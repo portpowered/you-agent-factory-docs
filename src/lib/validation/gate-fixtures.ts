@@ -3,9 +3,17 @@ import {
   getFoundationContentMetadata,
 } from "@/lib/validation/foundation-content";
 import {
+  type ShellAccessibilitySnapshot,
+  getExpectedDocsNavigationLabel,
+} from "@/lib/validation/shell-accessibility";
+import {
   type ShellLocalizationCopy,
   getShellLocalizationCopy,
 } from "@/lib/validation/shell-localization";
+import {
+  type StaticExportConfig,
+  getStaticExportConfig,
+} from "@/lib/validation/static-export";
 
 export const EARLY_GATE_VALIDATION_FIXTURES = {
   "broken-shell-localization": (): ShellLocalizationCopy => ({
@@ -15,6 +23,25 @@ export const EARLY_GATE_VALIDATION_FIXTURES = {
   "broken-foundation-content": (): FoundationContentMetadata => ({
     ...getFoundationContentMetadata(),
     PROJECT_TAGLINE: "   ",
+  }),
+  "broken-shell-accessibility": (): ShellAccessibilitySnapshot => ({
+    landing: {
+      primaryNavigationLabel: "",
+      hasMainLandmark: true,
+      heroHeadingLevel: 1,
+      externalGithubLinkRel: "noopener noreferrer",
+    },
+    docs: {
+      hasBannerLandmark: true,
+      siteNavigationLabel: "Site",
+      docsNavigationLabel: getExpectedDocsNavigationLabel(),
+      hasMainLandmark: true,
+      overviewLinkAriaCurrent: "page",
+    },
+  }),
+  "broken-static-export": (): StaticExportConfig => ({
+    ...getStaticExportConfig(),
+    output: "standalone",
   }),
 } as const;
 
@@ -50,4 +77,22 @@ export function resolveFoundationContentMetadataForGate(): FoundationContentMeta
   }
 
   return getFoundationContentMetadata();
+}
+
+export function resolveShellAccessibilitySnapshotForGate(): ShellAccessibilitySnapshot | null {
+  const fixture = readEarlyGateValidationFixture();
+  if (fixture === "broken-shell-accessibility") {
+    return EARLY_GATE_VALIDATION_FIXTURES["broken-shell-accessibility"]();
+  }
+
+  return null;
+}
+
+export function resolveStaticExportConfigForGate(): StaticExportConfig {
+  const fixture = readEarlyGateValidationFixture();
+  if (fixture === "broken-static-export") {
+    return EARLY_GATE_VALIDATION_FIXTURES["broken-static-export"]();
+  }
+
+  return getStaticExportConfig();
 }

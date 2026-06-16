@@ -25,7 +25,11 @@ export function runBunScript(
 }
 
 export function runValidationScript(
-  target: "validate:localization" | "validate:content",
+  target:
+    | "validate:localization"
+    | "validate:content"
+    | "validate:accessibility"
+    | "validate:static-export",
   fixture?: EarlyGateValidationFixture,
 ): { status: number | null; stdout: string; stderr: string } {
   return runBunScript(target, {

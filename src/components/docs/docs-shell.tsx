@@ -8,6 +8,10 @@ import {
   GITHUB_REPO_URL,
   HOME_CTA_LABEL,
 } from "@/lib/shell";
+import {
+  DOCS_OVERVIEW_ARIA_CURRENT,
+  DOCS_SITE_NAV_ARIA_LABEL,
+} from "@/lib/validation/shell-accessibility";
 import Link from "next/link";
 
 export function DocsShell() {
@@ -15,7 +19,10 @@ export function DocsShell() {
     <div className="docs-shell">
       <header className="docs-shell__header">
         <p className="docs-shell__brand">{PROJECT_NAME}</p>
-        <nav aria-label="Site" className="docs-shell__header-nav">
+        <nav
+          aria-label={DOCS_SITE_NAV_ARIA_LABEL}
+          className="docs-shell__header-nav"
+        >
           <Link className="docs-shell__link" href="/">
             {HOME_CTA_LABEL}
           </Link>
@@ -36,7 +43,7 @@ export function DocsShell() {
           <ul className="docs-shell__nav-list">
             <li>
               <Link
-                aria-current="page"
+                aria-current={DOCS_OVERVIEW_ARIA_CURRENT}
                 className="docs-shell__nav-link docs-shell__nav-link--active"
                 href={DOCS_ENTRY_ROUTE}
               >

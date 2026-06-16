@@ -35,4 +35,26 @@ describe("early foundation quality gate failing-path proof", () => {
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain("Shell localization validation failed");
   }, 180_000);
+
+  test("validate:accessibility blocks a missing primary navigation label regression", () => {
+    const result = runValidationScript(
+      "validate:accessibility",
+      "broken-shell-accessibility",
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Shell accessibility validation failed");
+    expect(result.stderr).toContain("primaryNavigationLabel");
+  });
+
+  test("validate:static-export blocks a broken static export configuration regression", () => {
+    const result = runValidationScript(
+      "validate:static-export",
+      "broken-static-export",
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Static export validation failed");
+    expect(result.stderr).toContain("output");
+  });
 });

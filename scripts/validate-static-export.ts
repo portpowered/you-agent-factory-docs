@@ -1,6 +1,8 @@
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
+import { resolveStaticExportConfigForGate } from "@/lib/validation/gate-fixtures";
+import { assertValidStaticExportConfig } from "@/lib/validation/static-export";
 
 const repoRoot = join(import.meta.dir, "..");
 
@@ -14,6 +16,8 @@ function run(command: string, args: string[]): number {
 
   return result.status ?? 1;
 }
+
+assertValidStaticExportConfig(resolveStaticExportConfigForGate());
 
 const buildStatus = run("bun", ["run", "build"]);
 if (buildStatus !== 0) {

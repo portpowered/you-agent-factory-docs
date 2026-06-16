@@ -14,8 +14,8 @@ The early gate currently runs, in order:
 2. `bun run lint`
 3. `bun run validate:localization` → `scripts/validate-localization.ts` → `src/lib/validation/shell-localization.ts`
 4. `bun run validate:content` → `scripts/validate-content.ts` → `src/lib/validation/foundation-content.ts`
-5. `bun run validate:accessibility` → focused shell accessibility tests in `tests/unit/homepage-shell.test.tsx` and `tests/unit/docs-shell.test.tsx`
-6. `bun run validate:static-export` → `scripts/validate-static-export.ts` (production build, `out/` presence, static export tests)
+5. `bun run validate:accessibility` → `scripts/validate-accessibility.ts` → bounded expectations in `src/lib/validation/shell-accessibility.ts` plus focused shell tests in `tests/unit/homepage-shell.test.tsx`, `tests/unit/docs-shell.test.tsx`, and `tests/unit/shell-accessibility-validation.test.tsx`
+6. `bun run validate:static-export` → `scripts/validate-static-export.ts` → `src/lib/validation/static-export.ts`, production build, `out/` presence, and `tests/unit/static-export.test.ts`
 7. Remaining foundation unit tests (`tests/unit/project.test.ts`, `tests/unit/site.test.ts`)
 
 `make check`, `make test`, and `make build` remain narrower helper targets. They are not substitutes for `make quality-gate`.
@@ -41,6 +41,8 @@ Pure validators accept injectable copy/metadata records (`getShellLocalizationCo
 ## Contract tests
 
 - `tests/unit/quality-gate.test.ts` verifies the make/bun command contract and runs the full gate on the current baseline.
-- `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization and content regressions fail through the shared validate scripts and that `make quality-gate` fails fast on a broken localization fixture.
+- `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization, content, accessibility, and static-export regressions fail through the shared validate scripts and that `make quality-gate` fails fast on a broken localization fixture.
+- `src/lib/validation/shell-accessibility.ts` documents `FOCUSED_SHELL_ACCESSIBILITY_COVERAGE` and exports shared aria-label constants consumed by shell components.
+- `src/lib/validation/static-export.ts` validates the GitHub Pages-safe Next.js export configuration before the production build step runs.
 - `tests/helpers/make.ts` supports dry-run assertions against the root `Makefile`.
 - `tests/helpers/validation.ts` runs `validate:localization` and `validate:content` with optional gate fixtures.

@@ -5,6 +5,7 @@ import {
   GITHUB_REPO_URL,
   LANDING_VALUE_STATEMENT,
 } from "@/lib/shell";
+import { LANDING_PRIMARY_NAV_ARIA_LABEL } from "@/lib/validation/shell-accessibility";
 import Link from "next/link";
 
 export function LandingShell() {
@@ -12,7 +13,10 @@ export function LandingShell() {
     <div className="landing-shell">
       <header className="landing-shell__header">
         <p className="landing-shell__brand">{PROJECT_NAME}</p>
-        <nav aria-label="Primary" className="landing-shell__header-nav">
+        <nav
+          aria-label={LANDING_PRIMARY_NAV_ARIA_LABEL}
+          className="landing-shell__header-nav"
+        >
           <Link className="landing-shell__link" href={DOCS_ENTRY_ROUTE}>
             {DOCS_CTA_LABEL}
           </Link>
