@@ -39,7 +39,7 @@ Verify on desktop and a mobile-width viewport (for example 390px wide):
 - [ ] Page loads with HTTP 200 and renders a non-empty landing shell.
 - [ ] Project title and value statement are visible.
 - [ ] Primary docs CTA is visible, keyboard reachable, and navigates to the docs entry route.
-- [ ] GitHub CTA is visible, keyboard reachable, and points to the external repository URL.
+- [ ] GitHub CTA is visible, keyboard reachable, and opens the public factory repository (`https://github.com/portpowered/you-agent-factory`).
 - [ ] Semantic landmarks are present (`header`, `main`).
 
 ## Docs shell

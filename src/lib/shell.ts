@@ -1,6 +1,7 @@
 /** Shared shell copy and external links for homepage and docs entry surfaces. */
+/** Public factory repository; the docs repo may be private during bootstrap. */
 export const GITHUB_REPO_URL =
-  "https://github.com/portpowered/you-agent-factory-docs";
+  "https://github.com/portpowered/you-agent-factory";
 
 export const GITHUB_CTA_LABEL = "View on GitHub";
 
