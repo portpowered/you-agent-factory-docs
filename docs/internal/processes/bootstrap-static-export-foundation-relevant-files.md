@@ -7,7 +7,7 @@
 - `make setup` runs `bun install`.
 - `make check` runs `bun run typecheck` then `bun run lint` (Biome).
 - `make test` runs `bun test` directly (not a separate test runner).
-- `make build` runs `bun run build` (Next.js production build).
+- `make build` runs `rm -rf .next` then `bun run build` (Next.js production build) so stale trace artifacts cannot break static export.
 
 ## Application scaffold
 
