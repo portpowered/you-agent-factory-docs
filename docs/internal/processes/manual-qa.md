@@ -13,16 +13,20 @@ make test
 make build
 ```
 
-2. Serve the exported `out/` directory with the GitHub Pages base path mounted at the site root. The configured base path is `/you-agent-factory-docs` (see `src/lib/site.ts`).
+2. Serve the static export so it is mounted at `/you-agent-factory-docs`, matching GitHub Pages project-site hosting. The configured base path is `/you-agent-factory-docs` (see `src/lib/site.ts`).
 
-Pick an unused port in the 3100–3999 range. Example:
+Next.js writes routes to `out/` at the filesystem root (`out/index.html`, `out/docs/index.html`), but generated links and assets use the `/you-agent-factory-docs/...` prefix. Serving `out/` directly at `http://127.0.0.1:$PORT/` does **not** expose those URLs; you must serve a parent directory that contains a `you-agent-factory-docs` entry pointing at the export.
+
+Pick an unused port in the 3100–3999 range. From the repository root after `make build`:
 
 ```bash
 PORT=3457
-cd out
+SERVE_ROOT=$(mktemp -d)
+ln -sf "$(pwd)/out" "$SERVE_ROOT/you-agent-factory-docs"
+cd "$SERVE_ROOT"
 python3 -m http.server "$PORT" &
 server_pid=$!
-trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+trap 'kill "$server_pid" 2>/dev/null || true; rm -rf "$SERVE_ROOT"' EXIT
 ```
 
 Homepage URL: `http://127.0.0.1:$PORT/you-agent-factory-docs/`  
