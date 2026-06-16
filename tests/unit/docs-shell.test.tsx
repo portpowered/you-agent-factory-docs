@@ -123,7 +123,14 @@ describe("code presentation example surface", () => {
     const codeBlockSection = screen.getByRole("region", {
       name: CODE_BLOCK_SECTION_HEADING,
     });
-    expect(within(codeBlockSection).getByLabelText("bash example")).toBeTruthy();
+    expect(
+      within(codeBlockSection).getByRole("figure", { name: "Bash" }),
+    ).toBeTruthy();
+    expect(
+      within(codeBlockSection).getByRole("figure", {
+        name: "Long command line",
+      }),
+    ).toBeTruthy();
     expect(screen.getByRole("tablist")).toBeTruthy();
     expect(screen.getAllByRole("note")).toHaveLength(2);
     expect(
@@ -150,7 +157,7 @@ describe("code presentation example surface", () => {
       name: "PowerShell",
     });
     expect(
-      within(powershellPanel).getByLabelText("powershell example"),
+      within(powershellPanel).getByRole("figure", { name: "PowerShell" }),
     ).toBeTruthy();
   });
 });

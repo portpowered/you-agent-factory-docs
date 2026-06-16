@@ -285,12 +285,19 @@ body {
   font-size: clamp(1.125rem, 2.5vw, 1.375rem);
 }
 
+.docs-code-block-section {
+  display: grid;
+  gap: 1rem;
+}
+
 .docs-code-block {
   margin: 0;
   border: 1px solid var(--landing-border);
   border-radius: 0.75rem;
   background: var(--landing-surface);
   overflow: hidden;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .docs-code-block__label {
@@ -308,14 +315,26 @@ body {
   margin: 0;
   padding: 1rem;
   overflow-x: auto;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.875rem;
   line-height: 1.6;
+  scroll-behavior: smooth;
 }
 
 .docs-code-block__code {
   display: block;
   white-space: pre;
+  min-width: min-content;
+}
+
+@media (max-width: 40rem) {
+  .docs-code-block__pre {
+    padding: 0.75rem;
+    font-size: 0.8125rem;
+  }
 }
 
 .docs-code-tabs {
@@ -448,5 +467,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .docs-code-tabs__tab {
     transition: none;
+  }
+
+  .docs-code-block__pre {
+    scroll-behavior: auto;
   }
 }

@@ -11,6 +11,20 @@ export const CODE_PRESENTATION_EXAMPLE_INTRO =
 
 export const CODE_BLOCK_SECTION_HEADING = "Code block";
 
+const CODE_BLOCK_LANGUAGE_LABELS: Record<string, string> = {
+  bash: "Bash",
+  powershell: "PowerShell",
+  typescript: "TypeScript",
+  javascript: "JavaScript",
+  json: "JSON",
+  yaml: "YAML",
+};
+
+/** Maps a language slug to a reviewer-visible label for code blocks. */
+export function formatCodeBlockLanguageLabel(language: string): string {
+  return CODE_BLOCK_LANGUAGE_LABELS[language.toLowerCase()] ?? language;
+}
+
 export const CODE_TABS_SECTION_HEADING = "Code tabs";
 
 export const CALLOUT_SECTION_HEADING = "Callouts";

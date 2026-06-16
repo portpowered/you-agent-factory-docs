@@ -18,6 +18,9 @@ const EXAMPLE_CODE = `factory run workflows/pr-review.yaml \\
   --repo ./my-service \\
   --output ./review-artifacts`;
 
+const EXAMPLE_LONG_LINE_CODE =
+  "factory run workflows/pr-review.yaml --repo ./my-service --output ./review-artifacts --include-logs --format json --timeout 3600";
+
 const EXAMPLE_TABS = [
   {
     id: "bash",
@@ -41,9 +44,17 @@ export function CodePresentationExample() {
       </h1>
       <p className="docs-shell__framing">{CODE_PRESENTATION_EXAMPLE_INTRO}</p>
 
-      <section aria-labelledby="code-block-section-heading">
+      <section
+        aria-labelledby="code-block-section-heading"
+        className="docs-code-block-section"
+      >
         <h2 id="code-block-section-heading">{CODE_BLOCK_SECTION_HEADING}</h2>
         <CodeBlock code={EXAMPLE_CODE} language="bash" />
+        <CodeBlock
+          code={EXAMPLE_LONG_LINE_CODE}
+          language="bash"
+          title="Long command line"
+        />
       </section>
 
       <section aria-labelledby="code-tabs-section-heading">

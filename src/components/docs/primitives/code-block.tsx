@@ -1,3 +1,8 @@
+"use client";
+
+import { formatCodeBlockLanguageLabel } from "@/lib/docs-primitives";
+import { useId } from "react";
+
 type CodeBlockProps = {
   code: string;
   language?: string;
@@ -5,13 +10,23 @@ type CodeBlockProps = {
 };
 
 export function CodeBlock({ code, language, title }: CodeBlockProps) {
-  const label = title ?? (language ? `${language} example` : "Code example");
+  const labelId = useId();
+  const languageLabel = language
+    ? formatCodeBlockLanguageLabel(language)
+    : undefined;
+  const visibleLabel = title ?? languageLabel;
+  const accessibleName =
+    title ?? (languageLabel ? `${languageLabel} code example` : "Code example");
 
   return (
-    <figure className="docs-code-block" aria-label={label}>
-      {(language || title) && (
-        <figcaption className="docs-code-block__label">
-          {title ?? language}
+    <figure
+      aria-labelledby={visibleLabel ? labelId : undefined}
+      aria-label={visibleLabel ? undefined : accessibleName}
+      className="docs-code-block"
+    >
+      {visibleLabel && (
+        <figcaption className="docs-code-block__label" id={labelId}>
+          {visibleLabel}
         </figcaption>
       )}
       <pre className="docs-code-block__pre">
@@ -21,6 +36,7 @@ export function CodeBlock({ code, language, title }: CodeBlockProps) {
               ? `docs-code-block__code language-${language}`
               : "docs-code-block__code"
           }
+          lang={language}
         >
           {code}
         </code>
