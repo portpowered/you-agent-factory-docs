@@ -267,6 +267,10 @@ Quality expectations:
 * keyboard navigation works
 * screen-reader labels are present
 * Lighthouse checks pass in CI
+* README explains the project immediately with a one-line description before deeper detail
+* contributors and CI can use the same top-level `make` entrypoints without environment-specific branching
+* code coverage for component packages stays at or above 90 percent in CI where package-level enforcement is practical
+* successful changes can flow through a fully automated continuous deployment path
 
 ## 3. Technology Choices
 
@@ -342,7 +346,7 @@ Use:
 
 Use:
 
-* **Vitest** for unit tests
+* **bun test** for unit and component test execution
 * **React Testing Library** for component tests
 * **Playwright** for end-to-end tests
 * **axe-core / jest-axe** for accessibility validation
@@ -351,6 +355,15 @@ Use:
 * content validation scripts
 * localization validation scripts
 * search validation scripts
+* CI-enforced code coverage thresholds with a 90 percent minimum for component packages where package-level enforcement is practical
+
+Execution expectations:
+
+* the repository should expose a small set of top-level `make` targets for local development and CI
+* CI should invoke the same `make` targets that contributors run locally
+* `make` targets should not require separate CI-only behavior flags to succeed in automation
+* `make test` should run through `bun test`
+* deployment should run automatically after required checks pass on changes to `main`
 
 ## 4. Implementation Details
 
@@ -471,6 +484,13 @@ Implementation shape:
 * treat this as the core system shape for v1
 * defer heavier feature-layer factoring until repeated patterns appear in the codebase
 * aspirational subsystems such as richer charts, complex diagrams, and expanded analytics can be added later without forcing early folder complexity
+
+Repository entrypoint expectations:
+
+* `README.md` should begin with a single-sentence description of what the project is
+* the opening README section should then expand into install, quickstart, and deeper reference material as needed
+* a root `Makefile` should provide the standard automation entrypoints used by both developers and CI
+* those entrypoints should cover at least `make setup`, `make check`, `make test`, and `make build`, plus deploy-relevant checks where applicable
 
 ### 4.2 Shared Hooks
 
@@ -891,6 +911,12 @@ Validate:
 * empty states
 * error states
 
+Component coverage expectations:
+
+* CI should enforce at least 90 percent code coverage for component packages where package-level enforcement is practical
+* coverage reporting should make regressions obvious at pull request time
+* missing the threshold should block merge and therefore block deployment
+
 #### Accessibility Tests
 
 Validate:
@@ -1175,6 +1201,9 @@ Tasks:
 * [ ] add global header
 * [ ] add footer
 * [ ] add GitHub CTA
+* [ ] add root `Makefile` with shared local and CI entrypoints
+* [ ] wire `make test` to `bun test`
+* [ ] write README opening with one-line project description and fast-start links
 
 Done when:
 
@@ -1182,6 +1211,8 @@ Done when:
 * the site deploys to GitHub Pages
 * the site builds as a fully static export
 * the homepage and docs shell render
+* contributors and CI can invoke the same `make` entrypoints successfully
+* README starts with a one-line description followed by the next actions a reader needs
 
 ### Phase 2: Design System and Shared Hooks
 
@@ -1372,6 +1403,7 @@ Tasks:
 * [ ] add content tests
 * [ ] add search tests
 * [ ] add Playwright E2E tests
+* [ ] enforce 90 percent code coverage in CI for component packages where package-level enforcement is practical
 * [ ] add Lighthouse CI
 * [ ] add bundle budget checks
 * [ ] add image optimization checks
@@ -1379,7 +1411,7 @@ Tasks:
 * [ ] add lint checks
 * [ ] add CI workflow
 * [ ] require passing CI before merge
-* [ ] deploy only after successful build
+* [ ] deploy automatically on changes to `main` after successful required checks
 
 Repository settings such as branch protection should be tracked separately from the code implementation plan.
 
@@ -1387,6 +1419,8 @@ Done when:
 
 * PRs cannot merge unless tests pass
 * accessibility, localization, content, and performance are validated automatically
+* code coverage at or above 90 percent is enforced in CI for component packages where package-level enforcement is practical
+* deployment is fully automatic on changes to `main` once the required checks pass
 
 ### Phase 9: Expansion Content
 
@@ -1431,3 +1465,7 @@ The first public version is done when:
 17. PRs cannot merge unless checks pass.
 18. The site can cheaply add new docs, blogs, references, glossary pages, and localized component text.
 19. Public search is generated from structured content metadata and localized search documents rather than raw file discovery.
+20. README begins with a one-line description of the project and then expands into the next required details.
+21. Contributors and CI use the same top-level `make` commands successfully.
+22. CI enforces at least 90 percent component coverage.
+23. Deployment is fully automated after required checks succeed.
