@@ -1,12 +1,12 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseContentFile } from "@/lib/content/frontmatter";
 import { loadStarterContentRecords } from "@/lib/content/load-starter-content";
+import { resolveLocaleFileName } from "@/lib/content/locale-files";
 import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
 import type { CanonicalContentRecord } from "@/lib/content/types";
 
 const DEFAULT_CONTENT_ROOT = join(process.cwd(), "src/content");
-const LOCALE_FILE_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?\.mdx?$/;
 
 export type DocPageContent = {
   record: CanonicalContentRecord;
@@ -32,10 +32,12 @@ function readDocSource(
   locale: string,
 ): string {
   const slugRoot = join(contentRoot, "docs", slug);
-  const localeFile = `${locale}.mdx`;
+  const localeFile = resolveLocaleFileName(locale, readdirSync(slugRoot));
 
-  if (!LOCALE_FILE_PATTERN.test(localeFile)) {
-    throw new Error(`Unsupported doc locale file: ${localeFile}`);
+  if (!localeFile) {
+    throw new Error(
+      `Doc locale file not found for slug "${slug}" and locale "${locale}"`,
+    );
   }
 
   return readFileSync(join(slugRoot, localeFile), "utf8");

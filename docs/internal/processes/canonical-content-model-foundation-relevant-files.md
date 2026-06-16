@@ -26,7 +26,8 @@
 
 ## Starter content
 
-- Starter fixtures live under `src/content/{docs,blog,glossary,comparisons,references}/{slug}/{locale}.mdx`.
+- Starter fixtures live under `src/content/{docs,blog,glossary,comparisons,references}/{slug}/{locale}.md` or `{locale}.mdx`.
+- `resolveLocaleFileName()` in `src/lib/content/locale-files.ts` is the shared locale-file resolver; `loadDocPage()` prefers `.mdx` over `.md` when both exist for the same locale.
 - Directory names map to public content kinds via `STARTER_CONTENT_DIRECTORY_KINDS` in `src/lib/content/starter.ts`.
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
@@ -47,6 +48,7 @@
 - Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
 - Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
+- `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.
 - Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
 
 ## Quality checks

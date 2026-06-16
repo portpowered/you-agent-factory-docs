@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { LOCALE_FILE_PATTERN } from "@/lib/content/locale-files";
 import {
   STARTER_CONTENT_DIRECTORY_KINDS,
   type StarterContentDescriptor,
@@ -10,8 +11,6 @@ import {
 } from "@/lib/content/starter";
 import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
 import type { CanonicalContentRecord } from "@/lib/content/types";
-
-const LOCALE_FILE_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?\.mdx?$/;
 
 export type LoadedStarterContent = {
   records: CanonicalContentRecord[];
