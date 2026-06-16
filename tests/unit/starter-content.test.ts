@@ -112,6 +112,7 @@ section: guides
       slug: "agent",
       locale: "en",
       source: `---
+id: glossary/agent
 title: Agent
 canonicalLocale: en
 availableLocales:
@@ -174,5 +175,44 @@ navigationTitle: Agent term
     expect(records.some((record) => record.id === "doc/invalid-fixture")).toBe(
       false,
     );
+  });
+
+  test("blocks inferred locale metadata and missing canonical-locale variants through the loader", () => {
+    const { records, failures } =
+      loadStarterContentRecords(INVALID_FIXTURE_ROOT);
+
+    const inferredFailure = failures.find(
+      (failure) => failure.descriptor.slug === "inferred-locale-metadata",
+    );
+    expect(inferredFailure?.errors.map((error) => error.field).sort()).toEqual([
+      "availableLocales",
+      "canonicalLocale",
+      "id",
+    ]);
+
+    const missingCanonicalVariantFailure = failures.find(
+      (failure) => failure.descriptor.slug === "missing-canonical-variant",
+    );
+    expect(
+      missingCanonicalVariantFailure?.errors.some(
+        (error) =>
+          error.field === "doc/missing-canonical-variant.canonicalLocale" &&
+          error.message.includes('missing canonical-locale variant "en"'),
+      ),
+    ).toBe(true);
+    expect(
+      records.some((record) => record.id === "doc/missing-canonical-variant"),
+    ).toBe(false);
+
+    const unsupportedRegistryFailure = failures.find(
+      (failure) => failure.descriptor.slug === "unsupported-registry-locale",
+    );
+    expect(
+      unsupportedRegistryFailure?.errors.some(
+        (error) =>
+          error.field === "canonicalLocale" &&
+          error.message.includes("not a supported locale"),
+      ),
+    ).toBe(true);
   });
 });

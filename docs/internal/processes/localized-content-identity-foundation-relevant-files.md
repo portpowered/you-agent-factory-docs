@@ -24,10 +24,19 @@
 
 - Variant locales and `availableLocales` declarations must match `SUPPORTED_LOCALES` from `src/localization/config/locales.ts` (`en`, `fr`, `ja`, `es`).
 - BCP 47 tags such as `en-US` may still pass single-record metadata validation, but localized variant identity validation blocks unsupported registry declarations at the group layer.
+- `validateLocaleRegistryMetadata()` in `src/lib/content/locale-metadata-validation.ts` enforces registry membership during starter content validation before canonical record projection.
+
+## Build-time locale metadata validation
+
+- `validateExplicitStarterLocaleMetadata()` requires explicit `canonicalLocale`, `availableLocales`, and `id` frontmatter on every starter locale file; `buildMetadataFromStarterContent()` no longer infers locale metadata from the on-disk filename.
+- `validateStarterContent()` runs explicit metadata checks, registry validation, per-record validation, and `loadStarterContentRecords()` still runs group-level `validateLocalizedVariantBindings()`.
+- Group validation fails when the canonical-locale variant file is missing or when `availableLocales` lists locales without matching on-disk variant files.
+- Invalid fixtures for metadata drift proofs live under `tests/fixtures/starter-content/`; focused tests live in `tests/unit/locale-metadata-validation.test.ts`.
 
 ## Tests
 
 - Focused identity contract and validation behavior: `tests/unit/localized-variant-identity.test.ts`.
+- Build-time locale metadata validation: `tests/unit/locale-metadata-validation.test.ts`.
 - Starter loading integration remains covered in `tests/unit/starter-content.test.ts`; add identity failure fixtures under `tests/fixtures/starter-content/` when proving group-level errors through the loader.
 
 ## Quality checks

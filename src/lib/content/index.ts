@@ -17,6 +17,10 @@ export {
   parseCanonicalId,
 } from "@/lib/content/routes";
 export { isValidLocaleTag, normalizeLocaleList } from "@/lib/content/locales";
+export {
+  validateExplicitStarterLocaleMetadata,
+  validateLocaleRegistryMetadata,
+} from "@/lib/content/locale-metadata-validation";
 export { validateContentMetadata } from "@/lib/content/validation";
 export {
   parseContentFile,

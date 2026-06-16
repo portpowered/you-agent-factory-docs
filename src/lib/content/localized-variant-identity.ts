@@ -166,6 +166,35 @@ export function validateLocalizedVariantBindings(
       );
     }
 
+    const declaredCanonicalLocale = [...canonicalLocales][0];
+    if (
+      declaredCanonicalLocale &&
+      isSupportedLocale(declaredCanonicalLocale) &&
+      !groupBindings.some(
+        (binding) => binding.variantLocale === declaredCanonicalLocale,
+      )
+    ) {
+      pushError(
+        errors,
+        `${contentPathKey}.canonicalLocale`,
+        `missing canonical-locale variant "${declaredCanonicalLocale}" for canonical page "${contentPathKey}"`,
+      );
+    }
+
+    const declaredAvailableLocales = referenceLocales.filter(isSupportedLocale);
+    const presentVariantLocales = new Set(
+      groupBindings.map((binding) => binding.variantLocale),
+    );
+    for (const locale of declaredAvailableLocales) {
+      if (!presentVariantLocales.has(locale)) {
+        pushError(
+          errors,
+          `${contentPathKey}.availableLocales`,
+          `missing localized variant file for locale "${locale}" declared in availableLocales`,
+        );
+      }
+    }
+
     const seenVariantLocales = new Set<string>();
     for (const binding of groupBindings) {
       const { variantLocale, record } = binding;
