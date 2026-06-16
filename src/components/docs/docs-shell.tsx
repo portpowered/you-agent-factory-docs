@@ -1,8 +1,7 @@
+import { DocsShellNav } from "@/components/docs/docs-shell-nav";
 import { ResponsiveShellRoot } from "@/components/shell/responsive-shell-root";
-import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
+import { PROJECT_NAME } from "@/lib/project";
 import {
-  DOCS_NAV_HEADING,
-  DOCS_NAV_OVERVIEW_LABEL,
   DOCS_SHELL_FRAMING_TEXT,
   DOCS_SHELL_TITLE,
   GITHUB_CTA_LABEL,
@@ -32,20 +31,7 @@ export function DocsShell() {
       </header>
 
       <div className="docs-shell__layout">
-        <nav aria-label={DOCS_NAV_HEADING} className="docs-shell__nav">
-          <p className="docs-shell__nav-heading">{DOCS_NAV_HEADING}</p>
-          <ul className="docs-shell__nav-list">
-            <li>
-              <Link
-                aria-current="page"
-                className="docs-shell__nav-link docs-shell__nav-link--active"
-                href={DOCS_ENTRY_ROUTE}
-              >
-                {DOCS_NAV_OVERVIEW_LABEL}
-              </Link>
-            </li>
-          </ul>
-        </nav>
+        <DocsShellNav />
 
         <main className="docs-shell__main">
           <article aria-labelledby="docs-shell-title">

@@ -1,5 +1,6 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { render, screen, within } from "@testing-library/react";
+import { RESPONSIVE_BREAKPOINTS_PX } from "../../src/lib/responsive-tokens";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import {
   DOCS_NAV_HEADING,
@@ -12,14 +13,54 @@ import {
 } from "../../src/lib/shell";
 import MockLink from "../helpers/mock-next-link";
 
+function setViewportWidth(width: number) {
+  Object.defineProperty(window, "innerWidth", {
+    configurable: true,
+    value: width,
+    writable: true,
+  });
+}
+
+function mockMatchMediaForWidth(width: number) {
+  window.matchMedia = (query: string) => {
+    const maxWidthMatch = query.match(/\(max-width:\s*(\d+)px\)/);
+    const minWidthMatch = query.match(/\(min-width:\s*(\d+)px\)/);
+
+    let matches = false;
+
+    if (maxWidthMatch) {
+      matches = width <= Number(maxWidthMatch[1]);
+    } else if (minWidthMatch) {
+      matches = width >= Number(minWidthMatch[1]);
+    }
+
+    return {
+      addEventListener: () => {},
+      addListener: () => {},
+      dispatchEvent: () => false,
+      matches,
+      media: query,
+      onchange: null,
+      removeEventListener: () => {},
+      removeListener: () => {},
+    } as MediaQueryList;
+  };
+}
+
 mock.module("next/link", () => ({
   default: MockLink,
 }));
 
-const { DocsShell } = await import("../../src/components/docs/docs-shell");
+afterEach(() => {
+  mock.restore();
+});
 
 describe("docs shell rendering", () => {
-  test("renders header, docs navigation, and main content landmarks", () => {
+  test("renders header, docs navigation, and main content landmarks", async () => {
+    setViewportWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
+    mockMatchMediaForWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
     render(<DocsShell />);
 
     expect(screen.getByRole("banner")).toBeTruthy();
@@ -35,7 +76,11 @@ describe("docs shell rendering", () => {
     expect(screen.getByText(PROJECT_NAME)).toBeTruthy();
   });
 
-  test("marks the overview entry as current and links home and GitHub", () => {
+  test("marks the overview entry as current and links home and GitHub", async () => {
+    setViewportWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
+    mockMatchMediaForWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
     render(<DocsShell />);
 
     const siteNav = screen.getByRole("navigation", { name: "Site" });
