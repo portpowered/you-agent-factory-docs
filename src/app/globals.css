@@ -59,6 +59,15 @@ body {
   gap: 0.75rem 1rem;
 }
 
+.shared-shell__nav-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .shared-shell__layout {
   flex: 1;
   display: flex;

@@ -97,7 +97,9 @@ describe("shared shell structure", () => {
       within(homePrimaryNav).getByRole("link", { name: DOCS_CTA_LABEL }),
     ).toBeTruthy();
     expect(
-      within(homePrimaryNav).getByRole("link", { name: GITHUB_CTA_LABEL }),
+      within(homePrimaryNav).getByRole("link", {
+        name: `${GITHUB_CTA_LABEL} (opens in new tab)`,
+      }),
     ).toBeTruthy();
     expect(
       within(homePrimaryNav).queryByRole("link", { name: HOME_CTA_LABEL }),
@@ -114,7 +116,9 @@ describe("shared shell structure", () => {
       within(docsPrimaryNav).getByRole("link", { name: HOME_CTA_LABEL }),
     ).toBeTruthy();
     expect(
-      within(docsPrimaryNav).getByRole("link", { name: GITHUB_CTA_LABEL }),
+      within(docsPrimaryNav).getByRole("link", {
+        name: `${GITHUB_CTA_LABEL} (opens in new tab)`,
+      }),
     ).toBeTruthy();
     expect(
       docsPrimaryNav.querySelector(`a[href="${GITHUB_REPO_URL}"]`),

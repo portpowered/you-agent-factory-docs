@@ -115,6 +115,21 @@ export const sharedShellConfig: SharedShellConfig = {
   },
 };
 
+/** Destination id for the active surface; used for current-location treatment in primary nav. */
+export function getSharedShellCurrentDestinationId(
+  surface: SharedShellSurface,
+  config: SharedShellConfig = sharedShellConfig,
+): string | undefined {
+  const surfaceDestinationId = surface === "home" ? "home" : "docs";
+
+  const isVisibleInHeader =
+    config.headerDestinationIdsBySurface[surface].includes(
+      surfaceDestinationId,
+    );
+
+  return isVisibleInHeader ? surfaceDestinationId : undefined;
+}
+
 export function getSharedShellHeaderDestinations(
   surface: SharedShellSurface,
   config: SharedShellConfig = sharedShellConfig,

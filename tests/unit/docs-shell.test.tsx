@@ -45,7 +45,7 @@ describe("docs shell rendering", () => {
       name: HOME_CTA_LABEL,
     });
     const githubLink = within(siteNav).getByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: `${GITHUB_CTA_LABEL} (opens in new tab)`,
     });
 
     expect(homeLink.getAttribute("href")).toBe("/");

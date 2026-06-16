@@ -2,12 +2,16 @@ import { DOCS_ENTRY_ROUTE } from "@/lib/project";
 import {
   type SharedShellConfig,
   type SharedShellSurface,
+  getSharedShellCurrentDestinationId,
   getSharedShellHeaderDestinations,
   sharedShellConfig,
   shouldRenderDocsSidebar,
 } from "@/lib/shared-shell-config";
-import Link from "next/link";
 import type { ReactNode } from "react";
+import {
+  SharedShellDocsNavigation,
+  SharedShellPrimaryNavigation,
+} from "./shared-shell-navigation";
 
 export type SharedShellProps = {
   surface: SharedShellSurface;
@@ -24,36 +28,19 @@ function SharedShellHeader({
   surface: SharedShellSurface;
 }) {
   const headerDestinations = getSharedShellHeaderDestinations(surface, config);
+  const currentDestinationId = getSharedShellCurrentDestinationId(
+    surface,
+    config,
+  );
 
   return (
     <header className="shared-shell__header">
       <p className="shared-shell__brand">{config.brand}</p>
-      <nav
-        aria-label={config.primaryNavigation.ariaLabel}
-        className="shared-shell__header-nav"
-      >
-        {headerDestinations.map((destination) =>
-          destination.external ? (
-            <a
-              className="shared-shell__link shared-shell__link--external"
-              href={destination.href}
-              key={destination.id}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {destination.label}
-            </a>
-          ) : (
-            <Link
-              className="shared-shell__link"
-              href={destination.href}
-              key={destination.id}
-            >
-              {destination.label}
-            </Link>
-          ),
-        )}
-      </nav>
+      <SharedShellPrimaryNavigation
+        ariaLabel={config.primaryNavigation.ariaLabel}
+        currentDestinationId={currentDestinationId}
+        destinations={headerDestinations}
+      />
     </header>
   );
 }
@@ -72,30 +59,12 @@ function SharedShellDocsAside({
   }
 
   return (
-    <nav aria-label={docsNavigation.heading} className="shared-shell__docs-nav">
-      <p className="shared-shell__docs-nav-heading">{docsNavigation.heading}</p>
-      <ul className="shared-shell__docs-nav-list">
-        {docsNavigation.items.map((item) => {
-          const isCurrent = item.id === currentDocsItemId;
-
-          return (
-            <li key={item.id}>
-              <Link
-                aria-current={isCurrent ? "page" : undefined}
-                className={
-                  isCurrent
-                    ? "shared-shell__docs-nav-link shared-shell__docs-nav-link--active"
-                    : "shared-shell__docs-nav-link"
-                }
-                href={item.href}
-              >
-                {item.label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <SharedShellDocsNavigation
+      ariaLabel={docsNavigation.heading}
+      currentItemId={currentDocsItemId}
+      heading={docsNavigation.heading}
+      items={docsNavigation.items}
+    />
   );
 }
 
