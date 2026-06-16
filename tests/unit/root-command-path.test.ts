@@ -35,7 +35,11 @@ describe("root contributor command path", () => {
   testUnlessVerifying(
     "make test completes successfully from the repository root",
     () => {
-      const result = runMakeTarget("test", { VERIFYING_MAKE_TEST: "1" });
+      const result = runMakeTarget("test", {
+        VERIFYING_MAKE_TEST: "1",
+        STATIC_EXPORT_TEST_PORT: "3885",
+        RECONCILED_EXPORT_BROWSER_TEST_PORT: "3886",
+      });
 
       expect(result.status).toBe(0);
       expect(result.output).toMatch(/\d+ pass/);

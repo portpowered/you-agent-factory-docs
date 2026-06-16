@@ -38,6 +38,7 @@
 - `projectDocsShellNavigation()` derives section-grouped page labels and hrefs from published doc records.
 - `loadDocsShellNavigation()` calls `requireStarterContentRecords()` and throws `StarterContentValidationError` when any starter fixture is invalid.
 - `projectSharedShellDocsNavigation()` maps generated navigation into `SharedShell` sidebar groups; `DocsShell` composes `SharedShell` with that projected config.
+- `DocsShell` uses `createSharedShellConfigFromMessages(t, { docsNavigationGroups })` so localized shell labels come from the message catalog while docs sidebar items stay projected from canonical records.
 - Published doc pages are served from `src/app/docs/[slug]/page.tsx` via `loadDocPage()` and `generateStaticParams()`.
 
 ## Tests
@@ -49,6 +50,7 @@
 - Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
 - `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.
+- Static-export and browser-export tests read ports from `STATIC_EXPORT_TEST_PORT` / `RECONCILED_EXPORT_BROWSER_TEST_PORT` via `tests/helpers/test-port.ts` so nested `make test` invocations from `root-command-path.test.ts` do not collide with the outer suite.
 - Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
 
 ## Quality checks

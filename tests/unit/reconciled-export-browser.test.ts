@@ -17,9 +17,10 @@ import {
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
+import { getTestPort } from "../helpers/test-port";
 
 describe("reconciled baseline browser export", () => {
-  const port = 3786;
+  const port = getTestPort(3786, "RECONCILED_EXPORT_BROWSER_TEST_PORT");
   let server: StaticExportServer;
   let browser: Browser;
 
@@ -31,9 +32,9 @@ describe("reconciled baseline browser export", () => {
   }, 120_000);
 
   afterAll(async () => {
-    await browser.close();
-    server.stop();
-  });
+    await browser?.close();
+    server?.stop();
+  }, 30_000);
 
   test("homepage shell renders project identity, value statement, and CTAs", async () => {
     const page = await browser.newPage();
