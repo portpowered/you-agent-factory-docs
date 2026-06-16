@@ -297,3 +297,15 @@
   - Gotchas encountered: docs-shell navigation filters pages by locale availability before projection—fallback projection proofs belong on `projectLocaleAwareContent()` or `loadDocPage()`, not on filtered nav queries for unsupported locales.
   - Useful context: `projectLocaleAwareContentCatalog()` is the batch entry point for later search-document generation across canonical page ids.
 ---
+
+## 2026-06-17T21:01:00Z - PR feedback (mergeability)
+- Merged `origin/main` to resolve `mergeStateStatus: DIRTY` on PR #11; kept worktree `progress.txt` after main deleted it from the default branch.
+- Post-merge verification: `make check` pass, `make test` pass (183 tests).
+- Files changed
+  - merge from `origin/main` (quality gates, responsive shell, CI/pages deploy)
+  - `progress.txt` (conflict resolution)
+- **Learnings for future iterations:**
+  - Patterns discovered: main may delete `progress.txt` while worktrees still rely on it—resolve modify/delete conflicts by keeping the worktree progress log.
+  - Gotchas encountered: mergeability work after all stories pass should still run the full suite because main can add new gate tests.
+  - Useful context: PR #11 created at https://github.com/portpowered/you-agent-factory-docs/pull/11 after story 005 completion.
+---
