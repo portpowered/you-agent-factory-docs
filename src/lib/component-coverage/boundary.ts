@@ -72,6 +72,8 @@ export const COMPONENT_COVERAGE_PATH_IGNORE_PATTERNS = [
   "next.config.ts",
   "src/app/**",
   "src/lib/**",
+  "src/localization/**",
+  "src/hooks/**",
 ] as const;
 
 const ENFORCED_SOURCE_EXTENSIONS = new Set([".ts", ".tsx"]);

@@ -26,7 +26,7 @@ Documented in `COMPONENT_COVERAGE_OUT_OF_SCOPE_SURFACES`:
 ## Component coverage enforcement command
 
 - `make component-coverage` and `bun run component-coverage` are the authoritative root entrypoints for threshold enforcement on the practical component-package surface.
-- `scripts/enforce-component-coverage.ts` runs `bun test --coverage` (ignoring `tests/unit/component-coverage-enforcement.test.ts` to avoid recursive subprocess invocation), parses the scoped coverage table, and enforces the 90% aggregate line-coverage threshold from `src/lib/component-coverage/enforce.ts`.
+- `scripts/enforce-component-coverage.ts` runs `bun test --coverage` with text and lcov reporters (ignoring subprocess-heavy contract tests listed in `COMPONENT_COVERAGE_ENFORCEMENT_TEST_IGNORE_PATTERNS`, including `tests/unit/static-export.test.ts` because static export correctness is validated by `make quality-gate`), parses `coverage/lcov.info`, and enforces the 90% aggregate line-coverage threshold from `src/lib/component-coverage/enforce.ts` using summed LF/LH totals rather than averaging per-file percentages.
 - Failure output uses the `Component coverage enforcement failed` prefix so threshold breaches are distinguishable from unrelated test, lint, or typecheck failures.
 - `make component-coverage-boundary` remains the reviewer-visible boundary report; it does not run threshold enforcement.
 

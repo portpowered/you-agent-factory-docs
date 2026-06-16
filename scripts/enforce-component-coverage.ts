@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   formatComponentCoverageContractLimitations,
@@ -10,24 +11,25 @@ import {
   evaluateComponentCoverageEnforcement,
   formatComponentCoverageEnforcementFailure,
   formatComponentCoverageEnforcementSuccess,
-  parseBunCoverageTable,
+  parseBunCoverageLcov,
 } from "@/lib/component-coverage/enforce";
-import { getComponentCoverageEnforcementFixtureOutput } from "@/lib/component-coverage/fixtures";
+import { getComponentCoverageEnforcementFixture } from "@/lib/component-coverage/fixtures";
 
 const repoRoot = join(import.meta.dir, "..");
+const coverageDir = join(repoRoot, "coverage");
 
 console.log("Running component coverage enforcement.");
 console.log(`\n${formatComponentCoverageContractLimitations()}\n`);
 
-const fixtureOutput = getComponentCoverageEnforcementFixtureOutput(
+const fixture = getComponentCoverageEnforcementFixture(
   process.env.COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE,
 );
 
-if (fixtureOutput !== undefined) {
-  const coverageRows = parseBunCoverageTable(fixtureOutput);
+if (fixture !== undefined) {
+  const lcovByFile = parseBunCoverageLcov(fixture.lcov);
   const enforcedFiles = listEnforcedComponentSourceFiles(repoRoot);
   const evaluation = evaluateComponentCoverageEnforcement(
-    coverageRows,
+    lcovByFile,
     enforcedFiles,
   );
 
@@ -43,6 +45,10 @@ if (fixtureOutput !== undefined) {
 const testArgs = [
   "test",
   "--coverage",
+  "--coverage-reporter=text",
+  "--coverage-reporter=lcov",
+  "--coverage-dir",
+  coverageDir,
   ...COMPONENT_COVERAGE_ENFORCEMENT_TEST_IGNORE_PATTERNS.flatMap((pattern) => [
     "--path-ignore-patterns",
     pattern,
@@ -66,11 +72,11 @@ if (testResult.status !== 0) {
   process.exit(testResult.status ?? 1);
 }
 
-const output = `${testResult.stdout ?? ""}\n${testResult.stderr ?? ""}`;
-const coverageRows = parseBunCoverageTable(output);
+const lcovPath = join(coverageDir, "lcov.info");
+const lcovByFile = parseBunCoverageLcov(readFileSync(lcovPath, "utf8"));
 const enforcedFiles = listEnforcedComponentSourceFiles(repoRoot);
 const evaluation = evaluateComponentCoverageEnforcement(
-  coverageRows,
+  lcovByFile,
   enforcedFiles,
 );
 

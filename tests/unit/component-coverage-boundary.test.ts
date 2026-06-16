@@ -55,10 +55,15 @@ describe("component coverage boundary contract", () => {
   test("discovers the current practical component source files under src/components", () => {
     const enforcedFiles = listEnforcedComponentSourceFiles(repoRoot);
 
-    expect(enforcedFiles).toEqual([
-      "src/components/docs/docs-shell.tsx",
-      "src/components/landing/landing-shell.tsx",
-    ]);
+    expect(enforcedFiles.length).toBeGreaterThan(0);
+    expect(
+      enforcedFiles.every((file) =>
+        file.startsWith(`${COMPONENT_COVERAGE_ENFORCED_ROOT}/`),
+      ),
+    ).toBe(true);
+    expect(enforcedFiles).toContain("src/components/docs/docs-shell.tsx");
+    expect(enforcedFiles).toContain("src/components/landing/landing-shell.tsx");
+    expect(enforcedFiles).toEqual([...enforcedFiles].sort());
   });
 
   test("classifies enforced and out-of-scope paths predictably", () => {

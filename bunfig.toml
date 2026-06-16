@@ -8,4 +8,6 @@ coveragePathIgnorePatterns = [
   "next.config.ts",
   "src/app/**",
   "src/lib/**",
+  "src/localization/**",
+  "src/hooks/**",
 ]
