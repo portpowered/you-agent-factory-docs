@@ -7,7 +7,7 @@
 - `make setup` runs `bun install`.
 - `make check` runs `bun run typecheck` then `bun run lint` (Biome).
 - `make test` runs `bun test` directly (not a separate test runner).
-- `make build` runs `scripts/build-static-export.ts`, which acquires a cross-process build lock, clears `.next`, then runs `bun run build` (Next.js production build) so concurrent test or quality-gate invocations cannot race on `.next` artifacts.
+- `make build` runs `bun run build` (Next.js production build) and fails when the static export directory `out/` is missing after the build.
 
 ## Application scaffold
 
@@ -21,6 +21,9 @@
 - Unit tests live under `tests/unit/` and import source modules with relative paths.
 - Component behavior tests use `@testing-library/react` with `@happy-dom/global-registrator` preloaded from `bunfig.toml` (`tests/setup/happydom.ts`, `tests/setup/testing-library.ts`).
 - Served static-export navigation tests build once, mount `out/` under the base path, and use Bun's native `fetch` via `tests/helpers/http.ts` (happy-dom's fetch blocks cross-origin local requests).
+- `validate:static-export` cleans `.next`, runs one production build under `withStaticExportBuildLock()`, then invokes `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so the served-export tests reuse that `out/` instead of starting a second back-to-back `next build`.
+- `src/lib/validation/static-export-build-lock.ts` serializes `.next`/`out/` production builds across concurrent test files and subprocessed quality-gate runs.
+- `buildStaticExport()` in `tests/helpers/static-export-server.ts` also cleans `.next` before building when a fresh export is required.
 - Browser verification for the reconciled baseline uses `@playwright/test` Chromium against the same `tests/helpers/static-export-server.ts` mount pattern; see `tests/unit/reconciled-export-browser.test.ts`.
 - Manual browser verification for website changes follows `docs/internal/processes/manual-qa.md`; serve the export via a parent directory symlink (`you-agent-factory-docs -> out`) so `/you-agent-factory-docs/...` URLs resolve locally.
 
