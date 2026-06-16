@@ -19,3 +19,6 @@ jobs:
 
       - name: Early foundation quality gate
         run: make quality-gate
+
+      - name: Component coverage enforcement
+        run: make component-coverage

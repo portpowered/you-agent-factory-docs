@@ -13,7 +13,9 @@
     "validate:content": "bun run scripts/validate-content.ts",
     "validate:accessibility": "bun run scripts/validate-accessibility.ts",
     "validate:static-export": "bun run scripts/validate-static-export.ts",
-    "quality-gate": "bun run scripts/quality-gate.ts"
+    "quality-gate": "bun run scripts/quality-gate.ts",
+    "component-coverage:boundary": "bun run scripts/show-component-coverage-boundary.ts",
+    "component-coverage": "bun run scripts/enforce-component-coverage.ts"
   },
   "dependencies": {
     "next": "^15.3.3",
