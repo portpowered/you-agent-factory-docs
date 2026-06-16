@@ -27,4 +27,4 @@
 - `tests/unit/contributor-guidance.test.ts` behaviorally proves contributor-facing observable outcomes for each root command (dependency install, verification output, `bun test` delegation, static export output) without reading `README.md` or workflow YAML.
 - `tests/helpers/make.ts` and `tests/helpers/make-target.ts` centralize Makefile invocations for contributor and automation parity tests.
 - Served static-export tests build through `make build` via `tests/helpers/static-export-server.ts`.
-- `ensureStaticExportBuilt()` serializes export builds with an in-process promise plus a `.next/static-export-build.lock` directory lock so parallel export/browser suites do not collide on shared `.next` output during `bun test`.
+- `ensureStaticExportBuilt()` serializes export builds with an in-process promise plus a `.next/static-export-build.lock` directory lock so parallel export/browser suites do not collide on shared `.next` output during `bun test`. Lock acquisition uses `mkdirSync(..., { recursive: true })` so export suites work from a clean workspace without a pre-existing `.next/` directory.
