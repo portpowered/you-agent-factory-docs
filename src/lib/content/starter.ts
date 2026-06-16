@@ -1,4 +1,8 @@
 import { parseContentFile } from "@/lib/content/frontmatter";
+import {
+  validateExplicitStarterLocaleMetadata,
+  validateLocaleRegistryMetadata,
+} from "@/lib/content/locale-metadata-validation";
 import { buildCanonicalId } from "@/lib/content/routes";
 import type {
   CanonicalContentRecord,
@@ -27,6 +31,13 @@ export type StarterContentDescriptor = {
   locale: string;
   source: string;
 };
+
+/** Stable content path key for localized variant grouping, e.g. `doc/getting-started`. */
+export function buildStarterContentPathKey(
+  descriptor: Pick<StarterContentDescriptor, "contentDirectory" | "slug">,
+): string {
+  return `${STARTER_CONTENT_DIRECTORY_KINDS[descriptor.contentDirectory]}/${descriptor.slug}`;
+}
 
 export type StarterContentValidationSuccess = {
   ok: true;
@@ -108,11 +119,8 @@ export function buildMetadataFromStarterContent(
   const { frontmatter } = parseContentFile(descriptor.source);
   const kind = resolveKind(descriptor.contentDirectory, frontmatter);
   const slug = asString(frontmatter.slug) ?? descriptor.slug;
-  const canonicalLocale =
-    asString(frontmatter.canonicalLocale) ?? descriptor.locale;
-  const availableLocales = asStringArray(frontmatter.availableLocales) ?? [
-    descriptor.locale,
-  ];
+  const canonicalLocale = asString(frontmatter.canonicalLocale) ?? "";
+  const availableLocales = asStringArray(frontmatter.availableLocales) ?? [];
 
   return {
     id:
@@ -136,7 +144,31 @@ export function buildMetadataFromStarterContent(
 export function validateStarterContent(
   descriptor: StarterContentDescriptor,
 ): StarterContentValidationResult {
+  const { frontmatter } = parseContentFile(descriptor.source);
+  const explicitMetadataErrors = validateExplicitStarterLocaleMetadata(
+    frontmatter,
+    descriptor,
+  );
+
+  if (explicitMetadataErrors.length > 0) {
+    return {
+      ok: false,
+      errors: explicitMetadataErrors,
+      descriptor,
+    };
+  }
+
   const metadata = buildMetadataFromStarterContent(descriptor);
+  const registryErrors = validateLocaleRegistryMetadata(metadata);
+
+  if (registryErrors.length > 0) {
+    return {
+      ok: false,
+      errors: registryErrors,
+      descriptor,
+    };
+  }
+
   const validation = validateContentMetadata(metadata);
 
   if (!validation.ok) {

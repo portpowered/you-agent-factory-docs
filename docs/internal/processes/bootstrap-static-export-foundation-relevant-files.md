@@ -21,6 +21,9 @@
 - Unit tests live under `tests/unit/` and import source modules with relative paths.
 - Component behavior tests use `@testing-library/react` with `@happy-dom/global-registrator` preloaded from `bunfig.toml` (`tests/setup/happydom.ts`, `tests/setup/testing-library.ts`).
 - Served static-export navigation tests build once, mount `out/` under the base path, and use Bun's native `fetch` via `tests/helpers/http.ts` (happy-dom's fetch blocks cross-origin local requests).
+- `validate:static-export` cleans `.next`, runs one production build under `withStaticExportBuildLock()`, then invokes `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so the served-export tests reuse that `out/` instead of starting a second back-to-back `next build`.
+- `src/lib/validation/static-export-build-lock.ts` serializes `.next`/`out/` production builds across concurrent test files and subprocessed quality-gate runs.
+- `buildStaticExport()` in `tests/helpers/static-export-server.ts` also cleans `.next` before building when a fresh export is required.
 - Browser verification for the reconciled baseline uses `@playwright/test` Chromium against the same `tests/helpers/static-export-server.ts` mount pattern; see `tests/unit/reconciled-export-browser.test.ts`.
 - Manual browser verification for website changes follows `docs/internal/processes/manual-qa.md`; serve the export via a parent directory symlink (`you-agent-factory-docs -> out`) so `/you-agent-factory-docs/...` URLs resolve locally.
 

@@ -1,3 +1,9 @@
+import {
+  type LocaleAwareContentProjection,
+  projectLocaleAwareContent,
+} from "@/lib/content/locale-aware-content-projection";
+import { selectLocalizedVariantBinding } from "@/lib/content/localized-content-resolution";
+import type { LocalizedContentVariantBinding } from "@/lib/content/localized-variant-identity";
 import type { CanonicalContentRecord } from "@/lib/content/types";
 
 /** One docs-shell navigation link projected from a canonical content record. */
@@ -6,6 +12,8 @@ export type DocsShellNavPage = {
   label: string;
   href: string;
   order?: number;
+  /** Locale-aware metadata for later navigation and search surfaces. */
+  localeProjection?: LocaleAwareContentProjection;
 };
 
 /** Section grouping for the first generated docs-shell navigation behavior. */
@@ -66,7 +74,19 @@ function compareSections(
 
 function dedupeDocRecords(
   records: CanonicalContentRecord[],
+  options?: {
+    locale?: string;
+    variantBindings?: readonly LocalizedContentVariantBinding[];
+  },
 ): CanonicalContentRecord[] {
+  if (options?.variantBindings) {
+    return selectRepresentativeDocRecords(
+      records,
+      options.variantBindings,
+      options.locale,
+    );
+  }
+
   const byId = new Map<string, CanonicalContentRecord>();
 
   for (const record of records) {
@@ -86,6 +106,33 @@ function dedupeDocRecords(
   return [...byId.values()];
 }
 
+function selectRepresentativeDocRecords(
+  records: readonly CanonicalContentRecord[],
+  bindings: readonly LocalizedContentVariantBinding[],
+  requestedLocale?: string,
+): CanonicalContentRecord[] {
+  const docRecordIds = new Set(
+    records
+      .filter((record) => record.kind === "doc")
+      .map((record) => record.id),
+  );
+  const selected: CanonicalContentRecord[] = [];
+
+  for (const canonicalPageId of docRecordIds) {
+    const match = selectLocalizedVariantBinding(
+      bindings,
+      canonicalPageId,
+      requestedLocale,
+    );
+
+    if (match) {
+      selected.push(match.record);
+    }
+  }
+
+  return selected;
+}
+
 /**
  * Projects the first docs-shell navigation input from canonical content records.
  * Only published doc records are included; other public content kinds are reserved
@@ -93,18 +140,23 @@ function dedupeDocRecords(
  */
 export function projectDocsShellNavigation(
   records: readonly CanonicalContentRecord[],
-  options?: { locale?: string },
+  options?: {
+    locale?: string;
+    variantBindings?: readonly LocalizedContentVariantBinding[];
+  },
 ): DocsShellNavigationInput {
   const locale = options?.locale;
+  const useVariantBindings = Boolean(options?.variantBindings);
   const docRecords = records.filter(
     (record) =>
       record.kind === "doc" &&
       NAV_VISIBLE_STATUSES.has(record.status) &&
-      (locale === undefined ||
+      (useVariantBindings ||
+        locale === undefined ||
         record.availableLocales.includes(locale) ||
         record.canonicalLocale === locale),
   );
-  const uniqueDocRecords = dedupeDocRecords(docRecords);
+  const uniqueDocRecords = dedupeDocRecords(docRecords, options);
   const sectionsById = new Map<string, DocsShellNavSection>();
 
   for (const record of uniqueDocRecords) {
@@ -117,11 +169,19 @@ export function projectDocsShellNavigation(
         pages: [],
       } satisfies DocsShellNavSection);
 
+    const localeProjection = options?.variantBindings
+      ? projectLocaleAwareContent(record.id, {
+          requestedLocale: locale,
+          variantBindings: options.variantBindings,
+        })
+      : undefined;
+
     section.pages.push({
       canonicalId: record.id,
       label: record.navigationTitle,
       href: record.routePath,
       order: record.order,
+      localeProjection,
     });
     sectionsById.set(sectionId, section);
   }
