@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import { render, screen, within } from "@testing-library/react";
-import { RESPONSIVE_BREAKPOINTS_PX } from "../../src/lib/responsive-tokens";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
+import { RESPONSIVE_BREAKPOINTS_PX } from "../../src/lib/responsive-tokens";
 import {
   DOCS_NAV_HEADING,
   DOCS_NAV_OVERVIEW_LABEL,

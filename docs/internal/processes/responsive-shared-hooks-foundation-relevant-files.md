@@ -20,11 +20,20 @@
 - `src/components/docs/docs-shell.tsx` and `src/components/landing/landing-shell.tsx` wrap their roots with `ResponsiveShellRoot` instead of ad hoc viewport logic.
 - CSS layout still uses token-aligned media queries in `src/app/globals.css`; interactive shell behavior should consume `useResponsiveShellState` rather than route-local viewport checks.
 
+## Reduced-motion preference
+
+- Shared media query constant: `src/lib/media-preferences.ts` (`PREFERS_REDUCED_MOTION_MEDIA_QUERY`).
+- SSR-safe reduced-motion hook: `src/hooks/media/useReducedMotion.ts` (`useSyncExternalStore`; server snapshot defaults to `false`).
+- Canonical shell state includes `prefersReducedMotion` via `useResponsiveShellState`; `ResponsiveShellRoot` projects `data-shell-reduced-motion`.
+- Shell disclosure reveal animation in `src/app/globals.css` is disabled when `data-shell-reduced-motion` is set or `@media (prefers-reduced-motion: reduce)` matches.
+
 ## Verification
 
 - Pure breakpoint classification: `tests/unit/responsive-tokens.test.ts`
 - Hook and shell projection behavior: `tests/unit/responsive-shell-state.test.tsx`
 - Narrow-viewport disclosure behavior: `tests/unit/shell-disclosure.test.tsx`
+- Reduced-motion preference hook and shell projection: `tests/unit/use-reduced-motion.test.tsx`
+- Shared matchMedia stub for viewport and reduced-motion tests: `tests/helpers/mock-match-media.ts`
 - Existing shell landmark tests remain in `tests/unit/docs-shell.test.tsx` and `tests/unit/homepage-shell.test.tsx`
 
 ## Contributor commands

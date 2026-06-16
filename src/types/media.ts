@@ -11,4 +11,6 @@ export type ResponsiveShellState = {
   isNarrowViewport: boolean;
   /** True after client hydration has applied viewport measurements. */
   isHydrated: boolean;
+  /** True when the visitor prefers reduced motion for shell interactions. */
+  prefersReducedMotion: boolean;
 };

@@ -13,12 +13,14 @@ export function ResponsiveShellRoot({
   className,
   children,
 }: ResponsiveShellRootProps) {
-  const { viewport, isNarrowViewport } = useResponsiveShellState();
+  const { viewport, isNarrowViewport, prefersReducedMotion } =
+    useResponsiveShellState();
 
   return (
     <div
       className={className}
       data-shell-narrow={isNarrowViewport ? "" : undefined}
+      data-shell-reduced-motion={prefersReducedMotion ? "" : undefined}
       data-shell-viewport={viewport}
     >
       {children}

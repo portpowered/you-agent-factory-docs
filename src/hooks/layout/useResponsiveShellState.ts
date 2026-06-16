@@ -1,12 +1,14 @@
 "use client";
 
 import { useBreakpoint } from "@/hooks/media/useBreakpoint";
+import { useReducedMotion } from "@/hooks/media/useReducedMotion";
 import type { ResponsiveShellState, ShellViewport } from "@/types/media";
 import { useSyncExternalStore } from "react";
 
 function buildResponsiveShellState(
   viewport: ShellViewport,
   isHydrated: boolean,
+  prefersReducedMotion: boolean,
 ): ResponsiveShellState {
   return {
     viewport,
@@ -15,6 +17,7 @@ function buildResponsiveShellState(
     isDesktop: viewport === "desktop",
     isNarrowViewport: viewport !== "desktop",
     isHydrated,
+    prefersReducedMotion,
   };
 }
 
@@ -26,11 +29,12 @@ function subscribeToHydration(onStoreChange: () => void): () => void {
 /** Canonical responsive shell state boundary for docs and landing surfaces. */
 export function useResponsiveShellState(): ResponsiveShellState {
   const viewport = useBreakpoint();
+  const prefersReducedMotion = useReducedMotion();
   const isHydrated = useSyncExternalStore(
     subscribeToHydration,
     () => true,
     () => false,
   );
 
-  return buildResponsiveShellState(viewport, isHydrated);
+  return buildResponsiveShellState(viewport, isHydrated, prefersReducedMotion);
 }
