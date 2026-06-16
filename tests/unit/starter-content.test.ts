@@ -7,6 +7,10 @@ import {
 } from "../../src/lib/content";
 
 const CONTENT_ROOT = join(import.meta.dir, "../../src/content");
+const INVALID_FIXTURE_ROOT = join(
+  import.meta.dir,
+  "../fixtures/starter-content",
+);
 
 describe("starter content validation", () => {
   test("projects schema-compliant starter content into canonical records", () => {
@@ -137,11 +141,7 @@ navigationTitle: Agent term
   test("loads valid starter fixtures for every supported public content kind", () => {
     const { records, failures } = loadStarterContentRecords(CONTENT_ROOT);
 
-    expect(
-      failures.every(
-        (failure) => failure.descriptor.slug === "invalid-fixture",
-      ),
-    ).toBe(true);
+    expect(failures).toEqual([]);
     expect(records.map((record) => record.id).sort()).toEqual([
       "blog/introducing-factory",
       "comparison/vs-n8n",
@@ -157,8 +157,9 @@ navigationTitle: Agent term
     }
   });
 
-  test("surfaces invalid starter fixtures from the content root without partial records", () => {
-    const { records, failures } = loadStarterContentRecords(CONTENT_ROOT);
+  test("surfaces invalid starter fixtures without partial records", () => {
+    const { records, failures } =
+      loadStarterContentRecords(INVALID_FIXTURE_ROOT);
 
     const invalidFailure = failures.find(
       (failure) => failure.descriptor.slug === "invalid-fixture",

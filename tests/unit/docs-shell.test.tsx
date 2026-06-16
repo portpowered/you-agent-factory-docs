@@ -3,7 +3,6 @@ import { render, screen, within } from "@testing-library/react";
 import type { DocsShellNavigationInput } from "../../src/lib/content";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import {
-  DOCS_NAV_HEADING,
   DOCS_SHELL_FRAMING_TEXT,
   DOCS_SHELL_TITLE,
   GITHUB_CTA_LABEL,
@@ -37,19 +36,26 @@ const generatedNavigation: DocsShellNavigationInput = {
 
 describe("docs shell rendering", () => {
   test("renders header, generated docs navigation, and main content landmarks", () => {
-    render(<DocsShell navigation={generatedNavigation} />);
+    render(
+      <DocsShell navigation={generatedNavigation}>
+        <article aria-labelledby="docs-shell-title">
+          <h1 id="docs-shell-title">{DOCS_SHELL_TITLE}</h1>
+          <p className="docs-shell__framing">{DOCS_SHELL_FRAMING_TEXT}</p>
+        </article>
+      </DocsShell>,
+    );
 
     expect(screen.getByRole("banner")).toBeTruthy();
-    expect(
-      screen.getByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
     expect(screen.getByRole("main")).toBeTruthy();
 
     expect(
       screen.getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE }),
     ).toBeTruthy();
     expect(screen.getByText(DOCS_SHELL_FRAMING_TEXT)).toBeTruthy();
-    expect(screen.getByText(PROJECT_NAME)).toBeTruthy();
+    expect(
+      within(screen.getByRole("banner")).getByText(PROJECT_NAME),
+    ).toBeTruthy();
     expect(screen.getByText("Guides")).toBeTruthy();
     expect(screen.getByText("Getting started")).toBeTruthy();
   });
@@ -59,21 +65,23 @@ describe("docs shell rendering", () => {
       <DocsShell
         currentPath="/docs/getting-started"
         navigation={generatedNavigation}
-      />,
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
     );
 
-    const siteNav = screen.getByRole("navigation", { name: "Site" });
+    const siteNav = screen.getByRole("navigation", { name: "Primary" });
     const homeLink = within(siteNav).getByRole("link", {
       name: HOME_CTA_LABEL,
     });
     const githubLink = within(siteNav).getByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: `${GITHUB_CTA_LABEL} (opens in new tab)`,
     });
 
     expect(homeLink.getAttribute("href")).toBe("/");
     expect(githubLink.getAttribute("href")).toBe(GITHUB_REPO_URL);
 
-    const docsNav = screen.getByRole("navigation", { name: DOCS_NAV_HEADING });
+    const docsNav = screen.getByRole("navigation", { name: "Guides" });
     const gettingStartedLink = within(docsNav).getByRole("link", {
       name: "Getting started",
     });
@@ -89,10 +97,12 @@ describe("docs shell rendering", () => {
       <DocsShell
         currentPath={DOCS_ENTRY_ROUTE}
         navigation={generatedNavigation}
-      />,
+      >
+        <h1>{DOCS_SHELL_TITLE}</h1>
+      </DocsShell>,
     );
 
-    const docsNav = screen.getByRole("navigation", { name: DOCS_NAV_HEADING });
+    const docsNav = screen.getByRole("navigation", { name: "Guides" });
     const gettingStartedLink = within(docsNav).getByRole("link", {
       name: "Getting started",
     });

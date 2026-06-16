@@ -1,9 +1,13 @@
 import { describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   type CanonicalContentRecord,
+  StarterContentValidationError,
   loadDocsShellNavigation,
   projectDocsShellNavigation,
+  requireStarterContentRecords,
 } from "../../src/lib/content";
 
 const CONTENT_ROOT = join(import.meta.dir, "../../src/content");
@@ -202,6 +206,37 @@ describe("docs shell navigation projection", () => {
         ],
       },
     ]);
+  });
+
+  test("blocks docs navigation generation when starter content validation fails", () => {
+    const contentRoot = mkdtempSync(join(tmpdir(), "invalid-starter-content-"));
+    const fixtureDir = join(contentRoot, "docs", "invalid-fixture");
+    mkdirSync(fixtureDir, { recursive: true });
+    writeFileSync(
+      join(fixtureDir, "en.mdx"),
+      `---
+id: doc/invalid-fixture
+kind: doc
+title: Invalid fixture
+canonicalLocale: en
+availableLocales:
+  - fr
+status: archived
+tags:
+  - docs
+section: guides
+---
+
+# Invalid fixture
+`,
+    );
+
+    expect(() => requireStarterContentRecords(contentRoot)).toThrow(
+      StarterContentValidationError,
+    );
+    expect(() => loadDocsShellNavigation(contentRoot)).toThrow(
+      StarterContentValidationError,
+    );
   });
 
   test("loads generated navigation from starter content fixtures", () => {

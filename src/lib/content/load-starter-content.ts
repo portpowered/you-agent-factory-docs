@@ -8,6 +8,7 @@ import {
   type StarterContentValidationSuccess,
   validateStarterContent,
 } from "@/lib/content/starter";
+import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
 import type { CanonicalContentRecord } from "@/lib/content/types";
 
 const LOCALE_FILE_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?\.mdx?$/;
@@ -91,6 +92,17 @@ export function loadStarterContentRecords(
 
   records.sort((left, right) => left.id.localeCompare(right.id));
   return { records, failures };
+}
+
+/**
+ * Loads starter content fixtures and fails when any fixture is invalid.
+ */
+export function requireStarterContentRecords(
+  contentRoot: string,
+): CanonicalContentRecord[] {
+  const { records, failures } = loadStarterContentRecords(contentRoot);
+  assertStarterContentValid(failures);
+  return records;
 }
 
 export function starterContentRootExists(contentRoot: string): boolean {

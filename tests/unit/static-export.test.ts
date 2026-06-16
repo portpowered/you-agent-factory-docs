@@ -1,6 +1,10 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import nextConfig from "../../next.config";
-import { DOCS_CTA_LABEL } from "../../src/lib/shell";
+import {
+  DOCS_CTA_LABEL,
+  GITHUB_CTA_LABEL,
+  HOME_CTA_LABEL,
+} from "../../src/lib/shell";
 import {
   DOCS_ENTRY_ROUTE,
   SITE_BASE_PATH,
@@ -70,6 +74,35 @@ describe("served static export navigation", () => {
     expect(docsResponse.status).toBe(200);
   }, 30_000);
 
+  test("exposes the same primary navigation destinations on homepage and docs entry routes", async () => {
+    const homepageResponse = await fetchHttp(server.baseUrl, {
+      signal: AbortSignal.timeout(10_000),
+    });
+    const docsResponse = await fetchHttp(
+      new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    const homepageHtml = await homepageResponse.text();
+    const docsHtml = await docsResponse.text();
+
+    for (const html of [homepageHtml, docsHtml]) {
+      expect(html).toContain('aria-label="Primary"');
+      expect(html).toContain(GITHUB_CTA_LABEL);
+      expect(html).toContain('rel="noopener noreferrer"');
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('id="shared-shell-primary-nav"');
+      expect(html).toContain('aria-controls="shared-shell-primary-nav"');
+      expect(html).toContain('aria-expanded="false"');
+      expect(html).toContain("Open menu");
+    }
+
+    expect(homepageHtml).toContain(DOCS_CTA_LABEL);
+    expect(homepageHtml).not.toContain(`>${HOME_CTA_LABEL}<`);
+    expect(docsHtml).toContain(HOME_CTA_LABEL);
+    expect(docsHtml).not.toContain(`>${DOCS_CTA_LABEL}<`);
+  }, 30_000);
+
   test("renders generated docs navigation from canonical content records", async () => {
     const docsResponse = await fetchHttp(
       new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
@@ -87,5 +120,35 @@ describe("served static export navigation", () => {
       true,
     );
     expect(docsHtml).not.toContain("Overview");
+  }, 30_000);
+
+  test("follows a generated docs navigation link to a served doc page", async () => {
+    const docsResponse = await fetchHttp(
+      new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const docsHtml = await docsResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+    const gettingStartedMatch = docsHtml.match(
+      new RegExp(`href="(${gettingStartedPath}/?)"`),
+    );
+
+    expect(gettingStartedMatch?.[1]).toBeTruthy();
+
+    const docPageResponse = await fetchHttp(
+      new URL(gettingStartedMatch?.[1] ?? "", server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(docPageResponse.status).toBe(200);
+
+    const docPageHtml = await docPageResponse.text();
+    expect(docPageHtml).toContain("Getting started");
+    expect(docPageHtml).toContain(
+      "Starter documentation content that proves the canonical content model.",
+    );
   }, 30_000);
 });

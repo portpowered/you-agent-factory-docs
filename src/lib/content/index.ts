@@ -36,9 +36,23 @@ export {
 } from "@/lib/content/starter";
 export {
   loadStarterContentRecords,
+  requireStarterContentRecords,
   starterContentRootExists,
   type LoadedStarterContent,
 } from "@/lib/content/load-starter-content";
+export {
+  assertStarterContentValid,
+  StarterContentValidationError,
+} from "@/lib/content/starter-content-errors";
+export {
+  listPublishedDocSlugs,
+  loadDocPage,
+  type DocPageContent,
+} from "@/lib/content/load-doc-page";
+export {
+  findCurrentDocsItemId,
+  projectSharedShellDocsNavigation,
+} from "@/lib/content/shared-shell-navigation";
 export {
   projectDocsShellNavigation,
   type DocsShellNavPage,

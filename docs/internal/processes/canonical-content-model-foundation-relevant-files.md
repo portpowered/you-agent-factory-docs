@@ -35,17 +35,18 @@
 
 - `DocsShellNavigationInput` in `src/lib/content/docs-navigation.ts` is the projected docs-shell navigation shape, separate from `CanonicalContentRecord`.
 - `projectDocsShellNavigation()` derives section-grouped page labels and hrefs from published doc records.
-- `loadDocsShellNavigation()` loads starter fixtures and projects navigation for the docs shell page.
-- `DocsShell` in `src/components/docs/docs-shell.tsx` consumes generated navigation input via props; avoid hand-maintained nav entry lists in shell constants.
+- `loadDocsShellNavigation()` calls `requireStarterContentRecords()` and throws `StarterContentValidationError` when any starter fixture is invalid.
+- `projectSharedShellDocsNavigation()` maps generated navigation into `SharedShell` sidebar groups; `DocsShell` composes `SharedShell` with that projected config.
+- Published doc pages are served from `src/app/docs/[slug]/page.tsx` via `loadDocPage()` and `generateStaticParams()`.
 
 ## Tests
 
 - Content validation behavior is covered in `tests/unit/content-validation.test.ts`.
-- Starter content loading and validation is covered in `tests/unit/starter-content.test.ts`.
-- Docs navigation projection is covered in `tests/unit/docs-navigation.test.ts`.
+- Starter content loading and validation is covered in `tests/unit/starter-content.test.ts`; invalid fixtures live under `tests/fixtures/starter-content/`.
+- Docs navigation projection is covered in `tests/unit/docs-navigation.test.ts`, including blocking generation on invalid fixtures.
 - Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
 - Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
-- Served static export HTML includes generated docs navigation in `tests/unit/static-export.test.ts`.
+- Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
 - Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
 
 ## Quality checks
