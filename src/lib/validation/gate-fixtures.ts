@@ -1,28 +1,42 @@
-import {
-  type FoundationContentMetadata,
-  getFoundationContentMetadata,
-} from "@/lib/validation/foundation-content";
+import type { StarterContentDescriptor } from "@/lib/content/starter";
 import {
   type ShellAccessibilitySnapshot,
   getExpectedDocsNavigationLabel,
 } from "@/lib/validation/shell-accessibility";
 import {
-  type ShellLocalizationCopy,
-  getShellLocalizationCopy,
-} from "@/lib/validation/shell-localization";
-import {
   type StaticExportConfig,
   getStaticExportConfig,
 } from "@/lib/validation/static-export";
+import type { SharedShellMessages } from "@/localization/messages/en";
+import { enMessages } from "@/localization/messages/en";
 
 export const EARLY_GATE_VALIDATION_FIXTURES = {
-  "broken-shell-localization": (): ShellLocalizationCopy => ({
-    ...getShellLocalizationCopy(),
-    GITHUB_CTA_LABEL: "",
+  "broken-shell-localization": (): SharedShellMessages => ({
+    ...enMessages,
+    common: {
+      ...enMessages.common,
+      getStarted: "   " as typeof enMessages.common.getStarted,
+    },
   }),
-  "broken-foundation-content": (): FoundationContentMetadata => ({
-    ...getFoundationContentMetadata(),
-    PROJECT_TAGLINE: "   ",
+  "broken-foundation-content": (): StarterContentDescriptor => ({
+    contentDirectory: "docs",
+    slug: "invalid-fixture",
+    locale: "en",
+    source: `---
+id: doc/invalid-fixture
+kind: doc
+title: Invalid fixture
+canonicalLocale: en
+availableLocales:
+  - fr
+status: archived
+tags:
+  - docs
+section: guides
+---
+
+# Invalid fixture
+`,
   }),
   "broken-shell-accessibility": (): ShellAccessibilitySnapshot => ({
     landing: {
@@ -33,7 +47,7 @@ export const EARLY_GATE_VALIDATION_FIXTURES = {
     },
     docs: {
       hasBannerLandmark: true,
-      siteNavigationLabel: "Site",
+      siteNavigationLabel: "Primary",
       docsNavigationLabel: getExpectedDocsNavigationLabel(),
       hasMainLandmark: true,
       overviewLinkAriaCurrent: "page",
@@ -61,22 +75,22 @@ export function readEarlyGateValidationFixture(): EarlyGateValidationFixture | n
   return null;
 }
 
-export function resolveShellLocalizationCopyForGate(): ShellLocalizationCopy {
+export function resolveDefaultLocaleCatalogForGate(): SharedShellMessages {
   const fixture = readEarlyGateValidationFixture();
   if (fixture === "broken-shell-localization") {
     return EARLY_GATE_VALIDATION_FIXTURES["broken-shell-localization"]();
   }
 
-  return getShellLocalizationCopy();
+  return enMessages;
 }
 
-export function resolveFoundationContentMetadataForGate(): FoundationContentMetadata {
+export function resolveStarterContentDescriptorForGate(): StarterContentDescriptor | null {
   const fixture = readEarlyGateValidationFixture();
   if (fixture === "broken-foundation-content") {
     return EARLY_GATE_VALIDATION_FIXTURES["broken-foundation-content"]();
   }
 
-  return getFoundationContentMetadata();
+  return null;
 }
 
 export function resolveShellAccessibilitySnapshotForGate(): ShellAccessibilitySnapshot | null {

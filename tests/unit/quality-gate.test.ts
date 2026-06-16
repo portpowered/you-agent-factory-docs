@@ -1,34 +1,29 @@
 import { describe, expect, test } from "bun:test";
-import { EARLY_FOUNDATION_GATE_STEPS } from "../../src/lib/quality-gate/steps";
 import { dryRunMake, runMake } from "../helpers/make";
+import {
+  extractQualityGateStepNames,
+  runQualityGateScript,
+} from "../helpers/validation";
 
 describe("early foundation quality gate command surface", () => {
   test("make quality-gate delegates to the bun quality-gate script", () => {
     expect(dryRunMake("quality-gate")).toContain("bun run quality-gate");
   });
 
-  test("quality-gate steps run foundational checks in enforced order", () => {
-    const orderedChecks = [
+  test("quality-gate subprocess output shows foundational checks in enforced order", () => {
+    const result = runQualityGateScript();
+
+    expect(result.status).toBe(0);
+    expect(extractQualityGateStepNames(result.stdout)).toEqual([
       "typecheck",
       "lint",
-      "validate:localization",
-      "validate:content",
-      "validate:accessibility",
-      "validate:static-export",
-    ];
-
-    const flattenedArgs = EARLY_FOUNDATION_GATE_STEPS.flatMap(
-      (step) => step.args,
-    );
-    let previousIndex = -1;
-
-    for (const check of orderedChecks) {
-      const index = flattenedArgs.indexOf(check);
-      expect(index).toBeGreaterThanOrEqual(0);
-      expect(index).toBeGreaterThan(previousIndex);
-      previousIndex = index;
-    }
-  });
+      "localization validation",
+      "content validation",
+      "focused accessibility validation",
+      "static export correctness",
+      "foundation unit tests",
+    ]);
+  }, 180_000);
 
   test("make quality-gate succeeds on the current foundation baseline", () => {
     const result = runMake("quality-gate");

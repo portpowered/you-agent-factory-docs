@@ -1,19 +1,20 @@
-import { DOCS_NAV_HEADING } from "@/lib/shell";
+import { enMessages } from "@/localization/messages/en";
 
 /** Reviewer-visible scope for the early gate accessibility lane. */
 export const FOCUSED_SHELL_ACCESSIBILITY_COVERAGE = [
   "landing shell exposes a labeled Primary navigation landmark",
   "landing shell exposes a main landmark with an h1 hero title",
   "landing shell external GitHub CTA uses rel=noopener noreferrer",
-  "docs shell exposes banner, labeled Site nav, labeled docs nav, and main landmarks",
+  "docs shell exposes banner, labeled primary nav, labeled docs nav, and main landmarks",
   "docs shell marks the overview entry with aria-current=page",
 ] as const;
 
 export type FocusedShellAccessibilityExpectation =
   (typeof FOCUSED_SHELL_ACCESSIBILITY_COVERAGE)[number];
 
-export const LANDING_PRIMARY_NAV_ARIA_LABEL = "Primary";
-export const DOCS_SITE_NAV_ARIA_LABEL = "Site";
+export const LANDING_PRIMARY_NAV_ARIA_LABEL =
+  enMessages.landing.primaryNavAriaLabel;
+export const DOCS_SITE_NAV_ARIA_LABEL = enMessages.landing.primaryNavAriaLabel;
 export const DOCS_OVERVIEW_ARIA_CURRENT = "page";
 
 export type LandingShellAccessibilitySnapshot = {
@@ -48,7 +49,7 @@ export type ShellAccessibilityValidationResult = {
 };
 
 export function getExpectedDocsNavigationLabel(): string {
-  return DOCS_NAV_HEADING;
+  return enMessages.docs.navHeading;
 }
 
 /** Validates focused shell accessibility expectations for the current foundations. */

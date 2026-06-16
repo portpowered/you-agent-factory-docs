@@ -1,12 +1,10 @@
 import { type RenderResult, within } from "@testing-library/react";
-import { DOCS_NAV_HEADING, GITHUB_CTA_LABEL } from "../../src/lib/shell";
-import {
-  DOCS_SITE_NAV_ARIA_LABEL,
-  type DocsShellAccessibilitySnapshot,
-  LANDING_PRIMARY_NAV_ARIA_LABEL,
-  type LandingShellAccessibilitySnapshot,
-  type ShellAccessibilitySnapshot,
+import type {
+  DocsShellAccessibilitySnapshot,
+  LandingShellAccessibilitySnapshot,
+  ShellAccessibilitySnapshot,
 } from "../../src/lib/validation/shell-accessibility";
+import { enMessages } from "../../src/localization/messages/en";
 
 function resolveShellRoot(
   rendered: RenderResult | undefined,
@@ -23,16 +21,18 @@ function resolveShellRoot(
 export function collectLandingShellAccessibilitySnapshot(
   rendered?: RenderResult,
 ): LandingShellAccessibilitySnapshot {
-  const root = within(resolveShellRoot(rendered, ".landing-shell"));
+  const root = within(resolveShellRoot(rendered, ".shared-shell"));
   const primaryNav = root.queryByRole("navigation", {
-    name: LANDING_PRIMARY_NAV_ARIA_LABEL,
+    name: enMessages.landing.primaryNavAriaLabel,
   });
   const main = root.queryByRole("main");
   const heroHeading = main
     ? within(main).queryByRole("heading", { level: 1 })
     : null;
   const githubLink = main
-    ? within(main).queryByRole("link", { name: GITHUB_CTA_LABEL })
+    ? within(main).queryByRole("link", {
+        name: enMessages.common.githubCta,
+      })
     : null;
 
   return {
@@ -46,13 +46,13 @@ export function collectLandingShellAccessibilitySnapshot(
 export function collectDocsShellAccessibilitySnapshot(
   rendered?: RenderResult,
 ): DocsShellAccessibilitySnapshot {
-  const root = within(resolveShellRoot(rendered, ".docs-shell"));
+  const root = within(resolveShellRoot(rendered, ".shared-shell"));
   const banner = root.queryByRole("banner");
   const siteNav = root.queryByRole("navigation", {
-    name: DOCS_SITE_NAV_ARIA_LABEL,
+    name: enMessages.landing.primaryNavAriaLabel,
   });
   const docsNav = root.queryByRole("navigation", {
-    name: DOCS_NAV_HEADING,
+    name: enMessages.docs.navHeading,
   });
   const main = root.queryByRole("main");
   const overviewLink = docsNav?.querySelector('[aria-current="page"]');

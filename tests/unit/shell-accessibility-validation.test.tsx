@@ -1,5 +1,7 @@
 import { describe, expect, mock, test } from "bun:test";
-import { render } from "@testing-library/react";
+import { screen } from "@testing-library/react";
+import type { DocsShellNavigationInput } from "../../src/lib/content";
+import { DOCS_ENTRY_ROUTE } from "../../src/lib/project";
 import {
   DOCS_SITE_NAV_ARIA_LABEL,
   FOCUSED_SHELL_ACCESSIBILITY_COVERAGE,
@@ -8,7 +10,9 @@ import {
   getExpectedDocsNavigationLabel,
   validateShellAccessibilitySnapshot,
 } from "../../src/lib/validation/shell-accessibility";
+import { enMessages } from "../../src/localization/messages/en";
 import MockLink from "../helpers/mock-next-link";
+import { renderWithLocalization } from "../helpers/render-with-localization";
 import {
   collectDocsShellAccessibilitySnapshot,
   collectLandingShellAccessibilitySnapshot,
@@ -23,19 +27,35 @@ const { LandingShell } = await import(
 );
 const { DocsShell } = await import("../../src/components/docs/docs-shell");
 
-describe("shell accessibility validation", () => {
-  test("documents the bounded early-gate accessibility coverage", () => {
-    expect(FOCUSED_SHELL_ACCESSIBILITY_COVERAGE.length).toBeGreaterThan(0);
-    expect(FOCUSED_SHELL_ACCESSIBILITY_COVERAGE).toContain(
-      "landing shell exposes a labeled Primary navigation landmark",
-    );
-  });
+const overviewNavigation: DocsShellNavigationInput = {
+  sections: [
+    {
+      id: "overview",
+      label: "",
+      pages: [
+        {
+          canonicalId: "overview",
+          label: enMessages.docs.navOverview,
+          href: DOCS_ENTRY_ROUTE,
+          order: 1,
+        },
+      ],
+    },
+  ],
+};
 
+describe("shell accessibility validation", () => {
   test("accepts the current landing and docs shell accessibility snapshots", () => {
-    const landingRendered = render(<LandingShell />);
+    const landingRendered = renderWithLocalization(<LandingShell />);
     const landingSnapshot =
       collectLandingShellAccessibilitySnapshot(landingRendered);
-    const docsRendered = render(<DocsShell />);
+    const docsRendered = renderWithLocalization(
+      <DocsShell navigation={overviewNavigation} currentPath={DOCS_ENTRY_ROUTE}>
+        <article aria-labelledby="docs-shell-title">
+          <h1 id="docs-shell-title">{enMessages.docs.shellTitle}</h1>
+        </article>
+      </DocsShell>,
+    );
     const docsSnapshot = collectDocsShellAccessibilitySnapshot(docsRendered);
 
     expect(
@@ -81,10 +101,38 @@ describe("shell accessibility validation", () => {
   });
 
   test("landing shell uses the shared primary navigation aria label constant", () => {
-    const rendered = render(<LandingShell />);
+    const rendered = renderWithLocalization(<LandingShell />);
 
     expect(
       collectLandingShellAccessibilitySnapshot(rendered).primaryNavigationLabel,
     ).toBe(LANDING_PRIMARY_NAV_ARIA_LABEL);
+    expect(
+      screen.getByRole("navigation", {
+        name: LANDING_PRIMARY_NAV_ARIA_LABEL,
+      }),
+    ).toBeTruthy();
+  });
+
+  test("documents bounded early-gate accessibility coverage through rendered landmarks", () => {
+    renderWithLocalization(<LandingShell />);
+    renderWithLocalization(
+      <DocsShell navigation={overviewNavigation} currentPath={DOCS_ENTRY_ROUTE}>
+        <article aria-labelledby="docs-shell-title">
+          <h1 id="docs-shell-title">{enMessages.docs.shellTitle}</h1>
+        </article>
+      </DocsShell>,
+    );
+
+    for (const expectation of FOCUSED_SHELL_ACCESSIBILITY_COVERAGE) {
+      expect(expectation.length).toBeGreaterThan(0);
+    }
+
+    expect(
+      screen.getAllByRole("navigation", {
+        name: LANDING_PRIMARY_NAV_ARIA_LABEL,
+      }).length,
+    ).toBeGreaterThan(0);
+    expect(screen.getAllByRole("main").length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("banner").length).toBeGreaterThan(0);
   });
 });
