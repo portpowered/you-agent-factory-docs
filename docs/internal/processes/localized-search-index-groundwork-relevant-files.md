@@ -20,12 +20,23 @@
 - Variant bindings come from localized variant identity validation; search generation does not infer locale relationships from file paths alone.
 - Exclusion of draft, internal, hidden, or `search.include: false` content is enforced in `generateLocalizedSearchDocuments()` via `shouldIncludeVariantInSearch()` before projection.
 
+## Public search artifact
+
+- Types and deterministic projection live in `src/lib/content/search-artifact.ts`; import from `@/lib/content`.
+- `buildPublicSearchArtifact()` maps normalized `LocalizedSearchDocument` values into `PublicSearchArtifact` entries without a separate indexing-only parser.
+- `loadPublicSearchArtifact()` and `writePublicSearchArtifact()` in `src/lib/content/load-search-artifact.ts` load starter content through `loadLocalizedSearchDocuments()` before emitting the artifact.
+- `scripts/generate-search-index.ts` writes `public/search/public-search-index.json` for reviewer inspection and static export consumption.
+- `bun run generate:search-index` runs before `next build`; later search UX should read the generated artifact contract rather than re-parsing raw content files.
+- Artifact entries expose locale, canonical id, route or URL identity, searchable text fields, and search priority for representative entries.
+
 ## Tests
 
 - Focused search-document projection and starter loading proof: `tests/unit/localized-search-documents.test.ts`.
+- Generated public search artifact contract proof: `tests/unit/public-search-artifact.test.ts`.
 - Prefer asserting observable generated document fields, canonical ids, locale metadata, and searchable text—not helper inventories or source-file topology scans.
 
 ## Quality checks
 
 - `make check` / `bun run typecheck` + `bun run lint`
 - `make test` / `bun test`
+- `bun run generate:search-index` to inspect `public/search/public-search-index.json`

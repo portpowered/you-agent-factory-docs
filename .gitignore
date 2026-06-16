@@ -8,6 +8,7 @@ bin/
 out/
 .source/
 src/generated/
+public/search/public-search-index.json
 storybook-static/
 coverage/
 playwright-report/

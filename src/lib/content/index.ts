@@ -101,3 +101,16 @@ export {
   type LocalizedSearchDocument,
 } from "@/lib/content/search-document";
 export { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";
+export {
+  loadPublicSearchArtifact,
+  writePublicSearchArtifact,
+  type LoadPublicSearchArtifactOptions,
+  type WritePublicSearchArtifactOptions,
+} from "@/lib/content/load-search-artifact";
+export {
+  PUBLIC_SEARCH_ARTIFACT_VERSION,
+  buildPublicSearchArtifact,
+  serializePublicSearchArtifact,
+  type PublicSearchArtifact,
+  type PublicSearchArtifactEntry,
+} from "@/lib/content/search-artifact";
