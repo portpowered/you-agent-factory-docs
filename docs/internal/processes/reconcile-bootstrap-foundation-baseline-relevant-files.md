@@ -5,9 +5,16 @@
 - `bootstrap-static-export-foundation` is the source of truth for the delivered website foundation.
 - The scaffold landed on the default baseline through merge commit `4ee2134` (PR #1). The reconciled tree matches the bootstrap branch tip with no additional scaffold edits.
 - Reviewer proof that the default baseline inherits the foundation rather than planning-only artifacts:
-  - `make setup`, `make check`, `make test`, and `make build` succeed from the repository root.
   - `tests/unit/baseline-foundation.test.tsx` proves the homepage and `/docs` App Router entries render the delivered shells.
+  - `tests/unit/root-command-path.test.ts` runs the documented `Makefile` targets (`setup`, `check`, `test`, `build`) from the repository root and asserts observable success outcomes instead of branch or file inventories.
   - Existing bootstrap tests under `tests/unit/` continue to cover static export, homepage shell, docs shell, project metadata, and site configuration.
+
+## Root command path verification
+
+- Documented contributor entrypoints live in the root `Makefile` and mirror `package.json` scripts (`setup`, `check`, `test`, `build`).
+- `tests/helpers/make-target.ts` wraps `make <target>` via `spawnSync` so command-path proof stays at the process-outcome layer. Assert on combined `stdout` and `stderr` because `bun test` reports results on stderr.
+- `tests/unit/root-command-path.test.ts` sets `VERIFYING_MAKE_TEST=1` when invoking `make test` so the nested run skips the recursive `make test` assertion while still executing the rest of the suite.
+- No reconciliation-specific command-path divergence was required; the inherited bootstrap `Makefile` and scripts pass unchanged on the default baseline.
 
 ## Inherited foundation surfaces
 
