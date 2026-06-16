@@ -38,7 +38,7 @@ describe("served static export navigation", () => {
     server.stop();
   });
 
-  test("serves homepage and docs entry routes under the configured base path", async () => {
+  test("serves homepage, docs entry, and code presentation example routes under the configured base path", async () => {
     const homepageResponse = await fetchHttp(server.baseUrl, {
       signal: AbortSignal.timeout(10_000),
     });
@@ -46,9 +46,21 @@ describe("served static export navigation", () => {
       new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
     );
+    const exampleResponse = await fetchHttp(
+      new URL(withBasePath("/docs/examples/code-presentation"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
 
     expect(homepageResponse.status).toBe(200);
     expect(docsResponse.status).toBe(200);
+    expect(exampleResponse.status).toBe(200);
+
+    const exampleHtml = await exampleResponse.text();
+    expect(exampleHtml).toContain("Code presentation primitives");
+    expect(exampleHtml).toContain("Code block");
+    expect(exampleHtml).toContain("Code tabs");
+    expect(exampleHtml).toContain("Callouts");
+    expect(exampleHtml).toContain("File tree");
   });
 
   test("follows the homepage docs CTA to the docs shell entry route", async () => {

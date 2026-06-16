@@ -29,6 +29,15 @@
 - `buildPublicSearchArtifact()` maps normalized `LocalizedSearchDocument` values into deterministic `PublicSearchArtifact` JSON; `writePublicSearchArtifact()` emits `public/search/public-search-index.json` before `next build` via `bun run generate:search-index`.
 - `LocalizedSearchDocument` and `PublicSearchArtifactEntry` carry `canonicalLocale` and `availableLocales` from canonical records so later query code can default to the active locale without re-normalizing content.
 - Cross-layer search foundation proofs belong in `tests/unit/localized-search-index-foundation.test.ts`: assert inclusion/exclusion on both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` outputs, and use a temporary starter content root with one published doc plus representative excluded variants for exclusion coverage.
+- Reusable docs primitives live under `src/components/docs/primitives/` and are re-exported from `index.ts`.
+- Shared reviewer labels, fixture data, and example route constants belong in `src/lib/docs-primitives.ts`.
+- `formatCodeBlockLanguageLabel()` maps language slugs to reviewer-visible labels for `CodeBlock` figcaptions.
+- `CodeBlock` is a client component (`useId` + `aria-labelledby`) so figcaption names are exposed to assistive tech and happy-dom tests.
+- Docs chrome is shared through `src/components/docs/docs-shell-layout.tsx`; pass `activeNav` and render page content as children.
+- The reviewer-visible code presentation example is at `/docs/examples/code-presentation/` via `src/app/docs/examples/code-presentation/page.tsx`.
+- Primitive styles extend `src/app/globals.css` using existing `--landing-*` CSS variables.
+- Component tests for docs surfaces belong in `tests/unit/docs-shell.test.tsx`; focused `CodeBlock` tests belong in `tests/unit/code-block.test.tsx`; static export route checks belong in `tests/unit/static-export.test.ts`.
+- Manual browser verification serves `out/` under `/you-agent-factory-docs` per `docs/internal/processes/manual-qa.md`.
 
 ## 2026-06-16T15:47:18Z - canonical-content-model-foundation-001
 - What was implemented
@@ -352,6 +361,27 @@
   - Useful context: mergeability-only quality-gate stabilization belongs under "PR feedback (mergeability)" in progress after all PRD stories pass.
 ---
 
+## 2026-06-17T09:12:00Z - rich-code-presentation-primitives-foundation-001
+- Implemented reviewer-visible code presentation example surface at `/docs/examples/code-presentation/` rendering code block, code tabs, callouts, and file-tree primitives through the current React content-rendering path.
+- Added reusable primitive components (`CodeBlock`, `CodeTabs`, `Callout`, `FileTree`), shared docs shell layout with navigation to the example route, styles, tests, and process documentation.
+- Files changed: `src/components/docs/primitives/*`, `src/components/docs/code-presentation-example.tsx`, `src/components/docs/docs-shell-layout.tsx`, `src/components/docs/docs-shell.tsx`, `src/app/docs/examples/code-presentation/page.tsx`, `src/lib/docs-primitives.ts`, `src/app/globals.css`, `tests/unit/docs-shell.test.tsx`, `tests/unit/static-export.test.ts`, `docs/internal/processes/rich-code-presentation-primitives-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - `CodeTabs` is a client component because tab state is interactive; keep static primitives server-renderable where possible.
+  - Example page includes both a standalone code block and tabbed code blocks, so tests should scope queries to section landmarks to avoid duplicate `aria-label` matches.
+  - Biome prefers semantic `<output>` over `role="status"` and flags `role="group"` on lists; nested file-tree lists work without extra ARIA roles.
+  - Browser verification URL: `http://127.0.0.1:$PORT/you-agent-factory-docs/docs/examples/code-presentation/`
+---
+
+## 2026-06-17T09:16:00Z - rich-code-presentation-primitives-foundation-002
+- Strengthened the reusable `CodeBlock` primitive with human-readable language labels (`formatCodeBlockLanguageLabel`), `lang` attributes, `aria-labelledby` figcaption wiring, responsive overflow CSS, and reduced-motion-safe scrolling.
+- Added a long-line example block with a custom title on the reviewer surface and focused unit tests in `tests/unit/code-block.test.tsx`.
+- Files changed: `src/components/docs/primitives/code-block.tsx`, `src/lib/docs-primitives.ts`, `src/app/globals.css`, `src/components/docs/code-presentation-example.tsx`, `tests/unit/code-block.test.tsx`, `tests/unit/docs-shell.test.tsx`, `docs/internal/processes/rich-code-presentation-primitives-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - happy-dom does not derive figure accessible names from bare `<figcaption>`; pair figcaption `id` with `aria-labelledby` on `<figure>`.
+  - Biome rejects `tabIndex` on non-interactive `<pre>` elements; rely on native horizontal scrolling instead.
+  - `CodeBlock` must be a client component when using `useId` for label association.
+---
+
 ## 2026-06-17T00:00:00Z - localized-search-index-groundwork-001
 - What was implemented
   - Merged `origin/main` into the worktree to pick up localized-content-identity-foundation dependencies.
@@ -439,4 +469,12 @@
   - Patterns discovered: keep inclusion proofs on real starter fixtures and exclusion proofs on isolated temp content roots so production `src/content/` stays publishable-only while still covering every supported exclusion rule.
   - Gotchas encountered: story 005 acceptance wants both document and artifact surfaces asserted together—unit tests on each layer alone are insufficient for the foundation verification story.
   - Useful context: all five PRD stories are now complete; create the PR when pushing the final code commit.
+---
+
+## 2026-06-17T23:35:00Z - PR feedback (mergeability)
+- Merged `origin/main` (rich-code-presentation-primitives-foundation) to resolve `mergeStateStatus: DIRTY` on PR #15.
+- Combined `progress.txt` codebase patterns from both branches and preserved localized-search progress history alongside main's rich-code-presentation entries.
+- Files changed
+  - merge from `origin/main` (docs primitives, code presentation example route)
+  - `progress.txt` (conflict resolution)
 ---

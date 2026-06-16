@@ -263,6 +263,18 @@ section: guides
           },
         ],
       },
+      {
+        id: "examples",
+        label: "Examples",
+        pages: [
+          {
+            canonicalId: "doc/examples/code-presentation",
+            label: "Code presentation",
+            href: "/docs/examples/code-presentation",
+            order: 1,
+          },
+        ],
+      },
     ]);
   });
 
