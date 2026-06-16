@@ -7,6 +7,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: false
@@ -34,11 +39,23 @@ jobs:
       - name: Build static export
         run: make build
 
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static export artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Next.js static export output from `make build`; consumed by deploy-pages below.
+          path: out/
+
   deploy:
     name: Deploy to GitHub Pages
     needs: validate
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Confirm deploy eligibility
-        run: |
-          echo "Canonical validation succeeded; Pages publish steps run in this job after validation."
+      - name: Deploy static export to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
