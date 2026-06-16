@@ -19,6 +19,7 @@
 - Group validation fails when the canonical-locale variant file is missing or when `availableLocales` lists locales without matching on-disk variant files.
 - `loadStarterContentRecords()` returns `localizedVariantGroups` and `variantBindings` for reviewer-visible parallel variant proof and locale-aware navigation dedupe.
 - `projectDocsShellNavigation(records, { variantBindings })` selects the canonical-locale variant label by default; pass `{ locale }` for localized nav labels.
+- When `variantBindings` are provided, do not pre-filter doc records by `availableLocales` before `selectLocalizedVariantBinding()`; locale-aware navigation must keep canonical pages visible with fallback metadata for unsupported or missing variant locales.
 - `resolveLocalizedContentVariant()` and `selectLocalizedVariantBinding()` in `src/lib/content/localized-content-resolution.ts` centralize locale-aware content resolution and canonical-locale fallback; `loadDocPage(slug, contentRoot, { locale })` returns reviewer-verifiable `resolution` metadata.
 - `LocaleAwareContentProjection`, `projectLocaleAwareContent()`, and `projectLocaleAwareContentCatalog()` in `src/lib/content/locale-aware-content-projection.ts` expose durable metadata seams for later navigation and search work; `loadDocPage()` and `projectDocsShellNavigation()` attach `localeProjection` when variant bindings are available.
 
@@ -308,4 +309,19 @@
   - Patterns discovered: main may delete `progress.txt` while worktrees still rely on it—resolve modify/delete conflicts by keeping the worktree progress log.
   - Gotchas encountered: mergeability work after all stories pass should still run the full suite because main can add new gate tests.
   - Useful context: PR #11 created at https://github.com/portpowered/you-agent-factory-docs/pull/11 after story 005 completion.
+---
+
+## 2026-06-17T21:15:00Z - PR feedback (mergeability)
+- Addressed BLOCKING PR #11 feedback on locale-aware docs navigation dropping canonical pages for fallback locales (`ja`, `de`).
+- Removed the `availableLocales` pre-filter in `projectDocsShellNavigation()` when `variantBindings` are provided so binding selection via `selectLocalizedVariantBinding()` applies the same canonical-locale fallback contract as `loadDocPage()`.
+- Added behavioral coverage in `tests/unit/docs-navigation.test.ts` for `loadDocsShellNavigation(..., { locale: "ja" })` and `{ locale: "de" }` expecting the canonical `doc/getting-started` nav entry with fallback `localeProjection` metadata.
+- Re-verified locally: `make check` pass, `make test` pass (184 tests).
+- Files changed
+  - `src/lib/content/docs-navigation.ts`
+  - `tests/unit/docs-navigation.test.ts`
+  - `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: locale-aware navigation with `variantBindings` must select representative bindings per canonical page id before applying fallback; availability pre-filters conflict with the canonical-locale fallback contract.
+  - Gotchas encountered: `availableLocales.includes(locale)` gates pages out entirely for unsupported locales even when `selectLocalizedVariantBinding()` would correctly fall back to the canonical variant.
+  - Useful context: fallback navigation proofs belong on `loadDocsShellNavigation()` with real starter fixtures, not only on `projectLocaleAwareContent()` unit tests.
 ---
