@@ -50,4 +50,12 @@ export function mockMatchMedia({
   };
 }
 
+/** Default happy-dom viewport width used when tests do not set a breakpoint. */
+export const DEFAULT_TEST_VIEWPORT_WIDTH = 1024;
+
+/** Reset viewport and matchMedia stubs so later tests do not inherit narrow widths. */
+export function resetMatchMedia(): void {
+  mockMatchMedia({ width: DEFAULT_TEST_VIEWPORT_WIDTH });
+}
+
 export { RESPONSIVE_BREAKPOINTS_PX };

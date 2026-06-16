@@ -23,6 +23,7 @@
 - Disclosure keyboard behavior: `tests/unit/shell-disclosure.test.tsx`
 - Shared shell responsive contract: `tests/unit/shared-shell-responsive.test.tsx`
 - Existing shell landmark tests remain in `tests/unit/docs-shell.test.tsx` and `tests/unit/homepage-shell.test.tsx`
+- Shell tests that assert always-visible navigation should mock desktop width (`RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1`); `tests/setup/testing-library.ts` calls `resetMatchMedia()` after each test so narrow-viewport mocks do not leak across files.
 
 ## Contributor commands
 
