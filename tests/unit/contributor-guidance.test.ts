@@ -1,48 +1,43 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { dryRunMake } from "../helpers/make";
+import { runMakeTarget } from "../helpers/make-target";
 
 const repoRoot = join(import.meta.dir, "../..");
-const readmePath = join(repoRoot, "README.md");
-const workflowPath = join(repoRoot, ".github/workflows/ci.yml");
 
-const rootTargets = ["setup", "check", "test", "build"] as const;
-
-function readReadme(): string {
-  return readFileSync(readmePath, "utf8");
+function cleanNextTypeArtifacts() {
+  rmSync(join(repoRoot, ".next"), { recursive: true, force: true });
+  rmSync(join(repoRoot, "tsconfig.tsbuildinfo"), { force: true });
 }
 
-function readCiWorkflow(): string {
-  return readFileSync(workflowPath, "utf8");
-}
-
-describe("contributor guidance", () => {
-  test("readme identifies the authoritative root make workflow", () => {
-    const readme = readReadme();
-
-    expect(readme).toMatch(/authoritative/i);
-
-    for (const target of rootTargets) {
-      expect(readme).toMatch(new RegExp(`make\\s+${target}\\b`));
-    }
+describe("contributor guidance observable outcomes", () => {
+  test("make setup installs dependencies from the repository root", () => {
+    const result = runMakeTarget("setup");
+    expect(result.status).toBe(0);
+    expect(result.stdout).toMatch(/bun install/);
+    expect(existsSync(join(repoRoot, "node_modules"))).toBe(true);
   });
 
-  test("readme documents observable outcomes for each root command", () => {
-    const readme = readReadme();
+  test("make check surfaces typecheck and lint verification through one command", () => {
+    cleanNextTypeArtifacts();
+    const result = runMakeTarget("check");
+    expect(result.status).toBe(0);
+    expect(result.output).toMatch(/typecheck/);
+    expect(result.output).toMatch(/lint/);
+    expect(result.output.indexOf("typecheck")).toBeLessThan(
+      result.output.indexOf("lint"),
+    );
+  }, 30_000);
 
-    expect(readme).toMatch(/dependenc/i);
-    expect(readme).toMatch(/typecheck|lint/i);
-    expect(readme).toMatch(/\bbun test\b/);
-    expect(readme).toMatch(/out\/|static export|static build/i);
+  test("make test runs the automated suite through bun test", () => {
+    expect(dryRunMake("test")).toContain("bun test");
   });
 
-  test("documented command path matches ci automation targets", () => {
-    const readme = readReadme();
-    const workflow = readCiWorkflow();
-
-    for (const target of rootTargets) {
-      expect(readme).toMatch(new RegExp(`make\\s+${target}\\b`));
-      expect(workflow).toMatch(new RegExp(`make\\s+${target}\\b`));
-    }
-  });
+  test("make build proves the static export by requiring out/", () => {
+    const result = runMakeTarget("build");
+    expect(result.status).toBe(0);
+    expect(result.output).toMatch(/Exporting/);
+    expect(existsSync(join(repoRoot, "out"))).toBe(true);
+  }, 120_000);
 });
