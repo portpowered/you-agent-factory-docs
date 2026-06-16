@@ -8,6 +8,7 @@
   - `tests/unit/baseline-foundation.test.tsx` proves the homepage and `/docs` App Router entries render the delivered shells.
   - `tests/unit/root-command-path.test.ts` runs the documented `Makefile` targets (`setup`, `check`, `test`, `build`) from the repository root and asserts observable success outcomes instead of branch or file inventories.
   - Existing bootstrap tests under `tests/unit/` continue to cover static export, homepage shell, docs shell, project metadata, and site configuration.
+  - `tests/unit/reconciled-export-browser.test.ts` serves the built static export under the GitHub Pages base path and uses Playwright Chromium to prove the homepage and `/docs` shell render and remain navigable from the reconciled default baseline.
 
 ## Root command path verification
 
