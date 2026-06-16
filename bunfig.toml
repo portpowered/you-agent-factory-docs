@@ -1,2 +1,11 @@
 [test]
 preload = ["./tests/setup/happydom.ts", "./tests/setup/testing-library.ts"]
+coverageSkipTestFiles = true
+coveragePathIgnorePatterns = [
+  "tests/**",
+  "scripts/**",
+  "factory/**",
+  "next.config.ts",
+  "src/app/**",
+  "src/lib/**",
+]

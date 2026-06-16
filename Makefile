@@ -1,4 +1,4 @@
-.PHONY: setup check test build quality-gate
+.PHONY: setup check test build quality-gate component-coverage-boundary component-coverage
 
 setup:
 	bun install
@@ -16,3 +16,9 @@ build:
 
 quality-gate:
 	bun run quality-gate
+
+component-coverage-boundary:
+	bun run component-coverage:boundary
+
+component-coverage:
+	bun run component-coverage
