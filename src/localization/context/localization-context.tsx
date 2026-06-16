@@ -1,15 +1,17 @@
 "use client";
 
+import type { PartialSharedShellMessages } from "@/types/localization";
 import { type ReactNode, createContext, useContext, useMemo } from "react";
 import { DEFAULT_LOCALE } from "../config/default-locale";
 import type { SupportedLocale } from "../config/locales";
 import { resolveLocale } from "../lib/resolve-locale";
-import { getMessageCatalog } from "../messages";
+import { enMessages, getMessageCatalog } from "../messages";
 import type { SharedShellMessages } from "../messages/en";
 
 export type LocalizationContextValue = {
   locale: SupportedLocale;
-  messages: SharedShellMessages;
+  messages: SharedShellMessages | PartialSharedShellMessages;
+  fallbackMessages: SharedShellMessages;
 };
 
 const LocalizationContext = createContext<LocalizationContextValue | null>(
@@ -30,6 +32,7 @@ export function LocalizationProvider({
     return {
       locale,
       messages: getMessageCatalog(locale),
+      fallbackMessages: enMessages,
     };
   }, [localeInput]);
 

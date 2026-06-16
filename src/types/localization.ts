@@ -1,5 +1,17 @@
 import type { SharedShellMessages } from "@/localization/messages/en";
 
+type DeepPartialMessageTree<T> = {
+  [K in keyof T]?: T[K] extends string
+    ? string
+    : T[K] extends object
+      ? DeepPartialMessageTree<T[K]>
+      : never;
+};
+
+/** Locale catalogs may omit keys that resolve through default-locale fallback. */
+export type PartialSharedShellMessages =
+  DeepPartialMessageTree<SharedShellMessages>;
+
 type Join<K extends string, P extends string> = `${K}.${P}`;
 
 type SharedShellMessagePaths<T, Prefix extends string = ""> = {

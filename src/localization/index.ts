@@ -20,10 +20,14 @@ export {
   createCanonicalPageIdentity,
   type CanonicalPageIdentity,
 } from "./lib/canonical-page";
-export { resolveMessage } from "./lib/resolve-message";
+export {
+  resolveMessage,
+  resolveMessageWithFallback,
+} from "./lib/resolve-message";
 export { resolveLocale, type LocaleResolution } from "./lib/resolve-locale";
 export {
   enMessages,
+  frMessages,
   getMessageCatalog,
   type SharedShellMessages,
 } from "./messages";

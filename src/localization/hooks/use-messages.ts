@@ -2,12 +2,13 @@
 
 import type { SharedShellMessageKey } from "@/types/localization";
 import { useLocalizationContext } from "../context/localization-context";
-import { resolveMessage } from "../lib/resolve-message";
+import { resolveMessageWithFallback } from "../lib/resolve-message";
 
 export function useMessages() {
-  const { messages } = useLocalizationContext();
+  const { messages, fallbackMessages } = useLocalizationContext();
 
   return {
-    t: (key: SharedShellMessageKey) => resolveMessage(messages, key),
+    t: (key: SharedShellMessageKey) =>
+      resolveMessageWithFallback(messages, fallbackMessages, key),
   };
 }

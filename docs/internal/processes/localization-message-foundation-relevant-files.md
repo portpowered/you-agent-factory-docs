@@ -19,6 +19,14 @@
 - Shell components consume messages through `useMessages()` from `src/localization/hooks/use-messages.ts` instead of `src/lib/shell.ts` literals.
 - `src/lib/shell.ts` retains non-localized external link constants such as `GITHUB_REPO_URL`.
 - Component tests wrap shells with `tests/helpers/render-with-localization.tsx`.
+- Pass `{ locale: "fr" }` to `renderWithLocalization` to exercise non-default locale fallback in component tests.
+
+## Message fallback lookup
+
+- Secondary locale catalogs may be partial; missing keys resolve through `resolveMessageWithFallback()` in `src/localization/lib/resolve-message.ts`.
+- `LocalizationProvider` exposes both the active locale catalog and `fallbackMessages` (default locale catalog) to `useMessages()`.
+- Partial French catalog for fallback coverage lives in `src/localization/messages/fr.ts`; unregistered secondary locales receive an empty overlay and fall back entirely to the default catalog.
+- Fallback unit coverage: `tests/unit/message-fallback.test.ts`; shell integration: `tests/unit/shell-fallback.test.tsx`.
 
 ## Verification
 

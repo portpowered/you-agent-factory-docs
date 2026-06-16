@@ -2,14 +2,20 @@ import { type RenderOptions, render } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { LocalizationProvider } from "../../src/localization/context/localization-context";
 
+type RenderWithLocalizationOptions = Omit<RenderOptions, "wrapper"> & {
+  locale?: string;
+};
+
 export function renderWithLocalization(
   ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">,
+  options?: RenderWithLocalizationOptions,
 ) {
+  const { locale, ...renderOptions } = options ?? {};
+
   return render(ui, {
     wrapper: ({ children }) => (
-      <LocalizationProvider>{children}</LocalizationProvider>
+      <LocalizationProvider locale={locale}>{children}</LocalizationProvider>
     ),
-    ...options,
+    ...renderOptions,
   });
 }
