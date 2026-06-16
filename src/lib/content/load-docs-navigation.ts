@@ -5,6 +5,7 @@ import {
 } from "@/lib/content/docs-navigation";
 import { loadStarterContentRecords } from "@/lib/content/load-starter-content";
 import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
+import { withCodePresentationExampleNavigation } from "@/lib/docs-primitives";
 
 const DEFAULT_CONTENT_ROOT = join(process.cwd(), "src/content");
 
@@ -18,8 +19,10 @@ export function loadDocsShellNavigation(
   const { records, failures, variantBindings } =
     loadStarterContentRecords(contentRoot);
   assertStarterContentValid(failures);
-  return projectDocsShellNavigation(records, {
-    ...options,
-    variantBindings,
-  });
+  return withCodePresentationExampleNavigation(
+    projectDocsShellNavigation(records, {
+      ...options,
+      variantBindings,
+    }),
+  );
 }
