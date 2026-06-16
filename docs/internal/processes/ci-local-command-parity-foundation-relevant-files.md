@@ -11,6 +11,7 @@
 ## Automation parity
 
 - `.github/workflows/ci.yml` is the minimal verification workflow for this lane. It runs `make setup`, `make check`, `make test`, and `make build` in order without bypassing the root `Makefile`.
+- CI installs Playwright Chromium after `make setup` so reconciled baseline browser tests in `make test` can launch a browser on Linux runners.
 - Failures in typecheck, lint, tests, or static build surface through the same `make` targets contributors use locally.
 
 ## Contributor guidance

@@ -17,6 +17,9 @@ jobs:
       - name: Setup
         run: make setup
 
+      - name: Install Playwright browsers
+        run: bunx playwright install chromium --with-deps
+
       - name: Check
         run: make check
 
