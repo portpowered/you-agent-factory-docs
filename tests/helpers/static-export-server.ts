@@ -1,13 +1,36 @@
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { SITE_BASE_PATH } from "../../src/lib/site";
+import { STATIC_EXPORT_SKIP_BUILD_ENV } from "../../src/lib/validation/static-export";
 import { fetchHttp } from "./http";
 
 const projectRoot = join(import.meta.dir, "../..");
+const exportDir = join(projectRoot, "out");
+const nextDir = join(projectRoot, ".next");
+
+function cleanNextBuildArtifacts(): void {
+  rmSync(nextDir, { recursive: true, force: true });
+}
+
+export function shouldSkipStaticExportBuild(): boolean {
+  return process.env[STATIC_EXPORT_SKIP_BUILD_ENV] === "1";
+}
 
 export function buildStaticExport(): void {
+  if (shouldSkipStaticExportBuild()) {
+    if (!existsSync(exportDir)) {
+      throw new Error(
+        `${STATIC_EXPORT_SKIP_BUILD_ENV}=1 but static export output is missing at out/`,
+      );
+    }
+
+    return;
+  }
+
+  cleanNextBuildArtifacts();
+
   const build = spawnSync("make", ["build"], {
     cwd: projectRoot,
     encoding: "utf8",
