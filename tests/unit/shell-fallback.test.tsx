@@ -9,7 +9,6 @@ const frPrimaryNavAriaLabel = "Principale";
 const frGetStarted = "Commencer";
 const frHome = "Accueil";
 const frDocsNavHeading = "Navigation de la documentation";
-const frSiteNavAriaLabel = "Site";
 
 mock.module("next/link", () => ({
   default: MockLink,
@@ -35,7 +34,7 @@ describe("homepage shell fallback messaging", () => {
     ).toBeGreaterThan(0);
     expect(
       within(primaryNav).getAllByRole("link", {
-        name: enMessages.common.githubCta,
+        name: `${enMessages.common.githubCta} (opens in new tab)`,
       }).length,
     ).toBeGreaterThan(0);
     expect(screen.getByText(enMessages.landing.valueStatement)).toBeTruthy();
@@ -65,7 +64,7 @@ describe("docs shell fallback messaging", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("navigation", {
-        name: frSiteNavAriaLabel,
+        name: frPrimaryNavAriaLabel,
       }),
     ).toBeTruthy();
     expect(
@@ -79,7 +78,9 @@ describe("docs shell fallback messaging", () => {
       screen.getByRole("link", { name: enMessages.docs.navOverview }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: enMessages.common.githubCta }),
+      screen.getByRole("link", {
+        name: `${enMessages.common.githubCta} (opens in new tab)`,
+      }),
     ).toBeTruthy();
   });
 

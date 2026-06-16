@@ -71,4 +71,35 @@ describe("served static export navigation", () => {
 
     expect(docsResponse.status).toBe(200);
   }, 30_000);
+
+  test("exposes the same primary navigation destinations on homepage and docs entry routes", async () => {
+    const homepageResponse = await fetchHttp(server.baseUrl, {
+      signal: AbortSignal.timeout(10_000),
+    });
+    const docsResponse = await fetchHttp(
+      new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    const homepageHtml = await homepageResponse.text();
+    const docsHtml = await docsResponse.text();
+
+    for (const html of [homepageHtml, docsHtml]) {
+      expect(html).toContain(
+        `aria-label="${enMessages.landing.primaryNavAriaLabel}"`,
+      );
+      expect(html).toContain(enMessages.common.githubCta);
+      expect(html).toContain('rel="noopener noreferrer"');
+      expect(html).toContain('target="_blank"');
+      expect(html).toContain('id="shared-shell-primary-nav"');
+      expect(html).toContain('aria-controls="shared-shell-primary-nav"');
+      expect(html).toContain('aria-expanded="false"');
+      expect(html).toContain(enMessages.shell.openMenuLabel);
+    }
+
+    expect(homepageHtml).toContain(enMessages.common.getStarted);
+    expect(homepageHtml).not.toContain(`>${enMessages.common.home}<`);
+    expect(docsHtml).toContain(enMessages.common.home);
+    expect(docsHtml).not.toContain(`>${enMessages.common.getStarted}<`);
+  }, 30_000);
 });

@@ -17,6 +17,7 @@
 - Message lookup for shell surfaces uses `src/localization/lib/resolve-message.ts` (`resolveMessage`).
 - Provider wiring lives in `src/localization/context/localization-context.tsx` (`LocalizationProvider`); the root layout wraps app children with it.
 - Shell components consume messages through `useMessages()` from `src/localization/hooks/use-messages.ts` instead of `src/lib/shell.ts` literals.
+- `createSharedShellConfigFromMessages()` in `src/localization/lib/create-shared-shell-config.ts` maps message lookup into `SharedShellConfig` for `LandingShell` and `DocsShell`.
 - `src/lib/shell.ts` retains non-localized external link constants such as `GITHUB_REPO_URL`.
 - Component tests wrap shells with `tests/helpers/render-with-localization.tsx`.
 - Pass `{ locale: "fr" }` to `renderWithLocalization` to exercise non-default locale fallback in component tests.

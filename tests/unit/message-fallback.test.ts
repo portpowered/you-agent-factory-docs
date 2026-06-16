@@ -47,12 +47,8 @@ describe("shared shell message fallback", () => {
       ),
     ).toBe("Principale");
     expect(
-      resolveMessageWithFallback(
-        frMessages,
-        enMessages,
-        "docs.siteNavAriaLabel",
-      ),
-    ).toBe("Site");
+      resolveMessageWithFallback(frMessages, enMessages, "shell.openMenuLabel"),
+    ).toBe(enMessages.shell.openMenuLabel);
   });
 
   test("throws when a key is missing in both active and default catalogs", () => {

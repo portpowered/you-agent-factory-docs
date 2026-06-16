@@ -31,7 +31,7 @@ describe("homepage shell rendering", () => {
       name: enMessages.common.getStarted,
     });
     const githubLinks = within(primaryNav).getAllByRole("link", {
-      name: enMessages.common.githubCta,
+      name: `${enMessages.common.githubCta} (opens in new tab)`,
     });
 
     expect(docsLinks[0]?.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);

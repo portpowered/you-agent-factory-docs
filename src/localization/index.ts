@@ -21,6 +21,7 @@ export {
   createLocaleFormatters,
   type LocaleFormatters,
 } from "./lib/create-formatters";
+export { createSharedShellConfigFromMessages } from "./lib/create-shared-shell-config";
 export { getIntlLocaleTag } from "./lib/locale-intl-tag";
 export {
   createCanonicalPageIdentity,

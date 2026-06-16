@@ -18,7 +18,7 @@ describe("shared shell message validation", () => {
 
     expect(keys).toContain("common.getStarted");
     expect(keys).toContain("landing.primaryNavAriaLabel");
-    expect(keys).toContain("docs.siteNavAriaLabel");
+    expect(keys).toContain("shell.openMenuLabel");
     expect(keys.length).toBeGreaterThan(0);
   });
 

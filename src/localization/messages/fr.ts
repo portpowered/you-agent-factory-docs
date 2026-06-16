@@ -10,7 +10,6 @@ export const frMessages: PartialSharedShellMessages = {
     primaryNavAriaLabel: "Principale",
   },
   docs: {
-    siteNavAriaLabel: "Site",
     navHeading: "Navigation de la documentation",
   },
 };

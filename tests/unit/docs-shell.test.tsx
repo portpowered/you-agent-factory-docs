@@ -29,20 +29,22 @@ describe("docs shell rendering", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByText(enMessages.docs.framingText)).toBeTruthy();
-    expect(screen.getByText(PROJECT_NAME)).toBeTruthy();
+    expect(
+      within(screen.getByRole("banner")).getByText(PROJECT_NAME),
+    ).toBeTruthy();
   });
 
   test("marks the overview entry as current and links home and GitHub", () => {
     renderWithLocalization(<DocsShell />);
 
     const siteNav = screen.getByRole("navigation", {
-      name: enMessages.docs.siteNavAriaLabel,
+      name: enMessages.landing.primaryNavAriaLabel,
     });
     const homeLink = within(siteNav).getByRole("link", {
       name: enMessages.common.home,
     });
     const githubLink = within(siteNav).getByRole("link", {
-      name: enMessages.common.githubCta,
+      name: `${enMessages.common.githubCta} (opens in new tab)`,
     });
 
     expect(homeLink.getAttribute("href")).toBe("/");

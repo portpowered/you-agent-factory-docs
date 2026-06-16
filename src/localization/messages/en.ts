@@ -5,13 +5,16 @@ export const enMessages = {
     getStarted: "Get started",
     home: "Home",
   },
+  shell: {
+    openMenuLabel: "Open menu",
+    closeMenuLabel: "Close menu",
+  },
   landing: {
     primaryNavAriaLabel: "Primary",
     valueStatement:
       "Turn recurring engineering work into reusable, inspectable AI agent workflows you can run locally and evolve with your team.",
   },
   docs: {
-    siteNavAriaLabel: "Site",
     navHeading: "Docs navigation",
     navOverview: "Overview",
     shellTitle: "Documentation",
