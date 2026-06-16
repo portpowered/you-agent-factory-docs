@@ -1,10 +1,17 @@
 import { CodePresentationExample } from "@/components/docs/code-presentation-example";
-import { DocsShellLayout } from "@/components/docs/docs-shell-layout";
+import { DocsShell } from "@/components/docs/docs-shell";
+import { loadDocsShellNavigation } from "@/lib/content";
+import { CODE_PRESENTATION_EXAMPLE_ROUTE } from "@/lib/docs-primitives";
 
 export default function CodePresentationExamplePage() {
+  const navigation = loadDocsShellNavigation();
+
   return (
-    <DocsShellLayout activeNav="code-presentation">
+    <DocsShell
+      currentPath={CODE_PRESENTATION_EXAMPLE_ROUTE}
+      navigation={navigation}
+    >
       <CodePresentationExample />
-    </DocsShellLayout>
+    </DocsShell>
   );
 }

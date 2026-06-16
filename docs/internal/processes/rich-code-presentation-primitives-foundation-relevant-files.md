@@ -9,9 +9,10 @@
 ## Primitive components
 
 - Reusable docs primitives live under `src/components/docs/primitives/` and are re-exported from `src/components/docs/primitives/index.ts`.
-- Shared reviewer labels, example fixture data, and the example route constant live in `src/lib/docs-primitives.ts`.
-- The reviewer-visible example surface is `src/components/docs/code-presentation-example.tsx`, rendered from `src/app/docs/examples/code-presentation/page.tsx`.
-- Docs chrome is shared through `src/components/docs/docs-shell-layout.tsx`; overview content remains in `src/components/docs/docs-shell.tsx`.
+- Shared reviewer labels, example fixture data, example route constants, and `withCodePresentationExampleNavigation()` live in `src/lib/docs-primitives.ts`.
+- `loadDocsShellNavigation()` in `src/lib/content/load-docs-navigation.ts` appends the code presentation example route through `withCodePresentationExampleNavigation()`.
+- The reviewer-visible example surface is `src/components/docs/code-presentation-example.tsx`, rendered from `src/app/docs/examples/code-presentation/page.tsx` through `DocsShell` and the shared shell on the current site foundation.
+- Docs chrome is shared through `src/components/docs/docs-shell.tsx` (`SharedShell`); pass generated navigation and `currentPath` for active docs sidebar state.
 - Primitive styles extend `src/app/globals.css` using the existing landing/docs CSS variables.
 
 ## Verification

@@ -1,8 +1,61 @@
+import type { DocsShellNavigationInput } from "@/lib/content/docs-navigation";
+
 /** Reviewer-facing labels for the code presentation primitive example surface. */
 export const CODE_PRESENTATION_EXAMPLE_ROUTE =
   "/docs/examples/code-presentation";
 
+export const CODE_PRESENTATION_EXAMPLE_CANONICAL_ID =
+  "doc/examples/code-presentation";
+
+export const CODE_PRESENTATION_EXAMPLE_SECTION_ID = "examples";
+
+export const CODE_PRESENTATION_EXAMPLE_SECTION_LABEL = "Examples";
+
 export const DOCS_NAV_CODE_PRESENTATION_LABEL = "Code presentation";
+
+/** Appends the reviewer-visible code presentation example route to docs navigation. */
+export function withCodePresentationExampleNavigation(
+  navigation: DocsShellNavigationInput,
+): DocsShellNavigationInput {
+  const existingSection = navigation.sections.find(
+    (section) => section.id === CODE_PRESENTATION_EXAMPLE_SECTION_ID,
+  );
+
+  const examplePage = {
+    canonicalId: CODE_PRESENTATION_EXAMPLE_CANONICAL_ID,
+    label: DOCS_NAV_CODE_PRESENTATION_LABEL,
+    href: CODE_PRESENTATION_EXAMPLE_ROUTE,
+    order: 1,
+  };
+
+  if (existingSection) {
+    return {
+      sections: navigation.sections.map((section) =>
+        section.id === CODE_PRESENTATION_EXAMPLE_SECTION_ID
+          ? {
+              ...section,
+              pages: section.pages.some(
+                (page) => page.canonicalId === examplePage.canonicalId,
+              )
+                ? section.pages
+                : [...section.pages, examplePage],
+            }
+          : section,
+      ),
+    };
+  }
+
+  return {
+    sections: [
+      ...navigation.sections,
+      {
+        id: CODE_PRESENTATION_EXAMPLE_SECTION_ID,
+        label: CODE_PRESENTATION_EXAMPLE_SECTION_LABEL,
+        pages: [examplePage],
+      },
+    ],
+  };
+}
 
 export const CODE_PRESENTATION_EXAMPLE_TITLE = "Code presentation primitives";
 

@@ -1,13 +1,42 @@
-import { DocsShellLayout } from "@/components/docs/docs-shell-layout";
-import { DOCS_SHELL_FRAMING_TEXT, DOCS_SHELL_TITLE } from "@/lib/shell";
+"use client";
 
-export function DocsShell() {
+import { SharedShell } from "@/components/shell/shared-shell";
+import type { DocsShellNavigationInput } from "@/lib/content";
+import {
+  findCurrentDocsItemId,
+  projectSharedShellDocsNavigation,
+} from "@/lib/content/shared-shell-navigation";
+import { DOCS_ENTRY_ROUTE } from "@/lib/project";
+import { useMessages } from "@/localization/hooks/use-messages";
+import { createSharedShellConfigFromMessages } from "@/localization/lib/create-shared-shell-config";
+import type { ReactNode } from "react";
+
+export type DocsShellProps = {
+  navigation: DocsShellNavigationInput;
+  currentPath?: string;
+  children?: ReactNode;
+};
+
+export function DocsShell({
+  navigation,
+  currentPath = DOCS_ENTRY_ROUTE,
+  children,
+}: DocsShellProps) {
+  const { t } = useMessages();
+  const shellConfig = createSharedShellConfigFromMessages(t, {
+    docsNavigationGroups: projectSharedShellDocsNavigation(navigation, {
+      navHeading: t("docs.navHeading"),
+    }),
+  });
+  const currentDocsItemId = findCurrentDocsItemId(navigation, currentPath);
+
   return (
-    <DocsShellLayout activeNav="overview">
-      <article aria-labelledby="docs-shell-title">
-        <h1 id="docs-shell-title">{DOCS_SHELL_TITLE}</h1>
-        <p className="docs-shell__framing">{DOCS_SHELL_FRAMING_TEXT}</p>
-      </article>
-    </DocsShellLayout>
+    <SharedShell
+      config={shellConfig}
+      currentDocsItemId={currentDocsItemId}
+      surface="docs"
+    >
+      {children}
+    </SharedShell>
   );
 }
