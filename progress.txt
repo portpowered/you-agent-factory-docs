@@ -23,6 +23,11 @@
 - `resolveLocalizedContentVariant()` and `selectLocalizedVariantBinding()` in `src/lib/content/localized-content-resolution.ts` centralize locale-aware content resolution and canonical-locale fallback; `loadDocPage(slug, contentRoot, { locale })` returns reviewer-verifiable `resolution` metadata.
 - `LocaleAwareContentProjection`, `projectLocaleAwareContent()`, and `projectLocaleAwareContentCatalog()` in `src/lib/content/locale-aware-content-projection.ts` expose durable metadata seams for later navigation and search work; `loadDocPage()` and `projectDocsShellNavigation()` attach `localeProjection` when variant bindings are available.
 - `validate:static-export` cleans `.next`, runs one production build, then sets `STATIC_EXPORT_SKIP_BUILD=1` for `tests/unit/static-export.test.ts` so served-export tests reuse that `out/` instead of starting a second back-to-back `next build`.
+- Normalized search documents live in `src/lib/content/search-document.ts` as `LocalizedSearchDocument`; `projectLocalizedSearchDocument()` and `generateLocalizedSearchDocuments()` stay pure while `loadLocalizedSearchDocuments()` reads variant sources through `loadStarterContentRecords()` and `resolveLocaleFileName()`.
+- Search-document ids use `{canonicalId}@{locale}` via `buildLocalizedSearchDocumentId()`; searchable text comes from `extractMarkdownHeadings()` and `extractSearchableBody()` so later query code does not re-parse raw files.
+- `shouldIncludeVariantInSearch()` filters variant bindings using canonical `status` and `searchInclude`; only `published` records with `searchInclude: true` emit search documents, mirroring structured metadata rather than file-path heuristics.
+- `buildPublicSearchArtifact()` maps normalized `LocalizedSearchDocument` values into deterministic `PublicSearchArtifact` JSON; `writePublicSearchArtifact()` emits `public/search/public-search-index.json` before `next build` via `bun run generate:search-index`.
+- `LocalizedSearchDocument` and `PublicSearchArtifactEntry` carry `canonicalLocale` and `availableLocales` from canonical records so later query code can default to the active locale without re-normalizing content.
 
 ## 2026-06-16T15:47:18Z - canonical-content-model-foundation-001
 - What was implemented
@@ -344,4 +349,78 @@
   - Patterns discovered: gate-owned production builds should pass `STATIC_EXPORT_SKIP_BUILD=1` to served-export tests so validation does not immediately trigger a second `next build` on the same `.next` directory.
   - Gotchas encountered: back-to-back `next build` calls without cleaning `.next` can surface intermittent `pages-manifest.json` ENOENT failures even when product behavior is correct.
   - Useful context: mergeability-only quality-gate stabilization belongs under "PR feedback (mergeability)" in progress after all PRD stories pass.
+---
+
+## 2026-06-17T00:00:00Z - localized-search-index-groundwork-001
+- What was implemented
+  - Merged `origin/main` into the worktree to pick up localized-content-identity-foundation dependencies.
+  - Added `LocalizedSearchDocument` with pure projection via `projectLocalizedSearchDocument()` and `generateLocalizedSearchDocuments()` in `src/lib/content/search-document.ts`.
+  - Added `loadLocalizedSearchDocuments()` to consume validated variant bindings from `loadStarterContentRecords()` and emit one normalized document per locale variant.
+  - Added focused tests in `tests/unit/localized-search-documents.test.ts` and documented patterns in `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`.
+- Files changed
+  - `src/lib/content/search-document.ts`
+  - `src/lib/content/load-search-documents.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/localized-search-documents.test.ts`
+  - `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: keep search-document projection pure and inject source reads at the loader boundary; reuse `variantBindings` from `loadStarterContentRecords()` rather than re-deriving locale relationships from paths.
+  - Gotchas encountered: the worktree branch started behind `origin/main`; fast-forward merge was required before search generation could depend on localized variant identity APIs.
+  - Useful context: story 002 should filter excluded variants at generation time using `record.status` and `record.searchInclude` before building the public search artifact in story 003.
+---
+
+## 2026-06-17T23:30:00Z - localized-search-index-groundwork-002
+- What was implemented
+  - Added `isSearchableCanonicalContentRecord()` and `shouldIncludeVariantInSearch()` in `src/lib/content/search-document.ts` to exclude `draft`, `internal`, `hidden`, and `search.include: false` variants from generated search documents using canonical record metadata.
+  - Updated `generateLocalizedSearchDocuments()` to filter bindings before projection so excluded variants never emit normalized search documents.
+  - Added focused exclusion coverage in `tests/unit/localized-search-documents.test.ts` for each supported exclusion rule alongside a published inclusion proof.
+  - Documented visibility rules in `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`.
+- Files changed
+  - `src/lib/content/search-document.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/localized-search-documents.test.ts`
+  - `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: mirror docs-navigation `NAV_VISIBLE_STATUSES` with `SEARCH_VISIBLE_STATUSES` at the search-generation layer; keep `projectLocalizedSearchDocument()` pure for field mapping while `generateLocalizedSearchDocuments()` owns inclusion filtering.
+  - Gotchas encountered: variant bindings can still validate for excluded statuses—filter at generation time rather than dropping records during starter validation.
+  - Useful context: story 003 should reuse `shouldIncludeVariantInSearch()` when emitting the generated public search artifact so exclusion stays consistent across document and index outputs.
+---
+
+## 2026-06-17T23:15:00Z - localized-search-index-groundwork-003
+- What was implemented
+  - Added `PublicSearchArtifact` with pure `buildPublicSearchArtifact()` and `serializePublicSearchArtifact()` in `src/lib/content/search-artifact.ts` to derive the generated artifact from normalized localized search documents.
+  - Added `loadPublicSearchArtifact()` and `writePublicSearchArtifact()` in `src/lib/content/load-search-artifact.ts` so artifact generation reuses `loadLocalizedSearchDocuments()` instead of a separate indexing parser.
+  - Added `scripts/generate-search-index.ts` and wired `bun run generate:search-index` before `next build` to emit reviewer-verifiable `public/search/public-search-index.json`.
+  - Added focused contract tests in `tests/unit/public-search-artifact.test.ts`; gitignored and biome-ignored the build-generated JSON artifact.
+- Files changed
+  - `src/lib/content/search-artifact.ts`
+  - `src/lib/content/load-search-artifact.ts`
+  - `scripts/generate-search-index.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/public-search-artifact.test.ts`
+  - `package.json`
+  - `.gitignore`
+  - `biome.json`
+  - `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: keep artifact projection pure on top of `LocalizedSearchDocument[]`; inject filesystem writes at `writePublicSearchArtifact()` and run generation before `next build` so static export can serve the artifact from `public/search/`.
+  - Gotchas encountered: build-generated JSON under `public/` must be gitignored and excluded from biome check or lint fails after `generate:search-index` runs locally.
+  - Useful context: story 004 should preserve locale and canonical-id metadata in any downstream index structure without re-parsing raw content files.
+---
+
+## 2026-06-17T23:45:00Z - localized-search-index-groundwork-004
+- What was implemented
+  - Extended `LocalizedSearchDocument` and `PublicSearchArtifactEntry` with `canonicalLocale` and `availableLocales` projected from canonical content records so the generated search index preserves locale-aware defaults for active-locale-first querying.
+  - Documented explicit ownership boundaries between canonical records, localized variant bindings, normalized search documents, the public search artifact, and downstream query UI.
+  - Added focused tests proving parallel locale variants share canonical-locale relationships while keeping distinct variant locales in both search documents and the generated artifact.
+- Files changed
+  - `src/lib/content/search-document.ts`
+  - `src/lib/content/search-artifact.ts`
+  - `tests/unit/localized-search-documents.test.ts`
+  - `tests/unit/public-search-artifact.test.ts`
+  - `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: propagate `canonicalLocale` and `availableLocales` from `binding.record` at search-document projection time so artifact/index consumers can filter by active locale without re-reading canonical records.
+  - Gotchas encountered: parallel locale variants must share the same canonical-locale metadata on every indexed entry even when `locale` differs; assert both fields in artifact contract tests.
+  - Useful context: story 005 should add end-to-end inclusion/exclusion validation across normalized documents and the generated artifact using observable outputs.
 ---
