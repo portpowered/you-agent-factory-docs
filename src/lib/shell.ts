@@ -94,6 +94,12 @@ export const LANDING_HOW_IT_WORKS_STEPS = [
 
 export const LANDING_WHY_TITLE = "Why You Agent Factory";
 
+export const LANDING_FINAL_CTA_TITLE =
+  "Start orchestrating engineering workflows";
+
+export const LANDING_FINAL_CTA_SUMMARY =
+  "Install locally, try the factory on GitHub, or explore the docs to configure your first inspectable workflow.";
+
 export const LANDING_WHY_POINTS = [
   {
     title: "Local-first",

@@ -1,6 +1,17 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import nextConfig from "../../next.config";
-import { DOCS_CTA_LABEL } from "../../src/lib/shell";
+import { PROJECT_TAGLINE } from "../../src/lib/project";
+import {
+  DOCS_CTA_LABEL,
+  GITHUB_CTA_LABEL,
+  GITHUB_REPO_URL,
+  LANDING_EXAMPLE_WORKFLOWS_TITLE,
+  LANDING_FINAL_CTA_TITLE,
+  LANDING_HOW_IT_WORKS_TITLE,
+  LANDING_PROBLEM_TITLE,
+  LANDING_SOLUTION_TITLE,
+  LANDING_WHY_TITLE,
+} from "../../src/lib/shell";
 import {
   DOCS_ENTRY_ROUTE,
   SITE_BASE_PATH,
@@ -68,5 +79,30 @@ describe("served static export navigation", () => {
     );
 
     expect(docsResponse.status).toBe(200);
+  }, 30_000);
+
+  test("exports the complete first-visit homepage story with primary CTA destinations", async () => {
+    const homepageResponse = await fetchHttp(server.baseUrl, {
+      signal: AbortSignal.timeout(10_000),
+    });
+    const homepageHtml = await homepageResponse.text();
+
+    for (const sectionTitle of [
+      PROJECT_TAGLINE,
+      LANDING_PROBLEM_TITLE,
+      LANDING_SOLUTION_TITLE,
+      LANDING_EXAMPLE_WORKFLOWS_TITLE,
+      LANDING_HOW_IT_WORKS_TITLE,
+      LANDING_WHY_TITLE,
+      LANDING_FINAL_CTA_TITLE,
+    ]) {
+      expect(homepageHtml).toContain(sectionTitle);
+    }
+
+    const docsBasePath = withBasePath(DOCS_ENTRY_ROUTE);
+    expect(homepageHtml).toContain(`href="${docsBasePath}/"`);
+    expect(homepageHtml).toContain(DOCS_CTA_LABEL);
+    expect(homepageHtml).toContain(`href="${GITHUB_REPO_URL}"`);
+    expect(homepageHtml).toContain(GITHUB_CTA_LABEL);
   }, 30_000);
 });

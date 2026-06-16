@@ -5,6 +5,8 @@ import {
   GITHUB_REPO_URL,
   LANDING_EXAMPLE_WORKFLOWS,
   LANDING_EXAMPLE_WORKFLOWS_TITLE,
+  LANDING_FINAL_CTA_SUMMARY,
+  LANDING_FINAL_CTA_TITLE,
   LANDING_HOW_IT_WORKS_STEPS,
   LANDING_HOW_IT_WORKS_TITLE,
   LANDING_PROBLEM_POINTS,
@@ -140,6 +142,33 @@ export function LandingShell() {
               </li>
             ))}
           </ul>
+        </section>
+
+        <section
+          aria-describedby="landing-final-cta-summary"
+          aria-labelledby="landing-final-cta-title"
+          className="landing-shell__section landing-shell__final-cta"
+        >
+          <h2 id="landing-final-cta-title">{LANDING_FINAL_CTA_TITLE}</h2>
+          <p
+            className="landing-shell__final-cta-summary"
+            id="landing-final-cta-summary"
+          >
+            {LANDING_FINAL_CTA_SUMMARY}
+          </p>
+          <div className="landing-shell__cta-row">
+            <Link className="landing-shell__button" href={DOCS_ENTRY_ROUTE}>
+              {DOCS_CTA_LABEL}
+            </Link>
+            <a
+              className="landing-shell__button landing-shell__button--secondary"
+              href={GITHUB_REPO_URL}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {GITHUB_CTA_LABEL}
+            </a>
+          </div>
         </section>
       </main>
     </div>

@@ -178,6 +178,16 @@ body {
   color: var(--landing-muted);
 }
 
+.landing-shell__final-cta {
+  background: var(--landing-surface);
+}
+
+.landing-shell__final-cta-summary {
+  margin: 0 0 1.5rem;
+  color: var(--landing-muted);
+  font-size: clamp(1rem, 2.5vw, 1.125rem);
+}
+
 .landing-shell__link,
 .landing-shell__button {
   display: inline-flex;

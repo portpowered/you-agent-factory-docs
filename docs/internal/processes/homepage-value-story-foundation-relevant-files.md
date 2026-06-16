@@ -15,12 +15,18 @@
 ## Example workflows and differentiation sections
 
 - Workflow examples and why-You-Agent-Factory copy live in `src/lib/shell.ts`: `LANDING_EXAMPLE_WORKFLOWS_*` and `LANDING_WHY_*` constants.
-- Architecture order on the homepage: hero → problem → solution → example workflows → how it works → why You Agent Factory (final CTA is story 004).
+- Architecture order on the homepage: hero → problem → solution → example workflows → how it works → why You Agent Factory → final CTA.
 - Each workflow and differentiator renders as a grouped list item with an `h3` title and description inside `landing-shell.tsx`.
 - Card-style grouping uses `.landing-shell__workflow-list` / `.landing-shell__why-list` in `src/app/globals.css`.
 
+## Final CTA section
+
+- Final CTA copy lives in `src/lib/shell.ts`: `LANDING_FINAL_CTA_TITLE` and `LANDING_FINAL_CTA_SUMMARY`.
+- `src/components/landing/landing-shell.tsx` renders the final CTA as the last `main` section with the same primary CTA labels and destinations as the hero (`DOCS_CTA_LABEL`, `GITHUB_CTA_LABEL`).
+- Styling uses `.landing-shell__final-cta` and `.landing-shell__final-cta-summary` in `src/app/globals.css`.
+
 ## Verification
 
-- Component behavior for the hero and value-story sections lives in `tests/unit/homepage-shell.test.tsx`.
-- Served static-export navigation checks remain in `tests/unit/static-export.test.ts`.
+- Component behavior for the hero and value-story sections lives in `tests/unit/homepage-shell.test.tsx`, including final CTA semantics and the complete first-visit section order proof.
+- Served static-export navigation checks remain in `tests/unit/static-export.test.ts`, including exported homepage section titles and primary CTA destinations.
 - Manual browser verification follows `docs/internal/processes/manual-qa.md` after `make build`.

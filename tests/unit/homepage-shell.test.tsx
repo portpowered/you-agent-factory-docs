@@ -11,6 +11,8 @@ import {
   GITHUB_REPO_URL,
   LANDING_EXAMPLE_WORKFLOWS,
   LANDING_EXAMPLE_WORKFLOWS_TITLE,
+  LANDING_FINAL_CTA_SUMMARY,
+  LANDING_FINAL_CTA_TITLE,
   LANDING_HOW_IT_WORKS_STEPS,
   LANDING_HOW_IT_WORKS_TITLE,
   LANDING_PROBLEM_POINTS,
@@ -60,7 +62,7 @@ describe("homepage shell rendering", () => {
   test("exposes keyboard-reachable docs and GitHub CTAs in the hero", () => {
     render(<LandingShell />);
 
-    const hero = screen.getByRole("main");
+    const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
     const docsCta = within(hero).getByRole("link", { name: DOCS_CTA_LABEL });
     const githubCta = within(hero).getByRole("link", {
       name: GITHUB_CTA_LABEL,
@@ -84,7 +86,7 @@ describe("homepage shell rendering", () => {
   test("marks hero CTAs as focusable controls with button styling hooks", () => {
     render(<LandingShell />);
 
-    const hero = screen.getByRole("main");
+    const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
     const docsCta = within(hero).getByRole("link", { name: DOCS_CTA_LABEL });
     const githubCta = within(hero).getByRole("link", {
       name: GITHUB_CTA_LABEL,
@@ -189,6 +191,53 @@ describe("homepage shell rendering", () => {
     expect(
       within(whySection).getByText(/drag-and-drop automation tiles/i),
     ).toBeTruthy();
+  });
+
+  test("renders final CTA section with accessible semantics and primary destinations", () => {
+    render(<LandingShell />);
+
+    const finalCtaSection = screen.getByRole("region", {
+      name: LANDING_FINAL_CTA_TITLE,
+    });
+
+    expect(
+      within(finalCtaSection).getByText(LANDING_FINAL_CTA_SUMMARY),
+    ).toBeTruthy();
+    expect(finalCtaSection.getAttribute("aria-describedby")).toBe(
+      "landing-final-cta-summary",
+    );
+
+    const docsCta = within(finalCtaSection).getByRole("link", {
+      name: DOCS_CTA_LABEL,
+    });
+    const githubCta = within(finalCtaSection).getByRole("link", {
+      name: GITHUB_CTA_LABEL,
+    });
+
+    expect(docsCta.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
+    expect(githubCta.getAttribute("href")).toBe(GITHUB_REPO_URL);
+    expect(githubCta.getAttribute("target")).toBe("_blank");
+    expect(docsCta.className).toContain("landing-shell__button");
+    expect(githubCta.className).toContain("landing-shell__button");
+  });
+
+  test("renders the complete first-visit section story in architecture order", () => {
+    render(<LandingShell />);
+
+    const main = screen.getByRole("main");
+    const sectionTitles = [
+      PROJECT_TAGLINE,
+      LANDING_PROBLEM_TITLE,
+      LANDING_SOLUTION_TITLE,
+      LANDING_EXAMPLE_WORKFLOWS_TITLE,
+      LANDING_HOW_IT_WORKS_TITLE,
+      LANDING_WHY_TITLE,
+      LANDING_FINAL_CTA_TITLE,
+    ];
+
+    for (const title of sectionTitles) {
+      expect(within(main).getByRole("region", { name: title })).toBeTruthy();
+    }
   });
 });
 
