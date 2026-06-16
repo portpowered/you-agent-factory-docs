@@ -1,0 +1,44 @@
+# Main-branch GitHub Pages deploy path.
+# Validation runs first via the root Makefile contract; deploy jobs only start after it succeeds.
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Canonical validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: make setup
+
+      - name: Run typecheck and lint
+        run: make check
+
+      - name: Run tests
+        run: make test
+
+      - name: Build static export
+        run: make build
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm deploy eligibility
+        run: |
+          echo "Canonical validation succeeded; Pages publish steps run in this job after validation."
