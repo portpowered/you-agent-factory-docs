@@ -45,6 +45,30 @@ const generatedNavigation: DocsShellNavigationInput = {
           href: "/docs/getting-started",
           order: 1,
         },
+        {
+          canonicalId: "doc/concepts",
+          label: "Core concepts",
+          href: "/docs/concepts",
+          order: 2,
+        },
+      ],
+    },
+    {
+      id: "setup",
+      label: "Setup",
+      pages: [
+        {
+          canonicalId: "doc/installation",
+          label: "Installation",
+          href: "/docs/installation",
+          order: 1,
+        },
+        {
+          canonicalId: "doc/configuration",
+          label: "Configuration",
+          href: "/docs/configuration",
+          order: 2,
+        },
       ],
     },
   ],
@@ -87,7 +111,29 @@ describe("docs shell rendering", () => {
       within(screen.getByRole("banner")).getByText(PROJECT_NAME),
     ).toBeTruthy();
     expect(screen.getByText("Guides")).toBeTruthy();
+    expect(screen.getByText("Setup")).toBeTruthy();
     expect(screen.getByText("Getting started")).toBeTruthy();
+    expect(screen.getByText("Core concepts")).toBeTruthy();
+    expect(screen.getByText("Installation")).toBeTruthy();
+    expect(screen.getByText("Configuration")).toBeTruthy();
+  });
+
+  test("renders separate navigation landmarks for each generated docs section", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    const setupNav = screen.getByRole("navigation", { name: "Setup" });
+
+    expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
+    expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
   });
 
   test("marks the active generated nav entry and links home and GitHub", async () => {

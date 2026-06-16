@@ -273,6 +273,30 @@ section: guides
             href: "/docs/examples/code-presentation",
             order: 1,
           },
+          {
+            canonicalId: "doc/concepts",
+            label: "Core concepts",
+            href: "/docs/concepts",
+            order: 2,
+          },
+        ],
+      },
+      {
+        id: "setup",
+        label: "Setup",
+        pages: [
+          {
+            canonicalId: "doc/installation",
+            label: "Installation",
+            href: "/docs/installation",
+            order: 1,
+          },
+          {
+            canonicalId: "doc/configuration",
+            label: "Configuration",
+            href: "/docs/configuration",
+            order: 2,
+          },
         ],
       },
     ]);
@@ -300,5 +324,25 @@ section: guides
         },
       });
     }
+  });
+
+  test("exposes multi-section docs browsing depth from canonical metadata", () => {
+    const navigation = loadDocsShellNavigation(CONTENT_ROOT);
+    const sectionIds = navigation.sections.map((section) => section.id);
+    const pageCount = navigation.sections.reduce(
+      (total, section) => total + section.pages.length,
+      0,
+    );
+
+    expect(sectionIds).toEqual(["guides", "examples", "setup"]);
+    expect(pageCount).toBeGreaterThanOrEqual(5);
+    expect(
+      navigation.sections.some(
+        (section) =>
+          section.id === "setup" &&
+          section.pages.map((page) => page.canonicalId).join(",") ===
+            "doc/installation,doc/configuration",
+      ),
+    ).toBe(true);
   });
 });

@@ -163,7 +163,11 @@ describe("served static export navigation", () => {
     );
 
     expect(docsHtml).toContain("Getting started");
+    expect(docsHtml).toContain("Core concepts");
+    expect(docsHtml).toContain("Installation");
+    expect(docsHtml).toContain("Configuration");
     expect(docsHtml).toContain("Guides");
+    expect(docsHtml).toContain("Setup");
     expect(new RegExp(`href="${gettingStartedPath}/?"`).test(docsHtml)).toBe(
       true,
     );

@@ -146,8 +146,11 @@ navigationTitle: Agent term
     expect(records.map((record) => record.id).sort()).toEqual([
       "blog/introducing-factory",
       "comparison/vs-n8n",
+      "doc/concepts",
+      "doc/configuration",
       "doc/getting-started",
       "doc/getting-started",
+      "doc/installation",
       "glossary/agent",
       "reference/loop-engineering",
     ]);
