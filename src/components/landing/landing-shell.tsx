@@ -1,4 +1,4 @@
-import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
+import { DOCS_ENTRY_ROUTE, PROJECT_NAME, PROJECT_TAGLINE } from "@/lib/project";
 import {
   DOCS_CTA_LABEL,
   GITHUB_CTA_LABEL,
@@ -29,11 +29,15 @@ export function LandingShell() {
 
       <main className="landing-shell__main">
         <section
+          aria-describedby="landing-hero-summary"
           aria-labelledby="landing-hero-title"
           className="landing-shell__hero"
         >
-          <h1 id="landing-hero-title">{PROJECT_NAME}</h1>
-          <p className="landing-shell__value">{LANDING_VALUE_STATEMENT}</p>
+          <p className="landing-shell__eyebrow">{PROJECT_NAME}</p>
+          <h1 id="landing-hero-title">{PROJECT_TAGLINE}</h1>
+          <p className="landing-shell__value" id="landing-hero-summary">
+            {LANDING_VALUE_STATEMENT}
+          </p>
           <div className="landing-shell__cta-row">
             <Link className="landing-shell__button" href={DOCS_ENTRY_ROUTE}>
               {DOCS_CTA_LABEL}

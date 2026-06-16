@@ -3,8 +3,10 @@
 export const GITHUB_REPO_URL =
   "https://github.com/portpowered/you-agent-factory";
 
-export const GITHUB_CTA_LABEL = "View on GitHub";
+/** Opens the public factory repository so visitors can try or install the product. */
+export const GITHUB_CTA_LABEL = "Try on GitHub";
 
+/** Enters the docs entry route for installation and quickstart guidance. */
 export const DOCS_CTA_LABEL = "Get started";
 
 export const HOME_CTA_LABEL = "Home";

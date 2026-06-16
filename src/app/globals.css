@@ -75,6 +75,15 @@ body {
   background: var(--landing-surface);
 }
 
+.landing-shell__eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--landing-accent);
+}
+
 .landing-shell__hero h1 {
   margin: 0 0 0.75rem;
   font-size: clamp(1.75rem, 4vw, 2.5rem);

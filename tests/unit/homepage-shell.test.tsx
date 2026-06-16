@@ -1,6 +1,10 @@
 import { describe, expect, mock, test } from "bun:test";
 import { render, screen, within } from "@testing-library/react";
-import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
+import {
+  DOCS_ENTRY_ROUTE,
+  PROJECT_NAME,
+  PROJECT_TAGLINE,
+} from "../../src/lib/project";
 import {
   DOCS_CTA_LABEL,
   GITHUB_CTA_LABEL,
@@ -19,13 +23,16 @@ const { LandingShell } = await import(
 );
 
 describe("homepage shell rendering", () => {
-  test("renders project identity, value statement, and primary CTAs", () => {
+  test("renders product positioning, value statement, and primary CTAs", () => {
     render(<LandingShell />);
 
+    const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
+
+    expect(within(hero).getByText(PROJECT_NAME)).toBeTruthy();
     expect(
-      screen.getByRole("heading", { level: 1, name: PROJECT_NAME }),
+      screen.getByRole("heading", { level: 1, name: PROJECT_TAGLINE }),
     ).toBeTruthy();
-    expect(screen.getByText(LANDING_VALUE_STATEMENT)).toBeTruthy();
+    expect(within(hero).getByText(LANDING_VALUE_STATEMENT)).toBeTruthy();
 
     const primaryNav = screen.getByRole("navigation", { name: "Primary" });
     const docsLinks = within(primaryNav).getAllByRole("link", {
@@ -52,6 +59,31 @@ describe("homepage shell rendering", () => {
     expect(docsCta.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
     expect(githubCta.getAttribute("href")).toBe(GITHUB_REPO_URL);
     expect(githubCta.getAttribute("target")).toBe("_blank");
+  });
+
+  test("groups hero copy with accessible section semantics", () => {
+    render(<LandingShell />);
+
+    const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
+    const summary = within(hero).getByText(LANDING_VALUE_STATEMENT);
+
+    expect(summary.getAttribute("id")).toBe("landing-hero-summary");
+    expect(hero.getAttribute("aria-describedby")).toBe("landing-hero-summary");
+  });
+
+  test("marks hero CTAs as focusable controls with button styling hooks", () => {
+    render(<LandingShell />);
+
+    const hero = screen.getByRole("main");
+    const docsCta = within(hero).getByRole("link", { name: DOCS_CTA_LABEL });
+    const githubCta = within(hero).getByRole("link", {
+      name: GITHUB_CTA_LABEL,
+    });
+
+    expect(docsCta.className).toContain("landing-shell__button");
+    expect(githubCta.className).toContain("landing-shell__button");
+    expect(docsCta.tabIndex).not.toBe(-1);
+    expect(githubCta.tabIndex).not.toBe(-1);
   });
 });
 
