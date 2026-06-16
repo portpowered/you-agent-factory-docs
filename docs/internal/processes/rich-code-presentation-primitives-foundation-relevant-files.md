@@ -18,5 +18,6 @@
 
 - Component behavior tests belong in `tests/unit/docs-shell.test.tsx` (example surface headings, accessible labels, tab switching).
 - Focused `CodeBlock` primitive tests belong in `tests/unit/code-block.test.tsx` (language labels, `lang` attribute, responsive layout classes).
+- Focused `CodeTabs` primitive tests belong in `tests/unit/code-tabs.test.tsx` (tab list labeling, roving `tabIndex`, click and keyboard panel switching, empty state).
 - Static export route coverage for the example page belongs in `tests/unit/static-export.test.ts`.
 - Manual browser verification follows `docs/internal/processes/manual-qa.md`; serve the export under `/you-agent-factory-docs` and open `/you-agent-factory-docs/docs/examples/code-presentation/`.

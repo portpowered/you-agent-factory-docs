@@ -160,6 +160,19 @@ describe("code presentation example surface", () => {
       within(powershellPanel).getByRole("figure", { name: "PowerShell" }),
     ).toBeTruthy();
   });
+
+  test("switches code tabs on the example surface with keyboard controls", () => {
+    render(<CodePresentationExample />);
+
+    const bashTab = screen.getByRole("tab", { name: "Bash" });
+    bashTab.focus();
+
+    fireEvent.keyDown(bashTab, { key: "ArrowRight" });
+
+    const powershellTab = screen.getByRole("tab", { name: "PowerShell" });
+    expect(powershellTab.getAttribute("aria-selected")).toBe("true");
+    expect(document.activeElement).toBe(powershellTab);
+  });
 });
 
 describe("docs shell layout navigation", () => {
