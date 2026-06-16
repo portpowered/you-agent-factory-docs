@@ -3,12 +3,12 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import nextConfig from "../../next.config";
+import { DOCS_SHELL_TITLE } from "../../src/lib/shell";
 import {
   DOCS_ENTRY_ROUTE,
   SITE_BASE_PATH,
   withBasePath,
 } from "../../src/lib/site";
-import { DOCS_SHELL_TITLE } from "../../src/lib/shell";
 
 const projectRoot = join(import.meta.dir, "../..");
 
