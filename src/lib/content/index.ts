@@ -17,6 +17,10 @@ export {
   parseCanonicalId,
 } from "@/lib/content/routes";
 export { isValidLocaleTag, normalizeLocaleList } from "@/lib/content/locales";
+export {
+  validateExplicitStarterLocaleMetadata,
+  validateLocaleRegistryMetadata,
+} from "@/lib/content/locale-metadata-validation";
 export { validateContentMetadata } from "@/lib/content/validation";
 export {
   parseContentFile,
@@ -25,6 +29,7 @@ export {
 } from "@/lib/content/frontmatter";
 export {
   buildMetadataFromStarterContent,
+  buildStarterContentPathKey,
   STARTER_CONTENT_DIRECTORY_KINDS,
   validateStarterContent,
   validateStarterContentSource,
@@ -48,7 +53,21 @@ export {
   listPublishedDocSlugs,
   loadDocPage,
   type DocPageContent,
+  type LoadDocPageOptions,
 } from "@/lib/content/load-doc-page";
+export {
+  resolveLocalizedContentVariant,
+  selectLocalizedVariantBinding,
+  type LocalizedContentResolution,
+  type ResolveLocalizedContentVariantOptions,
+} from "@/lib/content/localized-content-resolution";
+export {
+  projectLocaleAwareContent,
+  projectLocaleAwareContentCatalog,
+  type LocaleAwareContentProjection,
+  type ProjectLocaleAwareContentCatalogOptions,
+  type ProjectLocaleAwareContentOptions,
+} from "@/lib/content/locale-aware-content-projection";
 export {
   findCurrentDocsItemId,
   projectSharedShellDocsNavigation,
@@ -60,3 +79,14 @@ export {
   type DocsShellNavigationInput,
 } from "@/lib/content/docs-navigation";
 export { loadDocsShellNavigation } from "@/lib/content/load-docs-navigation";
+export {
+  projectLocalizedVariantGroups,
+  projectLocalizedVariantIdentity,
+  validateLocalizedVariantBindings,
+  type LocalizedContentVariantBinding,
+  type LocalizedContentVariantIdentity,
+  type LocalizedVariantGroup,
+  type LocalizedVariantValidationFailure,
+  type LocalizedVariantValidationResult,
+  type LocalizedVariantValidationSuccess,
+} from "@/lib/content/localized-variant-identity";

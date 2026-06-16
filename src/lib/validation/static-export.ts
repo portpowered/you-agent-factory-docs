@@ -1,6 +1,9 @@
 import { SITE_BASE_PATH } from "@/lib/site";
 import nextConfig from "../../../next.config";
 
+/** Set by validate:static-export after a successful production build. */
+export const STATIC_EXPORT_SKIP_BUILD_ENV = "STATIC_EXPORT_SKIP_BUILD";
+
 export type StaticExportConfig = {
   output: string | undefined;
   basePath: string | undefined;

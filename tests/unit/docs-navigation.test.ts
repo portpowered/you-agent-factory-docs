@@ -252,9 +252,41 @@ section: guides
             label: "Getting started",
             href: "/docs/getting-started",
             order: 1,
+            localeProjection: {
+              canonicalPageId: "doc/getting-started",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en", "fr"],
+              fellBackToCanonicalLocale: false,
+            },
           },
         ],
       },
     ]);
+  });
+
+  test("keeps canonical pages in locale-aware navigation when falling back to canonical locale", () => {
+    for (const locale of ["ja", "de"] as const) {
+      const navigation = loadDocsShellNavigation(CONTENT_ROOT, { locale });
+      const gettingStarted = navigation.sections
+        .flatMap((section) => section.pages)
+        .find((page) => page.canonicalId === "doc/getting-started");
+
+      expect(gettingStarted).toEqual({
+        canonicalId: "doc/getting-started",
+        label: "Getting started",
+        href: "/docs/getting-started",
+        order: 1,
+        localeProjection: {
+          canonicalPageId: "doc/getting-started",
+          canonicalLocale: "en",
+          requestedLocale: locale,
+          resolvedLocale: "en",
+          availableLocales: ["en", "fr"],
+          fellBackToCanonicalLocale: true,
+        },
+      });
+    }
   });
 });

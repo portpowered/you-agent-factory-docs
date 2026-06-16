@@ -1,12 +1,21 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { LOCALE_FILE_PATTERN } from "@/lib/content/locale-files";
+import {
+  LOCALE_FILE_PATTERN,
+  resolveLocaleFileName,
+} from "@/lib/content/locale-files";
+import {
+  type LocalizedContentVariantBinding,
+  type LocalizedVariantGroup,
+  validateLocalizedVariantBindings,
+} from "@/lib/content/localized-variant-identity";
 import {
   STARTER_CONTENT_DIRECTORY_KINDS,
   type StarterContentDescriptor,
   type StarterContentDirectory,
   type StarterContentValidationFailure,
   type StarterContentValidationSuccess,
+  buildStarterContentPathKey,
   validateStarterContent,
 } from "@/lib/content/starter";
 import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
@@ -15,6 +24,10 @@ import type { CanonicalContentRecord } from "@/lib/content/types";
 export type LoadedStarterContent = {
   records: CanonicalContentRecord[];
   failures: StarterContentValidationFailure[];
+  /** Reviewer-visible localized variant groups validated across parallel locale files. */
+  localizedVariantGroups: LocalizedVariantGroup[];
+  /** Variant locale bindings used for locale-aware navigation projection. */
+  variantBindings: LocalizedContentVariantBinding[];
 };
 
 function isStarterContentDirectory(
@@ -44,12 +57,21 @@ function listStarterContentDescriptors(
 
     for (const slug of slugEntries) {
       const slugRoot = join(kindRoot, slug);
-      const localeFiles = readdirSync(slugRoot).filter((fileName) =>
-        LOCALE_FILE_PATTERN.test(fileName),
-      );
+      const fileNames = readdirSync(slugRoot);
+      const localeTags = new Set<string>();
 
-      for (const localeFile of localeFiles) {
-        const locale = localeFile.replace(/\.mdx?$/, "");
+      for (const fileName of fileNames) {
+        if (LOCALE_FILE_PATTERN.test(fileName)) {
+          localeTags.add(fileName.replace(/\.mdx?$/, ""));
+        }
+      }
+
+      for (const locale of localeTags) {
+        const localeFile = resolveLocaleFileName(locale, fileNames);
+        if (!localeFile) {
+          continue;
+        }
+
         descriptors.push({
           contentDirectory,
           slug,
@@ -73,24 +95,87 @@ function isValidationSuccess(
  * Loads starter content fixtures from the canonical content directories and
  * validates each locale variant into canonical content records.
  */
+function groupErrorsByContentPathKey(
+  errors: StarterContentValidationFailure["errors"],
+): Map<string, StarterContentValidationFailure["errors"]> {
+  const grouped = new Map<string, StarterContentValidationFailure["errors"]>();
+
+  for (const error of errors) {
+    const contentPathKey = error.field.split(".")[0] ?? error.field;
+    const existing = grouped.get(contentPathKey) ?? [];
+    existing.push(error);
+    grouped.set(contentPathKey, existing);
+  }
+
+  return grouped;
+}
+
 export function loadStarterContentRecords(
   contentRoot: string,
 ): LoadedStarterContent {
-  const records: CanonicalContentRecord[] = [];
   const failures: StarterContentValidationFailure[] = [];
+  const successes: StarterContentValidationSuccess[] = [];
 
   for (const descriptor of listStarterContentDescriptors(contentRoot)) {
     const result = validateStarterContent(descriptor);
     if (isValidationSuccess(result)) {
-      records.push(result.record);
+      successes.push(result);
       continue;
     }
 
     failures.push(result);
   }
 
+  const bindings: LocalizedContentVariantBinding[] = successes.map(
+    (success) => ({
+      contentPathKey: buildStarterContentPathKey(success.descriptor),
+      variantLocale: success.descriptor.locale,
+      record: success.record,
+    }),
+  );
+  const identityResult = validateLocalizedVariantBindings(bindings);
+  const invalidPathKeys = new Set<string>();
+  let localizedVariantGroups: LocalizedVariantGroup[] = [];
+
+  if (!identityResult.ok) {
+    const groupedErrors = groupErrorsByContentPathKey(identityResult.errors);
+
+    for (const [contentPathKey, errors] of groupedErrors) {
+      invalidPathKeys.add(contentPathKey);
+      const groupSuccesses = successes.filter(
+        (success) =>
+          buildStarterContentPathKey(success.descriptor) === contentPathKey,
+      );
+
+      for (const success of groupSuccesses) {
+        failures.push({
+          ok: false,
+          errors,
+          descriptor: success.descriptor,
+        });
+      }
+    }
+  } else {
+    localizedVariantGroups = identityResult.groups;
+  }
+
+  const records = successes
+    .filter(
+      (success) =>
+        !invalidPathKeys.has(buildStarterContentPathKey(success.descriptor)),
+    )
+    .map((success) => success.record);
+
   records.sort((left, right) => left.id.localeCompare(right.id));
-  return { records, failures };
+  const validBindings = bindings.filter(
+    (binding) => !invalidPathKeys.has(binding.contentPathKey),
+  );
+  return {
+    records,
+    failures,
+    localizedVariantGroups,
+    variantBindings: validBindings,
+  };
 }
 
 /**
