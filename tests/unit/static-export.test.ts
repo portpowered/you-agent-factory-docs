@@ -1,11 +1,11 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import nextConfig from "../../next.config";
-import { DOCS_CTA_LABEL } from "../../src/lib/shell";
 import {
   DOCS_ENTRY_ROUTE,
   SITE_BASE_PATH,
   withBasePath,
 } from "../../src/lib/site";
+import { enMessages } from "../../src/localization/messages/en";
 import { fetchHttp } from "../helpers/http";
 import {
   buildStaticExport,
@@ -57,7 +57,9 @@ describe("served static export navigation", () => {
     const homepageHtml = await homepageResponse.text();
     const docsBasePath = withBasePath(DOCS_ENTRY_ROUTE).replace(/\//g, "\\/");
     const docsCtaMatch = homepageHtml.match(
-      new RegExp(`href="(${docsBasePath}/?)"[^>]*>[\\s\\S]*?${DOCS_CTA_LABEL}`),
+      new RegExp(
+        `href="(${docsBasePath}/?)"[^>]*>[\\s\\S]*?${enMessages.common.getStarted}`,
+      ),
     );
 
     expect(docsCtaMatch?.[1]).toBeTruthy();

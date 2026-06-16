@@ -1,20 +1,23 @@
+"use client";
+
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
-import {
-  DOCS_CTA_LABEL,
-  GITHUB_CTA_LABEL,
-  GITHUB_REPO_URL,
-  LANDING_VALUE_STATEMENT,
-} from "@/lib/shell";
+import { GITHUB_REPO_URL } from "@/lib/shell";
+import { useMessages } from "@/localization/hooks/use-messages";
 import Link from "next/link";
 
 export function LandingShell() {
+  const { t } = useMessages();
+
   return (
     <div className="landing-shell">
       <header className="landing-shell__header">
         <p className="landing-shell__brand">{PROJECT_NAME}</p>
-        <nav aria-label="Primary" className="landing-shell__header-nav">
+        <nav
+          aria-label={t("landing.primaryNavAriaLabel")}
+          className="landing-shell__header-nav"
+        >
           <Link className="landing-shell__link" href={DOCS_ENTRY_ROUTE}>
-            {DOCS_CTA_LABEL}
+            {t("common.getStarted")}
           </Link>
           <a
             className="landing-shell__link landing-shell__link--external"
@@ -22,7 +25,7 @@ export function LandingShell() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            {GITHUB_CTA_LABEL}
+            {t("common.githubCta")}
           </a>
         </nav>
       </header>
@@ -33,10 +36,10 @@ export function LandingShell() {
           className="landing-shell__hero"
         >
           <h1 id="landing-hero-title">{PROJECT_NAME}</h1>
-          <p className="landing-shell__value">{LANDING_VALUE_STATEMENT}</p>
+          <p className="landing-shell__value">{t("landing.valueStatement")}</p>
           <div className="landing-shell__cta-row">
             <Link className="landing-shell__button" href={DOCS_ENTRY_ROUTE}>
-              {DOCS_CTA_LABEL}
+              {t("common.getStarted")}
             </Link>
             <a
               className="landing-shell__button landing-shell__button--secondary"
@@ -44,7 +47,7 @@ export function LandingShell() {
               rel="noopener noreferrer"
               target="_blank"
             >
-              {GITHUB_CTA_LABEL}
+              {t("common.githubCta")}
             </a>
           </div>
         </section>

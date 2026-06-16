@@ -1,23 +1,23 @@
+"use client";
+
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
-import {
-  DOCS_NAV_HEADING,
-  DOCS_NAV_OVERVIEW_LABEL,
-  DOCS_SHELL_FRAMING_TEXT,
-  DOCS_SHELL_TITLE,
-  GITHUB_CTA_LABEL,
-  GITHUB_REPO_URL,
-  HOME_CTA_LABEL,
-} from "@/lib/shell";
+import { GITHUB_REPO_URL } from "@/lib/shell";
+import { useMessages } from "@/localization/hooks/use-messages";
 import Link from "next/link";
 
 export function DocsShell() {
+  const { t } = useMessages();
+
   return (
     <div className="docs-shell">
       <header className="docs-shell__header">
         <p className="docs-shell__brand">{PROJECT_NAME}</p>
-        <nav aria-label="Site" className="docs-shell__header-nav">
+        <nav
+          aria-label={t("docs.siteNavAriaLabel")}
+          className="docs-shell__header-nav"
+        >
           <Link className="docs-shell__link" href="/">
-            {HOME_CTA_LABEL}
+            {t("common.home")}
           </Link>
           <a
             className="docs-shell__link docs-shell__link--external"
@@ -25,14 +25,14 @@ export function DocsShell() {
             rel="noopener noreferrer"
             target="_blank"
           >
-            {GITHUB_CTA_LABEL}
+            {t("common.githubCta")}
           </a>
         </nav>
       </header>
 
       <div className="docs-shell__layout">
-        <nav aria-label={DOCS_NAV_HEADING} className="docs-shell__nav">
-          <p className="docs-shell__nav-heading">{DOCS_NAV_HEADING}</p>
+        <nav aria-label={t("docs.navHeading")} className="docs-shell__nav">
+          <p className="docs-shell__nav-heading">{t("docs.navHeading")}</p>
           <ul className="docs-shell__nav-list">
             <li>
               <Link
@@ -40,7 +40,7 @@ export function DocsShell() {
                 className="docs-shell__nav-link docs-shell__nav-link--active"
                 href={DOCS_ENTRY_ROUTE}
               >
-                {DOCS_NAV_OVERVIEW_LABEL}
+                {t("docs.navOverview")}
               </Link>
             </li>
           </ul>
@@ -48,8 +48,8 @@ export function DocsShell() {
 
         <main className="docs-shell__main">
           <article aria-labelledby="docs-shell-title">
-            <h1 id="docs-shell-title">{DOCS_SHELL_TITLE}</h1>
-            <p className="docs-shell__framing">{DOCS_SHELL_FRAMING_TEXT}</p>
+            <h1 id="docs-shell-title">{t("docs.shellTitle")}</h1>
+            <p className="docs-shell__framing">{t("docs.framingText")}</p>
           </article>
         </main>
       </div>
