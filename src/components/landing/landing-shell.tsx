@@ -3,6 +3,12 @@ import {
   DOCS_CTA_LABEL,
   GITHUB_CTA_LABEL,
   GITHUB_REPO_URL,
+  LANDING_HOW_IT_WORKS_STEPS,
+  LANDING_HOW_IT_WORKS_TITLE,
+  LANDING_PROBLEM_POINTS,
+  LANDING_PROBLEM_TITLE,
+  LANDING_SOLUTION_POINTS,
+  LANDING_SOLUTION_TITLE,
   LANDING_VALUE_STATEMENT,
 } from "@/lib/shell";
 import Link from "next/link";
@@ -51,6 +57,47 @@ export function LandingShell() {
               {GITHUB_CTA_LABEL}
             </a>
           </div>
+        </section>
+
+        <section
+          aria-labelledby="landing-problem-title"
+          className="landing-shell__section"
+        >
+          <h2 id="landing-problem-title">{LANDING_PROBLEM_TITLE}</h2>
+          <ul className="landing-shell__list">
+            {LANDING_PROBLEM_POINTS.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section
+          aria-labelledby="landing-solution-title"
+          className="landing-shell__section"
+        >
+          <h2 id="landing-solution-title">{LANDING_SOLUTION_TITLE}</h2>
+          <ul className="landing-shell__list">
+            {LANDING_SOLUTION_POINTS.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+        </section>
+
+        <section
+          aria-labelledby="landing-how-it-works-title"
+          className="landing-shell__section"
+        >
+          <h2 id="landing-how-it-works-title">{LANDING_HOW_IT_WORKS_TITLE}</h2>
+          <ol className="landing-shell__steps">
+            {LANDING_HOW_IT_WORKS_STEPS.map((step) => (
+              <li key={step.title}>
+                <h3 className="landing-shell__step-title">{step.title}</h3>
+                <p className="landing-shell__step-description">
+                  {step.description}
+                </p>
+              </li>
+            ))}
+          </ol>
         </section>
       </main>
     </div>

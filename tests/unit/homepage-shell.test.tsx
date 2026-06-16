@@ -9,6 +9,12 @@ import {
   DOCS_CTA_LABEL,
   GITHUB_CTA_LABEL,
   GITHUB_REPO_URL,
+  LANDING_HOW_IT_WORKS_STEPS,
+  LANDING_HOW_IT_WORKS_TITLE,
+  LANDING_PROBLEM_POINTS,
+  LANDING_PROBLEM_TITLE,
+  LANDING_SOLUTION_POINTS,
+  LANDING_SOLUTION_TITLE,
   LANDING_VALUE_STATEMENT,
 } from "../../src/lib/shell";
 import { fetchHttp } from "../helpers/http";
@@ -84,6 +90,54 @@ describe("homepage shell rendering", () => {
     expect(githubCta.className).toContain("landing-shell__button");
     expect(docsCta.tabIndex).not.toBe(-1);
     expect(githubCta.tabIndex).not.toBe(-1);
+  });
+
+  test("renders problem, solution, and how-it-works sections with accessible headings", () => {
+    render(<LandingShell />);
+
+    const problemSection = screen.getByRole("region", {
+      name: LANDING_PROBLEM_TITLE,
+    });
+    const solutionSection = screen.getByRole("region", {
+      name: LANDING_SOLUTION_TITLE,
+    });
+    const howItWorksSection = screen.getByRole("region", {
+      name: LANDING_HOW_IT_WORKS_TITLE,
+    });
+
+    for (const point of LANDING_PROBLEM_POINTS) {
+      expect(within(problemSection).getByText(point)).toBeTruthy();
+    }
+
+    for (const point of LANDING_SOLUTION_POINTS) {
+      expect(within(solutionSection).getByText(point)).toBeTruthy();
+    }
+
+    for (const step of LANDING_HOW_IT_WORKS_STEPS) {
+      expect(
+        within(howItWorksSection).getByRole("heading", {
+          level: 3,
+          name: step.title,
+        }),
+      ).toBeTruthy();
+      expect(
+        within(howItWorksSection).getByText(step.description),
+      ).toBeTruthy();
+    }
+  });
+
+  test("explains orchestration value without no-code or autonomous replacement claims", () => {
+    render(<LandingShell />);
+
+    const main = screen.getByRole("main");
+
+    expect(
+      within(main).getByText(/inspectable engineering workflows/i),
+    ).toBeTruthy();
+    expect(
+      within(main).getByText(/does not replace engineering judgment/i),
+    ).toBeTruthy();
+    expect(within(main).getByText(/no-code Zapier-style glue/i)).toBeTruthy();
   });
 });
 
