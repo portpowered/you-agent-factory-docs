@@ -1,0 +1,60 @@
+## Codebase Patterns
+- Root contributor commands live in the `Makefile` (`setup`, `check`, `test`, `build`) and mirror `package.json` scripts.
+- Bootstrap scaffold patterns are documented in `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`; reconciliation lane notes live in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`.
+- Command-path proof uses `tests/helpers/make-target.ts` (`spawnSync` on `make <target>`); assert on combined stdout+stderr because `bun test` reports on stderr.
+- When a test invokes `make test`, set `VERIFYING_MAKE_TEST=1` in the child env and skip the recursive assertion when that env var is present.
+- Component behavior tests use `@testing-library/react` with `next/link` mocked via `tests/helpers/mock-next-link.tsx`.
+- App Router pages are thin wrappers around shell components (`src/app/page.tsx`, `src/app/docs/page.tsx`).
+- The bootstrap foundation was merged to `main` via PR #1 (`4ee2134`); the reconciled tree matches `bootstrap-static-export-foundation` with no scaffold divergence.
+- Browser verification for the static export reuses `tests/helpers/static-export-server.ts` (symlink mount under the GitHub Pages base path) with Playwright Chromium; static-export links use trailing slashes so href assertions should allow an optional `/` suffix.
+- Reconciliation divergence is recorded in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md`; keep that file narrow to reconciliation-relevant differences and link it from the lane relevant-files doc.
+- Prefix `package.json` `typecheck` with `next typegen` when `tsconfig.json` or `next-env.d.ts` reference `.next/types` so `make check` succeeds on a clean checkout without a prior build.
+
+## 2026-06-16 14:55 UTC - reconcile-bootstrap-foundation-baseline-001
+- Verified the default baseline already contains the bootstrap static-export scaffold (merged via PR #1) and added reviewer-facing proof: `tests/unit/baseline-foundation.test.tsx` asserts homepage and `/docs` routes render the delivered shells, plus `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md` documents inherited surfaces and verification commands.
+- Files changed: `tests/unit/baseline-foundation.test.tsx`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: Reconciliation proof should use observable route-to-shell rendering tests rather than branch or file inventories.
+  - Gotchas encountered: Homepage has duplicate "Get started" links (nav + hero); scope queries with `within(hero)` when asserting CTA hrefs.
+  - Useful context: `main` and `bootstrap-static-export-foundation` trees are identical post-merge; later stories should focus on command-path verification, browser QA, and divergence recording.
+---
+
+## 2026-06-16 16:45 UTC - reconcile-bootstrap-foundation-baseline-002
+- Added observable root command-path verification: `tests/unit/root-command-path.test.ts` runs `make setup`, `make check`, `make test`, and `make build` from the repository root via `tests/helpers/make-target.ts`, with a `VERIFYING_MAKE_TEST=1` guard to avoid recursive `make test` invocation.
+- Documented command-path proof and the no-divergence outcome in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`.
+- Files changed: `tests/helpers/make-target.ts`, `tests/unit/root-command-path.test.ts`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: `spawnSync` command-path tests should assert on combined stdout+stderr; `bun test` summary lines appear on stderr.
+  - Gotchas encountered: `/\d+ fail/` matches `0 fail`; use an explicit `0 fail` summary assertion instead. Slow `make` targets need explicit test timeouts (default 5s is too low for `make check` under load).
+  - Useful context: Full `make test` now takes ~2 minutes because command-path tests nest another `make test` plus `make build`; this is expected for this story.
+---
+
+## 2026-06-16 18:30 UTC - reconcile-bootstrap-foundation-baseline-003
+- Added Playwright Chromium browser verification for the reconciled static export: `tests/unit/reconciled-export-browser.test.ts` serves `out/` under `/you-agent-factory-docs`, asserts homepage and `/docs` shell rendering (identity, CTAs, landmarks, framing copy), proves CTA navigation in both directions, and checks mobile viewport navigability.
+- Documented the browser proof pattern in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md` and `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`.
+- Files changed: `tests/unit/reconciled-export-browser.test.ts`, `package.json`, `bun.lock`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`, `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: Reuse `static-export-server.ts` for both fetch-based and Playwright browser checks; install Chromium via `bunx playwright install chromium` after adding `@playwright/test`.
+  - Gotchas encountered: Next.js static export with `trailingSlash: true` emits docs CTA hrefs with a trailing slash; browser href assertions must allow `/you-agent-factory-docs/docs/`.
+  - Useful context: Browser tests add ~15s per file (including one build in `beforeAll`); full `make test` now takes ~70s when not nested through `root-command-path.test.ts`.
+---
+
+## 2026-06-16 20:15 UTC - reconcile-bootstrap-foundation-baseline-004
+- Added reviewer-facing divergence record at `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md` explicitly stating **no meaningful divergence** between `bootstrap-static-export-foundation` and the reconciled default baseline, listing reconciliation-only verification additions separately from behavioral changes, and documenting re-verification steps.
+- Linked the divergence record from `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md` with a dedicated reconciliation divergence section for later lanes.
+- Files changed: `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: Keep divergence recording in a dedicated narrow doc rather than scattering statements across lane notes; distinguish reconciliation verification additions from corrective scaffold edits.
+  - Gotchas encountered: Story 004 only requires typecheck, but running the full suite before commit still catches regressions from doc-only lanes that share CI with code stories.
+  - Useful context: All four PRD stories are now complete; create the PR on first push after the final story commit when no PR exists yet.
+---
+
+## 2026-06-16 22:35 UTC - PR feedback (clean-root make check)
+- Addressed BLOCKING PR #2 feedback: prefixed `package.json` `typecheck` with `next typegen` so `make check` succeeds on a clean checkout before `.next/types` exists; updated `tests/unit/root-command-path.test.ts` to clear `.next` and `tsconfig.tsbuildinfo` before the `make check` assertion so command-path proof is order-independent.
+- Recorded the reconciliation-specific typecheck divergence in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md` and linked it from the lane relevant-files doc.
+- Files changed: `package.json`, `tests/unit/root-command-path.test.ts`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`, `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: Use `next typegen && tsc --noEmit` when `tsconfig.json` includes `.next/types/**/*.ts` or `next-env.d.ts` references generated route types.
+  - Gotchas encountered: Command-path tests that invoke `make check` must clear `.next` and `tsconfig.tsbuildinfo` first or they only prove a warmed workspace; stale `tsconfig.tsbuildinfo` can also mask `TS6053` locally.
+  - Useful context: Reviewer repro was `make check` on a clean root; `next typegen` is the Next.js 15.5+ fast path that materializes route types without a full build.
+---
