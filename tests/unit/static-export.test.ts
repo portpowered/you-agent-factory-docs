@@ -202,5 +202,11 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain(
       "Starter documentation content that proves the canonical content model.",
     );
+    expect(docPageHtml).toContain(
+      `aria-label="${enMessages.docs.breadcrumbAriaLabel}"`,
+    );
+    expect(docPageHtml).toContain(enMessages.docs.shellTitle);
+    expect(docPageHtml).toContain("Guides");
+    expect(docPageHtml).toContain('aria-current="page"');
   }, 30_000);
 });

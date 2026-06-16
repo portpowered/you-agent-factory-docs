@@ -1,7 +1,9 @@
 "use client";
 
+import { DocsBreadcrumbs } from "@/components/docs/docs-breadcrumbs";
 import { SharedShell } from "@/components/shell/shared-shell";
 import type { DocsShellNavigationInput } from "@/lib/content";
+import { projectDocsBreadcrumbs } from "@/lib/content/docs-breadcrumbs";
 import {
   findCurrentDocsItemId,
   projectSharedShellDocsNavigation,
@@ -29,6 +31,10 @@ export function DocsShell({
     }),
   });
   const currentDocsItemId = findCurrentDocsItemId(navigation, currentPath);
+  const breadcrumbs = projectDocsBreadcrumbs(navigation, {
+    currentPath,
+    docsRootLabel: t("docs.shellTitle"),
+  });
 
   return (
     <SharedShell
@@ -36,6 +42,10 @@ export function DocsShell({
       currentDocsItemId={currentDocsItemId}
       surface="docs"
     >
+      <DocsBreadcrumbs
+        ariaLabel={t("docs.breadcrumbAriaLabel")}
+        trail={breadcrumbs}
+      />
       {children}
     </SharedShell>
   );

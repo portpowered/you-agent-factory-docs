@@ -208,6 +208,77 @@ describe("docs shell rendering", () => {
     expect(gettingStartedLink.getAttribute("aria-current")).toBeNull();
   });
 
+  test("renders breadcrumb position from generated navigation ancestry on detail pages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const breadcrumbs = screen.getByRole("navigation", {
+      name: enMessages.docs.breadcrumbAriaLabel,
+    });
+    const breadcrumbItems = within(breadcrumbs).getAllByRole("listitem");
+
+    expect(breadcrumbItems).toHaveLength(3);
+
+    const [docsRootItem, sectionItem, currentPageItem] = breadcrumbItems;
+
+    expect(docsRootItem).toBeTruthy();
+    expect(sectionItem).toBeTruthy();
+    expect(currentPageItem).toBeTruthy();
+
+    if (!docsRootItem || !sectionItem || !currentPageItem) {
+      throw new Error("Expected breadcrumb items to be present");
+    }
+
+    expect(
+      within(docsRootItem)
+        .getByRole("link", {
+          name: enMessages.docs.shellTitle,
+        })
+        .getAttribute("href"),
+    ).toBe(DOCS_ENTRY_ROUTE);
+    expect(within(sectionItem).getByText("Guides")).toBeTruthy();
+    expect(
+      within(currentPageItem)
+        .getByText("Getting started")
+        .getAttribute("aria-current"),
+    ).toBe("page");
+  });
+
+  test("marks the docs entry route as the current breadcrumb page", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath={DOCS_ENTRY_ROUTE}
+        navigation={generatedNavigation}
+      >
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const breadcrumbs = screen.getByRole("navigation", {
+      name: enMessages.docs.breadcrumbAriaLabel,
+    });
+    const currentCrumb = within(breadcrumbs).getByText(
+      enMessages.docs.shellTitle,
+    );
+
+    expect(currentCrumb.getAttribute("aria-current")).toBe("page");
+    expect(within(breadcrumbs).queryByRole("link")).toBeNull();
+  });
+
   test("marks the code presentation example route as current when active", async () => {
     mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
 

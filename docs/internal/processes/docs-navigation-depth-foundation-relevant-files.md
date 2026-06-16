@@ -20,13 +20,16 @@
 - Starter docs depth is authored under `src/content/docs/{slug}/en.mdx`; section and order frontmatter drive generated left-navigation grouping.
 - `loadDocsShellNavigation()` loads canonical records and projects navigation for `DocsShell` on both `/docs` and `/docs/[slug]` routes.
 - `SharedShellDocsAside` renders one navigation landmark per projected section so multi-section browsing depth is observable in the left sidebar.
+- `projectDocsBreadcrumbs()` projects breadcrumb ancestry from the same `DocsShellNavigationInput`; shell root labels resolve through localization while section and page crumbs come from projected navigation state.
+- `DocsBreadcrumbs` renders the projected trail inside `DocsShell` with `aria-current="page"` on the active crumb.
 - Remove bootstrap-only nav constants such as `src/lib/docs-nav.ts`; the docs shell consumes projected navigation only.
 
 ## Tests
 
 - Multi-section projection and fixture loading: `tests/unit/docs-navigation.test.ts`
-- Docs shell rendering with separate section landmarks: `tests/unit/docs-shell.test.tsx`
-- Served static export HTML includes generated multi-page sidebar depth: `tests/unit/static-export.test.ts`
+- Breadcrumb ancestry projection: `tests/unit/docs-navigation.test.ts` (`projectDocsBreadcrumbs`)
+- Docs shell rendering with separate section landmarks and breadcrumb position: `tests/unit/docs-shell.test.tsx`
+- Served static export HTML includes generated multi-page sidebar depth and breadcrumb ancestry on doc detail pages: `tests/unit/static-export.test.ts`
 - Starter content record inventory after adding docs fixtures: `tests/unit/starter-content.test.ts`
 - Prefer observable navigation output, served HTML, and rendered landmarks—not file inventories or route registries.
 

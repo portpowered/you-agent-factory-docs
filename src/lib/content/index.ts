@@ -80,6 +80,11 @@ export {
 } from "@/lib/content/docs-navigation";
 export { loadDocsShellNavigation } from "@/lib/content/load-docs-navigation";
 export {
+  projectDocsBreadcrumbs,
+  type DocsBreadcrumbItem,
+  type DocsBreadcrumbTrail,
+} from "@/lib/content/docs-breadcrumbs";
+export {
   projectLocalizedVariantGroups,
   projectLocalizedVariantIdentity,
   validateLocalizedVariantBindings,

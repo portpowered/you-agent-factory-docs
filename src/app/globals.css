@@ -119,6 +119,53 @@ body {
   padding: 2rem 1.5rem 3rem;
 }
 
+.docs-breadcrumbs {
+  margin-bottom: 1.5rem;
+}
+
+.docs-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  color: var(--landing-muted);
+}
+
+.docs-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.docs-breadcrumbs__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.docs-breadcrumbs__link:hover {
+  color: var(--landing-foreground);
+  text-decoration: underline;
+}
+
+.docs-breadcrumbs__current {
+  color: var(--landing-foreground);
+  font-weight: 600;
+}
+
+.docs-breadcrumbs__separator {
+  color: var(--landing-muted);
+}
+
+.docs-breadcrumbs__link:focus-visible,
+.docs-breadcrumbs__current:focus-visible {
+  outline: 2px solid var(--landing-accent);
+  outline-offset: 2px;
+}
+
 .shared-shell__layout:not(.shared-shell__layout--with-sidebar)
   .shared-shell__main {
   display: flex;

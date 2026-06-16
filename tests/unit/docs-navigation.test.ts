@@ -6,6 +6,7 @@ import {
   type CanonicalContentRecord,
   StarterContentValidationError,
   loadDocsShellNavigation,
+  projectDocsBreadcrumbs,
   projectDocsShellNavigation,
   requireStarterContentRecords,
 } from "../../src/lib/content";
@@ -344,5 +345,72 @@ section: guides
             "doc/installation,doc/configuration",
       ),
     ).toBe(true);
+  });
+});
+
+describe("docs breadcrumb projection", () => {
+  test("projects docs entry position as a single current-page crumb", () => {
+    const navigation = projectDocsShellNavigation([createDocRecord()]);
+
+    expect(
+      projectDocsBreadcrumbs(navigation, {
+        currentPath: "/docs",
+        docsRootLabel: "Documentation",
+      }),
+    ).toEqual({
+      items: [{ label: "Documentation" }],
+    });
+  });
+
+  test("projects section and page ancestry for generated docs detail routes", () => {
+    const navigation = projectDocsShellNavigation([
+      createDocRecord({
+        id: "doc/concepts",
+        slug: "concepts",
+        routePath: "/docs/concepts",
+        navigationTitle: "Core concepts",
+        order: 2,
+      }),
+      createDocRecord(),
+    ]);
+
+    expect(
+      projectDocsBreadcrumbs(navigation, {
+        currentPath: "/docs/getting-started",
+        docsRootLabel: "Documentation",
+      }),
+    ).toEqual({
+      items: [
+        { label: "Documentation", href: "/docs" },
+        { label: "Guides" },
+        { label: "Getting started" },
+      ],
+    });
+  });
+
+  test("updates breadcrumb ancestry when canonical section metadata changes", () => {
+    const navigation = projectDocsShellNavigation([
+      createDocRecord({
+        id: "doc/installation",
+        slug: "installation",
+        routePath: "/docs/installation",
+        navigationTitle: "Installation",
+        section: "setup",
+        order: 1,
+      }),
+    ]);
+
+    expect(
+      projectDocsBreadcrumbs(navigation, {
+        currentPath: "/docs/installation",
+        docsRootLabel: "Documentation",
+      }),
+    ).toEqual({
+      items: [
+        { label: "Documentation", href: "/docs" },
+        { label: "Setup" },
+        { label: "Installation" },
+      ],
+    });
   });
 });
