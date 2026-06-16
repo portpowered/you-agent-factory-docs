@@ -4,6 +4,7 @@
 
 - `bootstrap-static-export-foundation` is the source of truth for the delivered website foundation.
 - The scaffold landed on the default baseline through merge commit `4ee2134` (PR #1). The reconciled tree matches the bootstrap branch tip with no additional scaffold edits.
+- Reviewer-facing divergence record: `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md` explicitly records that there is **no meaningful divergence** between bootstrap and the reconciled default baseline, lists reconciliation-only verification additions, and documents how preserved bootstrap behavior was re-verified.
 - Reviewer proof that the default baseline inherits the foundation rather than planning-only artifacts:
   - `tests/unit/baseline-foundation.test.tsx` proves the homepage and `/docs` App Router entries render the delivered shells.
   - `tests/unit/root-command-path.test.ts` runs the documented `Makefile` targets (`setup`, `check`, `test`, `build`) from the repository root and asserts observable success outcomes instead of branch or file inventories.
@@ -26,6 +27,12 @@
 - GitHub Pages base-path helpers: `src/lib/site.ts`.
 - Shared shell copy and CTA constants: `src/lib/shell.ts`, `src/lib/project.ts`.
 - Automated verification: `tests/unit/` plus `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md` for bootstrap-specific patterns.
+
+## Reconciliation divergence
+
+- `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md` is the durable reviewer-facing record for reconciliation-specific differences.
+- Current outcome: no meaningful behavior or command-path divergence beyond landing the scaffold on the default baseline.
+- Reconciliation lane additions (tests, helpers, lane docs) are verification artifacts, not corrective scaffold edits.
 
 ## Scope guardrails
 
