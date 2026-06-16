@@ -9,6 +9,8 @@ import {
   DOCS_CTA_LABEL,
   GITHUB_CTA_LABEL,
   GITHUB_REPO_URL,
+  LANDING_EXAMPLE_WORKFLOWS,
+  LANDING_EXAMPLE_WORKFLOWS_TITLE,
   LANDING_HOW_IT_WORKS_STEPS,
   LANDING_HOW_IT_WORKS_TITLE,
   LANDING_PROBLEM_POINTS,
@@ -16,6 +18,8 @@ import {
   LANDING_SOLUTION_POINTS,
   LANDING_SOLUTION_TITLE,
   LANDING_VALUE_STATEMENT,
+  LANDING_WHY_POINTS,
+  LANDING_WHY_TITLE,
 } from "../../src/lib/shell";
 import { fetchHttp } from "../helpers/http";
 import MockLink from "../helpers/mock-next-link";
@@ -138,6 +142,53 @@ describe("homepage shell rendering", () => {
       within(main).getByText(/does not replace engineering judgment/i),
     ).toBeTruthy();
     expect(within(main).getByText(/no-code Zapier-style glue/i)).toBeTruthy();
+  });
+
+  test("renders example workflows and differentiation sections with accessible headings", () => {
+    render(<LandingShell />);
+
+    const workflowsSection = screen.getByRole("region", {
+      name: LANDING_EXAMPLE_WORKFLOWS_TITLE,
+    });
+    const whySection = screen.getByRole("region", {
+      name: LANDING_WHY_TITLE,
+    });
+
+    for (const workflow of LANDING_EXAMPLE_WORKFLOWS) {
+      expect(
+        within(workflowsSection).getByRole("heading", {
+          level: 3,
+          name: workflow.title,
+        }),
+      ).toBeTruthy();
+      expect(
+        within(workflowsSection).getByText(workflow.description),
+      ).toBeTruthy();
+    }
+
+    for (const point of LANDING_WHY_POINTS) {
+      expect(
+        within(whySection).getByRole("heading", {
+          level: 3,
+          name: point.title,
+        }),
+      ).toBeTruthy();
+      expect(within(whySection).getByText(point.description)).toBeTruthy();
+    }
+  });
+
+  test("communicates engineering-native differentiation without generic automation claims", () => {
+    render(<LandingShell />);
+
+    const whySection = screen.getByRole("region", {
+      name: LANDING_WHY_TITLE,
+    });
+
+    expect(within(whySection).getByText(/engineering-native/i)).toBeTruthy();
+    expect(within(whySection).getByText(/approval gates/i)).toBeTruthy();
+    expect(
+      within(whySection).getByText(/drag-and-drop automation tiles/i),
+    ).toBeTruthy();
   });
 });
 

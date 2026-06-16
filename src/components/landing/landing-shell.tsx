@@ -3,6 +3,8 @@ import {
   DOCS_CTA_LABEL,
   GITHUB_CTA_LABEL,
   GITHUB_REPO_URL,
+  LANDING_EXAMPLE_WORKFLOWS,
+  LANDING_EXAMPLE_WORKFLOWS_TITLE,
   LANDING_HOW_IT_WORKS_STEPS,
   LANDING_HOW_IT_WORKS_TITLE,
   LANDING_PROBLEM_POINTS,
@@ -10,6 +12,8 @@ import {
   LANDING_SOLUTION_POINTS,
   LANDING_SOLUTION_TITLE,
   LANDING_VALUE_STATEMENT,
+  LANDING_WHY_POINTS,
+  LANDING_WHY_TITLE,
 } from "@/lib/shell";
 import Link from "next/link";
 
@@ -84,6 +88,27 @@ export function LandingShell() {
         </section>
 
         <section
+          aria-labelledby="landing-example-workflows-title"
+          className="landing-shell__section"
+        >
+          <h2 id="landing-example-workflows-title">
+            {LANDING_EXAMPLE_WORKFLOWS_TITLE}
+          </h2>
+          <ul className="landing-shell__workflow-list">
+            {LANDING_EXAMPLE_WORKFLOWS.map((workflow) => (
+              <li key={workflow.title} className="landing-shell__workflow-item">
+                <h3 className="landing-shell__workflow-title">
+                  {workflow.title}
+                </h3>
+                <p className="landing-shell__workflow-description">
+                  {workflow.description}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section
           aria-labelledby="landing-how-it-works-title"
           className="landing-shell__section"
         >
@@ -98,6 +123,23 @@ export function LandingShell() {
               </li>
             ))}
           </ol>
+        </section>
+
+        <section
+          aria-labelledby="landing-why-title"
+          className="landing-shell__section"
+        >
+          <h2 id="landing-why-title">{LANDING_WHY_TITLE}</h2>
+          <ul className="landing-shell__why-list">
+            {LANDING_WHY_POINTS.map((point) => (
+              <li key={point.title} className="landing-shell__why-item">
+                <h3 className="landing-shell__why-title">{point.title}</h3>
+                <p className="landing-shell__why-description">
+                  {point.description}
+                </p>
+              </li>
+            ))}
+          </ul>
         </section>
       </main>
     </div>

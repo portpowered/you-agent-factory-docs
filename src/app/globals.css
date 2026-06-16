@@ -148,6 +148,36 @@ body {
   color: var(--landing-muted);
 }
 
+.landing-shell__workflow-list,
+.landing-shell__why-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 1rem;
+}
+
+.landing-shell__workflow-item,
+.landing-shell__why-item {
+  padding: 1rem;
+  border: 1px solid var(--landing-border);
+  border-radius: 0.75rem;
+  background: var(--landing-bg);
+}
+
+.landing-shell__workflow-title,
+.landing-shell__why-title {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.landing-shell__workflow-description,
+.landing-shell__why-description {
+  margin: 0;
+  color: var(--landing-muted);
+}
+
 .landing-shell__link,
 .landing-shell__button {
   display: inline-flex;
