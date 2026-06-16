@@ -28,6 +28,13 @@ export type StarterContentDescriptor = {
   source: string;
 };
 
+/** Stable content path key for localized variant grouping, e.g. `doc/getting-started`. */
+export function buildStarterContentPathKey(
+  descriptor: Pick<StarterContentDescriptor, "contentDirectory" | "slug">,
+): string {
+  return `${STARTER_CONTENT_DIRECTORY_KINDS[descriptor.contentDirectory]}/${descriptor.slug}`;
+}
+
 export type StarterContentValidationSuccess = {
   ok: true;
   record: CanonicalContentRecord;

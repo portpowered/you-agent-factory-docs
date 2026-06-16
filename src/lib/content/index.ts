@@ -25,6 +25,7 @@ export {
 } from "@/lib/content/frontmatter";
 export {
   buildMetadataFromStarterContent,
+  buildStarterContentPathKey,
   STARTER_CONTENT_DIRECTORY_KINDS,
   validateStarterContent,
   validateStarterContentSource,
@@ -60,3 +61,14 @@ export {
   type DocsShellNavigationInput,
 } from "@/lib/content/docs-navigation";
 export { loadDocsShellNavigation } from "@/lib/content/load-docs-navigation";
+export {
+  projectLocalizedVariantGroups,
+  projectLocalizedVariantIdentity,
+  validateLocalizedVariantBindings,
+  type LocalizedContentVariantBinding,
+  type LocalizedContentVariantIdentity,
+  type LocalizedVariantGroup,
+  type LocalizedVariantValidationFailure,
+  type LocalizedVariantValidationResult,
+  type LocalizedVariantValidationSuccess,
+} from "@/lib/content/localized-variant-identity";
