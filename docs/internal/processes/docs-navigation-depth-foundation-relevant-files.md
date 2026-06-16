@@ -5,7 +5,7 @@
 ### Prerequisites
 
 - **canonical-content-model-foundation** provides `CanonicalContentRecord`, `projectDocsShellNavigation()`, and starter content fixtures.
-- **responsive-shared-hooks-foundation** provides shared shell disclosure behavior consumed by `SharedShellDocsAside`.
+- **responsive-shared-hooks-foundation** provides shared shell disclosure behavior consumed by `SharedShellDocsAside`; docs navigation depth features must not add docs-specific viewport logic outside that shared layer.
 - **localization-message-foundation** supplies localized shell labels via `createSharedShellConfigFromMessages()` while docs sidebar page labels come from canonical metadata.
 
 ### Ownership boundary
@@ -28,6 +28,13 @@
 - `DocPageArticle` renders the projected page outline, page title, and parsed body blocks with heading anchor ids on docs detail routes.
 - Remove bootstrap-only nav constants such as `src/lib/docs-nav.ts`; the docs shell consumes projected navigation only.
 
+## Responsive docs navigation depth
+
+- `DocsShell` composes `SharedShell`, which wraps the frame with `ResponsiveShellRoot` and projects viewport state through `data-shell-viewport` / `data-shell-narrow`.
+- Narrow-viewport docs sidebar disclosure stays in `SharedShellDocsAside` via `useShellDisclosure`; breadcrumbs, progression, and page-outline UI remain in main content and do not duplicate responsive state.
+- Localized docs disclosure labels resolve through `createSharedShellConfigFromMessages()` (`shell.showDocsNavLabel`, `shell.hideDocsNavLabel`); projected section and page labels still come from canonical navigation metadata.
+- Ownership boundary: canonical content records and `DocsShellNavigationInput` projection supply navigation depth; `useShellDisclosure` owns open/closed UI state only.
+
 ## Tests
 
 - Multi-section projection and fixture loading: `tests/unit/docs-navigation.test.ts`
@@ -37,8 +44,11 @@
 - Doc page article outline rendering and empty-state fallback: `tests/unit/doc-page-article.test.tsx`
 - Docs shell rendering with separate section landmarks, breadcrumb position, and progression links: `tests/unit/docs-shell.test.tsx`
 - Served static export HTML includes generated multi-page sidebar depth, breadcrumb ancestry, progression links, and page-outline navigation when headings exist: `tests/unit/static-export.test.ts`
+- Responsive docs navigation depth on narrow viewports: `tests/unit/docs-shell.test.tsx` (`responsive docs navigation depth`) and `tests/unit/shell-disclosure.test.tsx`
+- Mobile browser verification for generated docs depth affordances: `tests/unit/reconciled-export-browser.test.ts` (`docs navigation depth remains usable at a mobile viewport`)
 - Starter content record inventory after adding docs fixtures: `tests/unit/starter-content.test.ts`
 - Prefer observable navigation output, served HTML, and rendered landmarks—not file inventories or route registries.
+- Shell tests that assert always-visible navigation should mock desktop width (`RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1`); narrow-viewport docs depth tests mock mobile or tablet widths instead.
 
 ## Quality checks
 

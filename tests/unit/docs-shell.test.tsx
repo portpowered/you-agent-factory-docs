@@ -475,3 +475,125 @@ describe("code presentation example surface", () => {
     expect(document.activeElement).toBe(powershellTab);
   });
 });
+
+describe("responsive docs navigation depth", () => {
+  test("exposes multi-section generated docs navigation through shared disclosure on narrow viewports", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const toggle = screen.getByRole("button", {
+      name: enMessages.shell.showDocsNavLabel,
+    });
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Setup" })).toBeNull();
+
+    fireEvent.click(toggle);
+
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    const setupNav = screen.getByRole("navigation", { name: "Setup" });
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
+    expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
+  });
+
+  test("keeps breadcrumbs and progression reachable in main content on narrow viewports without docs sidebar disclosure", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const breadcrumbs = screen.getByRole("navigation", {
+      name: enMessages.docs.breadcrumbAriaLabel,
+    });
+    const progression = screen.getByRole("navigation", {
+      name: enMessages.docs.progressionAriaLabel,
+    });
+
+    expect(within(breadcrumbs).getByText("Guides")).toBeTruthy();
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts");
+    expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
+  });
+
+  test("keeps responsive disclosure state separate from projected navigation depth", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    const { rerender } = renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const toggle = screen.getByRole("button", {
+      name: enMessages.shell.showDocsNavLabel,
+    });
+    fireEvent.click(toggle);
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
+
+    const alternateNavigation: DocsShellNavigationInput = {
+      sections: [
+        {
+          id: "guides",
+          label: "Guides",
+          pages: [
+            {
+              canonicalId: "doc/getting-started",
+              label: "Getting started",
+              href: "/docs/getting-started",
+              order: 1,
+            },
+            {
+              canonicalId: "doc/concepts",
+              label: "Renamed concepts page",
+              href: "/docs/concepts",
+              order: 2,
+            },
+          ],
+        },
+      ],
+    };
+
+    rerender(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={alternateNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    expect(
+      within(guidesNav).getByRole("link", { name: "Renamed concepts page" }),
+    ).toBeTruthy();
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+  });
+});

@@ -559,6 +559,11 @@ body {
     display: block;
   }
 
+  .shared-shell[data-shell-narrow] .shared-shell__header-nav-region[hidden],
+  .shared-shell[data-shell-narrow] .shared-shell__docs-aside-panel[hidden] {
+    display: none !important;
+  }
+
   .shared-shell[data-shell-narrow]
     .shared-shell__docs-aside-panel[data-shell-disclosure="open"] {
     animation: shell-disclosure-reveal 200ms ease-out;
