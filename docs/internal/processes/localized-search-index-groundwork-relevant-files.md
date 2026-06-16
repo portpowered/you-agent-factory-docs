@@ -36,7 +36,9 @@
 
 - Focused search-document projection and starter loading proof: `tests/unit/localized-search-documents.test.ts`.
 - Generated public search artifact contract proof: `tests/unit/public-search-artifact.test.ts`.
+- Cross-layer inclusion, exclusion, and artifact alignment proof: `tests/unit/localized-search-index-foundation.test.ts`.
 - Prefer asserting observable generated document fields, canonical ids, locale metadata, and searchable text—not helper inventories or source-file topology scans.
+- Exclusion proofs should load a temporary starter content root with one published variant plus representative `draft`, `internal`, `hidden`, and `search.include: false` variants, then assert both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` omit the excluded canonical ids.
 
 ## Quality checks
 
