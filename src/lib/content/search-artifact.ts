@@ -6,11 +6,17 @@ export const PUBLIC_SEARCH_ARTIFACT_VERSION = 1 as const;
 /**
  * One searchable entry in the generated public search artifact. Later query
  * consumers read this contract instead of re-parsing raw content files.
+ *
+ * Locale-aware defaults for active-locale-first querying live on each entry:
+ * `locale` is the variant locale, `canonicalLocale` is the fallback locale,
+ * and `availableLocales` lists sibling variants for the same canonical page.
  */
 export type PublicSearchArtifactEntry = {
   id: string;
   canonicalId: string;
   locale: string;
+  canonicalLocale: string;
+  availableLocales: readonly string[];
   kind: PublicContentKind;
   url: string;
   title: string;
@@ -25,7 +31,9 @@ export type PublicSearchArtifactEntry = {
 
 /**
  * Reviewer-verifiable generated public search artifact derived from normalized
- * localized search documents at build time.
+ * localized search documents at build time. The artifact is the build-time
+ * search index contract; it must not re-parse raw content files or bypass the
+ * normalized search-document generation path.
  */
 export type PublicSearchArtifact = {
   version: typeof PUBLIC_SEARCH_ARTIFACT_VERSION;
@@ -39,6 +47,8 @@ function projectArtifactEntry(
     id: document.id,
     canonicalId: document.canonicalId,
     locale: document.locale,
+    canonicalLocale: document.canonicalLocale,
+    availableLocales: [...document.availableLocales],
     kind: document.kind,
     url: document.url,
     title: document.title,

@@ -29,11 +29,17 @@ export function shouldIncludeVariantInSearch(
  * Normalized localized search document projected from one locale-specific
  * content variant. Downstream query code consumes this contract instead of
  * re-parsing raw content files.
+ *
+ * Ownership: canonical content records supply identity and locale metadata;
+ * localized variant bindings supply locale-specific source text; this type is
+ * the search-data contract; later query UI remains a downstream consumer.
  */
 export type LocalizedSearchDocument = {
   id: string;
   canonicalId: string;
   locale: string;
+  canonicalLocale: string;
+  availableLocales: readonly string[];
   kind: PublicContentKind;
   url: string;
   title: string;
@@ -148,6 +154,8 @@ export function projectLocalizedSearchDocument(
     id: buildLocalizedSearchDocumentId(record.id, variantLocale),
     canonicalId: record.id,
     locale: variantLocale,
+    canonicalLocale: record.canonicalLocale,
+    availableLocales: [...record.availableLocales],
     kind: record.kind,
     url: record.routePath,
     title: resolveTitle(frontmatter, record.navigationTitle),

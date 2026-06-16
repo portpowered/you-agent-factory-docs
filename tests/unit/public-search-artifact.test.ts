@@ -16,6 +16,8 @@ const REPRESENTATIVE_DOCUMENT: LocalizedSearchDocument = {
   id: "doc/getting-started@en",
   canonicalId: "doc/getting-started",
   locale: "en",
+  canonicalLocale: "en",
+  availableLocales: ["en", "fr"],
   kind: "doc",
   url: "/docs/getting-started",
   title: "Getting started",
@@ -53,6 +55,8 @@ describe("public search artifact generation", () => {
       id: "doc/getting-started@en",
       canonicalId: "doc/getting-started",
       locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
       kind: "doc",
       url: "/docs/getting-started",
       title: "Getting started",
@@ -95,6 +99,8 @@ describe("public search artifact generation", () => {
     expect(gettingStarted).toMatchObject({
       canonicalId: "doc/getting-started",
       locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
       url: "/docs/getting-started",
       title: "Getting started",
       section: "guides",
@@ -102,6 +108,39 @@ describe("public search artifact generation", () => {
     });
     expect(gettingStarted?.headings.length).toBeGreaterThan(0);
     expect(gettingStarted?.body.length).toBeGreaterThan(0);
+  });
+
+  test("preserves locale-aware canonical-locale relationships for active-locale-first query defaults", () => {
+    const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
+
+    const gettingStartedEntries = artifact.entries.filter(
+      (entry) => entry.canonicalId === "doc/getting-started",
+    );
+
+    expect(gettingStartedEntries.map((entry) => entry.locale).sort()).toEqual([
+      "en",
+      "fr",
+    ]);
+
+    for (const entry of gettingStartedEntries) {
+      expect(entry).toMatchObject({
+        canonicalId: "doc/getting-started",
+        canonicalLocale: "en",
+        availableLocales: ["en", "fr"],
+      });
+    }
+
+    const englishEntry = gettingStartedEntries.find(
+      (entry) => entry.locale === "en",
+    );
+    const frenchEntry = gettingStartedEntries.find(
+      (entry) => entry.locale === "fr",
+    );
+
+    expect(englishEntry?.locale).toBe("en");
+    expect(frenchEntry?.locale).toBe("fr");
+    expect(englishEntry?.canonicalLocale).toBe("en");
+    expect(frenchEntry?.canonicalLocale).toBe("en");
   });
 
   test("writes the generated artifact to disk for build-time inspection", () => {

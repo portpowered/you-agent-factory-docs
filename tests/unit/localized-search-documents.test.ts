@@ -176,6 +176,8 @@ Exécutez \`bun install\`.
       id: "doc/getting-started@en",
       canonicalId: "doc/getting-started",
       locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
       kind: "doc",
       url: "/docs/getting-started",
       title: "Getting started",
@@ -192,6 +194,8 @@ Exécutez \`bun install\`.
       id: "doc/getting-started@fr",
       canonicalId: "doc/getting-started",
       locale: "fr",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
       title: "Commencer",
       description: "Installez et exécutez You Agent Factory.",
       headings: ["Commencer", "Installer l'outil"],
@@ -199,6 +203,19 @@ Exécutez \`bun install\`.
       searchPriority: 10,
     });
     expect(frenchDocument?.aliases).toBeUndefined();
+  });
+
+  test("preserves canonical-locale and available-locale metadata from canonical records", () => {
+    const documents = loadLocalizedSearchDocuments(CONTENT_ROOT);
+    const gettingStarted = documents.filter(
+      (document) => document.canonicalId === "doc/getting-started",
+    );
+
+    expect(gettingStarted).toHaveLength(2);
+    for (const document of gettingStarted) {
+      expect(document.canonicalLocale).toBe("en");
+      expect(document.availableLocales).toEqual(["en", "fr"]);
+    }
   });
 
   test("builds stable search-document ids from canonical id and locale", () => {

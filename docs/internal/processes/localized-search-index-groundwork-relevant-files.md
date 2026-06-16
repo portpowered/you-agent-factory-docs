@@ -2,13 +2,15 @@
 
 ## Ownership boundary
 
-- **`CanonicalContentRecord`** and **`LocalizedContentVariantBinding`** remain the content-domain inputs. Search generation projects a separate **`LocalizedSearchDocument`** contract without introducing a parallel content parser.
-- **`LocalizedSearchDocument`** (`src/lib/content/search-document.ts`) is the normalized search-data shape for later query consumers: title, description, headings, body text, tags, aliases, kind, section, locale, canonical id, route identity, and search priority.
-- **`projectLocalizedSearchDocument()`** and **`generateLocalizedSearchDocuments()`** stay pure; filesystem reads live in **`loadLocalizedSearchDocuments()`**.
+- **`CanonicalContentRecord`** remains the source of truth for content identity, publication status, search visibility, `canonicalLocale`, and `availableLocales`.
+- **`LocalizedContentVariantBinding`** remains the source of locale-specific page data and validated variant relationships.
+- **`LocalizedSearchDocument`** is the normalized search-data contract projected from canonical records plus variant source text; later query UI is a downstream consumer and must not re-parse raw files.
+- **`PublicSearchArtifact`** is the build-time search index artifact derived only from normalized localized search documents.
 
 ## Search document module
 
 - Types and projection logic live in `src/lib/content/search-document.ts`; import from `@/lib/content`.
+- `LocalizedSearchDocument` includes locale-aware metadata for later active-locale-first querying: `locale`, `canonicalLocale`, and `availableLocales` alongside searchable text fields, canonical id, route identity, and search priority.
 - `buildLocalizedSearchDocumentId(canonicalId, locale)` returns stable ids such as `doc/getting-started@en`.
 - `extractMarkdownHeadings()` and `extractSearchableBody()` derive searchable text from variant markdown without query-layer file access.
 - `generateLocalizedSearchDocuments(bindings, readVariantSource)` emits one document per validated variant binding; callers inject source lookup to keep IO at the loader boundary.
@@ -27,7 +29,8 @@
 - `loadPublicSearchArtifact()` and `writePublicSearchArtifact()` in `src/lib/content/load-search-artifact.ts` load starter content through `loadLocalizedSearchDocuments()` before emitting the artifact.
 - `scripts/generate-search-index.ts` writes `public/search/public-search-index.json` for reviewer inspection and static export consumption.
 - `bun run generate:search-index` runs before `next build`; later search UX should read the generated artifact contract rather than re-parsing raw content files.
-- Artifact entries expose locale, canonical id, route or URL identity, searchable text fields, and search priority for representative entries.
+- Artifact entries expose locale, `canonicalLocale`, `availableLocales`, canonical id, route or URL identity, searchable text fields, and search priority for representative entries.
+- Parallel locale variants for one canonical page share the same `canonicalId`, `canonicalLocale`, and `availableLocales` while keeping distinct `locale` and variant-specific searchable text.
 
 ## Tests
 
