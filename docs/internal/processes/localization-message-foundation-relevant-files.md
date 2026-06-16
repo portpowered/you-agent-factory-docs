@@ -37,8 +37,15 @@
 - `validateUnsupportedLocaleResolution()` proves unsupported locale inputs normalize before fallback catalog lookup stays valid.
 - Automated coverage: `tests/unit/message-validation.test.ts`.
 
+## Locale-aware formatting groundwork
+
+- Shared shell date and number formatting resolves through `src/localization/lib/create-formatters.ts` (`createLocaleFormatters`) and `src/localization/lib/locale-intl-tag.ts` (`getIntlLocaleTag`).
+- Shell components consume formatters through `useFormatters()` from `src/localization/hooks/use-formatters.ts`, aligned with the active locale from `LocalizationProvider`.
+- Formatting helpers stay separate from message lookup and localized content bodies; use them only for shared shell UI values such as dates and numbers.
+- Automated coverage: `tests/unit/locale-formatting.test.ts`, `tests/unit/use-formatters.test.tsx`.
+
 ## Verification
 
 - `make check` — typecheck and Biome lint.
-- `make test` — includes locale registry, shared shell message, fallback, and validation tests via `bun test`.
+- `make test` — includes locale registry, shared shell message, fallback, validation, and formatting tests via `bun test`.
 - Browser verification: build static export and confirm homepage and `/docs` render shared shell text from the message catalog.

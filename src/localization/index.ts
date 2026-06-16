@@ -14,8 +14,14 @@ export {
   useLocalizationContext,
   type LocalizationContextValue,
 } from "./context/localization-context";
+export { useFormatters } from "./hooks/use-formatters";
 export { useLocale } from "./hooks/use-locale";
 export { useMessages } from "./hooks/use-messages";
+export {
+  createLocaleFormatters,
+  type LocaleFormatters,
+} from "./lib/create-formatters";
+export { getIntlLocaleTag } from "./lib/locale-intl-tag";
 export {
   createCanonicalPageIdentity,
   type CanonicalPageIdentity,
