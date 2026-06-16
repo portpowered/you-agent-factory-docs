@@ -3,7 +3,8 @@ import {
   type DocsShellNavigationInput,
   projectDocsShellNavigation,
 } from "@/lib/content/docs-navigation";
-import { requireStarterContentRecords } from "@/lib/content/load-starter-content";
+import { loadStarterContentRecords } from "@/lib/content/load-starter-content";
+import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
 
 const DEFAULT_CONTENT_ROOT = join(process.cwd(), "src/content");
 
@@ -14,6 +15,11 @@ export function loadDocsShellNavigation(
   contentRoot = DEFAULT_CONTENT_ROOT,
   options?: { locale?: string },
 ): DocsShellNavigationInput {
-  const records = requireStarterContentRecords(contentRoot);
-  return projectDocsShellNavigation(records, options);
+  const { records, failures, variantBindings } =
+    loadStarterContentRecords(contentRoot);
+  assertStarterContentValid(failures);
+  return projectDocsShellNavigation(records, {
+    ...options,
+    variantBindings,
+  });
 }

@@ -147,15 +147,31 @@ navigationTitle: Agent term
       "blog/introducing-factory",
       "comparison/vs-n8n",
       "doc/getting-started",
+      "doc/getting-started",
       "glossary/agent",
       "reference/loop-engineering",
     ]);
 
-    for (const record of records) {
+    const singleLocaleRecords = records.filter(
+      (record) => record.id !== "doc/getting-started",
+    );
+    for (const record of singleLocaleRecords) {
       expect(record.canonicalLocale).toBe("en");
       expect(record.availableLocales).toEqual(["en"]);
       expect(record.navigationTitle.length).toBeGreaterThan(0);
     }
+
+    const gettingStartedRecords = records.filter(
+      (record) => record.id === "doc/getting-started",
+    );
+    expect(gettingStartedRecords).toHaveLength(2);
+    expect(
+      gettingStartedRecords.every(
+        (record) =>
+          record.canonicalLocale === "en" &&
+          record.availableLocales.join(",") === "en,fr",
+      ),
+    ).toBe(true);
   });
 
   test("surfaces invalid starter fixtures without partial records", () => {

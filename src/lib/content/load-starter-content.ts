@@ -6,6 +6,7 @@ import {
 } from "@/lib/content/locale-files";
 import {
   type LocalizedContentVariantBinding,
+  type LocalizedVariantGroup,
   validateLocalizedVariantBindings,
 } from "@/lib/content/localized-variant-identity";
 import {
@@ -23,6 +24,10 @@ import type { CanonicalContentRecord } from "@/lib/content/types";
 export type LoadedStarterContent = {
   records: CanonicalContentRecord[];
   failures: StarterContentValidationFailure[];
+  /** Reviewer-visible localized variant groups validated across parallel locale files. */
+  localizedVariantGroups: LocalizedVariantGroup[];
+  /** Variant locale bindings used for locale-aware navigation projection. */
+  variantBindings: LocalizedContentVariantBinding[];
 };
 
 function isStarterContentDirectory(
@@ -130,6 +135,7 @@ export function loadStarterContentRecords(
   );
   const identityResult = validateLocalizedVariantBindings(bindings);
   const invalidPathKeys = new Set<string>();
+  let localizedVariantGroups: LocalizedVariantGroup[] = [];
 
   if (!identityResult.ok) {
     const groupedErrors = groupErrorsByContentPathKey(identityResult.errors);
@@ -149,6 +155,8 @@ export function loadStarterContentRecords(
         });
       }
     }
+  } else {
+    localizedVariantGroups = identityResult.groups;
   }
 
   const records = successes
@@ -159,7 +167,15 @@ export function loadStarterContentRecords(
     .map((success) => success.record);
 
   records.sort((left, right) => left.id.localeCompare(right.id));
-  return { records, failures };
+  const validBindings = bindings.filter(
+    (binding) => !invalidPathKeys.has(binding.contentPathKey),
+  );
+  return {
+    records,
+    failures,
+    localizedVariantGroups,
+    variantBindings: validBindings,
+  };
 }
 
 /**

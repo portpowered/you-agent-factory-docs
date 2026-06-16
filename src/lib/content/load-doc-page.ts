@@ -52,10 +52,14 @@ export function listPublishedDocSlugs(
   const { records, failures } = loadStarterContentRecords(contentRoot);
   assertStarterContentValid(failures);
 
-  return records
-    .filter((record) => record.kind === "doc" && record.status === "published")
-    .map((record) => record.slug)
-    .sort((left, right) => left.localeCompare(right));
+  const slugs = new Set<string>();
+  for (const record of records) {
+    if (record.kind === "doc" && record.status === "published") {
+      slugs.add(record.slug);
+    }
+  }
+
+  return [...slugs].sort((left, right) => left.localeCompare(right));
 }
 
 /**

@@ -17,8 +17,10 @@
 ## Starter content integration
 
 - `loadStarterContentRecords()` validates individual fixtures first, then runs localized variant identity validation across successful bindings.
+- The loader returns `localizedVariantGroups` alongside canonical records so reviewers can inspect shared canonical page id, canonical locale, and available locales for parallel locale variants.
 - Identity failures are attached to every affected starter descriptor and those records are excluded from the returned `records` array.
 - `requireStarterContentRecords()` and `loadDocsShellNavigation()` continue to throw `StarterContentValidationError` when identity validation fails.
+- Parallel locale variants for one doc slug share one route path; `listPublishedDocSlugs()` deduplicates slugs and `projectDocsShellNavigation()` deduplicates by canonical id.
 
 ## Locale registry alignment
 
@@ -37,6 +39,7 @@
 
 - Focused identity contract and validation behavior: `tests/unit/localized-variant-identity.test.ts`.
 - Build-time locale metadata validation: `tests/unit/locale-metadata-validation.test.ts`.
+- Parallel localized starter content proof: `tests/unit/localized-starter-content.test.ts`.
 - Starter loading integration remains covered in `tests/unit/starter-content.test.ts`; add identity failure fixtures under `tests/fixtures/starter-content/` when proving group-level errors through the loader.
 
 ## Quality checks
