@@ -10,9 +10,17 @@
 - Route paths are derived per kind (`/docs/...`, `/blog/...`, `/glossary/...`, `/comparisons/...`, `/references/...`).
 - Locale tags use BCP 47-style `en` or `en-US`; `canonicalLocale` must appear in `availableLocales`.
 
+## Starter content
+
+- Starter fixtures live under `src/content/{docs,blog,glossary,comparisons,references}/{slug}/{locale}.mdx`.
+- Directory names map to public content kinds via `STARTER_CONTENT_DIRECTORY_KINDS` in `src/lib/content/starter.ts`.
+- Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
+- `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
+
 ## Tests
 
 - Content validation behavior is covered in `tests/unit/content-validation.test.ts`.
+- Starter content loading and validation is covered in `tests/unit/starter-content.test.ts`.
 - Prefer asserting observable validation results and projected record fields, not file inventories or internal helper existence.
 
 ## Quality checks

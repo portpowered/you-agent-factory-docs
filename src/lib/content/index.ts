@@ -18,3 +18,24 @@ export {
 } from "@/lib/content/routes";
 export { isValidLocaleTag, normalizeLocaleList } from "@/lib/content/locales";
 export { validateContentMetadata } from "@/lib/content/validation";
+export {
+  parseContentFile,
+  parseFrontmatterBlock,
+  type ParsedContentFile,
+} from "@/lib/content/frontmatter";
+export {
+  buildMetadataFromStarterContent,
+  STARTER_CONTENT_DIRECTORY_KINDS,
+  validateStarterContent,
+  validateStarterContentSource,
+  type StarterContentDescriptor,
+  type StarterContentDirectory,
+  type StarterContentValidationFailure,
+  type StarterContentValidationResult,
+  type StarterContentValidationSuccess,
+} from "@/lib/content/starter";
+export {
+  loadStarterContentRecords,
+  starterContentRootExists,
+  type LoadedStarterContent,
+} from "@/lib/content/load-starter-content";
