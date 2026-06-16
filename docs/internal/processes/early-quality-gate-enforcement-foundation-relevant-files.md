@@ -17,7 +17,7 @@ The early gate currently runs, in order:
 3. `bun run validate:localization` → `scripts/validate-localization.ts` → `src/localization/lib/validate-messages.ts`
 4. `bun run validate:content` → `scripts/validate-content.ts` → `src/lib/content/load-starter-content.ts` and `src/lib/content/starter.ts`
 5. `bun run validate:accessibility` → `scripts/validate-accessibility.ts` → bounded expectations in `src/lib/validation/shell-accessibility.ts` plus focused shell tests in `tests/unit/homepage-shell.test.tsx`, `tests/unit/docs-shell.test.tsx`, and `tests/unit/shell-accessibility-validation.test.tsx`
-6. `bun run validate:static-export` → `scripts/validate-static-export.ts` → `src/lib/validation/static-export.ts`, one cleaned production build, `out/` presence, and `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so served-export tests reuse the gate build output
+6. `bun run validate:static-export` → `scripts/validate-static-export.ts` → `src/lib/validation/static-export.ts`, one cleaned production build under `withStaticExportBuildLock()`, `out/` presence, and `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so served-export tests reuse the gate build output
 7. Remaining foundation unit tests (`tests/unit/project.test.ts`, `tests/unit/site.test.ts`)
 
 `make check`, `make test`, and `make build` remain narrower helper targets. They are not substitutes for `make quality-gate`.

@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { SITE_BASE_PATH } from "../../src/lib/site";
 import { STATIC_EXPORT_SKIP_BUILD_ENV } from "../../src/lib/validation/static-export";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { fetchHttp } from "./http";
 
 const projectRoot = join(import.meta.dir, "../..");
@@ -29,19 +30,21 @@ export function buildStaticExport(): void {
     return;
   }
 
-  cleanNextBuildArtifacts();
+  withStaticExportBuildLock(projectRoot, () => {
+    cleanNextBuildArtifacts();
 
-  const build = spawnSync("make", ["build"], {
-    cwd: projectRoot,
-    encoding: "utf8",
-    env: process.env,
+    const build = spawnSync("make", ["build"], {
+      cwd: projectRoot,
+      encoding: "utf8",
+      env: process.env,
+    });
+
+    if (build.status !== 0) {
+      throw new Error(
+        build.stderr || build.stdout || "Static export build failed",
+      );
+    }
   });
-
-  if (build.status !== 0) {
-    throw new Error(
-      build.stderr || build.stdout || "Static export build failed",
-    );
-  }
 }
 
 export type StaticExportServer = {

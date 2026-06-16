@@ -6,6 +6,7 @@ import {
   STATIC_EXPORT_SKIP_BUILD_ENV,
   assertValidStaticExportConfig,
 } from "@/lib/validation/static-export";
+import { withStaticExportBuildLock } from "@/lib/validation/static-export-build-lock";
 
 const repoRoot = join(import.meta.dir, "..");
 const nextDir = join(repoRoot, ".next");
@@ -30,23 +31,26 @@ function run(
 
 assertValidStaticExportConfig(resolveStaticExportConfigForGate());
 
-rmSync(nextDir, { recursive: true, force: true });
+const exitCode = withStaticExportBuildLock(repoRoot, () => {
+  rmSync(nextDir, { recursive: true, force: true });
 
-const buildStatus = run("bun", ["run", "build"]);
-if (buildStatus !== 0) {
-  process.exit(buildStatus);
-}
+  const buildStatus = run("bun", ["run", "build"]);
+  if (buildStatus !== 0) {
+    return buildStatus;
+  }
 
-const exportDir = join(repoRoot, "out");
-if (!existsSync(exportDir)) {
-  console.error("Static export output missing: expected out/ after build");
-  process.exit(1);
-}
+  const exportDir = join(repoRoot, "out");
+  if (!existsSync(exportDir)) {
+    console.error("Static export output missing: expected out/ after build");
+    return 1;
+  }
 
-const testStatus = run("bun", ["test", "tests/unit/static-export.test.ts"], {
-  env: {
-    ...process.env,
-    [STATIC_EXPORT_SKIP_BUILD_ENV]: "1",
-  },
+  return run("bun", ["test", "tests/unit/static-export.test.ts"], {
+    env: {
+      ...process.env,
+      [STATIC_EXPORT_SKIP_BUILD_ENV]: "1",
+    },
+  });
 });
-process.exit(testStatus);
+
+process.exit(exitCode);
