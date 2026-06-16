@@ -5,13 +5,16 @@ const repoRoot = join(import.meta.dir, "../..");
 
 export function runMake(
   target: string,
-  options: { dryRun?: boolean } = {},
+  options: { dryRun?: boolean; env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
   const args = options.dryRun ? ["-n", target] : [target];
   const result = spawnSync("make", args, {
     cwd: repoRoot,
     encoding: "utf8",
-    env: process.env,
+    env: {
+      ...process.env,
+      ...options.env,
+    },
   });
 
   return {

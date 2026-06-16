@@ -17,14 +17,5 @@ jobs:
       - name: Setup
         run: make setup
 
-      - name: Install Playwright browsers
-        run: bunx playwright install chromium --with-deps
-
-      - name: Check
-        run: make check
-
-      - name: Test
-        run: make test
-
-      - name: Build
-        run: make build
+      - name: Early foundation quality gate
+        run: make quality-gate
