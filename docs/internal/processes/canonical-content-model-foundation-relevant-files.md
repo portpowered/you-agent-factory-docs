@@ -1,5 +1,19 @@
 # Canonical content model foundation — relevant files
 
+## Reviewer notes
+
+### Prerequisites
+
+- **reconcile-bootstrap-foundation-baseline** (merged) provides the reconciled Next.js scaffold, shared shell components, and local/CI command parity this lane builds on.
+- **bootstrap-static-export-foundation** and **shared-shell-behavior-foundation** establish static export, base-path routing, and docs-shell framing that canonical navigation now consumes.
+
+### Ownership boundary
+
+- **`CanonicalContentRecord`** (`src/lib/content/types.ts`) is the durable source of truth for canonical identity, content kind, route identity, locale metadata, publication status, tags, and navigation metadata.
+- **`DocsShellNavigationInput`** (`src/lib/content/docs-navigation.ts`) is projected docs-shell UI state derived from canonical records. It includes section grouping and page labels/hrefs for the first docs navigation behavior only.
+- Author metadata enters through starter fixtures or `ContentMetadataInput`, is validated by `validateContentMetadata()` / `validateStarterContent()`, and is projected into navigation by `projectDocsShellNavigation()` without editing hand-maintained shell nav constants.
+- Later lanes can extend canonical records for localized search documents, breadcrumbs, previous-next links, and raw markdown access without renaming or overloading the projected navigation shape.
+
 ## Canonical content module
 
 - Canonical content types and validation live under `src/lib/content/`, separate from docs-shell UI copy in `src/lib/shell.ts`.
@@ -29,9 +43,10 @@
 - Content validation behavior is covered in `tests/unit/content-validation.test.ts`.
 - Starter content loading and validation is covered in `tests/unit/starter-content.test.ts`.
 - Docs navigation projection is covered in `tests/unit/docs-navigation.test.ts`.
+- Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
 - Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation in `tests/unit/static-export.test.ts`.
-- Prefer asserting observable validation results and projected record fields, not file inventories or internal helper existence.
+- Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
 
 ## Quality checks
 

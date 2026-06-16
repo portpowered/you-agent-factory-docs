@@ -247,6 +247,48 @@ describe("validateContentMetadata", () => {
     ).toBe(true);
   });
 
+  test("preserves canonical identity and locale metadata for future localized variants", () => {
+    const result = validateContentMetadata(
+      validMetadata({
+        canonicalLocale: "en",
+        availableLocales: ["en", "en-US"],
+        navigationTitle: "Getting started",
+      }),
+    );
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw new Error("expected validation success");
+    }
+
+    expect(result.record.id).toBe("doc/getting-started");
+    expect(result.record.kind).toBe("doc");
+    expect(result.record.slug).toBe("getting-started");
+    expect(result.record.routePath).toBe("/docs/getting-started");
+    expect(result.record.canonicalLocale).toBe("en");
+    expect(result.record.availableLocales).toEqual(["en", "en-US"]);
+  });
+
+  test("rejects duplicate locale tags in availableLocales", () => {
+    const result = validateContentMetadata(
+      validMetadata({
+        availableLocales: ["en", "en"],
+      }),
+    );
+
+    expect(result.ok).toBe(false);
+    if (result.ok) {
+      throw new Error("expected duplicate locale failure");
+    }
+
+    expect(result.errors).toEqual([
+      expect.objectContaining({
+        field: "availableLocales",
+        message: expect.stringContaining("duplicate locale tags"),
+      }),
+    ]);
+  });
+
   test("defaults search inclusion to true when search metadata is omitted", () => {
     const result = validateContentMetadata(
       validMetadata({
