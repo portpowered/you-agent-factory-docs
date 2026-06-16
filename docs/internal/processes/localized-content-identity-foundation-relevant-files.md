@@ -35,11 +35,19 @@
 - Group validation fails when the canonical-locale variant file is missing or when `availableLocales` lists locales without matching on-disk variant files.
 - Invalid fixtures for metadata drift proofs live under `tests/fixtures/starter-content/`; focused tests live in `tests/unit/locale-metadata-validation.test.ts`.
 
+## Canonical-locale fallback resolution
+
+- `resolveLocalizedContentVariant()` and `selectLocalizedVariantBinding()` in `src/lib/content/localized-content-resolution.ts` resolve locale-aware doc content and fall back to the canonical-locale variant when the requested locale is unsupported or missing a variant file.
+- `loadDocPage(slug, contentRoot, { locale })` returns `resolution` metadata (`requestedLocale`, `resolvedLocale`, `fellBackToCanonicalLocale`) alongside the served record and body.
+- Unsupported locales and supported locales without an on-disk variant resolve to the canonical-locale content for the same canonical page id and stable `routePath`.
+- Navigation projection reuses `selectLocalizedVariantBinding()` so docs-shell labels follow the same fallback rules as doc page loading.
+
 ## Tests
 
 - Focused identity contract and validation behavior: `tests/unit/localized-variant-identity.test.ts`.
 - Build-time locale metadata validation: `tests/unit/locale-metadata-validation.test.ts`.
 - Parallel localized starter content proof: `tests/unit/localized-starter-content.test.ts`.
+- Canonical-locale fallback resolution: `tests/unit/localized-content-resolution.test.ts` and locale-aware cases in `tests/unit/load-doc-page.test.ts`.
 - Starter loading integration remains covered in `tests/unit/starter-content.test.ts`; add identity failure fixtures under `tests/fixtures/starter-content/` when proving group-level errors through the loader.
 
 ## Quality checks

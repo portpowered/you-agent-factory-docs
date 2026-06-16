@@ -1,3 +1,4 @@
+import { selectLocalizedVariantBinding } from "@/lib/content/localized-content-resolution";
 import type { LocalizedContentVariantBinding } from "@/lib/content/localized-variant-identity";
 import type { CanonicalContentRecord } from "@/lib/content/types";
 
@@ -109,28 +110,14 @@ function selectRepresentativeDocRecords(
       .filter((record) => record.kind === "doc")
       .map((record) => record.id),
   );
-  const bindingsById = new Map<string, LocalizedContentVariantBinding[]>();
-
-  for (const binding of bindings) {
-    if (binding.record.kind !== "doc" || !docRecordIds.has(binding.record.id)) {
-      continue;
-    }
-
-    const group = bindingsById.get(binding.record.id) ?? [];
-    group.push(binding);
-    bindingsById.set(binding.record.id, group);
-  }
-
   const selected: CanonicalContentRecord[] = [];
-  for (const variants of bindingsById.values()) {
-    const canonicalLocale = variants[0]?.record.canonicalLocale;
-    const targetLocale = requestedLocale ?? canonicalLocale;
-    const match =
-      variants.find((binding) => binding.variantLocale === targetLocale) ??
-      variants.find(
-        (binding) => binding.variantLocale === binding.record.canonicalLocale,
-      ) ??
-      variants[0];
+
+  for (const canonicalPageId of docRecordIds) {
+    const match = selectLocalizedVariantBinding(
+      bindings,
+      canonicalPageId,
+      requestedLocale,
+    );
 
     if (match) {
       selected.push(match.record);

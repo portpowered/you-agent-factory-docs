@@ -53,7 +53,14 @@ export {
   listPublishedDocSlugs,
   loadDocPage,
   type DocPageContent,
+  type LoadDocPageOptions,
 } from "@/lib/content/load-doc-page";
+export {
+  resolveLocalizedContentVariant,
+  selectLocalizedVariantBinding,
+  type LocalizedContentResolution,
+  type ResolveLocalizedContentVariantOptions,
+} from "@/lib/content/localized-content-resolution";
 export {
   findCurrentDocsItemId,
   projectSharedShellDocsNavigation,
