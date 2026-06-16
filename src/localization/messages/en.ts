@@ -8,6 +8,8 @@ export const enMessages = {
   shell: {
     openMenuLabel: "Open menu",
     closeMenuLabel: "Close menu",
+    showDocsNavLabel: "Show docs navigation",
+    hideDocsNavLabel: "Hide docs navigation",
   },
   landing: {
     primaryNavAriaLabel: "Primary",

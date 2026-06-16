@@ -31,7 +31,7 @@ export const SHARED_SHELL_PROJECTED_EXTENSION_POINTS = {
   currentDocsItemId:
     "Active docs sidebar item id for current-location treatment",
   navigationDisclosure:
-    "Narrow-width menu open/closed state from useSharedShellNavigationDisclosure",
+    "Narrow-width menu open/closed state from useShellDisclosure",
 } as const;
 
 export type SharedShellConfigOverrides = Partial<
@@ -77,6 +77,13 @@ export function createSharedShellConfig(
                 ...overrides.responsive.navigationDisclosure,
               }
             : sharedShellConfig.responsive.navigationDisclosure,
+          docsNavigationDisclosure: overrides.responsive
+            .docsNavigationDisclosure
+            ? {
+                ...sharedShellConfig.responsive.docsNavigationDisclosure,
+                ...overrides.responsive.docsNavigationDisclosure,
+              }
+            : sharedShellConfig.responsive.docsNavigationDisclosure,
         }
       : sharedShellConfig.responsive,
   };

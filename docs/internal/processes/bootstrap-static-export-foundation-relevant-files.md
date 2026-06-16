@@ -2,7 +2,8 @@
 
 ## Contributor command path
 
-- Root `Makefile` is the shared entrypoint for local development and future CI: `setup`, `check`, `test`, `build`.
+- Root `Makefile` is the shared entrypoint for local development and CI: `setup`, `check`, `test`, `build`, and `quality-gate`.
+- `make quality-gate` is the authoritative early enforcement path; see `docs/internal/processes/early-quality-gate-enforcement-foundation-relevant-files.md`.
 - `make setup` runs `bun install`.
 - `make check` runs `bun run typecheck` then `bun run lint` (Biome).
 - `make test` runs `bun test` directly (not a separate test runner).

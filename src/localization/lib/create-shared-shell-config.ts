@@ -1,4 +1,5 @@
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
+import { RESPONSIVE_BREAKPOINTS_PX } from "@/lib/responsive-tokens";
 import {
   GITHUB_REPO_URL,
   type SharedShellConfig,
@@ -63,10 +64,14 @@ export function createSharedShellConfigFromMessages(
       footerText: PROJECT_NAME,
     },
     responsive: {
-      narrowMaxWidthPx: 768,
+      narrowMaxWidthPx: RESPONSIVE_BREAKPOINTS_PX.tabletMax,
       navigationDisclosure: {
         openLabel: t("shell.openMenuLabel"),
         closeLabel: t("shell.closeMenuLabel"),
+      },
+      docsNavigationDisclosure: {
+        openLabel: t("shell.showDocsNavLabel"),
+        closeLabel: t("shell.hideDocsNavLabel"),
       },
     },
   };

@@ -1,4 +1,4 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
 import { render, screen, within } from "@testing-library/react";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import {
@@ -8,11 +8,23 @@ import {
   HOME_CTA_LABEL,
   sharedShellConfig,
 } from "../../src/lib/shared-shell-config";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 
 mock.module("next/link", () => ({
   default: MockLink,
 }));
+
+beforeEach(() => {
+  mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+});
+
+afterEach(() => {
+  mock.restore();
+});
 
 const { SharedShell, isDocsEntryRoute } = await import(
   "../../src/components/shell/shared-shell"

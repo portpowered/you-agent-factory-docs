@@ -1,8 +1,12 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
 import type { DocsShellNavigationInput } from "../../src/lib/content";
 import { DOCS_ENTRY_ROUTE } from "../../src/lib/project";
 import { enMessages } from "../../src/localization/messages/en";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
@@ -31,6 +35,14 @@ const fallbackDocsNavigation: DocsShellNavigationInput = {
 mock.module("next/link", () => ({
   default: MockLink,
 }));
+
+beforeEach(() => {
+  mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+});
+
+afterEach(() => {
+  mock.restore();
+});
 
 const { LandingShell } = await import(
   "../../src/components/landing/landing-shell"

@@ -8,6 +8,10 @@ import {
   HOME_CTA_LABEL,
   sharedShellConfig,
 } from "../../src/lib/shared-shell-config";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 
 mock.module("next/link", () => ({
@@ -100,6 +104,8 @@ describe("shared shell navigation primitives", () => {
 
 describe("shared shell primary navigation contract", () => {
   test("consumes the same destination contract on homepage and docs surfaces", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
     const { rerender } = render(
       <SharedShell surface="home">
         <p>Home</p>
@@ -137,6 +143,8 @@ describe("shared shell primary navigation contract", () => {
   });
 
   test("derives labels and destinations from sharedShellConfig without page-local duplication", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
     render(
       <SharedShell surface="home">
         <p>Home</p>

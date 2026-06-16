@@ -59,11 +59,13 @@ body {
   font-weight: 600;
 }
 
-.shared-shell__menu-toggle {
+.shared-shell__menu-toggle,
+.shared-shell__docs-nav-toggle {
   display: none;
   align-items: center;
   justify-content: center;
   min-height: 2.75rem;
+  margin: 0;
   padding: 0.625rem 1rem;
   border: 1px solid var(--landing-border);
   border-radius: 0.5rem;
@@ -74,9 +76,15 @@ body {
   cursor: pointer;
 }
 
-.shared-shell__menu-toggle:focus-visible {
+.shared-shell__menu-toggle:focus-visible,
+.shared-shell__docs-nav-toggle:focus-visible {
   outline: 3px solid var(--landing-accent);
   outline-offset: 2px;
+}
+
+.shared-shell__header-nav-region,
+.shared-shell__docs-aside-region {
+  display: contents;
 }
 
 .shared-shell__header-nav {
@@ -247,7 +255,20 @@ body {
   outline-offset: 2px;
 }
 
-@media (max-width: 640px) {
+@keyframes shell-disclosure-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-0.25rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Breakpoints align with src/lib/responsive-tokens.ts (mobileMax: 639px). */
+@media (max-width: 639px) {
   .landing-shell__hero {
     padding: 1.5rem;
   }
@@ -261,32 +282,98 @@ body {
   }
 }
 
-@media (max-width: 768px) {
-  .shared-shell__menu-toggle {
-    display: inline-flex;
+/* Breakpoints align with src/lib/responsive-tokens.ts (tabletMax: 1023px). */
+@media (max-width: 1023px) {
+  .shared-shell[data-shell-narrow] .shared-shell__header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .shared-shell__header-nav {
-    display: none;
+  .shared-shell[data-shell-narrow] .shared-shell__header-nav-region {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     width: 100%;
   }
 
-  .shared-shell__header-nav.shared-shell__header-nav--open {
-    display: flex;
+  .shared-shell[data-shell-narrow] .shared-shell__menu-toggle {
+    display: inline-flex;
   }
 
-  .shared-shell__nav-list {
+  .shared-shell[data-shell-narrow]
+    .shared-shell__header-nav-region[data-shell-disclosure="open"] {
+    animation: shell-disclosure-reveal 200ms ease-out;
+  }
+
+  .shared-shell[data-shell-reduced-motion]
+    .shared-shell__header-nav-region[data-shell-disclosure="open"],
+  .shared-shell[data-shell-reduced-motion]
+    .shared-shell__docs-aside-panel[data-shell-disclosure="open"] {
+    animation: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shared-shell[data-shell-narrow]
+      .shared-shell__header-nav-region[data-shell-disclosure="open"],
+    .shared-shell[data-shell-narrow]
+      .shared-shell__docs-aside-panel[data-shell-disclosure="open"] {
+      animation: none;
+    }
+  }
+
+  .shared-shell[data-shell-narrow] .shared-shell__header-nav {
     flex-direction: column;
     align-items: stretch;
     width: 100%;
   }
 
-  .shared-shell__link {
+  .shared-shell[data-shell-narrow] .shared-shell__link {
     width: 100%;
+  }
+
+  .shared-shell__layout--with-sidebar {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 0 1.25rem 0;
+  }
+
+  .shared-shell[data-shell-narrow] .shared-shell__docs-aside-region {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .shared-shell[data-shell-narrow] .shared-shell__docs-nav-toggle {
+    display: inline-flex;
+    width: 100%;
+  }
+
+  .shared-shell[data-shell-narrow] .shared-shell__docs-aside-panel {
+    display: block;
+  }
+
+  .shared-shell[data-shell-narrow]
+    .shared-shell__docs-aside-panel[data-shell-disclosure="open"] {
+    animation: shell-disclosure-reveal 200ms ease-out;
+  }
+
+  .shared-shell__docs-aside {
+    border-right: none;
+    border-bottom: 1px solid var(--landing-border);
+  }
+
+  .shared-shell__docs-nav {
+    border-right: none;
+    border-bottom: none;
+    padding: 1rem 1.25rem;
+  }
+
+  .shared-shell__main {
+    padding: 1.5rem 1.25rem 2.5rem;
   }
 }
 
-@media (min-width: 769px) {
+@media (min-width: 1024px) {
   .shared-shell__header {
     flex-direction: row;
     flex-wrap: wrap;
@@ -318,25 +405,4 @@ body {
   max-width: 42rem;
   color: var(--landing-muted);
   font-size: clamp(1rem, 2.5vw, 1.0625rem);
-}
-
-@media (max-width: 768px) {
-  .shared-shell__layout--with-sidebar {
-    grid-template-columns: 1fr;
-  }
-
-  .shared-shell__docs-aside {
-    border-right: none;
-    border-bottom: 1px solid var(--landing-border);
-  }
-
-  .shared-shell__docs-nav {
-    border-right: none;
-    border-bottom: none;
-    padding: 1rem 1.25rem;
-  }
-
-  .shared-shell__main {
-    padding: 1.5rem 1.25rem 2.5rem;
-  }
 }

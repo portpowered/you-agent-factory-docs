@@ -2,6 +2,10 @@ import { describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import { DOCS_CTA_LABEL, DOCS_SHELL_TITLE } from "../../src/lib/shell";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
@@ -26,6 +30,8 @@ describe("default baseline website foundation", () => {
   });
 
   test("docs route renders the delivered docs shell entry", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
     renderWithLocalization(<DocsPage />);
 
     expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();

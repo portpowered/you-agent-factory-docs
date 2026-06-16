@@ -1,3 +1,8 @@
+"use client";
+
+import { ResponsiveShellRoot } from "@/components/shell/responsive-shell-root";
+import { SharedShellDocsAside } from "@/components/shell/shared-shell-docs-aside";
+import { SharedShellHeader } from "@/components/shell/shared-shell-header";
 import { DOCS_ENTRY_ROUTE } from "@/lib/project";
 import {
   type SharedShellConfig,
@@ -5,10 +10,7 @@ import {
   sharedShellConfig,
   shouldRenderDocsSidebar,
 } from "@/lib/shared-shell-config";
-import { getSharedShellDocsNavigationGroups } from "@/lib/shared-shell-extension-points";
 import type { ReactNode } from "react";
-import { SharedShellHeader } from "./shared-shell-header";
-import { SharedShellDocsNavigation } from "./shared-shell-navigation";
 
 export type SharedShellProps = {
   surface: SharedShellSurface;
@@ -16,34 +18,6 @@ export type SharedShellProps = {
   config?: SharedShellConfig;
   currentDocsItemId?: string;
 };
-
-function SharedShellDocsAside({
-  config,
-  currentDocsItemId = "overview",
-}: {
-  config: SharedShellConfig;
-  currentDocsItemId?: string;
-}) {
-  const docsNavigationGroups = getSharedShellDocsNavigationGroups(config);
-
-  if (docsNavigationGroups.length === 0) {
-    return null;
-  }
-
-  return (
-    <aside className="shared-shell__docs-aside">
-      {docsNavigationGroups.map((docsNavigation) => (
-        <SharedShellDocsNavigation
-          ariaLabel={docsNavigation.heading}
-          currentItemId={currentDocsItemId}
-          heading={docsNavigation.heading}
-          items={docsNavigation.items}
-          key={docsNavigation.heading}
-        />
-      ))}
-    </aside>
-  );
-}
 
 function SharedShellFooter({ config }: { config: SharedShellConfig }) {
   const footerText = config.structural.footerText;
@@ -71,7 +45,7 @@ export function SharedShell({
     : "shared-shell__layout";
 
   return (
-    <div className="shared-shell">
+    <ResponsiveShellRoot className="shared-shell">
       <SharedShellHeader config={config} surface={surface} />
       <div className={layoutClassName}>
         {showDocsSidebar ? (
@@ -83,7 +57,7 @@ export function SharedShell({
         <main className="shared-shell__main">{children}</main>
       </div>
       <SharedShellFooter config={config} />
-    </div>
+    </ResponsiveShellRoot>
   );
 }
 

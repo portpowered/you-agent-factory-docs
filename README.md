@@ -4,22 +4,20 @@ You Agent Factory Docs is the public documentation and learning site for You Age
 
 ## Contributor workflow
 
-From the repository root, `make setup`, `make check`, `make test`, and `make build` are the authoritative commands for preparing the scaffold, running verification, executing tests, and proving the static export build. CI uses the same targets (see `.github/workflows/ci.yml`), so you do not need alternate `bun` commands to match automation.
+From the repository root, `make setup` and `make quality-gate` are the authoritative commands for preparing the scaffold and running the early foundation quality gate. CI uses the same path (see `.github/workflows/ci.yml`), so you do not need alternate `bun` commands to match automation.
 
 Prerequisites: [Bun](https://bun.sh) 1.1 or newer.
 
-Use each command when you need its observable outcome:
-
 - **`make setup`** — install or refresh dependencies after cloning or when `package.json` changes. Runs `bun install` from the repository root.
-- **`make check`** — surface typecheck and lint failures before commit or when reproducing CI verification failures. Runs `bun run typecheck` then `bun run lint`; the first failure stops the command.
-- **`make test`** — run the automated test suite. Delegates to `bun test` from the repository root.
-- **`make build`** — verify the static production build succeeds. Runs `bun run build` and fails if the export directory `out/` is missing afterward.
+- **`make quality-gate`** — run the enforced early foundation gate. Executes typecheck, lint, localization validation, content validation, focused accessibility checks, static export correctness, and the remaining foundation unit tests. Fails fast on the first failing check.
+
+`make check`, `make test`, and `make build` remain narrower helper targets for partial verification. They are not substitutes for `make quality-gate`.
+
+**Deferred to later Phase 8 work** (not enforced by the early gate): deploy-on-main automation, Lighthouse performance and accessibility budgets, broad package coverage policy enforcement, full search-index validation, launch-content completeness enforcement.
 
 ```bash
 make setup
-make check
-make test
-make build
+make quality-gate
 ```
 
 ## Local development server
