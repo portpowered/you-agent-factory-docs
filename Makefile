@@ -11,9 +11,7 @@ test:
 	bun test
 
 build:
-	rm -rf .next
-	bun run build
-	test -d out || (echo "Static export output missing: expected out/ after build" >&2; exit 1)
+	bun run scripts/build-static-export.ts
 
 quality-gate:
 	bun run quality-gate

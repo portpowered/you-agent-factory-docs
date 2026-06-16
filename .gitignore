@@ -4,6 +4,7 @@ node_modules/
 # Build and generated output
 bin/
 .next/
+.build-lock/
 out/
 .source/
 src/generated/

@@ -19,7 +19,7 @@ function run(command: string, args: string[]): number {
 
 assertValidStaticExportConfig(resolveStaticExportConfigForGate());
 
-const buildStatus = run("bun", ["run", "build"]);
+const buildStatus = run("make", ["build"]);
 if (buildStatus !== 0) {
   process.exit(buildStatus);
 }
