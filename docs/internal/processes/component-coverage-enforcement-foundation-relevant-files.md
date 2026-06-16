@@ -30,4 +30,11 @@ Documented in `COMPONENT_COVERAGE_OUT_OF_SCOPE_SURFACES`:
 - Failure output uses the `Component coverage enforcement failed` prefix so threshold breaches are distinguishable from unrelated test, lint, or typecheck failures.
 - `make component-coverage-boundary` remains the reviewer-visible boundary report; it does not run threshold enforcement.
 
-Later stories wire CI through the same `make component-coverage` command without replacing this enforcement module.
+## CI automation parity
+
+- `.github/workflows/ci.yml` runs `make component-coverage` on push and pull request through the same root Makefile contract contributors use locally.
+- `tests/unit/component-coverage-ci-automation-parity.test.ts` verifies the workflow invokes `make component-coverage` rather than a CI-only script path.
+- `tests/unit/component-coverage-enforcement-failing-path.test.ts` proves coverage enforcement blocks regressions with explicit `Component coverage enforcement failed` output via the `below-threshold` fixture in `src/lib/component-coverage/fixtures.ts`.
+- Set `COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE=below-threshold` only for reviewer-verifiable failing-path proofs; normal local and CI runs omit it.
+
+Later stories can extend maintainer-facing limitation guidance without replacing this CI command contract.

@@ -9,10 +9,32 @@ import {
   formatComponentCoverageEnforcementSuccess,
   parseBunCoverageTable,
 } from "@/lib/component-coverage/enforce";
+import { getComponentCoverageEnforcementFixtureOutput } from "@/lib/component-coverage/fixtures";
 
 const repoRoot = join(import.meta.dir, "..");
 
 console.log("Running component coverage enforcement.");
+
+const fixtureOutput = getComponentCoverageEnforcementFixtureOutput(
+  process.env.COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE,
+);
+
+if (fixtureOutput !== undefined) {
+  const coverageRows = parseBunCoverageTable(fixtureOutput);
+  const enforcedFiles = listEnforcedComponentSourceFiles(repoRoot);
+  const evaluation = evaluateComponentCoverageEnforcement(
+    coverageRows,
+    enforcedFiles,
+  );
+
+  if (!evaluation.passed) {
+    console.error(`\n${formatComponentCoverageEnforcementFailure(evaluation)}`);
+    process.exit(1);
+  }
+
+  console.log(`\n${formatComponentCoverageEnforcementSuccess(evaluation)}`);
+  process.exit(0);
+}
 
 const testArgs = [
   "test",
