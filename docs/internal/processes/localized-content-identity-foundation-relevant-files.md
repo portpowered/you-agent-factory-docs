@@ -41,6 +41,7 @@
 - `loadDocPage(slug, contentRoot, { locale })` returns `resolution` metadata (`requestedLocale`, `resolvedLocale`, `fellBackToCanonicalLocale`) alongside the served record and body.
 - Unsupported locales and supported locales without an on-disk variant resolve to the canonical-locale content for the same canonical page id and stable `routePath`.
 - Navigation projection reuses `selectLocalizedVariantBinding()` so docs-shell labels follow the same fallback rules as doc page loading.
+- When `variantBindings` are provided, `projectDocsShellNavigation()` must not pre-filter records by `availableLocales` before binding selection; unsupported or missing variant locales still surface the canonical page with fallback `localeProjection` metadata.
 
 ## Locale-aware content projection
 

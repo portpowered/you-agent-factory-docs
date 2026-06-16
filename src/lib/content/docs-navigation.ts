@@ -146,11 +146,13 @@ export function projectDocsShellNavigation(
   },
 ): DocsShellNavigationInput {
   const locale = options?.locale;
+  const useVariantBindings = Boolean(options?.variantBindings);
   const docRecords = records.filter(
     (record) =>
       record.kind === "doc" &&
       NAV_VISIBLE_STATUSES.has(record.status) &&
-      (locale === undefined ||
+      (useVariantBindings ||
+        locale === undefined ||
         record.availableLocales.includes(locale) ||
         record.canonicalLocale === locale),
   );
