@@ -15,6 +15,12 @@
 - Static-export/browser tests use `getTestPort()` with env overrides so nested `make test` from `root-command-path.test.ts` does not bind the same ports as the outer suite.
 - Localized variant identity is projected separately from `CanonicalContentRecord` via `LocalizedContentVariantIdentity` and `validateLocalizedVariantBindings()` in `src/lib/content/localized-variant-identity.ts`; group parallel locale files with `buildStarterContentPathKey()`.
 - `loadStarterContentRecords()` deduplicates locale files per slug through `resolveLocaleFileName()` before running localized variant identity validation across bindings.
+- Starter locale files require explicit `canonicalLocale`, `availableLocales`, and `id` frontmatter; `validateExplicitStarterLocaleMetadata()` and `validateLocaleRegistryMetadata()` run before canonical record projection in `validateStarterContent()`.
+- Group validation fails when the canonical-locale variant file is missing or when `availableLocales` lists locales without matching on-disk variant files.
+- `loadStarterContentRecords()` returns `localizedVariantGroups` and `variantBindings` for reviewer-visible parallel variant proof and locale-aware navigation dedupe.
+- `projectDocsShellNavigation(records, { variantBindings })` selects the canonical-locale variant label by default; pass `{ locale }` for localized nav labels.
+- `resolveLocalizedContentVariant()` and `selectLocalizedVariantBinding()` in `src/lib/content/localized-content-resolution.ts` centralize locale-aware content resolution and canonical-locale fallback; `loadDocPage(slug, contentRoot, { locale })` returns reviewer-verifiable `resolution` metadata.
+- `LocaleAwareContentProjection`, `projectLocaleAwareContent()`, and `projectLocaleAwareContentCatalog()` in `src/lib/content/locale-aware-content-projection.ts` expose durable metadata seams for later navigation and search work; `loadDocPage()` and `projectDocsShellNavigation()` attach `localeProjection` when variant bindings are available.
 
 ## 2026-06-16T15:47:18Z - canonical-content-model-foundation-001
 - What was implemented
@@ -203,4 +209,91 @@
   - Patterns discovered: localized variant identity is a projection layer on top of `CanonicalContentRecord`; group bindings by `buildStarterContentPathKey()` (`{kind}/{slug}`) rather than inferring relationships from filenames alone.
   - Gotchas encountered: listing every locale file in a slug directory creates duplicate variant locales when both `.md` and `.mdx` exist—resolve one file per locale tag before identity validation.
   - Useful context: variant locales and `availableLocales` must align with `SUPPORTED_LOCALES` from `src/localization/config/locales.ts` at the identity validation layer even when single-record metadata still accepts broader BCP 47 tags.
+---
+
+## 2026-06-17T12:00:00Z - localized-content-identity-foundation-002
+- What was implemented
+  - Added `validateExplicitStarterLocaleMetadata()` and `validateLocaleRegistryMetadata()` in `src/lib/content/locale-metadata-validation.ts` to require explicit locale metadata frontmatter and enforce supported-locale registry membership at build time.
+  - Updated `validateStarterContent()` to run explicit metadata and registry validation before canonical record projection; removed filename-based inference for `canonicalLocale` and `availableLocales` in `buildMetadataFromStarterContent()`.
+  - Extended `validateLocalizedVariantBindings()` to fail when the canonical-locale variant file is missing or when `availableLocales` lists locales without matching on-disk variant files.
+  - Added focused tests and invalid fixtures for inferred metadata, registry drift, and missing canonical-locale variants.
+- Files changed
+  - `src/lib/content/locale-metadata-validation.ts`
+  - `src/lib/content/starter.ts`
+  - `src/lib/content/localized-variant-identity.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/locale-metadata-validation.test.ts`
+  - `tests/unit/starter-content.test.ts`
+  - `tests/fixtures/starter-content/docs/inferred-locale-metadata/en.mdx`
+  - `tests/fixtures/starter-content/docs/missing-canonical-variant/fr.mdx`
+  - `tests/fixtures/starter-content/docs/unsupported-registry-locale/en.mdx`
+  - `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: keep explicit frontmatter validation on raw parsed frontmatter before metadata projection so reviewers can see omission failures instead of silent filename inference.
+  - Gotchas encountered: registry validation belongs on the starter build path even when generic `validateContentMetadata()` still accepts broader BCP 47 tags such as `en-US`.
+  - Useful context: group-level missing-variant checks should run after per-file validation succeeds so failures surface with content-path prefixes like `doc/slug.canonicalLocale`.
+---
+
+## 2026-06-17T18:00:00Z - localized-content-identity-foundation-003
+- What was implemented
+  - Added parallel `en` and `fr` doc locale variants for `docs/getting-started` sharing canonical page id `doc/getting-started` with explicit `availableLocales: [en, fr]`.
+  - Extended `loadStarterContentRecords()` to return `localizedVariantGroups` and `variantBindings` as reviewer-visible parallel variant output.
+  - Deduplicated published doc slugs in `listPublishedDocSlugs()` and taught `projectDocsShellNavigation()` to select canonical-locale nav labels via `variantBindings`.
+  - Added focused proof tests in `tests/unit/localized-starter-content.test.ts`.
+- Files changed
+  - `src/content/docs/getting-started/en.mdx`
+  - `src/content/docs/getting-started/fr.mdx`
+  - `src/lib/content/load-starter-content.ts`
+  - `src/lib/content/load-doc-page.ts`
+  - `src/lib/content/docs-navigation.ts`
+  - `src/lib/content/load-docs-navigation.ts`
+  - `tests/unit/localized-starter-content.test.ts`
+  - `tests/unit/starter-content.test.ts`
+  - `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: parallel locale variants produce multiple canonical records with the same id; navigation and static params must dedupe by canonical page id while `localizedVariantGroups` carries the shared identity metadata.
+  - Gotchas encountered: order-based dedupe alone picks arbitrary variant labels when parallel records share the same `order`; pass `variantBindings` into navigation projection to prefer the canonical-locale variant.
+  - Useful context: story 004 should implement locale-aware doc page resolution and fallback using the same binding/group metadata rather than inventing path conventions.
+---
+
+## 2026-06-17T20:30:00Z - localized-content-identity-foundation-004
+- What was implemented
+  - Added `resolveLocalizedContentVariant()` and `selectLocalizedVariantBinding()` in `src/lib/content/localized-content-resolution.ts` to resolve locale-aware doc content with canonical-locale fallback for unsupported or missing variants.
+  - Extended `loadDocPage()` with optional `{ locale }` and reviewer-verifiable `resolution` metadata (`requestedLocale`, `resolvedLocale`, `fellBackToCanonicalLocale`).
+  - Refactored docs navigation representative-record selection to reuse `selectLocalizedVariantBinding()` so nav labels follow the same fallback rules.
+  - Added focused tests in `tests/unit/localized-content-resolution.test.ts` and locale-aware fallback cases in `tests/unit/load-doc-page.test.ts`.
+- Files changed
+  - `src/lib/content/localized-content-resolution.ts`
+  - `src/lib/content/load-doc-page.ts`
+  - `src/lib/content/docs-navigation.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/localized-content-resolution.test.ts`
+  - `tests/unit/load-doc-page.test.ts`
+  - `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: keep fallback resolution in one module consumed by both `loadDocPage()` and `projectDocsShellNavigation()` so page body and nav labels stay aligned.
+  - Gotchas encountered: when multiple locale records share one canonical page id, pick the binding for `resolution.resolvedLocale` rather than the first matching slug record.
+  - Useful context: story 005 should build locale-aware projections on top of `LocalizedContentResolution` rather than re-deriving fallback state.
+---
+
+## 2026-06-17T22:00:00Z - localized-content-identity-foundation-005
+- What was implemented
+  - Added `LocaleAwareContentProjection`, `projectLocaleAwareContent()`, and `projectLocaleAwareContentCatalog()` in `src/lib/content/locale-aware-content-projection.ts` to expose canonical page id, canonical locale, requested locale, resolved locale, and available locales as a stable typed seam for later navigation and search generation.
+  - Extended `loadDocPage()` to return `localeProjection` alongside `resolution` and taught `projectDocsShellNavigation()` to attach `localeProjection` on nav pages when variant bindings are provided.
+  - Added focused tests in `tests/unit/locale-aware-content-projection.test.ts` for direct localized-variant and canonical-locale fallback projection shapes.
+  - Documented projection patterns in `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`.
+- Files changed
+  - `src/lib/content/locale-aware-content-projection.ts`
+  - `src/lib/content/load-doc-page.ts`
+  - `src/lib/content/docs-navigation.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/locale-aware-content-projection.test.ts`
+  - `tests/unit/load-doc-page.test.ts`
+  - `tests/unit/docs-navigation.test.ts`
+  - `tests/unit/localized-starter-content.test.ts`
+  - `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: build locale-aware projections on top of `LocalizedContentResolution` and validated variant bindings rather than inferring `availableLocales` from file paths or route strings.
+  - Gotchas encountered: docs-shell navigation filters pages by locale availability before projection—fallback projection proofs belong on `projectLocaleAwareContent()` or `loadDocPage()`, not on filtered nav queries for unsupported locales.
+  - Useful context: `projectLocaleAwareContentCatalog()` is the batch entry point for later search-document generation across canonical page ids.
 ---
