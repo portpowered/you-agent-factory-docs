@@ -28,7 +28,7 @@
 `package.json` scripts mirror the Makefile targets for direct Bun invocation:
 
 - `bun run dev` — local dev server
-- `bun run typecheck` — `tsc --noEmit`
+- `bun run typecheck` — `tsc --noEmit` on the bootstrap branch; the reconciled default baseline prefixes `next typegen` (see `reconcile-bootstrap-foundation-baseline-divergence.md`).
 - `bun run lint` — `biome check .`
 - `bun run test` — `bun test`
 - `bun run build` — `next build`

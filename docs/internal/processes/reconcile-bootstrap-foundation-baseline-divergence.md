@@ -14,14 +14,18 @@ This record documents reconciliation-specific differences between `bootstrap-sta
 
 ## Meaningful divergence
 
-**No meaningful divergence.**
+One small corrective command-path edit was required after reconciliation review:
 
-The reconciled default baseline preserves the delivered bootstrap scaffold without behavioral or command-path changes:
+| Surface | Divergence | Reason | Preserved behavior |
+| --- | --- | --- | --- |
+| `package.json` `typecheck` script | Runs `next typegen && tsc --noEmit` instead of bootstrap's `tsc --noEmit` only | `make check` failed on a clean checkout with `TS6053` because `tsconfig.json` and `next-env.d.ts` reference `.next/types` files that do not exist until Next generates them | Static-export scaffold, homepage/docs shells, and `make build` output remain unchanged; typecheck still validates the same project sources after route types are generated |
+
+All other bootstrap surfaces remain unchanged:
 
 | Surface | Divergence |
 | --- | --- |
 | Static-export scaffold (`next.config.ts`, `src/app/`, `src/components/`, `src/lib/`) | None — carried forward unchanged via PR #1 merge |
-| Root command path (`Makefile`, `package.json` scripts) | None |
+| Root `Makefile` targets | None |
 | Homepage shell behavior | None |
 | `/docs` shell entry route behavior | None |
 | Static export and GitHub Pages route/asset handling | None |

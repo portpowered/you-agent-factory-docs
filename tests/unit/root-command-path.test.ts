@@ -1,5 +1,14 @@
 import { describe, expect, test } from "bun:test";
+import { rmSync } from "node:fs";
+import { join } from "node:path";
 import { runMakeTarget } from "../helpers/make-target";
+
+const projectRoot = join(import.meta.dir, "../..");
+
+function cleanNextTypeArtifacts() {
+  rmSync(join(projectRoot, ".next"), { recursive: true, force: true });
+  rmSync(join(projectRoot, "tsconfig.tsbuildinfo"), { force: true });
+}
 
 const verifyingMakeTest = process.env.VERIFYING_MAKE_TEST === "1";
 const testUnlessVerifying = verifyingMakeTest ? test.skip : test;
@@ -13,11 +22,14 @@ describe("root contributor command path", () => {
   });
 
   test("make check completes successfully from the repository root", () => {
+    cleanNextTypeArtifacts();
+
     const result = runMakeTarget("check");
 
     expect(result.status).toBe(0);
-    expect(result.stdout).toMatch(/typecheck/);
-    expect(result.stdout).toMatch(/lint/);
+    expect(result.output).toMatch(/typecheck/);
+    expect(result.output).toMatch(/typegen/);
+    expect(result.output).toMatch(/lint/);
   }, 30_000);
 
   testUnlessVerifying(
