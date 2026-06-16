@@ -1,4 +1,5 @@
 import { PROJECT_NAME, PROJECT_TAGLINE } from "@/lib/project";
+import { LocalizationProvider } from "@/localization/context/localization-context";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -15,7 +16,9 @@ type RootLayoutProps = {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <LocalizationProvider>{children}</LocalizationProvider>
+      </body>
     </html>
   );
 }

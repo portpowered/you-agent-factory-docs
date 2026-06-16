@@ -32,9 +32,9 @@ describe("reconciled baseline browser export", () => {
   }, 120_000);
 
   afterAll(async () => {
-    await browser.close();
-    server.stop();
-  });
+    await browser?.close();
+    server?.stop();
+  }, 30_000);
 
   test("homepage shell renders project identity, value statement, and CTAs", async () => {
     const page = await browser.newPage();

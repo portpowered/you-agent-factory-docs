@@ -1,15 +1,18 @@
+"use client";
+
 import { SharedShell } from "@/components/shell/shared-shell";
-import {
-  DOCS_SHELL_FRAMING_TEXT,
-  DOCS_SHELL_TITLE,
-} from "@/lib/shared-shell-config";
+import { useMessages } from "@/localization/hooks/use-messages";
+import { createSharedShellConfigFromMessages } from "@/localization/lib/create-shared-shell-config";
 
 export function DocsShell() {
+  const { t } = useMessages();
+  const config = createSharedShellConfigFromMessages(t);
+
   return (
-    <SharedShell currentDocsItemId="overview" surface="docs">
+    <SharedShell config={config} currentDocsItemId="overview" surface="docs">
       <article aria-labelledby="docs-shell-title">
-        <h1 id="docs-shell-title">{DOCS_SHELL_TITLE}</h1>
-        <p className="docs-shell__framing">{DOCS_SHELL_FRAMING_TEXT}</p>
+        <h1 id="docs-shell-title">{t("docs.shellTitle")}</h1>
+        <p className="docs-shell__framing">{t("docs.framingText")}</p>
       </article>
     </SharedShell>
   );
