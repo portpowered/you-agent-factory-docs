@@ -1,3 +1,4 @@
+import { ResponsiveShellRoot } from "@/components/shell/responsive-shell-root";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
 import {
   DOCS_CTA_LABEL,
@@ -9,7 +10,7 @@ import Link from "next/link";
 
 export function LandingShell() {
   return (
-    <div className="landing-shell">
+    <ResponsiveShellRoot className="landing-shell">
       <header className="landing-shell__header">
         <p className="landing-shell__brand">{PROJECT_NAME}</p>
         <nav aria-label="Primary" className="landing-shell__header-nav">
@@ -49,6 +50,6 @@ export function LandingShell() {
           </div>
         </section>
       </main>
-    </div>
+    </ResponsiveShellRoot>
   );
 }

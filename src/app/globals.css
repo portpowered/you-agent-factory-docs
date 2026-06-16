@@ -127,7 +127,8 @@ body {
   outline-offset: 2px;
 }
 
-@media (max-width: 640px) {
+/* Breakpoints align with src/lib/responsive-tokens.ts (mobileMax: 639px). */
+@media (max-width: 639px) {
   .landing-shell__header {
     flex-direction: column;
     align-items: flex-start;
@@ -255,7 +256,8 @@ body {
   outline-offset: 2px;
 }
 
-@media (max-width: 768px) {
+/* Breakpoints align with src/lib/responsive-tokens.ts (tabletMax: 1023px). */
+@media (max-width: 1023px) {
   .docs-shell__header {
     flex-direction: column;
     align-items: flex-start;

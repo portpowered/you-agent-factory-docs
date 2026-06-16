@@ -1,3 +1,4 @@
+import { ResponsiveShellRoot } from "@/components/shell/responsive-shell-root";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
 import {
   DOCS_NAV_HEADING,
@@ -12,7 +13,7 @@ import Link from "next/link";
 
 export function DocsShell() {
   return (
-    <div className="docs-shell">
+    <ResponsiveShellRoot className="docs-shell">
       <header className="docs-shell__header">
         <p className="docs-shell__brand">{PROJECT_NAME}</p>
         <nav aria-label="Site" className="docs-shell__header-nav">
@@ -53,6 +54,6 @@ export function DocsShell() {
           </article>
         </main>
       </div>
-    </div>
+    </ResponsiveShellRoot>
   );
 }
