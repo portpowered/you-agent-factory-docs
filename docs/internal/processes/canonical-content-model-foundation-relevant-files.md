@@ -17,10 +17,20 @@
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
 
+## Docs shell navigation projection
+
+- `DocsShellNavigationInput` in `src/lib/content/docs-navigation.ts` is the projected docs-shell navigation shape, separate from `CanonicalContentRecord`.
+- `projectDocsShellNavigation()` derives section-grouped page labels and hrefs from published doc records.
+- `loadDocsShellNavigation()` loads starter fixtures and projects navigation for the docs shell page.
+- `DocsShell` in `src/components/docs/docs-shell.tsx` consumes generated navigation input via props; avoid hand-maintained nav entry lists in shell constants.
+
 ## Tests
 
 - Content validation behavior is covered in `tests/unit/content-validation.test.ts`.
 - Starter content loading and validation is covered in `tests/unit/starter-content.test.ts`.
+- Docs navigation projection is covered in `tests/unit/docs-navigation.test.ts`.
+- Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
+- Served static export HTML includes generated docs navigation in `tests/unit/static-export.test.ts`.
 - Prefer asserting observable validation results and projected record fields, not file inventories or internal helper existence.
 
 ## Quality checks

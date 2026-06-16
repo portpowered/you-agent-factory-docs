@@ -16,7 +16,5 @@ export const DOCS_SHELL_TITLE = "Documentation";
 
 export const DOCS_NAV_HEADING = "Docs navigation";
 
-export const DOCS_NAV_OVERVIEW_LABEL = "Overview";
-
 export const DOCS_SHELL_FRAMING_TEXT =
   "This is the stable docs entry route. Later navigation, localization, and content systems extend this shell without changing route structure.";

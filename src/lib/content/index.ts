@@ -39,3 +39,10 @@ export {
   starterContentRootExists,
   type LoadedStarterContent,
 } from "@/lib/content/load-starter-content";
+export {
+  projectDocsShellNavigation,
+  type DocsShellNavPage,
+  type DocsShellNavSection,
+  type DocsShellNavigationInput,
+} from "@/lib/content/docs-navigation";
+export { loadDocsShellNavigation } from "@/lib/content/load-docs-navigation";

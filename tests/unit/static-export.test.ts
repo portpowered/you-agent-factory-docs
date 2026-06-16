@@ -69,4 +69,23 @@ describe("served static export navigation", () => {
 
     expect(docsResponse.status).toBe(200);
   }, 30_000);
+
+  test("renders generated docs navigation from canonical content records", async () => {
+    const docsResponse = await fetchHttp(
+      new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const docsHtml = await docsResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+
+    expect(docsHtml).toContain("Getting started");
+    expect(docsHtml).toContain("Guides");
+    expect(new RegExp(`href="${gettingStartedPath}/?"`).test(docsHtml)).toBe(
+      true,
+    );
+    expect(docsHtml).not.toContain("Overview");
+  }, 30_000);
 });

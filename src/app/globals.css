@@ -196,6 +196,17 @@ body {
   color: var(--landing-muted);
 }
 
+.docs-shell__nav-section + .docs-shell__nav-section {
+  margin-top: 1.25rem;
+}
+
+.docs-shell__nav-section-heading {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--landing-muted);
+}
+
 .docs-shell__nav-list {
   margin: 0;
   padding: 0;
