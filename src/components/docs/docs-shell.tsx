@@ -1,5 +1,8 @@
 import { SharedShell } from "@/components/shell/shared-shell";
-import { DOCS_SHELL_FRAMING_TEXT, DOCS_SHELL_TITLE } from "@/lib/shell";
+import {
+  DOCS_SHELL_FRAMING_TEXT,
+  DOCS_SHELL_TITLE,
+} from "@/lib/shared-shell-config";
 
 export function DocsShell() {
   return (

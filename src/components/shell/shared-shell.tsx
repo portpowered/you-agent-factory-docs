@@ -5,6 +5,7 @@ import {
   sharedShellConfig,
   shouldRenderDocsSidebar,
 } from "@/lib/shared-shell-config";
+import { getSharedShellDocsNavigationGroups } from "@/lib/shared-shell-extension-points";
 import type { ReactNode } from "react";
 import { SharedShellHeader } from "./shared-shell-header";
 import { SharedShellDocsNavigation } from "./shared-shell-navigation";
@@ -23,19 +24,24 @@ function SharedShellDocsAside({
   config: SharedShellConfig;
   currentDocsItemId?: string;
 }) {
-  const docsNavigation = config.docsNavigation;
+  const docsNavigationGroups = getSharedShellDocsNavigationGroups(config);
 
-  if (!docsNavigation) {
+  if (docsNavigationGroups.length === 0) {
     return null;
   }
 
   return (
-    <SharedShellDocsNavigation
-      ariaLabel={docsNavigation.heading}
-      currentItemId={currentDocsItemId}
-      heading={docsNavigation.heading}
-      items={docsNavigation.items}
-    />
+    <aside className="shared-shell__docs-aside">
+      {docsNavigationGroups.map((docsNavigation) => (
+        <SharedShellDocsNavigation
+          ariaLabel={docsNavigation.heading}
+          currentItemId={currentDocsItemId}
+          heading={docsNavigation.heading}
+          items={docsNavigation.items}
+          key={docsNavigation.heading}
+        />
+      ))}
+    </aside>
   );
 }
 

@@ -47,7 +47,8 @@ export type SharedShellConfig = {
   brand: string;
   primaryNavigation: SharedShellPrimaryNavigation;
   headerDestinationIdsBySurface: Record<SharedShellSurface, string[]>;
-  docsNavigation?: SharedShellDocsNavigationGroup;
+  /** Extend this array for richer docs navigation without changing the shell frame. */
+  docsNavigationGroups: SharedShellDocsNavigationGroup[];
   structural: SharedShellStructuralOptions;
   responsive: SharedShellResponsiveOptions;
 };
@@ -109,16 +110,18 @@ export const sharedShellConfig: SharedShellConfig = {
     home: [sharedShellDestinations.docs.id, sharedShellDestinations.github.id],
     docs: [sharedShellDestinations.home.id, sharedShellDestinations.github.id],
   },
-  docsNavigation: {
-    heading: DOCS_NAV_HEADING,
-    items: [
-      {
-        id: "overview",
-        label: DOCS_NAV_OVERVIEW_LABEL,
-        href: DOCS_ENTRY_ROUTE,
-      },
-    ],
-  },
+  docsNavigationGroups: [
+    {
+      heading: DOCS_NAV_HEADING,
+      items: [
+        {
+          id: "overview",
+          label: DOCS_NAV_OVERVIEW_LABEL,
+          href: DOCS_ENTRY_ROUTE,
+        },
+      ],
+    },
+  ],
   structural: {
     showDocsSidebar: true,
     footerText: PROJECT_NAME,

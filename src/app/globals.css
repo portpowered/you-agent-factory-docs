@@ -119,9 +119,17 @@ body {
   padding: 2rem 1.25rem 3rem;
 }
 
+.shared-shell__docs-aside {
+  border-right: 1px solid var(--landing-border);
+  background: var(--landing-surface);
+}
+
+.shared-shell__docs-aside .shared-shell__docs-nav + .shared-shell__docs-nav {
+  border-top: 1px solid var(--landing-border);
+}
+
 .shared-shell__docs-nav {
   padding: 1.5rem 1.25rem;
-  border-right: 1px solid var(--landing-border);
   background: var(--landing-surface);
 }
 
@@ -314,9 +322,14 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .shared-shell__docs-nav {
+  .shared-shell__docs-aside {
     border-right: none;
     border-bottom: 1px solid var(--landing-border);
+  }
+
+  .shared-shell__docs-nav {
+    border-right: none;
+    border-bottom: none;
     padding: 1rem 1.25rem;
   }
 

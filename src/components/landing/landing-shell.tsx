@@ -5,7 +5,7 @@ import {
   GITHUB_CTA_LABEL,
   GITHUB_REPO_URL,
   LANDING_VALUE_STATEMENT,
-} from "@/lib/shell";
+} from "@/lib/shared-shell-config";
 import Link from "next/link";
 
 export function LandingShell() {

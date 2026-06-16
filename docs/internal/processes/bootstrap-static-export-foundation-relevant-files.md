@@ -12,7 +12,7 @@
 
 - Next.js App Router lives under `src/app/`.
 - Shared non-UI constants start in `src/lib/` (for example `src/lib/project.ts`).
-- Shared homepage and docs-shell copy, CTA labels, and external links live in `src/lib/shell.ts` so later localization can replace the same keys without revisiting routes. The GitHub CTA points at the public `you-agent-factory` repository while the docs repo may remain private during bootstrap.
+- Shared homepage and docs-shell copy, CTA labels, and external links live in `src/lib/shared-shell-config.ts` via `sharedShellConfig`; later localization and docs navigation lanes extend that canonical config (see `src/lib/shared-shell-extension-points.ts`) instead of route-local shell wiring. `src/lib/shell.ts` remains a deprecated re-export for legacy imports. The GitHub CTA points at the public `you-agent-factory` repository while the docs repo may remain private during bootstrap.
 - The homepage landing shell lives in `src/components/landing/landing-shell.tsx` and is rendered from `src/app/page.tsx`.
 - The docs shell lives in `src/components/docs/docs-shell.tsx` and is rendered from `src/app/docs/page.tsx`.
 - GitHub Pages base-path and route constants live in `src/lib/site.ts`; `next.config.ts` imports `SITE_BASE_PATH` from there so export settings stay aligned with link helpers.

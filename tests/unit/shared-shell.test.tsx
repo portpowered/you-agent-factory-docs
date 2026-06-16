@@ -74,7 +74,7 @@ describe("shared shell structure", () => {
     );
 
     const docsNav = screen.getByRole("navigation", {
-      name: sharedShellConfig.docsNavigation?.heading,
+      name: sharedShellConfig.docsNavigationGroups[0]?.heading,
     });
 
     expect(
