@@ -1,9 +1,13 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
 import type { DocsShellNavigationInput } from "../../src/lib/content";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shell";
 import { enMessages } from "../../src/localization/messages/en";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
@@ -11,7 +15,9 @@ mock.module("next/link", () => ({
   default: MockLink,
 }));
 
-const { DocsShell } = await import("../../src/components/docs/docs-shell");
+afterEach(() => {
+  mock.restore();
+});
 
 const generatedNavigation: DocsShellNavigationInput = {
   sections: [
@@ -31,7 +37,11 @@ const generatedNavigation: DocsShellNavigationInput = {
 };
 
 describe("docs shell rendering", () => {
-  test("renders header, generated docs navigation, and main content landmarks", () => {
+  test("renders header, generated docs navigation, and main content landmarks", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
     renderWithLocalization(
       <DocsShell navigation={generatedNavigation}>
         <article aria-labelledby="docs-shell-title">
@@ -59,7 +69,11 @@ describe("docs shell rendering", () => {
     expect(screen.getByText("Getting started")).toBeTruthy();
   });
 
-  test("marks the active generated nav entry and links home and GitHub", () => {
+  test("marks the active generated nav entry and links home and GitHub", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
     renderWithLocalization(
       <DocsShell
         currentPath="/docs/getting-started"
@@ -93,7 +107,11 @@ describe("docs shell rendering", () => {
     expect(gettingStartedLink.getAttribute("aria-current")).toBe("page");
   });
 
-  test("does not mark docs entry overview as active when viewing generated pages", () => {
+  test("does not mark docs entry overview as active when viewing generated pages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
     renderWithLocalization(
       <DocsShell
         currentPath={DOCS_ENTRY_ROUTE}

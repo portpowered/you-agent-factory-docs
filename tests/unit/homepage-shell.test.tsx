@@ -1,9 +1,13 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shell";
 import { enMessages } from "../../src/localization/messages/en";
 import { fetchHttp } from "../helpers/http";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
@@ -11,12 +15,18 @@ mock.module("next/link", () => ({
   default: MockLink,
 }));
 
-const { LandingShell } = await import(
-  "../../src/components/landing/landing-shell"
-);
+afterEach(() => {
+  mock.restore();
+});
 
 describe("homepage shell rendering", () => {
-  test("renders project identity, value statement, and primary CTAs from messages", () => {
+  test("renders project identity, value statement, and primary CTAs from messages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
     renderWithLocalization(<LandingShell />);
 
     expect(
@@ -39,7 +49,13 @@ describe("homepage shell rendering", () => {
     expect(githubLinks[0]?.getAttribute("rel")).toBe("noopener noreferrer");
   });
 
-  test("exposes keyboard-reachable docs and GitHub CTAs in the hero", () => {
+  test("exposes keyboard-reachable docs and GitHub CTAs in the hero", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
     renderWithLocalization(<LandingShell />);
 
     const hero = screen.getByRole("main");

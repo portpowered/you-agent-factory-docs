@@ -1,4 +1,5 @@
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
+import { RESPONSIVE_BREAKPOINTS_PX } from "@/lib/responsive-tokens";
 
 /** Canonical destination in shared shell navigation and CTAs. */
 export type SharedShellDestination = {
@@ -34,6 +35,10 @@ export type SharedShellStructuralOptions = {
 export type SharedShellResponsiveOptions = {
   narrowMaxWidthPx: number;
   navigationDisclosure: {
+    openLabel: string;
+    closeLabel: string;
+  };
+  docsNavigationDisclosure: {
     openLabel: string;
     closeLabel: string;
   };
@@ -127,10 +132,14 @@ export const sharedShellConfig: SharedShellConfig = {
     footerText: PROJECT_NAME,
   },
   responsive: {
-    narrowMaxWidthPx: 768,
+    narrowMaxWidthPx: RESPONSIVE_BREAKPOINTS_PX.tabletMax,
     navigationDisclosure: {
       openLabel: "Open menu",
       closeLabel: "Close menu",
+    },
+    docsNavigationDisclosure: {
+      openLabel: "Show docs navigation",
+      closeLabel: "Hide docs navigation",
     },
   },
 };

@@ -1,30 +1,36 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import {
   DOCS_CTA_LABEL,
   GITHUB_CTA_LABEL,
   sharedShellConfig,
 } from "../../src/lib/shared-shell-config";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 
 mock.module("next/link", () => ({
   default: MockLink,
 }));
 
-const { useSharedShellNavigationDisclosure } = await import(
-  "../../src/hooks/use-shared-shell-navigation-disclosure"
+afterEach(() => {
+  mock.restore();
+});
+
+const { useShellDisclosure } = await import(
+  "../../src/hooks/layout/useShellDisclosure"
 );
 const { SharedShellHeader } = await import(
   "../../src/components/shell/shared-shell-header"
 );
 const { SharedShell } = await import("../../src/components/shell/shared-shell");
 
-function DisclosureProbe({
-  initialOpen = false,
-}: {
-  initialOpen?: boolean;
-}) {
-  const disclosure = useSharedShellNavigationDisclosure(initialOpen);
+function DisclosureProbe() {
+  const disclosure = useShellDisclosure({
+    panelId: "shared-shell-primary-nav",
+  });
 
   return (
     <div>
@@ -44,6 +50,8 @@ function DisclosureProbe({
 
 describe("shared shell navigation disclosure hook", () => {
   test("starts closed for SSR-safe initial render and toggles projected open state", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
     render(<DisclosureProbe />);
 
     expect(screen.getByTestId("open-state").textContent).toBe("closed");
@@ -61,31 +69,33 @@ describe("shared shell navigation disclosure hook", () => {
 
 describe("shared shell responsive header", () => {
   test("renders a menu toggle wired to primary navigation disclosure state", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
     render(<SharedShellHeader config={sharedShellConfig} surface="home" />);
 
     const menuToggle = screen.getByRole("button", { name: "Open menu" });
-    const primaryNav = screen.getByRole("navigation", { name: "Primary" });
 
     expect(menuToggle.getAttribute("aria-controls")).toBe(
       "shared-shell-primary-nav",
     );
     expect(menuToggle.getAttribute("aria-expanded")).toBe("false");
-    expect(primaryNav.getAttribute("id")).toBe("shared-shell-primary-nav");
-    expect(primaryNav.className).not.toContain(
-      "shared-shell__header-nav--open",
-    );
+    expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
 
     fireEvent.click(menuToggle);
+
+    const primaryNav = screen.getByRole("navigation", { name: "Primary" });
 
     expect(
       screen
         .getByRole("button", { name: "Close menu" })
         .getAttribute("aria-expanded"),
     ).toBe("true");
-    expect(primaryNav.className).toContain("shared-shell__header-nav--open");
+    expect(primaryNav).toBeTruthy();
   });
 
   test("keeps primary navigation links keyboard reachable when disclosure is open", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
     render(<SharedShellHeader config={sharedShellConfig} surface="home" />);
 
     fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
@@ -105,6 +115,8 @@ describe("shared shell responsive header", () => {
   });
 
   test("derives disclosure labels from sharedShellConfig rather than local constants", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
     const customConfig = {
       ...sharedShellConfig,
       responsive: {
@@ -126,6 +138,8 @@ describe("shared shell responsive header", () => {
 
 describe("shared shell responsive layout contract", () => {
   test("uses the same responsive header on homepage and docs surfaces", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
     const { rerender } = render(
       <SharedShell surface="home">
         <p>Home</p>
@@ -133,9 +147,8 @@ describe("shared shell responsive layout contract", () => {
     );
 
     expect(screen.getByRole("button", { name: "Open menu" })).toBeTruthy();
-    expect(
-      screen.getByRole("navigation", { name: "Primary" }).getAttribute("id"),
-    ).toBe("shared-shell-primary-nav");
+    fireEvent.click(screen.getByRole("button", { name: "Open menu" }));
+    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
 
     rerender(
       <SharedShell surface="docs">
@@ -143,9 +156,7 @@ describe("shared shell responsive layout contract", () => {
       </SharedShell>,
     );
 
-    expect(screen.getByRole("button", { name: "Open menu" })).toBeTruthy();
-    expect(
-      screen.getByRole("navigation", { name: "Primary" }).getAttribute("id"),
-    ).toBe("shared-shell-primary-nav");
+    expect(screen.getByRole("button", { name: "Close menu" })).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
   });
 });

@@ -10,6 +10,10 @@ import {
   SHARED_SHELL_PROJECTED_EXTENSION_POINTS,
   createSharedShellConfig,
 } from "../../src/lib/shared-shell-extension-points";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 
 mock.module("next/link", () => ({
@@ -28,10 +32,12 @@ describe("shared shell extension points", () => {
     );
     expect(
       SHARED_SHELL_PROJECTED_EXTENSION_POINTS.navigationDisclosure,
-    ).toContain("useSharedShellNavigationDisclosure");
+    ).toContain("useShellDisclosure");
   });
 
   test("extends localized labels and additional docs navigation groups through createSharedShellConfig", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
     const localizedBrand = "Localized Factory";
     const guidesHeading = "Guides";
     const extendedConfig = createSharedShellConfig({
@@ -76,6 +82,8 @@ describe("shared shell extension points", () => {
   });
 
   test("keeps projected page content and disclosure state outside canonical config", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
     render(
       <SharedShell surface="home">
         <p>Projected homepage section</p>
