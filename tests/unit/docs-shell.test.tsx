@@ -110,12 +110,14 @@ describe("docs shell rendering", () => {
     expect(
       within(screen.getByRole("banner")).getByText(PROJECT_NAME),
     ).toBeTruthy();
-    expect(screen.getByText("Guides")).toBeTruthy();
-    expect(screen.getByText("Setup")).toBeTruthy();
-    expect(screen.getByText("Getting started")).toBeTruthy();
-    expect(screen.getByText("Core concepts")).toBeTruthy();
-    expect(screen.getByText("Installation")).toBeTruthy();
-    expect(screen.getByText("Configuration")).toBeTruthy();
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    const setupNav = screen.getByRole("navigation", { name: "Setup" });
+    expect(within(guidesNav).getByText("Guides")).toBeTruthy();
+    expect(within(setupNav).getByText("Setup")).toBeTruthy();
+    expect(within(guidesNav).getByText("Getting started")).toBeTruthy();
+    expect(within(guidesNav).getByText("Core concepts")).toBeTruthy();
+    expect(within(setupNav).getByText("Installation")).toBeTruthy();
+    expect(within(setupNav).getByText("Configuration")).toBeTruthy();
   });
 
   test("renders separate navigation landmarks for each generated docs section", async () => {
@@ -277,6 +279,69 @@ describe("docs shell rendering", () => {
 
     expect(currentCrumb.getAttribute("aria-current")).toBe("page");
     expect(within(breadcrumbs).queryByRole("link")).toBeNull();
+  });
+
+  test("renders generated previous-next progression across docs detail pages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const progression = screen.getByRole("navigation", {
+      name: enMessages.docs.progressionAriaLabel,
+    });
+
+    expect(
+      within(progression).queryByRole("link", {
+        name: `${enMessages.docs.previousPagePrefix} Core concepts`,
+      }),
+    ).toBeNull();
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts");
+  });
+
+  test("renders previous progression when the current page is not first in sequence", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell currentPath="/docs/concepts" navigation={generatedNavigation}>
+        <h1>Core concepts</h1>
+      </DocsShell>,
+    );
+
+    const progression = screen.getByRole("navigation", {
+      name: enMessages.docs.progressionAriaLabel,
+    });
+
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.previousPagePrefix} Getting started`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/getting-started");
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Installation`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/installation");
   });
 
   test("marks the code presentation example route as current when active", async () => {

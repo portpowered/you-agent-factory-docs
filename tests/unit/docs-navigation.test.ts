@@ -7,6 +7,7 @@ import {
   StarterContentValidationError,
   loadDocsShellNavigation,
   projectDocsBreadcrumbs,
+  projectDocsProgression,
   projectDocsShellNavigation,
   requireStarterContentRecords,
 } from "../../src/lib/content";
@@ -411,6 +412,115 @@ describe("docs breadcrumb projection", () => {
         { label: "Setup" },
         { label: "Installation" },
       ],
+    });
+  });
+});
+
+describe("docs progression projection", () => {
+  const multiSectionNavigation = projectDocsShellNavigation([
+    createDocRecord({
+      id: "doc/installation",
+      slug: "installation",
+      routePath: "/docs/installation",
+      navigationTitle: "Installation",
+      section: "setup",
+      order: 1,
+    }),
+    createDocRecord({
+      id: "doc/configuration",
+      slug: "configuration",
+      routePath: "/docs/configuration",
+      navigationTitle: "Configuration",
+      section: "setup",
+      order: 2,
+    }),
+    createDocRecord({
+      id: "doc/concepts",
+      slug: "concepts",
+      routePath: "/docs/concepts",
+      navigationTitle: "Core concepts",
+      order: 2,
+    }),
+    createDocRecord(),
+  ]);
+
+  test("projects next progression from docs entry to the first generated page", () => {
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs",
+      }),
+    ).toEqual({
+      next: {
+        label: "Getting started",
+        href: "/docs/getting-started",
+      },
+    });
+  });
+
+  test("projects previous and next links from flattened docs navigation ordering", () => {
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs/concepts",
+      }),
+    ).toEqual({
+      previous: {
+        label: "Getting started",
+        href: "/docs/getting-started",
+      },
+      next: {
+        label: "Installation",
+        href: "/docs/installation",
+      },
+    });
+  });
+
+  test("omits previous on the first page and next on the last page", () => {
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs/getting-started",
+      }),
+    ).toEqual({
+      next: {
+        label: "Core concepts",
+        href: "/docs/concepts",
+      },
+    });
+
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs/configuration",
+      }),
+    ).toEqual({
+      previous: {
+        label: "Installation",
+        href: "/docs/installation",
+      },
+    });
+  });
+
+  test("updates progression when canonical section or order metadata changes", () => {
+    const reordered = projectDocsShellNavigation([
+      createDocRecord({
+        id: "doc/installation",
+        slug: "installation",
+        routePath: "/docs/installation",
+        navigationTitle: "Installation",
+        section: "setup",
+        order: 0,
+      }),
+      createDocRecord({ order: 5 }),
+    ]);
+
+    expect(
+      projectDocsProgression(reordered, {
+        currentPath: "/docs/getting-started",
+      }),
+    ).toEqual({
+      previous: {
+        label: "Installation",
+        href: "/docs/installation",
+      },
+      next: undefined,
     });
   });
 });

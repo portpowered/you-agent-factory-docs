@@ -85,6 +85,11 @@ export {
   type DocsBreadcrumbTrail,
 } from "@/lib/content/docs-breadcrumbs";
 export {
+  projectDocsProgression,
+  type DocsProgressionLink,
+  type DocsProgressionLinks,
+} from "@/lib/content/docs-progression";
+export {
   projectLocalizedVariantGroups,
   projectLocalizedVariantIdentity,
   validateLocalizedVariantBindings,

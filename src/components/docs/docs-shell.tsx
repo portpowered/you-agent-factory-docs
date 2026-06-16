@@ -1,9 +1,11 @@
 "use client";
 
 import { DocsBreadcrumbs } from "@/components/docs/docs-breadcrumbs";
+import { DocsProgression } from "@/components/docs/docs-progression";
 import { SharedShell } from "@/components/shell/shared-shell";
 import type { DocsShellNavigationInput } from "@/lib/content";
 import { projectDocsBreadcrumbs } from "@/lib/content/docs-breadcrumbs";
+import { projectDocsProgression } from "@/lib/content/docs-progression";
 import {
   findCurrentDocsItemId,
   projectSharedShellDocsNavigation,
@@ -35,6 +37,7 @@ export function DocsShell({
     currentPath,
     docsRootLabel: t("docs.shellTitle"),
   });
+  const progression = projectDocsProgression(navigation, { currentPath });
 
   return (
     <SharedShell
@@ -47,6 +50,12 @@ export function DocsShell({
         trail={breadcrumbs}
       />
       {children}
+      <DocsProgression
+        ariaLabel={t("docs.progressionAriaLabel")}
+        nextPagePrefix={t("docs.nextPagePrefix")}
+        previousPagePrefix={t("docs.previousPagePrefix")}
+        progression={progression}
+      />
     </SharedShell>
   );
 }

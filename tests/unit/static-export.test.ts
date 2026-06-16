@@ -208,5 +208,57 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain(enMessages.docs.shellTitle);
     expect(docPageHtml).toContain("Guides");
     expect(docPageHtml).toContain('aria-current="page"');
+    expect(docPageHtml).toContain(
+      `aria-label="${enMessages.docs.progressionAriaLabel}"`,
+    );
+    expect(docPageHtml).toContain(enMessages.docs.nextPagePrefix);
+    expect(docPageHtml).toContain("Core concepts");
+    expect(docPageHtml).toContain('rel="next"');
+  }, 30_000);
+
+  test("follows generated previous-next progression across docs pages", async () => {
+    const gettingStartedResponse = await fetchHttp(
+      new URL(withBasePath("/docs/getting-started"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const gettingStartedHtml = await gettingStartedResponse.text();
+    const conceptsPath = withBasePath("/docs/concepts").replace(/\//g, "\\/");
+
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
+      ).test(gettingStartedHtml),
+    ).toBe(true);
+
+    const nextHrefMatch = gettingStartedHtml.match(
+      new RegExp(
+        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
+      ),
+    );
+    const nextHref = nextHrefMatch?.[1] ?? nextHrefMatch?.[2];
+
+    expect(nextHref).toBeTruthy();
+
+    const conceptsResponse = await fetchHttp(
+      new URL(nextHref ?? "", server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(conceptsResponse.status).toBe(200);
+
+    const conceptsHtml = await conceptsResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+
+    expect(conceptsHtml).toContain("Core concepts");
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${gettingStartedPath}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${gettingStartedPath}/?)"`,
+      ).test(conceptsHtml),
+    ).toBe(true);
+    expect(conceptsHtml).toContain(enMessages.docs.previousPagePrefix);
+    expect(conceptsHtml).toContain("Getting started");
   }, 30_000);
 });
