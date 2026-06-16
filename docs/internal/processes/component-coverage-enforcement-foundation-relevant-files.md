@@ -23,4 +23,11 @@ Documented in `COMPONENT_COVERAGE_OUT_OF_SCOPE_SURFACES`:
 - localization catalogs and formatting hooks
 - deployment, CI automation, and factory tooling
 
-Later stories wire threshold enforcement and CI through the same root command path without replacing this boundary module.
+## Component coverage enforcement command
+
+- `make component-coverage` and `bun run component-coverage` are the authoritative root entrypoints for threshold enforcement on the practical component-package surface.
+- `scripts/enforce-component-coverage.ts` runs `bun test --coverage` (ignoring `tests/unit/component-coverage-enforcement.test.ts` to avoid recursive subprocess invocation), parses the scoped coverage table, and enforces the 90% aggregate line-coverage threshold from `src/lib/component-coverage/enforce.ts`.
+- Failure output uses the `Component coverage enforcement failed` prefix so threshold breaches are distinguishable from unrelated test, lint, or typecheck failures.
+- `make component-coverage-boundary` remains the reviewer-visible boundary report; it does not run threshold enforcement.
+
+Later stories wire CI through the same `make component-coverage` command without replacing this enforcement module.
