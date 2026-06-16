@@ -1,5 +1,15 @@
 import { PROJECT_NAME, PROJECT_TAGLINE } from "@/lib/project";
 
+export const REQUIRED_FOUNDATION_CONTENT_FIELDS = [
+  "PROJECT_NAME",
+  "PROJECT_TAGLINE",
+] as const;
+
+export type FoundationContentField =
+  (typeof REQUIRED_FOUNDATION_CONTENT_FIELDS)[number];
+
+export type FoundationContentMetadata = Record<FoundationContentField, string>;
+
 export type FoundationContentIssue = {
   field: string;
   message: string;
@@ -14,30 +24,46 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
+/** Reads canonical project metadata for the current bootstrap content model. */
+export function getFoundationContentMetadata(): FoundationContentMetadata {
+  return {
+    PROJECT_NAME,
+    PROJECT_TAGLINE,
+  };
+}
+
 /** Validates canonical project metadata for the current bootstrap content model. */
-export function validateFoundationContentMetadata(): FoundationContentValidationResult {
+export function validateFoundationContentMetadata(
+  metadata: FoundationContentMetadata = getFoundationContentMetadata(),
+): FoundationContentValidationResult {
   const issues: FoundationContentIssue[] = [];
 
-  if (!isNonEmptyString(PROJECT_NAME)) {
-    issues.push({
-      field: "PROJECT_NAME",
-      message: "PROJECT_NAME must be a non-empty string",
-    });
-  }
+  for (const field of REQUIRED_FOUNDATION_CONTENT_FIELDS) {
+    if (!(field in metadata)) {
+      issues.push({
+        field,
+        message: `${field} is required`,
+      });
+      continue;
+    }
 
-  if (!isNonEmptyString(PROJECT_TAGLINE)) {
-    issues.push({
-      field: "PROJECT_TAGLINE",
-      message: "PROJECT_TAGLINE must be a non-empty string",
-    });
+    const value = metadata[field];
+    if (!isNonEmptyString(value)) {
+      issues.push({
+        field,
+        message: `${field} must be a non-empty string`,
+      });
+    }
   }
 
   return { valid: issues.length === 0, issues };
 }
 
 /** Throws when foundation content metadata fails validation. */
-export function assertValidFoundationContentMetadata(): void {
-  const result = validateFoundationContentMetadata();
+export function assertValidFoundationContentMetadata(
+  metadata: FoundationContentMetadata = getFoundationContentMetadata(),
+): void {
+  const result = validateFoundationContentMetadata(metadata);
   if (result.valid) {
     return;
   }

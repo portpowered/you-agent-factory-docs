@@ -34,7 +34,13 @@ Deferred from this early lane (see `DEFERRED_PHASE_8_QUALITY_CHECKS`):
 
 Later localization message catalogs and canonical content-model validators should plug into the same `validate:localization` and `validate:content` scripts instead of introducing a parallel gate surface.
 
+Pure validators accept injectable copy/metadata records (`getShellLocalizationCopy`, `getFoundationContentMetadata`) so unit tests can prove rejection without mutating production modules.
+
+`src/lib/validation/gate-fixtures.ts` exposes `EARLY_GATE_VALIDATION_FIXTURE` values for subprocess failing-path proof in `tests/unit/quality-gate-validation-failing-path.test.ts`. Use this only in tests; production runs omit the env var.
+
 ## Contract tests
 
 - `tests/unit/quality-gate.test.ts` verifies the make/bun command contract and runs the full gate on the current baseline.
+- `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization and content regressions fail through the shared validate scripts and that `make quality-gate` fails fast on a broken localization fixture.
 - `tests/helpers/make.ts` supports dry-run assertions against the root `Makefile`.
+- `tests/helpers/validation.ts` runs `validate:localization` and `validate:content` with optional gate fixtures.
