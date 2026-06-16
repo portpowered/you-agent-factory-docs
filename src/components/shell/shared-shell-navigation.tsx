@@ -45,17 +45,25 @@ export function SharedShellNavigationLink({
 
 export type SharedShellPrimaryNavigationProps = {
   ariaLabel: string;
+  className?: string;
   currentDestinationId?: string;
   destinations: SharedShellDestination[];
+  id?: string;
 };
 
 export function SharedShellPrimaryNavigation({
   ariaLabel,
+  className,
   currentDestinationId,
   destinations,
+  id,
 }: SharedShellPrimaryNavigationProps) {
   return (
-    <nav aria-label={ariaLabel} className="shared-shell__header-nav">
+    <nav
+      aria-label={ariaLabel}
+      className={joinClassNames("shared-shell__header-nav", className)}
+      id={id}
+    >
       <ul className="shared-shell__nav-list">
         {destinations.map((destination) => (
           <li key={destination.id}>

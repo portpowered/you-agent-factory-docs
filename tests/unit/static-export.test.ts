@@ -91,6 +91,10 @@ describe("served static export navigation", () => {
       expect(html).toContain(GITHUB_CTA_LABEL);
       expect(html).toContain('rel="noopener noreferrer"');
       expect(html).toContain('target="_blank"');
+      expect(html).toContain('id="shared-shell-primary-nav"');
+      expect(html).toContain('aria-controls="shared-shell-primary-nav"');
+      expect(html).toContain('aria-expanded="false"');
+      expect(html).toContain("Open menu");
     }
 
     expect(homepageHtml).toContain(DOCS_CTA_LABEL);

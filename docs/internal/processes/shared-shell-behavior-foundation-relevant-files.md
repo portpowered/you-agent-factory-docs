@@ -6,6 +6,7 @@
 - Transient UI such as disclosure open state stays in component state inside `src/components/shell/shared-shell.tsx`; it is not part of `sharedShellConfig`.
 - `src/components/shell/shared-shell.tsx` is the single global frame for homepage and docs entry routes. It renders shared header, optional docs sidebar, main content slot, and footer framing.
 - Reusable accessible navigation primitives live in `src/components/shell/shared-shell-navigation.tsx` (`SharedShellPrimaryNavigation`, `SharedShellNavigationLink`, `SharedShellDocsNavigation`). Both surfaces consume the same destination contract from `sharedShellConfig`; external GitHub links expose `(opens in new tab)` in the accessible name.
+- Responsive shell behavior uses CSS media queries in `src/app/globals.css` with the `sharedShellConfig.responsive.narrowMaxWidthPx` breakpoint (768px). Narrow-width primary navigation disclosure state is projected through `useSharedShellNavigationDisclosure` in `src/hooks/use-shared-shell-navigation-disclosure.ts` and rendered by the client `SharedShellHeader` in `src/components/shell/shared-shell-header.tsx`.
 - `src/components/landing/landing-shell.tsx` and `src/components/docs/docs-shell.tsx` are thin surface wrappers that project page content into `SharedShell` instead of owning independent header or layout wiring.
 - `src/lib/shell.ts` re-exports legacy copy constants and `sharedShellConfig` for existing imports; prefer `@/lib/shared-shell-config` for new shell work.
 
@@ -13,6 +14,7 @@
 
 - `tests/unit/shared-shell.test.tsx` proves the shared frame contract, config separation, and surface-specific header destinations.
 - `tests/unit/shared-shell-navigation.test.tsx` proves reusable navigation primitives, keyboard reachability, accessible external-link names, and the shared destination contract across surfaces.
+- `tests/unit/shared-shell-responsive.test.tsx` proves SSR-safe initial disclosure state, menu toggle wiring, and shared responsive header behavior across surfaces.
 - Homepage and docs shell tests remain focused on surface content and navigation expectations after adopting the shared frame.
 
 ## Styling

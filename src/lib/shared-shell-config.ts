@@ -30,6 +30,15 @@ export type SharedShellStructuralOptions = {
   footerText?: string;
 };
 
+/** SSR-safe responsive shell options; keep in sync with shared-shell media queries in globals.css. */
+export type SharedShellResponsiveOptions = {
+  narrowMaxWidthPx: number;
+  navigationDisclosure: {
+    openLabel: string;
+    closeLabel: string;
+  };
+};
+
 /**
  * Canonical extendable shell configuration.
  * Transient UI such as menu open state belongs in component state, not here.
@@ -40,6 +49,7 @@ export type SharedShellConfig = {
   headerDestinationIdsBySurface: Record<SharedShellSurface, string[]>;
   docsNavigation?: SharedShellDocsNavigationGroup;
   structural: SharedShellStructuralOptions;
+  responsive: SharedShellResponsiveOptions;
 };
 
 export type SharedShellSurface = "home" | "docs";
@@ -112,6 +122,13 @@ export const sharedShellConfig: SharedShellConfig = {
   structural: {
     showDocsSidebar: true,
     footerText: PROJECT_NAME,
+  },
+  responsive: {
+    narrowMaxWidthPx: 768,
+    navigationDisclosure: {
+      openLabel: "Open menu",
+      closeLabel: "Close menu",
+    },
   },
 };
 

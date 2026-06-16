@@ -2,16 +2,12 @@ import { DOCS_ENTRY_ROUTE } from "@/lib/project";
 import {
   type SharedShellConfig,
   type SharedShellSurface,
-  getSharedShellCurrentDestinationId,
-  getSharedShellHeaderDestinations,
   sharedShellConfig,
   shouldRenderDocsSidebar,
 } from "@/lib/shared-shell-config";
 import type { ReactNode } from "react";
-import {
-  SharedShellDocsNavigation,
-  SharedShellPrimaryNavigation,
-} from "./shared-shell-navigation";
+import { SharedShellHeader } from "./shared-shell-header";
+import { SharedShellDocsNavigation } from "./shared-shell-navigation";
 
 export type SharedShellProps = {
   surface: SharedShellSurface;
@@ -19,31 +15,6 @@ export type SharedShellProps = {
   config?: SharedShellConfig;
   currentDocsItemId?: string;
 };
-
-function SharedShellHeader({
-  config,
-  surface,
-}: {
-  config: SharedShellConfig;
-  surface: SharedShellSurface;
-}) {
-  const headerDestinations = getSharedShellHeaderDestinations(surface, config);
-  const currentDestinationId = getSharedShellCurrentDestinationId(
-    surface,
-    config,
-  );
-
-  return (
-    <header className="shared-shell__header">
-      <p className="shared-shell__brand">{config.brand}</p>
-      <SharedShellPrimaryNavigation
-        ariaLabel={config.primaryNavigation.ariaLabel}
-        currentDestinationId={currentDestinationId}
-        destinations={headerDestinations}
-      />
-    </header>
-  );
-}
 
 function SharedShellDocsAside({
   config,
