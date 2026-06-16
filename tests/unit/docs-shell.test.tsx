@@ -32,18 +32,20 @@ describe("docs shell rendering", () => {
       screen.getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE }),
     ).toBeTruthy();
     expect(screen.getByText(DOCS_SHELL_FRAMING_TEXT)).toBeTruthy();
-    expect(screen.getByText(PROJECT_NAME)).toBeTruthy();
+    expect(
+      within(screen.getByRole("banner")).getByText(PROJECT_NAME),
+    ).toBeTruthy();
   });
 
   test("marks the overview entry as current and links home and GitHub", () => {
     render(<DocsShell />);
 
-    const siteNav = screen.getByRole("navigation", { name: "Site" });
+    const siteNav = screen.getByRole("navigation", { name: "Primary" });
     const homeLink = within(siteNav).getByRole("link", {
       name: HOME_CTA_LABEL,
     });
     const githubLink = within(siteNav).getByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: `${GITHUB_CTA_LABEL} (opens in new tab)`,
     });
 
     expect(homeLink.getAttribute("href")).toBe("/");
