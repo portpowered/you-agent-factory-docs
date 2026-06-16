@@ -1,25 +1,37 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import {
-  DOCS_NAV_DISCLOSURE_HIDE_LABEL,
-  DOCS_NAV_DISCLOSURE_SHOW_LABEL,
-  DOCS_NAV_HEADING,
-  DOCS_NAV_OVERVIEW_LABEL,
-  LANDING_NAV_DISCLOSURE_HIDE_LABEL,
-  LANDING_NAV_DISCLOSURE_SHOW_LABEL,
-} from "../../src/lib/shell";
+import type { DocsShellNavigationInput } from "../../src/lib/content";
+import { enMessages } from "../../src/localization/messages/en";
 import {
   RESPONSIVE_BREAKPOINTS_PX,
   mockMatchMedia,
 } from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
+import { renderWithLocalization } from "../helpers/render-with-localization";
+
+const generatedNavigation: DocsShellNavigationInput = {
+  sections: [
+    {
+      id: "guides",
+      label: "Guides",
+      pages: [
+        {
+          canonicalId: "doc/getting-started",
+          label: "Getting started",
+          href: "/docs/getting-started",
+          order: 1,
+        },
+      ],
+    },
+  ],
+};
 
 afterEach(() => {
   mock.restore();
 });
 
 describe("useShellDisclosure", () => {
-  test("keeps docs navigation visible on desktop without a disclosure trigger", async () => {
+  test("keeps docs navigation visible on desktop without requiring disclosure", async () => {
     mock.module("next/link", () => ({
       default: MockLink,
     }));
@@ -27,14 +39,13 @@ describe("useShellDisclosure", () => {
     mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
 
     const { DocsShell } = await import("../../src/components/docs/docs-shell");
-    render(<DocsShell />);
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
 
-    expect(
-      screen.queryByRole("button", { name: DOCS_NAV_DISCLOSURE_SHOW_LABEL }),
-    ).toBeNull();
-    expect(
-      screen.getByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
   });
 
   test("collapses docs navigation on narrow viewports until opened", async () => {
@@ -45,26 +56,28 @@ describe("useShellDisclosure", () => {
     mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
 
     const { DocsShell } = await import("../../src/components/docs/docs-shell");
-    render(<DocsShell />);
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
 
     const toggle = screen.getByRole("button", {
-      name: DOCS_NAV_DISCLOSURE_SHOW_LABEL,
+      name: enMessages.shell.showDocsNavLabel,
     });
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
-    expect(
-      screen.queryByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
 
     fireEvent.click(toggle);
 
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
-    expect(toggle.textContent).toBe(DOCS_NAV_DISCLOSURE_HIDE_LABEL);
+    expect(toggle.textContent).toBe(enMessages.shell.hideDocsNavLabel);
 
-    const docsNav = screen.getByRole("navigation", { name: DOCS_NAV_HEADING });
-    const overviewLink = within(docsNav).getByRole("link", {
-      name: DOCS_NAV_OVERVIEW_LABEL,
+    const docsNav = screen.getByRole("navigation", { name: "Guides" });
+    const gettingStartedLink = within(docsNav).getByRole("link", {
+      name: "Getting started",
     });
-    expect(overviewLink).toBeTruthy();
+    expect(gettingStartedLink).toBeTruthy();
   });
 
   test("returns focus to the trigger when Escape closes narrow-viewport disclosure", async () => {
@@ -75,21 +88,21 @@ describe("useShellDisclosure", () => {
     mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax });
 
     const { DocsShell } = await import("../../src/components/docs/docs-shell");
-    render(<DocsShell />);
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
 
     const toggle = screen.getByRole("button", {
-      name: DOCS_NAV_DISCLOSURE_SHOW_LABEL,
+      name: enMessages.shell.showDocsNavLabel,
     });
     fireEvent.click(toggle);
-    expect(
-      screen.getByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
 
     fireEvent.keyDown(document, { key: "Escape" });
 
-    expect(
-      screen.queryByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
     expect(document.activeElement).toBe(toggle);
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
   });
@@ -105,33 +118,33 @@ describe("useShellDisclosure", () => {
     });
 
     const { DocsShell } = await import("../../src/components/docs/docs-shell");
-    const { container } = render(<DocsShell />);
+    const { container } = renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
 
-    const docsRoot = container.querySelector(".docs-shell");
-    expect(docsRoot?.hasAttribute("data-shell-reduced-motion")).toBe(true);
+    const shellRoot = container.querySelector(".shared-shell");
+    expect(shellRoot?.hasAttribute("data-shell-reduced-motion")).toBe(true);
 
     const toggle = screen.getByRole("button", {
-      name: DOCS_NAV_DISCLOSURE_SHOW_LABEL,
+      name: enMessages.shell.showDocsNavLabel,
     });
     fireEvent.click(toggle);
 
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
-    expect(
-      screen.getByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
 
     fireEvent.keyDown(document, { key: "Escape" });
 
-    expect(
-      screen.queryByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
     expect(document.activeElement).toBe(toggle);
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
   });
 });
 
 describe("landing shell disclosure", () => {
-  test("keeps header navigation visible on desktop without a disclosure trigger", async () => {
+  test("keeps header navigation visible on desktop without requiring disclosure", async () => {
     mock.module("next/link", () => ({
       default: MockLink,
     }));
@@ -141,12 +154,13 @@ describe("landing shell disclosure", () => {
     const { LandingShell } = await import(
       "../../src/components/landing/landing-shell"
     );
-    render(<LandingShell />);
+    renderWithLocalization(<LandingShell />);
 
     expect(
-      screen.queryByRole("button", { name: LANDING_NAV_DISCLOSURE_SHOW_LABEL }),
-    ).toBeNull();
-    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+      screen.getByRole("navigation", {
+        name: enMessages.landing.primaryNavAriaLabel,
+      }),
+    ).toBeTruthy();
   });
 
   test("collapses landing header navigation on narrow viewports until opened", async () => {
@@ -159,19 +173,27 @@ describe("landing shell disclosure", () => {
     const { LandingShell } = await import(
       "../../src/components/landing/landing-shell"
     );
-    render(<LandingShell />);
+    renderWithLocalization(<LandingShell />);
 
     const toggle = screen.getByRole("button", {
-      name: LANDING_NAV_DISCLOSURE_SHOW_LABEL,
+      name: enMessages.shell.openMenuLabel,
     });
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
-    expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
+    expect(
+      screen.queryByRole("navigation", {
+        name: enMessages.landing.primaryNavAriaLabel,
+      }),
+    ).toBeNull();
 
     fireEvent.click(toggle);
 
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
-    expect(toggle.textContent).toBe(LANDING_NAV_DISCLOSURE_HIDE_LABEL);
-    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+    expect(toggle.textContent).toBe(enMessages.shell.closeMenuLabel);
+    expect(
+      screen.getByRole("navigation", {
+        name: enMessages.landing.primaryNavAriaLabel,
+      }),
+    ).toBeTruthy();
   });
 
   test("returns focus to the trigger when Escape closes landing disclosure", async () => {
@@ -184,17 +206,25 @@ describe("landing shell disclosure", () => {
     const { LandingShell } = await import(
       "../../src/components/landing/landing-shell"
     );
-    render(<LandingShell />);
+    renderWithLocalization(<LandingShell />);
 
     const toggle = screen.getByRole("button", {
-      name: LANDING_NAV_DISCLOSURE_SHOW_LABEL,
+      name: enMessages.shell.openMenuLabel,
     });
     fireEvent.click(toggle);
-    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+    expect(
+      screen.getByRole("navigation", {
+        name: enMessages.landing.primaryNavAriaLabel,
+      }),
+    ).toBeTruthy();
 
     fireEvent.keyDown(document, { key: "Escape" });
 
-    expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
+    expect(
+      screen.queryByRole("navigation", {
+        name: enMessages.landing.primaryNavAriaLabel,
+      }),
+    ).toBeNull();
     expect(document.activeElement).toBe(toggle);
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
   });

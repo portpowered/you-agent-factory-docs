@@ -15,17 +15,13 @@ export function ShellDisclosureTrigger({
   className,
   children,
 }: ShellDisclosureTriggerProps) {
-  if (!disclosure.isEnabled) {
-    return null;
-  }
-
   return (
     <button
       aria-controls={disclosure.panelId}
-      aria-expanded={disclosure.isOpen}
+      aria-expanded={disclosure.isEnabled ? disclosure.isOpen : false}
       className={className}
       id={disclosure.triggerId}
-      onClick={disclosure.toggle}
+      onClick={disclosure.isEnabled ? disclosure.toggle : undefined}
       ref={disclosure.triggerRef}
       type="button"
     >

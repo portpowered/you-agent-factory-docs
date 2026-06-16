@@ -1,9 +1,29 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import { render, screen } from "@testing-library/react";
+import type { DocsShellNavigationInput } from "../../src/lib/content";
+import { enMessages } from "../../src/localization/messages/en";
 import {
   RESPONSIVE_BREAKPOINTS_PX,
   mockMatchMedia,
 } from "../helpers/mock-match-media";
+import { renderWithLocalization } from "../helpers/render-with-localization";
+
+const generatedNavigation: DocsShellNavigationInput = {
+  sections: [
+    {
+      id: "guides",
+      label: "Guides",
+      pages: [
+        {
+          canonicalId: "doc/getting-started",
+          label: "Getting started",
+          href: "/docs/getting-started",
+          order: 1,
+        },
+      ],
+    },
+  ],
+};
 
 afterEach(() => {
   mock.restore();
@@ -91,8 +111,12 @@ describe("reduced-motion shell integration", () => {
     });
 
     const { DocsShell } = await import("../../src/components/docs/docs-shell");
-    const { container } = render(<DocsShell />);
-    const docsRoot = container.querySelector(".docs-shell");
+    const { container } = renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+    const docsRoot = container.querySelector(".shared-shell");
 
     expect(docsRoot?.hasAttribute("data-shell-reduced-motion")).toBe(true);
   });

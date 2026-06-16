@@ -1,51 +1,15 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
+import type { DocsShellNavigationInput } from "../../src/lib/content";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
-import { RESPONSIVE_BREAKPOINTS_PX } from "../../src/lib/responsive-tokens";
+import { GITHUB_REPO_URL } from "../../src/lib/shell";
+import { enMessages } from "../../src/localization/messages/en";
 import {
-  DOCS_NAV_HEADING,
-  DOCS_NAV_OVERVIEW_LABEL,
-  DOCS_SHELL_FRAMING_TEXT,
-  DOCS_SHELL_TITLE,
-  GITHUB_CTA_LABEL,
-  GITHUB_REPO_URL,
-  HOME_CTA_LABEL,
-} from "../../src/lib/shell";
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
-
-function setViewportWidth(width: number) {
-  Object.defineProperty(window, "innerWidth", {
-    configurable: true,
-    value: width,
-    writable: true,
-  });
-}
-
-function mockMatchMediaForWidth(width: number) {
-  window.matchMedia = (query: string) => {
-    const maxWidthMatch = query.match(/\(max-width:\s*(\d+)px\)/);
-    const minWidthMatch = query.match(/\(min-width:\s*(\d+)px\)/);
-
-    let matches = false;
-
-    if (maxWidthMatch) {
-      matches = width <= Number(maxWidthMatch[1]);
-    } else if (minWidthMatch) {
-      matches = width >= Number(minWidthMatch[1]);
-    }
-
-    return {
-      addEventListener: () => {},
-      addListener: () => {},
-      dispatchEvent: () => false,
-      matches,
-      media: query,
-      onchange: null,
-      removeEventListener: () => {},
-      removeListener: () => {},
-    } as MediaQueryList;
-  };
-}
+import { renderWithLocalization } from "../helpers/render-with-localization";
 
 mock.module("next/link", () => ({
   default: MockLink,
@@ -55,51 +19,113 @@ afterEach(() => {
   mock.restore();
 });
 
+const generatedNavigation: DocsShellNavigationInput = {
+  sections: [
+    {
+      id: "guides",
+      label: "Guides",
+      pages: [
+        {
+          canonicalId: "doc/getting-started",
+          label: "Getting started",
+          href: "/docs/getting-started",
+          order: 1,
+        },
+      ],
+    },
+  ],
+};
+
 describe("docs shell rendering", () => {
-  test("renders header, docs navigation, and main content landmarks", async () => {
-    setViewportWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
-    mockMatchMediaForWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
+  test("renders header, generated docs navigation, and main content landmarks", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
 
     const { DocsShell } = await import("../../src/components/docs/docs-shell");
-    render(<DocsShell />);
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <article aria-labelledby="docs-shell-title">
+          <h1 id="docs-shell-title">{enMessages.docs.shellTitle}</h1>
+          <p className="docs-shell__framing">{enMessages.docs.framingText}</p>
+        </article>
+      </DocsShell>,
+    );
 
     expect(screen.getByRole("banner")).toBeTruthy();
-    expect(
-      screen.getByRole("navigation", { name: DOCS_NAV_HEADING }),
-    ).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
     expect(screen.getByRole("main")).toBeTruthy();
 
     expect(
-      screen.getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE }),
+      screen.getByRole("heading", {
+        level: 1,
+        name: enMessages.docs.shellTitle,
+      }),
     ).toBeTruthy();
-    expect(screen.getByText(DOCS_SHELL_FRAMING_TEXT)).toBeTruthy();
-    expect(screen.getByText(PROJECT_NAME)).toBeTruthy();
+    expect(screen.getByText(enMessages.docs.framingText)).toBeTruthy();
+    expect(
+      within(screen.getByRole("banner")).getByText(PROJECT_NAME),
+    ).toBeTruthy();
+    expect(screen.getByText("Guides")).toBeTruthy();
+    expect(screen.getByText("Getting started")).toBeTruthy();
   });
 
-  test("marks the overview entry as current and links home and GitHub", async () => {
-    setViewportWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
-    mockMatchMediaForWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1);
+  test("marks the active generated nav entry and links home and GitHub", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
 
     const { DocsShell } = await import("../../src/components/docs/docs-shell");
-    render(<DocsShell />);
 
-    const siteNav = screen.getByRole("navigation", { name: "Site" });
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const siteNav = screen.getByRole("navigation", {
+      name: enMessages.landing.primaryNavAriaLabel,
+    });
     const homeLink = within(siteNav).getByRole("link", {
-      name: HOME_CTA_LABEL,
+      name: enMessages.common.home,
     });
     const githubLink = within(siteNav).getByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: `${enMessages.common.githubCta} (opens in new tab)`,
     });
 
     expect(homeLink.getAttribute("href")).toBe("/");
     expect(githubLink.getAttribute("href")).toBe(GITHUB_REPO_URL);
 
-    const docsNav = screen.getByRole("navigation", { name: DOCS_NAV_HEADING });
-    const overviewLink = within(docsNav).getByRole("link", {
-      name: DOCS_NAV_OVERVIEW_LABEL,
+    const docsNav = screen.getByRole("navigation", { name: "Guides" });
+    const gettingStartedLink = within(docsNav).getByRole("link", {
+      name: "Getting started",
     });
 
-    expect(overviewLink.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
-    expect(overviewLink.getAttribute("aria-current")).toBe("page");
+    expect(gettingStartedLink.getAttribute("href")).toBe(
+      "/docs/getting-started",
+    );
+    expect(gettingStartedLink.getAttribute("aria-current")).toBe("page");
+  });
+
+  test("does not mark docs entry overview as active when viewing generated pages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath={DOCS_ENTRY_ROUTE}
+        navigation={generatedNavigation}
+      >
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const docsNav = screen.getByRole("navigation", { name: "Guides" });
+    const gettingStartedLink = within(docsNav).getByRole("link", {
+      name: "Getting started",
+    });
+
+    expect(gettingStartedLink.getAttribute("aria-current")).toBeNull();
   });
 });
