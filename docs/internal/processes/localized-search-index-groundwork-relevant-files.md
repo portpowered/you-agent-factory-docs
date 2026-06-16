@@ -12,12 +12,13 @@
 - `buildLocalizedSearchDocumentId(canonicalId, locale)` returns stable ids such as `doc/getting-started@en`.
 - `extractMarkdownHeadings()` and `extractSearchableBody()` derive searchable text from variant markdown without query-layer file access.
 - `generateLocalizedSearchDocuments(bindings, readVariantSource)` emits one document per validated variant binding; callers inject source lookup to keep IO at the loader boundary.
+- `isSearchableCanonicalContentRecord()` and `shouldIncludeVariantInSearch()` apply structured exclusion from canonical `status` and `searchInclude` metadata. Only `published` records with `searchInclude: true` emit search documents; `draft`, `internal`, `hidden`, and `search.include: false` variants are filtered before projection.
 
 ## Starter content integration
 
 - `loadLocalizedSearchDocuments()` loads validated starter fixtures via `loadStarterContentRecords()`, asserts validation success with `assertStarterContentValid()`, and re-reads each variant source file through `resolveLocaleFileName()`.
 - Variant bindings come from localized variant identity validation; search generation does not infer locale relationships from file paths alone.
-- Exclusion of draft, internal, hidden, or `search.include: false` content is handled in later stories; this lane first proves normalized document projection from validated bindings.
+- Exclusion of draft, internal, hidden, or `search.include: false` content is enforced in `generateLocalizedSearchDocuments()` via `shouldIncludeVariantInSearch()` before projection.
 
 ## Tests
 

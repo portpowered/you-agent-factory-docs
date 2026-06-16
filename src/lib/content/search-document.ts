@@ -1,8 +1,29 @@
 import { parseContentFile } from "@/lib/content/frontmatter";
 import type { LocalizedContentVariantBinding } from "@/lib/content/localized-variant-identity";
-import type { PublicContentKind } from "@/lib/content/types";
+import type {
+  CanonicalContentRecord,
+  PublicContentKind,
+} from "@/lib/content/types";
 
 const DEFAULT_SEARCH_PRIORITY = 0;
+
+const SEARCH_VISIBLE_STATUSES = new Set<CanonicalContentRecord["status"]>([
+  "published",
+]);
+
+/** Whether canonical content metadata allows public search indexing. */
+export function isSearchableCanonicalContentRecord(
+  record: CanonicalContentRecord,
+): boolean {
+  return SEARCH_VISIBLE_STATUSES.has(record.status) && record.searchInclude;
+}
+
+/** Whether one validated locale variant should emit a search document. */
+export function shouldIncludeVariantInSearch(
+  binding: LocalizedContentVariantBinding,
+): boolean {
+  return isSearchableCanonicalContentRecord(binding.record);
+}
 
 /**
  * Normalized localized search document projected from one locale-specific
@@ -153,9 +174,11 @@ export function generateLocalizedSearchDocuments(
   bindings: readonly LocalizedContentVariantBinding[],
   readVariantSource: (binding: LocalizedContentVariantBinding) => string,
 ): LocalizedSearchDocument[] {
-  const documents = bindings.map((binding) =>
-    projectLocalizedSearchDocument(binding, readVariantSource(binding)),
-  );
+  const documents = bindings
+    .filter(shouldIncludeVariantInSearch)
+    .map((binding) =>
+      projectLocalizedSearchDocument(binding, readVariantSource(binding)),
+    );
 
   documents.sort((left, right) => left.id.localeCompare(right.id));
   return documents;

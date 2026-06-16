@@ -95,7 +95,9 @@ export {
   extractMarkdownHeadings,
   extractSearchableBody,
   generateLocalizedSearchDocuments,
+  isSearchableCanonicalContentRecord,
   projectLocalizedSearchDocument,
+  shouldIncludeVariantInSearch,
   type LocalizedSearchDocument,
 } from "@/lib/content/search-document";
 export { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";

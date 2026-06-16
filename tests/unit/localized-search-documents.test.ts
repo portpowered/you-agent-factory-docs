@@ -1,16 +1,68 @@
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import {
+  type CanonicalContentRecord,
   buildLocalizedSearchDocumentId,
   extractMarkdownHeadings,
   extractSearchableBody,
   generateLocalizedSearchDocuments,
+  isSearchableCanonicalContentRecord,
   loadLocalizedSearchDocuments,
   projectLocalizedSearchDocument,
+  shouldIncludeVariantInSearch,
   validateStarterContentSource,
 } from "../../src/lib/content";
+import type { LocalizedContentVariantBinding } from "../../src/lib/content/localized-variant-identity";
 
 const CONTENT_ROOT = join(process.cwd(), "src/content");
+
+function createPublishedDocRecord(
+  overrides: Partial<CanonicalContentRecord> = {},
+): CanonicalContentRecord {
+  return {
+    id: "doc/getting-started",
+    kind: "doc",
+    slug: "getting-started",
+    routePath: "/docs/getting-started",
+    section: "guides",
+    tags: ["docs"],
+    status: "published",
+    order: 1,
+    canonicalLocale: "en",
+    availableLocales: ["en"],
+    searchInclude: true,
+    navigationTitle: "Getting started",
+    ...overrides,
+  };
+}
+
+function createBinding(
+  record: CanonicalContentRecord,
+  variantLocale = "en",
+): LocalizedContentVariantBinding {
+  return {
+    contentPathKey: record.id,
+    variantLocale,
+    record,
+  };
+}
+
+const PUBLISHED_SOURCE = `---
+id: doc/getting-started
+kind: doc
+title: Getting started
+canonicalLocale: en
+availableLocales:
+  - en
+status: published
+tags:
+  - docs
+section: guides
+search.include: true
+---
+
+# Getting started
+`;
 
 describe("localized search document generation", () => {
   test("projects one normalized search document per validated locale variant binding", () => {
@@ -223,4 +275,55 @@ An autonomous software actor.
       body: "Agent An autonomous software actor.",
     });
   });
+
+  test("includes published variants with search.include enabled", () => {
+    const publishedRecord = createPublishedDocRecord();
+    const bindings = [createBinding(publishedRecord)];
+
+    expect(isSearchableCanonicalContentRecord(publishedRecord)).toBe(true);
+    expect(shouldIncludeVariantInSearch(bindings[0])).toBe(true);
+
+    const documents = generateLocalizedSearchDocuments(
+      bindings,
+      () => PUBLISHED_SOURCE,
+    );
+
+    expect(documents).toHaveLength(1);
+    expect(documents[0]?.id).toBe("doc/getting-started@en");
+  });
+
+  test.each([
+    ["draft", { status: "draft" as const }],
+    ["internal", { status: "internal" as const }],
+    ["hidden", { status: "hidden" as const }],
+    ["search.include: false", { searchInclude: false }],
+  ])(
+    "excludes non-public localized variants marked %s from generated search documents",
+    (_label, overrides) => {
+      const excludedRecord = createPublishedDocRecord(overrides);
+      const publishedRecord = createPublishedDocRecord({
+        id: "doc/installation",
+        slug: "installation",
+        routePath: "/docs/installation",
+        navigationTitle: "Installation",
+      });
+      const bindings = [
+        createBinding(excludedRecord),
+        createBinding(publishedRecord),
+      ];
+
+      expect(isSearchableCanonicalContentRecord(excludedRecord)).toBe(false);
+      expect(shouldIncludeVariantInSearch(bindings[0])).toBe(false);
+
+      const documents = generateLocalizedSearchDocuments(bindings, (binding) =>
+        binding.record.id === "doc/installation"
+          ? "# Installation"
+          : PUBLISHED_SOURCE,
+      );
+
+      expect(documents.map((document) => document.id)).toEqual([
+        "doc/installation@en",
+      ]);
+    },
+  );
 });
