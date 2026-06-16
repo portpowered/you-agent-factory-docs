@@ -13,6 +13,8 @@
 - Starter locale files may use `.md` or `.mdx`; `resolveLocaleFileName()` in `src/lib/content/locale-files.ts` is the shared resolver and `loadDocPage()` prefers `.mdx` when both exist.
 - `DocsShell` projects canonical navigation into `createSharedShellConfigFromMessages()` so localized shell labels and generated docs sidebar items compose without hand-maintained nav constants.
 - Static-export/browser tests use `getTestPort()` with env overrides so nested `make test` from `root-command-path.test.ts` does not bind the same ports as the outer suite.
+- Localized variant identity is projected separately from `CanonicalContentRecord` via `LocalizedContentVariantIdentity` and `validateLocalizedVariantBindings()` in `src/lib/content/localized-variant-identity.ts`; group parallel locale files with `buildStarterContentPathKey()`.
+- `loadStarterContentRecords()` deduplicates locale files per slug through `resolveLocaleFileName()` before running localized variant identity validation across bindings.
 
 ## 2026-06-16T15:47:18Z - canonical-content-model-foundation-001
 - What was implemented
@@ -182,4 +184,23 @@
   - Patterns discovered: `gh pr view --json statusCheckRollup` can lag behind completed workflow runs; use `gh run list` when polling CI completion.
   - Gotchas encountered: `mergeStateStatus: UNSTABLE` while CI is in progress is expected; wait for terminal check state before treating mergeability as blocked.
   - Useful context: when all stories pass and blocking feedback is addressed, a verification iteration with local `make test` plus green CI is sufficient before `<COMPLETE>`.
+---
+
+## 2026-06-17T00:00:00Z - localized-content-identity-foundation-001
+- What was implemented
+  - Fast-forwarded branch to `canonical-content-model-foundation` so localized identity work builds on the existing canonical content model and locale registry.
+  - Added `LocalizedContentVariantIdentity`, `LocalizedVariantGroup`, and `validateLocalizedVariantBindings()` in `src/lib/content/localized-variant-identity.ts` with reviewer-verifiable fields for canonical page id, canonical locale, variant locale, and available locales.
+  - Integrated group validation into `loadStarterContentRecords()` and deduplicated per-slug locale files via `resolveLocaleFileName()` before identity validation.
+  - Added focused tests in `tests/unit/localized-variant-identity.test.ts` and documented patterns in `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`.
+- Files changed
+  - `src/lib/content/localized-variant-identity.ts`
+  - `src/lib/content/load-starter-content.ts`
+  - `src/lib/content/starter.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/localized-variant-identity.test.ts`
+  - `docs/internal/processes/localized-content-identity-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: localized variant identity is a projection layer on top of `CanonicalContentRecord`; group bindings by `buildStarterContentPathKey()` (`{kind}/{slug}`) rather than inferring relationships from filenames alone.
+  - Gotchas encountered: listing every locale file in a slug directory creates duplicate variant locales when both `.md` and `.mdx` exist—resolve one file per locale tag before identity validation.
+  - Useful context: variant locales and `availableLocales` must align with `SUPPORTED_LOCALES` from `src/localization/config/locales.ts` at the identity validation layer even when single-record metadata still accepts broader BCP 47 tags.
 ---
