@@ -42,12 +42,20 @@
 - Unsupported locales and supported locales without an on-disk variant resolve to the canonical-locale content for the same canonical page id and stable `routePath`.
 - Navigation projection reuses `selectLocalizedVariantBinding()` so docs-shell labels follow the same fallback rules as doc page loading.
 
+## Locale-aware content projection
+
+- `LocaleAwareContentProjection` and `projectLocaleAwareContent()` in `src/lib/content/locale-aware-content-projection.ts` expose canonical page id, canonical locale, requested locale, resolved locale, and available locales as a stable typed seam for later navigation and search generation.
+- `projectLocaleAwareContentCatalog()` projects one entry per unique canonical page id from validated records and variant bindings.
+- `loadDocPage()` returns `localeProjection` alongside `resolution`; `projectDocsShellNavigation()` attaches `localeProjection` to each nav page when `variantBindings` are provided.
+- Focused tests live in `tests/unit/locale-aware-content-projection.test.ts`.
+
 ## Tests
 
 - Focused identity contract and validation behavior: `tests/unit/localized-variant-identity.test.ts`.
 - Build-time locale metadata validation: `tests/unit/locale-metadata-validation.test.ts`.
 - Parallel localized starter content proof: `tests/unit/localized-starter-content.test.ts`.
 - Canonical-locale fallback resolution: `tests/unit/localized-content-resolution.test.ts` and locale-aware cases in `tests/unit/load-doc-page.test.ts`.
+- Locale-aware content projection: `tests/unit/locale-aware-content-projection.test.ts`.
 - Starter loading integration remains covered in `tests/unit/starter-content.test.ts`; add identity failure fixtures under `tests/fixtures/starter-content/` when proving group-level errors through the loader.
 
 ## Quality checks

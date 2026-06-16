@@ -1,3 +1,7 @@
+import {
+  type LocaleAwareContentProjection,
+  projectLocaleAwareContent,
+} from "@/lib/content/locale-aware-content-projection";
 import { selectLocalizedVariantBinding } from "@/lib/content/localized-content-resolution";
 import type { LocalizedContentVariantBinding } from "@/lib/content/localized-variant-identity";
 import type { CanonicalContentRecord } from "@/lib/content/types";
@@ -8,6 +12,8 @@ export type DocsShellNavPage = {
   label: string;
   href: string;
   order?: number;
+  /** Locale-aware metadata for later navigation and search surfaces. */
+  localeProjection?: LocaleAwareContentProjection;
 };
 
 /** Section grouping for the first generated docs-shell navigation behavior. */
@@ -161,11 +167,19 @@ export function projectDocsShellNavigation(
         pages: [],
       } satisfies DocsShellNavSection);
 
+    const localeProjection = options?.variantBindings
+      ? projectLocaleAwareContent(record.id, {
+          requestedLocale: locale,
+          variantBindings: options.variantBindings,
+        })
+      : undefined;
+
     section.pages.push({
       canonicalId: record.id,
       label: record.navigationTitle,
       href: record.routePath,
       order: record.order,
+      localeProjection,
     });
     sectionsById.set(sectionId, section);
   }

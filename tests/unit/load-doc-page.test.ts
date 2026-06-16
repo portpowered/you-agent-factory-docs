@@ -102,6 +102,14 @@ MDX body.
       resolvedLocale: "fr",
       fellBackToCanonicalLocale: false,
     });
+    expect(page.localeProjection).toEqual({
+      canonicalPageId: "doc/getting-started",
+      canonicalLocale: "en",
+      requestedLocale: "fr",
+      resolvedLocale: "fr",
+      availableLocales: ["en", "fr"],
+      fellBackToCanonicalLocale: false,
+    });
   });
 
   test("falls back to canonical-locale content for supported locales without variants", () => {
@@ -119,6 +127,8 @@ MDX body.
       resolvedLocale: "en",
       fellBackToCanonicalLocale: true,
     });
+    expect(page.localeProjection.availableLocales).toEqual(["en", "fr"]);
+    expect(page.localeProjection.fellBackToCanonicalLocale).toBe(true);
   });
 
   test("falls back to canonical-locale content for unsupported locales", () => {
@@ -135,5 +145,6 @@ MDX body.
       resolvedLocale: "en",
       fellBackToCanonicalLocale: true,
     });
+    expect(page.localeProjection.availableLocales).toEqual(["en", "fr"]);
   });
 });

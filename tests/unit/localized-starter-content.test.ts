@@ -78,6 +78,14 @@ describe("localized starter content variants", () => {
         label: "Getting started",
         href: "/docs/getting-started",
         order: 1,
+        localeProjection: {
+          canonicalPageId: "doc/getting-started",
+          canonicalLocale: "en",
+          requestedLocale: "en",
+          resolvedLocale: "en",
+          availableLocales: ["en", "fr"],
+          fellBackToCanonicalLocale: false,
+        },
       },
     ]);
   });

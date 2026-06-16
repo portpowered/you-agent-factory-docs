@@ -62,6 +62,13 @@ export {
   type ResolveLocalizedContentVariantOptions,
 } from "@/lib/content/localized-content-resolution";
 export {
+  projectLocaleAwareContent,
+  projectLocaleAwareContentCatalog,
+  type LocaleAwareContentProjection,
+  type ProjectLocaleAwareContentCatalogOptions,
+  type ProjectLocaleAwareContentOptions,
+} from "@/lib/content/locale-aware-content-projection";
+export {
   findCurrentDocsItemId,
   projectSharedShellDocsNavigation,
 } from "@/lib/content/shared-shell-navigation";

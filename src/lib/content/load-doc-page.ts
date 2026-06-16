@@ -2,10 +2,13 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { parseContentFile } from "@/lib/content/frontmatter";
 import { loadStarterContentRecords } from "@/lib/content/load-starter-content";
+import {
+  type LocaleAwareContentProjection,
+  projectLocaleAwareContent,
+} from "@/lib/content/locale-aware-content-projection";
 import { resolveLocaleFileName } from "@/lib/content/locale-files";
 import {
   type LocalizedContentResolution,
-  resolveLocalizedContentVariant,
   selectLocalizedVariantBinding,
 } from "@/lib/content/localized-content-resolution";
 import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
@@ -18,6 +21,7 @@ export type DocPageContent = {
   title: string;
   body: string;
   resolution: LocalizedContentResolution;
+  localeProjection: LocaleAwareContentProjection;
 };
 
 function findPublishedDocRecord(
@@ -90,13 +94,21 @@ export function loadDocPage(
     throw new Error(`Published doc page not found: ${slug}`);
   }
 
-  const resolution = resolveLocalizedContentVariant(record.id, {
+  const localeProjection = projectLocaleAwareContent(record.id, {
     requestedLocale: options?.locale,
     variantBindings,
   });
-  if (!resolution) {
+  if (!localeProjection) {
     throw new Error(`Published doc page not found: ${slug}`);
   }
+
+  const resolution: LocalizedContentResolution = {
+    canonicalPageId: localeProjection.canonicalPageId,
+    canonicalLocale: localeProjection.canonicalLocale,
+    requestedLocale: localeProjection.requestedLocale,
+    resolvedLocale: localeProjection.resolvedLocale,
+    fellBackToCanonicalLocale: localeProjection.fellBackToCanonicalLocale,
+  };
 
   const binding =
     selectLocalizedVariantBinding(
@@ -114,5 +126,6 @@ export function loadDocPage(
     title: resolvedRecord.navigationTitle,
     body: body.trim(),
     resolution,
+    localeProjection,
   };
 }
