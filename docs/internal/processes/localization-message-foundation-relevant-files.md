@@ -28,8 +28,17 @@
 - Partial French catalog for fallback coverage lives in `src/localization/messages/fr.ts`; unregistered secondary locales receive an empty overlay and fall back entirely to the default catalog.
 - Fallback unit coverage: `tests/unit/message-fallback.test.ts`; shell integration: `tests/unit/shell-fallback.test.tsx`.
 
+## Shared shell message validation
+
+- Validation logic lives in `src/localization/lib/validate-messages.ts`.
+- `validateDefaultLocaleMessages()` ensures the default locale catalog defines every required shared shell key with non-empty strings.
+- `validatePartialLocaleMessages()` checks secondary locale catalogs against the shared contract shape; missing keys are allowed, but incompatible shapes and unknown keys fail fast.
+- `validateRegisteredMessageCatalogs()` and `assertValidRegisteredMessageCatalogs()` validate every locale catalog returned by `getMessageCatalog()`.
+- `validateUnsupportedLocaleResolution()` proves unsupported locale inputs normalize before fallback catalog lookup stays valid.
+- Automated coverage: `tests/unit/message-validation.test.ts`.
+
 ## Verification
 
 - `make check` — typecheck and Biome lint.
-- `make test` — includes locale registry and shared shell message tests via `bun test`.
+- `make test` — includes locale registry, shared shell message, fallback, and validation tests via `bun test`.
 - Browser verification: build static export and confirm homepage and `/docs` render shared shell text from the message catalog.

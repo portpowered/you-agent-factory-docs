@@ -24,6 +24,16 @@ export {
   resolveMessage,
   resolveMessageWithFallback,
 } from "./lib/resolve-message";
+export {
+  assertValidRegisteredMessageCatalogs,
+  collectSharedShellMessageKeys,
+  validateDefaultLocaleMessages,
+  validatePartialLocaleMessages,
+  validateRegisteredMessageCatalogs,
+  validateUnsupportedLocaleResolution,
+  type MessageValidationIssue,
+  type MessageValidationResult,
+} from "./lib/validate-messages";
 export { resolveLocale, type LocaleResolution } from "./lib/resolve-locale";
 export {
   enMessages,
