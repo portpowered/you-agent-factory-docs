@@ -1,8 +1,10 @@
+import { DocPageArticle } from "@/components/docs/doc-page-article";
 import { DocsShell } from "@/components/docs/docs-shell";
 import { loadDocPage, loadDocsShellNavigation } from "@/lib/content";
 import { notFound } from "next/navigation";
 
 import { listPublishedDocSlugs } from "@/lib/content/load-doc-page";
+import { enMessages } from "@/localization/messages/en";
 
 type DocPageProps = {
   params: Promise<{ slug: string }>;
@@ -25,10 +27,12 @@ export default async function DocPage({ params }: DocPageProps) {
 
   return (
     <DocsShell currentPath={page.record.routePath} navigation={navigation}>
-      <article aria-labelledby="doc-page-title">
-        <h1 id="doc-page-title">{page.title}</h1>
-        <div className="docs-page__body">{page.body}</div>
-      </article>
+      <DocPageArticle
+        body={page.body}
+        onThisPageLabel={enMessages.docs.onThisPageLabel}
+        outlineAriaLabel={enMessages.docs.pageOutlineAriaLabel}
+        title={page.title}
+      />
     </DocsShell>
   );
 }

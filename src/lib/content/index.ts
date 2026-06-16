@@ -90,6 +90,14 @@ export {
   type DocsProgressionLinks,
 } from "@/lib/content/docs-progression";
 export {
+  parseDocPageBody,
+  projectDocsPageOutline,
+  type DocPageBodyBlock,
+  type DocsPageOutline,
+  type DocsPageOutlineHeading,
+  type ParsedDocPageBody,
+} from "@/lib/content/docs-page-outline";
+export {
   projectLocalizedVariantGroups,
   projectLocalizedVariantIdentity,
   validateLocalizedVariantBindings,

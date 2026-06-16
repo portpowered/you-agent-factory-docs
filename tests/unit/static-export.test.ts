@@ -214,6 +214,29 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain(enMessages.docs.nextPagePrefix);
     expect(docPageHtml).toContain("Core concepts");
     expect(docPageHtml).toContain('rel="next"');
+    expect(docPageHtml).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(docPageHtml).toContain('href="#prerequisites"');
+    expect(docPageHtml).toContain('id="prerequisites"');
+    expect(docPageHtml).toContain("Prerequisites");
+    expect(docPageHtml).toContain("Next steps");
+  }, 30_000);
+
+  test("serves doc pages without page-outline navigation when headings are insufficient", async () => {
+    const installationResponse = await fetchHttp(
+      new URL(withBasePath("/docs/installation"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(installationResponse.status).toBe(200);
+
+    const installationHtml = await installationResponse.text();
+
+    expect(installationHtml).toContain("Installation");
+    expect(installationHtml).not.toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
   }, 30_000);
 
   test("follows generated previous-next progression across docs pages", async () => {
