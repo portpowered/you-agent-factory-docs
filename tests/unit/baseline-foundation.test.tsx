@@ -1,9 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
-import {
-  DOCS_ENTRY_ROUTE,
-  PROJECT_TAGLINE,
-} from "../../src/lib/project";
+import { DOCS_ENTRY_ROUTE, PROJECT_TAGLINE } from "../../src/lib/project";
 import { DOCS_CTA_LABEL, DOCS_SHELL_TITLE } from "../../src/lib/shell";
 import {
   RESPONSIVE_BREAKPOINTS_PX,
