@@ -2,9 +2,11 @@
 
 ## Authoritative gate path
 
-- `make quality-gate` and `bun run quality-gate` are the single early enforcement entrypoints for contributors and future automation.
+- `make quality-gate` and `bun run quality-gate` are the single early enforcement entrypoints for contributors and automation.
 - `scripts/quality-gate.ts` orchestrates the enforced sequence and fails fast on the first failing step.
 - `src/lib/quality-gate/deferred-phase8.ts` lists checks intentionally deferred to later Phase 8 work.
+- `.github/workflows/ci.yml` runs `make setup` then `make quality-gate` without bypassing the root `Makefile`.
+- `README.md` documents the same authoritative path, lists the enforced foundation checks, and marks deferred Phase 8 work out of scope for this lane.
 
 ## Enforced foundation checks
 
@@ -42,6 +44,8 @@ Pure validators accept injectable copy/metadata records (`getShellLocalizationCo
 
 - `tests/unit/quality-gate.test.ts` verifies the make/bun command contract and runs the full gate on the current baseline.
 - `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization, content, accessibility, and static-export regressions fail through the shared validate scripts and that `make quality-gate` fails fast on a broken localization fixture.
+- `tests/unit/early-gate-automation-parity.test.ts` verifies `.github/workflows/ci.yml` invokes `make quality-gate` after `make setup` and does not split verification across separate `make check`, `make test`, or `make build` steps.
+- `tests/unit/early-gate-contributor-guidance.test.ts` verifies `README.md` identifies `make quality-gate` as authoritative and documents deferred Phase 8 checks from `DEFERRED_PHASE_8_QUALITY_CHECKS`.
 - `src/lib/validation/shell-accessibility.ts` documents `FOCUSED_SHELL_ACCESSIBILITY_COVERAGE` and exports shared aria-label constants consumed by shell components.
 - `src/lib/validation/static-export.ts` validates the GitHub Pages-safe Next.js export configuration before the production build step runs.
 - `tests/helpers/make.ts` supports dry-run assertions against the root `Makefile`.
