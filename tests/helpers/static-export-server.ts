@@ -11,6 +11,8 @@ const projectRoot = join(import.meta.dir, "../..");
 const exportDir = join(projectRoot, "out");
 const nextDir = join(projectRoot, ".next");
 const STATIC_EXPORT_LOCK_HELD_ENV = "STATIC_EXPORT_BUILD_LOCK_HELD";
+let inProcessStaticExportBuild: Promise<void> | undefined;
+let inProcessStaticExportBuildComplete = false;
 
 function cleanNextBuildArtifacts(): void {
   rmSync(nextDir, { recursive: true, force: true });
@@ -46,6 +48,26 @@ export function buildStaticExport(): void {
       );
     }
   });
+}
+
+export async function ensureStaticExportBuilt(): Promise<void> {
+  if (inProcessStaticExportBuildComplete) {
+    return;
+  }
+
+  if (!inProcessStaticExportBuild) {
+    inProcessStaticExportBuild = Promise.resolve().then(() => {
+      try {
+        buildStaticExport();
+        inProcessStaticExportBuildComplete = true;
+      } catch (error) {
+        inProcessStaticExportBuild = undefined;
+        throw error;
+      }
+    });
+  }
+
+  await inProcessStaticExportBuild;
 }
 
 export type StaticExportServer = {

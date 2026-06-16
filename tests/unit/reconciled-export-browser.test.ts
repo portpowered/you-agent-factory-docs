@@ -19,7 +19,7 @@ import { withBasePath } from "../../src/lib/site";
 import { enMessages } from "../../src/localization/messages/en";
 import {
   type StaticExportServer,
-  buildStaticExport,
+  ensureStaticExportBuilt,
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
@@ -31,7 +31,7 @@ describe("reconciled baseline browser export", () => {
   let browser: Browser;
 
   beforeAll(async () => {
-    buildStaticExport();
+    await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
     browser = await chromium.launch();

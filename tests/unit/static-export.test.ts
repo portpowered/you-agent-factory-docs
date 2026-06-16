@@ -18,7 +18,7 @@ import {
 import { enMessages } from "../../src/localization/messages/en";
 import { fetchHttp } from "../helpers/http";
 import {
-  buildStaticExport,
+  ensureStaticExportBuilt,
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
@@ -39,13 +39,13 @@ describe("served static export navigation", () => {
   let server: ReturnType<typeof startStaticExportServer>;
 
   beforeAll(async () => {
-    buildStaticExport();
+    await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
   }, 120_000);
 
   afterAll(() => {
-    server.stop();
+    server?.stop();
   });
 
   test("serves homepage, docs entry, and code presentation example routes under the configured base path", async () => {

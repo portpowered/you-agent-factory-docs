@@ -44,6 +44,7 @@
 - Doc page article outline rendering and empty-state fallback: `tests/unit/doc-page-article.test.tsx`
 - Docs shell rendering with separate section landmarks, breadcrumb position, and progression links: `tests/unit/docs-shell.test.tsx`
 - Served static export HTML includes generated multi-page sidebar depth, breadcrumb ancestry, progression links, and page-outline navigation when headings exist: `tests/unit/static-export.test.ts`
+- Export-based browser and HTTP suites share one serialized static build through `ensureStaticExportBuilt()` in `tests/helpers/static-export-server.ts`; do not call `make build` directly from export test hooks.
 - Responsive docs navigation depth on narrow viewports: `tests/unit/docs-shell.test.tsx` (`responsive docs navigation depth`) and `tests/unit/shell-disclosure.test.tsx`
 - Mobile browser verification for generated docs depth affordances: `tests/unit/reconciled-export-browser.test.ts` (`docs navigation depth remains usable at a mobile viewport`)
 - Starter content record inventory after adding docs fixtures: `tests/unit/starter-content.test.ts`
