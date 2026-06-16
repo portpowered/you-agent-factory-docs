@@ -7,6 +7,7 @@ import {
   CODE_PRESENTATION_EXAMPLE_ROUTE,
   CODE_PRESENTATION_EXAMPLE_TITLE,
   CODE_TABS_SECTION_HEADING,
+  DEFAULT_FILE_TREE_LABEL,
   DOCS_NAV_CODE_PRESENTATION_LABEL,
   EXAMPLE_FILE_TREE,
   FILE_TREE_SECTION_HEADING,
@@ -142,9 +143,16 @@ describe("code presentation example surface", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("navigation", { name: "Example file tree" }),
+      screen.getByRole("navigation", { name: DEFAULT_FILE_TREE_LABEL }),
     ).toBeTruthy();
+    expect(screen.getByLabelText("Folder: workflows")).toBeTruthy();
+    expect(screen.getByLabelText("File: README.md")).toBeTruthy();
     expect(screen.getByText(EXAMPLE_FILE_TREE[0]?.name ?? "")).toBeTruthy();
+    expect(
+      screen.getByText(
+        "base-workflow-with-a-very-long-filename-for-narrow-layouts.yaml",
+      ),
+    ).toBeTruthy();
   });
 
   test("switches visible code tab panels through direct interaction", () => {

@@ -455,6 +455,14 @@ body {
   list-style: none;
 }
 
+.docs-file-tree__list--nested {
+  flex-basis: 100%;
+  margin-top: 0.125rem;
+  margin-left: 0.375rem;
+  padding-left: 0.75rem;
+  border-left: 1px solid var(--landing-border);
+}
+
 .docs-file-tree__item {
   display: flex;
   flex-wrap: wrap;
@@ -463,18 +471,32 @@ body {
   padding: 0.25rem 0;
 }
 
+.docs-file-tree__item--folder .docs-file-tree__name {
+  font-weight: 600;
+}
+
 .docs-file-tree__icon {
+  flex-shrink: 0;
   width: 1.25rem;
   text-align: center;
 }
 
 .docs-file-tree__name {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-wrap: anywhere;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.875rem;
 }
 
 .docs-file-tree__item .docs-file-tree__list {
   flex-basis: 100%;
+}
+
+.docs-file-tree__empty {
+  margin: 0;
+  color: var(--landing-muted);
+  font-size: 0.875rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
