@@ -22,6 +22,7 @@
 - When `variantBindings` are provided, do not pre-filter doc records by `availableLocales` before `selectLocalizedVariantBinding()`; locale-aware navigation must keep canonical pages visible with fallback metadata for unsupported or missing variant locales.
 - `resolveLocalizedContentVariant()` and `selectLocalizedVariantBinding()` in `src/lib/content/localized-content-resolution.ts` centralize locale-aware content resolution and canonical-locale fallback; `loadDocPage(slug, contentRoot, { locale })` returns reviewer-verifiable `resolution` metadata.
 - `LocaleAwareContentProjection`, `projectLocaleAwareContent()`, and `projectLocaleAwareContentCatalog()` in `src/lib/content/locale-aware-content-projection.ts` expose durable metadata seams for later navigation and search work; `loadDocPage()` and `projectDocsShellNavigation()` attach `localeProjection` when variant bindings are available.
+- `validate:static-export` cleans `.next`, runs one production build, then sets `STATIC_EXPORT_SKIP_BUILD=1` for `tests/unit/static-export.test.ts` so served-export tests reuse that `out/` instead of starting a second back-to-back `next build`.
 
 ## 2026-06-16T15:47:18Z - canonical-content-model-foundation-001
 - What was implemented
@@ -324,4 +325,23 @@
   - Patterns discovered: locale-aware navigation with `variantBindings` must select representative bindings per canonical page id before applying fallback; availability pre-filters conflict with the canonical-locale fallback contract.
   - Gotchas encountered: `availableLocales.includes(locale)` gates pages out entirely for unsupported locales even when `selectLocalizedVariantBinding()` would correctly fall back to the canonical variant.
   - Useful context: fallback navigation proofs belong on `loadDocsShellNavigation()` with real starter fixtures, not only on `projectLocaleAwareContent()` unit tests.
+---
+
+## 2026-06-17T22:30:00Z - PR feedback (mergeability)
+- Addressed BLOCKING PR #11 feedback on flaky `make quality-gate` / `validate:static-export` builds (`ENOENT` for `.next/server/pages-manifest.json` and intermittent `static-export.test.ts:140` failures).
+- `scripts/validate-static-export.ts` now cleans `.next` before the gate production build and invokes `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so served-export tests reuse the freshly built `out/` instead of starting a second back-to-back `next build`.
+- `buildStaticExport()` in `tests/helpers/static-export-server.ts` also cleans `.next` before building when a fresh export is required and fails fast when skip-build is set without `out/`.
+- Added focused helper coverage in `tests/unit/static-export-server.test.ts`.
+- Re-verified locally from clean `.next`/`out`: consecutive `make quality-gate` runs pass; full `make test` pass (187 tests).
+- Files changed
+  - `src/lib/validation/static-export.ts`
+  - `scripts/validate-static-export.ts`
+  - `tests/helpers/static-export-server.ts`
+  - `tests/unit/static-export-server.test.ts`
+  - `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`
+  - `docs/internal/processes/early-quality-gate-enforcement-foundation-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: gate-owned production builds should pass `STATIC_EXPORT_SKIP_BUILD=1` to served-export tests so validation does not immediately trigger a second `next build` on the same `.next` directory.
+  - Gotchas encountered: back-to-back `next build` calls without cleaning `.next` can surface intermittent `pages-manifest.json` ENOENT failures even when product behavior is correct.
+  - Useful context: mergeability-only quality-gate stabilization belongs under "PR feedback (mergeability)" in progress after all PRD stories pass.
 ---
