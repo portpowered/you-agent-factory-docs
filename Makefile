@@ -1,4 +1,4 @@
-.PHONY: setup check test build
+.PHONY: setup check test build quality-gate
 
 setup:
 	bun install
@@ -12,3 +12,6 @@ test:
 
 build:
 	bun run build
+
+quality-gate:
+	bun run quality-gate
