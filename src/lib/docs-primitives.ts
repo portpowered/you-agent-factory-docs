@@ -29,6 +29,26 @@ export const CODE_TABS_SECTION_HEADING = "Code tabs";
 
 export const CALLOUT_SECTION_HEADING = "Callouts";
 
+export type CalloutVariant = "info" | "caution";
+
+const CALLOUT_VARIANT_LABELS: Record<CalloutVariant, string> = {
+  info: "Information",
+  caution: "Caution",
+};
+
+/** Maps a callout variant to a reviewer-visible emphasis label. */
+export function formatCalloutVariantLabel(variant: CalloutVariant): string {
+  return CALLOUT_VARIANT_LABELS[variant];
+}
+
+/** Builds an accessible callout name that includes variant context and title. */
+export function formatCalloutAccessibleName(
+  variant: CalloutVariant,
+  title: string,
+): string {
+  return `${formatCalloutVariantLabel(variant)}: ${title}`;
+}
+
 export const FILE_TREE_SECTION_HEADING = "File tree";
 
 export type FileTreeNode = {

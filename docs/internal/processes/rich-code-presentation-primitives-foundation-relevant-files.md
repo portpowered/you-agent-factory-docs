@@ -19,5 +19,8 @@
 - Component behavior tests belong in `tests/unit/docs-shell.test.tsx` (example surface headings, accessible labels, tab switching).
 - Focused `CodeBlock` primitive tests belong in `tests/unit/code-block.test.tsx` (language labels, `lang` attribute, responsive layout classes).
 - Focused `CodeTabs` primitive tests belong in `tests/unit/code-tabs.test.tsx` (tab list labeling, roving `tabIndex`, click and keyboard panel switching, empty state).
+- Focused `Callout` primitive tests belong in `tests/unit/callout.test.tsx` (variant labels, accessible names, variant classes, responsive wrapping).
+- `formatCalloutVariantLabel()` and `formatCalloutAccessibleName()` map callout variants to reviewer-visible labels and assistive-tech names.
+- `Callout` exposes variant context through `aria-label` with `aria-hidden` variant badges; keep it server-renderable unless interactive behavior is added later.
 - Static export route coverage for the example page belongs in `tests/unit/static-export.test.ts`.
 - Manual browser verification follows `docs/internal/processes/manual-qa.md`; serve the export under `/you-agent-factory-docs` and open `/you-agent-factory-docs/docs/examples/code-presentation/`.

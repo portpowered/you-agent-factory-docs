@@ -1,6 +1,11 @@
+import {
+  type CalloutVariant,
+  formatCalloutAccessibleName,
+  formatCalloutVariantLabel,
+} from "@/lib/docs-primitives";
 import type { ReactNode } from "react";
 
-export type CalloutVariant = "info" | "caution";
+export type { CalloutVariant };
 
 type CalloutProps = {
   variant: CalloutVariant;
@@ -8,23 +13,21 @@ type CalloutProps = {
   children: ReactNode;
 };
 
-const VARIANT_LABEL: Record<CalloutVariant, string> = {
-  info: "Information",
-  caution: "Caution",
-};
-
 export function Callout({ variant, title, children }: CalloutProps) {
-  const labelId = `callout-${variant}-${title.replace(/\s+/g, "-").toLowerCase()}`;
+  const accessibleName = formatCalloutAccessibleName(variant, title);
+  const variantLabel = formatCalloutVariantLabel(variant);
 
   return (
     <aside
-      aria-labelledby={labelId}
+      aria-label={accessibleName}
       className={`docs-callout docs-callout--${variant}`}
       role="note"
     >
-      <p className="docs-callout__title" id={labelId}>
-        <span className="docs-callout__variant">{VARIANT_LABEL[variant]}</span>
-        {title}
+      <p className="docs-callout__title">
+        <span aria-hidden="true" className="docs-callout__variant">
+          {variantLabel}
+        </span>
+        <span className="docs-callout__title-text">{title}</span>
       </p>
       <div className="docs-callout__content">{children}</div>
     </aside>

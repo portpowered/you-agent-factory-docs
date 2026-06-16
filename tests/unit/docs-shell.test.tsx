@@ -132,7 +132,15 @@ describe("code presentation example surface", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByRole("tablist")).toBeTruthy();
-    expect(screen.getAllByRole("note")).toHaveLength(2);
+    expect(screen.getAllByRole("note")).toHaveLength(3);
+    expect(
+      screen.getByRole("note", { name: "Information: Run locally first" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("note", {
+        name: "Caution: Protect production credentials",
+      }),
+    ).toBeTruthy();
     expect(
       screen.getByRole("navigation", { name: "Example file tree" }),
     ).toBeTruthy();

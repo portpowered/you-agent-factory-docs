@@ -76,6 +76,16 @@ export function CodePresentationExample() {
             environment instead.
           </p>
         </Callout>
+        <Callout
+          title="Long guidance titles stay readable on narrow viewports"
+          variant="info"
+        >
+          <p>
+            Callout bodies wrap within the docs content column instead of
+            forcing horizontal overflow, so emphasized guidance remains readable
+            beside code examples on mobile and desktop layouts.
+          </p>
+        </Callout>
       </section>
 
       <section aria-labelledby="file-tree-section-heading">

@@ -394,11 +394,22 @@ body {
   border-left-width: 0.25rem;
   border-radius: 0.5rem;
   background: var(--landing-surface);
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .docs-callout__title {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  align-items: baseline;
   margin: 0 0 0.5rem;
   font-weight: 600;
+}
+
+.docs-callout__title-text {
+  min-width: 0;
 }
 
 .docs-callout__variant {
