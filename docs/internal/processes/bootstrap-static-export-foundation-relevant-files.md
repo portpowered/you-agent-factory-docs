@@ -14,6 +14,7 @@
 - Shared non-UI constants start in `src/lib/` (for example `src/lib/project.ts`).
 - Shared homepage and docs-shell copy, CTA labels, and external links live in `src/lib/shell.ts` so later localization can replace the same keys without revisiting routes.
 - The homepage landing shell lives in `src/components/landing/landing-shell.tsx` and is rendered from `src/app/page.tsx`.
+- The docs shell lives in `src/components/docs/docs-shell.tsx` and is rendered from `src/app/docs/page.tsx`.
 - GitHub Pages base-path and route constants live in `src/lib/site.ts`; `next.config.ts` imports `SITE_BASE_PATH` from there so export settings stay aligned with link helpers.
 - Static export uses `output: "export"` with `trailingSlash: true` and `images.unoptimized: true` for GitHub Pages compatibility.
 - Unit tests live under `tests/unit/` and import source modules with relative paths.

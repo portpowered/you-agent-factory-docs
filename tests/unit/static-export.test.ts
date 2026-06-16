@@ -8,6 +8,7 @@ import {
   SITE_BASE_PATH,
   withBasePath,
 } from "../../src/lib/site";
+import { DOCS_SHELL_TITLE } from "../../src/lib/shell";
 
 const projectRoot = join(import.meta.dir, "../..");
 
@@ -40,7 +41,7 @@ describe("static export configuration", () => {
 
     expect(homepageHtml).toContain("You Agent Factory");
     expect(homepageHtml).toContain(withBasePath(DOCS_ENTRY_ROUTE));
-    expect(docsHtml).toContain("documentation");
+    expect(docsHtml).toContain(DOCS_SHELL_TITLE);
     expect(docsHtml).toContain(withBasePath("/"));
   }, 120_000);
 });
