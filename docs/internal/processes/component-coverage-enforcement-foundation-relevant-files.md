@@ -37,4 +37,10 @@ Documented in `COMPONENT_COVERAGE_OUT_OF_SCOPE_SURFACES`:
 - `tests/unit/component-coverage-enforcement-failing-path.test.ts` proves coverage enforcement blocks regressions with explicit `Component coverage enforcement failed` output via the `below-threshold` fixture in `src/lib/component-coverage/fixtures.ts`.
 - Set `COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE=below-threshold` only for reviewer-verifiable failing-path proofs; normal local and CI runs omit it.
 
-Later stories can extend maintainer-facing limitation guidance without replacing this CI command contract.
+## Enforcement contract limitations and extension path
+
+- `formatComponentCoverageContractLimitations()` in `src/lib/component-coverage/boundary.ts` is the shared source of truth for what the gate enforces now, which component-adjacent surfaces remain out of scope, and how later lanes extend coverage without replacing the command contract.
+- `make component-coverage` prints the contract limitations at the start of every enforcement run so reviewers see the practical boundary on the same path used for threshold blocking.
+- `make component-coverage-boundary` includes the same limitations block after the discovered file list and ignore patterns.
+- The limitations text keeps the enforced threshold at 90% for `src/components`; out-of-scope surfaces are excluded from measurement rather than held to a lower bar.
+- Extension guidance lives in `COMPONENT_COVERAGE_EXTENSION_PATH_STEPS`; widen scope by updating the boundary constants and keeping `bunfig.toml` ignore patterns aligned.

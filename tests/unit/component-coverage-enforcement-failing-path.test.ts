@@ -15,6 +15,7 @@ describe("component coverage enforcement failing-path proof", () => {
 
     expect(result.status).not.toBe(0);
     expect(output).toContain(COMPONENT_COVERAGE_ENFORCEMENT_FAILURE_PREFIX);
+    expect(output).toContain("Component coverage enforcement contract");
     expect(output).toContain("src/components/landing/landing-shell.tsx");
     expect(output).not.toContain("typecheck");
     expect(output).not.toContain("biome check");

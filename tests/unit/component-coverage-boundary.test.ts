@@ -3,10 +3,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   COMPONENT_COVERAGE_ENFORCED_ROOT,
+  COMPONENT_COVERAGE_EXTENSION_PATH_STEPS,
   COMPONENT_COVERAGE_OUT_OF_SCOPE_SURFACES,
   COMPONENT_COVERAGE_PATH_IGNORE_PATTERNS,
+  COMPONENT_COVERAGE_PRACTICAL_CONTRACT_SUMMARY,
   COMPONENT_COVERAGE_THRESHOLD_PERCENT,
   formatComponentCoverageBoundaryReport,
+  formatComponentCoverageContractLimitations,
   isPathInEnforcedComponentBoundary,
   listEnforcedComponentSourceFiles,
 } from "../../src/lib/component-coverage/boundary";
@@ -91,6 +94,26 @@ describe("component coverage boundary contract", () => {
     for (const pattern of COMPONENT_COVERAGE_PATH_IGNORE_PATTERNS) {
       expect(report).toContain(pattern);
     }
+
+    expect(report).toContain("Extension path for later coverage expansion:");
+    for (const step of COMPONENT_COVERAGE_EXTENSION_PATH_STEPS) {
+      expect(report).toContain(step);
+    }
+  });
+
+  test("contract limitations state the practical boundary without lowering the enforced threshold", () => {
+    const limitations = formatComponentCoverageContractLimitations();
+
+    expect(limitations).toContain(
+      COMPONENT_COVERAGE_PRACTICAL_CONTRACT_SUMMARY,
+    );
+    expect(limitations).toContain(
+      `Threshold for the enforced surface remains ${COMPONENT_COVERAGE_THRESHOLD_PERCENT}%`,
+    );
+    expect(limitations).toContain("not held to a lower bar");
+    expect(limitations).toContain("Surfaces not enforced by this lane yet:");
+    expect(limitations).toContain("localization catalogs and formatting hooks");
+    expect(limitations).toContain("make component-coverage-boundary");
   });
 
   test("bunfig.toml encodes the same coverage ignore patterns as the boundary contract", () => {
@@ -114,7 +137,8 @@ describe("component coverage boundary command output", () => {
 
     expect(stdout).toContain("Component coverage enforcement boundary");
     expect(stdout).toContain("src/components/landing/landing-shell.tsx");
-    expect(stdout).toContain("Out of scope for this lane:");
+    expect(stdout).toContain("Surfaces not enforced by this lane yet:");
     expect(stdout).toContain("localization catalogs and formatting hooks");
+    expect(stdout).toContain("Extension path for later coverage expansion:");
   });
 });

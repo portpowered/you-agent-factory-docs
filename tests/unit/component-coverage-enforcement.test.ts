@@ -130,6 +130,8 @@ describe("component coverage enforcement command surface", () => {
 
     expect(result.exitCode).toBe(0);
     expect(output).toContain("Running component coverage enforcement.");
+    expect(output).toContain("Component coverage enforcement contract");
+    expect(output).toContain("Extension path for later coverage expansion:");
     expect(output).toContain(COMPONENT_COVERAGE_ENFORCEMENT_SUCCESS_PREFIX);
     expect(output).toContain("src/components/landing/landing-shell.tsx");
   }, 120_000);

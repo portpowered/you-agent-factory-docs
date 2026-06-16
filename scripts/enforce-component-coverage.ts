@@ -1,6 +1,9 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { listEnforcedComponentSourceFiles } from "@/lib/component-coverage/boundary";
+import {
+  formatComponentCoverageContractLimitations,
+  listEnforcedComponentSourceFiles,
+} from "@/lib/component-coverage/boundary";
 import {
   COMPONENT_COVERAGE_ENFORCEMENT_FAILURE_PREFIX,
   COMPONENT_COVERAGE_ENFORCEMENT_TEST_IGNORE_PATTERNS,
@@ -14,6 +17,7 @@ import { getComponentCoverageEnforcementFixtureOutput } from "@/lib/component-co
 const repoRoot = join(import.meta.dir, "..");
 
 console.log("Running component coverage enforcement.");
+console.log(`\n${formatComponentCoverageContractLimitations()}\n`);
 
 const fixtureOutput = getComponentCoverageEnforcementFixtureOutput(
   process.env.COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE,
