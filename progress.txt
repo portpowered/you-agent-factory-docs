@@ -28,6 +28,7 @@
 - `shouldIncludeVariantInSearch()` filters variant bindings using canonical `status` and `searchInclude`; only `published` records with `searchInclude: true` emit search documents, mirroring structured metadata rather than file-path heuristics.
 - `buildPublicSearchArtifact()` maps normalized `LocalizedSearchDocument` values into deterministic `PublicSearchArtifact` JSON; `writePublicSearchArtifact()` emits `public/search/public-search-index.json` before `next build` via `bun run generate:search-index`.
 - `LocalizedSearchDocument` and `PublicSearchArtifactEntry` carry `canonicalLocale` and `availableLocales` from canonical records so later query code can default to the active locale without re-normalizing content.
+- Cross-layer search foundation proofs belong in `tests/unit/localized-search-index-foundation.test.ts`: assert inclusion/exclusion on both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` outputs, and use a temporary starter content root with one published doc plus representative excluded variants for exclusion coverage.
 
 ## 2026-06-16T15:47:18Z - canonical-content-model-foundation-001
 - What was implemented
@@ -423,4 +424,19 @@
   - Patterns discovered: propagate `canonicalLocale` and `availableLocales` from `binding.record` at search-document projection time so artifact/index consumers can filter by active locale without re-reading canonical records.
   - Gotchas encountered: parallel locale variants must share the same canonical-locale metadata on every indexed entry even when `locale` differs; assert both fields in artifact contract tests.
   - Useful context: story 005 should add end-to-end inclusion/exclusion validation across normalized documents and the generated artifact using observable outputs.
+---
+
+## 2026-06-17T23:59:00Z - localized-search-index-groundwork-005
+- What was implemented
+  - Added `tests/unit/localized-search-index-foundation.test.ts` with cross-layer proofs that representative public localized content enters both normalized search documents and the generated public search artifact with expected canonical id and locale metadata.
+  - Added exclusion proofs using a temporary starter content root with one published doc plus `draft`, `internal`, `hidden`, and `search.include: false` variants, asserting both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` omit excluded canonical ids.
+  - Added artifact-to-document alignment coverage so generated index entries match normalized search-document fields one-to-one.
+  - Documented foundation validation patterns in `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`.
+- Files changed
+  - `tests/unit/localized-search-index-foundation.test.ts`
+  - `docs/internal/processes/localized-search-index-groundwork-relevant-files.md`
+- **Learnings for future iterations:**
+  - Patterns discovered: keep inclusion proofs on real starter fixtures and exclusion proofs on isolated temp content roots so production `src/content/` stays publishable-only while still covering every supported exclusion rule.
+  - Gotchas encountered: story 005 acceptance wants both document and artifact surfaces asserted together—unit tests on each layer alone are insufficient for the foundation verification story.
+  - Useful context: all five PRD stories are now complete; create the PR when pushing the final code commit.
 ---
