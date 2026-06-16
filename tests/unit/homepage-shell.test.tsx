@@ -1,14 +1,12 @@
-import { describe, expect, mock, test } from "bun:test";
-import { render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, mock, test } from "bun:test";
+import { screen, within } from "@testing-library/react";
 import {
   DOCS_ENTRY_ROUTE,
   PROJECT_NAME,
   PROJECT_TAGLINE,
 } from "../../src/lib/project";
+import { GITHUB_REPO_URL } from "../../src/lib/shared-shell-config";
 import {
-  DOCS_CTA_LABEL,
-  GITHUB_CTA_LABEL,
-  GITHUB_REPO_URL,
   LANDING_EXAMPLE_WORKFLOWS,
   LANDING_EXAMPLE_WORKFLOWS_TITLE,
   LANDING_FINAL_CTA_SUMMARY,
@@ -19,24 +17,35 @@ import {
   LANDING_PROBLEM_TITLE,
   LANDING_SOLUTION_POINTS,
   LANDING_SOLUTION_TITLE,
-  LANDING_VALUE_STATEMENT,
   LANDING_WHY_POINTS,
   LANDING_WHY_TITLE,
 } from "../../src/lib/shell";
+import { enMessages } from "../../src/localization/messages/en";
 import { fetchHttp } from "../helpers/http";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
+import { renderWithLocalization } from "../helpers/render-with-localization";
 
 mock.module("next/link", () => ({
   default: MockLink,
 }));
 
-const { LandingShell } = await import(
-  "../../src/components/landing/landing-shell"
-);
+afterEach(() => {
+  mock.restore();
+});
 
 describe("homepage shell rendering", () => {
-  test("renders product positioning, value statement, and primary CTAs", () => {
-    render(<LandingShell />);
+  test("renders product positioning, value statement, and primary CTAs from messages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
 
@@ -44,14 +53,16 @@ describe("homepage shell rendering", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: PROJECT_TAGLINE }),
     ).toBeTruthy();
-    expect(within(hero).getByText(LANDING_VALUE_STATEMENT)).toBeTruthy();
+    expect(screen.getByText(enMessages.landing.valueStatement)).toBeTruthy();
 
-    const primaryNav = screen.getByRole("navigation", { name: "Primary" });
+    const primaryNav = screen.getByRole("navigation", {
+      name: enMessages.landing.primaryNavAriaLabel,
+    });
     const docsLinks = within(primaryNav).getAllByRole("link", {
-      name: DOCS_CTA_LABEL,
+      name: enMessages.common.getStarted,
     });
     const githubLinks = within(primaryNav).getAllByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: `${enMessages.common.githubCta} (opens in new tab)`,
     });
 
     expect(docsLinks[0]?.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
@@ -59,13 +70,21 @@ describe("homepage shell rendering", () => {
     expect(githubLinks[0]?.getAttribute("rel")).toBe("noopener noreferrer");
   });
 
-  test("exposes keyboard-reachable docs and GitHub CTAs in the hero", () => {
-    render(<LandingShell />);
+  test("exposes keyboard-reachable docs and GitHub CTAs in the hero", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
-    const docsCta = within(hero).getByRole("link", { name: DOCS_CTA_LABEL });
+    const docsCta = within(hero).getByRole("link", {
+      name: enMessages.common.getStarted,
+    });
     const githubCta = within(hero).getByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: enMessages.common.githubCta,
     });
 
     expect(docsCta.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
@@ -73,23 +92,37 @@ describe("homepage shell rendering", () => {
     expect(githubCta.getAttribute("target")).toBe("_blank");
   });
 
-  test("groups hero copy with accessible section semantics", () => {
-    render(<LandingShell />);
+  test("groups hero copy with accessible section semantics", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
-    const summary = within(hero).getByText(LANDING_VALUE_STATEMENT);
+    const summary = within(hero).getByText(enMessages.landing.valueStatement);
 
     expect(summary.getAttribute("id")).toBe("landing-hero-summary");
     expect(hero.getAttribute("aria-describedby")).toBe("landing-hero-summary");
   });
 
-  test("marks hero CTAs as focusable controls with button styling hooks", () => {
-    render(<LandingShell />);
+  test("marks hero CTAs as focusable controls with button styling hooks", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
-    const docsCta = within(hero).getByRole("link", { name: DOCS_CTA_LABEL });
+    const docsCta = within(hero).getByRole("link", {
+      name: enMessages.common.getStarted,
+    });
     const githubCta = within(hero).getByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: enMessages.common.githubCta,
     });
 
     expect(docsCta.className).toContain("landing-shell__button");
@@ -98,8 +131,14 @@ describe("homepage shell rendering", () => {
     expect(githubCta.tabIndex).not.toBe(-1);
   });
 
-  test("renders problem, solution, and how-it-works sections with accessible headings", () => {
-    render(<LandingShell />);
+  test("renders problem, solution, and how-it-works sections with accessible headings", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const problemSection = screen.getByRole("region", {
       name: LANDING_PROBLEM_TITLE,
@@ -132,8 +171,14 @@ describe("homepage shell rendering", () => {
     }
   });
 
-  test("explains orchestration value without no-code or autonomous replacement claims", () => {
-    render(<LandingShell />);
+  test("explains orchestration value without no-code or autonomous replacement claims", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const main = screen.getByRole("main");
 
@@ -146,8 +191,14 @@ describe("homepage shell rendering", () => {
     expect(within(main).getByText(/no-code Zapier-style glue/i)).toBeTruthy();
   });
 
-  test("renders example workflows and differentiation sections with accessible headings", () => {
-    render(<LandingShell />);
+  test("renders example workflows and differentiation sections with accessible headings", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const workflowsSection = screen.getByRole("region", {
       name: LANDING_EXAMPLE_WORKFLOWS_TITLE,
@@ -179,8 +230,14 @@ describe("homepage shell rendering", () => {
     }
   });
 
-  test("communicates engineering-native differentiation without generic automation claims", () => {
-    render(<LandingShell />);
+  test("communicates engineering-native differentiation without generic automation claims", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const whySection = screen.getByRole("region", {
       name: LANDING_WHY_TITLE,
@@ -193,8 +250,14 @@ describe("homepage shell rendering", () => {
     ).toBeTruthy();
   });
 
-  test("renders final CTA section with accessible semantics and primary destinations", () => {
-    render(<LandingShell />);
+  test("renders final CTA section with accessible semantics and primary destinations", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const finalCtaSection = screen.getByRole("region", {
       name: LANDING_FINAL_CTA_TITLE,
@@ -208,10 +271,10 @@ describe("homepage shell rendering", () => {
     );
 
     const docsCta = within(finalCtaSection).getByRole("link", {
-      name: DOCS_CTA_LABEL,
+      name: enMessages.common.getStarted,
     });
     const githubCta = within(finalCtaSection).getByRole("link", {
-      name: GITHUB_CTA_LABEL,
+      name: enMessages.common.githubCta,
     });
 
     expect(docsCta.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
@@ -221,8 +284,14 @@ describe("homepage shell rendering", () => {
     expect(githubCta.className).toContain("landing-shell__button");
   });
 
-  test("renders the complete first-visit section story in architecture order", () => {
-    render(<LandingShell />);
+  test("renders the complete first-visit section story in architecture order", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
 
     const main = screen.getByRole("main");
     const sectionTitles = [

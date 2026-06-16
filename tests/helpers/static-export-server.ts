@@ -8,14 +8,16 @@ import { fetchHttp } from "./http";
 const projectRoot = join(import.meta.dir, "../..");
 
 export function buildStaticExport(): void {
-  const build = spawnSync("bun", ["run", "build"], {
+  const build = spawnSync("make", ["build"], {
     cwd: projectRoot,
     encoding: "utf8",
     env: process.env,
   });
 
   if (build.status !== 0) {
-    throw new Error(build.stderr || "Static export build failed");
+    throw new Error(
+      build.stderr || build.stdout || "Static export build failed",
+    );
   }
 }
 
