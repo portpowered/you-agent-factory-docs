@@ -1,5 +1,6 @@
-import { describe, expect, mock, test } from "bun:test";
+import { afterEach, describe, expect, mock, test } from "bun:test";
 import { render, screen, within } from "@testing-library/react";
+import { DOCS_NAV_SECTION } from "../../src/lib/docs-nav";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import {
   DOCS_CTA_LABEL,
@@ -8,18 +9,27 @@ import {
   LANDING_VALUE_STATEMENT,
 } from "../../src/lib/shell";
 import { fetchHttp } from "../helpers/http";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
 
 mock.module("next/link", () => ({
   default: MockLink,
 }));
 
-const { LandingShell } = await import(
-  "../../src/components/landing/landing-shell"
-);
+afterEach(() => {
+  mock.restore();
+});
 
 describe("homepage shell rendering", () => {
-  test("renders project identity, value statement, and primary CTAs", () => {
+  test("renders project identity, value statement, and primary CTAs", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
     render(<LandingShell />);
 
     expect(
@@ -40,7 +50,12 @@ describe("homepage shell rendering", () => {
     expect(githubLinks[0]?.getAttribute("rel")).toBe("noopener noreferrer");
   });
 
-  test("exposes keyboard-reachable docs and GitHub CTAs in the hero", () => {
+  test("exposes keyboard-reachable docs and GitHub CTAs in the hero", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
     render(<LandingShell />);
 
     const hero = screen.getByRole("main");
@@ -64,5 +79,29 @@ describe("homepage GitHub CTA destination", () => {
     });
 
     expect(response.status).not.toBe(404);
+  });
+});
+
+describe("docs nav extension surface", () => {
+  test("renders canonical docs nav section items from the shared extension point", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShellNav } = await import(
+      "../../src/components/docs/docs-shell-nav"
+    );
+    render(<DocsShellNav />);
+
+    const docsNav = screen.getByRole("navigation", {
+      name: DOCS_NAV_SECTION.heading,
+    });
+
+    for (const item of DOCS_NAV_SECTION.items) {
+      const link = within(docsNav).getByRole("link", { name: item.label });
+      expect(link.getAttribute("href")).toBe(item.href);
+
+      if (item.isCurrent) {
+        expect(link.getAttribute("aria-current")).toBe("page");
+      }
+    }
   });
 });

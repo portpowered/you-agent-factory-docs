@@ -3,12 +3,10 @@
 import { ShellDisclosurePanel } from "@/components/shell/shell-disclosure-panel";
 import { ShellDisclosureTrigger } from "@/components/shell/shell-disclosure-trigger";
 import { useShellDisclosure } from "@/hooks/layout/useShellDisclosure";
-import { DOCS_ENTRY_ROUTE } from "@/lib/project";
+import { DOCS_NAV_SECTION } from "@/lib/docs-nav";
 import {
   DOCS_NAV_DISCLOSURE_HIDE_LABEL,
   DOCS_NAV_DISCLOSURE_SHOW_LABEL,
-  DOCS_NAV_HEADING,
-  DOCS_NAV_OVERVIEW_LABEL,
 } from "@/lib/shell";
 import Link from "next/link";
 
@@ -34,18 +32,24 @@ export function DocsShellNav() {
         className="docs-shell__nav-panel"
         disclosure={disclosure}
       >
-        <nav aria-label={DOCS_NAV_HEADING} className="docs-shell__nav">
-          <p className="docs-shell__nav-heading">{DOCS_NAV_HEADING}</p>
+        <nav aria-label={DOCS_NAV_SECTION.heading} className="docs-shell__nav">
+          <p className="docs-shell__nav-heading">{DOCS_NAV_SECTION.heading}</p>
           <ul className="docs-shell__nav-list">
-            <li>
-              <Link
-                aria-current="page"
-                className="docs-shell__nav-link docs-shell__nav-link--active"
-                href={DOCS_ENTRY_ROUTE}
-              >
-                {DOCS_NAV_OVERVIEW_LABEL}
-              </Link>
-            </li>
+            {DOCS_NAV_SECTION.items.map((item) => (
+              <li key={item.href}>
+                <Link
+                  aria-current={item.isCurrent ? "page" : undefined}
+                  className={
+                    item.isCurrent
+                      ? "docs-shell__nav-link docs-shell__nav-link--active"
+                      : "docs-shell__nav-link"
+                  }
+                  href={item.href}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
           </ul>
         </nav>
       </ShellDisclosurePanel>

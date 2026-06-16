@@ -115,4 +115,26 @@ describe("responsive shell integration", () => {
     expect(landingRoot?.getAttribute("data-shell-viewport")).toBe("desktop");
     expect(landingRoot?.hasAttribute("data-shell-narrow")).toBe(false);
   });
+
+  test("projects narrow viewport state onto landing shell for tablet widths", async () => {
+    mock.module("next/link", () => ({
+      default: ({ href, children, ...props }: Record<string, unknown>) => (
+        <a href={href as string} {...props}>
+          {children as React.ReactNode}
+        </a>
+      ),
+    }));
+
+    setViewportWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax);
+    mockMatchMediaForWidth(RESPONSIVE_BREAKPOINTS_PX.tabletMax);
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    const { container } = render(<LandingShell />);
+    const landingRoot = container.querySelector(".landing-shell");
+    expect(landingRoot?.getAttribute("data-shell-viewport")).toBe("tablet");
+    expect(landingRoot?.hasAttribute("data-shell-narrow")).toBe(true);
+  });
 });

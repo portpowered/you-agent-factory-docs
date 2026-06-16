@@ -1,3 +1,4 @@
+import { LandingShellHeaderNav } from "@/components/landing/landing-shell-header-nav";
 import { ResponsiveShellRoot } from "@/components/shell/responsive-shell-root";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
 import {
@@ -13,19 +14,7 @@ export function LandingShell() {
     <ResponsiveShellRoot className="landing-shell">
       <header className="landing-shell__header">
         <p className="landing-shell__brand">{PROJECT_NAME}</p>
-        <nav aria-label="Primary" className="landing-shell__header-nav">
-          <Link className="landing-shell__link" href={DOCS_ENTRY_ROUTE}>
-            {DOCS_CTA_LABEL}
-          </Link>
-          <a
-            className="landing-shell__link landing-shell__link--external"
-            href={GITHUB_REPO_URL}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {GITHUB_CTA_LABEL}
-          </a>
-        </nav>
+        <LandingShellHeaderNav />
       </header>
 
       <main className="landing-shell__main">

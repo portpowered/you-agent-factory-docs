@@ -5,6 +5,8 @@ import {
   DOCS_NAV_DISCLOSURE_SHOW_LABEL,
   DOCS_NAV_HEADING,
   DOCS_NAV_OVERVIEW_LABEL,
+  LANDING_NAV_DISCLOSURE_HIDE_LABEL,
+  LANDING_NAV_DISCLOSURE_SHOW_LABEL,
 } from "../../src/lib/shell";
 import {
   RESPONSIVE_BREAKPOINTS_PX,
@@ -123,6 +125,76 @@ describe("useShellDisclosure", () => {
     expect(
       screen.queryByRole("navigation", { name: DOCS_NAV_HEADING }),
     ).toBeNull();
+    expect(document.activeElement).toBe(toggle);
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+  });
+});
+
+describe("landing shell disclosure", () => {
+  test("keeps header navigation visible on desktop without a disclosure trigger", async () => {
+    mock.module("next/link", () => ({
+      default: MockLink,
+    }));
+
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+    render(<LandingShell />);
+
+    expect(
+      screen.queryByRole("button", { name: LANDING_NAV_DISCLOSURE_SHOW_LABEL }),
+    ).toBeNull();
+    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+  });
+
+  test("collapses landing header navigation on narrow viewports until opened", async () => {
+    mock.module("next/link", () => ({
+      default: MockLink,
+    }));
+
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+    render(<LandingShell />);
+
+    const toggle = screen.getByRole("button", {
+      name: LANDING_NAV_DISCLOSURE_SHOW_LABEL,
+    });
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
+
+    fireEvent.click(toggle);
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(toggle.textContent).toBe(LANDING_NAV_DISCLOSURE_HIDE_LABEL);
+    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+  });
+
+  test("returns focus to the trigger when Escape closes landing disclosure", async () => {
+    mock.module("next/link", () => ({
+      default: MockLink,
+    }));
+
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+    render(<LandingShell />);
+
+    const toggle = screen.getByRole("button", {
+      name: LANDING_NAV_DISCLOSURE_SHOW_LABEL,
+    });
+    fireEvent.click(toggle);
+    expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
     expect(document.activeElement).toBe(toggle);
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
   });

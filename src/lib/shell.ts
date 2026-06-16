@@ -20,6 +20,10 @@ export const DOCS_NAV_DISCLOSURE_SHOW_LABEL = "Show docs navigation";
 
 export const DOCS_NAV_DISCLOSURE_HIDE_LABEL = "Hide docs navigation";
 
+export const LANDING_NAV_DISCLOSURE_SHOW_LABEL = "Show site navigation";
+
+export const LANDING_NAV_DISCLOSURE_HIDE_LABEL = "Hide site navigation";
+
 export const DOCS_NAV_OVERVIEW_LABEL = "Overview";
 
 export const DOCS_SHELL_FRAMING_TEXT =
