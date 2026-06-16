@@ -25,12 +25,7 @@ Install locally and verify the contributor command path.
 describe("doc page article rendering", () => {
   test("renders generated in-page outline links for pages with h2+ headings", () => {
     renderWithLocalization(
-      <DocPageArticle
-        body={bodyWithOutline}
-        onThisPageLabel={enMessages.docs.onThisPageLabel}
-        outlineAriaLabel={enMessages.docs.pageOutlineAriaLabel}
-        title="Getting started"
-      />,
+      <DocPageArticle body={bodyWithOutline} title="Getting started" />,
     );
 
     const outline = screen.getByRole("navigation", {
@@ -56,12 +51,7 @@ describe("doc page article rendering", () => {
 
   test("omits page-outline navigation when the page body has no h2+ headings", () => {
     renderWithLocalization(
-      <DocPageArticle
-        body={bodyWithoutOutline}
-        onThisPageLabel={enMessages.docs.onThisPageLabel}
-        outlineAriaLabel={enMessages.docs.pageOutlineAriaLabel}
-        title="Installation"
-      />,
+      <DocPageArticle body={bodyWithoutOutline} title="Installation" />,
     );
 
     expect(
@@ -77,5 +67,19 @@ describe("doc page article rendering", () => {
         "Install locally and verify the contributor command path.",
       ),
     ).toBeTruthy();
+  });
+
+  test("resolves page-outline shell labels through the localization message path", () => {
+    renderWithLocalization(
+      <DocPageArticle body={bodyWithOutline} title="Getting started" />,
+      { locale: "fr" },
+    );
+
+    expect(
+      screen.getByRole("navigation", {
+        name: enMessages.docs.pageOutlineAriaLabel,
+      }),
+    ).toBeTruthy();
+    expect(screen.getByText(enMessages.docs.onThisPageLabel)).toBeTruthy();
   });
 });
