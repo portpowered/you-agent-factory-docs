@@ -3,7 +3,6 @@ import { type Browser, type Page, chromium } from "@playwright/test";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import {
   DOCS_CTA_LABEL,
-  DOCS_NAV_HEADING,
   DOCS_SHELL_FRAMING_TEXT,
   DOCS_SHELL_TITLE,
   GITHUB_CTA_LABEL,
@@ -18,9 +17,10 @@ import {
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
+import { getTestPort } from "../helpers/test-port";
 
 describe("reconciled baseline browser export", () => {
-  const port = 3786;
+  const port = getTestPort(3786, "RECONCILED_EXPORT_BROWSER_TEST_PORT");
   let server: StaticExportServer;
   let browser: Browser;
 
@@ -90,9 +90,7 @@ describe("reconciled baseline browser export", () => {
         true,
       );
       expect(
-        await page
-          .getByRole("navigation", { name: DOCS_NAV_HEADING })
-          .isVisible(),
+        await page.getByRole("navigation", { name: "Guides" }).isVisible(),
       ).toBe(true);
       expect(await page.getByRole("banner").isVisible()).toBe(true);
       expect(await page.getByRole("main").isVisible()).toBe(true);

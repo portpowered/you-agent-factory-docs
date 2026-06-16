@@ -1,60 +1,78 @@
 ## Codebase Patterns
-- Root contributor commands live in the `Makefile` (`setup`, `check`, `test`, `build`) and mirror `package.json` scripts.
-- Bootstrap scaffold patterns are documented in `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`; reconciliation lane notes live in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`.
-- Command-path proof uses `tests/helpers/make-target.ts` (`spawnSync` on `make <target>`); assert on combined stdout+stderr because `bun test` reports on stderr.
-- When a test invokes `make test`, set `VERIFYING_MAKE_TEST=1` in the child env and skip the recursive assertion when that env var is present.
-- Component behavior tests use `@testing-library/react` with `next/link` mocked via `tests/helpers/mock-next-link.tsx`.
-- App Router pages are thin wrappers around shell components (`src/app/page.tsx`, `src/app/docs/page.tsx`).
-- The bootstrap foundation was merged to `main` via PR #1 (`4ee2134`); the reconciled tree matches `bootstrap-static-export-foundation` with no scaffold divergence.
-- Browser verification for the static export reuses `tests/helpers/static-export-server.ts` (symlink mount under the GitHub Pages base path) with Playwright Chromium; static-export links use trailing slashes so href assertions should allow an optional `/` suffix.
-- Reconciliation divergence is recorded in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md`; keep that file narrow to reconciliation-relevant differences and link it from the lane relevant-files doc.
-- Prefix `package.json` `typecheck` with `next typegen` when `tsconfig.json` or `next-env.d.ts` reference `.next/types` so `make check` succeeds on a clean checkout without a prior build.
+- Canonical content types and validation live in `src/lib/content/`; import from `@/lib/content`. Keep this separate from docs-shell UI copy in `src/lib/shell.ts`.
+- `validateContentMetadata()` returns `{ ok: true, record }` or `{ ok: false, errors }` with reviewer-verifiable `{ field, message }` entries instead of throwing.
+- Canonical ids use `{kind}/{slug}` and must match the declared `kind` and `slug`; route paths are derived per public content kind.
+- Locale tags use BCP 47-style `en` or `en-US`; `canonicalLocale` must be included in `availableLocales`.
+- Root `Makefile` targets (`setup`, `check`, `test`, `build`) mirror `package.json` scripts; component tests use `@testing-library/react` with happy-dom preloaded from `bunfig.toml`.
+- Starter content fixtures live under `src/content/{docs,blog,glossary,comparisons,references}/{slug}/{locale}.mdx`; use `validateStarterContent()` or `loadStarterContentRecords()` to project validated canonical records from frontmatter plus directory context.
+- Docs-shell navigation is projected via `projectDocsShellNavigation()` / `loadDocsShellNavigation()` into `DocsShellNavigationInput`; `DocsShell` consumes that input via props instead of hand-maintained nav entry constants.
 
-## 2026-06-16 14:55 UTC - reconcile-bootstrap-foundation-baseline-001
-- Verified the default baseline already contains the bootstrap static-export scaffold (merged via PR #1) and added reviewer-facing proof: `tests/unit/baseline-foundation.test.tsx` asserts homepage and `/docs` routes render the delivered shells, plus `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md` documents inherited surfaces and verification commands.
-- Files changed: `tests/unit/baseline-foundation.test.tsx`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`
+## 2026-06-16T15:47:18Z - canonical-content-model-foundation-001
+- What was implemented
+  - Added `src/lib/content/` with `CanonicalContentRecord`, `ContentMetadataInput`, locale helpers, route identity helpers, and `validateContentMetadata()`.
+  - Enforced public content kinds (`doc`, `blog`, `glossary`, `comparison`, `reference`), canonical id rules, locale alignment, publication status, and search visibility validation.
+  - Added focused unit tests in `tests/unit/content-validation.test.ts`.
+  - Documented reusable patterns in `docs/internal/processes/canonical-content-model-foundation-relevant-files.md`.
+- Files changed
+  - `src/lib/content/types.ts`
+  - `src/lib/content/locales.ts`
+  - `src/lib/content/routes.ts`
+  - `src/lib/content/validation.ts`
+  - `src/lib/content/index.ts`
+  - `tests/unit/content-validation.test.ts`
+  - `docs/internal/processes/canonical-content-model-foundation-relevant-files.md`
 - **Learnings for future iterations:**
-  - Patterns discovered: Reconciliation proof should use observable route-to-shell rendering tests rather than branch or file inventories.
-  - Gotchas encountered: Homepage has duplicate "Get started" links (nav + hero); scope queries with `within(hero)` when asserting CTA hrefs.
-  - Useful context: `main` and `bootstrap-static-export-foundation` trees are identical post-merge; later stories should focus on command-path verification, browser QA, and divergence recording.
+  - Patterns discovered: canonical records are projected from author metadata via `validateContentMetadata()`; docs-shell navigation projection should consume records in story 003.
+  - Gotchas encountered: validate `canonicalLocale` even when `availableLocales` contains invalid tags so reviewers get errors on both fields.
+  - Useful context: architecture places future starter content under `src/content/{docs,blog,glossary,comparisons,references}/` with locale variant files.
 ---
 
-## 2026-06-16 16:45 UTC - reconcile-bootstrap-foundation-baseline-002
-- Added observable root command-path verification: `tests/unit/root-command-path.test.ts` runs `make setup`, `make check`, `make test`, and `make build` from the repository root via `tests/helpers/make-target.ts`, with a `VERIFYING_MAKE_TEST=1` guard to avoid recursive `make test` invocation.
-- Documented command-path proof and the no-divergence outcome in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`.
-- Files changed: `tests/helpers/make-target.ts`, `tests/unit/root-command-path.test.ts`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`
+## 2026-06-16T16:35:00Z - canonical-content-model-foundation-002
+- What was implemented
+  - Added starter content directories and minimal MDX fixtures for doc, blog, glossary, comparison, and reference content under `src/content/`.
+  - Implemented frontmatter parsing (`parseContentFile`), starter metadata projection (`buildMetadataFromStarterContent`), validation (`validateStarterContent`), and filesystem loading (`loadStarterContentRecords`).
+  - Added focused tests covering success paths, failure paths, directory-derived kind/slug defaults, and loading all supported content kinds.
+  - Documented starter content patterns in `docs/internal/processes/canonical-content-model-foundation-relevant-files.md`.
+- Files changed
+  - `src/lib/content/frontmatter.ts`
+  - `src/lib/content/starter.ts`
+  - `src/lib/content/load-starter-content.ts`
+  - `src/lib/content/index.ts`
+  - `src/content/docs/getting-started/en.mdx`
+  - `src/content/docs/invalid-fixture/en.mdx`
+  - `src/content/blog/introducing-factory/en.mdx`
+  - `src/content/glossary/agent/en.mdx`
+  - `src/content/comparisons/vs-n8n/en.mdx`
+  - `src/content/references/loop-engineering/en.mdx`
+  - `tests/unit/starter-content.test.ts`
+  - `docs/internal/processes/canonical-content-model-foundation-relevant-files.md`
 - **Learnings for future iterations:**
-  - Patterns discovered: `spawnSync` command-path tests should assert on combined stdout+stderr; `bun test` summary lines appear on stderr.
-  - Gotchas encountered: `/\d+ fail/` matches `0 fail`; use an explicit `0 fail` summary assertion instead. Slow `make` targets need explicit test timeouts (default 5s is too low for `make check` under load).
-  - Useful context: Full `make test` now takes ~2 minutes because command-path tests nest another `make test` plus `make build`; this is expected for this story.
+  - Patterns discovered: starter content kind defaults come from directory name via `STARTER_CONTENT_DIRECTORY_KINDS`; `title` frontmatter maps to `navigationTitle` when omitted.
+  - Gotchas encountered: keep an explicit invalid fixture in `src/content/docs/invalid-fixture/` to prove failure handling when loading the content root; filter expected failures in tests that load the full tree.
+  - Useful context: story 003 should project docs-shell navigation from `loadStarterContentRecords()` output rather than shell constants.
 ---
 
-## 2026-06-16 18:30 UTC - reconcile-bootstrap-foundation-baseline-003
-- Added Playwright Chromium browser verification for the reconciled static export: `tests/unit/reconciled-export-browser.test.ts` serves `out/` under `/you-agent-factory-docs`, asserts homepage and `/docs` shell rendering (identity, CTAs, landmarks, framing copy), proves CTA navigation in both directions, and checks mobile viewport navigability.
-- Documented the browser proof pattern in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md` and `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`.
-- Files changed: `tests/unit/reconciled-export-browser.test.ts`, `package.json`, `bun.lock`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`, `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`
+## 2026-06-16T15:56:13Z - canonical-content-model-foundation-003
+- What was implemented
+  - Added `DocsShellNavigationInput` and `projectDocsShellNavigation()` to derive section-grouped, ordered docs navigation from published canonical doc records.
+  - Added `loadDocsShellNavigation()` to load starter fixtures and project navigation at build time for the docs shell page.
+  - Updated `DocsShell` to render generated navigation sections and page links instead of the hand-maintained Overview placeholder.
+  - Added unit tests for navigation projection and docs-shell consumption, plus static-export HTML verification for generated nav labels and hrefs.
+  - Documented navigation projection patterns in `docs/internal/processes/canonical-content-model-foundation-relevant-files.md`.
+- Files changed
+  - `src/lib/content/docs-navigation.ts`
+  - `src/lib/content/load-docs-navigation.ts`
+  - `src/lib/content/index.ts`
+  - `src/app/docs/page.tsx`
+  - `src/components/docs/docs-shell.tsx`
+  - `src/lib/shell.ts`
+  - `src/app/globals.css`
+  - `tests/unit/docs-navigation.test.ts`
+  - `tests/unit/docs-shell.test.tsx`
+  - `tests/unit/static-export.test.ts`
+  - `docs/internal/processes/canonical-content-model-foundation-relevant-files.md`
 - **Learnings for future iterations:**
-  - Patterns discovered: Reuse `static-export-server.ts` for both fetch-based and Playwright browser checks; install Chromium via `bunx playwright install chromium` after adding `@playwright/test`.
-  - Gotchas encountered: Next.js static export with `trailingSlash: true` emits docs CTA hrefs with a trailing slash; browser href assertions must allow `/you-agent-factory-docs/docs/`.
-  - Useful context: Browser tests add ~15s per file (including one build in `beforeAll`); full `make test` now takes ~70s when not nested through `root-command-path.test.ts`.
----
-
-## 2026-06-16 20:15 UTC - reconcile-bootstrap-foundation-baseline-004
-- Added reviewer-facing divergence record at `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md` explicitly stating **no meaningful divergence** between `bootstrap-static-export-foundation` and the reconciled default baseline, listing reconciliation-only verification additions separately from behavioral changes, and documenting re-verification steps.
-- Linked the divergence record from `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md` with a dedicated reconciliation divergence section for later lanes.
-- Files changed: `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`
-- **Learnings for future iterations:**
-  - Patterns discovered: Keep divergence recording in a dedicated narrow doc rather than scattering statements across lane notes; distinguish reconciliation verification additions from corrective scaffold edits.
-  - Gotchas encountered: Story 004 only requires typecheck, but running the full suite before commit still catches regressions from doc-only lanes that share CI with code stories.
-  - Useful context: All four PRD stories are now complete; create the PR on first push after the final story commit when no PR exists yet.
----
-
-## 2026-06-16 22:35 UTC - PR feedback (clean-root make check)
-- Addressed BLOCKING PR #2 feedback: prefixed `package.json` `typecheck` with `next typegen` so `make check` succeeds on a clean checkout before `.next/types` exists; updated `tests/unit/root-command-path.test.ts` to clear `.next` and `tsconfig.tsbuildinfo` before the `make check` assertion so command-path proof is order-independent.
-- Recorded the reconciliation-specific typecheck divergence in `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md` and linked it from the lane relevant-files doc.
-- Files changed: `package.json`, `tests/unit/root-command-path.test.ts`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md`, `docs/internal/processes/reconcile-bootstrap-foundation-baseline-relevant-files.md`, `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md`
-- **Learnings for future iterations:**
-  - Patterns discovered: Use `next typegen && tsc --noEmit` when `tsconfig.json` includes `.next/types/**/*.ts` or `next-env.d.ts` references generated route types.
-  - Gotchas encountered: Command-path tests that invoke `make check` must clear `.next` and `tsconfig.tsbuildinfo` first or they only prove a warmed workspace; stale `tsconfig.tsbuildinfo` can also mask `TS6053` locally.
-  - Useful context: Reviewer repro was `make check` on a clean root; `next typegen` is the Next.js 15.5+ fast path that materializes route types without a full build.
+  - Patterns discovered: keep `DocsShellNavigationInput` separate from `CanonicalContentRecord`; filter to published `doc` records for the first docs-shell nav surface.
+  - Gotchas encountered: static-export browser verification belongs in `static-export.test.ts` using served `out/` HTML, not happy-dom fetch.
+  - Useful context: story 004 should consolidate reviewer-facing prerequisite notes and ownership-boundary documentation.
 ---

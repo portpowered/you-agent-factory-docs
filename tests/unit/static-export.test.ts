@@ -12,6 +12,7 @@ import {
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
+import { getTestPort } from "../helpers/test-port";
 
 describe("static export configuration", () => {
   test("configures Next.js for fully static GitHub Pages export", () => {
@@ -24,7 +25,7 @@ describe("static export configuration", () => {
 });
 
 describe("served static export navigation", () => {
-  const port = 3785;
+  const port = getTestPort(3785, "STATIC_EXPORT_TEST_PORT");
   let server: ReturnType<typeof startStaticExportServer>;
 
   beforeAll(async () => {
@@ -101,5 +102,54 @@ describe("served static export navigation", () => {
     expect(homepageHtml).not.toContain(`>${enMessages.common.home}<`);
     expect(docsHtml).toContain(enMessages.common.home);
     expect(docsHtml).not.toContain(`>${enMessages.common.getStarted}<`);
+  }, 30_000);
+
+  test("renders generated docs navigation from canonical content records", async () => {
+    const docsResponse = await fetchHttp(
+      new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const docsHtml = await docsResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+
+    expect(docsHtml).toContain("Getting started");
+    expect(docsHtml).toContain("Guides");
+    expect(new RegExp(`href="${gettingStartedPath}/?"`).test(docsHtml)).toBe(
+      true,
+    );
+    expect(docsHtml).not.toContain("Overview");
+  }, 30_000);
+
+  test("follows a generated docs navigation link to a served doc page", async () => {
+    const docsResponse = await fetchHttp(
+      new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const docsHtml = await docsResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+    const gettingStartedMatch = docsHtml.match(
+      new RegExp(`href="(${gettingStartedPath}/?)"`),
+    );
+
+    expect(gettingStartedMatch?.[1]).toBeTruthy();
+
+    const docPageResponse = await fetchHttp(
+      new URL(gettingStartedMatch?.[1] ?? "", server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(docPageResponse.status).toBe(200);
+
+    const docPageHtml = await docPageResponse.text();
+    expect(docPageHtml).toContain("Getting started");
+    expect(docPageHtml).toContain(
+      "Starter documentation content that proves the canonical content model.",
+    );
   }, 30_000);
 });

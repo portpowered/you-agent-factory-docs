@@ -1,5 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
+import type { DocsShellNavigationInput } from "../../src/lib/content";
 import { DOCS_ENTRY_ROUTE } from "../../src/lib/project";
 import { enMessages } from "../../src/localization/messages/en";
 import MockLink from "../helpers/mock-next-link";
@@ -9,6 +10,23 @@ const frPrimaryNavAriaLabel = "Principale";
 const frGetStarted = "Commencer";
 const frHome = "Accueil";
 const frDocsNavHeading = "Navigation de la documentation";
+
+const fallbackDocsNavigation: DocsShellNavigationInput = {
+  sections: [
+    {
+      id: "docs",
+      label: "",
+      pages: [
+        {
+          canonicalId: "overview",
+          label: enMessages.docs.navOverview,
+          href: DOCS_ENTRY_ROUTE,
+          order: 1,
+        },
+      ],
+    },
+  ],
+};
 
 mock.module("next/link", () => ({
   default: MockLink,
@@ -55,7 +73,15 @@ describe("homepage shell fallback messaging", () => {
 
 describe("docs shell fallback messaging", () => {
   test("renders localized labels and falls back to default locale for missing keys", () => {
-    renderWithLocalization(<DocsShell />, { locale: "fr" });
+    renderWithLocalization(
+      <DocsShell navigation={fallbackDocsNavigation}>
+        <article aria-labelledby="docs-shell-title">
+          <h1 id="docs-shell-title">{enMessages.docs.shellTitle}</h1>
+          <p className="docs-shell__framing">{enMessages.docs.framingText}</p>
+        </article>
+      </DocsShell>,
+      { locale: "fr" },
+    );
 
     expect(
       screen.getByRole("navigation", {
@@ -85,7 +111,12 @@ describe("docs shell fallback messaging", () => {
   });
 
   test("keeps canonical route identities when rendering fallback shell text", () => {
-    renderWithLocalization(<DocsShell />, { locale: "fr" });
+    renderWithLocalization(
+      <DocsShell navigation={fallbackDocsNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+      { locale: "fr" },
+    );
 
     const homeLink = screen.getByRole("link", { name: frHome });
     const overviewLink = screen.getByRole("link", {

@@ -304,10 +304,13 @@ body {
 }
 
 .shared-shell__main h1,
-.docs-shell__main h1 {
-  margin: 0 0 1rem;
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  line-height: 1.2;
+.docs-shell__main h1,
+.docs-page__body {
+  margin: 0;
+  max-width: 42rem;
+  white-space: pre-wrap;
+  color: var(--landing-muted);
+  font-size: clamp(1rem, 2.5vw, 1.0625rem);
 }
 
 .docs-shell__framing {

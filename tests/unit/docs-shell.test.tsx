@@ -1,5 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
+import type { DocsShellNavigationInput } from "../../src/lib/content";
 import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shell";
 import { enMessages } from "../../src/localization/messages/en";
@@ -12,14 +13,36 @@ mock.module("next/link", () => ({
 
 const { DocsShell } = await import("../../src/components/docs/docs-shell");
 
+const generatedNavigation: DocsShellNavigationInput = {
+  sections: [
+    {
+      id: "guides",
+      label: "Guides",
+      pages: [
+        {
+          canonicalId: "doc/getting-started",
+          label: "Getting started",
+          href: "/docs/getting-started",
+          order: 1,
+        },
+      ],
+    },
+  ],
+};
+
 describe("docs shell rendering", () => {
-  test("renders header, docs navigation, and main content landmarks from messages", () => {
-    renderWithLocalization(<DocsShell />);
+  test("renders header, generated docs navigation, and main content landmarks", () => {
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <article aria-labelledby="docs-shell-title">
+          <h1 id="docs-shell-title">{enMessages.docs.shellTitle}</h1>
+          <p className="docs-shell__framing">{enMessages.docs.framingText}</p>
+        </article>
+      </DocsShell>,
+    );
 
     expect(screen.getByRole("banner")).toBeTruthy();
-    expect(
-      screen.getByRole("navigation", { name: enMessages.docs.navHeading }),
-    ).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
     expect(screen.getByRole("main")).toBeTruthy();
 
     expect(
@@ -32,10 +55,19 @@ describe("docs shell rendering", () => {
     expect(
       within(screen.getByRole("banner")).getByText(PROJECT_NAME),
     ).toBeTruthy();
+    expect(screen.getByText("Guides")).toBeTruthy();
+    expect(screen.getByText("Getting started")).toBeTruthy();
   });
 
-  test("marks the overview entry as current and links home and GitHub", () => {
-    renderWithLocalization(<DocsShell />);
+  test("marks the active generated nav entry and links home and GitHub", () => {
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
 
     const siteNav = screen.getByRole("navigation", {
       name: enMessages.landing.primaryNavAriaLabel,
@@ -50,14 +82,32 @@ describe("docs shell rendering", () => {
     expect(homeLink.getAttribute("href")).toBe("/");
     expect(githubLink.getAttribute("href")).toBe(GITHUB_REPO_URL);
 
-    const docsNav = screen.getByRole("navigation", {
-      name: enMessages.docs.navHeading,
-    });
-    const overviewLink = within(docsNav).getByRole("link", {
-      name: enMessages.docs.navOverview,
+    const docsNav = screen.getByRole("navigation", { name: "Guides" });
+    const gettingStartedLink = within(docsNav).getByRole("link", {
+      name: "Getting started",
     });
 
-    expect(overviewLink.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
-    expect(overviewLink.getAttribute("aria-current")).toBe("page");
+    expect(gettingStartedLink.getAttribute("href")).toBe(
+      "/docs/getting-started",
+    );
+    expect(gettingStartedLink.getAttribute("aria-current")).toBe("page");
+  });
+
+  test("does not mark docs entry overview as active when viewing generated pages", () => {
+    renderWithLocalization(
+      <DocsShell
+        currentPath={DOCS_ENTRY_ROUTE}
+        navigation={generatedNavigation}
+      >
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const docsNav = screen.getByRole("navigation", { name: "Guides" });
+    const gettingStartedLink = within(docsNav).getByRole("link", {
+      name: "Getting started",
+    });
+
+    expect(gettingStartedLink.getAttribute("aria-current")).toBeNull();
   });
 });

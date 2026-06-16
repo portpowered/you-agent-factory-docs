@@ -2,14 +2,20 @@ import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "@/lib/project";
 import {
   GITHUB_REPO_URL,
   type SharedShellConfig,
+  type SharedShellDocsNavigationGroup,
 } from "@/lib/shared-shell-config";
 import type { SharedShellMessageKey } from "@/types/localization";
 
 type MessageLookup = (key: SharedShellMessageKey) => string;
 
+type SharedShellMessageConfigOverrides = {
+  docsNavigationGroups?: SharedShellDocsNavigationGroup[];
+};
+
 /** Builds shared shell configuration from localized message lookup. */
 export function createSharedShellConfigFromMessages(
   t: MessageLookup,
+  overrides?: SharedShellMessageConfigOverrides,
 ): SharedShellConfig {
   const destinations = {
     home: {
@@ -40,7 +46,7 @@ export function createSharedShellConfigFromMessages(
       home: [destinations.docs.id, destinations.github.id],
       docs: [destinations.home.id, destinations.github.id],
     },
-    docsNavigationGroups: [
+    docsNavigationGroups: overrides?.docsNavigationGroups ?? [
       {
         heading: t("docs.navHeading"),
         items: [
