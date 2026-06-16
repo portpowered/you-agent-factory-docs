@@ -90,3 +90,12 @@ export {
   type LocalizedVariantValidationResult,
   type LocalizedVariantValidationSuccess,
 } from "@/lib/content/localized-variant-identity";
+export {
+  buildLocalizedSearchDocumentId,
+  extractMarkdownHeadings,
+  extractSearchableBody,
+  generateLocalizedSearchDocuments,
+  projectLocalizedSearchDocument,
+  type LocalizedSearchDocument,
+} from "@/lib/content/search-document";
+export { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";
