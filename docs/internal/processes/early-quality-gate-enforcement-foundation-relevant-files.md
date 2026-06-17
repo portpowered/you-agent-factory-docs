@@ -4,6 +4,7 @@
 
 - `make quality-gate` and `bun run quality-gate` are the single early enforcement entrypoints for contributors and automation.
 - `scripts/quality-gate.ts` orchestrates the enforced sequence and fails fast on the first failing step.
+- When tests or helpers need to serialize `make quality-gate` against other `.next`/`out/`-mutating command paths, they should hold the repo-root export lock and pass `STATIC_EXPORT_BUILD_LOCK_HELD=1`. `scripts/validate-static-export.ts` reuses that parent-held lock instead of reacquiring it in the child process, which avoids both cross-test typegen/build races and child-process self-deadlock.
 - `src/lib/quality-gate/deferred-phase8.ts` lists checks intentionally deferred to later Phase 8 work.
 - `.github/workflows/ci.yml` runs `make setup` then `make quality-gate` without bypassing the root `Makefile`.
 - `README.md` documents the same authoritative path, lists the enforced foundation checks, and marks deferred Phase 8 work out of scope for this lane.
