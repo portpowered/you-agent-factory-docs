@@ -121,11 +121,11 @@ export {
 export { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";
 export {
   loadPublicSearchArtifact,
-  parsePublicSearchArtifact,
   writePublicSearchArtifact,
   type LoadPublicSearchArtifactOptions,
   type WritePublicSearchArtifactOptions,
 } from "@/lib/content/load-search-artifact";
+export { parsePublicSearchArtifact } from "@/lib/content/parse-public-search-artifact";
 export {
   PUBLIC_SEARCH_ARTIFACT_VERSION,
   buildPublicSearchArtifact,
