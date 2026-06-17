@@ -41,7 +41,7 @@ describe("reconciled baseline browser export", () => {
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
     browser = await chromium.launch();
-  }, 120_000);
+  }, 240_000);
 
   afterAll(async () => {
     await browser?.close();
@@ -494,7 +494,7 @@ describe("reconciled baseline browser export", () => {
       expect(
         await page
           .getByText(
-            "Run `make quality-gate` after setup to verify that the local install is usable.",
+            "Run `make check`, `make test`, and `make build` after setup to verify that the local install matches pull request validation.",
           )
           .isVisible(),
       ).toBe(true);

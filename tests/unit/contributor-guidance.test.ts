@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, rmSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { dryRunMake } from "../helpers/make";
 import { runMakeTarget } from "../helpers/make-target";
@@ -7,11 +7,6 @@ import { runMakeTarget } from "../helpers/make-target";
 const repoRoot = join(import.meta.dir, "../..");
 const verifyingMakeTest = process.env.VERIFYING_MAKE_TEST === "1";
 const testUnlessVerifying = verifyingMakeTest ? test.skip : test;
-
-function cleanNextTypeArtifacts() {
-  rmSync(join(repoRoot, ".next"), { recursive: true, force: true });
-  rmSync(join(repoRoot, "tsconfig.tsbuildinfo"), { force: true });
-}
 
 describe("contributor guidance observable outcomes", () => {
   testUnlessVerifying(
@@ -27,7 +22,6 @@ describe("contributor guidance observable outcomes", () => {
   testUnlessVerifying(
     "make check surfaces typecheck and lint verification through one command",
     () => {
-      cleanNextTypeArtifacts();
       const output = dryRunMake("check");
 
       expect(output).toMatch(/bun run typecheck/);

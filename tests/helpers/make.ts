@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { withRepoCommandLock } from "./repo-command-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
@@ -24,9 +25,16 @@ export function runMake(
         },
         maxBuffer: 50 * 1024 * 1024,
       });
-    return target === "quality-gate" && !options.dryRun
-      ? withQualityGateCommandLock(repoRoot, runTarget)
-      : runTarget();
+
+    if (target === "quality-gate" && !options.dryRun) {
+      return withQualityGateCommandLock(repoRoot, runTarget);
+    }
+
+    if ((target === "check" || target === "build") && !options.dryRun) {
+      return withStaticExportBuildLock(repoRoot, runTarget);
+    }
+
+    return runTarget();
   });
 
   return {

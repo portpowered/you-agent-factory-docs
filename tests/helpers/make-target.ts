@@ -1,10 +1,12 @@
 import { spawnSync } from "node:child_process";
+import { rmSync } from "node:fs";
 import { join } from "node:path";
-import { withNextTypeArtifactLock } from "../../src/lib/validation/next-type-artifact-lock";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { withRepoCommandLock } from "./repo-command-lock";
 
 const projectRoot = join(import.meta.dir, "../..");
+const nextDir = join(projectRoot, ".next");
+const tsBuildInfoPath = join(projectRoot, "tsconfig.tsbuildinfo");
 
 export type MakeTargetResult = {
   status: number | null;
@@ -16,6 +18,7 @@ export type MakeTargetResult = {
 export function runMakeTarget(
   target: string,
   env: Record<string, string> = {},
+  options: { resetGeneratedArtifacts?: boolean } = {},
 ): MakeTargetResult {
   const mergedEnv = { ...process.env, ...env };
   const verifyingMakeTest = mergedEnv.VERIFYING_MAKE_TEST === "1";
@@ -45,11 +48,18 @@ export function runMakeTarget(
       });
     };
 
-    return target === "build"
-      ? withStaticExportBuildLock(projectRoot, runTarget)
-      : target === "check"
-        ? withNextTypeArtifactLock(projectRoot, runTarget)
-        : runTarget();
+    if (target === "build" || target === "check") {
+      return withStaticExportBuildLock(projectRoot, () => {
+        if (options.resetGeneratedArtifacts) {
+          rmSync(nextDir, { recursive: true, force: true });
+          rmSync(tsBuildInfoPath, { force: true });
+        }
+
+        return runTarget();
+      });
+    }
+
+    return runTarget();
   });
 
   const stdout = result.stdout ?? "";
