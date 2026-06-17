@@ -121,11 +121,11 @@ export {
 export { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";
 export {
   loadPublicSearchArtifact,
-  parsePublicSearchArtifact,
   writePublicSearchArtifact,
   type LoadPublicSearchArtifactOptions,
   type WritePublicSearchArtifactOptions,
 } from "@/lib/content/load-search-artifact";
+export { parsePublicSearchArtifact } from "@/lib/content/parse-public-search-artifact";
 export {
   PUBLIC_SEARCH_ARTIFACT_VERSION,
   buildPublicSearchArtifact,
@@ -133,3 +133,12 @@ export {
   type PublicSearchArtifact,
   type PublicSearchArtifactEntry,
 } from "@/lib/content/search-artifact";
+export {
+  createPublicSearchOramaIndex,
+  searchPublicSearchOramaIndex,
+  type PublicSearchOramaDatabase,
+  type PublicSearchOramaHit,
+  type PublicSearchOramaIndex,
+  type PublicSearchOramaSearchResult,
+  type SearchPublicSearchOramaIndexOptions,
+} from "@/lib/content/orama-search";

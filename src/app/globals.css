@@ -98,6 +98,70 @@
     border-top: 1px solid var(--border);
   }
 
+  .docs-search {
+    @apply mb-6 grid gap-4 rounded-xl border bg-card p-4;
+  }
+
+  .docs-search__header {
+    @apply grid gap-4;
+  }
+
+  .docs-search__title {
+    @apply m-0 text-base font-semibold text-foreground;
+  }
+
+  .docs-search__helper {
+    @apply mb-0 mt-1 text-sm text-muted-foreground;
+  }
+
+  .docs-search__form {
+    @apply grid gap-2;
+  }
+
+  .docs-search__label {
+    @apply text-sm font-semibold text-foreground;
+  }
+
+  .docs-search__input {
+    @apply min-h-11 rounded-lg border bg-background px-3.5 py-3 text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  .docs-search__status {
+    @apply m-0 text-sm text-muted-foreground;
+  }
+
+  .docs-search__status--error {
+    @apply text-red-600 dark:text-red-400;
+  }
+
+  .docs-search__results {
+    @apply grid gap-3;
+  }
+
+  .docs-search__results-list {
+    @apply m-0 grid list-none gap-3 p-0;
+  }
+
+  .docs-search__result {
+    @apply rounded-lg border bg-card;
+  }
+
+  .docs-search__result-link {
+    @apply grid gap-1.5 rounded-lg px-4 py-3 no-underline transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  .docs-search__result-link:hover .docs-search__result-title {
+    @apply text-accent underline;
+  }
+
+  .docs-search__result-title {
+    @apply text-sm font-semibold text-foreground;
+  }
+
+  .docs-search__result-description {
+    @apply text-sm text-muted-foreground;
+  }
+
   .docs-breadcrumbs {
     @apply mb-6;
   }

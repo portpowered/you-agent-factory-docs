@@ -2,6 +2,7 @@
 
 import { DocsBreadcrumbs } from "@/components/docs/docs-breadcrumbs";
 import { DocsProgression } from "@/components/docs/docs-progression";
+import { DocsSearch } from "@/components/docs/docs-search";
 import { SharedShell } from "@/components/shell/shared-shell";
 import type { DocsShellNavigationInput } from "@/lib/content";
 import { projectDocsBreadcrumbs } from "@/lib/content/docs-breadcrumbs";
@@ -45,6 +46,7 @@ export function DocsShell({
       currentDocsItemId={currentDocsItemId}
       surface="docs"
     >
+      <DocsSearch />
       <DocsBreadcrumbs
         ariaLabel={t("docs.breadcrumbAriaLabel")}
         trail={breadcrumbs}

@@ -2,21 +2,24 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import type { EarlyGateValidationFixture } from "../../src/lib/validation/gate-fixtures";
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
+import { withRepoCommandLock } from "./repo-command-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
 
 export function runQualityGateScript(
   options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
-  const result = withQualityGateCommandLock(repoRoot, () =>
-    spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
-      cwd: repoRoot,
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        ...options.env,
-      },
-    }),
+  const result = withRepoCommandLock(repoRoot, () =>
+    withQualityGateCommandLock(repoRoot, () =>
+      spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          ...options.env,
+        },
+      }),
+    ),
   );
 
   return {
@@ -42,19 +45,21 @@ export function runValidationScript(
   fixture?: EarlyGateValidationFixture,
   options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
-  const result = spawnSync("bun", ["run", target], {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-      ...(fixture
-        ? {
-            EARLY_GATE_VALIDATION_FIXTURE: fixture,
-          }
-        : undefined),
-    },
-  });
+  const result = withRepoCommandLock(repoRoot, () =>
+    spawnSync("bun", ["run", target], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        ...options.env,
+        ...(fixture
+          ? {
+              EARLY_GATE_VALIDATION_FIXTURE: fixture,
+            }
+          : undefined),
+      },
+    }),
+  );
 
   return {
     status: result.status,
