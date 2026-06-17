@@ -202,7 +202,10 @@ describe("served static export navigation", () => {
     const docPageHtml = await docPageResponse.text();
     expect(docPageHtml).toContain("Introduction");
     expect(docPageHtml).toContain(
-      "Start the docs journey with a short orientation to You Agent Factory before installation and quickstart.",
+      "You Agent Factory is an open-source, engineering-native platform for turning recurring development work into reusable, inspectable AI agent workflows.",
+    );
+    expect(docPageHtml).toContain(
+      "This path is for engineers and technical teams who already work from repositories, files, command-line tools, and review processes, and want a clearer way to structure recurring AI-assisted development work.",
     );
     expect(docPageHtml).toContain(
       `aria-label="${enMessages.docs.breadcrumbAriaLabel}"`,
@@ -219,9 +222,13 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
     );
-    expect(docPageHtml).toContain('href="#why-this-path-exists"');
-    expect(docPageHtml).toContain('id="why-this-path-exists"');
-    expect(docPageHtml).toContain("Why this path exists");
+    expect(docPageHtml).toContain(
+      'href="#what-you-agent-factory-helps-you-do"',
+    );
+    expect(docPageHtml).toContain('id="what-you-agent-factory-helps-you-do"');
+    expect(docPageHtml).toContain("What You Agent Factory helps you do");
+    expect(docPageHtml).toContain("Who this setup path is for");
+    expect(docPageHtml).toContain("Why continue into setup");
     expect(docPageHtml).toContain("Continue through setup");
   }, 30_000);
 

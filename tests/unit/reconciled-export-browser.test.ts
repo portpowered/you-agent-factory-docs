@@ -220,10 +220,24 @@ describe("reconciled baseline browser export", () => {
       expect(await breadcrumbs.isVisible()).toBe(true);
       expect(await breadcrumbs.getByText("Setup").isVisible()).toBe(true);
       expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Who this setup path is for",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
         await progression
           .getByRole("link", {
             name: `${enMessages.docs.nextPagePrefix} Installation`,
           })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("link", { name: "Installation" })
+          .first()
           .isVisible(),
       ).toBe(true);
 
