@@ -492,4 +492,48 @@ describe("served static export navigation", () => {
     expect(cliHtml).toContain(enMessages.docs.nextPagePrefix);
     expect(cliHtml).toContain("Configuration");
   }, 30_000);
+
+  test("serves the post-setup concept routes through canonical docs paths", async () => {
+    const routeChecks = [
+      {
+        path: "/docs/cli",
+        title: "CLI overview",
+        body: "Typical commands and outcomes",
+        previousLabel: "Getting started",
+        nextLabel: "Configuration",
+      },
+      {
+        path: "/docs/configuration",
+        title: "Configuration",
+        body: "How configuration changes execution",
+        previousLabel: "CLI overview",
+        nextLabel: "Workflow concepts",
+      },
+      {
+        path: "/docs/concepts",
+        title: "Workflow concepts",
+        body: "How the CLI and configuration connect",
+        previousLabel: "Configuration",
+        nextLabel: "Installation",
+      },
+    ] as const;
+
+    for (const routeCheck of routeChecks) {
+      const response = await fetchHttp(
+        new URL(withBasePath(routeCheck.path), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(200);
+
+      const html = await response.text();
+      expect(html).toContain(routeCheck.title);
+      expect(html).toContain(routeCheck.body);
+      expect(html).toContain(
+        `aria-label="${enMessages.docs.progressionAriaLabel}"`,
+      );
+      expect(html).toContain(routeCheck.previousLabel);
+      expect(html).toContain(routeCheck.nextLabel);
+    }
+  }, 30_000);
 });
