@@ -237,6 +237,46 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("react-flow__viewport");
   }, 30_000);
 
+  test("serves canonical public starter routes for blog, glossary, comparison, and reference content", async () => {
+    const publicRoutes = [
+      {
+        path: "/blog/introducing-factory",
+        title: "Introducing You Agent Factory",
+        body: "Starter blog content for the shared canonical model.",
+      },
+      {
+        path: "/glossary/agent",
+        title: "Agent",
+        body: "Starter glossary entry for canonical content validation.",
+      },
+      {
+        path: "/comparisons/vs-n8n",
+        title: "You Agent Factory vs n8n",
+        body: "Starter comparison content for the canonical model.",
+      },
+      {
+        path: "/references/loop-engineering",
+        title: "Loop engineering",
+        body: "Starter reference content for canonical record generation.",
+      },
+    ];
+
+    for (const route of publicRoutes) {
+      const response = await fetchHttp(
+        new URL(withBasePath(route.path), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(200);
+
+      const html = await response.text();
+      expect(html).toContain(route.title);
+      expect(html).toContain(route.body);
+      expect(html).toContain(`href="${withBasePath(DOCS_ENTRY_ROUTE)}/"`);
+      expect(html).toContain(enMessages.common.githubCta);
+    }
+  }, 30_000);
+
   test("follows a generated docs navigation link to a served doc page", async () => {
     const docsResponse = await fetchHttp(
       new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),

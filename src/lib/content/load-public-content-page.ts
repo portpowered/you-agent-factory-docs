@@ -19,13 +19,15 @@ import type {
 
 const DEFAULT_CONTENT_ROOT = join(process.cwd(), "src/content");
 
-const CONTENT_DIRECTORY_BY_KIND = {
-  doc: "docs",
+const CONTENT_DIRECTORY_BY_KIND: Record<
+  Exclude<PublicContentKind, "doc">,
+  string
+> = {
   blog: "blog",
   glossary: "glossary",
   comparison: "comparisons",
   reference: "references",
-} as const satisfies Record<PublicContentKind, string>;
+};
 
 export type PublicContentPage = {
   record: CanonicalContentRecord;
@@ -35,9 +37,20 @@ export type PublicContentPage = {
   localeProjection: LocaleAwareContentProjection;
 };
 
-function findPublishedRecord(
+export type LoadPublicContentPageOptions = {
+  locale?: string;
+};
+
+export class PublicContentPageNotFoundError extends Error {
+  constructor(kind: Exclude<PublicContentKind, "doc">, slug: string) {
+    super(`Published ${kind} page not found: ${slug}`);
+    this.name = "PublicContentPageNotFoundError";
+  }
+}
+
+function findPublishedPublicContentRecord(
   records: CanonicalContentRecord[],
-  kind: PublicContentKind,
+  kind: Exclude<PublicContentKind, "doc">,
   slug: string,
 ): CanonicalContentRecord | undefined {
   return records.find(
@@ -48,9 +61,9 @@ function findPublishedRecord(
   );
 }
 
-function readContentSource(
+function readPublicContentSource(
   contentRoot: string,
-  kind: PublicContentKind,
+  kind: Exclude<PublicContentKind, "doc">,
   slug: string,
   locale: string,
 ): string {
@@ -60,36 +73,19 @@ function readContentSource(
 
   if (!localeFile) {
     throw new Error(
-      `Content locale file not found for kind "${kind}", slug "${slug}", and locale "${locale}"`,
+      `Public content locale file not found for "${kind}/${slug}" and locale "${locale}"`,
     );
   }
 
   return readFileSync(join(slugRoot, localeFile), "utf8");
 }
 
-export type LoadPublicContentPageOptions = {
-  locale?: string;
-};
-
-export function listPublishedContentSlugs(
-  kind: PublicContentKind,
-  contentRoot = DEFAULT_CONTENT_ROOT,
-): string[] {
-  const { records, failures } = loadStarterContentRecords(contentRoot);
-  assertStarterContentValid(failures);
-
-  const slugs = new Set<string>();
-  for (const record of records) {
-    if (record.kind === kind && record.status === "published") {
-      slugs.add(record.slug);
-    }
-  }
-
-  return [...slugs].sort((left, right) => left.localeCompare(right));
-}
-
+/**
+ * Loads a published non-doc public page from validated starter content
+ * fixtures.
+ */
 export function loadPublicContentPage(
-  kind: PublicContentKind,
+  kind: Exclude<PublicContentKind, "doc">,
   slug: string,
   contentRoot = DEFAULT_CONTENT_ROOT,
   options?: LoadPublicContentPageOptions,
@@ -98,9 +94,9 @@ export function loadPublicContentPage(
     loadStarterContentRecords(contentRoot);
   assertStarterContentValid(failures);
 
-  const record = findPublishedRecord(records, kind, slug);
+  const record = findPublishedPublicContentRecord(records, kind, slug);
   if (!record) {
-    throw new Error(`Published ${kind} page not found: ${slug}`);
+    throw new PublicContentPageNotFoundError(kind, slug);
   }
 
   const localeProjection = projectLocaleAwareContent(record.id, {
@@ -108,7 +104,7 @@ export function loadPublicContentPage(
     variantBindings,
   });
   if (!localeProjection) {
-    throw new Error(`Published ${kind} page not found: ${slug}`);
+    throw new PublicContentPageNotFoundError(kind, slug);
   }
 
   const resolution: LocalizedContentResolution = {
@@ -126,7 +122,7 @@ export function loadPublicContentPage(
       options?.locale,
     ) ?? undefined;
   const resolvedRecord = binding?.record ?? record;
-  const source = readContentSource(
+  const source = readPublicContentSource(
     contentRoot,
     kind,
     slug,

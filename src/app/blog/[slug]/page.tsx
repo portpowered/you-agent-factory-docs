@@ -1,0 +1,34 @@
+import { PublicContentPageShell } from "@/components/content/public-content-page-shell";
+import {
+  listPublishedPublicContentRouteParams,
+  loadPublicContentPage,
+} from "@/lib/content";
+import { notFound } from "next/navigation";
+
+type BlogPageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+export function generateStaticParams() {
+  return listPublishedPublicContentRouteParams(undefined, {
+    supportedKinds: ["blog"],
+  }).map(({ slug }) => ({ slug }));
+}
+
+export default async function BlogPage({ params }: BlogPageProps) {
+  const { slug } = await params;
+
+  try {
+    const page = loadPublicContentPage("blog", slug);
+
+    return (
+      <PublicContentPageShell
+        body={page.body}
+        record={page.record}
+        title={page.title}
+      />
+    );
+  } catch {
+    notFound();
+  }
+}

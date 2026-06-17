@@ -68,11 +68,12 @@ export {
   type PublicContentRouteParams,
 } from "@/lib/content/public-content-routes";
 export {
-  listPublishedContentSlugs,
   loadPublicContentPage,
   type LoadPublicContentPageOptions,
   type PublicContentPage,
+  PublicContentPageNotFoundError,
 } from "@/lib/content/load-public-content-page";
+export { buildContentPageMetadata } from "@/lib/content/page-metadata";
 export {
   resolveLocalizedContentVariant,
   selectLocalizedVariantBinding,

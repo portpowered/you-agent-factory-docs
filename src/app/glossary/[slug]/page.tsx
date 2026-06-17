@@ -1,11 +1,11 @@
-import { DocPageArticle } from "@/components/docs/doc-page-article";
-import { DocsRouteChrome } from "@/components/docs/docs-route-chrome";
-import { FumadocsDocsLayout } from "@/components/docs/fumadocs-docs-layout";
+import { PublicContentPageShell } from "@/components/content/public-content-page-shell";
 import {
-  listPublishedContentSlugs,
-  loadDocsShellNavigation,
+  PublicContentPageNotFoundError,
+  buildContentPageMetadata,
+  listPublishedPublicContentRouteParams,
   loadPublicContentPage,
 } from "@/lib/content";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type GlossaryPageProps = {
@@ -13,33 +13,42 @@ type GlossaryPageProps = {
 };
 
 export function generateStaticParams() {
-  return listPublishedContentSlugs("glossary").map((slug) => ({ slug }));
+  return listPublishedPublicContentRouteParams(undefined, {
+    supportedKinds: ["glossary"],
+  }).map(({ slug }) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: GlossaryPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const page = loadPublicContentPage("glossary", slug);
+
+  return buildContentPageMetadata({
+    title: page.title,
+    body: page.body,
+    routePath: page.record.routePath,
+  });
 }
 
 export default async function GlossaryPage({ params }: GlossaryPageProps) {
   const { slug } = await params;
-  const navigation = loadDocsShellNavigation();
 
-  let page: ReturnType<typeof loadPublicContentPage>;
   try {
-    page = loadPublicContentPage("glossary", slug);
-  } catch {
+    const page = loadPublicContentPage("glossary", slug);
+
+    return (
+      <PublicContentPageShell
+        body={page.body}
+        record={page.record}
+        title={page.title}
+      />
+    );
+  } catch (error) {
+    if (!(error instanceof PublicContentPageNotFoundError)) {
+      throw error;
+    }
+
     notFound();
   }
-
-  return (
-    <FumadocsDocsLayout>
-      <DocsRouteChrome
-        breadcrumbItems={[
-          { labelKey: "docs.glossarySectionLabel" },
-          { label: page.title },
-        ]}
-        currentPath={page.record.routePath}
-        hideProgression
-        navigation={navigation}
-      >
-        <DocPageArticle body={page.body} title={page.title} />
-      </DocsRouteChrome>
-    </FumadocsDocsLayout>
-  );
 }

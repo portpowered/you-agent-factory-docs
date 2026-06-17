@@ -1,11 +1,11 @@
-import { DocPageArticle } from "@/components/docs/doc-page-article";
-import { DocsRouteChrome } from "@/components/docs/docs-route-chrome";
-import { FumadocsDocsLayout } from "@/components/docs/fumadocs-docs-layout";
+import { PublicContentPageShell } from "@/components/content/public-content-page-shell";
 import {
-  listPublishedContentSlugs,
-  loadDocsShellNavigation,
+  PublicContentPageNotFoundError,
+  buildContentPageMetadata,
+  listPublishedPublicContentRouteParams,
   loadPublicContentPage,
 } from "@/lib/content";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type ComparisonPageProps = {
@@ -13,33 +13,42 @@ type ComparisonPageProps = {
 };
 
 export function generateStaticParams() {
-  return listPublishedContentSlugs("comparison").map((slug) => ({ slug }));
+  return listPublishedPublicContentRouteParams(undefined, {
+    supportedKinds: ["comparison"],
+  }).map(({ slug }) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: ComparisonPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const page = loadPublicContentPage("comparison", slug);
+
+  return buildContentPageMetadata({
+    title: page.title,
+    body: page.body,
+    routePath: page.record.routePath,
+  });
 }
 
 export default async function ComparisonPage({ params }: ComparisonPageProps) {
   const { slug } = await params;
-  const navigation = loadDocsShellNavigation();
 
-  let page: ReturnType<typeof loadPublicContentPage>;
   try {
-    page = loadPublicContentPage("comparison", slug);
-  } catch {
+    const page = loadPublicContentPage("comparison", slug);
+
+    return (
+      <PublicContentPageShell
+        body={page.body}
+        record={page.record}
+        title={page.title}
+      />
+    );
+  } catch (error) {
+    if (!(error instanceof PublicContentPageNotFoundError)) {
+      throw error;
+    }
+
     notFound();
   }
-
-  return (
-    <FumadocsDocsLayout>
-      <DocsRouteChrome
-        breadcrumbItems={[
-          { labelKey: "docs.comparisonSectionLabel" },
-          { label: page.title },
-        ]}
-        currentPath={page.record.routePath}
-        hideProgression
-        navigation={navigation}
-      >
-        <DocPageArticle body={page.body} title={page.title} />
-      </DocsRouteChrome>
-    </FumadocsDocsLayout>
-  );
 }
