@@ -8,6 +8,7 @@
 - `src/components/shell/shared-shell.tsx` is the single global frame for homepage and docs entry routes. It renders shared header, optional docs sidebar (`docsNavigationGroups`), main content slot, and footer framing.
 - Reusable accessible navigation primitives live in `src/components/shell/shared-shell-navigation.tsx` (`SharedShellPrimaryNavigation`, `SharedShellNavigationLink`, `SharedShellDocsNavigation`). Both surfaces consume the same destination contract from `sharedShellConfig`; external GitHub links expose `(opens in new tab)` in the accessible name.
 - Shared shell interactive primitives should flow through `src/components/ui/button.tsx` rather than restating focus, spacing, and variant classes inline. Keep shell-specific hooks such as `shared-shell__link` or `shared-shell__menu-toggle` as additive selectors only.
+- When a shell disclosure control renders through `Button`, declare its breakpoint display contract through the primitive call site (for example `displayClassName="hidden max-[1023px]:inline-flex"`) instead of relying on legacy `shared-shell__*` selectors to override the primitive's default display utility.
 - Responsive shell behavior uses CSS media queries in `src/app/globals.css` aligned with `src/lib/responsive-tokens.ts` (639px / 1023px). Narrow-width disclosure state is projected through `useShellDisclosure` and rendered by the client `SharedShellHeader` / `SharedShellDocsAside`.
 - `src/components/landing/landing-shell.tsx` and `src/components/docs/docs-shell.tsx` are thin surface wrappers that project page content into `SharedShell` instead of owning independent header or layout wiring.
 - `src/lib/shell.ts` remains a deprecated re-export for legacy imports; prefer `@/lib/shared-shell-config` and `@/lib/shared-shell-extension-points` for new shell work.
@@ -24,6 +25,7 @@
 - `tests/unit/shared-shell.test.tsx` proves the shared frame contract, config separation, and surface-specific header destinations.
 - `tests/unit/shared-shell-navigation.test.tsx` proves reusable navigation primitives, keyboard reachability, accessible external-link names, and the shared destination contract across surfaces.
 - `tests/unit/shared-shell-responsive.test.tsx` proves SSR-safe initial disclosure state, menu toggle wiring, and shared responsive header behavior across surfaces.
+- `tests/unit/reconciled-export-browser.test.ts` is the reviewer-facing proof for computed desktop-hidden/mobile-visible disclosure behavior on the built export; use it when a shell styling change could regress real breakpoint visibility.
 - `tests/unit/shared-shell-extension-points.test.tsx` proves canonical config extension, multiple docs navigation groups, and projected-state separation.
 - Homepage and docs shell tests remain focused on surface content and navigation expectations after adopting the shared frame.
 

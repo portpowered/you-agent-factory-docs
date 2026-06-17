@@ -21,6 +21,7 @@ export function ShellDisclosureTrigger({
       aria-controls={disclosure.panelId}
       aria-expanded={disclosure.isEnabled ? disclosure.isOpen : false}
       className={className}
+      displayClassName="hidden max-[1023px]:inline-flex"
       id={disclosure.triggerId}
       onClick={disclosure.isEnabled ? disclosure.toggle : undefined}
       ref={disclosure.triggerRef}

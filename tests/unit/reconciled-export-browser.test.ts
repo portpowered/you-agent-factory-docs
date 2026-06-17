@@ -246,6 +246,48 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("shared-shell disclosure triggers stay hidden on desktop and visible on mobile", async () => {
+    const page = await browser.newPage({
+      viewport: { width: 1280, height: 900 },
+    });
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const getDisplay = async (selector: string) =>
+      page.locator(selector).evaluate((element) => {
+        return window.getComputedStyle(element).display;
+      });
+
+    try {
+      await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
+
+      expect(await getDisplay(".shared-shell__menu-toggle")).toBe("none");
+
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      expect(await getDisplay(".shared-shell__menu-toggle")).toBe("none");
+      expect(await getDisplay(".shared-shell__docs-nav-toggle")).toBe("none");
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(200);
+
+      const mobileMenuToggle = page.locator(".shared-shell__menu-toggle");
+      const mobileDocsNavToggle = page.locator(
+        ".shared-shell__docs-nav-toggle",
+      );
+
+      expect(await getDisplay(".shared-shell__menu-toggle")).not.toBe("none");
+      expect(await getDisplay(".shared-shell__docs-nav-toggle")).not.toBe(
+        "none",
+      );
+      expect(await mobileMenuToggle.isVisible()).toBe(true);
+      expect(await mobileDocsNavToggle.isVisible()).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("docs diagram examples stay visible after desktop-to-mobile resize", async () => {
     const page = await browser.newPage({
       viewport: { width: 1440, height: 1100 },

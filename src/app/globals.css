@@ -94,11 +94,6 @@
     display: contents;
   }
 
-  .shared-shell__menu-toggle,
-  .shared-shell__docs-nav-toggle {
-    display: none;
-  }
-
   .shared-shell__docs-aside .shared-shell__docs-nav + .shared-shell__docs-nav {
     border-top: 1px solid var(--border);
   }

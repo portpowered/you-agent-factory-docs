@@ -26,6 +26,7 @@ type ButtonSize = keyof typeof BUTTON_SIZE_CLASS_NAMES;
 
 type ButtonClassNameOptions = {
   className?: string;
+  displayClassName?: string;
   fullWidth?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
@@ -33,12 +34,14 @@ type ButtonClassNameOptions = {
 
 export function getButtonClassName({
   className,
+  displayClassName = "inline-flex",
   fullWidth = false,
   size = "default",
   variant = "primary",
 }: ButtonClassNameOptions = {}): string {
   return joinClassNames(
-    "ui-button inline-flex items-center justify-center rounded-md font-semibold no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    "ui-button items-center justify-center rounded-md font-semibold no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    displayClassName,
     BUTTON_SIZE_CLASS_NAMES[size],
     BUTTON_VARIANT_CLASS_NAMES[variant],
     fullWidth && "w-full",
@@ -47,6 +50,7 @@ export function getButtonClassName({
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  displayClassName?: string;
   variant?: ButtonVariant;
   size?: ButtonSize;
   fullWidth?: boolean;
@@ -56,6 +60,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
+      displayClassName,
       fullWidth = false,
       size = "default",
       type = "button",
@@ -66,7 +71,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     return (
       <button
-        className={getButtonClassName({ className, fullWidth, size, variant })}
+        className={getButtonClassName({
+          className,
+          displayClassName,
+          fullWidth,
+          size,
+          variant,
+        })}
         ref={ref}
         type={type}
         {...props}
@@ -80,6 +91,7 @@ Button.displayName = "Button";
 type ButtonLinkProps = {
   children: ReactNode;
   className?: string;
+  displayClassName?: string;
   external?: boolean;
   fullWidth?: boolean;
   href: string;
@@ -90,6 +102,7 @@ type ButtonLinkProps = {
 export function ButtonLink({
   children,
   className,
+  displayClassName,
   external = false,
   fullWidth = false,
   href,
@@ -99,6 +112,7 @@ export function ButtonLink({
 }: ButtonLinkProps) {
   const resolvedClassName = getButtonClassName({
     className,
+    displayClassName,
     fullWidth,
     size,
     variant,
