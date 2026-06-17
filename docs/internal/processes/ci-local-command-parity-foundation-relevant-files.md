@@ -12,7 +12,7 @@
 
 - `.github/workflows/ci.yml` is the minimal verification workflow for this lane. It runs `make setup`, `make check`, `make test`, and `make build` in order without bypassing the root `Makefile`.
 - PR CI installs Playwright Chromium after `make setup` and before `make test` so the root test path can launch the browser-backed export suite on Linux runners.
-- PR CI keeps `make budget` and `make component-coverage` as adjacent reviewer-visible gates after the root `make build` path instead of folding them into a parallel CI-only command surface.
+- The same workflow keeps `make quality-gate`, `make budget`, and `make component-coverage` as supplemental reviewer-visible gates after the required top-level path rather than replacing that path with narrower or indirect checks.
 - Failures in typecheck, lint, tests, or static build surface through the same `make` targets contributors use locally.
 
 ## Contributor guidance
@@ -24,7 +24,8 @@
 ## Proof tests
 
 - `tests/unit/root-workflow.test.ts` uses `make -n` to prove each target delegates through the Bun-first command path and runs `make check` as a smoke test.
-- `tests/unit/pull-request-ci-parity.test.ts` proves the PR workflow contract in two layers: reviewer-visible YAML ordering for `make check`, `make test`, `make build`, `make budget`, and `make component-coverage`, plus failing-path execution of the extracted `Run tests` and `Build static export` workflow commands with a PATH-prepended fake `make` so the proof stays tied to the exact PR automation command surface.
+- `tests/unit/pr-ci-command-parity.test.ts` reads `.github/workflows/ci.yml` only to discover the `verify` job's root `run` commands, then proves the checked-in PR contract behaviorally by executing the required `make setup` / `make check` / `make test` / `make build` path through those same root targets and asserting the retained supplemental gates stay later in the workflow command sequence.
+- Keep this suite focused on executable command-surface proof. It may use the workflow file as the reviewer-visible source of which commands PR automation claims to run, but it should not regress into exact README phrasing checks or step-name inventory assertions that only prove checked-in text.
 - `tests/unit/root-command-path.test.ts` runs `make setup`, `make check`, and `make build` from the repository root, and proves `make test` through `make -n` output so the command-path suite does not recursively spawn the full test suite from inside itself.
 - `tests/unit/automation-parity.test.ts` behaviorally proves automation parity by executing the same ordered root `make` targets CI uses (`setup`, `check`, `build`), asserting `make test` delegates to `bun test` via `make -n`, and verifying failures surface through the root command path.
 - `tests/unit/contributor-guidance.test.ts` behaviorally proves contributor-facing observable outcomes for each root command (dependency install, verification output, `bun test` delegation, static export output) without reading `README.md` or workflow YAML. Keep expensive root-command smoke tests singular: once `tests/unit/root-workflow.test.ts` already proves the real `make check` subprocess succeeds, companion suites should prove the same command wiring with `make -n` output instead of duplicating another full subprocess run under the suite-wide artifact lock.

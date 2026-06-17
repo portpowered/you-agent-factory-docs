@@ -5,7 +5,7 @@
 - `make quality-gate` and `bun run quality-gate` are the single early enforcement entrypoints for contributors and automation.
 - `scripts/quality-gate.ts` orchestrates the enforced sequence and fails fast on the first failing step.
 - `src/lib/quality-gate/deferred-phase8.ts` lists checks intentionally deferred to later Phase 8 work.
-- `.github/workflows/ci.yml` runs `make setup` then `make quality-gate` without bypassing the root `Makefile`.
+- `.github/workflows/ci.yml` keeps `make quality-gate` on the shared root `Makefile` surface as a supplemental PR gate after the reviewer-visible `make setup`, `make check`, `make test`, and `make build` path.
 - `README.md` documents the same authoritative path, lists the enforced foundation checks, and marks deferred Phase 8 work out of scope for this lane.
 
 ## Enforced foundation checks
