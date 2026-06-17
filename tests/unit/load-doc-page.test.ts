@@ -28,6 +28,12 @@ describe("loadDocPage", () => {
         title: "Quickstart",
         bodySnippet: "Run `bun run dev` from the repository root.",
       },
+      {
+        slug: "coder-reviewer-pattern",
+        canonicalId: "doc/coder-reviewer-pattern",
+        title: "Coder / Reviewer pattern",
+        bodySnippet: "generated concept lane",
+      },
     ] as const;
 
     for (const setupPage of setupPages) {

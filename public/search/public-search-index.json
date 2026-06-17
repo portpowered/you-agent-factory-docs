@@ -46,6 +46,30 @@
       "searchPriority": 6
     },
     {
+      "id": "doc/coder-reviewer-pattern@en",
+      "canonicalId": "doc/coder-reviewer-pattern",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/coder-reviewer-pattern",
+      "title": "Coder / Reviewer pattern",
+      "description": "",
+      "headings": [
+        "Coder / Reviewer pattern",
+        "Why this page exists",
+        "What to expect next"
+      ],
+      "body": "Coder / Reviewer pattern Use this page when you need a practical starting point for understanding the Coder / Reviewer operating pattern inside You Agent Factory. Why this page exists The docs shell now exposes this pattern as part of the generated concept lane so evaluators can reach it through the normal docs navigation instead of relying on a direct URL. What to expect next This launch-minimum page anchors the pattern in the docs tree first. Later iterations can expand the workflow details, review gates, and failure modes without changing the route or navigation identity for the page.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 8
+    },
+    {
       "id": "doc/concepts@en",
       "canonicalId": "doc/concepts",
       "locale": "en",

@@ -86,6 +86,7 @@ describe("public search artifact generation", () => {
     expect(artifact.entries.map((entry) => entry.id).sort()).toEqual([
       "blog/introducing-factory@en",
       "comparison/vs-n8n@en",
+      "doc/coder-reviewer-pattern@en",
       "doc/concepts@en",
       "doc/configuration@en",
       "doc/getting-started@en",
@@ -113,6 +114,21 @@ describe("public search artifact generation", () => {
     });
     expect(gettingStarted?.headings.length).toBeGreaterThan(0);
     expect(gettingStarted?.body.length).toBeGreaterThan(0);
+
+    const coderReviewerPattern = artifact.entries.find(
+      (entry) => entry.id === "doc/coder-reviewer-pattern@en",
+    );
+
+    expect(coderReviewerPattern).toMatchObject({
+      canonicalId: "doc/coder-reviewer-pattern",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/coder-reviewer-pattern",
+      title: "Coder / Reviewer pattern",
+      section: "guides",
+      searchPriority: 8,
+    });
   });
 
   test("preserves locale-aware canonical-locale relationships for active-locale-first query defaults", () => {

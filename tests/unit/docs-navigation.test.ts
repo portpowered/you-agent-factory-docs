@@ -353,6 +353,20 @@ section: guides
               fellBackToCanonicalLocale: false,
             },
           },
+          {
+            canonicalId: "doc/coder-reviewer-pattern",
+            label: "Coder / Reviewer pattern",
+            href: "/docs/coder-reviewer-pattern",
+            order: 3,
+            localeProjection: {
+              canonicalPageId: "doc/coder-reviewer-pattern",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
         ],
       },
       {
@@ -403,13 +417,21 @@ section: guides
     );
 
     expect(sectionIds).toEqual(["setup", "guides", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(7);
+    expect(pageCount).toBeGreaterThanOrEqual(8);
     expect(
       navigation.sections.some(
         (section) =>
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
             "doc/introduction,doc/installation,doc/quickstart,doc/configuration",
+      ),
+    ).toBe(true);
+    expect(
+      navigation.sections.some(
+        (section) =>
+          section.id === "guides" &&
+          section.pages.map((page) => page.canonicalId).join(",") ===
+            "doc/getting-started,doc/concepts,doc/coder-reviewer-pattern",
       ),
     ).toBe(true);
   });
