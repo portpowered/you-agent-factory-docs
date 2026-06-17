@@ -133,3 +133,12 @@ export {
   type PublicSearchArtifact,
   type PublicSearchArtifactEntry,
 } from "@/lib/content/search-artifact";
+export {
+  createPublicSearchOramaIndex,
+  searchPublicSearchOramaIndex,
+  type PublicSearchOramaDatabase,
+  type PublicSearchOramaHit,
+  type PublicSearchOramaIndex,
+  type PublicSearchOramaSearchResult,
+  type SearchPublicSearchOramaIndexOptions,
+} from "@/lib/content/orama-search";
