@@ -195,13 +195,13 @@ describe("reconciled baseline browser export", () => {
     const page = await browser.newPage({
       viewport: { width: 390, height: 844 },
     });
-    const gettingStartedUrl = new URL(
-      withBasePath("/docs/getting-started"),
+    const introductionUrl = new URL(
+      withBasePath("/docs/introduction"),
       server.baseUrl,
     ).toString();
 
     try {
-      await page.goto(gettingStartedUrl, { waitUntil: "domcontentloaded" });
+      await page.goto(introductionUrl, { waitUntil: "domcontentloaded" });
       await page
         .locator('.shared-shell[data-shell-viewport="mobile"]')
         .waitFor({ timeout: 10_000 });
@@ -213,16 +213,16 @@ describe("reconciled baseline browser export", () => {
         name: enMessages.docs.progressionAriaLabel,
       });
       const docsAsidePanel = page.locator("#shared-shell-docs-aside");
-      const guidesAsideNav = docsAsidePanel.getByRole("navigation", {
-        name: "Guides",
+      const setupAsideNav = docsAsidePanel.getByRole("navigation", {
+        name: "Setup",
       });
 
       expect(await breadcrumbs.isVisible()).toBe(true);
-      expect(await breadcrumbs.getByText("Guides").isVisible()).toBe(true);
+      expect(await breadcrumbs.getByText("Setup").isVisible()).toBe(true);
       expect(
         await progression
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+            name: `${enMessages.docs.nextPagePrefix} Installation`,
           })
           .isVisible(),
       ).toBe(true);
@@ -232,19 +232,19 @@ describe("reconciled baseline browser export", () => {
       });
       expect(await docsNavToggle.getAttribute("aria-expanded")).toBe("false");
       expect(await docsAsidePanel.getAttribute("hidden")).not.toBeNull();
-      expect(await guidesAsideNav.isVisible()).toBe(false);
+      expect(await setupAsideNav.isVisible()).toBe(false);
 
       await docsNavToggle.click();
 
-      expect(await guidesAsideNav.isVisible()).toBe(true);
+      expect(await setupAsideNav.isVisible()).toBe(true);
       expect(
         await docsAsidePanel
-          .getByRole("navigation", { name: "Setup" })
+          .getByRole("navigation", { name: "Guides" })
           .isVisible(),
       ).toBe(true);
       expect(
-        await guidesAsideNav
-          .getByRole("link", { name: "Core concepts" })
+        await setupAsideNav
+          .getByRole("link", { name: "Quickstart" })
           .isVisible(),
       ).toBe(true);
     } finally {

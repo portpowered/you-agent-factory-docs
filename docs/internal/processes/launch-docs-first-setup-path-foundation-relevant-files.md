@@ -1,0 +1,7 @@
+# Launch Docs First Setup Path Foundation Relevant Files
+
+- `src/content/docs/{introduction,installation,quickstart,configuration}/en.mdx` owns the canonical setup-path docs ordering through frontmatter `section` and `order`. The first-adoption lane is authored in content metadata, not in shell-only navigation constants.
+- `src/content/docs/getting-started/en.mdx` and `src/content/docs/concepts/en.mdx` remain deeper guides after the setup path. Keeping them published is safe as long as setup pages sort first and the first-sequence order stays introduction → installation → quickstart.
+- `src/lib/content/docs-navigation.ts` and `src/lib/content/docs-progression.ts` are the navigation/progression source of truth. Changing published doc frontmatter automatically affects sidebar order, breadcrumbs, progression, and docs-root next-link behavior.
+- Search participation for newly published setup docs is automatic through the existing content pipeline in `src/lib/content/load-search-documents.ts` and `src/lib/content/load-search-artifact.ts`; tests should verify generated search ids rather than hand-maintained inventories elsewhere.
+- Browser-visible proof for this lane lives in `tests/unit/static-export.test.ts` and `tests/unit/reconciled-export-browser.test.ts`. Use those to verify the generated docs shell exposes the setup sequence inside the exported site, including mobile docs-nav disclosure behavior.

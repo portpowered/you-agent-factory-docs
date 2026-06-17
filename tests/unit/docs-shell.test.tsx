@@ -36,6 +36,36 @@ afterEach(() => {
 const generatedNavigation: DocsShellNavigationInput = {
   sections: [
     {
+      id: "setup",
+      label: "Setup",
+      pages: [
+        {
+          canonicalId: "doc/introduction",
+          label: "Introduction",
+          href: "/docs/introduction",
+          order: 0,
+        },
+        {
+          canonicalId: "doc/installation",
+          label: "Installation",
+          href: "/docs/installation",
+          order: 1,
+        },
+        {
+          canonicalId: "doc/quickstart",
+          label: "Quickstart",
+          href: "/docs/quickstart",
+          order: 2,
+        },
+        {
+          canonicalId: "doc/configuration",
+          label: "Configuration",
+          href: "/docs/configuration",
+          order: 3,
+        },
+      ],
+    },
+    {
       id: "guides",
       label: "Guides",
       pages: [
@@ -49,24 +79,6 @@ const generatedNavigation: DocsShellNavigationInput = {
           canonicalId: "doc/concepts",
           label: "Core concepts",
           href: "/docs/concepts",
-          order: 2,
-        },
-      ],
-    },
-    {
-      id: "setup",
-      label: "Setup",
-      pages: [
-        {
-          canonicalId: "doc/installation",
-          label: "Installation",
-          href: "/docs/installation",
-          order: 1,
-        },
-        {
-          canonicalId: "doc/configuration",
-          label: "Configuration",
-          href: "/docs/configuration",
           order: 2,
         },
       ],
@@ -98,6 +110,7 @@ describe("docs shell rendering", () => {
 
     expect(screen.getByRole("banner")).toBeTruthy();
     expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
+    expect(screen.getByRole("navigation", { name: "Setup" })).toBeTruthy();
     expect(screen.getByRole("main")).toBeTruthy();
 
     expect(
@@ -114,10 +127,12 @@ describe("docs shell rendering", () => {
     const setupNav = screen.getByRole("navigation", { name: "Setup" });
     expect(within(guidesNav).getByText("Guides")).toBeTruthy();
     expect(within(setupNav).getByText("Setup")).toBeTruthy();
+    expect(within(setupNav).getByText("Introduction")).toBeTruthy();
+    expect(within(setupNav).getByText("Installation")).toBeTruthy();
+    expect(within(setupNav).getByText("Quickstart")).toBeTruthy();
+    expect(within(setupNav).getByText("Configuration")).toBeTruthy();
     expect(within(guidesNav).getByText("Getting started")).toBeTruthy();
     expect(within(guidesNav).getByText("Core concepts")).toBeTruthy();
-    expect(within(setupNav).getByText("Installation")).toBeTruthy();
-    expect(within(setupNav).getByText("Configuration")).toBeTruthy();
   });
 
   test("renders separate navigation landmarks for each generated docs section", async () => {
@@ -134,8 +149,8 @@ describe("docs shell rendering", () => {
     const guidesNav = screen.getByRole("navigation", { name: "Guides" });
     const setupNav = screen.getByRole("navigation", { name: "Setup" });
 
+    expect(within(setupNav).getAllByRole("link")).toHaveLength(4);
     expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
-    expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
   });
 
   test("marks the active generated nav entry and links home and GitHub", async () => {
@@ -336,12 +351,10 @@ describe("docs shell rendering", () => {
         .getAttribute("href"),
     ).toBe("/docs/getting-started");
     expect(
-      within(progression)
-        .getByRole("link", {
-          name: `${enMessages.docs.nextPagePrefix} Installation`,
-        })
-        .getAttribute("href"),
-    ).toBe("/docs/installation");
+      within(progression).queryByRole("link", {
+        name: `${enMessages.docs.nextPagePrefix} Installation`,
+      }),
+    ).toBeNull();
   });
 
   test("marks the code presentation example route as current when active", async () => {
@@ -503,7 +516,7 @@ describe("responsive docs navigation depth", () => {
 
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
-    expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
+    expect(within(setupNav).getAllByRole("link")).toHaveLength(4);
   });
 
   test("keeps breadcrumbs and progression reachable in main content on narrow viewports without docs sidebar disclosure", async () => {

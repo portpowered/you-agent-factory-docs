@@ -91,6 +91,8 @@ describe("public search artifact generation", () => {
       "doc/getting-started@en",
       "doc/getting-started@fr",
       "doc/installation@en",
+      "doc/introduction@en",
+      "doc/quickstart@en",
       "glossary/agent@en",
       "reference/loop-engineering@en",
     ]);

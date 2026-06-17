@@ -16,25 +16,25 @@ describe("starter content validation", () => {
   test("projects schema-compliant starter content into canonical records", () => {
     const result = validateStarterContentSource(
       "docs",
-      "getting-started",
+      "introduction",
       "en",
       `---
-id: doc/getting-started
+id: doc/introduction
 kind: doc
-title: Getting started
+title: Introduction
 canonicalLocale: en
 availableLocales:
   - en
 status: published
 tags:
   - docs
-section: guides
-order: 1
+section: setup
+order: 0
 search.include: true
 search.priority: 10
 ---
 
-# Getting started
+# Introduction
 `,
     );
 
@@ -44,19 +44,19 @@ search.priority: 10
     }
 
     expect(result.record).toEqual({
-      id: "doc/getting-started",
+      id: "doc/introduction",
       kind: "doc",
-      slug: "getting-started",
-      routePath: "/docs/getting-started",
-      section: "guides",
+      slug: "introduction",
+      routePath: "/docs/introduction",
+      section: "setup",
       tags: ["docs"],
       status: "published",
-      order: 1,
+      order: 0,
       canonicalLocale: "en",
       availableLocales: ["en"],
       searchInclude: true,
       searchPriority: 10,
-      navigationTitle: "Getting started",
+      navigationTitle: "Introduction",
     });
   });
 
@@ -151,6 +151,8 @@ navigationTitle: Agent term
       "doc/getting-started",
       "doc/getting-started",
       "doc/installation",
+      "doc/introduction",
+      "doc/quickstart",
       "glossary/agent",
       "reference/loop-engineering",
     ]);

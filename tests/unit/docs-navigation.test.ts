@@ -18,18 +18,18 @@ function createDocRecord(
   overrides: Partial<CanonicalContentRecord> = {},
 ): CanonicalContentRecord {
   return {
-    id: "doc/getting-started",
+    id: "doc/introduction",
     kind: "doc",
-    slug: "getting-started",
-    routePath: "/docs/getting-started",
-    section: "guides",
+    slug: "introduction",
+    routePath: "/docs/introduction",
+    section: "setup",
     tags: ["docs"],
     status: "published",
-    order: 1,
+    order: 0,
     canonicalLocale: "en",
     availableLocales: ["en"],
     searchInclude: true,
-    navigationTitle: "Getting started",
+    navigationTitle: "Introduction",
     ...overrides,
   };
 }
@@ -63,14 +63,14 @@ describe("docs shell navigation projection", () => {
 
     expect(navigation.sections).toEqual([
       {
-        id: "guides",
-        label: "Guides",
+        id: "setup",
+        label: "Setup",
         pages: [
           {
-            canonicalId: "doc/getting-started",
-            label: "Getting started",
-            href: "/docs/getting-started",
-            order: 1,
+            canonicalId: "doc/introduction",
+            label: "Introduction",
+            href: "/docs/introduction",
+            order: 0,
           },
           {
             canonicalId: "doc/installation",
@@ -93,7 +93,14 @@ describe("docs shell navigation projection", () => {
         section: "setup",
         order: 2,
       }),
-      createDocRecord(),
+      createDocRecord({
+        id: "doc/getting-started",
+        slug: "getting-started",
+        routePath: "/docs/getting-started",
+        section: "guides",
+        navigationTitle: "Getting started",
+        order: 1,
+      }),
     ]);
 
     const reordered = projectDocsShellNavigation([
@@ -105,7 +112,14 @@ describe("docs shell navigation projection", () => {
         section: "setup",
         order: 0,
       }),
-      createDocRecord({ order: 5 }),
+      createDocRecord({
+        id: "doc/getting-started",
+        slug: "getting-started",
+        routePath: "/docs/getting-started",
+        section: "guides",
+        navigationTitle: "Getting started",
+        order: 5,
+      }),
     ]);
 
     expect(baseline.sections.map((section) => section.id)).toEqual([
@@ -121,10 +135,10 @@ describe("docs shell navigation projection", () => {
 
   test("filters projected navigation to locale availability while keeping canonical ids", () => {
     const englishOnly = createDocRecord({
-      id: "doc/getting-started",
-      slug: "getting-started",
-      routePath: "/docs/getting-started",
-      navigationTitle: "Getting started",
+      id: "doc/introduction",
+      slug: "introduction",
+      routePath: "/docs/introduction",
+      navigationTitle: "Introduction",
       canonicalLocale: "en",
       availableLocales: ["en"],
     });
@@ -159,35 +173,35 @@ describe("docs shell navigation projection", () => {
       englishNavigation.sections.flatMap((section) => section.pages),
     ).toEqual([
       expect.objectContaining({
+        canonicalId: "doc/introduction",
+        label: "Introduction",
+        href: "/docs/introduction",
+      }),
+      expect.objectContaining({
         canonicalId: "doc/multilingual",
         label: "Multilingual guide",
         href: "/docs/multilingual",
-      }),
-      expect.objectContaining({
-        canonicalId: "doc/getting-started",
-        label: "Getting started",
-        href: "/docs/getting-started",
       }),
     ]);
     expect(
       frenchNavigation.sections
         .flatMap((section) => section.pages)
         .map((page) => page.canonicalId),
-    ).toEqual(["doc/multilingual", "doc/guide-fr"]);
+    ).toEqual(["doc/guide-fr", "doc/multilingual"]);
   });
 
   test("deduplicates locale variants that share one canonical identity", () => {
     const navigation = projectDocsShellNavigation([
       createDocRecord({
-        id: "doc/getting-started",
-        navigationTitle: "Getting started",
+        id: "doc/introduction",
+        navigationTitle: "Introduction",
         canonicalLocale: "en",
         availableLocales: ["en"],
-        order: 1,
+        order: 0,
       }),
       createDocRecord({
-        id: "doc/getting-started",
-        navigationTitle: "Getting started (US)",
+        id: "doc/introduction",
+        navigationTitle: "Introduction (US)",
         canonicalLocale: "en-US",
         availableLocales: ["en-US"],
         order: 2,
@@ -196,14 +210,14 @@ describe("docs shell navigation projection", () => {
 
     expect(navigation.sections).toEqual([
       {
-        id: "guides",
-        label: "Guides",
+        id: "setup",
+        label: "Setup",
         pages: [
           {
-            canonicalId: "doc/getting-started",
-            label: "Getting started",
-            href: "/docs/getting-started",
-            order: 1,
+            canonicalId: "doc/introduction",
+            label: "Introduction",
+            href: "/docs/introduction",
+            order: 0,
           },
         ],
       },
@@ -246,6 +260,68 @@ section: guides
 
     expect(navigation.sections).toEqual([
       {
+        id: "setup",
+        label: "Setup",
+        pages: [
+          {
+            canonicalId: "doc/introduction",
+            label: "Introduction",
+            href: "/docs/introduction",
+            order: 0,
+            localeProjection: {
+              canonicalPageId: "doc/introduction",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/installation",
+            label: "Installation",
+            href: "/docs/installation",
+            order: 1,
+            localeProjection: {
+              canonicalPageId: "doc/installation",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/quickstart",
+            label: "Quickstart",
+            href: "/docs/quickstart",
+            order: 2,
+            localeProjection: {
+              canonicalPageId: "doc/quickstart",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/configuration",
+            label: "Configuration",
+            href: "/docs/configuration",
+            order: 3,
+            localeProjection: {
+              canonicalPageId: "doc/configuration",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+        ],
+      },
+      {
         id: "guides",
         label: "Guides",
         pages: [
@@ -270,40 +346,6 @@ section: guides
             order: 2,
             localeProjection: {
               canonicalPageId: "doc/concepts",
-              canonicalLocale: "en",
-              requestedLocale: "en",
-              resolvedLocale: "en",
-              availableLocales: ["en"],
-              fellBackToCanonicalLocale: false,
-            },
-          },
-        ],
-      },
-      {
-        id: "setup",
-        label: "Setup",
-        pages: [
-          {
-            canonicalId: "doc/installation",
-            label: "Installation",
-            href: "/docs/installation",
-            order: 1,
-            localeProjection: {
-              canonicalPageId: "doc/installation",
-              canonicalLocale: "en",
-              requestedLocale: "en",
-              resolvedLocale: "en",
-              availableLocales: ["en"],
-              fellBackToCanonicalLocale: false,
-            },
-          },
-          {
-            canonicalId: "doc/configuration",
-            label: "Configuration",
-            href: "/docs/configuration",
-            order: 2,
-            localeProjection: {
-              canonicalPageId: "doc/configuration",
               canonicalLocale: "en",
               requestedLocale: "en",
               resolvedLocale: "en",
@@ -360,14 +402,14 @@ section: guides
       0,
     );
 
-    expect(sectionIds).toEqual(["guides", "setup", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(5);
+    expect(sectionIds).toEqual(["setup", "guides", "examples"]);
+    expect(pageCount).toBeGreaterThanOrEqual(7);
     expect(
       navigation.sections.some(
         (section) =>
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/installation,doc/configuration",
+            "doc/introduction,doc/installation,doc/quickstart,doc/configuration",
       ),
     ).toBe(true);
   });
@@ -390,13 +432,21 @@ describe("docs breadcrumb projection", () => {
   test("projects section and page ancestry for generated docs detail routes", () => {
     const navigation = projectDocsShellNavigation([
       createDocRecord({
+        id: "doc/getting-started",
+        slug: "getting-started",
+        routePath: "/docs/getting-started",
+        section: "guides",
+        navigationTitle: "Getting started",
+        order: 1,
+      }),
+      createDocRecord({
         id: "doc/concepts",
         slug: "concepts",
         routePath: "/docs/concepts",
+        section: "guides",
         navigationTitle: "Core concepts",
         order: 2,
       }),
-      createDocRecord(),
     ]);
 
     expect(
@@ -442,6 +492,7 @@ describe("docs breadcrumb projection", () => {
 
 describe("docs progression projection", () => {
   const multiSectionNavigation = projectDocsShellNavigation([
+    createDocRecord(),
     createDocRecord({
       id: "doc/installation",
       slug: "installation",
@@ -451,21 +502,37 @@ describe("docs progression projection", () => {
       order: 1,
     }),
     createDocRecord({
+      id: "doc/quickstart",
+      slug: "quickstart",
+      routePath: "/docs/quickstart",
+      navigationTitle: "Quickstart",
+      section: "setup",
+      order: 2,
+    }),
+    createDocRecord({
       id: "doc/configuration",
       slug: "configuration",
       routePath: "/docs/configuration",
       navigationTitle: "Configuration",
       section: "setup",
-      order: 2,
+      order: 3,
     }),
     createDocRecord({
       id: "doc/concepts",
       slug: "concepts",
       routePath: "/docs/concepts",
+      section: "guides",
       navigationTitle: "Core concepts",
       order: 2,
     }),
-    createDocRecord(),
+    createDocRecord({
+      id: "doc/getting-started",
+      slug: "getting-started",
+      routePath: "/docs/getting-started",
+      section: "guides",
+      navigationTitle: "Getting started",
+      order: 1,
+    }),
   ]);
 
   test("projects next progression from docs entry to the first generated page", () => {
@@ -475,8 +542,8 @@ describe("docs progression projection", () => {
       }),
     ).toEqual({
       next: {
-        label: "Getting started",
-        href: "/docs/getting-started",
+        label: "Introduction",
+        href: "/docs/introduction",
       },
     });
   });
@@ -491,34 +558,32 @@ describe("docs progression projection", () => {
         label: "Getting started",
         href: "/docs/getting-started",
       },
-      next: {
-        label: "Installation",
-        href: "/docs/installation",
-      },
+      next: undefined,
     });
   });
 
   test("omits previous on the first page and next on the last page", () => {
     expect(
       projectDocsProgression(multiSectionNavigation, {
-        currentPath: "/docs/getting-started",
+        currentPath: "/docs/introduction",
       }),
     ).toEqual({
       next: {
-        label: "Core concepts",
-        href: "/docs/concepts",
+        label: "Installation",
+        href: "/docs/installation",
       },
     });
 
     expect(
       projectDocsProgression(multiSectionNavigation, {
-        currentPath: "/docs/configuration",
+        currentPath: "/docs/concepts",
       }),
     ).toEqual({
       previous: {
-        label: "Installation",
-        href: "/docs/installation",
+        label: "Getting started",
+        href: "/docs/getting-started",
       },
+      next: undefined,
     });
   });
 
@@ -537,7 +602,7 @@ describe("docs progression projection", () => {
 
     expect(
       projectDocsProgression(reordered, {
-        currentPath: "/docs/getting-started",
+        currentPath: "/docs/introduction",
       }),
     ).toEqual({
       previous: {
