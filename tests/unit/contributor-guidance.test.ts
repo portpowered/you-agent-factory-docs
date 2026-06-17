@@ -21,8 +21,10 @@ describe("contributor guidance observable outcomes", () => {
   });
 
   test("make check surfaces typecheck and lint verification through one command", () => {
-    cleanNextTypeArtifacts();
-    const result = runMakeTarget("check");
+    const result = withStaticExportBuildLock(repoRoot, () => {
+      cleanNextTypeArtifacts();
+      return runMakeTarget("check");
+    });
     expect(result.status).toBe(0);
     expect(result.output).toMatch(/typecheck/);
     expect(result.output).toMatch(/lint/);
