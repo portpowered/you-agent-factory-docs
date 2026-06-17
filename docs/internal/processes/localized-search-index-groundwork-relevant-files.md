@@ -28,6 +28,7 @@
 - `buildPublicSearchArtifact()` maps normalized `LocalizedSearchDocument` values into `PublicSearchArtifact` entries without a separate indexing-only parser.
 - `loadPublicSearchArtifact()` and `writePublicSearchArtifact()` in `src/lib/content/load-search-artifact.ts` load starter content through `loadLocalizedSearchDocuments()` before emitting the artifact.
 - `scripts/generate-search-index.ts` writes `public/search/public-search-index.json` for reviewer inspection and static export consumption.
+- `src/lib/validation/search-index.ts` and `scripts/validate-search-index.ts` validate that the checked-in `public/search/public-search-index.json` artifact still matches a fresh projection from normalized localized search documents.
 - `bun run generate:search-index` runs before `next build`; later search UX should read the generated artifact contract rather than re-parsing raw content files.
 - Artifact entries expose locale, `canonicalLocale`, `availableLocales`, canonical id, route or URL identity, searchable text fields, and search priority for representative entries.
 - Parallel locale variants for one canonical page share the same `canonicalId`, `canonicalLocale`, and `availableLocales` while keeping distinct `locale` and variant-specific searchable text.
@@ -45,3 +46,4 @@
 - `make check` / `bun run typecheck` + `bun run lint`
 - `make test` / `bun test`
 - `bun run generate:search-index` to inspect `public/search/public-search-index.json`
+- `make validate-search-index` / `bun run validate:search-index` to validate the checked-in artifact contract without running the broader quality gate

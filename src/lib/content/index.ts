@@ -121,6 +121,7 @@ export {
 export { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";
 export {
   loadPublicSearchArtifact,
+  parsePublicSearchArtifact,
   writePublicSearchArtifact,
   type LoadPublicSearchArtifactOptions,
   type WritePublicSearchArtifactOptions,

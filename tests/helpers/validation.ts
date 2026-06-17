@@ -1,20 +1,23 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import type { EarlyGateValidationFixture } from "../../src/lib/validation/gate-fixtures";
+import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
 
 export function runQualityGateScript(
   options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
-  const result = spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-    },
-  });
+  const result = withQualityGateCommandLock(repoRoot, () =>
+    spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        ...options.env,
+      },
+    }),
+  );
 
   return {
     status: result.status,
@@ -34,7 +37,8 @@ export function runValidationScript(
     | "validate:localization"
     | "validate:content"
     | "validate:accessibility"
-    | "validate:static-export",
+    | "validate:static-export"
+    | "validate:search-index",
   fixture?: EarlyGateValidationFixture,
   options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
