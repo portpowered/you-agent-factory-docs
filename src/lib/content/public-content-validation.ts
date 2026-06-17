@@ -3,7 +3,9 @@ import {
   type PublicContentGraph,
   type PublicContentKind,
   type PublicContentLocalizedVariant,
+  type PublicLocalizedSearchDocument,
   SUPPORTED_PUBLIC_CONTENT_KINDS,
+  getPublicContentVariantUrl,
 } from "@/lib/content/public-content";
 
 export type PublicContentValidationIssue = {
@@ -16,7 +18,10 @@ export type PublicContentValidationIssue = {
     | "duplicate_variant_locale"
     | "missing_canonical_locale_variant"
     | "duplicate_variant_slug"
-    | "canonical_locale_slug_mismatch";
+    | "canonical_locale_slug_mismatch"
+    | "missing_search_artifact_entry"
+    | "stale_search_artifact_entry"
+    | "search_artifact_entry_mismatch";
   kind: PublicContentKind;
   message: string;
 };
@@ -214,10 +219,87 @@ function validateLocalizedVariants(
   return issues;
 }
 
+function validateLocalizedSearchArtifact(
+  graph: PublicContentGraph,
+  localizedSearchArtifact: PublicLocalizedSearchDocument[],
+): PublicContentValidationIssue[] {
+  const canonicalRecordsById = new Map(
+    graph.canonicalRecords.map((record) => [record.canonicalId, record]),
+  );
+  const localizedVariantsByKey = new Map(
+    graph.localizedVariants.map((variant) => [
+      `${variant.canonicalId}:${variant.locale}`,
+      variant,
+    ]),
+  );
+  const issues: PublicContentValidationIssue[] = [];
+
+  for (const variant of graph.localizedVariants) {
+    const artifactKey = `${variant.canonicalId}:${variant.locale}`;
+    const artifactEntry = localizedSearchArtifact.find(
+      (entry) => `${entry.canonicalId}:${entry.locale}` === artifactKey,
+    );
+
+    if (!artifactEntry) {
+      issues.push({
+        code: "missing_search_artifact_entry",
+        kind: variant.kind,
+        message: `Generated localized search artifact is missing ${variant.kind}:${variant.slug} for locale "${variant.locale}" (canonical id "${variant.canonicalId}").`,
+      });
+      continue;
+    }
+
+    const expectedUrl = getPublicContentVariantUrl(variant);
+
+    if (
+      artifactEntry.id !== artifactKey ||
+      artifactEntry.kind !== variant.kind ||
+      artifactEntry.title !== variant.title ||
+      artifactEntry.url !== expectedUrl
+    ) {
+      issues.push({
+        code: "search_artifact_entry_mismatch",
+        kind: variant.kind,
+        message: `Generated localized search artifact drifted for canonical id "${variant.canonicalId}" locale "${variant.locale}": expected id "${artifactKey}", kind "${variant.kind}", title "${variant.title}", url "${expectedUrl}" but found id "${artifactEntry.id}", kind "${artifactEntry.kind}", title "${artifactEntry.title}", url "${artifactEntry.url}".`,
+      });
+    }
+  }
+
+  for (const artifactEntry of localizedSearchArtifact) {
+    const variantKey = `${artifactEntry.canonicalId}:${artifactEntry.locale}`;
+    const matchingVariant = localizedVariantsByKey.get(variantKey);
+
+    if (matchingVariant) {
+      continue;
+    }
+
+    const canonicalRecord = canonicalRecordsById.get(artifactEntry.canonicalId);
+    issues.push({
+      code: "stale_search_artifact_entry",
+      kind: canonicalRecord?.kind ?? artifactEntry.kind,
+      message: `Generated localized search artifact contains stale entry "${artifactEntry.id}" for ${artifactEntry.kind}:${artifactEntry.url} with no matching validated localized variant.`,
+    });
+  }
+
+  return issues;
+}
+
 export function validatePublicContentGraph(
   graph: PublicContentGraph,
+  localizedSearchArtifact?: PublicLocalizedSearchDocument[],
 ): PublicContentValidationResult {
   const coveredKinds = collectCoveredKinds(graph.canonicalRecords);
+  const artifactToValidate =
+    localizedSearchArtifact === undefined
+      ? graph.localizedVariants.map((variant) => ({
+          id: `${variant.canonicalId}:${variant.locale}`,
+          canonicalId: variant.canonicalId,
+          locale: variant.locale,
+          kind: variant.kind,
+          url: getPublicContentVariantUrl(variant),
+          title: variant.title,
+        }))
+      : localizedSearchArtifact;
   const issues = [
     ...validateCanonicalCoverage(graph.canonicalRecords, coveredKinds),
     ...validateCanonicalIds(graph.canonicalRecords),
@@ -226,6 +308,7 @@ export function validatePublicContentGraph(
       graph.canonicalRecords,
       graph.localizedVariants,
     ),
+    ...validateLocalizedSearchArtifact(graph, artifactToValidate),
   ];
 
   if (issues.length === 0) {

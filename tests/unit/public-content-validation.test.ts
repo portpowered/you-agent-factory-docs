@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   SUPPORTED_PUBLIC_CONTENT_KINDS,
   getPublicContentGraph,
+  getPublicLocalizedSearchArtifact,
 } from "../../src/lib/content/public-content";
 import {
   formatPublicContentValidationResult,
@@ -10,7 +11,10 @@ import {
 
 describe("public content validation", () => {
   test("covers every supported public content kind in one validation contract", () => {
-    const result = validatePublicContentGraph(getPublicContentGraph());
+    const result = validatePublicContentGraph(
+      getPublicContentGraph(),
+      getPublicLocalizedSearchArtifact(),
+    );
 
     expect(result.ok).toBe(true);
     expect(result.coveredKinds).toEqual([...SUPPORTED_PUBLIC_CONTENT_KINDS]);
@@ -232,6 +236,81 @@ describe("public content validation", () => {
     });
     expect(formatPublicContentValidationResult(result)).toContain(
       'Canonical id "blog.agent-review-loops" has route drift',
+    );
+  });
+
+  test("fails clearly when the generated localized search artifact omits a validated entry", () => {
+    const graph = getPublicContentGraph();
+    const result = validatePublicContentGraph(
+      graph,
+      getPublicLocalizedSearchArtifact().filter(
+        (entry) =>
+          !(
+            entry.canonicalId === "comparison.openai-vs-anthropic" &&
+            entry.locale === "en"
+          ),
+      ),
+    );
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual({
+      code: "missing_search_artifact_entry",
+      kind: "comparison",
+      message:
+        'Generated localized search artifact is missing comparison:openai-vs-anthropic for locale "en" (canonical id "comparison.openai-vs-anthropic").',
+    });
+    expect(formatPublicContentValidationResult(result)).toContain(
+      "Generated localized search artifact is missing comparison:openai-vs-anthropic",
+    );
+  });
+
+  test("fails clearly when the generated localized search artifact contains a stale entry", () => {
+    const graph = getPublicContentGraph();
+    const result = validatePublicContentGraph(graph, [
+      ...getPublicLocalizedSearchArtifact(),
+      {
+        id: "reference.retired-api:en",
+        canonicalId: "reference.retired-api",
+        locale: "en",
+        kind: "reference",
+        url: "/en/reference/retired-api",
+        title: "Retired API",
+      },
+    ]);
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual({
+      code: "stale_search_artifact_entry",
+      kind: "reference",
+      message:
+        'Generated localized search artifact contains stale entry "reference.retired-api:en" for reference:/en/reference/retired-api with no matching validated localized variant.',
+    });
+  });
+
+  test("fails clearly when the generated localized search artifact drifts from validated variant metadata", () => {
+    const graph = getPublicContentGraph();
+    const result = validatePublicContentGraph(
+      graph,
+      getPublicLocalizedSearchArtifact().map((entry) =>
+        entry.canonicalId === "docs.quickstart" && entry.locale === "fr"
+          ? {
+              ...entry,
+              title: "Guide de demarrage",
+              url: "/fr/docs/demarrage",
+            }
+          : entry,
+      ),
+    );
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual({
+      code: "search_artifact_entry_mismatch",
+      kind: "docs",
+      message:
+        'Generated localized search artifact drifted for canonical id "docs.quickstart" locale "fr": expected id "docs.quickstart:fr", kind "docs", title "Demarrage rapide", url "/fr/docs/demarrage-rapide" but found id "docs.quickstart:fr", kind "docs", title "Guide de demarrage", url "/fr/docs/demarrage".',
+    });
+    expect(formatPublicContentValidationResult(result)).toContain(
+      'Generated localized search artifact drifted for canonical id "docs.quickstart" locale "fr"',
     );
   });
 });

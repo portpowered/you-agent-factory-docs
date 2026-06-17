@@ -24,6 +24,15 @@ export type PublicContentLocalizedVariant = {
   title: string;
 };
 
+export type PublicLocalizedSearchDocument = {
+  id: string;
+  canonicalId: string;
+  locale: string;
+  kind: PublicContentKind;
+  url: string;
+  title: string;
+};
+
 export type PublicContentGraph = {
   canonicalRecords: PublicContentCanonicalRecord[];
   localizedVariants: PublicContentLocalizedVariant[];
@@ -115,4 +124,30 @@ export const PUBLIC_CONTENT_GRAPH_FIXTURE: PublicContentGraph = {
 
 export function getPublicContentGraph(): PublicContentGraph {
   return PUBLIC_CONTENT_GRAPH_FIXTURE;
+}
+
+export function getPublicContentVariantUrl(
+  variant: PublicContentLocalizedVariant,
+): string {
+  return `/${variant.locale}/${variant.kind}/${variant.slug}`;
+}
+
+export function buildPublicLocalizedSearchArtifact(
+  graph: PublicContentGraph,
+): PublicLocalizedSearchDocument[] {
+  return graph.localizedVariants.map((variant) => ({
+    id: `${variant.canonicalId}:${variant.locale}`,
+    canonicalId: variant.canonicalId,
+    locale: variant.locale,
+    kind: variant.kind,
+    url: getPublicContentVariantUrl(variant),
+    title: variant.title,
+  }));
+}
+
+export const PUBLIC_LOCALIZED_SEARCH_ARTIFACT_FIXTURE =
+  buildPublicLocalizedSearchArtifact(PUBLIC_CONTENT_GRAPH_FIXTURE);
+
+export function getPublicLocalizedSearchArtifact(): PublicLocalizedSearchDocument[] {
+  return PUBLIC_LOCALIZED_SEARCH_ARTIFACT_FIXTURE;
 }
