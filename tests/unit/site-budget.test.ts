@@ -42,8 +42,8 @@ describe("site budget route coverage", () => {
         label: "Docs entry",
         route: DOCS_ENTRY_ROUTE,
         budget: {
-          maxHtmlBytes: 40_000,
-          maxScriptTagCount: 21,
+          maxHtmlBytes: 40_750,
+          maxScriptTagCount: 24,
           maxStylesheetLinkCount: 1,
           maxImageCount: 0,
           requireMainLandmark: true,

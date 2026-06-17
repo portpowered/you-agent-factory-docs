@@ -24,7 +24,7 @@ export function runMake(
         },
         maxBuffer: 50 * 1024 * 1024,
       });
-    return target === "quality-gate"
+    return target === "quality-gate" && !options.dryRun
       ? withQualityGateCommandLock(repoRoot, runTarget)
       : runTarget();
   });
