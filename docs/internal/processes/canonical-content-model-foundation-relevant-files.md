@@ -31,6 +31,7 @@
 - Directory names map to public content kinds via `STARTER_CONTENT_DIRECTORY_KINDS` in `src/lib/content/starter.ts`.
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
+- For non-doc starter content that does not yet have a dedicated public page implementation in the current branch, prefer verifying richer body copy through `loadPublicSearchArtifact()` or `loadLocalizedSearchDocuments()` so tests still exercise canonical ids, route paths, headings, and searchable body text without reopening route plumbing.
 
 ## Docs shell navigation projection
 
