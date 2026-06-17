@@ -7,6 +7,20 @@ export type BudgetRouteTarget = {
   route: "/" | typeof DOCS_ENTRY_ROUTE;
 };
 
+export type RouteBudgetThresholds = {
+  maxHtmlBytes: number;
+  maxScriptTagCount: number;
+  maxStylesheetLinkCount: number;
+  maxImageCount: number;
+  requireMainLandmark: boolean;
+  requireTitle: boolean;
+  requireH1: boolean;
+};
+
+export type BudgetedRouteTarget = BudgetRouteTarget & {
+  budget: RouteBudgetThresholds;
+};
+
 export type RouteBudgetMeasurement = {
   route: BudgetRouteTarget;
   requestUrl: string;
@@ -20,16 +34,48 @@ export type RouteBudgetMeasurement = {
   h1Text: string | null;
 };
 
-export const SITE_BUDGET_ROUTE_TARGETS: BudgetRouteTarget[] = [
+export type RouteBudgetFailure = {
+  route: BudgetRouteTarget;
+  dimension:
+    | "status"
+    | "htmlBytes"
+    | "scriptTagCount"
+    | "stylesheetLinkCount"
+    | "imageCount"
+    | "mainLandmarkPresent"
+    | "titlePresent"
+    | "h1Text";
+  message: string;
+};
+
+export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
   {
     id: "homepage",
     label: "Homepage",
     route: "/",
+    budget: {
+      maxHtmlBytes: 8_500,
+      maxScriptTagCount: 13,
+      maxStylesheetLinkCount: 1,
+      maxImageCount: 0,
+      requireMainLandmark: true,
+      requireTitle: true,
+      requireH1: true,
+    },
   },
   {
     id: "docs-entry",
     label: "Docs entry",
     route: DOCS_ENTRY_ROUTE,
+    budget: {
+      maxHtmlBytes: 9_000,
+      maxScriptTagCount: 13,
+      maxStylesheetLinkCount: 1,
+      maxImageCount: 0,
+      requireMainLandmark: true,
+      requireTitle: true,
+      requireH1: true,
+    },
   },
 ];
 
@@ -67,6 +113,127 @@ export async function measureBudgetRoute(
     titlePresent: /<title>[\s\S]*?<\/title>/i.test(html),
     h1Text: extractTextContent(html, "h1"),
   };
+}
+
+export function evaluateRouteBudget(
+  measurement: RouteBudgetMeasurement,
+  budget: RouteBudgetThresholds = getRouteBudgetThresholds(
+    measurement.route.id,
+  ),
+): RouteBudgetFailure[] {
+  const failures: RouteBudgetFailure[] = [];
+
+  if (measurement.status !== 200) {
+    failures.push({
+      route: measurement.route,
+      dimension: "status",
+      message: `expected status=200, received ${measurement.status}`,
+    });
+  }
+
+  if (measurement.htmlBytes > budget.maxHtmlBytes) {
+    failures.push({
+      route: measurement.route,
+      dimension: "htmlBytes",
+      message: `expected htmlBytes<=${budget.maxHtmlBytes}, received ${measurement.htmlBytes}`,
+    });
+  }
+
+  if (measurement.scriptTagCount > budget.maxScriptTagCount) {
+    failures.push({
+      route: measurement.route,
+      dimension: "scriptTagCount",
+      message: `expected scripts<=${budget.maxScriptTagCount}, received ${measurement.scriptTagCount}`,
+    });
+  }
+
+  if (measurement.stylesheetLinkCount > budget.maxStylesheetLinkCount) {
+    failures.push({
+      route: measurement.route,
+      dimension: "stylesheetLinkCount",
+      message: `expected stylesheets<=${budget.maxStylesheetLinkCount}, received ${measurement.stylesheetLinkCount}`,
+    });
+  }
+
+  if (measurement.imageCount > budget.maxImageCount) {
+    failures.push({
+      route: measurement.route,
+      dimension: "imageCount",
+      message: `expected images<=${budget.maxImageCount}, received ${measurement.imageCount}`,
+    });
+  }
+
+  if (budget.requireMainLandmark && !measurement.mainLandmarkPresent) {
+    failures.push({
+      route: measurement.route,
+      dimension: "mainLandmarkPresent",
+      message: "expected a <main> landmark",
+    });
+  }
+
+  if (budget.requireTitle && !measurement.titlePresent) {
+    failures.push({
+      route: measurement.route,
+      dimension: "titlePresent",
+      message: "expected a <title> element",
+    });
+  }
+
+  if (budget.requireH1 && !measurement.h1Text) {
+    failures.push({
+      route: measurement.route,
+      dimension: "h1Text",
+      message: "expected a non-empty <h1>",
+    });
+  }
+
+  return failures;
+}
+
+export function assertSiteBudget(
+  measurements: RouteBudgetMeasurement[],
+  routeTargets: BudgetedRouteTarget[] = SITE_BUDGET_ROUTE_TARGETS,
+): void {
+  const failures = measurements.flatMap((measurement) =>
+    evaluateRouteBudget(
+      measurement,
+      routeTargets.find(
+        (routeTarget) => routeTarget.id === measurement.route.id,
+      )?.budget,
+    ),
+  );
+
+  if (failures.length === 0) {
+    return;
+  }
+
+  throw new Error(formatRouteBudgetFailures(failures));
+}
+
+export function formatRouteBudgetFailures(
+  failures: RouteBudgetFailure[],
+): string {
+  return [
+    "Site budget check failed:",
+    ...failures.map(
+      (failure) =>
+        `- ${failure.route.label} (${failure.route.route}) ${failure.dimension}: ${failure.message}`,
+    ),
+  ].join("\n");
+}
+
+function getRouteBudgetThresholds(
+  routeId: BudgetRouteTarget["id"],
+): RouteBudgetThresholds {
+  const routeTarget = SITE_BUDGET_ROUTE_TARGETS.find(
+    (candidate) => candidate.id === routeId,
+  );
+
+  if (!routeTarget) {
+    throw new Error(`Missing site budget thresholds for route "${routeId}"`);
+  }
+
+  return routeTarget.budget;
 }
 
 function countMatches(text: string, matcher: RegExp): number {

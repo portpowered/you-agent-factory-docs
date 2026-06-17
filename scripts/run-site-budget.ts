@@ -1,5 +1,6 @@
 import {
   SITE_BUDGET_ROUTE_TARGETS,
+  assertSiteBudget,
   measureBudgetRoute,
 } from "@/lib/site-budget";
 import {
@@ -23,6 +24,8 @@ async function main(): Promise<void> {
         measureBudgetRoute(fetch, server.baseUrl, route),
       ),
     );
+
+    assertSiteBudget(measurements);
 
     for (const measurement of measurements) {
       console.log(

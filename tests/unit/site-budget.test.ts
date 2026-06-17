@@ -2,6 +2,8 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { DOCS_ENTRY_ROUTE, SITE_BASE_PATH } from "../../src/lib/site";
 import {
   SITE_BUDGET_ROUTE_TARGETS,
+  assertSiteBudget,
+  evaluateRouteBudget,
   measureBudgetRoute,
   resolveBudgetRouteUrl,
 } from "../../src/lib/site-budget";
@@ -15,8 +17,34 @@ import {
 describe("site budget route coverage", () => {
   test("defines the exported homepage and docs entry route as the audit scope", () => {
     expect(SITE_BUDGET_ROUTE_TARGETS).toEqual([
-      { id: "homepage", label: "Homepage", route: "/" },
-      { id: "docs-entry", label: "Docs entry", route: DOCS_ENTRY_ROUTE },
+      {
+        id: "homepage",
+        label: "Homepage",
+        route: "/",
+        budget: {
+          maxHtmlBytes: 8_500,
+          maxScriptTagCount: 13,
+          maxStylesheetLinkCount: 1,
+          maxImageCount: 0,
+          requireMainLandmark: true,
+          requireTitle: true,
+          requireH1: true,
+        },
+      },
+      {
+        id: "docs-entry",
+        label: "Docs entry",
+        route: DOCS_ENTRY_ROUTE,
+        budget: {
+          maxHtmlBytes: 9_000,
+          maxScriptTagCount: 13,
+          maxStylesheetLinkCount: 1,
+          maxImageCount: 0,
+          requireMainLandmark: true,
+          requireTitle: true,
+          requireH1: true,
+        },
+      },
     ]);
   });
 
@@ -81,4 +109,77 @@ describe("site budget measurements", () => {
       },
     ]);
   }, 30_000);
+
+  test("accepts the current exported routes against the checked-in budgets", async () => {
+    const measurements = await Promise.all(
+      SITE_BUDGET_ROUTE_TARGETS.map((route) =>
+        measureBudgetRoute(fetchHttp, server.baseUrl, route),
+      ),
+    );
+
+    expect(() => assertSiteBudget(measurements)).not.toThrow();
+  }, 30_000);
+});
+
+describe("site budget failures", () => {
+  test("reports the failing route and budget dimensions when a route regresses", () => {
+    const homepage = SITE_BUDGET_ROUTE_TARGETS[0];
+    const failures = evaluateRouteBudget(
+      {
+        route: homepage,
+        requestUrl: "http://127.0.0.1:3786/you-agent-factory-docs/",
+        status: 200,
+        htmlBytes: 8_900,
+        scriptTagCount: 15,
+        stylesheetLinkCount: 1,
+        imageCount: 0,
+        mainLandmarkPresent: false,
+        titlePresent: true,
+        h1Text: null,
+      },
+      homepage.budget,
+    );
+
+    expect(failures).toEqual([
+      {
+        route: homepage,
+        dimension: "htmlBytes",
+        message: "expected htmlBytes<=8500, received 8900",
+      },
+      {
+        route: homepage,
+        dimension: "scriptTagCount",
+        message: "expected scripts<=13, received 15",
+      },
+      {
+        route: homepage,
+        dimension: "mainLandmarkPresent",
+        message: "expected a <main> landmark",
+      },
+      {
+        route: homepage,
+        dimension: "h1Text",
+        message: "expected a non-empty <h1>",
+      },
+    ]);
+
+    expect(() =>
+      assertSiteBudget([
+        {
+          route: homepage,
+          requestUrl: "http://127.0.0.1:3786/you-agent-factory-docs/",
+          status: 200,
+          htmlBytes: 8_900,
+          scriptTagCount: 15,
+          stylesheetLinkCount: 1,
+          imageCount: 0,
+          mainLandmarkPresent: false,
+          titlePresent: true,
+          h1Text: null,
+        },
+      ]),
+    ).toThrow(
+      "Site budget check failed:\n- Homepage (/) htmlBytes: expected htmlBytes<=8500, received 8900\n- Homepage (/) scriptTagCount: expected scripts<=13, received 15\n- Homepage (/) mainLandmarkPresent: expected a <main> landmark\n- Homepage (/) h1Text: expected a non-empty <h1>",
+    );
+  });
 });
