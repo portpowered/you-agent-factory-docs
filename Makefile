@@ -1,4 +1,4 @@
-.PHONY: setup check test build quality-gate component-coverage-boundary component-coverage
+.PHONY: setup check test build budget quality-gate component-coverage-boundary component-coverage
 
 setup:
 	bun install
@@ -13,6 +13,9 @@ test:
 build:
 	bun run build
 	test -d out || (echo "Static export output missing: expected out/ after build" >&2; exit 1)
+
+budget:
+	bun run budget
 
 quality-gate:
 	bun run quality-gate

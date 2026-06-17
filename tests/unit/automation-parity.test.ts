@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { dryRunMake } from "../helpers/make";
 import { runMakeTarget } from "../helpers/make-target";
 
@@ -17,8 +18,10 @@ describe("automation command parity", () => {
     expect(setup.status).toBe(0);
     expect(setup.stdout).toMatch(/bun install/);
 
-    cleanNextTypeArtifacts();
-    const check = runMakeTarget("check");
+    const check = withStaticExportBuildLock(repoRoot, () => {
+      cleanNextTypeArtifacts();
+      return runMakeTarget("check");
+    });
     expect(check.status).toBe(0);
     expect(check.output).toMatch(/typecheck/);
     expect(check.output).toMatch(/lint/);

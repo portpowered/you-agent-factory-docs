@@ -20,5 +20,8 @@ jobs:
       - name: Early foundation quality gate
         run: make quality-gate
 
+      - name: Exported-site budget gate
+        run: make budget
+
       - name: Component coverage enforcement
         run: make component-coverage

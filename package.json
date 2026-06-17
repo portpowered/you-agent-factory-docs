@@ -7,6 +7,7 @@
     "generate:search-index": "bun run scripts/generate-search-index.ts",
     "build": "bun run generate:search-index && next build",
     "start": "next start",
+    "budget": "bun run scripts/run-site-budget.ts",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "biome check .",
     "test": "bun test",

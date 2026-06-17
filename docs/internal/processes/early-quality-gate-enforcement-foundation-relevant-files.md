@@ -28,11 +28,10 @@ Contract tests in `tests/unit/quality-gate.test.ts` are run via `bun test` and a
 
 Deferred from this early lane (see `DEFERRED_PHASE_8_QUALITY_CHECKS`):
 
-- deploy-on-main automation
-- Lighthouse performance and accessibility budgets
 - broad package coverage policy enforcement
 - full search-index validation
 - launch-content completeness enforcement
+- broader route coverage and richer performance instrumentation beyond the current narrow budget gate
 
 Later localization and canonical content foundations plug into the same `validate:localization` and `validate:content` scripts instead of introducing a parallel gate surface.
 
