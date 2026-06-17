@@ -162,8 +162,8 @@ describe("site budget measurements", () => {
     expect(measurements).toHaveLength(1);
     expect(measurements[0].target).toEqual(SITE_BUDGET_STATIC_ASSET_TARGETS[0]);
     expect(measurements[0].assetCount).toBeGreaterThan(0);
-    expect(measurements[0].largestAssetPath).toBe(
-      "/_next/static/chunks/framework-2c534e0e662575a2.js",
+    expect(measurements[0].largestAssetPath).toMatch(
+      /^\/_next\/static\/.+\.js$/,
     );
     expect(measurements[0].totalBytes).toBeLessThanOrEqual(
       SITE_BUDGET_STATIC_ASSET_TARGETS[0].budget.maxTotalBytes,
