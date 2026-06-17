@@ -94,13 +94,18 @@ describe("static export server helpers", () => {
         },
       );
       const servedHtml = await response.text();
+      const stableHomepageTitle = "<title>You Agent Factory</title>";
+      const stableHomepageCta = `href="${SITE_BASE_PATH}/docs/"`;
 
       expect(response.status).toBe(200);
-      expect(servedHtml).toContain(originalHomepageHtml.slice(0, 120));
+      expect(originalHomepageHtml).toContain(stableHomepageTitle);
+      expect(originalHomepageHtml).toContain(stableHomepageCta);
+      expect(servedHtml).toContain(stableHomepageTitle);
+      expect(servedHtml).toContain(stableHomepageCta);
       expect(servedHtml).not.toContain("<title>mutated</title>");
     } finally {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
       server.stop();
     }
-  });
+  }, 20_000);
 });

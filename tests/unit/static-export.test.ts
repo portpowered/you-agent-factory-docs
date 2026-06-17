@@ -166,8 +166,11 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("Core concepts");
     expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Configuration");
+    expect(docsHtml).toContain("PR Review Factory");
+    expect(docsHtml).toContain("Release Readiness Factory");
     expect(docsHtml).toContain("Guides");
     expect(docsHtml).toContain("Setup");
+    expect(docsHtml).toContain("Use cases");
     expect(new RegExp(`href="${gettingStartedPath}/?"`).test(docsHtml)).toBe(
       true,
     );
@@ -283,5 +286,21 @@ describe("served static export navigation", () => {
     ).toBe(true);
     expect(conceptsHtml).toContain(enMessages.docs.previousPagePrefix);
     expect(conceptsHtml).toContain("Getting started");
+  }, 30_000);
+
+  test("serves the generated PR Review Factory use-case page through the docs shell", async () => {
+    const reviewResponse = await fetchHttp(
+      new URL(withBasePath("/docs/pr-review-factory"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(reviewResponse.status).toBe(200);
+
+    const reviewHtml = await reviewResponse.text();
+
+    expect(reviewHtml).toContain("PR Review Factory");
+    expect(reviewHtml).toContain("Use cases");
+    expect(reviewHtml).toContain("Release Readiness Factory");
+    expect(reviewHtml).toContain('aria-current="page"');
   }, 30_000);
 });

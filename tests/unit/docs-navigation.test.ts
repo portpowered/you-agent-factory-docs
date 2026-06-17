@@ -314,6 +314,40 @@ section: guides
         ],
       },
       {
+        id: "use cases",
+        label: "Use cases",
+        pages: [
+          {
+            canonicalId: "doc/pr-review-factory",
+            label: "PR Review Factory",
+            href: "/docs/pr-review-factory",
+            order: 3,
+            localeProjection: {
+              canonicalPageId: "doc/pr-review-factory",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/release-readiness-factory",
+            label: "Release Readiness Factory",
+            href: "/docs/release-readiness-factory",
+            order: 4,
+            localeProjection: {
+              canonicalPageId: "doc/release-readiness-factory",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+        ],
+      },
+      {
         id: "examples",
         label: "Examples",
         pages: [
@@ -360,14 +394,22 @@ section: guides
       0,
     );
 
-    expect(sectionIds).toEqual(["guides", "setup", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(5);
+    expect(sectionIds).toEqual(["guides", "setup", "use cases", "examples"]);
+    expect(pageCount).toBeGreaterThanOrEqual(7);
     expect(
       navigation.sections.some(
         (section) =>
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
             "doc/installation,doc/configuration",
+      ),
+    ).toBe(true);
+    expect(
+      navigation.sections.some(
+        (section) =>
+          section.id === "use cases" &&
+          section.pages.map((page) => page.canonicalId).join(",") ===
+            "doc/pr-review-factory,doc/release-readiness-factory",
       ),
     ).toBe(true);
   });

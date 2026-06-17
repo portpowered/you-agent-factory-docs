@@ -71,6 +71,24 @@ const generatedNavigation: DocsShellNavigationInput = {
         },
       ],
     },
+    {
+      id: "use cases",
+      label: "Use cases",
+      pages: [
+        {
+          canonicalId: "doc/pr-review-factory",
+          label: "PR Review Factory",
+          href: "/docs/pr-review-factory",
+          order: 3,
+        },
+        {
+          canonicalId: "doc/release-readiness-factory",
+          label: "Release Readiness Factory",
+          href: "/docs/release-readiness-factory",
+          order: 4,
+        },
+      ],
+    },
   ],
 };
 
@@ -112,12 +130,18 @@ describe("docs shell rendering", () => {
     ).toBeTruthy();
     const guidesNav = screen.getByRole("navigation", { name: "Guides" });
     const setupNav = screen.getByRole("navigation", { name: "Setup" });
+    const useCasesNav = screen.getByRole("navigation", { name: "Use cases" });
     expect(within(guidesNav).getByText("Guides")).toBeTruthy();
     expect(within(setupNav).getByText("Setup")).toBeTruthy();
+    expect(within(useCasesNav).getByText("Use cases")).toBeTruthy();
     expect(within(guidesNav).getByText("Getting started")).toBeTruthy();
     expect(within(guidesNav).getByText("Core concepts")).toBeTruthy();
     expect(within(setupNav).getByText("Installation")).toBeTruthy();
     expect(within(setupNav).getByText("Configuration")).toBeTruthy();
+    expect(within(useCasesNav).getByText("PR Review Factory")).toBeTruthy();
+    expect(
+      within(useCasesNav).getByText("Release Readiness Factory"),
+    ).toBeTruthy();
   });
 
   test("renders separate navigation landmarks for each generated docs section", async () => {
@@ -133,9 +157,11 @@ describe("docs shell rendering", () => {
 
     const guidesNav = screen.getByRole("navigation", { name: "Guides" });
     const setupNav = screen.getByRole("navigation", { name: "Setup" });
+    const useCasesNav = screen.getByRole("navigation", { name: "Use cases" });
 
     expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
     expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
+    expect(within(useCasesNav).getAllByRole("link")).toHaveLength(2);
   });
 
   test("marks the active generated nav entry and links home and GitHub", async () => {
@@ -344,6 +370,35 @@ describe("docs shell rendering", () => {
     ).toBe("/docs/installation");
   });
 
+  test("renders generated use-case pages as standard docs-shell navigation links", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/pr-review-factory"
+        navigation={generatedNavigation}
+      >
+        <h1>PR Review Factory</h1>
+      </DocsShell>,
+    );
+
+    const useCasesNav = screen.getByRole("navigation", { name: "Use cases" });
+    const reviewLink = within(useCasesNav).getByRole("link", {
+      name: "PR Review Factory",
+    });
+    const releaseLink = within(useCasesNav).getByRole("link", {
+      name: "Release Readiness Factory",
+    });
+
+    expect(reviewLink.getAttribute("href")).toBe("/docs/pr-review-factory");
+    expect(reviewLink.getAttribute("aria-current")).toBe("page");
+    expect(releaseLink.getAttribute("href")).toBe(
+      "/docs/release-readiness-factory",
+    );
+  });
+
   test("marks the code presentation example route as current when active", async () => {
     mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
 
@@ -495,15 +550,18 @@ describe("responsive docs navigation depth", () => {
     expect(toggle.getAttribute("aria-expanded")).toBe("false");
     expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
     expect(screen.queryByRole("navigation", { name: "Setup" })).toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Use cases" })).toBeNull();
 
     fireEvent.click(toggle);
 
     const guidesNav = screen.getByRole("navigation", { name: "Guides" });
     const setupNav = screen.getByRole("navigation", { name: "Setup" });
+    const useCasesNav = screen.getByRole("navigation", { name: "Use cases" });
 
     expect(toggle.getAttribute("aria-expanded")).toBe("true");
     expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
     expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
+    expect(within(useCasesNav).getAllByRole("link")).toHaveLength(2);
   });
 
   test("keeps breadcrumbs and progression reachable in main content on narrow viewports without docs sidebar disclosure", async () => {

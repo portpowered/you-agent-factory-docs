@@ -70,6 +70,8 @@ describe("localized starter content variants", () => {
       "configuration",
       "getting-started",
       "installation",
+      "pr-review-factory",
+      "release-readiness-factory",
     ]);
 
     const navigation = projectDocsShellNavigation(records, { variantBindings });
