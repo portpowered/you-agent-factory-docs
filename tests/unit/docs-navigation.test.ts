@@ -246,6 +246,54 @@ section: guides
 
     expect(navigation.sections).toEqual([
       {
+        id: "setup",
+        label: "Setup",
+        pages: [
+          {
+            canonicalId: "doc/introduction",
+            label: "Introduction",
+            href: "/docs/introduction",
+            order: 0,
+            localeProjection: {
+              canonicalPageId: "doc/introduction",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/installation",
+            label: "Installation",
+            href: "/docs/installation",
+            order: 1,
+            localeProjection: {
+              canonicalPageId: "doc/installation",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/quickstart",
+            label: "Quickstart",
+            href: "/docs/quickstart",
+            order: 2,
+            localeProjection: {
+              canonicalPageId: "doc/quickstart",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+        ],
+      },
+      {
         id: "guides",
         label: "Guides",
         pages: [
@@ -308,26 +356,6 @@ section: guides
         ],
       },
       {
-        id: "setup",
-        label: "Setup",
-        pages: [
-          {
-            canonicalId: "doc/installation",
-            label: "Installation",
-            href: "/docs/installation",
-            order: 1,
-            localeProjection: {
-              canonicalPageId: "doc/installation",
-              canonicalLocale: "en",
-              requestedLocale: "en",
-              resolvedLocale: "en",
-              availableLocales: ["en"],
-              fellBackToCanonicalLocale: false,
-            },
-          },
-        ],
-      },
-      {
         id: "examples",
         label: "Examples",
         pages: [
@@ -374,14 +402,14 @@ section: guides
       0,
     );
 
-    expect(sectionIds).toEqual(["guides", "setup", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(6);
+    expect(sectionIds).toEqual(["setup", "guides", "examples"]);
+    expect(pageCount).toBeGreaterThanOrEqual(8);
     expect(
       navigation.sections.some(
         (section) =>
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/installation",
+            "doc/introduction,doc/installation,doc/quickstart",
       ),
     ).toBe(true);
     expect(
