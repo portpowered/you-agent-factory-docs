@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { serializePublicSearchArtifact } from "../../src/lib/content";
@@ -13,6 +13,16 @@ const ARTIFACT_PATH = join(
   process.cwd(),
   "public/search/public-search-index.json",
 );
+
+function readCheckedInArtifact(): {
+  version: number;
+  entries: Array<Record<string, unknown>>;
+} {
+  return JSON.parse(readFileSync(ARTIFACT_PATH, "utf8")) as {
+    version: number;
+    entries: Array<Record<string, unknown>>;
+  };
+}
 
 function writeSearchFixture(
   contentRoot: string,
@@ -65,12 +75,10 @@ describe("search index validation", () => {
     });
 
     expect(result.valid).toBe(false);
-    expect(result.issues).toEqual([
-      {
-        field: "artifact",
-        message: `Checked-in search artifact at ${ARTIFACT_PATH} does not match generated artifact. Regenerate with bun run generate:search-index and review the diff.`,
-      },
-    ]);
+    expect(result.issues[0]).toEqual({
+      field: "artifact",
+      message: `Checked-in search artifact at ${ARTIFACT_PATH} is missing generated entry blog/introducing-factory@en. This is deterministic artifact drift from the normalized search documents.`,
+    });
   });
 
   test("throws a contract failure with maintainer guidance", () => {
@@ -81,6 +89,115 @@ describe("search index validation", () => {
         checkedInArtifactSource: '{\n  "version": 1,\n  "entries": []\n}\n',
       }),
     ).toThrow("Search index validation failed");
+  });
+
+  test("rejects stale checked-in entries that are absent from generated output", () => {
+    const checkedInArtifact = readCheckedInArtifact();
+    const artifactSource = `${JSON.stringify(
+      {
+        ...checkedInArtifact,
+        entries: [
+          ...checkedInArtifact.entries,
+          {
+            id: "doc/obsolete-entry@en",
+            canonicalId: "doc/obsolete-entry",
+            locale: "en",
+            canonicalLocale: "en",
+            availableLocales: ["en"],
+            kind: "doc",
+            url: "/docs/obsolete-entry",
+            title: "Obsolete entry",
+            description: "",
+            headings: ["Obsolete entry"],
+            body: "",
+            tags: ["docs"],
+            section: "guides",
+            searchPriority: 0,
+          },
+        ],
+      },
+      null,
+      2,
+    )}\n`;
+
+    const result = validateSearchIndex({
+      contentRoot: CONTENT_ROOT,
+      artifactPath: ARTIFACT_PATH,
+      checkedInArtifactSource: artifactSource,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(
+      result.issues.some((issue) =>
+        issue.message.includes("stale entry doc/obsolete-entry@en"),
+      ),
+    ).toBe(true);
+  });
+
+  test("rejects unstable checked-in entry ordering clearly", () => {
+    const checkedInArtifact = readCheckedInArtifact();
+    const reorderedEntries = [...checkedInArtifact.entries];
+    const firstEntry = reorderedEntries.shift();
+    if (!firstEntry) {
+      throw new Error(
+        "Expected at least one checked-in search artifact entry.",
+      );
+    }
+
+    reorderedEntries.splice(1, 0, firstEntry);
+
+    const result = validateSearchIndex({
+      contentRoot: CONTENT_ROOT,
+      artifactPath: ARTIFACT_PATH,
+      checkedInArtifactSource: `${JSON.stringify(
+        {
+          ...checkedInArtifact,
+          entries: reorderedEntries,
+        },
+        null,
+        2,
+      )}\n`,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(
+      result.issues.some((issue) =>
+        issue.message.includes("unstable ordering"),
+      ),
+    ).toBe(true);
+  });
+
+  test("rejects normalized contract field mismatches clearly", () => {
+    const checkedInArtifact = readCheckedInArtifact();
+
+    const result = validateSearchIndex({
+      contentRoot: CONTENT_ROOT,
+      artifactPath: ARTIFACT_PATH,
+      checkedInArtifactSource: `${JSON.stringify(
+        {
+          ...checkedInArtifact,
+          entries: checkedInArtifact.entries.map((entry) =>
+            entry.id === "doc/installation@en"
+              ? {
+                  ...entry,
+                  title: "Broken installation title",
+                }
+              : entry,
+          ),
+        },
+        null,
+        2,
+      )}\n`,
+    });
+
+    expect(result.valid).toBe(false);
+    expect(
+      result.issues.some((issue) =>
+        issue.message.includes(
+          "normalized contract mismatch for entry doc/installation@en: field title",
+        ),
+      ),
+    ).toBe(true);
   });
 
   test("rejects excluded search entries from every supported public content kind", () => {

@@ -10,7 +10,19 @@ describe("search index validation failing-path proof", () => {
 
     expect(result.status).not.toBe(0);
     expect(result.stderr).toContain("Search index validation failed");
-    expect(result.stderr).toContain("does not match generated artifact");
+    expect(result.stderr).toContain("is missing generated entry");
+  });
+
+  test("validate:search-index reports normalized contract field mismatches clearly", () => {
+    const result = runValidationScript(
+      "validate:search-index",
+      "broken-search-contract-field",
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Search index validation failed");
+    expect(result.stderr).toContain("normalized contract mismatch");
+    expect(result.stderr).toContain("field title");
   });
 
   test("validate:search-index reports excluded-entry regressions clearly", () => {

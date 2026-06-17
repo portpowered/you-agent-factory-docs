@@ -1,20 +1,23 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import type { EarlyGateValidationFixture } from "../../src/lib/validation/gate-fixtures";
+import { withNextTypeArtifactLock } from "../../src/lib/validation/next-type-artifact-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
 
 export function runQualityGateScript(
   options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
-  const result = spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-    },
-  });
+  const result = withNextTypeArtifactLock(repoRoot, () =>
+    spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        ...options.env,
+      },
+    }),
+  );
 
   return {
     status: result.status,

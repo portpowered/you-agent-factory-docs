@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   type PublicSearchArtifact,
+  type PublicSearchArtifactEntry,
   assertStarterContentValid,
   buildLocalizedSearchDocumentId,
   loadPublicSearchArtifact,
@@ -38,6 +39,10 @@ type ExcludedSearchEntry = {
   kind: string;
   reason: string;
 };
+
+function formatArtifactValue(value: unknown): string {
+  return JSON.stringify(value);
+}
 
 function readCheckedInArtifactSource(
   artifactPath: string,
@@ -128,6 +133,127 @@ function collectExcludedEntryIssues(
   return issues;
 }
 
+function collectArtifactAlignmentIssues(
+  checkedInArtifact: PublicSearchArtifact,
+  generatedArtifact: PublicSearchArtifact,
+  artifactPath: string,
+): SearchIndexValidationIssue[] {
+  const issues: SearchIndexValidationIssue[] = [];
+
+  if (checkedInArtifact.version !== generatedArtifact.version) {
+    issues.push({
+      field: "artifact",
+      message: `Checked-in search artifact at ${artifactPath} uses version ${checkedInArtifact.version}, but generated artifact uses version ${generatedArtifact.version}. This is a normalized search-document contract mismatch.`,
+    });
+  }
+
+  const checkedInEntriesById = new Map(
+    checkedInArtifact.entries.map((entry) => [entry.id, entry] as const),
+  );
+  const generatedEntriesById = new Map(
+    generatedArtifact.entries.map((entry) => [entry.id, entry] as const),
+  );
+
+  for (const generatedEntry of generatedArtifact.entries) {
+    if (checkedInEntriesById.has(generatedEntry.id)) {
+      continue;
+    }
+
+    issues.push({
+      field: "artifact",
+      message: `Checked-in search artifact at ${artifactPath} is missing generated entry ${generatedEntry.id}. This is deterministic artifact drift from the normalized search documents.`,
+    });
+  }
+
+  for (const checkedInEntry of checkedInArtifact.entries) {
+    if (generatedEntriesById.has(checkedInEntry.id)) {
+      continue;
+    }
+
+    issues.push({
+      field: "artifact",
+      message: `Checked-in search artifact at ${artifactPath} still contains stale entry ${checkedInEntry.id} that is absent from the generated artifact. This is deterministic artifact drift from the normalized search documents.`,
+    });
+  }
+
+  const comparableEntryCount = Math.min(
+    checkedInArtifact.entries.length,
+    generatedArtifact.entries.length,
+  );
+
+  for (let index = 0; index < comparableEntryCount; index += 1) {
+    const checkedInEntry = checkedInArtifact.entries[index];
+    const generatedEntry = generatedArtifact.entries[index];
+    if (checkedInEntry?.id === generatedEntry?.id) {
+      continue;
+    }
+
+    issues.push({
+      field: "artifact",
+      message: `Checked-in search artifact at ${artifactPath} has unstable ordering at index ${index}: expected ${generatedEntry?.id ?? "<missing>"} but found ${checkedInEntry?.id ?? "<missing>"}. Regenerate with bun run generate:search-index to restore deterministic ordering.`,
+    });
+    break;
+  }
+
+  for (const generatedEntry of generatedArtifact.entries) {
+    const checkedInEntry = checkedInEntriesById.get(generatedEntry.id);
+    if (!checkedInEntry) {
+      continue;
+    }
+
+    const mismatch = findEntryFieldMismatch(checkedInEntry, generatedEntry);
+    if (!mismatch) {
+      continue;
+    }
+
+    issues.push({
+      field: "artifact",
+      message: `Checked-in search artifact at ${artifactPath} has a normalized contract mismatch for entry ${generatedEntry.id}: field ${mismatch.field} expected ${formatArtifactValue(mismatch.expected)} but found ${formatArtifactValue(mismatch.actual)}.`,
+    });
+  }
+
+  return issues;
+}
+
+function findEntryFieldMismatch(
+  checkedInEntry: PublicSearchArtifactEntry,
+  generatedEntry: PublicSearchArtifactEntry,
+): {
+  field: keyof PublicSearchArtifactEntry;
+  expected: unknown;
+  actual: unknown;
+} | null {
+  const fields: (keyof PublicSearchArtifactEntry)[] = [
+    "id",
+    "canonicalId",
+    "locale",
+    "canonicalLocale",
+    "availableLocales",
+    "kind",
+    "url",
+    "title",
+    "description",
+    "headings",
+    "body",
+    "tags",
+    "aliases",
+    "section",
+    "searchPriority",
+  ];
+
+  for (const field of fields) {
+    const expected = generatedEntry[field];
+    const actual = checkedInEntry[field];
+    if (JSON.stringify(expected) === JSON.stringify(actual)) {
+      continue;
+    }
+
+    return { field, expected, actual };
+  }
+
+  return null;
+}
+
 /** Validates the checked-in public search artifact against generated output. */
 export function validateSearchIndex(
   options: SearchIndexValidationOptions = {},
@@ -173,6 +299,18 @@ export function validateSearchIndex(
     };
   }
 
+  const alignmentIssues = collectArtifactAlignmentIssues(
+    checkedInArtifact,
+    generatedArtifact,
+    artifactPath,
+  );
+  if (alignmentIssues.length > 0) {
+    return {
+      valid: false,
+      issues: alignmentIssues,
+    };
+  }
+
   const generatedSource = serializePublicSearchArtifact(generatedArtifact);
 
   if (checkedInArtifactSource !== generatedSource) {
@@ -181,7 +319,7 @@ export function validateSearchIndex(
       issues: [
         {
           field: "artifact",
-          message: `Checked-in search artifact at ${artifactPath} does not match generated artifact. Regenerate with bun run generate:search-index and review the diff.`,
+          message: `Checked-in search artifact at ${artifactPath} does not match the stable generated serialization. Regenerate with bun run generate:search-index and review the diff.`,
         },
       ],
     };
