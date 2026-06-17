@@ -182,6 +182,42 @@ describe("public search artifact generation", () => {
     expect(comparison?.body).toContain("approval-driven orchestration");
   });
 
+  test("surfaces substantive reference starter copy on the existing canonical record", () => {
+    const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
+
+    const reference = artifact.entries.find(
+      (entry) => entry.id === "reference/loop-engineering@en",
+    );
+
+    expect(reference).toMatchObject({
+      canonicalId: "reference/loop-engineering",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      kind: "reference",
+      url: "/references/loop-engineering",
+      title: "Loop engineering",
+      section: "references",
+      searchPriority: 7,
+    });
+    expect(reference?.headings).toEqual([
+      "Loop engineering",
+      "What the reference topic covers",
+      "Where loop engineering helps in practice",
+      "What a healthy loop usually includes",
+      "How to evaluate a loop as a first-time reader",
+    ]);
+    expect(reference?.body).toContain(
+      "designing the feedback cycle around an agent workflow",
+    );
+    expect(reference?.body).toContain(
+      "repeated improvement safe, inspectable, and cheap to reason about",
+    );
+    expect(reference?.body).toContain(
+      "scoped worker, a concrete review step, a visible decision rule, and an exit condition",
+    );
+  });
+
   test("preserves locale-aware canonical-locale relationships for active-locale-first query defaults", () => {
     const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
 
