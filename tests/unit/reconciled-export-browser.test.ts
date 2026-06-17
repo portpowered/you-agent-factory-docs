@@ -116,6 +116,44 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("docs search fetches the generated artifact and returns representative results on the public surface", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const artifactPath = withBasePath("/search/public-search-index.json");
+
+    try {
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const artifactResponsePromise = page.waitForResponse(
+        (response) =>
+          response.url().endsWith(artifactPath) && response.status() === 200,
+        { timeout: 10_000 },
+      );
+
+      await page
+        .getByRole("searchbox", { name: "Search documentation" })
+        .fill("installation");
+
+      const artifactResponse = await artifactResponsePromise;
+      expect(artifactResponse.ok()).toBe(true);
+
+      const installationResult = page
+        .getByRole("region", { name: "Search docs" })
+        .getByRole("link", { name: "Installation" });
+
+      await installationResult.waitFor({ state: "visible", timeout: 10_000 });
+      expect(await installationResult.isVisible()).toBe(true);
+      expect(await installationResult.getAttribute("href")).toBe(
+        `${withBasePath("/docs/installation")}/`,
+      );
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("built export keeps primitive-backed homepage and docs surfaces on the reviewed path", async () => {
     const page = await browser.newPage();
     const docsUrl = new URL(

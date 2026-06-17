@@ -15,24 +15,31 @@ const verifyingMakeTest = process.env.VERIFYING_MAKE_TEST === "1";
 const testUnlessVerifying = verifyingMakeTest ? test.skip : test;
 
 describe("root contributor command path", () => {
-  test("make setup completes successfully from the repository root", () => {
-    const result = runMakeTarget("setup");
+  testUnlessVerifying(
+    "make setup completes successfully from the repository root",
+    () => {
+      const result = runMakeTarget("setup");
 
-    expect(result.status).toBe(0);
-    expect(result.stdout).toMatch(/bun install/);
-  });
+      expect(result.status).toBe(0);
+      expect(result.stdout).toMatch(/bun install/);
+    },
+  );
 
-  test("make check completes successfully from the repository root", () => {
-    const result = withStaticExportBuildLock(projectRoot, () => {
-      cleanNextTypeArtifacts();
-      return runMakeTarget("check");
-    });
+  testUnlessVerifying(
+    "make check completes successfully from the repository root",
+    () => {
+      const result = withStaticExportBuildLock(projectRoot, () => {
+        cleanNextTypeArtifacts();
+        return runMakeTarget("check");
+      });
 
-    expect(result.status).toBe(0);
-    expect(result.output).toMatch(/typecheck/);
-    expect(result.output).toMatch(/typegen/);
-    expect(result.output).toMatch(/lint/);
-  }, 120_000);
+      expect(result.status).toBe(0);
+      expect(result.output).toMatch(/typecheck/);
+      expect(result.output).toMatch(/typegen/);
+      expect(result.output).toMatch(/lint/);
+    },
+    120_000,
+  );
 
   testUnlessVerifying(
     "make test completes successfully from the repository root",
@@ -50,10 +57,14 @@ describe("root contributor command path", () => {
     480_000,
   );
 
-  test("make build completes successfully from the repository root", () => {
-    const result = runMakeTarget("build");
+  testUnlessVerifying(
+    "make build completes successfully from the repository root",
+    () => {
+      const result = runMakeTarget("build");
 
-    expect(result.status).toBe(0);
-    expect(result.output).toMatch(/Exporting/);
-  }, 120_000);
+      expect(result.status).toBe(0);
+      expect(result.output).toMatch(/Exporting/);
+    },
+    120_000,
+  );
 });

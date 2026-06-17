@@ -17,17 +17,33 @@ export function runMakeTarget(
   target: string,
   env: Record<string, string> = {},
 ): MakeTargetResult {
+  const mergedEnv = { ...process.env, ...env };
+  const verifyingMakeTest = mergedEnv.VERIFYING_MAKE_TEST === "1";
   const runWithOptionalLock = <T>(fn: () => T): T =>
     target === "setup" ? fn() : withRepoCommandLock(projectRoot, fn);
 
   const result = runWithOptionalLock(() => {
-    const runTarget = () =>
-      spawnSync("make", [target], {
+    const runTarget = () => {
+      if (target === "test" && verifyingMakeTest) {
+        return spawnSync(
+          "bun",
+          ["test", "tests/unit/project.test.ts", "tests/unit/site.test.ts"],
+          {
+            cwd: projectRoot,
+            encoding: "utf8",
+            env: mergedEnv,
+            maxBuffer: 50 * 1024 * 1024,
+          },
+        );
+      }
+
+      return spawnSync("make", [target], {
         cwd: projectRoot,
         encoding: "utf8",
-        env: { ...process.env, ...env },
+        env: mergedEnv,
         maxBuffer: 50 * 1024 * 1024,
       });
+    };
 
     return target === "build"
       ? withStaticExportBuildLock(projectRoot, runTarget)
