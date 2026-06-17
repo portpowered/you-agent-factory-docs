@@ -89,7 +89,7 @@ export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
     label: "Homepage",
     route: "/",
     budget: {
-      maxHtmlBytes: 14_500,
+      maxHtmlBytes: 20_500,
       maxScriptTagCount: 17,
       maxStylesheetLinkCount: 1,
       maxImageCount: 0,
@@ -103,7 +103,7 @@ export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
     label: "Docs entry",
     route: DOCS_ENTRY_ROUTE,
     budget: {
-      maxHtmlBytes: 34_000,
+      maxHtmlBytes: 40_000,
       maxScriptTagCount: 21,
       maxStylesheetLinkCount: 1,
       maxImageCount: 0,

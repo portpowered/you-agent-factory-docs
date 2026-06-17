@@ -380,6 +380,26 @@ describe("docs shell rendering", () => {
 
     expect(codePresentationLink.getAttribute("aria-current")).toBe("page");
   });
+
+  test("docs entry route frames overview content through shared card primitives", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const DocsShellPage = (await import("../../src/app/docs/page")).default;
+
+    renderWithLocalization(<DocsShellPage />);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: enMessages.docs.shellTitle,
+      }).parentElement?.className,
+    ).toContain("ui-card");
+    expect(
+      screen.getByRole("region", {
+        name: enMessages.docs.examplesHeading,
+      }).className,
+    ).toContain("ui-card");
+  });
 });
 
 describe("code presentation example surface", () => {

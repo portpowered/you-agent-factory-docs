@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import type { ShellDisclosureState } from "@/types/shell-disclosure";
 import type { ReactNode } from "react";
 
@@ -16,16 +17,17 @@ export function ShellDisclosureTrigger({
   children,
 }: ShellDisclosureTriggerProps) {
   return (
-    <button
+    <Button
       aria-controls={disclosure.panelId}
       aria-expanded={disclosure.isEnabled ? disclosure.isOpen : false}
       className={className}
+      displayClassName="hidden max-[1023px]:inline-flex"
       id={disclosure.triggerId}
       onClick={disclosure.isEnabled ? disclosure.toggle : undefined}
       ref={disclosure.triggerRef}
-      type="button"
+      variant="secondary"
     >
       {children({ isOpen: disclosure.isOpen })}
-    </button>
+    </Button>
   );
 }

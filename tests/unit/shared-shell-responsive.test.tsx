@@ -79,6 +79,7 @@ describe("shared shell responsive header", () => {
       "shared-shell-primary-nav",
     );
     expect(menuToggle.getAttribute("aria-expanded")).toBe("false");
+    expect(menuToggle.className).toContain("ui-button");
     expect(screen.queryByRole("navigation", { name: "Primary" })).toBeNull();
 
     fireEvent.click(menuToggle);

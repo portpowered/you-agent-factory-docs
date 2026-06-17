@@ -124,17 +124,17 @@ function toReactFlowEdge(
     type: "smoothstep",
     animated: false,
     labelStyle: {
-      fill: "var(--landing-text)",
+      fill: "var(--foreground)",
       fontWeight: 600,
     },
     markerEnd: {
       type: MarkerType.ArrowClosed,
       width: 18,
       height: 18,
-      color: "var(--landing-accent)",
+      color: "var(--accent)",
     },
     style: {
-      stroke: "var(--landing-accent)",
+      stroke: "var(--accent)",
       strokeWidth: 2,
     },
     ariaLabel: edge.label,
@@ -296,7 +296,7 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
               zoomOnScroll={false}
             >
               <Background
-                color="color-mix(in srgb, var(--landing-accent) 22%, transparent)"
+                color="color-mix(in srgb, var(--accent) 22%, transparent)"
                 gap={20}
               />
             </ReactFlow>
