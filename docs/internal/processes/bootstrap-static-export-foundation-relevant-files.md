@@ -7,6 +7,7 @@
 - `make check` runs `bun run typecheck` then `bun run lint` (Biome).
 - `make test` runs `bun test` directly (not a separate test runner).
 - `make build` runs `bun run build` (Next.js production build).
+- `make budget` runs `bun run budget`, which builds the static export, serves `out/` under the GitHub Pages base path, and audits the homepage plus docs entry route from that exported surface.
 
 ## Application scaffold
 
@@ -16,7 +17,9 @@
 - The homepage landing shell lives in `src/components/landing/landing-shell.tsx` and is rendered from `src/app/page.tsx`.
 - The docs shell lives in `src/components/docs/docs-shell.tsx` and is rendered from `src/app/docs/page.tsx`.
 - GitHub Pages base-path and route constants live in `src/lib/site.ts`; `next.config.ts` imports `SITE_BASE_PATH` from there so export settings stay aligned with link helpers.
+- Site budget route coverage and HTML-level measurement helpers live in `src/lib/site-budget.ts`; the checked-in route scope is the homepage (`/`) plus docs entry route (`/docs`).
 - Static export uses `output: "export"` with `trailingSlash: true` and `images.unoptimized: true` for GitHub Pages compatibility.
+- Reusable static-export build and local serving helpers live in `src/lib/static-export.ts`; tests reuse the same module through `tests/helpers/static-export-server.ts`.
 - Unit tests live under `tests/unit/` and import source modules with relative paths.
 - Component behavior tests use `@testing-library/react` with `@happy-dom/global-registrator` preloaded from `bunfig.toml` (`tests/setup/happydom.ts`, `tests/setup/testing-library.ts`).
 - Served static-export navigation tests build once, mount `out/` under the base path, and use Bun's native `fetch` via `tests/helpers/http.ts` (happy-dom's fetch blocks cross-origin local requests).

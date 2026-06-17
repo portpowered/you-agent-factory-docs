@@ -1,4 +1,4 @@
-.PHONY: setup check test build
+.PHONY: setup check test build budget
 
 setup:
 	bun install
@@ -12,3 +12,6 @@ test:
 
 build:
 	bun run build
+
+budget:
+	bun run budget
