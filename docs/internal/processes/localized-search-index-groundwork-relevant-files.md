@@ -32,11 +32,18 @@
 - Artifact entries expose locale, `canonicalLocale`, `availableLocales`, canonical id, route or URL identity, searchable text fields, and search priority for representative entries.
 - Parallel locale variants for one canonical page share the same `canonicalId`, `canonicalLocale`, and `availableLocales` while keeping distinct `locale` and variant-specific searchable text.
 
+## Scope and deferred follow-on work
+
+- The current search-document and public-search-artifact proof is the bounded verification seam for glossary, comparison, and reference starter content when adjacent public route implementations are not part of the same lane.
+- Keep this verification focused on canonical ids, content kinds, current route paths, headings, and searchable body text for the existing starter entries; do not widen it into route-inventory assertions, search-query behavior, or new public content kinds.
+- Treat broader editorial expansion, localized variants for the current starter knowledge pages, additional glossary/comparison/reference pages, and public-route or search-plumbing changes as explicitly deferred follow-on work outside this lane.
+
 ## Tests
 
 - Focused search-document projection and starter loading proof: `tests/unit/localized-search-documents.test.ts`.
 - Generated public search artifact contract proof: `tests/unit/public-search-artifact.test.ts`.
 - Cross-layer inclusion, exclusion, and artifact alignment proof: `tests/unit/localized-search-index-foundation.test.ts`.
+- When richer starter knowledge content changes, add or update one bounded cross-entry regression in `tests/unit/localized-search-index-foundation.test.ts` that proves the existing glossary, comparison, and reference records still project through both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` with the same canonical ids, content kinds, and route paths.
 - Prefer asserting observable generated document fields, canonical ids, locale metadata, and searchable text—not helper inventories or source-file topology scans.
 - Exclusion proofs should load a temporary starter content root with one published variant plus representative `draft`, `internal`, `hidden`, and `search.include: false` variants, then assert both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` omit the excluded canonical ids.
 
