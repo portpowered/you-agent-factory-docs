@@ -148,6 +148,40 @@ describe("public search artifact generation", () => {
     );
   });
 
+  test("surfaces substantive comparison starter copy on the existing canonical record", () => {
+    const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
+
+    const comparison = artifact.entries.find(
+      (entry) => entry.id === "comparison/vs-n8n@en",
+    );
+
+    expect(comparison).toMatchObject({
+      canonicalId: "comparison/vs-n8n",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      kind: "comparison",
+      url: "/comparisons/vs-n8n",
+      title: "You Agent Factory vs n8n",
+      section: "comparisons",
+      searchPriority: 6,
+    });
+    expect(comparison?.headings).toEqual([
+      "You Agent Factory vs n8n",
+      "Where n8n fits best",
+      "Where You Agent Factory fits best",
+      "Practical tradeoffs to evaluate",
+      "How to choose between them",
+    ]);
+    expect(comparison?.body).toContain(
+      "engineering-heavy and needs structured agent roles",
+    );
+    expect(comparison?.body).toContain(
+      "event-driven integration between external systems",
+    );
+    expect(comparison?.body).toContain("approval-driven orchestration");
+  });
+
   test("preserves locale-aware canonical-locale relationships for active-locale-first query defaults", () => {
     const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
 
