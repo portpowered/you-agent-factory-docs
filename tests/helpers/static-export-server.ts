@@ -1,6 +1,9 @@
 import { fetchHttp } from "./http";
 export {
   buildStaticExport,
+  ensureStaticExportBuilt,
+  findAvailableLocalPort,
+  shouldSkipStaticExportBuild,
   startStaticExportServer,
   type StaticExportServer,
 } from "../../src/lib/static-export";

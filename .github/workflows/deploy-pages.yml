@@ -1,0 +1,69 @@
+# Main-branch GitHub Pages deploy path.
+#
+# Contract (see docs/internal/deployment.md):
+# - Trigger: push to main (including merges). No manual publish step.
+# - validate runs make setup, check, test, build, budget — the same Makefile path as local/CI verification.
+# - deploy has needs: validate; failed validation never starts deploy for that run.
+# - Artifact: out/ from make build, uploaded in validate and published by deploy-pages.
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Canonical validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: make setup
+
+      - name: Run typecheck and lint
+        run: make check
+
+      - name: Run tests
+        run: make test
+
+      - name: Build static export
+        run: make build
+
+      - name: Enforce exported-site budget gate
+        run: make budget
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload static export artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Next.js static export output from `make build`; consumed by deploy-pages below.
+          path: out/
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy static export to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,6 +1,6 @@
 # Manual QA for website changes
 
-Use this checklist when reviewing or verifying changes to the You Agent Factory docs website scaffold. Automated `make check` and `make test` are required first; manual QA confirms observable browser behavior on the static export that GitHub Pages will serve.
+Use this checklist when reviewing or verifying changes to the You Agent Factory docs website scaffold. Run `make quality-gate` first so the enforced early foundation checks pass; manual QA then confirms observable browser behavior on the static export that GitHub Pages will serve.
 
 ## Prerequisites
 
@@ -8,9 +8,7 @@ Use this checklist when reviewing or verifying changes to the You Agent Factory 
 
 ```bash
 make setup
-make check
-make test
-make build
+make quality-gate
 ```
 
 2. Serve the static export so it is mounted at `/you-agent-factory-docs`, matching GitHub Pages project-site hosting. The configured base path is `/you-agent-factory-docs` (see `src/lib/site.ts`).

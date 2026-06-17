@@ -4,12 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "generate:search-index": "bun run scripts/generate-search-index.ts",
+    "build": "bun run generate:search-index && next build",
     "start": "next start",
     "budget": "bun run scripts/run-site-budget.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "lint": "biome check .",
-    "test": "bun test"
+    "test": "bun test",
+    "validate:localization": "bun run scripts/validate-localization.ts",
+    "validate:content": "bun run scripts/validate-content.ts",
+    "validate:accessibility": "bun run scripts/validate-accessibility.ts",
+    "validate:static-export": "bun run scripts/validate-static-export.ts",
+    "quality-gate": "bun run scripts/quality-gate.ts",
+    "component-coverage:boundary": "bun run scripts/show-component-coverage-boundary.ts",
+    "component-coverage": "bun run scripts/enforce-component-coverage.ts"
   },
   "dependencies": {
     "next": "^15.3.3",
@@ -18,8 +26,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
-    "@testing-library/react": "^16.3.0",
     "@happy-dom/global-registrator": "^17.4.4",
+    "@playwright/test": "^1.61.0",
+    "@testing-library/react": "^16.3.0",
     "@types/bun": "^1.2.15",
     "@types/node": "^22.15.21",
     "@types/react": "^19.1.4",

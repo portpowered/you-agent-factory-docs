@@ -10,17 +10,17 @@ import {
 } from "@/lib/site-budget";
 import {
   buildStaticExport,
+  findAvailableLocalPort,
   startStaticExportServer,
   waitForStaticExportServer,
 } from "@/lib/static-export";
 
-const SITE_BUDGET_PORT = 3786;
 const exportRoot = join(import.meta.dir, "..", "out");
 
 async function main(): Promise<void> {
   buildStaticExport();
 
-  const server = startStaticExportServer(SITE_BUDGET_PORT);
+  const server = startStaticExportServer(await findAvailableLocalPort());
 
   try {
     await waitForStaticExportServer(fetch, server.baseUrl);

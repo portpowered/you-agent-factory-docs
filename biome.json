@@ -22,7 +22,8 @@
       "coverage",
       "playwright-report",
       "test-results",
-      "storybook-static"
+      "storybook-static",
+      "public/search/public-search-index.json"
     ]
   }
 }
