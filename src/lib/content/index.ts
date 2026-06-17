@@ -40,6 +40,13 @@ export {
   type StarterContentValidationSuccess,
 } from "@/lib/content/starter";
 export {
+  loadDocsContentSource,
+  loadDocsStructureSource,
+  type DocsContentSource,
+  type DocsStructureSource,
+  type LoadDocsStructureSourceOptions,
+} from "@/lib/content/docs-structure-source";
+export {
   loadStarterContentRecords,
   requireStarterContentRecords,
   starterContentRootExists,

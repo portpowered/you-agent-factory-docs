@@ -1,11 +1,16 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
+import { join } from "node:path";
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import type { DocsShellNavigationInput } from "../../src/lib/content";
+import {
+  type DocsShellNavigationInput,
+  loadDocsStructureSource,
+} from "../../src/lib/content";
 import { projectFumadocsPageTree } from "../../src/lib/content/fumadocs-page-tree";
 import { PROJECT_NAME } from "../../src/lib/project";
 
 const capturedLayoutProps: unknown[] = [];
+const CONTENT_ROOT = join(import.meta.dir, "../../src/content");
 
 mock.module("fumadocs-ui/layouts/docs", () => ({
   DocsLayout: ({
@@ -61,6 +66,46 @@ afterEach(() => {
 });
 
 describe("Fumadocs docs layout bridge", () => {
+  test("derives Fumadocs and route-chrome projections from one canonical content source", () => {
+    const structure = loadDocsStructureSource(CONTENT_ROOT, {
+      locale: "fr",
+      rootName: PROJECT_NAME,
+    });
+
+    expect(structure.canonicalRecords.length).toBeGreaterThan(0);
+    expect(structure.variantBindings.length).toBeGreaterThan(0);
+    expect(structure.docsRouteNavigation.sections.length).toBeGreaterThan(0);
+    expect(structure.fumadocsPageTree.name).toBe(PROJECT_NAME);
+
+    const routePages = structure.docsRouteNavigation.sections.flatMap(
+      (section) => section.pages,
+    );
+    const treePages = structure.fumadocsPageTree.children.flatMap((section) => {
+      if (!("children" in section)) {
+        return [];
+      }
+
+      return section.children
+        .filter((page) => "url" in page)
+        .map((page) => ({
+          label: page.name,
+          href: page.url,
+        }));
+    });
+
+    expect(routePages).toContainEqual(
+      expect.objectContaining({
+        canonicalId: "doc/getting-started",
+        href: "/docs/getting-started",
+        label: "Commencer",
+      }),
+    );
+    expect(treePages).toContainEqual({
+      href: "/docs/getting-started",
+      label: "Commencer",
+    });
+  });
+
   test("projects generated docs navigation into a Fumadocs page tree", () => {
     const tree = projectFumadocsPageTree(navigation, {
       rootName: PROJECT_NAME,

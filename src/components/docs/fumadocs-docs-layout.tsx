@@ -1,5 +1,4 @@
-import { loadDocsShellNavigation } from "@/lib/content";
-import { projectFumadocsPageTree } from "@/lib/content/fumadocs-page-tree";
+import { loadDocsStructureSource } from "@/lib/content/docs-structure-source";
 import { PROJECT_NAME } from "@/lib/project";
 import { GITHUB_REPO_URL } from "@/lib/shell";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
@@ -10,8 +9,7 @@ type FumadocsDocsLayoutProps = {
 };
 
 export function FumadocsDocsLayout({ children }: FumadocsDocsLayoutProps) {
-  const navigation = loadDocsShellNavigation();
-  const tree = projectFumadocsPageTree(navigation, {
+  const { fumadocsPageTree } = loadDocsStructureSource(undefined, {
     rootName: PROJECT_NAME,
   });
 
@@ -27,7 +25,7 @@ export function FumadocsDocsLayout({ children }: FumadocsDocsLayoutProps) {
       sidebar={{
         hideSearch: true,
       }}
-      tree={tree}
+      tree={fumadocsPageTree}
     >
       {children}
     </DocsLayout>
