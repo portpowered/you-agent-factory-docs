@@ -68,7 +68,6 @@ describe("static export server helpers", () => {
       renameSync(backupDir, exportDir);
     }
   });
-
   test("startStaticExportServer serves an isolated snapshot of out/", async () => {
     if (!existsSync(exportDir)) {
       buildStaticExport();
