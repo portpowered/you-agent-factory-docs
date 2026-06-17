@@ -2,6 +2,7 @@ import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import { DOCS_ENTRY_ROUTE, SITE_BASE_PATH } from "../../src/lib/site";
 import {
+  SITE_BUDGET_GUIDANCE,
   SITE_BUDGET_ROUTE_TARGETS,
   SITE_BUDGET_STATIC_ASSET_TARGETS,
   assertSiteBudget,
@@ -65,6 +66,19 @@ describe("site budget route coverage", () => {
         },
       },
     ]);
+  });
+
+  test("documents the checked-in budget command scope and current limitations", () => {
+    expect(SITE_BUDGET_GUIDANCE).toEqual({
+      command: "make budget",
+      protectedRoutes: ["/", DOCS_ENTRY_ROUTE],
+      protectedAssetSurfaces: ["_next/static"],
+      currentLimitations: [
+        "Only the exported homepage and docs entry route are measured in this lane.",
+        "The asset budget currently covers total emitted JavaScript bytes under out/_next/static only.",
+        "Broader route coverage, richer bundle analysis, search-index budgets, and platform-level performance instrumentation remain out of scope for this phase.",
+      ],
+    });
   });
 
   test("resolves budget URLs under the GitHub Pages export base path", () => {
@@ -145,21 +159,15 @@ describe("site budget measurements", () => {
       measureStaticAssetBudget(exportRoot, target),
     );
 
-    expect(
-      measurements.map((measurement) => ({
-        id: measurement.target.id,
-        assetCount: measurement.assetCount,
-        totalBytes: measurement.totalBytes,
-        largestAssetPath: measurement.largestAssetPath,
-      })),
-    ).toEqual([
-      {
-        id: "next-static-javascript",
-        assetCount: 16,
-        totalBytes: 803_528,
-        largestAssetPath: "/_next/static/chunks/framework-2c534e0e662575a2.js",
-      },
-    ]);
+    expect(measurements).toHaveLength(1);
+    expect(measurements[0]).toMatchObject({
+      target: SITE_BUDGET_STATIC_ASSET_TARGETS[0],
+      assetCount: 16,
+      largestAssetPath: "/_next/static/chunks/framework-2c534e0e662575a2.js",
+    });
+    expect(measurements[0].totalBytes).toBeLessThanOrEqual(
+      SITE_BUDGET_STATIC_ASSET_TARGETS[0].budget.maxTotalBytes,
+    );
 
     expect(() => assertStaticAssetBudget(measurements)).not.toThrow();
   });

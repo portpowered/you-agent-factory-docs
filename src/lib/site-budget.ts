@@ -76,6 +76,13 @@ export type StaticAssetBudgetFailure = {
   message: string;
 };
 
+export type SiteBudgetGuidance = {
+  command: string;
+  protectedRoutes: string[];
+  protectedAssetSurfaces: string[];
+  currentLimitations: string[];
+};
+
 export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
   {
     id: "homepage",
@@ -118,6 +125,21 @@ export const SITE_BUDGET_STATIC_ASSET_TARGETS: StaticAssetBudgetTarget[] = [
     },
   },
 ];
+
+export const SITE_BUDGET_GUIDANCE: SiteBudgetGuidance = {
+  command: "make budget",
+  protectedRoutes: SITE_BUDGET_ROUTE_TARGETS.map(
+    (routeTarget) => routeTarget.route,
+  ),
+  protectedAssetSurfaces: SITE_BUDGET_STATIC_ASSET_TARGETS.map(
+    (target) => target.directory,
+  ),
+  currentLimitations: [
+    "Only the exported homepage and docs entry route are measured in this lane.",
+    "The asset budget currently covers total emitted JavaScript bytes under out/_next/static only.",
+    "Broader route coverage, richer bundle analysis, search-index budgets, and platform-level performance instrumentation remain out of scope for this phase.",
+  ],
+};
 
 export function resolveBudgetRouteUrl(
   baseUrl: string,

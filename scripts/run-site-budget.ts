@@ -1,5 +1,6 @@
 import { join } from "node:path";
 import {
+  SITE_BUDGET_GUIDANCE,
   SITE_BUDGET_ROUTE_TARGETS,
   SITE_BUDGET_STATIC_ASSET_TARGETS,
   assertSiteBudget,
@@ -35,6 +36,18 @@ async function main(): Promise<void> {
 
     assertSiteBudget(measurements);
     assertStaticAssetBudget(staticAssetMeasurements);
+
+    console.log(`Budget command: ${SITE_BUDGET_GUIDANCE.command}`);
+    console.log(
+      `Protected routes: ${SITE_BUDGET_GUIDANCE.protectedRoutes.join(", ")}`,
+    );
+    console.log(
+      `Protected asset surfaces: ${SITE_BUDGET_GUIDANCE.protectedAssetSurfaces.join(", ")}`,
+    );
+    console.log("Current limitations:");
+    for (const limitation of SITE_BUDGET_GUIDANCE.currentLimitations) {
+      console.log(`- ${limitation}`);
+    }
 
     for (const measurement of measurements) {
       console.log(
