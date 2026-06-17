@@ -329,4 +329,73 @@ describe("reconciled baseline browser export", () => {
       await page.close();
     }
   }, 30_000);
+
+  test("quickstart page presents one concrete local docs workflow outcome", async () => {
+    const page = await browser.newPage();
+    const quickstartUrl = new URL(
+      withBasePath("/docs/quickstart"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(quickstartUrl, { waitUntil: "domcontentloaded" });
+
+      expect(
+        await page
+          .getByRole("heading", { level: 1, name: "Quickstart" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Start the local docs site",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText("Run `bun run dev` from the repository root.")
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Use the local URL that Bun prints, then open the `/docs` route inside that running site so you stay in the docs shell instead of relying on homepage copy alone.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Verify the first outcome",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Treat the quickstart as successful when the local docs shell renders the setup sequence and you can move through Introduction, Installation, and Quickstart from the generated sidebar or previous-next navigation.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Continue into deeper guides",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page.getByText("Continue into Getting started").isVisible(),
+      ).toBe(true);
+      expect(
+        await page.getByRole("link", { name: "Core concepts" }).isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
 });

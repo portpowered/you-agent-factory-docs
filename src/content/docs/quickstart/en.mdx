@@ -16,12 +16,22 @@ search.priority: 9
 
 # Quickstart
 
-Run one narrow first workflow after installation so the initial setup path ends in a concrete outcome.
+Run the docs site locally after installation so the first setup path ends in one concrete, reviewer-verifiable outcome.
 
 ## Before you start
 
-Complete the Installation step first so the repository dependencies and command surfaces are available locally.
+Complete the Installation step first so the repository dependencies are installed and `make quality-gate` already passes from the repository root.
 
-## Expected result
+## Start the local docs site
 
-Finish this page ready to continue into deeper guides such as Getting started and Core concepts.
+Run `bun run dev` from the repository root.
+Use the local URL that Bun prints, then open the `/docs` route inside that running site so you stay in the docs shell instead of relying on homepage copy alone.
+
+## Verify the first outcome
+
+Treat the quickstart as successful when the local docs shell renders the setup sequence and you can move through Introduction, Installation, and Quickstart from the generated sidebar or previous-next navigation.
+At that point you have confirmed the supported install path, the generated docs navigation, and the local rendering loop that future docs work builds on.
+
+## Continue into deeper guides
+
+Continue into Getting started for the broader docs baseline, then move on to Core concepts when you want the orchestration model behind the site and factory.

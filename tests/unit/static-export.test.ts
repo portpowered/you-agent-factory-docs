@@ -288,6 +288,39 @@ describe("served static export navigation", () => {
     expect(installationHtml).toContain("Quickstart");
   }, 30_000);
 
+  test("renders the quickstart page with a concrete first local workflow outcome", async () => {
+    const quickstartResponse = await fetchHttp(
+      new URL(withBasePath("/docs/quickstart"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(quickstartResponse.status).toBe(200);
+
+    const quickstartHtml = await quickstartResponse.text();
+
+    expect(quickstartHtml).toContain("Quickstart");
+    expect(quickstartHtml).toContain(
+      "Run the docs site locally after installation so the first setup path ends in one concrete, reviewer-verifiable outcome.",
+    );
+    expect(quickstartHtml).toContain(
+      "Complete the Installation step first so the repository dependencies are installed and `make quality-gate` already passes from the repository root.",
+    );
+    expect(quickstartHtml).toContain(
+      "Run `bun run dev` from the repository root.",
+    );
+    expect(quickstartHtml).toContain(
+      "Treat the quickstart as successful when the local docs shell renders the setup sequence and you can move through Introduction, Installation, and Quickstart from the generated sidebar or previous-next navigation.",
+    );
+    expect(quickstartHtml).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(quickstartHtml).toContain('href="#start-the-local-docs-site"');
+    expect(quickstartHtml).toContain("Verify the first outcome");
+    expect(quickstartHtml).toContain("Continue into deeper guides");
+    expect(quickstartHtml).toContain("Getting started");
+    expect(quickstartHtml).toContain("Core concepts");
+  }, 30_000);
+
   test("renders page-outline navigation only when a page provides sufficient headings", async () => {
     const configurationResponse = await fetchHttp(
       new URL(withBasePath("/docs/configuration"), server.baseUrl),
