@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { withNextTypeArtifactLock } from "../../src/lib/validation/next-type-artifact-lock";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { dryRunMake } from "../helpers/make";
 import { runMakeTarget } from "../helpers/make-target";
@@ -22,7 +21,7 @@ describe("contributor guidance observable outcomes", () => {
   });
 
   test("make check surfaces typecheck and lint verification through one command", () => {
-    const result = withNextTypeArtifactLock(repoRoot, () => {
+    const result = withStaticExportBuildLock(repoRoot, () => {
       cleanNextTypeArtifacts();
       return runMakeTarget("check");
     });
