@@ -33,3 +33,9 @@
 - Structural wrappers that need reusable shell-or-homepage card treatment should use `src/components/ui/card.tsx` and override only the narrow delta, such as muted nested cards or shadow removal.
 - `src/app/globals.css` is now the narrow baseline for shared token projection, base rules, and stateful responsive selectors such as disclosure visibility and animation. Avoid moving shared shell presentation back into large bespoke selector clusters there.
 - Surface wrappers may keep `landing-shell__*` or `docs-shell__*` hooks for tests and targeted overrides, but shared shell chrome should prefer utility classes on the component markup.
+
+## Deferred legacy styling boundary
+
+- The shared shell, homepage CTA groups, docs overview framing, and doc-page outline card now demonstrate the reviewed Tailwind and primitive path in built output through `ui-button` and `ui-card` classes.
+- Remaining docs presentation selectors in `src/app/globals.css` are intentionally limited to surfaces that still need global or structure-aware treatment: `.docs-page__body` for MDX prose flow, `.docs-breadcrumbs__*` and `.docs-progression__*` for generated navigation wrappers, and `.docs-diagram__*` for Mermaid and React Flow containers.
+- Future styling lanes should migrate those deferred selectors only by moving the owning surface onto reusable primitives or semantic utilities; do not re-expand `globals.css` back into the primary contract for shared shell or homepage presentation.

@@ -16,6 +16,7 @@
 - Docs chrome is shared through `src/components/docs/docs-shell.tsx` (`SharedShell`); pass generated navigation and `currentPath` for active docs sidebar state.
 - Primitive and diagram surfaces extend the shared token layer projected from `src/app/globals.css`; prefer semantic utilities (`bg-card`, `bg-muted`, `text-foreground`, `border-border`) over direct landing-only variables.
 - Responsive docs diagrams rely on `min-w-0` shared-shell containers plus `.docs-diagram__*` baseline classes in `src/app/globals.css`; preserve that combination when adjusting docs example layout or diagram rendering.
+- Deferred docs-specific global CSS should stay narrow: keep `.docs-diagram__*`, `.docs-breadcrumbs__*`, `.docs-progression__*`, and `.docs-page__body` only while those generated or third-party-backed surfaces still need structure-aware styling. New docs framing work should start from `DocsContentSurface`, `DocsContentCard`, and primitive utilities instead of extending those legacy selectors.
 
 ## Verification
 

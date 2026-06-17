@@ -116,6 +116,47 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("built export keeps primitive-backed homepage and docs surfaces on the reviewed path", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const introductionUrl = new URL(
+      withBasePath("/docs/introduction"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
+
+      const heroDocsCta = page
+        .getByRole("region", { name: PROJECT_TAGLINE })
+        .getByRole("link", { name: DOCS_CTA_LABEL });
+      const homepageHeroCard = page.getByRole("region", {
+        name: PROJECT_TAGLINE,
+      });
+
+      expect(await heroDocsCta.getAttribute("class")).toContain("ui-button");
+      expect(await homepageHeroCard.getAttribute("class")).toContain("ui-card");
+
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const docsOverviewCard = page.locator(".docs-content-card").first();
+      await docsOverviewCard.waitFor({ state: "visible", timeout: 10_000 });
+      expect(await docsOverviewCard.getAttribute("class")).toContain("ui-card");
+
+      await page.goto(introductionUrl, { waitUntil: "domcontentloaded" });
+
+      const docsOutline = page.getByRole("navigation", {
+        name: enMessages.docs.pageOutlineAriaLabel,
+      });
+      expect(await docsOutline.getAttribute("class")).toContain("ui-card");
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("homepage docs CTA navigates to the docs shell entry route", async () => {
     const page = await browser.newPage();
 
