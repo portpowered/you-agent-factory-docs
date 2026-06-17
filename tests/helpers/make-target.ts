@@ -1,6 +1,5 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
-import { withNextTypeArtifactLock } from "../../src/lib/validation/next-type-artifact-lock";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 
 const projectRoot = join(import.meta.dir, "../..");
@@ -25,11 +24,9 @@ export function runMakeTarget(
     });
 
   const result =
-    target === "build"
+    target === "build" || target === "check"
       ? withStaticExportBuildLock(projectRoot, runTarget)
-      : target === "check"
-        ? withNextTypeArtifactLock(projectRoot, runTarget)
-        : runTarget();
+      : runTarget();
 
   const stdout = result.stdout ?? "";
   const stderr = result.stderr ?? "";

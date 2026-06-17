@@ -32,7 +32,7 @@ describe("contributor guidance observable outcomes", () => {
     expect(result.output.indexOf("typecheck")).toBeLessThan(
       result.output.indexOf("lint"),
     );
-  }, 30_000);
+  }, 120_000);
 
   test("make test runs the automated suite through bun test", () => {
     expect(dryRunMake("test")).toContain("bun test");

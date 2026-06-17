@@ -47,7 +47,7 @@ describe("served static export navigation", () => {
     await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
-  }, 120_000);
+  }, 240_000);
 
   afterAll(() => {
     server?.stop();

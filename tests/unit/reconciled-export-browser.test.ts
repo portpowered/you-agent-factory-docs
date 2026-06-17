@@ -41,7 +41,7 @@ describe("reconciled baseline browser export", () => {
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
     browser = await chromium.launch();
-  }, 120_000);
+  }, 240_000);
 
   afterAll(async () => {
     await browser?.close();
