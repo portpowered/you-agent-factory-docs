@@ -63,6 +63,11 @@ export {
   type LoadDocPageOptions,
 } from "@/lib/content/load-doc-page";
 export {
+  listPublishedPublicContentRouteParams,
+  type ListPublishedPublicContentRouteParamsOptions,
+  type PublicContentRouteParams,
+} from "@/lib/content/public-content-routes";
+export {
   listPublishedContentSlugs,
   loadPublicContentPage,
   type LoadPublicContentPageOptions,
