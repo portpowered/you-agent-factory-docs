@@ -71,6 +71,20 @@ export const enMessages = {
         "The generated public search artifact could not be loaded for this request.",
       resultsTitle: "Results",
       resultsSummary: "Showing generated artifact matches for",
+      resultKinds: {
+        doc: "Documentation",
+        blog: "Blog",
+        glossary: "Glossary",
+        comparison: "Comparison",
+        reference: "Reference",
+      },
+      previewContexts: {
+        summary: "Summary",
+        heading: "Section match",
+        tag: "Tag match",
+        alias: "Alias match",
+        body: "Excerpt",
+      },
     },
   },
 } as const;

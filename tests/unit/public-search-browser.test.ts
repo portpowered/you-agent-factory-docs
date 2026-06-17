@@ -64,6 +64,28 @@ describe("public search browser flow", () => {
       expect(
         await page.locator(".public-search__result-item").first().isVisible(),
       ).toBe(true);
+      expect(await page.getByText("Glossary").first().isVisible()).toBe(true);
+    } finally {
+      await page.unrouteAll({ behavior: "ignoreErrors" });
+      await page.close();
+    }
+  }, 30_000);
+
+  test("shows visible kind and match context for glossary-style discovery", async () => {
+    const page = await openDocsPage();
+
+    try {
+      await page
+        .getByRole("searchbox", { name: "Search query" })
+        .fill("glossary");
+      await page.getByRole("button", { name: "Search" }).click();
+
+      await page
+        .getByRole("link", { name: /Agent \/glossary\/agent/ })
+        .waitFor({ state: "visible", timeout: 5_000 });
+      expect(await page.getByText("Glossary").first().isVisible()).toBe(true);
+      expect(await page.getByText("Tag match").first().isVisible()).toBe(true);
+      expect(await page.getByText("glossary").first().isVisible()).toBe(true);
     } finally {
       await page.unrouteAll({ behavior: "ignoreErrors" });
       await page.close();

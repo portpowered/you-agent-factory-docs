@@ -22,6 +22,7 @@ const FIELD_WEIGHTS = {
 export type PublicSearchMatch = {
   entry: PublicSearchArtifactEntry;
   preview: string;
+  previewContext: "summary" | "heading" | "tag" | "alias" | "body";
   score: number;
   localeScore: number;
 };
@@ -147,28 +148,111 @@ function buildBodyPreview(body: string, query: string): string {
   return `${previewStart > 0 ? "..." : ""}${snippet}${previewEnd < body.length ? "..." : ""}`;
 }
 
+function findPreviewMatch(
+  values: readonly string[],
+  query: string,
+  tokens: readonly string[],
+): string | null {
+  return (
+    values.find((value) =>
+      tokens.some((token) => normalizeSearchText(value).includes(token)),
+    ) ?? null
+  );
+}
+
+function findExactPreviewMatch(
+  values: readonly string[],
+  query: string,
+): string | null {
+  return values.find((value) => normalizeSearchText(value) === query) ?? null;
+}
+
 function buildPreview(
   entry: PublicSearchArtifactEntry,
   query: string,
   tokens: readonly string[],
-): string {
-  const matchesQuery = (value: string): boolean =>
-    tokens.some((token) => normalizeSearchText(value).includes(token));
-
-  if (entry.description.length > 0 && matchesQuery(entry.description)) {
-    return entry.description;
+): Pick<PublicSearchMatch, "preview" | "previewContext"> {
+  if (
+    normalizeSearchText(entry.title) === query &&
+    entry.description.length > 0
+  ) {
+    return {
+      preview: entry.description,
+      previewContext: "summary",
+    };
   }
 
-  const matchingHeading = entry.headings.find(matchesQuery);
+  const exactTagMatch = findExactPreviewMatch(entry.tags, query);
+  if (exactTagMatch) {
+    return {
+      preview: exactTagMatch,
+      previewContext: "tag",
+    };
+  }
+
+  const exactAliasMatch = findExactPreviewMatch(entry.aliases ?? [], query);
+  if (exactAliasMatch) {
+    return {
+      preview: exactAliasMatch,
+      previewContext: "alias",
+    };
+  }
+
+  const exactHeadingMatch = findExactPreviewMatch(entry.headings, query);
+  if (exactHeadingMatch) {
+    return {
+      preview: exactHeadingMatch,
+      previewContext: "heading",
+    };
+  }
+
+  if (
+    entry.description.length > 0 &&
+    tokens.some((token) =>
+      normalizeSearchText(entry.description).includes(token),
+    )
+  ) {
+    return {
+      preview: entry.description,
+      previewContext: "summary",
+    };
+  }
+
+  const matchingHeading = findPreviewMatch(entry.headings, query, tokens);
   if (matchingHeading) {
-    return matchingHeading;
+    return {
+      preview: matchingHeading,
+      previewContext: "heading",
+    };
+  }
+
+  const matchingTag = findPreviewMatch(entry.tags, query, tokens);
+  if (matchingTag) {
+    return {
+      preview: matchingTag,
+      previewContext: "tag",
+    };
+  }
+
+  const matchingAlias = findPreviewMatch(entry.aliases ?? [], query, tokens);
+  if (matchingAlias) {
+    return {
+      preview: matchingAlias,
+      previewContext: "alias",
+    };
   }
 
   if (entry.body.length > 0) {
-    return buildBodyPreview(entry.body, query);
+    return {
+      preview: buildBodyPreview(entry.body, query),
+      previewContext: "body",
+    };
   }
 
-  return entry.description || entry.title;
+  return {
+    preview: entry.description || entry.title,
+    previewContext: "summary",
+  };
 }
 
 function isArtifactEntry(value: unknown): value is PublicSearchArtifactEntry {
@@ -258,9 +342,11 @@ export function searchPublicSearchArtifact(
       continue;
     }
 
+    const preview = buildPreview(entry, normalizedQuery, tokens);
     const match = {
       entry,
-      preview: buildPreview(entry, normalizedQuery, tokens),
+      preview: preview.preview,
+      previewContext: preview.previewContext,
       score,
       localeScore: scoreEntryLocale(entry, activeLocale),
     } satisfies PublicSearchMatch;

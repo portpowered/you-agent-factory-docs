@@ -27,6 +27,44 @@ type ResultLinkLabelProps = {
   title: string;
 };
 
+function getResultKindLabel(
+  kind: ReturnType<typeof searchPublicSearchArtifact>[number]["entry"]["kind"],
+  t: ReturnType<typeof useMessages>["t"],
+): string {
+  switch (kind) {
+    case "doc":
+      return t("docs.search.resultKinds.doc");
+    case "blog":
+      return t("docs.search.resultKinds.blog");
+    case "glossary":
+      return t("docs.search.resultKinds.glossary");
+    case "comparison":
+      return t("docs.search.resultKinds.comparison");
+    case "reference":
+      return t("docs.search.resultKinds.reference");
+  }
+}
+
+function getPreviewContextLabel(
+  previewContext: ReturnType<
+    typeof searchPublicSearchArtifact
+  >[number]["previewContext"],
+  t: ReturnType<typeof useMessages>["t"],
+): string {
+  switch (previewContext) {
+    case "summary":
+      return t("docs.search.previewContexts.summary");
+    case "heading":
+      return t("docs.search.previewContexts.heading");
+    case "tag":
+      return t("docs.search.previewContexts.tag");
+    case "alias":
+      return t("docs.search.previewContexts.alias");
+    case "body":
+      return t("docs.search.previewContexts.body");
+  }
+}
+
 function ResultLinkLabel({ href, title }: ResultLinkLabelProps) {
   return (
     <span className="public-search__result-link-label">
@@ -200,6 +238,14 @@ export function PublicSearchPanel() {
                   className="public-search__result-item"
                   key={result.entry.id}
                 >
+                  <div className="public-search__result-meta">
+                    <span className="public-search__result-kind">
+                      {getResultKindLabel(result.entry.kind, t)}
+                    </span>
+                    <span className="public-search__result-context">
+                      {getPreviewContextLabel(result.previewContext, t)}
+                    </span>
+                  </div>
                   <a
                     className="public-search__result-link"
                     href={result.entry.url}

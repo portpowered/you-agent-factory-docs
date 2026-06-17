@@ -116,11 +116,30 @@ describe("public search helpers", () => {
     expect(results).toHaveLength(3);
     expect(results[0]?.entry.id).toBe("glossary/agent@en");
     expect(results[0]?.preview).toContain("Definition of an AI agent");
+    expect(results[0]?.previewContext).toBe("summary");
     expect(results.map((result) => result.entry.id)).toEqual([
       "glossary/agent@en",
       "reference/agent-loops@en",
       "blog/introducing-factory@en",
     ]);
+  });
+
+  test("uses tag or alias context when those fields explain the match best", () => {
+    const glossaryResults = searchPublicSearchArtifact(artifact, "glossary");
+    const launchResults = searchPublicSearchArtifact(
+      artifact,
+      "factory launch",
+    );
+
+    expect(glossaryResults[0]).toMatchObject({
+      preview: "glossary",
+      previewContext: "tag",
+    });
+    expect(launchResults[0]).toMatchObject({
+      entry: { id: "blog/introducing-factory@en" },
+      preview: "factory launch",
+      previewContext: "alias",
+    });
   });
 
   test("prefers the active locale variant for a canonical page", () => {

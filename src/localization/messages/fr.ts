@@ -45,6 +45,15 @@ export const frMessages: PartialSharedShellMessages = {
     search: {
       title: "Rechercher dans l artefact public genere",
       submitLabel: "Rechercher",
+      resultKinds: {
+        doc: "Documentation",
+        glossary: "Glossaire",
+        reference: "Reference",
+      },
+      previewContexts: {
+        heading: "Section correspondante",
+        tag: "Tag correspondant",
+      },
     },
   },
 };

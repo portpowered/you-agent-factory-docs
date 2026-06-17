@@ -106,6 +106,8 @@ describe("public search panel", () => {
         "Definition of an AI agent in the factory documentation.",
       ),
     ).toBeTruthy();
+    expect(screen.getByText("Glossary")).toBeTruthy();
+    expect(screen.getByText("Summary")).toBeTruthy();
   });
 
   test("renders a loading state while the artifact request is pending", async () => {
@@ -155,6 +157,20 @@ describe("public search panel", () => {
 
     expect(await screen.findByText("Commencer")).toBeTruthy();
     expect(screen.queryByText("Getting started")).toBeNull();
+    expect(screen.getByText("Documentation")).toBeTruthy();
+  });
+
+  test("renders tag match context for glossary-style discovery queries", async () => {
+    globalThis.fetch = mock(async () =>
+      createArtifactResponse(),
+    ) as unknown as typeof fetch;
+
+    renderWithLocalization(<PublicSearchPanel />);
+
+    submitQuery("glossary");
+
+    expect(await screen.findByText("Tag match")).toBeTruthy();
+    expect(screen.getAllByText("glossary")).toHaveLength(2);
   });
 
   test("renders an error state when the artifact cannot be loaded", async () => {
