@@ -310,4 +310,27 @@ describe("served static export navigation", () => {
     expect(reviewHtml).toContain("review summary");
     expect(reviewHtml).toContain('aria-current="page"');
   }, 30_000);
+
+  test("serves the generated Release Readiness Factory use-case page through the docs shell", async () => {
+    const readinessResponse = await fetchHttp(
+      new URL(withBasePath("/docs/release-readiness-factory"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(readinessResponse.status).toBe(200);
+
+    const readinessHtml = await readinessResponse.text();
+
+    expect(readinessHtml).toContain("Release Readiness Factory");
+    expect(readinessHtml).toContain("Use cases");
+    expect(readinessHtml).toContain("PR Review Factory");
+    expect(readinessHtml).toContain("What this workflow is for");
+    expect(readinessHtml).toContain("Who participates");
+    expect(readinessHtml).toContain("Main workflow stages");
+    expect(readinessHtml).toContain("Inputs and outputs");
+    expect(readinessHtml).toContain("Why engineering teams use it");
+    expect(readinessHtml).toContain("release candidate");
+    expect(readinessHtml).toContain("readiness summary");
+    expect(readinessHtml).toContain('aria-current="page"');
+  }, 30_000);
 });

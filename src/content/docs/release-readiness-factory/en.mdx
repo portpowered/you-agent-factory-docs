@@ -19,6 +19,34 @@ search.priority: 5
 
 Navigate this workflow example from the generated docs shell to inspect a concrete launch-readiness journey.
 
-## What this page covers
+## What this workflow is for
 
-This launch-use-case page anchors the Release Readiness Factory route inside the existing docs navigation so reviewers can reach it through the standard shell.
+Release Readiness Factory turns a pending ship decision into a repeatable readiness review that a team can inspect before announcing or deploying a release. A release candidate, its changelog, the verification evidence around it, and the remaining known risks enter the workflow so the team can decide from current evidence instead of from scattered status updates.
+
+## Who participates
+
+The workflow usually involves the release owner, the engineers responsible for the changed services, one or more agents that gather readiness evidence, and a human approver such as an engineering lead or release manager. The human approver still decides whether the release can move forward, while the factory assembles the facts, highlights gaps, and records what still blocks shipment.
+
+## What enters the workflow
+
+Work typically enters when a team has a release candidate ready or when a previously blocked release needs another readiness pass. The main inputs are the planned release scope, linked pull requests or changelog entries, the required quality checks, deployment notes, and any open issues or approvals that affect the launch decision.
+
+## Main workflow stages
+
+The workflow starts by loading the release scope and gathering the evidence that should already exist for a candidate ship. That usually includes build status, test results, changelog or release-note entries, linked tickets, and the list of environments or services affected by the release.
+
+The next stage compares that evidence against the release policy the team expects to enforce. The workflow checks whether required validations completed, whether any blocking regressions or unresolved incidents remain, and whether the release notes and operational context are complete enough for reviewers to understand what is about to ship.
+
+The final stage is the approval handoff. When the evidence is complete, the workflow leaves a concise readiness summary that tells reviewers what passed, what risks still exist, and which approvals were captured. When the release is not ready, it reports the missing evidence or blocking issues explicitly so the next pass can focus on concrete gaps instead of repeating the entire checklist by hand.
+
+## Readiness gates that matter
+
+The key gates are whether the release candidate passed the required checks, whether known risks are documented and accepted, and whether the right human approvals are present before shipping. A reviewer should expect the workflow to make blocking gaps obvious, distinguish them from informational notes, and keep the go or no-go decision tied to evidence rather than release pressure.
+
+## Inputs and outputs
+
+The practical inputs are a release candidate, release notes or changelog entries, test and build signals, deployment context, and any approvals or exceptions already recorded for the ship window. The useful outputs are a readiness summary, a list of blocking issues or missing approvals, and a clearer release decision that a human lead can approve, postpone, or send back for follow-up.
+
+## Why engineering teams use it
+
+Engineering teams use Release Readiness Factory to make launch decisions more consistent without turning them into a black box. It reduces the time spent chasing status across tools, keeps approval points explicit, and leaves a durable record of what evidence supported the release decision before anything shipped.
