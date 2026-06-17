@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import {
   existsSync,
-  mkdirSync,
+  readFileSync,
   renameSync,
   rmSync,
   writeFileSync,
@@ -9,12 +9,14 @@ import {
 import { join } from "node:path";
 import { SITE_BASE_PATH } from "../../src/lib/site";
 import { STATIC_EXPORT_SKIP_BUILD_ENV } from "../../src/lib/validation/static-export";
+import { fetchHttp } from "../helpers/http";
 import {
   buildStaticExport,
-  findAvailableLocalPort,
   shouldSkipStaticExportBuild,
   startStaticExportServer,
+  waitForStaticExportServer,
 } from "../helpers/static-export-server";
+import { getTestPort } from "../helpers/test-port";
 
 const projectRoot = join(import.meta.dir, "../..");
 const exportDir = join(projectRoot, "out");
@@ -46,7 +48,7 @@ describe("static export server helpers", () => {
     process.env[STATIC_EXPORT_SKIP_BUILD_ENV] = "1";
 
     expect(() => buildStaticExport()).not.toThrow();
-  });
+  }, 60_000);
 
   test("buildStaticExport fails fast when skip is set but out/ is missing", () => {
     const backupDir = join(projectRoot, "out.skip-build-test-backup");
@@ -67,34 +69,42 @@ describe("static export server helpers", () => {
     }
   });
 
-  test("findAvailableLocalPort returns a positive localhost port", async () => {
-    expect(await findAvailableLocalPort()).toBeGreaterThan(0);
-  });
-
-  test("startStaticExportServer returns a base-path server handle", async () => {
-    const homepageHtmlPath = join(exportDir, "index.html");
-    const fallbackHomepageHtml =
-      "<!doctype html><html><head><title>Snapshot fallback</title></head><body><main>Snapshot fallback body</main></body></html>";
-    let createdFallbackExport = false;
-
+  test("startStaticExportServer serves an isolated snapshot of out/", async () => {
     if (!existsSync(exportDir)) {
-      mkdirSync(exportDir, { recursive: true });
-      writeFileSync(homepageHtmlPath, fallbackHomepageHtml, "utf8");
-      createdFallbackExport = true;
+      buildStaticExport();
     }
 
-    const port = await findAvailableLocalPort();
+    const homepageHtmlPath = join(exportDir, "index.html");
+    const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
+    const port = getTestPort(3791, "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT");
     const server = startStaticExportServer(port);
 
-    try {
-      expect(server.baseUrl).toBe(`http://127.0.0.1:${port}${SITE_BASE_PATH}/`);
-      expect(typeof server.stop).toBe("function");
-    } finally {
-      server.stop();
+    await waitForStaticExportServer(server.baseUrl);
 
-      if (createdFallbackExport) {
-        rmSync(exportDir, { recursive: true, force: true });
-      }
+    try {
+      writeFileSync(
+        homepageHtmlPath,
+        "<!doctype html><title>mutated</title>",
+        "utf8",
+      );
+
+      const response = await fetchHttp(
+        `http://127.0.0.1:${port}${SITE_BASE_PATH}/`,
+        {
+          signal: AbortSignal.timeout(10_000),
+        },
+      );
+      const servedHtml = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(servedHtml).toContain("<title>You Agent Factory</title>");
+      expect(servedHtml).toContain(
+        "An open-source, engineering-native platform for turning recurring development work into reusable, inspectable AI agent workflows.",
+      );
+      expect(servedHtml).not.toContain("<title>mutated</title>");
+    } finally {
+      writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
+      server.stop();
     }
-  });
+  }, 60_000);
 });

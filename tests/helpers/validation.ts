@@ -34,7 +34,8 @@ export function runValidationScript(
     | "validate:localization"
     | "validate:content"
     | "validate:accessibility"
-    | "validate:static-export",
+    | "validate:static-export"
+    | "validate:search-index",
   fixture?: EarlyGateValidationFixture,
   options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {

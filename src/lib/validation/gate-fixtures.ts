@@ -83,6 +83,15 @@ section: guides
     ...getStaticExportConfig(),
     output: "standalone",
   }),
+  "broken-search-artifact": (): string =>
+    `${JSON.stringify(
+      {
+        version: 1,
+        entries: [],
+      },
+      null,
+      2,
+    )}\n`,
 } as const;
 
 export type EarlyGateValidationFixture =
@@ -159,4 +168,13 @@ export function resolveStaticExportConfigForGate(): StaticExportConfig {
   }
 
   return getStaticExportConfig();
+}
+
+export function resolveSearchArtifactSourceForGate(): string | null {
+  const fixture = readEarlyGateValidationFixture();
+  if (fixture === "broken-search-artifact") {
+    return EARLY_GATE_VALIDATION_FIXTURES["broken-search-artifact"]();
+  }
+
+  return null;
 }

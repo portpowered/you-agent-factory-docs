@@ -1,4 +1,4 @@
-.PHONY: setup check test build budget quality-gate component-coverage-boundary component-coverage
+.PHONY: setup check test build budget quality-gate validate-search-index component-coverage-boundary component-coverage
 
 setup:
 	bun install
@@ -19,6 +19,9 @@ budget:
 
 quality-gate:
 	bun run quality-gate
+
+validate-search-index:
+	bun run validate:search-index
 
 component-coverage-boundary:
 	bun run component-coverage:boundary

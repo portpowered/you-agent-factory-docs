@@ -12,15 +12,17 @@ Prerequisites: [Bun](https://bun.sh) 1.1 or newer.
 - **`make setup`** — install or refresh dependencies after cloning or when `package.json` changes. Runs `bun install` from the repository root.
 - **`make quality-gate`** — run the enforced early foundation gate. Executes typecheck, lint, localization validation, content validation, focused accessibility checks, static export correctness, and the remaining foundation unit tests. Fails fast on the first failing check.
 - **`make budget`** — build the export, serve `out/` under the GitHub Pages base path on an available localhost port, then enforce the checked-in homepage/docs route budgets plus the `_next/static` JavaScript payload budget.
+- **`make validate-search-index`** — run the dedicated generated-search-data contract check. Compares the checked-in `public/search/public-search-index.json` artifact against a fresh projection from normalized localized search documents and fails with regeneration guidance when they drift.
 
-`make check`, `make test`, and `make build` remain narrower helper targets for partial verification. They are not substitutes for `make quality-gate` or `make budget` when you need the full public-site review path.
+`make check`, `make test`, `make build`, `make budget`, and `make validate-search-index` remain narrower helper targets for partial verification. `make validate-search-index` is the smallest direct maintainer path for search-contract work, while `make quality-gate` reuses the same validation seam for the broader review-ready gate.
 
-**Deferred to later Phase 8 work**: broad package coverage policy enforcement, full search-index validation, launch-content completeness enforcement, and broader route/performance instrumentation beyond the current narrow budget gate.
+**Deferred to later Phase 8 work** (not enforced by the early gate): deploy-on-main automation, Lighthouse performance and accessibility budgets, broad package coverage policy enforcement, launch-content completeness enforcement, and broader route/performance instrumentation beyond the current narrow budget gate.
 
 ```bash
 make setup         # install dependencies with Bun
 make quality-gate  # early foundation gate
 make budget        # verify the exported homepage/docs routes and the checked-in static JS budget
+make validate-search-index  # verify the generated search contract directly
 ```
 
 ## Local development server

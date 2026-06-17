@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "blog/introducing-factory@en",
+      "canonicalId": "blog/introducing-factory",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "blog",
+      "url": "/blog/introducing-factory",
+      "title": "Introducing You Agent Factory",
+      "description": "",
+      "headings": [
+        "Introducing You Agent Factory"
+      ],
+      "body": "Introducing You Agent Factory Starter blog content for the shared canonical model.",
+      "tags": [
+        "announcement"
+      ],
+      "section": "updates",
+      "searchPriority": 5
+    },
+    {
+      "id": "comparison/vs-n8n@en",
+      "canonicalId": "comparison/vs-n8n",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "comparison",
+      "url": "/comparisons/vs-n8n",
+      "title": "You Agent Factory vs n8n",
+      "description": "",
+      "headings": [
+        "You Agent Factory vs n8n"
+      ],
+      "body": "You Agent Factory vs n8n Starter comparison content for the canonical model.",
+      "tags": [
+        "comparison"
+      ],
+      "section": "comparisons",
+      "searchPriority": 6
+    },
+    {
+      "id": "doc/concepts@en",
+      "canonicalId": "doc/concepts",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/concepts",
+      "title": "Core concepts",
+      "description": "",
+      "headings": [
+        "Core concepts"
+      ],
+      "body": "Core concepts Learn the orchestration concepts that shape how You Agent Factory workflows are designed and run.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 9
+    },
+    {
+      "id": "doc/configuration@en",
+      "canonicalId": "doc/configuration",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/configuration",
+      "title": "Configuration",
+      "description": "",
+      "headings": [
+        "Configuration"
+      ],
+      "body": "Configuration Configure factory inputs, approval gates, and workflow templates from the project baseline.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 7
+    },
+    {
+      "id": "doc/getting-started@en",
+      "canonicalId": "doc/getting-started",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en",
+        "fr"
+      ],
+      "kind": "doc",
+      "url": "/docs/getting-started",
+      "title": "Getting started",
+      "description": "",
+      "headings": [
+        "Getting started",
+        "Prerequisites",
+        "Next steps"
+      ],
+      "body": "Getting started Starter documentation content that proves the canonical content model. Prerequisites Confirm the repository worktree is on the docs navigation depth branch and that canonical content fixtures load without validation errors. Next steps Continue through Core concepts to follow the generated previous-next progression path.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 10
+    },
+    {
+      "id": "doc/getting-started@fr",
+      "canonicalId": "doc/getting-started",
+      "locale": "fr",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en",
+        "fr"
+      ],
+      "kind": "doc",
+      "url": "/docs/getting-started",
+      "title": "Commencer",
+      "description": "",
+      "headings": [
+        "Commencer"
+      ],
+      "body": "Commencer Contenu de documentation de démarrage qui prouve l'identité de contenu localisé partagée.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 10
+    },
+    {
+      "id": "doc/installation@en",
+      "canonicalId": "doc/installation",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/installation",
+      "title": "Installation",
+      "description": "",
+      "headings": [
+        "Installation"
+      ],
+      "body": "Installation Install You Agent Factory locally and verify the contributor command path before extending workflows.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 8
+    },
+    {
+      "id": "glossary/agent@en",
+      "canonicalId": "glossary/agent",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "glossary",
+      "url": "/glossary/agent",
+      "title": "Agent",
+      "description": "",
+      "headings": [
+        "Agent"
+      ],
+      "body": "Agent Starter glossary entry for canonical content validation.",
+      "tags": [
+        "glossary"
+      ],
+      "section": "terms",
+      "searchPriority": 8
+    },
+    {
+      "id": "reference/loop-engineering@en",
+      "canonicalId": "reference/loop-engineering",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "reference",
+      "url": "/references/loop-engineering",
+      "title": "Loop engineering",
+      "description": "",
+      "headings": [
+        "Loop engineering"
+      ],
+      "body": "Loop engineering Starter reference content for canonical record generation.",
+      "tags": [
+        "reference"
+      ],
+      "section": "references",
+      "searchPriority": 7
+    }
+  ]
+}
