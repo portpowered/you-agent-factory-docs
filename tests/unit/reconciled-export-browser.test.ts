@@ -215,7 +215,7 @@ describe("reconciled baseline browser export", () => {
       ).toBe(true);
       expect(
         await page
-          .getByRole("navigation", { name: "Setup" })
+          .getByRole("navigation", { name: "Guides" })
           .getByRole("link", { name: "Configuration" })
           .isVisible(),
       ).toBe(true);
@@ -275,6 +275,62 @@ describe("reconciled baseline browser export", () => {
           .getByRole("heading", {
             level: 2,
             name: "How the CLI and configuration connect",
+          })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("docs shell exposes the post-setup concepts path coherently", async () => {
+    const page = await browser.newPage();
+    const cliUrl = new URL(
+      withBasePath("/docs/cli"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(cliUrl, { waitUntil: "domcontentloaded" });
+
+      const guidesNav = page.getByRole("navigation", { name: "Guides" });
+      expect(
+        await guidesNav.getByRole("link", { name: "CLI overview" }).isVisible(),
+      ).toBe(true);
+      expect(
+        await guidesNav
+          .getByRole("link", { name: "Configuration" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await guidesNav
+          .getByRole("link", { name: "Workflow concepts" })
+          .isVisible(),
+      ).toBe(true);
+
+      const progression = page.getByRole("navigation", {
+        name: enMessages.docs.progressionAriaLabel,
+      });
+      const nextConfigurationLink = progression.getByRole("link", {
+        name: `${enMessages.docs.nextPagePrefix} Configuration`,
+      });
+
+      expect(await nextConfigurationLink.isVisible()).toBe(true);
+      await nextConfigurationLink.click();
+      await page.waitForURL(
+        new RegExp(
+          `${withBasePath("/docs/configuration").replace(/\//g, "\\/")}/?$`,
+        ),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
           })
           .isVisible(),
       ).toBe(true);

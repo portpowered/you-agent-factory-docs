@@ -18,6 +18,7 @@
 ## Docs navigation depth
 
 - Starter docs depth is authored under `src/content/docs/{slug}/en.mdx`; section and order frontmatter drive generated left-navigation grouping.
+- First-adoption learning paths should be encoded in canonical frontmatter order, not hard-coded shell links; for this lane the post-setup sequence is `Getting started -> CLI overview -> Configuration -> Workflow concepts`.
 - Route identity for launch-lane docs still comes from the folder slug, while the rendered shell H1 and sidebar label come from frontmatter title or `navigationTitle`, so copy renames do not require route changes.
 - The current doc body parser only projects ATX headings and paragraph blocks into the shell. Keep launch-lane docs readable with headings plus paragraphs unless the parser grows structured support for lists, code blocks, or richer MDX elements.
 - `loadDocsShellNavigation()` loads canonical records and projects navigation for `DocsShell` on both `/docs` and `/docs/[slug]` routes.

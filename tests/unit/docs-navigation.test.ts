@@ -354,10 +354,24 @@ section: guides
             },
           },
           {
+            canonicalId: "doc/configuration",
+            label: "Configuration",
+            href: "/docs/configuration",
+            order: 3,
+            localeProjection: {
+              canonicalPageId: "doc/configuration",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
             canonicalId: "doc/concepts",
-            label: "Core concepts",
+            label: "Workflow concepts",
             href: "/docs/concepts",
-            order: 2,
+            order: 4,
             localeProjection: {
               canonicalPageId: "doc/concepts",
               canonicalLocale: "en",
@@ -370,6 +384,29 @@ section: guides
         ],
       },
       {
+<<<<<<< HEAD
+=======
+        id: "setup",
+        label: "Setup",
+        pages: [
+          {
+            canonicalId: "doc/installation",
+            label: "Installation",
+            href: "/docs/installation",
+            order: 1,
+            localeProjection: {
+              canonicalPageId: "doc/installation",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+        ],
+      },
+      {
+>>>>>>> 3621547 (feat: [cli-config-workflow-concepts-foundation-004] - [Generated docs navigation exposes the post-setup concepts path coherently])
         id: "examples",
         label: "Examples",
         pages: [
@@ -423,7 +460,11 @@ section: guides
         (section) =>
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
+<<<<<<< HEAD
             "doc/introduction,doc/installation,doc/quickstart,doc/configuration",
+=======
+            "doc/installation",
+>>>>>>> 3621547 (feat: [cli-config-workflow-concepts-foundation-004] - [Generated docs navigation exposes the post-setup concepts path coherently])
       ),
     ).toBe(true);
     expect(
@@ -431,7 +472,7 @@ section: guides
         (section) =>
           section.id === "guides" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/getting-started,doc/cli,doc/concepts",
+            "doc/getting-started,doc/cli,doc/configuration,doc/concepts",
       ),
     ).toBe(true);
   });
@@ -516,6 +557,13 @@ describe("docs progression projection", () => {
   const multiSectionNavigation = projectDocsShellNavigation([
     createDocRecord(),
     createDocRecord({
+      id: "doc/cli",
+      slug: "cli",
+      routePath: "/docs/cli",
+      navigationTitle: "CLI overview",
+      order: 2,
+    }),
+    createDocRecord({
       id: "doc/installation",
       slug: "installation",
       routePath: "/docs/installation",
@@ -536,7 +584,10 @@ describe("docs progression projection", () => {
       slug: "configuration",
       routePath: "/docs/configuration",
       navigationTitle: "Configuration",
+<<<<<<< HEAD
       section: "setup",
+=======
+>>>>>>> 3621547 (feat: [cli-config-workflow-concepts-foundation-004] - [Generated docs navigation exposes the post-setup concepts path coherently])
       order: 3,
     }),
     createDocRecord({
@@ -545,7 +596,7 @@ describe("docs progression projection", () => {
       routePath: "/docs/concepts",
       section: "guides",
       navigationTitle: "Core concepts",
-      order: 2,
+      order: 4,
     }),
     createDocRecord({
       id: "doc/getting-started",
@@ -577,8 +628,8 @@ describe("docs progression projection", () => {
       }),
     ).toEqual({
       previous: {
-        label: "Getting started",
-        href: "/docs/getting-started",
+        label: "Configuration",
+        href: "/docs/configuration",
       },
       next: undefined,
     });
@@ -591,8 +642,28 @@ describe("docs progression projection", () => {
       }),
     ).toEqual({
       next: {
+<<<<<<< HEAD
         label: "Installation",
         href: "/docs/installation",
+=======
+        label: "CLI overview",
+        href: "/docs/cli",
+      },
+    });
+
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs/cli",
+      }),
+    ).toEqual({
+      previous: {
+        label: "Getting started",
+        href: "/docs/getting-started",
+      },
+      next: {
+        label: "Configuration",
+        href: "/docs/configuration",
+>>>>>>> 3621547 (feat: [cli-config-workflow-concepts-foundation-004] - [Generated docs navigation exposes the post-setup concepts path coherently])
       },
     });
 
@@ -602,8 +673,28 @@ describe("docs progression projection", () => {
       }),
     ).toEqual({
       previous: {
+<<<<<<< HEAD
         label: "Getting started",
         href: "/docs/getting-started",
+=======
+        label: "CLI overview",
+        href: "/docs/cli",
+      },
+      next: {
+        label: "Core concepts",
+        href: "/docs/concepts",
+      },
+    });
+
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs/installation",
+      }),
+    ).toEqual({
+      previous: {
+        label: "Core concepts",
+        href: "/docs/concepts",
+>>>>>>> 3621547 (feat: [cli-config-workflow-concepts-foundation-004] - [Generated docs navigation exposes the post-setup concepts path coherently])
       },
       next: undefined,
     });

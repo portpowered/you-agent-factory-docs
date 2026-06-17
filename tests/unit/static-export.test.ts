@@ -174,9 +174,9 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("Getting started");
     expect(docsHtml).toContain("Quickstart");
     expect(docsHtml).toContain("CLI overview");
-    expect(docsHtml).toContain("Core concepts");
-    expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Configuration");
+    expect(docsHtml).toContain("Workflow concepts");
+    expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Guides");
     expect(docsHtml).toContain("Setup");
     expect(new RegExp(`href="${introductionPath}/?"`).test(docsHtml)).toBe(
@@ -471,7 +471,10 @@ describe("served static export navigation", () => {
       /\//g,
       "\\/",
     );
-    const conceptsPath = withBasePath("/docs/concepts").replace(/\//g, "\\/");
+    const configurationPath = withBasePath("/docs/configuration").replace(
+      /\//g,
+      "\\/",
+    );
 
     expect(cliHtml).toContain("CLI overview");
     expect(
@@ -481,12 +484,12 @@ describe("served static export navigation", () => {
     ).toBe(true);
     expect(
       new RegExp(
-        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
+        `<a[^>]*href="(${configurationPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${configurationPath}/?)"`,
       ).test(cliHtml),
     ).toBe(true);
     expect(cliHtml).toContain(enMessages.docs.previousPagePrefix);
     expect(cliHtml).toContain("Getting started");
     expect(cliHtml).toContain(enMessages.docs.nextPagePrefix);
-    expect(cliHtml).toContain("Core concepts");
+    expect(cliHtml).toContain("Configuration");
   }, 30_000);
 });
