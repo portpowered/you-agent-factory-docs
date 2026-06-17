@@ -52,4 +52,18 @@ describe("static export build lock", () => {
     releaseStaticExportBuildLock(projectRoot);
     expect(existsSync(lockDir)).toBe(false);
   });
+
+  test("nested lock acquisition by the same process is reentrant", () => {
+    withStaticExportBuildLock(projectRoot, () => {
+      expect(existsSync(lockDir)).toBe(true);
+
+      withStaticExportBuildLock(projectRoot, () => {
+        expect(existsSync(lockDir)).toBe(true);
+      });
+
+      expect(existsSync(lockDir)).toBe(true);
+    });
+
+    expect(existsSync(lockDir)).toBe(false);
+  });
 });

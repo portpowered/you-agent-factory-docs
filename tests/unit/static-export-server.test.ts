@@ -1,11 +1,22 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { existsSync, renameSync, rmSync } from "node:fs";
+import {
+  existsSync,
+  readFileSync,
+  renameSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import { join } from "node:path";
+import { SITE_BASE_PATH } from "../../src/lib/site";
 import { STATIC_EXPORT_SKIP_BUILD_ENV } from "../../src/lib/validation/static-export";
+import { fetchHttp } from "../helpers/http";
 import {
   buildStaticExport,
   shouldSkipStaticExportBuild,
+  startStaticExportServer,
+  waitForStaticExportServer,
 } from "../helpers/static-export-server";
+import { getTestPort } from "../helpers/test-port";
 
 const projectRoot = join(import.meta.dir, "../..");
 const exportDir = join(projectRoot, "out");
@@ -55,6 +66,42 @@ describe("static export server helpers", () => {
 
     if (movedExport) {
       renameSync(backupDir, exportDir);
+    }
+  });
+
+  test("startStaticExportServer serves an isolated snapshot of out/", async () => {
+    if (!existsSync(exportDir)) {
+      buildStaticExport();
+    }
+
+    const homepageHtmlPath = join(exportDir, "index.html");
+    const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
+    const port = getTestPort(3791, "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT");
+    const server = startStaticExportServer(port);
+
+    await waitForStaticExportServer(server.baseUrl);
+
+    try {
+      writeFileSync(
+        homepageHtmlPath,
+        "<!doctype html><title>mutated</title>",
+        "utf8",
+      );
+
+      const response = await fetchHttp(
+        `http://127.0.0.1:${port}${SITE_BASE_PATH}/`,
+        {
+          signal: AbortSignal.timeout(10_000),
+        },
+      );
+      const servedHtml = await response.text();
+
+      expect(response.status).toBe(200);
+      expect(servedHtml).toContain(originalHomepageHtml.slice(0, 120));
+      expect(servedHtml).not.toContain("<title>mutated</title>");
+    } finally {
+      writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
+      server.stop();
     }
   });
 });

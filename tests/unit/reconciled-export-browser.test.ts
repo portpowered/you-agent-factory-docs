@@ -1,6 +1,10 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { type Browser, type Page, chromium } from "@playwright/test";
-import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
+import {
+  DOCS_ENTRY_ROUTE,
+  PROJECT_NAME,
+  PROJECT_TAGLINE,
+} from "../../src/lib/project";
 import {
   DOCS_CTA_LABEL,
   DOCS_SHELL_FRAMING_TEXT,
@@ -44,19 +48,16 @@ describe("reconciled baseline browser export", () => {
 
       expect(
         await page
-          .getByRole("heading", { level: 1, name: PROJECT_NAME })
+          .getByRole("heading", { level: 1, name: PROJECT_TAGLINE })
           .isVisible(),
       ).toBe(true);
       expect(await page.getByText(LANDING_VALUE_STATEMENT).isVisible()).toBe(
         true,
       );
 
-      const heroDocsCta = page
-        .getByRole("main")
-        .getByRole("link", { name: DOCS_CTA_LABEL });
-      const heroGithubCta = page
-        .getByRole("main")
-        .getByRole("link", { name: GITHUB_CTA_LABEL });
+      const hero = page.getByRole("region", { name: PROJECT_TAGLINE });
+      const heroDocsCta = hero.getByRole("link", { name: DOCS_CTA_LABEL });
+      const heroGithubCta = hero.getByRole("link", { name: GITHUB_CTA_LABEL });
 
       expect(await heroDocsCta.isVisible()).toBe(true);
       expect(await heroGithubCta.isVisible()).toBe(true);
@@ -105,7 +106,7 @@ describe("reconciled baseline browser export", () => {
     try {
       await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
       await page
-        .getByRole("main")
+        .getByRole("region", { name: PROJECT_TAGLINE })
         .getByRole("link", { name: DOCS_CTA_LABEL })
         .click();
 
@@ -146,7 +147,7 @@ describe("reconciled baseline browser export", () => {
 
       expect(
         await page
-          .getByRole("heading", { level: 1, name: PROJECT_NAME })
+          .getByRole("heading", { level: 1, name: PROJECT_TAGLINE })
           .isVisible(),
       ).toBe(true);
     } finally {
@@ -163,12 +164,12 @@ describe("reconciled baseline browser export", () => {
       await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
       expect(
         await page
-          .getByRole("heading", { level: 1, name: PROJECT_NAME })
+          .getByRole("heading", { level: 1, name: PROJECT_TAGLINE })
           .isVisible(),
       ).toBe(true);
 
       await page
-        .getByRole("main")
+        .getByRole("region", { name: PROJECT_TAGLINE })
         .getByRole("link", { name: DOCS_CTA_LABEL })
         .click();
       await page.waitForURL(

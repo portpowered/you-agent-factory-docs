@@ -1,6 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
-import { DOCS_ENTRY_ROUTE, PROJECT_NAME } from "../../src/lib/project";
+import { DOCS_ENTRY_ROUTE, PROJECT_TAGLINE } from "../../src/lib/project";
 import { DOCS_CTA_LABEL, DOCS_SHELL_TITLE } from "../../src/lib/shell";
 import {
   RESPONSIVE_BREAKPOINTS_PX,
@@ -21,9 +21,9 @@ describe("default baseline website foundation", () => {
     renderWithLocalization(<HomePage />);
 
     expect(
-      screen.getByRole("heading", { level: 1, name: PROJECT_NAME }),
+      screen.getByRole("heading", { level: 1, name: PROJECT_TAGLINE }),
     ).toBeTruthy();
-    const hero = screen.getByRole("main");
+    const hero = screen.getByRole("region", { name: PROJECT_TAGLINE });
     const docsCta = within(hero).getByRole("link", { name: DOCS_CTA_LABEL });
 
     expect(docsCta.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);

@@ -1,7 +1,7 @@
 /** Default-locale shared shell messages for homepage and docs entry surfaces. */
 export const enMessages = {
   common: {
-    githubCta: "View on GitHub",
+    githubCta: "Try on GitHub",
     getStarted: "Get started",
     home: "Home",
   },

@@ -64,7 +64,7 @@ export type SharedShellSurface = "home" | "docs";
 export const GITHUB_REPO_URL =
   "https://github.com/portpowered/you-agent-factory";
 
-export const GITHUB_CTA_LABEL = "View on GitHub";
+export const GITHUB_CTA_LABEL = "Try on GitHub";
 
 export const DOCS_CTA_LABEL = "Get started";
 

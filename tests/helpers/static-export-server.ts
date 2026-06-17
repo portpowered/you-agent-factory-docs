@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { SITE_BASE_PATH } from "../../src/lib/site";
@@ -10,6 +10,7 @@ import { fetchHttp } from "./http";
 const projectRoot = join(import.meta.dir, "../..");
 const exportDir = join(projectRoot, "out");
 const nextDir = join(projectRoot, ".next");
+const STATIC_EXPORT_LOCK_HELD_ENV = "STATIC_EXPORT_BUILD_LOCK_HELD";
 
 function cleanNextBuildArtifacts(): void {
   rmSync(nextDir, { recursive: true, force: true });
@@ -54,10 +55,23 @@ export type StaticExportServer = {
 
 export function startStaticExportServer(port: number): StaticExportServer {
   const serveRoot = mkdtempSync(join(tmpdir(), "yaf-docs-serve-"));
-  symlinkSync(
-    join(projectRoot, "out"),
-    join(serveRoot, SITE_BASE_PATH.slice(1)),
-  );
+  const serveSnapshotPath = join(serveRoot, SITE_BASE_PATH.slice(1));
+
+  const snapshotExport = () => {
+    if (!existsSync(exportDir)) {
+      throw new Error(
+        "Static export output is missing at out/; build the export before serving it",
+      );
+    }
+
+    cpSync(exportDir, serveSnapshotPath, { recursive: true });
+  };
+
+  if (process.env[STATIC_EXPORT_LOCK_HELD_ENV] === "1") {
+    snapshotExport();
+  } else {
+    withStaticExportBuildLock(projectRoot, snapshotExport);
+  }
 
   const server = Bun.spawn(
     ["python3", "-m", "http.server", String(port), "--bind", "127.0.0.1"],

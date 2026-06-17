@@ -1,4 +1,5 @@
 import { type RenderResult, within } from "@testing-library/react";
+import { PROJECT_TAGLINE } from "../../src/lib/project";
 import type {
   DocsShellAccessibilitySnapshot,
   LandingShellAccessibilitySnapshot,
@@ -26,11 +27,14 @@ export function collectLandingShellAccessibilitySnapshot(
     name: enMessages.landing.primaryNavAriaLabel,
   });
   const main = root.queryByRole("main");
-  const heroHeading = main
-    ? within(main).queryByRole("heading", { level: 1 })
+  const hero = main
+    ? within(main).queryByRole("region", { name: PROJECT_TAGLINE })
     : null;
-  const githubLink = main
-    ? within(main).queryByRole("link", {
+  const heroHeading = hero
+    ? within(hero).queryByRole("heading", { level: 1 })
+    : null;
+  const githubLink = hero
+    ? within(hero).queryByRole("link", {
         name: enMessages.common.githubCta,
       })
     : null;
