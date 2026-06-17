@@ -327,6 +327,14 @@
   .shared-shell__main h6 {
     text-wrap: balance;
   }
+
+  .public-search {
+    padding: 1.25rem;
+  }
+
+  .public-search__controls {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Breakpoints align with src/lib/responsive-tokens.ts (tabletMax: 1023px). */
