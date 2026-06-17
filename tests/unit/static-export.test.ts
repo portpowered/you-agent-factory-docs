@@ -29,6 +29,10 @@ import {
 } from "../helpers/static-export-server";
 import { getTestPort } from "../helpers/test-port";
 
+function escapeHrefForHtmlMatch(href: string): string {
+  return href.replace(/\//g, "\\/");
+}
+
 describe("static export configuration", () => {
   test("configures Next.js for fully static GitHub Pages export", () => {
     expect(nextConfig.output).toBe("export");
@@ -503,21 +507,27 @@ describe("served static export navigation", () => {
         title: "CLI overview",
         body: "Typical commands and outcomes",
         previousLabel: "Getting started",
+        previousHref: "/docs/getting-started",
         nextLabel: "Configuration",
+        nextHref: "/docs/configuration",
       },
       {
         path: "/docs/configuration",
         title: "Configuration",
         body: "How configuration changes execution",
         previousLabel: "CLI overview",
+        previousHref: "/docs/cli",
         nextLabel: "Workflow concepts",
+        nextHref: "/docs/concepts",
       },
       {
         path: "/docs/concepts",
         title: "Workflow concepts",
         body: "How the CLI and configuration connect",
         previousLabel: "Configuration",
-        nextLabel: "Installation",
+        previousHref: "/docs/configuration",
+        nextLabel: "Code presentation",
+        nextHref: "/docs/examples/code-presentation",
       },
     ] as const;
 
@@ -535,6 +545,16 @@ describe("served static export navigation", () => {
       expect(html).toContain(
         `aria-label="${enMessages.docs.progressionAriaLabel}"`,
       );
+      expect(
+        new RegExp(
+          `<a[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.previousHref))}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.previousHref))}/?)"`,
+        ).test(html),
+      ).toBe(true);
+      expect(
+        new RegExp(
+          `<a[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.nextHref))}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.nextHref))}/?)"`,
+        ).test(html),
+      ).toBe(true);
       expect(html).toContain(routeCheck.previousLabel);
       expect(html).toContain(routeCheck.nextLabel);
     }

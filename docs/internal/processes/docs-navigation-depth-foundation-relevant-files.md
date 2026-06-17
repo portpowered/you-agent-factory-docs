@@ -31,7 +31,7 @@
 - `DocPageArticle` renders the projected page outline, page title, and parsed body blocks inside the shared docs content surface from `src/components/docs/docs-content.tsx` with heading anchor ids on docs detail routes; page-outline shell labels resolve through `useMessages()` like breadcrumbs and progression in `DocsShell`, and outline/content framing should stay on that shared card-backed path instead of reintroducing route-local wrapper CSS.
 - `loadDocPage()` returns `record.navigationTitle` as the rendered docs-page title, so the shell H1 and sidebar label stay on one canonical naming field while body headings should carry the deeper explanatory structure.
 - Search-artifact proof for launch-lane docs should assert canonical id, canonical locale, available locales, route URL, and representative heading/body text for concrete docs entries rather than only counting ids.
-- Route-loading proof for launch-lane docs should hit the canonical `/docs/{slug}` export paths directly and assert the rendered title, body copy, and previous-next labels for the current post-setup sequence.
+- Route-loading proof for launch-lane docs should hit the canonical `/docs/{slug}` export paths directly and assert the rendered title, body copy, and the actual `rel="prev"` / `rel="next"` anchor targets for the current progression contract rather than only checking whether a label string appears somewhere in the HTML.
 - Remove bootstrap-only nav constants such as `src/lib/docs-nav.ts`; the docs shell consumes projected navigation only.
 
 ## Responsive docs navigation depth
