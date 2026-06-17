@@ -126,4 +126,21 @@ describe("pull-request CI command parity", () => {
       expect(step.run).not.toContain("scripts/enforce-component-coverage");
     }
   });
+
+  test("contributor guidance names the required PR path and the retained supplemental checks", () => {
+    const readme = readFileSync(join(repoRoot, "README.md"), "utf8");
+
+    expect(readme).toContain(
+      "pull requests visibly gate on `make setup`, `make check`, `make test`, and `make build` in that order",
+    );
+    expect(readme).toContain(
+      "`make quality-gate`, `make budget`, and `make component-coverage` as supplemental checks",
+    );
+    expect(readme).toContain(
+      "`make setup`, `make check`, `make test`, and `make build` are the required reviewer-visible pull-request validation path.",
+    );
+    expect(readme).toContain(
+      "`make quality-gate`, `make budget`, and `make component-coverage` stay on that same root command surface as supplemental PR checks",
+    );
+  });
 });

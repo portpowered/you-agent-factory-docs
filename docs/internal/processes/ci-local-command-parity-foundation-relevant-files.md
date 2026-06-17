@@ -18,7 +18,7 @@
 ## Contributor guidance
 
 - `README.md` identifies `make setup`, `make check`, `make test`, and `make build` as the authoritative root workflow and explains when to use each command in terms of observable outcomes (dependency install, verification failures, automated tests, static export output).
-- Contributor-facing guidance may still document `make quality-gate`, but only as a broader local-only sweep that intentionally goes beyond the pull request merge gate. Do not present it as the PR parity contract once `.github/workflows/ci.yml` is anchored on `make check`, `make test`, and `make build`.
+- The same guidance explicitly calls `make quality-gate`, `make budget`, and `make component-coverage` supplemental PR checks and local review helpers, while also framing `make quality-gate` as a broader local-only sweep that goes beyond the pull request merge gate.
 - The documented command path matches `.github/workflows/ci.yml` so contributors do not need alternate `bun` verification commands to match automation.
 
 ## Proof tests
