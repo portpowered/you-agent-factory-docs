@@ -277,6 +277,20 @@ section: guides
               fellBackToCanonicalLocale: false,
             },
           },
+          {
+            canonicalId: "doc/logs-and-replays",
+            label: "Logs and replays",
+            href: "/docs/logs-and-replays",
+            order: 3,
+            localeProjection: {
+              canonicalPageId: "doc/logs-and-replays",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
         ],
       },
       {
@@ -361,7 +375,7 @@ section: guides
     );
 
     expect(sectionIds).toEqual(["guides", "setup", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(5);
+    expect(pageCount).toBeGreaterThanOrEqual(6);
     expect(
       navigation.sections.some(
         (section) =>
@@ -370,6 +384,11 @@ section: guides
             "doc/installation,doc/configuration",
       ),
     ).toBe(true);
+    expect(
+      navigation.sections
+        .flatMap((section) => section.pages)
+        .map((page) => page.canonicalId),
+    ).toContain("doc/logs-and-replays");
   });
 });
 

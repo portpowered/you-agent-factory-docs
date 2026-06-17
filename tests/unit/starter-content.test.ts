@@ -151,6 +151,7 @@ navigationTitle: Agent term
       "doc/getting-started",
       "doc/getting-started",
       "doc/installation",
+      "doc/logs-and-replays",
       "glossary/agent",
       "reference/loop-engineering",
     ]);

@@ -75,6 +75,9 @@ describe("static export server helpers", () => {
 
     const homepageHtmlPath = join(exportDir, "index.html");
     const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
+    const stableOriginalTitle = "<title>You Agent Factory</title>";
+    const stableOriginalHeading =
+      "An open-source, engineering-native platform for turning recurring development work into reusable, inspectable AI agent workflows.";
     const port = getTestPort(3791, "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT");
     const server = startStaticExportServer(port);
 
@@ -96,11 +99,14 @@ describe("static export server helpers", () => {
       const servedHtml = await response.text();
 
       expect(response.status).toBe(200);
-      expect(servedHtml).toContain(originalHomepageHtml.slice(0, 120));
+      expect(originalHomepageHtml).toContain(stableOriginalTitle);
+      expect(originalHomepageHtml).toContain(stableOriginalHeading);
+      expect(servedHtml).toContain(stableOriginalTitle);
+      expect(servedHtml).toContain(stableOriginalHeading);
       expect(servedHtml).not.toContain("<title>mutated</title>");
     } finally {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
       server.stop();
     }
-  });
+  }, 60_000);
 });

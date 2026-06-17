@@ -147,4 +147,20 @@ MDX body.
     });
     expect(page.localeProjection.availableLocales).toEqual(["en", "fr"]);
   });
+
+  test("loads the logs-and-replays guide from starter content", () => {
+    const page = loadDocPage("logs-and-replays", STARTER_CONTENT_ROOT);
+
+    expect(page.record.id).toBe("doc/logs-and-replays");
+    expect(page.record.routePath).toBe("/docs/logs-and-replays");
+    expect(page.title).toBe("Logs and replays");
+    expect(page.body).toContain("post-run inspection");
+    expect(page.resolution).toEqual({
+      canonicalPageId: "doc/logs-and-replays",
+      canonicalLocale: "en",
+      requestedLocale: "en",
+      resolvedLocale: "en",
+      fellBackToCanonicalLocale: false,
+    });
+  });
 });

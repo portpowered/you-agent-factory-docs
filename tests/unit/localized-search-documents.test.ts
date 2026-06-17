@@ -76,6 +76,7 @@ describe("localized search document generation", () => {
       "doc/getting-started@en",
       "doc/getting-started@fr",
       "doc/installation@en",
+      "doc/logs-and-replays@en",
       "glossary/agent@en",
       "reference/loop-engineering@en",
     ]);
