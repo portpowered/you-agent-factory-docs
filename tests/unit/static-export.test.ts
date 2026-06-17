@@ -4,6 +4,7 @@ import {
   FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM,
   FACTORY_WORKFLOW_MERMAID_DIAGRAM,
 } from "../../src/content/docs-diagrams";
+import { loadDocsShellNavigation } from "../../src/lib/content";
 import { PROJECT_TAGLINE } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shared-shell-config";
 import {

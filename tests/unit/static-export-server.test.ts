@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import {
   existsSync,
   mkdirSync,
+  renameSync,
   rmSync,
   writeFileSync,
 } from "node:fs";
