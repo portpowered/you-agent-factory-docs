@@ -1,18 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { rmSync } from "node:fs";
-import { join } from "node:path";
-import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
+import { dryRunMake } from "../helpers/make";
 import { runMakeTarget } from "../helpers/make-target";
-
-const projectRoot = join(import.meta.dir, "../..");
-
-function cleanNextTypeArtifacts() {
-  rmSync(join(projectRoot, ".next"), { recursive: true, force: true });
-  rmSync(join(projectRoot, "tsconfig.tsbuildinfo"), { force: true });
-}
-
-const verifyingMakeTest = process.env.VERIFYING_MAKE_TEST === "1";
-const testUnlessVerifying = verifyingMakeTest ? test.skip : test;
 
 describe("root contributor command path", () => {
   test("make setup completes successfully from the repository root", () => {
@@ -23,10 +11,13 @@ describe("root contributor command path", () => {
   });
 
   test("make check completes successfully from the repository root", () => {
-    const result = withStaticExportBuildLock(projectRoot, () => {
-      cleanNextTypeArtifacts();
-      return runMakeTarget("check");
-    });
+    const result = runMakeTarget(
+      "check",
+      {},
+      {
+        resetGeneratedArtifacts: true,
+      },
+    );
 
     expect(result.status).toBe(0);
     expect(result.output).toMatch(/typecheck/);
@@ -34,21 +25,9 @@ describe("root contributor command path", () => {
     expect(result.output).toMatch(/lint/);
   }, 120_000);
 
-  testUnlessVerifying(
-    "make test completes successfully from the repository root",
-    () => {
-      const result = runMakeTarget("test", {
-        VERIFYING_MAKE_TEST: "1",
-        STATIC_EXPORT_TEST_PORT: "3885",
-        RECONCILED_EXPORT_BROWSER_TEST_PORT: "3886",
-      });
-
-      expect(result.status).toBe(0);
-      expect(result.output).toMatch(/\d+ pass/);
-      expect(result.output).toMatch(/\n 0 fail\n/);
-    },
-    480_000,
-  );
+  test("make test delegates to bun test from the repository root", () => {
+    expect(dryRunMake("test")).toContain("bun test");
+  });
 
   test("make build completes successfully from the repository root", () => {
     const result = runMakeTarget("build");

@@ -1,16 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { existsSync, rmSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { dryRunMake } from "../helpers/make";
 import { runMakeTarget } from "../helpers/make-target";
 
 const repoRoot = join(import.meta.dir, "../..");
-
-function cleanNextTypeArtifacts() {
-  rmSync(join(repoRoot, ".next"), { recursive: true, force: true });
-  rmSync(join(repoRoot, "tsconfig.tsbuildinfo"), { force: true });
-}
 
 describe("contributor guidance observable outcomes", () => {
   test("make setup installs dependencies from the repository root", () => {
@@ -21,10 +15,13 @@ describe("contributor guidance observable outcomes", () => {
   });
 
   test("make check surfaces typecheck and lint verification through one command", () => {
-    const result = withStaticExportBuildLock(repoRoot, () => {
-      cleanNextTypeArtifacts();
-      return runMakeTarget("check");
-    });
+    const result = runMakeTarget(
+      "check",
+      {},
+      {
+        resetGeneratedArtifacts: true,
+      },
+    );
 
     expect(result.status).toBe(0);
     expect(result.output).toMatch(/typecheck/);
@@ -39,9 +36,7 @@ describe("contributor guidance observable outcomes", () => {
   });
 
   test("make build proves the static export by requiring out/", () => {
-    const result = withStaticExportBuildLock(repoRoot, () =>
-      runMakeTarget("build"),
-    );
+    const result = runMakeTarget("build");
     expect(result.status).toBe(0);
     expect(result.output).toMatch(/Exporting/);
     expect(existsSync(join(repoRoot, "out"))).toBe(true);
