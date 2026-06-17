@@ -49,6 +49,8 @@ Verify on desktop and a mobile-width viewport:
 - [ ] Framing copy confirms the route is intentional (not an empty placeholder).
 - [ ] The Mermaid example renders after client load, keeps its heading and description visible, and exposes readable checked-in source text for reviewer comparison.
 - [ ] If JavaScript is still loading or Mermaid fails, the docs surface keeps an explicit status or error message rather than silently omitting the diagram.
+- [ ] The React Flow example renders with all workflow nodes visible on desktop and remains understandable on a mobile-width viewport through fit-to-view or coherent overflow behavior.
+- [ ] The React Flow example keeps its heading, explanatory copy, and checked-in source preview visible so reviewers can compare authored graph data to the rendered structure.
 - [ ] Home or back navigation returns to the homepage with base-path-aware links.
 - [ ] Semantic landmarks are present (`header`, `nav`, `main`).
 
