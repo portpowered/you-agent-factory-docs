@@ -395,7 +395,7 @@ describe("served static export navigation", () => {
 
     const configurationHtml = await configurationResponse.text();
 
-    expect(configurationHtml).not.toContain(
+    expect(configurationHtml).toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
     );
   }, 30_000);
@@ -461,9 +461,12 @@ describe("served static export navigation", () => {
       ).test(gettingStartedHtml),
     ).toBe(true);
 
-    const cliResponse = await fetchHttp(new URL(cliPath, server.baseUrl), {
-      signal: AbortSignal.timeout(10_000),
-    });
+    const cliResponse = await fetchHttp(
+      new URL(withBasePath("/docs/cli"), server.baseUrl),
+      {
+        signal: AbortSignal.timeout(10_000),
+      },
+    );
     expect(cliResponse.status).toBe(200);
 
     const cliHtml = await cliResponse.text();
