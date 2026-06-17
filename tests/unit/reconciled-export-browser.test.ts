@@ -265,4 +265,68 @@ describe("reconciled baseline browser export", () => {
       await page.close();
     }
   }, 30_000);
+
+  test("installation page presents the supported prerequisite, setup, and validation path", async () => {
+    const page = await browser.newPage();
+    const installationUrl = new URL(
+      withBasePath("/docs/installation"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(installationUrl, { waitUntil: "domcontentloaded" });
+
+      expect(
+        await page
+          .getByRole("heading", { level: 1, name: "Installation" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", { level: 2, name: "Prerequisites" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Start with Bun 1.1 or newer available on your machine because the repository uses Bun for dependency installation, scripts, and test execution.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Run `make setup` from the repository root to install or refresh dependencies.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Run `make quality-gate` after setup to verify that the local install is usable.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.pageOutlineAriaLabel,
+          })
+          .getByRole("link", { name: "Validate the install" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Quickstart`,
+          })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
 });

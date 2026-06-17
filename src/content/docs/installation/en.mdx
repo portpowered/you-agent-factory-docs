@@ -16,5 +16,28 @@ search.priority: 8
 
 # Installation
 
-Install You Agent Factory locally and verify the contributor command path before extending workflows.
-Continue to Quickstart once the local install path is ready.
+Install You Agent Factory locally using the repository's supported Bun and Make workflow before moving into the first workflow run.
+
+## Prerequisites
+
+Start with Bun 1.1 or newer available on your machine because the repository uses Bun for dependency installation, scripts, and test execution.
+Clone the repository and work from its root so the documented Make targets run against the same command path used by local contributors and CI.
+
+## Install the repository
+
+Run `make setup` from the repository root to install or refresh dependencies.
+This target is the supported entrypoint for initial setup and it delegates to `bun install` instead of requiring a separate manual package-manager path.
+
+## Validate the install
+
+Run `make quality-gate` after setup to verify that the local install is usable.
+This is the authoritative reviewer-facing validation path because it checks typecheck, lint, localization validation, content validation, accessibility validation, static export correctness, and the remaining foundation unit coverage through the repository's existing automation contract.
+
+## What success looks like
+
+Treat the install as successful when `make quality-gate` finishes without failures from the repository root.
+If you need narrower follow-up checks after that first pass, the same root workflow also exposes `make check`, `make test`, and `make build`, but the installation path should start with the full quality gate.
+
+## Continue into quickstart
+
+Continue to Quickstart once the repository installs cleanly and the validation path passes so your first workflow run starts from a known-good local setup.

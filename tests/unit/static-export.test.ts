@@ -232,7 +232,7 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain("Continue through setup");
   }, 30_000);
 
-  test("serves doc pages without page-outline navigation when headings are insufficient", async () => {
+  test("renders the installation page with repository-supported setup and validation guidance", async () => {
     const installationResponse = await fetchHttp(
       new URL(withBasePath("/docs/installation"), server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
@@ -243,7 +243,62 @@ describe("served static export navigation", () => {
     const installationHtml = await installationResponse.text();
 
     expect(installationHtml).toContain("Installation");
-    expect(installationHtml).not.toContain(
+    expect(installationHtml).toContain(
+      "Start with Bun 1.1 or newer available on your machine because the repository uses Bun for dependency installation, scripts, and test execution.",
+    );
+    expect(installationHtml).toContain(
+      "Run `make setup` from the repository root to install or refresh dependencies.",
+    );
+    expect(installationHtml).toContain(
+      "Run `make quality-gate` after setup to verify that the local install is usable.",
+    );
+    expect(installationHtml).toContain(
+      "Treat the install as successful when `make quality-gate` finishes without failures from the repository root.",
+    );
+    expect(installationHtml).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(installationHtml).toContain('href="#prerequisites"');
+    expect(installationHtml).toContain('id="install-the-repository"');
+    expect(installationHtml).toContain("Validate the install");
+    expect(installationHtml).toContain("What success looks like");
+    expect(installationHtml).toContain("Continue into quickstart");
+  }, 30_000);
+
+  test("follows generated previous-next progression from installation into quickstart", async () => {
+    const installationResponse = await fetchHttp(
+      new URL(withBasePath("/docs/installation"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(installationResponse.status).toBe(200);
+
+    const installationHtml = await installationResponse.text();
+    const quickstartPath = withBasePath("/docs/quickstart").replace(
+      /\//g,
+      "\\/",
+    );
+
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${quickstartPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${quickstartPath}/?)"`,
+      ).test(installationHtml),
+    ).toBe(true);
+    expect(installationHtml).toContain(enMessages.docs.nextPagePrefix);
+    expect(installationHtml).toContain("Quickstart");
+  }, 30_000);
+
+  test("renders page-outline navigation only when a page provides sufficient headings", async () => {
+    const configurationResponse = await fetchHttp(
+      new URL(withBasePath("/docs/configuration"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(configurationResponse.status).toBe(200);
+
+    const configurationHtml = await configurationResponse.text();
+
+    expect(configurationHtml).not.toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
     );
   }, 30_000);
