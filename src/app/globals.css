@@ -107,6 +107,26 @@
     @apply mb-6;
   }
 
+  .docs-content-lead {
+    @apply mb-0 mt-3 text-[clamp(1rem,2.3vw,1.125rem)] text-muted-foreground;
+  }
+
+  .docs-page-outline__title {
+    @apply m-0 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground;
+  }
+
+  .docs-page-outline__list {
+    @apply m-0 mt-4 grid gap-3 list-none p-0;
+  }
+
+  .docs-page-outline__item--level-3 {
+    @apply pl-4;
+  }
+
+  .docs-page-outline__link {
+    @apply text-sm font-medium text-foreground no-underline transition-colors hover:text-accent hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
   .docs-breadcrumbs__list {
     @apply m-0 flex list-none flex-wrap items-center gap-x-2 gap-y-1 p-0 text-sm text-muted-foreground;
   }
@@ -210,6 +230,34 @@
 
   .docs-diagram__code {
     @apply mb-0 mt-3 overflow-x-auto rounded-lg bg-background p-4 text-sm text-foreground;
+  }
+
+  .docs-page__body {
+    @apply mt-5 text-[1.02rem] leading-7 text-foreground;
+  }
+
+  .docs-page__body > * + * {
+    margin-top: 1rem;
+  }
+
+  .docs-page__body h2,
+  .docs-page__body h3,
+  .docs-page__body h4,
+  .docs-page__body h5,
+  .docs-page__body h6 {
+    @apply scroll-mt-24 font-semibold tracking-tight text-card-foreground;
+  }
+
+  .docs-page__body h2 {
+    @apply mt-8 text-2xl;
+  }
+
+  .docs-page__body h3 {
+    @apply mt-7 text-xl;
+  }
+
+  .docs-page__body p {
+    @apply m-0 max-w-[72ch] text-muted-foreground;
   }
 
   .shared-shell__main h1,

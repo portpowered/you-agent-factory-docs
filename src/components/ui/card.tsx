@@ -2,7 +2,7 @@ import { joinClassNames } from "@/lib/classnames";
 import type { ComponentPropsWithoutRef } from "react";
 
 type CardProps = ComponentPropsWithoutRef<"section"> & {
-  as?: "div" | "li" | "section";
+  as?: "article" | "div" | "li" | "nav" | "section";
 };
 
 export function Card({

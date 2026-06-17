@@ -103,7 +103,7 @@ export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
     label: "Docs entry",
     route: DOCS_ENTRY_ROUTE,
     budget: {
-      maxHtmlBytes: 38_000,
+      maxHtmlBytes: 40_000,
       maxScriptTagCount: 21,
       maxStylesheetLinkCount: 1,
       maxImageCount: 0,

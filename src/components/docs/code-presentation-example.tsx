@@ -1,4 +1,8 @@
 import {
+  DocsContentCard,
+  DocsContentSurface,
+} from "@/components/docs/docs-content";
+import {
   Callout,
   CodeBlock,
   CodeTabs,
@@ -38,11 +42,18 @@ const EXAMPLE_TABS = [
 
 export function CodePresentationExample() {
   return (
-    <article aria-labelledby="code-presentation-example-title">
-      <h1 id="code-presentation-example-title">
-        {CODE_PRESENTATION_EXAMPLE_TITLE}
-      </h1>
-      <p className="docs-shell__framing">{CODE_PRESENTATION_EXAMPLE_INTRO}</p>
+    <DocsContentSurface aria-labelledby="code-presentation-example-title">
+      <DocsContentCard as="section">
+        <h1
+          className="m-0 text-[clamp(1.75rem,4vw,2.5rem)] leading-tight tracking-tight text-card-foreground"
+          id="code-presentation-example-title"
+        >
+          {CODE_PRESENTATION_EXAMPLE_TITLE}
+        </h1>
+        <p className="docs-content-lead docs-shell__framing">
+          {CODE_PRESENTATION_EXAMPLE_INTRO}
+        </p>
+      </DocsContentCard>
 
       <section
         aria-labelledby="code-block-section-heading"
@@ -92,6 +103,6 @@ export function CodePresentationExample() {
         <h2 id="file-tree-section-heading">{FILE_TREE_SECTION_HEADING}</h2>
         <FileTree nodes={EXAMPLE_FILE_TREE} />
       </section>
-    </article>
+    </DocsContentSurface>
   );
 }

@@ -12,6 +12,7 @@
 - Shared reviewer labels, example fixture data, example route constants, and `withCodePresentationExampleNavigation()` live in `src/lib/docs-primitives.ts`.
 - `loadDocsShellNavigation()` in `src/lib/content/load-docs-navigation.ts` appends the code presentation example route through `withCodePresentationExampleNavigation()`.
 - The reviewer-visible example surface is `src/components/docs/code-presentation-example.tsx`, rendered from `src/app/docs/examples/code-presentation/page.tsx` through `DocsShell` and the shared shell on the current site foundation.
+- Shared docs article framing now lives in `src/components/docs/docs-content.tsx`; overview pages and example routes should reuse `DocsContentSurface` and `DocsContentCard` so docs intro/section framing stays aligned with the same primitive-backed styling path as the shell.
 - Docs chrome is shared through `src/components/docs/docs-shell.tsx` (`SharedShell`); pass generated navigation and `currentPath` for active docs sidebar state.
 - Primitive and diagram surfaces extend the shared token layer projected from `src/app/globals.css`; prefer semantic utilities (`bg-card`, `bg-muted`, `text-foreground`, `border-border`) over direct landing-only variables.
 - Responsive docs diagrams rely on `min-w-0` shared-shell containers plus `.docs-diagram__*` baseline classes in `src/app/globals.css`; preserve that combination when adjusting docs example layout or diagram rendering.
