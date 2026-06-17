@@ -31,7 +31,7 @@ export function SharedShellDocsAside({
   return (
     <div className="shared-shell__docs-aside-region">
       <ShellDisclosureTrigger
-        className="shared-shell__docs-nav-toggle"
+        className="shared-shell__docs-nav-toggle items-center justify-center rounded-md border bg-card px-4 py-2.5 font-semibold text-card-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         disclosure={disclosure}
       >
         {({ isOpen }) =>
@@ -44,7 +44,7 @@ export function SharedShellDocsAside({
         className="shared-shell__docs-aside-panel"
         disclosure={disclosure}
       >
-        <aside className="shared-shell__docs-aside">
+        <aside className="shared-shell__docs-aside border-r bg-card xl:min-h-full">
           {docsNavigationGroups.map((docsNavigation) => (
             <SharedShellDocsNavigation
               ariaLabel={docsNavigation.heading}

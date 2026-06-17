@@ -21,13 +21,14 @@ const coverageDir = join(repoRoot, "coverage");
 console.log("Running component coverage enforcement.");
 console.log(`\n${formatComponentCoverageContractLimitations()}\n`);
 
+const enforcedFiles = listEnforcedComponentSourceFiles(repoRoot);
 const fixture = getComponentCoverageEnforcementFixture(
   process.env.COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE,
+  enforcedFiles,
 );
 
 if (fixture !== undefined) {
   const lcovByFile = parseBunCoverageLcov(fixture.lcov);
-  const enforcedFiles = listEnforcedComponentSourceFiles(repoRoot);
   const evaluation = evaluateComponentCoverageEnforcement(
     lcovByFile,
     enforcedFiles,
@@ -74,7 +75,6 @@ if (testResult.status !== 0) {
 
 const lcovPath = join(coverageDir, "lcov.info");
 const lcovByFile = parseBunCoverageLcov(readFileSync(lcovPath, "utf8"));
-const enforcedFiles = listEnforcedComponentSourceFiles(repoRoot);
 const evaluation = evaluateComponentCoverageEnforcement(
   lcovByFile,
   enforcedFiles,

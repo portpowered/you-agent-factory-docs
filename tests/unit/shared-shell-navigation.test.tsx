@@ -41,6 +41,8 @@ describe("shared shell navigation primitives", () => {
     expect(link.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
     expect(link.getAttribute("aria-current")).toBe("page");
     expect(link.className).toContain("shared-shell__link");
+    expect(link.className).toContain("bg-accent");
+    expect(link.className).toContain("text-accent-foreground");
   });
 
   test("renders external GitHub links with accessible names and new-tab semantics", () => {
@@ -63,6 +65,7 @@ describe("shared shell navigation primitives", () => {
     expect(link.getAttribute("target")).toBe("_blank");
     expect(link.getAttribute("rel")).toBe("noopener noreferrer");
     expect(link.className).toContain("shared-shell__link--external");
+    expect(link.className).toContain("text-accent");
   });
 
   test("keeps primary navigation links keyboard reachable in configured order", () => {

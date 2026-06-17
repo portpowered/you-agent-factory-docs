@@ -13,7 +13,8 @@
 - `loadDocsShellNavigation()` in `src/lib/content/load-docs-navigation.ts` appends the code presentation example route through `withCodePresentationExampleNavigation()`.
 - The reviewer-visible example surface is `src/components/docs/code-presentation-example.tsx`, rendered from `src/app/docs/examples/code-presentation/page.tsx` through `DocsShell` and the shared shell on the current site foundation.
 - Docs chrome is shared through `src/components/docs/docs-shell.tsx` (`SharedShell`); pass generated navigation and `currentPath` for active docs sidebar state.
-- Primitive styles extend `src/app/globals.css` using the existing landing/docs CSS variables.
+- Primitive and diagram surfaces extend the shared token layer projected from `src/app/globals.css`; prefer semantic utilities (`bg-card`, `bg-muted`, `text-foreground`, `border-border`) over direct landing-only variables.
+- Responsive docs diagrams rely on `min-w-0` shared-shell containers plus `.docs-diagram__*` baseline classes in `src/app/globals.css`; preserve that combination when adjusting docs example layout or diagram rendering.
 
 ## Verification
 

@@ -7,7 +7,7 @@
 - Transient UI such as disclosure open state stays in component state inside `src/components/shell/shared-shell-header.tsx`; it is not part of `sharedShellConfig`.
 - `src/components/shell/shared-shell.tsx` is the single global frame for homepage and docs entry routes. It renders shared header, optional docs sidebar (`docsNavigationGroups`), main content slot, and footer framing.
 - Reusable accessible navigation primitives live in `src/components/shell/shared-shell-navigation.tsx` (`SharedShellPrimaryNavigation`, `SharedShellNavigationLink`, `SharedShellDocsNavigation`). Both surfaces consume the same destination contract from `sharedShellConfig`; external GitHub links expose `(opens in new tab)` in the accessible name.
-- Responsive shell behavior uses CSS media queries in `src/app/globals.css` with the `sharedShellConfig.responsive.narrowMaxWidthPx` breakpoint (768px). Narrow-width primary navigation disclosure state is projected through `useSharedShellNavigationDisclosure` in `src/hooks/use-shared-shell-navigation-disclosure.ts` and rendered by the client `SharedShellHeader` in `src/components/shell/shared-shell-header.tsx`.
+- Responsive shell behavior uses CSS media queries in `src/app/globals.css` aligned with `src/lib/responsive-tokens.ts` (639px / 1023px). Narrow-width disclosure state is projected through `useShellDisclosure` and rendered by the client `SharedShellHeader` / `SharedShellDocsAside`.
 - `src/components/landing/landing-shell.tsx` and `src/components/docs/docs-shell.tsx` are thin surface wrappers that project page content into `SharedShell` instead of owning independent header or layout wiring.
 - `src/lib/shell.ts` remains a deprecated re-export for legacy imports; prefer `@/lib/shared-shell-config` and `@/lib/shared-shell-extension-points` for new shell work.
 
@@ -28,5 +28,6 @@
 
 ## Styling
 
-- Shared shell layout and navigation classes use the `shared-shell__*` prefix in `src/app/globals.css`.
-- Surface-specific content styling remains under `landing-shell__*` and `docs-shell__*` prefixes.
+- Shared shell layout and navigation markup keeps the `shared-shell__*` class hooks, but the presentation contract now lives primarily in Tailwind utility classes backed by semantic tokens from `src/app/globals.css`.
+- `src/app/globals.css` is now the narrow baseline for shared token projection, base rules, and stateful responsive selectors such as disclosure visibility and animation. Avoid moving shared shell presentation back into large bespoke selector clusters there.
+- Surface wrappers may keep `landing-shell__*` or `docs-shell__*` hooks for tests and targeted overrides, but shared shell chrome should prefer utility classes on the component markup.

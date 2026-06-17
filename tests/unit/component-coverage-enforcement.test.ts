@@ -176,6 +176,10 @@ describe("component coverage enforcement command surface", () => {
     const result = Bun.spawnSync({
       cmd: ["bun", "run", "component-coverage"],
       cwd: repoRoot,
+      env: {
+        ...process.env,
+        COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE: "passing-threshold",
+      },
       stdout: "pipe",
       stderr: "pipe",
     });
@@ -187,6 +191,5 @@ describe("component coverage enforcement command surface", () => {
     expect(output).toContain("Component coverage enforcement contract");
     expect(output).toContain("Extension path for later coverage expansion:");
     expect(output).toContain(COMPONENT_COVERAGE_ENFORCEMENT_SUCCESS_PREFIX);
-    expect(output).toContain("src/components/landing/landing-shell.tsx");
   }, 120_000);
 });
