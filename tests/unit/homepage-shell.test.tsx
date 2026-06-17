@@ -127,8 +127,11 @@ describe("homepage shell rendering", () => {
 
     expect(docsCta.className).toContain("landing-shell__button");
     expect(githubCta.className).toContain("landing-shell__button");
+    expect(docsCta.className).toContain("ui-button");
+    expect(githubCta.className).toContain("ui-button");
     expect(docsCta.className).toContain("bg-accent");
     expect(githubCta.className).toContain("border");
+    expect(hero.className).toContain("ui-card");
     expect(docsCta.tabIndex).not.toBe(-1);
     expect(githubCta.tabIndex).not.toBe(-1);
   });

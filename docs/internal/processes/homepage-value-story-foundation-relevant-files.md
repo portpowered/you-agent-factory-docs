@@ -3,7 +3,7 @@
 ## Shell integration
 
 - `src/components/landing/landing-shell.tsx` composes the full first-visit story inside `SharedShell` (`surface="home"`) with localized header config from `createSharedShellConfigFromMessages`.
-- Homepage sections render inside `.landing-shell__sections` within `shared-shell__main`; shared card, spacing, and CTA presentation now comes primarily from Tailwind utility classes backed by the semantic token layer in `src/app/globals.css`.
+- Homepage sections render inside `.landing-shell__sections` within `shared-shell__main`; shared card and CTA presentation should flow through `src/components/ui/card.tsx` and `src/components/ui/button.tsx`, with `landing-shell__*` classes kept only as hooks for tests or narrow overrides.
 
 ## Hero and shared copy
 

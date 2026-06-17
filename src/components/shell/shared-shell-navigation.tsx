@@ -1,5 +1,6 @@
+import { ButtonLink } from "@/components/ui/button";
+import { joinClassNames } from "@/lib/classnames";
 import type { SharedShellDestination } from "@/lib/shared-shell-config";
-import Link from "next/link";
 
 export type SharedShellNavigationLinkProps = {
   destination: SharedShellDestination;
@@ -7,50 +8,29 @@ export type SharedShellNavigationLinkProps = {
   className?: string;
 };
 
-function joinClassNames(
-  ...classNames: Array<string | false | undefined>
-): string {
-  return classNames.filter(Boolean).join(" ");
-}
-
 export function SharedShellNavigationLink({
   destination,
   isCurrent = false,
   className = "shared-shell__link",
 }: SharedShellNavigationLinkProps) {
-  const resolvedClassName = joinClassNames(
-    className,
-    "inline-flex min-h-11 items-center justify-center rounded-md px-4 py-2.5 font-semibold no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-    isCurrent
-      ? "bg-accent text-accent-foreground"
-      : "text-accent hover:bg-accent/10",
-  );
-
-  if (destination.external) {
-    return (
-      <a
-        aria-label={`${destination.label} (opens in new tab)`}
-        className={joinClassNames(
-          resolvedClassName,
-          "shared-shell__link--external",
-        )}
-        href={destination.href}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        {destination.label}
-      </a>
-    );
-  }
-
   return (
-    <Link
+    <ButtonLink
       aria-current={isCurrent ? "page" : undefined}
-      className={resolvedClassName}
+      aria-label={
+        destination.external
+          ? `${destination.label} (opens in new tab)`
+          : undefined
+      }
+      className={joinClassNames(
+        className,
+        destination.external && "shared-shell__link--external",
+      )}
+      external={destination.external}
       href={destination.href}
+      variant={isCurrent ? "navCurrent" : "nav"}
     >
       {destination.label}
-    </Link>
+    </ButtonLink>
   );
 }
 
@@ -125,17 +105,20 @@ export function SharedShellDocsNavigation({
 
           return (
             <li className="mt-1 first:mt-0" key={item.id}>
-              <Link
+              <ButtonLink
                 aria-current={isCurrent ? "page" : undefined}
-                className={
-                  isCurrent
-                    ? "shared-shell__docs-nav-link shared-shell__docs-nav-link--active block rounded-md bg-accent/12 px-3 py-2 text-sm font-medium text-accent no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    : "shared-shell__docs-nav-link block rounded-md px-3 py-2 text-sm font-medium text-card-foreground no-underline transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                }
+                className={joinClassNames(
+                  "shared-shell__docs-nav-link block justify-start font-medium",
+                  isCurrent && "shared-shell__docs-nav-link--active",
+                )}
+                data-current={isCurrent ? "true" : undefined}
+                fullWidth
                 href={item.href}
+                size="compact"
+                variant="navSubtle"
               >
                 {item.label}
-              </Link>
+              </ButtonLink>
             </li>
           );
         })}
