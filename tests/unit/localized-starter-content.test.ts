@@ -96,4 +96,49 @@ describe("localized starter content variants", () => {
       },
     ]);
   });
+
+  test("projects the use-case pages into generated docs navigation with stable canonical ids", () => {
+    const { records, variantBindings } =
+      loadStarterContentRecords(CONTENT_ROOT);
+
+    const navigation = projectDocsShellNavigation(records, { variantBindings });
+    const useCaseSection = navigation.sections.find(
+      (section) => section.id === "use cases",
+    );
+
+    expect(useCaseSection).toEqual({
+      id: "use cases",
+      label: "Use cases",
+      pages: [
+        {
+          canonicalId: "doc/pr-review-factory",
+          label: "PR Review Factory",
+          href: "/docs/pr-review-factory",
+          order: 3,
+          localeProjection: {
+            canonicalPageId: "doc/pr-review-factory",
+            canonicalLocale: "en",
+            requestedLocale: "en",
+            resolvedLocale: "en",
+            availableLocales: ["en"],
+            fellBackToCanonicalLocale: false,
+          },
+        },
+        {
+          canonicalId: "doc/release-readiness-factory",
+          label: "Release Readiness Factory",
+          href: "/docs/release-readiness-factory",
+          order: 4,
+          localeProjection: {
+            canonicalPageId: "doc/release-readiness-factory",
+            canonicalLocale: "en",
+            requestedLocale: "en",
+            resolvedLocale: "en",
+            availableLocales: ["en"],
+            fellBackToCanonicalLocale: false,
+          },
+        },
+      ],
+    });
+  });
 });

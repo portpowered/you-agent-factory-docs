@@ -148,6 +148,63 @@ describe("public search artifact generation", () => {
     expect(frenchEntry?.canonicalLocale).toBe("en");
   });
 
+  test("includes the use-case pages with stable canonical ids, routes, and searchable metadata", () => {
+    const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
+
+    const prReviewEntry = artifact.entries.find(
+      (entry) => entry.id === "doc/pr-review-factory@en",
+    );
+    const releaseReadinessEntry = artifact.entries.find(
+      (entry) => entry.id === "doc/release-readiness-factory@en",
+    );
+
+    expect(prReviewEntry).toMatchObject({
+      id: "doc/pr-review-factory@en",
+      canonicalId: "doc/pr-review-factory",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/pr-review-factory",
+      title: "PR Review Factory",
+      section: "use cases",
+      searchPriority: 6,
+    });
+    expect(prReviewEntry?.headings).toEqual([
+      "PR Review Factory",
+      "What this workflow is for",
+      "Who participates",
+      "What enters the workflow",
+      "Main workflow stages",
+      "Review points that matter",
+      "Inputs and outputs",
+      "Why engineering teams use it",
+    ]);
+    expect(prReviewEntry?.body).toContain("review summary");
+
+    expect(releaseReadinessEntry).toMatchObject({
+      id: "doc/release-readiness-factory@en",
+      canonicalId: "doc/release-readiness-factory",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/release-readiness-factory",
+      title: "Release Readiness Factory",
+      section: "use cases",
+      searchPriority: 5,
+    });
+    expect(releaseReadinessEntry?.headings).toEqual([
+      "Release Readiness Factory",
+      "What this workflow is for",
+      "Who participates",
+      "What enters the workflow",
+      "Main workflow stages",
+      "Readiness gates that matter",
+      "Inputs and outputs",
+      "Why engineering teams use it",
+    ]);
+    expect(releaseReadinessEntry?.body).toContain("readiness summary");
+  });
+
   test("writes the generated artifact to disk for build-time inspection", () => {
     const outputDir = mkdtempSync(join(tmpdir(), "public-search-artifact-"));
     const outputPath = join(outputDir, "search/public-search-index.json");
