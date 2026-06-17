@@ -8,7 +8,7 @@ check:
 	bun run lint
 
 test:
-	bun test
+	bun test --max-concurrency 4
 
 build:
 	bun run build

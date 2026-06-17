@@ -25,6 +25,19 @@ describe("early foundation quality gate failing-path proof", () => {
     expect(result.stderr).toContain("canonicalLocale");
   });
 
+  test("validate:content blocks public content graph or artifact drift regressions", () => {
+    const result = runValidationScript(
+      "validate:content",
+      "broken-public-content",
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Public content validation failed");
+    expect(result.stderr).toContain(
+      "Generated localized search artifact is missing",
+    );
+  });
+
   test("make quality-gate fails fast when localization validation regresses", () => {
     const result = runMake("quality-gate", {
       env: {

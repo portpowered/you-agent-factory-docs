@@ -5,7 +5,7 @@
 - Root `Makefile` is the shared entrypoint for local development and CI: `setup`, `check`, `test`, `build`, and `quality-gate`.
 - `make quality-gate` is the authoritative early enforcement path; see `docs/internal/processes/early-quality-gate-enforcement-foundation-relevant-files.md`.
 - `make setup` runs `bun install`.
-- `make check` runs `bun run typecheck` then `bun run lint` (Biome).
+- `make check` runs `bun run typecheck` followed by `bun run lint` (Biome); content validation is enforced through `make quality-gate`.
 - `make test` runs `bun test` directly (not a separate test runner).
 - `make build` runs `bun run build` (Next.js production build) and fails when the static export directory `out/` is missing after the build.
 
