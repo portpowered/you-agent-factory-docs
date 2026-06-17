@@ -23,6 +23,7 @@
 
 - `tests/unit/root-workflow.test.ts` uses `make -n` to prove each target delegates through the Bun-first command path and runs `make check` as a smoke test.
 - `tests/unit/root-command-path.test.ts` runs `make setup`, `make check`, `make test`, and `make build` from the repository root and asserts observable CLI success outcomes.
+- Long-running root command-path checks need explicit timeout budgets that match real command latency on a clean workspace: use at least 30 seconds for `make check` assertions that trigger `next typegen`, and at least 300 seconds for nested `make test` assertions that rerun the full suite through the root workflow.
 - `tests/unit/automation-parity.test.ts` behaviorally proves automation parity by executing the same ordered root `make` targets CI uses (`setup`, `check`, `build`), asserting `make test` delegates to `bun test` via `make -n`, and verifying failures surface through the root command path.
 - `tests/unit/contributor-guidance.test.ts` behaviorally proves contributor-facing observable outcomes for each root command (dependency install, verification output, `bun test` delegation, static export output) without reading `README.md` or workflow YAML; `make build` assertions should run under the shared static-export build lock because other suites also mutate `.next/` and `out/`.
 - `tests/helpers/make.ts` and `tests/helpers/make-target.ts` centralize Makefile invocations for contributor and automation parity tests.
