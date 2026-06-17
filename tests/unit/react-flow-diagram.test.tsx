@@ -1,13 +1,12 @@
 import { describe, expect, mock, test } from "bun:test";
 import { act, render, screen, waitFor, within } from "@testing-library/react";
-import { useEffect } from "react";
 import { FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM } from "../../src/content/docs-diagrams";
 
-const fitViewCalls: unknown[] = [];
 const resizeObserverEntries: Array<{
   callback: ResizeObserverCallback;
   observedElements: Element[];
 }> = [];
+const stageStyleSnapshots: string[] = [];
 
 class MockResizeObserver {
   #entry: {
@@ -48,20 +47,10 @@ mock.module("@xyflow/react", () => ({
   ReactFlow: ({
     children,
     nodes,
-    onInit,
   }: {
     children?: React.ReactNode;
     nodes: Array<{ id: string; data: { label: React.ReactNode } }>;
-    onInit?: (instance: { fitView: (options: unknown) => void }) => void;
   }) => {
-    useEffect(() => {
-      onInit?.({
-        fitView(options) {
-          fitViewCalls.push(options);
-        },
-      });
-    }, [onInit]);
-
     return (
       <div className="react-flow">
         <div className="react-flow__viewport">
@@ -83,16 +72,23 @@ const { ReactFlowDiagram } = await import(
 );
 
 describe("ReactFlowDiagram", () => {
-  test("re-fits the graph after the diagram container resizes", async () => {
-    fitViewCalls.length = 0;
+  test("reprojects the graph viewport after the diagram container resizes", async () => {
     resizeObserverEntries.length = 0;
+    stageStyleSnapshots.length = 0;
 
     render(
       <ReactFlowDiagram definition={FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM} />,
     );
 
     await waitFor(() => {
-      expect(fitViewCalls.length).toBeGreaterThan(0);
+      const stage = document.querySelector(".docs-diagram__react-flow-stage");
+      const transform = stage?.getAttribute("style") ?? "";
+
+      if (transform) {
+        stageStyleSnapshots.push(transform);
+      }
+
+      expect(stageStyleSnapshots.length).toBeGreaterThan(0);
     });
 
     expect(resizeObserverEntries).toHaveLength(1);
@@ -105,25 +101,31 @@ describe("ReactFlowDiagram", () => {
     );
     expect(resizeObserverEntries[0]?.observedElements).toContain(graphic);
 
-    fitViewCalls.length = 0;
+    const initialStageStyle = stageStyleSnapshots.at(-1);
 
     act(() => {
-      resizeObserverEntries[0]?.callback([], {} as ResizeObserver);
+      resizeObserverEntries[0]?.callback(
+        [
+          {
+            contentRect: {
+              width: 280,
+              height: 320,
+            },
+          } as ResizeObserverEntry,
+        ],
+        {} as ResizeObserver,
+      );
     });
 
     await waitFor(() => {
-      expect(fitViewCalls).toEqual([
-        {
-          padding: 0.2,
-          minZoom: 0.3,
-        },
-      ]);
+      const stage = document.querySelector(".docs-diagram__react-flow-stage");
+      expect(stage?.getAttribute("style")).not.toEqual(initialStageStyle);
     });
   });
 
   test("renders the workflow graph with accessible labels and checked-in source", () => {
-    fitViewCalls.length = 0;
     resizeObserverEntries.length = 0;
+    stageStyleSnapshots.length = 0;
 
     render(
       <ReactFlowDiagram definition={FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM} />,

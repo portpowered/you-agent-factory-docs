@@ -8,40 +8,18 @@ import type {
 import {
   Background,
   type Edge,
-  type FitViewOptions,
   MarkerType,
   type Node,
   type NodeHandle,
   Position,
   ReactFlow,
-  type ReactFlowInstance,
 } from "@xyflow/react";
 import type { ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type ReactFlowDiagramProps = {
   definition: ReactFlowDiagramDefinition;
 };
-
-const FIT_VIEW_OPTIONS = {
-  padding: 0.2,
-  minZoom: 0.3,
-} satisfies FitViewOptions;
-
-function scheduleFitView(callback: () => void) {
-  if (typeof window === "undefined") {
-    callback();
-    return () => undefined;
-  }
-
-  const frameId = window.requestAnimationFrame(() => {
-    callback();
-  });
-
-  return () => {
-    window.cancelAnimationFrame(frameId);
-  };
-}
 
 function toPosition(position: DiagramPortPosition): Position {
   switch (position) {
@@ -184,50 +162,82 @@ function createSourcePreview(definition: ReactFlowDiagramDefinition) {
   );
 }
 
+function projectStageScale(
+  definition: ReactFlowDiagramDefinition,
+  width: number,
+  height: number,
+): {
+  scale: number;
+  x: number;
+  y: number;
+} {
+  const padding = Math.max(32, Math.min(width, height) * 0.12);
+  const availableWidth = Math.max(width - padding * 2, 1);
+  const availableHeight = Math.max(height - padding * 2, 1);
+  const zoom = Math.min(
+    availableWidth / definition.viewport.width,
+    availableHeight / definition.viewport.height,
+    1,
+  );
+  const scaledWidth = definition.viewport.width * zoom;
+  const scaledHeight = definition.viewport.height * zoom;
+
+  return {
+    scale: zoom,
+    x: (width - scaledWidth) / 2,
+    y: (height - scaledHeight) / 2,
+  };
+}
+
 export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
   const nodes = definition.nodes.map(toReactFlowNode);
   const edges = definition.edges.map(toReactFlowEdge);
   const sourcePreview = createSourcePreview(definition);
   const graphicRef = useRef<HTMLDivElement>(null);
-  const [graphInstance, setGraphInstance] = useState<ReactFlowInstance | null>(
-    null,
-  );
+  const [frameSize, setFrameSize] = useState(definition.viewport);
   const titleId = `${definition.title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")}-title`;
   const descriptionId = `${titleId}-description`;
   const sourceId = `${titleId}-source`;
+  const stageProjection = useMemo(
+    () => projectStageScale(definition, frameSize.width, frameSize.height),
+    [definition, frameSize.height, frameSize.width],
+  );
 
   useEffect(() => {
-    if (!graphInstance) {
+    if (typeof ResizeObserver === "undefined" || !graphicRef.current) {
       return;
     }
 
-    let cancelScheduledFit = scheduleFitView(() => {
-      graphInstance.fitView(FIT_VIEW_OPTIONS);
-    });
+    const resizeObserver = new ResizeObserver((entries) => {
+      const nextEntry = entries[0];
 
-    if (typeof ResizeObserver === "undefined" || !graphicRef.current) {
-      return () => {
-        cancelScheduledFit();
-      };
-    }
+      if (!nextEntry) {
+        return;
+      }
 
-    const resizeObserver = new ResizeObserver(() => {
-      cancelScheduledFit();
-      cancelScheduledFit = scheduleFitView(() => {
-        graphInstance.fitView(FIT_VIEW_OPTIONS);
-      });
+      const nextWidth = Math.round(nextEntry.contentRect.width);
+      const nextHeight = Math.round(nextEntry.contentRect.height);
+
+      if (nextWidth <= 0 || nextHeight <= 0) {
+        return;
+      }
+
+      setFrameSize((current) =>
+        current.width === nextWidth && current.height === nextHeight
+          ? current
+          : { width: nextWidth, height: nextHeight },
+      );
     });
 
     resizeObserver.observe(graphicRef.current);
 
     return () => {
-      cancelScheduledFit();
       resizeObserver.disconnect();
     };
-  }, [graphInstance]);
+  }, []);
 
   return (
     <figure
@@ -248,39 +258,49 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
           className="docs-diagram__graphic docs-diagram__graphic--react-flow"
           ref={graphicRef}
         >
-          <ReactFlow
-            ariaLabelConfig={{
-              "node.a11yDescription.default":
-                "Press tab to inspect the next workflow node in this documentation graph.",
-              "edge.a11yDescription.default":
-                "Press tab to inspect the next workflow relationship in this documentation graph.",
+          <div
+            className="docs-diagram__react-flow-stage"
+            style={{
+              width: `${definition.viewport.width}px`,
+              height: `${definition.viewport.height}px`,
+              transform: `translate(${stageProjection.x}px, ${stageProjection.y}px) scale(${stageProjection.scale})`,
             }}
-            autoPanOnNodeFocus={false}
-            colorMode="light"
-            edges={edges}
-            edgesFocusable
-            elementsSelectable={false}
-            fitView
-            fitViewOptions={FIT_VIEW_OPTIONS}
-            maxZoom={1.1}
-            minZoom={0.3}
-            nodes={nodes}
-            nodesConnectable={false}
-            nodesDraggable={false}
-            nodesFocusable
-            panOnDrag={false}
-            panOnScroll={false}
-            preventScrolling={false}
-            onInit={setGraphInstance}
-            zoomOnDoubleClick={false}
-            zoomOnPinch={false}
-            zoomOnScroll={false}
           >
-            <Background
-              color="color-mix(in srgb, var(--landing-accent) 22%, transparent)"
-              gap={20}
-            />
-          </ReactFlow>
+            <ReactFlow
+              ariaLabelConfig={{
+                "node.a11yDescription.default":
+                  "Press tab to inspect the next workflow node in this documentation graph.",
+                "edge.a11yDescription.default":
+                  "Press tab to inspect the next workflow relationship in this documentation graph.",
+              }}
+              autoPanOnNodeFocus={false}
+              colorMode="light"
+              edges={edges}
+              edgesFocusable
+              elementsSelectable={false}
+              maxZoom={1}
+              minZoom={1}
+              nodes={nodes}
+              nodesConnectable={false}
+              nodesDraggable={false}
+              nodesFocusable
+              panOnDrag={false}
+              panOnScroll={false}
+              preventScrolling={false}
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+              zoomOnDoubleClick={false}
+              zoomOnPinch={false}
+              zoomOnScroll={false}
+            >
+              <Background
+                color="color-mix(in srgb, var(--landing-accent) 22%, transparent)"
+                gap={20}
+              />
+            </ReactFlow>
+          </div>
         </div>
       </div>
 

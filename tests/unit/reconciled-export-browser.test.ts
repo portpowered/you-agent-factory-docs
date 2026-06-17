@@ -1,6 +1,10 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { type Browser, type Page, chromium } from "@playwright/test";
 import {
+  FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM,
+  FACTORY_WORKFLOW_MERMAID_DIAGRAM,
+} from "../../src/content/docs-diagrams";
+import {
   DOCS_ENTRY_ROUTE,
   PROJECT_NAME,
   PROJECT_TAGLINE,
@@ -24,6 +28,8 @@ import {
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
 import { getTestPort } from "../helpers/test-port";
+
+const GRAPH_FRAME_TOLERANCE_PX = 24;
 
 describe("reconciled baseline browser export", () => {
   const port = getTestPort(3786, "RECONCILED_EXPORT_BROWSER_TEST_PORT");
@@ -92,6 +98,14 @@ describe("reconciled baseline browser export", () => {
       expect(await page.getByText(DOCS_SHELL_FRAMING_TEXT).isVisible()).toBe(
         true,
       );
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: enMessages.docs.examplesHeading,
+          })
+          .isVisible(),
+      ).toBe(true);
       expect(
         await page.getByRole("navigation", { name: "Guides" }).isVisible(),
       ).toBe(true);
@@ -186,6 +200,82 @@ describe("reconciled baseline browser export", () => {
           .getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE })
           .isVisible(),
       ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("docs diagram examples stay visible after desktop-to-mobile resize", async () => {
+    const page = await browser.newPage({
+      viewport: { width: 1440, height: 1100 },
+    });
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const mermaidFigure = page.getByRole("figure", {
+        name: FACTORY_WORKFLOW_MERMAID_DIAGRAM.title,
+      });
+      const reactFlowFigure = page.getByRole("figure", {
+        name: FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM.title,
+      });
+
+      await mermaidFigure.locator(".docs-diagram__graphic svg").waitFor({
+        timeout: 10_000,
+      });
+
+      expect(
+        await mermaidFigure.getByText("Mermaid source of truth").isVisible(),
+      ).toBe(true);
+      expect(
+        await reactFlowFigure
+          .getByText("React Flow source of truth")
+          .isVisible(),
+      ).toBe(true);
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(200);
+
+      const graphFrame = reactFlowFigure.locator(
+        ".docs-diagram__graphic--react-flow",
+      );
+      const frameBox = await graphFrame.boundingBox();
+
+      expect(frameBox).toBeTruthy();
+
+      for (const nodeTitle of [
+        "Authored content",
+        "Factory executor",
+        "Verification lane",
+        "Docs surface",
+      ]) {
+        const node = graphFrame.getByText(nodeTitle, { exact: true });
+        const nodeBox = await node.boundingBox();
+
+        expect(await node.isVisible()).toBe(true);
+        expect(nodeBox).toBeTruthy();
+
+        if (!frameBox || !nodeBox) {
+          continue;
+        }
+
+        expect(nodeBox.x).toBeGreaterThanOrEqual(
+          frameBox.x - GRAPH_FRAME_TOLERANCE_PX,
+        );
+        expect(nodeBox.x + nodeBox.width).toBeLessThanOrEqual(
+          frameBox.x + frameBox.width + GRAPH_FRAME_TOLERANCE_PX,
+        );
+        expect(nodeBox.y).toBeGreaterThanOrEqual(
+          frameBox.y - GRAPH_FRAME_TOLERANCE_PX,
+        );
+        expect(nodeBox.y + nodeBox.height).toBeLessThanOrEqual(
+          frameBox.y + frameBox.height + GRAPH_FRAME_TOLERANCE_PX,
+        );
+      }
     } finally {
       await page.close();
     }
