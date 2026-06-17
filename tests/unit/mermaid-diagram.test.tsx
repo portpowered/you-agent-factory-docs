@@ -69,4 +69,40 @@ describe("MermaidDiagram", () => {
       "Mermaid rendering failed: Parse error",
     );
   });
+
+  test("reprojects the checked-in definition when authored source changes", async () => {
+    const { rerender } = render(
+      <MermaidDiagram
+        definition={"flowchart LR\nA[Author] --> B[Review]"}
+        description="A docs-owned Mermaid workflow example."
+        loader={successfulLoader}
+        title="Workflow review loop"
+      />,
+    );
+
+    const initialGraphic = await screen.findByRole("img", {
+      name: "Workflow review loop",
+    });
+
+    expect(initialGraphic.innerHTML).toContain("Rendered");
+
+    rerender(
+      <MermaidDiagram
+        definition={"flowchart LR\nA[Author] --> B[Publish]"}
+        description="An updated docs-owned Mermaid workflow example."
+        loader={successfulLoader}
+        title="Workflow review loop"
+      />,
+    );
+
+    expect(
+      screen.getByText("Rendering Mermaid diagram from checked-in source…"),
+    ).toBeTruthy();
+
+    await screen.findByText(/A\[Author\] --> B\[Publish\]/);
+    expect(renderMermaid).toHaveBeenCalledWith(
+      expect.stringContaining("-diagram"),
+      "flowchart LR\nA[Author] --> B[Publish]",
+    );
+  });
 });

@@ -12,26 +12,42 @@ describe("ReactFlowDiagram", () => {
       <ReactFlowDiagram definition={FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM} />,
     );
 
+    const figure = screen.getByRole("figure", {
+      name: FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM.title,
+    });
+
     expect(
-      screen.getByRole("heading", {
+      within(figure).getByRole("heading", {
         level: 2,
         name: FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM.title,
       }),
     ).toBeTruthy();
     expect(
-      screen.getByText(FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM.description),
+      within(figure).getByText(
+        FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM.description,
+      ),
     ).toBeTruthy();
 
-    const graphic = screen.getByLabelText(
+    const graphic = within(figure).getByLabelText(
       FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM.title,
     );
     expect(graphic.querySelector(".react-flow")).toBeTruthy();
 
-    expect(screen.getByText("React Flow source of truth")).toBeTruthy();
-    expect(screen.getByText(/"title": "Factory executor"/)).toBeTruthy();
-    expect(screen.getByText(/"label": "mergeable output"/)).toBeTruthy();
+    expect(within(figure).getByText("React Flow source of truth")).toBeTruthy();
+    expect(within(figure).getByText(/"viewport": {/)).toBeTruthy();
+    expect(
+      within(figure).getByText(/"title": "Factory executor"/),
+    ).toBeTruthy();
+    expect(
+      within(figure).getByText(/"label": "mergeable output"/),
+    ).toBeTruthy();
 
     const node = within(graphic).getByText("Factory executor");
     expect(node).toBeTruthy();
+    expect(
+      within(graphic).getByText(
+        "Implements one story, runs checks, and keeps the branch pushable.",
+      ),
+    ).toBeTruthy();
   });
 });

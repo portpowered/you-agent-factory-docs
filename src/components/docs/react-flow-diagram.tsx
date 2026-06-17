@@ -163,12 +163,24 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
   const nodes = definition.nodes.map(toReactFlowNode);
   const edges = definition.edges.map(toReactFlowEdge);
   const sourcePreview = createSourcePreview(definition);
+  const titleId = `${definition.title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}-title`;
+  const descriptionId = `${titleId}-description`;
+  const sourceId = `${titleId}-source`;
 
   return (
-    <figure className="docs-diagram">
+    <figure
+      aria-describedby={`${descriptionId} ${sourceId}`}
+      aria-labelledby={titleId}
+      className="docs-diagram"
+    >
       <figcaption className="docs-diagram__header">
-        <h2>{definition.title}</h2>
-        <p className="docs-diagram__description">{definition.description}</p>
+        <h2 id={titleId}>{definition.title}</h2>
+        <p className="docs-diagram__description" id={descriptionId}>
+          {definition.description}
+        </p>
       </figcaption>
 
       <div className="docs-diagram__surface">
@@ -190,7 +202,6 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
             elementsSelectable={false}
             fitView
             fitViewOptions={{ padding: 0.2, minZoom: 0.3 }}
-            height={definition.viewport.height}
             maxZoom={1.1}
             minZoom={0.3}
             nodes={nodes}
@@ -200,7 +211,6 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
             panOnDrag={false}
             panOnScroll={false}
             preventScrolling={false}
-            width={definition.viewport.width}
             zoomOnDoubleClick={false}
             zoomOnPinch={false}
             zoomOnScroll={false}
@@ -214,7 +224,9 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
       </div>
 
       <div className="docs-diagram__source">
-        <p className="docs-diagram__source-label">React Flow source of truth</p>
+        <p className="docs-diagram__source-label" id={sourceId}>
+          React Flow source of truth
+        </p>
         <pre className="docs-diagram__code">
           <code>{sourcePreview}</code>
         </pre>
