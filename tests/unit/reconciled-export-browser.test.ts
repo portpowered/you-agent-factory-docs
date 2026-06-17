@@ -106,10 +106,10 @@ describe("reconciled baseline browser export", () => {
           })
           .isVisible(),
       ).toBe(true);
-      expect(await page.getByText("Guides", { exact: true }).isVisible()).toBe(
-        true,
-      );
-      expect(await page.getByRole("complementary").isVisible()).toBe(true);
+      expect(
+        await page.getByRole("navigation", { name: "Guides" }).isVisible(),
+      ).toBe(true);
+      expect(await page.getByRole("banner").isVisible()).toBe(true);
       expect(await page.getByRole("main").isVisible()).toBe(true);
     } finally {
       await page.close();
@@ -195,6 +195,50 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("configuration overview renders clearly inside the docs shell", async () => {
+    const page = await browser.newPage();
+    const configurationUrl = new URL(
+      withBasePath("/docs/configuration"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(configurationUrl, { waitUntil: "domcontentloaded" });
+
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 1,
+            name: "Configuration",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", { name: "Setup" })
+          .getByRole("link", { name: "Configuration" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Configuration is the contract between the CLI command you run and the workflow behavior the factory will execute.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "How configuration changes execution",
+          })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("homepage docs CTA navigates to the docs shell entry route", async () => {
     const page = await browser.newPage();
 
@@ -231,7 +275,7 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
-      await page.getByRole("link", { name: PROJECT_NAME }).click();
+      await page.getByRole("link", { name: HOME_CTA_LABEL }).click();
 
       await page.waitForURL(
         new RegExp(
