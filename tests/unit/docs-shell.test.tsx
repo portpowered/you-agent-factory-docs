@@ -45,6 +45,30 @@ const generatedNavigation: DocsShellNavigationInput = {
           href: "/docs/getting-started",
           order: 1,
         },
+        {
+          canonicalId: "doc/concepts",
+          label: "Core concepts",
+          href: "/docs/concepts",
+          order: 2,
+        },
+      ],
+    },
+    {
+      id: "setup",
+      label: "Setup",
+      pages: [
+        {
+          canonicalId: "doc/installation",
+          label: "Installation",
+          href: "/docs/installation",
+          order: 1,
+        },
+        {
+          canonicalId: "doc/configuration",
+          label: "Configuration",
+          href: "/docs/configuration",
+          order: 2,
+        },
       ],
     },
   ],
@@ -86,8 +110,32 @@ describe("docs shell rendering", () => {
     expect(
       within(screen.getByRole("banner")).getByText(PROJECT_NAME),
     ).toBeTruthy();
-    expect(screen.getByText("Guides")).toBeTruthy();
-    expect(screen.getByText("Getting started")).toBeTruthy();
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    const setupNav = screen.getByRole("navigation", { name: "Setup" });
+    expect(within(guidesNav).getByText("Guides")).toBeTruthy();
+    expect(within(setupNav).getByText("Setup")).toBeTruthy();
+    expect(within(guidesNav).getByText("Getting started")).toBeTruthy();
+    expect(within(guidesNav).getByText("Core concepts")).toBeTruthy();
+    expect(within(setupNav).getByText("Installation")).toBeTruthy();
+    expect(within(setupNav).getByText("Configuration")).toBeTruthy();
+  });
+
+  test("renders separate navigation landmarks for each generated docs section", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    const setupNav = screen.getByRole("navigation", { name: "Setup" });
+
+    expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
+    expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
   });
 
   test("marks the active generated nav entry and links home and GitHub", async () => {
@@ -160,6 +208,140 @@ describe("docs shell rendering", () => {
     });
 
     expect(gettingStartedLink.getAttribute("aria-current")).toBeNull();
+  });
+
+  test("renders breadcrumb position from generated navigation ancestry on detail pages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const breadcrumbs = screen.getByRole("navigation", {
+      name: enMessages.docs.breadcrumbAriaLabel,
+    });
+    const breadcrumbItems = within(breadcrumbs).getAllByRole("listitem");
+
+    expect(breadcrumbItems).toHaveLength(3);
+
+    const [docsRootItem, sectionItem, currentPageItem] = breadcrumbItems;
+
+    expect(docsRootItem).toBeTruthy();
+    expect(sectionItem).toBeTruthy();
+    expect(currentPageItem).toBeTruthy();
+
+    if (!docsRootItem || !sectionItem || !currentPageItem) {
+      throw new Error("Expected breadcrumb items to be present");
+    }
+
+    expect(
+      within(docsRootItem)
+        .getByRole("link", {
+          name: enMessages.docs.shellTitle,
+        })
+        .getAttribute("href"),
+    ).toBe(DOCS_ENTRY_ROUTE);
+    expect(within(sectionItem).getByText("Guides")).toBeTruthy();
+    expect(
+      within(currentPageItem)
+        .getByText("Getting started")
+        .getAttribute("aria-current"),
+    ).toBe("page");
+  });
+
+  test("marks the docs entry route as the current breadcrumb page", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath={DOCS_ENTRY_ROUTE}
+        navigation={generatedNavigation}
+      >
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const breadcrumbs = screen.getByRole("navigation", {
+      name: enMessages.docs.breadcrumbAriaLabel,
+    });
+    const currentCrumb = within(breadcrumbs).getByText(
+      enMessages.docs.shellTitle,
+    );
+
+    expect(currentCrumb.getAttribute("aria-current")).toBe("page");
+    expect(within(breadcrumbs).queryByRole("link")).toBeNull();
+  });
+
+  test("renders generated previous-next progression across docs detail pages", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const progression = screen.getByRole("navigation", {
+      name: enMessages.docs.progressionAriaLabel,
+    });
+
+    expect(
+      within(progression).queryByRole("link", {
+        name: `${enMessages.docs.previousPagePrefix} Core concepts`,
+      }),
+    ).toBeNull();
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts");
+  });
+
+  test("renders previous progression when the current page is not first in sequence", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell currentPath="/docs/concepts" navigation={generatedNavigation}>
+        <h1>Core concepts</h1>
+      </DocsShell>,
+    );
+
+    const progression = screen.getByRole("navigation", {
+      name: enMessages.docs.progressionAriaLabel,
+    });
+
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.previousPagePrefix} Getting started`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/getting-started");
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Installation`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/installation");
   });
 
   test("marks the code presentation example route as current when active", async () => {
@@ -291,5 +473,127 @@ describe("code presentation example surface", () => {
     const powershellTab = screen.getByRole("tab", { name: "PowerShell" });
     expect(powershellTab.getAttribute("aria-selected")).toBe("true");
     expect(document.activeElement).toBe(powershellTab);
+  });
+});
+
+describe("responsive docs navigation depth", () => {
+  test("exposes multi-section generated docs navigation through shared disclosure on narrow viewports", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const toggle = screen.getByRole("button", {
+      name: enMessages.shell.showDocsNavLabel,
+    });
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
+    expect(screen.queryByRole("navigation", { name: "Setup" })).toBeNull();
+
+    fireEvent.click(toggle);
+
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    const setupNav = screen.getByRole("navigation", { name: "Setup" });
+
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
+    expect(within(guidesNav).getAllByRole("link")).toHaveLength(2);
+    expect(within(setupNav).getAllByRole("link")).toHaveLength(2);
+  });
+
+  test("keeps breadcrumbs and progression reachable in main content on narrow viewports without docs sidebar disclosure", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const breadcrumbs = screen.getByRole("navigation", {
+      name: enMessages.docs.breadcrumbAriaLabel,
+    });
+    const progression = screen.getByRole("navigation", {
+      name: enMessages.docs.progressionAriaLabel,
+    });
+
+    expect(within(breadcrumbs).getByText("Guides")).toBeTruthy();
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts");
+    expect(screen.queryByRole("navigation", { name: "Guides" })).toBeNull();
+  });
+
+  test("keeps responsive disclosure state separate from projected navigation depth", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    const { rerender } = renderWithLocalization(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={generatedNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const toggle = screen.getByRole("button", {
+      name: enMessages.shell.showDocsNavLabel,
+    });
+    fireEvent.click(toggle);
+    expect(screen.getByRole("navigation", { name: "Guides" })).toBeTruthy();
+
+    const alternateNavigation: DocsShellNavigationInput = {
+      sections: [
+        {
+          id: "guides",
+          label: "Guides",
+          pages: [
+            {
+              canonicalId: "doc/getting-started",
+              label: "Getting started",
+              href: "/docs/getting-started",
+              order: 1,
+            },
+            {
+              canonicalId: "doc/concepts",
+              label: "Renamed concepts page",
+              href: "/docs/concepts",
+              order: 2,
+            },
+          ],
+        },
+      ],
+    };
+
+    rerender(
+      <DocsShell
+        currentPath="/docs/getting-started"
+        navigation={alternateNavigation}
+      >
+        <h1>Getting started</h1>
+      </DocsShell>,
+    );
+
+    const guidesNav = screen.getByRole("navigation", { name: "Guides" });
+    expect(
+      within(guidesNav).getByRole("link", { name: "Renamed concepts page" }),
+    ).toBeTruthy();
+    expect(toggle.getAttribute("aria-expanded")).toBe("true");
   });
 });

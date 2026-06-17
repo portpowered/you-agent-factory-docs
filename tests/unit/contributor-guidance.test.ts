@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { dryRunMake } from "../helpers/make";
 import { runMakeTarget } from "../helpers/make-target";
 
@@ -35,7 +36,9 @@ describe("contributor guidance observable outcomes", () => {
   });
 
   test("make build proves the static export by requiring out/", () => {
-    const result = runMakeTarget("build");
+    const result = withStaticExportBuildLock(repoRoot, () =>
+      runMakeTarget("build"),
+    );
     expect(result.status).toBe(0);
     expect(result.output).toMatch(/Exporting/);
     expect(existsSync(join(repoRoot, "out"))).toBe(true);

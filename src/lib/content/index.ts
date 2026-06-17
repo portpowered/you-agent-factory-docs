@@ -80,6 +80,24 @@ export {
 } from "@/lib/content/docs-navigation";
 export { loadDocsShellNavigation } from "@/lib/content/load-docs-navigation";
 export {
+  projectDocsBreadcrumbs,
+  type DocsBreadcrumbItem,
+  type DocsBreadcrumbTrail,
+} from "@/lib/content/docs-breadcrumbs";
+export {
+  projectDocsProgression,
+  type DocsProgressionLink,
+  type DocsProgressionLinks,
+} from "@/lib/content/docs-progression";
+export {
+  parseDocPageBody,
+  projectDocsPageOutline,
+  type DocPageBodyBlock,
+  type DocsPageOutline,
+  type DocsPageOutlineHeading,
+  type ParsedDocPageBody,
+} from "@/lib/content/docs-page-outline";
+export {
   projectLocalizedVariantGroups,
   projectLocalizedVariantIdentity,
   validateLocalizedVariantBindings,

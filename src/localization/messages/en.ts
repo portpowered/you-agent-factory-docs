@@ -19,6 +19,12 @@ export const enMessages = {
   docs: {
     navHeading: "Docs navigation",
     navOverview: "Overview",
+    breadcrumbAriaLabel: "Breadcrumb",
+    progressionAriaLabel: "Page progression",
+    previousPagePrefix: "Previous",
+    nextPagePrefix: "Next",
+    onThisPageLabel: "On this page",
+    pageOutlineAriaLabel: "On this page",
     shellTitle: "Documentation",
     framingText:
       "This is the stable docs entry route. Later navigation, localization, and content systems extend this shell without changing route structure.",

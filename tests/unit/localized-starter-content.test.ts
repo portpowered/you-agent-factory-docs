@@ -65,7 +65,12 @@ describe("localized starter content variants", () => {
     const { records, variantBindings } =
       loadStarterContentRecords(CONTENT_ROOT);
 
-    expect(listPublishedDocSlugs(CONTENT_ROOT)).toEqual(["getting-started"]);
+    expect(listPublishedDocSlugs(CONTENT_ROOT)).toEqual([
+      "concepts",
+      "configuration",
+      "getting-started",
+      "installation",
+    ]);
 
     const navigation = projectDocsShellNavigation(records, { variantBindings });
     const gettingStartedPages = navigation.sections

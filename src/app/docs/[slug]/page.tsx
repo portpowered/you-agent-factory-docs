@@ -1,3 +1,4 @@
+import { DocPageArticle } from "@/components/docs/doc-page-article";
 import { DocsShell } from "@/components/docs/docs-shell";
 import { loadDocPage, loadDocsShellNavigation } from "@/lib/content";
 import { notFound } from "next/navigation";
@@ -25,10 +26,7 @@ export default async function DocPage({ params }: DocPageProps) {
 
   return (
     <DocsShell currentPath={page.record.routePath} navigation={navigation}>
-      <article aria-labelledby="doc-page-title">
-        <h1 id="doc-page-title">{page.title}</h1>
-        <div className="docs-page__body">{page.body}</div>
-      </article>
+      <DocPageArticle body={page.body} title={page.title} />
     </DocsShell>
   );
 }

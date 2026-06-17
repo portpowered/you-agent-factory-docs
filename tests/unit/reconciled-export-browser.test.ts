@@ -13,11 +13,13 @@ import {
   GITHUB_REPO_URL,
   HOME_CTA_LABEL,
   LANDING_VALUE_STATEMENT,
+  sharedShellConfig,
 } from "../../src/lib/shell";
 import { withBasePath } from "../../src/lib/site";
+import { enMessages } from "../../src/localization/messages/en";
 import {
   type StaticExportServer,
-  buildStaticExport,
+  ensureStaticExportBuilt,
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
@@ -29,7 +31,7 @@ describe("reconciled baseline browser export", () => {
   let browser: Browser;
 
   beforeAll(async () => {
-    buildStaticExport();
+    await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
     browser = await chromium.launch();
@@ -182,6 +184,67 @@ describe("reconciled baseline browser export", () => {
       expect(
         await page
           .getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("docs navigation depth remains usable at a mobile viewport", async () => {
+    const page = await browser.newPage({
+      viewport: { width: 390, height: 844 },
+    });
+    const gettingStartedUrl = new URL(
+      withBasePath("/docs/getting-started"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(gettingStartedUrl, { waitUntil: "domcontentloaded" });
+      await page
+        .locator('.shared-shell[data-shell-viewport="mobile"]')
+        .waitFor({ timeout: 10_000 });
+
+      const breadcrumbs = page.getByRole("navigation", {
+        name: enMessages.docs.breadcrumbAriaLabel,
+      });
+      const progression = page.getByRole("navigation", {
+        name: enMessages.docs.progressionAriaLabel,
+      });
+      const docsAsidePanel = page.locator("#shared-shell-docs-aside");
+      const guidesAsideNav = docsAsidePanel.getByRole("navigation", {
+        name: "Guides",
+      });
+
+      expect(await breadcrumbs.isVisible()).toBe(true);
+      expect(await breadcrumbs.getByText("Guides").isVisible()).toBe(true);
+      expect(
+        await progression
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+          })
+          .isVisible(),
+      ).toBe(true);
+
+      const docsNavToggle = page.getByRole("button", {
+        name: sharedShellConfig.responsive.docsNavigationDisclosure.openLabel,
+      });
+      expect(await docsNavToggle.getAttribute("aria-expanded")).toBe("false");
+      expect(await docsAsidePanel.getAttribute("hidden")).not.toBeNull();
+      expect(await guidesAsideNav.isVisible()).toBe(false);
+
+      await docsNavToggle.click();
+
+      expect(await guidesAsideNav.isVisible()).toBe(true);
+      expect(
+        await docsAsidePanel
+          .getByRole("navigation", { name: "Setup" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await guidesAsideNav
+          .getByRole("link", { name: "Core concepts" })
           .isVisible(),
       ).toBe(true);
     } finally {

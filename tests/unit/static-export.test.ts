@@ -18,7 +18,7 @@ import {
 import { enMessages } from "../../src/localization/messages/en";
 import { fetchHttp } from "../helpers/http";
 import {
-  buildStaticExport,
+  ensureStaticExportBuilt,
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
@@ -39,13 +39,13 @@ describe("served static export navigation", () => {
   let server: ReturnType<typeof startStaticExportServer>;
 
   beforeAll(async () => {
-    buildStaticExport();
+    await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
   }, 120_000);
 
   afterAll(() => {
-    server.stop();
+    server?.stop();
   });
 
   test("serves homepage, docs entry, and code presentation example routes under the configured base path", async () => {
@@ -163,7 +163,11 @@ describe("served static export navigation", () => {
     );
 
     expect(docsHtml).toContain("Getting started");
+    expect(docsHtml).toContain("Core concepts");
+    expect(docsHtml).toContain("Installation");
+    expect(docsHtml).toContain("Configuration");
     expect(docsHtml).toContain("Guides");
+    expect(docsHtml).toContain("Setup");
     expect(new RegExp(`href="${gettingStartedPath}/?"`).test(docsHtml)).toBe(
       true,
     );
@@ -198,5 +202,86 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain(
       "Starter documentation content that proves the canonical content model.",
     );
+    expect(docPageHtml).toContain(
+      `aria-label="${enMessages.docs.breadcrumbAriaLabel}"`,
+    );
+    expect(docPageHtml).toContain(enMessages.docs.shellTitle);
+    expect(docPageHtml).toContain("Guides");
+    expect(docPageHtml).toContain('aria-current="page"');
+    expect(docPageHtml).toContain(
+      `aria-label="${enMessages.docs.progressionAriaLabel}"`,
+    );
+    expect(docPageHtml).toContain(enMessages.docs.nextPagePrefix);
+    expect(docPageHtml).toContain("Core concepts");
+    expect(docPageHtml).toContain('rel="next"');
+    expect(docPageHtml).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(docPageHtml).toContain('href="#prerequisites"');
+    expect(docPageHtml).toContain('id="prerequisites"');
+    expect(docPageHtml).toContain("Prerequisites");
+    expect(docPageHtml).toContain("Next steps");
+  }, 30_000);
+
+  test("serves doc pages without page-outline navigation when headings are insufficient", async () => {
+    const installationResponse = await fetchHttp(
+      new URL(withBasePath("/docs/installation"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(installationResponse.status).toBe(200);
+
+    const installationHtml = await installationResponse.text();
+
+    expect(installationHtml).toContain("Installation");
+    expect(installationHtml).not.toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+  }, 30_000);
+
+  test("follows generated previous-next progression across docs pages", async () => {
+    const gettingStartedResponse = await fetchHttp(
+      new URL(withBasePath("/docs/getting-started"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const gettingStartedHtml = await gettingStartedResponse.text();
+    const conceptsPath = withBasePath("/docs/concepts").replace(/\//g, "\\/");
+
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
+      ).test(gettingStartedHtml),
+    ).toBe(true);
+
+    const nextHrefMatch = gettingStartedHtml.match(
+      new RegExp(
+        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
+      ),
+    );
+    const nextHref = nextHrefMatch?.[1] ?? nextHrefMatch?.[2];
+
+    expect(nextHref).toBeTruthy();
+
+    const conceptsResponse = await fetchHttp(
+      new URL(nextHref ?? "", server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(conceptsResponse.status).toBe(200);
+
+    const conceptsHtml = await conceptsResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+
+    expect(conceptsHtml).toContain("Core concepts");
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${gettingStartedPath}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${gettingStartedPath}/?)"`,
+      ).test(conceptsHtml),
+    ).toBe(true);
+    expect(conceptsHtml).toContain(enMessages.docs.previousPagePrefix);
+    expect(conceptsHtml).toContain("Getting started");
   }, 30_000);
 });
