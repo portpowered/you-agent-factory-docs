@@ -1,9 +1,10 @@
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
-  type PublicContentGraph,
-  type PublicLocalizedSearchDocument,
-  buildPublicLocalizedSearchArtifact,
-  getPublicContentGraph,
-} from "@/lib/content/public-content";
+  DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH,
+  parsePublicSearchArtifact,
+} from "@/lib/content/load-search-artifact";
 import type { StarterContentDescriptor } from "@/lib/content/starter";
 import {
   type ShellAccessibilitySnapshot,
@@ -44,19 +45,25 @@ section: guides
 # Invalid fixture
 `,
   }),
-  "broken-public-content": (): {
-    graph: PublicContentGraph;
-    localizedSearchArtifact: PublicLocalizedSearchDocument[];
-  } => {
-    const graph = getPublicContentGraph();
-
-    return {
-      graph,
-      localizedSearchArtifact: buildPublicLocalizedSearchArtifact(graph).filter(
-        (entry) =>
-          !(entry.canonicalId === "docs.quickstart" && entry.locale === "fr"),
+  "broken-public-content": (): { artifactPath: string } => {
+    const artifact = parsePublicSearchArtifact(
+      readFileSync(DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH, "utf8"),
+    );
+    const tempRoot = mkdtempSync(join(tmpdir(), "broken-public-content-"));
+    const artifactPath = join(tempRoot, "public-search-index.json");
+    const brokenArtifact = {
+      ...artifact,
+      entries: artifact.entries.filter(
+        (entry) => entry.id !== "doc/getting-started@fr",
       ),
     };
+
+    writeFileSync(
+      artifactPath,
+      JSON.stringify(brokenArtifact, null, 2),
+      "utf8",
+    );
+    return { artifactPath };
   },
   "broken-shell-accessibility": (): ShellAccessibilitySnapshot => ({
     landing: {
@@ -113,13 +120,21 @@ export function resolveStarterContentDescriptorForGate(): StarterContentDescript
   return null;
 }
 
-export function resolvePublicContentValidationFixtureForGate(): {
-  graph: PublicContentGraph;
-  localizedSearchArtifact: PublicLocalizedSearchDocument[];
-} | null {
+export function resolveContentRootForGate(): string | null {
+  return process.env.PUBLIC_CONTENT_ROOT ?? null;
+}
+
+export function resolveCheckedInPublicSearchArtifactPathForGate():
+  | string
+  | null {
+  if (process.env.PUBLIC_SEARCH_ARTIFACT_PATH) {
+    return process.env.PUBLIC_SEARCH_ARTIFACT_PATH;
+  }
+
   const fixture = readEarlyGateValidationFixture();
   if (fixture === "broken-public-content") {
-    return EARLY_GATE_VALIDATION_FIXTURES["broken-public-content"]();
+    return EARLY_GATE_VALIDATION_FIXTURES["broken-public-content"]()
+      .artifactPath;
   }
 
   return null;
