@@ -223,6 +223,64 @@ Exécutez \`bun install\`.
     }
   });
 
+  test("includes setup-path docs in localized search metadata through the canonical content pipeline", () => {
+    const documents = loadLocalizedSearchDocuments(CONTENT_ROOT);
+    const setupDocuments = documents.filter((document) =>
+      new Set(["doc/introduction", "doc/installation", "doc/quickstart"]).has(
+        document.canonicalId,
+      ),
+    );
+
+    expect(setupDocuments.map((document) => document.id).sort()).toEqual([
+      "doc/installation@en",
+      "doc/introduction@en",
+      "doc/quickstart@en",
+    ]);
+
+    expect(setupDocuments).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: "doc/introduction@en",
+          canonicalId: "doc/introduction",
+          canonicalLocale: "en",
+          availableLocales: ["en"],
+          locale: "en",
+          title: "Introduction",
+          url: "/docs/introduction",
+          section: "setup",
+          searchPriority: 10,
+        }),
+        expect.objectContaining({
+          id: "doc/installation@en",
+          canonicalId: "doc/installation",
+          canonicalLocale: "en",
+          availableLocales: ["en"],
+          locale: "en",
+          title: "Installation",
+          url: "/docs/installation",
+          section: "setup",
+          searchPriority: 8,
+        }),
+        expect.objectContaining({
+          id: "doc/quickstart@en",
+          canonicalId: "doc/quickstart",
+          canonicalLocale: "en",
+          availableLocales: ["en"],
+          locale: "en",
+          title: "Quickstart",
+          url: "/docs/quickstart",
+          section: "setup",
+          searchPriority: 9,
+        }),
+      ]),
+    );
+
+    for (const document of setupDocuments) {
+      expect(document.headings.length).toBeGreaterThan(0);
+      expect(document.body.length).toBeGreaterThan(0);
+    }
+  });
+
   test("builds stable search-document ids from canonical id and locale", () => {
     expect(buildLocalizedSearchDocumentId("doc/getting-started", "en")).toBe(
       "doc/getting-started@en",

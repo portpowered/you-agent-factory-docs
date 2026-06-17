@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import nextConfig from "../../next.config";
+import { loadDocsShellNavigation } from "../../src/lib/content";
 import { PROJECT_TAGLINE } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shared-shell-config";
 import {
@@ -230,6 +231,36 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain("Who this setup path is for");
     expect(docPageHtml).toContain("Why continue into setup");
     expect(docPageHtml).toContain("Continue through setup");
+  }, 30_000);
+
+  test("serves the generated setup-path routes projected by docs navigation", async () => {
+    const setupPages = loadDocsShellNavigation()
+      .sections.find((section) => section.id === "setup")
+      ?.pages.filter((page) =>
+        new Set(["doc/introduction", "doc/installation", "doc/quickstart"]).has(
+          page.canonicalId,
+        ),
+      );
+
+    expect(setupPages?.map((page) => page.canonicalId)).toEqual([
+      "doc/introduction",
+      "doc/installation",
+      "doc/quickstart",
+    ]);
+
+    for (const page of setupPages ?? []) {
+      const response = await fetchHttp(
+        new URL(withBasePath(page.href), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(200);
+
+      const html = await response.text();
+      expect(html).toContain(page.label);
+      expect(html).toContain(enMessages.docs.shellTitle);
+      expect(html).toContain('aria-current="page"');
+    }
   }, 30_000);
 
   test("renders the installation page with repository-supported setup and validation guidance", async () => {
