@@ -9,6 +9,9 @@ import {
 import { type ReactNode, useId } from "react";
 import { ResponsiveContainer } from "recharts";
 
+const DEFAULT_CHART_INITIAL_WIDTH_PX = 640;
+const DEFAULT_CHART_INITIAL_HEIGHT_PX = 320;
+
 export type DocsChartFrameRenderContext<TData extends DocsChartDatum> = {
   data: readonly TData[];
   config: DocsChartConfig<TData>;
@@ -19,6 +22,7 @@ type DocsChartFrameProps<TData extends DocsChartDatum> = {
   data: readonly TData[];
   config: DocsChartConfig<TData>;
   emptyMessage?: string;
+  surfaceMinWidthPx?: number;
   children: (context: DocsChartFrameRenderContext<TData>) => ReactNode;
 };
 
@@ -26,6 +30,7 @@ export function DocsChartFrame<TData extends DocsChartDatum>({
   data,
   config,
   emptyMessage = "No chart data is available yet.",
+  surfaceMinWidthPx,
   children,
 }: DocsChartFrameProps<TData>) {
   const titleId = useId();
@@ -56,17 +61,47 @@ export function DocsChartFrame<TData extends DocsChartDatum>({
       <p className="docs-chart__summary" id={summaryId}>
         {summary}
       </p>
+      <ul aria-label={`${config.title} series`} className="docs-chart__legend">
+        {config.series.map((series) => (
+          <li className="docs-chart__legend-item" key={series.key}>
+            <span
+              aria-hidden="true"
+              className="docs-chart__legend-swatch"
+              style={{ backgroundColor: series.color }}
+            />
+            <span>{series.label}</span>
+          </li>
+        ))}
+      </ul>
       {data.length === 0 ? (
         <output className="docs-chart__empty">{emptyMessage}</output>
       ) : (
-        <div aria-hidden="true" className="docs-chart__surface">
-          <ResponsiveContainer height="100%" width="100%">
-            {children({
-              config,
-              data,
-              isAnimationActive: !prefersReducedMotion,
-            })}
-          </ResponsiveContainer>
+        <div className="docs-chart__surface-shell">
+          <div
+            aria-hidden="true"
+            className="docs-chart__surface"
+            style={
+              surfaceMinWidthPx
+                ? { minWidth: `${surfaceMinWidthPx}px` }
+                : undefined
+            }
+          >
+            <ResponsiveContainer
+              height="100%"
+              initialDimension={{
+                width: surfaceMinWidthPx ?? DEFAULT_CHART_INITIAL_WIDTH_PX,
+                height: DEFAULT_CHART_INITIAL_HEIGHT_PX,
+              }}
+              minHeight={DEFAULT_CHART_INITIAL_HEIGHT_PX}
+              width="100%"
+            >
+              {children({
+                config,
+                data,
+                isAnimationActive: !prefersReducedMotion,
+              })}
+            </ResponsiveContainer>
+          </div>
         </div>
       )}
     </figure>

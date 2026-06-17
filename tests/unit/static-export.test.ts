@@ -48,7 +48,7 @@ describe("served static export navigation", () => {
     server?.stop();
   });
 
-  test("serves homepage, docs entry, and code presentation example routes under the configured base path", async () => {
+  test("serves homepage, docs entry, and reviewer example routes under the configured base path", async () => {
     const homepageResponse = await fetchHttp(server.baseUrl, {
       signal: AbortSignal.timeout(10_000),
     });
@@ -60,10 +60,15 @@ describe("served static export navigation", () => {
       new URL(withBasePath("/docs/examples/code-presentation"), server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
     );
+    const chartExampleResponse = await fetchHttp(
+      new URL(withBasePath("/docs/examples/charts"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
 
     expect(homepageResponse.status).toBe(200);
     expect(docsResponse.status).toBe(200);
     expect(exampleResponse.status).toBe(200);
+    expect(chartExampleResponse.status).toBe(200);
 
     const exampleHtml = await exampleResponse.text();
     expect(exampleHtml).toContain("Code presentation primitives");
@@ -71,6 +76,11 @@ describe("served static export navigation", () => {
     expect(exampleHtml).toContain("Code tabs");
     expect(exampleHtml).toContain("Callouts");
     expect(exampleHtml).toContain("File tree");
+
+    const chartExampleHtml = await chartExampleResponse.text();
+    expect(chartExampleHtml).toContain("Docs chart examples");
+    expect(chartExampleHtml).toContain("Line chart");
+    expect(chartExampleHtml).toContain("Review throughput by hour");
   });
 
   test("follows the homepage docs CTA to the docs shell entry route", async () => {

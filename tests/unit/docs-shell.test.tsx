@@ -2,6 +2,11 @@ import { afterEach, describe, expect, mock, test } from "bun:test";
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import type { DocsShellNavigationInput } from "../../src/lib/content";
 import {
+  CHART_EXAMPLE_ROUTE,
+  DOCS_NAV_CHART_EXAMPLE_LABEL,
+  withChartExampleNavigation,
+} from "../../src/lib/docs-charts";
+import {
   CALLOUT_SECTION_HEADING,
   CODE_BLOCK_SECTION_HEADING,
   CODE_PRESENTATION_EXAMPLE_INTRO,
@@ -74,8 +79,9 @@ const generatedNavigation: DocsShellNavigationInput = {
   ],
 };
 
-const navigationWithCodePresentation =
-  withCodePresentationExampleNavigation(generatedNavigation);
+const navigationWithExamples = withChartExampleNavigation(
+  withCodePresentationExampleNavigation(generatedNavigation),
+);
 
 const { CodePresentationExample } = await import(
   "../../src/components/docs/code-presentation-example"
@@ -146,7 +152,7 @@ describe("docs shell rendering", () => {
     renderWithLocalization(
       <DocsShell
         currentPath="/docs/getting-started"
-        navigation={navigationWithCodePresentation}
+        navigation={navigationWithExamples}
       >
         <h1>Getting started</h1>
       </DocsShell>,
@@ -352,7 +358,7 @@ describe("docs shell rendering", () => {
     renderWithLocalization(
       <DocsShell
         currentPath={CODE_PRESENTATION_EXAMPLE_ROUTE}
-        navigation={navigationWithCodePresentation}
+        navigation={navigationWithExamples}
       >
         <p>Example content</p>
       </DocsShell>,
@@ -366,6 +372,30 @@ describe("docs shell rendering", () => {
     });
 
     expect(codePresentationLink.getAttribute("aria-current")).toBe("page");
+  });
+
+  test("marks the chart example route as current when active", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell
+        currentPath={CHART_EXAMPLE_ROUTE}
+        navigation={navigationWithExamples}
+      >
+        <p>Chart example content</p>
+      </DocsShell>,
+    );
+
+    const examplesNav = screen.getByRole("navigation", {
+      name: CODE_PRESENTATION_EXAMPLE_SECTION_LABEL,
+    });
+    const chartLink = within(examplesNav).getByRole("link", {
+      name: DOCS_NAV_CHART_EXAMPLE_LABEL,
+    });
+
+    expect(chartLink.getAttribute("aria-current")).toBe("page");
   });
 });
 

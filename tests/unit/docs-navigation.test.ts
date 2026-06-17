@@ -323,6 +323,12 @@ section: guides
             href: "/docs/examples/code-presentation",
             order: 1,
           },
+          {
+            canonicalId: "doc/examples/charts",
+            label: "Charts",
+            href: "/docs/examples/charts",
+            order: 2,
+          },
         ],
       },
     ]);
@@ -361,7 +367,7 @@ section: guides
     );
 
     expect(sectionIds).toEqual(["guides", "setup", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(5);
+    expect(pageCount).toBeGreaterThanOrEqual(6);
     expect(
       navigation.sections.some(
         (section) =>
