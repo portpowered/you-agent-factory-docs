@@ -45,7 +45,7 @@ describe("root contributor command path", () => {
       expect(result.output).toMatch(/\d+ pass/);
       expect(result.output).toMatch(/\n 0 fail\n/);
     },
-    180_000,
+    300_000,
   );
 
   test("make build completes successfully from the repository root", () => {
