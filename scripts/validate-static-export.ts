@@ -10,6 +10,7 @@ import { withStaticExportBuildLock } from "@/lib/validation/static-export-build-
 
 const repoRoot = join(import.meta.dir, "..");
 const nextDir = join(repoRoot, ".next");
+const STATIC_EXPORT_LOCK_HELD_ENV = "STATIC_EXPORT_BUILD_LOCK_HELD";
 
 function run(
   command: string,
@@ -48,6 +49,7 @@ const exitCode = withStaticExportBuildLock(repoRoot, () => {
   return run("bun", ["test", "tests/unit/static-export.test.ts"], {
     env: {
       ...process.env,
+      [STATIC_EXPORT_LOCK_HELD_ENV]: "1",
       [STATIC_EXPORT_SKIP_BUILD_ENV]: "1",
     },
   });
