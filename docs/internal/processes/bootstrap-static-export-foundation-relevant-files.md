@@ -4,7 +4,7 @@
 
 - Root `Makefile` is the shared entrypoint for local development and future CI: `setup`, `check`, `test`, `build`.
 - `make setup` runs `bun install`.
-- `make check` runs `bun run typecheck` then `bun run lint` (Biome).
+- `make check` runs the staged quality gate: public content validation first, then `bun run typecheck`, then `bun run lint` (Biome).
 - `make test` runs `bun test` directly (not a separate test runner).
 - `make build` runs `bun run build` (Next.js production build).
 

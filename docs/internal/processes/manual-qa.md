@@ -1,6 +1,6 @@
 # Manual QA for website changes
 
-Use this checklist when reviewing or verifying changes to the You Agent Factory docs website scaffold. Automated `make check` and `make test` are required first; manual QA confirms observable browser behavior on the static export that GitHub Pages will serve.
+Use this checklist when reviewing or verifying changes to the You Agent Factory docs website scaffold. Automated `make check` and `make test` are required first; manual QA confirms observable browser behavior on the static export that GitHub Pages will serve. `make check` now runs content validation before typecheck and lint, so content-graph failures should be interpreted separately from static-analysis failures.
 
 ## Prerequisites
 

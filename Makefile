@@ -4,8 +4,7 @@ setup:
 	bun install
 
 check:
-	bun run typecheck
-	bun run lint
+	bun run scripts/run-check.ts
 
 test:
 	bun test

@@ -10,7 +10,7 @@ From the repository root:
 
 ```bash
 make setup   # install dependencies with Bun
-make check   # typecheck and lint
+make check   # content validation, typecheck, and lint
 make test    # run tests through bun test
 make build   # build the website scaffold
 ```
