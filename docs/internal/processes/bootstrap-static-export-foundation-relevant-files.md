@@ -7,7 +7,7 @@
 - `make check` runs `bun run typecheck` then `bun run lint` (Biome).
 - `make test` runs `bun test` directly (not a separate test runner).
 - `make build` runs `bun run build` (Next.js production build).
-- `make budget` runs `bun run budget`, which builds the static export, serves `out/` under the GitHub Pages base path, and audits the homepage plus docs entry route from that exported surface.
+- `make budget` runs `bun run budget`, which builds the static export, serves `out/` under the GitHub Pages base path, audits the homepage plus docs entry route from that exported surface, and enforces the checked-in `_next/static` JavaScript payload budget.
 
 ## Application scaffold
 
@@ -17,7 +17,7 @@
 - The homepage landing shell lives in `src/components/landing/landing-shell.tsx` and is rendered from `src/app/page.tsx`.
 - The docs shell lives in `src/components/docs/docs-shell.tsx` and is rendered from `src/app/docs/page.tsx`.
 - GitHub Pages base-path and route constants live in `src/lib/site.ts`; `next.config.ts` imports `SITE_BASE_PATH` from there so export settings stay aligned with link helpers.
-- Site budget route coverage, checked-in route thresholds, and HTML-level measurement helpers live in `src/lib/site-budget.ts`; the checked-in route scope is the homepage (`/`) plus docs entry route (`/docs`), and the gate fails by route and budget dimension when those exported pages regress.
+- Site budget route coverage, checked-in route thresholds, exported static-asset thresholds, and measurement helpers live in `src/lib/site-budget.ts`; the checked-in scope is the homepage (`/`), the docs entry route (`/docs`), and total emitted JavaScript bytes under `out/_next/static`, and the gate fails by route or asset dimension when that exported surface regresses.
 - Static export uses `output: "export"` with `trailingSlash: true` and `images.unoptimized: true` for GitHub Pages compatibility.
 - Reusable static-export build and local serving helpers live in `src/lib/static-export.ts`; tests reuse the same module through `tests/helpers/static-export-server.ts`.
 - Unit tests live under `tests/unit/` and import source modules with relative paths.

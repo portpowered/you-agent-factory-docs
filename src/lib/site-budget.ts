@@ -1,3 +1,5 @@
+import { readdirSync, statSync } from "node:fs";
+import { join, relative, sep } from "node:path";
 import { DOCS_ENTRY_ROUTE } from "@/lib/site";
 import type { FetchLike } from "@/lib/static-export";
 
@@ -48,6 +50,32 @@ export type RouteBudgetFailure = {
   message: string;
 };
 
+export type StaticAssetBudgetThresholds = {
+  maxTotalBytes: number;
+};
+
+export type StaticAssetBudgetTarget = {
+  id: "next-static-javascript";
+  label: string;
+  directory: string;
+  fileExtension: ".js";
+  budget: StaticAssetBudgetThresholds;
+};
+
+export type StaticAssetBudgetMeasurement = {
+  target: StaticAssetBudgetTarget;
+  assetCount: number;
+  totalBytes: number;
+  largestAssetPath: string | null;
+  largestAssetBytes: number;
+};
+
+export type StaticAssetBudgetFailure = {
+  target: StaticAssetBudgetTarget;
+  dimension: "totalBytes";
+  message: string;
+};
+
 export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
   {
     id: "homepage",
@@ -75,6 +103,18 @@ export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
       requireMainLandmark: true,
       requireTitle: true,
       requireH1: true,
+    },
+  },
+];
+
+export const SITE_BUDGET_STATIC_ASSET_TARGETS: StaticAssetBudgetTarget[] = [
+  {
+    id: "next-static-javascript",
+    label: "Next static JavaScript",
+    directory: "_next/static",
+    fileExtension: ".js",
+    budget: {
+      maxTotalBytes: 850_000,
     },
   },
 ];
@@ -210,6 +250,71 @@ export function assertSiteBudget(
   throw new Error(formatRouteBudgetFailures(failures));
 }
 
+export function measureStaticAssetBudget(
+  exportRoot: string,
+  target: StaticAssetBudgetTarget,
+): StaticAssetBudgetMeasurement {
+  const assetRoot = join(exportRoot, target.directory);
+  const assetPaths = listMatchingAssetPaths(assetRoot, target.fileExtension);
+
+  let totalBytes = 0;
+  let largestAssetPath: string | null = null;
+  let largestAssetBytes = 0;
+
+  for (const assetPath of assetPaths) {
+    const assetBytes = statSync(assetPath).size;
+    totalBytes += assetBytes;
+
+    if (assetBytes > largestAssetBytes) {
+      largestAssetBytes = assetBytes;
+      largestAssetPath = `/${relative(exportRoot, assetPath).split(sep).join("/")}`;
+    }
+  }
+
+  return {
+    target,
+    assetCount: assetPaths.length,
+    totalBytes,
+    largestAssetPath,
+    largestAssetBytes,
+  };
+}
+
+export function evaluateStaticAssetBudget(
+  measurement: StaticAssetBudgetMeasurement,
+  budget: StaticAssetBudgetThresholds = measurement.target.budget,
+): StaticAssetBudgetFailure[] {
+  if (measurement.totalBytes <= budget.maxTotalBytes) {
+    return [];
+  }
+
+  return [
+    {
+      target: measurement.target,
+      dimension: "totalBytes",
+      message: [
+        `expected totalBytes<=${budget.maxTotalBytes}, received ${measurement.totalBytes}`,
+        `across ${measurement.assetCount} ${measurement.target.fileExtension} assets`,
+        `largest=${measurement.largestAssetPath ?? "missing"} (${measurement.largestAssetBytes} bytes)`,
+      ].join("; "),
+    },
+  ];
+}
+
+export function assertStaticAssetBudget(
+  measurements: StaticAssetBudgetMeasurement[],
+): void {
+  const failures = measurements.flatMap((measurement) =>
+    evaluateStaticAssetBudget(measurement),
+  );
+
+  if (failures.length === 0) {
+    return;
+  }
+
+  throw new Error(formatStaticAssetBudgetFailures(failures));
+}
+
 export function formatRouteBudgetFailures(
   failures: RouteBudgetFailure[],
 ): string {
@@ -236,8 +341,42 @@ function getRouteBudgetThresholds(
   return routeTarget.budget;
 }
 
+export function formatStaticAssetBudgetFailures(
+  failures: StaticAssetBudgetFailure[],
+): string {
+  return [
+    "Static asset budget check failed:",
+    ...failures.map(
+      (failure) =>
+        `- ${failure.target.label} (${failure.target.directory}) ${failure.dimension}: ${failure.message}`,
+    ),
+  ].join("\n");
+}
+
 function countMatches(text: string, matcher: RegExp): number {
   return text.match(matcher)?.length ?? 0;
+}
+
+function listMatchingAssetPaths(
+  directory: string,
+  fileExtension: string,
+): string[] {
+  const results: string[] = [];
+
+  for (const entry of readdirSync(directory, { withFileTypes: true })) {
+    const entryPath = join(directory, entry.name);
+
+    if (entry.isDirectory()) {
+      results.push(...listMatchingAssetPaths(entryPath, fileExtension));
+      continue;
+    }
+
+    if (entry.isFile() && entry.name.endsWith(fileExtension)) {
+      results.push(entryPath);
+    }
+  }
+
+  return results;
 }
 
 function extractTextContent(text: string, tagName: string): string | null {

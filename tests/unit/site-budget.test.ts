@@ -1,10 +1,15 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import { join } from "node:path";
 import { DOCS_ENTRY_ROUTE, SITE_BASE_PATH } from "../../src/lib/site";
 import {
   SITE_BUDGET_ROUTE_TARGETS,
+  SITE_BUDGET_STATIC_ASSET_TARGETS,
   assertSiteBudget,
+  assertStaticAssetBudget,
   evaluateRouteBudget,
+  evaluateStaticAssetBudget,
   measureBudgetRoute,
+  measureStaticAssetBudget,
   resolveBudgetRouteUrl,
 } from "../../src/lib/site-budget";
 import { fetchHttp } from "../helpers/http";
@@ -48,6 +53,20 @@ describe("site budget route coverage", () => {
     ]);
   });
 
+  test("defines the exported next-static javascript asset budget scope", () => {
+    expect(SITE_BUDGET_STATIC_ASSET_TARGETS).toEqual([
+      {
+        id: "next-static-javascript",
+        label: "Next static JavaScript",
+        directory: "_next/static",
+        fileExtension: ".js",
+        budget: {
+          maxTotalBytes: 850_000,
+        },
+      },
+    ]);
+  });
+
   test("resolves budget URLs under the GitHub Pages export base path", () => {
     const baseUrl = `http://127.0.0.1:3786${SITE_BASE_PATH}/`;
 
@@ -62,6 +81,7 @@ describe("site budget route coverage", () => {
 
 describe("site budget measurements", () => {
   const port = 3787;
+  const exportRoot = join(process.cwd(), "out");
   let server: ReturnType<typeof startStaticExportServer>;
 
   beforeAll(async () => {
@@ -119,6 +139,30 @@ describe("site budget measurements", () => {
 
     expect(() => assertSiteBudget(measurements)).not.toThrow();
   }, 30_000);
+
+  test("accepts the current exported static assets against the checked-in budget", () => {
+    const measurements = SITE_BUDGET_STATIC_ASSET_TARGETS.map((target) =>
+      measureStaticAssetBudget(exportRoot, target),
+    );
+
+    expect(
+      measurements.map((measurement) => ({
+        id: measurement.target.id,
+        assetCount: measurement.assetCount,
+        totalBytes: measurement.totalBytes,
+        largestAssetPath: measurement.largestAssetPath,
+      })),
+    ).toEqual([
+      {
+        id: "next-static-javascript",
+        assetCount: 16,
+        totalBytes: 803_528,
+        largestAssetPath: "/_next/static/chunks/framework-2c534e0e662575a2.js",
+      },
+    ]);
+
+    expect(() => assertStaticAssetBudget(measurements)).not.toThrow();
+  });
 });
 
 describe("site budget failures", () => {
@@ -180,6 +224,43 @@ describe("site budget failures", () => {
       ]),
     ).toThrow(
       "Site budget check failed:\n- Homepage (/) htmlBytes: expected htmlBytes<=8500, received 8900\n- Homepage (/) scriptTagCount: expected scripts<=13, received 15\n- Homepage (/) mainLandmarkPresent: expected a <main> landmark\n- Homepage (/) h1Text: expected a non-empty <h1>",
+    );
+  });
+
+  test("reports the failing asset budget with the measured payload surface", () => {
+    const staticJs = SITE_BUDGET_STATIC_ASSET_TARGETS[0];
+    const failures = evaluateStaticAssetBudget(
+      {
+        target: staticJs,
+        assetCount: 16,
+        totalBytes: 900_000,
+        largestAssetPath: "/_next/static/chunks/framework-example.js",
+        largestAssetBytes: 200_000,
+      },
+      staticJs.budget,
+    );
+
+    expect(failures).toEqual([
+      {
+        target: staticJs,
+        dimension: "totalBytes",
+        message:
+          "expected totalBytes<=850000, received 900000; across 16 .js assets; largest=/_next/static/chunks/framework-example.js (200000 bytes)",
+      },
+    ]);
+
+    expect(() =>
+      assertStaticAssetBudget([
+        {
+          target: staticJs,
+          assetCount: 16,
+          totalBytes: 900_000,
+          largestAssetPath: "/_next/static/chunks/framework-example.js",
+          largestAssetBytes: 200_000,
+        },
+      ]),
+    ).toThrow(
+      "Static asset budget check failed:\n- Next static JavaScript (_next/static) totalBytes: expected totalBytes<=850000, received 900000; across 16 .js assets; largest=/_next/static/chunks/framework-example.js (200000 bytes)",
     );
   });
 });
