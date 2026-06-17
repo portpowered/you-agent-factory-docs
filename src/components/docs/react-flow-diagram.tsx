@@ -1,3 +1,5 @@
+"use client";
+
 import type {
   DiagramPortPosition,
   ReactFlowDiagramDefinition,
@@ -6,17 +8,40 @@ import type {
 import {
   Background,
   type Edge,
+  type FitViewOptions,
   MarkerType,
   type Node,
   type NodeHandle,
   Position,
   ReactFlow,
+  type ReactFlowInstance,
 } from "@xyflow/react";
 import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type ReactFlowDiagramProps = {
   definition: ReactFlowDiagramDefinition;
 };
+
+const FIT_VIEW_OPTIONS = {
+  padding: 0.2,
+  minZoom: 0.3,
+} satisfies FitViewOptions;
+
+function scheduleFitView(callback: () => void) {
+  if (typeof window === "undefined") {
+    callback();
+    return () => undefined;
+  }
+
+  const frameId = window.requestAnimationFrame(() => {
+    callback();
+  });
+
+  return () => {
+    window.cancelAnimationFrame(frameId);
+  };
+}
 
 function toPosition(position: DiagramPortPosition): Position {
   switch (position) {
@@ -163,12 +188,46 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
   const nodes = definition.nodes.map(toReactFlowNode);
   const edges = definition.edges.map(toReactFlowEdge);
   const sourcePreview = createSourcePreview(definition);
+  const graphicRef = useRef<HTMLDivElement>(null);
+  const [graphInstance, setGraphInstance] = useState<ReactFlowInstance | null>(
+    null,
+  );
   const titleId = `${definition.title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "")}-title`;
   const descriptionId = `${titleId}-description`;
   const sourceId = `${titleId}-source`;
+
+  useEffect(() => {
+    if (!graphInstance) {
+      return;
+    }
+
+    let cancelScheduledFit = scheduleFitView(() => {
+      graphInstance.fitView(FIT_VIEW_OPTIONS);
+    });
+
+    if (typeof ResizeObserver === "undefined" || !graphicRef.current) {
+      return () => {
+        cancelScheduledFit();
+      };
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      cancelScheduledFit();
+      cancelScheduledFit = scheduleFitView(() => {
+        graphInstance.fitView(FIT_VIEW_OPTIONS);
+      });
+    });
+
+    resizeObserver.observe(graphicRef.current);
+
+    return () => {
+      cancelScheduledFit();
+      resizeObserver.disconnect();
+    };
+  }, [graphInstance]);
 
   return (
     <figure
@@ -187,6 +246,7 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
         <div
           aria-label={definition.title}
           className="docs-diagram__graphic docs-diagram__graphic--react-flow"
+          ref={graphicRef}
         >
           <ReactFlow
             ariaLabelConfig={{
@@ -201,7 +261,7 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
             edgesFocusable
             elementsSelectable={false}
             fitView
-            fitViewOptions={{ padding: 0.2, minZoom: 0.3 }}
+            fitViewOptions={FIT_VIEW_OPTIONS}
             maxZoom={1.1}
             minZoom={0.3}
             nodes={nodes}
@@ -211,6 +271,7 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
             panOnDrag={false}
             panOnScroll={false}
             preventScrolling={false}
+            onInit={setGraphInstance}
             zoomOnDoubleClick={false}
             zoomOnPinch={false}
             zoomOnScroll={false}
