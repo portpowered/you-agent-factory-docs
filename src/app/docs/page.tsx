@@ -2,7 +2,7 @@ import {
   DocsContentCard,
   DocsContentSurface,
 } from "@/components/docs/docs-content";
-import { DocsShell } from "@/components/docs/docs-shell";
+import { DocsRouteChrome } from "@/components/docs/docs-route-chrome";
 import { MermaidDiagram } from "@/components/docs/mermaid-diagram";
 import { ReactFlowDiagram } from "@/components/docs/react-flow-diagram";
 import {
@@ -17,7 +17,7 @@ export default function DocsShellPage() {
   const navigation = loadDocsShellNavigation();
 
   return (
-    <DocsShell currentPath={DOCS_ENTRY_ROUTE} navigation={navigation}>
+    <DocsRouteChrome currentPath={DOCS_ENTRY_ROUTE} navigation={navigation}>
       <DocsContentSurface aria-labelledby="docs-shell-title">
         <DocsContentCard
           aria-labelledby="docs-shell-title"
@@ -62,6 +62,6 @@ export default function DocsShellPage() {
         />
         <ReactFlowDiagram definition={FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM} />
       </DocsContentSurface>
-    </DocsShell>
+    </DocsRouteChrome>
   );
 }

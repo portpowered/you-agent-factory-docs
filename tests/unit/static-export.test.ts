@@ -5,7 +5,7 @@ import {
   FACTORY_WORKFLOW_MERMAID_DIAGRAM,
 } from "../../src/content/docs-diagrams";
 import { loadDocsShellNavigation } from "../../src/lib/content";
-import { PROJECT_TAGLINE } from "../../src/lib/project";
+import { PROJECT_NAME, PROJECT_TAGLINE } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shared-shell-config";
 import {
   LANDING_EXAMPLE_WORKFLOWS_TITLE,
@@ -125,7 +125,7 @@ describe("served static export navigation", () => {
     expect(homepageHtml).toContain(enMessages.common.githubCta);
   }, 30_000);
 
-  test("exposes the same primary navigation destinations on homepage and docs entry routes", async () => {
+  test("keeps the homepage shared-shell nav and serves the docs entry through the Fumadocs layout shell", async () => {
     const homepageResponse = await fetchHttp(server.baseUrl, {
       signal: AbortSignal.timeout(10_000),
     });
@@ -137,22 +137,25 @@ describe("served static export navigation", () => {
     const homepageHtml = await homepageResponse.text();
     const docsHtml = await docsResponse.text();
 
-    for (const html of [homepageHtml, docsHtml]) {
-      expect(html).toContain(
-        `aria-label="${enMessages.landing.primaryNavAriaLabel}"`,
-      );
-      expect(html).toContain(enMessages.common.githubCta);
-      expect(html).toContain('rel="noopener noreferrer"');
-      expect(html).toContain('target="_blank"');
-      expect(html).toContain('id="shared-shell-primary-nav"');
-      expect(html).toContain('aria-controls="shared-shell-primary-nav"');
-      expect(html).toContain('aria-expanded="false"');
-      expect(html).toContain(enMessages.shell.openMenuLabel);
-    }
-
+    expect(homepageHtml).toContain(
+      `aria-label="${enMessages.landing.primaryNavAriaLabel}"`,
+    );
+    expect(homepageHtml).toContain('id="shared-shell-primary-nav"');
+    expect(homepageHtml).toContain('aria-controls="shared-shell-primary-nav"');
+    expect(homepageHtml).toContain('aria-expanded="false"');
+    expect(homepageHtml).toContain(enMessages.shell.openMenuLabel);
     expect(homepageHtml).toContain(enMessages.common.getStarted);
     expect(homepageHtml).not.toContain(`>${enMessages.common.home}<`);
-    expect(docsHtml).toContain(enMessages.common.home);
+    expect(homepageHtml).toContain(enMessages.common.githubCta);
+    expect(homepageHtml).toContain('rel="noopener noreferrer"');
+    expect(homepageHtml).toContain('target="_blank"');
+
+    expect(docsHtml).toContain('id="nd-docs-layout"');
+    expect(docsHtml).toContain('id="nd-sidebar"');
+    expect(docsHtml).toContain(GITHUB_REPO_URL);
+    expect(docsHtml).toContain(PROJECT_NAME);
+    expect(docsHtml).toContain('aria-label="Breadcrumb"');
+    expect(docsHtml).not.toContain('id="shared-shell-primary-nav"');
     expect(docsHtml).not.toContain(`>${enMessages.common.getStarted}<`);
   }, 30_000);
 
