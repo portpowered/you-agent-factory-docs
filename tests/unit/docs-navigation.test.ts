@@ -263,23 +263,19 @@ section: guides
               fellBackToCanonicalLocale: false,
             },
           },
-        ],
-      },
-      {
-        id: "examples",
-        label: "Examples",
-        pages: [
-          {
-            canonicalId: "doc/examples/code-presentation",
-            label: "Code presentation",
-            href: "/docs/examples/code-presentation",
-            order: 1,
-          },
           {
             canonicalId: "doc/concepts",
             label: "Core concepts",
             href: "/docs/concepts",
             order: 2,
+            localeProjection: {
+              canonicalPageId: "doc/concepts",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
           },
         ],
       },
@@ -292,12 +288,40 @@ section: guides
             label: "Installation",
             href: "/docs/installation",
             order: 1,
+            localeProjection: {
+              canonicalPageId: "doc/installation",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
           },
           {
             canonicalId: "doc/configuration",
             label: "Configuration",
             href: "/docs/configuration",
             order: 2,
+            localeProjection: {
+              canonicalPageId: "doc/configuration",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+        ],
+      },
+      {
+        id: "examples",
+        label: "Examples",
+        pages: [
+          {
+            canonicalId: "doc/examples/code-presentation",
+            label: "Code presentation",
+            href: "/docs/examples/code-presentation",
+            order: 1,
           },
         ],
       },
@@ -336,7 +360,7 @@ section: guides
       0,
     );
 
-    expect(sectionIds).toEqual(["guides", "examples", "setup"]);
+    expect(sectionIds).toEqual(["guides", "setup", "examples"]);
     expect(pageCount).toBeGreaterThanOrEqual(5);
     expect(
       navigation.sections.some(

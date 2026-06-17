@@ -11,11 +11,13 @@ const projectRoot = join(import.meta.dir, "../..");
 const exportDir = join(projectRoot, "out");
 const nextDir = join(projectRoot, ".next");
 const STATIC_EXPORT_LOCK_HELD_ENV = "STATIC_EXPORT_BUILD_LOCK_HELD";
+const tsBuildInfoPath = join(projectRoot, "tsconfig.tsbuildinfo");
 let inProcessStaticExportBuild: Promise<void> | undefined;
 let inProcessStaticExportBuildComplete = false;
 
 function cleanNextBuildArtifacts(): void {
   rmSync(nextDir, { recursive: true, force: true });
+  rmSync(tsBuildInfoPath, { force: true });
 }
 
 export function shouldSkipStaticExportBuild(): boolean {

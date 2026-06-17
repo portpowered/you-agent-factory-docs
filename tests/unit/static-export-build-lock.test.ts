@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { existsSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   STATIC_EXPORT_BUILD_LOCK_DIR,
@@ -9,7 +10,10 @@ import {
 } from "../../src/lib/validation/static-export-build-lock";
 
 const projectRoot = join(import.meta.dir, "../..");
-const lockDir = join(projectRoot, STATIC_EXPORT_BUILD_LOCK_DIR);
+
+function createLockRoot(): string {
+  return mkdtempSync(join(tmpdir(), "static-export-build-lock-"));
+}
 
 describe("static export build lock", () => {
   afterEach(() => {
@@ -17,53 +21,80 @@ describe("static export build lock", () => {
   });
 
   test("withStaticExportBuildLock creates and releases the lock directory", () => {
-    expect(existsSync(lockDir)).toBe(false);
+    const lockRoot = createLockRoot();
+    const lockDir = join(lockRoot, STATIC_EXPORT_BUILD_LOCK_DIR);
 
-    withStaticExportBuildLock(projectRoot, () => {
-      expect(existsSync(lockDir)).toBe(true);
-    });
+    try {
+      expect(existsSync(lockDir)).toBe(false);
 
-    expect(existsSync(lockDir)).toBe(false);
-  });
-
-  test("withStaticExportBuildLock serializes concurrent build attempts", async () => {
-    let activeBuilds = 0;
-    let maxActiveBuilds = 0;
-
-    const simulateBuild = () =>
-      Promise.resolve().then(() =>
-        withStaticExportBuildLock(projectRoot, () => {
-          activeBuilds += 1;
-          maxActiveBuilds = Math.max(maxActiveBuilds, activeBuilds);
-          Bun.sleepSync(50);
-          activeBuilds -= 1;
-        }),
-      );
-
-    await Promise.all([simulateBuild(), simulateBuild()]);
-
-    expect(maxActiveBuilds).toBe(1);
-  });
-
-  test("releaseStaticExportBuildLock removes the lock for the current process", () => {
-    acquireStaticExportBuildLock(projectRoot);
-    expect(existsSync(lockDir)).toBe(true);
-
-    releaseStaticExportBuildLock(projectRoot);
-    expect(existsSync(lockDir)).toBe(false);
-  });
-
-  test("nested lock acquisition by the same process is reentrant", () => {
-    withStaticExportBuildLock(projectRoot, () => {
-      expect(existsSync(lockDir)).toBe(true);
-
-      withStaticExportBuildLock(projectRoot, () => {
+      withStaticExportBuildLock(lockRoot, () => {
         expect(existsSync(lockDir)).toBe(true);
       });
 
-      expect(existsSync(lockDir)).toBe(true);
-    });
+      expect(existsSync(lockDir)).toBe(false);
+    } finally {
+      rmSync(lockRoot, { recursive: true, force: true });
+    }
+  });
 
-    expect(existsSync(lockDir)).toBe(false);
+  test("withStaticExportBuildLock serializes concurrent build attempts", async () => {
+    const lockRoot = createLockRoot();
+
+    try {
+      let activeBuilds = 0;
+      let maxActiveBuilds = 0;
+
+      const simulateBuild = () =>
+        Promise.resolve().then(() =>
+          withStaticExportBuildLock(lockRoot, () => {
+            activeBuilds += 1;
+            maxActiveBuilds = Math.max(maxActiveBuilds, activeBuilds);
+            Bun.sleepSync(50);
+            activeBuilds -= 1;
+          }),
+        );
+
+      await Promise.all([simulateBuild(), simulateBuild()]);
+
+      expect(maxActiveBuilds).toBe(1);
+    } finally {
+      rmSync(lockRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("releaseStaticExportBuildLock removes the lock for the current process", () => {
+    const lockRoot = createLockRoot();
+    const lockDir = join(lockRoot, STATIC_EXPORT_BUILD_LOCK_DIR);
+
+    try {
+      acquireStaticExportBuildLock(lockRoot);
+      expect(existsSync(lockDir)).toBe(true);
+
+      releaseStaticExportBuildLock(lockRoot);
+      expect(existsSync(lockDir)).toBe(false);
+    } finally {
+      rmSync(lockRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("nested lock acquisition by the same process is reentrant", () => {
+    const lockRoot = createLockRoot();
+    const lockDir = join(lockRoot, STATIC_EXPORT_BUILD_LOCK_DIR);
+
+    try {
+      withStaticExportBuildLock(lockRoot, () => {
+        expect(existsSync(lockDir)).toBe(true);
+
+        withStaticExportBuildLock(lockRoot, () => {
+          expect(existsSync(lockDir)).toBe(true);
+        });
+
+        expect(existsSync(lockDir)).toBe(true);
+      });
+
+      expect(existsSync(lockDir)).toBe(false);
+    } finally {
+      rmSync(lockRoot, { recursive: true, force: true });
+    }
   });
 });
