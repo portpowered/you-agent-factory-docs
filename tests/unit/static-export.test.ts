@@ -29,6 +29,25 @@ import {
 } from "../helpers/static-export-server";
 import { getTestPort } from "../helpers/test-port";
 
+const publicKnowledgePages = [
+  {
+    path: "/glossary/agent",
+    title: "Agent",
+    excerpt: "named worker inside a workflow",
+  },
+  {
+    path: "/comparisons/vs-n8n",
+    title: "You Agent Factory vs n8n",
+    excerpt:
+      "automate repeatable work, but they optimize for different operating models",
+  },
+  {
+    path: "/references/loop-engineering",
+    title: "Loop engineering",
+    excerpt: "designing the feedback cycle around an agent workflow",
+  },
+] as const;
+
 describe("static export configuration", () => {
   test("configures Next.js for fully static GitHub Pages export", () => {
     expect(nextConfig.output).toBe("export");
@@ -394,6 +413,25 @@ describe("served static export navigation", () => {
     expect(configurationHtml).not.toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
     );
+  }, 30_000);
+
+  test("serves glossary, comparison, and reference starter pages on their public routes", async () => {
+    for (const knowledgePage of publicKnowledgePages) {
+      const response = await fetchHttp(
+        new URL(withBasePath(knowledgePage.path), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(200);
+
+      const html = await response.text();
+      expect(html).toContain(knowledgePage.title);
+      expect(html).toContain(knowledgePage.excerpt);
+      expect(html).toContain(
+        `aria-label="${enMessages.docs.breadcrumbAriaLabel}"`,
+      );
+      expect(html).toContain('href="/you-agent-factory-docs/docs/"');
+    }
   }, 30_000);
 
   test("follows generated previous-next progression across docs pages", async () => {

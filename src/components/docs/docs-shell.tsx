@@ -3,7 +3,10 @@
 import { DocsBreadcrumbs } from "@/components/docs/docs-breadcrumbs";
 import { DocsProgression } from "@/components/docs/docs-progression";
 import { SharedShell } from "@/components/shell/shared-shell";
-import type { DocsShellNavigationInput } from "@/lib/content";
+import type {
+  DocsBreadcrumbItem,
+  DocsShellNavigationInput,
+} from "@/lib/content";
 import { projectDocsBreadcrumbs } from "@/lib/content/docs-breadcrumbs";
 import { projectDocsProgression } from "@/lib/content/docs-progression";
 import {
@@ -18,12 +21,16 @@ import type { ReactNode } from "react";
 export type DocsShellProps = {
   navigation: DocsShellNavigationInput;
   currentPath?: string;
+  breadcrumbItems?: DocsBreadcrumbItem[];
+  hideProgression?: boolean;
   children?: ReactNode;
 };
 
 export function DocsShell({
   navigation,
   currentPath = DOCS_ENTRY_ROUTE,
+  breadcrumbItems,
+  hideProgression = false,
   children,
 }: DocsShellProps) {
   const { t } = useMessages();
@@ -33,10 +40,18 @@ export function DocsShell({
     }),
   });
   const currentDocsItemId = findCurrentDocsItemId(navigation, currentPath);
-  const breadcrumbs = projectDocsBreadcrumbs(navigation, {
-    currentPath,
-    docsRootLabel: t("docs.shellTitle"),
-  });
+  const breadcrumbs =
+    breadcrumbItems !== undefined
+      ? {
+          items: [
+            { label: t("docs.shellTitle"), href: DOCS_ENTRY_ROUTE },
+            ...breadcrumbItems,
+          ],
+        }
+      : projectDocsBreadcrumbs(navigation, {
+          currentPath,
+          docsRootLabel: t("docs.shellTitle"),
+        });
   const progression = projectDocsProgression(navigation, { currentPath });
 
   return (
@@ -50,12 +65,14 @@ export function DocsShell({
         trail={breadcrumbs}
       />
       {children}
-      <DocsProgression
-        ariaLabel={t("docs.progressionAriaLabel")}
-        nextPagePrefix={t("docs.nextPagePrefix")}
-        previousPagePrefix={t("docs.previousPagePrefix")}
-        progression={progression}
-      />
+      {hideProgression ? null : (
+        <DocsProgression
+          ariaLabel={t("docs.progressionAriaLabel")}
+          nextPagePrefix={t("docs.nextPagePrefix")}
+          previousPagePrefix={t("docs.previousPagePrefix")}
+          progression={progression}
+        />
+      )}
     </SharedShell>
   );
 }

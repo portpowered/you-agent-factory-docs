@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { rmSync } from "node:fs";
 import { join } from "node:path";
-import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
+import { withNextTypeArtifactLock } from "../../src/lib/validation/next-type-artifact-lock";
 import { runMakeTarget } from "../helpers/make-target";
 
 const projectRoot = join(import.meta.dir, "../..");
@@ -23,7 +23,7 @@ describe("root contributor command path", () => {
   });
 
   test("make check completes successfully from the repository root", () => {
-    const result = withStaticExportBuildLock(projectRoot, () => {
+    const result = withNextTypeArtifactLock(projectRoot, () => {
       cleanNextTypeArtifacts();
       return runMakeTarget("check");
     });

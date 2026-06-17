@@ -30,6 +30,26 @@ import {
 import { getTestPort } from "../helpers/test-port";
 
 const GRAPH_FRAME_TOLERANCE_PX = 24;
+const publicKnowledgePages = [
+  {
+    path: "/glossary/agent",
+    title: "Agent",
+    excerpt:
+      "An agent in You Agent Factory is a named worker inside a workflow.",
+  },
+  {
+    path: "/comparisons/vs-n8n",
+    title: "You Agent Factory vs n8n",
+    excerpt:
+      "You Agent Factory and n8n both help teams automate repeatable work",
+  },
+  {
+    path: "/references/loop-engineering",
+    title: "Loop engineering",
+    excerpt:
+      "Loop engineering is the practice of designing the feedback cycle around an agent workflow",
+  },
+] as const;
 
 describe("reconciled baseline browser export", () => {
   const port = getTestPort(3786, "RECONCILED_EXPORT_BROWSER_TEST_PORT");
@@ -484,6 +504,39 @@ describe("reconciled baseline browser export", () => {
       expect(
         await page.getByRole("link", { name: "Core concepts" }).isVisible(),
       ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("public knowledge routes render substantive starter content in the browser", async () => {
+    const page = await browser.newPage();
+
+    try {
+      for (const knowledgePage of publicKnowledgePages) {
+        await page.goto(
+          new URL(withBasePath(knowledgePage.path), server.baseUrl).toString(),
+          {
+            waitUntil: "domcontentloaded",
+          },
+        );
+
+        expect(
+          await page
+            .getByRole("heading", { level: 1, name: knowledgePage.title })
+            .isVisible(),
+        ).toBe(true);
+        expect(await page.getByText(knowledgePage.excerpt).isVisible()).toBe(
+          true,
+        );
+        expect(
+          await page
+            .getByRole("navigation", {
+              name: enMessages.docs.breadcrumbAriaLabel,
+            })
+            .isVisible(),
+        ).toBe(true);
+      }
     } finally {
       await page.close();
     }

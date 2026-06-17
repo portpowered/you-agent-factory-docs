@@ -1,6 +1,9 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { withNextTypeArtifactLock } from "../../src/lib/validation/next-type-artifact-lock";
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -13,16 +16,19 @@ export function runMake(
     spawnSync("make", args, {
       cwd: repoRoot,
       encoding: "utf8",
-      env: {
-        ...process.env,
-        ...options.env,
-      },
+      env: buildCleanSubprocessEnv(options.env),
       maxBuffer: 50 * 1024 * 1024,
     });
-  const result =
-    target === "quality-gate"
+
+  const result = options.dryRun
+    ? runTarget()
+    : target === "quality-gate"
       ? withQualityGateCommandLock(repoRoot, runTarget)
-      : runTarget();
+      : target === "check"
+        ? withNextTypeArtifactLock(repoRoot, runTarget)
+        : ["build", "component-coverage"].includes(target)
+          ? withStaticExportBuildLock(repoRoot, runTarget)
+          : runTarget();
 
   return {
     status: result.status,

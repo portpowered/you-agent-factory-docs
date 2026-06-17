@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import type { EarlyGateValidationFixture } from "../../src/lib/validation/gate-fixtures";
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -12,10 +13,7 @@ export function runQualityGateScript(
     spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
       cwd: repoRoot,
       encoding: "utf8",
-      env: {
-        ...process.env,
-        ...options.env,
-      },
+      env: buildCleanSubprocessEnv(options.env),
     }),
   );
 
@@ -45,15 +43,14 @@ export function runValidationScript(
   const result = spawnSync("bun", ["run", target], {
     cwd: repoRoot,
     encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-      ...(fixture
+    env: buildCleanSubprocessEnv(
+      options.env,
+      fixture
         ? {
             EARLY_GATE_VALIDATION_FIXTURE: fixture,
           }
-        : undefined),
-    },
+        : undefined,
+    ),
   });
 
   return {

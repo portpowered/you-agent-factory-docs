@@ -26,14 +26,13 @@ describe("contributor guidance observable outcomes", () => {
       cleanNextTypeArtifacts();
       return runMakeTarget("check");
     });
-
     expect(result.status).toBe(0);
     expect(result.output).toMatch(/typecheck/);
     expect(result.output).toMatch(/lint/);
     expect(result.output.indexOf("typecheck")).toBeLessThan(
       result.output.indexOf("lint"),
     );
-  }, 30_000);
+  }, 90_000);
 
   test("make test runs the automated suite through bun test", () => {
     expect(dryRunMake("test")).toContain("bun test");

@@ -8,7 +8,7 @@
     "build": "bun run generate:search-index && next build",
     "start": "next start",
     "budget": "bun run scripts/run-site-budget.ts",
-    "typecheck": "next typegen && tsc --noEmit",
+    "typecheck": "bun run scripts/typecheck.ts",
     "lint": "biome check .",
     "test": "bun test",
     "validate:localization": "bun run scripts/validate-localization.ts",
