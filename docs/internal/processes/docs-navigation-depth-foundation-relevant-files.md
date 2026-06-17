@@ -25,6 +25,7 @@
 - `projectDocsProgression()` projects previous-next links from flattened docs navigation ordering; section and page order match left navigation projection.
 - `DocsProgression` renders generated previous-next links inside `DocsShell` with `rel="prev"` / `rel="next"` semantics.
 - `parseDocPageBody()` and `projectDocsPageOutline()` derive in-page outline headings from docs page body markdown structure; h2+ headings become anchor-linked outline entries while pages without sufficient headings return an empty outline.
+- The current doc body renderer supports headings and paragraph blocks only, so new canonical docs pages should express workflow structure with h2/h3 sections and prose paragraphs rather than list-dependent formatting until richer block support is added.
 - `DocPageArticle` renders the projected page outline, page title, and parsed body blocks with heading anchor ids on docs detail routes; page-outline shell labels resolve through `useMessages()` like breadcrumbs and progression in `DocsShell`.
 - Remove bootstrap-only nav constants such as `src/lib/docs-nav.ts`; the docs shell consumes projected navigation only.
 

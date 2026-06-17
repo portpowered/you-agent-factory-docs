@@ -21,10 +21,11 @@
 
 ## Proof tests
 
-- `tests/unit/root-workflow.test.ts` uses `make -n` to prove each target delegates through the Bun-first command path and runs `make check` as a smoke test.
+- `tests/unit/root-workflow.test.ts` is a fast Makefile contract test that stays on `make -n` assertions for target delegation and output-shape checks.
 - `tests/unit/root-command-path.test.ts` runs `make setup`, `make check`, `make test`, and `make build` from the repository root and asserts observable CLI success outcomes.
 - `tests/unit/automation-parity.test.ts` behaviorally proves automation parity by executing the same ordered root `make` targets CI uses (`setup`, `check`, `build`), asserting `make test` delegates to `bun test` via `make -n`, and verifying failures surface through the root command path.
-- `tests/unit/contributor-guidance.test.ts` behaviorally proves contributor-facing observable outcomes for each root command (dependency install, verification output, `bun test` delegation, static export output) without reading `README.md` or workflow YAML; `make build` assertions should run under the shared static-export build lock because other suites also mutate `.next/` and `out/`.
+- `tests/unit/contributor-guidance.test.ts` behaviorally proves contributor-facing observable outcomes for each root command (dependency install, verification output, `bun test` delegation, static export output) without reading `README.md` or workflow YAML; real `make check` / `make build` subprocess assertions belong in this helper-backed lane instead of the fast contract-only workflow test.
+- Repo-root smoke tests that execute heavyweight `make` targets should use `tests/helpers/make-target.ts` instead of raw `spawnSync` helpers so `make check` and `make build` inherit the shared build lock and larger subprocess budget needed for concurrent suite runs.
 - `tests/helpers/make.ts` and `tests/helpers/make-target.ts` centralize Makefile invocations for contributor and automation parity tests.
 - Served static-export tests build through `make build` via `tests/helpers/static-export-server.ts`.
 - `src/lib/validation/static-export-build-lock.ts` is the shared lock surface for any test or helper that runs `make build` against the repo root; use it to serialize access to `.next/` and `out/` across concurrent suites.

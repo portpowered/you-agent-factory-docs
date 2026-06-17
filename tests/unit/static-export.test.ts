@@ -301,6 +301,13 @@ describe("served static export navigation", () => {
     expect(reviewHtml).toContain("PR Review Factory");
     expect(reviewHtml).toContain("Use cases");
     expect(reviewHtml).toContain("Release Readiness Factory");
+    expect(reviewHtml).toContain("What this workflow is for");
+    expect(reviewHtml).toContain("Who participates");
+    expect(reviewHtml).toContain("Main workflow stages");
+    expect(reviewHtml).toContain("Inputs and outputs");
+    expect(reviewHtml).toContain("Why engineering teams use it");
+    expect(reviewHtml).toContain("human approver");
+    expect(reviewHtml).toContain("review summary");
     expect(reviewHtml).toContain('aria-current="page"');
   }, 30_000);
 });

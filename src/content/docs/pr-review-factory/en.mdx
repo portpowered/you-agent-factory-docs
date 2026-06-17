@@ -19,6 +19,34 @@ search.priority: 6
 
 Navigate this workflow example from the generated docs shell to inspect a concrete pull-request review journey.
 
-## What this page covers
+## What this workflow is for
 
-This launch-use-case page anchors the PR Review Factory route inside the existing docs navigation so reviewers can reach it through the standard shell.
+PR Review Factory turns a proposed code change into a repeatable review lane that a team can inspect before merging. A pull request, its diff, the surrounding task context, and the branch history enter the workflow so reviewers can see how the change was evaluated instead of only seeing a final approval or rejection.
+
+## Who participates
+
+The workflow usually involves the change author, an orchestrating workflow owner, one or more review agents, and a human approver who decides whether the branch is ready to merge. The human reviewer remains the decision maker while the factory gathers evidence, checks the change against repo standards, and reports concrete follow-up work when the branch is not ready.
+
+## What enters the workflow
+
+Work typically enters when a branch is ready for review or when a reviewer asks for another pass after feedback. The main inputs are the pull request description, the proposed code diff, relevant tests or quality-gate commands, and the repository standards that define what counts as an acceptable change.
+
+## Main workflow stages
+
+The workflow starts by loading the branch context and the open pull request so the review run is tied to a real candidate change. It then inspects the diff, runs the required checks, and compares the observed behavior against the stated story or release goal instead of commenting on style alone.
+
+The next stage gathers review signals that a human reviewer would normally need to chase manually: correctness risks, missing test coverage, broken checks, and places where the implementation drifts from the stated requirements. If blocking issues are found, the workflow reports them as explicit feedback tied to the changed code and the expected fix.
+
+The final stage is the approval handoff. When the branch is healthy, the workflow leaves a concise summary of what was validated and what still needs human judgment. When the branch is not healthy, the workflow sends it back with concrete remediation items so the next review pass starts from specific evidence rather than guesswork.
+
+## Review points that matter
+
+The key review gates are whether the change solves the stated problem, whether required checks pass, and whether the observable behavior is proven with the right tests. A reviewer should expect the workflow to surface blocking issues clearly, distinguish them from non-blocking suggestions, and keep the merge decision anchored to correctness first.
+
+## Inputs and outputs
+
+The practical inputs are a pull request under review, repository policies, test and lint commands, and any reviewer feedback already attached to the branch. The useful outputs are a review summary, a list of blocking findings or approval-ready evidence, and a branch state that is easier for a human engineer to accept, reject, or send back for revision.
+
+## Why engineering teams use it
+
+Engineering teams use PR Review Factory to make review quality more consistent without pretending that judgment can be automated away. It reduces the time reviewers spend reconstructing context, makes approval gates explicit, and leaves a durable record of what signals were checked before code moved forward.

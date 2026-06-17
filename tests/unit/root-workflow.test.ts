@@ -24,10 +24,4 @@ describe("root makefile workflow", () => {
     expect(output).toMatch(/bun run build/);
     expect(output).toMatch(/out/);
   });
-
-  test("make check succeeds on the reconciled scaffold", () => {
-    const result = runMake("check");
-
-    expect(result.status).toBe(0);
-  });
 });
