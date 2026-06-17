@@ -32,7 +32,7 @@ describe("loadDocPage", () => {
         slug: "coder-reviewer-pattern",
         canonicalId: "doc/coder-reviewer-pattern",
         title: "Coder / Reviewer pattern",
-        bodySnippet: "one role focused on producing the change",
+        bodySnippet: "approval is treated as a real gate",
       },
     ] as const;
 

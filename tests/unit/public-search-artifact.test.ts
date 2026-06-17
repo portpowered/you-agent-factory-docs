@@ -137,12 +137,20 @@ describe("public search artifact generation", () => {
       "How the handoff works",
       "What the review loop looks like",
       "What teams get from the pattern",
+      "Where approval gates matter",
+      "Realistic limits and failure modes",
     ]);
     expect(coderReviewerPattern?.body).toContain(
       "one role focused on producing the change",
     );
     expect(coderReviewerPattern?.body).toContain(
       "approves the work or sends it back with concrete changes requested",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "approval is treated as a real gate",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "The most common failure mode is shallow review",
     );
   });
 

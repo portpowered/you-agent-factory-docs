@@ -65,3 +65,15 @@ Used well, the Coder / Reviewer pattern gives a team a few practical advantages:
 - More disciplined iteration because rejected work comes back with specific issues to fix.
 
 Those outcomes are useful because they improve merge decisions, not because the pattern removes uncertainty. The reviewer still works with incomplete information and has to apply engineering judgment.
+
+## Where approval gates matter
+
+This pattern only works safely when approval is treated as a real gate. The reviewer should be able to stop the change from moving forward when the evidence is weak, the important behavior was not validated, or the implementation does not match the requested outcome.
+
+In practice, that usually means the reviewer does not approve until they can trace the request to the diff and to the checks that matter for that change. If the evidence is missing, the correct move is to reject the handoff and ask the coder to come back with stronger validation.
+
+## Realistic limits and failure modes
+
+The most common failure mode is shallow review. A reviewer can read quickly, approve based on trust, and miss the exact behavior that needed scrutiny. Another failure mode is unclear ownership, where the coder assumes the reviewer will catch every issue and the reviewer assumes the coder already validated the risky parts.
+
+The reviewer role helps contain those risks by forcing one person to judge the submission independently, but it does not remove the need for engineering judgment. If the review is rushed, the task is ambiguous, or the evidence is weak, the pattern can still fail and should not be treated as automatic safety.
