@@ -1,5 +1,6 @@
 import { PublicContentPageShell } from "@/components/content/public-content-page-shell";
 import {
+  PublicContentPageNotFoundError,
   listPublishedPublicContentRouteParams,
   loadPublicContentPage,
 } from "@/lib/content";
@@ -28,7 +29,11 @@ export default async function BlogPage({ params }: BlogPageProps) {
         title={page.title}
       />
     );
-  } catch {
+  } catch (error) {
+    if (!(error instanceof PublicContentPageNotFoundError)) {
+      throw error;
+    }
+
     notFound();
   }
 }

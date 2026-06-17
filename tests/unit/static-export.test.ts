@@ -277,6 +277,30 @@ describe("served static export navigation", () => {
     }
   }, 30_000);
 
+  test("serves the intentional not-found path for unknown public slugs", async () => {
+    const missingRoutes = [
+      "/blog/missing-post",
+      "/glossary/missing-term",
+      "/comparisons/missing-comparison",
+      "/references/missing-reference",
+    ];
+
+    for (const route of missingRoutes) {
+      const response = await fetchHttp(
+        new URL(withBasePath(route), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(404);
+
+      const html = await response.text();
+      expect(html).toContain("Page not found");
+      expect(html).toContain("Recovery navigation");
+      expect(html).not.toContain("Introducing You Agent Factory");
+      expect(html).not.toContain("Loop engineering");
+    }
+  }, 30_000);
+
   test("follows a generated docs navigation link to a served doc page", async () => {
     const docsResponse = await fetchHttp(
       new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),

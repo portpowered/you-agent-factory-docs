@@ -1,6 +1,11 @@
 import { describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { loadPublicContentPage } from "../../src/lib/content";
+import {
+  PublicContentPageNotFoundError,
+  loadPublicContentPage,
+} from "../../src/lib/content";
 
 const STARTER_CONTENT_ROOT = join(import.meta.dir, "../../src/content");
 
@@ -57,4 +62,40 @@ describe("loadPublicContentPage", () => {
       });
     },
   );
+
+  test("throws a public-content not-found error for an unknown slug", () => {
+    expect(() =>
+      loadPublicContentPage("blog", "missing-post", STARTER_CONTENT_ROOT),
+    ).toThrow(PublicContentPageNotFoundError);
+  });
+
+  test("treats hidden public content as not found", () => {
+    const contentRoot = mkdtempSync(join(tmpdir(), "hidden-public-content-"));
+    const hiddenReferenceDir = join(contentRoot, "references", "hidden-entry");
+
+    mkdirSync(hiddenReferenceDir, { recursive: true });
+    writeFileSync(
+      join(hiddenReferenceDir, "en.mdx"),
+      `---
+id: reference/hidden-entry
+kind: reference
+title: Hidden entry
+canonicalLocale: en
+availableLocales:
+  - en
+status: hidden
+tags:
+  - reference
+section: references
+order: 1
+---
+
+Hidden entry content.
+`,
+    );
+
+    expect(() =>
+      loadPublicContentPage("reference", "hidden-entry", contentRoot),
+    ).toThrow(PublicContentPageNotFoundError);
+  });
 });
