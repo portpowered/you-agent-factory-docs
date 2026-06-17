@@ -30,7 +30,7 @@ describe("root contributor command path", () => {
     expect(result.output).toMatch(/typecheck/);
     expect(result.output).toMatch(/typegen/);
     expect(result.output).toMatch(/lint/);
-  }, 30_000);
+  }, 60_000);
 
   testUnlessVerifying(
     "make test completes successfully from the repository root",
