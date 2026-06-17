@@ -13,6 +13,18 @@ describe("search index validation failing-path proof", () => {
     expect(result.stderr).toContain("is missing generated entry");
   });
 
+  test("validate:search-index reports malformed artifact structure clearly", () => {
+    const result = runValidationScript(
+      "validate:search-index",
+      "broken-search-artifact-structure",
+    );
+
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Search index validation failed");
+    expect(result.stderr).toContain("failed contract validation");
+    expect(result.stderr).toContain('must include an "entries" array');
+  });
+
   test("validate:search-index reports normalized contract field mismatches clearly", () => {
     const result = runValidationScript(
       "validate:search-index",

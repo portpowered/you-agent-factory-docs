@@ -7,6 +7,7 @@ import {
   buildLocalizedSearchDocumentId,
   loadPublicSearchArtifact,
   loadStarterContentRecords,
+  parsePublicSearchArtifact,
   serializePublicSearchArtifact,
   shouldIncludeVariantInSearch,
 } from "@/lib/content";
@@ -67,11 +68,23 @@ function parseArtifactSource(
   source: string,
 ): PublicSearchArtifact | SearchIndexValidationIssue {
   try {
-    return JSON.parse(source) as PublicSearchArtifact;
-  } catch {
+    return parsePublicSearchArtifact(source);
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      return {
+        field: "artifact",
+        message: `Checked-in search artifact at ${artifactPath} is not valid JSON. Regenerate with bun run generate:search-index and commit public/search/public-search-index.json.`,
+      };
+    }
+
+    const details =
+      error instanceof Error
+        ? error.message
+        : "Unknown artifact parse failure.";
+
     return {
       field: "artifact",
-      message: `Checked-in search artifact at ${artifactPath} is not valid JSON. Regenerate with bun run generate:search-index and commit public/search/public-search-index.json.`,
+      message: `Checked-in search artifact at ${artifactPath} failed contract validation: ${details} Regenerate with bun run generate:search-index and commit public/search/public-search-index.json.`,
     };
   }
 }
@@ -273,7 +286,7 @@ export function validateSearchIndex(
     artifactPath,
     checkedInArtifactSource,
   );
-  if (!("entries" in checkedInArtifact)) {
+  if ("field" in checkedInArtifact) {
     return { valid: false, issues: [checkedInArtifact] };
   }
 

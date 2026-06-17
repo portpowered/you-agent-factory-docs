@@ -81,6 +81,24 @@ describe("search index validation", () => {
     });
   });
 
+  test("rejects malformed-but-json-valid checked-in artifacts clearly", () => {
+    const result = validateSearchIndex({
+      contentRoot: CONTENT_ROOT,
+      artifactPath: ARTIFACT_PATH,
+      checkedInArtifactSource: '{\n  "version": 1\n}\n',
+    });
+
+    expect(result).toEqual({
+      valid: false,
+      issues: [
+        {
+          field: "artifact",
+          message: `Checked-in search artifact at ${ARTIFACT_PATH} failed contract validation: Public search artifact must include an "entries" array. Regenerate with bun run generate:search-index and commit public/search/public-search-index.json.`,
+        },
+      ],
+    });
+  });
+
   test("throws a contract failure with maintainer guidance", () => {
     expect(() =>
       assertValidSearchIndex({
@@ -89,6 +107,16 @@ describe("search index validation", () => {
         checkedInArtifactSource: '{\n  "version": 1,\n  "entries": []\n}\n',
       }),
     ).toThrow("Search index validation failed");
+  });
+
+  test("throws explicit structural contract errors for malformed artifacts", () => {
+    expect(() =>
+      assertValidSearchIndex({
+        contentRoot: CONTENT_ROOT,
+        artifactPath: ARTIFACT_PATH,
+        checkedInArtifactSource: '{\n  "version": 1\n}\n',
+      }),
+    ).toThrow("artifact: Checked-in search artifact at");
   });
 
   test("rejects stale checked-in entries that are absent from generated output", () => {

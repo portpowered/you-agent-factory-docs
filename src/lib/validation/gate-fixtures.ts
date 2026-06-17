@@ -211,6 +211,14 @@ section: guides
       null,
       2,
     )}\n`,
+  "broken-search-artifact-structure": (): string =>
+    `${JSON.stringify(
+      {
+        version: 1,
+      },
+      null,
+      2,
+    )}\n`,
   "broken-search-contract-field": (): string => {
     const artifact = readCheckedInSearchArtifact();
     const entry = artifact.entries.find(
@@ -321,6 +329,10 @@ export function resolveSearchArtifactSourceForGate(): string | null {
   const fixture = readEarlyGateValidationFixture();
   if (fixture === "broken-search-artifact") {
     return EARLY_GATE_VALIDATION_FIXTURES["broken-search-artifact"]();
+  }
+
+  if (fixture === "broken-search-artifact-structure") {
+    return EARLY_GATE_VALIDATION_FIXTURES["broken-search-artifact-structure"]();
   }
 
   if (fixture === "broken-search-contract-field") {
