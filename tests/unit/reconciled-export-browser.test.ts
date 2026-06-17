@@ -195,13 +195,13 @@ describe("reconciled baseline browser export", () => {
     const page = await browser.newPage({
       viewport: { width: 390, height: 844 },
     });
-    const gettingStartedUrl = new URL(
-      withBasePath("/docs/getting-started"),
+    const introductionUrl = new URL(
+      withBasePath("/docs/introduction"),
       server.baseUrl,
     ).toString();
 
     try {
-      await page.goto(gettingStartedUrl, { waitUntil: "domcontentloaded" });
+      await page.goto(introductionUrl, { waitUntil: "domcontentloaded" });
       await page
         .locator('.shared-shell[data-shell-viewport="mobile"]')
         .waitFor({ timeout: 10_000 });
@@ -213,17 +213,31 @@ describe("reconciled baseline browser export", () => {
         name: enMessages.docs.progressionAriaLabel,
       });
       const docsAsidePanel = page.locator("#shared-shell-docs-aside");
-      const guidesAsideNav = docsAsidePanel.getByRole("navigation", {
-        name: "Guides",
+      const setupAsideNav = docsAsidePanel.getByRole("navigation", {
+        name: "Setup",
       });
 
       expect(await breadcrumbs.isVisible()).toBe(true);
-      expect(await breadcrumbs.getByText("Guides").isVisible()).toBe(true);
+      expect(await breadcrumbs.getByText("Setup").isVisible()).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Who this setup path is for",
+          })
+          .isVisible(),
+      ).toBe(true);
       expect(
         await progression
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+            name: `${enMessages.docs.nextPagePrefix} Installation`,
           })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("link", { name: "Installation" })
+          .first()
           .isVisible(),
       ).toBe(true);
 
@@ -232,20 +246,153 @@ describe("reconciled baseline browser export", () => {
       });
       expect(await docsNavToggle.getAttribute("aria-expanded")).toBe("false");
       expect(await docsAsidePanel.getAttribute("hidden")).not.toBeNull();
-      expect(await guidesAsideNav.isVisible()).toBe(false);
+      expect(await setupAsideNav.isVisible()).toBe(false);
 
       await docsNavToggle.click();
 
-      expect(await guidesAsideNav.isVisible()).toBe(true);
+      expect(await setupAsideNav.isVisible()).toBe(true);
       expect(
         await docsAsidePanel
-          .getByRole("navigation", { name: "Setup" })
+          .getByRole("navigation", { name: "Guides" })
           .isVisible(),
       ).toBe(true);
       expect(
-        await guidesAsideNav
-          .getByRole("link", { name: "Core concepts" })
+        await setupAsideNav
+          .getByRole("link", { name: "Quickstart" })
           .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("installation page presents the supported prerequisite, setup, and validation path", async () => {
+    const page = await browser.newPage();
+    const installationUrl = new URL(
+      withBasePath("/docs/installation"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(installationUrl, { waitUntil: "domcontentloaded" });
+
+      expect(
+        await page
+          .getByRole("heading", { level: 1, name: "Installation" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", { level: 2, name: "Prerequisites" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Start with Bun 1.1 or newer available on your machine because the repository uses Bun for dependency installation, scripts, and test execution.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Run `make setup` from the repository root to install or refresh dependencies.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Run `make quality-gate` after setup to verify that the local install is usable.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.pageOutlineAriaLabel,
+          })
+          .getByRole("link", { name: "Validate the install" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Quickstart`,
+          })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("quickstart page presents one concrete local docs workflow outcome", async () => {
+    const page = await browser.newPage();
+    const quickstartUrl = new URL(
+      withBasePath("/docs/quickstart"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(quickstartUrl, { waitUntil: "domcontentloaded" });
+
+      expect(
+        await page
+          .getByRole("heading", { level: 1, name: "Quickstart" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Start the local docs site",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText("Run `bun run dev` from the repository root.")
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Use the local URL that Bun prints, then open the `/docs` route inside that running site so you stay in the docs shell instead of relying on homepage copy alone.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Verify the first outcome",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Treat the quickstart as successful when the local docs shell renders the setup sequence and you can move through Introduction, Installation, and Quickstart from the generated sidebar or previous-next navigation.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Continue into deeper guides",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page.getByText("Continue into Getting started").isVisible(),
+      ).toBe(true);
+      expect(
+        await page.getByRole("link", { name: "Core concepts" }).isVisible(),
       ).toBe(true);
     } finally {
       await page.close();

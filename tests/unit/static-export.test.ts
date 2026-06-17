@@ -1,5 +1,6 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import nextConfig from "../../next.config";
+import { loadDocsShellNavigation } from "../../src/lib/content";
 import { PROJECT_TAGLINE } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shared-shell-config";
 import {
@@ -157,18 +158,20 @@ describe("served static export navigation", () => {
       { signal: AbortSignal.timeout(10_000) },
     );
     const docsHtml = await docsResponse.text();
-    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+    const introductionPath = withBasePath("/docs/introduction").replace(
       /\//g,
       "\\/",
     );
 
+    expect(docsHtml).toContain("Introduction");
     expect(docsHtml).toContain("Getting started");
+    expect(docsHtml).toContain("Quickstart");
     expect(docsHtml).toContain("Core concepts");
     expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Configuration");
     expect(docsHtml).toContain("Guides");
     expect(docsHtml).toContain("Setup");
-    expect(new RegExp(`href="${gettingStartedPath}/?"`).test(docsHtml)).toBe(
+    expect(new RegExp(`href="${introductionPath}/?"`).test(docsHtml)).toBe(
       true,
     );
     expect(docsHtml).not.toContain("Overview");
@@ -180,50 +183,87 @@ describe("served static export navigation", () => {
       { signal: AbortSignal.timeout(10_000) },
     );
     const docsHtml = await docsResponse.text();
-    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+    const introductionPath = withBasePath("/docs/introduction").replace(
       /\//g,
       "\\/",
     );
-    const gettingStartedMatch = docsHtml.match(
-      new RegExp(`href="(${gettingStartedPath}/?)"`),
+    const introductionMatch = docsHtml.match(
+      new RegExp(`href="(${introductionPath}/?)"`),
     );
 
-    expect(gettingStartedMatch?.[1]).toBeTruthy();
+    expect(introductionMatch?.[1]).toBeTruthy();
 
     const docPageResponse = await fetchHttp(
-      new URL(gettingStartedMatch?.[1] ?? "", server.baseUrl),
+      new URL(introductionMatch?.[1] ?? "", server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
     );
 
     expect(docPageResponse.status).toBe(200);
 
     const docPageHtml = await docPageResponse.text();
-    expect(docPageHtml).toContain("Getting started");
+    expect(docPageHtml).toContain("Introduction");
     expect(docPageHtml).toContain(
-      "Starter documentation content that proves the canonical content model.",
+      "You Agent Factory is an open-source, engineering-native platform for turning recurring development work into reusable, inspectable AI agent workflows.",
+    );
+    expect(docPageHtml).toContain(
+      "This path is for engineers and technical teams who already work from repositories, files, command-line tools, and review processes, and want a clearer way to structure recurring AI-assisted development work.",
     );
     expect(docPageHtml).toContain(
       `aria-label="${enMessages.docs.breadcrumbAriaLabel}"`,
     );
     expect(docPageHtml).toContain(enMessages.docs.shellTitle);
-    expect(docPageHtml).toContain("Guides");
+    expect(docPageHtml).toContain("Setup");
     expect(docPageHtml).toContain('aria-current="page"');
     expect(docPageHtml).toContain(
       `aria-label="${enMessages.docs.progressionAriaLabel}"`,
     );
     expect(docPageHtml).toContain(enMessages.docs.nextPagePrefix);
-    expect(docPageHtml).toContain("Core concepts");
+    expect(docPageHtml).toContain("Installation");
     expect(docPageHtml).toContain('rel="next"');
     expect(docPageHtml).toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
     );
-    expect(docPageHtml).toContain('href="#prerequisites"');
-    expect(docPageHtml).toContain('id="prerequisites"');
-    expect(docPageHtml).toContain("Prerequisites");
-    expect(docPageHtml).toContain("Next steps");
+    expect(docPageHtml).toContain(
+      'href="#what-you-agent-factory-helps-you-do"',
+    );
+    expect(docPageHtml).toContain('id="what-you-agent-factory-helps-you-do"');
+    expect(docPageHtml).toContain("What You Agent Factory helps you do");
+    expect(docPageHtml).toContain("Who this setup path is for");
+    expect(docPageHtml).toContain("Why continue into setup");
+    expect(docPageHtml).toContain("Continue through setup");
   }, 30_000);
 
-  test("serves doc pages without page-outline navigation when headings are insufficient", async () => {
+  test("serves the generated setup-path routes projected by docs navigation", async () => {
+    const setupPages = loadDocsShellNavigation()
+      .sections.find((section) => section.id === "setup")
+      ?.pages.filter((page) =>
+        new Set(["doc/introduction", "doc/installation", "doc/quickstart"]).has(
+          page.canonicalId,
+        ),
+      );
+
+    expect(setupPages?.map((page) => page.canonicalId)).toEqual([
+      "doc/introduction",
+      "doc/installation",
+      "doc/quickstart",
+    ]);
+
+    for (const page of setupPages ?? []) {
+      const response = await fetchHttp(
+        new URL(withBasePath(page.href), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(200);
+
+      const html = await response.text();
+      expect(html).toContain(page.label);
+      expect(html).toContain(enMessages.docs.shellTitle);
+      expect(html).toContain('aria-current="page"');
+    }
+  }, 30_000);
+
+  test("renders the installation page with repository-supported setup and validation guidance", async () => {
     const installationResponse = await fetchHttp(
       new URL(withBasePath("/docs/installation"), server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
@@ -234,54 +274,145 @@ describe("served static export navigation", () => {
     const installationHtml = await installationResponse.text();
 
     expect(installationHtml).toContain("Installation");
-    expect(installationHtml).not.toContain(
+    expect(installationHtml).toContain(
+      "Start with Bun 1.1 or newer available on your machine because the repository uses Bun for dependency installation, scripts, and test execution.",
+    );
+    expect(installationHtml).toContain(
+      "Run `make setup` from the repository root to install or refresh dependencies.",
+    );
+    expect(installationHtml).toContain(
+      "Run `make quality-gate` after setup to verify that the local install is usable.",
+    );
+    expect(installationHtml).toContain(
+      "Treat the install as successful when `make quality-gate` finishes without failures from the repository root.",
+    );
+    expect(installationHtml).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(installationHtml).toContain('href="#prerequisites"');
+    expect(installationHtml).toContain('id="install-the-repository"');
+    expect(installationHtml).toContain("Validate the install");
+    expect(installationHtml).toContain("What success looks like");
+    expect(installationHtml).toContain("Continue into quickstart");
+  }, 30_000);
+
+  test("follows generated previous-next progression from installation into quickstart", async () => {
+    const installationResponse = await fetchHttp(
+      new URL(withBasePath("/docs/installation"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(installationResponse.status).toBe(200);
+
+    const installationHtml = await installationResponse.text();
+    const quickstartPath = withBasePath("/docs/quickstart").replace(
+      /\//g,
+      "\\/",
+    );
+
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${quickstartPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${quickstartPath}/?)"`,
+      ).test(installationHtml),
+    ).toBe(true);
+    expect(installationHtml).toContain(enMessages.docs.nextPagePrefix);
+    expect(installationHtml).toContain("Quickstart");
+  }, 30_000);
+
+  test("renders the quickstart page with a concrete first local workflow outcome", async () => {
+    const quickstartResponse = await fetchHttp(
+      new URL(withBasePath("/docs/quickstart"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(quickstartResponse.status).toBe(200);
+
+    const quickstartHtml = await quickstartResponse.text();
+
+    expect(quickstartHtml).toContain("Quickstart");
+    expect(quickstartHtml).toContain(
+      "Run the docs site locally after installation so the first setup path ends in one concrete, reviewer-verifiable outcome.",
+    );
+    expect(quickstartHtml).toContain(
+      "Complete the Installation step first so the repository dependencies are installed and `make quality-gate` already passes from the repository root.",
+    );
+    expect(quickstartHtml).toContain(
+      "Run `bun run dev` from the repository root.",
+    );
+    expect(quickstartHtml).toContain(
+      "Treat the quickstart as successful when the local docs shell renders the setup sequence and you can move through Introduction, Installation, and Quickstart from the generated sidebar or previous-next navigation.",
+    );
+    expect(quickstartHtml).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(quickstartHtml).toContain('href="#start-the-local-docs-site"');
+    expect(quickstartHtml).toContain("Verify the first outcome");
+    expect(quickstartHtml).toContain("Continue into deeper guides");
+    expect(quickstartHtml).toContain("Getting started");
+    expect(quickstartHtml).toContain("Core concepts");
+  }, 30_000);
+
+  test("renders page-outline navigation only when a page provides sufficient headings", async () => {
+    const configurationResponse = await fetchHttp(
+      new URL(withBasePath("/docs/configuration"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(configurationResponse.status).toBe(200);
+
+    const configurationHtml = await configurationResponse.text();
+
+    expect(configurationHtml).not.toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
     );
   }, 30_000);
 
   test("follows generated previous-next progression across docs pages", async () => {
-    const gettingStartedResponse = await fetchHttp(
-      new URL(withBasePath("/docs/getting-started"), server.baseUrl),
+    const introductionResponse = await fetchHttp(
+      new URL(withBasePath("/docs/introduction"), server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
     );
-    const gettingStartedHtml = await gettingStartedResponse.text();
-    const conceptsPath = withBasePath("/docs/concepts").replace(/\//g, "\\/");
+    const introductionHtml = await introductionResponse.text();
+    const installationPath = withBasePath("/docs/installation").replace(
+      /\//g,
+      "\\/",
+    );
 
     expect(
       new RegExp(
-        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
-      ).test(gettingStartedHtml),
+        `<a[^>]*href="(${installationPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${installationPath}/?)"`,
+      ).test(introductionHtml),
     ).toBe(true);
 
-    const nextHrefMatch = gettingStartedHtml.match(
+    const nextHrefMatch = introductionHtml.match(
       new RegExp(
-        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
+        `<a[^>]*href="(${installationPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${installationPath}/?)"`,
       ),
     );
     const nextHref = nextHrefMatch?.[1] ?? nextHrefMatch?.[2];
 
     expect(nextHref).toBeTruthy();
 
-    const conceptsResponse = await fetchHttp(
+    const installationResponse = await fetchHttp(
       new URL(nextHref ?? "", server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
     );
 
-    expect(conceptsResponse.status).toBe(200);
+    expect(installationResponse.status).toBe(200);
 
-    const conceptsHtml = await conceptsResponse.text();
-    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+    const installationHtml = await installationResponse.text();
+    const introductionPath = withBasePath("/docs/introduction").replace(
       /\//g,
       "\\/",
     );
 
-    expect(conceptsHtml).toContain("Core concepts");
+    expect(installationHtml).toContain("Installation");
     expect(
       new RegExp(
-        `<a[^>]*href="(${gettingStartedPath}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${gettingStartedPath}/?)"`,
-      ).test(conceptsHtml),
+        `<a[^>]*href="(${introductionPath}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${introductionPath}/?)"`,
+      ).test(installationHtml),
     ).toBe(true);
-    expect(conceptsHtml).toContain(enMessages.docs.previousPagePrefix);
-    expect(conceptsHtml).toContain("Getting started");
+    expect(installationHtml).toContain(enMessages.docs.previousPagePrefix);
+    expect(installationHtml).toContain("Introduction");
   }, 30_000);
 });
