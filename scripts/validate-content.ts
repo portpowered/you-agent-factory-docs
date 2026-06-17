@@ -1,7 +1,7 @@
 import { join } from "node:path";
 import {
   DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH,
-  readCheckedInPublicSearchArtifact,
+  loadPublicSearchArtifactForValidation,
 } from "@/lib/content/load-search-artifact";
 import { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";
 import { loadStarterContentRecords } from "@/lib/content/load-starter-content";
@@ -18,6 +18,7 @@ import { assertStarterContentValid } from "@/lib/content/starter-content-errors"
 import {
   resolveCheckedInPublicSearchArtifactPathForGate,
   resolveContentRootForGate,
+  resolveDefaultPublicSearchArtifactPathForGate,
   resolveStarterContentDescriptorForGate,
 } from "@/lib/validation/gate-fixtures";
 
@@ -35,16 +36,20 @@ const contentRoot =
 const { failures, variantBindings } = loadStarterContentRecords(contentRoot);
 assertStarterContentValid(failures);
 const localizedSearchDocuments = loadLocalizedSearchDocuments(contentRoot);
-const artifactPath =
-  resolveCheckedInPublicSearchArtifactPathForGate() ??
-  DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH;
 const publicContentResult = validatePublicContentGraph(
   {
     canonicalRecords: projectCanonicalRecordsForValidation(variantBindings),
     variantBindings,
     localizedSearchDocuments,
   },
-  readCheckedInPublicSearchArtifact(artifactPath),
+  loadPublicSearchArtifactForValidation({
+    contentRoot,
+    artifactPath:
+      resolveCheckedInPublicSearchArtifactPathForGate() ?? undefined,
+    defaultArtifactPath:
+      resolveDefaultPublicSearchArtifactPathForGate() ??
+      DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH,
+  }),
 );
 
 if (!publicContentResult.ok) {

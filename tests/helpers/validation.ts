@@ -36,12 +36,14 @@ export function runValidationScript(
     | "validate:accessibility"
     | "validate:static-export",
   fixture?: EarlyGateValidationFixture,
+  options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
   const result = spawnSync("bun", ["run", target], {
     cwd: repoRoot,
     encoding: "utf8",
     env: {
       ...process.env,
+      ...options.env,
       ...(fixture
         ? {
             EARLY_GATE_VALIDATION_FIXTURE: fixture,

@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { loadLocalizedSearchDocuments } from "@/lib/content/load-search-documents";
 import {
@@ -23,6 +23,12 @@ export type WritePublicSearchArtifactOptions =
     outputPath?: string;
   };
 
+export type LoadPublicSearchArtifactForValidationOptions =
+  LoadPublicSearchArtifactOptions & {
+    artifactPath?: string;
+    defaultArtifactPath?: string;
+  };
+
 function isStringArray(value: unknown): value is string[] {
   return (
     Array.isArray(value) && value.every((item) => typeof item === "string")
@@ -34,23 +40,19 @@ export function parsePublicSearchArtifact(json: string): PublicSearchArtifact {
 
   if (parsed.version !== PUBLIC_SEARCH_ARTIFACT_VERSION) {
     throw new Error(
-      `Checked-in public search artifact must declare version ${PUBLIC_SEARCH_ARTIFACT_VERSION}.`,
+      `Public search artifact must declare version ${PUBLIC_SEARCH_ARTIFACT_VERSION}.`,
     );
   }
 
   if (!Array.isArray(parsed.entries)) {
-    throw new Error(
-      'Checked-in public search artifact must include an "entries" array.',
-    );
+    throw new Error('Public search artifact must include an "entries" array.');
   }
 
   return {
     version: PUBLIC_SEARCH_ARTIFACT_VERSION,
     entries: parsed.entries.map((entry, index) => {
       if (typeof entry !== "object" || entry === null || Array.isArray(entry)) {
-        throw new Error(
-          `Checked-in public search artifact entry ${index} is malformed.`,
-        );
+        throw new Error(`Public search artifact entry ${index} is malformed.`);
       }
 
       const candidate = entry as Record<string, unknown>;
@@ -70,26 +72,26 @@ export function parsePublicSearchArtifact(json: string): PublicSearchArtifact {
       for (const field of requiredStringFields) {
         if (typeof candidate[field] !== "string") {
           throw new Error(
-            `Checked-in public search artifact entry ${index} is missing string field "${field}".`,
+            `Public search artifact entry ${index} is missing string field "${field}".`,
           );
         }
       }
 
       if (!isStringArray(candidate.availableLocales)) {
         throw new Error(
-          `Checked-in public search artifact entry ${index} has invalid "availableLocales".`,
+          `Public search artifact entry ${index} has invalid "availableLocales".`,
         );
       }
 
       if (!isStringArray(candidate.headings)) {
         throw new Error(
-          `Checked-in public search artifact entry ${index} has invalid "headings".`,
+          `Public search artifact entry ${index} has invalid "headings".`,
         );
       }
 
       if (!isStringArray(candidate.tags)) {
         throw new Error(
-          `Checked-in public search artifact entry ${index} has invalid "tags".`,
+          `Public search artifact entry ${index} has invalid "tags".`,
         );
       }
 
@@ -98,13 +100,13 @@ export function parsePublicSearchArtifact(json: string): PublicSearchArtifact {
         !isStringArray(candidate.aliases)
       ) {
         throw new Error(
-          `Checked-in public search artifact entry ${index} has invalid "aliases".`,
+          `Public search artifact entry ${index} has invalid "aliases".`,
         );
       }
 
       if (typeof candidate.searchPriority !== "number") {
         throw new Error(
-          `Checked-in public search artifact entry ${index} is missing numeric field "searchPriority".`,
+          `Public search artifact entry ${index} is missing numeric field "searchPriority".`,
         );
       }
 
@@ -161,4 +163,36 @@ export function readCheckedInPublicSearchArtifact(
   artifactPath = DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH,
 ): PublicSearchArtifact {
   return parsePublicSearchArtifact(readFileSync(artifactPath, "utf8"));
+}
+
+/**
+ * Validation prefers an existing generated artifact when available, but it
+ * must also work from a clean checkout where the gitignored build artifact has
+ * not been generated yet.
+ */
+export function loadPublicSearchArtifactForValidation(
+  options: LoadPublicSearchArtifactForValidationOptions = {},
+): PublicSearchArtifact {
+  const explicitArtifactPath = options.artifactPath;
+
+  if (explicitArtifactPath) {
+    if (!existsSync(explicitArtifactPath)) {
+      throw new Error(
+        `Public search artifact not found at "${explicitArtifactPath}".`,
+      );
+    }
+
+    return readCheckedInPublicSearchArtifact(explicitArtifactPath);
+  }
+
+  const defaultArtifactPath =
+    options.defaultArtifactPath ?? DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH;
+
+  if (existsSync(defaultArtifactPath)) {
+    return readCheckedInPublicSearchArtifact(defaultArtifactPath);
+  }
+
+  return loadPublicSearchArtifact({
+    contentRoot: options.contentRoot,
+  });
 }

@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { readCheckedInPublicSearchArtifact } from "../../src/lib/content/load-search-artifact";
+import { loadPublicSearchArtifact } from "../../src/lib/content/load-search-artifact";
 import { loadLocalizedSearchDocuments } from "../../src/lib/content/load-search-documents";
 import { loadStarterContentRecords } from "../../src/lib/content/load-starter-content";
 import {
@@ -14,11 +16,6 @@ import { PUBLIC_CONTENT_KINDS } from "../../src/lib/content/types";
 import { runValidationScript } from "../helpers/validation";
 
 const CONTENT_ROOT = join(process.cwd(), "src/content");
-const ARTIFACT_PATH = join(
-  process.cwd(),
-  "public/search/public-search-index.json",
-);
-
 function cloneRecord(record: CanonicalContentRecord): CanonicalContentRecord {
   return {
     ...record,
@@ -56,16 +53,16 @@ function loadBaselineValidationInputs() {
     ...(document.aliases ? { aliases: [...document.aliases] } : {}),
   }));
   const artifact = {
-    ...readCheckedInPublicSearchArtifact(ARTIFACT_PATH),
-    entries: readCheckedInPublicSearchArtifact(ARTIFACT_PATH).entries.map(
-      (entry) => ({
-        ...entry,
-        availableLocales: [...entry.availableLocales],
-        headings: [...entry.headings],
-        tags: [...entry.tags],
-        ...(entry.aliases ? { aliases: [...entry.aliases] } : {}),
-      }),
-    ),
+    ...loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT }),
+    entries: loadPublicSearchArtifact({
+      contentRoot: CONTENT_ROOT,
+    }).entries.map((entry) => ({
+      ...entry,
+      availableLocales: [...entry.availableLocales],
+      headings: [...entry.headings],
+      tags: [...entry.tags],
+      ...(entry.aliases ? { aliases: [...entry.aliases] } : {}),
+    })),
   };
 
   return {
@@ -77,6 +74,21 @@ function loadBaselineValidationInputs() {
 }
 
 describe("public content validation", () => {
+  test("validate:content succeeds when the default generated search artifact is absent", () => {
+    const missingArtifactPath = join(
+      mkdtempSync(join(tmpdir(), "missing-public-search-artifact-")),
+      "public-search-index.json",
+    );
+    const result = runValidationScript("validate:content", undefined, {
+      env: {
+        PUBLIC_SEARCH_ARTIFACT_DEFAULT_PATH: missingArtifactPath,
+      },
+    });
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain("Content validation passed");
+  });
+
   test("validate:content reports checked-in public-search artifact drift as a content-validation failure", () => {
     const result = runValidationScript(
       "validate:content",

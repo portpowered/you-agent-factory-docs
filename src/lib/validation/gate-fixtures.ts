@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH,
+  loadPublicSearchArtifact,
   parsePublicSearchArtifact,
 } from "@/lib/content/load-search-artifact";
 import type { StarterContentDescriptor } from "@/lib/content/starter";
@@ -46,9 +47,7 @@ section: guides
 `,
   }),
   "broken-public-content": (): { artifactPath: string } => {
-    const artifact = parsePublicSearchArtifact(
-      readFileSync(DEFAULT_PUBLIC_SEARCH_ARTIFACT_PATH, "utf8"),
-    );
+    const artifact = loadPublicSearchArtifact();
     const tempRoot = mkdtempSync(join(tmpdir(), "broken-public-content-"));
     const artifactPath = join(tempRoot, "public-search-index.json");
     const brokenArtifact = {
@@ -138,6 +137,10 @@ export function resolveCheckedInPublicSearchArtifactPathForGate():
   }
 
   return null;
+}
+
+export function resolveDefaultPublicSearchArtifactPathForGate(): string | null {
+  return process.env.PUBLIC_SEARCH_ARTIFACT_DEFAULT_PATH ?? null;
 }
 
 export function resolveShellAccessibilitySnapshotForGate(): ShellAccessibilitySnapshot | null {

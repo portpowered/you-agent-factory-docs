@@ -1,4 +1,7 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { dryRunMake, runMake } from "../helpers/make";
 import {
   extractQualityGateStepNames,
@@ -25,8 +28,16 @@ describe("early foundation quality gate command surface", () => {
     ]);
   }, 180_000);
 
-  test("make quality-gate succeeds on the current foundation baseline", () => {
-    const result = runMake("quality-gate");
+  test("make quality-gate succeeds when the generated search artifact is missing on a clean checkout", () => {
+    const missingArtifactPath = join(
+      mkdtempSync(join(tmpdir(), "missing-public-search-artifact-")),
+      "public-search-index.json",
+    );
+    const result = runMake("quality-gate", {
+      env: {
+        PUBLIC_SEARCH_ARTIFACT_DEFAULT_PATH: missingArtifactPath,
+      },
+    });
 
     expect(result.status).toBe(0);
   }, 180_000);
