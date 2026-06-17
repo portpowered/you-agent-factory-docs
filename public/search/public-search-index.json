@@ -150,14 +150,71 @@
       "title": "Installation",
       "description": "",
       "headings": [
-        "Installation"
+        "Installation",
+        "Prerequisites",
+        "Install the repository",
+        "Validate the install",
+        "What success looks like",
+        "Continue into quickstart"
       ],
-      "body": "Installation Install You Agent Factory locally and verify the contributor command path before extending workflows.",
+      "body": "Installation Install You Agent Factory locally using the repository's supported Bun and Make workflow before moving into the first workflow run. Prerequisites Start with Bun 1.1 or newer available on your machine because the repository uses Bun for dependency installation, scripts, and test execution. Clone the repository and work from its root so the documented Make targets run against the same command path used by local contributors and CI. Install the repository Run make setup from the repository root to install or refresh dependencies. This target is the supported entrypoint for initial setup and it delegates to bun install instead of requiring a separate manual package-manager path. Validate the install Run make quality-gate after setup to verify that the local install is usable. This is the authoritative reviewer-facing validation path because it checks typecheck, lint, localization validation, content validation, accessibility validation, static export correctness, and the remaining foundation unit coverage through the repository's existing automation contract. What success looks like Treat the install as successful when make quality-gate finishes without failures from the repository root. If you need narrower follow-up checks after that first pass, the same root workflow also exposes make check, make test, and make build, but the installation path should start with the full quality gate. Continue into quickstart Continue to Quickstart once the repository installs cleanly and the validation path passes so your first workflow run starts from a known-good local setup.",
       "tags": [
         "docs"
       ],
       "section": "setup",
       "searchPriority": 8
+    },
+    {
+      "id": "doc/introduction@en",
+      "canonicalId": "doc/introduction",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/introduction",
+      "title": "Introduction",
+      "description": "",
+      "headings": [
+        "Introduction",
+        "What You Agent Factory helps you do",
+        "Who this setup path is for",
+        "Why continue into setup",
+        "Continue through setup"
+      ],
+      "body": "Introduction You Agent Factory is an open-source, engineering-native platform for turning recurring development work into reusable, inspectable AI agent workflows. What You Agent Factory helps you do Use it when your team has engineering tasks that happen over and over again, such as docs updates, review passes, release checks, or follow-up work after a bug fix, and you want those flows to be repeatable without becoming opaque. Instead of treating each run as a one-off chat, You Agent Factory helps you define a workflow, run it with agents and tools, inspect the outputs, and keep human review in the loop where approval still matters. Who this setup path is for This path is for engineers and technical teams who already work from repositories, files, command-line tools, and review processes, and want a clearer way to structure recurring AI-assisted development work. If you are evaluating whether the project fits your team, this lane gives you the smallest useful sequence: understand the product, install the supported local toolchain, and run one first outcome. Why continue into setup Continue if you want to confirm the local prerequisites and supported command path for this repository before you invest further time. The next pages show the Bun and Make workflow this repo already expects, then close the lane with one first workflow outcome before you move on to deeper guides and concepts. Continue through setup Move next to Installation, then Quickstart, to stay on the first-adoption path.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 10
+    },
+    {
+      "id": "doc/quickstart@en",
+      "canonicalId": "doc/quickstart",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/quickstart",
+      "title": "Quickstart",
+      "description": "",
+      "headings": [
+        "Quickstart",
+        "Before you start",
+        "Start the local docs site",
+        "Verify the first outcome",
+        "Continue into deeper guides"
+      ],
+      "body": "Quickstart Run the docs site locally after installation so the first setup path ends in one concrete, reviewer-verifiable outcome. Before you start Complete the Installation step first so the repository dependencies are installed and make quality-gate already passes from the repository root. Start the local docs site Run bun run dev from the repository root. Use the local URL that Bun prints, then open the /docs route inside that running site so you stay in the docs shell instead of relying on homepage copy alone. Verify the first outcome Treat the quickstart as successful when the local docs shell renders the setup sequence and you can move through Introduction, Installation, and Quickstart from the generated sidebar or previous-next navigation. At that point you have confirmed the supported install path, the generated docs navigation, and the local rendering loop that future docs work builds on. Continue into deeper guides Continue into Getting started for the broader docs baseline, then move on to Core concepts when you want the orchestration model behind the site and factory.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 9
     },
     {
       "id": "glossary/agent@en",
