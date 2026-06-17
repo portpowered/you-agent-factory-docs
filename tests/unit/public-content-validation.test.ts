@@ -8,57 +8,20 @@ import {
   formatPublicContentValidationResult,
   validatePublicContentGraph,
 } from "../../src/lib/content/public-content-validation";
-import {
-  DEFAULT_MAKE_CHECK_STAGES,
-  runMakeCheck,
-} from "../../src/lib/quality/make-check";
+import { runValidationScript } from "../helpers/validation";
 
 describe("public content validation", () => {
-  test("make check runs content validation before typecheck and lint", () => {
-    expect(DEFAULT_MAKE_CHECK_STAGES.map((stage) => stage.id)).toEqual([
-      "content_validation",
-      "typecheck",
-      "lint",
-    ]);
-  });
+  test("validate:content reports public-content artifact drift as a content-validation failure", () => {
+    const result = runValidationScript(
+      "validate:content",
+      "broken-public-content",
+    );
 
-  test("make check reports content-validation failures as distinct from lint and typecheck failures", async () => {
-    const messages = {
-      stdout: [] as string[],
-      stderr: [] as string[],
-    };
-    const invokedStages: string[] = [];
-    const exitCode = await runMakeCheck({
-      runner: async (stage) => {
-        invokedStages.push(stage.id);
-        if (stage.id === "content_validation") {
-          return {
-            exitCode: 1,
-            stdout: "",
-            stderr:
-              'Canonical id "docs.quickstart" is duplicated between docs:quickstart and reference:quickstart-api.',
-          };
-        }
-
-        return {
-          exitCode: 0,
-          stdout: "",
-          stderr: "",
-        };
-      },
-      stdout: (message) => messages.stdout.push(message),
-      stderr: (message) => messages.stderr.push(message),
-    });
-
-    expect(exitCode).toBe(1);
-    expect(invokedStages).toEqual(["content_validation"]);
-    expect(messages.stdout).toEqual([
-      "[make check] Running content validation to validate the public content graph and generated search artifact...",
-    ]);
-    expect(messages.stderr).toEqual([
-      'Canonical id "docs.quickstart" is duplicated between docs:quickstart and reference:quickstart-api.',
-      "[make check] content validation failed.\nContent validation blocked this change for a content-graph or generated-artifact reason.\nCommand: bun run validate:content",
-    ]);
+    expect(result.status).not.toBe(0);
+    expect(result.stderr).toContain("Public content validation failed");
+    expect(result.stderr).toContain(
+      'Generated localized search artifact is missing docs:demarrage-rapide for locale "fr"',
+    );
   });
 
   test("covers every supported public content kind in one validation contract", () => {
