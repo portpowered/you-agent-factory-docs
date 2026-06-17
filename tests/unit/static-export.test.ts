@@ -310,10 +310,10 @@ describe("served static export navigation", () => {
       "Run `make setup` from the repository root to install or refresh dependencies.",
     );
     expect(installationHtml).toContain(
-      "Run `make quality-gate` after setup to verify that the local install is usable.",
+      "Run `make check`, `make test`, and `make build` after setup to verify that the local install matches pull request validation.",
     );
     expect(installationHtml).toContain(
-      "Treat the install as successful when `make quality-gate` finishes without failures from the repository root.",
+      "Treat the install as successful when `make check`, `make test`, and `make build` finish without failures from the repository root.",
     );
     expect(installationHtml).toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
@@ -363,7 +363,7 @@ describe("served static export navigation", () => {
       "Run the docs site locally after installation so the first setup path ends in one concrete, reviewer-verifiable outcome.",
     );
     expect(quickstartHtml).toContain(
-      "Complete the Installation step first so the repository dependencies are installed and `make quality-gate` already passes from the repository root.",
+      "Complete the Installation step first so the repository dependencies are installed and `make check`, `make test`, and `make build` already pass from the repository root.",
     );
     expect(quickstartHtml).toContain(
       "Run `bun run dev` from the repository root.",

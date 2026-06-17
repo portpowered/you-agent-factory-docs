@@ -20,7 +20,8 @@ describe("loadDocPage", () => {
         slug: "installation",
         canonicalId: "doc/installation",
         title: "Installation",
-        bodySnippet: "Run `make quality-gate` after setup to verify",
+        bodySnippet:
+          "Run `make check`, `make test`, and `make build` after setup",
       },
       {
         slug: "quickstart",
