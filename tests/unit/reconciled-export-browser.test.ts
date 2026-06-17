@@ -116,6 +116,85 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("docs search fetches the generated artifact and returns representative results on the public surface", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const artifactPath = withBasePath("/search/public-search-index.json");
+
+    try {
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const artifactResponsePromise = page.waitForResponse(
+        (response) =>
+          response.url().endsWith(artifactPath) && response.status() === 200,
+        { timeout: 10_000 },
+      );
+
+      await page
+        .getByRole("searchbox", { name: "Search documentation" })
+        .fill("installation");
+
+      const artifactResponse = await artifactResponsePromise;
+      expect(artifactResponse.ok()).toBe(true);
+
+      const installationResult = page
+        .getByRole("region", { name: "Search docs" })
+        .getByRole("link", { name: "Installation" });
+
+      await installationResult.waitFor({ state: "visible", timeout: 10_000 });
+      expect(await installationResult.isVisible()).toBe(true);
+      expect(await installationResult.getAttribute("href")).toBe(
+        `${withBasePath("/docs/installation")}/`,
+      );
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("built export keeps primitive-backed homepage and docs surfaces on the reviewed path", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const introductionUrl = new URL(
+      withBasePath("/docs/introduction"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
+
+      const heroDocsCta = page
+        .getByRole("region", { name: PROJECT_TAGLINE })
+        .getByRole("link", { name: DOCS_CTA_LABEL });
+      const homepageHeroCard = page.getByRole("region", {
+        name: PROJECT_TAGLINE,
+      });
+
+      expect(await heroDocsCta.getAttribute("class")).toContain("ui-button");
+      expect(await homepageHeroCard.getAttribute("class")).toContain("ui-card");
+
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const docsOverviewCard = page.locator(".docs-content-card").first();
+      await docsOverviewCard.waitFor({ state: "visible", timeout: 10_000 });
+      expect(await docsOverviewCard.getAttribute("class")).toContain("ui-card");
+
+      await page.goto(introductionUrl, { waitUntil: "domcontentloaded" });
+
+      const docsOutline = page.getByRole("navigation", {
+        name: enMessages.docs.pageOutlineAriaLabel,
+      });
+      expect(await docsOutline.getAttribute("class")).toContain("ui-card");
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("homepage docs CTA navigates to the docs shell entry route", async () => {
     const page = await browser.newPage();
 
@@ -200,6 +279,48 @@ describe("reconciled baseline browser export", () => {
           .getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE })
           .isVisible(),
       ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("shared-shell disclosure triggers stay hidden on desktop and visible on mobile", async () => {
+    const page = await browser.newPage({
+      viewport: { width: 1280, height: 900 },
+    });
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const getDisplay = async (selector: string) =>
+      page.locator(selector).evaluate((element) => {
+        return window.getComputedStyle(element).display;
+      });
+
+    try {
+      await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
+
+      expect(await getDisplay(".shared-shell__menu-toggle")).toBe("none");
+
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      expect(await getDisplay(".shared-shell__menu-toggle")).toBe("none");
+      expect(await getDisplay(".shared-shell__docs-nav-toggle")).toBe("none");
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(200);
+
+      const mobileMenuToggle = page.locator(".shared-shell__menu-toggle");
+      const mobileDocsNavToggle = page.locator(
+        ".shared-shell__docs-nav-toggle",
+      );
+
+      expect(await getDisplay(".shared-shell__menu-toggle")).not.toBe("none");
+      expect(await getDisplay(".shared-shell__docs-nav-toggle")).not.toBe(
+        "none",
+      );
+      expect(await mobileMenuToggle.isVisible()).toBe(true);
+      expect(await mobileDocsNavToggle.isVisible()).toBe(true);
     } finally {
       await page.close();
     }

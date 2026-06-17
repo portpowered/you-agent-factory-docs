@@ -1,5 +1,6 @@
+import { ButtonLink } from "@/components/ui/button";
+import { joinClassNames } from "@/lib/classnames";
 import type { SharedShellDestination } from "@/lib/shared-shell-config";
-import Link from "next/link";
 
 export type SharedShellNavigationLinkProps = {
   destination: SharedShellDestination;
@@ -7,39 +8,29 @@ export type SharedShellNavigationLinkProps = {
   className?: string;
 };
 
-function joinClassNames(
-  ...classNames: Array<string | false | undefined>
-): string {
-  return classNames.filter(Boolean).join(" ");
-}
-
 export function SharedShellNavigationLink({
   destination,
   isCurrent = false,
   className = "shared-shell__link",
 }: SharedShellNavigationLinkProps) {
-  if (destination.external) {
-    return (
-      <a
-        aria-label={`${destination.label} (opens in new tab)`}
-        className={joinClassNames(className, "shared-shell__link--external")}
-        href={destination.href}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        {destination.label}
-      </a>
-    );
-  }
-
   return (
-    <Link
+    <ButtonLink
       aria-current={isCurrent ? "page" : undefined}
-      className={className}
+      aria-label={
+        destination.external
+          ? `${destination.label} (opens in new tab)`
+          : undefined
+      }
+      className={joinClassNames(
+        className,
+        destination.external && "shared-shell__link--external",
+      )}
+      external={destination.external}
       href={destination.href}
+      variant={isCurrent ? "navCurrent" : "nav"}
     >
       {destination.label}
-    </Link>
+    </ButtonLink>
   );
 }
 
@@ -61,10 +52,13 @@ export function SharedShellPrimaryNavigation({
   return (
     <nav
       aria-label={ariaLabel}
-      className={joinClassNames("shared-shell__header-nav", className)}
+      className={joinClassNames(
+        "shared-shell__header-nav flex flex-wrap gap-x-4 gap-y-3",
+        className,
+      )}
       id={id}
     >
-      <ul className="shared-shell__nav-list">
+      <ul className="shared-shell__nav-list m-0 flex list-none flex-wrap gap-x-4 gap-y-3 p-0">
         {destinations.map((destination) => (
           <li key={destination.id}>
             <SharedShellNavigationLink
@@ -98,25 +92,33 @@ export function SharedShellDocsNavigation({
   items,
 }: SharedShellDocsNavigationProps) {
   return (
-    <nav aria-label={ariaLabel} className="shared-shell__docs-nav">
-      <p className="shared-shell__docs-nav-heading">{heading}</p>
-      <ul className="shared-shell__docs-nav-list">
+    <nav
+      aria-label={ariaLabel}
+      className="shared-shell__docs-nav bg-card px-5 py-6"
+    >
+      <p className="shared-shell__docs-nav-heading m-0 mb-3 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+        {heading}
+      </p>
+      <ul className="shared-shell__docs-nav-list m-0 list-none p-0">
         {items.map((item) => {
           const isCurrent = item.id === currentItemId;
 
           return (
-            <li key={item.id}>
-              <Link
+            <li className="mt-1 first:mt-0" key={item.id}>
+              <ButtonLink
                 aria-current={isCurrent ? "page" : undefined}
-                className={
-                  isCurrent
-                    ? "shared-shell__docs-nav-link shared-shell__docs-nav-link--active"
-                    : "shared-shell__docs-nav-link"
-                }
+                className={joinClassNames(
+                  "shared-shell__docs-nav-link block justify-start font-medium",
+                  isCurrent && "shared-shell__docs-nav-link--active",
+                )}
+                data-current={isCurrent ? "true" : undefined}
+                fullWidth
                 href={item.href}
+                size="compact"
+                variant="navSubtle"
               >
                 {item.label}
-              </Link>
+              </ButtonLink>
             </li>
           );
         })}

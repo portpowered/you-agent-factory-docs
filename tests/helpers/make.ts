@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
+import { withRepoCommandLock } from "./repo-command-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -9,26 +10,32 @@ export function runMake(
   target: string,
   options: { dryRun?: boolean; env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
-  const args = options.dryRun ? ["-n", target] : [target];
-  const runTarget = () =>
-    spawnSync("make", args, {
-      cwd: repoRoot,
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        ...options.env,
-      },
-      maxBuffer: 50 * 1024 * 1024,
-    });
-  let result: ReturnType<typeof runTarget>;
+  const runWithOptionalLock = <T>(fn: () => T): T =>
+    options.dryRun ? fn() : withRepoCommandLock(repoRoot, fn);
 
-  if (target === "quality-gate" && !options.dryRun) {
-    result = withQualityGateCommandLock(repoRoot, runTarget);
-  } else if ((target === "check" || target === "build") && !options.dryRun) {
-    result = withStaticExportBuildLock(repoRoot, runTarget);
-  } else {
-    result = runTarget();
-  }
+  const result = runWithOptionalLock(() => {
+    const args = options.dryRun ? ["-n", target] : [target];
+    const runTarget = () =>
+      spawnSync("make", args, {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: {
+          ...process.env,
+          ...options.env,
+        },
+        maxBuffer: 50 * 1024 * 1024,
+      });
+
+    if (target === "quality-gate" && !options.dryRun) {
+      return withQualityGateCommandLock(repoRoot, runTarget);
+    }
+
+    if ((target === "check" || target === "build") && !options.dryRun) {
+      return withStaticExportBuildLock(repoRoot, runTarget);
+    }
+
+    return runTarget();
+  });
 
   return {
     status: result.status,

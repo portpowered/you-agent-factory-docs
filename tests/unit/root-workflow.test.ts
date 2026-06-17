@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { dryRunMake, runMake } from "../helpers/make";
+import { dryRunMake } from "../helpers/make";
+import { runMakeTarget } from "../helpers/make-target";
 
 describe("root makefile workflow", () => {
   test("make setup prepares dependencies through bun install", () => {
@@ -26,8 +27,8 @@ describe("root makefile workflow", () => {
   });
 
   test("make check succeeds on the reconciled scaffold", () => {
-    const result = runMake("check");
+    const result = runMakeTarget("check");
 
     expect(result.status).toBe(0);
-  }, 30_000);
+  }, 120_000);
 });

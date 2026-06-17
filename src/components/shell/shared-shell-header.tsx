@@ -30,9 +30,11 @@ export function SharedShellHeader({ config, surface }: SharedShellHeaderProps) {
   const navigationDisclosure = config.responsive.navigationDisclosure;
 
   return (
-    <header className="shared-shell__header">
-      <div className="shared-shell__header-row">
-        <p className="shared-shell__brand">{config.brand}</p>
+    <header className="shared-shell__header border-b bg-card px-5 py-4 md:px-6">
+      <div className="shared-shell__header-row flex items-center justify-between gap-4">
+        <p className="shared-shell__brand m-0 text-base font-semibold tracking-tight">
+          {config.brand}
+        </p>
         <ShellDisclosureTrigger
           className="shared-shell__menu-toggle"
           disclosure={disclosure}

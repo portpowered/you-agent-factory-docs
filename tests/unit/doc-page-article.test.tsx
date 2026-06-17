@@ -47,6 +47,11 @@ describe("doc page article rendering", () => {
         .getByRole("heading", { level: 2, name: "Prerequisites" })
         .getAttribute("id"),
     ).toBe("prerequisites");
+    expect(outline.className).toContain("ui-card");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Getting started" })
+        .parentElement?.className,
+    ).toContain("ui-card");
   });
 
   test("omits page-outline navigation when the page body has no h2+ headings", () => {
@@ -62,6 +67,10 @@ describe("doc page article rendering", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: "Installation" }),
     ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Installation" })
+        .parentElement?.className,
+    ).toContain("ui-card");
     expect(
       screen.getByText(
         "Install locally and verify the contributor command path.",

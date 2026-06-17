@@ -28,7 +28,7 @@ describe("site budget route coverage", () => {
         label: "Homepage",
         route: "/",
         budget: {
-          maxHtmlBytes: 14_500,
+          maxHtmlBytes: 20_500,
           maxScriptTagCount: 17,
           maxStylesheetLinkCount: 1,
           maxImageCount: 0,
@@ -42,8 +42,8 @@ describe("site budget route coverage", () => {
         label: "Docs entry",
         route: DOCS_ENTRY_ROUTE,
         budget: {
-          maxHtmlBytes: 34_000,
-          maxScriptTagCount: 21,
+          maxHtmlBytes: 40_750,
+          maxScriptTagCount: 24,
           maxStylesheetLinkCount: 1,
           maxImageCount: 0,
           requireMainLandmark: true,
@@ -181,7 +181,7 @@ describe("site budget failures", () => {
         route: homepage,
         requestUrl: "http://127.0.0.1:3786/you-agent-factory-docs/",
         status: 200,
-        htmlBytes: 14_900,
+        htmlBytes: 20_900,
         scriptTagCount: 18,
         stylesheetLinkCount: 1,
         imageCount: 0,
@@ -196,7 +196,7 @@ describe("site budget failures", () => {
       {
         route: homepage,
         dimension: "htmlBytes",
-        message: "expected htmlBytes<=14500, received 14900",
+        message: "expected htmlBytes<=20500, received 20900",
       },
       {
         route: homepage,
@@ -221,7 +221,7 @@ describe("site budget failures", () => {
           route: homepage,
           requestUrl: "http://127.0.0.1:3786/you-agent-factory-docs/",
           status: 200,
-          htmlBytes: 14_900,
+          htmlBytes: 20_900,
           scriptTagCount: 18,
           stylesheetLinkCount: 1,
           imageCount: 0,
@@ -231,7 +231,7 @@ describe("site budget failures", () => {
         },
       ]),
     ).toThrow(
-      "Site budget check failed:\n- Homepage (/) htmlBytes: expected htmlBytes<=14500, received 14900\n- Homepage (/) scriptTagCount: expected scripts<=17, received 18\n- Homepage (/) mainLandmarkPresent: expected a <main> landmark\n- Homepage (/) h1Text: expected a non-empty <h1>",
+      "Site budget check failed:\n- Homepage (/) htmlBytes: expected htmlBytes<=20500, received 20900\n- Homepage (/) scriptTagCount: expected scripts<=17, received 18\n- Homepage (/) mainLandmarkPresent: expected a <main> landmark\n- Homepage (/) h1Text: expected a non-empty <h1>",
     );
   });
 

@@ -7,6 +7,7 @@
 - Low-level SSR-safe viewport band detection lives in `src/hooks/media/useBreakpoint.ts` (`useSyncExternalStore` + shared tokens; no per-page `window.matchMedia`).
 - Canonical shell responsive state boundary: `src/hooks/layout/useResponsiveShellState.ts`.
 - Shell UI projection without owning layout markup: `src/components/shell/responsive-shell-root.tsx` (sets `data-shell-viewport`, `data-shell-narrow`, and `data-shell-reduced-motion`).
+- Tailwind-backed shared tokens are projected from `src/app/globals.css` through `@theme inline`; keep shell utilities on semantic token names such as `bg-card`, `text-foreground`, `border-border`, and `ring-ring` instead of reintroducing one-off color values.
 
 ## Shell integration
 
@@ -15,6 +16,7 @@
 - Narrow-viewport docs sidebar disclosure: `SharedShellDocsAside` uses the same shared disclosure primitives.
 - `src/components/docs/docs-shell.tsx` and `src/components/landing/landing-shell.tsx` compose `SharedShell` with localized config instead of ad hoc viewport logic.
 - CSS layout uses token-aligned media queries in `src/app/globals.css`; interactive shell behavior consumes `useResponsiveShellState` and `data-shell-*` attributes rather than route-local viewport checks.
+- Narrow shared-shell content containers should carry `min-w-0` when they participate in flex or grid layouts; this prevents docs diagrams and code examples from overflowing after desktop-to-mobile viewport changes.
 
 ## Verification
 

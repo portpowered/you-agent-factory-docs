@@ -1,6 +1,9 @@
-import { afterEach, describe, expect, mock, test } from "bun:test";
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
 import { fireEvent, render, screen, within } from "@testing-library/react";
-import type { DocsShellNavigationInput } from "../../src/lib/content";
+import type {
+  DocsShellNavigationInput,
+  PublicSearchArtifact,
+} from "../../src/lib/content";
 import {
   CALLOUT_SECTION_HEADING,
   CODE_BLOCK_SECTION_HEADING,
@@ -28,6 +31,52 @@ import { renderWithLocalization } from "../helpers/render-with-localization";
 mock.module("next/link", () => ({
   default: MockLink,
 }));
+
+const publicSearchArtifact: PublicSearchArtifact = {
+  version: 1,
+  entries: [
+    {
+      id: "doc/installation@en",
+      canonicalId: "doc/installation",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
+      kind: "doc",
+      url: "/docs/installation",
+      title: "Installation",
+      description: "Install the factory on your machine.",
+      headings: ["Install"],
+      body: "Install the factory locally.",
+      tags: ["setup"],
+      aliases: ["install guide"],
+      section: "Setup",
+      searchPriority: 20,
+    },
+    {
+      id: "doc/installation@fr",
+      canonicalId: "doc/installation",
+      locale: "fr",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
+      kind: "doc",
+      url: "/docs/installation",
+      title: "Installation FR",
+      description: "Installez la factory sur votre machine.",
+      headings: ["Installation"],
+      body: "Installez la factory localement.",
+      tags: ["installation"],
+      aliases: ["guide d'installation"],
+      section: "Configuration",
+      searchPriority: 20,
+    },
+  ],
+};
+
+beforeEach(() => {
+  globalThis.fetch = mock(
+    () => new Promise(() => {}),
+  ) as unknown as typeof fetch;
+});
 
 afterEach(() => {
   mock.restore();
@@ -133,6 +182,169 @@ describe("docs shell rendering", () => {
     expect(within(setupNav).getByText("Configuration")).toBeTruthy();
     expect(within(guidesNav).getByText("Getting started")).toBeTruthy();
     expect(within(guidesNav).getByText("Core concepts")).toBeTruthy();
+    expect(screen.getByRole("region", { name: "Search docs" })).toBeTruthy();
+  });
+
+  test("returns localized Orama-backed search results on the docs surface", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+    globalThis.fetch = mock(() =>
+      Promise.resolve(
+        new Response(JSON.stringify(publicSearchArtifact), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      ),
+    ) as unknown as typeof fetch;
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Search documentation",
+    });
+    fireEvent.change(searchInput, { target: { value: "install" } });
+
+    const resultLink = await screen.findByRole("link", {
+      name: /Installation Install the factory on your machine\./,
+    });
+
+    expect(resultLink.getAttribute("href")).toBe("/docs/installation");
+    expect(screen.getByText("1 matching docs")).toBeTruthy();
+  });
+
+  test("returns to the idle guidance when the docs search query is cleared", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+    globalThis.fetch = mock(() =>
+      Promise.resolve(
+        new Response(JSON.stringify(publicSearchArtifact), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      ),
+    ) as unknown as typeof fetch;
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Search documentation",
+    });
+    fireEvent.change(searchInput, { target: { value: "install" } });
+
+    await screen.findByText("1 matching docs");
+
+    fireEvent.change(searchInput, { target: { value: "   " } });
+
+    expect(
+      await screen.findByText(
+        "Type a query to search the current locale's published docs.",
+      ),
+    ).toBeTruthy();
+  });
+
+  test("uses the active locale when querying the docs search surface", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+    globalThis.fetch = mock(() =>
+      Promise.resolve(
+        new Response(JSON.stringify(publicSearchArtifact), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      ),
+    ) as unknown as typeof fetch;
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+      { locale: "fr" },
+    );
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Rechercher dans la documentation",
+    });
+    fireEvent.change(searchInput, { target: { value: "installation" } });
+
+    const resultLink = await screen.findByRole("link", {
+      name: /Installation FR Installez la factory sur votre machine\./,
+    });
+
+    expect(resultLink.getAttribute("href")).toBe("/docs/installation");
+    expect(screen.getByText("1 documentation correspondante")).toBeTruthy();
+  });
+
+  test("shows an empty search state when no Orama-backed docs match", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+    globalThis.fetch = mock(() =>
+      Promise.resolve(
+        new Response(JSON.stringify(publicSearchArtifact), {
+          status: 200,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }),
+      ),
+    ) as unknown as typeof fetch;
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    const searchInput = screen.getByRole("searchbox", {
+      name: "Search documentation",
+    });
+    fireEvent.change(searchInput, { target: { value: "missing-term" } });
+
+    expect(
+      await screen.findByText("No matching docs found for this query."),
+    ).toBeTruthy();
+  });
+
+  test("shows a search error when the public search artifact cannot load", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+    globalThis.fetch = mock(() =>
+      Promise.resolve(
+        new Response("missing artifact", {
+          status: 500,
+        }),
+      ),
+    ) as unknown as typeof fetch;
+
+    const { DocsShell } = await import("../../src/components/docs/docs-shell");
+
+    renderWithLocalization(
+      <DocsShell navigation={generatedNavigation}>
+        <h1>{enMessages.docs.shellTitle}</h1>
+      </DocsShell>,
+    );
+
+    expect(
+      await screen.findByText(
+        "Search is temporarily unavailable because the public search artifact could not be loaded.",
+      ),
+    ).toBeTruthy();
   });
 
   test("renders separate navigation landmarks for each generated docs section", async () => {
@@ -379,6 +591,26 @@ describe("docs shell rendering", () => {
     });
 
     expect(codePresentationLink.getAttribute("aria-current")).toBe("page");
+  });
+
+  test("docs entry route frames overview content through shared card primitives", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const DocsShellPage = (await import("../../src/app/docs/page")).default;
+
+    renderWithLocalization(<DocsShellPage />);
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: enMessages.docs.shellTitle,
+      }).parentElement?.className,
+    ).toContain("ui-card");
+    expect(
+      screen.getByRole("region", {
+        name: enMessages.docs.examplesHeading,
+      }).className,
+    ).toContain("ui-card");
   });
 });
 

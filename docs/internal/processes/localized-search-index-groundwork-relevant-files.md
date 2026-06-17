@@ -27,17 +27,23 @@
 - Types and deterministic projection live in `src/lib/content/search-artifact.ts`; import from `@/lib/content`.
 - `buildPublicSearchArtifact()` maps normalized `LocalizedSearchDocument` values into `PublicSearchArtifact` entries without a separate indexing-only parser.
 - `loadPublicSearchArtifact()` and `writePublicSearchArtifact()` in `src/lib/content/load-search-artifact.ts` load starter content through `loadLocalizedSearchDocuments()` before emitting the artifact.
+- `src/lib/content/orama-search.ts` is the Orama-backed query seam. It consumes the generated `PublicSearchArtifact`, inserts one normalized document per artifact entry into Orama, and exposes the later public-search query path without reopening content parsing.
+- `src/components/docs/docs-search.tsx` is the narrow public docs-search consumer. It fetches the checked-in artifact from static export, builds the Orama index client-side, and queries only through `src/lib/content/orama-search.ts`.
 - `scripts/generate-search-index.ts` writes `public/search/public-search-index.json` for reviewer inspection and static export consumption.
 - `src/lib/validation/search-index.ts` and `scripts/validate-search-index.ts` validate that the checked-in `public/search/public-search-index.json` artifact still matches a fresh projection from normalized localized search documents.
 - `bun run generate:search-index` runs before `next build`; later search UX should read the generated artifact contract rather than re-parsing raw content files.
+- When wiring public search UI, fetch `withBasePath("/search/public-search-index.json")` so the artifact resolves under GitHub Pages `basePath` during static export verification.
 - Artifact entries expose locale, `canonicalLocale`, `availableLocales`, canonical id, route or URL identity, searchable text fields, and search priority for representative entries.
 - Parallel locale variants for one canonical page share the same `canonicalId`, `canonicalLocale`, and `availableLocales` while keeping distinct `locale` and variant-specific searchable text.
+- When adding query behavior, preserve `PublicSearchArtifact` as the build-time contract and derive any Orama compatibility shape from artifact entries inside the adapter instead of widening the artifact or re-reading MDX at query time.
 
 ## Tests
 
 - Focused search-document projection and starter loading proof: `tests/unit/localized-search-documents.test.ts`.
 - Generated public search artifact contract proof: `tests/unit/public-search-artifact.test.ts`.
 - Cross-layer inclusion, exclusion, and artifact alignment proof: `tests/unit/localized-search-index-foundation.test.ts`.
+- Orama alignment proof belongs in `tests/unit/orama-search-alignment-foundation.test.ts`; prefer asserting that representative queries return artifact-backed entries with preserved locale metadata.
+- Public search UI proof belongs in `tests/unit/docs-shell.test.tsx`; prefer runtime assertions that localized queries surface representative docs, plus explicit empty and artifact-load error states.
 - Prefer asserting observable generated document fields, canonical ids, locale metadata, and searchable text—not helper inventories or source-file topology scans.
 - Exclusion proofs should load a temporary starter content root with one published variant plus representative `draft`, `internal`, `hidden`, and `search.include: false` variants, then assert both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` omit the excluded canonical ids.
 
