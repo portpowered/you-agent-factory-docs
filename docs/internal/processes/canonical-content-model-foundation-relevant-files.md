@@ -32,6 +32,7 @@
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
 - To add a new canonical docs page to the shell, create one localized file under `src/content/docs/{slug}/{locale}.mdx` with valid canonical frontmatter (`id`, `title`, `canonicalLocale`, `availableLocales`, `section`, `order`, and publication metadata); the page will flow into route loading and generated navigation without manual sidebar wiring.
+- When canonical docs copy changes, regenerate `public/search/public-search-index.json` so the checked-in search artifact stays aligned with the page body and headings that search exposes.
 
 ## Docs shell navigation projection
 
