@@ -1,5 +1,9 @@
 import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import nextConfig from "../../next.config";
+import {
+  FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM,
+  FACTORY_WORKFLOW_MERMAID_DIAGRAM,
+} from "../../src/content/docs-diagrams";
 import { loadDocsShellNavigation } from "../../src/lib/content";
 import { PROJECT_TAGLINE } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shared-shell-config";
@@ -175,6 +179,31 @@ describe("served static export navigation", () => {
       true,
     );
     expect(docsHtml).not.toContain("Overview");
+  }, 30_000);
+
+  test("ships reviewer-visible Mermaid and React Flow examples on the docs entry route", async () => {
+    const docsResponse = await fetchHttp(
+      new URL(withBasePath(DOCS_ENTRY_ROUTE), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const docsHtml = await docsResponse.text();
+
+    expect(docsHtml).toContain(enMessages.docs.examplesHeading);
+    expect(docsHtml).toContain(enMessages.docs.examplesText);
+    expect(docsHtml).toContain(enMessages.docs.mermaidExampleLabel);
+    expect(docsHtml).toContain(enMessages.docs.reactFlowExampleLabel);
+    expect(docsHtml).toContain(FACTORY_WORKFLOW_MERMAID_DIAGRAM.title);
+    expect(docsHtml).toContain(
+      "Rendering Mermaid diagram from checked-in source",
+    );
+    expect(docsHtml).toContain("Mermaid source of truth");
+    expect(docsHtml).toContain("flowchart LR");
+    expect(docsHtml).toContain(FACTORY_AGENT_GRAPH_REACT_FLOW_DIAGRAM.title);
+    expect(docsHtml).toContain("React Flow source of truth");
+    expect(docsHtml).toContain("Factory executor");
+    expect(docsHtml).toContain("Verification lane");
+    expect(docsHtml).toContain("rendered diagram");
+    expect(docsHtml).toContain("react-flow__viewport");
   }, 30_000);
 
   test("follows a generated docs navigation link to a served doc page", async () => {

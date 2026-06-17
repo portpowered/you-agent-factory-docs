@@ -28,6 +28,13 @@ export const enMessages = {
     shellTitle: "Documentation",
     framingText:
       "This is the stable docs entry route. Later navigation, localization, and content systems extend this shell without changing route structure.",
+    examplesHeading: "Diagram rendering examples",
+    examplesText:
+      "These fixtures prove the two supported docs-diagram paths from checked-in authored definitions through responsive rendering.",
+    mermaidExampleLabel:
+      "Mermaid renders simple explanatory workflow diagrams.",
+    reactFlowExampleLabel:
+      "React Flow renders workflow and agent graph diagrams.",
   },
 } as const;
 
