@@ -1,18 +1,22 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import type {
   DocsShellNavigationInput,
   PublicSearchArtifact,
 } from "../../src/lib/content";
+import { MockFumadocsDocsLayout } from "../helpers/mock-fumadocs-docs-layout";
 import {
   RESPONSIVE_BREAKPOINTS_PX,
   mockMatchMedia,
 } from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
-import { renderWithLocalization } from "../helpers/render-with-localization";
+import { renderDocsRoute } from "../helpers/render-docs-route";
 
 mock.module("next/link", () => ({
   default: MockLink,
+}));
+mock.module("fumadocs-ui/layouts/docs", () => ({
+  DocsLayout: MockFumadocsDocsLayout,
 }));
 
 const publicSearchArtifact: PublicSearchArtifact = {
@@ -110,19 +114,16 @@ afterEach(() => {
 
 describe("docs route chrome", () => {
   test("keeps generated navigation affordances and localized labels on the Fumadocs-owned route path", async () => {
-    const { DocsRouteChrome } = await import(
-      "../../src/components/docs/docs-route-chrome"
-    );
-
-    renderWithLocalization(
-      <DocsRouteChrome
-        currentPath="/docs/installation"
-        navigation={generatedNavigation}
-      >
-        <article>
-          <h1>Installation</h1>
-        </article>
-      </DocsRouteChrome>,
+    renderDocsRoute(
+      {
+        currentPath: "/docs/installation",
+        navigation: generatedNavigation,
+        children: (
+          <article>
+            <h1>Installation</h1>
+          </article>
+        ),
+      },
       { locale: "fr" },
     );
 
@@ -146,19 +147,19 @@ describe("docs route chrome", () => {
         "Saisissez une requete pour rechercher dans la documentation publiee de la langue active.",
       ),
     ).toBeTruthy();
-    expect(screen.getByText("Setup")).toBeTruthy();
-    expect(screen.getByText("Getting started")).toBeTruthy();
+    const docsNav = screen.getByRole("navigation", {
+      name: "Navigation de la documentation",
+    });
+    expect(within(docsNav).getByText("Setup")).toBeTruthy();
+    expect(within(docsNav).getByText("Getting started")).toBeTruthy();
   });
 
   test("uses the active locale for the preserved docs search entry behavior", async () => {
-    const { DocsRouteChrome } = await import(
-      "../../src/components/docs/docs-route-chrome"
-    );
-
-    renderWithLocalization(
-      <DocsRouteChrome navigation={generatedNavigation}>
-        <h1>Documentation</h1>
-      </DocsRouteChrome>,
+    renderDocsRoute(
+      {
+        navigation: generatedNavigation,
+        children: <h1>Documentation</h1>,
+      },
       { locale: "fr" },
     );
 

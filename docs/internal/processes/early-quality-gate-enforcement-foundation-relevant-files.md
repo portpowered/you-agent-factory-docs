@@ -16,7 +16,7 @@ The early gate currently runs, in order:
 2. `bun run lint`
 3. `bun run validate:localization` → `scripts/validate-localization.ts` → `src/localization/lib/validate-messages.ts`
 4. `bun run validate:content` → `scripts/validate-content.ts` → `src/lib/content/load-starter-content.ts` and `src/lib/content/starter.ts`
-5. `bun run validate:accessibility` → `scripts/validate-accessibility.ts` → bounded expectations in `src/lib/validation/shell-accessibility.ts` plus focused shell tests in `tests/unit/homepage-shell.test.tsx`, `tests/unit/docs-shell.test.tsx`, and `tests/unit/shell-accessibility-validation.test.tsx`
+5. `bun run validate:accessibility` → `scripts/validate-accessibility.ts` → bounded expectations in `src/lib/validation/shell-accessibility.ts` plus focused shell tests in `tests/unit/homepage-shell.test.tsx`, `tests/unit/docs-route-shell.test.tsx`, `tests/unit/docs-route-chrome.test.tsx`, and `tests/unit/shell-accessibility-validation.test.tsx`
 6. `bun run validate:static-export` → `scripts/validate-static-export.ts` → `src/lib/validation/static-export.ts`, one cleaned `make build` production export under `withStaticExportBuildLock()`, `out/` presence, and `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so served-export tests reuse the gate build output
 7. `bun run validate:search-index` → `scripts/validate-search-index.ts` → `src/lib/validation/search-index.ts` for dedicated generated-search-data contract validation reused by the broader gate
 8. Remaining foundation unit tests (`tests/unit/project.test.ts`, `tests/unit/site.test.ts`)

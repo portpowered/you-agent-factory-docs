@@ -24,7 +24,7 @@
 - Root contributor command path: `Makefile` (`setup`, `check`, `test`, `build`) and matching `package.json` scripts.
 - Next.js static-export scaffold: `next.config.ts`, `src/app/`, `src/components/`, `src/lib/`.
 - Homepage shell: `src/components/landing/landing-shell.tsx` via `src/app/page.tsx`.
-- Docs shell entry route: `src/components/docs/docs-shell.tsx` via `src/app/docs/page.tsx`.
+- Docs route entry path: `src/app/docs/page.tsx` through `src/components/docs/docs-route-chrome.tsx`, owned by `src/app/docs/layout.tsx` and `src/components/docs/fumadocs-docs-layout.tsx`.
 - GitHub Pages base-path helpers: `src/lib/site.ts`.
 - Shared shell copy and CTA constants: `src/lib/shell.ts`, `src/lib/project.ts`.
 - Automated verification: `tests/unit/` plus `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md` for bootstrap-specific patterns.

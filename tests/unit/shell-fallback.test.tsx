@@ -3,11 +3,13 @@ import { screen, within } from "@testing-library/react";
 import type { DocsShellNavigationInput } from "../../src/lib/content";
 import { DOCS_ENTRY_ROUTE } from "../../src/lib/project";
 import { enMessages } from "../../src/localization/messages/en";
+import { MockFumadocsDocsLayout } from "../helpers/mock-fumadocs-docs-layout";
 import {
   RESPONSIVE_BREAKPOINTS_PX,
   mockMatchMedia,
 } from "../helpers/mock-match-media";
 import MockLink from "../helpers/mock-next-link";
+import { renderDocsRoute } from "../helpers/render-docs-route";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
 const frPrimaryNavAriaLabel = "Principale";
@@ -35,6 +37,9 @@ const fallbackDocsNavigation: DocsShellNavigationInput = {
 mock.module("next/link", () => ({
   default: MockLink,
 }));
+mock.module("fumadocs-ui/layouts/docs", () => ({
+  DocsLayout: MockFumadocsDocsLayout,
+}));
 
 beforeEach(() => {
   mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
@@ -47,7 +52,6 @@ afterEach(() => {
 const { LandingShell } = await import(
   "../../src/components/landing/landing-shell"
 );
-const { DocsShell } = await import("../../src/components/docs/docs-shell");
 
 describe("homepage shell fallback messaging", () => {
   test("renders localized labels and falls back to default locale for missing keys", () => {
@@ -83,26 +87,24 @@ describe("homepage shell fallback messaging", () => {
   });
 });
 
-describe("docs shell fallback messaging", () => {
+describe("docs route fallback messaging", () => {
   test("renders localized labels and falls back to default locale for missing keys", () => {
-    renderWithLocalization(
-      <DocsShell navigation={fallbackDocsNavigation}>
-        <article aria-labelledby="docs-shell-title">
-          <h1 id="docs-shell-title">{enMessages.docs.shellTitle}</h1>
-          <p className="docs-shell__framing">{enMessages.docs.framingText}</p>
-        </article>
-      </DocsShell>,
+    renderDocsRoute(
+      {
+        navigation: fallbackDocsNavigation,
+        children: (
+          <article aria-labelledby="docs-shell-title">
+            <h1 id="docs-shell-title">{enMessages.docs.shellTitle}</h1>
+            <p className="docs-shell__framing">{enMessages.docs.framingText}</p>
+          </article>
+        ),
+      },
       { locale: "fr" },
     );
 
     expect(
       screen.getByRole("navigation", {
         name: frDocsNavHeading,
-      }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("navigation", {
-        name: frPrimaryNavAriaLabel,
       }),
     ).toBeTruthy();
     expect(
@@ -113,29 +115,29 @@ describe("docs shell fallback messaging", () => {
     ).toBeTruthy();
     expect(screen.getByText(enMessages.docs.framingText)).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: enMessages.docs.navOverview }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("link", {
-        name: `${enMessages.common.githubCta} (opens in new tab)`,
-      }),
+      within(
+        screen.getByRole("navigation", {
+          name: frDocsNavHeading,
+        }),
+      ).getByRole("link", { name: "Installation" }),
     ).toBeTruthy();
   });
 
   test("keeps canonical route identities when rendering fallback shell text", () => {
-    renderWithLocalization(
-      <DocsShell navigation={fallbackDocsNavigation}>
-        <h1>{enMessages.docs.shellTitle}</h1>
-      </DocsShell>,
+    renderDocsRoute(
+      {
+        navigation: fallbackDocsNavigation,
+        children: <h1>{enMessages.docs.shellTitle}</h1>,
+      },
       { locale: "fr" },
     );
 
-    const homeLink = screen.getByRole("link", { name: frHome });
-    const overviewLink = screen.getByRole("link", {
-      name: enMessages.docs.navOverview,
+    const installationLink = screen.getByRole("link", {
+      name: "Installation",
     });
+    const homeLink = screen.getByRole("link", { name: "You Agent Factory" });
 
+    expect(installationLink.getAttribute("href")).toBe("/docs/installation");
     expect(homeLink.getAttribute("href")).toBe("/");
-    expect(overviewLink.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
   });
 });

@@ -192,10 +192,12 @@ section: guides
     },
     docs: {
       hasBannerLandmark: true,
-      siteNavigationLabel: "Primary",
       docsNavigationLabel: getExpectedDocsNavigationLabel(),
       hasMainLandmark: true,
-      overviewLinkAriaCurrent: "page",
+      hasSearchRegion: true,
+      hasBreadcrumbNavigation: true,
+      hasProgressionNavigation: true,
+      docsRootLabel: "Wrong label",
     },
   }),
   "broken-static-export": (): StaticExportConfig => ({

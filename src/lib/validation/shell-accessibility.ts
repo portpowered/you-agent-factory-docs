@@ -5,8 +5,8 @@ export const FOCUSED_SHELL_ACCESSIBILITY_COVERAGE = [
   "landing shell exposes a labeled Primary navigation landmark",
   "landing shell exposes a main landmark with an h1 hero title",
   "landing shell external GitHub CTA uses rel=noopener noreferrer",
-  "docs shell exposes banner, labeled primary nav, labeled docs nav, and main landmarks",
-  "docs shell marks the overview entry with aria-current=page",
+  "docs route exposes banner, labeled docs nav, search, breadcrumb, progression, and main landmarks through the Fumadocs path",
+  "docs route keeps the canonical docs-root context visible on the /docs entry path",
 ] as const;
 
 export type FocusedShellAccessibilityExpectation =
@@ -14,8 +14,7 @@ export type FocusedShellAccessibilityExpectation =
 
 export const LANDING_PRIMARY_NAV_ARIA_LABEL =
   enMessages.landing.primaryNavAriaLabel;
-export const DOCS_SITE_NAV_ARIA_LABEL = enMessages.landing.primaryNavAriaLabel;
-export const DOCS_OVERVIEW_ARIA_CURRENT = "page";
+export const DOCS_ROOT_LABEL = enMessages.docs.shellTitle;
 
 export type LandingShellAccessibilitySnapshot = {
   primaryNavigationLabel: string;
@@ -26,10 +25,12 @@ export type LandingShellAccessibilitySnapshot = {
 
 export type DocsShellAccessibilitySnapshot = {
   hasBannerLandmark: boolean;
-  siteNavigationLabel: string;
   docsNavigationLabel: string;
   hasMainLandmark: boolean;
-  overviewLinkAriaCurrent: string | null;
+  hasSearchRegion: boolean;
+  hasBreadcrumbNavigation: boolean;
+  hasProgressionNavigation: boolean;
+  docsRootLabel: string | null;
 };
 
 export type ShellAccessibilitySnapshot = {
@@ -96,15 +97,7 @@ export function validateShellAccessibilitySnapshot(
     issues.push({
       surface: "docs",
       field: "hasBannerLandmark",
-      message: "Docs shell must expose a banner landmark",
-    });
-  }
-
-  if (snapshot.docs.siteNavigationLabel !== DOCS_SITE_NAV_ARIA_LABEL) {
-    issues.push({
-      surface: "docs",
-      field: "siteNavigationLabel",
-      message: `Site navigation must use aria-label="${DOCS_SITE_NAV_ARIA_LABEL}"`,
+      message: "Docs route must expose a banner landmark",
     });
   }
 
@@ -121,15 +114,39 @@ export function validateShellAccessibilitySnapshot(
     issues.push({
       surface: "docs",
       field: "hasMainLandmark",
-      message: "Docs shell must expose a main landmark",
+      message: "Docs route must expose a main landmark",
     });
   }
 
-  if (snapshot.docs.overviewLinkAriaCurrent !== DOCS_OVERVIEW_ARIA_CURRENT) {
+  if (!snapshot.docs.hasSearchRegion) {
     issues.push({
       surface: "docs",
-      field: "overviewLinkAriaCurrent",
-      message: `Docs overview entry must use aria-current="${DOCS_OVERVIEW_ARIA_CURRENT}"`,
+      field: "hasSearchRegion",
+      message: "Docs route must expose the preserved search region",
+    });
+  }
+
+  if (!snapshot.docs.hasBreadcrumbNavigation) {
+    issues.push({
+      surface: "docs",
+      field: "hasBreadcrumbNavigation",
+      message: "Docs route must expose breadcrumb navigation",
+    });
+  }
+
+  if (!snapshot.docs.hasProgressionNavigation) {
+    issues.push({
+      surface: "docs",
+      field: "hasProgressionNavigation",
+      message: "Docs route must expose progression navigation",
+    });
+  }
+
+  if (snapshot.docs.docsRootLabel !== DOCS_ROOT_LABEL) {
+    issues.push({
+      surface: "docs",
+      field: "docsRootLabel",
+      message: `Docs route must keep the root context label "${DOCS_ROOT_LABEL}" visible`,
     });
   }
 

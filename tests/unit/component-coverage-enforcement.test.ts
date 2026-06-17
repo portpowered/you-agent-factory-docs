@@ -14,7 +14,7 @@ import {
 const repoRoot = join(import.meta.dir, "../..");
 
 const passingCoverageLcov = `
-SF:src/components/docs/docs-shell.tsx
+SF:src/components/docs/docs-route-chrome.tsx
 LF:43
 LH:43
 end_of_record
@@ -25,7 +25,7 @@ end_of_record
 `;
 
 const failingCoverageLcov = `
-SF:src/components/docs/docs-shell.tsx
+SF:src/components/docs/docs-route-chrome.tsx
 LF:43
 LH:43
 end_of_record
@@ -36,7 +36,7 @@ end_of_record
 `;
 
 const misleadingAverageCoverageLcov = `
-SF:src/components/docs/docs-shell.tsx
+SF:src/components/docs/docs-route-chrome.tsx
 LF:10
 LH:10
 end_of_record
@@ -51,7 +51,7 @@ const passingCoverageOutput = `
 File                                      | % Funcs | % Lines | Uncovered Line #s
 ------------------------------------------|---------|---------|-------------------
 All files                                 |  100.00 |  100.00 |
- src/components/docs/docs-shell.tsx       |  100.00 |  100.00 |
+ src/components/docs/docs-route-chrome.tsx | 100.00 | 100.00 |
  src/components/landing/landing-shell.tsx |  100.00 |  100.00 |
 ------------------------------------------|---------|---------|-------------------
 `;
@@ -62,7 +62,7 @@ describe("component coverage enforcement logic", () => {
 
     expect(rows).toEqual([
       {
-        filePath: "src/components/docs/docs-shell.tsx",
+        filePath: "src/components/docs/docs-route-chrome.tsx",
         functionCoveragePercent: 100,
         lineCoveragePercent: 100,
       },
@@ -76,7 +76,7 @@ describe("component coverage enforcement logic", () => {
 
   test("evaluates aggregate line coverage from lcov LF/LH totals for the enforced surface", () => {
     const enforcedFiles = [
-      "src/components/docs/docs-shell.tsx",
+      "src/components/docs/docs-route-chrome.tsx",
       "src/components/landing/landing-shell.tsx",
     ];
 
@@ -104,7 +104,7 @@ describe("component coverage enforcement logic", () => {
 
   test("does not treat equal per-file averages as aggregate coverage", () => {
     const enforcedFiles = [
-      "src/components/docs/docs-shell.tsx",
+      "src/components/docs/docs-route-chrome.tsx",
       "src/components/landing/landing-shell.tsx",
     ];
     const evaluation = evaluateComponentCoverageEnforcement(
@@ -128,7 +128,7 @@ describe("component coverage enforcement logic", () => {
 
   test("failure and success messages name component coverage enforcement explicitly", () => {
     const enforcedFiles = [
-      "src/components/docs/docs-shell.tsx",
+      "src/components/docs/docs-route-chrome.tsx",
       "src/components/landing/landing-shell.tsx",
     ];
     const failingEvaluation = evaluateComponentCoverageEnforcement(
