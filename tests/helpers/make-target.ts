@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const projectRoot = join(import.meta.dir, "../..");
 
@@ -19,7 +20,7 @@ export function runMakeTarget(
     spawnSync("make", [target], {
       cwd: projectRoot,
       encoding: "utf8",
-      env: { ...process.env, ...env },
+      env: buildCleanSubprocessEnv(env),
       maxBuffer: 50 * 1024 * 1024,
     });
 

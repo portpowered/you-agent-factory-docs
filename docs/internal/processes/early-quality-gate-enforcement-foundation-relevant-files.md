@@ -48,3 +48,4 @@ Later localization and canonical content foundations plug into the same `validat
 - `src/lib/validation/static-export.ts` validates the GitHub Pages-safe Next.js export configuration before the production build step runs.
 - `tests/helpers/make.ts` supports dry-run assertions against the root `Makefile`.
 - `tests/helpers/validation.ts` runs validate scripts and the quality-gate script with optional gate fixtures and step-output helpers.
+- `src/lib/validation/quality-gate-lock.ts` serializes concurrent `quality-gate` subprocess runs so automation-parity and failing-path tests can exercise the shared command path without racing on repo-root artifacts.

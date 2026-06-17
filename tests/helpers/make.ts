@@ -1,5 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -8,14 +10,17 @@ export function runMake(
   options: { dryRun?: boolean; env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
   const args = options.dryRun ? ["-n", target] : [target];
-  const result = spawnSync("make", args, {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-    },
-  });
+  const runTarget = () =>
+    spawnSync("make", args, {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: buildCleanSubprocessEnv(options.env),
+    });
+
+  const result =
+    options.dryRun || !["build", "check", "component-coverage"].includes(target)
+      ? runTarget()
+      : withStaticExportBuildLock(repoRoot, runTarget);
 
   return {
     status: result.status,

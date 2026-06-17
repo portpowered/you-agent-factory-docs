@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { runMake } from "../helpers/make";
-import { runValidationScript } from "../helpers/validation";
+import {
+  runQualityGateScript,
+  runValidationScript,
+} from "../helpers/validation";
 
 describe("early foundation quality gate failing-path proof", () => {
   test("validate:localization blocks a broken message catalog regression", () => {
@@ -25,8 +27,8 @@ describe("early foundation quality gate failing-path proof", () => {
     expect(result.stderr).toContain("canonicalLocale");
   });
 
-  test("make quality-gate fails fast when localization validation regresses", () => {
-    const result = runMake("quality-gate", {
+  test("quality-gate script fails fast when localization validation regresses", () => {
+    const result = runQualityGateScript({
       env: {
         EARLY_GATE_VALIDATION_FIXTURE: "broken-shell-localization",
       },

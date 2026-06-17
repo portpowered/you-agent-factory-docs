@@ -29,5 +29,5 @@ describe("root makefile workflow", () => {
     const result = runMake("check");
 
     expect(result.status).toBe(0);
-  }, 30_000);
+  }, 90_000);
 });

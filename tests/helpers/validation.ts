@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import type { EarlyGateValidationFixture } from "../../src/lib/validation/gate-fixtures";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -10,10 +11,7 @@ export function runQualityGateScript(
   const result = spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
     cwd: repoRoot,
     encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-    },
+    env: buildCleanSubprocessEnv(options.env),
   });
 
   return {
@@ -40,14 +38,13 @@ export function runValidationScript(
   const result = spawnSync("bun", ["run", target], {
     cwd: repoRoot,
     encoding: "utf8",
-    env: {
-      ...process.env,
-      ...(fixture
+    env: buildCleanSubprocessEnv(
+      fixture
         ? {
             EARLY_GATE_VALIDATION_FIXTURE: fixture,
           }
-        : undefined),
-    },
+        : undefined,
+    ),
   });
 
   return {

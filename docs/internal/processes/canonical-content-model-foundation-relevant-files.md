@@ -28,10 +28,11 @@
 
 - Starter fixtures live under `src/content/{docs,blog,glossary,comparisons,references}/{slug}/{locale}.md` or `{locale}.mdx`.
 - `resolveLocaleFileName()` in `src/lib/content/locale-files.ts` is the shared locale-file resolver; `loadDocPage()` prefers `.mdx` over `.md` when both exist for the same locale.
+- `loadPublicContentPage()` in `src/lib/content/load-public-content-page.ts` is the shared runtime loader for public starter-content pages outside the docs route tree; it keeps glossary, comparison, and reference pages on the same validated canonical records and locale-projection path as docs pages.
 - Directory names map to public content kinds via `STARTER_CONTENT_DIRECTORY_KINDS` in `src/lib/content/starter.ts`.
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
-- For non-doc starter content that does not yet have a dedicated public page implementation in the current branch, prefer verifying richer body copy through `loadPublicSearchArtifact()` or `loadLocalizedSearchDocuments()` so tests still exercise canonical ids, route paths, headings, and searchable body text without reopening route plumbing.
+- Use `loadPublicSearchArtifact()` or `loadLocalizedSearchDocuments()` for pre-route proof when a non-doc content kind has no public page yet. Once a route exists, prefer served static-export or browser-visible assertions for the actual page URL and keep artifact-level tests as supporting coverage.
 
 ## Docs shell navigation projection
 
@@ -41,6 +42,7 @@
 - `projectSharedShellDocsNavigation()` maps generated navigation into `SharedShell` sidebar groups; `DocsShell` composes `SharedShell` with that projected config.
 - `DocsShell` uses `createSharedShellConfigFromMessages(t, { docsNavigationGroups })` so localized shell labels come from the message catalog while docs sidebar items stay projected from canonical records.
 - Published doc pages are served from `src/app/docs/[slug]/page.tsx` via `loadDocPage()` and `generateStaticParams()`.
+- Published glossary, comparison, and reference pages are served from `src/app/glossary/[slug]/page.tsx`, `src/app/comparisons/[slug]/page.tsx`, and `src/app/references/[slug]/page.tsx`, each with `generateStaticParams()` from `listPublishedContentSlugs()`.
 
 ## Tests
 
@@ -50,6 +52,7 @@
 - Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
 - Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
+- Served static export and browser-export tests should be the primary proof for public knowledge routes such as `/glossary/...`, `/comparisons/...`, and `/references/...`, because they verify the same GitHub Pages URLs reviewers open manually.
 - `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.
 - Static-export and browser-export tests read ports from `STATIC_EXPORT_TEST_PORT` / `RECONCILED_EXPORT_BROWSER_TEST_PORT` via `tests/helpers/test-port.ts` so nested `make test` invocations from `root-command-path.test.ts` do not collide with the outer suite.
 - Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.

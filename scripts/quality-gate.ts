@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { DEFERRED_PHASE_8_QUALITY_CHECKS } from "@/lib/quality-gate/deferred-phase8";
 import { EARLY_FOUNDATION_GATE_STEPS } from "@/lib/quality-gate/steps";
+import { withQualityGateLock } from "@/lib/validation/quality-gate-lock";
 
 const repoRoot = join(import.meta.dir, "..");
 
@@ -24,20 +25,22 @@ console.log(
   `Deferred to later Phase 8 work: ${DEFERRED_PHASE_8_QUALITY_CHECKS.join(", ")}`,
 );
 
-for (const step of EARLY_FOUNDATION_GATE_STEPS) {
-  const status = runStep(step);
-  if (status !== 0) {
-    console.error(`\nEarly quality gate failed at: ${step.name}`);
-    process.exit(status);
+withQualityGateLock(repoRoot, () => {
+  for (const step of EARLY_FOUNDATION_GATE_STEPS) {
+    const status = runStep(step);
+    if (status !== 0) {
+      console.error(`\nEarly quality gate failed at: ${step.name}`);
+      process.exit(status);
+    }
   }
-}
 
-const exportDir = join(repoRoot, "out");
-if (!existsSync(exportDir)) {
-  console.error(
-    "\nEarly quality gate failed: static export output missing at out/",
-  );
-  process.exit(1);
-}
+  const exportDir = join(repoRoot, "out");
+  if (!existsSync(exportDir)) {
+    console.error(
+      "\nEarly quality gate failed: static export output missing at out/",
+    );
+    process.exit(1);
+  }
 
-console.log("\nEarly foundation quality gate passed.");
+  console.log("\nEarly foundation quality gate passed.");
+});

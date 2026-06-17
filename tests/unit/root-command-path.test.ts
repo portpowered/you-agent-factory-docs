@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { rmSync } from "node:fs";
 import { join } from "node:path";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { runMakeTarget } from "../helpers/make-target";
 
 const projectRoot = join(import.meta.dir, "../..");
@@ -22,15 +23,16 @@ describe("root contributor command path", () => {
   });
 
   test("make check completes successfully from the repository root", () => {
-    cleanNextTypeArtifacts();
-
-    const result = runMakeTarget("check");
+    const result = withStaticExportBuildLock(projectRoot, () => {
+      cleanNextTypeArtifacts();
+      return runMakeTarget("check");
+    });
 
     expect(result.status).toBe(0);
     expect(result.output).toMatch(/typecheck/);
     expect(result.output).toMatch(/typegen/);
     expect(result.output).toMatch(/lint/);
-  }, 30_000);
+  }, 90_000);
 
   testUnlessVerifying(
     "make test completes successfully from the repository root",
