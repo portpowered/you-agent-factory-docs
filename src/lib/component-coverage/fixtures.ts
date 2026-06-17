@@ -5,7 +5,7 @@
 export const COMPONENT_COVERAGE_ENFORCEMENT_FIXTURES = {
   "below-threshold": {
     lcov: `
-SF:src/components/docs/docs-shell.tsx
+SF:src/components/docs/docs-route-chrome.tsx
 LF:43
 LH:43
 end_of_record
@@ -19,7 +19,7 @@ end_of_record
 File                                      | % Funcs | % Lines | Uncovered Line #s
 ------------------------------------------|---------|---------|-------------------
 All files                                 |   50.00 |   50.00 |
- src/components/docs/docs-shell.tsx       |  100.00 |  100.00 |
+ src/components/docs/docs-route-chrome.tsx | 100.00 | 100.00 |
  src/components/landing/landing-shell.tsx |    0.00 |    0.00 | 1-20
 ------------------------------------------|---------|---------|-------------------
 `,

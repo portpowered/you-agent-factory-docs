@@ -16,8 +16,8 @@ The early gate currently runs, in order:
 2. `bun run lint`
 3. `bun run validate:localization` → `scripts/validate-localization.ts` → `src/localization/lib/validate-messages.ts`
 4. `bun run validate:content` → `scripts/validate-content.ts` → `src/lib/content/load-starter-content.ts` and `src/lib/content/starter.ts`
-5. `bun run validate:accessibility` → `scripts/validate-accessibility.ts` → bounded expectations in `src/lib/validation/shell-accessibility.ts` plus focused shell tests in `tests/unit/homepage-shell.test.tsx`, `tests/unit/docs-shell.test.tsx`, and `tests/unit/shell-accessibility-validation.test.tsx`
-6. `bun run validate:static-export` → `scripts/validate-static-export.ts` → `src/lib/validation/static-export.ts`, one cleaned production build under `withStaticExportBuildLock()`, `out/` presence, and `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so served-export tests reuse the gate build output
+5. `bun run validate:accessibility` → `scripts/validate-accessibility.ts` → bounded expectations in `src/lib/validation/shell-accessibility.ts` plus focused shell tests in `tests/unit/homepage-shell.test.tsx`, `tests/unit/docs-route-shell.test.tsx`, `tests/unit/docs-route-chrome.test.tsx`, and `tests/unit/shell-accessibility-validation.test.tsx`
+6. `bun run validate:static-export` → `scripts/validate-static-export.ts` → `src/lib/validation/static-export.ts`, one cleaned `make build` production export under `withStaticExportBuildLock()`, `out/` presence, and `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` so served-export tests reuse the gate build output
 7. `bun run validate:search-index` → `scripts/validate-search-index.ts` → `src/lib/validation/search-index.ts` for dedicated generated-search-data contract validation reused by the broader gate
 8. Remaining foundation unit tests (`tests/unit/project.test.ts`, `tests/unit/site.test.ts`)
 
@@ -41,7 +41,7 @@ Later localization and canonical content foundations plug into the same `validat
 ## Contract tests
 
 - `tests/unit/quality-gate.test.ts` verifies the make/bun command contract and observes enforced step order from quality-gate subprocess stdout, including search-index contract reuse.
-- `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization, content, accessibility, static-export, and search-index regressions fail through the shared validate scripts and that `make quality-gate` fails fast on a broken search-index fixture with distinct search-contract output.
+- `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization, content, accessibility, static-export, and search-index regressions fail through the shared validate scripts, confirms `validate:static-export` builds through `make build`, and shows `make quality-gate` fails fast on a broken search-index fixture with distinct search-contract output.
 - `tests/unit/early-gate-automation-parity.test.ts` verifies `make quality-gate` delegates to `bun run quality-gate` and that the quality-gate script emits ordered foundation steps through subprocess output.
 - `tests/unit/early-gate-contributor-guidance.test.ts` verifies the quality-gate script announces deferred Phase 8 checks and foundation step coverage through subprocess output.
 - `src/lib/validation/shell-accessibility.ts` documents `FOCUSED_SHELL_ACCESSIBILITY_COVERAGE` and exports shared aria-label constants consumed by shell components.

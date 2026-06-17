@@ -61,7 +61,12 @@ describe("component coverage boundary contract", () => {
         file.startsWith(`${COMPONENT_COVERAGE_ENFORCED_ROOT}/`),
       ),
     ).toBe(true);
-    expect(enforcedFiles).toContain("src/components/docs/docs-shell.tsx");
+    expect(enforcedFiles).toContain(
+      "src/components/docs/docs-route-chrome.tsx",
+    );
+    expect(enforcedFiles).toContain(
+      "src/components/docs/fumadocs-docs-layout.tsx",
+    );
     expect(enforcedFiles).toContain("src/components/landing/landing-shell.tsx");
     expect(enforcedFiles).toEqual([...enforcedFiles].sort());
   });
@@ -89,7 +94,8 @@ describe("component coverage boundary contract", () => {
       `Enforced root: ${COMPONENT_COVERAGE_ENFORCED_ROOT}`,
     );
     expect(report).toContain("src/components/landing/landing-shell.tsx");
-    expect(report).toContain("src/components/docs/docs-shell.tsx");
+    expect(report).toContain("src/components/docs/docs-route-chrome.tsx");
+    expect(report).toContain("src/components/docs/fumadocs-docs-layout.tsx");
 
     for (const outOfScope of COMPONENT_COVERAGE_OUT_OF_SCOPE_SURFACES) {
       expect(report).toContain(outOfScope.surface);

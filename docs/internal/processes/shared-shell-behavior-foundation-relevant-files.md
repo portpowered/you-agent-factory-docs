@@ -10,7 +10,7 @@
 - Shared shell interactive primitives should flow through `src/components/ui/button.tsx` rather than restating focus, spacing, and variant classes inline. Keep shell-specific hooks such as `shared-shell__link` or `shared-shell__menu-toggle` as additive selectors only.
 - When a shell disclosure control renders through `Button`, declare its breakpoint display contract through the primitive call site (for example `displayClassName="hidden max-[1023px]:inline-flex"`) instead of relying on legacy `shared-shell__*` selectors to override the primitive's default display utility.
 - Responsive shell behavior uses CSS media queries in `src/app/globals.css` aligned with `src/lib/responsive-tokens.ts` (639px / 1023px). Narrow-width disclosure state is projected through `useShellDisclosure` and rendered by the client `SharedShellHeader` / `SharedShellDocsAside`.
-- `src/components/landing/landing-shell.tsx` and `src/components/docs/docs-shell.tsx` are thin surface wrappers that project page content into `SharedShell` instead of owning independent header or layout wiring.
+- `src/components/landing/landing-shell.tsx` remains the shared-shell surface wrapper for the homepage, while the docs route has moved to the Fumadocs-owned path in `src/components/docs/fumadocs-docs-layout.tsx` with `src/components/docs/docs-route-chrome.tsx` handling the narrowed docs-specific chrome.
 - `src/lib/shell.ts` remains a deprecated re-export for legacy imports; prefer `@/lib/shared-shell-config` and `@/lib/shared-shell-extension-points` for new shell work.
 
 ## Extension points for later lanes

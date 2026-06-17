@@ -94,6 +94,20 @@ describe("early foundation quality gate failing-path proof", () => {
   );
 
   testUnlessVerifying(
+    "validate:static-export uses the maintained Makefile build path on the current baseline",
+    () => {
+      const result = runValidationScript("validate:static-export");
+
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain(
+        "Running static export validation build through `make build`",
+      );
+      expect(result.stdout).toContain("make build");
+    },
+    180_000,
+  );
+
+  testUnlessVerifying(
     "make quality-gate fails fast when search-index validation regresses",
     () => {
       const result = runMake("quality-gate", {

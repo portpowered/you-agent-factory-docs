@@ -11,7 +11,7 @@
 
 - Root: `src/components`
 - File glob: `src/components/**/*.{ts,tsx}`
-- Current files: `src/components/landing/landing-shell.tsx`, `src/components/docs/docs-shell.tsx`
+- Representative current docs-route files are `src/components/docs/fumadocs-docs-layout.tsx` and `src/components/docs/docs-route-chrome.tsx`, alongside `src/components/landing/landing-shell.tsx` and the rest of the checked-in component tree under `src/components/**`.
 
 ## Explicitly out of scope
 

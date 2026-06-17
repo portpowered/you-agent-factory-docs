@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
 import { DocPageArticle } from "../../src/components/docs/doc-page-article";
 import { enMessages } from "../../src/localization/messages/en";
+import { frMessages } from "../../src/localization/messages/fr";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
 const bodyWithOutline = `# Getting started
@@ -86,9 +87,11 @@ describe("doc page article rendering", () => {
 
     expect(
       screen.getByRole("navigation", {
-        name: enMessages.docs.pageOutlineAriaLabel,
+        name: frMessages.docs?.pageOutlineAriaLabel ?? "",
       }),
     ).toBeTruthy();
-    expect(screen.getByText(enMessages.docs.onThisPageLabel)).toBeTruthy();
+    expect(
+      screen.getByText(frMessages.docs?.onThisPageLabel ?? ""),
+    ).toBeTruthy();
   });
 });

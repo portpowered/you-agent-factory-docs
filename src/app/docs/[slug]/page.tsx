@@ -1,5 +1,5 @@
 import { DocPageArticle } from "@/components/docs/doc-page-article";
-import { DocsShell } from "@/components/docs/docs-shell";
+import { DocsRouteChrome } from "@/components/docs/docs-route-chrome";
 import { loadDocPage, loadDocsShellNavigation } from "@/lib/content";
 import { notFound } from "next/navigation";
 
@@ -25,8 +25,11 @@ export default async function DocPage({ params }: DocPageProps) {
   }
 
   return (
-    <DocsShell currentPath={page.record.routePath} navigation={navigation}>
+    <DocsRouteChrome
+      currentPath={page.record.routePath}
+      navigation={navigation}
+    >
       <DocPageArticle body={page.body} title={page.title} />
-    </DocsShell>
+    </DocsRouteChrome>
   );
 }

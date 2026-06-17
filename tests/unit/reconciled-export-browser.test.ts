@@ -106,10 +106,10 @@ describe("reconciled baseline browser export", () => {
           })
           .isVisible(),
       ).toBe(true);
-      expect(
-        await page.getByRole("navigation", { name: "Guides" }).isVisible(),
-      ).toBe(true);
-      expect(await page.getByRole("banner").isVisible()).toBe(true);
+      expect(await page.getByText("Guides", { exact: true }).isVisible()).toBe(
+        true,
+      );
+      expect(await page.getByRole("complementary").isVisible()).toBe(true);
       expect(await page.getByRole("main").isVisible()).toBe(true);
     } finally {
       await page.close();
@@ -231,7 +231,7 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
-      await page.getByRole("link", { name: HOME_CTA_LABEL }).click();
+      await page.getByRole("link", { name: PROJECT_NAME }).click();
 
       await page.waitForURL(
         new RegExp(
@@ -284,7 +284,7 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
-  test("shared-shell disclosure triggers stay hidden on desktop and visible on mobile", async () => {
+  test("responsive disclosure stays homepage-owned while docs mobile uses the Fumadocs sidebar toggle", async () => {
     const page = await browser.newPage({
       viewport: { width: 1280, height: 900 },
     });
@@ -292,34 +292,25 @@ describe("reconciled baseline browser export", () => {
       withBasePath(DOCS_ENTRY_ROUTE),
       server.baseUrl,
     ).toString();
-    const getDisplay = async (selector: string) =>
-      page.locator(selector).evaluate((element) => {
-        return window.getComputedStyle(element).display;
-      });
-
     try {
       await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
 
-      expect(await getDisplay(".shared-shell__menu-toggle")).toBe("none");
+      expect(
+        await page.locator(".shared-shell__menu-toggle").evaluate((element) => {
+          return window.getComputedStyle(element).display;
+        }),
+      ).toBe("none");
 
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
-
-      expect(await getDisplay(".shared-shell__menu-toggle")).toBe("none");
-      expect(await getDisplay(".shared-shell__docs-nav-toggle")).toBe("none");
+      expect(await page.getByRole("complementary").isVisible()).toBe(true);
 
       await page.setViewportSize({ width: 390, height: 844 });
       await page.waitForTimeout(200);
 
-      const mobileMenuToggle = page.locator(".shared-shell__menu-toggle");
-      const mobileDocsNavToggle = page.locator(
-        ".shared-shell__docs-nav-toggle",
-      );
+      const mobileDocsNavToggle = page.getByRole("button", {
+        name: "Toggle Sidebar",
+      });
 
-      expect(await getDisplay(".shared-shell__menu-toggle")).not.toBe("none");
-      expect(await getDisplay(".shared-shell__docs-nav-toggle")).not.toBe(
-        "none",
-      );
-      expect(await mobileMenuToggle.isVisible()).toBe(true);
       expect(await mobileDocsNavToggle.isVisible()).toBe(true);
     } finally {
       await page.close();
@@ -413,19 +404,12 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(introductionUrl, { waitUntil: "domcontentloaded" });
-      await page
-        .locator('.shared-shell[data-shell-viewport="mobile"]')
-        .waitFor({ timeout: 10_000 });
 
       const breadcrumbs = page.getByRole("navigation", {
         name: enMessages.docs.breadcrumbAriaLabel,
       });
       const progression = page.getByRole("navigation", {
         name: enMessages.docs.progressionAriaLabel,
-      });
-      const docsAsidePanel = page.locator("#shared-shell-docs-aside");
-      const setupAsideNav = docsAsidePanel.getByRole("navigation", {
-        name: "Setup",
       });
 
       expect(await breadcrumbs.isVisible()).toBe(true);
@@ -453,22 +437,18 @@ describe("reconciled baseline browser export", () => {
       ).toBe(true);
 
       const docsNavToggle = page.getByRole("button", {
-        name: sharedShellConfig.responsive.docsNavigationDisclosure.openLabel,
+        name: "Toggle Sidebar",
       });
-      expect(await docsNavToggle.getAttribute("aria-expanded")).toBe("false");
-      expect(await docsAsidePanel.getAttribute("hidden")).not.toBeNull();
-      expect(await setupAsideNav.isVisible()).toBe(false);
+      expect(await docsNavToggle.isVisible()).toBe(true);
 
       await docsNavToggle.click();
 
-      expect(await setupAsideNav.isVisible()).toBe(true);
+      const docsAsidePanel = page.getByRole("complementary");
+      const setupSection = docsAsidePanel.getByText("Setup", { exact: true });
+
+      expect(await setupSection.isVisible()).toBe(true);
       expect(
         await docsAsidePanel
-          .getByRole("navigation", { name: "Guides" })
-          .isVisible(),
-      ).toBe(true);
-      expect(
-        await setupAsideNav
           .getByRole("link", { name: "Quickstart" })
           .isVisible(),
       ).toBe(true);
@@ -601,9 +581,6 @@ describe("reconciled baseline browser export", () => {
       ).toBe(true);
       expect(
         await page.getByText("Continue into Getting started").isVisible(),
-      ).toBe(true);
-      expect(
-        await page.getByRole("link", { name: "Core concepts" }).isVisible(),
       ).toBe(true);
     } finally {
       await page.close();

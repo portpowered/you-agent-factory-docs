@@ -17,7 +17,7 @@
 - Shared non-UI constants start in `src/lib/` (for example `src/lib/project.ts`).
 - Shared homepage and docs-shell copy, CTA labels, and external links live in `src/lib/shared-shell-config.ts` via `sharedShellConfig`; later localization and docs navigation lanes extend that canonical config (see `src/lib/shared-shell-extension-points.ts`) instead of route-local shell wiring. `src/lib/shell.ts` remains a deprecated re-export for legacy imports. The GitHub CTA points at the public `you-agent-factory` repository while the docs repo may remain private during bootstrap.
 - The homepage landing shell lives in `src/components/landing/landing-shell.tsx` and is rendered from `src/app/page.tsx`.
-- The docs shell lives in `src/components/docs/docs-shell.tsx` and is rendered from `src/app/docs/page.tsx`.
+- The current docs route is rendered from `src/app/docs/page.tsx` through `src/components/docs/docs-route-chrome.tsx` under the Fumadocs-owned layout in `src/app/docs/layout.tsx` and `src/components/docs/fumadocs-docs-layout.tsx`.
 - When a docs route is acting as a reviewer fixture, give it explicit framing copy that names the supported renderer paths so the surface itself explains what should be validated.
 - Docs-owned diagram fixtures live in `src/content/`; wrappers own projection concerns while checked-in Mermaid or graph definitions remain reviewer-visible source of truth.
 - Mermaid rendering is isolated behind `src/lib/mermaid-loader.ts` and the client wrapper `src/components/docs/mermaid-diagram.tsx` so docs pages can stay declarative while static export still renders explicit loading and error states before hydration.
