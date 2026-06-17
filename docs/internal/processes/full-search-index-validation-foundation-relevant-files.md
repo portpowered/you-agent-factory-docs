@@ -5,6 +5,7 @@
 - `package.json` exposes `bun run validate:search-index` as the dedicated generated-search-data validation path.
 - `Makefile` exposes `make validate-search-index` as the maintainer-facing wrapper that follows the repository's existing Make-driven command surface.
 - `scripts/validate-search-index.ts` is intentionally thin: it resolves optional test fixtures, runs the validator, and prints one success line on pass.
+- `src/lib/quality-gate/steps.ts` reuses the same dedicated script in the broader `make quality-gate` path, so later gate expansion consumes the existing seam instead of redefining the contract.
 
 ## Validation contract
 
@@ -25,3 +26,4 @@
 - `tests/unit/search-index-command-surface.test.ts` proves the Bun and Make command surfaces for the dedicated validation lane.
 - `tests/unit/search-index-validation.test.ts` also carries focused exclusion fixtures across docs, blog, glossary, comparison, and reference content so reviewers can verify the supported seam without involving the UI.
 - `tests/unit/search-index-validation-failing-path.test.ts` proves the script exits non-zero for representative artifact drift, normalized contract mismatch, and excluded-entry regressions.
+- `tests/unit/quality-gate.test.ts` and `tests/unit/quality-gate-validation-failing-path.test.ts` prove broader quality-gate reuse stays distinguishable from unrelated validation failures.

@@ -92,4 +92,25 @@ describe("early foundation quality gate failing-path proof", () => {
       expect(result.stderr).toContain("output");
     },
   );
+
+  testUnlessVerifying(
+    "make quality-gate fails fast when search-index validation regresses",
+    () => {
+      const result = runMake("quality-gate", {
+        env: {
+          EARLY_GATE_VALIDATION_FIXTURE: "broken-search-contract-field",
+        },
+      });
+
+      expect(result.status).not.toBe(0);
+      expect(result.stderr).toContain("Search index validation failed");
+      expect(result.stderr).toContain("normalized contract mismatch");
+      expect(result.stderr).toContain(
+        "Early quality gate failed at: search-index contract validation",
+      );
+      expect(result.stderr).not.toContain("Static export validation failed");
+      expect(result.stderr).not.toContain("Starter content validation failed");
+    },
+    180_000,
+  );
 });

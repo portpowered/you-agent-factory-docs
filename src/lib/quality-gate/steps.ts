@@ -29,6 +29,11 @@ export const EARLY_FOUNDATION_GATE_STEPS: QualityGateStep[] = [
     args: ["run", "validate:static-export"],
   },
   {
+    name: "search-index contract validation",
+    command: "bun",
+    args: ["run", "validate:search-index"],
+  },
+  {
     name: "foundation unit tests",
     command: "bun",
     args: ["test", "tests/unit/project.test.ts", "tests/unit/site.test.ts"],

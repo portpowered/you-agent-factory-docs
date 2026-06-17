@@ -10,7 +10,7 @@ For the Phase 8 public-site budget lane, `make budget` is the checked-in review 
 Prerequisites: [Bun](https://bun.sh) 1.1 or newer.
 
 - **`make setup`** — install or refresh dependencies after cloning or when `package.json` changes. Runs `bun install` from the repository root.
-- **`make quality-gate`** — run the enforced early foundation gate. Executes typecheck, lint, localization validation, content validation, focused accessibility checks, static export correctness, and the remaining foundation unit tests. Fails fast on the first failing check.
+- **`make quality-gate`** — run the enforced early foundation gate. Executes typecheck, lint, localization validation, content validation, focused accessibility checks, static export correctness, search-index contract validation, and the remaining foundation unit tests. Fails fast on the first failing check.
 - **`make budget`** — build the export, serve `out/` under the GitHub Pages base path on an available localhost port, then enforce the checked-in homepage/docs route budgets plus the `_next/static` JavaScript payload budget.
 - **`make validate-search-index`** — run the dedicated generated-search-data contract check. Compares the checked-in `public/search/public-search-index.json` artifact against a fresh projection from normalized localized search documents and fails with regeneration guidance when they drift.
 

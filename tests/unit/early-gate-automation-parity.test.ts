@@ -29,6 +29,7 @@ describe("early gate automation parity", () => {
         "content validation",
         "focused accessibility validation",
         "static export correctness",
+        "search-index contract validation",
         "foundation unit tests",
       ]);
     },

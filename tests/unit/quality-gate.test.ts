@@ -37,6 +37,7 @@ describe("early foundation quality gate command surface", () => {
         "content validation",
         "focused accessibility validation",
         "static export correctness",
+        "search-index contract validation",
         "foundation unit tests",
       ]);
     },
