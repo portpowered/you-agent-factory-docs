@@ -42,6 +42,54 @@ const artifact: PublicSearchArtifact = {
       section: "blog",
       searchPriority: 4,
     },
+    {
+      id: "doc/getting-started@fr",
+      canonicalId: "doc/getting-started",
+      locale: "fr",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
+      kind: "doc",
+      url: "/docs/getting-started",
+      title: "Commencer",
+      description: "Guide de démarrage pour la documentation.",
+      headings: ["Commencer"],
+      body: "Commencer avec les docs du projet et les résultats localisés.",
+      tags: ["docs", "guide"],
+      section: "guides",
+      searchPriority: 10,
+    },
+    {
+      id: "doc/getting-started@en",
+      canonicalId: "doc/getting-started",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
+      kind: "doc",
+      url: "/docs/getting-started",
+      title: "Getting started",
+      description: "Quickstart guide for the documentation.",
+      headings: ["Getting started"],
+      body: "Getting started with the project docs and localized results.",
+      tags: ["docs", "guide"],
+      section: "guides",
+      searchPriority: 10,
+    },
+    {
+      id: "reference/agent-loops@en",
+      canonicalId: "reference/agent-loops",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      kind: "reference",
+      url: "/references/agent-loops",
+      title: "Agent loops",
+      description: "Reference details for recurring agent loops.",
+      headings: ["Agent loops"],
+      body: "Reference material about agent loops and execution details.",
+      tags: ["agent", "reference"],
+      section: "references",
+      searchPriority: 6,
+    },
   ],
 };
 
@@ -65,10 +113,38 @@ describe("public search helpers", () => {
   test("returns ranked matches with visible preview text", () => {
     const results = searchPublicSearchArtifact(artifact, "agent");
 
-    expect(results).toHaveLength(2);
+    expect(results).toHaveLength(3);
     expect(results[0]?.entry.id).toBe("glossary/agent@en");
     expect(results[0]?.preview).toContain("Definition of an AI agent");
-    expect(results[1]?.entry.id).toBe("blog/introducing-factory@en");
+    expect(results.map((result) => result.entry.id)).toEqual([
+      "glossary/agent@en",
+      "reference/agent-loops@en",
+      "blog/introducing-factory@en",
+    ]);
+  });
+
+  test("prefers the active locale variant for a canonical page", () => {
+    const results = searchPublicSearchArtifact(artifact, "guide", {
+      activeLocale: "fr",
+    });
+
+    expect(results.map((result) => result.entry.id)).toContain(
+      "doc/getting-started@fr",
+    );
+    expect(results.map((result) => result.entry.id)).not.toContain(
+      "doc/getting-started@en",
+    );
+    expect(results[0]?.entry.id).toBe("doc/getting-started@fr");
+  });
+
+  test("keeps relevant cross-kind matches when ranking for the active locale", () => {
+    const results = searchPublicSearchArtifact(artifact, "agent", {
+      activeLocale: "fr",
+    });
+
+    expect(new Set(results.map((result) => result.entry.kind))).toEqual(
+      new Set(["glossary", "blog", "reference"]),
+    );
   });
 
   test("returns an empty result set for blank or unmatched queries", () => {

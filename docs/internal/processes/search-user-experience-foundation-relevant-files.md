@@ -6,7 +6,8 @@
 - The module fetches the generated artifact from `withBasePath("/search/public-search-index.json")` so GitHub Pages exports and local static-export tests resolve the same path.
 - Import search artifact types directly from `src/lib/content/search-artifact.ts` or other client-safe modules; do not import client search code through `@/lib/content` because that barrel also re-exports filesystem-backed loaders.
 - `fetchPublicSearchArtifact()` validates the artifact shape before the UI consumes it.
-- `searchPublicSearchArtifact()` is the narrow projection layer from artifact entries to ranked UI matches with preview text; later locale-first or richer result-card work should extend this projection rather than re-reading content files.
+- `searchPublicSearchArtifact()` is the narrow projection layer from artifact entries to ranked UI matches with preview text; locale-aware ordering should be expressed here through `activeLocale` projection options instead of re-reading content files or pushing ranking rules into the component.
+- Collapse competing localized variants by `canonicalId` inside the projection seam so the visible results list shows one best match per canonical page while still allowing cross-kind matches from unrelated entries.
 
 ## Public docs search surface
 

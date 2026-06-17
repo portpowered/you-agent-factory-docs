@@ -23,9 +23,11 @@ export type PublicSearchMatch = {
   entry: PublicSearchArtifactEntry;
   preview: string;
   score: number;
+  localeScore: number;
 };
 
 export type SearchPublicArtifactOptions = {
+  activeLocale?: string;
   limit?: number;
 };
 
@@ -101,6 +103,29 @@ function scoreEntry(
   }
 
   return score + entry.searchPriority * 10;
+}
+
+function scoreEntryLocale(
+  entry: PublicSearchArtifactEntry,
+  activeLocale?: string,
+): number {
+  if (!activeLocale) {
+    return 0;
+  }
+
+  if (entry.locale === activeLocale) {
+    return 48;
+  }
+
+  if (!entry.availableLocales.includes(activeLocale)) {
+    return 12;
+  }
+
+  if (entry.canonicalLocale === activeLocale) {
+    return 24;
+  }
+
+  return 0;
 }
 
 function buildBodyPreview(body: string, query: string): string {
@@ -221,24 +246,63 @@ export function searchPublicSearchArtifact(
   }
 
   const tokens = tokenizeQuery(normalizedQuery);
+  const activeLocale = options.activeLocale;
   const limit = options.limit ?? DEFAULT_RESULT_LIMIT;
 
-  return artifact.entries
-    .map((entry) => {
-      const score = scoreEntry(entry, normalizedQuery, tokens);
+  const canonicalMatches = new Map<string, PublicSearchMatch>();
 
-      if (score === 0) {
-        return null;
+  for (const entry of artifact.entries) {
+    const score = scoreEntry(entry, normalizedQuery, tokens);
+
+    if (score === 0) {
+      continue;
+    }
+
+    const match = {
+      entry,
+      preview: buildPreview(entry, normalizedQuery, tokens),
+      score,
+      localeScore: scoreEntryLocale(entry, activeLocale),
+    } satisfies PublicSearchMatch;
+    const previousMatch = canonicalMatches.get(entry.canonicalId);
+
+    if (!previousMatch) {
+      canonicalMatches.set(entry.canonicalId, match);
+      continue;
+    }
+
+    const isBetterMatch =
+      match.score + match.localeScore >
+        previousMatch.score + previousMatch.localeScore ||
+      (match.score + match.localeScore ===
+        previousMatch.score + previousMatch.localeScore &&
+        match.localeScore > previousMatch.localeScore) ||
+      (match.score === previousMatch.score &&
+        match.localeScore === previousMatch.localeScore &&
+        match.entry.searchPriority > previousMatch.entry.searchPriority) ||
+      (match.score === previousMatch.score &&
+        match.localeScore === previousMatch.localeScore &&
+        match.entry.searchPriority === previousMatch.entry.searchPriority &&
+        match.entry.id.localeCompare(previousMatch.entry.id) < 0);
+
+    if (isBetterMatch) {
+      canonicalMatches.set(entry.canonicalId, match);
+    }
+  }
+
+  return [...canonicalMatches.values()]
+    .sort((left, right) => {
+      const leftTotalScore = left.score + left.localeScore;
+      const rightTotalScore = right.score + right.localeScore;
+
+      if (rightTotalScore !== leftTotalScore) {
+        return rightTotalScore - leftTotalScore;
       }
 
-      return {
-        entry,
-        preview: buildPreview(entry, normalizedQuery, tokens),
-        score,
-      };
-    })
-    .filter((match): match is PublicSearchMatch => match !== null)
-    .sort((left, right) => {
+      if (right.localeScore !== left.localeScore) {
+        return right.localeScore - left.localeScore;
+      }
+
       if (right.score !== left.score) {
         return right.score - left.score;
       }

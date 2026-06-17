@@ -1,6 +1,6 @@
 "use client";
 
-import type { PublicSearchArtifact } from "@/lib/content";
+import type { PublicSearchArtifact } from "@/lib/content/search-artifact";
 import {
   fetchPublicSearchArtifact,
   searchPublicSearchArtifact,
@@ -71,6 +71,7 @@ export function PublicSearchPanel() {
     try {
       const artifact = await loadArtifact();
       const nextResults = searchPublicSearchArtifact(artifact, searchQuery, {
+        activeLocale: locale,
         limit: 8,
       });
 

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, mock, test } from "bun:test";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { PublicSearchPanel } from "../../src/components/search/public-search-panel";
-import type { PublicSearchArtifact } from "../../src/lib/content";
+import type { PublicSearchArtifact } from "../../src/lib/content/search-artifact";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
 const artifact: PublicSearchArtifact = {
@@ -23,6 +23,38 @@ const artifact: PublicSearchArtifact = {
       section: "glossary",
       searchPriority: 9,
     },
+    {
+      id: "doc/getting-started@fr",
+      canonicalId: "doc/getting-started",
+      locale: "fr",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
+      kind: "doc",
+      url: "/docs/getting-started",
+      title: "Commencer",
+      description: "Guide de démarrage pour la documentation.",
+      headings: ["Commencer"],
+      body: "Commencer avec les docs du projet et les résultats localisés.",
+      tags: ["docs", "guide"],
+      section: "guides",
+      searchPriority: 10,
+    },
+    {
+      id: "doc/getting-started@en",
+      canonicalId: "doc/getting-started",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en", "fr"],
+      kind: "doc",
+      url: "/docs/getting-started",
+      title: "Getting started",
+      description: "Quickstart guide for the documentation.",
+      headings: ["Getting started"],
+      body: "Getting started with the project docs and localized results.",
+      tags: ["docs", "guide"],
+      section: "guides",
+      searchPriority: 10,
+    },
   ],
 };
 
@@ -34,10 +66,21 @@ function createArtifactResponse(): Response {
 }
 
 function submitQuery(query: string) {
-  fireEvent.change(screen.getByRole("searchbox", { name: "Search query" }), {
+  const searchInput = screen.getByRole("searchbox", { name: "Search query" });
+
+  fireEvent.change(searchInput, {
     target: { value: query },
   });
-  fireEvent.click(screen.getByRole("button", { name: "Search" }));
+
+  const form = searchInput.closest("form");
+
+  if (!(form instanceof HTMLFormElement)) {
+    throw new Error(
+      "expected public search input to be rendered inside a form",
+    );
+  }
+
+  fireEvent.submit(form);
 }
 
 afterEach(() => {
@@ -99,6 +142,19 @@ describe("public search panel", () => {
     expect(
       await screen.findByRole("heading", { name: "No matching results" }),
     ).toBeTruthy();
+  });
+
+  test("renders the active-locale variant for localized canonical matches", async () => {
+    globalThis.fetch = mock(async () =>
+      createArtifactResponse(),
+    ) as unknown as typeof fetch;
+
+    renderWithLocalization(<PublicSearchPanel />, { locale: "fr" });
+
+    submitQuery("guide");
+
+    expect(await screen.findByText("Commencer")).toBeTruthy();
+    expect(screen.queryByText("Getting started")).toBeNull();
   });
 
   test("renders an error state when the artifact cannot be loaded", async () => {
