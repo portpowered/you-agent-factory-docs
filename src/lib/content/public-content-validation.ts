@@ -10,10 +10,13 @@ export type PublicContentValidationIssue = {
   code:
     | "missing_kind_coverage"
     | "duplicate_canonical_id"
+    | "duplicate_canonical_slug"
     | "missing_canonical_record"
     | "mismatched_variant_kind"
     | "duplicate_variant_locale"
-    | "missing_canonical_locale_variant";
+    | "missing_canonical_locale_variant"
+    | "duplicate_variant_slug"
+    | "canonical_locale_slug_mismatch";
   kind: PublicContentKind;
   message: string;
 };
@@ -78,6 +81,69 @@ function validateCanonicalIds(
       kind: record.kind,
       message: `Canonical id "${record.canonicalId}" is duplicated between ${existingRecord.kind}:${existingRecord.slug} and ${record.kind}:${record.slug}.`,
     });
+  }
+
+  return issues;
+}
+
+function validateRouteIdentity(
+  canonicalRecords: PublicContentCanonicalRecord[],
+  localizedVariants: PublicContentLocalizedVariant[],
+): PublicContentValidationIssue[] {
+  const seenCanonicalSlugs = new Map<string, PublicContentCanonicalRecord>();
+  const seenLocalizedSlugs = new Map<string, PublicContentLocalizedVariant>();
+  const canonicalRecordsById = new Map(
+    canonicalRecords.map((record) => [record.canonicalId, record]),
+  );
+  const issues: PublicContentValidationIssue[] = [];
+
+  for (const record of canonicalRecords) {
+    const canonicalSlugKey = `${record.kind}:${record.slug}`;
+    const existingRecord = seenCanonicalSlugs.get(canonicalSlugKey);
+
+    if (existingRecord) {
+      issues.push({
+        code: "duplicate_canonical_slug",
+        kind: record.kind,
+        message: `Public identity "${record.kind}/${record.slug}" is claimed by canonical ids "${existingRecord.canonicalId}" and "${record.canonicalId}".`,
+      });
+      continue;
+    }
+
+    seenCanonicalSlugs.set(canonicalSlugKey, record);
+  }
+
+  for (const variant of localizedVariants) {
+    const canonicalRecord = canonicalRecordsById.get(variant.canonicalId);
+
+    if (!canonicalRecord) {
+      continue;
+    }
+
+    const localizedSlugKey = `${variant.kind}:${variant.locale}:${variant.slug}`;
+    const existingVariant = seenLocalizedSlugs.get(localizedSlugKey);
+
+    if (existingVariant) {
+      issues.push({
+        code: "duplicate_variant_slug",
+        kind: variant.kind,
+        message: `Localized public identity "${variant.kind}/${variant.slug}" for locale "${variant.locale}" is claimed by canonical ids "${existingVariant.canonicalId}" and "${variant.canonicalId}".`,
+      });
+      continue;
+    }
+
+    seenLocalizedSlugs.set(localizedSlugKey, variant);
+
+    if (
+      variant.locale === canonicalRecord.canonicalLocale &&
+      variant.slug !== canonicalRecord.slug
+    ) {
+      issues.push({
+        code: "canonical_locale_slug_mismatch",
+        kind: variant.kind,
+        message: `Canonical id "${variant.canonicalId}" has route drift between canonical slug "${canonicalRecord.slug}" and canonical-locale variant slug "${variant.slug}" (${variant.locale}).`,
+      });
+    }
   }
 
   return issues;
@@ -155,6 +221,7 @@ export function validatePublicContentGraph(
   const issues = [
     ...validateCanonicalCoverage(graph.canonicalRecords, coveredKinds),
     ...validateCanonicalIds(graph.canonicalRecords),
+    ...validateRouteIdentity(graph.canonicalRecords, graph.localizedVariants),
     ...validateLocalizedVariants(
       graph.canonicalRecords,
       graph.localizedVariants,

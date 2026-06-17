@@ -140,4 +140,98 @@ describe("public content validation", () => {
       'missing canonical id "missing.reference-id"',
     );
   });
+
+  test("fails clearly when canonical records collide on a public route identity", () => {
+    const graph = getPublicContentGraph();
+    const result = validatePublicContentGraph({
+      ...graph,
+      canonicalRecords: [
+        ...graph.canonicalRecords,
+        {
+          canonicalId: "docs.quickstart-alternate",
+          kind: "docs",
+          canonicalLocale: "en",
+          slug: "quickstart",
+          title: "Alternate Quickstart",
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual({
+      code: "duplicate_canonical_slug",
+      kind: "docs",
+      message:
+        'Public identity "docs/quickstart" is claimed by canonical ids "docs.quickstart" and "docs.quickstart-alternate".',
+    });
+  });
+
+  test("fails clearly when localized variants collide on the same locale-specific public identity", () => {
+    const graph = getPublicContentGraph();
+    const result = validatePublicContentGraph({
+      ...graph,
+      canonicalRecords: [
+        ...graph.canonicalRecords,
+        {
+          canonicalId: "docs.installation",
+          kind: "docs",
+          canonicalLocale: "en",
+          slug: "installation",
+          title: "Installation",
+        },
+      ],
+      localizedVariants: [
+        ...graph.localizedVariants,
+        {
+          canonicalId: "docs.installation",
+          kind: "docs",
+          locale: "en",
+          slug: "installation",
+          title: "Installation",
+        },
+        {
+          canonicalId: "docs.installation",
+          kind: "docs",
+          locale: "fr",
+          slug: "demarrage-rapide",
+          title: "Installation",
+        },
+      ],
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual({
+      code: "duplicate_variant_slug",
+      kind: "docs",
+      message:
+        'Localized public identity "docs/demarrage-rapide" for locale "fr" is claimed by canonical ids "docs.quickstart" and "docs.installation".',
+    });
+  });
+
+  test("fails clearly when a canonical-locale route drifts from its canonical record", () => {
+    const graph = getPublicContentGraph();
+    const result = validatePublicContentGraph({
+      ...graph,
+      localizedVariants: graph.localizedVariants.map((variant) =>
+        variant.canonicalId === "blog.agent-review-loops" &&
+        variant.locale === "en"
+          ? {
+              ...variant,
+              slug: "agent-review-loops-updated",
+            }
+          : variant,
+      ),
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.issues).toContainEqual({
+      code: "canonical_locale_slug_mismatch",
+      kind: "blog",
+      message:
+        'Canonical id "blog.agent-review-loops" has route drift between canonical slug "agent-review-loops" and canonical-locale variant slug "agent-review-loops-updated" (en).',
+    });
+    expect(formatPublicContentValidationResult(result)).toContain(
+      'Canonical id "blog.agent-review-loops" has route drift',
+    );
+  });
 });
