@@ -1,12 +1,19 @@
 import {
-  type PublicContentEntry,
+  type PublicContentCanonicalRecord,
   type PublicContentGraph,
   type PublicContentKind,
+  type PublicContentLocalizedVariant,
   SUPPORTED_PUBLIC_CONTENT_KINDS,
 } from "@/lib/content/public-content";
 
 export type PublicContentValidationIssue = {
-  code: "missing_kind_coverage";
+  code:
+    | "missing_kind_coverage"
+    | "duplicate_canonical_id"
+    | "missing_canonical_record"
+    | "mismatched_variant_kind"
+    | "duplicate_variant_locale"
+    | "missing_canonical_locale_variant";
   kind: PublicContentKind;
   message: string;
 };
@@ -24,20 +31,20 @@ export type PublicContentValidationResult =
     };
 
 function collectCoveredKinds(
-  entries: PublicContentEntry[],
+  canonicalRecords: PublicContentCanonicalRecord[],
 ): PublicContentKind[] {
-  const coveredKinds = new Set(entries.map((entry) => entry.kind));
+  const coveredKinds = new Set(canonicalRecords.map((entry) => entry.kind));
 
   return SUPPORTED_PUBLIC_CONTENT_KINDS.filter((kind) =>
     coveredKinds.has(kind),
   );
 }
 
-export function validatePublicContentGraph(
-  graph: PublicContentGraph,
-): PublicContentValidationResult {
-  const coveredKinds = collectCoveredKinds(graph.entries);
-  const issues = SUPPORTED_PUBLIC_CONTENT_KINDS.flatMap((kind) => {
+function validateCanonicalCoverage(
+  canonicalRecords: PublicContentCanonicalRecord[],
+  coveredKinds: PublicContentKind[],
+): PublicContentValidationIssue[] {
+  return SUPPORTED_PUBLIC_CONTENT_KINDS.flatMap((kind) => {
     if (coveredKinds.includes(kind)) {
       return [];
     }
@@ -50,6 +57,109 @@ export function validatePublicContentGraph(
       },
     ];
   });
+}
+
+function validateCanonicalIds(
+  canonicalRecords: PublicContentCanonicalRecord[],
+): PublicContentValidationIssue[] {
+  const seenCanonicalIds = new Map<string, PublicContentCanonicalRecord>();
+  const issues: PublicContentValidationIssue[] = [];
+
+  for (const record of canonicalRecords) {
+    const existingRecord = seenCanonicalIds.get(record.canonicalId);
+
+    if (!existingRecord) {
+      seenCanonicalIds.set(record.canonicalId, record);
+      continue;
+    }
+
+    issues.push({
+      code: "duplicate_canonical_id",
+      kind: record.kind,
+      message: `Canonical id "${record.canonicalId}" is duplicated between ${existingRecord.kind}:${existingRecord.slug} and ${record.kind}:${record.slug}.`,
+    });
+  }
+
+  return issues;
+}
+
+function validateLocalizedVariants(
+  canonicalRecords: PublicContentCanonicalRecord[],
+  localizedVariants: PublicContentLocalizedVariant[],
+): PublicContentValidationIssue[] {
+  const canonicalRecordsById = new Map(
+    canonicalRecords.map((record) => [record.canonicalId, record]),
+  );
+  const seenVariantLocales = new Map<string, PublicContentLocalizedVariant>();
+  const canonicalLocalesWithVariants = new Set<string>();
+  const issues: PublicContentValidationIssue[] = [];
+
+  for (const variant of localizedVariants) {
+    const canonicalRecord = canonicalRecordsById.get(variant.canonicalId);
+
+    if (!canonicalRecord) {
+      issues.push({
+        code: "missing_canonical_record",
+        kind: variant.kind,
+        message: `Localized variant ${variant.kind}:${variant.slug} (${variant.locale}) points to missing canonical id "${variant.canonicalId}".`,
+      });
+      continue;
+    }
+
+    if (canonicalRecord.kind !== variant.kind) {
+      issues.push({
+        code: "mismatched_variant_kind",
+        kind: variant.kind,
+        message: `Localized variant ${variant.kind}:${variant.slug} (${variant.locale}) points to canonical id "${variant.canonicalId}" owned by ${canonicalRecord.kind}.`,
+      });
+    }
+
+    const variantLocaleKey = `${variant.canonicalId}:${variant.locale}`;
+    const existingVariant = seenVariantLocales.get(variantLocaleKey);
+
+    if (existingVariant) {
+      issues.push({
+        code: "duplicate_variant_locale",
+        kind: variant.kind,
+        message: `Canonical id "${variant.canonicalId}" has multiple localized variants for locale "${variant.locale}": ${existingVariant.kind}:${existingVariant.slug} and ${variant.kind}:${variant.slug}.`,
+      });
+      continue;
+    }
+
+    seenVariantLocales.set(variantLocaleKey, variant);
+
+    if (variant.locale === canonicalRecord.canonicalLocale) {
+      canonicalLocalesWithVariants.add(canonicalRecord.canonicalId);
+    }
+  }
+
+  for (const record of canonicalRecords) {
+    if (canonicalLocalesWithVariants.has(record.canonicalId)) {
+      continue;
+    }
+
+    issues.push({
+      code: "missing_canonical_locale_variant",
+      kind: record.kind,
+      message: `Canonical id "${record.canonicalId}" is missing its canonical locale variant "${record.canonicalLocale}".`,
+    });
+  }
+
+  return issues;
+}
+
+export function validatePublicContentGraph(
+  graph: PublicContentGraph,
+): PublicContentValidationResult {
+  const coveredKinds = collectCoveredKinds(graph.canonicalRecords);
+  const issues = [
+    ...validateCanonicalCoverage(graph.canonicalRecords, coveredKinds),
+    ...validateCanonicalIds(graph.canonicalRecords),
+    ...validateLocalizedVariants(
+      graph.canonicalRecords,
+      graph.localizedVariants,
+    ),
+  ];
 
   if (issues.length === 0) {
     return {
