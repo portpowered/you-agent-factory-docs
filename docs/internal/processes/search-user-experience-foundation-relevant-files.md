@@ -15,6 +15,7 @@
 - `src/components/search/public-search-panel.tsx` renders the visible docs-entry search surface with explicit `idle`, `loading`, `error`, and `success` states.
 - The panel caches the fetched artifact in component-local state and only reads from the generated artifact URL; it does not perform raw markdown or starter-content reads.
 - The panel renders localized content-kind labels and preview-context badges directly from projected match metadata; keep those labels in `docs.search.*` rather than hardcoding presentation copy in the component.
+- Keep the primary keyboard path native-first: submit from the search field, then move focus into result links with explicit arrow-key handlers instead of introducing a separate pointer-only selection model.
 - `src/app/docs/page.tsx` mounts the search panel on the existing docs entry route so reviewers can exercise the feature without changing route structure.
 - Search UI copy lives under `docs.search.*` in the shared shell localization catalogs.
 - `src/app/globals.css` contains the public search styles; keep the surface responsive by preserving the one-column mobile controls path.
@@ -23,5 +24,5 @@
 
 - `tests/unit/public-search.test.ts` covers the artifact URL, shape validation, ranking, and preview projection.
 - `tests/unit/public-search-panel.test.tsx` covers rendered `loading`, `empty`, `error`, and `success` states by mocking the browser fetch path.
-- `tests/unit/public-search-browser.test.ts` covers the exported-site reviewer path against the built static export and uses route interception to prove loading and failure behavior.
+- `tests/unit/public-search-browser.test.ts` covers the exported-site reviewer path against the built static export and uses route interception to prove loading, failure, and keyboard-only result activation behavior.
 - `tests/unit/static-export-server.test.ts` should assert against stable reviewer-visible export content such as `PROJECT_TAGLINE`, not unstable framework bytes at the start of generated HTML.

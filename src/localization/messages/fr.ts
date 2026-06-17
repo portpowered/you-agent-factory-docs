@@ -45,6 +45,9 @@ export const frMessages: PartialSharedShellMessages = {
     search: {
       title: "Rechercher dans l artefact public genere",
       submitLabel: "Rechercher",
+      keyboardHint:
+        "Une fois les resultats charges, utilisez Fleche bas pour entrer dans la liste puis les touches flechees pour parcourir les resultats.",
+      resultsListLabel: "Resultats de recherche",
       resultKinds: {
         doc: "Documentation",
         glossary: "Glossaire",

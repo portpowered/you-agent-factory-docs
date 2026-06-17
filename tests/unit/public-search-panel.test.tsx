@@ -55,6 +55,22 @@ const artifact: PublicSearchArtifact = {
       section: "guides",
       searchPriority: 10,
     },
+    {
+      id: "reference/agent-runner@en",
+      canonicalId: "reference/agent-runner",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      kind: "reference",
+      url: "/reference/agent-runner",
+      title: "Agent runner reference",
+      description: "Reference details for agent execution and result handling.",
+      headings: ["Agent execution"],
+      body: "Agent runner behavior and agent execution details for keyboard verification.",
+      tags: ["agent", "reference"],
+      section: "reference",
+      searchPriority: 8,
+    },
   ],
 };
 
@@ -192,5 +208,44 @@ describe("public search panel", () => {
         ),
       ).toBeTruthy();
     });
+  });
+
+  test("supports keyboard movement from the search field into the result links", async () => {
+    globalThis.fetch = mock(async () =>
+      createArtifactResponse(),
+    ) as unknown as typeof fetch;
+
+    renderWithLocalization(<PublicSearchPanel />);
+
+    const searchInput = screen.getByRole("searchbox", { name: "Search query" });
+
+    fireEvent.change(searchInput, {
+      target: { value: "agent" },
+    });
+    fireEvent.submit(searchInput.closest("form") as HTMLFormElement);
+
+    await screen.findByRole("heading", { name: "Results" });
+
+    fireEvent.keyDown(searchInput, { key: "ArrowDown" });
+
+    const resultLinks = screen.getAllByRole("link");
+    const firstResult = resultLinks.find((link) =>
+      link.textContent?.includes("Agent"),
+    );
+    const secondResult = resultLinks.find((link) =>
+      link.textContent?.includes("Agent runner reference"),
+    );
+
+    if (!firstResult || !secondResult) {
+      throw new Error("Expected both keyboard-navigation result links.");
+    }
+
+    expect(document.activeElement).toBe(firstResult);
+
+    fireEvent.keyDown(firstResult, { key: "ArrowDown" });
+    expect(document.activeElement).toBe(secondResult);
+
+    fireEvent.keyDown(secondResult, { key: "ArrowUp" });
+    expect(document.activeElement).toBe(firstResult);
   });
 });

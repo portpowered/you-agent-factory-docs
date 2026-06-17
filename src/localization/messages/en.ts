@@ -58,6 +58,8 @@ export const enMessages = {
       submitLabel: "Search",
       loadingButtonLabel: "Searching",
       helperText: "Active locale:",
+      keyboardHint:
+        "After results load, use the Down Arrow to move into the result list and use the arrow keys to move between matches.",
       idleBody:
         "Submit a query to load the generated search artifact and inspect the visible search states.",
       loadingTitle: "Loading search results",
@@ -71,6 +73,7 @@ export const enMessages = {
         "The generated public search artifact could not be loaded for this request.",
       resultsTitle: "Results",
       resultsSummary: "Showing generated artifact matches for",
+      resultsListLabel: "Search results",
       resultKinds: {
         doc: "Documentation",
         blog: "Blog",

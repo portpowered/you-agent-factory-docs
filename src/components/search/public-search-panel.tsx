@@ -7,7 +7,13 @@ import {
 } from "@/lib/search/public-search";
 import { useLocale } from "@/localization";
 import { useMessages } from "@/localization/hooks/use-messages";
-import { type FormEvent, useRef, useState } from "react";
+import {
+  type FormEvent,
+  type KeyboardEvent,
+  useId,
+  useRef,
+  useState,
+} from "react";
 
 type SearchPanelStatus = "idle" | "loading" | "success" | "error";
 
@@ -77,10 +83,13 @@ function ResultLinkLabel({ href, title }: ResultLinkLabelProps) {
 export function PublicSearchPanel() {
   const { t } = useMessages();
   const locale = useLocale();
+  const resultsId = useId();
   const artifactRef = useRef<PublicSearchArtifact | null>(null);
+  const resultLinkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const requestIdRef = useRef(0);
   const [query, setQuery] = useState("");
   const [state, setState] = useState<SearchPanelState>(INITIAL_STATE);
+  const [activeResultIndex, setActiveResultIndex] = useState(-1);
   const [results, setResults] = useState<
     ReturnType<typeof searchPublicSearchArtifact>
   >([]);
@@ -100,6 +109,7 @@ export function PublicSearchPanel() {
   async function submitSearch(searchQuery: string): Promise<void> {
     const requestId = requestIdRef.current + 1;
     requestIdRef.current = requestId;
+    setActiveResultIndex(-1);
 
     setState({
       status: "loading",
@@ -117,6 +127,7 @@ export function PublicSearchPanel() {
         return;
       }
 
+      resultLinkRefs.current = [];
       setResults(nextResults);
       setState({
         status: "success",
@@ -127,6 +138,7 @@ export function PublicSearchPanel() {
         return;
       }
 
+      resultLinkRefs.current = [];
       setResults([]);
       setState({
         status: "error",
@@ -141,12 +153,85 @@ export function PublicSearchPanel() {
     event.preventDefault();
 
     if (trimmedQuery.length === 0) {
+      setActiveResultIndex(-1);
+      resultLinkRefs.current = [];
       setResults([]);
       setState(INITIAL_STATE);
       return;
     }
 
     void submitSearch(trimmedQuery);
+  }
+
+  function focusResultIndex(nextIndex: number) {
+    const link = resultLinkRefs.current[nextIndex];
+
+    if (!link) {
+      return;
+    }
+
+    setActiveResultIndex(nextIndex);
+    link.focus();
+  }
+
+  function moveResultFocus(nextIndex: number) {
+    if (results.length === 0) {
+      return;
+    }
+
+    const wrappedIndex = (nextIndex + results.length) % results.length;
+    focusResultIndex(wrappedIndex);
+  }
+
+  function handleInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
+    if (state.status !== "success" || results.length === 0) {
+      return;
+    }
+
+    switch (event.key) {
+      case "ArrowDown": {
+        event.preventDefault();
+        focusResultIndex(0);
+        break;
+      }
+      case "ArrowUp": {
+        event.preventDefault();
+        focusResultIndex(results.length - 1);
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  function handleResultKeyDown(
+    event: KeyboardEvent<HTMLAnchorElement>,
+    currentIndex: number,
+  ) {
+    switch (event.key) {
+      case "ArrowDown": {
+        event.preventDefault();
+        moveResultFocus(currentIndex + 1);
+        break;
+      }
+      case "ArrowUp": {
+        event.preventDefault();
+        moveResultFocus(currentIndex - 1);
+        break;
+      }
+      case "Home": {
+        event.preventDefault();
+        focusResultIndex(0);
+        break;
+      }
+      case "End": {
+        event.preventDefault();
+        focusResultIndex(results.length - 1);
+        break;
+      }
+      default:
+        break;
+    }
   }
 
   return (
@@ -171,11 +256,14 @@ export function PublicSearchPanel() {
         </label>
         <div className="public-search__controls">
           <input
+            aria-controls={state.status === "success" ? resultsId : undefined}
+            aria-describedby="public-search-help"
             aria-label={t("docs.search.label")}
             className="public-search__input"
             id="public-search-query"
             name="query"
             onChange={(event) => setQuery(event.currentTarget.value)}
+            onKeyDown={handleInputKeyDown}
             placeholder={t("docs.search.placeholder")}
             type="search"
             value={query}
@@ -191,7 +279,8 @@ export function PublicSearchPanel() {
           </button>
         </div>
         <p className="public-search__help" id="public-search-help">
-          {t("docs.search.helperText")} {locale.toUpperCase()}
+          {t("docs.search.helperText")} {locale.toUpperCase()}.{" "}
+          {t("docs.search.keyboardHint")}
         </p>
       </form>
       <div className="public-search__results" data-state={state.status}>
@@ -232,10 +321,15 @@ export function PublicSearchPanel() {
                 <strong>{state.submittedQuery}</strong>
               </p>
             </div>
-            <ul className="public-search__result-list">
-              {results.map((result) => (
+            <ul
+              aria-label={t("docs.search.resultsListLabel")}
+              className="public-search__result-list"
+              id={resultsId}
+            >
+              {results.map((result, index) => (
                 <li
                   className="public-search__result-item"
+                  data-active={activeResultIndex === index}
                   key={result.entry.id}
                 >
                   <div className="public-search__result-meta">
@@ -249,6 +343,11 @@ export function PublicSearchPanel() {
                   <a
                     className="public-search__result-link"
                     href={result.entry.url}
+                    onFocus={() => setActiveResultIndex(index)}
+                    onKeyDown={(event) => handleResultKeyDown(event, index)}
+                    ref={(element) => {
+                      resultLinkRefs.current[index] = element;
+                    }}
                   >
                     <ResultLinkLabel
                       href={result.entry.url}
