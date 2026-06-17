@@ -113,6 +113,39 @@ describe("public search artifact generation", () => {
     expect(gettingStarted?.body.length).toBeGreaterThan(0);
   });
 
+  test("surfaces substantive glossary starter copy on the existing canonical record", () => {
+    const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
+
+    const glossaryAgent = artifact.entries.find(
+      (entry) => entry.id === "glossary/agent@en",
+    );
+
+    expect(glossaryAgent).toMatchObject({
+      canonicalId: "glossary/agent",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      kind: "glossary",
+      url: "/glossary/agent",
+      title: "Agent",
+      section: "terms",
+      searchPriority: 8,
+    });
+    expect(glossaryAgent?.headings).toEqual([
+      "Agent",
+      "What the term means here",
+      "Why it matters in You Agent Factory",
+      "How to read the term as a first-time evaluator",
+    ]);
+    expect(glossaryAgent?.body).toContain("named worker inside a workflow");
+    expect(glossaryAgent?.body).toContain(
+      "repeatable process design, not one large prompt",
+    );
+    expect(glossaryAgent?.body).toContain(
+      "scoped unit of work with a specific contract",
+    );
+  });
+
   test("preserves locale-aware canonical-locale relationships for active-locale-first query defaults", () => {
     const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
 
