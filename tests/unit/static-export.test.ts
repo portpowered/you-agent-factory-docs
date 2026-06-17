@@ -173,6 +173,7 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("Introduction");
     expect(docsHtml).toContain("Getting started");
     expect(docsHtml).toContain("Quickstart");
+    expect(docsHtml).toContain("CLI overview");
     expect(docsHtml).toContain("Core concepts");
     expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Configuration");
@@ -446,5 +447,46 @@ describe("served static export navigation", () => {
     ).toBe(true);
     expect(installationHtml).toContain(enMessages.docs.previousPagePrefix);
     expect(installationHtml).toContain("Introduction");
+
+    const gettingStartedResponse = await fetchHttp(
+      new URL(withBasePath("/docs/getting-started"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const gettingStartedHtml = await gettingStartedResponse.text();
+    const cliPath = withBasePath("/docs/cli").replace(/\//g, "\\/");
+
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${cliPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${cliPath}/?)"`,
+      ).test(gettingStartedHtml),
+    ).toBe(true);
+
+    const cliResponse = await fetchHttp(new URL(cliPath, server.baseUrl), {
+      signal: AbortSignal.timeout(10_000),
+    });
+    expect(cliResponse.status).toBe(200);
+
+    const cliHtml = await cliResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+    const conceptsPath = withBasePath("/docs/concepts").replace(/\//g, "\\/");
+
+    expect(cliHtml).toContain("CLI overview");
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${gettingStartedPath}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${gettingStartedPath}/?)"`,
+      ).test(cliHtml),
+    ).toBe(true);
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${conceptsPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${conceptsPath}/?)"`,
+      ).test(cliHtml),
+    ).toBe(true);
+    expect(cliHtml).toContain(enMessages.docs.previousPagePrefix);
+    expect(cliHtml).toContain("Getting started");
+    expect(cliHtml).toContain(enMessages.docs.nextPagePrefix);
+    expect(cliHtml).toContain("Core concepts");
   }, 30_000);
 });

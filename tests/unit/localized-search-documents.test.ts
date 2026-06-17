@@ -71,6 +71,7 @@ describe("localized search document generation", () => {
     expect(documents.map((document) => document.id).sort()).toEqual([
       "blog/introducing-factory@en",
       "comparison/vs-n8n@en",
+      "doc/cli@en",
       "doc/concepts@en",
       "doc/configuration@en",
       "doc/getting-started@en",

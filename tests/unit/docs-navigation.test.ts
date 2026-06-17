@@ -340,6 +340,20 @@ section: guides
             },
           },
           {
+            canonicalId: "doc/cli",
+            label: "CLI overview",
+            href: "/docs/cli",
+            order: 2,
+            localeProjection: {
+              canonicalPageId: "doc/cli",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
             canonicalId: "doc/concepts",
             label: "Core concepts",
             href: "/docs/concepts",
@@ -410,6 +424,14 @@ section: guides
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
             "doc/introduction,doc/installation,doc/quickstart,doc/configuration",
+      ),
+    ).toBe(true);
+    expect(
+      navigation.sections.some(
+        (section) =>
+          section.id === "guides" &&
+          section.pages.map((page) => page.canonicalId).join(",") ===
+            "doc/getting-started,doc/cli,doc/concepts",
       ),
     ).toBe(true);
   });

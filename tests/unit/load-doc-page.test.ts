@@ -169,6 +169,18 @@ MDX body.
     });
   });
 
+  test("loads the CLI overview body through the published docs page path", () => {
+    const page = loadDocPage("cli", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/cli");
+    expect(page.title).toBe("CLI overview");
+    expect(page.body).toContain(
+      "The You Agent Factory CLI is the operator surface",
+    );
+    expect(page.body).toContain("Typical commands and outcomes");
+    expect(page.body).toContain("`you submit batch --dry-run <path>`");
+  });
+
   test("falls back to canonical-locale content for supported locales without variants", () => {
     const page = loadDocPage("getting-started", STARTER_CONTENT_ROOT, {
       locale: "ja",

@@ -86,6 +86,7 @@ describe("public search artifact generation", () => {
     expect(artifact.entries.map((entry) => entry.id).sort()).toEqual([
       "blog/introducing-factory@en",
       "comparison/vs-n8n@en",
+      "doc/cli@en",
       "doc/concepts@en",
       "doc/configuration@en",
       "doc/getting-started@en",

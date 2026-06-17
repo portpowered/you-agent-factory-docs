@@ -66,6 +66,7 @@ describe("localized starter content variants", () => {
       loadStarterContentRecords(CONTENT_ROOT);
 
     expect(listPublishedDocSlugs(CONTENT_ROOT)).toEqual([
+      "cli",
       "concepts",
       "configuration",
       "getting-started",
