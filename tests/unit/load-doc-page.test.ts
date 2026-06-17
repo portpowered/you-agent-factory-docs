@@ -198,6 +198,23 @@ MDX body.
     );
   });
 
+  test("loads the workflow concepts body through the published docs page path", () => {
+    const page = loadDocPage("concepts", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/concepts");
+    expect(page.title).toBe("Workflow concepts");
+    expect(page.body).toContain(
+      "Workflow concepts explain how the CLI, configuration, approvals, and outputs fit together",
+    );
+    expect(page.body).toContain("Where approvals fit");
+    expect(page.body).toContain(
+      "append-only progress logging, and PR conversation updates",
+    );
+    expect(page.body).toContain(
+      "configuration decides which stages exist and where approvals happen",
+    );
+  });
+
   test("falls back to canonical-locale content for supported locales without variants", () => {
     const page = loadDocPage("getting-started", STARTER_CONTENT_ROOT, {
       locale: "ja",

@@ -239,6 +239,50 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("workflow concepts render clearly inside the docs shell", async () => {
+    const page = await browser.newPage();
+    const workflowConceptsUrl = new URL(
+      withBasePath("/docs/concepts"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(workflowConceptsUrl, { waitUntil: "domcontentloaded" });
+
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 1,
+            name: "Workflow concepts",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", { name: "Guides" })
+          .getByRole("link", { name: "Workflow concepts" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Workflow concepts explain how the CLI, configuration, approvals, and outputs fit together once you move beyond the first setup path.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "How the CLI and configuration connect",
+          })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("homepage docs CTA navigates to the docs shell entry route", async () => {
     const page = await browser.newPage();
 
