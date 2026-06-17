@@ -47,6 +47,8 @@ Verify on desktop and a mobile-width viewport:
 - [ ] `/docs/` loads with HTTP 200 and renders a non-empty docs shell.
 - [ ] Header, navigation area, and main content region are visible.
 - [ ] Framing copy confirms the route is intentional (not an empty placeholder).
+- [ ] The Mermaid example renders after client load, keeps its heading and description visible, and exposes readable checked-in source text for reviewer comparison.
+- [ ] If JavaScript is still loading or Mermaid fails, the docs surface keeps an explicit status or error message rather than silently omitting the diagram.
 - [ ] Home or back navigation returns to the homepage with base-path-aware links.
 - [ ] Semantic landmarks are present (`header`, `nav`, `main`).
 
