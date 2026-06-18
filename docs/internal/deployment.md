@@ -18,6 +18,7 @@ Deployment eligibility is tied to the same root `Makefile` contract used locally
 | `make check` | Typecheck and lint |
 | `make test` | Unit and component tests (`bun test`) |
 | `make build` | Production static export (`bun run build`) |
+| `make budget` | Exported-site route and asset budget enforcement against the built GitHub Pages surface |
 
 The workflow runs those targets in the `validate` job before any deploy step can start. Do not add deploy-only validation commands; extend the Makefile and call it from the workflow instead.
 

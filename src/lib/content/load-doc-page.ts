@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { loadDocsContentSource } from "@/lib/content/docs-structure-source";
 import { parseContentFile } from "@/lib/content/frontmatter";
-import { loadStarterContentRecords } from "@/lib/content/load-starter-content";
 import {
   type LocaleAwareContentProjection,
   projectLocaleAwareContent,
@@ -11,7 +11,6 @@ import {
   type LocalizedContentResolution,
   selectLocalizedVariantBinding,
 } from "@/lib/content/localized-content-resolution";
-import { assertStarterContentValid } from "@/lib/content/starter-content-errors";
 import type { CanonicalContentRecord } from "@/lib/content/types";
 
 const DEFAULT_CONTENT_ROOT = join(process.cwd(), "src/content");
@@ -59,11 +58,10 @@ function readDocSource(
 export function listPublishedDocSlugs(
   contentRoot = DEFAULT_CONTENT_ROOT,
 ): string[] {
-  const { records, failures } = loadStarterContentRecords(contentRoot);
-  assertStarterContentValid(failures);
+  const { canonicalRecords } = loadDocsContentSource(contentRoot);
 
   const slugs = new Set<string>();
-  for (const record of records) {
+  for (const record of canonicalRecords) {
     if (record.kind === "doc" && record.status === "published") {
       slugs.add(record.slug);
     }
@@ -85,11 +83,10 @@ export function loadDocPage(
   contentRoot = DEFAULT_CONTENT_ROOT,
   options?: LoadDocPageOptions,
 ): DocPageContent {
-  const { records, failures, variantBindings } =
-    loadStarterContentRecords(contentRoot);
-  assertStarterContentValid(failures);
+  const { canonicalRecords, variantBindings } =
+    loadDocsContentSource(contentRoot);
 
-  const record = findPublishedDocRecord(records, slug);
+  const record = findPublishedDocRecord(canonicalRecords, slug);
   if (!record) {
     throw new Error(`Published doc page not found: ${slug}`);
   }

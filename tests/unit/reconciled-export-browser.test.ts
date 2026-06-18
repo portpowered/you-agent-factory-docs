@@ -25,6 +25,27 @@ import {
 } from "../helpers/static-export-server";
 import { getTestPort } from "../helpers/test-port";
 
+const publicKnowledgePages = [
+  {
+    path: "/glossary/agent",
+    title: "Agent",
+    excerpt:
+      "An agent in You Agent Factory is a named worker inside a workflow.",
+  },
+  {
+    path: "/comparisons/vs-n8n",
+    title: "You Agent Factory vs n8n",
+    excerpt:
+      "You Agent Factory and n8n both help teams automate repeatable work",
+  },
+  {
+    path: "/references/loop-engineering",
+    title: "Loop engineering",
+    excerpt:
+      "Loop engineering is the practice of designing the feedback cycle around an agent workflow",
+  },
+] as const;
+
 describe("reconciled baseline browser export", () => {
   const port = getTestPort(3786, "RECONCILED_EXPORT_BROWSER_TEST_PORT");
   let server: StaticExportServer;
@@ -32,11 +53,8 @@ describe("reconciled baseline browser export", () => {
 
   async function waitForDocsShellReady(page: Page): Promise<void> {
     await page
-      .locator('nav[aria-label="Guides"]')
+      .locator("#nd-sidebar")
       .waitFor({ state: "attached", timeout: 10_000 });
-    await page
-      .getByRole("banner")
-      .waitFor({ state: "visible", timeout: 10_000 });
     await page.getByRole("main").waitFor({ state: "visible", timeout: 10_000 });
   }
 
@@ -90,6 +108,7 @@ describe("reconciled baseline browser export", () => {
       withBasePath(DOCS_ENTRY_ROUTE),
       server.baseUrl,
     ).toString();
+    const docsSidebar = page.locator("#nd-sidebar");
 
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
@@ -103,9 +122,218 @@ describe("reconciled baseline browser export", () => {
       expect(await page.getByText(DOCS_SHELL_FRAMING_TEXT).isVisible()).toBe(
         true,
       );
-      expect(await page.getByText("Guides").isVisible()).toBe(true);
-      expect(await page.getByRole("banner").isVisible()).toBe(true);
+      expect(
+        await docsSidebar.getByText("Guides", { exact: true }).isVisible(),
+      ).toBe(true);
       expect(await page.getByRole("main").isVisible()).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("configuration overview renders clearly inside the docs shell", async () => {
+    const page = await browser.newPage();
+    const configurationUrl = new URL(
+      withBasePath("/docs/configuration"),
+      server.baseUrl,
+    ).toString();
+    const docsSidebar = page.locator("#nd-sidebar");
+
+    try {
+      await page.goto(configurationUrl, { waitUntil: "domcontentloaded" });
+      await waitForDocsShellReady(page);
+
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 1,
+            name: "Configuration",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await docsSidebar.getByText("Guides", { exact: true }).isVisible(),
+      ).toBe(true);
+      expect(
+        await docsSidebar
+          .getByRole("link", { name: "Configuration" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Configuration is the contract between the CLI command you run and the workflow behavior the factory will execute.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "How configuration changes execution",
+          })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("workflow concepts render clearly inside the docs shell", async () => {
+    const page = await browser.newPage();
+    const workflowConceptsUrl = new URL(
+      withBasePath("/docs/concepts"),
+      server.baseUrl,
+    ).toString();
+    const docsSidebar = page.locator("#nd-sidebar");
+
+    try {
+      await page.goto(workflowConceptsUrl, { waitUntil: "domcontentloaded" });
+      await waitForDocsShellReady(page);
+
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 1,
+            name: "Workflow concepts",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await docsSidebar.getByText("Guides", { exact: true }).isVisible(),
+      ).toBe(true);
+      expect(
+        await docsSidebar
+          .getByRole("link", { name: "Workflow concepts" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Workflow concepts explain how the CLI, configuration, approvals, and outputs fit together once you move beyond the first setup path.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "How the CLI and configuration connect",
+          })
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("docs shell exposes the post-setup concepts path coherently", async () => {
+    const page = await browser.newPage();
+    const cliUrl = new URL(
+      withBasePath("/docs/cli"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(cliUrl, { waitUntil: "domcontentloaded" });
+      await waitForDocsShellReady(page);
+
+      const docsSidebar = page.locator("#nd-sidebar");
+      expect(
+        await docsSidebar.getByText("Guides", { exact: true }).isVisible(),
+      ).toBe(true);
+      expect(
+        await docsSidebar
+          .getByRole("link", { name: "CLI overview" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await docsSidebar
+          .getByRole("link", { name: "Configuration" })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await docsSidebar
+          .getByRole("link", { name: "Workflow concepts" })
+          .isVisible(),
+      ).toBe(true);
+
+      const progression = page.getByRole("navigation", {
+        name: enMessages.docs.progressionAriaLabel,
+      });
+      const nextConfigurationLink = progression.getByRole("link", {
+        name: `${enMessages.docs.nextPagePrefix} Configuration`,
+      });
+
+      expect(await nextConfigurationLink.isVisible()).toBe(true);
+      await nextConfigurationLink.click();
+      await page.waitForURL(
+        new RegExp(
+          `${withBasePath("/docs/configuration").replace(/\//g, "\\/")}/?$`,
+        ),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Logs and replays`,
+          })
+          .isVisible(),
+      ).toBe(true);
+      await page
+        .getByRole("navigation", {
+          name: enMessages.docs.progressionAriaLabel,
+        })
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Logs and replays`,
+        })
+        .click();
+      await page.waitForURL(
+        new RegExp(
+          `${withBasePath("/docs/logs-and-replays").replace(/\//g, "\\/")}/?$`,
+        ),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
+          })
+          .isVisible(),
+      ).toBe(true);
+      await page
+        .getByRole("navigation", {
+          name: enMessages.docs.progressionAriaLabel,
+        })
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
+        })
+        .click();
+      await page.waitForURL(
+        new RegExp(
+          `${withBasePath("/docs/concepts").replace(/\//g, "\\/")}/?$`,
+        ),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Coder / Reviewer pattern`,
+          })
+          .isVisible(),
+      ).toBe(true);
     } finally {
       await page.close();
     }
@@ -149,7 +377,7 @@ describe("reconciled baseline browser export", () => {
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
       await waitForDocsShellReady(page);
-      await page.getByRole("link", { name: HOME_CTA_LABEL }).click();
+      await page.getByRole("link", { name: PROJECT_NAME }).click();
 
       await page.waitForURL(
         new RegExp(
@@ -215,9 +443,6 @@ describe("reconciled baseline browser export", () => {
     try {
       await page.goto(gettingStartedUrl, { waitUntil: "domcontentloaded" });
       await waitForDocsShellReady(page);
-      await page
-        .locator('.shared-shell[data-shell-viewport="mobile"]')
-        .waitFor({ timeout: 10_000 });
 
       const breadcrumbs = page.getByRole("navigation", {
         name: enMessages.docs.breadcrumbAriaLabel,
@@ -225,41 +450,70 @@ describe("reconciled baseline browser export", () => {
       const progression = page.getByRole("navigation", {
         name: enMessages.docs.progressionAriaLabel,
       });
-      const docsAsidePanel = page.locator("#shared-shell-docs-aside");
-      const guidesAsideNav = docsAsidePanel.getByRole("navigation", {
-        name: "Guides",
-      });
+      const docsAsidePanel = page.locator("#nd-sidebar");
 
       expect(await breadcrumbs.isVisible()).toBe(true);
       expect(await breadcrumbs.getByText("Guides").isVisible()).toBe(true);
       expect(
         await progression
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Core concepts`,
+            name: `${enMessages.docs.nextPagePrefix} CLI overview`,
           })
           .isVisible(),
       ).toBe(true);
 
       const docsNavToggle = page.getByRole("button", {
-        name: sharedShellConfig.responsive.docsNavigationDisclosure.openLabel,
+        name: "Toggle Sidebar",
       });
-      expect(await docsNavToggle.getAttribute("aria-expanded")).toBe("false");
-      expect(await docsAsidePanel.getAttribute("hidden")).not.toBeNull();
-      expect(await guidesAsideNav.isVisible()).toBe(false);
 
       await docsNavToggle.click();
 
-      expect(await guidesAsideNav.isVisible()).toBe(true);
+      expect(await docsNavToggle.getAttribute("data-open")).toBe("true");
       expect(
-        await docsAsidePanel
-          .getByRole("navigation", { name: "Setup" })
+        await page
+          .getByRole("link", { name: "CLI overview" })
+          .last()
           .isVisible(),
       ).toBe(true);
       expect(
-        await guidesAsideNav
-          .getByRole("link", { name: "Core concepts" })
+        await page
+          .getByRole("link", { name: "CLI overview" })
+          .last()
           .isVisible(),
       ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("public knowledge routes render substantive starter content in the browser", async () => {
+    const page = await browser.newPage();
+
+    try {
+      for (const knowledgePage of publicKnowledgePages) {
+        await page.goto(
+          new URL(withBasePath(knowledgePage.path), server.baseUrl).toString(),
+          {
+            waitUntil: "domcontentloaded",
+          },
+        );
+
+        expect(
+          await page
+            .getByRole("heading", { level: 1, name: knowledgePage.title })
+            .isVisible(),
+        ).toBe(true);
+        expect(await page.getByText(knowledgePage.excerpt).isVisible()).toBe(
+          true,
+        );
+        expect(
+          await page
+            .getByRole("navigation", {
+              name: enMessages.docs.breadcrumbAriaLabel,
+            })
+            .isVisible(),
+        ).toBe(true);
+      }
     } finally {
       await page.close();
     }

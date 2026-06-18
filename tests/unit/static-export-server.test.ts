@@ -9,9 +9,11 @@ import {
 import { join } from "node:path";
 import { SITE_BASE_PATH } from "../../src/lib/site";
 import { STATIC_EXPORT_SKIP_BUILD_ENV } from "../../src/lib/validation/static-export";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { fetchHttp } from "../helpers/http";
 import {
   buildStaticExport,
+  ensureStaticExportBuilt,
   shouldSkipStaticExportBuild,
   startStaticExportServer,
   waitForStaticExportServer,
@@ -45,33 +47,36 @@ describe("static export server helpers", () => {
       buildStaticExport();
     }
 
-    process.env[STATIC_EXPORT_SKIP_BUILD_ENV] = "1";
+    withStaticExportBuildLock(projectRoot, () => {
+      process.env[STATIC_EXPORT_SKIP_BUILD_ENV] = "1";
 
-    expect(() => buildStaticExport()).not.toThrow();
-  });
+      expect(() => buildStaticExport()).not.toThrow();
+    });
+  }, 120_000);
 
   test("buildStaticExport fails fast when skip is set but out/ is missing", () => {
-    const backupDir = join(projectRoot, "out.skip-build-test-backup");
-    let movedExport = false;
+    withStaticExportBuildLock(projectRoot, () => {
+      const backupDir = join(projectRoot, "out.skip-build-test-backup");
+      let movedExport = false;
 
-    if (existsSync(exportDir)) {
-      rmSync(backupDir, { recursive: true, force: true });
-      renameSync(exportDir, backupDir);
-      movedExport = true;
-    }
+      if (existsSync(exportDir)) {
+        rmSync(backupDir, { recursive: true, force: true });
+        renameSync(exportDir, backupDir);
+        movedExport = true;
+      }
 
-    process.env[STATIC_EXPORT_SKIP_BUILD_ENV] = "1";
+      process.env[STATIC_EXPORT_SKIP_BUILD_ENV] = "1";
 
-    expect(() => buildStaticExport()).toThrow(/missing at out\//);
+      expect(() => buildStaticExport()).toThrow(/missing at out\//);
 
-    if (movedExport) {
-      renameSync(backupDir, exportDir);
-    }
+      if (movedExport) {
+        renameSync(backupDir, exportDir);
+      }
+    });
   });
+
   test("startStaticExportServer serves an isolated snapshot of out/", async () => {
-    if (!existsSync(exportDir)) {
-      buildStaticExport();
-    }
+    await ensureStaticExportBuilt();
 
     const homepageHtmlPath = join(exportDir, "index.html");
     const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
@@ -108,5 +113,5 @@ describe("static export server helpers", () => {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
       server.stop();
     }
-  }, 60_000);
+  }, 180_000);
 });

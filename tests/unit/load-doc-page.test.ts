@@ -7,6 +7,69 @@ import { loadDocPage } from "../../src/lib/content";
 const STARTER_CONTENT_ROOT = join(import.meta.dir, "../../src/content");
 
 describe("loadDocPage", () => {
+  test("loads canonical setup-path pages with stable doc identity and canonical-locale metadata", () => {
+    const setupPages = [
+      {
+        slug: "introduction",
+        canonicalId: "doc/introduction",
+        title: "Introduction",
+        bodySnippet:
+          "You Agent Factory is an open-source, engineering-native platform",
+      },
+      {
+        slug: "installation",
+        canonicalId: "doc/installation",
+        title: "Installation",
+        bodySnippet:
+          "Run `make check`, `make test`, and `make build` after setup",
+      },
+      {
+        slug: "quickstart",
+        canonicalId: "doc/quickstart",
+        title: "Quickstart",
+        bodySnippet: "Run `bun run dev` from the repository root.",
+      },
+      {
+        slug: "coder-reviewer-pattern",
+        canonicalId: "doc/coder-reviewer-pattern",
+        title: "Coder / Reviewer pattern",
+        bodySnippet: "approval is treated as a real gate",
+      },
+    ] as const;
+
+    for (const setupPage of setupPages) {
+      const page = loadDocPage(setupPage.slug, STARTER_CONTENT_ROOT, {
+        locale: "en",
+      });
+
+      expect(page.record).toMatchObject({
+        id: setupPage.canonicalId,
+        slug: setupPage.slug,
+        routePath: `/docs/${setupPage.slug}`,
+        canonicalLocale: "en",
+        availableLocales: ["en"],
+        status: "published",
+      });
+      expect(page.title).toBe(setupPage.title);
+      expect(page.body).toContain(setupPage.bodySnippet);
+      expect(page.resolution).toEqual({
+        canonicalPageId: setupPage.canonicalId,
+        canonicalLocale: "en",
+        requestedLocale: "en",
+        resolvedLocale: "en",
+        fellBackToCanonicalLocale: false,
+      });
+      expect(page.localeProjection).toEqual({
+        canonicalPageId: setupPage.canonicalId,
+        canonicalLocale: "en",
+        requestedLocale: "en",
+        resolvedLocale: "en",
+        availableLocales: ["en"],
+        fellBackToCanonicalLocale: false,
+      });
+    }
+  });
+
   test("serves accepted plain markdown locale files through the docs page path", () => {
     const contentRoot = mkdtempSync(join(tmpdir(), "plain-markdown-doc-"));
     const fixtureDir = join(contentRoot, "docs", "plain-markdown");
@@ -110,6 +173,52 @@ MDX body.
       availableLocales: ["en", "fr"],
       fellBackToCanonicalLocale: false,
     });
+  });
+
+  test("loads the CLI overview body through the published docs page path", () => {
+    const page = loadDocPage("cli", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/cli");
+    expect(page.title).toBe("CLI overview");
+    expect(page.body).toContain(
+      "The You Agent Factory CLI is the operator surface",
+    );
+    expect(page.body).toContain("Typical commands and outcomes");
+    expect(page.body).toContain("`you submit batch --dry-run <path>`");
+  });
+
+  test("loads the configuration overview body through the published docs page path", () => {
+    const page = loadDocPage("configuration", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/configuration");
+    expect(page.title).toBe("Configuration");
+    expect(page.body).toContain(
+      "Configuration is the contract between the CLI command you run and the workflow behavior the factory will execute.",
+    );
+    expect(page.body).toContain("Main configuration concepts");
+    expect(page.body).toContain(
+      "workflow definitions, task or PRD inputs that name the work to perform",
+    );
+    expect(page.body).toContain(
+      "it shapes what the operator should expect from the same CLI surface",
+    );
+  });
+
+  test("loads the workflow concepts body through the published docs page path", () => {
+    const page = loadDocPage("concepts", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/concepts");
+    expect(page.title).toBe("Workflow concepts");
+    expect(page.body).toContain(
+      "Workflow concepts explain how the CLI, configuration, approvals, and outputs fit together",
+    );
+    expect(page.body).toContain("Where approvals fit");
+    expect(page.body).toContain(
+      "append-only progress logging, and PR conversation updates",
+    );
+    expect(page.body).toContain(
+      "configuration decides which stages exist and where approvals happen",
+    );
   });
 
   test("falls back to canonical-locale content for supported locales without variants", () => {

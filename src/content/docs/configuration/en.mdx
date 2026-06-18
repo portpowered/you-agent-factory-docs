@@ -8,12 +8,32 @@ availableLocales:
 status: published
 tags:
   - docs
-section: setup
-order: 2
+section: guides
+order: 3
 search.include: true
 search.priority: 7
 ---
 
 # Configuration
 
-Configure factory inputs, approval gates, and workflow templates from the project baseline.
+Configuration is the contract between the CLI command you run and the workflow behavior the factory will execute. It tells the system which work items exist, which agents or tools participate, where approvals are required, and which repository files define the process for a given lane.
+
+## How to think about configuration
+
+Think of configuration as the durable operating model for the factory rather than a bag of one-off flags. The CLI starts and advances work, but configuration decides what that work means. A good first-adoption mental model is that commands trigger execution, configuration defines the allowed workflow shape, and progress logs or outputs prove what happened during the run.
+
+## Main configuration concepts
+
+Most teams only need to understand a few concepts at first. The factory is organized around file-driven workflow definitions, task or PRD inputs that name the work to perform, workspace or branch setup that gives each run an isolated place to write files, and approval or review checkpoints that determine when a task continues automatically versus waiting for a human decision.
+
+## What configuration is responsible for
+
+Configuration is responsible for turning a generic workflow engine into your team's operating path. It identifies the workflow templates that can run, the instructions or standards those workflows must follow, the paths where inputs and outputs live, and the command or quality gates that keep a generated branch reviewable before it moves forward.
+
+## How configuration changes execution
+
+Small configuration changes can materially change runtime behavior. Choosing a different workflow definition can add or remove stages, changing approval settings can introduce a pause before review or deployment, and pointing the factory at different task or docs inputs changes which artifacts the CLI produces in a worktree. This is why configuration matters before you think about deeper workflow concepts: it shapes what the operator should expect from the same CLI surface.
+
+## Where to go next
+
+Return to the CLI overview if you need the command surface again, or continue to workflow concepts when you want to connect configuration, approvals, execution stages, and observable outputs into one operated system.

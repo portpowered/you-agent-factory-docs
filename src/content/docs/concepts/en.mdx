@@ -1,7 +1,7 @@
 ---
 id: doc/concepts
 kind: doc
-title: Core concepts
+title: Workflow concepts
 canonicalLocale: en
 availableLocales:
   - en
@@ -9,11 +9,31 @@ status: published
 tags:
   - docs
 section: guides
-order: 2
+order: 4
 search.include: true
 search.priority: 9
 ---
 
-# Core concepts
+# Workflow concepts
 
-Learn the orchestration concepts that shape how You Agent Factory workflows are designed and run.
+Workflow concepts explain how the CLI, configuration, approvals, and outputs fit together once you move beyond the first setup path. A workflow run is not just a command invocation: it is a staged operating loop where the factory creates work, advances it through defined checkpoints, and leaves behind evidence that tells you what happened.
+
+## How workflow execution moves
+
+Think of a workflow as a sequence of workstations rather than a single script. A run begins when the CLI submits or advances a named work item, then the factory routes that item through the configured stages for planning, implementation, validation, review, or any other lane your process defines. Each stage has a specific responsibility, so the important first-adoption mental model is that progress happens through explicit transitions, not hidden background magic.
+
+## Where approvals fit
+
+Approvals govern when the system can continue automatically and when it must pause for a human decision. Some stages can run straight through, while others stop at a review or process checkpoint until an operator confirms the result, requests fixes, or rejects the current output. This approval loop is what keeps the factory useful for real engineering work: automation does the repetitive execution, but humans still control the riskier decisions.
+
+## What you should observe during a run
+
+A healthy workflow produces inspectable state at every step. Expect to see durable work-item status, active or completed session records, branch or worktree changes, append-only progress logging, and PR conversation updates when a lane is operating against a review branch. If the run stalls, those same artifacts tell you whether the task is waiting on approval, blocked by a failed quality gate, or ready for the next CLI transition.
+
+## How the CLI and configuration connect
+
+The CLI is how you operate the factory, but configuration is what defines the workflow that the CLI can run. Commands create or advance work, configuration decides which stages exist and where approvals happen, and workflow execution is the observable result of those two surfaces working together. This is why the concepts page matters after the CLI and configuration overviews: it turns those separate ideas into one operating model a new evaluator can reason about.
+
+## Where to go next
+
+Return to the CLI overview if you need the operator command surface, or revisit configuration when you want to inspect which files and settings created a specific workflow path. From there, deeper reference or architecture docs can add more detail without changing this first-adoption workflow model.

@@ -1,8 +1,13 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
 import { STATIC_EXPORT_LOCK_HELD_ENV } from "../../src/lib/validation/static-export";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
-import { withRepoRootCommandLock } from "./repo-root-command-lock";
+import { withRepoCommandLock } from "./repo-command-lock";
+import {
+  buildCleanSubprocessEnv,
+  buildIsolatedTestPortEnv,
+} from "./subprocess-env";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -10,30 +15,39 @@ export function runMake(
   target: string,
   options: { dryRun?: boolean; env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
-  const args = options.dryRun ? ["-n", target] : [target];
-  const run = () =>
-    spawnSync("make", args, {
-      cwd: repoRoot,
-      encoding: "utf8",
-      env: {
-        ...process.env,
-        ...(target === "quality-gate"
-          ? {
-              [STATIC_EXPORT_LOCK_HELD_ENV]: "1",
-            }
-          : undefined),
-        ...options.env,
-      },
-    });
-  const result =
-    options.dryRun ||
-    (target !== "build" && target !== "check" && target !== "quality-gate")
-      ? run()
-      : withRepoRootCommandLock(repoRoot, () =>
-          target === "build" || target === "quality-gate"
-            ? withStaticExportBuildLock(repoRoot, run)
-            : run(),
-        );
+  const runWithOptionalLock = <T>(fn: () => T): T =>
+    options.dryRun ? fn() : withRepoCommandLock(repoRoot, fn);
+
+  const result = runWithOptionalLock(() => {
+    const args = options.dryRun ? ["-n", target] : [target];
+    const runTarget = () =>
+      spawnSync("make", args, {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: buildCleanSubprocessEnv({
+          ...(target === "quality-gate" && !options.dryRun
+            ? {
+                [STATIC_EXPORT_LOCK_HELD_ENV]: "1",
+                ...buildIsolatedTestPortEnv(),
+              }
+            : undefined),
+          ...options.env,
+        }),
+        maxBuffer: 50 * 1024 * 1024,
+      });
+
+    if (target === "quality-gate" && !options.dryRun) {
+      return withQualityGateCommandLock(repoRoot, () =>
+        withStaticExportBuildLock(repoRoot, runTarget),
+      );
+    }
+
+    if ((target === "check" || target === "build") && !options.dryRun) {
+      return withStaticExportBuildLock(repoRoot, runTarget);
+    }
+
+    return runTarget();
+  });
 
   return {
     status: result.status,

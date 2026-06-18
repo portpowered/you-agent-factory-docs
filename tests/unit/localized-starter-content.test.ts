@@ -66,11 +66,15 @@ describe("localized starter content variants", () => {
       loadStarterContentRecords(CONTENT_ROOT);
 
     expect(listPublishedDocSlugs(CONTENT_ROOT)).toEqual([
+      "cli",
+      "coder-reviewer-pattern",
       "concepts",
       "configuration",
       "getting-started",
       "installation",
+      "introduction",
       "logs-and-replays",
+      "quickstart",
     ]);
 
     const navigation = projectDocsShellNavigation(records, { variantBindings });

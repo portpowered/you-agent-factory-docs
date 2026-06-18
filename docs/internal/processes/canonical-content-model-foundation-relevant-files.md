@@ -28,9 +28,14 @@
 
 - Starter fixtures live under `src/content/{docs,blog,glossary,comparisons,references}/{slug}/{locale}.md` or `{locale}.mdx`.
 - `resolveLocaleFileName()` in `src/lib/content/locale-files.ts` is the shared locale-file resolver; `loadDocPage()` prefers `.mdx` over `.md` when both exist for the same locale.
+- `loadPublicContentPage()` in `src/lib/content/load-public-content-page.ts` is the shared runtime loader for public starter-content pages outside the docs route tree; it keeps glossary, comparison, and reference pages on the same validated canonical records and locale-projection path as docs pages.
 - Directory names map to public content kinds via `STARTER_CONTENT_DIRECTORY_KINDS` in `src/lib/content/starter.ts`.
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
+- Use `loadPublicSearchArtifact()` or `loadLocalizedSearchDocuments()` for pre-route proof when a non-doc content kind has no public page yet. Once a route exists, prefer served static-export or browser-visible assertions for the actual page URL and keep artifact-level tests as supporting coverage.
+- To add a new canonical docs page to the shell, create one localized file under `src/content/docs/{slug}/{locale}.mdx` with valid canonical frontmatter (`id`, `title`, `canonicalLocale`, `availableLocales`, `section`, `order`, and publication metadata); the page will flow into route loading and generated navigation without manual sidebar wiring.
+- When canonical docs copy changes, regenerate `public/search/public-search-index.json` so the checked-in search artifact stays aligned with the page body and headings that search exposes.
+- For one-page launch-content stories that need focused pipeline proof, prefer one page-specific test that asserts the generated nav page, `loadDocPage()` result, localized search document, and checked-in public search entry agree on canonical id, route, locale metadata, and key reader-visible claims.
 
 ## Docs shell navigation projection
 
@@ -40,6 +45,7 @@
 - `projectSharedShellDocsNavigation()` maps generated navigation into `SharedShell` sidebar groups; `DocsShell` composes `SharedShell` with that projected config.
 - `DocsShell` uses `createSharedShellConfigFromMessages(t, { docsNavigationGroups })` so localized shell labels come from the message catalog while docs sidebar items stay projected from canonical records.
 - Published doc pages are served from `src/app/docs/[slug]/page.tsx` via `loadDocPage()` and `generateStaticParams()`.
+- Published glossary, comparison, and reference pages are served from `src/app/glossary/[slug]/page.tsx`, `src/app/comparisons/[slug]/page.tsx`, and `src/app/references/[slug]/page.tsx`, each with `generateStaticParams()` from `listPublishedContentSlugs()`.
 
 ## Tests
 
@@ -49,9 +55,12 @@
 - Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
 - Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
+- Served static export and browser-export tests should be the primary proof for public knowledge routes such as `/glossary/...`, `/comparisons/...`, and `/references/...`, because they verify the same GitHub Pages URLs reviewers open manually.
 - `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.
 - When one docs page needs reviewer-friendly end-to-end proof through the existing content pipeline, prefer a focused pipeline test like `tests/unit/logs-and-replays-guide-pipeline.test.ts` that asserts canonical record loading, generated navigation projection, doc-page loading, and search-document/search-artifact projection for that page.
 - Adding a new published docs fixture usually requires updating representative published-doc inventories in `tests/unit/starter-content.test.ts`, `tests/unit/localized-starter-content.test.ts`, `tests/unit/docs-navigation.test.ts`, `tests/unit/load-doc-page.test.ts`, `tests/unit/localized-search-documents.test.ts`, and `tests/unit/public-search-artifact.test.ts` because those tests prove the generated content pipeline end to end.
+- When canonical docs copy changes add or revise reader-visible claims, update both `tests/unit/load-doc-page.test.ts` and `tests/unit/public-search-artifact.test.ts` so route loading and the checked-in search contract prove the same content.
+- When a page needs explicit route-render proof in addition to content-pipeline assertions, add one static-export test that derives the page href from `loadDocsShellNavigation()` before fetching the rendered route, rather than asserting against a hand-maintained route inventory.
 - Static-export and browser-export tests read ports from `STATIC_EXPORT_TEST_PORT` / `RECONCILED_EXPORT_BROWSER_TEST_PORT` via `tests/helpers/test-port.ts` so nested `make test` invocations from `root-command-path.test.ts` do not collide with the outer suite.
 - Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
 

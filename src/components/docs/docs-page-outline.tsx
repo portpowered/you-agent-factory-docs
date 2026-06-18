@@ -1,3 +1,4 @@
+import { DocsContentCard } from "@/components/docs/docs-content";
 import type { DocsPageOutline } from "@/lib/content/docs-page-outline";
 
 export type DocsPageOutlineNavProps = {
@@ -16,7 +17,11 @@ export function DocsPageOutlineNav({
   }
 
   return (
-    <nav aria-label={ariaLabel} className="docs-page-outline">
+    <DocsContentCard
+      as="nav"
+      aria-label={ariaLabel}
+      className="docs-page-outline border-border/70 bg-muted/30 p-4 sm:p-5"
+    >
       <p className="docs-page-outline__title">{onThisPageLabel}</p>
       <ol className="docs-page-outline__list">
         {outline.headings.map((heading) => (
@@ -30,6 +35,6 @@ export function DocsPageOutlineNav({
           </li>
         ))}
       </ol>
-    </nav>
+    </DocsContentCard>
   );
 }

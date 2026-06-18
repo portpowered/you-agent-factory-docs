@@ -44,7 +44,7 @@ export function SharedShellDocsAside({
         className="shared-shell__docs-aside-panel"
         disclosure={disclosure}
       >
-        <aside className="shared-shell__docs-aside">
+        <aside className="shared-shell__docs-aside border-r bg-card xl:min-h-full">
           {docsNavigationGroups.map((docsNavigation) => (
             <SharedShellDocsNavigation
               ariaLabel={docsNavigation.heading}

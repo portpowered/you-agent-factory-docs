@@ -15,16 +15,16 @@
 
 - Documented contributor entrypoints live in the root `Makefile` and mirror `package.json` scripts (`setup`, `check`, `test`, `build`).
 - `tests/helpers/make-target.ts` wraps `make <target>` via `spawnSync` so command-path proof stays at the process-outcome layer. Assert on combined `stdout` and `stderr` because `bun test` reports results on stderr.
-- `tests/unit/root-command-path.test.ts` sets `VERIFYING_MAKE_TEST=1` when invoking `make test` so the nested run skips the recursive `make test` assertion while still executing the rest of the suite.
+- `tests/unit/root-command-path.test.ts` executes `make setup`, `make check`, and `make build` from the repository root, but proves `make test` through `make -n` output so the suite does not recursively re-run itself from inside `bun test`.
 - Reconciliation review required one corrective edit: `package.json` `typecheck` now runs `next typegen && tsc --noEmit` so `make check` succeeds on a clean checkout before any build artifacts exist. See `docs/internal/processes/reconcile-bootstrap-foundation-baseline-divergence.md`.
-- `tests/unit/root-command-path.test.ts` clears `.next` and `tsconfig.tsbuildinfo` before invoking `make check` so command-path proof does not depend on earlier tests warming build output.
+- `tests/unit/root-command-path.test.ts` clears `.next` and `tsconfig.tsbuildinfo` inside `withStaticExportBuildLock(...)` before invoking `make check` so command-path proof does not race other suites that touch the same generated artifacts.
 
 ## Inherited foundation surfaces
 
 - Root contributor command path: `Makefile` (`setup`, `check`, `test`, `build`) and matching `package.json` scripts.
 - Next.js static-export scaffold: `next.config.ts`, `src/app/`, `src/components/`, `src/lib/`.
 - Homepage shell: `src/components/landing/landing-shell.tsx` via `src/app/page.tsx`.
-- Docs shell entry route: `src/components/docs/docs-shell.tsx` via `src/app/docs/page.tsx`.
+- Docs route entry path: `src/app/docs/page.tsx` through `src/components/docs/docs-route-chrome.tsx`, owned by `src/app/docs/layout.tsx` and `src/components/docs/fumadocs-docs-layout.tsx`.
 - GitHub Pages base-path helpers: `src/lib/site.ts`.
 - Shared shell copy and CTA constants: `src/lib/shell.ts`, `src/lib/project.ts`.
 - Automated verification: `tests/unit/` plus `docs/internal/processes/bootstrap-static-export-foundation-relevant-files.md` for bootstrap-specific patterns.

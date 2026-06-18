@@ -14,6 +14,14 @@ describe("shared shell message fallback", () => {
     expect(
       resolveMessageWithFallback(frMessages, enMessages, "docs.navHeading"),
     ).toBe("Navigation de la documentation");
+    expect(
+      resolveMessageWithFallback(frMessages, enMessages, "docs.framingText"),
+    ).toBe(
+      "Ceci est la route d'entree stable de la documentation. Les futurs systemes de navigation, de localisation et de contenu etendent cette coquille sans changer la structure des routes.",
+    );
+    expect(
+      resolveMessageWithFallback(frMessages, enMessages, "docs.navOverview"),
+    ).toBe("Apercu");
   });
 
   test("falls back to the default locale when a key is missing in the active catalog", () => {
@@ -30,12 +38,6 @@ describe("shared shell message fallback", () => {
     expect(
       resolveMessageWithFallback(frMessages, enMessages, "docs.shellTitle"),
     ).toBe(enMessages.docs.shellTitle);
-    expect(
-      resolveMessageWithFallback(frMessages, enMessages, "docs.framingText"),
-    ).toBe(enMessages.docs.framingText);
-    expect(
-      resolveMessageWithFallback(frMessages, enMessages, "docs.navOverview"),
-    ).toBe(enMessages.docs.navOverview);
   });
 
   test("falls back through ARIA label keys used by homepage and docs shells", () => {

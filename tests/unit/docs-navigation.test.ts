@@ -246,6 +246,54 @@ section: guides
 
     expect(navigation.sections).toEqual([
       {
+        id: "setup",
+        label: "Setup",
+        pages: [
+          {
+            canonicalId: "doc/introduction",
+            label: "Introduction",
+            href: "/docs/introduction",
+            order: 0,
+            localeProjection: {
+              canonicalPageId: "doc/introduction",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/installation",
+            label: "Installation",
+            href: "/docs/installation",
+            order: 1,
+            localeProjection: {
+              canonicalPageId: "doc/installation",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/quickstart",
+            label: "Quickstart",
+            href: "/docs/quickstart",
+            order: 2,
+            localeProjection: {
+              canonicalPageId: "doc/quickstart",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+        ],
+      },
+      {
         id: "guides",
         label: "Guides",
         pages: [
@@ -264,12 +312,26 @@ section: guides
             },
           },
           {
-            canonicalId: "doc/concepts",
-            label: "Core concepts",
-            href: "/docs/concepts",
+            canonicalId: "doc/cli",
+            label: "CLI overview",
+            href: "/docs/cli",
             order: 2,
             localeProjection: {
-              canonicalPageId: "doc/concepts",
+              canonicalPageId: "doc/cli",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
+            canonicalId: "doc/configuration",
+            label: "Configuration",
+            href: "/docs/configuration",
+            order: 3,
+            localeProjection: {
+              canonicalPageId: "doc/configuration",
               canonicalLocale: "en",
               requestedLocale: "en",
               resolvedLocale: "en",
@@ -291,19 +353,13 @@ section: guides
               fellBackToCanonicalLocale: false,
             },
           },
-        ],
-      },
-      {
-        id: "setup",
-        label: "Setup",
-        pages: [
           {
-            canonicalId: "doc/installation",
-            label: "Installation",
-            href: "/docs/installation",
-            order: 1,
+            canonicalId: "doc/concepts",
+            label: "Workflow concepts",
+            href: "/docs/concepts",
+            order: 4,
             localeProjection: {
-              canonicalPageId: "doc/installation",
+              canonicalPageId: "doc/concepts",
               canonicalLocale: "en",
               requestedLocale: "en",
               resolvedLocale: "en",
@@ -312,12 +368,12 @@ section: guides
             },
           },
           {
-            canonicalId: "doc/configuration",
-            label: "Configuration",
-            href: "/docs/configuration",
-            order: 2,
+            canonicalId: "doc/coder-reviewer-pattern",
+            label: "Coder / Reviewer pattern",
+            href: "/docs/coder-reviewer-pattern",
+            order: 5,
             localeProjection: {
-              canonicalPageId: "doc/configuration",
+              canonicalPageId: "doc/coder-reviewer-pattern",
               canonicalLocale: "en",
               requestedLocale: "en",
               resolvedLocale: "en",
@@ -374,21 +430,24 @@ section: guides
       0,
     );
 
-    expect(sectionIds).toEqual(["guides", "setup", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(6);
+    expect(sectionIds).toEqual(["setup", "guides", "examples"]);
+    expect(pageCount).toBeGreaterThanOrEqual(9);
     expect(
       navigation.sections.some(
         (section) =>
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/installation,doc/configuration",
+            "doc/introduction,doc/installation,doc/quickstart",
       ),
     ).toBe(true);
     expect(
-      navigation.sections
-        .flatMap((section) => section.pages)
-        .map((page) => page.canonicalId),
-    ).toContain("doc/logs-and-replays");
+      navigation.sections.some(
+        (section) =>
+          section.id === "guides" &&
+          section.pages.map((page) => page.canonicalId).join(",") ===
+            "doc/getting-started,doc/cli,doc/configuration,doc/logs-and-replays,doc/concepts,doc/coder-reviewer-pattern",
+      ),
+    ).toBe(true);
   });
 });
 
@@ -462,6 +521,13 @@ describe("docs breadcrumb projection", () => {
 describe("docs progression projection", () => {
   const multiSectionNavigation = projectDocsShellNavigation([
     createDocRecord({
+      id: "doc/cli",
+      slug: "cli",
+      routePath: "/docs/cli",
+      navigationTitle: "CLI overview",
+      order: 2,
+    }),
+    createDocRecord({
       id: "doc/installation",
       slug: "installation",
       routePath: "/docs/installation",
@@ -474,15 +540,14 @@ describe("docs progression projection", () => {
       slug: "configuration",
       routePath: "/docs/configuration",
       navigationTitle: "Configuration",
-      section: "setup",
-      order: 2,
+      order: 3,
     }),
     createDocRecord({
       id: "doc/concepts",
       slug: "concepts",
       routePath: "/docs/concepts",
       navigationTitle: "Core concepts",
-      order: 2,
+      order: 4,
     }),
     createDocRecord(),
   ]);
@@ -507,8 +572,8 @@ describe("docs progression projection", () => {
       }),
     ).toEqual({
       previous: {
-        label: "Getting started",
-        href: "/docs/getting-started",
+        label: "Configuration",
+        href: "/docs/configuration",
       },
       next: {
         label: "Installation",
@@ -524,8 +589,23 @@ describe("docs progression projection", () => {
       }),
     ).toEqual({
       next: {
-        label: "Core concepts",
-        href: "/docs/concepts",
+        label: "CLI overview",
+        href: "/docs/cli",
+      },
+    });
+
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs/cli",
+      }),
+    ).toEqual({
+      previous: {
+        label: "Getting started",
+        href: "/docs/getting-started",
+      },
+      next: {
+        label: "Configuration",
+        href: "/docs/configuration",
       },
     });
 
@@ -535,8 +615,23 @@ describe("docs progression projection", () => {
       }),
     ).toEqual({
       previous: {
-        label: "Installation",
-        href: "/docs/installation",
+        label: "CLI overview",
+        href: "/docs/cli",
+      },
+      next: {
+        label: "Core concepts",
+        href: "/docs/concepts",
+      },
+    });
+
+    expect(
+      projectDocsProgression(multiSectionNavigation, {
+        currentPath: "/docs/installation",
+      }),
+    ).toEqual({
+      previous: {
+        label: "Core concepts",
+        href: "/docs/concepts",
       },
     });
   });
