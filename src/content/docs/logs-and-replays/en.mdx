@@ -21,3 +21,58 @@ Use this guide after the first workflow run when you need to inspect outputs, re
 ## What this page covers
 
 This launch guide explains where post-run inspection starts and how the existing replay-oriented workflow model helps reviewers understand successful and failed runs without reading source code first.
+
+## Start with the run summary
+
+After a workflow completes, first confirm whether the run reached a clear success state and which steps produced the final result. The run summary is the fastest way to answer three basic questions:
+
+1. Did the workflow finish successfully, stop for approval, or fail?
+2. Which step produced the output you expected to review?
+3. Which step should you inspect next if the result is missing or incomplete?
+
+Treat the summary as the index for the rest of your inspection. If it shows the expected terminal state and a final output-producing step, move there before reading every log line.
+
+## Inspect outputs before deep debugging
+
+For a successful first run, inspect the user-visible outputs before you start replaying or troubleshooting internals. Reviewers should usually look for:
+
+- the final artifact, file change, or generated response the workflow was meant to produce
+- any short result summary that explains what the workflow completed
+- step outputs that confirm handoffs between agents, tools, and approval points
+
+This keeps the inspection path practical. A good first question is not "what did every step log?" but "what did this run leave behind that proves the workflow did the intended work?"
+
+## Confirm the success signals match the emitted result
+
+A healthy successful run should leave behind more than a green status badge. Before you move on, make sure the completion signal matches the output you inspected:
+
+- the run reached a terminal success state instead of stopping at an approval or retry boundary
+- the expected artifact, change, or response is present where that workflow normally emits it
+- the result summary and the output-producing step describe the same outcome in plain language
+
+If one of those clues is missing, treat the run as incomplete even if the top-level status looks successful. That usually means the next useful step is to inspect the output-producing step directly instead of assuming the run is done.
+
+## Use step outputs to connect result to workflow behavior
+
+Once you find the final result, step back through the output-producing steps in reverse order. This helps you connect the finished artifact to the workflow behavior that created it.
+
+Look for concrete clues such as:
+
+- the step where the final artifact was emitted or written
+- any earlier step that prepared inputs for that output
+- approval boundaries that determined whether the workflow could continue
+- short status notes that show a step completed with the expected inputs and outputs
+
+If those clues line up, you usually have enough evidence that the run behaved correctly without turning the guide into a full step-by-step trace review.
+
+## Success path checklist
+
+After a successful workflow run, inspect in this order:
+
+1. the overall run status
+2. the final output or artifact
+3. the step that emitted that result
+4. the immediately preceding handoff or approval step
+5. only then the broader logs if something still looks unclear
+
+This order keeps the first-review experience grounded in observable results instead of forcing a new user to infer success from raw logs alone.

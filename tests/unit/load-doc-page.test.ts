@@ -155,6 +155,17 @@ MDX body.
     expect(page.record.routePath).toBe("/docs/logs-and-replays");
     expect(page.title).toBe("Logs and replays");
     expect(page.body).toContain("post-run inspection");
+    expect(page.body).toContain("Start with the run summary");
+    expect(page.body).toContain("Did the workflow finish successfully");
+    expect(page.body).toContain(
+      "the final artifact, file change, or generated response",
+    );
+    expect(page.body).toContain(
+      "A healthy successful run should leave behind more than a green status badge.",
+    );
+    expect(page.body).toContain(
+      "the result summary and the output-producing step describe the same outcome",
+    );
     expect(page.resolution).toEqual({
       canonicalPageId: "doc/logs-and-replays",
       canonicalLocale: "en",

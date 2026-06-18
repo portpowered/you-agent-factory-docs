@@ -223,6 +223,33 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain("Next steps");
   }, 30_000);
 
+  test("serves the logs-and-replays guide with concrete successful-run inspection guidance", async () => {
+    const logsGuideResponse = await fetchHttp(
+      new URL(withBasePath("/docs/logs-and-replays"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(logsGuideResponse.status).toBe(200);
+
+    const logsGuideHtml = await logsGuideResponse.text();
+
+    expect(logsGuideHtml).toContain("Logs and replays");
+    expect(logsGuideHtml).toContain("Start with the run summary");
+    expect(logsGuideHtml).toContain(
+      "Did the workflow finish successfully, stop for approval, or fail?",
+    );
+    expect(logsGuideHtml).toContain(
+      "the final artifact, file change, or generated response",
+    );
+    expect(logsGuideHtml).toContain(
+      "A healthy successful run should leave behind more than a green status badge.",
+    );
+    expect(logsGuideHtml).toContain(
+      "the run reached a terminal success state instead of stopping at an approval or retry boundary",
+    );
+    expect(logsGuideHtml).toContain("Success path checklist");
+  }, 30_000);
+
   test("serves doc pages without page-outline navigation when headings are insufficient", async () => {
     const installationResponse = await fetchHttp(
       new URL(withBasePath("/docs/installation"), server.baseUrl),

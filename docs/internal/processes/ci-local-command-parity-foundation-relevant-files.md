@@ -7,6 +7,7 @@
 - `make check` runs `bun run typecheck` then `bun run lint` and fails on the first verification error.
 - `make test` runs `bun test` directly (not a separate test runner).
 - `make build` runs `bun run build` and fails when the static export directory `out/` is missing after the build.
+- In detached worktrees, `next build` can still infer the parent repository as the workspace root because of the outer `bun.lock`; keep worktree CSS/PostCSS build dependencies aligned with the root-level config that build will resolve.
 
 ## Automation parity
 
