@@ -251,6 +251,19 @@ describe("reconciled baseline browser export", () => {
           )
           .isVisible(),
       ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "What reviewers should inspect before approving",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText("Treat an approval as an evidence check, not a gut check.")
+          .isVisible(),
+      ).toBe(true);
     } finally {
       await page.close();
     }

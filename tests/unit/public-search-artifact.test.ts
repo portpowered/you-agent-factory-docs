@@ -218,6 +218,7 @@ describe("public search artifact generation", () => {
       "What this guide is for",
       "When a workflow should pause for review",
       "What approval gates are meant to catch",
+      "What reviewers should inspect before approving",
       "How this page fits the rest of the docs",
     ]);
     expect(humanApprovalGates?.body).toContain(
@@ -228,6 +229,12 @@ describe("public search artifact generation", () => {
     );
     expect(humanApprovalGates?.body).toContain(
       "Approval loops exist to catch avoidable failures while the workflow still has a clean stopping point.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Treat an approval as an evidence check, not a gut check.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "the proposed diff, generated document or output, stage summary, logs, and any validation or test results",
     );
     expect(humanApprovalGates?.body).toContain(
       "Continue to the Coder / Reviewer pattern",

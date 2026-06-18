@@ -249,6 +249,18 @@ MDX body.
       "They are not a sign that every step needs supervision.",
     );
     expect(page.body).toContain(
+      "What reviewers should inspect before approving",
+    );
+    expect(page.body).toContain(
+      "Treat an approval as an evidence check, not a gut check.",
+    );
+    expect(page.body).toContain(
+      "the proposed diff, generated document or output, stage summary, logs, and any validation or test results",
+    );
+    expect(page.body).toContain(
+      "the output is correct enough for the stage, the next action is safe, the work still matches the requested scope",
+    );
+    expect(page.body).toContain(
       "Continue to the Coder / Reviewer pattern if you want a deeper role-based example",
     );
   });

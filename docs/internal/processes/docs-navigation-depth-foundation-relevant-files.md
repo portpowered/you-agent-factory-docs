@@ -23,6 +23,7 @@
 - Route identity for launch-lane docs still comes from the folder slug, while the rendered shell H1 and sidebar label come from frontmatter title or `navigationTitle`, so copy renames do not require route changes.
 - The current doc body parser only projects ATX headings and paragraph blocks into the shell. Keep launch-lane docs readable with headings plus paragraphs unless the parser grows structured support for lists, code blocks, or richer MDX elements.
 - When a guide needs to answer a concrete operator or reviewer question, phrase that question as an `h2` in the page body so the same wording becomes visible in the docs outline, static route HTML, browser verification, and generated search artifact.
+- For reviewer-focused guidance pages, keep approval criteria tied to concrete workflow evidence such as diffs, generated artifacts, summaries, logs, and validation results so the same evidence-based checklist can be asserted in route-loading, export, browser, and search-artifact proof.
 - `loadDocsShellNavigation()` loads canonical records and projects navigation for `DocsShell` on both `/docs` and `/docs/[slug]` routes.
 - `SharedShellDocsAside` renders one navigation landmark per projected section so multi-section browsing depth is observable in the left sidebar.
 - `projectDocsBreadcrumbs()` projects breadcrumb ancestry from the same `DocsShellNavigationInput`; shell root labels resolve through localization while section and page crumbs come from projected navigation state.

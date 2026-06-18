@@ -569,7 +569,7 @@ describe("served static export navigation", () => {
       {
         path: "/docs/human-approval-gates",
         title: "Human approval gates",
-        body: "When a workflow should pause for review",
+        body: "What reviewers should inspect before approving",
         previousLabel: "Workflow concepts",
         previousHref: "/docs/concepts",
         nextLabel: "Coder / Reviewer pattern",

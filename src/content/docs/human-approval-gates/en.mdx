@@ -36,6 +36,12 @@ Approval loops exist to catch avoidable failures while the workflow still has a 
 
 They are not a sign that every step needs supervision. If a workflow stage is cheap, reversible, and already well validated, adding a human gate usually slows the lane down more than it improves control. Reserve approvals for the moments where a reviewer can materially change the outcome.
 
+## What reviewers should inspect before approving
+
+Treat an approval as an evidence check, not a gut check. Before approving, inspect the artifact the workflow is about to act on: the proposed diff, generated document or output, stage summary, logs, and any validation or test results that explain what changed and whether the result still fits the requested scope.
+
+The reviewer should be able to confirm four things from that evidence: the output is correct enough for the stage, the next action is safe, the work still matches the requested scope, and the workflow is not about to take an expensive or hard-to-reverse step on weak evidence. If those signals disagree with each other, or if the summary looks cleaner than the underlying artifact, send the workflow back with a concrete fix request instead of approving on intuition.
+
 ## How this page fits the rest of the docs
 
 Start with workflow concepts if you still need the overall execution model. Continue to the Coder / Reviewer pattern if you want a deeper role-based example of how one approval-oriented handoff works in practice once a workflow reaches a review boundary.
