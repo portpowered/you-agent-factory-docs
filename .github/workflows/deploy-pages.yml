@@ -2,7 +2,7 @@
 #
 # Contract (see docs/internal/deployment.md):
 # - Trigger: push to main (including merges). No manual publish step.
-# - validate runs make setup, check, test, build — the same Makefile path as local/CI verification.
+# - validate runs make setup, check, test, build, budget — the same Makefile path as local/CI verification.
 # - deploy has needs: validate; failed validation never starts deploy for that run.
 # - Artifact: out/ from make build, uploaded in validate and published by deploy-pages.
 name: Deploy GitHub Pages
@@ -43,6 +43,9 @@ jobs:
 
       - name: Build static export
         run: make build
+
+      - name: Enforce exported-site budget gate
+        run: make budget
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5

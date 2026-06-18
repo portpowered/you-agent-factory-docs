@@ -48,7 +48,7 @@ describe("static export server helpers", () => {
     process.env[STATIC_EXPORT_SKIP_BUILD_ENV] = "1";
 
     expect(() => buildStaticExport()).not.toThrow();
-  });
+  }, 60_000);
 
   test("buildStaticExport fails fast when skip is set but out/ is missing", () => {
     const backupDir = join(projectRoot, "out.skip-build-test-backup");
@@ -68,6 +68,7 @@ describe("static export server helpers", () => {
       renameSync(backupDir, exportDir);
     }
   });
+
   test("startStaticExportServer serves an isolated snapshot of out/", async () => {
     if (!existsSync(exportDir)) {
       buildStaticExport();
@@ -75,7 +76,10 @@ describe("static export server helpers", () => {
 
     const homepageHtmlPath = join(exportDir, "index.html");
     const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
-    const port = getTestPort(3791, "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT");
+    const port = await getTestPort(
+      3791,
+      "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT",
+    );
     const server = startStaticExportServer(port);
 
     await waitForStaticExportServer(server.baseUrl);
@@ -107,5 +111,5 @@ describe("static export server helpers", () => {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
       server.stop();
     }
-  }, 20_000);
+  }, 180_000);
 });

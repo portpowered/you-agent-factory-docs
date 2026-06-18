@@ -66,11 +66,14 @@ describe("localized starter content variants", () => {
       loadStarterContentRecords(CONTENT_ROOT);
 
     expect(listPublishedDocSlugs(CONTENT_ROOT)).toEqual([
+      "coder-reviewer-pattern",
       "concepts",
       "configuration",
       "getting-started",
       "installation",
+      "introduction",
       "pr-review-factory",
+      "quickstart",
       "release-readiness-factory",
     ]);
 

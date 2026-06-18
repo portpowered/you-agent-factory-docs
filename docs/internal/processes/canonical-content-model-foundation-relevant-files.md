@@ -31,6 +31,9 @@
 - Directory names map to public content kinds via `STARTER_CONTENT_DIRECTORY_KINDS` in `src/lib/content/starter.ts`.
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
+- To add a new canonical docs page to the shell, create one localized file under `src/content/docs/{slug}/{locale}.mdx` with valid canonical frontmatter (`id`, `title`, `canonicalLocale`, `availableLocales`, `section`, `order`, and publication metadata); the page will flow into route loading and generated navigation without manual sidebar wiring.
+- When canonical docs copy changes, regenerate `public/search/public-search-index.json` so the checked-in search artifact stays aligned with the page body and headings that search exposes.
+- For one-page launch-content stories that need focused pipeline proof, prefer one page-specific test that asserts the generated nav page, `loadDocPage()` result, localized search document, and checked-in public search entry agree on canonical id, route, locale metadata, and key reader-visible claims.
 
 ## Docs shell navigation projection
 
@@ -47,9 +50,11 @@
 - Starter content loading and validation is covered in `tests/unit/starter-content.test.ts`; invalid fixtures live under `tests/fixtures/starter-content/`.
 - Docs navigation projection is covered in `tests/unit/docs-navigation.test.ts`, including blocking generation on invalid fixtures.
 - Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
-- Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
+- Docs route-shell rendering with generated navigation is covered in `tests/unit/docs-route-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
 - `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.
+- When canonical docs copy changes add or revise reader-visible claims, update both `tests/unit/load-doc-page.test.ts` and `tests/unit/public-search-artifact.test.ts` so route loading and the checked-in search contract prove the same content.
+- When a page needs explicit route-render proof in addition to content-pipeline assertions, add one static-export test that derives the page href from `loadDocsShellNavigation()` before fetching the rendered route, rather than asserting against a hand-maintained route inventory.
 - Static-export and browser-export tests read ports from `STATIC_EXPORT_TEST_PORT` / `RECONCILED_EXPORT_BROWSER_TEST_PORT` via `tests/helpers/test-port.ts` so nested `make test` invocations from `root-command-path.test.ts` do not collide with the outer suite.
 - Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
 

@@ -26,7 +26,7 @@
 - `DocsProgression` renders generated previous-next links inside `DocsShell` with `rel="prev"` / `rel="next"` semantics.
 - `parseDocPageBody()` and `projectDocsPageOutline()` derive in-page outline headings from docs page body markdown structure; h2+ headings become anchor-linked outline entries while pages without sufficient headings return an empty outline.
 - The current doc body renderer supports headings and paragraph blocks only, so new canonical docs pages should express workflow structure with h2/h3 sections and prose paragraphs rather than list-dependent formatting until richer block support is added.
-- `DocPageArticle` renders the projected page outline, page title, and parsed body blocks with heading anchor ids on docs detail routes; page-outline shell labels resolve through `useMessages()` like breadcrumbs and progression in `DocsShell`.
+- `DocPageArticle` renders the projected page outline, page title, and parsed body blocks inside the shared docs content surface from `src/components/docs/docs-content.tsx`; page-outline shell labels resolve through `useMessages()` like breadcrumbs and progression in `DocsShell`, and outline/content framing should stay on that shared card-backed path instead of reintroducing route-local wrapper CSS.
 - Remove bootstrap-only nav constants such as `src/lib/docs-nav.ts`; the docs shell consumes projected navigation only.
 
 ## Responsive docs navigation depth
@@ -43,10 +43,10 @@
 - Previous-next progression projection: `tests/unit/docs-navigation.test.ts` (`projectDocsProgression`)
 - In-page outline parsing and projection: `tests/unit/docs-page-outline.test.ts`
 - Doc page article outline rendering and empty-state fallback: `tests/unit/doc-page-article.test.tsx`
-- Docs shell rendering with separate section landmarks, breadcrumb position, and progression links: `tests/unit/docs-shell.test.tsx`
+- Docs route shell rendering with separate section landmarks, breadcrumb position, and progression links: `tests/unit/docs-route-shell.test.tsx`
 - Served static export HTML includes generated multi-page sidebar depth, breadcrumb ancestry, progression links, and page-outline navigation when headings exist: `tests/unit/static-export.test.ts`
 - Export-based browser and HTTP suites share one serialized static build through `ensureStaticExportBuilt()` in `tests/helpers/static-export-server.ts`; do not call `make build` directly from export test hooks.
-- Responsive docs navigation depth on narrow viewports: `tests/unit/docs-shell.test.tsx` (`responsive docs navigation depth`) and `tests/unit/shell-disclosure.test.tsx`
+- Responsive docs navigation depth on narrow viewports: `tests/unit/docs-route-shell.test.tsx` and `tests/unit/shell-disclosure.test.tsx`
 - Mobile browser verification for generated docs depth affordances: `tests/unit/reconciled-export-browser.test.ts` (`docs navigation depth remains usable at a mobile viewport`)
 - Starter content record inventory after adding docs fixtures: `tests/unit/starter-content.test.ts`
 - Prefer observable navigation output, served HTML, and rendered landmarks—not file inventories or route registries.

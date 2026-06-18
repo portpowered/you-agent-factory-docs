@@ -1,6 +1,10 @@
 "use client";
 
 import { DocPageBody } from "@/components/docs/doc-page-body";
+import {
+  DocsContentCard,
+  DocsContentSurface,
+} from "@/components/docs/docs-content";
 import { DocsPageOutlineNav } from "@/components/docs/docs-page-outline";
 import {
   parseDocPageBody,
@@ -19,14 +23,21 @@ export function DocPageArticle({ body, title }: DocPageArticleProps) {
   const outline = projectDocsPageOutline(parsed);
 
   return (
-    <article aria-labelledby="doc-page-title">
+    <DocsContentSurface aria-labelledby="doc-page-title">
       <DocsPageOutlineNav
         ariaLabel={t("docs.pageOutlineAriaLabel")}
         onThisPageLabel={t("docs.onThisPageLabel")}
         outline={outline}
       />
-      <h1 id="doc-page-title">{title}</h1>
-      <DocPageBody blocks={parsed.blocks} />
-    </article>
+      <DocsContentCard as="section">
+        <h1
+          className="m-0 text-[clamp(1.75rem,4vw,2.5rem)] leading-tight tracking-tight text-card-foreground"
+          id="doc-page-title"
+        >
+          {title}
+        </h1>
+        <DocPageBody blocks={parsed.blocks} />
+      </DocsContentCard>
+    </DocsContentSurface>
   );
 }

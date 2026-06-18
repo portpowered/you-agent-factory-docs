@@ -1,5 +1,6 @@
 import { PROJECT_NAME, PROJECT_TAGLINE } from "@/lib/project";
 import { LocalizationProvider } from "@/localization/context/localization-context";
+import { RootProvider } from "fumadocs-ui/provider";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
@@ -17,7 +18,9 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>
-        <LocalizationProvider>{children}</LocalizationProvider>
+        <RootProvider search={{ enabled: false }} theme={{ enabled: false }}>
+          <LocalizationProvider>{children}</LocalizationProvider>
+        </RootProvider>
       </body>
     </html>
   );

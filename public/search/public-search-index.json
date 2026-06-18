@@ -1,0 +1,354 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "blog/introducing-factory@en",
+      "canonicalId": "blog/introducing-factory",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "blog",
+      "url": "/blog/introducing-factory",
+      "title": "Introducing You Agent Factory",
+      "description": "",
+      "headings": [
+        "Introducing You Agent Factory"
+      ],
+      "body": "Introducing You Agent Factory Starter blog content for the shared canonical model.",
+      "tags": [
+        "announcement"
+      ],
+      "section": "updates",
+      "searchPriority": 5
+    },
+    {
+      "id": "comparison/vs-n8n@en",
+      "canonicalId": "comparison/vs-n8n",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "comparison",
+      "url": "/comparisons/vs-n8n",
+      "title": "You Agent Factory vs n8n",
+      "description": "",
+      "headings": [
+        "You Agent Factory vs n8n"
+      ],
+      "body": "You Agent Factory vs n8n Starter comparison content for the canonical model.",
+      "tags": [
+        "comparison"
+      ],
+      "section": "comparisons",
+      "searchPriority": 6
+    },
+    {
+      "id": "doc/coder-reviewer-pattern@en",
+      "canonicalId": "doc/coder-reviewer-pattern",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/coder-reviewer-pattern",
+      "title": "Coder / Reviewer pattern",
+      "description": "",
+      "headings": [
+        "Coder / Reviewer pattern",
+        "Who the two roles are",
+        "Coder",
+        "Reviewer",
+        "How the handoff works",
+        "What the review loop looks like",
+        "What teams get from the pattern",
+        "Where approval gates matter",
+        "Realistic limits and failure modes"
+      ],
+      "body": "Coder / Reviewer pattern Use this page when you need a practical starting point for understanding the Coder / Reviewer operating pattern inside You Agent Factory. Teams use this pattern when they want one role focused on producing the change and another role focused on validating whether that change should move forward. The split does not guarantee correctness, but it does make ownership clearer and makes review work explicit instead of optional. Who the two roles are Coder The coder is responsible for making the requested change real. In practice that usually means reading the task, inspecting the current system, editing code or docs, running the relevant checks, and showing enough evidence that the change is ready for review. The coder should optimize for correctness and traceability, not only speed. A strong coder handoff leaves the reviewer with concrete outputs to inspect: the diff, test results, and a short explanation of what changed. Reviewer The reviewer is responsible for deciding whether the change is acceptable to merge or whether it needs another pass. That means checking the actual behavior, reading the diff for design fit, verifying tests, and pushing back when the change does not meet the requested standard. The reviewer is not there to re-implement the task. The value of the role is independent judgment about the submitted work: does it solve the stated problem, does it preserve system quality, and is the evidence strong enough to approve? How the handoff works The normal handoff is simple: 1. The coder completes one bounded piece of work. 2. The coder runs the relevant checks and records what was verified. 3. The reviewer inspects the diff and the observable evidence. 4. The reviewer either approves the work or sends it back with concrete changes requested. This handoff keeps coding and judging separate. That separation matters because the person who made the change is often the least reliable person to decide that their own work is fully correct. What the review loop looks like In day-to-day engineering work, the loop is usually short and explicit: 1. The reviewer reads the change against the task, not only against personal style preferences. 2. If something is wrong or unproven, the reviewer sends specific feedback back to the coder. 3. The coder revises the change, reruns the relevant validation, and hands the update back. 4. The loop ends when the reviewer can either approve with confidence or reject because the requested outcome is still not being met. Good review loops are concrete. Feedback should point to the behavior that failed, the risk it creates, and what proof would resolve the concern. What teams get from the pattern Used well, the Coder / Reviewer pattern gives a team a few practical advantages: Better change quality because someone other than the author checks the result. Clearer review ownership because approval is a deliberate step rather than an implied one. More disciplined iteration because rejected work comes back with specific issues to fix. Those outcomes are useful because they improve merge decisions, not because the pattern removes uncertainty. The reviewer still works with incomplete information and has to apply engineering judgment. Where approval gates matter This pattern only works safely when approval is treated as a real gate. The reviewer should be able to stop the change from moving forward when the evidence is weak, the important behavior was not validated, or the implementation does not match the requested outcome. In practice, that usually means the reviewer does not approve until they can trace the request to the diff and to the checks that matter for that change. If the evidence is missing, the correct move is to reject the handoff and ask the coder to come back with stronger validation. Realistic limits and failure modes The most common failure mode is shallow review. A reviewer can read quickly, approve based on trust, and miss the exact behavior that needed scrutiny. Another failure mode is unclear ownership, where the coder assumes the reviewer will catch every issue and the reviewer assumes the coder already validated the risky parts. The reviewer role helps contain those risks by forcing one person to judge the submission independently, but it does not remove the need for engineering judgment. If the review is rushed, the task is ambiguous, or the evidence is weak, the pattern can still fail and should not be treated as automatic safety.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 8
+    },
+    {
+      "id": "doc/concepts@en",
+      "canonicalId": "doc/concepts",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/concepts",
+      "title": "Core concepts",
+      "description": "",
+      "headings": [
+        "Core concepts"
+      ],
+      "body": "Core concepts Learn the orchestration concepts that shape how You Agent Factory workflows are designed and run.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 9
+    },
+    {
+      "id": "doc/configuration@en",
+      "canonicalId": "doc/configuration",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/configuration",
+      "title": "Configuration",
+      "description": "",
+      "headings": [
+        "Configuration"
+      ],
+      "body": "Configuration Configure factory inputs, approval gates, and workflow templates from the project baseline.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 7
+    },
+    {
+      "id": "doc/getting-started@en",
+      "canonicalId": "doc/getting-started",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en",
+        "fr"
+      ],
+      "kind": "doc",
+      "url": "/docs/getting-started",
+      "title": "Getting started",
+      "description": "",
+      "headings": [
+        "Getting started",
+        "Prerequisites",
+        "Next steps"
+      ],
+      "body": "Getting started Starter documentation content that proves the canonical content model. Prerequisites Confirm the repository worktree is on the docs navigation depth branch and that canonical content fixtures load without validation errors. Next steps Continue through Core concepts to follow the generated previous-next progression path.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 10
+    },
+    {
+      "id": "doc/getting-started@fr",
+      "canonicalId": "doc/getting-started",
+      "locale": "fr",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en",
+        "fr"
+      ],
+      "kind": "doc",
+      "url": "/docs/getting-started",
+      "title": "Commencer",
+      "description": "",
+      "headings": [
+        "Commencer"
+      ],
+      "body": "Commencer Contenu de documentation de démarrage qui prouve l'identité de contenu localisé partagée.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 10
+    },
+    {
+      "id": "doc/installation@en",
+      "canonicalId": "doc/installation",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/installation",
+      "title": "Installation",
+      "description": "",
+      "headings": [
+        "Installation",
+        "Prerequisites",
+        "Install the repository",
+        "Validate the install",
+        "What success looks like",
+        "Continue into quickstart"
+      ],
+      "body": "Installation Install You Agent Factory locally using the repository's supported Bun and Make workflow before moving into the first workflow run. Prerequisites Start with Bun 1.1 or newer available on your machine because the repository uses Bun for dependency installation, scripts, and test execution. Clone the repository and work from its root so the documented Make targets run against the same command path used by local contributors and CI. Install the repository Run make setup from the repository root to install or refresh dependencies. This target is the supported entrypoint for initial setup and it delegates to bun install instead of requiring a separate manual package-manager path. Validate the install Run make check, make test, and make build after setup to verify that the local install matches pull request validation. These are the authoritative repository-root commands for contributor and PR parity, so the same typecheck, lint, automated tests, and static export checks fail in both places without switching to a CI-only command surface. What success looks like Treat the install as successful when make check, make test, and make build finish without failures from the repository root. If you want the broader local-only foundation sweep before review, run make quality-gate afterward; it intentionally goes beyond PR validation by adding localization, content, accessibility, and static-export contract checks. Continue into quickstart Continue to Quickstart once the repository installs cleanly and the validation path passes so your first workflow run starts from a known-good local setup.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 8
+    },
+    {
+      "id": "doc/introduction@en",
+      "canonicalId": "doc/introduction",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/introduction",
+      "title": "Introduction",
+      "description": "",
+      "headings": [
+        "Introduction",
+        "What You Agent Factory helps you do",
+        "Who this setup path is for",
+        "Why continue into setup",
+        "Continue through setup"
+      ],
+      "body": "Introduction You Agent Factory is an open-source, engineering-native platform for turning recurring development work into reusable, inspectable AI agent workflows. What You Agent Factory helps you do Use it when your team has engineering tasks that happen over and over again, such as docs updates, review passes, release checks, or follow-up work after a bug fix, and you want those flows to be repeatable without becoming opaque. Instead of treating each run as a one-off chat, You Agent Factory helps you define a workflow, run it with agents and tools, inspect the outputs, and keep human review in the loop where approval still matters. Who this setup path is for This path is for engineers and technical teams who already work from repositories, files, command-line tools, and review processes, and want a clearer way to structure recurring AI-assisted development work. If you are evaluating whether the project fits your team, this lane gives you the smallest useful sequence: understand the product, install the supported local toolchain, and run one first outcome. Why continue into setup Continue if you want to confirm the local prerequisites and supported command path for this repository before you invest further time. The next pages show the Bun and Make workflow this repo already expects, then close the lane with one first workflow outcome before you move on to deeper guides and concepts. Continue through setup Move next to Installation, then Quickstart, to stay on the first-adoption path.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 10
+    },
+    {
+      "id": "doc/pr-review-factory@en",
+      "canonicalId": "doc/pr-review-factory",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/pr-review-factory",
+      "title": "PR Review Factory",
+      "description": "",
+      "headings": [
+        "PR Review Factory",
+        "What this workflow is for",
+        "Who participates",
+        "What enters the workflow",
+        "Main workflow stages",
+        "Review points that matter",
+        "Inputs and outputs",
+        "Why engineering teams use it"
+      ],
+      "body": "PR Review Factory Navigate this workflow example from the generated docs shell to inspect a concrete pull-request review journey. What this workflow is for PR Review Factory turns a proposed code change into a repeatable review lane that a team can inspect before merging. A pull request, its diff, the surrounding task context, and the branch history enter the workflow so reviewers can see how the change was evaluated instead of only seeing a final approval or rejection. Who participates The workflow usually involves the change author, an orchestrating workflow owner, one or more review agents, and a human approver who decides whether the branch is ready to merge. The human reviewer remains the decision maker while the factory gathers evidence, checks the change against repo standards, and reports concrete follow-up work when the branch is not ready. What enters the workflow Work typically enters when a branch is ready for review or when a reviewer asks for another pass after feedback. The main inputs are the pull request description, the proposed code diff, relevant tests or quality-gate commands, and the repository standards that define what counts as an acceptable change. Main workflow stages The workflow starts by loading the branch context and the open pull request so the review run is tied to a real candidate change. It then inspects the diff, runs the required checks, and compares the observed behavior against the stated story or release goal instead of commenting on style alone. The next stage gathers review signals that a human reviewer would normally need to chase manually: correctness risks, missing test coverage, broken checks, and places where the implementation drifts from the stated requirements. If blocking issues are found, the workflow reports them as explicit feedback tied to the changed code and the expected fix. The final stage is the approval handoff. When the branch is healthy, the workflow leaves a concise summary of what was validated and what still needs human judgment. When the branch is not healthy, the workflow sends it back with concrete remediation items so the next review pass starts from specific evidence rather than guesswork. Review points that matter The key review gates are whether the change solves the stated problem, whether required checks pass, and whether the observable behavior is proven with the right tests. A reviewer should expect the workflow to surface blocking issues clearly, distinguish them from non-blocking suggestions, and keep the merge decision anchored to correctness first. Inputs and outputs The practical inputs are a pull request under review, repository policies, test and lint commands, and any reviewer feedback already attached to the branch. The useful outputs are a review summary, a list of blocking findings or approval-ready evidence, and a branch state that is easier for a human engineer to accept, reject, or send back for revision. Why engineering teams use it Engineering teams use PR Review Factory to make review quality more consistent without pretending that judgment can be automated away. It reduces the time reviewers spend reconstructing context, makes approval gates explicit, and leaves a durable record of what signals were checked before code moved forward.",
+      "tags": [
+        "docs",
+        "use-case"
+      ],
+      "section": "use cases",
+      "searchPriority": 6
+    },
+    {
+      "id": "doc/quickstart@en",
+      "canonicalId": "doc/quickstart",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/quickstart",
+      "title": "Quickstart",
+      "description": "",
+      "headings": [
+        "Quickstart",
+        "Before you start",
+        "Start the local docs site",
+        "Verify the first outcome",
+        "Continue into deeper guides"
+      ],
+      "body": "Quickstart Run the docs site locally after installation so the first setup path ends in one concrete, reviewer-verifiable outcome. Before you start Complete the Installation step first so the repository dependencies are installed and make check, make test, and make build already pass from the repository root. Start the local docs site Run bun run dev from the repository root. Use the local URL that Bun prints, then open the /docs route inside that running site so you stay in the docs shell instead of relying on homepage copy alone. Verify the first outcome Treat the quickstart as successful when the local docs shell renders the setup sequence and you can move through Introduction, Installation, and Quickstart from the generated sidebar or previous-next navigation. At that point you have confirmed the supported install path, the generated docs navigation, and the local rendering loop that future docs work builds on. Continue into deeper guides Continue into Getting started for the broader docs baseline, then move on to Core concepts when you want the orchestration model behind the site and factory.",
+      "tags": [
+        "docs"
+      ],
+      "section": "setup",
+      "searchPriority": 9
+    },
+    {
+      "id": "doc/release-readiness-factory@en",
+      "canonicalId": "doc/release-readiness-factory",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/release-readiness-factory",
+      "title": "Release Readiness Factory",
+      "description": "",
+      "headings": [
+        "Release Readiness Factory",
+        "What this workflow is for",
+        "Who participates",
+        "What enters the workflow",
+        "Main workflow stages",
+        "Readiness gates that matter",
+        "Inputs and outputs",
+        "Why engineering teams use it"
+      ],
+      "body": "Release Readiness Factory Navigate this workflow example from the generated docs shell to inspect a concrete launch-readiness journey. What this workflow is for Release Readiness Factory turns a pending ship decision into a repeatable readiness review that a team can inspect before announcing or deploying a release. A release candidate, its changelog, the verification evidence around it, and the remaining known risks enter the workflow so the team can decide from current evidence instead of from scattered status updates. Who participates The workflow usually involves the release owner, the engineers responsible for the changed services, one or more agents that gather readiness evidence, and a human approver such as an engineering lead or release manager. The human approver still decides whether the release can move forward, while the factory assembles the facts, highlights gaps, and records what still blocks shipment. What enters the workflow Work typically enters when a team has a release candidate ready or when a previously blocked release needs another readiness pass. The main inputs are the planned release scope, linked pull requests or changelog entries, the required quality checks, deployment notes, and any open issues or approvals that affect the launch decision. Main workflow stages The workflow starts by loading the release scope and gathering the evidence that should already exist for a candidate ship. That usually includes build status, test results, changelog or release-note entries, linked tickets, and the list of environments or services affected by the release. The next stage compares that evidence against the release policy the team expects to enforce. The workflow checks whether required validations completed, whether any blocking regressions or unresolved incidents remain, and whether the release notes and operational context are complete enough for reviewers to understand what is about to ship. The final stage is the approval handoff. When the evidence is complete, the workflow leaves a concise readiness summary that tells reviewers what passed, what risks still exist, and which approvals were captured. When the release is not ready, it reports the missing evidence or blocking issues explicitly so the next pass can focus on concrete gaps instead of repeating the entire checklist by hand. Readiness gates that matter The key gates are whether the release candidate passed the required checks, whether known risks are documented and accepted, and whether the right human approvals are present before shipping. A reviewer should expect the workflow to make blocking gaps obvious, distinguish them from informational notes, and keep the go or no-go decision tied to evidence rather than release pressure. Inputs and outputs The practical inputs are a release candidate, release notes or changelog entries, test and build signals, deployment context, and any approvals or exceptions already recorded for the ship window. The useful outputs are a readiness summary, a list of blocking issues or missing approvals, and a clearer release decision that a human lead can approve, postpone, or send back for follow-up. Why engineering teams use it Engineering teams use Release Readiness Factory to make launch decisions more consistent without turning them into a black box. It reduces the time spent chasing status across tools, keeps approval points explicit, and leaves a durable record of what evidence supported the release decision before anything shipped.",
+      "tags": [
+        "docs",
+        "use-case"
+      ],
+      "section": "use cases",
+      "searchPriority": 5
+    },
+    {
+      "id": "glossary/agent@en",
+      "canonicalId": "glossary/agent",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "glossary",
+      "url": "/glossary/agent",
+      "title": "Agent",
+      "description": "",
+      "headings": [
+        "Agent"
+      ],
+      "body": "Agent Starter glossary entry for canonical content validation.",
+      "tags": [
+        "glossary"
+      ],
+      "section": "terms",
+      "searchPriority": 8
+    },
+    {
+      "id": "reference/loop-engineering@en",
+      "canonicalId": "reference/loop-engineering",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "reference",
+      "url": "/references/loop-engineering",
+      "title": "Loop engineering",
+      "description": "",
+      "headings": [
+        "Loop engineering"
+      ],
+      "body": "Loop engineering Starter reference content for canonical record generation.",
+      "tags": [
+        "reference"
+      ],
+      "section": "references",
+      "searchPriority": 7
+    }
+  ]
+}

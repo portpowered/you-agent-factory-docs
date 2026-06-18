@@ -3,13 +3,14 @@
 ## Shell integration
 
 - `src/components/landing/landing-shell.tsx` composes the full first-visit story inside `SharedShell` (`surface="home"`) with localized header config from `createSharedShellConfigFromMessages`.
-- Homepage sections render inside `.landing-shell__sections` within `shared-shell__main`; stacked layout styles live in `src/app/globals.css`.
+- Homepage sections render inside `.landing-shell__sections` within `shared-shell__main`; shared card and CTA presentation should flow through `src/components/ui/card.tsx` and `src/components/ui/button.tsx`, with `landing-shell__*` classes kept only as hooks for tests or narrow overrides.
 
 ## Hero and shared copy
 
 - Hero product positioning uses `PROJECT_TAGLINE` from `src/lib/project.ts` as the visible `h1`, with `PROJECT_NAME` as an eyebrow label and `landing.valueStatement` from `src/localization/messages/en.ts` as the short explanation.
 - Primary homepage CTA labels come from localized `common.getStarted` and `common.githubCta`; destinations use `DOCS_ENTRY_ROUTE` and `GITHUB_REPO_URL` from `src/lib/shared-shell-config.ts`.
 - The hero section uses `aria-labelledby` / `aria-describedby` wiring so screen readers get a named region plus summary text.
+- Hero and final CTA links keep the `landing-shell__button` hook for tests, but visual treatment should stay on token-backed utilities such as `bg-accent`, `text-accent-foreground`, and `border-border`.
 
 ## First-visit section content
 

@@ -47,6 +47,12 @@ Verify on desktop and a mobile-width viewport:
 - [ ] `/docs/` loads with HTTP 200 and renders a non-empty docs shell.
 - [ ] Header, navigation area, and main content region are visible.
 - [ ] Framing copy confirms the route is intentional (not an empty placeholder).
+- [ ] The Mermaid example renders after client load, keeps its heading and description visible, and exposes readable checked-in source text for reviewer comparison.
+- [ ] If JavaScript is still loading or Mermaid fails, the docs surface keeps an explicit status or error message rather than silently omitting the diagram.
+- [ ] The React Flow example renders with all workflow nodes visible on desktop and remains understandable on a mobile-width viewport through fit-to-view or coherent overflow behavior.
+- [ ] After loading `/docs/` at a desktop viewport, shrinking the same page to a mobile-width viewport re-fits the React Flow graph instead of leaving nodes clipped off-canvas.
+- [ ] On a mobile-width viewport, every React Flow node stays inside the visible diagram frame rather than clipping to an off-canvas desktop-sized projection.
+- [ ] The React Flow example keeps its heading, explanatory copy, and checked-in source preview visible so reviewers can compare authored graph data to the rendered structure.
 - [ ] Home or back navigation returns to the homepage with base-path-aware links.
 - [ ] Semantic landmarks are present (`header`, `nav`, `main`).
 

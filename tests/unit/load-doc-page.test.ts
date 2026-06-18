@@ -7,6 +7,69 @@ import { loadDocPage } from "../../src/lib/content";
 const STARTER_CONTENT_ROOT = join(import.meta.dir, "../../src/content");
 
 describe("loadDocPage", () => {
+  test("loads canonical setup-path pages with stable doc identity and canonical-locale metadata", () => {
+    const setupPages = [
+      {
+        slug: "introduction",
+        canonicalId: "doc/introduction",
+        title: "Introduction",
+        bodySnippet:
+          "You Agent Factory is an open-source, engineering-native platform",
+      },
+      {
+        slug: "installation",
+        canonicalId: "doc/installation",
+        title: "Installation",
+        bodySnippet:
+          "Run `make check`, `make test`, and `make build` after setup",
+      },
+      {
+        slug: "quickstart",
+        canonicalId: "doc/quickstart",
+        title: "Quickstart",
+        bodySnippet: "Run `bun run dev` from the repository root.",
+      },
+      {
+        slug: "coder-reviewer-pattern",
+        canonicalId: "doc/coder-reviewer-pattern",
+        title: "Coder / Reviewer pattern",
+        bodySnippet: "approval is treated as a real gate",
+      },
+    ] as const;
+
+    for (const setupPage of setupPages) {
+      const page = loadDocPage(setupPage.slug, STARTER_CONTENT_ROOT, {
+        locale: "en",
+      });
+
+      expect(page.record).toMatchObject({
+        id: setupPage.canonicalId,
+        slug: setupPage.slug,
+        routePath: `/docs/${setupPage.slug}`,
+        canonicalLocale: "en",
+        availableLocales: ["en"],
+        status: "published",
+      });
+      expect(page.title).toBe(setupPage.title);
+      expect(page.body).toContain(setupPage.bodySnippet);
+      expect(page.resolution).toEqual({
+        canonicalPageId: setupPage.canonicalId,
+        canonicalLocale: "en",
+        requestedLocale: "en",
+        resolvedLocale: "en",
+        fellBackToCanonicalLocale: false,
+      });
+      expect(page.localeProjection).toEqual({
+        canonicalPageId: setupPage.canonicalId,
+        canonicalLocale: "en",
+        requestedLocale: "en",
+        resolvedLocale: "en",
+        availableLocales: ["en"],
+        fellBackToCanonicalLocale: false,
+      });
+    }
+  });
+
   test("serves accepted plain markdown locale files through the docs page path", () => {
     const contentRoot = mkdtempSync(join(tmpdir(), "plain-markdown-doc-"));
     const fixtureDir = join(contentRoot, "docs", "plain-markdown");

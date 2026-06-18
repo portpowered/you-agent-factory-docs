@@ -67,6 +67,7 @@ You are an autonomous coding agent working on a software project.
 16.1. If there is no existing PR and all tasks in the current PRD are complete, create the PR for the branch, named {{ (index .Inputs 0).Name }}. Set the description as the prd.json file that we used.
 16.2. If a PR already exists, update it by pushing the new commit(s) and, if relevant, reply in PR conversation comments describing exactly which feedback items were addressed and how.
 16.3. Verify that the reviewed code changes are actually present in the PR diff after the push. 
+16.4. wait for the PR to complete CI, if it fails CI then loop back and fix the CI issues.
 17. Respond finally as follows: 
 17.1. Respond `<COMPLETE>` only when all items in the PRD have been marked as passes:true, all relevant PR conversation comments have been addressed, and the PR has been updated to the latest commits so the task is ready to move into review.
 17.2. Respond `<CONTINUE>` when you completed this iteration but the task still has remaining story work, unresolved feedback, or PR follow-up; this is ordinary partial progress and should stay on the process continue path, not the review rejection path.

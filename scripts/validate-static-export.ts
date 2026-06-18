@@ -35,7 +35,8 @@ assertValidStaticExportConfig(resolveStaticExportConfigForGate());
 const exitCode = withStaticExportBuildLock(repoRoot, () => {
   rmSync(nextDir, { recursive: true, force: true });
 
-  const buildStatus = run("bun", ["run", "build"]);
+  console.log("Running static export validation build through `make build`");
+  const buildStatus = run("make", ["build"]);
   if (buildStatus !== 0) {
     return buildStatus;
   }

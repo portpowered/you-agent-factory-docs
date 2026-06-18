@@ -1,4 +1,4 @@
-.PHONY: setup check test build quality-gate component-coverage-boundary component-coverage
+.PHONY: setup check test build budget quality-gate validate-search-index component-coverage-boundary component-coverage
 
 setup:
 	bun install
@@ -8,14 +8,20 @@ check:
 	bun run lint
 
 test:
-	bun test
+	bun test --max-concurrency 4
 
 build:
 	bun run build
 	test -d out || (echo "Static export output missing: expected out/ after build" >&2; exit 1)
 
+budget:
+	bun run budget
+
 quality-gate:
 	bun run quality-gate
+
+validate-search-index:
+	bun run validate:search-index
 
 component-coverage-boundary:
 	bun run component-coverage:boundary

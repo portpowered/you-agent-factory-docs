@@ -19,6 +19,19 @@ export const enMessages = {
   docs: {
     navHeading: "Docs navigation",
     navOverview: "Overview",
+    searchTitle: "Search docs",
+    searchLabel: "Search documentation",
+    searchPlaceholder: "Search setup, guides, and concepts",
+    searchHelperText:
+      "Results come from the generated public search artifact through the Orama-backed query path.",
+    searchLoading: "Loading the search index...",
+    searchSearching: "Searching documentation...",
+    searchEmptyQuery:
+      "Type a query to search the current locale's published docs.",
+    searchNoResults: "No matching docs found for this query.",
+    searchError:
+      "Search is temporarily unavailable because the public search artifact could not be loaded.",
+    searchResultsLabel: "matching docs",
     breadcrumbAriaLabel: "Breadcrumb",
     progressionAriaLabel: "Page progression",
     previousPagePrefix: "Previous",
@@ -28,6 +41,13 @@ export const enMessages = {
     shellTitle: "Documentation",
     framingText:
       "This is the stable docs entry route. Later navigation, localization, and content systems extend this shell without changing route structure.",
+    examplesHeading: "Diagram rendering examples",
+    examplesText:
+      "These fixtures prove the two supported docs-diagram paths from checked-in authored definitions through responsive rendering.",
+    mermaidExampleLabel:
+      "Mermaid renders simple explanatory workflow diagrams.",
+    reactFlowExampleLabel:
+      "React Flow renders workflow and agent graph diagrams.",
   },
 } as const;
 
