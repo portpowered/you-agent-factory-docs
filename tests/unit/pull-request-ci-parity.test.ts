@@ -78,14 +78,15 @@ describe("pull request CI workflow parity", () => {
     const checkIndex = stepIndex(ciWorkflow, "make check");
     const testIndex = stepIndex(ciWorkflow, "make test");
     const buildIndex = stepIndex(ciWorkflow, "make build");
+    const qualityGateIndex = stepIndex(ciWorkflow, "make quality-gate");
 
     expect(setupIndex).toBeGreaterThan(-1);
     expect(playwrightIndex).toBeGreaterThan(setupIndex);
     expect(checkIndex).toBeGreaterThan(playwrightIndex);
     expect(testIndex).toBeGreaterThan(checkIndex);
     expect(buildIndex).toBeGreaterThan(testIndex);
+    expect(qualityGateIndex).toBeGreaterThan(buildIndex);
 
-    expect(ciWorkflow).not.toContain("make quality-gate");
     expect(ciWorkflow).not.toContain("bun run typecheck");
     expect(ciWorkflow).not.toContain("bun run lint");
     expect(ciWorkflow).not.toContain("bun test");
@@ -99,11 +100,14 @@ describe("pull request CI workflow parity", () => {
     );
 
     const buildIndex = stepIndex(ciWorkflow, "make build");
+    const qualityGateIndex = stepIndex(ciWorkflow, "make quality-gate");
     const budgetIndex = stepIndex(ciWorkflow, "make budget");
     const coverageIndex = stepIndex(ciWorkflow, "make component-coverage");
 
-    expect(budgetIndex).toBeGreaterThan(buildIndex);
+    expect(qualityGateIndex).toBeGreaterThan(buildIndex);
+    expect(budgetIndex).toBeGreaterThan(qualityGateIndex);
     expect(coverageIndex).toBeGreaterThan(budgetIndex);
+    expect(ciWorkflow).not.toContain("bun run quality-gate");
     expect(ciWorkflow).not.toContain("bun run budget");
     expect(ciWorkflow).not.toContain("bun run component-coverage");
     expect(ciWorkflow).not.toContain("scripts/enforce-component-coverage");

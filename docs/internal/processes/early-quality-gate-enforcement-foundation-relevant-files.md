@@ -5,7 +5,7 @@
 - `make quality-gate` and `bun run quality-gate` are the single early enforcement entrypoints for contributors and automation.
 - `scripts/quality-gate.ts` orchestrates the enforced sequence and fails fast on the first failing step.
 - `src/lib/quality-gate/deferred-phase8.ts` lists checks intentionally deferred to later Phase 8 work.
-- `.github/workflows/ci.yml` runs `make setup` then `make quality-gate` without bypassing the root `Makefile`.
+- `.github/workflows/ci.yml` keeps `make quality-gate` on the shared root `Makefile` surface as a supplemental PR gate after the reviewer-visible `make setup`, `make check`, `make test`, and `make build` path.
 - `README.md` documents the same authoritative path, lists the enforced foundation checks, and marks deferred Phase 8 work out of scope for this lane.
 
 ## Enforced foundation checks
@@ -42,6 +42,7 @@ Later localization and canonical content foundations plug into the same `validat
 
 - `tests/unit/quality-gate.test.ts` verifies the make/bun command contract and observes enforced step order from quality-gate subprocess stdout, including search-index contract reuse.
 - `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization, content, accessibility, static-export, and search-index regressions fail through the shared validate scripts, confirms `validate:static-export` builds through `make build`, and shows `make quality-gate` fails fast on a broken search-index fixture with distinct search-contract output.
+- Validation-script failing-path tests that go through `tests/helpers/validation.ts` should carry explicit timeout budgets under the repo command lock, and their assertions should prefer the combined subprocess output (`stdout + stderr`) over assuming Bun reports failures on only one stream.
 - `tests/unit/early-gate-automation-parity.test.ts` verifies `make quality-gate` delegates to `bun run quality-gate` and that the quality-gate script emits ordered foundation steps through subprocess output.
 - `tests/unit/early-gate-contributor-guidance.test.ts` verifies the quality-gate script announces deferred Phase 8 checks and foundation step coverage through subprocess output.
 - `src/lib/validation/shell-accessibility.ts` documents `FOCUSED_SHELL_ACCESSIBILITY_COVERAGE` and exports shared aria-label constants consumed by shell components.
