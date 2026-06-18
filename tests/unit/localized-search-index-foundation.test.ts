@@ -31,6 +31,9 @@ describe("localized search index foundation verification", () => {
     const englishDocument = documents.find(
       (document) => document.id === "doc/getting-started@en",
     );
+    const cliDocument = documents.find(
+      (document) => document.id === "doc/cli@en",
+    );
     const frenchDocument = documents.find(
       (document) => document.id === "doc/getting-started@fr",
     );
@@ -46,6 +49,17 @@ describe("localized search index foundation verification", () => {
     });
     expect(englishDocument?.headings.length).toBeGreaterThan(0);
     expect(englishDocument?.body.length).toBeGreaterThan(0);
+    expect(cliDocument).toMatchObject({
+      canonicalId: "doc/cli",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/cli",
+      title: "CLI overview",
+      section: "guides",
+    });
+    expect(cliDocument?.headings.length).toBeGreaterThan(0);
+    expect(cliDocument?.body.length).toBeGreaterThan(0);
 
     expect(frenchDocument).toMatchObject({
       canonicalId: "doc/getting-started",
@@ -62,6 +76,9 @@ describe("localized search index foundation verification", () => {
     const englishEntry = artifact.entries.find(
       (entry) => entry.id === "doc/getting-started@en",
     );
+    const cliEntry = artifact.entries.find(
+      (entry) => entry.id === "doc/cli@en",
+    );
     const frenchEntry = artifact.entries.find(
       (entry) => entry.id === "doc/getting-started@fr",
     );
@@ -73,6 +90,15 @@ describe("localized search index foundation verification", () => {
       availableLocales: ["en", "fr"],
       url: "/docs/getting-started",
       title: "Getting started",
+      section: "guides",
+    });
+    expect(cliEntry).toMatchObject({
+      canonicalId: "doc/cli",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/cli",
+      title: "CLI overview",
       section: "guides",
     });
     expect(frenchEntry).toMatchObject({

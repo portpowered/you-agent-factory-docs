@@ -1,0 +1,35 @@
+---
+id: doc/cli
+kind: doc
+title: CLI overview
+canonicalLocale: en
+availableLocales:
+  - en
+status: published
+tags:
+  - docs
+section: guides
+order: 2
+search.include: true
+search.priority: 9
+---
+
+# CLI overview
+
+The You Agent Factory CLI is the operator surface for turning planned work into running workflow state. You use commands to submit work, inspect status, move a task into the next workstation when needed, and run the local quality checks that keep a branch reviewable.
+
+## How to think about the CLI
+
+Think of the CLI as the control plane for the factory rather than a single one-shot generator. A command either creates work, advances work through a workstation, or tells you what happened after a run. The important mental model is that the command you choose determines whether you are creating queue state, inspecting runtime state, or validating the files a workflow produced.
+
+## Typical commands and outcomes
+
+`you submit batch --dry-run <path>` checks a batch request before it enters the factory, and `you submit batch <path>` creates durable work items for the runtime to process. `you work list` and `you session list` answer different questions: the first shows durable workflow state, while the second shows active or recent runtime sessions. `python factory/scripts/setup-workspace.py <prd-name>` prepares the worktree for implementation, and repository quality commands such as `make check` and `make test` confirm that the generated changes still satisfy the local review gates.
+
+## What a successful run produces
+
+A successful CLI-driven run leaves behind inspectable artifacts instead of hidden automation. Expect to see a named work item, a branch and worktree for implementation, updated docs or code files, append-only progress tracking, and command output that helps an operator tell whether the run advanced, stalled, or needs a manual repair step such as `you work move`.
+
+## Where to go next
+
+Read the configuration overview next if you need to understand which files and values shape what the CLI will execute. Continue to workflow concepts after that when you want the approval loops, execution stages, and observable run outcomes to make sense as one operating model.

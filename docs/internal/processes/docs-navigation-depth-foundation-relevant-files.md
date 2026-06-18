@@ -18,6 +18,9 @@
 ## Docs navigation depth
 
 - Starter docs depth is authored under `src/content/docs/{slug}/en.mdx`; section and order frontmatter drive generated left-navigation grouping.
+- First-adoption learning paths should be encoded in canonical frontmatter order, not hard-coded shell links; for this lane the post-setup sequence is `Getting started -> CLI overview -> Configuration -> Workflow concepts`.
+- Route identity for launch-lane docs still comes from the folder slug, while the rendered shell H1 and sidebar label come from frontmatter title or `navigationTitle`, so copy renames do not require route changes.
+- The current doc body parser only projects ATX headings and paragraph blocks into the shell. Keep launch-lane docs readable with headings plus paragraphs unless the parser grows structured support for lists, code blocks, or richer MDX elements.
 - `loadDocsShellNavigation()` loads canonical records and projects navigation for `DocsShell` on both `/docs` and `/docs/[slug]` routes.
 - `SharedShellDocsAside` renders one navigation landmark per projected section so multi-section browsing depth is observable in the left sidebar.
 - `projectDocsBreadcrumbs()` projects breadcrumb ancestry from the same `DocsShellNavigationInput`; shell root labels resolve through localization while section and page crumbs come from projected navigation state.
@@ -25,7 +28,10 @@
 - `projectDocsProgression()` projects previous-next links from flattened docs navigation ordering; section and page order match left navigation projection.
 - `DocsProgression` renders generated previous-next links inside `DocsShell` with `rel="prev"` / `rel="next"` semantics.
 - `parseDocPageBody()` and `projectDocsPageOutline()` derive in-page outline headings from docs page body markdown structure; h2+ headings become anchor-linked outline entries while pages without sufficient headings return an empty outline.
-- `DocPageArticle` renders the projected page outline, page title, and parsed body blocks inside the shared docs content surface from `src/components/docs/docs-content.tsx`; page-outline shell labels resolve through `useMessages()` like breadcrumbs and progression in `DocsShell`, and outline/content framing should stay on that shared card-backed path instead of reintroducing route-local wrapper CSS.
+- `DocPageArticle` renders the projected page outline, page title, and parsed body blocks inside the shared docs content surface from `src/components/docs/docs-content.tsx` with heading anchor ids on docs detail routes; page-outline shell labels resolve through `useMessages()` like breadcrumbs and progression in `DocsShell`, and outline/content framing should stay on that shared card-backed path instead of reintroducing route-local wrapper CSS.
+- `loadDocPage()` returns `record.navigationTitle` as the rendered docs-page title, so the shell H1 and sidebar label stay on one canonical naming field while body headings should carry the deeper explanatory structure.
+- Search-artifact proof for launch-lane docs should assert canonical id, canonical locale, available locales, route URL, and representative heading/body text for concrete docs entries rather than only counting ids.
+- Route-loading proof for launch-lane docs should hit the canonical `/docs/{slug}` export paths directly and assert the rendered title, body copy, and the actual `rel="prev"` / `rel="next"` anchor targets for the current progression contract rather than only checking whether a label string appears somewhere in the HTML.
 - Remove bootstrap-only nav constants such as `src/lib/docs-nav.ts`; the docs shell consumes projected navigation only.
 
 ## Responsive docs navigation depth
@@ -44,6 +50,7 @@
 - Doc page article outline rendering and empty-state fallback: `tests/unit/doc-page-article.test.tsx`
 - Docs shell rendering with separate section landmarks, breadcrumb position, and progression links: `tests/unit/docs-shell.test.tsx`
 - Served static export HTML includes generated multi-page sidebar depth, breadcrumb ancestry, progression links, and page-outline navigation when headings exist: `tests/unit/static-export.test.ts`
+- Search artifact and normalized search-document proof for the post-setup concept lane: `tests/unit/public-search-artifact.test.ts` and `tests/unit/localized-search-index-foundation.test.ts`
 - Export-based browser and HTTP suites share one serialized static build through `ensureStaticExportBuilt()` in `tests/helpers/static-export-server.ts`; do not call `make build` directly from export test hooks.
 - Responsive docs navigation depth on narrow viewports: `tests/unit/docs-shell.test.tsx` (`responsive docs navigation depth`) and `tests/unit/shell-disclosure.test.tsx`
 - Mobile browser verification for generated docs depth affordances: `tests/unit/reconciled-export-browser.test.ts` (`docs navigation depth remains usable at a mobile viewport`)

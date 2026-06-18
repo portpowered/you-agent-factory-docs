@@ -19,7 +19,7 @@ describe("automation command parity", () => {
       const check = runMakeTarget(
         "check",
         {},
-        { resetGeneratedArtifacts: true },
+        { cleanNextTypeArtifacts: true },
       );
       expect(check.status).toBe(0);
       expect(check.output).toMatch(/typecheck/);
