@@ -24,7 +24,8 @@ describe("loadPublicContentPage", () => {
       slug: "agent",
       title: "Agent",
       routePath: "/glossary/agent",
-      bodyText: "Starter glossary entry for canonical content validation.",
+      bodyText:
+        "An agent in You Agent Factory is a named worker inside a workflow.",
       section: "terms",
     },
     {
@@ -32,7 +33,8 @@ describe("loadPublicContentPage", () => {
       slug: "vs-n8n",
       title: "You Agent Factory vs n8n",
       routePath: "/comparisons/vs-n8n",
-      bodyText: "Starter comparison content for the canonical model.",
+      bodyText:
+        "You Agent Factory and n8n both help teams automate repeatable work, but they optimize for different operating models.",
       section: "comparisons",
     },
     {
@@ -40,7 +42,8 @@ describe("loadPublicContentPage", () => {
       slug: "loop-engineering",
       title: "Loop engineering",
       routePath: "/references/loop-engineering",
-      bodyText: "Starter reference content for canonical record generation.",
+      bodyText:
+        "Loop engineering is the practice of designing the feedback cycle around an agent workflow instead of treating a run as one irreversible shot.",
       section: "references",
     },
   ])(
