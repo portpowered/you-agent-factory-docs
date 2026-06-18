@@ -92,6 +92,7 @@ describe("public search artifact generation", () => {
       "doc/configuration@en",
       "doc/getting-started@en",
       "doc/getting-started@fr",
+      "doc/human-approval-gates@en",
       "doc/installation@en",
       "doc/introduction@en",
       "doc/quickstart@en",
@@ -111,6 +112,9 @@ describe("public search artifact generation", () => {
     );
     const concepts = artifact.entries.find(
       (entry) => entry.id === "doc/concepts@en",
+    );
+    const humanApprovalGates = artifact.entries.find(
+      (entry) => entry.id === "doc/human-approval-gates@en",
     );
 
     expect(gettingStarted).toMatchObject({
@@ -198,6 +202,28 @@ describe("public search artifact generation", () => {
     });
     expect(concepts?.headings.length).toBeGreaterThan(0);
     expect(concepts?.body).toContain("How the CLI and configuration connect");
+
+    expect(humanApprovalGates).toMatchObject({
+      canonicalId: "doc/human-approval-gates",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/human-approval-gates",
+      title: "Human approval gates",
+      section: "guides",
+      searchPriority: 8,
+    });
+    expect(humanApprovalGates?.headings).toEqual([
+      "Human approval gates",
+      "What this guide is for",
+      "How this page fits the rest of the docs",
+    ]);
+    expect(humanApprovalGates?.body).toContain(
+      "one canonical guide about approval checkpoints in You Agent Factory workflows",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Continue to the Coder / Reviewer pattern",
+    );
   });
 
   test("preserves locale-aware canonical-locale relationships for active-locale-first query defaults", () => {

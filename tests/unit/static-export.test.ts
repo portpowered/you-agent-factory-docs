@@ -180,6 +180,7 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("CLI overview");
     expect(docsHtml).toContain("Configuration");
     expect(docsHtml).toContain("Workflow concepts");
+    expect(docsHtml).toContain("Human approval gates");
     expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Guides");
     expect(docsHtml).toContain("Setup");
@@ -562,6 +563,15 @@ describe("served static export navigation", () => {
         body: "How the CLI and configuration connect",
         previousLabel: "Configuration",
         previousHref: "/docs/configuration",
+        nextLabel: "Human approval gates",
+        nextHref: "/docs/human-approval-gates",
+      },
+      {
+        path: "/docs/human-approval-gates",
+        title: "Human approval gates",
+        body: "What this guide is for",
+        previousLabel: "Workflow concepts",
+        previousHref: "/docs/concepts",
         nextLabel: "Coder / Reviewer pattern",
         nextHref: "/docs/coder-reviewer-pattern",
       },

@@ -152,6 +152,7 @@ navigationTitle: Agent term
       "doc/configuration",
       "doc/getting-started",
       "doc/getting-started",
+      "doc/human-approval-gates",
       "doc/installation",
       "doc/introduction",
       "doc/quickstart",

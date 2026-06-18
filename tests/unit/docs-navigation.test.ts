@@ -354,10 +354,24 @@ section: guides
             },
           },
           {
+            canonicalId: "doc/human-approval-gates",
+            label: "Human approval gates",
+            href: "/docs/human-approval-gates",
+            order: 5,
+            localeProjection: {
+              canonicalPageId: "doc/human-approval-gates",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
             canonicalId: "doc/coder-reviewer-pattern",
             label: "Coder / Reviewer pattern",
             href: "/docs/coder-reviewer-pattern",
-            order: 5,
+            order: 6,
             localeProjection: {
               canonicalPageId: "doc/coder-reviewer-pattern",
               canonicalLocale: "en",
@@ -431,7 +445,7 @@ section: guides
         (section) =>
           section.id === "guides" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/getting-started,doc/cli,doc/configuration,doc/concepts,doc/coder-reviewer-pattern",
+            "doc/getting-started,doc/cli,doc/configuration,doc/concepts,doc/human-approval-gates,doc/coder-reviewer-pattern",
       ),
     ).toBe(true);
   });

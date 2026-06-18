@@ -35,6 +35,13 @@ describe("loadDocPage", () => {
         title: "Coder / Reviewer pattern",
         bodySnippet: "approval is treated as a real gate",
       },
+      {
+        slug: "human-approval-gates",
+        canonicalId: "doc/human-approval-gates",
+        title: "Human approval gates",
+        bodySnippet:
+          "one canonical guide about approval checkpoints in You Agent Factory workflows",
+      },
     ] as const;
 
     for (const setupPage of setupPages) {
@@ -218,6 +225,20 @@ MDX body.
     );
     expect(page.body).toContain(
       "configuration decides which stages exist and where approvals happen",
+    );
+  });
+
+  test("loads the human approval gates guide through the published docs page path", () => {
+    const page = loadDocPage("human-approval-gates", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/human-approval-gates");
+    expect(page.title).toBe("Human approval gates");
+    expect(page.body).toContain(
+      "the generated docs shell to point readers to one canonical guide about approval checkpoints",
+    );
+    expect(page.body).toContain("What this guide is for");
+    expect(page.body).toContain(
+      "Continue to the Coder / Reviewer pattern if you want a deeper role-based example",
     );
   });
 

@@ -196,6 +196,50 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("human approval gates are reachable from the docs shell navigation", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const docsSidebar = page.locator("#nd-sidebar");
+      const humanApprovalGatesLink = docsSidebar.getByRole("link", {
+        name: "Human approval gates",
+      });
+
+      expect(await humanApprovalGatesLink.isVisible()).toBe(true);
+      await humanApprovalGatesLink.click();
+      await page.waitForURL(
+        new RegExp(
+          `${withBasePath("/docs/human-approval-gates").replace(/\//g, "\\/")}/?$`,
+        ),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 1,
+            name: "Human approval gates",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Use this page when you need the generated docs shell to point readers to one canonical guide about approval checkpoints in You Agent Factory workflows.",
+          )
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("docs shell exposes the post-setup concepts path coherently", async () => {
     const page = await browser.newPage();
     const cliUrl = new URL(
@@ -273,7 +317,7 @@ describe("reconciled baseline browser export", () => {
             name: enMessages.docs.progressionAriaLabel,
           })
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Coder / Reviewer pattern`,
+            name: `${enMessages.docs.nextPagePrefix} Human approval gates`,
           })
           .isVisible(),
       ).toBe(true);
