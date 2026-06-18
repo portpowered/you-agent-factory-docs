@@ -43,11 +43,11 @@ describe("static export server helpers", () => {
   });
 
   test("buildStaticExport skips rebuild when STATIC_EXPORT_SKIP_BUILD is set and out/ exists", () => {
-    withStaticExportBuildLock(projectRoot, () => {
-      if (!existsSync(exportDir)) {
-        buildStaticExport();
-      }
+    if (!existsSync(exportDir)) {
+      buildStaticExport();
+    }
 
+    withStaticExportBuildLock(projectRoot, () => {
       process.env[STATIC_EXPORT_SKIP_BUILD_ENV] = "1";
 
       expect(() => buildStaticExport()).not.toThrow();
