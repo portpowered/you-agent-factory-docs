@@ -47,6 +47,7 @@
 - `DocsShell` uses `createSharedShellConfigFromMessages(t, { docsNavigationGroups })` so localized shell labels come from the message catalog while docs sidebar items stay projected from canonical records.
 - Published doc pages are served from `src/app/docs/[slug]/page.tsx` via `loadDocPage()` and `generateStaticParams()`.
 - Published blog, glossary, comparison, and reference starter pages are served from `src/app/{blog,glossary,comparisons,references}/[slug]/page.tsx`, each using `listPublishedPublicContentRouteParams()` for static params and `loadPublicContentPage()` for canonical record resolution.
+- `src/components/content/public-content-page-shell.tsx` owns the shared non-doc article chrome; reuse `DocsBreadcrumbs` there with the docs-entry link instead of inventing a separate breadcrumb pattern per public content kind.
 
 ## Tests
 
