@@ -80,6 +80,46 @@ export const LANDING_HOW_IT_WORKS_STEPS = [
 
 export const LANDING_WHY_TITLE = "Why You Agent Factory";
 
+export const LANDING_DIALOG_TITLE = "Dialog controls";
+
+export const LANDING_DIALOG_SELECTOR_LABEL = "State";
+
+export const LANDING_DIALOG_OPEN_LABEL = "Open";
+
+export const LANDING_DIALOG_DISMISS_LABEL = "Dismiss";
+
+export const LANDING_DIALOG_LOADING_ACTION_LABEL = "Loading";
+
+export const LANDING_DIALOG_CLOSE_ACTION_LABEL = "Close";
+
+export const LANDING_DIALOG_SURFACE_TITLE = "Preview";
+
+export const LANDING_DIALOG_STATE_OPTIONS = [
+  { label: "Loading", value: "loading" },
+  { label: "Loaded", value: "success" },
+  { label: "Empty", value: "empty" },
+  { label: "Failed", value: "error" },
+] as const;
+
+export const LANDING_DIALOG_STATES = {
+  loading: {
+    body: "Preparing details.",
+    title: "Loading",
+  },
+  success: {
+    body: "Showing authored details.",
+    title: "Loaded",
+  },
+  empty: {
+    body: "No authored detail yet.",
+    title: "Empty",
+  },
+  error: {
+    body: "The authored input failed.",
+    title: "Failed",
+  },
+} as const;
+
 export const LANDING_FINAL_CTA_TITLE =
   "Start orchestrating engineering workflows";
 

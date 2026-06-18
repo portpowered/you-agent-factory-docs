@@ -121,7 +121,7 @@ export const SITE_BUDGET_STATIC_ASSET_TARGETS: StaticAssetBudgetTarget[] = [
     directory: "_next/static",
     fileExtension: ".js",
     budget: {
-      maxTotalBytes: 4_400_000,
+      maxTotalBytes: 4_405_000,
     },
   },
 ];

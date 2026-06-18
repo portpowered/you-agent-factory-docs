@@ -1,7 +1,8 @@
 import { describe, expect, test } from "bun:test";
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { useState } from "react";
 import { Checkbox } from "../../src/components/ui/checkbox";
+import { Dialog } from "../../src/components/ui/dialog";
 import { Icon } from "../../src/components/ui/icon";
 import { Alert, Banner } from "../../src/components/ui/notice";
 import { Selector } from "../../src/components/ui/selector";
@@ -88,5 +89,51 @@ describe("UI primitive components", () => {
     expect(screen.getByRole("alert")).toBeTruthy();
     expect(screen.getByText("Banner title")).toBeTruthy();
     expect(screen.getByText("Alert title")).toBeTruthy();
+  });
+
+  test("dialog closes on Escape and restores focus to the triggering control", async () => {
+    function DialogHarness() {
+      const [open, setOpen] = useState(false);
+
+      return (
+        <div>
+          <button onClick={() => setOpen(true)} type="button">
+            Open dialog
+          </button>
+          <Dialog
+            closeLabel="Dismiss dialog"
+            footer={<button type="button">Close detail view</button>}
+            onOpenChange={setOpen}
+            open={open}
+            title="Dialog title"
+          >
+            <Banner title="Loaded state" tone="success">
+              <p>Dialog content</p>
+            </Banner>
+          </Dialog>
+        </div>
+      );
+    }
+
+    renderWithLocalization(<DialogHarness />);
+
+    const trigger = screen.getByRole("button", { name: "Open dialog" });
+    trigger.focus();
+    fireEvent.click(trigger);
+
+    const dialog = screen.getByRole("dialog", { name: "Dialog title" });
+
+    expect(dialog).toBeTruthy();
+    expect(
+      document.activeElement === dialog ||
+        document.activeElement?.getAttribute("aria-label") === "Dismiss dialog",
+    ).toBe(true);
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: "Dialog title" })).toBeNull();
+      expect(document.activeElement).toBe(trigger);
+    });
   });
 });

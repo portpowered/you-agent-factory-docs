@@ -18,3 +18,8 @@
 - `src/components/landing/primitives-showcase.tsx` is the current integration surface that proves the primitives work together with explicit success, disabled, and blocking states.
 - `tests/unit/ui-primitives.test.tsx` covers the primitives directly at the component layer; `tests/unit/primitives-showcase.test.tsx` proves the homepage-facing integration and state transitions.
 - Because component coverage is enforced across all `src/components/**/*.{ts,tsx}` files, every new shared primitive needs focused tests immediately or `bun run component-coverage` will regress.
+
+## Dialog and overlay behavior
+
+- `src/components/ui/dialog.tsx` is the shared overlay primitive for docs-native modal surfaces; keep open state controlled by the parent and preserve keyboard dismissal and focus return inside the primitive instead of reimplementing them per page.
+- Dialog demos should keep fixture-state meaning in authored props or localized copy, then render loading, empty, error, and success bodies explicitly inside the overlay rather than closing or rendering nothing when state changes.

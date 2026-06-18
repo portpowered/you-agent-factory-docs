@@ -28,7 +28,7 @@ describe("landing primitives showcase", () => {
         name: "Ready this example for review",
       }),
     ).toBeTruthy();
-    expect(within(section).getByRole("status")).toBeTruthy();
+    expect(within(section).getAllByRole("status").length).toBeGreaterThan(0);
     expect(within(section).getByRole("alert")).toBeTruthy();
     expect(
       within(section)
@@ -53,5 +53,35 @@ describe("landing primitives showcase", () => {
     expect(screen.queryByRole("alert")).toBeNull();
     expect(screen.getAllByRole("status").length).toBe(2);
     expect(screen.getByText("Review-ready state")).toBeTruthy();
+  });
+
+  test("opens a keyboard-dismissible dialog with explicit empty and error-capable states", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { PrimitivesShowcase } = await import(
+      "../../src/components/landing/primitives-showcase"
+    );
+
+    renderWithLocalization(<PrimitivesShowcase />);
+
+    fireEvent.click(screen.getByLabelText("Empty"));
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+
+    const emptyDialog = screen.getByRole("dialog", { name: "Preview" });
+
+    expect(emptyDialog).toBeTruthy();
+    expect(within(emptyDialog).getByText("Empty")).toBeTruthy();
+
+    fireEvent.keyDown(document, { key: "Escape" });
+
+    expect(screen.queryByRole("dialog", { name: "Preview" })).toBeNull();
+
+    fireEvent.click(screen.getByLabelText("Failed"));
+    fireEvent.click(screen.getByRole("button", { name: "Open" }));
+
+    const dialog = screen.getByRole("dialog", { name: "Preview" });
+
+    expect(within(dialog).getByRole("alert")).toBeTruthy();
+    expect(within(dialog).getByText("Failed")).toBeTruthy();
   });
 });

@@ -518,6 +518,97 @@
     margin: 0;
   }
 
+  .ui-dialog {
+    align-items: flex-end;
+    display: flex;
+    inset: 0;
+    justify-content: center;
+    padding: 1rem;
+    position: fixed;
+    z-index: 60;
+  }
+
+  .ui-dialog__backdrop {
+    background: rgba(16, 32, 58, 0.62);
+    border: 0;
+    inset: 0;
+    position: absolute;
+  }
+
+  .ui-dialog__panel {
+    display: grid;
+    gap: 1rem;
+    max-height: min(90vh, 44rem);
+    overflow: auto;
+    padding: 0;
+    position: relative;
+    width: 100%;
+  }
+
+  .ui-dialog__panel--default {
+    max-width: 34rem;
+  }
+
+  .ui-dialog__panel--wide {
+    max-width: 42rem;
+  }
+
+  .ui-dialog__header {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 1.25rem 1.25rem 0;
+  }
+
+  .ui-dialog__header-copy {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .ui-dialog__title {
+    color: var(--card-foreground);
+    font-size: clamp(1.1rem, 2.8vw, 1.4rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .ui-dialog__description {
+    color: var(--muted-foreground);
+    margin: 0;
+  }
+
+  .ui-dialog__close {
+    flex: none;
+    min-width: var(--ui-control-height-compact);
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  .ui-dialog__body {
+    display: grid;
+    gap: 1rem;
+    padding: 0 1.25rem;
+  }
+
+  .ui-dialog__footer {
+    border-top: 1px solid var(--ui-color-border-subtle);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 1rem 1.25rem 1.25rem;
+  }
+
+  @media (min-width: 40rem) {
+    .ui-dialog {
+      align-items: center;
+      padding: 1.5rem;
+    }
+  }
+
   .ui-notice__action {
     grid-column: 2;
   }
