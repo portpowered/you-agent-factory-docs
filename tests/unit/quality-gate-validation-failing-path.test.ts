@@ -6,6 +6,10 @@ const verifyingMakeTest = process.env.VERIFYING_MAKE_TEST === "1";
 const testUnlessVerifying = verifyingMakeTest ? test.skip : test;
 
 describe("early foundation quality gate failing-path proof", () => {
+  function combinedOutput(result: { stdout: string; stderr: string }) {
+    return `${result.stdout}${result.stderr}`;
+  }
+
   testUnlessVerifying(
     "validate:localization blocks a broken message catalog regression",
     () => {
@@ -13,11 +17,13 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:localization",
         "broken-shell-localization",
       );
+      const output = combinedOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Shared shell message validation failed");
-      expect(result.stderr).toContain("common.getStarted");
+      expect(output).toContain("Shared shell message validation failed");
+      expect(output).toContain("common.getStarted");
     },
+    60_000,
   );
 
   testUnlessVerifying(
@@ -27,11 +33,13 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:content",
         "broken-foundation-content",
       );
+      const output = combinedOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Starter content validation failed");
-      expect(result.stderr).toContain("canonicalLocale");
+      expect(output).toContain("Starter content validation failed");
+      expect(output).toContain("canonicalLocale");
     },
+    60_000,
   );
 
   testUnlessVerifying(
@@ -56,13 +64,15 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:content",
         "broken-public-content",
       );
+      const output = combinedOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Public content validation failed");
-      expect(result.stderr).toContain(
+      expect(output).toContain("Public content validation failed");
+      expect(output).toContain(
         "Generated localized search artifact is missing",
       );
     },
+    60_000,
   );
 
   testUnlessVerifying(
@@ -72,11 +82,13 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:accessibility",
         "broken-shell-accessibility",
       );
+      const output = combinedOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Shell accessibility validation failed");
-      expect(result.stderr).toContain("primaryNavigationLabel");
+      expect(output).toContain("Shell accessibility validation failed");
+      expect(output).toContain("primaryNavigationLabel");
     },
+    60_000,
   );
 
   testUnlessVerifying(
@@ -86,11 +98,13 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:static-export",
         "broken-static-export",
       );
+      const output = combinedOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Static export validation failed");
-      expect(result.stderr).toContain("output");
+      expect(output).toContain("Static export validation failed");
+      expect(output).toContain("output");
     },
+    60_000,
   );
 
   testUnlessVerifying(

@@ -42,6 +42,7 @@ Later localization and canonical content foundations plug into the same `validat
 
 - `tests/unit/quality-gate.test.ts` verifies the make/bun command contract and observes enforced step order from quality-gate subprocess stdout, including search-index contract reuse.
 - `tests/unit/quality-gate-validation-failing-path.test.ts` proves localization, content, accessibility, static-export, and search-index regressions fail through the shared validate scripts, confirms `validate:static-export` builds through `make build`, and shows `make quality-gate` fails fast on a broken search-index fixture with distinct search-contract output.
+- Validation-script failing-path tests that go through `tests/helpers/validation.ts` should carry explicit timeout budgets under the repo command lock, and their assertions should prefer the combined subprocess output (`stdout + stderr`) over assuming Bun reports failures on only one stream.
 - `tests/unit/early-gate-automation-parity.test.ts` verifies `make quality-gate` delegates to `bun run quality-gate` and that the quality-gate script emits ordered foundation steps through subprocess output.
 - `tests/unit/early-gate-contributor-guidance.test.ts` verifies the quality-gate script announces deferred Phase 8 checks and foundation step coverage through subprocess output.
 - `src/lib/validation/shell-accessibility.ts` documents `FOCUSED_SHELL_ACCESSIBILITY_COVERAGE` and exports shared aria-label constants consumed by shell components.
