@@ -18,7 +18,7 @@ One small corrective command-path edit was required after reconciliation review:
 
 | Surface | Divergence | Reason | Preserved behavior |
 | --- | --- | --- | --- |
-| `package.json` `typecheck` script | Runs `next typegen && tsc --noEmit` instead of bootstrap's `tsc --noEmit` only | `make check` failed on a clean checkout with `TS6053` because `tsconfig.json` and `next-env.d.ts` reference `.next/types` files that do not exist until Next generates them | Static-export scaffold, homepage/docs shells, and `make build` output remain unchanged; typecheck still validates the same project sources after route types are generated |
+| `package.json` `typecheck` script | Runs `rm -rf .next/types && next typegen && tsc --noEmit` instead of bootstrap's `tsc --noEmit` only | `make check` failed on a clean checkout with `TS6053` because `tsconfig.json` and `next-env.d.ts` reference `.next/types` files that do not exist until Next generates them, and later route-shape changes can leave stale `.next/types` entries behind unless they are cleared before regeneration | Static-export scaffold, homepage/docs shells, and `make build` output remain unchanged; typecheck still validates the same project sources after route types are regenerated from a clean `.next/types` state |
 
 All other bootstrap surfaces remain unchanged:
 

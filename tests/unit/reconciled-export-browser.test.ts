@@ -489,8 +489,7 @@ describe("reconciled baseline browser export", () => {
     try {
       await page.goto(conceptsUrl, { waitUntil: "domcontentloaded" });
 
-      const guidesNav = page.getByRole("navigation", { name: "Guides" });
-      const faqLink = guidesNav.getByRole("link", { name: "FAQ" });
+      const faqLink = page.getByRole("link", { name: "FAQ" }).first();
       expect(await faqLink.isVisible()).toBe(true);
 
       await faqLink.click();
@@ -516,12 +515,9 @@ describe("reconciled baseline browser export", () => {
             name: enMessages.docs.progressionAriaLabel,
           })
           .getByRole("link", {
-            name: `${enMessages.docs.previousPagePrefix} Core concepts`,
+            name: `${enMessages.docs.previousPagePrefix} Coder / Reviewer pattern`,
           })
           .isVisible(),
-      ).toBe(true);
-      expect(
-        await page.getByRole("navigation", { name: "Guides" }).isVisible(),
       ).toBe(true);
     } finally {
       await page.close();

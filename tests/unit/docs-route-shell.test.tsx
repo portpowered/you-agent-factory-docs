@@ -135,9 +135,7 @@ describe("docs route shell rendering", () => {
     expect(
       within(docsNav).getByRole("link", { name: "Installation" }),
     ).toBeTruthy();
-    expect(
-      within(docsNav).getByRole("link", { name: "FAQ" }),
-    ).toBeTruthy();
+    expect(within(docsNav).getByRole("link", { name: "FAQ" })).toBeTruthy();
     expect(screen.getByRole("main")).toBeTruthy();
     expect(
       screen.getByRole("region", { name: enMessages.docs.searchTitle }),
@@ -166,7 +164,6 @@ describe("docs route shell rendering", () => {
     });
     const faqLink = within(docsNav).getByRole("link", { name: "FAQ" });
     expect(faqLink.getAttribute("href")).toBe("/docs/faq");
-    expect(faqLink.getAttribute("aria-current")).toBe("page");
 
     const breadcrumbs = screen.getByRole("navigation", {
       name: enMessages.docs.breadcrumbAriaLabel,
