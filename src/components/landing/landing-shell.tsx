@@ -4,6 +4,10 @@ import { SharedShell } from "@/components/shell/shared-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
+  getContentWidthClassName,
+  getStackClassName,
+} from "@/components/ui/factory-theme";
+import {
   LANDING_EXAMPLE_WORKFLOWS,
   LANDING_EXAMPLE_WORKFLOWS_TITLE,
   LANDING_FINAL_CTA_SUMMARY,
@@ -28,11 +32,18 @@ export function LandingShell() {
 
   return (
     <SharedShell config={config} surface="home">
-      <div className="landing-shell__sections flex w-full flex-col items-center gap-8">
+      <div
+        className={getStackClassName({
+          align: "items-center",
+          className: "landing-shell__sections",
+        })}
+      >
         <Card
           aria-describedby="landing-hero-summary"
           aria-labelledby="landing-hero-title"
-          className="landing-shell__hero max-w-[42rem] p-6 sm:p-8"
+          className={getContentWidthClassName("prose", "landing-shell__hero")}
+          padding="spacious"
+          tone="hero"
         >
           <p className="landing-shell__eyebrow mb-3 text-sm font-semibold uppercase tracking-[0.04em] text-accent">
             {PROJECT_NAME}
@@ -69,7 +80,11 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-problem-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className={getContentWidthClassName(
+            "prose",
+            "landing-shell__section",
+          )}
+          padding="spacious"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -88,7 +103,11 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-solution-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className={getContentWidthClassName(
+            "prose",
+            "landing-shell__section",
+          )}
+          padding="spacious"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -107,7 +126,11 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-example-workflows-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className={getContentWidthClassName(
+            "prose",
+            "landing-shell__section",
+          )}
+          padding="spacious"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -120,7 +143,9 @@ export function LandingShell() {
               <Card
                 as="li"
                 key={workflow.title}
-                className="landing-shell__workflow-item bg-muted px-4 py-4 shadow-none"
+                className="landing-shell__workflow-item"
+                padding="compact"
+                tone="muted"
               >
                 <h3 className="landing-shell__workflow-title m-0 text-base font-semibold leading-snug text-card-foreground">
                   {workflow.title}
@@ -135,7 +160,11 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-how-it-works-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className={getContentWidthClassName(
+            "prose",
+            "landing-shell__section",
+          )}
+          padding="spacious"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -159,7 +188,11 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-why-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className={getContentWidthClassName(
+            "prose",
+            "landing-shell__section",
+          )}
+          padding="spacious"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -172,7 +205,9 @@ export function LandingShell() {
               <Card
                 as="li"
                 key={point.title}
-                className="landing-shell__why-item bg-muted px-4 py-4 shadow-none"
+                className="landing-shell__why-item"
+                padding="compact"
+                tone="muted"
               >
                 <h3 className="landing-shell__why-title m-0 text-base font-semibold leading-snug text-card-foreground">
                   {point.title}
@@ -188,7 +223,11 @@ export function LandingShell() {
         <Card
           aria-describedby="landing-final-cta-summary"
           aria-labelledby="landing-final-cta-title"
-          className="landing-shell__section landing-shell__final-cta max-w-[42rem] p-7"
+          className={getContentWidthClassName(
+            "prose",
+            "landing-shell__section landing-shell__final-cta",
+          )}
+          padding="spacious"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"

@@ -1,20 +1,32 @@
+import { getSurfaceClassName } from "@/components/ui/factory-theme";
 import { joinClassNames } from "@/lib/classnames";
 import type { ComponentPropsWithoutRef } from "react";
 
+type CardTone = "default" | "hero" | "muted";
+type CardPadding = "compact" | "comfortable" | "spacious";
+
 type CardProps = ComponentPropsWithoutRef<"section"> & {
   as?: "article" | "div" | "li" | "nav" | "section";
+  padding?: CardPadding;
+  tone?: CardTone;
 };
 
 export function Card({
   as: Component = "section",
   className,
+  padding = "comfortable",
+  tone = "default",
   ...props
 }: CardProps) {
   return (
     <Component
       className={joinClassNames(
-        "ui-card w-full rounded-xl border bg-card shadow-sm",
-        className,
+        "ui-card",
+        getSurfaceClassName({
+          className,
+          padding,
+          tone,
+        }),
       )}
       {...props}
     />

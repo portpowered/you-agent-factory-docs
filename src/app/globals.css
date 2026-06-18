@@ -23,31 +23,89 @@
   line-height: 1.5;
   --font-family-sans: "Instrument Sans", "Segoe UI", system-ui, -apple-system,
     BlinkMacSystemFont, sans-serif;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --muted: #eef2ff;
-  --muted-foreground: #475569;
-  --border: #cbd5e1;
-  --accent: #2563eb;
-  --accent-foreground: #ffffff;
-  --ring: #2563eb;
-  --radius: 0.75rem;
+  --ui-color-canvas: #f3f6fb;
+  --ui-color-foreground: #10203a;
+  --ui-color-surface-default: rgba(255, 255, 255, 0.94);
+  --ui-color-surface-muted: #e9efff;
+  --ui-color-surface-hero: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(235, 244, 255, 0.96)
+  );
+  --ui-color-card-foreground: #10203a;
+  --ui-color-muted-foreground: #4d5f80;
+  --ui-color-border-strong: rgba(135, 157, 191, 0.42);
+  --ui-color-border-subtle: rgba(135, 157, 191, 0.24);
+  --ui-color-accent: #1662f3;
+  --ui-color-accent-strong: #0f4fcc;
+  --ui-color-accent-foreground: #f8fbff;
+  --ui-color-accent-soft: rgba(22, 98, 243, 0.18);
+  --ui-color-accent-subtle: rgba(22, 98, 243, 0.1);
+  --ui-space-control-x: 1rem;
+  --ui-space-control-y: 0.75rem;
+  --ui-space-control-x-compact: 0.75rem;
+  --ui-space-control-y-compact: 0.5rem;
+  --ui-space-card-compact: 1rem;
+  --ui-space-card: 1.5rem;
+  --ui-space-card-spacious: 1.75rem;
+  --ui-space-stack-compact: 1rem;
+  --ui-space-stack-section: 2rem;
+  --ui-layout-prose: 42rem;
+  --ui-layout-reading: 56rem;
+  --ui-radius-inner: 1rem;
+  --ui-radius-card: 1.5rem;
+  --ui-radius-control: 0.875rem;
+  --ui-shadow-surface: 0 18px 44px -30px rgba(16, 32, 58, 0.28);
+  --ui-shadow-hero: 0 24px 60px -34px rgba(22, 98, 243, 0.32);
+  --ui-shadow-interactive: 0 12px 28px -20px rgba(22, 98, 243, 0.75);
+  --ui-control-height-default: 2.75rem;
+  --ui-control-height-compact: 2.25rem;
+  --background: var(--ui-color-canvas);
+  --foreground: var(--ui-color-foreground);
+  --card: var(--ui-color-surface-default);
+  --card-foreground: var(--ui-color-card-foreground);
+  --muted: var(--ui-color-surface-muted);
+  --muted-foreground: var(--ui-color-muted-foreground);
+  --border: var(--ui-color-border-strong);
+  --accent: var(--ui-color-accent);
+  --accent-foreground: var(--ui-color-accent-foreground);
+  --ring: var(--ui-color-accent);
+  --radius: var(--ui-radius-card);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0b1220;
-    --foreground: #f8fafc;
-    --card: #111827;
-    --card-foreground: #f8fafc;
-    --muted: #172033;
-    --muted-foreground: #cbd5e1;
-    --border: #334155;
-    --accent: #60a5fa;
-    --accent-foreground: #0b1220;
-    --ring: #93c5fd;
+    --ui-color-canvas: #09111f;
+    --ui-color-foreground: #eef4ff;
+    --ui-color-surface-default: rgba(12, 23, 42, 0.94);
+    --ui-color-surface-muted: #15233a;
+    --ui-color-surface-hero: linear-gradient(
+      145deg,
+      rgba(15, 28, 50, 0.97),
+      rgba(9, 17, 31, 0.98)
+    );
+    --ui-color-card-foreground: #eef4ff;
+    --ui-color-muted-foreground: #b6c6de;
+    --ui-color-border-strong: rgba(113, 143, 189, 0.44);
+    --ui-color-border-subtle: rgba(113, 143, 189, 0.28);
+    --ui-color-accent: #7cb2ff;
+    --ui-color-accent-strong: #9bc4ff;
+    --ui-color-accent-foreground: #09111f;
+    --ui-color-accent-soft: rgba(124, 178, 255, 0.22);
+    --ui-color-accent-subtle: rgba(124, 178, 255, 0.16);
+    --ui-shadow-surface: 0 22px 54px -34px rgba(3, 8, 18, 0.8);
+    --ui-shadow-hero: 0 28px 72px -36px rgba(3, 8, 18, 0.88);
+    --ui-shadow-interactive: 0 14px 32px -22px rgba(124, 178, 255, 0.72);
+    --background: var(--ui-color-canvas);
+    --foreground: var(--ui-color-foreground);
+    --card: var(--ui-color-surface-default);
+    --card-foreground: var(--ui-color-card-foreground);
+    --muted: var(--ui-color-surface-muted);
+    --muted-foreground: var(--ui-color-muted-foreground);
+    --border: var(--ui-color-border-strong);
+    --accent: var(--ui-color-accent);
+    --accent-foreground: var(--ui-color-accent-foreground);
+    --ring: var(--ui-color-accent);
   }
 }
 
@@ -89,6 +147,160 @@
 }
 
 @layer components {
+  .ui-layout--prose {
+    max-width: var(--ui-layout-prose);
+  }
+
+  .ui-layout--reading {
+    max-width: var(--ui-layout-reading);
+  }
+
+  .ui-stack {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .ui-stack-align--center {
+    align-items: center;
+  }
+
+  .ui-stack-align--stretch {
+    align-items: stretch;
+  }
+
+  .ui-stack-gap--compact {
+    gap: var(--ui-space-stack-compact);
+  }
+
+  .ui-stack-gap--section {
+    gap: var(--ui-space-stack-section);
+  }
+
+  .ui-surface {
+    border-radius: var(--ui-radius-card);
+  }
+
+  .ui-surface--default {
+    border-color: var(--ui-color-border-strong);
+    background: var(--ui-color-surface-default);
+    box-shadow: var(--ui-shadow-surface);
+    color: var(--card-foreground);
+  }
+
+  .ui-surface--hero {
+    border-color: var(--ui-color-accent-soft);
+    background: var(--ui-color-surface-hero);
+    box-shadow: var(--ui-shadow-hero);
+    color: var(--card-foreground);
+  }
+
+  .ui-surface--muted {
+    border-color: var(--ui-color-border-subtle);
+    background: var(--ui-color-surface-muted);
+    box-shadow: none;
+    color: var(--card-foreground);
+  }
+
+  .ui-surface-padding--compact {
+    padding: var(--ui-space-card-compact);
+  }
+
+  .ui-surface-padding--comfortable {
+    padding: var(--ui-space-card);
+  }
+
+  .ui-surface-padding--spacious {
+    padding: var(--ui-space-card-spacious);
+  }
+
+  .ui-surface-radius--default {
+    border-radius: var(--ui-radius-card);
+  }
+
+  .ui-surface-radius--inner {
+    border-radius: var(--ui-radius-inner);
+  }
+
+  .ui-button {
+    align-items: center;
+    border-radius: var(--ui-radius-control);
+    display: inline-flex;
+    font-weight: 600;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 150ms ease, border-color 150ms ease, box-shadow
+      150ms ease, color 150ms ease;
+  }
+
+  .ui-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--ring), 0 0 0 4px var(--background);
+  }
+
+  .ui-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .ui-button-size--default {
+    min-height: var(--ui-control-height-default);
+    padding: var(--ui-space-control-y) var(--ui-space-control-x);
+  }
+
+  .ui-button-size--compact {
+    min-height: var(--ui-control-height-compact);
+    padding: var(--ui-space-control-y-compact) var(--ui-space-control-x-compact);
+  }
+
+  .ui-button--primary {
+    background: var(--ui-color-accent);
+    box-shadow: var(--ui-shadow-interactive);
+    color: var(--ui-color-accent-foreground);
+  }
+
+  .ui-button--primary:hover {
+    background: var(--ui-color-accent-strong);
+  }
+
+  .ui-button--secondary {
+    background: var(--ui-color-surface-default);
+    border: 1px solid var(--ui-color-border-strong);
+    color: var(--card-foreground);
+  }
+
+  .ui-button--secondary:hover {
+    background: var(--ui-color-surface-muted);
+  }
+
+  .ui-button--nav {
+    color: var(--ui-color-accent);
+  }
+
+  .ui-button--nav:hover {
+    background: var(--ui-color-accent-subtle);
+  }
+
+  .ui-button--nav-current {
+    background: var(--ui-color-accent);
+    box-shadow: var(--ui-shadow-interactive);
+    color: var(--ui-color-accent-foreground);
+  }
+
+  .ui-button--nav-subtle {
+    color: var(--card-foreground);
+  }
+
+  .ui-button--nav-subtle:hover {
+    background: var(--ui-color-surface-muted);
+    color: var(--foreground);
+  }
+
+  .ui-button--nav-subtle[data-current="true"] {
+    background: var(--ui-color-accent-subtle);
+    color: var(--ui-color-accent);
+  }
+
   .shared-shell__header-nav-region,
   .shared-shell__docs-aside-region {
     display: contents;

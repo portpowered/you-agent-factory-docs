@@ -1,3 +1,7 @@
+import {
+  BUTTON_SIZE_CLASS_NAMES,
+  BUTTON_VARIANT_CLASS_NAMES,
+} from "@/components/ui/factory-theme";
 import { joinClassNames } from "@/lib/classnames";
 import Link from "next/link";
 import {
@@ -6,20 +10,6 @@ import {
   type ReactNode,
   forwardRef,
 } from "react";
-
-const BUTTON_VARIANT_CLASS_NAMES = {
-  primary: "bg-accent text-accent-foreground hover:opacity-90",
-  secondary: "border bg-transparent text-card-foreground hover:bg-muted",
-  nav: "text-accent hover:bg-accent/10",
-  navCurrent: "bg-accent text-accent-foreground",
-  navSubtle:
-    "text-card-foreground hover:bg-muted hover:text-foreground data-[current=true]:bg-accent/12 data-[current=true]:text-accent",
-} as const;
-
-const BUTTON_SIZE_CLASS_NAMES = {
-  default: "min-h-11 px-4 py-2.5",
-  compact: "px-3 py-2 text-sm",
-} as const;
 
 type ButtonVariant = keyof typeof BUTTON_VARIANT_CLASS_NAMES;
 type ButtonSize = keyof typeof BUTTON_SIZE_CLASS_NAMES;
@@ -40,7 +30,7 @@ export function getButtonClassName({
   variant = "primary",
 }: ButtonClassNameOptions = {}): string {
   return joinClassNames(
-    "ui-button items-center justify-center rounded-md font-semibold no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+    "ui-button",
     displayClassName,
     BUTTON_SIZE_CLASS_NAMES[size],
     BUTTON_VARIANT_CLASS_NAMES[variant],

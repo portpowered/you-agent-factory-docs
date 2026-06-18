@@ -129,11 +129,46 @@ describe("homepage shell rendering", () => {
     expect(githubCta.className).toContain("landing-shell__button");
     expect(docsCta.className).toContain("ui-button");
     expect(githubCta.className).toContain("ui-button");
-    expect(docsCta.className).toContain("bg-accent");
-    expect(githubCta.className).toContain("border");
+    expect(docsCta.className).toContain("ui-button--primary");
+    expect(githubCta.className).toContain("ui-button--secondary");
     expect(hero.className).toContain("ui-card");
+    expect(hero.className).toContain("ui-surface--hero");
     expect(docsCta.tabIndex).not.toBe(-1);
     expect(githubCta.tabIndex).not.toBe(-1);
+  });
+
+  test("reuses shared surface and layout tokens across dense homepage sections", async () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
+
+    const { LandingShell } = await import(
+      "../../src/components/landing/landing-shell"
+    );
+
+    renderWithLocalization(<LandingShell />);
+
+    const workflowsSection = screen.getByRole("region", {
+      name: LANDING_EXAMPLE_WORKFLOWS_TITLE,
+    });
+    const workflowCard = within(workflowsSection)
+      .getByRole("heading", {
+        level: 3,
+        name: LANDING_EXAMPLE_WORKFLOWS[0]?.title ?? "",
+      })
+      .closest("li");
+    const whySection = screen.getByRole("region", {
+      name: LANDING_WHY_TITLE,
+    });
+    const whyCard = within(whySection)
+      .getByRole("heading", {
+        level: 3,
+        name: LANDING_WHY_POINTS[0]?.title ?? "",
+      })
+      .closest("li");
+
+    expect(workflowsSection.className).toContain("ui-layout--prose");
+    expect(workflowCard?.className).toContain("ui-surface--muted");
+    expect(workflowCard?.className).toContain("ui-surface-padding--compact");
+    expect(whyCard?.className).toContain("ui-surface--muted");
   });
 
   test("renders problem, solution, and how-it-works sections with accessible headings", async () => {
