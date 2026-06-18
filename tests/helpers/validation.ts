@@ -14,7 +14,7 @@ export function runQualityGateScript(
   const exportDir = join(repoRoot, "out");
   const result = withRepoCommandLock(repoRoot, () =>
     withQualityGateCommandLock(repoRoot, () =>
-      spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
+      spawnSync("bun", ["run", "quality-gate"], {
         cwd: repoRoot,
         encoding: "utf8",
         env: {

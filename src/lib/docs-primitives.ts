@@ -13,6 +13,12 @@ export const CODE_PRESENTATION_EXAMPLE_SECTION_LABEL = "Examples";
 
 export const DOCS_NAV_CODE_PRESENTATION_LABEL = "Code presentation";
 
+export const UI_PRIMITIVES_ROUTE = "/docs/examples/ui-primitives";
+
+export const UI_PRIMITIVES_CANONICAL_ID = "doc/examples/ui-primitives";
+
+export const DOCS_NAV_UI_PRIMITIVES_LABEL = "Shared UI primitives";
+
 /** Appends the reviewer-visible code presentation example route to docs navigation. */
 export function withCodePresentationExampleNavigation(
   navigation: DocsShellNavigationInput,
@@ -21,25 +27,45 @@ export function withCodePresentationExampleNavigation(
     (section) => section.id === CODE_PRESENTATION_EXAMPLE_SECTION_ID,
   );
 
-  const examplePage = {
-    canonicalId: CODE_PRESENTATION_EXAMPLE_CANONICAL_ID,
-    label: DOCS_NAV_CODE_PRESENTATION_LABEL,
-    href: CODE_PRESENTATION_EXAMPLE_ROUTE,
-    order: 1,
-  };
+  const examplePages = [
+    {
+      canonicalId: CODE_PRESENTATION_EXAMPLE_CANONICAL_ID,
+      label: DOCS_NAV_CODE_PRESENTATION_LABEL,
+      href: CODE_PRESENTATION_EXAMPLE_ROUTE,
+      order: 1,
+    },
+    {
+      canonicalId: UI_PRIMITIVES_CANONICAL_ID,
+      label: DOCS_NAV_UI_PRIMITIVES_LABEL,
+      href: UI_PRIMITIVES_ROUTE,
+      order: 2,
+    },
+  ];
 
   if (existingSection) {
     return {
       sections: navigation.sections.map((section) =>
         section.id === CODE_PRESENTATION_EXAMPLE_SECTION_ID
-          ? {
-              ...section,
-              pages: section.pages.some(
-                (page) => page.canonicalId === examplePage.canonicalId,
-              )
-                ? section.pages
-                : [...section.pages, examplePage],
-            }
+          ? (() => {
+              const pages = [...section.pages];
+
+              for (const examplePage of examplePages) {
+                if (
+                  pages.some(
+                    (page) => page.canonicalId === examplePage.canonicalId,
+                  )
+                ) {
+                  continue;
+                }
+
+                pages.push(examplePage);
+              }
+
+              return {
+                ...section,
+                pages,
+              };
+            })()
           : section,
       ),
     };
@@ -51,7 +77,7 @@ export function withCodePresentationExampleNavigation(
       {
         id: CODE_PRESENTATION_EXAMPLE_SECTION_ID,
         label: CODE_PRESENTATION_EXAMPLE_SECTION_LABEL,
-        pages: [examplePage],
+        pages: examplePages,
       },
     ],
   };
@@ -61,6 +87,23 @@ export const CODE_PRESENTATION_EXAMPLE_TITLE = "Code presentation primitives";
 
 export const CODE_PRESENTATION_EXAMPLE_INTRO =
   "Reviewer-visible examples of the reusable code block, code tabs, callout, and file-tree primitives on the current docs foundation.";
+
+export const UI_PRIMITIVES_TITLE = "Shared UI primitives";
+
+export const UI_PRIMITIVES_INTRO =
+  "Reviewer-visible examples of the approved local shadcn-style primitives that docs-site authors can import from the stable repo-local UI barrel.";
+
+export const UI_PRIMITIVES_FORM_HEADING = "Actions and form controls";
+
+export const UI_PRIMITIVES_NAVIGATION_HEADING = "Navigation tabs";
+
+export const UI_PRIMITIVES_ACCORDION_HEADING = "Disclosure";
+
+export const UI_PRIMITIVES_DIALOG_HEADING = "Overlay";
+
+export const UI_PRIMITIVES_ALERT_HEADING = "Feedback";
+
+export const UI_PRIMITIVES_TABLE_HEADING = "Table";
 
 export const CODE_BLOCK_SECTION_HEADING = "Code block";
 

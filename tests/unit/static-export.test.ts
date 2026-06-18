@@ -57,7 +57,7 @@ describe("served static export navigation", () => {
     server?.stop();
   });
 
-  test("serves homepage, docs entry, and code presentation example routes under the configured base path", async () => {
+  test("serves homepage, docs entry, and reviewer example routes under the configured base path", async () => {
     const homepageResponse = await fetchHttp(server.baseUrl, {
       signal: AbortSignal.timeout(10_000),
     });
@@ -69,17 +69,28 @@ describe("served static export navigation", () => {
       new URL(withBasePath("/docs/examples/code-presentation"), server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
     );
+    const primitivesResponse = await fetchHttp(
+      new URL(withBasePath("/docs/examples/ui-primitives"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
 
     expect(homepageResponse.status).toBe(200);
     expect(docsResponse.status).toBe(200);
     expect(exampleResponse.status).toBe(200);
+    expect(primitivesResponse.status).toBe(200);
 
     const exampleHtml = await exampleResponse.text();
+    const primitivesHtml = await primitivesResponse.text();
     expect(exampleHtml).toContain("Code presentation primitives");
     expect(exampleHtml).toContain("Code block");
     expect(exampleHtml).toContain("Code tabs");
     expect(exampleHtml).toContain("Callouts");
     expect(exampleHtml).toContain("File tree");
+    expect(primitivesHtml).toContain("Shared UI primitives");
+    expect(primitivesHtml).toContain("Actions and form controls");
+    expect(primitivesHtml).toContain("Navigation tabs");
+    expect(primitivesHtml).toContain("Overlay");
+    expect(primitivesHtml).toContain("Table");
   });
 
   test("follows the homepage docs CTA to the docs shell entry route", async () => {
@@ -183,6 +194,7 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Guides");
     expect(docsHtml).toContain("Setup");
+    expect(docsHtml).toContain("Shared UI primitives");
     expect(new RegExp(`href="${introductionPath}/?"`).test(docsHtml)).toBe(
       true,
     );

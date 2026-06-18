@@ -4,6 +4,7 @@
 
 - `src/components/ui/index.ts` is the stable repo-local import barrel for approved shared UI primitives. Feature and shell code should prefer `@/components/ui` over file-specific or ad hoc upstream import paths.
 - `src/components/ui/button.tsx` and `src/components/ui/card.tsx` remain the initial approved local shadcn-style primitives for this foundation slice.
+- `src/components/ui/{input,label,accordion,tabs,dialog,alert,table}.tsx` expand the approved local surface for shared form, disclosure, navigation, overlay, feedback, and table use cases without reaching into upstream package internals.
 - `src/components/ui/component-intake.ts` records the reviewer-visible intake decisions for shadcn, Magic UI, and Performative UI, including which components are approved now and which are intentionally deferred for compatibility reasons.
 
 ## Compatibility decisions
@@ -15,4 +16,6 @@
 ## Verification
 
 - `tests/unit/ui-component-intake.test.tsx` is the focused proof for the stable barrel path and the checked-in approved/deferred decision registry.
+- `tests/unit/shared-ui-primitives.test.tsx` verifies keyboard-safe tabs, disclosure toggling, and dialog dismissal on the approved local primitive set.
+- `src/app/docs/examples/ui-primitives/page.tsx` and `src/components/docs/ui-primitives-example.tsx` provide a reviewer-visible docs-shell proof route for the current approved primitive surface.
 - Existing shell and landing tests continue to prove that current site surfaces consume the same stable barrel-backed primitives rather than page-local controls.

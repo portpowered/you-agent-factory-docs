@@ -1,5 +1,6 @@
 "use client";
 
+import { Input, Label } from "@/components/ui";
 import type {
   PublicSearchOramaHit,
   PublicSearchOramaIndex,
@@ -183,10 +184,10 @@ export function DocsSearch() {
           className="docs-search__form"
           onSubmit={(event) => event.preventDefault()}
         >
-          <label className="docs-search__label" htmlFor="docs-search-input">
+          <Label className="docs-search__label" htmlFor="docs-search-input">
             {t("docs.searchLabel")}
-          </label>
-          <input
+          </Label>
+          <Input
             className="docs-search__input"
             id="docs-search-input"
             name="docs-search-input"

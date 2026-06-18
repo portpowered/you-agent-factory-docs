@@ -379,6 +379,12 @@ section: guides
             href: "/docs/examples/code-presentation",
             order: 1,
           },
+          {
+            canonicalId: "doc/examples/ui-primitives",
+            label: "Shared UI primitives",
+            href: "/docs/examples/ui-primitives",
+            order: 2,
+          },
         ],
       },
     ]);
@@ -417,13 +423,21 @@ section: guides
     );
 
     expect(sectionIds).toEqual(["setup", "guides", "examples"]);
-    expect(pageCount).toBeGreaterThanOrEqual(8);
+    expect(pageCount).toBeGreaterThanOrEqual(9);
     expect(
       navigation.sections.some(
         (section) =>
           section.id === "setup" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
             "doc/introduction,doc/installation,doc/quickstart",
+      ),
+    ).toBe(true);
+    expect(
+      navigation.sections.some(
+        (section) =>
+          section.id === "examples" &&
+          section.pages.map((page) => page.canonicalId).join(",") ===
+            "doc/examples/code-presentation,doc/examples/ui-primitives",
       ),
     ).toBe(true);
     expect(
