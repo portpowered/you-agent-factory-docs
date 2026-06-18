@@ -85,6 +85,7 @@ export function PublicSearchPanel() {
   const locale = useLocale();
   const resultsId = useId();
   const artifactRef = useRef<PublicSearchArtifact | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const resultLinkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
   const requestIdRef = useRef(0);
   const [query, setQuery] = useState("");
@@ -108,6 +109,7 @@ export function PublicSearchPanel() {
 
   async function submitSearch(searchQuery: string): Promise<void> {
     const requestId = requestIdRef.current + 1;
+    const shouldRestoreInputFocus = document.activeElement === inputRef.current;
     requestIdRef.current = requestId;
     setActiveResultIndex(-1);
 
@@ -133,6 +135,10 @@ export function PublicSearchPanel() {
         status: "success",
         submittedQuery: searchQuery,
       });
+
+      if (shouldRestoreInputFocus) {
+        inputRef.current?.focus();
+      }
     } catch (error) {
       if (requestId !== requestIdRef.current) {
         return;
@@ -146,6 +152,10 @@ export function PublicSearchPanel() {
         errorMessage:
           error instanceof Error ? error.message : t("docs.search.errorBody"),
       });
+
+      if (shouldRestoreInputFocus) {
+        inputRef.current?.focus();
+      }
     }
   }
 
@@ -164,14 +174,13 @@ export function PublicSearchPanel() {
   }
 
   function focusResultIndex(nextIndex: number) {
+    setActiveResultIndex(nextIndex);
+
     const link = resultLinkRefs.current[nextIndex];
 
-    if (!link) {
-      return;
+    if (link && document.activeElement !== link) {
+      link.focus();
     }
-
-    setActiveResultIndex(nextIndex);
-    link.focus();
   }
 
   function moveResultFocus(nextIndex: number) {
@@ -263,9 +272,11 @@ export function PublicSearchPanel() {
             id="public-search-query"
             name="query"
             onChange={(event) => setQuery(event.currentTarget.value)}
-            onKeyDown={handleInputKeyDown}
+            onKeyDownCapture={handleInputKeyDown}
             placeholder={t("docs.search.placeholder")}
-            type="search"
+            ref={inputRef}
+            role="searchbox"
+            type="text"
             value={query}
           />
           <button
@@ -347,6 +358,14 @@ export function PublicSearchPanel() {
                     onKeyDown={(event) => handleResultKeyDown(event, index)}
                     ref={(element) => {
                       resultLinkRefs.current[index] = element;
+
+                      if (
+                        element &&
+                        activeResultIndex === index &&
+                        document.activeElement !== element
+                      ) {
+                        element.focus();
+                      }
                     }}
                   >
                     <ResultLinkLabel

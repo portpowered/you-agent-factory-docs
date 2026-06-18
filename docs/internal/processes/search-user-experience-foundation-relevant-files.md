@@ -16,6 +16,7 @@
 - The panel caches the fetched artifact in component-local state and only reads from the generated artifact URL; it does not perform raw markdown or starter-content reads.
 - The panel renders localized content-kind labels and preview-context badges directly from projected match metadata; keep those labels in `docs.search.*` rather than hardcoding presentation copy in the component.
 - Keep the primary keyboard path native-first: submit from the search field, then move focus into result links with explicit arrow-key handlers instead of introducing a separate pointer-only selection model.
+- For input-to-result focus movement, keep a direct focus attempt in the key handler and mirror it in the link ref callback so keyboard navigation still lands on the intended result if the result list finishes mounting on the same interaction tick.
 - `src/app/docs/page.tsx` mounts the search panel on the existing docs entry route so reviewers can exercise the feature without changing route structure.
 - Search UI copy lives under `docs.search.*` in the shared shell localization catalogs.
 - `src/app/globals.css` contains the public search styles; keep the surface responsive by preserving the one-column mobile controls path.

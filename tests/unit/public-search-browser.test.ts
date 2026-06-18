@@ -219,6 +219,11 @@ describe("public search browser flow", () => {
 
       await page.keyboard.press("ArrowDown");
 
+      await page.waitForFunction(
+        () =>
+          document.activeElement?.getAttribute("href") === "/glossary/agent",
+      );
+
       const firstResult = page.getByRole("link", {
         name: /Agent \/glossary\/agent/,
       });
@@ -233,6 +238,12 @@ describe("public search browser flow", () => {
       ).toBe(true);
 
       await page.keyboard.press("ArrowDown");
+
+      await page.waitForFunction(
+        () =>
+          document.activeElement?.getAttribute("href") ===
+          "/reference/agent-runner",
+      );
 
       expect(
         await secondResult.evaluate(

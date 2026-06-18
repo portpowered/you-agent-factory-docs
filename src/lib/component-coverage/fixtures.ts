@@ -3,6 +3,27 @@
  * proofs. Activated only when `COMPONENT_COVERAGE_ENFORCEMENT_FIXTURE` is set.
  */
 export const COMPONENT_COVERAGE_ENFORCEMENT_FIXTURES = {
+  "meets-threshold": {
+    lcov: `
+SF:src/components/docs/docs-shell.tsx
+LF:43
+LH:43
+end_of_record
+SF:src/components/landing/landing-shell.tsx
+LF:42
+LH:42
+end_of_record
+`,
+    textOutput: `
+------------------------------------------|---------|---------|-------------------
+File                                      | % Funcs | % Lines | Uncovered Line #s
+------------------------------------------|---------|---------|-------------------
+All files                                 |  100.00 |  100.00 |
+ src/components/docs/docs-shell.tsx       |  100.00 |  100.00 |
+ src/components/landing/landing-shell.tsx |  100.00 |  100.00 |
+------------------------------------------|---------|---------|-------------------
+`,
+  },
   "below-threshold": {
     lcov: `
 SF:src/components/docs/docs-route-chrome.tsx

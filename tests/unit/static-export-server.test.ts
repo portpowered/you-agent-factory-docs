@@ -16,7 +16,7 @@ import {
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
-import { getTestPort } from "../helpers/test-port";
+import { findUsableTestPort, getTestPort } from "../helpers/test-port";
 
 const projectRoot = join(import.meta.dir, "../..");
 const exportDir = join(projectRoot, "out");
@@ -76,7 +76,10 @@ describe("static export server helpers", () => {
 
     const homepageHtmlPath = join(exportDir, "index.html");
     const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
-    const port = getTestPort(3791, "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT");
+    const port = await findUsableTestPort(
+      3791,
+      "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT",
+    );
     const server = startStaticExportServer(port);
 
     await waitForStaticExportServer(server.baseUrl);
