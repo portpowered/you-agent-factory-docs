@@ -240,6 +240,82 @@
     border-radius: var(--ui-radius-inner);
   }
 
+  .ui-bento-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ui-bento-card {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .ui-bento-card__header,
+  .ui-bento-card__body {
+    display: grid;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
+  .ui-bento-card__eyebrow {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 0;
+    text-transform: uppercase;
+  }
+
+  .ui-bento-card__title {
+    color: var(--card-foreground);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .ui-bento-card__description,
+  .ui-bento-card__description p {
+    color: var(--muted-foreground);
+    margin: 0;
+  }
+
+  .ui-bento-card__footer {
+    align-items: flex-start;
+    border-top: 1px solid var(--ui-color-border-subtle);
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    padding-top: 1rem;
+  }
+
+  .ui-bento-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ui-bento-card__meta-item {
+    background: var(--ui-color-surface-default);
+    border: 1px solid var(--ui-color-border-subtle);
+    border-radius: 999px;
+    color: var(--card-foreground);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: 0.4rem 0.7rem;
+  }
+
+  .ui-bento-card__action {
+    width: fit-content;
+  }
+
   .ui-button {
     align-items: center;
     border-radius: var(--ui-radius-control);
@@ -606,6 +682,22 @@
     .ui-dialog {
       align-items: center;
       padding: 1.5rem;
+    }
+
+    .ui-bento-card__footer {
+      align-items: center;
+      flex-direction: row;
+      justify-content: space-between;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .ui-bento-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ui-bento-card--feature {
+      grid-column: span 2;
     }
   }
 

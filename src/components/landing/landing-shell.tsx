@@ -2,6 +2,7 @@
 
 import { PrimitivesShowcase } from "@/components/landing/primitives-showcase";
 import { SharedShell } from "@/components/shell/shared-shell";
+import { BentoCard, BentoGrid } from "@/components/ui/bento-card";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
@@ -145,24 +146,26 @@ export function LandingShell() {
           >
             {LANDING_EXAMPLE_WORKFLOWS_TITLE}
           </CardTitle>
-          <ul className="landing-shell__workflow-list m-0 grid list-none gap-4 p-0">
+          <BentoGrid
+            as="ul"
+            className="landing-shell__workflow-list m-0 list-none p-0"
+          >
             {LANDING_EXAMPLE_WORKFLOWS.map((workflow) => (
-              <Card
+              <BentoCard
+                action={"action" in workflow ? workflow.action : undefined}
                 as="li"
+                description={workflow.description}
+                eyebrow={workflow.eyebrow}
                 key={workflow.title}
                 className="landing-shell__workflow-item"
-                padding="compact"
-                tone="muted"
-              >
-                <h3 className="landing-shell__workflow-title m-0 text-base font-semibold leading-snug text-card-foreground">
-                  {workflow.title}
-                </h3>
-                <p className="landing-shell__workflow-description mb-0 mt-1 text-muted-foreground">
-                  {workflow.description}
-                </p>
-              </Card>
+                meta={workflow.meta}
+                span={
+                  workflow.title === "PR Review Factory" ? "feature" : "default"
+                }
+                title={workflow.title}
+              />
             ))}
-          </ul>
+          </BentoGrid>
         </Card>
 
         <Card
@@ -231,24 +234,22 @@ export function LandingShell() {
           >
             {LANDING_WHY_TITLE}
           </CardTitle>
-          <ul className="landing-shell__why-list m-0 grid list-none gap-4 p-0">
+          <BentoGrid
+            as="ul"
+            className="landing-shell__why-list m-0 list-none p-0"
+          >
             {LANDING_WHY_POINTS.map((point) => (
-              <Card
+              <BentoCard
                 as="li"
+                description={point.description}
+                eyebrow={point.eyebrow}
                 key={point.title}
                 className="landing-shell__why-item"
-                padding="compact"
-                tone="muted"
-              >
-                <h3 className="landing-shell__why-title m-0 text-base font-semibold leading-snug text-card-foreground">
-                  {point.title}
-                </h3>
-                <p className="landing-shell__why-description mb-0 mt-1 text-muted-foreground">
-                  {point.description}
-                </p>
-              </Card>
+                meta={point.meta}
+                title={point.title}
+              />
             ))}
-          </ul>
+          </BentoGrid>
         </Card>
 
         <Card

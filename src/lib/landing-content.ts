@@ -22,26 +22,45 @@ export const LANDING_EXAMPLE_WORKFLOWS_TITLE = "Example workflows";
 
 export const LANDING_EXAMPLE_WORKFLOWS = [
   {
+    action: {
+      href: "/docs",
+      label: "Open docs",
+    },
+    eyebrow: "Release path",
+    meta: ["Review gates", "Checks", "Approval"],
     title: "PR Review Factory",
     description:
       "Coordinate reviewer agents, lint checks, and human approval gates before a pull request merges.",
   },
   {
+    eyebrow: "Shipping",
+    meta: ["Changelog", "Tests", "Deploy"],
     title: "Release Readiness Factory",
     description:
       "Walk through changelog, test, and deployment checks as a repeatable pre-release workflow.",
   },
   {
+    eyebrow: "Operations",
+    meta: ["Timeline", "Postmortem", "Remediation"],
     title: "Incident Follow-up Factory",
     description:
       "Capture timelines, draft postmortems, and track remediation tasks with inspectable steps.",
   },
   {
+    eyebrow: "Analytics",
+    meta: ["Data quality", "Reruns", "Summaries"],
     title: "Data Question Factory",
     description:
       "Turn recurring analytics or data-quality questions into templated agent workflows your team can rerun.",
   },
   {
+    action: {
+      external: true,
+      href: "https://github.com/portpowered/you-agent-factory",
+      label: "Browse repo",
+    },
+    eyebrow: "Reliability",
+    meta: ["Diffs", "Runbooks", "Review"],
     title: "Runbook Maintenance Factory",
     description:
       "Keep operational runbooks current by diffing docs against live systems and routing updates for review.",
@@ -128,31 +147,43 @@ export const LANDING_FINAL_CTA_SUMMARY =
 
 export const LANDING_WHY_POINTS = [
   {
+    eyebrow: "Principle",
+    meta: ["Repo access", "Logs", "Control"],
     title: "Local-first",
     description:
       "Run workflows on your machine or infrastructure so code, logs, and configs stay under your control.",
   },
   {
+    eyebrow: "Adoption",
+    meta: ["Inspect", "Fork", "Extend"],
     title: "Open source",
     description:
       "Inspect, fork, and extend the orchestrator instead of trusting a hosted black box.",
   },
   {
+    eyebrow: "Workflow fit",
+    meta: ["Repos", "Tests", "Human gates"],
     title: "Engineering-native",
     description:
       "Model workflows around repos, tools, tests, and human approval gates—not drag-and-drop automation tiles.",
   },
   {
+    eyebrow: "Portability",
+    meta: ["Models", "Harnesses", "Vendors"],
     title: "Harness-agnostic",
     description:
       "Connect the agent runtimes and coding assistants your team already uses without vendor lock-in.",
   },
   {
+    eyebrow: "Change control",
+    meta: ["Diffs", "Config", "Reuse"],
     title: "File and config driven",
     description:
       "Store workflow definitions in versioned files your team can diff, review, and reuse.",
   },
   {
+    eyebrow: "Confidence",
+    meta: ["Replay", "Trace", "Proof"],
     title: "Auditable",
     description:
       "Replay runs, read step logs, and prove what each agent did before changes ship.",

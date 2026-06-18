@@ -167,7 +167,10 @@ describe("homepage shell rendering", () => {
 
     expect(workflowsSection.className).toContain("ui-layout--prose");
     expect(workflowCard?.className).toContain("ui-surface--muted");
-    expect(workflowCard?.className).toContain("ui-surface-padding--compact");
+    expect(workflowCard?.className).toContain("ui-bento-card");
+    expect(workflowCard?.className).toContain(
+      "ui-surface-padding--comfortable",
+    );
     expect(whyCard?.className).toContain("ui-surface--muted");
   });
 
@@ -257,6 +260,14 @@ describe("homepage shell rendering", () => {
       expect(
         within(workflowsSection).getByText(workflow.description),
       ).toBeTruthy();
+      if (workflow.eyebrow) {
+        expect(
+          within(workflowsSection).getByText(workflow.eyebrow),
+        ).toBeTruthy();
+      }
+      for (const metaItem of workflow.meta) {
+        expect(within(workflowsSection).getByText(metaItem)).toBeTruthy();
+      }
     }
 
     for (const point of LANDING_WHY_POINTS) {
