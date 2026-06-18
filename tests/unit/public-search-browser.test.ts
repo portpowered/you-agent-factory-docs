@@ -7,7 +7,7 @@ import {
   startStaticExportServer,
   waitForStaticExportServer,
 } from "../helpers/static-export-server";
-import { getTestPort } from "../helpers/test-port";
+import { findUsableTestPort } from "../helpers/test-port";
 
 const keyboardArtifact = {
   version: 1,
@@ -48,11 +48,12 @@ const keyboardArtifact = {
 } as const;
 
 describe("public search browser flow", () => {
-  const port = getTestPort(3787, "PUBLIC_SEARCH_BROWSER_TEST_PORT");
+  let port = 3787;
   let server: StaticExportServer;
   let browser: Browser;
 
   beforeAll(async () => {
+    port = await findUsableTestPort(3787, "PUBLIC_SEARCH_BROWSER_TEST_PORT");
     await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
