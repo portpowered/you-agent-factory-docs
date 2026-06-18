@@ -70,7 +70,7 @@ describe("loadDocPage", () => {
     }
   });
 
-  test("loads the FAQ page with practical positioning answers through the canonical doc path", () => {
+  test("loads the FAQ page with practical positioning and oversight answers through the canonical doc path", () => {
     const page = loadDocPage("faq", STARTER_CONTENT_ROOT, {
       locale: "en",
     });
@@ -92,6 +92,15 @@ describe("loadDocPage", () => {
     expect(page.body).toContain("How is it different from one-off chat usage?");
     expect(page.body).toContain(
       "The workflow, inputs, outputs, and checkpoints live in a form that engineers can inspect, review, compare, and update instead of depending on one successful prompt session.",
+    );
+    expect(page.body).toContain(
+      "Approvals and review remain part of the normal workflow.",
+    );
+    expect(page.body).toContain(
+      "it does not guarantee correctness and it should not be treated as a replacement for human judgment, validation, or sign-off.",
+    );
+    expect(page.body).toContain(
+      "Start with bounded recurring workflows where the expected inputs, outputs, and review points are already understood by the team.",
     );
     expect(page.resolution).toEqual({
       canonicalPageId: "doc/faq",

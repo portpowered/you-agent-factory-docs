@@ -286,7 +286,7 @@ Exécutez \`bun install\`.
     }
   });
 
-  test("includes the FAQ page in localized search metadata with practical positioning copy", () => {
+  test("includes the FAQ page in localized search metadata with practical positioning and oversight copy", () => {
     const documents = loadLocalizedSearchDocuments(CONTENT_ROOT);
     const faq = documents.find((document) => document.id === "doc/faq@en");
 
@@ -308,9 +308,23 @@ Exécutez \`bun install\`.
       "How is it different from one-off chat usage?",
       "How is it different from running a single agent ad hoc?",
       "When is it a good fit?",
+      "Where do approvals and engineering review fit?",
+      "What should I expect from workflow outputs?",
+      "What should I expect from logs?",
+      "Does this mean the workflow is fully autonomous or always correct?",
+      "How should a team start safely?",
     ]);
     expect(faq?.body).toContain(
       "turning recurring development work into reusable, inspectable agent workflows",
+    );
+    expect(faq?.body).toContain(
+      "Approvals and review remain part of the normal workflow.",
+    );
+    expect(faq?.body).toContain(
+      "Expect reviewable artifacts rather than magic.",
+    );
+    expect(faq?.body).toContain(
+      "it does not guarantee correctness and it should not be treated as a replacement for human judgment, validation, or sign-off.",
     );
   });
 
