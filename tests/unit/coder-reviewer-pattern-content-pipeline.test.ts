@@ -31,7 +31,7 @@ describe("coder / reviewer pattern content pipeline", () => {
       canonicalId: "doc/coder-reviewer-pattern",
       label: "Coder / Reviewer pattern",
       href: "/docs/coder-reviewer-pattern",
-      order: 3,
+      order: 5,
       localeProjection: {
         canonicalPageId: "doc/coder-reviewer-pattern",
         canonicalLocale: "en",
@@ -49,7 +49,7 @@ describe("coder / reviewer pattern content pipeline", () => {
       canonicalLocale: "en",
       availableLocales: ["en"],
       section: "guides",
-      order: 3,
+      order: 5,
       status: "published",
     });
     expect(page.resolution).toEqual({

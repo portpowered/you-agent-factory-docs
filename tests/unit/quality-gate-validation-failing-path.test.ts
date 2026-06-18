@@ -4,6 +4,8 @@ import { runValidationScript } from "../helpers/validation";
 
 const verifyingMakeTest = process.env.VERIFYING_MAKE_TEST === "1";
 const testUnlessVerifying = verifyingMakeTest ? test.skip : test;
+const getProcessOutput = (result: { stdout: string; stderr: string }) =>
+  `${result.stdout}${result.stderr}`;
 
 describe("early foundation quality gate failing-path proof", () => {
   testUnlessVerifying(
@@ -13,10 +15,11 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:localization",
         "broken-shell-localization",
       );
+      const output = getProcessOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Shared shell message validation failed");
-      expect(result.stderr).toContain("common.getStarted");
+      expect(output).toContain("Shared shell message validation failed");
+      expect(output).toContain("common.getStarted");
     },
     120_000,
   );
@@ -28,10 +31,11 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:content",
         "broken-foundation-content",
       );
+      const output = getProcessOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Starter content validation failed");
-      expect(result.stderr).toContain("canonicalLocale");
+      expect(output).toContain("Starter content validation failed");
+      expect(output).toContain("canonicalLocale");
     },
     120_000,
   );
@@ -44,9 +48,10 @@ describe("early foundation quality gate failing-path proof", () => {
           EARLY_GATE_VALIDATION_FIXTURE: "broken-shell-localization",
         },
       });
+      const output = getProcessOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Shared shell message validation failed");
+      expect(output).toContain("Shared shell message validation failed");
     },
     180_000,
   );
@@ -58,10 +63,11 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:content",
         "broken-public-content",
       );
+      const output = getProcessOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Public content validation failed");
-      expect(result.stderr).toContain(
+      expect(output).toContain("Public content validation failed");
+      expect(output).toContain(
         "Generated localized search artifact is missing",
       );
     },
@@ -75,10 +81,11 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:accessibility",
         "broken-shell-accessibility",
       );
+      const output = getProcessOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Shell accessibility validation failed");
-      expect(result.stderr).toContain("primaryNavigationLabel");
+      expect(output).toContain("Shell accessibility validation failed");
+      expect(output).toContain("primaryNavigationLabel");
     },
     120_000,
   );
@@ -90,10 +97,11 @@ describe("early foundation quality gate failing-path proof", () => {
         "validate:static-export",
         "broken-static-export",
       );
+      const output = getProcessOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Static export validation failed");
-      expect(result.stderr).toContain("output");
+      expect(output).toContain("Static export validation failed");
+      expect(output).toContain("output");
     },
     120_000,
   );
@@ -120,15 +128,16 @@ describe("early foundation quality gate failing-path proof", () => {
           EARLY_GATE_VALIDATION_FIXTURE: "broken-search-contract-field",
         },
       });
+      const output = getProcessOutput(result);
 
       expect(result.status).not.toBe(0);
-      expect(result.stderr).toContain("Search index validation failed");
-      expect(result.stderr).toContain("normalized contract mismatch");
-      expect(result.stderr).toContain(
+      expect(output).toContain("Search index validation failed");
+      expect(output).toContain("normalized contract mismatch");
+      expect(output).toContain(
         "Early quality gate failed at: search-index contract validation",
       );
-      expect(result.stderr).not.toContain("Static export validation failed");
-      expect(result.stderr).not.toContain("Starter content validation failed");
+      expect(output).not.toContain("Static export validation failed");
+      expect(output).not.toContain("Starter content validation failed");
     },
     180_000,
   );

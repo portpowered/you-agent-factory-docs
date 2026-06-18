@@ -175,6 +175,52 @@ MDX body.
     });
   });
 
+  test("loads the CLI overview body through the published docs page path", () => {
+    const page = loadDocPage("cli", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/cli");
+    expect(page.title).toBe("CLI overview");
+    expect(page.body).toContain(
+      "The You Agent Factory CLI is the operator surface",
+    );
+    expect(page.body).toContain("Typical commands and outcomes");
+    expect(page.body).toContain("`you submit batch --dry-run <path>`");
+  });
+
+  test("loads the configuration overview body through the published docs page path", () => {
+    const page = loadDocPage("configuration", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/configuration");
+    expect(page.title).toBe("Configuration");
+    expect(page.body).toContain(
+      "Configuration is the contract between the CLI command you run and the workflow behavior the factory will execute.",
+    );
+    expect(page.body).toContain("Main configuration concepts");
+    expect(page.body).toContain(
+      "workflow definitions, task or PRD inputs that name the work to perform",
+    );
+    expect(page.body).toContain(
+      "it shapes what the operator should expect from the same CLI surface",
+    );
+  });
+
+  test("loads the workflow concepts body through the published docs page path", () => {
+    const page = loadDocPage("concepts", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/concepts");
+    expect(page.title).toBe("Workflow concepts");
+    expect(page.body).toContain(
+      "Workflow concepts explain how the CLI, configuration, approvals, and outputs fit together",
+    );
+    expect(page.body).toContain("Where approvals fit");
+    expect(page.body).toContain(
+      "append-only progress logging, and PR conversation updates",
+    );
+    expect(page.body).toContain(
+      "configuration decides which stages exist and where approvals happen",
+    );
+  });
+
   test("falls back to canonical-locale content for supported locales without variants", () => {
     const page = loadDocPage("getting-started", STARTER_CONTENT_ROOT, {
       locale: "ja",
