@@ -1,6 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
+import { withRepoRootCommandLock } from "./repo-root-command-lock";
 
 const projectRoot = join(import.meta.dir, "../..");
 
@@ -25,7 +26,9 @@ export function runMakeTarget(
 
   const result =
     target === "build" || target === "check"
-      ? withStaticExportBuildLock(projectRoot, runTarget)
+      ? withRepoRootCommandLock(projectRoot, () =>
+          withStaticExportBuildLock(projectRoot, runTarget),
+        )
       : runTarget();
 
   const stdout = result.stdout ?? "";

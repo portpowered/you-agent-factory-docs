@@ -1,5 +1,6 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { withRepoRootCommandLock } from "./repo-root-command-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -8,14 +9,20 @@ export function runMake(
   options: { dryRun?: boolean; env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
   const args = options.dryRun ? ["-n", target] : [target];
-  const result = spawnSync("make", args, {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-    },
-  });
+  const run = () =>
+    spawnSync("make", args, {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        ...options.env,
+      },
+    });
+  const result =
+    options.dryRun ||
+    (target !== "build" && target !== "check" && target !== "quality-gate")
+      ? run()
+      : withRepoRootCommandLock(repoRoot, run);
 
   return {
     status: result.status,

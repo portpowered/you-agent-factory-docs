@@ -1,20 +1,23 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
 import type { EarlyGateValidationFixture } from "../../src/lib/validation/gate-fixtures";
+import { withRepoRootCommandLock } from "./repo-root-command-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
 
 export function runQualityGateScript(
   options: { env?: Record<string, string | undefined> } = {},
 ): { status: number | null; stdout: string; stderr: string } {
-  const result = spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...options.env,
-    },
-  });
+  const result = withRepoRootCommandLock(repoRoot, () =>
+    spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        ...options.env,
+      },
+    }),
+  );
 
   return {
     status: result.status,
@@ -37,18 +40,20 @@ export function runValidationScript(
     | "validate:static-export",
   fixture?: EarlyGateValidationFixture,
 ): { status: number | null; stdout: string; stderr: string } {
-  const result = spawnSync("bun", ["run", target], {
-    cwd: repoRoot,
-    encoding: "utf8",
-    env: {
-      ...process.env,
-      ...(fixture
-        ? {
-            EARLY_GATE_VALIDATION_FIXTURE: fixture,
-          }
-        : undefined),
-    },
-  });
+  const result = withRepoRootCommandLock(repoRoot, () =>
+    spawnSync("bun", ["run", target], {
+      cwd: repoRoot,
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        ...(fixture
+          ? {
+              EARLY_GATE_VALIDATION_FIXTURE: fixture,
+            }
+          : undefined),
+      },
+    }),
+  );
 
   return {
     status: result.status,

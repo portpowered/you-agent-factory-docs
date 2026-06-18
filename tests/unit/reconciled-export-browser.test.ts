@@ -30,6 +30,16 @@ describe("reconciled baseline browser export", () => {
   let server: StaticExportServer;
   let browser: Browser;
 
+  async function waitForDocsShellReady(page: Page): Promise<void> {
+    await page
+      .locator('nav[aria-label="Guides"]')
+      .waitFor({ state: "attached", timeout: 10_000 });
+    await page
+      .getByRole("banner")
+      .waitFor({ state: "visible", timeout: 10_000 });
+    await page.getByRole("main").waitFor({ state: "visible", timeout: 10_000 });
+  }
+
   beforeAll(async () => {
     await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
@@ -83,9 +93,7 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
-      await page
-        .locator('nav[aria-label="Guides"]')
-        .waitFor({ state: "attached", timeout: 10_000 });
+      await waitForDocsShellReady(page);
 
       expect(
         await page
@@ -119,6 +127,7 @@ describe("reconciled baseline browser export", () => {
         ),
         { timeout: 10_000 },
       );
+      await waitForDocsShellReady(page);
 
       expect(
         await page
@@ -139,6 +148,7 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+      await waitForDocsShellReady(page);
       await page.getByRole("link", { name: HOME_CTA_LABEL }).click();
 
       await page.waitForURL(
@@ -181,6 +191,7 @@ describe("reconciled baseline browser export", () => {
         ),
         { timeout: 10_000 },
       );
+      await waitForDocsShellReady(page);
 
       expect(
         await page
@@ -203,6 +214,7 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(gettingStartedUrl, { waitUntil: "domcontentloaded" });
+      await waitForDocsShellReady(page);
       await page
         .locator('.shared-shell[data-shell-viewport="mobile"]')
         .waitFor({ timeout: 10_000 });
