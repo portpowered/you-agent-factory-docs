@@ -208,6 +208,34 @@
       "searchPriority": 10
     },
     {
+      "id": "doc/human-approval-gates@en",
+      "canonicalId": "doc/human-approval-gates",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/human-approval-gates",
+      "title": "Human approval gates",
+      "description": "",
+      "headings": [
+        "Human approval gates",
+        "What this guide is for",
+        "When a workflow should pause for review",
+        "What approval gates are meant to catch",
+        "What reviewers should inspect before approving",
+        "Why approval loops improve safe adoption",
+        "How this page fits the rest of the docs"
+      ],
+      "body": "Human approval gates Use this page when you need the generated docs shell to point readers to one canonical guide about approval checkpoints in You Agent Factory workflows. This guide sits after workflow concepts because approval gates make the most sense once you understand that the factory advances work through explicit stages with durable outputs and review handoffs. It sits before deeper reviewer-pattern material because approval checkpoints are the simpler concept: they define where a workflow must stop for a human decision before it continues. What this guide is for Treat this page as the entry point for understanding why some workflows should pause instead of running straight through every stage. A reader who lands here should be able to identify approval gates as a deliberate operating-control surface inside the factory rather than a vague safety warning scattered across other docs. When a workflow should pause for review An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff. Use one before the workflow applies a high-impact code change, publishes or deletes something expensive to undo, or turns a low-confidence output into the next irreversible step. The key test is whether the next action could compound a bad assumption faster than the workflow can correct itself. If a stage is about to merge a pull request, edit production configuration, spend significant compute or external-service cost, or fan out a questionable result into more automation, that is a strong signal to pause and ask for bounded human review. What approval gates are meant to catch Approval loops exist to catch avoidable failures while the workflow still has a clean stopping point. They are useful when generated changes are technically plausible but may be out of scope, when the workflow summary does not match the actual diff or artifact, or when the system is acting on inputs that are incomplete, ambiguous, or newly introduced. They are not a sign that every step needs supervision. If a workflow stage is cheap, reversible, and already well validated, adding a human gate usually slows the lane down more than it improves control. Reserve approvals for the moments where a reviewer can materially change the outcome. What reviewers should inspect before approving Treat an approval as an evidence check, not a gut check. Before approving, inspect the artifact the workflow is about to act on: the proposed diff, generated document or output, stage summary, logs, and any validation or test results that explain what changed and whether the result still fits the requested scope. The reviewer should be able to confirm four things from that evidence: the output is correct enough for the stage, the next action is safe, the work still matches the requested scope, and the workflow is not about to take an expensive or hard-to-reverse step on weak evidence. If those signals disagree with each other, or if the summary looks cleaner than the underlying artifact, send the workflow back with a concrete fix request instead of approving on intuition. Why approval loops improve safe adoption Approval loops reduce avoidable failure by stopping the workflow before one wrong assumption compounds into several expensive follow-on actions. They give a reviewer one bounded moment to catch a bad diff, a misleading summary, an unsafe action target, or a low-confidence result before the factory spends more time, money, or trust building on top of it. That control has a cost: every gate slows throughput because the workflow waits for a human decision. Early in adoption, that tradeoff is usually worth it because teams are still learning where the workflow is reliable and where it drifts. Start with more gates at the highest-risk boundaries, then remove or relax the ones that stop finding real issues once validation, logs, and reviewer experience show the workflow can be trusted there. Approval loops improve the odds of safe operation, but they do not guarantee correctness. A weak review can still miss a real problem, and a mature workflow is not automatically safe to run fully autonomously just because earlier runs looked good. How this page fits the rest of the docs Start with workflow concepts if you still need the overall execution model. Continue to the Coder / Reviewer pattern if you want a deeper role-based example of how one approval-oriented handoff works in practice once a workflow reaches a review boundary.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 8
+    },
+    {
       "id": "doc/installation@en",
       "canonicalId": "doc/installation",
       "locale": "en",

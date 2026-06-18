@@ -35,6 +35,13 @@ describe("loadDocPage", () => {
         title: "Coder / Reviewer pattern",
         bodySnippet: "approval is treated as a real gate",
       },
+      {
+        slug: "human-approval-gates",
+        canonicalId: "doc/human-approval-gates",
+        title: "Human approval gates",
+        bodySnippet:
+          "one canonical guide about approval checkpoints in You Agent Factory workflows",
+      },
     ] as const;
 
     for (const setupPage of setupPages) {
@@ -218,6 +225,53 @@ MDX body.
     );
     expect(page.body).toContain(
       "configuration decides which stages exist and where approvals happen",
+    );
+  });
+
+  test("loads the human approval gates guide through the published docs page path", () => {
+    const page = loadDocPage("human-approval-gates", STARTER_CONTENT_ROOT);
+
+    expect(page.record.routePath).toBe("/docs/human-approval-gates");
+    expect(page.title).toBe("Human approval gates");
+    expect(page.body).toContain(
+      "the generated docs shell to point readers to one canonical guide about approval checkpoints",
+    );
+    expect(page.body).toContain("What this guide is for");
+    expect(page.body).toContain("When a workflow should pause for review");
+    expect(page.body).toContain(
+      "An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff.",
+    );
+    expect(page.body).toContain(
+      "If a stage is about to merge a pull request, edit production configuration, spend significant compute or external-service cost, or fan out a questionable result into more automation, that is a strong signal to pause and ask for bounded human review.",
+    );
+    expect(page.body).toContain("What approval gates are meant to catch");
+    expect(page.body).toContain(
+      "They are not a sign that every step needs supervision.",
+    );
+    expect(page.body).toContain(
+      "What reviewers should inspect before approving",
+    );
+    expect(page.body).toContain(
+      "Treat an approval as an evidence check, not a gut check.",
+    );
+    expect(page.body).toContain(
+      "the proposed diff, generated document or output, stage summary, logs, and any validation or test results",
+    );
+    expect(page.body).toContain(
+      "the output is correct enough for the stage, the next action is safe, the work still matches the requested scope",
+    );
+    expect(page.body).toContain("Why approval loops improve safe adoption");
+    expect(page.body).toContain(
+      "Approval loops reduce avoidable failure by stopping the workflow before one wrong assumption compounds into several expensive follow-on actions.",
+    );
+    expect(page.body).toContain(
+      "Start with more gates at the highest-risk boundaries, then remove or relax the ones that stop finding real issues",
+    );
+    expect(page.body).toContain(
+      "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
+    );
+    expect(page.body).toContain(
+      "Continue to the Coder / Reviewer pattern if you want a deeper role-based example",
     );
   });
 

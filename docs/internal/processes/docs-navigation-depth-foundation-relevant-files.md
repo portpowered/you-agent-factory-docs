@@ -19,8 +19,12 @@
 
 - Starter docs depth is authored under `src/content/docs/{slug}/en.mdx`; section and order frontmatter drive generated left-navigation grouping.
 - First-adoption learning paths should be encoded in canonical frontmatter order, not hard-coded shell links; for this lane the post-setup sequence is `Getting started -> CLI overview -> Configuration -> Workflow concepts`.
+- When a new guide bridges a general workflow concept page and a deeper role-specific pattern page, preserve that reader path by adjusting canonical frontmatter `order` in starter content instead of adding route-local navigation logic or bespoke sidebar wiring.
 - Route identity for launch-lane docs still comes from the folder slug, while the rendered shell H1 and sidebar label come from frontmatter title or `navigationTitle`, so copy renames do not require route changes.
 - The current doc body parser only projects ATX headings and paragraph blocks into the shell. Keep launch-lane docs readable with headings plus paragraphs unless the parser grows structured support for lists, code blocks, or richer MDX elements.
+- When a guide needs to answer a concrete operator or reviewer question, phrase that question as an `h2` in the page body so the same wording becomes visible in the docs outline, static route HTML, browser verification, and generated search artifact.
+- For reviewer-focused guidance pages, keep approval criteria tied to concrete workflow evidence such as diffs, generated artifacts, summaries, logs, and validation results so the same evidence-based checklist can be asserted in route-loading, export, browser, and search-artifact proof.
+- When a guidance page explains a safety-control tradeoff, state both the failure-reduction benefit and the throughput cost directly in visible body copy so reviewers can prove the page does not imply approvals guarantee correctness or that autonomy is safe by default.
 - `loadDocsShellNavigation()` loads canonical records and projects navigation for `DocsShell` on both `/docs` and `/docs/[slug]` routes.
 - `SharedShellDocsAside` renders one navigation landmark per projected section so multi-section browsing depth is observable in the left sidebar.
 - `projectDocsBreadcrumbs()` projects breadcrumb ancestry from the same `DocsShellNavigationInput`; shell root labels resolve through localization while section and page crumbs come from projected navigation state.
@@ -32,6 +36,7 @@
 - `DocPageArticle` renders the projected page outline, page title, and parsed body blocks inside the shared docs content surface from `src/components/docs/docs-content.tsx` with heading anchor ids on docs detail routes; page-outline shell labels resolve through `useMessages()` like breadcrumbs and progression in `DocsShell`, and outline/content framing should stay on that shared card-backed path instead of reintroducing route-local wrapper CSS.
 - `loadDocPage()` returns `record.navigationTitle` as the rendered docs-page title, so the shell H1 and sidebar label stay on one canonical naming field while body headings should carry the deeper explanatory structure.
 - Search-artifact proof for launch-lane docs should assert canonical id, canonical locale, available locales, route URL, and representative heading/body text for concrete docs entries rather than only counting ids.
+- When one launch-lane guide needs reviewer-readable pipeline proof, prefer one page-specific test that loads the generated docs navigation, canonical doc page, localized search document, and checked-in public search artifact together for that slug instead of spreading the contract across route inventories.
 - Route-loading proof for launch-lane docs should hit the canonical `/docs/{slug}` export paths directly and assert the rendered title, body copy, and the actual `rel="prev"` / `rel="next"` anchor targets for the current progression contract rather than only checking whether a label string appears somewhere in the HTML.
 - Remove bootstrap-only nav constants such as `src/lib/docs-nav.ts`; the docs shell consumes projected navigation only.
 
@@ -52,6 +57,7 @@
 - Docs route shell rendering with separate section landmarks, breadcrumb position, and progression links: `tests/unit/docs-route-shell.test.tsx`
 - Served static export HTML includes generated multi-page sidebar depth, breadcrumb ancestry, progression links, and page-outline navigation when headings exist: `tests/unit/static-export.test.ts`
 - Search artifact and normalized search-document proof for the post-setup concept lane: `tests/unit/public-search-artifact.test.ts` and `tests/unit/localized-search-index-foundation.test.ts`
+- Page-specific content-pipeline proof for concept or reviewer guidance pages: `tests/unit/coder-reviewer-pattern-content-pipeline.test.ts` and `tests/unit/human-approval-gates-content-pipeline.test.ts`
 - Export-based browser and HTTP suites share one serialized static build through `ensureStaticExportBuilt()` in `tests/helpers/static-export-server.ts`; do not call `make build` directly from export test hooks.
 - Responsive docs navigation depth on narrow viewports: `tests/unit/docs-route-shell.test.tsx` and `tests/unit/shell-disclosure.test.tsx`
 - Mobile browser verification for generated docs depth affordances: `tests/unit/reconciled-export-browser.test.ts` (`docs navigation depth remains usable at a mobile viewport`)

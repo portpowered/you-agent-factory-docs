@@ -71,6 +71,7 @@ describe("localized starter content variants", () => {
       "concepts",
       "configuration",
       "getting-started",
+      "human-approval-gates",
       "installation",
       "introduction",
       "pr-review-factory",

@@ -92,6 +92,7 @@ describe("public search artifact generation", () => {
       "doc/configuration@en",
       "doc/getting-started@en",
       "doc/getting-started@fr",
+      "doc/human-approval-gates@en",
       "doc/installation@en",
       "doc/introduction@en",
       "doc/pr-review-factory@en",
@@ -113,6 +114,9 @@ describe("public search artifact generation", () => {
     );
     const concepts = artifact.entries.find(
       (entry) => entry.id === "doc/concepts@en",
+    );
+    const humanApprovalGates = artifact.entries.find(
+      (entry) => entry.id === "doc/human-approval-gates@en",
     );
 
     expect(gettingStarted).toMatchObject({
@@ -200,6 +204,53 @@ describe("public search artifact generation", () => {
     });
     expect(concepts?.headings.length).toBeGreaterThan(0);
     expect(concepts?.body).toContain("How the CLI and configuration connect");
+
+    expect(humanApprovalGates).toMatchObject({
+      canonicalId: "doc/human-approval-gates",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/human-approval-gates",
+      title: "Human approval gates",
+      section: "guides",
+      searchPriority: 8,
+    });
+    expect(humanApprovalGates?.headings).toEqual([
+      "Human approval gates",
+      "What this guide is for",
+      "When a workflow should pause for review",
+      "What approval gates are meant to catch",
+      "What reviewers should inspect before approving",
+      "Why approval loops improve safe adoption",
+      "How this page fits the rest of the docs",
+    ]);
+    expect(humanApprovalGates?.body).toContain(
+      "one canonical guide about approval checkpoints in You Agent Factory workflows",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Approval loops exist to catch avoidable failures while the workflow still has a clean stopping point.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Treat an approval as an evidence check, not a gut check.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "the proposed diff, generated document or output, stage summary, logs, and any validation or test results",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Approval loops reduce avoidable failure by stopping the workflow before one wrong assumption compounds into several expensive follow-on actions.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "That control has a cost: every gate slows throughput because the workflow waits for a human decision.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Continue to the Coder / Reviewer pattern",
+    );
   });
 
   test("surfaces substantive glossary starter copy on the existing canonical record", () => {

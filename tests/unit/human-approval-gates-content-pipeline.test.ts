@@ -9,10 +9,10 @@ import {
 
 const CONTENT_ROOT = join(process.cwd(), "src/content");
 
-describe("coder / reviewer pattern content pipeline", () => {
+describe("human approval gates content pipeline", () => {
   test("keeps navigation, doc loading, localized search documents, and the public search artifact aligned", () => {
     const navigation = loadDocsShellNavigation(CONTENT_ROOT);
-    const page = loadDocPage("coder-reviewer-pattern", CONTENT_ROOT, {
+    const page = loadDocPage("human-approval-gates", CONTENT_ROOT, {
       locale: "en",
     });
     const searchDocuments = loadLocalizedSearchDocuments(CONTENT_ROOT);
@@ -24,16 +24,16 @@ describe("coder / reviewer pattern content pipeline", () => {
       .find((section) => section.id === "guides")
       ?.pages.find(
         (projectedPage) =>
-          projectedPage.canonicalId === "doc/coder-reviewer-pattern",
+          projectedPage.canonicalId === "doc/human-approval-gates",
       );
 
     expect(navPage).toEqual({
-      canonicalId: "doc/coder-reviewer-pattern",
-      label: "Coder / Reviewer pattern",
-      href: "/docs/coder-reviewer-pattern",
-      order: 6,
+      canonicalId: "doc/human-approval-gates",
+      label: "Human approval gates",
+      href: "/docs/human-approval-gates",
+      order: 5,
       localeProjection: {
-        canonicalPageId: "doc/coder-reviewer-pattern",
+        canonicalPageId: "doc/human-approval-gates",
         canonicalLocale: "en",
         requestedLocale: "en",
         resolvedLocale: "en",
@@ -43,49 +43,59 @@ describe("coder / reviewer pattern content pipeline", () => {
     });
 
     expect(page.record).toMatchObject({
-      id: "doc/coder-reviewer-pattern",
-      slug: "coder-reviewer-pattern",
-      routePath: "/docs/coder-reviewer-pattern",
+      id: "doc/human-approval-gates",
+      slug: "human-approval-gates",
+      routePath: "/docs/human-approval-gates",
       canonicalLocale: "en",
       availableLocales: ["en"],
       section: "guides",
-      order: 6,
+      order: 5,
       status: "published",
     });
     expect(page.resolution).toEqual({
-      canonicalPageId: "doc/coder-reviewer-pattern",
+      canonicalPageId: "doc/human-approval-gates",
       canonicalLocale: "en",
       requestedLocale: "en",
       resolvedLocale: "en",
       fellBackToCanonicalLocale: false,
     });
-    expect(page.body).toContain("approval is treated as a real gate");
     expect(page.body).toContain(
-      "The most common failure mode is shallow review",
+      "An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff.",
+    );
+    expect(page.body).toContain(
+      "Treat an approval as an evidence check, not a gut check.",
+    );
+    expect(page.body).toContain(
+      "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
     );
 
     const searchDocument = searchDocuments.find(
-      (document) => document.id === "doc/coder-reviewer-pattern@en",
+      (document) => document.id === "doc/human-approval-gates@en",
     );
     expect(searchDocument).toMatchObject({
-      id: "doc/coder-reviewer-pattern@en",
-      canonicalId: "doc/coder-reviewer-pattern",
+      id: "doc/human-approval-gates@en",
+      canonicalId: "doc/human-approval-gates",
       locale: "en",
       canonicalLocale: "en",
       availableLocales: ["en"],
       kind: "doc",
-      url: "/docs/coder-reviewer-pattern",
-      title: "Coder / Reviewer pattern",
+      url: "/docs/human-approval-gates",
+      title: "Human approval gates",
       section: "guides",
       searchPriority: 8,
     });
-    expect(searchDocument?.headings).toContain("Where approval gates matter");
     expect(searchDocument?.headings).toContain(
-      "Realistic limits and failure modes",
+      "When a workflow should pause for review",
+    );
+    expect(searchDocument?.headings).toContain(
+      "What reviewers should inspect before approving",
+    );
+    expect(searchDocument?.headings).toContain(
+      "Why approval loops improve safe adoption",
     );
 
     const searchEntry = searchArtifact.entries.find(
-      (entry) => entry.id === "doc/coder-reviewer-pattern@en",
+      (entry) => entry.id === "doc/human-approval-gates@en",
     );
     expect(searchEntry).toEqual(searchDocument);
   });

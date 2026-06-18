@@ -217,6 +217,101 @@ describe("reconciled baseline browser export", () => {
     }
   }, 30_000);
 
+  test("human approval gates are reachable from the docs shell navigation", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const docsSidebar = page.locator("#nd-sidebar");
+      const humanApprovalGatesLink = docsSidebar.getByRole("link", {
+        name: "Human approval gates",
+      });
+
+      await humanApprovalGatesLink.waitFor({ state: "visible" });
+      expect(await humanApprovalGatesLink.isVisible()).toBe(true);
+      await humanApprovalGatesLink.click();
+      await page.waitForURL(
+        new RegExp(
+          `${withBasePath("/docs/human-approval-gates").replace(/\//g, "\\/")}/?$`,
+        ),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 1,
+            name: "Human approval gates",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Use this page when you need the generated docs shell to point readers to one canonical guide about approval checkpoints in You Agent Factory workflows.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "When a workflow should pause for review",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "What reviewers should inspect before approving",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText("Treat an approval as an evidence check, not a gut check.")
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Why approval loops improve safe adoption",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "That control has a cost: every gate slows throughput because the workflow waits for a human decision.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
+          )
+          .isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
   test("docs shell exposes the post-setup concepts path coherently", async () => {
     const page = await browser.newPage();
     const cliUrl = new URL(
@@ -254,6 +349,7 @@ describe("reconciled baseline browser export", () => {
         name: `${enMessages.docs.nextPagePrefix} Configuration`,
       });
 
+      await nextConfigurationLink.waitFor({ state: "visible" });
       expect(await nextConfigurationLink.isVisible()).toBe(true);
       await nextConfigurationLink.click();
       await page.waitForURL(
@@ -263,24 +359,16 @@ describe("reconciled baseline browser export", () => {
         { timeout: 10_000 },
       );
 
-      expect(
-        await page
-          .getByRole("navigation", {
-            name: enMessages.docs.progressionAriaLabel,
-          })
-          .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
-          })
-          .isVisible(),
-      ).toBe(true);
-      await page
+      const nextWorkflowConceptsLink = page
         .getByRole("navigation", {
           name: enMessages.docs.progressionAriaLabel,
         })
         .getByRole("link", {
           name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
-        })
-        .click();
+        });
+      await nextWorkflowConceptsLink.waitFor({ state: "visible" });
+      expect(await nextWorkflowConceptsLink.isVisible()).toBe(true);
+      await nextWorkflowConceptsLink.click();
       await page.waitForURL(
         new RegExp(
           `${withBasePath("/docs/concepts").replace(/\//g, "\\/")}/?$`,
@@ -288,16 +376,15 @@ describe("reconciled baseline browser export", () => {
         { timeout: 10_000 },
       );
 
-      expect(
-        await page
-          .getByRole("navigation", {
-            name: enMessages.docs.progressionAriaLabel,
-          })
-          .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Coder / Reviewer pattern`,
-          })
-          .isVisible(),
-      ).toBe(true);
+      const nextHumanApprovalGatesLink = page
+        .getByRole("navigation", {
+          name: enMessages.docs.progressionAriaLabel,
+        })
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Human approval gates`,
+        });
+      await nextHumanApprovalGatesLink.waitFor({ state: "visible" });
+      expect(await nextHumanApprovalGatesLink.isVisible()).toBe(true);
     } finally {
       await page.close();
     }
