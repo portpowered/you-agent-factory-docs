@@ -95,3 +95,28 @@ export const BUTTON_SIZE_CLASS_NAMES = {
   default: "ui-button-size--default",
   compact: "ui-button-size--compact",
 } as const;
+
+export const NOTICE_TONE_CLASS_NAMES = {
+  info: "ui-notice--info",
+  success: "ui-notice--success",
+  warning: "ui-notice--warning",
+  danger: "ui-notice--danger",
+} as const;
+
+type NoticeTone = keyof typeof NOTICE_TONE_CLASS_NAMES;
+
+type NoticeClassNameOptions = {
+  className?: string;
+  tone?: NoticeTone;
+};
+
+export function getNoticeClassName({
+  className,
+  tone = "info",
+}: NoticeClassNameOptions = {}): string {
+  return joinClassNames(
+    "ui-notice ui-surface ui-surface-radius--inner border",
+    NOTICE_TONE_CLASS_NAMES[tone],
+    className,
+  );
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { PrimitivesShowcase } from "@/components/landing/primitives-showcase";
 import { SharedShell } from "@/components/shell/shared-shell";
 import { ButtonLink } from "@/components/ui/button";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
@@ -25,10 +26,16 @@ import { DOCS_ENTRY_ROUTE, PROJECT_NAME, PROJECT_TAGLINE } from "@/lib/project";
 import { GITHUB_REPO_URL } from "@/lib/shared-shell-config";
 import { useMessages } from "@/localization/hooks/use-messages";
 import { createSharedShellConfigFromMessages } from "@/localization/lib/create-shared-shell-config";
+import { useEffect, useState } from "react";
 
 export function LandingShell() {
   const { t } = useMessages();
   const config = createSharedShellConfigFromMessages(t);
+  const [showPrimitivesShowcase, setShowPrimitivesShowcase] = useState(false);
+
+  useEffect(() => {
+    setShowPrimitivesShowcase(true);
+  }, []);
 
   return (
     <SharedShell config={config} surface="home">
@@ -185,6 +192,30 @@ export function LandingShell() {
             ))}
           </ol>
         </Card>
+
+        {showPrimitivesShowcase ? (
+          <PrimitivesShowcase />
+        ) : (
+          <Card
+            aria-busy="true"
+            aria-labelledby="landing-primitives-loading-title"
+            className={getContentWidthClassName(
+              "prose",
+              "landing-shell__section",
+            )}
+            padding="spacious"
+          >
+            <CardTitle
+              className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
+              id="landing-primitives-loading-title"
+            >
+              {t("landing.primitives.title")}
+            </CardTitle>
+            <CardDescription className="mb-0">
+              {t("landing.primitives.loadingBody")}
+            </CardDescription>
+          </Card>
+        )}
 
         <Card
           aria-labelledby="landing-why-title"

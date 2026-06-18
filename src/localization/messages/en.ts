@@ -15,6 +15,34 @@ export const enMessages = {
     primaryNavAriaLabel: "Primary",
     valueStatement:
       "Turn recurring engineering work into reusable, inspectable AI agent workflows you can run locally and evolve with your team.",
+    primitives: {
+      title: "Reusable UI primitives for docs-native interaction patterns",
+      loadingBody: "Loading the interactive primitives preview.",
+      summary:
+        "Typed docs controls that reuse the factory visual language without product-runtime coupling.",
+      selectorLabel: "Workflow mode",
+      selectorDescription:
+        "Switch between authored docs paths with one tokenized selector contract.",
+      selectorGuidedLabel: "Guided setup",
+      selectorReviewLabel: "Review queue",
+      selectorScheduledLabel: "Scheduled rollout (disabled)",
+      checkboxLabel: "Ready this example for review",
+      checkboxDescription:
+        "The checkbox keeps helper text and validation explicit.",
+      checkboxError: "Mark this before calling the example review-ready.",
+      bannerTitle: "Selected interaction path",
+      successTitle: "Review-ready state",
+      successBody: "This example is ready for review.",
+      alertTitle: "Review still blocked",
+      alertBody: "This example is not review-ready yet.",
+      pendingLabel: "Pending review",
+      mode: {
+        guided: "Guided setup focuses on install and first-run verification.",
+        review: "Review queue focuses on feedback and validation.",
+        scheduled:
+          "Scheduled rollout stays disabled until time-based examples land.",
+      },
+    },
   },
   docs: {
     navHeading: "Docs navigation",
