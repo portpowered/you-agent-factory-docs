@@ -1,5 +1,6 @@
 "use client";
 
+import { joinClassNames } from "@/lib/classnames";
 import type {
   PublicSearchOramaHit,
   PublicSearchOramaIndex,
@@ -50,6 +51,8 @@ const PUBLIC_SEARCH_ARTIFACT_PATH = withBasePath(
   "/search/public-search-index.json",
 );
 const SEARCH_RESULT_LIMIT = 5;
+const SEARCH_STATUS_CLASS_NAME = "m-0 text-sm text-muted-foreground";
+const SEARCH_ERROR_CLASS_NAME = "text-red-600 dark:text-red-400";
 
 export function DocsSearch() {
   const locale = useLocale();
@@ -170,24 +173,35 @@ export function DocsSearch() {
   }, [indexState, locale, query]);
 
   return (
-    <section aria-labelledby="docs-search-title" className="docs-search">
-      <div className="docs-search__header">
+    <section
+      aria-labelledby="docs-search-title"
+      className="mb-6 grid gap-4 rounded-xl border bg-card p-4"
+    >
+      <div className="grid gap-4">
         <div>
-          <h2 className="docs-search__title" id="docs-search-title">
+          <h2
+            className="m-0 text-base font-semibold text-foreground"
+            id="docs-search-title"
+          >
             {t("docs.searchTitle")}
           </h2>
-          <p className="docs-search__helper">{t("docs.searchHelperText")}</p>
+          <p className="mb-0 mt-1 text-sm text-muted-foreground">
+            {t("docs.searchHelperText")}
+          </p>
         </div>
         <form
           aria-labelledby="docs-search-title"
-          className="docs-search__form"
+          className="grid gap-2"
           onSubmit={(event) => event.preventDefault()}
         >
-          <label className="docs-search__label" htmlFor="docs-search-input">
+          <label
+            className="text-sm font-semibold text-foreground"
+            htmlFor="docs-search-input"
+          >
             {t("docs.searchLabel")}
           </label>
           <input
-            className="docs-search__input"
+            className="min-h-11 rounded-lg border bg-background px-3.5 py-3 text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             id="docs-search-input"
             name="docs-search-input"
             placeholder={t("docs.searchPlaceholder")}
@@ -199,7 +213,7 @@ export function DocsSearch() {
       </div>
 
       {indexState.status === "loading" ? (
-        <p aria-live="polite" className="docs-search__status">
+        <p aria-live="polite" className={SEARCH_STATUS_CLASS_NAME}>
           {t("docs.searchLoading")}
         </p>
       ) : null}
@@ -207,20 +221,23 @@ export function DocsSearch() {
       {indexState.status === "error" ? (
         <p
           aria-live="polite"
-          className="docs-search__status docs-search__status--error"
+          className={joinClassNames(
+            SEARCH_STATUS_CLASS_NAME,
+            SEARCH_ERROR_CLASS_NAME,
+          )}
         >
           {t("docs.searchError")}
         </p>
       ) : null}
 
       {indexState.status === "ready" && resultState.status === "idle" ? (
-        <p aria-live="polite" className="docs-search__status">
+        <p aria-live="polite" className={SEARCH_STATUS_CLASS_NAME}>
           {t("docs.searchEmptyQuery")}
         </p>
       ) : null}
 
       {indexState.status === "ready" && resultState.status === "searching" ? (
-        <p aria-live="polite" className="docs-search__status">
+        <p aria-live="polite" className={SEARCH_STATUS_CLASS_NAME}>
           {t("docs.searchSearching")}
         </p>
       ) : null}
@@ -228,31 +245,37 @@ export function DocsSearch() {
       {indexState.status === "ready" && resultState.status === "error" ? (
         <p
           aria-live="polite"
-          className="docs-search__status docs-search__status--error"
+          className={joinClassNames(
+            SEARCH_STATUS_CLASS_NAME,
+            SEARCH_ERROR_CLASS_NAME,
+          )}
         >
           {t("docs.searchError")}
         </p>
       ) : null}
 
       {indexState.status === "ready" && resultState.status === "empty" ? (
-        <p aria-live="polite" className="docs-search__status">
+        <p aria-live="polite" className={SEARCH_STATUS_CLASS_NAME}>
           {t("docs.searchNoResults")}
         </p>
       ) : null}
 
       {indexState.status === "ready" && resultState.status === "success" ? (
-        <div className="docs-search__results">
-          <p aria-live="polite" className="docs-search__status">
+        <div className="grid gap-3">
+          <p aria-live="polite" className={SEARCH_STATUS_CLASS_NAME}>
             {resultState.count} {t("docs.searchResultsLabel")}
           </p>
-          <ul className="docs-search__results-list">
+          <ul className="m-0 grid list-none gap-3 p-0">
             {resultState.hits.map((hit) => (
-              <li key={hit.id} className="docs-search__result">
-                <Link className="docs-search__result-link" href={hit.entry.url}>
-                  <span className="docs-search__result-title">
+              <li className="rounded-lg border bg-card" key={hit.id}>
+                <Link
+                  className="group grid gap-1.5 rounded-lg px-4 py-3 no-underline transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  href={hit.entry.url}
+                >
+                  <span className="text-sm font-semibold text-foreground transition-colors group-hover:text-accent group-hover:underline">
                     {hit.entry.title}
                   </span>
-                  <span className="docs-search__result-description">
+                  <span className="text-sm text-muted-foreground">
                     {hit.entry.description}
                   </span>
                 </Link>

@@ -29,9 +29,9 @@ export function SharedShellDocsAside({
   }
 
   return (
-    <div className="shared-shell__docs-aside-region">
+    <div className="contents max-[1023px]:flex max-[1023px]:flex-col max-[1023px]:gap-3 max-[1023px]:px-5 md:max-[1023px]:px-6">
       <ShellDisclosureTrigger
-        className="shared-shell__docs-nav-toggle"
+        className="max-[1023px]:inline-flex"
         disclosure={disclosure}
       >
         {({ isOpen }) =>
@@ -41,10 +41,10 @@ export function SharedShellDocsAside({
         }
       </ShellDisclosureTrigger>
       <ShellDisclosurePanel
-        className="shared-shell__docs-aside-panel"
+        className="contents max-[1023px]:block data-[shell-disclosure=open]:animate-[shell-disclosure-reveal_200ms_ease-out] motion-reduce:data-[shell-disclosure=open]:animate-none"
         disclosure={disclosure}
       >
-        <aside className="shared-shell__docs-aside border-r bg-card xl:min-h-full">
+        <aside className="divide-y border-r bg-card xl:min-h-full max-[1023px]:border-r-0 max-[1023px]:border-t">
           {docsNavigationGroups.map((docsNavigation) => (
             <SharedShellDocsNavigation
               ariaLabel={docsNavigation.heading}

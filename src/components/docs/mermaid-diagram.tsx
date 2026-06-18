@@ -117,24 +117,32 @@ export function MermaidDiagram({
     <figure
       aria-describedby={`${descriptionId} ${sourceId}`}
       aria-labelledby={titleId}
-      className="docs-diagram"
+      className="my-8"
     >
-      <figcaption className="docs-diagram__header">
-        <h2 id={titleId}>{title}</h2>
-        <p className="docs-diagram__description" id={descriptionId}>
+      <figcaption>
+        <h2
+          className="m-0 text-2xl font-semibold tracking-tight text-foreground"
+          id={titleId}
+        >
+          {title}
+        </h2>
+        <p className="mb-0 mt-2 text-muted-foreground" id={descriptionId}>
           {description}
         </p>
       </figcaption>
 
-      <div className="docs-diagram__surface">
+      <div className="mt-4 rounded-xl border bg-card p-3 sm:p-4">
         {renderState.status === "loading" ? (
-          <p aria-live="polite" className="docs-diagram__status">
+          <p aria-live="polite" className="m-0 text-sm text-muted-foreground">
             Rendering Mermaid diagram from checked-in source…
           </p>
         ) : null}
 
         {renderState.status === "error" ? (
-          <p className="docs-diagram__error" role="alert">
+          <p
+            className="m-0 text-sm text-red-600 dark:text-red-400"
+            role="alert"
+          >
             Mermaid rendering failed: {renderState.message}
           </p>
         ) : null}
@@ -142,18 +150,21 @@ export function MermaidDiagram({
         <div
           aria-busy={renderState.status === "loading" ? true : undefined}
           aria-label={title}
-          className="docs-diagram__graphic"
+          className="overflow-hidden rounded-lg border bg-muted"
           ref={graphicRef}
           role="img"
           suppressHydrationWarning
+          style={{
+            minHeight: "clamp(16rem, 42vw, 28rem)",
+          }}
         />
       </div>
 
-      <div className="docs-diagram__source">
-        <p className="docs-diagram__source-label" id={sourceId}>
+      <div className="mt-4 rounded-xl border bg-card p-4">
+        <p className="m-0 text-sm font-semibold text-foreground" id={sourceId}>
           Mermaid source of truth
         </p>
-        <pre className="docs-diagram__code">
+        <pre className="mb-0 mt-3 overflow-x-auto rounded-lg bg-background p-4 text-sm text-foreground">
           <code>{definition}</code>
         </pre>
       </div>

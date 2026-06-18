@@ -22,14 +22,19 @@ export function DocsPageOutlineNav({
       aria-label={ariaLabel}
       className="docs-page-outline border-border/70 bg-muted/30 p-4 sm:p-5"
     >
-      <p className="docs-page-outline__title">{onThisPageLabel}</p>
-      <ol className="docs-page-outline__list">
+      <p className="m-0 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+        {onThisPageLabel}
+      </p>
+      <ol className="m-0 mt-4 grid list-none gap-3 p-0">
         {outline.headings.map((heading) => (
           <li
-            className={`docs-page-outline__item docs-page-outline__item--level-${heading.level}`}
+            className={heading.level === 3 ? "pl-4" : undefined}
             key={heading.id}
           >
-            <a className="docs-page-outline__link" href={`#${heading.id}`}>
+            <a
+              className="text-sm font-medium text-foreground no-underline transition-colors hover:text-accent hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              href={`#${heading.id}`}
+            >
               {heading.text}
             </a>
           </li>

@@ -106,9 +106,13 @@ function toReactFlowNode(
     handles,
     data: {
       label: (
-        <div className="docs-react-flow-node">
-          <strong>{node.title}</strong>
-          <span>{node.detail}</span>
+        <div className="flex h-full flex-col justify-center rounded-lg border bg-card px-4 py-3 text-left shadow-sm">
+          <strong className="text-sm font-semibold text-foreground">
+            {node.title}
+          </strong>
+          <span className="mt-1 text-sm text-muted-foreground">
+            {node.detail}
+          </span>
         </div>
       ),
     },
@@ -243,23 +247,32 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
     <figure
       aria-describedby={`${descriptionId} ${sourceId}`}
       aria-labelledby={titleId}
-      className="docs-diagram"
+      className="my-8"
     >
-      <figcaption className="docs-diagram__header">
-        <h2 id={titleId}>{definition.title}</h2>
-        <p className="docs-diagram__description" id={descriptionId}>
+      <figcaption>
+        <h2
+          className="m-0 text-2xl font-semibold tracking-tight text-foreground"
+          id={titleId}
+        >
+          {definition.title}
+        </h2>
+        <p className="mb-0 mt-2 text-muted-foreground" id={descriptionId}>
           {definition.description}
         </p>
       </figcaption>
 
-      <div className="docs-diagram__surface">
+      <div className="mt-4 rounded-xl border bg-card p-3 sm:p-4">
         <div
           aria-label={definition.title}
-          className="docs-diagram__graphic docs-diagram__graphic--react-flow"
+          className="overflow-hidden rounded-lg border bg-muted p-2"
           ref={graphicRef}
+          style={{
+            minHeight: "clamp(16rem, 42vw, 28rem)",
+          }}
         >
           <div
-            className="docs-diagram__react-flow-stage"
+            className="origin-top-left"
+            data-testid="react-flow-stage"
             style={{
               width: `${definition.viewport.width}px`,
               height: `${definition.viewport.height}px`,
@@ -304,11 +317,11 @@ export function ReactFlowDiagram({ definition }: ReactFlowDiagramProps) {
         </div>
       </div>
 
-      <div className="docs-diagram__source">
-        <p className="docs-diagram__source-label" id={sourceId}>
+      <div className="mt-4 rounded-xl border bg-card p-4">
+        <p className="m-0 text-sm font-semibold text-foreground" id={sourceId}>
           React Flow source of truth
         </p>
-        <pre className="docs-diagram__code">
+        <pre className="mb-0 mt-3 overflow-x-auto rounded-lg bg-background p-4 text-sm text-foreground">
           <code>{sourcePreview}</code>
         </pre>
       </div>

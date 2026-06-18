@@ -28,13 +28,13 @@ export function LandingShell() {
 
   return (
     <SharedShell config={config} surface="home">
-      <div className="landing-shell__sections flex w-full flex-col items-center gap-8">
+      <div className="flex w-full flex-col items-center gap-8">
         <Card
           aria-describedby="landing-hero-summary"
           aria-labelledby="landing-hero-title"
-          className="landing-shell__hero max-w-[42rem] p-6 sm:p-8"
+          className="max-w-[42rem] p-6 sm:p-8"
         >
-          <p className="landing-shell__eyebrow mb-3 text-sm font-semibold uppercase tracking-[0.04em] text-accent">
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.04em] text-accent">
             {PROJECT_NAME}
           </p>
           <h1
@@ -44,24 +44,16 @@ export function LandingShell() {
             {PROJECT_TAGLINE}
           </h1>
           <CardDescription
-            className="landing-shell__value mb-0 mt-3 text-[clamp(1rem,2.5vw,1.125rem)] text-muted-foreground"
+            className="mb-0 mt-3 text-[clamp(1rem,2.5vw,1.125rem)] text-muted-foreground"
             id="landing-hero-summary"
           >
             {t("landing.valueStatement")}
           </CardDescription>
-          <div className="landing-shell__cta-row mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <ButtonLink
-              className="landing-shell__button"
-              href={DOCS_ENTRY_ROUTE}
-            >
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <ButtonLink href={DOCS_ENTRY_ROUTE}>
               {t("common.getStarted")}
             </ButtonLink>
-            <ButtonLink
-              className="landing-shell__button landing-shell__button--secondary"
-              external
-              href={GITHUB_REPO_URL}
-              variant="secondary"
-            >
+            <ButtonLink external href={GITHUB_REPO_URL} variant="secondary">
               {t("common.githubCta")}
             </ButtonLink>
           </div>
@@ -69,7 +61,7 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-problem-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className="max-w-[42rem] p-7"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -77,7 +69,7 @@ export function LandingShell() {
           >
             {LANDING_PROBLEM_TITLE}
           </CardTitle>
-          <ul className="landing-shell__list m-0 list-disc pl-5 text-muted-foreground">
+          <ul className="m-0 list-disc pl-5 text-muted-foreground">
             {LANDING_PROBLEM_POINTS.map((point) => (
               <li className="mt-3 first:mt-0" key={point}>
                 {point}
@@ -88,7 +80,7 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-solution-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className="max-w-[42rem] p-7"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -96,7 +88,7 @@ export function LandingShell() {
           >
             {LANDING_SOLUTION_TITLE}
           </CardTitle>
-          <ul className="landing-shell__list m-0 list-disc pl-5 text-muted-foreground">
+          <ul className="m-0 list-disc pl-5 text-muted-foreground">
             {LANDING_SOLUTION_POINTS.map((point) => (
               <li className="mt-3 first:mt-0" key={point}>
                 {point}
@@ -107,7 +99,7 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-example-workflows-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className="max-w-[42rem] p-7"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -115,17 +107,17 @@ export function LandingShell() {
           >
             {LANDING_EXAMPLE_WORKFLOWS_TITLE}
           </CardTitle>
-          <ul className="landing-shell__workflow-list m-0 grid list-none gap-4 p-0">
+          <ul className="m-0 grid list-none gap-4 p-0">
             {LANDING_EXAMPLE_WORKFLOWS.map((workflow) => (
               <Card
                 as="li"
                 key={workflow.title}
-                className="landing-shell__workflow-item bg-muted px-4 py-4 shadow-none"
+                className="bg-muted px-4 py-4 shadow-none"
               >
-                <h3 className="landing-shell__workflow-title m-0 text-base font-semibold leading-snug text-card-foreground">
+                <h3 className="m-0 text-base font-semibold leading-snug text-card-foreground">
                   {workflow.title}
                 </h3>
-                <p className="landing-shell__workflow-description mb-0 mt-1 text-muted-foreground">
+                <p className="mb-0 mt-1 text-muted-foreground">
                   {workflow.description}
                 </p>
               </Card>
@@ -135,7 +127,7 @@ export function LandingShell() {
 
         <Card
           aria-labelledby="landing-how-it-works-title"
-          className="landing-shell__section max-w-[42rem] p-7"
+          className="max-w-[42rem] p-7"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -143,13 +135,13 @@ export function LandingShell() {
           >
             {LANDING_HOW_IT_WORKS_TITLE}
           </CardTitle>
-          <ol className="landing-shell__steps m-0 grid gap-4 pl-5">
+          <ol className="m-0 grid gap-4 pl-5">
             {LANDING_HOW_IT_WORKS_STEPS.map((step) => (
               <li key={step.title}>
-                <h3 className="landing-shell__step-title m-0 text-base font-semibold leading-snug text-card-foreground">
+                <h3 className="m-0 text-base font-semibold leading-snug text-card-foreground">
                   {step.title}
                 </h3>
-                <p className="landing-shell__step-description mb-0 mt-1 text-muted-foreground">
+                <p className="mb-0 mt-1 text-muted-foreground">
                   {step.description}
                 </p>
               </li>
@@ -157,27 +149,24 @@ export function LandingShell() {
           </ol>
         </Card>
 
-        <Card
-          aria-labelledby="landing-why-title"
-          className="landing-shell__section max-w-[42rem] p-7"
-        >
+        <Card aria-labelledby="landing-why-title" className="max-w-[42rem] p-7">
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
             id="landing-why-title"
           >
             {LANDING_WHY_TITLE}
           </CardTitle>
-          <ul className="landing-shell__why-list m-0 grid list-none gap-4 p-0">
+          <ul className="m-0 grid list-none gap-4 p-0">
             {LANDING_WHY_POINTS.map((point) => (
               <Card
                 as="li"
                 key={point.title}
-                className="landing-shell__why-item bg-muted px-4 py-4 shadow-none"
+                className="bg-muted px-4 py-4 shadow-none"
               >
-                <h3 className="landing-shell__why-title m-0 text-base font-semibold leading-snug text-card-foreground">
+                <h3 className="m-0 text-base font-semibold leading-snug text-card-foreground">
                   {point.title}
                 </h3>
-                <p className="landing-shell__why-description mb-0 mt-1 text-muted-foreground">
+                <p className="mb-0 mt-1 text-muted-foreground">
                   {point.description}
                 </p>
               </Card>
@@ -188,7 +177,7 @@ export function LandingShell() {
         <Card
           aria-describedby="landing-final-cta-summary"
           aria-labelledby="landing-final-cta-title"
-          className="landing-shell__section landing-shell__final-cta max-w-[42rem] p-7"
+          className="max-w-[42rem] p-7"
         >
           <CardTitle
             className="mb-4 text-[clamp(1.25rem,3vw,1.75rem)]"
@@ -197,24 +186,16 @@ export function LandingShell() {
             {LANDING_FINAL_CTA_TITLE}
           </CardTitle>
           <CardDescription
-            className="landing-shell__final-cta-summary mb-0 text-[clamp(1rem,2.5vw,1.125rem)] text-muted-foreground"
+            className="mb-0 text-[clamp(1rem,2.5vw,1.125rem)] text-muted-foreground"
             id="landing-final-cta-summary"
           >
             {LANDING_FINAL_CTA_SUMMARY}
           </CardDescription>
-          <div className="landing-shell__cta-row mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <ButtonLink
-              className="landing-shell__button"
-              href={DOCS_ENTRY_ROUTE}
-            >
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <ButtonLink href={DOCS_ENTRY_ROUTE}>
               {t("common.getStarted")}
             </ButtonLink>
-            <ButtonLink
-              className="landing-shell__button landing-shell__button--secondary"
-              external
-              href={GITHUB_REPO_URL}
-              variant="secondary"
-            >
+            <ButtonLink external href={GITHUB_REPO_URL} variant="secondary">
               {t("common.githubCta")}
             </ButtonLink>
           </div>

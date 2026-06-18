@@ -81,7 +81,7 @@ describe("ReactFlowDiagram", () => {
     );
 
     await waitFor(() => {
-      const stage = document.querySelector(".docs-diagram__react-flow-stage");
+      const stage = screen.getByTestId("react-flow-stage");
       const transform = stage?.getAttribute("style") ?? "";
 
       if (transform) {
@@ -118,7 +118,7 @@ describe("ReactFlowDiagram", () => {
     });
 
     await waitFor(() => {
-      const stage = document.querySelector(".docs-diagram__react-flow-stage");
+      const stage = screen.getByTestId("react-flow-stage");
       expect(stage?.getAttribute("style")).not.toEqual(initialStageStyle);
     });
   });

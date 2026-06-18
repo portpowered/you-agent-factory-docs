@@ -19,37 +19,39 @@ export function DocsProgression({
   }
 
   return (
-    <nav aria-label={ariaLabel} className="docs-progression">
-      <div className="docs-progression__links">
+    <nav aria-label={ariaLabel} className="mt-10 border-t pt-6">
+      <div className="grid gap-4 sm:grid-cols-2">
         {progression.previous ? (
           <Link
-            className="docs-progression__link docs-progression__link--previous"
+            className="group flex flex-col gap-1 rounded-lg border bg-card px-4 py-3 no-underline transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             href={progression.previous.href}
             rel="prev"
           >
-            <span className="docs-progression__prefix">
+            <span className="text-xs font-semibold uppercase tracking-[0.04em] text-muted-foreground">
               {previousPagePrefix}
             </span>
-            <span className="docs-progression__label">
+            <span className="text-sm font-semibold text-foreground group-hover:text-accent group-hover:underline">
               {progression.previous.label}
             </span>
           </Link>
         ) : (
-          <span className="docs-progression__placeholder" />
+          <span aria-hidden="true" className="hidden sm:block" />
         )}
         {progression.next ? (
           <Link
-            className="docs-progression__link docs-progression__link--next"
+            className="group flex flex-col gap-1 rounded-lg border bg-card px-4 py-3 text-left no-underline transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:col-start-2 sm:items-end sm:text-right"
             href={progression.next.href}
             rel="next"
           >
-            <span className="docs-progression__prefix">{nextPagePrefix}</span>
-            <span className="docs-progression__label">
+            <span className="text-xs font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+              {nextPagePrefix}
+            </span>
+            <span className="text-sm font-semibold text-foreground group-hover:text-accent group-hover:underline">
               {progression.next.label}
             </span>
           </Link>
         ) : (
-          <span className="docs-progression__placeholder" />
+          <span aria-hidden="true" className="hidden sm:block" />
         )}
       </div>
     </nav>

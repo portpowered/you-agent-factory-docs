@@ -108,7 +108,7 @@ describe("homepage shell rendering", () => {
     expect(hero.getAttribute("aria-describedby")).toBe("landing-hero-summary");
   });
 
-  test("marks hero CTAs as focusable controls with button styling hooks", async () => {
+  test("marks hero CTAs as focusable controls with button styling", async () => {
     mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1 });
 
     const { LandingShell } = await import(
@@ -125,8 +125,6 @@ describe("homepage shell rendering", () => {
       name: enMessages.common.githubCta,
     });
 
-    expect(docsCta.className).toContain("landing-shell__button");
-    expect(githubCta.className).toContain("landing-shell__button");
     expect(docsCta.className).toContain("ui-button");
     expect(githubCta.className).toContain("ui-button");
     expect(docsCta.className).toContain("bg-accent");
@@ -285,8 +283,8 @@ describe("homepage shell rendering", () => {
     expect(docsCta.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
     expect(githubCta.getAttribute("href")).toBe(GITHUB_REPO_URL);
     expect(githubCta.getAttribute("target")).toBe("_blank");
-    expect(docsCta.className).toContain("landing-shell__button");
-    expect(githubCta.className).toContain("landing-shell__button");
+    expect(docsCta.className).toContain("ui-button");
+    expect(githubCta.className).toContain("ui-button");
   });
 
   test("renders the complete first-visit section story in architecture order", async () => {

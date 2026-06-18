@@ -40,7 +40,6 @@ describe("shared shell navigation primitives", () => {
 
     expect(link.getAttribute("href")).toBe(DOCS_ENTRY_ROUTE);
     expect(link.getAttribute("aria-current")).toBe("page");
-    expect(link.className).toContain("shared-shell__link");
     expect(link.className).toContain("ui-button");
     expect(link.className).toContain("bg-accent");
     expect(link.className).toContain("text-accent-foreground");
@@ -65,7 +64,6 @@ describe("shared shell navigation primitives", () => {
     expect(link.getAttribute("href")).toBe(GITHUB_REPO_URL);
     expect(link.getAttribute("target")).toBe("_blank");
     expect(link.getAttribute("rel")).toBe("noopener noreferrer");
-    expect(link.className).toContain("shared-shell__link--external");
     expect(link.className).toContain("ui-button");
     expect(link.className).toContain("text-accent");
   });

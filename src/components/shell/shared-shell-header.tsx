@@ -30,13 +30,13 @@ export function SharedShellHeader({ config, surface }: SharedShellHeaderProps) {
   const navigationDisclosure = config.responsive.navigationDisclosure;
 
   return (
-    <header className="shared-shell__header border-b bg-card px-5 py-4 md:px-6">
-      <div className="shared-shell__header-row flex items-center justify-between gap-4">
-        <p className="shared-shell__brand m-0 text-base font-semibold tracking-tight">
+    <header className="border-b bg-card px-5 py-4 md:px-6">
+      <div className="flex items-center justify-between gap-4">
+        <p className="m-0 text-base font-semibold tracking-tight">
           {config.brand}
         </p>
         <ShellDisclosureTrigger
-          className="shared-shell__menu-toggle"
+          className="max-[1023px]:inline-flex"
           disclosure={disclosure}
         >
           {({ isOpen }) =>
@@ -47,7 +47,7 @@ export function SharedShellHeader({ config, surface }: SharedShellHeaderProps) {
         </ShellDisclosureTrigger>
       </div>
       <ShellDisclosurePanel
-        className="shared-shell__header-nav-region"
+        className="contents max-[1023px]:mt-3 max-[1023px]:block max-[1023px]:w-full data-[shell-disclosure=open]:animate-[shell-disclosure-reveal_200ms_ease-out] motion-reduce:data-[shell-disclosure=open]:animate-none"
         disclosure={disclosure}
       >
         <SharedShellPrimaryNavigation
