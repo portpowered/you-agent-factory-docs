@@ -478,4 +478,53 @@ describe("reconciled baseline browser export", () => {
       await page.close();
     }
   }, 30_000);
+
+  test("FAQ stays reachable through the generated guides navigation inside the docs shell", async () => {
+    const page = await browser.newPage();
+    const conceptsUrl = new URL(
+      withBasePath("/docs/concepts"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(conceptsUrl, { waitUntil: "domcontentloaded" });
+
+      const guidesNav = page.getByRole("navigation", { name: "Guides" });
+      const faqLink = guidesNav.getByRole("link", { name: "FAQ" });
+      expect(await faqLink.isVisible()).toBe(true);
+
+      await faqLink.click();
+      await page.waitForURL(
+        new RegExp(`${withBasePath("/docs/faq").replace(/\//g, "\\/")}/?$`),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page.getByRole("heading", { level: 1, name: "FAQ" }).isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.breadcrumbAriaLabel,
+          })
+          .getByText("Guides")
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.previousPagePrefix} Core concepts`,
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page.getByRole("navigation", { name: "Guides" }).isVisible(),
+      ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
 });
