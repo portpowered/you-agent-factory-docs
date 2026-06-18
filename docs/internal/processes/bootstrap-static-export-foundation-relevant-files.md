@@ -30,6 +30,7 @@
 - Reusable static-export build and local serving helpers live in `src/lib/static-export.ts`; tests reuse the same module through `tests/helpers/static-export-server.ts`.
 - Unit tests live under `tests/unit/` and import source modules with relative paths.
 - Component behavior tests use `@testing-library/react` with `@happy-dom/global-registrator` preloaded from `bunfig.toml` (`tests/setup/happydom.ts`, `tests/setup/testing-library.ts`).
+- Keep `happy-dom` declared directly in `devDependencies` when using that preload path; relying on the registrator package's transitive install can break `make setup && make test` reproducibility on a fresh checkout.
 - Served static-export navigation tests build once, mount `out/` under the base path, and use Bun's native `fetch` via `tests/helpers/http.ts` (happy-dom's fetch blocks cross-origin local requests).
 - Export-backed server tests must reserve an actually available localhost port before spawning `python3 -m http.server`; if the preferred default test port is already occupied, fall back to a free port instead of accidentally reusing a stale server from another run.
 - `validate:static-export` cleans `.next`, runs one production build under `withStaticExportBuildLock()`, then invokes `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` and `STATIC_EXPORT_BUILD_LOCK_HELD=1` so the served-export tests reuse that export without deadlocking on the parent-held lock.
