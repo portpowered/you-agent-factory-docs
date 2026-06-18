@@ -3,6 +3,7 @@ import nextConfig from "../../../next.config";
 
 /** Set by validate:static-export after a successful production build. */
 export const STATIC_EXPORT_SKIP_BUILD_ENV = "STATIC_EXPORT_SKIP_BUILD";
+export const STATIC_EXPORT_LOCK_HELD_ENV = "STATIC_EXPORT_BUILD_LOCK_HELD";
 
 export type StaticExportConfig = {
   output: string | undefined;

@@ -1,5 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { join } from "node:path";
+import { STATIC_EXPORT_LOCK_HELD_ENV } from "../../src/lib/validation/static-export";
+import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { withRepoRootCommandLock } from "./repo-root-command-lock";
 
 const repoRoot = join(import.meta.dir, "../..");
@@ -15,6 +17,11 @@ export function runMake(
       encoding: "utf8",
       env: {
         ...process.env,
+        ...(target === "quality-gate"
+          ? {
+              [STATIC_EXPORT_LOCK_HELD_ENV]: "1",
+            }
+          : undefined),
         ...options.env,
       },
     });
@@ -22,7 +29,11 @@ export function runMake(
     options.dryRun ||
     (target !== "build" && target !== "check" && target !== "quality-gate")
       ? run()
-      : withRepoRootCommandLock(repoRoot, run);
+      : withRepoRootCommandLock(repoRoot, () =>
+          target === "build" || target === "quality-gate"
+            ? withStaticExportBuildLock(repoRoot, run)
+            : run(),
+        );
 
   return {
     status: result.status,
