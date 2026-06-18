@@ -25,6 +25,7 @@
 
 - `tests/unit/search-index-validation.test.ts` covers the pure validator success path plus missing-artifact, missing-entry, stale-entry, ordering-drift, normalized-field-mismatch, and exclusion-regression failures.
 - `tests/unit/search-index-command-surface.test.ts` proves the Bun and Make command surfaces for the dedicated validation lane.
+- Real command-surface tests in `tests/unit/search-index-command-surface.test.ts` need explicit timeouts above Bun's default because they can queue behind the shared repo-command lock while concurrent suites run other root validation subprocesses.
 - `tests/unit/search-index-validation.test.ts` also carries focused exclusion fixtures across docs, blog, glossary, comparison, and reference content so reviewers can verify the supported seam without involving the UI.
 - `tests/unit/search-index-validation-failing-path.test.ts` proves the script exits non-zero for representative artifact drift, malformed checked-in artifact structure, normalized contract mismatch, and excluded-entry regressions.
 - `tests/unit/quality-gate.test.ts` and `tests/unit/quality-gate-validation-failing-path.test.ts` prove broader quality-gate reuse stays distinguishable from unrelated validation failures.

@@ -80,7 +80,10 @@ describe("static export server helpers", () => {
 
     const homepageHtmlPath = join(exportDir, "index.html");
     const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
-    const port = getTestPort(3791, "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT");
+    const port = await getTestPort(
+      3791,
+      "STATIC_EXPORT_SERVER_SNAPSHOT_TEST_PORT",
+    );
     const server = startStaticExportServer(port);
 
     await waitForStaticExportServer(server.baseUrl);
@@ -99,12 +102,14 @@ describe("static export server helpers", () => {
         },
       );
       const servedHtml = await response.text();
+      const stableHomepageTitle = "<title>You Agent Factory</title>";
+      const stableHomepageCta = `href="${SITE_BASE_PATH}/docs/"`;
 
       expect(response.status).toBe(200);
-      expect(servedHtml).toContain("<title>You Agent Factory</title>");
-      expect(servedHtml).toContain(
-        "An open-source, engineering-native platform for turning recurring development work into reusable, inspectable AI agent workflows.",
-      );
+      expect(originalHomepageHtml).toContain(stableHomepageTitle);
+      expect(originalHomepageHtml).toContain(stableHomepageCta);
+      expect(servedHtml).toContain(stableHomepageTitle);
+      expect(servedHtml).toContain(stableHomepageCta);
       expect(servedHtml).not.toContain("<title>mutated</title>");
     } finally {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");

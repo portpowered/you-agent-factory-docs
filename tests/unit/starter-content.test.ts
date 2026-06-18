@@ -154,7 +154,9 @@ navigationTitle: Agent term
       "doc/getting-started",
       "doc/installation",
       "doc/introduction",
+      "doc/pr-review-factory",
       "doc/quickstart",
+      "doc/release-readiness-factory",
       "glossary/agent",
       "reference/loop-engineering",
     ]);

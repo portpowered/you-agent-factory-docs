@@ -256,4 +256,50 @@ MDX body.
     });
     expect(page.localeProjection.availableLocales).toEqual(["en", "fr"]);
   });
+
+  test("loads the use-case pages through stable canonical doc routes", () => {
+    const prReviewPage = loadDocPage("pr-review-factory", STARTER_CONTENT_ROOT);
+    const releaseReadinessPage = loadDocPage(
+      "release-readiness-factory",
+      STARTER_CONTENT_ROOT,
+    );
+
+    expect(prReviewPage).toMatchObject({
+      record: {
+        id: "doc/pr-review-factory",
+        routePath: "/docs/pr-review-factory",
+        canonicalLocale: "en",
+        availableLocales: ["en"],
+      },
+      title: "PR Review Factory",
+      resolution: {
+        canonicalPageId: "doc/pr-review-factory",
+        canonicalLocale: "en",
+        requestedLocale: "en",
+        resolvedLocale: "en",
+        fellBackToCanonicalLocale: false,
+      },
+    });
+    expect(prReviewPage.body).toContain("What this workflow is for");
+    expect(prReviewPage.body).toContain("Inputs and outputs");
+
+    expect(releaseReadinessPage).toMatchObject({
+      record: {
+        id: "doc/release-readiness-factory",
+        routePath: "/docs/release-readiness-factory",
+        canonicalLocale: "en",
+        availableLocales: ["en"],
+      },
+      title: "Release Readiness Factory",
+      resolution: {
+        canonicalPageId: "doc/release-readiness-factory",
+        canonicalLocale: "en",
+        requestedLocale: "en",
+        resolvedLocale: "en",
+        fellBackToCanonicalLocale: false,
+      },
+    });
+    expect(releaseReadinessPage.body).toContain("What this workflow is for");
+    expect(releaseReadinessPage.body).toContain("Inputs and outputs");
+  });
 });

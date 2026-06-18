@@ -63,10 +63,11 @@ describe("static export configuration", () => {
 });
 
 describe("served static export navigation", () => {
-  const port = getTestPort(3785, "STATIC_EXPORT_TEST_PORT");
+  let port: number;
   let server: ReturnType<typeof startStaticExportServer>;
 
   beforeAll(async () => {
+    port = await getTestPort(3785, "STATIC_EXPORT_TEST_PORT");
     await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
@@ -198,10 +199,13 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("Quickstart");
     expect(docsHtml).toContain("CLI overview");
     expect(docsHtml).toContain("Configuration");
+    expect(docsHtml).toContain("PR Review Factory");
+    expect(docsHtml).toContain("Release Readiness Factory");
     expect(docsHtml).toContain("Workflow concepts");
     expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Guides");
     expect(docsHtml).toContain("Setup");
+    expect(docsHtml).toContain("Use cases");
     expect(new RegExp(`href="${introductionPath}/?"`).test(docsHtml)).toBe(
       true,
     );
@@ -632,5 +636,51 @@ describe("served static export navigation", () => {
       expect(html).toContain(routeCheck.previousLabel);
       expect(html).toContain(routeCheck.nextLabel);
     }
+  }, 30_000);
+
+  test("serves the generated PR Review Factory use-case page through the docs shell", async () => {
+    const reviewResponse = await fetchHttp(
+      new URL(withBasePath("/docs/pr-review-factory"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(reviewResponse.status).toBe(200);
+
+    const reviewHtml = await reviewResponse.text();
+
+    expect(reviewHtml).toContain("PR Review Factory");
+    expect(reviewHtml).toContain("Use cases");
+    expect(reviewHtml).toContain("Release Readiness Factory");
+    expect(reviewHtml).toContain("What this workflow is for");
+    expect(reviewHtml).toContain("Who participates");
+    expect(reviewHtml).toContain("Main workflow stages");
+    expect(reviewHtml).toContain("Inputs and outputs");
+    expect(reviewHtml).toContain("Why engineering teams use it");
+    expect(reviewHtml).toContain("human approver");
+    expect(reviewHtml).toContain("review summary");
+    expect(reviewHtml).toContain('aria-current="page"');
+  }, 30_000);
+
+  test("serves the generated Release Readiness Factory use-case page through the docs shell", async () => {
+    const readinessResponse = await fetchHttp(
+      new URL(withBasePath("/docs/release-readiness-factory"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(readinessResponse.status).toBe(200);
+
+    const readinessHtml = await readinessResponse.text();
+
+    expect(readinessHtml).toContain("Release Readiness Factory");
+    expect(readinessHtml).toContain("Use cases");
+    expect(readinessHtml).toContain("PR Review Factory");
+    expect(readinessHtml).toContain("What this workflow is for");
+    expect(readinessHtml).toContain("Who participates");
+    expect(readinessHtml).toContain("Main workflow stages");
+    expect(readinessHtml).toContain("Inputs and outputs");
+    expect(readinessHtml).toContain("Why engineering teams use it");
+    expect(readinessHtml).toContain("release candidate");
+    expect(readinessHtml).toContain("readiness summary");
+    expect(readinessHtml).toContain('aria-current="page"');
   }, 30_000);
 });

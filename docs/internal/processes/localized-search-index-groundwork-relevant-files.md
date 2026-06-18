@@ -50,8 +50,9 @@
 - Cross-layer inclusion, exclusion, and artifact alignment proof: `tests/unit/localized-search-index-foundation.test.ts`.
 - When richer starter knowledge content changes, add or update one bounded cross-entry regression in `tests/unit/localized-search-index-foundation.test.ts` that proves the existing glossary, comparison, and reference records still project through both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` with the same canonical ids, content kinds, and route paths.
 - Orama alignment proof belongs in `tests/unit/orama-search-alignment-foundation.test.ts`; prefer asserting that representative queries return artifact-backed entries with preserved locale metadata.
-- Public search UI proof belongs in `tests/unit/docs-shell.test.tsx`; prefer runtime assertions that localized queries surface representative docs, plus explicit empty and artifact-load error states.
+- Public search UI proof belongs in `tests/unit/docs-route-shell.test.tsx`; prefer runtime assertions that localized queries surface representative docs, plus explicit empty and artifact-load error states on the live docs route seam.
 - Prefer asserting observable generated document fields, canonical ids, locale metadata, and searchable text—not helper inventories or source-file topology scans.
+- For new docs-page stories, keep proof at the generated seams reviewers actually inspect: `projectDocsShellNavigation()` for sidebar placement, `loadDocPage()` for stable route and canonical-locale loading, and `loadPublicSearchArtifact()` for emitted search metadata.
 - Exclusion proofs should load a temporary starter content root with one published variant plus representative `draft`, `internal`, `hidden`, and `search.include: false` variants, then assert both `loadLocalizedSearchDocuments()` and `loadPublicSearchArtifact()` omit the excluded canonical ids.
 
 ## Quality checks

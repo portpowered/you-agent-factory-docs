@@ -53,7 +53,7 @@
 - Starter content loading and validation is covered in `tests/unit/starter-content.test.ts`; invalid fixtures live under `tests/fixtures/starter-content/`.
 - Docs navigation projection is covered in `tests/unit/docs-navigation.test.ts`, including blocking generation on invalid fixtures.
 - Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
-- Docs shell rendering with generated navigation is covered in `tests/unit/docs-shell.test.tsx`.
+- Docs route-shell rendering with generated navigation is covered in `tests/unit/docs-route-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
 - Served static export and browser-export tests should be the primary proof for public knowledge routes such as `/glossary/...`, `/comparisons/...`, and `/references/...`, because they verify the same GitHub Pages URLs reviewers open manually.
 - `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.

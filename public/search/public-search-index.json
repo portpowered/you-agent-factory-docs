@@ -261,6 +261,36 @@
       "searchPriority": 10
     },
     {
+      "id": "doc/pr-review-factory@en",
+      "canonicalId": "doc/pr-review-factory",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/pr-review-factory",
+      "title": "PR Review Factory",
+      "description": "",
+      "headings": [
+        "PR Review Factory",
+        "What this workflow is for",
+        "Who participates",
+        "What enters the workflow",
+        "Main workflow stages",
+        "Review points that matter",
+        "Inputs and outputs",
+        "Why engineering teams use it"
+      ],
+      "body": "PR Review Factory Navigate this workflow example from the generated docs shell to inspect a concrete pull-request review journey. What this workflow is for PR Review Factory turns a proposed code change into a repeatable review lane that a team can inspect before merging. A pull request, its diff, the surrounding task context, and the branch history enter the workflow so reviewers can see how the change was evaluated instead of only seeing a final approval or rejection. Who participates The workflow usually involves the change author, an orchestrating workflow owner, one or more review agents, and a human approver who decides whether the branch is ready to merge. The human reviewer remains the decision maker while the factory gathers evidence, checks the change against repo standards, and reports concrete follow-up work when the branch is not ready. What enters the workflow Work typically enters when a branch is ready for review or when a reviewer asks for another pass after feedback. The main inputs are the pull request description, the proposed code diff, relevant tests or quality-gate commands, and the repository standards that define what counts as an acceptable change. Main workflow stages The workflow starts by loading the branch context and the open pull request so the review run is tied to a real candidate change. It then inspects the diff, runs the required checks, and compares the observed behavior against the stated story or release goal instead of commenting on style alone. The next stage gathers review signals that a human reviewer would normally need to chase manually: correctness risks, missing test coverage, broken checks, and places where the implementation drifts from the stated requirements. If blocking issues are found, the workflow reports them as explicit feedback tied to the changed code and the expected fix. The final stage is the approval handoff. When the branch is healthy, the workflow leaves a concise summary of what was validated and what still needs human judgment. When the branch is not healthy, the workflow sends it back with concrete remediation items so the next review pass starts from specific evidence rather than guesswork. Review points that matter The key review gates are whether the change solves the stated problem, whether required checks pass, and whether the observable behavior is proven with the right tests. A reviewer should expect the workflow to surface blocking issues clearly, distinguish them from non-blocking suggestions, and keep the merge decision anchored to correctness first. Inputs and outputs The practical inputs are a pull request under review, repository policies, test and lint commands, and any reviewer feedback already attached to the branch. The useful outputs are a review summary, a list of blocking findings or approval-ready evidence, and a branch state that is easier for a human engineer to accept, reject, or send back for revision. Why engineering teams use it Engineering teams use PR Review Factory to make review quality more consistent without pretending that judgment can be automated away. It reduces the time reviewers spend reconstructing context, makes approval gates explicit, and leaves a durable record of what signals were checked before code moved forward.",
+      "tags": [
+        "docs",
+        "use-case"
+      ],
+      "section": "use cases",
+      "searchPriority": 6
+    },
+    {
       "id": "doc/quickstart@en",
       "canonicalId": "doc/quickstart",
       "locale": "en",
@@ -285,6 +315,36 @@
       ],
       "section": "setup",
       "searchPriority": 9
+    },
+    {
+      "id": "doc/release-readiness-factory@en",
+      "canonicalId": "doc/release-readiness-factory",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/release-readiness-factory",
+      "title": "Release Readiness Factory",
+      "description": "",
+      "headings": [
+        "Release Readiness Factory",
+        "What this workflow is for",
+        "Who participates",
+        "What enters the workflow",
+        "Main workflow stages",
+        "Readiness gates that matter",
+        "Inputs and outputs",
+        "Why engineering teams use it"
+      ],
+      "body": "Release Readiness Factory Navigate this workflow example from the generated docs shell to inspect a concrete launch-readiness journey. What this workflow is for Release Readiness Factory turns a pending ship decision into a repeatable readiness review that a team can inspect before announcing or deploying a release. A release candidate, its changelog, the verification evidence around it, and the remaining known risks enter the workflow so the team can decide from current evidence instead of from scattered status updates. Who participates The workflow usually involves the release owner, the engineers responsible for the changed services, one or more agents that gather readiness evidence, and a human approver such as an engineering lead or release manager. The human approver still decides whether the release can move forward, while the factory assembles the facts, highlights gaps, and records what still blocks shipment. What enters the workflow Work typically enters when a team has a release candidate ready or when a previously blocked release needs another readiness pass. The main inputs are the planned release scope, linked pull requests or changelog entries, the required quality checks, deployment notes, and any open issues or approvals that affect the launch decision. Main workflow stages The workflow starts by loading the release scope and gathering the evidence that should already exist for a candidate ship. That usually includes build status, test results, changelog or release-note entries, linked tickets, and the list of environments or services affected by the release. The next stage compares that evidence against the release policy the team expects to enforce. The workflow checks whether required validations completed, whether any blocking regressions or unresolved incidents remain, and whether the release notes and operational context are complete enough for reviewers to understand what is about to ship. The final stage is the approval handoff. When the evidence is complete, the workflow leaves a concise readiness summary that tells reviewers what passed, what risks still exist, and which approvals were captured. When the release is not ready, it reports the missing evidence or blocking issues explicitly so the next pass can focus on concrete gaps instead of repeating the entire checklist by hand. Readiness gates that matter The key gates are whether the release candidate passed the required checks, whether known risks are documented and accepted, and whether the right human approvals are present before shipping. A reviewer should expect the workflow to make blocking gaps obvious, distinguish them from informational notes, and keep the go or no-go decision tied to evidence rather than release pressure. Inputs and outputs The practical inputs are a release candidate, release notes or changelog entries, test and build signals, deployment context, and any approvals or exceptions already recorded for the ship window. The useful outputs are a readiness summary, a list of blocking issues or missing approvals, and a clearer release decision that a human lead can approve, postpone, or send back for follow-up. Why engineering teams use it Engineering teams use Release Readiness Factory to make launch decisions more consistent without turning them into a black box. It reduces the time spent chasing status across tools, keeps approval points explicit, and leaves a durable record of what evidence supported the release decision before anything shipped.",
+      "tags": [
+        "docs",
+        "use-case"
+      ],
+      "section": "use cases",
+      "searchPriority": 5
     },
     {
       "id": "glossary/agent@en",

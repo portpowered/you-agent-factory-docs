@@ -21,6 +21,7 @@ describe("early foundation quality gate failing-path proof", () => {
       expect(output).toContain("Shared shell message validation failed");
       expect(output).toContain("common.getStarted");
     },
+    120_000,
   );
 
   testUnlessVerifying(
@@ -36,6 +37,7 @@ describe("early foundation quality gate failing-path proof", () => {
       expect(output).toContain("Starter content validation failed");
       expect(output).toContain("canonicalLocale");
     },
+    120_000,
   );
 
   testUnlessVerifying(
@@ -69,6 +71,7 @@ describe("early foundation quality gate failing-path proof", () => {
         "Generated localized search artifact is missing",
       );
     },
+    120_000,
   );
 
   testUnlessVerifying(
@@ -84,6 +87,7 @@ describe("early foundation quality gate failing-path proof", () => {
       expect(output).toContain("Shell accessibility validation failed");
       expect(output).toContain("primaryNavigationLabel");
     },
+    120_000,
   );
 
   testUnlessVerifying(
@@ -99,6 +103,7 @@ describe("early foundation quality gate failing-path proof", () => {
       expect(output).toContain("Static export validation failed");
       expect(output).toContain("output");
     },
+    120_000,
   );
 
   testUnlessVerifying(

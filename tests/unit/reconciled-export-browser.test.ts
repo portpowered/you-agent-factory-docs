@@ -46,11 +46,12 @@ const publicKnowledgePages = [
   },
 ] as const;
 describe("reconciled baseline browser export", () => {
-  const port = getTestPort(3786, "RECONCILED_EXPORT_BROWSER_TEST_PORT");
+  let port: number;
   let server: StaticExportServer;
   let browser: Browser;
 
   beforeAll(async () => {
+    port = await getTestPort(3786, "RECONCILED_EXPORT_BROWSER_TEST_PORT");
     await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);

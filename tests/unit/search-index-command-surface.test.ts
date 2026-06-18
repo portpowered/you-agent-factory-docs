@@ -14,11 +14,11 @@ describe("search index validation command surface", () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("Search index validation passed");
-  });
+  }, 120_000);
 
   test("make validate-search-index succeeds on the current checked-in contract", () => {
     const result = runMake("validate-search-index");
 
     expect(result.status).toBe(0);
-  });
+  }, 120_000);
 });

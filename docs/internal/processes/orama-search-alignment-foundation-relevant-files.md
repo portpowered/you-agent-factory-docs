@@ -10,7 +10,7 @@
 
 - Query-path proof: `tests/unit/orama-search-alignment-foundation.test.ts` proves the checked-in generated artifact feeds the Orama-backed query seam and that representative English and French queries preserve canonical id and locale metadata through returned hits.
 - User-facing proof: `tests/unit/reconciled-export-browser.test.ts` serves the static export, waits for the docs search UI to fetch `/you-agent-factory-docs/search/public-search-index.json`, then verifies that a representative `installation` query returns the public docs result on the reviewer-visible surface.
-- Supporting component-level state coverage remains in `tests/unit/docs-shell.test.tsx`, which asserts explicit loading, empty, error, and success states for the docs search interaction.
+- Supporting component-level state coverage remains in `tests/unit/docs-route-shell.test.tsx`, which asserts explicit loading, empty, and success states for the docs search interaction on the live route shell seam.
 
 ## Out of scope for this slice
 
