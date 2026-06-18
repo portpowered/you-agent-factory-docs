@@ -24,6 +24,18 @@ This guide sits after workflow concepts because approval gates make the most sen
 
 Treat this page as the entry point for understanding why some workflows should pause instead of running straight through every stage. A reader who lands here should be able to identify approval gates as a deliberate operating-control surface inside the factory rather than a vague safety warning scattered across other docs.
 
+## When a workflow should pause for review
+
+An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff. Use one before the workflow applies a high-impact code change, publishes or deletes something expensive to undo, or turns a low-confidence output into the next irreversible step.
+
+The key test is whether the next action could compound a bad assumption faster than the workflow can correct itself. If a stage is about to merge a pull request, edit production configuration, spend significant compute or external-service cost, or fan out a questionable result into more automation, that is a strong signal to pause and ask for bounded human review.
+
+## What approval gates are meant to catch
+
+Approval loops exist to catch avoidable failures while the workflow still has a clean stopping point. They are useful when generated changes are technically plausible but may be out of scope, when the workflow summary does not match the actual diff or artifact, or when the system is acting on inputs that are incomplete, ambiguous, or newly introduced.
+
+They are not a sign that every step needs supervision. If a workflow stage is cheap, reversible, and already well validated, adding a human gate usually slows the lane down more than it improves control. Reserve approvals for the moments where a reviewer can materially change the outcome.
+
 ## How this page fits the rest of the docs
 
 Start with workflow concepts if you still need the overall execution model. Continue to the Coder / Reviewer pattern if you want a deeper role-based example of how one approval-oriented handoff works in practice once a workflow reaches a review boundary.

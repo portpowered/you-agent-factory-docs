@@ -237,6 +237,17 @@ MDX body.
       "the generated docs shell to point readers to one canonical guide about approval checkpoints",
     );
     expect(page.body).toContain("What this guide is for");
+    expect(page.body).toContain("When a workflow should pause for review");
+    expect(page.body).toContain(
+      "An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff.",
+    );
+    expect(page.body).toContain(
+      "If a stage is about to merge a pull request, edit production configuration, spend significant compute or external-service cost, or fan out a questionable result into more automation, that is a strong signal to pause and ask for bounded human review.",
+    );
+    expect(page.body).toContain("What approval gates are meant to catch");
+    expect(page.body).toContain(
+      "They are not a sign that every step needs supervision.",
+    );
     expect(page.body).toContain(
       "Continue to the Coder / Reviewer pattern if you want a deeper role-based example",
     );

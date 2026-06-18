@@ -211,6 +211,7 @@ describe("reconciled baseline browser export", () => {
         name: "Human approval gates",
       });
 
+      await humanApprovalGatesLink.waitFor({ state: "visible" });
       expect(await humanApprovalGatesLink.isVisible()).toBe(true);
       await humanApprovalGatesLink.click();
       await page.waitForURL(
@@ -232,6 +233,21 @@ describe("reconciled baseline browser export", () => {
         await page
           .getByText(
             "Use this page when you need the generated docs shell to point readers to one canonical guide about approval checkpoints in You Agent Factory workflows.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "When a workflow should pause for review",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff.",
           )
           .isVisible(),
       ).toBe(true);
@@ -277,6 +293,7 @@ describe("reconciled baseline browser export", () => {
         name: `${enMessages.docs.nextPagePrefix} Configuration`,
       });
 
+      await nextConfigurationLink.waitFor({ state: "visible" });
       expect(await nextConfigurationLink.isVisible()).toBe(true);
       await nextConfigurationLink.click();
       await page.waitForURL(
@@ -286,24 +303,16 @@ describe("reconciled baseline browser export", () => {
         { timeout: 10_000 },
       );
 
-      expect(
-        await page
-          .getByRole("navigation", {
-            name: enMessages.docs.progressionAriaLabel,
-          })
-          .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
-          })
-          .isVisible(),
-      ).toBe(true);
-      await page
+      const nextWorkflowConceptsLink = page
         .getByRole("navigation", {
           name: enMessages.docs.progressionAriaLabel,
         })
         .getByRole("link", {
           name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
-        })
-        .click();
+        });
+      await nextWorkflowConceptsLink.waitFor({ state: "visible" });
+      expect(await nextWorkflowConceptsLink.isVisible()).toBe(true);
+      await nextWorkflowConceptsLink.click();
       await page.waitForURL(
         new RegExp(
           `${withBasePath("/docs/concepts").replace(/\//g, "\\/")}/?$`,
@@ -311,16 +320,15 @@ describe("reconciled baseline browser export", () => {
         { timeout: 10_000 },
       );
 
-      expect(
-        await page
-          .getByRole("navigation", {
-            name: enMessages.docs.progressionAriaLabel,
-          })
-          .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Human approval gates`,
-          })
-          .isVisible(),
-      ).toBe(true);
+      const nextHumanApprovalGatesLink = page
+        .getByRole("navigation", {
+          name: enMessages.docs.progressionAriaLabel,
+        })
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Human approval gates`,
+        });
+      await nextHumanApprovalGatesLink.waitFor({ state: "visible" });
+      expect(await nextHumanApprovalGatesLink.isVisible()).toBe(true);
     } finally {
       await page.close();
     }

@@ -216,10 +216,18 @@ describe("public search artifact generation", () => {
     expect(humanApprovalGates?.headings).toEqual([
       "Human approval gates",
       "What this guide is for",
+      "When a workflow should pause for review",
+      "What approval gates are meant to catch",
       "How this page fits the rest of the docs",
     ]);
     expect(humanApprovalGates?.body).toContain(
       "one canonical guide about approval checkpoints in You Agent Factory workflows",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "An approval gate should interrupt execution at a meaningful risk boundary, not at every trivial handoff.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Approval loops exist to catch avoidable failures while the workflow still has a clean stopping point.",
     );
     expect(humanApprovalGates?.body).toContain(
       "Continue to the Coder / Reviewer pattern",
