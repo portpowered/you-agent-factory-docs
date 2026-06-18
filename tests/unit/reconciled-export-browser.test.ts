@@ -282,9 +282,7 @@ describe("reconciled baseline browser export", () => {
         })
         .click();
       await page.waitForURL(
-        new RegExp(
-          `${withBasePath("/docs/faq").replace(/\//g, "\\/")}/?$`,
-        ),
+        new RegExp(`${withBasePath("/docs/faq").replace(/\//g, "\\/")}/?$`),
         { timeout: 10_000 },
       );
 
