@@ -32,6 +32,8 @@
 - `scripts/generate-search-index.ts` writes `public/search/public-search-index.json` for reviewer inspection and static export consumption.
 - `src/lib/validation/search-index.ts` and `scripts/validate-search-index.ts` validate that the checked-in `public/search/public-search-index.json` artifact still matches a fresh projection from normalized localized search documents.
 - `bun run generate:search-index` runs before `next build`; later search UX should read the generated artifact contract rather than re-parsing raw content files.
+<<<<<<< HEAD
+- Adding a new published starter-content doc normally requires regenerating `public/search/public-search-index.json` and updating the focused fixture-based search tests that assert the projected entry ids.
 - When wiring public search UI, fetch `withBasePath("/search/public-search-index.json")` so the artifact resolves under GitHub Pages `basePath` during static export verification.
 - Artifact entries expose locale, `canonicalLocale`, `availableLocales`, canonical id, route or URL identity, searchable text fields, and search priority for representative entries.
 - Parallel locale variants for one canonical page share the same `canonicalId`, `canonicalLocale`, and `availableLocales` while keeping distinct `locale` and variant-specific searchable text.

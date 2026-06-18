@@ -90,6 +90,7 @@ describe("public search artifact generation", () => {
       "doc/coder-reviewer-pattern@en",
       "doc/concepts@en",
       "doc/configuration@en",
+      "doc/faq@en",
       "doc/getting-started@en",
       "doc/getting-started@fr",
       "doc/installation@en",

@@ -150,6 +150,7 @@ navigationTitle: Agent term
       "doc/coder-reviewer-pattern",
       "doc/concepts",
       "doc/configuration",
+      "doc/faq",
       "doc/getting-started",
       "doc/getting-started",
       "doc/installation",
