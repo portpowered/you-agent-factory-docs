@@ -23,7 +23,7 @@ describe("root contributor command path", () => {
         "check",
         {},
         {
-          resetGeneratedArtifacts: true,
+          cleanNextTypeArtifacts: true,
         },
       );
 

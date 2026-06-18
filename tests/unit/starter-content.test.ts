@@ -146,6 +146,7 @@ navigationTitle: Agent term
     expect(records.map((record) => record.id).sort()).toEqual([
       "blog/introducing-factory",
       "comparison/vs-n8n",
+      "doc/cli",
       "doc/coder-reviewer-pattern",
       "doc/concepts",
       "doc/configuration",

@@ -48,6 +48,10 @@ const publicKnowledgePages = [
   },
 ] as const;
 
+function escapeHrefForHtmlMatch(href: string): string {
+  return href.replace(/\//g, "\\/");
+}
+
 describe("static export configuration", () => {
   test("configures Next.js for fully static GitHub Pages export", () => {
     expect(nextConfig.output).toBe("export");
@@ -192,9 +196,10 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("Introduction");
     expect(docsHtml).toContain("Getting started");
     expect(docsHtml).toContain("Quickstart");
-    expect(docsHtml).toContain("Core concepts");
-    expect(docsHtml).toContain("Installation");
+    expect(docsHtml).toContain("CLI overview");
     expect(docsHtml).toContain("Configuration");
+    expect(docsHtml).toContain("Workflow concepts");
+    expect(docsHtml).toContain("Installation");
     expect(docsHtml).toContain("Guides");
     expect(docsHtml).toContain("Setup");
     expect(new RegExp(`href="${introductionPath}/?"`).test(docsHtml)).toBe(
@@ -449,7 +454,7 @@ describe("served static export navigation", () => {
 
     const configurationHtml = await configurationResponse.text();
 
-    expect(configurationHtml).not.toContain(
+    expect(configurationHtml).toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
     );
   }, 30_000);
@@ -520,5 +525,112 @@ describe("served static export navigation", () => {
     ).toBe(true);
     expect(installationHtml).toContain(enMessages.docs.previousPagePrefix);
     expect(installationHtml).toContain("Introduction");
+
+    const gettingStartedResponse = await fetchHttp(
+      new URL(withBasePath("/docs/getting-started"), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+    const gettingStartedHtml = await gettingStartedResponse.text();
+    const cliPath = withBasePath("/docs/cli").replace(/\//g, "\\/");
+
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${cliPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${cliPath}/?)"`,
+      ).test(gettingStartedHtml),
+    ).toBe(true);
+
+    const cliResponse = await fetchHttp(
+      new URL(withBasePath("/docs/cli"), server.baseUrl),
+      {
+        signal: AbortSignal.timeout(10_000),
+      },
+    );
+    expect(cliResponse.status).toBe(200);
+
+    const cliHtml = await cliResponse.text();
+    const gettingStartedPath = withBasePath("/docs/getting-started").replace(
+      /\//g,
+      "\\/",
+    );
+    const configurationPath = withBasePath("/docs/configuration").replace(
+      /\//g,
+      "\\/",
+    );
+
+    expect(cliHtml).toContain("CLI overview");
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${gettingStartedPath}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${gettingStartedPath}/?)"`,
+      ).test(cliHtml),
+    ).toBe(true);
+    expect(
+      new RegExp(
+        `<a[^>]*href="(${configurationPath}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${configurationPath}/?)"`,
+      ).test(cliHtml),
+    ).toBe(true);
+    expect(cliHtml).toContain(enMessages.docs.previousPagePrefix);
+    expect(cliHtml).toContain("Getting started");
+    expect(cliHtml).toContain(enMessages.docs.nextPagePrefix);
+    expect(cliHtml).toContain("Configuration");
+  }, 30_000);
+
+  test("serves the post-setup concept routes through canonical docs paths", async () => {
+    const routeChecks = [
+      {
+        path: "/docs/cli",
+        title: "CLI overview",
+        body: "Typical commands and outcomes",
+        previousLabel: "Getting started",
+        previousHref: "/docs/getting-started",
+        nextLabel: "Configuration",
+        nextHref: "/docs/configuration",
+      },
+      {
+        path: "/docs/configuration",
+        title: "Configuration",
+        body: "How configuration changes execution",
+        previousLabel: "CLI overview",
+        previousHref: "/docs/cli",
+        nextLabel: "Workflow concepts",
+        nextHref: "/docs/concepts",
+      },
+      {
+        path: "/docs/concepts",
+        title: "Workflow concepts",
+        body: "How the CLI and configuration connect",
+        previousLabel: "Configuration",
+        previousHref: "/docs/configuration",
+        nextLabel: "Coder / Reviewer pattern",
+        nextHref: "/docs/coder-reviewer-pattern",
+      },
+    ] as const;
+
+    for (const routeCheck of routeChecks) {
+      const response = await fetchHttp(
+        new URL(withBasePath(routeCheck.path), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(200);
+
+      const html = await response.text();
+      expect(html).toContain(routeCheck.title);
+      expect(html).toContain(routeCheck.body);
+      expect(html).toContain(
+        `aria-label="${enMessages.docs.progressionAriaLabel}"`,
+      );
+      expect(
+        new RegExp(
+          `<a[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.previousHref))}/?)"[^>]*rel="prev"|<a[^>]*rel="prev"[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.previousHref))}/?)"`,
+        ).test(html),
+      ).toBe(true);
+      expect(
+        new RegExp(
+          `<a[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.nextHref))}/?)"[^>]*rel="next"|<a[^>]*rel="next"[^>]*href="(${escapeHrefForHtmlMatch(withBasePath(routeCheck.nextHref))}/?)"`,
+        ).test(html),
+      ).toBe(true);
+      expect(html).toContain(routeCheck.previousLabel);
+      expect(html).toContain(routeCheck.nextLabel);
+    }
   }, 30_000);
 });

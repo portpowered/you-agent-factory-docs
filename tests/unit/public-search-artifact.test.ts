@@ -86,6 +86,7 @@ describe("public search artifact generation", () => {
     expect(artifact.entries.map((entry) => entry.id).sort()).toEqual([
       "blog/introducing-factory@en",
       "comparison/vs-n8n@en",
+      "doc/cli@en",
       "doc/coder-reviewer-pattern@en",
       "doc/concepts@en",
       "doc/configuration@en",
@@ -101,6 +102,16 @@ describe("public search artifact generation", () => {
     const gettingStarted = artifact.entries.find(
       (entry) => entry.id === "doc/getting-started@en",
     );
+    const cli = artifact.entries.find((entry) => entry.id === "doc/cli@en");
+    const coderReviewerPattern = artifact.entries.find(
+      (entry) => entry.id === "doc/coder-reviewer-pattern@en",
+    );
+    const configuration = artifact.entries.find(
+      (entry) => entry.id === "doc/configuration@en",
+    );
+    const concepts = artifact.entries.find(
+      (entry) => entry.id === "doc/concepts@en",
+    );
 
     expect(gettingStarted).toMatchObject({
       canonicalId: "doc/getting-started",
@@ -115,9 +126,18 @@ describe("public search artifact generation", () => {
     expect(gettingStarted?.headings.length).toBeGreaterThan(0);
     expect(gettingStarted?.body.length).toBeGreaterThan(0);
 
-    const coderReviewerPattern = artifact.entries.find(
-      (entry) => entry.id === "doc/coder-reviewer-pattern@en",
-    );
+    expect(cli).toMatchObject({
+      canonicalId: "doc/cli",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/cli",
+      title: "CLI overview",
+      section: "guides",
+      searchPriority: 9,
+    });
+    expect(cli?.headings.length).toBeGreaterThan(0);
+    expect(cli?.body).toContain("Typical commands and outcomes");
 
     expect(coderReviewerPattern).toMatchObject({
       canonicalId: "doc/coder-reviewer-pattern",
@@ -152,6 +172,32 @@ describe("public search artifact generation", () => {
     expect(coderReviewerPattern?.body).toContain(
       "The most common failure mode is shallow review",
     );
+
+    expect(configuration).toMatchObject({
+      canonicalId: "doc/configuration",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/configuration",
+      title: "Configuration",
+      section: "guides",
+    });
+    expect(configuration?.headings.length).toBeGreaterThan(0);
+    expect(configuration?.body).toContain(
+      "How configuration changes execution",
+    );
+
+    expect(concepts).toMatchObject({
+      canonicalId: "doc/concepts",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/concepts",
+      title: "Workflow concepts",
+      section: "guides",
+    });
+    expect(concepts?.headings.length).toBeGreaterThan(0);
+    expect(concepts?.body).toContain("How the CLI and configuration connect");
   });
 
   test("surfaces substantive glossary starter copy on the existing canonical record", () => {

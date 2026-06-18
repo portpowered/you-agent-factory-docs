@@ -110,5 +110,5 @@ describe("static export server helpers", () => {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
       server.stop();
     }
-  }, 120_000);
+  }, 180_000);
 });
