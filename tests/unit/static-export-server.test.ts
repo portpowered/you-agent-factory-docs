@@ -123,7 +123,10 @@ describe("static export server helpers", () => {
       buildStaticExport();
     }
 
-    const port = getTestPort(3792, "STATIC_EXPORT_SERVER_NOT_FOUND_TEST_PORT");
+    const port = await getTestPort(
+      3792,
+      "STATIC_EXPORT_SERVER_NOT_FOUND_TEST_PORT",
+    );
     const server = startStaticExportServer(port);
 
     await waitForStaticExportServer(server.baseUrl);
