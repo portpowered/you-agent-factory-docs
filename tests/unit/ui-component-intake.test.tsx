@@ -21,9 +21,11 @@ import {
   DialogDescription,
   DialogTitle,
   DialogTrigger,
+  GradientText,
   Input,
   LOCAL_COMPONENT_INTAKE_IMPORT_PATH,
   Label,
+  Marquee,
   Table,
   TableBody,
   TableCell,
@@ -91,6 +93,11 @@ describe("local component intake surface", () => {
             <DialogDescription>Dialog body</DialogDescription>
           </DialogContent>
         </Dialog>
+        <Marquee aria-label="Shared marquee">
+          <span>One</span>
+          <span>Two</span>
+        </Marquee>
+        <GradientText>Shared gradient text</GradientText>
       </div>,
     );
 
@@ -110,6 +117,8 @@ describe("local component intake surface", () => {
     ).toBeTruthy();
     expect(screen.getByRole("tab", { name: "Overview" })).toBeTruthy();
     expect(screen.getByRole("table", { name: "Shared table" })).toBeTruthy();
+    expect(screen.getByLabelText("Shared marquee")).toBeTruthy();
+    expect(screen.getByText("Shared gradient text")).toBeTruthy();
 
     fireEvent.click(screen.getByRole("button", { name: "Open dialog" }));
     expect(screen.getByRole("dialog", { name: "Shared dialog" })).toBeTruthy();
@@ -117,13 +126,11 @@ describe("local component intake surface", () => {
 
   test("records reviewer-visible approved and deferred intake decisions", () => {
     expect(COMPONENT_INTAKE_DECISIONS).toHaveLength(3);
-    expect(APPROVED_COMPONENT_INTAKE_DECISIONS).toHaveLength(1);
+    expect(APPROVED_COMPONENT_INTAKE_DECISIONS).toHaveLength(3);
     expect(DEFERRED_COMPONENT_INTAKE_DECISIONS).toHaveLength(2);
 
     expect(getComponentIntakeDecision("shadcn-ui")).toEqual({
-      library: "shadcn-ui",
-      status: "approved",
-      components: [
+      approvedComponents: [
         "Accordion",
         "AccordionContent",
         "AccordionItem",
@@ -158,25 +165,33 @@ describe("local component intake surface", () => {
         "TabsList",
         "TabsTrigger",
       ],
+      deferredComponents: [],
+      library: "shadcn-ui",
+      status: "approved",
       rationale: expect.stringContaining("shared actions, form controls"),
     });
 
     expect(getComponentIntakeDecision("magic-ui")).toEqual({
-      library: "magic-ui",
-      status: "deferred",
-      components: expect.arrayContaining([
-        "animated spotlight and particle surfaces",
+      approvedComponents: ["Marquee"],
+      deferredComponents: expect.arrayContaining([
+        "Globe",
+        "Particles",
+        "VideoText",
       ]),
-      rationale: expect.stringContaining("reduced-motion behavior"),
+      library: "magic-ui",
+      status: "mixed",
+      rationale: expect.stringContaining("reduced-motion fallback"),
     });
 
     expect(getComponentIntakeDecision("performative-ui")).toEqual({
-      library: "performative-ui",
-      status: "deferred",
-      components: expect.arrayContaining([
-        "animation-first presentational wrappers",
+      approvedComponents: ["GradientText"],
+      deferredComponents: expect.arrayContaining([
+        "Aurora",
+        "NodeGraphBackground",
       ]),
-      rationale: expect.stringContaining("GitHub Pages"),
+      library: "performative-ui",
+      status: "mixed",
+      rationale: expect.stringContaining("static-safe presentational accent"),
     });
   });
 });

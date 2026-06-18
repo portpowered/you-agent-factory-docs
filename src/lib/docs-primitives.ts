@@ -105,6 +105,11 @@ export const UI_PRIMITIVES_ALERT_HEADING = "Feedback";
 
 export const UI_PRIMITIVES_TABLE_HEADING = "Table";
 
+export const UI_PRESENTATIONAL_HEADING = "Magic UI and Performative UI";
+
+export const UI_PRESENTATIONAL_INTRO =
+  "Representative local copies of compatible presentational components, including reduced-motion-safe treatment for animated intake.";
+
 export const CODE_BLOCK_SECTION_HEADING = "Code block";
 
 const CODE_BLOCK_LANGUAGE_LABELS: Record<string, string> = {

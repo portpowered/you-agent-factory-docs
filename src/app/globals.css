@@ -88,6 +88,16 @@
   }
 }
 
+@keyframes ui-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(-50% - var(--ui-marquee-gap) / 2), 0, 0);
+  }
+}
+
 @layer components {
   .shared-shell__header-nav-region,
   .shared-shell__docs-aside-region {
@@ -257,6 +267,48 @@
   .docs-diagram__graphic {
     @apply overflow-hidden rounded-lg border bg-muted;
     min-height: clamp(16rem, 42vw, 28rem);
+  }
+
+  .ui-marquee {
+    --ui-marquee-gap: 1rem;
+  }
+
+  .ui-marquee__viewport {
+    @apply overflow-hidden;
+  }
+
+  .ui-marquee__content {
+    @apply flex min-w-max gap-4;
+    animation: ui-marquee-scroll 24s linear infinite;
+    gap: var(--ui-marquee-gap);
+    width: max-content;
+  }
+
+  .ui-marquee__content--pause-on-hover:hover {
+    animation-play-state: paused;
+  }
+
+  .ui-marquee__content--reverse {
+    animation-direction: reverse;
+  }
+
+  .ui-marquee__content--static {
+    @apply min-w-0 flex-wrap;
+    animation: none;
+    width: 100%;
+  }
+
+  .ui-marquee__track {
+    @apply flex min-w-max gap-4;
+    gap: var(--ui-marquee-gap);
+  }
+
+  .ui-marquee__content--static .ui-marquee__track {
+    @apply min-w-0 flex-1 flex-wrap;
+  }
+
+  .ui-marquee__item {
+    min-width: min(19rem, 80vw);
   }
 
   .docs-diagram__graphic--react-flow {

@@ -14,12 +14,18 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  GradientText,
+  Marquee,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
   getButtonClassName,
 } from "../../src/components/ui";
+import {
+  RESPONSIVE_BREAKPOINTS_PX,
+  mockMatchMedia,
+} from "../helpers/mock-match-media";
 
 describe("shared UI tabs", () => {
   test("switches shared tab panels with click and keyboard navigation", () => {
@@ -111,5 +117,53 @@ describe("shared UI dialog", () => {
 
     fireEvent.keyDown(document, { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
+  });
+});
+
+describe("shared visual UI intake", () => {
+  test("duplicates marquee content only when reduced motion is not preferred", () => {
+    mockMatchMedia({
+      width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1,
+      prefersReducedMotion: false,
+    });
+
+    const { rerender } = render(
+      <Marquee aria-label="Motion-safe marquee">
+        <span>Alpha</span>
+        <span>Beta</span>
+      </Marquee>,
+    );
+
+    expect(screen.getAllByText("Alpha")).toHaveLength(2);
+    expect(
+      screen
+        .getByLabelText("Motion-safe marquee")
+        .getAttribute("data-reduced-motion"),
+    ).toBeNull();
+
+    mockMatchMedia({
+      width: RESPONSIVE_BREAKPOINTS_PX.tabletMax + 1,
+      prefersReducedMotion: true,
+    });
+
+    rerender(
+      <Marquee aria-label="Motion-safe marquee">
+        <span>Alpha</span>
+        <span>Beta</span>
+      </Marquee>,
+    );
+
+    expect(screen.getAllByText("Alpha")).toHaveLength(1);
+    expect(
+      screen
+        .getByLabelText("Motion-safe marquee")
+        .getAttribute("data-reduced-motion"),
+    ).toBe("");
+  });
+
+  test("renders gradient text through the shared visual intake", () => {
+    render(<GradientText>Inspectable gradient text</GradientText>);
+
+    expect(screen.getByText("Inspectable gradient text")).toBeTruthy();
   });
 });

@@ -24,8 +24,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  GradientText,
   Input,
   Label,
+  Marquee,
   Table,
   TableBody,
   TableCaption,
@@ -40,6 +42,8 @@ import {
   getButtonClassName,
 } from "@/components/ui";
 import {
+  UI_PRESENTATIONAL_HEADING,
+  UI_PRESENTATIONAL_INTRO,
   UI_PRIMITIVES_ACCORDION_HEADING,
   UI_PRIMITIVES_ALERT_HEADING,
   UI_PRIMITIVES_DIALOG_HEADING,
@@ -227,6 +231,79 @@ export function UIPrimitivesExample() {
             </TableRow>
           </TableBody>
         </Table>
+      </section>
+
+      <section
+        aria-labelledby="ui-primitives-presentational-heading"
+        className="grid gap-4"
+      >
+        <h2 id="ui-primitives-presentational-heading">
+          {UI_PRESENTATIONAL_HEADING}
+        </h2>
+        <Card className="grid gap-6 overflow-hidden p-5 sm:p-6">
+          <div className="grid gap-2">
+            <p className="m-0 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+              {UI_PRESENTATIONAL_INTRO}
+            </p>
+            <Marquee
+              aria-label="Compatible Magic UI marquee examples"
+              className="py-1"
+              itemClassName="w-[min(19rem,80vw)]"
+              pauseOnHover
+            >
+              <Card as="article" className="grid gap-2 p-4">
+                <CardTitle className="text-lg">
+                  Static-export safe motion
+                </CardTitle>
+                <CardDescription>
+                  The approved local marquee uses CSS motion only and falls back
+                  to a wrapped static layout when reduced motion is preferred.
+                </CardDescription>
+              </Card>
+              <Card as="article" className="grid gap-2 p-4">
+                <CardTitle className="text-lg">Local import contract</CardTitle>
+                <CardDescription>
+                  Feature authors can import compatible visual surfaces from{" "}
+                  <code>@/components/ui</code> instead of vendoring ad hoc code
+                  into individual pages.
+                </CardDescription>
+              </Card>
+              <Card as="article" className="grid gap-2 p-4">
+                <CardTitle className="text-lg">Responsive proof</CardTitle>
+                <CardDescription>
+                  The marquee cards keep readable widths on narrow screens and
+                  remain inspectable inside the existing docs shell.
+                </CardDescription>
+              </Card>
+            </Marquee>
+          </div>
+
+          <Card className="grid gap-3 border-accent/25 bg-linear-to-br from-card via-card to-accent/8 p-5">
+            <p className="m-0 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+              Performative UI gradient accent
+            </p>
+            <GradientText
+              as="strong"
+              className="text-[clamp(1.75rem,4vw,3rem)] font-semibold leading-tight tracking-tight"
+            >
+              Inspectable component surface
+            </GradientText>
+            <CardDescription>
+              This approved local copy keeps the richer visual treatment fully
+              static-export safe because it relies on CSS gradients rather than
+              request-time behavior.
+            </CardDescription>
+          </Card>
+
+          <Alert variant="success">
+            <AlertTitle>Reduced-motion handling</AlertTitle>
+            <AlertDescription>
+              When reduced motion is preferred, the marquee stops duplicating or
+              scrolling content and instead presents the same cards in a static
+              wrapped layout.
+            </AlertDescription>
+          </Alert>
+        </Card>
       </section>
 
       <DocsContentCard

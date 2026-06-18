@@ -5,17 +5,19 @@
 - `src/components/ui/index.ts` is the stable repo-local import barrel for approved shared UI primitives. Feature and shell code should prefer `@/components/ui` over file-specific or ad hoc upstream import paths.
 - `src/components/ui/button.tsx` and `src/components/ui/card.tsx` remain the initial approved local shadcn-style primitives for this foundation slice.
 - `src/components/ui/{input,label,accordion,tabs,dialog,alert,table}.tsx` expand the approved local surface for shared form, disclosure, navigation, overlay, feedback, and table use cases without reaching into upstream package internals.
+- `src/components/ui/{marquee,gradient-text}.tsx` are the first approved local copies sourced from Magic UI and Performative UI-style presentational intake, kept narrow enough for the current static-export and accessibility contract.
 - `src/components/ui/component-intake.ts` records the reviewer-visible intake decisions for shadcn, Magic UI, and Performative UI, including which components are approved now and which are intentionally deferred for compatibility reasons.
 
 ## Compatibility decisions
 
 - Keep decisions tied to the current docs-site stack: Next.js 15 App Router, React 19, Tailwind CSS v4, and GitHub Pages static export.
 - Defer upstream components when they still need browser-only guards, reduced-motion treatment, or other work to fit the static-export and accessibility contract.
+- When a library moves from fully deferred to partially approved, record the split explicitly in `approvedComponents` and `deferredComponents` instead of flipping the whole library to approved.
 - Extend the approved intake surface by adding local copies behind `src/components/ui/index.ts` first, then updating the decision registry and focused proof tests in the same change.
 
 ## Verification
 
 - `tests/unit/ui-component-intake.test.tsx` is the focused proof for the stable barrel path and the checked-in approved/deferred decision registry.
-- `tests/unit/shared-ui-primitives.test.tsx` verifies keyboard-safe tabs, disclosure toggling, and dialog dismissal on the approved local primitive set.
+- `tests/unit/shared-ui-primitives.test.tsx` verifies keyboard-safe tabs, disclosure toggling, dialog dismissal, and reduced-motion-safe marquee behavior on the approved local primitive set.
 - `src/app/docs/examples/ui-primitives/page.tsx` and `src/components/docs/ui-primitives-example.tsx` provide a reviewer-visible docs-shell proof route for the current approved primitive surface.
 - Existing shell and landing tests continue to prove that current site surfaces consume the same stable barrel-backed primitives rather than page-local controls.
