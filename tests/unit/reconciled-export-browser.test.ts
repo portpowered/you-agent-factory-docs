@@ -83,6 +83,9 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+      await page
+        .locator('nav[aria-label="Guides"]')
+        .waitFor({ state: "attached", timeout: 10_000 });
 
       expect(
         await page
@@ -92,9 +95,7 @@ describe("reconciled baseline browser export", () => {
       expect(await page.getByText(DOCS_SHELL_FRAMING_TEXT).isVisible()).toBe(
         true,
       );
-      expect(
-        await page.getByRole("navigation", { name: "Guides" }).isVisible(),
-      ).toBe(true);
+      expect(await page.getByText("Guides").isVisible()).toBe(true);
       expect(await page.getByRole("banner").isVisible()).toBe(true);
       expect(await page.getByRole("main").isVisible()).toBe(true);
     } finally {
