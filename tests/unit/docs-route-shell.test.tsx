@@ -97,6 +97,26 @@ afterEach(() => {
   mock.restore();
 });
 
+function submitQuery(query: string) {
+  const searchInput = screen.getByRole("searchbox", {
+    name: enMessages.docs.search.label,
+  });
+
+  fireEvent.change(searchInput, {
+    target: { value: query },
+  });
+
+  const form = searchInput.closest("form");
+
+  if (!(form instanceof HTMLFormElement)) {
+    throw new Error(
+      "Expected the public search input to be rendered in a form.",
+    );
+  }
+
+  fireEvent.submit(form);
+}
+
 describe("docs route shell rendering", () => {
   test("renders the Fumadocs-owned docs route frame with projected navigation and route chrome", () => {
     renderDocsRoute({
@@ -125,7 +145,7 @@ describe("docs route shell rendering", () => {
     ).toBeTruthy();
     expect(screen.getByRole("main")).toBeTruthy();
     expect(
-      screen.getByRole("region", { name: enMessages.docs.searchTitle }),
+      screen.getByRole("region", { name: enMessages.docs.search.title }),
     ).toBeTruthy();
     expect(
       screen.getByRole("navigation", {
@@ -139,23 +159,28 @@ describe("docs route shell rendering", () => {
     ).toBeTruthy();
   });
 
-  test("returns Orama-backed search results on the live docs route seam", async () => {
+  test("returns artifact-backed search results on the live docs route seam", async () => {
     renderDocsRoute({
       navigation: generatedNavigation,
       children: <h1>{enMessages.docs.shellTitle}</h1>,
     });
 
-    const searchInput = screen.getByRole("searchbox", {
-      name: "Search documentation",
-    });
-    fireEvent.change(searchInput, { target: { value: "install" } });
+    submitQuery("install");
+
+    expect(
+      await screen.findByRole("heading", { name: "Results" }),
+    ).toBeTruthy();
 
     const resultLink = await screen.findByRole("link", {
-      name: /Installation Install the factory on your machine\./,
+      name: /Installation \/docs\/installation/,
     });
 
     expect(resultLink.getAttribute("href")).toBe("/docs/installation");
-    expect(screen.getByText("1 matching docs")).toBeTruthy();
+    expect(
+      screen.getByText("Documentation", {
+        selector: ".public-search__result-kind",
+      }),
+    ).toBeTruthy();
   });
 
   test("returns to idle search guidance when the query is cleared", async () => {
@@ -165,17 +190,16 @@ describe("docs route shell rendering", () => {
     });
 
     const searchInput = screen.getByRole("searchbox", {
-      name: "Search documentation",
+      name: enMessages.docs.search.label,
     });
-    fireEvent.change(searchInput, { target: { value: "install" } });
+    submitQuery("install");
 
-    await screen.findByText("1 matching docs");
+    await screen.findByRole("heading", { name: "Results" });
     fireEvent.change(searchInput, { target: { value: "" } });
+    fireEvent.submit(searchInput.closest("form") as HTMLFormElement);
 
     expect(
-      await screen.findByText(
-        "Type a query to search the current locale's published docs.",
-      ),
+      await screen.findByText(enMessages.docs.search.idleBody),
     ).toBeTruthy();
   });
 
@@ -185,13 +209,10 @@ describe("docs route shell rendering", () => {
       children: <h1>{enMessages.docs.shellTitle}</h1>,
     });
 
-    const searchInput = screen.getByRole("searchbox", {
-      name: "Search documentation",
-    });
-    fireEvent.change(searchInput, { target: { value: "unknown" } });
+    submitQuery("unknown");
 
     expect(
-      await screen.findByText("No matching docs found for this query."),
+      await screen.findByRole("heading", { name: "No matching results" }),
     ).toBeTruthy();
   });
 });

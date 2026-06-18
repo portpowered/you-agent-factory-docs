@@ -120,7 +120,7 @@ describe("shell accessibility validation", () => {
     expect(screen.getAllByRole("main").length).toBeGreaterThan(0);
     expect(screen.getAllByRole("banner").length).toBeGreaterThan(0);
     expect(
-      screen.getAllByRole("region", { name: enMessages.docs.searchTitle })
+      screen.getAllByRole("region", { name: enMessages.docs.search.title })
         .length,
     ).toBeGreaterThan(0);
   });

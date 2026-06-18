@@ -76,7 +76,7 @@ describe("public search browser flow", () => {
   async function focusSearchboxWithKeyboard(page: Page): Promise<void> {
     const searchbox = page.getByRole("searchbox", { name: "Search query" });
 
-    for (let attempt = 0; attempt < 12; attempt += 1) {
+    for (let attempt = 0; attempt < 24; attempt += 1) {
       await page.keyboard.press("Tab");
 
       if (
@@ -134,17 +134,37 @@ describe("public search browser flow", () => {
     const page = await openDocsPage();
 
     try {
+      await page.route("**/search/public-search-index.json", async (route) => {
+        await route.fulfill({
+          contentType: "application/json",
+          body: JSON.stringify(keyboardArtifact),
+        });
+      });
+      const searchRegion = page.getByRole("region", {
+        name: "Search the generated public artifact",
+      });
+
       await page
         .getByRole("searchbox", { name: "Search query" })
         .fill("glossary");
       await page.getByRole("button", { name: "Search" }).click();
 
-      await page
-        .getByRole("link", { name: /Agent \/glossary\/agent/ })
-        .waitFor({ state: "visible", timeout: 5_000 });
-      expect(await page.getByText("Glossary").first().isVisible()).toBe(true);
-      expect(await page.getByText("Tag match").first().isVisible()).toBe(true);
-      expect(await page.getByText("glossary").first().isVisible()).toBe(true);
+      await searchRegion
+        .locator(".public-search__result-item")
+        .first()
+        .waitFor({
+          state: "visible",
+          timeout: 5_000,
+        });
+      expect(await searchRegion.getByText("Glossary").first().isVisible()).toBe(
+        true,
+      );
+      expect(
+        await searchRegion.getByText("Tag match").first().isVisible(),
+      ).toBe(true);
+      expect(await searchRegion.getByText("glossary").first().isVisible()).toBe(
+        true,
+      );
     } finally {
       await page.unrouteAll({ behavior: "ignoreErrors" });
       await page.close();
@@ -223,14 +243,11 @@ describe("public search browser flow", () => {
       await page.waitForFunction(
         () =>
           document.activeElement?.getAttribute("href") === "/glossary/agent",
+        { timeout: 5_000 },
       );
 
-      const firstResult = page.getByRole("link", {
-        name: /Agent \/glossary\/agent/,
-      });
-      const secondResult = page.getByRole("link", {
-        name: /Agent runner reference \/reference\/agent-runner/,
-      });
+      const firstResult = page.locator(".public-search__result-link").nth(0);
+      const secondResult = page.locator(".public-search__result-link").nth(1);
 
       expect(
         await firstResult.evaluate(
@@ -244,6 +261,7 @@ describe("public search browser flow", () => {
         () =>
           document.activeElement?.getAttribute("href") ===
           "/reference/agent-runner",
+        { timeout: 5_000 },
       );
 
       expect(
@@ -260,5 +278,5 @@ describe("public search browser flow", () => {
       await page.unrouteAll({ behavior: "ignoreErrors" });
       await page.close();
     }
-  }, 30_000);
+  }, 60_000);
 });

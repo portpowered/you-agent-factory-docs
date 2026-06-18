@@ -59,7 +59,7 @@ export function collectDocsShellAccessibilitySnapshot(
   });
   const main = root.queryByRole("main");
   const searchRegion = root.queryByRole("region", {
-    name: enMessages.docs.searchTitle,
+    name: enMessages.docs.search.title,
   });
   const breadcrumbNavigation = root.queryByRole("navigation", {
     name: enMessages.docs.breadcrumbAriaLabel,
