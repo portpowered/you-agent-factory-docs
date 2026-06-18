@@ -60,8 +60,9 @@
 - `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.
 - When canonical docs copy changes add or revise reader-visible claims, update both `tests/unit/load-doc-page.test.ts` and `tests/unit/public-search-artifact.test.ts` so route loading and the checked-in search contract prove the same content.
 - When a page needs explicit route-render proof in addition to content-pipeline assertions, add one static-export test that derives the page href from `loadDocsShellNavigation()` before fetching the rendered route, rather than asserting against a hand-maintained route inventory.
+- Browser-route progression assertions should follow the current generated docs order from canonical metadata, not a remembered narrative sequence; adjacent guide pages can legitimately shift previous/next links after rebases or new launch-content additions.
 - Static-export and browser-export tests read ports from `STATIC_EXPORT_TEST_PORT` / `RECONCILED_EXPORT_BROWSER_TEST_PORT` via `tests/helpers/test-port.ts` so nested `make test` invocations from `root-command-path.test.ts` do not collide with the outer suite.
-- Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
+- Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML-not file inventories, route registries, or internal helper existence.
 
 ## Quality checks
 

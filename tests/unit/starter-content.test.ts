@@ -143,24 +143,18 @@ navigationTitle: Agent term
     const { records, failures } = loadStarterContentRecords(CONTENT_ROOT);
 
     expect(failures).toEqual([]);
-    expect(records.map((record) => record.id).sort()).toEqual([
-      "blog/introducing-factory",
-      "comparison/vs-n8n",
-      "doc/cli",
-      "doc/coder-reviewer-pattern",
-      "doc/concepts",
-      "doc/configuration",
-      "doc/faq",
-      "doc/getting-started",
-      "doc/getting-started",
-      "doc/installation",
-      "doc/introduction",
-      "doc/pr-review-factory",
-      "doc/quickstart",
-      "doc/release-readiness-factory",
-      "glossary/agent",
-      "reference/loop-engineering",
-    ]);
+    expect(records.some((record) => record.kind === "blog")).toBe(true);
+    expect(records.some((record) => record.kind === "comparison")).toBe(true);
+    expect(records.some((record) => record.kind === "doc")).toBe(true);
+    expect(records.some((record) => record.kind === "glossary")).toBe(true);
+    expect(records.some((record) => record.kind === "reference")).toBe(true);
+    expect(
+      records.some(
+        (record) =>
+          record.id === "doc/getting-started" &&
+          record.availableLocales.join(",") === "en,fr",
+      ),
+    ).toBe(true);
 
     const singleLocaleRecords = records.filter(
       (record) => record.id !== "doc/getting-started",

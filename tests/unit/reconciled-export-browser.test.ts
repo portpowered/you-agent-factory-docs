@@ -269,7 +269,7 @@ describe("reconciled baseline browser export", () => {
             name: enMessages.docs.progressionAriaLabel,
           })
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
+            name: `${enMessages.docs.nextPagePrefix} FAQ`,
           })
           .isVisible(),
       ).toBe(true);
@@ -278,12 +278,12 @@ describe("reconciled baseline browser export", () => {
           name: enMessages.docs.progressionAriaLabel,
         })
         .getByRole("link", {
-          name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
+          name: `${enMessages.docs.nextPagePrefix} FAQ`,
         })
         .click();
       await page.waitForURL(
         new RegExp(
-          `${withBasePath("/docs/concepts").replace(/\//g, "\\/")}/?$`,
+          `${withBasePath("/docs/faq").replace(/\//g, "\\/")}/?$`,
         ),
         { timeout: 10_000 },
       );
@@ -294,7 +294,7 @@ describe("reconciled baseline browser export", () => {
             name: enMessages.docs.progressionAriaLabel,
           })
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Coder / Reviewer pattern`,
+            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
           })
           .isVisible(),
       ).toBe(true);
@@ -515,7 +515,7 @@ describe("reconciled baseline browser export", () => {
             name: enMessages.docs.progressionAriaLabel,
           })
           .getByRole("link", {
-            name: `${enMessages.docs.previousPagePrefix} Coder / Reviewer pattern`,
+            name: `${enMessages.docs.previousPagePrefix} Configuration`,
           })
           .isVisible(),
       ).toBe(true);
