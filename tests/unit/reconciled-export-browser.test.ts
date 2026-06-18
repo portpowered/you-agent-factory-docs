@@ -252,6 +252,31 @@ describe("reconciled baseline browser export", () => {
           })
           .isVisible(),
       ).toBe(true);
+      await page
+        .getByRole("navigation", {
+          name: enMessages.docs.progressionAriaLabel,
+        })
+        .getByRole("link", {
+          name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
+        })
+        .click();
+      await page.waitForURL(
+        new RegExp(
+          `${withBasePath("/docs/concepts").replace(/\//g, "\\/")}/?$`,
+        ),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.nextPagePrefix} Coder / Reviewer pattern`,
+          })
+          .isVisible(),
+      ).toBe(true);
     } finally {
       await page.close();
     }

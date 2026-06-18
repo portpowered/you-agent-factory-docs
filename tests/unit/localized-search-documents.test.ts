@@ -72,6 +72,7 @@ describe("localized search document generation", () => {
       "blog/introducing-factory@en",
       "comparison/vs-n8n@en",
       "doc/cli@en",
+      "doc/coder-reviewer-pattern@en",
       "doc/concepts@en",
       "doc/configuration@en",
       "doc/getting-started@en",

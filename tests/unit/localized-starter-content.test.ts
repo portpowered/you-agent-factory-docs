@@ -67,6 +67,7 @@ describe("localized starter content variants", () => {
 
     expect(listPublishedDocSlugs(CONTENT_ROOT)).toEqual([
       "cli",
+      "coder-reviewer-pattern",
       "concepts",
       "configuration",
       "getting-started",

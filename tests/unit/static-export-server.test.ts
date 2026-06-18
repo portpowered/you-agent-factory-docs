@@ -12,6 +12,7 @@ import { STATIC_EXPORT_SKIP_BUILD_ENV } from "../../src/lib/validation/static-ex
 import { fetchHttp } from "../helpers/http";
 import {
   buildStaticExport,
+  ensureStaticExportBuilt,
   shouldSkipStaticExportBuild,
   startStaticExportServer,
   waitForStaticExportServer,
@@ -70,9 +71,7 @@ describe("static export server helpers", () => {
   });
 
   test("startStaticExportServer serves an isolated snapshot of out/", async () => {
-    if (!existsSync(exportDir)) {
-      buildStaticExport();
-    }
+    await ensureStaticExportBuilt();
 
     const homepageHtmlPath = join(exportDir, "index.html");
     const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
@@ -106,5 +105,5 @@ describe("static export server helpers", () => {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
       server.stop();
     }
-  }, 60_000);
+  }, 180_000);
 });

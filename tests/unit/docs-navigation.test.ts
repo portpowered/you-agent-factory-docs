@@ -353,6 +353,20 @@ section: guides
               fellBackToCanonicalLocale: false,
             },
           },
+          {
+            canonicalId: "doc/coder-reviewer-pattern",
+            label: "Coder / Reviewer pattern",
+            href: "/docs/coder-reviewer-pattern",
+            order: 5,
+            localeProjection: {
+              canonicalPageId: "doc/coder-reviewer-pattern",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
         ],
       },
       {
@@ -417,7 +431,7 @@ section: guides
         (section) =>
           section.id === "guides" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/getting-started,doc/cli,doc/configuration,doc/concepts",
+            "doc/getting-started,doc/cli,doc/configuration,doc/concepts,doc/coder-reviewer-pattern",
       ),
     ).toBe(true);
   });

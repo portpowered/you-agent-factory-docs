@@ -147,6 +147,7 @@ navigationTitle: Agent term
       "blog/introducing-factory",
       "comparison/vs-n8n",
       "doc/cli",
+      "doc/coder-reviewer-pattern",
       "doc/concepts",
       "doc/configuration",
       "doc/getting-started",

@@ -87,6 +87,7 @@ describe("public search artifact generation", () => {
       "blog/introducing-factory@en",
       "comparison/vs-n8n@en",
       "doc/cli@en",
+      "doc/coder-reviewer-pattern@en",
       "doc/concepts@en",
       "doc/configuration@en",
       "doc/getting-started@en",
@@ -102,6 +103,9 @@ describe("public search artifact generation", () => {
       (entry) => entry.id === "doc/getting-started@en",
     );
     const cli = artifact.entries.find((entry) => entry.id === "doc/cli@en");
+    const coderReviewerPattern = artifact.entries.find(
+      (entry) => entry.id === "doc/coder-reviewer-pattern@en",
+    );
     const configuration = artifact.entries.find(
       (entry) => entry.id === "doc/configuration@en",
     );
@@ -130,9 +134,44 @@ describe("public search artifact generation", () => {
       url: "/docs/cli",
       title: "CLI overview",
       section: "guides",
+      searchPriority: 9,
     });
     expect(cli?.headings.length).toBeGreaterThan(0);
     expect(cli?.body).toContain("Typical commands and outcomes");
+
+    expect(coderReviewerPattern).toMatchObject({
+      canonicalId: "doc/coder-reviewer-pattern",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/coder-reviewer-pattern",
+      title: "Coder / Reviewer pattern",
+      section: "guides",
+      searchPriority: 8,
+    });
+    expect(coderReviewerPattern?.headings).toEqual([
+      "Coder / Reviewer pattern",
+      "Who the two roles are",
+      "Coder",
+      "Reviewer",
+      "How the handoff works",
+      "What the review loop looks like",
+      "What teams get from the pattern",
+      "Where approval gates matter",
+      "Realistic limits and failure modes",
+    ]);
+    expect(coderReviewerPattern?.body).toContain(
+      "one role focused on producing the change",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "approves the work or sends it back with concrete changes requested",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "approval is treated as a real gate",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "The most common failure mode is shallow review",
+    );
 
     expect(configuration).toMatchObject({
       canonicalId: "doc/configuration",

@@ -270,6 +270,42 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain("Continue through setup");
   }, 30_000);
 
+  test("serves the coder reviewer pattern route from generated guides navigation", async () => {
+    const guidesPage = loadDocsShellNavigation()
+      .sections.find((section) => section.id === "guides")
+      ?.pages.find((page) => page.canonicalId === "doc/coder-reviewer-pattern");
+
+    expect(guidesPage).toEqual(
+      expect.objectContaining({
+        canonicalId: "doc/coder-reviewer-pattern",
+        label: "Coder / Reviewer pattern",
+        href: "/docs/coder-reviewer-pattern",
+      }),
+    );
+
+    const response = await fetchHttp(
+      new URL(withBasePath(guidesPage?.href ?? ""), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(response.status).toBe(200);
+
+    const html = await response.text();
+    expect(html).toContain("Coder / Reviewer pattern");
+    expect(html).toContain("Who the two roles are");
+    expect(html).toContain("Where approval gates matter");
+    expect(html).toContain("Realistic limits and failure modes");
+    expect(html).toContain("approval is treated as a real gate");
+    expect(html).toContain("The most common failure mode is shallow review");
+    expect(html).toContain(
+      `aria-label="${enMessages.docs.breadcrumbAriaLabel}"`,
+    );
+    expect(html).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(html).toContain('aria-current="page"');
+  }, 30_000);
+
   test("serves the generated setup-path routes projected by docs navigation", async () => {
     const setupPages = loadDocsShellNavigation()
       .sections.find((section) => section.id === "setup")
@@ -526,8 +562,8 @@ describe("served static export navigation", () => {
         body: "How the CLI and configuration connect",
         previousLabel: "Configuration",
         previousHref: "/docs/configuration",
-        nextLabel: "Code presentation",
-        nextHref: "/docs/examples/code-presentation",
+        nextLabel: "Coder / Reviewer pattern",
+        nextHref: "/docs/coder-reviewer-pattern",
       },
     ] as const;
 
