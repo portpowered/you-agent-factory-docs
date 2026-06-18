@@ -5,6 +5,7 @@ import type { EarlyGateValidationFixture } from "../../src/lib/validation/gate-f
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
 import { STATIC_EXPORT_SKIP_BUILD_ENV } from "../../src/lib/validation/static-export";
 import { withRepoCommandLock } from "./repo-command-lock";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -17,15 +18,14 @@ export function runQualityGateScript(
       spawnSync("bun", ["run", "scripts/quality-gate.ts"], {
         cwd: repoRoot,
         encoding: "utf8",
-        env: {
-          ...process.env,
+        env: buildCleanSubprocessEnv({
           ...(existsSync(exportDir)
             ? {
                 [STATIC_EXPORT_SKIP_BUILD_ENV]: "1",
               }
             : undefined),
           ...options.env,
-        },
+        }),
       }),
     ),
   );
@@ -57,15 +57,14 @@ export function runValidationScript(
     spawnSync("bun", ["run", target], {
       cwd: repoRoot,
       encoding: "utf8",
-      env: {
-        ...process.env,
+      env: buildCleanSubprocessEnv({
         ...options.env,
         ...(fixture
           ? {
               EARLY_GATE_VALIDATION_FIXTURE: fixture,
             }
           : undefined),
-      },
+      }),
     }),
   );
 

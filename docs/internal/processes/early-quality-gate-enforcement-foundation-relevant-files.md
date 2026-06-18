@@ -36,7 +36,6 @@ Deferred from this early lane (see `DEFERRED_PHASE_8_QUALITY_CHECKS`):
 Later localization and canonical content foundations plug into the same `validate:localization` and `validate:content` scripts instead of introducing a parallel gate surface.
 
 `src/lib/validation/gate-fixtures.ts` exposes `EARLY_GATE_VALIDATION_FIXTURE` values for subprocess failing-path proof in `tests/unit/quality-gate-validation-failing-path.test.ts`. Use this only in tests; production runs omit the env var.
-`src/lib/validation/quality-gate-command-lock.ts` serializes full `quality-gate` subprocess tests without deadlocking the inner `.next` or static-export locks that the gate acquires itself.
 
 ## Contract tests
 
@@ -50,4 +49,6 @@ Later localization and canonical content foundations plug into the same `validat
 - `src/lib/validation/shell-accessibility.ts` documents `FOCUSED_SHELL_ACCESSIBILITY_COVERAGE` and exports shared aria-label constants consumed by shell components.
 - `src/lib/validation/static-export.ts` validates the GitHub Pages-safe Next.js export configuration before the production build step runs.
 - `tests/helpers/make.ts` supports dry-run assertions against the root `Makefile` and serializes `make quality-gate` subprocess tests through the dedicated quality-gate command lock.
-- `tests/helpers/validation.ts` runs validate scripts and the quality-gate script with optional gate fixtures and step-output helpers under the same quality-gate command lock.
+- `tests/helpers/validation.ts` runs validate scripts and the quality-gate script with optional gate fixtures, clean subprocess envs, and the same quality-gate command lock used by root `make` failing-path proof.
+- `src/lib/validation/quality-gate-command-lock.ts` serializes top-level quality-gate subprocess tests without deadlocking the inner repo-root locks acquired by the gate itself.
+- `src/lib/validation/quality-gate-lock.ts` serializes the actual `quality-gate` script execution so concurrent command-path tests do not race on repo-root artifacts.

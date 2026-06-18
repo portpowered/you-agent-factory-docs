@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { withRepoCommandLock } from "./repo-command-lock";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const repoRoot = join(import.meta.dir, "../..");
 
@@ -19,10 +20,7 @@ export function runMake(
       spawnSync("make", args, {
         cwd: repoRoot,
         encoding: "utf8",
-        env: {
-          ...process.env,
-          ...options.env,
-        },
+        env: buildCleanSubprocessEnv(options.env),
         maxBuffer: 50 * 1024 * 1024,
       });
 

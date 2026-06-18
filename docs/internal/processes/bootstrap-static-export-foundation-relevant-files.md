@@ -35,7 +35,7 @@
 - Export-backed server tests must reserve an actually available localhost port before spawning `python3 -m http.server`; if the preferred default test port is already occupied, fall back to a free port instead of accidentally reusing a stale server from another run.
 - `validate:static-export` cleans `.next`, runs one production build under `withStaticExportBuildLock()`, then invokes `tests/unit/static-export.test.ts` with `STATIC_EXPORT_SKIP_BUILD=1` and `STATIC_EXPORT_BUILD_LOCK_HELD=1` so the served-export tests reuse that export without deadlocking on the parent-held lock.
 - `src/lib/validation/static-export-build-lock.ts` serializes `.next`/`out/` production builds across concurrent test files and subprocessed quality-gate runs.
-- `src/lib/validation/static-export-build-lock.ts` supports same-process nested acquisition; keep cross-process locking in one place rather than layering ad hoc file cleanup around callers.
+- `src/lib/validation/static-export-build-lock.ts` does not support same-process nested acquisition; callers and tests need to prepare any required `out/` fixture before taking the lock when verifying skip-build behavior.
 - `buildStaticExport()` in `src/lib/static-export.ts` also cleans `.next` before building when a fresh export is required.
 - `startStaticExportServer()` copies `out/` into a temp snapshot before serving it so export-backed suites do not observe a live shared `out/` while another test rebuilds the site.
 - Browser verification for the reconciled baseline uses `@playwright/test` Chromium against the same `tests/helpers/static-export-server.ts` mount pattern; see `tests/unit/reconciled-export-browser.test.ts`.
