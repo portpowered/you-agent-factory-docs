@@ -242,24 +242,17 @@ describe("reconciled baseline browser export", () => {
         { timeout: 10_000 },
       );
 
-      expect(
-        await page
-          .getByRole("navigation", {
-            name: enMessages.docs.progressionAriaLabel,
-          })
-          .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
-          })
-          .isVisible(),
-      ).toBe(true);
-      await page
+      const nextConceptsLink = page
         .getByRole("navigation", {
           name: enMessages.docs.progressionAriaLabel,
         })
         .getByRole("link", {
           name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
-        })
-        .click();
+        });
+
+      await nextConceptsLink.waitFor({ state: "visible", timeout: 10_000 });
+      expect(await nextConceptsLink.isVisible()).toBe(true);
+      await nextConceptsLink.click();
       await page.waitForURL(
         new RegExp(
           `${withBasePath("/docs/concepts").replace(/\//g, "\\/")}/?$`,

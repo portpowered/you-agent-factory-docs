@@ -25,6 +25,7 @@
 - `tests/unit/shared-shell.test.tsx` proves the shared frame contract, config separation, and surface-specific header destinations.
 - `tests/unit/shared-shell-navigation.test.tsx` proves reusable navigation primitives, keyboard reachability, accessible external-link names, and the shared destination contract across surfaces.
 - `tests/unit/shared-shell-responsive.test.tsx` proves SSR-safe initial disclosure state, menu toggle wiring, and shared responsive header behavior across surfaces.
+- When the docs sidebar frame changes, extend `tests/unit/shared-shell-responsive.test.tsx` with a runtime disclosure assertion on `SharedShell surface="docs"` so narrow-viewport sidebar behavior stays covered independently from the Fumadocs route shell.
 - `tests/unit/reconciled-export-browser.test.ts` is the reviewer-facing proof for computed desktop-hidden/mobile-visible disclosure behavior on the built export; use it when a shell styling change could regress real breakpoint visibility.
 - `tests/unit/shared-shell-extension-points.test.tsx` proves canonical config extension, multiple docs navigation groups, and projected-state separation.
 - Homepage and docs shell tests remain focused on surface content and navigation expectations after adopting the shared frame.

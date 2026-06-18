@@ -160,4 +160,39 @@ describe("shared shell responsive layout contract", () => {
     expect(screen.getByRole("button", { name: "Close menu" })).toBeTruthy();
     expect(screen.getByRole("navigation", { name: "Primary" })).toBeTruthy();
   });
+
+  test("collapses docs sidebar navigation on narrow viewports until opened", () => {
+    mockMatchMedia({ width: RESPONSIVE_BREAKPOINTS_PX.mobileMax });
+
+    render(
+      <SharedShell currentDocsItemId="overview" surface="docs">
+        <p>Docs</p>
+      </SharedShell>,
+    );
+
+    const sidebarToggle = screen.getByRole("button", {
+      name: sharedShellConfig.responsive.docsNavigationDisclosure.openLabel,
+    });
+
+    expect(sidebarToggle.getAttribute("aria-expanded")).toBe("false");
+    expect(
+      screen.queryByRole("navigation", {
+        name: sharedShellConfig.docsNavigationGroups[0]?.heading,
+      }),
+    ).toBeNull();
+
+    fireEvent.click(sidebarToggle);
+
+    const docsGroup = screen.getByRole("navigation", {
+      name: sharedShellConfig.docsNavigationGroups[0]?.heading,
+    });
+    const currentPageLink = within(docsGroup).getByRole("link", {
+      current: "page",
+      name: "Overview",
+    });
+
+    expect(sidebarToggle.getAttribute("aria-expanded")).toBe("true");
+    expect(currentPageLink).toBeTruthy();
+    expect(currentPageLink.className).toContain("ui-button");
+  });
 });
