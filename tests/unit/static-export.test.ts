@@ -223,7 +223,7 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain("Next steps");
   }, 30_000);
 
-  test("serves the logs-and-replays guide with concrete successful-run inspection guidance", async () => {
+  test("serves the logs-and-replays guide with concrete success and failure inspection guidance", async () => {
     const logsGuideResponse = await fetchHttp(
       new URL(withBasePath("/docs/logs-and-replays"), server.baseUrl),
       { signal: AbortSignal.timeout(10_000) },
@@ -248,6 +248,22 @@ describe("served static export navigation", () => {
       "the run reached a terminal success state instead of stopping at an approval or retry boundary",
     );
     expect(logsGuideHtml).toContain("Success path checklist");
+    expect(logsGuideHtml).toContain(
+      "When a workflow does not finish cleanly, do not start by reading the entire trace from top to bottom.",
+    );
+    expect(logsGuideHtml).toContain(
+      "the step marked failed, blocked, or waiting for approval",
+    );
+    expect(logsGuideHtml).toContain(
+      "Read logs for decision points, not just raw volume",
+    );
+    expect(logsGuideHtml).toContain(
+      "Use replay or rerun surfaces to narrow the problem",
+    );
+    expect(logsGuideHtml).toContain(
+      "Two common first-adoption problems are a missing expected output and a workflow that appears stuck waiting for approval.",
+    );
+    expect(logsGuideHtml).toContain("Failure path checklist");
   }, 30_000);
 
   test("serves doc pages without page-outline navigation when headings are insufficient", async () => {

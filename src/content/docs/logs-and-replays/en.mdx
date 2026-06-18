@@ -76,3 +76,64 @@ After a successful workflow run, inspect in this order:
 5. only then the broader logs if something still looks unclear
 
 This order keeps the first-review experience grounded in observable results instead of forcing a new user to infer success from raw logs alone.
+
+## When a run fails or stalls, inspect the first failing clue before everything else
+
+When a workflow does not finish cleanly, do not start by reading the entire trace from top to bottom. Start with the first clue that tells you where the run stopped changing state:
+
+- the step marked failed, blocked, or waiting for approval
+- the last step that still produced a clear output
+- any short error summary, retry note, or approval status attached to the run
+
+Those clues tell you where to focus. A failed run is usually easiest to understand when you compare the last healthy step with the first step that stopped, retried, or asked for human input.
+
+## Read logs for decision points, not just raw volume
+
+Step logs are most useful when they explain a decision boundary. For a confusing first run, inspect logs in this order:
+
+1. the failing or blocked step summary
+2. the input or handoff that step received
+3. the log line or status note that explains why the step failed, retried, or paused
+4. the previous successful step, to confirm whether the problem started earlier
+
+This keeps log review practical. You are looking for signals such as missing inputs, invalid configuration, approval pauses, or tool failures, not for every message the run emitted.
+
+## Use replay or rerun surfaces to narrow the problem
+
+Replay or rerun surfaces are most useful after you have identified the first suspicious step. Use them to answer a narrower question than "does the whole workflow work?":
+
+- replay the run when you need to inspect the same path again and confirm where behavior diverges
+- rerun after a fix when you need to verify whether a changed input, approval, or configuration resolves the issue
+- compare the repeated run with the original run summary, outputs, and failing step so you can tell what actually changed
+
+The goal is not just to produce a second result. The goal is to prove whether the same step fails again, whether the failure moved, or whether the expected output now appears.
+
+## Debug the first missing-output or approval-bottleneck case
+
+Two common first-adoption problems are a missing expected output and a workflow that appears stuck waiting for approval.
+
+If the output is missing, inspect:
+
+1. whether the run ended in success, failure, or a non-terminal waiting state
+2. the step that should have emitted the result
+3. the immediately preceding handoff or tool step for missing input or error clues
+4. a replay or rerun after fixing the missing dependency, prompt, or configuration
+
+If the run is waiting for approval, inspect:
+
+1. which approval step is blocking progress
+2. what output or summary was produced for the approver
+3. whether the next step ever started
+4. a replay or rerun after the approval path is completed or corrected
+
+In both cases, the debugging path starts from the missing observable outcome and works backward to the first blocked or failing step.
+
+## Failure path checklist
+
+When a workflow fails, pauses unexpectedly, or produces an incomplete result, inspect in this order:
+
+1. the run state and the first failing, blocked, or waiting step
+2. the last confirmed output before the problem
+3. the logs around that step's decision or error boundary
+4. the replay or rerun result after your smallest corrective change
+5. whether the expected output now appears or the failure moved somewhere else

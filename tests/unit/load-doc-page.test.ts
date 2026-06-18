@@ -166,6 +166,22 @@ MDX body.
     expect(page.body).toContain(
       "the result summary and the output-producing step describe the same outcome",
     );
+    expect(page.body).toContain(
+      "When a workflow does not finish cleanly, do not start by reading the entire trace from top to bottom.",
+    );
+    expect(page.body).toContain(
+      "the step marked failed, blocked, or waiting for approval",
+    );
+    expect(page.body).toContain(
+      "Use replay or rerun surfaces to narrow the problem",
+    );
+    expect(page.body).toContain(
+      "compare the repeated run with the original run summary, outputs, and failing step",
+    );
+    expect(page.body).toContain(
+      "Two common first-adoption problems are a missing expected output and a workflow that appears stuck waiting for approval.",
+    );
+    expect(page.body).toContain("Failure path checklist");
     expect(page.resolution).toEqual({
       canonicalPageId: "doc/logs-and-replays",
       canonicalLocale: "en",
