@@ -1,11 +1,11 @@
-import { DocPageArticle } from "@/components/docs/doc-page-article";
-import { DocsRouteChrome } from "@/components/docs/docs-route-chrome";
-import { FumadocsDocsLayout } from "@/components/docs/fumadocs-docs-layout";
+import { PublicContentPageShell } from "@/components/content/public-content-page-shell";
 import {
-  listPublishedContentSlugs,
-  loadDocsShellNavigation,
+  PublicContentPageNotFoundError,
+  buildContentPageMetadata,
+  listPublishedPublicContentRouteParams,
   loadPublicContentPage,
 } from "@/lib/content";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type ReferencePageProps = {
@@ -13,33 +13,42 @@ type ReferencePageProps = {
 };
 
 export function generateStaticParams() {
-  return listPublishedContentSlugs("reference").map((slug) => ({ slug }));
+  return listPublishedPublicContentRouteParams(undefined, {
+    supportedKinds: ["reference"],
+  }).map(({ slug }) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: ReferencePageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const page = loadPublicContentPage("reference", slug);
+
+  return buildContentPageMetadata({
+    title: page.title,
+    body: page.body,
+    routePath: page.record.routePath,
+  });
 }
 
 export default async function ReferencePage({ params }: ReferencePageProps) {
   const { slug } = await params;
-  const navigation = loadDocsShellNavigation();
 
-  let page: ReturnType<typeof loadPublicContentPage>;
   try {
-    page = loadPublicContentPage("reference", slug);
-  } catch {
+    const page = loadPublicContentPage("reference", slug);
+
+    return (
+      <PublicContentPageShell
+        body={page.body}
+        record={page.record}
+        title={page.title}
+      />
+    );
+  } catch (error) {
+    if (!(error instanceof PublicContentPageNotFoundError)) {
+      throw error;
+    }
+
     notFound();
   }
-
-  return (
-    <FumadocsDocsLayout>
-      <DocsRouteChrome
-        breadcrumbItems={[
-          { labelKey: "docs.referenceSectionLabel" },
-          { label: page.title },
-        ]}
-        currentPath={page.record.routePath}
-        hideProgression
-        navigation={navigation}
-      >
-        <DocPageArticle body={page.body} title={page.title} />
-      </DocsRouteChrome>
-    </FumadocsDocsLayout>
-  );
 }

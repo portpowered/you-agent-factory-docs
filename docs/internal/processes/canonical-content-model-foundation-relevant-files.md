@@ -28,14 +28,15 @@
 
 - Starter fixtures live under `src/content/{docs,blog,glossary,comparisons,references}/{slug}/{locale}.md` or `{locale}.mdx`.
 - `resolveLocaleFileName()` in `src/lib/content/locale-files.ts` is the shared locale-file resolver; `loadDocPage()` prefers `.mdx` over `.md` when both exist for the same locale.
-- `loadPublicContentPage()` in `src/lib/content/load-public-content-page.ts` is the shared runtime loader for public starter-content pages outside the docs route tree; it keeps glossary, comparison, and reference pages on the same validated canonical records and locale-projection path as docs pages.
 - Directory names map to public content kinds via `STARTER_CONTENT_DIRECTORY_KINDS` in `src/lib/content/starter.ts`.
 - Frontmatter is parsed by `parseContentFile()`; `buildMetadataFromStarterContent()` projects author metadata from directory context plus frontmatter.
 - `validateStarterContent()` and `loadStarterContentRecords()` validate fixtures into canonical records without docs-shell constant edits.
-- Use `loadPublicSearchArtifact()` or `loadLocalizedSearchDocuments()` for pre-route proof when a non-doc content kind has no public page yet. Once a route exists, prefer served static-export or browser-visible assertions for the actual page URL and keep artifact-level tests as supporting coverage.
 - To add a new canonical docs page to the shell, create one localized file under `src/content/docs/{slug}/{locale}.mdx` with valid canonical frontmatter (`id`, `title`, `canonicalLocale`, `availableLocales`, `section`, `order`, and publication metadata); the page will flow into route loading and generated navigation without manual sidebar wiring.
 - When canonical docs copy changes, regenerate `public/search/public-search-index.json` so the checked-in search artifact stays aligned with the page body and headings that search exposes.
 - For one-page launch-content stories that need focused pipeline proof, prefer one page-specific test that asserts the generated nav page, `loadDocPage()` result, localized search document, and checked-in public search entry agree on canonical id, route, locale metadata, and key reader-visible claims.
+- `listPublishedPublicContentRouteParams()` in `src/lib/content/public-content-routes.ts` projects published `{ kind, slug }` static-route params for supported public kinds directly from validated canonical records; callers narrow scope with `supportedKinds` instead of hand-maintaining route lists.
+- `loadPublicContentPage()` in `src/lib/content/load-public-content-page.ts` is the non-doc equivalent of `loadDocPage()`: it resolves published blog, glossary, comparison, and reference starter pages from validated canonical records, then reads the canonical-locale or localized variant source from the starter-content directory mapped to that kind.
+- `PublicContentPageNotFoundError` from `src/lib/content/load-public-content-page.ts` is the route-level not-found seam for non-doc public pages; route entrypoints should translate only that typed missing-page error into `notFound()` and rethrow unexpected loader failures.
 
 ## Docs shell navigation projection
 
@@ -45,7 +46,8 @@
 - `projectSharedShellDocsNavigation()` maps generated navigation into `SharedShell` sidebar groups; `DocsShell` composes `SharedShell` with that projected config.
 - `DocsShell` uses `createSharedShellConfigFromMessages(t, { docsNavigationGroups })` so localized shell labels come from the message catalog while docs sidebar items stay projected from canonical records.
 - Published doc pages are served from `src/app/docs/[slug]/page.tsx` via `loadDocPage()` and `generateStaticParams()`.
-- Published glossary, comparison, and reference pages are served from `src/app/glossary/[slug]/page.tsx`, `src/app/comparisons/[slug]/page.tsx`, and `src/app/references/[slug]/page.tsx`, each with `generateStaticParams()` from `listPublishedContentSlugs()`.
+- Published blog, glossary, comparison, and reference starter pages are served from `src/app/{blog,glossary,comparisons,references}/[slug]/page.tsx`, each using `listPublishedPublicContentRouteParams()` for static params and `loadPublicContentPage()` for canonical record resolution.
+- `src/components/content/public-content-page-shell.tsx` owns the shared non-doc article chrome; reuse `DocsBreadcrumbs` there with the docs-entry link instead of inventing a separate breadcrumb pattern per public content kind.
 
 ## Tests
 
@@ -55,10 +57,14 @@
 - Cross-layer foundation verification (validation → navigation projection, locale readiness, ownership separation) is covered in `tests/unit/canonical-content-foundation.test.ts`.
 - Docs route-shell rendering with generated navigation is covered in `tests/unit/docs-route-shell.test.tsx`.
 - Served static export HTML includes generated docs navigation and follows generated doc links in `tests/unit/static-export.test.ts`.
-- Served static export and browser-export tests should be the primary proof for public knowledge routes such as `/glossary/...`, `/comparisons/...`, and `/references/...`, because they verify the same GitHub Pages URLs reviewers open manually.
 - `loadDocPage()` locale-file resolution for accepted `.md` and `.mdx` fixtures is covered in `tests/unit/load-doc-page.test.ts`.
 - When canonical docs copy changes add or revise reader-visible claims, update both `tests/unit/load-doc-page.test.ts` and `tests/unit/public-search-artifact.test.ts` so route loading and the checked-in search contract prove the same content.
 - When a page needs explicit route-render proof in addition to content-pipeline assertions, add one static-export test that derives the page href from `loadDocsShellNavigation()` before fetching the rendered route, rather than asserting against a hand-maintained route inventory.
+- Public non-doc route-param projection is covered in `tests/unit/public-content-routes.test.ts`.
+- Public non-doc page loading is covered in `tests/unit/load-public-content-page.test.ts`.
+- `tests/helpers/public-content-verification.ts` is the shared verification fixture seam for public non-doc starter routes; derive browser/export expectations from `listPublishedPublicContentRouteParams()` plus `loadPublicContentPage()` instead of maintaining a second hardcoded route inventory in higher-level tests.
+- Static export and browser-visible verification for the public starter routes lives in `tests/unit/static-export.test.ts` and `tests/unit/reconciled-export-browser.test.ts`.
+- `tests/helpers/static-export-server.ts` is the shared static-export test server. It serves a snapshot of `out/`, decodes Next.js asset paths like `%5Bslug%5D`, and falls back to exported `404.html` so browser-visible missing-route checks match the project’s intentional not-found behavior.
 - Static-export and browser-export tests read ports from `STATIC_EXPORT_TEST_PORT` / `RECONCILED_EXPORT_BROWSER_TEST_PORT` via `tests/helpers/test-port.ts` so nested `make test` invocations from `root-command-path.test.ts` do not collide with the outer suite.
 - Prefer asserting observable validation results, projected record fields, generated navigation output, and served HTML—not file inventories, route registries, or internal helper existence.
 

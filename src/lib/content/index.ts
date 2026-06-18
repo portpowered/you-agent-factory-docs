@@ -63,11 +63,17 @@ export {
   type LoadDocPageOptions,
 } from "@/lib/content/load-doc-page";
 export {
-  listPublishedContentSlugs,
+  listPublishedPublicContentRouteParams,
+  type ListPublishedPublicContentRouteParamsOptions,
+  type PublicContentRouteParams,
+} from "@/lib/content/public-content-routes";
+export {
   loadPublicContentPage,
   type LoadPublicContentPageOptions,
   type PublicContentPage,
+  PublicContentPageNotFoundError,
 } from "@/lib/content/load-public-content-page";
+export { buildContentPageMetadata } from "@/lib/content/page-metadata";
 export {
   resolveLocalizedContentVariant,
   selectLocalizedVariantBinding,

@@ -32,7 +32,7 @@ function run(
 
 assertValidStaticExportConfig(resolveStaticExportConfigForGate());
 
-const exitCode = withStaticExportBuildLock(repoRoot, () => {
+const validateStaticExport = () => {
   rmSync(nextDir, { recursive: true, force: true });
 
   console.log("Running static export validation build through `make build`");
@@ -54,6 +54,11 @@ const exitCode = withStaticExportBuildLock(repoRoot, () => {
       [STATIC_EXPORT_SKIP_BUILD_ENV]: "1",
     },
   });
-});
+};
+
+const exitCode =
+  process.env[STATIC_EXPORT_LOCK_HELD_ENV] === "1"
+    ? validateStaticExport()
+    : withStaticExportBuildLock(repoRoot, validateStaticExport);
 
 process.exit(exitCode);

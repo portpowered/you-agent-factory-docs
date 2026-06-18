@@ -8,21 +8,21 @@ import {
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-type GlossaryPageProps = {
+type BlogPageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
   return listPublishedPublicContentRouteParams(undefined, {
-    supportedKinds: ["glossary"],
+    supportedKinds: ["blog"],
   }).map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({
   params,
-}: GlossaryPageProps): Promise<Metadata> {
+}: BlogPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const page = loadPublicContentPage("glossary", slug);
+  const page = loadPublicContentPage("blog", slug);
 
   return buildContentPageMetadata({
     title: page.title,
@@ -31,11 +31,11 @@ export async function generateMetadata({
   });
 }
 
-export default async function GlossaryPage({ params }: GlossaryPageProps) {
+export default async function BlogPage({ params }: BlogPageProps) {
   const { slug } = await params;
 
   try {
-    const page = loadPublicContentPage("glossary", slug);
+    const page = loadPublicContentPage("blog", slug);
 
     return (
       <PublicContentPageShell

@@ -170,6 +170,30 @@
     @apply mb-0 mt-3 text-[clamp(1rem,2.3vw,1.125rem)] text-muted-foreground;
   }
 
+  .public-content-page {
+    @apply mx-auto flex w-full max-w-3xl flex-col gap-6;
+  }
+
+  .public-content-page__header {
+    @apply flex flex-col gap-3;
+  }
+
+  .public-content-page__header h1 {
+    @apply m-0 text-[clamp(2rem,4vw,3rem)] leading-tight text-foreground;
+  }
+
+  .public-content-page__eyebrow {
+    @apply m-0 text-[0.85rem] font-bold uppercase tracking-[0.08em] text-muted-foreground;
+  }
+
+  .public-content-page__meta {
+    @apply m-0 flex list-none flex-wrap gap-2 p-0;
+  }
+
+  .public-content-page__meta li {
+    @apply rounded-full border bg-card px-3 py-1.5 text-[0.85rem] font-semibold text-muted-foreground;
+  }
+
   .docs-page-outline__title {
     @apply m-0 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground;
   }

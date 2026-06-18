@@ -7,6 +7,8 @@ import { withRepoCommandLock } from "./repo-command-lock";
 import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const projectRoot = join(import.meta.dir, "../..");
+const nextDir = join(projectRoot, ".next");
+const tsBuildInfoPath = join(projectRoot, "tsconfig.tsbuildinfo");
 
 export type MakeTargetResult = {
   status: number | null;

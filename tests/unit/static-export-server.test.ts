@@ -13,7 +13,6 @@ import { withStaticExportBuildLock } from "../../src/lib/validation/static-expor
 import { fetchHttp } from "../helpers/http";
 import {
   buildStaticExport,
-  ensureStaticExportBuilt,
   shouldSkipStaticExportBuild,
   startStaticExportServer,
   waitForStaticExportServer,
@@ -76,7 +75,9 @@ describe("static export server helpers", () => {
   });
 
   test("startStaticExportServer serves an isolated snapshot of out/", async () => {
-    await ensureStaticExportBuilt();
+    if (!existsSync(exportDir)) {
+      buildStaticExport();
+    }
 
     const homepageHtmlPath = join(exportDir, "index.html");
     const originalHomepageHtml = readFileSync(homepageHtmlPath, "utf8");
@@ -115,5 +116,35 @@ describe("static export server helpers", () => {
       writeFileSync(homepageHtmlPath, originalHomepageHtml, "utf8");
       server.stop();
     }
-  }, 180_000);
+  }, 60_000);
+
+  test("startStaticExportServer serves the exported not-found document for missing routes", async () => {
+    if (!existsSync(exportDir)) {
+      buildStaticExport();
+    }
+
+    const port = await getTestPort(
+      3792,
+      "STATIC_EXPORT_SERVER_NOT_FOUND_TEST_PORT",
+    );
+    const server = startStaticExportServer(port);
+
+    await waitForStaticExportServer(server.baseUrl);
+
+    try {
+      const response = await fetchHttp(
+        `http://127.0.0.1:${port}${SITE_BASE_PATH}/blog/missing-post/`,
+        {
+          signal: AbortSignal.timeout(10_000),
+        },
+      );
+      const html = await response.text();
+
+      expect(response.status).toBe(404);
+      expect(html).toContain("Page not found");
+      expect(html).toContain("Recovery navigation");
+    } finally {
+      server.stop();
+    }
+  }, 45_000);
 });

@@ -23,6 +23,10 @@ import {
 import { enMessages } from "../../src/localization/messages/en";
 import { fetchHttp } from "../helpers/http";
 import {
+  listPublicContentVerificationFixtures,
+  listRepresentativeMissingPublicRoutePaths,
+} from "../helpers/public-content-verification";
+import {
   ensureStaticExportBuilt,
   startStaticExportServer,
   waitForStaticExportServer,
@@ -235,6 +239,44 @@ describe("served static export navigation", () => {
     expect(docsHtml).toContain("Verification lane");
     expect(docsHtml).toContain("rendered diagram");
     expect(docsHtml).toContain("react-flow__viewport");
+  }, 30_000);
+
+  test("serves canonical public starter routes for blog, glossary, comparison, and reference content", async () => {
+    const publicRoutes = listPublicContentVerificationFixtures();
+
+    for (const route of publicRoutes) {
+      const response = await fetchHttp(
+        new URL(withBasePath(route.routePath), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(200);
+
+      const html = await response.text();
+      expect(html).toContain(route.heading);
+      expect(html).toContain(route.body);
+      expect(html).toContain(`href="${withBasePath(DOCS_ENTRY_ROUTE)}/"`);
+      expect(html).toContain(enMessages.common.githubCta);
+    }
+  }, 30_000);
+
+  test("serves the intentional not-found path for unknown public slugs", async () => {
+    const missingRoutes = listRepresentativeMissingPublicRoutePaths();
+
+    for (const route of missingRoutes) {
+      const response = await fetchHttp(
+        new URL(withBasePath(route), server.baseUrl),
+        { signal: AbortSignal.timeout(10_000) },
+      );
+
+      expect(response.status).toBe(404);
+
+      const html = await response.text();
+      expect(html).toContain("Page not found");
+      expect(html).toContain("Recovery navigation");
+      expect(html).not.toContain("Introducing You Agent Factory");
+      expect(html).not.toContain("Loop engineering");
+    }
   }, 30_000);
 
   test("follows a generated docs navigation link to a served doc page", async () => {
