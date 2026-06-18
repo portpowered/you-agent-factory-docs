@@ -70,6 +70,47 @@ describe("loadDocPage", () => {
     }
   });
 
+  test("loads the FAQ page with practical positioning and oversight answers through the canonical doc path", () => {
+    const page = loadDocPage("faq", STARTER_CONTENT_ROOT, {
+      locale: "en",
+    });
+
+    expect(page.record).toMatchObject({
+      id: "doc/faq",
+      slug: "faq",
+      routePath: "/docs/faq",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      status: "published",
+      section: "guides",
+      order: 3,
+    });
+    expect(page.title).toBe("FAQ");
+    expect(page.body).toContain(
+      "Practical answers for first-wave evaluators who want to decide whether You Agent Factory fits recurring engineering work.",
+    );
+    expect(page.body).toContain("How is it different from one-off chat usage?");
+    expect(page.body).toContain(
+      "The workflow, inputs, outputs, and checkpoints live in a form that engineers can inspect, review, compare, and update instead of depending on one successful prompt session.",
+    );
+    expect(page.body).toContain(
+      "Approvals and review remain part of the normal workflow.",
+    );
+    expect(page.body).toContain(
+      "it does not guarantee correctness and it should not be treated as a replacement for human judgment, validation, or sign-off.",
+    );
+    expect(page.body).toContain(
+      "Start with bounded recurring workflows where the expected inputs, outputs, and review points are already understood by the team.",
+    );
+    expect(page.resolution).toEqual({
+      canonicalPageId: "doc/faq",
+      canonicalLocale: "en",
+      requestedLocale: "en",
+      resolvedLocale: "en",
+      fellBackToCanonicalLocale: false,
+    });
+  });
+
   test("serves accepted plain markdown locale files through the docs page path", () => {
     const contentRoot = mkdtempSync(join(tmpdir(), "plain-markdown-doc-"));
     const fixtureDir = join(contentRoot, "docs", "plain-markdown");

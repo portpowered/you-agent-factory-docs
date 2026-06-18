@@ -269,7 +269,7 @@ describe("reconciled baseline browser export", () => {
             name: enMessages.docs.progressionAriaLabel,
           })
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
+            name: `${enMessages.docs.nextPagePrefix} FAQ`,
           })
           .isVisible(),
       ).toBe(true);
@@ -278,13 +278,11 @@ describe("reconciled baseline browser export", () => {
           name: enMessages.docs.progressionAriaLabel,
         })
         .getByRole("link", {
-          name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
+          name: `${enMessages.docs.nextPagePrefix} FAQ`,
         })
         .click();
       await page.waitForURL(
-        new RegExp(
-          `${withBasePath("/docs/concepts").replace(/\//g, "\\/")}/?$`,
-        ),
+        new RegExp(`${withBasePath("/docs/faq").replace(/\//g, "\\/")}/?$`),
         { timeout: 10_000 },
       );
 
@@ -294,7 +292,7 @@ describe("reconciled baseline browser export", () => {
             name: enMessages.docs.progressionAriaLabel,
           })
           .getByRole("link", {
-            name: `${enMessages.docs.nextPagePrefix} Coder / Reviewer pattern`,
+            name: `${enMessages.docs.nextPagePrefix} Workflow concepts`,
           })
           .isVisible(),
       ).toBe(true);
@@ -474,6 +472,51 @@ describe("reconciled baseline browser export", () => {
             .isVisible(),
         ).toBe(true);
       }
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("FAQ stays reachable through the generated guides navigation inside the docs shell", async () => {
+    const page = await browser.newPage();
+    const conceptsUrl = new URL(
+      withBasePath("/docs/concepts"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(conceptsUrl, { waitUntil: "domcontentloaded" });
+
+      const faqLink = page.getByRole("link", { name: "FAQ" }).first();
+      expect(await faqLink.isVisible()).toBe(true);
+
+      await faqLink.click();
+      await page.waitForURL(
+        new RegExp(`${withBasePath("/docs/faq").replace(/\//g, "\\/")}/?$`),
+        { timeout: 10_000 },
+      );
+
+      expect(
+        await page.getByRole("heading", { level: 1, name: "FAQ" }).isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.breadcrumbAriaLabel,
+          })
+          .getByText("Guides")
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByRole("navigation", {
+            name: enMessages.docs.progressionAriaLabel,
+          })
+          .getByRole("link", {
+            name: `${enMessages.docs.previousPagePrefix} Configuration`,
+          })
+          .isVisible(),
+      ).toBe(true);
     } finally {
       await page.close();
     }

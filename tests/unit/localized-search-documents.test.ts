@@ -75,6 +75,7 @@ describe("localized search document generation", () => {
       "doc/coder-reviewer-pattern@en",
       "doc/concepts@en",
       "doc/configuration@en",
+      "doc/faq@en",
       "doc/getting-started@en",
       "doc/getting-started@fr",
       "doc/installation@en",
@@ -283,6 +284,48 @@ Exécutez \`bun install\`.
       expect(document.headings.length).toBeGreaterThan(0);
       expect(document.body.length).toBeGreaterThan(0);
     }
+  });
+
+  test("includes the FAQ page in localized search metadata with practical positioning and oversight copy", () => {
+    const documents = loadLocalizedSearchDocuments(CONTENT_ROOT);
+    const faq = documents.find((document) => document.id === "doc/faq@en");
+
+    expect(faq).toMatchObject({
+      id: "doc/faq@en",
+      canonicalId: "doc/faq",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      locale: "en",
+      title: "FAQ",
+      url: "/docs/faq",
+      section: "guides",
+      searchPriority: 8,
+    });
+    expect(faq?.headings).toEqual([
+      "FAQ",
+      "What is You Agent Factory for?",
+      "Who is it for first?",
+      "How is it different from one-off chat usage?",
+      "How is it different from running a single agent ad hoc?",
+      "When is it a good fit?",
+      "Where do approvals and engineering review fit?",
+      "What should I expect from workflow outputs?",
+      "What should I expect from logs?",
+      "Does this mean the workflow is fully autonomous or always correct?",
+      "How should a team start safely?",
+    ]);
+    expect(faq?.body).toContain(
+      "turning recurring development work into reusable, inspectable agent workflows",
+    );
+    expect(faq?.body).toContain(
+      "Approvals and review remain part of the normal workflow.",
+    );
+    expect(faq?.body).toContain(
+      "Expect reviewable artifacts rather than magic.",
+    );
+    expect(faq?.body).toContain(
+      "it does not guarantee correctness and it should not be treated as a replacement for human judgment, validation, or sign-off.",
+    );
   });
 
   test("builds stable search-document ids from canonical id and locale", () => {

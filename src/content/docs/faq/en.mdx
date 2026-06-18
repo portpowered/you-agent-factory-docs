@@ -1,0 +1,80 @@
+---
+id: doc/faq
+kind: doc
+title: FAQ
+canonicalLocale: en
+availableLocales:
+  - en
+status: published
+tags:
+  - docs
+  - faq
+section: guides
+order: 3
+search.include: true
+search.priority: 8
+---
+
+# FAQ
+
+Practical answers for first-wave evaluators who want to decide whether You Agent Factory fits recurring engineering work.
+
+## What is You Agent Factory for?
+
+You Agent Factory is for turning recurring development work into reusable, inspectable agent workflows instead of handling each run as a fresh prompt.
+
+Use it when the same engineering tasks keep coming back, such as documentation updates, review passes, release checks, or follow-up work after incidents, and you want a defined process that can be repeated and improved over time.
+
+## Who is it for first?
+
+It is for engineering teams that already work from repositories, pull requests, local tools, and explicit review steps, and want those recurring workflows to become easier to rerun, inspect, and refine.
+
+Teams get the most value first when they already know the task pattern they want to repeat and need a better way to keep the workflow consistent across runs.
+
+## How is it different from one-off chat usage?
+
+One-off chat is useful for isolated questions or ad hoc tasks, but it does not give you a durable workflow definition that your team can run again with the same structure.
+
+You Agent Factory focuses on repeatability. The workflow, inputs, outputs, and checkpoints live in a form that engineers can inspect, review, compare, and update instead of depending on one successful prompt session.
+
+## How is it different from running a single agent ad hoc?
+
+Running a single agent ad hoc can help with a task once, but it still leaves the surrounding process implicit.
+
+You Agent Factory is designed for the broader workflow around the task: which steps run, where tools or files are involved, what gets handed off, and how the same pattern becomes reusable for the next run.
+
+## When is it a good fit?
+
+It is a good fit when the work is recurring enough that the team benefits from a shared, inspectable workflow instead of relying on memory, personal prompting habits, or copied chat transcripts.
+
+If the task is still highly exploratory or one-time, a direct chat or a simple single-agent run may be the faster starting point.
+
+## Where do approvals and engineering review fit?
+
+Approvals and review remain part of the normal workflow. You Agent Factory can help structure the work that happens before a decision, but it does not remove the need for engineers to inspect outputs, keep approval gates, or decide whether a run is ready to ship.
+
+The strongest early use cases keep the existing human checkpoints in place. Teams usually review generated changes, logs, and handoffs the same way they would review other engineering work, especially before merging, releasing, or acting on higher-risk results.
+
+## What should I expect from workflow outputs?
+
+Expect reviewable artifacts rather than magic. A workflow run should leave behind concrete outputs such as changed files, generated notes, summaries, status updates, or other handoff material that someone on the team can inspect and judge.
+
+The important difference is that outputs are tied to an explicit workflow definition, which makes it easier to compare runs, understand what happened, and refine the process over time.
+
+## What should I expect from logs?
+
+Expect logs that help you understand the run, not a guarantee that the run was correct. Logs should make it easier to see which steps executed, what the workflow produced, where approvals or handoffs happened, and where a human should look more closely.
+
+For first adoption, logs are most useful when they support inspection and replay of a bounded workflow. They should help reviewers reconstruct the process without pretending that observability replaces engineering judgment.
+
+## Does this mean the workflow is fully autonomous or always correct?
+
+No. You Agent Factory helps teams make recurring work more reusable and inspectable, but it does not guarantee correctness and it should not be treated as a replacement for human judgment, validation, or sign-off.
+
+If a workflow affects code, releases, infrastructure, or other meaningful outcomes, teams should still keep the same review standards, checks, and ownership they would expect from any other engineering process.
+
+## How should a team start safely?
+
+Start with bounded recurring workflows where the expected inputs, outputs, and review points are already understood by the team. Good first candidates are tasks like documentation updates, structured review passes, or routine release preparation where outputs are easy to inspect before anything important happens next.
+
+Keep the workflow narrow, retain approval gates, and prefer runs that produce reviewable artifacts before you expand scope. Safe early adoption comes from making the process repeatable and observable while keeping people responsible for the final decision.

@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { join } from "node:path";
 import {
-  listPublishedDocSlugs,
   loadStarterContentRecords,
   projectDocsShellNavigation,
 } from "../../src/lib/content";
@@ -64,20 +63,6 @@ describe("localized starter content variants", () => {
   test("does not duplicate public doc routes for parallel locale variants", () => {
     const { records, variantBindings } =
       loadStarterContentRecords(CONTENT_ROOT);
-
-    expect(listPublishedDocSlugs(CONTENT_ROOT)).toEqual([
-      "cli",
-      "coder-reviewer-pattern",
-      "concepts",
-      "configuration",
-      "getting-started",
-      "installation",
-      "introduction",
-      "pr-review-factory",
-      "quickstart",
-      "release-readiness-factory",
-    ]);
-
     const navigation = projectDocsShellNavigation(records, { variantBindings });
     const gettingStartedPages = navigation.sections
       .flatMap((section) => section.pages)

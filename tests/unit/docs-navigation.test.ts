@@ -340,6 +340,20 @@ section: guides
             },
           },
           {
+            canonicalId: "doc/faq",
+            label: "FAQ",
+            href: "/docs/faq",
+            order: 3,
+            localeProjection: {
+              canonicalPageId: "doc/faq",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
             canonicalId: "doc/concepts",
             label: "Workflow concepts",
             href: "/docs/concepts",
@@ -465,7 +479,7 @@ section: guides
         (section) =>
           section.id === "guides" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/getting-started,doc/cli,doc/configuration,doc/concepts,doc/coder-reviewer-pattern",
+            "doc/getting-started,doc/cli,doc/configuration,doc/faq,doc/concepts,doc/coder-reviewer-pattern",
       ),
     ).toBe(true);
     expect(

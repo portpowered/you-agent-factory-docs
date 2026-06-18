@@ -74,6 +74,18 @@ const generatedNavigation: DocsShellNavigationInput = {
           label: "Getting started",
           order: 0,
         },
+        {
+          canonicalId: "doc/concepts",
+          href: "/docs/concepts",
+          label: "Core concepts",
+          order: 1,
+        },
+        {
+          canonicalId: "doc/faq",
+          href: "/docs/faq",
+          label: "FAQ",
+          order: 2,
+        },
       ],
     },
   ],
@@ -123,6 +135,7 @@ describe("docs route shell rendering", () => {
     expect(
       within(docsNav).getByRole("link", { name: "Installation" }),
     ).toBeTruthy();
+    expect(within(docsNav).getByRole("link", { name: "FAQ" })).toBeTruthy();
     expect(screen.getByRole("main")).toBeTruthy();
     expect(
       screen.getByRole("region", { name: enMessages.docs.searchTitle }),
@@ -137,6 +150,39 @@ describe("docs route shell rendering", () => {
         name: enMessages.docs.progressionAriaLabel,
       }),
     ).toBeTruthy();
+  });
+
+  test("keeps FAQ inside the generated guides journey on the live docs route seam", () => {
+    renderDocsRoute({
+      currentPath: "/docs/faq",
+      navigation: generatedNavigation,
+      children: <h1>FAQ</h1>,
+    });
+
+    const docsNav = screen.getByRole("navigation", {
+      name: enMessages.docs.navHeading,
+    });
+    const faqLink = within(docsNav).getByRole("link", { name: "FAQ" });
+    expect(faqLink.getAttribute("href")).toBe("/docs/faq");
+
+    const breadcrumbs = screen.getByRole("navigation", {
+      name: enMessages.docs.breadcrumbAriaLabel,
+    });
+    expect(within(breadcrumbs).getByText("Guides")).toBeTruthy();
+    expect(
+      within(breadcrumbs).getByText("FAQ").getAttribute("aria-current"),
+    ).toBe("page");
+
+    const progression = screen.getByRole("navigation", {
+      name: enMessages.docs.progressionAriaLabel,
+    });
+    expect(
+      within(progression)
+        .getByRole("link", {
+          name: `${enMessages.docs.previousPagePrefix} Core concepts`,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts");
   });
 
   test("returns Orama-backed search results on the live docs route seam", async () => {
