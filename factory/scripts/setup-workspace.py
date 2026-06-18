@@ -129,6 +129,8 @@ def sync_main(repo_root):
     so dirty-root checkouts can continue workspace setup from local state.
     Returns a human-readable outcome string for logging.
     """
+    run_git('add', "-A")
+    run_git('stash', 'push', cwd=repo_root, check=False)
     if not has_origin_remote(repo_root):
         if local_main_ref_exists(repo_root):
             return "skipped (no origin remote)"
