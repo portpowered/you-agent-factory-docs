@@ -42,5 +42,21 @@ export const frMessages: PartialSharedShellMessages = {
       "Mermaid affiche des diagrammes de workflow explicatifs simples.",
     reactFlowExampleLabel:
       "React Flow affiche des graphes de workflow et d'agents.",
+    search: {
+      title: "Rechercher dans l artefact public genere",
+      submitLabel: "Rechercher",
+      keyboardHint:
+        "Une fois les resultats charges, utilisez Fleche bas pour entrer dans la liste puis les touches flechees pour parcourir les resultats.",
+      resultsListLabel: "Resultats de recherche",
+      resultKinds: {
+        doc: "Documentation",
+        glossary: "Glossaire",
+        reference: "Reference",
+      },
+      previewContexts: {
+        heading: "Section correspondante",
+        tag: "Tag correspondant",
+      },
+    },
   },
 };

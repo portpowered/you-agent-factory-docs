@@ -48,7 +48,11 @@ describe("default baseline website foundation", () => {
     expect(
       screen.getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE }),
     ).toBeTruthy();
-    expect(screen.getByRole("region", { name: "Search docs" })).toBeTruthy();
+    expect(
+      screen.getByRole("region", {
+        name: "Search the generated public artifact",
+      }),
+    ).toBeTruthy();
   });
 
   test("docs entry content resolves through localization on the Fumadocs route path", () => {
@@ -63,7 +67,7 @@ describe("default baseline website foundation", () => {
 
     expect(
       screen.getByRole("region", {
-        name: frMessages.docs?.searchTitle ?? "",
+        name: frMessages.docs?.search?.title ?? "",
       }),
     ).toBeTruthy();
     expect(

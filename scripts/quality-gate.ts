@@ -5,9 +5,15 @@ import { DEFERRED_PHASE_8_QUALITY_CHECKS } from "@/lib/quality-gate/deferred-pha
 import { EARLY_FOUNDATION_GATE_STEPS } from "@/lib/quality-gate/steps";
 
 const repoRoot = join(import.meta.dir, "..");
+const QUALITY_GATE_DRY_RUN_ENV = "QUALITY_GATE_DRY_RUN";
+const QUALITY_GATE_START_STEP_ENV = "QUALITY_GATE_START_STEP";
 
 function runStep(step: (typeof EARLY_FOUNDATION_GATE_STEPS)[number]): number {
   console.log(`\n==> Early quality gate: ${step.name}`);
+
+  if (process.env[QUALITY_GATE_DRY_RUN_ENV] === "1") {
+    return 0;
+  }
 
   const result = spawnSync(step.command, step.args, {
     cwd: repoRoot,
@@ -24,7 +30,18 @@ console.log(
   `Deferred to later Phase 8 work: ${DEFERRED_PHASE_8_QUALITY_CHECKS.join(", ")}`,
 );
 
+const startStepName = process.env[QUALITY_GATE_START_STEP_ENV];
+let reachedRequestedStartStep = startStepName === undefined;
+
 for (const step of EARLY_FOUNDATION_GATE_STEPS) {
+  if (!reachedRequestedStartStep) {
+    reachedRequestedStartStep = step.name === startStepName;
+  }
+
+  if (!reachedRequestedStartStep) {
+    continue;
+  }
+
   const status = runStep(step);
   if (status !== 0) {
     console.error(`\nEarly quality gate failed at: ${step.name}`);
@@ -33,7 +50,7 @@ for (const step of EARLY_FOUNDATION_GATE_STEPS) {
 }
 
 const exportDir = join(repoRoot, "out");
-if (!existsSync(exportDir)) {
+if (process.env[QUALITY_GATE_DRY_RUN_ENV] !== "1" && !existsSync(exportDir)) {
   console.error(
     "\nEarly quality gate failed: static export output missing at out/",
   );

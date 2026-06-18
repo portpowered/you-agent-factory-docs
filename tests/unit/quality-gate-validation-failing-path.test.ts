@@ -40,6 +40,7 @@ describe("early foundation quality gate failing-path proof", () => {
       const result = runMake("quality-gate", {
         env: {
           EARLY_GATE_VALIDATION_FIXTURE: "broken-shell-localization",
+          QUALITY_GATE_START_STEP: "localization validation",
         },
       });
 
@@ -113,6 +114,7 @@ describe("early foundation quality gate failing-path proof", () => {
       const result = runMake("quality-gate", {
         env: {
           EARLY_GATE_VALIDATION_FIXTURE: "broken-search-contract-field",
+          QUALITY_GATE_START_STEP: "search-index contract validation",
         },
       });
 

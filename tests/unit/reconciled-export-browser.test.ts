@@ -134,20 +134,30 @@ describe("reconciled baseline browser export", () => {
       );
 
       await page
-        .getByRole("searchbox", { name: "Search documentation" })
+        .getByRole("searchbox", { name: "Search query" })
         .fill("installation");
+      await page.getByRole("button", { name: "Search" }).click();
 
       const artifactResponse = await artifactResponsePromise;
       expect(artifactResponse.ok()).toBe(true);
 
-      const installationResult = page
-        .getByRole("region", { name: "Search docs" })
-        .getByRole("link", { name: "Installation" });
+      const searchRegion = page.getByRole("region", {
+        name: "Search the generated public artifact",
+      });
+      const installationResult = searchRegion
+        .locator(".public-search__result-link")
+        .first();
 
-      await installationResult.waitFor({ state: "visible", timeout: 10_000 });
-      expect(await installationResult.isVisible()).toBe(true);
+      await page
+        .getByRole("heading", { name: "Results" })
+        .waitFor({ state: "visible", timeout: 10_000 });
+      await page.getByText("Installation").first().waitFor({
+        state: "visible",
+        timeout: 10_000,
+      });
+      expect(await searchRegion.isVisible()).toBe(true);
       expect(await installationResult.getAttribute("href")).toBe(
-        `${withBasePath("/docs/installation")}/`,
+        "/docs/installation",
       );
     } finally {
       await page.close();

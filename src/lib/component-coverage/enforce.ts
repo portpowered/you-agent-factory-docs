@@ -22,6 +22,7 @@ export const COMPONENT_COVERAGE_ENFORCEMENT_TEST_IGNORE_PATTERNS = [
   "tests/unit/search-index-validation-failing-path.test.ts",
   "tests/unit/static-export.test.ts",
   "tests/unit/reconciled-export-browser.test.ts",
+  "tests/unit/public-search-browser.test.ts",
   "tests/unit/root-command-path.test.ts",
   "tests/unit/root-workflow.test.ts",
   "tests/unit/quality-gate.test.ts",

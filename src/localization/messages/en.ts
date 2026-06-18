@@ -48,6 +48,47 @@ export const enMessages = {
       "Mermaid renders simple explanatory workflow diagrams.",
     reactFlowExampleLabel:
       "React Flow renders workflow and agent graph diagrams.",
+    search: {
+      eyebrow: "Public search",
+      title: "Search the generated public artifact",
+      description:
+        "Enter a query to load the generated search artifact and inspect matching public content without raw file reads.",
+      label: "Search query",
+      placeholder: "Search docs, glossary, blog, comparisons, or references",
+      submitLabel: "Search",
+      loadingButtonLabel: "Searching",
+      helperText: "Active locale:",
+      keyboardHint:
+        "After results load, use the Down Arrow to move into the result list and use the arrow keys to move between matches.",
+      idleBody:
+        "Submit a query to load the generated search artifact and inspect the visible search states.",
+      loadingTitle: "Loading search results",
+      loadingBody:
+        "Fetching the generated public search artifact and projecting matching results.",
+      emptyTitle: "No matching results",
+      emptyBody:
+        "The generated public search artifact did not return any published matches for this query.",
+      errorTitle: "Search unavailable",
+      errorBody:
+        "The generated public search artifact could not be loaded for this request.",
+      resultsTitle: "Results",
+      resultsSummary: "Showing generated artifact matches for",
+      resultsListLabel: "Search results",
+      resultKinds: {
+        doc: "Documentation",
+        blog: "Blog",
+        glossary: "Glossary",
+        comparison: "Comparison",
+        reference: "Reference",
+      },
+      previewContexts: {
+        summary: "Summary",
+        heading: "Section match",
+        tag: "Tag match",
+        alias: "Alias match",
+        body: "Excerpt",
+      },
+    },
   },
 } as const;
 

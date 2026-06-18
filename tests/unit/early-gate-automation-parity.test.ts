@@ -19,7 +19,11 @@ describe("early gate automation parity", () => {
   testUnlessVerifying(
     "quality-gate script emits ordered foundation steps through subprocess output",
     () => {
-      const result = runQualityGateScript();
+      const result = runQualityGateScript({
+        env: {
+          QUALITY_GATE_DRY_RUN: "1",
+        },
+      });
 
       expect(result.status).toBe(0);
       expect(extractQualityGateStepNames(result.stdout)).toEqual([

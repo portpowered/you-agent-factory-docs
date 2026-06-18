@@ -112,6 +112,15 @@ afterEach(() => {
   mock.restore();
 });
 
+function submitQuery(query: string) {
+  const searchInput = screen.getByRole("searchbox", {
+    name: "Search query",
+  });
+
+  fireEvent.change(searchInput, { target: { value: query } });
+  fireEvent.submit(searchInput.closest("form") as HTMLFormElement);
+}
+
 describe("docs route chrome", () => {
   test("keeps generated navigation affordances and localized labels on the Fumadocs-owned route path", async () => {
     renderDocsRoute(
@@ -129,7 +138,7 @@ describe("docs route chrome", () => {
 
     expect(
       screen.getByRole("region", {
-        name: "Rechercher dans la documentation",
+        name: "Rechercher dans l artefact public genere",
       }),
     ).toBeTruthy();
     expect(
@@ -144,7 +153,7 @@ describe("docs route chrome", () => {
     ).toBeTruthy();
     expect(
       await screen.findByText(
-        "Saisissez une requete pour rechercher dans la documentation publiee de la langue active.",
+        "Submit a query to load the generated search artifact and inspect the visible search states.",
       ),
     ).toBeTruthy();
     const docsNav = screen.getByRole("navigation", {
@@ -163,17 +172,13 @@ describe("docs route chrome", () => {
       { locale: "fr" },
     );
 
-    const searchInput = screen.getByRole("searchbox", {
-      name: "Rechercher dans la documentation",
-    });
-
-    fireEvent.change(searchInput, { target: { value: "install" } });
+    submitQuery("install");
 
     const resultLink = await screen.findByRole("link", {
-      name: /Installation FR Installez la factory sur votre machine\./,
+      name: /Installation FR \/docs\/installation/,
     });
 
     expect(resultLink.getAttribute("href")).toBe("/docs/installation");
-    expect(screen.getByText("1 documentation correspondante")).toBeTruthy();
+    expect(screen.getByText("Installation FR")).toBeTruthy();
   });
 });
