@@ -42,6 +42,14 @@ Treat an approval as an evidence check, not a gut check. Before approving, inspe
 
 The reviewer should be able to confirm four things from that evidence: the output is correct enough for the stage, the next action is safe, the work still matches the requested scope, and the workflow is not about to take an expensive or hard-to-reverse step on weak evidence. If those signals disagree with each other, or if the summary looks cleaner than the underlying artifact, send the workflow back with a concrete fix request instead of approving on intuition.
 
+## Why approval loops improve safe adoption
+
+Approval loops reduce avoidable failure by stopping the workflow before one wrong assumption compounds into several expensive follow-on actions. They give a reviewer one bounded moment to catch a bad diff, a misleading summary, an unsafe action target, or a low-confidence result before the factory spends more time, money, or trust building on top of it.
+
+That control has a cost: every gate slows throughput because the workflow waits for a human decision. Early in adoption, that tradeoff is usually worth it because teams are still learning where the workflow is reliable and where it drifts. Start with more gates at the highest-risk boundaries, then remove or relax the ones that stop finding real issues once validation, logs, and reviewer experience show the workflow can be trusted there.
+
+Approval loops improve the odds of safe operation, but they do not guarantee correctness. A weak review can still miss a real problem, and a mature workflow is not automatically safe to run fully autonomously just because earlier runs looked good.
+
 ## How this page fits the rest of the docs
 
 Start with workflow concepts if you still need the overall execution model. Continue to the Coder / Reviewer pattern if you want a deeper role-based example of how one approval-oriented handoff works in practice once a workflow reaches a review boundary.

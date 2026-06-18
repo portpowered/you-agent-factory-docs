@@ -569,7 +569,7 @@ describe("served static export navigation", () => {
       {
         path: "/docs/human-approval-gates",
         title: "Human approval gates",
-        body: "What reviewers should inspect before approving",
+        body: "Why approval loops improve safe adoption",
         previousLabel: "Workflow concepts",
         previousHref: "/docs/concepts",
         nextLabel: "Coder / Reviewer pattern",
@@ -588,6 +588,14 @@ describe("served static export navigation", () => {
       const html = await response.text();
       expect(html).toContain(routeCheck.title);
       expect(html).toContain(routeCheck.body);
+      if (routeCheck.path === "/docs/human-approval-gates") {
+        expect(html).toContain(
+          "That control has a cost: every gate slows throughput because the workflow waits for a human decision.",
+        );
+        expect(html).toContain(
+          "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
+        );
+      }
       expect(html).toContain(
         `aria-label="${enMessages.docs.progressionAriaLabel}"`,
       );

@@ -219,6 +219,7 @@ describe("public search artifact generation", () => {
       "When a workflow should pause for review",
       "What approval gates are meant to catch",
       "What reviewers should inspect before approving",
+      "Why approval loops improve safe adoption",
       "How this page fits the rest of the docs",
     ]);
     expect(humanApprovalGates?.body).toContain(
@@ -235,6 +236,15 @@ describe("public search artifact generation", () => {
     );
     expect(humanApprovalGates?.body).toContain(
       "the proposed diff, generated document or output, stage summary, logs, and any validation or test results",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Approval loops reduce avoidable failure by stopping the workflow before one wrong assumption compounds into several expensive follow-on actions.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "That control has a cost: every gate slows throughput because the workflow waits for a human decision.",
+    );
+    expect(humanApprovalGates?.body).toContain(
+      "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
     );
     expect(humanApprovalGates?.body).toContain(
       "Continue to the Coder / Reviewer pattern",

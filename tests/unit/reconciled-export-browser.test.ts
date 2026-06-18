@@ -264,6 +264,28 @@ describe("reconciled baseline browser export", () => {
           .getByText("Treat an approval as an evidence check, not a gut check.")
           .isVisible(),
       ).toBe(true);
+      expect(
+        await page
+          .getByRole("heading", {
+            level: 2,
+            name: "Why approval loops improve safe adoption",
+          })
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "That control has a cost: every gate slows throughput because the workflow waits for a human decision.",
+          )
+          .isVisible(),
+      ).toBe(true);
+      expect(
+        await page
+          .getByText(
+            "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
+          )
+          .isVisible(),
+      ).toBe(true);
     } finally {
       await page.close();
     }

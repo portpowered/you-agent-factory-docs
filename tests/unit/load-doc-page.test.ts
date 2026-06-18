@@ -260,6 +260,16 @@ MDX body.
     expect(page.body).toContain(
       "the output is correct enough for the stage, the next action is safe, the work still matches the requested scope",
     );
+    expect(page.body).toContain("Why approval loops improve safe adoption");
+    expect(page.body).toContain(
+      "Approval loops reduce avoidable failure by stopping the workflow before one wrong assumption compounds into several expensive follow-on actions.",
+    );
+    expect(page.body).toContain(
+      "Start with more gates at the highest-risk boundaries, then remove or relax the ones that stop finding real issues",
+    );
+    expect(page.body).toContain(
+      "Approval loops improve the odds of safe operation, but they do not guarantee correctness.",
+    );
     expect(page.body).toContain(
       "Continue to the Coder / Reviewer pattern if you want a deeper role-based example",
     );
