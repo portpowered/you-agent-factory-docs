@@ -27,8 +27,10 @@ function SharedShellFooter({ config }: { config: SharedShellConfig }) {
   }
 
   return (
-    <footer className="shared-shell__footer">
-      <p className="shared-shell__footer-text">{footerText}</p>
+    <footer className="shared-shell__footer border-t bg-card px-5 py-4 md:px-6">
+      <p className="shared-shell__footer-text m-0 text-sm text-muted-foreground">
+        {footerText}
+      </p>
     </footer>
   );
 }
@@ -41,11 +43,14 @@ export function SharedShell({
 }: SharedShellProps) {
   const showDocsSidebar = shouldRenderDocsSidebar(surface, config);
   const layoutClassName = showDocsSidebar
-    ? "shared-shell__layout shared-shell__layout--with-sidebar"
-    : "shared-shell__layout";
+    ? "shared-shell__layout shared-shell__layout--with-sidebar flex min-w-0 flex-1 flex-col xl:grid xl:grid-cols-[minmax(12rem,16rem)_minmax(0,1fr)]"
+    : "shared-shell__layout flex min-w-0 flex-1 flex-col";
+  const mainClassName = showDocsSidebar
+    ? "shared-shell__main min-w-0 flex-1 px-5 py-8 md:px-6 lg:py-12"
+    : "shared-shell__main flex min-w-0 flex-1 justify-center px-5 py-8 md:px-6 lg:py-12";
 
   return (
-    <ResponsiveShellRoot className="shared-shell">
+    <ResponsiveShellRoot className="shared-shell flex min-h-screen flex-col">
       <SharedShellHeader config={config} surface={surface} />
       <div className={layoutClassName}>
         {showDocsSidebar ? (
@@ -54,7 +59,7 @@ export function SharedShell({
             currentDocsItemId={currentDocsItemId}
           />
         ) : null}
-        <main className="shared-shell__main">{children}</main>
+        <main className={mainClassName}>{children}</main>
       </div>
       <SharedShellFooter config={config} />
     </ResponsiveShellRoot>

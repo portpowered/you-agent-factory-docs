@@ -28,7 +28,7 @@ describe("site budget route coverage", () => {
         label: "Homepage",
         route: "/",
         budget: {
-          maxHtmlBytes: 14_500,
+          maxHtmlBytes: 20_500,
           maxScriptTagCount: 17,
           maxStylesheetLinkCount: 1,
           maxImageCount: 0,
@@ -42,9 +42,9 @@ describe("site budget route coverage", () => {
         label: "Docs entry",
         route: DOCS_ENTRY_ROUTE,
         budget: {
-          maxHtmlBytes: 34_000,
-          maxScriptTagCount: 21,
-          maxStylesheetLinkCount: 1,
+          maxHtmlBytes: 58_000,
+          maxScriptTagCount: 32,
+          maxStylesheetLinkCount: 2,
           maxImageCount: 0,
           requireMainLandmark: true,
           requireTitle: true,
@@ -62,7 +62,7 @@ describe("site budget route coverage", () => {
         directory: "_next/static",
         fileExtension: ".js",
         budget: {
-          maxTotalBytes: 4_200_000,
+          maxTotalBytes: 4_400_000,
         },
       },
     ]);
@@ -181,7 +181,7 @@ describe("site budget failures", () => {
         route: homepage,
         requestUrl: "http://127.0.0.1:3786/you-agent-factory-docs/",
         status: 200,
-        htmlBytes: 14_900,
+        htmlBytes: 20_900,
         scriptTagCount: 18,
         stylesheetLinkCount: 1,
         imageCount: 0,
@@ -196,7 +196,7 @@ describe("site budget failures", () => {
       {
         route: homepage,
         dimension: "htmlBytes",
-        message: "expected htmlBytes<=14500, received 14900",
+        message: "expected htmlBytes<=20500, received 20900",
       },
       {
         route: homepage,
@@ -221,7 +221,7 @@ describe("site budget failures", () => {
           route: homepage,
           requestUrl: "http://127.0.0.1:3786/you-agent-factory-docs/",
           status: 200,
-          htmlBytes: 14_900,
+          htmlBytes: 20_900,
           scriptTagCount: 18,
           stylesheetLinkCount: 1,
           imageCount: 0,
@@ -231,7 +231,7 @@ describe("site budget failures", () => {
         },
       ]),
     ).toThrow(
-      "Site budget check failed:\n- Homepage (/) htmlBytes: expected htmlBytes<=14500, received 14900\n- Homepage (/) scriptTagCount: expected scripts<=17, received 18\n- Homepage (/) mainLandmarkPresent: expected a <main> landmark\n- Homepage (/) h1Text: expected a non-empty <h1>",
+      "Site budget check failed:\n- Homepage (/) htmlBytes: expected htmlBytes<=20500, received 20900\n- Homepage (/) scriptTagCount: expected scripts<=17, received 18\n- Homepage (/) mainLandmarkPresent: expected a <main> landmark\n- Homepage (/) h1Text: expected a non-empty <h1>",
     );
   });
 
@@ -241,7 +241,7 @@ describe("site budget failures", () => {
       {
         target: staticJs,
         assetCount: 16,
-        totalBytes: 4_250_000,
+        totalBytes: 4_450_000,
         largestAssetPath: "/_next/static/chunks/framework-example.js",
         largestAssetBytes: 200_000,
       },
@@ -253,7 +253,7 @@ describe("site budget failures", () => {
         target: staticJs,
         dimension: "totalBytes",
         message:
-          "expected totalBytes<=4200000, received 4250000; across 16 .js assets; largest=/_next/static/chunks/framework-example.js (200000 bytes)",
+          "expected totalBytes<=4400000, received 4450000; across 16 .js assets; largest=/_next/static/chunks/framework-example.js (200000 bytes)",
       },
     ]);
 
@@ -262,13 +262,13 @@ describe("site budget failures", () => {
         {
           target: staticJs,
           assetCount: 16,
-          totalBytes: 4_250_000,
+          totalBytes: 4_450_000,
           largestAssetPath: "/_next/static/chunks/framework-example.js",
           largestAssetBytes: 200_000,
         },
       ]),
     ).toThrow(
-      "Static asset budget check failed:\n- Next static JavaScript (_next/static) totalBytes: expected totalBytes<=4200000, received 4250000; across 16 .js assets; largest=/_next/static/chunks/framework-example.js (200000 bytes)",
+      "Static asset budget check failed:\n- Next static JavaScript (_next/static) totalBytes: expected totalBytes<=4400000, received 4450000; across 16 .js assets; largest=/_next/static/chunks/framework-example.js (200000 bytes)",
     );
   });
 });

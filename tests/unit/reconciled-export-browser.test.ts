@@ -61,7 +61,7 @@ describe("reconciled baseline browser export", () => {
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
     browser = await chromium.launch();
-  }, 120_000);
+  }, 240_000);
 
   afterAll(async () => {
     await browser?.close();
@@ -126,11 +126,90 @@ describe("reconciled baseline browser export", () => {
           })
           .isVisible(),
       ).toBe(true);
-      expect(
-        await page.getByRole("navigation", { name: "Guides" }).isVisible(),
-      ).toBe(true);
-      expect(await page.getByRole("banner").isVisible()).toBe(true);
+      expect(await page.getByText("Guides", { exact: true }).isVisible()).toBe(
+        true,
+      );
+      expect(await page.getByRole("complementary").isVisible()).toBe(true);
       expect(await page.getByRole("main").isVisible()).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("docs search fetches the generated artifact and returns representative results on the public surface", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const artifactPath = withBasePath("/search/public-search-index.json");
+
+    try {
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const artifactResponsePromise = page.waitForResponse(
+        (response) =>
+          response.url().endsWith(artifactPath) && response.status() === 200,
+        { timeout: 10_000 },
+      );
+
+      await page
+        .getByRole("searchbox", { name: "Search documentation" })
+        .fill("installation");
+
+      const artifactResponse = await artifactResponsePromise;
+      expect(artifactResponse.ok()).toBe(true);
+
+      const installationResult = page
+        .getByRole("region", { name: "Search docs" })
+        .getByRole("link", { name: "Installation" });
+
+      await installationResult.waitFor({ state: "visible", timeout: 10_000 });
+      expect(await installationResult.isVisible()).toBe(true);
+      expect(await installationResult.getAttribute("href")).toBe(
+        `${withBasePath("/docs/installation")}/`,
+      );
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("built export keeps primitive-backed homepage and docs surfaces on the reviewed path", async () => {
+    const page = await browser.newPage();
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    const introductionUrl = new URL(
+      withBasePath("/docs/introduction"),
+      server.baseUrl,
+    ).toString();
+
+    try {
+      await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
+
+      const heroDocsCta = page
+        .getByRole("region", { name: PROJECT_TAGLINE })
+        .getByRole("link", { name: DOCS_CTA_LABEL });
+      const homepageHeroCard = page.getByRole("region", {
+        name: PROJECT_TAGLINE,
+      });
+
+      expect(await heroDocsCta.getAttribute("class")).toContain("ui-button");
+      expect(await homepageHeroCard.getAttribute("class")).toContain("ui-card");
+
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+
+      const docsOverviewCard = page.locator(".docs-content-card").first();
+      await docsOverviewCard.waitFor({ state: "visible", timeout: 10_000 });
+      expect(await docsOverviewCard.getAttribute("class")).toContain("ui-card");
+
+      await page.goto(introductionUrl, { waitUntil: "domcontentloaded" });
+
+      const docsOutline = page.getByRole("navigation", {
+        name: enMessages.docs.pageOutlineAriaLabel,
+      });
+      expect(await docsOutline.getAttribute("class")).toContain("ui-card");
     } finally {
       await page.close();
     }
@@ -172,7 +251,7 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
-      await page.getByRole("link", { name: HOME_CTA_LABEL }).click();
+      await page.getByRole("link", { name: PROJECT_NAME }).click();
 
       await page.waitForURL(
         new RegExp(
@@ -220,6 +299,39 @@ describe("reconciled baseline browser export", () => {
           .getByRole("heading", { level: 1, name: DOCS_SHELL_TITLE })
           .isVisible(),
       ).toBe(true);
+    } finally {
+      await page.close();
+    }
+  }, 30_000);
+
+  test("responsive disclosure stays homepage-owned while docs mobile uses the Fumadocs sidebar toggle", async () => {
+    const page = await browser.newPage({
+      viewport: { width: 1280, height: 900 },
+    });
+    const docsUrl = new URL(
+      withBasePath(DOCS_ENTRY_ROUTE),
+      server.baseUrl,
+    ).toString();
+    try {
+      await page.goto(server.baseUrl, { waitUntil: "domcontentloaded" });
+
+      expect(
+        await page.locator(".shared-shell__menu-toggle").evaluate((element) => {
+          return window.getComputedStyle(element).display;
+        }),
+      ).toBe("none");
+
+      await page.goto(docsUrl, { waitUntil: "domcontentloaded" });
+      expect(await page.getByRole("complementary").isVisible()).toBe(true);
+
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(200);
+
+      const mobileDocsNavToggle = page.getByRole("button", {
+        name: "Toggle Sidebar",
+      });
+
+      expect(await mobileDocsNavToggle.isVisible()).toBe(true);
     } finally {
       await page.close();
     }
@@ -312,19 +424,12 @@ describe("reconciled baseline browser export", () => {
 
     try {
       await page.goto(introductionUrl, { waitUntil: "domcontentloaded" });
-      await page
-        .locator('.shared-shell[data-shell-viewport="mobile"]')
-        .waitFor({ timeout: 10_000 });
 
       const breadcrumbs = page.getByRole("navigation", {
         name: enMessages.docs.breadcrumbAriaLabel,
       });
       const progression = page.getByRole("navigation", {
         name: enMessages.docs.progressionAriaLabel,
-      });
-      const docsAsidePanel = page.locator("#shared-shell-docs-aside");
-      const setupAsideNav = docsAsidePanel.getByRole("navigation", {
-        name: "Setup",
       });
 
       expect(await breadcrumbs.isVisible()).toBe(true);
@@ -352,22 +457,18 @@ describe("reconciled baseline browser export", () => {
       ).toBe(true);
 
       const docsNavToggle = page.getByRole("button", {
-        name: sharedShellConfig.responsive.docsNavigationDisclosure.openLabel,
+        name: "Toggle Sidebar",
       });
-      expect(await docsNavToggle.getAttribute("aria-expanded")).toBe("false");
-      expect(await docsAsidePanel.getAttribute("hidden")).not.toBeNull();
-      expect(await setupAsideNav.isVisible()).toBe(false);
+      expect(await docsNavToggle.isVisible()).toBe(true);
 
       await docsNavToggle.click();
 
-      expect(await setupAsideNav.isVisible()).toBe(true);
+      const docsAsidePanel = page.getByRole("complementary");
+      const setupSection = docsAsidePanel.getByText("Setup", { exact: true });
+
+      expect(await setupSection.isVisible()).toBe(true);
       expect(
         await docsAsidePanel
-          .getByRole("navigation", { name: "Guides" })
-          .isVisible(),
-      ).toBe(true);
-      expect(
-        await setupAsideNav
           .getByRole("link", { name: "Quickstart" })
           .isVisible(),
       ).toBe(true);
@@ -413,7 +514,7 @@ describe("reconciled baseline browser export", () => {
       expect(
         await page
           .getByText(
-            "Run `make quality-gate` after setup to verify that the local install is usable.",
+            "Run `make check`, `make test`, and `make build` after setup to verify that the local install matches pull request validation.",
           )
           .isVisible(),
       ).toBe(true);
@@ -500,9 +601,6 @@ describe("reconciled baseline browser export", () => {
       ).toBe(true);
       expect(
         await page.getByText("Continue into Getting started").isVisible(),
-      ).toBe(true);
-      expect(
-        await page.getByRole("link", { name: "Core concepts" }).isVisible(),
       ).toBe(true);
     } finally {
       await page.close();

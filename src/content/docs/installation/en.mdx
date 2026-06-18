@@ -30,13 +30,13 @@ This target is the supported entrypoint for initial setup and it delegates to `b
 
 ## Validate the install
 
-Run `make quality-gate` after setup to verify that the local install is usable.
-This is the authoritative reviewer-facing validation path because it checks typecheck, lint, localization validation, content validation, accessibility validation, static export correctness, and the remaining foundation unit coverage through the repository's existing automation contract.
+Run `make check`, `make test`, and `make build` after setup to verify that the local install matches pull request validation.
+These are the authoritative repository-root commands for contributor and PR parity, so the same typecheck, lint, automated tests, and static export checks fail in both places without switching to a CI-only command surface.
 
 ## What success looks like
 
-Treat the install as successful when `make quality-gate` finishes without failures from the repository root.
-If you need narrower follow-up checks after that first pass, the same root workflow also exposes `make check`, `make test`, and `make build`, but the installation path should start with the full quality gate.
+Treat the install as successful when `make check`, `make test`, and `make build` finish without failures from the repository root.
+If you want the broader local-only foundation sweep before review, run `make quality-gate` afterward; it intentionally goes beyond PR validation by adding localization, content, accessibility, and static-export contract checks.
 
 ## Continue into quickstart
 

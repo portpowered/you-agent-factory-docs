@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { screen, within } from "@testing-library/react";
 import { DocPageArticle } from "../../src/components/docs/doc-page-article";
 import { enMessages } from "../../src/localization/messages/en";
+import { frMessages } from "../../src/localization/messages/fr";
 import { renderWithLocalization } from "../helpers/render-with-localization";
 
 const bodyWithOutline = `# Getting started
@@ -47,6 +48,11 @@ describe("doc page article rendering", () => {
         .getByRole("heading", { level: 2, name: "Prerequisites" })
         .getAttribute("id"),
     ).toBe("prerequisites");
+    expect(outline.className).toContain("ui-card");
+    expect(
+      screen.getByRole("heading", { level: 1, name: "Getting started" })
+        .parentElement?.className,
+    ).toContain("ui-card");
   });
 
   test("omits page-outline navigation when the page body has no h2+ headings", () => {
@@ -63,6 +69,10 @@ describe("doc page article rendering", () => {
       screen.getByRole("heading", { level: 1, name: "Installation" }),
     ).toBeTruthy();
     expect(
+      screen.getByRole("heading", { level: 1, name: "Installation" })
+        .parentElement?.className,
+    ).toContain("ui-card");
+    expect(
       screen.getByText(
         "Install locally and verify the contributor command path.",
       ),
@@ -77,9 +87,11 @@ describe("doc page article rendering", () => {
 
     expect(
       screen.getByRole("navigation", {
-        name: enMessages.docs.pageOutlineAriaLabel,
+        name: frMessages.docs?.pageOutlineAriaLabel ?? "",
       }),
     ).toBeTruthy();
-    expect(screen.getByText(enMessages.docs.onThisPageLabel)).toBeTruthy();
+    expect(
+      screen.getByText(frMessages.docs?.onThisPageLabel ?? ""),
+    ).toBeTruthy();
   });
 });

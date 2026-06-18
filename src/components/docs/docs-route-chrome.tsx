@@ -2,50 +2,50 @@
 
 import { DocsBreadcrumbs } from "@/components/docs/docs-breadcrumbs";
 import { DocsProgression } from "@/components/docs/docs-progression";
-import { SharedShell } from "@/components/shell/shared-shell";
+import { DocsSearch } from "@/components/docs/docs-search";
 import type {
   DocsBreadcrumbItem,
   DocsShellNavigationInput,
 } from "@/lib/content";
 import { projectDocsBreadcrumbs } from "@/lib/content/docs-breadcrumbs";
 import { projectDocsProgression } from "@/lib/content/docs-progression";
-import {
-  findCurrentDocsItemId,
-  projectSharedShellDocsNavigation,
-} from "@/lib/content/shared-shell-navigation";
 import { DOCS_ENTRY_ROUTE } from "@/lib/project";
 import { useMessages } from "@/localization/hooks/use-messages";
-import { createSharedShellConfigFromMessages } from "@/localization/lib/create-shared-shell-config";
+import type { SharedShellMessageKey } from "@/types/localization";
 import type { ReactNode } from "react";
 
-export type DocsShellProps = {
+type DocsRouteBreadcrumbItem =
+  | DocsBreadcrumbItem
+  | {
+      href?: string;
+      labelKey: SharedShellMessageKey;
+    };
+
+export type DocsRouteChromeProps = {
   navigation: DocsShellNavigationInput;
   currentPath?: string;
-  breadcrumbItems?: DocsBreadcrumbItem[];
+  breadcrumbItems?: DocsRouteBreadcrumbItem[];
   hideProgression?: boolean;
   children?: ReactNode;
 };
 
-export function DocsShell({
+export function DocsRouteChrome({
   navigation,
   currentPath = DOCS_ENTRY_ROUTE,
   breadcrumbItems,
   hideProgression = false,
   children,
-}: DocsShellProps) {
+}: DocsRouteChromeProps) {
   const { t } = useMessages();
-  const shellConfig = createSharedShellConfigFromMessages(t, {
-    docsNavigationGroups: projectSharedShellDocsNavigation(navigation, {
-      navHeading: t("docs.navHeading"),
-    }),
-  });
-  const currentDocsItemId = findCurrentDocsItemId(navigation, currentPath);
   const breadcrumbs =
     breadcrumbItems !== undefined
       ? {
           items: [
             { label: t("docs.shellTitle"), href: DOCS_ENTRY_ROUTE },
-            ...breadcrumbItems,
+            ...breadcrumbItems.map((item) => ({
+              href: item.href,
+              label: "labelKey" in item ? t(item.labelKey) : item.label,
+            })),
           ],
         }
       : projectDocsBreadcrumbs(navigation, {
@@ -55,11 +55,8 @@ export function DocsShell({
   const progression = projectDocsProgression(navigation, { currentPath });
 
   return (
-    <SharedShell
-      config={shellConfig}
-      currentDocsItemId={currentDocsItemId}
-      surface="docs"
-    >
+    <>
+      <DocsSearch />
       <DocsBreadcrumbs
         ariaLabel={t("docs.breadcrumbAriaLabel")}
         trail={breadcrumbs}
@@ -73,6 +70,6 @@ export function DocsShell({
           progression={progression}
         />
       )}
-    </SharedShell>
+    </>
   );
 }

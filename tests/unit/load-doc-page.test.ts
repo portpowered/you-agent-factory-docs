@@ -20,13 +20,20 @@ describe("loadDocPage", () => {
         slug: "installation",
         canonicalId: "doc/installation",
         title: "Installation",
-        bodySnippet: "Run `make quality-gate` after setup to verify",
+        bodySnippet:
+          "Run `make check`, `make test`, and `make build` after setup",
       },
       {
         slug: "quickstart",
         canonicalId: "doc/quickstart",
         title: "Quickstart",
         bodySnippet: "Run `bun run dev` from the repository root.",
+      },
+      {
+        slug: "coder-reviewer-pattern",
+        canonicalId: "doc/coder-reviewer-pattern",
+        title: "Coder / Reviewer pattern",
+        bodySnippet: "approval is treated as a real gate",
       },
     ] as const;
 

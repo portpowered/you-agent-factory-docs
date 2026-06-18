@@ -5,7 +5,7 @@ import {
   FACTORY_WORKFLOW_MERMAID_DIAGRAM,
 } from "../../src/content/docs-diagrams";
 import { loadDocsShellNavigation } from "../../src/lib/content";
-import { PROJECT_TAGLINE } from "../../src/lib/project";
+import { PROJECT_NAME, PROJECT_TAGLINE } from "../../src/lib/project";
 import { GITHUB_REPO_URL } from "../../src/lib/shared-shell-config";
 import {
   LANDING_EXAMPLE_WORKFLOWS_TITLE,
@@ -66,7 +66,7 @@ describe("served static export navigation", () => {
     await ensureStaticExportBuilt();
     server = startStaticExportServer(port);
     await waitForStaticExportServer(server.baseUrl);
-  }, 120_000);
+  }, 240_000);
 
   afterAll(() => {
     server?.stop();
@@ -144,7 +144,7 @@ describe("served static export navigation", () => {
     expect(homepageHtml).toContain(enMessages.common.githubCta);
   }, 30_000);
 
-  test("exposes the same primary navigation destinations on homepage and docs entry routes", async () => {
+  test("keeps the homepage shared-shell nav and serves the docs entry through the Fumadocs layout shell", async () => {
     const homepageResponse = await fetchHttp(server.baseUrl, {
       signal: AbortSignal.timeout(10_000),
     });
@@ -156,22 +156,25 @@ describe("served static export navigation", () => {
     const homepageHtml = await homepageResponse.text();
     const docsHtml = await docsResponse.text();
 
-    for (const html of [homepageHtml, docsHtml]) {
-      expect(html).toContain(
-        `aria-label="${enMessages.landing.primaryNavAriaLabel}"`,
-      );
-      expect(html).toContain(enMessages.common.githubCta);
-      expect(html).toContain('rel="noopener noreferrer"');
-      expect(html).toContain('target="_blank"');
-      expect(html).toContain('id="shared-shell-primary-nav"');
-      expect(html).toContain('aria-controls="shared-shell-primary-nav"');
-      expect(html).toContain('aria-expanded="false"');
-      expect(html).toContain(enMessages.shell.openMenuLabel);
-    }
-
+    expect(homepageHtml).toContain(
+      `aria-label="${enMessages.landing.primaryNavAriaLabel}"`,
+    );
+    expect(homepageHtml).toContain('id="shared-shell-primary-nav"');
+    expect(homepageHtml).toContain('aria-controls="shared-shell-primary-nav"');
+    expect(homepageHtml).toContain('aria-expanded="false"');
+    expect(homepageHtml).toContain(enMessages.shell.openMenuLabel);
     expect(homepageHtml).toContain(enMessages.common.getStarted);
     expect(homepageHtml).not.toContain(`>${enMessages.common.home}<`);
-    expect(docsHtml).toContain(enMessages.common.home);
+    expect(homepageHtml).toContain(enMessages.common.githubCta);
+    expect(homepageHtml).toContain('rel="noopener noreferrer"');
+    expect(homepageHtml).toContain('target="_blank"');
+
+    expect(docsHtml).toContain('id="nd-docs-layout"');
+    expect(docsHtml).toContain('id="nd-sidebar"');
+    expect(docsHtml).toContain(GITHUB_REPO_URL);
+    expect(docsHtml).toContain(PROJECT_NAME);
+    expect(docsHtml).toContain('aria-label="Breadcrumb"');
+    expect(docsHtml).not.toContain('id="shared-shell-primary-nav"');
     expect(docsHtml).not.toContain(`>${enMessages.common.getStarted}<`);
   }, 30_000);
 
@@ -281,6 +284,42 @@ describe("served static export navigation", () => {
     expect(docPageHtml).toContain("Continue through setup");
   }, 30_000);
 
+  test("serves the coder reviewer pattern route from generated guides navigation", async () => {
+    const guidesPage = loadDocsShellNavigation()
+      .sections.find((section) => section.id === "guides")
+      ?.pages.find((page) => page.canonicalId === "doc/coder-reviewer-pattern");
+
+    expect(guidesPage).toEqual(
+      expect.objectContaining({
+        canonicalId: "doc/coder-reviewer-pattern",
+        label: "Coder / Reviewer pattern",
+        href: "/docs/coder-reviewer-pattern",
+      }),
+    );
+
+    const response = await fetchHttp(
+      new URL(withBasePath(guidesPage?.href ?? ""), server.baseUrl),
+      { signal: AbortSignal.timeout(10_000) },
+    );
+
+    expect(response.status).toBe(200);
+
+    const html = await response.text();
+    expect(html).toContain("Coder / Reviewer pattern");
+    expect(html).toContain("Who the two roles are");
+    expect(html).toContain("Where approval gates matter");
+    expect(html).toContain("Realistic limits and failure modes");
+    expect(html).toContain("approval is treated as a real gate");
+    expect(html).toContain("The most common failure mode is shallow review");
+    expect(html).toContain(
+      `aria-label="${enMessages.docs.breadcrumbAriaLabel}"`,
+    );
+    expect(html).toContain(
+      `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
+    );
+    expect(html).toContain('aria-current="page"');
+  }, 30_000);
+
   test("serves the generated setup-path routes projected by docs navigation", async () => {
     const setupPages = loadDocsShellNavigation()
       .sections.find((section) => section.id === "setup")
@@ -329,10 +368,10 @@ describe("served static export navigation", () => {
       "Run `make setup` from the repository root to install or refresh dependencies.",
     );
     expect(installationHtml).toContain(
-      "Run `make quality-gate` after setup to verify that the local install is usable.",
+      "Run `make check`, `make test`, and `make build` after setup to verify that the local install matches pull request validation.",
     );
     expect(installationHtml).toContain(
-      "Treat the install as successful when `make quality-gate` finishes without failures from the repository root.",
+      "Treat the install as successful when `make check`, `make test`, and `make build` finish without failures from the repository root.",
     );
     expect(installationHtml).toContain(
       `aria-label="${enMessages.docs.pageOutlineAriaLabel}"`,
@@ -382,7 +421,7 @@ describe("served static export navigation", () => {
       "Run the docs site locally after installation so the first setup path ends in one concrete, reviewer-verifiable outcome.",
     );
     expect(quickstartHtml).toContain(
-      "Complete the Installation step first so the repository dependencies are installed and `make quality-gate` already passes from the repository root.",
+      "Complete the Installation step first so the repository dependencies are installed and `make check`, `make test`, and `make build` already pass from the repository root.",
     );
     expect(quickstartHtml).toContain(
       "Run `bun run dev` from the repository root.",

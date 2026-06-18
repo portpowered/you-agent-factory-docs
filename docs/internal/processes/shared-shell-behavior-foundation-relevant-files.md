@@ -7,8 +7,10 @@
 - Transient UI such as disclosure open state stays in component state inside `src/components/shell/shared-shell-header.tsx`; it is not part of `sharedShellConfig`.
 - `src/components/shell/shared-shell.tsx` is the single global frame for homepage and docs entry routes. It renders shared header, optional docs sidebar (`docsNavigationGroups`), main content slot, and footer framing.
 - Reusable accessible navigation primitives live in `src/components/shell/shared-shell-navigation.tsx` (`SharedShellPrimaryNavigation`, `SharedShellNavigationLink`, `SharedShellDocsNavigation`). Both surfaces consume the same destination contract from `sharedShellConfig`; external GitHub links expose `(opens in new tab)` in the accessible name.
-- Responsive shell behavior uses CSS media queries in `src/app/globals.css` with the `sharedShellConfig.responsive.narrowMaxWidthPx` breakpoint (768px). Narrow-width primary navigation disclosure state is projected through `useSharedShellNavigationDisclosure` in `src/hooks/use-shared-shell-navigation-disclosure.ts` and rendered by the client `SharedShellHeader` in `src/components/shell/shared-shell-header.tsx`.
-- `src/components/landing/landing-shell.tsx` and `src/components/docs/docs-shell.tsx` are thin surface wrappers that project page content into `SharedShell` instead of owning independent header or layout wiring.
+- Shared shell interactive primitives should flow through `src/components/ui/button.tsx` rather than restating focus, spacing, and variant classes inline. Keep shell-specific hooks such as `shared-shell__link` or `shared-shell__menu-toggle` as additive selectors only.
+- When a shell disclosure control renders through `Button`, declare its breakpoint display contract through the primitive call site (for example `displayClassName="hidden max-[1023px]:inline-flex"`) instead of relying on legacy `shared-shell__*` selectors to override the primitive's default display utility.
+- Responsive shell behavior uses CSS media queries in `src/app/globals.css` aligned with `src/lib/responsive-tokens.ts` (639px / 1023px). Narrow-width disclosure state is projected through `useShellDisclosure` and rendered by the client `SharedShellHeader` / `SharedShellDocsAside`.
+- `src/components/landing/landing-shell.tsx` remains the shared-shell surface wrapper for the homepage, while the docs route has moved to the Fumadocs-owned path in `src/components/docs/fumadocs-docs-layout.tsx` with `src/components/docs/docs-route-chrome.tsx` handling the narrowed docs-specific chrome.
 - `src/lib/shell.ts` remains a deprecated re-export for legacy imports; prefer `@/lib/shared-shell-config` and `@/lib/shared-shell-extension-points` for new shell work.
 
 ## Extension points for later lanes
@@ -23,10 +25,19 @@
 - `tests/unit/shared-shell.test.tsx` proves the shared frame contract, config separation, and surface-specific header destinations.
 - `tests/unit/shared-shell-navigation.test.tsx` proves reusable navigation primitives, keyboard reachability, accessible external-link names, and the shared destination contract across surfaces.
 - `tests/unit/shared-shell-responsive.test.tsx` proves SSR-safe initial disclosure state, menu toggle wiring, and shared responsive header behavior across surfaces.
+- `tests/unit/reconciled-export-browser.test.ts` is the reviewer-facing proof for computed desktop-hidden/mobile-visible disclosure behavior on the built export; use it when a shell styling change could regress real breakpoint visibility.
 - `tests/unit/shared-shell-extension-points.test.tsx` proves canonical config extension, multiple docs navigation groups, and projected-state separation.
 - Homepage and docs shell tests remain focused on surface content and navigation expectations after adopting the shared frame.
 
 ## Styling
 
-- Shared shell layout and navigation classes use the `shared-shell__*` prefix in `src/app/globals.css`.
-- Surface-specific content styling remains under `landing-shell__*` and `docs-shell__*` prefixes.
+- Shared shell layout and navigation markup keeps the `shared-shell__*` class hooks, but the presentation contract now lives primarily in Tailwind utility classes backed by semantic tokens from `src/app/globals.css`.
+- Structural wrappers that need reusable shell-or-homepage card treatment should use `src/components/ui/card.tsx` and override only the narrow delta, such as muted nested cards or shadow removal.
+- `src/app/globals.css` is now the narrow baseline for shared token projection, base rules, and stateful responsive selectors such as disclosure visibility and animation. Avoid moving shared shell presentation back into large bespoke selector clusters there.
+- Surface wrappers may keep `landing-shell__*` or `docs-shell__*` hooks for tests and targeted overrides, but shared shell chrome should prefer utility classes on the component markup.
+
+## Deferred legacy styling boundary
+
+- The shared shell, homepage CTA groups, docs overview framing, and doc-page outline card now demonstrate the reviewed Tailwind and primitive path in built output through `ui-button` and `ui-card` classes.
+- Remaining docs presentation selectors in `src/app/globals.css` are intentionally limited to surfaces that still need global or structure-aware treatment: `.docs-page__body` for MDX prose flow, `.docs-breadcrumbs__*` and `.docs-progression__*` for generated navigation wrappers, and `.docs-diagram__*` for Mermaid and React Flow containers.
+- Future styling lanes should migrate those deferred selectors only by moving the owning surface onto reusable primitives or semantic utilities; do not re-expand `globals.css` back into the primary contract for shared shell or homepage presentation.

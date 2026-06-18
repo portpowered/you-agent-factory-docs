@@ -77,23 +77,19 @@ describe("static export build lock", () => {
     }
   });
 
-  test("nested lock acquisition by the same process is reentrant", () => {
+  test("nested lock acquisition by the same process times out instead of reentering", () => {
     const lockRoot = createLockRoot();
     const lockDir = join(lockRoot, STATIC_EXPORT_BUILD_LOCK_DIR);
 
     try {
-      withStaticExportBuildLock(lockRoot, () => {
-        expect(existsSync(lockDir)).toBe(true);
+      acquireStaticExportBuildLock(lockRoot);
+      expect(existsSync(lockDir)).toBe(true);
 
-        withStaticExportBuildLock(lockRoot, () => {
-          expect(existsSync(lockDir)).toBe(true);
-        });
-
-        expect(existsSync(lockDir)).toBe(true);
-      });
-
-      expect(existsSync(lockDir)).toBe(false);
+      expect(() => acquireStaticExportBuildLock(lockRoot, 100)).toThrow(
+        /Timed out/,
+      );
     } finally {
+      releaseStaticExportBuildLock(lockRoot);
       rmSync(lockRoot, { recursive: true, force: true });
     }
   });

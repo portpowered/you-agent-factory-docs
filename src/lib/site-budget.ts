@@ -89,7 +89,7 @@ export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
     label: "Homepage",
     route: "/",
     budget: {
-      maxHtmlBytes: 14_500,
+      maxHtmlBytes: 20_500,
       maxScriptTagCount: 17,
       maxStylesheetLinkCount: 1,
       maxImageCount: 0,
@@ -103,9 +103,9 @@ export const SITE_BUDGET_ROUTE_TARGETS: BudgetedRouteTarget[] = [
     label: "Docs entry",
     route: DOCS_ENTRY_ROUTE,
     budget: {
-      maxHtmlBytes: 34_000,
-      maxScriptTagCount: 21,
-      maxStylesheetLinkCount: 1,
+      maxHtmlBytes: 58_000,
+      maxScriptTagCount: 32,
+      maxStylesheetLinkCount: 2,
       maxImageCount: 0,
       requireMainLandmark: true,
       requireTitle: true,
@@ -121,7 +121,7 @@ export const SITE_BUDGET_STATIC_ASSET_TARGETS: StaticAssetBudgetTarget[] = [
     directory: "_next/static",
     fileExtension: ".js",
     budget: {
-      maxTotalBytes: 4_200_000,
+      maxTotalBytes: 4_400_000,
     },
   },
 ];

@@ -11,7 +11,7 @@
 
 - Root: `src/components`
 - File glob: `src/components/**/*.{ts,tsx}`
-- Current files: `src/components/landing/landing-shell.tsx`, `src/components/docs/docs-shell.tsx`
+- Representative current docs-route files are `src/components/docs/fumadocs-docs-layout.tsx` and `src/components/docs/docs-route-chrome.tsx`, alongside `src/components/landing/landing-shell.tsx` and the rest of the checked-in component tree under `src/components/**`.
 
 ## Explicitly out of scope
 
@@ -26,7 +26,8 @@ Documented in `COMPONENT_COVERAGE_OUT_OF_SCOPE_SURFACES`:
 ## Component coverage enforcement command
 
 - `make component-coverage` and `bun run component-coverage` are the authoritative root entrypoints for threshold enforcement on the practical component-package surface.
-- `scripts/enforce-component-coverage.ts` runs `bun test --coverage` with text and lcov reporters (ignoring subprocess-heavy contract tests listed in `COMPONENT_COVERAGE_ENFORCEMENT_TEST_IGNORE_PATTERNS`, including `tests/unit/static-export.test.ts` because static export correctness is validated by `make quality-gate`), parses `coverage/lcov.info`, and enforces the 90% aggregate line-coverage threshold from `src/lib/component-coverage/enforce.ts` using summed LF/LH totals rather than averaging per-file percentages.
+- `scripts/enforce-component-coverage.ts` runs `bun test --coverage` with text and lcov reporters, then parses `coverage/lcov.info` and enforces the 90% aggregate line-coverage threshold from `src/lib/component-coverage/enforce.ts` using summed LF/LH totals rather than averaging per-file percentages.
+- `COMPONENT_COVERAGE_ENFORCEMENT_TEST_IGNORE_PATTERNS` must exclude subprocess-heavy contract tests that re-enter root `make` or validation commands under the repo command lock. Keep `tests/unit/search-index-command-surface.test.ts`, `tests/unit/public-content-validation.test.ts`, `tests/unit/search-index-validation-failing-path.test.ts`, `tests/unit/static-export.test.ts`, and similar root-command tests out of the nested coverage run so `make test` and `make component-coverage` do not deadlock each other.
 - Failure output uses the `Component coverage enforcement failed` prefix so threshold breaches are distinguishable from unrelated test, lint, or typecheck failures.
 - `make component-coverage-boundary` remains the reviewer-visible boundary report; it does not run threshold enforcement.
 

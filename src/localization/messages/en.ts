@@ -19,7 +19,23 @@ export const enMessages = {
   docs: {
     navHeading: "Docs navigation",
     navOverview: "Overview",
+    searchTitle: "Search docs",
+    searchLabel: "Search documentation",
+    searchPlaceholder: "Search setup, guides, and concepts",
+    searchHelperText:
+      "Results come from the generated public search artifact through the Orama-backed query path.",
+    searchLoading: "Loading the search index...",
+    searchSearching: "Searching documentation...",
+    searchEmptyQuery:
+      "Type a query to search the current locale's published docs.",
+    searchNoResults: "No matching docs found for this query.",
+    searchError:
+      "Search is temporarily unavailable because the public search artifact could not be loaded.",
+    searchResultsLabel: "matching docs",
     breadcrumbAriaLabel: "Breadcrumb",
+    glossarySectionLabel: "Glossary",
+    comparisonSectionLabel: "Comparisons",
+    referenceSectionLabel: "References",
     progressionAriaLabel: "Page progression",
     previousPagePrefix: "Previous",
     nextPagePrefix: "Next",

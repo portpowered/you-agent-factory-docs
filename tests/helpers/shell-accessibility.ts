@@ -50,23 +50,35 @@ export function collectLandingShellAccessibilitySnapshot(
 export function collectDocsShellAccessibilitySnapshot(
   rendered?: RenderResult,
 ): DocsShellAccessibilitySnapshot {
-  const root = within(resolveShellRoot(rendered, ".shared-shell"));
+  const root = within(
+    resolveShellRoot(rendered, "[data-testid='fumadocs-layout']"),
+  );
   const banner = root.queryByRole("banner");
-  const siteNav = root.queryByRole("navigation", {
-    name: enMessages.landing.primaryNavAriaLabel,
-  });
   const docsNav = root.queryByRole("navigation", {
     name: enMessages.docs.navHeading,
   });
   const main = root.queryByRole("main");
-  const overviewLink = docsNav?.querySelector('[aria-current="page"]');
+  const searchRegion = root.queryByRole("region", {
+    name: enMessages.docs.searchTitle,
+  });
+  const breadcrumbNavigation = root.queryByRole("navigation", {
+    name: enMessages.docs.breadcrumbAriaLabel,
+  });
+  const progressionNavigation = root.queryByRole("navigation", {
+    name: enMessages.docs.progressionAriaLabel,
+  });
+  const docsRootLabel = breadcrumbNavigation
+    ? within(breadcrumbNavigation).queryByText(enMessages.docs.shellTitle)
+    : null;
 
   return {
     hasBannerLandmark: banner !== null,
-    siteNavigationLabel: siteNav?.getAttribute("aria-label") ?? "",
     docsNavigationLabel: docsNav?.getAttribute("aria-label") ?? "",
     hasMainLandmark: main !== null,
-    overviewLinkAriaCurrent: overviewLink?.getAttribute("aria-current") ?? null,
+    hasSearchRegion: searchRegion !== null,
+    hasBreadcrumbNavigation: breadcrumbNavigation !== null,
+    hasProgressionNavigation: progressionNavigation !== null,
+    docsRootLabel: docsRootLabel?.textContent ?? null,
   };
 }
 

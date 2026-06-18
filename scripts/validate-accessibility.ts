@@ -24,7 +24,8 @@ const testStatus = spawnSync(
   [
     "test",
     "tests/unit/homepage-shell.test.tsx",
-    "tests/unit/docs-shell.test.tsx",
+    "tests/unit/docs-route-shell.test.tsx",
+    "tests/unit/docs-route-chrome.test.tsx",
     "tests/unit/shell-accessibility-validation.test.tsx",
   ],
   {

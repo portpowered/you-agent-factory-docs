@@ -86,6 +86,7 @@ describe("public search artifact generation", () => {
     expect(artifact.entries.map((entry) => entry.id).sort()).toEqual([
       "blog/introducing-factory@en",
       "comparison/vs-n8n@en",
+      "doc/coder-reviewer-pattern@en",
       "doc/concepts@en",
       "doc/configuration@en",
       "doc/getting-started@en",
@@ -113,6 +114,44 @@ describe("public search artifact generation", () => {
     });
     expect(gettingStarted?.headings.length).toBeGreaterThan(0);
     expect(gettingStarted?.body.length).toBeGreaterThan(0);
+
+    const coderReviewerPattern = artifact.entries.find(
+      (entry) => entry.id === "doc/coder-reviewer-pattern@en",
+    );
+
+    expect(coderReviewerPattern).toMatchObject({
+      canonicalId: "doc/coder-reviewer-pattern",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/coder-reviewer-pattern",
+      title: "Coder / Reviewer pattern",
+      section: "guides",
+      searchPriority: 8,
+    });
+    expect(coderReviewerPattern?.headings).toEqual([
+      "Coder / Reviewer pattern",
+      "Who the two roles are",
+      "Coder",
+      "Reviewer",
+      "How the handoff works",
+      "What the review loop looks like",
+      "What teams get from the pattern",
+      "Where approval gates matter",
+      "Realistic limits and failure modes",
+    ]);
+    expect(coderReviewerPattern?.body).toContain(
+      "one role focused on producing the change",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "approves the work or sends it back with concrete changes requested",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "approval is treated as a real gate",
+    );
+    expect(coderReviewerPattern?.body).toContain(
+      "The most common failure mode is shallow review",
+    );
   });
 
   test("surfaces substantive glossary starter copy on the existing canonical record", () => {

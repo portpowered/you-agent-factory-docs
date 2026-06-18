@@ -1,5 +1,6 @@
 import { DocPageArticle } from "@/components/docs/doc-page-article";
-import { DocsShell } from "@/components/docs/docs-shell";
+import { DocsRouteChrome } from "@/components/docs/docs-route-chrome";
+import { FumadocsDocsLayout } from "@/components/docs/fumadocs-docs-layout";
 import {
   listPublishedContentSlugs,
   loadDocsShellNavigation,
@@ -27,13 +28,18 @@ export default async function ComparisonPage({ params }: ComparisonPageProps) {
   }
 
   return (
-    <DocsShell
-      breadcrumbItems={[{ label: "Comparisons" }, { label: page.title }]}
-      currentPath={page.record.routePath}
-      hideProgression
-      navigation={navigation}
-    >
-      <DocPageArticle body={page.body} title={page.title} />
-    </DocsShell>
+    <FumadocsDocsLayout>
+      <DocsRouteChrome
+        breadcrumbItems={[
+          { labelKey: "docs.comparisonSectionLabel" },
+          { label: page.title },
+        ]}
+        currentPath={page.record.routePath}
+        hideProgression
+        navigation={navigation}
+      >
+        <DocPageArticle body={page.body} title={page.title} />
+      </DocsRouteChrome>
+    </FumadocsDocsLayout>
   );
 }

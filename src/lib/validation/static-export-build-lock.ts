@@ -2,7 +2,6 @@ import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 export const STATIC_EXPORT_BUILD_LOCK_DIR = ".static-export-build.lock";
-const reentrantLockDepthByRepoRoot = new Map<string, number>();
 
 function lockPath(repoRoot: string): string {
   return join(repoRoot, STATIC_EXPORT_BUILD_LOCK_DIR);
@@ -43,26 +42,14 @@ export function acquireStaticExportBuildLock(
   repoRoot: string,
   timeoutMs = 600_000,
 ): void {
-  const currentDepth = reentrantLockDepthByRepoRoot.get(repoRoot);
-  if (currentDepth !== undefined) {
-    reentrantLockDepthByRepoRoot.set(repoRoot, currentDepth + 1);
-    return;
-  }
-
   const deadline = Date.now() + timeoutMs;
 
   while (Date.now() < deadline) {
-    if (readLockOwnerPid(repoRoot) === process.pid) {
-      reentrantLockDepthByRepoRoot.set(repoRoot, 1);
-      return;
-    }
-
     removeStaleLockIfNeeded(repoRoot);
 
     try {
       mkdirSync(lockPath(repoRoot));
       writeFileSync(pidFilePath(repoRoot), String(process.pid), "utf8");
-      reentrantLockDepthByRepoRoot.set(repoRoot, 1);
       return;
     } catch (error) {
       const code = (error as NodeJS.ErrnoException).code;
@@ -81,16 +68,6 @@ export function acquireStaticExportBuildLock(
 
 /** Releases the static export build lock when held by the current process. */
 export function releaseStaticExportBuildLock(repoRoot: string): void {
-  const currentDepth = reentrantLockDepthByRepoRoot.get(repoRoot);
-  if (currentDepth !== undefined) {
-    if (currentDepth > 1) {
-      reentrantLockDepthByRepoRoot.set(repoRoot, currentDepth - 1);
-      return;
-    }
-
-    reentrantLockDepthByRepoRoot.delete(repoRoot);
-  }
-
   const ownerPid = readLockOwnerPid(repoRoot);
   if (ownerPid !== undefined && ownerPid !== process.pid) {
     return;

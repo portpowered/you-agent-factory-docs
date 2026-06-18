@@ -17,6 +17,9 @@ export const COMPONENT_COVERAGE_ENFORCEMENT_SUCCESS_PREFIX =
 export const COMPONENT_COVERAGE_ENFORCEMENT_TEST_IGNORE_PATTERNS = [
   "tests/unit/component-coverage-enforcement.test.ts",
   "tests/unit/component-coverage-enforcement-failing-path.test.ts",
+  "tests/unit/public-content-validation.test.ts",
+  "tests/unit/search-index-command-surface.test.ts",
+  "tests/unit/search-index-validation-failing-path.test.ts",
   "tests/unit/static-export.test.ts",
   "tests/unit/reconciled-export-browser.test.ts",
   "tests/unit/root-command-path.test.ts",
