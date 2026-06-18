@@ -94,6 +94,7 @@ describe("public search artifact generation", () => {
       "doc/getting-started@fr",
       "doc/installation@en",
       "doc/introduction@en",
+      "doc/mcp-installation@en",
       "doc/quickstart@en",
       "glossary/agent@en",
       "reference/loop-engineering@en",
@@ -108,6 +109,9 @@ describe("public search artifact generation", () => {
     );
     const configuration = artifact.entries.find(
       (entry) => entry.id === "doc/configuration@en",
+    );
+    const mcpInstallation = artifact.entries.find(
+      (entry) => entry.id === "doc/mcp-installation@en",
     );
     const concepts = artifact.entries.find(
       (entry) => entry.id === "doc/concepts@en",
@@ -186,6 +190,19 @@ describe("public search artifact generation", () => {
     expect(configuration?.body).toContain(
       "How configuration changes execution",
     );
+
+    expect(mcpInstallation).toMatchObject({
+      canonicalId: "doc/mcp-installation",
+      locale: "en",
+      canonicalLocale: "en",
+      availableLocales: ["en"],
+      url: "/docs/mcp-installation",
+      title: "MCP installation",
+      section: "guides",
+      searchPriority: 8,
+    });
+    expect(mcpInstallation?.headings).toContain("Where this guide fits");
+    expect(mcpInstallation?.body).toContain("Model Context Protocol (MCP)");
 
     expect(concepts).toMatchObject({
       canonicalId: "doc/concepts",

@@ -340,10 +340,24 @@ section: guides
             },
           },
           {
+            canonicalId: "doc/mcp-installation",
+            label: "MCP installation",
+            href: "/docs/mcp-installation",
+            order: 4,
+            localeProjection: {
+              canonicalPageId: "doc/mcp-installation",
+              canonicalLocale: "en",
+              requestedLocale: "en",
+              resolvedLocale: "en",
+              availableLocales: ["en"],
+              fellBackToCanonicalLocale: false,
+            },
+          },
+          {
             canonicalId: "doc/concepts",
             label: "Workflow concepts",
             href: "/docs/concepts",
-            order: 4,
+            order: 5,
             localeProjection: {
               canonicalPageId: "doc/concepts",
               canonicalLocale: "en",
@@ -357,7 +371,7 @@ section: guides
             canonicalId: "doc/coder-reviewer-pattern",
             label: "Coder / Reviewer pattern",
             href: "/docs/coder-reviewer-pattern",
-            order: 5,
+            order: 6,
             localeProjection: {
               canonicalPageId: "doc/coder-reviewer-pattern",
               canonicalLocale: "en",
@@ -431,7 +445,7 @@ section: guides
         (section) =>
           section.id === "guides" &&
           section.pages.map((page) => page.canonicalId).join(",") ===
-            "doc/getting-started,doc/cli,doc/configuration,doc/concepts,doc/coder-reviewer-pattern",
+            "doc/getting-started,doc/cli,doc/configuration,doc/mcp-installation,doc/concepts,doc/coder-reviewer-pattern",
       ),
     ).toBe(true);
   });

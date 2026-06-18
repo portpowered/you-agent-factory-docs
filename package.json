@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "generate:search-index": "bun run scripts/generate-search-index.ts",
-    "build": "bun run generate:search-index && next build",
+    "build": "mkdir -p .next/server .next/server/pages .next/export .next/cache/webpack/server-production && bun run generate:search-index && (next build || (mkdir -p .next/server .next/server/pages .next/export .next/cache/webpack/server-production && next build))",
     "start": "next start",
     "budget": "bun run scripts/run-site-budget.ts",
     "typecheck": "next typegen && tsc --noEmit",

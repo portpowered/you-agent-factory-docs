@@ -257,6 +257,33 @@
       "searchPriority": 10
     },
     {
+      "id": "doc/mcp-installation@en",
+      "canonicalId": "doc/mcp-installation",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/mcp-installation",
+      "title": "MCP installation",
+      "description": "",
+      "headings": [
+        "MCP installation",
+        "Where this guide fits",
+        "Why this page appears here",
+        "What this guide will cover",
+        "When to stay on the simpler path"
+      ],
+      "body": "MCP installation Use this page when you need You Agent Factory to connect to tools that are exposed through the Model Context Protocol (MCP) instead of staying on the baseline local docs and repository workflow alone. Where this guide fits Finish Installation and Quickstart first so the repository already runs through the supported local validation path. Keep Configuration nearby because MCP-backed tools still attach to the same workflow definitions, approvals, and command surfaces the rest of the factory uses. Why this page appears here MCP setup is a bridge between the first local setup path and the broader workflow model. That means it belongs with the generated guides rather than inside the setup-only sequence or deeper workflow concepts. What this guide will cover This guide stays intentionally narrow. Use it for prerequisites, the smallest useful setup path, first-run verification, and the first failure checks that matter before you continue into broader workflow guidance. When to stay on the simpler path If you are only evaluating the docs shell, local repository checks, or the baseline contributor loop, you do not need MCP yet. Continue with Getting started or Workflow concepts until you are ready to connect external tool integrations into the factory workflow.",
+      "tags": [
+        "docs",
+        "mcp"
+      ],
+      "section": "guides",
+      "searchPriority": 8
+    },
+    {
       "id": "doc/quickstart@en",
       "canonicalId": "doc/quickstart",
       "locale": "en",

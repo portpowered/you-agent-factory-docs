@@ -48,5 +48,6 @@
 - `bun run typecheck` — `next typegen && tsc --noEmit`
 - `bun run lint` — `biome check .`
 - `bun run test` — `bun test`
-- `bun run build` — `bun run generate:search-index && next build`
+- `bun run build` — `mkdir -p .next/server .next/server/pages .next/export .next/cache/webpack/server-production && bun run generate:search-index && (next build || (mkdir -p .next/server .next/server/pages .next/export .next/cache/webpack/server-production && next build))`
+- In this worktree environment, precreating the expected `.next` output subdirectories avoids intermittent `ENOENT` failures while Next writes `pages-manifest.json`, webpack cache packs, or export output. The shared build script also performs one immediate retry after restoring those directories because the transient export-stage rename failure has been reproducible on the first attempt but not the second. Keep that safeguard centralized in the build script instead of relying on manual one-off reruns.
 - `bun run quality-gate` — early foundation quality gate

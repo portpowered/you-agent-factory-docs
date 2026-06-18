@@ -154,6 +154,7 @@ navigationTitle: Agent term
       "doc/getting-started",
       "doc/installation",
       "doc/introduction",
+      "doc/mcp-installation",
       "doc/quickstart",
       "glossary/agent",
       "reference/loop-engineering",
