@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui";
 import type { ShellDisclosureState } from "@/types/shell-disclosure";
 import type { ReactNode } from "react";
 

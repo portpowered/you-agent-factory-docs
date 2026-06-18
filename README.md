@@ -43,3 +43,11 @@ bun run dev
 The site scaffold lives under `src/`. Architecture and planning docs are in `docs/internal/`.
 
 The checked-in budget gate intentionally stays narrow for this phase: it measures the exported homepage, the exported docs entry route, and total emitted JavaScript bytes under `out/_next/static`. Broader route coverage, richer bundle analysis, and search-index budgeting remain out of scope until a later expansion.
+
+## Local component intake surface
+
+Use `@/components/ui` as the stable repo-local intake path for shared shadcn-style primitives on the docs site.
+
+- Approved today through the local intake barrel: `Button`, `ButtonLink`, `Card`, `CardTitle`, `CardDescription`
+- Compatibility decisions for shadcn, Magic UI, and Performative UI intake live in `src/components/ui/component-intake.ts`
+- Do not import UI building blocks from ad hoc upstream install locations in feature code; add or defer them through the local intake surface instead

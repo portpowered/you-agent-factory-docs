@@ -1,8 +1,7 @@
 "use client";
 
 import { SharedShell } from "@/components/shell/shared-shell";
-import { ButtonLink } from "@/components/ui/button";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import { ButtonLink, Card, CardDescription, CardTitle } from "@/components/ui";
 import {
   LANDING_EXAMPLE_WORKFLOWS,
   LANDING_EXAMPLE_WORKFLOWS_TITLE,

@@ -1,4 +1,4 @@
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui";
 import { joinClassNames } from "@/lib/classnames";
 import type { SharedShellDestination } from "@/lib/shared-shell-config";
 

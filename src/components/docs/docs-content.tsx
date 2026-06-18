@@ -1,4 +1,4 @@
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ui";
 import { joinClassNames } from "@/lib/classnames";
 import type { ComponentPropsWithoutRef } from "react";
 
