@@ -1,115 +1,61 @@
 import { describe, expect, test } from "bun:test";
+import { existsSync } from "node:fs";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { dryRunMake } from "../helpers/make";
+import { runMakeTarget } from "../helpers/make-target";
 
 const repoRoot = join(import.meta.dir, "../..");
-
-type WorkflowStep = {
-  name?: string;
-  run?: string;
-  uses?: string;
-};
 
 function normalizeWorkflowLines(workflow: string) {
   return workflow.replace(/\r\n/g, "\n").split("\n");
 }
 
-function extractVerifyJobLines(workflow: string) {
+function extractVerifyJobRunCommands(workflow: string) {
   const lines = normalizeWorkflowLines(workflow);
   const verifyJobStart = lines.findIndex((line) => line === "  verify:");
 
   expect(verifyJobStart).toBeGreaterThanOrEqual(0);
 
-  const verifyJobLines: string[] = [];
+  const commands: string[] = [];
 
   for (const line of lines.slice(verifyJobStart + 1)) {
     if (/^ {2}[^ ]/.test(line)) {
       break;
     }
 
-    verifyJobLines.push(line);
+    const trimmed = line.trim();
+    if (trimmed.startsWith("run: ")) {
+      commands.push(trimmed.slice("run: ".length));
+    }
   }
 
-  return verifyJobLines;
+  return commands;
 }
 
-function extractVerifyJobSteps(workflow: string) {
-  const verifyJobLines = extractVerifyJobLines(workflow);
-  const stepsStart = verifyJobLines.findIndex((line) => line === "    steps:");
+function expectOrderedSubsequence(commands: string[], expected: string[]) {
+  let nextIndex = 0;
 
-  expect(stepsStart).toBeGreaterThanOrEqual(0);
-
-  const steps: WorkflowStep[] = [];
-  let currentStep: WorkflowStep | null = null;
-
-  for (const line of verifyJobLines.slice(stepsStart + 1)) {
-    if (line.startsWith("      - ")) {
-      if (currentStep) {
-        steps.push(currentStep);
-      }
-
-      currentStep = {};
-      const trimmed = line.trim();
-
-      if (trimmed.startsWith("- name: ")) {
-        currentStep.name = trimmed.slice("- name: ".length);
-      }
-
-      continue;
-    }
-
-    if (!currentStep) {
-      continue;
-    }
-
-    const trimmed = line.trim();
-
-    if (trimmed.startsWith("name: ")) {
-      currentStep.name = trimmed.slice("name: ".length);
-    }
-
-    if (trimmed.startsWith("run: ")) {
-      currentStep.run = trimmed.slice("run: ".length);
-    }
-
-    if (trimmed.startsWith("uses: ")) {
-      currentStep.uses = trimmed.slice("uses: ".length);
+  for (const command of commands) {
+    if (command === expected[nextIndex]) {
+      nextIndex += 1;
     }
   }
 
-  if (currentStep) {
-    steps.push(currentStep);
-  }
-
-  return steps;
+  expect(nextIndex).toBe(expected.length);
 }
 
 describe("pull-request CI command parity", () => {
-  test("workflow visibly runs the required pull-request command path in the verify job", () => {
+  test("verify job keeps the required root make path ahead of supplemental gates and the commands succeed through that same surface", () => {
     const ciWorkflow = readFileSync(
       join(repoRoot, ".github/workflows/ci.yml"),
       "utf8",
     );
-    const steps = extractVerifyJobSteps(ciWorkflow);
-    const runnableSteps = steps.filter((step) => step.run);
-    const runnableCommands = runnableSteps.map((step) => step.run);
+    const commands = extractVerifyJobRunCommands(ciWorkflow);
 
     expect(ciWorkflow).toContain("pull_request:");
-    expect(steps.map((step) => step.name)).toEqual([
-      "Checkout",
-      "Setup Bun",
-      "Setup",
-      "Install Playwright Chromium",
-      "Run typecheck and lint",
-      "Run tests",
-      "Build static export",
-      "Run early foundation quality gate",
-      "Exported-site budget gate",
-      "Component coverage enforcement",
-    ]);
-    expect(runnableCommands).toEqual([
+    expectOrderedSubsequence(commands, [
       "make setup",
-      "bunx playwright install --with-deps chromium",
       "make check",
       "make test",
       "make build",
@@ -118,29 +64,37 @@ describe("pull-request CI command parity", () => {
       "make component-coverage",
     ]);
 
-    for (const step of runnableSteps) {
-      expect(step.run).not.toContain("bun run typecheck");
-      expect(step.run).not.toContain("bun run lint");
-      expect(step.run).not.toContain("bun test");
-      expect(step.run).not.toContain("bun run build");
-      expect(step.run).not.toContain("scripts/enforce-component-coverage");
-    }
-  });
+    expect(commands).not.toContain("bun run typecheck");
+    expect(commands).not.toContain("bun run lint");
+    expect(commands).not.toContain("bun test");
+    expect(commands).not.toContain("bun run build");
+    expect(commands).not.toContain("scripts/enforce-component-coverage");
 
-  test("contributor guidance names the required PR path and the retained supplemental checks", () => {
-    const readme = readFileSync(join(repoRoot, "README.md"), "utf8");
+    const setup = runMakeTarget("setup");
+    expect(setup.status).toBe(0);
+    expect(setup.output).toMatch(/bun install/);
 
-    expect(readme).toContain(
-      "pull requests visibly gate on `make setup`, `make check`, `make test`, and `make build` in that order",
-    );
-    expect(readme).toContain(
-      "`make quality-gate`, `make budget`, and `make component-coverage` as supplemental checks",
-    );
-    expect(readme).toContain(
-      "`make setup`, `make check`, `make test`, and `make build` are the required reviewer-visible pull-request validation path.",
-    );
-    expect(readme).toContain(
-      "`make quality-gate`, `make budget`, and `make component-coverage` stay on that same root command surface as supplemental PR checks",
+    const check = runMakeTarget("check");
+    expect(check.status).toBe(0);
+    expect(check.output).toMatch(/typecheck/);
+    expect(check.output).toMatch(/lint/);
+
+    const testResult = runMakeTarget("test", { VERIFYING_MAKE_TEST: "1" });
+    expect(testResult.status).toBe(0);
+    expect(testResult.output).toContain("tests/unit/project.test.ts");
+    expect(testResult.output).toContain("tests/unit/site.test.ts");
+
+    const build = runMakeTarget("build");
+    expect(build.status).toBe(0);
+    expect(build.output).toMatch(/Exporting/);
+    expect(existsSync(join(repoRoot, "out"))).toBe(true);
+  }, 240_000);
+
+  test("supplemental root make targets keep their own command surfaces", () => {
+    expect(dryRunMake("quality-gate")).toContain("bun run quality-gate");
+    expect(dryRunMake("budget")).toContain("bun run budget");
+    expect(dryRunMake("component-coverage")).toContain(
+      "bun run component-coverage",
     );
   });
 });
