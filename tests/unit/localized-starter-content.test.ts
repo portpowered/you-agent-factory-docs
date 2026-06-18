@@ -70,6 +70,7 @@ describe("localized starter content variants", () => {
       "coder-reviewer-pattern",
       "concepts",
       "configuration",
+      "faq",
       "getting-started",
       "installation",
       "introduction",
