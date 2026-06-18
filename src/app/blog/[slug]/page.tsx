@@ -1,9 +1,11 @@
 import { PublicContentPageShell } from "@/components/content/public-content-page-shell";
 import {
   PublicContentPageNotFoundError,
+  buildContentPageMetadata,
   listPublishedPublicContentRouteParams,
   loadPublicContentPage,
 } from "@/lib/content";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 type BlogPageProps = {
@@ -14,6 +16,19 @@ export function generateStaticParams() {
   return listPublishedPublicContentRouteParams(undefined, {
     supportedKinds: ["blog"],
   }).map(({ slug }) => ({ slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: BlogPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const page = loadPublicContentPage("blog", slug);
+
+  return buildContentPageMetadata({
+    title: page.title,
+    body: page.body,
+    routePath: page.record.routePath,
+  });
 }
 
 export default async function BlogPage({ params }: BlogPageProps) {
