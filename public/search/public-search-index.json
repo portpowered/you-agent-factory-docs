@@ -36,9 +36,13 @@
       "title": "You Agent Factory vs n8n",
       "description": "",
       "headings": [
-        "You Agent Factory vs n8n"
+        "You Agent Factory vs n8n",
+        "Where n8n fits best",
+        "Where You Agent Factory fits best",
+        "Practical tradeoffs to evaluate",
+        "How to choose between them"
       ],
-      "body": "You Agent Factory vs n8n Starter comparison content for the canonical model.",
+      "body": "You Agent Factory vs n8n You Agent Factory and n8n both help teams automate repeatable work, but they optimize for different operating models. n8n is strongest when a workflow mostly connects APIs, SaaS triggers, and data transformation steps. You Agent Factory is strongest when the recurring work is engineering-heavy and needs structured agent roles, repository context, review loops, and inspectable outputs. Where n8n fits best n8n is a good fit when a team wants a general workflow builder for integrations. It gives operators a visual way to connect systems, react to events, and move data between services without needing to treat each step like a software-delivery process. If the main problem is \"when this webhook arrives, fan out to these systems and update records,\" n8n is often the more direct tool. Where You Agent Factory fits best You Agent Factory is aimed at workflows where the unit of work looks more like engineering execution than integration plumbing. It helps teams define agent responsibilities, pass files and repository context between steps, require approvals at key boundaries, and keep logs that explain what happened during a run. That makes it a better fit for recurring tasks such as code review, release preparation, documentation maintenance, or other processes where outputs need human scrutiny. Practical tradeoffs to evaluate The tradeoff is that You Agent Factory usually asks for more explicit process design up front. Teams define narrower roles, clearer handoffs, and more deliberate review points because the goal is not just automation volume, but reliable agent-assisted execution. n8n can feel faster to adopt for broad integration flows, while You Agent Factory is more useful when the workflow needs reproducibility, auditable decisions, and collaboration between multiple specialized agents. How to choose between them Choose n8n when the work is primarily event-driven integration between external systems. Choose You Agent Factory when the work is a repeatable engineering process that benefits from scoped agent roles, filesystem-aware context, and approval-driven orchestration. Some teams may use both: n8n to trigger or coordinate operational events, and You Agent Factory to run the deeper engineering workflow once human or repository-level reasoning is required.",
       "tags": [
         "comparison"
       ],
@@ -295,9 +299,12 @@
       "title": "Agent",
       "description": "",
       "headings": [
-        "Agent"
+        "Agent",
+        "What the term means here",
+        "Why it matters in You Agent Factory",
+        "How to read the term as a first-time evaluator"
       ],
-      "body": "Agent Starter glossary entry for canonical content validation.",
+      "body": "Agent An agent in You Agent Factory is a named worker inside a workflow. It receives instructions, can use the tools and files the workflow gives it, and returns an output that another step can inspect, approve, or reuse. What the term means here In this project, an agent is not the whole factory and it is not a vague synonym for \"AI.\" It is one bounded participant with a clear role, such as drafting a change, reviewing a diff, collecting evidence, or preparing a follow-up task. The workflow decides when that agent runs, what context it sees, and what happens with its output. Why it matters in You Agent Factory The distinction matters because You Agent Factory is built around repeatable process design, not one large prompt. Teams break recurring work into smaller responsibilities so each agent can be inspected, retried, or replaced without rewriting the whole workflow. That makes approvals, logs, and failure handling easier to reason about. How to read the term as a first-time evaluator When the docs say \"agent,\" read it as a scoped unit of work with a specific contract. A useful agent should have a narrow job, explicit inputs, and an output that the rest of the workflow can validate. If a step has no clear owner or no clear handoff, it is usually a sign that the workflow still needs better structure rather than more agent autonomy.",
       "tags": [
         "glossary"
       ],
@@ -317,9 +324,13 @@
       "title": "Loop engineering",
       "description": "",
       "headings": [
-        "Loop engineering"
+        "Loop engineering",
+        "What the reference topic covers",
+        "Where loop engineering helps in practice",
+        "What a healthy loop usually includes",
+        "How to evaluate a loop as a first-time reader"
       ],
-      "body": "Loop engineering Starter reference content for canonical record generation.",
+      "body": "Loop engineering Loop engineering is the practice of designing the feedback cycle around an agent workflow instead of treating a run as one irreversible shot. In You Agent Factory, a loop usually means a worker produces an output, another step checks it, the workflow decides whether the result is acceptable, and only then does the run move forward or branch into another attempt. What the reference topic covers This topic is not only about retries. It covers how a workflow turns intermediate outputs into evidence, review signals, and next actions. A useful loop makes it obvious who produced the artifact, what standard it was checked against, and what should happen when the check fails. Where loop engineering helps in practice Loop design matters most when the work is high leverage but not guaranteed to be correct on the first pass. Code review preparation, release-readiness checks, documentation refreshes, and follow-up task generation all benefit from explicit loops because the workflow can inspect partial results before they become expensive mistakes. The goal is not to maximize agent autonomy. The goal is to make repeated improvement safe, inspectable, and cheap to reason about. What a healthy loop usually includes A healthy loop usually has four parts: a scoped worker, a concrete review step, a visible decision rule, and an exit condition. The worker should have a narrow responsibility. The review step should check something observable such as failing tests, missing evidence, policy mismatch, or reviewer comments. The decision rule should explain whether the workflow retries, escalates to a human, or stops. The exit condition should prevent the loop from running forever without producing a better outcome. How to evaluate a loop as a first-time reader When you read about loop engineering in this project, look for whether the workflow makes quality gates explicit. If a run can be retried, the docs should also make clear what changed between attempts and why the next pass is more trustworthy. If the loop has no clear reviewer, no concrete check, or no stop condition, it is usually a sign that the workflow still needs better structure before more automation is added.",
       "tags": [
         "reference"
       ],

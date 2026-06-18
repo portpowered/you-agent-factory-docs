@@ -63,6 +63,12 @@ export {
   type LoadDocPageOptions,
 } from "@/lib/content/load-doc-page";
 export {
+  listPublishedContentSlugs,
+  loadPublicContentPage,
+  type LoadPublicContentPageOptions,
+  type PublicContentPage,
+} from "@/lib/content/load-public-content-page";
+export {
   resolveLocalizedContentVariant,
   selectLocalizedVariantBinding,
   type LocalizedContentResolution,

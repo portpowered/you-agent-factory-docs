@@ -16,4 +16,20 @@ search.priority: 7
 
 # Loop engineering
 
-Starter reference content for canonical record generation.
+Loop engineering is the practice of designing the feedback cycle around an agent workflow instead of treating a run as one irreversible shot. In You Agent Factory, a loop usually means a worker produces an output, another step checks it, the workflow decides whether the result is acceptable, and only then does the run move forward or branch into another attempt.
+
+## What the reference topic covers
+
+This topic is not only about retries. It covers how a workflow turns intermediate outputs into evidence, review signals, and next actions. A useful loop makes it obvious who produced the artifact, what standard it was checked against, and what should happen when the check fails.
+
+## Where loop engineering helps in practice
+
+Loop design matters most when the work is high leverage but not guaranteed to be correct on the first pass. Code review preparation, release-readiness checks, documentation refreshes, and follow-up task generation all benefit from explicit loops because the workflow can inspect partial results before they become expensive mistakes. The goal is not to maximize agent autonomy. The goal is to make repeated improvement safe, inspectable, and cheap to reason about.
+
+## What a healthy loop usually includes
+
+A healthy loop usually has four parts: a scoped worker, a concrete review step, a visible decision rule, and an exit condition. The worker should have a narrow responsibility. The review step should check something observable such as failing tests, missing evidence, policy mismatch, or reviewer comments. The decision rule should explain whether the workflow retries, escalates to a human, or stops. The exit condition should prevent the loop from running forever without producing a better outcome.
+
+## How to evaluate a loop as a first-time reader
+
+When you read about loop engineering in this project, look for whether the workflow makes quality gates explicit. If a run can be retried, the docs should also make clear what changed between attempts and why the next pass is more trustworthy. If the loop has no clear reviewer, no concrete check, or no stop condition, it is usually a sign that the workflow still needs better structure before more automation is added.

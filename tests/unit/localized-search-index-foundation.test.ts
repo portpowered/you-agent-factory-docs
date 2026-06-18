@@ -24,6 +24,71 @@ function collectSearchIds(values: { id: string }[]): string[] {
 }
 
 describe("localized search index foundation verification", () => {
+  test("keeps enriched glossary, comparison, and reference starters on the same canonical identities and current public routes", () => {
+    const documents = loadLocalizedSearchDocuments(CONTENT_ROOT);
+    const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });
+
+    const expectedEntries = [
+      {
+        id: "glossary/agent@en",
+        canonicalId: "glossary/agent",
+        kind: "glossary",
+        url: "/glossary/agent",
+        title: "Agent",
+        bodySnippet: "named worker inside a workflow",
+      },
+      {
+        id: "comparison/vs-n8n@en",
+        canonicalId: "comparison/vs-n8n",
+        kind: "comparison",
+        url: "/comparisons/vs-n8n",
+        title: "You Agent Factory vs n8n",
+        bodySnippet: "approval-driven orchestration",
+      },
+      {
+        id: "reference/loop-engineering@en",
+        canonicalId: "reference/loop-engineering",
+        kind: "reference",
+        url: "/references/loop-engineering",
+        title: "Loop engineering",
+        bodySnippet: "designing the feedback cycle around an agent workflow",
+      },
+    ] as const;
+
+    for (const expectedEntry of expectedEntries) {
+      const document = documents.find(
+        (candidate) => candidate.id === expectedEntry.id,
+      );
+      const artifactEntry = artifact.entries.find(
+        (candidate) => candidate.id === expectedEntry.id,
+      );
+
+      expect(document).toMatchObject({
+        canonicalId: expectedEntry.canonicalId,
+        kind: expectedEntry.kind,
+        locale: "en",
+        canonicalLocale: "en",
+        availableLocales: ["en"],
+        url: expectedEntry.url,
+        title: expectedEntry.title,
+      });
+      expect(document?.headings.length).toBeGreaterThan(1);
+      expect(document?.body).toContain(expectedEntry.bodySnippet);
+
+      expect(artifactEntry).toMatchObject({
+        canonicalId: expectedEntry.canonicalId,
+        kind: expectedEntry.kind,
+        locale: "en",
+        canonicalLocale: "en",
+        availableLocales: ["en"],
+        url: expectedEntry.url,
+        title: expectedEntry.title,
+      });
+      expect(artifactEntry?.headings).toEqual(document?.headings);
+      expect(artifactEntry?.body).toContain(expectedEntry.bodySnippet);
+    }
+  });
+
   test("includes representative public localized content in search documents and generated artifact", () => {
     const documents = loadLocalizedSearchDocuments(CONTENT_ROOT);
     const artifact = loadPublicSearchArtifact({ contentRoot: CONTENT_ROOT });

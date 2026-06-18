@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { withQualityGateCommandLock } from "../../src/lib/validation/quality-gate-command-lock";
 import { withStaticExportBuildLock } from "../../src/lib/validation/static-export-build-lock";
 import { withRepoCommandLock } from "./repo-command-lock";
+import { buildCleanSubprocessEnv } from "./subprocess-env";
 
 const projectRoot = join(import.meta.dir, "../..");
 
@@ -19,7 +20,7 @@ export function runMakeTarget(
   env: Record<string, string> = {},
   options: { cleanNextTypeArtifacts?: boolean } = {},
 ): MakeTargetResult {
-  const mergedEnv = { ...process.env, ...env };
+  const mergedEnv = buildCleanSubprocessEnv(env);
   const verifyingMakeTest = mergedEnv.VERIFYING_MAKE_TEST === "1";
 
   const prepareTarget = () => {
