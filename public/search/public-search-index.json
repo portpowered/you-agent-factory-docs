@@ -46,6 +46,36 @@
       "searchPriority": 6
     },
     {
+      "id": "doc/coder-reviewer-pattern@en",
+      "canonicalId": "doc/coder-reviewer-pattern",
+      "locale": "en",
+      "canonicalLocale": "en",
+      "availableLocales": [
+        "en"
+      ],
+      "kind": "doc",
+      "url": "/docs/coder-reviewer-pattern",
+      "title": "Coder / Reviewer pattern",
+      "description": "",
+      "headings": [
+        "Coder / Reviewer pattern",
+        "Who the two roles are",
+        "Coder",
+        "Reviewer",
+        "How the handoff works",
+        "What the review loop looks like",
+        "What teams get from the pattern",
+        "Where approval gates matter",
+        "Realistic limits and failure modes"
+      ],
+      "body": "Coder / Reviewer pattern Use this page when you need a practical starting point for understanding the Coder / Reviewer operating pattern inside You Agent Factory. Teams use this pattern when they want one role focused on producing the change and another role focused on validating whether that change should move forward. The split does not guarantee correctness, but it does make ownership clearer and makes review work explicit instead of optional. Who the two roles are Coder The coder is responsible for making the requested change real. In practice that usually means reading the task, inspecting the current system, editing code or docs, running the relevant checks, and showing enough evidence that the change is ready for review. The coder should optimize for correctness and traceability, not only speed. A strong coder handoff leaves the reviewer with concrete outputs to inspect: the diff, test results, and a short explanation of what changed. Reviewer The reviewer is responsible for deciding whether the change is acceptable to merge or whether it needs another pass. That means checking the actual behavior, reading the diff for design fit, verifying tests, and pushing back when the change does not meet the requested standard. The reviewer is not there to re-implement the task. The value of the role is independent judgment about the submitted work: does it solve the stated problem, does it preserve system quality, and is the evidence strong enough to approve? How the handoff works The normal handoff is simple: 1. The coder completes one bounded piece of work. 2. The coder runs the relevant checks and records what was verified. 3. The reviewer inspects the diff and the observable evidence. 4. The reviewer either approves the work or sends it back with concrete changes requested. This handoff keeps coding and judging separate. That separation matters because the person who made the change is often the least reliable person to decide that their own work is fully correct. What the review loop looks like In day-to-day engineering work, the loop is usually short and explicit: 1. The reviewer reads the change against the task, not only against personal style preferences. 2. If something is wrong or unproven, the reviewer sends specific feedback back to the coder. 3. The coder revises the change, reruns the relevant validation, and hands the update back. 4. The loop ends when the reviewer can either approve with confidence or reject because the requested outcome is still not being met. Good review loops are concrete. Feedback should point to the behavior that failed, the risk it creates, and what proof would resolve the concern. What teams get from the pattern Used well, the Coder / Reviewer pattern gives a team a few practical advantages: Better change quality because someone other than the author checks the result. Clearer review ownership because approval is a deliberate step rather than an implied one. More disciplined iteration because rejected work comes back with specific issues to fix. Those outcomes are useful because they improve merge decisions, not because the pattern removes uncertainty. The reviewer still works with incomplete information and has to apply engineering judgment. Where approval gates matter This pattern only works safely when approval is treated as a real gate. The reviewer should be able to stop the change from moving forward when the evidence is weak, the important behavior was not validated, or the implementation does not match the requested outcome. In practice, that usually means the reviewer does not approve until they can trace the request to the diff and to the checks that matter for that change. If the evidence is missing, the correct move is to reject the handoff and ask the coder to come back with stronger validation. Realistic limits and failure modes The most common failure mode is shallow review. A reviewer can read quickly, approve based on trust, and miss the exact behavior that needed scrutiny. Another failure mode is unclear ownership, where the coder assumes the reviewer will catch every issue and the reviewer assumes the coder already validated the risky parts. The reviewer role helps contain those risks by forcing one person to judge the submission independently, but it does not remove the need for engineering judgment. If the review is rushed, the task is ambiguous, or the evidence is weak, the pattern can still fail and should not be treated as automatic safety.",
+      "tags": [
+        "docs"
+      ],
+      "section": "guides",
+      "searchPriority": 8
+    },
+    {
       "id": "doc/concepts@en",
       "canonicalId": "doc/concepts",
       "locale": "en",
