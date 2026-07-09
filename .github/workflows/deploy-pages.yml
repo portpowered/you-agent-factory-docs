@@ -1,10 +1,12 @@
 # Main-branch GitHub Pages deploy path.
 #
-# Contract (see docs/internal/deployment.md):
+# Contract (see docs/internal/processes/ci-deploy-foundation-relevant-files.md
+# and docs/operations.md):
 # - Trigger: push to main (including merges). No manual publish step.
-# - validate runs make setup, check, test, build, budget — the same Makefile path as local/CI verification.
+# - validate runs make setup, check, test, build, budget — the same Makefile
+#   path as local/CI verification (reproduce each stage with make <target>).
 # - deploy has needs: validate; failed validation never starts deploy for that run.
-# - Artifact: out/ from make build, uploaded in validate and published by deploy-pages.
+# - Artifact: out/ from make build, uploaded in validate and published by deploy.
 name: Deploy GitHub Pages
 
 on:
@@ -35,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: make setup
 
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
       - name: Run typecheck and lint
         run: make check
 
@@ -53,7 +58,7 @@ jobs:
       - name: Upload static export artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Next.js static export output from `make build`; consumed by deploy-pages below.
+          # Next.js static export output from `make build`; consumed by deploy below.
           path: out/
 
   deploy:

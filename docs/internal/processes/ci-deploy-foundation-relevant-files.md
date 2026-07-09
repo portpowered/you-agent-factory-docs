@@ -16,16 +16,21 @@ Pages deploy for the rewrite-era foundation pipeline.
 
 Workflows that call this contract:
 
-- `.github/workflows/ci.yml` — setup → check → test → build → budget → component-coverage
-- `.github/workflows/deploy-pages.yml` — setup → check → test → build → budget, then upload `out/`
+- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → build → budget → component-coverage
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build → budget, then upload `out/`
+
+Reproduce any failing workflow stage locally with the same `make <target>` after
+`make setup` (and `bunx playwright install --with-deps chromium` when website
+tests need a browser).
 
 ## Key files
 
 | Path | Role |
 | --- | --- |
 | `Makefile` | Public local/CI command contract for the stages above |
-| `.github/workflows/ci.yml` | Required PR/push verification stages |
+| `.github/workflows/ci.yml` | Required PR/push verification stages (`jobs.verify`) |
 | `.github/workflows/deploy-pages.yml` | Main-branch Pages validate + deploy; artifact path `out/` |
+| `docs/operations.md` | Maintainer-facing CI/deploy posture aligned to the Makefile contract |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`) |
 
 ## `make build` vs `make build-export`
@@ -69,4 +74,13 @@ failures from `check`, `test`, or the static-export build behind those skips.
 
 ## Related
 
-- [operations.md](../../operations.md) — broader deployment posture notes (may still describe legacy deploy.yml naming until retargeted)
+- [operations.md](../../operations.md) — maintainer CI/deploy posture for the rewrite-era Makefile contract
+
+## Stale inventory tests
+
+`src/tests/ci/github-actions-*.test.ts` still describe the older matrix /
+`deploy.yml` / `make build-export` layout. They are excluded from plain
+`make test` (`scripts/run-website-functionality-tests.ts` skips `src/tests/ci/`).
+Do not treat those inventory tests as the live workflow contract; prefer
+command-level verification of the Makefile targets and the YAML files above.
+Story 005 owns repository-facing badge / workflow identity retargeting.
