@@ -27,7 +27,7 @@ entry. Do not vendor or fork package source into this repo.
 | `src/lib/factory-components/host-package-styles.ts` | Resolves the published `styles.css` export map entry for smoke verification |
 | `src/features/factory-ui/graphs.ts` | Thin re-export of `@you-agent-factory/components/graphs` (viewport/node/edge helpers); no domain logic or styles import |
 | `src/features/factory-ui/charts.ts` | Thin re-export of `@you-agent-factory/components/charts` (ChartContainer, ChartStatePanel, tooltip/legend helpers); no domain series models or styles import |
-| `src/features/factory-ui/*` | Thin re-export wrappers for DataTable, CodePanel (later stories) |
+| `src/features/factory-ui/data-display.ts` | Thin re-export of DataTable + CodePanel from `@you-agent-factory/components/data-display`; columns/rows/code stay caller-owned; no styles import |
 | `src/lib/docs/component-manifest.ts` | Reusable coverage boundary retarget away from Atlas graph components (later story) |
 
 ## Styles import contract
@@ -59,6 +59,19 @@ entry. Do not vendor or fork package source into this repo.
 - Smoke-test `ChartContainer` with fixture `ChartConfig` + Recharts children
   (`role="img"` + `data-chart-container`). Also exercise `ChartStatePanel`
   empty (`role="status"`) and error (`role="alert"`) states.
+- Do not import package styles from the wrapper module.
+
+## Thin factory-ui DataTable and CodePanel wrappers
+
+- Host path: `src/features/factory-ui/data-display.ts` — re-export
+  `DataTable`, `CodePanel`, and related types/helpers from
+  `@you-agent-factory/components/data-display`.
+- Keep column definitions, row data, and code content caller-owned; the
+  wrapper adds no domain matrix models or Atlas assumptions.
+- Smoke-test `DataTable` success with fixture columns/rows
+  (`role="table"` + cell text), plus at least one non-success state:
+  empty → `role="status"`, error → `role="alert"`.
+- Smoke-test `CodePanel` with fixture code text on a `<pre>` surface.
 - Do not import package styles from the wrapper module.
 
 ## Verification preference
