@@ -134,3 +134,18 @@ matching empty registry dirs for `guides`/`techniques`/`documentation`, empty
 customer page bundles or CLI topic registry JSON in this lane. Designate
 `concepts` as a CLI target without deleting Atlas concept content owned by the
 sibling delete lane.
+
+## Empty CLI browse + section index end-to-end proof
+
+| Path | Role |
+| --- | --- |
+| `src/lib/docs/empty-cli-browse-indexes-verification.test.tsx` | Consolidated SSR proof: default browse order, empty starters/content roots, browse hub CLI headings (no Atlas `*-heading` ids), four section-index empty states, Atlas-free browse/empty message fields across en/ja/vi/zh-CN |
+
+Run directly with
+`bun test src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`.
+`src/lib/docs/` is excluded from required `bun run test` after Atlas deletion.
+Assert Atlas-free copy on message fields (`browseIndex.*`, `*Index.empty*`),
+not full HTML — `SearchTrigger` may still carry residual Atlas search chrome.
+Browser smoke: SSR via `renderBrowseIndexPage` /
+`renderSectionCollectionIndexPage`, or `PORT=<unique> bun run start` + curl
+`/browse` and `/docs/{guides,concepts,techniques,documentation}` after a build.

@@ -52,6 +52,11 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   CLI section-index page render and metadata coverage for guides, concepts,
   techniques, and documentation (default + localized routes). Asserts CLI
   `*Index` empty-state message fields stay free of Model Atlas product phrasing.
+* `src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`
+  Consolidated end-to-end SSR proof for empty CLI browse hub + four section
+  indexes (CLI headings, empty states, Atlas-free message fields, no authored
+  CLI page bundles). Run directly — `src/lib/docs/` is excluded from required
+  `bun run test` after Atlas deletion.
 * `src/app/(site)/docs/{guides,concepts,techniques,documentation}/page.tsx`
   Default-locale CLI section index routes via `renderSectionCollectionIndexPage`.
 * `src/app/[locale]/docs/{guides,concepts,techniques,documentation}/page.tsx`
