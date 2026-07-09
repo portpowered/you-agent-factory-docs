@@ -1,0 +1,31 @@
+{
+  "title": "Harness",
+  "description": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A harness is the agent runtime the factory drives. In you-agent-factory, the factory is the workflow system that keeps work persistent; a harness is the coding agent or agent command-line interface that actually runs that work under the factory process."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Knowing which harness runs factory work helps you choose or recognize the agent runtime that executes a goal, and understand why the same factory can target different harnesses."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "When you start a named run, the factory can dispatch that work to a Codex-backed or Cursor-backed agent runtime. That runtime is the harness: it is the agent environment that carries out the steps the factory tracks."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A harness is not the factory itself. The factory is the workflow system; the harness is the agent runtime it drives. A harness is also not a worker: a worker is a configured work executor declared in factory config, while the harness is the agent runtime that executes agent-loop work. Choosing a runner or model provider is not the same as defining what a harness is—those settings select how a runtime is reached, not the harness concept itself."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
