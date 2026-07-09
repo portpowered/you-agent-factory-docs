@@ -1,0 +1,14 @@
+{
+  "id": "guide.cursor-dynamic-workflows",
+  "slug": "cursor-dynamic-workflows",
+  "kind": "guide",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["Cursor MCP workflows"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T00:00:00.000Z",
+  "updatedAt": "2026-07-09T00:00:00.000Z"
+}

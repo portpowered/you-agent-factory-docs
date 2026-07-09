@@ -1,0 +1,32 @@
+{
+  "title": "Cursor Dynamic Workflows",
+  "description": "Use Cursor as an MCP host for you-agent-factory Factory Session and dynamic-workflow tools.",
+  "openingSummary": "Connect Cursor to you-agent-factory over MCP so you can drive Factory Session and dynamic-workflow tools from the editor.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Cursor dynamic workflows use Cursor as an MCP host that calls you-agent-factory Factory Session and dynamic-workflow tools through you mcp serve."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this guide when you want to author or drive JavaScript or TypeScript dynamic workflows from Cursor over MCP."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Configure Cursor MCP for you mcp serve, reload Cursor, then run a first validate and start or status loop from Factory Session tools."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Common setup mistakes include a missing you binary on PATH, the wrong project cwd, and forgetting to reload Cursor after MCP config changes."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
