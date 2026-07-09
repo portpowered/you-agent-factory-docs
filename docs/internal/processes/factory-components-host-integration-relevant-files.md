@@ -23,9 +23,20 @@ entry. Do not vendor or fork package source into this repo.
 | `package.json` | Runtime dependency on `@you-agent-factory/components@0.0.0` |
 | `next.config.ts` | `transpilePackages: ["@you-agent-factory/components"]` so Next compiles TS source exports |
 | `src/lib/factory-components/host-package-surface.ts` | Minimal host import proving root + category resolution/typecheck |
-| `src/app/globals.css` | Single `@import "@you-agent-factory/components/styles.css"` (later story) |
+| `src/app/globals.css` | Single `@import "@you-agent-factory/components/styles.css"` after Tailwind (package README order) |
+| `src/lib/factory-components/host-package-styles.ts` | Resolves the published `styles.css` export map entry for smoke verification |
 | `src/features/factory-ui/*` | Thin re-export wrappers for graphs, charts, DataTable, CodePanel (later stories) |
 | `src/lib/docs/component-manifest.ts` | Reusable coverage boundary retarget away from Atlas graph components (later story) |
+
+## Styles import contract
+
+- Import `@you-agent-factory/components/styles.css` **exactly once** in
+  `src/app/globals.css` (the stylesheet every app/static-export layout already
+  pulls in). Place it immediately after `@import "tailwindcss"` so package
+  `@theme` tokens layer correctly with Tailwind v4.
+- Do **not** re-import package styles from `src/features/factory-ui/*` wrappers.
+- Prove the styles export resolves with `resolveFactoryComponentsStylesPath()`;
+  do not add tests that only count `@import` lines in `globals.css`.
 
 ## Verification preference
 
