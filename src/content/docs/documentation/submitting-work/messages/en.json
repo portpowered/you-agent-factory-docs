@@ -1,0 +1,32 @@
+{
+  "title": "Submitting Work",
+  "description": "Submit work batches to a running you-agent-factory and relate work items with DEPENDS_ON or PARENT_CHILD.",
+  "openingSummary": "Submitting work is how you enqueue one or more work items into a factory that is already running, including batch documents and the relationships that order or nest those items.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers submitting work to you-agent-factory: how a FACTORY_REQUEST_BATCH is shaped, how you submit that batch to a factory that is already running, and how DEPENDS_ON and PARENT_CHILD relationships order or nest the work items in that batch. Use it when you need the web submitting-work surface rather than a full CLI flag dump or a packaged docs sync."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Submitted work enters a factory that is already running. A batch creates multiple work items in one validated submission. Relations order or nest those items so the factory can wait on prerequisites or keep child work under a parent."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a FACTORY_REQUEST_BATCH with a stable requestId and the works you want to enqueue. Add relations when items must wait on each other or nest under a parent. Submit the batch to a running factory, and use dry-run when you want validation without creating work. Later sections on this page teach the batch shape and relationship choices in more detail."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web submitting-work reference for batches and relationships. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install, first-run, and command-matrix details belong on sibling documentation and guide pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

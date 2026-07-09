@@ -1,0 +1,14 @@
+{
+  "id": "documentation.submitting-work",
+  "slug": "submitting-work",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["submitting work", "work batches", "FACTORY_REQUEST_BATCH"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T22:41:00.000Z",
+  "updatedAt": "2026-07-09T22:41:00.000Z"
+}
