@@ -1,0 +1,14 @@
+{
+  "id": "documentation.install",
+  "slug": "install",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["install", "install you-agent-factory", "CLI install"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "draft",
+  "createdAt": "2026-07-09T17:20:34.000Z",
+  "updatedAt": "2026-07-09T17:20:34.000Z"
+}

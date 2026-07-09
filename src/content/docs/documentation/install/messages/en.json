@@ -1,0 +1,31 @@
+{
+  "title": "Install you-agent-factory",
+  "description": "Draft placeholder for the install deep-dive. Replace before publishing.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
