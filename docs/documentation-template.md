@@ -10,6 +10,9 @@ Use the page-kind template that matches the content:
 
 ```txt
 docs/templates/concept.mdx
+docs/templates/guide.mdx
+docs/templates/technique.mdx
+docs/templates/documentation.mdx
 docs/templates/glossary.mdx
 docs/templates/model.mdx
 docs/templates/module.mdx
@@ -18,6 +21,11 @@ docs/templates/system.mdx
 docs/templates/training-regime.mdx
 docs/templates/blog-post.mdx
 ```
+
+Rewrite-era CLI collections use `guide`, `technique`, and `documentation`
+templates (plus the existing `concept` template) under matching route prefixes.
+Those templates follow the same production-shaped contract: structure in MDX,
+prose keys in messages, authoring guidance in `.content.md` sidecars only.
 
 Glossary entries use `glossary.mdx` with colocated content under `src/content/docs/glossary/<slug>/` and render at `/docs/glossary/<slug>`. They share the concept registry record shape (`concept.<slug>`) and the same section structure as concept pages; only frontmatter `kind` and the docs route differ.
 

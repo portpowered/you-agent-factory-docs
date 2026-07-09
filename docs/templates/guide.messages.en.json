@@ -1,0 +1,31 @@
+{
+  "title": "",
+  "description": "",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": ""
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": ""
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": ""
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": ""
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

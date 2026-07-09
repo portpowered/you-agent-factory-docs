@@ -45,6 +45,23 @@ frontmatter kind. Do not invent a second hardcoded section allowlist in
 `source.ts` / `routable-docs-page.ts`; derive acceptance from collection
 definitions via `isAcceptedDocsSourceSection`.
 
+## Page templates (story 004)
+
+| Path | Role |
+| --- | --- |
+| `docs/templates/guide.{mdx,messages.en.json,assets.json,content.md}` | Production-shaped guide template + sidecars (`kind: guide`, `guide.*` registry ids) |
+| `docs/templates/technique.{mdx,messages.en.json,assets.json,content.md}` | Production-shaped technique template + sidecars (`kind: technique`, `technique.*` registry ids) |
+| `docs/templates/documentation.{mdx,messages.en.json,assets.json,content.md}` | Production-shaped documentation template + sidecars (`kind: documentation`, `documentation.*` registry ids) |
+| `docs/templates/concept.*` | Existing CLI-ready concept template path (preserve; do not invent a parallel concept kind) |
+| `src/lib/content/cli-page-templates.test.ts` | Sidecar presence, Zod frontmatter kind validation, isolation-first section order |
+| `src/lib/content/page-template-convergence.test.tsx` | Writing-standards convergence for CLI templates (no reader shortcuts / legacy summary keys) |
+| `docs/documentation-template.md` | Lists CLI template kinds in the shared template contract |
+
+CLI templates keep structure in MDX, prose keys in messages, and authoring
+instructions only in `.content.md`. Baseline guide/technique/documentation
+templates ship empty `assets.json` until a later authored page needs media.
+Do not author customer page bundles under content roots in this lane.
+
 ## Wiring that must stay aligned when adding a registry kind
 
 | Path | Role |
@@ -74,3 +91,9 @@ Docs source slug acceptance must recognize the four CLI route prefixes via
 collection `routeSlug` matching. Keep `source.ts` and
 `routable-docs-page.ts` on `isAcceptedDocsSourceSection` so new collection
 route slugs do not require a third hardcoded allowlist.
+
+CLI page templates need: `docs/templates/<kind>.mdx` with matching Zod
+`kind`, namespaced placeholder `registryId`, empty or optional assets sidecar,
+starter messages without reader-shortcut/legacy summary keys, and a
+`.content.md` authoring guide that is never pasted into production MDX.
+Preserve the existing `concept` template as the CLI concept path.

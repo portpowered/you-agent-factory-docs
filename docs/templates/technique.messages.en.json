@@ -1,0 +1,31 @@
+{
+  "title": "",
+  "description": "",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": ""
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": ""
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": ""
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": ""
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

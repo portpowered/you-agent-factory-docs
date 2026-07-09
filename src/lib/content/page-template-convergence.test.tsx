@@ -8,6 +8,9 @@ type TemplateKind =
   | "model"
   | "paper"
   | "concept"
+  | "guide"
+  | "technique"
+  | "documentation"
   | "system"
   | "training-regime"
   | "glossary";
@@ -30,6 +33,15 @@ const nonModuleTemplates: Array<{
   {
     kind: "concept",
     graphAssetId: "conceptMap",
+  },
+  {
+    kind: "guide",
+  },
+  {
+    kind: "technique",
+  },
+  {
+    kind: "documentation",
   },
   {
     kind: "training-regime",
