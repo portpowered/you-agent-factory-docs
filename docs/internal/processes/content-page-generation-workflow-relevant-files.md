@@ -435,6 +435,20 @@ when useful). Do not absorb worker provider setup, full guard catalogs, or
 template-variable inventories. Store multiline JSON as `\n`-joined strings in
 `links.*` so `<pre>` preserves selectable formatting.
 
+### Documentation workstations limits and sibling discovery (page-local)
+
+For `documentation/workstations`, keep `#limits-and-assumptions` as the scope
+boundary: web kinds / routing / workstation-owned runtime only — not a packaged
+CLI sync, not workers backend, not configuration overview, and not
+guards/templates/resources deep pages.
+
+Wire sibling discovery for configuration, workers, and resources with
+page-local `<LocalizedLinkList>` and `links.*` labels when those sibling
+registry records are not yet published in the worktree. Keep
+`<RelatedDocs registryId="documentation.workstations" />` for registry-backed
+related items, but omit unpublished sibling ids from `relatedIds` so
+`validate-data` stays clean. Do not invent page-meta “on this page” prose.
+
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands

@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web workstations reference for kinds, routing, and workstation-owned runtime. It is not a sync of packaged CLI docs, not the workers backend page, not the configuration overview, and not the guards, templates, or resources deep pages."
+      "body": "This page is the web workstations reference for kinds, routing, and workstation-owned runtime. It is not a sync of packaged CLI docs, not the workers backend page, not the configuration overview, and not the guards, templates, or resources deep pages. Worker provider setup, top-level factory topology, guard catalogs, template variables, and resource declarations belong on those sibling surfaces when they are published."
     },
     "related": {
       "title": "Related To"
@@ -88,6 +88,9 @@
     "exampleLogicalMoveLabel": "LOGICAL_MOVE loop-breaker in factory.json",
     "exampleLogicalMoveCode": "{\n  \"name\": \"executor-loop-breaker\",\n  \"type\": \"LOGICAL_MOVE\",\n  \"guards\": [{ \"type\": \"VISIT_COUNT\", \"workstation\": \"execute-story\", \"maxVisits\": 50 }],\n  \"inputs\": [{ \"workType\": \"story\", \"state\": \"init\" }],\n  \"outputs\": [{ \"workType\": \"story\", \"state\": \"failed\" }]\n}",
     "exampleAgentsMdLabel": "Matching workstation prompt path",
-    "exampleAgentsMdCode": "workstations/execute-story/AGENTS.md"
+    "exampleAgentsMdCode": "workstations/execute-story/AGENTS.md",
+    "configurationDocs": "Configuration overview",
+    "workersDocs": "Workers",
+    "resourcesDocs": "Resources"
   }
 }
