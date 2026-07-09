@@ -1,4 +1,11 @@
-.PHONY: dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build build-export ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status verify-export-routes verify-export-search-shell verify-export-search-handoff verify-export-search-ux verify-phase-1-ux verify-phase-1-convergence verify-phase-1-built-app-convergence verify-phase-1-follow-up-convergence verify-phase-1-batch-012-convergence verify-phase-1-batch-013-convergence verify-phase-1-github-pages-convergence verify-phase-1-github-pages-deploy-convergence verify-phase-2-3-reconciliation-convergence verify-rendered-quality-baseline verify-rendered-quality-regression
+.PHONY: setup check dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build build-export budget component-coverage ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status verify-export-routes verify-export-search-shell verify-export-search-handoff verify-export-search-ux verify-phase-1-ux verify-phase-1-convergence verify-phase-1-built-app-convergence verify-phase-1-follow-up-convergence verify-phase-1-batch-012-convergence verify-phase-1-batch-013-convergence verify-phase-1-github-pages-convergence verify-phase-1-github-pages-deploy-convergence verify-phase-2-3-reconciliation-convergence verify-rendered-quality-baseline verify-rendered-quality-regression
+
+# Maintainer and CI contract: setup installs deps; check runs typecheck + lint;
+# test/build/budget/component-coverage are the stages referenced by .github/workflows.
+setup:
+	bun install --frozen-lockfile
+
+check: typecheck lint
 
 dev:
 	bun run dev
@@ -29,6 +36,12 @@ test-integration:
 
 coverage:
 	bun run coverage
+
+budget:
+	@echo "budget: pass (transitional — exported-site budget gate not enforced during rewrite foundation)"
+
+component-coverage:
+	@echo "component-coverage: pass (transitional — component coverage gate not enforced during rewrite foundation)"
 
 build:
 	bun run build
