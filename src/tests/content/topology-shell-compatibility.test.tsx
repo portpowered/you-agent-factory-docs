@@ -150,9 +150,10 @@ describe("topology browse shell compatibility", () => {
       expect(topologyRoute.status).toBe(200);
       expect(assertDocsShellConvergence(topologyRoute.body)).toBeNull();
       expect(topologyRoute.body).toContain('href="/"');
-      expect(topologyRoute.body).toContain('href="/topology"');
-      expect(topologyRoute.body).toContain('href="/docs/timeline"');
-      expect(topologyRoute.body).toContain('href="/tags"');
+      expect(topologyRoute.body).toContain('href="/docs/guides"');
+      expect(topologyRoute.body).toContain('href="/browse"');
+      expect(topologyRoute.body).toContain('href="/docs/glossary"');
+      expect(topologyRoute.body).toContain('href="/blog"');
       expect(topologyRoute.body).toContain('data-search=""');
       expect(topologyRoute.body).toContain('href="/docs/glossary/token"');
     } finally {

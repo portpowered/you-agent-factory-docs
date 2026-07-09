@@ -136,10 +136,10 @@ describe("ModelAtlasDocsHeader", () => {
     const expectedItems = getPrimaryNavItems(messages);
     expect(expectedItems.map((item) => item.href)).toEqual([
       "/",
-      "/topology",
-      "/docs/timeline",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
       "/blog",
-      "/tags",
     ]);
 
     for (const item of expectedItems) {
@@ -396,7 +396,11 @@ describe("ModelAtlasDocsHeader", () => {
       expect(desktopNavMatch?.[1]).toContain(`>${item.label}<`);
     }
     expect(html).toContain(">Trang chủ<");
-    expect(html).toContain(">Dòng thời gian<");
+    expect(html).toContain(">Hướng dẫn<");
+    expect(html).toContain(">Tài liệu<");
+    expect(html).toContain(">Thuật ngữ<");
+    expect(html).not.toContain(">Dòng thời gian<");
+    expect(html).not.toContain(">Bản đồ<");
   });
 
   test("reveals localized mobile primary nav links when the menu opens on a vietnamese route", async () => {
@@ -440,9 +444,19 @@ describe("ModelAtlasDocsHeader", () => {
     ).toBeTruthy();
     expect(
       within(drawer as HTMLElement).getByRole("link", {
-        name: "Dòng thời gian",
+        name: "Hướng dẫn",
       }),
     ).toBeTruthy();
+    expect(
+      within(drawer as HTMLElement).getByRole("link", {
+        name: "Tài liệu",
+      }),
+    ).toBeTruthy();
+    expect(
+      within(drawer as HTMLElement).queryByRole("link", {
+        name: "Dòng thời gian",
+      }),
+    ).toBeNull();
   });
 
   test("closes the mobile menu when a localized primary nav link is clicked", async () => {

@@ -35,13 +35,29 @@ describe("model atlas site config", () => {
     );
   });
 
-  test("orders primary nav for home, topology, timeline, blog, and tags", () => {
+  test("orders primary nav for home, guides, docs, glossary, and blog", () => {
     expect(
       modelAtlasSiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).toEqual(["home", "topology", "timeline", "blogIndex", "tagsIndex"]);
+    ).toEqual(["home", "guides", "docs", "glossary", "blogIndex"]);
     expect(
       modelAtlasSiteConfig.primaryNav.map((entry) => entry.labelKey),
-    ).toEqual(["home", "topology", "timeline", "blog", "tags"]);
+    ).toEqual(["home", "guides", "docs", "glossary", "blog"]);
+    expect(modelAtlasSiteConfig.routeSurfaces).toMatchObject({
+      home: { surface: "home" },
+      guides: { surface: "docs-page", slug: "guides" },
+      docs: { surface: "browse" },
+      glossary: { surface: "glossary-index" },
+      blogIndex: { surface: "blog-index" },
+      search: { surface: "search" },
+    });
+    expect(modelAtlasSiteConfig.routeSurfaces).not.toHaveProperty("topology");
+    expect(modelAtlasSiteConfig.routeSurfaces).not.toHaveProperty("timeline");
+    expect(
+      modelAtlasSiteConfig.primaryNav.map((entry) => entry.routeSurface),
+    ).not.toContain("topology");
+    expect(
+      modelAtlasSiteConfig.primaryNav.map((entry) => entry.routeSurface),
+    ).not.toContain("timeline");
   });
 
   test("includes transitional Model Atlas collection family placeholders", () => {

@@ -12,24 +12,26 @@ import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
 
 describe("getPrimaryNavItems", () => {
-  it("lists Phase 1 discovery routes in order", async () => {
+  it("lists CLI docs primary nav routes in order", async () => {
     const messages = await loadUiMessages();
     const items = getPrimaryNavItems(messages);
 
     expect(items.map((item) => item.href)).toEqual([
       "/",
-      "/topology",
-      "/docs/timeline",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
       "/blog",
-      "/tags",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
-      messages.nav.topology,
-      messages.nav.timeline,
+      messages.nav.guides,
+      messages.nav.docs,
+      messages.nav.glossary,
       messages.nav.blog,
-      messages.nav.tags,
     ]);
+    expect(items.some((item) => item.href === "/topology")).toBe(false);
+    expect(items.some((item) => item.href === "/docs/timeline")).toBe(false);
   });
 
   it("can emit vietnamese-prefixed navigation routes from the shared locale contract", async () => {
@@ -38,24 +40,24 @@ describe("getPrimaryNavItems", () => {
 
     expect(items.map((item) => item.href)).toEqual([
       "/vi",
-      "/vi/topology",
-      "/vi/docs/timeline",
+      "/vi/docs/guides",
+      "/vi/browse",
+      "/vi/docs/glossary",
       "/vi/blog",
-      "/vi/tags",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
-      messages.nav.topology,
-      messages.nav.timeline,
+      messages.nav.guides,
+      messages.nav.docs,
+      messages.nav.glossary,
       messages.nav.blog,
-      messages.nav.tags,
     ]);
     expect(items.map((item) => item.label)).toEqual([
       "Trang chủ",
-      messages.nav.topology,
-      "Dòng thời gian",
+      "Hướng dẫn",
+      "Tài liệu",
+      "Thuật ngữ",
       messages.nav.blog,
-      messages.nav.tags,
     ]);
   });
 

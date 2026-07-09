@@ -109,18 +109,20 @@ describe("site config primary nav compatibility", () => {
 
     expect(items.map((item) => item.href)).toEqual([
       "/vi",
-      "/vi/topology",
-      "/vi/docs/timeline",
+      "/vi/docs/guides",
+      "/vi/browse",
+      "/vi/docs/glossary",
       "/vi/blog",
-      "/vi/tags",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       "Trang chủ",
-      messages.nav.topology,
-      "Dòng thời gian",
+      messages.nav.guides,
+      messages.nav.docs,
+      "Thuật ngữ",
       messages.nav.blog,
-      messages.nav.tags,
     ]);
+    expect(items.some((item) => item.href === "/vi/topology")).toBe(false);
+    expect(items.some((item) => item.href === "/vi/docs/timeline")).toBe(false);
   });
 });
 

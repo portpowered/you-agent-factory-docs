@@ -23,8 +23,8 @@ const cliDocsSiteConfig = {
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },
-    { routeSurface: "guides", labelKey: "glossary" },
-    { routeSurface: "docs", labelKey: "architecture" },
+    { routeSurface: "guides", labelKey: "guides" },
+    { routeSurface: "docs", labelKey: "docs" },
     { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
     { routeSurface: "search", labelKey: "search" },

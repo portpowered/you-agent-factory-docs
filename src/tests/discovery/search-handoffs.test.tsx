@@ -110,12 +110,14 @@ describe("Phase 1 discovery search handoffs", () => {
     const items = getPrimaryNavItems(messages);
     expect(items.map((item) => item.href)).toEqual([
       "/",
-      "/topology",
-      "/docs/timeline",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
       "/blog",
-      "/tags",
     ]);
     expect(items.some((item) => item.href === "/search")).toBe(false);
+    expect(items.some((item) => item.href === "/topology")).toBe(false);
+    expect(items.some((item) => item.href === "/docs/timeline")).toBe(false);
   });
 
   it(

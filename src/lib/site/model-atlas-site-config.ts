@@ -10,9 +10,10 @@ export const MODEL_ATLAS_REPOSITORY_URL = YOU_AGENT_FACTORY_REPOSITORY_URL;
 
 /**
  * Transitional default config still used by the current shell.
- * Brand/repo identity is you-agent-factory; later rewrite stories replace
- * nav/collections. The shared contract no longer requires Atlas
- * topology/timeline/AI collection fields.
+ * Brand/repo and primary nav/route placeholders are you-agent-factory CLI
+ * docs shaped; later rewrite stories replace collections/featured links.
+ * Search is a configured route surface (header trigger) but not a primary
+ * nav item, to avoid duplicating the header search control.
  */
 export const modelAtlasSiteConfig = {
   brand: {
@@ -23,18 +24,20 @@ export const modelAtlasSiteConfig = {
   repositoryUrl: YOU_AGENT_FACTORY_REPOSITORY_URL,
   routeSurfaces: {
     home: { surface: "home" },
-    browse: { surface: "browse" },
-    topology: { surface: "topology" },
-    timeline: { surface: "docs-page", slug: "timeline" },
+    guides: { surface: "docs-page", slug: "guides" },
+    docs: { surface: "browse" },
+    glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
-    tagsIndex: { surface: "tags-index" },
+    search: { surface: "search" },
+    /** Kept for transitional home featured links until story 004. */
+    browse: { surface: "browse" },
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },
-    { routeSurface: "topology", labelKey: "topology" },
-    { routeSurface: "timeline", labelKey: "timeline" },
+    { routeSurface: "guides", labelKey: "guides" },
+    { routeSurface: "docs", labelKey: "docs" },
+    { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
-    { routeSurface: "tagsIndex", labelKey: "tags" },
   ],
   collections: [
     { family: "glossary" },
