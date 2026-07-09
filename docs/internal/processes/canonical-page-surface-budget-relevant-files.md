@@ -80,8 +80,25 @@ Over-budget output groups shared paths into reviewer-readable buckets:
 | Lane | When it applies | Contributor action |
 | --- | --- | --- |
 | **Default pass (`keep-routine`)** | Only page-owned paths changed | Open or update the routine page PR; no extra justification |
-| **Narrow exception (`declare-exception`)** | One small shared hotspot touch directly required to ship the page | Rerun the audit with `--exception-reason "..."` and repeat the same justification in the PR conversation comment |
+| **Narrow exception (`declare-exception`)** | One small shared hotspot touch directly required to ship the page, or a documented first CLI-section page / glossary dual-route exception | Rerun the audit with `--exception-reason "..."` and repeat the same justification in the PR conversation comment |
 | **Split or redirect** | Generated outputs in the review commit (`split-to-page-owned-work`), multiple shared categories, shared test churn, or broad helper/runtime edits (`redirect-to-throughput-prd`) | Remove generated artifacts from the routine commit, split page-owned work from shared changes, or open a dedicated throughput/conflict-reduction PRD lane |
+
+## First authored page under a rewrite-era CLI section
+
+When publishing the first page under `guides`, `techniques`, or `documentation`,
+the audit recognizes a narrow `declare-exception` lane for the required
+published-docs + local-docs loader wiring (and section `.gitkeep` removal).
+Allowed shared paths stay limited to:
+
+- `src/lib/content/published-docs-registry-contract.ts`
+- `src/lib/content/content-hrefs.ts`
+- `src/lib/content/local-docs-page.ts`
+- matching `*-page.ts` / `*-page-load.ts` for that section
+- section-root `.gitkeep` removals under docs and registry
+- the process notes that document the first-page wiring
+
+Rerun with `--exception-reason` and repeat the same justification in the PR
+conversation comment. Later pages in the same section should stay page-local.
 
 ## Local checker
 

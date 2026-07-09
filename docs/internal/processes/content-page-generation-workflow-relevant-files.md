@@ -196,11 +196,18 @@ When publishing the first authored page under a rewrite-era CLI section
    `src/lib/content/local-docs-page.ts` include the section, with a matching
    `*-page.ts` / `*-page-load.ts` pair (same shape as `system-page*`) so
    message-backed MDX resolves through `ModulePageProviders`.
+3. `bun run audit:canonical-page-surface -- --page-dir src/content/docs/<section>/<slug> --exception-reason "..."`
+   reports `declare-exception` for that first-page wiring (not
+   `redirect-to-throughput-prd`). The audit maps CLI registry kinds
+   (`guide` / `technique` / `documentation`) and ignores section-root
+   `.gitkeep` when inferring page scope. Repeat the exception reason in the PR
+   conversation comment.
 
 Without (1), `bun run prepare:content-runtime` fails while generating the
 published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to
 Fumadocs frontmatter title and 404s because CLI templates keep title/description
-in colocated messages.
+in colocated messages. Without (3), review preflight cannot classify the
+first-page shared wiring as the documented exception lane.
 
 ### Documentation CLI install commands (page-local)
 

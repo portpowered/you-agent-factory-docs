@@ -19,14 +19,26 @@ const PAGE_MDX_NAME = "page.mdx";
 const registryDirectoryByKind: Record<string, string> = {
   citation: "citations",
   concept: "concepts",
+  documentation: "documentation",
   graph: "graphs",
+  guide: "guides",
   module: "modules",
   model: "models",
   paper: "papers",
   "training-regime": "training-regimes",
   system: "systems",
   table: "tables",
+  technique: "techniques",
 };
+
+/** Rewrite-era CLI docs sections that need first-page published-docs + local-docs wiring. */
+const FIRST_CLI_SECTION_PAGE_SECTIONS = [
+  "documentation",
+  "guides",
+  "techniques",
+] as const;
+
+type FirstCliSection = (typeof FIRST_CLI_SECTION_PAGE_SECTIONS)[number];
 
 export type CanonicalPageSurfaceClassification =
   | {
@@ -321,7 +333,10 @@ function inferPageDirectory(
     }
 
     const segments = changedPath.split("/");
-    if (segments.length < 5) {
+    // Page bundles are `src/content/docs/<section>/<slug>/…` (6+ segments).
+    // Section-root files such as `.gitkeep` have only 5 segments and must not
+    // be treated as a second page bundle when publishing the first CLI page.
+    if (segments.length < 6) {
       continue;
     }
 
@@ -684,6 +699,104 @@ function isAuditDualRouteSupportPath(path: string): boolean {
   );
 }
 
+function isAuditSupportPath(path: string): boolean {
+  return isAuditDualRouteSupportPath(path);
+}
+
+function resolveFirstCliSection(pageDirectory: string): FirstCliSection | null {
+  for (const section of FIRST_CLI_SECTION_PAGE_SECTIONS) {
+    if (pageDirectory.startsWith(`src/content/docs/${section}/`)) {
+      return section;
+    }
+  }
+  return null;
+}
+
+function isAllowedFirstCliSectionPageSharedPath(
+  path: string,
+  section: FirstCliSection,
+): boolean {
+  if (isAuditSupportPath(path)) {
+    return true;
+  }
+
+  if (
+    path === `src/content/docs/${section}/.gitkeep` ||
+    path === `src/content/registry/${section}/.gitkeep`
+  ) {
+    return true;
+  }
+
+  if (
+    path ===
+      "docs/internal/processes/content-page-generation-workflow-relevant-files.md" ||
+    path === "docs/internal/processes/empty-cli-taxonomy-relevant-files.md" ||
+    path ===
+      "docs/internal/processes/canonical-page-surface-budget-relevant-files.md"
+  ) {
+    return true;
+  }
+
+  if (
+    path === "src/lib/content/published-docs-registry-contract.ts" ||
+    path === "src/lib/content/content-hrefs.ts" ||
+    path === "src/lib/content/local-docs-page.ts"
+  ) {
+    return true;
+  }
+
+  const singular =
+    section === "documentation"
+      ? "documentation"
+      : section === "guides"
+        ? "guide"
+        : "technique";
+
+  return (
+    path === `src/lib/content/${singular}-page.ts` ||
+    path === `src/lib/content/${singular}-page-load.ts`
+  );
+}
+
+function evaluateFirstCliSectionPageBudget(
+  scope: CanonicalPageScope,
+  sharedPaths: readonly string[],
+): { reason: string } | null {
+  const section = resolveFirstCliSection(scope.pageDirectory);
+  if (!section) {
+    return null;
+  }
+
+  const expectedKindPrefix =
+    section === "guides"
+      ? "guide."
+      : section === "techniques"
+        ? "technique."
+        : "documentation.";
+  if (!scope.registryId.startsWith(expectedKindPrefix)) {
+    return null;
+  }
+
+  const relevantSharedPaths = sharedPaths.filter(
+    (path) => !isAuditSupportPath(path),
+  );
+  if (relevantSharedPaths.length === 0) {
+    return null;
+  }
+
+  if (
+    !relevantSharedPaths.every((path) =>
+      isAllowedFirstCliSectionPageSharedPath(path, section),
+    )
+  ) {
+    return null;
+  }
+
+  return {
+    reason: `First authored page under rewrite-era CLI section ${section}: published-docs + local-docs loader wiring, section .gitkeep removal, and process notes required so /docs/${section}/${scope.slug} publishes with colocated messages.`,
+  };
+}
+
 function evaluateGlossaryBridgeDualRouteBudget(
   scope: CanonicalPageScope,
   sharedPaths: readonly string[],
@@ -856,6 +969,34 @@ function collectGuidance(
       details,
       headline:
         "This branch is over the routine budget, but it fits the glossary-bridge dual-route exception when discovery and convergence fixture updates stay narrowly scoped.",
+      recommendedAction: "declare-exception",
+    };
+  }
+
+  const firstCliSectionException = evaluateFirstCliSectionPageBudget(
+    scope,
+    sharedPaths,
+  );
+  if (firstCliSectionException) {
+    const details = [
+      "This branch matches the documented first authored page under a rewrite-era CLI section exception.",
+      firstCliSectionException.reason,
+      `Shared paths: ${sharedPaths.filter((path) => !isAuditSupportPath(path)).join(", ")}.`,
+    ];
+    if (exception) {
+      details.push(
+        `Visible exception declared: "${exception.reason}". Repeat that justification in the PR conversation comment so reviewers can evaluate the broader touch explicitly.`,
+      );
+    } else {
+      details.push(
+        'If this shared touch is truly required to ship the page, rerun the guard with --exception-reason "..." and copy the same justification into the PR conversation comment.',
+      );
+    }
+
+    return {
+      details,
+      headline:
+        "This branch is over the routine budget, but it fits the first CLI-section page exception when published-docs and local-docs wiring stay narrowly scoped to one section.",
       recommendedAction: "declare-exception",
     };
   }
