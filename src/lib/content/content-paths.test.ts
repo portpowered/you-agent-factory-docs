@@ -6,17 +6,21 @@ import {
   CONTENT_ROOT,
   DOCS_ROOT,
   DOCS_SECTIONS,
+  DOCUMENTATION_DOCS_ROOT,
   GENERATED_CONTENT_RUNTIME_ROOT,
   GENERATED_DOCS_SOURCE_ROOT,
   GLOSSARY_DOCS_ROOT,
+  GUIDES_DOCS_ROOT,
   getConceptsDocsRoot,
   getContentRoot,
   getDocsPageDir,
   getDocsRoot,
   getDocsSectionRoot,
+  getDocumentationDocsRoot,
   getGeneratedContentRuntimeRoot,
   getGeneratedDocsSourceRoot,
   getGlossaryDocsRoot,
+  getGuidesDocsRoot,
   getMessagesRoot,
   getModelsDocsRoot,
   getModulesDocsRoot,
@@ -26,6 +30,7 @@ import {
   getRegistryRoot,
   getSystemsDocsRoot,
   getTagMessagesRoot,
+  getTechniquesDocsRoot,
   getTrainingDocsRoot,
   MESSAGES_ROOT,
   MODELS_DOCS_ROOT,
@@ -35,6 +40,7 @@ import {
   REGISTRY_ROOT,
   SYSTEMS_DOCS_ROOT,
   TAG_MESSAGES_ROOT,
+  TECHNIQUES_DOCS_ROOT,
   TRAINING_DOCS_ROOT,
 } from "./content-paths";
 import {
@@ -69,8 +75,23 @@ describe("content-paths", () => {
 
   test("generic docs page helper derives representative page directories for every docs section", () => {
     const representativePages = [
-      { section: "glossary", slug: "token", sectionRoot: GLOSSARY_DOCS_ROOT },
+      {
+        section: "guides",
+        slug: "getting-started",
+        sectionRoot: GUIDES_DOCS_ROOT,
+      },
       { section: "concepts", slug: "alibi", sectionRoot: CONCEPTS_DOCS_ROOT },
+      {
+        section: "techniques",
+        slug: "prompt-caching",
+        sectionRoot: TECHNIQUES_DOCS_ROOT,
+      },
+      {
+        section: "documentation",
+        slug: "cli-reference",
+        sectionRoot: DOCUMENTATION_DOCS_ROOT,
+      },
+      { section: "glossary", slug: "token", sectionRoot: GLOSSARY_DOCS_ROOT },
       {
         section: "modules",
         slug: "grouped-query-attention",
@@ -101,8 +122,11 @@ describe("content-paths", () => {
   test("generic docs page helper preserves section-plus-slug invariants for custom roots", () => {
     const docsRoot = "/tmp/model-reference/docs";
     const representativePages = [
-      { section: "glossary", slug: "token" },
+      { section: "guides", slug: "getting-started" },
       { section: "concepts", slug: "alibi" },
+      { section: "techniques", slug: "prompt-caching" },
+      { section: "documentation", slug: "cli-reference" },
+      { section: "glossary", slug: "token" },
       { section: "modules", slug: "grouped-query-attention" },
       { section: "models", slug: "gpt-2" },
       { section: "papers", slug: "attention-is-all-you-need" },
@@ -150,7 +174,10 @@ describe("content-paths", () => {
     expect(CONTENT_ROOT.endsWith("src/content")).toBe(true);
     expect(DOCS_ROOT).toBe(getDocsRoot());
     expect(GLOSSARY_DOCS_ROOT).toBe(getGlossaryDocsRoot());
+    expect(GUIDES_DOCS_ROOT).toBe(getGuidesDocsRoot());
     expect(CONCEPTS_DOCS_ROOT).toBe(getConceptsDocsRoot());
+    expect(TECHNIQUES_DOCS_ROOT).toBe(getTechniquesDocsRoot());
+    expect(DOCUMENTATION_DOCS_ROOT).toBe(getDocumentationDocsRoot());
     expect(MODULES_DOCS_ROOT).toBe(getModulesDocsRoot());
     expect(MODELS_DOCS_ROOT).toBe(getModelsDocsRoot());
     expect(PAPERS_DOCS_ROOT).toBe(getPapersDocsRoot());

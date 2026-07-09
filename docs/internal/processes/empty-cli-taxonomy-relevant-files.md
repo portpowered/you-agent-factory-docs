@@ -30,6 +30,21 @@ Browse hub order (`DOCS_BROWSE_COLLECTION_IDS`) and sidebar section order
 wiring batch; empty CLI collections are inventory-first so consumers can look
 them up without featuring placeholder pages.
 
+## Source slug acceptance (story 003)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/docs/docs-collection-slug-acceptance.ts` | Route-slug prefix → collection id; `isAcceptedDocsSourceSection` for source allowlists |
+| `src/lib/docs/docs-collection-slug-acceptance.test.ts` | CLI prefix acceptance + non-CLI rejection behavior |
+| `src/lib/source.ts` | `pageBundleSlug` accepts registered collection route prefixes (including CLI) |
+| `src/lib/content/routable-docs-page.ts` | Local page-bundle path check uses the same accepted-section set |
+| `src/lib/content/content-paths.ts` | `DOCS_SECTIONS` includes `guides`, `techniques`, `documentation` for derived page dirs |
+
+Slug acceptance keys off `routeSlug` prefixes (`guides/…`, etc.), independent of
+frontmatter kind. Do not invent a second hardcoded section allowlist in
+`source.ts` / `routable-docs-page.ts`; derive acceptance from collection
+definitions via `isAcceptedDocsSourceSection`.
+
 ## Wiring that must stay aligned when adding a registry kind
 
 | Path | Role |
@@ -54,3 +69,8 @@ aligned frontmatter/registry kinds, empty `starterSlugs`, resolvable
 browse/index message keys, and inventory verification that permits empty
 starters for those four ids only. Do not force empty CLI collections into
 browse/sidebar section order until a dedicated wiring story owns that surface.
+
+Docs source slug acceptance must recognize the four CLI route prefixes via
+collection `routeSlug` matching. Keep `source.ts` and
+`routable-docs-page.ts` on `isAcceptedDocsSourceSection` so new collection
+route slugs do not require a third hardcoded allowlist.

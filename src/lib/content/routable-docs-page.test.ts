@@ -7,14 +7,25 @@ import {
 import { source } from "@/lib/source";
 
 describe("routable local docs pages", () => {
-  test("identifies concepts, glossary, module, model, paper, and training page bundle paths", () => {
+  test("identifies CLI and Atlas local docs page bundle paths", () => {
+    expect(isLocalDocsPageBundlePath("guides/getting-started/page.mdx")).toBe(
+      true,
+    );
     expect(isLocalDocsPageBundlePath("concepts/foo/page.mdx")).toBe(true);
+    expect(
+      isLocalDocsPageBundlePath("techniques/prompt-caching/page.mdx"),
+    ).toBe(true);
+    expect(
+      isLocalDocsPageBundlePath("documentation/cli-reference/page.mdx"),
+    ).toBe(true);
     expect(isLocalDocsPageBundlePath("glossary/token/page.mdx")).toBe(true);
     expect(isLocalDocsPageBundlePath("modules/attention/page.mdx")).toBe(true);
     expect(isLocalDocsPageBundlePath("models/foo/page.mdx")).toBe(true);
     expect(isLocalDocsPageBundlePath("papers/foo/page.mdx")).toBe(true);
     expect(isLocalDocsPageBundlePath("training/foo/page.mdx")).toBe(true);
+    expect(isLocalDocsPageBundlePath("systems/batching/page.mdx")).toBe(true);
     expect(isLocalDocsPageBundlePath("getting-started.mdx")).toBe(false);
+    expect(isLocalDocsPageBundlePath("unknown/foo/page.mdx")).toBe(false);
   });
 
   test("requires published status for local message bundles", () => {
