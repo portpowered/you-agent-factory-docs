@@ -101,12 +101,19 @@ describe("empty CLI browse and section indexes end-to-end", () => {
     }
   });
 
-  test("keeps guides, concepts, and techniques free of authored customer page bundles", () => {
-    for (const collectionId of ["guides", "concepts", "techniques"] as const) {
-      expect(
-        listAuthoredPageBundleSlugs(join(DOCS_ROOT, collectionId)),
-      ).toEqual([]);
-    }
+  test("keeps techniques free of authored customer page bundles", () => {
+    expect(listAuthoredPageBundleSlugs(join(DOCS_ROOT, "techniques"))).toEqual(
+      [],
+    );
+  });
+
+  test("lists authored guide and concept page bundles under their collection roots", () => {
+    expect(listAuthoredPageBundleSlugs(join(DOCS_ROOT, "guides"))).toContain(
+      "getting-started",
+    );
+    expect(listAuthoredPageBundleSlugs(join(DOCS_ROOT, "concepts"))).toEqual([
+      "tokens",
+    ]);
   });
 
   test("keeps the documentation collection root available for authored page bundles", () => {
@@ -145,31 +152,53 @@ describe("empty CLI browse and section indexes end-to-end", () => {
     }
   });
 
-  test("renders empty CLI section indexes and a populated documentation index without Atlas copy", async () => {
+  test("renders empty techniques index and populated guides, concepts, and documentation indexes without Atlas copy", async () => {
     const messages = await loadUiMessages();
 
-    for (const collectionId of ["guides", "concepts", "techniques"] as const) {
-      const indexMessages = sectionIndexMessages(messages, collectionId);
-      const html = renderToStaticMarkup(
-        await renderSectionCollectionIndexPage(collectionId),
-      );
+    const techniquesMessages = sectionIndexMessages(messages, "techniques");
+    const techniquesHtml = renderToStaticMarkup(
+      await renderSectionCollectionIndexPage("techniques"),
+    );
 
-      expect(html).toContain(indexMessages.title);
-      expect(html).toContain(indexMessages.description);
-      expect(html).toContain(indexMessages.emptyTitle);
-      expect(html).toContain(indexMessages.emptyDescription);
-      expect(html).toContain(indexMessages.emptyHomeLink);
-      expect(html).toContain('href="/"');
-      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(techniquesHtml).toContain(techniquesMessages.title);
+    expect(techniquesHtml).toContain(techniquesMessages.description);
+    expect(techniquesHtml).toContain(techniquesMessages.emptyTitle);
+    expect(techniquesHtml).toContain(techniquesMessages.emptyDescription);
+    expect(techniquesHtml).toContain(techniquesMessages.emptyHomeLink);
+    expect(techniquesHtml).toContain('href="/"');
+    expect(techniquesHtml).not.toContain(
+      `aria-label="${techniquesMessages.listLabel}"`,
+    );
+    expect(techniquesMessages.title).not.toMatch(ATLAS_PRODUCT_COPY);
+    expect(techniquesMessages.description).not.toMatch(ATLAS_PRODUCT_COPY);
+    expect(techniquesMessages.emptyTitle).not.toMatch(ATLAS_PRODUCT_COPY);
+    expect(techniquesMessages.emptyDescription).not.toMatch(ATLAS_PRODUCT_COPY);
+    expect(techniquesMessages.emptyHomeLink).not.toMatch(ATLAS_PRODUCT_COPY);
 
-      // Empty-state / index message fields only — SearchTrigger may still carry
-      // residual Atlas search chrome outside this lane.
-      expect(indexMessages.title).not.toMatch(ATLAS_PRODUCT_COPY);
-      expect(indexMessages.description).not.toMatch(ATLAS_PRODUCT_COPY);
-      expect(indexMessages.emptyTitle).not.toMatch(ATLAS_PRODUCT_COPY);
-      expect(indexMessages.emptyDescription).not.toMatch(ATLAS_PRODUCT_COPY);
-      expect(indexMessages.emptyHomeLink).not.toMatch(ATLAS_PRODUCT_COPY);
-    }
+    const guidesMessages = sectionIndexMessages(messages, "guides");
+    const guidesHtml = renderToStaticMarkup(
+      await renderSectionCollectionIndexPage("guides"),
+    );
+    expect(guidesHtml).toContain(guidesMessages.title);
+    expect(guidesHtml).toContain(`aria-label="${guidesMessages.listLabel}"`);
+    expect(guidesHtml).toContain("Getting Started");
+    expect(guidesHtml).toContain("/docs/guides/getting-started");
+    expect(guidesHtml).not.toContain(guidesMessages.emptyTitle);
+
+    const conceptsMessages = sectionIndexMessages(messages, "concepts");
+    const conceptsHtml = renderToStaticMarkup(
+      await renderSectionCollectionIndexPage("concepts"),
+    );
+    expect(conceptsHtml).toContain(conceptsMessages.title);
+    expect(conceptsHtml).toContain(
+      `aria-label="${conceptsMessages.listLabel}"`,
+    );
+    expect(conceptsHtml).toContain("Tokens");
+    expect(conceptsHtml).toContain("/docs/concepts/tokens");
+    expect(conceptsHtml).toContain(
+      "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
+    );
+    expect(conceptsHtml).not.toContain(conceptsMessages.emptyTitle);
 
     const documentationMessages = sectionIndexMessages(
       messages,

@@ -1,0 +1,36 @@
+{
+  "title": "Tokens",
+  "description": "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
+  "openingSummary": "A factory token, also called a work token, is the runtime unit that represents one submitted work item while it occupies a work-type state.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A factory token (or work token) is the runtime unit that represents one submitted work item occupying a work-type state, also called a place. It is not a chat message and not an LLM tokenizer piece."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Tokens are how the factory tracks where each piece of submitted work sits. Reading workstation enablement, inspecting work list state, and understanding why submit places work in an initial state all depend on recognizing the token as that unit of work."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You submit work for a task work type. The runtime places a token in the initial place task:init. An enabled workstation consumes that token, a worker runs, and the outcome routes the token to another place such as accepted, continue, rejection, or failure."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "Tokens show up wherever the factory talks about places and routing: work types and states in factory.json form places named like task:init, workstation inputs and outputs consume and emit tokens, and inspection surfaces such as you work list or session work views show which tokens sit in which states."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "Factory and work tokens are not LLM tokenizer or model-input tokens. This page means the unit of work moving through the factory, not pieces of text a model reads. Design-system or UI tokens are also out of scope here."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

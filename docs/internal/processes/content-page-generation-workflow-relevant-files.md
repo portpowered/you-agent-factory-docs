@@ -220,6 +220,24 @@ Document the first-collection publish-wiring exception in the work-item PRD
 necessary shared diff as “page-only AC failure.” Later pages in the same
 collection should stay page-local and in-budget.
 
+### First published concepts page (collection already wired)
+
+`concepts` already has published-section wiring (`PUBLISHED_DOCS_SECTIONS`,
+`LOCAL_DOCS_SECTIONS`, concept page loaders, `registryDirectoryByKind.concept`).
+The first authored published page under `src/content/docs/concepts/<slug>/`
+still needs a narrow section-index expectation update so default-locale indexes
+list the page title / summary / href instead of empty-state copy:
+
+- `src/tests/content/section-indexes.test.tsx`
+- `src/lib/docs/section-collection-index.test.ts`
+- optional verification helpers such as
+  `src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`
+
+Do not treat that index-expectation update as a redirect-to-throughput lane.
+Non-default locales stay on the empty concepts index until colocated
+`messages/<locale>.json` files exist for the page (shipped-localized-docs is
+derived from those files).
+
 Prefer behavioral coverage for the shipped page (section-index listing title /
 summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
 and next-step links) over inventory-only “slug exists on disk” assertions.

@@ -63,7 +63,10 @@ const CLI_SECTION_INDEX_CASES = [
 ] as const;
 
 const CLI_EMPTY_SECTION_INDEX_CASES = CLI_SECTION_INDEX_CASES.filter(
-  (section) => section.collectionId !== "documentation",
+  (section) =>
+    section.collectionId !== "documentation" &&
+    section.collectionId !== "guides" &&
+    section.collectionId !== "concepts",
 );
 
 describe("CLI section index messages", () => {
@@ -134,10 +137,51 @@ describe("CLI section index page render", () => {
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
   });
+
+  it("renders the guides index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.guidesIndex;
+    const html = renderToStaticMarkup(await GuidesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Getting Started");
+    expect(html).toContain("/docs/guides/getting-started");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
+  it("renders the concepts index with the tokens page entry", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.conceptsIndex;
+    const html = renderToStaticMarkup(await ConceptsIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Tokens");
+    expect(html).toContain("/docs/concepts/tokens");
+    expect(html).toContain(
+      "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
+    );
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
 });
 
 describe("localized CLI section index page render", () => {
-  it("renders the vietnamese guides index with localized title and empty-state copy", async () => {
+  it("renders the vietnamese guides index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("vi");
     const html = renderToStaticMarkup(
       await LocalizedGuidesIndexPage({
@@ -146,9 +190,10 @@ describe("localized CLI section index page render", () => {
     );
 
     expect(html).toContain(messages.guidesIndex.title);
-    expect(html).toContain(messages.guidesIndex.emptyTitle);
-    expect(html).toContain(messages.guidesIndex.emptyDescription);
-    expect(html).toContain('href="/vi"');
+    expect(html).toContain(`aria-label="${messages.guidesIndex.listLabel}"`);
+    expect(html).toContain("Getting Started");
+    expect(html).toContain("/vi/docs/guides/getting-started");
+    expect(html).not.toContain(messages.guidesIndex.emptyTitle);
     expect(messages.guidesIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
@@ -194,7 +239,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese concepts index with localized title and empty-state copy", async () => {
+  it("renders the japanese concepts index with localized title and empty-state copy until locale messages ship", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedConceptsIndexPage({
@@ -202,10 +247,13 @@ describe("localized CLI section index page render", () => {
       }),
     );
 
+    // Default-locale concepts lists Tokens; non-en locales stay empty until
+    // colocated ja/zh-CN/vi messages ship for the page bundle.
     expect(html).toContain(messages.conceptsIndex.title);
     expect(html).toContain(messages.conceptsIndex.emptyTitle);
     expect(html).toContain(messages.conceptsIndex.emptyDescription);
     expect(html).toContain('href="/ja"');
+    expect(html).not.toContain("/ja/docs/concepts/tokens");
     expect(messages.conceptsIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
