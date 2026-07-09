@@ -29,11 +29,11 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start from factory.json as the topology root, then add split worker and workstation instruction files named to match the entries in that file. Use this page for the layout, fields overview, and minimal factory shape. Open the workers, workstations, and resources documentation when you need field-level contracts for those pieces."
+      "body": "Start from factory.json as the topology root, then add split worker and workstation instruction files named to match the entries in that file. Use this page for the layout, fields overview, and minimal factory shape. This overview stays at topology depth. Open the child documentation pages below when you need the deep contracts those pieces own: workers, workstations, and resources."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web topology overview for factory.json. It is not a sync of packaged CLI docs, not the operator model-defaults deep dive, and not the submitting-work, batch, relationships, or harness-support references. Deep worker, workstation, and resource field contracts belong on their sibling documentation pages."
+      "body": "This page is a web topology overview for factory.json. It is not a sync of packaged CLI docs, not the operator model-defaults deep dive in ~/.you-agent-factory/config.json, and not the submitting-work, batch, relationships, or harness-support references. Deep worker-type, workstation-kind, and resource-pool field contracts belong on the workers, workstations, and resources child documentation pages — this overview does not absorb those contracts."
     },
     "related": {
       "title": "Related To"
@@ -82,7 +82,10 @@
     "fieldLayoutDescription": "Non-executable portable graph-editor layout metadata. It must not change runtime topology or execution behavior.",
     "fieldSupportingFilesName": "supportingFiles",
     "fieldSupportingFilesRequired": "No",
-    "fieldSupportingFilesDescription": "Portability-only manifest for validation-only external tools and bundled files. Distinct from runtime-capacity resources."
+    "fieldSupportingFilesDescription": "Portability-only manifest for validation-only external tools and bundled files. Distinct from runtime-capacity resources.",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "resourcesDocs": "Resources"
   },
   "callouts": {
     "layoutNotes": {
