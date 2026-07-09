@@ -73,6 +73,14 @@ contract for the you-agent-factory CLI docs product.
 - Adapters (`primary-nav`, `layout.shared`, header, home renderer) must default
   to `youAgentFactorySiteConfig`.
 
+## Regression test retargeting
+
+- Shell compatibility tests that assert primary nav must expect CLI labels
+  (Home/Guides/Docs/Glossary/Blog) and must not require Topology/Timeline/
+  Tags as primary destinations.
+- Sidebar/layout brand link assertions should use `you-agent-factory`, not
+  `Model Atlas`, when driven by the default site config.
+
 ## Story sequencing
 
 1. Neutralize contract shape (this lane story 001).
