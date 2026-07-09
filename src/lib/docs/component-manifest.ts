@@ -1,10 +1,13 @@
 /**
  * Reusable shared components subject to the manifest-driven coverage gate.
  * Allowed manifest paths: src/components (any depth), src/features/.../components,
- * documented search UI under src/features/docs/search/, and tag list UI under
- * src/features/docs/tags/.
+ * documented search UI under src/features/docs/search/, tag list UI under
+ * src/features/docs/tags/, and rewrite-era factory-ui wrappers under
+ * src/features/factory-ui/.
  *
- * Update this manifest and docs/phase-2-component-coverage.md when adding components.
+ * Update this manifest when adding components. Atlas AttentionVariantComparisonGraph
+ * and RegistryGraphFlow remain in the repo for existing page consumers but are not
+ * the rewrite-era reusable coverage boundary — use factory-ui thin wrappers instead.
  */
 export type ComponentCoverageEntry = {
   /** Repo-relative source path */
@@ -144,20 +147,6 @@ export const PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] =
       unitTests: [
         "src/features/models/components/RegistryComparisonTable.test.tsx",
       ],
-    },
-    {
-      file: "src/features/models/components/AttentionVariantComparisonGraph.tsx",
-      label: "AttentionVariantComparisonGraph",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/AttentionVariantComparisonGraph.test.tsx",
-      ],
-    },
-    {
-      file: "src/features/models/components/RegistryGraphFlow.tsx",
-      label: "RegistryGraphFlow",
-      minReachableLinePercent: 90,
-      unitTests: ["src/features/models/components/RegistryGraphFlow.test.tsx"],
     },
     {
       file: "src/features/models/components/ModuleMetadataCard.tsx",
@@ -323,5 +312,29 @@ export const REUSABLE_THIN_WRAPPERS: ThinWrapperEntry[] = [
     label: "ModuleComparisonTable",
     forwardsTo: "PageAsset",
     smokeTests: ["src/lib/content/module-page.test.ts"],
+  },
+  {
+    file: "src/features/factory-ui/graphs.ts",
+    label: "factory-ui graphs",
+    forwardsTo: "@you-agent-factory/components/graphs",
+    smokeTests: ["src/features/factory-ui/graphs.test.tsx"],
+  },
+  {
+    file: "src/features/factory-ui/charts.ts",
+    label: "factory-ui charts",
+    forwardsTo: "@you-agent-factory/components/charts",
+    smokeTests: ["src/features/factory-ui/charts.test.tsx"],
+  },
+  {
+    file: "src/features/factory-ui/data-display.ts",
+    label: "factory-ui DataTable",
+    forwardsTo: "DataTable (@you-agent-factory/components/data-display)",
+    smokeTests: ["src/features/factory-ui/data-display.test.tsx"],
+  },
+  {
+    file: "src/features/factory-ui/data-display.ts",
+    label: "factory-ui CodePanel",
+    forwardsTo: "CodePanel (@you-agent-factory/components/data-display)",
+    smokeTests: ["src/features/factory-ui/data-display.test.tsx"],
   },
 ];

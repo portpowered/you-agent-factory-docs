@@ -14,6 +14,8 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   ...resolveNextConfigForBuildMode(),
+  // Package ships TypeScript source through its export map (no dist/); Next must transpile it.
+  transpilePackages: ["@you-agent-factory/components"],
   env: {
     [DOCS_SEARCH_BOOTSTRAP_FROM_ENV]: resolveDocsSearchStaticBootstrapFrom(
       process.env,
