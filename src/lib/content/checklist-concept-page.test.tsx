@@ -29,6 +29,12 @@ describe("checklist concept page", () => {
     const whyItMatters = String(
       loadedPage.messages.sections?.whyItMatters?.body ?? "",
     );
+    const simpleExample = String(
+      loadedPage.messages.sections?.simpleExample?.body ?? "",
+    );
+    const commonConfusions = String(
+      loadedPage.messages.sections?.commonConfusions?.body ?? "",
+    );
     expect(whatItIs).toMatch(/live outcomes and workstream board/i);
     expect(whatItIs).toMatch(/done/i);
     expect(whatItIs).toMatch(/active/i);
@@ -38,8 +44,23 @@ describe("checklist concept page", () => {
     expect(whyItMatters).toMatch(/track customer outcomes/i);
     expect(whyItMatters).toMatch(/parallel/i);
     expect(whyItMatters).toMatch(/real holds/i);
+    expect(simpleExample).toMatch(/customer outcomes/i);
+    expect(simpleExample).toMatch(/done/i);
+    expect(simpleExample).toMatch(/active/i);
+    expect(simpleExample).toMatch(/ready next/i);
+    expect(simpleExample).toMatch(/held/i);
+    expect(simpleExample).toMatch(/collision|in flight/i);
+    expect(commonConfusions).toMatch(/task queue/i);
+    expect(commonConfusions).toMatch(/ordered work waiting to run/i);
+    expect(commonConfusions).toMatch(
+      /architectural checklist|acceptance-criteria/i,
+    );
+    expect(commonConfusions).toMatch(/static verification lists/i);
+    expect(commonConfusions).toMatch(/phase-gated/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
     expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
+    expect(simpleExample).not.toMatch(/on this page|Model Atlas/i);
+    expect(commonConfusions).not.toMatch(/on this page|Model Atlas/i);
 
     render(
       <main>
@@ -57,9 +78,17 @@ describe("checklist concept page", () => {
       screen.getByRole("heading", { name: "Why It Matters" }),
     ).toBeTruthy();
     expect(
-      screen.getByText(/live outcomes and workstream board/i),
+      screen.getByRole("heading", { name: "Simple Example" }),
     ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Common Confusions" }),
+    ).toBeTruthy();
+    expect(
+      screen.getAllByText(/live outcomes and workstream board/i).length,
+    ).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/track customer outcomes/i)).toBeTruthy();
+    expect(screen.getByText(/Picture a compact board/i)).toBeTruthy();
+    expect(screen.getByText(/not a task queue/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });

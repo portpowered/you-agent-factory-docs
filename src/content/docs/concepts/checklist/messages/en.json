@@ -13,7 +13,7 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "Imagine a docs rewrite board. Customer outcomes list published install and getting-started pages. Active workstreams cover the checklist concept page. Ready-next workstreams include the task-queue concept page. A hold notes that a shared registry schema change is already in flight, so a colliding lane waits for a real reason—not because a phase name says it should."
+      "body": "Picture a compact board for a docs rewrite. Customer outcomes: publish the install guide and the getting-started page. Done: the install guide lane is finished. Active: the checklist concept page is in progress. Ready next: the task-queue concept page can start when a lane frees up. Held: a colliding registry change is already in flight, so that lane waits for a concrete collision reason—not because a phase label says later work must wait."
     },
     "whereItAppears": {
       "title": "Where It Appears",
@@ -21,7 +21,7 @@
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "A checklist is not a task queue. A task queue is ordered work waiting to run; a checklist is the outcomes and workstream board that shows status across streams. It is also not an architectural checklist or a review acceptance-criteria list, which are static verification lists. And it is not a phase-gated project plan that forces every stream to finish one global phase before the next can start."
+      "body": "A checklist is not a task queue. A task queue is ordered work waiting to run; a checklist is the live outcomes and workstream board that shows done, active, ready next, and held status across streams. A checklist is also not an architectural checklist or a review acceptance-criteria list—those are static verification lists you tick once. And it is not a phase-gated project plan that forces every stream to finish one global phase before the next can start."
     },
     "related": {
       "title": "Related Concepts And Modules"
