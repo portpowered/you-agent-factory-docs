@@ -8,15 +8,15 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "An install script downloads the CLI release for your operating system and places the you command where your shell can find it. After install, you can scaffold a factory project. Later sections cover executor scaffold choice in more detail."
+      "body": "An install script downloads the CLI release for your operating system and places the you binary on your PATH so the you command is available in your shell. After install, you init scaffolds a factory directory. The --executor flag chooses which starter worker scaffold is generated: omit it for the default Codex-backed scaffold, or pass claude for a Claude-backed scaffold. Supported starter values are codex and claude."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Run the install command for your operating system. Both paths use the same GitHub Releases assets as the home install CTA. After the script finishes, confirm you is available in your shell, then scaffold a factory when you are ready."
+      "body": "Run the install command for your operating system. Both paths use the same GitHub Releases assets as the home install CTA. After the script finishes, confirm you is available in your shell. Then scaffold a factory. Omitting --executor keeps the default Codex-backed starter scaffold. Pass --executor claude when you want a Claude-backed default scaffold instead."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the install reference. It is not the getting-started quickstart and not the full CLI command matrix. Packaged you docs topics remain the place for deeper agent and factory orientation."
+      "body": "This page is the install reference only. It is not the getting-started quickstart, not the full CLI command matrix, and it does not replace packaged you docs topics. For agent and factory orientation after install, run you docs agents. Deeper CLI and factory contracts stay in packaged you docs and sibling documentation pages."
     },
     "related": {
       "title": "Related To"
@@ -30,6 +30,7 @@
   },
   "links": {
     "macosLinuxLabel": "macOS / Linux",
-    "windowsLabel": "Windows (PowerShell)"
+    "windowsLabel": "Windows (PowerShell)",
+    "claudeInitLabel": "Claude-backed scaffold"
   }
 }

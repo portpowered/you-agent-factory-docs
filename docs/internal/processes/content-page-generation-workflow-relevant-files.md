@@ -39,6 +39,16 @@ Before the first authored page under a rewrite-era CLI collection can pass
    `pageSectionSchema`. Put OS labels and similar short strings under
    `links.*` (or another allowed top-level message field), not under
    `sections.<id>.*`.
+6. Browser verify with `bun run start` serves the last production build.
+   After editing page MDX or colocated messages, run `bun run build` (or
+   use `bun run dev`) before curling the route, or the HTML will still show
+   the previous copy. Prefer a unique port in `3100-3999`,
+   `curl --max-time 10`, and kill the server before the command exits.
+7. Do not run overlapping `prepare:content-runtime` / `fumadocs-mdx`
+   invocations in parallel on the same worktree — concurrent prep can delete
+   `.source` mid-validate and fail with `Cannot find module '../../.source/server'`.
+   Run `make validate-data`, `bun run lint`, and `bun run test` sequentially
+   when diagnosing page-bundle validation.
 
 ## Routine preflight for ordinary page branches
 
