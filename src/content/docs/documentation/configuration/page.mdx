@@ -1,0 +1,278 @@
+---
+title: "Configuration"
+description: "Configure you-agent-factory with factory.json topology: work types, workers, workstations, resources, and how the pieces fit."
+kind: "documentation"
+registryId: "documentation.configuration"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "configuration"
+  - "factory.json"
+  - "factory configuration"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="what-lives-where" titleKey="sections.whatLivesWhere.title">
+  <T k="sections.whatLivesWhere.body" />
+
+```text
+factory/
+  factory.json
+  workers/
+    processor/AGENTS.md
+  workstations/
+    process/AGENTS.md
+  inputs/
+    task/default/request.json
+```
+
+  <T k="callouts.layoutNotes.body" />
+</Section>
+
+<Section id="how-pieces-fit" titleKey="sections.howPiecesFit.title">
+  <T k="sections.howPiecesFit.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.routingOutcomeHeader" />
+        </th>
+        <th>
+          <T k="links.routingFieldHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.routingAcceptedOutcome" />
+        </td>
+        <td>
+          <T k="links.routingAcceptedField" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.routingContinueOutcome" />
+        </td>
+        <td>
+          <T k="links.routingContinueField" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.routingRejectedOutcome" />
+        </td>
+        <td>
+          <T k="links.routingRejectedField" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.routingFailedOutcome" />
+        </td>
+        <td>
+          <T k="links.routingFailedField" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.placeNote.body" />
+</Section>
+
+<Section id="top-level-fields" titleKey="sections.topLevelFields.title">
+  <T k="sections.topLevelFields.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.fieldNameHeader" />
+        </th>
+        <th>
+          <T k="links.fieldRequiredHeader" />
+        </th>
+        <th>
+          <T k="links.fieldDescriptionHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.fieldWorkTypesName" />
+        </td>
+        <td>
+          <T k="links.fieldWorkTypesRequired" />
+        </td>
+        <td>
+          <T k="links.fieldWorkTypesDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldWorkersName" />
+        </td>
+        <td>
+          <T k="links.fieldWorkersRequired" />
+        </td>
+        <td>
+          <T k="links.fieldWorkersDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldWorkstationsName" />
+        </td>
+        <td>
+          <T k="links.fieldWorkstationsRequired" />
+        </td>
+        <td>
+          <T k="links.fieldWorkstationsDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldResourcesName" />
+        </td>
+        <td>
+          <T k="links.fieldResourcesRequired" />
+        </td>
+        <td>
+          <T k="links.fieldResourcesDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldIdName" />
+        </td>
+        <td>
+          <T k="links.fieldIdRequired" />
+        </td>
+        <td>
+          <T k="links.fieldIdDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldRunnerName" />
+        </td>
+        <td>
+          <T k="links.fieldRunnerRequired" />
+        </td>
+        <td>
+          <T k="links.fieldRunnerDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldLayoutName" />
+        </td>
+        <td>
+          <T k="links.fieldLayoutRequired" />
+        </td>
+        <td>
+          <T k="links.fieldLayoutDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldSupportingFilesName" />
+        </td>
+        <td>
+          <T k="links.fieldSupportingFilesRequired" />
+        </td>
+        <td>
+          <T k="links.fieldSupportingFilesDescription" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.fieldsOverviewNote.body" />
+</Section>
+
+<Section id="minimal-factory" titleKey="sections.minimalFactory.title">
+  <T k="sections.minimalFactory.body" />
+
+```json
+{
+  "workTypes": [
+    {
+      "name": "task",
+      "states": [
+        { "name": "init", "type": "INITIAL" },
+        { "name": "complete", "type": "TERMINAL" },
+        { "name": "failed", "type": "FAILED" }
+      ]
+    }
+  ],
+  "workers": [
+    { "name": "processor" }
+  ],
+  "workstations": [
+    {
+      "name": "process",
+      "worker": "processor",
+      "inputs": [{ "workType": "task", "state": "init" }],
+      "outputs": [{ "workType": "task", "state": "complete" }],
+      "onFailure": { "workType": "task", "state": "failed" }
+    }
+  ]
+}
+```
+
+  <T k="callouts.minimalFactoryNote.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.resourcesDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="documentation.configuration" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.configuration" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.configuration" />
+</Section>
