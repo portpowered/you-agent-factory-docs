@@ -28,22 +28,37 @@ const featuredLinkLocaleFallbackConfig = {
 } satisfies SiteConfig;
 
 describe("site config home featured link resolution", () => {
-  test("default config resolves an empty featured-link href list", () => {
+  test("default config resolves CLI docs featured-link hrefs", () => {
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "en"),
-    ).toEqual([]);
+    ).toEqual(["/docs/guides", "/browse", "/docs/glossary", "/blog"]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "vi"),
-    ).toEqual([]);
+    ).toEqual([
+      "/vi/docs/guides",
+      "/vi/browse",
+      "/vi/docs/glossary",
+      "/vi/blog",
+    ]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "ja"),
-    ).toEqual([]);
+    ).toEqual([
+      "/ja/docs/guides",
+      "/ja/browse",
+      "/ja/docs/glossary",
+      "/ja/blog",
+    ]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(
         youAgentFactorySiteConfig,
         "zh-CN",
       ),
-    ).toEqual([]);
+    ).toEqual([
+      "/zh-CN/docs/guides",
+      "/zh-CN/browse",
+      "/zh-CN/docs/glossary",
+      "/zh-CN/blog",
+    ]);
   });
 
   test("uses shipped-docs locale fallback for docs-page featured links", () => {

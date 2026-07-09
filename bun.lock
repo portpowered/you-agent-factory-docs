@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "model-reference",
+      "name": "you-agent-factory-docs",
       "dependencies": {
         "@base-ui/react": "^1.5.0",
         "@orama/orama": "^3.1.16",

@@ -72,10 +72,36 @@
     "openingSummary": "要約を開く"
   },
   "home": {
-    "title": "Model Atlas",
-    "subtitle": "現代の AI モデルとモジュールのためのフィールドガイド",
-    "intro": "Model Atlas は、トランスフォーマー、注意機構の派生、学習手法、それらを支えるシステムを扱うドキュメント中心のリファレンスです。",
+    "title": "you-agent-factory",
+    "subtitle": "Docs for the agent factory CLI",
+    "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
+    "installSectionTitle": "Install",
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    "runSectionTitle": "Run a named goal",
+    "runCommandLabel": "First run",
+    "runCommand": "you run --named @goal/blah",
+    "whySectionTitle": "Why you-agent-factory",
+    "whyBody": "Run hundreds of agents at once so long-running factory work stays moving without babysitting each session by hand.",
+    "featuresSectionTitle": "What you get",
+    "featuresIntro": "The factory supports common agent harnesses and workflow formats:",
+    "featureHarnesses": "Harness support for running agents under a shared factory runtime",
+    "featureLoop": "loop — keep work iterating until the goal is done",
+    "featureReview": "review — send completed work through a review pass",
+    "featurePlanner": "planner — plan and sequence multi-step factory work",
+    "featureCrons": "crons — schedule recurring factory runs",
+    "featureEventStreams": "event streams — observe factory progress as events",
     "browseSectionTitle": "参照",
+    "guidesLinkTitle": "Guides",
+    "guidesLinkDescription": "Start with how-to guides for installing and running the agent factory CLI.",
+    "docsLinkTitle": "Docs browse",
+    "docsLinkDescription": "Open the docs browse hub to explore CLI documentation collections.",
+    "glossaryLinkTitle": "Glossary",
+    "glossaryLinkDescription": "Scan short definitions for factory and CLI terms.",
+    "blogLinkTitle": "Blog",
+    "blogLinkDescription": "Read updates and deeper write-ups about the agent factory.",
     "atlasLinkTitle": "アトラス全体を見る",
     "atlasLinkDescription": "モデル、モジュール、概念、用語集、タグ、アーキテクチャの各ページがどうつながるかを案内するページから始められます。",
     "gqaLinkTitle": "Grouped-query attention",
@@ -84,11 +110,15 @@
     "swigluLinkDescription": "単純な活性化の代わりに、学習されるゲートと SiLU 経路を使う feed-forward の派生です。",
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "モジュールの基本に入りやすい、シンプルな活性化関数のページです。",
+    "onThisPageInstall": "Install",
+    "onThisPageRun": "Run",
+    "onThisPageWhy": "Why",
+    "onThisPageFeatures": "Features",
     "onThisPageBrowse": "参照"
   },
   "browseIndex": {
-    "title": "アトラスを参照",
-    "description": "すでに知っている種類の情報から始められます。モデル、モジュール、概念、または用語集のどこから入るべきかを示し、良い出発点も並べます。",
+    "title": "参照",
+    "description": "必要なコレクションの種類から始められます。ガイド、概念、技法、またはドキュメントのどこから入るべきかを示し、良い出発点も並べます。",
     "quickRoutesTitle": "主要な入口",
     "quickRoutesDescription": "探し方は分かっているけれど、まだ具体的なページ名が分からないときに使ってください。",
     "searchRouteDescription": "すでに用語が分かっているなら、タイトル、別名、タグへ直接ジャンプできます。",
@@ -202,7 +232,7 @@
     "description": "公開済みの概念ページでは、アーキテクチャパターン、量子化、長文コンテキストのトレードオフのように、多くのモデルやモジュールにまたがる広い考え方を説明します。",
     "listLabel": "概念項目",
     "emptyTitle": "概念項目はまだありません",
-    "emptyDescription": "公開された概念ページは、アトラスに追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照してモデル、モジュール、用語集を探索してください。",
+    "emptyDescription": "公開された概念ページは、追加されるとここに表示されます。それまではホームに戻るか、参照を開いて他のコレクションを探索してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "guidesIndex": {
@@ -210,7 +240,7 @@
     "description": "公開済みのガイドページでは、実務的な CLI ワークフローと、参照資料を日常の作業へどう適用するかを順を追って説明します。",
     "listLabel": "ガイド項目",
     "emptyTitle": "ガイド項目はまだありません",
-    "emptyDescription": "公開されたガイドページは、追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照して他のコレクションを探索してください。",
+    "emptyDescription": "公開されたガイドページは、追加されるとここに表示されます。それまではホームに戻るか、参照を開いて他のコレクションを探索してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "techniquesIndex": {
@@ -218,7 +248,7 @@
     "description": "公開済みの技法ページでは、CLI ワークフローやドキュメント作業に横断して適用できる、名前のある方法と実践を説明します。",
     "listLabel": "技法項目",
     "emptyTitle": "技法項目はまだありません",
-    "emptyDescription": "公開された技法ページは、追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照して他のコレクションを探索してください。",
+    "emptyDescription": "公開された技法ページは、追加されるとここに表示されます。それまではホームに戻るか、参照を開いて他のコレクションを探索してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "documentationIndex": {
@@ -226,7 +256,7 @@
     "description": "公開済みのドキュメントページでは、契約、規約、補足情報など、CLI 面の参照資料を扱います。",
     "listLabel": "ドキュメント項目",
     "emptyTitle": "ドキュメント項目はまだありません",
-    "emptyDescription": "公開されたドキュメントページは、追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照して他のコレクションを探索してください。",
+    "emptyDescription": "公開されたドキュメントページは、追加されるとここに表示されます。それまではホームに戻るか、参照を開いて他のコレクションを探索してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "papersIndex": {

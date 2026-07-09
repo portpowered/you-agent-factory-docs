@@ -11,8 +11,8 @@ export const YOU_AGENT_FACTORY_REPOSITORY_URL =
 /**
  * Default site config for the you-agent-factory CLI docs product.
  * Brand/repo, primary nav/route placeholders, collections, and home featured
- * links are CLI docs shaped. Home featured links stay an empty placeholder
- * list so B01 can author final marketing copy.
+ * links are CLI docs shaped. Home featured links point at guides, docs/browse,
+ * glossary, and blog route surfaces (not Atlas module pages).
  * Search is a configured route surface (header trigger) but not a primary
  * nav item, to avoid duplicating the header search control.
  */
@@ -39,6 +39,30 @@ export const youAgentFactorySiteConfig = {
     { routeSurface: "blogIndex", labelKey: "blog" },
   ],
   collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
-  /** Empty until B01 authors final home marketing featured links. */
-  homeFeaturedLinks: [] as SiteConfig["homeFeaturedLinks"],
+  homeFeaturedLinks: [
+    {
+      kind: "route",
+      routeSurface: "guides",
+      titleKey: "guidesLinkTitle",
+      descriptionKey: "guidesLinkDescription",
+    },
+    {
+      kind: "route",
+      routeSurface: "docs",
+      titleKey: "docsLinkTitle",
+      descriptionKey: "docsLinkDescription",
+    },
+    {
+      kind: "route",
+      routeSurface: "glossary",
+      titleKey: "glossaryLinkTitle",
+      descriptionKey: "glossaryLinkDescription",
+    },
+    {
+      kind: "route",
+      routeSurface: "blogIndex",
+      titleKey: "blogLinkTitle",
+      descriptionKey: "blogLinkDescription",
+    },
+  ] as SiteConfig["homeFeaturedLinks"],
 } as const satisfies SiteConfig;

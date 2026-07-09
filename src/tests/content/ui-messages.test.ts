@@ -108,7 +108,7 @@ describe("loadUiMessages shell keys", () => {
       messages.topologyBrowse.classificationLabels.attentionMechanisms,
     ).toBe("Attention Mechanisms");
     expect(messages.searchEntry.title).toBe("Search");
-    expect(messages.browseIndex.title).toBe("Browse the Atlas");
+    expect(messages.browseIndex.title).toBe("Browse");
     expect(messages.modelsIndex.title).toBe("Models");
     expect(messages.modulesIndex.title).toBe("Modules");
     expect(messages.conceptsIndex.title).toBe("Concepts");
@@ -123,7 +123,7 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.search.placeholder).toBe("Tìm trong you-agent-factory…");
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("Trang chủ");
-    expect(messages.browseIndex.title).toBe("Duyệt Atlas");
+    expect(messages.browseIndex.title).toBe("Duyệt");
     expect(messages.modelsIndex.title).toBe("Mô hình");
     expect(messages.searchEntry.title).toBe("Tìm kiếm");
     expect(messages.tagsIndex.title).toBe("Thẻ");
@@ -141,7 +141,7 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.search.placeholder).toBe("you-agent-factory を検索…");
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("ホーム");
-    expect(messages.browseIndex.title).toBe("アトラスを参照");
+    expect(messages.browseIndex.title).toBe("参照");
     expect(messages.modelsIndex.title).toBe("モデル");
     expect(messages.searchEntry.title).toBe("検索");
     expect(messages.tagsIndex.title).toBe("タグ");
@@ -163,7 +163,7 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.language.selectorLabel).toBe("语言");
     expect(messages.language.locales["zh-CN"]).toBe("简体中文");
-    expect(messages.browseIndex.title).toBe("浏览图谱");
+    expect(messages.browseIndex.title).toBe("浏览");
     expect(messages.modelsIndex.title).toBe("模型");
     expect(messages.searchEntry.title).toBe("搜索");
     expect(messages.tagsIndex.title).toBe("标签");

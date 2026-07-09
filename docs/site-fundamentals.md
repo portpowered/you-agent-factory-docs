@@ -166,7 +166,7 @@ brand red.
 
 ## Home Page Header
 
-The Model Atlas home page should use a broad irregular brush-stroke header
+The you-agent-factory home page should use a broad irregular brush-stroke header
 behind the title and subtitle area. The brush stroke may mix pastel coral,
 weathered cream, charcoal ink, and dull teal-gray. It should not be a rectangular
 banner or a separate callout card.

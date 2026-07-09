@@ -72,10 +72,36 @@
     "openingSummary": "Opening summary"
   },
   "home": {
-    "title": "Model Atlas",
-    "subtitle": "A field guide to modern AI models and modules",
-    "intro": "Model Atlas is a documentation-native reference for transformers, attention variants, training methods, and the systems around them.",
+    "title": "you-agent-factory",
+    "subtitle": "Docs for the agent factory CLI",
+    "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
+    "installSectionTitle": "Install",
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    "runSectionTitle": "Run a named goal",
+    "runCommandLabel": "First run",
+    "runCommand": "you run --named @goal/blah",
+    "whySectionTitle": "Why you-agent-factory",
+    "whyBody": "Run hundreds of agents at once so long-running factory work stays moving without babysitting each session by hand.",
+    "featuresSectionTitle": "What you get",
+    "featuresIntro": "The factory supports common agent harnesses and workflow formats:",
+    "featureHarnesses": "Harness support for running agents under a shared factory runtime",
+    "featureLoop": "loop — keep work iterating until the goal is done",
+    "featureReview": "review — send completed work through a review pass",
+    "featurePlanner": "planner — plan and sequence multi-step factory work",
+    "featureCrons": "crons — schedule recurring factory runs",
+    "featureEventStreams": "event streams — observe factory progress as events",
     "browseSectionTitle": "Browse",
+    "guidesLinkTitle": "Guides",
+    "guidesLinkDescription": "Start with how-to guides for installing and running the agent factory CLI.",
+    "docsLinkTitle": "Docs browse",
+    "docsLinkDescription": "Open the docs browse hub to explore CLI documentation collections.",
+    "glossaryLinkTitle": "Glossary",
+    "glossaryLinkDescription": "Scan short definitions for factory and CLI terms.",
+    "blogLinkTitle": "Blog",
+    "blogLinkDescription": "Read updates and deeper write-ups about the agent factory.",
     "atlasLinkTitle": "Browse the atlas",
     "atlasLinkDescription": "Start with a page that explains where models, modules, concepts, glossary entries, tags, and architecture pages fit together.",
     "gqaLinkTitle": "Grouped-query attention",
@@ -84,11 +110,15 @@
     "swigluLinkDescription": "A gated feed-forward variant that replaces a plain activation with a learned gate and SiLU path.",
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "A simple activation function page that gives a lightweight entry point into module basics.",
+    "onThisPageInstall": "Install",
+    "onThisPageRun": "Run",
+    "onThisPageWhy": "Why",
+    "onThisPageFeatures": "Features",
     "onThisPageBrowse": "Browse"
   },
   "browseIndex": {
-    "title": "Browse the Atlas",
-    "description": "Start from the kind of thing you already know: a model, a module, a concept, or a glossary term. This page points you to the right part of the reference and gives a few strong starting pages.",
+    "title": "Browse",
+    "description": "Start from the kind of collection you need: guides, concepts, techniques, or documentation. This page points you to the right part of the reference and gives a few strong starting pages.",
     "quickRoutesTitle": "Quick routes",
     "quickRoutesDescription": "Use these entry points when you know how you want to explore, but not the exact page yet.",
     "searchRouteDescription": "Jump straight to a title, alias, or tag when you already have a term in mind.",
@@ -202,7 +232,7 @@
     "description": "Published concept pages that explain broader ideas spanning many models and modules, such as architecture patterns, quantization, and long-context tradeoffs.",
     "listLabel": "Concept entries",
     "emptyTitle": "No concept entries yet",
-    "emptyDescription": "Published concept pages will appear here once they are added to the atlas. Return home or open Browse the Atlas to explore models, modules, and glossary pages in the meantime.",
+    "emptyDescription": "Published concept pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "guidesIndex": {
@@ -210,7 +240,7 @@
     "description": "Published guide pages that walk through practical CLI workflows and how to apply the reference in day-to-day work.",
     "listLabel": "Guide entries",
     "emptyTitle": "No guide entries yet",
-    "emptyDescription": "Published guide pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyDescription": "Published guide pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "techniquesIndex": {
@@ -218,7 +248,7 @@
     "description": "Published technique pages that explain named methods and practices you can apply across CLI workflows and documentation tasks.",
     "listLabel": "Technique entries",
     "emptyTitle": "No technique entries yet",
-    "emptyDescription": "Published technique pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyDescription": "Published technique pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "documentationIndex": {
@@ -226,7 +256,7 @@
     "description": "Published documentation pages covering reference material for the CLI surface, including contracts, conventions, and supporting detail.",
     "listLabel": "Documentation entries",
     "emptyTitle": "No documentation entries yet",
-    "emptyDescription": "Published documentation pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyDescription": "Published documentation pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "papersIndex": {

@@ -10,7 +10,7 @@ contract for the you-agent-factory CLI docs product.
 | `src/lib/site/site-config.contract.ts` | Shared `SiteConfig` shape: open route-surface map, open collection family strings, nav/home copy keys from `UiMessages` (not Atlas-locked) |
 | `src/lib/site/site-config.contract.test.ts` | Contract tests; CLI representative fixture must type-check without topology/timeline/AI collections |
 | `src/lib/scaffold.ts` | Shared scaffold brand constants (`SCAFFOLD_ID`, `SITE_BRAND_NAME`, `SITE_HEADING`) consumed by the default site config |
-| `src/lib/site/you-agent-factory-site-config.ts` | Product default config: you-agent-factory brand/repo, CLI primary nav/route placeholders, CLI collections (`guides`/`concepts`/`techniques`/`documentation`), and empty `homeFeaturedLinks` for B01 |
+| `src/lib/site/you-agent-factory-site-config.ts` | Product default config: you-agent-factory brand/repo, CLI primary nav/route placeholders, CLI collections (`guides`/`concepts`/`techniques`/`documentation`), and CLI `homeFeaturedLinks` (guides/docs/glossary/blog) |
 | `src/lib/site/site-config-layout-nav.ts` | Client-safe brand/home resolution (`resolveSiteConfigLayoutNav`) for header chrome; no Node/`pages` imports |
 | `src/lib/site/site-config-resolution.ts` | Resolves primary nav hrefs and home featured links from `SiteConfig`; re-exports layout-nav helpers |
 | `src/components/layout/primary-nav.ts` | Shell primary nav consumer of `SiteConfig.primaryNav` / `routeSurfaces` |
@@ -68,13 +68,15 @@ contract for the you-agent-factory CLI docs product.
 
 - Default `collections` are exactly `SITE_COLLECTION_FAMILIES`:
   `guides`, `concepts`, `techniques`, `documentation`.
-- Default `homeFeaturedLinks` is an empty placeholder list (no Atlas module
-  slugs, no final home marketing copy). B01 owns final featured-link copy.
-- Type empty featured links as `[] as SiteConfig["homeFeaturedLinks"]` when
-  the default config uses `as const satisfies SiteConfig`, so the field stays
-  assignable as `HomeFeaturedLinkPlaceholder[]` rather than `readonly []`.
+- Default `homeFeaturedLinks` lists CLI route destinations (guides, docs/browse,
+  glossary, blogIndex) bound to `guidesLink*` / `docsLink*` / `glossaryLink*` /
+  `blogLink*` home message keys — not Atlas module slugs.
+- Type featured-link arrays as `… as SiteConfig["homeFeaturedLinks"]` when the
+  default config uses `as const satisfies SiteConfig`, so the field stays
+  assignable as `HomeFeaturedLinkPlaceholder[]`.
 - Locale-fallback coverage for docs-page featured links should use an explicit
-  fixture config, not the empty default list.
+  fixture config when testing docs-page kind resolution separately from the
+  default route-kind list.
 
 ## Default export naming
 
