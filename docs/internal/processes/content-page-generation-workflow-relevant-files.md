@@ -1,9 +1,20 @@
 # Content Page Generation Workflow Relevant Files
 
 Use these files when adding or updating routine canonical docs pages (model,
-concept, module, system, paper, training, or glossary). The goal is to add page
-bundles and registry records without editing shared helper surfaces for
-page-specific directory paths.
+concept, module, system, paper, training, glossary, or documentation). The goal
+is to add page bundles and registry records without editing shared helper
+surfaces for page-specific directory paths.
+
+First published `documentation` pages also need `documentation` in
+`PUBLISHED_DOCS_SECTIONS` / `documentationPageHref`, and
+`registryDirectoryByKind.documentation` in the canonical page surface audit.
+See [empty-cli-taxonomy-relevant-files.md](./empty-cli-taxonomy-relevant-files.md).
+Published local page bundles must include Fumadocs `title` (and usually
+`description`) in `page.mdx` frontmatter — `pageSchema` requires `title` once
+the page is no longer excluded as draft. Local-message documentation pages also
+need `documentation` in `LOCAL_DOCS_SECTIONS` plus
+`documentation-page.ts` / `documentation-page-load.ts` so
+`ModulePageProviders` wraps the compiled MDX (same pattern as concepts/systems).
 
 ## Derived page directory contract
 
@@ -145,6 +156,28 @@ page-local but CI will require narrowly-scoped shared updates:
 Document the exception explicitly in the work-item PRD when this collision is
 inherent to the slice.
 
+## First published documentation (or other empty CLI collection) page
+
+The first published page in a previously empty CLI collection (`documentation`,
+and later `guides` / `techniques`) is not a routine page-only lane. Publishing
+requires shared wiring that will trip
+`bun run audit:canonical-page-surface`:
+
+- `PUBLISHED_DOCS_SECTIONS` + collection `*PageHref` in content-hrefs /
+  published-docs registry contract
+- `LOCAL_DOCS_SECTIONS` + `<kind>-page(-load).ts` local MDX loader path
+- `registryDirectoryByKind.<kind>` in the canonical page surface audit
+- empty-root / section-index tests that previously forbade authored bundles
+
+Document the first-collection publish-wiring exception in the work-item PRD
+(project ACs + story surface-budget criteria) so review does not reject a
+necessary shared diff as “page-only AC failure.” Later pages in the same
+collection should stay page-local and in-budget.
+
+Prefer behavioral coverage for the shipped page (section-index listing title /
+summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
+and next-step links) over inventory-only “slug exists on disk” assertions.
+
 ## Glossary-derived browse and sidebar sections
 
 When glossary decomposition needs new reader-facing top-level areas such as
@@ -181,6 +214,15 @@ routes:
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.
+- Forward next-step links to sibling lanes that are not yet published on this
+  branch: prefer `LocalizedLinkList` in the how-to-use (or equivalent) section
+  with canonical planned hrefs (for example `/docs/guides/getting-started`,
+  `/docs/documentation/architecture-of-system`). `RelatedDocs` filters out
+  items without published hrefs, so curated `relatedIds` alone will not show
+  reviewer-visible navigation for unpublished targets. `LocalizedLinkList` is
+  registered in MDX components and is not in
+  `LINK_VALIDATION_MARKDOWN_COMPONENTS`, so planned destinations stay
+  mergeable under current linkcheck rules without authoring the target pages.
 - `validatePublishedGlossaryClassification` in `validate-glossary-classification.ts`
   blocks published glossary pages that lack `primaryClassificationId` unless
   `sidebarGrouping.glossary` provides an explicit editorial fallback; wired through
@@ -385,6 +427,16 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   empty `zh-CN` shipped bucket is valid and does not force every page to ship
   Chinese copy. Cover load + fail-closed in `src/lib/content/messages.test.ts`
   and shipped/empty validation in `src/lib/content/validate-registry.test.ts`.
+* When a page story requires non-en stubs (`ja` / `zh-CN` / `vi`), copy the
+  default-locale file into `messages/<locale>.json` with the **same key shape**
+  (en complete; non-en may reuse English wording). Adding those files ships the
+  page for those locales via `deriveShippedLocalizedDocsManifest`. Regenerate
+  with `bun run prepare:content-runtime` / `generate:shipped-localized-docs`
+  and **commit** `src/lib/content/generated/shipped-localized-docs.generated.ts`
+  (unlike other generated runtime files, this manifest is tracked). Update the
+  committed-tree expectation in
+  `src/lib/content/shipped-localized-docs.server.test.ts` to match the new
+  shipped slug lists.
 * Language switcher (`src/components/layout/language-switcher.tsx`) maps
   `supportedLocales` into options: non-docs surfaces (home, search, browse, …)
   always get a locale-preserving `href` via `switchRouteLocale`; docs pages mark

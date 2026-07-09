@@ -136,13 +136,21 @@ describe("deriveShippedLocalizedDocsManifest", () => {
 
   test("generated shipped localized docs artifact matches the committed docs tree", () => {
     resetDerivedShippedLocalizedDocsManifestCache();
-    expect(deriveShippedLocalizedDocsManifest()).toEqual(
-      resolveShippedLocalizedDocsManifest(),
-    );
-    expect(deriveShippedLocalizedDocsManifest()).toEqual({
-      ja: ["guides/getting-started"],
-      "zh-CN": ["guides/getting-started"],
-      vi: ["guides/getting-started"],
+    const derived = deriveShippedLocalizedDocsManifest();
+    expect(derived).toEqual(resolveShippedLocalizedDocsManifest());
+    expect(derived).toEqual({
+      ja: [
+        "documentation/what-is-you-agent-factory",
+        "guides/getting-started",
+      ],
+      "zh-CN": [
+        "documentation/what-is-you-agent-factory",
+        "guides/getting-started",
+      ],
+      vi: [
+        "documentation/what-is-you-agent-factory",
+        "guides/getting-started",
+      ],
     });
   });
 });

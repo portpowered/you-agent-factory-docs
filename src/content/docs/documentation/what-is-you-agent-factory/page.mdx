@@ -1,19 +1,20 @@
 ---
-title: ""
-description: ""
+title: "What is you-agent-factory"
+description: "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent."
 kind: "documentation"
-registryId: "documentation.example-documentation"
+registryId: "documentation.what-is-you-agent-factory"
 messageNamespace: "local"
 assetNamespace: "local"
-status: "draft"
-tags:
-  - example-tag
+status: "published"
+tags: []
 aliases:
-  - "Example Alias"
+  - "you-agent-factory"
+  - "what is you-agent-factory"
 updatedAt: "2026-07-09"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -30,6 +31,18 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+      {
+        href: "/docs/documentation/architecture-of-system",
+        labelKey: "links.architectureOfSystem",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
@@ -37,13 +50,13 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 </Section>
 
 <Section id="related" titleKey="sections.related.title">
-  <RelatedDocs registryId="documentation.example-documentation" />
+  <RelatedDocs registryId="documentation.what-is-you-agent-factory" />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">
-  <TagPillList registryId="documentation.example-documentation" showDescriptions />
+  <TagPillList registryId="documentation.what-is-you-agent-factory" showDescriptions />
 </Section>
 
 <Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.example-documentation" />
+  <CitationList registryId="documentation.what-is-you-agent-factory" />
 </Section>
