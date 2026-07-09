@@ -25,11 +25,11 @@
     },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
-      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. Install, first-you, and first-submit commands are above."
+      "body": "Install the CLI, start a factory (or named run) and confirm it with session list, then submit work — in that order."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
-      "body": "Do not submit work before a factory session is running. OS-specific install edge cases live on the install deep-dive, and the full CLI command matrix lives on the CLI docs — not on this quickstart."
+      "body": "Do not submit work before a factory session is running. For OS-specific install edge cases, use the install deep-dive. For the full CLI command matrix, use the CLI docs."
     },
     "related": {
       "title": "Related To"
@@ -60,7 +60,7 @@
       "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."
     },
     "firstSubmitRunningFactory": {
-      "body": "Submit targets a running factory. Confirm a live session with session list from the previous step before you enqueue work. Batch schema, relations, and dry-run details live on later submitting-work and CLI docs."
+      "body": "Submit targets a running factory. Confirm a live session with session list before you enqueue work. Batch schema, relations, and dry-run details live on submitting-work and CLI docs."
     }
   }
 }

@@ -139,6 +139,10 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     expect(deriveShippedLocalizedDocsManifest()).toEqual(
       resolveShippedLocalizedDocsManifest(),
     );
-    expect(deriveShippedLocalizedDocsManifest()["zh-CN"]).toEqual([]);
+    expect(deriveShippedLocalizedDocsManifest()).toEqual({
+      ja: ["guides/getting-started"],
+      "zh-CN": ["guides/getting-started"],
+      vi: ["guides/getting-started"],
+    });
   });
 });

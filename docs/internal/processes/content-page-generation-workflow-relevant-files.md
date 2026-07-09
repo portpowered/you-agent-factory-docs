@@ -11,26 +11,6 @@ Routine canonical pages live under `src/content/docs/<section>/<slug>`. Resolve
 the page directory with `getDocsPageDir(section, slug)` instead of adding a new
 exported `*_PAGE_DIR` constant to `src/lib/content/content-paths.ts`.
 
-## First CLI collection page (guides / techniques / documentation)
-
-Before the first authored page under a rewrite-era CLI collection can pass
-`prepare:content-runtime` / `make validate-data` and render under
-`/docs/<section>/<slug>`:
-
-1. `PUBLISHED_DOCS_SECTIONS` and `publishedDocsHrefFromEntry` in
-   `src/lib/content/published-docs-registry-contract.ts` must accept that
-   section (with matching `*PageHref` helpers in `content-hrefs.ts`). Empty
-   CLI taxonomy roots alone are not enough — generation throws
-   `Unsupported published docs section` otherwise.
-2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
-   `src/lib/content/local-docs-page.ts` must include the section with a
-   colocated loader (for example `guide-page.ts` / `guide-page-load.ts`).
-   Without that, Fumadocs renders the MDX body without
-   `ModulePageProviders` and `Section` / `T` throw
-   `usePageMessages must be used within PageMessagesProvider`.
-3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
-   even when reader copy is message-backed — mirror the glossary template.
-
 ## Guide quickstart commands and message keys
 
 When a guide needs copyable shell commands (install, first-run, submit):
@@ -76,18 +56,13 @@ files is what derives the page as shipped for that locale
 (`deriveShippedLocalizedDocsManifest` / `bun run generate:shipped-localized-docs`).
 Missing non-default messages fail closed (no English fallback at load time).
 
-For the first page under a rewrite-era CLI collection (`guides` / `techniques` /
-`documentation`), `bun run audit:canonical-page-surface` must recognize the
-registry kind (`guide`, `technique`, `documentation`, `glossary`) and must not
-treat section-level `src/content/docs/<section>/.gitkeep` as a second page
-bundle when inferring scope. Retiring an Atlas-era root placeholder at
-`src/content/docs/<slug>.mdx` when publishing `src/content/docs/<section>/<slug>/`
-is page-owned for that slug. Prove the owned-surface keep with
-`--page-dir src/content/docs/<section>/<slug> --files <page-owned paths…>` when
-earlier commits also carried first-CLI shared unblocks. Commit the regenerated
-tracked `shipped-localized-docs.generated.ts` when adding locale message files
-(the derive test requires it); leave other `prepare:content-runtime` outputs
-uncommitted when they stay gitignored.
+Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
+locale message files (the derive test requires it). On a first CLI-section page,
+that generated file plus a narrow `shipped-localized-docs.server.test.ts`
+expectation update stay inside the documented `declare-exception` allowlist —
+see [canonical-page-surface-budget-relevant-files.md](./canonical-page-surface-budget-relevant-files.md#first-authored-page-under-a-rewrite-era-cli-section).
+Leave other `prepare:content-runtime` outputs uncommitted when they stay
+gitignored.
 
 ## Routine preflight for ordinary page branches
 

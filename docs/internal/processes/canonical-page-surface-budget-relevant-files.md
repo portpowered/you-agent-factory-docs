@@ -30,13 +30,6 @@ For one canonical page, reviewers should expect:
   that exist only to render that same page)
 - No unrelated shared-surface churn
 
-Rewrite-era CLI collection kinds (`guide`, `technique`, `documentation`,
-`glossary`) resolve through the same audit registry-directory map as Atlas-era
-kinds. Section-level `src/content/docs/<section>/.gitkeep` deletions are not a
-second page bundle for scope inference; when proving an owned-surface keep for
-a page that also needed first-CLI shared unblocks earlier on the branch, pass
-`--page-dir` plus `--files` limited to the page-owned paths.
-
 ## Shared hotspot surfaces (high risk for ordinary page work)
 
 Ordinary page branches should avoid touching:
@@ -103,6 +96,15 @@ Allowed shared paths stay limited to:
 - matching `*-page.ts` / `*-page-load.ts` for that section
 - section-root `.gitkeep` removals under docs and registry
 - the process notes that document the first-page wiring
+- `src/lib/content/shipped-localized-docs.server.test.ts` when the page ships
+  non-en locale stubs (the derive test asserts the committed manifest)
+
+Retiring an Atlas-era root placeholder at `src/content/docs/<slug>.mdx` when
+publishing `src/content/docs/<section>/<slug>/` is **page-owned** for that
+slug, not a shared hotspot. Tracked
+`src/lib/content/generated/shipped-localized-docs.generated.ts` may appear as a
+declared generated output alongside the first-page exception; keep it committed
+when locale message files change.
 
 Rerun with `--exception-reason` and repeat the same justification in the PR
 conversation comment. Later pages in the same section should stay page-local.
