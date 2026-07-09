@@ -13,11 +13,11 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "On a hard coding task, raise a harness thinking or effort control so the agent spends more deliberative reasoning before editing files. On a routine rename, lower the same control so the run stays quick and inexpensive."
+      "body": "You start a factory run on a hard coding bug. Before the harness edits files, you raise its thinking or effort control so the model spends more deliberative reasoning on the diagnosis. On a routine rename in the same harness, you lower that control so the run finishes faster and costs less."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "Thinking is not factory thoughts work, which is a planner or loopback work type in the factory topology. It is also not tokens, which measure cost or context size, or tools, which are callable actions the agent can invoke. Compaction shrinks context; thinking is the deliberative reasoning that may happen inside that context."
+      "body": "Thinking is not factory thoughts work. Thoughts work is a planner or loopback work type the factory schedules; thinking is deliberative reasoning inside a harness or model turn. Thinking is also not tokens—neither LLM cost or context units nor factory work tokens that move submitted work through places. Tools are named callable actions; compaction shrinks context. Thinking is the deliberative reasoning that may happen before or alongside those actions, not the actions or context shrink itself."
     },
     "related": {
       "title": "Related Concepts And Modules"
