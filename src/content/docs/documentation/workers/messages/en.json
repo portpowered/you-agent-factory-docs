@@ -1,0 +1,32 @@
+{
+  "title": "Workers",
+  "description": "Declare and place you-agent-factory workers: runtime executors bound by workstations, named in factory.json, with backend details in workers/<name>/AGENTS.md.",
+  "openingSummary": "Workers are the runtime executors that workstation steps invoke. factory.json names each worker; the matching workers/<name>/AGENTS.md file supplies the backend and shared system instructions.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers you-agent-factory workers: what a worker is, how it sits beside workstations and factory.json, and where backend details live. Use it when you need the durable web workers contract for placement and identity. Deeper taxonomy, ownership split, and authoring examples land in the sections that follow as this page is completed."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A worker is a runtime executor that a workstation invokes by name. factory.json declares each worker name in the factory topology. The worker directory at workers/<name>/AGENTS.md holds the backend type and shared system instructions for every workstation that binds that name. A workstation owns step routing, prompt body, limits, and outputs; the worker owns the execution backend."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start from factory.json to see which worker names the factory declares. Open the matching workers/<name>/AGENTS.md file for backend details. Bind a workstation to a worker with the workstation worker field. Prefer current public worker type names when authoring new configs. Ownership split details and minimal authoring examples belong in the how-to-use expansion on this page."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web workers reference for you-agent-factory. It is not a verbatim sync of packaged you docs workers markdown, not a workstation routing guide, and not a resources capacity deep-dive. Sibling configuration, workstations, and resources pages own those surfaces when published."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
