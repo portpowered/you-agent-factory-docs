@@ -27,5 +27,10 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "whatIsYouAgentFactory": "What is you-agent-factory",
+    "loopConcept": "Loop concept",
+    "harnessSupport": "Harness support"
   }
 }
