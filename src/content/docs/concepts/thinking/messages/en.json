@@ -1,0 +1,32 @@
+{
+  "title": "Thinking",
+  "description": "Thinking is the deliberative reasoning a harness or model may produce before or alongside tool use and final answers, including thinking controls that trade quality against latency and cost.",
+  "openingSummary": "Thinking is deliberative reasoning a harness or model may produce while working toward an answer. Thinking controls let operators raise or lower that effort when quality, latency, and cost need to be balanced.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Thinking is the deliberative reasoning a harness or model may produce before or alongside tool use and final answers. In you-agent-factory terms, it is not the factory workflow system itself, and it is not the factory thoughts work type used for planner or loopback work."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Thinking and thinking controls trade answer quality against latency and cost. Raising thinking effort can improve hard tasks; lowering it can make runs cheaper and faster. Not every harness exposes the same thinking controls, so operators need to know what their chosen harness can adjust."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "On a hard coding task, raise a harness thinking or effort control so the agent spends more deliberative reasoning before editing files. On a routine rename, lower the same control so the run stays quick and inexpensive."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "Thinking is not factory thoughts work, which is a planner or loopback work type in the factory topology. It is also not tokens, which measure cost or context size, or tools, which are callable actions the agent can invoke. Compaction shrinks context; thinking is the deliberative reasoning that may happen inside that context."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
