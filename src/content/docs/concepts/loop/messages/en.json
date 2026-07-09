@@ -5,11 +5,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done, or until you take an explicit stop or terminal path. It is not a one-shot chat reply that ends when a single answer finishes."
+      "body": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done, or until you take an explicit stop or terminal path. The factory keeps the session and continues agent passes across that loop, so each pass builds on the same run instead of ending when one answer finishes. It is not a one-shot chat reply."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Long-running goals stay persistent across agent passes, so you can tell when a loop format fits versus a single submit."
+      "body": "Long-running goals stay persistent across agent passes, so progress does not reset after every submit. You can tell when a loop format fits — a goal that needs repeated work under a live factory — versus a single submit that is finished when one answer returns."
     },
     "simpleExample": {
       "title": "Simple Example",
