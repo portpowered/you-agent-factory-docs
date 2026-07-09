@@ -3,6 +3,7 @@ import type { UiMessages } from "@/lib/content/ui-messages.types";
 import {
   buildLocalizedRoute,
   defaultLocale,
+  type LocalizedRouteDestination,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
 import type {
@@ -17,7 +18,7 @@ export function resolveSiteConfigLayoutNav(
 ): { title: string; url: string } {
   return {
     title: config.brand.brandName,
-    url: buildLocalizedRoute(config.routeSurfaces.home, locale),
+    url: buildLocalizedRoute(requireRouteSurface(config, "home"), locale),
   };
 }
 
@@ -31,12 +32,23 @@ export type ResolvedHomeFeaturedLink = {
   description: string;
 };
 
+function requireRouteSurface(
+  config: SiteConfig,
+  routeSurface: string,
+): LocalizedRouteDestination {
+  const destination = config.routeSurfaces[routeSurface];
+  if (!destination) {
+    throw new Error(`Missing site config route surface: ${routeSurface}`);
+  }
+  return destination;
+}
+
 function resolveRouteSurfaceHref(
   config: SiteConfig,
   routeSurface: SitePrimaryNavEntry["routeSurface"],
   locale: SiteLocale,
 ): string {
-  return buildLocalizedRoute(config.routeSurfaces[routeSurface], locale);
+  return buildLocalizedRoute(requireRouteSurface(config, routeSurface), locale);
 }
 
 export function resolveSiteConfigPrimaryNavHrefs(
@@ -54,7 +66,10 @@ function resolveHomeFeaturedLinkHref(
   locale: SiteLocale,
 ): string {
   if (link.kind === "route") {
-    return buildLocalizedRoute(config.routeSurfaces[link.routeSurface], locale);
+    return buildLocalizedRoute(
+      requireRouteSurface(config, link.routeSurface),
+      locale,
+    );
   }
 
   const hrefLocale = isDocsPageShippedForLocale(link.slug, locale)

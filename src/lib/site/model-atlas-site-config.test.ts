@@ -4,7 +4,6 @@ import {
   MODEL_ATLAS_REPOSITORY_URL,
   modelAtlasSiteConfig,
 } from "./model-atlas-site-config";
-import { SITE_COLLECTION_FAMILIES } from "./site-config.contract";
 
 describe("model atlas site config", () => {
   test("contains current scaffold brand values", () => {
@@ -36,10 +35,18 @@ describe("model atlas site config", () => {
     ).toEqual(["home", "topology", "timeline", "blog", "tags"]);
   });
 
-  test("includes all Model Atlas collection family placeholders", () => {
+  test("includes transitional Model Atlas collection family placeholders", () => {
     expect(
       modelAtlasSiteConfig.collections.map((entry) => entry.family),
-    ).toEqual([...SITE_COLLECTION_FAMILIES]);
+    ).toEqual([
+      "glossary",
+      "concepts",
+      "modules",
+      "models",
+      "papers",
+      "training",
+      "systems",
+    ]);
   });
 
   test("includes current home featured link placeholders", () => {

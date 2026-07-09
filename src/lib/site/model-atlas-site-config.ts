@@ -1,12 +1,14 @@
 import { SCAFFOLD_ID, SITE_BRAND_NAME, SITE_HEADING } from "@/lib/scaffold";
-import {
-  SITE_COLLECTION_FAMILIES,
-  type SiteConfig,
-} from "./site-config.contract";
+import type { SiteConfig } from "./site-config.contract";
 
 export const MODEL_ATLAS_REPOSITORY_URL =
   "https://github.com/portpowered/ai-model-reference" as const;
 
+/**
+ * Transitional default config still used by the current shell.
+ * Later rewrite stories replace brand/nav/collections; the shared contract no
+ * longer requires these Atlas topology/timeline/AI collection fields.
+ */
 export const modelAtlasSiteConfig = {
   brand: {
     scaffoldId: SCAFFOLD_ID,
@@ -29,7 +31,15 @@ export const modelAtlasSiteConfig = {
     { routeSurface: "blogIndex", labelKey: "blog" },
     { routeSurface: "tagsIndex", labelKey: "tags" },
   ],
-  collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
+  collections: [
+    { family: "glossary" },
+    { family: "concepts" },
+    { family: "modules" },
+    { family: "models" },
+    { family: "papers" },
+    { family: "training" },
+    { family: "systems" },
+  ],
   homeFeaturedLinks: [
     {
       kind: "route",

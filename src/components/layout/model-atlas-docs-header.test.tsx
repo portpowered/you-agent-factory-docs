@@ -24,10 +24,7 @@ import {
   MODEL_ATLAS_REPOSITORY_URL,
   modelAtlasSiteConfig,
 } from "@/lib/site/model-atlas-site-config";
-import {
-  SITE_COLLECTION_FAMILIES,
-  type SiteConfig,
-} from "@/lib/site/site-config.contract";
+import type { SiteConfig } from "@/lib/site/site-config.contract";
 import { source } from "@/lib/source";
 import { assertPrimaryNavNoDuplicateSearchLink } from "@/lib/verify/customer-ask-home-header-convergence";
 import {
@@ -60,7 +57,15 @@ const alternateSiteConfig = {
     { routeSurface: "blogIndex", labelKey: "blog" },
     { routeSurface: "tagsIndex", labelKey: "tags" },
   ],
-  collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
+  collections: [
+    { family: "glossary" },
+    { family: "concepts" },
+    { family: "modules" },
+    { family: "models" },
+    { family: "papers" },
+    { family: "training" },
+    { family: "systems" },
+  ],
   homeFeaturedLinks: [
     {
       kind: "route",

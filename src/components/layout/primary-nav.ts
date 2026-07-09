@@ -38,11 +38,17 @@ export function getPrimaryNavItems(
 ): PrimaryNavItem[] {
   const { siteConfig = modelAtlasSiteConfig } = options;
 
-  return siteConfig.primaryNav.map((entry) => ({
-    href: buildLocalizedRoute(
-      siteConfig.routeSurfaces[entry.routeSurface],
-      locale,
-    ),
-    label: messages.nav[entry.labelKey],
-  }));
+  return siteConfig.primaryNav.map((entry) => {
+    const destination = siteConfig.routeSurfaces[entry.routeSurface];
+    if (!destination) {
+      throw new Error(
+        `Missing site config route surface: ${entry.routeSurface}`,
+      );
+    }
+
+    return {
+      href: buildLocalizedRoute(destination, locale),
+      label: messages.nav[entry.labelKey],
+    };
+  });
 }
