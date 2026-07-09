@@ -11,9 +11,13 @@
       "title": "When To Use",
       "body": "Use this guide when you are installing for the first time or verifying the install → run → submit loop on a new machine."
     },
+    "install": {
+      "title": "Install",
+      "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system."
+    },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
-      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. Later stories fill in the copyable commands for each step."
+      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. The install commands are above; first-you and first-submit commands land in the following quickstart steps."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
@@ -27,6 +31,15 @@
     },
     "references": {
       "title": "References"
+    }
+  },
+  "links": {
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)"
+  },
+  "callouts": {
+    "installDeepDive": {
+      "body": "These commands cover a basic install. OS-specific edge cases, custom install locations, and pinned versions live on the install deep-dive; you do not need that page open to finish a standard install."
     }
   }
 }

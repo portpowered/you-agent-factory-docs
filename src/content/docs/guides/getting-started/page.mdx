@@ -27,6 +27,27 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.whenToUse.body" />
 </Section>
 
+<Section id="install" titleKey="sections.install.title">
+  <T k="sections.install.body" />
+  <p>
+    <T k="links.installMacosLinuxLabel" />
+  </p>
+
+```sh
+curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh
+```
+
+  <p>
+    <T k="links.installWindowsLabel" />
+  </p>
+
+```powershell
+irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex
+```
+
+  <T k="callouts.installDeepDive.body" />
+</Section>
+
 <Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
   <T k="sections.stepsOrWorkflow.body" />
 </Section>

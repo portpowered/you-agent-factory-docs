@@ -31,6 +31,26 @@ Before the first authored page under a rewrite-era CLI collection can pass
 3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
    even when reader copy is message-backed — mirror the glossary template.
 
+## Guide quickstart commands and message keys
+
+When a guide needs copyable shell commands (install, first-run, submit):
+
+1. Put fenced code blocks in `page.mdx` (not in message JSON). They render
+   through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents` and
+   stay always-visible with a copy control.
+2. Keep OS labels and short prose in colocated messages. `pageSectionSchema`
+   only allows `title` / `body` per section — extra keys under
+   `sections.<id>` are stripped by Zod and then fail
+   `make validate-data` as missing MDX message keys.
+3. For short non-section strings (for example OS labels), use top-level
+   `links.<key>` (string map). For an extra prose block that is not a section
+   heading, use `callouts.<id>.body` with `<T k="callouts.<id>.body" />` —
+   that stores the string without rendering the `Callout` UI component.
+
+Canonical install command forms match the home CTA in
+`src/content/messages/*/common.json` (`home.installMacosLinuxCommand` /
+`home.installWindowsCommand`).
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |
