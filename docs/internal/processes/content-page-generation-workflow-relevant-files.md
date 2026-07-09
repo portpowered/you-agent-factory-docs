@@ -397,6 +397,26 @@ Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
 readers while keeping the run/submit/session/work/docs running-factory
 distinctions clear.
 
+### Documentation workstations taxonomy and routing matrices (page-local)
+
+For `documentation/workstations`, keep `#key-concepts` as the isolation-first
+definition (workflow step + ownership + route fields), then add page-local
+teaching sections before `#how-to-use`:
+
+- `#ownership` — factory.json topology vs `workstations/<name>/AGENTS.md`
+  prompt/runtime vs worker backends
+- `#runtime-types` — public `type` values with short use-when guidance
+- `#scheduling-and-routing` — `behavior` values plus `outputs` /
+  `onContinue` / `onRejection` / `onFailure` (including implicit failure for
+  worker-backed steps and explicit routes for `LOGICAL_MOVE`)
+
+Put matrix headers and cell strings under page `links.*` keys and render
+always-visible HTML `<table>` rows with `<T k="links.…" />`, same as the CLI
+command matrix. Prefer current public names; mention legacy
+`MODEL_WORKSTATION` / `MODEL_INVOKE` only as brief migration notes in section
+body prose. Rewrite from `you docs workstations` for web readers — do not sync
+packaged markdown into the page bundle.
+
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands

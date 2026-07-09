@@ -5,15 +5,27 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This reference covers you-agent-factory workstations: what a workstation owns as a workflow step, how runtime kinds and scheduling behavior are named, and how outcomes route through success, continue, rejection, and failure paths. Use it when you need the web workstations contract for authoring steps in factory.json and workstations/<name>/AGENTS.md."
+      "body": "This reference covers you-agent-factory workstations as workflow steps: what a step owns, which public runtime types and scheduling behaviors to choose, and how outcomes route through success, continue, rejection, and failure paths. Use it when you need the web workstations contract for authoring steps in factory.json and workstations/<name>/AGENTS.md."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A workstation is a workflow step. It consumes one or more input places, may bind a worker for execution, and routes results through outputs, onContinue, onRejection, or onFailure. factory.json holds topology and route wiring. workstations/<name>/AGENTS.md (or inline runtime fields) holds the step prompt and workstation-owned runtime. Workers own backend and system instructions on their own page."
+      "body": "A workstation is a workflow step. It consumes one or more input places, may bind a worker for execution, and routes results through outputs (accepted), onContinue (ordinary partial progress), onRejection (rejected), or onFailure (failed or timed out). Topology and route wiring live in factory.json. The step prompt and workstation-owned runtime live in workstations/<name>/AGENTS.md, or as inline runtime fields in factory.json. Workers own the execution backend and shared system instructions on their own surface."
+    },
+    "ownership": {
+      "title": "Ownership Split",
+      "body": "Keep three concerns separate. factory.json declares topology: workstation name, type, optional worker, inputs, and route fields. workstations/<name>/AGENTS.md holds the step-specific prompt template and workstation-owned runtime such as limits, output schema, working directory, worktree path, and environment. Workers supply the backend and shared system instructions. Inline runtime fields in factory.json are valid for single-file configs; every referenced worker and workstation must still resolve to inline fields or a matching AGENTS.md on disk. CLASSIFIER_WORKSTATION still binds a worker and inputs, but successful routing uses authored classificationRoutes instead of ordinary success outputs."
+    },
+    "runtimeTypes": {
+      "title": "Runtime Types",
+      "body": "Use type for the runtime implementation that handles the step. Prefer the current public names below. Legacy MODEL_WORKSTATION and MODEL_INVOKE aliases still load during migration as AGENT_RUN and INFERENCE_RUN; prefer the new names in new configs."
+    },
+    "schedulingAndRouting": {
+      "title": "Scheduling And Routing",
+      "body": "Use behavior for when the workstation should run, and keep type for what runtime handles it. Route accepted results through outputs, ordinary partial progress through onContinue, rejected results through onRejection, and failed or timed-out results through onFailure. Worker-backed steps that omit onFailure still get an implicit failure lane to each emitted work type's FAILED state. LOGICAL_MOVE does not dispatch a worker and must keep every route authored explicitly."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Declare each workstation in factory.json with a name, runtime type, optional worker, inputs, and route fields. Put the step-specific prompt and workstation-owned runtime in workstations/<name>/AGENTS.md when you use the split layout. Choose a public runtime type such as AGENT_RUN for prompt-rendered agent steps, or LOGICAL_MOVE when you need a no-worker token move. Concrete topology examples land in later sections of this reference."
+      "body": "Declare each workstation in factory.json with a name, runtime type, optional worker, inputs, and route fields. Put the step-specific prompt and workstation-owned runtime in workstations/<name>/AGENTS.md when you use the split layout. Choose AGENT_RUN for prompt-rendered agent steps, INFERENCE_RUN for typed one-shot model operations, SCRIPT_RUN for script workers, POLLER_RUN for hosted poller ingress, CLASSIFIER_WORKSTATION for single-label branch selection, or LOGICAL_MOVE for no-worker token moves. Concrete topology examples land in later sections of this reference."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -28,5 +40,48 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "runtimeTypeHeader": "Public type",
+    "runtimeBehaviorHeader": "Behavior",
+    "runtimeUseWhenHeader": "Use when",
+    "runtimeAgentRunType": "AGENT_RUN",
+    "runtimeAgentRunBehavior": "Prompt-rendered agent dispatch",
+    "runtimeAgentRunUseWhen": "Model-backed steps that render a workstation prompt and iterate through continue, rejection, or failure routes.",
+    "runtimeInferenceRunType": "INFERENCE_RUN",
+    "runtimeInferenceRunBehavior": "One-shot model operation",
+    "runtimeInferenceRunUseWhen": "Typed operations such as TTS with operationBindings and an inference worker.",
+    "runtimeScriptRunType": "SCRIPT_RUN",
+    "runtimeScriptRunBehavior": "Script dispatch",
+    "runtimeScriptRunUseWhen": "Steps bound to a SCRIPT_WORKER.",
+    "runtimePollerRunType": "POLLER_RUN",
+    "runtimePollerRunBehavior": "Hosted poller ingress",
+    "runtimePollerRunUseWhen": "Workstations with behavior POLLER that keep an external ingress loop active.",
+    "runtimeClassifierType": "CLASSIFIER_WORKSTATION",
+    "runtimeClassifierBehavior": "Single-label branch selection",
+    "runtimeClassifierUseWhen": "The step returns one plain string label and routes through authored classificationRoutes.",
+    "runtimeLogicalMoveType": "LOGICAL_MOVE",
+    "runtimeLogicalMoveBehavior": "No-worker token move",
+    "runtimeLogicalMoveUseWhen": "Routing or loop-breaker moves that should not invoke a worker.",
+    "behaviorHeader": "Behavior",
+    "behaviorMeaningHeader": "Meaning",
+    "behaviorStandardName": "STANDARD",
+    "behaviorStandardMeaning": "Default fire-once step.",
+    "behaviorRepeaterName": "REPEATER",
+    "behaviorRepeaterMeaning": "Re-runs after continue results until the work is accepted or fails.",
+    "behaviorCronName": "CRON",
+    "behaviorCronMeaning": "Runs on a schedule in service mode.",
+    "behaviorPollerName": "POLLER",
+    "behaviorPollerMeaning": "Keeps an external ingress loop active in service mode and submits new work through the bound worker.",
+    "routeFieldHeader": "Route field",
+    "routeMeaningHeader": "Meaning",
+    "routeOutputsName": "outputs",
+    "routeOutputsMeaning": "Places produced when the step returns accepted success.",
+    "routeOnContinueName": "onContinue",
+    "routeOnContinueMeaning": "Place produced for ordinary partial progress that should iterate without counting as rejection.",
+    "routeOnRejectionName": "onRejection",
+    "routeOnRejectionMeaning": "Place produced when the step returns rejected.",
+    "routeOnFailureName": "onFailure",
+    "routeOnFailureMeaning": "Place produced when execution fails or times out. Omitted on worker-backed steps still maps an implicit FAILED lane; LOGICAL_MOVE stays explicit."
   }
 }
