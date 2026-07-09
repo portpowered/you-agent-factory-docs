@@ -5,11 +5,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A factory token (or work token) is the runtime unit that represents one submitted work item occupying a work-type state, also called a place. It is not a chat message and not an LLM tokenizer piece."
+      "body": "A factory token, also called a work token, is the runtime unit that represents one submitted work item occupying a work-type state. That state is called a place: the factory tracks where each token sits by the place it occupies. The token is the thing the runtime moves — not a chat message, and not an LLM tokenizer piece."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Tokens are how the factory tracks where each piece of submitted work sits. Reading workstation enablement, inspecting work list state, and understanding why submit places work in an initial state all depend on recognizing the token as that unit of work."
+      "body": "When you read whether a workstation is enabled, inspect you work list or session work views, or ask why a submit lands work in an initial state, you are looking at factory tokens. Recognizing that unit of work makes those surfaces readable without reverse-engineering the rest of the topology first."
     },
     "simpleExample": {
       "title": "Simple Example",
