@@ -1,0 +1,32 @@
+{
+  "title": "Loop",
+  "description": "A factory loop keeps iterating under you-agent-factory until the goal is done.",
+  "openingSummary": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done, or until you take an explicit stop or terminal path. It is not a one-shot chat reply that ends when a single answer finishes."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long-running goals stay persistent across agent passes, so you can tell when a loop format fits versus a single submit."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "Start or continue a named run, submit work the factory can cycle on, and keep going until the goal is done or you stop."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A factory loop is not a one-shot chat, a write-review loop with draft and review gates, a programming for or while loop, or a Cursor-driven dynamic workflow."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

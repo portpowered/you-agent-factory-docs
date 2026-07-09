@@ -1,0 +1,16 @@
+{
+  "id": "concept.loop",
+  "slug": "loop",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["factory loop", "loops"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T00:00:00.000Z",
+  "updatedAt": "2026-07-09T00:00:00.000Z",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}

@@ -205,8 +205,8 @@ inherent to the slice.
 ## First published documentation (or other empty CLI collection) page
 
 The first published page in a previously empty CLI collection (`documentation`,
-and later `guides` / `techniques`) is not a routine page-only lane. Publishing
-requires shared wiring that will trip
+`guides`, `techniques`, or `concepts`) is not a routine page-only lane when
+shared wiring is still missing. Publishing may trip
 `bun run audit:canonical-page-surface`:
 
 - `PUBLISHED_DOCS_SECTIONS` + collection `*PageHref` in content-hrefs /
@@ -214,11 +214,17 @@ requires shared wiring that will trip
 - `LOCAL_DOCS_SECTIONS` + `<kind>-page(-load).ts` local MDX loader path
 - `registryDirectoryByKind.<kind>` in the canonical page surface audit
 - empty-root / section-index tests that previously forbade authored bundles
+  (`src/tests/content/section-indexes.test.tsx` must move that section from
+  empty-state assertions to authored-entry assertions once the first page
+  ships; keep non-default locale empty-state checks until locale stubs exist)
 
-Document the first-collection publish-wiring exception in the work-item PRD
-(project ACs + story surface-budget criteria) so review does not reject a
-necessary shared diff as “page-only AC failure.” Later pages in the same
-collection should stay page-local and in-budget.
+When the section loader wiring already exists (for example `concepts` after
+empty-CLI taxonomy work), the first authored page may only need the
+section-index test update plus page-owned bundle/registry files. Document the
+first-collection publish-wiring exception in the work-item PRD when shared
+paths remain required so review does not reject a necessary shared diff as
+“page-only AC failure.” Later pages in the same collection should stay
+page-local and in-budget.
 
 Prefer behavioral coverage for the shipped page (section-index listing title /
 summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy

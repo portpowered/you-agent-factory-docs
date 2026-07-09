@@ -85,9 +85,11 @@ Over-budget output groups shared paths into reviewer-readable buckets:
 
 ## First authored page under a rewrite-era CLI section
 
-When publishing the first page under `guides`, `techniques`, or `documentation`,
-the audit recognizes a narrow `declare-exception` lane for the required
-published-docs + local-docs loader wiring (and section `.gitkeep` removal).
+When publishing the first page under `guides`, `techniques`, `documentation`,
+or `concepts`, the audit recognizes a narrow `declare-exception` lane for the
+required published-docs + local-docs loader wiring (and section `.gitkeep`
+removal). When loader wiring already exists, the first page may only need
+section-index empty→authored test updates plus page-owned files.
 Allowed shared paths stay limited to:
 
 - `src/lib/content/published-docs-registry-contract.ts`
