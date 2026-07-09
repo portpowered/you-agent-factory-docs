@@ -4,11 +4,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Write-review loops are a factory workflow where write or execute work produces a candidate, review accepts it to a complete state or rejects it back to write for another pass."
+      "body": "A write-review loop is a factory workflow where write or execute work produces a candidate, then a review step decides the outcome. Accepted work moves to a complete state. Rejected work returns to write for another pass, so the same goal can revise until review accepts it."
     },
     "whenToUse": {
       "title": "When To Use",
-      "body": "Use this guide when agent work must pass review before completion, and you want a clear write → review → revise path in the factory."
+      "body": "Use this guide when agent output must pass an explicit review gate before completion, for example quality-gated docs, code, or plans. Follow it when you want a clear write → review → revise path in the factory. The outcome you should reach is accepted work that completes only after review, with rejected work routed back for another write pass."
     },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
