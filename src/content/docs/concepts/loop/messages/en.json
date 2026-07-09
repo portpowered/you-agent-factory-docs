@@ -13,11 +13,11 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "Start or continue a named run, submit work the factory can cycle on, and keep going until the goal is done or you stop."
+      "body": "You start or continue a named run under you-agent-factory, submit work the factory can cycle on, and keep submitting until the goal is done or you stop. Each pass stays on the same live run, so later work picks up where the last pass left off instead of starting a new chat."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "A factory loop is not a one-shot chat, a write-review loop with draft and review gates, a programming for or while loop, or a Cursor-driven dynamic workflow."
+      "body": "A factory loop is not a one-shot chat reply that ends when a single answer returns. It is also not a write-review loop, where draft or execute work must pass an explicit review gate before the goal can complete. A programming for or while loop only repeats code in a process; it does not keep a factory session living across agent passes. Cursor-driven dynamic workflows are editor-session automation that may call the factory, not the plain factory-loop format itself."
     },
     "related": {
       "title": "Related Concepts And Modules"
