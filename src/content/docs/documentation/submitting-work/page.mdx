@@ -1,0 +1,160 @@
+---
+title: "Submitting Work"
+description: "Submit work batches to a running you-agent-factory and relate work items with DEPENDS_ON or PARENT_CHILD."
+kind: "documentation"
+registryId: "documentation.submitting-work"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "submitting work"
+  - "work batches"
+  - "FACTORY_REQUEST_BATCH"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="work-batches" titleKey="sections.workBatches.title">
+  <T k="sections.workBatches.body" />
+  <p>
+    <T k="links.batchExampleLabel" />
+  </p>
+  ```json
+  {
+    "requestId": "release-story-set",
+    "type": "FACTORY_REQUEST_BATCH",
+    "works": [
+      {
+        "name": "story-auth",
+        "workTypeName": "story",
+        "payload": { "title": "Harden auth session handling" }
+      }
+    ]
+  }
+  ```
+  <p>
+    <T k="links.submitBatchLabel" />
+  </p>
+  ```sh
+  you submit batch ./batch.json
+  ```
+  <p>
+    <T k="links.dryRunLabel" />
+  </p>
+  ```sh
+  you submit batch --dry-run ./batch.json
+  ```
+  <T k="links.idempotencyNote" />
+</Section>
+
+<Section id="relationships" titleKey="sections.relationships.title">
+  <T k="sections.relationships.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.relationNeedHeader" />
+        </th>
+        <th>
+          <T k="links.relationTypeHeader" />
+        </th>
+        <th>
+          <T k="links.relationMeaningHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.dependsOnNeed" />
+        </td>
+        <td>
+          <T k="links.dependsOnType" />
+        </td>
+        <td>
+          <T k="links.dependsOnMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.parentChildNeed" />
+        </td>
+        <td>
+          <T k="links.parentChildType" />
+        </td>
+        <td>
+          <T k="links.parentChildMeaning" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="links.sourceTargetNote" />
+  <p>
+    <T k="links.relationsExampleLabel" />
+  </p>
+  ```json
+  {
+    "relations": [
+      {
+        "type": "DEPENDS_ON",
+        "sourceWorkName": "publish",
+        "targetWorkName": "review",
+        "requiredState": "complete"
+      },
+      {
+        "type": "PARENT_CHILD",
+        "sourceWorkName": "story-auth",
+        "targetWorkName": "story-set"
+      }
+    ]
+  }
+  ```
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="documentation.submitting-work" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.submitting-work" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.submitting-work" />
+</Section>
