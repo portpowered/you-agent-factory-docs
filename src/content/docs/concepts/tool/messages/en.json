@@ -12,11 +12,11 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "An MCP host can call a Factory Session tool such as you.factory_session.validate_source. Scaffold copy — a compact concrete example lands in a later story."
+      "body": "An MCP host running Cursor opens a Factory Session and calls you.factory_session.validate_source on a workflow file. That named call is one tool in use: the host asks for validation, gets a result, and can act on it. The same idea shows up when a harness agent invokes a file or shell tool while executing dispatched work—still one named action, not the whole runtime."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "A tool is not the harness, not MCP host-setup documentation, and not a worker. Scaffold copy — full confusion boundaries land in a later story."
+      "body": "A tool is the named action you call. The harness is the agent runtime that can choose and run tools; it is not itself a tool. MCP documentation and host setup explain how to connect a host and list available tools; they are not the tools those pages describe. A worker is a configured executor that does assigned work; tools are the callable actions that worker or host may use. Thinking is internal reasoning before or between actions; it is not a callable capability with a tool name."
     },
     "related": {
       "title": "Related Concepts And Modules"
