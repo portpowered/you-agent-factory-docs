@@ -414,6 +414,18 @@ page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 
+### Documentation submitting-work key concepts, limits, and sibling discovery
+
+For `documentation/submitting-work`, keep `#key-concepts` as the plain-language
+assumptions (running factory, batch creates multiple items, relations order or
+nest) and `#limits-and-assumptions` as the scope boundary (web batches +
+relationships reference — not CLI flag dump, packaged-docs sync, configuration
+topology, or OpenAPI/API). Prefer page-local `<LocalizedLinkList>` in how-to-use
+for CLI and getting-started discovery: documentation/guide kinds are omitted
+from generated related-registry candidates, so curated `relatedIds` alone will
+not render under `<RelatedDocs />`. Keep labels in `links.*` and assert the
+hrefs in the page render test.
+
 ## Core content paths
 
 * `src/lib/content/content-paths.ts`

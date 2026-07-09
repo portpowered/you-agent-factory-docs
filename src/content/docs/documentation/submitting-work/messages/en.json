@@ -9,11 +9,11 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "Submitted work enters a factory that is already running. A batch creates multiple work items in one validated submission. Relations order or nest those items so the factory can wait on prerequisites or keep child work under a parent."
+      "body": "Submitted work enters a factory that is already running — the factory must accept work before a batch lands. A batch creates multiple work items in one validated submission, so the factory either accepts the whole document or rejects it. Relations order or nest those items: DEPENDS_ON waits on a sibling prerequisite, and PARENT_CHILD keeps child work under a parent."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a FACTORY_REQUEST_BATCH with a stable requestId and the works you want to enqueue. Add relations when items must wait on each other or nest under a parent. Submit the batch to a running factory, and use dry-run when you want validation without creating work. Later sections on this page teach the batch shape and relationship choices in more detail."
+      "body": "Author a FACTORY_REQUEST_BATCH with a stable requestId and the works you want to enqueue. Add relations when items must wait on each other or nest under a parent. Submit the batch to a running factory, and use dry-run when you want validation without creating work. Later sections on this page teach the batch shape and relationship choices in more detail. Open the CLI docs for the broader command matrix, or getting started when you need the first-run walkthrough."
     },
     "workBatches": {
       "title": "Work Batches",
@@ -25,7 +25,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web submitting-work reference for batches and relationships. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install, first-run, and command-matrix details belong on sibling documentation and guide pages."
+      "body": "This page is a web submitting-work reference for batches and relationships only. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install scripts, first-run walkthroughs, and the broader command matrix belong on sibling documentation and guide pages linked from how to use."
     },
     "related": {
       "title": "Related To"
@@ -52,6 +52,8 @@
     "parentChildType": "PARENT_CHILD",
     "parentChildMeaning": "Source is the child of target",
     "sourceTargetNote": "Read DEPENDS_ON as: the source waits for the target. Read PARENT_CHILD as: the source is a child of the target. requiredState applies only to DEPENDS_ON and names the state the target must reach; it defaults to complete when omitted.",
-    "relationsExampleLabel": "Minimal relations fragment:"
+    "relationsExampleLabel": "Minimal relations fragment:",
+    "cliDocs": "CLI docs",
+    "gettingStarted": "Getting started"
   }
 }

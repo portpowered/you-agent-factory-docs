@@ -95,5 +95,40 @@ describe("submitting-work documentation page", () => {
     expect(relationshipsSection?.textContent).toMatch(
       /source is a child of the target/i,
     );
+
+    const keyConceptsSection = document.getElementById("key-concepts");
+    expect(keyConceptsSection).toBeTruthy();
+    expect(keyConceptsSection?.textContent).toMatch(
+      /factory that is already running/i,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(
+      /multiple work items in one validated submission/i,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(/Relations order or nest/i);
+
+    const limitsSection = document.getElementById("limits-and-assumptions");
+    expect(limitsSection).toBeTruthy();
+    expect(limitsSection?.textContent).toMatch(
+      /web submitting-work reference/i,
+    );
+    expect(limitsSection?.textContent).toMatch(/not a full CLI flag dump/i);
+    expect(limitsSection?.textContent).toMatch(
+      /not a sync of packaged you docs/i,
+    );
+    expect(limitsSection?.textContent).toMatch(
+      /not the configuration topology page/i,
+    );
+    expect(limitsSection?.textContent).toMatch(
+      /not the OpenAPI or API reference/i,
+    );
+
+    const cliDocs = screen.getByRole("link", { name: "CLI docs" });
+    const gettingStarted = screen.getByRole("link", {
+      name: "Getting started",
+    });
+    expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
+    expect(gettingStarted.getAttribute("href")).toBe(
+      "/docs/guides/getting-started",
+    );
   });
 });
