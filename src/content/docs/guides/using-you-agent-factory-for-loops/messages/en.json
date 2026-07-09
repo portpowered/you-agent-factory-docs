@@ -1,0 +1,33 @@
+{
+  "title": "Using you-agent-factory for Loops",
+  "description": "Run iterative factory loops that keep work cycling until a goal is done.",
+  "openingSummary": "This guide covers using you-agent-factory for loops: iterative factory work that keeps cycling until a goal is done.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A factory loop is iterative work under you-agent-factory that keeps cycling until the goal is done."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this guide when a goal needs repeated agent passes under a live factory."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Confirm a live factory, start or continue a named run, submit work that iterates, and check progress."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Do not submit without a live factory session, and do not treat a loop as a one-shot chat."
+    },
+
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
