@@ -123,6 +123,9 @@ describe("CLI section index page render", () => {
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("What is you-agent-factory");
     expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
+    expect(html).toContain(
+      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+    );
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
@@ -168,7 +171,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the vietnamese documentation index with localized title and empty-state copy", async () => {
+  it("renders the vietnamese documentation index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("vi");
     const html = renderToStaticMarkup(
       await LocalizedDocumentationIndexPage({
@@ -177,11 +180,15 @@ describe("localized CLI section index page render", () => {
     );
 
     expect(html).toContain(messages.documentationIndex.title);
-    // Default-locale-only documentation pages are not shipped for vi yet, so
-    // the localized index still uses the empty-state contract.
-    expect(html).toContain(messages.documentationIndex.emptyTitle);
-    expect(html).toContain(messages.documentationIndex.emptyDescription);
-    expect(html).toContain('href="/vi"');
+    expect(html).toContain(
+      `aria-label="${messages.documentationIndex.listLabel}"`,
+    );
+    expect(html).toContain("What is you-agent-factory");
+    expect(html).toContain("/vi/docs/documentation/what-is-you-agent-factory");
+    expect(html).toContain(
+      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+    );
+    expect(html).not.toContain(messages.documentationIndex.emptyTitle);
     expect(messages.documentationIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );

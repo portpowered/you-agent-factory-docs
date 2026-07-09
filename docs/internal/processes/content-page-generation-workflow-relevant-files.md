@@ -103,6 +103,28 @@ page-local but CI will require narrowly-scoped shared updates:
 Document the exception explicitly in the work-item PRD when this collision is
 inherent to the slice.
 
+## First published documentation (or other empty CLI collection) page
+
+The first published page in a previously empty CLI collection (`documentation`,
+and later `guides` / `techniques`) is not a routine page-only lane. Publishing
+requires shared wiring that will trip
+`bun run audit:canonical-page-surface`:
+
+- `PUBLISHED_DOCS_SECTIONS` + collection `*PageHref` in content-hrefs /
+  published-docs registry contract
+- `LOCAL_DOCS_SECTIONS` + `<kind>-page(-load).ts` local MDX loader path
+- `registryDirectoryByKind.<kind>` in the canonical page surface audit
+- empty-root / section-index tests that previously forbade authored bundles
+
+Document the first-collection publish-wiring exception in the work-item PRD
+(project ACs + story surface-budget criteria) so review does not reject a
+necessary shared diff as “page-only AC failure.” Later pages in the same
+collection should stay page-local and in-budget.
+
+Prefer behavioral coverage for the shipped page (section-index listing title /
+summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
+and next-step links) over inventory-only “slug exists on disk” assertions.
+
 ## Glossary-derived browse and sidebar sections
 
 When glossary decomposition needs new reader-facing top-level areas such as

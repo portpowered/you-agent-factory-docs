@@ -109,10 +109,8 @@ describe("empty CLI browse and section indexes end-to-end", () => {
     }
   });
 
-  test("allows authored documentation page bundles under the documentation collection", () => {
-    expect(
-      listAuthoredPageBundleSlugs(join(DOCS_ROOT, "documentation")),
-    ).toContain("what-is-you-agent-factory");
+  test("keeps the documentation collection root available for authored page bundles", () => {
+    expect(existsSync(join(DOCS_ROOT, "documentation"))).toBe(true);
   });
 
   test("renders the browse hub with CLI section headings and no Atlas sections", async () => {
@@ -187,6 +185,12 @@ describe("empty CLI browse and section indexes end-to-end", () => {
       `aria-label="${documentationMessages.listLabel}"`,
     );
     expect(documentationHtml).toContain("What is you-agent-factory");
+    expect(documentationHtml).toContain(
+      "/docs/documentation/what-is-you-agent-factory",
+    );
+    expect(documentationHtml).toContain(
+      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+    );
     expect(documentationHtml).not.toContain(documentationMessages.emptyTitle);
     expect(documentationMessages.title).not.toMatch(ATLAS_PRODUCT_COPY);
     expect(documentationMessages.description).not.toMatch(ATLAS_PRODUCT_COPY);

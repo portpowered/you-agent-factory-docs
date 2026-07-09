@@ -140,6 +140,9 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("What is you-agent-factory");
     expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
+    expect(html).toContain(
+      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+    );
     expect(html).not.toContain(indexMessages.emptyTitle);
   });
 

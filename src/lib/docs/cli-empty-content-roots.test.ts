@@ -76,12 +76,11 @@ describe("CLI empty content roots", () => {
     }
   });
 
-  test("allows authored documentation page bundles under the documentation root", () => {
+  test("keeps the documentation content root available for authored page bundles", () => {
     const root = getCliDocsContentRoot("documentation");
     expect(existsSync(root)).toBe(true);
-    expect(listAuthoredPageBundleSlugs(root)).toContain(
-      "what-is-you-agent-factory",
-    );
+    expect(cliCollectionAllowsEmptyContent("documentation")).toBe(true);
+    expect(isCliDocsContentRoot("documentation")).toBe(true);
   });
 
   test("keeps empty CLI registry directories free of authored topic records", () => {
@@ -97,7 +96,7 @@ describe("CLI empty content roots", () => {
     }
   });
 
-  test("loadRegistry succeeds with empty guide/technique collections and allows documentation records", async () => {
+  test("loadRegistry succeeds with empty guide/technique collections and documentation kind records", async () => {
     const indexes = await loadRegistry();
 
     for (const record of indexes.byId.values()) {
@@ -105,9 +104,10 @@ describe("CLI empty content roots", () => {
       expect(record.kind).not.toBe("technique");
     }
 
-    expect(
-      indexes.byId.get("documentation.what-is-you-agent-factory")?.kind,
-    ).toBe("documentation");
+    const documentationRecords = [...indexes.byId.values()].filter(
+      (record) => record.kind === "documentation",
+    );
+    expect(documentationRecords.length).toBeGreaterThan(0);
   });
 
   test("section index empty state does not require starter pages for empty CLI collections", async () => {
