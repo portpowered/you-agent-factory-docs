@@ -26,7 +26,8 @@ entry. Do not vendor or fork package source into this repo.
 | `src/app/globals.css` | Single `@import "@you-agent-factory/components/styles.css"` after Tailwind (package README order) |
 | `src/lib/factory-components/host-package-styles.ts` | Resolves the published `styles.css` export map entry for smoke verification |
 | `src/features/factory-ui/graphs.ts` | Thin re-export of `@you-agent-factory/components/graphs` (viewport/node/edge helpers); no domain logic or styles import |
-| `src/features/factory-ui/*` | Thin re-export wrappers for charts, DataTable, CodePanel (later stories) |
+| `src/features/factory-ui/charts.ts` | Thin re-export of `@you-agent-factory/components/charts` (ChartContainer, ChartStatePanel, tooltip/legend helpers); no domain series models or styles import |
+| `src/features/factory-ui/*` | Thin re-export wrappers for DataTable, CodePanel (later stories) |
 | `src/lib/docs/component-manifest.ts` | Reusable coverage boundary retarget away from Atlas graph components (later story) |
 
 ## Styles import contract
@@ -48,6 +49,17 @@ entry. Do not vendor or fork package source into this repo.
   handle badges need a `ReactFlowProvider` ancestor (same pattern as
   `RegistryGraphFlow` tests).
 - Do not put registry IDs, Atlas copy, or data fetching in the wrapper module.
+
+## Thin factory-ui chart wrappers
+
+- Host path: `src/features/factory-ui/charts.ts` — re-export only from
+  `@you-agent-factory/components/charts`.
+- Host apps already depend on `recharts` for Recharts children
+  (`LineChart`, `Line`, axes). Keep series config/data caller-owned.
+- Smoke-test `ChartContainer` with fixture `ChartConfig` + Recharts children
+  (`role="img"` + `data-chart-container`). Also exercise `ChartStatePanel`
+  empty (`role="status"`) and error (`role="alert"`) states.
+- Do not import package styles from the wrapper module.
 
 ## Verification preference
 
