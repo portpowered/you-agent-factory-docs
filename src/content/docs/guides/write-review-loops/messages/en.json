@@ -33,7 +33,8 @@
     "startFactoryLabel": "Start a factory when no session is active",
     "namedRunLabel": "Named run",
     "submitWorkLabel": "Submit write or execute work",
-    "batchSubmitLabel": "Batch submit"
+    "batchSubmitLabel": "Batch submit",
+    "writerReviewerTechnique": "Writer-reviewer technique"
   },
   "callouts": {
     "sessionCheck": {
