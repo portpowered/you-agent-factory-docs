@@ -11,7 +11,7 @@ import type { SharedProps } from "fumadocs-ui/contexts/search";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { ComponentType, ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ModelAtlasDocsHeader } from "@/components/layout/model-atlas-docs-header";
+import { DocsHeader } from "@/components/layout/docs-header";
 import {
   getPrimaryNavItems,
   PRIMARY_NAV_DESKTOP_CLASS,
@@ -101,7 +101,7 @@ function renderHeaderWithNavigation(
   );
 }
 
-describe("ModelAtlasDocsHeader", () => {
+describe("DocsHeader", () => {
   afterEach(() => {
     cleanup();
     resetMockNavigation();
@@ -112,7 +112,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -148,7 +148,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
+        <DocsHeader
           messages={messages}
           pageTree={source.pageTree}
           siteConfig={alternateSiteConfig}
@@ -167,7 +167,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
+        <DocsHeader
           messages={messages}
           pageTree={source.pageTree}
           siteConfig={youAgentFactorySiteConfig}
@@ -186,7 +186,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -220,7 +220,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -252,7 +252,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
+        <DocsHeader
           messages={messages}
           pageTree={source.pageTree}
           topologyOptions={[]}
@@ -281,7 +281,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -293,7 +293,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -327,7 +327,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader
+      <DocsHeader
         messages={messages}
         pageTree={source.pageTree}
         topologyOptions={[]}
@@ -360,7 +360,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
+        <DocsHeader
           messages={messages}
           pageTree={source.pageTree}
           locale="vi"
@@ -392,7 +392,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages("vi");
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader
+      <DocsHeader
         messages={messages}
         pageTree={source.pageTree}
         locale="vi"
@@ -448,7 +448,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages("vi");
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader
+      <DocsHeader
         messages={messages}
         pageTree={source.pageTree}
         locale="vi"
@@ -483,7 +483,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -509,7 +509,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -524,7 +524,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -560,7 +560,7 @@ describe("ModelAtlasDocsHeader", () => {
     const user = userEvent.setup();
     window.history.replaceState({}, "", "/docs/glossary/token?tag=attention");
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
         pathname: "/docs/glossary/token",
@@ -581,14 +581,14 @@ describe("ModelAtlasDocsHeader", () => {
     ).toBe("/docs/glossary/token?tag=attention");
     expect(
       within(dialog)
-        .getByRole("menuitem", { name: /^Tiếng Việt$/i })
-        .getAttribute("href"),
-    ).toBe("/vi/docs/glossary/token?tag=attention");
+        .getByRole("menuitem", { name: /Tiếng Việt/ })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
     expect(
       within(dialog)
         .getByRole("menuitem", { name: /日本語/ })
-        .getAttribute("href"),
-    ).toBe("/ja/docs/glossary/token?tag=attention");
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
     expect(
       within(dialog)
         .getByRole("menuitem", { name: /简体中文/ })
@@ -603,7 +603,7 @@ describe("ModelAtlasDocsHeader", () => {
     const user = userEvent.setup();
     window.history.replaceState({}, "", "/search?q=attention&tag=attention");
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
         pathname: "/search",
@@ -645,7 +645,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -672,7 +672,7 @@ describe("ModelAtlasDocsHeader", () => {
     const user = userEvent.setup();
     window.history.replaceState({}, "", "/docs/modules/sparse-attention");
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
         pathname: "/docs/modules/sparse-attention",

@@ -10,7 +10,7 @@ const PHASE_1_SHELL_SOURCE_FILES = [
   "src/components/home/home-article.tsx",
   "src/components/home/home-browse-link.tsx",
   "src/components/layout/primary-nav.ts",
-  "src/components/layout/model-atlas-docs-header.tsx",
+  "src/components/layout/docs-header.tsx",
   "src/components/layout/canonical-docs-layout.tsx",
   "src/features/docs/search/SearchTrigger.tsx",
   "src/features/docs/components/DocsIndexEntryList.tsx",

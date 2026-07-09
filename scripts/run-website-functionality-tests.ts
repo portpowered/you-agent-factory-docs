@@ -64,7 +64,7 @@ const excludedFiles = new Set([
   "src/lib/scaffold.test.ts",
   "src/lib/source.test.ts",
   "src/app/docs/docs-slug-renderer.test.tsx",
-  "src/components/layout/model-atlas-docs-header.test.tsx",
+  "src/components/layout/docs-header.test.tsx",
   "src/features/blog/llms-no-longer-reliant-discoverability.test.tsx",
   "src/features/blog/components/BlogRelatedDocs.test.tsx",
   "src/features/blog/components/blog-related-docs-blog-integration.test.tsx",

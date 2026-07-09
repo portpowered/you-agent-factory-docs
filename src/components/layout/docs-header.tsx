@@ -21,7 +21,7 @@ import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
 import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 
-type ModelAtlasDocsHeaderProps = {
+type DocsHeaderProps = {
   messages: UiMessages;
   pageTree: PageTree.Root;
   locale?: SiteLocale;
@@ -30,14 +30,14 @@ type ModelAtlasDocsHeaderProps = {
   trailing?: ReactNode;
 };
 
-export function ModelAtlasDocsHeader({
+export function DocsHeader({
   messages,
   pageTree,
   locale = defaultLocale,
   siteConfig = youAgentFactorySiteConfig,
   topologyOptions = [],
   trailing,
-}: ModelAtlasDocsHeaderProps) {
+}: DocsHeaderProps) {
   const repositoryUrl = siteConfig.repositoryUrl;
   const primaryNavItems = getPrimaryNavItems(messages, locale, {
     siteConfig,

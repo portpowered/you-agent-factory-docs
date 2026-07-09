@@ -1,8 +1,7 @@
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
-
+import { DocsHeader } from "@/components/layout/docs-header";
 import { docsSidebarTreeComponents } from "@/components/layout/docs-sidebar-tree";
-import { ModelAtlasDocsHeader } from "@/components/layout/model-atlas-docs-header";
 import {
   getTopologyNavigationLabels,
   listTopologyNavigationOptions,
@@ -33,7 +32,7 @@ export function CanonicalDocsLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
-      <ModelAtlasDocsHeader
+      <DocsHeader
         messages={messages}
         pageTree={pageTree}
         locale={locale}

@@ -3,7 +3,7 @@ import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, fireEvent, screen, within } from "@testing-library/react";
 import { act } from "react";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { ModelAtlasDocsHeader } from "@/components/layout/model-atlas-docs-header";
+import { DocsHeader } from "@/components/layout/docs-header";
 import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { source } from "@/lib/source";
 import { expectNoSeriousAxeViolations } from "@/tests/a11y/axe";
@@ -72,10 +72,7 @@ describe("primary navigation accessibility smoke", () => {
     const context = await loadAppTestContext();
     await act(async () => {
       await renderWithAppProviders(
-        <ModelAtlasDocsHeader
-          messages={context.messages}
-          pageTree={source.pageTree}
-        />,
+        <DocsHeader messages={context.messages} pageTree={source.pageTree} />,
         { context },
       );
     });
