@@ -1,0 +1,31 @@
+{
+  "title": "Resources",
+  "description": "Declare bounded-concurrency resource pools in factory.json and consume them from workstation requirements while a dispatch is in flight.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Resources are the you-agent-factory bounded-concurrency contract. This page covers how top-level resource pools and workstation requirements limit how many matching dispatches can run at once. It is the durable web reference for capacity pools, not a Model Atlas surface and not the portability supportingFiles contract."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A resource pool is a named capacity limit declared in factory.json. Workstation requirements hold that capacity while a dispatch is in flight. Later matching dispatches wait when the pool is exhausted. Later sections on this page teach where requirements belong, a minimal capacity example, and when typed resources such as MODEL, PROVIDER_QUOTA, and INVOCATION_SLOT apply."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Declare shared pools under top-level resources, then reference those pool names from the workstation that should hold capacity while it runs. Use this page when you need the resources / bounded-concurrency reference before opening configuration, workers, or workstations sibling docs."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web resources / bounded-concurrency reference. It is not a verbatim sync of packaged CLI docs, not the configuration topology overview, not worker backends, not workstation routing or lifecycle, and not portability supportingFiles."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
