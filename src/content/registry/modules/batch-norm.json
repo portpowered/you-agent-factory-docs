@@ -1,0 +1,33 @@
+{
+  "id": "module.batch-norm",
+  "slug": "batch-norm",
+  "kind": "module",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["BatchNorm", "batch normalization", "BN"],
+  "tags": ["normalization", "foundations"],
+  "relatedIds": [
+    "concept.normalization",
+    "module.group-norm",
+    "module.layer-norm"
+  ],
+  "citationIds": ["citation.batch-normalization"],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+  "releaseDate": "2015-02-01",
+  "authors": ["Sergey Ioffe", "Christian Szegedy"],
+  "sourceId": "citation.batch-normalization",
+  "primaryClassificationId": "classification.module.normalization",
+  "moduleType": "normalization",
+  "optimizes": ["training-stability"],
+  "exampleModelIds": [],
+  "improvesOnIds": [],
+  "tradeoffIds": [],
+  "usedByModelIds": [],
+  "introducedByPaperIds": [],
+  "mathLevel": "light",
+  "moduleFamily": "normalization",
+  "conceptType": "normalization-variant",
+  "variantGroup": "normalization-variants"
+}

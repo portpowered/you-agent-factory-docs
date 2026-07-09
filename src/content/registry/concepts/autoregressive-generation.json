@@ -1,0 +1,53 @@
+{
+  "id": "concept.autoregressive-generation",
+  "slug": "autoregressive-generation",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "Autoregressive generation",
+    "autoregressive decoding",
+    "next-token generation",
+    "AR generation"
+  ],
+  "tags": ["foundations", "taxonomy", "attention"],
+  "relatedIds": [
+    "concept.token",
+    "concept.logit",
+    "concept.softmax",
+    "concept.sampling-overview",
+    "concept.greedy-decoding",
+    "concept.embedding",
+    "concept.decoder",
+    "concept.kv-cache",
+    "concept.prefill",
+    "concept.decode",
+    "concept.prefill-decode-split",
+    "concept.encoder-decoder",
+    "concept.conditioning",
+    "concept.denoising-generation",
+    "concept.quantization",
+    "model.cosmos-3"
+  ],
+  "citationIds": [
+    "citation.brown-gpt-3",
+    "citation.curious-case-neural-text-degeneration"
+  ],
+  "status": "published",
+  "createdAt": "2026-06-04T12:30:00.000Z",
+  "updatedAt": "2026-07-03T02:45:00.000Z",
+  "primaryClassificationId": "classification.concept.model-type",
+  "conceptType": "general",
+  "sidebarGrouping": {
+    "glossary": "generation-and-diffusion"
+  },
+  "prerequisiteIds": [
+    "concept.token",
+    "concept.logit",
+    "concept.softmax",
+    "concept.embedding",
+    "concept.decoder",
+    "concept.encoder-decoder"
+  ],
+  "explainsIds": ["concept.conditioning"]
+}

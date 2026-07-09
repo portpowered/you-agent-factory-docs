@@ -1,0 +1,38 @@
+{
+  "id": "module.qk-norm",
+  "slug": "qk-norm",
+  "kind": "module",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["QK norm", "query-key normalization", "QK normalization"],
+  "tags": ["normalization", "foundations"],
+  "relatedIds": [
+    "concept.normalization",
+    "module.layer-norm",
+    "module.rmsnorm"
+  ],
+  "citationIds": ["citation.query-key-normalization-for-transformers"],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+  "releaseDate": "2020-10-01",
+  "authors": [
+    "Alex Henry",
+    "Prudhvi Raj Dachapally",
+    "Shubham Pawar",
+    "Yuxuan Chen"
+  ],
+  "sourceId": "citation.query-key-normalization-for-transformers",
+  "primaryClassificationId": "classification.module.normalization",
+  "moduleType": "normalization",
+  "optimizes": ["attention-logit-stability"],
+  "exampleModelIds": [],
+  "improvesOnIds": [],
+  "tradeoffIds": [],
+  "usedByModelIds": [],
+  "introducedByPaperIds": [],
+  "mathLevel": "light",
+  "moduleFamily": "normalization",
+  "conceptType": "normalization-variant",
+  "variantGroup": "normalization-variants"
+}

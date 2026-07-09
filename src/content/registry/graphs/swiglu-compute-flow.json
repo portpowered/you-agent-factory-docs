@@ -1,0 +1,150 @@
+{
+  "id": "graph.swiglu-compute-flow",
+  "slug": "swiglu-compute-flow",
+  "kind": "graph",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [],
+  "tags": ["foundations"],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-20T00:00:00.000Z",
+  "subjectId": "concept.swiglu",
+  "graphType": "module-compute-flow",
+  "rootNodeId": "input-state",
+  "layout": "vertical-expandable",
+  "defaultExpandedDepth": 1,
+  "supportedRenderers": ["react-flow", "mermaid"],
+  "nodes": [
+    {
+      "id": "swiglu-module",
+      "labelKey": "graph.nodes.swigluModule.label",
+      "summaryKey": "graph.nodes.swigluModule.summary",
+      "registryId": "module.swiglu",
+      "moduleKind": "feed-forward",
+      "position": { "x": -10, "y": 18 },
+      "size": { "width": 150, "height": 72 },
+      "visualRole": "process-node",
+      "childNodeIds": []
+    },
+    {
+      "id": "input-state",
+      "labelKey": "graph.nodes.inputState.label",
+      "moduleKind": "input",
+      "position": { "x": 210, "y": 0 },
+      "visualRole": "process-node",
+      "childNodeIds": ["value-projection", "gate-projection"]
+    },
+    {
+      "id": "value-projection",
+      "labelKey": "graph.nodes.valueProjection.label",
+      "moduleKind": "projection",
+      "position": { "x": 80, "y": 110 },
+      "visualRole": "process-node",
+      "childNodeIds": ["value-branch"]
+    },
+    {
+      "id": "gate-projection",
+      "labelKey": "graph.nodes.gateProjection.label",
+      "moduleKind": "projection",
+      "position": { "x": 430, "y": 110 },
+      "visualRole": "process-node",
+      "childNodeIds": ["gate-activation"]
+    },
+    {
+      "id": "value-branch",
+      "labelKey": "graph.nodes.valueBranch.label",
+      "moduleKind": "feed-forward",
+      "position": { "x": 105, "y": 220 },
+      "visualRole": "summary-node",
+      "childNodeIds": ["gated-product"]
+    },
+    {
+      "id": "gate-activation",
+      "labelKey": "graph.nodes.gateActivation.label",
+      "summaryKey": "graph.nodes.gateActivation.summary",
+      "registryId": "module.silu",
+      "moduleKind": "operation",
+      "position": { "x": 450, "y": 220 },
+      "visualRole": "process-node",
+      "childNodeIds": ["gated-product"]
+    },
+    {
+      "id": "gated-product",
+      "labelKey": "graph.nodes.gatedProduct.label",
+      "summaryKey": "graph.nodes.gatedProduct.summary",
+      "moduleKind": "feed-forward",
+      "position": { "x": 250, "y": 330 },
+      "visualRole": "process-node",
+      "childNodeIds": ["project-back"]
+    },
+    {
+      "id": "project-back",
+      "labelKey": "graph.nodes.projectBack.label",
+      "moduleKind": "projection",
+      "position": { "x": 175, "y": 440 },
+      "visualRole": "process-node",
+      "childNodeIds": ["output-state"]
+    },
+    {
+      "id": "output-state",
+      "labelKey": "graph.nodes.outputState.label",
+      "moduleKind": "output",
+      "position": { "x": 200, "y": 550 },
+      "visualRole": "process-node",
+      "childNodeIds": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "input-to-value-projection",
+      "source": "input-state",
+      "target": "value-projection",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "input-to-gate-projection",
+      "source": "input-state",
+      "target": "gate-projection",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "value-projection-to-branch",
+      "source": "value-projection",
+      "target": "value-branch",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "gate-projection-to-activation",
+      "source": "gate-projection",
+      "target": "gate-activation",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "value-branch-to-product",
+      "source": "value-branch",
+      "target": "gated-product",
+      "edgeKind": "depends-on"
+    },
+    {
+      "id": "gate-activation-to-product",
+      "source": "gate-activation",
+      "target": "gated-product",
+      "edgeKind": "depends-on"
+    },
+    {
+      "id": "product-to-project",
+      "source": "gated-product",
+      "target": "project-back",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "project-to-output",
+      "source": "project-back",
+      "target": "output-state",
+      "edgeKind": "data-flow"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": "module.superhot-rope",
+  "slug": "superhot-rope",
+  "kind": "module",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "SuperHOT RoPE",
+    "SuperHOT",
+    "SuperHOT scaling",
+    "superhot rope scaling"
+  ],
+  "tags": ["position-encoding", "context-window", "foundations"],
+  "relatedIds": [
+    "module.rope",
+    "concept.context-extension",
+    "module.ntk-aware-rope-scaling",
+    "module.yarn"
+  ],
+  "citationIds": [
+    "citation.kaiokendev-superhot",
+    "citation.chen-positional-interpolation"
+  ],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+  "releaseDate": "2023-01-01",
+  "authors": ["kaiokendev"],
+  "sourceId": "citation.kaiokendev-superhot",
+  "primaryClassificationId": "classification.module.positional-encoding",
+  "moduleType": "position-encoding",
+  "optimizes": ["long-context-extrapolation"],
+  "exampleModelIds": [],
+  "improvesOnIds": [],
+  "tradeoffIds": [],
+  "usedByModelIds": [],
+  "introducedByPaperIds": [],
+  "mathLevel": "none",
+  "moduleFamily": "rope-scaling",
+  "conceptType": "rope-scaling-method",
+  "variantGroup": "rope-scaling-family"
+}

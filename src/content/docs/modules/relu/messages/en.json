@@ -1,0 +1,140 @@
+{
+  "title": "Rectified Linear Unit",
+  "description": "A simple activation function that keeps positive values and turns negative values into zero.",
+  "openingSummary": "The rectified linear unit (ReLU) is a simple activation function that leaves positive values alone and turns negative values into zero. It became important because deep networks needed a cheap way to add nonlinearity without the training slowdown that older saturating activations such as sigmoid or tanh often caused.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "The rectified linear unit (ReLU) is an activation function used in many neural networks. It applies one simple rule to each value: keep positive numbers and replace negative numbers with zero. In transformer feed-forward layers, that rule decides which hidden features stay active before the layer projects back to the model width."
+    },
+    "whyItExists": {
+      "title": "Why It Exists",
+      "body": "ReLU exists because neural networks need nonlinearity to model the curved, conditional patterns that show up in real data. Without an activation rule like this, stacked linear layers still collapse into one linear transform. ReLU also became popular because it gave that nonlinearity in a very cheap form that often trained more easily than older saturating activations such as sigmoid or tanh, helping deeper models reduce training loss more reliably."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "ReLU works one value at a time. If the value is positive, it stays as it is. If the value is negative, it becomes zero. In a transformer feed-forward layer, the model first expands into a wider hidden state, applies that rule to each hidden value, and then projects the filtered result back down."
+    },
+    "mathOrComputeSchema": {
+      "title": "Math Or Compute Schema",
+      "body": "The formula below shows the ReLU rule for one value at a time. The key detail is the hard cutoff at zero."
+    },
+    "comparedToNearbyModules": {
+      "title": "Compared To Nearby Modules",
+      "body": "ReLU is the sharpest cutoff in this activation family. Leaky rectified linear unit keeps a faint negative path, while sigmoid linear unit smooths the whole transition instead of using a hard corner."
+    },
+    "exampleArchitectures": {
+      "title": "Example Architectures",
+      "body": "ReLU became famous in the wave of early deep vision and speech models that needed a simpler activation to train reliably. It still appears across many baseline architectures and educational examples, even though many newer language models now prefer smoother or gated feed-forward activations."
+    },
+    "limitationsAndTradeoffs": {
+      "title": "Limitations And Tradeoffs",
+      "body": "Because every negative value becomes zero, ReLU can throw away weak negative evidence completely. That simplicity helps efficiency, but it also makes the activation less smooth and less expressive than many newer alternatives."
+    },
+    "whyItStillMatters": {
+      "title": "Why It Still Matters",
+      "body": "ReLU still matters because it explains two core lessons in deep learning: models need nonlinearity to represent real-world structure, and the shape of that nonlinearity affects how well deep networks train. Even when newer models choose smoother or gated activations, they are still solving the same problem ReLU helped solve clearly and cheaply."
+    },
+    "related": {
+      "title": "Related"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "assets": {
+    "computeFlow": {
+      "alt": "Activation comparison chart showing how rectified linear unit, leaky rectified linear unit, and sigmoid linear unit treat positive and negative values",
+      "variants": {
+        "relu": {
+          "label": "ReLU"
+        },
+        "leakyRelu": {
+          "label": "LeakyReLU"
+        },
+        "silu": {
+          "label": "SiLU"
+        }
+      }
+    },
+    "hiddenStateHeatmap": {
+      "alt": "Two heatmaps compare a hidden state before rectified linear unit and after rectified linear unit, showing negative activations removed while positive activations remain.",
+      "caption": "These heatmaps show the same hidden state before and after ReLU. Negative cells collapse to zero, while positive cells keep their strength."
+    },
+    "comparisonTable": {}
+  },
+  "tables": {
+    "comparison": {
+      "columns": {
+        "relu": {
+          "title": "ReLU"
+        },
+        "leakyRelu": {
+          "title": "LeakyReLU"
+        },
+        "silu": {
+          "title": "SiLU"
+        }
+      },
+      "dimensions": {
+        "negativeBranch": "Negative branch",
+        "transitionShape": "Transition shape",
+        "mainTradeoff": "Main tradeoff"
+      },
+      "values": {
+        "relu": {
+          "negativeBranch": "Clamp every negative hidden value to 0",
+          "transitionShape": "Hard corner at 0",
+          "mainTradeoff": "Very simple and sparse, but it throws away all negative signal"
+        },
+        "leakyRelu": {
+          "negativeBranch": "Keep a small slope alpha x for x < 0",
+          "transitionShape": "Hard corner with a weak negative path",
+          "mainTradeoff": "Preserves gradient on the negative side, but stays less smooth than SiLU"
+        },
+        "silu": {
+          "negativeBranch": "Shrink negative values smoothly with x sigma(x)",
+          "transitionShape": "Smooth curve through 0",
+          "mainTradeoff": "Smoother hidden filtering, but less minimal than ReLU"
+        }
+      }
+    }
+  },
+  "math": {
+    "reluSchema": {
+      "label": "Rectified linear unit activation",
+      "formula": "\\mathrm{ReLU}(x) = \\max(0, x)",
+      "variableDefinitions": {
+        "x": {
+          "term": "x",
+          "definition": "One input value before the activation rule is applied."
+        }
+      }
+    }
+  },
+  "graph": {
+    "nodes": {
+      "inputState": {
+        "label": "Token state h_t"
+      },
+      "expandProjection": {
+        "label": "Wide projection W_1"
+      },
+      "activationRule": {
+        "label": "ReLU(x) = max(0, x)"
+      },
+      "negativeBehavior": {
+        "label": "Negative values stop here: x < 0 becomes 0"
+      },
+      "projectBack": {
+        "label": "Project back with W_2"
+      },
+      "outputState": {
+        "label": "Updated token state"
+      }
+    }
+  }
+}

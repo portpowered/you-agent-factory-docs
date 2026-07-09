@@ -1,0 +1,195 @@
+{
+  "title": "Multi-Head Attention",
+  "description": "The baseline attention design that gives every query head its own key-value head pair.",
+  "openingSummary": "Multi-head attention (MHA) is the baseline transformer attention design, splitting attention into several parallel heads so different heads can focus on different relationships while each head keeps its own key and value pair.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Multi-head attention (MHA) is the original scaled dot-product attention design used in the Transformer. Instead of running one large attention lookup, the model splits the work across several heads. Each head computes its own attention distribution over keys and values, and the head outputs are then merged."
+    },
+    "whyItExists": {
+      "title": "Why It Exists",
+      "body": "MHA optimizes for representational breadth. Distinct query heads can attend to different relationships in the same sequence without sharing key-value parameters."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "Linear projections produce multiple query heads, multiple key heads, and multiple value heads. Each query head attends to its matching key and value head, producing several outputs that are concatenated and projected again."
+    },
+    "mathOrComputeSchema": {
+      "title": "Math Or Compute Schema",
+      "body": "The formula below is the per-head attention computation used inside multi-head attention. Each head index i pairs its own query, key, and value tensors before outputs are merged."
+    },
+    "comparedToNearbyModules": {
+      "title": "Compared To Nearby Modules",
+      "body": "Compared with multi-query attention, MHA stores one key-value pair per query head, so cache size grows with head count. Compared with grouped-query attention, MHA avoids shared key-value groups and keeps the largest cache footprint in the head-sharing family."
+    },
+    "exampleArchitectures": {
+      "title": "Example Architectures",
+      "body": "MHA appears in the original Transformer encoder-decoder, early GPT-style decoder-only language models, and many vision and speech transformers that adopt the standard attention block."
+    },
+    "limitationsAndTradeoffs": {
+      "title": "Limitations And Tradeoffs",
+      "body": "Autoregressive inference must cache every key and value head, so memory and bandwidth grow with context length and head count. Serving long contexts often motivates multi-query attention or grouped-query attention instead."
+    },
+    "whyItStillMatters": {
+      "title": "Why It Still Matters",
+      "body": "MHA is the conceptual baseline for every head-sharing variant. Understanding its one-to-one query-to-key-value mapping makes later tradeoffs easier to reason about."
+    },
+    "related": {
+      "title": "Related"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "assets": {
+    "computeFlow": {
+      "alt": "Multi-head attention versus multi-query attention head-count comparison",
+      "variants": {
+        "mha": {
+          "label": "Multi-head"
+        },
+        "mqa": {
+          "label": "Multi-query"
+        }
+      }
+    },
+    "comparisonTable": {}
+  },
+  "tables": {
+    "comparison": {
+      "columns": {
+        "mha": {
+          "title": "Multi-Head Attention"
+        },
+        "mqa": {
+          "title": "Multi-Query Attention"
+        },
+        "gqa": {
+          "title": "Grouped-Query Attention"
+        }
+      },
+      "dimensions": {
+        "kvHeadCount": "Key-value head count",
+        "queryHeadFlexibility": "Query-head flexibility",
+        "cacheFootprint": "Cache footprint per token"
+      },
+      "values": {
+        "mha": {
+          "kvHeadCount": "H key heads and H value heads",
+          "queryHeadFlexibility": "H independent query and key-value head pairs",
+          "cacheFootprint": "2H tensors (full multi-head attention cache)"
+        },
+        "mqa": {
+          "kvHeadCount": "1 key head and 1 value head",
+          "queryHeadFlexibility": "H query heads share one key-value pair",
+          "cacheFootprint": "2 tensors (single shared key-value cache)"
+        },
+        "gqa": {
+          "kvHeadCount": "G key heads and G value heads",
+          "queryHeadFlexibility": "H distinct query heads grouped into G shared key-value pairs",
+          "cacheFootprint": "2G tensors (G keys plus G values)"
+        }
+      }
+    }
+  },
+  "math": {
+    "mhaSchema": {
+      "label": "Multi-head attention (MHA)",
+      "formula": "\\text{Attention}(Q_i, K_i, V_i) = \\mathrm{softmax}\\!\\left(\\frac{Q_i K_i^{\\top}}{\\sqrt{d_k}}\\right) V_i",
+      "variableDefinitions": {
+        "q": {
+          "term": "Q",
+          "definition": "Query vectors for head i."
+        },
+        "k": {
+          "term": "K",
+          "definition": "Key vectors for head i."
+        },
+        "v": {
+          "term": "V",
+          "definition": "Value vectors for head i."
+        },
+        "h": {
+          "term": "H",
+          "definition": "Number of query heads."
+        },
+        "dk": {
+          "term": "d_k",
+          "definition": "Key dimension per head."
+        },
+        "i": {
+          "term": "i",
+          "definition": "Query head index."
+        }
+      }
+    }
+  },
+  "graph": {
+    "nodes": {
+      "valuesLabel": {
+        "label": "Values"
+      },
+      "keysLabel": {
+        "label": "Keys"
+      },
+      "queriesLabel": {
+        "label": "Queries"
+      },
+      "queryHead": {
+        "label": "q"
+      },
+      "keyHead": {
+        "label": "k"
+      },
+      "valueHead": {
+        "label": "V"
+      },
+      "mhaQueryHeads": {
+        "label": "H query heads"
+      },
+      "mhaKvHeads": {
+        "label": "H key-value head pairs (1:1 with queries)"
+      },
+      "mhaOneToOne": {
+        "label": "Each query head has its own K and V"
+      },
+      "mqaQueryHeads": {
+        "label": "H query heads"
+      },
+      "mqaKvShared": {
+        "label": "1 shared key-value pair"
+      },
+      "mqaSharedMapping": {
+        "label": "All H query heads read from one K and V"
+      },
+      "mqaSharingNote": {
+        "label": "One shared key/value pair serves every query head"
+      },
+      "timeCurrentQuery": {
+        "label": "q_t"
+      },
+      "timeKv0": {
+        "label": "KV_0"
+      },
+      "timeKv1": {
+        "label": "KV_1"
+      },
+      "timeKvEllipsis": {
+        "label": "\\cdots"
+      },
+      "timeKvT3": {
+        "label": "KV_{t-3}"
+      },
+      "timeKvT2": {
+        "label": "KV_{t-2}"
+      },
+      "timeKvT1": {
+        "label": "KV_{t-1}"
+      }
+    }
+  }
+}

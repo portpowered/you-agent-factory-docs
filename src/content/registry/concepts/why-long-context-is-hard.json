@@ -1,0 +1,34 @@
+{
+  "id": "concept.why-long-context-is-hard",
+  "slug": "why-long-context-is-hard",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "why long context is hard",
+    "long context difficulty",
+    "long-context challenges"
+  ],
+  "tags": ["context-window", "foundations"],
+  "relatedIds": [
+    "concept.context-extension",
+    "concept.rope",
+    "concept.longrope",
+    "concept.positional-interpolation",
+    "module.attention"
+  ],
+  "citationIds": [
+    "citation.longformer",
+    "citation.kivi-kv-cache-quantization",
+    "citation.deepseek-v4-paper"
+  ],
+  "status": "published",
+  "createdAt": "2026-06-09T00:00:00.000Z",
+  "updatedAt": "2026-06-09T22:00:00.000Z",
+  "conceptType": "general",
+  "sidebarGrouping": {
+    "concepts": "long-context"
+  },
+  "prerequisiteIds": ["concept.context-window"],
+  "explainsIds": ["concept.longrope", "concept.positional-interpolation"]
+}

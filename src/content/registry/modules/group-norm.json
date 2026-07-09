@@ -1,0 +1,33 @@
+{
+  "id": "module.group-norm",
+  "slug": "group-norm",
+  "kind": "module",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["GroupNorm", "group normalization", "GN"],
+  "tags": ["normalization", "foundations"],
+  "relatedIds": [
+    "concept.normalization",
+    "module.batch-norm",
+    "module.layer-norm"
+  ],
+  "citationIds": ["citation.group-normalization"],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+  "releaseDate": "2018-03-01",
+  "authors": ["Yuxin Wu", "Kaiming He"],
+  "sourceId": "citation.group-normalization",
+  "primaryClassificationId": "classification.module.normalization",
+  "moduleType": "normalization",
+  "optimizes": ["small-batch-stability"],
+  "exampleModelIds": [],
+  "improvesOnIds": [],
+  "tradeoffIds": [],
+  "usedByModelIds": [],
+  "introducedByPaperIds": [],
+  "mathLevel": "light",
+  "moduleFamily": "normalization",
+  "conceptType": "normalization-variant",
+  "variantGroup": "normalization-variants"
+}

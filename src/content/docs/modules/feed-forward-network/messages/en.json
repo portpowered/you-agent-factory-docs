@@ -1,0 +1,105 @@
+{
+  "title": "Feed-Forward Network",
+  "description": "A neural network whose signals move from input to output through weighted layers without recurrent loops back into earlier layers.",
+  "openingSummary": "A feed-forward network is a neural network that pushes an input through one or more learned weight matrices and nonlinear steps until it produces an output, without sending the signal backward through cycles during the forward pass.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A feed-forward network, often shortened to FFN, is a neural network whose computation flows from input to output in one direction. Each layer multiplies the current values by learned weights, usually adds a bias, applies a nonlinear activation, and passes the result onward. The key idea is general: no recurrent loop is needed in the forward path."
+    },
+    "whyItExists": {
+      "title": "Why It Exists",
+      "body": "Feed-forward networks exist because a stack of learned weighted transformations can turn raw inputs into more useful internal features and final outputs. Coupled with an activation function, the FFN can express non linear functions and representations. As a consequence the FFN is able to represent complex concepts in real life."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "An input vector enters the first learned projection, gets transformed into a hidden representation, passes through an activation, and continues toward the output. In a simple dense feed-forward network, every example uses the same hidden layers."
+    },
+    "mathOrComputeSchema": {
+      "title": "Math Or Compute Schema",
+      "body": "This formula shows the standard feed-forward pattern: project the input into hidden computation, apply a nonlinear transformation, then map the result onward."
+    },
+    "exampleArchitectures": {
+      "title": "Example Architectures",
+      "body": "Feed-forward networks appear across classic multilayer perceptrons, convolutional classifiers, recommendation models, and transformer blocks. In transformers they usually appear as the position-wise dense or sparse sublayer after attention, but that is only one important use case."
+    },
+    "limitationsAndTradeoffs": {
+      "title": "Limitations And Tradeoffs",
+      "body": "A feed-forward network only applies the transformations its architecture makes available. A plain dense version can be simple and stable, but expensive when hidden layers get large. Gated and sparse variants can be more expressive or more parameter-efficient, but they add routing, balancing, or optimization complexity."
+    },
+    "whyItStillMatters": {
+      "title": "Why It Still Matters",
+      "body": "Feed-forward networks remain one of the core building blocks of modern machine learning. Even when a paper introduces a new gated block or sparse expert system, it is often best understood as a new way to organize feed-forward computation rather than as a completely separate idea."
+    },
+    "related": {
+      "title": "Related"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "assets": {
+    "computeFlow": {
+      "alt": "Feed-forward network graph showing an input vector passing through a dense hidden path and continuing to an output vector",
+      "caption": "A standard feed-forward network pushes the input through a learned hidden path and onward to the output without recurrent loops in the forward pass."
+    }
+  },
+  "math": {
+    "standardSchema": {
+      "label": "Standard feed-forward network",
+      "formula": "\\mathrm{FFN}(x) = W_2\\,\\sigma(W_1 x + b_1) + b_2",
+      "variableDefinitions": {
+        "x": {
+          "term": "x",
+          "definition": "Input vector."
+        },
+        "w1": {
+          "term": "W_1",
+          "definition": "Projection into the hidden layer."
+        },
+        "w2": {
+          "term": "W_2",
+          "definition": "Projection from the hidden layer toward the output."
+        },
+        "sigma": {
+          "term": "σ",
+          "definition": "Pointwise activation applied in the hidden computation."
+        }
+      }
+    }
+  },
+  "graph": {
+    "nodes": {
+      "inputState": {
+        "label": "Input vector"
+      },
+      "ffnSlot": {
+        "label": "Position-wise feed-forward slot"
+      },
+      "denseBranch": {
+        "label": "Standard feed-forward"
+      },
+      "gatedBranch": {
+        "label": "SwiGLU"
+      },
+      "sparseBranch": {
+        "label": "Mixture of experts"
+      },
+      "denseNote": {
+        "label": "Dense path: expand -> activate -> project"
+      },
+      "gatedNote": {
+        "label": "Gated path: value x SiLU(gate)"
+      },
+      "sparseNote": {
+        "label": "Sparse path: router sends each token to top-k experts"
+      },
+      "outputState": {
+        "label": "Updated token state"
+      }
+    }
+  }
+}

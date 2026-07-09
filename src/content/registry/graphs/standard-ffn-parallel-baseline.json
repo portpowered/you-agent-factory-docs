@@ -1,0 +1,152 @@
+{
+  "id": "graph.standard-ffn-parallel-baseline",
+  "slug": "standard-ffn-parallel-baseline",
+  "kind": "graph",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [],
+  "tags": ["foundations"],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+  "subjectId": "concept.standard-ffn",
+  "graphType": "module-compute-flow",
+  "rootNodeId": "input-state",
+  "layout": "vertical-expandable",
+  "defaultExpandedDepth": 1,
+  "supportedRenderers": ["react-flow", "mermaid"],
+  "nodes": [
+    {
+      "id": "input-state",
+      "labelKey": "graph.nodes.inputState.label",
+      "moduleKind": "input",
+      "position": { "x": 250, "y": 0 },
+      "size": { "width": 170, "height": 80 },
+      "visualRole": "process-node",
+      "childNodeIds": ["expand-projection"]
+    },
+    {
+      "id": "ffn-internals",
+      "labelKey": "graph.nodes.ffnInternals.label",
+      "moduleKind": "block",
+      "position": { "x": 170, "y": 128 },
+      "size": { "width": 310, "height": 470 },
+      "visualRole": "group-container",
+      "zIndex": 0,
+      "childNodeIds": []
+    },
+    {
+      "id": "ffn-internals-header",
+      "labelKey": "graph.nodes.ffnInternalsHeader.label",
+      "moduleKind": "block",
+      "position": { "x": 120, "y": 102 },
+      "size": { "width": 180, "height": 40 },
+      "visualRole": "group-container",
+      "zIndex": 2,
+      "childNodeIds": []
+    },
+    {
+      "id": "expand-projection",
+      "labelKey": "graph.nodes.expandProjection.label",
+      "moduleKind": "projection",
+      "position": { "x": 250, "y": 160 },
+      "size": { "width": 170, "height": 80 },
+      "visualRole": "process-node",
+      "zIndex": 1,
+      "childNodeIds": ["wide-hidden", "no-router-note"]
+    },
+    {
+      "id": "wide-hidden",
+      "labelKey": "graph.nodes.wideHidden.label",
+      "moduleKind": "feed-forward",
+      "position": { "x": 230, "y": 270 },
+      "size": { "width": 210, "height": 96 },
+      "visualRole": "process-node",
+      "zIndex": 1,
+      "childNodeIds": ["activation-step"]
+    },
+    {
+      "id": "activation-step",
+      "labelKey": "graph.nodes.activationStep.label",
+      "moduleKind": "operation",
+      "position": { "x": 250, "y": 390 },
+      "size": { "width": 190, "height": 80 },
+      "visualRole": "process-node",
+      "zIndex": 1,
+      "childNodeIds": ["project-back"]
+    },
+    {
+      "id": "no-router-note",
+      "labelKey": "graph.nodes.feedForwardDescription.label",
+      "moduleKind": "other",
+      "position": { "x": 520, "y": 260 },
+      "size": { "width": 230, "height": 120 },
+      "visualRole": "annotation",
+      "zIndex": 1,
+      "childNodeIds": []
+    },
+    {
+      "id": "project-back",
+      "labelKey": "graph.nodes.projectBack.label",
+      "moduleKind": "projection",
+      "position": { "x": 250, "y": 510 },
+      "size": { "width": 170, "height": 80 },
+      "visualRole": "process-node",
+      "zIndex": 1,
+      "childNodeIds": ["output-state"]
+    },
+    {
+      "id": "output-state",
+      "labelKey": "graph.nodes.outputState.label",
+      "moduleKind": "output",
+      "position": { "x": 250, "y": 630 },
+      "size": { "width": 170, "height": 80 },
+      "visualRole": "process-node",
+      "childNodeIds": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "input-to-expand-projection",
+      "source": "input-state",
+      "target": "expand-projection",
+      "edgeKind": "data-flow",
+      "sourceHandleSide": "bottom",
+      "targetHandleSide": "top"
+    },
+    {
+      "id": "expand-projection-to-wide-hidden",
+      "source": "expand-projection",
+      "target": "wide-hidden",
+      "edgeKind": "data-flow",
+      "sourceHandleSide": "bottom",
+      "targetHandleSide": "top"
+    },
+    {
+      "id": "wide-hidden-to-activation-step",
+      "source": "wide-hidden",
+      "target": "activation-step",
+      "edgeKind": "data-flow",
+      "sourceHandleSide": "bottom",
+      "targetHandleSide": "top"
+    },
+    {
+      "id": "activation-step-to-project-back",
+      "source": "activation-step",
+      "target": "project-back",
+      "edgeKind": "data-flow",
+      "sourceHandleSide": "bottom",
+      "targetHandleSide": "top"
+    },
+    {
+      "id": "project-back-to-output-state",
+      "source": "project-back",
+      "target": "output-state",
+      "edgeKind": "data-flow",
+      "sourceHandleSide": "bottom",
+      "targetHandleSide": "top"
+    }
+  ]
+}

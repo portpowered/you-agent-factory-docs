@@ -1,0 +1,132 @@
+{
+  "title": "",
+  "description": "",
+  "openingSummary": "",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": ""
+    },
+    "whyItExists": {
+      "title": "Why It Exists",
+      "body": ""
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": ""
+    },
+    "mathOrComputeSchema": {
+      "title": "Math Or Compute Schema",
+      "body": ""
+    },
+    "comparedToNearbyModules": {
+      "title": "Compared To Nearby Modules",
+      "body": ""
+    },
+    "exampleArchitectures": {
+      "title": "Example Architectures",
+      "body": ""
+    },
+    "limitationsAndTradeoffs": {
+      "title": "Limitations And Tradeoffs",
+      "body": ""
+    },
+    "whyItStillMatters": {
+      "title": "Why It Still Matters",
+      "body": ""
+    },
+    "related": {
+      "title": "Related"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "assets": {
+    "computeFlow": {
+      "alt": ""
+    },
+    "comparisonTable": {}
+  },
+  "math": {
+    "mhaSchema": {
+      "label": "",
+      "formula": "",
+      "variableDefinitions": {
+        "q": {
+          "term": "Q",
+          "definition": ""
+        },
+        "k": {
+          "term": "K",
+          "definition": ""
+        },
+        "v": {
+          "term": "V",
+          "definition": ""
+        },
+        "h": {
+          "term": "H",
+          "definition": ""
+        },
+        "dk": {
+          "term": "d_k",
+          "definition": ""
+        },
+        "i": {
+          "term": "i",
+          "definition": ""
+        }
+      }
+    },
+    "gqaSchema": {
+      "label": "",
+      "formula": "",
+      "variableDefinitions": {
+        "q": {
+          "term": "Q",
+          "definition": ""
+        },
+        "k": {
+          "term": "K",
+          "definition": ""
+        },
+        "v": {
+          "term": "V",
+          "definition": ""
+        },
+        "h": {
+          "term": "H",
+          "definition": ""
+        },
+        "g": {
+          "term": "G",
+          "definition": ""
+        },
+        "dk": {
+          "term": "d_k",
+          "definition": ""
+        },
+        "i": {
+          "term": "i",
+          "definition": ""
+        },
+        "gi": {
+          "term": "g(i)",
+          "definition": ""
+        }
+      }
+    }
+  },
+  "graph": {
+    "nodes": {
+      "root": {
+        "label": "",
+        "summary": ""
+      }
+    }
+  }
+}

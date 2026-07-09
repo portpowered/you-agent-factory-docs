@@ -1,0 +1,41 @@
+{
+  "id": "concept.sampling-overview",
+  "slug": "sampling-overview",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "sampling overview",
+    "token sampling",
+    "next-token sampling",
+    "sampling basics"
+  ],
+  "tags": ["foundations", "token-to-probability-chain"],
+  "relatedIds": [
+    "concept.temperature",
+    "concept.softmax",
+    "concept.autoregressive-generation",
+    "concept.greedy-decoding",
+    "concept.top-k-sampling",
+    "concept.top-p-sampling"
+  ],
+  "citationIds": ["citation.curious-case-neural-text-degeneration"],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+  "primaryClassificationId": "classification.concept.inference",
+  "conceptType": "inference",
+  "sidebarGrouping": {
+    "glossary": "generation-and-diffusion"
+  },
+  "prerequisiteIds": [
+    "concept.softmax",
+    "concept.temperature",
+    "concept.autoregressive-generation"
+  ],
+  "explainsIds": [
+    "concept.greedy-decoding",
+    "concept.top-k-sampling",
+    "concept.top-p-sampling"
+  ]
+}

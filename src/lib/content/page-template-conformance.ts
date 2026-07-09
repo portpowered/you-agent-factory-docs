@@ -1,0 +1,332 @@
+import { readFileSync } from "node:fs";
+import { join, relative } from "node:path";
+import { getProjectRoot } from "./content-paths";
+import type { PageKind } from "./schemas";
+import { splitMdxFrontmatter } from "./validate-canonical-mdx-prose";
+import type { ValidationError } from "./validate-registry";
+
+type SectionStructure = {
+  id: string;
+  titleKey: string;
+  components: string[];
+};
+
+type PageTemplateStructure = {
+  topLevelComponents: string[];
+  sections: SectionStructure[];
+};
+
+type SupportedTemplateKind = "module" | "paper" | "system" | "training-regime";
+
+const supportedTemplateKinds = new Set<SupportedTemplateKind>([
+  "module",
+  "paper",
+  "system",
+  "training-regime",
+]);
+
+const ignoredStructuralComponents = new Set(["Section", "T"]);
+
+const pageTemplateConformanceExceptions: Record<string, string> = {
+  "modules/absolute-positional-embeddings/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/alibi/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/attention/page.mdx":
+    "Legacy module overview predates the current full module template.",
+  "modules/grouped-query-attention/page.mdx":
+    "Legacy module page predates the variants-and-nearby-modules section.",
+  "modules/manifold-constrained-hyper-connections/page.mdx":
+    "DeepSeek-V4 module uses a custom math and comparison structure outside the baseline module template.",
+  "modules/compressed-sparse-attention/page.mdx":
+    "DeepSeek-V4 module uses a custom math and comparison structure outside the baseline module template.",
+  "modules/deepseekmoe/page.mdx":
+    "DeepSeek-V4 module uses a custom math and comparison structure outside the baseline module template.",
+  "modules/feed-forward-network/page.mdx":
+    "Baseline feed-forward overview intentionally omits nearby-module comparison because it serves as the family root page.",
+  "modules/heavily-compressed-attention/page.mdx":
+    "DeepSeek-V4 module uses a custom math and comparison structure outside the baseline module template.",
+  "modules/learned-positional-embeddings/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/linear-attention/page.mdx":
+    "Legacy module page predates the variants-and-nearby-modules section.",
+  "modules/longrope/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/multi-head-attention/page.mdx":
+    "Legacy module page still uses the older attention schema component shape.",
+  "modules/multi-head-latent-attention/page.mdx":
+    "Legacy module page predates the variants-and-nearby-modules section.",
+  "modules/multi-query-attention/page.mdx":
+    "Legacy module page predates the variants-and-nearby-modules section and still uses the older attention schema comparison component.",
+  "modules/nope/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/ntk-aware-rope-scaling/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/positional-interpolation/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/sigmoid/page.mdx":
+    "Activation modules use inline charts in how-it-works instead of the default ModuleGraph slot.",
+  "modules/relu/page.mdx":
+    "Activation modules use inline charts in how-it-works instead of the default ModuleGraph slot.",
+  "modules/relative-position-bias/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/rope/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/tanh/page.mdx":
+    "Activation modules use inline charts in how-it-works instead of the default ModuleGraph slot.",
+  "modules/sinusoidal-positional-embeddings/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/silu/page.mdx":
+    "Activation modules use inline charts in how-it-works instead of the default ModuleGraph slot.",
+  "modules/sliding-window-attention/page.mdx":
+    "Legacy module page predates the variants-and-nearby-modules section.",
+  "modules/sparse-attention/page.mdx":
+    "Legacy module page predates the variants-and-nearby-modules section.",
+  "modules/superhot-rope/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/gelu/page.mdx":
+    "Activation modules use inline charts in how-it-works instead of the default ModuleGraph slot.",
+  "modules/t5-relative-position-bias/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "modules/yarn/page.mdx":
+    "Legacy module migration still uses the older glossary-shaped structure.",
+  "systems/request-scheduling/page.mdx":
+    "Request scheduling adds a focused scheduler-decision teaching graph in practical-impact alongside the latency and throughput equation.",
+  "training/pretraining/page.mdx":
+    "Canonical pretraining needs a message-backed custom reader-journey link list in the comparison section to avoid nested auto-linked anchors while preserving localized navigation labels.",
+  "training/post-training/page.mdx":
+    "Canonical post-training needs a message-backed reader-journey link list in the comparison section so discovery paths stay localized without nested auto-linked anchors.",
+  "training/rlvr/page.mdx":
+    "Canonical RLVR needs a message-backed reader-journey link list in the comparison section so alignment, post-training, preference, and reasoning discovery paths stay localized without nested auto-linked anchors.",
+  "training/diffusion-training-objective/page.mdx":
+    "Canonical diffusion training objective needs a message-backed custom reader-journey link list in the comparison section to preserve localized navigation labels without nested auto-linked anchors.",
+  "training/dropout/page.mdx":
+    "Canonical dropout needs a message-backed reader-journey link list in the comparison section so discovery paths to regularization and nearby concepts stay localized without nested auto-linked anchors.",
+};
+
+const templateStructureCache = new Map<
+  SupportedTemplateKind,
+  PageTemplateStructure
+>();
+
+function isSupportedTemplateKind(
+  kind: PageKind,
+): kind is SupportedTemplateKind {
+  return supportedTemplateKinds.has(kind as SupportedTemplateKind);
+}
+
+function templatePathForKind(kind: SupportedTemplateKind): string {
+  return join(getProjectRoot(), "docs", "templates", `${kind}.mdx`);
+}
+
+function extractAttributeValue(
+  tagSource: string,
+  attributeName: string,
+): string | undefined {
+  const match = tagSource.match(new RegExp(`\\b${attributeName}="([^"]+)"`));
+  return match?.[1];
+}
+
+function extractComponentNames(source: string): string[] {
+  const components: string[] = [];
+  for (const match of source.matchAll(/<([A-Z][A-Za-z0-9]*)\b/g)) {
+    const componentName = match[1];
+    if (!componentName || ignoredStructuralComponents.has(componentName)) {
+      continue;
+    }
+    components.push(componentName);
+  }
+  return components;
+}
+
+function extractSectionStructures(mdxBody: string): SectionStructure[] {
+  const sections: SectionStructure[] = [];
+  const sectionPattern = /<Section\b([\s\S]*?)>([\s\S]*?)<\/Section>/g;
+
+  for (const match of mdxBody.matchAll(sectionPattern)) {
+    const tagAttributes = match[1] ?? "";
+    const sectionBody = match[2] ?? "";
+    const id = extractAttributeValue(tagAttributes, "id");
+    const titleKey = extractAttributeValue(tagAttributes, "titleKey");
+
+    if (!id || !titleKey) {
+      continue;
+    }
+
+    sections.push({
+      id,
+      titleKey,
+      components: extractComponentNames(sectionBody),
+    });
+  }
+
+  return sections;
+}
+
+function extractTemplateStructure(mdxSource: string): PageTemplateStructure {
+  const { body } = splitMdxFrontmatter(mdxSource);
+  const withoutImports = body.replace(/^import\s+.+$/gm, "");
+  const sections = extractSectionStructures(withoutImports);
+  const topLevelBody = withoutImports.replace(
+    /<Section\b[\s\S]*?<\/Section>/g,
+    "",
+  );
+
+  return {
+    topLevelComponents: extractComponentNames(topLevelBody),
+    sections,
+  };
+}
+
+function readTemplateStructure(
+  kind: SupportedTemplateKind,
+): PageTemplateStructure {
+  const cached = templateStructureCache.get(kind);
+  if (cached) {
+    return cached;
+  }
+
+  const structure = extractTemplateStructure(
+    readFileSync(templatePathForKind(kind), "utf8"),
+  );
+  templateStructureCache.set(kind, structure);
+  return structure;
+}
+
+const optionalTemplateSectionsByKind: Partial<
+  Record<SupportedTemplateKind, ReadonlySet<string>>
+> = {
+  system: new Set(["how-it-differs"]),
+};
+
+function sectionIdsMatchWithOptionalSections(
+  kind: SupportedTemplateKind,
+  expectedSectionIds: string[],
+  actualSectionIds: string[],
+): boolean {
+  const optionalSections = optionalTemplateSectionsByKind[kind];
+  if (!optionalSections || optionalSections.size === 0) {
+    return (
+      JSON.stringify(actualSectionIds) === JSON.stringify(expectedSectionIds)
+    );
+  }
+
+  let expectedIndex = 0;
+  for (const actualSectionId of actualSectionIds) {
+    if (
+      optionalSections.has(actualSectionId) &&
+      !expectedSectionIds.includes(actualSectionId)
+    ) {
+      const previousSectionId =
+        actualSectionIds[actualSectionIds.indexOf(actualSectionId) - 1];
+      const nextRequiredSectionId = expectedSectionIds[expectedIndex];
+      if (
+        actualSectionId === "how-it-differs" &&
+        previousSectionId === "how-it-works" &&
+        nextRequiredSectionId === "practical-impact"
+      ) {
+        continue;
+      }
+      return false;
+    }
+
+    if (expectedSectionIds[expectedIndex] !== actualSectionId) {
+      return false;
+    }
+    expectedIndex += 1;
+  }
+
+  return expectedIndex === expectedSectionIds.length;
+}
+
+function formatComponentList(components: string[]): string {
+  return components.length > 0 ? components.join(", ") : "(none)";
+}
+
+function pagePathRelativeToDocsRoot(
+  pagePath: string,
+  docsRoot: string,
+): string {
+  return relative(docsRoot, pagePath).replace(/\\/g, "/");
+}
+
+export function validatePageTemplateConformance(options: {
+  pagePath: string;
+  docsRoot: string;
+  kind: PageKind;
+  mdxSource: string;
+}): ValidationError[] {
+  const { pagePath, docsRoot, kind, mdxSource } = options;
+
+  if (!isSupportedTemplateKind(kind)) {
+    return [];
+  }
+
+  const relativePagePath = pagePathRelativeToDocsRoot(pagePath, docsRoot);
+  const exceptionReason = pageTemplateConformanceExceptions[relativePagePath];
+  if (exceptionReason) {
+    return [];
+  }
+
+  const expected = readTemplateStructure(kind);
+  const actual = extractTemplateStructure(mdxSource);
+  const errors: ValidationError[] = [];
+
+  if (
+    JSON.stringify(actual.topLevelComponents) !==
+    JSON.stringify(expected.topLevelComponents)
+  ) {
+    errors.push({
+      code: "page-template-top-level-components-mismatch",
+      message: `${pagePath}: ${kind} page top-level components must match docs/templates/${kind}.mdx; expected ${formatComponentList(expected.topLevelComponents)}, found ${formatComponentList(actual.topLevelComponents)}`,
+      path: pagePath,
+    });
+  }
+
+  const expectedSectionIds = expected.sections.map((section) => section.id);
+  const actualSectionIds = actual.sections.map((section) => section.id);
+  if (
+    !sectionIdsMatchWithOptionalSections(
+      kind,
+      expectedSectionIds,
+      actualSectionIds,
+    )
+  ) {
+    errors.push({
+      code: "page-template-section-order-mismatch",
+      message: `${pagePath}: ${kind} page sections must match docs/templates/${kind}.mdx; expected [${expectedSectionIds.join(", ")}], found [${actualSectionIds.join(", ")}]`,
+      path: pagePath,
+    });
+  }
+
+  for (const expectedSection of expected.sections) {
+    const actualSection = actual.sections.find(
+      (section) => section.id === expectedSection.id,
+    );
+
+    if (!actualSection) {
+      continue;
+    }
+
+    if (actualSection.titleKey !== expectedSection.titleKey) {
+      errors.push({
+        code: "page-template-title-key-mismatch",
+        message: `${pagePath}: section "${expectedSection.id}" must use titleKey "${expectedSection.titleKey}" to match docs/templates/${kind}.mdx; found "${actualSection.titleKey}"`,
+        path: pagePath,
+      });
+    }
+
+    if (
+      JSON.stringify(actualSection.components) !==
+      JSON.stringify(expectedSection.components)
+    ) {
+      errors.push({
+        code: "page-template-section-components-mismatch",
+        message: `${pagePath}: section "${expectedSection.id}" must match docs/templates/${kind}.mdx component structure; expected ${formatComponentList(expectedSection.components)}, found ${formatComponentList(actualSection.components)}`,
+        path: pagePath,
+      });
+    }
+  }
+
+  return errors;
+}

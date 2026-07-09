@@ -1,0 +1,25 @@
+{
+  "id": "concept.representation",
+  "slug": "representation",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "learned representation",
+    "feature representation",
+    "latent representation"
+  ],
+  "tags": ["taxonomy", "foundations"],
+  "relatedIds": ["concept.modality", "concept.patch", "concept.latent"],
+  "citationIds": [
+    "citation.goodfellow-deep-learning",
+    "citation.learning-transferable-visual-models-from-natural-language-supervision"
+  ],
+  "status": "published",
+  "createdAt": "2026-06-04T00:00:00.000Z",
+  "updatedAt": "2026-06-04T00:00:00.000Z",
+  "primaryClassificationId": "classification.concept.architecture",
+  "conceptType": "architecture",
+  "prerequisiteIds": ["concept.model"],
+  "explainsIds": []
+}

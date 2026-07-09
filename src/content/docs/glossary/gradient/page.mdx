@@ -1,0 +1,54 @@
+---
+title: Gradient
+description: The direction and size of change each parameter should take to reduce the training loss.
+kind: "glossary"
+registryId: "concept.gradient"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags:
+  - token-to-probability-chain
+  - foundations
+aliases:
+  - "gradients"
+  - "partial derivative"
+  - "loss gradient"
+updatedAt: "2026-06-04"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="simple-example" titleKey="sections.simpleExample.title">
+  <T k="sections.simpleExample.body" />
+  <BlockMath formula="\nabla_\theta L(\theta) = \frac{\partial L}{\partial \theta}" />
+</Section>
+
+
+<Section id="common-confusions" titleKey="sections.commonConfusions.title">
+  <T k="sections.commonConfusions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="concept.gradient" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="concept.gradient" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="concept.gradient" />
+</Section>

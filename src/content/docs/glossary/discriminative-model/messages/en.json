@@ -1,0 +1,36 @@
+{
+  "title": "Discriminative Model",
+  "description": "A model trained to score, rank, or classify inputs into labels or preferences rather than synthesize new content.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Discriminative models include classifiers, rerankers, and reward models used in RLHF. They consume representations from shared backbones and output decisions or scalar scores. The role is orthogonal to architecture: transformers are used in both generative and discriminative setups."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Knowing a checkpoint is discriminative sets expectations for metrics (accuracy, AUROC, calibration) and for how it pairs with generative models in pipelines."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "A BERT-style encoder with a classification head for sentiment is discriminative. The same encoder body might later be fine-tuned into a generative decoder, but the discriminative training objective only predicts labels from text."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "Discriminative model appears in moderation stacks, retrieval reranking, and alignment literature next to generative model and foundation model entries."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "Discriminative versus generative describes training and inference goals, not whether the network is large or small. A reward model that scores completions is discriminative even when it sits beside a generative chat model. Discriminative is also not the same as \"non-foundation\": many foundation checkpoints are fine-tuned into discriminative heads."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "openingSummary": "A discriminative model estimates p(label | input) or preference scores from inputs rather than learning a full generative distribution over outputs."
+}

@@ -1,0 +1,64 @@
+---
+title: Attention
+description: How transformer blocks mix information across token positions using query, key, and value projections.
+kind: "module"
+registryId: "module.attention"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags:
+  - attention
+aliases:
+  - "attention"
+updatedAt: "2026-06-08"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+import { ModuleAtAGlance } from "@/features/models/components/ModuleAtAGlance";
+
+
+<ModuleAtAGlance registryId="module.attention" />
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-exists" titleKey="sections.whyItExists.title">
+  <T k="sections.whyItExists.body" />
+</Section>
+
+<Section id="how-it-works" titleKey="sections.howItWorks.title">
+  <T k="sections.howItWorks.body" />
+</Section>
+
+<Section id="compared-to-nearby-modules" titleKey="sections.comparedToNearbyModules.title">
+  <T k="sections.comparedToNearbyModules.body" />
+</Section>
+
+<Section id="example-architectures" titleKey="sections.exampleArchitectures.title">
+  <T k="sections.exampleArchitectures.body" />
+</Section>
+
+<Section id="limitations-and-tradeoffs" titleKey="sections.limitationsAndTradeoffs.title">
+  <T k="sections.limitationsAndTradeoffs.body" />
+</Section>
+
+<Section id="why-it-still-matters" titleKey="sections.whyItStillMatters.title">
+  <T k="sections.whyItStillMatters.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="module.attention" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="module.attention" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="module.attention" />
+</Section>

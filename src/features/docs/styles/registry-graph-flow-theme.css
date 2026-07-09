@@ -1,0 +1,405 @@
+.registry-graph-flow__viewport,
+.registry-graph-flow .react-flow {
+  background-color: var(--xy-background-color, #ffffff);
+}
+
+.registry-graph-flow__viewport {
+  border: 1px solid var(--xy-node-border-color, #cbd5e1);
+  border-radius: 8px;
+}
+
+.registry-graph-flow .react-flow__node-default,
+.registry-graph-flow .react-flow__node-input,
+.registry-graph-flow .react-flow__node-output,
+.registry-graph-flow .react-flow__node-group,
+.registry-graph-flow .react-flow__node-attentionHead {
+  color: var(--xy-node-color, #111827);
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.registry-graph-flow .react-flow__edge-path {
+  stroke: #111111;
+  stroke-width: 4;
+}
+
+.registry-graph-flow .registry-graph-flow__handle {
+  height: 1px !important;
+  width: 1px !important;
+  border: 0;
+  opacity: 0;
+  pointer-events: none !important;
+}
+
+.registry-graph-flow__row-label {
+  width: 108px;
+  color: #111111;
+  font-size: 20px;
+  line-height: 1;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.registry-graph-flow__head-box {
+  display: grid;
+  height: 88px;
+  width: 60px;
+  place-items: center;
+  border: 3px solid currentColor;
+  border-radius: 8px;
+  background: #fffaf5;
+  font-size: 34px;
+  font-weight: 500;
+  line-height: 1;
+  box-shadow: 0 6px 18px rgb(15 23 42 / 0.08);
+}
+
+.registry-graph-flow__head-box--query {
+  color: #075985;
+}
+
+.registry-graph-flow__head-box--key {
+  color: #991b1b;
+}
+
+.registry-graph-flow__head-box--value {
+  color: #d97706;
+}
+
+.registry-graph-flow__annotation {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  place-items: center;
+  max-width: 320px;
+  color: #111111;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.registry-graph-flow__default-node {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 48px;
+  place-items: center;
+  max-width: 176px;
+  border: 1px solid var(--xy-node-border-color, #cbd5e1);
+  background-color: var(--xy-node-background-color, #ffffff);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--xy-node-color, #111827);
+  font-size: 13px;
+  line-height: 1.25;
+  text-align: center;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.08);
+}
+
+.registry-graph-flow__node-content,
+.registry-graph-flow__node-button {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  align-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  text-align: inherit;
+}
+
+.registry-graph-flow__node-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.registry-graph-flow__node-button:focus-visible {
+  outline: 3px solid var(--ring, #0f766e);
+  outline-offset: 4px;
+}
+
+.registry-graph-flow__default-node--has-summary {
+  align-content: center;
+  gap: 0.35rem;
+}
+
+.registry-graph-flow__summary-affordance {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgb(148 163 184 / 0.9);
+  background: rgb(241 245 249 / 0.95);
+  padding: 0.125rem 0.4rem;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.registry-graph-flow__timeline-node {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 48px;
+  min-width: 84px;
+  place-items: center;
+  border: 1px solid #94a3b8;
+  border-radius: 8px;
+  background: #f8fafc;
+  padding: 8px 10px;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 6px 18px rgb(15 23 42 / 0.06);
+}
+
+.registry-graph-flow__timeline-node--muted {
+  border-style: dashed;
+  border-color: #cbd5e1;
+  background: #f8fafc;
+  color: #94a3b8;
+  box-shadow: none;
+  opacity: 0.72;
+}
+
+.registry-graph-flow__summary-node,
+.registry-graph-flow__process-node,
+.registry-graph-flow__latent-node {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 48px;
+  place-items: center;
+  border-radius: 8px;
+  padding: 8px 10px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgb(15 23 42 / 0.08);
+}
+
+.registry-graph-flow__summary-node {
+  min-width: 116px;
+  border: 2px solid #0369a1;
+  background: linear-gradient(180deg, #f8fbff 0%, #eff6ff 100%);
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.registry-graph-flow__process-node {
+  min-width: 134px;
+  border: 2px solid #7c2d12;
+  background: linear-gradient(180deg, #fffaf5 0%, #fff7ed 100%);
+  color: #7c2d12;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.15;
+  white-space: pre-line;
+}
+
+.registry-graph-flow__process-node--moe-expert,
+.registry-graph-flow__process-node--moe-merge {
+  border-color: #0369a1;
+  background: linear-gradient(180deg, #f8fbff 0%, #dbeafe 100%);
+  color: #0c4a6e;
+}
+
+.registry-graph-flow__latent-node {
+  min-width: 148px;
+  border: 2px solid #4c1d95;
+  background: linear-gradient(180deg, #faf8ff 0%, #f5f3ff 100%);
+  color: #4c1d95;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.registry-graph-flow__group-container {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  border: 3px solid #111111;
+  border-radius: 22px;
+  background: rgb(255 255 255 / 0.88);
+  box-shadow: 0 10px 30px rgb(15 23 42 / 0.06);
+}
+
+.registry-graph-flow__repeat-label {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  width: 100%;
+  color: #111111;
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+  text-align: center;
+}
+
+.registry-graph-flow__architecture-node {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  border: 3px solid #111111;
+  border-radius: 12px;
+  padding: 8px 12px;
+  color: #111111;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.15;
+  text-align: center;
+  white-space: pre-line;
+  box-shadow: 0 8px 22px rgb(15 23 42 / 0.08);
+}
+
+.registry-graph-flow__architecture-node--embedding {
+  background: #f9dfe3;
+}
+
+.registry-graph-flow__architecture-node--attention {
+  background: #fde3bf;
+}
+
+.registry-graph-flow__architecture-node--feed-forward {
+  background: #cfeafb;
+}
+
+.registry-graph-flow__architecture-node--add-norm {
+  background: #f5f3b8;
+}
+
+.registry-graph-flow__architecture-node--linear {
+  background: #d8def2;
+}
+
+.registry-graph-flow__architecture-node--softmax {
+  background: #d5ecd3;
+}
+
+.registry-graph-flow__architecture-node--io {
+  background: #f7e6ea;
+}
+
+.registry-graph-flow__operator-circle {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  border: 3px solid #111111;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #111111;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.registry-graph-flow__math-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.registry-graph-flow__math-label .katex-inline,
+.registry-graph-flow__math-label .katex {
+  max-width: 100%;
+  color: inherit;
+  font-size: 1em;
+}
+
+.registry-graph-flow__math-label .katex {
+  white-space: nowrap;
+}
+
+.registry-graph-flow__popup {
+  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--popover) 94%, transparent);
+  padding: 0.9rem;
+  color: var(--popover-foreground);
+  box-shadow: 0 20px 48px rgb(2 8 23 / 0.34);
+  backdrop-filter: blur(12px);
+}
+
+.registry-graph-flow__popup-kind {
+  margin: 0 0 0.25rem;
+  color: var(--muted-foreground);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.registry-graph-flow__popup-title {
+  margin: 0;
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.registry-graph-flow__popup-summary {
+  margin: 0.75rem 0 0;
+  color: var(--foreground);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.registry-graph-flow__popup-link {
+  display: inline-flex;
+  margin-top: 0.85rem;
+  color: var(--primary);
+  font-size: 0.92rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
+.registry-graph-flow__edge-button {
+  position: absolute;
+  display: block;
+  height: 2.75rem;
+  width: 2.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.registry-graph-flow__edge-button::after {
+  content: "";
+  position: absolute;
+  inset: 0.7rem;
+  border-radius: 999px;
+  background: rgb(15 118 110 / 0.16);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.registry-graph-flow__edge-button:hover::after,
+.registry-graph-flow__edge-button:focus-visible::after,
+.registry-graph-flow__edge-button[aria-expanded="true"]::after {
+  opacity: 1;
+}
+
+.registry-graph-flow__edge-button:focus-visible {
+  outline: 3px solid var(--ring, #0f766e);
+  outline-offset: 4px;
+}

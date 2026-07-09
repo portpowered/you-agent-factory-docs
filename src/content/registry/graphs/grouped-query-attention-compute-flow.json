@@ -1,0 +1,90 @@
+{
+  "id": "graph.grouped-query-attention-compute-flow",
+  "slug": "grouped-query-attention-compute-flow",
+  "kind": "graph",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [],
+  "tags": ["attention"],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-06-01T00:00:00.000Z",
+  "updatedAt": "2026-06-05T00:00:00.000Z",
+  "subjectId": "module.grouped-query-attention",
+  "graphType": "module-compute-flow",
+  "rootNodeId": "hidden-states",
+  "layout": "vertical-expandable",
+  "defaultExpandedDepth": 1,
+  "supportedRenderers": ["react-flow", "mermaid"],
+  "nodes": [
+    {
+      "id": "hidden-states",
+      "labelKey": "graph.nodes.hiddenStates.label",
+      "moduleKind": "input",
+      "childNodeIds": ["query-projection"]
+    },
+    {
+      "id": "query-projection",
+      "labelKey": "graph.nodes.queryProjection.label",
+      "moduleKind": "projection",
+      "childNodeIds": ["query-groups"]
+    },
+    {
+      "id": "query-groups",
+      "labelKey": "graph.nodes.queryGroups.label",
+      "moduleKind": "operation",
+      "childNodeIds": ["shared-kv"]
+    },
+    {
+      "id": "shared-kv",
+      "labelKey": "graph.nodes.sharedKv.label",
+      "moduleKind": "attention",
+      "childNodeIds": ["attention-scores"]
+    },
+    {
+      "id": "attention-scores",
+      "labelKey": "graph.nodes.attentionScores.label",
+      "moduleKind": "attention",
+      "childNodeIds": ["output-projection"]
+    },
+    {
+      "id": "output-projection",
+      "labelKey": "graph.nodes.outputProjection.label",
+      "moduleKind": "output",
+      "childNodeIds": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "hidden-to-query",
+      "source": "hidden-states",
+      "target": "query-projection",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "query-to-groups",
+      "source": "query-projection",
+      "target": "query-groups",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "groups-to-shared-kv",
+      "source": "query-groups",
+      "target": "shared-kv",
+      "edgeKind": "parameter-sharing"
+    },
+    {
+      "id": "shared-kv-to-scores",
+      "source": "shared-kv",
+      "target": "attention-scores",
+      "edgeKind": "data-flow"
+    },
+    {
+      "id": "scores-to-output",
+      "source": "attention-scores",
+      "target": "output-projection",
+      "edgeKind": "data-flow"
+    }
+  ]
+}

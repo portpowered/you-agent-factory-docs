@@ -1,390 +1,120 @@
 @import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "fumadocs-ui/css/shadcn.css";
+@import "katex/dist/katex.min.css";
+@import "../features/docs/styles/docs-page-footer-chrome.css";
+@import "../features/docs/styles/registry-graph-flow-theme.css";
+@import "@xyflow/react/dist/style.css";
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(0.145 0.018 205);
+  --foreground: oklch(0.955 0.018 82);
+  --card: oklch(0.18 0.018 205);
+  --card-foreground: oklch(0.955 0.018 82);
+  --popover: oklch(0.17 0.018 205);
+  --popover-foreground: oklch(0.955 0.018 82);
+  --primary: oklch(0.59 0.07 205);
+  --primary-foreground: oklch(0.98 0.01 82);
+  --secondary: oklch(0.24 0.018 205);
+  --secondary-foreground: oklch(0.9 0.014 82);
+  --muted: oklch(0.24 0.012 205);
+  --muted-foreground: oklch(0.68 0.018 82);
+  --accent: oklch(0.74 0.105 21);
+  --accent-foreground: oklch(0.16 0.02 205);
+  --destructive: oklch(0.56 0.16 24);
+  --destructive-foreground: oklch(0.98 0.01 82);
+  --border: oklch(0.32 0.018 205);
+  --input: oklch(0.28 0.018 205);
+  --ring: oklch(0.59 0.07 205);
+  --sidebar: oklch(0.155 0.018 205);
+  --sidebar-foreground: oklch(0.9 0.014 82);
+  --sidebar-primary: oklch(0.59 0.07 205);
+  --sidebar-primary-foreground: oklch(0.98 0.01 82);
+  --sidebar-accent: oklch(0.24 0.018 205);
+  --sidebar-accent-foreground: oklch(0.955 0.018 82);
+  --sidebar-border: oklch(0.29 0.018 205);
+  --sidebar-ring: oklch(0.59 0.07 205);
+}
 
 @theme inline {
-  --font-sans: var(--font-family-sans);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 0.25rem);
-  --radius-md: calc(var(--radius) - 0.125rem);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 0.25rem);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
 }
 
-:root {
-  color-scheme: light dark;
-  line-height: 1.5;
-  --font-family-sans: "Instrument Sans", "Segoe UI", system-ui, -apple-system,
-    BlinkMacSystemFont, sans-serif;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --muted: #eef2ff;
-  --muted-foreground: #475569;
-  --border: #cbd5e1;
-  --accent: #2563eb;
-  --accent-foreground: #ffffff;
-  --ring: #2563eb;
-  --radius: 0.75rem;
+body {
+  font-family: Inter, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0b1220;
-    --foreground: #f8fafc;
-    --card: #111827;
-    --card-foreground: #f8fafc;
-    --muted: #172033;
-    --muted-foreground: #cbd5e1;
-    --border: #334155;
-    --accent: #60a5fa;
-    --accent-foreground: #0b1220;
-    --ring: #93c5fd;
-  }
+article[data-registry-id] > section:first-of-type {
+  margin-top: 1rem;
 }
 
-@layer base {
-  * {
-    border-color: var(--border);
+article[data-registry-id] > section:first-of-type > h2 {
+  margin-top: 0;
+}
+
+/*
+ * Fumadocs renders an extra search trigger inside the collapsed docs sidebar
+ * panel even when we provide our own primary search entry point in the header.
+ * Hide only that redundant control and keep the collapse toggle visible.
+ */
+[data-sidebar-panel] [data-search] {
+  display: none;
+}
+
+[data-search] {
+  border-style: solid;
+}
+
+.header-action-icon {
+  border-style: solid;
+}
+
+@media (hover: hover) {
+  [data-search][data-search]:hover {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: var(--accent-foreground) !important;
   }
 
-  html {
-    font-family: var(--font-family-sans);
-  }
-
-  body {
-    @apply m-0 min-h-screen bg-background text-foreground antialiased;
-  }
-
-  a {
-    color: inherit;
-  }
-
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
+  [data-search][data-search]:hover kbd {
+    border-color: color-mix(in oklch, var(--accent-foreground) 25%, transparent) !important;
+    background-color: color-mix(in oklch, var(--accent-foreground) 10%, transparent) !important;
+    color: var(--accent-foreground) !important;
   }
 }
 
-@keyframes shell-disclosure-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(-0.25rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@layer components {
-  .shared-shell__header-nav-region,
-  .shared-shell__docs-aside-region {
-    display: contents;
-  }
-
-  .shared-shell__docs-aside .shared-shell__docs-nav + .shared-shell__docs-nav {
-    border-top: 1px solid var(--border);
-  }
-
-  .docs-search {
-    @apply mb-6 grid gap-4 rounded-xl border bg-card p-4;
-  }
-
-  .docs-search__header {
-    @apply grid gap-4;
-  }
-
-  .docs-search__title {
-    @apply m-0 text-base font-semibold text-foreground;
-  }
-
-  .docs-search__helper {
-    @apply mb-0 mt-1 text-sm text-muted-foreground;
-  }
-
-  .docs-search__form {
-    @apply grid gap-2;
-  }
-
-  .docs-search__label {
-    @apply text-sm font-semibold text-foreground;
-  }
-
-  .docs-search__input {
-    @apply min-h-11 rounded-lg border bg-background px-3.5 py-3 text-foreground outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-  }
-
-  .docs-search__status {
-    @apply m-0 text-sm text-muted-foreground;
-  }
-
-  .docs-search__status--error {
-    @apply text-red-600 dark:text-red-400;
-  }
-
-  .docs-search__results {
-    @apply grid gap-3;
-  }
-
-  .docs-search__results-list {
-    @apply m-0 grid list-none gap-3 p-0;
-  }
-
-  .docs-search__result {
-    @apply rounded-lg border bg-card;
-  }
-
-  .docs-search__result-link {
-    @apply grid gap-1.5 rounded-lg px-4 py-3 no-underline transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-  }
-
-  .docs-search__result-link:hover .docs-search__result-title {
-    @apply text-accent underline;
-  }
-
-  .docs-search__result-title {
-    @apply text-sm font-semibold text-foreground;
-  }
-
-  .docs-search__result-description {
-    @apply text-sm text-muted-foreground;
-  }
-
-  .docs-breadcrumbs {
-    @apply mb-6;
-  }
-
-  .docs-content-lead {
-    @apply mb-0 mt-3 text-[clamp(1rem,2.3vw,1.125rem)] text-muted-foreground;
-  }
-
-  .docs-page-outline__title {
-    @apply m-0 text-sm font-semibold uppercase tracking-[0.04em] text-muted-foreground;
-  }
-
-  .docs-page-outline__list {
-    @apply m-0 mt-4 grid gap-3 list-none p-0;
-  }
-
-  .docs-page-outline__item--level-3 {
-    @apply pl-4;
-  }
-
-  .docs-page-outline__link {
-    @apply text-sm font-medium text-foreground no-underline transition-colors hover:text-accent hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-  }
-
-  .docs-breadcrumbs__list {
-    @apply m-0 flex list-none flex-wrap items-center gap-x-2 gap-y-1 p-0 text-sm text-muted-foreground;
-  }
-
-  .docs-breadcrumbs__item {
-    @apply inline-flex items-center gap-2;
-  }
-
-  .docs-breadcrumbs__link {
-    @apply no-underline transition-colors hover:text-foreground hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-  }
-
-  .docs-breadcrumbs__current {
-    @apply font-semibold text-foreground focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-  }
-
-  .docs-breadcrumbs__separator {
-    @apply text-muted-foreground;
-  }
-
-  .docs-progression {
-    @apply mt-10 border-t pt-6;
-  }
-
-  .docs-progression__links {
-    @apply grid gap-4 sm:grid-cols-2;
-  }
-
-  .docs-progression__link {
-    @apply flex flex-col gap-1 rounded-lg border bg-card px-4 py-3 no-underline transition-colors hover:border-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
-  }
-
-  .docs-progression__link--next {
-    @apply text-left sm:col-start-2 sm:items-end sm:text-right;
-  }
-
-  .docs-progression__prefix {
-    @apply text-xs font-semibold uppercase tracking-[0.04em] text-muted-foreground;
-  }
-
-  .docs-progression__label {
-    @apply text-sm font-semibold text-foreground;
-  }
-
-  .docs-progression__link:hover .docs-progression__label {
-    @apply text-accent underline;
-  }
-
-  .docs-progression__placeholder {
-    @apply hidden sm:block;
-  }
-
-  .docs-diagram {
-    @apply my-8;
-  }
-
-  .docs-diagram__header h2 {
-    @apply m-0 text-2xl font-semibold tracking-tight text-foreground;
-  }
-
-  .docs-diagram__description {
-    @apply mb-0 mt-2 text-muted-foreground;
-  }
-
-  .docs-diagram__surface {
-    @apply mt-4 rounded-xl border bg-card p-3 sm:p-4;
-  }
-
-  .docs-diagram__graphic {
-    @apply overflow-hidden rounded-lg border bg-muted;
-    min-height: clamp(16rem, 42vw, 28rem);
-  }
-
-  .docs-diagram__graphic--react-flow {
-    @apply p-2;
-  }
-
-  .docs-diagram__react-flow-stage {
-    transform-origin: top left;
-  }
-
-  .docs-react-flow-node {
-    @apply flex h-full flex-col justify-center rounded-lg border bg-card px-4 py-3 text-left shadow-sm;
-  }
-
-  .docs-react-flow-node strong {
-    @apply text-sm font-semibold text-foreground;
-  }
-
-  .docs-react-flow-node span {
-    @apply mt-1 text-sm text-muted-foreground;
-  }
-
-  .docs-diagram__source {
-    @apply mt-4 rounded-xl border bg-card p-4;
-  }
-
-  .docs-diagram__source-label {
-    @apply m-0 text-sm font-semibold text-foreground;
-  }
-
-  .docs-diagram__code {
-    @apply mb-0 mt-3 overflow-x-auto rounded-lg bg-background p-4 text-sm text-foreground;
-  }
-
-  .docs-page__body {
-    @apply mt-5 text-[1.02rem] leading-7 text-foreground;
-  }
-
-  .docs-page__body > * + * {
-    margin-top: 1rem;
-  }
-
-  .docs-page__body h2,
-  .docs-page__body h3,
-  .docs-page__body h4,
-  .docs-page__body h5,
-  .docs-page__body h6 {
-    @apply scroll-mt-24 font-semibold tracking-tight text-card-foreground;
-  }
-
-  .docs-page__body h2 {
-    @apply mt-8 text-2xl;
-  }
-
-  .docs-page__body h3 {
-    @apply mt-7 text-xl;
-  }
-
-  .docs-page__body p {
-    @apply m-0 max-w-[72ch] text-muted-foreground;
-  }
-
-  .shared-shell__main h1,
-  .shared-shell__main h2,
-  .shared-shell__main h3,
-  .shared-shell__main h4,
-  .shared-shell__main h5,
-  .shared-shell__main h6 {
-    text-wrap: balance;
-  }
-}
-
-/* Breakpoints align with src/lib/responsive-tokens.ts (tabletMax: 1023px). */
-@media (max-width: 1023px) {
-  .shared-shell[data-shell-narrow] .shared-shell__header-nav-region {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .shared-shell[data-shell-narrow] .shared-shell__menu-toggle,
-  .shared-shell[data-shell-narrow] .shared-shell__docs-nav-toggle {
-    display: inline-flex;
-  }
-
-  .shared-shell[data-shell-narrow]
-    .shared-shell__header-nav-region[data-shell-disclosure="open"],
-  .shared-shell[data-shell-narrow]
-    .shared-shell__docs-aside-panel[data-shell-disclosure="open"] {
-    animation: shell-disclosure-reveal 200ms ease-out;
-  }
-
-  .shared-shell[data-shell-reduced-motion]
-    .shared-shell__header-nav-region[data-shell-disclosure="open"],
-  .shared-shell[data-shell-reduced-motion]
-    .shared-shell__docs-aside-panel[data-shell-disclosure="open"] {
-    animation: none;
-  }
-
-  .shared-shell[data-shell-narrow] .shared-shell__header-nav {
-    width: 100%;
-  }
-
-  .shared-shell[data-shell-narrow] .shared-shell__nav-list {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .shared-shell[data-shell-narrow] .shared-shell__link {
-    width: 100%;
-    justify-content: flex-start;
-  }
-
-  .shared-shell[data-shell-narrow] .shared-shell__docs-aside-region {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    padding: 0 1.25rem;
-  }
-
-  .shared-shell[data-shell-narrow] .shared-shell__header-nav-region[hidden],
-  .shared-shell[data-shell-narrow] .shared-shell__docs-aside-panel[hidden] {
-    display: none;
-  }
-
-  .shared-shell[data-shell-narrow] .shared-shell__docs-aside {
-    border-right: 0;
-    border-top: 1px solid var(--border);
-  }
+.ontology-timeline {
+  width: 100%;
+  overflow-x: hidden;
 }

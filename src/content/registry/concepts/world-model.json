@@ -1,0 +1,31 @@
+{
+  "id": "concept.world-model",
+  "slug": "world-model",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["world models", "world modeling", "environment model"],
+  "tags": ["taxonomy", "model-family"],
+  "relatedIds": [
+    "concept.architecture",
+    "concept.representation",
+    "concept.generative-model",
+    "concept.conditioning",
+    "concept.model",
+    "model.cosmos-3"
+  ],
+  "citationIds": ["citation.world-models"],
+  "status": "published",
+  "createdAt": "2026-06-04T00:00:00.000Z",
+  "updatedAt": "2026-07-03T02:45:00.000Z",
+  "primaryClassificationId": "classification.concept.model-type",
+  "conceptType": "architecture",
+  "prerequisiteIds": [
+    "concept.architecture",
+    "concept.model",
+    "concept.representation",
+    "concept.generative-model",
+    "concept.conditioning"
+  ],
+  "explainsIds": []
+}

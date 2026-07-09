@@ -1,0 +1,42 @@
+{
+  "id": "module.relative-position-bias",
+  "slug": "relative-position-bias",
+  "kind": "module",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "relative position bias",
+    "Relative position bias",
+    "relative positional bias",
+    "relative attention bias"
+  ],
+  "tags": ["position-encoding", "foundations"],
+  "relatedIds": [
+    "concept.positional-encodings",
+    "module.absolute-positional-embeddings",
+    "module.t5-relative-position-bias",
+    "module.rope",
+    "module.alibi"
+  ],
+  "citationIds": [
+    "citation.self-attention-with-relative-position-representations"
+  ],
+  "status": "published",
+  "createdAt": "2026-06-18T00:00:00.000Z",
+  "updatedAt": "2026-06-18T00:00:00.000Z",
+  "releaseDate": "2018-03-01",
+  "authors": ["Peter Shaw", "Jakob Uszkoreit", "Ashish Vaswani"],
+  "sourceId": "citation.self-attention-with-relative-position-representations",
+  "primaryClassificationId": "classification.module.positional-encoding",
+  "moduleType": "position-encoding",
+  "optimizes": ["distance-awareness"],
+  "exampleModelIds": [],
+  "improvesOnIds": [],
+  "tradeoffIds": [],
+  "usedByModelIds": [],
+  "introducedByPaperIds": [],
+  "mathLevel": "none",
+  "moduleFamily": "relative-position-methods",
+  "conceptType": "relative-position-encoding",
+  "variantGroup": "relative-position-family"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "concept.modality",
+  "slug": "modality",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["data modality", "input modality", "multimodal input"],
+  "tags": ["taxonomy", "foundations"],
+  "relatedIds": ["concept.representation"],
+  "citationIds": [
+    "citation.learning-transferable-visual-models-from-natural-language-supervision",
+    "citation.flamingo-visual-language-model"
+  ],
+  "status": "published",
+  "createdAt": "2026-06-04T00:00:00.000Z",
+  "updatedAt": "2026-06-04T00:00:00.000Z",
+  "primaryClassificationId": "classification.concept.model-type",
+  "conceptType": "general",
+  "prerequisiteIds": ["concept.model"],
+  "explainsIds": []
+}

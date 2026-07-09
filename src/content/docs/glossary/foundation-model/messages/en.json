@@ -1,0 +1,36 @@
+{
+  "title": "Foundation Model",
+  "description": "A large pretrained model intended as a shared starting point for many downstream tasks via fine-tuning or prompting.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "In this reference, a foundation model is a general-purpose pretrained checkpoint: wide data, large capacity, and an explicit role as a base for downstream use. It is still a model in the taxonomy sense—weights you can load—not an architecture diagram alone."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Labeling a release as a foundation model signals adaptation paths: which generative or discriminative heads are common, and how it relates to the plain model glossary entry for artifacts versus roles."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "A 70B language model trained on mixed web and code text, then instruction-tuned for chat, often has a foundation pretraining stage and a later alignment stage. The foundation stage checkpoint is the shared base many products build on."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "Foundation model appears in scaling papers, open-weight hubs, and policy discussions. Generative and discriminative model pages describe how teams specialize this base."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A foundation model is not automatically generative: the same base can feed classifiers or generators depending on heads and training. It is also not the same as any large model—a narrow specialist can be huge but not intended as a reusable base."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "openingSummary": "A foundation model is pretrained at scale on broad data so teams can adapt it through fine-tuning, prompting, or distillation instead of training from scratch per task."
+}

@@ -1,0 +1,41 @@
+import { describe, expect, test } from "bun:test";
+import { renderToStaticMarkup } from "react-dom/server";
+import { ModuleAtAGlance } from "@/features/models/components/ModuleAtAGlance";
+
+describe("ModuleAtAGlance", () => {
+  test("renders registry-backed optimizes and source metadata without an empty example-model section", () => {
+    const html = renderToStaticMarkup(
+      <ModuleAtAGlance registryId="module.grouped-query-attention" />,
+    );
+    expect(html).toContain("Released");
+    expect(html).toContain("May 2023");
+    expect(html).toContain(
+      "Joshua Ainslie, James Lee-Thorp, Seth R. Robertson, et al.",
+    );
+    expect(html).toContain(
+      "GQA: Training Generalized Multi-Query Transformer Models from Multi-Head Checkpoints",
+    );
+    expect(html).toContain("Kv Cache");
+    expect(html).not.toContain("Example models");
+    expect(html).not.toContain("No example models listed yet.");
+  });
+
+  test("renders example models when the registry record provides them", () => {
+    const html = renderToStaticMarkup(
+      <ModuleAtAGlance registryId="module.bpe" />,
+    );
+
+    expect(html).toContain("Example models");
+    expect(html).toContain("GPT-3");
+  });
+
+  test("uses bulletless list styling consistent with TagResourceList", () => {
+    const html = renderToStaticMarkup(
+      <ModuleAtAGlance registryId="module.grouped-query-attention" />,
+    );
+
+    expect(html).toContain("list-none");
+    expect(html).not.toContain("list-disc");
+    expect(html).not.toContain("pl-5");
+  });
+});
