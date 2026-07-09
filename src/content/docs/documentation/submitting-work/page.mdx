@@ -33,6 +33,39 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.howToUse.body" />
 </Section>
 
+<Section id="work-batches" titleKey="sections.workBatches.title">
+  <T k="sections.workBatches.body" />
+  <p>
+    <T k="links.batchExampleLabel" />
+  </p>
+  ```json
+  {
+    "requestId": "release-story-set",
+    "type": "FACTORY_REQUEST_BATCH",
+    "works": [
+      {
+        "name": "story-auth",
+        "workTypeName": "story",
+        "payload": { "title": "Harden auth session handling" }
+      }
+    ]
+  }
+  ```
+  <p>
+    <T k="links.submitBatchLabel" />
+  </p>
+  ```sh
+  you submit batch ./batch.json
+  ```
+  <p>
+    <T k="links.dryRunLabel" />
+  </p>
+  ```sh
+  you submit batch --dry-run ./batch.json
+  ```
+  <T k="links.idempotencyNote" />
+</Section>
+
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
 </Section>

@@ -15,6 +15,10 @@
       "title": "How To Use",
       "body": "Author a FACTORY_REQUEST_BATCH with a stable requestId and the works you want to enqueue. Add relations when items must wait on each other or nest under a parent. Submit the batch to a running factory, and use dry-run when you want validation without creating work. Later sections on this page teach the batch shape and relationship choices in more detail."
     },
+    "workBatches": {
+      "title": "Work Batches",
+      "body": "A FACTORY_REQUEST_BATCH is one JSON document that creates multiple work items in a single validated submission. Required fields are requestId, type set to FACTORY_REQUEST_BATCH, and a works array. Each works entry needs a name and a workTypeName that exists in the target factory. The factory validates the full batch before creating any work, so an invalid batch rejects the whole submission."
+    },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
       "body": "This page is a web submitting-work reference for batches and relationships. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install, first-run, and command-matrix details belong on sibling documentation and guide pages."
@@ -28,5 +32,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "batchExampleLabel": "Minimal batch document:",
+    "submitBatchLabel": "Submit that document to a factory that is already running:",
+    "dryRunLabel": "Validate the batch without creating work:",
+    "idempotencyNote": "Reuse a stable non-empty requestId with the same body when you retry. That makes the batch upsert idempotent instead of creating duplicate work."
   }
 }

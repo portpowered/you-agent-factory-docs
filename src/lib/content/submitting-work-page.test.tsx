@@ -34,6 +34,7 @@ describe("submitting-work documentation page", () => {
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Work Batches" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
@@ -49,5 +50,23 @@ describe("submitting-work documentation page", () => {
         /submit that batch to a factory that is already running/i,
       ),
     ).toBeTruthy();
+
+    const workBatchesSection = document.getElementById("work-batches");
+    expect(workBatchesSection).toBeTruthy();
+    expect(workBatchesSection?.textContent).toMatch(/requestId/i);
+    expect(workBatchesSection?.textContent).toMatch(/workTypeName/i);
+    expect(workBatchesSection?.textContent).toMatch(
+      /you submit batch \.\/batch\.json/,
+    );
+    expect(workBatchesSection?.textContent).toMatch(
+      /you submit batch --dry-run/,
+    );
+    expect(workBatchesSection?.textContent).toMatch(
+      /factory that is already running/i,
+    );
+    expect(workBatchesSection?.textContent).toMatch(
+      /validates? the batch without creating work|Validate the batch without creating work/i,
+    );
+    expect(workBatchesSection?.textContent).toMatch(/idempotent/i);
   });
 });
