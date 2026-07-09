@@ -56,10 +56,29 @@ describe("task-queue concept page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    expect(screen.getByText(/backlog of submitted work/i)).toBeTruthy();
-    expect(document.getElementById("what-it-is")).toBeTruthy();
-    expect(document.getElementById("why-it-matters")).toBeTruthy();
-    expect(document.getElementById("simple-example")).toBeTruthy();
+    const whatItIs = document.getElementById("what-it-is");
+    const whyItMatters = document.getElementById("why-it-matters");
+    const simpleExample = document.getElementById("simple-example");
+    expect(whatItIs).toBeTruthy();
+    expect(whyItMatters).toBeTruthy();
+    expect(simpleExample).toBeTruthy();
     expect(document.getElementById("common-confusions")).toBeTruthy();
+
+    expect(whatItIs?.textContent).toMatch(/task queue/i);
+    expect(whatItIs?.textContent).toMatch(/backlog of submitted work/i);
+    expect(whatItIs?.textContent).toMatch(/work-type state/i);
+    expect(whatItIs?.textContent).toMatch(/workstation/i);
+
+    expect(whyItMatters?.textContent).toMatch(/persistent/i);
+    expect(whyItMatters?.textContent).toMatch(/parallel|in order/i);
+
+    expect(simpleExample?.textContent).toMatch(/submit/i);
+    expect(simpleExample?.textContent).toMatch(/task:init/i);
+    expect(simpleExample?.textContent).toMatch(/consume/i);
+
+    // Teaching copy must be in the document tree (not hover-only).
+    expect(whatItIs?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(whyItMatters?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(simpleExample?.textContent?.trim().length).toBeGreaterThan(40);
   });
 });

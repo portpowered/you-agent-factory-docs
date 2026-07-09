@@ -5,15 +5,15 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A task queue is the you-agent-factory backlog of submitted work. After work enters the factory, it becomes tokens waiting in work-type states and places until workstations can consume ready items."
+      "body": "A task queue is the you-agent-factory backlog of submitted work. After work enters the factory, each item becomes a token waiting in a work-type state and place. Those waiting places hold the work until a workstation whose inputs match can consume a ready item. The queue is that waiting backlog—not the submit step that enqueues work, and not the workstation that later runs it."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "The task queue keeps many work items persistent after submit so a long-running factory can dispatch them in parallel or in order as workstations become enabled."
+      "body": "Long-running factories keep many work items alive after submit. The task queue is how those items stay persistent and ready for dispatch: workstations can take them in parallel or in order as matching inputs become available, instead of losing the backlog when a single agent session ends."
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "You submit a work item. It lands in an initial work-type state such as task:init. A workstation whose inputs match that waiting place becomes enabled and consumes the item."
+      "body": "You submit a work item into a running factory. It lands in an initial work-type state such as task:init, which is a queued place in the topology. A workstation whose inputs match that place becomes enabled, consumes the waiting item, and moves it forward. Until that consume happens, the item stays in the task queue."
     },
     "commonConfusions": {
       "title": "Common Confusions",
