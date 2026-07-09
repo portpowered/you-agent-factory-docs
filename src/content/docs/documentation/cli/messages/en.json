@@ -11,6 +11,10 @@
       "title": "Key Concepts",
       "body": "A factory is the long-running runtime that keeps agent work persistent. Some commands start that runtime on your machine. Other commands talk to a factory that is already running. Packaged docs commands print reference markdown without needing a live factory."
     },
+    "install": {
+      "title": "Install",
+      "body": "Install the you CLI with the published release entrypoint for your operating system. These commands install the binary; they do not start a factory."
+    },
     "howToUse": {
       "title": "How To Use",
       "body": "Install the CLI with the published macOS, Linux, or Windows install entrypoint for your operating system. Then use you to start a local factory when you need a runtime, you submit or you submit batch to enqueue work against a running factory, you session and you work to inspect live state, and you docs to read packaged reference topics offline."
@@ -28,5 +32,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex"
   }
 }

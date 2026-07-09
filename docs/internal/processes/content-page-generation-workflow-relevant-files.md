@@ -202,6 +202,22 @@ published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to
 Fumadocs frontmatter title and 404s because CLI templates keep title/description
 in colocated messages.
 
+### Documentation CLI install commands (page-local)
+
+For `documentation/cli` install copy, keep OS labels and install commands under
+page `links.*` keys (not under `sections.*` — `pageSectionSchema` only keeps
+`title`/`body`, so extra section fields are stripped on load). Render them as
+always-visible `<pre><code><T k="links.…" /></code></pre>` blocks inside a
+`#install` `Section`. Reuse the same product release strings as home
+(`install.sh` curl | sh and PowerShell `irm` | `iex`). Do not hard-code command
+strings in MDX and do not import `HomeCommandBlock` into docs MDX (home-only CTA
+primitive).
+
+Canonical commands:
+
+- macOS/Linux: `curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh`
+- Windows: `irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex`
+
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 
