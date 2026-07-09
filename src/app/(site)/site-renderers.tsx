@@ -8,7 +8,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { HomeArticle } from "@/components/home/home-article";
-import { OntologyTimelinePage } from "@/features/ai/timeline";
 import { BlogIndexPostList } from "@/features/blog/components/BlogIndexPostList";
 import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
 import { BrowseAtlasPage } from "@/features/docs/components/BrowseAtlasPage";
@@ -93,7 +92,6 @@ export type SearchPageProps = {
 export type BrowseIndexPageProps = {
   searchParams?: Promise<TopologySearchParams>;
 };
-export type TimelinePageProps = SearchPageProps;
 
 export type TagLandingPageProps = {
   params: Promise<{ slug: string }>;
@@ -427,24 +425,6 @@ export async function renderSearchPage(
           handoff={handoff}
           locale={locale}
         />
-      </DocsBody>
-    </DocsPage>
-  );
-}
-
-export async function renderTimelinePage(
-  locale: SiteLocale = defaultLocale,
-  _props: TimelinePageProps = {},
-) {
-  const messages = await loadUiMessages(locale);
-  const { timelinePage } = messages;
-
-  return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
-      <DocsTitle>{timelinePage.title}</DocsTitle>
-      <DocsDescription>{timelinePage.description}</DocsDescription>
-      <DocsBody>
-        <OntologyTimelinePage locale={locale} messages={messages} />
       </DocsBody>
     </DocsPage>
   );

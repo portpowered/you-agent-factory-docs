@@ -15,8 +15,6 @@ import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-import { GenerationEvolutionBlogVisual } from "@/features/generation-evolution/GenerationEvolutionBlogVisual";
-import { GenerationEvolutionTimeline } from "@/features/generation-evolution/GenerationEvolutionTimeline";
 
 export const moduleMdxComponents: MDXComponents = {
   ...defaultMdxComponents,
@@ -36,6 +34,4 @@ export const moduleMdxComponents: MDXComponents = {
   T,
   TagPillList,
   PageMathFormula,
-  GenerationEvolutionBlogVisual,
-  GenerationEvolutionTimeline,
 };

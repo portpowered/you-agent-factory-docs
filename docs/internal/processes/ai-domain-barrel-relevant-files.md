@@ -2,29 +2,29 @@
 
 ## Namespace entry points
 
-- `src/features/ai/index.ts` — server-safe helpers via `export * from "./server"`; renderer namespaces via `models`, `topology`, and `timeline` subpath exports.
-- `src/features/ai/server.ts` — SSR-safe re-exports (query helpers, server components, theme/math constants) without client-only graph renderers.
-- `src/features/ai/models.ts` — model/module/paper/training/system renderers and helpers from `src/features/models/components`.
-- `src/features/ai/topology.ts` — topology helpers and renderers from `src/features/topology`.
-- `src/features/ai/timeline.ts` — timeline helpers and renderers from `src/features/docs/timeline`.
+- `src/features/ai/index.ts` — re-exports empty retired namespaces (`models`, `topology`, `timeline`) plus the empty server surface.
+- `src/features/ai/server.ts` — intentionally empty after Model Atlas explorer deletion (`export {}`).
+- `src/features/ai/models.ts` — retired Model Atlas renderer namespace (`export {}`).
+- `src/features/ai/topology.ts` — retired topology explorer namespace (`export {}`).
+- `src/features/ai/timeline.ts` — retired ontology timeline namespace (`export {}`).
 
-## Source domains (transitional direct imports still valid)
+## Source domains
 
-- `src/features/models/components/` — MDX-facing AI page renderers; `index.ts` re-exports the public renderer surface.
-- `src/features/topology/` — topology browse/prototype graph surface; `index.ts` re-exports helpers and renderers.
-- `src/features/docs/timeline/` — ontology timeline page surface; `index.ts` re-exports helpers and renderers.
+Atlas feature packages that previously backed these barrels (`src/features/models`,
+`src/features/topology`, `src/features/docs/timeline`, generation/training/roofline
+explorers, and `src/features/graphs`) were deleted in `rewrite-delete-atlas-domain`.
+Do not reintroduce those packages through the AI barrel.
 
-## Shell consumers to migrate incrementally
+## Shell consumers
 
-- `src/app/(site)/site-renderers.tsx` — topology and timeline renderers import through `@/features/ai/topology` and `@/features/ai/timeline`.
-- `src/lib/content/mdx-components.tsx` — imports model renderers directly today.
+- `src/app/(site)/site-renderers.tsx` — no longer imports AI timeline/topology explorers.
+- `src/lib/content/mdx-components.tsx` / `blog-mdx-components.tsx` — no longer register Atlas explorer MDX components.
 
 ## Conventions
 
-- Import `@/features/ai` when shell or server code needs helpers without pulling client graph bundles into module evaluation.
-- Import `@/features/ai/models`, `@/features/ai/topology`, or `@/features/ai/timeline` when wiring renderers through the AI domain boundary.
-- Keep original feature paths working as transitional re-exports until migration stories complete.
+- Keep retired `@/features/ai/<name>` paths as empty modules so transitional imports stay type-safe without re-exporting deleted code.
+- Prefer deleting Atlas explorer packages over leaving stub renderers in the AI barrel.
 
 ## Verification
 
-- `src/features/ai/ai-domain-import-surfaces.test.ts` — focused import-surface tests for the AI namespace and transitional barrels; asserts export availability and representative helper behavior without source-file inventories.
+- `src/features/ai/ai-domain-import-surfaces.test.ts` — asserts retired namespaces export nothing and the server barrel no longer re-exports Atlas explorers.

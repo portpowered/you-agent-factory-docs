@@ -19,15 +19,9 @@ describe("getPrimaryNavItems", () => {
     const messages = await loadUiMessages();
     const items = getPrimaryNavItems(messages);
 
-    expect(items.map((item) => item.href)).toEqual([
-      "/",
-      "/docs/timeline",
-      "/blog",
-      "/tags",
-    ]);
+    expect(items.map((item) => item.href)).toEqual(["/", "/blog", "/tags"]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
-      messages.nav.timeline,
       messages.nav.blog,
       messages.nav.tags,
     ]);
@@ -39,19 +33,16 @@ describe("getPrimaryNavItems", () => {
 
     expect(items.map((item) => item.href)).toEqual([
       "/vi",
-      "/vi/docs/timeline",
       "/vi/blog",
       "/vi/tags",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
-      messages.nav.timeline,
       messages.nav.blog,
       messages.nav.tags,
     ]);
     expect(items.map((item) => item.label)).toEqual([
       "Trang chủ",
-      "Dòng thời gian",
       messages.nav.blog,
       messages.nav.tags,
     ]);

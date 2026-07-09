@@ -5,17 +5,9 @@
  *
  * Model Atlas at-a-glance / graph renderers were removed with
  * `src/features/models`. Topology explorer helpers were removed with
- * `src/features/topology`. This surface now re-exports timeline helpers only.
+ * `src/features/topology`. Ontology timeline helpers were removed with
+ * `src/features/docs/timeline`. This surface is intentionally empty for the
+ * rewrite shell until CLI domain helpers land.
  */
 
-export {
-  loadPreloadedTimelineSelections,
-  OntologyTimelinePage,
-} from "@/features/docs/timeline/OntologyTimelinePage";
-export {
-  buildTimelineClassificationHref,
-  getCanonicalTimelineSelectorForOutput,
-  getDefaultTimelineClassificationSelector,
-  normalizeTimelineClassificationSelector,
-  TIMELINE_CLASSIFICATION_QUERY_KEY,
-} from "@/features/docs/timeline/timeline-query";
+export {};

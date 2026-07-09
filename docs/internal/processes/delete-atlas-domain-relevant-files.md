@@ -81,9 +81,25 @@ collections.
 
 Required `make check` / `make test` / `make build` must not invoke deleted Atlas verifiers.
 
+## Story 006: remaining Atlas feature packages and routes
+
+| Path | Role |
+| --- | --- |
+| `src/features/generation-evolution/` | Deleted blog/docs generation-evolution explorer |
+| `src/features/training-signal-evolution/` | Deleted training-signal evolution explorer |
+| `src/features/roofline-throughput-explorer/` | Deleted registry-backed roofline explorer |
+| `src/features/graphs/` | Deleted Atlas graph primitives (GraphFrame/LineGraph/Heatmap + training-signal stacked chart) |
+| `src/features/docs/timeline/` | Deleted ontology timeline product surface |
+| `src/app/docs/timeline/` / `src/app/[locale]/docs/timeline/` | Deleted live `/docs/timeline` routes |
+| `src/features/ai/{timeline,server}.ts` | Empty retired barrels after timeline deletion |
+| `src/lib/content/{ontology-timeline,timeline-selector-compatibility,roofline-model-size-presets,effective-roofline-model-size}.ts` | Deleted helpers that existed only for those explorers |
+| `src/lib/content/mdx-components.tsx` / `blog-mdx-components.tsx` | No longer register Atlas explorer MDX components |
+| `src/lib/site/model-atlas-site-config.ts` | Drop timeline from `primaryNav` (route surface key may remain for contract compatibility) |
+| `src/app/(site)/docs/{models,modules,papers,training,systems,glossary}/` | Collection section indexes remain as empty-shell routes via `renderSectionCollectionIndexPage` |
+| `src/content/blog/*/page.mdx` | Strip explorer component imports; keep prose-only posts |
+
 ## Later stories in this PRD
 
-- `006` removes remaining Atlas feature packages/routes
 - `007` proves `make check` / `make test` / `make build` end-to-end
 
 

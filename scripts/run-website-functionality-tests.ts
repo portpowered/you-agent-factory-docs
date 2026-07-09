@@ -19,14 +19,10 @@ const excludedPrefixes = [
   "src/lib/governance/",
   "src/tests/build/",
   "src/tests/ci/",
-  // Atlas product surfaces deleted in rewrite-delete-atlas-domain; keep suites
-  // out of required make test until later stories retire the packages themselves.
-  "src/features/generation-evolution/",
-  "src/features/training-signal-evolution/",
-  "src/features/roofline-throughput-explorer/",
+  // Atlas product surfaces deleted in rewrite-delete-atlas-domain; keep
+  // leftover Atlas-coupled suites out of required make test.
   "src/features/ai/",
   "src/features/models/",
-  "src/features/docs/timeline/",
   "src/tests/discovery/",
   "src/tests/search/",
   "src/tests/content/",
@@ -71,8 +67,6 @@ const excludedFiles = new Set([
   "src/components/layout/model-atlas-docs-header.test.tsx",
   "src/features/blog/llms-no-longer-reliant-discoverability.test.tsx",
   "src/features/blog/components/BlogRelatedDocs.test.tsx",
-  "src/features/blog/components/llms-training-shift-post-blog-integration.test.tsx",
-  "src/features/blog/components/evolution-of-diffusion-blog-integration.test.tsx",
   "src/features/blog/components/blog-related-docs-blog-integration.test.tsx",
   "src/features/docs/components/CitationList.test.tsx",
   "src/features/docs/components/DerivedRelatedDocs.test.tsx",

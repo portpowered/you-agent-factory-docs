@@ -14,7 +14,6 @@ status: "published"
 
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-import { RooflineThroughputExplorerFromRegistry } from "@/features/roofline-throughput-explorer/RooflineThroughputExplorerFromRegistry";
 
 ## Problem
 
@@ -86,23 +85,13 @@ you aren't seeing the throughput. Therefore, whatever gets you more tokens is be
 
 ## Explorer
 
-The graph below shows different computers and how fast they can generate tokens. 
+A useful mental model is a roofline: plot memory bandwidth against compute, then place hosts and model working sets on that plane.
 
-Generally to the right of the graph is better, and closer to the line is optimal. 
+Generally more bandwidth to the right is better, and sitting closer to the compute-versus-bandwidth border is more balanced. In practice, the best computer to buy right now for local language model inference is still an RTX 5090 or an M-series Max chip. Higher-memory workstation cards can run bigger models, but they are still constrained by memory bandwidth.
 
-Play around with the model points, but you can sort of see overall that the best computer to buy right now is an RTX 5090 or an M-series Max chip for running a local model.
-Higher-memory workstation cards can run bigger models, but they're still constrained by memory bandwidth.
+Anything above the optimal border means you have too much compute but not enough bandwidth to saturate. Anything below means you have lots of memory bandwidth, but not enough compute. Overall, most local language models are memory-bound, not compute-bound.
 
-<RooflineThroughputExplorerFromRegistry />
-
-
-On the graph there's a line that is the optimal compute versus bandwidth border. Anything above the line means you have too much compute but not enough bandwidth to saturate. 
-Anything below the line means you have lots of memory bandwidth, but not enough compute. 
-
-The dots on the graph show different compute hosts. Overall, most models are memory-bound, not compute-bound. 
-
-DGX Spark and Strix Halo were recent releases for compute hosts, but they are heavily bottlenecked by memory throughput. 
-We don't recommend using them for local language model inference. 
+DGX Spark and Strix Halo were recent releases for compute hosts, but they are heavily bottlenecked by memory throughput. We don't recommend using them for local language model inference. 
 
 # FAQ
 

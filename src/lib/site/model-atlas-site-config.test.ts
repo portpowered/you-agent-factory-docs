@@ -27,13 +27,13 @@ describe("model atlas site config", () => {
     );
   });
 
-  test("orders primary nav for home, timeline, blog, and tags without topology", () => {
+  test("orders primary nav for home, blog, and tags without topology or timeline", () => {
     expect(
       modelAtlasSiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).toEqual(["home", "timeline", "blogIndex", "tagsIndex"]);
+    ).toEqual(["home", "blogIndex", "tagsIndex"]);
     expect(
       modelAtlasSiteConfig.primaryNav.map((entry) => entry.labelKey),
-    ).toEqual(["home", "timeline", "blog", "tags"]);
+    ).toEqual(["home", "blog", "tags"]);
   });
 
   test("includes all Model Atlas collection family placeholders", () => {
