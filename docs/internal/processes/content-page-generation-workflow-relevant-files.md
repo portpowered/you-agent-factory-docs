@@ -218,6 +218,21 @@ Canonical commands:
 - macOS/Linux: `curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh`
 - Windows: `irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex`
 
+### Documentation CLI command matrix (page-local)
+
+For `documentation/cli` commands copy, keep a distinct `#commands` `Section`
+after `#how-to-use` (template order stays intact; `#commands` is an extra
+teaching surface). Put matrix headers and cell strings under page `links.*`
+keys — same reason as install: `pageSectionSchema` only keeps `title`/`body`.
+Render an always-visible HTML `<table>` with `<T k="links.…" />` in each cell
+so the running-factory distinction is readable without hover and without
+hard-coded prose in MDX.
+
+Do not use `PageAsset` table stubs for this matrix (they only echo `tableId`).
+Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
+readers while keeping the run/submit/session/work/docs running-factory
+distinctions clear.
+
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 
