@@ -53,6 +53,29 @@ const modelsDefinition: DocsCollectionDefinition = {
   },
 };
 
+const guidesDefinition: DocsCollectionDefinition = {
+  id: "guides",
+  routeSlug: "guides",
+  registryKind: "guide",
+  frontmatterKind: "guide",
+  starterSlugs: [],
+  messageKeys: {
+    browse: {
+      sectionTitle: "browseIndex.guidesSectionTitle",
+      sectionDescription: "browseIndex.guidesSectionDescription",
+      sectionLinkLabel: "browseIndex.guidesSectionLinkLabel",
+    },
+    index: {
+      title: "guidesIndex.title",
+      description: "guidesIndex.description",
+      listLabel: "guidesIndex.listLabel",
+      emptyTitle: "guidesIndex.emptyTitle",
+      emptyDescription: "guidesIndex.emptyDescription",
+      emptyHomeLink: "guidesIndex.emptyHomeLink",
+    },
+  },
+};
+
 describe("collection definition contract", () => {
   test("allows route slug and frontmatter kind to diverge for training", () => {
     expect(trainingDefinition.routeSlug).toBe("training");
@@ -62,12 +85,20 @@ describe("collection definition contract", () => {
 
   test("allows collections without sidebar grouping resolver ids", () => {
     expect(modelsDefinition.sidebarGroupingResolverId).toBeUndefined();
+    expect(guidesDefinition.sidebarGroupingResolverId).toBeUndefined();
   });
 
-  test("exports the current AI collection ids", () => {
+  test("allows empty starter slug lists for CLI collections", () => {
+    expect(guidesDefinition.starterSlugs).toEqual([]);
+  });
+
+  test("exports the current docs collection ids including empty CLI collections", () => {
     expect(DOCS_COLLECTION_IDS).toEqual([
-      "glossary",
+      "guides",
       "concepts",
+      "techniques",
+      "documentation",
+      "glossary",
       "modules",
       "models",
       "papers",
@@ -79,11 +110,15 @@ describe("collection definition contract", () => {
   test("constrains sidebar grouping resolver ids", () => {
     expect(isDocsCollectionSidebarGroupingResolverId("modules")).toBe(true);
     expect(isDocsCollectionSidebarGroupingResolverId("models")).toBe(false);
+    expect(isDocsCollectionSidebarGroupingResolverId("guides")).toBe(false);
     expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).not.toContain(
       "models",
     );
     expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).not.toContain(
       "papers",
+    );
+    expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).not.toContain(
+      "guides",
     );
   });
 });

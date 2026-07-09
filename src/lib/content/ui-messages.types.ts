@@ -98,6 +98,15 @@ export type BrowseIndexMessages = {
   conceptsSectionTitle: string;
   conceptsSectionDescription: string;
   conceptsSectionLinkLabel: string;
+  guidesSectionTitle: string;
+  guidesSectionDescription: string;
+  guidesSectionLinkLabel: string;
+  techniquesSectionTitle: string;
+  techniquesSectionDescription: string;
+  techniquesSectionLinkLabel: string;
+  documentationSectionTitle: string;
+  documentationSectionDescription: string;
+  documentationSectionLinkLabel: string;
   papersSectionTitle: string;
   papersSectionDescription: string;
   papersSectionLinkLabel: string;
@@ -296,6 +305,9 @@ export type AiCollectionIndexMessages = {
   modelsIndex: SectionIndexMessages;
   modulesIndex: SectionIndexMessages;
   conceptsIndex: SectionIndexMessages;
+  guidesIndex: SectionIndexMessages;
+  techniquesIndex: SectionIndexMessages;
+  documentationIndex: SectionIndexMessages;
   papersIndex: SectionIndexMessages;
   trainingIndex: SectionIndexMessages;
   systemsIndex: SectionIndexMessages;
@@ -338,6 +350,9 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "modelsIndex",
   "modulesIndex",
   "conceptsIndex",
+  "guidesIndex",
+  "techniquesIndex",
+  "documentationIndex",
   "papersIndex",
   "trainingIndex",
   "systemsIndex",

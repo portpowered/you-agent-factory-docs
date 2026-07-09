@@ -49,7 +49,9 @@ const AI_BROWSE_STARTER_HREFS = [
   "/docs/glossary/world-model",
   "/docs/modules/grouped-query-attention",
   "/docs/glossary/softmax",
-  "/docs/concepts/transformer-architecture",
+  // Concepts keep an empty starter list for the CLI taxonomy rewrite; browse
+  // falls back to title-sorted published concept pages (activation first).
+  "/docs/concepts/activation",
   "/docs/glossary/temperature",
   "/docs/papers/deepseek-v4",
   "/docs/training/on-policy-distillation",

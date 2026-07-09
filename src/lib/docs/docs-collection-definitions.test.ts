@@ -13,6 +13,13 @@ import {
   listDocsCollectionDefinitions,
 } from "@/lib/docs/docs-collection-definitions";
 
+const EMPTY_CLI_COLLECTION_IDS = [
+  "guides",
+  "concepts",
+  "techniques",
+  "documentation",
+] as const;
+
 function resolveUiMessagePath(messages: UiMessages, path: string): string {
   const value = path
     .split(".")
@@ -53,7 +60,7 @@ function expectResolvableMessageKeys(
 }
 
 describe("docs collection definitions config", () => {
-  test("represents every current AI collection exactly once", () => {
+  test("represents every current docs collection exactly once", () => {
     assertDocsCollectionInventory();
 
     expect(
@@ -71,13 +78,26 @@ describe("docs collection definitions config", () => {
   });
 
   test("uses current frontmatter and registry kinds", () => {
-    expect(getDocsCollectionDefinition("glossary")).toMatchObject({
-      routeSlug: "glossary",
-      frontmatterKind: "glossary",
-      registryKind: "concept",
+    expect(getDocsCollectionDefinition("guides")).toMatchObject({
+      routeSlug: "guides",
+      frontmatterKind: "guide",
+      registryKind: "guide",
     });
     expect(getDocsCollectionDefinition("concepts")).toMatchObject({
       frontmatterKind: "concept",
+      registryKind: "concept",
+    });
+    expect(getDocsCollectionDefinition("techniques")).toMatchObject({
+      frontmatterKind: "technique",
+      registryKind: "technique",
+    });
+    expect(getDocsCollectionDefinition("documentation")).toMatchObject({
+      frontmatterKind: "documentation",
+      registryKind: "documentation",
+    });
+    expect(getDocsCollectionDefinition("glossary")).toMatchObject({
+      routeSlug: "glossary",
+      frontmatterKind: "glossary",
       registryKind: "concept",
     });
     expect(getDocsCollectionDefinition("modules")).toMatchObject({
@@ -107,7 +127,13 @@ describe("docs collection definitions config", () => {
     });
   });
 
-  test("preserves current browse starter slugs as route-relative docs slugs", () => {
+  test("keeps CLI collection starter and featured slug lists empty", () => {
+    for (const id of EMPTY_CLI_COLLECTION_IDS) {
+      expect(getDocsCollectionDefinition(id).starterSlugs).toEqual([]);
+    }
+  });
+
+  test("preserves Atlas browse starter slugs as route-relative docs slugs", () => {
     expect(getDocsCollectionDefinition("models").starterSlugs).toEqual([
       "models/gpt-3",
     ]);
@@ -118,14 +144,6 @@ describe("docs collection definitions config", () => {
       "modules/relu",
       "modules/multi-head-attention",
       "modules/feed-forward-network",
-    ]);
-    expect(getDocsCollectionDefinition("concepts").starterSlugs).toEqual([
-      "concepts/transformer-architecture",
-      "concepts/positional-encodings",
-      "concepts/context-extension",
-      "concepts/quantization",
-      "concepts/why-long-context-is-hard",
-      "concepts/kv-cache-quantization",
     ]);
     expect(getDocsCollectionDefinition("papers").starterSlugs).toEqual([
       "papers/deepseek-v4",
@@ -147,6 +165,13 @@ describe("docs collection definitions config", () => {
     ]);
 
     for (const definition of DOCS_COLLECTION_DEFINITIONS) {
+      if (
+        (EMPTY_CLI_COLLECTION_IDS as readonly string[]).includes(definition.id)
+      ) {
+        expect(definition.starterSlugs).toEqual([]);
+        continue;
+      }
+
       expect(definition.starterSlugs.length).toBeGreaterThan(0);
       for (const slug of definition.starterSlugs) {
         expect(slug.startsWith(`${definition.routeSlug}/`)).toBe(true);
@@ -184,22 +209,32 @@ describe("docs collection definitions config", () => {
     }
   });
 
-  test("omits sidebar grouping resolver ids for models and papers", () => {
-    expect(
-      getDocsCollectionDefinition("models").sidebarGroupingResolverId,
-    ).toBeUndefined();
-    expect(
-      getDocsCollectionDefinition("papers").sidebarGroupingResolverId,
-    ).toBeUndefined();
+  test("omits sidebar grouping resolver ids for ungrouped collections", () => {
+    const ungroupedIds = new Set<string>([
+      "guides",
+      "techniques",
+      "documentation",
+      "models",
+      "papers",
+    ]);
+
+    for (const id of ungroupedIds) {
+      expect(
+        getDocsCollectionDefinition(id as (typeof DOCS_COLLECTION_IDS)[number])
+          .sidebarGroupingResolverId,
+      ).toBeUndefined();
+    }
 
     for (const id of DOCS_COLLECTION_IDS) {
       const definition = getDocsCollectionDefinition(id);
-      if (id === "models" || id === "papers") {
+      if (ungroupedIds.has(id)) {
         expect(definition.sidebarGroupingResolverId).toBeUndefined();
         continue;
       }
 
-      expect(definition.sidebarGroupingResolverId).toBe(id);
+      expect(definition.sidebarGroupingResolverId).toBe(
+        id as "glossary" | "concepts" | "modules" | "training" | "systems",
+      );
     }
   });
 });

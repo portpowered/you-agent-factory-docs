@@ -101,6 +101,15 @@
     "conceptsSectionTitle": "概念",
     "conceptsSectionDescription": "概念のページでは、transformer の構造、量子化、長文コンテキストのトレードオフのように、多くのモデルやモジュールにまたがる広い考え方を扱います。",
     "conceptsSectionLinkLabel": "概念ページをすべて見る",
+    "guidesSectionTitle": "ガイド",
+    "guidesSectionDescription": "ガイドのページでは、実務的な CLI ワークフローと、参照資料を日常の作業へどう適用するかを順を追って説明します。",
+    "guidesSectionLinkLabel": "ガイドページをすべて見る",
+    "techniquesSectionTitle": "技法",
+    "techniquesSectionDescription": "技法のページでは、CLI ワークフローやドキュメント作業に横断して適用できる、名前のある方法と実践を説明します。",
+    "techniquesSectionLinkLabel": "技法ページをすべて見る",
+    "documentationSectionTitle": "ドキュメント",
+    "documentationSectionDescription": "ドキュメントのページでは、契約、規約、補足情報など、CLI 面の参照資料を扱います。",
+    "documentationSectionLinkLabel": "ドキュメントページをすべて見る",
     "papersSectionTitle": "論文",
     "papersSectionDescription": "論文ページでは、ひとつの公開資料を、それが導入または補強したモデル、モジュール、学習法、システムへ分解して示します。",
     "papersSectionLinkLabel": "論文ページをすべて見る",
@@ -191,6 +200,30 @@
     "listLabel": "概念項目",
     "emptyTitle": "概念項目はまだありません",
     "emptyDescription": "公開された概念ページは、アトラスに追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照してモデル、モジュール、用語集を探索してください。",
+    "emptyHomeLink": "ホームに戻る"
+  },
+  "guidesIndex": {
+    "title": "ガイド",
+    "description": "公開済みのガイドページでは、実務的な CLI ワークフローと、参照資料を日常の作業へどう適用するかを順を追って説明します。",
+    "listLabel": "ガイド項目",
+    "emptyTitle": "ガイド項目はまだありません",
+    "emptyDescription": "公開されたガイドページは、追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照して他のコレクションを探索してください。",
+    "emptyHomeLink": "ホームに戻る"
+  },
+  "techniquesIndex": {
+    "title": "技法",
+    "description": "公開済みの技法ページでは、CLI ワークフローやドキュメント作業に横断して適用できる、名前のある方法と実践を説明します。",
+    "listLabel": "技法項目",
+    "emptyTitle": "技法項目はまだありません",
+    "emptyDescription": "公開された技法ページは、追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照して他のコレクションを探索してください。",
+    "emptyHomeLink": "ホームに戻る"
+  },
+  "documentationIndex": {
+    "title": "ドキュメント",
+    "description": "公開済みのドキュメントページでは、契約、規約、補足情報など、CLI 面の参照資料を扱います。",
+    "listLabel": "ドキュメント項目",
+    "emptyTitle": "ドキュメント項目はまだありません",
+    "emptyDescription": "公開されたドキュメントページは、追加されるとここに表示されます。それまではホームに戻るか、アトラスを参照して他のコレクションを探索してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "papersIndex": {
