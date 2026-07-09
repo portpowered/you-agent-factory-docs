@@ -1,0 +1,132 @@
+---
+title: "Getting Started"
+description: "Install you-agent-factory, start a factory, and submit your first work."
+kind: "guide"
+registryId: "guide.getting-started"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "Quickstart"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="install" titleKey="sections.install.title">
+  <T k="sections.install.body" />
+  <p>
+    <T k="links.installMacosLinuxLabel" />
+  </p>
+
+```sh
+curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh
+```
+
+  <p>
+    <T k="links.installWindowsLabel" />
+  </p>
+
+```powershell
+irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex
+```
+
+  <T k="callouts.installDeepDive.body" />
+</Section>
+
+<Section id="first-you" titleKey="sections.firstYou.title">
+  <T k="sections.firstYou.body" />
+  <p>
+    <T k="links.firstYouNamedRunLabel" />
+  </p>
+
+```sh
+you run --named @goal/blah
+```
+
+  <p>
+    <T k="links.firstYouDefaultStartLabel" />
+  </p>
+
+```sh
+you
+```
+
+  <p>
+    <T k="links.firstYouSessionListLabel" />
+  </p>
+
+```sh
+you session list
+```
+
+  <T k="callouts.firstYouSessionCheck.body" />
+</Section>
+
+<Section id="first-submit" titleKey="sections.firstSubmit.title">
+  <T k="sections.firstSubmit.body" />
+  <p>
+    <T k="links.firstSubmitUnaryLabel" />
+  </p>
+
+```sh
+you submit --name my-first-work --work-type-name idea --payload ./payload.md
+```
+
+  <p>
+    <T k="links.firstSubmitBatchLabel" />
+  </p>
+
+```sh
+you submit batch ./batch.json
+```
+
+  <T k="callouts.firstSubmitRunningFactory.body" />
+</Section>
+
+<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
+  <T k="sections.stepsOrWorkflow.body" />
+</Section>
+
+<Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
+  <T k="sections.commonPitfalls.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDeepDive",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="guide.getting-started" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="guide.getting-started" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="guide.getting-started" />
+</Section>

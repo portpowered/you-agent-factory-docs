@@ -568,6 +568,16 @@ function summarizeSharedHotspotCategories(
   );
 }
 
+function isRetiredRootPlaceholderForPage(
+  path: string,
+  scope: CanonicalPageScope,
+): boolean {
+  // Atlas-era root placeholders lived at src/content/docs/<slug>.mdx.
+  // Retiring that file when publishing src/content/docs/<section>/<slug>/ is
+  // page-owned for the matching slug (for example getting-started).
+  return path === `${DOCS_PAGE_PREFIX}${scope.slug}.mdx`;
+}
+
 function classifyChangedPath(
   path: string,
   scope: CanonicalPageScope,
@@ -596,6 +606,14 @@ function classifyChangedPath(
       kind: "page-owned",
       path,
       reason: "page-specific declared support record",
+    };
+  }
+
+  if (isRetiredRootPlaceholderForPage(path, scope)) {
+    return {
+      kind: "page-owned",
+      path,
+      reason: "matching page bundle",
     };
   }
 
@@ -740,7 +758,8 @@ function isAllowedFirstCliSectionPageSharedPath(
   if (
     path === "src/lib/content/published-docs-registry-contract.ts" ||
     path === "src/lib/content/content-hrefs.ts" ||
-    path === "src/lib/content/local-docs-page.ts"
+    path === "src/lib/content/local-docs-page.ts" ||
+    path === "src/lib/content/shipped-localized-docs.server.test.ts"
   ) {
     return true;
   }

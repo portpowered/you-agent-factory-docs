@@ -22,6 +22,59 @@ Routine canonical pages live under `src/content/docs/<section>/<slug>`. Resolve
 the page directory with `getDocsPageDir(section, slug)` instead of adding a new
 exported `*_PAGE_DIR` constant to `src/lib/content/content-paths.ts`.
 
+## Guide quickstart commands and message keys
+
+When a guide needs copyable shell commands (install, first-run, submit):
+
+1. Put fenced code blocks in `page.mdx` (not in message JSON). They render
+   through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents` and
+   stay always-visible with a copy control.
+2. Keep OS labels and short prose in colocated messages. `pageSectionSchema`
+   only allows `title` / `body` per section — extra keys under
+   `sections.<id>` are stripped by Zod and then fail
+   `make validate-data` as missing MDX message keys.
+3. For short non-section strings (for example OS labels), use top-level
+   `links.<key>` (string map). For an extra prose block that is not a section
+   heading, use `callouts.<id>.body` with `<T k="callouts.<id>.body" />` —
+   that stores the string without rendering the `Callout` UI component.
+
+Canonical install command forms match the home CTA in
+`src/content/messages/*/common.json` (`home.installMacosLinuxCommand` /
+`home.installWindowsCommand`). First-run / session forms used on the
+getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
+`you session list`. First-submit forms: unary
+`you submit --name <name> --work-type-name <type> --payload <path>` and
+`you submit batch <path>` (keep the quickstart free of full batch schema /
+relation dumps — those belong on submitting-work / CLI docs).
+
+Guide kind is outside the strict page-template conformance set, so extra
+quickstart `Section`s (for example `install`, `first-you`, `first-submit`)
+are allowed when colocated message keys validate. Browser-verify MDX or
+message edits with `bun run build` then `bun run start` on a unique port —
+plain `start` serves the last production build and will look stale otherwise.
+
+When linking parallel-lane sibling destinations that are not yet published in
+this worktree (for example getting-started → `/docs/documentation/install` and
+`/docs/documentation/cli`), prefer page-local `<LocalizedLinkList>` with stable
+hrefs and `links.*` labels. Do not put those ids in registry `relatedIds` until
+the sibling registry records exist here — unresolved related ids fail
+`validate-data`, and RelatedDocs also drops unpublished targets.
+
+## Shipping non-en locale stubs on a page bundle
+
+Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
+files is what derives the page as shipped for that locale
+(`deriveShippedLocalizedDocsManifest` / `bun run generate:shipped-localized-docs`).
+Missing non-default messages fail closed (no English fallback at load time).
+
+Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
+locale message files (the derive test requires it). On a first CLI-section page,
+that generated file plus a narrow `shipped-localized-docs.server.test.ts`
+expectation update stay inside the documented `declare-exception` allowlist —
+see [canonical-page-surface-budget-relevant-files.md](./canonical-page-surface-budget-relevant-files.md#first-authored-page-under-a-rewrite-era-cli-section).
+Leave other `prepare:content-runtime` outputs uncommitted when they stay
+gitignored.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |

@@ -921,4 +921,62 @@ describe("canonical page surface audit", () => {
       rmSync(repoRoot, { force: true, recursive: true });
     }
   });
+
+  test("treats retiring Atlas root placeholder as page-owned for matching slug", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
+
+    try {
+      mkdirSync(
+        join(repoRoot, "src/content/docs/guides/getting-started/messages"),
+        { recursive: true },
+      );
+      mkdirSync(join(repoRoot, "src/content/registry/guides"), {
+        recursive: true,
+      });
+
+      writeFileSync(
+        join(repoRoot, "src/content/docs/guides/getting-started/page.mdx"),
+        `---\nkind: "guide"\nregistryId: "guide.getting-started"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+      );
+      writeJson(
+        join(repoRoot, "src/content/docs/guides/getting-started/assets.json"),
+        [],
+      );
+      writeJson(
+        join(repoRoot, "src/content/registry/guides/getting-started.json"),
+        {
+          id: "guide.getting-started",
+        },
+      );
+
+      const snapshot: ConflictHotspotSnapshot = {
+        generatedAtUtc: "2026-07-09T12:00:00.000Z",
+        rankedSurfaces: [],
+        recentCommitLimit: 40,
+        repoRoot,
+        topPaths: [],
+        worktrees: [],
+      };
+
+      const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
+        changedPaths: [
+          "src/content/docs/getting-started.mdx",
+          "src/content/docs/guides/getting-started/page.mdx",
+          "src/content/docs/guides/getting-started/messages/en.json",
+          "src/content/docs/guides/getting-started/assets.json",
+          "src/content/registry/guides/getting-started.json",
+        ],
+        snapshot,
+      });
+
+      expect(audit.pageScope.registryId).toBe("guide.getting-started");
+      expect(audit.budgetStatus).toBe("within-budget");
+      expect(audit.guidance.recommendedAction).toBe("keep-routine");
+      expect(
+        audit.classifications.every((item) => item.kind === "page-owned"),
+      ).toBe(true);
+    } finally {
+      rmSync(repoRoot, { force: true, recursive: true });
+    }
+  });
 });
