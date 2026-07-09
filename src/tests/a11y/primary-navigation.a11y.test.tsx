@@ -40,6 +40,16 @@ describe("primary navigation accessibility smoke", () => {
     const header = document.querySelector("header");
     expect(header).toBeTruthy();
 
+    // Scope to DocsHeader brand chrome; CanonicalDocsLayout may also expose a
+    // Fumadocs layout brand link with the same accessible name.
+    const brandLink = header?.querySelector(
+      "a[data-docs-header-brand]",
+    ) as HTMLAnchorElement | null;
+    expect(brandLink).toBeTruthy();
+    expect(brandLink?.textContent).toBe("you-agent-factory");
+    expect(brandLink?.getAttribute("href")).toBe("/");
+    expect(header?.textContent).not.toMatch(/Model Atlas/);
+
     const nav = screen.getByRole("navigation", { name: "Primary" });
     expect(nav).toBeTruthy();
 
@@ -81,6 +91,10 @@ describe("primary navigation accessibility smoke", () => {
     const searchButton = screen.getByRole("button", {
       name: context.messages.search.open,
     });
+    expect(context.messages.search.open).not.toMatch(/Model Atlas/i);
+    expect(context.messages.search.placeholder).toBe(
+      "Search you-agent-factory…",
+    );
     searchButton.focus();
     expect(document.activeElement).toBe(searchButton);
 

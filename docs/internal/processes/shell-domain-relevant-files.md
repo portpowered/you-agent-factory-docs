@@ -38,6 +38,21 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/fixtures/non-ai-shell/search.test.ts`
   Fixture base search document and Orama query coverage without AI enrichment.
 
+## CLI docs header / primary-nav regression
+
+* `src/components/layout/docs-header.tsx`
+  Product-neutral docs shell header (`DocsHeader`); brand via
+  `data-docs-header-brand`, CLI primary nav, and header `SearchTrigger`.
+* `src/components/layout/docs-header.test.tsx`
+  Unit regression locking you-agent-factory brand, Home/Guides/Docs/Glossary/Blog
+  primary destinations (no Topology/Timeline), and Search chrome without Model
+  Atlas copy — including the consolidated "locks CLI shell header brand,
+  primary nav, and Search together" case.
+* `src/tests/a11y/primary-navigation.a11y.test.tsx`
+  A11y smoke for brand + Primary landmark + Search on the canonical docs layout.
+* `src/components/layout/primary-nav.ts` / `primary-nav.test.ts`
+  Site-config-driven CLI primary nav item resolution.
+
 ## AI shell parity regression
 
 * `src/tests/fixtures/non-ai-shell/ai-shell-behavior-parity.test.ts`

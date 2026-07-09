@@ -105,10 +105,76 @@ function renderHeaderWithNavigation(
   );
 }
 
+/** Product-order CLI primary destinations locked for the you-agent-factory shell. */
+const CLI_PRIMARY_NAV_LABELS = [
+  "Home",
+  "Guides",
+  "Docs",
+  "Glossary",
+  "Blog",
+] as const;
+const CLI_PRIMARY_NAV_HREFS = [
+  "/",
+  "/docs/guides",
+  "/browse",
+  "/docs/glossary",
+  "/blog",
+] as const;
+
 describe("DocsHeader", () => {
   afterEach(() => {
     cleanup();
     resetMockNavigation();
+  });
+
+  test("locks CLI shell header brand, primary nav, and Search together", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(youAgentFactorySiteConfig);
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
+          messages={messages}
+          pageTree={source.pageTree}
+          siteConfig={youAgentFactorySiteConfig}
+        />
+      </RootProvider>,
+    );
+
+    expect(brand.title).toBe("you-agent-factory");
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).not.toContain(">Model Atlas<");
+    expect(html).not.toMatch(/ModelAtlasDocsHeader|model-atlas-docs-header/);
+
+    const expectedItems = getPrimaryNavItems(messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      ...CLI_PRIMARY_NAV_LABELS,
+    ]);
+    expect(expectedItems.map((item) => item.href)).toEqual([
+      ...CLI_PRIMARY_NAV_HREFS,
+    ]);
+
+    const desktopNavMatch = html.match(
+      /<nav[^>]*aria-label="Primary"[^>]*>([\s\S]*?)<\/nav>/,
+    );
+    expect(desktopNavMatch).toBeTruthy();
+    const desktopNav = desktopNavMatch?.[1] ?? "";
+    for (const item of expectedItems) {
+      expect(desktopNav).toContain(`href="${item.href}"`);
+      expect(desktopNav).toContain(`>${item.label}<`);
+    }
+    expect(desktopNav).not.toContain(`>${messages.nav.topology}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.timeline}<`);
+    expect(desktopNav).not.toContain('href="/topology"');
+    expect(desktopNav).not.toContain('href="/docs/timeline"');
+
+    expect(html).toContain('data-search=""');
+    expect(html).toContain(`aria-label="${messages.search.open}"`);
+    expect(messages.search.placeholder).toBe("Search you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.search.open).not.toMatch(/Model Atlas/i);
+    expect(assertPrimaryNavNoDuplicateSearchLink(html)).toBeNull();
   });
 
   test("renders header search trigger without duplicate /search primary nav link", async () => {

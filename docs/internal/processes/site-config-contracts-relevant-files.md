@@ -92,6 +92,13 @@ contract for the you-agent-factory CLI docs product.
   Tags as primary destinations.
 - Sidebar/layout brand link assertions should use `you-agent-factory`, not
   `Model Atlas`, when driven by the default site config.
+- CLI docs header regression lock-in lives in
+  `src/components/layout/docs-header.test.tsx` ("locks CLI shell header brand,
+  primary nav, and Search together") and
+  `src/tests/a11y/primary-navigation.a11y.test.tsx` (brand + CLI Primary +
+  Search on the canonical layout). Do not reintroduce Model Atlas header
+  component names, Topology/Timeline primary items, or Model Atlas search
+  chrome copy in those surfaces.
 
 ## Story sequencing
 
