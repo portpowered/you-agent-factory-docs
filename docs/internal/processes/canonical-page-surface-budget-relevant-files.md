@@ -30,6 +30,13 @@ For one canonical page, reviewers should expect:
   that exist only to render that same page)
 - No unrelated shared-surface churn
 
+Rewrite-era CLI collection kinds (`guide`, `technique`, `documentation`,
+`glossary`) resolve through the same audit registry-directory map as Atlas-era
+kinds. Section-level `src/content/docs/<section>/.gitkeep` deletions are not a
+second page bundle for scope inference; when proving an owned-surface keep for
+a page that also needed first-CLI shared unblocks earlier on the branch, pass
+`--page-dir` plus `--files` limited to the page-owned paths.
+
 ## Shared hotspot surfaces (high risk for ordinary page work)
 
 Ordinary page branches should avoid touching:

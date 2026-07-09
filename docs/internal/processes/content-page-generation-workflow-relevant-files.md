@@ -69,6 +69,26 @@ hrefs and `links.*` labels. Do not put those ids in registry `relatedIds` until
 the sibling registry records exist here — unresolved related ids fail
 `validate-data`, and RelatedDocs also drops unpublished targets.
 
+## Shipping non-en locale stubs on a page bundle
+
+Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
+files is what derives the page as shipped for that locale
+(`deriveShippedLocalizedDocsManifest` / `bun run generate:shipped-localized-docs`).
+Missing non-default messages fail closed (no English fallback at load time).
+
+For the first page under a rewrite-era CLI collection (`guides` / `techniques` /
+`documentation`), `bun run audit:canonical-page-surface` must recognize the
+registry kind (`guide`, `technique`, `documentation`, `glossary`) and must not
+treat section-level `src/content/docs/<section>/.gitkeep` as a second page
+bundle when inferring scope. Retiring an Atlas-era root placeholder at
+`src/content/docs/<slug>.mdx` when publishing `src/content/docs/<section>/<slug>/`
+is page-owned for that slug. Prove the owned-surface keep with
+`--page-dir src/content/docs/<section>/<slug> --files <page-owned paths…>` when
+earlier commits also carried first-CLI shared unblocks. Commit the regenerated
+tracked `shipped-localized-docs.generated.ts` when adding locale message files
+(the derive test requires it); leave other `prepare:content-runtime` outputs
+uncommitted when they stay gitignored.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |
