@@ -1,0 +1,97 @@
+---
+title: "Using you-agent-factory for Loops"
+description: "Run iterative factory loops that keep work cycling until a goal is done."
+kind: "guide"
+registryId: "guide.using-you-agent-factory-for-loops"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases: []
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
+  <T k="sections.stepsOrWorkflow.body" />
+  <p>
+    <T k="links.stepsNamedRunLabel" />
+  </p>
+
+```sh
+you run --named @goal/blah
+```
+
+  <p>
+    <T k="links.stepsSessionListLabel" />
+  </p>
+
+```sh
+you session list
+```
+
+  <p>
+    <T k="links.stepsSubmitLabel" />
+  </p>
+
+```sh
+you submit --name loop-pass --work-type-name idea --payload ./payload.md
+```
+
+  <p>
+    <T k="links.stepsSubmitBatchLabel" />
+  </p>
+
+```sh
+you submit batch ./batch.json
+```
+
+  <T k="callouts.stepsKeepIterating.body" />
+</Section>
+
+<Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
+  <T k="sections.commonPitfalls.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+      {
+        href: "/docs/concepts/loop",
+        labelKey: "links.loopConcept",
+      },
+      {
+        href: "/docs/guides/write-review-loops",
+        labelKey: "links.writeReviewLoopsGuide",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="guide.using-you-agent-factory-for-loops" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="guide.using-you-agent-factory-for-loops" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="guide.using-you-agent-factory-for-loops" />
+</Section>

@@ -1,0 +1,46 @@
+{
+  "title": "Using you-agent-factory for Loops",
+  "description": "Run iterative factory loops that keep work cycling until a goal is done.",
+  "openingSummary": "Run a factory loop when a goal needs repeated agent passes under you-agent-factory until the work is done.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done, or until you take an explicit stop or terminal path. The factory keeps the session and continues agent passes across that loop. It is not a one-shot chat session that ends when a single reply finishes. You start or continue a named run, submit work the factory can cycle on, and keep going until the goal is complete or you stop the run."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use a factory loop when a goal needs repeated agent passes under a live factory—for example a long-running feature, a multi-step migration, or any outcome that is not finished in one submit. Prefer a write-review loop when the work should alternate between drafting and review gates. Prefer Cursor dynamic workflows when the loop should be driven from Cursor session automation rather than a plain factory loop. If you still need to install the command-line interface (CLI) or confirm a first run, start with getting started first."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "If the CLI is not installed yet, finish getting started first, then return here. Start or continue a named factory run for the goal, confirm a live session, submit work the factory can iterate on, and keep submitting until the goal is done or you stop the run."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Do not submit work when no factory session is live—confirm with session list first, or start a named run again. Do not treat a factory loop as a disposable one-shot chat; the factory keeps the session across passes until the goal is done or you stop. Do not use a plain loop when the work should alternate draft and review gates—that path belongs to a write-review loop instead."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "stepsNamedRunLabel": "Start or continue a named run",
+    "stepsSessionListLabel": "Confirm a live factory session",
+    "stepsSubmitLabel": "Submit work for this loop pass",
+    "stepsSubmitBatchLabel": "Or submit a small batch",
+    "gettingStarted": "Getting started",
+    "loopConcept": "Loop concept",
+    "writeReviewLoopsGuide": "Write-Review Loops"
+  },
+  "callouts": {
+    "stepsKeepIterating": {
+      "body": "After each pass, check session list again and submit the next piece of work. The factory keeps the loop alive across submits until the goal is complete or you take an explicit stop path. Replace @goal/blah, work names, and payload paths with your own goal and files."
+    }
+  }
+}

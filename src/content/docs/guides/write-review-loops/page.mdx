@@ -1,0 +1,100 @@
+---
+title: "Write-Review Loops"
+description: "Use you-agent-factory for write → review → revise loops with a bounded retry path."
+kind: "guide"
+registryId: "guide.write-review-loops"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases: []
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
+  <T k="sections.stepsOrWorkflow.body" />
+  <p>
+    <T k="links.confirmSessionLabel" />
+  </p>
+
+```sh
+you session list
+```
+
+  <p>
+    <T k="links.startFactoryLabel" />
+  </p>
+
+```sh
+you
+```
+
+  <p>
+    <T k="links.namedRunLabel" />
+  </p>
+
+```sh
+you run --named @goal/blah
+```
+
+  <T k="callouts.sessionCheck.body" />
+  <p>
+    <T k="links.submitWorkLabel" />
+  </p>
+
+```sh
+you submit --name my-write-review-work --work-type-name task --payload ./payload.md
+```
+
+  <p>
+    <T k="links.batchSubmitLabel" />
+  </p>
+
+```sh
+you submit batch ./batch.json
+```
+
+  <T k="callouts.submitAgainstLive.body" />
+  <T k="callouts.routing.body" />
+  <T k="callouts.loopBreaker.body" />
+</Section>
+
+<Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
+  <T k="sections.commonPitfalls.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/techniques/writer-reviewer",
+        labelKey: "links.writerReviewerTechnique",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="guide.write-review-loops" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="guide.write-review-loops" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="guide.write-review-loops" />
+</Section>
