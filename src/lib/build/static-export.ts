@@ -13,8 +13,11 @@ export function isStaticExportBuild(env: BuildModeEnv = process.env): boolean {
  * Next.js `output: "export"` rejects empty `generateStaticParams()` results with a
  * misleading "missing generateStaticParams()" error. When a dynamic route has no
  * real params at build time, emit a single placeholder that the page can `notFound()`.
+ *
+ * Placeholder values may include string arrays (docs catch-all `slug`) as well as
+ * plain strings (blog/tag slugs).
  */
-export function ensureStaticExportParams<T extends Record<string, string>>(
+export function ensureStaticExportParams<T>(
   params: readonly T[],
   placeholder: T,
   env: BuildModeEnv = process.env,

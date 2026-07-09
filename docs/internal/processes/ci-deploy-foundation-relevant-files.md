@@ -57,7 +57,8 @@ page fixtures. See [delete-atlas-domain-relevant-files.md](./delete-atlas-domain
 Next.js `output: "export"` fails with a misleading "missing generateStaticParams()"
 error when a dynamic route returns `[]`. Use `ensureStaticExportParams` from
 `src/lib/build/static-export.ts` to emit a single placeholder param that the page
-already `notFound()`s (see localized blog `[slug]`).
+already `notFound()`s (see localized blog `[slug]` and docs `[[...slug]]` after
+Atlas page deletion leaves empty collections).
 
 ## Transitional skip/pass gates
 

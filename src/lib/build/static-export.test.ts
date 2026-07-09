@@ -103,4 +103,14 @@ describe("static export build mode", () => {
       ),
     ).toEqual([{ locale: "vi", slug: "placeholder" }]);
   });
+
+  test("emits a placeholder catch-all slug array for empty docs routes", () => {
+    expect(
+      ensureStaticExportParams(
+        [],
+        { locale: "ja", slug: ["__no_localized_docs_pages__"] },
+        { [STATIC_EXPORT_ENV]: "1" },
+      ),
+    ).toEqual([{ locale: "ja", slug: ["__no_localized_docs_pages__"] }]);
+  });
 });
