@@ -13,13 +13,12 @@
     },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
-      "body": "Confirm a live factory, start or continue a named run, submit work that iterates, and check progress."
+      "body": "If the CLI is not installed yet, finish getting started first, then return here. Start or continue a named factory run for the goal, confirm a live session, submit work the factory can iterate on, and keep submitting until the goal is done or you stop the run."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
       "body": "Do not submit without a live factory session, and do not treat a loop as a one-shot chat."
     },
-
     "related": {
       "title": "Related To"
     },
@@ -28,6 +27,17 @@
     },
     "references": {
       "title": "References"
+    }
+  },
+  "links": {
+    "stepsNamedRunLabel": "Start or continue a named run",
+    "stepsSessionListLabel": "Confirm a live factory session",
+    "stepsSubmitLabel": "Submit work for this loop pass",
+    "stepsSubmitBatchLabel": "Or submit a small batch"
+  },
+  "callouts": {
+    "stepsKeepIterating": {
+      "body": "After each pass, check session list again and submit the next piece of work. The factory keeps the loop alive across submits until the goal is complete or you take an explicit stop path. Replace @goal/blah, work names, and payload paths with your own goal and files."
     }
   }
 }

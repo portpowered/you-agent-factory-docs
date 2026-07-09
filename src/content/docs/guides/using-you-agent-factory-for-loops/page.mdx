@@ -28,6 +28,39 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
   <T k="sections.stepsOrWorkflow.body" />
+  <p>
+    <T k="links.stepsNamedRunLabel" />
+  </p>
+
+```sh
+you run --named @goal/blah
+```
+
+  <p>
+    <T k="links.stepsSessionListLabel" />
+  </p>
+
+```sh
+you session list
+```
+
+  <p>
+    <T k="links.stepsSubmitLabel" />
+  </p>
+
+```sh
+you submit --name loop-pass --work-type-name idea --payload ./payload.md
+```
+
+  <p>
+    <T k="links.stepsSubmitBatchLabel" />
+  </p>
+
+```sh
+you submit batch ./batch.json
+```
+
+  <T k="callouts.stepsKeepIterating.body" />
 </Section>
 
 <Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
