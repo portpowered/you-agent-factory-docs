@@ -238,6 +238,13 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   `prepare:content-runtime`).
 * Cover client gating in `src/lib/content/shipped-localized-docs.test.ts` and
   derivation in `src/lib/content/shipped-localized-docs.server.test.ts`.
+* Ship shell UI copy at `src/content/messages/<locale>/common.json` with the
+  same top-level groups as English; `loadUiMessages` / `loadUiMessagesFromDisk`
+  fail closed on a missing file (same as `ja`/`vi`). Every shipped shell locale
+  must include `language.locales.<new-locale>` for the language selector.
+* Prove load + fail-closed behavior in `src/tests/content/ui-messages.test.ts`
+  (use `bun test --preload ./src/tests/a11y/mock-navigation.ts` for focused
+  runs; `bun run test` alone fans the full website suite).
 
 ## Representative migrated consumers
 
