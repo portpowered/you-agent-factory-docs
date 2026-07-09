@@ -3,16 +3,19 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ja: [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
+    "guides/cursor-dynamic-workflows",
     "guides/getting-started",
   ],
   "zh-CN": [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
+    "guides/cursor-dynamic-workflows",
     "guides/getting-started",
   ],
   vi: [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
+    "guides/cursor-dynamic-workflows",
     "guides/getting-started",
   ],
 } as const;
