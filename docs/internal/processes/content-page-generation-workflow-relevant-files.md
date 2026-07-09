@@ -397,58 +397,6 @@ Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
 readers while keeping the run/submit/session/work/docs running-factory
 distinctions clear.
 
-### Documentation workstations taxonomy and routing matrices (page-local)
-
-For `documentation/workstations`, keep `#key-concepts` as the isolation-first
-definition (workflow step + ownership + route fields), then add page-local
-teaching sections before `#how-to-use`:
-
-- `#ownership` — factory.json topology vs `workstations/<name>/AGENTS.md`
-  prompt/runtime vs worker backends
-- `#runtime-types` — public `type` values with short use-when guidance
-- `#scheduling-and-routing` — `behavior` values plus `outputs` /
-  `onContinue` / `onRejection` / `onFailure` (including implicit failure for
-  worker-backed steps and explicit routes for `LOGICAL_MOVE`)
-
-Put matrix headers and cell strings under page `links.*` keys and render
-always-visible HTML `<table>` rows with `<T k="links.…" />`, same as the CLI
-command matrix. Prefer current public names; mention legacy
-`MODEL_WORKSTATION` / `MODEL_INVOKE` only as brief migration notes in section
-body prose. Rewrite from `you docs workstations` for web readers — do not sync
-packaged markdown into the page bundle.
-
-### Documentation workstations how-to-use examples (page-local)
-
-For `documentation/workstations` `#how-to-use`, keep narrative in
-`sections.howToUse.body` and put example labels plus selectable code under
-page `links.*` keys (same `pageSectionSchema` constraint as CLI install
-commands). Render always-visible
-`<p><T k="links.…Label" /></p><pre><code><T k="links.…Code" /></code></pre>`
-blocks so topology examples stay readable without hover; horizontal scroll is
-acceptable on narrow viewports.
-
-Ship at least one worker-backed example (`AGENT_RUN` with inputs / outputs /
-`onContinue` or `onRejection` / `onFailure`) and one distinct non-worker or
-special-kind example (`LOGICAL_MOVE`, `CLASSIFIER_WORKSTATION`, or
-`INFERENCE_RUN`). Keep examples minimal: topology + routing (+ prompt path
-when useful). Do not absorb worker provider setup, full guard catalogs, or
-template-variable inventories. Store multiline JSON as `\n`-joined strings in
-`links.*` so `<pre>` preserves selectable formatting.
-
-### Documentation workstations limits and sibling discovery (page-local)
-
-For `documentation/workstations`, keep `#limits-and-assumptions` as the scope
-boundary: web kinds / routing / workstation-owned runtime only — not a packaged
-CLI sync, not workers backend, not configuration overview, and not
-guards/templates/resources deep pages.
-
-Wire sibling discovery for configuration, workers, and resources with
-page-local `<LocalizedLinkList>` and `links.*` labels when those sibling
-registry records are not yet published in the worktree. Keep
-`<RelatedDocs registryId="documentation.workstations" />` for registry-backed
-related items, but omit unpublished sibling ids from `relatedIds` so
-`validate-data` stays clean. Do not invent page-meta “on this page” prose.
-
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands
