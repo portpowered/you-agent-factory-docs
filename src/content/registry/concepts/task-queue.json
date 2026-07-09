@@ -1,0 +1,17 @@
+{
+  "id": "concept.task-queue",
+  "slug": "task-queue",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["task queue", "work queue", "factory task queue"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T23:33:33.000Z",
+  "updatedAt": "2026-07-09T23:33:33.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}

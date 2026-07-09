@@ -1,0 +1,32 @@
+{
+  "title": "Task Queue",
+  "description": "The you-agent-factory task queue is the backlog of submitted work waiting in work-type states until workstations consume it.",
+  "openingSummary": "A task queue is the factory backlog of submitted work sitting in work-type states and places until enabled workstations can consume ready items.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A task queue is the you-agent-factory backlog of submitted work. After work enters the factory, it becomes tokens waiting in work-type states and places until workstations can consume ready items."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "The task queue keeps many work items persistent after submit so a long-running factory can dispatch them in parallel or in order as workstations become enabled."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You submit a work item. It lands in an initial work-type state such as task:init. A workstation whose inputs match that waiting place becomes enabled and consumes the item."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "The task queue is the runtime backlog of waiting work, not a planner checklist, not the submit batch that enqueues work, not the token vocabulary itself, and not the workqueue-executor technique pattern."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
