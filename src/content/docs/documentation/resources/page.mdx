@@ -1,0 +1,220 @@
+---
+title: "Resources"
+description: "Declare bounded-concurrency resource pools in factory.json and consume them from workstation requirements while a dispatch is in flight."
+kind: "documentation"
+registryId: "documentation.resources"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "resources"
+  - "bounded concurrency"
+  - "resource pools"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="where-requirements-belong" titleKey="sections.whereRequirementsBelong.title">
+  <T k="sections.whereRequirementsBelong.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.ownershipLocationHeader" />
+        </th>
+        <th>
+          <T k="links.ownershipShapeHeader" />
+        </th>
+        <th>
+          <T k="links.ownershipUseHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.ownershipTopLevelLocation" />
+        </td>
+        <td>
+          <T k="links.ownershipTopLevelShape" />
+        </td>
+        <td>
+          <T k="links.ownershipTopLevelUse" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkstationLocation" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationShape" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationUse" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerLocation" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkerShape" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkerUse" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.ownershipWorkerNote" />
+  </p>
+  <p>
+    <T k="links.ownershipSupportingFilesNote" />
+  </p>
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="minimal-example" titleKey="sections.minimalExample.title">
+  <T k="sections.minimalExample.body" />
+
+```json
+{
+  "resources": [
+    { "name": "agent-slot", "capacity": 2 }
+  ],
+  "workers": [
+    { "name": "executor", "type": "AGENT_WORKER" }
+  ],
+  "workstations": [
+    {
+      "name": "execute",
+      "worker": "executor",
+      "inputs": [{ "workType": "story", "state": "init" }],
+      "outputs": [{ "workType": "story", "state": "complete" }],
+      "onFailure": { "workType": "story", "state": "failed" },
+      "resources": [{ "name": "agent-slot", "capacity": 1 }]
+    }
+  ]
+}
+```
+
+  <p>
+    <T k="links.minimalExampleRuntimeMeaning" />
+  </p>
+  <p>
+    <T k="links.validationRules" />
+  </p>
+</Section>
+
+<Section id="typed-resources" titleKey="sections.typedResources.title">
+  <T k="sections.typedResources.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.typedKindHeader" />
+        </th>
+        <th>
+          <T k="links.typedPurposeHeader" />
+        </th>
+        <th>
+          <T k="links.typedMetadataHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.typedModelKind" />
+        </td>
+        <td>
+          <T k="links.typedModelPurpose" />
+        </td>
+        <td>
+          <T k="links.typedModelMetadata" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.typedProviderQuotaKind" />
+        </td>
+        <td>
+          <T k="links.typedProviderQuotaPurpose" />
+        </td>
+        <td>
+          <T k="links.typedProviderQuotaMetadata" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.typedInvocationSlotKind" />
+        </td>
+        <td>
+          <T k="links.typedInvocationSlotPurpose" />
+        </td>
+        <td>
+          <T k="links.typedInvocationSlotMetadata" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.typedResourcesWhenGenericIsNotEnough" />
+  </p>
+  <p>
+    <T k="links.typedResourcesModelsPointer" />
+  </p>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <T k="links.siblingDiscoveryIntro" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.resources" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.resources" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.resources" />
+</Section>

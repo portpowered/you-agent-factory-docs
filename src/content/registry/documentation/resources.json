@@ -1,0 +1,14 @@
+{
+  "id": "documentation.resources",
+  "slug": "resources",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["resources", "bounded concurrency", "resource pools"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T22:41:00.000Z",
+  "updatedAt": "2026-07-09T22:41:00.000Z"
+}
