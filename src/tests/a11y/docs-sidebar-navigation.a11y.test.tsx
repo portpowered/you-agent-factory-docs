@@ -178,7 +178,7 @@ describe("docs sidebar navigation accessibility", () => {
     }
 
     const homeLink = within(sidebar).getByRole("link", {
-      name: "Model Atlas",
+      name: "you-agent-factory",
     });
     expect(homeLink.getAttribute("href")).toBe("/vi");
 

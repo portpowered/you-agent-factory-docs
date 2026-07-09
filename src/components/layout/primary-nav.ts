@@ -5,8 +5,8 @@ import {
   defaultLocale,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
-import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
+import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 
 export const PRIMARY_NAV_LINK_CLASS =
   "text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
@@ -36,13 +36,22 @@ export function getPrimaryNavItems(
   locale: SiteLocale = defaultLocale,
   options: GetPrimaryNavItemsOptions = {},
 ): PrimaryNavItem[] {
-  const { siteConfig = modelAtlasSiteConfig } = options;
+  // Widen the transitional const default to SiteConfig so open route-surface
+  // lookups stay typed as Record<string, ...> rather than a closed const map.
+  const siteConfig: SiteConfig =
+    options.siteConfig ?? youAgentFactorySiteConfig;
 
-  return siteConfig.primaryNav.map((entry) => ({
-    href: buildLocalizedRoute(
-      siteConfig.routeSurfaces[entry.routeSurface],
-      locale,
-    ),
-    label: messages.nav[entry.labelKey],
-  }));
+  return siteConfig.primaryNav.map((entry) => {
+    const destination = siteConfig.routeSurfaces[entry.routeSurface];
+    if (!destination) {
+      throw new Error(
+        `Missing site config route surface: ${entry.routeSurface}`,
+      );
+    }
+
+    return {
+      href: buildLocalizedRoute(destination, locale),
+      label: messages.nav[entry.labelKey],
+    };
+  });
 }

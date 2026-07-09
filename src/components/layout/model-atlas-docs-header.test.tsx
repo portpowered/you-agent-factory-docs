@@ -20,14 +20,11 @@ import {
   PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
 } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
+import type { SiteConfig } from "@/lib/site/site-config.contract";
 import {
-  MODEL_ATLAS_REPOSITORY_URL,
-  modelAtlasSiteConfig,
-} from "@/lib/site/model-atlas-site-config";
-import {
-  SITE_COLLECTION_FAMILIES,
-  type SiteConfig,
-} from "@/lib/site/site-config.contract";
+  YOU_AGENT_FACTORY_REPOSITORY_URL,
+  youAgentFactorySiteConfig,
+} from "@/lib/site/you-agent-factory-site-config";
 import { source } from "@/lib/source";
 import { assertPrimaryNavNoDuplicateSearchLink } from "@/lib/verify/customer-ask-home-header-convergence";
 import {
@@ -60,7 +57,15 @@ const alternateSiteConfig = {
     { routeSurface: "blogIndex", labelKey: "blog" },
     { routeSurface: "tagsIndex", labelKey: "tags" },
   ],
-  collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
+  collections: [
+    { family: "glossary" },
+    { family: "concepts" },
+    { family: "modules" },
+    { family: "models" },
+    { family: "papers" },
+    { family: "training" },
+    { family: "systems" },
+  ],
   homeFeaturedLinks: [
     {
       kind: "route",
@@ -131,10 +136,10 @@ describe("ModelAtlasDocsHeader", () => {
     const expectedItems = getPrimaryNavItems(messages);
     expect(expectedItems.map((item) => item.href)).toEqual([
       "/",
-      "/topology",
-      "/docs/timeline",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
       "/blog",
-      "/tags",
     ]);
 
     for (const item of expectedItems) {
@@ -149,7 +154,7 @@ describe("ModelAtlasDocsHeader", () => {
     expect(html).toContain(`aria-label="${messages.search.open}"`);
     expect(html).toContain(messages.search.shortcut);
     expect(html).toContain(`aria-label="${messages.language.open}"`);
-    expect(html).toContain(`href="${MODEL_ATLAS_REPOSITORY_URL}"`);
+    expect(html).toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
     expect(html).toContain('aria-label="Open project GitHub repository"');
   });
 
@@ -167,12 +172,12 @@ describe("ModelAtlasDocsHeader", () => {
     );
 
     expect(html).toContain('href="https://github.com/example/example"');
-    expect(html).not.toContain(`href="${MODEL_ATLAS_REPOSITORY_URL}"`);
+    expect(html).not.toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
     expect(html).toContain('aria-label="Open project GitHub repository"');
     expect(html).toContain('title="Open project GitHub repository"');
   });
 
-  test("keeps the default repository URL from model atlas site config", async () => {
+  test("keeps the default repository URL from you-agent-factory site config", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
@@ -180,13 +185,15 @@ describe("ModelAtlasDocsHeader", () => {
         <ModelAtlasDocsHeader
           messages={messages}
           pageTree={source.pageTree}
-          siteConfig={modelAtlasSiteConfig}
+          siteConfig={youAgentFactorySiteConfig}
         />
       </RootProvider>,
     );
 
-    expect(html).toContain(`href="${modelAtlasSiteConfig.repositoryUrl}"`);
-    expect(modelAtlasSiteConfig.repositoryUrl).toBe(MODEL_ATLAS_REPOSITORY_URL);
+    expect(html).toContain(`href="${youAgentFactorySiteConfig.repositoryUrl}"`);
+    expect(youAgentFactorySiteConfig.repositoryUrl).toBe(
+      YOU_AGENT_FACTORY_REPOSITORY_URL,
+    );
   });
 
   test("mobile width markup hides desktop inline nav links and exposes the menu control", async () => {
@@ -389,7 +396,11 @@ describe("ModelAtlasDocsHeader", () => {
       expect(desktopNavMatch?.[1]).toContain(`>${item.label}<`);
     }
     expect(html).toContain(">Trang chủ<");
-    expect(html).toContain(">Dòng thời gian<");
+    expect(html).toContain(">Hướng dẫn<");
+    expect(html).toContain(">Tài liệu<");
+    expect(html).toContain(">Thuật ngữ<");
+    expect(html).not.toContain(">Dòng thời gian<");
+    expect(html).not.toContain(">Bản đồ<");
   });
 
   test("reveals localized mobile primary nav links when the menu opens on a vietnamese route", async () => {
@@ -433,9 +444,19 @@ describe("ModelAtlasDocsHeader", () => {
     ).toBeTruthy();
     expect(
       within(drawer as HTMLElement).getByRole("link", {
-        name: "Dòng thời gian",
+        name: "Hướng dẫn",
       }),
     ).toBeTruthy();
+    expect(
+      within(drawer as HTMLElement).getByRole("link", {
+        name: "Tài liệu",
+      }),
+    ).toBeTruthy();
+    expect(
+      within(drawer as HTMLElement).queryByRole("link", {
+        name: "Dòng thời gian",
+      }),
+    ).toBeNull();
   });
 
   test("closes the mobile menu when a localized primary nav link is clicked", async () => {

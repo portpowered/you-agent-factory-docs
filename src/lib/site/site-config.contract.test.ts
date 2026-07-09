@@ -5,90 +5,104 @@ import {
   type SiteConfig,
 } from "./site-config.contract";
 
-const representativeSiteConfig = {
+/** Representative CLI docs SiteConfig — no Atlas topology/timeline/collection requirements. */
+const cliDocsSiteConfig = {
   brand: {
-    scaffoldId: "example-scaffold",
-    brandName: "Example Atlas",
-    siteHeading: "Example Reference",
+    scaffoldId: "you-agent-factory-scaffold",
+    brandName: "you-agent-factory",
+    siteHeading: "you-agent-factory",
   },
-  repositoryUrl: "https://github.com/example/example",
+  repositoryUrl: "https://github.com/portpowered/you-agent-factory",
   routeSurfaces: {
     home: { surface: "home" },
-    browse: { surface: "browse" },
-    topology: { surface: "topology" },
-    timeline: { surface: "docs-page", slug: "timeline" },
+    guides: { surface: "docs-page", slug: "guides" },
+    docs: { surface: "browse" },
+    glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
-    tagsIndex: { surface: "tags-index" },
+    search: { surface: "search" },
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },
-    { routeSurface: "topology", labelKey: "topology" },
-    { routeSurface: "timeline", labelKey: "timeline" },
+    { routeSurface: "guides", labelKey: "guides" },
+    { routeSurface: "docs", labelKey: "docs" },
+    { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
-    { routeSurface: "tagsIndex", labelKey: "tags" },
+    { routeSurface: "search", labelKey: "search" },
   ],
   collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
   homeFeaturedLinks: [
     {
       kind: "route",
-      routeSurface: "browse",
-      titleKey: "atlasLinkTitle",
-      descriptionKey: "atlasLinkDescription",
+      routeSurface: "guides",
+      titleKey: "browseSectionTitle",
+      descriptionKey: "intro",
     },
     {
       kind: "docs-page",
-      slug: "modules/grouped-query-attention",
-      titleKey: "gqaLinkTitle",
-      descriptionKey: "gqaLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/swiglu",
-      titleKey: "swigluLinkTitle",
-      descriptionKey: "swigluLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/relu",
-      titleKey: "reluLinkTitle",
-      descriptionKey: "reluLinkDescription",
+      slug: "guides/getting-started",
+      titleKey: "title",
+      descriptionKey: "subtitle",
     },
   ],
 } satisfies SiteConfig;
 
 describe("site config contract", () => {
-  test("defines named route surfaces for current shell destinations", () => {
+  test("documents CLI named route surface placeholders without topology or timeline", () => {
     expect(SITE_NAMED_ROUTE_SURFACES).toEqual([
       "home",
-      "browse",
-      "topology",
-      "timeline",
-      "blogIndex",
-      "tagsIndex",
-    ]);
-  });
-
-  test("defines collection family placeholders for docs sections", () => {
-    expect(SITE_COLLECTION_FAMILIES).toEqual([
+      "guides",
+      "docs",
       "glossary",
-      "concepts",
-      "modules",
-      "models",
-      "papers",
-      "training",
-      "systems",
+      "blogIndex",
+      "search",
     ]);
+    expect(SITE_NAMED_ROUTE_SURFACES).not.toContain("topology");
+    expect(SITE_NAMED_ROUTE_SURFACES).not.toContain("timeline");
   });
 
-  test("accepts a representative config shape with route, nav, and featured link placeholders", () => {
-    expect(representativeSiteConfig.primaryNav).toHaveLength(5);
-    expect(representativeSiteConfig.homeFeaturedLinks).toHaveLength(4);
-    expect(representativeSiteConfig.collections).toHaveLength(
-      SITE_COLLECTION_FAMILIES.length,
-    );
-    expect(representativeSiteConfig.routeSurfaces.timeline).toEqual({
-      surface: "docs-page",
-      slug: "timeline",
-    });
+  test("documents CLI collection family placeholders without Atlas AI families", () => {
+    expect(SITE_COLLECTION_FAMILIES).toEqual([
+      "guides",
+      "concepts",
+      "techniques",
+      "documentation",
+    ]);
+    expect(SITE_COLLECTION_FAMILIES).not.toContain("modules");
+    expect(SITE_COLLECTION_FAMILIES).not.toContain("models");
+    expect(SITE_COLLECTION_FAMILIES).not.toContain("papers");
+    expect(SITE_COLLECTION_FAMILIES).not.toContain("training");
+    expect(SITE_COLLECTION_FAMILIES).not.toContain("systems");
+  });
+
+  test("accepts a CLI placeholder config without Atlas topology, timeline, or AI collections", () => {
+    const atlasNavLabelKeys = new Set(["topology", "timeline"]);
+    const atlasFeaturedTitleKeys = new Set([
+      "atlasLinkTitle",
+      "gqaLinkTitle",
+      "swigluLinkTitle",
+      "reluLinkTitle",
+    ]);
+
+    expect(cliDocsSiteConfig.routeSurfaces).not.toHaveProperty("topology");
+    expect(cliDocsSiteConfig.routeSurfaces).not.toHaveProperty("timeline");
+    expect(
+      cliDocsSiteConfig.primaryNav.map((entry) => entry.routeSurface),
+    ).toEqual(["home", "guides", "docs", "glossary", "blogIndex", "search"]);
+    expect(
+      cliDocsSiteConfig.primaryNav.every(
+        (entry) => !atlasNavLabelKeys.has(entry.labelKey),
+      ),
+    ).toBe(true);
+    expect(cliDocsSiteConfig.collections.map((entry) => entry.family)).toEqual([
+      ...SITE_COLLECTION_FAMILIES,
+    ]);
+    expect(
+      cliDocsSiteConfig.homeFeaturedLinks.every((link) => {
+        if (link.kind === "docs-page") {
+          return !link.slug.startsWith("modules/");
+        }
+        return !atlasFeaturedTitleKeys.has(link.titleKey);
+      }),
+    ).toBe(true);
   });
 });

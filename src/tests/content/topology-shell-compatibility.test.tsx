@@ -65,14 +65,25 @@ describe("topology browse shell compatibility", () => {
     const primaryNav = screen.getByRole("navigation", { name: "Primary" });
     for (const label of [
       context.messages.nav.home,
-      context.messages.nav.topology,
-      context.messages.nav.timeline,
-      context.messages.nav.tags,
+      context.messages.nav.guides,
+      context.messages.nav.docs,
+      context.messages.nav.glossary,
+      context.messages.nav.blog,
     ] as const) {
       expect(
         within(primaryNav).getByRole("link", { name: label }),
       ).toBeTruthy();
     }
+    expect(
+      within(primaryNav).queryByRole("link", {
+        name: context.messages.nav.topology,
+      }),
+    ).toBeNull();
+    expect(
+      within(primaryNav).queryByRole("link", {
+        name: context.messages.nav.timeline,
+      }),
+    ).toBeNull();
 
     const sidebar = document.getElementById("nd-sidebar");
     expect(sidebar).toBeTruthy();
@@ -87,7 +98,7 @@ describe("topology browse shell compatibility", () => {
     );
   });
 
-  test("normal glossary pages still expose topology entry points in the shared header", async () => {
+  test("normal glossary pages expose CLI primary nav without topology entry points", async () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
     const page = await renderGlossaryIndexPage();
@@ -104,16 +115,27 @@ describe("topology browse shell compatibility", () => {
     expect(screen.getByRole("heading", { name: "Glossary" })).toBeTruthy();
 
     const primaryNav = screen.getByRole("navigation", { name: "Primary" });
+    for (const label of [
+      context.messages.nav.home,
+      context.messages.nav.guides,
+      context.messages.nav.docs,
+      context.messages.nav.glossary,
+      context.messages.nav.blog,
+    ] as const) {
+      expect(
+        within(primaryNav).getByRole("link", { name: label }),
+      ).toBeTruthy();
+    }
     expect(
-      within(primaryNav).getByRole("link", {
+      within(primaryNav).queryByRole("link", {
         name: context.messages.nav.topology,
       }),
-    ).toBeTruthy();
+    ).toBeNull();
     expect(
-      within(primaryNav).getByRole("link", {
+      within(primaryNav).queryByRole("link", {
         name: context.messages.nav.timeline,
       }),
-    ).toBeTruthy();
+    ).toBeNull();
 
     const sidebar = document.getElementById("nd-sidebar");
     expect(sidebar).toBeTruthy();
@@ -150,9 +172,10 @@ describe("topology browse shell compatibility", () => {
       expect(topologyRoute.status).toBe(200);
       expect(assertDocsShellConvergence(topologyRoute.body)).toBeNull();
       expect(topologyRoute.body).toContain('href="/"');
-      expect(topologyRoute.body).toContain('href="/topology"');
-      expect(topologyRoute.body).toContain('href="/docs/timeline"');
-      expect(topologyRoute.body).toContain('href="/tags"');
+      expect(topologyRoute.body).toContain('href="/docs/guides"');
+      expect(topologyRoute.body).toContain('href="/browse"');
+      expect(topologyRoute.body).toContain('href="/docs/glossary"');
+      expect(topologyRoute.body).toContain('href="/blog"');
       expect(topologyRoute.body).toContain('data-search=""');
       expect(topologyRoute.body).toContain('href="/docs/glossary/token"');
     } finally {

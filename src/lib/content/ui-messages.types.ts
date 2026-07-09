@@ -17,6 +17,8 @@ export type NavMessages = {
   home: string;
   search: string;
   menu: string;
+  guides: string;
+  docs: string;
   architecture: string;
   topology: string;
   blog: string;
