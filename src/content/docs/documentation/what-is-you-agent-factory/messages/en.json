@@ -1,0 +1,31 @@
+{
+  "title": "What is you-agent-factory",
+  "description": "Draft placeholder for what is you-agent-factory. Replace before publishing.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Draft placeholder for What is you-agent-factory. Replace before publishing."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Draft placeholder for What is you-agent-factory. Replace before publishing."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Draft placeholder for What is you-agent-factory. Replace before publishing."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Draft placeholder for What is you-agent-factory. Replace before publishing."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "documentation.what-is-you-agent-factory",
+  "slug": "what-is-you-agent-factory",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["you-agent-factory", "what is you-agent-factory"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "draft",
+  "createdAt": "2026-07-09T17:19:28.000Z",
+  "updatedAt": "2026-07-09T17:19:28.000Z"
+}
