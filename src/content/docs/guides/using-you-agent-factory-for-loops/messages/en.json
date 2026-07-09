@@ -1,15 +1,15 @@
 {
   "title": "Using you-agent-factory for Loops",
   "description": "Run iterative factory loops that keep work cycling until a goal is done.",
-  "openingSummary": "This guide covers using you-agent-factory for loops: iterative factory work that keeps cycling until a goal is done.",
+  "openingSummary": "Run a factory loop when a goal needs repeated agent passes under you-agent-factory until the work is done.",
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A factory loop is iterative work under you-agent-factory that keeps cycling until the goal is done."
+      "body": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done, or until you take an explicit stop or terminal path. The factory keeps the session and continues agent passes across that loop. It is not a one-shot chat session that ends when a single reply finishes. You start or continue a named run, submit work the factory can cycle on, and keep going until the goal is complete or you stop the run."
     },
     "whenToUse": {
       "title": "When To Use",
-      "body": "Use this guide when a goal needs repeated agent passes under a live factory."
+      "body": "Use a factory loop when a goal needs repeated agent passes under a live factory—for example a long-running feature, a multi-step migration, or any outcome that is not finished in one submit. Prefer a write-review loop when the work should alternate between drafting and review gates. Prefer Cursor dynamic workflows when the loop should be driven from Cursor session automation rather than a plain factory loop. If you still need to install the command-line interface (CLI) or confirm a first run, start with getting started first."
     },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
