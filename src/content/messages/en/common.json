@@ -75,6 +75,11 @@
     "title": "you-agent-factory",
     "subtitle": "Docs for the agent factory CLI",
     "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
+    "installSectionTitle": "Install",
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
     "browseSectionTitle": "Browse",
     "atlasLinkTitle": "Browse the atlas",
     "atlasLinkDescription": "Start with a page that explains where models, modules, concepts, glossary entries, tags, and architecture pages fit together.",
@@ -84,6 +89,7 @@
     "swigluLinkDescription": "A gated feed-forward variant that replaces a plain activation with a learned gate and SiLU path.",
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "A simple activation function page that gives a lightweight entry point into module basics.",
+    "onThisPageInstall": "Install",
     "onThisPageBrowse": "Browse"
   },
   "browseIndex": {

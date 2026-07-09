@@ -73,6 +73,11 @@
     "title": "Model Atlas",
     "subtitle": "现代 AI 模型与模块的实地指南",
     "intro": "Model Atlas 是面向文档的参考资料，涵盖 Transformer、注意力变体、训练方法及其周边系统。",
+    "installSectionTitle": "Install",
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
     "browseSectionTitle": "浏览",
     "atlasLinkTitle": "浏览图谱",
     "atlasLinkDescription": "从解释模型、模块、概念、术语表、标签与架构页面如何衔接的页面开始。",
@@ -82,6 +87,7 @@
     "swigluLinkDescription": "一种门控前馈变体：用可学习门控与 SiLU 路径替代普通激活。",
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "一个简单的激活函数页面，可作为进入模块基础的轻量入口。",
+    "onThisPageInstall": "Install",
     "onThisPageBrowse": "浏览"
   },
   "browseIndex": {

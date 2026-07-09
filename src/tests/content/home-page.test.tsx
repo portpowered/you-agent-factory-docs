@@ -26,6 +26,10 @@ describe("home page messages", () => {
     expect(home.intro).not.toMatch(/Search by alias/i);
     expect(home.intro).not.toMatch(/search by tag/i);
     expect(home.browseSectionTitle.length).toBeGreaterThan(0);
+    expect(home.installSectionTitle).toBe("Install");
+    expect(home.installMacosLinuxCommand).toContain("install.sh");
+    expect(home.installWindowsCommand).toContain("install.ps1");
+    expect(home.onThisPageInstall).toBe("Install");
     expect(home.onThisPageBrowse).toBe("Browse");
   });
 
@@ -59,11 +63,29 @@ describe("home page render", () => {
     expect(html).toContain("you-agent-factory");
     expect(html).toContain("Docs for the agent factory CLI");
     expect(html).not.toContain("Model Atlas");
+    expect(html).toContain('id="install"');
     expect(html).toContain('id="browse"');
     for (const href of ATLAS_MODULE_FEATURED_HREFS) {
       expect(html).not.toContain(`href="${href}"`);
     }
     expect(html).not.toContain('href="/browse"');
+  });
+
+  it("renders a dedicated install CTA with macOS/Linux and Windows commands", async () => {
+    const html = await renderHomeArticleHtml();
+    expect(html).toContain('id="install"');
+    expect(html).toContain('id="home-install-heading"');
+    expect(html).toContain("Install");
+    expect(html).toContain("macOS / Linux");
+    expect(html).toContain("Windows (PowerShell)");
+    expect(html).toContain(
+      "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    );
+    expect(html).toContain(
+      "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    );
+    expect(html).toContain("<pre");
+    expect(html).toContain("<code");
   });
 
   it("preserves browse section structure on the vietnamese route surface without Atlas module links", async () => {
@@ -133,13 +155,15 @@ describe("home page render", () => {
     expect(withoutNoUnderline).not.toMatch(/\bunderline\b/);
   });
 
-  it("defines On this page Browse anchor without a removed #search target", async () => {
+  it("defines On this page Install and Browse anchors without a removed #search target", async () => {
     const { home } = await loadUiMessages();
     const toc = buildHomeTableOfContents(home);
     const html = await renderHomeArticleHtml();
 
+    expect(toc.some((item) => item.url === "#install")).toBe(true);
     expect(toc.some((item) => item.url === "#browse")).toBe(true);
     expect(toc.some((item) => item.url === "#search")).toBe(false);
+    expect(html).toContain('id="install"');
     expect(html).toContain('id="browse"');
     expect(html).not.toContain('id="search"');
   });

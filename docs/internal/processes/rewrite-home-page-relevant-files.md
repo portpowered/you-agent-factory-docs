@@ -14,12 +14,31 @@ install/run CTAs, why/features sections, featured links, or locale shell copy.
 | `src/app/root-layout.shared.tsx` (`siteMetadata`) | Layout-level fallback metadata; keep aligned with you-agent-factory identity (not Model Atlas) |
 | `src/tests/content/home-page.test.tsx` | Asserts default-locale identity and rendered header copy |
 
+## Install CTA
+
+| File | Role |
+| --- | --- |
+| `src/content/messages/*/common.json` (`home.install*`) | Section title, OS labels, and copyable install commands for all locales |
+| `src/components/home/home-command-block.tsx` | Always-visible `<pre><code>` command block (no hover-only reveal) |
+| `src/components/home/home-article.tsx` (`#install`) | Install section before browse; uses `HomeCommandBlock` for both OS paths |
+| `src/lib/navigation/home-page-toc.ts` | TOC includes `#install` then `#browse` |
+| `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for install section + TOC label |
+
+Canonical install commands (product repo releases):
+
+- macOS/Linux: `curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh`
+- Windows: `irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex`
+
 ## Patterns
 
 - Product identity on `/` is message-driven (`messages.home.*`), not `siteConfig.brand`.
   Nav brand still comes from `youAgentFactorySiteConfig.brand.brandName`.
 - When changing default-locale home identity, update **both** `en/common.json` home
   keys and `siteMetadata` in `root-layout.shared.tsx`, plus home/metadata tests.
+- When adding home message keys, update `HomeMessages` and all four locale
+  `common.json` files together so loaders do not fail (non-en may stub labels).
+- Install/run command strings live in messages (not hard-coded in the component)
+  so locales can stub labels while keeping the same runnable commands.
 - Legacy Atlas featured-link message keys (`atlasLinkTitle`, `gqaLinkTitle`, …) may
   remain in message files until a later story removes them; they must not appear as
   rendered product copy when `homeFeaturedLinks` is empty or CLI-shaped.

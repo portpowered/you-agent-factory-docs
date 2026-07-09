@@ -75,6 +75,11 @@
     "title": "Model Atlas",
     "subtitle": "Cẩm nang về các mô hình và module AI hiện đại",
     "intro": "Model Atlas là tài liệu tham chiếu dành cho transformer, các biến thể attention, phương pháp huấn luyện, và các hệ thống xoay quanh chúng.",
+    "installSectionTitle": "Install",
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
     "browseSectionTitle": "Duyệt",
     "atlasLinkTitle": "Duyệt toàn bộ atlas",
     "atlasLinkDescription": "Bắt đầu từ một trang giải thích cách các trang mô hình, module, khái niệm, thuật ngữ, thẻ, và kiến trúc liên kết với nhau.",
@@ -84,6 +89,7 @@
     "swigluLinkDescription": "Một biến thể feed-forward có cổng, thay activation đơn giản bằng nhánh gate học được và đường SiLU.",
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "Trang về hàm kích hoạt đơn giản, phù hợp để bắt đầu với các khái niệm module cơ bản.",
+    "onThisPageInstall": "Install",
     "onThisPageBrowse": "Duyệt"
   },
   "browseIndex": {

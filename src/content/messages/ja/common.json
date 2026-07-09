@@ -75,6 +75,11 @@
     "title": "Model Atlas",
     "subtitle": "現代の AI モデルとモジュールのためのフィールドガイド",
     "intro": "Model Atlas は、トランスフォーマー、注意機構の派生、学習手法、それらを支えるシステムを扱うドキュメント中心のリファレンスです。",
+    "installSectionTitle": "Install",
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
     "browseSectionTitle": "参照",
     "atlasLinkTitle": "アトラス全体を見る",
     "atlasLinkDescription": "モデル、モジュール、概念、用語集、タグ、アーキテクチャの各ページがどうつながるかを案内するページから始められます。",
@@ -84,6 +89,7 @@
     "swigluLinkDescription": "単純な活性化の代わりに、学習されるゲートと SiLU 経路を使う feed-forward の派生です。",
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "モジュールの基本に入りやすい、シンプルな活性化関数のページです。",
+    "onThisPageInstall": "Install",
     "onThisPageBrowse": "参照"
   },
   "browseIndex": {

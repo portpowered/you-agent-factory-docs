@@ -69,6 +69,11 @@ export type HomeMessages = {
   title: string;
   subtitle: string;
   intro: string;
+  installSectionTitle: string;
+  installMacosLinuxLabel: string;
+  installWindowsLabel: string;
+  installMacosLinuxCommand: string;
+  installWindowsCommand: string;
   browseSectionTitle: string;
   atlasLinkTitle: string;
   atlasLinkDescription: string;
@@ -78,6 +83,7 @@ export type HomeMessages = {
   swigluLinkDescription: string;
   reluLinkTitle: string;
   reluLinkDescription: string;
+  onThisPageInstall: string;
   onThisPageBrowse: string;
 };
 
