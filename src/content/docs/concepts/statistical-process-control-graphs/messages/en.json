@@ -1,15 +1,15 @@
 {
   "title": "Statistical Process Control Graphs",
   "description": "Statistical process control graphs, also called control charts, plot a factory process metric over time with a center line and control limits so readers can tell routine variation from unusual signals.",
-  "openingSummary": "Statistical process control graphs (control charts) help factory readers watch a process metric over time and separate everyday noise from unusual drift.",
+  "openingSummary": "Statistical process control graphs, also called control charts, help factory readers watch a process metric over time and separate everyday noise from unusual drift.",
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A statistical process control graph, often shortened to SPC graph or control chart, is a time-ordered plot of a process metric. The chart shows a center line for the typical level of the metric and control limits that mark the band of routine variation. Points that stay inside the limits usually reflect common-cause variation. Points that break the limits, or form clear non-random patterns, are treated as special-cause signals that deserve a closer look."
+      "body": "Statistical process control (SPC) uses control charts to watch a process over time. A control chart is a time-ordered plot of a process metric with a center line for the typical level and control limits that mark the band of routine variation. Points inside the limits usually reflect common-cause variation — the ordinary noise of a stable process. Points that break the limits, or form clear non-random patterns, are special-cause signals: unusual shifts that deserve a closer look."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Long-running factory work produces metrics that move every interval: completions, failures, queue depth, and token spend. Without control limits, every bump can look like an incident and every quiet stretch can look healthy. Control charts give operators a shared way to see whether a change is still inside normal process noise or whether the process has shifted enough to investigate."
+      "body": "Long-running agent factory work keeps producing metrics every interval: throughput, failure rate, queue depth, and token spend. Without control limits, every bump can look like an incident and every quiet stretch can look healthy. Control charts help operators spot real drift during a multi-hour run — for example a rising failure rate or a jump in token spend — and tell that signal apart from ordinary process noise before anyone treats the blip as a special cause."
     },
     "simpleExample": {
       "title": "Simple Example",

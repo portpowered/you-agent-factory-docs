@@ -29,6 +29,27 @@ describe("statistical-process-control-graphs concept page", () => {
     expect(loadedPage.messages.description).toMatch(/control charts/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
+    const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
+    const whyItMatters = String(
+      loadedPage.messages.sections?.whyItMatters?.body ?? "",
+    );
+
+    expect(whatItIs).toMatch(/Statistical process control\s*\(SPC\)/i);
+    expect(whatItIs).toMatch(/control chart/i);
+    expect(whatItIs).toMatch(/center line/i);
+    expect(whatItIs).toMatch(/control limits/i);
+    expect(whatItIs).toMatch(/common-cause/i);
+    expect(whatItIs).toMatch(/special-cause/i);
+    expect(whatItIs).not.toMatch(/on this page/i);
+    expect(whatItIs).not.toMatch(/Model Atlas/i);
+
+    expect(whyItMatters).toMatch(
+      /throughput|failure rate|queue depth|token spend/i,
+    );
+    expect(whyItMatters).toMatch(/drift|noise/i);
+    expect(whyItMatters).not.toMatch(/on this page/i);
+    expect(whyItMatters).not.toMatch(/Model Atlas/i);
+
     render(
       <main>
         <ModulePageProviders
@@ -56,5 +77,13 @@ describe("statistical-process-control-graphs concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
+    const whatItIsSection = document.getElementById("what-it-is");
+    const whyItMattersSection = document.getElementById("why-it-matters");
+    expect(whatItIsSection?.textContent).toMatch(
+      /Statistical process control\s*\(SPC\)\s*uses\s*control charts/i,
+    );
+    expect(whyItMattersSection?.textContent).toMatch(
+      /throughput, failure rate, queue depth, and token spend/i,
+    );
   });
 });
