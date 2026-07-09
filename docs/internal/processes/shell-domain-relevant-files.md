@@ -8,7 +8,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
 * `src/lib/docs/browse-collection-sections.ts`
-  Collection-driven browse sections; AI order comes from `DOCS_BROWSE_COLLECTION_IDS`.
+  Collection-driven browse sections; default order is the four CLI collections
+  from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
+  `DOCS_BROWSE_SECTION_ORDER`. Pass an explicit `sectionOrder` when a test or
+  fixture still needs Atlas or glossary-derived browse sections.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
 * `src/lib/navigation/shell-collection-page-tree.ts`
@@ -46,7 +49,22 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/content/browse-index.test.tsx`
   Detailed AI browse quick-route and localized browse assertions.
 * `src/tests/content/section-indexes.test.tsx`
-  AI section-index page render and metadata coverage.
+  CLI section-index page render and metadata coverage for guides, concepts,
+  techniques, and documentation (default + localized routes). Asserts CLI
+  `*Index` empty-state message fields stay free of Model Atlas product phrasing.
+* `src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`
+  Consolidated end-to-end SSR proof for empty CLI browse hub + four section
+  indexes (CLI headings, empty states, Atlas-free message fields, no authored
+  CLI page bundles). Run directly — `src/lib/docs/` is excluded from required
+  `bun run test` after Atlas deletion.
+* `src/app/(site)/docs/{guides,concepts,techniques,documentation}/page.tsx`
+  Default-locale CLI section index routes via `renderSectionCollectionIndexPage`.
+* `src/app/[locale]/docs/{guides,concepts,techniques,documentation}/page.tsx`
+  Localized CLI section index routes mirroring the default-locale pattern.
+* `src/content/messages/{en,ja,vi,zh-CN}/common.json`
+  CLI `guidesIndex` / `conceptsIndex` / `techniquesIndex` / `documentationIndex`
+  empty-state copy and `browseIndex` hub title/description / CLI section blurbs
+  (no Model Atlas / Browse the Atlas / the atlas phrasing).
 * `src/lib/navigation/docs-sidebar-collection-verification.test.ts`
   AI sidebar folder order, grouping labels, and representative links.
 * `src/tests/search/search-behavior-parity.test.ts`

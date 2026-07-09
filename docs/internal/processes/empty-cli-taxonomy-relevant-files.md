@@ -25,10 +25,22 @@ rewrite-era CLI collections (`guides`, `concepts`, `techniques`, `documentation`
 | `src/content/messages/{en,ja,vi}/common.json` | `browseIndex.*` + `*Index` copy for guides/techniques/documentation |
 | `src/lib/content/ui-messages.types.ts` | Typed browse/index message keys for the new collections |
 
-Browse hub order (`DOCS_BROWSE_COLLECTION_IDS`) and sidebar section order
-(`DOCS_SIDEBAR_SECTION_ORDER`) stay Atlas-shaped until a later browse/sidebar
-wiring batch; empty CLI collections are inventory-first so consumers can look
-them up without featuring placeholder pages.
+Browse hub order (`DOCS_BROWSE_COLLECTION_IDS`) is the four CLI collections.
+Live section index routes for guides/concepts/techniques/documentation live
+under `src/app/(site)/docs/{id}/page.tsx` and
+`src/app/[locale]/docs/{id}/page.tsx`, each calling
+`renderSectionCollectionIndexPage` with matching `*Index` message keys.
+CLI `*Index.emptyTitle` / `emptyDescription` / `emptyHomeLink` copy must stay
+free of Model Atlas / “Browse the Atlas” / “the atlas” product phrasing (and
+locale equivalents such as アトラス, Duyệt Atlas, 浏览图谱). Assert those
+message fields directly — `DocsIndexEmptyState` still mounts `SearchTrigger`,
+which may retain residual Atlas search chrome outside this lane.
+`browseIndex.title` / `description` and CLI section
+`*SectionTitle` / `*SectionDescription` / `*SectionLinkLabel` keys must follow
+the same no-Model-Atlas rule across en/ja/vi/zh-CN.
+Sidebar section order may still include residual Atlas folders until a later
+sidebar wiring batch; empty CLI collections remain inventory-first so consumers
+can look them up without featuring placeholder pages.
 
 ## Source slug acceptance (story 003)
 
@@ -99,8 +111,11 @@ Preserve existing `concept` rather than inventing a parallel concept kind.
 Empty CLI collection definitions need: collection id + matching route slug,
 aligned frontmatter/registry kinds, empty `starterSlugs`, resolvable
 browse/index message keys, and inventory verification that permits empty
-starters for those four ids only. Do not force empty CLI collections into
-browse/sidebar section order until a dedicated wiring story owns that surface.
+starters for those four ids only. Default browse hub order is owned by
+`rewrite-browse-indexes` via `DOCS_BROWSE_COLLECTION_IDS` /
+`DOCS_BROWSE_SECTION_ORDER` (guides, concepts, techniques, documentation).
+Keep Atlas collections registered until sibling delete/retarget lanes remove
+them, but do not reintroduce them as default browse sections.
 
 Docs source slug acceptance must recognize the four CLI route prefixes via
 collection `routeSlug` matching. Keep `source.ts` and
@@ -119,3 +134,18 @@ matching empty registry dirs for `guides`/`techniques`/`documentation`, empty
 customer page bundles or CLI topic registry JSON in this lane. Designate
 `concepts` as a CLI target without deleting Atlas concept content owned by the
 sibling delete lane.
+
+## Empty CLI browse + section index end-to-end proof
+
+| Path | Role |
+| --- | --- |
+| `src/lib/docs/empty-cli-browse-indexes-verification.test.tsx` | Consolidated SSR proof: default browse order, empty starters/content roots, browse hub CLI headings (no Atlas `*-heading` ids), four section-index empty states, Atlas-free browse/empty message fields across en/ja/vi/zh-CN |
+
+Run directly with
+`bun test src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`.
+`src/lib/docs/` is excluded from required `bun run test` after Atlas deletion.
+Assert Atlas-free copy on message fields (`browseIndex.*`, `*Index.empty*`),
+not full HTML — `SearchTrigger` may still carry residual Atlas search chrome.
+Browser smoke: SSR via `renderBrowseIndexPage` /
+`renderSectionCollectionIndexPage`, or `PORT=<unique> bun run start` + curl
+`/browse` and `/docs/{guides,concepts,techniques,documentation}` after a build.

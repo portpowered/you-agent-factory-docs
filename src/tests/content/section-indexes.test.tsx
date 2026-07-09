@@ -1,131 +1,210 @@
 import { describe, expect, it } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import ConceptsIndexPage from "@/app/(site)/docs/concepts/page";
-import ModelsIndexPage, {
-  generateMetadata as generateModelsMetadata,
-} from "@/app/(site)/docs/models/page";
-import ModulesIndexPage from "@/app/(site)/docs/modules/page";
-import PapersIndexPage from "@/app/(site)/docs/papers/page";
-import SystemsIndexPage from "@/app/(site)/docs/systems/page";
-import TrainingIndexPage from "@/app/(site)/docs/training/page";
-import LocalizedModelsIndexPage, {
-  generateMetadata as generateLocalizedModelsMetadata,
-} from "@/app/[locale]/docs/models/page";
-import LocalizedModulesIndexPage from "@/app/[locale]/docs/modules/page";
+import ConceptsIndexPage, {
+  generateMetadata as generateConceptsMetadata,
+} from "@/app/(site)/docs/concepts/page";
+import DocumentationIndexPage, {
+  generateMetadata as generateDocumentationMetadata,
+} from "@/app/(site)/docs/documentation/page";
+import GuidesIndexPage, {
+  generateMetadata as generateGuidesMetadata,
+} from "@/app/(site)/docs/guides/page";
+import TechniquesIndexPage, {
+  generateMetadata as generateTechniquesMetadata,
+} from "@/app/(site)/docs/techniques/page";
+import LocalizedConceptsIndexPage, {
+  generateMetadata as generateLocalizedConceptsMetadata,
+} from "@/app/[locale]/docs/concepts/page";
+import LocalizedDocumentationIndexPage, {
+  generateMetadata as generateLocalizedDocumentationMetadata,
+} from "@/app/[locale]/docs/documentation/page";
+import LocalizedGuidesIndexPage, {
+  generateMetadata as generateLocalizedGuidesMetadata,
+} from "@/app/[locale]/docs/guides/page";
+import LocalizedTechniquesIndexPage, {
+  generateMetadata as generateLocalizedTechniquesMetadata,
+} from "@/app/[locale]/docs/techniques/page";
 import { loadUiMessages } from "@/lib/content/ui-messages";
+import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 
-describe("section index messages", () => {
-  it("loads localized copy for model, module, concept, paper, training, and system index pages", async () => {
+const CLI_SECTION_INDEX_CASES = [
+  {
+    collectionId: "guides" as const,
+    messageKey: "guidesIndex" as const,
+    renderDefault: GuidesIndexPage,
+    renderLocalized: LocalizedGuidesIndexPage,
+    generateDefaultMetadata: generateGuidesMetadata,
+    generateLocalizedMetadata: generateLocalizedGuidesMetadata,
+  },
+  {
+    collectionId: "concepts" as const,
+    messageKey: "conceptsIndex" as const,
+    renderDefault: ConceptsIndexPage,
+    renderLocalized: LocalizedConceptsIndexPage,
+    generateDefaultMetadata: generateConceptsMetadata,
+    generateLocalizedMetadata: generateLocalizedConceptsMetadata,
+  },
+  {
+    collectionId: "techniques" as const,
+    messageKey: "techniquesIndex" as const,
+    renderDefault: TechniquesIndexPage,
+    renderLocalized: LocalizedTechniquesIndexPage,
+    generateDefaultMetadata: generateTechniquesMetadata,
+    generateLocalizedMetadata: generateLocalizedTechniquesMetadata,
+  },
+  {
+    collectionId: "documentation" as const,
+    messageKey: "documentationIndex" as const,
+    renderDefault: DocumentationIndexPage,
+    renderLocalized: LocalizedDocumentationIndexPage,
+    generateDefaultMetadata: generateDocumentationMetadata,
+    generateLocalizedMetadata: generateLocalizedDocumentationMetadata,
+  },
+] as const;
+
+describe("CLI section index messages", () => {
+  it("loads index copy for guides, concepts, techniques, and documentation", async () => {
     const messages = await loadUiMessages();
-    expect(messages.modelsIndex.title).toBe("Models");
-    expect(messages.modulesIndex.title).toBe("Modules");
+
+    expect(messages.guidesIndex.title).toBe("Guides");
     expect(messages.conceptsIndex.title).toBe("Concepts");
-    expect(messages.papersIndex.title).toBe("Papers");
-    expect(messages.trainingIndex.title).toBe("Training");
-    expect(messages.systemsIndex.title).toBe("Systems");
+    expect(messages.techniquesIndex.title).toBe("Techniques");
+    expect(messages.documentationIndex.title).toBe("Documentation");
+    expect([...CLI_DOCS_COLLECTION_IDS]).toEqual([
+      "guides",
+      "concepts",
+      "techniques",
+      "documentation",
+    ]);
   });
 });
 
-describe("section index page render", () => {
-  it("renders the models index so model breadcrumbs land on a real page", async () => {
-    const html = renderToStaticMarkup(await ModelsIndexPage());
+const CLI_EMPTY_STATE_ATLAS_PHRASING =
+  /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
 
-    expect(html).toContain("Models");
-    expect(html).toContain('href="/docs/models/gpt-3"');
-    expect(html).toContain("list-none");
-    expect(html).not.toContain("list-disc");
-  });
+describe("CLI section index page render", () => {
+  for (const section of CLI_SECTION_INDEX_CASES) {
+    it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
+      const messages = await loadUiMessages();
+      const indexMessages = messages[section.messageKey];
+      const html = renderToStaticMarkup(await section.renderDefault());
 
-  it("renders the modules index with published module entries", async () => {
-    const html = renderToStaticMarkup(await ModulesIndexPage());
-
-    expect(html).toContain("Modules");
-    expect(html).toContain('href="/docs/modules/grouped-query-attention"');
-    expect(html).toContain('href="/docs/modules/swiglu"');
-  });
-
-  it("renders the concepts index with published concept entries", async () => {
-    const html = renderToStaticMarkup(await ConceptsIndexPage());
-
-    expect(html).toContain("Concepts");
-    expect(html).toContain('href="/docs/concepts/transformer-architecture"');
-    expect(html).toContain('href="/docs/concepts/quantization"');
-  });
-
-  it("renders the papers index with published paper entries", async () => {
-    const html = renderToStaticMarkup(await PapersIndexPage());
-
-    expect(html).toContain("Papers");
-    expect(html).toContain('href="/docs/papers/deepseek-v4"');
-  });
-
-  it("renders the training index with published training entries", async () => {
-    const html = renderToStaticMarkup(await TrainingIndexPage());
-
-    expect(html).toContain("Training");
-    expect(html).toContain('href="/docs/training/on-policy-distillation"');
-    expect(html).toContain('href="/docs/training/specialist-training"');
-  });
-
-  it("renders the systems index with published system entries", async () => {
-    const html = renderToStaticMarkup(await SystemsIndexPage());
-
-    expect(html).toContain("Systems");
-    expect(html).toContain('href="/docs/systems/deployment"');
-    expect(html).toContain('href="/docs/systems/routing"');
-    expect(html).toContain('href="/docs/systems/batching"');
-    expect(html).toContain('href="/docs/systems/on-disk-kv-cache"');
-    expect(html).toContain('href="/docs/systems/expert-parallel-overlap"');
-  });
+      expect(html).toContain(indexMessages.title);
+      expect(html).toContain(indexMessages.description);
+      expect(html).toContain(indexMessages.emptyTitle);
+      expect(html).toContain(indexMessages.emptyDescription);
+      expect(html).toContain(indexMessages.emptyHomeLink);
+      expect(html).toContain('href="/"');
+      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+      // Empty-state copy only — SearchTrigger may still carry residual Atlas search chrome.
+      expect(indexMessages.emptyTitle).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyDescription).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyHomeLink).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+    });
+  }
 });
 
-describe("localized section index page render", () => {
-  it("renders the vietnamese models index with localized title and empty-state copy", async () => {
+describe("localized CLI section index page render", () => {
+  it("renders the vietnamese guides index with localized title and empty-state copy", async () => {
+    const messages = await loadUiMessages("vi");
     const html = renderToStaticMarkup(
-      await LocalizedModelsIndexPage({
+      await LocalizedGuidesIndexPage({
         params: Promise.resolve({ locale: "vi" }),
       }),
     );
 
-    expect(html).toContain("Mô hình");
-    expect(html).toContain("Chưa có mục mô hình nào");
+    expect(html).toContain(messages.guidesIndex.title);
+    expect(html).toContain(messages.guidesIndex.emptyTitle);
+    expect(html).toContain(messages.guidesIndex.emptyDescription);
     expect(html).toContain('href="/vi"');
+    expect(messages.guidesIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
   });
 
-  it("renders the japanese modules index with localized title and entries", async () => {
+  it("renders the japanese techniques index with localized title and empty-state copy", async () => {
+    const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
-      await LocalizedModulesIndexPage({
+      await LocalizedTechniquesIndexPage({
         params: Promise.resolve({ locale: "ja" }),
       }),
     );
 
-    expect(html).toContain("モジュール");
-    expect(html).toContain('href="/ja/docs/modules/grouped-query-attention"');
+    expect(html).toContain(messages.techniquesIndex.title);
+    expect(html).toContain(messages.techniquesIndex.emptyTitle);
+    expect(html).toContain(messages.techniquesIndex.emptyDescription);
+    expect(html).toContain('href="/ja"');
+    expect(messages.techniquesIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
+  it("renders the vietnamese documentation index with localized title and empty-state copy", async () => {
+    const messages = await loadUiMessages("vi");
+    const html = renderToStaticMarkup(
+      await LocalizedDocumentationIndexPage({
+        params: Promise.resolve({ locale: "vi" }),
+      }),
+    );
+
+    expect(html).toContain(messages.documentationIndex.title);
+    expect(html).toContain(messages.documentationIndex.emptyTitle);
+    expect(html).toContain(messages.documentationIndex.emptyDescription);
+    expect(html).toContain('href="/vi"');
+    expect(messages.documentationIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
+  it("renders the japanese concepts index with localized title and empty-state copy", async () => {
+    const messages = await loadUiMessages("ja");
+    const html = renderToStaticMarkup(
+      await LocalizedConceptsIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    expect(html).toContain(messages.conceptsIndex.title);
+    expect(html).toContain(messages.conceptsIndex.emptyTitle);
+    expect(html).toContain(messages.conceptsIndex.emptyDescription);
+    expect(html).toContain('href="/ja"');
+    expect(messages.conceptsIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
   });
 });
 
-describe("section index metadata", () => {
-  it("keeps default and localized models index metadata aligned", async () => {
-    const defaultMetadata = await generateModelsMetadata();
-    const localizedMetadata = await generateLocalizedModelsMetadata({
-      params: Promise.resolve({ locale: "vi" }),
-    });
+describe("CLI section index metadata", () => {
+  for (const section of CLI_SECTION_INDEX_CASES) {
+    it(`keeps default and localized ${section.collectionId} index metadata aligned`, async () => {
+      const defaultMetadata = await section.generateDefaultMetadata();
+      const localizedMetadata = await section.generateLocalizedMetadata({
+        params: Promise.resolve({ locale: "vi" }),
+      });
+      const routeSlug = section.collectionId;
+      const expectedAlternates = {
+        canonical: `/docs/${routeSlug}`,
+        languages: {
+          en: `/docs/${routeSlug}`,
+          ja: `/ja/docs/${routeSlug}`,
+          "zh-CN": `/zh-CN/docs/${routeSlug}`,
+          vi: `/vi/docs/${routeSlug}`,
+        },
+      };
 
-    expect(defaultMetadata.alternates).toEqual({
-      canonical: "/docs/models",
-      languages: {
-        en: "/docs/models",
-        ja: "/ja/docs/models",
-        "zh-CN": "/zh-CN/docs/models",
-        vi: "/vi/docs/models",
-      },
-    });
-    expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+      expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+      expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
 
-    const viMessages = await loadUiMessages("vi");
-    expect(localizedMetadata.title).toBe(viMessages.modelsIndex.title);
-    expect(localizedMetadata.description).toBe(
-      viMessages.modelsIndex.description,
-    );
-  });
+      const viMessages = await loadUiMessages("vi");
+      const indexMessages = viMessages[section.messageKey];
+      expect(localizedMetadata.title).toBe(indexMessages.title);
+      expect(localizedMetadata.description).toBe(indexMessages.description);
+    });
+  }
 });

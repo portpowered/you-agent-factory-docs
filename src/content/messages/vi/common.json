@@ -117,8 +117,8 @@
     "onThisPageBrowse": "Duyệt"
   },
   "browseIndex": {
-    "title": "Duyệt Atlas",
-    "description": "Hãy bắt đầu từ loại nội dung mà bạn đã biết: một mô hình, một module, một khái niệm, hoặc một thuật ngữ. Trang này chỉ bạn đến đúng phần của bộ tham chiếu và gợi ý vài trang mở đầu hữu ích.",
+    "title": "Duyệt",
+    "description": "Hãy bắt đầu từ loại bộ sưu tập bạn cần: hướng dẫn, khái niệm, kỹ thuật, hoặc tài liệu. Trang này chỉ bạn đến đúng phần của bộ tham chiếu và gợi ý vài trang mở đầu hữu ích.",
     "quickRoutesTitle": "Lối vào nhanh",
     "quickRoutesDescription": "Dùng các điểm vào này khi bạn biết cách muốn khám phá, nhưng chưa biết chính xác trang nào.",
     "searchRouteDescription": "Nhảy thẳng tới tiêu đề, tên gọi khác, hoặc thẻ khi bạn đã có sẵn một thuật ngữ.",
@@ -232,7 +232,7 @@
     "description": "Các trang khái niệm đã xuất bản giải thích những ý tưởng rộng hơn xuất hiện trên nhiều mô hình và module, như mẫu kiến trúc, lượng tử hóa, và đánh đổi của ngữ cảnh dài.",
     "listLabel": "Các mục khái niệm",
     "emptyTitle": "Chưa có mục khái niệm nào",
-    "emptyDescription": "Các trang khái niệm đã xuất bản sẽ xuất hiện ở đây khi được thêm vào atlas. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt Atlas để khám phá mô hình, module, và thuật ngữ.",
+    "emptyDescription": "Các trang khái niệm đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt để khám phá các bộ sưu tập khác.",
     "emptyHomeLink": "Về trang chủ"
   },
   "guidesIndex": {
@@ -240,7 +240,7 @@
     "description": "Các trang hướng dẫn đã xuất bản lần lượt đi qua các quy trình CLI thực tế và cách áp dụng tài liệu tham chiếu vào công việc hằng ngày.",
     "listLabel": "Các mục hướng dẫn",
     "emptyTitle": "Chưa có mục hướng dẫn nào",
-    "emptyDescription": "Các trang hướng dẫn đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt Atlas để khám phá các bộ sưu tập khác.",
+    "emptyDescription": "Các trang hướng dẫn đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt để khám phá các bộ sưu tập khác.",
     "emptyHomeLink": "Về trang chủ"
   },
   "techniquesIndex": {
@@ -248,7 +248,7 @@
     "description": "Các trang kỹ thuật đã xuất bản giải thích các phương pháp và thực hành có tên rõ ràng mà bạn có thể áp dụng xuyên suốt quy trình CLI và công việc tài liệu.",
     "listLabel": "Các mục kỹ thuật",
     "emptyTitle": "Chưa có mục kỹ thuật nào",
-    "emptyDescription": "Các trang kỹ thuật đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt Atlas để khám phá các bộ sưu tập khác.",
+    "emptyDescription": "Các trang kỹ thuật đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt để khám phá các bộ sưu tập khác.",
     "emptyHomeLink": "Về trang chủ"
   },
   "documentationIndex": {
@@ -256,7 +256,7 @@
     "description": "Các trang tài liệu đã xuất bản bao gồm tài liệu tham chiếu cho bề mặt CLI, gồm hợp đồng, quy ước, và chi tiết hỗ trợ.",
     "listLabel": "Các mục tài liệu",
     "emptyTitle": "Chưa có mục tài liệu nào",
-    "emptyDescription": "Các trang tài liệu đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt Atlas để khám phá các bộ sưu tập khác.",
+    "emptyDescription": "Các trang tài liệu đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt để khám phá các bộ sưu tập khác.",
     "emptyHomeLink": "Về trang chủ"
   },
   "papersIndex": {

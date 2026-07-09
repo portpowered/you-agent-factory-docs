@@ -3,6 +3,7 @@ import type { DocsPageSource } from "@/lib/content/pages";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import type { ShellCollectionDefinition } from "@/lib/docs/collection-definition-contract";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
+import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import { toDocsIndexEntries } from "@/lib/docs/docs-index-entries";
 import {
   buildGlossaryDerivedBrowseSection,
@@ -15,35 +16,25 @@ import {
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
 
-/** Reader-visible browse section order for the AI docs atlas. */
-export const DOCS_BROWSE_COLLECTION_IDS = [
-  "models",
-  "modules",
-  "concepts",
-  "papers",
-  "training",
-  "systems",
-  "glossary",
-] as const;
+/**
+ * Reader-visible browse collection order for the rewrite-era CLI docs taxonomy.
+ * Atlas collections remain registered for sibling delete/retarget lanes but are
+ * not default browse hub sections.
+ */
+export const DOCS_BROWSE_COLLECTION_IDS = CLI_DOCS_COLLECTION_IDS;
 
 type DocsBrowseCollectionId = (typeof DOCS_BROWSE_COLLECTION_IDS)[number];
 
-type DocsBrowseSectionRef =
-  | { kind: "collection"; id: DocsBrowseCollectionId }
+export type DocsBrowseSectionRef =
+  | { kind: "collection"; id: DocsBrowseCollectionId | string }
   | { kind: "glossary-derived"; id: GlossaryDerivedBrowseSectionId };
 
-/** Full browse hub order, including ontology-derived glossary groupings. */
+/** Default browse hub order: the four empty CLI collections. */
 export const DOCS_BROWSE_SECTION_ORDER = [
-  { kind: "collection", id: "models" },
-  { kind: "glossary-derived", id: "model-types" },
-  { kind: "collection", id: "modules" },
-  { kind: "glossary-derived", id: "module-components" },
+  { kind: "collection", id: "guides" },
   { kind: "collection", id: "concepts" },
-  { kind: "glossary-derived", id: "inference" },
-  { kind: "collection", id: "papers" },
-  { kind: "collection", id: "training" },
-  { kind: "collection", id: "systems" },
-  { kind: "collection", id: "glossary" },
+  { kind: "collection", id: "techniques" },
+  { kind: "collection", id: "documentation" },
 ] as const satisfies readonly DocsBrowseSectionRef[];
 
 export type BrowseCollectionSection = {
