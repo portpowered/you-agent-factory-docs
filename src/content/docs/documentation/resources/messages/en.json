@@ -4,11 +4,15 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Resources are the you-agent-factory bounded-concurrency contract. This page covers how top-level resource pools and workstation requirements limit how many matching dispatches can run at once. It is the durable web reference for capacity pools, not a Model Atlas surface and not the portability supportingFiles contract."
+      "body": "Resources are bounded-concurrency pools in factory.json. A top-level resources[] entry declares a named pool with a capacity (and optional typed metadata). A workstation requirement holds that capacity while a dispatch runs, so later matching dispatches wait when the pool is exhausted. This page teaches that pool-and-requirement contract for web readers."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A resource pool is a named capacity limit declared in factory.json. Workstation requirements hold that capacity while a dispatch is in flight. Later matching dispatches wait when the pool is exhausted. Later sections on this page teach where requirements belong, a minimal capacity example, and when typed resources such as MODEL, PROVIDER_QUOTA, and INVOCATION_SLOT apply."
+      "body": "A resource pool is a shared concurrency limit. Declare it once under top-level resources[] with at least {name, capacity}. Consume it from workstations[].resources[] so the workstation holds capacity for the workflow step while the dispatch is in flight. The same pool name means one shared limit across every requirement that references it. Typed pools such as MODEL, PROVIDER_QUOTA, and INVOCATION_SLOT add metadata when a generic capacity shape is not enough; those details belong in later sections on this page."
+    },
+    "whereRequirementsBelong": {
+      "title": "Where Requirements Belong",
+      "body": "Use this ownership split when you decide where to declare a pool and where to consume capacity. The normal authoring path is declare the pool at the top level, then reference that pool from the workstation you want to throttle."
     },
     "howToUse": {
       "title": "How To Use",
@@ -27,5 +31,21 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "ownershipLocationHeader": "Location",
+    "ownershipShapeHeader": "Shared shape",
+    "ownershipUseHeader": "What to use it for",
+    "ownershipTopLevelLocation": "resources[]",
+    "ownershipTopLevelShape": "yes — {name, capacity} plus optional typed metadata",
+    "ownershipTopLevelUse": "Declare the pool name and total available capacity",
+    "ownershipWorkstationLocation": "workstations[].resources[]",
+    "ownershipWorkstationShape": "yes — matching requirement shape",
+    "ownershipWorkstationUse": "Consume capacity for a workflow step while that workstation runs",
+    "ownershipWorkerLocation": "workers[].resources[]",
+    "ownershipWorkerShape": "yes — matching requirement shape",
+    "ownershipWorkerUse": "Worker-runtime requirement metadata only; not the canonical workflow-step concurrency path",
+    "ownershipWorkerNote": "Worker-only resources are not the canonical explanation for workflow-step concurrency. Put the scheduling-facing requirement on the workstation. Keep workers[].resources[] only when the worker-runtime contract itself needs the same requirement metadata.",
+    "ownershipSupportingFilesNote": "Runtime-capacity resources are not portability supportingFiles. Do not overload a capacity pool with bundled files or external tool checks; supportingFiles belong to the portability contract, not to bounded concurrency."
   }
 }
