@@ -15,8 +15,11 @@ import {
 } from "@/lib/navigation/ai-docs-sidebar-adapter";
 
 const EXPECTED_AI_SIDEBAR_FOLDER_LABELS = [
-  "Glossary",
+  "Guides",
   "Concepts",
+  "Techniques",
+  "Documentation",
+  "Glossary",
   "Modules",
   "Models",
   "Papers",

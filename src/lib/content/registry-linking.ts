@@ -7,19 +7,25 @@ import type {
   ClassificationRecord,
   ConceptRecord,
   DatasetRecord,
+  DocumentationRecord,
   GraphRecord,
+  GuideRecord,
   ModelRecord,
   ModuleRecord,
   OrganizationRecord,
   PaperRecord,
   SystemRecord,
   TagRecord,
+  TechniqueRecord,
   TrainingRegimeRecord,
 } from "@/lib/content/schemas";
 
 export type LinkableRegistryRecord =
   | ModuleRecord
   | ConceptRecord
+  | GuideRecord
+  | TechniqueRecord
+  | DocumentationRecord
   | ClassificationRecord
   | ModelRecord
   | PaperRecord
@@ -48,6 +54,9 @@ export function registryRecordHref(
   if (
     record.kind === "module" ||
     record.kind === "concept" ||
+    record.kind === "guide" ||
+    record.kind === "technique" ||
+    record.kind === "documentation" ||
     record.kind === "model" ||
     record.kind === "paper" ||
     record.kind === "training-regime" ||

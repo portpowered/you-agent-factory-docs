@@ -12,7 +12,9 @@ import {
   classificationRecordSchema,
   conceptRecordSchema,
   datasetRecordSchema,
+  documentationRecordSchema,
   graphRecordSchema,
+  guideRecordSchema,
   modelRecordSchema,
   moduleRecordSchema,
   organizationRecordSchema,
@@ -20,6 +22,7 @@ import {
   systemRecordSchema,
   type TagRecord,
   tagRecordSchema,
+  techniqueRecordSchema,
   trainingRegimeRecordSchema,
 } from "./schemas";
 import { validateSidebarGroupingForRecord } from "./sidebar-grouping";
@@ -49,6 +52,9 @@ type RegistryDirectory = {
   schema:
     | typeof moduleRecordSchema
     | typeof conceptRecordSchema
+    | typeof guideRecordSchema
+    | typeof techniqueRecordSchema
+    | typeof documentationRecordSchema
     | typeof modelRecordSchema
     | typeof classificationRecordSchema
     | typeof paperRecordSchema
@@ -64,6 +70,9 @@ type RegistryDirectory = {
 const registryDirectories: RegistryDirectory[] = [
   { name: "modules", schema: moduleRecordSchema },
   { name: "concepts", schema: conceptRecordSchema },
+  { name: "guides", schema: guideRecordSchema },
+  { name: "techniques", schema: techniqueRecordSchema },
+  { name: "documentation", schema: documentationRecordSchema },
   { name: "models", schema: modelRecordSchema },
   { name: "classifications", schema: classificationRecordSchema },
   { name: "papers", schema: paperRecordSchema },

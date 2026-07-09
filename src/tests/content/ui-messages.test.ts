@@ -34,6 +34,9 @@ const AI_DOMAIN_MESSAGE_KEYS = [
   "modelsIndex",
   "modulesIndex",
   "conceptsIndex",
+  "guidesIndex",
+  "techniquesIndex",
+  "documentationIndex",
   "papersIndex",
   "trainingIndex",
   "systemsIndex",
@@ -67,6 +70,9 @@ function pickAiDomainMessages(messages: AiDomainMessages): AiDomainMessages {
     modelsIndex: messages.modelsIndex,
     modulesIndex: messages.modulesIndex,
     conceptsIndex: messages.conceptsIndex,
+    guidesIndex: messages.guidesIndex,
+    techniquesIndex: messages.techniquesIndex,
+    documentationIndex: messages.documentationIndex,
     papersIndex: messages.papersIndex,
     trainingIndex: messages.trainingIndex,
     systemsIndex: messages.systemsIndex,
@@ -201,6 +207,9 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages();
     expect(formatPageKind(messages, "module")).toBe("Module");
     expect(formatPageKind(messages, "concept")).toBe("Concept");
+    expect(formatPageKind(messages, "guide")).toBe("Guide");
+    expect(formatPageKind(messages, "technique")).toBe("Technique");
+    expect(formatPageKind(messages, "documentation")).toBe("Documentation");
     expect(formatPageKind(messages, "not-a-real-kind")).toBe("not-a-real-kind");
   });
 

@@ -27,10 +27,46 @@ function collectionMessageKeys(
 }
 
 /**
- * Canonical AI docs collection inventory for later generic shell consumers.
- * Runtime browse, sidebar, and source slug matching remain on existing paths.
+ * Canonical docs collection inventory.
+ * Rewrite-era CLI collections (`guides`, `concepts`, `techniques`,
+ * `documentation`) ship with empty starter/featured slug lists. Remaining
+ * Atlas collections stay registered until sibling delete/retarget lanes own
+ * their removal; browse order remains on `DOCS_BROWSE_COLLECTION_IDS`.
  */
 export const DOCS_COLLECTION_DEFINITIONS = [
+  {
+    id: "guides",
+    routeSlug: "guides",
+    registryKind: "guide",
+    frontmatterKind: "guide",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("guides", "guides"),
+  },
+  {
+    id: "concepts",
+    routeSlug: "concepts",
+    registryKind: "concept",
+    frontmatterKind: "concept",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("concepts", "concepts"),
+    sidebarGroupingResolverId: "concepts",
+  },
+  {
+    id: "techniques",
+    routeSlug: "techniques",
+    registryKind: "technique",
+    frontmatterKind: "technique",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("techniques", "techniques"),
+  },
+  {
+    id: "documentation",
+    routeSlug: "documentation",
+    registryKind: "documentation",
+    frontmatterKind: "documentation",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("documentation", "documentation"),
+  },
   {
     id: "glossary",
     routeSlug: "glossary",
@@ -39,22 +75,6 @@ export const DOCS_COLLECTION_DEFINITIONS = [
     starterSlugs: ["glossary/token", "glossary/architecture"],
     messageKeys: collectionMessageKeys("glossary", "glossary"),
     sidebarGroupingResolverId: "glossary",
-  },
-  {
-    id: "concepts",
-    routeSlug: "concepts",
-    registryKind: "concept",
-    frontmatterKind: "concept",
-    starterSlugs: [
-      "concepts/transformer-architecture",
-      "concepts/positional-encodings",
-      "concepts/context-extension",
-      "concepts/quantization",
-      "concepts/why-long-context-is-hard",
-      "concepts/kv-cache-quantization",
-    ],
-    messageKeys: collectionMessageKeys("concepts", "concepts"),
-    sidebarGroupingResolverId: "concepts",
   },
   {
     id: "modules",

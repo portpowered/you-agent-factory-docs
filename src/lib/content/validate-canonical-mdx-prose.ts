@@ -6,6 +6,9 @@ import type { ValidationError } from "./validate-registry";
 /** Page kinds that must keep reader-facing text in messages/assets, not MDX. */
 export const canonicalDocsPageKinds = new Set<PageKind>([
   "concept",
+  "guide",
+  "technique",
+  "documentation",
   "glossary",
   "module",
   "model",

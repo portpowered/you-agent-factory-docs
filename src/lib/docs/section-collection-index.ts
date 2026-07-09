@@ -20,9 +20,12 @@ export type DocsCollectionIndexMessages = {
 };
 
 const SECTION_KIND_TO_COLLECTION_ID = {
+  guide: "guides",
+  concept: "concepts",
+  technique: "techniques",
+  documentation: "documentation",
   model: "models",
   module: "modules",
-  concept: "concepts",
   paper: "papers",
   "training-regime": "training",
   system: "systems",

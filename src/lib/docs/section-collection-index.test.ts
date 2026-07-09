@@ -147,6 +147,12 @@ describe("section collection index resolution", () => {
   test("maps section frontmatter kinds to collection ids", () => {
     expect(resolveSectionKindCollectionId("training-regime")).toBe("training");
     expect(resolveSectionKindCollectionId("model")).toBe("models");
+    expect(resolveSectionKindCollectionId("guide")).toBe("guides");
+    expect(resolveSectionKindCollectionId("technique")).toBe("techniques");
+    expect(resolveSectionKindCollectionId("documentation")).toBe(
+      "documentation",
+    );
+    expect(resolveSectionKindCollectionId("concept")).toBe("concepts");
   });
 
   test("resolves localized index copy from collection message metadata", async () => {

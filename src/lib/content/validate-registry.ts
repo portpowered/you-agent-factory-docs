@@ -77,6 +77,9 @@ const defaultDocsRoot = DOCS_ROOT;
 const registryKindDirectories: Record<string, string> = {
   module: "modules",
   concept: "concepts",
+  guide: "guides",
+  technique: "techniques",
+  documentation: "documentation",
   model: "models",
   classification: "classifications",
   paper: "papers",

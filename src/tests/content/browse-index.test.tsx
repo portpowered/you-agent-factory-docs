@@ -28,7 +28,8 @@ const BROWSE_REPRESENTATIVE_STARTER_HREFS = [
   "/docs/glossary/world-model",
   "/docs/modules/grouped-query-attention",
   "/docs/glossary/softmax",
-  "/docs/concepts/transformer-architecture",
+  // Empty CLI concepts starters fall back to title-sorted published pages.
+  "/docs/concepts/activation",
   "/docs/glossary/temperature",
   "/docs/papers/deepseek-v4",
   "/docs/training/on-policy-distillation",
@@ -148,7 +149,7 @@ describe("browse index page render", () => {
       "/tags",
       "/docs/models/gpt-3",
       "/docs/modules/grouped-query-attention",
-      "/docs/concepts/transformer-architecture",
+      "/docs/concepts/activation",
       "/docs/papers/deepseek-v4",
       "/docs/training/on-policy-distillation",
       "/docs/systems/deployment",

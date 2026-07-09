@@ -13,8 +13,11 @@ import type {
 } from "@/lib/navigation/shell-collection-page-tree";
 
 const AI_SIDEBAR_FOLDER_LABELS: Record<DocsCollectionId, string> = {
-  glossary: "Glossary",
+  guides: "Guides",
   concepts: "Concepts",
+  techniques: "Techniques",
+  documentation: "Documentation",
+  glossary: "Glossary",
   modules: "Modules",
   models: "Models",
   papers: "Papers",

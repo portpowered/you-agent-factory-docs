@@ -101,6 +101,30 @@ export const conceptRecordSchema = z.object({
   sidebarGrouping: sidebarGroupingSchema,
 });
 
+/** CLI guide registry records (1:1 with page kind `guide`). */
+export const guideRecordSchema = z.object({
+  ...baseRecordShape,
+  kind: z.literal("guide"),
+  ...releaseMetadataShape,
+  ...ontologyMembershipShape,
+});
+
+/** CLI technique registry records (1:1 with page kind `technique`). */
+export const techniqueRecordSchema = z.object({
+  ...baseRecordShape,
+  kind: z.literal("technique"),
+  ...releaseMetadataShape,
+  ...ontologyMembershipShape,
+});
+
+/** CLI documentation registry records (1:1 with page kind `documentation`). */
+export const documentationRecordSchema = z.object({
+  ...baseRecordShape,
+  kind: z.literal("documentation"),
+  ...releaseMetadataShape,
+  ...ontologyMembershipShape,
+});
+
 export const modelSourceTypeSchema = z.enum([
   "open-weights",
   "closed",
@@ -227,6 +251,9 @@ export const generatedPageBundleRegistryRecordSchema = z.discriminatedUnion(
   "kind",
   [
     conceptRecordSchema,
+    guideRecordSchema,
+    techniqueRecordSchema,
+    documentationRecordSchema,
     moduleRecordSchema,
     modelRecordSchema,
     paperRecordSchema,
@@ -371,6 +398,9 @@ export const graphRecordSchema = z.object({
 export const registryRecordSchema = z.discriminatedUnion("kind", [
   moduleRecordSchema,
   conceptRecordSchema,
+  guideRecordSchema,
+  techniqueRecordSchema,
+  documentationRecordSchema,
   classificationRecordSchema,
   modelRecordSchema,
   paperRecordSchema,
@@ -385,6 +415,9 @@ export const registryRecordSchema = z.discriminatedUnion("kind", [
 
 export const pageKindSchema = z.enum([
   "concept",
+  "guide",
+  "technique",
+  "documentation",
   "model",
   "module",
   "paper",
@@ -605,6 +638,9 @@ export type {
 } from "./registry-core";
 export type ModuleRecord = z.infer<typeof moduleRecordSchema>;
 export type ConceptRecord = z.infer<typeof conceptRecordSchema>;
+export type GuideRecord = z.infer<typeof guideRecordSchema>;
+export type TechniqueRecord = z.infer<typeof techniqueRecordSchema>;
+export type DocumentationRecord = z.infer<typeof documentationRecordSchema>;
 export type ModelRecord = z.infer<typeof modelRecordSchema>;
 export type PaperRecord = z.infer<typeof paperRecordSchema>;
 export type TrainingRegimeRecord = z.infer<typeof trainingRegimeRecordSchema>;

@@ -121,6 +121,19 @@ git with `.gitkeep` (for example `src/content/registry/graphs/.gitkeep`). CI
 clones omit untracked empty dirs; `generate-graph-registry-runtime` also
 tolerates a missing graphs root by emitting an empty runtime.
 
+## Mergeability with empty-CLI taxonomy (`rewrite-empty-cli-taxonomy`)
+
+When merging main after empty-CLI taxonomy lands:
+
+| Path | Role |
+| --- | --- |
+| `src/features/models/**` | Keep deleted (modify/delete: prefer HEAD deletion over main's RegistryGraphFlow edits) |
+| `src/lib/content/page-template-convergence.test.tsx` | Keep writing-standards assertions; do **not** require deleted `assetId` / PageAsset graph tags |
+| `src/lib/content/routable-docs-page.test.ts` | Keep CLI path-acceptance cases; assert deleted Atlas page fixtures are **absent** from `source`, not present |
+| `docs/templates/{guide,technique,documentation}.*` | Accept main's CLI templates |
+| `src/content/docs/{guides,techniques,documentation}/.gitkeep` | Accept empty CLI content roots from main |
+
 ## Related
 
 - [ci-deploy-foundation-relevant-files.md](./ci-deploy-foundation-relevant-files.md) — required make targets must not re-chain Atlas verifiers
+- [empty-cli-taxonomy-relevant-files.md](./empty-cli-taxonomy-relevant-files.md) — CLI kinds/templates/empty roots from the sibling lane

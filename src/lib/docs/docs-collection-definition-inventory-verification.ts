@@ -1,5 +1,6 @@
 import {
   DOCS_COLLECTION_IDS,
+  type DocsCollectionId,
   type DocsCollectionMessageKeys,
 } from "@/lib/docs/collection-definition-contract";
 import {
@@ -7,6 +8,14 @@ import {
   getDocsCollectionDefinition,
   listDocsCollectionDefinitions,
 } from "@/lib/docs/docs-collection-definitions";
+
+/** Rewrite-era CLI collections may ship with empty starter/featured lists. */
+const EMPTY_STARTER_COLLECTION_IDS = [
+  "guides",
+  "concepts",
+  "techniques",
+  "documentation",
+] as const satisfies readonly DocsCollectionId[];
 
 const GROUPED_STARTER_COLLECTION_ID = "modules" as const;
 const GROUPED_STARTER_SLUG = "modules/grouped-query-attention" as const;
@@ -56,6 +65,59 @@ function assertTrainingRouteSlugKindMapping(): void {
   }
 }
 
+function assertEmptyCliCollectionContract(): void {
+  for (const id of EMPTY_STARTER_COLLECTION_IDS) {
+    const definition = getDocsCollectionDefinition(id);
+    if (definition.routeSlug !== id) {
+      throw new Error(
+        `Expected CLI collection ${id} route slug "${id}", found "${definition.routeSlug}"`,
+      );
+    }
+    if (definition.starterSlugs.length !== 0) {
+      throw new Error(
+        `Expected CLI collection ${id} to have empty starterSlugs, found ${definition.starterSlugs.length}`,
+      );
+    }
+  }
+
+  const guides = getDocsCollectionDefinition("guides");
+  if (guides.frontmatterKind !== "guide" || guides.registryKind !== "guide") {
+    throw new Error(
+      `Expected guides kinds guide/guide, found ${guides.frontmatterKind}/${guides.registryKind}`,
+    );
+  }
+
+  const concepts = getDocsCollectionDefinition("concepts");
+  if (
+    concepts.frontmatterKind !== "concept" ||
+    concepts.registryKind !== "concept"
+  ) {
+    throw new Error(
+      `Expected concepts kinds concept/concept, found ${concepts.frontmatterKind}/${concepts.registryKind}`,
+    );
+  }
+
+  const techniques = getDocsCollectionDefinition("techniques");
+  if (
+    techniques.frontmatterKind !== "technique" ||
+    techniques.registryKind !== "technique"
+  ) {
+    throw new Error(
+      `Expected techniques kinds technique/technique, found ${techniques.frontmatterKind}/${techniques.registryKind}`,
+    );
+  }
+
+  const documentation = getDocsCollectionDefinition("documentation");
+  if (
+    documentation.frontmatterKind !== "documentation" ||
+    documentation.registryKind !== "documentation"
+  ) {
+    throw new Error(
+      `Expected documentation kinds documentation/documentation, found ${documentation.frontmatterKind}/${documentation.registryKind}`,
+    );
+  }
+}
+
 function assertRepresentativeStarterSlugs(): void {
   const grouped = getDocsCollectionDefinition(GROUPED_STARTER_COLLECTION_ID);
   if (!grouped.starterSlugs.includes(GROUPED_STARTER_SLUG)) {
@@ -76,7 +138,7 @@ function assertRepresentativeStarterSlugs(): void {
 
 /**
  * Behavioral verification that exported collection definitions match the
- * current AI docs collection contract without scanning source files.
+ * current docs collection contract without scanning source files.
  */
 export function assertDocsCollectionDefinitionInventoryVerified(): void {
   assertDocsCollectionInventory();
@@ -87,6 +149,8 @@ export function assertDocsCollectionDefinitionInventoryVerified(): void {
       `Expected ${DOCS_COLLECTION_IDS.length} collection definitions, found ${definitions.length}`,
     );
   }
+
+  const emptyStarterIds = new Set<string>(EMPTY_STARTER_COLLECTION_IDS);
 
   for (const definition of definitions) {
     if (definition.routeSlug.length === 0) {
@@ -103,6 +167,15 @@ export function assertDocsCollectionDefinitionInventoryVerified(): void {
 
     assertNonEmptyMessageKeyMetadata(definition.id, definition.messageKeys);
 
+    if (emptyStarterIds.has(definition.id)) {
+      if (definition.starterSlugs.length !== 0) {
+        throw new Error(
+          `CLI collection ${definition.id} must keep starterSlugs empty`,
+        );
+      }
+      continue;
+    }
+
     if (definition.starterSlugs.length === 0) {
       throw new Error(`Collection ${definition.id} has no starter slugs`);
     }
@@ -115,6 +188,7 @@ export function assertDocsCollectionDefinitionInventoryVerified(): void {
     }
   }
 
+  assertEmptyCliCollectionContract();
   assertTrainingRouteSlugKindMapping();
   assertRepresentativeStarterSlugs();
 }
