@@ -12,11 +12,11 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "When you start a named run, the factory can dispatch that work to a Codex-backed or Cursor-backed agent runtime. That runtime is the harness: it is the agent environment that carries out the steps the factory tracks."
+      "body": "You start a named run with the factory CLI. The factory dispatches that work to a Codex-backed or Cursor-backed coding agent. That coding-agent environment is the harness: it carries out the steps while the factory keeps the run persistent and coordinated."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "A harness is not the factory itself. The factory is the workflow system; the harness is the agent runtime it drives. A harness is also not a worker: a worker is a configured work executor declared in factory config, while the harness is the agent runtime that executes agent-loop work. Choosing a runner or model provider is not the same as defining what a harness is—those settings select how a runtime is reached, not the harness concept itself."
+      "body": "A harness is not the factory. The factory is the workflow system that tracks and coordinates work; the harness is the agent runtime that carries the work out. A harness is also not a worker. A worker is a named executor declared in factory configuration; the harness is the agent environment that actually runs agent work. Choosing a runner or model provider is a different decision: those settings select which backend or model a run uses, not the harness itself."
     },
     "related": {
       "title": "Related Concepts And Modules"
