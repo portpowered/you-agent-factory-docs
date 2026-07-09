@@ -51,13 +51,16 @@ Canonical install command forms match the home CTA in
 `src/content/messages/*/common.json` (`home.installMacosLinuxCommand` /
 `home.installWindowsCommand`). First-run / session forms used on the
 getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
-`you session list`.
+`you session list`. First-submit forms: unary
+`you submit --name <name> --work-type-name <type> --payload <path>` and
+`you submit batch <path>` (keep the quickstart free of full batch schema /
+relation dumps — those belong on submitting-work / CLI docs).
 
 Guide kind is outside the strict page-template conformance set, so extra
-quickstart `Section`s (for example `install`, `first-you`) are allowed when
-colocated message keys validate. Browser-verify MDX or message edits with
-`bun run build` then `bun run start` on a unique port — plain `start` serves
-the last production build and will look stale otherwise.
+quickstart `Section`s (for example `install`, `first-you`, `first-submit`)
+are allowed when colocated message keys validate. Browser-verify MDX or
+message edits with `bun run build` then `bun run start` on a unique port —
+plain `start` serves the last production build and will look stale otherwise.
 
 ## Routine preflight for ordinary page branches
 

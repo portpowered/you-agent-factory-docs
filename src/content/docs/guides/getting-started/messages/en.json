@@ -19,9 +19,13 @@
       "title": "First You",
       "body": "Start a factory so the runtime is live before you submit work. Use a named run for a concrete goal, or start the default factory."
     },
+    "firstSubmit": {
+      "title": "First Submit",
+      "body": "Enqueue work against the running factory. Use unary submit for one item, or submit batch for a small JSON batch file."
+    },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
-      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. Install and first-you commands are above; first-submit commands land in the next quickstart step."
+      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. Install, first-you, and first-submit commands are above."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
@@ -42,7 +46,9 @@
     "installWindowsLabel": "Windows (PowerShell)",
     "firstYouNamedRunLabel": "Named run",
     "firstYouDefaultStartLabel": "Default factory start",
-    "firstYouSessionListLabel": "Confirm a live factory"
+    "firstYouSessionListLabel": "Confirm a live factory",
+    "firstSubmitUnaryLabel": "Unary submit",
+    "firstSubmitBatchLabel": "Batch submit"
   },
   "callouts": {
     "installDeepDive": {
@@ -50,6 +56,9 @@
     },
     "firstYouSessionCheck": {
       "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."
+    },
+    "firstSubmitRunningFactory": {
+      "body": "Submit targets a running factory. Confirm a live session with session list from the previous step before you enqueue work. Batch schema, relations, and dry-run details live on later submitting-work and CLI docs."
     }
   }
 }
