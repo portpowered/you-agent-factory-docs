@@ -11,7 +11,10 @@ import type { SharedProps } from "fumadocs-ui/contexts/search";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { ComponentType, ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { DocsHeader } from "@/components/layout/docs-header";
+import {
+  DOCS_HEADER_BRAND_LINK_CLASS,
+  DocsHeader,
+} from "@/components/layout/docs-header";
 import {
   getPrimaryNavItems,
   PRIMARY_NAV_DESKTOP_CLASS,
@@ -21,6 +24,7 @@ import {
 } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
+import { resolveSiteConfigLayoutNav } from "@/lib/site/site-config-layout-nav";
 import {
   YOU_AGENT_FACTORY_REPOSITORY_URL,
   youAgentFactorySiteConfig,
@@ -143,9 +147,34 @@ describe("DocsHeader", () => {
     expect(html).toContain('aria-label="Open project GitHub repository"');
   });
 
-  test("sources the repository link href from site config", async () => {
+  test("renders you-agent-factory brand chrome linking to the localized home route", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(youAgentFactorySiteConfig);
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
+          messages={messages}
+          pageTree={source.pageTree}
+          siteConfig={youAgentFactorySiteConfig}
+        />
+      </RootProvider>,
+    );
+
+    expect(brand.title).toBe("you-agent-factory");
+    expect(brand.url).toBe("/");
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).toContain(DOCS_HEADER_BRAND_LINK_CLASS);
+    expect(html).toContain(`href="${brand.url}"`);
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).not.toContain(">Model Atlas<");
+    expect(html).toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
+  });
+
+  test("sources brand title, home href, and repository link from site config", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(alternateSiteConfig);
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
         <DocsHeader
@@ -156,10 +185,38 @@ describe("DocsHeader", () => {
       </RootProvider>,
     );
 
+    expect(brand.title).toBe("Example Docs");
+    expect(brand.url).toBe("/");
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).not.toContain(">you-agent-factory<");
     expect(html).toContain('href="https://github.com/example/example"');
     expect(html).not.toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
     expect(html).toContain('aria-label="Open project GitHub repository"');
     expect(html).toContain('title="Open project GitHub repository"');
+  });
+
+  test("localizes the brand home destination on non-default locales", async () => {
+    const messages = await loadUiMessages("vi");
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(youAgentFactorySiteConfig, "vi");
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
+          messages={messages}
+          pageTree={source.pageTree}
+          locale="vi"
+          siteConfig={youAgentFactorySiteConfig}
+        />
+      </RootProvider>,
+    );
+
+    expect(brand.title).toBe("you-agent-factory");
+    expect(brand.url).toBe("/vi");
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).toContain(`href="${brand.url}"`);
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).not.toContain(">Model Atlas<");
   });
 
   test("keeps the default repository URL from you-agent-factory site config", async () => {
@@ -520,7 +577,7 @@ describe("DocsHeader", () => {
     expect(html).toContain("focus-visible:ring-3");
   });
 
-  test("moves keyboard focus through menu control, disclosed links, and search trigger when open", async () => {
+  test("moves keyboard focus through menu control, brand link, and search trigger when open", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
@@ -531,6 +588,7 @@ describe("DocsHeader", () => {
     );
     const user = userEvent.setup();
     const menuButton = screen.getByRole("button", { name: messages.nav.menu });
+    const brandLink = screen.getByRole("link", { name: "you-agent-factory" });
     const searchTrigger = screen.getByRole("button", {
       name: messages.search.open,
     });
@@ -549,6 +607,9 @@ describe("DocsHeader", () => {
     });
     const panelLinks = within(primaryNav).getAllByRole("link");
     expect(panelLinks).toHaveLength(expectedItems.length);
+
+    await user.tab();
+    expect(document.activeElement).toBe(brandLink);
 
     await user.tab();
     expect(document.activeElement).toBe(searchTrigger);

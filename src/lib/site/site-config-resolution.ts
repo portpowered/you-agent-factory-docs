@@ -3,7 +3,6 @@ import type { UiMessages } from "@/lib/content/ui-messages.types";
 import {
   buildLocalizedRoute,
   defaultLocale,
-  type LocalizedRouteDestination,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
 import type {
@@ -11,16 +10,12 @@ import type {
   SiteConfig,
   SitePrimaryNavEntry,
 } from "./site-config.contract";
+import {
+  requireSiteConfigRouteSurface,
+  resolveSiteConfigLayoutNav,
+} from "./site-config-layout-nav";
 
-export function resolveSiteConfigLayoutNav(
-  config: SiteConfig,
-  locale: SiteLocale = defaultLocale,
-): { title: string; url: string } {
-  return {
-    title: config.brand.brandName,
-    url: buildLocalizedRoute(requireRouteSurface(config, "home"), locale),
-  };
-}
+export { resolveSiteConfigLayoutNav };
 
 export function resolveSiteConfigRepositoryUrl(config: SiteConfig): string {
   return config.repositoryUrl;
@@ -32,23 +27,15 @@ export type ResolvedHomeFeaturedLink = {
   description: string;
 };
 
-function requireRouteSurface(
-  config: SiteConfig,
-  routeSurface: string,
-): LocalizedRouteDestination {
-  const destination = config.routeSurfaces[routeSurface];
-  if (!destination) {
-    throw new Error(`Missing site config route surface: ${routeSurface}`);
-  }
-  return destination;
-}
-
 function resolveRouteSurfaceHref(
   config: SiteConfig,
   routeSurface: SitePrimaryNavEntry["routeSurface"],
   locale: SiteLocale,
 ): string {
-  return buildLocalizedRoute(requireRouteSurface(config, routeSurface), locale);
+  return buildLocalizedRoute(
+    requireSiteConfigRouteSurface(config, routeSurface),
+    locale,
+  );
 }
 
 export function resolveSiteConfigPrimaryNavHrefs(
@@ -67,7 +54,7 @@ function resolveHomeFeaturedLinkHref(
 ): string {
   if (link.kind === "route") {
     return buildLocalizedRoute(
-      requireRouteSurface(config, link.routeSurface),
+      requireSiteConfigRouteSurface(config, link.routeSurface),
       locale,
     );
   }

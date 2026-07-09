@@ -11,7 +11,8 @@ contract for the you-agent-factory CLI docs product.
 | `src/lib/site/site-config.contract.test.ts` | Contract tests; CLI representative fixture must type-check without topology/timeline/AI collections |
 | `src/lib/scaffold.ts` | Shared scaffold brand constants (`SCAFFOLD_ID`, `SITE_BRAND_NAME`, `SITE_HEADING`) consumed by the default site config |
 | `src/lib/site/you-agent-factory-site-config.ts` | Product default config: you-agent-factory brand/repo, CLI primary nav/route placeholders, CLI collections (`guides`/`concepts`/`techniques`/`documentation`), and empty `homeFeaturedLinks` for B01 |
-| `src/lib/site/site-config-resolution.ts` | Resolves brand, primary nav hrefs, and home featured links from `SiteConfig` |
+| `src/lib/site/site-config-layout-nav.ts` | Client-safe brand/home resolution (`resolveSiteConfigLayoutNav`) for header chrome; no Node/`pages` imports |
+| `src/lib/site/site-config-resolution.ts` | Resolves primary nav hrefs and home featured links from `SiteConfig`; re-exports layout-nav helpers |
 | `src/components/layout/primary-nav.ts` | Shell primary nav consumer of `SiteConfig.primaryNav` / `routeSurfaces` |
 | `src/lib/layout.shared.tsx` | Layout `baseOptions` defaults to `youAgentFactorySiteConfig` |
 | `src/content/messages/{en,vi,ja}/common.json` | Shell UI messages; `nav.guides` / `nav.docs` label keys for CLI primary nav |
@@ -41,6 +42,11 @@ contract for the you-agent-factory CLI docs product.
   (`YOU_AGENT_FACTORY_REPOSITORY_URL`).
 - Layout brand title comes from `resolveSiteConfigLayoutNav` →
   `config.brand.brandName` (not UI message `home.title`).
+- Docs header brand chrome (`DocsHeader`) imports layout-nav from
+  `site-config-layout-nav.ts` (not `site-config-resolution.ts`) so the client
+  bundle does not pull Node-only featured-link helpers. It renders the resolved
+  title/url as a visible home link (`data-docs-header-brand`); Fumadocs layout
+  `nav` stays disabled, so the custom header owns the brand surface.
 
 ## Primary nav / route placeholders
 
