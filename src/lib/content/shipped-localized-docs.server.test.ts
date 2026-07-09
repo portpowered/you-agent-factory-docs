@@ -139,18 +139,12 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     const derived = deriveShippedLocalizedDocsManifest();
     expect(derived).toEqual(resolveShippedLocalizedDocsManifest());
     expect(derived).toEqual({
-      ja: [
-        "documentation/what-is-you-agent-factory",
-        "guides/getting-started",
-      ],
+      ja: ["documentation/what-is-you-agent-factory", "guides/getting-started"],
       "zh-CN": [
         "documentation/what-is-you-agent-factory",
         "guides/getting-started",
       ],
-      vi: [
-        "documentation/what-is-you-agent-factory",
-        "guides/getting-started",
-      ],
+      vi: ["documentation/what-is-you-agent-factory", "guides/getting-started"],
     });
   });
 });
