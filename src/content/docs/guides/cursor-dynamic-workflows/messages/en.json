@@ -13,7 +13,7 @@
     },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
-      "body": "Configure Cursor MCP for you mcp serve, reload Cursor, then run a first validate and start or status loop from Factory Session tools."
+      "body": "Confirm the you CLI is installed, add a Cursor Model Context Protocol (MCP) server entry for you mcp serve, reload Cursor so the child process starts, then use Factory Session tools for a first validate and start or status loop."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
@@ -27,6 +27,18 @@
     },
     "references": {
       "title": "References"
+    }
+  },
+  "links": {
+    "mcpConfigLocationsLabel": "Cursor MCP config locations",
+    "mcpServerJsonLabel": "Example Cursor MCP server entry"
+  },
+  "callouts": {
+    "mcpConfigLocations": {
+      "body": "Put the server entry in the project file at .cursor/mcp.json when the workflow lives in that repository, or in the global file at ~/.cursor/mcp.json when you want the same server across projects. Project config is usually enough for one workflow root."
+    },
+    "mcpReload": {
+      "body": "Replace command with the absolute path to your you binary when Cursor cannot see your shell PATH. Keep args as mcp serve. Set cwd to the workflow project root so sources resolve. After you save the file, restart Cursor or run Developer: Reload Window so Cursor respawns the MCP child process."
     }
   }
 }

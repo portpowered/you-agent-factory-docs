@@ -29,6 +29,27 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
   <T k="sections.stepsOrWorkflow.body" />
+  <p>
+    <T k="links.mcpConfigLocationsLabel" />
+  </p>
+  <T k="callouts.mcpConfigLocations.body" />
+  <p>
+    <T k="links.mcpServerJsonLabel" />
+  </p>
+
+```json
+{
+  "mcpServers": {
+    "you-agent-factory": {
+      "command": "/absolute/path/to/you",
+      "args": ["mcp", "serve"],
+      "cwd": "/absolute/path/to/project"
+    }
+  }
+}
+```
+
+  <T k="callouts.mcpReload.body" />
 </Section>
 
 <Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
