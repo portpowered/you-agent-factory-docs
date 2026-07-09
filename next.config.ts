@@ -1,16 +1,27 @@
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { createMDX } from "fumadocs-mdx/next";
 import type { NextConfig } from "next";
-import { SITE_BASE_PATH } from "./src/lib/site";
+import { resolveNextConfigForBuildMode } from "./src/lib/build/static-export";
+import {
+  DOCS_SEARCH_BOOTSTRAP_FROM_ENV,
+  resolveDocsSearchStaticBootstrapFrom,
+} from "./src/lib/search/docs-search-bootstrap-path";
+
+const withMDX = createMDX();
+
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
-  output: "export",
-  basePath: SITE_BASE_PATH,
-  assetPrefix: `${SITE_BASE_PATH}/`,
-  trailingSlash: true,
-  images: {
-    unoptimized: true,
+  ...resolveNextConfigForBuildMode(),
+  env: {
+    [DOCS_SEARCH_BOOTSTRAP_FROM_ENV]: resolveDocsSearchStaticBootstrapFrom(
+      process.env,
+    ),
   },
-  outputFileTracingRoot: path.resolve("."),
+  turbopack: {
+    root: projectRoot,
+  },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);

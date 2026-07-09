@@ -1,45 +1,632 @@
-# You Agent Factory Docs
+# Learn Language Models
 
-You Agent Factory Docs is the public documentation and learning site for You Agent Factory, an open-source platform for turning recurring engineering work into reusable AI agent workflows.
+[![CI](https://github.com/portpowered/ai-model-reference/actions/workflows/ci.yml/badge.svg)](https://github.com/portpowered/ai-model-reference/actions/workflows/ci.yml)
 
-## Contributor workflow
+A static AI model reference site for large language model components, concepts,
+papers, training regimes, systems ideas, and architecture variants.
 
-From the repository root, `make setup`, `make check`, `make test`, and `make build` are the authoritative commands for the same contributor and pull request validation path. CI uses the same root Makefile contract (see `.github/workflows/ci.yml`), so you do not need alternate `bun` commands to match automation.
-`make quality-gate` remains a broader local-only foundation sweep. It intentionally goes beyond pull request validation by adding localization, content, accessibility, and static-export validation on top of the narrower PR merge gate.
-For the Phase 8 public-site budget lane, `make budget` is the checked-in review and CI command for the exported homepage/docs route budgets plus the static JavaScript payload budget.
+## Problem
 
-Prerequisites: [Bun](https://bun.sh) 1.1 or newer.
+Engineers and technical readers who follow model architecture changes do not
+have a compact reference that connects models, modules, papers, systems
+concepts, and practical tradeoffs in one searchable place.
 
-- **`make setup`** — install or refresh dependencies after cloning or when `package.json` changes. Runs `bun install` from the repository root.
-- **`make check`** — run the pull request parity verification path for typecheck and lint from the repository root.
-- **`make test`** — run the automated test suite through the same root Makefile command CI uses.
-- **`make build`** — build the production static export and fail if the expected `out/` output is missing after the build.
-- **`make quality-gate`** — run the broader local-only foundation gate. Executes typecheck, lint, localization validation, content validation, focused accessibility checks, static export correctness, search-index contract validation, and the remaining foundation unit tests. Fails fast on the first failing check.
-- **`make budget`** — build the export, serve `out/` under the GitHub Pages base path on an available localhost port, then enforce the checked-in homepage/docs route budgets plus the `_next/static` JavaScript payload budget.
-- **`make validate-search-index`** — run the dedicated generated-search-data contract check. Compares the checked-in `public/search/public-search-index.json` artifact against a fresh projection from normalized localized search documents and fails with regeneration guidance when they drift.
+## Solution
 
-`make check`, `make test`, and `make build` are the review-facing parity path shared by local contributors and pull request automation. `make budget` and `make validate-search-index` remain narrower helper targets for focused follow-up verification, while `make quality-gate` reuses the same seams for the broader local review-ready sweep.
+This project builds a multilingual, static-first reference website where readers
+can search for concepts such as attention, KV cache, grouped-query attention,
+diffusion transformers, quantization, inference serving, or GPT-2 and move
+between related models, modules, papers, and explanations.
 
-**Deferred to later Phase 8 work** (not enforced by the early gate): deploy-on-main automation, Lighthouse performance and accessibility budgets, broad package coverage policy enforcement, launch-content completeness enforcement, and broader route/performance instrumentation beyond the current narrow budget gate.
+The site is not a benchmark leaderboard and is not a paper-download mirror. It
+is an explainer and reference system backed by structured data.
 
-```bash
-make setup         # install dependencies with Bun
-make check         # pull request parity: typecheck and lint
-make test          # pull request parity: automated test suite
-make build         # pull request parity: production static export
-make quality-gate  # broader local-only foundation gate
-make budget        # verify the exported homepage/docs routes and the checked-in static JS budget
-make validate-search-index  # verify the generated search contract directly
+## Website Shape
+
+The intended app is a Next.js App Router site using:
+
+* Fumadocs for MDX documentation routes and source loading
+* Orama through Fumadocs for search
+* React Flow for interactive recursive model/module graphs
+* static vertical SVG, Mermaid, or image fallbacks for print/PDF graphs
+* Recharts for explanatory charts
+* Tailwind, design tokens, and shadcn/ui for interface components
+* Bun for package scripts, tests, and coverage
+* Biome for linting and formatting
+
+Content is split into three layers:
+
+```txt
+src/content/docs/**/page.mdx       # page structure
+src/content/docs/**/messages/*.json # localized text
+src/content/docs/**/assets.json     # page-local asset references
+src/content/registry/**/*.json      # structured records for search and relations
 ```
 
-## Local development server
+The registry defines meaning. MDX defines structure. Messages provide localized
+values. Asset config resolves concrete images, graphs, tables, charts, and code
+schemas.
 
-After `make setup`, start the local development server with:
+## Important Docs
 
-```bash
-bun run dev
+Start with:
+
+* [AGENTS.md](./AGENTS.md)
+* [docs/architecture.md](./docs/architecture.md)
+* [docs/data-model.md](./docs/data-model.md)
+* [docs/architectural-checklist.md](./docs/architectural-checklist.md)
+* [docs/documentation-template.md](./docs/documentation-template.md)
+* [docs/documentation-site-pages-needed.md](./docs/documentation-site-pages-needed.md)
+* [docs/site-fundamentals.md](./docs/site-fundamentals.md)
+* [factory/docs/standards/docs-writing-standards.md](./factory/docs/standards/docs-writing-standards.md)
+
+## Local Development
+
+Install dependencies and start the dev server:
+
+```sh
+bun install
+make dev
 ```
 
-The site scaffold lives under `src/`. Architecture and planning docs are in `docs/internal/`.
+`make dev` runs the same Next.js dev entrypoint as `bun run dev`. Open
+`http://localhost:3000` for the home page and `/docs/getting-started` for the
+placeholder docs route.
 
-The checked-in budget gate intentionally stays narrow for this phase: it measures the exported homepage, the exported docs entry route, and total emitted JavaScript bytes under `out/_next/static`. Broader route coverage, richer bundle analysis, and search-index budgeting remain out of scope until a later expansion.
+## Static export (GitHub Pages)
+
+The default `bun run build` / `make build` path keeps the standard Next.js
+production build under `.next/` for `next start` and existing Phase 1 route
+verifiers. Use the static export path when you need a GitHub Pages–compatible
+`out/` artifact instead of `next start`—for example when validating
+project-site base paths locally or confirming the same artifact the deploy
+workflow publishes.
+
+**Single command:** `make build-export` runs the export build and verifies the
+`out/` artifact in one step. It is the local verification command and the deploy
+workflow build entrypoint (`.github/workflows/deploy.yml` runs the same target on
+`main` pushes with `GITHUB_PAGES_BASE_PATH=ai-model-reference`). The same export
+contract is covered by `make test-build-contract` in `make ci` so both the
+`.next/` production contract and the GitHub Pages `out/` artifact stay verified
+without duplicate CI builds.
+
+```sh
+make build-export
+```
+
+That runs `bun run build:export` (sets `NEXT_STATIC_EXPORT=1`, which toggles
+`output: "export"` and `images.unoptimized` in `next.config.ts`), then
+`verify-phase-1-export-routes`, which exits non-zero when `out/` is missing,
+empty, or lacks expected Phase 1 reader routes and content markers (`/`,
+`/docs/architecture`, `/docs/glossary`, `/docs/modules/grouped-query-attention`,
+`/tags`, and `/tags/attention`), then `verify-phase-1-export-search-handoff`,
+which exits non-zero when `out/api/search` is missing or when Phase 1 static
+search queries (`GQA`, `attention`, `KV cache`) fail against the export bootstrap
+payload.
+
+To verify an existing export without rebuilding:
+
+```sh
+make verify-export-routes
+# or: bun run verify:export-routes
+
+make verify-export-search-handoff
+# or: bun run verify:export-search-handoff
+
+make verify-export-search-shell
+# or: bun run verify:export-search-shell
+
+make verify-export-search-ux
+# or: bun run verify:export-search-ux
+```
+
+For GitHub Pages **project sites** served from `https://<org>.github.io/<repo>/`,
+set `GITHUB_PAGES_BASE_PATH` to the repository name (with or without a leading
+slash) when running the export build. The value configures matching
+`basePath` and `assetPrefix` so bundled assets and internal links resolve under
+the project path:
+
+```sh
+GITHUB_PAGES_BASE_PATH=/ai-model-reference make build-export
+```
+
+When `GITHUB_PAGES_BASE_PATH` is unset, export builds keep `/` as the base for
+local preview and user/org root GitHub Pages sites.
+
+See [docs/operations.md](./docs/operations.md) for deployment posture, required
+Pages settings, deploy check visibility, and commit-SHA traceability after merges
+to `main`.
+
+## Phase 2 docs authoring
+
+Canonical page bundles share one page-spec generation path. Templates live in
+`docs/templates/`; see [docs/documentation-template.md](./docs/documentation-template.md)
+for the message-key-driven MDX contract.
+
+### Generate a canonical page bundle
+
+Preview planned paths without writing files:
+
+```sh
+bun run generate:page-bundle -- --spec page-specs/page-spec-workflow-sample.json --dry-run
+```
+
+Create the canonical bundle from one page spec. This is the supported common
+path for `concept`, `glossary`, `module`, `model`, `paper`, and
+`training-regime` pages:
+
+```sh
+bun run generate:page-bundle -- --spec page-specs/my-page.json
+```
+
+The generator writes the page bundle and aligned registry artifacts together:
+
+- `src/content/docs/<section>/<slug>/page.mdx`
+- `src/content/docs/<section>/<slug>/messages/en.json`
+- `src/content/docs/<section>/<slug>/assets.json`
+- `src/content/registry/<kind-directory>/<slug>.json`
+- `src/content/registry/graphs/*.json` when the template references a graph
+
+Run `bun run generate:page-bundle -- --help` for the full page-spec contract.
+Checked-in example specs for each supported canonical kind live in
+`page-specs/`.
+The legacy `scaffold:doc-page` CLI remains available for concept and glossary
+backward compatibility, but new canonical bundles should use the page-spec path.
+
+## Reusable component coverage
+
+Reusable MDX building blocks (Callout, Section, T, TagPillList,
+DerivedRelatedDocs, and search result presentation) must keep **at least 90%
+reachable line coverage**, or be documented as thin wrappers with named smoke
+tests. The inventory, thin-wrapper exception pattern, allowed path globs, and
+update steps live in
+[docs/phase-2-component-coverage.md](./docs/phase-2-component-coverage.md);
+machine-readable entries are in `src/lib/docs/component-manifest.ts`.
+
+Run the manifest gate locally with `make coverage` (same as `bun run coverage`).
+`make ci` includes this gate after `make test` so GitHub Actions enforces the
+same manifest-scoped contract—there are no repository-wide coverage thresholds.
+
+## Component example harness
+
+Phase 2 shared docs components (Callout, Section, T, TagPillList,
+DerivedRelatedDocs, and search result presentation) ship with a lightweight
+Storybook-style gallery instead of full Storybook. Examples live in
+`src/component-examples/` and render on a dev-only route at
+`/component-examples`.
+
+Start the harness with a single command (picks a free port in `3100-3999`):
+
+```sh
+make component-examples
+```
+
+Equivalent Bun script: `bun run component-examples`. The gallery uses grouped-query-attention
+fixtures and search metadata so reviewers can inspect default and alternate states
+without loading full MDX pages. The route returns 404 in production builds unless
+`ENABLE_COMPONENT_EXAMPLES=1` is set; it is not part of `make ci` or deploy.
+
+### After scaffolding
+
+1. Replace placeholder copy in `messages/en.json` (scaffold fills schema-valid stubs).
+2. Add or update registry records the page references (for example a `graph.<slug>-concept-map`
+   record when the template references a concept map asset).
+3. Set `status: published` in `page.mdx` frontmatter when the page is ready for published
+   reference checks; keep `draft` while `relatedIds`, tags, or citations still point at
+   unpublished targets.
+4. Run `make validate-data` (also part of `make ci`) to catch missing message keys, unknown
+   assets, unresolved tags, broken references, and page/registry slug mismatches.
+
+## Operations and release
+
+Maintainer procedures for deployment posture, branch protection, CI merge policy,
+release, rollback, and commit-SHA traceability live in
+[docs/operations.md](./docs/operations.md).
+
+Merges to `main` trigger GitHub Pages deployment via
+`.github/workflows/deploy.yml`, which builds `out/` with `make build-export` and
+publishes to the project site. See [docs/operations.md](./docs/operations.md) for
+required Pages settings, deploy check visibility on `main`, and commit-SHA
+traceability.
+
+`.github/workflows/ci.yml` remains the quality gate on pull requests and `main`
+pushes; it runs `make ci` only and does not replace or invoke the deploy
+workflow. Preview deployments for pull requests remain out of scope for Phase 1.
+
+See the [Actions tab](https://github.com/portpowered/ai-model-reference/actions)
+for CI and deploy run history on pull requests and `main`.
+
+## Quality Gates
+
+Merge policy, branch protection assumptions, and what contributors see on pull
+requests versus `main` pushes are documented in
+[docs/operations.md](./docs/operations.md) (Branch protection and CI status
+expectations). GitHub enforces required **ci** status on `main` through
+repository settings, not from files in this repo.
+
+### Fresh checkout
+
+On a clean clone with no gitignored build artifacts, the minimal setup is:
+
+```sh
+bun install --frozen-lockfile
+make ci
+```
+
+You do not need to run `fumadocs-mdx` manually. The repository does not commit
+`.source/` (Fumadocs MDX bindings) or `.next/`; the supported command scripts
+run `prepare:content-runtime` first and invoke `fumadocs-mdx` automatically
+where `.source/` is part of the command contract.
+
+The canonical derived-content bootstrap command is:
+
+```sh
+bun run prepare:content-runtime
+```
+
+It prepares shipped localized docs, the published docs registry manifest, graph
+registry runtime, registry runtime, and table registry runtime in one fixed
+order. Re-running it is safe; it refreshes the checked-in generated runtime
+artifacts in place when needed.
+
+For content pull requests, the supported local review-readiness proof is:
+
+```sh
+bun run doctor:content-pr
+```
+
+This maintainer-facing doctor flow is scoped to content-branch review readiness,
+not the full `make ci` gate. It proves four stages in order:
+
+1. preflight cleanliness check for tracked `src/content` plus the checked-in generated runtime modules owned by the preparation flow
+2. canonical content-runtime preparation through `bun run prepare:content-runtime`, including an immediate scoped drift proof for the tracked authoritative derived artifacts and a generated-source completeness/freshness proof for the full preparation contract
+3. narrow content validation (`validate-data` and `linkcheck`)
+4. final clean-tree proof for the same tracked scoped paths
+
+The tracked scope is intentionally limited to `src/content` plus the four
+authoritative preparation outputs that are committed to git:
+`shipped-localized-docs.generated.ts`,
+`graph-registry-runtime.generated.ts`,
+`registry-runtime.generated.ts`, and `table-registry.generated.ts`.
+`published-docs-registry.generated.ts` is still regenerated by
+`bun run prepare:content-runtime`, but it is gitignored, so the doctor treats it
+as part of the preparation command contract rather than the tracked clean-tree
+proof. If that deleted-route manifest or another generated runtime output is
+still stale after the supported preparation path, `bun run doctor:content-pr`
+now stops with a targeted generated-source completeness/freshness invariant
+failure instead of only surfacing generic dirty-path, validation, or linkcheck
+errors. Unrelated repository cleanup is left to the maintainer rather than
+performed automatically by the doctor flow.
+
+Use this command when you want one repeatable content-PR proof without manually
+remembering the generation and lightweight validation sequence. Use `make ci`
+when you need the full repository gate.
+
+### CI sequence
+
+GitHub Actions runs the same gate sequence on pull requests and pushes to
+`main`: install dependencies with `bun install --frozen-lockfile`, then
+`make ci` (see `.github/workflows/ci.yml`). No repository secrets are required
+for lint, typecheck, fast tests, manifest-scoped component coverage,
+build-contract tests, post-build integration tests, validate-data, and
+linkcheck. The baseline CI workflow
+(`.github/workflows/ci.yml`) does not invoke deploy or preview steps. GitHub
+Pages deployment runs separately via `.github/workflows/deploy.yml` on pushes to
+`main` (see [Operations and release](#operations-and-release)). PDF validation
+remains deferred to later phases.
+
+The root Makefile mirrors those CI-oriented checks locally. Run `make ci` from
+the repository root after `bun install --frozen-lockfile`; it runs, in order:
+
+1. `make lint` — Biome check (no auto-fix)
+2. `make typecheck` — generates Fumadocs MDX source, then `tsc --noEmit`
+3. `make test` — generates Fumadocs MDX source (when typecheck was skipped), then fast tests via `scripts/run-fast-tests.ts`
+4. `make coverage` — manifest-scoped reusable component coverage gate (same as `bun run coverage`)
+5. `make test-build-contract` — one production build contract and one GitHub Pages base-path export artifact contract (`bun run test:build-contract`)
+6. `make test-integration` — served export, built HTML, and production-server integration manifest (`bun run test:integration` / `scripts/run-production-integration-tests.ts`)
+7. `make validate-data` — registry and content validation
+8. `make linkcheck` — internal docs link validation (Fumadocs routes, module/glossary pages, anchors, MDX href components)
+
+Use `bun run generate:page-bundle` when adding canonical concept, glossary,
+module, model, paper, or training-regime pages, then run `make validate-data`
+before opening a pull request.
+
+Fumadocs writes generated MDX bindings under `.source/` (gitignored). Fresh
+checkouts do not include that directory; the `typecheck`, `test`,
+`test:build-contract`, `test:verify-contract`, `coverage`, `build`, and
+`linkcheck` command paths all invoke `fumadocs-mdx` after the shared
+`prepare:content-runtime` flow when `.source/` is required, so standalone
+`make typecheck`, `make test`, and `make linkcheck` succeed without a manual
+codegen step. That shared preparation flow also removes any existing `.source/`
+tree before regeneration so deleted or moved docs pages cannot survive as stale
+generated imports between runs.
+
+When you need to refresh the checked-in content-runtime artifacts directly, use
+`bun run prepare:content-runtime` rather than running the five runtime
+generation commands separately.
+
+When a planner or reviewer needs one narrow proof that a normal checkout can
+materialize the full generated runtime surface, run
+`make verify-content-runtime-completeness`. That target reruns the canonical
+`prepare:content-runtime` flow through the existing verifier, then fails
+non-zero if any required runtime module is missing or if its committed-versus-
+ignored git classification no longer matches the completeness contract.
+
+
+Individual targets:
+
+```sh
+make ci            # full gate sequence above
+make build         # prepare:content-runtime + fumadocs-mdx via package scripts, then next build + Phase 1 static route check
+make lint          # Biome check (no auto-fix)
+make format        # Biome format --write
+make typecheck     # prepare:content-runtime + fumadocs-mdx, then tsc --noEmit
+make test          # prepare:content-runtime + fumadocs-mdx, then fast tests
+make test-build-contract # consolidated build/export contract suites
+make test-system   # build/export contracts plus post-build integration tests
+make coverage      # prepare:content-runtime + fumadocs-mdx, manifest coverage gate
+make build-export  # prepare:content-runtime + fumadocs-mdx, static export to out/ + Phase 1 export route verification
+make verify-content-runtime-completeness # authoritative reviewer proof for generated runtime completeness
+make verify-export-routes # verify existing out/ artifact (requires build-export first)
+make verify-phase-1-ux # HTTP verification for Phase 1 reader routes and search (requires build)
+make verify-phase-1-built-app-convergence # batch-010 built-app gate with planner-facing evidence summary
+make verify-phase-1-follow-up-convergence # batch-011 follow-up gate with planner-facing evidence summary
+make verify-phase-1-github-pages-convergence # batch-014 GitHub Pages closure gate (validates out/ static export)
+make validate-data # registry and content validation
+make linkcheck     # prepare:content-runtime + fumadocs-mdx, internal docs link validation (also runs in make ci)
+make scaffold       # scaffold glossary/concept page bundles (pass ARGS='...')
+```
+
+Stub targets exist for later work and are not part of `make ci` or GitHub
+Actions:
+
+```sh
+make validate-pdf
+```
+
+### Phase 1 route and search UX verification
+
+**Prerequisites:** `make build` (production `.next/`), Bun dependencies
+installed, and Playwright Chromium for real browser checks (`npx playwright
+install chromium` once per machine).
+
+After `make build`, run the built-app verifier to codify the Phase 1 manual gate
+from `docs/temp/customer-ask.md` (home, search, glossary, tags, sample
+docs, live `/search` and header search for GQA, attention, and KV cache, plus
+`/api/search` for the same queries):
+
+```sh
+make verify-phase-1-ux
+# or
+bun run verify:phase-1-ux
+```
+
+The verifier requires a production build (`.next/`). If the build is missing,
+it exits with a clear message to run `make build` first—it does not start
+`next dev` by default.
+
+When `VERIFY_BASE_URL` is unset, the harness picks a free port on
+`127.0.0.1` in the 3100–3999 range (never port 3000), spawns
+`bun run start` on that port, and always tears down the child server on exit.
+Each HTTP check uses a per-request timeout of at most 10 seconds; server startup
+waits at most 30 seconds. Set `VERIFY_BASE_URL` to an already-running base URL
+(for example `http://127.0.0.1:3456`) to skip spawn and run checks against that
+server instead.
+
+On success the command prints a one-line summary and exits `0`; failures print
+route or query, HTTP status, and reason before exiting `1`. A healthy build
+completes the verifier in well under two minutes on a typical laptop, bounded
+by the configured timeouts.
+
+**Pass/fail interpretation:** Exit `0` means the production-built app satisfies
+the Phase 1 manual gate in `docs/temp/customer-ask.md`, including visible
+links to Grouped-Query Attention for GQA, attention, and KV cache on `/search`
+and in the header search dialog. Exit `1` catches the known **empty-results
+regression**: `make ci` and in-process search tests can pass while `next start`
+still shows an empty-only `/search` UI—this verifier fails in that case so
+convergence review does not rely on ad hoc browser sessions alone. Neither
+`make ci` nor GitHub Actions runs this verifier by default; run it locally or in
+convergence review after `make build`.
+
+**UX convergence scope:** One command exercises all eight Phase 1 reader routes
+over live HTTP against the production build. Failures print the request URL and a
+human-readable reason before exiting `1`.
+
+| Route | Pass | Fail (examples) |
+| --- | --- | --- |
+| `/docs/architecture`, `/docs/glossary`, `/docs/glossary/token`, `/docs/modules/grouped-query-attention` | Unified Fumadocs shell: primary nav, `nd-sidebar`, `nd-page`, populated Modules and Glossary sidebar, token glossary link | Split shell (missing `nd-sidebar`/`nd-page`), empty sidebar, legacy placeholder sidebar copy |
+| `/` | Model Atlas title, global header search trigger (`data-search`), bookmark link to `/search`, **no** redundant inline home search section | Duplicate "Search the reference" heading, `id="search"` section anchor, or inline `data-search` in the home article alongside header search |
+| `/search` | Manual-gate search page content markers | Missing expected search page copy or links |
+| `/tags`, `/tags/attention` | Primary site navigation plus real tag links to sample module, token glossary, and tag-scoped search (no placeholder copy) | Missing primary nav, placeholder/lorem copy, or required tag navigation links |
+| `/api/search`, built `/search`, header dialog | Live search returns GQA, attention, and KV cache results | Empty-only search UI or missing result links |
+
+Convergence checks run first (docs shell → home search entry → reader/tags
+navigation), then legacy route content markers, then `/api/search`, built
+`/search` Playwright checks, header search dialog, and keyboard shortcuts.
+
+**Customer-ask convergence reporting:** After the Phase 1 UX checks finish,
+the same command prints a structured **Customer-ask convergence report** with
+one line per batch-008 customer-ask check. Each row includes a stable `checkId`,
+human title, optional `route` or `query`, `pass` / `fail` / `uncertain` status,
+failure reason when applicable, and a `checklistRow` mapping to
+`docs/temp/checklist.md`. The report covers home/header polish on `/`,
+tag list styling on `/tags` and `/tags/attention`, search surface behavior on
+`/search`, the header search dialog, and `/api/search`, glossary presentation on
+`/docs/glossary/token`, and the canonical GQA module page on
+`/docs/modules/grouped-query-attention`.
+
+**Pass / fail / uncertain interpretation for loopback review:**
+
+| Outcome | Meaning | Exit code impact |
+| --- | --- | --- |
+| `pass` | Built app satisfies the customer-ask assertion | Non-blocking |
+| `fail` | Regression or missing batch-008 repair evidence | Command exits `1` |
+| `uncertain` | Check ran but needs manual follow-up (for example Command-K hover contrast or glossary footer hover pairing) | Non-blocking; record in convergence notes |
+
+The process exit code is `1` when **either** legacy Phase 1 UX verification fails
+**or** any customer-ask row is `fail`. Rows marked `uncertain` alone do not fail
+the command. Copy per-row statuses into loopback convergence notes so the
+ideafy planner can choose a narrow repair batch or Phase 1 stop-and-wait. See
+`factory/docs/phase-1-customer-ask-convergence-validator.md` for the full check
+id, route, and checklist-row inventory.
+
+**Batch-010 built-app convergence validator:** During batch-010 loopback, run
+the canonical built-app gate with planner-facing evidence that separates
+verifier command-path health from customer-ask row outcomes:
+
+```sh
+make verify-phase-1-built-app-convergence
+# or
+bun run verify:phase-1-built-app-convergence
+```
+
+This runs `make build` then `make verify-phase-1-ux` with `VERIFY_BASE_URL`
+explicitly unset, streams subprocess output to the terminal while capturing it
+for parsing, and prints a **Phase 1 batch-010 built-app convergence evidence
+summary** with `Recommendation` and `Rationale` lines. The process exits `1`
+when verifier command-path or any customer-ask row is `fail`; `uncertain`
+evidence is non-blocking. Canonical validation must not set `VERIFY_BASE_URL`.
+See `factory/docs/phase-1-built-app-convergence-validator.md` for
+prerequisites, report fields, exit semantics, and recommendation interpretation.
+
+**Batch-011 follow-up convergence validator:** After batch-011 follow-up repairs
+land, run the canonical follow-up gate with planner-facing evidence for the
+expanded customer-ask inventory:
+
+```sh
+make verify-phase-1-follow-up-convergence
+# or
+bun run verify:phase-1-follow-up-convergence
+```
+
+This runs `make build` then `make verify-phase-1-ux` with `VERIFY_BASE_URL`
+explicitly unset, streams subprocess output to the terminal while capturing it
+for parsing, and prints a **Phase 1 batch-011 follow-up convergence evidence
+summary** with `Recommendation` and `Rationale` lines. The process exits `1`
+when verifier command-path or any customer-ask row is `fail`; `uncertain`
+evidence is non-blocking. Prior batch-008/010 all-pass evidence is stale for
+this inventory and must be refreshed through this pass. See
+`factory/docs/phase-1-follow-up-customer-ask-convergence-validator.md` for
+prerequisites, check inventory, exit semantics, and loopback usage.
+
+**Batch-014 GitHub Pages convergence validator:** After batch-014 GitHub Pages
+repairs land, run the canonical static-export closure gate that validates the
+built `out/` artifact rather than only the `next start` spawned-server path:
+
+```sh
+make verify-phase-1-github-pages-convergence
+# or
+bun run verify:phase-1-github-pages-convergence
+```
+
+This runs `make build-export`, inspects the `out/` artifact, serves it from a
+loopback static file server, and re-runs Phase 1 search probes for GQA,
+attention, and KV cache plus representative reader-route markers against that
+static export. It prints a **Phase 1 batch-014 GitHub Pages convergence
+evidence summary** with `Recommendation` and `Rationale` lines. The process
+exits `1` when export-command-path, export-artifact, static-server-command-path,
+or phase-1-static-regression rows are `fail`; `uncertain` evidence is
+non-blocking. Prior built-app follow-up convergence evidence does not prove the
+GitHub Pages export path and must be refreshed through this pass. See
+`factory/docs/phase-1-github-pages-convergence-validator.md` for prerequisites,
+domain inventory, exit semantics, and loopback usage.
+
+Those GQA, attention, and KV cache queries are representative behavior probes,
+not a hidden page inventory. Critical canonical page coverage for export and
+search smoke is projected from the shared `critical-docs-smoke` contract.
+
+That contract derives its page set from the same published-docs workflow used
+elsewhere in the site:
+
+- `loadShippedLocalizedDocsPages` supplies the published canonical page set.
+- `resolvePublishedResourceTags` merges page frontmatter tags with registry
+  tags.
+- the published-docs registry/discovery manifest remains the supported route
+  and page inventory surface for those published pages.
+
+In practice, a normal canonical page addition should enter critical-doc smoke
+automatically when it is published through the supported workflow and matches an
+existing critical rule. For example, a published module page with the merged
+`attention` tag or a published glossary page with the merged
+`token-to-probability-chain` tag is picked up without editing separate route or
+search smoke arrays.
+
+Manual smoke-test edits are still expected only when behavior changes rather
+than page count changes. Typical examples are adding a new representative
+search query, changing the critical-rule definitions themselves, introducing a
+new export-facing route expectation, or expanding smoke coverage to a new
+behavior class.
+
+Keep the ownership boundary narrow: contributor docs or canonical page additions
+should not reopen the active built-app or GitHub Pages static-export repair
+tracks unless the change exposes a concrete customer-visible gap in those
+verifiers.
+
+The verifier also exercises the built `/search` page, the header search dialog
+(via the search trigger button), and keyboard shortcuts on the home page:
+**Meta+K** (Cmd+K on macOS) and **Control+K** (Windows/Linux). Each shortcut
+must open the header search dialog with a visible search textbox. Real runs
+need Playwright Chromium once per machine (`npx playwright install chromium`).
+
+If your environment cannot reliably automate OS keyboard shortcuts in CI, set
+`VERIFY_SEARCH_SHORTCUT_SKIP=1` to skip automated shortcut checks. When
+skipping, reviewers must run this two-step manual check after
+`make verify-phase-1-ux`:
+
+1. Open the built app home page (`/`).
+2. Press **Cmd+K** (macOS) or **Ctrl+K** (Windows/Linux) and confirm the
+   header search dialog opens with a visible search textbox; repeat for the
+   other modifier if your platform supports both.
+
+For static HTTP fixture tests, set `VERIFY_SEARCH_SHORTCUT_STUB=pass` alongside
+the other `VERIFY_*_STUB=pass` env vars documented in the verifier tests.
+
+GitHub Pages deployment runs in `.github/workflows/deploy.yml` on `main` pushes
+only; neither `.github/workflows/ci.yml` nor `make ci` invokes deploy or preview
+steps.
+Manifest-scoped component coverage runs in `make ci` after `make test` (see
+[Reusable component coverage](#reusable-component-coverage)).
+
+### Fresh-checkout CI proof
+
+During `make test` (and therefore `make ci`), `src/tests/ci/fresh-checkout-typecheck.test.ts`
+proves the typecheck gate succeeds when `.source/` is absent. Instead of
+deleting gitignored artifacts in your working tree, the test provisions an
+isolated detached git worktree at HEAD, runs `bun install --frozen-lockfile`
+inside it, confirms `.source/` is missing, and runs the typecheck gate only in
+that worktree. This models a fresh clone without mutating your main workspace
+`node_modules`, `.next/`, or generated `.source/`.
+
+Equivalent Bun scripts are in `package.json` (`bun run lint`, `bun run build`,
+`bun run scaffold:doc-page`, and so on).
+
+## Agent Factory Loop
+
+The project uses an agent factory called `you` to manage long-running work.
+Only the PLANNER/meta-planner role should use `you`.
+
+The ideafy meta-planner submits batches of `idea` work. Each idea is converted
+to a PRD, a worktree task, implementation work, review, and eventual completion.
+The loop is documented in:
+
+* [factory/workstations/ideafy/AGENTS.md](./factory/workstations/ideafy/AGENTS.md)
+* [factory/factory.json](./factory/factory.json)
+* [factory/docs/batch-inputs.md](./factory/docs/batch-inputs.md)
+* [factory/docs/batch-input-example.json](./factory/docs/batch-input-example.json)
+
+Maintainers can refresh current repo-local dispatch evidence with:
+
+```bash
+make planner-conflict-hotspots
+```
+
+That command reads current `git log --name-only` history plus tracked worktree
+state and prints a concise planner-facing hotspot snapshot, including a short
+safe-next-lanes hint, without relying on handwritten temp notes.
+
+Project-level meta state lives in:
+
+```txt
+docs/temp/progress.txt
+docs/temp/checklist.md
+```

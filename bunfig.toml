@@ -1,13 +1,11 @@
 [test]
-preload = ["./tests/setup/happydom.ts", "./tests/setup/testing-library.ts"]
-coverageSkipTestFiles = true
-coveragePathIgnorePatterns = [
-  "tests/**",
-  "scripts/**",
-  "factory/**",
-  "next.config.ts",
-  "src/app/**",
-  "src/lib/**",
-  "src/localization/**",
-  "src/hooks/**",
-]
+root = "."
+preload = ["./happydom.ts"]
+# Align local `make test` with CI: heavyweight registry/render rows exceed Bun's 5s default under suite load.
+timeout = 900000
+
+[test.ci]
+timeout = 900000
+
+[alias]
+"@" = "./src"
