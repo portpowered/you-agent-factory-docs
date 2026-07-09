@@ -99,8 +99,11 @@ Preserve existing `concept` rather than inventing a parallel concept kind.
 Empty CLI collection definitions need: collection id + matching route slug,
 aligned frontmatter/registry kinds, empty `starterSlugs`, resolvable
 browse/index message keys, and inventory verification that permits empty
-starters for those four ids only. Do not force empty CLI collections into
-browse/sidebar section order until a dedicated wiring story owns that surface.
+starters for those four ids only. Default browse hub order is owned by
+`rewrite-browse-indexes` via `DOCS_BROWSE_COLLECTION_IDS` /
+`DOCS_BROWSE_SECTION_ORDER` (guides, concepts, techniques, documentation).
+Keep Atlas collections registered until sibling delete/retarget lanes remove
+them, but do not reintroduce them as default browse sections.
 
 Docs source slug acceptance must recognize the four CLI route prefixes via
 collection `routeSlug` matching. Keep `source.ts` and

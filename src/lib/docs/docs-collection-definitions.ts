@@ -31,7 +31,8 @@ function collectionMessageKeys(
  * Rewrite-era CLI collections (`guides`, `concepts`, `techniques`,
  * `documentation`) ship with empty starter/featured slug lists. Remaining
  * Atlas collections stay registered until sibling delete/retarget lanes own
- * their removal; browse order remains on `DOCS_BROWSE_COLLECTION_IDS`.
+ * their removal. Default browse order is the four CLI ids in
+ * `DOCS_BROWSE_COLLECTION_IDS`.
  */
 export const DOCS_COLLECTION_DEFINITIONS = [
   {

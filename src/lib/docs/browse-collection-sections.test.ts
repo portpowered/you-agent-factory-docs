@@ -3,13 +3,31 @@ import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   buildBrowseCollectionSections,
+  buildDocsBrowseSections,
   DOCS_BROWSE_COLLECTION_IDS,
+  DOCS_BROWSE_SECTION_ORDER,
 } from "@/lib/docs/browse-collection-sections";
-import { getDocsCollectionDefinition } from "@/lib/docs/docs-collection-definitions";
+import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import { buildLocalizedRoute, defaultLocale } from "@/lib/i18n/locale-routing";
 
+const ATLAS_BROWSE_SECTION_IDS = [
+  "models",
+  "modules",
+  "papers",
+  "training",
+  "systems",
+  "glossary",
+] as const;
+
 describe("browse collection sections", () => {
-  test("builds sections in the current browse order from collection definitions", async () => {
+  test("defaults browse collection order to the four CLI collections", () => {
+    expect(DOCS_BROWSE_COLLECTION_IDS).toEqual([...CLI_DOCS_COLLECTION_IDS]);
+    expect(
+      DOCS_BROWSE_SECTION_ORDER.map((sectionRef) => sectionRef.id),
+    ).toEqual([...CLI_DOCS_COLLECTION_IDS]);
+  });
+
+  test("builds sections in the CLI browse order from collection definitions", async () => {
     const messages = await loadUiMessages();
     const pages = await loadShippedLocalizedDocsPages(defaultLocale);
     const sections = buildBrowseCollectionSections({
@@ -22,17 +40,49 @@ describe("browse collection sections", () => {
       ...DOCS_BROWSE_COLLECTION_IDS,
     ]);
     expect(sections.map((section) => section.title)).toEqual([
+      messages.browseIndex.guidesSectionTitle,
+      messages.browseIndex.conceptsSectionTitle,
+      messages.browseIndex.techniquesSectionTitle,
+      messages.browseIndex.documentationSectionTitle,
+    ]);
+    for (const atlasId of ATLAS_BROWSE_SECTION_IDS) {
+      expect(sections.some((section) => section.id === atlasId)).toBe(false);
+    }
+  });
+
+  test("buildDocsBrowseSections matches the CLI section order without Atlas headings", async () => {
+    const messages = await loadUiMessages();
+    const pages = await loadShippedLocalizedDocsPages(defaultLocale);
+    const sections = buildDocsBrowseSections({
+      pages,
+      locale: defaultLocale,
+      messages,
+    });
+
+    expect(sections.map((section) => section.id)).toEqual([
+      ...CLI_DOCS_COLLECTION_IDS,
+    ]);
+    expect(sections.map((section) => section.title)).toEqual([
+      messages.browseIndex.guidesSectionTitle,
+      messages.browseIndex.conceptsSectionTitle,
+      messages.browseIndex.techniquesSectionTitle,
+      messages.browseIndex.documentationSectionTitle,
+    ]);
+    for (const atlasTitle of [
       messages.browseIndex.modelsSectionTitle,
       messages.browseIndex.modulesSectionTitle,
-      messages.browseIndex.conceptsSectionTitle,
       messages.browseIndex.papersSectionTitle,
       messages.browseIndex.trainingSectionTitle,
       messages.browseIndex.systemsSectionTitle,
       messages.browseIndex.glossarySectionTitle,
-    ]);
+    ] as const) {
+      expect(sections.some((section) => section.title === atlasTitle)).toBe(
+        false,
+      );
+    }
   });
 
-  test("filters pages by each collection frontmatter kind and preserves starter priority", async () => {
+  test("keeps empty CLI starter lists so browse sections render without featured pages", async () => {
     const messages = await loadUiMessages();
     const pages = await loadShippedLocalizedDocsPages(defaultLocale);
     const sections = buildBrowseCollectionSections({
@@ -41,35 +91,12 @@ describe("browse collection sections", () => {
       messages,
     });
 
-    const modelsSection = sections.find((section) => section.id === "models");
-    expect(modelsSection?.entries[0]?.slug).toBe("models/gpt-3");
-
-    const modulesSection = sections.find((section) => section.id === "modules");
-    expect(modulesSection?.entries.map((entry) => entry.slug)).toEqual([
-      "modules/grouped-query-attention",
-      "modules/attention",
-      "modules/swiglu",
-      "modules/relu",
-      "modules/multi-head-attention",
-      "modules/feed-forward-network",
-    ]);
-
-    const glossarySection = sections.find(
-      (section) => section.id === "glossary",
-    );
-    const glossaryStarterSlugs = [
-      ...getDocsCollectionDefinition("glossary").starterSlugs,
-    ];
-    expect(glossarySection?.entries[0]?.slug).toBe(glossaryStarterSlugs[0]);
-    expect(glossarySection?.entries.map((entry) => entry.slug)).not.toContain(
-      "glossary/kv-cache",
-    );
-    expect(glossarySection?.entries.map((entry) => entry.slug)).not.toContain(
-      "glossary/world-model",
-    );
+    for (const section of sections) {
+      expect(section.entries).toEqual([]);
+    }
   });
 
-  test("resolves browse link hrefs for docs collections and glossary index", async () => {
+  test("resolves browse link hrefs to matching CLI section index routes", async () => {
     const messages = await loadUiMessages();
     const pages = await loadShippedLocalizedDocsPages(defaultLocale);
     const sections = buildBrowseCollectionSections({
@@ -78,15 +105,38 @@ describe("browse collection sections", () => {
       messages,
     });
 
-    expect(sections.find((section) => section.id === "models")?.linkHref).toBe(
-      buildLocalizedRoute(
-        { surface: "docs-page", slug: "models" },
-        defaultLocale,
-      ),
+    for (const collectionId of CLI_DOCS_COLLECTION_IDS) {
+      expect(
+        sections.find((section) => section.id === collectionId)?.linkHref,
+      ).toBe(
+        buildLocalizedRoute(
+          { surface: "docs-page", slug: collectionId },
+          defaultLocale,
+        ),
+      );
+    }
+  });
+
+  test("resolves localized browse link hrefs for CLI section indexes", async () => {
+    const messages = await loadUiMessages("vi");
+    const pages = await loadShippedLocalizedDocsPages("vi");
+    const sections = buildBrowseCollectionSections({
+      pages,
+      locale: "vi",
+      messages,
+    });
+
+    expect(sections.find((section) => section.id === "guides")?.linkHref).toBe(
+      buildLocalizedRoute({ surface: "docs-page", slug: "guides" }, "vi"),
     );
     expect(
-      sections.find((section) => section.id === "glossary")?.linkHref,
-    ).toBe(buildLocalizedRoute({ surface: "glossary-index" }, defaultLocale));
+      sections.find((section) => section.id === "documentation")?.linkHref,
+    ).toBe(
+      buildLocalizedRoute(
+        { surface: "docs-page", slug: "documentation" },
+        "vi",
+      ),
+    );
   });
 
   test("resolves browse message keys for section descriptions and link labels", async () => {
@@ -106,6 +156,14 @@ describe("browse collection sections", () => {
     );
     expect(conceptsSection?.linkLabel).toBe(
       messages.browseIndex.conceptsSectionLinkLabel,
+    );
+
+    const guidesSection = sections.find((section) => section.id === "guides");
+    expect(guidesSection?.description).toBe(
+      messages.browseIndex.guidesSectionDescription,
+    );
+    expect(guidesSection?.linkLabel).toBe(
+      messages.browseIndex.guidesSectionLinkLabel,
     );
   });
 });

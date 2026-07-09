@@ -32,44 +32,24 @@ import {
 } from "./fixture";
 
 const AI_BROWSE_SECTION_LABELS = [
-  "Models",
-  "Model Types",
-  "Modules",
-  "Module Components",
+  "Guides",
   "Concepts",
-  "Inference",
-  "Papers",
-  "Training",
-  "Systems",
-  "Glossary",
+  "Techniques",
+  "Documentation",
 ] as const;
 
-const AI_BROWSE_STARTER_HREFS = [
-  "/docs/models/gpt-3",
-  "/docs/glossary/world-model",
-  "/docs/modules/grouped-query-attention",
-  "/docs/glossary/softmax",
-  // Concepts keep an empty starter list for the CLI taxonomy rewrite; browse
-  // falls back to title-sorted published concept pages (activation first).
-  "/docs/concepts/activation",
-  "/docs/glossary/temperature",
-  "/docs/papers/deepseek-v4",
-  "/docs/training/on-policy-distillation",
-  "/docs/systems/deployment",
-  "/docs/glossary/token",
+const AI_BROWSE_SECTION_INDEX_HREFS = [
+  "/docs/guides",
+  "/docs/concepts",
+  "/docs/techniques",
+  "/docs/documentation",
 ] as const;
 
 const AI_BROWSE_HEADING_IDS = [
-  "models-heading",
-  "model-types-heading",
-  "modules-heading",
-  "module-components-heading",
+  "guides-heading",
   "concepts-heading",
-  "inference-heading",
-  "papers-heading",
-  "training-heading",
-  "systems-heading",
-  "glossary-heading",
+  "techniques-heading",
+  "documentation-heading",
 ] as const;
 
 const AI_SIDEBAR_FOLDER_NAMES = [
@@ -146,7 +126,7 @@ function getTopLevelFolderNames(): string[] {
 
 describe("AI shell behavior parity after non-AI fixture proof", () => {
   describe("browse index", () => {
-    test("keeps collection section order and representative starter entries", async () => {
+    test("keeps CLI collection section order and section index links", async () => {
       const html = renderToStaticMarkup(await renderBrowseIndexPage());
 
       for (const label of AI_BROWSE_SECTION_LABELS) {
@@ -162,18 +142,15 @@ describe("AI shell behavior parity after non-AI fixture proof", () => {
         );
       }
 
-      for (const href of AI_BROWSE_STARTER_HREFS) {
+      for (const href of AI_BROWSE_SECTION_INDEX_HREFS) {
         expect(html).toContain(`href="${href}"`);
       }
 
       expect(DOCS_BROWSE_COLLECTION_IDS).toEqual([
-        "models",
-        "modules",
+        "guides",
         "concepts",
-        "papers",
-        "training",
-        "systems",
-        "glossary",
+        "techniques",
+        "documentation",
       ]);
     });
   });

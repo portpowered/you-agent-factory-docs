@@ -5,7 +5,7 @@ import { getConceptById } from "@/lib/content/registry-runtime";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   buildDocsBrowseSections,
-  DOCS_BROWSE_SECTION_ORDER,
+  type DocsBrowseSectionRef,
 } from "@/lib/docs/browse-collection-sections";
 import {
   buildGlossaryDerivedBrowseSections,
@@ -15,6 +15,18 @@ import {
 import { defaultLocale } from "@/lib/i18n/locale-routing";
 import { buildSearchDocuments } from "@/lib/search/build-documents";
 import { docsSearchApi } from "@/lib/search/search-server";
+
+/**
+ * Explicit Atlas-era browse order for glossary exclusion unit tests.
+ * Default `DOCS_BROWSE_SECTION_ORDER` is the CLI taxonomy and no longer
+ * includes glossary or glossary-derived sections.
+ */
+const ATLAS_GLOSSARY_BROWSE_SECTION_ORDER = [
+  { kind: "glossary-derived", id: "model-types" },
+  { kind: "glossary-derived", id: "module-components" },
+  { kind: "glossary-derived", id: "inference" },
+  { kind: "collection", id: "glossary" },
+] as const satisfies readonly DocsBrowseSectionRef[];
 
 const MODEL_TYPE_GLOSSARY_SLUGS = [
   "glossary/world-model",
@@ -141,6 +153,7 @@ describe("glossary derived browse sections", () => {
       pages,
       locale: defaultLocale,
       messages,
+      sectionOrder: ATLAS_GLOSSARY_BROWSE_SECTION_ORDER,
     });
 
     const glossarySection = sections.find(
@@ -163,6 +176,7 @@ describe("glossary derived browse sections", () => {
       pages,
       locale: defaultLocale,
       messages,
+      sectionOrder: ATLAS_GLOSSARY_BROWSE_SECTION_ORDER,
     });
 
     const glossarySection = sections.find(
@@ -185,12 +199,11 @@ describe("glossary derived browse sections", () => {
       pages,
       locale: defaultLocale,
       messages,
+      sectionOrder: ATLAS_GLOSSARY_BROWSE_SECTION_ORDER,
     });
 
     expect(sections.map((section) => section.id)).toEqual(
-      DOCS_BROWSE_SECTION_ORDER.map((sectionRef) =>
-        sectionRef.kind === "collection" ? sectionRef.id : sectionRef.id,
-      ),
+      ATLAS_GLOSSARY_BROWSE_SECTION_ORDER.map((sectionRef) => sectionRef.id),
     );
 
     const glossarySection = sections.find(

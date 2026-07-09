@@ -8,7 +8,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
 * `src/lib/docs/browse-collection-sections.ts`
-  Collection-driven browse sections; AI order comes from `DOCS_BROWSE_COLLECTION_IDS`.
+  Collection-driven browse sections; default order is the four CLI collections
+  from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
+  `DOCS_BROWSE_SECTION_ORDER`. Pass an explicit `sectionOrder` when a test or
+  fixture still needs Atlas or glossary-derived browse sections.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
 * `src/lib/navigation/shell-collection-page-tree.ts`
