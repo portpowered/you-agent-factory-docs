@@ -15,9 +15,13 @@
       "title": "Install",
       "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system."
     },
+    "firstYou": {
+      "title": "First You",
+      "body": "Start a factory so the runtime is live before you submit work. Use a named run for a concrete goal, or start the default factory."
+    },
     "stepsOrWorkflow": {
       "title": "Steps Or Workflow",
-      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. The install commands are above; first-you and first-submit commands land in the following quickstart steps."
+      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. Install and first-you commands are above; first-submit commands land in the next quickstart step."
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
@@ -35,11 +39,17 @@
   },
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
-    "installWindowsLabel": "Windows (PowerShell)"
+    "installWindowsLabel": "Windows (PowerShell)",
+    "firstYouNamedRunLabel": "Named run",
+    "firstYouDefaultStartLabel": "Default factory start",
+    "firstYouSessionListLabel": "Confirm a live factory"
   },
   "callouts": {
     "installDeepDive": {
       "body": "These commands cover a basic install. OS-specific edge cases, custom install locations, and pinned versions live on the install deep-dive; you do not need that page open to finish a standard install."
+    },
+    "firstYouSessionCheck": {
+      "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."
     }
   }
 }
