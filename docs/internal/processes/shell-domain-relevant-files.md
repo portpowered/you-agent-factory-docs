@@ -58,7 +58,8 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Localized CLI section index routes mirroring the default-locale pattern.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   CLI `guidesIndex` / `conceptsIndex` / `techniquesIndex` / `documentationIndex`
-  empty-state copy (no Model Atlas / Browse the Atlas / the atlas phrasing).
+  empty-state copy and `browseIndex` hub title/description / CLI section blurbs
+  (no Model Atlas / Browse the Atlas / the atlas phrasing).
 * `src/lib/navigation/docs-sidebar-collection-verification.test.ts`
   AI sidebar folder order, grouping labels, and representative links.
 * `src/tests/search/search-behavior-parity.test.ts`

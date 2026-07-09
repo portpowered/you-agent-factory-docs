@@ -87,8 +87,8 @@
     "onThisPageBrowse": "Duyệt"
   },
   "browseIndex": {
-    "title": "Duyệt Atlas",
-    "description": "Hãy bắt đầu từ loại nội dung mà bạn đã biết: một mô hình, một module, một khái niệm, hoặc một thuật ngữ. Trang này chỉ bạn đến đúng phần của bộ tham chiếu và gợi ý vài trang mở đầu hữu ích.",
+    "title": "Duyệt",
+    "description": "Hãy bắt đầu từ loại bộ sưu tập bạn cần: hướng dẫn, khái niệm, kỹ thuật, hoặc tài liệu. Trang này chỉ bạn đến đúng phần của bộ tham chiếu và gợi ý vài trang mở đầu hữu ích.",
     "quickRoutesTitle": "Lối vào nhanh",
     "quickRoutesDescription": "Dùng các điểm vào này khi bạn biết cách muốn khám phá, nhưng chưa biết chính xác trang nào.",
     "searchRouteDescription": "Nhảy thẳng tới tiêu đề, tên gọi khác, hoặc thẻ khi bạn đã có sẵn một thuật ngữ.",

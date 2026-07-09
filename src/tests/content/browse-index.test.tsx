@@ -55,14 +55,46 @@ function headingIdPosition(html: string, headingId: string): number {
   return position;
 }
 
+const ATLAS_PRODUCT_COPY =
+  /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
+
+const CLI_BROWSE_SECTION_MESSAGE_KEYS = [
+  "guidesSectionTitle",
+  "guidesSectionDescription",
+  "guidesSectionLinkLabel",
+  "conceptsSectionTitle",
+  "conceptsSectionDescription",
+  "conceptsSectionLinkLabel",
+  "techniquesSectionTitle",
+  "techniquesSectionDescription",
+  "techniquesSectionLinkLabel",
+  "documentationSectionTitle",
+  "documentationSectionDescription",
+  "documentationSectionLinkLabel",
+] as const;
+
 describe("browse index messages", () => {
   it("loads localized copy for the browse page", async () => {
     const messages = await loadUiMessages();
-    expect(messages.browseIndex.title).toBe("Browse the Atlas");
+    expect(messages.browseIndex.title).toBe("Browse");
     expect(messages.browseIndex.description.length).toBeGreaterThan(0);
     expect(
       messages.browseIndex.modelsSectionDescription.length,
     ).toBeGreaterThan(0);
+  });
+
+  it("keeps browse hub and CLI section copy free of Model Atlas product phrasing", async () => {
+    for (const locale of ["en", "ja", "vi", "zh-CN"] as const) {
+      const messages = await loadUiMessages(locale);
+      const { browseIndex } = messages;
+
+      expect(browseIndex.title).not.toMatch(ATLAS_PRODUCT_COPY);
+      expect(browseIndex.description).not.toMatch(ATLAS_PRODUCT_COPY);
+
+      for (const key of CLI_BROWSE_SECTION_MESSAGE_KEYS) {
+        expect(browseIndex[key]).not.toMatch(ATLAS_PRODUCT_COPY);
+      }
+    }
   });
 });
 
@@ -173,7 +205,8 @@ describe("browse index page render", () => {
     const page = await renderBrowseIndexPage("vi");
     const html = renderToStaticMarkup(page);
 
-    expect(html).toContain("Duyệt Atlas");
+    expect(html).toContain("Duyệt");
+    expect(html).not.toContain("Duyệt Atlas");
     expect(html).toContain('href="/vi/search"');
     expect(html).toContain('href="/vi/docs/glossary"');
     expect(html).toContain('href="/vi/tags"');
@@ -262,7 +295,8 @@ describe("browse index page render", () => {
       });
       const html = renderToStaticMarkup(page);
 
-      expect(html).toContain("Browse the Atlas");
+      expect(html).toContain("Browse");
+      expect(html).not.toContain("Browse the Atlas");
       expect(html).not.toContain("Activation Functions Graph Map");
     } finally {
       process.env.NEXT_STATIC_EXPORT = previousStaticExport;

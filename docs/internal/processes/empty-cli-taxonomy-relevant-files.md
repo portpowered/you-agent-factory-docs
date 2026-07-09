@@ -35,6 +35,9 @@ free of Model Atlas / “Browse the Atlas” / “the atlas” product phrasing 
 locale equivalents such as アトラス, Duyệt Atlas, 浏览图谱). Assert those
 message fields directly — `DocsIndexEmptyState` still mounts `SearchTrigger`,
 which may retain residual Atlas search chrome outside this lane.
+`browseIndex.title` / `description` and CLI section
+`*SectionTitle` / `*SectionDescription` / `*SectionLinkLabel` keys must follow
+the same no-Model-Atlas rule across en/ja/vi/zh-CN.
 Sidebar section order may still include residual Atlas folders until a later
 sidebar wiring batch; empty CLI collections remain inventory-first so consumers
 can look them up without featuring placeholder pages.

@@ -87,8 +87,8 @@
     "onThisPageBrowse": "Browse"
   },
   "browseIndex": {
-    "title": "Browse the Atlas",
-    "description": "Start from the kind of thing you already know: a model, a module, a concept, or a glossary term. This page points you to the right part of the reference and gives a few strong starting pages.",
+    "title": "Browse",
+    "description": "Start from the kind of collection you need: guides, concepts, techniques, or documentation. This page points you to the right part of the reference and gives a few strong starting pages.",
     "quickRoutesTitle": "Quick routes",
     "quickRoutesDescription": "Use these entry points when you know how you want to explore, but not the exact page yet.",
     "searchRouteDescription": "Jump straight to a title, alias, or tag when you already have a term in mind.",
