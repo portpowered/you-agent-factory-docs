@@ -34,6 +34,10 @@ function toImportName(fileName: string): string {
 }
 
 function readSortedGraphFiles(graphsRoot: string): string[] {
+  if (!existsSync(graphsRoot)) {
+    return [];
+  }
+
   return readdirSync(graphsRoot)
     .filter((entry) => entry.endsWith(".json"))
     .sort();

@@ -86,6 +86,14 @@ Required `make check` / `make test` / `make build` must not invoke deleted Atlas
 - `006` removes remaining Atlas feature packages/routes
 - `007` proves `make check` / `make test` / `make build` end-to-end
 
+
+## Empty collection directories in git
+
+After clearing Atlas registry/docs collections, keep empty section directories in
+git with `.gitkeep` (for example `src/content/registry/graphs/.gitkeep`). CI
+clones omit untracked empty dirs; `generate-graph-registry-runtime` also
+tolerates a missing graphs root by emitting an empty runtime.
+
 ## Related
 
 - [ci-deploy-foundation-relevant-files.md](./ci-deploy-foundation-relevant-files.md) — required make targets must not re-chain Atlas verifiers
