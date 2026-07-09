@@ -1,3 +1,8 @@
+/**
+ * Page-owned render proof for concepts/statistical-process-control-graphs.
+ * Colocated under the page bundle so audit:canonical-page-surface stays
+ * within-budget for this ordinary concept lane.
+ */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
