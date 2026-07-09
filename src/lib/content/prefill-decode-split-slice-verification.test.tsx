@@ -101,7 +101,9 @@ describe("prefill/decode split slice verification (prefill-decode-split-concept-
     );
 
     expect(html.toLowerCase()).toContain("prefill/decode split");
-    expect(html).toContain("serving layout");
+    // "serving" may be auto-linked via tag.inference aliases in rendered HTML.
+    expect(html).toContain(" layout");
+    expect(html).toContain('href="/tags/inference"');
     expect(html).toContain('data-testid="curated-related-docs"');
     expect(html).toContain('href="/docs/concepts/kv-cache"');
     expect(html).toContain('href="/docs/concepts/prefill"');
