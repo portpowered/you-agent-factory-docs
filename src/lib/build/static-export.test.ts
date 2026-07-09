@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  ensureStaticExportParams,
   GITHUB_PAGES_BASE_PATH_ENV,
   isStaticExportBuild,
   normalizeGitHubPagesBasePath,
@@ -75,5 +76,31 @@ describe("static export build mode", () => {
       basePath: "/ai-model-reference",
       assetPrefix: "/ai-model-reference",
     });
+  });
+
+  test("keeps real generateStaticParams when non-empty", () => {
+    expect(
+      ensureStaticExportParams(
+        [{ locale: "vi", slug: "post" }],
+        { locale: "vi", slug: "placeholder" },
+        { [STATIC_EXPORT_ENV]: "1" },
+      ),
+    ).toEqual([{ locale: "vi", slug: "post" }]);
+  });
+
+  test("allows empty generateStaticParams outside static export", () => {
+    expect(
+      ensureStaticExportParams([], { locale: "vi", slug: "placeholder" }, {}),
+    ).toEqual([]);
+  });
+
+  test("emits a placeholder param when static export would otherwise be empty", () => {
+    expect(
+      ensureStaticExportParams(
+        [],
+        { locale: "vi", slug: "placeholder" },
+        { [STATIC_EXPORT_ENV]: "1" },
+      ),
+    ).toEqual([{ locale: "vi", slug: "placeholder" }]);
   });
 });

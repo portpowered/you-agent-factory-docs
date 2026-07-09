@@ -46,12 +46,13 @@ test-integration:
 coverage:
 	bun run coverage
 
+# CI / Pages contract: static export that emits out/ for upload-pages-artifact.
+# Reuses package.json build:export (NEXT_STATIC_EXPORT). Atlas route verifiers are
+# not chained here — see build-export / story 003 for opt-in legacy checks.
 build:
-	bun run build
-	bun ./scripts/verify-phase-1-static-routes.ts
-	bun ./scripts/verify-grouped-query-attention-built-route.ts
-	bun ./scripts/verify-docs-footer-hover-built-route.ts
+	bun run build:export
 
+# Opt-in export path with Phase 1 export route/search verifiers (not required by CI).
 build-export:
 	bun run build:export
 	bun ./scripts/verify-phase-1-export-routes.ts
