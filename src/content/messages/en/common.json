@@ -202,7 +202,7 @@
     "description": "Published concept pages that explain broader ideas spanning many models and modules, such as architecture patterns, quantization, and long-context tradeoffs.",
     "listLabel": "Concept entries",
     "emptyTitle": "No concept entries yet",
-    "emptyDescription": "Published concept pages will appear here once they are added to the atlas. Return home or open Browse the Atlas to explore models, modules, and glossary pages in the meantime.",
+    "emptyDescription": "Published concept pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "guidesIndex": {
@@ -210,7 +210,7 @@
     "description": "Published guide pages that walk through practical CLI workflows and how to apply the reference in day-to-day work.",
     "listLabel": "Guide entries",
     "emptyTitle": "No guide entries yet",
-    "emptyDescription": "Published guide pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyDescription": "Published guide pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "techniquesIndex": {
@@ -218,7 +218,7 @@
     "description": "Published technique pages that explain named methods and practices you can apply across CLI workflows and documentation tasks.",
     "listLabel": "Technique entries",
     "emptyTitle": "No technique entries yet",
-    "emptyDescription": "Published technique pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyDescription": "Published technique pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "documentationIndex": {
@@ -226,7 +226,7 @@
     "description": "Published documentation pages covering reference material for the CLI surface, including contracts, conventions, and supporting detail.",
     "listLabel": "Documentation entries",
     "emptyTitle": "No documentation entries yet",
-    "emptyDescription": "Published documentation pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyDescription": "Published documentation pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "papersIndex": {

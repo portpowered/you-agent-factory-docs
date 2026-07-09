@@ -30,6 +30,11 @@ Live section index routes for guides/concepts/techniques/documentation live
 under `src/app/(site)/docs/{id}/page.tsx` and
 `src/app/[locale]/docs/{id}/page.tsx`, each calling
 `renderSectionCollectionIndexPage` with matching `*Index` message keys.
+CLI `*Index.emptyTitle` / `emptyDescription` / `emptyHomeLink` copy must stay
+free of Model Atlas / “Browse the Atlas” / “the atlas” product phrasing (and
+locale equivalents such as アトラス, Duyệt Atlas, 浏览图谱). Assert those
+message fields directly — `DocsIndexEmptyState` still mounts `SearchTrigger`,
+which may retain residual Atlas search chrome outside this lane.
 Sidebar section order may still include residual Atlas folders until a later
 sidebar wiring batch; empty CLI collections remain inventory-first so consumers
 can look them up without featuring placeholder pages.

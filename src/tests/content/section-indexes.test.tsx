@@ -79,6 +79,9 @@ describe("CLI section index messages", () => {
   });
 });
 
+const CLI_EMPTY_STATE_ATLAS_PHRASING =
+  /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
+
 describe("CLI section index page render", () => {
   for (const section of CLI_SECTION_INDEX_CASES) {
     it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
@@ -93,6 +96,16 @@ describe("CLI section index page render", () => {
       expect(html).toContain(indexMessages.emptyHomeLink);
       expect(html).toContain('href="/"');
       expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+      // Empty-state copy only — SearchTrigger may still carry residual Atlas search chrome.
+      expect(indexMessages.emptyTitle).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyDescription).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyHomeLink).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
     });
   }
 });
@@ -108,7 +121,11 @@ describe("localized CLI section index page render", () => {
 
     expect(html).toContain(messages.guidesIndex.title);
     expect(html).toContain(messages.guidesIndex.emptyTitle);
+    expect(html).toContain(messages.guidesIndex.emptyDescription);
     expect(html).toContain('href="/vi"');
+    expect(messages.guidesIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
   });
 
   it("renders the japanese techniques index with localized title and empty-state copy", async () => {
@@ -121,7 +138,11 @@ describe("localized CLI section index page render", () => {
 
     expect(html).toContain(messages.techniquesIndex.title);
     expect(html).toContain(messages.techniquesIndex.emptyTitle);
+    expect(html).toContain(messages.techniquesIndex.emptyDescription);
     expect(html).toContain('href="/ja"');
+    expect(messages.techniquesIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
   });
 
   it("renders the vietnamese documentation index with localized title and empty-state copy", async () => {
@@ -134,7 +155,11 @@ describe("localized CLI section index page render", () => {
 
     expect(html).toContain(messages.documentationIndex.title);
     expect(html).toContain(messages.documentationIndex.emptyTitle);
+    expect(html).toContain(messages.documentationIndex.emptyDescription);
     expect(html).toContain('href="/vi"');
+    expect(messages.documentationIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
   });
 
   it("renders the japanese concepts index with localized title and empty-state copy", async () => {
@@ -147,7 +172,11 @@ describe("localized CLI section index page render", () => {
 
     expect(html).toContain(messages.conceptsIndex.title);
     expect(html).toContain(messages.conceptsIndex.emptyTitle);
+    expect(html).toContain(messages.conceptsIndex.emptyDescription);
     expect(html).toContain('href="/ja"');
+    expect(messages.conceptsIndex.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
   });
 });
 

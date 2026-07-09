@@ -115,6 +115,16 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
       expect(html).toContain(indexMessages.emptyDescription);
       expect(html).toContain(indexMessages.emptyHomeLink);
       expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+      // Empty-state copy only — SearchTrigger may still carry residual Atlas search chrome.
+      expect(indexMessages.emptyTitle).not.toMatch(
+        /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i,
+      );
+      expect(indexMessages.emptyDescription).not.toMatch(
+        /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i,
+      );
+      expect(indexMessages.emptyHomeLink).not.toMatch(
+        /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i,
+      );
     });
   }
 
