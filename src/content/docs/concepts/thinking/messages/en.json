@@ -5,11 +5,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Thinking is the deliberative reasoning a harness or model may produce before or alongside tool use and final answers. In you-agent-factory terms, it is not the factory workflow system itself, and it is not the factory thoughts work type used for planner or loopback work."
+      "body": "Thinking is the deliberative reasoning a harness or model may produce before or alongside tool use and final answers. A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. Thinking is not the factory workflow system itself, and it is not the factory thoughts work type used for planner or loopback work."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Thinking and thinking controls trade answer quality against latency and cost. Raising thinking effort can improve hard tasks; lowering it can make runs cheaper and faster. Not every harness exposes the same thinking controls, so operators need to know what their chosen harness can adjust."
+      "body": "Thinking and thinking controls trade answer quality against latency and cost. Raising a thinking or effort control can improve hard tasks by giving the model more deliberative reasoning; lowering it can make runs cheaper and faster. Not every harness exposes the same thinking controls, so operators need to know which knobs their chosen harness actually offers."
     },
     "simpleExample": {
       "title": "Simple Example",
