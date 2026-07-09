@@ -99,6 +99,11 @@ command-level verification of the Makefile targets and the YAML files above.
   rule, and point planners at `docs/temp/customer-ask.md` plus `docs/temp/big-docs`.
   Prefer live standards paths under `factory/docs/standards/` when the old
   `docs/graphing-standards.md` path is gone.
+- Meta-doc lanes that must leave B00 ownership untouched should verify with
+  `git diff <base>...HEAD -- Makefile .github/workflows/` (empty) and then run
+  `make check` / `make test` on the lane checkout before marking the CI-contract
+  story complete. Do not edit those surfaces from README/AGENTS/package rename
+  work.
 
 ## Mergeability: brittle HTML / inventory test drift
 
