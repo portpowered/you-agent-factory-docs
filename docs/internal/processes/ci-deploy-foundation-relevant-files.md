@@ -56,8 +56,11 @@ explicit opt-in targets and are **not** invoked by `make build`, `make check`,
 
 `scripts/run-website-functionality-tests.ts` (plain `make test`) also excludes
 Atlas built-HTML assertion suites (`*-built-route-convergence`, `*-built-app`,
-and related layout shell HTML probes). Those suites stay runnable under
+and related layout shell HTML probes), plus Atlas discovery/search/content/
+feature packages that require deleted Model Atlas page fixtures after
+`rewrite-delete-atlas-domain`. Those suites stay runnable under
 `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` or via the opt-in Makefile targets.
+See [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
 
 ## Empty `generateStaticParams` under static export
 

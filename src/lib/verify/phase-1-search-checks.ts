@@ -162,6 +162,9 @@ export const PHASE_1_SEARCH_ASSERTIONS: readonly Phase1SearchAssertion[] =
             return `expected hit for ${PHASE_1_GROUPED_QUERY_ATTENTION_URL}`;
           }
           return null;
+        default:
+          // Atlas critical-doc probes were retired; empty probe lists stay typed.
+          return null;
       }
     },
   }));

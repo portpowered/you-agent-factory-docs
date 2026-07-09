@@ -8,23 +8,10 @@ authors:
 tags:
   - foundations
   - model-family
-relatedDocIds:
-  - concept.diffusion-model
-  - concept.denoising-generation
-  - module.u-net
-  - training-regime.diffusion-training-objective
-  - module.clip-image-tokenization
-  - paper.latent-diffusion
-  - module.diffusion-transformer-block
-  - concept.flow-matching
-  - concept.video-generation
-  - concept.world-model
-  - model.ltx-23
-  - model.cosmos-3
+relatedDocIds: []
 status: "published"
 ---
 
-import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
 import { Callout } from "@/features/docs/components/Callout";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
@@ -72,7 +59,7 @@ Latent diffusion lowered cost, but the denoising network itself was still often 
 
 The shift is architectural, not a new sampler headline. Training still optimizes a denoising objective over many steps, and inference still walks a schedule from noise toward a finished sample. What changes is how information mixes across the field: self-attention lets distant patches influence one another directly instead of relying on deep stacks of local convolutions. That pattern scales to higher resolutions and multimodal latents where long-range structure matters.
 
-The [diffusion transformer block](/docs/modules/diffusion-transformer-block) page explains what one transformer-style denoising layer does inside that stack. This post only marks the backbone transition from U-Net convolutions to patch-token transformers.
+The diffusion transformer block page explains what one transformer-style denoising layer does inside that stack. This post only marks the backbone transition from U-Net convolutions to patch-token transformers.
 
 ## Flow matching as an objective shift
 
@@ -80,17 +67,17 @@ Diffusion and flow matching can look identical at inference: start from a simple
 
 Classic denoising-diffusion training often asks the network to predict noise to remove or a denoised estimate at each noise level along a fixed schedule. Flow matching instead trains a velocity or vector field — the direction and speed that should move the current state along a transport path toward data. Readers can think of it as learning how to steer each small move rather than only learning how much noise to subtract at a labeled timestep.
 
-Modern image and video stacks often pair flow-style objectives with latent compression and transformer denoisers. The generation loop stays familiar while the trainer optimizes a different target. The [flow matching](/docs/concepts/flow-matching) concept page defines the objective, transport paths, and how it relates to diffusion-style sampling.
+Modern image and video stacks often pair flow-style objectives with latent compression and transformer denoisers. The generation loop stays familiar while the trainer optimizes a different target. The flow matching concept page defines the objective, transport paths, and how it relates to diffusion-style sampling.
 
 ## Modern open video and world-model examples
 
-Once latents, transformer denoisers, and flexible objectives were in place, researchers extended the same iterative pattern across time. [Video generation](/docs/concepts/video-generation) adds a temporal axis: models must keep motion, identity, and appearance coherent from frame to frame, not only render one still image. Conditioning can include text, reference images, prior frames, or audio depending on the system.
+Once latents, transformer denoisers, and flexible objectives were in place, researchers extended the same iterative pattern across time. Video generation adds a temporal axis: models must keep motion, identity, and appearance coherent from frame to frame, not only render one still image. Conditioning can include text, reference images, prior frames, or audio depending on the system.
 
 Two recent open releases illustrate how far the stack has moved beyond single-image latent diffusion:
 
-**LTX-2.3** is Lightricks' open-weight diffusion-transformer release for synchronized video and audio. Public materials describe it as denoising joint audio-video latents with text, image, and audio conditioning rather than predicting text tokens one at a time. The [LTX-2.3 model page](/docs/models/ltx-23) summarizes architecture, inputs, and training framing from those sources.
+**LTX-2.3** is Lightricks' open-weight diffusion-transformer release for synchronized video and audio. Public materials describe it as denoising joint audio-video latents with text, image, and audio conditioning rather than predicting text tokens one at a time. The LTX-2.3 model page summarizes architecture, inputs, and training framing from those sources.
 
-**Cosmos 3** is NVIDIA's open-weights omnimodal [world model](/docs/glossary/world-model) family for physical AI. Release materials pair an autoregressive reasoning path with a diffusion-based generation path so one backbone can ground language in images and video, synthesize audiovisual worlds, and support action-oriented outputs. The [Cosmos 3 model page](/docs/models/cosmos-3) carries checkpoint-level detail from NVIDIA's technical report and research pages.
+**Cosmos 3** is NVIDIA's open-weights omnimodal world model family for physical AI. Release materials pair an autoregressive reasoning path with a diffusion-based generation path so one backbone can ground language in images and video, synthesize audiovisual worlds, and support action-oriented outputs. The Cosmos 3 model page carries checkpoint-level detail from NVIDIA's technical report and research pages.
 
 <Callout type="note" titleKey="callouts.sourceBackedExamples.title">
   <T k="callouts.sourceBackedExamples.body" />
@@ -106,4 +93,3 @@ Use the reference pages linked below for stable definitions of diffusion models,
 
 ## Related reference pages
 
-<BlogRelatedDocs relatedDocIds={["concept.diffusion-model", "concept.denoising-generation", "module.u-net", "training-regime.diffusion-training-objective", "module.clip-image-tokenization", "paper.latent-diffusion", "module.diffusion-transformer-block", "concept.flow-matching", "concept.video-generation", "concept.world-model", "model.ltx-23", "model.cosmos-3"]} />

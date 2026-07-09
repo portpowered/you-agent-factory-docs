@@ -19,13 +19,34 @@ const excludedPrefixes = [
   "src/lib/governance/",
   "src/tests/build/",
   "src/tests/ci/",
+  // Atlas product surfaces deleted in rewrite-delete-atlas-domain; keep suites
+  // out of required make test until later stories retire the packages themselves.
+  "src/features/topology/",
+  "src/features/generation-evolution/",
+  "src/features/training-signal-evolution/",
+  "src/features/roofline-throughput-explorer/",
+  "src/features/ai/",
+  "src/features/models/",
+  "src/features/docs/timeline/",
+  "src/tests/discovery/",
+  "src/tests/search/",
+  "src/tests/content/",
+  "src/tests/docs/",
+  "src/tests/features/",
+  "src/tests/a11y/",
+  "src/tests/fixtures/non-ai-shell/",
+  "src/lib/navigation/",
+  "src/lib/docs/",
+  "src/lib/search/",
+  "src/lib/build/",
+  "src/lib/factory/",
 ];
 
 /**
  * Atlas / Phase-1 built-HTML assertion suites and opt-in verifier script tests.
  * These require Model Atlas page fixtures or `.next` built routes and belong on
  * `make verify-atlas-*` / `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`, not required
- * `make test` during rewrite foundation.
+ * `make test` during rewrite foundation / Atlas domain deletion.
  */
 const excludedAtlasHtmlAssertionSuffixes = [
   "-built-route-convergence.test.tsx",
@@ -44,6 +65,34 @@ const excludedFiles = new Set([
   "src/lib/build/verify-export-routes.test.ts",
   "src/lib/build/verify-module-built-routes.test.ts",
   "src/lib/docs/component-coverage-gate.test.ts",
+  "src/lib/fumadocs-source-runtime.test.ts",
+  "src/lib/layout.shared.test.ts",
+  "src/lib/scaffold.test.ts",
+  "src/lib/source.test.ts",
+  "src/app/docs/docs-slug-renderer.test.tsx",
+  "src/components/layout/model-atlas-docs-header.test.tsx",
+  "src/features/blog/llms-no-longer-reliant-discoverability.test.tsx",
+  "src/features/blog/components/BlogRelatedDocs.test.tsx",
+  "src/features/blog/components/llms-training-shift-post-blog-integration.test.tsx",
+  "src/features/blog/components/evolution-of-diffusion-blog-integration.test.tsx",
+  "src/features/blog/components/blog-related-docs-blog-integration.test.tsx",
+  "src/features/docs/components/CitationList.test.tsx",
+  "src/features/docs/components/DerivedRelatedDocs.test.tsx",
+  "src/features/docs/components/DocsAutoLinkedDescription.test.tsx",
+  "src/features/docs/components/ProseAutoLinkText.test.tsx",
+  "src/features/docs/components/RegistryAssociatedRecords.test.tsx",
+  "src/features/docs/components/RelatedDocList.test.tsx",
+  "src/features/docs/components/RelatedDocs.test.tsx",
+  "src/features/docs/components/RelatedRegistryDocs.test.tsx",
+  "src/features/docs/components/Section.test.tsx",
+  "src/features/docs/components/T.test.tsx",
+  "src/features/docs/components/TagPillList.test.tsx",
+  "src/features/docs/components/PageAsset.test.tsx",
+  "src/features/docs/search/SearchResults.test.tsx",
+  "src/lib/i18n/localize-page-tree.test.ts",
+  "src/lib/site/site-config-compatibility.test.tsx",
+  "src/lib/site/site-config-resolution.test.ts",
+  "src/tests/component-examples/registry.test.tsx",
   "src/tests/discovery/verify-grouped-query-attention-built-route.test.ts",
   "src/tests/layout/docs-shell-contract.test.tsx",
   "src/tests/layout/docs-sidebar-navigation.test.tsx",
@@ -51,6 +100,12 @@ const excludedFiles = new Set([
   "src/tests/layout/docs-page-footer-hover-convergence.test.tsx",
   "src/tests/layout/docs-index-shell.test.tsx",
   "src/tests/layout/site-routes-shell.test.tsx",
+  "src/tests/layout/home-shell-coverage-contract.test.ts",
+  "src/tests/layout/home-shell-styling-contract.test.tsx",
+  "src/tests/layout/japanese-shell-routes.test.tsx",
+  "src/tests/layout/localized-route-metadata.test.ts",
+  "src/tests/layout/module-page-coverage-contract.test.ts",
+  "src/tests/layout/root-layout-locale.test.tsx",
 ]);
 
 function normalizePath(path: string): string {
