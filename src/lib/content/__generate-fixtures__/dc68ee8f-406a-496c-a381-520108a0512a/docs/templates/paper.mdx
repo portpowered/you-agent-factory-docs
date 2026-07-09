@@ -16,11 +16,8 @@ import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-import { PaperContributionGraph } from "@/features/models/components/PaperContributionGraph";
-import { PaperAtAGlance } from "@/features/models/components/PaperAtAGlance";
 
 
-<PaperAtAGlance registryId="paper.example-paper" />
 
 <Section id="why-it-matters" titleKey="sections.whyItMatters.title">
   <T k="sections.whyItMatters.body" />
@@ -29,10 +26,6 @@ import { PaperAtAGlance } from "@/features/models/components/PaperAtAGlance";
 <Section id="method-or-architecture" titleKey="sections.methodOrArchitecture.title">
   <T k="sections.methodOrArchitecture.body" />
 
-  <PaperContributionGraph
-    registryId="paper.example-paper"
-    assetId="contributionGraph"
-  />
 </Section>
 
 <Section id="evidence" titleKey="sections.evidence.title">

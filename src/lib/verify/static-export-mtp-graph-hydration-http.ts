@@ -1,7 +1,7 @@
 import type { Browser, Page } from "playwright";
-import { REGISTRY_GRAPH_FLOW_MANUAL_VISIBILITY_SELECTORS } from "@/features/models/components/registry-graph-flow-theme";
 import { exportHtmlIncludesMtpAttentionVariantGraphShellMarkers } from "@/lib/build/verify-export-base-path";
 import { MULTI_TOKEN_PREDICTION_ROUTE } from "@/lib/verify/multi-token-prediction-module-convergence";
+import { REGISTRY_GRAPH_FLOW_MANUAL_VISIBILITY_SELECTORS } from "@/lib/verify/registry-graph-flow-theme";
 import { withExportIntegrationProbeLock } from "./export-integration-probe-lock";
 import { httpGetText } from "./http-harness";
 import {

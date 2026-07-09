@@ -303,7 +303,6 @@ export function partitionTokenizerMismatchRemotePresentDeletions(
 }
 
 const MANUAL_INSPECTION_SHARED_EDIT_PATHS = new Set([
-  "src/features/models/components/ModuleGraph.tsx",
   "src/lib/content/baseline-records.test.ts",
   "src/lib/content/citations.test.ts",
   "src/lib/content/graph-registry-runtime.test.ts",

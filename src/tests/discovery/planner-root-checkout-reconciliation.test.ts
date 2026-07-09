@@ -306,7 +306,6 @@ describe("planner-root-checkout-reconciliation script", () => {
     runGit(repoRoot, ["config", "user.name", "Planner Tests"]);
 
     const sharedEditPaths = [
-      "src/features/models/components/ModuleGraph.tsx",
       "src/lib/content/table-registry-runtime.ts",
       "src/lib/content/validate-registry.ts",
       "src/lib/source.test.ts",
@@ -359,10 +358,7 @@ describe("planner-root-checkout-reconciliation script", () => {
 
     expect(result.status).toBe(0);
     expect(result.stdout).toContain(
-      "  - manual-inspection-shared-edits count=4",
-    );
-    expect(result.stdout).toContain(
-      "path=src/features/models/components/ModuleGraph.tsx",
+      "  - manual-inspection-shared-edits count=3",
     );
     expect(result.stdout).toContain(
       "path=src/lib/content/table-registry-runtime.ts",

@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   MODULE_ATTENTION_GQA_MATH_VARIABLE_DEFINITION_IDS,
   MODULE_ATTENTION_MHA_MATH_VARIABLE_DEFINITION_IDS,
-} from "@/features/models/components/module-attention-math-variable-definitions";
+} from "@/lib/verify/module-attention-math-variable-definitions";
 import {
   assertGroupedQueryAttentionChromeConvergence,
   assertGroupedQueryAttentionCompanionSectionsConvergence,

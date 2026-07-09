@@ -1,4 +1,4 @@
-import { MODULE_ATTENTION_MHA_MATH_VARIABLE_DEFINITION_IDS } from "@/features/models/components/module-attention-math-variable-definitions";
+import { MODULE_ATTENTION_MHA_MATH_VARIABLE_DEFINITION_IDS } from "@/lib/verify/module-attention-math-variable-definitions";
 
 export const MAMBA_SELECTIVE_STATE_SPACE_MODULE_TITLE =
   "Mamba Selective State-Space Module" as const;

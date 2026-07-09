@@ -29,9 +29,21 @@ collections.
 4. `bun run lint`
 5. `bun run test` (website suite with Atlas exclusions)
 
+## Story 002: delete `src/features/models` and host imports
+
+| Path | Role |
+| --- | --- |
+| `src/features/models/` | Deleted Atlas model/module/paper/system/training renderers |
+| `src/lib/content/mdx-components.tsx` | Host MDX registration no longer maps Atlas model components |
+| `src/features/docs/components/PageAsset.tsx` | Renders image/graph/table/chart placeholders without Atlas React Flow charts |
+| `src/features/ai/models.ts` / `src/features/ai/server.ts` | Stop re-exporting deleted `@/features/models` renderers |
+| `src/lib/verify/module-attention-math-variable-definitions.ts` | Pure math-id constants relocated from deleted models package for remaining Atlas verifiers |
+| `src/lib/verify/registry-graph-flow-theme.ts` | Graph theme/selector constants relocated for remaining static-export verifiers |
+| `src/lib/docs/component-manifest.ts` | Drop deleted models coverage entries / thin wrappers |
+| `docs/templates/*.mdx` | Authoring templates no longer import deleted Atlas components |
+
 ## Later stories in this PRD
 
-- `002` deletes `src/features/models` and host imports
 - `003` deletes topology explorers/routes
 - `004` removes Model Atlas AI search enrichment
 - `005` deletes Atlas verifier scripts and make/package entrypoints

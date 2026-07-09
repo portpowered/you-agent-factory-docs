@@ -130,48 +130,6 @@ export const PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] =
       unitTests: ["src/features/docs/components/TBlockMath.test.tsx"],
     },
     {
-      file: "src/features/models/components/ModuleAttentionSchemaComparison.tsx",
-      label: "ModuleAttentionSchemaComparison",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/ModuleAttentionSchemaComparison.test.tsx",
-      ],
-    },
-    {
-      file: "src/features/models/components/RegistryComparisonTable.tsx",
-      label: "RegistryComparisonTable",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/RegistryComparisonTable.test.tsx",
-      ],
-    },
-    {
-      file: "src/features/models/components/AttentionVariantComparisonGraph.tsx",
-      label: "AttentionVariantComparisonGraph",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/AttentionVariantComparisonGraph.test.tsx",
-      ],
-    },
-    {
-      file: "src/features/models/components/RegistryGraphFlow.tsx",
-      label: "RegistryGraphFlow",
-      minReachableLinePercent: 90,
-      unitTests: ["src/features/models/components/RegistryGraphFlow.test.tsx"],
-    },
-    {
-      file: "src/features/models/components/ModuleMetadataCard.tsx",
-      label: "ModuleMetadataCard",
-      minReachableLinePercent: 90,
-      unitTests: ["src/features/models/components/ModuleMetadataCard.test.tsx"],
-    },
-    {
-      file: "src/features/models/components/ModuleAtAGlance.tsx",
-      label: "ModuleAtAGlance",
-      minReachableLinePercent: 90,
-      unitTests: ["src/features/models/components/ModuleAtAGlance.test.tsx"],
-    },
-    {
       file: "src/features/docs/components/PageAsset.tsx",
       label: "PageAsset",
       minReachableLinePercent: 90,
@@ -182,14 +140,6 @@ export const PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] =
       label: "MissingGraphRecord",
       minReachableLinePercent: 90,
       unitTests: ["src/features/docs/components/MissingGraphRecord.test.tsx"],
-    },
-    {
-      file: "src/features/models/components/MissingTableRecord.tsx",
-      label: "MissingTableRecord",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/RegistryComparisonTable.test.tsx",
-      ],
     },
   ];
 
@@ -311,17 +261,5 @@ export const REUSABLE_THIN_WRAPPERS: ThinWrapperEntry[] = [
       "src/features/docs/components/DocsAutoLinkedDescription.test.tsx",
       "src/lib/content/glossary-shell-description-auto-link.test.tsx",
     ],
-  },
-  {
-    file: "src/features/models/components/ModuleGraph.tsx",
-    label: "ModuleGraph",
-    forwardsTo: "PageAsset",
-    smokeTests: ["src/lib/content/module-page.test.ts"],
-  },
-  {
-    file: "src/features/models/components/ModuleComparisonTable.tsx",
-    label: "ModuleComparisonTable",
-    forwardsTo: "PageAsset",
-    smokeTests: ["src/lib/content/module-page.test.ts"],
   },
 ];

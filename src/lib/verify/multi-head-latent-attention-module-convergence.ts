@@ -3,7 +3,7 @@ import {
   MODULE_ATTENTION_GQA_ONLY_MATH_VARIABLE_DEFINITION_IDS,
   MODULE_ATTENTION_MATH_FORBIDDEN_DEFINITION_TERMS,
   MODULE_ATTENTION_MHA_MATH_VARIABLE_DEFINITION_IDS,
-} from "@/features/models/components/module-attention-math-variable-definitions";
+} from "@/lib/verify/module-attention-math-variable-definitions";
 
 export const MULTI_HEAD_LATENT_ATTENTION_MODULE_TITLE =
   "Multi-Head Latent Attention" as const;

@@ -91,7 +91,7 @@ describe("validateGeneratedFoldedSummary", () => {
 });
 
 describe("validateGeneratedGraphPlacement", () => {
-  test("passes module template graph in how-it-works section", () => {
+  test("passes module template without required Atlas graph components", () => {
     const errors = validateGeneratedGraphPlacement({
       pagePath: "/docs/modules/example/page.mdx",
       kind: "module",
@@ -101,26 +101,16 @@ describe("validateGeneratedGraphPlacement", () => {
     expect(errors).toEqual([]);
   });
 
-  test("fails module graph embedded in math section", () => {
-    const moduleMdx = readTemplateMdx("module");
-    const brokenMdx = moduleMdx
-      .replace(
-        '<Section id="how-it-works"',
-        '<Section id="how-it-works-disabled"',
-      )
-      .replace(
-        '<Section id="math-or-compute-schema"',
-        `<Section id="math-or-compute-schema"`,
-      )
-      .replace(
-        "<ModuleAttentionSchemaComparison />",
-        '<ModuleGraph registryId="module.example-module" assetId="computeFlow" />\n  <ModuleAttentionSchemaComparison />',
-      );
+  test("fails leftover module graph embedded in math section", () => {
+    const moduleMdx = readTemplateMdx("module").replace(
+      '<Section id="math-or-compute-schema" titleKey="sections.mathOrComputeSchema.title">\n  <T k="sections.mathOrComputeSchema.body" />',
+      '<Section id="math-or-compute-schema" titleKey="sections.mathOrComputeSchema.title">\n  <T k="sections.mathOrComputeSchema.body" />\n  <ModuleGraph registryId="module.example-module" assetId="computeFlow" />',
+    );
 
     const errors = validateGeneratedGraphPlacement({
       pagePath: "/docs/modules/example/page.mdx",
       kind: "module",
-      mdxSource: brokenMdx,
+      mdxSource: moduleMdx,
       assets: readTemplateAssets("module"),
     });
 
@@ -129,10 +119,10 @@ describe("validateGeneratedGraphPlacement", () => {
     ).toBe(true);
   });
 
-  test("fails graph components without assetId", () => {
+  test("fails leftover graph components without assetId", () => {
     const conceptMdx = readTemplateMdx("concept").replace(
-      'assetId="conceptMap"',
-      "",
+      '<Section id="simple-example" titleKey="sections.simpleExample.title">\n  <T k="sections.simpleExample.body" />',
+      '<Section id="simple-example" titleKey="sections.simpleExample.title">\n  <T k="sections.simpleExample.body" />\n  <ConceptMap registryId="concept.example-concept" />',
     );
 
     const errors = validateGeneratedGraphPlacement({
@@ -147,13 +137,15 @@ describe("validateGeneratedGraphPlacement", () => {
     ).toBe(true);
   });
 
-  test("passes multiple module teaching visuals in how-it-works", () => {
+  test("passes leftover module teaching visuals when assetIds resolve", () => {
     const moduleMdx = readTemplateMdx("module").replace(
-      '<ModuleGraph registryId="module.example-module" assetId="computeFlow" />',
+      '<Section id="how-it-works" titleKey="sections.howItWorks.title">\n  <T k="sections.howItWorks.body" />',
       [
-        '<ModuleGraph registryId="module.example-module" assetId="computeFlow" />',
-        '<ModuleChart registryId="module.example-module" assetId="activationHeatmap" />',
-      ].join("\n  "),
+        '<Section id="how-it-works" titleKey="sections.howItWorks.title">',
+        '  <T k="sections.howItWorks.body" />',
+        '  <ModuleGraph registryId="module.example-module" assetId="computeFlow" />',
+        '  <ModuleChart registryId="module.example-module" assetId="activationHeatmap" />',
+      ].join("\n"),
     );
 
     const assets = {
