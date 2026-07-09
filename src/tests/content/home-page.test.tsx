@@ -7,13 +7,8 @@ import { buildHomeTableOfContents } from "@/lib/navigation/home-page-toc";
 import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
 import { expectHomeArticleHeaderOnlySearchEntry } from "@/tests/discovery/home-search-entry-contract";
 
-/** Discovery targets on `/` must stay aligned with Phase 1 acceptance criteria. */
-const HOME_DISCOVERY_HREFS = [
-  "/browse",
-  "/docs/modules/grouped-query-attention",
-  "/docs/modules/swiglu",
-  "/docs/modules/relu",
-] as const;
+/** Empty-shell home discovery targets after Atlas page deletion. */
+const HOME_DISCOVERY_HREFS = ["/browse"] as const;
 
 describe("home page messages", () => {
   it("loads localized copy for title, search, and browse sections", async () => {
@@ -25,21 +20,13 @@ describe("home page messages", () => {
     expect(home.intro).not.toMatch(/search by tag/i);
     expect(home.browseSectionTitle.length).toBeGreaterThan(0);
     expect(home.atlasLinkTitle).toBe("Browse the atlas");
-    expect(home.gqaLinkTitle).toBe("Grouped-query attention");
-    expect(home.swigluLinkTitle).toBe("SwiGLU");
-    expect(home.reluLinkTitle).toBe("ReLU");
     expect(home.onThisPageBrowse).toBe("Browse");
   });
 
-  it("defines browse link titles for every homepage module shortcut", async () => {
+  it("defines browse link copy for the remaining homepage shortcut", async () => {
     const { home } = await loadUiMessages();
     expect(home.atlasLinkDescription.length).toBeGreaterThan(0);
-    expect(home.gqaLinkDescription.length).toBeGreaterThan(0);
-    expect(home.swigluLinkDescription.length).toBeGreaterThan(0);
-    expect(home.reluLinkDescription.length).toBeGreaterThan(0);
-    expect(home.gqaLinkDescription).not.toMatch(/Phase 1/i);
-    expect(home.swigluLinkDescription).not.toMatch(/Phase 1/i);
-    expect(HOME_DISCOVERY_HREFS).toHaveLength(4);
+    expect(HOME_DISCOVERY_HREFS).toHaveLength(1);
   });
 });
 
@@ -51,12 +38,15 @@ describe("home page render", () => {
     );
   }
 
-  it("links to concrete starter module pages", async () => {
+  it("links to browse without deleted Atlas module pages", async () => {
     const html = await renderHomeArticleHtml();
     expect(html).toContain("Model Atlas");
     for (const href of HOME_DISCOVERY_HREFS) {
       expect(html).toContain(`href="${href}"`);
     }
+    expect(html).not.toContain("/docs/modules/grouped-query-attention");
+    expect(html).not.toContain("/docs/modules/swiglu");
+    expect(html).not.toContain("/docs/modules/relu");
   });
 
   it("preserves the active locale in browse links on the vietnamese route surface", async () => {
@@ -71,11 +61,9 @@ describe("home page render", () => {
 
     expect(html).toContain("Cẩm nang về các mô hình và module AI hiện đại");
     expect(html).toContain('href="/vi/browse"');
-    expect(html).toContain('href="/vi/docs/modules/grouped-query-attention"');
-    expect(html).toContain('href="/docs/modules/swiglu"');
-    expect(html).toContain('href="/docs/modules/relu"');
-    expect(html).not.toContain('href="/vi/docs/modules/swiglu"');
-    expect(html).not.toContain('href="/vi/docs/modules/relu"');
+    expect(html).not.toContain("/docs/modules/grouped-query-attention");
+    expect(html).not.toContain("/docs/modules/swiglu");
+    expect(html).not.toContain("/docs/modules/relu");
   });
 
   it("preserves the active locale in browse links on the japanese route surface", async () => {
@@ -92,11 +80,9 @@ describe("home page render", () => {
       "現代の AI モデルとモジュールのためのフィールドガイド",
     );
     expect(html).toContain('href="/ja/browse"');
-    expect(html).toContain('href="/ja/docs/modules/grouped-query-attention"');
-    expect(html).toContain('href="/docs/modules/swiglu"');
-    expect(html).toContain('href="/docs/modules/relu"');
-    expect(html).not.toContain('href="/ja/docs/modules/swiglu"');
-    expect(html).not.toContain('href="/ja/docs/modules/relu"');
+    expect(html).not.toContain("/docs/modules/grouped-query-attention");
+    expect(html).not.toContain("/docs/modules/swiglu");
+    expect(html).not.toContain("/docs/modules/relu");
   });
 
   it("omits verbose search handoff prose and inline /search link", async () => {

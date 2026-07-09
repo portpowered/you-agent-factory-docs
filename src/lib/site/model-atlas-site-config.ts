@@ -35,23 +35,5 @@ export const modelAtlasSiteConfig = {
       titleKey: "atlasLinkTitle",
       descriptionKey: "atlasLinkDescription",
     },
-    {
-      kind: "docs-page",
-      slug: "modules/grouped-query-attention",
-      titleKey: "gqaLinkTitle",
-      descriptionKey: "gqaLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/swiglu",
-      titleKey: "swigluLinkTitle",
-      descriptionKey: "swigluLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/relu",
-      titleKey: "reluLinkTitle",
-      descriptionKey: "reluLinkDescription",
-    },
   ],
 } as const satisfies SiteConfig;

@@ -138,7 +138,7 @@ describe("site config home featured link compatibility", () => {
     }
   });
 
-  test("preserves docs-page locale fallback behavior for module featured links", () => {
+  test("preserves localized browse featured link hrefs without deleted Atlas module pages", () => {
     const viHrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
       modelAtlasSiteConfig,
       "vi",
@@ -148,32 +148,17 @@ describe("site config home featured link compatibility", () => {
       "ja",
     );
 
-    expect(viHrefs).toEqual([
-      "/vi/browse",
-      "/vi/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
-    expect(jaHrefs).toEqual([
-      "/ja/browse",
-      "/ja/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
+    expect(viHrefs).toEqual(["/vi/browse"]);
+    expect(jaHrefs).toEqual(["/ja/browse"]);
   });
 
-  test("resolves default-locale browse and module links on the english surface", () => {
+  test("resolves default-locale browse featured link on the english surface", () => {
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(
         modelAtlasSiteConfig,
         defaultLocale,
       ),
-    ).toEqual([
-      "/browse",
-      "/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
+    ).toEqual(["/browse"]);
   });
 
   test("binds featured link copy through the same home message keys", async () => {
@@ -191,11 +176,6 @@ describe("site config home featured link compatibility", () => {
     expect(
       configLinks.map(({ title, description }) => ({ title, description })),
     ).toEqual(expectedCopy);
-    expect(configLinks.map((link) => link.title)).toEqual([
-      "Browse the atlas",
-      "Grouped-query attention",
-      "SwiGLU",
-      "ReLU",
-    ]);
+    expect(configLinks.map((link) => link.title)).toEqual(["Browse the atlas"]);
   });
 });

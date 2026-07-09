@@ -37,21 +37,9 @@ const representativeSiteConfig = {
     },
     {
       kind: "docs-page",
-      slug: "modules/grouped-query-attention",
+      slug: "getting-started",
       titleKey: "gqaLinkTitle",
       descriptionKey: "gqaLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/swiglu",
-      titleKey: "swigluLinkTitle",
-      descriptionKey: "swigluLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/relu",
-      titleKey: "reluLinkTitle",
-      descriptionKey: "reluLinkDescription",
     },
   ],
 } satisfies SiteConfig;
@@ -82,7 +70,7 @@ describe("site config contract", () => {
 
   test("accepts a representative config shape with route, nav, and featured link placeholders", () => {
     expect(representativeSiteConfig.primaryNav).toHaveLength(5);
-    expect(representativeSiteConfig.homeFeaturedLinks).toHaveLength(4);
+    expect(representativeSiteConfig.homeFeaturedLinks).toHaveLength(2);
     expect(representativeSiteConfig.collections).toHaveLength(
       SITE_COLLECTION_FAMILIES.length,
     );

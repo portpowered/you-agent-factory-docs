@@ -98,10 +98,21 @@ Required `make check` / `make test` / `make build` must not invoke deleted Atlas
 | `src/app/(site)/docs/{models,modules,papers,training,systems,glossary}/` | Collection section indexes remain as empty-shell routes via `renderSectionCollectionIndexPage` |
 | `src/content/blog/*/page.mdx` | Strip explorer component imports; keep prose-only posts |
 
-## Later stories in this PRD
+## Story 007: prove the shell builds without Atlas domain content
 
-- `007` proves `make check` / `make test` / `make build` end-to-end
+| Path | Role |
+| --- | --- |
+| `Makefile` `check` / `test` / `build` | End-to-end maintainer gates that must exit 0 on the post-deletion tree |
+| `src/lib/site/model-atlas-site-config.ts` | Clear deleted Atlas module slugs from `homeFeaturedLinks` so home no longer advertises missing collection pages (brand/nav placeholder rewrite stays with `rewrite-site-config-contracts`) |
+| `out/` | Static export artifact from `make build`; browser-verify home/shell loads without `/topology` or Atlas module product destinations |
+| `docs/getting-started` + empty collection section indexes | Remaining non-Atlas shell surfaces after page-bundle deletion |
 
+Validation sequence for story 007:
+
+1. `make check`
+2. `make test`
+3. `make build` (produces `out/`)
+4. Serve `out/` briefly and confirm `/` loads, `/topology` and `/docs/timeline` are gone, and home featured links do not point at deleted Atlas module pages
 
 ## Empty collection directories in git
 
