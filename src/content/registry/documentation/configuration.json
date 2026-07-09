@@ -1,0 +1,14 @@
+{
+  "id": "documentation.configuration",
+  "slug": "configuration",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["configuration", "factory.json", "factory configuration"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T22:41:40.000Z",
+  "updatedAt": "2026-07-09T22:41:40.000Z"
+}

@@ -1,0 +1,32 @@
+{
+  "title": "Configuration",
+  "description": "Configure you-agent-factory with factory.json topology: work types, workers, workstations, resources, and how the pieces fit.",
+  "openingSummary": "factory.json is the topology root for a you-agent-factory run. It declares the work types, workers, workstations, optional resources, and routing the runtime turns into executable workflow.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Configuration is the web overview of factory.json topology for you-agent-factory. It explains what the factory root file owns, how the recommended directory layout splits workers, workstations, and inputs, and how work moves through workstations and workers. Use it when you need the factory topology picture before opening the deeper workers, workstations, or resources references."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "factory.json is the canonical root file for a factory. It declares work types and lifecycle states, the workers workstations call, the workstations that dispatch and route outcomes, and optional resources for bounded concurrency. Split files under workers/ and workstations/ hold runtime instructions; inputs/ holds watched submission data. Operator model defaults in ~/.you-agent-factory/config.json are separate from this factory topology."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start from factory.json as the topology root, then add split worker and workstation instruction files named to match the entries in that file. Use this page for the layout and how-pieces-fit overview. Open the workers, workstations, and resources documentation when you need field-level contracts for those pieces."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web topology overview for factory.json. It is not a sync of packaged CLI docs, not the operator model-defaults deep dive, and not the submitting-work, batch, relationships, or harness-support references. Deep worker, workstation, and resource field contracts belong on their sibling documentation pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
