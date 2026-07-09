@@ -169,7 +169,7 @@ describe("home page render", () => {
     expect(html).not.toContain("list-disc");
   });
 
-  it("preserves browse section structure on the vietnamese route surface without Atlas module links", async () => {
+  it("renders you-agent-factory home shell structure on the vietnamese route without Model Atlas identity", async () => {
     const messages = await loadUiMessages("vi");
     const html = renderToStaticMarkup(
       <HomeArticle
@@ -178,9 +178,28 @@ describe("home page render", () => {
         locale="vi"
       />,
     );
+    const toc = buildHomeTableOfContents(messages.home);
 
-    expect(html).toContain("Cẩm nang về các mô hình và module AI hiện đại");
+    expect(messages.home.title).toBe("you-agent-factory");
+    expect(messages.home.subtitle).toBe("Docs for the agent factory CLI");
+    expect(messages.home.intro).toContain("you-agent-factory");
+    expect(messages.home.title).not.toMatch(/Model Atlas/i);
+    expect(messages.home.intro).not.toMatch(/Model Atlas/i);
+    expect(html).toContain("you-agent-factory");
+    expect(html).toContain("Docs for the agent factory CLI");
+    expect(html).not.toContain("Model Atlas");
+    expect(html).toContain('id="install"');
+    expect(html).toContain('id="run"');
+    expect(html).toContain('id="why"');
+    expect(html).toContain('id="features"');
     expect(html).toContain('id="browse"');
+    expect(html).toContain("you run --named @goal/blah");
+    expect(html).toContain("hundreds of agents");
+    expect(html).toContain("loop");
+    expect(html).toContain("review");
+    expect(html).toContain("planner");
+    expect(html).toContain("crons");
+    expect(html).toContain("event streams");
     expect(html).toContain('href="/vi/docs/guides"');
     expect(html).toContain('href="/vi/browse"');
     expect(html).toContain('href="/vi/docs/glossary"');
@@ -190,9 +209,16 @@ describe("home page render", () => {
     );
     expect(html).not.toContain('href="/docs/modules/swiglu"');
     expect(html).not.toContain('href="/docs/modules/relu"');
+    expect(toc.map((item) => item.url)).toEqual([
+      "#install",
+      "#run",
+      "#why",
+      "#features",
+      "#browse",
+    ]);
   });
 
-  it("preserves browse section structure on the japanese route surface without Atlas module links", async () => {
+  it("renders you-agent-factory home shell structure on the japanese route without Model Atlas identity", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       <HomeArticle
@@ -201,11 +227,23 @@ describe("home page render", () => {
         locale="ja"
       />,
     );
+    const toc = buildHomeTableOfContents(messages.home);
 
-    expect(html).toContain(
-      "現代の AI モデルとモジュールのためのフィールドガイド",
-    );
+    expect(messages.home.title).toBe("you-agent-factory");
+    expect(messages.home.subtitle).toBe("Docs for the agent factory CLI");
+    expect(messages.home.intro).toContain("you-agent-factory");
+    expect(messages.home.title).not.toMatch(/Model Atlas/i);
+    expect(messages.home.intro).not.toMatch(/Model Atlas/i);
+    expect(html).toContain("you-agent-factory");
+    expect(html).toContain("Docs for the agent factory CLI");
+    expect(html).not.toContain("Model Atlas");
+    expect(html).toContain('id="install"');
+    expect(html).toContain('id="run"');
+    expect(html).toContain('id="why"');
+    expect(html).toContain('id="features"');
     expect(html).toContain('id="browse"');
+    expect(html).toContain("you run --named @goal/blah");
+    expect(html).toContain("hundreds of agents");
     expect(html).toContain('href="/ja/docs/guides"');
     expect(html).toContain('href="/ja/browse"');
     expect(html).toContain('href="/ja/docs/glossary"');
@@ -215,6 +253,45 @@ describe("home page render", () => {
     );
     expect(html).not.toContain('href="/docs/modules/swiglu"');
     expect(html).not.toContain('href="/docs/modules/relu"');
+    expect(toc.map((item) => item.url)).toEqual([
+      "#install",
+      "#run",
+      "#why",
+      "#features",
+      "#browse",
+    ]);
+  });
+
+  it("renders you-agent-factory home shell structure on the zh-CN route without Model Atlas identity", async () => {
+    const messages = await loadUiMessages("zh-CN");
+    const html = renderToStaticMarkup(
+      <HomeArticle
+        messages={messages}
+        siteConfig={youAgentFactorySiteConfig}
+        locale="zh-CN"
+      />,
+    );
+    const toc = buildHomeTableOfContents(messages.home);
+
+    expect(messages.home.title).toBe("you-agent-factory");
+    expect(messages.home.intro).toContain("you-agent-factory");
+    expect(messages.home.title).not.toMatch(/Model Atlas/i);
+    expect(html).toContain("you-agent-factory");
+    expect(html).not.toContain("Model Atlas");
+    expect(html).toContain('id="install"');
+    expect(html).toContain('id="run"');
+    expect(html).toContain('id="why"');
+    expect(html).toContain('id="features"');
+    expect(html).toContain('id="browse"');
+    expect(html).toContain('href="/zh-CN/docs/guides"');
+    expect(html).toContain('href="/zh-CN/browse"');
+    expect(toc.map((item) => item.url)).toEqual([
+      "#install",
+      "#run",
+      "#why",
+      "#features",
+      "#browse",
+    ]);
   });
 
   it("omits verbose search handoff prose and inline /search link", async () => {

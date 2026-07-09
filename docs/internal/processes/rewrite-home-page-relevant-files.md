@@ -8,7 +8,7 @@ install/run CTAs, why/features sections, featured links, or locale shell copy.
 | File | Role |
 | --- | --- |
 | `src/content/messages/en/common.json` (`home.title` / `home.subtitle` / `home.intro`) | Default-locale product identity rendered by `HomeBrushHeader` and used as page metadata description |
-| `src/content/messages/{ja,zh-CN,vi}/common.json` | Localized home shell strings (stubs OK until localization story) |
+| `src/content/messages/{ja,zh-CN,vi}/common.json` | Localized home shell strings (en complete; non-en may stub English identity/CTA copy, but must not say Model Atlas) |
 | `src/components/home/home-article.tsx` | Renders `home.title` / `home.subtitle` via `HomeBrushHeader`; does not currently render `home.intro` in the article body |
 | `src/app/(site)/page.tsx` / `src/app/[locale]/page.tsx` | `generateMetadata` binds `title` ← `messages.home.title`, `description` ← `messages.home.intro` |
 | `src/app/root-layout.shared.tsx` (`siteMetadata`) | Layout-level fallback metadata; keep aligned with you-agent-factory identity (not Model Atlas) |
@@ -68,6 +68,15 @@ Required meaning (wording may vary):
 
 Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
 
+## Locale shell + TOC regression
+
+| File | Role |
+| --- | --- |
+| `src/content/messages/{en,ja,zh-CN,vi}/common.json` (`home.*`) | All required home shell keys must exist in every locale |
+| `src/lib/navigation/home-page-toc.ts` | TOC anchors: `#install` → `#run` → `#why` → `#features` → `#browse` |
+| `src/tests/content/home-page.test.tsx` | Asserts identity, CTAs, why/features, featured links, and non-en section structure |
+| `src/tests/layout/localized-route-metadata.test.ts` | Localized home metadata must use you-agent-factory identity (not Model Atlas) |
+
 ## Patterns
 
 - Product identity on `/` is message-driven (`messages.home.*`), not `siteConfig.brand`.
@@ -76,6 +85,8 @@ Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
   keys and `siteMetadata` in `root-layout.shared.tsx`, plus home/metadata tests.
 - When adding home message keys, update `HomeMessages` and all four locale
   `common.json` files together so loaders do not fail (non-en may stub labels).
+- Non-en home `title` / `subtitle` / `intro` may stub English copy, but must identify
+  you-agent-factory and must not say Model Atlas (story 006 regression).
 - Install/run command strings live in messages (not hard-coded in the component)
   so locales can stub labels while keeping the same runnable commands.
 - Why/features stay single-column article sections with stable `#why` / `#features`
@@ -89,3 +100,4 @@ Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
   repo root). Turbopack rejects out-of-root `node_modules` symlinks. Prefer
   `renderToStaticMarkup(HomeArticle)` + `generateMetadata()` for identity checks
   when `bun run dev` cannot start in the worktree.
+- This lane must not edit Makefile or CI workflow files.

@@ -72,9 +72,9 @@
     "openingSummary": "要約を開く"
   },
   "home": {
-    "title": "Model Atlas",
-    "subtitle": "現代の AI モデルとモジュールのためのフィールドガイド",
-    "intro": "Model Atlas は、トランスフォーマー、注意機構の派生、学習手法、それらを支えるシステムを扱うドキュメント中心のリファレンスです。",
+    "title": "you-agent-factory",
+    "subtitle": "Docs for the agent factory CLI",
+    "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
     "installSectionTitle": "Install",
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",

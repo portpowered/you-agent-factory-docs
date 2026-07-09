@@ -125,10 +125,12 @@ describe("localized route metadata alternates", () => {
       params: Promise.resolve({ locale: "ja" }),
     });
 
-    expect(jaHomeMetadata.title).toBe("Model Atlas");
+    expect(jaHomeMetadata.title).toBe("you-agent-factory");
     expect(jaHomeMetadata.description).toBe(
-      "Model Atlas は、トランスフォーマー、注意機構の派生、学習手法、それらを支えるシステムを扱うドキュメント中心のリファレンスです。",
+      "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
     );
+    expect(String(jaHomeMetadata.title)).not.toMatch(/Model Atlas/i);
+    expect(String(jaHomeMetadata.description)).not.toMatch(/Model Atlas/i);
 
     expect(jaSearchMetadata.title).toBe("検索");
     expect(jaSearchMetadata.description).toBe(

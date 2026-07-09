@@ -70,9 +70,9 @@
     "openingSummary": "开篇摘要"
   },
   "home": {
-    "title": "Model Atlas",
-    "subtitle": "现代 AI 模型与模块的实地指南",
-    "intro": "Model Atlas 是面向文档的参考资料，涵盖 Transformer、注意力变体、训练方法及其周边系统。",
+    "title": "you-agent-factory",
+    "subtitle": "Docs for the agent factory CLI",
+    "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
     "installSectionTitle": "Install",
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",

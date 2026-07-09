@@ -72,9 +72,9 @@
     "openingSummary": "Tóm tắt mở đầu"
   },
   "home": {
-    "title": "Model Atlas",
-    "subtitle": "Cẩm nang về các mô hình và module AI hiện đại",
-    "intro": "Model Atlas là tài liệu tham chiếu dành cho transformer, các biến thể attention, phương pháp huấn luyện, và các hệ thống xoay quanh chúng.",
+    "title": "you-agent-factory",
+    "subtitle": "Docs for the agent factory CLI",
+    "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
     "installSectionTitle": "Install",
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
