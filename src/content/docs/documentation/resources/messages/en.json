@@ -8,7 +8,7 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A resource pool is a shared concurrency limit. Declare it once under top-level resources[] with at least {name, capacity}. Consume it from workstations[].resources[] so the workstation holds capacity for the workflow step while the dispatch is in flight. The same pool name means one shared limit across every requirement that references it. Typed pools such as MODEL, PROVIDER_QUOTA, and INVOCATION_SLOT add metadata when a generic capacity shape is not enough; those details belong in later sections on this page."
+      "body": "A resource pool is a shared concurrency limit. Declare it once under top-level resources[] with at least {name, capacity}. Consume it from workstations[].resources[] so the workstation holds capacity for the workflow step while the dispatch is in flight. The same pool name means one shared limit across every requirement that references it. Typed pools such as MODEL, PROVIDER_QUOTA, and INVOCATION_SLOT add metadata when a generic capacity shape is not enough."
     },
     "whereRequirementsBelong": {
       "title": "Where Requirements Belong",
@@ -16,7 +16,15 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Declare shared pools under top-level resources, then reference those pool names from the workstation that should hold capacity while it runs. Use this page when you need the resources / bounded-concurrency reference before opening configuration, workers, or workstations sibling docs."
+      "body": "Declare shared pools under top-level resources with the canonical {name, capacity} shape, then reference those pool names from the workstation that should hold capacity while it runs. Start with the minimal bounded-concurrency example below when you need a copyable pool-plus-requirement pair. Use typed resources when the pool describes a managed model asset, a provider quota, or an invocation slot rather than a generic concurrency limit."
+    },
+    "minimalExample": {
+      "title": "Minimal Bounded-Concurrency Example",
+      "body": "This minimal factory fragment declares one shared pool and one workstation requirement. Copy it when you need the smallest readable capacity example before adding typed metadata."
+    },
+    "typedResources": {
+      "title": "Typed Resources",
+      "body": "Use an uppercase type plus typed metadata when the resource is more than a generic capacity pool. The three typed kinds below are the web-reference set for model-backed and provider-backed limits."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -46,6 +54,22 @@
     "ownershipWorkerShape": "yes — matching requirement shape",
     "ownershipWorkerUse": "Worker-runtime requirement metadata only; not the canonical workflow-step concurrency path",
     "ownershipWorkerNote": "Worker-only resources are not the canonical explanation for workflow-step concurrency. Put the scheduling-facing requirement on the workstation. Keep workers[].resources[] only when the worker-runtime contract itself needs the same requirement metadata.",
-    "ownershipSupportingFilesNote": "Runtime-capacity resources are not portability supportingFiles. Do not overload a capacity pool with bundled files or external tool checks; supportingFiles belong to the portability contract, not to bounded concurrency."
+    "ownershipSupportingFilesNote": "Runtime-capacity resources are not portability supportingFiles. Do not overload a capacity pool with bundled files or external tool checks; supportingFiles belong to the portability contract, not to bounded concurrency.",
+    "minimalExampleRuntimeMeaning": "Read the example as runtime capacity, not decoration: resources[0] declares a pool named agent-slot with total available capacity 2. workstations[0].resources[0] asks that workstation to hold one slot while the dispatch is in flight. Up to two matching dispatches can run at once; later matching dispatches wait until capacity is released.",
+    "validationRules": "Validation rules you must not miss: requirement names must match a declared top-level pool; requirement capacity must be positive; the same pool name means one shared limit everywhere it is referenced.",
+    "typedKindHeader": "Type",
+    "typedPurposeHeader": "What it bounds",
+    "typedMetadataHeader": "Metadata you need",
+    "typedModelKind": "MODEL",
+    "typedModelPurpose": "Local managed model assets and loaded-handle capacity",
+    "typedModelMetadata": "Requires model (managed runtime identity), backend, and loadPolicy",
+    "typedProviderQuotaKind": "PROVIDER_QUOTA",
+    "typedProviderQuotaPurpose": "Provider-wide cloud quota or request budget",
+    "typedProviderQuotaMetadata": "Requires provider and model",
+    "typedInvocationSlotKind": "INVOCATION_SLOT",
+    "typedInvocationSlotPurpose": "Per-model or per-provider concurrency",
+    "typedInvocationSlotMetadata": "Carry the provider or model identity the scheduler should throttle",
+    "typedResourcesWhenGenericIsNotEnough": "Stay on the generic {name, capacity} shape when you only need a shared concurrency pool. Switch to a typed resource when the pool must identify a managed model asset, a provider quota boundary, or an invocation slot the scheduler should throttle by provider or model.",
+    "typedResourcesModelsPointer": "LOCAL inference workers that depend on managed model assets must reference a matching top-level MODEL resource. Operator commands and full managed-runtime matrices belong on models docs when those pages are published; this page only covers the typed resource kinds and the metadata you need to declare them."
   }
 }
