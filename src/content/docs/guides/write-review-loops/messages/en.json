@@ -1,0 +1,31 @@
+{
+  "title": "Write-Review Loops",
+  "description": "Use you-agent-factory for write → review → revise loops with a bounded retry path.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Write-review loops are a factory workflow where write or execute work produces a candidate, review accepts it to a complete state or rejects it back to write for another pass."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this guide when agent work must pass review before completion, and you want a clear write → review → revise path in the factory."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Start or confirm a live factory, advance write or execute work into review, route accepted review to complete, and route rejection back to write for another pass."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Do not review before a factory session is live. Do not treat reject-without-a-breaker as safe forever. Do not confuse this use-case guide with the writer-reviewer technique page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
