@@ -41,6 +41,13 @@ describe("submitting-work documentation page", () => {
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    const howToUseSection = document.getElementById("how-to-use");
+    expect(howToUseSection).toBeTruthy();
+    expect(howToUseSection?.textContent).toMatch(
+      /Author a FACTORY_REQUEST_BATCH with a stable requestId/i,
+    );
+    expect(howToUseSection?.textContent).not.toMatch(/on this page/i);
+    expect(howToUseSection?.textContent).not.toMatch(/Later sections/i);
     expect(screen.getByRole("heading", { name: "Work Batches" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Relationships" })).toBeTruthy();
     expect(

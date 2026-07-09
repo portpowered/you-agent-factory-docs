@@ -13,7 +13,7 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a FACTORY_REQUEST_BATCH with a stable requestId and the works you want to enqueue. Add relations when items must wait on each other or nest under a parent. Submit the batch to a running factory, and use dry-run when you want validation without creating work. Later sections on this page teach the batch shape and relationship choices in more detail. Open the CLI docs for the broader command matrix, or getting started when you need the first-run walkthrough."
+      "body": "Author a FACTORY_REQUEST_BATCH with a stable requestId and the works you want to enqueue. Add relations when items must wait on each other or nest under a parent. Submit the batch to a running factory, and use dry-run when you want validation without creating work. Open the CLI docs for the broader command matrix, or getting started when you need the first-run walkthrough."
     },
     "workBatches": {
       "title": "Work Batches",
