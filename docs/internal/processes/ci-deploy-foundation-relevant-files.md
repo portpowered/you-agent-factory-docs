@@ -93,6 +93,12 @@ command-level verification of the Makefile targets and the YAML files above.
   verifier inventories as the required contributor path. Meta-doc lanes point
   Important Docs at `docs/temp/customer-ask.md` and `docs/temp/big-docs` even
   though `docs/temp/` is gitignored planner working state.
+- Root `AGENTS.md` for the CLI rewrite should describe the you-agent-factory
+  docs product and customer stories from `docs/temp/customer-ask.md` (install/run,
+  guides, concepts/techniques, comparisons, news), keep the planner-only `you`
+  rule, and point planners at `docs/temp/customer-ask.md` plus `docs/temp/big-docs`.
+  Prefer live standards paths under `factory/docs/standards/` when the old
+  `docs/graphing-standards.md` path is gone.
 
 ## Mergeability: brittle HTML / inventory test drift
 
