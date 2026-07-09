@@ -4,12 +4,17 @@ import {
   citationRecordSchema,
   classificationRecordSchema,
   conceptRecordSchema,
+  documentationRecordSchema,
+  guideRecordSchema,
   moduleRecordSchema,
   pageAssetConfigSchema,
   pageFrontmatterSchema,
+  pageKindSchema,
   pageMessagesSchema,
+  registryKindSchema,
   registryRecordSchema,
   tagRecordSchema,
+  techniqueRecordSchema,
 } from "./schemas";
 import { validateSidebarGroupingForRecord } from "./sidebar-grouping";
 
@@ -281,6 +286,43 @@ describe("registry schemas", () => {
     });
     expect(result.success).toBe(false);
   });
+
+  test("accepts CLI guide, technique, and documentation registry kinds", () => {
+    for (const [kind, schema] of [
+      ["guide", guideRecordSchema],
+      ["technique", techniqueRecordSchema],
+      ["documentation", documentationRecordSchema],
+    ] as const) {
+      const result = schema.safeParse({
+        ...validBaseFields,
+        id: `${kind}.example`,
+        slug: "example",
+        kind,
+      });
+      expect(result.success).toBe(true);
+      expect(registryKindSchema.safeParse(kind).success).toBe(true);
+      expect(
+        registryRecordSchema.safeParse({
+          ...validBaseFields,
+          id: `${kind}.example`,
+          slug: "example",
+          kind,
+        }).success,
+      ).toBe(true);
+    }
+  });
+
+  test("rejects unknown registry kinds", () => {
+    expect(registryKindSchema.safeParse("not-a-kind").success).toBe(false);
+    expect(
+      registryRecordSchema.safeParse({
+        ...validBaseFields,
+        id: "unknown.example",
+        slug: "example",
+        kind: "not-a-kind",
+      }).success,
+    ).toBe(false);
+  });
 });
 
 const validModuleFrontmatter = {
@@ -354,6 +396,32 @@ describe("page schemas", () => {
   test("accepts valid module page frontmatter", () => {
     const result = pageFrontmatterSchema.safeParse(validModuleFrontmatter);
     expect(result.success).toBe(true);
+  });
+
+  test("accepts CLI collection page kinds and rejects unknown kinds", () => {
+    for (const kind of [
+      "guide",
+      "concept",
+      "technique",
+      "documentation",
+    ] as const) {
+      expect(pageKindSchema.safeParse(kind).success).toBe(true);
+      expect(
+        pageFrontmatterSchema.safeParse({
+          ...validModuleFrontmatter,
+          kind,
+          registryId: `${kind}.example`,
+        }).success,
+      ).toBe(true);
+    }
+
+    expect(pageKindSchema.safeParse("not-a-kind").success).toBe(false);
+    expect(
+      pageFrontmatterSchema.safeParse({
+        ...validModuleFrontmatter,
+        kind: "not-a-kind",
+      }).success,
+    ).toBe(false);
   });
 
   test("accepts valid page messages with nested sections and asset keys", () => {

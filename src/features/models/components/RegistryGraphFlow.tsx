@@ -599,6 +599,12 @@ function formatRegistryKindLabel(kind?: RegistryKind): string | null {
   switch (kind) {
     case "concept":
       return "Concept";
+    case "guide":
+      return "Guide";
+    case "technique":
+      return "Technique";
+    case "documentation":
+      return "Documentation";
     case "model":
       return "Model";
     case "module":

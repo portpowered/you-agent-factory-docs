@@ -3,19 +3,25 @@ import type {
   ClassificationRecord,
   ConceptRecord,
   DatasetRecord,
+  DocumentationRecord,
   GraphRecord,
+  GuideRecord,
   ModelRecord,
   ModuleRecord,
   OrganizationRecord,
   PaperRecord,
   SystemRecord,
   TagRecord,
+  TechniqueRecord,
   TrainingRegimeRecord,
 } from "./schemas";
 
 export type RegistryRecord =
   | ModuleRecord
   | ConceptRecord
+  | GuideRecord
+  | TechniqueRecord
+  | DocumentationRecord
   | ClassificationRecord
   | ModelRecord
   | PaperRecord

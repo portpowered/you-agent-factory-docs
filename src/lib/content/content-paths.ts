@@ -134,7 +134,9 @@ export const REGISTRY_COLLECTIONS = [
   "classifications",
   "concepts",
   "datasets",
+  "documentation",
   "graphs",
+  "guides",
   "models",
   "modules",
   "organizations",
@@ -142,6 +144,7 @@ export const REGISTRY_COLLECTIONS = [
   "systems",
   "tables",
   "tags",
+  "techniques",
   "training-regimes",
 ] as const;
 
