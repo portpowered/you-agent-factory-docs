@@ -4,11 +4,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A tool is a named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work. Scaffold copy — full isolation-first definition lands in a later story."
+      "body": "A tool is a named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing work. Calling a tool means asking for a concrete action by name—read a file, run a command, or call a Factory Session tool such as you.factory_session.validate_source. The tool is that callable action, not the factory that schedules work and not the harness that runs the agent."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Tools are how agents and hosts act on the world and on the factory instead of only producing text. Scaffold copy — full why-it-matters narrative lands in a later story."
+      "body": "Without tools, agents and hosts mostly produce text. With tools, they can inspect a project, validate a workflow, start a session, or change work in the factory and on the machine. That is how factory work moves from advice into actions you can check and repeat."
     },
     "simpleExample": {
       "title": "Simple Example",
