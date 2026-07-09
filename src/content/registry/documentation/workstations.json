@@ -1,0 +1,14 @@
+{
+  "id": "documentation.workstations",
+  "slug": "workstations",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["workstations", "you workstations", "factory workstations"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T22:41:00.000Z",
+  "updatedAt": "2026-07-09T22:41:00.000Z"
+}

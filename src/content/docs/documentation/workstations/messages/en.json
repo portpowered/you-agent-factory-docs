@@ -1,0 +1,32 @@
+{
+  "title": "Workstations",
+  "description": "Author you-agent-factory workstations: workflow steps that consume inputs, optionally bind a worker, and route success, continue, rejection, and failure outcomes.",
+  "openingSummary": "A workstation is a workflow step in you-agent-factory. It consumes input places, may bind a worker, and routes accepted, continue, rejection, and failure outcomes through the factory topology.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers you-agent-factory workstations: what a workstation owns as a workflow step, how runtime kinds and scheduling behavior are named, and how outcomes route through success, continue, rejection, and failure paths. Use it when you need the web workstations contract for authoring steps in factory.json and workstations/<name>/AGENTS.md."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A workstation is a workflow step. It consumes one or more input places, may bind a worker for execution, and routes results through outputs, onContinue, onRejection, or onFailure. factory.json holds topology and route wiring. workstations/<name>/AGENTS.md (or inline runtime fields) holds the step prompt and workstation-owned runtime. Workers own backend and system instructions on their own page."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Declare each workstation in factory.json with a name, runtime type, optional worker, inputs, and route fields. Put the step-specific prompt and workstation-owned runtime in workstations/<name>/AGENTS.md when you use the split layout. Choose a public runtime type such as AGENT_RUN for prompt-rendered agent steps, or LOGICAL_MOVE when you need a no-worker token move. Concrete topology examples land in later sections of this reference."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web workstations reference for kinds, routing, and workstation-owned runtime. It is not a sync of packaged CLI docs, not the workers backend page, not the configuration overview, and not the guards, templates, or resources deep pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
