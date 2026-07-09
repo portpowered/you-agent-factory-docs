@@ -25,7 +25,8 @@ entry. Do not vendor or fork package source into this repo.
 | `src/lib/factory-components/host-package-surface.ts` | Minimal host import proving root + category resolution/typecheck |
 | `src/app/globals.css` | Single `@import "@you-agent-factory/components/styles.css"` after Tailwind (package README order) |
 | `src/lib/factory-components/host-package-styles.ts` | Resolves the published `styles.css` export map entry for smoke verification |
-| `src/features/factory-ui/*` | Thin re-export wrappers for graphs, charts, DataTable, CodePanel (later stories) |
+| `src/features/factory-ui/graphs.ts` | Thin re-export of `@you-agent-factory/components/graphs` (viewport/node/edge helpers); no domain logic or styles import |
+| `src/features/factory-ui/*` | Thin re-export wrappers for charts, DataTable, CodePanel (later stories) |
 | `src/lib/docs/component-manifest.ts` | Reusable coverage boundary retarget away from Atlas graph components (later story) |
 
 ## Styles import contract
@@ -37,6 +38,16 @@ entry. Do not vendor or fork package source into this repo.
 - Do **not** re-import package styles from `src/features/factory-ui/*` wrappers.
 - Prove the styles export resolves with `resolveFactoryComponentsStylesPath()`;
   do not add tests that only count `@import` lines in `globals.css`.
+
+## Thin factory-ui graph wrappers
+
+- Host path: `src/features/factory-ui/graphs.ts` — re-export only from
+  `@you-agent-factory/components/graphs`.
+- Smoke-test with fixture props via `@testing-library/react`.
+  `GraphViewportSurface` mounts without React Flow; `GraphNodeShell` /
+  handle badges need a `ReactFlowProvider` ancestor (same pattern as
+  `RegistryGraphFlow` tests).
+- Do not put registry IDs, Atlas copy, or data fetching in the wrapper module.
 
 ## Verification preference
 
