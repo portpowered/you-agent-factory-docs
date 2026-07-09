@@ -1,0 +1,66 @@
+{
+  "title": "Getting Started",
+  "description": "Install you-agent-factory, start a factory, and submit your first work.",
+  "openingSummary": "This quickstart walks install, first factory start, and first submit so you can run the CLI end to end.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Getting started is the short path from installing the CLI to submitting your first work against a running factory."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this guide when you are installing for the first time or verifying the install → run → submit loop on a new machine."
+    },
+    "install": {
+      "title": "Install",
+      "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system."
+    },
+    "firstYou": {
+      "title": "First You",
+      "body": "Start a factory so the runtime is live before you submit work. Use a named run for a concrete goal, or start the default factory."
+    },
+    "firstSubmit": {
+      "title": "First Submit",
+      "body": "Enqueue work against the running factory. Use unary submit for one item, or submit batch for a small JSON batch file."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Install the CLI, start a factory (or named run) and confirm it with session list, then submit work — in that order."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Do not submit work before a factory session is running. For OS-specific install edge cases, use the install deep-dive. For the full CLI command matrix, use the CLI docs."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "firstYouNamedRunLabel": "Named run",
+    "firstYouDefaultStartLabel": "Default factory start",
+    "firstYouSessionListLabel": "Confirm a live factory",
+    "firstSubmitUnaryLabel": "Unary submit",
+    "firstSubmitBatchLabel": "Batch submit",
+    "installDeepDive": "Install deep-dive",
+    "cliDocs": "CLI docs"
+  },
+  "callouts": {
+    "installDeepDive": {
+      "body": "These commands cover a basic install. OS-specific edge cases, custom install locations, and pinned versions live on the install deep-dive; you do not need that page open to finish a standard install."
+    },
+    "firstYouSessionCheck": {
+      "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."
+    },
+    "firstSubmitRunningFactory": {
+      "body": "Submit targets a running factory. Confirm a live session with session list before you enqueue work. Batch schema, relations, and dry-run details live on submitting-work and CLI docs."
+    }
+  }
+}

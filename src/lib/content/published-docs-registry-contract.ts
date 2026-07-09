@@ -13,16 +13,16 @@ import {
 import type { PageKind } from "@/lib/content/schemas";
 
 export const PUBLISHED_DOCS_SECTIONS = [
-  "guides",
-  "concepts",
-  "techniques",
-  "documentation",
   "glossary",
+  "concepts",
   "modules",
   "models",
   "papers",
   "training",
   "systems",
+  "guides",
+  "techniques",
+  "documentation",
 ] as const;
 
 export type PublishedDocsSection = (typeof PUBLISHED_DOCS_SECTIONS)[number];
@@ -60,16 +60,10 @@ export function docsSectionFromSlug(docsSlug: string): PublishedDocsSection {
 
 export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
   switch (entry.section) {
-    case "guides":
-      return guidePageHref(entry.slug);
-    case "concepts":
-      return conceptPageHref(entry.slug);
-    case "techniques":
-      return techniquePageHref(entry.slug);
-    case "documentation":
-      return documentationPageHref(entry.slug);
     case "glossary":
       return glossaryPageHref(entry.slug);
+    case "concepts":
+      return conceptPageHref(entry.slug);
     case "modules":
       return modulePageHref(entry.slug);
     case "models":
@@ -80,5 +74,11 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return trainingPageHref(entry.slug);
     case "systems":
       return systemPageHref(entry.slug);
+    case "guides":
+      return guidePageHref(entry.slug);
+    case "techniques":
+      return techniquePageHref(entry.slug);
+    case "documentation":
+      return documentationPageHref(entry.slug);
   }
 }

@@ -669,6 +669,138 @@ describe("canonical page surface audit", () => {
     }
   });
 
+  test("resolves documentation registry paths and ignores section .gitkeep when inferring page scope", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
+
+    try {
+      mkdirSync(join(repoRoot, "src/content/docs/documentation/cli/messages"), {
+        recursive: true,
+      });
+      mkdirSync(join(repoRoot, "src/content/registry/documentation"), {
+        recursive: true,
+      });
+
+      writeFileSync(
+        join(repoRoot, "src/content/docs/documentation/cli/page.mdx"),
+        `---\nkind: "documentation"\nregistryId: "documentation.cli"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+      );
+      writeJson(join(repoRoot, "src/content/registry/documentation/cli.json"), {
+        id: "documentation.cli",
+      });
+
+      const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
+        changedPaths: [
+          "src/content/docs/documentation/.gitkeep",
+          "src/content/docs/documentation/cli/page.mdx",
+          "src/content/docs/documentation/cli/messages/en.json",
+          "src/content/registry/documentation/.gitkeep",
+          "src/content/registry/documentation/cli.json",
+        ],
+        snapshot: {
+          generatedAtUtc: "2026-07-09T12:00:00.000Z",
+          rankedSurfaces: [],
+          recentCommitLimit: 40,
+          repoRoot,
+          topPaths: [],
+          worktrees: [],
+        },
+      });
+
+      expect(audit.pageScope.pageDirectory).toBe(
+        "src/content/docs/documentation/cli",
+      );
+      expect(audit.pageScope.registryPath).toBe(
+        "src/content/registry/documentation/cli.json",
+      );
+      expect(audit.budgetStatus).toBe("over-budget");
+      expect(audit.guidance.recommendedAction).toBe("declare-exception");
+      expect(formatCanonicalPageSurfaceAudit(audit)).toContain(
+        "first authored page under a rewrite-era CLI section",
+      );
+    } finally {
+      rmSync(repoRoot, { force: true, recursive: true });
+    }
+  });
+
+  test("allows first CLI-section page published-docs and local-docs wiring in declare-exception lane", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
+
+    try {
+      mkdirSync(join(repoRoot, "src/content/docs/documentation/cli/messages"), {
+        recursive: true,
+      });
+      mkdirSync(join(repoRoot, "src/content/registry/documentation"), {
+        recursive: true,
+      });
+      mkdirSync(join(repoRoot, "src/lib/content"), { recursive: true });
+
+      writeFileSync(
+        join(repoRoot, "src/content/docs/documentation/cli/page.mdx"),
+        `---\nkind: "documentation"\nregistryId: "documentation.cli"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+      );
+      writeJson(join(repoRoot, "src/content/registry/documentation/cli.json"), {
+        id: "documentation.cli",
+      });
+      writeFileSync(
+        join(repoRoot, "src/lib/content/published-docs-registry-contract.ts"),
+        "export const PUBLISHED_DOCS_SECTIONS = [];\n",
+      );
+      writeFileSync(
+        join(repoRoot, "src/lib/content/local-docs-page.ts"),
+        "export function parseLocalDocsPageRef() { return null; }\n",
+      );
+      writeFileSync(
+        join(repoRoot, "src/lib/content/documentation-page.ts"),
+        "export async function loadDocumentationPage() {}\n",
+      );
+      writeFileSync(
+        join(repoRoot, "src/lib/content/documentation-page-load.ts"),
+        "export async function loadDocumentationPageFromDisk() {}\n",
+      );
+      writeFileSync(
+        join(repoRoot, "src/lib/content/content-hrefs.ts"),
+        "export function documentationPageHref() { return '/docs/documentation/cli'; }\n",
+      );
+
+      const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
+        changedPaths: [
+          "src/content/docs/documentation/.gitkeep",
+          "src/content/docs/documentation/cli/page.mdx",
+          "src/content/registry/documentation/cli.json",
+          "src/lib/content/published-docs-registry-contract.ts",
+          "src/lib/content/local-docs-page.ts",
+          "src/lib/content/documentation-page.ts",
+          "src/lib/content/documentation-page-load.ts",
+          "src/lib/content/content-hrefs.ts",
+          "docs/internal/processes/content-page-generation-workflow-relevant-files.md",
+        ],
+        exception: {
+          reason:
+            "First documentation page requires published-docs and local-docs wiring.",
+        },
+        pageDirectory: "src/content/docs/documentation/cli",
+        snapshot: {
+          generatedAtUtc: "2026-07-09T12:00:00.000Z",
+          rankedSurfaces: [],
+          recentCommitLimit: 40,
+          repoRoot,
+          topPaths: [],
+          worktrees: [],
+        },
+      });
+
+      expect(audit.guidance.recommendedAction).toBe("declare-exception");
+      expect(audit.guidance.details.join("\n")).toContain(
+        "Visible exception declared",
+      );
+      expect(formatCanonicalPageSurfaceAudit(audit)).toContain(
+        "first CLI-section page exception",
+      );
+    } finally {
+      rmSync(repoRoot, { force: true, recursive: true });
+    }
+  });
+
   test("allows glossary-bridge dual-route discovery and convergence fixture updates in declare-exception lane", () => {
     const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
 
@@ -785,6 +917,64 @@ describe("canonical page surface audit", () => {
       expect(audit.budgetStatus).toBe("over-budget");
       expect(audit.guidance.recommendedAction).toBe("split-to-page-owned-work");
       expect(audit.guidance.headline).toContain("Split this branch back");
+    } finally {
+      rmSync(repoRoot, { force: true, recursive: true });
+    }
+  });
+
+  test("treats retiring Atlas root placeholder as page-owned for matching slug", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
+
+    try {
+      mkdirSync(
+        join(repoRoot, "src/content/docs/guides/getting-started/messages"),
+        { recursive: true },
+      );
+      mkdirSync(join(repoRoot, "src/content/registry/guides"), {
+        recursive: true,
+      });
+
+      writeFileSync(
+        join(repoRoot, "src/content/docs/guides/getting-started/page.mdx"),
+        `---\nkind: "guide"\nregistryId: "guide.getting-started"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+      );
+      writeJson(
+        join(repoRoot, "src/content/docs/guides/getting-started/assets.json"),
+        [],
+      );
+      writeJson(
+        join(repoRoot, "src/content/registry/guides/getting-started.json"),
+        {
+          id: "guide.getting-started",
+        },
+      );
+
+      const snapshot: ConflictHotspotSnapshot = {
+        generatedAtUtc: "2026-07-09T12:00:00.000Z",
+        rankedSurfaces: [],
+        recentCommitLimit: 40,
+        repoRoot,
+        topPaths: [],
+        worktrees: [],
+      };
+
+      const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
+        changedPaths: [
+          "src/content/docs/getting-started.mdx",
+          "src/content/docs/guides/getting-started/page.mdx",
+          "src/content/docs/guides/getting-started/messages/en.json",
+          "src/content/docs/guides/getting-started/assets.json",
+          "src/content/registry/guides/getting-started.json",
+        ],
+        snapshot,
+      });
+
+      expect(audit.pageScope.registryId).toBe("guide.getting-started");
+      expect(audit.budgetStatus).toBe("within-budget");
+      expect(audit.guidance.recommendedAction).toBe("keep-routine");
+      expect(
+        audit.classifications.every((item) => item.kind === "page-owned"),
+      ).toBe(true);
     } finally {
       rmSync(repoRoot, { force: true, recursive: true });
     }

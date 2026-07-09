@@ -67,8 +67,8 @@ describe("CLI empty content roots", () => {
     expect(isCliDocsContentRoot("modules")).toBe(false);
   });
 
-  test("keeps guides, techniques, and documentation docs roots empty of page bundles", () => {
-    for (const id of ["guides", "techniques", "documentation"] as const) {
+  test("keeps guides and techniques docs roots empty of page bundles", () => {
+    for (const id of ["guides", "techniques"] as const) {
       const root = getCliDocsContentRoot(id);
       expect(existsSync(root)).toBe(true);
       expect(listAuthoredPageBundleSlugs(root)).toEqual([]);
@@ -76,7 +76,18 @@ describe("CLI empty content roots", () => {
     }
   });
 
+  test("keeps the documentation content root available for authored page bundles", () => {
+    const root = getCliDocsContentRoot("documentation");
+    expect(existsSync(root)).toBe(true);
+    expect(cliCollectionAllowsEmptyContent("documentation")).toBe(true);
+    expect(isCliDocsContentRoot("documentation")).toBe(true);
+  });
+
   test("keeps empty CLI registry directories free of authored topic records", () => {
+    expect([...EMPTY_CLI_REGISTRY_COLLECTION_DIRS]).toEqual([
+      "guides",
+      "techniques",
+    ]);
     for (const collection of EMPTY_CLI_REGISTRY_COLLECTION_DIRS) {
       const root = getEmptyCliRegistryCollectionRoot(collection);
       expect(root).toBe(join(REGISTRY_ROOT, collection));
@@ -85,14 +96,18 @@ describe("CLI empty content roots", () => {
     }
   });
 
-  test("loadRegistry succeeds with empty CLI registry collections and no CLI topic records", async () => {
+  test("loadRegistry succeeds with empty guide/technique collections and documentation kind records", async () => {
     const indexes = await loadRegistry();
 
     for (const record of indexes.byId.values()) {
       expect(record.kind).not.toBe("guide");
       expect(record.kind).not.toBe("technique");
-      expect(record.kind).not.toBe("documentation");
     }
+
+    const documentationRecords = [...indexes.byId.values()].filter(
+      (record) => record.kind === "documentation",
+    );
+    expect(documentationRecords.length).toBeGreaterThan(0);
   });
 
   test("section index empty state does not require starter pages for empty CLI collections", async () => {

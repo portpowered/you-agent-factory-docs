@@ -1,9 +1,20 @@
 # Content Page Generation Workflow Relevant Files
 
 Use these files when adding or updating routine canonical docs pages (model,
-concept, module, system, paper, training, or glossary). The goal is to add page
-bundles and registry records without editing shared helper surfaces for
-page-specific directory paths.
+concept, module, system, paper, training, glossary, or documentation). The goal
+is to add page bundles and registry records without editing shared helper
+surfaces for page-specific directory paths.
+
+First published `documentation` pages also need `documentation` in
+`PUBLISHED_DOCS_SECTIONS` / `documentationPageHref`, and
+`registryDirectoryByKind.documentation` in the canonical page surface audit.
+See [empty-cli-taxonomy-relevant-files.md](./empty-cli-taxonomy-relevant-files.md).
+Published local page bundles must include Fumadocs `title` (and usually
+`description`) in `page.mdx` frontmatter — `pageSchema` requires `title` once
+the page is no longer excluded as draft. Local-message documentation pages also
+need `documentation` in `LOCAL_DOCS_SECTIONS` plus
+`documentation-page.ts` / `documentation-page-load.ts` so
+`ModulePageProviders` wraps the compiled MDX (same pattern as concepts/systems).
 
 ## Derived page directory contract
 
@@ -49,6 +60,59 @@ Before the first authored page under a rewrite-era CLI collection can pass
    `.source` mid-validate and fail with `Cannot find module '../../.source/server'`.
    Run `make validate-data`, `bun run lint`, and `bun run test` sequentially
    when diagnosing page-bundle validation.
+
+## Guide quickstart commands and message keys
+
+When a guide needs copyable shell commands (install, first-run, submit):
+
+1. Put fenced code blocks in `page.mdx` (not in message JSON). They render
+   through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents` and
+   stay always-visible with a copy control.
+2. Keep OS labels and short prose in colocated messages. `pageSectionSchema`
+   only allows `title` / `body` per section — extra keys under
+   `sections.<id>` are stripped by Zod and then fail
+   `make validate-data` as missing MDX message keys.
+3. For short non-section strings (for example OS labels), use top-level
+   `links.<key>` (string map). For an extra prose block that is not a section
+   heading, use `callouts.<id>.body` with `<T k="callouts.<id>.body" />` —
+   that stores the string without rendering the `Callout` UI component.
+
+Canonical install command forms match the home CTA in
+`src/content/messages/*/common.json` (`home.installMacosLinuxCommand` /
+`home.installWindowsCommand`). First-run / session forms used on the
+getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
+`you session list`. First-submit forms: unary
+`you submit --name <name> --work-type-name <type> --payload <path>` and
+`you submit batch <path>` (keep the quickstart free of full batch schema /
+relation dumps — those belong on submitting-work / CLI docs).
+
+Guide kind is outside the strict page-template conformance set, so extra
+quickstart `Section`s (for example `install`, `first-you`, `first-submit`)
+are allowed when colocated message keys validate. Browser-verify MDX or
+message edits with `bun run build` then `bun run start` on a unique port —
+plain `start` serves the last production build and will look stale otherwise.
+
+When linking parallel-lane sibling destinations that are not yet published in
+this worktree (for example getting-started → `/docs/documentation/install` and
+`/docs/documentation/cli`), prefer page-local `<LocalizedLinkList>` with stable
+hrefs and `links.*` labels. Do not put those ids in registry `relatedIds` until
+the sibling registry records exist here — unresolved related ids fail
+`validate-data`, and RelatedDocs also drops unpublished targets.
+
+## Shipping non-en locale stubs on a page bundle
+
+Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
+files is what derives the page as shipped for that locale
+(`deriveShippedLocalizedDocsManifest` / `bun run generate:shipped-localized-docs`).
+Missing non-default messages fail closed (no English fallback at load time).
+
+Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
+locale message files (the derive test requires it). On a first CLI-section page,
+that generated file plus a narrow `shipped-localized-docs.server.test.ts`
+expectation update stay inside the documented `declare-exception` allowlist —
+see [canonical-page-surface-budget-relevant-files.md](./canonical-page-surface-budget-relevant-files.md#first-authored-page-under-a-rewrite-era-cli-section).
+Leave other `prepare:content-runtime` outputs uncommitted when they stay
+gitignored.
 
 ## Routine preflight for ordinary page branches
 
@@ -131,6 +195,28 @@ page-local but CI will require narrowly-scoped shared updates:
 Document the exception explicitly in the work-item PRD when this collision is
 inherent to the slice.
 
+## First published documentation (or other empty CLI collection) page
+
+The first published page in a previously empty CLI collection (`documentation`,
+and later `guides` / `techniques`) is not a routine page-only lane. Publishing
+requires shared wiring that will trip
+`bun run audit:canonical-page-surface`:
+
+- `PUBLISHED_DOCS_SECTIONS` + collection `*PageHref` in content-hrefs /
+  published-docs registry contract
+- `LOCAL_DOCS_SECTIONS` + `<kind>-page(-load).ts` local MDX loader path
+- `registryDirectoryByKind.<kind>` in the canonical page surface audit
+- empty-root / section-index tests that previously forbade authored bundles
+
+Document the first-collection publish-wiring exception in the work-item PRD
+(project ACs + story surface-budget criteria) so review does not reject a
+necessary shared diff as “page-only AC failure.” Later pages in the same
+collection should stay page-local and in-budget.
+
+Prefer behavioral coverage for the shipped page (section-index listing title /
+summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
+and next-step links) over inventory-only “slug exists on disk” assertions.
+
 ## Glossary-derived browse and sidebar sections
 
 When glossary decomposition needs new reader-facing top-level areas such as
@@ -170,12 +256,12 @@ routes:
 - Forward next-step links to sibling lanes that are not yet published on this
   branch: prefer `LocalizedLinkList` in the how-to-use (or equivalent) section
   with canonical planned hrefs (for example `/docs/guides/getting-started`,
-  `/docs/documentation/cli`). `RelatedDocs` filters out items without published
-  hrefs, so curated `relatedIds` alone will not show reviewer-visible navigation
-  for unpublished targets. `LocalizedLinkList` is registered in MDX components
-  and is not in `LINK_VALIDATION_MARKDOWN_COMPONENTS`, so planned destinations
-  stay mergeable under current linkcheck rules without authoring the target
-  pages.
+  `/docs/documentation/cli`, `/docs/documentation/architecture-of-system`).
+  `RelatedDocs` filters out items without published hrefs, so curated
+  `relatedIds` alone will not show reviewer-visible navigation for unpublished
+  targets. `LocalizedLinkList` is registered in MDX components and is not in
+  `LINK_VALIDATION_MARKDOWN_COMPONENTS`, so planned destinations stay
+  mergeable under current linkcheck rules without authoring the target pages.
 - `validatePublishedGlossaryClassification` in `validate-glossary-classification.ts`
   blocks published glossary pages that lack `primaryClassificationId` unless
   `sidebarGrouping.glossary` provides an explicit editorial fallback; wired through
@@ -232,7 +318,85 @@ const pageDir = getDocsPageDir("modules", "grouped-query-attention");
 ```
 
 Supported `section` values: `glossary`, `concepts`, `modules`, `models`,
-`papers`, `training`, `systems`.
+`papers`, `training`, `systems`, `guides`, `techniques`, `documentation`.
+
+When publishing the first authored page under a rewrite-era CLI section
+(`guides`, `techniques`, or `documentation`), also confirm:
+
+1. `PUBLISHED_DOCS_SECTIONS` and `publishedDocsHrefFromEntry` in
+   `src/lib/content/published-docs-registry-contract.ts` recognize that section,
+   with matching `*PageHref` helpers in `src/lib/content/content-hrefs.ts`.
+2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
+   `src/lib/content/local-docs-page.ts` include the section, with a matching
+   `*-page.ts` / `*-page-load.ts` pair (same shape as `system-page*`) so
+   message-backed MDX resolves through `ModulePageProviders`.
+3. `bun run audit:canonical-page-surface -- --page-dir src/content/docs/<section>/<slug> --exception-reason "..."`
+   reports `declare-exception` for that first-page wiring (not
+   `redirect-to-throughput-prd`). The audit maps CLI registry kinds
+   (`guide` / `technique` / `documentation`) and ignores section-root
+   `.gitkeep` when inferring page scope. Repeat the exception reason in the PR
+   conversation comment.
+
+Without (1), `bun run prepare:content-runtime` fails while generating the
+published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to
+Fumadocs frontmatter title and 404s because CLI templates keep title/description
+in colocated messages. Without (3), review preflight cannot classify the
+first-page shared wiring as the documented exception lane.
+
+Fumadocs `pageSchema` still requires frontmatter `title` (and accepts optional
+`description`) at webpack/static-export time. For local-message CLI pages, set
+`title: ""` and `description: ""` on that page's `page.mdx` frontmatter (same
+pattern as published glossary pages) so the Fumadocs collection validates, while
+the shell continues to render `messages.title` / `messages.description` via
+`ModulePageProviders`. Do not put the real reader title only in Fumadocs
+frontmatter, and do not edit shared `docs/templates/{concept,documentation,guide,technique}.mdx`
+just to add those empty keys — that pulls a page lane out of the documented
+first-CLI-section `declare-exception` allowlist into `redirect-to-throughput-prd`.
+
+### Documentation CLI install commands (page-local)
+
+For `documentation/cli` install copy, keep OS labels and install commands under
+page `links.*` keys (not under `sections.*` — `pageSectionSchema` only keeps
+`title`/`body`, so extra section fields are stripped on load). Render them as
+always-visible `<pre><code><T k="links.…" /></code></pre>` blocks inside a
+`#install` `Section`. Reuse the same product release strings as home
+(`install.sh` curl | sh and PowerShell `irm` | `iex`). Do not hard-code command
+strings in MDX and do not import `HomeCommandBlock` into docs MDX (home-only CTA
+primitive).
+
+Canonical commands:
+
+- macOS/Linux: `curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh`
+- Windows: `irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex`
+
+### Documentation CLI command matrix (page-local)
+
+For `documentation/cli` commands copy, keep a distinct `#commands` `Section`
+after `#how-to-use` (template order stays intact; `#commands` is an extra
+teaching surface). Put matrix headers and cell strings under page `links.*`
+keys — same reason as install: `pageSectionSchema` only keeps `title`/`body`.
+Render an always-visible HTML `<table>` with `<T k="links.…" />` in each cell
+so the running-factory distinction is readable without hover and without
+hard-coded prose in MDX.
+
+Do not use `PageAsset` table stubs for this matrix (they only echo `tableId`).
+Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
+readers while keeping the run/submit/session/work/docs running-factory
+distinctions clear.
+
+### Documentation CLI key concepts, limits, and sibling discovery
+
+For `documentation/cli`, keep `#key-concepts` before the install/commands
+teaching surfaces so readers learn start-a-factory vs submit-to-a-running-factory
+before the matrix. Keep `#limits-and-assumptions` as the scope boundary: web
+install + command matrix only — not a flag dump, not a packaged-docs sync, and
+not harness/MCP/config deep pages.
+
+Wire sibling discovery through registry `relatedIds` + `<RelatedDocs />` only
+when the sibling registry records and published pages exist (for example
+getting-started or install deep-dive). Omit unpublished sibling ids from
+`relatedIds` so validation and related rendering stay clean; do not invent
+page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.

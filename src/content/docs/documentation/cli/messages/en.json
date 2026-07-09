@@ -1,0 +1,76 @@
+{
+  "title": "CLI",
+  "description": "Install the you-agent-factory CLI and look up the core you commands for starting a factory, submitting work, checking sessions, and reading packaged docs.",
+  "openingSummary": "The you-agent-factory CLI is the command-line entrypoint for installing the factory tooling and operating long-running agent work from your machine.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers the you-agent-factory CLI: how to install the you binary, and which core commands start a factory, submit work, inspect sessions and work, or print packaged docs. It is the durable CLI lookup surface for customers who need install entrypoints and command purpose at a glance."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A factory is the long-running runtime that keeps agent work persistent on your machine. Starting a factory means launching that runtime with forms such as you or you run so the host can accept work. Submitting work means sending a work item or batch to a factory that is already running, with forms such as you submit or you submit batch. Session and work commands inspect live factory state. Packaged docs commands print reference markdown without needing a live factory."
+    },
+    "install": {
+      "title": "Install",
+      "body": "Install the you CLI with the published release entrypoint for your operating system. These commands install the binary; they do not start a factory."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Install the CLI, then use the command matrix below to choose the right you command. Start a factory when you need a local runtime. Submit work only after a factory is already running. Use session and work commands to inspect live state, and you docs when you need packaged reference topics without a live factory."
+    },
+    "commands": {
+      "title": "Commands",
+      "body": "Use this matrix to pick a core you command and see whether a factory must already be running. Startup forms create or attach to a local runtime. Submit forms enqueue work against a live factory. Docs print packaged reference markdown offline."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web CLI reference for install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    "commandMatrixCommandHeader": "Command",
+    "commandMatrixPurposeHeader": "Purpose",
+    "commandMatrixRunningFactoryHeader": "Factory must already be running?",
+    "commandMatrixYouCommand": "you",
+    "commandMatrixYouPurpose": "Start the default local factory and dashboard from the current project.",
+    "commandMatrixYouRunning": "No — this starts the runtime.",
+    "commandMatrixYouRunDirCommand": "you run --dir <factory>",
+    "commandMatrixYouRunDirPurpose": "Start or attach to a local factory from an explicit factory directory.",
+    "commandMatrixYouRunDirRunning": "No — this starts the runtime.",
+    "commandMatrixYouRunNamedCommand": "you run --named <factory> / you run --factory <path>",
+    "commandMatrixYouRunNamedPurpose": "Run a named or portable factory without guessing the local directory layout.",
+    "commandMatrixYouRunNamedRunning": "No — this starts the runtime.",
+    "commandMatrixYouRunWorkCommand": "you run --work <batch.json>",
+    "commandMatrixYouRunWorkPurpose": "Submit batch JSON as part of local factory startup, not steady-state ingress.",
+    "commandMatrixYouRunWorkRunning": "No when used with a startup form such as --dir.",
+    "commandMatrixYouSubmitCommand": "you submit",
+    "commandMatrixYouSubmitPurpose": "Submit one work item to a factory that is already accepting work.",
+    "commandMatrixYouSubmitRunning": "Yes",
+    "commandMatrixYouSubmitBatchCommand": "you submit batch",
+    "commandMatrixYouSubmitBatchPurpose": "Upsert batch JSON to a running factory session.",
+    "commandMatrixYouSubmitBatchRunning": "Yes",
+    "commandMatrixYouSessionListCommand": "you session list",
+    "commandMatrixYouSessionListPurpose": "Check whether a factory host has open sessions before submitting work.",
+    "commandMatrixYouSessionListRunning": "Yes — talks to a running host.",
+    "commandMatrixYouWorkCommand": "you work list / you work show",
+    "commandMatrixYouWorkPurpose": "Inspect work items from a running factory.",
+    "commandMatrixYouWorkRunning": "Yes",
+    "commandMatrixYouDocsCommand": "you docs / you docs <topic>",
+    "commandMatrixYouDocsPurpose": "Print packaged reference markdown from the installed binary.",
+    "commandMatrixYouDocsRunning": "No"
+  }
+}

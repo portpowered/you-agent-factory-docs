@@ -13,21 +13,22 @@ import {
 
 /**
  * Docs content sections that are rewrite-era CLI collection targets.
- * `guides`, `techniques`, and `documentation` ship empty of authored page
- * bundles. `concepts` is designated the same CLI target (empty starters) while
- * remaining Atlas concept pages stay until `rewrite-delete-atlas-domain`.
+ * `guides` and `techniques` still ship empty of authored page bundles.
+ * `documentation` may contain authored topic pages. `concepts` is designated
+ * the same CLI target (empty starters) while remaining Atlas concept pages
+ * stay until `rewrite-delete-atlas-domain`.
  */
 export const CLI_DOCS_CONTENT_ROOT_SECTIONS = CLI_DOCS_COLLECTION_IDS;
 
 /**
  * Registry directories that must stay empty of authored CLI topic records in
  * this lane. Concepts keep existing Atlas registry records until the delete
- * lane owns removal.
+ * lane owns removal. `documentation` is omitted because authored documentation
+ * topic records are allowed.
  */
 export const EMPTY_CLI_REGISTRY_COLLECTION_DIRS = [
   "guides",
   "techniques",
-  "documentation",
 ] as const satisfies readonly RegistryCollection[];
 
 export type EmptyCliRegistryCollectionDir =

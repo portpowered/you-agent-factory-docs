@@ -62,6 +62,10 @@ const CLI_SECTION_INDEX_CASES = [
   },
 ] as const;
 
+const CLI_EMPTY_SECTION_INDEX_CASES = CLI_SECTION_INDEX_CASES.filter(
+  (section) => section.collectionId !== "documentation",
+);
+
 describe("CLI section index messages", () => {
   it("loads index copy for guides, concepts, techniques, and documentation", async () => {
     const messages = await loadUiMessages();
@@ -83,7 +87,7 @@ const CLI_EMPTY_STATE_ATLAS_PHRASING =
   /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
 
 describe("CLI section index page render", () => {
-  for (const section of CLI_SECTION_INDEX_CASES) {
+  for (const section of CLI_EMPTY_SECTION_INDEX_CASES) {
     it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
       const messages = await loadUiMessages();
       const indexMessages = messages[section.messageKey];
@@ -108,6 +112,28 @@ describe("CLI section index page render", () => {
       );
     });
   }
+
+  it("renders the documentation index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.documentationIndex;
+    const html = renderToStaticMarkup(await DocumentationIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("What is you-agent-factory");
+    expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
+    expect(html).toContain(
+      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+    );
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
 });
 
 describe("localized CLI section index page render", () => {
@@ -145,7 +171,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the vietnamese documentation index with localized title and empty-state copy", async () => {
+  it("renders the vietnamese documentation index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("vi");
     const html = renderToStaticMarkup(
       await LocalizedDocumentationIndexPage({
@@ -154,9 +180,15 @@ describe("localized CLI section index page render", () => {
     );
 
     expect(html).toContain(messages.documentationIndex.title);
-    expect(html).toContain(messages.documentationIndex.emptyTitle);
-    expect(html).toContain(messages.documentationIndex.emptyDescription);
-    expect(html).toContain('href="/vi"');
+    expect(html).toContain(
+      `aria-label="${messages.documentationIndex.listLabel}"`,
+    );
+    expect(html).toContain("What is you-agent-factory");
+    expect(html).toContain("/vi/docs/documentation/what-is-you-agent-factory");
+    expect(html).toContain(
+      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+    );
+    expect(html).not.toContain(messages.documentationIndex.emptyTitle);
     expect(messages.documentationIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );

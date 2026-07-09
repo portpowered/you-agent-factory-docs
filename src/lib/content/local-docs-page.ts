@@ -4,6 +4,8 @@ import { loadDocumentationPage } from "@/lib/content/documentation-page";
 import type { LoadedDocumentationPage } from "@/lib/content/documentation-page-load";
 import { loadGlossaryPage } from "@/lib/content/glossary-page";
 import type { LoadedGlossaryPage } from "@/lib/content/glossary-page-load";
+import { loadGuidePage } from "@/lib/content/guide-page";
+import type { LoadedGuidePage } from "@/lib/content/guide-page-load";
 import { loadModelPage } from "@/lib/content/model-page";
 import type { LoadedModelPage } from "@/lib/content/model-page-load";
 import { loadModulePage } from "@/lib/content/module-page";
@@ -21,8 +23,9 @@ import {
 } from "@/lib/i18n/locale-routing";
 
 export type LocalDocsPageRef =
-  | { section: "documentation"; slug: string }
+  | { section: "guides"; slug: string }
   | { section: "concepts"; slug: string }
+  | { section: "documentation"; slug: string }
   | { section: "glossary"; slug: string }
   | { section: "modules"; slug: string }
   | { section: "models"; slug: string }
@@ -31,8 +34,9 @@ export type LocalDocsPageRef =
   | { section: "systems"; slug: string };
 
 export type LoadedLocalDocsPage =
-  | LoadedDocumentationPage
+  | LoadedGuidePage
   | LoadedConceptPage
+  | LoadedDocumentationPage
   | LoadedGlossaryPage
   | LoadedModulePage
   | LoadedModelPage
@@ -41,8 +45,9 @@ export type LoadedLocalDocsPage =
   | LoadedSystemPage;
 
 const LOCAL_DOCS_SECTIONS = new Set([
-  "documentation",
+  "guides",
   "concepts",
+  "documentation",
   "glossary",
   "modules",
   "models",
@@ -97,10 +102,12 @@ export async function loadLocalDocsPage(
   locale: SiteLocale = defaultLocale,
 ): Promise<LoadedLocalDocsPage> {
   switch (ref.section) {
-    case "documentation":
-      return loadDocumentationPage(ref.slug, locale);
+    case "guides":
+      return loadGuidePage(ref.slug, locale);
     case "concepts":
       return loadConceptPage(ref.slug, locale);
+    case "documentation":
+      return loadDocumentationPage(ref.slug, locale);
     case "glossary":
       return loadGlossaryPage(ref.slug, locale);
     case "modules":
