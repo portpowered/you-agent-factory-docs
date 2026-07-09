@@ -1,4 +1,4 @@
-.PHONY: setup check dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build build-export budget component-coverage ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status verify-export-routes verify-export-search-shell verify-export-search-handoff verify-export-search-ux verify-phase-1-ux verify-phase-1-convergence verify-phase-1-built-app-convergence verify-phase-1-follow-up-convergence verify-phase-1-batch-012-convergence verify-phase-1-batch-013-convergence verify-phase-1-github-pages-convergence verify-phase-1-github-pages-deploy-convergence verify-phase-2-3-reconciliation-convergence verify-rendered-quality-baseline verify-rendered-quality-regression
+.PHONY: setup check dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build build-app-with-atlas-verifiers build-export budget component-coverage ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status verify-export-routes verify-export-search-shell verify-export-search-handoff verify-export-search-ux verify-phase-1-ux verify-phase-1-convergence verify-phase-1-built-app-convergence verify-phase-1-follow-up-convergence verify-phase-1-batch-012-convergence verify-phase-1-batch-013-convergence verify-phase-1-github-pages-convergence verify-phase-1-github-pages-deploy-convergence verify-phase-2-3-reconciliation-convergence verify-rendered-quality-baseline verify-rendered-quality-regression
 
 # Maintainer and CI contract: setup installs deps; check runs typecheck + lint;
 # test/build/budget/component-coverage are the stages referenced by .github/workflows.
@@ -44,13 +44,17 @@ component-coverage:
 	@echo "component-coverage: pass (transitional — component coverage gate not enforced during rewrite foundation)"
 
 build:
+	bun run build:export
+	bun ./scripts/verify-static-export-out-dir.ts
+
+# Opt-in Atlas production-build verifiers (not part of CI/deploy make build).
+build-app-with-atlas-verifiers:
 	bun run build
 	bun ./scripts/verify-phase-1-static-routes.ts
 	bun ./scripts/verify-grouped-query-attention-built-route.ts
 	bun ./scripts/verify-docs-footer-hover-built-route.ts
 
-build-export:
-	bun run build:export
+build-export: build
 	bun ./scripts/verify-phase-1-export-routes.ts
 	bun ./scripts/verify-phase-1-export-search-shell.ts
 	bun ./scripts/verify-phase-1-export-search-handoff.ts

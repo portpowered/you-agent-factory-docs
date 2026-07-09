@@ -5,7 +5,7 @@ import { blogPostHref, listBlogSlugs } from "@/lib/content/blog-page-load";
 import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
 import { hasBlogPostMessagesForLocale } from "@/lib/content/blog-post-list";
 import {
-  generateStaticLocaleParams,
+  localizeStaticParams,
   resolveRouteLocaleOrNotFound,
 } from "@/lib/i18n/route-locale";
 
@@ -13,18 +13,11 @@ type LocalizedBlogPostPageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
-export function generateStaticParams() {
-  const params: Array<{ locale: string; slug: string }> = [];
-
-  for (const { locale } of generateStaticLocaleParams()) {
-    for (const slug of listBlogSlugs()) {
-      if (hasBlogPostMessagesForLocale(slug, locale)) {
-        params.push({ locale, slug });
-      }
-    }
-  }
-
-  return params;
+export async function generateStaticParams() {
+  // Non-default locales use this route tree; Next.js static export requires at
+  // least one param per dynamic route even when localized messages are absent
+  // (the page calls notFound() for missing locale sidecars).
+  return localizeStaticParams(listBlogSlugs().map((slug) => ({ slug })));
 }
 
 export async function generateMetadata({
