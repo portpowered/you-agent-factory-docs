@@ -1,6 +1,6 @@
 # Learn Language Models
 
-[![CI](https://github.com/portpowered/ai-model-reference/actions/workflows/ci.yml/badge.svg)](https://github.com/portpowered/ai-model-reference/actions/workflows/ci.yml)
+[![CI](https://github.com/portpowered/you-agent-factory-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/portpowered/you-agent-factory-docs/actions/workflows/ci.yml)
 
 A static AI model reference site for large language model components, concepts,
 papers, training regimes, systems ideas, and architecture variants.
@@ -75,34 +75,28 @@ placeholder docs route.
 
 ## Static export (GitHub Pages)
 
-The default `bun run build` / `make build` path keeps the standard Next.js
-production build under `.next/` for `next start` and existing Phase 1 route
-verifiers. Use the static export path when you need a GitHub Pages–compatible
-`out/` artifact instead of `next start`—for example when validating
-project-site base paths locally or confirming the same artifact the deploy
-workflow publishes.
+**CI / Pages contract:** `make build` runs `bun run build:export`
+(`NEXT_STATIC_EXPORT=1`) and emits `out/`. `.github/workflows/ci.yml` and
+`.github/workflows/deploy-pages.yml` both call `make build`; the Pages validate
+job uploads that `out/` directory.
 
-**Single command:** `make build-export` runs the export build and verifies the
-`out/` artifact in one step. It is the local verification command and the deploy
-workflow build entrypoint (`.github/workflows/deploy.yml` runs the same target on
-`main` pushes with `GITHUB_PAGES_BASE_PATH=ai-model-reference`). The same export
-contract is covered by `make test-build-contract` in `make ci` so both the
-`.next/` production contract and the GitHub Pages `out/` artifact stay verified
-without duplicate CI builds.
+```sh
+make build
+```
+
+**Opt-in local verification:** `make build-export` runs the same export, then
+Phase 1 export route/search verifiers. It is not invoked by CI or deploy-pages.
 
 ```sh
 make build-export
 ```
 
-That runs `bun run build:export` (sets `NEXT_STATIC_EXPORT=1`, which toggles
-`output: "export"` and `images.unoptimized` in `next.config.ts`), then
-`verify-phase-1-export-routes`, which exits non-zero when `out/` is missing,
-empty, or lacks expected Phase 1 reader routes and content markers (`/`,
-`/docs/architecture`, `/docs/glossary`, `/docs/modules/grouped-query-attention`,
-`/tags`, and `/tags/attention`), then `verify-phase-1-export-search-handoff`,
-which exits non-zero when `out/api/search` is missing or when Phase 1 static
-search queries (`GQA`, `attention`, `KV cache`) fail against the export bootstrap
-payload.
+`bun run build:export` sets `NEXT_STATIC_EXPORT=1`, which toggles
+`output: "export"` and `images.unoptimized` in `next.config.ts`. Opt-in
+`make build-export` then runs `verify-phase-1-export-routes` (exits non-zero when
+`out/` is missing, empty, or lacks expected Phase 1 reader routes) and
+`verify-phase-1-export-search-handoff` (exits non-zero when `out/api/search` is
+missing or Phase 1 static search queries fail against the export bootstrap).
 
 To verify an existing export without rebuilding:
 
@@ -127,7 +121,7 @@ slash) when running the export build. The value configures matching
 the project path:
 
 ```sh
-GITHUB_PAGES_BASE_PATH=/ai-model-reference make build-export
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
 ```
 
 When `GITHUB_PAGES_BASE_PATH` is unset, export builds keep `/` as the base for
@@ -184,8 +178,9 @@ update steps live in
 machine-readable entries are in `src/lib/docs/component-manifest.ts`.
 
 Run the manifest gate locally with `make coverage` (same as `bun run coverage`).
-`make ci` includes this gate after `make test` so GitHub Actions enforces the
-same manifest-scoped contract—there are no repository-wide coverage thresholds.
+The older aggregate `make ci` target still includes this gate after `make test`.
+Rewrite-era CI calls transitional `make component-coverage` instead; restore a
+rewrite-safe coverage gate there when fixtures allow.
 
 ## Component example harness
 
@@ -224,16 +219,18 @@ release, rollback, and commit-SHA traceability live in
 [docs/operations.md](./docs/operations.md).
 
 Merges to `main` trigger GitHub Pages deployment via
-`.github/workflows/deploy.yml`, which builds `out/` with `make build-export` and
+`.github/workflows/deploy-pages.yml`, which validates with the Makefile contract
+(`make setup` → `check` → `test` → `build` → `budget`), uploads `out/`, and
 publishes to the project site. See [docs/operations.md](./docs/operations.md) for
 required Pages settings, deploy check visibility on `main`, and commit-SHA
 traceability.
 
-`.github/workflows/ci.yml` remains the quality gate on pull requests and `main`
-pushes; it runs `make ci` only and does not replace or invoke the deploy
-workflow. Preview deployments for pull requests remain out of scope for Phase 1.
+`.github/workflows/ci.yml` remains the quality gate on pull requests and pushes;
+it runs `make setup` → `check` → `test` → `build` → `budget` →
+`component-coverage` and does not replace or invoke deploy-pages. Preview
+deployments for pull requests remain out of scope for Phase 1.
 
-See the [Actions tab](https://github.com/portpowered/ai-model-reference/actions)
+See the [Actions tab](https://github.com/portpowered/you-agent-factory-docs/actions)
 for CI and deploy run history on pull requests and `main`.
 
 ## Quality Gates
@@ -249,8 +246,12 @@ repository settings, not from files in this repo.
 On a clean clone with no gitignored build artifacts, the minimal setup is:
 
 ```sh
-bun install --frozen-lockfile
-make ci
+make setup
+make check
+make test
+make build
+make budget
+make component-coverage
 ```
 
 You do not need to run `fumadocs-mdx` manually. The repository does not commit
@@ -304,28 +305,26 @@ when you need the full repository gate.
 
 ### CI sequence
 
-GitHub Actions runs the same gate sequence on pull requests and pushes to
-`main`: install dependencies with `bun install --frozen-lockfile`, then
-`make ci` (see `.github/workflows/ci.yml`). No repository secrets are required
-for lint, typecheck, fast tests, manifest-scoped component coverage,
-build-contract tests, post-build integration tests, validate-data, and
-linkcheck. The baseline CI workflow
-(`.github/workflows/ci.yml`) does not invoke deploy or preview steps. GitHub
-Pages deployment runs separately via `.github/workflows/deploy.yml` on pushes to
-`main` (see [Operations and release](#operations-and-release)). PDF validation
-remains deferred to later phases.
+GitHub Actions runs the Makefile contract on pull requests and pushes (see
+`.github/workflows/ci.yml`):
 
-The root Makefile mirrors those CI-oriented checks locally. Run `make ci` from
-the repository root after `bun install --frozen-lockfile`; it runs, in order:
+1. `make setup` — `bun install --frozen-lockfile`
+2. Install Playwright Chromium (CI/deploy runners; needed by some website tests)
+3. `make check` — typecheck then lint
+4. `make test` — website functionality suite
+5. `make build` — static export to `out/`
+6. `make budget` — exported-site budget gate (rewrite-era transitional skip/pass is allowed)
+7. `make component-coverage` — component coverage gate (rewrite-era transitional skip/pass is allowed)
 
-1. `make lint` — Biome check (no auto-fix)
-2. `make typecheck` — generates Fumadocs MDX source, then `tsc --noEmit`
-3. `make test` — generates Fumadocs MDX source (when typecheck was skipped), then fast tests via `scripts/run-fast-tests.ts`
-4. `make coverage` — manifest-scoped reusable component coverage gate (same as `bun run coverage`)
-5. `make test-build-contract` — one production build contract and one GitHub Pages base-path export artifact contract (`bun run test:build-contract`)
-6. `make test-integration` — served export, built HTML, and production-server integration manifest (`bun run test:integration` / `scripts/run-production-integration-tests.ts`)
-7. `make validate-data` — registry and content validation
-8. `make linkcheck` — internal docs link validation (Fumadocs routes, module/glossary pages, anchors, MDX href components)
+No repository secrets are required for those stages. The baseline CI workflow
+does not invoke deploy or preview steps. GitHub Pages deployment runs separately
+via `.github/workflows/deploy-pages.yml` on pushes to `main` (see
+[Operations and release](#operations-and-release)). Reproduce any failing stage
+locally with the same `make <target>`.
+
+The older aggregate `make ci` target still exists for broader local gates
+(lint/typecheck/test/coverage/build-contract/integration/validate-data/linkcheck)
+but is not what `.github/workflows/ci.yml` invokes.
 
 Use `bun run generate:page-bundle` when adding canonical concept, glossary,
 module, model, paper, or training-regime pages, then run `make validate-data`
@@ -356,16 +355,20 @@ ignored git classification no longer matches the completeness contract.
 Individual targets:
 
 ```sh
-make ci            # full gate sequence above
-make build         # prepare:content-runtime + fumadocs-mdx via package scripts, then next build + Phase 1 static route check
+make setup         # bun install --frozen-lockfile (CI/Pages install contract)
+make check         # typecheck then lint (CI/Pages static analysis contract)
+make budget        # exported-site budget gate (rewrite-era transitional skip/pass allowed)
+make component-coverage # component coverage gate (rewrite-era transitional skip/pass allowed)
+make ci            # broader local aggregate gate (not invoked by rewrite-era CI YAML)
+make build         # static export to out/ via bun run build:export (CI/Pages build contract)
 make lint          # Biome check (no auto-fix)
 make format        # Biome format --write
 make typecheck     # prepare:content-runtime + fumadocs-mdx, then tsc --noEmit
-make test          # prepare:content-runtime + fumadocs-mdx, then fast tests
+make test          # website functionality suite (CI/Pages test contract)
 make test-build-contract # consolidated build/export contract suites
 make test-system   # build/export contracts plus post-build integration tests
 make coverage      # prepare:content-runtime + fumadocs-mdx, manifest coverage gate
-make build-export  # prepare:content-runtime + fumadocs-mdx, static export to out/ + Phase 1 export route verification
+make build-export  # static export to out/ + opt-in Phase 1 export route/search verification
 make verify-content-runtime-completeness # authoritative reviewer proof for generated runtime completeness
 make verify-export-routes # verify existing out/ artifact (requires build-export first)
 make verify-phase-1-ux # HTTP verification for Phase 1 reader routes and search (requires build)
@@ -386,9 +389,11 @@ make validate-pdf
 
 ### Phase 1 route and search UX verification
 
-**Prerequisites:** `make build` (production `.next/`), Bun dependencies
-installed, and Playwright Chromium for real browser checks (`npx playwright
-install chromium` once per machine).
+**Prerequisites:** a production `.next/` build (`bun run build` / the non-export
+Next build), Bun dependencies installed, and Playwright Chromium for real
+browser checks (`bunx playwright install chromium` once per machine). Note:
+rewrite-era `make build` emits static `out/` instead of the `.next/` server
+build; use `bun run build` when a verifier still needs `next start`.
 
 After `make build`, run the built-app verifier to codify the Phase 1 manual gate
 from `docs/temp/customer-ask.md` (home, search, glossary, tags, sample
@@ -581,21 +586,22 @@ skipping, reviewers must run this two-step manual check after
 For static HTTP fixture tests, set `VERIFY_SEARCH_SHORTCUT_STUB=pass` alongside
 the other `VERIFY_*_STUB=pass` env vars documented in the verifier tests.
 
-GitHub Pages deployment runs in `.github/workflows/deploy.yml` on `main` pushes
-only; neither `.github/workflows/ci.yml` nor `make ci` invokes deploy or preview
-steps.
-Manifest-scoped component coverage runs in `make ci` after `make test` (see
-[Reusable component coverage](#reusable-component-coverage)).
+GitHub Pages deployment runs in `.github/workflows/deploy-pages.yml` on `main`
+pushes only; neither `.github/workflows/ci.yml` nor the Makefile contract stages
+it calls invoke deploy or preview steps. Rewrite-era `make component-coverage`
+is an honest transitional skip/pass until a rewrite-safe coverage gate exists
+(see [ci-deploy-foundation-relevant-files.md](./docs/internal/processes/ci-deploy-foundation-relevant-files.md)).
 
 ### Fresh-checkout CI proof
 
-During `make test` (and therefore `make ci`), `src/tests/ci/fresh-checkout-typecheck.test.ts`
-proves the typecheck gate succeeds when `.source/` is absent. Instead of
-deleting gitignored artifacts in your working tree, the test provisions an
-isolated detached git worktree at HEAD, runs `bun install --frozen-lockfile`
-inside it, confirms `.source/` is missing, and runs the typecheck gate only in
-that worktree. This models a fresh clone without mutating your main workspace
-`node_modules`, `.next/`, or generated `.source/`.
+`src/tests/ci/fresh-checkout-typecheck.test.ts` proves the typecheck gate
+succeeds when `.source/` is absent. Instead of deleting gitignored artifacts in
+your working tree, the test provisions an isolated detached git worktree at HEAD,
+runs `bun install --frozen-lockfile` inside it, confirms `.source/` is missing,
+and runs the typecheck gate only in that worktree. This models a fresh clone
+without mutating your main workspace `node_modules`, `.next/`, or generated
+`.source/`. Note: that file lives under `src/tests/ci/` and is not part of plain
+`make test`; run it explicitly when you need the fresh-checkout proof.
 
 Equivalent Bun scripts are in `package.json` (`bun run lint`, `bun run build`,
 `bun run scaffold:doc-page`, and so on).

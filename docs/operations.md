@@ -7,26 +7,33 @@ inferred from workflow files alone.
 
 ## Deployment posture
 
-**Decision: Phase 1 publishes the static export to GitHub Pages via GitHub
-Actions.** Merges to `main` trigger an automatic deploy workflow that builds
-`out/` with `make build-export` and publishes it to the project-site URL.
+**Decision: the rewrite-era site publishes a static export to GitHub Pages via
+GitHub Actions.** Merges to `main` trigger an automatic deploy workflow that
+builds `out/` with `make build` and publishes that artifact.
+
+Local maintainers and automation share one Makefile contract. Reproduce any
+failing workflow stage with the same `make <target>` locally (see
+[ci-deploy-foundation-relevant-files.md](./internal/processes/ci-deploy-foundation-relevant-files.md)).
 
 ### Active deploy path
 
 | Item | Value |
 | --- | --- |
-| Workflow file | `.github/workflows/deploy.yml` (separate from `.github/workflows/ci.yml`) |
+| Workflow file | `.github/workflows/deploy-pages.yml` (separate from `.github/workflows/ci.yml`) |
 | Trigger | `push` to `main` |
-| Install | `bun install --frozen-lockfile` |
-| Build entrypoint | `make build-export` with `GITHUB_PAGES_BASE_PATH: ai-model-reference` |
-| Published artifact | `out/` (static export verified by `verify-phase-1-export-routes` and `verify-phase-1-export-search-handoff`) |
-| Public URL | `https://portpowered.github.io/ai-model-reference/` (GitHub Pages project site for `portpowered/ai-model-reference`) |
-| Quality gates | `.github/workflows/ci.yml` runs `make ci` only; deploy does not replace or invoke CI |
+| Install | `make setup` (`bun install --frozen-lockfile`) |
+| Validate stages | `make check`, `make test`, `make build`, `make budget` (same targets as local/CI) |
+| Build entrypoint | `make build` → `bun run build:export` (`NEXT_STATIC_EXPORT=1`) |
+| Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
+| Quality gates | `.github/workflows/ci.yml` runs `make setup` → `check` → `test` → `build` → `budget` → `component-coverage`; deploy-pages validate does not replace CI |
 
-The workflow **`build`** job checks out the pushed commit, runs
-`make build-export`, and uploads `out/` with `actions/upload-pages-artifact@v3`.
-The **`deploy`** job publishes that artifact via `actions/deploy-pages@v4`.
-Failed export builds or deploy steps fail the workflow run on the `main` commit.
+The workflow **`validate`** job checks out the pushed commit, runs the Makefile
+stages above, and uploads `out/` with `actions/upload-pages-artifact@v3`.
+The **`deploy`** job (`needs: validate`) publishes that artifact via
+`actions/deploy-pages@v4`. Failed validation never starts deploy for that run.
+
+Opt-in `make build-export` still chains Phase 1 export route/search verifiers for
+local maintainer use. CI and deploy-pages call `make build`, not `make build-export`.
 
 ### Why GitHub Pages works for this repository
 
@@ -34,11 +41,11 @@ Observable constraints satisfied in the current repository:
 
 | Constraint | Evidence |
 | --- | --- |
-| Static export is verified in CI and deploy | `NEXT_STATIC_EXPORT=1` (`bun run build:export` / `make build-export`) emits `out/` with `output: "export"`. `make ci` runs the consolidated build-contract gate, which performs one production build contract and one GitHub Pages base-path export artifact contract. The deploy workflow runs `make build-export` with `GITHUB_PAGES_BASE_PATH` set for the project site. |
-| Search works without live API routes on Pages | `make build-export` runs `verify-phase-1-export-search-handoff`, which validates static Orama bootstrap and Phase 1 `GQA` / `attention` / `KV cache` ranking under `out/api/search`. Client search loads the prebuilt index from `/api/search` in the static export. |
+| Static export is verified in CI and deploy | `make build` runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`) and emits `out/` with `output: "export"`. CI and deploy-pages both call `make build` before later stages or artifact upload. |
+| Search works without live API routes on Pages | The static export ships a prebuilt Orama bootstrap under `out/api/search`. Client search loads that index from `/api/search` in the export. Opt-in `make build-export` can still run Phase 1 export search handoff verifiers locally. |
 | Query-backed static routes stay exportable | Static export routes must not await request-only `searchParams` during prerender. Query-driven surfaces should fall back to export-safe HTML on the server and hydrate URL state inside a client component wrapped by `Suspense`. |
 | GitHub Pages is static-only | GitHub Pages cannot run Node.js API routes at request time. This site ships a pre-generated static export and search index instead of live `GET` handlers. |
-| CI and deploy are separate | `.github/workflows/ci.yml` runs `make ci` on pull requests and `main` pushes. `.github/workflows/deploy.yml` publishes `out/` on `main` pushes only and does not invoke `make ci`. |
+| CI and deploy are separate | `.github/workflows/ci.yml` runs the Makefile contract on pull requests and pushes. `.github/workflows/deploy-pages.yml` validates with the same Makefile targets on `main` pushes, then publishes `out/`. |
 
 ### Required GitHub repository settings
 
@@ -50,7 +57,7 @@ Maintainers must confirm these settings under the repository **Settings** tab
 | Pages source | **Settings → Pages → Build and deployment → Source** | **GitHub Actions** (not “Deploy from a branch”) |
 | Workflow permissions | **Settings → Actions → General → Workflow permissions** | **Read and write permissions** enabled so the deploy workflow can request `pages: write` and `id-token: write` |
 | Pages environment | **Settings → Environments → `github-pages`** | Created automatically on first successful deploy; confirm it exists and review protection rules if the org requires approvals |
-| Deploy workflow permissions | `.github/workflows/deploy.yml` | `contents: read`, `pages: write`, `id-token: write` at workflow scope |
+| Deploy workflow permissions | `.github/workflows/deploy-pages.yml` | `contents: read`, `pages: write`, `id-token: write` at workflow scope |
 
 **One-time host-side step:** the first publish requires Pages to be enabled with
 source **GitHub Actions**. Until that setting is saved, deploy workflow runs may
@@ -69,34 +76,31 @@ with owner), or **N/A** (not applicable).
 | Checklist row | Phase 1 status | Owner | Follow-up |
 | --- | --- | --- | --- |
 | Merges to `main` are blocked unless CI passes | **Implemented** (CI workflow) + **GitHub settings assumed** | Repository maintainers | Configure **Settings → Branches** on GitHub per the [Branch protection](#branch-protection) section; rules cannot be enforced from git. |
-| Website deploys automatically via GitHub Actions (GitHub Pages or equivalent) | **Implemented** | Repository maintainers | `.github/workflows/deploy.yml` runs on `main` pushes; confirm Pages source is **GitHub Actions** on first enablement. |
-| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | The **deploy** job from `.github/workflows/deploy.yml` reports status on each `main` push alongside **ci**. PRs do not run deploy (preview deploy is deferred). |
+| Website deploys automatically via GitHub Actions (GitHub Pages or equivalent) | **Implemented** | Repository maintainers | `.github/workflows/deploy-pages.yml` runs on `main` pushes; confirm Pages source is **GitHub Actions** on first enablement. |
+| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | The **Deploy to GitHub Pages** job from `.github/workflows/deploy-pages.yml` reports status on each `main` push alongside CI. PRs do not run deploy (preview deploy is deferred). |
 
 Related operational rows not closed in this section alone:
 
 | Checklist row | Phase 1 status | Notes |
 | --- | --- | --- |
-| Website has CI checks on every pull request and merge | **Implemented** | `.github/workflows/ci.yml` runs on `pull_request` and `push` to `main`. |
-| The build has deterministic install behavior through a lockfile | **Implemented** | `bun.lock` + `bun install --frozen-lockfile` in CI and deploy. |
+| Website has CI checks on every pull request and merge | **Implemented** | `.github/workflows/ci.yml` runs on `pull_request` and `push`. |
+| The build has deterministic install behavior through a lockfile | **Implemented** | `bun.lock` + `make setup` (`bun install --frozen-lockfile`) in CI and deploy-pages. |
 | Preview deployments for pull requests | **Deferred** | Out of scope for Phase 1; production deploy is active on `main` only. |
 | Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), and [Commit-SHA traceability](#commit-sha-traceability) using the live deploy check and published site. |
 
 ### What contributors should expect today
 
-- **Pull requests and `main` pushes** run the `ci` job (see
-  `.github/workflows/ci.yml`). Passing `make ci` locally matches GitHub Actions.
-- **Pushes to `main`** also run `.github/workflows/deploy.yml`, which publishes
-  `out/` to GitHub Pages when the export build and deploy steps succeed.
-- **The public site** is `https://portpowered.github.io/ai-model-reference/`
-  after a successful deploy on `main`. Confirm the **deploy** check on the
-  merge commit before claiming the site was updated.
-- **Batch-014 GitHub Pages closure** uses `make verify-phase-1-github-pages-convergence`
-  (or `bun run verify:phase-1-github-pages-convergence`) to prove the static
-  export path end to end. Unlike `make verify-phase-1-follow-up-convergence`,
-  this gate exercises the built `out/` artifact served as static files rather
-  than only a spawned `next start` server on `.next/`. See
-  `factory/docs/phase-1-github-pages-convergence-validator.md` for workflow
-  order, domain inventory, and recommendation rules.
+- **Pull requests and pushes** run the **verify** job in `.github/workflows/ci.yml`
+  (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`).
+  Reproduce a failing stage locally with the same `make <target>`.
+- **Pushes to `main`** also run `.github/workflows/deploy-pages.yml`, which
+  validates with the same Makefile targets (through `budget`), uploads `out/`,
+  and publishes to GitHub Pages when deploy succeeds.
+- Confirm the **Deploy to GitHub Pages** check on the merge commit before
+  claiming the site was updated.
+- Opt-in Atlas / Phase 1 export verifiers remain available as
+  `make build-export` and `make verify-atlas-*`; they are not required by CI or
+  deploy-pages.
 
 ## Branch protection
 
@@ -110,13 +114,13 @@ version-controlled.
 | --- | --- | --- |
 | Protected branch | `main` | Production integration branch; merges trigger CI and GitHub Pages deploy. |
 | Require status checks to pass before merging | **Enabled** | Merges must not land while the CI workflow is failing. |
-| Required status check name | `ci` | Matches the sole job in `.github/workflows/ci.yml` (`jobs.ci`). GitHub lists this as **ci** on pull requests once the workflow has run at least once on the branch. |
-| Require branches to be up to date before merging | **Recommended** | Ensures the required `ci` check ran against the latest `main` tip, not only an older base. |
+| Required status check name | `verify` | Matches the sole job in `.github/workflows/ci.yml` (`jobs.verify`). GitHub lists this as **verify** on pull requests once the workflow has run at least once on the branch. |
+| Require branches to be up to date before merging | **Recommended** | Ensures the required `verify` check ran against the latest `main` tip, not only an older base. |
 | Do not allow bypassing the above settings | **Enabled for administrators** | Prevents accidental direct pushes that skip the gate. |
 | Allow force pushes | **Disabled** | Force-push to `main` is not permitted; history repair uses revert commits or a new branch and PR. |
 | Allow deletions | **Disabled** | The default branch must not be deleted from the UI. |
 
-The **deploy** check on `main` is informational for merge gating in Phase 1
+The **Deploy to GitHub Pages** check on `main` is informational for merge gating
 (deploy runs after merge). Maintainers may add it as a required check later if
 the org wants to block integration on deploy failure.
 
@@ -132,66 +136,72 @@ the rule is active.
 
 ## CI status expectations
 
-The baseline quality gate is workflow file `.github/workflows/ci.yml`, which
-defines parallel gate jobs for each `make ci` prerequisite plus a final
-aggregate job named **`ci`** for branch protection. Each gate job checks out the
-branch, installs with `bun install --frozen-lockfile`, and runs one Make target:
-`lint`, `typecheck`, `test`, `test-verify-contract`, `coverage`,
-`test-build-contract`, `test-integration`, `validate-data`, or `linkcheck`.
-The `test-verify-contract`, `test-build-contract`, and `test-integration` gates
-install Playwright Chromium (`bunx playwright install chromium --with-deps`)
-because they contain browser-backed verifier and static export checks. Deploy
-and preview steps are intentionally excluded from CI.
+The baseline quality gate is workflow file `.github/workflows/ci.yml`, job
+**`verify`**. It checks out the branch, runs `make setup`, installs Playwright
+Chromium for browser-backed website tests, then runs the Makefile contract in
+order: `make check`, `make test`, `make build`, `make budget`, and
+`make component-coverage`. Deploy and preview steps are intentionally excluded
+from CI.
 
-Production publish is workflow file `.github/workflows/deploy.yml`, job **`deploy`**.
-It runs only on `push` to `main`, builds with `make build-export`, and publishes
-`out/` to GitHub Pages.
+Production publish is workflow file `.github/workflows/deploy-pages.yml`. The
+**`validate`** job runs the same Makefile stages through `make budget`, uploads
+`out/`, and the **`deploy`** job publishes that artifact on `push` to `main`
+only.
 
 ### When checks run
 
 | Event | Workflow trigger | Expected checks |
 | --- | --- | --- |
-| Pull request opened or updated | `on: pull_request` in `ci.yml` | Parallel CI gate jobs and the aggregate **ci** job run against the PR head commit and appear in the PR **Checks** tab. No deploy check on PRs. |
-| Push to `main` | `on: push` branches `main` in `ci.yml` and `deploy.yml` | Parallel CI gate jobs, the aggregate **ci** job, and **deploy** run against the pushed commit and appear on the commit and branch views. |
-| Push to other branches without a PR | No workflow trigger | No GitHub Actions run until a pull request is opened (or the branch is pushed to `main`). |
+| Pull request opened or updated | `on: pull_request` in `ci.yml` | **verify** runs against the PR head commit and appears in the PR **Checks** tab. No deploy check on PRs. |
+| Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **verify** plus deploy-pages **validate** / **deploy** run against the pushed commit. |
+| Push to other branches without a PR | `on: push` in `ci.yml` | **verify** runs; deploy-pages does not. |
 
 ### What contributors see
 
 **On pull requests**
 
-- The **Checks** tab shows per-gate entries such as `lint`, `typecheck`, and
-  `test-integration`, plus the aggregate **ci** entry.
-- A green **ci** check means every parallel `make ci` gate passed on the PR
+- The **Checks** tab shows the **verify** job from `.github/workflows/ci.yml`.
+- A green **verify** check means every Makefile contract stage passed on the PR
   head SHA.
-- A red **ci** check blocks merge when branch protection requires status checks
-  (see [Branch protection](#branch-protection)); the failing per-gate job shows
-  which target broke.
-- The PR conversation may also show “All checks have passed” or list failing
-  checks; the authoritative job name for required-merge gating is **ci**.
-- No **deploy** check appears on PRs; production deploy runs after merge to `main`.
+- A red **verify** check blocks merge when branch protection requires status
+  checks (see [Branch protection](#branch-protection)); open the failed step to
+  see which `make <target>` broke, then reproduce it locally.
+- No deploy-pages check appears on PRs; production deploy runs after merge to
+  `main`.
 
 **On pushes to `main`**
 
-- Each commit on `main` shows the per-gate CI jobs, aggregate **ci**, and
-  **deploy** on the commit list and commit detail page.
-- Failed **ci** on `main` signals the integration branch is unhealthy; fix
+- Each commit on `main` shows **verify** plus deploy-pages **Canonical
+  validation** / **Deploy to GitHub Pages**.
+- Failed **verify** on `main` signals the integration branch is unhealthy; fix
   forward with a follow-up commit or revert—do not force-push.
-- Failed **deploy** on `main` means the static export did not publish; the prior
-  successful Pages deployment remains live until a later green **deploy** run.
+- Failed deploy-pages on `main` means the static export did not publish; the
+  prior successful Pages deployment remains live until a later green deploy.
 
 **Local versus GitHub**
 
-- `make ci` locally does not publish status to GitHub; push or open/update a PR
-  to surface the **ci** check.
-- `make build-export` locally verifies the same export artifact deploy publishes;
-  it does not push to GitHub Pages.
+- Local Makefile targets do not publish status to GitHub; push or open/update a
+  PR to surface the **verify** check.
+- `make build` locally produces the same `out/` artifact deploy-pages uploads;
+  it does not push to GitHub Pages. Use opt-in `make build-export` when you also
+  want Phase 1 export route/search verifiers.
 
 ### Matching local and CI
 
-Run `bun install --frozen-lockfile` then `make ci` from the repository root
-before opening a PR. The same sequence runs in GitHub Actions, so local green
-`make ci` is the practical preflight for the **ci** check contributors see on
-GitHub.
+Run `make setup`, then the same stages CI runs, from the repository root before
+opening a PR:
+
+```sh
+make setup
+make check
+make test
+make build
+make budget
+make component-coverage
+```
+
+That sequence matches `.github/workflows/ci.yml`, so a local green run is the
+practical preflight for the **verify** check contributors see on GitHub.
 
 ### Governance audit reviewer path
 
@@ -202,26 +212,26 @@ Reviewers validating that artifact should run, in order:
 1. `make verify-architectural-checklist-mechanism-status` — proves the durable
    audit artifact stays complete and aligned with
    [architectural-checklist.md](./architectural-checklist.md).
-2. `make ci` — confirms general site quality gates still pass after governance
-   edits (including post-build integration tests after the build steps).
+2. `make check` and `make test` — confirms general site quality gates still pass
+   after governance edits.
 
 ## Release process
 
-Phase 1 release means integrating changes onto `main` with a green **ci** check,
-then confirming **deploy** published the merge commit to
-`https://portpowered.github.io/ai-model-reference/`.
+Release means integrating changes onto `main` with a green **verify** check,
+then confirming deploy-pages published the merge commit.
 
 ### Standard release on `main`
 
-1. **Open a pull request** against `main` and wait for the **ci** check to pass
-   on the PR head commit (see [CI status expectations](#ci-status-expectations)).
-2. **Merge to `main`** only when branch protection allows it (required **ci**
+1. **Open a pull request** against `main` and wait for the **verify** check to
+   pass on the PR head commit (see [CI status expectations](#ci-status-expectations)).
+2. **Merge to `main`** only when branch protection allows it (required **verify**
    green and branch up to date if that rule is enabled).
 3. **Confirm post-merge CI** on the merge commit: a push to `main` triggers
    `.github/workflows/ci.yml` again on the integrated SHA.
-4. **Confirm post-merge deploy** on the same SHA: `.github/workflows/deploy.yml`
-   builds `out/` with `make build-export` and publishes to GitHub Pages. A green
-   **deploy** check means the public site reflects that commit.
+4. **Confirm post-merge deploy** on the same SHA: `.github/workflows/deploy-pages.yml`
+   validates with `make build`, uploads `out/`, and publishes to GitHub Pages. A
+   green **Deploy to GitHub Pages** check means the public site reflects that
+   commit.
 5. **Optionally tag a release point** on `main` when maintainers want a named
    version in git history, for example `git tag v0.1.0 <merge-commit-sha>` followed
    by `git push origin v0.1.0`. Tags do not replace the deploy-on-`main` flow
@@ -248,14 +258,13 @@ Rollback means **republishing a prior known-good commit** to GitHub Pages and/or
 
 When the latest deploy is bad but an older artifact is still valid:
 
-1. **Identify the last good commit** on `main` with green **ci** and **deploy**
-   in GitHub Actions.
+1. **Identify the last good commit** on `main` with green **verify** and
+   deploy-pages in GitHub Actions.
 2. **Re-run deploy for that SHA**—today this means restoring `main` to that
    commit via revert (preferred) or merging a fix-forward PR, then letting
-   **deploy** run on the new `main` tip. If `workflow_dispatch` is added later,
+   deploy-pages run on the new `main` tip. If `workflow_dispatch` is added later,
    re-run deploy against the good SHA directly.
-3. **Confirm** the **deploy** check and
-   `https://portpowered.github.io/ai-model-reference/` reflect the target SHA
+3. **Confirm** the **Deploy to GitHub Pages** check reflects the target SHA
    (see [Commit-SHA traceability](#commit-sha-traceability)).
 
 ### Revert on `main`, then redeploy
@@ -263,9 +272,9 @@ When the latest deploy is bad but an older artifact is still valid:
 When code on `main` must change:
 
 1. **`git revert`** the bad merge commit or commits on a branch, open a PR, and
-   merge after **ci** passes. This preserves history and avoids force-push
+   merge after **verify** passes. This preserves history and avoids force-push
    (branch protection disallows force-push to `main`).
-2. Let **deploy** run on the post-revert merge commit on `main`.
+2. Let deploy-pages run on the post-revert merge commit on `main`.
 3. **Use GitHub Actions run metadata**—note the failing deploy run ID, the SHA it
    built, and the prior successful deploy run/SHA when documenting the incident.
 
@@ -280,15 +289,14 @@ Maintainers must tie integration and deployment to an exact git commit.
 
 | SHA role | Where it appears | Phase 1 meaning |
 | --- | --- | --- |
-| PR head commit | PR **Checks** tab **ci** run | Validates the proposed merge tip before integration. |
-| Merge commit on `main` | Commit page; **ci** and **deploy** runs | Authoritative integrated and published state after green checks. |
-| `github.sha` in workflows | GitHub Actions context for `ci.yml` and `deploy.yml` | The commit `actions/checkout@v4` built for that run—matches the trigger commit. |
+| PR head commit | PR **Checks** tab **verify** run | Validates the proposed merge tip before integration. |
+| Merge commit on `main` | Commit page; **verify** and deploy-pages runs | Authoritative integrated and published state after green checks. |
+| `github.sha` in workflows | GitHub Actions context for `ci.yml` and `deploy-pages.yml` | The commit `actions/checkout@v4` built for that run—matches the trigger commit. |
 | Deploy workflow output | **deploy** job summary and Pages deployment record | Should reference the same SHA as the `main` push that triggered publish. |
 
 **Proof of what shipped to production** is: the merge commit SHA on `main`, a
-green **ci** run for that SHA, a green **deploy** run for that SHA, and the
-live site at `https://portpowered.github.io/ai-model-reference/` updated after
-that deploy.
+green **verify** run for that SHA, a green deploy-pages run for that SHA, and
+the live site updated after that deploy.
 
 | Artifact | Purpose |
 | --- | --- |
@@ -305,11 +313,11 @@ without guessing.
 
 1. On GitHub, open **Commits** on `main` and copy the full SHA of the merge or
    release point.
-2. Open **Actions**, select the **CI** workflow, and confirm a successful run
-   exists for that SHA.
+2. Open **Actions**, select the **CI** workflow, and confirm a successful
+   **verify** run exists for that SHA.
 3. Open the **Deploy GitHub Pages** workflow run for the same SHA and confirm
    the **deploy** job succeeded and the run summary repeats the commit hash.
-4. Load `https://portpowered.github.io/ai-model-reference/` and spot-check that
-   content matches the expected release (deploy propagation can take a short time).
+4. Load the published Pages site and spot-check that content matches the
+   expected release (deploy propagation can take a short time).
 5. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on `main` must match
    the SHA recorded in CI and deploy for that release.

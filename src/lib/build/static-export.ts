@@ -9,6 +9,23 @@ export function isStaticExportBuild(env: BuildModeEnv = process.env): boolean {
   return env[STATIC_EXPORT_ENV] === "1";
 }
 
+/**
+ * Next.js `output: "export"` rejects empty `generateStaticParams()` results with a
+ * misleading "missing generateStaticParams()" error. When a dynamic route has no
+ * real params at build time, emit a single placeholder that the page can `notFound()`.
+ */
+export function ensureStaticExportParams<T extends Record<string, string>>(
+  params: readonly T[],
+  placeholder: T,
+  env: BuildModeEnv = process.env,
+): T[] {
+  if (params.length > 0 || !isStaticExportBuild(env)) {
+    return [...params];
+  }
+
+  return [placeholder];
+}
+
 /** Normalizes a GitHub Pages repo base path for Next.js `basePath` / `assetPrefix`. */
 export function normalizeGitHubPagesBasePath(raw: string | undefined): string {
   if (raw === undefined) {

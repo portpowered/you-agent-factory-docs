@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { renderBlogPostPage } from "@/app/(site)/site-renderers";
+import { ensureStaticExportParams } from "@/lib/build/static-export";
 import { blogPostHref, listBlogSlugs } from "@/lib/content/blog-page-load";
 import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
 import { hasBlogPostMessagesForLocale } from "@/lib/content/blog-post-list";
@@ -13,6 +14,9 @@ type LocalizedBlogPostPageProps = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+/** Placeholder slug when no localized blog posts exist (static export requires ≥1 param). */
+const STATIC_EXPORT_EMPTY_BLOG_SLUG = "__no_localized_blog_posts__";
+
 export function generateStaticParams() {
   const params: Array<{ locale: string; slug: string }> = [];
 
@@ -24,7 +28,11 @@ export function generateStaticParams() {
     }
   }
 
-  return params;
+  const [{ locale: placeholderLocale }] = generateStaticLocaleParams();
+  return ensureStaticExportParams(params, {
+    locale: placeholderLocale,
+    slug: STATIC_EXPORT_EMPTY_BLOG_SLUG,
+  });
 }
 
 export async function generateMetadata({
