@@ -184,7 +184,23 @@ const pageDir = getDocsPageDir("modules", "grouped-query-attention");
 ```
 
 Supported `section` values: `glossary`, `concepts`, `modules`, `models`,
-`papers`, `training`, `systems`.
+`papers`, `training`, `systems`, `guides`, `techniques`, `documentation`.
+
+When publishing the first authored page under a rewrite-era CLI section
+(`guides`, `techniques`, or `documentation`), also confirm:
+
+1. `PUBLISHED_DOCS_SECTIONS` and `publishedDocsHrefFromEntry` in
+   `src/lib/content/published-docs-registry-contract.ts` recognize that section,
+   with matching `*PageHref` helpers in `src/lib/content/content-hrefs.ts`.
+2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
+   `src/lib/content/local-docs-page.ts` include the section, with a matching
+   `*-page.ts` / `*-page-load.ts` pair (same shape as `system-page*`) so
+   message-backed MDX resolves through `ModulePageProviders`.
+
+Without (1), `bun run prepare:content-runtime` fails while generating the
+published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to
+Fumadocs frontmatter title and 404s because CLI templates keep title/description
+in colocated messages.
 
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.

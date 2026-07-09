@@ -1,5 +1,7 @@
 import { loadConceptPage } from "@/lib/content/concept-page";
 import type { LoadedConceptPage } from "@/lib/content/concept-page-load";
+import { loadDocumentationPage } from "@/lib/content/documentation-page";
+import type { LoadedDocumentationPage } from "@/lib/content/documentation-page-load";
 import { loadGlossaryPage } from "@/lib/content/glossary-page";
 import type { LoadedGlossaryPage } from "@/lib/content/glossary-page-load";
 import { loadModelPage } from "@/lib/content/model-page";
@@ -20,6 +22,7 @@ import {
 
 export type LocalDocsPageRef =
   | { section: "concepts"; slug: string }
+  | { section: "documentation"; slug: string }
   | { section: "glossary"; slug: string }
   | { section: "modules"; slug: string }
   | { section: "models"; slug: string }
@@ -29,6 +32,7 @@ export type LocalDocsPageRef =
 
 export type LoadedLocalDocsPage =
   | LoadedConceptPage
+  | LoadedDocumentationPage
   | LoadedGlossaryPage
   | LoadedModulePage
   | LoadedModelPage
@@ -38,6 +42,7 @@ export type LoadedLocalDocsPage =
 
 const LOCAL_DOCS_SECTIONS = new Set([
   "concepts",
+  "documentation",
   "glossary",
   "modules",
   "models",
@@ -94,6 +99,8 @@ export async function loadLocalDocsPage(
   switch (ref.section) {
     case "concepts":
       return loadConceptPage(ref.slug, locale);
+    case "documentation":
+      return loadDocumentationPage(ref.slug, locale);
     case "glossary":
       return loadGlossaryPage(ref.slug, locale);
     case "modules":

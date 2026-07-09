@@ -1,0 +1,32 @@
+{
+  "title": "CLI",
+  "description": "Install the you-agent-factory CLI and look up the core you commands for starting a factory, submitting work, checking sessions, and reading packaged docs.",
+  "openingSummary": "The you-agent-factory CLI is the command-line entrypoint for installing the factory tooling and operating long-running agent work from your machine.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers the you-agent-factory CLI: how to install the you binary, and which core commands start a factory, submit work, inspect sessions and work, or print packaged docs. It is the durable CLI lookup surface for customers who need install entrypoints and command purpose at a glance."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A factory is the long-running runtime that keeps agent work persistent. Some commands start that runtime on your machine. Other commands talk to a factory that is already running. Packaged docs commands print reference markdown without needing a live factory."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Install the CLI with the published macOS, Linux, or Windows install entrypoint for your operating system. Then use you to start a local factory when you need a runtime, you submit or you submit batch to enqueue work against a running factory, you session and you work to inspect live state, and you docs to read packaged reference topics offline."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web CLI reference for install entrypoints and core command purpose. It is not a full flag dump, not a sync of packaged CLI markdown, and not the harness, MCP, or configuration deep pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
