@@ -1488,6 +1488,8 @@ updatedAt: "2026-06-02"
         phase1PageDirectories: [],
         shippedLocalizedDocsManifest: {
           ja: ["modules/multi-query-attention"],
+          "zh-CN": [],
+          vi: [],
         },
       });
       expect(
@@ -1568,6 +1570,7 @@ updatedAt: "2026-06-02"
         phase1PageDirectories: [],
         shippedLocalizedDocsManifest: {
           ja: ["modules/multi-query-attention"],
+          "zh-CN": [],
           vi: [],
         },
       });
@@ -1754,6 +1757,7 @@ updatedAt: "2026-06-02"
         phase1PageDirectories: [],
         shippedLocalizedDocsManifest: {
           ja: [],
+          "zh-CN": [],
           vi: [],
         },
       });

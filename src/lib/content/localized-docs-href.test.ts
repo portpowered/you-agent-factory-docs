@@ -33,6 +33,12 @@ describe("localizeDocsHref", () => {
     expect(localizeDocsHref("/docs/modules/sparse-attention", "ja")).toBe(
       "/docs/modules/sparse-attention",
     );
+    expect(localizeDocsHref("/docs/glossary/token", "zh-CN")).toBe(
+      "/docs/glossary/token",
+    );
+    expect(
+      localizeDocsHref("/docs/modules/grouped-query-attention", "zh-CN"),
+    ).toBe("/docs/modules/grouped-query-attention");
   });
 
   test("preserves query strings while applying shipped locale gating", () => {

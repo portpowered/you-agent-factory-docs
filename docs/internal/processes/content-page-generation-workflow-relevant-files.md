@@ -223,6 +223,22 @@ from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 * `scripts/validate-registry.ts`
   Maintainer and CI entrypoint for registry validation after adding records.
 
+## Shipped-locale discovery when adding a locale
+
+When extending `supportedLocales` (for example adding `zh-CN`):
+
+* Derive `NonDefaultLocale` / empty shipped-docs buckets from `supportedLocales`
+  in `src/lib/content/shipped-localized-docs.ts` and
+  `src/lib/content/shipped-localized-docs.server.ts` — do not hard-code a
+  `ja`/`vi`-only manifest shape as the authoritative contract.
+* An empty locale bucket is valid: pages without `messages/<locale>.json` stay
+  unshipped and the language switcher marks that locale unavailable for those
+  docs routes.
+* Regenerate with `bun run generate:shipped-localized-docs` (also covered by
+  `prepare:content-runtime`).
+* Cover client gating in `src/lib/content/shipped-localized-docs.test.ts` and
+  derivation in `src/lib/content/shipped-localized-docs.server.test.ts`.
+
 ## Representative migrated consumers
 
 These files show the preferred `getDocsPageDir` pattern in page tests without

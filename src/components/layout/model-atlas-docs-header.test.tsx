@@ -648,6 +648,11 @@ describe("ModelAtlasDocsHeader", () => {
     expect(
       within(dialog).queryByRole("menuitem", { name: /日本語/ }),
     ).toBeTruthy();
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /简体中文/ })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
     expect(dialog.textContent).toContain(messages.language.unavailable);
   });
 });
