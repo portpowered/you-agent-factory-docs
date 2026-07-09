@@ -4,7 +4,7 @@ import { HomeArticle } from "@/components/home/home-article";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { PLACEHOLDER_SIDEBAR_DESCRIPTION } from "@/lib/navigation/docs-sidebar-contract";
 import { buildHomeTableOfContents } from "@/lib/navigation/home-page-toc";
-import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
+import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 import { expectHomeArticleHeaderOnlySearchEntry } from "@/tests/discovery/home-search-entry-contract";
 
 /** Atlas module destinations must not appear on the default home featured list. */
@@ -36,7 +36,7 @@ describe("home page messages", () => {
     expect(home.gqaLinkDescription.length).toBeGreaterThan(0);
     expect(home.swigluLinkDescription.length).toBeGreaterThan(0);
     expect(home.reluLinkDescription.length).toBeGreaterThan(0);
-    expect(modelAtlasSiteConfig.homeFeaturedLinks).toEqual([]);
+    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toEqual([]);
   });
 });
 
@@ -44,7 +44,10 @@ describe("home page render", () => {
   async function renderHomeArticleHtml(): Promise<string> {
     const messages = await loadUiMessages();
     return renderToStaticMarkup(
-      <HomeArticle messages={messages} siteConfig={modelAtlasSiteConfig} />,
+      <HomeArticle
+        messages={messages}
+        siteConfig={youAgentFactorySiteConfig}
+      />,
     );
   }
 
@@ -63,7 +66,7 @@ describe("home page render", () => {
     const html = renderToStaticMarkup(
       <HomeArticle
         messages={messages}
-        siteConfig={modelAtlasSiteConfig}
+        siteConfig={youAgentFactorySiteConfig}
         locale="vi"
       />,
     );
@@ -83,7 +86,7 @@ describe("home page render", () => {
     const html = renderToStaticMarkup(
       <HomeArticle
         messages={messages}
-        siteConfig={modelAtlasSiteConfig}
+        siteConfig={youAgentFactorySiteConfig}
         locale="ja"
       />,
     );

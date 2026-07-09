@@ -6,7 +6,7 @@ import { ModulePageProviders } from "@/features/docs/components/ModulePageProvid
 import { loadGlossaryPage } from "@/lib/content/glossary-page";
 import { loadModulePage } from "@/lib/content/module-page";
 import { loadUiMessages } from "@/lib/content/ui-messages";
-import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
+import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 import {
   RENDERED_QUALITY_PROCESS_LANGUAGE_PATTERNS,
   RENDERED_QUALITY_READER_SHORTCUT_MARKERS,
@@ -50,7 +50,10 @@ describe("canonical content standards", () => {
     assertNoProcessLanguage(serialized);
 
     const html = renderToStaticMarkup(
-      <HomeArticle messages={messages} siteConfig={modelAtlasSiteConfig} />,
+      <HomeArticle
+        messages={messages}
+        siteConfig={youAgentFactorySiteConfig}
+      />,
     );
     assertNoProcessLanguage(html);
   });

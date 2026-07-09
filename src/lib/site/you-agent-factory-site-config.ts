@@ -8,18 +8,15 @@ import {
 export const YOU_AGENT_FACTORY_REPOSITORY_URL =
   "https://github.com/portpowered/you-agent-factory" as const;
 
-/** @deprecated Prefer YOU_AGENT_FACTORY_REPOSITORY_URL; kept for transitional imports. */
-export const MODEL_ATLAS_REPOSITORY_URL = YOU_AGENT_FACTORY_REPOSITORY_URL;
-
 /**
- * Transitional default config still used by the current shell.
+ * Default site config for the you-agent-factory CLI docs product.
  * Brand/repo, primary nav/route placeholders, collections, and home featured
- * links are you-agent-factory CLI docs shaped. Home featured links stay an
- * empty placeholder list so B01 can author final marketing copy.
+ * links are CLI docs shaped. Home featured links stay an empty placeholder
+ * list so B01 can author final marketing copy.
  * Search is a configured route surface (header trigger) but not a primary
  * nav item, to avoid duplicating the header search control.
  */
-export const modelAtlasSiteConfig = {
+export const youAgentFactorySiteConfig = {
   brand: {
     scaffoldId: SCAFFOLD_ID,
     brandName: SITE_BRAND_NAME,

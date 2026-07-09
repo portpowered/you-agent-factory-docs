@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { baseOptions } from "@/lib/layout.shared";
-import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
+import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 
 const alternateSiteConfig = {
   brand: {
@@ -64,7 +64,9 @@ const alternateSiteConfig = {
 
 describe("baseOptions", () => {
   test("sources the layout nav title from site config brand name", () => {
-    expect(baseOptions().nav?.title).toBe(modelAtlasSiteConfig.brand.brandName);
+    expect(baseOptions().nav?.title).toBe(
+      youAgentFactorySiteConfig.brand.brandName,
+    );
     expect(baseOptions("en", alternateSiteConfig).nav?.title).toBe(
       "Example Atlas",
     );

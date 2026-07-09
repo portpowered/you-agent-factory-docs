@@ -10,9 +10,10 @@ contract for the you-agent-factory CLI docs product.
 | `src/lib/site/site-config.contract.ts` | Shared `SiteConfig` shape: open route-surface map, open collection family strings, nav/home copy keys from `UiMessages` (not Atlas-locked) |
 | `src/lib/site/site-config.contract.test.ts` | Contract tests; CLI representative fixture must type-check without topology/timeline/AI collections |
 | `src/lib/scaffold.ts` | Shared scaffold brand constants (`SCAFFOLD_ID`, `SITE_BRAND_NAME`, `SITE_HEADING`) consumed by the default site config |
-| `src/lib/site/model-atlas-site-config.ts` | Transitional default config: you-agent-factory brand/repo, CLI primary nav/route placeholders, CLI collections (`guides`/`concepts`/`techniques`/`documentation`), and empty `homeFeaturedLinks` for B01 |
+| `src/lib/site/you-agent-factory-site-config.ts` | Product default config: you-agent-factory brand/repo, CLI primary nav/route placeholders, CLI collections (`guides`/`concepts`/`techniques`/`documentation`), and empty `homeFeaturedLinks` for B01 |
 | `src/lib/site/site-config-resolution.ts` | Resolves brand, primary nav hrefs, and home featured links from `SiteConfig` |
 | `src/components/layout/primary-nav.ts` | Shell primary nav consumer of `SiteConfig.primaryNav` / `routeSurfaces` |
+| `src/lib/layout.shared.tsx` | Layout `baseOptions` defaults to `youAgentFactorySiteConfig` |
 | `src/content/messages/{en,vi,ja}/common.json` | Shell UI messages; `nav.guides` / `nav.docs` label keys for CLI primary nav |
 
 ## Contract shape rules (rewrite era)
@@ -34,11 +35,10 @@ contract for the you-agent-factory CLI docs product.
 ## Brand / repository identity
 
 - Default brand resolves to `you-agent-factory` via scaffold constants and
-  `modelAtlasSiteConfig.brand`.
+  `youAgentFactorySiteConfig.brand`.
 - Default repository URL is
   `https://github.com/portpowered/you-agent-factory`
-  (`YOU_AGENT_FACTORY_REPOSITORY_URL`). Prefer that export over the transitional
-  `MODEL_ATLAS_REPOSITORY_URL` alias.
+  (`YOU_AGENT_FACTORY_REPOSITORY_URL`).
 - Layout brand title comes from `resolveSiteConfigLayoutNav` →
   `config.brand.brandName` (not UI message `home.title`).
 
@@ -63,6 +63,15 @@ contract for the you-agent-factory CLI docs product.
   assignable as `HomeFeaturedLinkPlaceholder[]` rather than `readonly []`.
 - Locale-fallback coverage for docs-page featured links should use an explicit
   fixture config, not the empty default list.
+
+## Default export naming
+
+- Product default export is `youAgentFactorySiteConfig` from
+  `you-agent-factory-site-config.ts`.
+- Do not reintroduce `modelAtlasSiteConfig` / `model-atlas-site-config.ts` as
+  the product default; B01 may still rename header chrome separately.
+- Adapters (`primary-nav`, `layout.shared`, header, home renderer) must default
+  to `youAgentFactorySiteConfig`.
 
 ## Story sequencing
 

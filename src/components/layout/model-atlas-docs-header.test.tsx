@@ -20,11 +20,11 @@ import {
   PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
 } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
-import {
-  modelAtlasSiteConfig,
-  YOU_AGENT_FACTORY_REPOSITORY_URL,
-} from "@/lib/site/model-atlas-site-config";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
+import {
+  YOU_AGENT_FACTORY_REPOSITORY_URL,
+  youAgentFactorySiteConfig,
+} from "@/lib/site/you-agent-factory-site-config";
 import { source } from "@/lib/source";
 import { assertPrimaryNavNoDuplicateSearchLink } from "@/lib/verify/customer-ask-home-header-convergence";
 import {
@@ -185,13 +185,13 @@ describe("ModelAtlasDocsHeader", () => {
         <ModelAtlasDocsHeader
           messages={messages}
           pageTree={source.pageTree}
-          siteConfig={modelAtlasSiteConfig}
+          siteConfig={youAgentFactorySiteConfig}
         />
       </RootProvider>,
     );
 
-    expect(html).toContain(`href="${modelAtlasSiteConfig.repositoryUrl}"`);
-    expect(modelAtlasSiteConfig.repositoryUrl).toBe(
+    expect(html).toContain(`href="${youAgentFactorySiteConfig.repositoryUrl}"`);
+    expect(youAgentFactorySiteConfig.repositoryUrl).toBe(
       YOU_AGENT_FACTORY_REPOSITORY_URL,
     );
   });

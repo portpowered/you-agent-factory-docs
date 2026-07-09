@@ -1,12 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import { isDocsPageShippedForLocale } from "@/lib/content/pages";
-import { modelAtlasSiteConfig } from "./model-atlas-site-config";
 import type { SiteConfig } from "./site-config.contract";
 import { resolveSiteConfigHomeFeaturedLinkHrefs } from "./site-config-resolution";
+import { youAgentFactorySiteConfig } from "./you-agent-factory-site-config";
 
 /** Fixture with docs-page featured links for locale-fallback resolution coverage. */
 const featuredLinkLocaleFallbackConfig = {
-  ...modelAtlasSiteConfig,
+  ...youAgentFactorySiteConfig,
   homeFeaturedLinks: [
     {
       kind: "docs-page" as const,
@@ -32,13 +32,13 @@ const featuredLinkLocaleFallbackConfig = {
 describe("site config home featured link resolution", () => {
   test("default config resolves an empty featured-link href list", () => {
     expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "en"),
+      resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "en"),
     ).toEqual([]);
     expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "vi"),
+      resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "vi"),
     ).toEqual([]);
     expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "ja"),
+      resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "ja"),
     ).toEqual([]);
   });
 

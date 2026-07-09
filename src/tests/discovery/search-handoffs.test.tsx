@@ -10,7 +10,7 @@ import {
 } from "@/features/docs/search/search-page-query";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { docsSearchApi } from "@/lib/search/search-server";
-import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
+import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 import { expectHomeArticleHeaderOnlySearchEntry } from "@/tests/discovery/home-search-entry-contract";
 import { resultsIncludeSampleModule } from "@/tests/search/helpers";
 
@@ -100,7 +100,10 @@ describe("Phase 1 discovery search handoffs", () => {
   it("home article uses header-only search entry without inline /search handoff", async () => {
     const messages = await loadUiMessages();
     const html = renderToStaticMarkup(
-      <HomeArticle messages={messages} siteConfig={modelAtlasSiteConfig} />,
+      <HomeArticle
+        messages={messages}
+        siteConfig={youAgentFactorySiteConfig}
+      />,
     );
     expectHomeArticleHeaderOnlySearchEntry(html);
   });
