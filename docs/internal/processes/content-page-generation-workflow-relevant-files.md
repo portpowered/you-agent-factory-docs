@@ -139,6 +139,15 @@ routes:
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.
+- Forward next-step links to sibling lanes that are not yet published on this
+  branch: prefer `LocalizedLinkList` in the how-to-use (or equivalent) section
+  with canonical planned hrefs (for example `/docs/guides/getting-started`,
+  `/docs/documentation/architecture-of-system`). `RelatedDocs` filters out
+  items without published hrefs, so curated `relatedIds` alone will not show
+  reviewer-visible navigation for unpublished targets. `LocalizedLinkList` is
+  registered in MDX components and is not in
+  `LINK_VALIDATION_MARKDOWN_COMPONENTS`, so planned destinations stay
+  mergeable under current linkcheck rules without authoring the target pages.
 - `validatePublishedGlossaryClassification` in `validate-glossary-classification.ts`
   blocks published glossary pages that lack `primaryClassificationId` unless
   `sidebarGrouping.glossary` provides an explicit editorial fallback; wired through
