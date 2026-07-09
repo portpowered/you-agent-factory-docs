@@ -233,6 +233,20 @@ Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
 readers while keeping the run/submit/session/work/docs running-factory
 distinctions clear.
 
+### Documentation CLI key concepts, limits, and sibling discovery
+
+For `documentation/cli`, keep `#key-concepts` before the install/commands
+teaching surfaces so readers learn start-a-factory vs submit-to-a-running-factory
+before the matrix. Keep `#limits-and-assumptions` as the scope boundary: web
+install + command matrix only — not a flag dump, not a packaged-docs sync, and
+not harness/MCP/config deep pages.
+
+Wire sibling discovery through registry `relatedIds` + `<RelatedDocs />` only
+when the sibling registry records and published pages exist (for example
+getting-started or install deep-dive). Omit unpublished sibling ids from
+`relatedIds` so validation and related rendering stay clean; do not invent
+page-meta “on this page” prose or hard-coded sibling route lists in MDX.
+
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 

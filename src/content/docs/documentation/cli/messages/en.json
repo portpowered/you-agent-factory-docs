@@ -9,7 +9,7 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A factory is the long-running runtime that keeps agent work persistent. Some commands start that runtime on your machine. Other commands talk to a factory that is already running. Packaged docs commands print reference markdown without needing a live factory."
+      "body": "A factory is the long-running runtime that keeps agent work persistent on your machine. Starting a factory means launching that runtime with forms such as you or you run so the host can accept work. Submitting work means sending a work item or batch to a factory that is already running, with forms such as you submit or you submit batch. Session and work commands inspect live factory state. Packaged docs commands print reference markdown without needing a live factory."
     },
     "install": {
       "title": "Install",
@@ -25,7 +25,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web CLI reference for install entrypoints and core command purpose. It is not a full flag dump, not a sync of packaged CLI markdown, and not the harness, MCP, or configuration deep pages."
+      "body": "This page is a web CLI reference for install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
     },
     "related": {
       "title": "Related To"
