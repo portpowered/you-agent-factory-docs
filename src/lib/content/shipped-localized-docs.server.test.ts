@@ -136,9 +136,12 @@ describe("deriveShippedLocalizedDocsManifest", () => {
 
   test("generated shipped localized docs artifact matches the committed docs tree", () => {
     resetDerivedShippedLocalizedDocsManifestCache();
-    expect(deriveShippedLocalizedDocsManifest()).toEqual(
-      resolveShippedLocalizedDocsManifest(),
-    );
-    expect(deriveShippedLocalizedDocsManifest()["zh-CN"]).toEqual([]);
+    const derived = deriveShippedLocalizedDocsManifest();
+    expect(derived).toEqual(resolveShippedLocalizedDocsManifest());
+    expect(derived).toEqual({
+      ja: ["documentation/what-is-you-agent-factory"],
+      "zh-CN": ["documentation/what-is-you-agent-factory"],
+      vi: ["documentation/what-is-you-agent-factory"],
+    });
   });
 });
