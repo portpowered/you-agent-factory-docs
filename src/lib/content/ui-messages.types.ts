@@ -74,6 +74,9 @@ export type HomeMessages = {
   installWindowsLabel: string;
   installMacosLinuxCommand: string;
   installWindowsCommand: string;
+  runSectionTitle: string;
+  runCommandLabel: string;
+  runCommand: string;
   browseSectionTitle: string;
   atlasLinkTitle: string;
   atlasLinkDescription: string;
@@ -84,6 +87,7 @@ export type HomeMessages = {
   reluLinkTitle: string;
   reluLinkDescription: string;
   onThisPageInstall: string;
+  onThisPageRun: string;
   onThisPageBrowse: string;
 };
 

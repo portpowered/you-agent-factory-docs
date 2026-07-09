@@ -53,6 +53,23 @@ export function HomeArticle({
       </section>
 
       <section
+        id="run"
+        className="mt-8 scroll-mt-6"
+        aria-labelledby="home-run-heading"
+      >
+        <h2
+          id="home-run-heading"
+          className="font-serif text-2xl font-semibold text-foreground"
+        >
+          {home.runSectionTitle}
+        </h2>
+        <HomeCommandBlock
+          label={home.runCommandLabel}
+          command={home.runCommand}
+        />
+      </section>
+
+      <section
         id="browse"
         className="mt-8 scroll-mt-6"
         aria-labelledby="home-browse-heading"

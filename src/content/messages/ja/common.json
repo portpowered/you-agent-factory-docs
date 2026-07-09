@@ -80,6 +80,9 @@
     "installWindowsLabel": "Windows (PowerShell)",
     "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
     "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    "runSectionTitle": "Run a named goal",
+    "runCommandLabel": "First run",
+    "runCommand": "you run --named @goal/blah",
     "browseSectionTitle": "参照",
     "atlasLinkTitle": "アトラス全体を見る",
     "atlasLinkDescription": "モデル、モジュール、概念、用語集、タグ、アーキテクチャの各ページがどうつながるかを案内するページから始められます。",
@@ -90,6 +93,7 @@
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "モジュールの基本に入りやすい、シンプルな活性化関数のページです。",
     "onThisPageInstall": "Install",
+    "onThisPageRun": "Run",
     "onThisPageBrowse": "参照"
   },
   "browseIndex": {

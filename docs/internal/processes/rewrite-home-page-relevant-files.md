@@ -20,14 +20,27 @@ install/run CTAs, why/features sections, featured links, or locale shell copy.
 | --- | --- |
 | `src/content/messages/*/common.json` (`home.install*`) | Section title, OS labels, and copyable install commands for all locales |
 | `src/components/home/home-command-block.tsx` | Always-visible `<pre><code>` command block (no hover-only reveal) |
-| `src/components/home/home-article.tsx` (`#install`) | Install section before browse; uses `HomeCommandBlock` for both OS paths |
-| `src/lib/navigation/home-page-toc.ts` | TOC includes `#install` then `#browse` |
+| `src/components/home/home-article.tsx` (`#install`) | Install section before run/browse; uses `HomeCommandBlock` for both OS paths |
+| `src/lib/navigation/home-page-toc.ts` | TOC includes `#install`, then later sections, then `#browse` |
 | `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for install section + TOC label |
 
 Canonical install commands (product repo releases):
 
 - macOS/Linux: `curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh`
 - Windows: `irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex`
+
+## First-run CTA
+
+| File | Role |
+| --- | --- |
+| `src/content/messages/*/common.json` (`home.run*`) | Section title, label, and `you run --named @goal/...` command |
+| `src/components/home/home-article.tsx` (`#run`) | First-run section after install; uses `HomeCommandBlock` |
+| `src/lib/navigation/home-page-toc.ts` | TOC includes `#run` between `#install` and `#browse` |
+| `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for run section + `onThisPageRun` |
+
+Canonical first-run example:
+
+- `you run --named @goal/blah`
 
 ## Patterns
 

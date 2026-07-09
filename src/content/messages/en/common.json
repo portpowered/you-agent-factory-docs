@@ -80,6 +80,9 @@
     "installWindowsLabel": "Windows (PowerShell)",
     "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
     "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    "runSectionTitle": "Run a named goal",
+    "runCommandLabel": "First run",
+    "runCommand": "you run --named @goal/blah",
     "browseSectionTitle": "Browse",
     "atlasLinkTitle": "Browse the atlas",
     "atlasLinkDescription": "Start with a page that explains where models, modules, concepts, glossary entries, tags, and architecture pages fit together.",
@@ -90,6 +93,7 @@
     "reluLinkTitle": "ReLU",
     "reluLinkDescription": "A simple activation function page that gives a lightweight entry point into module basics.",
     "onThisPageInstall": "Install",
+    "onThisPageRun": "Run",
     "onThisPageBrowse": "Browse"
   },
   "browseIndex": {

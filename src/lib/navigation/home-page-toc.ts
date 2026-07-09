@@ -16,6 +16,11 @@ export function buildHomeTableOfContents(
       depth: HOME_SECTION_TOC_DEPTH,
     },
     {
+      title: home.onThisPageRun,
+      url: "#run",
+      depth: HOME_SECTION_TOC_DEPTH,
+    },
+    {
       title: home.onThisPageBrowse,
       url: "#browse",
       depth: HOME_SECTION_TOC_DEPTH,

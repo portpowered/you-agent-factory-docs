@@ -29,7 +29,11 @@ describe("home page messages", () => {
     expect(home.installSectionTitle).toBe("Install");
     expect(home.installMacosLinuxCommand).toContain("install.sh");
     expect(home.installWindowsCommand).toContain("install.ps1");
+    expect(home.runSectionTitle).toBe("Run a named goal");
+    expect(home.runCommand).toContain("you run --named");
+    expect(home.runCommand).toContain("@goal/");
     expect(home.onThisPageInstall).toBe("Install");
+    expect(home.onThisPageRun).toBe("Run");
     expect(home.onThisPageBrowse).toBe("Browse");
   });
 
@@ -64,6 +68,7 @@ describe("home page render", () => {
     expect(html).toContain("Docs for the agent factory CLI");
     expect(html).not.toContain("Model Atlas");
     expect(html).toContain('id="install"');
+    expect(html).toContain('id="run"');
     expect(html).toContain('id="browse"');
     for (const href of ATLAS_MODULE_FEATURED_HREFS) {
       expect(html).not.toContain(`href="${href}"`);
@@ -84,6 +89,17 @@ describe("home page render", () => {
     expect(html).toContain(
       "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
     );
+    expect(html).toContain("<pre");
+    expect(html).toContain("<code");
+  });
+
+  it("renders a first-run you run --named example with an @goal target", async () => {
+    const html = await renderHomeArticleHtml();
+    expect(html).toContain('id="run"');
+    expect(html).toContain('id="home-run-heading"');
+    expect(html).toContain("Run a named goal");
+    expect(html).toContain("First run");
+    expect(html).toContain("you run --named @goal/blah");
     expect(html).toContain("<pre");
     expect(html).toContain("<code");
   });
@@ -155,15 +171,17 @@ describe("home page render", () => {
     expect(withoutNoUnderline).not.toMatch(/\bunderline\b/);
   });
 
-  it("defines On this page Install and Browse anchors without a removed #search target", async () => {
+  it("defines On this page Install, Run, and Browse anchors without a removed #search target", async () => {
     const { home } = await loadUiMessages();
     const toc = buildHomeTableOfContents(home);
     const html = await renderHomeArticleHtml();
 
     expect(toc.some((item) => item.url === "#install")).toBe(true);
+    expect(toc.some((item) => item.url === "#run")).toBe(true);
     expect(toc.some((item) => item.url === "#browse")).toBe(true);
     expect(toc.some((item) => item.url === "#search")).toBe(false);
     expect(html).toContain('id="install"');
+    expect(html).toContain('id="run"');
     expect(html).toContain('id="browse"');
     expect(html).not.toContain('id="search"');
   });
