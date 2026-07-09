@@ -1,7 +1,7 @@
 {
   "search": {
     "open": "Open search",
-    "placeholder": "Search Model Atlas…",
+    "placeholder": "Search you-agent-factory…",
     "close": "Close search",
     "idle": "Type a query to search modules, glossary entries, and tags.",
     "noResults": "No results found.",

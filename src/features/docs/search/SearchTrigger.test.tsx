@@ -36,6 +36,20 @@ describe("SearchTrigger", () => {
     expect(html).toContain("hidden gap-0.5 md:inline-flex");
   });
 
+  test("header search chrome strings identify you-agent-factory, not Model Atlas", async () => {
+    const messages = await loadUiMessages();
+
+    expect(messages.search.placeholder).toBe("Search you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.search.open).not.toMatch(/Model Atlas/i);
+    expect(messages.search.shortcut).not.toMatch(/Model Atlas/i);
+
+    const html = renderSearchTrigger(messages);
+    expect(html).not.toMatch(/Model Atlas/i);
+    expect(html).toContain('data-search=""');
+    expect(html).toContain(`aria-label="${messages.search.open}"`);
+  });
+
   test("keeps shortcut chips readable on trigger hover and focus via group accent styles", async () => {
     const messages = await loadUiMessages();
     const html = renderSearchTrigger(messages);

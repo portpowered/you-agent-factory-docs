@@ -1,4 +1,3 @@
-import type { TopologyNavigationOption } from "@/lib/content/topology-navigation";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import {
   buildLocalizedRoute,
@@ -27,10 +26,14 @@ export type PrimaryNavItem = {
 };
 
 export type GetPrimaryNavItemsOptions = {
-  topologyOptions?: readonly TopologyNavigationOption[];
   siteConfig?: SiteConfig;
 };
 
+/**
+ * CLI docs primary destinations from site config (Home, Guides, Docs,
+ * Glossary, Blog). Does not accept Atlas topology options — those surfaces
+ * are not primary nav items for the you-agent-factory shell.
+ */
 export function getPrimaryNavItems(
   messages: UiMessages,
   locale: SiteLocale = defaultLocale,

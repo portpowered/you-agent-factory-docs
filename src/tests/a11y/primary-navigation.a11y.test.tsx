@@ -3,7 +3,7 @@ import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, fireEvent, screen, within } from "@testing-library/react";
 import { act } from "react";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { ModelAtlasDocsHeader } from "@/components/layout/model-atlas-docs-header";
+import { DocsHeader } from "@/components/layout/docs-header";
 import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { source } from "@/lib/source";
 import { expectNoSeriousAxeViolations } from "@/tests/a11y/axe";
@@ -40,6 +40,16 @@ describe("primary navigation accessibility smoke", () => {
     const header = document.querySelector("header");
     expect(header).toBeTruthy();
 
+    // Scope to DocsHeader brand chrome; CanonicalDocsLayout may also expose a
+    // Fumadocs layout brand link with the same accessible name.
+    const brandLink = header?.querySelector(
+      "a[data-docs-header-brand]",
+    ) as HTMLAnchorElement | null;
+    expect(brandLink).toBeTruthy();
+    expect(brandLink?.textContent).toBe("you-agent-factory");
+    expect(brandLink?.getAttribute("href")).toBe("/");
+    expect(header?.textContent).not.toMatch(/Model Atlas/);
+
     const nav = screen.getByRole("navigation", { name: "Primary" });
     expect(nav).toBeTruthy();
 
@@ -47,10 +57,30 @@ describe("primary navigation accessibility smoke", () => {
     expect(searchTrigger).toBeTruthy();
 
     const expectedItems = getPrimaryNavItems(context.messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      "Home",
+      "Guides",
+      "Docs",
+      "Glossary",
+      "Blog",
+    ]);
+    expect(expectedItems.map((item) => item.href)).toEqual([
+      "/",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
+      "/blog",
+    ]);
     for (const item of expectedItems) {
       const link = within(nav).getByRole("link", { name: item.label });
       expect(link.getAttribute("href")).toBe(item.href);
     }
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.topology }),
+    ).toBeNull();
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.timeline }),
+    ).toBeNull();
 
     for (const item of expectedItems) {
       const link = within(nav).getByRole("link", { name: item.label });
@@ -61,6 +91,10 @@ describe("primary navigation accessibility smoke", () => {
     const searchButton = screen.getByRole("button", {
       name: context.messages.search.open,
     });
+    expect(context.messages.search.open).not.toMatch(/Model Atlas/i);
+    expect(context.messages.search.placeholder).toBe(
+      "Search you-agent-factory…",
+    );
     searchButton.focus();
     expect(document.activeElement).toBe(searchButton);
 
@@ -72,10 +106,7 @@ describe("primary navigation accessibility smoke", () => {
     const context = await loadAppTestContext();
     await act(async () => {
       await renderWithAppProviders(
-        <ModelAtlasDocsHeader
-          messages={context.messages}
-          pageTree={source.pageTree}
-        />,
+        <DocsHeader messages={context.messages} pageTree={source.pageTree} />,
         { context },
       );
     });

@@ -259,7 +259,7 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   always get a locale-preserving `href` via `switchRouteLocale`; docs pages mark
   unshipped locales unavailable (`href: null`) instead of linking to wrong-language
   copy. Cover available zh-CN navigation + query preservation and unavailable
-  docs behavior in `src/components/layout/model-atlas-docs-header.test.tsx`.
+  docs behavior in `src/components/layout/docs-header.test.tsx`.
 
 ## Representative migrated consumers
 

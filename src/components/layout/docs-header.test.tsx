@@ -11,7 +11,10 @@ import type { SharedProps } from "fumadocs-ui/contexts/search";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { ComponentType, ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { ModelAtlasDocsHeader } from "@/components/layout/model-atlas-docs-header";
+import {
+  DOCS_HEADER_BRAND_LINK_CLASS,
+  DocsHeader,
+} from "@/components/layout/docs-header";
 import {
   getPrimaryNavItems,
   PRIMARY_NAV_DESKTOP_CLASS,
@@ -21,6 +24,7 @@ import {
 } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
+import { resolveSiteConfigLayoutNav } from "@/lib/site/site-config-layout-nav";
 import {
   YOU_AGENT_FACTORY_REPOSITORY_URL,
   youAgentFactorySiteConfig,
@@ -101,10 +105,76 @@ function renderHeaderWithNavigation(
   );
 }
 
-describe("ModelAtlasDocsHeader", () => {
+/** Product-order CLI primary destinations locked for the you-agent-factory shell. */
+const CLI_PRIMARY_NAV_LABELS = [
+  "Home",
+  "Guides",
+  "Docs",
+  "Glossary",
+  "Blog",
+] as const;
+const CLI_PRIMARY_NAV_HREFS = [
+  "/",
+  "/docs/guides",
+  "/browse",
+  "/docs/glossary",
+  "/blog",
+] as const;
+
+describe("DocsHeader", () => {
   afterEach(() => {
     cleanup();
     resetMockNavigation();
+  });
+
+  test("locks CLI shell header brand, primary nav, and Search together", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(youAgentFactorySiteConfig);
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
+          messages={messages}
+          pageTree={source.pageTree}
+          siteConfig={youAgentFactorySiteConfig}
+        />
+      </RootProvider>,
+    );
+
+    expect(brand.title).toBe("you-agent-factory");
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).not.toContain(">Model Atlas<");
+    expect(html).not.toMatch(/ModelAtlasDocsHeader|model-atlas-docs-header/);
+
+    const expectedItems = getPrimaryNavItems(messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      ...CLI_PRIMARY_NAV_LABELS,
+    ]);
+    expect(expectedItems.map((item) => item.href)).toEqual([
+      ...CLI_PRIMARY_NAV_HREFS,
+    ]);
+
+    const desktopNavMatch = html.match(
+      /<nav[^>]*aria-label="Primary"[^>]*>([\s\S]*?)<\/nav>/,
+    );
+    expect(desktopNavMatch).toBeTruthy();
+    const desktopNav = desktopNavMatch?.[1] ?? "";
+    for (const item of expectedItems) {
+      expect(desktopNav).toContain(`href="${item.href}"`);
+      expect(desktopNav).toContain(`>${item.label}<`);
+    }
+    expect(desktopNav).not.toContain(`>${messages.nav.topology}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.timeline}<`);
+    expect(desktopNav).not.toContain('href="/topology"');
+    expect(desktopNav).not.toContain('href="/docs/timeline"');
+
+    expect(html).toContain('data-search=""');
+    expect(html).toContain(`aria-label="${messages.search.open}"`);
+    expect(messages.search.placeholder).toBe("Search you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.search.open).not.toMatch(/Model Atlas/i);
+    expect(assertPrimaryNavNoDuplicateSearchLink(html)).toBeNull();
   });
 
   test("renders header search trigger without duplicate /search primary nav link", async () => {
@@ -112,7 +182,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -143,12 +213,57 @@ describe("ModelAtlasDocsHeader", () => {
     expect(html).toContain('aria-label="Open project GitHub repository"');
   });
 
-  test("sources the repository link href from site config", async () => {
+  test("keeps Search as a first-class header destination without Model Atlas chrome copy", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
+      </RootProvider>,
+    );
+
+    expect(messages.search.placeholder).toBe("Search you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.search.open).not.toMatch(/Model Atlas/i);
+    expect(messages.search.shortcut).toBe("Search");
+    expect(html).toContain('data-search=""');
+    expect(html).toContain(`aria-label="${messages.search.open}"`);
+    expect(html).toContain(messages.search.shortcut);
+    expect(html).not.toMatch(/Model Atlas/i);
+    expect(assertPrimaryNavNoDuplicateSearchLink(html)).toBeNull();
+  });
+
+  test("renders you-agent-factory brand chrome linking to the localized home route", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(youAgentFactorySiteConfig);
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
+          messages={messages}
+          pageTree={source.pageTree}
+          siteConfig={youAgentFactorySiteConfig}
+        />
+      </RootProvider>,
+    );
+
+    expect(brand.title).toBe("you-agent-factory");
+    expect(brand.url).toBe("/");
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).toContain(DOCS_HEADER_BRAND_LINK_CLASS);
+    expect(html).toContain(`href="${brand.url}"`);
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).not.toContain(">Model Atlas<");
+    expect(html).toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
+  });
+
+  test("sources brand title, home href, and repository link from site config", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(alternateSiteConfig);
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
           messages={messages}
           pageTree={source.pageTree}
           siteConfig={alternateSiteConfig}
@@ -156,10 +271,38 @@ describe("ModelAtlasDocsHeader", () => {
       </RootProvider>,
     );
 
+    expect(brand.title).toBe("Example Docs");
+    expect(brand.url).toBe("/");
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).not.toContain(">you-agent-factory<");
     expect(html).toContain('href="https://github.com/example/example"');
     expect(html).not.toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
     expect(html).toContain('aria-label="Open project GitHub repository"');
     expect(html).toContain('title="Open project GitHub repository"');
+  });
+
+  test("localizes the brand home destination on non-default locales", async () => {
+    const messages = await loadUiMessages("vi");
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const brand = resolveSiteConfigLayoutNav(youAgentFactorySiteConfig, "vi");
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
+          messages={messages}
+          pageTree={source.pageTree}
+          locale="vi"
+          siteConfig={youAgentFactorySiteConfig}
+        />
+      </RootProvider>,
+    );
+
+    expect(brand.title).toBe("you-agent-factory");
+    expect(brand.url).toBe("/vi");
+    expect(html).toContain('data-docs-header-brand=""');
+    expect(html).toContain(`href="${brand.url}"`);
+    expect(html).toContain(`>${brand.title}<`);
+    expect(html).not.toContain(">Model Atlas<");
   });
 
   test("keeps the default repository URL from you-agent-factory site config", async () => {
@@ -167,7 +310,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
+        <DocsHeader
           messages={messages}
           pageTree={source.pageTree}
           siteConfig={youAgentFactorySiteConfig}
@@ -186,7 +329,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -220,7 +363,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -247,31 +390,47 @@ describe("ModelAtlasDocsHeader", () => {
     );
   });
 
-  test("keeps the simplified primary nav even when topology options are provided", async () => {
+  test("desktop primary nav exposes CLI destinations without Topology or Timeline", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
-          messages={messages}
-          pageTree={source.pageTree}
-          topologyOptions={[]}
-        />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
     const expectedItems = getPrimaryNavItems(messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      "Home",
+      "Guides",
+      "Docs",
+      "Glossary",
+      "Blog",
+    ]);
+    expect(expectedItems.map((item) => item.href)).toEqual([
+      "/",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
+      "/blog",
+    ]);
+
     const desktopNavMatch = html.match(
       /<nav[^>]*aria-label="Primary"[^>]*>([\s\S]*?)<\/nav>/,
     );
     expect(desktopNavMatch).toBeTruthy();
+    const desktopNav = desktopNavMatch?.[1] ?? "";
 
     for (const item of expectedItems) {
       const escapedHref = item.href.replaceAll("&", "&amp;");
-      expect(desktopNavMatch?.[1]).toContain(`href="${escapedHref}"`);
-      expect(desktopNavMatch?.[1]).toContain(`>${item.label}<`);
+      expect(desktopNav).toContain(`href="${escapedHref}"`);
+      expect(desktopNav).toContain(`>${item.label}<`);
     }
 
+    expect(desktopNav).not.toContain(`>${messages.nav.topology}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.timeline}<`);
+    expect(desktopNav).not.toContain('href="/topology"');
+    expect(desktopNav).not.toContain('href="/docs/timeline"');
     expect(html).toContain("flex-wrap");
     expect(html).toContain("gap-y-2");
   });
@@ -281,7 +440,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -293,7 +452,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -323,15 +482,11 @@ describe("ModelAtlasDocsHeader", () => {
     }
   });
 
-  test("keeps the simplified mobile drawer nav when topology options are provided", async () => {
+  test("mobile drawer primary nav exposes the same CLI destinations", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader
-        messages={messages}
-        pageTree={source.pageTree}
-        topologyOptions={[]}
-      />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -346,6 +501,13 @@ describe("ModelAtlasDocsHeader", () => {
     expect(drawer).toBeTruthy();
 
     const expectedItems = getPrimaryNavItems(messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      "Home",
+      "Guides",
+      "Docs",
+      "Glossary",
+      "Blog",
+    ]);
     for (const item of expectedItems) {
       const link = within(drawer as HTMLElement).getByRole("link", {
         name: item.label,
@@ -353,6 +515,16 @@ describe("ModelAtlasDocsHeader", () => {
       expect(link.getAttribute("href")).toBe(item.href);
       expect(link.className).toContain(PRIMARY_NAV_MOBILE_LINK_CLASS);
     }
+    expect(
+      within(drawer as HTMLElement).queryByRole("link", {
+        name: messages.nav.topology,
+      }),
+    ).toBeNull();
+    expect(
+      within(drawer as HTMLElement).queryByRole("link", {
+        name: messages.nav.timeline,
+      }),
+    ).toBeNull();
   });
 
   test("renders localized simplified header labels on a vietnamese route", async () => {
@@ -360,11 +532,10 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader
+        <DocsHeader
           messages={messages}
           pageTree={source.pageTree}
           locale="vi"
-          topologyOptions={[]}
         />
       </RootProvider>,
     );
@@ -392,12 +563,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages("vi");
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader
-        messages={messages}
-        pageTree={source.pageTree}
-        locale="vi"
-        topologyOptions={[]}
-      />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} locale="vi" />,
       {
         SearchDialog,
       },
@@ -448,12 +614,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages("vi");
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader
-        messages={messages}
-        pageTree={source.pageTree}
-        locale="vi"
-        topologyOptions={[]}
-      />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} locale="vi" />,
       {
         SearchDialog,
       },
@@ -483,7 +644,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -509,7 +670,7 @@ describe("ModelAtlasDocsHeader", () => {
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
@@ -520,17 +681,18 @@ describe("ModelAtlasDocsHeader", () => {
     expect(html).toContain("focus-visible:ring-3");
   });
 
-  test("moves keyboard focus through menu control, disclosed links, and search trigger when open", async () => {
+  test("moves keyboard focus through menu control, brand link, and search trigger when open", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
     );
     const user = userEvent.setup();
     const menuButton = screen.getByRole("button", { name: messages.nav.menu });
+    const brandLink = screen.getByRole("link", { name: "you-agent-factory" });
     const searchTrigger = screen.getByRole("button", {
       name: messages.search.open,
     });
@@ -551,6 +713,9 @@ describe("ModelAtlasDocsHeader", () => {
     expect(panelLinks).toHaveLength(expectedItems.length);
 
     await user.tab();
+    expect(document.activeElement).toBe(brandLink);
+
+    await user.tab();
     expect(document.activeElement).toBe(searchTrigger);
   });
 
@@ -560,7 +725,7 @@ describe("ModelAtlasDocsHeader", () => {
     const user = userEvent.setup();
     window.history.replaceState({}, "", "/docs/glossary/token?tag=attention");
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
         pathname: "/docs/glossary/token",
@@ -581,14 +746,14 @@ describe("ModelAtlasDocsHeader", () => {
     ).toBe("/docs/glossary/token?tag=attention");
     expect(
       within(dialog)
-        .getByRole("menuitem", { name: /^Tiếng Việt$/i })
-        .getAttribute("href"),
-    ).toBe("/vi/docs/glossary/token?tag=attention");
+        .getByRole("menuitem", { name: /Tiếng Việt/ })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
     expect(
       within(dialog)
         .getByRole("menuitem", { name: /日本語/ })
-        .getAttribute("href"),
-    ).toBe("/ja/docs/glossary/token?tag=attention");
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
     expect(
       within(dialog)
         .getByRole("menuitem", { name: /简体中文/ })
@@ -603,7 +768,7 @@ describe("ModelAtlasDocsHeader", () => {
     const user = userEvent.setup();
     window.history.replaceState({}, "", "/search?q=attention&tag=attention");
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
         pathname: "/search",
@@ -645,7 +810,7 @@ describe("ModelAtlasDocsHeader", () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -672,7 +837,7 @@ describe("ModelAtlasDocsHeader", () => {
     const user = userEvent.setup();
     window.history.replaceState({}, "", "/docs/modules/sparse-attention");
     renderHeaderWithNavigation(
-      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
         pathname: "/docs/modules/sparse-attention",

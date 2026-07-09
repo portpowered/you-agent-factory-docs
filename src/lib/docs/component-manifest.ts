@@ -59,10 +59,10 @@ export const PHASE_1_SHELL_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
     a11ySmokeTests: ["src/tests/a11y/primary-navigation.a11y.test.tsx"],
   },
   {
-    file: "src/components/layout/model-atlas-docs-header.tsx",
-    label: "ModelAtlasDocsHeader",
+    file: "src/components/layout/docs-header.tsx",
+    label: "DocsHeader",
     minReachableLinePercent: 90,
-    unitTests: ["src/components/layout/model-atlas-docs-header.test.tsx"],
+    unitTests: ["src/components/layout/docs-header.test.tsx"],
     a11ySmokeTests: ["src/tests/a11y/primary-navigation.a11y.test.tsx"],
   },
   {

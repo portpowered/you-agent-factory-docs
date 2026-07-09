@@ -15,7 +15,8 @@ describe("search UI messages", () => {
   test("loads localized copy for dialog, trigger, and result states", async () => {
     const messages = await loadUiMessages();
     expect(messages.search.open).toBe("Open search");
-    expect(messages.search.placeholder.length).toBeGreaterThan(0);
+    expect(messages.search.placeholder).toBe("Search you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.search.close.length).toBeGreaterThan(0);
     expect(messages.search.idle.length).toBeGreaterThan(0);
     expect(messages.search.noResults.length).toBeGreaterThan(0);
