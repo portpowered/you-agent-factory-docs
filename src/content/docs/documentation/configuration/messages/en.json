@@ -19,9 +19,17 @@
       "title": "How The Pieces Fit",
       "body": "Work enters the factory as a token in a work type's initial state. A workstation is enabled when its configured input places have matching tokens. The workstation dispatches to its worker, then routes the token based on the worker outcome:"
     },
+    "topLevelFields": {
+      "title": "Top-Level Fields",
+      "body": "factory.json owns the customer-facing topology fields below. Required fields define executable workflow. Optional resources bound concurrency. id and runner set factory-level defaults. layout and supportingFiles are non-executable portability metadata — they do not change runtime topology."
+    },
+    "minimalFactory": {
+      "title": "Minimal Factory",
+      "body": "A minimal factory needs one work type, one worker, and one workstation that moves submitted work from an initial state to a terminal state. Copy this shape, then add matching workers/processor/AGENTS.md and workstations/process/AGENTS.md files:"
+    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start from factory.json as the topology root, then add split worker and workstation instruction files named to match the entries in that file. Use this page for the layout and how-pieces-fit overview. Open the workers, workstations, and resources documentation when you need field-level contracts for those pieces."
+      "body": "Start from factory.json as the topology root, then add split worker and workstation instruction files named to match the entries in that file. Use this page for the layout, fields overview, and minimal factory shape. Open the workers, workstations, and resources documentation when you need field-level contracts for those pieces."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -47,7 +55,34 @@
     "routingRejectedOutcome": "Rejected",
     "routingRejectedField": "onRejection",
     "routingFailedOutcome": "Failed, timed out, or errored",
-    "routingFailedField": "onFailure"
+    "routingFailedField": "onFailure",
+    "fieldNameHeader": "Field",
+    "fieldRequiredHeader": "Required",
+    "fieldDescriptionHeader": "Overview",
+    "fieldWorkTypesName": "workTypes",
+    "fieldWorkTypesRequired": "Yes",
+    "fieldWorkTypesDescription": "Work categories and lifecycle states. Workstation inputs and outputs must reference these names.",
+    "fieldWorkersName": "workers",
+    "fieldWorkersRequired": "Yes",
+    "fieldWorkersDescription": "Worker identities that workstations reference by name. Deep worker-type fields live on the workers documentation page.",
+    "fieldWorkstationsName": "workstations",
+    "fieldWorkstationsRequired": "Yes",
+    "fieldWorkstationsDescription": "Dispatch steps that consume input states and produce output states. Deep workstation-kind fields live on the workstations documentation page.",
+    "fieldResourcesName": "resources",
+    "fieldResourcesRequired": "No",
+    "fieldResourcesDescription": "Optional bounded concurrency pools. Workers and workstations declare requirements against these pools. Deep pool contracts live on the resources documentation page.",
+    "fieldIdName": "id",
+    "fieldIdRequired": "No",
+    "fieldIdDescription": "Factory-level identifier. Prompt context uses this when a submitted work item does not carry a project tag.",
+    "fieldRunnerName": "runner",
+    "fieldRunnerRequired": "No",
+    "fieldRunnerDescription": "Factory-level default runner ID. Supported built-ins include codex, gemini, kiro, cursor-cli, and opencode.",
+    "fieldLayoutName": "layout",
+    "fieldLayoutRequired": "No",
+    "fieldLayoutDescription": "Non-executable portable graph-editor layout metadata. It must not change runtime topology or execution behavior.",
+    "fieldSupportingFilesName": "supportingFiles",
+    "fieldSupportingFilesRequired": "No",
+    "fieldSupportingFilesDescription": "Portability-only manifest for validation-only external tools and bundled files. Distinct from runtime-capacity resources."
   },
   "callouts": {
     "layoutNotes": {
@@ -55,6 +90,12 @@
     },
     "placeNote": {
       "body": "Each workType and state pair becomes a place named <workType>:<state>, such as task:init. That place naming is how workstation inputs and outputs connect to the work-type lifecycle."
+    },
+    "fieldsOverviewNote": {
+      "body": "Runtime topology is workTypes, workers, workstations, and optional resources. layout and supportingFiles travel with the factory for portability and presentation only. Do not treat them as executable workflow fields."
+    },
+    "minimalFactoryNote": {
+      "body": "Accepted work moves through outputs to task:complete. Failures route through onFailure to task:failed. Add onContinue or onRejection only when those outcomes are part of the workstation contract."
     }
   }
 }

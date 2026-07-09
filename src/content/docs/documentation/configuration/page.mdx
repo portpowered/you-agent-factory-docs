@@ -97,6 +97,149 @@ factory/
   <T k="callouts.placeNote.body" />
 </Section>
 
+<Section id="top-level-fields" titleKey="sections.topLevelFields.title">
+  <T k="sections.topLevelFields.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.fieldNameHeader" />
+        </th>
+        <th>
+          <T k="links.fieldRequiredHeader" />
+        </th>
+        <th>
+          <T k="links.fieldDescriptionHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.fieldWorkTypesName" />
+        </td>
+        <td>
+          <T k="links.fieldWorkTypesRequired" />
+        </td>
+        <td>
+          <T k="links.fieldWorkTypesDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldWorkersName" />
+        </td>
+        <td>
+          <T k="links.fieldWorkersRequired" />
+        </td>
+        <td>
+          <T k="links.fieldWorkersDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldWorkstationsName" />
+        </td>
+        <td>
+          <T k="links.fieldWorkstationsRequired" />
+        </td>
+        <td>
+          <T k="links.fieldWorkstationsDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldResourcesName" />
+        </td>
+        <td>
+          <T k="links.fieldResourcesRequired" />
+        </td>
+        <td>
+          <T k="links.fieldResourcesDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldIdName" />
+        </td>
+        <td>
+          <T k="links.fieldIdRequired" />
+        </td>
+        <td>
+          <T k="links.fieldIdDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldRunnerName" />
+        </td>
+        <td>
+          <T k="links.fieldRunnerRequired" />
+        </td>
+        <td>
+          <T k="links.fieldRunnerDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldLayoutName" />
+        </td>
+        <td>
+          <T k="links.fieldLayoutRequired" />
+        </td>
+        <td>
+          <T k="links.fieldLayoutDescription" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.fieldSupportingFilesName" />
+        </td>
+        <td>
+          <T k="links.fieldSupportingFilesRequired" />
+        </td>
+        <td>
+          <T k="links.fieldSupportingFilesDescription" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.fieldsOverviewNote.body" />
+</Section>
+
+<Section id="minimal-factory" titleKey="sections.minimalFactory.title">
+  <T k="sections.minimalFactory.body" />
+
+```json
+{
+  "workTypes": [
+    {
+      "name": "task",
+      "states": [
+        { "name": "init", "type": "INITIAL" },
+        { "name": "complete", "type": "TERMINAL" },
+        { "name": "failed", "type": "FAILED" }
+      ]
+    }
+  ],
+  "workers": [
+    { "name": "processor" }
+  ],
+  "workstations": [
+    {
+      "name": "process",
+      "worker": "processor",
+      "inputs": [{ "workType": "task", "state": "init" }],
+      "outputs": [{ "workType": "task", "state": "complete" }],
+      "onFailure": { "workType": "task", "state": "failed" }
+    }
+  ]
+}
+```
+
+  <T k="callouts.minimalFactoryNote.body" />
+</Section>
+
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
 </Section>
