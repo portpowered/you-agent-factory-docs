@@ -62,6 +62,21 @@ instructions only in `.content.md`. Baseline guide/technique/documentation
 templates ship empty `assets.json` until a later authored page needs media.
 Do not author customer page bundles under content roots in this lane.
 
+## Empty content roots (story 005)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/{guides,techniques,documentation}/.gitkeep` | Present, empty CLI docs content roots (no authored `page.mdx` bundles) |
+| `src/content/registry/{guides,techniques,documentation}/.gitkeep` | Present, empty CLI registry dirs (loader already tolerates ENOENT; dirs make the contract explicit) |
+| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as empty-content targets; helpers for docs/registry roots and empty-starter readiness |
+| `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks: empty page bundles, empty registry JSON, `loadRegistry` without CLI topic kinds, section-index empty state without starters |
+
+`concepts` remains a designated CLI collection target (empty `starterSlugs`)
+while existing Atlas concept pages/registry records stay until
+`rewrite-delete-atlas-domain` owns deletion. Do not delete Atlas
+models/modules/papers/training/systems in this lane. Do not author real CLI
+topic pages or registry records here.
+
 ## Wiring that must stay aligned when adding a registry kind
 
 | Path | Role |
@@ -97,3 +112,10 @@ CLI page templates need: `docs/templates/<kind>.mdx` with matching Zod
 starter messages without reader-shortcut/legacy summary keys, and a
 `.content.md` authoring guide that is never pasted into production MDX.
 Preserve the existing `concept` template as the CLI concept path.
+
+Empty CLI content roots need: present `src/content/docs/<collection>/` and
+matching empty registry dirs for `guides`/`techniques`/`documentation`, empty
+`starterSlugs` so indexes/browse do not require featured pages, and no authored
+customer page bundles or CLI topic registry JSON in this lane. Designate
+`concepts` as a CLI target without deleting Atlas concept content owned by the
+sibling delete lane.

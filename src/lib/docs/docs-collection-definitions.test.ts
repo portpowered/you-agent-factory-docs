@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
+import { CLI_DOCS_CONTENT_ROOT_SECTIONS } from "@/lib/docs/cli-empty-content-roots";
 import {
   DOCS_COLLECTION_IDS,
   DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS,
@@ -13,12 +14,7 @@ import {
   listDocsCollectionDefinitions,
 } from "@/lib/docs/docs-collection-definitions";
 
-const EMPTY_CLI_COLLECTION_IDS = [
-  "guides",
-  "concepts",
-  "techniques",
-  "documentation",
-] as const;
+const EMPTY_CLI_COLLECTION_IDS = CLI_DOCS_CONTENT_ROOT_SECTIONS;
 
 function resolveUiMessagePath(messages: UiMessages, path: string): string {
   const value = path
