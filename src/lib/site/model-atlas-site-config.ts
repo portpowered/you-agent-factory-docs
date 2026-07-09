@@ -1,5 +1,8 @@
 import { SCAFFOLD_ID, SITE_BRAND_NAME, SITE_HEADING } from "@/lib/scaffold";
-import type { SiteConfig } from "./site-config.contract";
+import {
+  SITE_COLLECTION_FAMILIES,
+  type SiteConfig,
+} from "./site-config.contract";
 
 /** Default product repository URL for the you-agent-factory shell. */
 export const YOU_AGENT_FACTORY_REPOSITORY_URL =
@@ -10,8 +13,9 @@ export const MODEL_ATLAS_REPOSITORY_URL = YOU_AGENT_FACTORY_REPOSITORY_URL;
 
 /**
  * Transitional default config still used by the current shell.
- * Brand/repo and primary nav/route placeholders are you-agent-factory CLI
- * docs shaped; later rewrite stories replace collections/featured links.
+ * Brand/repo, primary nav/route placeholders, collections, and home featured
+ * links are you-agent-factory CLI docs shaped. Home featured links stay an
+ * empty placeholder list so B01 can author final marketing copy.
  * Search is a configured route surface (header trigger) but not a primary
  * nav item, to avoid duplicating the header search control.
  */
@@ -29,8 +33,6 @@ export const modelAtlasSiteConfig = {
     glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
     search: { surface: "search" },
-    /** Kept for transitional home featured links until story 004. */
-    browse: { surface: "browse" },
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },
@@ -39,39 +41,7 @@ export const modelAtlasSiteConfig = {
     { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
   ],
-  collections: [
-    { family: "glossary" },
-    { family: "concepts" },
-    { family: "modules" },
-    { family: "models" },
-    { family: "papers" },
-    { family: "training" },
-    { family: "systems" },
-  ],
-  homeFeaturedLinks: [
-    {
-      kind: "route",
-      routeSurface: "browse",
-      titleKey: "atlasLinkTitle",
-      descriptionKey: "atlasLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/grouped-query-attention",
-      titleKey: "gqaLinkTitle",
-      descriptionKey: "gqaLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/swiglu",
-      titleKey: "swigluLinkTitle",
-      descriptionKey: "swigluLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/relu",
-      titleKey: "reluLinkTitle",
-      descriptionKey: "reluLinkDescription",
-    },
-  ],
+  collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
+  /** Empty until B01 authors final home marketing featured links. */
+  homeFeaturedLinks: [] as SiteConfig["homeFeaturedLinks"],
 } as const satisfies SiteConfig;

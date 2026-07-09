@@ -5,7 +5,6 @@ import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   buildLocalizedRoute,
-  defaultLocale,
   supportedLocales,
 } from "@/lib/i18n/locale-routing";
 import { baseOptions } from "@/lib/layout.shared";
@@ -146,46 +145,27 @@ describe("site config home featured link compatibility", () => {
         configHrefs.includes(href),
       );
 
+      expect(configHrefs).toEqual([]);
       expect(consumerHrefs).toEqual(configHrefs);
     }
   });
 
-  test("preserves docs-page locale fallback behavior for module featured links", () => {
-    const viHrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
-      modelAtlasSiteConfig,
-      "vi",
-    );
-    const jaHrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
-      modelAtlasSiteConfig,
-      "ja",
-    );
-
-    expect(viHrefs).toEqual([
-      "/vi/browse",
-      "/vi/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
-    expect(jaHrefs).toEqual([
-      "/ja/browse",
-      "/ja/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
-  });
-
-  test("resolves default-locale browse and module links on the english surface", () => {
-    expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(
+  test("default featured-link resolution emits no Atlas module destinations", () => {
+    for (const locale of supportedLocales) {
+      const hrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
         modelAtlasSiteConfig,
-        defaultLocale,
-      ),
-    ).toEqual([
-      "/browse",
-      "/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
+        locale,
+      );
+      expect(hrefs).toEqual([]);
+      expect(
+        hrefs.some(
+          (href) =>
+            href.includes("/docs/modules/grouped-query-attention") ||
+            href.includes("/docs/modules/swiglu") ||
+            href.includes("/docs/modules/relu"),
+        ),
+      ).toBe(false);
+    }
   });
 
   test("binds featured link copy through the same home message keys", async () => {
@@ -195,19 +175,8 @@ describe("site config home featured link compatibility", () => {
       modelAtlasSiteConfig,
       messages,
     );
-    const expectedCopy = modelAtlasSiteConfig.homeFeaturedLinks.map((link) => ({
-      title: messages.home[link.titleKey],
-      description: messages.home[link.descriptionKey],
-    }));
 
-    expect(
-      configLinks.map(({ title, description }) => ({ title, description })),
-    ).toEqual(expectedCopy);
-    expect(configLinks.map((link) => link.title)).toEqual([
-      "Browse the atlas",
-      "Grouped-query attention",
-      "SwiGLU",
-      "ReLU",
-    ]);
+    expect(modelAtlasSiteConfig.homeFeaturedLinks).toEqual([]);
+    expect(configLinks).toEqual([]);
   });
 });

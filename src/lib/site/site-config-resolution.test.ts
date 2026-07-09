@@ -1,11 +1,49 @@
 import { describe, expect, test } from "bun:test";
 import { isDocsPageShippedForLocale } from "@/lib/content/pages";
 import { modelAtlasSiteConfig } from "./model-atlas-site-config";
+import type { SiteConfig } from "./site-config.contract";
 import { resolveSiteConfigHomeFeaturedLinkHrefs } from "./site-config-resolution";
 
+/** Fixture with docs-page featured links for locale-fallback resolution coverage. */
+const featuredLinkLocaleFallbackConfig = {
+  ...modelAtlasSiteConfig,
+  homeFeaturedLinks: [
+    {
+      kind: "docs-page" as const,
+      slug: "modules/grouped-query-attention",
+      titleKey: "gqaLinkTitle" as const,
+      descriptionKey: "gqaLinkDescription" as const,
+    },
+    {
+      kind: "docs-page" as const,
+      slug: "modules/swiglu",
+      titleKey: "swigluLinkTitle" as const,
+      descriptionKey: "swigluLinkDescription" as const,
+    },
+    {
+      kind: "docs-page" as const,
+      slug: "modules/relu",
+      titleKey: "reluLinkTitle" as const,
+      descriptionKey: "reluLinkDescription" as const,
+    },
+  ],
+} satisfies SiteConfig;
+
 describe("site config home featured link resolution", () => {
+  test("default config resolves an empty featured-link href list", () => {
+    expect(
+      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "en"),
+    ).toEqual([]);
+    expect(
+      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "vi"),
+    ).toEqual([]);
+    expect(
+      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "ja"),
+    ).toEqual([]);
+  });
+
   test("uses shipped-docs locale fallback for docs-page featured links", () => {
-    const docsLinks = modelAtlasSiteConfig.homeFeaturedLinks.filter(
+    const docsLinks = featuredLinkLocaleFallbackConfig.homeFeaturedLinks.filter(
       (link) => link.kind === "docs-page",
     );
 
@@ -16,9 +54,9 @@ describe("site config home featured link resolution", () => {
           : "en";
 
         const href = resolveSiteConfigHomeFeaturedLinkHrefs(
-          modelAtlasSiteConfig,
+          featuredLinkLocaleFallbackConfig,
           locale,
-        )[modelAtlasSiteConfig.homeFeaturedLinks.indexOf(link)];
+        )[featuredLinkLocaleFallbackConfig.homeFeaturedLinks.indexOf(link)];
 
         if (expectedLocale === locale) {
           expect(href).toContain(`/${locale}/`);
@@ -30,22 +68,26 @@ describe("site config home featured link resolution", () => {
     }
   });
 
-  test("preserves localized browse and shipped module hrefs on vietnamese home", () => {
+  test("preserves localized shipped module hrefs on vietnamese home for docs-page links", () => {
     expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "vi"),
+      resolveSiteConfigHomeFeaturedLinkHrefs(
+        featuredLinkLocaleFallbackConfig,
+        "vi",
+      ),
     ).toEqual([
-      "/vi/browse",
       "/vi/docs/modules/grouped-query-attention",
       "/docs/modules/swiglu",
       "/docs/modules/relu",
     ]);
   });
 
-  test("preserves localized browse and shipped module hrefs on japanese home", () => {
+  test("preserves localized shipped module hrefs on japanese home for docs-page links", () => {
     expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "ja"),
+      resolveSiteConfigHomeFeaturedLinkHrefs(
+        featuredLinkLocaleFallbackConfig,
+        "ja",
+      ),
     ).toEqual([
-      "/ja/browse",
       "/ja/docs/modules/grouped-query-attention",
       "/docs/modules/swiglu",
       "/docs/modules/relu",

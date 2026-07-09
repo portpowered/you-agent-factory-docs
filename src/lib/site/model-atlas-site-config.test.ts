@@ -60,46 +60,29 @@ describe("model atlas site config", () => {
     ).not.toContain("timeline");
   });
 
-  test("includes transitional Model Atlas collection family placeholders", () => {
+  test("includes CLI collection family placeholders", () => {
     expect(
       modelAtlasSiteConfig.collections.map((entry) => entry.family),
-    ).toEqual([
-      "glossary",
-      "concepts",
-      "modules",
-      "models",
-      "papers",
-      "training",
-      "systems",
-    ]);
+    ).toEqual(["guides", "concepts", "techniques", "documentation"]);
+    expect(
+      modelAtlasSiteConfig.collections.map((entry) => entry.family),
+    ).not.toContain("modules");
+    expect(
+      modelAtlasSiteConfig.collections.map((entry) => entry.family),
+    ).not.toContain("models");
+    expect(
+      modelAtlasSiteConfig.collections.map((entry) => entry.family),
+    ).not.toContain("papers");
+    expect(
+      modelAtlasSiteConfig.collections.map((entry) => entry.family),
+    ).not.toContain("training");
+    expect(
+      modelAtlasSiteConfig.collections.map((entry) => entry.family),
+    ).not.toContain("systems");
   });
 
-  test("includes current home featured link placeholders", () => {
-    expect(modelAtlasSiteConfig.homeFeaturedLinks).toEqual([
-      {
-        kind: "route",
-        routeSurface: "browse",
-        titleKey: "atlasLinkTitle",
-        descriptionKey: "atlasLinkDescription",
-      },
-      {
-        kind: "docs-page",
-        slug: "modules/grouped-query-attention",
-        titleKey: "gqaLinkTitle",
-        descriptionKey: "gqaLinkDescription",
-      },
-      {
-        kind: "docs-page",
-        slug: "modules/swiglu",
-        titleKey: "swigluLinkTitle",
-        descriptionKey: "swigluLinkDescription",
-      },
-      {
-        kind: "docs-page",
-        slug: "modules/relu",
-        titleKey: "reluLinkTitle",
-        descriptionKey: "reluLinkDescription",
-      },
-    ]);
+  test("keeps home featured links as an empty transitional placeholder list", () => {
+    expect(modelAtlasSiteConfig.homeFeaturedLinks).toEqual([]);
+    expect(modelAtlasSiteConfig.homeFeaturedLinks).toHaveLength(0);
   });
 });
