@@ -3,6 +3,8 @@ import {
   HomeBrowseList,
 } from "@/components/home/home-browse-link";
 import { HomeBrushHeader } from "@/components/home/home-brush-header";
+import { HomeCommandBlock } from "@/components/home/home-command-block";
+import { bulletlessListClassName } from "@/features/docs/components/list-decoration";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
@@ -25,14 +27,102 @@ export function HomeArticle({
     messages,
     locale,
   );
+  const featureItems = [
+    home.featureHarnesses,
+    home.featureLoop,
+    home.featureReview,
+    home.featurePlanner,
+    home.featureCrons,
+    home.featureEventStreams,
+  ] as const;
 
   return (
     <article className="max-w-3xl">
       <HomeBrushHeader title={home.title} subtitle={home.subtitle} />
 
       <section
+        id="install"
+        className="mt-8 scroll-mt-6"
+        aria-labelledby="home-install-heading"
+      >
+        <h2
+          id="home-install-heading"
+          className="font-serif text-2xl font-semibold text-foreground"
+        >
+          {home.installSectionTitle}
+        </h2>
+        <HomeCommandBlock
+          label={home.installMacosLinuxLabel}
+          command={home.installMacosLinuxCommand}
+        />
+        <HomeCommandBlock
+          label={home.installWindowsLabel}
+          command={home.installWindowsCommand}
+        />
+      </section>
+
+      <section
+        id="run"
+        className="mt-8 scroll-mt-6"
+        aria-labelledby="home-run-heading"
+      >
+        <h2
+          id="home-run-heading"
+          className="font-serif text-2xl font-semibold text-foreground"
+        >
+          {home.runSectionTitle}
+        </h2>
+        <HomeCommandBlock
+          label={home.runCommandLabel}
+          command={home.runCommand}
+        />
+      </section>
+
+      <section
+        id="why"
+        className="mt-8 scroll-mt-6"
+        aria-labelledby="home-why-heading"
+      >
+        <h2
+          id="home-why-heading"
+          className="font-serif text-2xl font-semibold text-foreground"
+        >
+          {home.whySectionTitle}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+          {home.whyBody}
+        </p>
+      </section>
+
+      <section
+        id="features"
+        className="mt-8 scroll-mt-6"
+        aria-labelledby="home-features-heading"
+      >
+        <h2
+          id="home-features-heading"
+          className="font-serif text-2xl font-semibold text-foreground"
+        >
+          {home.featuresSectionTitle}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+          {home.featuresIntro}
+        </p>
+        <ul
+          className={bulletlessListClassName("mt-4")}
+          aria-label={home.featuresSectionTitle}
+        >
+          {featureItems.map((item) => (
+            <li key={item} className="text-base text-foreground">
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section
         id="browse"
-        className="mt-4 scroll-mt-6"
+        className="mt-8 scroll-mt-6"
         aria-labelledby="home-browse-heading"
       >
         <h2
