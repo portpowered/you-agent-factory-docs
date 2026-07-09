@@ -1,0 +1,36 @@
+{
+  "title": "Checklist",
+  "description": "A factory planner checklist is a live outcomes and workstream board that shows done, active, ready-next, and intentionally held work.",
+  "openingSummary": "A checklist is the factory planner's live board of customer outcomes and workstreams. It shows what is done, active, ready next, and intentionally held—without treating phase names as mandatory gates.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A checklist is a live planner outcomes and workstream board. It makes done, active, ready-next, and intentionally held work visible in one place. Phase names may appear as optional labels, but they are not mandatory gates that force every stream to wait for a global stage to finish."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "A checklist helps you track customer outcomes, see which workstreams can move in parallel, and record real holds with concrete reasons. Without it, planners and readers mix finished work, ready work, and blocked work into one vague queue and slow everything down."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "Imagine a docs rewrite board. Customer outcomes list published install and getting-started pages. Active workstreams cover the checklist concept page. Ready-next workstreams include the task-queue concept page. A hold notes that a shared registry schema change is already in flight, so a colliding lane waits for a real reason—not because a phase name says it should."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "In factory planning, the checklist usually lives as planner-owned state such as a live checklist file. It sits beside a lightweight queue summary and an append-only planner log so active, ready, held, and completed workstreams stay visible across sessions."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A checklist is not a task queue. A task queue is ordered work waiting to run; a checklist is the outcomes and workstream board that shows status across streams. It is also not an architectural checklist or a review acceptance-criteria list, which are static verification lists. And it is not a phase-gated project plan that forces every stream to finish one global phase before the next can start."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
