@@ -47,10 +47,30 @@ describe("primary navigation accessibility smoke", () => {
     expect(searchTrigger).toBeTruthy();
 
     const expectedItems = getPrimaryNavItems(context.messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      "Home",
+      "Guides",
+      "Docs",
+      "Glossary",
+      "Blog",
+    ]);
+    expect(expectedItems.map((item) => item.href)).toEqual([
+      "/",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
+      "/blog",
+    ]);
     for (const item of expectedItems) {
       const link = within(nav).getByRole("link", { name: item.label });
       expect(link.getAttribute("href")).toBe(item.href);
     }
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.topology }),
+    ).toBeNull();
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.timeline }),
+    ).toBeNull();
 
     for (const item of expectedItems) {
       const link = within(nav).getByRole("link", { name: item.label });

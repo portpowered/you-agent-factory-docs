@@ -7,21 +7,30 @@ import {
   PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
   PRIMARY_NAV_MOBILE_PANEL_CLASS,
 } from "@/components/layout/primary-nav";
-import type { TopologyNavigationOption } from "@/lib/content/topology-navigation";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
+
+/** Product-order CLI primary destinations for the you-agent-factory shell. */
+const CLI_PRIMARY_NAV_HREFS = [
+  "/",
+  "/docs/guides",
+  "/browse",
+  "/docs/glossary",
+  "/blog",
+] as const;
 
 describe("getPrimaryNavItems", () => {
   it("lists CLI docs primary nav routes in order", async () => {
     const messages = await loadUiMessages();
     const items = getPrimaryNavItems(messages);
 
-    expect(items.map((item) => item.href)).toEqual([
-      "/",
-      "/docs/guides",
-      "/browse",
-      "/docs/glossary",
-      "/blog",
+    expect(items.map((item) => item.href)).toEqual([...CLI_PRIMARY_NAV_HREFS]);
+    expect(items.map((item) => item.label)).toEqual([
+      "Home",
+      "Guides",
+      "Docs",
+      "Glossary",
+      "Blog",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
@@ -32,6 +41,12 @@ describe("getPrimaryNavItems", () => {
     ]);
     expect(items.some((item) => item.href === "/topology")).toBe(false);
     expect(items.some((item) => item.href === "/docs/timeline")).toBe(false);
+    expect(items.some((item) => item.label === messages.nav.topology)).toBe(
+      false,
+    );
+    expect(items.some((item) => item.label === messages.nav.timeline)).toBe(
+      false,
+    );
   });
 
   it("can emit vietnamese-prefixed navigation routes from the shared locale contract", async () => {
@@ -107,18 +122,6 @@ describe("getPrimaryNavItems", () => {
       messages.nav.tags,
       messages.nav.home,
     ]);
-  });
-
-  it("accepts topologyOptions without adding extra nav items", async () => {
-    const messages = await loadUiMessages();
-    const defaultItems = getPrimaryNavItems(messages);
-    const withTopologyOptions = getPrimaryNavItems(messages, "en", {
-      topologyOptions: [
-        { classificationId: "classification.example" },
-      ] as TopologyNavigationOption[],
-    });
-
-    expect(withTopologyOptions).toEqual(defaultItems);
   });
 
   it("uses ring token focus styles on nav links", () => {

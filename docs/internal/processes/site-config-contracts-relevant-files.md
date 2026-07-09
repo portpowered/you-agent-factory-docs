@@ -57,6 +57,9 @@ contract for the you-agent-factory CLI docs product.
   `/blog`. Guides uses `{ surface: "docs-page", slug: "guides" }`; Docs uses
   `{ surface: "browse" }` as the transitional docs landing placeholder.
 - Nav label keys `guides` and `docs` live on `NavMessages` / `common.json`.
+- `DocsHeader` / `getPrimaryNavItems` do not accept Atlas `topologyOptions`;
+  canonical docs layout no longer wires topology navigation into the header.
+  Topology browse remains a separate page-surface concern in site-renderers.
 
 ## Collections / home featured links
 

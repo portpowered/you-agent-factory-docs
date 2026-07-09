@@ -304,31 +304,47 @@ describe("DocsHeader", () => {
     );
   });
 
-  test("keeps the simplified primary nav even when topology options are provided", async () => {
+  test("desktop primary nav exposes CLI destinations without Topology or Timeline", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
       <RootProvider search={{ SearchDialog, enabled: true }}>
-        <DocsHeader
-          messages={messages}
-          pageTree={source.pageTree}
-          topologyOptions={[]}
-        />
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
       </RootProvider>,
     );
 
     const expectedItems = getPrimaryNavItems(messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      "Home",
+      "Guides",
+      "Docs",
+      "Glossary",
+      "Blog",
+    ]);
+    expect(expectedItems.map((item) => item.href)).toEqual([
+      "/",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
+      "/blog",
+    ]);
+
     const desktopNavMatch = html.match(
       /<nav[^>]*aria-label="Primary"[^>]*>([\s\S]*?)<\/nav>/,
     );
     expect(desktopNavMatch).toBeTruthy();
+    const desktopNav = desktopNavMatch?.[1] ?? "";
 
     for (const item of expectedItems) {
       const escapedHref = item.href.replaceAll("&", "&amp;");
-      expect(desktopNavMatch?.[1]).toContain(`href="${escapedHref}"`);
-      expect(desktopNavMatch?.[1]).toContain(`>${item.label}<`);
+      expect(desktopNav).toContain(`href="${escapedHref}"`);
+      expect(desktopNav).toContain(`>${item.label}<`);
     }
 
+    expect(desktopNav).not.toContain(`>${messages.nav.topology}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.timeline}<`);
+    expect(desktopNav).not.toContain('href="/topology"');
+    expect(desktopNav).not.toContain('href="/docs/timeline"');
     expect(html).toContain("flex-wrap");
     expect(html).toContain("gap-y-2");
   });
@@ -380,15 +396,11 @@ describe("DocsHeader", () => {
     }
   });
 
-  test("keeps the simplified mobile drawer nav when topology options are provided", async () => {
+  test("mobile drawer primary nav exposes the same CLI destinations", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <DocsHeader
-        messages={messages}
-        pageTree={source.pageTree}
-        topologyOptions={[]}
-      />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
       {
         SearchDialog,
       },
@@ -403,6 +415,13 @@ describe("DocsHeader", () => {
     expect(drawer).toBeTruthy();
 
     const expectedItems = getPrimaryNavItems(messages);
+    expect(expectedItems.map((item) => item.label)).toEqual([
+      "Home",
+      "Guides",
+      "Docs",
+      "Glossary",
+      "Blog",
+    ]);
     for (const item of expectedItems) {
       const link = within(drawer as HTMLElement).getByRole("link", {
         name: item.label,
@@ -410,6 +429,16 @@ describe("DocsHeader", () => {
       expect(link.getAttribute("href")).toBe(item.href);
       expect(link.className).toContain(PRIMARY_NAV_MOBILE_LINK_CLASS);
     }
+    expect(
+      within(drawer as HTMLElement).queryByRole("link", {
+        name: messages.nav.topology,
+      }),
+    ).toBeNull();
+    expect(
+      within(drawer as HTMLElement).queryByRole("link", {
+        name: messages.nav.timeline,
+      }),
+    ).toBeNull();
   });
 
   test("renders localized simplified header labels on a vietnamese route", async () => {
@@ -421,7 +450,6 @@ describe("DocsHeader", () => {
           messages={messages}
           pageTree={source.pageTree}
           locale="vi"
-          topologyOptions={[]}
         />
       </RootProvider>,
     );
@@ -449,12 +477,7 @@ describe("DocsHeader", () => {
     const messages = await loadUiMessages("vi");
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <DocsHeader
-        messages={messages}
-        pageTree={source.pageTree}
-        locale="vi"
-        topologyOptions={[]}
-      />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} locale="vi" />,
       {
         SearchDialog,
       },
@@ -505,12 +528,7 @@ describe("DocsHeader", () => {
     const messages = await loadUiMessages("vi");
     const SearchDialog: ComponentType<SharedProps> = () => null;
     await renderWithAppProviders(
-      <DocsHeader
-        messages={messages}
-        pageTree={source.pageTree}
-        locale="vi"
-        topologyOptions={[]}
-      />,
+      <DocsHeader messages={messages} pageTree={source.pageTree} locale="vi" />,
       {
         SearchDialog,
       },

@@ -15,7 +15,6 @@ import {
 } from "@/components/layout/primary-nav";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
-import type { TopologyNavigationOption } from "@/lib/content/topology-navigation";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
@@ -31,7 +30,6 @@ type DocsHeaderProps = {
   pageTree: PageTree.Root;
   locale?: SiteLocale;
   siteConfig?: SiteConfig;
-  topologyOptions?: readonly TopologyNavigationOption[];
   trailing?: ReactNode;
 };
 
@@ -40,14 +38,12 @@ export function DocsHeader({
   pageTree,
   locale = defaultLocale,
   siteConfig = youAgentFactorySiteConfig,
-  topologyOptions = [],
   trailing,
 }: DocsHeaderProps) {
   const repositoryUrl = siteConfig.repositoryUrl;
   const brand = resolveSiteConfigLayoutNav(siteConfig, locale);
   const primaryNavItems = getPrimaryNavItems(messages, locale, {
     siteConfig,
-    topologyOptions,
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const menuPanelId = useId();
