@@ -1,0 +1,36 @@
+{
+  "title": "Statistical Process Control Graphs",
+  "description": "Statistical process control graphs, also called control charts, plot a factory process metric over time with a center line and control limits so readers can tell routine variation from unusual signals.",
+  "openingSummary": "Statistical process control graphs (control charts) help factory readers watch a process metric over time and separate everyday noise from unusual drift.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A statistical process control graph, often shortened to SPC graph or control chart, is a time-ordered plot of a process metric. The chart shows a center line for the typical level of the metric and control limits that mark the band of routine variation. Points that stay inside the limits usually reflect common-cause variation. Points that break the limits, or form clear non-random patterns, are treated as special-cause signals that deserve a closer look."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long-running factory work produces metrics that move every interval: completions, failures, queue depth, and token spend. Without control limits, every bump can look like an incident and every quiet stretch can look healthy. Control charts give operators a shared way to see whether a change is still inside normal process noise or whether the process has shifted enough to investigate."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "Imagine counting successful goal completions in each ten-minute interval while a factory run is active. Most intervals land near the same center line and stay between the upper and lower control limits. One interval then spikes above the upper limit after a bad retry storm. The chart makes that special-cause excursion visible against the earlier in-control stretch, so the reader can tell unusual behavior from ordinary jitter."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "SPC graphs show up wherever factory operators watch process health over time rather than as a one-off snapshot. Throughput, failure rate, queue depth, and spend series are common candidates when a run lasts long enough for a center line and limits to mean something."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A control chart is not a one-off dashboard snapshot with no limits, and it is not a benchmark or eval leaderboard. It is also not a rule that every spike is a deploy bug. The chart asks whether a point is unusual relative to the process limits before anyone treats it as a special cause."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
