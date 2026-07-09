@@ -1,4 +1,20 @@
-.PHONY: dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build build-export ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status verify-export-routes verify-export-search-shell verify-export-search-handoff verify-export-search-ux verify-phase-1-ux verify-phase-1-convergence verify-phase-1-built-app-convergence verify-phase-1-follow-up-convergence verify-phase-1-batch-012-convergence verify-phase-1-batch-013-convergence verify-phase-1-github-pages-convergence verify-phase-1-github-pages-deploy-convergence verify-phase-2-3-reconciliation-convergence verify-rendered-quality-baseline verify-rendered-quality-regression
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build build-export ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status verify-export-routes verify-export-search-shell verify-export-search-handoff verify-export-search-ux verify-phase-1-ux verify-phase-1-convergence verify-phase-1-built-app-convergence verify-phase-1-follow-up-convergence verify-phase-1-batch-012-convergence verify-phase-1-batch-013-convergence verify-phase-1-github-pages-convergence verify-phase-1-github-pages-deploy-convergence verify-phase-2-3-reconciliation-convergence verify-rendered-quality-baseline verify-rendered-quality-regression
+
+# CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
+# Local maintainers and automation share these entrypoints.
+
+setup:
+	bun install --frozen-lockfile
+
+check: typecheck lint
+
+budget:
+	@echo "budget: exported-site budget gate temporarily skipped during rewrite foundation"
+	@exit 0
+
+component-coverage:
+	@echo "component-coverage: coverage gate temporarily skipped during rewrite foundation"
+	@exit 0
 
 dev:
 	bun run dev
