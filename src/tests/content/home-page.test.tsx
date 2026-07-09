@@ -32,8 +32,20 @@ describe("home page messages", () => {
     expect(home.runSectionTitle).toBe("Run a named goal");
     expect(home.runCommand).toContain("you run --named");
     expect(home.runCommand).toContain("@goal/");
+    expect(home.whySectionTitle).toBe("Why you-agent-factory");
+    expect(home.whyBody).toMatch(/hundreds of agents/i);
+    expect(home.featuresSectionTitle).toBe("What you get");
+    expect(home.featuresIntro).toMatch(/harness/i);
+    expect(home.featureHarnesses).toMatch(/harness/i);
+    expect(home.featureLoop).toContain("loop");
+    expect(home.featureReview).toContain("review");
+    expect(home.featurePlanner).toContain("planner");
+    expect(home.featureCrons).toContain("crons");
+    expect(home.featureEventStreams).toContain("event streams");
     expect(home.onThisPageInstall).toBe("Install");
     expect(home.onThisPageRun).toBe("Run");
+    expect(home.onThisPageWhy).toBe("Why");
+    expect(home.onThisPageFeatures).toBe("Features");
     expect(home.onThisPageBrowse).toBe("Browse");
   });
 
@@ -69,6 +81,8 @@ describe("home page render", () => {
     expect(html).not.toContain("Model Atlas");
     expect(html).toContain('id="install"');
     expect(html).toContain('id="run"');
+    expect(html).toContain('id="why"');
+    expect(html).toContain('id="features"');
     expect(html).toContain('id="browse"');
     for (const href of ATLAS_MODULE_FEATURED_HREFS) {
       expect(html).not.toContain(`href="${href}"`);
@@ -102,6 +116,25 @@ describe("home page render", () => {
     expect(html).toContain("you run --named @goal/blah");
     expect(html).toContain("<pre");
     expect(html).toContain("<code");
+  });
+
+  it("renders why and feature-list sections in the docs article flow", async () => {
+    const html = await renderHomeArticleHtml();
+    expect(html).toContain('id="why"');
+    expect(html).toContain('id="home-why-heading"');
+    expect(html).toContain("Why you-agent-factory");
+    expect(html).toContain("hundreds of agents");
+    expect(html).toContain('id="features"');
+    expect(html).toContain('id="home-features-heading"');
+    expect(html).toContain("What you get");
+    expect(html).toMatch(/harness/i);
+    expect(html).toContain("loop");
+    expect(html).toContain("review");
+    expect(html).toContain("planner");
+    expect(html).toContain("crons");
+    expect(html).toContain("event streams");
+    expect(html).toContain("list-none");
+    expect(html).not.toContain("list-disc");
   });
 
   it("preserves browse section structure on the vietnamese route surface without Atlas module links", async () => {
@@ -171,17 +204,23 @@ describe("home page render", () => {
     expect(withoutNoUnderline).not.toMatch(/\bunderline\b/);
   });
 
-  it("defines On this page Install, Run, and Browse anchors without a removed #search target", async () => {
+  it("defines On this page Install, Run, Why, Features, and Browse anchors without a removed #search target", async () => {
     const { home } = await loadUiMessages();
     const toc = buildHomeTableOfContents(home);
     const html = await renderHomeArticleHtml();
 
-    expect(toc.some((item) => item.url === "#install")).toBe(true);
-    expect(toc.some((item) => item.url === "#run")).toBe(true);
-    expect(toc.some((item) => item.url === "#browse")).toBe(true);
+    expect(toc.map((item) => item.url)).toEqual([
+      "#install",
+      "#run",
+      "#why",
+      "#features",
+      "#browse",
+    ]);
     expect(toc.some((item) => item.url === "#search")).toBe(false);
     expect(html).toContain('id="install"');
     expect(html).toContain('id="run"');
+    expect(html).toContain('id="why"');
+    expect(html).toContain('id="features"');
     expect(html).toContain('id="browse"');
     expect(html).not.toContain('id="search"');
   });

@@ -77,6 +77,16 @@ export type HomeMessages = {
   runSectionTitle: string;
   runCommandLabel: string;
   runCommand: string;
+  whySectionTitle: string;
+  whyBody: string;
+  featuresSectionTitle: string;
+  featuresIntro: string;
+  featureHarnesses: string;
+  featureLoop: string;
+  featureReview: string;
+  featurePlanner: string;
+  featureCrons: string;
+  featureEventStreams: string;
   browseSectionTitle: string;
   atlasLinkTitle: string;
   atlasLinkDescription: string;
@@ -88,6 +98,8 @@ export type HomeMessages = {
   reluLinkDescription: string;
   onThisPageInstall: string;
   onThisPageRun: string;
+  onThisPageWhy: string;
+  onThisPageFeatures: string;
   onThisPageBrowse: string;
 };
 

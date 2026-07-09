@@ -42,6 +42,20 @@ Canonical first-run example:
 
 - `you run --named @goal/blah`
 
+## Why and features
+
+| File | Role |
+| --- | --- |
+| `src/content/messages/*/common.json` (`home.why*`, `home.feature*`, `home.features*`) | Why body + feature list copy for all locales |
+| `src/components/home/home-article.tsx` (`#why`, `#features`) | Why prose + bulletless feature list in normal article flow |
+| `src/lib/navigation/home-page-toc.ts` | TOC order: `#install` → `#run` → `#why` → `#features` → `#browse` |
+| `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for why/features + `onThisPageWhy` / `onThisPageFeatures` |
+
+Required meaning (wording may vary):
+
+- Why: communicate running hundreds of agents at once
+- Features: harness support plus loop, review, planner, crons, and event streams
+
 ## Patterns
 
 - Product identity on `/` is message-driven (`messages.home.*`), not `siteConfig.brand`.
@@ -52,6 +66,8 @@ Canonical first-run example:
   `common.json` files together so loaders do not fail (non-en may stub labels).
 - Install/run command strings live in messages (not hard-coded in the component)
   so locales can stub labels while keeping the same runnable commands.
+- Why/features stay single-column article sections with stable `#why` / `#features`
+  anchors; use `bulletlessListClassName` for the feature list (no `list-disc`).
 - Legacy Atlas featured-link message keys (`atlasLinkTitle`, `gqaLinkTitle`, …) may
   remain in message files until a later story removes them; they must not appear as
   rendered product copy when `homeFeaturedLinks` is empty or CLI-shaped.
