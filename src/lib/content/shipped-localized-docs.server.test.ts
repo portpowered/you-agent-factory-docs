@@ -79,10 +79,15 @@ describe("deriveShippedLocalizedDocsManifest", () => {
           status: "published",
           locales: ["ja"],
         });
+        await writePageBundle(tempRoot, "modules/chinese-page", {
+          status: "published",
+          locales: ["zh-CN"],
+        });
 
         resetDerivedShippedLocalizedDocsManifestCache();
         expect(deriveShippedLocalizedDocsManifest(tempRoot)).toEqual({
           ja: ["modules/japanese-page"],
+          "zh-CN": ["modules/chinese-page"],
           vi: ["concepts/translated-page"],
         });
       } finally {
@@ -96,10 +101,44 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     { timeout: 15_000 },
   );
 
+  test("treats an empty zh-CN shipped-docs list as valid when no Chinese page messages exist", async () => {
+    const tempRoot = join(
+      import.meta.dir,
+      "__shipped-localized-docs-fixtures__",
+      crypto.randomUUID(),
+      "docs",
+    );
+    await mkdir(tempRoot, { recursive: true });
+
+    try {
+      await writePageBundle(tempRoot, "concepts/english-only", {
+        status: "published",
+        locales: [],
+      });
+      await writePageBundle(tempRoot, "modules/japanese-only", {
+        status: "published",
+        locales: ["ja"],
+      });
+
+      resetDerivedShippedLocalizedDocsManifestCache();
+      const manifest = deriveShippedLocalizedDocsManifest(tempRoot);
+      expect(manifest["zh-CN"]).toEqual([]);
+      expect(manifest.ja).toEqual(["modules/japanese-only"]);
+      expect(manifest.vi).toEqual([]);
+    } finally {
+      resetDerivedShippedLocalizedDocsManifestCache();
+      await rm(join(import.meta.dir, "__shipped-localized-docs-fixtures__"), {
+        recursive: true,
+        force: true,
+      });
+    }
+  });
+
   test("generated shipped localized docs artifact matches the committed docs tree", () => {
     resetDerivedShippedLocalizedDocsManifestCache();
     expect(deriveShippedLocalizedDocsManifest()).toEqual(
       resolveShippedLocalizedDocsManifest(),
     );
+    expect(deriveShippedLocalizedDocsManifest()["zh-CN"]).toEqual([]);
   });
 });

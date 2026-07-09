@@ -31,7 +31,8 @@
     "locales": {
       "en": "English",
       "vi": "Tiếng Việt",
-      "ja": "日本語"
+      "ja": "日本語",
+      "zh-CN": "简体中文"
     }
   },
   "searchEntry": {

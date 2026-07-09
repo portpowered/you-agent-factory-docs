@@ -115,8 +115,9 @@ describe("section index metadata", () => {
       canonical: "/docs/models",
       languages: {
         en: "/docs/models",
-        vi: "/vi/docs/models",
         ja: "/ja/docs/models",
+        "zh-CN": "/zh-CN/docs/models",
+        vi: "/vi/docs/models",
       },
     });
     expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);

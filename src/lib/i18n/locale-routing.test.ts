@@ -12,7 +12,7 @@ import {
 
 describe("locale-routing", () => {
   test("exports the shared locale contract", () => {
-    expect(supportedLocales).toEqual(["en", "vi", "ja"]);
+    expect(supportedLocales).toEqual(["en", "ja", "zh-CN", "vi"]);
     expect(defaultLocale).toBe("en");
   });
 
@@ -20,6 +20,7 @@ describe("locale-routing", () => {
     expect(resolveLocale()).toBe("en");
     expect(resolveLocale("vi")).toBe("vi");
     expect(resolveLocale("ja")).toBe("ja");
+    expect(resolveLocale("zh-CN")).toBe("zh-CN");
     expect(() => resolveLocale("fr")).toThrow(UnsupportedLocaleError);
   });
 
@@ -27,6 +28,7 @@ describe("locale-routing", () => {
     expect(localizePath("/", "en")).toBe("/");
     expect(localizePath("/", "vi")).toBe("/vi");
     expect(localizePath("/", "ja")).toBe("/ja");
+    expect(localizePath("/", "zh-CN")).toBe("/zh-CN");
     expect(localizePath("/search?tag=attention", "en")).toBe(
       "/search?tag=attention",
     );
@@ -36,17 +38,27 @@ describe("locale-routing", () => {
     expect(localizePath("/search?tag=attention", "ja")).toBe(
       "/ja/search?tag=attention",
     );
+    expect(localizePath("/search?tag=attention", "zh-CN")).toBe(
+      "/zh-CN/search?tag=attention",
+    );
   });
 
   test("buildLocalizedRoute covers the shipped surface contract", () => {
     expect(buildLocalizedRoute({ surface: "home" }, "en")).toBe("/");
     expect(buildLocalizedRoute({ surface: "home" }, "vi")).toBe("/vi");
     expect(buildLocalizedRoute({ surface: "home" }, "ja")).toBe("/ja");
+    expect(buildLocalizedRoute({ surface: "home" }, "zh-CN")).toBe("/zh-CN");
     expect(buildLocalizedRoute({ surface: "browse" }, "en")).toBe("/browse");
     expect(buildLocalizedRoute({ surface: "browse" }, "vi")).toBe("/vi/browse");
     expect(buildLocalizedRoute({ surface: "browse" }, "ja")).toBe("/ja/browse");
+    expect(buildLocalizedRoute({ surface: "browse" }, "zh-CN")).toBe(
+      "/zh-CN/browse",
+    );
     expect(buildLocalizedRoute({ surface: "search" }, "vi")).toBe("/vi/search");
     expect(buildLocalizedRoute({ surface: "search" }, "ja")).toBe("/ja/search");
+    expect(buildLocalizedRoute({ surface: "search" }, "zh-CN")).toBe(
+      "/zh-CN/search",
+    );
     expect(buildLocalizedRoute({ surface: "topology" }, "en")).toBe(
       "/topology",
     );
@@ -56,9 +68,15 @@ describe("locale-routing", () => {
     expect(buildLocalizedRoute({ surface: "topology" }, "ja")).toBe(
       "/ja/topology",
     );
+    expect(buildLocalizedRoute({ surface: "topology" }, "zh-CN")).toBe(
+      "/zh-CN/topology",
+    );
     expect(buildLocalizedRoute({ surface: "blog-index" }, "en")).toBe("/blog");
     expect(buildLocalizedRoute({ surface: "blog-index" }, "vi")).toBe(
       "/vi/blog",
+    );
+    expect(buildLocalizedRoute({ surface: "blog-index" }, "zh-CN")).toBe(
+      "/zh-CN/blog",
     );
     expect(
       buildLocalizedRoute(
@@ -66,6 +84,12 @@ describe("locale-routing", () => {
         "ja",
       ),
     ).toBe("/ja/blog/roofline-throughput-explorer");
+    expect(
+      buildLocalizedRoute(
+        { surface: "blog-post", slug: "roofline-throughput-explorer" },
+        "zh-CN",
+      ),
+    ).toBe("/zh-CN/blog/roofline-throughput-explorer");
     expect(
       buildLocalizedRoute(
         { surface: "docs-page", slug: "modules/grouped-query-attention" },
@@ -78,17 +102,29 @@ describe("locale-routing", () => {
         "ja",
       ),
     ).toBe("/ja/docs/modules/grouped-query-attention");
+    expect(
+      buildLocalizedRoute(
+        { surface: "docs-page", slug: "modules/grouped-query-attention" },
+        "zh-CN",
+      ),
+    ).toBe("/zh-CN/docs/modules/grouped-query-attention");
     expect(buildLocalizedRoute({ surface: "architecture-index" }, "vi")).toBe(
       "/vi/docs/architecture",
     );
     expect(buildLocalizedRoute({ surface: "architecture-index" }, "ja")).toBe(
       "/ja/docs/architecture",
     );
+    expect(
+      buildLocalizedRoute({ surface: "architecture-index" }, "zh-CN"),
+    ).toBe("/zh-CN/docs/architecture");
     expect(buildLocalizedRoute({ surface: "glossary-index" }, "vi")).toBe(
       "/vi/docs/glossary",
     );
     expect(buildLocalizedRoute({ surface: "glossary-index" }, "ja")).toBe(
       "/ja/docs/glossary",
+    );
+    expect(buildLocalizedRoute({ surface: "glossary-index" }, "zh-CN")).toBe(
+      "/zh-CN/docs/glossary",
     );
     expect(buildLocalizedRoute({ surface: "tags-index" }, "vi")).toBe(
       "/vi/tags",
@@ -96,12 +132,18 @@ describe("locale-routing", () => {
     expect(buildLocalizedRoute({ surface: "tags-index" }, "ja")).toBe(
       "/ja/tags",
     );
+    expect(buildLocalizedRoute({ surface: "tags-index" }, "zh-CN")).toBe(
+      "/zh-CN/tags",
+    );
     expect(
       buildLocalizedRoute({ surface: "tag-page", slug: "attention" }, "vi"),
     ).toBe("/vi/tags/attention");
     expect(
       buildLocalizedRoute({ surface: "tag-page", slug: "attention" }, "ja"),
     ).toBe("/ja/tags/attention");
+    expect(
+      buildLocalizedRoute({ surface: "tag-page", slug: "attention" }, "zh-CN"),
+    ).toBe("/zh-CN/tags/attention");
   });
 
   test("matchLocalizedRoute resolves english defaults and localized prefixes", () => {
@@ -124,6 +166,13 @@ describe("locale-routing", () => {
       locale: "ja",
       pathname: "/topology",
       destination: { surface: "topology" },
+    });
+
+    expect(matchLocalizedRoute("/zh-CN/search")).toEqual({
+      kind: "matched",
+      locale: "zh-CN",
+      pathname: "/search",
+      destination: { surface: "search" },
     });
 
     expect(matchLocalizedRoute("/vi/blog")).toEqual({
@@ -164,6 +213,18 @@ describe("locale-routing", () => {
       },
     });
 
+    expect(
+      matchLocalizedRoute("/zh-CN/docs/modules/grouped-query-attention"),
+    ).toEqual({
+      kind: "matched",
+      locale: "zh-CN",
+      pathname: "/docs/modules/grouped-query-attention",
+      destination: {
+        surface: "docs-page",
+        slug: "modules/grouped-query-attention",
+      },
+    });
+
     expect(matchLocalizedRoute("/ja/tags/attention")).toEqual({
       kind: "matched",
       locale: "ja",
@@ -190,18 +251,29 @@ describe("locale-routing", () => {
     expect(switchRouteLocale("/docs/glossary/token", "ja")).toBe(
       "/ja/docs/glossary/token",
     );
+    expect(switchRouteLocale("/docs/glossary/token", "zh-CN")).toBe(
+      "/zh-CN/docs/glossary/token",
+    );
     expect(switchRouteLocale("/vi/tags/attention", "en")).toBe(
       "/tags/attention",
     );
     expect(switchRouteLocale("/vi/tags/attention", "ja")).toBe(
       "/ja/tags/attention",
     );
+    expect(switchRouteLocale("/ja/tags/attention", "zh-CN")).toBe(
+      "/zh-CN/tags/attention",
+    );
     expect(switchRouteLocale("/search?tag=attention", "vi")).toBe(
       "/vi/search?tag=attention",
     );
+    expect(switchRouteLocale("/search?tag=attention", "zh-CN")).toBe(
+      "/zh-CN/search?tag=attention",
+    );
     expect(switchRouteLocale("/browse", "ja")).toBe("/ja/browse");
+    expect(switchRouteLocale("/browse", "zh-CN")).toBe("/zh-CN/browse");
     expect(switchRouteLocale("/topology", "vi")).toBe("/vi/topology");
     expect(switchRouteLocale("/vi/topology", "ja")).toBe("/ja/topology");
+    expect(switchRouteLocale("/vi/topology", "zh-CN")).toBe("/zh-CN/topology");
     expect(switchRouteLocale("/blog", "vi")).toBe("/vi/blog");
     expect(
       switchRouteLocale("/vi/blog/roofline-throughput-explorer", "en"),

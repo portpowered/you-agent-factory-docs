@@ -223,6 +223,44 @@ from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 * `scripts/validate-registry.ts`
   Maintainer and CI entrypoint for registry validation after adding records.
 
+## Shipped-locale discovery when adding a locale
+
+When extending `supportedLocales` (for example adding `zh-CN`):
+
+* Derive `NonDefaultLocale` / empty shipped-docs buckets from `supportedLocales`
+  in `src/lib/content/shipped-localized-docs.ts` and
+  `src/lib/content/shipped-localized-docs.server.ts` — do not hard-code a
+  `ja`/`vi`-only manifest shape as the authoritative contract.
+* An empty locale bucket is valid: pages without `messages/<locale>.json` stay
+  unshipped and the language switcher marks that locale unavailable for those
+  docs routes.
+* Regenerate with `bun run generate:shipped-localized-docs` (also covered by
+  `prepare:content-runtime`).
+* Cover client gating in `src/lib/content/shipped-localized-docs.test.ts` and
+  derivation in `src/lib/content/shipped-localized-docs.server.test.ts`.
+* Ship shell UI copy at `src/content/messages/<locale>/common.json` with the
+  same top-level groups as English; `loadUiMessages` / `loadUiMessagesFromDisk`
+  fail closed on a missing file (same as `ja`/`vi`). Every shipped shell locale
+  must include `language.locales.<new-locale>` for the language selector.
+* Prove load + fail-closed behavior in `src/tests/content/ui-messages.test.ts`
+  (use `bun test --preload ./src/tests/a11y/mock-navigation.ts` for focused
+  runs; `bun run test` alone fans the full website suite).
+* Page-bundle messages use the same `messages/<locale>.json` convention for
+  every supported locale (including `zh-CN`). `loadPageMessages` /
+  `hasPageMessagesFile` already resolve that path from `SiteLocale`; do not
+  special-case `ja`/`vi`. Missing non-default page messages fail closed (no
+  English fallback). Validation iterates `supportedLocales` but only requires
+  colocated locale files for docs that derive as shipped in that locale—an
+  empty `zh-CN` shipped bucket is valid and does not force every page to ship
+  Chinese copy. Cover load + fail-closed in `src/lib/content/messages.test.ts`
+  and shipped/empty validation in `src/lib/content/validate-registry.test.ts`.
+* Language switcher (`src/components/layout/language-switcher.tsx`) maps
+  `supportedLocales` into options: non-docs surfaces (home, search, browse, …)
+  always get a locale-preserving `href` via `switchRouteLocale`; docs pages mark
+  unshipped locales unavailable (`href: null`) instead of linking to wrong-language
+  copy. Cover available zh-CN navigation + query preservation and unavailable
+  docs behavior in `src/components/layout/model-atlas-docs-header.test.tsx`.
+
 ## Representative migrated consumers
 
 These files show the preferred `getDocsPageDir` pattern in page tests without

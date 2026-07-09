@@ -1,10 +1,13 @@
 /**
  * Reusable shared components subject to the manifest-driven coverage gate.
  * Allowed manifest paths: src/components (any depth), src/features/.../components,
- * documented search UI under src/features/docs/search/, and tag list UI under
- * src/features/docs/tags/.
+ * documented search UI under src/features/docs/search/, tag list UI under
+ * src/features/docs/tags/, and rewrite-era factory-ui wrappers under
+ * src/features/factory-ui/.
  *
- * Update this manifest and docs/phase-2-component-coverage.md when adding components.
+ * Update this manifest when adding components. Atlas models/topology graph
+ * components are deleted in rewrite-delete-atlas-domain; use factory-ui thin
+ * wrappers for rewrite-era reusable coverage.
  */
 export type ComponentCoverageEntry = {
   /** Repo-relative source path */
@@ -261,5 +264,29 @@ export const REUSABLE_THIN_WRAPPERS: ThinWrapperEntry[] = [
       "src/features/docs/components/DocsAutoLinkedDescription.test.tsx",
       "src/lib/content/glossary-shell-description-auto-link.test.tsx",
     ],
+  },
+  {
+    file: "src/features/factory-ui/graphs.ts",
+    label: "factory-ui graphs",
+    forwardsTo: "@you-agent-factory/components/graphs",
+    smokeTests: ["src/features/factory-ui/graphs.test.tsx"],
+  },
+  {
+    file: "src/features/factory-ui/charts.ts",
+    label: "factory-ui charts",
+    forwardsTo: "@you-agent-factory/components/charts",
+    smokeTests: ["src/features/factory-ui/charts.test.tsx"],
+  },
+  {
+    file: "src/features/factory-ui/data-display.ts",
+    label: "factory-ui DataTable",
+    forwardsTo: "DataTable (@you-agent-factory/components/data-display)",
+    smokeTests: ["src/features/factory-ui/data-display.test.tsx"],
+  },
+  {
+    file: "src/features/factory-ui/data-display.ts",
+    label: "factory-ui CodePanel",
+    forwardsTo: "CodePanel (@you-agent-factory/components/data-display)",
+    smokeTests: ["src/features/factory-ui/data-display.test.tsx"],
   },
 ];

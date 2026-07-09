@@ -145,6 +145,34 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.shell.openingSummary).toBe("要約を開く");
   });
 
+  it("loads shipped chinese simplified shell copy when zh-CN shared messages are available", async () => {
+    const messages = await loadUiMessages("zh-CN");
+    expect(messages.nav.home).toBe("首页");
+    expect(messages.nav.search).toBe("搜索");
+    expect(messages.search.placeholder.length).toBeGreaterThan(0);
+    expect(messages.language.selectorLabel).toBe("语言");
+    expect(messages.language.locales["zh-CN"]).toBe("简体中文");
+    expect(messages.browseIndex.title).toBe("浏览图谱");
+    expect(messages.modelsIndex.title).toBe("模型");
+    expect(messages.searchEntry.title).toBe("搜索");
+    expect(messages.tagsIndex.title).toBe("标签");
+    expect(messages.shell.sidebarTitle).toBe("参考");
+    expect(messages.shell.openingSummary).toBe("开篇摘要");
+    expect(
+      messages.topologyBrowse.classificationLabels.attentionMechanisms,
+    ).toBe("注意力机制");
+    expect(
+      messages.topologyBrowse.classificationLabels.normalizationLayers,
+    ).toBe("归一化层");
+  });
+
+  it("includes zh-CN language selector labels across shipped shell locales", async () => {
+    for (const locale of ["en", "ja", "zh-CN", "vi"] as const) {
+      const messages = await loadUiMessages(locale);
+      expect(messages.language.locales["zh-CN"]).toBe("简体中文");
+    }
+  });
+
   it("fails closed when shipped vietnamese shared UI messages are missing", async () => {
     await mkdir(join(tempMessagesRoot, "en"), { recursive: true });
     await writeFile(
@@ -191,6 +219,23 @@ describe("loadUiMessages shell keys", () => {
     expect(() =>
       loadUiMessagesFromDisk("ja", { messagesRoot: tempMessagesRoot }),
     ).toThrow(/Missing required UI messages file for locale "ja"/);
+  });
+
+  it("fails closed when shipped chinese simplified shared UI messages are missing", async () => {
+    await mkdir(join(tempMessagesRoot, "en"), { recursive: true });
+    await writeFile(
+      join(tempMessagesRoot, "en", "common.json"),
+      JSON.stringify({
+        nav: { home: "Home" },
+      }),
+    );
+
+    expect(() =>
+      loadUiMessagesFromDisk("zh-CN", { messagesRoot: tempMessagesRoot }),
+    ).toThrow(UiMessagesLoadError);
+    expect(() =>
+      loadUiMessagesFromDisk("zh-CN", { messagesRoot: tempMessagesRoot }),
+    ).toThrow(/Missing required UI messages file for locale "zh-CN"/);
   });
 });
 
