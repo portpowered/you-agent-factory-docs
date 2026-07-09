@@ -143,16 +143,19 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/getting-started",
+        "guides/write-review-loops",
       ],
       "zh-CN": [
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/getting-started",
+        "guides/write-review-loops",
       ],
       vi: [
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/getting-started",
+        "guides/write-review-loops",
       ],
     });
   });
