@@ -203,6 +203,30 @@
     "emptyDescription": "已发布的概念页加入图谱后会出现在这里。在此之前可返回首页或打开「浏览图谱」探索模型、模块与术语表页。",
     "emptyHomeLink": "返回首页"
   },
+  "guidesIndex": {
+    "title": "指南",
+    "description": "已发布的指南页逐步介绍实用的 CLI 工作流，以及如何把参考资料应用到日常工作中。",
+    "listLabel": "指南条目",
+    "emptyTitle": "尚无指南条目",
+    "emptyDescription": "已发布的指南页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
+    "emptyHomeLink": "返回首页"
+  },
+  "techniquesIndex": {
+    "title": "技巧",
+    "description": "已发布的技巧页解释可在 CLI 工作流与文档任务中应用的具名方法与实践。",
+    "listLabel": "技巧条目",
+    "emptyTitle": "尚无技巧条目",
+    "emptyDescription": "已发布的技巧页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
+    "emptyHomeLink": "返回首页"
+  },
+  "documentationIndex": {
+    "title": "文档",
+    "description": "已发布的文档页涵盖 CLI 表面的参考资料，包括契约、约定与补充细节。",
+    "listLabel": "文档条目",
+    "emptyTitle": "尚无文档条目",
+    "emptyDescription": "已发布的文档页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
+    "emptyHomeLink": "返回首页"
+  },
   "papersIndex": {
     "title": "论文",
     "description": "已发布的论文页把一份报告或出版物拆解为其主要主张、关联实体与支撑来源。",

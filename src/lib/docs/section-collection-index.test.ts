@@ -1,126 +1,44 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { renderSectionCollectionIndexPage } from "@/app/(site)/site-renderers";
-import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import type { DocsCollectionDefinition } from "@/lib/docs/collection-definition-contract";
 import { getDocsCollectionDefinition } from "@/lib/docs/docs-collection-definitions";
+import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import {
   isDocsCollectionId,
   resolveDocsCollectionIndexMessages,
   resolveDocsCollectionInput,
   resolveSectionKindCollectionId,
 } from "@/lib/docs/section-collection-index";
-import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 
 const trainingDefinition = getDocsCollectionDefinition("training");
 
-type SectionIndexCollectionId =
-  | "models"
-  | "modules"
-  | "concepts"
-  | "papers"
-  | "training"
-  | "systems";
+type CliSectionIndexCollectionId = (typeof CLI_DOCS_COLLECTION_IDS)[number];
 
-type SectionIndexMessages = UiMessages["modelsIndex"];
+type SectionIndexMessages = UiMessages["guidesIndex"];
 
-const SECTION_INDEX_MESSAGE_KEYS = {
-  models: "modelsIndex",
-  modules: "modulesIndex",
+const CLI_SECTION_INDEX_MESSAGE_KEYS = {
+  guides: "guidesIndex",
   concepts: "conceptsIndex",
-  papers: "papersIndex",
-  training: "trainingIndex",
-  systems: "systemsIndex",
-} as const satisfies Record<SectionIndexCollectionId, keyof UiMessages>;
-
-const SECTION_INDEX_RENDER_CASES = [
-  {
-    collectionId: "models",
-    representativeHrefs: ["/docs/models/gpt-3"],
-  },
-  {
-    collectionId: "modules",
-    representativeHrefs: [
-      "/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-    ],
-  },
-  {
-    collectionId: "concepts",
-    representativeHrefs: [
-      "/docs/concepts/transformer-architecture",
-      "/docs/concepts/quantization",
-    ],
-  },
-  {
-    collectionId: "papers",
-    representativeHrefs: ["/docs/papers/deepseek-v4"],
-  },
-  {
-    collectionId: "training",
-    representativeHrefs: [
-      "/docs/training/on-policy-distillation",
-      "/docs/training/specialist-training",
-    ],
-  },
-  {
-    collectionId: "systems",
-    representativeHrefs: [
-      "/docs/systems/deployment",
-      "/docs/systems/routing",
-      "/docs/systems/batching",
-    ],
-  },
-] as const satisfies ReadonlyArray<{
-  collectionId: SectionIndexCollectionId;
-  representativeHrefs: readonly string[];
-}>;
+  techniques: "techniquesIndex",
+  documentation: "documentationIndex",
+} as const satisfies Record<CliSectionIndexCollectionId, keyof UiMessages>;
 
 function sectionIndexMessages(
   messages: UiMessages,
-  collectionId: SectionIndexCollectionId,
+  collectionId: CliSectionIndexCollectionId,
 ): SectionIndexMessages {
   return messages[
-    SECTION_INDEX_MESSAGE_KEYS[collectionId]
+    CLI_SECTION_INDEX_MESSAGE_KEYS[collectionId]
   ] as SectionIndexMessages;
-}
-
-function extractIndexListEntryHrefs(html: string, listLabel: string): string[] {
-  const escapedLabel = listLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const listMatch = html.match(
-    new RegExp(`<ul[^>]*aria-label="${escapedLabel}"[^>]*>([\\s\\S]*?)</ul>`),
-  );
-
-  if (!listMatch) {
-    return [];
-  }
-
-  return [...listMatch[1].matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
-}
-
-async function expectedSectionIndexHrefs(
-  collectionId: SectionIndexCollectionId,
-  locale: SiteLocale = defaultLocale,
-): Promise<string[]> {
-  const definition = getDocsCollectionDefinition(collectionId);
-  const pages = await loadShippedLocalizedDocsPages(locale);
-
-  return pages
-    .filter((page) => page.frontmatter.kind === definition.frontmatterKind)
-    .sort((left, right) =>
-      left.messages.title.localeCompare(right.messages.title, locale, {
-        sensitivity: "base",
-      }),
-    )
-    .map((page) => page.url);
 }
 
 describe("section collection index resolution", () => {
   test("resolves a collection id to the canonical definition", () => {
-    expect(resolveDocsCollectionInput("models")).toEqual(
-      getDocsCollectionDefinition("models"),
+    expect(resolveDocsCollectionInput("guides")).toEqual(
+      getDocsCollectionDefinition("guides"),
     );
   });
 
@@ -157,13 +75,13 @@ describe("section collection index resolution", () => {
 
   test("resolves localized index copy from collection message metadata", async () => {
     const messages = await loadUiMessages();
-    const modelsDefinition = getDocsCollectionDefinition("models");
+    const guidesDefinition = getDocsCollectionDefinition("guides");
     const resolved = resolveDocsCollectionIndexMessages(
       messages,
-      modelsDefinition,
+      guidesDefinition,
     );
 
-    expect(resolved).toEqual(messages.modelsIndex);
+    expect(resolved).toEqual(messages.guidesIndex);
     expect(
       resolveDocsCollectionIndexMessages(messages, trainingDefinition),
     ).toEqual(messages.trainingIndex);
@@ -182,12 +100,9 @@ describe("section collection index resolution", () => {
   });
 });
 
-describe("renderSectionCollectionIndexPage populated collections", () => {
-  for (const {
-    collectionId,
-    representativeHrefs,
-  } of SECTION_INDEX_RENDER_CASES) {
-    test(`renders ${collectionId} title, description, list label, and representative entries`, async () => {
+describe("renderSectionCollectionIndexPage empty CLI collections", () => {
+  for (const collectionId of CLI_DOCS_COLLECTION_IDS) {
+    test(`renders ${collectionId} title, description, and empty-state copy`, async () => {
       const messages = await loadUiMessages();
       const indexMessages = sectionIndexMessages(messages, collectionId);
       const html = renderToStaticMarkup(
@@ -196,40 +111,20 @@ describe("renderSectionCollectionIndexPage populated collections", () => {
 
       expect(html).toContain(indexMessages.title);
       expect(html).toContain(indexMessages.description);
-      expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
-
-      for (const href of representativeHrefs) {
-        expect(html).toContain(`href="${href}"`);
-      }
+      expect(html).toContain(indexMessages.emptyTitle);
+      expect(html).toContain(indexMessages.emptyDescription);
+      expect(html).toContain(indexMessages.emptyHomeLink);
+      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
     });
   }
 
-  test("sorts modules and systems entries alphabetically by title", async () => {
-    const messages = await loadUiMessages();
-
-    for (const collectionId of ["modules", "systems"] as const) {
-      const indexMessages = sectionIndexMessages(messages, collectionId);
-      const html = renderToStaticMarkup(
-        await renderSectionCollectionIndexPage(collectionId),
-      );
-      const renderedHrefs = extractIndexListEntryHrefs(
-        html,
-        indexMessages.listLabel,
-      );
-      const expectedHrefs = await expectedSectionIndexHrefs(collectionId);
-
-      expect(renderedHrefs).toEqual(expectedHrefs);
-      expect(renderedHrefs.length).toBeGreaterThan(1);
-    }
-  });
-
-  test("renders the same models output when passed the collection definition", async () => {
+  test("renders the same guides output when passed the collection definition", async () => {
     const byId = renderToStaticMarkup(
-      await renderSectionCollectionIndexPage("models"),
+      await renderSectionCollectionIndexPage("guides"),
     );
     const byDefinition = renderToStaticMarkup(
       await renderSectionCollectionIndexPage(
-        getDocsCollectionDefinition("models"),
+        getDocsCollectionDefinition("guides"),
       ),
     );
 
@@ -237,39 +132,20 @@ describe("renderSectionCollectionIndexPage populated collections", () => {
   });
 });
 
-describe("renderSectionCollectionIndexPage training mapping", () => {
-  test("lists training-regime pages for the training collection id", async () => {
-    const pages = await loadShippedLocalizedDocsPages(defaultLocale);
-    const trainingPages = pages.filter(
-      (page) => page.frontmatter.kind === "training-regime",
-    );
-
-    expect(trainingPages.length).toBeGreaterThan(0);
-
-    const html = renderToStaticMarkup(
-      await renderSectionCollectionIndexPage("training"),
-    );
-
-    for (const page of trainingPages) {
-      expect(html).toContain(`href="${page.url}"`);
-    }
-  });
-});
-
 describe("renderSectionCollectionIndexPage empty state", () => {
   test("renders DocsIndexEmptyState copy from collection index message metadata", async () => {
     const messages = await loadUiMessages("vi");
-    const modelsDefinition = getDocsCollectionDefinition("models");
+    const guidesDefinition = getDocsCollectionDefinition("guides");
     const html = renderToStaticMarkup(
-      await renderSectionCollectionIndexPage(modelsDefinition, "vi"),
+      await renderSectionCollectionIndexPage(guidesDefinition, "vi"),
     );
 
-    expect(html).toContain(messages.modelsIndex.emptyTitle);
-    expect(html).toContain(messages.modelsIndex.emptyDescription);
-    expect(html).toContain(messages.modelsIndex.emptyHomeLink);
+    expect(html).toContain(messages.guidesIndex.emptyTitle);
+    expect(html).toContain(messages.guidesIndex.emptyDescription);
+    expect(html).toContain(messages.guidesIndex.emptyHomeLink);
     expect(html).toContain('href="/vi"');
     expect(html).not.toContain(
-      `aria-label="${messages.modelsIndex.listLabel}"`,
+      `aria-label="${messages.guidesIndex.listLabel}"`,
     );
   });
 });

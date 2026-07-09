@@ -25,10 +25,14 @@ rewrite-era CLI collections (`guides`, `concepts`, `techniques`, `documentation`
 | `src/content/messages/{en,ja,vi}/common.json` | `browseIndex.*` + `*Index` copy for guides/techniques/documentation |
 | `src/lib/content/ui-messages.types.ts` | Typed browse/index message keys for the new collections |
 
-Browse hub order (`DOCS_BROWSE_COLLECTION_IDS`) and sidebar section order
-(`DOCS_SIDEBAR_SECTION_ORDER`) stay Atlas-shaped until a later browse/sidebar
-wiring batch; empty CLI collections are inventory-first so consumers can look
-them up without featuring placeholder pages.
+Browse hub order (`DOCS_BROWSE_COLLECTION_IDS`) is the four CLI collections.
+Live section index routes for guides/concepts/techniques/documentation live
+under `src/app/(site)/docs/{id}/page.tsx` and
+`src/app/[locale]/docs/{id}/page.tsx`, each calling
+`renderSectionCollectionIndexPage` with matching `*Index` message keys.
+Sidebar section order may still include residual Atlas folders until a later
+sidebar wiring batch; empty CLI collections remain inventory-first so consumers
+can look them up without featuring placeholder pages.
 
 ## Source slug acceptance (story 003)
 

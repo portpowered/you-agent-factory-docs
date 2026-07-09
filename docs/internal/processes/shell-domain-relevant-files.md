@@ -49,7 +49,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/content/browse-index.test.tsx`
   Detailed AI browse quick-route and localized browse assertions.
 * `src/tests/content/section-indexes.test.tsx`
-  AI section-index page render and metadata coverage.
+  CLI section-index page render and metadata coverage for guides, concepts,
+  techniques, and documentation (default + localized routes).
+* `src/app/(site)/docs/{guides,concepts,techniques,documentation}/page.tsx`
+  Default-locale CLI section index routes via `renderSectionCollectionIndexPage`.
+* `src/app/[locale]/docs/{guides,concepts,techniques,documentation}/page.tsx`
+  Localized CLI section index routes mirroring the default-locale pattern.
 * `src/lib/navigation/docs-sidebar-collection-verification.test.ts`
   AI sidebar folder order, grouping labels, and representative links.
 * `src/tests/search/search-behavior-parity.test.ts`
