@@ -53,9 +53,19 @@ collections.
 | `src/lib/site/model-atlas-site-config.ts` | Drop topology from `primaryNav` so the shell no longer links the product surface |
 | `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Keep browse classification helpers; they are not the `/topology` explorer product |
 
+## Story 004: remove Model Atlas AI search enrichment
+
+| Path | Role |
+| --- | --- |
+| `src/lib/search/build-documents.ts` | Composes base + generic `enrichSearchDocument` only; no Atlas AI facet adapter |
+| `src/lib/search/model-atlas-ai-search-enrichment-adapter.ts` | Deleted; previously appended `modelFamily` / `sourceType` / `modalities` / `trainingRegimeIds` / `optimizes` |
+| `src/lib/search/index.ts` | No longer re-exports Atlas AI enrichment helpers |
+| `src/lib/search/build-documents.test.ts` | Asserts built documents stay free of Atlas AI-only facet keys |
+| `src/lib/search/types.ts` | Optional Atlas AI facet keys may remain on the type for compatibility; builder must not populate them |
+| `docs/internal/processes/search-domain-relevant-files.md` | Search pipeline map after adapter removal |
+
 ## Later stories in this PRD
 
-- `004` removes Model Atlas AI search enrichment
 - `005` deletes Atlas verifier scripts and make/package entrypoints
 - `006` removes remaining Atlas feature packages/routes
 - `007` proves `make check` / `make test` / `make build` end-to-end
