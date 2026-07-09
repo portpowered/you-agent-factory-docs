@@ -28,5 +28,10 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "harnessConcept": "Harness concept",
+    "tokensConcept": "Tokens concept",
+    "harnessSupportDocs": "Harness-support documentation"
   }
 }
