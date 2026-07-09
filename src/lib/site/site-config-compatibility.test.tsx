@@ -5,23 +5,23 @@ import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   buildLocalizedRoute,
-  defaultLocale,
   supportedLocales,
 } from "@/lib/i18n/locale-routing";
 import { baseOptions } from "@/lib/layout.shared";
 import { SCAFFOLD_ID, SITE_BRAND_NAME, SITE_HEADING } from "@/lib/scaffold";
 import {
-  MODEL_ATLAS_REPOSITORY_URL,
-  modelAtlasSiteConfig,
-} from "./model-atlas-site-config";
-import {
   resolveSiteConfigHomeFeaturedLinkHrefs,
   resolveSiteConfigHomeFeaturedLinks,
+  resolveSiteConfigLayoutNav,
   resolveSiteConfigPrimaryNavHrefs,
   resolveSiteConfigRepositoryUrl,
 } from "./site-config-resolution";
+import {
+  YOU_AGENT_FACTORY_REPOSITORY_URL,
+  youAgentFactorySiteConfig,
+} from "./you-agent-factory-site-config";
 
-const PROJECT_GITHUB_URL = "https://github.com/portpowered/ai-model-reference";
+const PROJECT_GITHUB_URL = "https://github.com/portpowered/you-agent-factory";
 
 function extractHrefAttributes(html: string): string[] {
   const hrefs: string[] = [];
@@ -36,15 +36,17 @@ function extractHrefAttributes(html: string): string[] {
 
 describe("site config scaffold compatibility", () => {
   test("keeps scaffold brand exports aligned with the default config", () => {
-    expect(modelAtlasSiteConfig.brand.scaffoldId).toBe(SCAFFOLD_ID);
-    expect(modelAtlasSiteConfig.brand.brandName).toBe(SITE_BRAND_NAME);
-    expect(modelAtlasSiteConfig.brand.siteHeading).toBe(SITE_HEADING);
+    expect(youAgentFactorySiteConfig.brand.scaffoldId).toBe(SCAFFOLD_ID);
+    expect(youAgentFactorySiteConfig.brand.brandName).toBe(SITE_BRAND_NAME);
+    expect(youAgentFactorySiteConfig.brand.siteHeading).toBe(SITE_HEADING);
   });
 
   test("keeps the default repository URL aligned with the current header link", () => {
-    expect(modelAtlasSiteConfig.repositoryUrl).toBe(MODEL_ATLAS_REPOSITORY_URL);
-    expect(modelAtlasSiteConfig.repositoryUrl).toBe(PROJECT_GITHUB_URL);
-    expect(resolveSiteConfigRepositoryUrl(modelAtlasSiteConfig)).toBe(
+    expect(youAgentFactorySiteConfig.repositoryUrl).toBe(
+      YOU_AGENT_FACTORY_REPOSITORY_URL,
+    );
+    expect(youAgentFactorySiteConfig.repositoryUrl).toBe(PROJECT_GITHUB_URL);
+    expect(resolveSiteConfigRepositoryUrl(youAgentFactorySiteConfig)).toBe(
       PROJECT_GITHUB_URL,
     );
   });
@@ -52,16 +54,29 @@ describe("site config scaffold compatibility", () => {
   test("keeps the default home route surface aligned with layout nav title link", () => {
     for (const locale of supportedLocales) {
       expect(
-        buildLocalizedRoute(modelAtlasSiteConfig.routeSurfaces.home, locale),
+        buildLocalizedRoute(
+          youAgentFactorySiteConfig.routeSurfaces.home,
+          locale,
+        ),
       ).toBe(buildLocalizedRoute({ surface: "home" }, locale));
       expect(baseOptions(locale).nav?.url).toBe(
-        buildLocalizedRoute(modelAtlasSiteConfig.routeSurfaces.home, locale),
+        buildLocalizedRoute(
+          youAgentFactorySiteConfig.routeSurfaces.home,
+          locale,
+        ),
       );
     }
   });
 
-  test("keeps the layout nav title aligned with the configured brand name", () => {
-    expect(baseOptions().nav?.title).toBe(modelAtlasSiteConfig.brand.brandName);
+  test("keeps the layout nav title aligned with the you-agent-factory brand name", () => {
+    expect(youAgentFactorySiteConfig.brand.brandName).toBe("you-agent-factory");
+    expect(resolveSiteConfigLayoutNav(youAgentFactorySiteConfig).title).toBe(
+      "you-agent-factory",
+    );
+    expect(baseOptions().nav?.title).toBe("you-agent-factory");
+    expect(baseOptions().nav?.title).toBe(
+      youAgentFactorySiteConfig.brand.brandName,
+    );
   });
 });
 
@@ -71,7 +86,7 @@ describe("site config primary nav compatibility", () => {
 
     for (const locale of supportedLocales) {
       const configHrefs = resolveSiteConfigPrimaryNavHrefs(
-        modelAtlasSiteConfig,
+        youAgentFactorySiteConfig,
         locale,
       );
       const consumerHrefs = getPrimaryNavItems(messages, locale).map(
@@ -85,7 +100,7 @@ describe("site config primary nav compatibility", () => {
   test("binds primary nav labels through the same message keys", async () => {
     const messages = await loadUiMessages();
 
-    const configLabels = modelAtlasSiteConfig.primaryNav.map(
+    const configLabels = youAgentFactorySiteConfig.primaryNav.map(
       (entry) => messages.nav[entry.labelKey],
     );
     const consumerLabels = getPrimaryNavItems(messages).map(
@@ -101,16 +116,20 @@ describe("site config primary nav compatibility", () => {
 
     expect(items.map((item) => item.href)).toEqual([
       "/vi",
-      "/vi/docs/timeline",
+      "/vi/docs/guides",
+      "/vi/browse",
+      "/vi/docs/glossary",
       "/vi/blog",
-      "/vi/tags",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       "Trang chủ",
-      "Dòng thời gian",
+      messages.nav.guides,
+      messages.nav.docs,
+      "Thuật ngữ",
       messages.nav.blog,
-      messages.nav.tags,
     ]);
+    expect(items.some((item) => item.href === "/vi/topology")).toBe(false);
+    expect(items.some((item) => item.href === "/vi/docs/timeline")).toBe(false);
   });
 });
 
@@ -120,13 +139,13 @@ describe("site config home featured link compatibility", () => {
 
     for (const locale of supportedLocales) {
       const configHrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
-        modelAtlasSiteConfig,
+        youAgentFactorySiteConfig,
         locale,
       );
       const html = renderToStaticMarkup(
         <HomeArticle
           messages={messages}
-          siteConfig={modelAtlasSiteConfig}
+          siteConfig={youAgentFactorySiteConfig}
           locale={locale}
         />,
       );
@@ -134,48 +153,38 @@ describe("site config home featured link compatibility", () => {
         configHrefs.includes(href),
       );
 
+      expect(configHrefs).toEqual([]);
       expect(consumerHrefs).toEqual(configHrefs);
     }
   });
 
-  test("preserves localized browse featured link hrefs without deleted Atlas module pages", () => {
-    const viHrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
-      modelAtlasSiteConfig,
-      "vi",
-    );
-    const jaHrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
-      modelAtlasSiteConfig,
-      "ja",
-    );
-
-    expect(viHrefs).toEqual(["/vi/browse"]);
-    expect(jaHrefs).toEqual(["/ja/browse"]);
-  });
-
-  test("resolves default-locale browse featured link on the english surface", () => {
-    expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(
-        modelAtlasSiteConfig,
-        defaultLocale,
-      ),
-    ).toEqual(["/browse"]);
+  test("default featured-link resolution emits no Atlas module destinations", () => {
+    for (const locale of supportedLocales) {
+      const hrefs = resolveSiteConfigHomeFeaturedLinkHrefs(
+        youAgentFactorySiteConfig,
+        locale,
+      );
+      expect(hrefs).toEqual([]);
+      expect(
+        hrefs.some(
+          (href) =>
+            href.includes("/docs/modules/grouped-query-attention") ||
+            href.includes("/docs/modules/swiglu") ||
+            href.includes("/docs/modules/relu"),
+        ),
+      ).toBe(false);
+    }
   });
 
   test("binds featured link copy through the same home message keys", async () => {
     const messages = await loadUiMessages();
 
     const configLinks = resolveSiteConfigHomeFeaturedLinks(
-      modelAtlasSiteConfig,
+      youAgentFactorySiteConfig,
       messages,
     );
-    const expectedCopy = modelAtlasSiteConfig.homeFeaturedLinks.map((link) => ({
-      title: messages.home[link.titleKey],
-      description: messages.home[link.descriptionKey],
-    }));
 
-    expect(
-      configLinks.map(({ title, description }) => ({ title, description })),
-    ).toEqual(expectedCopy);
-    expect(configLinks.map((link) => link.title)).toEqual(["Browse the atlas"]);
+    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toEqual([]);
+    expect(configLinks).toEqual([]);
   });
 });

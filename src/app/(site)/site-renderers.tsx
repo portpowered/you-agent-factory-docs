@@ -83,7 +83,7 @@ import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { buildHomeTableOfContents } from "@/lib/navigation/home-page-toc";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
-import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
+import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 
 export type SearchPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -202,7 +202,7 @@ export async function renderHomePage(locale: SiteLocale = defaultLocale) {
       <DocsBody>
         <HomeArticle
           messages={messages}
-          siteConfig={modelAtlasSiteConfig}
+          siteConfig={youAgentFactorySiteConfig}
           locale={locale}
         />
       </DocsBody>

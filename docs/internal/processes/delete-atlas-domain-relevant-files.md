@@ -50,7 +50,7 @@ collections.
 | `src/app/(site)/topology/` / `src/app/[locale]/topology/` | Deleted live `/topology` product route modules |
 | `src/app/(site)/site-renderers.tsx` | No longer renders `TopologyPrototype`; browse graph-map still uses `TopologyBrowsePage` |
 | `src/features/ai/topology.ts` / `src/features/ai/server.ts` | Stop re-exporting deleted topology explorers |
-| `src/lib/site/model-atlas-site-config.ts` | Drop topology from `primaryNav` so the shell no longer links the product surface |
+| `src/lib/site/you-agent-factory-site-config.ts` | CLI site config after `rewrite-site-config-contracts`; topology is not in `primaryNav` |
 | `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Keep browse classification helpers; they are not the `/topology` explorer product |
 
 ## Story 004: remove Model Atlas AI search enrichment
@@ -94,7 +94,7 @@ Required `make check` / `make test` / `make build` must not invoke deleted Atlas
 | `src/features/ai/{timeline,server}.ts` | Empty retired barrels after timeline deletion |
 | `src/lib/content/{ontology-timeline,timeline-selector-compatibility,roofline-model-size-presets,effective-roofline-model-size}.ts` | Deleted helpers that existed only for those explorers |
 | `src/lib/content/mdx-components.tsx` / `blog-mdx-components.tsx` | No longer register Atlas explorer MDX components |
-| `src/lib/site/model-atlas-site-config.ts` | Drop timeline from `primaryNav` (route surface key may remain for contract compatibility) |
+| `src/lib/site/you-agent-factory-site-config.ts` | Timeline not in CLI `primaryNav`; do not reintroduce `modelAtlasSiteConfig` |
 | `src/app/(site)/docs/{models,modules,papers,training,systems,glossary}/` | Collection section indexes remain as empty-shell routes via `renderSectionCollectionIndexPage` |
 | `src/content/blog/*/page.mdx` | Strip explorer component imports; keep prose-only posts |
 
@@ -103,7 +103,7 @@ Required `make check` / `make test` / `make build` must not invoke deleted Atlas
 | Path | Role |
 | --- | --- |
 | `Makefile` `check` / `test` / `build` | End-to-end maintainer gates that must exit 0 on the post-deletion tree |
-| `src/lib/site/model-atlas-site-config.ts` | Clear deleted Atlas module slugs from `homeFeaturedLinks` so home no longer advertises missing collection pages (brand/nav placeholder rewrite stays with `rewrite-site-config-contracts`) |
+| `src/lib/site/you-agent-factory-site-config.ts` | `homeFeaturedLinks` is empty on main after site-config contracts; no deleted Atlas module destinations |
 | `out/` | Static export artifact from `make build`; browser-verify home/shell loads without `/topology` or Atlas module product destinations |
 | `docs/getting-started` + empty collection section indexes | Remaining non-Atlas shell surfaces after page-bundle deletion |
 

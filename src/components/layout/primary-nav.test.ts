@@ -9,22 +9,29 @@ import {
 } from "@/components/layout/primary-nav";
 import type { TopologyNavigationOption } from "@/lib/content/topology-navigation";
 import { loadUiMessages } from "@/lib/content/ui-messages";
-import {
-  SITE_COLLECTION_FAMILIES,
-  type SiteConfig,
-} from "@/lib/site/site-config.contract";
+import type { SiteConfig } from "@/lib/site/site-config.contract";
 
 describe("getPrimaryNavItems", () => {
-  it("lists Phase 1 discovery routes in order", async () => {
+  it("lists CLI docs primary nav routes in order", async () => {
     const messages = await loadUiMessages();
     const items = getPrimaryNavItems(messages);
 
-    expect(items.map((item) => item.href)).toEqual(["/", "/blog", "/tags"]);
+    expect(items.map((item) => item.href)).toEqual([
+      "/",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
+      "/blog",
+    ]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
+      messages.nav.guides,
+      messages.nav.docs,
+      messages.nav.glossary,
       messages.nav.blog,
-      messages.nav.tags,
     ]);
+    expect(items.some((item) => item.href === "/topology")).toBe(false);
+    expect(items.some((item) => item.href === "/docs/timeline")).toBe(false);
   });
 
   it("can emit vietnamese-prefixed navigation routes from the shared locale contract", async () => {
@@ -33,18 +40,24 @@ describe("getPrimaryNavItems", () => {
 
     expect(items.map((item) => item.href)).toEqual([
       "/vi",
+      "/vi/docs/guides",
+      "/vi/browse",
+      "/vi/docs/glossary",
       "/vi/blog",
-      "/vi/tags",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
+      messages.nav.guides,
+      messages.nav.docs,
+      messages.nav.glossary,
       messages.nav.blog,
-      messages.nav.tags,
     ]);
     expect(items.map((item) => item.label)).toEqual([
       "Trang chủ",
+      "Hướng dẫn",
+      "Tài liệu",
+      "Thuật ngữ",
       messages.nav.blog,
-      messages.nav.tags,
     ]);
   });
 
@@ -76,7 +89,12 @@ describe("getPrimaryNavItems", () => {
         { routeSurface: "tagsIndex", labelKey: "tags" },
         { routeSurface: "home", labelKey: "home" },
       ],
-      collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
+      collections: [
+        { family: "guides" },
+        { family: "concepts" },
+        { family: "techniques" },
+        { family: "documentation" },
+      ],
       homeFeaturedLinks: [],
     } satisfies SiteConfig;
 

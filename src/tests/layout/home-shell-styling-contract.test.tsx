@@ -57,12 +57,21 @@ describe("Phase 1 home shell styling contracts", () => {
 
     expect(getPrimaryNavItems(messages).map((item) => item.href)).toEqual([
       "/",
-      "/docs/timeline",
+      "/docs/guides",
+      "/browse",
+      "/docs/glossary",
       "/blog",
-      "/tags",
     ]);
     expect(
       getPrimaryNavItems(messages).some((item) => item.href === "/search"),
+    ).toBe(false);
+    expect(
+      getPrimaryNavItems(messages).some((item) => item.href === "/topology"),
+    ).toBe(false);
+    expect(
+      getPrimaryNavItems(messages).some(
+        (item) => item.href === "/docs/timeline",
+      ),
     ).toBe(false);
 
     const brushHtml = renderToStaticMarkup(

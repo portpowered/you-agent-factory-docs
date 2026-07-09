@@ -1,33 +1,35 @@
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import type { LocalizedRouteDestination } from "@/lib/i18n/locale-routing";
 
-/** Named shell route surfaces referenced by navigation and home featured links. */
+/**
+ * Documented CLI docs named route surface placeholders.
+ * SiteConfig.routeSurfaces is an open map — these ids are not a mandatory closed set,
+ * and topology/timeline are not required contract surfaces.
+ */
 export const SITE_NAMED_ROUTE_SURFACES = [
   "home",
-  "browse",
-  "topology",
-  "timeline",
+  "guides",
+  "docs",
+  "glossary",
   "blogIndex",
-  "tagsIndex",
+  "search",
 ] as const;
 
 export type SiteNamedRouteSurface = (typeof SITE_NAMED_ROUTE_SURFACES)[number];
 
 /** UI message keys for primary navigation labels under `messages.nav`. */
-export type PrimaryNavLabelKey = Extract<
-  keyof UiMessages["nav"],
-  "home" | "topology" | "timeline" | "blog" | "tags"
->;
+export type PrimaryNavLabelKey = keyof UiMessages["nav"];
 
-/** Collection families represented in the site shell without binding renderers. */
+/**
+ * Documented CLI collection family placeholders.
+ * SiteConfig.collections accepts these (and other string family ids);
+ * Atlas AI families are not required by the contract.
+ */
 export const SITE_COLLECTION_FAMILIES = [
-  "glossary",
+  "guides",
   "concepts",
-  "modules",
-  "models",
-  "papers",
-  "training",
-  "systems",
+  "techniques",
+  "documentation",
 ] as const;
 
 export type SiteCollectionFamily = (typeof SITE_COLLECTION_FAMILIES)[number];
@@ -41,34 +43,23 @@ export type SiteBrandConfig = {
   siteHeading: string;
 };
 
-export type SiteRouteSurfaces = Record<
-  SiteNamedRouteSurface,
-  LocalizedRouteDestination
->;
+/** Open route-surface map keyed by product-specific surface ids. */
+export type SiteRouteSurfaces = Record<string, LocalizedRouteDestination>;
 
 export type SitePrimaryNavEntry = {
-  routeSurface: SiteNamedRouteSurface;
+  routeSurface: string;
   labelKey: PrimaryNavLabelKey;
 };
 
 export type SiteCollectionPlaceholder = {
-  family: SiteCollectionFamily;
+  family: string;
 };
 
 /** UI message keys for home featured link titles under `messages.home`. */
-export type HomeFeaturedLinkTitleKey = Extract<
-  keyof UiMessages["home"],
-  "atlasLinkTitle" | "gqaLinkTitle" | "swigluLinkTitle" | "reluLinkTitle"
->;
+export type HomeFeaturedLinkTitleKey = keyof UiMessages["home"];
 
 /** UI message keys for home featured link descriptions under `messages.home`. */
-export type HomeFeaturedLinkDescriptionKey = Extract<
-  keyof UiMessages["home"],
-  | "atlasLinkDescription"
-  | "gqaLinkDescription"
-  | "swigluLinkDescription"
-  | "reluLinkDescription"
->;
+export type HomeFeaturedLinkDescriptionKey = keyof UiMessages["home"];
 
 type HomeFeaturedLinkCopyBinding = {
   titleKey: HomeFeaturedLinkTitleKey;
@@ -78,7 +69,7 @@ type HomeFeaturedLinkCopyBinding = {
 export type HomeFeaturedLinkPlaceholder =
   | ({
       kind: "route";
-      routeSurface: Extract<SiteNamedRouteSurface, "browse">;
+      routeSurface: string;
     } & HomeFeaturedLinkCopyBinding)
   | ({ kind: "docs-page"; slug: string } & HomeFeaturedLinkCopyBinding);
 

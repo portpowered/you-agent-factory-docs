@@ -241,6 +241,8 @@ describe("message boundary contracts", () => {
         home: "Home",
         search: "Search",
         menu: "Open menu",
+        guides: "Guides",
+        docs: "Docs",
         architecture: "Architecture",
         topology: "Topology",
         blog: "Blog",

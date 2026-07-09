@@ -18,8 +18,8 @@ import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
 import type { TopologyNavigationOption } from "@/lib/content/topology-navigation";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
-import { modelAtlasSiteConfig } from "@/lib/site/model-atlas-site-config";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
+import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 
 type ModelAtlasDocsHeaderProps = {
   messages: UiMessages;
@@ -34,7 +34,7 @@ export function ModelAtlasDocsHeader({
   messages,
   pageTree,
   locale = defaultLocale,
-  siteConfig = modelAtlasSiteConfig,
+  siteConfig = youAgentFactorySiteConfig,
   topologyOptions = [],
   trailing,
 }: ModelAtlasDocsHeaderProps) {
