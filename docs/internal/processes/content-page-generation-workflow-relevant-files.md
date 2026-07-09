@@ -245,6 +245,15 @@ When extending `supportedLocales` (for example adding `zh-CN`):
 * Prove load + fail-closed behavior in `src/tests/content/ui-messages.test.ts`
   (use `bun test --preload ./src/tests/a11y/mock-navigation.ts` for focused
   runs; `bun run test` alone fans the full website suite).
+* Page-bundle messages use the same `messages/<locale>.json` convention for
+  every supported locale (including `zh-CN`). `loadPageMessages` /
+  `hasPageMessagesFile` already resolve that path from `SiteLocale`; do not
+  special-case `ja`/`vi`. Missing non-default page messages fail closed (no
+  English fallback). Validation iterates `supportedLocales` but only requires
+  colocated locale files for docs that derive as shipped in that locale—an
+  empty `zh-CN` shipped bucket is valid and does not force every page to ship
+  Chinese copy. Cover load + fail-closed in `src/lib/content/messages.test.ts`
+  and shipped/empty validation in `src/lib/content/validate-registry.test.ts`.
 
 ## Representative migrated consumers
 

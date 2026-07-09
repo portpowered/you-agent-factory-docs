@@ -8,7 +8,11 @@ import {
   MissingMessageKeyError,
   resolveMessage,
 } from "./messages";
-import { loadPageMessages, MessageLoadError } from "./page-messages-load";
+import {
+  hasPageMessagesFile,
+  loadPageMessages,
+  MessageLoadError,
+} from "./page-messages-load";
 import type { PageMessages } from "./schemas";
 
 const fixture = JSON.parse(
@@ -113,6 +117,57 @@ describe("loadPageMessages errors", () => {
         }),
       ],
     });
+  });
+
+  test("loads colocated messages/zh-CN.json for locale zh-CN", async () => {
+    const chineseMessages = {
+      title: "分组查询注意力",
+      description: "一种通过共享键值缓存来降低内存占用的注意力变体。",
+      sections: {
+        whatItIs: {
+          title: "它是什么",
+          body: "分组查询注意力是从多头注意力派生出的一种注意力变体。",
+        },
+      },
+    };
+    await writeMessagesFixture("zh-CN", chineseMessages);
+
+    expect(hasPageMessagesFile(tempPageDir, "zh-CN")).toBe(true);
+    const messages = await loadPageMessages(tempPageDir, "zh-CN", {
+      route: "/zh-CN/docs/modules/grouped-query-attention",
+    });
+
+    expect(messages.title).toBe(chineseMessages.title);
+    expect(messages.description).toBe(chineseMessages.description);
+    expect(messages.sections?.whatItIs?.body).toBe(
+      chineseMessages.sections.whatItIs.body,
+    );
+  });
+
+  test("fails closed when messages/zh-CN.json is absent instead of falling back to English", async () => {
+    await writeMessagesFixture("en", validMessages);
+
+    expect(hasPageMessagesFile(tempPageDir, "zh-CN")).toBe(false);
+    await expect(
+      loadPageMessages(tempPageDir, "zh-CN", {
+        route: "/zh-CN/docs/modules/grouped-query-attention",
+      }),
+    ).rejects.toMatchObject({
+      name: "MessageLoadError",
+      message: expect.stringMatching(
+        /Missing messages file.*locale "zh-CN".*messages\/zh-CN\.json/,
+      ),
+      details: [
+        expect.objectContaining({
+          type: "missing-file",
+          locale: "zh-CN",
+          path: expect.stringContaining("messages/zh-CN.json"),
+        }),
+      ],
+    });
+
+    const english = await loadPageMessages(tempPageDir, "en");
+    expect(english.title).toBe(validMessages.title);
   });
 
   test("throws when messages fail schema validation", async () => {
