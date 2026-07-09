@@ -1,0 +1,38 @@
+{
+  "title": "Install you-agent-factory",
+  "description": "Install the you-agent-factory CLI on macOS, Linux, or Windows with the release install scripts, then scaffold a factory.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Install is the reference for getting you-agent-factory onto a machine. It covers the macOS and Linux curl install script, the Windows PowerShell install script, and the related first-scaffold notes that follow a successful install. Use it when you need the full OS install commands rather than a short home CTA."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "An install script downloads the CLI release for your operating system and places the you binary on your PATH so the you command is available in your shell. After install, you init scaffolds a factory directory. The --executor flag chooses which starter worker scaffold is generated: omit it for the default Codex-backed scaffold, or pass claude for a Claude-backed scaffold. Supported starter values are codex and claude."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Run the install command for your operating system. Both paths use the same GitHub Releases assets as the home install CTA. After the script finishes, confirm you is available in your shell. Then scaffold a factory. Omitting --executor keeps the default Codex-backed starter scaffold. Pass --executor claude when you want a Claude-backed default scaffold instead. After install, continue with getting started for the first run and submit loop, or open the CLI docs when you need the broader command matrix."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the install reference only. It is not the getting-started quickstart, not the full CLI command matrix, and it does not replace packaged you docs topics. For agent and factory orientation after install, run you docs agents. Deeper CLI and factory contracts stay in packaged you docs and sibling documentation pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "macosLinuxLabel": "macOS / Linux",
+    "windowsLabel": "Windows (PowerShell)",
+    "claudeInitLabel": "Claude-backed scaffold",
+    "gettingStarted": "Getting started",
+    "cliDocs": "CLI docs"
+  }
+}

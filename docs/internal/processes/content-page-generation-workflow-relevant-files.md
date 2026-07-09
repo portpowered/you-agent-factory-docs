@@ -22,6 +22,45 @@ Routine canonical pages live under `src/content/docs/<section>/<slug>`. Resolve
 the page directory with `getDocsPageDir(section, slug)` instead of adding a new
 exported `*_PAGE_DIR` constant to `src/lib/content/content-paths.ts`.
 
+## First CLI collection page (guides / techniques / documentation)
+
+Before the first authored page under a rewrite-era CLI collection can pass
+`prepare:content-runtime` / `make validate-data` and render under
+`/docs/<section>/<slug>`:
+
+1. `PUBLISHED_DOCS_SECTIONS` and `publishedDocsHrefFromEntry` in
+   `src/lib/content/published-docs-registry-contract.ts` must accept that
+   section (with matching `*PageHref` helpers in `content-hrefs.ts`). Empty
+   CLI taxonomy roots alone are not enough — generation throws
+   `Unsupported published docs section` otherwise.
+2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
+   `src/lib/content/local-docs-page.ts` must include the section with a
+   colocated loader (for example `documentation-page.ts` /
+   `documentation-page-load.ts`). Without that, Fumadocs renders the MDX body
+   without `ModulePageProviders` and `Section` / `T` throw
+   `usePageMessages must be used within PageMessagesProvider`.
+3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
+   even when reader copy is message-backed — mirror the glossary template.
+4. `registryDirectoryByKind` in
+   `src/lib/factory/canonical-page-surface-audit.ts` must map
+   `guide` / `technique` / `documentation` to their registry directories, or
+   `bun run audit:canonical-page-surface` fails with an unsupported registry
+   kind for the new primary record.
+5. Extra section message keys beyond `title` / `body` are stripped by
+   `pageSectionSchema`. Put OS labels and similar short strings under
+   `links.*` (or another allowed top-level message field), not under
+   `sections.<id>.*`.
+6. Browser verify with `bun run start` serves the last production build.
+   After editing page MDX or colocated messages, run `bun run build` (or
+   use `bun run dev`) before curling the route, or the HTML will still show
+   the previous copy. Prefer a unique port in `3100-3999`,
+   `curl --max-time 10`, and kill the server before the command exits.
+7. Do not run overlapping `prepare:content-runtime` / `fumadocs-mdx`
+   invocations in parallel on the same worktree — concurrent prep can delete
+   `.source` mid-validate and fail with `Cannot find module '../../.source/server'`.
+   Run `make validate-data`, `bun run lint`, and `bun run test` sequentially
+   when diagnosing page-bundle validation.
+
 ## Guide quickstart commands and message keys
 
 When a guide needs copyable shell commands (install, first-run, submit):
@@ -177,6 +216,12 @@ collection should stay page-local and in-budget.
 Prefer behavioral coverage for the shipped page (section-index listing title /
 summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
 and next-step links) over inventory-only “slug exists on disk” assertions.
+For documentation pages with copyable commands, mirror
+`src/lib/content/what-is-you-agent-factory-page.test.tsx` /
+`src/lib/content/install-page.test.tsx`: load via `loadLocalDocsPage`, render
+with `ModulePageProviders`, and assert visible command text plus next-step
+hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
+as sufficient page coverage.
 
 ## Glossary-derived browse and sidebar sections
 
@@ -217,10 +262,10 @@ routes:
 - Forward next-step links to sibling lanes that are not yet published on this
   branch: prefer `LocalizedLinkList` in the how-to-use (or equivalent) section
   with canonical planned hrefs (for example `/docs/guides/getting-started`,
-  `/docs/documentation/architecture-of-system`). `RelatedDocs` filters out
-  items without published hrefs, so curated `relatedIds` alone will not show
-  reviewer-visible navigation for unpublished targets. `LocalizedLinkList` is
-  registered in MDX components and is not in
+  `/docs/documentation/cli`, `/docs/documentation/architecture-of-system`).
+  `RelatedDocs` filters out items without published hrefs, so curated
+  `relatedIds` alone will not show reviewer-visible navigation for unpublished
+  targets. `LocalizedLinkList` is registered in MDX components and is not in
   `LINK_VALIDATION_MARKDOWN_COMPONENTS`, so planned destinations stay
   mergeable under current linkcheck rules without authoring the target pages.
 - `validatePublishedGlossaryClassification` in `validate-glossary-classification.ts`
