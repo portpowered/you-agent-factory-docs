@@ -147,6 +147,26 @@ describe("DocsHeader", () => {
     expect(html).toContain('aria-label="Open project GitHub repository"');
   });
 
+  test("keeps Search as a first-class header destination without Model Atlas chrome copy", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
+      </RootProvider>,
+    );
+
+    expect(messages.search.placeholder).toBe("Search you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.search.open).not.toMatch(/Model Atlas/i);
+    expect(messages.search.shortcut).toBe("Search");
+    expect(html).toContain('data-search=""');
+    expect(html).toContain(`aria-label="${messages.search.open}"`);
+    expect(html).toContain(messages.search.shortcut);
+    expect(html).not.toMatch(/Model Atlas/i);
+    expect(assertPrimaryNavNoDuplicateSearchLink(html)).toBeNull();
+  });
+
   test("renders you-agent-factory brand chrome linking to the localized home route", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;

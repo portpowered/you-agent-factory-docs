@@ -120,6 +120,8 @@ describe("loadUiMessages shell keys", () => {
 
   it("loads shipped vietnamese shell copy when vi shared messages are available", async () => {
     const messages = await loadUiMessages("vi");
+    expect(messages.search.placeholder).toBe("Tìm trong you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("Trang chủ");
     expect(messages.browseIndex.title).toBe("Duyệt Atlas");
     expect(messages.modelsIndex.title).toBe("Mô hình");
@@ -136,6 +138,8 @@ describe("loadUiMessages shell keys", () => {
 
   it("loads shipped japanese shell copy when ja shared messages are available", async () => {
     const messages = await loadUiMessages("ja");
+    expect(messages.search.placeholder).toBe("you-agent-factory を検索…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("ホーム");
     expect(messages.browseIndex.title).toBe("アトラスを参照");
     expect(messages.modelsIndex.title).toBe("モデル");
@@ -155,7 +159,8 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages("zh-CN");
     expect(messages.nav.home).toBe("首页");
     expect(messages.nav.search).toBe("搜索");
-    expect(messages.search.placeholder.length).toBeGreaterThan(0);
+    expect(messages.search.placeholder).toBe("搜索 you-agent-factory…");
+    expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.language.selectorLabel).toBe("语言");
     expect(messages.language.locales["zh-CN"]).toBe("简体中文");
     expect(messages.browseIndex.title).toBe("浏览图谱");
@@ -251,7 +256,7 @@ describe("loadUiMessages shell keys", () => {
 describe("message boundary contracts", () => {
   it("loads representative shell message values through loadUiMessages", async () => {
     const messages = await loadUiMessages();
-    expect(messages.search.placeholder).toBe("Search Model Atlas…");
+    expect(messages.search.placeholder).toBe("Search you-agent-factory…");
     expect(messages.search.open).toBe("Open search");
     expect(messages.language.selectorLabel).toBe("Language");
     expect(messages.language.locales.en).toBe("English");

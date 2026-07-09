@@ -1,7 +1,7 @@
 {
   "search": {
     "open": "検索を開く",
-    "placeholder": "Model Atlas を検索…",
+    "placeholder": "you-agent-factory を検索…",
     "close": "検索を閉じる",
     "idle": "クエリを入力して、モジュール、用語集、タグを検索します。",
     "noResults": "結果が見つかりませんでした。",

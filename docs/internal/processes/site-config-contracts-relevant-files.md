@@ -53,6 +53,9 @@ contract for the you-agent-factory CLI docs product.
 - Default primary nav is Home, Guides, Docs, Glossary, Blog (no Topology or
   Timeline). Search is a configured `routeSurfaces.search` entry for the header
   trigger, not a primary nav item (avoids duplicating the search control).
+- Header search chrome copy (`messages.search.placeholder` / open / shortcut in
+  `common.json`) must not say Model Atlas; placeholder identifies
+  `you-agent-factory` (or neutral CLI docs search).
 - Resolved default hrefs: `/`, `/docs/guides`, `/browse`, `/docs/glossary`,
   `/blog`. Guides uses `{ surface: "docs-page", slug: "guides" }`; Docs uses
   `{ surface: "browse" }` as the transitional docs landing placeholder.

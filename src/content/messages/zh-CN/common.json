@@ -1,7 +1,7 @@
 {
   "search": {
     "open": "打开搜索",
-    "placeholder": "搜索 Model Atlas…",
+    "placeholder": "搜索 you-agent-factory…",
     "close": "关闭搜索",
     "idle": "输入查询以搜索模块、术语表条目和标签。",
     "noResults": "未找到结果。",

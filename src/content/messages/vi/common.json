@@ -1,7 +1,7 @@
 {
   "search": {
     "open": "Mở tìm kiếm",
-    "placeholder": "Tìm trong Model Atlas…",
+    "placeholder": "Tìm trong you-agent-factory…",
     "close": "Đóng tìm kiếm",
     "idle": "Nhập truy vấn để tìm module, mục thuật ngữ, và thẻ.",
     "noResults": "Không tìm thấy kết quả.",
