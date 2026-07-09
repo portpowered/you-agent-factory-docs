@@ -17,9 +17,12 @@ const ATLAS_MODULE_FEATURED_HREFS = [
 describe("home page messages", () => {
   it("loads localized copy for title, search, and browse sections", async () => {
     const { home } = await loadUiMessages();
-    expect(home.title).toBe("Model Atlas");
-    expect(home.subtitle.length).toBeGreaterThan(0);
-    expect(home.intro.length).toBeGreaterThan(0);
+    expect(home.title).toBe("you-agent-factory");
+    expect(home.subtitle).toBe("Docs for the agent factory CLI");
+    expect(home.intro).toContain("you-agent-factory");
+    expect(home.title).not.toMatch(/Model Atlas/i);
+    expect(home.subtitle).not.toMatch(/Model Atlas/i);
+    expect(home.intro).not.toMatch(/Model Atlas/i);
     expect(home.intro).not.toMatch(/Search by alias/i);
     expect(home.intro).not.toMatch(/search by tag/i);
     expect(home.browseSectionTitle.length).toBeGreaterThan(0);
@@ -51,9 +54,11 @@ describe("home page render", () => {
     );
   }
 
-  it("renders the browse section without Atlas module featured destinations", async () => {
+  it("renders you-agent-factory identity without Atlas module featured destinations", async () => {
     const html = await renderHomeArticleHtml();
-    expect(html).toContain("Model Atlas");
+    expect(html).toContain("you-agent-factory");
+    expect(html).toContain("Docs for the agent factory CLI");
+    expect(html).not.toContain("Model Atlas");
     expect(html).toContain('id="browse"');
     for (const href of ATLAS_MODULE_FEATURED_HREFS) {
       expect(html).not.toContain(`href="${href}"`);

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const siteMetadata: Metadata = {
-  title: "Model Atlas",
-  description: "Reference for modern AI models and modules",
+  title: "you-agent-factory",
+  description:
+    "CLI documentation for installing the factory, running named goals, and operating agent workflows",
 };
 
 type RootDocumentProps = {

@@ -20,6 +20,11 @@ describe("localized route metadata alternates", () => {
     const homeMetadata = await generateHomeMetadata();
     const searchMetadata = await generateSearchMetadata();
 
+    expect(homeMetadata.title).toBe("you-agent-factory");
+    expect(homeMetadata.description).toContain("you-agent-factory");
+    expect(String(homeMetadata.title)).not.toMatch(/Model Atlas/i);
+    expect(String(homeMetadata.description)).not.toMatch(/Model Atlas/i);
+
     expect(homeMetadata.alternates?.canonical).toBe("/");
     expect(homeMetadata.alternates?.languages?.en).toBe("/");
     expect(homeMetadata.alternates?.languages?.vi).toBe("/vi");

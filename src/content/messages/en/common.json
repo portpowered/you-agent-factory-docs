@@ -72,9 +72,9 @@
     "openingSummary": "Opening summary"
   },
   "home": {
-    "title": "Model Atlas",
-    "subtitle": "A field guide to modern AI models and modules",
-    "intro": "Model Atlas is a documentation-native reference for transformers, attention variants, training methods, and the systems around them.",
+    "title": "you-agent-factory",
+    "subtitle": "Docs for the agent factory CLI",
+    "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
     "browseSectionTitle": "Browse",
     "atlasLinkTitle": "Browse the atlas",
     "atlasLinkDescription": "Start with a page that explains where models, modules, concepts, glossary entries, tags, and architecture pages fit together.",
