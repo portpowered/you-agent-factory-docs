@@ -1,13 +1,18 @@
 import { SCAFFOLD_ID, SITE_BRAND_NAME, SITE_HEADING } from "@/lib/scaffold";
 import type { SiteConfig } from "./site-config.contract";
 
-export const MODEL_ATLAS_REPOSITORY_URL =
-  "https://github.com/portpowered/ai-model-reference" as const;
+/** Default product repository URL for the you-agent-factory shell. */
+export const YOU_AGENT_FACTORY_REPOSITORY_URL =
+  "https://github.com/portpowered/you-agent-factory" as const;
+
+/** @deprecated Prefer YOU_AGENT_FACTORY_REPOSITORY_URL; kept for transitional imports. */
+export const MODEL_ATLAS_REPOSITORY_URL = YOU_AGENT_FACTORY_REPOSITORY_URL;
 
 /**
  * Transitional default config still used by the current shell.
- * Later rewrite stories replace brand/nav/collections; the shared contract no
- * longer requires these Atlas topology/timeline/AI collection fields.
+ * Brand/repo identity is you-agent-factory; later rewrite stories replace
+ * nav/collections. The shared contract no longer requires Atlas
+ * topology/timeline/AI collection fields.
  */
 export const modelAtlasSiteConfig = {
   brand: {
@@ -15,7 +20,7 @@ export const modelAtlasSiteConfig = {
     brandName: SITE_BRAND_NAME,
     siteHeading: SITE_HEADING,
   },
-  repositoryUrl: MODEL_ATLAS_REPOSITORY_URL,
+  repositoryUrl: YOU_AGENT_FACTORY_REPOSITORY_URL,
   routeSurfaces: {
     home: { surface: "home" },
     browse: { surface: "browse" },

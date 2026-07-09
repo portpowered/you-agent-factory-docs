@@ -75,6 +75,14 @@ describe("site config contract", () => {
   });
 
   test("accepts a CLI placeholder config without Atlas topology, timeline, or AI collections", () => {
+    const atlasNavLabelKeys = new Set(["topology", "timeline"]);
+    const atlasFeaturedTitleKeys = new Set([
+      "atlasLinkTitle",
+      "gqaLinkTitle",
+      "swigluLinkTitle",
+      "reluLinkTitle",
+    ]);
+
     expect(cliDocsSiteConfig.routeSurfaces).not.toHaveProperty("topology");
     expect(cliDocsSiteConfig.routeSurfaces).not.toHaveProperty("timeline");
     expect(
@@ -82,8 +90,7 @@ describe("site config contract", () => {
     ).toEqual(["home", "guides", "docs", "glossary", "blogIndex", "search"]);
     expect(
       cliDocsSiteConfig.primaryNav.every(
-        (entry) =>
-          entry.labelKey !== "topology" && entry.labelKey !== "timeline",
+        (entry) => !atlasNavLabelKeys.has(entry.labelKey),
       ),
     ).toBe(true);
     expect(cliDocsSiteConfig.collections.map((entry) => entry.family)).toEqual([
@@ -94,12 +101,7 @@ describe("site config contract", () => {
         if (link.kind === "docs-page") {
           return !link.slug.startsWith("modules/");
         }
-        return (
-          link.titleKey !== "atlasLinkTitle" &&
-          link.titleKey !== "gqaLinkTitle" &&
-          link.titleKey !== "swigluLinkTitle" &&
-          link.titleKey !== "reluLinkTitle"
-        );
+        return !atlasFeaturedTitleKeys.has(link.titleKey);
       }),
     ).toBe(true);
   });

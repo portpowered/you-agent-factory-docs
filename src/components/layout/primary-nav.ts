@@ -36,7 +36,9 @@ export function getPrimaryNavItems(
   locale: SiteLocale = defaultLocale,
   options: GetPrimaryNavItemsOptions = {},
 ): PrimaryNavItem[] {
-  const { siteConfig = modelAtlasSiteConfig } = options;
+  // Widen the transitional const default to SiteConfig so open route-surface
+  // lookups stay typed as Record<string, ...> rather than a closed const map.
+  const siteConfig: SiteConfig = options.siteConfig ?? modelAtlasSiteConfig;
 
   return siteConfig.primaryNav.map((entry) => {
     const destination = siteConfig.routeSurfaces[entry.routeSurface];

@@ -21,8 +21,8 @@ import {
 } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
-  MODEL_ATLAS_REPOSITORY_URL,
   modelAtlasSiteConfig,
+  YOU_AGENT_FACTORY_REPOSITORY_URL,
 } from "@/lib/site/model-atlas-site-config";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
 import { source } from "@/lib/source";
@@ -154,7 +154,7 @@ describe("ModelAtlasDocsHeader", () => {
     expect(html).toContain(`aria-label="${messages.search.open}"`);
     expect(html).toContain(messages.search.shortcut);
     expect(html).toContain(`aria-label="${messages.language.open}"`);
-    expect(html).toContain(`href="${MODEL_ATLAS_REPOSITORY_URL}"`);
+    expect(html).toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
     expect(html).toContain('aria-label="Open project GitHub repository"');
   });
 
@@ -172,12 +172,12 @@ describe("ModelAtlasDocsHeader", () => {
     );
 
     expect(html).toContain('href="https://github.com/example/example"');
-    expect(html).not.toContain(`href="${MODEL_ATLAS_REPOSITORY_URL}"`);
+    expect(html).not.toContain(`href="${YOU_AGENT_FACTORY_REPOSITORY_URL}"`);
     expect(html).toContain('aria-label="Open project GitHub repository"');
     expect(html).toContain('title="Open project GitHub repository"');
   });
 
-  test("keeps the default repository URL from model atlas site config", async () => {
+  test("keeps the default repository URL from you-agent-factory site config", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const html = renderToStaticMarkup(
@@ -191,7 +191,9 @@ describe("ModelAtlasDocsHeader", () => {
     );
 
     expect(html).toContain(`href="${modelAtlasSiteConfig.repositoryUrl}"`);
-    expect(modelAtlasSiteConfig.repositoryUrl).toBe(MODEL_ATLAS_REPOSITORY_URL);
+    expect(modelAtlasSiteConfig.repositoryUrl).toBe(
+      YOU_AGENT_FACTORY_REPOSITORY_URL,
+    );
   });
 
   test("mobile width markup hides desktop inline nav links and exposes the menu control", async () => {

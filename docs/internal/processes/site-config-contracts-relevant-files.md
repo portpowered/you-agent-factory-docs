@@ -9,7 +9,8 @@ contract for the you-agent-factory CLI docs product.
 | --- | --- |
 | `src/lib/site/site-config.contract.ts` | Shared `SiteConfig` shape: open route-surface map, open collection family strings, nav/home copy keys from `UiMessages` (not Atlas-locked) |
 | `src/lib/site/site-config.contract.test.ts` | Contract tests; CLI representative fixture must type-check without topology/timeline/AI collections |
-| `src/lib/site/model-atlas-site-config.ts` | Transitional default config (still Atlas-shaped until later rewrite stories) |
+| `src/lib/scaffold.ts` | Shared scaffold brand constants (`SCAFFOLD_ID`, `SITE_BRAND_NAME`, `SITE_HEADING`) consumed by the default site config |
+| `src/lib/site/model-atlas-site-config.ts` | Transitional default config: you-agent-factory brand/repo; nav/collections still Atlas-shaped until later rewrite stories |
 | `src/lib/site/site-config-resolution.ts` | Resolves brand, primary nav hrefs, and home featured links from `SiteConfig` |
 | `src/components/layout/primary-nav.ts` | Shell primary nav consumer of `SiteConfig.primaryNav` / `routeSurfaces` |
 
@@ -29,10 +30,21 @@ contract for the you-agent-factory CLI docs product.
 - Missing route-surface lookups in resolution/nav should throw an explicit
   error rather than pass `undefined` into `buildLocalizedRoute`.
 
+## Brand / repository identity
+
+- Default brand resolves to `you-agent-factory` via scaffold constants and
+  `modelAtlasSiteConfig.brand`.
+- Default repository URL is
+  `https://github.com/portpowered/you-agent-factory`
+  (`YOU_AGENT_FACTORY_REPOSITORY_URL`). Prefer that export over the transitional
+  `MODEL_ATLAS_REPOSITORY_URL` alias.
+- Layout brand title comes from `resolveSiteConfigLayoutNav` →
+  `config.brand.brandName` (not UI message `home.title`).
+
 ## Story sequencing
 
 1. Neutralize contract shape (this lane story 001).
-2. Replace default brand/repo identity.
+2. Replace default brand/repo identity (story 002).
 3. Retarget default nav/route placeholders.
 4. Replace default collections and home featured links.
 5. Align adapters/regression coverage with the new default.

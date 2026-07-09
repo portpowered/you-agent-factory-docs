@@ -1,28 +1,37 @@
 import { describe, expect, test } from "bun:test";
 import { SCAFFOLD_ID, SITE_BRAND_NAME, SITE_HEADING } from "@/lib/scaffold";
 import {
-  MODEL_ATLAS_REPOSITORY_URL,
   modelAtlasSiteConfig,
+  YOU_AGENT_FACTORY_REPOSITORY_URL,
 } from "./model-atlas-site-config";
+import { resolveSiteConfigLayoutNav } from "./site-config-resolution";
 
 describe("model atlas site config", () => {
-  test("contains current scaffold brand values", () => {
+  test("contains you-agent-factory scaffold brand values", () => {
     expect(modelAtlasSiteConfig.brand).toEqual({
       scaffoldId: SCAFFOLD_ID,
       brandName: SITE_BRAND_NAME,
       siteHeading: SITE_HEADING,
     });
     expect(modelAtlasSiteConfig.brand.scaffoldId).toBe(
-      "model-reference-scaffold",
+      "you-agent-factory-scaffold",
     );
-    expect(modelAtlasSiteConfig.brand.brandName).toBe("Model Atlas");
-    expect(modelAtlasSiteConfig.brand.siteHeading).toBe("Model Reference");
+    expect(modelAtlasSiteConfig.brand.brandName).toBe("you-agent-factory");
+    expect(modelAtlasSiteConfig.brand.siteHeading).toBe("you-agent-factory");
   });
 
-  test("contains current repository URL", () => {
-    expect(modelAtlasSiteConfig.repositoryUrl).toBe(MODEL_ATLAS_REPOSITORY_URL);
+  test("contains you-agent-factory repository URL", () => {
     expect(modelAtlasSiteConfig.repositoryUrl).toBe(
-      "https://github.com/portpowered/ai-model-reference",
+      YOU_AGENT_FACTORY_REPOSITORY_URL,
+    );
+    expect(modelAtlasSiteConfig.repositoryUrl).toBe(
+      "https://github.com/portpowered/you-agent-factory",
+    );
+  });
+
+  test("layout nav brand resolution returns you-agent-factory", () => {
+    expect(resolveSiteConfigLayoutNav(modelAtlasSiteConfig).title).toBe(
+      "you-agent-factory",
     );
   });
 

@@ -11,17 +11,18 @@ import {
 import { baseOptions } from "@/lib/layout.shared";
 import { SCAFFOLD_ID, SITE_BRAND_NAME, SITE_HEADING } from "@/lib/scaffold";
 import {
-  MODEL_ATLAS_REPOSITORY_URL,
   modelAtlasSiteConfig,
+  YOU_AGENT_FACTORY_REPOSITORY_URL,
 } from "./model-atlas-site-config";
 import {
   resolveSiteConfigHomeFeaturedLinkHrefs,
   resolveSiteConfigHomeFeaturedLinks,
+  resolveSiteConfigLayoutNav,
   resolveSiteConfigPrimaryNavHrefs,
   resolveSiteConfigRepositoryUrl,
 } from "./site-config-resolution";
 
-const PROJECT_GITHUB_URL = "https://github.com/portpowered/ai-model-reference";
+const PROJECT_GITHUB_URL = "https://github.com/portpowered/you-agent-factory";
 
 function extractHrefAttributes(html: string): string[] {
   const hrefs: string[] = [];
@@ -42,7 +43,9 @@ describe("site config scaffold compatibility", () => {
   });
 
   test("keeps the default repository URL aligned with the current header link", () => {
-    expect(modelAtlasSiteConfig.repositoryUrl).toBe(MODEL_ATLAS_REPOSITORY_URL);
+    expect(modelAtlasSiteConfig.repositoryUrl).toBe(
+      YOU_AGENT_FACTORY_REPOSITORY_URL,
+    );
     expect(modelAtlasSiteConfig.repositoryUrl).toBe(PROJECT_GITHUB_URL);
     expect(resolveSiteConfigRepositoryUrl(modelAtlasSiteConfig)).toBe(
       PROJECT_GITHUB_URL,
@@ -60,7 +63,12 @@ describe("site config scaffold compatibility", () => {
     }
   });
 
-  test("keeps the layout nav title aligned with the configured brand name", () => {
+  test("keeps the layout nav title aligned with the you-agent-factory brand name", () => {
+    expect(modelAtlasSiteConfig.brand.brandName).toBe("you-agent-factory");
+    expect(resolveSiteConfigLayoutNav(modelAtlasSiteConfig).title).toBe(
+      "you-agent-factory",
+    );
+    expect(baseOptions().nav?.title).toBe("you-agent-factory");
     expect(baseOptions().nav?.title).toBe(modelAtlasSiteConfig.brand.brandName);
   });
 });
