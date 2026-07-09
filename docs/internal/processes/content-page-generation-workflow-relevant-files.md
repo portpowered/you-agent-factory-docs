@@ -62,6 +62,13 @@ are allowed when colocated message keys validate. Browser-verify MDX or
 message edits with `bun run build` then `bun run start` on a unique port —
 plain `start` serves the last production build and will look stale otherwise.
 
+When linking parallel-lane sibling destinations that are not yet published in
+this worktree (for example getting-started → `/docs/documentation/install` and
+`/docs/documentation/cli`), prefer page-local `<LocalizedLinkList>` with stable
+hrefs and `links.*` labels. Do not put those ids in registry `relatedIds` until
+the sibling registry records exist here — unresolved related ids fail
+`validate-data`, and RelatedDocs also drops unpublished targets.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |
