@@ -1,0 +1,31 @@
+{
+  "title": "Tool",
+  "description": "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A tool is a named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work. Scaffold copy — full isolation-first definition lands in a later story."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Tools are how agents and hosts act on the world and on the factory instead of only producing text. Scaffold copy — full why-it-matters narrative lands in a later story."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "An MCP host can call a Factory Session tool such as you.factory_session.validate_source. Scaffold copy — a compact concrete example lands in a later story."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A tool is not the harness, not MCP host-setup documentation, and not a worker. Scaffold copy — full confusion boundaries land in a later story."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
