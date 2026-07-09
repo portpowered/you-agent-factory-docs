@@ -66,6 +66,70 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="links.idempotencyNote" />
 </Section>
 
+<Section id="relationships" titleKey="sections.relationships.title">
+  <T k="sections.relationships.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.relationNeedHeader" />
+        </th>
+        <th>
+          <T k="links.relationTypeHeader" />
+        </th>
+        <th>
+          <T k="links.relationMeaningHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.dependsOnNeed" />
+        </td>
+        <td>
+          <T k="links.dependsOnType" />
+        </td>
+        <td>
+          <T k="links.dependsOnMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.parentChildNeed" />
+        </td>
+        <td>
+          <T k="links.parentChildType" />
+        </td>
+        <td>
+          <T k="links.parentChildMeaning" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="links.sourceTargetNote" />
+  <p>
+    <T k="links.relationsExampleLabel" />
+  </p>
+  ```json
+  {
+    "relations": [
+      {
+        "type": "DEPENDS_ON",
+        "sourceWorkName": "publish",
+        "targetWorkName": "review",
+        "requiredState": "complete"
+      },
+      {
+        "type": "PARENT_CHILD",
+        "sourceWorkName": "story-auth",
+        "targetWorkName": "story-set"
+      }
+    ]
+  }
+  ```
+</Section>
+
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
 </Section>

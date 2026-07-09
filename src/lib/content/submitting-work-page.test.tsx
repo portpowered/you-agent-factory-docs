@@ -35,6 +35,7 @@ describe("submitting-work documentation page", () => {
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Work Batches" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Relationships" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
@@ -68,5 +69,31 @@ describe("submitting-work documentation page", () => {
       /validates? the batch without creating work|Validate the batch without creating work/i,
     );
     expect(workBatchesSection?.textContent).toMatch(/idempotent/i);
+
+    const relationshipsSection = document.getElementById("relationships");
+    expect(relationshipsSection).toBeTruthy();
+    expect(relationshipsSection?.textContent).toMatch(/DEPENDS_ON/);
+    expect(relationshipsSection?.textContent).toMatch(/PARENT_CHILD/);
+    expect(relationshipsSection?.textContent).toMatch(
+      /Sibling prerequisite ordering/i,
+    );
+    expect(relationshipsSection?.textContent).toMatch(
+      /Child membership under a parent/i,
+    );
+    expect(relationshipsSection?.textContent).toMatch(
+      /Source waits for target/i,
+    );
+    expect(relationshipsSection?.textContent).toMatch(
+      /Source is the child of target/i,
+    );
+    expect(relationshipsSection?.textContent).toMatch(/sourceWorkName/);
+    expect(relationshipsSection?.textContent).toMatch(/targetWorkName/);
+    expect(relationshipsSection?.textContent).toMatch(/requiredState/);
+    expect(relationshipsSection?.textContent).toMatch(
+      /source waits for the target/i,
+    );
+    expect(relationshipsSection?.textContent).toMatch(
+      /source is a child of the target/i,
+    );
   });
 });

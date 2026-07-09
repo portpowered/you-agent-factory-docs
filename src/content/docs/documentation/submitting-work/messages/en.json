@@ -19,6 +19,10 @@
       "title": "Work Batches",
       "body": "A FACTORY_REQUEST_BATCH is one JSON document that creates multiple work items in a single validated submission. Required fields are requestId, type set to FACTORY_REQUEST_BATCH, and a works array. Each works entry needs a name and a workTypeName that exists in the target factory. The factory validates the full batch before creating any work, so an invalid batch rejects the whole submission."
     },
+    "relationships": {
+      "title": "Relationships",
+      "body": "Batch relations tell the factory how work items in the same submission should wait on each other or nest under a parent. Put them in the relations array on the FACTORY_REQUEST_BATCH. Choose DEPENDS_ON when one sibling must wait for another. Choose PARENT_CHILD when a child should belong under a parent for parent-aware fan-in. Both types can appear in the same batch when you need ordering and membership together."
+    },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
       "body": "This page is a web submitting-work reference for batches and relationships. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install, first-run, and command-matrix details belong on sibling documentation and guide pages."
@@ -37,6 +41,17 @@
     "batchExampleLabel": "Minimal batch document:",
     "submitBatchLabel": "Submit that document to a factory that is already running:",
     "dryRunLabel": "Validate the batch without creating work:",
-    "idempotencyNote": "Reuse a stable non-empty requestId with the same body when you retry. That makes the batch upsert idempotent instead of creating duplicate work."
+    "idempotencyNote": "Reuse a stable non-empty requestId with the same body when you retry. That makes the batch upsert idempotent instead of creating duplicate work.",
+    "relationNeedHeader": "Need",
+    "relationTypeHeader": "Relation type",
+    "relationMeaningHeader": "Source and target",
+    "dependsOnNeed": "Sibling prerequisite ordering",
+    "dependsOnType": "DEPENDS_ON",
+    "dependsOnMeaning": "Source waits for target",
+    "parentChildNeed": "Child membership under a parent",
+    "parentChildType": "PARENT_CHILD",
+    "parentChildMeaning": "Source is the child of target",
+    "sourceTargetNote": "Read DEPENDS_ON as: the source waits for the target. Read PARENT_CHILD as: the source is a child of the target. requiredState applies only to DEPENDS_ON and names the state the target must reach; it defaults to complete when omitted.",
+    "relationsExampleLabel": "Minimal relations fragment:"
   }
 }
