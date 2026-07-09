@@ -1,6 +1,6 @@
 # Learn Language Models
 
-[![CI](https://github.com/portpowered/ai-model-reference/actions/workflows/ci.yml/badge.svg)](https://github.com/portpowered/ai-model-reference/actions/workflows/ci.yml)
+[![CI](https://github.com/portpowered/you-agent-factory-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/portpowered/you-agent-factory-docs/actions/workflows/ci.yml)
 
 A static AI model reference site for large language model components, concepts,
 papers, training regimes, systems ideas, and architecture variants.
@@ -121,7 +121,7 @@ slash) when running the export build. The value configures matching
 the project path:
 
 ```sh
-GITHUB_PAGES_BASE_PATH=/ai-model-reference make build-export
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
 ```
 
 When `GITHUB_PAGES_BASE_PATH` is unset, export builds keep `/` as the base for

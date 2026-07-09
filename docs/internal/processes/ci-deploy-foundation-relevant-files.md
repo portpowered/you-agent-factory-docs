@@ -83,4 +83,13 @@ failures from `check`, `test`, or the static-export build behind those skips.
 `make test` (`scripts/run-website-functionality-tests.ts` skips `src/tests/ci/`).
 Do not treat those inventory tests as the live workflow contract; prefer
 command-level verification of the Makefile targets and the YAML files above.
-Story 005 owns repository-facing badge / workflow identity retargeting.
+
+## Repository-facing workflow identity
+
+- Live workflow display names are project-neutral: `CI` and `Deploy GitHub Pages`
+  (jobs `verify`, `Canonical validation`, `Deploy to GitHub Pages`).
+- The README CI badge must point at
+  `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
+  legacy `ai-model-reference` repository.
+- Maintainer `GITHUB_PAGES_BASE_PATH` examples in README should use the current
+  repository name when illustrating project-site export.
