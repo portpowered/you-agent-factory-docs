@@ -412,6 +412,23 @@ Orient from `you docs workers` for type/behavior/when-to-use meaning, but
 rewrite for web scanning. Mention `MODEL_WORKER` / `HOSTED_WORKER` only as
 migration guidance and prefer the current public names for new configs.
 
+### Documentation workers ownership, examples, and core fields (page-local)
+
+For `documentation/workers` how-to-use teaching, keep ownership split,
+minimal authoring example, and type-specific cues inside `#how-to-use`
+(stable anchor). Put ownership matrix cells, example label/body, and
+type-guidance strings under page `links.*` keys — same reason as taxonomy:
+`pageSectionSchema` only keeps `title`/`body`. Render:
+
+- an always-visible ownership HTML `<table>` (worker-owned vs workstation-owned)
+- a minimal agent-worker example as `<pre><code><T k="links.…" /></code></pre>`
+- short type-guidance bullets for inference / agent / script / poller
+
+Keep a distinct `#core-fields` `Section` after `#how-to-use` for the
+structured field reference table (type, model/provider, command/args,
+poller provider/auth, operations). Orient from `you docs workers` for field
+meanings, but rewrite for web scanning and avoid a full flag dump.
+
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands
