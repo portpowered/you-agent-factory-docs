@@ -568,7 +568,8 @@
     {
       "executorProvider": "SCRIPT_WRAP",
       "id": "planner",
-      "modelProvider": "CODEX",
+      "modelProvider": "CURSOR",
+      "model": "grok-4.5-high",
       "name": "planner",
       "skipPermissions": true,
       "stopToken": "\u003cCOMPLETE\u003e",
