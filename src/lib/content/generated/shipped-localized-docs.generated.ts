@@ -10,6 +10,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "modules/multi-query-attention",
     "modules/sliding-window-attention",
   ],
+  "zh-CN": [],
   vi: [
     "concepts/transformer-architecture",
     "glossary/autoregressive-generation",

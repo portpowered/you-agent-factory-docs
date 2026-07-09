@@ -9,15 +9,17 @@ import {
 describe("route-locale", () => {
   test("generates static locale params for every non-default locale", () => {
     expect(generateStaticLocaleParams()).toEqual([
-      { locale: "vi" },
       { locale: "ja" },
+      { locale: "zh-CN" },
+      { locale: "vi" },
     ]);
   });
 
   test("localizes static params for every non-default locale", () => {
     expect(localizeStaticParams([{ slug: "attention" }])).toEqual([
-      { slug: "attention", locale: "vi" },
       { slug: "attention", locale: "ja" },
+      { slug: "attention", locale: "zh-CN" },
+      { slug: "attention", locale: "vi" },
     ]);
   });
 
@@ -31,8 +33,9 @@ describe("route-locale", () => {
       canonical: "/docs/modules/grouped-query-attention",
       languages: {
         en: "/docs/modules/grouped-query-attention",
-        vi: "/vi/docs/modules/grouped-query-attention",
         ja: "/ja/docs/modules/grouped-query-attention",
+        "zh-CN": "/zh-CN/docs/modules/grouped-query-attention",
+        vi: "/vi/docs/modules/grouped-query-attention",
       },
     });
   });
@@ -42,13 +45,15 @@ describe("route-locale", () => {
       canonical: "/browse",
       languages: {
         en: "/browse",
-        vi: "/vi/browse",
         ja: "/ja/browse",
+        "zh-CN": "/zh-CN/browse",
+        vi: "/vi/browse",
       },
     });
   });
 
-  test("accepts japanese route locales", () => {
+  test("accepts japanese and chinese route locales", () => {
     expect(resolveRouteLocaleOrNotFound("ja")).toBe("ja");
+    expect(resolveRouteLocaleOrNotFound("zh-CN")).toBe("zh-CN");
   });
 });

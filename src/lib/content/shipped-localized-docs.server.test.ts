@@ -83,6 +83,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         resetDerivedShippedLocalizedDocsManifestCache();
         expect(deriveShippedLocalizedDocsManifest(tempRoot)).toEqual({
           ja: ["modules/japanese-page"],
+          "zh-CN": [],
           vi: ["concepts/translated-page"],
         });
       } finally {

@@ -47,10 +47,11 @@ function findPageDirectories(rootDir: string): string[] {
 }
 
 function createEmptyManifest(): ShippedLocalizedDocsManifest {
-  return {
-    ja: [],
-    vi: [],
-  };
+  const manifest = {} as ShippedLocalizedDocsManifest;
+  for (const locale of nonDefaultLocales) {
+    manifest[locale] = [];
+  }
+  return manifest;
 }
 
 function hasNonDefaultLocaleMessages(
@@ -68,10 +69,10 @@ export function deriveShippedLocalizedDocsManifest(
     return cached;
   }
 
-  const shippedDocsByLocale: Record<NonDefaultLocale, string[]> = {
-    ja: [],
-    vi: [],
-  };
+  const shippedDocsByLocale = createEmptyManifest() as Record<
+    NonDefaultLocale,
+    string[]
+  >;
 
   for (const pageDirectory of findPageDirectories(docsRoot)) {
     const frontmatter = parseFrontmatter(path.join(pageDirectory, "page.mdx"));
@@ -88,10 +89,10 @@ export function deriveShippedLocalizedDocsManifest(
     }
   }
 
-  const manifest: ShippedLocalizedDocsManifest = {
-    ja: shippedDocsByLocale.ja.sort(),
-    vi: shippedDocsByLocale.vi.sort(),
-  };
+  const manifest = createEmptyManifest() as Record<NonDefaultLocale, string[]>;
+  for (const locale of nonDefaultLocales) {
+    manifest[locale] = [...shippedDocsByLocale[locale]].sort();
+  }
   manifestCache.set(docsRoot, manifest);
   return manifest;
 }
@@ -101,10 +102,14 @@ export function resolveDerivedShippedLocalizedDocsManifest(
   docsRoot = DOCS_ROOT,
 ): ShippedLocalizedDocsManifest {
   const derivedManifest = deriveShippedLocalizedDocsManifest(docsRoot);
-  return {
-    ja: overrides.ja ?? derivedManifest.ja,
-    vi: overrides.vi ?? derivedManifest.vi,
-  };
+  const resolved = createEmptyManifest() as Record<
+    NonDefaultLocale,
+    readonly string[]
+  >;
+  for (const locale of nonDefaultLocales) {
+    resolved[locale] = overrides[locale] ?? derivedManifest[locale];
+  }
+  return resolved;
 }
 
 export function resetDerivedShippedLocalizedDocsManifestCache() {

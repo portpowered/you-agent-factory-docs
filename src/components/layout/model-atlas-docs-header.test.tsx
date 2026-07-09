@@ -583,7 +583,12 @@ describe("ModelAtlasDocsHeader", () => {
         .getByRole("menuitem", { name: /日本語/ })
         .getAttribute("href"),
     ).toBe("/ja/docs/glossary/token?tag=attention");
-    expect(dialog.textContent).not.toContain(messages.language.unavailable);
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /简体中文/ })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
+    expect(dialog.textContent).toContain(messages.language.unavailable);
   });
 
   test("keeps the language and GitHub header controls on the same outline button contract", async () => {
