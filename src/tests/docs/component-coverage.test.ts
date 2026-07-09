@@ -31,6 +31,41 @@ describe("component coverage contract", () => {
     }
   });
 
+  test("reusable coverage no longer lists Atlas attention/registry graph components", () => {
+    const coverageFiles = new Set(
+      REUSABLE_COVERAGE_COMPONENTS.map((entry) => entry.file),
+    );
+    expect(
+      coverageFiles.has(
+        "src/features/models/components/AttentionVariantComparisonGraph.tsx",
+      ),
+    ).toBe(false);
+    expect(
+      coverageFiles.has("src/features/models/components/RegistryGraphFlow.tsx"),
+    ).toBe(false);
+  });
+
+  test("factory-ui wrappers are registered as thin wrappers with smoke tests", () => {
+    const thinWrapperFiles = REUSABLE_THIN_WRAPPERS.map((entry) => entry.file);
+    expect(thinWrapperFiles).toContain("src/features/factory-ui/graphs.ts");
+    expect(thinWrapperFiles).toContain("src/features/factory-ui/charts.ts");
+    expect(thinWrapperFiles).toContain(
+      "src/features/factory-ui/data-display.ts",
+    );
+
+    const factoryUiWrappers = REUSABLE_THIN_WRAPPERS.filter((entry) =>
+      entry.file.startsWith("src/features/factory-ui/"),
+    );
+    expect(factoryUiWrappers.length).toBeGreaterThanOrEqual(3);
+    for (const wrapper of factoryUiWrappers) {
+      expect(wrapper.forwardsTo.length).toBeGreaterThan(0);
+      expect(wrapper.smokeTests.length).toBeGreaterThan(0);
+      for (const testPath of wrapper.smokeTests) {
+        expect(existsSync(join(repoRoot, testPath))).toBe(true);
+      }
+    }
+  });
+
   test("reachable line coverage minimums are enforced by make coverage, not nested bun test", () => {
     expect(existsSync(coverageGateScriptPath)).toBe(true);
     expect(COVERAGE_TEST_ARGS).toContain("--path-ignore-patterns");

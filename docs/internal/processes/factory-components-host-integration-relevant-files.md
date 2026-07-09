@@ -28,7 +28,8 @@ entry. Do not vendor or fork package source into this repo.
 | `src/features/factory-ui/graphs.ts` | Thin re-export of `@you-agent-factory/components/graphs` (viewport/node/edge helpers); no domain logic or styles import |
 | `src/features/factory-ui/charts.ts` | Thin re-export of `@you-agent-factory/components/charts` (ChartContainer, ChartStatePanel, tooltip/legend helpers); no domain series models or styles import |
 | `src/features/factory-ui/data-display.ts` | Thin re-export of DataTable + CodePanel from `@you-agent-factory/components/data-display`; columns/rows/code stay caller-owned; no styles import |
-| `src/lib/docs/component-manifest.ts` | Reusable coverage boundary retarget away from Atlas graph components (later story) |
+| `src/lib/docs/component-manifest.ts` | Reusable coverage boundary: factory-ui wrappers in `REUSABLE_THIN_WRAPPERS`; Atlas `AttentionVariantComparisonGraph` / `RegistryGraphFlow` are not in `REUSABLE_COVERAGE_COMPONENTS` |
+| `src/lib/docs/component-coverage-gate.ts` | Allows `src/features/factory-ui/` via `FACTORY_UI_MANIFEST_PREFIX` alongside components/search/tags paths |
 
 ## Styles import contract
 
@@ -73,6 +74,19 @@ entry. Do not vendor or fork package source into this repo.
   empty → `role="status"`, error → `role="alert"`.
 - Smoke-test `CodePanel` with fixture code text on a `<pre>` surface.
 - Do not import package styles from the wrapper module.
+
+## Component manifest retarget
+
+- Remove Atlas `AttentionVariantComparisonGraph` and `RegistryGraphFlow` from
+  `REUSABLE_COVERAGE_COMPONENTS` / `PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS`.
+  Leave the Atlas implementation files in place for existing page consumers;
+  deletion/migration belongs to later lanes.
+- Register factory-ui wrappers in `REUSABLE_THIN_WRAPPERS` with
+  `forwardsTo` pointing at the package category (or DataTable / CodePanel) and
+  smoke tests under `src/features/factory-ui/*.test.tsx`.
+- Coverage gate must allow `src/features/factory-ui/`
+  (`FACTORY_UI_MANIFEST_PREFIX` in `component-coverage-gate.ts`); thin wrappers
+  skip line-percent thresholds and only require existing smoke test files.
 
 ## Verification preference
 
