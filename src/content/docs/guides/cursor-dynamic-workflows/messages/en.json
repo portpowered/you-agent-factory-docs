@@ -17,7 +17,7 @@
     },
     "commonPitfalls": {
       "title": "Common Pitfalls",
-      "body": "Common setup mistakes include a missing you binary on PATH, the wrong project cwd, and forgetting to reload Cursor after MCP config changes."
+      "body": "If Cursor cannot find you on PATH, set command to the absolute path of the you binary instead of relying on the shell PATH. If validate or start fails to resolve workflow sources, check that cwd is the workflow project root, not a nested package or home directory. After you change MCP config, restart Cursor or run Developer: Reload Window so the MCP child process respawns; saving the file alone is not enough. Treat this guide as a first Cursor integration loop only — full tool catalogs, serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages linked below."
     },
     "related": {
       "title": "Related To"
@@ -35,7 +35,9 @@
     "firstLoopLabel": "First Factory Session loop from Cursor",
     "firstLoopValidateLabel": "Validate workflow source",
     "firstLoopStartLabel": "Start a Factory Session",
-    "firstLoopStatusLabel": "Check status and result"
+    "firstLoopStatusLabel": "Check status and result",
+    "mcpDocs": "MCP documentation",
+    "dynamicWorkflowsDocs": "Dynamic-workflows documentation"
   },
   "callouts": {
     "mcpConfigLocations": {
