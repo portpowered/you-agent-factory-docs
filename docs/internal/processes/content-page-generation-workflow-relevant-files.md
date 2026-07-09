@@ -211,10 +211,13 @@ first-page shared wiring as the documented exception lane.
 
 Fumadocs `pageSchema` still requires frontmatter `title` (and accepts optional
 `description`) at webpack/static-export time. For local-message CLI pages, set
-`title: ""` and `description: ""` in frontmatter (same pattern as the glossary
-template) so the Fumadocs collection validates, while the shell continues to
-render `messages.title` / `messages.description` via `ModulePageProviders`. Do
-not put the real reader title only in Fumadocs frontmatter.
+`title: ""` and `description: ""` on that page's `page.mdx` frontmatter (same
+pattern as published glossary pages) so the Fumadocs collection validates, while
+the shell continues to render `messages.title` / `messages.description` via
+`ModulePageProviders`. Do not put the real reader title only in Fumadocs
+frontmatter, and do not edit shared `docs/templates/{concept,documentation,guide,technique}.mdx`
+just to add those empty keys — that pulls a page lane out of the documented
+first-CLI-section `declare-exception` allowlist into `redirect-to-throughput-prd`.
 
 ### Documentation CLI install commands (page-local)
 
