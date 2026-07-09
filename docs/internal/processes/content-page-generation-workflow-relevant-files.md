@@ -155,6 +155,10 @@ review lanes):
   `assets.json`, page-local media)
 - Matching primary registry record and page-specific supporting graph/table
   records
+- Page-owned behavioral render proofs colocated as
+  `src/content/docs/<section>/<slug>/<slug>-page.test.tsx` (or similar under the
+  page directory). Prefer this over `src/lib/content/*-page.test.tsx` so
+  `audit:canonical-page-surface` stays within-budget for ordinary page lanes.
 
 **Supported derived (regenerate locally; keep out of routine commits):**
 
