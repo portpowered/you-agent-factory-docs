@@ -1,3 +1,10 @@
+/**
+ * Page-owned render proof for documentation/submitting-work.
+ * Covers work-batches + relationships visibility and sibling discovery hrefs —
+ * not routine derived bundle invariants (those stay on make validate-data).
+ * Colocated under the page bundle so audit:canonical-page-surface stays
+ * within-budget for this ordinary documentation lane.
+ */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
