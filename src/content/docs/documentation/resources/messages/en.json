@@ -4,7 +4,7 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Resources are bounded-concurrency pools in factory.json. A top-level resources[] entry declares a named pool with a capacity (and optional typed metadata). A workstation requirement holds that capacity while a dispatch runs, so later matching dispatches wait when the pool is exhausted. This page teaches that pool-and-requirement contract for web readers."
+      "body": "Resources are bounded-concurrency pools in factory.json. A top-level resources[] entry declares a named pool with a capacity (and optional typed metadata). A workstation requirement holds that capacity while a dispatch runs, so later matching dispatches wait when the pool is exhausted."
     },
     "keyConcepts": {
       "title": "Key Concepts",
