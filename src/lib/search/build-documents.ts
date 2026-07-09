@@ -6,7 +6,6 @@ import {
   buildBlogSearchDocuments,
 } from "./build-blog-search-document";
 import { enrichSearchDocument } from "./enrich-search-document";
-import { enrichSearchDocumentWithModelAtlasAiFacets } from "./model-atlas-ai-search-enrichment-adapter";
 import type { SearchDocument } from "./types";
 
 export function buildSearchDocument(
@@ -14,8 +13,7 @@ export function buildSearchDocument(
   indexes: RegistryIndexes,
 ): SearchDocument {
   const base = buildBaseSearchDocument(page, indexes);
-  const generic = enrichSearchDocument(base, indexes);
-  return enrichSearchDocumentWithModelAtlasAiFacets(generic, indexes);
+  return enrichSearchDocument(base, indexes);
 }
 
 export function buildSearchDocuments(

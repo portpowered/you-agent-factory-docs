@@ -13,15 +13,12 @@ export type VerifierCoverageEntry = {
   unitTests: string[];
 };
 
-/** Phase 1 built-app verifier lifecycle harness modules. */
+/** Remaining verifier lifecycle harness modules after Atlas verifier deletion. */
 export const VERIFIER_COVERAGE_MODULES: VerifierCoverageEntry[] = [
   {
     file: "src/lib/verify/server-lifecycle.ts",
     label: "Verify server lifecycle",
     minReachableLinePercent: 90,
-    unitTests: [
-      "src/lib/verify/server-lifecycle.test.ts",
-      "src/lib/verify/reader-ux-verifier.test.ts",
-    ],
+    unitTests: ["src/lib/verify/server-lifecycle.test.ts"],
   },
 ];

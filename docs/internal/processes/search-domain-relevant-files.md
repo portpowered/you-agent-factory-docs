@@ -1,7 +1,7 @@
 # Search Domain Relevant Files
 
-Use these files when changing search document construction, AI enrichment,
-Orama indexing, or `/api/search` behavior.
+Use these files when changing search document construction, Orama indexing, or
+`/api/search` behavior.
 
 ## Core search boundary
 
@@ -12,14 +12,10 @@ Orama indexing, or `/api/search` behavior.
 * `src/lib/search/enrich-search-document.ts`
   Generic enrichment step that resolves published classification lineage, topology
   relationship terms, and legacy taxonomy compatibility onto base documents.
-* `src/lib/search/model-atlas-ai-search-enrichment-adapter.ts`
-  Model Atlas AI enrichment adapter that appends model/module facets
-  (`modelFamily`, `sourceType`, `modalities`, `trainingRegimeIds`, `optimizes`)
-  onto generic search documents. Registered by the search builder in story 003.
 * `src/lib/search/build-documents.ts`
-  Model Atlas search builder: composes base documents with generic
-  `enrichSearchDocument`, then applies `enrichSearchDocumentWithModelAtlasAiFacets`
-  before returning catalog `SearchDocument` records consumed by `search-server.ts`.
+  Search builder: composes base documents with generic `enrichSearchDocument`
+  only. Model Atlas AI facet enrichment (`modelFamily`, `sourceType`,
+  `modalities`, `trainingRegimeIds`, `optimizes`) is no longer applied.
 * `src/lib/search/to-advanced-index.ts`
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`
@@ -32,32 +28,32 @@ Orama indexing, or `/api/search` behavior.
 
 * `src/tests/search/search-behavior-parity.test.ts`
   Focused baseline for attention, GQA alias, tag, and classification-scoped
-  search before/after the generic base + AI enrichment boundary split. Extend
-  this file when adding new parity assertions for the enrichment refactor.
+  search. Extend this file when adding new parity assertions for enrichment.
 * `src/tests/search/search-api-contract-parity.test.ts`
   `/api/search` bootstrap export and query contract parity for GQA, attention,
-  tag-filtered, and classification-scoped searches after the boundary split.
+  tag-filtered, and classification-scoped searches.
 * `src/lib/search/to-advanced-index.test.ts`
   Fumadocs advanced index projection contract for `id`, `title`, `description`,
   `url`, `structuredData`, and `tag` fields.
 * `src/lib/search/build-base-document.test.ts`
   Generic base document field contract and empty topology/facet guarantees.
+* `src/lib/search/build-documents.test.ts`
+  Builder contract: generic enrichment only; asserts Atlas AI-only facet keys
+  are absent from built documents.
 * `src/tests/fixtures/non-ai-shell/search.test.ts`
   Non-AI fixture base and generic-enrichment search document fields and Orama
   query behavior without AI registry enrichment; uses
   `buildNonAiShellFixtureBaseSearchDocuments()` and
-  `buildNonAiShellFixtureSearchDocuments()` (shared enrichment only, no AI adapter).
+  `buildNonAiShellFixtureSearchDocuments()` (shared enrichment only).
 * `src/tests/fixtures/non-ai-shell/fixture.ts`
   Non-AI shell fixture pages and search builders; `buildNonAiShellFixtureSearchDocuments`
   composes base documents with `enrichSearchDocuments` for the generic search proof.
 * `src/lib/search/enrich-search-document.test.ts`
   Generic enrichment topology/facet contract, searchable topology terms, and draft or
   missing-target stability coverage.
-* `src/lib/search/model-atlas-ai-search-enrichment-adapter.test.ts`
-  Model Atlas AI facet adapter contract for model/module records, generic facet
-  preservation, and non-model/module no-op behavior.
 * `src/tests/search/build-documents.test.ts`
-  Document construction and topology normalization coverage.
+  Document construction and topology normalization coverage (Atlas page fixtures;
+  excluded from required `make test` after Atlas deletion).
 * `src/tests/search/search-api.test.ts`
   `/api/search` HTTP contract and `docsSearchApi` ranking regressions.
 * `src/tests/search/helpers.ts`

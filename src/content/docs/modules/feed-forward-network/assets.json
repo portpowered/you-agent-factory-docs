@@ -1,9 +1,0 @@
-{
-  "computeFlow": {
-    "type": "graph",
-    "graphId": "graph.standard-ffn-parallel-baseline",
-    "webRenderer": "react-flow",
-    "printRenderer": "mermaid",
-    "altKey": "assets.computeFlow.alt"
-  }
-}

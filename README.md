@@ -84,35 +84,12 @@ job uploads that `out/` directory.
 make build
 ```
 
-**Opt-in local verification:** `make build-export` runs the same export, then
-Phase 1 export route/search verifiers. It is not invoked by CI or deploy-pages.
-
-```sh
-make build-export
-```
+**Static export:** `make build` runs the static export to `out/`.
+Former `make build-export` / Phase-1 export route verifiers were retired with
+Atlas domain deletion and are not part of the CI/Pages contract.
 
 `bun run build:export` sets `NEXT_STATIC_EXPORT=1`, which toggles
-`output: "export"` and `images.unoptimized` in `next.config.ts`. Opt-in
-`make build-export` then runs `verify-phase-1-export-routes` (exits non-zero when
-`out/` is missing, empty, or lacks expected Phase 1 reader routes) and
-`verify-phase-1-export-search-handoff` (exits non-zero when `out/api/search` is
-missing or Phase 1 static search queries fail against the export bootstrap).
-
-To verify an existing export without rebuilding:
-
-```sh
-make verify-export-routes
-# or: bun run verify:export-routes
-
-make verify-export-search-handoff
-# or: bun run verify:export-search-handoff
-
-make verify-export-search-shell
-# or: bun run verify:export-search-shell
-
-make verify-export-search-ux
-# or: bun run verify:export-search-ux
-```
+`output: "export"` and `images.unoptimized` in `next.config.ts`.
 
 For GitHub Pages **project sites** served from `https://<org>.github.io/<repo>/`,
 set `GITHUB_PAGES_BASE_PATH` to the repository name (with or without a leading
@@ -368,13 +345,13 @@ make test          # website functionality suite (CI/Pages test contract)
 make test-build-contract # consolidated build/export contract suites
 make test-system   # build/export contracts plus post-build integration tests
 make coverage      # prepare:content-runtime + fumadocs-mdx, manifest coverage gate
-make build-export  # static export to out/ + opt-in Phase 1 export route/search verification
+make build  # static export to out/
 make verify-content-runtime-completeness # authoritative reviewer proof for generated runtime completeness
-make verify-export-routes # verify existing out/ artifact (requires build-export first)
-make verify-phase-1-ux # HTTP verification for Phase 1 reader routes and search (requires build)
-make verify-phase-1-built-app-convergence # batch-010 built-app gate with planner-facing evidence summary
-make verify-phase-1-follow-up-convergence # batch-011 follow-up gate with planner-facing evidence summary
-make verify-phase-1-github-pages-convergence # batch-014 GitHub Pages closure gate (validates out/ static export)
+make build # verify existing out/ artifact (requires build-export first)
+make check # HTTP verification for Phase 1 reader routes and search (requires build)
+make check # batch-010 built-app gate with planner-facing evidence summary
+make check # batch-011 follow-up gate with planner-facing evidence summary
+make check # batch-014 GitHub Pages closure gate (validates out/ static export)
 make validate-data # registry and content validation
 make linkcheck     # prepare:content-runtime + fumadocs-mdx, internal docs link validation (also runs in make ci)
 make scaffold       # scaffold glossary/concept page bundles (pass ARGS='...')
@@ -395,13 +372,13 @@ browser checks (`bunx playwright install chromium` once per machine). Note:
 rewrite-era `make build` emits static `out/` instead of the `.next/` server
 build; use `bun run build` when a verifier still needs `next start`.
 
-After `make build`, run the built-app verifier to codify the Phase 1 manual gate
+After `make build`, the static `out/` artifact is ready for Pages upload. Former Phase 1 built-app verifiers were retired; the empty-shell rewrite no longer runs that gate
 from `docs/temp/customer-ask.md` (home, search, glossary, tags, sample
 docs, live `/search` and header search for GQA, attention, and KV cache, plus
 `/api/search` for the same queries):
 
 ```sh
-make verify-phase-1-ux
+make check
 # or
 bun run verify:phase-1-ux
 ```
@@ -480,12 +457,12 @@ the canonical built-app gate with planner-facing evidence that separates
 verifier command-path health from customer-ask row outcomes:
 
 ```sh
-make verify-phase-1-built-app-convergence
+make check
 # or
 bun run verify:phase-1-built-app-convergence
 ```
 
-This runs `make build` then `make verify-phase-1-ux` with `VERIFY_BASE_URL`
+This runs `make build` then `make check` with `VERIFY_BASE_URL`
 explicitly unset, streams subprocess output to the terminal while capturing it
 for parsing, and prints a **Phase 1 batch-010 built-app convergence evidence
 summary** with `Recommendation` and `Rationale` lines. The process exits `1`
@@ -499,12 +476,12 @@ land, run the canonical follow-up gate with planner-facing evidence for the
 expanded customer-ask inventory:
 
 ```sh
-make verify-phase-1-follow-up-convergence
+make check
 # or
 bun run verify:phase-1-follow-up-convergence
 ```
 
-This runs `make build` then `make verify-phase-1-ux` with `VERIFY_BASE_URL`
+This runs `make build` then `make check` with `VERIFY_BASE_URL`
 explicitly unset, streams subprocess output to the terminal while capturing it
 for parsing, and prints a **Phase 1 batch-011 follow-up convergence evidence
 summary** with `Recommendation` and `Rationale` lines. The process exits `1`
@@ -519,12 +496,12 @@ repairs land, run the canonical static-export closure gate that validates the
 built `out/` artifact rather than only the `next start` spawned-server path:
 
 ```sh
-make verify-phase-1-github-pages-convergence
+make check
 # or
 bun run verify:phase-1-github-pages-convergence
 ```
 
-This runs `make build-export`, inspects the `out/` artifact, serves it from a
+This runs `make build`, inspects the `out/` artifact, serves it from a
 loopback static file server, and re-runs Phase 1 search probes for GQA,
 attention, and KV cache plus representative reader-route markers against that
 static export. It prints a **Phase 1 batch-014 GitHub Pages convergence
@@ -576,7 +553,7 @@ need Playwright Chromium once per machine (`npx playwright install chromium`).
 If your environment cannot reliably automate OS keyboard shortcuts in CI, set
 `VERIFY_SEARCH_SHORTCUT_SKIP=1` to skip automated shortcut checks. When
 skipping, reviewers must run this two-step manual check after
-`make verify-phase-1-ux`:
+`make check`:
 
 1. Open the built app home page (`/`).
 2. Press **Cmd+K** (macOS) or **Ctrl+K** (Windows/Linux) and confirm the

@@ -43,28 +43,23 @@ describe("validatePageTemplateConformance", () => {
   });
 
   test("reports mismatched section components", () => {
-    const oldAttentionSchema = readTemplate("module")
-      .replace(
-        "ModuleAttentionSchemaComparison",
-        "ModuleAttentionSchemaComparison",
-      )
-      .replace(
-        "<ModuleAttentionSchemaComparison />",
-        '<ModuleAttentionSchema schemaId="mha" />',
-      );
+    const mismatchedRelated = readTemplate("module").replace(
+      '<RelatedDocs registryId="module.example-module" />',
+      '<RegistryDeepLinkList registryId="module.example-module" />',
+    );
 
     const errors = validatePageTemplateConformance({
       pagePath: `${docsRoot}/modules/example-module/page.mdx`,
       docsRoot,
       kind: "module",
-      mdxSource: oldAttentionSchema,
+      mdxSource: mismatchedRelated,
     });
 
     expect(
       errors.some(
         (error) =>
           error.code === "page-template-section-components-mismatch" &&
-          error.message.includes('section "math-or-compute-schema"'),
+          error.message.includes('section "related"'),
       ),
     ).toBe(true);
   });

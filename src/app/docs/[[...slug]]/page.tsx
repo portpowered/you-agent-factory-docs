@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ensureStaticExportParams } from "@/lib/build/static-export";
 import { source } from "@/lib/source";
 import {
   buildDocsPageMetadata,
@@ -9,8 +10,14 @@ type DocsPageProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
+/** Placeholder slug when no docs pages remain (static export requires ≥1 param). */
+const STATIC_EXPORT_EMPTY_DOCS_SLUG = ["__no_docs_pages__"];
+
 export function generateStaticParams() {
-  return source.generateParams();
+  return ensureStaticExportParams(source.generateParams(), {
+    slug: STATIC_EXPORT_EMPTY_DOCS_SLUG,
+    lang: "en",
+  });
 }
 
 export async function generateMetadata({

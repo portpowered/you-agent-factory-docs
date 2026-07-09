@@ -8,25 +8,13 @@ authors:
 tags:
   - foundations
   - alignment
-relatedDocIds:
-  - training-regime.pretraining
-  - training-regime.mid-training
-  - training-regime.post-training
-  - training-regime.instruction-tuning
-  - training-regime.rlhf
-  - training-regime.rlvr
-  - concept.synthetic-data
-  - training-regime.distillation
-  - training-regime.on-policy-distillation
-  - concept.on-policy
+relatedDocIds: []
 status: "published"
 ---
 
-import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
 import { Callout } from "@/features/docs/components/Callout";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-import { TrainingSignalStackedChartFromDefault } from "@/features/graphs/training-signal/TrainingSignalStackedChartFromDefault";
 
 # <T k="title" />
 
@@ -50,9 +38,7 @@ This post traces how those later signals accumulated into the modern training re
 
 The recipe below moves from the earliest dominant signal toward the feedback loops that shape models today. Later steps build on earlier ones; none of them makes internet-scale pretraining irrelevant.
 
-The stacked chart below is a **conceptual illustration**. Band heights show illustrative relative emphasis across training eras, not measured dataset percentages or published benchmarks.
-
-<TrainingSignalStackedChartFromDefault caption="Illustrative training-signal mix across three eras. Values are conceptual, not sourced measurements." />
+Think of the mix as a conceptual stack rather than measured dataset percentages: early eras lean on web-scale pretraining, later eras add mid-training, preference optimization, verifiable rewards, and distillation without erasing the internet-scale foundation.
 
 <Callout type="note" titleKey="callouts.conceptualChart.title">
   <T k="callouts.conceptualChart.body" />
@@ -128,17 +114,3 @@ For stable definitions of each training stage, use the reference pages linked be
 
 ## Related reference pages
 
-<BlogRelatedDocs
-  relatedDocIds={[
-    "training-regime.pretraining",
-    "training-regime.mid-training",
-    "training-regime.post-training",
-    "training-regime.instruction-tuning",
-    "training-regime.rlhf",
-    "training-regime.rlvr",
-    "concept.synthetic-data",
-    "training-regime.distillation",
-    "training-regime.on-policy-distillation",
-    "concept.on-policy",
-  ]}
-/>

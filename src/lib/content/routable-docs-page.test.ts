@@ -7,7 +7,7 @@ import {
 import { source } from "@/lib/source";
 
 describe("routable local docs pages", () => {
-  test("identifies CLI and Atlas local docs page bundle paths", () => {
+  test("identifies CLI and remaining collection local docs page bundle paths", () => {
     expect(isLocalDocsPageBundlePath("guides/getting-started/page.mdx")).toBe(
       true,
     );
@@ -64,22 +64,21 @@ describe("routable local docs pages", () => {
     ).toBe(false);
   });
 
-  test("published page-spec workflow sample is routable through Fumadocs source", () => {
+  test("empty Atlas-cleared collections do not publish deleted page fixtures", () => {
     expect(
       source.getPage(["concepts", "page-spec-workflow-sample"]),
-    ).toBeDefined();
+    ).toBeUndefined();
+    expect(source.getPage(["glossary", "token"])).toBeUndefined();
+    expect(
+      source.getPage(["concepts", "transformer-architecture"]),
+    ).toBeUndefined();
+    expect(source.getPage(["modules", "attention"])).toBeUndefined();
 
     const slugPaths = source
       .generateParams()
       .map((entry) => entry.slug.join("/"));
-    expect(slugPaths).toContain("concepts/page-spec-workflow-sample");
-  });
-
-  test("published local docs bundles remain routable", () => {
-    expect(source.getPage(["glossary", "token"])).toBeDefined();
-    expect(
-      source.getPage(["concepts", "transformer-architecture"]),
-    ).toBeDefined();
-    expect(source.getPage(["modules", "attention"])).toBeDefined();
+    expect(slugPaths).not.toContain("concepts/page-spec-workflow-sample");
+    expect(slugPaths).not.toContain("glossary/token");
+    expect(slugPaths).not.toContain("modules/attention");
   });
 });

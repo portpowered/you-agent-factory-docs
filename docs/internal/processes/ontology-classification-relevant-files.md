@@ -119,44 +119,14 @@ the temporary legacy-id bridge.
   compatibility support separate from emitted selector URLs so chip toggles,
   clear actions, and other steady-state topology links normalize back to the
   canonical runtime-backed selector set.
-* `src/features/topology/TopologyPrototype.tsx`
-  Customer-visible topology chip interactions and recovery actions. When
-  selector semantics change, verify both the graph-state resolver and the
-  emitted URL updates here so compatibility aliases do not leak back into the
-  steady-state browser URL.
-* `src/lib/content/ontology-timeline.ts`
-  Timeline classification resolution and item assembly. Keep selector matching
-  aligned with the shared ontology selector contract instead of ad hoc fuzzy
-  matching so canonical ids and explicit compatibility selectors behave the
-  same on server and client.
 * `src/lib/content/topology-navigation.ts`
   Registry-driven browse navigation options that expose classification slugs to
-  the topology and timeline entry points.
+  the browse graph-map entry points. The `/topology` explorer and
+  `/docs/timeline` product surfaces were deleted in
+  `rewrite-delete-atlas-domain`; do not reintroduce those packages here.
 * `src/lib/search/legacy-taxonomy-compat.ts`
   Explicit compatibility adapter for search surfaces that still emit legacy
   typed-taxonomy facets while downstream filters migrate.
-* `src/features/docs/timeline/OntologyTimelinePage.tsx`
-  Timeline static preload registration. Any selector the timeline route accepts
-  must be preloaded here as well or the client route will drift from the
-  server-resolved contract.
-* `src/lib/content/timeline-selector-compatibility.ts`
-  Timeline-specific temporary selector fence. Keep any still-supported legacy
-  timeline ids or shorthand selectors here so canonical timeline resolution can
-  stay separate from explicit compatibility handling. When timeline query or
-  preload code needs to turn an accepted selector back into the steady-state
-  browser output, route that through this helper too so customer-path files do
-  not hardcode legacy aliases outside the named fence.
-* `src/features/docs/timeline/timeline-query.ts`
-  Timeline-specific selector parsing and outbound URL normalization. Keep the
-  accepted selector set and the emitted steady-state selector URLs separate
-  here so legacy or shorthand entry compatibility does not leak back into
-  canonical chip and recovery links. Timeline defaults should resolve from the
-  canonical activation classification id first rather than depending on the
-  incidental ordering of runtime navigation options.
-* `src/features/docs/timeline/timeline-query.test.ts`
-  Focused proof that timeline query normalization keeps accepted compatibility
-  selectors on the input side while chip and recovery href builders emit only
-  canonical outbound selectors and preserve unknown-selector empty states.
 
 ## Remaining compatibility fallback outside the proving consumer
 
@@ -272,31 +242,9 @@ the temporary legacy-id bridge.
 * `scripts/verify-typed-taxonomy-consumer-fence.ts`
   Maintainer and CI entrypoint that fails when new targeted typed-taxonomy
   usage lands outside the approved audit contract.
-* `src/features/topology/topology-data.test.ts`
-  Topology-surface assertions for canonical selection, invalid-selector
-  recovery, and membership/relationship graph output.
-* `src/features/topology/topology-query.test.ts`
-  Focused proof that topology query serialization normalizes supported
-  compatibility selectors and canonical ids back to the canonical outbound URL
-  contract.
-* `src/features/topology/TopologyPrototype.test.tsx`
-  Browser-interaction-level proof for topology chip hrefs and router pushes
-  after selector canonicalization changes.
-* `src/lib/content/ontology-timeline.test.ts`
-  Canonical-versus-compatibility selector assertions for the timeline data
-  layer.
-* `src/lib/content/timeline-selector-compatibility.test.ts`
-  Focused proof that the timeline compatibility fence stays reviewable,
-  canonicalizes approved selectors, and rejects undeclared near misses.
-* `src/features/docs/timeline/OntologyTimelinePage.test.tsx`
-  Static preload coverage proving accepted selector forms survive the
-  server-to-client handoff.
-* `src/features/docs/timeline/OntologyTimelineClientPage.test.tsx`
-  Hydration coverage for canonical ids, legacy ids, and invalid timeline
-  selectors read from the browser URL. Keep the recoverable empty-state
-  assertions focused on rendered chip and recovery-link hrefs so customer-path
-  output stays canonical even when compatibility selectors remain accepted on
-  input.
+* `src/lib/content/topology-browse.test.ts`
+  Browse graph-map assertions for canonical selection and invalid-selector
+  recovery after Atlas topology/timeline product deletion.
 * `docs/data-model.md`
   Human-readable ontology contract, runtime ordering rules, empty-branch
   behavior, and temporary bridge rules.

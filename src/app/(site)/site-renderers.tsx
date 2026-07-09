@@ -8,11 +8,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { HomeArticle } from "@/components/home/home-article";
-import { OntologyTimelinePage } from "@/features/ai/timeline";
-import {
-  type TopologyDocsPageContentByRegistryId,
-  TopologyPrototype,
-} from "@/features/ai/topology";
 import { BlogIndexPostList } from "@/features/blog/components/BlogIndexPostList";
 import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
 import { BrowseAtlasPage } from "@/features/docs/components/BrowseAtlasPage";
@@ -97,7 +92,6 @@ export type SearchPageProps = {
 export type BrowseIndexPageProps = {
   searchParams?: Promise<TopologySearchParams>;
 };
-export type TimelinePageProps = SearchPageProps;
 
 export type TagLandingPageProps = {
   params: Promise<{ slug: string }>;
@@ -436,24 +430,6 @@ export async function renderSearchPage(
   );
 }
 
-export async function renderTimelinePage(
-  locale: SiteLocale = defaultLocale,
-  _props: TimelinePageProps = {},
-) {
-  const messages = await loadUiMessages(locale);
-  const { timelinePage } = messages;
-
-  return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
-      <DocsTitle>{timelinePage.title}</DocsTitle>
-      <DocsDescription>{timelinePage.description}</DocsDescription>
-      <DocsBody>
-        <OntologyTimelinePage locale={locale} messages={messages} />
-      </DocsBody>
-    </DocsPage>
-  );
-}
-
 export async function renderArchitectureIndexPage(
   locale: SiteLocale = defaultLocale,
 ) {
@@ -482,73 +458,6 @@ export async function renderArchitectureIndexPage(
         )}
       </DocsBody>
     </DocsPage>
-  );
-}
-
-export async function renderTopologyPrototypePage(
-  locale: SiteLocale = defaultLocale,
-) {
-  const messages = await loadUiMessages(locale);
-  const docsPages = await loadShippedLocalizedDocsPages(locale);
-  const { topologyPrototype } = messages;
-  const docsPageContentByRegistryId: TopologyDocsPageContentByRegistryId =
-    Object.fromEntries(
-      docsPages.map((page) => [
-        page.frontmatter.registryId,
-        {
-          href: page.url,
-          summary: page.messages.description,
-          title: page.messages.title,
-        },
-      ]),
-    );
-
-  return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
-      <DocsTitle>{topologyPrototype.title}</DocsTitle>
-      <DocsBody>
-        <Suspense
-          fallback={
-            <TopologyPrototypeLoadingFallback
-              title={topologyPrototype.loadingTitle}
-              description={topologyPrototype.loadingDescription}
-            />
-          }
-        >
-          <TopologyPrototype
-            messages={messages}
-            docsPageContentByRegistryId={docsPageContentByRegistryId}
-          />
-        </Suspense>
-      </DocsBody>
-    </DocsPage>
-  );
-}
-
-function TopologyPrototypeLoadingFallback({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
-  return (
-    <section className="space-y-6" aria-labelledby="topology-success-title">
-      <div className="grid gap-3 md:grid-cols-3">
-        <article
-          className="rounded-lg border border-border bg-muted/20 p-4"
-          aria-labelledby="topology-loading-title"
-        >
-          <h2
-            id="topology-loading-title"
-            className="text-sm font-semibold text-foreground"
-          >
-            {title}
-          </h2>
-          <p className="mt-2 text-sm text-muted-foreground">{description}</p>
-        </article>
-      </div>
-    </section>
   );
 }
 

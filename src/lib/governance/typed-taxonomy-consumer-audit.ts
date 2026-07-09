@@ -308,19 +308,6 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
         "Registry validation still enforces compatibility expectations that keep legacy typed taxonomy aligned with the ontology bridge during migration.",
     },
     {
-      id: "module-metadata-card-legacy-display",
-      path: "src/features/models/components/ModuleMetadataCard.tsx",
-      cluster: "metadata-ui",
-      status: "migrated-ontology-first-consumer",
-      owner: "reader-experience",
-      fields: [],
-      evidence: [
-        "const metadataLabels = deriveOntologyMetadataLabels(record);",
-      ],
-      rationale:
-        "Module detail metadata now renders reader-facing classification labels through the shared ontology metadata helper instead of direct legacy taxonomy reads.",
-    },
-    {
       id: "training-regime-at-a-glance-legacy-display",
       path: "src/lib/content/metadata-labels.ts",
       cluster: "metadata-ui",
@@ -488,11 +475,6 @@ const TYPED_TAXONOMY_CONSUMER_FENCE_TARGETS: readonly TypedTaxonomyConsumerFence
       cluster: "registry-validation",
       path: "src/lib/content/registry.ts",
       type: "file",
-    },
-    {
-      cluster: "metadata-ui",
-      path: "src/features/models/components",
-      type: "directory",
     },
     {
       cluster: "metadata-ui",

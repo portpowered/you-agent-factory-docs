@@ -4,6 +4,7 @@ import {
   buildDocsPageMetadata,
   renderDocsSlugPage,
 } from "@/app/docs/docs-slug-renderer";
+import { ensureStaticExportParams } from "@/lib/build/static-export";
 import {
   isDocsPageShippedForLocale,
   loadShippedLocalizedDocsPages,
@@ -16,6 +17,9 @@ import {
 type LocalizedDocsSlugPageProps = {
   params: Promise<{ locale: string; slug?: string[] }>;
 };
+
+/** Placeholder slug when no localized docs pages remain (static export requires ≥1 param). */
+const STATIC_EXPORT_EMPTY_DOCS_SLUG = ["__no_localized_docs_pages__"];
 
 export async function generateStaticParams() {
   const params: Array<{ locale: string; slug?: string[] }> = [];
@@ -30,7 +34,11 @@ export async function generateStaticParams() {
     }
   }
 
-  return params;
+  const [{ locale: placeholderLocale }] = generateStaticLocaleParams();
+  return ensureStaticExportParams(params, {
+    locale: placeholderLocale,
+    slug: STATIC_EXPORT_EMPTY_DOCS_SLUG,
+  });
 }
 
 export async function generateMetadata({

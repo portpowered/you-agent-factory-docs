@@ -15,30 +15,6 @@ import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
-import { GenerationEvolutionBlogVisual } from "@/features/generation-evolution/GenerationEvolutionBlogVisual";
-import { GenerationEvolutionTimeline } from "@/features/generation-evolution/GenerationEvolutionTimeline";
-import { ConceptMap } from "@/features/models/components/ConceptMap";
-import { ModelArchitectureGraph } from "@/features/models/components/ModelArchitectureGraph";
-import { ModelAtAGlance } from "@/features/models/components/ModelAtAGlance";
-import { ModelModuleList } from "@/features/models/components/ModelModuleList";
-import { ModelsUsingModule } from "@/features/models/components/ModelsUsingModule";
-import { ModelTrainingSummary } from "@/features/models/components/ModelTrainingSummary";
-import { ModuleAtAGlance } from "@/features/models/components/ModuleAtAGlance";
-import {
-  ModuleAttentionMhaMqaSchemaComparison,
-  ModuleAttentionSchema,
-  ModuleAttentionSchemaComparison,
-} from "@/features/models/components/ModuleAttentionSchemaComparison";
-import { ModuleChart } from "@/features/models/components/ModuleChart";
-import { ModuleComparisonTable } from "@/features/models/components/ModuleComparisonTable";
-import { ModuleGraph } from "@/features/models/components/ModuleGraph";
-import { ModuleMetadataCard } from "@/features/models/components/ModuleMetadataCard";
-import { PaperAtAGlance } from "@/features/models/components/PaperAtAGlance";
-import { PaperContributionGraph } from "@/features/models/components/PaperContributionGraph";
-import { SystemAtAGlance } from "@/features/models/components/SystemAtAGlance";
-import { SystemFlowGraph } from "@/features/models/components/SystemFlowGraph";
-import { TrainingRegimeAtAGlance } from "@/features/models/components/TrainingRegimeAtAGlance";
-import { TrainingRegimeFlow } from "@/features/models/components/TrainingRegimeFlow";
 
 export const moduleMdxComponents: MDXComponents = {
   ...defaultMdxComponents,
@@ -57,27 +33,5 @@ export const moduleMdxComponents: MDXComponents = {
   Section,
   T,
   TagPillList,
-  ModuleComparisonTable,
-  ModuleChart,
-  ModuleAttentionMhaMqaSchemaComparison,
-  ModuleAttentionSchema,
-  ModuleAttentionSchemaComparison,
-  ConceptMap,
-  ModelArchitectureGraph,
-  ModelAtAGlance,
-  ModelModuleList,
-  ModelTrainingSummary,
-  ModuleGraph,
-  ModuleMetadataCard,
-  ModuleAtAGlance,
-  ModelsUsingModule,
-  PaperAtAGlance,
-  PaperContributionGraph,
   PageMathFormula,
-  SystemAtAGlance,
-  SystemFlowGraph,
-  TrainingRegimeAtAGlance,
-  TrainingRegimeFlow,
-  GenerationEvolutionBlogVisual,
-  GenerationEvolutionTimeline,
 };

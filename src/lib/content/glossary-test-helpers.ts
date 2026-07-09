@@ -1,5 +1,5 @@
 import { expect } from "bun:test";
-import { normalizeBuiltAppHtmlInternalPaths } from "@/lib/build/built-app-html-test-utils";
+import { normalizeBuiltAppHtmlInternalPaths } from "@/lib/build/built-app-html-paths";
 import { proseAutoLinkAnchorPattern } from "@/lib/content/prose-auto-link";
 
 function decodeCommonHtmlEntities(text: string): string {

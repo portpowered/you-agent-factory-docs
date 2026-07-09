@@ -3,13 +3,13 @@ import { dirname } from "node:path";
 import { supportedLocales } from "@/lib/i18n/locale-routing";
 import { docsSearchApi } from "@/lib/search/search-server";
 import {
+  DEFAULT_EXPORT_OUT_DIR,
+  verifyExportOutDirectory,
+} from "./export-out-directory";
+import {
   type AdvancedOramaExportPayload,
   resolveExportSearchBootstrapFilePath,
 } from "./export-search-bootstrap";
-import {
-  DEFAULT_EXPORT_OUT_DIR,
-  verifyExportOutDirectory,
-} from "./verify-phase-1-export-routes";
 
 export type EmitExportSearchIndexOptions = {
   outDir?: string;

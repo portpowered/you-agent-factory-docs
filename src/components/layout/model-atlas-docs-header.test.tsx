@@ -26,7 +26,6 @@ import {
   youAgentFactorySiteConfig,
 } from "@/lib/site/you-agent-factory-site-config";
 import { source } from "@/lib/source";
-import { assertPrimaryNavNoDuplicateSearchLink } from "@/lib/verify/customer-ask-home-header-convergence";
 import {
   resetMockNavigation,
   setMockPathname,
@@ -35,63 +34,49 @@ import {
 import { NextNavigationTestProvider } from "@/tests/a11y/next-navigation-test-provider";
 import { renderWithAppProviders } from "@/tests/a11y/render";
 
+/** Local assertion: primary nav must not duplicate the header search control. */
+function assertPrimaryNavNoDuplicateSearchLink(html: string): string | null {
+  const match = html.match(
+    /<nav\b[^>]*\baria-label="Primary"[^>]*>([\s\S]*?)<\/nav>/i,
+  );
+  if (!match?.[1]) {
+    return 'primary navigation not found (aria-label="Primary")';
+  }
+  if (match[1].includes('href="/search"')) {
+    return "primary navigation still exposes redundant /search link alongside header search";
+  }
+  return null;
+}
+
 const alternateSiteConfig = {
   brand: {
     scaffoldId: "example-scaffold",
-    brandName: "Example Atlas",
+    brandName: "Example Docs",
     siteHeading: "Example Reference",
   },
   repositoryUrl: "https://github.com/example/example",
   routeSurfaces: {
     home: { surface: "home" },
-    browse: { surface: "browse" },
-    topology: { surface: "topology" },
-    timeline: { surface: "docs-page", slug: "timeline" },
+    guides: { surface: "docs-page", slug: "guides" },
+    docs: { surface: "browse" },
+    glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
-    tagsIndex: { surface: "tags-index" },
+    search: { surface: "search" },
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },
-    { routeSurface: "topology", labelKey: "topology" },
-    { routeSurface: "timeline", labelKey: "timeline" },
+    { routeSurface: "guides", labelKey: "guides" },
+    { routeSurface: "docs", labelKey: "docs" },
+    { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
-    { routeSurface: "tagsIndex", labelKey: "tags" },
   ],
   collections: [
-    { family: "glossary" },
+    { family: "guides" },
     { family: "concepts" },
-    { family: "modules" },
-    { family: "models" },
-    { family: "papers" },
-    { family: "training" },
-    { family: "systems" },
+    { family: "techniques" },
+    { family: "documentation" },
   ],
-  homeFeaturedLinks: [
-    {
-      kind: "route",
-      routeSurface: "browse",
-      titleKey: "atlasLinkTitle",
-      descriptionKey: "atlasLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/grouped-query-attention",
-      titleKey: "gqaLinkTitle",
-      descriptionKey: "gqaLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/swiglu",
-      titleKey: "swigluLinkTitle",
-      descriptionKey: "swigluLinkDescription",
-    },
-    {
-      kind: "docs-page",
-      slug: "modules/relu",
-      titleKey: "reluLinkTitle",
-      descriptionKey: "reluLinkDescription",
-    },
-  ],
+  homeFeaturedLinks: [] as SiteConfig["homeFeaturedLinks"],
 } satisfies SiteConfig;
 
 function renderHeaderWithNavigation(

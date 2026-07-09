@@ -15,48 +15,21 @@ type TemplateKind =
   | "training-regime"
   | "glossary";
 
-const nonModuleTemplates: Array<{
-  kind: TemplateKind;
-  graphAssetId?: string;
-  graphSectionId?: string;
-}> = [
-  {
-    kind: "model",
-    graphAssetId: "architectureGraph",
-    graphSectionId: "architecture",
-  },
-  {
-    kind: "paper",
-    graphAssetId: "contributionGraph",
-    graphSectionId: "method-or-architecture",
-  },
-  {
-    kind: "concept",
-    graphAssetId: "conceptMap",
-  },
-  {
-    kind: "guide",
-  },
-  {
-    kind: "technique",
-  },
-  {
-    kind: "documentation",
-  },
-  {
-    kind: "training-regime",
-    graphAssetId: "trainingFlow",
-    graphSectionId: "how-it-works",
-  },
-  {
-    kind: "system",
-    graphAssetId: "systemFlow",
-    graphSectionId: "how-it-works",
-  },
-  {
-    kind: "glossary",
-    graphAssetId: "conceptMap",
-  },
+/**
+ * After Atlas graph/chart MDX deletion, templates keep writing-standards
+ * convergence without requiring deleted PageAsset/ModuleGraph tags.
+ * CLI kinds (guide/technique/documentation) never had graph assets.
+ */
+const nonModuleTemplates: TemplateKind[] = [
+  "model",
+  "paper",
+  "concept",
+  "guide",
+  "technique",
+  "documentation",
+  "training-regime",
+  "system",
+  "glossary",
 ];
 
 function readTemplate(kind: TemplateKind): string {
@@ -70,14 +43,8 @@ function readStarterMessages(kind: TemplateKind): Record<string, unknown> {
 }
 
 describe("non-module page template convergence", () => {
-  for (const config of nonModuleTemplates) {
-    const { kind, graphAssetId, graphSectionId } = config as {
-      kind: TemplateKind;
-      graphAssetId?: string;
-      graphSectionId?: string;
-    };
-
-    test(`${kind}.mdx follows writing and graphing standards`, () => {
+  for (const kind of nonModuleTemplates) {
+    test(`${kind}.mdx follows writing standards without deleted Atlas graph tags`, () => {
       const template = readTemplate(kind);
 
       expect(template).not.toContain('# <T k="title" />');
@@ -89,17 +56,9 @@ describe("non-module page template convergence", () => {
       expect(template).not.toContain('<T k="openingSummary" />');
       expect(template).not.toContain("<GlossaryOpening />");
 
-      if (graphAssetId) {
-        expect(template).toContain(`assetId="${graphAssetId}"`);
-        if (graphSectionId) {
-          const sectionStart = template.indexOf(`id="${graphSectionId}"`);
-          const graphIndex = template.indexOf(`assetId="${graphAssetId}"`);
-          expect(sectionStart).toBeGreaterThanOrEqual(0);
-          expect(graphIndex).toBeGreaterThan(sectionStart);
-        } else {
-          expect(template).not.toContain('id="where-it-appears"');
-        }
-      }
+      expect(template).not.toContain("<ModuleGraph");
+      expect(template).not.toContain("<RegistryGraphFlow");
+      expect(template).not.toContain('from "@/features/models');
     });
 
     test(`${kind} starter messages omit deprecated summary keys and reader shortcuts`, () => {

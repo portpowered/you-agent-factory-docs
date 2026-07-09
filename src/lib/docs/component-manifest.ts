@@ -5,9 +5,9 @@
  * src/features/docs/tags/, and rewrite-era factory-ui wrappers under
  * src/features/factory-ui/.
  *
- * Update this manifest when adding components. Atlas AttentionVariantComparisonGraph
- * and RegistryGraphFlow remain in the repo for existing page consumers but are not
- * the rewrite-era reusable coverage boundary — use factory-ui thin wrappers instead.
+ * Update this manifest when adding components. Atlas models/topology graph
+ * components are deleted in rewrite-delete-atlas-domain; use factory-ui thin
+ * wrappers for rewrite-era reusable coverage.
  */
 export type ComponentCoverageEntry = {
   /** Repo-relative source path */
@@ -133,34 +133,6 @@ export const PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] =
       unitTests: ["src/features/docs/components/TBlockMath.test.tsx"],
     },
     {
-      file: "src/features/models/components/ModuleAttentionSchemaComparison.tsx",
-      label: "ModuleAttentionSchemaComparison",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/ModuleAttentionSchemaComparison.test.tsx",
-      ],
-    },
-    {
-      file: "src/features/models/components/RegistryComparisonTable.tsx",
-      label: "RegistryComparisonTable",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/RegistryComparisonTable.test.tsx",
-      ],
-    },
-    {
-      file: "src/features/models/components/ModuleMetadataCard.tsx",
-      label: "ModuleMetadataCard",
-      minReachableLinePercent: 90,
-      unitTests: ["src/features/models/components/ModuleMetadataCard.test.tsx"],
-    },
-    {
-      file: "src/features/models/components/ModuleAtAGlance.tsx",
-      label: "ModuleAtAGlance",
-      minReachableLinePercent: 90,
-      unitTests: ["src/features/models/components/ModuleAtAGlance.test.tsx"],
-    },
-    {
       file: "src/features/docs/components/PageAsset.tsx",
       label: "PageAsset",
       minReachableLinePercent: 90,
@@ -171,14 +143,6 @@ export const PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] =
       label: "MissingGraphRecord",
       minReachableLinePercent: 90,
       unitTests: ["src/features/docs/components/MissingGraphRecord.test.tsx"],
-    },
-    {
-      file: "src/features/models/components/MissingTableRecord.tsx",
-      label: "MissingTableRecord",
-      minReachableLinePercent: 90,
-      unitTests: [
-        "src/features/models/components/RegistryComparisonTable.test.tsx",
-      ],
     },
   ];
 
@@ -300,18 +264,6 @@ export const REUSABLE_THIN_WRAPPERS: ThinWrapperEntry[] = [
       "src/features/docs/components/DocsAutoLinkedDescription.test.tsx",
       "src/lib/content/glossary-shell-description-auto-link.test.tsx",
     ],
-  },
-  {
-    file: "src/features/models/components/ModuleGraph.tsx",
-    label: "ModuleGraph",
-    forwardsTo: "PageAsset",
-    smokeTests: ["src/lib/content/module-page.test.ts"],
-  },
-  {
-    file: "src/features/models/components/ModuleComparisonTable.tsx",
-    label: "ModuleComparisonTable",
-    forwardsTo: "PageAsset",
-    smokeTests: ["src/lib/content/module-page.test.ts"],
   },
   {
     file: "src/features/factory-ui/graphs.ts",

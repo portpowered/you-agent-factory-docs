@@ -1,5 +1,5 @@
 import { emitExportSearchIndex } from "../src/lib/build/emit-export-search-index";
-import { DEFAULT_EXPORT_OUT_DIR } from "../src/lib/build/verify-phase-1-export-routes";
+import { DEFAULT_EXPORT_OUT_DIR } from "../src/lib/build/export-out-directory";
 
 async function main(): Promise<void> {
   const outDir = process.argv[2] ?? DEFAULT_EXPORT_OUT_DIR;

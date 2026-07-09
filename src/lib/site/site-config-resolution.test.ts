@@ -4,27 +4,25 @@ import type { SiteConfig } from "./site-config.contract";
 import { resolveSiteConfigHomeFeaturedLinkHrefs } from "./site-config-resolution";
 import { youAgentFactorySiteConfig } from "./you-agent-factory-site-config";
 
-/** Fixture with docs-page featured links for locale-fallback resolution coverage. */
+/**
+ * Fixture with docs-page featured links for locale-fallback resolution coverage.
+ * Uses getting-started (still present after Atlas deletion) rather than deleted
+ * Atlas module slugs.
+ */
 const featuredLinkLocaleFallbackConfig = {
   ...youAgentFactorySiteConfig,
   homeFeaturedLinks: [
     {
-      kind: "docs-page" as const,
-      slug: "modules/grouped-query-attention",
-      titleKey: "gqaLinkTitle" as const,
-      descriptionKey: "gqaLinkDescription" as const,
+      kind: "route" as const,
+      routeSurface: "docs",
+      titleKey: "browseSectionTitle" as const,
+      descriptionKey: "intro" as const,
     },
     {
       kind: "docs-page" as const,
-      slug: "modules/swiglu",
-      titleKey: "swigluLinkTitle" as const,
-      descriptionKey: "swigluLinkDescription" as const,
-    },
-    {
-      kind: "docs-page" as const,
-      slug: "modules/relu",
-      titleKey: "reluLinkTitle" as const,
-      descriptionKey: "reluLinkDescription" as const,
+      slug: "getting-started",
+      titleKey: "title" as const,
+      descriptionKey: "subtitle" as const,
     },
   ],
 } satisfies SiteConfig;
@@ -39,6 +37,12 @@ describe("site config home featured link resolution", () => {
     ).toEqual([]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "ja"),
+    ).toEqual([]);
+    expect(
+      resolveSiteConfigHomeFeaturedLinkHrefs(
+        youAgentFactorySiteConfig,
+        "zh-CN",
+      ),
     ).toEqual([]);
   });
 
@@ -68,40 +72,24 @@ describe("site config home featured link resolution", () => {
     }
   });
 
-  test("preserves localized shipped module hrefs on vietnamese home for docs-page links", () => {
+  test("resolves browse route and unshipped docs-page fallbacks for localized homes", () => {
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(
         featuredLinkLocaleFallbackConfig,
         "vi",
       ),
-    ).toEqual([
-      "/vi/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
-  });
-
-  test("preserves localized shipped module hrefs on japanese home for docs-page links", () => {
+    ).toEqual(["/vi/browse", "/docs/getting-started"]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(
         featuredLinkLocaleFallbackConfig,
         "ja",
       ),
-    ).toEqual([
-      "/ja/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
-  });
-
-  test("falls back to canonical docs hrefs on chinese home when zh-CN is unshipped", () => {
+    ).toEqual(["/ja/browse", "/docs/getting-started"]);
     expect(
-      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "zh-CN"),
-    ).toEqual([
-      "/zh-CN/browse",
-      "/docs/modules/grouped-query-attention",
-      "/docs/modules/swiglu",
-      "/docs/modules/relu",
-    ]);
+      resolveSiteConfigHomeFeaturedLinkHrefs(
+        featuredLinkLocaleFallbackConfig,
+        "zh-CN",
+      ),
+    ).toEqual(["/zh-CN/browse", "/docs/getting-started"]);
   });
 });

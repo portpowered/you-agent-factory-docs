@@ -10,10 +10,8 @@
     "alignment training"
   ],
   "tags": [],
-  "relatedIds": ["concept.alignment"],
-  "citationIds": [
-    "citation.training-language-models-to-follow-instructions-with-human-feedback"
-  ],
+  "relatedIds": [],
+  "citationIds": [],
   "status": "published",
   "createdAt": "2026-06-19T00:00:00.000Z",
   "updatedAt": "2026-06-19T00:00:00.000Z",

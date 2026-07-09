@@ -23,7 +23,15 @@ export function parseYamlFrontmatterBlock(
       result[key] = items;
       continue;
     }
-    result[key] = rest.replace(/^"|"$/g, "");
+    const scalar = rest.replace(/^"|"$/g, "");
+    // Real YAML parsers (and next-mdx-remote) treat `[]` as an empty array.
+    // Keep the minimal frontmatter parser aligned so empty list fields round-trip.
+    if (scalar === "[]") {
+      result[key] = [];
+      i += 1;
+      continue;
+    }
+    result[key] = scalar;
     i += 1;
   }
   return result;

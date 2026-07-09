@@ -112,7 +112,6 @@ function createFixtureRunGit(remotePresentPaths: ReadonlySet<string>) {
 describe("isManualInspectionSharedEditPath", () => {
   test("matches tokenizer-mismatch shared manual-inspection paths", () => {
     const matchingPaths = [
-      "src/features/models/components/ModuleGraph.tsx",
       "src/lib/content/table-registry-runtime.ts",
       "src/lib/content/validate-registry.ts",
       "src/lib/content/baseline-records.test.ts",
@@ -1255,19 +1254,16 @@ describe("planner root checkout reconciliation fixture evidence", () => {
       runGit: createFixtureRunGit(remotePresentPaths),
     });
 
-    expect(report.manualInspectionSharedEdits).toHaveLength(8);
+    expect(report.manualInspectionSharedEdits).toHaveLength(7);
     expect(report.otherManualInspectionPaths).toHaveLength(1);
     expect(report.remotePresentDeletions).toHaveLength(1);
 
     const formatted = formatPlannerRootCheckoutReconciliationReport(report);
     expect(formatted).toContain(
-      `  - ${PLANNER_ROOT_CHECKOUT_MANUAL_INSPECTION_SHARED_EDITS_FAMILY} count=8`,
+      `  - ${PLANNER_ROOT_CHECKOUT_MANUAL_INSPECTION_SHARED_EDITS_FAMILY} count=7`,
     );
     expect(formatted).toContain(
       `    - guidance=${PLANNER_ROOT_CHECKOUT_MANUAL_INSPECTION_SHARED_EDITS_GUIDANCE}`,
-    );
-    expect(formatted).toContain(
-      "path=src/features/models/components/ModuleGraph.tsx status= M change=modified comparison-target=HEAD evidence=non-deletion-dirty-path classification=manual-inspection inspection-family=manual-inspection-shared-edits",
     );
     expect(formatted).toContain(
       "path=src/lib/content/table-registry-runtime.ts status= M change=modified comparison-target=HEAD evidence=non-deletion-dirty-path classification=manual-inspection inspection-family=manual-inspection-shared-edits",

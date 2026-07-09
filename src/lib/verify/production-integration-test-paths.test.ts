@@ -5,7 +5,7 @@ import { PRODUCTION_INTEGRATION_TEST_PATHS } from "./production-integration-test
 
 const repoRoot = join(import.meta.dir, "../../..");
 
-const builtRouteConvergencePaths = [
+const retiredAtlasBuiltRoutePaths = [
   "src/tests/layout/grouped-query-attention-built-route-convergence.test.tsx",
   "src/tests/layout/linear-attention-built-route-convergence.test.tsx",
   "src/tests/layout/multi-head-latent-attention-built-route-convergence.test.tsx",
@@ -36,18 +36,18 @@ describe("PRODUCTION_INTEGRATION_TEST_PATHS", () => {
     }
   });
 
-  test("includes all built-route convergence suites in the required CI path", () => {
-    for (const relativePath of builtRouteConvergencePaths) {
-      expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(relativePath);
+  test("excludes retired Atlas built-route convergence suites", () => {
+    for (const relativePath of retiredAtlasBuiltRoutePaths) {
+      expect(PRODUCTION_INTEGRATION_TEST_PATHS).not.toContain(relativePath);
     }
   });
 
-  test("includes built HTML and production-server convergence suites cited in governance", () => {
-    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
-      "src/tests/layout/site-routes-shell.test.tsx",
-    );
+  test("includes remaining shell and production-server lifecycle suites", () => {
     expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
       "src/lib/verify/server-lifecycle.test.ts",
+    );
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/lib/verify/built-html-convergence-test-helpers.test.ts",
     );
   });
 });

@@ -33,6 +33,11 @@ type GraphPlacementRule = {
   minPrimaryGraphComponents?: number;
 };
 
+/**
+ * Atlas graph/chart MDX components were deleted with `src/features/models`.
+ * Rules no longer require those tags on templates; they only validate leftover
+ * tags if an author still embeds them (assetId / section placement).
+ */
 const graphPlacementRulesByKind: Partial<Record<PageKind, GraphPlacementRule>> =
   {
     concept: {
@@ -43,25 +48,19 @@ const graphPlacementRulesByKind: Partial<Record<PageKind, GraphPlacementRule>> =
     },
     module: {
       components: ["ModuleGraph", "ModuleChart"],
-      requiredSectionId: "how-it-works",
       forbiddenSectionIds: ["math-or-compute-schema"],
-      minPrimaryGraphComponents: 1,
     },
     model: {
       components: ["ModelArchitectureGraph"],
-      requiredSectionId: "architecture",
     },
     paper: {
       components: ["PaperContributionGraph"],
-      requiredSectionId: "method-or-architecture",
     },
     "training-regime": {
       components: ["TrainingRegimeFlow"],
-      requiredSectionId: "how-it-works",
     },
     system: {
       components: ["SystemFlowGraph"],
-      requiredSectionId: "how-it-works",
     },
   };
 
