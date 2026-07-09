@@ -216,6 +216,12 @@ collection should stay page-local and in-budget.
 Prefer behavioral coverage for the shipped page (section-index listing title /
 summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
 and next-step links) over inventory-only “slug exists on disk” assertions.
+For documentation pages with copyable commands, mirror
+`src/lib/content/what-is-you-agent-factory-page.test.tsx` /
+`src/lib/content/install-page.test.tsx`: load via `loadLocalDocsPage`, render
+with `ModulePageProviders`, and assert visible command text plus next-step
+hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
+as sufficient page coverage.
 
 ## Glossary-derived browse and sidebar sections
 
