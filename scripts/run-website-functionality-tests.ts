@@ -21,6 +21,19 @@ const excludedPrefixes = [
   "src/tests/ci/",
 ];
 
+/**
+ * Atlas / Phase-1 built-HTML assertion suites and opt-in verifier script tests.
+ * These require Model Atlas page fixtures or `.next` built routes and belong on
+ * `make verify-atlas-*` / `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`, not required
+ * `make test` during rewrite foundation.
+ */
+const excludedAtlasHtmlAssertionSuffixes = [
+  "-built-route-convergence.test.tsx",
+  "-built-route-convergence.test.ts",
+  "-built-app.test.ts",
+  "-built-app.test.tsx",
+];
+
 const excludedFiles = new Set([
   "src/lib/build/built-app-html-test-utils.test.ts",
   "src/lib/build/ensure-export-search-artifacts.test.ts",
@@ -31,6 +44,13 @@ const excludedFiles = new Set([
   "src/lib/build/verify-export-routes.test.ts",
   "src/lib/build/verify-module-built-routes.test.ts",
   "src/lib/docs/component-coverage-gate.test.ts",
+  "src/tests/discovery/verify-grouped-query-attention-built-route.test.ts",
+  "src/tests/layout/docs-shell-contract.test.tsx",
+  "src/tests/layout/docs-sidebar-navigation.test.tsx",
+  "src/tests/layout/docs-page-toc.test.tsx",
+  "src/tests/layout/docs-page-footer-hover-convergence.test.tsx",
+  "src/tests/layout/docs-index-shell.test.tsx",
+  "src/tests/layout/site-routes-shell.test.tsx",
 ]);
 
 function normalizePath(path: string): string {
@@ -70,7 +90,10 @@ function listTestFiles(directory: string): string[] {
 function isExcluded(relativePath: string): boolean {
   return (
     excludedFiles.has(relativePath) ||
-    excludedPrefixes.some((prefix) => relativePath.startsWith(prefix))
+    excludedPrefixes.some((prefix) => relativePath.startsWith(prefix)) ||
+    excludedAtlasHtmlAssertionSuffixes.some((suffix) =>
+      relativePath.endsWith(suffix),
+    )
   );
 }
 

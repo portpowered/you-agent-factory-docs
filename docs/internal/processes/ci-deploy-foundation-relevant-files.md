@@ -36,6 +36,24 @@ Workflows that call this contract:
   export plus Phase 1 export route/search verifiers. CI and deploy-pages call
   `make build`, not `make build-export`.
 
+## Opt-in Atlas / Phase-1 post-build verifiers
+
+Former `make build` chained these Atlas-only checks. They remain available as
+explicit opt-in targets and are **not** invoked by `make build`, `make check`,
+`make test`, CI, or deploy-pages:
+
+| Target | Script |
+| --- | --- |
+| `make verify-atlas-static-routes` | `scripts/verify-phase-1-static-routes.ts` |
+| `make verify-atlas-grouped-query-attention-built-route` | `scripts/verify-grouped-query-attention-built-route.ts` |
+| `make verify-atlas-docs-footer-hover` | `scripts/verify-docs-footer-hover-built-route.ts` |
+| `make verify-atlas-built-routes` | Runs the three targets above |
+
+`scripts/run-website-functionality-tests.ts` (plain `make test`) also excludes
+Atlas built-HTML assertion suites (`*-built-route-convergence`, `*-built-app`,
+and related layout shell HTML probes). Those suites stay runnable under
+`VERIFY_PRODUCTION_INTEGRATION_TESTS=1` or via the opt-in Makefile targets.
+
 ## Empty `generateStaticParams` under static export
 
 Next.js `output: "export"` fails with a misleading "missing generateStaticParams()"
