@@ -5,7 +5,7 @@ import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import type { DocsCollectionDefinition } from "@/lib/docs/collection-definition-contract";
 import { getDocsCollectionDefinition } from "@/lib/docs/docs-collection-definitions";
-import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
+import type { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import {
   isDocsCollectionId,
   resolveDocsCollectionIndexMessages,
@@ -101,7 +101,7 @@ describe("section collection index resolution", () => {
 });
 
 describe("renderSectionCollectionIndexPage empty CLI collections", () => {
-  for (const collectionId of CLI_DOCS_COLLECTION_IDS) {
+  for (const collectionId of ["guides", "concepts", "techniques"] as const) {
     test(`renders ${collectionId} title, description, and empty-state copy`, async () => {
       const messages = await loadUiMessages();
       const indexMessages = sectionIndexMessages(messages, collectionId);
@@ -127,6 +127,21 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
       );
     });
   }
+
+  test("renders documentation index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = sectionIndexMessages(messages, "documentation");
+    const html = renderToStaticMarkup(
+      await renderSectionCollectionIndexPage("documentation"),
+    );
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("What is you-agent-factory");
+    expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+  });
 
   test("renders the same guides output when passed the collection definition", async () => {
     const byId = renderToStaticMarkup(

@@ -78,10 +78,15 @@ Do not author customer page bundles under content roots in this lane.
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/{guides,techniques,documentation}/.gitkeep` | Present, empty CLI docs content roots (no authored `page.mdx` bundles) |
-| `src/content/registry/{guides,techniques,documentation}/.gitkeep` | Present, empty CLI registry dirs (loader already tolerates ENOENT; dirs make the contract explicit) |
-| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as empty-content targets; helpers for docs/registry roots and empty-starter readiness |
-| `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks: empty page bundles, empty registry JSON, `loadRegistry` without CLI topic kinds, section-index empty state without starters |
+| `src/content/docs/{guides,techniques}/.gitkeep` | Present, empty CLI docs content roots (no authored `page.mdx` bundles) |
+| `src/content/docs/documentation/` | CLI documentation content root; may contain authored topic page bundles |
+| `src/content/registry/{guides,techniques}/.gitkeep` | Present, empty CLI registry dirs (loader already tolerates ENOENT; dirs make the contract explicit) |
+| `src/content/registry/documentation/` | CLI documentation registry dir; may contain authored topic records |
+| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` stays guides/techniques only once documentation pages ship |
+| `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks: empty guide/technique roots, allowed documentation pages/records, section-index empty state without starters |
+| `src/lib/content/published-docs-registry-contract.ts` | Includes `documentation` in `PUBLISHED_DOCS_SECTIONS` with `documentationPageHref` routing |
+| `src/lib/content/content-hrefs.ts` | `documentationPageHref` for `/docs/documentation/<slug>` |
+| `src/lib/factory/canonical-page-surface-audit.ts` | `registryDirectoryByKind` includes `documentation` (and guide/technique) for routine page-surface audits |
 
 `concepts` remains a designated CLI collection target (empty `starterSlugs`)
 while existing Atlas concept pages/registry records stay until

@@ -1,9 +1,20 @@
 # Content Page Generation Workflow Relevant Files
 
 Use these files when adding or updating routine canonical docs pages (model,
-concept, module, system, paper, training, or glossary). The goal is to add page
-bundles and registry records without editing shared helper surfaces for
-page-specific directory paths.
+concept, module, system, paper, training, glossary, or documentation). The goal
+is to add page bundles and registry records without editing shared helper
+surfaces for page-specific directory paths.
+
+First published `documentation` pages also need `documentation` in
+`PUBLISHED_DOCS_SECTIONS` / `documentationPageHref`, and
+`registryDirectoryByKind.documentation` in the canonical page surface audit.
+See [empty-cli-taxonomy-relevant-files.md](./empty-cli-taxonomy-relevant-files.md).
+Published local page bundles must include Fumadocs `title` (and usually
+`description`) in `page.mdx` frontmatter — `pageSchema` requires `title` once
+the page is no longer excluded as draft. Local-message documentation pages also
+need `documentation` in `LOCAL_DOCS_SECTIONS` plus
+`documentation-page.ts` / `documentation-page-load.ts` so
+`ModulePageProviders` wraps the compiled MDX (same pattern as concepts/systems).
 
 ## Derived page directory contract
 
