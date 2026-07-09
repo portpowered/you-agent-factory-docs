@@ -25,7 +25,7 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Declare each workstation in factory.json with a name, runtime type, optional worker, inputs, and route fields. Put the step-specific prompt and workstation-owned runtime in workstations/<name>/AGENTS.md when you use the split layout. Choose AGENT_RUN for prompt-rendered agent steps, INFERENCE_RUN for typed one-shot model operations, SCRIPT_RUN for script workers, POLLER_RUN for hosted poller ingress, CLASSIFIER_WORKSTATION for single-label branch selection, or LOGICAL_MOVE for no-worker token moves. Concrete topology examples land in later sections of this reference."
+      "body": "Declare each workstation in factory.json with a name, runtime type, optional worker, inputs, and route fields. Put the step-specific prompt and workstation-owned runtime in workstations/<name>/AGENTS.md when you use the split layout. The examples below show a worker-backed AGENT_RUN step with continue and failure routes, a LOGICAL_MOVE loop-breaker that keeps every route explicit, and where the matching workstation prompt file lives."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -82,6 +82,12 @@
     "routeOnRejectionName": "onRejection",
     "routeOnRejectionMeaning": "Place produced when the step returns rejected.",
     "routeOnFailureName": "onFailure",
-    "routeOnFailureMeaning": "Place produced when execution fails or times out. Omitted on worker-backed steps still maps an implicit FAILED lane; LOGICAL_MOVE stays explicit."
+    "routeOnFailureMeaning": "Place produced when execution fails or times out. Omitted on worker-backed steps still maps an implicit FAILED lane; LOGICAL_MOVE stays explicit.",
+    "exampleAgentRunLabel": "Worker-backed AGENT_RUN step in factory.json",
+    "exampleAgentRunCode": "{\n  \"name\": \"execute-story\",\n  \"behavior\": \"REPEATER\",\n  \"type\": \"AGENT_RUN\",\n  \"worker\": \"executor\",\n  \"inputs\": [{ \"workType\": \"story\", \"state\": \"init\" }],\n  \"outputs\": [{ \"workType\": \"story\", \"state\": \"in-review\" }],\n  \"onContinue\": { \"workType\": \"story\", \"state\": \"init\" },\n  \"onFailure\": { \"workType\": \"story\", \"state\": \"failed\" }\n}",
+    "exampleLogicalMoveLabel": "LOGICAL_MOVE loop-breaker in factory.json",
+    "exampleLogicalMoveCode": "{\n  \"name\": \"executor-loop-breaker\",\n  \"type\": \"LOGICAL_MOVE\",\n  \"guards\": [{ \"type\": \"VISIT_COUNT\", \"workstation\": \"execute-story\", \"maxVisits\": 50 }],\n  \"inputs\": [{ \"workType\": \"story\", \"state\": \"init\" }],\n  \"outputs\": [{ \"workType\": \"story\", \"state\": \"failed\" }]\n}",
+    "exampleAgentsMdLabel": "Matching workstation prompt path",
+    "exampleAgentsMdCode": "workstations/execute-story/AGENTS.md"
   }
 }

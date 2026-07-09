@@ -417,6 +417,24 @@ command matrix. Prefer current public names; mention legacy
 body prose. Rewrite from `you docs workstations` for web readers — do not sync
 packaged markdown into the page bundle.
 
+### Documentation workstations how-to-use examples (page-local)
+
+For `documentation/workstations` `#how-to-use`, keep narrative in
+`sections.howToUse.body` and put example labels plus selectable code under
+page `links.*` keys (same `pageSectionSchema` constraint as CLI install
+commands). Render always-visible
+`<p><T k="links.…Label" /></p><pre><code><T k="links.…Code" /></code></pre>`
+blocks so topology examples stay readable without hover; horizontal scroll is
+acceptable on narrow viewports.
+
+Ship at least one worker-backed example (`AGENT_RUN` with inputs / outputs /
+`onContinue` or `onRejection` / `onFailure`) and one distinct non-worker or
+special-kind example (`LOGICAL_MOVE`, `CLASSIFIER_WORKSTATION`, or
+`INFERENCE_RUN`). Keep examples minimal: topology + routing (+ prompt path
+when useful). Do not absorb worker provider setup, full guard catalogs, or
+template-variable inventories. Store multiline JSON as `\n`-joined strings in
+`links.*` so `<pre>` preserves selectable formatting.
+
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands
