@@ -11,6 +11,35 @@ Routine canonical pages live under `src/content/docs/<section>/<slug>`. Resolve
 the page directory with `getDocsPageDir(section, slug)` instead of adding a new
 exported `*_PAGE_DIR` constant to `src/lib/content/content-paths.ts`.
 
+## First CLI collection page (guides / techniques / documentation)
+
+Before the first authored page under a rewrite-era CLI collection can pass
+`prepare:content-runtime` / `make validate-data` and render under
+`/docs/<section>/<slug>`:
+
+1. `PUBLISHED_DOCS_SECTIONS` and `publishedDocsHrefFromEntry` in
+   `src/lib/content/published-docs-registry-contract.ts` must accept that
+   section (with matching `*PageHref` helpers in `content-hrefs.ts`). Empty
+   CLI taxonomy roots alone are not enough — generation throws
+   `Unsupported published docs section` otherwise.
+2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
+   `src/lib/content/local-docs-page.ts` must include the section with a
+   colocated loader (for example `documentation-page.ts` /
+   `documentation-page-load.ts`). Without that, Fumadocs renders the MDX body
+   without `ModulePageProviders` and `Section` / `T` throw
+   `usePageMessages must be used within PageMessagesProvider`.
+3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
+   even when reader copy is message-backed — mirror the glossary template.
+4. `registryDirectoryByKind` in
+   `src/lib/factory/canonical-page-surface-audit.ts` must map
+   `guide` / `technique` / `documentation` to their registry directories, or
+   `bun run audit:canonical-page-surface` fails with an unsupported registry
+   kind for the new primary record.
+5. Extra section message keys beyond `title` / `body` are stripped by
+   `pageSectionSchema`. Put OS labels and similar short strings under
+   `links.*` (or another allowed top-level message field), not under
+   `sections.<id>.*`.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |

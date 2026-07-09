@@ -19,10 +19,13 @@ const PAGE_MDX_NAME = "page.mdx";
 const registryDirectoryByKind: Record<string, string> = {
   citation: "citations",
   concept: "concepts",
+  documentation: "documentation",
+  guide: "guides",
   graph: "graphs",
   module: "modules",
   model: "models",
   paper: "papers",
+  technique: "techniques",
   "training-regime": "training-regimes",
   system: "systems",
   table: "tables",

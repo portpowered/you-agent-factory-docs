@@ -81,6 +81,39 @@ export function systemPageHref(
   );
 }
 
+/** Canonical docs URL for a guide entry slug under `docs/guides`. */
+export function guidePageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `guides/${slug}` },
+    locale,
+  );
+}
+
+/** Canonical docs URL for a technique entry slug under `docs/techniques`. */
+export function techniquePageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `techniques/${slug}` },
+    locale,
+  );
+}
+
+/** Canonical docs URL for a documentation entry slug under `docs/documentation`. */
+export function documentationPageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `documentation/${slug}` },
+    locale,
+  );
+}
+
 /** Canonical tag landing URL for a registry tag slug. */
 export function tagPageHref(
   slug: string,

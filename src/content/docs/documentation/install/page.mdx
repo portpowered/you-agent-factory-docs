@@ -1,10 +1,12 @@
 ---
+title: "Install you-agent-factory"
+description: "Install the you-agent-factory CLI on macOS, Linux, or Windows with the release install scripts, then scaffold a factory."
 kind: "documentation"
 registryId: "documentation.install"
 messageNamespace: "local"
 assetNamespace: "local"
-status: "draft"
-tags:
+status: "published"
+tags: []
 aliases:
   - "install"
   - "install you-agent-factory"
@@ -29,6 +31,18 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.macosLinuxLabel" />
+  </p>
+  ```sh
+  curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh
+  ```
+  <p>
+    <T k="links.windowsLabel" />
+  </p>
+  ```powershell
+  irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex
+  ```
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">

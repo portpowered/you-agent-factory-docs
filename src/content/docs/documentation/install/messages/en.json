@@ -1,22 +1,22 @@
 {
   "title": "Install you-agent-factory",
-  "description": "Draft placeholder for the install deep-dive. Replace before publishing.",
+  "description": "Install the you-agent-factory CLI on macOS, Linux, or Windows with the release install scripts, then scaffold a factory.",
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+      "body": "Install is the reference for getting you-agent-factory onto a machine. It covers the macOS and Linux curl install script, the Windows PowerShell install script, and the related first-scaffold notes that follow a successful install. Use it when you need the full OS install commands rather than a short home CTA."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+      "body": "An install script downloads the CLI release for your operating system and places the you command where your shell can find it. After install, you can scaffold a factory project. Later sections cover executor scaffold choice in more detail."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+      "body": "Run the install command for your operating system. Both paths use the same GitHub Releases assets as the home install CTA. After the script finishes, confirm you is available in your shell, then scaffold a factory when you are ready."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "Draft placeholder for Install you-agent-factory. Replace before publishing."
+      "body": "This page is the install reference. It is not the getting-started quickstart and not the full CLI command matrix. Packaged you docs topics remain the place for deeper agent and factory orientation."
     },
     "related": {
       "title": "Related To"
@@ -27,5 +27,9 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "macosLinuxLabel": "macOS / Linux",
+    "windowsLabel": "Windows (PowerShell)"
   }
 }
