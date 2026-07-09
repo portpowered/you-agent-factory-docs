@@ -4,18 +4,21 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "documentation/install",
     "documentation/what-is-you-agent-factory",
     "guides/getting-started",
+    "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
   ],
   "zh-CN": [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
     "guides/getting-started",
+    "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
   ],
   vi: [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
     "guides/getting-started",
+    "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
   ],
 } as const;

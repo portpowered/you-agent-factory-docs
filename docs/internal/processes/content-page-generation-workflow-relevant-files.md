@@ -99,6 +99,13 @@ hrefs and `links.*` labels. Do not put those ids in registry `relatedIds` until
 the sibling registry records exist here — unresolved related ids fail
 `validate-data`, and RelatedDocs also drops unpublished targets.
 
+Guide ↔ guide discovery also needs `<LocalizedLinkList>` today: generated
+`listRelatedRegistryRecords()` / `getRegistryRecordById()` omit `guides` (and
+documentation) kinds, so curated `relatedIds` on a guide record will not render
+under `<RelatedDocs />` even when the target guide is published. Keep
+getting-started and planned concept/write-review destinations on the page via
+message-backed `LocalizedLinkList` hrefs.
+
 ## Shipping non-en locale stubs on a page bundle
 
 Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
