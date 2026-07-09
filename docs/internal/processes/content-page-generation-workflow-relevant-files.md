@@ -184,7 +184,85 @@ const pageDir = getDocsPageDir("modules", "grouped-query-attention");
 ```
 
 Supported `section` values: `glossary`, `concepts`, `modules`, `models`,
-`papers`, `training`, `systems`.
+`papers`, `training`, `systems`, `guides`, `techniques`, `documentation`.
+
+When publishing the first authored page under a rewrite-era CLI section
+(`guides`, `techniques`, or `documentation`), also confirm:
+
+1. `PUBLISHED_DOCS_SECTIONS` and `publishedDocsHrefFromEntry` in
+   `src/lib/content/published-docs-registry-contract.ts` recognize that section,
+   with matching `*PageHref` helpers in `src/lib/content/content-hrefs.ts`.
+2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
+   `src/lib/content/local-docs-page.ts` include the section, with a matching
+   `*-page.ts` / `*-page-load.ts` pair (same shape as `system-page*`) so
+   message-backed MDX resolves through `ModulePageProviders`.
+3. `bun run audit:canonical-page-surface -- --page-dir src/content/docs/<section>/<slug> --exception-reason "..."`
+   reports `declare-exception` for that first-page wiring (not
+   `redirect-to-throughput-prd`). The audit maps CLI registry kinds
+   (`guide` / `technique` / `documentation`) and ignores section-root
+   `.gitkeep` when inferring page scope. Repeat the exception reason in the PR
+   conversation comment.
+
+Without (1), `bun run prepare:content-runtime` fails while generating the
+published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to
+Fumadocs frontmatter title and 404s because CLI templates keep title/description
+in colocated messages. Without (3), review preflight cannot classify the
+first-page shared wiring as the documented exception lane.
+
+Fumadocs `pageSchema` still requires frontmatter `title` (and accepts optional
+`description`) at webpack/static-export time. For local-message CLI pages, set
+`title: ""` and `description: ""` on that page's `page.mdx` frontmatter (same
+pattern as published glossary pages) so the Fumadocs collection validates, while
+the shell continues to render `messages.title` / `messages.description` via
+`ModulePageProviders`. Do not put the real reader title only in Fumadocs
+frontmatter, and do not edit shared `docs/templates/{concept,documentation,guide,technique}.mdx`
+just to add those empty keys — that pulls a page lane out of the documented
+first-CLI-section `declare-exception` allowlist into `redirect-to-throughput-prd`.
+
+### Documentation CLI install commands (page-local)
+
+For `documentation/cli` install copy, keep OS labels and install commands under
+page `links.*` keys (not under `sections.*` — `pageSectionSchema` only keeps
+`title`/`body`, so extra section fields are stripped on load). Render them as
+always-visible `<pre><code><T k="links.…" /></code></pre>` blocks inside a
+`#install` `Section`. Reuse the same product release strings as home
+(`install.sh` curl | sh and PowerShell `irm` | `iex`). Do not hard-code command
+strings in MDX and do not import `HomeCommandBlock` into docs MDX (home-only CTA
+primitive).
+
+Canonical commands:
+
+- macOS/Linux: `curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh`
+- Windows: `irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex`
+
+### Documentation CLI command matrix (page-local)
+
+For `documentation/cli` commands copy, keep a distinct `#commands` `Section`
+after `#how-to-use` (template order stays intact; `#commands` is an extra
+teaching surface). Put matrix headers and cell strings under page `links.*`
+keys — same reason as install: `pageSectionSchema` only keeps `title`/`body`.
+Render an always-visible HTML `<table>` with `<T k="links.…" />` in each cell
+so the running-factory distinction is readable without hover and without
+hard-coded prose in MDX.
+
+Do not use `PageAsset` table stubs for this matrix (they only echo `tableId`).
+Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
+readers while keeping the run/submit/session/work/docs running-factory
+distinctions clear.
+
+### Documentation CLI key concepts, limits, and sibling discovery
+
+For `documentation/cli`, keep `#key-concepts` before the install/commands
+teaching surfaces so readers learn start-a-factory vs submit-to-a-running-factory
+before the matrix. Keep `#limits-and-assumptions` as the scope boundary: web
+install + command matrix only — not a flag dump, not a packaged-docs sync, and
+not harness/MCP/config deep pages.
+
+Wire sibling discovery through registry `relatedIds` + `<RelatedDocs />` only
+when the sibling registry records and published pages exist (for example
+getting-started or install deep-dive). Omit unpublished sibling ids from
+`relatedIds` so validation and related rendering stay clean; do not invent
+page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.

@@ -1,10 +1,13 @@
 import {
   conceptPageHref,
+  documentationPageHref,
   glossaryPageHref,
+  guidePageHref,
   modelPageHref,
   modulePageHref,
   paperPageHref,
   systemPageHref,
+  techniquePageHref,
   trainingPageHref,
 } from "@/lib/content/content-hrefs";
 import type { PageKind } from "@/lib/content/schemas";
@@ -17,6 +20,9 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "papers",
   "training",
   "systems",
+  "guides",
+  "techniques",
+  "documentation",
 ] as const;
 
 export type PublishedDocsSection = (typeof PUBLISHED_DOCS_SECTIONS)[number];
@@ -68,5 +74,11 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return trainingPageHref(entry.slug);
     case "systems":
       return systemPageHref(entry.slug);
+    case "guides":
+      return guidePageHref(entry.slug);
+    case "techniques":
+      return techniquePageHref(entry.slug);
+    case "documentation":
+      return documentationPageHref(entry.slug);
   }
 }

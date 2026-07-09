@@ -100,6 +100,8 @@ topic pages or registry records here.
 | `src/lib/content/registry-runtime-generation.ts` | Runtime generation directory/schema imports |
 | `src/lib/content/validate-registry.ts` | `registryKindDirectories` map |
 | `src/lib/content/validate-canonical-mdx-prose.ts` | `canonicalDocsPageKinds` for prose isolation |
+| `src/lib/content/published-docs-registry-contract.ts` | `PUBLISHED_DOCS_SECTIONS` + `publishedDocsHrefFromEntry` must include CLI route sections (`guides`, `techniques`, `documentation`) once authored pages publish under those prefixes |
+| `src/lib/content/content-hrefs.ts` | `guidePageHref` / `techniquePageHref` / `documentationPageHref` for published-docs href resolution |
 
 ## Pattern
 
