@@ -15,6 +15,7 @@ updatedAt: "2026-07-09"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -170,6 +171,22 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
       <T k="links.typeGuidancePoller" />
     </li>
   </ul>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.siblingConfiguration",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.siblingWorkstations",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.siblingResources",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="core-fields" titleKey="sections.coreFields.title">

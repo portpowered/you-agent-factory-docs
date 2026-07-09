@@ -25,7 +25,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web workers reference for you-agent-factory. It is not a verbatim sync of packaged you docs workers markdown, not a workstation routing guide, and not a resources capacity deep-dive. Sibling configuration, workstations, and resources pages own those surfaces when published."
+      "body": "This page is a web workers reference for types, placement, ownership, and core authoring. It is not a sync of packaged CLI docs (you docs workers), not a workstation routing or lifecycle guide, not a resource capacity deep-dive, and not a full agent failure-class catalog. Sibling configuration, workstations, and resources pages own those surfaces when published. This page still defines what a worker is on its own; sibling links are discovery only."
     },
     "related": {
       "title": "Related To"
@@ -97,6 +97,9 @@
     "coreAuthControls": "Referenced secret name resolved at runtime (never an inline key)",
     "coreOperationsField": "operations",
     "coreOperationsApplies": "inference workers",
-    "coreOperationsControls": "Provider-agnostic one-shot capability declarations with typed input and output slots"
+    "coreOperationsControls": "Provider-agnostic one-shot capability declarations with typed input and output slots",
+    "siblingConfiguration": "Configuration",
+    "siblingWorkstations": "Workstations",
+    "siblingResources": "Resources"
   }
 }

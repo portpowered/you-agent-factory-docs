@@ -429,6 +429,22 @@ structured field reference table (type, model/provider, command/args,
 poller provider/auth, operations). Orient from `you docs workers` for field
 meanings, but rewrite for web scanning and avoid a full flag dump.
 
+### Documentation workers limits and sibling discovery (page-local)
+
+For `documentation/workers`, keep `#limits-and-assumptions` as the scope
+boundary: web workers reference for types, placement, ownership, and core
+authoring — not a packaged `you docs workers` sync, not workstation
+routing/lifecycle, not resource capacity deep-dive, and not a full agent
+failure-class catalog. Keep the page isolation-first: sibling links aid
+discovery but must not be required to define what a worker is.
+
+When B04 siblings (`configuration`, `workstations`, `resources`) are not yet
+published in this worktree, wire reviewer-visible discovery with page-local
+`<LocalizedLinkList>` and planned hrefs under `#how-to-use` (same pattern as
+install / what-is). Leave registry `relatedIds` empty until those sibling
+registry records and published pages exist; keep `<RelatedDocs />` in
+`#related` for when curated ids can resolve cleanly.
+
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands
