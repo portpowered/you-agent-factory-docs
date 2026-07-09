@@ -5,11 +5,15 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This reference covers you-agent-factory workers: what a worker is, how it sits beside workstations and factory.json, and where backend details live. Use it when you need the durable web workers contract for placement and identity. Deeper taxonomy, ownership split, and authoring examples land in the sections that follow as this page is completed."
+      "body": "This reference covers you-agent-factory workers: what a worker is, how it sits beside workstations and factory.json, and which public worker type matches a backend. Use it when you need the durable web workers contract for placement, identity, and type selection. Ownership split details and minimal authoring examples belong in the how-to-use section as this page is completed."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A worker is a runtime executor that a workstation invokes by name. factory.json declares each worker name in the factory topology. The worker directory at workers/<name>/AGENTS.md holds the backend type and shared system instructions for every workstation that binds that name. A workstation owns step routing, prompt body, limits, and outputs; the worker owns the execution backend."
+      "body": "A worker is a runtime executor that a workstation invokes by name. factory.json declares each worker name in the factory topology. The worker directory at workers/<name>/AGENTS.md holds the backend type and shared system instructions for every workstation that binds that name. A workstation owns step routing, prompt body, limits, and outputs; the worker owns the execution backend. Keep worker definitions in the split layout beside factory.json under workers/<name>/AGENTS.md."
+    },
+    "workerTaxonomy": {
+      "title": "Worker Taxonomy",
+      "body": "Public factory config names workers by behavior class. Use the matrix below to pick the current public type for a new worker. Prefer these names in new configs; legacy aliases remain only for migration."
     },
     "howToUse": {
       "title": "How To Use",
@@ -28,5 +32,23 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "taxonomyTypeHeader": "Public type",
+    "taxonomyBehaviorHeader": "Behavior",
+    "taxonomyWhenToUseHeader": "Use when",
+    "taxonomyInferenceType": "INFERENCE_WORKER",
+    "taxonomyInferenceBehavior": "One-shot model operations",
+    "taxonomyInferenceWhen": "Harnessless inference such as TTS, ASR, or typed INFERENCE_RUN dispatches",
+    "taxonomyAgentType": "AGENT_WORKER",
+    "taxonomyAgentBehavior": "Agent-loop model execution",
+    "taxonomyAgentWhen": "Prompt-rendered AGENT_RUN workstations that iterate until acceptance, rejection, or failure",
+    "taxonomyScriptType": "SCRIPT_WORKER",
+    "taxonomyScriptBehavior": "Script execution",
+    "taxonomyScriptWhen": "Command-backed SCRIPT_RUN workstations",
+    "taxonomyPollerType": "POLLER_WORKER",
+    "taxonomyPollerBehavior": "Hosted poller integration",
+    "taxonomyPollerWhen": "Workstations with behavior POLLER that ingest external work through built-in providers",
+    "taxonomyLegacyNote": "Legacy compatibility aliases: MODEL_WORKER still loads and projects to INFERENCE_WORKER or AGENT_WORKER depending on the paired workstation; HOSTED_WORKER still loads and projects to POLLER_WORKER. Prefer the current public names in new configs."
   }
 }

@@ -397,6 +397,21 @@ Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
 readers while keeping the run/submit/session/work/docs running-factory
 distinctions clear.
 
+### Documentation workers taxonomy matrix (page-local)
+
+For `documentation/workers` taxonomy copy, keep a distinct `#worker-taxonomy`
+`Section` after `#key-concepts` (template order stays intact; taxonomy is an
+extra teaching surface before `#how-to-use`). Put matrix headers, public type
+names, behavior cells, when-to-use cells, and the legacy-alias note under page
+`links.*` keys — same reason as CLI matrices: `pageSectionSchema` only keeps
+`title`/`body`. Render an always-visible HTML `<table>` with
+`<T k="links.…" />` in each cell so `INFERENCE_WORKER`, `AGENT_WORKER`,
+`SCRIPT_WORKER`, and `POLLER_WORKER` are readable without hover.
+
+Orient from `you docs workers` for type/behavior/when-to-use meaning, but
+rewrite for web scanning. Mention `MODEL_WORKER` / `HOSTED_WORKER` only as
+migration guidance and prefer the current public names for new configs.
+
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands
