@@ -5,11 +5,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A checklist is a live planner outcomes and workstream board. It makes done, active, ready-next, and intentionally held work visible in one place. Phase names may appear as optional labels, but they are not mandatory gates that force every stream to wait for a global stage to finish."
+      "body": "A checklist is a live outcomes and workstream board used by the factory planner. It shows customer outcomes alongside workstreams in four states: done, active, ready next, and intentionally held. Phase names may appear as optional labels, but they are not mandatory gates that force every stream to wait for a global stage to finish."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "A checklist helps you track customer outcomes, see which workstreams can move in parallel, and record real holds with concrete reasons. Without it, planners and readers mix finished work, ready work, and blocked work into one vague queue and slow everything down."
+      "body": "A checklist lets you track customer outcomes, see which workstreams can move in parallel, and record real holds with concrete reasons. Without that board, finished work, ready work, and blocked work collapse into one vague queue, so planners slow safe streams and miss what the customer still needs."
     },
     "simpleExample": {
       "title": "Simple Example",

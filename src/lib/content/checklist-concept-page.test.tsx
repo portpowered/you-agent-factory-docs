@@ -24,9 +24,22 @@ describe("checklist concept page", () => {
       "live outcomes and workstream board",
     );
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-    expect(String(loadedPage.messages.sections?.whatItIs?.body ?? "")).toMatch(
-      /live planner outcomes and workstream board/i,
+
+    const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
+    const whyItMatters = String(
+      loadedPage.messages.sections?.whyItMatters?.body ?? "",
     );
+    expect(whatItIs).toMatch(/live outcomes and workstream board/i);
+    expect(whatItIs).toMatch(/done/i);
+    expect(whatItIs).toMatch(/active/i);
+    expect(whatItIs).toMatch(/ready next/i);
+    expect(whatItIs).toMatch(/intentionally held/i);
+    expect(whatItIs).toMatch(/not mandatory gates/i);
+    expect(whyItMatters).toMatch(/track customer outcomes/i);
+    expect(whyItMatters).toMatch(/parallel/i);
+    expect(whyItMatters).toMatch(/real holds/i);
+    expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
+    expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
 
     render(
       <main>
@@ -44,8 +57,9 @@ describe("checklist concept page", () => {
       screen.getByRole("heading", { name: "Why It Matters" }),
     ).toBeTruthy();
     expect(
-      screen.getByText(/live planner outcomes and workstream board/i),
+      screen.getByText(/live outcomes and workstream board/i),
     ).toBeTruthy();
+    expect(screen.getByText(/track customer outcomes/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });
