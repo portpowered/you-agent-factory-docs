@@ -352,6 +352,16 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   empty `zh-CN` shipped bucket is valid and does not force every page to ship
   Chinese copy. Cover load + fail-closed in `src/lib/content/messages.test.ts`
   and shipped/empty validation in `src/lib/content/validate-registry.test.ts`.
+* When a page story requires non-en stubs (`ja` / `zh-CN` / `vi`), copy the
+  default-locale file into `messages/<locale>.json` with the **same key shape**
+  (en complete; non-en may reuse English wording). Adding those files ships the
+  page for those locales via `deriveShippedLocalizedDocsManifest`. Regenerate
+  with `bun run prepare:content-runtime` / `generate:shipped-localized-docs`
+  and **commit** `src/lib/content/generated/shipped-localized-docs.generated.ts`
+  (unlike other generated runtime files, this manifest is tracked). Update the
+  committed-tree expectation in
+  `src/lib/content/shipped-localized-docs.server.test.ts` to match the new
+  shipped slug lists.
 * Language switcher (`src/components/layout/language-switcher.tsx`) maps
   `supportedLocales` into options: non-docs surfaces (home, search, browse, …)
   always get a locale-preserving `href` via `switchRouteLocale`; docs pages mark
