@@ -1,251 +1,167 @@
-# Learn Language Models
+# you-agent-factory docs
 
 [![CI](https://github.com/portpowered/you-agent-factory-docs/actions/workflows/ci.yml/badge.svg)](https://github.com/portpowered/you-agent-factory-docs/actions/workflows/ci.yml)
 
-A static AI model reference site for large language model components, concepts,
-papers, training regimes, systems ideas, and architecture variants.
+Static documentation site for the
+[you-agent-factory](https://github.com/portpowered/you-agent-factory) CLI and
+agent-factory workflow system.
 
-## Problem
+Readers use this site to install and run the CLI, follow use-case guides, look up
+concepts and techniques, compare approaches, and read news/blog posts.
 
-Engineers and technical readers who follow model architecture changes do not
-have a compact reference that connects models, modules, papers, systems
-concepts, and practical tradeoffs in one searchable place.
+This repository is **not** the retired Model Atlas / Learn Language Models
+attention-reference product. It is also not a benchmark leaderboard or a
+paper-download mirror.
 
-## Solution
+## Product shape
 
-This project builds a multilingual, static-first reference website where readers
-can search for concepts such as attention, KV cache, grouped-query attention,
-diffusion transformers, quantization, inference serving, or GPT-2 and move
-between related models, modules, papers, and explanations.
+The intended site covers:
 
-The site is not a benchmark leaderboard and is not a paper-download mirror. It
-is an explainer and reference system backed by structured data.
+* **Install / run** — get the CLI, run named workflows, understand the factory loop
+* **Guides** — loops, Cursor dynamic workflows, write-review loops, and related use cases
+* **Concepts and techniques** — harness, loop, worktree, ralph, planner-executor, and peers
+* **Documentation** — configuration, workstations, harness support, CLI, MCP, API
+* **Comparisons and news** — listicles, examinations, and blog posts
 
-## Website Shape
+Content collections for the rewrite era are `guides`, `concepts`, `techniques`,
+and `documentation`, plus glossary and blog surfaces.
 
-The intended app is a Next.js App Router site using:
+## Website stack
+
+The app is a statically rendered Next.js App Router site using:
 
 * Fumadocs for MDX documentation routes and source loading
 * Orama through Fumadocs for search
-* React Flow for interactive recursive model/module graphs
-* static vertical SVG, Mermaid, or image fallbacks for print/PDF graphs
-* Recharts for explanatory charts
-* Tailwind, design tokens, and shadcn/ui for interface components
-* Bun for package scripts, tests, and coverage
+* React Flow, Recharts, Tailwind, and shadcn/ui for interactive and UI surfaces
+* Bun for package scripts and tests
 * Biome for linting and formatting
 
-Content is split into three layers:
+Content is split into page structure, localized messages, page-local assets, and
+structured registry records:
 
 ```txt
-src/content/docs/**/page.mdx       # page structure
+src/content/docs/**/page.mdx        # page structure
 src/content/docs/**/messages/*.json # localized text
 src/content/docs/**/assets.json     # page-local asset references
 src/content/registry/**/*.json      # structured records for search and relations
 ```
 
-The registry defines meaning. MDX defines structure. Messages provide localized
-values. Asset config resolves concrete images, graphs, tables, charts, and code
-schemas.
-
 ## Important Docs
 
-Start with:
+Start here for rewrite planning and contributor orientation.
 
-* [AGENTS.md](./AGENTS.md)
+Planner rewrite working set (`docs/temp/` is gitignored local planner state; create
+or refresh these paths in a checkout when doing rewrite planning):
+
+* [docs/temp/customer-ask.md](./docs/temp/customer-ask.md) — live customer ask
+* [docs/temp/big-docs](./docs/temp/big-docs) — durable rewrite planning artifacts
+
+Committed orientation docs:
+
+* [AGENTS.md](./AGENTS.md) — agent and planner operating rules
+* [docs/documentation-site-pages-needed.md](./docs/documentation-site-pages-needed.md) — page inventory
 * [docs/architecture.md](./docs/architecture.md)
-* [docs/data-model.md](./docs/data-model.md)
-* [docs/architectural-checklist.md](./docs/architectural-checklist.md)
-* [docs/documentation-template.md](./docs/documentation-template.md)
-* [docs/documentation-site-pages-needed.md](./docs/documentation-site-pages-needed.md)
 * [docs/site-fundamentals.md](./docs/site-fundamentals.md)
+* [docs/data-model.md](./docs/data-model.md)
+* [docs/documentation-template.md](./docs/documentation-template.md)
 * [factory/docs/standards/docs-writing-standards.md](./factory/docs/standards/docs-writing-standards.md)
+* [docs/operations.md](./docs/operations.md) — CI/deploy posture
 
 ## Local Development
 
-Install dependencies and start the dev server:
+Install dependencies and start the docs site:
 
 ```sh
 bun install
 make dev
 ```
 
-`make dev` runs the same Next.js dev entrypoint as `bun run dev`. Open
-`http://localhost:3000` for the home page and `/docs/getting-started` for the
-placeholder docs route.
-
-## Static export (GitHub Pages)
-
-**CI / Pages contract:** `make build` runs `bun run build:export`
-(`NEXT_STATIC_EXPORT=1`) and emits `out/`. `.github/workflows/ci.yml` and
-`.github/workflows/deploy-pages.yml` both call `make build`; the Pages validate
-job uploads that `out/` directory.
-
-```sh
-make build
-```
-
-**Static export:** `make build` runs the static export to `out/`.
-Former `make build-export` / Phase-1 export route verifiers were retired with
-Atlas domain deletion and are not part of the CI/Pages contract.
-
-`bun run build:export` sets `NEXT_STATIC_EXPORT=1`, which toggles
-`output: "export"` and `images.unoptimized` in `next.config.ts`.
-
-For GitHub Pages **project sites** served from `https://<org>.github.io/<repo>/`,
-set `GITHUB_PAGES_BASE_PATH` to the repository name (with or without a leading
-slash) when running the export build. The value configures matching
-`basePath` and `assetPrefix` so bundled assets and internal links resolve under
-the project path:
-
-```sh
-GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
-```
-
-When `GITHUB_PAGES_BASE_PATH` is unset, export builds keep `/` as the base for
-local preview and user/org root GitHub Pages sites.
-
-See [docs/operations.md](./docs/operations.md) for deployment posture, required
-Pages settings, deploy check visibility, and commit-SHA traceability after merges
-to `main`.
-
-## Phase 2 docs authoring
-
-Canonical page bundles share one page-spec generation path. Templates live in
-`docs/templates/`; see [docs/documentation-template.md](./docs/documentation-template.md)
-for the message-key-driven MDX contract.
-
-### Generate a canonical page bundle
-
-Preview planned paths without writing files:
-
-```sh
-bun run generate:page-bundle -- --spec page-specs/page-spec-workflow-sample.json --dry-run
-```
-
-Create the canonical bundle from one page spec. This is the supported common
-path for `concept`, `glossary`, `module`, `model`, `paper`, and
-`training-regime` pages:
-
-```sh
-bun run generate:page-bundle -- --spec page-specs/my-page.json
-```
-
-The generator writes the page bundle and aligned registry artifacts together:
-
-- `src/content/docs/<section>/<slug>/page.mdx`
-- `src/content/docs/<section>/<slug>/messages/en.json`
-- `src/content/docs/<section>/<slug>/assets.json`
-- `src/content/registry/<kind-directory>/<slug>.json`
-- `src/content/registry/graphs/*.json` when the template references a graph
-
-Run `bun run generate:page-bundle -- --help` for the full page-spec contract.
-Checked-in example specs for each supported canonical kind live in
-`page-specs/`.
-The legacy `scaffold:doc-page` CLI remains available for concept and glossary
-backward compatibility, but new canonical bundles should use the page-spec path.
-
-## Reusable component coverage
-
-Reusable MDX building blocks (Callout, Section, T, TagPillList,
-DerivedRelatedDocs, and search result presentation) must keep **at least 90%
-reachable line coverage**, or be documented as thin wrappers with named smoke
-tests. The inventory, thin-wrapper exception pattern, allowed path globs, and
-update steps live in
-[docs/phase-2-component-coverage.md](./docs/phase-2-component-coverage.md);
-machine-readable entries are in `src/lib/docs/component-manifest.ts`.
-
-Run the manifest gate locally with `make coverage` (same as `bun run coverage`).
-The older aggregate `make ci` target still includes this gate after `make test`.
-Rewrite-era CI calls transitional `make component-coverage` instead; restore a
-rewrite-safe coverage gate there when fixtures allow.
-
-## Component example harness
-
-Phase 2 shared docs components (Callout, Section, T, TagPillList,
-DerivedRelatedDocs, and search result presentation) ship with a lightweight
-Storybook-style gallery instead of full Storybook. Examples live in
-`src/component-examples/` and render on a dev-only route at
-`/component-examples`.
-
-Start the harness with a single command (picks a free port in `3100-3999`):
-
-```sh
-make component-examples
-```
-
-Equivalent Bun script: `bun run component-examples`. The gallery uses grouped-query-attention
-fixtures and search metadata so reviewers can inspect default and alternate states
-without loading full MDX pages. The route returns 404 in production builds unless
-`ENABLE_COMPONENT_EXAMPLES=1` is set; it is not part of `make ci` or deploy.
-
-### After scaffolding
-
-1. Replace placeholder copy in `messages/en.json` (scaffold fills schema-valid stubs).
-2. Add or update registry records the page references (for example a `graph.<slug>-concept-map`
-   record when the template references a concept map asset).
-3. Set `status: published` in `page.mdx` frontmatter when the page is ready for published
-   reference checks; keep `draft` while `relatedIds`, tags, or citations still point at
-   unpublished targets.
-4. Run `make validate-data` (also part of `make ci`) to catch missing message keys, unknown
-   assets, unresolved tags, broken references, and page/registry slug mismatches.
-
-## Operations and release
-
-Maintainer procedures for deployment posture, branch protection, CI merge policy,
-release, rollback, and commit-SHA traceability live in
-[docs/operations.md](./docs/operations.md).
-
-Merges to `main` trigger GitHub Pages deployment via
-`.github/workflows/deploy-pages.yml`, which validates with the Makefile contract
-(`make setup` → `check` → `test` → `build` → `budget`), uploads `out/`, and
-publishes to the project site. See [docs/operations.md](./docs/operations.md) for
-required Pages settings, deploy check visibility on `main`, and commit-SHA
-traceability.
-
-`.github/workflows/ci.yml` remains the quality gate on pull requests and pushes;
-it runs `make setup` → `check` → `test` → `build` → `budget` →
-`component-coverage` and does not replace or invoke deploy-pages. Preview
-deployments for pull requests remain out of scope for Phase 1.
-
-See the [Actions tab](https://github.com/portpowered/you-agent-factory-docs/actions)
-for CI and deploy run history on pull requests and `main`.
+`make setup` is the frozen-lockfile install path used by CI (`bun install --frozen-lockfile`).
+`make dev` runs the same Next.js entrypoint as `bun run dev`. Open
+`http://localhost:3000` for the home page.
 
 ## Quality Gates
 
-Merge policy, branch protection assumptions, and what contributors see on pull
-requests versus `main` pushes are documented in
-[docs/operations.md](./docs/operations.md) (Branch protection and CI status
-expectations). GitHub enforces required **ci** status on `main` through
-repository settings, not from files in this repo.
+Local maintainers and GitHub Actions share one Makefile contract (owned by the
+B00 CI/deploy foundation lane — do not edit `Makefile` or `.github/workflows/*`
+from meta-doc rewrite work):
 
-### Fresh checkout
+| Stage | Command | Role |
+| --- | --- | --- |
+| Install | `make setup` | `bun install --frozen-lockfile` |
+| Static analysis | `make check` | typecheck then lint |
+| Tests | `make test` | website functionality suite |
+| Static export | `make build` | `bun run build:export` → `out/` |
+| Budget | `make budget` | rewrite-era transitional skip/pass allowed |
+| Component coverage | `make component-coverage` | rewrite-era transitional skip/pass allowed |
 
-On a clean clone with no gitignored build artifacts, the minimal setup is:
+Fresh checkout proof:
 
 ```sh
 make setup
 make check
 make test
 make build
-make budget
-make component-coverage
 ```
 
-You do not need to run `fumadocs-mdx` manually. The repository does not commit
-`.source/` (Fumadocs MDX bindings) or `.next/`; the supported command scripts
-run `prepare:content-runtime` first and invoke `fumadocs-mdx` automatically
-where `.source/` is part of the command contract.
+`.github/workflows/ci.yml` runs `make setup` → `check` → `test` → `build` →
+`budget` → `component-coverage` on pull requests and pushes.
+`.github/workflows/deploy-pages.yml` validates with the same Makefile stages on
+`main`, then publishes `out/` to GitHub Pages.
 
-The canonical derived-content bootstrap command is:
+Retired Atlas / Phase 1 route-verifier sprawl is **not** part of the required
+contributor path. Prefer the Makefile stages above. Broader local aggregates such
+as `make ci` still exist for optional maintainer use but are not what rewrite-era
+CI invokes.
+
+See [docs/operations.md](./docs/operations.md) and
+[docs/internal/processes/ci-deploy-foundation-relevant-files.md](./docs/internal/processes/ci-deploy-foundation-relevant-files.md)
+for deploy posture, Pages settings, and transitional gate behavior.
+
+### Useful individual targets
 
 ```sh
-bun run prepare:content-runtime
+make setup              # bun install --frozen-lockfile
+make check              # typecheck then lint
+make test               # website functionality suite
+make build              # static export to out/
+make budget             # exported-site budget gate (transitional skip/pass ok)
+make component-coverage # component coverage gate (transitional skip/pass ok)
+make lint               # Biome check
+make format             # Biome format --write
+make typecheck          # tsc --noEmit (after content-runtime prep)
+make validate-data      # registry and content validation
+make linkcheck          # internal docs link validation
 ```
 
-It prepares shipped localized docs, the published docs registry manifest, graph
-registry runtime, registry runtime, and table registry runtime in one fixed
-order. Re-running it is safe; it refreshes the checked-in generated runtime
-artifacts in place when needed.
+You do not need to run `fumadocs-mdx` manually. Supported command scripts run
+`prepare:content-runtime` and invoke `fumadocs-mdx` when `.source/` is required.
+
+## Static export (GitHub Pages)
+
+`make build` runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`) and emits
+`out/`. CI and deploy-pages both call `make build`.
+
+For GitHub Pages **project sites** served from
+`https://<org>.github.io/<repo>/`, set `GITHUB_PAGES_BASE_PATH` to the repository
+name when running the export build:
+
+```sh
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+```
+
+When unset, export builds keep `/` as the base for local preview and user/org
+root Pages sites.
+
+## Docs authoring
+
+Canonical page bundles share one page-spec generation path. Templates live in
+`docs/templates/`; see [docs/documentation-template.md](./docs/documentation-template.md).
+
+```sh
+bun run generate:page-bundle -- --spec page-specs/my-page.json --dry-run
+bun run generate:page-bundle -- --spec page-specs/my-page.json
+```
 
 For content pull requests, the supported local review-readiness proof is:
 
@@ -253,363 +169,26 @@ For content pull requests, the supported local review-readiness proof is:
 bun run doctor:content-pr
 ```
 
-This maintainer-facing doctor flow is scoped to content-branch review readiness,
-not the full `make ci` gate. It proves four stages in order:
-
-1. preflight cleanliness check for tracked `src/content` plus the checked-in generated runtime modules owned by the preparation flow
-2. canonical content-runtime preparation through `bun run prepare:content-runtime`, including an immediate scoped drift proof for the tracked authoritative derived artifacts and a generated-source completeness/freshness proof for the full preparation contract
-3. narrow content validation (`validate-data` and `linkcheck`)
-4. final clean-tree proof for the same tracked scoped paths
-
-The tracked scope is intentionally limited to `src/content` plus the four
-authoritative preparation outputs that are committed to git:
-`shipped-localized-docs.generated.ts`,
-`graph-registry-runtime.generated.ts`,
-`registry-runtime.generated.ts`, and `table-registry.generated.ts`.
-`published-docs-registry.generated.ts` is still regenerated by
-`bun run prepare:content-runtime`, but it is gitignored, so the doctor treats it
-as part of the preparation command contract rather than the tracked clean-tree
-proof. If that deleted-route manifest or another generated runtime output is
-still stale after the supported preparation path, `bun run doctor:content-pr`
-now stops with a targeted generated-source completeness/freshness invariant
-failure instead of only surfacing generic dirty-path, validation, or linkcheck
-errors. Unrelated repository cleanup is left to the maintainer rather than
-performed automatically by the doctor flow.
-
-Use this command when you want one repeatable content-PR proof without manually
-remembering the generation and lightweight validation sequence. Use `make ci`
-when you need the full repository gate.
-
-### CI sequence
-
-GitHub Actions runs the Makefile contract on pull requests and pushes (see
-`.github/workflows/ci.yml`):
-
-1. `make setup` — `bun install --frozen-lockfile`
-2. Install Playwright Chromium (CI/deploy runners; needed by some website tests)
-3. `make check` — typecheck then lint
-4. `make test` — website functionality suite
-5. `make build` — static export to `out/`
-6. `make budget` — exported-site budget gate (rewrite-era transitional skip/pass is allowed)
-7. `make component-coverage` — component coverage gate (rewrite-era transitional skip/pass is allowed)
-
-No repository secrets are required for those stages. The baseline CI workflow
-does not invoke deploy or preview steps. GitHub Pages deployment runs separately
-via `.github/workflows/deploy-pages.yml` on pushes to `main` (see
-[Operations and release](#operations-and-release)). Reproduce any failing stage
-locally with the same `make <target>`.
-
-The older aggregate `make ci` target still exists for broader local gates
-(lint/typecheck/test/coverage/build-contract/integration/validate-data/linkcheck)
-but is not what `.github/workflows/ci.yml` invokes.
-
-Use `bun run generate:page-bundle` when adding canonical concept, glossary,
-module, model, paper, or training-regime pages, then run `make validate-data`
-before opening a pull request.
-
-Fumadocs writes generated MDX bindings under `.source/` (gitignored). Fresh
-checkouts do not include that directory; the `typecheck`, `test`,
-`test:build-contract`, `test:verify-contract`, `coverage`, `build`, and
-`linkcheck` command paths all invoke `fumadocs-mdx` after the shared
-`prepare:content-runtime` flow when `.source/` is required, so standalone
-`make typecheck`, `make test`, and `make linkcheck` succeed without a manual
-codegen step. That shared preparation flow also removes any existing `.source/`
-tree before regeneration so deleted or moved docs pages cannot survive as stale
-generated imports between runs.
-
-When you need to refresh the checked-in content-runtime artifacts directly, use
-`bun run prepare:content-runtime` rather than running the five runtime
-generation commands separately.
-
-When a planner or reviewer needs one narrow proof that a normal checkout can
-materialize the full generated runtime surface, run
-`make verify-content-runtime-completeness`. That target reruns the canonical
-`prepare:content-runtime` flow through the existing verifier, then fails
-non-zero if any required runtime module is missing or if its committed-versus-
-ignored git classification no longer matches the completeness contract.
-
-
-Individual targets:
-
-```sh
-make setup         # bun install --frozen-lockfile (CI/Pages install contract)
-make check         # typecheck then lint (CI/Pages static analysis contract)
-make budget        # exported-site budget gate (rewrite-era transitional skip/pass allowed)
-make component-coverage # component coverage gate (rewrite-era transitional skip/pass allowed)
-make ci            # broader local aggregate gate (not invoked by rewrite-era CI YAML)
-make build         # static export to out/ via bun run build:export (CI/Pages build contract)
-make lint          # Biome check (no auto-fix)
-make format        # Biome format --write
-make typecheck     # prepare:content-runtime + fumadocs-mdx, then tsc --noEmit
-make test          # website functionality suite (CI/Pages test contract)
-make test-build-contract # consolidated build/export contract suites
-make test-system   # build/export contracts plus post-build integration tests
-make coverage      # prepare:content-runtime + fumadocs-mdx, manifest coverage gate
-make build  # static export to out/
-make verify-content-runtime-completeness # authoritative reviewer proof for generated runtime completeness
-make build # verify existing out/ artifact (requires build-export first)
-make check # HTTP verification for Phase 1 reader routes and search (requires build)
-make check # batch-010 built-app gate with planner-facing evidence summary
-make check # batch-011 follow-up gate with planner-facing evidence summary
-make check # batch-014 GitHub Pages closure gate (validates out/ static export)
-make validate-data # registry and content validation
-make linkcheck     # prepare:content-runtime + fumadocs-mdx, internal docs link validation (also runs in make ci)
-make scaffold       # scaffold glossary/concept page bundles (pass ARGS='...')
-```
-
-Stub targets exist for later work and are not part of `make ci` or GitHub
-Actions:
-
-```sh
-make validate-pdf
-```
-
-### Phase 1 route and search UX verification
-
-**Prerequisites:** a production `.next/` build (`bun run build` / the non-export
-Next build), Bun dependencies installed, and Playwright Chromium for real
-browser checks (`bunx playwright install chromium` once per machine). Note:
-rewrite-era `make build` emits static `out/` instead of the `.next/` server
-build; use `bun run build` when a verifier still needs `next start`.
-
-After `make build`, the static `out/` artifact is ready for Pages upload. Former Phase 1 built-app verifiers were retired; the empty-shell rewrite no longer runs that gate
-from `docs/temp/customer-ask.md` (home, search, glossary, tags, sample
-docs, live `/search` and header search for GQA, attention, and KV cache, plus
-`/api/search` for the same queries):
-
-```sh
-make check
-# or
-bun run verify:phase-1-ux
-```
-
-The verifier requires a production build (`.next/`). If the build is missing,
-it exits with a clear message to run `make build` first—it does not start
-`next dev` by default.
-
-When `VERIFY_BASE_URL` is unset, the harness picks a free port on
-`127.0.0.1` in the 3100–3999 range (never port 3000), spawns
-`bun run start` on that port, and always tears down the child server on exit.
-Each HTTP check uses a per-request timeout of at most 10 seconds; server startup
-waits at most 30 seconds. Set `VERIFY_BASE_URL` to an already-running base URL
-(for example `http://127.0.0.1:3456`) to skip spawn and run checks against that
-server instead.
-
-On success the command prints a one-line summary and exits `0`; failures print
-route or query, HTTP status, and reason before exiting `1`. A healthy build
-completes the verifier in well under two minutes on a typical laptop, bounded
-by the configured timeouts.
-
-**Pass/fail interpretation:** Exit `0` means the production-built app satisfies
-the Phase 1 manual gate in `docs/temp/customer-ask.md`, including visible
-links to Grouped-Query Attention for GQA, attention, and KV cache on `/search`
-and in the header search dialog. Exit `1` catches the known **empty-results
-regression**: `make ci` and in-process search tests can pass while `next start`
-still shows an empty-only `/search` UI—this verifier fails in that case so
-convergence review does not rely on ad hoc browser sessions alone. Neither
-`make ci` nor GitHub Actions runs this verifier by default; run it locally or in
-convergence review after `make build`.
-
-**UX convergence scope:** One command exercises all eight Phase 1 reader routes
-over live HTTP against the production build. Failures print the request URL and a
-human-readable reason before exiting `1`.
-
-| Route | Pass | Fail (examples) |
-| --- | --- | --- |
-| `/docs/architecture`, `/docs/glossary`, `/docs/glossary/token`, `/docs/modules/grouped-query-attention` | Unified Fumadocs shell: primary nav, `nd-sidebar`, `nd-page`, populated Modules and Glossary sidebar, token glossary link | Split shell (missing `nd-sidebar`/`nd-page`), empty sidebar, legacy placeholder sidebar copy |
-| `/` | Model Atlas title, global header search trigger (`data-search`), bookmark link to `/search`, **no** redundant inline home search section | Duplicate "Search the reference" heading, `id="search"` section anchor, or inline `data-search` in the home article alongside header search |
-| `/search` | Manual-gate search page content markers | Missing expected search page copy or links |
-| `/tags`, `/tags/attention` | Primary site navigation plus real tag links to sample module, token glossary, and tag-scoped search (no placeholder copy) | Missing primary nav, placeholder/lorem copy, or required tag navigation links |
-| `/api/search`, built `/search`, header dialog | Live search returns GQA, attention, and KV cache results | Empty-only search UI or missing result links |
-
-Convergence checks run first (docs shell → home search entry → reader/tags
-navigation), then legacy route content markers, then `/api/search`, built
-`/search` Playwright checks, header search dialog, and keyboard shortcuts.
-
-**Customer-ask convergence reporting:** After the Phase 1 UX checks finish,
-the same command prints a structured **Customer-ask convergence report** with
-one line per batch-008 customer-ask check. Each row includes a stable `checkId`,
-human title, optional `route` or `query`, `pass` / `fail` / `uncertain` status,
-failure reason when applicable, and a `checklistRow` mapping to
-`docs/temp/checklist.md`. The report covers home/header polish on `/`,
-tag list styling on `/tags` and `/tags/attention`, search surface behavior on
-`/search`, the header search dialog, and `/api/search`, glossary presentation on
-`/docs/glossary/token`, and the canonical GQA module page on
-`/docs/modules/grouped-query-attention`.
-
-**Pass / fail / uncertain interpretation for loopback review:**
-
-| Outcome | Meaning | Exit code impact |
-| --- | --- | --- |
-| `pass` | Built app satisfies the customer-ask assertion | Non-blocking |
-| `fail` | Regression or missing batch-008 repair evidence | Command exits `1` |
-| `uncertain` | Check ran but needs manual follow-up (for example Command-K hover contrast or glossary footer hover pairing) | Non-blocking; record in convergence notes |
-
-The process exit code is `1` when **either** legacy Phase 1 UX verification fails
-**or** any customer-ask row is `fail`. Rows marked `uncertain` alone do not fail
-the command. Copy per-row statuses into loopback convergence notes so the
-ideafy planner can choose a narrow repair batch or Phase 1 stop-and-wait. See
-`factory/docs/phase-1-customer-ask-convergence-validator.md` for the full check
-id, route, and checklist-row inventory.
-
-**Batch-010 built-app convergence validator:** During batch-010 loopback, run
-the canonical built-app gate with planner-facing evidence that separates
-verifier command-path health from customer-ask row outcomes:
-
-```sh
-make check
-# or
-bun run verify:phase-1-built-app-convergence
-```
-
-This runs `make build` then `make check` with `VERIFY_BASE_URL`
-explicitly unset, streams subprocess output to the terminal while capturing it
-for parsing, and prints a **Phase 1 batch-010 built-app convergence evidence
-summary** with `Recommendation` and `Rationale` lines. The process exits `1`
-when verifier command-path or any customer-ask row is `fail`; `uncertain`
-evidence is non-blocking. Canonical validation must not set `VERIFY_BASE_URL`.
-See `factory/docs/phase-1-built-app-convergence-validator.md` for
-prerequisites, report fields, exit semantics, and recommendation interpretation.
-
-**Batch-011 follow-up convergence validator:** After batch-011 follow-up repairs
-land, run the canonical follow-up gate with planner-facing evidence for the
-expanded customer-ask inventory:
-
-```sh
-make check
-# or
-bun run verify:phase-1-follow-up-convergence
-```
-
-This runs `make build` then `make check` with `VERIFY_BASE_URL`
-explicitly unset, streams subprocess output to the terminal while capturing it
-for parsing, and prints a **Phase 1 batch-011 follow-up convergence evidence
-summary** with `Recommendation` and `Rationale` lines. The process exits `1`
-when verifier command-path or any customer-ask row is `fail`; `uncertain`
-evidence is non-blocking. Prior batch-008/010 all-pass evidence is stale for
-this inventory and must be refreshed through this pass. See
-`factory/docs/phase-1-follow-up-customer-ask-convergence-validator.md` for
-prerequisites, check inventory, exit semantics, and loopback usage.
-
-**Batch-014 GitHub Pages convergence validator:** After batch-014 GitHub Pages
-repairs land, run the canonical static-export closure gate that validates the
-built `out/` artifact rather than only the `next start` spawned-server path:
-
-```sh
-make check
-# or
-bun run verify:phase-1-github-pages-convergence
-```
-
-This runs `make build`, inspects the `out/` artifact, serves it from a
-loopback static file server, and re-runs Phase 1 search probes for GQA,
-attention, and KV cache plus representative reader-route markers against that
-static export. It prints a **Phase 1 batch-014 GitHub Pages convergence
-evidence summary** with `Recommendation` and `Rationale` lines. The process
-exits `1` when export-command-path, export-artifact, static-server-command-path,
-or phase-1-static-regression rows are `fail`; `uncertain` evidence is
-non-blocking. Prior built-app follow-up convergence evidence does not prove the
-GitHub Pages export path and must be refreshed through this pass. See
-`factory/docs/phase-1-github-pages-convergence-validator.md` for prerequisites,
-domain inventory, exit semantics, and loopback usage.
-
-Those GQA, attention, and KV cache queries are representative behavior probes,
-not a hidden page inventory. Critical canonical page coverage for export and
-search smoke is projected from the shared `critical-docs-smoke` contract.
-
-That contract derives its page set from the same published-docs workflow used
-elsewhere in the site:
-
-- `loadShippedLocalizedDocsPages` supplies the published canonical page set.
-- `resolvePublishedResourceTags` merges page frontmatter tags with registry
-  tags.
-- the published-docs registry/discovery manifest remains the supported route
-  and page inventory surface for those published pages.
-
-In practice, a normal canonical page addition should enter critical-doc smoke
-automatically when it is published through the supported workflow and matches an
-existing critical rule. For example, a published module page with the merged
-`attention` tag or a published glossary page with the merged
-`token-to-probability-chain` tag is picked up without editing separate route or
-search smoke arrays.
-
-Manual smoke-test edits are still expected only when behavior changes rather
-than page count changes. Typical examples are adding a new representative
-search query, changing the critical-rule definitions themselves, introducing a
-new export-facing route expectation, or expanding smoke coverage to a new
-behavior class.
-
-Keep the ownership boundary narrow: contributor docs or canonical page additions
-should not reopen the active built-app or GitHub Pages static-export repair
-tracks unless the change exposes a concrete customer-visible gap in those
-verifiers.
-
-The verifier also exercises the built `/search` page, the header search dialog
-(via the search trigger button), and keyboard shortcuts on the home page:
-**Meta+K** (Cmd+K on macOS) and **Control+K** (Windows/Linux). Each shortcut
-must open the header search dialog with a visible search textbox. Real runs
-need Playwright Chromium once per machine (`npx playwright install chromium`).
-
-If your environment cannot reliably automate OS keyboard shortcuts in CI, set
-`VERIFY_SEARCH_SHORTCUT_SKIP=1` to skip automated shortcut checks. When
-skipping, reviewers must run this two-step manual check after
-`make check`:
-
-1. Open the built app home page (`/`).
-2. Press **Cmd+K** (macOS) or **Ctrl+K** (Windows/Linux) and confirm the
-   header search dialog opens with a visible search textbox; repeat for the
-   other modifier if your platform supports both.
-
-For static HTTP fixture tests, set `VERIFY_SEARCH_SHORTCUT_STUB=pass` alongside
-the other `VERIFY_*_STUB=pass` env vars documented in the verifier tests.
-
-GitHub Pages deployment runs in `.github/workflows/deploy-pages.yml` on `main`
-pushes only; neither `.github/workflows/ci.yml` nor the Makefile contract stages
-it calls invoke deploy or preview steps. Rewrite-era `make component-coverage`
-is an honest transitional skip/pass until a rewrite-safe coverage gate exists
-(see [ci-deploy-foundation-relevant-files.md](./docs/internal/processes/ci-deploy-foundation-relevant-files.md)).
-
-### Fresh-checkout CI proof
-
-`src/tests/ci/fresh-checkout-typecheck.test.ts` proves the typecheck gate
-succeeds when `.source/` is absent. Instead of deleting gitignored artifacts in
-your working tree, the test provisions an isolated detached git worktree at HEAD,
-runs `bun install --frozen-lockfile` inside it, confirms `.source/` is missing,
-and runs the typecheck gate only in that worktree. This models a fresh clone
-without mutating your main workspace `node_modules`, `.next/`, or generated
-`.source/`. Note: that file lives under `src/tests/ci/` and is not part of plain
-`make test`; run it explicitly when you need the fresh-checkout proof.
-
-Equivalent Bun scripts are in `package.json` (`bun run lint`, `bun run build`,
-`bun run scaffold:doc-page`, and so on).
+Use `make check` / `make test` / `make build` for the repository quality gate.
 
 ## Agent Factory Loop
 
-The project uses an agent factory called `you` to manage long-running work.
-Only the PLANNER/meta-planner role should use `you`.
+This docs repo is built and maintained with an agent factory called `you`.
+**Only the PLANNER / meta-planner role should use `you`.** Non-planners must not
+start the workflow runtime.
 
-The ideafy meta-planner submits batches of `idea` work. Each idea is converted
-to a PRD, a worktree task, implementation work, review, and eventual completion.
-The loop is documented in:
+Figure out how `you` works with `you -h` and `you docs agents`. Do not run `you`
+directly unless you are the planner.
+
+Factory loop docs:
 
 * [factory/workstations/ideafy/AGENTS.md](./factory/workstations/ideafy/AGENTS.md)
 * [factory/factory.json](./factory/factory.json)
 * [factory/docs/batch-inputs.md](./factory/docs/batch-inputs.md)
-* [factory/docs/batch-input-example.json](./factory/docs/batch-input-example.json)
 
-Maintainers can refresh current repo-local dispatch evidence with:
-
-```bash
-make planner-conflict-hotspots
-```
-
-That command reads current `git log --name-only` history plus tracked worktree
-state and prints a concise planner-facing hotspot snapshot, including a short
-safe-next-lanes hint, without relying on handwritten temp notes.
-
-Project-level meta state lives in:
+Rewrite planning state for this product lives under:
 
 ```txt
-docs/temp/progress.txt
-docs/temp/checklist.md
+docs/temp/customer-ask.md
+docs/temp/big-docs/
 ```
