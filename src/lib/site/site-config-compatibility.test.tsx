@@ -153,7 +153,7 @@ describe("site config home featured link compatibility", () => {
         configHrefs.includes(href),
       );
 
-      expect(configHrefs).toEqual([]);
+      expect(configHrefs.length).toBeGreaterThan(0);
       expect(consumerHrefs).toEqual(configHrefs);
     }
   });
@@ -164,7 +164,7 @@ describe("site config home featured link compatibility", () => {
         youAgentFactorySiteConfig,
         locale,
       );
-      expect(hrefs).toEqual([]);
+      expect(hrefs.length).toBeGreaterThan(0);
       expect(
         hrefs.some(
           (href) =>
@@ -184,7 +184,28 @@ describe("site config home featured link compatibility", () => {
       messages,
     );
 
-    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toEqual([]);
-    expect(configLinks).toEqual([]);
+    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(4);
+    expect(configLinks).toEqual([
+      {
+        href: "/docs/guides",
+        title: messages.home.guidesLinkTitle,
+        description: messages.home.guidesLinkDescription,
+      },
+      {
+        href: "/browse",
+        title: messages.home.docsLinkTitle,
+        description: messages.home.docsLinkDescription,
+      },
+      {
+        href: "/docs/glossary",
+        title: messages.home.glossaryLinkTitle,
+        description: messages.home.glossaryLinkDescription,
+      },
+      {
+        href: "/blog",
+        title: messages.home.blogLinkTitle,
+        description: messages.home.blogLinkDescription,
+      },
+    ]);
   });
 });

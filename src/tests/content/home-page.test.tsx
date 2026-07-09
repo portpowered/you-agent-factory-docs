@@ -49,17 +49,34 @@ describe("home page messages", () => {
     expect(home.onThisPageBrowse).toBe("Browse");
   });
 
-  it("keeps legacy Atlas featured-link message keys available for B01 without requiring them in site config", async () => {
+  it("keeps legacy Atlas featured-link message keys available without binding them in site config", async () => {
     const { home } = await loadUiMessages();
+    expect(home.guidesLinkTitle).toBe("Guides");
+    expect(home.docsLinkTitle).toBe("Docs browse");
+    expect(home.glossaryLinkTitle).toBe("Glossary");
+    expect(home.blogLinkTitle).toBe("Blog");
     expect(home.atlasLinkTitle.length).toBeGreaterThan(0);
     expect(home.gqaLinkTitle.length).toBeGreaterThan(0);
     expect(home.swigluLinkTitle.length).toBeGreaterThan(0);
     expect(home.reluLinkTitle.length).toBeGreaterThan(0);
-    expect(home.atlasLinkDescription.length).toBeGreaterThan(0);
-    expect(home.gqaLinkDescription.length).toBeGreaterThan(0);
-    expect(home.swigluLinkDescription.length).toBeGreaterThan(0);
-    expect(home.reluLinkDescription.length).toBeGreaterThan(0);
-    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toEqual([]);
+    expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.map((link) => link.titleKey),
+    ).toEqual([
+      "guidesLinkTitle",
+      "docsLinkTitle",
+      "glossaryLinkTitle",
+      "blogLinkTitle",
+    ]);
+    expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.some((link) =>
+        [
+          "atlasLinkTitle",
+          "gqaLinkTitle",
+          "swigluLinkTitle",
+          "reluLinkTitle",
+        ].includes(link.titleKey),
+      ),
+    ).toBe(false);
   });
 });
 
@@ -87,7 +104,22 @@ describe("home page render", () => {
     for (const href of ATLAS_MODULE_FEATURED_HREFS) {
       expect(html).not.toContain(`href="${href}"`);
     }
-    expect(html).not.toContain('href="/browse"');
+  });
+
+  it("renders site-config CLI featured links in the browse section", async () => {
+    const html = await renderHomeArticleHtml();
+    expect(html).toContain('href="/docs/guides"');
+    expect(html).toContain('href="/browse"');
+    expect(html).toContain('href="/docs/glossary"');
+    expect(html).toContain('href="/blog"');
+    expect(html).toContain("Guides");
+    expect(html).toContain("Docs browse");
+    expect(html).toContain("Glossary");
+    expect(html).toContain("Blog");
+    expect(html).not.toContain("Browse the atlas");
+    expect(html).not.toContain("Grouped-query attention");
+    expect(html).not.toContain("SwiGLU");
+    expect(html).not.toContain(">ReLU<");
   });
 
   it("renders a dedicated install CTA with macOS/Linux and Windows commands", async () => {
@@ -149,7 +181,10 @@ describe("home page render", () => {
 
     expect(html).toContain("Cẩm nang về các mô hình và module AI hiện đại");
     expect(html).toContain('id="browse"');
-    expect(html).not.toContain('href="/vi/browse"');
+    expect(html).toContain('href="/vi/docs/guides"');
+    expect(html).toContain('href="/vi/browse"');
+    expect(html).toContain('href="/vi/docs/glossary"');
+    expect(html).toContain('href="/vi/blog"');
     expect(html).not.toContain(
       'href="/vi/docs/modules/grouped-query-attention"',
     );
@@ -171,7 +206,10 @@ describe("home page render", () => {
       "現代の AI モデルとモジュールのためのフィールドガイド",
     );
     expect(html).toContain('id="browse"');
-    expect(html).not.toContain('href="/ja/browse"');
+    expect(html).toContain('href="/ja/docs/guides"');
+    expect(html).toContain('href="/ja/browse"');
+    expect(html).toContain('href="/ja/docs/glossary"');
+    expect(html).toContain('href="/ja/blog"');
     expect(html).not.toContain(
       'href="/ja/docs/modules/grouped-query-attention"',
     );
@@ -195,11 +233,12 @@ describe("home page render", () => {
     expect(html).not.toContain("lorem");
   });
 
-  it("renders an empty browse list without persistent underlines", async () => {
+  it("renders featured browse links without persistent underlines", async () => {
     const html = await renderHomeArticleHtml();
 
     expect(html).toContain("list-none");
     expect(html).not.toContain("list-disc");
+    expect(html).toContain('href="/docs/guides"');
     const withoutNoUnderline = html.replaceAll("no-underline", "");
     expect(withoutNoUnderline).not.toMatch(/\bunderline\b/);
   });

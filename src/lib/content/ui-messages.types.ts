@@ -88,6 +88,14 @@ export type HomeMessages = {
   featureCrons: string;
   featureEventStreams: string;
   browseSectionTitle: string;
+  guidesLinkTitle: string;
+  guidesLinkDescription: string;
+  docsLinkTitle: string;
+  docsLinkDescription: string;
+  glossaryLinkTitle: string;
+  glossaryLinkDescription: string;
+  blogLinkTitle: string;
+  blogLinkDescription: string;
   atlasLinkTitle: string;
   atlasLinkDescription: string;
   gqaLinkTitle: string;

@@ -87,8 +87,24 @@ describe("you-agent-factory site config", () => {
     ).not.toContain("systems");
   });
 
-  test("keeps home featured links as an empty transitional placeholder list", () => {
-    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toEqual([]);
-    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(0);
+  test("lists CLI docs destinations for home featured links", () => {
+    expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.map((link) =>
+        link.kind === "route" ? link.routeSurface : link.slug,
+      ),
+    ).toEqual(["guides", "docs", "glossary", "blogIndex"]);
+    expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.every(
+        (link) =>
+          link.kind === "route" &&
+          ![
+            "atlasLinkTitle",
+            "gqaLinkTitle",
+            "swigluLinkTitle",
+            "reluLinkTitle",
+          ].includes(link.titleKey),
+      ),
+    ).toBe(true);
+    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(4);
   });
 });

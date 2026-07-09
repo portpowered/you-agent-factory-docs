@@ -56,6 +56,18 @@ Required meaning (wording may vary):
 - Why: communicate running hundreds of agents at once
 - Features: harness support plus loop, review, planner, crons, and event streams
 
+## Featured browse links
+
+| File | Role |
+| --- | --- |
+| `src/lib/site/you-agent-factory-site-config.ts` (`homeFeaturedLinks`) | Default CLI destinations: guides, docs/browse, glossary, blogIndex |
+| `src/content/messages/*/common.json` (`home.guidesLink*`, `home.docsLink*`, `home.glossaryLink*`, `home.blogLink*`) | Featured link title/description bindings |
+| `src/lib/site/site-config-resolution.ts` | `resolveSiteConfigHomeFeaturedLinks` / href helpers used by `HomeArticle` |
+| `src/components/home/home-article.tsx` (`#browse`) | Renders resolved featured links; does not hard-code hrefs |
+| `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for CLI featured-link copy |
+
+Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
+
 ## Patterns
 
 - Product identity on `/` is message-driven (`messages.home.*`), not `siteConfig.brand`.
@@ -68,9 +80,11 @@ Required meaning (wording may vary):
   so locales can stub labels while keeping the same runnable commands.
 - Why/features stay single-column article sections with stable `#why` / `#features`
   anchors; use `bulletlessListClassName` for the feature list (no `list-disc`).
+- Default `homeFeaturedLinks` bind CLI route surfaces to `guidesLink*` / `docsLink*` /
+  `glossaryLink*` / `blogLink*` message keys; do not hard-code hrefs in `HomeArticle`.
 - Legacy Atlas featured-link message keys (`atlasLinkTitle`, `gqaLinkTitle`, …) may
-  remain in message files until a later story removes them; they must not appear as
-  rendered product copy when `homeFeaturedLinks` is empty or CLI-shaped.
+  remain in message files until a later story removes them; they must not be bound in
+  `homeFeaturedLinks` or appear as rendered product copy.
 - Worktree browser verify: this lane often has no local `node_modules` (hoisted at
   repo root). Turbopack rejects out-of-root `node_modules` symlinks. Prefer
   `renderToStaticMarkup(HomeArticle)` + `generateMetadata()` for identity checks
