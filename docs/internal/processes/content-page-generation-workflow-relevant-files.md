@@ -209,6 +209,13 @@ Fumadocs frontmatter title and 404s because CLI templates keep title/description
 in colocated messages. Without (3), review preflight cannot classify the
 first-page shared wiring as the documented exception lane.
 
+Fumadocs `pageSchema` still requires frontmatter `title` (and accepts optional
+`description`) at webpack/static-export time. For local-message CLI pages, set
+`title: ""` and `description: ""` in frontmatter (same pattern as the glossary
+template) so the Fumadocs collection validates, while the shell continues to
+render `messages.title` / `messages.description` via `ModulePageProviders`. Do
+not put the real reader title only in Fumadocs frontmatter.
+
 ### Documentation CLI install commands (page-local)
 
 For `documentation/cli` install copy, keep OS labels and install commands under
