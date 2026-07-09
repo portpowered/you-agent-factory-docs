@@ -15,9 +15,13 @@
       "title": "Simple Example",
       "body": "You submit a work item into a running factory. It lands in an initial work-type state such as task:init, which is a queued place in the topology. A workstation whose inputs match that place becomes enabled, consumes the waiting item, and moves it forward. Until that consume happens, the item stays in the task queue."
     },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "You meet the task queue after submitting work into a running factory: each accepted item lands in a waiting work-type place. Work inspection surfaces such as you work list show those items by state, so you can see what is still queued. Workstations consume ready input places when their matching inputs are present, which is how waiting items leave the queue."
+    },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "The task queue is the runtime backlog of waiting work, not a planner checklist, not the submit batch that enqueues work, not the token vocabulary itself, and not the workqueue-executor technique pattern."
+      "body": "A task queue is not a checklist. A checklist is the planner’s live outcomes and workstream board; the task queue is the runtime backlog of work waiting in work-type places. Submitting work is how batches enter the factory—it is the ingress step, not the waiting backlog those items join afterward. Factory and work tokens name the unit that occupies a place; the task queue is the set of those waiting places holding ready work. A workqueue-executor is a technique pattern for draining or organizing queued work; it is not the queue concept itself."
     },
     "related": {
       "title": "Related Concepts And Modules"
@@ -28,5 +32,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "submittingWork": "Submitting work",
+    "checklist": "Checklist",
+    "tokens": "Tokens",
+    "workqueueExecutor": "Workqueue executor"
   }
 }

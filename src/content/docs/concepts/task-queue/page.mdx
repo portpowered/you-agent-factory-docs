@@ -16,6 +16,7 @@ updatedAt: "2026-07-09"
 
 import { CitationList } from "@/features/docs/components/CitationList";
 import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -31,6 +32,10 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="simple-example" titleKey="sections.simpleExample.title">
   <T k="sections.simpleExample.body" />
+</Section>
+
+<Section id="where-it-appears" titleKey="sections.whereItAppears.title">
+  <T k="sections.whereItAppears.body" />
 </Section>
 
 <Section id="common-confusions" titleKey="sections.commonConfusions.title">
@@ -49,6 +54,26 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   />
 
   <RelatedDocs registryId="concept.task-queue" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWork",
+      },
+      {
+        href: "/docs/concepts/checklist",
+        labelKey: "links.checklist",
+      },
+      {
+        href: "/docs/concepts/tokens",
+        labelKey: "links.tokens",
+      },
+      {
+        href: "/docs/techniques/workqueue-executor",
+        labelKey: "links.workqueueExecutor",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">

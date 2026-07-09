@@ -46,6 +46,9 @@ describe("task-queue concept page", () => {
       screen.getByRole("heading", { name: "Simple Example" }),
     ).toBeTruthy();
     expect(
+      screen.getByRole("heading", { name: "Where It Appears" }),
+    ).toBeTruthy();
+    expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
     expect(
@@ -59,10 +62,15 @@ describe("task-queue concept page", () => {
     const whatItIs = document.getElementById("what-it-is");
     const whyItMatters = document.getElementById("why-it-matters");
     const simpleExample = document.getElementById("simple-example");
+    const whereItAppears = document.getElementById("where-it-appears");
+    const commonConfusions = document.getElementById("common-confusions");
+    const related = document.getElementById("related");
     expect(whatItIs).toBeTruthy();
     expect(whyItMatters).toBeTruthy();
     expect(simpleExample).toBeTruthy();
-    expect(document.getElementById("common-confusions")).toBeTruthy();
+    expect(whereItAppears).toBeTruthy();
+    expect(commonConfusions).toBeTruthy();
+    expect(related).toBeTruthy();
 
     expect(whatItIs?.textContent).toMatch(/task queue/i);
     expect(whatItIs?.textContent).toMatch(/backlog of submitted work/i);
@@ -76,9 +84,33 @@ describe("task-queue concept page", () => {
     expect(simpleExample?.textContent).toMatch(/task:init/i);
     expect(simpleExample?.textContent).toMatch(/consume/i);
 
+    expect(whereItAppears?.textContent).toMatch(/submitting work/i);
+    expect(whereItAppears?.textContent).toMatch(/you work list/i);
+    expect(whereItAppears?.textContent).toMatch(/workstation/i);
+
+    expect(commonConfusions?.textContent).toMatch(/checklist/i);
+    expect(commonConfusions?.textContent).toMatch(/submitting work/i);
+    expect(commonConfusions?.textContent).toMatch(/token/i);
+    expect(commonConfusions?.textContent).toMatch(/workqueue-executor/i);
+
+    expect(
+      related?.querySelector('a[href="/docs/documentation/submitting-work"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/concepts/checklist"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/concepts/tokens"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/techniques/workqueue-executor"]'),
+    ).toBeTruthy();
+
     // Teaching copy must be in the document tree (not hover-only).
     expect(whatItIs?.textContent?.trim().length).toBeGreaterThan(40);
     expect(whyItMatters?.textContent?.trim().length).toBeGreaterThan(40);
     expect(simpleExample?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(whereItAppears?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(commonConfusions?.textContent?.trim().length).toBeGreaterThan(40);
   });
 });
