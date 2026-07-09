@@ -230,6 +230,29 @@ with `ModulePageProviders`, and assert visible command text plus next-step
 hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
 as sufficient page coverage.
 
+## First published concepts page (collection already wired)
+
+`concepts` already has collection loaders (`loadConceptPage` /
+`concept-page-load.ts`), `LOCAL_DOCS_SECTIONS`, `PUBLISHED_DOCS_SECTIONS`, and
+`registryDirectoryByKind.concept`. A routine first concepts page can stay
+page-only: page bundle + matching `src/content/registry/concepts/<slug>.json`.
+
+Scaffold with `bun run scaffold:doc-page -- --kind concept --slug <slug>
+--title <title> --concept-type <type>`, then before review:
+
+- set frontmatter and registry `status: published`
+- add frontmatter `title` / `description` (match published guide/documentation pages)
+- replace draft message placeholders with isolation-first English copy
+- use empty `assets.json` and delete the scaffolded
+  `src/content/registry/graphs/<slug>-concept-map.json` when no concept-map graph
+  is taught
+
+Required `bun run test` excludes `src/tests/content/` and `src/lib/docs/` empty
+index suites, so those empty-root assertions do not block a first concepts page
+in the website suite. Prefer `loadLocalDocsPage` + `ModulePageProviders` +
+`renderToStaticMarkup` for identity checks when the worktree has no local
+`node_modules` and Turbopack cannot start `bun run dev`.
+
 ## Glossary-derived browse and sidebar sections
 
 When glossary decomposition needs new reader-facing top-level areas such as
