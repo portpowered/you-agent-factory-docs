@@ -2,11 +2,52 @@ import { expect } from "bun:test";
 import type { StaticOptions } from "fumadocs-core/search/client";
 import { oramaStaticClient } from "fumadocs-core/search/client/orama-static";
 import { pageBaseUrl } from "@/lib/search/collapse-search-results-to-page-hits";
-import {
-  assertSearchNoMatchedTags,
-  assertSearchPageLevelHits,
-  type SearchSurfaceResultSnapshot,
-} from "@/lib/verify/customer-ask-search-surface-convergence";
+
+/** Snapshot of rendered search-panel results used by search UI tests. */
+export type SearchSurfaceResultSnapshot = {
+  resultUrls: readonly string[];
+  matchedTagsVisible: boolean;
+  hasResults: boolean;
+  hasEmpty: boolean;
+  firstResultRowHtml?: string | null;
+};
+
+/** Returns a failure reason when search hits are empty, fragmented, or duplicated. */
+export function assertSearchPageLevelHits(
+  snapshot: SearchSurfaceResultSnapshot,
+  query: string,
+): string | null {
+  if (snapshot.hasEmpty && !snapshot.hasResults) {
+    return `empty results state for query "${query}"`;
+  }
+
+  if (!snapshot.hasResults || snapshot.resultUrls.length === 0) {
+    return `no search results rendered for query "${query}"`;
+  }
+
+  const firstUrl = snapshot.resultUrls[0];
+  if (firstUrl?.includes("#")) {
+    return "first visible result URL includes a hash fragment";
+  }
+
+  const bases = snapshot.resultUrls.map(pageBaseUrl);
+  if (new Set(bases).size !== bases.length) {
+    return "multiple result rows duplicate one canonical page URL";
+  }
+
+  return null;
+}
+
+/** Returns a failure reason when matched-tag chips are visible in results. */
+export function assertSearchNoMatchedTags(
+  snapshot: SearchSurfaceResultSnapshot,
+): string | null {
+  if (snapshot.matchedTagsVisible) {
+    return "search-result-matched-tags is visible in results";
+  }
+
+  return null;
+}
 
 export const SAMPLE_MODULE_URL = "/docs/modules/grouped-query-attention";
 export const MULTI_HEAD_ATTENTION_URL = "/docs/modules/multi-head-attention";

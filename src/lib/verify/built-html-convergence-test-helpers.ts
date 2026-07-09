@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { normalizeBuiltAppHtmlInternalPaths } from "@/lib/build/built-app-html-test-utils";
+import { normalizeBuiltAppHtmlInternalPaths } from "@/lib/build/built-app-html-paths";
 import { shouldRunVerifyProductionIntegrationTests } from "./server-lifecycle";
 
 /**

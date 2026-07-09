@@ -52,7 +52,7 @@ export function ensureExportSearchArtifacts(
   });
   if (buildResult.status !== 0) {
     throw new Error(
-      `build-export failed with status ${buildResult.status}: ${buildResult.stderr ?? buildResult.stdout ?? ""}`,
+      `static export build failed with status ${buildResult.status}: ${buildResult.stderr ?? buildResult.stdout ?? ""}`,
     );
   }
 

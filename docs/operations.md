@@ -32,8 +32,8 @@ stages above, and uploads `out/` with `actions/upload-pages-artifact@v3`.
 The **`deploy`** job (`needs: validate`) publishes that artifact via
 `actions/deploy-pages@v4`. Failed validation never starts deploy for that run.
 
-Opt-in `make build-export` still chains Phase 1 export route/search verifiers for
-local maintainer use. CI and deploy-pages call `make build`, not `make build-export`.
+Atlas/Phase-1 export route verifiers and `make build-export` were retired with
+`rewrite-delete-atlas-domain`. CI and deploy-pages call `make build` only.
 
 ### Why GitHub Pages works for this repository
 
@@ -42,7 +42,7 @@ Observable constraints satisfied in the current repository:
 | Constraint | Evidence |
 | --- | --- |
 | Static export is verified in CI and deploy | `make build` runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`) and emits `out/` with `output: "export"`. CI and deploy-pages both call `make build` before later stages or artifact upload. |
-| Search works without live API routes on Pages | The static export ships a prebuilt Orama bootstrap under `out/api/search`. Client search loads that index from `/api/search` in the export. Opt-in `make build-export` can still run Phase 1 export search handoff verifiers locally. |
+| Search works without live API routes on Pages | The static export ships a prebuilt Orama bootstrap under `out/api/search`. Client search loads that index from `/api/search` in the export. Search bootstrap is emitted by `make build` via `emit-export-search-index`. |
 | Query-backed static routes stay exportable | Static export routes must not await request-only `searchParams` during prerender. Query-driven surfaces should fall back to export-safe HTML on the server and hydrate URL state inside a client component wrapped by `Suspense`. |
 | GitHub Pages is static-only | GitHub Pages cannot run Node.js API routes at request time. This site ships a pre-generated static export and search index instead of live `GET` handlers. |
 | CI and deploy are separate | `.github/workflows/ci.yml` runs the Makefile contract on pull requests and pushes. `.github/workflows/deploy-pages.yml` validates with the same Makefile targets on `main` pushes, then publishes `out/`. |
@@ -98,9 +98,9 @@ Related operational rows not closed in this section alone:
   and publishes to GitHub Pages when deploy succeeds.
 - Confirm the **Deploy to GitHub Pages** check on the merge commit before
   claiming the site was updated.
-- Opt-in Atlas / Phase 1 export verifiers remain available as
-  `make build-export` and `make verify-atlas-*`; they are not required by CI or
-  deploy-pages.
+- Atlas / Phase 1 export verifiers (`make build-export`, `make verify-atlas-*`)
+  were deleted with `rewrite-delete-atlas-domain` and must not be re-chained into
+  CI or deploy-pages.
 
 ## Branch protection
 
@@ -183,8 +183,8 @@ only.
 - Local Makefile targets do not publish status to GitHub; push or open/update a
   PR to surface the **verify** check.
 - `make build` locally produces the same `out/` artifact deploy-pages uploads;
-  it does not push to GitHub Pages. Use opt-in `make build-export` when you also
-  want Phase 1 export route/search verifiers.
+  it does not push to GitHub Pages. Use `make build` for the static export.
+  Former Phase 1 export route/search verifiers were retired with Atlas deletion.
 
 ### Matching local and CI
 

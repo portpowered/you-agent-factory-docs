@@ -37,30 +37,20 @@ tests need a browser).
 
 - `make build` is the CI/Pages contract: `bun run build:export` only. It must
   emit `out/` and must not chain Atlas/Phase-1 route verifiers.
-- `make build-export` remains an opt-in maintainer path that runs the same
-  export plus Phase 1 export route/search verifiers. CI and deploy-pages call
-  `make build`, not `make build-export`.
+- Former `make build-export` (export + Phase 1 verifiers) was retired with
+  Atlas verifier deletion. CI and deploy-pages call `make build` only.
 
-## Opt-in Atlas / Phase-1 post-build verifiers
+## Atlas / Phase-1 post-build verifiers (retired)
 
-Former `make build` chained these Atlas-only checks. They remain available as
-explicit opt-in targets and are **not** invoked by `make build`, `make check`,
-`make test`, CI, or deploy-pages:
+`rewrite-delete-atlas-domain` deleted Atlas-specific verifier scripts and their
+Makefile/`package.json` entrypoints (`verify-atlas-*`, Phase-1 export/route
+convergence passes, GQA built-route checks, and related `src/lib/verify`
+helpers). Do not reintroduce those targets into `make build`, `make check`,
+`make test`, CI, or deploy-pages.
 
-| Target | Script |
-| --- | --- |
-| `make verify-atlas-static-routes` | `scripts/verify-phase-1-static-routes.ts` |
-| `make verify-atlas-grouped-query-attention-built-route` | `scripts/verify-grouped-query-attention-built-route.ts` |
-| `make verify-atlas-docs-footer-hover` | `scripts/verify-docs-footer-hover-built-route.ts` |
-| `make verify-atlas-built-routes` | Runs the three targets above |
-
-`scripts/run-website-functionality-tests.ts` (plain `make test`) also excludes
-Atlas built-HTML assertion suites (`*-built-route-convergence`, `*-built-app`,
-and related layout shell HTML probes), plus Atlas discovery/search/content/
-feature packages that require deleted Model Atlas page fixtures after
-`rewrite-delete-atlas-domain`. Those suites stay runnable under
-`VERIFY_PRODUCTION_INTEGRATION_TESTS=1` or via the opt-in Makefile targets.
-See [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
+`scripts/run-website-functionality-tests.ts` (plain `make test`) still excludes
+Atlas discovery/search/content/feature packages that require deleted Model Atlas
+page fixtures. See [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
 
 ## Empty `generateStaticParams` under static export
 

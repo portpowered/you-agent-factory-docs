@@ -1,56 +1,45 @@
 import { describe, expect, test } from "bun:test";
-import { buildGroupedQueryAttentionStubBody } from "@/lib/verify/grouped-query-attention-module-convergence";
-import { buildMultiTokenPredictionStubBody } from "@/lib/verify/multi-token-prediction-module-convergence";
 import {
-  exportHtmlIncludesGqaAttentionVariantGraphShellMarkers,
-  exportHtmlIncludesMtpAttentionVariantGraphShellMarkers,
   exportHtmlReferencesBasePathAssets,
   exportHtmlReferencesBasePathInternalLinks,
 } from "./verify-export-base-path";
 
-describe("verify export base path markers", () => {
-  test("detects prefixed asset and internal link hrefs", () => {
-    const html = `
-      <script src="/ai-model-reference/_next/static/chunks/main.js"></script>
-      <a href="/ai-model-reference/docs/glossary">Glossary</a>
-    `;
-
+describe("verify-export-base-path", () => {
+  test("exportHtmlReferencesBasePathAssets requires a non-empty base path asset prefix", () => {
     expect(
-      exportHtmlReferencesBasePathAssets(html, "/ai-model-reference"),
+      exportHtmlReferencesBasePathAssets('<script src="/_next/x">', ""),
+    ).toBe(false);
+    expect(
+      exportHtmlReferencesBasePathAssets(
+        '<script src="/docs-site/_next/static/chunk.js">',
+        "/docs-site",
+      ),
     ).toBe(true);
     expect(
-      exportHtmlReferencesBasePathInternalLinks(html, "/ai-model-reference"),
-    ).toBe(true);
-  });
-
-  test("returns false for empty base path", () => {
-    const html =
-      '<script src="/_next/static/chunks/main.js"></script><a href="/docs/glossary">Glossary</a>';
-
-    expect(exportHtmlReferencesBasePathAssets(html, "")).toBe(false);
-    expect(exportHtmlReferencesBasePathInternalLinks(html, "")).toBe(false);
-  });
-
-  test("detects GQA attention-variant graph shell markers", () => {
-    const html = `<html><body>${buildGroupedQueryAttentionStubBody()}</body></html>`;
-    expect(exportHtmlIncludesGqaAttentionVariantGraphShellMarkers(html)).toBe(
-      true,
-    );
-    expect(
-      exportHtmlIncludesGqaAttentionVariantGraphShellMarkers(
-        "<html><body>Grouped-Query Attention</body></html>",
+      exportHtmlReferencesBasePathAssets(
+        '<script src="/_next/static/chunk.js">',
+        "/docs-site",
       ),
     ).toBe(false);
   });
 
-  test("detects MTP attention-variant graph shell markers", () => {
-    const html = `<html><body>${buildMultiTokenPredictionStubBody()}</body></html>`;
-    expect(exportHtmlIncludesMtpAttentionVariantGraphShellMarkers(html)).toBe(
-      true,
-    );
+  test("exportHtmlReferencesBasePathInternalLinks detects docs/tags/root hrefs", () => {
     expect(
-      exportHtmlIncludesMtpAttentionVariantGraphShellMarkers(
-        "<html><body>Multi-Token Prediction</body></html>",
+      exportHtmlReferencesBasePathInternalLinks(
+        '<a href="/docs-site/docs/getting-started">',
+        "/docs-site",
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesBasePathInternalLinks(
+        '<a href="/docs-site/tags">',
+        "/docs-site",
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesBasePathInternalLinks(
+        '<a href="/docs/getting-started">',
+        "/docs-site",
       ),
     ).toBe(false);
   });

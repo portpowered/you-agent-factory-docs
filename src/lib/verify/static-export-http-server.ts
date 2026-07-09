@@ -2,8 +2,8 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import type { Socket } from "node:net";
 import { isAbsolute, join } from "node:path";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import { normalizeGitHubPagesBasePath } from "@/lib/build/static-export";
-import { exportHtmlRelativePath } from "@/lib/build/verify-phase-1-export-routes";
 import {
   reserveListenPort,
   VERIFY_PORT_RANGE_END,

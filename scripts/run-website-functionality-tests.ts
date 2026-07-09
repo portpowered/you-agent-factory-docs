@@ -42,10 +42,9 @@ const excludedPrefixes = [
 ];
 
 /**
- * Atlas / Phase-1 built-HTML assertion suites and opt-in verifier script tests.
- * These require Model Atlas page fixtures or `.next` built routes and belong on
- * `make verify-atlas-*` / `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`, not required
- * `make test` during rewrite foundation / Atlas domain deletion.
+ * Atlas / Phase-1 built-HTML assertion suites (retired with
+ * rewrite-delete-atlas-domain). Keep these exclusions so leftover filenames
+ * cannot re-enter required `make test` if restored accidentally.
  */
 const excludedAtlasHtmlAssertionSuffixes = [
   "-built-route-convergence.test.tsx",

@@ -64,9 +64,25 @@ collections.
 | `src/lib/search/types.ts` | Optional Atlas AI facet keys may remain on the type for compatibility; builder must not populate them |
 | `docs/internal/processes/search-domain-relevant-files.md` | Search pipeline map after adapter removal |
 
+
+## Story 005: delete Atlas-specific verifiers and make/package entrypoints
+
+| Path | Role |
+| --- | --- |
+| `Makefile` | Removed `verify-atlas-*`, `build-export`, and Phase-1 convergence targets |
+| `package.json` | Removed `verify:export-*`, `verify:phase-1-*`, `verify:phase-2-*`, `verify:rendered-quality-*` scripts |
+| `scripts/verify-phase-1-*.ts`, `scripts/verify-grouped-query-attention-built-route.ts`, `scripts/verify-docs-footer-hover-built-route.ts`, `scripts/run-phase-1-*.ts` | Deleted Atlas/Phase-1 verifier entrypoints |
+| `src/lib/build/verify-phase-1-*.ts`, `src/lib/build/verify-*-built-route.ts` | Deleted Atlas built-route / export route verifiers |
+| `src/lib/build/export-out-directory.ts` | Generic `out/` helpers relocated from deleted Phase-1 export verifier for `emit-export-search-index` |
+| `src/lib/build/built-app-html-paths.ts` | Generic base-path HTML normalizer relocated from deleted built-app test utils |
+| `src/lib/verify/phase-1*`, `*module-convergence*`, `*gqa*`, rendered-quality / customer-ask Atlas helpers | Deleted Atlas-only verify helpers |
+| `scripts/run-website-verifier-tests.ts` | Empty-shell skip when no website verifier suites remain |
+| `src/lib/verify/production-integration-test-paths.ts` | Dropped retired Atlas built-route integration paths |
+
+Required `make check` / `make test` / `make build` must not invoke deleted Atlas verifiers.
+
 ## Later stories in this PRD
 
-- `005` deletes Atlas verifier scripts and make/package entrypoints
 - `006` removes remaining Atlas feature packages/routes
 - `007` proves `make check` / `make test` / `make build` end-to-end
 
