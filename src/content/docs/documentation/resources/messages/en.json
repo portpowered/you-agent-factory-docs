@@ -28,7 +28,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web resources / bounded-concurrency reference. It is not a verbatim sync of packaged CLI docs, not the configuration topology overview, not worker backends, not workstation routing or lifecycle, and not portability supportingFiles."
+      "body": "This page is the web resources / bounded-concurrency reference for pools, requirements, ownership, a minimal capacity example, and a typed-resource overview. It is not a sync of packaged CLI docs, not the configuration topology overview, not worker backends, not workstation routing or lifecycle, and not portability supportingFiles. Sibling configuration, workers, and workstations pages aid discovery; they are not required to define what a resource pool is."
     },
     "related": {
       "title": "Related To"
@@ -70,6 +70,10 @@
     "typedInvocationSlotPurpose": "Per-model or per-provider concurrency",
     "typedInvocationSlotMetadata": "Carry the provider or model identity the scheduler should throttle",
     "typedResourcesWhenGenericIsNotEnough": "Stay on the generic {name, capacity} shape when you only need a shared concurrency pool. Switch to a typed resource when the pool must identify a managed model asset, a provider quota boundary, or an invocation slot the scheduler should throttle by provider or model.",
-    "typedResourcesModelsPointer": "LOCAL inference workers that depend on managed model assets must reference a matching top-level MODEL resource. Operator commands and full managed-runtime matrices belong on models docs when those pages are published; this page only covers the typed resource kinds and the metadata you need to declare them."
+    "typedResourcesModelsPointer": "LOCAL inference workers that depend on managed model assets must reference a matching top-level MODEL resource. Operator commands and full managed-runtime matrices belong on models docs when those pages are published; this page only covers the typed resource kinds and the metadata you need to declare them.",
+    "siblingDiscoveryIntro": "Continue with these sibling documentation surfaces when you need factory topology, worker backends, or workstation routing beyond the resources contract.",
+    "configurationDocs": "Configuration",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations"
   }
 }
