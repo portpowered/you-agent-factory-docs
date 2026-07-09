@@ -87,6 +87,12 @@ command-level verification of the Makefile targets and the YAML files above.
   legacy `ai-model-reference` repository.
 - Maintainer `GITHUB_PAGES_BASE_PATH` examples in README should use the current
   repository name when illustrating project-site export.
+- Root README quality-gate docs for the CLI rewrite should document the B00
+  Makefile stages above (`setup` / `check` / `test` / `build`, plus transitional
+  `budget` / `component-coverage`) and must not present retired Atlas / Phase 1
+  verifier inventories as the required contributor path. Meta-doc lanes point
+  Important Docs at `docs/temp/customer-ask.md` and `docs/temp/big-docs` even
+  though `docs/temp/` is gitignored planner working state.
 
 ## Mergeability: brittle HTML / inventory test drift
 
