@@ -43,8 +43,11 @@ export function getBlogPageDir(slug: string, blogRoot = getBlogRoot()): string {
 
 /** Supported canonical docs sections under `src/content/docs`. */
 export const DOCS_SECTIONS = [
-  "glossary",
+  "guides",
   "concepts",
+  "techniques",
+  "documentation",
+  "glossary",
   "modules",
   "models",
   "papers",
@@ -57,8 +60,11 @@ export type DocsSection = (typeof DOCS_SECTIONS)[number];
 
 /** Supported docs sections keyed to the canonical content tree. */
 const docsSectionPaths: Record<DocsSection, string> = {
-  glossary: "glossary",
+  guides: "guides",
   concepts: "concepts",
+  techniques: "techniques",
+  documentation: "documentation",
+  glossary: "glossary",
   modules: "modules",
   models: "models",
   papers: "papers",
@@ -94,9 +100,24 @@ export function getGlossaryDocsRoot(docsRoot = getDocsRoot()): string {
   return getDocsSectionRoot("glossary", docsRoot);
 }
 
+/** Guide docs under `src/content/docs/guides`. */
+export function getGuidesDocsRoot(docsRoot = getDocsRoot()): string {
+  return getDocsSectionRoot("guides", docsRoot);
+}
+
 /** Concept docs under `src/content/docs/concepts`. */
 export function getConceptsDocsRoot(docsRoot = getDocsRoot()): string {
   return getDocsSectionRoot("concepts", docsRoot);
+}
+
+/** Technique docs under `src/content/docs/techniques`. */
+export function getTechniquesDocsRoot(docsRoot = getDocsRoot()): string {
+  return getDocsSectionRoot("techniques", docsRoot);
+}
+
+/** Documentation docs under `src/content/docs/documentation`. */
+export function getDocumentationDocsRoot(docsRoot = getDocsRoot()): string {
+  return getDocsSectionRoot("documentation", docsRoot);
 }
 
 /** Module docs under `src/content/docs/modules`. */
@@ -134,7 +155,9 @@ export const REGISTRY_COLLECTIONS = [
   "classifications",
   "concepts",
   "datasets",
+  "documentation",
   "graphs",
+  "guides",
   "models",
   "modules",
   "organizations",
@@ -142,6 +165,7 @@ export const REGISTRY_COLLECTIONS = [
   "systems",
   "tables",
   "tags",
+  "techniques",
   "training-regimes",
 ] as const;
 
@@ -193,8 +217,17 @@ export const DOCS_ROOT = getDocsRoot(contentRoot);
 /** Default `src/content/docs/glossary` root. */
 export const GLOSSARY_DOCS_ROOT = getGlossaryDocsRoot(DOCS_ROOT);
 
+/** Default `src/content/docs/guides` root. */
+export const GUIDES_DOCS_ROOT = getGuidesDocsRoot(DOCS_ROOT);
+
 /** Default `src/content/docs/concepts` root. */
 export const CONCEPTS_DOCS_ROOT = getConceptsDocsRoot(DOCS_ROOT);
+
+/** Default `src/content/docs/techniques` root. */
+export const TECHNIQUES_DOCS_ROOT = getTechniquesDocsRoot(DOCS_ROOT);
+
+/** Default `src/content/docs/documentation` root. */
+export const DOCUMENTATION_DOCS_ROOT = getDocumentationDocsRoot(DOCS_ROOT);
 
 /** Default `src/content/docs/modules` root. */
 export const MODULES_DOCS_ROOT = getModulesDocsRoot(DOCS_ROOT);

@@ -2,6 +2,8 @@
 
 Use `concept.mdx` as the production page structure. Put localized reader-facing text in `messages/<locale>.json` using the keys from `concept.messages.en.json`. Put page-specific visual references in `assets.json` using `concept.assets.json`.
 
+This template is the CLI-ready concept path for pages under the `concepts` collection (`kind: "concept"`, registry ids namespaced as `concept.<slug>`). Later rewrite batches should scaffold concept pages from this contract rather than inventing a parallel concept template.
+
 Follow [docs writing standards](../../factory/docs/standards/docs-writing-standards.md) and [graphing-standards](../graphing-standards.md) for layperson tone, isolation-first writing, and optional graph placement.
 
 ## Required Content

@@ -1,5 +1,6 @@
 import { loader } from "fumadocs-core/source";
 import { excludeNonPublishedLocalDocsPlugin } from "@/lib/content/exclude-non-published-local-docs-plugin";
+import { isAcceptedDocsSourceSection } from "@/lib/docs/docs-collection-slug-acceptance";
 import { loadGeneratedDocsSourceBinding } from "@/lib/fumadocs-source-runtime";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
 
@@ -16,15 +17,8 @@ function pageBundleSlug(file: { path: string }): string[] | undefined {
     .split("/")
     .filter(Boolean);
 
-  if (
-    sectionSlugs[0] === "concepts" ||
-    sectionSlugs[0] === "glossary" ||
-    sectionSlugs[0] === "modules" ||
-    sectionSlugs[0] === "models" ||
-    sectionSlugs[0] === "papers" ||
-    sectionSlugs[0] === "training" ||
-    sectionSlugs[0] === "systems"
-  ) {
+  const section = sectionSlugs[0];
+  if (section !== undefined && isAcceptedDocsSourceSection(section)) {
     return sectionSlugs;
   }
 

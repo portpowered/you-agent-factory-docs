@@ -1,3 +1,5 @@
+import { isAcceptedDocsSourceSection } from "@/lib/docs/docs-collection-slug-acceptance";
+
 /** True when a virtual docs path points at a local docs page bundle. */
 export function isLocalDocsPageBundlePath(path: string): boolean {
   if (!path.endsWith("/page.mdx")) {
@@ -11,13 +13,8 @@ export function isLocalDocsPageBundlePath(path: string): boolean {
 
   return (
     sectionSlugs.length === 2 &&
-    (sectionSlugs[0] === "concepts" ||
-      sectionSlugs[0] === "glossary" ||
-      sectionSlugs[0] === "modules" ||
-      sectionSlugs[0] === "models" ||
-      sectionSlugs[0] === "papers" ||
-      sectionSlugs[0] === "training" ||
-      sectionSlugs[0] === "systems")
+    sectionSlugs[0] !== undefined &&
+    isAcceptedDocsSourceSection(sectionSlugs[0])
   );
 }
 

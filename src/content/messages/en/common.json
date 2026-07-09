@@ -104,6 +104,15 @@
     "conceptsSectionTitle": "Concepts",
     "conceptsSectionDescription": "Concept pages explain broader ideas that span many models or modules, such as transformer structure, quantization, or long-context tradeoffs.",
     "conceptsSectionLinkLabel": "Browse all concept pages",
+    "guidesSectionTitle": "Guides",
+    "guidesSectionDescription": "Guide pages walk through practical CLI workflows and how to apply the reference in day-to-day work.",
+    "guidesSectionLinkLabel": "Browse all guide pages",
+    "techniquesSectionTitle": "Techniques",
+    "techniquesSectionDescription": "Technique pages explain named methods and practices you can apply across CLI workflows and documentation tasks.",
+    "techniquesSectionLinkLabel": "Browse all technique pages",
+    "documentationSectionTitle": "Documentation",
+    "documentationSectionDescription": "Documentation pages cover reference material for the CLI surface, including contracts, conventions, and supporting detail.",
+    "documentationSectionLinkLabel": "Browse all documentation pages",
     "papersSectionTitle": "Papers",
     "papersSectionDescription": "Paper pages distill one publication into the models, modules, training methods, and systems it introduces or strengthens.",
     "papersSectionLinkLabel": "Browse all paper pages",
@@ -194,6 +203,30 @@
     "listLabel": "Concept entries",
     "emptyTitle": "No concept entries yet",
     "emptyDescription": "Published concept pages will appear here once they are added to the atlas. Return home or open Browse the Atlas to explore models, modules, and glossary pages in the meantime.",
+    "emptyHomeLink": "Return home"
+  },
+  "guidesIndex": {
+    "title": "Guides",
+    "description": "Published guide pages that walk through practical CLI workflows and how to apply the reference in day-to-day work.",
+    "listLabel": "Guide entries",
+    "emptyTitle": "No guide entries yet",
+    "emptyDescription": "Published guide pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyHomeLink": "Return home"
+  },
+  "techniquesIndex": {
+    "title": "Techniques",
+    "description": "Published technique pages that explain named methods and practices you can apply across CLI workflows and documentation tasks.",
+    "listLabel": "Technique entries",
+    "emptyTitle": "No technique entries yet",
+    "emptyDescription": "Published technique pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
+    "emptyHomeLink": "Return home"
+  },
+  "documentationIndex": {
+    "title": "Documentation",
+    "description": "Published documentation pages covering reference material for the CLI surface, including contracts, conventions, and supporting detail.",
+    "listLabel": "Documentation entries",
+    "emptyTitle": "No documentation entries yet",
+    "emptyDescription": "Published documentation pages will appear here once they are added. Return home or open Browse the Atlas to explore other collections in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "papersIndex": {
@@ -336,6 +369,9 @@
     "module": "Module",
     "model": "Model",
     "concept": "Concept",
+    "guide": "Guide",
+    "technique": "Technique",
+    "documentation": "Documentation",
     "paper": "Paper",
     "glossary": "Glossary",
     "training": "Training",

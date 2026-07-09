@@ -1,9 +1,16 @@
 import type { PageKind, RegistryKind } from "@/lib/content/schemas";
 
-/** Stable ids for the AI docs atlas collections. */
+/**
+ * Stable ids for docs collections.
+ * Includes rewrite-era empty CLI collections plus remaining Atlas collections
+ * until sibling delete/retarget lanes remove Atlas inventory.
+ */
 export type DocsCollectionId =
-  | "glossary"
+  | "guides"
   | "concepts"
+  | "techniques"
+  | "documentation"
+  | "glossary"
   | "modules"
   | "models"
   | "papers"
@@ -11,8 +18,11 @@ export type DocsCollectionId =
   | "systems";
 
 export const DOCS_COLLECTION_IDS = [
-  "glossary",
+  "guides",
   "concepts",
+  "techniques",
+  "documentation",
+  "glossary",
   "modules",
   "models",
   "papers",
@@ -23,17 +33,28 @@ export const DOCS_COLLECTION_IDS = [
 /** Public route slug segment under `/docs`. */
 export type DocsCollectionRouteSlug = DocsCollectionId;
 
-/** Registry kinds referenced by published AI docs collection pages. */
+/** Registry kinds referenced by published docs collection pages. */
 export type DocsCollectionRegistryKind = Extract<
   RegistryKind,
-  "model" | "module" | "concept" | "paper" | "training-regime" | "system"
+  | "guide"
+  | "concept"
+  | "technique"
+  | "documentation"
+  | "module"
+  | "model"
+  | "paper"
+  | "training-regime"
+  | "system"
 >;
 
-/** Frontmatter kinds on published AI docs collection pages. */
+/** Frontmatter kinds on published docs collection pages. */
 export type DocsCollectionFrontmatterKind = Extract<
   PageKind,
-  | "glossary"
+  | "guide"
   | "concept"
+  | "technique"
+  | "documentation"
+  | "glossary"
   | "module"
   | "model"
   | "paper"
@@ -43,8 +64,8 @@ export type DocsCollectionFrontmatterKind = Extract<
 
 /**
  * Identifies sidebar grouping behavior for collections that partition pages
- * into labeled groups. Models and papers sort directly by page title and omit
- * this field.
+ * into labeled groups. Models, papers, and empty CLI collections that sort
+ * directly by page title omit this field.
  */
 export const DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS = [
   "glossary",
