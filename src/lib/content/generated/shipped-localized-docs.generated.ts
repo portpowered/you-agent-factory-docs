@@ -3,6 +3,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ja: [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
+    "guides/cursor-dynamic-workflows",
     "guides/getting-started",
     "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
@@ -10,6 +11,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   "zh-CN": [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
+    "guides/cursor-dynamic-workflows",
     "guides/getting-started",
     "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
@@ -17,6 +19,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   vi: [
     "documentation/install",
     "documentation/what-is-you-agent-factory",
+    "guides/cursor-dynamic-workflows",
     "guides/getting-started",
     "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",

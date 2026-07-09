@@ -1,0 +1,115 @@
+---
+title: "Cursor Dynamic Workflows"
+description: "Use Cursor as an MCP host for you-agent-factory Factory Session and dynamic-workflow tools."
+kind: "guide"
+registryId: "guide.cursor-dynamic-workflows"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "Cursor MCP workflows"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="when-to-use" titleKey="sections.whenToUse.title">
+  <T k="sections.whenToUse.body" />
+</Section>
+
+<Section id="steps-or-workflow" titleKey="sections.stepsOrWorkflow.title">
+  <T k="sections.stepsOrWorkflow.body" />
+  <p>
+    <T k="links.mcpConfigLocationsLabel" />
+  </p>
+  <T k="callouts.mcpConfigLocations.body" />
+  <p>
+    <T k="links.mcpServerJsonLabel" />
+  </p>
+
+```json
+{
+  "mcpServers": {
+    "you-agent-factory": {
+      "command": "/absolute/path/to/you",
+      "args": ["mcp", "serve"],
+      "cwd": "/absolute/path/to/project"
+    }
+  }
+}
+```
+
+  <T k="callouts.mcpReload.body" />
+  <p>
+    <T k="links.firstLoopLabel" />
+  </p>
+  <T k="callouts.firstLoopIntro.body" />
+  <p>
+    <T k="links.firstLoopValidateLabel" />
+  </p>
+
+```text
+you.factory_session.validate_source
+```
+
+  <T k="callouts.firstLoopValidate.body" />
+  <p>
+    <T k="links.firstLoopStartLabel" />
+  </p>
+
+```text
+you.factory_session.start_async
+```
+
+  <T k="callouts.firstLoopStart.body" />
+  <p>
+    <T k="links.firstLoopStatusLabel" />
+  </p>
+
+```text
+you.factory_session.get
+you.factory_session.get_result
+```
+
+  <T k="callouts.firstLoopStatus.body" />
+  <T k="callouts.firstLoopDeeperDocs.body" />
+</Section>
+
+<Section id="common-pitfalls" titleKey="sections.commonPitfalls.title">
+  <T k="sections.commonPitfalls.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/documentation/dynamic-workflows",
+        labelKey: "links.dynamicWorkflowsDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="guide.cursor-dynamic-workflows" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="guide.cursor-dynamic-workflows" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="guide.cursor-dynamic-workflows" />
+</Section>

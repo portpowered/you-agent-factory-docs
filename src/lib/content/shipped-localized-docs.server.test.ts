@@ -142,6 +142,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ja: [
         "documentation/install",
         "documentation/what-is-you-agent-factory",
+        "guides/cursor-dynamic-workflows",
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
@@ -149,6 +150,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       "zh-CN": [
         "documentation/install",
         "documentation/what-is-you-agent-factory",
+        "guides/cursor-dynamic-workflows",
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
@@ -156,6 +158,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       vi: [
         "documentation/install",
         "documentation/what-is-you-agent-factory",
+        "guides/cursor-dynamic-workflows",
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
