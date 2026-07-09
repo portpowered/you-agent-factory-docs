@@ -3,7 +3,7 @@
  *
  * - `@/features/ai` — server-safe helpers (safe for SSR module evaluation)
  * - `@/features/ai/models` — retired Model Atlas renderer namespace (empty)
- * - `@/features/ai/topology` — topology helpers and renderers
+ * - `@/features/ai/topology` — retired topology explorer namespace (empty)
  * - `@/features/ai/timeline` — timeline helpers and renderers
  */
 

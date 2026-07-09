@@ -131,7 +131,6 @@ describe("ModelAtlasDocsHeader", () => {
     const expectedItems = getPrimaryNavItems(messages);
     expect(expectedItems.map((item) => item.href)).toEqual([
       "/",
-      "/topology",
       "/docs/timeline",
       "/blog",
       "/tags",

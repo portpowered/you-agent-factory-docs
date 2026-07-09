@@ -42,9 +42,19 @@ collections.
 | `src/lib/docs/component-manifest.ts` | Drop deleted models coverage entries / thin wrappers |
 | `docs/templates/*.mdx` | Authoring templates no longer import deleted Atlas components |
 
+## Story 003: delete topology explorers and routes
+
+| Path | Role |
+| --- | --- |
+| `src/features/topology/` | Deleted Cytoscape topology explorer package |
+| `src/app/(site)/topology/` / `src/app/[locale]/topology/` | Deleted live `/topology` product route modules |
+| `src/app/(site)/site-renderers.tsx` | No longer renders `TopologyPrototype`; browse graph-map still uses `TopologyBrowsePage` |
+| `src/features/ai/topology.ts` / `src/features/ai/server.ts` | Stop re-exporting deleted topology explorers |
+| `src/lib/site/model-atlas-site-config.ts` | Drop topology from `primaryNav` so the shell no longer links the product surface |
+| `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Keep browse classification helpers; they are not the `/topology` explorer product |
+
 ## Later stories in this PRD
 
-- `003` deletes topology explorers/routes
 - `004` removes Model Atlas AI search enrichment
 - `005` deletes Atlas verifier scripts and make/package entrypoints
 - `006` removes remaining Atlas feature packages/routes

@@ -21,7 +21,6 @@ const excludedPrefixes = [
   "src/tests/ci/",
   // Atlas product surfaces deleted in rewrite-delete-atlas-domain; keep suites
   // out of required make test until later stories retire the packages themselves.
-  "src/features/topology/",
   "src/features/generation-evolution/",
   "src/features/training-signal-evolution/",
   "src/features/roofline-throughput-explorer/",

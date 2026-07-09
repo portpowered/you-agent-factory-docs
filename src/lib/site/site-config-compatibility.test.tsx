@@ -101,14 +101,12 @@ describe("site config primary nav compatibility", () => {
 
     expect(items.map((item) => item.href)).toEqual([
       "/vi",
-      "/vi/topology",
       "/vi/docs/timeline",
       "/vi/blog",
       "/vi/tags",
     ]);
     expect(items.map((item) => item.label)).toEqual([
       "Trang chủ",
-      messages.nav.topology,
       "Dòng thời gian",
       messages.nav.blog,
       messages.nav.tags,

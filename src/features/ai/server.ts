@@ -4,8 +4,8 @@
  * without pulling client-only renderers into module evaluation.
  *
  * Model Atlas at-a-glance / graph renderers were removed with
- * `src/features/models`; this surface now re-exports topology and timeline
- * helpers only.
+ * `src/features/models`. Topology explorer helpers were removed with
+ * `src/features/topology`. This surface now re-exports timeline helpers only.
  */
 
 export {
@@ -19,25 +19,3 @@ export {
   normalizeTimelineClassificationSelector,
   TIMELINE_CLASSIFICATION_QUERY_KEY,
 } from "@/features/docs/timeline/timeline-query";
-export type {
-  TopologyDocsPageContent,
-  TopologyDocsPageContentByRegistryId,
-} from "@/features/topology/topology-content";
-export {
-  buildTopologyGraph,
-  getDefaultTopologyClassificationSelectors,
-  resolveTopologyClassificationId,
-  type TopologyClassificationSelection,
-  type TopologyEdge,
-  type TopologyGraph,
-  type TopologyGraphResult,
-  type TopologyNode,
-} from "@/features/topology/topology-data";
-export {
-  buildTopologyHref,
-  getCanonicalTopologySelectorsForOutput,
-  getDefaultTopologySelectors,
-  parseTopologyQuery,
-  TOPOLOGY_CLASSIFICATION_QUERY_KEY,
-  type TopologyQueryState,
-} from "@/features/topology/topology-query";

@@ -24,7 +24,6 @@ export const modelAtlasSiteConfig = {
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },
-    { routeSurface: "topology", labelKey: "topology" },
     { routeSurface: "timeline", labelKey: "timeline" },
     { routeSurface: "blogIndex", labelKey: "blog" },
     { routeSurface: "tagsIndex", labelKey: "tags" },
