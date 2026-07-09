@@ -591,6 +591,50 @@ describe("ModelAtlasDocsHeader", () => {
     expect(dialog.textContent).toContain(messages.language.unavailable);
   });
 
+  test("lists zh-CN and navigates to /zh-CN on available surfaces while preserving query params", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const user = userEvent.setup();
+    window.history.replaceState({}, "", "/search?q=attention&tag=attention");
+    renderHeaderWithNavigation(
+      <ModelAtlasDocsHeader messages={messages} pageTree={source.pageTree} />,
+      {
+        SearchDialog,
+        pathname: "/search",
+        searchParams: new URLSearchParams("q=attention&tag=attention"),
+      },
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: messages.language.open }),
+    );
+
+    const dialog = screen.getByRole("menu");
+    const zhCnOption = within(dialog).getByRole("menuitem", {
+      name: /简体中文/,
+    });
+
+    expect(zhCnOption.getAttribute("aria-disabled")).not.toBe("true");
+    expect(zhCnOption.getAttribute("href")).toBe(
+      "/zh-CN/search?q=attention&tag=attention",
+    );
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /English/i })
+        .getAttribute("href"),
+    ).toBe("/search?q=attention&tag=attention");
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /^Tiếng Việt$/i })
+        .getAttribute("href"),
+    ).toBe("/vi/search?q=attention&tag=attention");
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /日本語/ })
+        .getAttribute("href"),
+    ).toBe("/ja/search?q=attention&tag=attention");
+  });
+
   test("keeps the language and GitHub header controls on the same outline button contract", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
