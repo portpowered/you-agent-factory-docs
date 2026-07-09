@@ -92,7 +92,11 @@ entry. Do not vendor or fork package source into this repo.
 
 Prove install/transpile by compiling and importing real package exports (and later
 by rendering factory-ui wrappers with fixture props). Avoid meta-tests that only
-scan `package.json` keys, CSS `@import` counts, or import-path inventories.
+scan `package.json` keys, CSS `@import` counts, import-path inventories, or live
+`REUSABLE_COVERAGE_COMPONENTS` / `REUSABLE_THIN_WRAPPERS` membership lists.
+Prove gate path allowlisting and thin-wrapper evaluation with fixture inputs in
+`component-coverage-gate.test.ts`; keep render smoke tests under
+`src/features/factory-ui/*.test.tsx`.
 
 ## Related
 
