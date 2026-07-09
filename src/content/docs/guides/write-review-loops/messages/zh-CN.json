@@ -1,0 +1,53 @@
+{
+  "title": "Write-Review Loops",
+  "description": "Use you-agent-factory for write → review → revise loops with a bounded retry path.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A write-review loop is a factory workflow where write or execute work produces a candidate, then a review step decides the outcome. Accepted work moves to a complete state. Rejected work returns to write for another pass, so the same goal can revise until review accepts it."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this guide when agent output must pass an explicit review gate before completion, for example quality-gated docs, code, or plans. Follow it when you want a clear write → review → revise path in the factory. The outcome you should reach is accepted work that completes only after review, with rejected work routed back for another write pass."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Confirm a live factory, submit or advance write or execute work, let review accept to complete or reject back to write, and bound retries with a loop breaker so reject cycles cannot run forever."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Do not review or submit against a factory that is not live. Do not treat reject-without-a-breaker as safe forever. Do not confuse this use-case guide with the later writer-reviewer technique glossary page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "confirmSessionLabel": "Confirm a live factory",
+    "startFactoryLabel": "Start a factory when no session is active",
+    "namedRunLabel": "Named run",
+    "submitWorkLabel": "Submit write or execute work",
+    "batchSubmitLabel": "Batch submit",
+    "writerReviewerTechnique": "Writer-reviewer technique"
+  },
+  "callouts": {
+    "sessionCheck": {
+      "body": "Start with you or you run when you need a factory, then confirm it with you session list before you submit. If no session is active, start the factory again and re-check."
+    },
+    "routing": {
+      "body": "Shape the factory so a write or execute workstation routes successful work into an in-review state for a paired review workstation. On accept, review routes work toward a complete state. On reject, set onRejection to return work to the write or init state for another pass. That execute and review pair, with outcome routes, is the write → review → revise path."
+    },
+    "loopBreaker": {
+      "body": "Add a bounded retry so endless reject cycles stop on purpose. A common pattern is a LOGICAL_MOVE guarded by VISIT_COUNT on the write or review workstation: when visits exceed the limit, move the work to a failed or other terminal state instead of sending it around again."
+    },
+    "submitAgainstLive": {
+      "body": "Submit only against a running factory. After enqueue, the write or execute workstation produces the candidate; review decides accept or reject."
+    }
+  }
+}
