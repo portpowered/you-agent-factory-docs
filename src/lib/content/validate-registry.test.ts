@@ -1429,6 +1429,135 @@ updatedAt: "2026-06-02"
     }
   });
 
+  test("iterates zh-CN in localized page validation without requiring every page to ship Chinese messages", async () => {
+    const tempRoot = join(import.meta.dir, "__fixtures__", crypto.randomUUID());
+    const registryRoot = join(tempRoot, "registry");
+    const docsRoot = join(tempRoot, "docs");
+    const pageDir = join(docsRoot, "modules", "multi-query-attention");
+    await mkdir(join(registryRoot, "modules"), { recursive: true });
+    await writeAttentionClassificationFixtures(registryRoot);
+    await mkdir(join(registryRoot, "tags"), { recursive: true });
+    await mkdir(join(registryRoot, "citations"), { recursive: true });
+    await mkdir(join(pageDir, "messages"), { recursive: true });
+
+    await writeFile(
+      join(registryRoot, "modules", "multi-query-attention.json"),
+      JSON.stringify({
+        ...validModuleRecord,
+        id: "module.multi-query-attention",
+        slug: "multi-query-attention",
+      }),
+    );
+    await writeFile(
+      join(registryRoot, "tags", "attention.json"),
+      JSON.stringify(validTagRecord),
+    );
+    await writeFile(
+      join(registryRoot, "citations", "gqa-paper.json"),
+      JSON.stringify(validCitationRecord),
+    );
+    await writeFile(
+      join(pageDir, "page.mdx"),
+      `---
+kind: module
+registryId: module.multi-query-attention
+messageNamespace: local
+assetNamespace: local
+status: published
+tags:
+  - attention
+updatedAt: "2026-06-02"
+---
+
+# <T k="title" />
+`,
+    );
+    await writeFile(
+      join(pageDir, "messages", "en.json"),
+      JSON.stringify({
+        title: "Multi-Query Attention",
+        description: "English description",
+      }),
+    );
+    await writeFile(join(pageDir, "assets.json"), JSON.stringify({}));
+
+    try {
+      const emptyZhCnErrors = await validateRegistryContent({
+        registryRoot,
+        docsRoot,
+        phase1PageDirectories: [],
+        shippedLocalizedDocsManifest: {
+          ja: [],
+          "zh-CN": [],
+          vi: [],
+        },
+      });
+      expect(
+        emptyZhCnErrors.some(
+          (error) =>
+            error.message.includes(pageDir) &&
+            (error.code === "missing-localized-page-messages" ||
+              error.code === "unexpected-localized-page-messages" ||
+              error.code === "messages-load-error") &&
+            error.message.includes('locale "zh-CN"'),
+        ),
+      ).toBe(false);
+
+      const shippedMissingZhCnErrors = await validateRegistryContent({
+        registryRoot,
+        docsRoot,
+        phase1PageDirectories: [],
+        shippedLocalizedDocsManifest: {
+          ja: [],
+          "zh-CN": ["modules/multi-query-attention"],
+          vi: [],
+        },
+      });
+      expect(
+        shippedMissingZhCnErrors.some(
+          (error) =>
+            error.code === "missing-localized-page-messages" &&
+            error.message.includes('locale "zh-CN"') &&
+            error.message.includes(
+              "/zh-CN/docs/modules/multi-query-attention",
+            ) &&
+            error.path?.includes("messages/zh-CN.json"),
+        ),
+      ).toBe(true);
+
+      await writeFile(
+        join(pageDir, "messages", "zh-CN.json"),
+        JSON.stringify({
+          title: "多查询注意力",
+          description: "中文说明",
+        }),
+      );
+
+      const shippedPresentZhCnErrors = await validateRegistryContent({
+        registryRoot,
+        docsRoot,
+        phase1PageDirectories: [],
+        shippedLocalizedDocsManifest: {
+          ja: [],
+          "zh-CN": ["modules/multi-query-attention"],
+          vi: [],
+        },
+      });
+      expect(
+        shippedPresentZhCnErrors.some(
+          (error) =>
+            error.message.includes(pageDir) &&
+            error.message.includes('locale "zh-CN"') &&
+            (error.code === "missing-localized-page-messages" ||
+              error.code === "unexpected-localized-page-messages" ||
+              error.code === "messages-load-error"),
+        ),
+      ).toBe(false);
+    } finally {
+      await rm(tempRoot, { recursive: true, force: true });
+    }
+  });
+
   test("reports missing japanese page messages for docs declared shipped in the locale manifest", async () => {
     const tempRoot = join(import.meta.dir, "__fixtures__", crypto.randomUUID());
     const registryRoot = join(tempRoot, "registry");
@@ -1488,6 +1617,8 @@ updatedAt: "2026-06-02"
         phase1PageDirectories: [],
         shippedLocalizedDocsManifest: {
           ja: ["modules/multi-query-attention"],
+          "zh-CN": [],
+          vi: [],
         },
       });
       expect(
@@ -1568,6 +1699,7 @@ updatedAt: "2026-06-02"
         phase1PageDirectories: [],
         shippedLocalizedDocsManifest: {
           ja: ["modules/multi-query-attention"],
+          "zh-CN": [],
           vi: [],
         },
       });
@@ -1754,6 +1886,7 @@ updatedAt: "2026-06-02"
         phase1PageDirectories: [],
         shippedLocalizedDocsManifest: {
           ja: [],
+          "zh-CN": [],
           vi: [],
         },
       });

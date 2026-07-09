@@ -47,7 +47,7 @@ describe("site config home featured link resolution", () => {
       (link) => link.kind === "docs-page",
     );
 
-    for (const locale of ["vi", "ja"] as const) {
+    for (const locale of ["vi", "ja", "zh-CN"] as const) {
       for (const link of docsLinks) {
         const expectedLocale = isDocsPageShippedForLocale(link.slug, locale)
           ? locale
@@ -89,6 +89,17 @@ describe("site config home featured link resolution", () => {
       ),
     ).toEqual([
       "/ja/docs/modules/grouped-query-attention",
+      "/docs/modules/swiglu",
+      "/docs/modules/relu",
+    ]);
+  });
+
+  test("falls back to canonical docs hrefs on chinese home when zh-CN is unshipped", () => {
+    expect(
+      resolveSiteConfigHomeFeaturedLinkHrefs(modelAtlasSiteConfig, "zh-CN"),
+    ).toEqual([
+      "/zh-CN/browse",
+      "/docs/modules/grouped-query-attention",
       "/docs/modules/swiglu",
       "/docs/modules/relu",
     ]);

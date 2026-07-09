@@ -24,11 +24,15 @@ describe("localized route metadata alternates", () => {
     expect(homeMetadata.alternates?.languages?.en).toBe("/");
     expect(homeMetadata.alternates?.languages?.vi).toBe("/vi");
     expect(homeMetadata.alternates?.languages?.ja).toBe("/ja");
+    expect(homeMetadata.alternates?.languages?.["zh-CN"]).toBe("/zh-CN");
 
     expect(searchMetadata.alternates?.canonical).toBe("/search");
     expect(searchMetadata.alternates?.languages?.en).toBe("/search");
     expect(searchMetadata.alternates?.languages?.vi).toBe("/vi/search");
     expect(searchMetadata.alternates?.languages?.ja).toBe("/ja/search");
+    expect(searchMetadata.alternates?.languages?.["zh-CN"]).toBe(
+      "/zh-CN/search",
+    );
   });
 
   it("publishes alternate-language metadata for tag and docs pages", async () => {

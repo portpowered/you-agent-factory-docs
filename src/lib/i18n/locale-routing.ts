@@ -1,6 +1,6 @@
 const LOCALE_PREFIX_PATTERN = /^[a-z]{2}(?:-[A-Z]{2})?$/;
 
-export const supportedLocales = ["en", "vi", "ja"] as const;
+export const supportedLocales = ["en", "ja", "zh-CN", "vi"] as const;
 
 export type SiteLocale = (typeof supportedLocales)[number];
 
