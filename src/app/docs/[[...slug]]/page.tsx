@@ -16,6 +16,7 @@ const STATIC_EXPORT_EMPTY_DOCS_SLUG = ["__no_docs_pages__"];
 export function generateStaticParams() {
   return ensureStaticExportParams(source.generateParams(), {
     slug: STATIC_EXPORT_EMPTY_DOCS_SLUG,
+    lang: "en",
   });
 }
 
