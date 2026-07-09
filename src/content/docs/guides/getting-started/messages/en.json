@@ -1,0 +1,32 @@
+{
+  "title": "Getting Started",
+  "description": "Install you-agent-factory, start a factory, and submit your first work.",
+  "openingSummary": "This quickstart walks install, first factory start, and first submit so you can run the CLI end to end.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Getting started is the short path from installing the CLI to submitting your first work against a running factory."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use this guide when you are installing for the first time or verifying the install → run → submit loop on a new machine."
+    },
+    "stepsOrWorkflow": {
+      "title": "Steps Or Workflow",
+      "body": "Follow the ordered path: install the CLI, start a factory (or named run) and confirm it with session list, then submit work. Later stories fill in the copyable commands for each step."
+    },
+    "commonPitfalls": {
+      "title": "Common Pitfalls",
+      "body": "Do not submit work before a factory session is running. OS-specific install edge cases and the full CLI command matrix live on sibling docs, not on this quickstart."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

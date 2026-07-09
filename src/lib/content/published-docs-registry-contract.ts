@@ -13,8 +13,11 @@ import {
 import type { PageKind } from "@/lib/content/schemas";
 
 export const PUBLISHED_DOCS_SECTIONS = [
-  "glossary",
+  "guides",
   "concepts",
+  "techniques",
+  "documentation",
+  "glossary",
   "modules",
   "models",
   "papers",
@@ -60,10 +63,16 @@ export function docsSectionFromSlug(docsSlug: string): PublishedDocsSection {
 
 export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
   switch (entry.section) {
-    case "glossary":
-      return glossaryPageHref(entry.slug);
+    case "guides":
+      return guidePageHref(entry.slug);
     case "concepts":
       return conceptPageHref(entry.slug);
+    case "techniques":
+      return techniquePageHref(entry.slug);
+    case "documentation":
+      return documentationPageHref(entry.slug);
+    case "glossary":
+      return glossaryPageHref(entry.slug);
     case "modules":
       return modulePageHref(entry.slug);
     case "models":
