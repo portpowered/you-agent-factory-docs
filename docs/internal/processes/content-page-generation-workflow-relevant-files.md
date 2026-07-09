@@ -397,6 +397,54 @@ Do not paste packaged `you docs agents` markdown verbatim; rewrite rows for web
 readers while keeping the run/submit/session/work/docs running-factory
 distinctions clear.
 
+### Documentation workers taxonomy matrix (page-local)
+
+For `documentation/workers` taxonomy copy, keep a distinct `#worker-taxonomy`
+`Section` after `#key-concepts` (template order stays intact; taxonomy is an
+extra teaching surface before `#how-to-use`). Put matrix headers, public type
+names, behavior cells, when-to-use cells, and the legacy-alias note under page
+`links.*` keys — same reason as CLI matrices: `pageSectionSchema` only keeps
+`title`/`body`. Render an always-visible HTML `<table>` with
+`<T k="links.…" />` in each cell so `INFERENCE_WORKER`, `AGENT_WORKER`,
+`SCRIPT_WORKER`, and `POLLER_WORKER` are readable without hover.
+
+Orient from `you docs workers` for type/behavior/when-to-use meaning, but
+rewrite for web scanning. Mention `MODEL_WORKER` / `HOSTED_WORKER` only as
+migration guidance and prefer the current public names for new configs.
+
+### Documentation workers ownership, examples, and core fields (page-local)
+
+For `documentation/workers` how-to-use teaching, keep ownership split,
+minimal authoring example, and type-specific cues inside `#how-to-use`
+(stable anchor). Put ownership matrix cells, example label/body, and
+type-guidance strings under page `links.*` keys — same reason as taxonomy:
+`pageSectionSchema` only keeps `title`/`body`. Render:
+
+- an always-visible ownership HTML `<table>` (worker-owned vs workstation-owned)
+- a minimal agent-worker example as `<pre><code><T k="links.…" /></code></pre>`
+- short type-guidance bullets for inference / agent / script / poller
+
+Keep a distinct `#core-fields` `Section` after `#how-to-use` for the
+structured field reference table (type, model/provider, command/args,
+poller provider/auth, operations). Orient from `you docs workers` for field
+meanings, but rewrite for web scanning and avoid a full flag dump.
+
+### Documentation workers limits and sibling discovery (page-local)
+
+For `documentation/workers`, keep `#limits-and-assumptions` as the scope
+boundary: web workers reference for types, placement, ownership, and core
+authoring — not a packaged `you docs workers` sync, not workstation
+routing/lifecycle, not resource capacity deep-dive, and not a full agent
+failure-class catalog. Keep the page isolation-first: sibling links aid
+discovery but must not be required to define what a worker is.
+
+When B04 siblings (`configuration`, `workstations`, `resources`) are not yet
+published in this worktree, wire reviewer-visible discovery with page-local
+`<LocalizedLinkList>` and planned hrefs under `#how-to-use` (same pattern as
+install / what-is). Leave registry `relatedIds` empty until those sibling
+registry records and published pages exist; keep `<RelatedDocs />` in
+`#related` for when curated ids can resolve cleanly.
+
 ### Documentation CLI key concepts, limits, and sibling discovery
 
 For `documentation/cli`, keep `#key-concepts` before the install/commands

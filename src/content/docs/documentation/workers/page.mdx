@@ -1,0 +1,315 @@
+---
+title: ""
+description: ""
+kind: "documentation"
+registryId: "documentation.workers"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "workers"
+  - "you workers"
+  - "worker types"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="worker-taxonomy" titleKey="sections.workerTaxonomy.title">
+  <T k="sections.workerTaxonomy.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.taxonomyTypeHeader" />
+        </th>
+        <th>
+          <T k="links.taxonomyBehaviorHeader" />
+        </th>
+        <th>
+          <T k="links.taxonomyWhenToUseHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.taxonomyInferenceType" />
+        </td>
+        <td>
+          <T k="links.taxonomyInferenceBehavior" />
+        </td>
+        <td>
+          <T k="links.taxonomyInferenceWhen" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.taxonomyAgentType" />
+        </td>
+        <td>
+          <T k="links.taxonomyAgentBehavior" />
+        </td>
+        <td>
+          <T k="links.taxonomyAgentWhen" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.taxonomyScriptType" />
+        </td>
+        <td>
+          <T k="links.taxonomyScriptBehavior" />
+        </td>
+        <td>
+          <T k="links.taxonomyScriptWhen" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.taxonomyPollerType" />
+        </td>
+        <td>
+          <T k="links.taxonomyPollerBehavior" />
+        </td>
+        <td>
+          <T k="links.taxonomyPollerWhen" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.taxonomyLegacyNote" />
+  </p>
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.ownershipWorkerHeader" />
+        </th>
+        <th>
+          <T k="links.ownershipWorkstationHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerBackend" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationRouting" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerScript" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerPoller" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationLimits" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerBody" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationPrompt" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.minimalExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.minimalAgentExample" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.typeGuidanceIntro" />
+  </p>
+  <ul>
+    <li>
+      <T k="links.typeGuidanceInference" />
+    </li>
+    <li>
+      <T k="links.typeGuidanceAgent" />
+    </li>
+    <li>
+      <T k="links.typeGuidanceScript" />
+    </li>
+    <li>
+      <T k="links.typeGuidancePoller" />
+    </li>
+  </ul>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.siblingConfiguration",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.siblingWorkstations",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.siblingResources",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="core-fields" titleKey="sections.coreFields.title">
+  <T k="sections.coreFields.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.coreFieldHeader" />
+        </th>
+        <th>
+          <T k="links.coreAppliesHeader" />
+        </th>
+        <th>
+          <T k="links.coreControlsHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.coreTypeField" />
+        </td>
+        <td>
+          <T k="links.coreTypeApplies" />
+        </td>
+        <td>
+          <T k="links.coreTypeControls" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.coreModelField" />
+        </td>
+        <td>
+          <T k="links.coreModelApplies" />
+        </td>
+        <td>
+          <T k="links.coreModelControls" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.coreModelProviderField" />
+        </td>
+        <td>
+          <T k="links.coreModelProviderApplies" />
+        </td>
+        <td>
+          <T k="links.coreModelProviderControls" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.coreCommandField" />
+        </td>
+        <td>
+          <T k="links.coreCommandApplies" />
+        </td>
+        <td>
+          <T k="links.coreCommandControls" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.coreArgsField" />
+        </td>
+        <td>
+          <T k="links.coreArgsApplies" />
+        </td>
+        <td>
+          <T k="links.coreArgsControls" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.coreProviderField" />
+        </td>
+        <td>
+          <T k="links.coreProviderApplies" />
+        </td>
+        <td>
+          <T k="links.coreProviderControls" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.coreAuthField" />
+        </td>
+        <td>
+          <T k="links.coreAuthApplies" />
+        </td>
+        <td>
+          <T k="links.coreAuthControls" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.coreOperationsField" />
+        </td>
+        <td>
+          <T k="links.coreOperationsApplies" />
+        </td>
+        <td>
+          <T k="links.coreOperationsControls" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="documentation.workers" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.workers" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.workers" />
+</Section>
