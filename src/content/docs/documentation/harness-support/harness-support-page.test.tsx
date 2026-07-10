@@ -1,11 +1,11 @@
 /**
  * Page-owned render proof for documentation/harness-support.
- * Covers documentation shell + harness-support identity for the scaffold story.
- * Colocated under the page bundle so audit:canonical-page-surface stays
- * within-budget for this ordinary documentation lane.
+ * Covers documentation shell, harness-support identity, and the support-matrix
+ * DataTable. Colocated under the page bundle so audit:canonical-page-surface
+ * stays within-budget for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -61,6 +61,9 @@ describe("harness-support documentation page", () => {
       screen.getByRole("heading", { name: "What It Covers" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Support Matrix" }),
+    ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -71,10 +74,12 @@ describe("harness-support documentation page", () => {
 
     const whatItCoversSection = document.getElementById("what-it-covers");
     const keyConceptsSection = document.getElementById("key-concepts");
+    const supportMatrixSection = document.getElementById("support-matrix");
     const howToUseSection = document.getElementById("how-to-use");
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(whatItCoversSection).toBeTruthy();
     expect(keyConceptsSection).toBeTruthy();
+    expect(supportMatrixSection).toBeTruthy();
     expect(howToUseSection).toBeTruthy();
     expect(limitsSection).toBeTruthy();
     expect(keyConceptsSection?.textContent).toMatch(
@@ -84,5 +89,33 @@ describe("harness-support documentation page", () => {
     expect(limitsSection?.textContent).toMatch(
       /web harness-support matrix reference/i,
     );
+
+    const matrix = within(supportMatrixSection as HTMLElement).getByRole(
+      "table",
+      { name: "Harness support matrix" },
+    );
+    const matrixQueries = within(matrix);
+    for (const harness of [
+      "claude",
+      "codex",
+      "opencode",
+      "pi",
+      "cursor",
+      "agy",
+    ]) {
+      expect(
+        matrixQueries.getByRole("columnheader", { name: harness }),
+      ).toBeTruthy();
+    }
+    for (const feature of [
+      "MCP",
+      "Worktrees",
+      "Loop",
+      "Thinking controls",
+      "Open source",
+      "External model support",
+    ]) {
+      expect(matrixQueries.getByRole("cell", { name: feature })).toBeTruthy();
+    }
   });
 });

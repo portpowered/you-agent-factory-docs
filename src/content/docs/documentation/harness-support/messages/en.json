@@ -11,13 +11,17 @@
       "title": "Key Concepts",
       "body": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. This page compares factory-supported harnesses by feature coverage. It does not redefine the harness concept in full; that definition lives on the harness concept page."
     },
+    "supportMatrix": {
+      "title": "Support Matrix",
+      "body": "Compare factory-supported harnesses across MCP, worktrees, loop, thinking controls, open-source status, and external model support. Cell values are yes, no, or partial."
+    },
     "howToUse": {
       "title": "How To Use",
       "body": "Scan the support matrix for the feature you need, then read across harness columns to see which runtimes cover it. Use clear cell values such as yes, no, or partial to compare options before you pick a harness for MCP, worktrees, loop, thinking controls, open-source status, or external models."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web harness-support matrix reference. It is not a full runner or provider field dump, not a sync of packaged CLI docs, not the harness concept glossary, and not an agent-factory comparison blog. Claims stay conservative when product evidence is incomplete."
+      "body": "This page is a web harness-support matrix reference. It is not a full runner or provider field dump, not a sync of packaged CLI docs, not the harness concept glossary, and not an agent-factory comparison blog. Claims stay conservative when product evidence is incomplete: partial cells mark uncertain or incomplete coverage rather than inventing full support."
     },
     "related": {
       "title": "Related To"

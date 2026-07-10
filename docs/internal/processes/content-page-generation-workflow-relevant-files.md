@@ -211,6 +211,21 @@ where the visual is optional, stay prose-first with empty `assets.json` rather
 than editing the shared loader; see
 `tasks/ideas-to-review/content/concept-page-local-mdx-components-without-shared-loader-switch.md`.
 
+### Documentation page-local DataTable / MDX components
+
+When a documentation page needs a required factory-ui teaching surface such as
+`DataTable` (for example `documentation/harness-support` support matrix):
+
+1. Keep matrix JSON, the page-local renderer, and `page-mdx-components.tsx`
+   under the page bundle.
+2. Add a static slug switch in `documentation-page-load.ts` that imports
+   `@/content/docs/documentation/<slug>/page-mdx-components` (same compileMDX
+   constraint as concepts — relative MDX imports do not resolve).
+3. Treat that loader switch as a narrow shared-surface exception: rerun
+   `bun run audit:canonical-page-surface` with `--exception-reason` and repeat
+   the justification in the PR conversation. Do not edit
+   `src/features/factory-ui/*` or invent shared matrix infrastructure.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |
