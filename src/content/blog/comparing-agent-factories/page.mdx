@@ -1,0 +1,114 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-09"
+updatedAt: "2026-07-09"
+authors:
+  - site-team
+tags: []
+relatedDocIds:
+  - documentation.what-is-you-agent-factory
+  - concept.harness
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+## Summary
+
+<T k="takeaway" />
+
+## Why a lightweight agent factory exists
+
+Agent factories and orchestration systems keep work moving, recover when a run stops, and give operators a place to define how agents or jobs cooperate. Many existing options are heavyweight durable engines, opinionated agent frameworks, or visual automation tools that assume a fixed shape for the work.
+
+**you-agent-factory** exists for a narrower need: a lightweight orchestrator for custom agent workflows. You run a binary, check in workflow and agent files, and keep long-running agent work persistent without adopting a full workflow platform first.
+
+The comparison below is practical tradeoff guidance, not a benchmark ranking. Systems differ in recursion and fan-in, room for custom workflows, agent harness support, whether workflow files live in the repo, durable execution, and day-to-day stability.
+
+## What this comparison covers
+
+Dimensions that matter for agent-oriented workflows:
+
+- recursion, fan-in, and stateful work
+- room for custom workflows
+- agent harness support
+- file-first / check-in workflow files
+- durable workflows
+- relative stability
+
+Systems in scope: you-agent-factory, custom scripts, Gas Town, DBOS, Dagster, N8N, and Temporal.
+
+## Comparison matrix
+
+Scan systems against the dimensions above. Yes means the system covers that
+dimension in practice for agent-oriented work; an em dash means it does not
+(or only with substantial custom work outside the product’s main path).
+
+<AgentFactoriesComparisonTable />
+
+## you-agent-factory
+
+you-agent-factory is a file-first agent factory. Workflow and agent definitions live in the repo; operators run a CLI binary and keep long-running agent work persistent across sessions. It supports recursion, fan-in, and stateful loops, and it is built around agent harnesses rather than treating harnesses as an afterthought.
+
+It does not claim transactional durability the way DBOS or Temporal do. The trade is weight: you get custom agent workflows and harness-native loops without standing up a heavy durable engine first.
+
+## Custom scripts
+
+Custom scripts in Python, Bash, or PowerShell can implement the same loops—Ralph-style iteration, auto-researchers, ad-hoc review bots. They are fully custom and can sit next to harness tooling, and they are just files in a repo.
+
+They tend to fail as complexity grows. Cross-machine runs, recovery after crashes, and multi-step review loops become hand-rolled. Scripts stay useful for small experiments; they are a weak default once the workflow must survive restarts and grow beyond a single shell session.
+
+## Gas Town
+
+Gas Town is an alternative agent orchestration framework. It can run agent work well, but it is opinionated: it leans on specific storage and workflow structure, and it expects a more rigid shape than a free-form factory.
+
+Choose Gas Town when that opinionated structure matches how you already want to work. Prefer you-agent-factory when you need open-ended workflows—for example spawning many QA reviewers without a fixed submit path—without adopting Gas Town's prescribed stack.
+
+## Dagster
+
+Dagster is a standard data and workflow engine with strong custom-pipeline support and a mature operational story. It does not ship agent-harness affordances, so harness integration is something you build yourself.
+
+Dagster models work as directed acyclic graphs. Agent loops are often cyclic: execute, review, revise, repeat. Mapping that spaghetti onto a DAG is awkward. Use Dagster when your pipelines are genuinely DAG-shaped data work; reach elsewhere when the core loop is harness-driven agent iteration.
+
+## DBOS
+
+DBOS is a durable workflow engine that stays relatively lightweight among durable systems. It supports recursion, fan-in, stateful work, and custom workflows, and it emphasizes durable execution and stability.
+
+you-agent-factory does not match DBOS on transactional consistency or durable execution guarantees. DBOS still asks you to write and reason about workflow code. If durability and recovery semantics are the product requirement, DBOS fits; if you mainly want file-checked agent workflows without that engine weight, you-agent-factory is the lighter path.
+
+## Temporal
+
+Temporal is a flexible durable workflow engine. It can express the custom loops agent factories need, including recursion and stateful work, and it is built for durable, relatively stable production runs.
+
+It is heavy for the use case of “run an agent and keep the workflow in files.” Relative to DBOS and lighter factories, Temporal brings more platform surface than many agent-loop teams want on day one. Reach for Temporal when durable workflow semantics and operational maturity outweigh setup cost.
+
+## N8N
+
+N8N is a robotic process automation and visual workflow tool. In theory it covers custom automation with branching and stateful paths. In practice it is a different product shape: visual graphs and RPA conventions rather than harness-native agent loops.
+
+Teams that already live in visual automation may get value from N8N. Teams whose unit of work is an agent harness with checked-in workflow files usually find it the wrong abstraction—too heavy and too far from file-first agent factories.
+
+## How to choose
+
+Match the tool to the work you actually run:
+
+- Prefer **you-agent-factory** when you want a lightweight, file-first orchestrator with agent harness support and custom workflows, and you can accept weaker durable-execution guarantees than DBOS or Temporal.
+- Prefer **custom scripts** only while the loop is small and disposable.
+- Prefer **Gas Town** when its opinionated structure is a feature, not a constraint.
+- Prefer **Dagster** for DAG-shaped data pipelines, not cyclic harness review loops.
+- Prefer **DBOS** or **Temporal** when durable execution is the requirement and platform weight is acceptable.
+- Prefer **N8N** when visual RPA automation is the primary job, not harness-native agent factories.
+
+## Related reference pages
+
+Start with the product overview at
+[What is you-agent-factory](/docs/documentation/what-is-you-agent-factory).
+Harness definitions live on the concept page linked below.
+
+<BlogRelatedDocs relatedDocIds={["concept.harness"]} />

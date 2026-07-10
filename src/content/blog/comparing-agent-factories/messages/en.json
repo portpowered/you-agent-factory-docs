@@ -1,0 +1,6 @@
+{
+  "title": "Comparing agent factories and orchestration systems",
+  "description": "A practical comparison of you-agent-factory with custom scripts, Gas Town, DBOS, Dagster, N8N, and Temporal for agent workflows and orchestration tradeoffs.",
+  "contextSentence": "Teams choosing how to run long-lived agent work need a clear view of harness support, custom workflows, file-first setup, durability, and stability across common orchestration options.",
+  "takeaway": "Use you-agent-factory when you want a lightweight, file-first orchestrator for custom agent workflows; reach for heavier or more opinionated systems when durability, visual pipelines, or established workflow engines matter more than harness-native agent loops."
+}

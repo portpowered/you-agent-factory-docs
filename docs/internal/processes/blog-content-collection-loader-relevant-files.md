@@ -86,3 +86,27 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
 ## Patterns
 
 * Blog post `relatedDocIds` frontmatter must use block-list YAML (`relatedDocIds:\n  - concept.example`). Inline `relatedDocIds: []` is parsed as a string by `parseYamlFrontmatterBlock` and as `null` by `compileMDX`, which fails `blogPostFrontmatterSchema`.
+* When adding a new published production blog slug, update the inventory assertion in
+  `src/lib/content/blog-content-loader-scope.test.ts` (sorted slug list +
+  `getPublishedBlogPostBySlug` match). That test is in the required website suite;
+  `src/tests/content/blog-*.test.tsx` rows are excluded from `make test` and are not
+  a substitute for the loader-scope inventory update.
+* Worktree checkouts often resolve `next` from a parent `node_modules`. Turbopack
+  rejects out-of-root `node_modules` symlinks; prefer SSR `renderBlogPostPage` +
+  `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification
+  instead of inventing a second package layout.
+* `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve related-doc kinds
+  wired through `getRegistryRecordById` (concept, module, model, …). Published
+  `documentation.*` ids validate in frontmatter `relatedDocIds` but render as
+  missing in the component; until that lookup gap is fixed, keep the id in
+  frontmatter and link the documentation route in MDX (or pass only resolvable
+  ids to `<BlogRelatedDocs />`) so readers still reach the page.
+* Page-local blog illustrations (DataTable, charts) need the same
+  `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
+  switch as concept SPC graphs: relative imports in `page.mdx` do not resolve
+  under `compileMDX`. Keep the component out of shared `blog-mdx-components.tsx`.
+* Empty `tags: []` is valid when no published tag fits. Discoverability then
+  relies on the blog index card plus prose/title search documents (not tag
+  landings). Keep that proof colocated under
+  `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
+  blog-local and still runs in the required website suite.

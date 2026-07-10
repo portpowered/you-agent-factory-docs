@@ -29,13 +29,19 @@ import { buildLocalDocsTableOfContents } from "@/lib/navigation/local-docs-toc";
  * relative imports in `page.mdx` do not resolve. Use a static
  * `import("@/content/blog/<slug>/page-mdx-components")` literal (bundlers
  * cannot resolve expression-based imports at build time). Keep post charts
- * out of the shared `blog-mdx-components.tsx` registry.
+ * and tables out of the shared `blog-mdx-components.tsx` registry.
  */
 async function loadBlogPostMdxComponents(slug: string): Promise<MDXComponents> {
   switch (slug) {
     case "bottlenecks": {
       const mod = await import(
         "@/content/blog/bottlenecks/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
+    case "comparing-agent-factories": {
+      const mod = await import(
+        "@/content/blog/comparing-agent-factories/page-mdx-components"
       );
       return mod.pageMdxComponents ?? {};
     }
