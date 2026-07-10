@@ -119,3 +119,18 @@ article[data-registry-id] > section:first-of-type > h2 {
   width: 100%;
   overflow-x: hidden;
 }
+
+/*
+ * Honor prefers-reduced-motion on critical-route chrome and shared UI.
+ * Use a near-zero duration (not 0s) so transitionend / animationend still fire.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

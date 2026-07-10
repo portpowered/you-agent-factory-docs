@@ -122,14 +122,32 @@ surfaces (home, browse, search, docs/harness-support, blog).
   drawer applies below that. Tablet probes should assert inline nav, not the
   drawer.
 
+## Reduced motion (story 007)
+
+* `src/app/globals.css` — `@media (prefers-reduced-motion: reduce)` sets
+  near-zero `animation-duration` / `transition-duration` (0.01ms) site-wide so
+  non-essential motion (drawer, dropdowns, graph hover fades) becomes
+  instantaneous without dropping transitionend events.
+* `MobileDocsDrawer` marks animated chrome with `data-motion-chrome` and adds
+  `motion-reduce:transition-none motion-reduce:duration-0` on the panel and
+  backdrop. Home brush header is static SVG — do not add decorative motion.
+* `src/lib/verify/a11y-reduced-motion.ts` — `parseCssTimeToMs`,
+  `probeMotionDurationsFromStyle`, `evaluateReducedMotionChromeInBrowser`
+  (self-contained for Playwright `page.evaluate`).
+* `src/tests/a11y/reduced-motion.a11y.test.tsx` — always-on: open mobile drawer
+  and assert motion-chrome markers + motion-reduce classes.
+* `src/lib/verify/a11y-reduced-motion-page.test.ts` — opt-in served probe:
+  Playwright `emulateMedia({ reducedMotion: "reduce" })` proves drawer
+  transition ≤ threshold; `no-preference` keeps duration-300.
+
 ## Focused gate
 
 * `Makefile` target `a11y` → `bun run test:a11y`
-* `package.json` script `test:a11y` runs contract/probe/axe/page-structure unit
-  tests plus home/browse, search, docs/harness-support, blog, and responsive
-  overflow a11y smokes (and the skipped-by-default served-page probes). Later
-  stories expand coverage and may fold in remaining `src/tests/a11y/` once those
-  smokes are factory-current.
+* `package.json` script `test:a11y` runs contract/probe/axe/page-structure/
+  reduced-motion unit tests plus home/browse, search, docs/harness-support,
+  blog, responsive overflow, and reduced-motion a11y smokes (and the
+  skipped-by-default served-page probes). Later stories expand coverage and may
+  fold in remaining `src/tests/a11y/` once those smokes are factory-current.
 * Not yet part of `make ci` (wire in story `harden-accessibility-responsive-ui-009`).
 
 ## Existing component a11y smokes
