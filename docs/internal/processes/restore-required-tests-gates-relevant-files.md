@@ -34,7 +34,7 @@ Atlas skips, and restoring bounded required gates after rewrite foundation.
 | `src/lib/verify/` | `make test-verify-contract` / `bun run test:verify-contract` (+ integration for lifecycle) |
 | Layout shell files under `src/tests/layout/` (sidebar/TOC/index/home) | `make test-reader-facing` (+ `make test-integration` for sidebar/TOC/index) |
 | `src/tests/search/` (current factory paths), `src/tests/features/`, `src/tests/a11y/`, `src/lib/search/` (current factory paths) | `make test-reader-facing` / `bun run test:reader-facing` |
-| `src/lib/docs/`, `src/tests/docs/` | `make component-coverage` (story 005) |
+| `src/lib/docs/`, `src/tests/docs/` | `make component-coverage` / `bun run coverage` |
 | `src/tests/ci/` | `make test-ci-contract` (workflow/Makefile alignment); `make test-build-contract` for Pages/export pieces |
 
 ## Story 002: reader-facing search / layout / a11y required suite
@@ -105,6 +105,32 @@ The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
 ```sh
 make build
 make budget
+```
+
+## Story 005: component and verifier coverage with factory baselines
+
+| Path | Role |
+| --- | --- |
+| `src/lib/docs/component-manifest.ts` | Factory reusable component + thin-wrapper coverage baselines (90% line targets; factory-ui wrappers) |
+| `src/lib/docs/component-coverage-gate.ts` | Pure evaluation of Bun coverage rows against the component manifest |
+| `src/lib/verify/verifier-coverage-manifest.ts` | Factory verifier module baselines (server lifecycle) |
+| `src/lib/verify/verifier-coverage-gate.ts` | Pure evaluation of Bun coverage rows against the verifier manifest |
+| `scripts/component-coverage-gate.ts` | CLI for `bun run coverage` / `make component-coverage` / `make coverage`; prints `make component-coverage` on failure |
+| `src/features/docs/components/PageAsset.test.tsx` | Factory fixture-based PageAsset shell coverage (image/graph/table/chart stubs; no Atlas module pages) |
+| `Makefile` `component-coverage` / `package.json` `coverage` | Maintainer + CI entrypoint; invoked by `.github/workflows/ci.yml` |
+
+Factory baselines use the factory-green `REUSABLE_COVERAGE_COMPONENTS` set
+(typically ≥90% reachable line coverage) plus factory-ui thin wrappers and the
+verifier lifecycle module. Atlas-stale phase inventories
+(`PHASE_1_SEARCH_COVERAGE_COMPONENTS`, auto-link / related-docs entries) stay
+documented but outside the required gate until their unit tests are rewritten.
+Deleted Atlas-only coverage fixtures (`static-export-search-surfaces`,
+`glossary-shell-description-auto-link`) are not referenced.
+
+The gate never passes via an unconditional skip/`exit 0`. Reproduce locally with:
+
+```sh
+make component-coverage
 ```
 
 ## Related

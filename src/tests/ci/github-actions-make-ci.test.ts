@@ -136,6 +136,7 @@ describe("GitHub Actions make ci", () => {
       "static-export-search-ux-integration.test.ts",
     );
     expect(scripts.budget).toBe("bun ./scripts/run-exported-site-budget.ts");
+    expect(scripts.coverage).toBe("bun ./scripts/component-coverage-gate.ts");
 
     const makefile = readFileSync(makefilePath, "utf8");
     const prerequisites = parseMakefileCiPrerequisites(makefile);
@@ -152,12 +153,22 @@ describe("GitHub Actions make ci", () => {
     expect(makefile).not.toContain(
       "exported-site budget gate temporarily skipped",
     );
+    expect(makefile).toMatch(/^component-coverage:\n\tbun run coverage$/m);
+    expect(makefile).not.toContain(
+      "coverage gate temporarily skipped during rewrite foundation",
+    );
 
     expect(
       existsSync(join(repoRoot, "src/lib/build/static-export.test.ts")),
     ).toBe(true);
     expect(
       existsSync(join(repoRoot, "src/lib/build/exported-site-budget.ts")),
+    ).toBe(true);
+    expect(
+      existsSync(join(repoRoot, "src/lib/docs/component-coverage-gate.ts")),
+    ).toBe(true);
+    expect(
+      existsSync(join(repoRoot, "src/lib/verify/verifier-coverage-gate.ts")),
     ).toBe(true);
   });
 

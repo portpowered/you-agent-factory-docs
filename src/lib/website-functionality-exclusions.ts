@@ -356,7 +356,6 @@ export const DELETED_OBSOLETE_ATLAS_WEBSITE_SUITES = [
   "src/lib/build/built-app-html-test-utils.test.ts",
   "src/lib/build/verify-export-routes.test.ts",
   "src/lib/build/verify-module-built-routes.test.ts",
-  "src/features/docs/components/PageAsset.test.tsx",
   "src/tests/layout/docs-shell-contract.test.tsx",
   "src/tests/layout/docs-page-footer-hover-convergence.test.tsx",
   "src/tests/layout/site-routes-shell.test.tsx",

@@ -18,7 +18,7 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=`, stage wall times, cache reasons, scale counts, and non-identifying machine metadata. Reference machine + recorded <=180s evidence live in `docs/operations.md`; print the gate with `bun run prove:static-export-optimization-evidence`. Not part of CI/Pages. |
 | Exported-site budget | `make budget` | Measures existing `out/` against factory baselines (total size, Next static JS, search bootstrap); never unconditional skip/`exit 0` |
-| Component coverage | `make component-coverage` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
+| Component coverage | `make component-coverage` | Evaluates factory component + verifier coverage manifests via `bun run coverage`; never unconditional skip/`exit 0` |
 
 Workflows that call this contract:
 
@@ -133,10 +133,10 @@ Atlas page deletion leaves empty collections).
 `make budget` now enforces factory exported-site baselines via
 `bun run budget` / `scripts/run-exported-site-budget.ts` (see
 [restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)).
-During rewrite foundation, `component-coverage` may still print a clear skip
-message and exit 0 when no rewrite-safe enforcement exists yet. Do not hide
-failures from `check`, `test`, `budget`, or the static-export build behind
-those skips.
+`make component-coverage` now enforces factory component and verifier coverage
+baselines via `bun run coverage` / `scripts/component-coverage-gate.ts` (same
+doc). Do not hide failures from `check`, `test`, `budget`, `component-coverage`,
+or the static-export build behind skip stubs.
 
 ## Related
 

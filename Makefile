@@ -12,8 +12,7 @@ budget:
 	bun run budget
 
 component-coverage:
-	@echo "component-coverage: coverage gate temporarily skipped during rewrite foundation"
-	@exit 0
+	bun run coverage
 
 dev:
 	bun run dev

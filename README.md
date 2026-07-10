@@ -93,7 +93,7 @@ from meta-doc rewrite work):
 | Tests | `make test` | website functionality suite |
 | Static export | `make build` | `bun run build:export` → `out/` |
 | Budget | `make budget` | rewrite-era transitional skip/pass allowed |
-| Component coverage | `make component-coverage` | rewrite-era transitional skip/pass allowed |
+| Component coverage | `make component-coverage` | factory component + verifier coverage baselines |
 
 Fresh checkout proof:
 
@@ -126,7 +126,7 @@ make check              # typecheck then lint
 make test               # website functionality suite
 make build              # static export to out/
 make budget             # exported-site budget gate (transitional skip/pass ok)
-make component-coverage # component coverage gate (transitional skip/pass ok)
+make component-coverage # component + verifier coverage gate
 make lint               # Biome check
 make format             # Biome format --write
 make typecheck          # tsc --noEmit (after content-runtime prep)
