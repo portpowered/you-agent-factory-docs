@@ -95,10 +95,10 @@
     "quickRoutesDescription": "当你知道想怎么探索、但还不确定具体页面时，使用这些入口。",
     "searchRouteDescription": "当你已有术语时，直接跳到标题、别名或标签。",
     "glossaryRouteDescription": "需要快速理解陌生用语时，浏览简短定义。",
-    "architectureRouteDescription": "跟进模型族结构、位置编码方案及其他系统形态相关思路。",
-    "tagsRouteDescription": "浏览跨模型、模块、概念与术语表页面的精选主题标签。",
+    "architectureRouteDescription": "跟进工厂系统形态、工作站结构及其他架构相关思路。",
+    "tagsRouteDescription": "浏览跨指南、概念、技法与文档页面的精选主题标签。",
     "conceptsSectionTitle": "概念",
-    "conceptsSectionDescription": "概念页解释跨越许多模型或模块的更广想法，例如 Transformer 结构、量化或长上下文权衡。",
+    "conceptsSectionDescription": "概念页解释跨越许多工厂工作流的更广想法，例如 harness、循环或瓶颈。",
     "conceptsSectionLinkLabel": "浏览全部概念页",
     "guidesSectionTitle": "指南",
     "guidesSectionDescription": "指南页逐步介绍实用的 CLI 工作流，以及如何把参考资料应用到日常工作中。",
@@ -110,7 +110,7 @@
     "documentationSectionDescription": "文档页涵盖 CLI 表面的参考资料，包括契约、约定与补充细节。",
     "documentationSectionLinkLabel": "浏览全部文档页",
     "glossarySectionTitle": "术语表",
-    "glossarySectionDescription": "术语表页定义模型架构、训练、推理与评估相关词汇，使图谱其余部分更易阅读。",
+    "glossarySectionDescription": "术语表页定义简短的工厂与 CLI 词汇，使其余文档更易阅读。",
     "glossarySectionLinkLabel": "浏览完整术语表"
   },
   "conceptsIndex": {

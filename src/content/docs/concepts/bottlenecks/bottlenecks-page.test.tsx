@@ -59,7 +59,7 @@ describe("bottlenecks concept page", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", {
-        name: "Related Concepts And Modules",
+        name: "Related To",
       }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();

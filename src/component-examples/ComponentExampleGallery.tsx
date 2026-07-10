@@ -24,9 +24,9 @@ export function ComponentExampleGallery({
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
           Lightweight Storybook-style gallery for Phase 2 MDX building blocks.
-          Examples use grouped-query-attention fixtures and search metadata so
-          reviewers can inspect default and alternate states without loading
-          full MDX pages.
+          Examples use factory concept fixtures and search metadata so reviewers
+          can inspect default and alternate states without loading full MDX
+          pages.
         </p>
       </header>
 

@@ -1,60 +1,57 @@
 import type { ResolveRelatedRegistryDocsOptions } from "@/lib/content/related-registry-docs";
 import type { ConceptRecord } from "@/lib/content/schemas";
 
-// These ids mirror real published concept records (see
-// src/content/registry/concepts/harness.json and loop.json) so that
-// registryRecordHref resolves a real href from the generated published-docs
-// registry instead of a fabricated one.
 export const RELATED_REGISTRY_DOCS_PUBLISHED_IDS = new Set([
+  "concept.bottlenecks",
   "concept.harness",
-  "concept.loop",
-  "concept.unindexed-concept",
 ]);
 
-export const relatedRegistryDocsHarness: ConceptRecord = {
-  id: "concept.harness",
-  slug: "harness",
+export const relatedRegistryDocsBottlenecks: ConceptRecord = {
+  id: "concept.bottlenecks",
+  slug: "bottlenecks",
   kind: "concept",
   defaultTitleKey: "title",
   defaultSummaryKey: "description",
-  aliases: ["Harness"],
-  tags: [],
+  aliases: ["Bottlenecks"],
+  tags: ["foundations"],
   relatedIds: [],
   citationIds: [],
   status: "published",
-  createdAt: "2026-06-01T00:00:00.000Z",
-  updatedAt: "2026-06-02T00:00:00.000Z",
+  createdAt: "2026-07-10T00:00:00.000Z",
+  updatedAt: "2026-07-10T00:00:00.000Z",
+  conceptType: "systems",
   prerequisiteIds: [],
   explainsIds: [],
 };
 
-export const relatedRegistryDocsLoop: ConceptRecord = {
-  ...relatedRegistryDocsHarness,
-  id: "concept.loop",
-  slug: "loop",
-  aliases: ["Loop"],
+export const relatedRegistryDocsHarness: ConceptRecord = {
+  ...relatedRegistryDocsBottlenecks,
+  id: "concept.harness",
+  slug: "harness",
+  aliases: ["Harness"],
+  tags: [],
 };
 
 export const relatedRegistryDocsDraftConcept: ConceptRecord = {
-  ...relatedRegistryDocsHarness,
-  id: "concept.draft-concept",
-  slug: "draft-concept",
-  aliases: ["Draft concept"],
+  ...relatedRegistryDocsBottlenecks,
+  id: "concept.draft-related",
+  slug: "draft-related",
+  aliases: ["Draft related"],
   status: "draft",
 };
 
-/** Published registry record that is not yet in the generated published-docs index. */
+/** Published registry record that is not yet in the published-docs index. */
 export const relatedRegistryDocsUnindexedConcept: ConceptRecord = {
-  ...relatedRegistryDocsHarness,
-  id: "concept.unindexed-concept",
-  slug: "unindexed-concept",
-  aliases: ["Unindexed concept"],
+  ...relatedRegistryDocsBottlenecks,
+  id: "concept.unindexed-related",
+  slug: "unindexed-related",
+  aliases: ["Unindexed related"],
   status: "published",
 };
 
 export const relatedRegistryDocsRecordsById = new Map<string, ConceptRecord>([
+  [relatedRegistryDocsBottlenecks.id, relatedRegistryDocsBottlenecks],
   [relatedRegistryDocsHarness.id, relatedRegistryDocsHarness],
-  [relatedRegistryDocsLoop.id, relatedRegistryDocsLoop],
   [relatedRegistryDocsDraftConcept.id, relatedRegistryDocsDraftConcept],
   [relatedRegistryDocsUnindexedConcept.id, relatedRegistryDocsUnindexedConcept],
 ]);

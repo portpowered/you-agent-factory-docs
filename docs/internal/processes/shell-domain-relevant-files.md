@@ -127,13 +127,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
   `browseIndex` hub + CLI section blurbs. Do not ship retired Atlas
   `models|modules|papers|training|systems` index blocks, Atlas browse
-  section keys (including Model Types / Inference / Module Components), or
+  section keys (including Model Types / Inference / Module Components),
+  retired `/topology` explorer `topologyPrototype` product copy, or
   home `atlasLink*` / module featured-link keys. Preserve legitimate factory
   model-provider / external-model product wording when present.
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only
-  message inventory above.
+  message inventory above (`topologyPrototype` omitted).
 * `src/lib/navigation/docs-sidebar-collection-verification.test.ts`
   AI sidebar folder order, grouping labels, and representative links.
 * `src/tests/search/search-behavior-parity.test.ts`

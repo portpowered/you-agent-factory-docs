@@ -43,13 +43,11 @@ Use these files when extending the default English blog surface at `/blog` and
 * `bun run lint`
 * `bun test src/tests/content/blog-index.test.tsx`
 * `bun test src/tests/content/blog-post.test.tsx`
-* `bun test src/features/roofline-throughput-explorer/roofline-throughput-explorer-responsive-verification.test.tsx`
-  RTL keyboard tab order and missing-preset fallbacks for `/blog/roofline-throughput-explorer`.
-* `bun test src/lib/verify/roofline-throughput-explorer-blog-viewport-http.test.tsx`
-  Playwright desktop/mobile viewport probes on blog shell HTML (runs in `test-verify-contract`).
 * `bun test src/tests/content/blog-routes-slice-verification.test.tsx`
   Consolidated route proof for `/blog` metadata/render, `/blog/<slug>` body
   content, newest-first ordering, and unknown-slug missing-page behavior.
+* `bun test src/content/blog/bottlenecks/bottlenecks-discoverability.test.tsx`
+  Blog-local index + search + foundations tag landing + post SSR proof.
 * `bun test src/content/blog/comparing-agent-factories/comparing-agent-factories-discoverability.test.tsx`
   Blog-local index + prose/title search + post SSR proof for empty-tag posts
   (no tag-landing assertions when `tags: []`).
@@ -63,9 +61,25 @@ Use these files when extending the default English blog surface at `/blog` and
 * Search page panel GQA ranking rows without explicit per-test timeouts inherit
   the 15s default and can fail under full-suite load; align them with the 90s GQA
   `test.each` budget when CI is already green.
-* Production roofline post assertions should track canonical frontmatter tags from
-  `src/content/blog/roofline-throughput-explorer/page.mdx` (currently
-  `foundations` and `kv-cache`), not stale `inference` labels after main sync.
+* After purging Atlas editorial posts, production blog assertions should track the
+  remaining factory posts (`bottlenecks`, `comparing-agent-factories`) and treat
+  `evolution-of-diffusion`, `llms-no-longer-wholly-reliant-on-the-internet`, and
+  `roofline-throughput-explorer` as unpublished (loader null / route notFound).
+* After purging Atlas-only tags, keep factory tags (`taxonomy`, `foundations`,
+  `local-models`) and assert absence of `model-family` / `inference` / `alignment`
+  from published tag index/landing surfaces. Reparent `local-models` so it does
+  not depend on deleted `tag.inference`.
+* After retargeting related links/registries, keep blog `relatedDocIds` and
+  related-registry fixtures on factory concepts (`concept.bottlenecks`,
+  `concept.harness`); prove with
+  `src/tests/content/purge-legacy-related-links.test.tsx` that blog lists/posts
+  and registry related-id graphs do not advertise deleted blog or Atlas-only tag
+  destinations.
+* After the purge is complete, prove public indexes with
+  `src/lib/content/purge-legacy-public-indexes.test.ts` (search documents,
+  meta map, tag index, blog/tags/search HTML) plus `bun run validate-data`,
+  `bun run linkcheck`, and a served-page curl of `/blog`, `/tags`, and
+  `/search` asserting zero deleted blog/tag hrefs.
 
 ## Patterns
 

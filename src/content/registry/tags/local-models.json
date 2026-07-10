@@ -10,8 +10,7 @@
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-09T00:00:00.000Z",
-  "updatedAt": "2026-07-09T00:00:00.000Z",
+  "updatedAt": "2026-07-10T00:00:00.000Z",
   "category": "inference",
-  "landingPage": "generated-tag-page",
-  "parentTagId": "tag.inference"
+  "landingPage": "generated-tag-page"
 }

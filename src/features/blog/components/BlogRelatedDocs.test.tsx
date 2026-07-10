@@ -9,9 +9,9 @@ import {
 } from "@/features/blog/components/BlogRelatedDocs";
 import {
   RELATED_REGISTRY_DOCS_MISSING_ID,
+  relatedRegistryDocsBottlenecks,
   relatedRegistryDocsDraftConcept,
   relatedRegistryDocsHarness,
-  relatedRegistryDocsLoop,
   relatedRegistryDocsResolveOptions,
 } from "@/lib/content/related-registry-docs.test-fixtures";
 
@@ -24,20 +24,20 @@ describe("BlogRelatedDocs", () => {
     const html = renderToStaticMarkup(
       <BlogRelatedDocs
         relatedDocIds={[
-          relatedRegistryDocsLoop.id,
           relatedRegistryDocsHarness.id,
+          relatedRegistryDocsBottlenecks.id,
         ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
     expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).toContain('href="/docs/concepts/loop"');
     expect(html).toContain('href="/docs/concepts/harness"');
-    expect(html).toContain("Loop");
+    expect(html).toContain('href="/docs/concepts/bottlenecks"');
     expect(html).toContain("Harness");
+    expect(html).toContain("Bottlenecks");
     expect(html).toContain("no-underline");
-    expect(html).not.toContain(relatedRegistryDocsLoop.id);
+    expect(html).not.toContain(relatedRegistryDocsHarness.id);
   });
 
   test("renders blog empty fallback when relatedDocIds is empty", () => {
@@ -75,36 +75,36 @@ describe("BlogRelatedDocs", () => {
       <BlogRelatedDocs
         relatedDocIds={[
           RELATED_REGISTRY_DOCS_MISSING_ID,
-          relatedRegistryDocsHarness.id,
+          relatedRegistryDocsBottlenecks.id,
           relatedRegistryDocsDraftConcept.id,
         ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
-    expect(html).toContain('href="/docs/concepts/harness"');
-    expect(html).toContain("Harness");
+    expect(html).toContain('href="/docs/concepts/bottlenecks"');
+    expect(html).toContain("Bottlenecks");
     expect(html).toContain(
       'data-testid="blog-related-docs-partial-unavailable"',
     );
     expect(html).toContain(BLOG_RELATED_DOCS_PARTIAL_UNAVAILABLE_STATUS);
     expect(html).not.toContain(RELATED_REGISTRY_DOCS_MISSING_ID);
-    expect(html).not.toContain("Draft concept");
+    expect(html).not.toContain("Draft related");
   });
 
   test("exposes accessible list semantics for available links", () => {
     render(
       <BlogRelatedDocs
         relatedDocIds={[
-          relatedRegistryDocsLoop.id,
           relatedRegistryDocsHarness.id,
+          relatedRegistryDocsBottlenecks.id,
         ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
     expect(screen.getAllByRole("list")).toHaveLength(1);
-    expect(screen.getByRole("link", { name: "Loop" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Harness" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Bottlenecks" })).toBeTruthy();
   });
 });

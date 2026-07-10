@@ -42,17 +42,15 @@ describe("comparing-agent-factories blog discoverability (004)", () => {
     expect(html).toContain(`aria-label="Read blog post: ${BLOG_TITLE}"`);
   });
 
-  test("blog index orders the post ahead of older published entries", async () => {
+  test("blog index orders the post after bottlenecks by slug tie-break when dates match", async () => {
     const page = await renderBlogIndexPage();
     const html = renderToStaticMarkup(page);
     const comparePosition = html.indexOf(`href="${BLOG_ROUTE}"`);
-    const olderPosition = html.indexOf(
-      'href="/blog/roofline-throughput-explorer"',
-    );
+    const bottlenecksPosition = html.indexOf('href="/blog/bottlenecks"');
 
     expect(comparePosition).toBeGreaterThanOrEqual(0);
-    expect(olderPosition).toBeGreaterThanOrEqual(0);
-    expect(comparePosition).toBeLessThan(olderPosition);
+    expect(bottlenecksPosition).toBeGreaterThanOrEqual(0);
+    expect(bottlenecksPosition).toBeLessThan(comparePosition);
   });
 
   test("search indexes the production post with title, description, and comparison prose", async () => {

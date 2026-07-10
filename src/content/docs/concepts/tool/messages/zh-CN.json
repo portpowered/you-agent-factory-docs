@@ -19,7 +19,7 @@
       "body": "A tool is the named action you call. The harness is the agent runtime that can choose and run tools; it is not itself a tool. MCP documentation and host setup explain how to connect a host and list available tools; they are not the tools those pages describe. A worker is a configured executor that does assigned work; tools are the callable actions that worker or host may use. Thinking is internal reasoning before or between actions; it is not a callable capability with a tool name."
     },
     "related": {
-      "title": "Related Concepts And Modules"
+      "title": "Related To"
     },
     "tags": {
       "title": "Tags"

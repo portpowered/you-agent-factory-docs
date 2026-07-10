@@ -11,7 +11,7 @@ function frontmatterBlock(input: {
   tags?: string[];
   authors?: string[];
 }): string {
-  const tags = input.tags ?? ["inference"];
+  const tags = input.tags ?? ["foundations"];
   const authors = input.authors ?? ["site-team"];
   return `---
 messageNamespace: "local"
@@ -82,62 +82,46 @@ describe("blog post page render", () => {
     );
   }
 
-  it("renders the production llms-no-longer-wholly-reliant-on-the-internet post with metadata and MDX body content", async () => {
-    const page = await renderBlogPostPage(
-      "llms-no-longer-wholly-reliant-on-the-internet",
-    );
+  it("renders the production bottlenecks post with metadata and MDX body content", async () => {
+    const page = await renderBlogPostPage("bottlenecks");
     const html = renderToStaticMarkup(page);
 
-    expect(html).toContain("LLMs are no longer wholly reliant on the internet");
     expect(html).toContain(
-      "Why modern language-model quality still starts with internet-scale pretraining",
+      "Factory bottlenecks: where long-running agent work actually stalls",
     );
-    expect(html).toContain('dateTime="2026-07-08"');
-    expect(html).toContain("July 8, 2026");
+    expect(html).toContain(
+      "A listicle comparison of common you-agent-factory limiting stages",
+    );
+    expect(html).toContain('dateTime="2026-07-09"');
+    expect(html).toContain("July 9, 2026");
     expect(html).toContain('class="sr-only">Authors: </span>');
     expect(html).toContain("Site Team");
     expect(html).toContain("Foundations");
-    expect(html).toContain("Alignment");
-    expect(html).toContain(
-      'data-blog-slug="llms-no-longer-wholly-reliant-on-the-internet"',
-    );
-    expect(html).toContain("The training-signal shift");
-    expect(html).toContain("How training signals accumulated over time");
-    expect(html).toContain("Few-shot prompting");
-    expect(html).toContain("Key post-training and feedback loops");
-    expect(html).toContain(
-      "Internet-scale pretraining remains the foundation of modern LLMs",
-    );
-    expect(html).toContain('data-training-signal-chart="ready"');
-    expect(html).toContain("Conceptual illustration");
-    expect(html).toContain("Broad pretraining corpus");
-    expect(html).toContain("On-policy distillation / self-distillation");
+    expect(html).toContain('data-blog-slug="bottlenecks"');
+    expect(html).toContain("Saturated task queue");
+    expect(html).toContain("Where one stage caps the run");
+    expect(html).toContain("bottlenecks-stage-throughput-chart");
     expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).toContain('href="/docs/training/rlhf"');
-    expect(html).toContain('href="/docs/training/rlvr"');
+    expect(html).toContain('href="/docs/concepts/bottlenecks"');
     expect(html).toContain("Related reference pages");
   });
 
-  it("renders the production roofline post with metadata and MDX body content", async () => {
-    const page = await renderBlogPostPage("roofline-throughput-explorer");
-    const html = renderToStaticMarkup(page);
-
-    expect(html).toContain(
-      "the best computer for local language models (2026)",
-    );
-    expect(html).toContain(
-      "An overall guide to the best computer to buy for local language models",
-    );
-    expect(html).toContain('dateTime="2026-07-02"');
-    expect(html).toContain("July 2, 2026");
-    expect(html).toContain('class="sr-only">Authors: </span>');
-    expect(html).toContain("Andreas Abdi");
-    expect(html).toContain("Inference");
-    expect(html).toContain("Local Models");
-    expect(html).toContain('data-blog-slug="roofline-throughput-explorer"');
-    expect(html).toContain("Problem");
-    expect(html).toContain("Models are constrained by memory and compute");
-    expect(html).toContain('data-roofline-throughput-explorer="explorer"');
+  it("returns missing-page behavior for unpublished legacy Atlas blog slugs", async () => {
+    for (const slug of [
+      "evolution-of-diffusion",
+      "llms-no-longer-wholly-reliant-on-the-internet",
+      "roofline-throughput-explorer",
+    ] as const) {
+      try {
+        await renderBlogPostPage(slug);
+        throw new Error(`Expected unpublished blog slug ${slug} to fail`);
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toMatch(
+          /notFound\(\)|NEXT_HTTP_ERROR_FALLBACK;404/,
+        );
+      }
+    }
   });
 
   it("renders fixture post metadata and MDX body content", async () => {

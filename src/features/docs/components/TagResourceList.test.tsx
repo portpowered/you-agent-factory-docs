@@ -5,15 +5,15 @@ import type { TagResourceKindGroup } from "@/lib/content/tag-resources";
 
 const sampleGroups: TagResourceKindGroup[] = [
   {
-    kind: "module",
-    kindLabel: "Module",
+    kind: "concept",
+    kindLabel: "Concept",
     resources: [
       {
-        title: "Grouped-Query Attention",
-        summary: "GQA module",
-        url: "/docs/modules/grouped-query-attention",
-        slug: "grouped-query-attention",
-        kind: "module",
+        title: "Bottlenecks",
+        summary: "Factory bottleneck concept",
+        url: "/docs/concepts/bottlenecks",
+        slug: "bottlenecks",
+        kind: "concept",
       },
     ],
   },
@@ -59,27 +59,27 @@ describe("TagResourceList", () => {
             kindLabel: "Blog",
             resources: [
               {
-                title: "Why throughput follows a roofline",
-                summary: "Roofline explainer",
-                url: "/blog/roofline-throughput-explorer",
-                slug: "roofline-throughput-explorer",
+                title: "Factory bottlenecks listicle",
+                summary: "Bottlenecks explainer",
+                url: "/blog/bottlenecks",
+                slug: "bottlenecks",
                 kind: "blog",
-                publishedAt: "2026-07-02",
-                tags: ["foundations", "kv-cache"],
+                publishedAt: "2026-07-09",
+                tags: ["foundations", "local-models"],
               },
             ],
           },
         ]}
         listLabel="Resources"
-        tagSlug="kv-cache"
+        tagSlug="local-models"
         locale="en"
       />,
     );
 
-    expect(html).toContain('dateTime="2026-07-02"');
+    expect(html).toContain('dateTime="2026-07-09"');
     expect(html).toContain("July 2026");
     expect(html).toContain('href="/tags/foundations"');
-    expect(html).not.toContain('href="/tags/kv-cache"');
+    expect(html).not.toContain('href="/tags/local-models"');
   });
 
   test("keeps blog tag pills when every tag matches the active tag slug", () => {

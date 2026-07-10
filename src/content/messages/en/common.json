@@ -97,10 +97,10 @@
     "quickRoutesDescription": "Use these entry points when you know how you want to explore, but not the exact page yet.",
     "searchRouteDescription": "Jump straight to a title, alias, or tag when you already have a term in mind.",
     "glossaryRouteDescription": "Scan short definitions when you need to decode unfamiliar language fast.",
-    "architectureRouteDescription": "Follow model-family structure, positional schemes, and other system-shape ideas.",
-    "tagsRouteDescription": "Browse curated topic labels that cut across models, modules, concepts, and glossary pages.",
+    "architectureRouteDescription": "Follow factory system shape, workstation structure, and other architecture ideas.",
+    "tagsRouteDescription": "Browse curated topic labels that cut across guides, concepts, techniques, and documentation.",
     "conceptsSectionTitle": "Concepts",
-    "conceptsSectionDescription": "Concept pages explain broader ideas that span many models or modules, such as transformer structure, quantization, or long-context tradeoffs.",
+    "conceptsSectionDescription": "Concept pages explain broader ideas that span many factory workflows, such as harnesses, loops, and bottlenecks.",
     "conceptsSectionLinkLabel": "Browse all concept pages",
     "guidesSectionTitle": "Guides",
     "guidesSectionDescription": "Guide pages walk through practical CLI workflows and how to apply the reference in day-to-day work.",
@@ -112,7 +112,7 @@
     "documentationSectionDescription": "Documentation pages cover reference material for the CLI surface, including contracts, conventions, and supporting detail.",
     "documentationSectionLinkLabel": "Browse all documentation pages",
     "glossarySectionTitle": "Glossary",
-    "glossarySectionDescription": "Glossary pages define the vocabulary around model architecture, training, inference, and evaluation so the rest of the atlas reads more naturally.",
+    "glossarySectionDescription": "Glossary pages define short factory and CLI vocabulary so the rest of the docs read more naturally.",
     "glossarySectionLinkLabel": "Browse the full glossary"
   },
   "conceptsIndex": {

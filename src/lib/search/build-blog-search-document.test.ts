@@ -164,35 +164,27 @@ Serving repeatedly reads weights from memory.
   test(
     "search returns published blog posts for title, body phrase, and tag queries",
     async () => {
-      const titleResults = await docsSearchApi.search(
-        "best computer for local language models",
-      );
+      const titleResults = await docsSearchApi.search("factory bottlenecks");
       expect(
-        titleResults.some(
-          (result) => result.url === "/blog/roofline-throughput-explorer",
-        ),
+        titleResults.some((result) => result.url === "/blog/bottlenecks"),
       ).toBe(true);
 
-      const bodyResults = await docsSearchApi.search("memory-bound limit");
+      const bodyResults = await docsSearchApi.search("saturated task queue");
       expect(
-        bodyResults.some(
-          (result) => result.url === "/blog/roofline-throughput-explorer",
-        ),
+        bodyResults.some((result) => result.url === "/blog/bottlenecks"),
       ).toBe(true);
 
-      const tagResults = await docsSearchApi.search("local models", {
-        tag: ["local-models"],
+      const tagResults = await docsSearchApi.search("factory bottlenecks", {
+        tag: ["foundations"],
       });
       expect(
-        tagResults.some(
-          (result) => result.url === "/blog/roofline-throughput-explorer",
-        ),
+        tagResults.some((result) => result.url === "/blog/bottlenecks"),
       ).toBe(true);
 
-      const docsResults = await docsSearchApi.search("grouped query attention");
+      const docsResults = await docsSearchApi.search("task queue");
       expect(
         docsResults.some((result) =>
-          result.url.includes("/docs/modules/grouped-query-attention"),
+          result.url.includes("/docs/concepts/task-queue"),
         ),
       ).toBe(true);
     },
@@ -200,61 +192,56 @@ Serving repeatedly reads weights from memory.
   );
 });
 
-const ROOFLINE_THROUGHPUT_EXPLORER_URL = "/blog/roofline-throughput-explorer";
+const BOTTLENECKS_BLOG_URL = "/blog/bottlenecks";
 
-const ROOFLINE_THROUGHPUT_EXPLORER_SEARCH_QUERIES = [
-  "roofline throughput",
-  "active weight reads",
-  "memory bandwidth tokens per second",
-  "FLOPs throughput",
+const BOTTLENECKS_SEARCH_QUERIES = [
+  "factory bottlenecks",
+  "harness latency",
+  "token pressure",
+  "saturated task queue",
 ] as const;
 
-describe("roofline throughput explorer blog search discovery", () => {
+describe("bottlenecks blog search discovery", () => {
   test("indexes the production post with title, description, headings, tags, and prose without MDX component names", async () => {
     const indexes = await loadRegistry();
     const posts = await loadBlogSearchPostSources();
     const document = buildBlogSearchDocuments(posts, indexes).find(
-      (entry) => entry.url === ROOFLINE_THROUGHPUT_EXPLORER_URL,
+      (entry) => entry.url === BOTTLENECKS_BLOG_URL,
     );
 
     expect(document).toMatchObject({
-      id: ROOFLINE_THROUGHPUT_EXPLORER_URL,
-      url: ROOFLINE_THROUGHPUT_EXPLORER_URL,
+      id: BOTTLENECKS_BLOG_URL,
+      url: BOTTLENECKS_BLOG_URL,
       kind: BLOG_SEARCH_DOCUMENT_KIND,
-      title: "the best computer for local language models (2026)",
+      title:
+        "Factory bottlenecks: where long-running agent work actually stalls",
       description:
-        "An overall guide to the best computer to buy for local language models. We recommend an M-series laptop or a 5090.",
-      publishedAt: "2026-07-02",
-      tags: ["inference", "local-models"],
+        "A listicle comparison of common you-agent-factory limiting stages—queues, workers, harness latency, shared resources, and token pressure—and how to read them against the bottlenecks concept.",
+      publishedAt: "2026-07-09",
+      tags: ["foundations"],
     });
     expect(document?.headings).toEqual(
       expect.arrayContaining([
-        "Problem",
-        "Models are constrained by memory and compute",
-        "Explorer",
+        "Saturated task queue",
+        "Where one stage caps the run",
+        "How to choose the next reading path",
       ]),
     );
-    expect(document?.bodyText).toContain(
-      "best computer to buy right now is an RTX 5090",
-    );
-    expect(document?.bodyText).toContain("memory bandwidth");
-    expect(document?.bodyText).not.toContain("RooflineThroughputExplorer");
+    expect(document?.bodyText).toContain("Saturated task queue");
+    expect(document?.bodyText).toContain("token or context pressure");
+    expect(document?.bodyText).not.toContain("BottlenecksStageThroughputChart");
     expect(document?.bodyText).not.toContain("BlogRelatedDocs");
-    expect(document?.aliases).toEqual(
-      expect.arrayContaining(["inference", "local-models"]),
-    );
+    expect(document?.aliases).toEqual(expect.arrayContaining(["foundations"]));
   });
 
   test(
-    "search returns the post for representative roofline throughput queries",
+    "search returns the post for representative bottlenecks queries",
     async () => {
-      for (const query of ROOFLINE_THROUGHPUT_EXPLORER_SEARCH_QUERIES) {
+      for (const query of BOTTLENECKS_SEARCH_QUERIES) {
         const results = await docsSearchApi.search(query);
         expect(
-          results.some(
-            (result) => result.url === ROOFLINE_THROUGHPUT_EXPLORER_URL,
-          ),
-          `expected ${ROOFLINE_THROUGHPUT_EXPLORER_URL} for query "${query}"`,
+          results.some((result) => result.url === BOTTLENECKS_BLOG_URL),
+          `expected ${BOTTLENECKS_BLOG_URL} for query "${query}"`,
         ).toBe(true);
       }
     },
@@ -262,20 +249,26 @@ describe("roofline throughput explorer blog search discovery", () => {
   );
 
   test(
-    "tag-filtered search returns the post on inference and local-models tag pages",
+    "tag-filtered search returns the post on the foundations tag page",
     async () => {
-      for (const tag of ["inference", "local-models"] as const) {
-        const results = await docsSearchApi.search("throughput", {
-          tag: [tag],
-        });
-        expect(
-          results.some(
-            (result) => result.url === ROOFLINE_THROUGHPUT_EXPLORER_URL,
-          ),
-          `expected ${ROOFLINE_THROUGHPUT_EXPLORER_URL} for tag "${tag}"`,
-        ).toBe(true);
-      }
+      const results = await docsSearchApi.search("bottlenecks", {
+        tag: ["foundations"],
+      });
+      expect(
+        results.some((result) => result.url === BOTTLENECKS_BLOG_URL),
+      ).toBe(true);
     },
     { timeout: 20_000 },
   );
+
+  test("search sources omit unpublished legacy Atlas blog URLs", async () => {
+    const posts = await loadBlogSearchPostSources();
+    const urls = posts.map((post) => `/blog/${post.slug}`);
+
+    expect(urls).not.toContain("/blog/evolution-of-diffusion");
+    expect(urls).not.toContain(
+      "/blog/llms-no-longer-wholly-reliant-on-the-internet",
+    );
+    expect(urls).not.toContain("/blog/roofline-throughput-explorer");
+  });
 });

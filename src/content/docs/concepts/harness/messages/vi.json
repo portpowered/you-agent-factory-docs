@@ -19,7 +19,7 @@
       "body": "A harness is not the factory. The factory is the workflow system that tracks and coordinates work; the harness is the agent runtime that carries the work out. A harness is also not a worker. A worker is a named executor declared in factory configuration; the harness is the agent environment that actually runs agent work. Choosing a runner or model provider is a different decision: those settings select which backend or model a run uses, not the harness itself."
     },
     "related": {
-      "title": "Related Concepts And Modules"
+      "title": "Related To"
     },
     "tags": {
       "title": "Tags"

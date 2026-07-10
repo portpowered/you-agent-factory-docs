@@ -15,18 +15,24 @@ describe("loadPublishedTagIndexEntries", () => {
     const messages = await loadUiMessages();
     const entries = await loadPublishedTagIndexEntries(messages, "en");
 
-    const attention = entries.find((entry) => entry.slug === "attention");
-    expect(attention).toBeDefined();
-    expect(attention?.title).toBe("Attention");
-    expect(attention?.url).toBe("/tags/attention");
-    expect(attention?.categoryLabel).toBe("Module type");
-    expect(attention?.summary.length).toBeGreaterThan(0);
+    const foundations = entries.find((entry) => entry.slug === "foundations");
+    expect(foundations).toBeDefined();
+    expect(foundations?.title).toBe("Foundations");
+    expect(foundations?.url).toBe("/tags/foundations");
+    expect(foundations?.categoryLabel).toBe("Architecture");
+    expect(foundations?.summary.length).toBeGreaterThan(0);
 
-    const kvCache = entries.find((entry) => entry.slug === "kv-cache");
-    expect(kvCache).toBeDefined();
-    expect(kvCache?.title).toBe("KV Cache");
-    expect(kvCache?.url).toBe("/tags/kv-cache");
-    expect(kvCache?.categoryLabel).toBe("Inference");
+    const localModels = entries.find((entry) => entry.slug === "local-models");
+    expect(localModels).toBeDefined();
+    expect(localModels?.title).toBe("Local models");
+    expect(localModels?.url).toBe("/tags/local-models");
+    expect(localModels?.categoryLabel).toBe("Inference");
+
+    expect(
+      entries.find((entry) => entry.slug === "model-family"),
+    ).toBeUndefined();
+    expect(entries.find((entry) => entry.slug === "inference")).toBeUndefined();
+    expect(entries.find((entry) => entry.slug === "alignment")).toBeUndefined();
   });
 
   it("sorts tags alphabetically by title within a flat list", async () => {
@@ -49,34 +55,13 @@ describe("groupTagIndexEntriesByCategory", () => {
 
     expect(groups.map((group) => group.category)).toEqual([
       "architecture",
-      "module-type",
-      "training",
       "inference",
-      "model-family",
     ]);
     expect(groups[0]?.tags.map((tag) => tag.slug)).toEqual([
       "foundations",
       "taxonomy",
-      "token-to-probability-chain",
     ]);
-    expect(groups[1]?.tags.map((tag) => tag.slug)).toEqual([
-      "activation",
-      "attention",
-      "feed-forward",
-      "normalization",
-      "position-encoding",
-      "state-space",
-      "tokenization",
-    ]);
-    expect(groups[2]?.tags.map((tag) => tag.slug)).toEqual(["alignment"]);
-    expect(groups[3]?.tags.map((tag) => tag.slug)).toEqual([
-      "context-window",
-      "inference",
-      "kv-cache",
-      "local-models",
-      "quantization",
-    ]);
-    expect(groups[4]?.tags.map((tag) => tag.slug)).toEqual(["model-family"]);
+    expect(groups[1]?.tags.map((tag) => tag.slug)).toEqual(["local-models"]);
   });
 
   it("sorts tags alphabetically by title inside each category group", () => {
@@ -111,18 +96,18 @@ describe("sortTagIndexEntriesByTitle", () => {
   it("sorts entries alphabetically by title", () => {
     const entries: TagIndexEntry[] = [
       {
-        slug: "kv-cache",
-        title: "KV Cache",
-        summary: "Cache",
-        url: "/tags/kv-cache",
+        slug: "local-models",
+        title: "Local models",
+        summary: "Local runtime",
+        url: "/tags/local-models",
         category: "inference",
         categoryLabel: "Inference",
       },
       {
-        slug: "attention",
-        title: "Attention",
-        summary: "Mechanisms",
-        url: "/tags/attention",
+        slug: "foundations",
+        title: "Foundations",
+        summary: "Core vocabulary",
+        url: "/tags/foundations",
         category: "architecture",
         categoryLabel: "Architecture",
       },
@@ -130,7 +115,7 @@ describe("sortTagIndexEntriesByTitle", () => {
 
     expect(
       sortTagIndexEntriesByTitle(entries).map((entry) => entry.title),
-    ).toEqual(["Attention", "KV Cache"]);
+    ).toEqual(["Foundations", "Local models"]);
   });
 });
 
@@ -144,7 +129,7 @@ describe("tags index messages", () => {
 });
 
 describe("tags index page render", () => {
-  it("lists foundational, attention, and inference tags with category labels and landing links", async () => {
+  it("lists factory tags with category labels and landing links without Atlas-only tags", async () => {
     const page = await renderTagsIndexPage();
     const html = renderToStaticMarkup(page);
 
@@ -153,30 +138,14 @@ describe("tags index page render", () => {
     expect(html).toContain('href="/tags/foundations"');
     expect(html).toContain("Taxonomy");
     expect(html).toContain('href="/tags/taxonomy"');
-    expect(html).toContain("Model family");
-    expect(html).toContain('href="/tags/model-family"');
-    expect(html).toContain("Token-to-probability chain");
-    expect(html).toContain('href="/tags/token-to-probability-chain"');
-    expect(html).toContain("Attention");
-    expect(html).toContain('href="/tags/attention"');
-    expect(html).toContain("Activation");
-    expect(html).toContain('href="/tags/activation"');
-    expect(html).toContain("Feed-forward");
-    expect(html).toContain('href="/tags/feed-forward"');
-    expect(html).toContain("Normalization");
-    expect(html).toContain('href="/tags/normalization"');
-    expect(html).toContain("Tokenization");
-    expect(html).toContain('href="/tags/tokenization"');
-    expect(html).toContain("Position Encoding");
-    expect(html).toContain('href="/tags/position-encoding"');
-    expect(html).toContain("Tokenization");
-    expect(html).toContain('href="/tags/tokenization"');
-    expect(html).toContain("Module type");
-    expect(html).toContain("KV Cache");
-    expect(html).toContain('href="/tags/kv-cache"');
-    expect(html).toContain("Quantization");
-    expect(html).toContain('href="/tags/quantization"');
+    expect(html).toContain("Local models");
+    expect(html).toContain('href="/tags/local-models"');
+    expect(html).toContain("Architecture");
     expect(html).toContain("Inference");
+    expect(html).not.toContain('href="/tags/model-family"');
+    expect(html).not.toContain('href="/tags/inference"');
+    expect(html).not.toContain('href="/tags/alignment"');
+    expect(html).not.toContain("Model family");
     expect(html).not.toContain("mt-8");
     expect(html).toContain("list-none");
     expect(html).not.toContain("list-disc");
@@ -189,18 +158,10 @@ describe("tags index page render", () => {
     expect(html).toContain("Thẻ");
     expect(html).toContain("Nền tảng");
     expect(html).toContain('href="/vi/tags/foundations"');
-    expect(html).toContain("Attention");
-    expect(html).toContain('href="/vi/tags/attention"');
-    expect(html).toContain('href="/vi/tags/activation"');
-    expect(html).toContain('href="/vi/tags/feed-forward"');
-    expect(html).toContain('href="/vi/tags/normalization"');
-    expect(html).toContain('href="/vi/tags/position-encoding"');
-    expect(html).toContain('href="/vi/tags/tokenization"');
-    expect(html).toContain("Loại module");
-    expect(html).toContain("Cửa sổ ngữ cảnh");
-    expect(html).toContain('href="/vi/tags/context-window"');
-    expect(html).toContain("Lượng tử hóa");
-    expect(html).toContain('href="/vi/tags/quantization"');
-    expect(html).toContain("Suy luận");
+    expect(html).toContain("Phân loại");
+    expect(html).toContain('href="/vi/tags/taxonomy"');
+    expect(html).toContain('href="/vi/tags/local-models"');
+    expect(html).not.toContain('href="/vi/tags/model-family"');
+    expect(html).not.toContain('href="/vi/tags/inference"');
   });
 });

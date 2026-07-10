@@ -18,7 +18,7 @@ export type ComponentExampleContext = {
   pageMessages: import("@/lib/content/schemas").PageMessages;
   uiMessages: import("@/lib/content/ui-messages.types").UiMessages;
   metaByUrl: import("@/features/docs/search/search-result-meta-client").SearchResultMetaRecord;
-  sampleModuleUrl: string;
+  sampleDocsUrl: string;
 };
 
 export type ComponentExampleDefinition = {

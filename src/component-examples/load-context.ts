@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { ComponentExampleContext } from "@/component-examples/types";
-import { modulePageHref } from "@/lib/content/content-hrefs";
+import { conceptPageHref } from "@/lib/content/content-hrefs";
 import { getProjectRoot } from "@/lib/content/content-paths";
 import { pageMessagesSchema } from "@/lib/content/schemas";
 import { loadUiMessages } from "@/lib/content/ui-messages";
@@ -33,6 +33,6 @@ export async function loadComponentExampleContext(): Promise<ComponentExampleCon
     pageMessages,
     uiMessages,
     metaByUrl: searchResultMetaMapToRecord(metaMap),
-    sampleModuleUrl: modulePageHref("grouped-query-attention"),
+    sampleDocsUrl: conceptPageHref("bottlenecks"),
   };
 }
