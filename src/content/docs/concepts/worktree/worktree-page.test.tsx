@@ -119,5 +119,28 @@ describe("worktree concept page", () => {
       /not the factory/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
+
+    const workstationsLink = screen.getByRole("link", {
+      name: "Workstations",
+    });
+    expect(workstationsLink.getAttribute("href")).toBe(
+      "/docs/documentation/workstations",
+    );
+    const whatIsLink = screen.getByRole("link", {
+      name: "What is you-agent-factory",
+    });
+    expect(whatIsLink.getAttribute("href")).toBe(
+      "/docs/documentation/what-is-you-agent-factory",
+    );
+    const harnessLink = screen.getByRole("link", { name: "Harness concept" });
+    expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
+    const loopLink = screen.getByRole("link", { name: "Loop concept" });
+    expect(loopLink.getAttribute("href")).toBe("/docs/concepts/loop");
+    const harnessSupportLink = screen.getByRole("link", {
+      name: "Harness support",
+    });
+    expect(harnessSupportLink.getAttribute("href")).toBe(
+      "/docs/documentation/harness-support",
+    );
   });
 });
