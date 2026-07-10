@@ -14,6 +14,14 @@
       "title": "How To Integrate",
       "body": "Install the you CLI, then point your MCP-capable host at the canonical serve entrypoint. The host must launch you mcp serve as a stdio child process—not as an interactive terminal command—so the host owns stdin and stdout for MCP traffic."
     },
+    "serveModes": {
+      "title": "Serve Modes",
+      "body": "you mcp serve exposes the same you.factory_session.* tool catalog in two backing modes. The catalog and Factory Session vocabulary stay the same; only the execution service behind the tools changes."
+    },
+    "factorySessionTools": {
+      "title": "Factory Session Tools",
+      "body": "After the host reloads and connects, it discovers Factory Session tools under the you.factory_session.* names. Prefer those names in new host configuration. The list below is a scannable overview of the primary tools most hosts use first—not a full OpenAPI dump."
+    },
     "howToUse": {
       "title": "How To Use",
       "body": "Install the you CLI, add an MCP server entry that launches you mcp serve, set the working directory to your workflow project root, then restart or reload the host so the child process starts. After reload, the host should discover you.factory_session.* tools for validate, start, status, and result flows."
@@ -34,7 +42,9 @@
   },
   "links": {
     "serveCommandLabel": "Canonical serve command",
-    "hostJsonLabel": "Generic MCP host JSON"
+    "hostJsonLabel": "Generic MCP host JSON",
+    "runtimeHostJsonLabel": "Runtime-backed MCP host JSON",
+    "primaryToolsLabel": "Primary Factory Session tools"
   },
   "callouts": {
     "stdioTransport": {
@@ -45,6 +55,24 @@
     },
     "reloadHost": {
       "body": "After you save the host configuration, restart or reload the host so it respawns the MCP child process. Saving the file alone is not enough for most hosts."
+    },
+    "fixtureMode": {
+      "body": "Fixture-backed mode is the default. Launch with you mcp serve (host args [\"mcp\", \"serve\"]). It uses the durable session fixture catalog so hosts can smoke-test tool discovery, validate_source, and async polling without a live factory HTTP server. Prefer this path for first-install smoke."
+    },
+    "runtimeMode": {
+      "body": "Runtime-backed mode launches with you mcp serve --runtime (host args [\"mcp\", \"serve\", \"--runtime\"]). It uses the shared durable JavaScript runtime service for live Factory Session execution. Use it when the host needs real async start, status polling, and terminal or not-ready result reads against live workflow sources."
+    },
+    "runtimeHostJsonNotes": {
+      "body": "Keep the default fixture-backed args when deterministic smoke is enough. Switch to the runtime shape only when live durable JavaScript execution is required. Do not combine --runtime with --fixture-catalog."
+    },
+    "primaryTools": {
+      "body": "validate_source checks JavaScript orchestrator source through the Factory preview contract. start_async starts one durable session for polling. get reads session status and progress. get_result reads the session outcome when it is ready."
+    },
+    "additionalTools": {
+      "body": "Hosts also discover additional list, control, and event tools such as list, start_sync, list_dispatches, list_artifacts, control, and read_events. Use those when you need inventory, lifecycle controls, or ordered event facts beyond the primary validate → start → status or result path."
+    },
+    "compatibilityAliases": {
+      "body": "Older you.workflow.* aliases may still appear and resolve to the same handlers. Prefer you.factory_session.* names in new configuration."
     }
   }
 }

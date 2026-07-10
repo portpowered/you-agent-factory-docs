@@ -1,6 +1,7 @@
 /**
  * Page-owned render proof for documentation/mcp.
- * Covers documentation shell, MCP identity, and how-to-integrate steps.
+ * Covers documentation shell, MCP identity, how-to-integrate steps,
+ * serve modes, and Factory Session tool overview.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -65,6 +66,10 @@ describe("mcp documentation page", () => {
     expect(
       screen.getByRole("heading", { name: "How To Integrate" }),
     ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Serve Modes" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Factory Session Tools" }),
+    ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -118,5 +123,64 @@ describe("mcp documentation page", () => {
     expect(codeText).toMatch(/"args"\s*:\s*\[\s*"mcp"\s*,\s*"serve"\s*\]/);
     expect(codeText).toMatch(/"cwd"/);
     expect(codeText).toMatch(/"command"/);
+  });
+
+  test("shows serve-mode distinction and Factory Session tool overview", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "documentation",
+      slug: "mcp",
+    });
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    const serveModesSection = document.getElementById("serve-modes");
+    expect(serveModesSection).toBeTruthy();
+    expect(serveModesSection?.textContent).toMatch(/fixture/i);
+    expect(serveModesSection?.textContent).toMatch(/runtime/i);
+    expect(serveModesSection?.textContent).toMatch(/you\.factory_session\./);
+    expect(serveModesSection?.textContent).toMatch(/--runtime/);
+
+    const serveModeCode = Array.from(
+      serveModesSection?.querySelectorAll("pre, code") ?? [],
+    )
+      .map((node) => node.textContent ?? "")
+      .join("\n");
+    expect(serveModeCode).toMatch(
+      /"args"\s*:\s*\[\s*"mcp"\s*,\s*"serve"\s*,\s*"--runtime"\s*\]/,
+    );
+
+    const toolsSection = document.getElementById("factory-session-tools");
+    expect(toolsSection).toBeTruthy();
+    expect(toolsSection?.textContent).toMatch(
+      /you\.factory_session\.validate_source/,
+    );
+    expect(toolsSection?.textContent).toMatch(
+      /you\.factory_session\.start_async/,
+    );
+    expect(toolsSection?.textContent).toMatch(/you\.factory_session\.get/);
+    expect(toolsSection?.textContent).toMatch(
+      /you\.factory_session\.get_result/,
+    );
+    expect(toolsSection?.textContent).toMatch(/list|control|event/i);
+    expect(toolsSection?.textContent).toMatch(/you\.workflow\./);
+
+    const toolCode = Array.from(
+      toolsSection?.querySelectorAll("pre, code") ?? [],
+    )
+      .map((node) => node.textContent ?? "")
+      .join("\n");
+    expect(toolCode).toMatch(/you\.factory_session\.validate_source/);
+    expect(toolCode).toMatch(/you\.factory_session\.start_async/);
+    expect(toolCode).toMatch(/you\.factory_session\.get/);
+    expect(toolCode).toMatch(/you\.factory_session\.get_result/);
   });
 });

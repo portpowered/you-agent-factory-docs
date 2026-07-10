@@ -60,6 +60,47 @@ you mcp serve
   <T k="callouts.reloadHost.body" />
 </Section>
 
+<Section id="serve-modes" titleKey="sections.serveModes.title">
+  <T k="sections.serveModes.body" />
+  <T k="callouts.fixtureMode.body" />
+  <T k="callouts.runtimeMode.body" />
+  <p>
+    <T k="links.runtimeHostJsonLabel" />
+  </p>
+
+```json
+{
+  "mcpServers": {
+    "you-agent-factory": {
+      "command": "/absolute/path/to/you",
+      "args": ["mcp", "serve", "--runtime"],
+      "cwd": "/absolute/path/to/your-workflow-project"
+    }
+  }
+}
+```
+
+  <T k="callouts.runtimeHostJsonNotes.body" />
+</Section>
+
+<Section id="factory-session-tools" titleKey="sections.factorySessionTools.title">
+  <T k="sections.factorySessionTools.body" />
+  <p>
+    <T k="links.primaryToolsLabel" />
+  </p>
+
+```text
+you.factory_session.validate_source
+you.factory_session.start_async
+you.factory_session.get
+you.factory_session.get_result
+```
+
+  <T k="callouts.primaryTools.body" />
+  <T k="callouts.additionalTools.body" />
+  <T k="callouts.compatibilityAliases.body" />
+</Section>
+
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
 </Section>
