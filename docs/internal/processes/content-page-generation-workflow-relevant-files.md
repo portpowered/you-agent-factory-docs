@@ -24,6 +24,15 @@ exported `*_PAGE_DIR` constant to `src/lib/content/content-paths.ts`.
 
 ## First CLI collection page (guides / techniques / documentation)
 
+The first authored `techniques/` page needs the same local-docs loader pair as
+guides/documentation (`technique-page.ts` / `technique-page-load.ts`) plus
+`techniques` in `LOCAL_DOCS_SECTIONS` / `parseLocalDocsPageRef`. Published-docs
+section membership and `techniquePageHref` already exist on main; still remove
+section-root `.gitkeep` files and flip
+`src/tests/content/section-indexes.test.tsx` from empty-state to authored-entry
+assertions. Prefer a colocated `<slug>-page.test.tsx` under the page bundle.
+Later technique pages stay page-local beside that wiring.
+
 Before the first authored page under a rewrite-era CLI collection can pass
 `prepare:content-runtime` / `make validate-data` and render under
 `/docs/<section>/<slug>`:

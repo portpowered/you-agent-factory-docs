@@ -78,11 +78,13 @@ Do not author customer page bundles under content roots in this lane.
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/{guides,techniques}/.gitkeep` | Present, empty CLI docs content roots (no authored `page.mdx` bundles) |
+| `src/content/docs/guides/` | CLI guides content root; may contain authored guide page bundles |
+| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles (first page: `workqueue-executor`) |
 | `src/content/docs/documentation/` | CLI documentation content root; may contain authored topic page bundles |
-| `src/content/registry/{guides,techniques}/.gitkeep` | Present, empty CLI registry dirs (loader already tolerates ENOENT; dirs make the contract explicit) |
+| `src/content/registry/guides/` | CLI guides registry dir; may contain authored guide records |
+| `src/content/registry/techniques/` | CLI techniques registry dir; may contain authored technique records |
 | `src/content/registry/documentation/` | CLI documentation registry dir; may contain authored topic records |
-| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` stays guides/techniques only once documentation pages ship |
+| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` historically listed guides/techniques while those roots were empty — update when a throughput lane retires the empty-root assertions after authored pages ship |
 | `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks: empty guide/technique roots, allowed documentation pages/records, section-index empty state without starters |
 | `src/lib/content/published-docs-registry-contract.ts` | Includes `documentation` in `PUBLISHED_DOCS_SECTIONS` with `documentationPageHref` routing |
 | `src/lib/content/content-hrefs.ts` | `documentationPageHref` for `/docs/documentation/<slug>` |

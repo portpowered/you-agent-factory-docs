@@ -1,0 +1,31 @@
+{
+  "title": "Workqueue Executor",
+  "description": "The you-agent-factory workqueue-executor technique drains or organizes a factory task queue through executor workstations.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A workqueue executor is a you-agent-factory technique pattern for draining or organizing a factory task queue by having executor workstations consume ready queued work. The workqueue-executor pattern is about how executors take items from the waiting backlog—not the backlog concept itself, and not a single named worker."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long-running factories accumulate queued work after submit. The workqueue-executor pattern is how operators keep that backlog moving through executor workstations without treating the queue itself as the technique."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "Work waits in task-queue places and states until matching executor workstation inputs become enabled. Executors consume and advance ready items. Remaining ready work stays organized for further drain through ordering, concurrency, or batching at the technique level."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "A task queue is the backlog concept of waiting work; a workqueue executor is the drain pattern that consumes that backlog. Planner-executor pairs plan then execute roles; it is not queue-drain organization. Classify-execute classifies then routes work; it is not the pattern for draining a waiting queue through executors."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

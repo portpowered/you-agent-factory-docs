@@ -1,0 +1,80 @@
+/**
+ * Page-owned render proof for techniques/workqueue-executor.
+ * Covers technique shell headings and workqueue-executor identity —
+ * not routine derived bundle invariants (those stay on make validate-data).
+ * Colocated under the page bundle so audit:canonical-page-surface stays
+ * within the first-techniques declare-exception lane for this page.
+ */
+import { afterEach, describe, expect, test } from "bun:test";
+import { cleanup, render, screen } from "@testing-library/react";
+import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+
+describe("workqueue-executor technique page", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  test("renders technique shell and workqueue-executor identity", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "techniques",
+      slug: "workqueue-executor",
+    });
+
+    expect(loadedPage.messages.title).toBe("Workqueue Executor");
+    expect(loadedPage.messages.description).toContain("you-agent-factory");
+    expect(loadedPage.messages.description).toMatch(/workqueue-executor/i);
+    expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(Object.keys(loadedPage.assets)).toEqual([]);
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Why It Matters" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "How It Works" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "Compared To Nearby Techniques",
+      }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+
+    const whatItIs = document.getElementById("what-it-is");
+    const whyItMatters = document.getElementById("why-it-matters");
+    const howItWorks = document.getElementById("how-it-works");
+    const compared = document.getElementById("compared-to-nearby-techniques");
+    expect(whatItIs).toBeTruthy();
+    expect(whyItMatters).toBeTruthy();
+    expect(howItWorks).toBeTruthy();
+    expect(compared).toBeTruthy();
+
+    expect(whatItIs?.textContent).toMatch(/workqueue executor/i);
+    expect(whatItIs?.textContent).toMatch(/task queue/i);
+    expect(whatItIs?.textContent).toMatch(/executor workstation/i);
+
+    expect(whyItMatters?.textContent).toMatch(/queued work/i);
+    expect(howItWorks?.textContent).toMatch(/task-queue/i);
+    expect(compared?.textContent).toMatch(/planner-executor/i);
+
+    expect(document.querySelector("[data-page-asset]")).toBeNull();
+    expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
+
+    expect(whatItIs?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(whyItMatters?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(howItWorks?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(compared?.textContent?.trim().length).toBeGreaterThan(40);
+  });
+});
