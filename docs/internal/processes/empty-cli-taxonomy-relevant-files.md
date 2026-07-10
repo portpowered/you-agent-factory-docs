@@ -78,16 +78,18 @@ Do not author customer page bundles under content roots in this lane.
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/guides/.gitkeep` | Present, empty guides docs content root (no authored `page.mdx` bundles in empty-taxonomy lanes) |
-| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles once a first-techniques-section lane ships |
+| `src/content/docs/guides/.gitkeep` | Present only while guides docs content root has no authored `page.mdx` bundles; remove when the first page ships |
+| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles once a first-techniques-section lane ships (remove `.gitkeep` with the first page) |
 | `src/content/docs/documentation/` | CLI documentation content root; may contain authored topic page bundles |
-| `src/content/registry/guides/.gitkeep` | Present, empty guides registry dir (loader already tolerates ENOENT; dirs make the contract explicit) |
+| `src/content/registry/guides/.gitkeep` | Present only while guides registry dir has no authored topic records; remove when the first record ships |
 | `src/content/registry/techniques/` | CLI techniques registry dir; may contain authored technique records once first pages ship |
 | `src/content/registry/documentation/` | CLI documentation registry dir; may contain authored topic records |
-| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` historically listed guides/techniques while those roots stayed empty |
-| `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks for empty-taxonomy lanes; required `make test` excludes `src/lib/docs/`, so first authored techniques pages update allowlisted `section-indexes.test.tsx` instead of rewriting this suite in the page lane |
-| `src/lib/content/published-docs-registry-contract.ts` | Includes `documentation` in `PUBLISHED_DOCS_SECTIONS` with `documentationPageHref` routing |
-| `src/lib/content/content-hrefs.ts` | `documentationPageHref` for `/docs/documentation/<slug>` |
+| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` historically listed guides/techniques while those roots stayed empty — update or retire those empty-root assertions when the first authored guide/technique pages ship (required `make test` excludes `src/lib/docs/`) |
+| `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks for empty vs authored CLI roots; keep aligned when first pages land, but do not treat excluded `src/lib/docs/` suites as required CI for page-only lanes — first authored techniques pages update allowlisted `section-indexes.test.tsx` instead |
+| `src/lib/content/published-docs-registry-contract.ts` | Includes `documentation` / `guides` / `techniques` in `PUBLISHED_DOCS_SECTIONS` with matching `*PageHref` routing |
+| `src/lib/content/content-hrefs.ts` | `documentationPageHref` / `guidePageHref` / `techniquePageHref` for `/docs/<section>/<slug>` |
+| `src/lib/content/local-docs-page.ts` | `LOCAL_DOCS_SECTIONS` plus section loaders so `ModulePageProviders` wraps colocated MDX |
+| `src/lib/content/technique-page.ts` / `technique-page-load.ts` | First-techniques-collection local MDX loader path (mirror guide loaders) |
 | `src/lib/factory/canonical-page-surface-audit.ts` | `registryDirectoryByKind` includes `documentation` (and guide/technique) for routine page-surface audits |
 
 `concepts` remains a designated CLI collection target (empty `starterSlugs`)

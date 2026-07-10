@@ -212,6 +212,11 @@ describe("CLI section index page render", () => {
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Classify-Execute");
+    expect(html).toContain("/docs/techniques/classify-execute");
+    expect(html).toContain(
+      "Classify an item into a known class, then run the specialist execute path for that class.",
+    );
     expect(html).toContain("Worker-Adviser");
     expect(html).toContain("/docs/techniques/worker-adviser");
     expect(html).not.toContain(indexMessages.emptyTitle);

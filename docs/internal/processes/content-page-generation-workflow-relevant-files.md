@@ -289,6 +289,8 @@ before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
   authored-entry assertions (title / href) and regenerate/commit
   `shipped-localized-docs.generated.ts` plus the matching
   `shipped-localized-docs.server.test.ts` committed-tree assertion
+- colocate the page render proof under the page bundle
+  (`<slug>-page.test.tsx`) so the proof stays page-owned
 - when every CLI section has authored entries, type
   `CLI_EMPTY_SECTION_INDEX_CASES` as `CliSectionIndexCase[]` (or equivalent)
   instead of relying on a filtered `as const` array — an empty filter collapses
@@ -297,7 +299,9 @@ before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
 Declare the first-CLI-section exception with
 `bun run audit:canonical-page-surface -- --exception-reason "..."` and repeat
 that justification in the PR conversation. Later technique pages should stay
-page-local once this wiring lands.
+page-local once this wiring lands. Do not treat excluded `src/lib/docs/`
+empty-root suites as required CI for this lane; update them only when a
+throughput lane owns that shared surface.
 
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the
