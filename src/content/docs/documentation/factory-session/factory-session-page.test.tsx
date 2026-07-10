@@ -1,9 +1,9 @@
 /**
  * Page-owned render proof for documentation/factory-session.
- * Covers documentation shell and Factory Session identity for the scaffold
- * story — not route inventories or shared helper contracts. Colocated under
- * the page bundle so audit:canonical-page-surface stays within-budget for
- * this ordinary documentation lane.
+ * Covers documentation shell, Factory Session identity, and discovery/inspect
+ * command visibility — not route inventories or shared helper contracts.
+ * Colocated under the page bundle so audit:canonical-page-surface stays
+ * within-budget for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -38,6 +38,12 @@ describe("factory-session documentation page", () => {
       loadedPage.messages.sections?.keyConcepts?.body ?? "",
     );
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
+    const sessionList = String(
+      loadedPage.messages.sections?.sessionList?.body ?? "",
+    );
+    const sessionShow = String(
+      loadedPage.messages.sections?.sessionShow?.body ?? "",
+    );
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
@@ -46,6 +52,10 @@ describe("factory-session documentation page", () => {
     expect(keyConcepts).toMatch(/live runtime unit/i);
     expect(keyConcepts).toMatch(/Session list confirms/i);
     expect(howToUse).toMatch(/session list/i);
+    expect(sessionList).toMatch(/liveness check/i);
+    expect(sessionList).toMatch(/empty list|connection failure/i);
+    expect(sessionShow).toMatch(/owns its own runtime state/i);
+    expect(sessionShow).toMatch(/target the intended session/i);
     expect(limits).toMatch(/web Factory Session reference/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
     expect(whatItCovers).not.toMatch(
@@ -73,6 +83,12 @@ describe("factory-session documentation page", () => {
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
+      screen.getByRole("heading", { name: "Discover Sessions" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Inspect A Session" }),
+    ).toBeTruthy();
+    expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
@@ -82,14 +98,31 @@ describe("factory-session documentation page", () => {
     const whatItCoversSection = document.getElementById("what-it-covers");
     const keyConceptsSection = document.getElementById("key-concepts");
     const howToUseSection = document.getElementById("how-to-use");
+    const sessionListSection = document.getElementById("session-list");
+    const sessionShowSection = document.getElementById("session-show");
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(whatItCoversSection).toBeTruthy();
     expect(keyConceptsSection).toBeTruthy();
     expect(howToUseSection).toBeTruthy();
+    expect(sessionListSection).toBeTruthy();
+    expect(sessionShowSection).toBeTruthy();
     expect(limitsSection).toBeTruthy();
     expect(whatItCoversSection?.textContent).toMatch(/Factory Session/i);
     expect(keyConceptsSection?.textContent).toMatch(/live runtime unit/i);
     expect(howToUseSection?.textContent).toMatch(/session list/i);
+    expect(sessionListSection?.textContent).toMatch(/you session list/);
+    expect(sessionListSection?.textContent).toMatch(
+      /empty|unreachable|no live session is accepting work/i,
+    );
+    expect(sessionShowSection?.textContent).toMatch(
+      /you session show <session-id>/,
+    );
+    expect(sessionShowSection?.textContent).toMatch(
+      /owns its own runtime state/i,
+    );
+    expect(sessionShowSection?.textContent).toMatch(
+      /target the intended session/i,
+    );
     expect(limitsSection?.textContent).toMatch(
       /web Factory Session reference/i,
     );

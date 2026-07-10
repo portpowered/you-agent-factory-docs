@@ -15,6 +15,14 @@
       "title": "How To Use",
       "body": "Confirm a live session with session list before submitting work. Inspect one session with session show when you need its identity and runtime projection. Apply pause or resume for that same session id when you need lifecycle control, then re-read status to confirm the outcome. For durable JavaScript work, validate source without creating a session, start one durable Factory Session, then read status and result for that same session id."
     },
+    "sessionList": {
+      "title": "Discover Sessions",
+      "body": "Session list is the primary liveness check on a running host. Use it to confirm a Factory Session is accepting work before you submit or inspect. An empty list means the host responded but no live session is registered yet. A connection failure means nothing is listening on that host and port—start or attach a factory before retrying."
+    },
+    "sessionShow": {
+      "title": "Inspect A Session",
+      "body": "Session show reads one live Factory Session projection by session id, including identity and runtime fields for that session. Each live session owns its own runtime state—loaded factory, work, and relative paths. When more than one session exists, submit and work commands must target the intended session id rather than assuming the default."
+    },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
       "body": "This page is a web Factory Session reference for discover, inspect, lifecycle, and durable overview. It is not a full CLI flag dump, not a sync of packaged you docs, not MCP host setup, not dynamic-workflow authoring, not submitting-work batch schema, and not the OpenAPI or API reference. Those surfaces stay on sibling documentation and guide pages."
@@ -28,5 +36,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "sessionListLabel": "List live sessions on the default local host:",
+    "sessionListEmptyNote": "If the list is empty or the host is unreachable, no live session is accepting work on that host—do not submit yet.",
+    "sessionShowLabel": "Inspect one live session by id:",
+    "sessionShowTargetNote": "Replace <session-id> with a SESSION ID from session list. On single-session local hosts the default compatibility session is often ~default."
   }
 }
