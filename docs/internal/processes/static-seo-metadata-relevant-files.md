@@ -16,7 +16,12 @@ social assets, sitemap, robots).
 | `src/lib/seo/page-open-graph.test.ts` | Helper unit proofs for OG field mirroring |
 | `src/lib/seo/export-page-open-graph.ts` | Export HTML OG extraction + verification for home/search/docs/blog proof routes |
 | `src/lib/seo/export-page-open-graph.test.ts` | Metadata + temp-`out/` proofs that OG matches page identity and absolute production `og:url` |
-| `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` wiring |
+| `src/lib/seo/social-preview-assets.ts` | Default social card path (`/images/og-default.png`) + Metadata/public-href helpers |
+| `src/lib/seo/social-preview-assets.test.ts` | Project-site vs root public-asset prefix + absolute production URL proofs |
+| `src/lib/seo/export-social-preview-images.ts` | Export HTML `og:image` / `twitter:image` extraction + verification |
+| `src/lib/seo/export-social-preview-images.test.ts` | Metadata + temp-`out/` proofs that social images resolve under production origin/base path |
+| `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
+| `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
 | `src/lib/navigation/site-metadata-path.ts` | Public-asset / non-Metadata path helpers; do not double-prefix Metadata fields |
 | `src/lib/build/static-export.ts` | `resolveGitHubPagesBasePath` / normalize helpers shared with metadataBase |
@@ -51,6 +56,15 @@ social assets, sitemap, robots).
    absolute production `og:url` matching the canonical. Proof routes: `/`,
    `/search`, `/docs/concepts/harness`, `/blog/bottlenecks`. Use
    `exportHtmlHasPageSpecificOpenGraph` / `verifyExportPageOpenGraph`.
+8. **Social preview assets** (story 004): ship `public/images/og-default.png`
+   and reference it via app-relative Metadata (`openGraph.images` /
+   `twitter.images`). Project-site export resolves to
+   `https://portpowered.github.io/you-agent-factory-docs/images/og-default.png`;
+   root / unset-base-path keeps `/images/og-default.png` (no forced project
+   prefix). Use `resolveSocialPreviewImagePublicHref` for non-Metadata
+   public-asset contexts and
+   `exportHtmlHasBasePrefixedSocialImages` /
+   `verifyExportSocialPreviewImages` for export HTML gates.
 
 ## Sibling lanes
 
