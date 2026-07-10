@@ -59,9 +59,10 @@ describe("worker-adviser technique page", () => {
       screen.queryByRole("heading", { name: "Worker-Adviser" }),
     ).toBeNull();
 
-    const whatItIs = loadedPage.messages.sections.whatItIs.body as string;
-    const whyItMatters = loadedPage.messages.sections.whyItMatters
-      .body as string;
+    const sections = loadedPage.messages.sections;
+    expect(sections).toBeDefined();
+    const whatItIs = sections?.whatItIs.body as string;
+    const whyItMatters = sections?.whyItMatters.body as string;
     expect(whatItIs).toMatch(/Worker-adviser/i);
     expect(whatItIs).toMatch(/adviser role/i);
     expect(whatItIs).toMatch(/worker role|performer/i);
