@@ -27,5 +27,8 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "writeReviewLoopsGuide": "Write-review loops guide"
   }
 }

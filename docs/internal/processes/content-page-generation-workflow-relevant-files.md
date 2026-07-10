@@ -114,6 +114,13 @@ equivalent discovery section). Leave concept `relatedIds` empty for those guide
 ids — they will not render under `<RelatedDocs />` until guides join the related
 registry runtime.
 
+Technique → guide discovery follows the same pattern: a technique glossary page
+that needs a visible next-step to a published how-to guide (for example
+writer-reviewer → `/docs/guides/write-review-loops`) must wire that destination
+with page-local `<LocalizedLinkList>` and `links.*` labels under `#related`.
+Do not rely on registry `relatedIds` alone for guide kinds — they will not
+render under `<RelatedDocs />` until guides join the related registry runtime.
+
 Concept → documentation discovery has the same gap: `listRelatedRegistryRecords()`
 omits `documentation` kinds, so a concept page that needs visible links to
 configuration / workstations / submitting-work (or other published docs pages)
