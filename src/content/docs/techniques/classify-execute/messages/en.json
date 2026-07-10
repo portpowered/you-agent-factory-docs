@@ -28,5 +28,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "plannerExecutor": "Planner-executor",
+    "workqueueExecutor": "Workqueue-executor",
+    "writerReviewer": "Writer-reviewer",
+    "taskQueue": "Task queue"
   }
 }

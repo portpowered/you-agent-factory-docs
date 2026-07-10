@@ -112,5 +112,25 @@ describe("classify-execute technique page", () => {
     expect(screen.getByText(/short handoff chain/i)).toBeTruthy();
     expect(screen.getByText(/triage-then-specialist handoff/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
+
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(
+      screen
+        .getByRole("link", { name: "Planner-executor" })
+        .getAttribute("href"),
+    ).toBe("/docs/techniques/planner-executor");
+    expect(
+      screen
+        .getByRole("link", { name: "Workqueue-executor" })
+        .getAttribute("href"),
+    ).toBe("/docs/techniques/workqueue-executor");
+    expect(
+      screen
+        .getByRole("link", { name: "Writer-reviewer" })
+        .getAttribute("href"),
+    ).toBe("/docs/techniques/writer-reviewer");
+    expect(
+      screen.getByRole("link", { name: "Task queue" }).getAttribute("href"),
+    ).toBe("/docs/concepts/task-queue");
   });
 });
