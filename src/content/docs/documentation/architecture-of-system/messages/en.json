@@ -1,0 +1,32 @@
+{
+  "title": "Architecture of system",
+  "description": "How you-agent-factory is structured: factory topology, work, workstations, workers, resources, and live FactorySession runtime.",
+  "openingSummary": "Architecture of system is the you-agent-factory system-structure overview. It maps how authored factory topology and the live session runtime keep long-running agent work persistent and coordinated.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Architecture of system is the web overview of you-agent-factory system structure. It introduces the major runtime nouns—factory topology, work types and states, workstations, workers, optional resources, and live FactorySession—so readers can see how the pieces fit before opening deeper field-reference pages."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A factory definition on disk declares the topology the runtime will run. Work types and states describe the lifecycle of submitted work. Workstations dispatch that work to workers. Optional resources bound concurrency. A live FactorySession is the running instance that keeps work moving across dispatches and events."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Use this page when you need the system-structure map for you-agent-factory. Stay here for the overview. Open sibling documentation when you need deep field contracts for configuration, workers, workstations, resources, or live session behavior."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a system-structure overview. It is not a field dump, not a sync of packaged CLI docs, and not the docs-site internal architecture document."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
