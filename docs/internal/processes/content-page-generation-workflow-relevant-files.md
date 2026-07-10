@@ -226,6 +226,20 @@ When a documentation page needs a required factory-ui teaching surface such as
    the justification in the PR conversation. Do not edit
    `src/features/factory-ui/*` or invent shared matrix infrastructure.
 
+Required factory-ui teaching visuals on blog posts use the same pattern under
+the blog loader: colocate `page-mdx-components.tsx` next to `page.mdx` and add a
+static `import("@/content/blog/<slug>/page-mdx-components")` switch case in
+`blog-page-load.ts`. Keep the chart/graph component post-owned; do not register
+it in shared `blog-mdx-components.tsx` / `mdx-components.tsx`.
+
+Blog discoverability proofs (index card, search queries, tag landing) for a
+blog-local lane should colocate under `src/content/blog/<slug>/` (for example
+`<slug>-discoverability.test.tsx`) rather than editing sibling B07 posts or
+shared search helpers. Published posts are already indexed by
+`docsSearchApi` / tag resource groups once the bundle is `status: published`
+with resolving tags — the test asserts that contract, it does not regenerate
+search artifacts.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |
