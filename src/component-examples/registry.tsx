@@ -107,8 +107,8 @@ export const componentExamples: ComponentExampleDefinition[] = [
   {
     id: "tag-pill-list-registry",
     componentName: "TagPillList",
-    variantLabel: "default (registry tags)",
-    render: () => <TagPillList registryId="module.grouped-query-attention" />,
+    variantLabel: "default (empty registry tags)",
+    render: () => <TagPillList registryId="concept.bottlenecks" />,
   },
   {
     id: "tag-pill-list-explicit",
@@ -124,7 +124,7 @@ export const componentExamples: ComponentExampleDefinition[] = [
     variantLabel: "default (same variant group)",
     render: () => (
       <DerivedRelatedDocs
-        registryId="module.grouped-query-attention"
+        registryId="concept.bottlenecks"
         groups={[SAME_VARIANT_GROUP]}
       />
     ),
@@ -135,7 +135,7 @@ export const componentExamples: ComponentExampleDefinition[] = [
     variantLabel: "shared tags group",
     render: () => (
       <DerivedRelatedDocs
-        registryId="module.grouped-query-attention"
+        registryId="concept.harness"
         groups={[SHARED_TAGS, SAME_CONCEPT_TYPE]}
       />
     ),
@@ -148,10 +148,7 @@ export const componentExamples: ComponentExampleDefinition[] = [
       "Compact related links resolved from explicit published registry ids.",
     render: () => (
       <RelatedRegistryDocs
-        registryIds={[
-          "module.grouped-query-attention",
-          "module.multi-query-attention",
-        ]}
+        registryIds={["concept.bottlenecks", "concept.harness"]}
       />
     ),
   },
@@ -171,8 +168,8 @@ export const componentExamples: ComponentExampleDefinition[] = [
     render: () => (
       <RelatedRegistryDocs
         registryIds={[
-          "module.missing-related-registry-docs-example",
-          "module.draft-attention",
+          "concept.missing-related-registry-docs-example",
+          "concept.draft-related",
         ]}
       />
     ),
@@ -196,13 +193,13 @@ export const componentExamples: ComponentExampleDefinition[] = [
     componentName: "SearchResultMetaDetails",
     variantLabel: "default (module metadata panel)",
     render: (context) => {
-      const meta = context.metaByUrl[context.sampleModuleUrl];
+      const meta = context.metaByUrl[context.sampleDocsUrl];
       if (!meta) {
         return null;
       }
       return (
         <SearchResultMetaDetails
-          url={context.sampleModuleUrl}
+          url={context.sampleDocsUrl}
           meta={meta}
           messages={context.uiMessages}
         />
@@ -214,13 +211,13 @@ export const componentExamples: ComponentExampleDefinition[] = [
     componentName: "SearchResultMetaDetails",
     variantLabel: "metadata without tag chips",
     render: (context) => {
-      const meta = context.metaByUrl[context.sampleModuleUrl];
+      const meta = context.metaByUrl[context.sampleDocsUrl];
       if (!meta) {
         return null;
       }
       return (
         <SearchResultMetaDetails
-          url={context.sampleModuleUrl}
+          url={context.sampleDocsUrl}
           meta={{ ...meta, tags: [] }}
           messages={context.uiMessages}
         />

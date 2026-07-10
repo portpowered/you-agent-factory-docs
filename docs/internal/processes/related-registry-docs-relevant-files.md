@@ -72,18 +72,31 @@ and the shared related-registry-docs component/blog wrapper.
   (`atlasLinkTitle` / “Browse the atlas”); see
   `rewrite-home-page-relevant-files.md`.
 
+## Retarget after Atlas blog/tag purge
+
+* Related-registry fixtures and component examples should use factory concepts
+  (`concept.bottlenecks`, `concept.harness`), not deleted Atlas modules such as
+  `module.grouped-query-attention`.
+* Remaining blog posts (`bottlenecks`, `comparing-agent-factories`) must keep
+  `relatedDocIds` / `BlogRelatedDocs` pointed at live factory docs only.
+* Story proof: `src/tests/content/purge-legacy-related-links.test.tsx` asserts
+  blog index/posts omit deleted blog and Atlas-only tag hrefs, and
+  `resolveRelatedRegistryDocs` treats deleted `tag.*` ids as missing.
+
 ## Verification
 
 * `bun test src/lib/content/related-registry-docs.test.ts`
-* `bun test src/lib/content/related-registry-docs-behavior.test.tsx`
 * `bun test src/features/docs/components/RelatedRegistryDocs.test.tsx`
 * `bun test src/features/blog/components/BlogRelatedDocs.test.tsx`
 * `bun test src/features/blog/components/blog-related-docs-blog-integration.test.tsx`
+* `bun test src/tests/content/purge-legacy-related-links.test.tsx`
 * `bun test src/content/docs/concepts/bottlenecks/bottlenecks-page.test.tsx src/content/docs/concepts/task-queue/task-queue-page.test.tsx src/tests/content/home-page.test.tsx`
 * `bun run typecheck`
 * `bun run lint`
-* Blog browser check: build then curl `/blog/bottlenecks` for
-  `data-testid="blog-related-docs"` and concept hrefs.
+* Blog browser check: build then curl `/blog` and `/blog/bottlenecks` and assert
+  HTML has no `/blog/evolution-of-diffusion`,
+  `/blog/llms-no-longer-wholly-reliant-on-the-internet`,
+  `/blog/roofline-throughput-explorer`, or `/tags/model-family` hrefs.
 * Concept/home chrome check: render or curl a concept page and `/` and assert
   HTML has `Related To` (or factory browse links) and does not contain
   `Related Concepts And Modules` or `Browse the atlas`.

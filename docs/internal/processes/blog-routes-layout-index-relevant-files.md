@@ -69,6 +69,12 @@ Use these files when extending the default English blog surface at `/blog` and
   `local-models`) and assert absence of `model-family` / `inference` / `alignment`
   from published tag index/landing surfaces. Reparent `local-models` so it does
   not depend on deleted `tag.inference`.
+* After retargeting related links/registries, keep blog `relatedDocIds` and
+  related-registry fixtures on factory concepts (`concept.bottlenecks`,
+  `concept.harness`); prove with
+  `src/tests/content/purge-legacy-related-links.test.tsx` that blog lists/posts
+  and registry related-id graphs do not advertise deleted blog or Atlas-only tag
+  destinations.
 
 ## Patterns
 

@@ -3,18 +3,18 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
 describe("TagPillList", () => {
-  test("renders keyboard-focusable pills from registry tags", () => {
+  test("renders keyboard-focusable pills from explicit factory tags", () => {
     const html = renderToStaticMarkup(
-      <TagPillList registryId="module.grouped-query-attention" />,
+      <TagPillList tags={["foundations", "taxonomy"]} />,
     );
 
     expect(html).toContain('data-testid="tag-pill-list"');
     expect(html).toContain("list-none");
     expect(html).toContain("p-0");
-    expect(html).toContain('href="/tags/attention"');
-    expect(html).toContain('href="/tags/kv-cache"');
-    expect(html).toContain("Attention");
-    expect(html).toContain("Kv Cache");
+    expect(html).toContain('href="/tags/foundations"');
+    expect(html).toContain('href="/tags/taxonomy"');
+    expect(html).toContain("Foundations");
+    expect(html).toContain("Taxonomy");
     expect(html).toContain("no-underline");
     const withoutNoUnderline = html.replaceAll("no-underline", "");
     expect(withoutNoUnderline).not.toMatch(/\bunderline\b/);
@@ -22,12 +22,10 @@ describe("TagPillList", () => {
   });
 
   test("renders pills from an explicit tags prop", () => {
-    const html = renderToStaticMarkup(
-      <TagPillList tags={["inference-optimization"]} />,
-    );
+    const html = renderToStaticMarkup(<TagPillList tags={["local-models"]} />);
 
-    expect(html).toContain('href="/tags/inference-optimization"');
-    expect(html).toContain("Inference Optimization");
+    expect(html).toContain('href="/tags/local-models"');
+    expect(html).toContain("Local Models");
   });
 
   test("renders nothing when there are no tags", () => {
@@ -35,18 +33,17 @@ describe("TagPillList", () => {
     expect(html).toBe("");
   });
 
-  test("renders attention tag pill for concept.token", () => {
+  test("renders nothing for a published concept with empty tags", () => {
     const html = renderToStaticMarkup(
-      <TagPillList registryId="concept.token" />,
+      <TagPillList registryId="concept.bottlenecks" />,
     );
 
-    expect(html).toContain('href="/tags/attention"');
-    expect(html).toContain("Attention");
+    expect(html).toBe("");
   });
 
   test("renders nothing for an unknown registry id", () => {
     const html = renderToStaticMarkup(
-      <TagPillList registryId="module.unknown-module" />,
+      <TagPillList registryId="concept.unknown-concept" />,
     );
     expect(html).toBe("");
   });
