@@ -11,18 +11,41 @@ import {
 
 const repoRoot = join(import.meta.dir, "../../..");
 
-const BROWSE_CATEGORY_HEADING_IDS = [
+const FACTORY_BROWSE_HEADING_IDS = [
+  "guides-heading",
+  "concepts-heading",
+  "techniques-heading",
+  "documentation-heading",
+] as const;
+
+const RETIRED_ATLAS_BROWSE_HEADING_IDS = [
+  "models-heading",
   "model-types-heading",
-  "inference-heading",
+  "modules-heading",
   "module-components-heading",
+  "inference-heading",
+  "papers-heading",
+  "training-heading",
+  "systems-heading",
   "glossary-heading",
 ] as const;
 
-const BROWSE_REPRESENTATIVE_HREFS = [
-  "/docs/glossary/world-model",
-  "/docs/glossary/temperature",
-  "/docs/glossary/softmax",
-  "/docs/glossary/token",
+const FACTORY_BROWSE_SECTION_LABELS = [
+  "Guides",
+  "Concepts",
+  "Techniques",
+  "Documentation",
+] as const;
+
+const RETIRED_ATLAS_BROWSE_SECTION_LABELS = [
+  "Model Types",
+  "Inference",
+  "Module Components",
+  "Models",
+  "Modules",
+  "Papers",
+  "Training",
+  "Systems",
 ] as const;
 
 const BROWSE_VIEWPORTS = [
@@ -30,11 +53,11 @@ const BROWSE_VIEWPORTS = [
   { label: "narrow", width: 390, height: 844 },
 ] as const;
 
-describe("glossary decomposition browse built-app verification", () => {
+describe("factory-only browse built-app verification", () => {
   test.each(
     BROWSE_VIEWPORTS.map((viewport) => [viewport.label, viewport] as const),
   )(
-    "served /browse exposes derived glossary categories at %s viewport",
+    "served /browse exposes factory CLI collections only at %s viewport",
     async (_label, viewport) => {
       if (!shouldRunVerifyProductionIntegrationTests(repoRoot)) {
         return;
@@ -54,21 +77,25 @@ describe("glossary decomposition browse built-app verification", () => {
           waitUntil: "load",
         });
 
-        for (const headingId of BROWSE_CATEGORY_HEADING_IDS) {
+        for (const headingId of FACTORY_BROWSE_HEADING_IDS) {
           await page.locator(`#${headingId}`).waitFor({ state: "visible" });
         }
 
-        for (const href of BROWSE_REPRESENTATIVE_HREFS) {
-          await page.locator(`a[href="${href}"]`).first().waitFor({
+        for (const headingId of RETIRED_ATLAS_BROWSE_HEADING_IDS) {
+          expect(await page.locator(`#${headingId}`).count()).toBe(0);
+        }
+
+        for (const label of FACTORY_BROWSE_SECTION_LABELS) {
+          await page.getByRole("heading", { level: 2, name: label }).waitFor({
             state: "visible",
           });
         }
 
-        const bodyText = await page.locator("main").innerText();
-        expect(bodyText).toContain("Model Types");
-        expect(bodyText).toContain("Inference");
-        expect(bodyText).toContain("Module Components");
-        expect(bodyText).toContain("Glossary");
+        for (const label of RETIRED_ATLAS_BROWSE_SECTION_LABELS) {
+          expect(
+            await page.getByRole("heading", { level: 2, name: label }).count(),
+          ).toBe(0);
+        }
 
         await page.close();
       } finally {

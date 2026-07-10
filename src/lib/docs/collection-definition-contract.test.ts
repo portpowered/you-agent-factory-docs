@@ -6,51 +6,28 @@ import {
   isDocsCollectionSidebarGroupingResolverId,
 } from "@/lib/docs/collection-definition-contract";
 
-const trainingDefinition: DocsCollectionDefinition = {
-  id: "training",
-  routeSlug: "training",
-  registryKind: "training-regime",
-  frontmatterKind: "training-regime",
-  starterSlugs: ["training/on-policy-distillation"],
+const glossaryDefinition: DocsCollectionDefinition = {
+  id: "glossary",
+  routeSlug: "glossary",
+  registryKind: "concept",
+  frontmatterKind: "glossary",
+  starterSlugs: ["glossary/token"],
   messageKeys: {
     browse: {
-      sectionTitle: "browseIndex.trainingSectionTitle",
-      sectionDescription: "browseIndex.trainingSectionDescription",
-      sectionLinkLabel: "browseIndex.trainingSectionLinkLabel",
+      sectionTitle: "browseIndex.glossarySectionTitle",
+      sectionDescription: "browseIndex.glossarySectionDescription",
+      sectionLinkLabel: "browseIndex.glossarySectionLinkLabel",
     },
     index: {
-      title: "trainingIndex.title",
-      description: "trainingIndex.description",
-      listLabel: "trainingIndex.listLabel",
-      emptyTitle: "trainingIndex.emptyTitle",
-      emptyDescription: "trainingIndex.emptyDescription",
-      emptyHomeLink: "trainingIndex.emptyHomeLink",
+      title: "glossaryIndex.title",
+      description: "glossaryIndex.description",
+      listLabel: "glossaryIndex.listLabel",
+      emptyTitle: "glossaryIndex.emptyTitle",
+      emptyDescription: "glossaryIndex.emptyDescription",
+      emptyHomeLink: "glossaryIndex.emptyHomeLink",
     },
   },
-  sidebarGroupingResolverId: "training",
-};
-
-const modelsDefinition: DocsCollectionDefinition = {
-  id: "models",
-  routeSlug: "models",
-  registryKind: "model",
-  frontmatterKind: "model",
-  starterSlugs: ["models/gpt-3"],
-  messageKeys: {
-    browse: {
-      sectionTitle: "browseIndex.modelsSectionTitle",
-      sectionDescription: "browseIndex.modelsSectionDescription",
-      sectionLinkLabel: "browseIndex.modelsSectionLinkLabel",
-    },
-    index: {
-      title: "modelsIndex.title",
-      description: "modelsIndex.description",
-      listLabel: "modelsIndex.listLabel",
-      emptyTitle: "modelsIndex.emptyTitle",
-      emptyDescription: "modelsIndex.emptyDescription",
-      emptyHomeLink: "modelsIndex.emptyHomeLink",
-    },
-  },
+  sidebarGroupingResolverId: "glossary",
 };
 
 const guidesDefinition: DocsCollectionDefinition = {
@@ -77,14 +54,13 @@ const guidesDefinition: DocsCollectionDefinition = {
 };
 
 describe("collection definition contract", () => {
-  test("allows route slug and frontmatter kind to diverge for training", () => {
-    expect(trainingDefinition.routeSlug).toBe("training");
-    expect(trainingDefinition.frontmatterKind).toBe("training-regime");
-    expect(trainingDefinition.registryKind).toBe("training-regime");
+  test("allows route slug and frontmatter kind to diverge for glossary", () => {
+    expect(glossaryDefinition.routeSlug).toBe("glossary");
+    expect(glossaryDefinition.frontmatterKind).toBe("glossary");
+    expect(glossaryDefinition.registryKind).toBe("concept");
   });
 
   test("allows collections without sidebar grouping resolver ids", () => {
-    expect(modelsDefinition.sidebarGroupingResolverId).toBeUndefined();
     expect(guidesDefinition.sidebarGroupingResolverId).toBeUndefined();
   });
 
@@ -92,33 +68,34 @@ describe("collection definition contract", () => {
     expect(guidesDefinition.starterSlugs).toEqual([]);
   });
 
-  test("exports the current docs collection ids including empty CLI collections", () => {
+  test("exports the factory-only docs collection ids", () => {
     expect(DOCS_COLLECTION_IDS).toEqual([
       "guides",
       "concepts",
       "techniques",
       "documentation",
       "glossary",
+    ]);
+    for (const retiredId of [
       "modules",
       "models",
       "papers",
       "training",
       "systems",
-    ]);
+    ] as const) {
+      expect(DOCS_COLLECTION_IDS).not.toContain(retiredId);
+    }
   });
 
-  test("constrains sidebar grouping resolver ids", () => {
-    expect(isDocsCollectionSidebarGroupingResolverId("modules")).toBe(true);
+  test("constrains sidebar grouping resolver ids to factory collections", () => {
+    expect(isDocsCollectionSidebarGroupingResolverId("glossary")).toBe(true);
+    expect(isDocsCollectionSidebarGroupingResolverId("concepts")).toBe(true);
+    expect(isDocsCollectionSidebarGroupingResolverId("modules")).toBe(false);
     expect(isDocsCollectionSidebarGroupingResolverId("models")).toBe(false);
     expect(isDocsCollectionSidebarGroupingResolverId("guides")).toBe(false);
-    expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).not.toContain(
-      "models",
-    );
-    expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).not.toContain(
-      "papers",
-    );
-    expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).not.toContain(
-      "guides",
-    );
+    expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).toEqual([
+      "glossary",
+      "concepts",
+    ]);
   });
 });

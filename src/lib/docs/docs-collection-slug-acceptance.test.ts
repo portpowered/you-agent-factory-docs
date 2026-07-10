@@ -41,7 +41,7 @@ describe("docs collection slug acceptance", () => {
     ).toBe("documentation");
   });
 
-  test("does not accept non-CLI prefixes as CLI collections", () => {
+  test("does not accept retired Atlas or unknown prefixes as docs collections", () => {
     for (const collectionId of CLI_DOCS_COLLECTION_IDS) {
       expect(
         docsSlugBelongsToCliCollection("modules/attention", collectionId),
@@ -61,17 +61,19 @@ describe("docs collection slug acceptance", () => {
       expect(
         docsSlugBelongsToCliCollection("systems/batching", collectionId),
       ).toBe(false);
-      expect(
-        docsSlugBelongsToCliCollection("glossary/token", collectionId),
-      ).toBe(false);
     }
 
-    expect(resolveDocsCollectionIdFromDocsSlug("modules/attention")).toBe(
-      "modules",
+    expect(resolveDocsCollectionIdFromDocsSlug("modules/attention")).toBeNull();
+    expect(resolveDocsCollectionIdFromDocsSlug("models/gpt-2")).toBeNull();
+    expect(resolveDocsCollectionIdFromDocsSlug("glossary/token")).toBe(
+      "glossary",
     );
-    expect(docsSlugBelongsToCollection("modules/attention", "modules")).toBe(
+    expect(docsSlugBelongsToCollection("glossary/token", "glossary")).toBe(
       true,
     );
+    expect(isAcceptedDocsSourceSection("models")).toBe(false);
+    expect(isAcceptedDocsSourceSection("modules")).toBe(false);
+    expect(isAcceptedDocsSourceSection("glossary")).toBe(true);
   });
 
   test("rejects bare section names and unknown prefixes", () => {

@@ -93,9 +93,10 @@ Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
   anchors; use `bulletlessListClassName` for the feature list (no `list-disc`).
 - Default `homeFeaturedLinks` bind CLI route surfaces to `guidesLink*` / `docsLink*` /
   `glossaryLink*` / `blogLink*` message keys; do not hard-code hrefs in `HomeArticle`.
-- Legacy Atlas featured-link message keys (`atlasLinkTitle`, `gqaLinkTitle`, …) may
-  remain in message files until a later story removes them; they must not be bound in
-  `homeFeaturedLinks` or appear as rendered product copy.
+- Do not ship retired Atlas home featured-link message keys (`atlasLinkTitle`,
+  `gqaLinkTitle`, `swigluLinkTitle`, `reluLinkTitle`, and their descriptions) in
+  `common.json` / `HomeMessages`; site config must bind only the CLI featured-link
+  keys above.
 - Worktree browser verify: this lane often has no local `node_modules` (hoisted at
   repo root). Turbopack rejects out-of-root `node_modules` symlinks. Prefer
   `renderToStaticMarkup(HomeArticle)` + `generateMetadata()` for identity checks

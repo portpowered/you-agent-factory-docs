@@ -7,6 +7,7 @@ import {
   DOCS_BROWSE_COLLECTION_IDS,
   DOCS_BROWSE_SECTION_ORDER,
 } from "@/lib/docs/browse-collection-sections";
+import { getDocsCollectionDefinition } from "@/lib/docs/docs-collection-definitions";
 import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import { buildLocalizedRoute, defaultLocale } from "@/lib/i18n/locale-routing";
 
@@ -69,20 +70,30 @@ describe("browse collection sections", () => {
       messages.browseIndex.documentationSectionTitle,
     ]);
     for (const atlasTitle of [
-      messages.browseIndex.modelsSectionTitle,
-      messages.browseIndex.modulesSectionTitle,
-      messages.browseIndex.papersSectionTitle,
-      messages.browseIndex.trainingSectionTitle,
-      messages.browseIndex.systemsSectionTitle,
+      "Models",
+      "Modules",
+      "Papers",
+      "Training",
+      "Systems",
       messages.browseIndex.glossarySectionTitle,
+      "Model Types",
+      "Inference",
+      "Module Components",
     ] as const) {
       expect(sections.some((section) => section.title === atlasTitle)).toBe(
         false,
       );
     }
+    for (const derivedId of [
+      "model-types",
+      "inference",
+      "module-components",
+    ] as const) {
+      expect(sections.some((section) => section.id === derivedId)).toBe(false);
+    }
   });
 
-  test("keeps empty CLI starter lists so browse sections render without featured pages", async () => {
+  test("keeps empty CLI starter lists while browse sections can still list published pages", async () => {
     const messages = await loadUiMessages();
     const pages = await loadShippedLocalizedDocsPages(defaultLocale);
     const sections = buildBrowseCollectionSections({
@@ -91,9 +102,18 @@ describe("browse collection sections", () => {
       messages,
     });
 
-    for (const section of sections) {
-      expect(section.entries).toEqual([]);
+    for (const collectionId of CLI_DOCS_COLLECTION_IDS) {
+      expect(getDocsCollectionDefinition(collectionId).starterSlugs).toEqual(
+        [],
+      );
     }
+
+    expect(
+      sections.find((section) => section.id === "guides")?.entries.length,
+    ).toBeGreaterThan(0);
+    expect(
+      sections.find((section) => section.id === "concepts")?.entries.length,
+    ).toBeGreaterThan(0);
   });
 
   test("resolves browse link hrefs to matching CLI section index routes", async () => {

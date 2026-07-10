@@ -17,11 +17,16 @@ const EMPTY_STARTER_COLLECTION_IDS = [
   "documentation",
 ] as const satisfies readonly DocsCollectionId[];
 
-const GROUPED_STARTER_COLLECTION_ID = "modules" as const;
-const GROUPED_STARTER_SLUG = "modules/grouped-query-attention" as const;
+const GLOSSARY_STARTER_COLLECTION_ID = "glossary" as const;
+const GLOSSARY_STARTER_SLUG = "glossary/token" as const;
 
-const UNGROUPED_STARTER_COLLECTION_ID = "models" as const;
-const UNGROUPED_STARTER_SLUG = "models/gpt-3" as const;
+const RETIRED_ATLAS_COLLECTION_IDS = [
+  "modules",
+  "models",
+  "papers",
+  "training",
+  "systems",
+] as const;
 
 function assertNonEmptyMessageKeyMetadata(
   collectionId: string,
@@ -43,25 +48,6 @@ function assertNonEmptyMessageKeyMetadata(
         `Collection ${collectionId} has empty message key metadata path`,
       );
     }
-  }
-}
-
-function assertTrainingRouteSlugKindMapping(): void {
-  const training = getDocsCollectionDefinition("training");
-  if (training.routeSlug !== "training") {
-    throw new Error(
-      `Expected training route slug "training", found "${training.routeSlug}"`,
-    );
-  }
-  if (training.frontmatterKind !== "training-regime") {
-    throw new Error(
-      `Expected training frontmatter kind "training-regime", found "${training.frontmatterKind}"`,
-    );
-  }
-  if (training.registryKind !== "training-regime") {
-    throw new Error(
-      `Expected training registry kind "training-regime", found "${training.registryKind}"`,
-    );
   }
 }
 
@@ -118,21 +104,35 @@ function assertEmptyCliCollectionContract(): void {
   }
 }
 
-function assertRepresentativeStarterSlugs(): void {
-  const grouped = getDocsCollectionDefinition(GROUPED_STARTER_COLLECTION_ID);
-  if (!grouped.starterSlugs.includes(GROUPED_STARTER_SLUG)) {
+function assertGlossaryStarterSlugs(): void {
+  const glossary = getDocsCollectionDefinition(GLOSSARY_STARTER_COLLECTION_ID);
+  if (!glossary.starterSlugs.includes(GLOSSARY_STARTER_SLUG)) {
     throw new Error(
-      `Grouped collection ${GROUPED_STARTER_COLLECTION_ID} is missing starter slug ${GROUPED_STARTER_SLUG}`,
+      `Glossary collection is missing starter slug ${GLOSSARY_STARTER_SLUG}`,
     );
   }
-
-  const ungrouped = getDocsCollectionDefinition(
-    UNGROUPED_STARTER_COLLECTION_ID,
-  );
-  if (!ungrouped.starterSlugs.includes(UNGROUPED_STARTER_SLUG)) {
+  if (glossary.frontmatterKind !== "glossary") {
     throw new Error(
-      `Ungrouped collection ${UNGROUPED_STARTER_COLLECTION_ID} is missing starter slug ${UNGROUPED_STARTER_SLUG}`,
+      `Expected glossary frontmatter kind "glossary", found "${glossary.frontmatterKind}"`,
     );
+  }
+  if (glossary.registryKind !== "concept") {
+    throw new Error(
+      `Expected glossary registry kind "concept", found "${glossary.registryKind}"`,
+    );
+  }
+}
+
+function assertRetiredAtlasCollectionsAbsent(): void {
+  const ids = new Set<string>(
+    listDocsCollectionDefinitions().map((definition) => definition.id),
+  );
+  for (const retiredId of RETIRED_ATLAS_COLLECTION_IDS) {
+    if (ids.has(retiredId)) {
+      throw new Error(
+        `Retired Atlas collection id "${retiredId}" must not appear in the public inventory`,
+      );
+    }
   }
 }
 
@@ -189,6 +189,6 @@ export function assertDocsCollectionDefinitionInventoryVerified(): void {
   }
 
   assertEmptyCliCollectionContract();
-  assertTrainingRouteSlugKindMapping();
-  assertRepresentativeStarterSlugs();
+  assertGlossaryStarterSlugs();
+  assertRetiredAtlasCollectionsAbsent();
 }

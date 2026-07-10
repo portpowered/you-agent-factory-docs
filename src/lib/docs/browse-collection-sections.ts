@@ -5,11 +5,6 @@ import type { ShellCollectionDefinition } from "@/lib/docs/collection-definition
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
 import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import { toDocsIndexEntries } from "@/lib/docs/docs-index-entries";
-import {
-  buildGlossaryDerivedBrowseSection,
-  type GlossaryDerivedBrowseSectionId,
-  isGlossaryPageAssignedToDerivedSection,
-} from "@/lib/docs/glossary-derived-browse-sections";
 import { resolveUiMessagePath } from "@/lib/docs/section-collection-index";
 import {
   buildLocalizedRoute,
@@ -18,18 +13,20 @@ import {
 
 /**
  * Reader-visible browse collection order for the rewrite-era CLI docs taxonomy.
- * Atlas collections remain registered for sibling delete/retarget lanes but are
- * not default browse hub sections.
+ * Public docs collection inventory is factory-only; default browse hub sections
+ * are the four CLI collections. Glossary-derived Atlas browse sections
+ * (Model Types / Inference / Module Components) are not part of the public hub.
  */
 export const DOCS_BROWSE_COLLECTION_IDS = CLI_DOCS_COLLECTION_IDS;
 
 type DocsBrowseCollectionId = (typeof DOCS_BROWSE_COLLECTION_IDS)[number];
 
-export type DocsBrowseSectionRef =
-  | { kind: "collection"; id: DocsBrowseCollectionId | string }
-  | { kind: "glossary-derived"; id: GlossaryDerivedBrowseSectionId };
+export type DocsBrowseSectionRef = {
+  kind: "collection";
+  id: DocsBrowseCollectionId | string;
+};
 
-/** Default browse hub order: the four empty CLI collections. */
+/** Default browse hub order: the four CLI collections. */
 export const DOCS_BROWSE_SECTION_ORDER = [
   { kind: "collection", id: "guides" },
   { kind: "collection", id: "concepts" },
@@ -82,17 +79,9 @@ function buildBrowseCollectionSection(
     locale: SiteLocale,
   ) => string,
 ): BrowseCollectionSection {
-  const collectionPages = pages.filter((page) => {
-    if (page.frontmatter.kind !== definition.frontmatterKind) {
-      return false;
-    }
-
-    if (definition.id === "glossary") {
-      return !isGlossaryPageAssignedToDerivedSection(page as DocsPageSource);
-    }
-
-    return true;
-  });
+  const collectionPages = pages.filter(
+    (page) => page.frontmatter.kind === definition.frontmatterKind,
+  );
 
   return {
     id: definition.id,
@@ -171,34 +160,12 @@ export function buildDocsBrowseSections({
     locale: SiteLocale,
   ) => string;
 }): BrowseCollectionSection[] {
-  const definitionsById = new Map(
-    definitions.map((definition) => [definition.id, definition]),
-  );
-  const docsPages = pages as readonly DocsPageSource[];
-
-  return sectionOrder.map((sectionRef) => {
-    if (sectionRef.kind === "glossary-derived") {
-      return buildGlossaryDerivedBrowseSection({
-        sectionId: sectionRef.id,
-        pages: docsPages,
-        locale,
-        messages,
-      });
-    }
-
-    const definition = definitionsById.get(sectionRef.id);
-    if (!definition) {
-      throw new Error(
-        `Missing collection definition for browse id: ${sectionRef.id}`,
-      );
-    }
-
-    return buildBrowseCollectionSection(
-      definition,
-      pages,
-      locale,
-      messages,
-      resolveSectionLinkHref,
-    );
+  return buildBrowseCollectionSections({
+    pages,
+    locale,
+    messages,
+    definitions,
+    browseCollectionIds: sectionOrder.map((sectionRef) => sectionRef.id),
+    resolveSectionLinkHref,
   });
 }

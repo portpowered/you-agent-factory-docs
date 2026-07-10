@@ -9,21 +9,15 @@ import {
 } from "@/components/ui/breadcrumb";
 import { localizeDocsHref } from "@/lib/content/localized-docs-href";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
+import type { DocsCollectionId } from "@/lib/docs/collection-definition-contract";
+import { isAcceptedDocsSourceSection } from "@/lib/docs/docs-collection-slug-acceptance";
 import {
   buildLocalizedRoute,
   defaultLocale,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
+import { resolveAiDocsSidebarFolderLabel } from "@/lib/navigation/ai-docs-sidebar-adapter";
 import { source } from "@/lib/source";
-
-const SECTION_FALLBACK_LABELS: Record<string, string> = {
-  concepts: "Concepts",
-  glossary: "Glossary",
-  models: "Models",
-  modules: "Modules",
-  papers: "Papers",
-  training: "Training",
-};
 
 type BreadcrumbSegment = {
   label: string;
@@ -37,11 +31,10 @@ type DocsPageBreadcrumbProps = {
   title: string;
 };
 
-function getSectionLabel(section: string): string {
+function getFactoryCollectionLabel(section: DocsCollectionId): string {
   return (
     source.getPage([section])?.data.title ??
-    SECTION_FALLBACK_LABELS[section] ??
-    section
+    resolveAiDocsSidebarFolderLabel(section)
   );
 }
 
@@ -60,10 +53,12 @@ export function buildDocsBreadcrumbSegments(
 
   if (slug && slug.length >= 2) {
     const section = slug[0];
-    segments.push({
-      label: getSectionLabel(section),
-      href: localizeDocsHref(`/docs/${section}`, locale),
-    });
+    if (section && isAcceptedDocsSourceSection(section)) {
+      segments.push({
+        label: getFactoryCollectionLabel(section),
+        href: localizeDocsHref(`/docs/${section}`, locale),
+      });
+    }
   }
 
   segments.push({ label: title });

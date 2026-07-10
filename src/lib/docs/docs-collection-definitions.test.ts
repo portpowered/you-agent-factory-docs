@@ -96,31 +96,6 @@ describe("docs collection definitions config", () => {
       frontmatterKind: "glossary",
       registryKind: "concept",
     });
-    expect(getDocsCollectionDefinition("modules")).toMatchObject({
-      frontmatterKind: "module",
-      registryKind: "module",
-    });
-    expect(getDocsCollectionDefinition("models")).toMatchObject({
-      frontmatterKind: "model",
-      registryKind: "model",
-    });
-    expect(getDocsCollectionDefinition("papers")).toMatchObject({
-      frontmatterKind: "paper",
-      registryKind: "paper",
-    });
-    expect(getDocsCollectionDefinition("systems")).toMatchObject({
-      frontmatterKind: "system",
-      registryKind: "system",
-    });
-  });
-
-  test("maps training route slug to training-regime kinds", () => {
-    expect(getDocsCollectionDefinition("training")).toMatchObject({
-      id: "training",
-      routeSlug: "training",
-      frontmatterKind: "training-regime",
-      registryKind: "training-regime",
-    });
   });
 
   test("keeps CLI collection starter and featured slug lists empty", () => {
@@ -129,32 +104,7 @@ describe("docs collection definitions config", () => {
     }
   });
 
-  test("preserves Atlas browse starter slugs as route-relative docs slugs", () => {
-    expect(getDocsCollectionDefinition("models").starterSlugs).toEqual([
-      "models/gpt-3",
-    ]);
-    expect(getDocsCollectionDefinition("modules").starterSlugs).toEqual([
-      "modules/grouped-query-attention",
-      "modules/attention",
-      "modules/swiglu",
-      "modules/relu",
-      "modules/multi-head-attention",
-      "modules/feed-forward-network",
-    ]);
-    expect(getDocsCollectionDefinition("papers").starterSlugs).toEqual([
-      "papers/deepseek-v4",
-    ]);
-    expect(getDocsCollectionDefinition("training").starterSlugs).toEqual([
-      "training/on-policy-distillation",
-      "training/specialist-training",
-      "training/fp4-quantization-aware-training",
-    ]);
-    expect(getDocsCollectionDefinition("systems").starterSlugs).toEqual([
-      "systems/deployment",
-      "systems/routing",
-      "systems/on-disk-kv-cache",
-      "systems/expert-parallel-overlap",
-    ]);
+  test("preserves glossary browse starter slugs as route-relative docs slugs", () => {
     expect(getDocsCollectionDefinition("glossary").starterSlugs).toEqual([
       "glossary/token",
       "glossary/architecture",
@@ -175,6 +125,19 @@ describe("docs collection definitions config", () => {
     }
   });
 
+  test("excludes retired Atlas collection ids from the public inventory", () => {
+    const ids = DOCS_COLLECTION_DEFINITIONS.map((definition) => definition.id);
+    for (const retiredId of [
+      "modules",
+      "models",
+      "papers",
+      "training",
+      "systems",
+    ] as const) {
+      expect(ids).not.toContain(retiredId);
+    }
+  });
+
   test("includes message keys that resolve to current browse and index copy", async () => {
     const messages = await loadUiMessages();
 
@@ -184,13 +147,7 @@ describe("docs collection definitions config", () => {
   });
 
   test("identifies sidebar grouping resolver ids for grouped collections", () => {
-    const groupedIds = [
-      "glossary",
-      "concepts",
-      "modules",
-      "training",
-      "systems",
-    ] as const;
+    const groupedIds = ["glossary", "concepts"] as const;
 
     for (const id of groupedIds) {
       const definition = getDocsCollectionDefinition(id);
@@ -210,8 +167,6 @@ describe("docs collection definitions config", () => {
       "guides",
       "techniques",
       "documentation",
-      "models",
-      "papers",
     ]);
 
     for (const id of ungroupedIds) {
@@ -229,7 +184,7 @@ describe("docs collection definitions config", () => {
       }
 
       expect(definition.sidebarGroupingResolverId).toBe(
-        id as "glossary" | "concepts" | "modules" | "training" | "systems",
+        id as "glossary" | "concepts",
       );
     }
   });

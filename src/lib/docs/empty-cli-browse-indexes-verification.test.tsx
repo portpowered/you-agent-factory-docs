@@ -17,7 +17,7 @@ import { getDocsCollectionDefinition } from "@/lib/docs/docs-collection-definiti
 import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 
 /**
- * Consolidated end-to-end proof for the empty CLI browse hub and four section
+ * Consolidated end-to-end proof for the factory CLI browse hub and four section
  * indexes. Run directly (`bun test src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`)
  * — `src/lib/docs/` is excluded from required `bun run test` after Atlas deletion.
  */
@@ -62,6 +62,25 @@ const CLI_BROWSE_SECTION_MESSAGE_KEYS = [
   "documentationSectionLinkLabel",
 ] as const;
 
+const REPRESENTATIVE_SECTION_PAGES = {
+  guides: {
+    title: "Getting Started",
+    href: "/docs/guides/getting-started",
+  },
+  concepts: {
+    title: "Harness",
+    href: "/docs/concepts/harness",
+  },
+  techniques: {
+    title: "Ralph",
+    href: "/docs/techniques/ralph",
+  },
+  documentation: {
+    title: "What is you-agent-factory",
+    href: "/docs/documentation/what-is-you-agent-factory",
+  },
+} as const;
+
 type CliSectionIndexMessages = UiMessages["guidesIndex"];
 
 function listAuthoredPageBundleSlugs(sectionRoot: string): string[] {
@@ -85,8 +104,8 @@ function sectionIndexMessages(
   ] as CliSectionIndexMessages;
 }
 
-describe("empty CLI browse and section indexes end-to-end", () => {
-  test("keeps default browse order on the four empty CLI collections", () => {
+describe("factory CLI browse and section indexes end-to-end", () => {
+  test("keeps default browse order on the four CLI collections with empty starters", () => {
     expect([...DOCS_BROWSE_COLLECTION_IDS]).toEqual([
       ...CLI_DOCS_COLLECTION_IDS,
     ]);
@@ -101,11 +120,11 @@ describe("empty CLI browse and section indexes end-to-end", () => {
     }
   });
 
-  test("keeps guides, concepts, and techniques free of authored customer page bundles", () => {
-    for (const collectionId of ["guides", "concepts", "techniques"] as const) {
+  test("keeps authored customer page bundles under factory CLI collection roots", () => {
+    for (const collectionId of CLI_DOCS_COLLECTION_IDS) {
       expect(
-        listAuthoredPageBundleSlugs(join(DOCS_ROOT, collectionId)),
-      ).toEqual([]);
+        listAuthoredPageBundleSlugs(join(DOCS_ROOT, collectionId)).length,
+      ).toBeGreaterThan(0);
     }
   });
 
@@ -145,60 +164,29 @@ describe("empty CLI browse and section indexes end-to-end", () => {
     }
   });
 
-  test("renders empty CLI section indexes and a populated documentation index without Atlas copy", async () => {
+  test("renders populated factory CLI section indexes without Atlas copy", async () => {
     const messages = await loadUiMessages();
 
-    for (const collectionId of ["guides", "concepts", "techniques"] as const) {
+    for (const collectionId of CLI_DOCS_COLLECTION_IDS) {
       const indexMessages = sectionIndexMessages(messages, collectionId);
+      const representative = REPRESENTATIVE_SECTION_PAGES[collectionId];
       const html = renderToStaticMarkup(
         await renderSectionCollectionIndexPage(collectionId),
       );
 
       expect(html).toContain(indexMessages.title);
       expect(html).toContain(indexMessages.description);
-      expect(html).toContain(indexMessages.emptyTitle);
-      expect(html).toContain(indexMessages.emptyDescription);
-      expect(html).toContain(indexMessages.emptyHomeLink);
-      expect(html).toContain('href="/"');
-      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+      expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+      expect(html).toContain(representative.title);
+      expect(html).toContain(representative.href);
+      expect(html).not.toContain(indexMessages.emptyTitle);
 
-      // Empty-state / index message fields only — SearchTrigger may still carry
-      // residual Atlas search chrome outside this lane.
       expect(indexMessages.title).not.toMatch(ATLAS_PRODUCT_COPY);
       expect(indexMessages.description).not.toMatch(ATLAS_PRODUCT_COPY);
       expect(indexMessages.emptyTitle).not.toMatch(ATLAS_PRODUCT_COPY);
       expect(indexMessages.emptyDescription).not.toMatch(ATLAS_PRODUCT_COPY);
       expect(indexMessages.emptyHomeLink).not.toMatch(ATLAS_PRODUCT_COPY);
     }
-
-    const documentationMessages = sectionIndexMessages(
-      messages,
-      "documentation",
-    );
-    const documentationHtml = renderToStaticMarkup(
-      await renderSectionCollectionIndexPage("documentation"),
-    );
-
-    expect(documentationHtml).toContain(documentationMessages.title);
-    expect(documentationHtml).toContain(documentationMessages.description);
-    expect(documentationHtml).toContain(
-      `aria-label="${documentationMessages.listLabel}"`,
-    );
-    expect(documentationHtml).toContain("What is you-agent-factory");
-    expect(documentationHtml).toContain(
-      "/docs/documentation/what-is-you-agent-factory",
-    );
-    expect(documentationHtml).toContain(
-      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
-    );
-    expect(documentationHtml).not.toContain(documentationMessages.emptyTitle);
-    expect(documentationMessages.title).not.toMatch(ATLAS_PRODUCT_COPY);
-    expect(documentationMessages.description).not.toMatch(ATLAS_PRODUCT_COPY);
-    expect(documentationMessages.emptyTitle).not.toMatch(ATLAS_PRODUCT_COPY);
-    expect(documentationMessages.emptyDescription).not.toMatch(
-      ATLAS_PRODUCT_COPY,
-    );
-    expect(documentationMessages.emptyHomeLink).not.toMatch(ATLAS_PRODUCT_COPY);
   });
 
   test("keeps localized browse hub and CLI empty-state message fields Atlas-free", async () => {

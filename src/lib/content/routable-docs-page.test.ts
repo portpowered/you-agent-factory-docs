@@ -7,7 +7,7 @@ import {
 import { source } from "@/lib/source";
 
 describe("routable local docs pages", () => {
-  test("identifies CLI and remaining collection local docs page bundle paths", () => {
+  test("identifies factory collection local docs page bundle paths only", () => {
     expect(isLocalDocsPageBundlePath("guides/getting-started/page.mdx")).toBe(
       true,
     );
@@ -19,11 +19,11 @@ describe("routable local docs pages", () => {
       isLocalDocsPageBundlePath("documentation/cli-reference/page.mdx"),
     ).toBe(true);
     expect(isLocalDocsPageBundlePath("glossary/token/page.mdx")).toBe(true);
-    expect(isLocalDocsPageBundlePath("modules/attention/page.mdx")).toBe(true);
-    expect(isLocalDocsPageBundlePath("models/foo/page.mdx")).toBe(true);
-    expect(isLocalDocsPageBundlePath("papers/foo/page.mdx")).toBe(true);
-    expect(isLocalDocsPageBundlePath("training/foo/page.mdx")).toBe(true);
-    expect(isLocalDocsPageBundlePath("systems/batching/page.mdx")).toBe(true);
+    expect(isLocalDocsPageBundlePath("modules/attention/page.mdx")).toBe(false);
+    expect(isLocalDocsPageBundlePath("models/foo/page.mdx")).toBe(false);
+    expect(isLocalDocsPageBundlePath("papers/foo/page.mdx")).toBe(false);
+    expect(isLocalDocsPageBundlePath("training/foo/page.mdx")).toBe(false);
+    expect(isLocalDocsPageBundlePath("systems/batching/page.mdx")).toBe(false);
     expect(isLocalDocsPageBundlePath("getting-started.mdx")).toBe(false);
     expect(isLocalDocsPageBundlePath("unknown/foo/page.mdx")).toBe(false);
   });
@@ -80,5 +80,22 @@ describe("routable local docs pages", () => {
     expect(slugPaths).not.toContain("concepts/page-spec-workflow-sample");
     expect(slugPaths).not.toContain("glossary/token");
     expect(slugPaths).not.toContain("modules/attention");
+
+    for (const retired of [
+      "models",
+      "modules",
+      "papers",
+      "training",
+      "systems",
+    ] as const) {
+      expect(source.getPage([retired])).toBeUndefined();
+      expect(slugPaths).not.toContain(retired);
+      expect(
+        slugPaths.some(
+          (slugPath) =>
+            slugPath === retired || slugPath.startsWith(`${retired}/`),
+        ),
+      ).toBe(false);
+    }
   });
 });

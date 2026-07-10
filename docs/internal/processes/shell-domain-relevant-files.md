@@ -7,19 +7,38 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
+  Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
+  `guides`, `concepts`, `techniques`, `documentation`, `glossary`. Retired
+  Atlas ids (`models`, `modules`, `papers`, `training`, `systems`) are not in
+  the public collection contract; sidebar grouping resolvers are only
+  `glossary` and `concepts`.
+* `src/lib/docs/docs-collection-definitions.ts`
+  Canonical inventory matching `DOCS_COLLECTION_IDS`. CLI collections keep
+  empty `starterSlugs`; glossary keeps route-relative starters.
 * `src/lib/docs/browse-collection-sections.ts`
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
-  `DOCS_BROWSE_SECTION_ORDER`. Pass an explicit `sectionOrder` when a test or
-  fixture still needs Atlas or glossary-derived browse sections.
+  `DOCS_BROWSE_SECTION_ORDER`. Public browse no longer accepts glossary-derived
+  Atlas section refs (Model Types / Inference / Module Components).
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
+  `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,
+  `technique`, `documentation`).
 * `src/lib/navigation/shell-collection-page-tree.ts`
   Generic sidebar/page-tree builder with optional grouping resolvers.
+* `src/lib/navigation/docs-sidebar-sections.ts`
+  Default `DOCS_SIDEBAR_SECTION_ORDER` is the five factory collection folders
+  (guides → glossary). Section refs are collection-only; glossary pages stay in
+  the Glossary folder (no Model Types / Inference / Module Components splits).
+* `src/features/docs/components/DocsPageBreadcrumb.tsx`
+  Docs breadcrumbs only emit a collection crumb for accepted factory route
+  slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are
+  not public crumbs.
 * `src/lib/navigation/ai-docs-sidebar-adapter.ts`
-  Model Atlas-owned shell sidebar labels, grouping resolvers, collection ids, and `getAiDocsShellPageTreeSettings()` for AI docs collections.
+  Factory docs shell sidebar labels, grouping resolvers, collection ids, and
+  `getAiDocsShellPageTreeSettings()` for public docs collections.
 * `src/lib/navigation/generated-docs-page-tree.ts`
-  AI docs page tree; composes adapter settings into `buildShellCollectionPageTree`.
+  Docs page tree; composes adapter settings into `buildDocsSidebarSectionNodes`.
 * `src/lib/navigation/generated-docs-page-tree-wiring.test.ts`
   Adapter-to-shell wiring regression for base-tree preservation and page inclusion.
 * `src/lib/navigation/ai-docs-sidebar-adapter-parity.test.ts`
@@ -88,10 +107,33 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Default-locale CLI section index routes via `renderSectionCollectionIndexPage`.
 * `src/app/[locale]/docs/{guides,concepts,techniques,documentation}/page.tsx`
   Localized CLI section index routes mirroring the default-locale pattern.
+* Retired Atlas collection index modules under
+  `src/app/(site)/docs/{models,modules,papers,training,systems}/` and
+  `src/app/[locale]/docs/{models,modules,papers,training,systems}/` must stay
+  deleted. Old URLs such as `/docs/models` and `/ja/docs/models` hit the docs
+  catch-all / slug renderer and return the normal docs not-found page
+  (`src/app/docs/not-found.tsx`); they must not appear in
+  `source.generateParams()` or default/localized docs `generateStaticParams`
+  inventories. Prove with
+  `src/lib/content/retired-atlas-collection-routes.test.ts` (included in
+  required `bun run test`).
+* `src/lib/content/factory-only-public-inventory.test.tsx`
+  End-to-end shell/navigation proof that the public docs inventory is only
+  guides/concepts/techniques/documentation/glossary, browse/sidebar omit
+  retired Atlas destinations, and Blog + Search stay reachable as separate
+  surfaces (included in required `bun run test`).
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
-  CLI `guidesIndex` / `conceptsIndex` / `techniquesIndex` / `documentationIndex`
-  empty-state copy and `browseIndex` hub title/description / CLI section blurbs
-  (no Model Atlas / Browse the Atlas / the atlas phrasing).
+  Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
+  `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
+  `browseIndex` hub + CLI section blurbs. Do not ship retired Atlas
+  `models|modules|papers|training|systems` index blocks, Atlas browse
+  section keys (including Model Types / Inference / Module Components), or
+  home `atlasLink*` / module featured-link keys. Preserve legitimate factory
+  model-provider / external-model product wording when present.
+* `src/lib/content/ui-messages.types.ts`
+  `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
+  `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only
+  message inventory above.
 * `src/lib/navigation/docs-sidebar-collection-verification.test.ts`
   AI sidebar folder order, grouping labels, and representative links.
 * `src/tests/search/search-behavior-parity.test.ts`

@@ -14,7 +14,7 @@ export const CLI_DOCS_COLLECTION_IDS = [
 
 export type CliDocsCollectionId = (typeof CLI_DOCS_COLLECTION_IDS)[number];
 
-const acceptedRouteSlugs = new Set(
+const acceptedRouteSlugs = new Set<string>(
   listDocsCollectionDefinitions().map((definition) => definition.routeSlug),
 );
 
@@ -22,8 +22,10 @@ const acceptedRouteSlugs = new Set(
  * True when a docs path section segment is a registered collection route slug.
  * Used by Fumadocs source slug mapping and local page-bundle path checks.
  */
-export function isAcceptedDocsSourceSection(section: string): boolean {
-  return acceptedRouteSlugs.has(section as DocsCollectionId);
+export function isAcceptedDocsSourceSection(
+  section: string,
+): section is DocsCollectionId {
+  return acceptedRouteSlugs.has(section);
 }
 
 /**

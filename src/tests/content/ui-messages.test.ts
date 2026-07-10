@@ -31,15 +31,10 @@ const AI_DOMAIN_MESSAGE_KEYS = [
   "timelinePage",
   "topologyBrowse",
   "topologyPrototype",
-  "modelsIndex",
-  "modulesIndex",
   "conceptsIndex",
   "guidesIndex",
   "techniquesIndex",
   "documentationIndex",
-  "papersIndex",
-  "trainingIndex",
-  "systemsIndex",
   "tagsIndex",
   "tagLanding",
   "tagCategories",
@@ -67,15 +62,10 @@ function pickAiDomainMessages(messages: AiDomainMessages): AiDomainMessages {
     timelinePage: messages.timelinePage,
     topologyBrowse: messages.topologyBrowse,
     topologyPrototype: messages.topologyPrototype,
-    modelsIndex: messages.modelsIndex,
-    modulesIndex: messages.modulesIndex,
     conceptsIndex: messages.conceptsIndex,
     guidesIndex: messages.guidesIndex,
     techniquesIndex: messages.techniquesIndex,
     documentationIndex: messages.documentationIndex,
-    papersIndex: messages.papersIndex,
-    trainingIndex: messages.trainingIndex,
-    systemsIndex: messages.systemsIndex,
     tagsIndex: messages.tagsIndex,
     tagLanding: messages.tagLanding,
     tagCategories: messages.tagCategories,
@@ -109,9 +99,8 @@ describe("loadUiMessages shell keys", () => {
     ).toBe("Attention Mechanisms");
     expect(messages.searchEntry.title).toBe("Search");
     expect(messages.browseIndex.title).toBe("Browse");
-    expect(messages.modelsIndex.title).toBe("Models");
-    expect(messages.modulesIndex.title).toBe("Modules");
     expect(messages.conceptsIndex.title).toBe("Concepts");
+    expect(messages.guidesIndex.title).toBe("Guides");
     expect(messages.architectureIndex.title).toBe("Architecture");
     expect(messages.glossaryIndex.title).toBe("Glossary");
     expect(messages.blogIndex.title).toBe("Blog");
@@ -124,7 +113,7 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("Trang chủ");
     expect(messages.browseIndex.title).toBe("Duyệt");
-    expect(messages.modelsIndex.title).toBe("Mô hình");
+    expect(messages.conceptsIndex.title).toBe("Khái niệm");
     expect(messages.searchEntry.title).toBe("Tìm kiếm");
     expect(messages.tagsIndex.title).toBe("Thẻ");
     expect(messages.topologyBrowse.navigationLabelTemplate).toBe(
@@ -142,7 +131,7 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("ホーム");
     expect(messages.browseIndex.title).toBe("参照");
-    expect(messages.modelsIndex.title).toBe("モデル");
+    expect(messages.conceptsIndex.title).toBe("概念");
     expect(messages.searchEntry.title).toBe("検索");
     expect(messages.tagsIndex.title).toBe("タグ");
     expect(messages.shell.sidebarTitle).toBe("リファレンス");
@@ -164,7 +153,7 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.language.selectorLabel).toBe("语言");
     expect(messages.language.locales["zh-CN"]).toBe("简体中文");
     expect(messages.browseIndex.title).toBe("浏览");
-    expect(messages.modelsIndex.title).toBe("模型");
+    expect(messages.conceptsIndex.title).toBe("概念");
     expect(messages.searchEntry.title).toBe("搜索");
     expect(messages.tagsIndex.title).toBe("标签");
     expect(messages.shell.sidebarTitle).toBe("参考");
@@ -278,7 +267,7 @@ describe("message boundary contracts", () => {
     expect(messages.topologyPrototype.graphLabel).toBe(
       "Activation/feed-forward topology preview",
     );
-    expect(messages.modelsIndex.title).toBe("Models");
+    expect(messages.conceptsIndex.title).toBe("Concepts");
     expect(messages.tagLanding.searchHandoff).toBe("Search this tag");
   });
 

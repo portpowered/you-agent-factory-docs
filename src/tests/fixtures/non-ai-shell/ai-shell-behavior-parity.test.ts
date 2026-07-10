@@ -1,5 +1,5 @@
 /**
- * Regression coverage proving Model Atlas AI browse, section index, sidebar, and
+ * Regression coverage proving factory docs browse, section index, sidebar, and
  * search behavior stayed stable while the generic shell primitives and non-AI
  * fixture proof landed. Fixture routes must stay off public AI surfaces.
  */
@@ -12,6 +12,7 @@ import {
 import { loadPublishedDocsPages } from "@/lib/content/pages";
 import { loadRegistry } from "@/lib/content/registry";
 import { DOCS_BROWSE_COLLECTION_IDS } from "@/lib/docs/browse-collection-sections";
+import { DOCS_COLLECTION_IDS } from "@/lib/docs/collection-definition-contract";
 import { collectSidebarPageLinks } from "@/lib/navigation/docs-sidebar-contract";
 import { buildSearchDocuments } from "@/lib/search/build-documents";
 import { source } from "@/lib/source";
@@ -46,23 +47,35 @@ const CLI_SECTION_INDEX_CASES = [
   {
     kind: "guide" as const,
     title: "Guides",
-    emptyTitle: "No guide entries yet",
+    pageTitle: "Getting Started",
+    pageHref: "/docs/guides/getting-started",
   },
   {
     kind: "concept" as const,
     title: "Concepts",
-    emptyTitle: "No concept entries yet",
+    pageTitle: "Harness",
+    pageHref: "/docs/concepts/harness",
   },
   {
     kind: "technique" as const,
     title: "Techniques",
-    emptyTitle: "No technique entries yet",
+    pageTitle: "Ralph",
+    pageHref: "/docs/techniques/ralph",
   },
   {
     kind: "documentation" as const,
     title: "Documentation",
-    emptyTitle: "No documentation entries yet",
+    pageTitle: "What is you-agent-factory",
+    pageHref: "/docs/documentation/what-is-you-agent-factory",
   },
+] as const;
+
+const RETIRED_ATLAS_URL_PREFIXES = [
+  "/docs/models/",
+  "/docs/modules/",
+  "/docs/papers/",
+  "/docs/training/",
+  "/docs/systems/",
 ] as const;
 
 function headingIdPosition(html: string, headingId: string): number {
@@ -99,27 +112,44 @@ describe("AI shell behavior parity after non-AI fixture proof", () => {
         "techniques",
         "documentation",
       ]);
+      expect([...DOCS_COLLECTION_IDS]).toEqual([
+        "guides",
+        "concepts",
+        "techniques",
+        "documentation",
+        "glossary",
+      ]);
     });
   });
 
   describe("section indexes", () => {
     for (const section of CLI_SECTION_INDEX_CASES) {
-      test(`renders empty ${section.title.toLowerCase()} index through the generic renderer`, async () => {
+      test(`renders populated ${section.title.toLowerCase()} index through the generic renderer`, async () => {
         const html = renderToStaticMarkup(
           await renderSectionKindIndexPage(section.kind),
         );
 
         expect(html).toContain(section.title);
-        expect(html).toContain(section.emptyTitle);
-        expect(html).toContain('href="/"');
+        expect(html).toContain(section.pageTitle);
+        expect(html).toContain(section.pageHref);
       });
     }
   });
 
   describe("sidebar page tree", () => {
-    test("stays empty of Atlas page links after domain deletion", () => {
+    test("exposes factory page links and excludes retired Atlas destinations", () => {
       const links = collectSidebarPageLinks(source.pageTree);
-      expect(links).toEqual([]);
+      expect(links.length).toBeGreaterThan(0);
+      expect(links.some((link) => link.url.startsWith("/docs/guides/"))).toBe(
+        true,
+      );
+      expect(links.some((link) => link.url.startsWith("/docs/concepts/"))).toBe(
+        true,
+      );
+
+      for (const prefix of RETIRED_ATLAS_URL_PREFIXES) {
+        expect(links.some((link) => link.url.startsWith(prefix))).toBe(false);
+      }
     });
   });
 

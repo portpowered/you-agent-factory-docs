@@ -14,7 +14,7 @@ function getSeparatorLabels(nodes: Node[]): string[] {
 }
 
 describe("docs sidebar grouping adapter", () => {
-  test("builds grouped nodes for every configured sidebar grouping resolver id", () => {
+  test("builds grouped nodes for every configured sidebar grouping resolver id with pages", () => {
     for (const definition of listDocsCollectionDefinitions()) {
       const resolverId = definition.sidebarGroupingResolverId;
       if (!resolverId) {
@@ -24,6 +24,10 @@ describe("docs sidebar grouping adapter", () => {
       const pages = loadPublishedDocsPagesSync("en").filter((page) =>
         page.docsSlug.startsWith(`${definition.routeSlug}/`),
       );
+      if (pages.length === 0) {
+        continue;
+      }
+
       const nodes = buildGroupedSidebarNodes(resolverId, pages);
 
       expect(nodes.length).toBeGreaterThan(0);
@@ -31,15 +35,18 @@ describe("docs sidebar grouping adapter", () => {
     }
   });
 
-  test("rejects unsupported resolver ids at runtime", () => {
+  test("rejects unsupported and retired Atlas resolver ids at runtime", () => {
     expect(() => assertSupportedSidebarGroupingResolverId("models")).toThrow(
       /Unsupported docs sidebar grouping resolver id: models/,
     );
+    expect(() => assertSupportedSidebarGroupingResolverId("modules")).toThrow(
+      /Unsupported docs sidebar grouping resolver id: modules/,
+    );
     expect(() =>
       buildGroupedSidebarNodes(
-        "models" as Parameters<typeof buildGroupedSidebarNodes>[0],
+        "modules" as Parameters<typeof buildGroupedSidebarNodes>[0],
         [],
       ),
-    ).toThrow(/Unsupported docs sidebar grouping resolver id: models/);
+    ).toThrow(/Unsupported docs sidebar grouping resolver id: modules/);
   });
 });

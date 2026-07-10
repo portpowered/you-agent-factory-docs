@@ -13,7 +13,7 @@ import {
   resolveSectionKindCollectionId,
 } from "@/lib/docs/section-collection-index";
 
-const trainingDefinition = getDocsCollectionDefinition("training");
+const guidesDefinition = getDocsCollectionDefinition("guides");
 
 type CliSectionIndexCollectionId = (typeof CLI_DOCS_COLLECTION_IDS)[number];
 
@@ -43,13 +43,13 @@ describe("section collection index resolution", () => {
   });
 
   test("accepts a full collection definition without re-resolving", () => {
-    expect(resolveDocsCollectionInput(trainingDefinition)).toBe(
-      trainingDefinition,
-    );
+    expect(resolveDocsCollectionInput(guidesDefinition)).toBe(guidesDefinition);
   });
 
-  test("rejects unknown collection ids with not-found behavior", () => {
+  test("rejects unknown and retired Atlas collection ids with not-found behavior", () => {
     expect(isDocsCollectionId("unknown-collection")).toBe(false);
+    expect(isDocsCollectionId("models")).toBe(false);
+    expect(isDocsCollectionId("modules")).toBe(false);
 
     try {
       resolveDocsCollectionInput("unknown-collection");
@@ -62,9 +62,7 @@ describe("section collection index resolution", () => {
     }
   });
 
-  test("maps section frontmatter kinds to collection ids", () => {
-    expect(resolveSectionKindCollectionId("training-regime")).toBe("training");
-    expect(resolveSectionKindCollectionId("model")).toBe("models");
+  test("maps section frontmatter kinds to factory collection ids", () => {
     expect(resolveSectionKindCollectionId("guide")).toBe("guides");
     expect(resolveSectionKindCollectionId("technique")).toBe("techniques");
     expect(resolveSectionKindCollectionId("documentation")).toBe(
@@ -75,7 +73,6 @@ describe("section collection index resolution", () => {
 
   test("resolves localized index copy from collection message metadata", async () => {
     const messages = await loadUiMessages();
-    const guidesDefinition = getDocsCollectionDefinition("guides");
     const resolved = resolveDocsCollectionIndexMessages(
       messages,
       guidesDefinition,
@@ -83,25 +80,28 @@ describe("section collection index resolution", () => {
 
     expect(resolved).toEqual(messages.guidesIndex);
     expect(
-      resolveDocsCollectionIndexMessages(messages, trainingDefinition),
-    ).toEqual(messages.trainingIndex);
+      resolveDocsCollectionIndexMessages(
+        messages,
+        getDocsCollectionDefinition("concepts"),
+      ),
+    ).toEqual(messages.conceptsIndex);
   });
 
   test("resolves index copy from an inline collection definition", async () => {
     const messages = await loadUiMessages();
     const inlineDefinition: DocsCollectionDefinition = {
-      ...trainingDefinition,
-      starterSlugs: ["training/on-policy-distillation"],
+      ...guidesDefinition,
+      starterSlugs: [],
     };
 
     expect(
       resolveDocsCollectionIndexMessages(messages, inlineDefinition),
-    ).toEqual(messages.trainingIndex);
+    ).toEqual(messages.guidesIndex);
   });
 });
 
 describe("renderSectionCollectionIndexPage empty CLI collections", () => {
-  test("renders techniques title, description, and empty-state copy", async () => {
+  test("renders techniques index with authored page entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = sectionIndexMessages(messages, "techniques");
     const html = renderToStaticMarkup(
@@ -110,11 +110,12 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
 
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.description);
-    expect(html).toContain(indexMessages.emptyTitle);
-    expect(html).toContain(indexMessages.emptyDescription);
-    expect(html).toContain(indexMessages.emptyHomeLink);
-    expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
-    // Empty-state copy only — SearchTrigger may still carry residual Atlas search chrome.
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/docs/techniques/ralph");
+    expect(html).toContain("Writer-Reviewer");
+    expect(html).toContain("/docs/techniques/writer-reviewer");
+    expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i,
     );
@@ -206,20 +207,20 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
   });
 });
 
-describe("renderSectionCollectionIndexPage empty state", () => {
-  test("renders DocsIndexEmptyState copy from collection index message metadata", async () => {
+describe("renderSectionCollectionIndexPage localized techniques", () => {
+  test("renders localized techniques index with authored page entries", async () => {
     const messages = await loadUiMessages("vi");
     const techniquesDefinition = getDocsCollectionDefinition("techniques");
     const html = renderToStaticMarkup(
       await renderSectionCollectionIndexPage(techniquesDefinition, "vi"),
     );
 
-    expect(html).toContain(messages.techniquesIndex.emptyTitle);
-    expect(html).toContain(messages.techniquesIndex.emptyDescription);
-    expect(html).toContain(messages.techniquesIndex.emptyHomeLink);
-    expect(html).toContain('href="/vi"');
-    expect(html).not.toContain(
+    expect(html).toContain(messages.techniquesIndex.title);
+    expect(html).toContain(messages.techniquesIndex.description);
+    expect(html).toContain(
       `aria-label="${messages.techniquesIndex.listLabel}"`,
     );
+    expect(html).toContain("/vi/docs/techniques/ralph");
+    expect(html).not.toContain(messages.techniquesIndex.emptyTitle);
   });
 });

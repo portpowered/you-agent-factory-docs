@@ -5,10 +5,8 @@ import {
   resolveClassificationId,
 } from "@/lib/content/registry-runtime";
 import type { ConceptRecord } from "@/lib/content/schemas";
-import type { UiMessages } from "@/lib/content/ui-messages.types";
 import type { BrowseCollectionSection } from "@/lib/docs/browse-collection-sections";
 import { toDocsIndexEntries } from "@/lib/docs/docs-index-entries";
-import { resolveUiMessagePath } from "@/lib/docs/section-collection-index";
 import {
   buildLocalizedRoute,
   type SiteLocale,
@@ -26,16 +24,19 @@ export type GlossaryDerivedBrowseSectionId =
 
 type GlossaryDerivedSectionConfig = {
   classificationRootId: string;
-  browseMessagePrefix: "modelTypes" | "inference" | "moduleComponents";
   sidebarLabel: string;
+  sectionDescription: string;
+  sectionLinkLabel: string;
   starterSlugs: readonly string[];
 };
 
 const GLOSSARY_DERIVED_SECTION_CONFIG = {
   "model-types": {
     classificationRootId: "classification.concept.model-type",
-    browseMessagePrefix: "modelTypes",
     sidebarLabel: "Model Types",
+    sectionDescription:
+      "Model-type glossary pages explain model families and structural roles.",
+    sectionLinkLabel: "Browse model-type glossary pages",
     starterSlugs: [
       "glossary/world-model",
       "glossary/generative-model",
@@ -52,8 +53,10 @@ const GLOSSARY_DERIVED_SECTION_CONFIG = {
   },
   inference: {
     classificationRootId: "classification.concept.inference",
-    browseMessagePrefix: "inference",
     sidebarLabel: "Inference",
+    sectionDescription:
+      "Inference glossary pages cover decoding, sampling, and runtime latency.",
+    sectionLinkLabel: "Browse inference glossary pages",
     starterSlugs: [
       "glossary/sampling-overview",
       "glossary/top-k-sampling",
@@ -68,8 +71,10 @@ const GLOSSARY_DERIVED_SECTION_CONFIG = {
   },
   "module-components": {
     classificationRootId: "classification.concept.module",
-    browseMessagePrefix: "moduleComponents",
     sidebarLabel: "Module Components",
+    sectionDescription:
+      "Module-component glossary pages explain activations, normalization, and embeddings.",
+    sectionLinkLabel: "Browse module-component glossary pages",
     starterSlugs: [
       "glossary/softmax",
       "glossary/residual-connection",
@@ -166,24 +171,14 @@ export function filterGlossaryPagesForDerivedSection(
   );
 }
 
-function resolveDerivedBrowseMessagePath(
-  messages: UiMessages | Record<string, unknown>,
-  prefix: GlossaryDerivedSectionConfig["browseMessagePrefix"],
-  suffix: "SectionTitle" | "SectionDescription" | "SectionLinkLabel",
-): string {
-  return resolveUiMessagePath(messages, `browseIndex.${prefix}${suffix}`);
-}
-
 export function buildGlossaryDerivedBrowseSection({
   sectionId,
   pages,
   locale,
-  messages,
 }: {
   sectionId: GlossaryDerivedBrowseSectionId;
   pages: readonly DocsPageSource[];
   locale: SiteLocale;
-  messages: UiMessages | Record<string, unknown>;
 }): BrowseCollectionSection {
   const config = GLOSSARY_DERIVED_SECTION_CONFIG[sectionId];
   const sectionPages = filterGlossaryPagesForDerivedSection(pages, sectionId);
@@ -191,27 +186,15 @@ export function buildGlossaryDerivedBrowseSection({
 
   return {
     id: sectionId,
-    title: resolveDerivedBrowseMessagePath(
-      messages,
-      config.browseMessagePrefix,
-      "SectionTitle",
-    ),
-    description: resolveDerivedBrowseMessagePath(
-      messages,
-      config.browseMessagePrefix,
-      "SectionDescription",
-    ),
+    title: config.sidebarLabel,
+    description: config.sectionDescription,
     entries: toDocsIndexEntries(
       sectionPages,
       locale,
       [...config.starterSlugs],
       config.starterSlugs.length,
     ),
-    linkLabel: resolveDerivedBrowseMessagePath(
-      messages,
-      config.browseMessagePrefix,
-      "SectionLinkLabel",
-    ),
+    linkLabel: config.sectionLinkLabel,
     linkHref: `${browseHref}#${sectionId}`,
   };
 }
@@ -219,18 +202,15 @@ export function buildGlossaryDerivedBrowseSection({
 export function buildGlossaryDerivedBrowseSections({
   pages,
   locale,
-  messages,
 }: {
   pages: readonly DocsPageSource[];
   locale: SiteLocale;
-  messages: UiMessages | Record<string, unknown>;
 }): BrowseCollectionSection[] {
   return GLOSSARY_DERIVED_BROWSE_SECTION_IDS.map((sectionId) =>
     buildGlossaryDerivedBrowseSection({
       sectionId,
       pages,
       locale,
-      messages,
     }),
   );
 }

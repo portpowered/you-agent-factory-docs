@@ -49,16 +49,25 @@ describe("home page messages", () => {
     expect(home.onThisPageBrowse).toBe("Browse");
   });
 
-  it("keeps legacy Atlas featured-link message keys available without binding them in site config", async () => {
+  it("ships factory featured-link message keys without Atlas product browse entries", async () => {
     const { home } = await loadUiMessages();
     expect(home.guidesLinkTitle).toBe("Guides");
     expect(home.docsLinkTitle).toBe("Docs browse");
     expect(home.glossaryLinkTitle).toBe("Glossary");
     expect(home.blogLinkTitle).toBe("Blog");
-    expect(home.atlasLinkTitle.length).toBeGreaterThan(0);
-    expect(home.gqaLinkTitle.length).toBeGreaterThan(0);
-    expect(home.swigluLinkTitle.length).toBeGreaterThan(0);
-    expect(home.reluLinkTitle.length).toBeGreaterThan(0);
+    const homeRecord = home as Record<string, unknown>;
+    for (const key of [
+      "atlasLinkTitle",
+      "atlasLinkDescription",
+      "gqaLinkTitle",
+      "gqaLinkDescription",
+      "swigluLinkTitle",
+      "swigluLinkDescription",
+      "reluLinkTitle",
+      "reluLinkDescription",
+    ] as const) {
+      expect(homeRecord[key]).toBeUndefined();
+    }
     expect(
       youAgentFactorySiteConfig.homeFeaturedLinks.map((link) => link.titleKey),
     ).toEqual([
@@ -67,16 +76,6 @@ describe("home page messages", () => {
       "glossaryLinkTitle",
       "blogLinkTitle",
     ]);
-    expect(
-      youAgentFactorySiteConfig.homeFeaturedLinks.some((link) =>
-        [
-          "atlasLinkTitle",
-          "gqaLinkTitle",
-          "swigluLinkTitle",
-          "reluLinkTitle",
-        ].includes(link.titleKey),
-      ),
-    ).toBe(false);
   });
 });
 

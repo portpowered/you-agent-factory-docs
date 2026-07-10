@@ -1,21 +1,16 @@
 import type { PageKind, RegistryKind } from "@/lib/content/schemas";
 
 /**
- * Stable ids for docs collections.
- * Includes rewrite-era empty CLI collections plus remaining Atlas collections
- * until sibling delete/retarget lanes remove Atlas inventory.
+ * Stable ids for public docs collections.
+ * Factory-only inventory: guides, concepts, techniques, documentation, and
+ * glossary. Retired Model Atlas collection ids are not part of this contract.
  */
 export type DocsCollectionId =
   | "guides"
   | "concepts"
   | "techniques"
   | "documentation"
-  | "glossary"
-  | "modules"
-  | "models"
-  | "papers"
-  | "training"
-  | "systems";
+  | "glossary";
 
 export const DOCS_COLLECTION_IDS = [
   "guides",
@@ -23,11 +18,6 @@ export const DOCS_COLLECTION_IDS = [
   "techniques",
   "documentation",
   "glossary",
-  "modules",
-  "models",
-  "papers",
-  "training",
-  "systems",
 ] as const satisfies readonly DocsCollectionId[];
 
 /** Public route slug segment under `/docs`. */
@@ -36,43 +26,23 @@ export type DocsCollectionRouteSlug = DocsCollectionId;
 /** Registry kinds referenced by published docs collection pages. */
 export type DocsCollectionRegistryKind = Extract<
   RegistryKind,
-  | "guide"
-  | "concept"
-  | "technique"
-  | "documentation"
-  | "module"
-  | "model"
-  | "paper"
-  | "training-regime"
-  | "system"
+  "guide" | "concept" | "technique" | "documentation"
 >;
 
 /** Frontmatter kinds on published docs collection pages. */
 export type DocsCollectionFrontmatterKind = Extract<
   PageKind,
-  | "guide"
-  | "concept"
-  | "technique"
-  | "documentation"
-  | "glossary"
-  | "module"
-  | "model"
-  | "paper"
-  | "training-regime"
-  | "system"
+  "guide" | "concept" | "technique" | "documentation" | "glossary"
 >;
 
 /**
  * Identifies sidebar grouping behavior for collections that partition pages
- * into labeled groups. Models, papers, and empty CLI collections that sort
- * directly by page title omit this field.
+ * into labeled groups. Collections that sort directly by page title omit this
+ * field.
  */
 export const DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS = [
   "glossary",
   "concepts",
-  "modules",
-  "training",
-  "systems",
 ] as const;
 
 export type DocsCollectionSidebarGroupingResolverId =
