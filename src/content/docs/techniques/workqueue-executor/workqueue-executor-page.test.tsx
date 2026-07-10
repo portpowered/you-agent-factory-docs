@@ -25,6 +25,9 @@ describe("workqueue-executor technique page", () => {
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).toMatch(/workqueue-executor/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    // Optional queue-drain graph omitted: Atlas ConceptMap/ModuleGraph MDX is
+    // retired and PageAsset only stubs graphs. Prose teaches waiting → consume
+    // → remaining ready work without a decorative placeholder figure.
     expect(Object.keys(loadedPage.assets)).toEqual([]);
 
     render(
@@ -78,7 +81,9 @@ describe("workqueue-executor technique page", () => {
 
     expect(howItWorks?.textContent).toMatch(/task-queue/i);
     expect(howItWorks?.textContent).toMatch(/executor workstation/i);
+    expect(howItWorks?.textContent).toMatch(/waiting/i);
     expect(howItWorks?.textContent).toMatch(/consume/i);
+    expect(howItWorks?.textContent).toMatch(/remaining ready work/i);
     expect(howItWorks?.textContent).toMatch(/ordering/i);
     expect(howItWorks?.textContent).toMatch(/concurrency/i);
     expect(howItWorks?.textContent).toMatch(/batching/i);
@@ -117,6 +122,7 @@ describe("workqueue-executor technique page", () => {
       related?.querySelector('a[href="/docs/techniques/writer-reviewer"]'),
     ).toBeTruthy();
 
+    // No decorative / broken placeholder graph figure on the page.
     expect(document.querySelector("[data-page-asset]")).toBeNull();
     expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
 

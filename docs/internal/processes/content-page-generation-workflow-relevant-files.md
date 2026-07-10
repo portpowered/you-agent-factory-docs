@@ -45,6 +45,14 @@ and `/docs/documentation/submitting-work`, plus planned technique hrefs for
 unpublished nearby techniques (planner-executor, classify-execute, ralph,
 writer-reviewer). Do not put unpublished technique registry ids in `relatedIds`.
 
+Optional technique teaching graphs: baseline `technique.assets.json` is empty.
+Atlas-era `<ConceptMap />` / `<ModuleGraph />` MDX tags are retired from
+templates; `PageAsset` graph slots only stub `data-graph-id` without a real
+React Flow canvas. Prefer strengthening how-it-works prose (for example the
+waiting → consume → remaining ready work drain loop) and keep `assets.json`
+empty rather than shipping a decorative or stub-only graph. Mirror the
+concepts/task-queue no-graph proof pattern in the colocated page test.
+
 Before the first authored page under a rewrite-era CLI collection can pass
 `prepare:content-runtime` / `make validate-data` and render under
 `/docs/<section>/<slug>`:
