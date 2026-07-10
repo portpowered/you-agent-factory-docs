@@ -7,6 +7,7 @@ import {
   absoluteSitePathToRequestUrl,
   evaluatePagesDeployedArtifactProbes,
   extractNextAssetUrlFromHtml,
+  guardPagesDeployedArtifact,
   PAGES_DEPLOYED_ARTIFACT_PROBE_ROUTES,
   probePagesDeployedArtifact,
 } from "./guard-pages-deployed-artifact";
@@ -259,5 +260,45 @@ describe("probePagesDeployedArtifact", () => {
     if (!result.ok) {
       expect(result.reason).toContain("Missing export directory");
     }
+  });
+});
+
+describe("guardPagesDeployedArtifact", () => {
+  test("reuses a matching trusted export and probes without rebuilding", async () => {
+    const root = makeTempRoot("pages-guard-reuse-");
+    writeRepairedExport(join(root, "out"));
+
+    const result = await guardPagesDeployedArtifact({
+      cwd: root,
+      outDir: "out",
+      basePath: BASE,
+      port: 3212,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.acquired.source).toBe("reused");
+    expect(result.probe.ok).toBe(true);
+    expect(result.probe.evaluation.hasPrefixedNextAssets).toBe(true);
+  });
+
+  test("fails without rebuild when the trusted export is missing", async () => {
+    const root = makeTempRoot("pages-guard-no-rebuild-");
+    const result = await guardPagesDeployedArtifact({
+      cwd: root,
+      outDir: "out",
+      basePath: BASE,
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) {
+      return;
+    }
+    expect(result.reason).toMatch(
+      /unavailable without rebuild|Missing export directory/i,
+    );
+    expect(result.acquired).toBeUndefined();
   });
 });

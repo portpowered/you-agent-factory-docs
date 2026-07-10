@@ -57,6 +57,32 @@ describe("deploy-pages.yml project-site build contract", () => {
     expect(uploadIndex).toBeGreaterThan(buildIndex);
   });
 
+  test("Pages deployed-artifact guard runs after make build and before upload without a second full export", () => {
+    const workflow = readFileSync(deployPagesWorkflowPath, "utf8");
+
+    const guardStepMatch = workflow.match(
+      /- name:\s*Guard Pages deployed artifact\s*\n([\s\S]*?)(?=\n\s*- name:|\n\s*deploy:)/,
+    );
+    expect(guardStepMatch).not.toBeNull();
+
+    const guardStep = guardStepMatch?.[1] ?? "";
+    const guardRunMatch = guardStep.match(/^\s*run:\s*(.+)$/m);
+    expect(guardRunMatch?.[1]?.trim()).toBe(
+      "make guard-pages-deployed-artifact",
+    );
+    expect(guardRunMatch?.[1]).not.toMatch(/make build\b/);
+    expect(guardRunMatch?.[1]).not.toMatch(/build:export\b/);
+
+    const buildIndex = workflow.indexOf("run: make build");
+    const guardIndex = workflow.indexOf(
+      "run: make guard-pages-deployed-artifact",
+    );
+    const uploadIndex = workflow.indexOf("actions/upload-pages-artifact@v3");
+    expect(buildIndex).toBeGreaterThan(-1);
+    expect(guardIndex).toBeGreaterThan(buildIndex);
+    expect(uploadIndex).toBeGreaterThan(guardIndex);
+  });
+
   test("workflow under guard is deploy-pages.yml with validate then deploy jobs", () => {
     const workflow = readFileSync(deployPagesWorkflowPath, "utf8");
 

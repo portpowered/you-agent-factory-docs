@@ -1,3 +1,7 @@
+import {
+  type AcquireTrustedProjectSiteExportResult,
+  acquireTrustedProjectSiteExport,
+} from "@/lib/build/acquire-trusted-project-site-export";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import { DEFAULT_EXPORT_OUT_DIR } from "@/lib/build/export-out-directory";
 import { normalizeGitHubPagesBasePath } from "@/lib/build/static-export";
@@ -70,6 +74,27 @@ export type ProbePagesDeployedArtifactOptions = {
   startupTimeoutMs?: number;
   fetchTimeoutMs?: number;
 };
+
+export type GuardPagesDeployedArtifactOptions = Omit<
+  ProbePagesDeployedArtifactOptions,
+  "outDir" | "basePath"
+> & {
+  outDir?: string;
+  basePath?: string;
+};
+
+export type GuardPagesDeployedArtifactResult =
+  | {
+      ok: true;
+      acquired: AcquireTrustedProjectSiteExportResult;
+      probe: Extract<PagesDeployedArtifactProbeResult, { ok: true }>;
+    }
+  | {
+      ok: false;
+      reason: string;
+      acquired?: AcquireTrustedProjectSiteExportResult;
+      probe?: PagesDeployedArtifactProbeResult;
+    };
 
 const EMPTY_EVALUATION: PagesDeployedArtifactProbeEvaluation = {
   hasPrefixedNextAssets: false,
@@ -395,4 +420,49 @@ export function absoluteSitePathToRequestUrl(
     return `${baseUrl}${stripped === "" ? "/" : stripped}`;
   }
   return `${baseUrl}${absoluteSitePath}`;
+}
+
+/**
+ * Deploy-path Pages guard: reuse an existing trusted project-site `out/`
+ * (`allowBuild: false` — never a second full export) and HTTP-probe it.
+ * Intended for `deploy-pages.yml` after `make build` and before upload.
+ */
+export async function guardPagesDeployedArtifact(
+  options: GuardPagesDeployedArtifactOptions = {},
+): Promise<GuardPagesDeployedArtifactResult> {
+  let acquired: AcquireTrustedProjectSiteExportResult;
+  try {
+    acquired = acquireTrustedProjectSiteExport({
+      cwd: options.cwd,
+      outDir: options.outDir,
+      basePath: options.basePath,
+      allowBuild: false,
+    });
+  } catch (error) {
+    return {
+      ok: false,
+      reason: error instanceof Error ? error.message : String(error),
+    };
+  }
+
+  const probe = await probePagesDeployedArtifact({
+    cwd: options.cwd,
+    outDir: acquired.outDir,
+    basePath: acquired.basePath,
+    host: options.host,
+    port: options.port,
+    startupTimeoutMs: options.startupTimeoutMs,
+    fetchTimeoutMs: options.fetchTimeoutMs,
+  });
+
+  if (!probe.ok) {
+    return {
+      ok: false,
+      reason: probe.reason,
+      acquired,
+      probe,
+    };
+  }
+
+  return { ok: true, acquired, probe };
 }

@@ -22,14 +22,16 @@ failing workflow stage with the same `make <target>` locally (see
 | Workflow file | `.github/workflows/deploy-pages.yml` (separate from `.github/workflows/ci.yml`) |
 | Trigger | `push` to `main` |
 | Install | `make setup` (`bun install --frozen-lockfile`) |
-| Validate stages | `make check`, `make test`, `make build`, `make budget` (same targets as local/CI) |
+| Validate stages | `make check`, `make test`, `make build`, `make guard-pages-deployed-artifact`, `make budget` (same targets as local/CI) |
 | Build entrypoint | `make build` → `bun run build:export` (`NEXT_STATIC_EXPORT=1`) with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` |
+| Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
 | Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
 | Quality gates | `.github/workflows/ci.yml` runs `make setup` → `check` → `test` → `build` → `budget` → `component-coverage`; deploy-pages validate does not replace CI |
 
 The workflow **`validate`** job checks out the pushed commit, runs the Makefile
-stages above, and uploads `out/` with `actions/upload-pages-artifact@v3`.
+stages above (including `make guard-pages-deployed-artifact` after `make build`),
+and uploads `out/` with `actions/upload-pages-artifact@v3`.
 The **`deploy`** job (`needs: validate`) publishes that artifact via
 `actions/deploy-pages@v4`. Failed validation never starts deploy for that run.
 
