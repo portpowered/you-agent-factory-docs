@@ -210,6 +210,13 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
   deployment record; do not claim the live project site
   (`https://portpowered.github.io/you-agent-factory-docs`) updated until
   **Deploy to GitHub Pages** is green for that SHA.
+- Non-destructive rollback lives in `docs/operations.md` under **Rollback
+  process**: identify `good_sha` with green **verify** + green **Deploy to
+  GitHub Pages**; record `(good_sha, bad_sha)` and Actions run IDs; prefer
+  `git revert` via PR (or fix-forward) then redeploy on the new `main` tip.
+  Force-push and hard-reset of `main` are prohibited. Direct redeploy of a
+  prior SHA is **not available today** (`deploy-pages.yml` is `push` to `main`
+  only — no `workflow_dispatch`).
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.

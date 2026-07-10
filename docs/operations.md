@@ -404,35 +404,82 @@ hosted artifact matches source control.
 
 ## Rollback process
 
-Rollback means **republishing a prior known-good commit** to GitHub Pages and/or
-**moving `main` back to a healthy integration state**.
+Rollback means restoring a **known-good source state on `main`** and letting
+**Deploy GitHub Pages** republish from the new tip — without destructive local
+Git on `main`.
 
-### Redeploy a prior SHA
+### Prohibited on `main`
 
-When the latest deploy is bad but an older artifact is still valid:
+| Action | Status | Why |
+| --- | --- | --- |
+| Force-push to `main` | **Prohibited** | Branch protection disables force-push; history repair must use revert or fix-forward PRs. |
+| Hard-reset of `main` (`git reset --hard` then push) | **Prohibited** | Rewrites the integration tip and requires a force-push; use revert-forward instead. |
+| Direct local Pages deploy / deploy API calls | **Prohibited** | Publish only via the live **Deploy GitHub Pages** workflow on a `main` push. |
 
-1. **Identify the last good commit** on `main` with green **verify** and
-   deploy-pages in GitHub Actions.
-2. **Re-run deploy for that SHA**—today this means restoring `main` to that
-   commit via revert (preferred) or merging a fix-forward PR, then letting
-   deploy-pages run on the new `main` tip. If `workflow_dispatch` is added later,
-   re-run deploy against the good SHA directly.
-3. **Confirm** the **Deploy to GitHub Pages** check reflects the target SHA
-   (see [Commit-SHA traceability](#commit-sha-traceability)).
+### Identify the last good SHA
 
-### Revert on `main`, then redeploy
+Before changing anything, pick the last commit on `main` that has **both**:
 
-When code on `main` must change:
+1. A green **CI** / **verify** run for that SHA, and
+2. A green **Deploy GitHub Pages** run for that SHA (**Canonical validation** and
+   **Deploy to GitHub Pages**).
 
-1. **`git revert`** the bad merge commit or commits on a branch, open a PR, and
-   merge after **verify** passes. This preserves history and avoids force-push
-   (branch protection disallows force-push to `main`).
-2. Let deploy-pages run on the post-revert merge commit on `main`.
-3. **Use GitHub Actions run metadata**—note the failing deploy run ID, the SHA it
-   built, and the prior successful deploy run/SHA when documenting the incident.
+Use [Commit-SHA traceability](#commit-sha-traceability) to confirm those runs
+(and the Pages deployment record) for the candidate `good_sha`. A green **verify**
+alone is not enough; a green **Canonical validation** without **Deploy to GitHub
+Pages** is also not enough.
 
-Do not force-push `main`; roll forward with revert + redeploy unless host
-documentation explicitly requires a different emergency path.
+### Record the incident pair
+
+Before opening a revert or fix-forward PR, record:
+
+| Field | Meaning |
+| --- | --- |
+| `good_sha` | Last known-good merge commit with green **verify** + green **Deploy to GitHub Pages**. |
+| `bad_sha` | The merge commit (or tip) that published or attempted the bad artifact. |
+| `bad_ci_run_id` / `bad_deploy_pages_run_id` | Actions run IDs (or URLs) for the failing or suspect **CI** / **Deploy GitHub Pages** runs. |
+| `good_ci_run_id` / `good_deploy_pages_run_id` | Actions run IDs (or URLs) that proved `good_sha` was healthy. |
+
+Keep this pair with the incident notes so the next maintainer does not guess the
+redeploy target.
+
+### Direct redeploy of a prior SHA (not available today)
+
+**Not available today.** `.github/workflows/deploy-pages.yml` triggers only on
+`push` to `main`. There is no `workflow_dispatch` (or tag) path to rebuild and
+publish an older SHA without moving `main`.
+
+Do **not** invent a local workaround (force-push, hard-reset, or calling Pages
+deploy APIs). The current non-destructive alternative is below.
+
+### Current non-destructive path: revert or fix-forward, then redeploy
+
+Prefer restoring healthy source on `main`, then letting deploy run on the new tip:
+
+1. **Choose the recovery shape**
+   - **`git revert`** (preferred when the bad change is clear): on a branch,
+     revert the bad merge commit(s) that introduced `bad_sha`, open a PR, and
+     merge after **verify** passes.
+   - **Fix-forward**: open a PR that corrects the defect without reverting, merge
+     after **verify** passes, when a targeted fix is safer than a full revert.
+2. **Merge to `main`** under normal branch protection (required **verify** green).
+3. **Let deploy run** on the post-merge tip: workflow **Deploy GitHub Pages**
+   runs **Canonical validation** then **Deploy to GitHub Pages** for the new
+   `main` SHA (not for the historical `good_sha` itself).
+4. **Confirm publish** with [Commit-SHA traceability](#commit-sha-traceability)
+   for the new tip, then run the
+   [read-only post-deploy checks](#read-only-post-deploy-checks) against
+   `https://portpowered.github.io/you-agent-factory-docs`.
+5. **Update the incident record** with the recovery merge SHA and its
+   `ci_run_id` / `deploy_pages_run_id`.
+
+Until a later green **Deploy to GitHub Pages** succeeds, the prior successful
+Pages deployment remains live (a failed deploy does not automatically roll the
+site back).
+
+If maintainers later add `workflow_dispatch` or tag triggers, that path must
+still pass an explicit SHA into build and deploy so the hosted artifact matches
+source control — and this section must be updated to name the new trigger.
 
 ## Read-only post-deploy checks
 
@@ -563,8 +610,9 @@ Pages**), and the live project site reflecting that deploy.
 | Optional git tag | Human-friendly name (`v0.2.0`) pointing at a release SHA; does not replace SHA traceability in Actions. |
 
 **Rollback traceability:** keep pairs of `(good_sha, bad_sha)` and the Actions run
-IDs for failed and successful deploys so redeploy targets an earlier green commit
-without guessing.
+IDs for failed and successful deploys (see [Rollback process](#rollback-process)).
+Direct redeploy of a prior SHA is not available today; recover with revert or
+fix-forward on `main`, then confirm the new tip’s deploy.
 
 ### Practical lookup steps (record the shipping SHA)
 
