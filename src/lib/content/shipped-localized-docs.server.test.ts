@@ -141,6 +141,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     expect(derived).toEqual({
       ja: [
         "concepts/checklist",
+        "concepts/harness",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -150,6 +151,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ],
       "zh-CN": [
         "concepts/checklist",
+        "concepts/harness",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -159,6 +161,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ],
       vi: [
         "concepts/checklist",
+        "concepts/harness",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
