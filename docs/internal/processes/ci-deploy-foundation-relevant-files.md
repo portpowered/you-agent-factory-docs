@@ -110,11 +110,18 @@ failures from `check`, `test`, or the static-export build behind those skips.
 
 ## Stale inventory tests
 
-`src/tests/ci/github-actions-*.test.ts` still describe the older matrix /
-`deploy.yml` / `make build-export` layout. They are excluded from plain
-`make test` (`scripts/run-website-functionality-tests.ts` skips `src/tests/ci/`).
+`src/tests/ci/github-actions-*.test.ts` may still describe older matrix /
+`make build-export` layouts. They are excluded from plain `make test`
+(`scripts/run-website-functionality-tests.ts` skips `src/tests/ci/`).
 Do not treat those inventory tests as the live workflow contract; prefer
 command-level verification of the Makefile targets and the YAML files above.
+
+The retired Pages inventory file
+`src/tests/ci/github-actions-deploy.test.ts` (which asserted
+`.github/workflows/deploy.yml` + `ai-model-reference`) was removed. Live
+Pages deploy coverage is only
+`src/lib/build/deploy-pages-workflow-contract.test.ts` inside
+`make test-build-contract` / `bun run test:build-contract`.
 
 Live project-site coverage belongs in `make test-build-contract` /
 `bun run test:build-contract`, which runs `deploy-pages-workflow-contract`,
