@@ -15,6 +15,7 @@ updatedAt: "2026-07-09"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -38,6 +39,19 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 </Section>
 
 <Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/concepts/checklist",
+        labelKey: "links.checklist",
+      },
+      {
+        href: "/docs/concepts/task-queue",
+        labelKey: "links.taskQueue",
+      },
+    ]}
+  />
+
   <RelatedDocs registryId="technique.planner-executor" />
 </Section>
 

@@ -85,6 +85,24 @@ describe("planner-executor technique page", () => {
     expect(howItWorksBody).not.toMatch(/Model Atlas/i);
     expect(howItWorksBody).not.toMatch(/on this page/i);
 
+    const comparedBody = String(
+      loadedPage.messages.sections?.comparedToNearbyTechniques?.body ?? "",
+    );
+    expect(comparedBody).toMatch(/Planner-executor/i);
+    expect(comparedBody).toMatch(/Writer-reviewer/i);
+    expect(comparedBody).toMatch(/quality loop/i);
+    expect(comparedBody).toMatch(/Workqueue-executor/i);
+    expect(comparedBody).toMatch(/ordered work queue/i);
+    expect(comparedBody).toMatch(/Classify-execute/i);
+    expect(comparedBody).toMatch(/classify-then-run/i);
+    expect(comparedBody).toMatch(/plan-then-execute/i);
+    expect(comparedBody).toMatch(/global phase gate/i);
+    expect(comparedBody).not.toMatch(/Model Atlas/i);
+    expect(comparedBody).not.toMatch(/on this page/i);
+
+    expect(loadedPage.messages.links?.checklist).toBe("Checklist");
+    expect(loadedPage.messages.links?.taskQueue).toBe("Task queue");
+
     render(
       <main>
         <ModulePageProviders
@@ -125,6 +143,29 @@ describe("planner-executor technique page", () => {
     expect(document.getElementById("how-it-works")?.textContent ?? "").toMatch(
       /loopback or queue health/i,
     );
+    expect(
+      document.getElementById("compared-to-nearby-techniques")?.textContent ??
+        "",
+    ).toMatch(/Writer-reviewer/i);
+    expect(
+      document.getElementById("compared-to-nearby-techniques")?.textContent ??
+        "",
+    ).toMatch(/Workqueue-executor/i);
+    expect(
+      document.getElementById("compared-to-nearby-techniques")?.textContent ??
+        "",
+    ).toMatch(/Classify-execute/i);
+    const relatedSection = document.getElementById("related");
+    expect(relatedSection?.textContent ?? "").toMatch(/Checklist/i);
+    expect(relatedSection?.textContent ?? "").toMatch(/Task queue/i);
+    const checklistLink = relatedSection?.querySelector(
+      'a[href="/docs/concepts/checklist"]',
+    );
+    const taskQueueLink = relatedSection?.querySelector(
+      'a[href="/docs/concepts/task-queue"]',
+    );
+    expect(checklistLink).toBeTruthy();
+    expect(taskQueueLink).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
   });
