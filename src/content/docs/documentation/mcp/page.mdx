@@ -1,0 +1,140 @@
+---
+title: "MCP"
+description: "Connect an MCP-capable host to you-agent-factory with you mcp serve over stdio, host JSON configuration, serve modes, and Factory Session tools."
+kind: "documentation"
+registryId: "documentation.mcp"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "MCP"
+  - "Model Context Protocol"
+  - "you mcp serve"
+updatedAt: "2026-07-10"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-integrate" titleKey="sections.howToIntegrate.title">
+  <T k="sections.howToIntegrate.body" />
+  <p>
+    <T k="links.serveCommandLabel" />
+  </p>
+
+```bash
+you mcp serve
+```
+
+  <T k="callouts.stdioTransport.body" />
+  <p>
+    <T k="links.hostJsonLabel" />
+  </p>
+
+```json
+{
+  "mcpServers": {
+    "you-agent-factory": {
+      "command": "/absolute/path/to/you",
+      "args": ["mcp", "serve"],
+      "cwd": "/absolute/path/to/your-workflow-project"
+    }
+  }
+}
+```
+
+  <T k="callouts.hostJsonNotes.body" />
+  <T k="callouts.reloadHost.body" />
+</Section>
+
+<Section id="serve-modes" titleKey="sections.serveModes.title">
+  <T k="sections.serveModes.body" />
+  <T k="callouts.fixtureMode.body" />
+  <T k="callouts.runtimeMode.body" />
+  <p>
+    <T k="links.runtimeHostJsonLabel" />
+  </p>
+
+```json
+{
+  "mcpServers": {
+    "you-agent-factory": {
+      "command": "/absolute/path/to/you",
+      "args": ["mcp", "serve", "--runtime"],
+      "cwd": "/absolute/path/to/your-workflow-project"
+    }
+  }
+}
+```
+
+  <T k="callouts.runtimeHostJsonNotes.body" />
+</Section>
+
+<Section id="factory-session-tools" titleKey="sections.factorySessionTools.title">
+  <T k="sections.factorySessionTools.body" />
+  <p>
+    <T k="links.primaryToolsLabel" />
+  </p>
+
+```text
+you.factory_session.validate_source
+you.factory_session.start_async
+you.factory_session.get
+you.factory_session.get_result
+```
+
+  <T k="callouts.primaryTools.body" />
+  <T k="callouts.additionalTools.body" />
+  <T k="callouts.compatibilityAliases.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflowsGuide",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/concepts/tool",
+        labelKey: "links.toolConcept",
+      },
+    ]}
+  />
+
+  <RelatedDocs registryId="documentation.mcp" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.mcp" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.mcp" />
+</Section>
