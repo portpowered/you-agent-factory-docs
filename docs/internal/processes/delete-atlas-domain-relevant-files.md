@@ -11,7 +11,7 @@ collections.
 | `src/content/docs/{models,modules,papers,training,systems,glossary,concepts}/` | Atlas MDX page bundles (cleared; section dirs may remain empty) |
 | `src/content/docs/getting-started.mdx` | Non-Atlas shell placeholder kept for Fumadocs wiring |
 | `src/content/registry/{models,modules,papers,training-regimes,systems,concepts,graphs,tables,classifications,citations,datasets,organizations}/` | Atlas registry collections cleared for empty-shell validation |
-| `src/content/registry/tags/` | Keep only tags still referenced by remaining blog posts (plus `taxonomy` parent) |
+| `src/content/registry/tags/` | Keep factory-facing tags (`taxonomy`, `foundations`, `local-models`); purge Atlas-only tags such as `model-family`, `inference`, and `alignment` plus orphaned tag locale messages |
 | `src/content/blog/*/page.mdx` | Clear `relatedDocIds` and `/docs/...` prose links when Atlas targets are gone |
 | `scripts/validate-registry.ts` / `bun run validate-data` | Maintainer registry/content validation path that must pass without Atlas fixtures |
 | `src/lib/content/validate-registry.ts` | `phase1PageDirectories` is empty after Atlas deletion |

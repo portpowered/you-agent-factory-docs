@@ -12,7 +12,7 @@ function frontmatterBlock(input: {
   publishedAt: string;
   tags?: string[];
 }): string {
-  const tags = input.tags ?? ["inference"];
+  const tags = input.tags ?? ["foundations"];
   return `---
 messageNamespace: "local"
 assetNamespace: "local"

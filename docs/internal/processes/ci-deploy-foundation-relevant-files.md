@@ -211,10 +211,12 @@ When required CI `make test` fails after foundation Makefile work for reasons
 outside the story diff, prefer the smallest mergeability fix:
 
 - Align stale nav/tag/blog inventory expectations with current published config
-  (for example primary nav `/blog`, published inference tags, current blog title).
-- For rendered HTML that asserts contiguous prose containing auto-linked terms
-  such as `serving` (`tag.inference` aliases), assert the surrounding fragments
-  and the auto-link `href` instead of rewriting customer copy.
+  (for example primary nav `/blog`, published factory tags such as `foundations`
+  / `local-models`, current blog title).
+- For rendered HTML that asserts contiguous prose containing auto-linked terms,
+  assert the surrounding fragments and the auto-link `href` instead of rewriting
+  customer copy. Do not reintroduce deleted Atlas-only tags such as
+  `tag.inference` / `tag.model-family` as fixtures.
 - Restore missing internal notes files required by existing tests (for example
   `docs/phase-2-3-reconciliation-implementation-notes.md`) rather than deleting
   the dependency assessment test.

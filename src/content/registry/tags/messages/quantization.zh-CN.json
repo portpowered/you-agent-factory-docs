@@ -1,4 +1,0 @@
-{
-  "title": "Quantization",
-  "summary": "Lower-precision storage and runtime strategies that trade memory, bandwidth, and latency against possible quality loss."
-}

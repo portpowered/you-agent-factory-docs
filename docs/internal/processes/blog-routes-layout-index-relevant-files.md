@@ -65,6 +65,10 @@ Use these files when extending the default English blog surface at `/blog` and
   remaining factory posts (`bottlenecks`, `comparing-agent-factories`) and treat
   `evolution-of-diffusion`, `llms-no-longer-wholly-reliant-on-the-internet`, and
   `roofline-throughput-explorer` as unpublished (loader null / route notFound).
+* After purging Atlas-only tags, keep factory tags (`taxonomy`, `foundations`,
+  `local-models`) and assert absence of `model-family` / `inference` / `alignment`
+  from published tag index/landing surfaces. Reparent `local-models` so it does
+  not depend on deleted `tag.inference`.
 
 ## Patterns
 

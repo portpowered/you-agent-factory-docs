@@ -115,7 +115,7 @@ export const componentExamples: ComponentExampleDefinition[] = [
     componentName: "TagPillList",
     variantLabel: "explicit tag slugs",
     render: () => (
-      <TagPillList tags={["attention", "inference", "transformer"]} />
+      <TagPillList tags={["foundations", "local-models", "taxonomy"]} />
     ),
   },
   {

@@ -9,9 +9,9 @@ const REPRESENTATIVE_TAGS = [
     landingPage: "generated-tag-page",
   },
   {
-    id: "tag.model-family",
-    slug: "model-family",
-    category: "model-family",
+    id: "tag.local-models",
+    slug: "local-models",
+    category: "inference",
     landingPage: "generated-tag-page",
   },
 ] as const;

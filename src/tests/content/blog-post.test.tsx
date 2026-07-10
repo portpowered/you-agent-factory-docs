@@ -11,7 +11,7 @@ function frontmatterBlock(input: {
   tags?: string[];
   authors?: string[];
 }): string {
-  const tags = input.tags ?? ["inference"];
+  const tags = input.tags ?? ["foundations"];
   const authors = input.authors ?? ["site-team"];
   return `---
 messageNamespace: "local"
