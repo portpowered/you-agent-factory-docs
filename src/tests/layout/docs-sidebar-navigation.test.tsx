@@ -47,12 +47,14 @@ const BUILT_HTML_LOCALIZED_DOC_ROUTES = [
   {
     path: "/vi/docs/concepts/harness",
     file: ".next/server/app/vi/docs/concepts/harness.html",
+    // Only assert links from the open Concepts folder. Collapsed Guides /
+    // Techniques folders omit their children from static HTML even when the
+    // localized page tree ships those routes.
     requiredSidebarUrls: [
       "/vi/docs/concepts/harness",
       "/vi/docs/concepts/tokens",
-      "/vi/docs/techniques/ralph",
-      "/vi/docs/guides/getting-started",
     ],
+    requiredSidebarLabels: [">Guides<", ">Concepts<", ">Techniques<"],
     forbiddenSidebarUrls: [
       "/vi/docs/modules/grouped-query-attention",
       "/vi/docs/modules/multi-head-attention",
@@ -163,6 +165,9 @@ describe("docs sidebar navigation (built HTML)", () => {
 
       for (const url of route.requiredSidebarUrls) {
         expect(sidebar).toContain(url);
+      }
+      for (const label of route.requiredSidebarLabels) {
+        expect(sidebar).toContain(label);
       }
       for (const url of route.forbiddenSidebarUrls) {
         expect(sidebar).not.toContain(url);
