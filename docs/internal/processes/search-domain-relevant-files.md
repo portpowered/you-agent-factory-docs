@@ -78,13 +78,50 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/lib/search/docs-search-bootstrap-path.ts`
   Resolves `/api/search` (root) vs `/you-agent-factory-docs/api/search`
   (project-site export) via `resolveGitHubPagesBasePath` + `withBasePath`.
-  Bakes `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` from `next.config.ts`.
+  `bakeDocsSearchStaticBootstrapFromEnv` writes
+  `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` onto the env object so Next/SWC
+  inlining sees the value on `process.env`, not only via the `next.config`
+  `env` map. `next.config.ts` calls that helper at load time.
 * `src/features/docs/search/search-client.ts`
-  Client fetch uses the baked public bootstrap path (no post-build rewrite).
+  Client `"use client"` module. `readBakedDocsSearchStaticFrom` and
+  `docsSearchStaticOptions` / `buildDocsSearchStaticOptions` use a literal
+  `process.env.NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` access so the baked
+  path is inlined into `out/_next/static/chunks` (no post-build rewrite).
 * `src/lib/build/verify-export-search-bootstrap-client-path.ts`
   Export-chunk verifier for the baked bootstrap literal.
+* `src/lib/build/verify-project-site-export-consumers.ts`
+  Composite export-consumer gate: project-site chunk content must include
+  `/you-agent-factory-docs/api/search` and fails when only an unprefixed
+  `/api/search` bootstrap bake is present.
+* `src/lib/build/guard-pages-deployed-artifact.ts`
+  Deploy-path HTTP probe. Prefixed bootstrap presence uses
+  `readExportClientChunkContents` (all `out/_next/static/chunks/*.js`), not
+  only the first HTML script tag — Next code-splits the search-client bake
+  into a separate chunk. Single-chunk HTTP GET still proves asset URL prefix.
 * Focused coverage: `bun run test:website:static-search` (includes
   `docs-search-bootstrap-path`, `export-search-bootstrap`, and
-  `verify-export-search-bootstrap-client-path` tests). Prefer
+  `verify-export-search-bootstrap-client-path` tests) plus
+  `bun run test:website:export-consumers` / `test:build-contract` for the
+  chunk-contract failure when only `/api/search` ships. Prefer
   `BUILT_APP_GITHUB_PAGES_BASE_PATH` over retired `/ai-model-reference`
   fixtures.
+
+### Pattern: bake NEXT_PUBLIC search bootstrap onto process.env
+
+Project-site static export must set both:
+
+1. `process.env.NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` (via
+   `bakeDocsSearchStaticBootstrapFromEnv(process.env)` in `next.config.ts`)
+2. `next.config` `env[NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM]`
+
+Setting only the config `env` map can leave client chunks with the
+`/api/search` fallback when SWC reads `process.env` for `NEXT_PUBLIC_*`
+inlining. Do not post-build rewrite chunk files to inject the prefix.
+
+### Pattern: literal NEXT_PUBLIC access in search-client static from
+
+Client code must read `process.env.NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM`
+with a static property access (see `readBakedDocsSearchStaticFrom`). Dynamic
+`env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV]` is fine in server/build helpers but is
+not inlined into client chunks — that leaves Orama static `from` on the
+fumadocs default `/api/search`.

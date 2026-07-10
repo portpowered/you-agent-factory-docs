@@ -33,6 +33,22 @@ export function resolveDocsSearchStaticBootstrapFrom(
 }
 
 /**
+ * Resolves the static bootstrap path and writes it onto `env` as
+ * `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` for next.config / SWC inlining.
+ *
+ * Next inlines `process.env.NEXT_PUBLIC_*` from the real process environment as
+ * well as `next.config` `env`. Setting only the config map can leave client
+ * chunks with the `/api/search` fallback when SWC reads process.env first.
+ */
+export function bakeDocsSearchStaticBootstrapFromEnv(
+  env: BuildModeEnv = process.env,
+): string {
+  const bootstrapFrom = resolveDocsSearchStaticBootstrapFrom(env);
+  env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV] = bootstrapFrom;
+  return bootstrapFrom;
+}
+
+/**
  * Resolves the locale-aware search bootstrap fetch path for live and export builds.
  * Export builds use distinct emitted artifacts per locale; live builds use the API
  * route plus a locale query for non-default locales.

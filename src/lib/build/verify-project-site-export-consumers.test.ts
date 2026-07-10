@@ -59,9 +59,16 @@ describe("verify-project-site-export-consumers", () => {
     });
     expect(bareSearch.hasUnprefixedSearchBootstrap).toBe(true);
     expect(bareSearch.hasPrefixedSearchBootstrap).toBe(false);
-    expect(
-      projectSiteExportConsumersPass(bareSearch, PROJECT_SITE_BASE_PATH).ok,
-    ).toBe(false);
+    const barePass = projectSiteExportConsumersPass(
+      bareSearch,
+      PROJECT_SITE_BASE_PATH,
+    );
+    expect(barePass.ok).toBe(false);
+    if (!barePass.ok) {
+      expect(barePass.reason).toBe(
+        `client chunks missing prefixed search bootstrap ${PROJECT_SITE_BOOTSTRAP}`,
+      );
+    }
   });
 
   test("evaluateProjectSiteExportConsumers tolerates DOCS_SEARCH_API_PATH constant beside prefixed bake", () => {
@@ -75,6 +82,36 @@ describe("verify-project-site-export-consumers", () => {
     expect(
       projectSiteExportConsumersPass(evaluation, PROJECT_SITE_BASE_PATH).ok,
     ).toBe(true);
+  });
+
+  test("chunk contract: project-site bake path must appear in chunk content", () => {
+    const prefixed = evaluateProjectSiteExportConsumers({
+      html: projectSiteHtmlFixture(),
+      chunksContent: `function v(){return"${PROJECT_SITE_BOOTSTRAP}"}`,
+      basePath: PROJECT_SITE_BASE_PATH,
+    });
+    expect(prefixed.hasPrefixedSearchBootstrap).toBe(true);
+    expect(
+      projectSiteExportConsumersPass(prefixed, PROJECT_SITE_BASE_PATH).ok,
+    ).toBe(true);
+
+    const unprefixedOnly = evaluateProjectSiteExportConsumers({
+      html: projectSiteHtmlFixture(),
+      chunksContent: 'function v(){return"/api/search"}',
+      basePath: PROJECT_SITE_BASE_PATH,
+    });
+    expect(unprefixedOnly.hasPrefixedSearchBootstrap).toBe(false);
+    expect(unprefixedOnly.hasUnprefixedSearchBootstrap).toBe(true);
+    const failed = projectSiteExportConsumersPass(
+      unprefixedOnly,
+      PROJECT_SITE_BASE_PATH,
+    );
+    expect(failed.ok).toBe(false);
+    if (!failed.ok) {
+      expect(failed.reason).toContain(
+        `client chunks missing prefixed search bootstrap ${PROJECT_SITE_BOOTSTRAP}`,
+      );
+    }
   });
 
   test("verifyProjectSiteExportDirectory reads out/ HTML and client chunks", () => {
@@ -104,6 +141,45 @@ describe("verify-project-site-export-consumers", () => {
         cwd: root,
       });
       expect(result.ok).toBe(true);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("verifyProjectSiteExportDirectory fails when chunks only bake unprefixed /api/search", () => {
+    const root = mkdtempSync(join(tmpdir(), "project-site-export-bare-"));
+    try {
+      const outDir = join(root, "out");
+      const chunksDir = join(outDir, "_next/static/chunks");
+      mkdirSync(join(outDir, "docs"), { recursive: true });
+      mkdirSync(chunksDir, { recursive: true });
+      writeFileSync(join(outDir, "index.html"), projectSiteHtmlFixture());
+      writeFileSync(
+        join(outDir, "docs/guides.html"),
+        `<a href="${PROJECT_SITE_BASE_PATH}/docs/guides">Guides</a>`,
+      );
+      writeFileSync(
+        join(outDir, "blog.html"),
+        `<a href="${PROJECT_SITE_BASE_PATH}/blog">Blog</a>`,
+      );
+      writeFileSync(
+        join(chunksDir, "main.js"),
+        'from:"/api/search",type:"static"',
+      );
+
+      const result = verifyProjectSiteExportDirectory({
+        basePath: PROJECT_SITE_BASE_PATH,
+        outDir: "out",
+        cwd: root,
+      });
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.reason).toBe(
+          `client chunks missing prefixed search bootstrap ${PROJECT_SITE_BOOTSTRAP}`,
+        );
+        expect(result.evaluation.hasPrefixedSearchBootstrap).toBe(false);
+        expect(result.evaluation.hasUnprefixedSearchBootstrap).toBe(true);
+      }
     } finally {
       rmSync(root, { recursive: true, force: true });
     }

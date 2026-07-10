@@ -226,6 +226,38 @@ describe("probePagesDeployedArtifact", () => {
     expect(result.evaluation.hasPrefixedSearchBootstrap).toBe(true);
   });
 
+  test("passes when prefixed bootstrap is only in a non-entry chunk", async () => {
+    const root = makeTempRoot("pages-guard-codesplit-");
+    const outDir = join(root, "out");
+    writeRepairedExport(outDir);
+    // Mimic Next code-splitting: HTML references main.js (no bake); search
+    // client bake lives in a separate chunk under _next/static/chunks.
+    writeFileSync(
+      join(outDir, "_next/static/chunks/main.js"),
+      'console.log("entry")',
+      "utf8",
+    );
+    writeFileSync(
+      join(outDir, "_next/static/chunks/search-client.js"),
+      `function v(){return"${BOOTSTRAP}"}`,
+      "utf8",
+    );
+
+    const result = await probePagesDeployedArtifact({
+      cwd: root,
+      outDir: "out",
+      basePath: BASE,
+      port: 3213,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+    expect(result.evaluation.hasPrefixedSearchBootstrap).toBe(true);
+    expect(result.jsChunkUrl).toBe(JS_PATH);
+  });
+
   test("fails against an intentionally unprefixed export fixture", async () => {
     const root = makeTempRoot("pages-guard-fail-");
     const outDir = join(root, "out");
