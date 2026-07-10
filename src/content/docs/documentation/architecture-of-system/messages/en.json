@@ -1,15 +1,15 @@
 {
   "title": "Architecture of system",
   "description": "How you-agent-factory is structured: factory topology, work, workstations, workers, resources, and live FactorySession runtime.",
-  "openingSummary": "Architecture of system is the you-agent-factory system-structure overview. It maps how authored factory topology and the live session runtime keep long-running agent work persistent and coordinated.",
+  "openingSummary": "you-agent-factory is a workflow factory. Authored topology on disk and a live Factory Session runtime keep long-running agent work persistent and coordinated.",
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Architecture of system is the web overview of you-agent-factory system structure. It introduces the major runtime nouns—factory topology, work types and states, workstations, workers, optional resources, and live FactorySession—so readers can see how the pieces fit before opening deeper field-reference pages."
+      "body": "you-agent-factory is a workflow factory. An authored factory definition on disk declares the topology; a live Factory Session runtime runs that topology so long-running agent work stays persistent and coordinated. Architecture of system maps the major system nouns—factory topology, work types and states, workstations, workers, optional resources, and Factory Session—so you can see how work moves through the system before opening deeper field-reference pages."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A factory definition on disk declares the topology the runtime will run. Work types and states describe the lifecycle of submitted work. Workstations dispatch that work to workers. Optional resources bound concurrency. A live FactorySession is the running instance that keeps work moving across dispatches and events."
+      "body": "A factory is the authored orchestration definition. Its root file, factory.json, declares the topology the runtime will load: work types and their lifecycle states, workstations that dispatch steps, workers those steps invoke, and optional resources that bound concurrency. That definition lives on disk until a session loads it. Work enters as a token in a work type's initial state. A workstation fires when its input places have matching tokens, dispatches to a bound worker when the step needs execution, and routes the outcome back into work states—accepted, continue, rejected, or failed. Workers are the runtime executors. Resources are optional shared capacity pools a workstation can hold while a dispatch is in flight. A Factory Session is the live runtime instance for one running orchestration. The session loads the factory definition, issues dispatches, and emits events as work moves. The orchestrator kind may be Petri-backed—graph places and transitions—or a JavaScript dynamic workflow; both still run as a Factory Session."
     },
     "howToUse": {
       "title": "How To Use",
