@@ -2,6 +2,7 @@
 export const SHIPPED_LOCALIZED_DOCS = {
   ja: [
     "concepts/checklist",
+    "concepts/harness",
     "concepts/tokens",
     "documentation/install",
     "documentation/what-is-you-agent-factory",
@@ -12,6 +13,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ],
   "zh-CN": [
     "concepts/checklist",
+    "concepts/harness",
     "concepts/tokens",
     "documentation/install",
     "documentation/what-is-you-agent-factory",
@@ -22,6 +24,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ],
   vi: [
     "concepts/checklist",
+    "concepts/harness",
     "concepts/tokens",
     "documentation/install",
     "documentation/what-is-you-agent-factory",

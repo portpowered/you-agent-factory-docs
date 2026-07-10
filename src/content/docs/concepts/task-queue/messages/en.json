@@ -1,0 +1,42 @@
+{
+  "title": "Task Queue",
+  "description": "The you-agent-factory task queue is the backlog of submitted work waiting in work-type states until workstations consume it.",
+  "openingSummary": "A task queue is the factory backlog of submitted work sitting in work-type states and places until enabled workstations can consume ready items.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A task queue is the you-agent-factory backlog of submitted work. After work enters the factory, each item becomes a token waiting in a work-type state and place. Those waiting places hold the work until a workstation whose inputs match can consume a ready item. The queue is that waiting backlog—not the submit step that enqueues work, and not the workstation that later runs it."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long-running factories keep many work items alive after submit. The task queue is how those items stay persistent and ready for dispatch: workstations can take them in parallel or in order as matching inputs become available, instead of losing the backlog when a single agent session ends."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You submit a work item into a running factory. It lands in an initial work-type state such as task:init, which is a queued place in the topology. A workstation whose inputs match that place becomes enabled, consumes the waiting item, and moves it forward. Until that consume happens, the item stays in the task queue."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "You meet the task queue after submitting work into a running factory: each accepted item lands in a waiting work-type place. Work inspection surfaces such as you work list show those items by state, so you can see what is still queued. Workstations consume ready input places when their matching inputs are present, which is how waiting items leave the queue."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A task queue is not a checklist. A checklist is the planner’s live outcomes and workstream board; the task queue is the runtime backlog of work waiting in work-type places. Submitting work is how batches enter the factory—it is the ingress step, not the waiting backlog those items join afterward. Factory and work tokens name the unit that occupies a place; the task queue is the set of those waiting places holding ready work. A workqueue-executor is a technique pattern for draining or organizing queued work; it is not the queue concept itself."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "submittingWork": "Submitting work",
+    "checklist": "Checklist",
+    "tokens": "Tokens",
+    "workqueueExecutor": "Workqueue executor"
+  }
+}

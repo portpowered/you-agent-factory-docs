@@ -93,7 +93,11 @@ describe("checklist concept page", () => {
     ).toBeGreaterThanOrEqual(1);
     expect(screen.getByText(/track customer outcomes/i)).toBeTruthy();
     expect(screen.getByText(/Picture a compact board/i)).toBeTruthy();
-    expect(screen.getByText(/not a task queue/i)).toBeTruthy();
+    // Prose auto-link splits "task queue" into an anchor once concept.task-queue
+    // publishes; assert via section textContent so the phrase still matches.
+    const commonConfusionsSection =
+      document.getElementById("common-confusions");
+    expect(commonConfusionsSection?.textContent).toMatch(/not a task queue/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
     const taskQueueLink = screen.getByRole("link", { name: "Task queue" });
