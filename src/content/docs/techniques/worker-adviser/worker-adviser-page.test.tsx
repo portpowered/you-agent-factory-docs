@@ -63,6 +63,7 @@ describe("worker-adviser technique page", () => {
     expect(sections).toBeDefined();
     const whatItIs = sections?.whatItIs.body as string;
     const whyItMatters = sections?.whyItMatters.body as string;
+    const howItWorks = sections?.howItWorks.body as string;
     expect(whatItIs).toMatch(/Worker-adviser/i);
     expect(whatItIs).toMatch(/adviser role/i);
     expect(whatItIs).toMatch(/worker role|performer/i);
@@ -71,7 +72,17 @@ describe("worker-adviser technique page", () => {
     expect(whyItMatters).toMatch(/ownership|distinct|critique/i);
     expect(whyItMatters).toMatch(/before or beside execution/i);
     expect(whyItMatters).toMatch(/advisory guidance|performed change/i);
+    expect(howItWorks).toMatch(/worker-adviser/i);
+    expect(howItWorks).toMatch(/adviser produces|guidance or critique/i);
+    expect(howItWorks).toMatch(/worker|performer/i);
+    expect(howItWorks).toMatch(/acts on the task/i);
+    expect(howItWorks).toMatch(/advise and perform|role boundary/i);
+    expect(howItWorks).toMatch(/precede|accompany|follow/i);
+    expect(howItWorks).toMatch(
+      /not silently rewritten|not treated as unexamined advice/i,
+    );
     expect(screen.getByText(whatItIs)).toBeTruthy();
     expect(screen.getByText(whyItMatters)).toBeTruthy();
+    expect(screen.getByText(howItWorks)).toBeTruthy();
   });
 });
