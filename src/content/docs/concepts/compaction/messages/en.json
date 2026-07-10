@@ -1,0 +1,32 @@
+{
+  "title": "Compaction",
+  "description": "Compaction shrinks retained context—history, transcripts, or stream windows—so long-running agent or factory work can continue within limits.",
+  "openingSummary": "Compaction shrinks retained context so long-running agent or factory work can keep going within context limits.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Compaction is shrinking retained context—conversation history, transcripts, or stream windows—so long-running agent or factory work can continue within context limits. It is not the factory workflow system itself, and it is not deliberative thinking."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long-running factory agent runs accumulate retained context until later turns no longer fit. Compaction keeps useful continuity while dropping or coalescing older detail so the run can continue."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "A long looped coding run keeps a growing transcript. Compaction truncates, coalesces, or age-evicts older turns in that retained window so later passes still fit."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "Compaction is not thinking: thinking is deliberative reasoning, while compaction shrinks retained context. Compaction is also not deleting or closing a session; the run continues with a smaller retained window."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

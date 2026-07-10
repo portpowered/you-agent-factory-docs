@@ -1,0 +1,17 @@
+{
+  "id": "concept.compaction",
+  "slug": "compaction",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["context compaction", "compact context"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T02:36:13.000Z",
+  "updatedAt": "2026-07-10T02:36:13.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}
