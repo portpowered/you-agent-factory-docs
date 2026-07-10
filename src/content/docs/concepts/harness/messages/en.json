@@ -1,0 +1,36 @@
+{
+  "title": "Harness",
+  "description": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. The factory is the workflow system that keeps agent work persistent and coordinated. The harness is the agent environment that actually executes that work—for example a coding agent or agent command-line interface (CLI) the factory starts and steers. The harness is not the factory itself."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "When you start factory work, you need to know which agent runtime will run it. Naming the harness tells you which coding agent or CLI executes the goal, and why the same factory can drive different harnesses without changing the workflow system around them."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You start a named run with the factory CLI. The factory dispatches that work to a Codex-backed or Cursor-backed coding agent. That coding-agent environment is the harness: it carries out the steps while the factory keeps the run persistent and coordinated."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A harness is not the factory. The factory is the workflow system that tracks and coordinates work; the harness is the agent runtime that carries the work out. A harness is also not a worker. A worker is a named executor declared in factory configuration; the harness is the agent environment that actually runs agent work. Choosing a runner or model provider is a different decision: those settings select which backend or model a run uses, not the harness itself."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "whatIsYouAgentFactory": "What is you-agent-factory",
+    "loopConcept": "Loop concept",
+    "harnessSupport": "Harness support"
+  }
+}

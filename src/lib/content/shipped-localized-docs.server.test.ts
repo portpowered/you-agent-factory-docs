@@ -140,7 +140,12 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     expect(derived).toEqual(resolveShippedLocalizedDocsManifest());
     expect(derived).toEqual({
       ja: [
+        "concepts/checklist",
+        "concepts/harness",
+        "concepts/loop",
         "concepts/statistical-process-control-graphs",
+        "concepts/tokens",
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -149,7 +154,12 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       "zh-CN": [
+        "concepts/checklist",
+        "concepts/harness",
+        "concepts/loop",
         "concepts/statistical-process-control-graphs",
+        "concepts/tokens",
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -158,7 +168,12 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       vi: [
+        "concepts/checklist",
+        "concepts/harness",
+        "concepts/loop",
         "concepts/statistical-process-control-graphs",
+        "concepts/tokens",
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",

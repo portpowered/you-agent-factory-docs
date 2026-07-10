@@ -145,8 +145,22 @@ describe("CLI section index page render", () => {
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/docs/concepts/checklist");
+    expect(html).toContain("Harness");
+    expect(html).toContain("/docs/concepts/harness");
+    expect(html).toContain("Loop");
+    expect(html).toContain("/docs/concepts/loop");
     expect(html).toContain("Statistical Process Control Graphs");
     expect(html).toContain("/docs/concepts/statistical-process-control-graphs");
+    expect(html).toContain("Task Queue");
+    expect(html).toContain("/docs/concepts/task-queue");
+    expect(html).toContain("Thinking");
+    expect(html).toContain("/docs/concepts/thinking");
+    expect(html).toContain("Tokens");
+    expect(html).toContain("/docs/concepts/tokens");
+    expect(html).toContain("Tool");
+    expect(html).toContain("/docs/concepts/tool");
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
@@ -238,7 +252,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese concepts index with localized title and the SPC page entry", async () => {
+  it("renders the japanese concepts index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedConceptsIndexPage({
@@ -249,10 +263,24 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(messages.conceptsIndex.title);
     expect(html).toContain(messages.conceptsIndex.description);
     expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/ja/docs/concepts/checklist");
+    expect(html).toContain("Harness");
+    expect(html).toContain("/ja/docs/concepts/harness");
+    expect(html).toContain("Loop");
+    expect(html).toContain("/ja/docs/concepts/loop");
     expect(html).toContain("Statistical Process Control Graphs");
     expect(html).toContain(
       "/ja/docs/concepts/statistical-process-control-graphs",
     );
+    expect(html).toContain("Tokens");
+    expect(html).toContain("/ja/docs/concepts/tokens");
+    expect(html).toContain("Tool");
+    expect(html).toContain("/ja/docs/concepts/tool");
+    expect(html).not.toContain("Thinking");
+    expect(html).not.toContain("/ja/docs/concepts/thinking");
+    expect(html).not.toContain("Task Queue");
+    expect(html).not.toContain("/ja/docs/concepts/task-queue");
     expect(html).not.toContain(messages.conceptsIndex.emptyTitle);
     expect(messages.conceptsIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,

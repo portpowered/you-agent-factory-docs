@@ -106,6 +106,22 @@ under `<RelatedDocs />` even when the target guide is published. Keep
 getting-started and planned concept/write-review destinations on the page via
 message-backed `LocalizedLinkList` hrefs.
 
+Concept → guide discovery uses the same rule: even when guide registry records
+are published, put loops / write-review / getting-started next steps on the
+concept page with message-backed `<LocalizedLinkList>` under `#related` (or an
+equivalent discovery section). Leave concept `relatedIds` empty for those guide
+ids — they will not render under `<RelatedDocs />` until guides join the related
+registry runtime.
+
+Concept → documentation discovery has the same gap: `listRelatedRegistryRecords()`
+omits `documentation` kinds, so a concept page that needs visible links to
+configuration / workstations / submitting-work (or other published docs pages)
+must wire those destinations with page-local `<LocalizedLinkList>` and
+`links.*` labels. Leave concept `relatedIds` empty for those documentation
+targets until related-runtime includes documentation records; keep
+`<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
+discovery when those ids can resolve.
+
 ## Shipping non-en locale stubs on a page bundle
 
 Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
@@ -114,12 +130,15 @@ files is what derives the page as shipped for that locale
 Missing non-default messages fail closed (no English fallback at load time).
 
 Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
-locale message files (the derive test requires it). On a first CLI-section page,
-that generated file plus a narrow `shipped-localized-docs.server.test.ts`
-expectation update stay inside the documented `declare-exception` allowlist —
+locale message files (the derive test requires it). On a first CLI-section page
+(including the first authored `concepts/` page), that generated file plus a
+narrow `shipped-localized-docs.server.test.ts` expectation update stay inside
+the documented `declare-exception` allowlist —
 see [canonical-page-surface-budget-relevant-files.md](./canonical-page-surface-budget-relevant-files.md#first-authored-page-under-a-rewrite-era-cli-section).
 Leave other `prepare:content-runtime` outputs uncommitted when they stay
-gitignored.
+gitignored. Colocate new concept page render proofs under
+`src/content/docs/concepts/<slug>/<slug>-page.test.tsx` so the page test stays
+page-owned rather than under `src/lib/content/`.
 
 For later concept pages (not first-CLI-section), the same locale shipping trio
 is still required to publish non-en routes. Update
@@ -216,8 +235,8 @@ inherent to the slice.
 ## First published documentation (or other empty CLI collection) page
 
 The first published page in a previously empty CLI collection (`documentation`,
-and later `guides` / `techniques`) is not a routine page-only lane. Publishing
-requires shared wiring that will trip
+`guides`, `techniques`, or `concepts`) is not a routine page-only lane when
+shared wiring is still missing. Publishing may trip
 `bun run audit:canonical-page-surface`:
 
 - `PUBLISHED_DOCS_SECTIONS` + collection `*PageHref` in content-hrefs /
@@ -225,11 +244,38 @@ requires shared wiring that will trip
 - `LOCAL_DOCS_SECTIONS` + `<kind>-page(-load).ts` local MDX loader path
 - `registryDirectoryByKind.<kind>` in the canonical page surface audit
 - empty-root / section-index tests that previously forbade authored bundles
+  (`src/tests/content/section-indexes.test.tsx` must move that section from
+  empty-state assertions to authored-entry assertions once the first page
+  ships; keep non-default locale empty-state checks until locale stubs exist)
 
-Document the first-collection publish-wiring exception in the work-item PRD
-(project ACs + story surface-budget criteria) so review does not reject a
-necessary shared diff as “page-only AC failure.” Later pages in the same
-collection should stay page-local and in-budget.
+When the section loader wiring already exists (for example `concepts` after
+empty-CLI taxonomy work), the first authored page may only need the
+section-index test update plus page-owned bundle/registry files. Document the
+first-collection publish-wiring exception in the work-item PRD when shared
+paths remain required so review does not reject a necessary shared diff as
+“page-only AC failure.” Later pages in the same collection should stay
+page-local and in-budget.
+
+### First published concepts page (collection already wired)
+
+`concepts` already has published-section wiring (`PUBLISHED_DOCS_SECTIONS`,
+`LOCAL_DOCS_SECTIONS`, concept page loaders, `registryDirectoryByKind.concept`).
+The first authored published page under `src/content/docs/concepts/<slug>/`
+still needs a narrow section-index expectation update so default-locale indexes
+list the page title / summary / href instead of empty-state copy:
+
+- `src/tests/content/section-indexes.test.tsx`
+- `src/lib/docs/section-collection-index.test.ts`
+- optional verification helpers such as
+  `src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`
+
+Do not treat that index-expectation update as a redirect-to-throughput lane.
+Non-default locales stay on the empty concepts index until colocated
+`messages/<locale>.json` files exist for the page (shipped-localized-docs is
+derived from those files). When those locale stubs ship, update the localized
+concepts section-index expectations the same way (list title / summary / href)
+and regenerate/commit `shipped-localized-docs.generated.ts` plus the matching
+`shipped-localized-docs.server.test.ts` committed-tree assertion.
 
 Prefer behavioral coverage for the shipped page (section-index listing title /
 summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy
