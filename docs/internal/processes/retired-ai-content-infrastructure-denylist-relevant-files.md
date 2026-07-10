@@ -52,7 +52,14 @@ route/kind product teaching fixtures).
 ```sh
 bun test src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts
 bun run audit:retired-ai-content-infrastructure
+# or: bun ./scripts/audit-retired-ai-content-infrastructure.ts
 ```
+
+Confirm denylisted owned paths stay absent on disk (including
+`src/lib/content/__generate-fixtures__`). Existence of any path in
+`RETIRED_AI_CONTENT_OWNED_PATHS` fails the audit as a reintroduction.
+`src/lib/content/__fixtures__/` is a separate live test-fixture directory and
+is not on the denylist.
 
 ## End-to-end proof (story 007)
 

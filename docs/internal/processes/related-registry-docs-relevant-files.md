@@ -65,9 +65,10 @@ and the shared related-registry-docs component/blog wrapper.
 * Live docs related headings use factory wording **`Related To`**
   (`sections.related.title` in page messages).
 * Do not reintroduce Atlas chrome **`Related Concepts And Modules`** in concept
-  (or other) page messages, `docs/templates/concept.messages.en.json`,
-  `docs/templates/glossary.messages.en.json`, or generate fixtures under
-  `src/lib/content/__generate-fixtures__/`.
+  (or other) page messages, `docs/templates/concept.messages.en.json`, or
+  `docs/templates/glossary.messages.en.json`. The retired path
+  `src/lib/content/__generate-fixtures__/` is denylisted and must stay absent
+  (`bun run audit:retired-ai-content-infrastructure`).
 * Home browse chrome must not ship retired Atlas featured-link keys
   (`atlasLinkTitle` / “Browse the atlas”); see
   `rewrite-home-page-relevant-files.md`.
