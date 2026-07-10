@@ -1,0 +1,38 @@
+{
+  "title": "Worktree",
+  "description": "A worktree is an isolated checkout or workspace the factory uses so agent lanes can run without colliding on the same tree.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A worktree is an isolated checkout or workspace the factory uses for a work item or lane—for example under .claude/worktrees/<name>/. It is a separate tree of files so that lane can edit and verify without sharing the same working tree as other lanes. A worktree is not the factory workflow system itself, and it is not just a branch name."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Parallel agent lanes can edit and verify in separate trees without stomping the same files. When a harness or workstation points at a worktree path, you know that lane is working in its own checkout instead of sharing one tree with every other run."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "Setup creates an isolated checkout at .claude/worktrees/<work-item-name>/ for a named work item. An executor or review step then runs inside that tree—editing files, running checks, and writing progress there—while other lanes keep their own checkouts. The shared repository history stays available, but each lane’s working files stay separate."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A worktree is not a git branch. A branch is a pointer along history; a worktree is a separate checkout of files where work actually happens. A worktree is also not a working-directory config field alone—that field may name a path, but the worktree is the isolated tree itself. It is not a workstation (a step or prompt unit in factory config) and not the factory (the workflow system that coordinates runs)."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "workstations": "Workstations",
+    "whatIsYouAgentFactory": "What is you-agent-factory",
+    "harnessConcept": "Harness concept",
+    "loopConcept": "Loop concept",
+    "harnessSupport": "Harness support"
+  }
+}

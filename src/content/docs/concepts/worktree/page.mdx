@@ -1,0 +1,86 @@
+---
+title: "Worktree"
+description: "A worktree is an isolated checkout or workspace the factory uses so agent lanes can run without colliding on the same tree."
+kind: "concept"
+registryId: "concept.worktree"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "git worktree"
+  - "isolated checkout"
+  - "factory worktree"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="simple-example" titleKey="sections.simpleExample.title">
+  <T k="sections.simpleExample.body" />
+</Section>
+
+<Section id="common-confusions" titleKey="sections.commonConfusions.title">
+  <T k="sections.commonConfusions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstations",
+      },
+      {
+        href: "/docs/documentation/what-is-you-agent-factory",
+        labelKey: "links.whatIsYouAgentFactory",
+      },
+      {
+        href: "/docs/concepts/harness",
+        labelKey: "links.harnessConcept",
+      },
+      {
+        href: "/docs/concepts/loop",
+        labelKey: "links.loopConcept",
+      },
+      {
+        href: "/docs/documentation/harness-support",
+        labelKey: "links.harnessSupport",
+      },
+    ]}
+  />
+
+  <DerivedRelatedDocs
+    registryId="concept.worktree"
+    groups={[
+      "same-concept-type",
+      "shared-tags",
+      "used-by-models",
+      "curated-related"
+    ]}
+  />
+
+  <RelatedDocs registryId="concept.worktree" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="concept.worktree" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="concept.worktree" />
+</Section>

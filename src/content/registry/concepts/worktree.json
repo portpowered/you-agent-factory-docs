@@ -1,0 +1,17 @@
+{
+  "id": "concept.worktree",
+  "slug": "worktree",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["git worktree", "isolated checkout", "factory worktree"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T02:34:00.000Z",
+  "updatedAt": "2026-07-10T02:34:00.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}
