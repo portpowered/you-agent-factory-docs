@@ -104,8 +104,39 @@ describe("bottlenecks concept page", () => {
     expect(Object.keys(loadedPage.assets)).toEqual([]);
     expect(document.querySelector("[data-page-asset]")).toBeNull();
     expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
+    expect(document.querySelector("[data-chart-container]")).toBeNull();
+
+    expect(whereItAppears?.textContent).toMatch(/task queues/i);
+    expect(whereItAppears?.textContent).toMatch(/workers or workstations/i);
+    expect(whereItAppears?.textContent).toMatch(/harness or tool calls/i);
+    expect(whereItAppears?.textContent).toMatch(/token or context pressure/i);
+    expect(whereItAppears?.textContent).not.toMatch(/on this page/i);
+    expect(whereItAppears?.textContent).not.toMatch(/Model Atlas/i);
+
+    expect(commonConfusions?.textContent).toMatch(/model-quality/i);
+    expect(commonConfusions?.textContent).toMatch(/blog listicle/i);
+    expect(commonConfusions?.textContent).toMatch(
+      /statistical process control/i,
+    );
+    expect(commonConfusions?.textContent).not.toMatch(/on this page/i);
+    expect(commonConfusions?.textContent).not.toMatch(/Model Atlas/i);
+
+    const blogLink = screen.getByRole("link", {
+      name: "Bottlenecks blog",
+    });
+    expect(blogLink.getAttribute("href")).toBe("/blog/bottlenecks");
     expect(
-      document.querySelector("[data-chart-container]"),
-    ).toBeNull();
+      screen.getByRole("link", { name: "Task queue" }).getAttribute("href"),
+    ).toBe("/docs/concepts/task-queue");
+    expect(
+      screen
+        .getByRole("link", {
+          name: "Statistical process control graphs",
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts/statistical-process-control-graphs");
+    expect(
+      screen.getByRole("link", { name: "Harness" }).getAttribute("href"),
+    ).toBe("/docs/concepts/harness");
   });
 });

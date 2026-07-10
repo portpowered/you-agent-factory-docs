@@ -16,6 +16,7 @@ updatedAt: "2026-07-10"
 
 import { CitationList } from "@/features/docs/components/CitationList";
 import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -53,6 +54,26 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   />
 
   <RelatedDocs registryId="concept.bottlenecks" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/blog/bottlenecks",
+        labelKey: "links.blogBottlenecks",
+      },
+      {
+        href: "/docs/concepts/task-queue",
+        labelKey: "links.taskQueueConcept",
+      },
+      {
+        href: "/docs/concepts/statistical-process-control-graphs",
+        labelKey: "links.spcGraphsConcept",
+      },
+      {
+        href: "/docs/concepts/harness",
+        labelKey: "links.harnessConcept",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">

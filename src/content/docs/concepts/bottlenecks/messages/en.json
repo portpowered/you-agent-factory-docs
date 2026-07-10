@@ -17,11 +17,11 @@
     },
     "whereItAppears": {
       "title": "Where It Appears",
-      "body": "Factory bottlenecks show up in queues, worker or workstation capacity, harness and tool latency, shared resources, and token or context pressure during long-running runs."
+      "body": "Factory bottlenecks show up wherever a long-running you-agent-factory run waits on one scarce stage while other stages still have spare capacity. Operators see them in saturated task queues, scarce workers or workstations, slow harness or tool calls, contention on shared resources, and token or context pressure that stalls otherwise ready work. Nearby concepts such as the task queue, harness, and statistical process control graphs sit next to the same ops work when you want the backlog, the agent runtime, or time-ordered metrics—not a second definition of the limiting stage itself."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "A factory bottleneck is not a hardware-only roofline essay and not an SPC control chart. It names the limiting stage that caps factory throughput."
+      "body": "A factory bottleneck is not every slow run. Treating a stalled factory as a model-quality problem misses cases where the model is fine and a queue, harness, or shared resource is already saturated. It is also not the future bottlenecks blog listicle: that post collects comparisons and reading paths, while this concept page names the limiting stage in isolation. Statistical process control graphs are a different idea too—they watch a metric over time with a center line and control limits; they do not by themselves identify which stage caps throughput."
     },
     "related": {
       "title": "Related Concepts And Modules"
@@ -32,5 +32,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "blogBottlenecks": "Bottlenecks blog",
+    "taskQueueConcept": "Task queue",
+    "spcGraphsConcept": "Statistical process control graphs",
+    "harnessConcept": "Harness"
   }
 }
