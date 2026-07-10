@@ -17,18 +17,13 @@ type DocsSidebarSectionRef =
   | { kind: "glossary-derived"; id: GlossaryDerivedBrowseSectionId }
   | { kind: "collection"; id: string };
 
-/** Reader-visible sidebar folder order for the AI docs atlas. */
+/** Reader-visible sidebar folder order for factory docs collections. */
 export const DOCS_SIDEBAR_SECTION_ORDER = [
-  { kind: "glossary-derived", id: "model-types" },
-  { kind: "glossary-derived", id: "inference" },
-  { kind: "glossary-derived", id: "module-components" },
-  { kind: "collection", id: "glossary" },
+  { kind: "collection", id: "guides" },
   { kind: "collection", id: "concepts" },
-  { kind: "collection", id: "modules" },
-  { kind: "collection", id: "models" },
-  { kind: "collection", id: "papers" },
-  { kind: "collection", id: "training" },
-  { kind: "collection", id: "systems" },
+  { kind: "collection", id: "techniques" },
+  { kind: "collection", id: "documentation" },
+  { kind: "collection", id: "glossary" },
 ] as const satisfies readonly DocsSidebarSectionRef[];
 
 function buildGlossaryDerivedSidebarFolder(

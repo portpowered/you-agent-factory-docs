@@ -24,11 +24,6 @@ const SECTION_KIND_TO_COLLECTION_ID = {
   concept: "concepts",
   technique: "techniques",
   documentation: "documentation",
-  model: "models",
-  module: "modules",
-  paper: "papers",
-  "training-regime": "training",
-  system: "systems",
 } as const satisfies Record<string, DocsCollectionId>;
 
 export type SectionIndexFrontmatterKind =

@@ -8,130 +8,24 @@ import {
 import { source } from "@/lib/source";
 
 const REQUIRED_SUBGROUP_LABELS = {
-  Glossary: [
-    "Model Taxonomy",
-    "Sequence And Attention",
-    "Math And Training",
-    "Generation And Diffusion",
-  ],
-  Concepts: ["Long Context", "Architecture"],
-  Modules: ["Attention Foundations", "Attention Variants"],
-  Training: ["Alignment", "Distillation"],
-  Systems: ["Memory", "Routing"],
+  Concepts: ["Reference Samples"],
 } as const;
 
 const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   {
-    folderName: "Glossary",
-    separator: "Math And Training",
-    url: "/docs/glossary/entropy",
-  },
-  {
-    folderName: "Glossary",
-    separator: "Sequence And Attention",
-    url: "/docs/glossary/token",
-  },
-  {
-    folderName: "Glossary",
-    separator: "Generation And Diffusion",
-    url: "/docs/glossary/denoising-generation",
-  },
-  {
     folderName: "Concepts",
-    separator: "Architecture",
-    url: "/docs/concepts/transformer-architecture",
+    separator: "Reference Samples",
+    url: "/docs/concepts/harness",
   },
   {
     folderName: "Concepts",
     separator: "Reference Samples",
-    url: "/docs/concepts/page-spec-workflow-sample",
-  },
-  {
-    folderName: "Modules",
-    separator: "Attention Foundations",
-    url: "/docs/modules/multi-head-attention",
-  },
-  {
-    folderName: "Modules",
-    separator: "Attention Variants",
-    url: "/docs/modules/grouped-query-attention",
-  },
-  {
-    folderName: "Modules",
-    separator: "Feed-Forward And Activation",
-    url: "/docs/modules/relu",
-  },
-  {
-    folderName: "Training",
-    separator: "Alignment",
-    url: "/docs/training/dpo",
-  },
-  {
-    folderName: "Training",
-    separator: "Distillation",
-    url: "/docs/training/on-policy-distillation",
-  },
-  {
-    folderName: "Training",
-    separator: "Optimization",
-    url: "/docs/training/fp4-quantization-aware-training",
-  },
-  {
-    folderName: "Systems",
-    separator: "Memory",
-    url: "/docs/systems/on-disk-kv-cache",
-  },
-  {
-    folderName: "Systems",
-    separator: "Routing",
-    url: "/docs/systems/routing",
-  },
-] as const;
-
-const REPRESENTATIVE_SUBGROUP_ORDERING = [
-  {
-    folderName: "Glossary",
-    earlier: "Model Taxonomy",
-    later: "Sequence And Attention",
-  },
-  {
-    folderName: "Glossary",
-    earlier: "Sequence And Attention",
-    later: "Math And Training",
-  },
-  {
-    folderName: "Glossary",
-    earlier: "Math And Training",
-    later: "Generation And Diffusion",
-  },
-  {
-    folderName: "Modules",
-    earlier: "Attention Foundations",
-    later: "Attention Variants",
-  },
-  {
-    folderName: "Modules",
-    earlier: "Attention Variants",
-    later: "Feed-Forward And Activation",
-  },
-  {
-    folderName: "Training",
-    earlier: "Alignment",
-    later: "Distillation",
-  },
-  {
-    folderName: "Systems",
-    earlier: "Memory",
-    later: "Routing",
+    url: "/docs/concepts/checklist",
   },
 ] as const;
 
 const GROUPED_SECTION_BY_FOLDER = {
-  Glossary: "glossary",
   Concepts: "concepts",
-  Modules: "modules",
-  Training: "training",
-  Systems: "systems",
 } as const satisfies Record<
   keyof typeof REQUIRED_SUBGROUP_LABELS,
   SidebarGroupingSection
@@ -197,7 +91,7 @@ function expectSeparatorsInConfiguredOrder(
 }
 
 describe("generated docs page tree", () => {
-  test("grouped docs folders expose required subgroup labels in configured order", () => {
+  test("grouped factory docs folders expose required subgroup labels in configured order", () => {
     for (const [folderName, requiredLabels] of Object.entries(
       REQUIRED_SUBGROUP_LABELS,
     )) {
@@ -238,22 +132,29 @@ describe("generated docs page tree", () => {
     }
   });
 
-  test("representative subgroup separators keep configured relative order", () => {
-    for (const ordering of REPRESENTATIVE_SUBGROUP_ORDERING) {
-      const children = getFolderChildren(ordering.folderName);
-      const earlierIndex = expectIndex(
-        `${ordering.folderName} separator ${ordering.earlier}`,
-        findNodeIndex(children, { name: ordering.earlier }),
-      );
-      const laterIndex = expectIndex(
-        `${ordering.folderName} separator ${ordering.later}`,
-        findNodeIndex(children, { name: ordering.later }),
-      );
+  test("factory sidebar folders exclude retired Atlas collection destinations", () => {
+    const folderNames = source.pageTree.children
+      .filter((node) => node.type === "folder")
+      .map((folder) => String(folder.name));
 
-      expect(
-        earlierIndex,
-        `${ordering.folderName} should place ${ordering.earlier} before ${ordering.later}`,
-      ).toBeLessThan(laterIndex);
+    expect(folderNames).toEqual([
+      "Guides",
+      "Concepts",
+      "Techniques",
+      "Documentation",
+      "Glossary",
+    ]);
+    for (const retired of [
+      "Modules",
+      "Models",
+      "Papers",
+      "Training",
+      "Systems",
+      "Model Types",
+      "Inference",
+      "Module Components",
+    ] as const) {
+      expect(folderNames).not.toContain(retired);
     }
   });
 });

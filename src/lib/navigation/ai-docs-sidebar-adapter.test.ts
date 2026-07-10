@@ -20,11 +20,6 @@ const EXPECTED_AI_SIDEBAR_FOLDER_LABELS = [
   "Techniques",
   "Documentation",
   "Glossary",
-  "Modules",
-  "Models",
-  "Papers",
-  "Training",
-  "Systems",
 ] as const;
 
 function getSeparatorLabels(nodes: Node[]): string[] {
@@ -77,17 +72,19 @@ describe("AI docs sidebar adapter", () => {
     }
   });
 
-  test("exposes grouping resolvers for grouped collections only", () => {
+  test("exposes grouping resolvers for grouped factory collections only", () => {
     const resolvers = getAiDocsShellSidebarGroupingResolvers();
 
     expect(Object.keys(resolvers).sort()).toEqual(
       [...DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS].sort(),
     );
+    expect(resolvers.modules).toBeUndefined();
     expect(resolvers.models).toBeUndefined();
-    expect(resolvers.papers).toBeUndefined();
+    expect(resolvers.training).toBeUndefined();
+    expect(resolvers.systems).toBeUndefined();
   });
 
-  test("grouping resolvers produce separator labels for configured collections", () => {
+  test("grouping resolvers produce separator labels for configured collections with pages", () => {
     const resolvers = getAiDocsShellSidebarGroupingResolvers();
 
     for (const definition of listDocsCollectionDefinitions()) {
@@ -99,6 +96,10 @@ describe("AI docs sidebar adapter", () => {
       const pages = loadPublishedDocsPagesSync("en").filter((page) =>
         page.docsSlug.startsWith(`${definition.routeSlug}/`),
       );
+      if (pages.length === 0) {
+        continue;
+      }
+
       const nodes = resolvers[resolverId]?.(pages) ?? [];
 
       expect(nodes.length).toBeGreaterThan(0);

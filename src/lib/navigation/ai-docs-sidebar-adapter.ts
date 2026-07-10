@@ -18,11 +18,6 @@ const AI_SIDEBAR_FOLDER_LABELS: Record<DocsCollectionId, string> = {
   techniques: "Techniques",
   documentation: "Documentation",
   glossary: "Glossary",
-  modules: "Modules",
-  models: "Models",
-  papers: "Papers",
-  training: "Training",
-  systems: "Systems",
 };
 
 export function resolveAiDocsSidebarFolderLabel(id: DocsCollectionId): string {

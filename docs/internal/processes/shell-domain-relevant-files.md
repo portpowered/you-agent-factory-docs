@@ -7,19 +7,34 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
+  Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
+  `guides`, `concepts`, `techniques`, `documentation`, `glossary`. Retired
+  Atlas ids (`models`, `modules`, `papers`, `training`, `systems`) are not in
+  the public collection contract; sidebar grouping resolvers are only
+  `glossary` and `concepts`.
+* `src/lib/docs/docs-collection-definitions.ts`
+  Canonical inventory matching `DOCS_COLLECTION_IDS`. CLI collections keep
+  empty `starterSlugs`; glossary keeps route-relative starters.
 * `src/lib/docs/browse-collection-sections.ts`
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
   `DOCS_BROWSE_SECTION_ORDER`. Pass an explicit `sectionOrder` when a test or
-  fixture still needs Atlas or glossary-derived browse sections.
+  fixture still needs glossary-derived browse sections.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
+  `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,
+  `technique`, `documentation`).
 * `src/lib/navigation/shell-collection-page-tree.ts`
   Generic sidebar/page-tree builder with optional grouping resolvers.
+* `src/lib/navigation/docs-sidebar-sections.ts`
+  Default `DOCS_SIDEBAR_SECTION_ORDER` is the five factory collection folders
+  (guides → glossary). Glossary-derived Atlas browse folders are not in the
+  default order.
 * `src/lib/navigation/ai-docs-sidebar-adapter.ts`
-  Model Atlas-owned shell sidebar labels, grouping resolvers, collection ids, and `getAiDocsShellPageTreeSettings()` for AI docs collections.
+  Factory docs shell sidebar labels, grouping resolvers, collection ids, and
+  `getAiDocsShellPageTreeSettings()` for public docs collections.
 * `src/lib/navigation/generated-docs-page-tree.ts`
-  AI docs page tree; composes adapter settings into `buildShellCollectionPageTree`.
+  Docs page tree; composes adapter settings into `buildDocsSidebarSectionNodes`.
 * `src/lib/navigation/generated-docs-page-tree-wiring.test.ts`
   Adapter-to-shell wiring regression for base-tree preservation and page inclusion.
 * `src/lib/navigation/ai-docs-sidebar-adapter-parity.test.ts`

@@ -2,24 +2,23 @@ import { describe, expect, test } from "bun:test";
 import type { Node, Root } from "fumadocs-core/page-tree";
 import {
   collectSidebarPageLinks,
-  DEEPSEEK_V4_PAPER_URL,
-  DPO_TRAINING_URL,
   findSidebarPageLink,
-  GPT_3_MODEL_URL,
-  GROUPED_QUERY_ATTENTION_URL,
-  ROUTING_SYSTEM_URL,
-  TOKEN_GLOSSARY_URL,
-  WHY_LONG_CONTEXT_IS_HARD_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
 import { source } from "@/lib/source";
 
 const EXPECTED_TOP_LEVEL_FOLDER_NAMES = [
+  "Guides",
+  "Concepts",
+  "Techniques",
+  "Documentation",
+  "Glossary",
+] as const;
+
+const RETIRED_ATLAS_FOLDER_NAMES = [
   "Model Types",
   "Inference",
   "Module Components",
-  "Glossary",
-  "Concepts",
   "Modules",
   "Models",
   "Papers",
@@ -27,36 +26,22 @@ const EXPECTED_TOP_LEVEL_FOLDER_NAMES = [
   "Systems",
 ] as const;
 
-const REPRESENTATIVE_GROUPED_PAGES = [
+const REPRESENTATIVE_FACTORY_PAGES = [
   {
-    folderName: "Glossary",
-    url: TOKEN_GLOSSARY_URL,
-    name: "Token",
-    separatorLabel: "Sequence And Attention",
-  },
-  {
-    folderName: "Modules",
-    url: GROUPED_QUERY_ATTENTION_URL,
-    name: "Grouped-Query Attention",
-    separatorLabel: "Attention Variants",
+    folderName: "Guides",
+    url: "/docs/guides/getting-started",
+    name: "Getting Started",
   },
   {
     folderName: "Concepts",
-    url: WHY_LONG_CONTEXT_IS_HARD_URL,
-    name: "Why long context is hard",
-    separatorLabel: "Long Context",
+    url: "/docs/concepts/harness",
+    name: "Harness",
+    separatorLabel: "Reference Samples",
   },
   {
-    folderName: "Training",
-    url: DPO_TRAINING_URL,
-    name: "Direct Preference Optimization",
-    separatorLabel: "Alignment",
-  },
-  {
-    folderName: "Systems",
-    url: ROUTING_SYSTEM_URL,
-    name: "Routing",
-    separatorLabel: "Routing",
+    folderName: "Documentation",
+    url: "/docs/documentation/what-is-you-agent-factory",
+    name: "What is you-agent-factory",
   },
 ] as const;
 
@@ -117,7 +102,7 @@ function getSeparatorLabels(nodes: Node[]): string[] {
 }
 
 describe("collection-driven docs sidebar verification", () => {
-  test("buildGeneratedDocsPageTree exposes configured folder names and order", () => {
+  test("buildGeneratedDocsPageTree exposes factory-only folder names and order", () => {
     const pageTree = buildVerificationPageTree();
 
     expect(getTopLevelFolderNames(pageTree)).toEqual([
@@ -126,6 +111,10 @@ describe("collection-driven docs sidebar verification", () => {
     expect(
       pageTree.children.filter((node) => node.type === "folder"),
     ).toHaveLength(EXPECTED_TOP_LEVEL_FOLDER_NAMES.length);
+
+    for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
+      expect(getTopLevelFolderNames(pageTree)).not.toContain(retiredFolder);
+    }
   });
 
   test("buildGeneratedDocsPageTree matches source page-tree folder contract", () => {
@@ -139,10 +128,10 @@ describe("collection-driven docs sidebar verification", () => {
     );
   });
 
-  test("representative grouped pages stay under the correct separator in each folder", () => {
+  test("representative factory pages stay under the correct folders", () => {
     const pageTree = buildVerificationPageTree();
 
-    for (const representative of REPRESENTATIVE_GROUPED_PAGES) {
+    for (const representative of REPRESENTATIVE_FACTORY_PAGES) {
       const children = getFolderChildren(pageTree, representative.folderName);
       const link = findSidebarPageLink(
         collectSidebarPageLinks(children),
@@ -153,36 +142,39 @@ describe("collection-driven docs sidebar verification", () => {
         name: representative.name,
         url: representative.url,
       });
-      expect(
-        findPrecedingSeparatorLabel(children, representative.url),
-        representative.folderName,
-      ).toBe(representative.separatorLabel);
-      expect(getSeparatorLabels(children), representative.folderName).toContain(
-        representative.separatorLabel,
-      );
+
+      if ("separatorLabel" in representative) {
+        expect(
+          findPrecedingSeparatorLabel(children, representative.url),
+          representative.folderName,
+        ).toBe(representative.separatorLabel);
+        expect(
+          getSeparatorLabels(children),
+          representative.folderName,
+        ).toContain(representative.separatorLabel);
+      }
     }
   });
 
-  test("ungrouped model and paper folders keep representative links without separators", () => {
+  test("ungrouped factory folders keep page links without Atlas destinations", () => {
     const pageTree = buildVerificationPageTree();
+    const links = collectSidebarPageLinks(pageTree);
 
-    for (const folderName of ["Models", "Papers"] as const) {
+    for (const folderName of [
+      "Guides",
+      "Techniques",
+      "Documentation",
+    ] as const) {
       const children = getFolderChildren(pageTree, folderName);
       expect(getSeparatorLabels(children), folderName).toEqual([]);
-      expect(
-        children.every((node) => node.type === "page"),
-        folderName,
-      ).toBe(true);
     }
 
-    const links = collectSidebarPageLinks(pageTree);
-    expect(findSidebarPageLink(links, GPT_3_MODEL_URL)).toEqual({
-      name: "GPT-3",
-      url: GPT_3_MODEL_URL,
-    });
-    expect(findSidebarPageLink(links, DEEPSEEK_V4_PAPER_URL)).toEqual({
-      name: "DeepSeek-V4",
-      url: DEEPSEEK_V4_PAPER_URL,
-    });
+    expect(findSidebarPageLink(links, "/docs/models/gpt-3")).toBeUndefined();
+    expect(
+      findSidebarPageLink(links, "/docs/modules/grouped-query-attention"),
+    ).toBeUndefined();
+    expect(
+      findSidebarPageLink(links, "/docs/papers/deepseek-v4"),
+    ).toBeUndefined();
   });
 });

@@ -1,19 +1,11 @@
 import type { Node } from "fumadocs-core/page-tree";
 import type { DocsPageSource } from "@/lib/content/pages";
-import {
-  getConceptById,
-  getModuleById,
-  getSystemById,
-  getTrainingRegimeById,
-} from "@/lib/content/registry-runtime";
+import { getConceptById } from "@/lib/content/registry-runtime";
 import {
   getSidebarGroupIdsForSection,
   getSidebarGroupLabel,
   resolveConceptsSidebarGroup,
   resolveGlossarySidebarGroup,
-  resolveModulesSidebarGroup,
-  resolveSystemsSidebarGroup,
-  resolveTrainingSidebarGroup,
   type SidebarGroupIdBySection,
   type SidebarGroupingSection,
 } from "@/lib/content/sidebar-grouping";
@@ -111,36 +103,12 @@ function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
   });
 }
 
-function buildModulesGroupedNodes(pages: DocsPageSource[]): Node[] {
-  return groupPagesBySection("modules", pages, (page) => {
-    const record = getModuleById(page.frontmatter.registryId);
-    return record ? resolveModulesSidebarGroup(record) : undefined;
-  });
-}
-
-function buildTrainingGroupedNodes(pages: DocsPageSource[]): Node[] {
-  return groupPagesBySection("training", pages, (page) => {
-    const record = getTrainingRegimeById(page.frontmatter.registryId);
-    return record ? resolveTrainingSidebarGroup(record) : undefined;
-  });
-}
-
-function buildSystemsGroupedNodes(pages: DocsPageSource[]): Node[] {
-  return groupPagesBySection("systems", pages, (page) => {
-    const record = getSystemById(page.frontmatter.registryId);
-    return record ? resolveSystemsSidebarGroup(record) : undefined;
-  });
-}
-
 const GROUPED_NODE_BUILDERS: Record<
   DocsCollectionSidebarGroupingResolverId,
   (pages: DocsPageSource[]) => Node[]
 > = {
   glossary: buildGlossaryGroupedNodes,
   concepts: buildConceptsGroupedNodes,
-  modules: buildModulesGroupedNodes,
-  training: buildTrainingGroupedNodes,
-  systems: buildSystemsGroupedNodes,
 };
 
 export function buildGroupedSidebarNodes(

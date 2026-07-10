@@ -1,17 +1,16 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
+import { DOCS_COLLECTION_IDS } from "@/lib/docs/collection-definition-contract";
 import {
   getAiDocsShellPageTreeSettings,
   listAiDocsShellSidebarDefinitions,
 } from "@/lib/navigation/ai-docs-sidebar-adapter";
 import {
   collectSidebarPageLinks,
-  DEEPSEEK_V4_PAPER_URL,
   findSidebarPageLink,
-  GPT_3_MODEL_URL,
-  GROUPED_QUERY_ATTENTION_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
+import { DOCS_SIDEBAR_SECTION_ORDER } from "@/lib/navigation/docs-sidebar-sections";
 import { buildGeneratedDocsPageTree } from "@/lib/navigation/generated-docs-page-tree";
 import { buildShellCollectionPageTree } from "@/lib/navigation/shell-collection-page-tree";
 import {
@@ -79,81 +78,83 @@ function getFolderPageLinks(
 }
 
 describe("AI docs sidebar adapter extraction parity", () => {
-  test("adapter-wired collection folders match generated tree for non-glossary collections", () => {
+  test("adapter-wired collection folders match generated tree for factory collections", () => {
     const baseTree = { name: "Docs", children: [] };
     const generatedTree = buildGeneratedDocsPageTree(baseTree);
-    const { definitions, collectionIds, groupingResolvers } =
-      getAiDocsShellPageTreeSettings();
+    const { definitions, groupingResolvers } = getAiDocsShellPageTreeSettings();
     const adapterTree = buildShellCollectionPageTree(baseTree, {
       pages: loadPublishedDocsPagesSync("en"),
       definitions,
-      collectionIds,
+      collectionIds: [...DOCS_COLLECTION_IDS],
       groupingResolvers,
     });
 
-    const sharedCollectionFolders = [
+    const factoryFolderNames = [
+      "Guides",
       "Concepts",
-      "Modules",
-      "Models",
-      "Papers",
-      "Training",
-      "Systems",
+      "Techniques",
+      "Documentation",
+      "Glossary",
     ] as const;
 
     expect(getTopLevelFolderNames(generatedTree)).toEqual([
-      "Model Types",
-      "Inference",
-      "Module Components",
-      "Glossary",
-      ...sharedCollectionFolders,
+      ...factoryFolderNames,
+    ]);
+    expect(DOCS_SIDEBAR_SECTION_ORDER.map((section) => section.id)).toEqual([
+      ...DOCS_COLLECTION_IDS,
     ]);
 
-    for (const folderName of sharedCollectionFolders) {
+    for (const folderName of factoryFolderNames) {
       expect(getFolderPageLinks(generatedTree, folderName)).toEqual(
         getFolderPageLinks(adapterTree, folderName),
       );
     }
   });
 
-  test("grouped modules folder keeps separator label and representative page placement", () => {
+  test("grouped concepts folder keeps separator label and representative page placement", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
-    const children = getFolderChildren(pageTree, "Modules");
+    const children = getFolderChildren(pageTree, "Concepts");
     const links = collectSidebarPageLinks(children);
+    const harnessUrl = "/docs/concepts/harness";
 
-    expect(findSidebarPageLink(links, GROUPED_QUERY_ATTENTION_URL)).toEqual({
-      name: "Grouped-Query Attention",
-      url: GROUPED_QUERY_ATTENTION_URL,
+    expect(findSidebarPageLink(links, harnessUrl)).toEqual({
+      name: "Harness",
+      url: harnessUrl,
     });
-    expect(
-      findPrecedingSeparatorLabel(children, GROUPED_QUERY_ATTENTION_URL),
-    ).toBe("Attention Variants");
-    expect(getSeparatorLabels(children)).toContain("Attention Variants");
+    expect(findPrecedingSeparatorLabel(children, harnessUrl)).toBe(
+      "Reference Samples",
+    );
+    expect(getSeparatorLabels(children)).toContain("Reference Samples");
   });
 
-  test("ungrouped models folder keeps representative links without separators", () => {
+  test("factory sidebar excludes retired Atlas collection destinations", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
-    const children = getFolderChildren(pageTree, "Models");
+    const folderNames = getTopLevelFolderNames(pageTree);
+    const links = collectSidebarPageLinks(pageTree);
 
-    expect(getSeparatorLabels(children)).toEqual([]);
-    expect(children.every((node) => node.type === "page")).toBe(true);
+    for (const retired of [
+      "Modules",
+      "Models",
+      "Papers",
+      "Training",
+      "Systems",
+      "Model Types",
+      "Inference",
+      "Module Components",
+    ] as const) {
+      expect(folderNames).not.toContain(retired);
+    }
+
+    expect(findSidebarPageLink(links, "/docs/models/gpt-3")).toBeUndefined();
     expect(
-      findSidebarPageLink(collectSidebarPageLinks(children), GPT_3_MODEL_URL),
-    ).toEqual({
-      name: "GPT-3",
-      url: GPT_3_MODEL_URL,
-    });
+      findSidebarPageLink(links, "/docs/modules/grouped-query-attention"),
+    ).toBeUndefined();
     expect(
-      findSidebarPageLink(
-        collectSidebarPageLinks(pageTree),
-        DEEPSEEK_V4_PAPER_URL,
-      ),
-    ).toEqual({
-      name: "DeepSeek-V4",
-      url: DEEPSEEK_V4_PAPER_URL,
-    });
+      findSidebarPageLink(links, "/docs/papers/deepseek-v4"),
+    ).toBeUndefined();
   });
 
-  test("non-AI fixture sidebar uses fixture labels instead of Model Atlas adapter labels", () => {
+  test("non-AI fixture sidebar uses fixture labels instead of factory adapter labels", () => {
     const fixtureTree = buildNonAiShellFixturePageTree();
     const fixtureLabels = listNonAiShellFixtureCollectionDefinitions().map(
       (definition) => definition.sidebarLabel,
