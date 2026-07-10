@@ -31,7 +31,7 @@ describe("static-export-profile-diagnostics", () => {
     });
     expect(reasons.nextCompilationStaticRendering).toEqual({
       status: "miss",
-      reason: "next-cache-directory-absent",
+      reason: "clean-mode-regenerates",
     });
     expect(reasons.searchIndexEmission.status).toBe("not-applicable");
     expect(reasons.fingerprintWriting.status).toBe("not-applicable");
@@ -60,7 +60,7 @@ describe("static-export-profile-diagnostics", () => {
     });
     expect(reasons.nextCompilationStaticRendering).toEqual({
       status: "hit",
-      reason: "next-cache-directory-present",
+      reason: "next-compiler-cache-present",
     });
   });
 
@@ -154,6 +154,9 @@ describe("static-export-profile-diagnostics", () => {
       cwd: "/repo",
       pathExists: (path) => present.has(path),
       fileSize: (path) => sizes.get(path) ?? 0,
+      isDirectory: (path) => path === "/repo/.next/cache",
+      readDirectoryNames: (path) =>
+        path === "/repo/.next/cache" ? ["webpack"] : [],
       contentRuntimeOutputPaths: [
         "src/lib/content/generated/a.generated.ts",
         "src/lib/content/generated/b.generated.ts",
@@ -167,6 +170,37 @@ describe("static-export-profile-diagnostics", () => {
       contentRuntimeFingerprintStorePresent: true,
       contentRuntimeOutputsPresent: true,
       immutableSnapshotStorePresent: true,
+    });
+  });
+
+  test("cache artifact snapshot treats empty .next/cache as absent", () => {
+    const snapshot = collectStaticExportCacheArtifactSnapshot({
+      cwd: "/repo",
+      pathExists: (path) => path === "/repo/.next/cache",
+      isDirectory: (path) => path === "/repo/.next/cache",
+      readDirectoryNames: () => [],
+      contentRuntimeOutputPaths: [],
+    });
+
+    expect(snapshot.nextCacheDirectoryPresent).toBe(false);
+  });
+
+  test("warm mode reports next compiler cache miss when cache is absent", () => {
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: false,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
+        },
+      }).nextCompilationStaticRendering,
+    ).toEqual({
+      status: "miss",
+      reason: "next-compiler-cache-absent",
     });
   });
 

@@ -43,7 +43,7 @@ describe("static-export-benchmark-prep", () => {
     expect(result.removedRelativePaths).not.toContain("node_modules");
   });
 
-  test("warm mode does not wipe build artifacts", () => {
+  test("warm mode does not wipe build artifacts or the Next compiler cache", () => {
     let removeDirectoryCalls = 0;
     let removeFileCalls = 0;
 
@@ -62,5 +62,33 @@ describe("static-export-benchmark-prep", () => {
     expect(result.removedRelativePaths).toEqual([]);
     expect(removeDirectoryCalls).toBe(0);
     expect(removeFileCalls).toBe(0);
+  });
+
+  test("clean mode is the only prep path that removes .next compiler cache", () => {
+    expect(STATIC_EXPORT_BENCHMARK_CLEAN_DIRS).toContain(".next");
+
+    const warm = prepareStaticExportBenchmark({
+      cwd: "/repo",
+      mode: "warm",
+      removeDirectory: () => {
+        throw new Error("warm must not remove directories");
+      },
+      removeFile: () => {
+        throw new Error("warm must not remove files");
+      },
+    });
+    expect(warm.removedRelativePaths).toEqual([]);
+
+    const removedDirs: string[] = [];
+    const clean = prepareStaticExportBenchmark({
+      cwd: "/repo",
+      mode: "clean",
+      removeDirectory: (path) => {
+        removedDirs.push(path);
+      },
+      removeFile: () => {},
+    });
+    expect(clean.removedRelativePaths).toContain(".next");
+    expect(removedDirs).toContain("/repo/.next");
   });
 });

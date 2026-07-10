@@ -31,7 +31,7 @@ describe("runProfiledStaticExport", () => {
     },
     nextCompilationStaticRendering: {
       status: "miss" as const,
-      reason: "next-cache-directory-absent",
+      reason: "next-compiler-cache-absent",
     },
     searchIndexEmission: {
       status: "not-applicable" as const,
@@ -96,7 +96,7 @@ describe("runProfiledStaticExport", () => {
     expect(result.summary).toContain("contentRuntimePreparationMs=10");
     expect(result.summary).toContain("totalWallTimeMs=50");
     expect(result.summary).toContain(
-      "nextCompilationStaticRenderingCache=miss:next-cache-directory-absent",
+      "nextCompilationStaticRenderingCache=miss:next-compiler-cache-absent",
     );
     expect(result.summary).toContain("staticRouteCount=3");
     expect(result.summary).toContain("localeCount=2");

@@ -268,6 +268,13 @@ bun run benchmark:static-export -- --mode=warm
   fingerprint-fresh `.source` via
   `bun ./scripts/ensure-static-export-immutable-snapshot.ts` instead of always
   re-running `fumadocs-mdx`.
+- Next compilation / static-rendering cache reasons: clean mode reports
+  `miss:clean-mode-regenerates` (clean prep wipes `.next`, including
+  `.next/cache`); warm mode reports `hit:next-compiler-cache-present` when
+  `.next/cache` exists and is non-empty, otherwise
+  `miss:next-compiler-cache-absent`. Ordinary `make build` /
+  `bun run build:export` never wipe a valid `.next` compiler cache — only the
+  explicit clean benchmark prep path does.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
 - Focused contract coverage (no full timed export):
   `bun run test:static-export-profile-contract`.

@@ -2,18 +2,24 @@
  * Clean / warm prep for the local static-export benchmark.
  *
  * Clean: dependencies stay installed; wipe build/export caches and ignored
- * generated outputs before the measured profiled export.
- * Warm: leave those artifacts in place (unchanged repeat).
+ * generated outputs before the measured profiled export (including the Next
+ * compiler cache under `.next`).
+ * Warm: leave those artifacts in place (unchanged repeat) so a valid
+ * `.next/cache` can be reused by the next compilation stage.
  */
 
 import { rmSync } from "node:fs";
 import { join } from "node:path";
+import {
+  NEXT_COMPILER_CACHE_ROOT_DIR,
+  shouldWipeNextCompilerCacheForBenchmarkMode,
+} from "@/lib/build/static-export-compiler-cache";
 import type { StaticExportBenchmarkMode } from "@/lib/build/static-export-profile";
 import { CONTENT_RUNTIME_PREPARATION_STEPS } from "@/lib/content/content-runtime-preparation";
 
 /** Directory artifacts removed in clean mode (relative to repo root). */
 export const STATIC_EXPORT_BENCHMARK_CLEAN_DIRS = [
-  ".next",
+  NEXT_COMPILER_CACHE_ROOT_DIR,
   "out",
   ".source",
   "src/generated",
@@ -56,7 +62,8 @@ export type PrepareStaticExportBenchmarkResult = {
 export function prepareStaticExportBenchmark(
   options: PrepareStaticExportBenchmarkOptions,
 ): PrepareStaticExportBenchmarkResult {
-  if (options.mode === "warm") {
+  // Warm / ordinary export must preserve a valid Next compiler cache.
+  if (!shouldWipeNextCompilerCacheForBenchmarkMode(options.mode)) {
     return {
       mode: "warm",
       removedRelativePaths: [],

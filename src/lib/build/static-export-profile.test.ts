@@ -28,7 +28,7 @@ const fixtureCacheReasons = {
   },
   nextCompilationStaticRendering: {
     status: "miss" as const,
-    reason: "next-cache-directory-absent",
+    reason: "clean-mode-regenerates",
   },
   searchIndexEmission: {
     status: "not-applicable" as const,
@@ -137,7 +137,7 @@ describe("static-export-profile", () => {
       "fumadocsGenerationCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
-      "nextCompilationStaticRenderingCache=miss:next-cache-directory-absent",
+      "nextCompilationStaticRenderingCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
       "searchIndexEmissionCache=not-applicable:always-regenerates-from-export",

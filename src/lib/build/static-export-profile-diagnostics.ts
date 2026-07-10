@@ -8,6 +8,10 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { DEFAULT_EXPORT_OUT_DIR } from "@/lib/build/export-out-directory";
+import {
+  isNextCompilerCacheUsable,
+  NEXT_COMPILER_CACHE_DIRECTORY,
+} from "@/lib/build/static-export-compiler-cache";
 import { STATIC_EXPORT_IMMUTABLE_SNAPSHOT_STORE_RELATIVE_PATH } from "@/lib/build/static-export-immutable-snapshot";
 import {
   createNotAvailableCacheReasons,
@@ -24,7 +28,7 @@ import { defaultLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 
 /** Relative paths used to diagnose warm vs clean cache presence before stages. */
 export const STATIC_EXPORT_CACHE_ARTIFACT_PATHS = {
-  nextCacheDirectory: ".next/cache",
+  nextCacheDirectory: NEXT_COMPILER_CACHE_DIRECTORY,
   sourceDirectory: ".source",
   outDirectory: DEFAULT_EXPORT_OUT_DIR,
   chunksDirectory: `${DEFAULT_EXPORT_OUT_DIR}/_next/static/chunks`,
@@ -38,6 +42,7 @@ export type IsDirectoryFn = (path: string) => boolean;
 export type FileSizeFn = (path: string) => number;
 
 export type StaticExportCacheArtifactSnapshot = {
+  /** True when `.next/cache` exists as a non-empty (usable) directory. */
   nextCacheDirectoryPresent: boolean;
   sourceDirectoryPresent: boolean;
   outDirectoryPresent: boolean;
@@ -53,6 +58,8 @@ export type CollectCacheArtifactSnapshotOptions = {
   cwd: string;
   pathExists?: PathExistsFn;
   fileSize?: FileSizeFn;
+  readDirectoryNames?: ReadDirectoryNamesFn;
+  isDirectory?: IsDirectoryFn;
   /** Override contracted output paths (tests). Defaults to preparation steps. */
   contentRuntimeOutputPaths?: readonly string[];
 };
@@ -113,14 +120,21 @@ export function collectStaticExportCacheArtifactSnapshot(
 ): StaticExportCacheArtifactSnapshot {
   const pathExists = options.pathExists ?? existsSync;
   const fileSize = options.fileSize ?? defaultFileSize;
+  const readDirectoryNames =
+    options.readDirectoryNames ?? defaultReadDirectoryNames;
+  const isDirectory = options.isDirectory ?? defaultIsDirectory;
   const contentRuntimeOutputPaths =
     options.contentRuntimeOutputPaths ??
     CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => step.outputPath);
 
   return {
-    nextCacheDirectoryPresent: pathExists(
-      join(options.cwd, STATIC_EXPORT_CACHE_ARTIFACT_PATHS.nextCacheDirectory),
-    ),
+    // Present means usable: `.next/cache` exists and is non-empty.
+    nextCacheDirectoryPresent: isNextCompilerCacheUsable({
+      cwd: options.cwd,
+      pathExists,
+      readDirectoryNames,
+      isDirectory,
+    }),
     sourceDirectoryPresent: pathExists(
       join(options.cwd, STATIC_EXPORT_CACHE_ARTIFACT_PATHS.sourceDirectory),
     ),
@@ -183,9 +197,11 @@ export function deriveStaticExportCacheReasons(input: {
         : cacheReason("miss", "immutable-snapshot-store-or-source-absent");
 
   const nextCompilationStaticRendering =
-    mode === "clean" || !snapshot.nextCacheDirectoryPresent
-      ? cacheReason("miss", "next-cache-directory-absent")
-      : cacheReason("hit", "next-cache-directory-present");
+    mode === "clean"
+      ? cacheReason("miss", "clean-mode-regenerates")
+      : snapshot.nextCacheDirectoryPresent
+        ? cacheReason("hit", "next-compiler-cache-present")
+        : cacheReason("miss", "next-compiler-cache-absent");
 
   return {
     contentRuntimePreparation,
