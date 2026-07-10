@@ -20,9 +20,12 @@ social assets, sitemap, robots).
 | `src/lib/seo/social-preview-assets.test.ts` | Project-site vs root public-asset prefix + absolute production URL proofs |
 | `src/lib/seo/export-social-preview-images.ts` | Export HTML `og:image` / `twitter:image` extraction + verification |
 | `src/lib/seo/export-social-preview-images.test.ts` | Metadata + temp-`out/` proofs that social images resolve under production origin/base path |
+| `src/lib/seo/export-localized-alternates.ts` | Export HTML hreflang extraction + shipped-only absolute production alternate verification |
+| `src/lib/seo/export-localized-alternates.test.ts` | Multi-locale home + subset-locale docs (`concepts/task-queue`) metadata and temp-`out/` proofs |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
+| `src/app/docs/docs-slug-renderer.tsx` | Docs `buildDocsPageAlternates` fail-closed filter via `isDocsPageShippedForLocale` |
 | `src/lib/navigation/site-metadata-path.ts` | Public-asset / non-Metadata path helpers; do not double-prefix Metadata fields |
 | `src/lib/build/static-export.ts` | `resolveGitHubPagesBasePath` / normalize helpers shared with metadataBase |
 | `src/lib/build/built-app-html-paths.ts` | Live project-site base path constant `/you-agent-factory-docs` |
@@ -65,6 +68,13 @@ social assets, sitemap, robots).
    public-asset contexts and
    `exportHtmlHasBasePrefixedSocialImages` /
    `verifyExportSocialPreviewImages` for export HTML gates.
+9. **Localized alternates** (story 005): keep hreflang Metadata app-relative;
+   filter docs alternates with `isDocsPageShippedForLocale` (fail-closed).
+   Exported HTML must emit absolute production hreflang URLs for shipped
+   locales only. Proof routes: `/` (en/ja/zh-CN/vi) and
+   `/docs/concepts/task-queue` (en only). Use
+   `exportHtmlHasShippedAbsoluteAlternates` /
+   `verifyExportLocalizedAlternates`. Never advertise deleted Atlas paths.
 
 ## Sibling lanes
 
