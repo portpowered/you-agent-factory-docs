@@ -49,6 +49,14 @@ describe("runProfiledStaticExport", () => {
     majorBundleModuleCount: { available: true as const, value: 4 },
   };
 
+  const stubMachineMetadata = {
+    osFamily: "darwin",
+    cpuArchitecture: "arm64",
+    logicalCpuCount: 10,
+    runtimeName: "bun",
+    runtimeVersion: "1.3.13",
+  };
+
   test("records wall-time measurements for every required stage when profiling runs", () => {
     const spawnCalls: string[] = [];
     let nowMs = 0;
@@ -66,6 +74,7 @@ describe("runProfiledStaticExport", () => {
       printSummary: false,
       cacheReasons: stubCacheReasons,
       scaleCounts: stubScaleCounts,
+      machineMetadata: stubMachineMetadata,
     });
 
     expect(result.ok).toBe(true);
@@ -92,6 +101,12 @@ describe("runProfiledStaticExport", () => {
     expect(result.summary).toContain("staticRouteCount=3");
     expect(result.summary).toContain("localeCount=2");
     expect(result.summary).toContain("majorBundleModuleCount=4");
+    expect(result.summary).toContain("osFamily=darwin");
+    expect(result.summary).toContain("cpuArchitecture=arm64");
+    expect(result.summary).toContain("logicalCpuCount=10");
+    expect(result.summary).toContain("runtimeName=bun");
+    expect(result.summary).toContain("runtimeVersion=1.3.13");
+    expect(result.machineMetadata).toEqual(stubMachineMetadata);
   });
 
   test("includes the requested clean mode label in the timing summary", () => {
@@ -110,6 +125,7 @@ describe("runProfiledStaticExport", () => {
       printSummary: false,
       cacheReasons: stubCacheReasons,
       scaleCounts: stubScaleCounts,
+      machineMetadata: stubMachineMetadata,
     });
 
     expect(result.ok).toBe(true);
@@ -163,6 +179,7 @@ describe("runProfiledStaticExport", () => {
           reason: "chunks-directory-missing",
         },
       },
+      machineMetadata: stubMachineMetadata,
     });
 
     expect(result.ok).toBe(true);
@@ -175,6 +192,7 @@ describe("runProfiledStaticExport", () => {
     expect(result.summary).toContain(
       "majorBundleModuleCount=not-available:chunks-directory-missing",
     );
+    expect(result.summary).toContain("runtimeName=bun");
   });
 
   test("stops at the first failing stage and still returns a timing summary", () => {
@@ -201,6 +219,7 @@ describe("runProfiledStaticExport", () => {
       printSummary: false,
       cacheReasons: stubCacheReasons,
       scaleCounts: stubScaleCounts,
+      machineMetadata: stubMachineMetadata,
     });
 
     expect(result.ok).toBe(false);
@@ -212,6 +231,7 @@ describe("runProfiledStaticExport", () => {
     expect(result.timings.totalWallTimeMs).toBe(10);
     expect(result.summary).toContain("fumadocsGenerationMs=5");
     expect(result.summary).toContain("staticRouteCount=3");
+    expect(result.summary).toContain("osFamily=darwin");
   });
 
   test("ordinary build:export package script stays the uninstrumented chain", () => {

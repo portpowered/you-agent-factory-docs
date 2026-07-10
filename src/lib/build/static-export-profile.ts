@@ -6,6 +6,8 @@
  * `PROFILE_STATIC_EXPORT=1` or the dedicated profiled / benchmark entrypoints.
  */
 
+import { arch, cpus, platform } from "node:os";
+
 export const PROFILE_STATIC_EXPORT_ENV = "PROFILE_STATIC_EXPORT";
 export const STATIC_EXPORT_BENCHMARK_MODE_ENV = "STATIC_EXPORT_BENCHMARK_MODE";
 
@@ -69,11 +71,36 @@ export type StaticExportProfileScaleCounts = {
   majorBundleModuleCount: StaticExportScaleCountValue;
 };
 
+/**
+ * Non-identifying runtime/machine metadata for comparing profile runs.
+ * Intentionally excludes hostname, username, home path, and similar fields.
+ */
+export type StaticExportProfileMachineMetadata = {
+  osFamily: string;
+  cpuArchitecture: string;
+  logicalCpuCount: number;
+  runtimeName: string;
+  runtimeVersion: string;
+};
+
+/**
+ * Injectable OS/runtime probes so contract tests do not depend on the host.
+ */
+export type StaticExportMachineMetadataSource = {
+  platform: () => NodeJS.Platform | string;
+  arch: () => string;
+  logicalCpuCount: () => number;
+  /** Present when the process is Bun; omit or return undefined under Node. */
+  bunVersion?: () => string | undefined;
+  nodeVersion: () => string;
+};
+
 export type StaticExportProfileSummaryInput = {
   mode: StaticExportBenchmarkMode;
   timings: StaticExportProfileTimings;
   cacheReasons: StaticExportProfileCacheReasons;
   scaleCounts: StaticExportProfileScaleCounts;
+  machineMetadata: StaticExportProfileMachineMetadata;
 };
 
 export type StaticExportProfileClock = () => number;
@@ -170,6 +197,56 @@ export function createNotAvailableCacheReasons(
   };
 }
 
+function defaultMachineMetadataSource(): StaticExportMachineMetadataSource {
+  return {
+    platform: () => platform(),
+    arch: () => arch(),
+    logicalCpuCount: () => cpus().length,
+    bunVersion: () => process.versions.bun,
+    nodeVersion: () => process.versions.node,
+  };
+}
+
+/**
+ * Collects non-identifying OS/runtime metadata for the timing summary.
+ * Prefers Bun when `process.versions.bun` is present because the supported
+ * static-export path runs under Bun.
+ */
+export function collectStaticExportMachineMetadata(
+  source: StaticExportMachineMetadataSource = defaultMachineMetadataSource(),
+): StaticExportProfileMachineMetadata {
+  const bunVersion = source.bunVersion?.();
+  if (bunVersion) {
+    return {
+      osFamily: String(source.platform()),
+      cpuArchitecture: source.arch(),
+      logicalCpuCount: source.logicalCpuCount(),
+      runtimeName: "bun",
+      runtimeVersion: bunVersion,
+    };
+  }
+
+  return {
+    osFamily: String(source.platform()),
+    cpuArchitecture: source.arch(),
+    logicalCpuCount: source.logicalCpuCount(),
+    runtimeName: "node",
+    runtimeVersion: source.nodeVersion(),
+  };
+}
+
+export function formatMachineMetadataLines(
+  metadata: StaticExportProfileMachineMetadata,
+): string[] {
+  return [
+    `osFamily=${metadata.osFamily}`,
+    `cpuArchitecture=${metadata.cpuArchitecture}`,
+    `logicalCpuCount=${metadata.logicalCpuCount}`,
+    `runtimeName=${metadata.runtimeName}`,
+    `runtimeVersion=${metadata.runtimeVersion}`,
+  ];
+}
+
 /**
  * Measures wall time for a synchronous stage body. Uses an injectable clock so
  * tests can stub time without sleeping.
@@ -184,13 +261,13 @@ export function measureWallTimeMs(
 }
 
 /**
- * Stable key order for timing summaries. Machine metadata is added by a later
- * story; cache reasons and scale counts are part of this contract.
+ * Stable key order for timing summaries: mode, stage timings, total, cache
+ * reasons, scale counts, then non-identifying machine metadata.
  */
 export function formatStageTimingSummaryLines(
   input: StaticExportProfileSummaryInput,
 ): string[] {
-  const { mode, timings, cacheReasons, scaleCounts } = input;
+  const { mode, timings, cacheReasons, scaleCounts, machineMetadata } = input;
   return [
     `mode=${mode}`,
     `contentRuntimePreparationMs=${timings.contentRuntimePreparation}`,
@@ -207,6 +284,7 @@ export function formatStageTimingSummaryLines(
     `staticRouteCount=${formatScaleCountValue(scaleCounts.staticRouteCount)}`,
     `localeCount=${formatScaleCountValue(scaleCounts.localeCount)}`,
     `majorBundleModuleCount=${formatScaleCountValue(scaleCounts.majorBundleModuleCount)}`,
+    ...formatMachineMetadataLines(machineMetadata),
   ];
 }
 

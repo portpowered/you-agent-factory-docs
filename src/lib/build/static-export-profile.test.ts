@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  collectStaticExportMachineMetadata,
   createEmptyStageTimingsMs,
   createNotAvailableCacheReasons,
   createNotAvailableScaleCounts,
@@ -43,6 +44,14 @@ const fixtureScaleCounts = {
   staticRouteCount: { available: true as const, value: 12 },
   localeCount: { available: true as const, value: 4 },
   majorBundleModuleCount: { available: true as const, value: 9 },
+};
+
+const fixtureMachineMetadata = {
+  osFamily: "darwin",
+  cpuArchitecture: "arm64",
+  logicalCpuCount: 10,
+  runtimeName: "bun",
+  runtimeVersion: "1.3.13",
 };
 
 describe("static-export-profile", () => {
@@ -92,7 +101,7 @@ describe("static-export-profile", () => {
     expect(elapsed).toBe(40);
   });
 
-  test("timing summary includes mode, stage timings, cache reasons, and scale counts", () => {
+  test("timing summary includes mode, stage timings, cache reasons, scale counts, and machine metadata", () => {
     const timings = finalizeProfileTimings(
       {
         ...createEmptyStageTimingsMs(),
@@ -110,6 +119,7 @@ describe("static-export-profile", () => {
       timings,
       cacheReasons: fixtureCacheReasons,
       scaleCounts: fixtureScaleCounts,
+      machineMetadata: fixtureMachineMetadata,
     });
 
     expect(summary).toContain("static-export-profile");
@@ -138,6 +148,50 @@ describe("static-export-profile", () => {
     expect(summary).toContain("staticRouteCount=12");
     expect(summary).toContain("localeCount=4");
     expect(summary).toContain("majorBundleModuleCount=9");
+    expect(summary).toContain("osFamily=darwin");
+    expect(summary).toContain("cpuArchitecture=arm64");
+    expect(summary).toContain("logicalCpuCount=10");
+    expect(summary).toContain("runtimeName=bun");
+    expect(summary).toContain("runtimeVersion=1.3.13");
+    expect(summary).not.toContain("hostname=");
+    expect(summary).not.toContain("username=");
+    expect(summary).not.toContain("home=");
+  });
+
+  test("collectStaticExportMachineMetadata prefers Bun and stays non-identifying", () => {
+    const metadata = collectStaticExportMachineMetadata({
+      platform: () => "linux",
+      arch: () => "x64",
+      logicalCpuCount: () => 8,
+      bunVersion: () => "1.2.0",
+      nodeVersion: () => "22.0.0",
+    });
+
+    expect(metadata).toEqual({
+      osFamily: "linux",
+      cpuArchitecture: "x64",
+      logicalCpuCount: 8,
+      runtimeName: "bun",
+      runtimeVersion: "1.2.0",
+    });
+
+    const nodeOnly = collectStaticExportMachineMetadata({
+      platform: () => "darwin",
+      arch: () => "arm64",
+      logicalCpuCount: () => 4,
+      bunVersion: () => undefined,
+      nodeVersion: () => "22.18.0",
+    });
+
+    expect(nodeOnly.runtimeName).toBe("node");
+    expect(nodeOnly.runtimeVersion).toBe("22.18.0");
+    expect(Object.keys(nodeOnly).sort()).toEqual([
+      "cpuArchitecture",
+      "logicalCpuCount",
+      "osFamily",
+      "runtimeName",
+      "runtimeVersion",
+    ]);
   });
 
   test("missing optional diagnostics format as not-available reasons", () => {
@@ -159,6 +213,7 @@ describe("static-export-profile", () => {
       timings: finalizeProfileTimings(createEmptyStageTimingsMs(), 0),
       cacheReasons: createNotAvailableCacheReasons("cache-diagnostics-failed"),
       scaleCounts: createNotAvailableScaleCounts("export-out-missing"),
+      machineMetadata: fixtureMachineMetadata,
     });
 
     expect(summary).toContain(
@@ -171,6 +226,7 @@ describe("static-export-profile", () => {
     expect(summary).toContain(
       "majorBundleModuleCount=not-available:export-out-missing",
     );
+    expect(summary).toContain("runtimeName=bun");
   });
 
   test("resolveStaticExportBenchmarkMode prefers CLI over env", () => {

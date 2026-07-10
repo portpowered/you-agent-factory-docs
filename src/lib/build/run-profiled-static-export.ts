@@ -1,5 +1,6 @@
 import { type SpawnSyncReturns, spawnSync } from "node:child_process";
 import {
+  collectStaticExportMachineMetadata,
   createEmptyStageTimingsMs,
   finalizeProfileTimings,
   formatStageTimingSummary,
@@ -8,6 +9,7 @@ import {
   type StaticExportBenchmarkMode,
   type StaticExportProfileCacheReasons,
   type StaticExportProfileClock,
+  type StaticExportProfileMachineMetadata,
   type StaticExportProfileScaleCounts,
   type StaticExportProfileStageCommand,
   type StaticExportProfileStageId,
@@ -53,6 +55,8 @@ export type RunProfiledStaticExportOptions = {
    */
   cacheReasons?: StaticExportProfileCacheReasons;
   scaleCounts?: StaticExportProfileScaleCounts;
+  /** Optional override for machine metadata (tests). */
+  machineMetadata?: StaticExportProfileMachineMetadata;
 };
 
 export type RunProfiledStaticExportResult = {
@@ -63,6 +67,7 @@ export type RunProfiledStaticExportResult = {
   timings: StaticExportProfileTimings;
   cacheReasons: StaticExportProfileCacheReasons;
   scaleCounts: StaticExportProfileScaleCounts;
+  machineMetadata: StaticExportProfileMachineMetadata;
   summary: string;
   stdout: string;
   stderr: string;
@@ -175,11 +180,14 @@ export function runProfiledStaticExport(
     safeCollectStaticExportScaleCounts({
       cwd: options.cwd,
     });
+  const machineMetadata =
+    options.machineMetadata ?? collectStaticExportMachineMetadata();
   const summary = formatStageTimingSummary({
     mode,
     timings,
     cacheReasons,
     scaleCounts,
+    machineMetadata,
   });
 
   if (printSummary) {
@@ -194,6 +202,7 @@ export function runProfiledStaticExport(
     timings,
     cacheReasons,
     scaleCounts,
+    machineMetadata,
     summary,
     stdout: stdoutChunks.join(""),
     stderr: stderrChunks.join(""),
