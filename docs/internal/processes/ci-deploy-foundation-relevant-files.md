@@ -178,11 +178,16 @@ just-built `out/` and never triggers a redundant `build:export`.
 Read-only post-deploy operator checks (live
 `https://portpowered.github.io/you-agent-factory-docs` home / getting-started /
 comparing-agent-factories / search / prefixed `_next` CSS+JS) live in
-`docs/operations.md` under **Read-only post-deploy checks**. Those curls are
-maintainer GET-only verification after a green deploy; they must not be wired
-into tests or the guard. The guard and `test:build-contract` only probe local
-`out/` over loopback and must never deploy to Pages, push branches, open PRs,
-or submit other external changes.
+`docs/operations.md` under **Read-only post-deploy checks**. That runbook
+includes an operator-only constraints table (GET-only; no push/PR/Pages deploy
+API), a check inventory, copy-paste curls, and auto-extracted prefixed CSS/JS
+fetches that reject bare `/_next`. Prefixed asset paths in live HTML are
+host-absolute (`/you-agent-factory-docs/_next/...`); fetch them from
+`https://portpowered.github.io` — do not append them to the `$SITE` base URL.
+Those curls are maintainer verification after a green deploy; they must not be
+wired into tests or the guard. The guard and `test:build-contract` only probe
+local `out/` over loopback and must never deploy to Pages, push branches, open
+PRs, or submit other external changes.
 
 When path-helper fixtures still encode retired `/ai-model-reference`, update them
 to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —

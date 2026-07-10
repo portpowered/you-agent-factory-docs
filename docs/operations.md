@@ -436,14 +436,38 @@ documentation explicitly requires a different emergency path.
 
 ## Read-only post-deploy checks
 
-After a green **Deploy to GitHub Pages** run on `main`, maintainers can confirm
-the live project site at
-`https://portpowered.github.io/you-agent-factory-docs` without deploying,
-pushing, opening PRs, or mutating remotes. These checks are **GET-only**
-operator curls (or equivalent browser loads). They are not part of CI, the
-Pages guard, or any automated test — `make guard-pages-deployed-artifact` and
-`make test-build-contract` only probe a local `out/` over loopback and never
-call GitHub Pages deploy APIs or push branches.
+After a green **Deploy to GitHub Pages** run on `main`, maintainers confirm the
+live project site at `https://portpowered.github.io/you-agent-factory-docs`
+with **GET-only** operator curls (or equivalent browser loads). Pair these
+checks with [Commit-SHA traceability](#commit-sha-traceability) so you know
+which SHA you are smoking.
+
+### Operator-only constraints
+
+These checks are **maintainer operator verification only**. They are **not** CI
+deploy steps, not part of the Pages guard, and not automated tests.
+
+| Must | Must not |
+| --- | --- |
+| Use `GET` (or a browser load) against the live project site | Push branches, open PRs, or mutate remotes |
+| Use short timeouts (`--max-time 10` or shorter) | Call GitHub Pages deploy APIs or re-run deploy from a local harness |
+| Fail closed on HTTP errors and bare `/_next` references | Wire these curls into `make test`, CI, or `make guard-pages-deployed-artifact` |
+
+`make guard-pages-deployed-artifact` and `make test-build-contract` only probe a
+local `out/` over loopback. They never hit the public site and must stay
+separate from this runbook.
+
+### Check inventory
+
+| Surface | URL under `https://portpowered.github.io/you-agent-factory-docs` | What a 200 proves |
+| --- | --- | --- |
+| Home | `/` | Project-site root HTML is reachable |
+| Docs page | `/docs/guides/getting-started` | A representative docs route is live |
+| Blog page | `/blog/comparing-agent-factories` | A representative blog route is live |
+| Search bootstrap | `/api/search` | Prefixed static Orama bootstrap is reachable |
+| Prefixed assets | `/you-agent-factory-docs/_next/...` CSS + JS from home HTML | Asset prefix is correct; bare `/_next` is absent |
+
+### Copy-paste smoke curls
 
 Use short timeouts so a hung host fails fast:
 
@@ -466,29 +490,34 @@ curl --fail --silent --show-error --max-time 10 \
   "$SITE/api/search" >/dev/null
 ```
 
-Confirm HTML still references the project-site asset prefix (not bare `/_next`):
+### Project-site asset prefix (reject bare `/_next`)
+
+Confirm live HTML references `/you-agent-factory-docs/_next/` and does **not**
+emit root-level `/_next` `src`/`href` attributes, then fetch one CSS and one JS
+asset from that HTML. Prefixed asset paths in HTML are host-absolute (they
+already include `/you-agent-factory-docs`), so fetch them from the Pages host
+origin — do not append them to `$SITE` or the path doubles.
 
 ```sh
 SITE=https://portpowered.github.io/you-agent-factory-docs
+ORIGIN=https://portpowered.github.io
 html="$(curl --fail --silent --show-error --max-time 10 "$SITE/")"
 printf '%s' "$html" | grep -q '/you-agent-factory-docs/_next/'
 ! printf '%s' "$html" | grep -q 'src="/_next/'
 ! printf '%s' "$html" | grep -q 'href="/_next/'
+
+CSS_PATH="$(printf '%s' "$html" | grep -oE '/you-agent-factory-docs/_next/[^"[:space:]]+\.css' | head -n 1)"
+JS_PATH="$(printf '%s' "$html" | grep -oE '/you-agent-factory-docs/_next/[^"[:space:]]+\.js' | head -n 1)"
+test -n "$CSS_PATH" && test -n "$JS_PATH"
+curl --fail --silent --show-error --max-time 10 "$ORIGIN$CSS_PATH" >/dev/null
+curl --fail --silent --show-error --max-time 10 "$ORIGIN$JS_PATH" >/dev/null
 ```
 
-Pick one CSS and one JS URL from that HTML (paths under
-`/you-agent-factory-docs/_next/...`) and fetch them:
-
-```sh
-SITE=https://portpowered.github.io/you-agent-factory-docs
-# Replace CSS_PATH / JS_PATH with href/src values from the home HTML above.
-curl --fail --silent --show-error --max-time 10 "$SITE$CSS_PATH" >/dev/null
-curl --fail --silent --show-error --max-time 10 "$SITE$JS_PATH" >/dev/null
-```
-
-A failed curl or a bare `/_next` match means the published artifact drifted from
-the project-site contract; investigate the latest deploy-pages run for that SHA
-rather than re-running deploy from a local test harness.
+A failed curl, a missing prefixed asset path, or a bare `/_next` match means the
+published artifact drifted from the project-site contract. Investigate the
+latest **Deploy GitHub Pages** run for that SHA (see
+[Commit-SHA traceability](#commit-sha-traceability)) rather than re-running
+deploy from a local test harness.
 
 ## Commit-SHA traceability
 
