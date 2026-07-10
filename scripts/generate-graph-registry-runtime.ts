@@ -1,17 +1,12 @@
-import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { join, relative } from "node:path";
 import {
   getGeneratedContentRuntimeRoot,
   getProjectRoot,
   getRegistryCollectionRoot,
 } from "@/lib/content/content-paths";
 import { parseGraphRegistryRecords } from "@/lib/content/graph-registry-validation";
+import { writeFileIfChangedSync } from "@/lib/content/write-file-if-changed";
 
 const projectRoot = getProjectRoot();
 const graphRegistryRoot = getRegistryCollectionRoot("graphs");
@@ -109,22 +104,9 @@ export function syncGraphRegistryRuntimeModule(
   const source = generateGraphRegistryRuntimeSource(
     buildGraphModuleDescriptors(graphFileNames),
   );
-  const existingSource = existsSync(resolvedOutputPath)
-    ? readFileSync(resolvedOutputPath, "utf8")
-    : undefined;
-
-  if (existingSource === source) {
-    return {
-      changed: false,
-      graphCount: graphFileNames.length,
-      outputPath: resolvedOutputPath,
-    };
-  }
-
-  mkdirSync(dirname(resolvedOutputPath), { recursive: true });
-  writeFileSync(resolvedOutputPath, source, "utf8");
+  const writeResult = writeFileIfChangedSync(resolvedOutputPath, source);
   return {
-    changed: true,
+    changed: writeResult.changed,
     graphCount: graphFileNames.length,
     outputPath: resolvedOutputPath,
   };

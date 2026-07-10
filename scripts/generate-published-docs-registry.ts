@@ -1,9 +1,11 @@
 import { spawnSync } from "node:child_process";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getGeneratedContentRuntimeRoot } from "../src/lib/content/content-paths";
 import { loadPublishedDocsRuntimeManifestSync } from "../src/lib/content/published-docs-registry-source";
+import { writeFileIfChangedSync } from "../src/lib/content/write-file-if-changed";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(scriptDir, "..");
@@ -71,24 +73,32 @@ export const GENERATED_PUBLISHED_CONCEPT_SECTION_REGISTRY_IDS = ${renderLiteral(
 )} as const;
 `;
 
-mkdirSync(dirname(outputPath), { recursive: true });
-writeFileSync(outputPath, fileContents);
+const tempDir = mkdtempSync(join(tmpdir(), "published-docs-registry-"));
+const tempPath = join(tempDir, "published-docs-registry.generated.ts");
 
-const formatResult = spawnSync(
-  "bunx",
-  ["biome", "format", "--write", "--vcs-use-ignore-file=false", outputPath],
-  {
-    cwd: repoRoot,
-    encoding: "utf8",
-  },
-);
-
-if (formatResult.status !== 0) {
-  throw new Error(
-    `Failed to format ${relative(repoRoot, outputPath)}: ${
-      formatResult.stderr || formatResult.stdout
-    }`,
+try {
+  writeFileSync(tempPath, fileContents, "utf8");
+  const formatResult = spawnSync(
+    "bunx",
+    ["biome", "format", "--write", "--vcs-use-ignore-file=false", tempPath],
+    {
+      cwd: repoRoot,
+      encoding: "utf8",
+    },
   );
-}
 
-console.log(`wrote ${relative(repoRoot, outputPath)}`);
+  if (formatResult.status !== 0) {
+    throw new Error(
+      `Failed to format ${relative(repoRoot, outputPath)}: ${
+        formatResult.stderr || formatResult.stdout
+      }`,
+    );
+  }
+
+  const formatted = readFileSync(tempPath, "utf8");
+  const result = writeFileIfChangedSync(outputPath, formatted);
+  const relativeOutputPath = relative(repoRoot, outputPath);
+  console.log(`${result.changed ? "wrote" : "verified"} ${relativeOutputPath}`);
+} finally {
+  rmSync(tempDir, { recursive: true, force: true });
+}

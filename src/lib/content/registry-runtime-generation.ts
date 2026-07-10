@@ -1,5 +1,4 @@
 import { readdirSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, relative } from "node:path";
 import {
   getProjectRoot,
@@ -12,6 +11,7 @@ import {
   RegistryLoadError,
   type RegistryLoadErrorDetail,
 } from "./registry";
+import { writeFileIfChanged } from "./write-file-if-changed";
 
 type RuntimeRegistryDirectory = {
   directory: Exclude<RegistryCollection, "graphs" | "tables">;
@@ -1240,25 +1240,6 @@ export async function writeGeneratedRegistryRuntimeModule(
   options: GenerateRegistryRuntimeSourceOptions,
 ): Promise<{ changed: boolean; source: string }> {
   const source = await generateRegistryRuntimeSource(options);
-  await mkdir(dirname(options.outputPath), { recursive: true });
-
-  let previousSource: string | undefined;
-  try {
-    previousSource = await readFile(options.outputPath, "utf8");
-  } catch (error) {
-    const code =
-      error && typeof error === "object" && "code" in error
-        ? (error as NodeJS.ErrnoException).code
-        : undefined;
-    if (code !== "ENOENT") {
-      throw error;
-    }
-  }
-
-  if (previousSource === source) {
-    return { changed: false, source };
-  }
-
-  await writeFile(options.outputPath, source);
-  return { changed: true, source };
+  const result = await writeFileIfChanged(options.outputPath, source);
+  return { changed: result.changed, source };
 }

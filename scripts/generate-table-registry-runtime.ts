@@ -1,5 +1,5 @@
-import { mkdir, readdir, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { readdir } from "node:fs/promises";
+import { join } from "node:path";
 import {
   getGeneratedContentRuntimeRoot,
   getProjectRoot,
@@ -9,6 +9,7 @@ import {
   createTableRegistrySourceEntries,
   renderGeneratedTableRegistryModule,
 } from "@/lib/content/table-registry-generation";
+import { writeFileIfChanged } from "@/lib/content/write-file-if-changed";
 
 const projectRoot = getProjectRoot();
 const tablesRegistryRoot = getRegistryCollectionRoot("tables");
@@ -21,9 +22,11 @@ async function main(): Promise<void> {
   const fileNames = await readdir(tablesRegistryRoot);
   const entries = createTableRegistrySourceEntries(fileNames);
   const output = renderGeneratedTableRegistryModule(entries);
-
-  await mkdir(dirname(outputPath), { recursive: true });
-  await writeFile(outputPath, output, "utf8");
+  const result = await writeFileIfChanged(outputPath, output);
+  const relativeOutputPath = outputPath.replace(`${projectRoot}/`, "");
+  console.log(
+    `${result.changed ? "Generated" : "Verified"} ${relativeOutputPath}.`,
+  );
 }
 
 await main();

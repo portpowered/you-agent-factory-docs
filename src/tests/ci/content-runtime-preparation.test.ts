@@ -5,6 +5,7 @@ import {
   mkdirSync,
   readFileSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { basename, join, relative } from "node:path";
@@ -1143,6 +1144,50 @@ describe("content runtime preparation", () => {
       expect(forceCleanOutput).toContain("0 cache hits");
     },
     { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS * 3 },
+  );
+
+  test(
+    "content-runtime generators use write-if-changed and leave identical bytes untouched",
+    () => {
+      // Force generators to run (bypass fingerprint skip) and prove identical
+      // content does not rewrite contracted runtime outputs.
+      clearContentRuntimeFingerprintStore();
+      const seed = runPrepareContentRuntime();
+      expect(seed.status).toBe(0);
+
+      const outputStatsBefore = CONTENT_RUNTIME_PREPARATION_STEPS.map(
+        (step) => {
+          const absolutePath = join(repoRoot, step.outputPath);
+          const stats = statSync(absolutePath);
+          return {
+            stepId: step.id,
+            absolutePath,
+            mtimeMs: stats.mtimeMs,
+            ino: stats.ino,
+            bytes: readFileSync(absolutePath),
+          };
+        },
+      );
+
+      // Clear fingerprints so the next prepare re-runs every generator.
+      clearContentRuntimeFingerprintStore();
+      // Brief pause so a naive unconditional write would bump mtime.
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 25);
+
+      const rerun = runPrepareContentRuntime();
+      const rerunOutput = `${rerun.stdout}\n${rerun.stderr}`;
+      expect(rerun.status).toBe(0);
+      expect(rerunOutput).toContain("0 cache hits");
+      expect(rerunOutput).toMatch(/Verified|already current|verified/i);
+
+      for (const before of outputStatsBefore) {
+        const after = statSync(before.absolutePath);
+        expect(readFileSync(before.absolutePath)).toEqual(before.bytes);
+        expect(after.mtimeMs).toBe(before.mtimeMs);
+        expect(after.ino).toBe(before.ino);
+      }
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS * 2 },
   );
 
   test(
