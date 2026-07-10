@@ -1,0 +1,31 @@
+{
+  "title": "Worker-Adviser",
+  "description": "Worker-adviser separates an adviser role that recommends or critiques from a worker role that performs the work.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Worker-adviser is a technique that separates an adviser role from a worker role. The adviser recommends, critiques, or guides. The worker performs the work. Keeping those roles apart means advice can shape outcomes without collapsing advise and perform into one unreviewed agent pass."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "When one agent both advises and acts, it is hard to tell guidance from the change that lands. Worker-adviser keeps ownership clear: who decides or critiques stays distinct from who performs, so critique can land before or beside execution instead of disappearing into a single pass."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "The adviser produces guidance or critique. The worker acts on the task. The two responsibilities stay distinct so advice is not silently rewritten as the only outcome, and performed work is not treated as unexamined advice."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Worker-adviser is about separating advise from perform. Writer-reviewer is a write then review accept-or-reject quality loop. Planner-executor plans slices then executes them. Classify-execute routes by work class then runs. Workqueue-executor drains an ordered work queue. The workers configuration reference explains how to declare worker backends; it is not the advise-versus-perform technique itself."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

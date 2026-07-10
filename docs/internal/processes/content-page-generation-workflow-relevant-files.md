@@ -255,6 +255,28 @@ shared wiring is still missing. Publishing may trip
   empty-state assertions to authored-entry assertions once the first page
   ships; keep non-default locale empty-state checks until locale stubs exist)
 
+### First published techniques page
+
+`techniques` already has `PUBLISHED_DOCS_SECTIONS` / `techniquePageHref` and
+`registryDirectoryByKind.technique`, but still needs the local-docs loader path
+before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
+
+- add `src/lib/content/technique-page.ts` + `technique-page-load.ts`
+- include `techniques` in `LOCAL_DOCS_SECTIONS` / `parseLocalDocsPageRef` /
+  `loadLocalDocsPage` in `src/lib/content/local-docs-page.ts`
+- remove `src/content/docs/techniques/.gitkeep` and
+  `src/content/registry/techniques/.gitkeep` when the first authored bundle and
+  registry record ship
+- update default-locale techniques expectations in
+  `src/tests/content/section-indexes.test.tsx` to authored-entry assertions;
+  leave non-default locale techniques indexes on empty-state until colocated
+  `messages/<locale>.json` stubs exist
+
+Declare the first-CLI-section exception with
+`bun run audit:canonical-page-surface -- --exception-reason "..."` and repeat
+that justification in the PR conversation. Later technique pages should stay
+page-local once this wiring lands.
+
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the
 section-index test update plus page-owned bundle/registry files. Document the

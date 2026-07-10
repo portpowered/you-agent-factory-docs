@@ -1,0 +1,14 @@
+{
+  "id": "technique.worker-adviser",
+  "slug": "worker-adviser",
+  "kind": "technique",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["worker and adviser", "advise then perform", "adviser-worker"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T03:13:00.000Z",
+  "updatedAt": "2026-07-10T03:13:00.000Z"
+}

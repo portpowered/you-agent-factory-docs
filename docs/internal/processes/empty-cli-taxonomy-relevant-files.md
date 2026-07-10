@@ -78,12 +78,14 @@ Do not author customer page bundles under content roots in this lane.
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/{guides,techniques}/.gitkeep` | Present, empty CLI docs content roots (no authored `page.mdx` bundles) |
+| `src/content/docs/guides/.gitkeep` | Present, empty guides docs content root (no authored `page.mdx` bundles in empty-taxonomy lanes) |
+| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles once a first-techniques-section lane ships |
 | `src/content/docs/documentation/` | CLI documentation content root; may contain authored topic page bundles |
-| `src/content/registry/{guides,techniques}/.gitkeep` | Present, empty CLI registry dirs (loader already tolerates ENOENT; dirs make the contract explicit) |
+| `src/content/registry/guides/.gitkeep` | Present, empty guides registry dir (loader already tolerates ENOENT; dirs make the contract explicit) |
+| `src/content/registry/techniques/` | CLI techniques registry dir; may contain authored technique records once first pages ship |
 | `src/content/registry/documentation/` | CLI documentation registry dir; may contain authored topic records |
-| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` stays guides/techniques only once documentation pages ship |
-| `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks: empty guide/technique roots, allowed documentation pages/records, section-index empty state without starters |
+| `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` historically listed guides/techniques while those roots stayed empty |
+| `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks for empty-taxonomy lanes; required `make test` excludes `src/lib/docs/`, so first authored techniques pages update allowlisted `section-indexes.test.tsx` instead of rewriting this suite in the page lane |
 | `src/lib/content/published-docs-registry-contract.ts` | Includes `documentation` in `PUBLISHED_DOCS_SECTIONS` with `documentationPageHref` routing |
 | `src/lib/content/content-hrefs.ts` | `documentationPageHref` for `/docs/documentation/<slug>` |
 | `src/lib/factory/canonical-page-surface-audit.ts` | `registryDirectoryByKind` includes `documentation` (and guide/technique) for routine page-surface audits |
