@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for documentation/mcp.
  * Covers documentation shell, MCP identity, how-to-integrate steps,
- * serve modes, and Factory Session tool overview.
+ * serve modes, Factory Session tool overview, key concepts / limits,
+ * and sibling discovery links.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -182,5 +183,74 @@ describe("mcp documentation page", () => {
     expect(toolCode).toMatch(/you\.factory_session\.start_async/);
     expect(toolCode).toMatch(/you\.factory_session\.get/);
     expect(toolCode).toMatch(/you\.factory_session\.get_result/);
+  });
+
+  test("shows key concepts, limits, and sibling discovery links", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "documentation",
+      slug: "mcp",
+    });
+
+    const keyConcepts = String(
+      loadedPage.messages.sections?.keyConcepts?.body ?? "",
+    );
+    const limits = String(
+      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+    );
+
+    expect(keyConcepts).toMatch(/Model Context Protocol \(MCP\)/);
+    expect(keyConcepts).toMatch(/Factory Session/);
+    expect(keyConcepts).toMatch(/you mcp serve/);
+    expect(keyConcepts).toMatch(/stdio/i);
+    expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
+
+    expect(limits).toMatch(/web MCP integration reference/i);
+    expect(limits).toMatch(/stdio/i);
+    expect(limits).toMatch(/HTTP|SSE/i);
+    expect(limits).toMatch(/multi-host/i);
+    expect(limits).toMatch(/Cursor/i);
+    expect(limits).toMatch(/dynamic-workflows/i);
+    expect(limits).not.toMatch(/on this page|reader.?shortcut/i);
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    const keyConceptsSection = document.getElementById("key-concepts");
+    const limitsSection = document.getElementById("limits-and-assumptions");
+    const relatedSection = document.getElementById("related");
+
+    expect(keyConceptsSection?.textContent).toMatch(
+      /Model Context Protocol \(MCP\)/,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(/you mcp serve/);
+    expect(keyConceptsSection?.textContent).toMatch(/stdio/i);
+    expect(keyConceptsSection?.textContent).toMatch(/Factory Session/);
+
+    expect(limitsSection?.textContent).toMatch(
+      /web MCP integration reference/i,
+    );
+    expect(limitsSection?.textContent).toMatch(/HTTP|SSE/i);
+    expect(limitsSection?.textContent).toMatch(/Cursor/i);
+    expect(limitsSection?.textContent).toMatch(/dynamic-workflows/i);
+
+    expect(relatedSection).toBeTruthy();
+    const relatedLinks = Array.from(
+      relatedSection?.querySelectorAll("a[href]") ?? [],
+    );
+    const hrefs = relatedLinks.map((node) => node.getAttribute("href") ?? "");
+    expect(hrefs).toContain("/docs/guides/cursor-dynamic-workflows");
+    expect(hrefs).toContain("/docs/documentation/cli");
+    expect(hrefs).toContain("/docs/concepts/tool");
+    expect(relatedSection?.textContent).toMatch(/Cursor dynamic workflows/i);
+    expect(relatedSection?.textContent).toMatch(/CLI docs/i);
+    expect(relatedSection?.textContent).toMatch(/Tool concept/i);
   });
 });

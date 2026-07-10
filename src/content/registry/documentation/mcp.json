@@ -6,9 +6,13 @@
   "defaultSummaryKey": "description",
   "aliases": ["MCP", "Model Context Protocol", "you mcp serve"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "guide.cursor-dynamic-workflows",
+    "documentation.cli",
+    "concept.tool"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T00:00:00.000Z",
-  "updatedAt": "2026-07-10T00:00:00.000Z"
+  "updatedAt": "2026-07-10T07:40:00.000Z"
 }

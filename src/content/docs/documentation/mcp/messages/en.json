@@ -8,7 +8,7 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "Model Context Protocol (MCP) is how an editor or other host discovers and calls tools over a child-process transport. you-agent-factory exposes Factory Session tools to MCP hosts through you mcp serve. The host spawns that command as a stdio child process: stdin and stdout carry MCP JSON-RPC, and stderr stays reserved for diagnostics."
+      "body": "Model Context Protocol (MCP) is how an editor or other host discovers and calls tools over a child-process transport. you-agent-factory exposes Factory Session tools to MCP hosts through you mcp serve over stdio. The host spawns that command as a stdio child process: stdin and stdout carry MCP JSON-RPC, and stderr stays reserved for diagnostics. After the host reloads, those Factory Session tools appear under you.factory_session.* names for validate, start, status, and result flows."
     },
     "howToIntegrate": {
       "title": "How To Integrate",
@@ -28,7 +28,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web MCP integration reference for stdio serve, host configuration, and Factory Session tool discovery. It is not HTTP or SSE transport documentation, not a multi-host UI parity matrix, not a sync of packaged you docs mcp topics, and not the Cursor dynamic-workflows use-case guide."
+      "body": "This page is a web MCP integration reference for stdio serve, host configuration, and Factory Session tool discovery. It is not HTTP or SSE transport documentation, not a multi-host UI parity matrix, not a sync of packaged you docs mcp topics, not the Cursor dynamic-workflows use-case guide, and not the dynamic-workflows API deep page."
     },
     "related": {
       "title": "Related To"
@@ -44,7 +44,10 @@
     "serveCommandLabel": "Canonical serve command",
     "hostJsonLabel": "Generic MCP host JSON",
     "runtimeHostJsonLabel": "Runtime-backed MCP host JSON",
-    "primaryToolsLabel": "Primary Factory Session tools"
+    "primaryToolsLabel": "Primary Factory Session tools",
+    "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows guide",
+    "cliDocs": "CLI docs",
+    "toolConcept": "Tool concept"
   },
   "callouts": {
     "stdioTransport": {
