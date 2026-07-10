@@ -1,0 +1,41 @@
+{
+  "title": "Tokens",
+  "description": "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
+  "openingSummary": "A factory token, also called a work token, is the runtime unit that represents one submitted work item while it occupies a work-type state.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A factory token, also called a work token, is the runtime unit that represents one submitted work item occupying a work-type state. That state is called a place: the factory tracks where each token sits by the place it occupies. The token is the thing the runtime moves — not a chat message, and not an LLM tokenizer piece."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "When you read whether a workstation is enabled, inspect you work list or session work views, or ask why a submit lands work in an initial state, you are looking at factory tokens. Recognizing that unit of work makes those surfaces readable without reverse-engineering the rest of the topology first."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You submit work for a task work type. The runtime creates a factory token in the initial place task:init. A workstation whose inputs include task:init becomes enabled, consumes that token, and dispatches its worker. When the worker finishes, the workstation routes the token to another place based on the outcome — an accepted success place, a continue place for ordinary partial progress, a rejection place, or a failure place."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "Tokens appear on three observable surfaces. In factory.json, each work type and state pair becomes a place named like task:init. Workstation inputs and outputs wire those places so a step can consume a token and emit it on an outcome route. Inspection surfaces such as you work list and session work views show which tokens currently sit in which states."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "Factory and work tokens are not LLM tokenizer or model-input tokens. In this system a token is the unit of submitted work that occupies a place; it is not a piece of text a model reads. Design-system or UI tokens are also a different idea and are out of scope here."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "configurationDocs": "Configuration",
+    "workstationsDocs": "Workstations",
+    "submittingWorkDocs": "Submitting work"
+  }
+}

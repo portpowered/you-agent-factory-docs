@@ -142,6 +142,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ja: [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/tokens",
         "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
@@ -153,6 +154,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       "zh-CN": [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/tokens",
         "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
@@ -164,6 +166,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       vi: [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/tokens",
         "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
