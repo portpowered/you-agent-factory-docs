@@ -1,0 +1,41 @@
+{
+  "title": "Compaction",
+  "description": "Compaction shrinks retained context—history, transcripts, or stream windows—so long-running agent or factory work can continue within limits.",
+  "openingSummary": "Compaction shrinks retained context so long-running agent or factory work can keep going within context limits.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Compaction is shrinking retained context—conversation history, transcripts, or stream windows—so long-running agent or factory work can continue within context limits. Retained context is the earlier turn detail a run still carries forward. Compaction drops, truncates, or coalesces that older detail so later turns still fit. It is not the factory workflow system itself, and it is not deliberative thinking."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long-running factory agent runs accumulate retained context until later turns no longer fit inside the model's context window. Without compaction, those runs stall or fail when the window fills. Compaction keeps useful continuity while dropping or coalescing older detail so later turns still fit and the run can continue."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You run a long looped coding goal under you-agent-factory. After many passes, the retained transcript or stream window is too large for later turns to fit. Compaction truncates, coalesces, or age-evicts older turns in that window so the next pass still fits and the run continues. In response-stream mode, the factory may also emit compaction records that report how many earlier sequences were dropped."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "Compaction is not thinking: thinking is deliberative reasoning inside a harness or model turn, while compaction shrinks retained context so later turns still fit. Compaction is also not tokens—neither LLM cost or context units nor factory work tokens that move submitted work through places. It is not deleting or closing a session; the run continues with a smaller retained window. And it is not a one-off summarize-this-chat tip: compaction is the runtime shrink that keeps long-running factory agent work inside limits."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "tokensConcept": "Tokens concept",
+    "thinkingConcept": "Thinking concept",
+    "harnessConcept": "Harness concept",
+    "loopConcept": "Loop concept",
+    "configurationDocs": "Configuration documentation",
+    "worktreeConcept": "Worktree concept",
+    "harnessSupportDocs": "Harness-support documentation"
+  }
+}

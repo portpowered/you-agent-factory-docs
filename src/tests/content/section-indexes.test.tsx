@@ -147,6 +147,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("Checklist");
     expect(html).toContain("/docs/concepts/checklist");
+    expect(html).toContain("Compaction");
+    expect(html).toContain("/docs/concepts/compaction");
     expect(html).toContain("Harness");
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("Loop");
@@ -265,6 +267,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
     expect(html).toContain("Checklist");
     expect(html).toContain("/ja/docs/concepts/checklist");
+    expect(html).toContain("Compaction");
+    expect(html).toContain("/ja/docs/concepts/compaction");
     expect(html).toContain("Harness");
     expect(html).toContain("/ja/docs/concepts/harness");
     expect(html).toContain("Loop");
