@@ -70,6 +70,21 @@ describe("planner-executor technique page", () => {
     expect(whyItMattersBody).not.toMatch(/Model Atlas/i);
     expect(whyItMattersBody).not.toMatch(/on this page/i);
 
+    const howItWorksBody = String(
+      loadedPage.messages.sections?.howItWorks?.body ?? "",
+    );
+    expect(howItWorksBody).toMatch(/implementation-ready slices/i);
+    expect(howItWorksBody).toMatch(
+      /product requirements document with acceptance criteria/i,
+    );
+    expect(howItWorksBody).toMatch(/ordered stories/i);
+    expect(howItWorksBody).toMatch(/small vertical/i);
+    expect(howItWorksBody).toMatch(/Non-overlapping lanes/i);
+    expect(howItWorksBody).toMatch(/concrete reason/i);
+    expect(howItWorksBody).toMatch(/loopback or queue health/i);
+    expect(howItWorksBody).not.toMatch(/Model Atlas/i);
+    expect(howItWorksBody).not.toMatch(/on this page/i);
+
     render(
       <main>
         <ModulePageProviders
@@ -104,6 +119,12 @@ describe("planner-executor technique page", () => {
     expect(
       document.getElementById("why-it-matters")?.textContent ?? "",
     ).toMatch(/does not stall unrelated ready work/i);
+    expect(document.getElementById("how-it-works")?.textContent ?? "").toMatch(
+      /implementation-ready slices/i,
+    );
+    expect(document.getElementById("how-it-works")?.textContent ?? "").toMatch(
+      /loopback or queue health/i,
+    );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
   });

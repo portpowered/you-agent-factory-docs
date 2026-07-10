@@ -12,7 +12,7 @@
     },
     "howItWorks": {
       "title": "How It Works",
-      "body": "A planner turns a customer ask into reviewable work slices; executors implement those slices while the planner re-enters through loopback or queue health rather than blocking the whole factory."
+      "body": "A planner turns a customer ask into implementation-ready slices: a product requirements document with acceptance criteria and ordered stories that name real dependencies. Each slice is a small vertical piece of work a reviewer can check on its own. Executors then implement those slices. Non-overlapping lanes run in parallel. A lane holds only for a concrete reason, such as a file collision or a missing prerequisite. The planner re-enters through loopback or queue health when more planning is needed, instead of freezing every ready lane behind one shared planning phase name."
     },
     "comparedToNearbyTechniques": {
       "title": "Compared To Nearby Techniques",
