@@ -1,7 +1,7 @@
 /**
- * Page-owned render proof for concepts/checklist.
+ * Page-owned render proof for concepts/loop.
  * Colocated under the page bundle so audit:canonical-page-surface stays
- * within page-owned budget for the checklist bundle (shared tests live elsewhere).
+ * within page-owned budget for the loop bundle (shared tests live elsewhere).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -9,25 +9,23 @@ import { ModulePageProviders } from "@/features/docs/components/ModulePageProvid
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 
-describe("checklist concept page", () => {
+describe("loop concept page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("publishes /docs/concepts/checklist as a docs concept page", async () => {
-    const fumadocsPage = source.getPage(["concepts", "checklist"]);
+  test("publishes /docs/concepts/loop as a docs concept page", async () => {
+    const fumadocsPage = source.getPage(["concepts", "loop"]);
     expect(fumadocsPage).toBeDefined();
-    expect(fumadocsPage?.url).toBe("/docs/concepts/checklist");
+    expect(fumadocsPage?.url).toBe("/docs/concepts/loop");
 
     const loadedPage = await loadLocalDocsPage({
       section: "concepts",
-      slug: "checklist",
+      slug: "loop",
     });
 
-    expect(loadedPage.messages.title).toBe("Checklist");
-    expect(loadedPage.messages.description).toContain(
-      "live outcomes and workstream board",
-    );
+    expect(loadedPage.messages.title).toBe("Loop");
+    expect(loadedPage.messages.description).toContain("factory loop");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
     const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
@@ -40,28 +38,21 @@ describe("checklist concept page", () => {
     const commonConfusions = String(
       loadedPage.messages.sections?.commonConfusions?.body ?? "",
     );
-    expect(whatItIs).toMatch(/live outcomes and workstream board/i);
-    expect(whatItIs).toMatch(/done/i);
-    expect(whatItIs).toMatch(/active/i);
-    expect(whatItIs).toMatch(/ready next/i);
-    expect(whatItIs).toMatch(/intentionally held/i);
-    expect(whatItIs).toMatch(/not mandatory gates/i);
-    expect(whyItMatters).toMatch(/track customer outcomes/i);
-    expect(whyItMatters).toMatch(/parallel/i);
-    expect(whyItMatters).toMatch(/real holds/i);
-    expect(simpleExample).toMatch(/customer outcomes/i);
-    expect(simpleExample).toMatch(/done/i);
-    expect(simpleExample).toMatch(/active/i);
-    expect(simpleExample).toMatch(/ready next/i);
-    expect(simpleExample).toMatch(/held/i);
-    expect(simpleExample).toMatch(/collision|in flight/i);
-    expect(commonConfusions).toMatch(/task queue/i);
-    expect(commonConfusions).toMatch(/ordered work waiting to run/i);
-    expect(commonConfusions).toMatch(
-      /architectural checklist|acceptance-criteria/i,
-    );
-    expect(commonConfusions).toMatch(/static verification lists/i);
-    expect(commonConfusions).toMatch(/phase-gated/i);
+    expect(whatItIs).toMatch(/factory loop/i);
+    expect(whatItIs).toMatch(/you-agent-factory/i);
+    expect(whatItIs).toMatch(/iterating/i);
+    expect(whatItIs).toMatch(/goal is done/i);
+    expect(whatItIs).toMatch(/one-shot chat/i);
+    expect(whyItMatters).toMatch(/persistent across agent passes/i);
+    expect(whyItMatters).toMatch(/loop format/i);
+    expect(whyItMatters).toMatch(/single submit/i);
+    expect(simpleExample).toMatch(/named run/i);
+    expect(simpleExample).toMatch(/same live run/i);
+    expect(simpleExample).toMatch(/goal is done/i);
+    expect(commonConfusions).toMatch(/one-shot chat/i);
+    expect(commonConfusions).toMatch(/write-review loop/i);
+    expect(commonConfusions).toMatch(/programming for or while loop/i);
+    expect(commonConfusions).toMatch(/Cursor-driven dynamic workflows/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
     expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
     expect(simpleExample).not.toMatch(/on this page|Model Atlas/i);
@@ -88,39 +79,49 @@ describe("checklist concept page", () => {
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
-    expect(
-      screen.getAllByText(/live outcomes and workstream board/i).length,
-    ).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText(/track customer outcomes/i)).toBeTruthy();
-    expect(screen.getByText(/Picture a compact board/i)).toBeTruthy();
-    // Prose auto-link splits "task queue" into an anchor once concept.task-queue
-    // publishes; assert via section textContent so the phrase still matches.
-    const commonConfusionsSection =
-      document.getElementById("common-confusions");
-    expect(commonConfusionsSection?.textContent).toMatch(/not a task queue/i);
+    expect(screen.getAllByText(/factory loop/i).length).toBeGreaterThanOrEqual(
+      1,
+    );
+    expect(screen.getByText(/persistent across agent passes/i)).toBeTruthy();
+    expect(screen.getByText(/named run under you-agent-factory/i)).toBeTruthy();
+    expect(screen.getByText(/not a write-review loop/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const taskQueueLink = screen.getByRole("link", { name: "Task queue" });
-    expect(taskQueueLink.getAttribute("href")).toBe(
-      "/docs/concepts/task-queue",
+    const loopsGuideLink = screen.getByRole("link", {
+      name: "Using you-agent-factory for loops",
+    });
+    expect(loopsGuideLink.getAttribute("href")).toBe(
+      "/docs/guides/using-you-agent-factory-for-loops",
+    );
+    const writeReviewLink = screen.getByRole("link", {
+      name: "Write-review loops",
+    });
+    expect(writeReviewLink.getAttribute("href")).toBe(
+      "/docs/guides/write-review-loops",
+    );
+    const gettingStartedLink = screen.getByRole("link", {
+      name: "Getting started",
+    });
+    expect(gettingStartedLink.getAttribute("href")).toBe(
+      "/docs/guides/getting-started",
     );
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {
     const en = await loadLocalDocsPage({
       section: "concepts",
-      slug: "checklist",
+      slug: "loop",
     });
     const ja = await loadLocalDocsPage(
-      { section: "concepts", slug: "checklist" },
+      { section: "concepts", slug: "loop" },
       "ja",
     );
     const zhCN = await loadLocalDocsPage(
-      { section: "concepts", slug: "checklist" },
+      { section: "concepts", slug: "loop" },
       "zh-CN",
     );
     const vi = await loadLocalDocsPage(
-      { section: "concepts", slug: "checklist" },
+      { section: "concepts", slug: "loop" },
       "vi",
     );
 
@@ -133,9 +134,15 @@ describe("checklist concept page", () => {
     expect(Object.keys(vi.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
-    expect(ja.messages.links?.taskQueue).toBe("Task queue");
-    expect(zhCN.messages.links?.taskQueue).toBe("Task queue");
-    expect(vi.messages.links?.taskQueue).toBe("Task queue");
+    expect(ja.messages.links?.loopsGuide).toBe(
+      "Using you-agent-factory for loops",
+    );
+    expect(zhCN.messages.links?.loopsGuide).toBe(
+      "Using you-agent-factory for loops",
+    );
+    expect(vi.messages.links?.loopsGuide).toBe(
+      "Using you-agent-factory for loops",
+    );
     expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
       "What It Is",
     );

@@ -1,0 +1,17 @@
+{
+  "id": "concept.harness",
+  "slug": "harness",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["harness", "agent runtime"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T23:30:00.000Z",
+  "updatedAt": "2026-07-09T23:30:00.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}
