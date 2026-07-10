@@ -65,13 +65,34 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `http://127.0.0.1:<port>` — Next 16 blocks cross-origin HMR from 127.0.0.1 and
   client hydration/handlers (including search open) can fail silently.
 
+## Docs / harness-support accessibility (story 004)
+
+* `src/tests/a11y/docs-harness.a11y.test.tsx`
+  Always-on smokes: getting-started + harness-support landmarks/headings/
+  keyboard chrome/axe; intentional matrix + fenced-code scroll wrappers.
+* `src/lib/verify/a11y-docs-harness-page.test.ts`
+  Opt-in served-page probe: laptop a11y for docs article + harness-support;
+  mobile/tablet matrix scroll without page overflow; mobile code-block scroll
+  without page overflow.
+* `INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS` includes
+  `[data-rich-content-scroll="code"]` (Fumadocs `DocsCodeBlock` viewport) in
+  addition to `[data-harness-support-matrix]`, `pre`, and `.overflow-x-auto`.
+* `HarnessSupportMatrix` puts `data-harness-support-matrix` /
+  `data-testid="harness-support-matrix"` on DataTable `containerProps` (the
+  real `overflow-x-auto` scroller). Do not wrap DataTable in a second
+  overflow div — the outer wrapper will not report scrollWidth growth.
+* Docs sidebar chrome is `aside#nd-sidebar` with `aria-label` from
+  `messages.shell.sidebarTitle` (not a `nav`).
+* Render docs pages for a11y via `renderDocsSlugPage` + `CanonicalDocsLayout`
+  (same shell as production), not a bare `<main>` wrapper alone.
+
 ## Focused gate
 
 * `Makefile` target `a11y` → `bun run test:a11y`
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure unit
-  tests plus home/browse and search a11y smokes (and the skipped-by-default
-  served-page probes). Later stories expand coverage and may fold in remaining
-  `src/tests/a11y/` once those smokes are factory-current.
+  tests plus home/browse, search, and docs/harness-support a11y smokes (and the
+  skipped-by-default served-page probes). Later stories expand coverage and may
+  fold in remaining `src/tests/a11y/` once those smokes are factory-current.
 * Not yet part of `make ci` (wire in story `harden-accessibility-responsive-ui-009`).
 
 ## Existing component a11y smokes

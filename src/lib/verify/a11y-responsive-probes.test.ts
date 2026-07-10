@@ -48,9 +48,9 @@ describe("findIntentionalHorizontalScrollContainers", () => {
         <div data-harness-support-matrix="" style="width: 200px; overflow-x: auto;">
           <table style="width: 800px;"><tr><td>wide</td></tr></table>
         </div>
-        <pre class="overflow-x-auto" style="width: 200px; overflow-x: auto;">
-          <code>const veryLongIdentifierThatForcesHorizontalScroll = true;</code>
-        </pre>
+        <div data-rich-content-scroll="code" style="width: 200px; overflow: auto;">
+          <pre><code>const veryLongIdentifierThatForcesHorizontalScroll = true;</code></pre>
+        </div>
         <p>narrow copy</p>
       </main>
     `;
@@ -58,7 +58,9 @@ describe("findIntentionalHorizontalScrollContainers", () => {
     const matrix = document.querySelector(
       "[data-harness-support-matrix]",
     ) as HTMLElement;
-    const pre = document.querySelector("pre") as HTMLElement;
+    const codeViewport = document.querySelector(
+      '[data-rich-content-scroll="code"]',
+    ) as HTMLElement;
 
     // happy-dom may not layout scrollWidth from nested table width; force the
     // observable contract the probe reads so later Playwright stories share it.
@@ -70,11 +72,11 @@ describe("findIntentionalHorizontalScrollContainers", () => {
       configurable: true,
       get: () => 800,
     });
-    Object.defineProperty(pre, "clientWidth", {
+    Object.defineProperty(codeViewport, "clientWidth", {
       configurable: true,
       get: () => 200,
     });
-    Object.defineProperty(pre, "scrollWidth", {
+    Object.defineProperty(codeViewport, "scrollWidth", {
       configurable: true,
       get: () => 640,
     });
@@ -85,10 +87,12 @@ describe("findIntentionalHorizontalScrollContainers", () => {
     const matrixHit = hits.find(
       (hit) => hit.matchedBy === "[data-harness-support-matrix]",
     );
-    const preHit = hits.find((hit) => hit.matchedBy === "pre");
+    const codeHit = hits.find(
+      (hit) => hit.matchedBy === '[data-rich-content-scroll="code"]',
+    );
 
     expect(matrixHit?.canScrollHorizontally).toBe(true);
-    expect(preHit?.canScrollHorizontally).toBe(true);
+    expect(codeHit?.canScrollHorizontally).toBe(true);
   });
 
   test("page overflow helper accepts intentional scrollers when page is clean", () => {

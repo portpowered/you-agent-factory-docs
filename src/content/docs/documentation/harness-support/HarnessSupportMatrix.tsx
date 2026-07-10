@@ -1,3 +1,4 @@
+import type { HTMLAttributes } from "react";
 import {
   DataTable,
   type DataTableColumn,
@@ -113,16 +114,20 @@ export function HarnessSupportMatrix() {
   const loaded = loadMatrixRows();
   const columns = buildColumns();
 
+  // Put the intentional-scroll marker on DataTable's overflow container (not an
+  // outer wrapper) so page probes measure the element that actually scrolls.
+  const matrixScrollContainerProps = {
+    "data-harness-support-matrix": "",
+    "data-testid": "harness-support-matrix",
+  } as HTMLAttributes<HTMLDivElement>;
+
   if (loaded.state === "error") {
     return (
-      <div
-        className="my-6 overflow-x-auto"
-        data-harness-support-matrix=""
-        data-testid="harness-support-matrix"
-      >
+      <div className="my-6">
         <DataTable
           ariaLabel={matrixData.ariaLabel}
           columns={columns}
+          containerProps={matrixScrollContainerProps}
           data={[]}
           errorMessage={matrixData.errorMessage}
           getRowKey={(row) => row.id}
@@ -135,14 +140,11 @@ export function HarnessSupportMatrix() {
 
   if (loaded.state === "empty") {
     return (
-      <div
-        className="my-6 overflow-x-auto"
-        data-harness-support-matrix=""
-        data-testid="harness-support-matrix"
-      >
+      <div className="my-6">
         <DataTable
           ariaLabel={matrixData.ariaLabel}
           columns={columns}
+          containerProps={matrixScrollContainerProps}
           data={[]}
           emptyMessage={matrixData.emptyMessage}
           getRowKey={(row) => row.id}
@@ -154,14 +156,11 @@ export function HarnessSupportMatrix() {
   }
 
   return (
-    <div
-      className="my-6 overflow-x-auto"
-      data-harness-support-matrix=""
-      data-testid="harness-support-matrix"
-    >
+    <div className="my-6">
       <DataTable
         ariaLabel={matrixData.ariaLabel}
         columns={columns}
+        containerProps={matrixScrollContainerProps}
         data={loaded.rows}
         emptyMessage={matrixData.emptyMessage}
         getRowKey={(row) => row.id}

@@ -72,6 +72,9 @@ describe("a11y-responsive viewport contract", () => {
     expect(INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS).toContain(
       "[data-harness-support-matrix]",
     );
+    expect(INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS).toContain(
+      '[data-rich-content-scroll="code"]',
+    );
     expect(INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS).toContain("pre");
     expect(INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS).toContain(
       ".overflow-x-auto",

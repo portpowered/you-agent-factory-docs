@@ -86,6 +86,7 @@ export const PAGE_OVERFLOW_TOLERANCE_PX = 1;
 export const INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS = [
   "[data-harness-support-matrix]",
   "[data-testid='harness-support-matrix']",
+  '[data-rich-content-scroll="code"]',
   "pre",
   ".overflow-x-auto",
 ] as const;
