@@ -38,6 +38,18 @@ Use these files when changing search document construction, Orama indexing, or
   preserve locale routing on search/nav hrefs, default-locale roots stay
   unprefixed, and project-site export prefixes bootstrap + nav under
   `/you-agent-factory-docs`.
+* `src/lib/content/factory-search-edge-cases.ts`
+  Factory empty/malformed/unavailable/deleted-content contract:
+  `FACTORY_SEARCH_EMPTY_SUGGESTION_TERM` (`harness`) + ralph docs href,
+  Atlas handoff denylist, malformed classification fixtures, unavailable
+  error test ids, and fail-closed asserts. `SearchPagePanel` resolves empty
+  suggestions through `resolveFactorySearchEmptySuggestion`.
+* `src/lib/content/factory-search-edge-cases.test.tsx`
+  Required `bun run test` proof that empty copy stays factory-only, no-match
+  queries return empty, malformed classifications fall back unscoped,
+  unavailable bootstrap stays on `/api/search` with error/retry copy, and
+  deleted Atlas destinations remain not-found / undiscoverable from
+  search/nav chrome.
 * `src/lib/search/build-base-document.ts`
   Generic base search document construction from localized docs pages and
   registry fields. Produces page-derived fields with empty topology and
@@ -150,8 +162,11 @@ representative deleted-inventory queries (`grouped-query attention`, `GQA`,
   Search empty-state suggestions use `searchEntry.emptySuggestionTerm` +
   `emptySuggestionLinkLabel` pointing at live factory docs (for example
   term `harness` and link `/docs/techniques/ralph`), not Atlas GQA /
-  attention tag handoffs. `SearchPagePanel` owns that wiring; lock with
-  message assertions plus `search-page-panel` empty-state coverage.
+  attention tag handoffs. `SearchPagePanel` owns that wiring via
+  `resolveFactorySearchEmptySuggestion` from
+  `factory-search-edge-cases.ts`; lock with message assertions plus the
+  required `factory-search-edge-cases.test.tsx` suite (and optional
+  `search-page-panel` empty-state coverage).
 * `src/components/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).
