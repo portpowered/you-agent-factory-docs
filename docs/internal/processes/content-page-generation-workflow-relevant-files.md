@@ -33,6 +33,18 @@ section-root `.gitkeep` files and flip
 assertions. Prefer a colocated `<slug>-page.test.tsx` under the page bundle.
 Later technique pages stay page-local beside that wiring.
 
+Technique → concept / documentation / unpublished sibling technique discovery
+needs page-local `<LocalizedLinkList>` today: `getRegistryRecordById()` /
+`listRelatedRegistryRecords()` omit `techniques` (and documentation/guides), so
+`<RelatedDocs registryId="technique.*" />` returns null even when
+`relatedIds` lists a published concept. Keep curated `relatedIds` only for
+targets that exist in this worktree (validation still resolves them), and wire
+reviewer-visible discovery under `#related` with message-backed
+`LocalizedLinkList` hrefs — published siblings such as `/docs/concepts/task-queue`
+and `/docs/documentation/submitting-work`, plus planned technique hrefs for
+unpublished nearby techniques (planner-executor, classify-execute, ralph,
+writer-reviewer). Do not put unpublished technique registry ids in `relatedIds`.
+
 Before the first authored page under a rewrite-era CLI collection can pass
 `prepare:content-runtime` / `make validate-data` and render under
 `/docs/<section>/<slug>`:

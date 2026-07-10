@@ -83,7 +83,39 @@ describe("workqueue-executor technique page", () => {
     expect(howItWorks?.textContent).toMatch(/concurrency/i);
     expect(howItWorks?.textContent).toMatch(/batching/i);
 
+    expect(compared?.textContent).toMatch(/task queue/i);
+    expect(compared?.textContent).toMatch(/backlog concept/i);
+    expect(compared?.textContent).toMatch(/drain pattern/i);
     expect(compared?.textContent).toMatch(/planner-executor/i);
+    expect(compared?.textContent).toMatch(/plan.*execute|planner role/i);
+    expect(compared?.textContent).toMatch(/classify-execute/i);
+    expect(compared?.textContent).toMatch(/classif/i);
+    expect(compared?.textContent).toMatch(/ralph/i);
+    expect(compared?.textContent).toMatch(/writer-reviewer/i);
+    expect(compared?.textContent).toMatch(/worker-adviser/i);
+    expect(compared?.textContent).not.toMatch(/on this page/i);
+    expect(compared?.textContent).not.toMatch(/page-meta/i);
+
+    const related = document.getElementById("related");
+    expect(related).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/concepts/task-queue"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/submitting-work"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/techniques/planner-executor"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/techniques/classify-execute"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/techniques/ralph"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/techniques/writer-reviewer"]'),
+    ).toBeTruthy();
 
     expect(document.querySelector("[data-page-asset]")).toBeNull();
     expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
@@ -91,6 +123,6 @@ describe("workqueue-executor technique page", () => {
     expect(whatItIs?.textContent?.trim().length).toBeGreaterThan(120);
     expect(whyItMatters?.textContent?.trim().length).toBeGreaterThan(120);
     expect(howItWorks?.textContent?.trim().length).toBeGreaterThan(120);
-    expect(compared?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(compared?.textContent?.trim().length).toBeGreaterThan(120);
   });
 });

@@ -15,6 +15,7 @@ updatedAt: "2026-07-10"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -39,6 +40,34 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="related" titleKey="sections.related.title">
   <RelatedDocs registryId="technique.workqueue-executor" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/concepts/task-queue",
+        labelKey: "links.taskQueue",
+      },
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWork",
+      },
+      {
+        href: "/docs/techniques/planner-executor",
+        labelKey: "links.plannerExecutor",
+      },
+      {
+        href: "/docs/techniques/classify-execute",
+        labelKey: "links.classifyExecute",
+      },
+      {
+        href: "/docs/techniques/ralph",
+        labelKey: "links.ralph",
+      },
+      {
+        href: "/docs/techniques/writer-reviewer",
+        labelKey: "links.writerReviewer",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="tags" titleKey="sections.tags.title">
