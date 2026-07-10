@@ -123,16 +123,20 @@ targets until related-runtime includes documentation records; keep
 `<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
 discovery when those ids can resolve.
 
-Technique → concept / guide / planned sibling discovery follows the same
-page-local pattern: put loop concept, loops guide, and planned sibling
-technique hrefs (`/docs/techniques/planner-executor`,
-`/docs/techniques/writer-reviewer`, `/docs/techniques/workqueue-executor`) on
-the technique page with message-backed `<LocalizedLinkList>` under `#related`.
-Omit unpublished sibling technique ids from registry `relatedIds` so
-`validate-data` stays clean; keep `<RelatedDocs />` for curated ids that can
-resolve. Technique kind is outside the strict page-template conformance set, so
-adding `LocalizedLinkList` does not need a `page-template-conformance.ts`
-exception.
+Technique → sibling technique / documentation / guide / concept discovery
+follows the same page-local rule while sibling technique pages are still
+unpublished: put planned routes such as `/docs/techniques/writer-reviewer`,
+`/docs/techniques/planner-executor`, `/docs/techniques/workqueue-executor`,
+published documentation such as `/docs/documentation/workers`, and useful
+concept/guide destinations on the technique page with message-backed
+`<LocalizedLinkList>` under `#related`. Leave technique `relatedIds` empty for
+unpublished sibling technique ids so `validate-data` stays clean; keep
+`<RelatedDocs />` for curated targets that already resolve. Technique kind is
+not in the page-template-conformance supported set, so adding
+`LocalizedLinkList` does not require a conformance exception entry.
+When asserting compared-to-nearby prose in colocated page tests, prefer
+section `textContent` matchers — prose auto-links can fragment exact
+`getByText` sentence matches.
 
 ## Shipping non-en locale stubs on a page bundle
 
@@ -277,24 +281,37 @@ shared wiring is still missing. Publishing may trip
 
 ### First published techniques page
 
-`techniques` needs the same first-collection publish wiring as guides when the
-section still lacks local MDX loaders:
+`techniques` already has `PUBLISHED_DOCS_SECTIONS` / `techniquePageHref` and
+`registryDirectoryByKind.technique`, but still needs the local-docs loader path
+before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
 
-- add `techniques` to `LOCAL_DOCS_SECTIONS` and `loadLocalDocsPage`
-- add `technique-page.ts` / `technique-page-load.ts` (mirror guide loaders;
-  `PUBLISHED_DOCS_SECTIONS` + `techniquePageHref` already exist)
-- remove section-root `.gitkeep` files under docs and registry techniques roots
-- flip `src/tests/content/section-indexes.test.tsx` default-locale techniques
-  index from empty-state to authored-entry assertions
-- keep non-default locale techniques indexes on empty-state until colocated
-  `messages/<locale>.json` stubs ship
+- add `src/lib/content/technique-page.ts` + `technique-page-load.ts`
+- include `techniques` in `LOCAL_DOCS_SECTIONS` / `parseLocalDocsPageRef` /
+  `loadLocalDocsPage` in `src/lib/content/local-docs-page.ts`
+- remove `src/content/docs/techniques/.gitkeep` and
+  `src/content/registry/techniques/.gitkeep` when the first authored bundle and
+  registry record ship
+- update default-locale techniques expectations in
+  `src/tests/content/section-indexes.test.tsx` to authored-entry assertions;
+  leave non-default locale techniques indexes on empty-state until colocated
+  `messages/<locale>.json` stubs exist
+- when those locale stubs ship, flip localized techniques indexes to
+  authored-entry assertions (title / href) and regenerate/commit
+  `shipped-localized-docs.generated.ts` plus the matching
+  `shipped-localized-docs.server.test.ts` committed-tree assertion
 - colocate the page render proof under the page bundle
-  (`classify-execute-page.test.tsx`) so the proof stays page-owned
-- document the exception with `--exception-reason` on
-  `bun run audit:canonical-page-surface`
+  (`<slug>-page.test.tsx`) so the proof stays page-owned
+- when every CLI section has authored entries, type
+  `CLI_EMPTY_SECTION_INDEX_CASES` as `CliSectionIndexCase[]` (or equivalent)
+  instead of relying on a filtered `as const` array — an empty filter collapses
+  to `never[]` and breaks `tsc` on the empty-state loop
 
-Do not treat excluded `src/lib/docs/` empty-root suites as required CI for this
-lane; update them only when a throughput lane owns that shared surface.
+Declare the first-CLI-section exception with
+`bun run audit:canonical-page-surface -- --exception-reason "..."` and repeat
+that justification in the PR conversation. Later technique pages should stay
+page-local once this wiring lands. Do not treat excluded `src/lib/docs/`
+empty-root suites as required CI for this lane; update them only when a
+throughput lane owns that shared surface.
 
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the
