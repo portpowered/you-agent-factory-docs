@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import sitemap from "@/app/sitemap";
+import sitemap, { dynamic as sitemapDynamic } from "@/app/sitemap";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import { FACTORY_PUBLISHED_TAG_SLUGS } from "@/lib/content/factory-tags-browse";
 import { listPublishedDocsEntries } from "@/lib/content/published-docs-registry-ids";
@@ -122,6 +122,7 @@ describe("export sitemap helpers", () => {
   });
 
   test("app/sitemap default export matches public factory entries", () => {
+    expect(sitemapDynamic).toBe("force-static");
     const previousExport = process.env.NEXT_STATIC_EXPORT;
     const previousBase = process.env.GITHUB_PAGES_BASE_PATH;
     process.env.NEXT_STATIC_EXPORT = "1";

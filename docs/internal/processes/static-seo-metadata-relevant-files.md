@@ -26,10 +26,10 @@ social assets, sitemap, robots).
 | `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths |
 | `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml` |
 | `src/lib/seo/export-sitemap.test.ts` | Absolute production sitemap URL proofs + temp-`out/` verification |
-| `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`) |
+| `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/export-robots.ts` | `buildPublicRobots` / `resolveProductionSitemapUrl` + `verifyExportRobots` for `out/robots.txt` |
 | `src/lib/seo/export-robots.test.ts` | Production sitemap reference proofs + no legacy Atlas advertising |
-| `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`) |
+| `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
 | `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
@@ -101,7 +101,9 @@ social assets, sitemap, robots).
     Allow/Disallow. Use `verifyExportRobots` for the robots file and
     `verifyExportSeoDiscovery` as the composite gate over canonicals, OG,
     social images, localized alternates, sitemap, and robots against an
-    exported `out/`.
+    exported `out/`. Both `src/app/sitemap.ts` and `src/app/robots.ts` must
+    export `dynamic = "force-static"` so `output: "export"` can emit the
+    discovery files at build time.
 
 ## Sibling lanes
 

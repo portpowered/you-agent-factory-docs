@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import robots from "@/app/robots";
+import robots, { dynamic as robotsDynamic } from "@/app/robots";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   buildPublicRobots,
@@ -87,6 +87,7 @@ describe("buildPublicRobots", () => {
   });
 
   test("app/robots default export matches public factory robots", () => {
+    expect(robotsDynamic).toBe("force-static");
     const previousExport = process.env.NEXT_STATIC_EXPORT;
     const previousBase = process.env.GITHUB_PAGES_BASE_PATH;
     process.env.NEXT_STATIC_EXPORT = "1";
