@@ -79,7 +79,7 @@ describe("browse index messages", () => {
     expect(messages.browseIndex.title).toBe("Browse");
     expect(messages.browseIndex.description.length).toBeGreaterThan(0);
     expect(
-      messages.browseIndex.modelsSectionDescription.length,
+      messages.browseIndex.guidesSectionDescription.length,
     ).toBeGreaterThan(0);
   });
 
@@ -93,6 +93,37 @@ describe("browse index messages", () => {
 
       for (const key of CLI_BROWSE_SECTION_MESSAGE_KEYS) {
         expect(browseIndex[key]).not.toMatch(ATLAS_PRODUCT_COPY);
+      }
+    }
+  });
+
+  it("does not ship retired Atlas collection browse message keys", async () => {
+    for (const locale of ["en", "ja", "vi", "zh-CN"] as const) {
+      const messages = await loadUiMessages(locale);
+      const browseIndex = messages.browseIndex as Record<string, unknown>;
+
+      for (const key of [
+        "modelsSectionTitle",
+        "modulesSectionTitle",
+        "papersSectionTitle",
+        "trainingSectionTitle",
+        "systemsSectionTitle",
+        "modelTypesSectionTitle",
+        "inferenceSectionTitle",
+        "moduleComponentsSectionTitle",
+      ] as const) {
+        expect(browseIndex[key]).toBeUndefined();
+      }
+
+      const topLevel = messages as Record<string, unknown>;
+      for (const key of [
+        "modelsIndex",
+        "modulesIndex",
+        "papersIndex",
+        "trainingIndex",
+        "systemsIndex",
+      ] as const) {
+        expect(topLevel[key]).toBeUndefined();
       }
     }
   });

@@ -70,14 +70,14 @@ describe("browse collection sections", () => {
       messages.browseIndex.documentationSectionTitle,
     ]);
     for (const atlasTitle of [
-      messages.browseIndex.modelsSectionTitle,
-      messages.browseIndex.modulesSectionTitle,
-      messages.browseIndex.papersSectionTitle,
-      messages.browseIndex.trainingSectionTitle,
-      messages.browseIndex.systemsSectionTitle,
+      "Models",
+      "Modules",
+      "Papers",
+      "Training",
+      "Systems",
       messages.browseIndex.glossarySectionTitle,
-      messages.browseIndex.modelTypesSectionTitle,
-      messages.browseIndex.inferenceSectionTitle,
+      "Model Types",
+      "Inference",
       "Module Components",
     ] as const) {
       expect(sections.some((section) => section.title === atlasTitle)).toBe(

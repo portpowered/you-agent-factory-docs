@@ -108,9 +108,17 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/app/[locale]/docs/{guides,concepts,techniques,documentation}/page.tsx`
   Localized CLI section index routes mirroring the default-locale pattern.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
-  CLI `guidesIndex` / `conceptsIndex` / `techniquesIndex` / `documentationIndex`
-  empty-state copy and `browseIndex` hub title/description / CLI section blurbs
-  (no Model Atlas / Browse the Atlas / the atlas phrasing).
+  Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
+  `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
+  `browseIndex` hub + CLI section blurbs. Do not ship retired Atlas
+  `models|modules|papers|training|systems` index blocks, Atlas browse
+  section keys (including Model Types / Inference / Module Components), or
+  home `atlasLink*` / module featured-link keys. Preserve legitimate factory
+  model-provider / external-model product wording when present.
+* `src/lib/content/ui-messages.types.ts`
+  `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
+  `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only
+  message inventory above.
 * `src/lib/navigation/docs-sidebar-collection-verification.test.ts`
   AI sidebar folder order, grouping labels, and representative links.
 * `src/tests/search/search-behavior-parity.test.ts`

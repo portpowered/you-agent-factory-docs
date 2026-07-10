@@ -1,6 +1,5 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   getNonAiShellFixtureCollectionDefinition,
   listNonAiShellFixturePagesForCollection,
@@ -124,7 +123,6 @@ describe("non-AI shell fixture section index render", () => {
 
 describe("non-AI shell fixture section index empty state", () => {
   test("renders fixture-configured empty copy instead of AI model empty-state text", async () => {
-    const aiMessages = await loadUiMessages();
     const indexMessages =
       resolveNonAiShellFixtureCollectionIndexMessages("guides");
     const html = renderToStaticMarkup(
@@ -134,7 +132,7 @@ describe("non-AI shell fixture section index empty state", () => {
     expect(html).toContain(indexMessages.emptyTitle);
     expect(html).toContain(indexMessages.emptyDescription);
     expect(html).toContain(indexMessages.emptyHomeLink);
-    expect(html).not.toContain(aiMessages.modelsIndex.emptyTitle);
+    expect(html).not.toContain("No model entries yet");
     expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
   });
 });

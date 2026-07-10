@@ -13,9 +13,9 @@ import {
 import { defaultLocale } from "@/lib/i18n/locale-routing";
 
 /**
- * Glossary-derived Atlas browse helpers remain for sidebar decomposition until
- * that surface is cleaned. Public browse no longer composes those sections;
- * Atlas glossary page fixtures are gone from the factory content tree.
+ * Glossary-derived Atlas browse helpers are no longer wired into the public
+ * browse hub or sidebar. They keep inline labels (not localized common.json
+ * Atlas browse keys) for any residual helper callers / tests.
  */
 describe("glossary derived browse sections", () => {
   test("resolves model-type and inference membership from canonical classification ids", () => {
@@ -63,8 +63,8 @@ describe("glossary derived browse sections", () => {
       expect(sections.some((section) => section.id === derivedId)).toBe(false);
     }
     for (const atlasTitle of [
-      messages.browseIndex.modelTypesSectionTitle,
-      messages.browseIndex.inferenceSectionTitle,
+      "Model Types",
+      "Inference",
       "Module Components",
       messages.browseIndex.glossarySectionTitle,
     ] as const) {
@@ -75,12 +75,10 @@ describe("glossary derived browse sections", () => {
   });
 
   test("builds empty glossary-derived sections when no glossary pages ship", async () => {
-    const messages = await loadUiMessages();
     const pages = await loadShippedLocalizedDocsPages(defaultLocale);
     const sections = buildGlossaryDerivedBrowseSections({
       pages,
       locale: defaultLocale,
-      messages,
     });
 
     expect(sections.map((section) => section.id)).toEqual([

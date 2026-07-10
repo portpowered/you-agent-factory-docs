@@ -96,14 +96,6 @@ export type HomeMessages = {
   glossaryLinkDescription: string;
   blogLinkTitle: string;
   blogLinkDescription: string;
-  atlasLinkTitle: string;
-  atlasLinkDescription: string;
-  gqaLinkTitle: string;
-  gqaLinkDescription: string;
-  swigluLinkTitle: string;
-  swigluLinkDescription: string;
-  reluLinkTitle: string;
-  reluLinkDescription: string;
   onThisPageInstall: string;
   onThisPageRun: string;
   onThisPageWhy: string;
@@ -121,12 +113,6 @@ export type BrowseIndexMessages = {
   glossaryRouteDescription: string;
   architectureRouteDescription: string;
   tagsRouteDescription: string;
-  modelsSectionTitle: string;
-  modelsSectionDescription: string;
-  modelsSectionLinkLabel: string;
-  modulesSectionTitle: string;
-  modulesSectionDescription: string;
-  modulesSectionLinkLabel: string;
   conceptsSectionTitle: string;
   conceptsSectionDescription: string;
   conceptsSectionLinkLabel: string;
@@ -139,21 +125,6 @@ export type BrowseIndexMessages = {
   documentationSectionTitle: string;
   documentationSectionDescription: string;
   documentationSectionLinkLabel: string;
-  papersSectionTitle: string;
-  papersSectionDescription: string;
-  papersSectionLinkLabel: string;
-  trainingSectionTitle: string;
-  trainingSectionDescription: string;
-  trainingSectionLinkLabel: string;
-  systemsSectionTitle: string;
-  systemsSectionDescription: string;
-  systemsSectionLinkLabel: string;
-  modelTypesSectionTitle: string;
-  modelTypesSectionDescription: string;
-  modelTypesSectionLinkLabel: string;
-  inferenceSectionTitle: string;
-  inferenceSectionDescription: string;
-  inferenceSectionLinkLabel: string;
   glossarySectionTitle: string;
   glossarySectionDescription: string;
   glossarySectionLinkLabel: string;
@@ -332,17 +303,12 @@ export type TopologyPrototypeMessages = {
   nodeFeedForward: string;
 };
 
-/** AI collection index landing pages (models, modules, concepts, etc.). */
+/** Factory collection index landing pages (guides, concepts, techniques, documentation). */
 export type AiCollectionIndexMessages = {
-  modelsIndex: SectionIndexMessages;
-  modulesIndex: SectionIndexMessages;
   conceptsIndex: SectionIndexMessages;
   guidesIndex: SectionIndexMessages;
   techniquesIndex: SectionIndexMessages;
   documentationIndex: SectionIndexMessages;
-  papersIndex: SectionIndexMessages;
-  trainingIndex: SectionIndexMessages;
-  systemsIndex: SectionIndexMessages;
 };
 
 /** AI tag index, landing, and category labels for the domain pack. */
@@ -379,15 +345,10 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "home",
   "browseIndex",
   "topologyBrowse",
-  "modelsIndex",
-  "modulesIndex",
   "conceptsIndex",
   "guidesIndex",
   "techniquesIndex",
   "documentationIndex",
-  "papersIndex",
-  "trainingIndex",
-  "systemsIndex",
   "glossaryIndex",
   "architectureIndex",
   "blogIndex",
