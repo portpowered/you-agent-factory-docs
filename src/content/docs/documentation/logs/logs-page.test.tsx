@@ -2,10 +2,10 @@
  * Page-owned render proof for documentation/logs.
  * Covers documentation shell, Logs identity, runtime-log channel
  * framing, retention/rotation controls, CLI diagnostics policy,
- * channel boundaries, and sibling discovery — not route inventories
- * or shared helper contracts.
+ * channel boundaries, sibling discovery, and non-en locale route
+ * render — not route inventories or shared helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
- * within budget for this ordinary documentation lane.
+ * within the ordinary page-owned + locale-shipping surface for this lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -201,5 +201,55 @@ describe("logs documentation page", () => {
         .getByRole("link", { name: "Replays / Records" })
         .getAttribute("href"),
     ).toBe("/docs/documentation/replays-records");
+  });
+
+  test("loads ja locale messages with the same section structure", async () => {
+    const loadedPage = await loadLocalDocsPage(
+      {
+        section: "documentation",
+        slug: "logs",
+      },
+      "ja",
+    );
+
+    expect(loadedPage.messages.title).toBe("Logs");
+    expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
+      "What It Covers",
+    );
+    expect(loadedPage.messages.sections?.keyConcepts?.title).toBe(
+      "Key Concepts",
+    );
+    expect(loadedPage.messages.sections?.howToUse?.title).toBe("How To Use");
+    expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
+      "Limits And Assumptions",
+    );
+    expect(String(loadedPage.messages.links?.defaultPathValue ?? "")).toBe(
+      "~/.you-agent-factory/logs",
+    );
+    expect(String(loadedPage.messages.links?.exampleCommand ?? "")).toMatch(
+      /you run --dir \.\/factory --runtime-log-dir ~\/\.you-agent-factory\/logs/,
+    );
+    expect(
+      String(loadedPage.messages.links?.diagnosticsExampleCommand ?? ""),
+    ).toMatch(/you run --dir \.\/factory --verbose/);
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "What It Covers" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(document.body.textContent).toMatch(/~\/\.you-agent-factory\/logs/);
+    expect(document.body.textContent).toMatch(/--runtime-log-dir/);
+    expect(document.body.textContent).toMatch(/--verbose/);
   });
 });
