@@ -89,10 +89,14 @@ Do not author customer page bundles under content roots in this lane.
 | `src/lib/factory/canonical-page-surface-audit.ts` | `registryDirectoryByKind` includes `documentation` (and guide/technique) for routine page-surface audits |
 
 `concepts` remains a designated CLI collection target (empty `starterSlugs`)
-while existing Atlas concept pages/registry records stay until
-`rewrite-delete-atlas-domain` owns deletion. Do not delete Atlas
-models/modules/papers/training/systems in this lane. Do not author real CLI
-topic pages or registry records here.
+for inventory/browse wiring. Authored concept topic pages and
+`src/content/registry/concepts/*.json` records are allowed once a B05 (or later)
+concept lane ships them—same posture as `documentation` after its first pages.
+Do not delete Atlas models/modules/papers/training/systems in empty-taxonomy
+lanes; Atlas concept deletion stays owned by `rewrite-delete-atlas-domain`.
+Required `make test` already excludes the older empty-concepts SSR proofs under
+`src/lib/docs/`, so the first published concept page does not need those suites
+rewritten in the page-only lane.
 
 ## Wiring that must stay aligned when adding a registry kind
 
