@@ -207,7 +207,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese techniques index with localized title and empty-state copy", async () => {
+  it("renders the japanese techniques index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedTechniquesIndexPage({
@@ -216,9 +216,15 @@ describe("localized CLI section index page render", () => {
     );
 
     expect(html).toContain(messages.techniquesIndex.title);
-    expect(html).toContain(messages.techniquesIndex.emptyTitle);
-    expect(html).toContain(messages.techniquesIndex.emptyDescription);
-    expect(html).toContain('href="/ja"');
+    expect(html).toContain(
+      `aria-label="${messages.techniquesIndex.listLabel}"`,
+    );
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/ja/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
+    );
+    expect(html).not.toContain(messages.techniquesIndex.emptyTitle);
     expect(messages.techniquesIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );

@@ -269,8 +269,11 @@ shared wiring is still missing. Publishing may trip
   When every CLI section is authored in the default locale, remove the
   `CLI_EMPTY_SECTION_INDEX_CASES` filter loop entirely — filtering all
   sections out yields `never[]` and breaks `tsc` on the empty-state `for`
-  loop. Keep locale-specific empty-state `it(...)` cases (for example ja
-  techniques) as standalone tests instead.
+  loop. Keep locale-specific empty-state `it(...)` cases as standalone tests
+  until that locale ships stubs; when techniques (or another section) ships
+  `messages/{ja,zh-CN,vi}.json`, flip the matching localized index assertion
+  to authored-entry and regenerate/commit
+  `shipped-localized-docs.generated.ts` plus the derive-test expectation.
 
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the
