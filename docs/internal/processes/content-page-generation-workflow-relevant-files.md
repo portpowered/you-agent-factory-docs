@@ -54,15 +54,6 @@ waiting → consume → remaining ready work drain loop) and keep `assets.json`
 empty rather than shipping a decorative or stub-only graph. Mirror the
 concepts/task-queue no-graph proof pattern in the colocated page test.
 
-When a documentation page **requires** a teaching diagram and must stay
-page-only (no `documentation-page-load.ts` switch): keep a readable SVG under
-the page bundle (`assets/<name>.svg`), ship it through `PageAsset` as
-`type: "image"` with a `data:image/svg+xml,...` `src` in `assets.json`, and put
-`alt` / `caption` under `messages.assets.<assetId>`. That keeps the diagram
-visible without hovering, avoids stub-only graph slots, and stays inside the
-ordinary page-owned surface budget. Re-encode the data URI when the SVG source
-changes (see `documentation/petri`).
-
 Before the first authored page under a rewrite-era CLI collection can pass
 `prepare:content-runtime` / `make validate-data` and render under
 `/docs/<section>/<slug>`:
@@ -430,17 +421,6 @@ with `ModulePageProviders`, and assert visible command text plus next-step
 hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
 as sufficient page coverage.
 
-Worktree browser verify for documentation pages: factory worktrees often have
-no local `node_modules` (Next resolves from the repo root). Turbopack then
-fails with an inferred workspace-root / `next/package.json` error. Run
-`bun install` in the worktree before `bun run dev` on a unique port. Warm the
-target docs route once (first compile can exceed 10s), then `curl --max-time`
-for title and section headings. Do not commit `next-env.d.ts` churn from
-`next dev` (it may rewrite the routes types import to `.next/dev/types/...`).
-Colocate page render proofs under the page bundle (for example
-`src/content/docs/documentation/petri/petri-page.test.tsx`) so
-`audit:canonical-page-surface` stays within ordinary page-owned budget.
-
 ## Glossary-derived browse and sidebar sections
 
 When glossary decomposition needs new reader-facing top-level areas such as
@@ -676,23 +656,6 @@ when the sibling registry records and published pages exist (for example
 getting-started or install deep-dive). Omit unpublished sibling ids from
 `relatedIds` so validation and related rendering stay clean; do not invent
 page-meta “on this page” prose or hard-coded sibling route lists in MDX.
-
-### Documentation petri limits and sibling discovery (page-local)
-
-For `documentation/petri`, keep `#limits-and-assumptions` as the framing
-boundary: Petri / Colored Petri Net (CPN) factory mapping only — not academic
-Petri-net theory, not the JavaScript dynamic-workflow deep dive, not the
-configuration field reference, and not the architecture-of-system diagram.
-Distinguish `PETRI` vs `JAVASCRIPT` orchestrators at overview depth, and note
-that compatibility defaults to Petri when no orchestrator block is authored.
-
-Wire reviewer-visible discovery under `#related` with page-local
-`<LocalizedLinkList>` to published tokens / configuration / workstations plus
-planned `/docs/documentation/architecture-of-system` and
-`/docs/documentation/factory-session` hrefs. Put only published registry ids
-in `relatedIds` (`concept.tokens`, `documentation.configuration`,
-`documentation.workstations`); omit unpublished architecture / factory-session
-ids so `validate-data` stays clean. Keep `<RelatedDocs />` beside the list.
 
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
