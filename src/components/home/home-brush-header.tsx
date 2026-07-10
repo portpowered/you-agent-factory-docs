@@ -5,7 +5,7 @@ type HomeBrushHeaderProps = {
 
 export function HomeBrushHeader({ title, subtitle }: HomeBrushHeaderProps) {
   return (
-    <header className="relative overflow-hidden rounded-lg px-6 py-10 sm:px-8 sm:py-12">
+    <div className="relative overflow-hidden rounded-lg px-6 py-10 sm:px-8 sm:py-12">
       <div className="pointer-events-none absolute inset-0 -z-10" aria-hidden>
         <svg
           className="h-full w-full"
@@ -67,6 +67,6 @@ export function HomeBrushHeader({ title, subtitle }: HomeBrushHeaderProps) {
       <p className="mt-3 max-w-2xl text-lg text-accent sm:text-xl">
         {subtitle}
       </p>
-    </header>
+    </div>
   );
 }

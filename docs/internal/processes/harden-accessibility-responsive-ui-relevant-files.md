@@ -15,21 +15,37 @@ surfaces (home, browse, search, docs/harness-support, blog).
   Pure DOM helpers: `measurePageLevelOverflow`,
   `findIntentionalHorizontalScrollContainers`,
   `pageOverflowAllowsIntentionalScrollers`.
+* `src/lib/verify/a11y-page-structure.ts`
+  Pure landmark/heading/keyboard probes: `probePageLandmarks`,
+  `expectCriticalPageStructure`, `listKeyboardFocusableControls`.
 * `src/lib/verify/a11y-axe.ts`
   Shared axe-core serious/critical runners used by component smokes and page
   probes (`expectNoSeriousAxeViolations`, `runAxeOnElement`).
+* `src/lib/verify/a11y-playwright-axe.ts`
+  Playwright injection helper: `expectNoSeriousAxeOnPlaywrightPage` /
+  `runSeriousAxeOnPlaywrightPage` for served critical routes.
 * `src/lib/verify/a11y-responsive-page-session.ts`
   IO helper: `openA11yResponsivePageProbe` / `resolveA11yResponsiveProbeUrl`
   (verify server + Playwright Chromium at a contracted viewport).
 * `src/tests/a11y/axe.ts`
   Thin re-export of `src/lib/verify/a11y-axe.ts` for existing component smokes.
 
+## Home / browse accessibility (story 002)
+
+* `src/tests/a11y/home-browse.a11y.test.tsx`
+  Always-on component smokes: home + browse landmarks, headings, keyboard
+  focus, labeled controls, serious/critical axe.
+* `src/lib/verify/a11y-home-browse-page.test.ts`
+  Opt-in served-page probe (`VERIFY_PRODUCTION_INTEGRATION_TESTS=1` + fresh
+  `.next`): home/browse landmarks, focus rings, Playwright axe.
+
 ## Focused gate
 
 * `Makefile` target `a11y` → `bun run test:a11y`
-* `package.json` script `test:a11y` runs the new contract/probe/axe/page-session
-  unit tests under `src/lib/verify/a11y-*`. Starts thin; later stories expand
-  coverage and may fold in `src/tests/a11y/` once those smokes are factory-current.
+* `package.json` script `test:a11y` runs contract/probe/axe/page-structure unit
+  tests plus home/browse a11y smokes (and the skipped-by-default served-page
+  probe). Starts thin for other routes; later stories expand coverage and may
+  fold in remaining `src/tests/a11y/` once those smokes are factory-current.
 * Not yet part of `make ci` (wire in story `harden-accessibility-responsive-ui-009`).
 
 ## Existing component a11y smokes
@@ -47,3 +63,6 @@ surfaces (home, browse, search, docs/harness-support, blog).
   intentional scrollers; fail only on page-level `scrollWidth` overflow.
 * Prefer pure probe helpers for happy-dom unit proofs; use
   `openA11yResponsivePageProbe` only when a served page is required.
+* For critical-page a11y stories: assert banner + `nav[aria-label="Primary"]` +
+  `main` + coherent h1/h2 outline, keyboard focus with `focus-visible:ring`,
+  then serious/critical axe on the verified surface.
