@@ -22,8 +22,8 @@ function stubStages(): readonly StaticExportProfileStageCommand[] {
 describe("runProfiledStaticExport", () => {
   const stubCacheReasons = {
     contentRuntimePreparation: {
-      status: "not-applicable" as const,
-      reason: "no-incremental-cache",
+      status: "hit" as const,
+      reason: "fingerprint-store-and-outputs-present",
     },
     fumadocsGeneration: {
       status: "miss" as const,

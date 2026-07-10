@@ -1,7 +1,14 @@
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync, rmSync } from "node:fs";
 import { join, relative } from "node:path";
 import { getGeneratedDocsSourceRoot } from "./content-paths";
+import {
+  type ContentRuntimeFingerprintDependencies,
+  type ContentRuntimeStepCacheDecision,
+  clearContentRuntimeFingerprints,
+  evaluateContentRuntimeStepCache,
+  writeContentRuntimeStepFingerprint,
+} from "./content-runtime-fingerprints";
 
 export type ContentRuntimePreparationStep = {
   id: string;
@@ -9,6 +16,12 @@ export type ContentRuntimePreparationStep = {
   outputPath: string;
   gitClassification: "committed" | "ignored";
   owningSurface: string;
+  /**
+   * Other preparation step ids that must finish before this step may start.
+   * Empty/omitted means the step only needs a disjoint output path to share a
+   * concurrent wave with peers.
+   */
+  dependsOn?: readonly string[];
 };
 
 export type ContentRuntimePreparationCommandResult = {
@@ -28,7 +41,9 @@ export type RunContentRuntimePreparationCommand = (
   options: {
     cwd: string;
   },
-) => ContentRuntimePreparationCommandResult;
+) =>
+  | ContentRuntimePreparationCommandResult
+  | Promise<ContentRuntimePreparationCommandResult>;
 
 export type RunContentRuntimeGitCommand = (
   command: readonly [string, ...string[]],
@@ -88,8 +103,30 @@ export const CONTENT_RUNTIME_COMPLETENESS_CONTRACT: readonly ContentRuntimePrepa
 export const CONTENT_RUNTIME_PREPARATION_STEPS =
   CONTENT_RUNTIME_COMPLETENESS_CONTRACT;
 
+/**
+ * Env flag that enables force-clean for `prepare:content-runtime`.
+ * Accepted truthy values: `1`, `true`, `yes` (case-insensitive).
+ */
+export const CONTENT_RUNTIME_FORCE_CLEAN_ENV = "CONTENT_RUNTIME_FORCE_CLEAN";
+
 export type RunContentRuntimePreparationOptions = {
   cwd: string;
+  /**
+   * When true, wipe `.source` and ignored generated runtime outputs before
+   * regenerating all steps. Default preparation preserves those artifacts.
+   */
+  forceClean?: boolean;
+  /**
+   * When false, every step runs without fingerprint cache checks.
+   * Defaults to true so warm prepares can skip unchanged generators.
+   */
+  useFingerprints?: boolean;
+  /**
+   * When true (default), independent steps with disjoint outputs and satisfied
+   * `dependsOn` edges run concurrently in waves. Set false to force serial
+   * execution (byte-equivalence proofs / debugging).
+   */
+  concurrency?: boolean;
   log?: ContentRuntimePreparationLogger;
   logError?: ContentRuntimePreparationLogger;
   runCommand?: RunContentRuntimePreparationCommand;
@@ -99,16 +136,66 @@ export type RunContentRuntimePreparationOptions = {
   ) => void;
   removeFile?: (path: string, options: { force: boolean }) => void;
   steps?: readonly ContentRuntimePreparationStep[];
+  fingerprintDependencies?: ContentRuntimeFingerprintDependencies;
+  evaluateStepCache?: (options: {
+    cwd: string;
+    stepId: string;
+    outputPath: string;
+    forceClean?: boolean;
+    dependencies?: ContentRuntimeFingerprintDependencies;
+  }) => ContentRuntimeStepCacheDecision;
+  recordStepFingerprint?: (
+    cwd: string,
+    stepId: string,
+    fingerprint: string,
+    dependencies?: ContentRuntimeFingerprintDependencies,
+  ) => void;
+  clearFingerprints?: (
+    cwd: string,
+    dependencies?: ContentRuntimeFingerprintDependencies,
+  ) => void;
 };
+
+/**
+ * Resolve whether force-clean is requested from CLI argv and/or env.
+ * CLI `--force-clean` / `--force-clean=true|1|yes` wins over env when present.
+ */
+export function resolveContentRuntimeForceClean(
+  env: Record<string, string | undefined> = process.env,
+  argv: readonly string[] = [],
+): boolean {
+  for (const arg of argv) {
+    if (arg === "--force-clean") {
+      return true;
+    }
+    if (arg.startsWith("--force-clean=")) {
+      return isTruthyFlagValue(arg.slice("--force-clean=".length));
+    }
+  }
+
+  return isTruthyFlagValue(env[CONTENT_RUNTIME_FORCE_CLEAN_ENV]);
+}
+
+function isTruthyFlagValue(value: string | undefined): boolean {
+  if (value === undefined) {
+    return false;
+  }
+
+  const normalized = value.trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes";
+}
 
 export type ContentRuntimePreparationResult =
   | {
       ok: true;
       completedSteps: readonly ContentRuntimePreparationStep[];
+      /** Steps skipped because fingerprints matched and outputs were usable. */
+      skippedSteps: readonly ContentRuntimePreparationStep[];
     }
   | {
       ok: false;
       completedSteps: readonly ContentRuntimePreparationStep[];
+      skippedSteps: readonly ContentRuntimePreparationStep[];
       failedStep: ContentRuntimePreparationStep;
       commandResult: ContentRuntimePreparationCommandResult;
     };
@@ -143,11 +230,14 @@ export type VerifyContentRuntimeCompletenessResult =
 
 export type RunContentRuntimeCompletenessGateOptions = {
   cwd: string;
+  forceClean?: boolean;
   log?: ContentRuntimePreparationLogger;
   logError?: ContentRuntimePreparationLogger;
   runPreparation?: (
     options: RunContentRuntimePreparationOptions,
-  ) => ContentRuntimePreparationResult;
+  ) =>
+    | ContentRuntimePreparationResult
+    | Promise<ContentRuntimePreparationResult>;
   runGitCommand?: RunContentRuntimeGitCommand;
   steps?: readonly ContentRuntimePreparationStep[];
   fileExists?: (path: string) => boolean;
@@ -229,6 +319,111 @@ function runCommandSync(
     signal: result.signal,
     status: result.status,
   };
+}
+
+function runCommandAsync(
+  command: readonly [string, ...string[]],
+  options: {
+    cwd: string;
+  },
+): Promise<ContentRuntimePreparationCommandResult> {
+  return new Promise((resolve) => {
+    const [binary, ...args] = command;
+    const child = spawn(binary, args, {
+      cwd: options.cwd,
+      env: process.env,
+      stdio: "inherit",
+    });
+
+    child.on("error", (error) => {
+      resolve({
+        error: error instanceof Error ? error : new Error(String(error)),
+        signal: null,
+        status: null,
+      });
+    });
+
+    child.on("close", (status, signal) => {
+      resolve({
+        signal,
+        status,
+      });
+    });
+  });
+}
+
+/**
+ * Partition preparation steps into concurrent waves.
+ *
+ * A step may share a wave with peers only when:
+ * - every `dependsOn` edge is satisfied by an earlier wave (or by
+ *   `alreadyCompletedIds`, e.g. fingerprint cache hits), and
+ * - its `outputPath` does not collide with any other step already in the wave.
+ *
+ * Steps are considered in contract order so wave membership stays deterministic.
+ * When `concurrency` is false, each runnable step becomes its own wave (serial).
+ */
+export function planContentRuntimePreparationWaves(
+  steps: readonly ContentRuntimePreparationStep[],
+  options: {
+    concurrency?: boolean;
+    alreadyCompletedIds?: ReadonlySet<string>;
+  } = {},
+): ContentRuntimePreparationStep[][] {
+  if (options.concurrency === false) {
+    return steps.map((step) => [step]);
+  }
+
+  const waves: ContentRuntimePreparationStep[][] = [];
+  const completedIds = new Set<string>(options.alreadyCompletedIds ?? []);
+
+  for (const step of steps) {
+    const dependencies = step.dependsOn ?? [];
+    const dependenciesSatisfied = dependencies.every((dependencyId) =>
+      completedIds.has(dependencyId),
+    );
+    if (!dependenciesSatisfied) {
+      throw new Error(
+        `Content-runtime step "${step.id}" depends on [${dependencies.join(", ")}] but those steps are missing or out of order in the preparation contract.`,
+      );
+    }
+
+    let placed = false;
+    for (const wave of waves) {
+      const waveDependsOnCurrent = wave.some((candidate) =>
+        (candidate.dependsOn ?? []).includes(step.id),
+      );
+      if (waveDependsOnCurrent) {
+        continue;
+      }
+
+      const dependsOnWaveMate = dependencies.some((dependencyId) =>
+        wave.some((candidate) => candidate.id === dependencyId),
+      );
+      if (dependsOnWaveMate) {
+        continue;
+      }
+
+      const outputCollides = wave.some(
+        (candidate) => candidate.outputPath === step.outputPath,
+      );
+      if (outputCollides) {
+        continue;
+      }
+
+      wave.push(step);
+      placed = true;
+      break;
+    }
+
+    if (!placed) {
+      waves.push([step]);
+    }
+
+    completedIds.add(step.id);
+  }
+
+  return waves;
 }
 
 function runGitCommandSync(
@@ -402,83 +597,223 @@ export function verifyContentRuntimeCompleteness(options: {
   };
 }
 
-export function runContentRuntimePreparation(
+export async function runContentRuntimePreparation(
   options: RunContentRuntimePreparationOptions,
-): ContentRuntimePreparationResult {
-  const runCommand = options.runCommand ?? runCommandSync;
+): Promise<ContentRuntimePreparationResult> {
+  const concurrencyEnabled = options.concurrency !== false;
+  const runCommand =
+    options.runCommand ??
+    (concurrencyEnabled ? runCommandAsync : runCommandSync);
   const log = options.log ?? console.log;
   const logError = options.logError ?? console.error;
   const removeDirectory = options.removeDirectory ?? rmSync;
   const steps = options.steps ?? CONTENT_RUNTIME_PREPARATION_STEPS;
   const removeFile = options.removeFile ?? rmSync;
+  const forceClean = options.forceClean === true;
+  const useFingerprints = options.useFingerprints !== false;
+  const fingerprintDependencies = options.fingerprintDependencies;
+  const evaluateStepCache =
+    options.evaluateStepCache ?? evaluateContentRuntimeStepCache;
+  const recordStepFingerprint =
+    options.recordStepFingerprint ?? writeContentRuntimeStepFingerprint;
+  const clearFingerprints =
+    options.clearFingerprints ?? clearContentRuntimeFingerprints;
   const completedSteps: ContentRuntimePreparationStep[] = [];
-  const removedSourceRoot = removeGeneratedDocsSource(
-    options.cwd,
-    removeDirectory,
-  );
-  const removedIgnoredOutputs = removeIgnoredGeneratedRuntimeOutputs(
-    options.cwd,
-    steps,
-    removeFile,
-  );
+  const skippedSteps: ContentRuntimePreparationStep[] = [];
+  const skippedStepIds = new Set<string>();
+  const succeededStepIds = new Set<string>();
 
-  log(
-    `[content-runtime] Removing stale generated Fumadocs bindings -> ${relative(options.cwd, removedSourceRoot) || ".source"}`,
-  );
-  for (const removedOutputPath of removedIgnoredOutputs) {
+  if (forceClean) {
+    const removedSourceRoot = removeGeneratedDocsSource(
+      options.cwd,
+      removeDirectory,
+    );
+    const removedIgnoredOutputs = removeIgnoredGeneratedRuntimeOutputs(
+      options.cwd,
+      steps,
+      removeFile,
+    );
+    if (useFingerprints) {
+      clearFingerprints(options.cwd, fingerprintDependencies);
+    }
+
     log(
-      `[content-runtime] Invalidating stale ignored generated runtime output -> ${relative(options.cwd, removedOutputPath)}`,
+      `[content-runtime] Force-clean: removing generated Fumadocs bindings -> ${relative(options.cwd, removedSourceRoot) || ".source"}`,
+    );
+    for (const removedOutputPath of removedIgnoredOutputs) {
+      log(
+        `[content-runtime] Force-clean: invalidating ignored generated runtime output -> ${relative(options.cwd, removedOutputPath)}`,
+      );
+    }
+  } else {
+    log(
+      "[content-runtime] Preserving existing .source and ignored generated runtime outputs (pass --force-clean to wipe).",
     );
   }
 
-  for (const step of steps) {
-    log(
-      `[content-runtime] Preparing ${step.id} -> ${step.outputPath} (${formatCommand(step.command)})`,
-    );
-    const commandResult = runCommand(step.command, {
-      cwd: options.cwd,
-    });
+  type StepExecutionPlan = {
+    step: ContentRuntimePreparationStep;
+    cacheDecision: ContentRuntimeStepCacheDecision;
+  };
 
-    if (commandResult.status !== 0) {
+  const runnablePlans: StepExecutionPlan[] = [];
+
+  for (const step of steps) {
+    const cacheDecision = useFingerprints
+      ? evaluateStepCache({
+          cwd: options.cwd,
+          stepId: step.id,
+          outputPath: step.outputPath,
+          forceClean,
+          dependencies: fingerprintDependencies,
+        })
+      : ({
+          action: "run",
+          reason: "fingerprint-miss",
+          fingerprint: null,
+        } satisfies ContentRuntimeStepCacheDecision);
+
+    if (cacheDecision.action === "skip") {
+      log(
+        `[content-runtime] Cache hit for ${step.id} -> ${step.outputPath}; skipping generation.`,
+      );
+      skippedStepIds.add(step.id);
+      succeededStepIds.add(step.id);
+      continue;
+    }
+
+    runnablePlans.push({ step, cacheDecision });
+  }
+
+  const waves = planContentRuntimePreparationWaves(
+    runnablePlans.map((plan) => plan.step),
+    {
+      concurrency: concurrencyEnabled,
+      alreadyCompletedIds: succeededStepIds,
+    },
+  );
+  const planByStepId = new Map(
+    runnablePlans.map((plan) => [plan.step.id, plan] as const),
+  );
+
+  if (concurrencyEnabled && waves.some((wave) => wave.length > 1)) {
+    log(
+      `[content-runtime] Running ${runnablePlans.length} generator step(s) across ${waves.length} concurrent wave(s).`,
+    );
+  }
+
+  const buildOrderedCompletedSteps = () => {
+    skippedSteps.length = 0;
+    completedSteps.length = 0;
+    for (const step of steps) {
+      if (skippedStepIds.has(step.id)) {
+        skippedSteps.push(step);
+      }
+      if (succeededStepIds.has(step.id)) {
+        completedSteps.push(step);
+      }
+    }
+  };
+
+  for (const wave of waves) {
+    if (wave.length > 1) {
+      log(
+        `[content-runtime] Concurrent wave (${wave.length}): ${wave.map((step) => step.id).join(", ")}`,
+      );
+    }
+
+    const waveResults = await Promise.all(
+      wave.map(async (step) => {
+        const plan = planByStepId.get(step.id);
+        if (!plan) {
+          throw new Error(
+            `Missing cache decision for content-runtime step "${step.id}".`,
+          );
+        }
+
+        log(
+          `[content-runtime] Preparing ${step.id} -> ${step.outputPath} (${formatCommand(step.command)}) [${plan.cacheDecision.reason}]`,
+        );
+        const commandResult = await runCommand(step.command, {
+          cwd: options.cwd,
+        });
+
+        return {
+          step,
+          cacheDecision: plan.cacheDecision,
+          commandResult,
+        };
+      }),
+    );
+
+    // Prefer the earliest contract-order failure when a concurrent wave has
+    // more than one failing command.
+    const orderedFailure = waveResults.find(
+      (result) => result.commandResult.status !== 0,
+    );
+
+    // Record fingerprints for successes before surfacing a wave failure so a
+    // concurrent sibling that finished cleanly does not lose its cache entry.
+    for (const result of waveResults) {
+      if (result.commandResult.status !== 0) {
+        continue;
+      }
+
+      if (useFingerprints && result.cacheDecision.fingerprint) {
+        recordStepFingerprint(
+          options.cwd,
+          result.step.id,
+          result.cacheDecision.fingerprint,
+          fingerprintDependencies,
+        );
+      }
+
+      succeededStepIds.add(result.step.id);
+    }
+
+    if (orderedFailure) {
       const failureReason =
-        commandResult.status === null
-          ? commandResult.signal
-            ? `signal ${commandResult.signal}`
-            : (commandResult.error?.message ?? "unknown failure")
-          : `exit status ${commandResult.status}`;
+        orderedFailure.commandResult.status === null
+          ? orderedFailure.commandResult.signal
+            ? `signal ${orderedFailure.commandResult.signal}`
+            : (orderedFailure.commandResult.error?.message ?? "unknown failure")
+          : `exit status ${orderedFailure.commandResult.status}`;
       logError(
-        `[content-runtime] Failed step "${step.id}" while running ${formatCommand(step.command)} (${failureReason}).`,
+        `[content-runtime] Failed step "${orderedFailure.step.id}" while running ${formatCommand(orderedFailure.step.command)} (${failureReason}).`,
       );
 
+      buildOrderedCompletedSteps();
       return {
         ok: false,
         completedSteps,
-        failedStep: step,
-        commandResult,
+        skippedSteps,
+        failedStep: orderedFailure.step,
+        commandResult: orderedFailure.commandResult,
       };
     }
-
-    completedSteps.push(step);
   }
 
+  buildOrderedCompletedSteps();
   log(
-    `[content-runtime] Prepared ${completedSteps.length} runtime steps successfully.`,
+    `[content-runtime] Prepared ${completedSteps.length} runtime steps successfully (${skippedSteps.length} cache hits).`,
   );
 
   return {
     ok: true,
     completedSteps,
+    skippedSteps,
   };
 }
 
-export function runContentRuntimeCompletenessGate(
+export async function runContentRuntimeCompletenessGate(
   options: RunContentRuntimeCompletenessGateOptions,
-): ContentRuntimeCompletenessGateResult {
+): Promise<ContentRuntimeCompletenessGateResult> {
   const runPreparation = options.runPreparation ?? runContentRuntimePreparation;
   const log = options.log ?? console.log;
   const steps = options.steps ?? CONTENT_RUNTIME_PREPARATION_STEPS;
-  const preparationResult = runPreparation({
+  const preparationResult = await runPreparation({
     cwd: options.cwd,
+    forceClean: options.forceClean,
     log: options.log,
     logError: options.logError,
     steps,

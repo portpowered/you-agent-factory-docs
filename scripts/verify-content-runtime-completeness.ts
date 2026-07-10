@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { runContentRuntimeCompletenessGate } from "../src/lib/content/content-runtime-preparation";
 
 const repoRoot = join(import.meta.dir, "..");
-const result = runContentRuntimeCompletenessGate({
+const result = await runContentRuntimeCompletenessGate({
   cwd: repoRoot,
 });
 
