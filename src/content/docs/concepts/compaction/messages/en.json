@@ -5,11 +5,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Compaction is shrinking retained context—conversation history, transcripts, or stream windows—so long-running agent or factory work can continue within context limits. It is not the factory workflow system itself, and it is not deliberative thinking."
+      "body": "Compaction is shrinking retained context—conversation history, transcripts, or stream windows—so long-running agent or factory work can continue within context limits. Retained context is the earlier turn detail a run still carries forward. Compaction drops, truncates, or coalesces that older detail so later turns still fit. It is not the factory workflow system itself, and it is not deliberative thinking."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Long-running factory agent runs accumulate retained context until later turns no longer fit. Compaction keeps useful continuity while dropping or coalescing older detail so the run can continue."
+      "body": "Long-running factory agent runs accumulate retained context until later turns no longer fit inside the model's context window. Without compaction, those runs stall or fail when the window fills. Compaction keeps useful continuity while dropping or coalescing older detail so later turns still fit and the run can continue."
     },
     "simpleExample": {
       "title": "Simple Example",
