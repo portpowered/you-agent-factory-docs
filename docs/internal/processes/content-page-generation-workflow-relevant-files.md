@@ -660,6 +660,23 @@ page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 
+### Documentation dynamic-workflows API interface matrices (page-local)
+
+For `documentation/dynamic-workflows` API interface copy, keep a single
+`#api-interface` `Section`. Put overview prose in `sections.apiInterface.body`,
+surface intros in `callouts.{cliSurface,mcpSurface,durableInspection}.body`,
+and matrix headers/cells under page `links.*` keys — `pageSectionSchema` only
+keeps `title`/`body` on sections. Render always-visible HTML `<table>` blocks
+with `<T k="links.…" />` so CLI commands (`you workflow validate|start|status|
+result|dispatches|artifacts|events`), canonical MCP tools
+(`you.factory_session.*`), compatibility aliases (`you.workflow.*`), and durable
+inspection surfaces (`you session list|show`, session-scoped events, Factory
+preview) are reviewer-visible without hard-coded command strings in MDX.
+
+Orient from `you docs orchestrators`, `you docs mcp-hosts`, and
+`you docs sessions`. Keep the live-run noun as `FactorySession`; do not invent
+a separate dynamic-workflow resource type.
+
 ## Core content paths
 
 * `src/lib/content/content-paths.ts`

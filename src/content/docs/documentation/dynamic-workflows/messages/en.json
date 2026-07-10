@@ -13,7 +13,7 @@
     },
     "apiInterface": {
       "title": "API Interface",
-      "body": "The API interface for dynamic workflows covers CLI workflow commands for JavaScript Factory Session work, Model Context Protocol (MCP) Factory Session tools with compatibility aliases, and durable session inspection for list, show, events, and preview style lookups."
+      "body": "Dynamic workflows use the shared Factory Session API surface. Call the CLI workflow path to validate source and start or inspect a durable JavaScript Factory Session. Call Model Context Protocol (MCP) Factory Session tools from an MCP host. Read the same session through durable list, show, events, and preview style lookups. There is no separate dynamic-workflow resource type — every live run is still a Factory Session."
     },
     "configuration": {
       "title": "Configuration",
@@ -36,5 +36,78 @@
     "references": {
       "title": "References"
     }
+  },
+  "callouts": {
+    "cliSurface": {
+      "body": "Use the you workflow CLI path for JavaScript Factory Session work. Validate source before execution, start a durable session, then inspect status, result, dispatches, artifacts, and events for that same Factory Session id."
+    },
+    "mcpSurface": {
+      "body": "Model Context Protocol (MCP) hosts discover Factory Session tools through you mcp serve. Prefer the canonical you.factory_session.* tool names. Compatibility you.workflow.* aliases resolve to the same handlers."
+    },
+    "durableInspection": {
+      "body": "Durable inspection uses shared Factory Session reads. List or show sessions, read session-scoped events, and use the Factory preview contract for source validation without inventing a separate dynamic-workflow resource type."
+    }
+  },
+  "links": {
+    "cliMatrixCommandHeader": "Command",
+    "cliMatrixPurposeHeader": "Purpose",
+    "cliValidateCommand": "you workflow validate",
+    "cliValidatePurpose": "Resolve and validate JavaScript workflow source without creating a Factory Session.",
+    "cliStartCommand": "you workflow start",
+    "cliStartPurpose": "Start one durable Factory Session asynchronously and return inspection links.",
+    "cliStatusCommand": "you workflow status",
+    "cliStatusPurpose": "Read durable Factory Session lifecycle status and progress.",
+    "cliResultCommand": "you workflow result",
+    "cliResultPurpose": "Read the durable Factory Session final or partial result.",
+    "cliDispatchesCommand": "you workflow dispatches",
+    "cliDispatchesPurpose": "List durable Dispatch summaries for one Factory Session.",
+    "cliArtifactsCommand": "you workflow artifacts",
+    "cliArtifactsPurpose": "List durable Factory Artifact summaries for one Factory Session.",
+    "cliEventsCommand": "you workflow events",
+    "cliEventsPurpose": "Poll ordered durable Factory Event history for one Factory Session.",
+    "mcpMatrixToolHeader": "Tool",
+    "mcpMatrixPurposeHeader": "Purpose",
+    "mcpListTool": "you.factory_session.list",
+    "mcpListPurpose": "List durable Factory Sessions.",
+    "mcpValidateSourceTool": "you.factory_session.validate_source",
+    "mcpValidateSourcePurpose": "Validate JavaScript orchestrator source through the Factory preview contract.",
+    "mcpStartSyncTool": "you.factory_session.start_sync",
+    "mcpStartSyncPurpose": "Start one sync Factory Session and wait for terminal completion or timeout.",
+    "mcpStartAsyncTool": "you.factory_session.start_async",
+    "mcpStartAsyncPurpose": "Start one async Factory Session for polling.",
+    "mcpGetTool": "you.factory_session.get",
+    "mcpGetPurpose": "Read one durable Factory Session status and progress.",
+    "mcpGetResultTool": "you.factory_session.get_result",
+    "mcpGetResultPurpose": "Read one durable Factory Session result.",
+    "mcpListDispatchesTool": "you.factory_session.list_dispatches",
+    "mcpListDispatchesPurpose": "List Dispatch summaries for one session.",
+    "mcpListArtifactsTool": "you.factory_session.list_artifacts",
+    "mcpListArtifactsPurpose": "List Factory Artifact summaries for one session.",
+    "mcpControlTool": "you.factory_session.control",
+    "mcpControlPurpose": "Apply lifecycle controls such as pause, resume, cancel, or terminate.",
+    "mcpReadEventsTool": "you.factory_session.read_events",
+    "mcpReadEventsPurpose": "Read ordered Factory Session event facts.",
+    "mcpAliasMatrixAliasHeader": "Compatibility alias",
+    "mcpAliasMatrixCanonicalHeader": "Canonical tool",
+    "mcpAliasValidate": "you.workflow.validate",
+    "mcpAliasValidateCanonical": "you.factory_session.validate_source",
+    "mcpAliasRun": "you.workflow.run",
+    "mcpAliasRunCanonical": "you.factory_session.start_sync",
+    "mcpAliasStatus": "you.workflow.status",
+    "mcpAliasStatusCanonical": "you.factory_session.get",
+    "mcpAliasResult": "you.workflow.result",
+    "mcpAliasResultCanonical": "you.factory_session.get_result",
+    "mcpAliasArtifacts": "you.workflow.artifacts",
+    "mcpAliasArtifactsCanonical": "you.factory_session.list_artifacts",
+    "inspectionMatrixSurfaceHeader": "Surface",
+    "inspectionMatrixPurposeHeader": "Purpose",
+    "inspectionSessionList": "you session list",
+    "inspectionSessionListPurpose": "List live Factory Sessions with orchestrator kind on a running host.",
+    "inspectionSessionShow": "you session show",
+    "inspectionSessionShowPurpose": "Show one Factory Session projection, including JavaScript runtime fields when present.",
+    "inspectionEvents": "GET /factory-sessions/{session_id}/events",
+    "inspectionEventsPurpose": "Read the session-scoped Factory Event stream for one Factory Session.",
+    "inspectionPreview": "POST /factories/preview",
+    "inspectionPreviewPurpose": "Validate source and policy through the Factory preview contract without creating a session."
   }
 }
