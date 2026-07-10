@@ -106,3 +106,18 @@ export function getCriticalViewport(
 export function listCriticalRoutePaths(): string[] {
   return CRITICAL_ROUTES.map((route) => route.path);
 }
+
+export type CriticalOverflowMatrixCase = {
+  route: CriticalRoute;
+  viewport: CriticalViewport;
+};
+
+/**
+ * Full critical-route × viewport matrix for responsive overflow probes.
+ * Story 006 and later CI wiring assert against this enumeration.
+ */
+export function listCriticalOverflowMatrixCases(): CriticalOverflowMatrixCase[] {
+  return CRITICAL_VIEWPORTS.flatMap((viewport) =>
+    CRITICAL_ROUTES.map((route) => ({ route, viewport })),
+  );
+}

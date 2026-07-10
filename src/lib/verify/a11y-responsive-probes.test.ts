@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import {
+  collectResponsiveOverflowProbe,
+  evaluateResponsiveOverflowInBrowser,
   findIntentionalHorizontalScrollContainers,
   measurePageLevelOverflow,
   pageOverflowAllowsIntentionalScrollers,
@@ -118,5 +120,90 @@ describe("findIntentionalHorizontalScrollContainers", () => {
         intentional,
       ),
     ).toBe(false);
+  });
+
+  test("collectResponsiveOverflowProbe combines page + intentional scrollers", () => {
+    document.body.innerHTML = `
+      <main>
+        <div data-harness-support-matrix="" class="overflow-x-auto"></div>
+      </main>
+    `;
+    const matrix = document.querySelector(
+      "[data-harness-support-matrix]",
+    ) as HTMLElement;
+    Object.defineProperty(matrix, "clientWidth", {
+      configurable: true,
+      get: () => 200,
+    });
+    Object.defineProperty(matrix, "scrollWidth", {
+      configurable: true,
+      get: () => 800,
+    });
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+    Object.defineProperty(document.documentElement, "scrollWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+    Object.defineProperty(document.body, "clientWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+    Object.defineProperty(document.body, "scrollWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+
+    const probe = collectResponsiveOverflowProbe(document, document);
+    expect(probe.page.hasUnintendedOverflow).toBe(false);
+    expect(probe.allowsIntentionalScrollers).toBe(true);
+    expect(
+      probe.intentional.some(
+        (hit) =>
+          hit.matchedBy === "[data-harness-support-matrix]" &&
+          hit.canScrollHorizontally,
+      ),
+    ).toBe(true);
+  });
+
+  test("evaluateResponsiveOverflowInBrowser mirrors collect probe shape", () => {
+    document.body.innerHTML = `<main><pre class="overflow-x-auto"></pre></main>`;
+    const pre = document.querySelector("pre") as HTMLElement;
+    Object.defineProperty(pre, "clientWidth", {
+      configurable: true,
+      get: () => 100,
+    });
+    Object.defineProperty(pre, "scrollWidth", {
+      configurable: true,
+      get: () => 400,
+    });
+    Object.defineProperty(document.documentElement, "clientWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+    Object.defineProperty(document.documentElement, "scrollWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+    Object.defineProperty(document.body, "clientWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+    Object.defineProperty(document.body, "scrollWidth", {
+      configurable: true,
+      get: () => 390,
+    });
+
+    const probe = evaluateResponsiveOverflowInBrowser({
+      selectors: ["pre", ".overflow-x-auto"],
+      tolerancePx: 1,
+    });
+    expect(probe.hasUnintendedOverflow).toBe(false);
+    expect(probe.allowsIntentionalScrollers).toBe(true);
+    expect(probe.intentional.some((hit) => hit.canScrollHorizontally)).toBe(
+      true,
+    );
   });
 });

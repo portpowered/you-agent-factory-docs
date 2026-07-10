@@ -101,14 +101,35 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * Render blog surfaces via `renderBlogIndexPage` / `renderBlogPostPage` +
   `CanonicalDocsLayout` (same shell as production).
 
+## Responsive overflow matrix (story 006)
+
+* `listCriticalOverflowMatrixCases()` in `a11y-responsive-contract.ts`
+  enumerates every critical route × mobile/tablet/laptop/wide viewport.
+* `collectResponsiveOverflowProbe` / `evaluateResponsiveOverflowInBrowser` in
+  `a11y-responsive-probes.ts` — unit + Playwright page-level overflow checks
+  that allow intentional table/code scrollers.
+* `probePrimaryNavUsability` in `a11y-responsive-nav-probe.ts` — drawer vs
+  inline primary-nav reachability.
+* `openA11yResponsiveBrowserSession` in `a11y-responsive-page-session.ts` —
+  one verify server + one Chromium for multi-route/viewport matrix iteration
+  (prefer over per-case `openA11yResponsivePageProbe`).
+* `src/tests/a11y/responsive-overflow.a11y.test.tsx` — always-on matrix
+  contract, mobile drawer primary-nav usability, intentional scroller markers.
+* `src/lib/verify/a11y-responsive-overflow-matrix-page.test.ts` — opt-in served
+  matrix: all critical routes at four widths with no page overflow; mobile
+  drawer + tablet inline primary nav usable.
+* At Tailwind `md` (768px) the desktop inline primary nav is shown; mobile
+  drawer applies below that. Tablet probes should assert inline nav, not the
+  drawer.
+
 ## Focused gate
 
 * `Makefile` target `a11y` → `bun run test:a11y`
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure unit
-  tests plus home/browse, search, docs/harness-support, and blog a11y smokes
-  (and the skipped-by-default served-page probes). Later stories expand coverage
-  and may fold in remaining `src/tests/a11y/` once those smokes are
-  factory-current.
+  tests plus home/browse, search, docs/harness-support, blog, and responsive
+  overflow a11y smokes (and the skipped-by-default served-page probes). Later
+  stories expand coverage and may fold in remaining `src/tests/a11y/` once those
+  smokes are factory-current.
 * Not yet part of `make ci` (wire in story `harden-accessibility-responsive-ui-009`).
 
 ## Existing component a11y smokes

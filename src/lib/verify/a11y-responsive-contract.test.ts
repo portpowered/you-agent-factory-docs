@@ -7,6 +7,7 @@ import {
   getCriticalRoute,
   getCriticalViewport,
   INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS,
+  listCriticalOverflowMatrixCases,
   listCriticalRoutePaths,
   PAGE_OVERFLOW_TOLERANCE_PX,
 } from "./a11y-responsive-contract";
@@ -79,5 +80,27 @@ describe("a11y-responsive viewport contract", () => {
     expect(INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS).toContain(
       ".overflow-x-auto",
     );
+  });
+
+  test("overflow matrix enumerates every critical route at every viewport", () => {
+    const cases = listCriticalOverflowMatrixCases();
+    expect(cases).toHaveLength(
+      CRITICAL_ROUTES.length * CRITICAL_VIEWPORTS.length,
+    );
+    expect(cases[0]?.route.id).toBe("home");
+    expect(cases[0]?.viewport.id).toBe("mobile");
+    expect(cases.at(-1)?.route.id).toBe("blog-post");
+    expect(cases.at(-1)?.viewport.id).toBe("wide");
+
+    for (const viewport of CRITICAL_VIEWPORTS) {
+      for (const route of CRITICAL_ROUTES) {
+        expect(
+          cases.some(
+            (entry) =>
+              entry.route.id === route.id && entry.viewport.id === viewport.id,
+          ),
+        ).toBe(true);
+      }
+    }
   });
 });

@@ -116,3 +116,109 @@ export function pageOverflowAllowsIntentionalScrollers(
   void intentional;
   return true;
 }
+
+export type ResponsiveOverflowProbeResult = {
+  page: PageOverflowMeasurement;
+  intentional: IntentionalScrollContainerHit[];
+  allowsIntentionalScrollers: boolean;
+};
+
+/**
+ * Combines page-level overflow + intentional scroller discovery for matrix
+ * assertions. Safe in happy-dom unit tests; Playwright stories reimplement the
+ * same measurements inside `page.evaluate` (no module imports across the bridge).
+ */
+export function collectResponsiveOverflowProbe(
+  doc: DocumentLike,
+  root: ParentNode,
+  selectors: readonly string[] = INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS,
+  tolerancePx: number = PAGE_OVERFLOW_TOLERANCE_PX,
+): ResponsiveOverflowProbeResult {
+  const page = measurePageLevelOverflow(doc, tolerancePx);
+  const intentional = findIntentionalHorizontalScrollContainers(
+    root,
+    selectors,
+  );
+  return {
+    page,
+    intentional,
+    allowsIntentionalScrollers: pageOverflowAllowsIntentionalScrollers(
+      page,
+      intentional,
+    ),
+  };
+}
+
+export type EvaluateResponsiveOverflowArgs = {
+  selectors: readonly string[];
+  tolerancePx: number;
+};
+
+/**
+ * Self-contained browser probe for Playwright `page.evaluate`. Do not close
+ * over module imports — Playwright serializes only this function body.
+ * Accepts a single arg object so it can be passed directly to `page.evaluate`.
+ */
+export function evaluateResponsiveOverflowInBrowser(args: {
+  selectors: readonly string[];
+  tolerancePx: number;
+}): {
+  clientWidth: number;
+  scrollWidth: number;
+  overflowPx: number;
+  hasUnintendedOverflow: boolean;
+  intentional: Array<{
+    matchedBy: string;
+    clientWidth: number;
+    scrollWidth: number;
+    canScrollHorizontally: boolean;
+  }>;
+  allowsIntentionalScrollers: boolean;
+} {
+  const { selectors, tolerancePx } = args;
+  const root = document.documentElement;
+  const body = document.body;
+  const clientWidth = Math.max(root.clientWidth, body?.clientWidth ?? 0);
+  const scrollWidth = Math.max(root.scrollWidth, body?.scrollWidth ?? 0);
+  const overflowPx = Math.max(0, scrollWidth - clientWidth);
+  const hasUnintendedOverflow = overflowPx > tolerancePx;
+
+  const seen = new Set<Element>();
+  const intentional: Array<{
+    matchedBy: string;
+    clientWidth: number;
+    scrollWidth: number;
+    canScrollHorizontally: boolean;
+  }> = [];
+  for (const selector of selectors) {
+    let matches: NodeListOf<Element>;
+    try {
+      matches = document.querySelectorAll(selector);
+    } catch {
+      continue;
+    }
+    for (const element of matches) {
+      if (seen.has(element)) {
+        continue;
+      }
+      seen.add(element);
+      const htmlElement = element as HTMLElement;
+      intentional.push({
+        matchedBy: selector,
+        clientWidth: htmlElement.clientWidth,
+        scrollWidth: htmlElement.scrollWidth,
+        canScrollHorizontally:
+          htmlElement.scrollWidth > htmlElement.clientWidth + tolerancePx,
+      });
+    }
+  }
+
+  return {
+    clientWidth,
+    scrollWidth,
+    overflowPx,
+    hasUnintendedOverflow,
+    intentional,
+    allowsIntentionalScrollers: !hasUnintendedOverflow,
+  };
+}
