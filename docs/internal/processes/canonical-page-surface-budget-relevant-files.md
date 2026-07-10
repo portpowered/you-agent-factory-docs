@@ -88,7 +88,9 @@ Over-budget output groups shared paths into reviewer-readable buckets:
 When publishing the first page under `guides`, `techniques`, `documentation`, or
 `concepts`, the audit recognizes a narrow `declare-exception` lane for the
 required first-page publish and locale-shipping wiring (and section `.gitkeep`
-removal). Allowed shared paths stay limited to:
+removal). When loader wiring already exists, the first page may only need
+section-index empty→authored test updates plus page-owned files.
+Allowed shared paths stay limited to:
 
 - `src/lib/content/published-docs-registry-contract.ts`
 - `src/lib/content/content-hrefs.ts`
@@ -99,13 +101,18 @@ removal). Allowed shared paths stay limited to:
 - the process notes that document the first-page wiring
 - `src/lib/content/shipped-localized-docs.server.test.ts` when the page ships
   non-en locale stubs (the derive test asserts the committed manifest)
+- `src/tests/content/section-indexes.test.tsx` when the section flips from
+  empty-state to authored-entry assertions (default locale and non-en indexes)
 
 Retiring an Atlas-era root placeholder at `src/content/docs/<slug>.mdx` when
 publishing `src/content/docs/<section>/<slug>/` is **page-owned** for that
 slug, not a shared hotspot. Tracked
 `src/lib/content/generated/shipped-localized-docs.generated.ts` may appear as a
 declared generated output alongside the first-page exception; keep it committed
-when locale message files change.
+when locale message files change. The audit's first-CLI-section exception
+covers `concepts`, `documentation`, `guides`, and `techniques` registry kinds
+and treats the tracked shipped-locale manifest as allowed declared output for
+that lane.
 
 For the first authored `concepts/` page specifically, prefer colocating the
 page render proof under the page bundle (`<slug>-page.test.tsx`) so the page

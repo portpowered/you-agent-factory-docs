@@ -760,7 +760,8 @@ function isAllowedFirstCliSectionPageSharedPath(
     path === "src/lib/content/published-docs-registry-contract.ts" ||
     path === "src/lib/content/content-hrefs.ts" ||
     path === "src/lib/content/local-docs-page.ts" ||
-    path === "src/lib/content/shipped-localized-docs.server.test.ts"
+    path === "src/lib/content/shipped-localized-docs.server.test.ts" ||
+    path === "src/tests/content/section-indexes.test.tsx"
   ) {
     return true;
   }

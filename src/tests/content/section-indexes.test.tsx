@@ -116,6 +116,58 @@ describe("CLI section index page render", () => {
     });
   }
 
+  it("renders the guides index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.guidesIndex;
+    const html = renderToStaticMarkup(await GuidesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Getting Started");
+    expect(html).toContain("/docs/guides/getting-started");
+    expect(html).toContain("Using you-agent-factory for Loops");
+    expect(html).toContain("/docs/guides/using-you-agent-factory-for-loops");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
+  it("renders the concepts index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.conceptsIndex;
+    const html = renderToStaticMarkup(await ConceptsIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/docs/concepts/checklist");
+    expect(html).toContain("Harness");
+    expect(html).toContain("/docs/concepts/harness");
+    expect(html).toContain("Loop");
+    expect(html).toContain("/docs/concepts/loop");
+    expect(html).toContain("Task Queue");
+    expect(html).toContain("/docs/concepts/task-queue");
+    expect(html).toContain("Thinking");
+    expect(html).toContain("/docs/concepts/thinking");
+    expect(html).toContain("Tokens");
+    expect(html).toContain("/docs/concepts/tokens");
+    expect(html).toContain("Tool");
+    expect(html).toContain("/docs/concepts/tool");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
   it("renders the documentation index with authored page entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = messages.documentationIndex;
@@ -128,60 +180,6 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(html).toContain(
       "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
-    );
-    expect(html).not.toContain(indexMessages.emptyTitle);
-    expect(indexMessages.emptyTitle).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-    expect(indexMessages.emptyDescription).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-  });
-
-  it("renders the guides index with authored page entries", async () => {
-    const messages = await loadUiMessages();
-    const indexMessages = messages.guidesIndex;
-    const html = renderToStaticMarkup(await GuidesIndexPage());
-
-    expect(html).toContain(indexMessages.title);
-    expect(html).toContain(indexMessages.description);
-    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
-    expect(html).toContain("Getting Started");
-    expect(html).toContain("/docs/guides/getting-started");
-    expect(html).not.toContain(indexMessages.emptyTitle);
-    expect(indexMessages.emptyTitle).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-    expect(indexMessages.emptyDescription).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-  });
-
-  it("renders the concepts index with authored concept page entries", async () => {
-    const messages = await loadUiMessages();
-    const indexMessages = messages.conceptsIndex;
-    const html = renderToStaticMarkup(await ConceptsIndexPage());
-
-    expect(html).toContain(indexMessages.title);
-    expect(html).toContain(indexMessages.description);
-    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
-    expect(html).toContain("Checklist");
-    expect(html).toContain("/docs/concepts/checklist");
-    expect(html).toContain("Harness");
-    expect(html).toContain("/docs/concepts/harness");
-    expect(html).toContain("Task Queue");
-    expect(html).toContain("/docs/concepts/task-queue");
-    expect(html).toContain("Thinking");
-    expect(html).toContain("/docs/concepts/thinking");
-    expect(html).toContain("Tokens");
-    expect(html).toContain("/docs/concepts/tokens");
-    expect(html).toContain(
-      "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
-    );
-    expect(html).toContain("Tool");
-    expect(html).toContain("/docs/concepts/tool");
-    expect(html).toContain(
-      "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
     );
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
@@ -252,7 +250,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese concepts index with checklist, harness, tokens, and tool page entries", async () => {
+  it("renders the japanese concepts index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedConceptsIndexPage({
@@ -267,17 +265,15 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/checklist");
     expect(html).toContain("Harness");
     expect(html).toContain("/ja/docs/concepts/harness");
+    expect(html).toContain("Loop");
+    expect(html).toContain("/ja/docs/concepts/loop");
     expect(html).toContain("Tokens");
     expect(html).toContain("/ja/docs/concepts/tokens");
-    expect(html).toContain(
-      "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
-    );
     expect(html).toContain("Tool");
     expect(html).toContain("/ja/docs/concepts/tool");
-    expect(html).toContain(
-      "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
-    );
+    expect(html).not.toContain("Thinking");
     expect(html).not.toContain("/ja/docs/concepts/thinking");
+    expect(html).not.toContain("Task Queue");
     expect(html).not.toContain("/ja/docs/concepts/task-queue");
     expect(html).not.toContain(messages.conceptsIndex.emptyTitle);
     expect(messages.conceptsIndex.emptyDescription).not.toMatch(

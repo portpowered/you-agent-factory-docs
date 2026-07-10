@@ -3,6 +3,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ja: [
     "concepts/checklist",
     "concepts/harness",
+    "concepts/loop",
     "concepts/tokens",
     "concepts/tool",
     "documentation/install",
@@ -15,6 +16,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   "zh-CN": [
     "concepts/checklist",
     "concepts/harness",
+    "concepts/loop",
     "concepts/tokens",
     "concepts/tool",
     "documentation/install",
@@ -27,6 +29,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   vi: [
     "concepts/checklist",
     "concepts/harness",
+    "concepts/loop",
     "concepts/tokens",
     "concepts/tool",
     "documentation/install",

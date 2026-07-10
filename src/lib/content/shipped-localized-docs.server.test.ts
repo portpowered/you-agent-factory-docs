@@ -142,6 +142,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ja: [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/loop",
         "concepts/tokens",
         "concepts/tool",
         "documentation/install",
@@ -154,6 +155,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       "zh-CN": [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/loop",
         "concepts/tokens",
         "concepts/tool",
         "documentation/install",
@@ -166,6 +168,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       vi: [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/loop",
         "concepts/tokens",
         "concepts/tool",
         "documentation/install",
