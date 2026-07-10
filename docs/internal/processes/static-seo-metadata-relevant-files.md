@@ -27,6 +27,11 @@ social assets, sitemap, robots).
 | `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml` |
 | `src/lib/seo/export-sitemap.test.ts` | Absolute production sitemap URL proofs + temp-`out/` verification |
 | `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`) |
+| `src/lib/seo/export-robots.ts` | `buildPublicRobots` / `resolveProductionSitemapUrl` + `verifyExportRobots` for `out/robots.txt` |
+| `src/lib/seo/export-robots.test.ts` | Production sitemap reference proofs + no legacy Atlas advertising |
+| `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`) |
+| `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
+| `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
@@ -88,6 +93,15 @@ social assets, sitemap, robots).
     Exclusion proofs: retired `/docs/models|modules|papers|training|systems`,
     `/topology`, `/docs/timeline`, deleted Atlas blog slugs. Use
     `verifyExportSitemap` / `sitemapLocsMatchPublicFactoryContract`.
+11. **Robots + discovery gate** (story 007): `buildPublicRobots` /
+    `src/app/robots.ts` emit `out/robots.txt` with a normal allow-all policy
+    and `Sitemap:` pointing at the absolute production sitemap URL
+    (`https://portpowered.github.io/you-agent-factory-docs/sitemap.xml` on
+    project-site export). Do not specially advertise retired Atlas paths in
+    Allow/Disallow. Use `verifyExportRobots` for the robots file and
+    `verifyExportSeoDiscovery` as the composite gate over canonicals, OG,
+    social images, localized alternates, sitemap, and robots against an
+    exported `out/`.
 
 ## Sibling lanes
 
