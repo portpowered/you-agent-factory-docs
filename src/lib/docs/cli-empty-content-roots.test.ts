@@ -63,8 +63,12 @@ describe("CLI empty content roots", () => {
       expect(getCliDocsContentRoot(id)).toBe(join(DOCS_ROOT, id));
     }
 
-    expect(isCliDocsContentRoot("models")).toBe(false);
-    expect(isCliDocsContentRoot("modules")).toBe(false);
+    expect(
+      (CLI_DOCS_CONTENT_ROOT_SECTIONS as readonly string[]).includes("models"),
+    ).toBe(false);
+    expect(
+      (CLI_DOCS_CONTENT_ROOT_SECTIONS as readonly string[]).includes("modules"),
+    ).toBe(false);
   });
 
   test("keeps guides and techniques docs roots empty of page bundles", () => {

@@ -78,7 +78,7 @@ describe("browse collection sections", () => {
       messages.browseIndex.glossarySectionTitle,
       messages.browseIndex.modelTypesSectionTitle,
       messages.browseIndex.inferenceSectionTitle,
-      messages.browseIndex.moduleComponentsSectionTitle,
+      "Module Components",
     ] as const) {
       expect(sections.some((section) => section.title === atlasTitle)).toBe(
         false,

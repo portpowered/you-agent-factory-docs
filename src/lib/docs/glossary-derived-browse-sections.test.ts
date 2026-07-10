@@ -65,7 +65,7 @@ describe("glossary derived browse sections", () => {
     for (const atlasTitle of [
       messages.browseIndex.modelTypesSectionTitle,
       messages.browseIndex.inferenceSectionTitle,
-      messages.browseIndex.moduleComponentsSectionTitle,
+      "Module Components",
       messages.browseIndex.glossarySectionTitle,
     ] as const) {
       expect(sections.some((section) => section.title === atlasTitle)).toBe(

@@ -433,22 +433,23 @@ as sufficient page coverage.
 
 ## Glossary-derived browse and sidebar sections
 
-Public `/browse` is factory-only (guides, concepts, techniques, documentation).
-Do not reintroduce Model Types / Inference / Module Components as browse hub
-cards through `buildDocsBrowseSections` — that path only accepts collection
-section refs.
+Public `/browse` and the docs sidebar are factory-only (guides, concepts,
+techniques, documentation, plus glossary on the sidebar). Do not reintroduce
+Model Types / Inference / Module Components as browse hub cards or sidebar
+folders through `buildDocsBrowseSections` / `buildDocsSidebarSectionNodes` —
+those paths only accept collection section refs.
 
-Glossary-derived helpers in
-`src/lib/docs/glossary-derived-browse-sections.ts` still exist for sidebar
-folder decomposition until the sidebar cleanup story removes them:
-
-- Derive sidebar folders through `src/lib/navigation/docs-sidebar-sections.ts`
-  when that surface still needs Atlas-era glossary splits; keep remaining
-  glossary pages in the `Glossary` folder.
-- Sidebar reconciliation tests that previously compared every glossary page to the
-  `Glossary` folder must union `Model Types`, `Inference`, `Module Components`, and remaining
-  `Glossary` URLs, or filter out `isGlossaryPageAssignedToDerivedSection`
-  pages when asserting the residual glossary folder.
+- `src/lib/navigation/docs-sidebar-sections.ts` keeps every glossary page under
+  the single `Glossary` folder; do not filter pages into Atlas-era derived
+  folders.
+- Docs breadcrumbs (`DocsPageBreadcrumb`) only add a collection crumb when
+  `isAcceptedDocsSourceSection` accepts the slug section; retired Atlas
+  prefixes must not become live crumb labels or `/docs/{atlas}` hrefs.
+- Glossary-derived helpers in
+  `src/lib/docs/glossary-derived-browse-sections.ts` may still exist for
+  message/legacy tests until the localized-message cleanup story removes
+  reader-facing Atlas browse copy; they must not drive public browse or
+  sidebar folder order.
 - Inference terms with canonical concept routes (`concepts/prefill`,
   `concepts/quantization`, `concepts/kv-cache-quantization`,
   `concepts/post-training-quantization`) still expose inference classification

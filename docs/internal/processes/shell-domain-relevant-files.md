@@ -19,8 +19,7 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
   `DOCS_BROWSE_SECTION_ORDER`. Public browse no longer accepts glossary-derived
-  Atlas section refs (Model Types / Inference / Module Components); those
-  helpers remain only for sidebar decomposition until that surface is cleaned.
+  Atlas section refs (Model Types / Inference / Module Components).
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
   `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,
@@ -29,8 +28,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Generic sidebar/page-tree builder with optional grouping resolvers.
 * `src/lib/navigation/docs-sidebar-sections.ts`
   Default `DOCS_SIDEBAR_SECTION_ORDER` is the five factory collection folders
-  (guides → glossary). Glossary-derived Atlas browse folders are not in the
-  default order.
+  (guides → glossary). Section refs are collection-only; glossary pages stay in
+  the Glossary folder (no Model Types / Inference / Module Components splits).
+* `src/features/docs/components/DocsPageBreadcrumb.tsx`
+  Docs breadcrumbs only emit a collection crumb for accepted factory route
+  slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are
+  not public crumbs.
 * `src/lib/navigation/ai-docs-sidebar-adapter.ts`
   Factory docs shell sidebar labels, grouping resolvers, collection ids, and
   `getAiDocsShellPageTreeSettings()` for public docs collections.

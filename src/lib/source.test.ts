@@ -1,60 +1,34 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
+import type { DocsCollectionId } from "@/lib/docs/collection-definition-contract";
 import { source } from "@/lib/source";
 
 const SECTION_FOLDER_NAMES = {
-  glossary: "Glossary",
+  guides: "Guides",
   concepts: "Concepts",
-  modules: "Modules",
-  models: "Models",
-  papers: "Papers",
-  training: "Training",
-  systems: "Systems",
-} as const;
+  techniques: "Techniques",
+  documentation: "Documentation",
+  glossary: "Glossary",
+} as const satisfies Record<DocsCollectionId, string>;
 
-const GLOSSARY_DERIVED_FOLDER_NAMES = [
+const RETIRED_ATLAS_FOLDER_NAMES = [
+  "Modules",
+  "Models",
+  "Papers",
+  "Training",
+  "Systems",
   "Model Types",
   "Inference",
   "Module Components",
-  "Glossary",
 ] as const;
 
-const REPRESENTATIVE_GLOSSARY_DERIVED_URLS = {
-  "Model Types": ["/docs/glossary/world-model", "/docs/glossary/encoder"],
-  Inference: [
-    "/docs/glossary/temperature",
-    "/docs/glossary/top-k-sampling",
-    "/docs/glossary/decode",
-  ],
-  "Module Components": [
-    "/docs/glossary/softmax",
-    "/docs/glossary/residual-connection",
-    "/docs/glossary/embedding",
-  ],
-} as const;
-
 const REPRESENTATIVE_SECTION_URLS = {
-  glossary: ["/docs/glossary/token", "/docs/glossary/denoising-generation"],
-  concepts: [
-    "/docs/concepts/alibi",
-    "/docs/concepts/transformer-architecture",
-    "/docs/concepts/page-spec-workflow-sample",
-    "/docs/concepts/prefill-decode-split",
-  ],
-  modules: [
-    "/docs/modules/multi-head-attention",
-    "/docs/modules/grouped-query-attention",
-    "/docs/modules/relu",
-  ],
-  models: ["/docs/models/deepseek-v4-flash", "/docs/models/gpt-3"],
-  papers: ["/docs/papers/deepseek-v4", "/docs/papers/latent-diffusion"],
-  training: [
-    "/docs/training/dpo",
-    "/docs/training/on-policy-distillation",
-    "/docs/training/fp4-quantization-aware-training",
-  ],
-  systems: ["/docs/systems/on-disk-kv-cache", "/docs/systems/routing"],
+  guides: ["/docs/guides/getting-started"],
+  concepts: ["/docs/concepts/harness", "/docs/concepts/compaction"],
+  techniques: ["/docs/techniques/ralph", "/docs/techniques/writer-reviewer"],
+  documentation: ["/docs/documentation/what-is-you-agent-factory"],
+  glossary: [],
 } as const;
 
 function collectPageUrls(nodes: Node[]): string[] {
@@ -99,12 +73,6 @@ function getFolderChildren(folderName: string): Node[] {
   return folder.children;
 }
 
-function collectGlossarySidebarUrls(): string[] {
-  return GLOSSARY_DERIVED_FOLDER_NAMES.flatMap((folderName) =>
-    collectPageUrls(getFolderChildren(folderName)),
-  );
-}
-
 function docsSlugFromUrl(url: string): string[] {
   return url.replace("/docs/", "").split("/");
 }
@@ -114,13 +82,14 @@ function countUnique(values: string[]): number {
 }
 
 describe("docs navigation source", () => {
-  test("page tree keeps the required published docs folders", () => {
+  test("page tree keeps only factory docs folders", () => {
     const folderNames = source.pageTree.children
       .filter((node) => node.type === "folder")
-      .map((node) => node.name);
+      .map((node) => String(node.name));
 
-    for (const folderName of Object.values(SECTION_FOLDER_NAMES)) {
-      expect(folderNames).toContain(folderName);
+    expect(folderNames).toEqual(Object.values(SECTION_FOLDER_NAMES));
+    for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
+      expect(folderNames).not.toContain(retiredFolder);
     }
   });
 
@@ -128,10 +97,7 @@ describe("docs navigation source", () => {
     const publishedPages = loadPublishedDocsPagesSync("en");
 
     for (const [section, folderName] of Object.entries(SECTION_FOLDER_NAMES)) {
-      const folderUrls =
-        section === "glossary"
-          ? collectGlossarySidebarUrls()
-          : collectPageUrls(getFolderChildren(folderName));
+      const folderUrls = collectPageUrls(getFolderChildren(folderName));
       const publishedSectionUrls = new Set(
         publishedPages
           .filter((page) => page.docsSlug.startsWith(`${section}/`))
@@ -139,11 +105,6 @@ describe("docs navigation source", () => {
       );
       const sectionPrefix = `/docs/${section}/`;
 
-      expect(publishedSectionUrls.size).toBeGreaterThan(0);
-      expect(
-        folderUrls.length,
-        `${folderName} should expose published routes`,
-      ).toBeGreaterThan(0);
       expect(
         countUnique(folderUrls),
         `${folderName} should not repeat sidebar routes`,
@@ -163,25 +124,29 @@ describe("docs navigation source", () => {
           `${folderName} route ${url} should resolve through the Fumadocs source`,
         ).toBeDefined();
       }
+
+      if (publishedSectionUrls.size > 0) {
+        expect(
+          folderUrls.length,
+          `${folderName} should expose published routes`,
+        ).toBeGreaterThan(0);
+      }
     }
   });
 
-  test("published sections keep representative anchors in the sidebar without full-section equality", () => {
+  test("published factory sections keep representative anchors in the sidebar", () => {
     const publishedPages = loadPublishedDocsPagesSync("en");
 
     for (const [section, folderName] of Object.entries(SECTION_FOLDER_NAMES)) {
-      const folderUrls =
-        section === "glossary"
-          ? collectGlossarySidebarUrls()
-          : collectPageUrls(getFolderChildren(folderName));
+      const folderUrls = collectPageUrls(getFolderChildren(folderName));
       const publishedSectionUrls = publishedPages
         .filter((page) => page.docsSlug.startsWith(`${section}/`))
         .map((page) => page.url);
 
-      expect(
-        publishedSectionUrls.length,
-        `${folderName} should have at least one published route`,
-      ).toBeGreaterThan(0);
+      if (publishedSectionUrls.length === 0) {
+        expect(folderUrls).toEqual([]);
+        continue;
+      }
 
       expect(
         folderUrls,
@@ -194,29 +159,14 @@ describe("docs navigation source", () => {
     }
   });
 
-  test("representative discovery routes resolve through the Fumadocs source", () => {
+  test("representative factory discovery routes resolve through the Fumadocs source", () => {
     for (const [section, urls] of Object.entries(REPRESENTATIVE_SECTION_URLS)) {
-      const folderUrls =
-        section === "glossary"
-          ? collectGlossarySidebarUrls()
-          : collectPageUrls(
-              getFolderChildren(
-                SECTION_FOLDER_NAMES[
-                  section as keyof typeof SECTION_FOLDER_NAMES
-                ],
-              ),
-            );
+      const folderUrls = collectPageUrls(
+        getFolderChildren(
+          SECTION_FOLDER_NAMES[section as keyof typeof SECTION_FOLDER_NAMES],
+        ),
+      );
 
-      for (const url of urls) {
-        expect(folderUrls).toContain(url);
-        expect(source.getPage(docsSlugFromUrl(url))).toBeDefined();
-      }
-    }
-
-    for (const [folderName, urls] of Object.entries(
-      REPRESENTATIVE_GLOSSARY_DERIVED_URLS,
-    )) {
-      const folderUrls = collectPageUrls(getFolderChildren(folderName));
       for (const url of urls) {
         expect(folderUrls).toContain(url);
         expect(source.getPage(docsSlugFromUrl(url))).toBeDefined();
@@ -224,20 +174,15 @@ describe("docs navigation source", () => {
     }
   });
 
-  test("page tree exposes sidebar grouping separators for grouped reader flows", () => {
+  test("page tree exposes factory concepts grouping separators without Atlas folders", () => {
     const separatorNames = collectSeparatorNames(source.pageTree.children);
+    const folderNames = source.pageTree.children
+      .filter((node) => node.type === "folder")
+      .map((node) => String(node.name));
 
-    for (const separatorName of [
-      "Attention Foundations",
-      "Attention Variants",
-      "Long Context",
-      "Architecture",
-      "Model Taxonomy",
-      "Sequence And Attention",
-      "Math And Training",
-      "Generation And Diffusion",
-    ]) {
-      expect(separatorNames).toContain(separatorName);
+    expect(separatorNames).toContain("Reference Samples");
+    for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
+      expect(folderNames).not.toContain(retiredFolder);
     }
   });
 });

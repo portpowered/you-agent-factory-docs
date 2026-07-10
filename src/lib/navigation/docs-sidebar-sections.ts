@@ -1,21 +1,13 @@
 import type { Node } from "fumadocs-core/page-tree";
 import type { DocsPageSource } from "@/lib/content/pages";
 import { isDocsCollectionSidebarGroupingResolverId } from "@/lib/docs/collection-definition-contract";
-import {
-  filterGlossaryPagesForDerivedSection,
-  type GlossaryDerivedBrowseSectionId,
-  getGlossaryDerivedSidebarLabel,
-  isGlossaryPageAssignedToDerivedSection,
-} from "@/lib/docs/glossary-derived-browse-sections";
 import { buildGroupedSidebarNodes } from "@/lib/navigation/docs-sidebar-grouping-adapter";
 import {
   buildUngroupedShellCollectionPageNodes,
   type ShellCollectionSidebarDefinition,
 } from "@/lib/navigation/shell-collection-page-tree";
 
-type DocsSidebarSectionRef =
-  | { kind: "glossary-derived"; id: GlossaryDerivedBrowseSectionId }
-  | { kind: "collection"; id: string };
+type DocsSidebarSectionRef = { kind: "collection"; id: string };
 
 /** Reader-visible sidebar folder order for factory docs collections. */
 export const DOCS_SIDEBAR_SECTION_ORDER = [
@@ -25,22 +17,6 @@ export const DOCS_SIDEBAR_SECTION_ORDER = [
   { kind: "collection", id: "documentation" },
   { kind: "collection", id: "glossary" },
 ] as const satisfies readonly DocsSidebarSectionRef[];
-
-function buildGlossaryDerivedSidebarFolder(
-  sectionId: GlossaryDerivedBrowseSectionId,
-  glossaryPages: readonly DocsPageSource[],
-): Node {
-  const sectionPages = filterGlossaryPagesForDerivedSection(
-    glossaryPages,
-    sectionId,
-  );
-
-  return {
-    type: "folder",
-    name: getGlossaryDerivedSidebarLabel(sectionId),
-    children: buildUngroupedShellCollectionPageNodes(sectionPages),
-  };
-}
 
 export function buildDocsSidebarSectionNodes({
   pages,
@@ -76,16 +52,7 @@ export function buildDocsSidebarSectionNodes({
     pagesByCollection.get(collectionId)?.push(page);
   }
 
-  const glossaryPages = pagesByCollection.get("glossary") ?? [];
-  const remainingGlossaryPages = glossaryPages.filter(
-    (page) => !isGlossaryPageAssignedToDerivedSection(page),
-  );
-
   return sectionOrder.map((sectionRef) => {
-    if (sectionRef.kind === "glossary-derived") {
-      return buildGlossaryDerivedSidebarFolder(sectionRef.id, glossaryPages);
-    }
-
     const definition = definitionsById.get(sectionRef.id);
     if (!definition) {
       throw new Error(
@@ -93,10 +60,7 @@ export function buildDocsSidebarSectionNodes({
       );
     }
 
-    const collectionPages =
-      sectionRef.id === "glossary"
-        ? remainingGlossaryPages
-        : (pagesByCollection.get(sectionRef.id) ?? []);
+    const collectionPages = pagesByCollection.get(sectionRef.id) ?? [];
 
     const children =
       definition.sidebarGroupingResolverId &&
