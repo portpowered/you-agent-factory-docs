@@ -1,0 +1,31 @@
+{
+  "title": "MCP",
+  "description": "Connect an MCP-capable host to you-agent-factory with you mcp serve over stdio, host JSON configuration, serve modes, and Factory Session tools.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "MCP is the you-agent-factory Model Context Protocol (MCP) integration reference. It covers how an MCP-capable host launches you mcp serve over stdio, how host configuration points at that child process, and how Factory Session tools become available after the host reloads. Use it when you need the web integration path rather than a Cursor walkthrough or a packaged CLI topic dump."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Model Context Protocol (MCP) is how an editor or other host discovers and calls tools over a child-process transport. you-agent-factory exposes Factory Session tools to MCP hosts through you mcp serve. The host spawns that command as a stdio child process: stdin and stdout carry MCP JSON-RPC, and stderr stays reserved for diagnostics."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Install the you CLI, add an MCP server entry that launches you mcp serve, set the working directory to your workflow project root, then restart or reload the host so the child process starts. After reload, the host should discover you.factory_session.* tools for validate, start, status, and result flows."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web MCP integration reference for stdio serve, host configuration, and Factory Session tool discovery. It is not HTTP or SSE transport documentation, not a multi-host UI parity matrix, not a sync of packaged you docs mcp topics, and not the Cursor dynamic-workflows use-case guide."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
