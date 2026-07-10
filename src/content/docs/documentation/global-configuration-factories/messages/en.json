@@ -9,11 +9,15 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "Operator model defaults are preferred provider and model values for INFERENCE_WORKER and AGENT_WORKER definitions that omit modelProvider or model. They live in the operator config file, environment variables, and global CLI flags, and apply in memory at runtime without rewriting authored worker fields or factory.json. Named factories are persisted factory definitions under a factory root. Project-local roots such as ./factory come first for you run --named; the global shared root is ~/.you-agent-factory/factories. Built-ins materialize into that global root on first use and stay editable on disk."
+      "body": "Operator model defaults are preferred provider and model values for INFERENCE_WORKER and AGENT_WORKER definitions that omit modelProvider or model. They live in the operator config file, environment variables, and global CLI flags. The runtime applies them in memory only: authored worker modelProvider and model values are never overwritten, script and poller workers are never touched, and factory.json is never rewritten with those defaults. Named factories are persisted factory definitions under a factory root. Project-local roots such as ./factory come first for you run --named; the global shared root is ~/.you-agent-factory/factories. Built-ins materialize into that global root on first use and stay editable on disk."
+    },
+    "operatorModelDefaults": {
+      "title": "Operator Model Defaults",
+      "body": "Use operator defaults when you want one preferred provider and model across runs without editing every factory worker. Defaults apply only to INFERENCE_WORKER and AGENT_WORKER entries that omit modelProvider or model. Authored worker values stay as written. Script workers and poller workers never receive operator defaults. The runtime fills omitted fields in memory at startup and does not persist those fills into factory.json."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Set operator defaults in ~/.you-agent-factory/config.json when you want one preferred provider and model across runs, then override with environment variables or global flags when a single invocation needs a different choice. List named factories one root at a time with you factory list for the project-local root, or you factory list --dir ~/.you-agent-factory/factories for the global root. Run a named factory with you run --named, and save or update under the --dir root you intend to own. Use the configuration documentation page when you need factory.json topology instead of operator or global factory settings."
+      "body": "Create ~/.you-agent-factory/config.json with defaults.workerModelProvider and defaults.workerModel when you want one preferred provider and model across runs. Override a single invocation with YOU_DEFAULT_WORKER_MODEL_PROVIDER and YOU_DEFAULT_WORKER_MODEL, or with --default-worker-model-provider and --default-worker-model on the root you command. Precedence is independent per field: file, then env, then flag. List named factories one root at a time with you factory list for the project-local root, or you factory list --dir ~/.you-agent-factory/factories for the global root. Run a named factory with you run --named, and save or update under the --dir root you intend to own. Use the configuration documentation page when you need factory.json topology instead of operator or global factory settings."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -27,6 +31,38 @@
     },
     "references": {
       "title": "References"
+    }
+  },
+  "links": {
+    "configPathLabel": "Default config path:",
+    "configExampleLabel": "Example operator config:",
+    "envOverridesLabel": "Environment overrides (each field independently):",
+    "envVariableHeader": "Variable",
+    "envPurposeHeader": "Purpose",
+    "envProviderName": "YOU_DEFAULT_WORKER_MODEL_PROVIDER",
+    "envProviderPurpose": "Overrides defaults.workerModelProvider from the config file",
+    "envModelName": "YOU_DEFAULT_WORKER_MODEL",
+    "envModelPurpose": "Overrides defaults.workerModel from the config file",
+    "flagOverridesLabel": "Global CLI flags (highest precedence per field):",
+    "flagNameHeader": "Flag",
+    "flagPurposeHeader": "Purpose",
+    "flagProviderName": "--default-worker-model-provider",
+    "flagProviderPurpose": "Overrides file and environment for the worker model provider",
+    "flagModelName": "--default-worker-model",
+    "flagModelPurpose": "Overrides file and environment for the worker model"
+  },
+  "callouts": {
+    "configFileNotes": {
+      "body": "A missing config file is valid and applies no operator defaults. Malformed JSON fails before service construction with an error that names the config file path. Unknown top-level JSON fields are rejected. Empty or unset environment values do not clear a lower-precedence layer."
+    },
+    "flagExample": {
+      "body": "These are global persistent flags on the root you command. Both bare you and explicit you run honor them:"
+    },
+    "precedence": {
+      "body": "Effective precedence is independent per field. For each of workerModelProvider and workerModel, the winning layer is:"
+    },
+    "runnerDistinction": {
+      "body": "Operator defaults are distinct from factory-level runner in factory.json. Public factory.json and OpenAPI runner fields stay topology-owned; operator defaults do not rewrite those runner fields. Set operator defaults or author modelProvider on workers when you need a preferred model worker provider — do not expect runner to stand in for operator defaults."
     }
   }
 }

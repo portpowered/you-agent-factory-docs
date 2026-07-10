@@ -29,6 +29,103 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.keyConcepts.body" />
 </Section>
 
+<Section id="operator-model-defaults" titleKey="sections.operatorModelDefaults.title">
+  <T k="sections.operatorModelDefaults.body" />
+  <p>
+    <T k="links.configPathLabel" />
+  </p>
+  ```text
+  ~/.you-agent-factory/config.json
+  ```
+  <p>
+    <T k="links.configExampleLabel" />
+  </p>
+  ```json
+  {
+    "defaults": {
+      "workerModelProvider": "codex",
+      "workerModel": "gpt-5-codex"
+    }
+  }
+  ```
+  <T k="callouts.configFileNotes.body" />
+  <p>
+    <T k="links.envOverridesLabel" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.envVariableHeader" />
+        </th>
+        <th>
+          <T k="links.envPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.envProviderName" />
+        </td>
+        <td>
+          <T k="links.envProviderPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.envModelName" />
+        </td>
+        <td>
+          <T k="links.envModelPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.flagOverridesLabel" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.flagNameHeader" />
+        </th>
+        <th>
+          <T k="links.flagPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.flagProviderName" />
+        </td>
+        <td>
+          <T k="links.flagProviderPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.flagModelName" />
+        </td>
+        <td>
+          <T k="links.flagModelPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.flagExample.body" />
+  ```bash
+  you --default-worker-model-provider codex --default-worker-model gpt-5-codex run
+  ```
+  <T k="callouts.precedence.body" />
+  ```text
+  file < env < flag
+  ```
+  <T k="callouts.runnerDistinction.body" />
+</Section>
+
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
 </Section>
