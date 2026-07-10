@@ -75,6 +75,9 @@ describe("statistical-process-control-graphs concept page", () => {
       screen.getByRole("heading", { name: "Simple Example" }),
     ).toBeTruthy();
     expect(
+      screen.getByRole("heading", { name: "Where It Appears" }),
+    ).toBeTruthy();
+    expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
     const whatItIsSection = document.getElementById("what-it-is");
@@ -117,5 +120,48 @@ describe("statistical-process-control-graphs concept page", () => {
     expect(simpleExampleSection?.textContent).toMatch(
       /X axis: Interval \(ten-minute ticks\)/i,
     );
+
+    const whereItAppears = String(
+      loadedPage.messages.sections?.whereItAppears?.body ?? "",
+    );
+    const commonConfusions = String(
+      loadedPage.messages.sections?.commonConfusions?.body ?? "",
+    );
+    expect(whereItAppears).toMatch(/ops|metrics/i);
+    expect(whereItAppears).toMatch(/time|interval/i);
+    expect(whereItAppears).not.toMatch(/on this page/i);
+    expect(whereItAppears).not.toMatch(/Model Atlas/i);
+
+    expect(commonConfusions).toMatch(/dashboard|snapshot/i);
+    expect(commonConfusions).toMatch(/benchmark|eval|leaderboard/i);
+    expect(commonConfusions).toMatch(/deploy|spike|special-cause/i);
+    expect(commonConfusions).not.toMatch(/on this page/i);
+    expect(commonConfusions).not.toMatch(/Model Atlas/i);
+
+    const whereItAppearsSection = document.getElementById("where-it-appears");
+    expect(whereItAppearsSection?.textContent).toMatch(/factory ops|metrics/i);
+    const metricsLink = screen.getByRole("link", {
+      name: "Metrics documentation",
+    });
+    expect(metricsLink.getAttribute("href")).toBe(
+      "/docs/documentation/metrics",
+    );
+    expect(
+      screen.getByRole("link", { name: "Bottlenecks" }).getAttribute("href"),
+    ).toBe("/docs/concepts/bottlenecks");
+    expect(
+      screen.getByRole("link", { name: "Tokens" }).getAttribute("href"),
+    ).toBe("/docs/concepts/tokens");
+
+    const commonConfusionsSection =
+      document.getElementById("common-confusions");
+    expect(commonConfusionsSection?.textContent).toMatch(
+      /dashboard snapshot|leaderboard|deploy bug/i,
+    );
+
+    expect(
+      (loadedPage.messages as { links?: Record<string, string> }).links
+        ?.metricsDocs,
+    ).toBe("Metrics documentation");
   });
 });

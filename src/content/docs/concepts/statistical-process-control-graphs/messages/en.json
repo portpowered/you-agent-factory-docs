@@ -17,11 +17,11 @@
     },
     "whereItAppears": {
       "title": "Where It Appears",
-      "body": "SPC graphs show up wherever factory operators watch process health over time rather than as a one-off snapshot. Throughput, failure rate, queue depth, and spend series are common candidates when a run lasts long enough for a center line and limits to mean something."
+      "body": "SPC graphs belong in factory ops and metrics work when a run lasts long enough to watch the same measure across many intervals. Operators use them while a session is live: completions per tick, failure rate, queue depth, and token spend as time-ordered series with a center line and control limits. That is different from a one-shot status panel. Metrics docs cover how those series are exposed in the product; bottlenecks and tokens sit next to the same watching work when interpreters want nearby concepts."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "A control chart is not a one-off dashboard snapshot with no limits, and it is not a benchmark or eval leaderboard. It is also not a rule that every spike is a deploy bug. The chart asks whether a point is unusual relative to the process limits before anyone treats it as a special cause."
+      "body": "A control chart is not a one-off dashboard snapshot that shows the latest value with no center line or limits. It is not a benchmark or eval leaderboard that ranks models or runs. It is also not a rule that every spike is a deploy bug: a point that stays inside the limits is usually common-cause noise, and a point that breaks the limits is a special-cause signal worth investigating — not an automatic proof of a bad release."
     },
     "related": {
       "title": "Related Concepts And Modules"
@@ -32,5 +32,10 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "metricsDocs": "Metrics documentation",
+    "bottlenecksConcept": "Bottlenecks",
+    "tokensConcept": "Tokens"
   }
 }

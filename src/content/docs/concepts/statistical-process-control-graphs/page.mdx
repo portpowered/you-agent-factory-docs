@@ -16,6 +16,7 @@ updatedAt: "2026-07-09"
 
 import { CitationList } from "@/features/docs/components/CitationList";
 import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -32,6 +33,26 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 <Section id="simple-example" titleKey="sections.simpleExample.title">
   <T k="sections.simpleExample.body" />
   <SpcControlChartIllustration />
+</Section>
+
+<Section id="where-it-appears" titleKey="sections.whereItAppears.title">
+  <T k="sections.whereItAppears.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/metrics",
+        labelKey: "links.metricsDocs",
+      },
+      {
+        href: "/docs/concepts/bottlenecks",
+        labelKey: "links.bottlenecksConcept",
+      },
+      {
+        href: "/docs/concepts/tokens",
+        labelKey: "links.tokensConcept",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="common-confusions" titleKey="sections.commonConfusions.title">
