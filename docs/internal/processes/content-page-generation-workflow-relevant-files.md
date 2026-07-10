@@ -106,6 +106,13 @@ under `<RelatedDocs />` even when the target guide is published. Keep
 getting-started and planned concept/write-review destinations on the page via
 message-backed `LocalizedLinkList` hrefs.
 
+Concept → guide discovery uses the same rule: even when guide registry records
+are published, put loops / write-review / getting-started next steps on the
+concept page with message-backed `<LocalizedLinkList>` under `#related` (or an
+equivalent discovery section). Leave concept `relatedIds` empty for those guide
+ids — they will not render under `<RelatedDocs />` until guides join the related
+registry runtime.
+
 ## Shipping non-en locale stubs on a page bundle
 
 Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
