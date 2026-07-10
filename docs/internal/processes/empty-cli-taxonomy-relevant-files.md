@@ -79,7 +79,7 @@ Do not author customer page bundles under content roots in this lane.
 | Path | Role |
 | --- | --- |
 | `src/content/docs/guides/` | CLI guides content root; may contain authored guide page bundles |
-| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles (e.g. `workqueue-executor`, `classify-execute`, `planner-executor`, `ralph`, `worker-adviser`) |
+| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles (e.g. `workqueue-executor`, `classify-execute`, `planner-executor`, `ralph`, `worker-adviser`, `writer-reviewer`) |
 | `src/content/docs/documentation/` | CLI documentation content root; may contain authored topic page bundles |
 | `src/content/registry/guides/` | CLI guides registry dir; may contain authored guide records |
 | `src/content/registry/techniques/` | CLI techniques registry dir; may contain authored technique records |
