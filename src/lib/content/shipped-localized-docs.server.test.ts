@@ -140,6 +140,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     expect(derived).toEqual(resolveShippedLocalizedDocsManifest());
     expect(derived).toEqual({
       ja: [
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -148,6 +149,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       "zh-CN": [
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -156,6 +158,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       vi: [
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
