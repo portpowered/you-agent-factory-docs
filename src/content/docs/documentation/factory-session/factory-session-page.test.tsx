@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for documentation/factory-session.
- * Covers documentation shell, Factory Session identity, and discovery/inspect
- * command visibility — not route inventories or shared helper contracts.
+ * Covers documentation shell, Factory Session identity, discovery/inspect,
+ * lifecycle pause/resume, and durable JavaScript validate → start →
+ * status/result guidance — not route inventories or shared helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -44,6 +45,12 @@ describe("factory-session documentation page", () => {
     const sessionShow = String(
       loadedPage.messages.sections?.sessionShow?.body ?? "",
     );
+    const lifecycle = String(
+      loadedPage.messages.sections?.lifecycle?.body ?? "",
+    );
+    const durableJavascriptSession = String(
+      loadedPage.messages.sections?.durableJavascriptSession?.body ?? "",
+    );
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
@@ -56,6 +63,13 @@ describe("factory-session documentation page", () => {
     expect(sessionList).toMatch(/empty list|connection failure/i);
     expect(sessionShow).toMatch(/owns its own runtime state/i);
     expect(sessionShow).toMatch(/target the intended session/i);
+    expect(lifecycle).toMatch(/Pause and resume/i);
+    expect(lifecycle).toMatch(/re-reading session status/i);
+    expect(durableJavascriptSession).toMatch(/Durable JavaScript runs/i);
+    expect(durableJavascriptSession).toMatch(/Dynamic workflow is shorthand/i);
+    expect(durableJavascriptSession).toMatch(
+      /Dispatch, FactoryArtifact, and FactoryEvent/i,
+    );
     expect(limits).toMatch(/web Factory Session reference/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
     expect(whatItCovers).not.toMatch(
@@ -89,6 +103,12 @@ describe("factory-session documentation page", () => {
       screen.getByRole("heading", { name: "Inspect A Session" }),
     ).toBeTruthy();
     expect(
+      screen.getByRole("heading", { name: "Pause And Resume" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Durable JavaScript Session" }),
+    ).toBeTruthy();
+    expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
@@ -100,12 +120,18 @@ describe("factory-session documentation page", () => {
     const howToUseSection = document.getElementById("how-to-use");
     const sessionListSection = document.getElementById("session-list");
     const sessionShowSection = document.getElementById("session-show");
+    const lifecycleSection = document.getElementById("lifecycle");
+    const durableSection = document.getElementById(
+      "durable-javascript-session",
+    );
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(whatItCoversSection).toBeTruthy();
     expect(keyConceptsSection).toBeTruthy();
     expect(howToUseSection).toBeTruthy();
     expect(sessionListSection).toBeTruthy();
     expect(sessionShowSection).toBeTruthy();
+    expect(lifecycleSection).toBeTruthy();
+    expect(durableSection).toBeTruthy();
     expect(limitsSection).toBeTruthy();
     expect(whatItCoversSection?.textContent).toMatch(/Factory Session/i);
     expect(keyConceptsSection?.textContent).toMatch(/live runtime unit/i);
@@ -122,6 +148,25 @@ describe("factory-session documentation page", () => {
     );
     expect(sessionShowSection?.textContent).toMatch(
       /target the intended session/i,
+    );
+    expect(lifecycleSection?.textContent).toMatch(
+      /you session pause <session-id>/,
+    );
+    expect(lifecycleSection?.textContent).toMatch(
+      /you session resume <session-id>/,
+    );
+    expect(lifecycleSection?.textContent).toMatch(
+      /confirm the outcome|re-reading session status|you session show/i,
+    );
+    expect(durableSection?.textContent).toMatch(/you workflow validate/);
+    expect(durableSection?.textContent).toMatch(/you workflow start/);
+    expect(durableSection?.textContent).toMatch(/you workflow status/);
+    expect(durableSection?.textContent).toMatch(/you workflow result/);
+    expect(durableSection?.textContent).toMatch(
+      /Dispatch, FactoryArtifact, and FactoryEvent/i,
+    );
+    expect(durableSection?.textContent).toMatch(
+      /Dynamic workflow is shorthand/i,
     );
     expect(limitsSection?.textContent).toMatch(
       /web Factory Session reference/i,

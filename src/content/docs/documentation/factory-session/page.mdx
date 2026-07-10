@@ -55,6 +55,52 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="links.sessionShowTargetNote" />
 </Section>
 
+<Section id="lifecycle" titleKey="sections.lifecycle.title">
+  <T k="sections.lifecycle.body" />
+  <p>
+    <T k="links.sessionPauseLabel" />
+  </p>
+  ```sh
+  you session pause <session-id>
+  ```
+  <p>
+    <T k="links.sessionResumeLabel" />
+  </p>
+  ```sh
+  you session resume <session-id>
+  ```
+  <T k="links.sessionLifecycleConfirmNote" />
+</Section>
+
+<Section id="durable-javascript-session" titleKey="sections.durableJavascriptSession.title">
+  <T k="sections.durableJavascriptSession.body" />
+  <p>
+    <T k="links.workflowValidateLabel" />
+  </p>
+  ```sh
+  you workflow validate --kind WORKFLOW_NAME --value <workflow-name>
+  ```
+  <p>
+    <T k="links.workflowStartLabel" />
+  </p>
+  ```sh
+  you workflow start --request-id <request-id> --workflow <workflow-name>
+  ```
+  <p>
+    <T k="links.workflowStatusLabel" />
+  </p>
+  ```sh
+  you workflow status <session-id>
+  ```
+  <p>
+    <T k="links.workflowResultLabel" />
+  </p>
+  ```sh
+  you workflow result <session-id>
+  ```
+  <T k="links.durableInspectionNounsNote" />
+</Section>
+
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
 </Section>
