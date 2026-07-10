@@ -129,9 +129,13 @@ describe("GitHub Actions make ci", () => {
     expect(scripts["test:build-contract"]).toContain(
       "src/lib/build/acquire-trusted-project-site-export.test.ts",
     );
+    expect(scripts["test:build-contract"]).toContain(
+      "src/lib/build/exported-site-budget.test.ts",
+    );
     expect(scripts["test:build-contract"]).not.toContain(
       "static-export-search-ux-integration.test.ts",
     );
+    expect(scripts.budget).toBe("bun ./scripts/run-exported-site-budget.ts");
 
     const makefile = readFileSync(makefilePath, "utf8");
     const prerequisites = parseMakefileCiPrerequisites(makefile);
@@ -144,8 +148,16 @@ describe("GitHub Actions make ci", () => {
     expect(prerequisites).not.toContain("build");
     expect(prerequisites).not.toContain("build-export");
 
+    expect(makefile).toMatch(/^budget:\n\tbun run budget$/m);
+    expect(makefile).not.toContain(
+      "exported-site budget gate temporarily skipped",
+    );
+
     expect(
       existsSync(join(repoRoot, "src/lib/build/static-export.test.ts")),
+    ).toBe(true);
+    expect(
+      existsSync(join(repoRoot, "src/lib/build/exported-site-budget.ts")),
     ).toBe(true);
   });
 

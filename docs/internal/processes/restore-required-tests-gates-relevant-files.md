@@ -84,6 +84,29 @@ make test-build-contract
 make test-integration
 ```
 
+## Story 004: exported-site budget with factory baselines
+
+| Path | Role |
+| --- | --- |
+| `src/lib/build/exported-site-budget.ts` | Pure measurement/evaluation of `out/` against factory baselines (total size, `_next/static/**/*.js`, `api/search*`); prints reproduction command on failure |
+| `src/lib/build/exported-site-budget.test.ts` | Fixture proofs for pass, breach, missing export, and missing JS/search surfaces; included in `make test-build-contract` |
+| `scripts/run-exported-site-budget.ts` | CLI for `bun run budget` / `make budget`; measures existing `out/` only (no competing full export) |
+| `Makefile` `budget` / `package.json` `budget` | Maintainer + CI/deploy entrypoint; invoked after `make build` in `.github/workflows/ci.yml` and `deploy-pages.yml` |
+
+Factory baselines (calibrated 2026-07-10 UTC against a clean factory export with headroom):
+
+- `maxTotalOutBytes`: 85_000_000
+- `maxNextStaticJsBytes`: 3_500_000
+- `maxSearchBootstrapBytes`: 4_000_000
+
+The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
+`out/` fails closed. Reproduce locally with:
+
+```sh
+make build
+make budget
+```
+
 ## Related
 
 - [ci-deploy-foundation-relevant-files.md](./ci-deploy-foundation-relevant-files.md) — Makefile / workflow contract map

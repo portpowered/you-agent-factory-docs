@@ -17,7 +17,7 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Integration | `make test-integration` | Production-integration path set for live shell/lifecycle contracts (prefer after `make build`) |
 | Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=`, stage wall times, cache reasons, scale counts, and non-identifying machine metadata. Reference machine + recorded <=180s evidence live in `docs/operations.md`; print the gate with `bun run prove:static-export-optimization-evidence`. Not part of CI/Pages. |
-| Exported-site budget | `make budget` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
+| Exported-site budget | `make budget` | Measures existing `out/` against factory baselines (total size, Next static JS, search bootstrap); never unconditional skip/`exit 0` |
 | Component coverage | `make component-coverage` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
 
 Workflows that call this contract:
@@ -94,6 +94,7 @@ and `bun run test:website:export-consumers`.
 | `src/lib/build/guard-pages-deployed-artifact.ts` | Pages deploy guard: `guardPagesDeployedArtifact` reuses trusted `out/` with `allowBuild: false`, then `probePagesDeployedArtifact` serves via `runStaticExportServerLifecycle` / `createStaticExportHttpServer` and HTTP-probes home, getting-started, comparing-agent-factories, search bootstrap, one CSS asset, and a JS chunk for `/you-agent-factory-docs` prefix correctness. Prefixed search-bootstrap presence is evaluated from concatenated `out/_next/static/chunks/*.js` (same as export-consumer) — not only the first HTML-referenced script — because the Orama static `from` bake is code-split into a search chunk |
 | `src/lib/build/guard-pages-deployed-artifact.test.ts` | Focused build-contract gate: repaired fixture passes; code-split bake in a non-entry chunk passes; unprefixed fixture fails; missing `out/` fails without rebuild — no production-scale rebuild required |
 | `scripts/guard-pages-deployed-artifact.ts` / `make guard-pages-deployed-artifact` / `bun run guard:pages-deployed-artifact` | Thin deploy-path entrypoint: reuse existing `out/` only and probe; never runs a second `make build` / `build:export` |
+| `src/lib/build/exported-site-budget.ts` / `exported-site-budget.test.ts` / `scripts/run-exported-site-budget.ts` / `make budget` / `bun run budget` | Factory exported-site budget gate: measures existing `out/` (total size, Next static JS, `api/search*`) against factory baselines; fails closed on missing/incomplete export or breach; no unconditional skip |
 | `src/lib/build/built-app-html-paths.test.ts` / `src/lib/navigation/site-path.test.ts` / `src/lib/navigation/site-navigation-href.test.ts` / `src/lib/navigation/site-metadata-path.test.ts` / `src/lib/i18n/route-locale.test.ts` | Focused helper gates: live project-site default + root vs `/you-agent-factory-docs` navigation/locale/metadata/asset href behavior |
 | `src/features/docs/components/LocalizedLinkList.tsx` | MDX link lists use Next `<Link>` so project-site `basePath` prefixes hrefs (raw `<a>` would escape to the org root) |
 
@@ -129,9 +130,13 @@ Atlas page deletion leaves empty collections).
 
 ## Transitional skip/pass gates
 
-During rewrite foundation, `budget` and `component-coverage` may print a clear
-skip message and exit 0 when no rewrite-safe enforcement exists yet. Do not hide
-failures from `check`, `test`, or the static-export build behind those skips.
+`make budget` now enforces factory exported-site baselines via
+`bun run budget` / `scripts/run-exported-site-budget.ts` (see
+[restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)).
+During rewrite foundation, `component-coverage` may still print a clear skip
+message and exit 0 when no rewrite-safe enforcement exists yet. Do not hide
+failures from `check`, `test`, `budget`, or the static-export build behind
+those skips.
 
 ## Related
 

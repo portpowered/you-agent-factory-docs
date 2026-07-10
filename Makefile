@@ -9,8 +9,7 @@ setup:
 check: typecheck lint
 
 budget:
-	@echo "budget: exported-site budget gate temporarily skipped during rewrite foundation"
-	@exit 0
+	bun run budget
 
 component-coverage:
 	@echo "component-coverage: coverage gate temporarily skipped during rewrite foundation"
