@@ -8,6 +8,12 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { DEFAULT_EXPORT_OUT_DIR } from "@/lib/build/export-out-directory";
+import { EXPORT_SEARCH_PARSED_DOCUMENTS_STORE_RELATIVE_PATH } from "@/lib/build/export-search-parsed-documents";
+import {
+  isNextCompilerCacheUsable,
+  NEXT_COMPILER_CACHE_DIRECTORY,
+} from "@/lib/build/static-export-compiler-cache";
+import { STATIC_EXPORT_IMMUTABLE_SNAPSHOT_STORE_RELATIVE_PATH } from "@/lib/build/static-export-immutable-snapshot";
 import {
   createNotAvailableCacheReasons,
   createNotAvailableScaleCounts,
@@ -23,11 +29,14 @@ import { defaultLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 
 /** Relative paths used to diagnose warm vs clean cache presence before stages. */
 export const STATIC_EXPORT_CACHE_ARTIFACT_PATHS = {
-  nextCacheDirectory: ".next/cache",
+  nextCacheDirectory: NEXT_COMPILER_CACHE_DIRECTORY,
   sourceDirectory: ".source",
   outDirectory: DEFAULT_EXPORT_OUT_DIR,
   chunksDirectory: `${DEFAULT_EXPORT_OUT_DIR}/_next/static/chunks`,
   contentRuntimeFingerprintStore: CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH,
+  immutableSnapshotStore: STATIC_EXPORT_IMMUTABLE_SNAPSHOT_STORE_RELATIVE_PATH,
+  exportSearchParsedDocumentsStore:
+    EXPORT_SEARCH_PARSED_DOCUMENTS_STORE_RELATIVE_PATH,
 } as const;
 
 export type PathExistsFn = (path: string) => boolean;
@@ -36,6 +45,7 @@ export type IsDirectoryFn = (path: string) => boolean;
 export type FileSizeFn = (path: string) => number;
 
 export type StaticExportCacheArtifactSnapshot = {
+  /** True when `.next/cache` exists as a non-empty (usable) directory. */
   nextCacheDirectoryPresent: boolean;
   sourceDirectoryPresent: boolean;
   outDirectoryPresent: boolean;
@@ -43,12 +53,18 @@ export type StaticExportCacheArtifactSnapshot = {
   contentRuntimeFingerprintStorePresent: boolean;
   /** All contracted content-runtime outputs exist and are non-empty. */
   contentRuntimeOutputsPresent: boolean;
+  /** Fingerprint store for the fumadocs `.source` immutable snapshot. */
+  immutableSnapshotStorePresent: boolean;
+  /** Fingerprint-gated parsed search-document store for emit-export-search-index. */
+  exportSearchParsedDocumentsStorePresent: boolean;
 };
 
 export type CollectCacheArtifactSnapshotOptions = {
   cwd: string;
   pathExists?: PathExistsFn;
   fileSize?: FileSizeFn;
+  readDirectoryNames?: ReadDirectoryNamesFn;
+  isDirectory?: IsDirectoryFn;
   /** Override contracted output paths (tests). Defaults to preparation steps. */
   contentRuntimeOutputPaths?: readonly string[];
 };
@@ -109,14 +125,21 @@ export function collectStaticExportCacheArtifactSnapshot(
 ): StaticExportCacheArtifactSnapshot {
   const pathExists = options.pathExists ?? existsSync;
   const fileSize = options.fileSize ?? defaultFileSize;
+  const readDirectoryNames =
+    options.readDirectoryNames ?? defaultReadDirectoryNames;
+  const isDirectory = options.isDirectory ?? defaultIsDirectory;
   const contentRuntimeOutputPaths =
     options.contentRuntimeOutputPaths ??
     CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => step.outputPath);
 
   return {
-    nextCacheDirectoryPresent: pathExists(
-      join(options.cwd, STATIC_EXPORT_CACHE_ARTIFACT_PATHS.nextCacheDirectory),
-    ),
+    // Present means usable: `.next/cache` exists and is non-empty.
+    nextCacheDirectoryPresent: isNextCompilerCacheUsable({
+      cwd: options.cwd,
+      pathExists,
+      readDirectoryNames,
+      isDirectory,
+    }),
     sourceDirectoryPresent: pathExists(
       join(options.cwd, STATIC_EXPORT_CACHE_ARTIFACT_PATHS.sourceDirectory),
     ),
@@ -135,6 +158,18 @@ export function collectStaticExportCacheArtifactSnapshot(
       pathExists,
       fileSize,
     ),
+    immutableSnapshotStorePresent: pathExists(
+      join(
+        options.cwd,
+        STATIC_EXPORT_CACHE_ARTIFACT_PATHS.immutableSnapshotStore,
+      ),
+    ),
+    exportSearchParsedDocumentsStorePresent: pathExists(
+      join(
+        options.cwd,
+        STATIC_EXPORT_CACHE_ARTIFACT_PATHS.exportSearchParsedDocumentsStore,
+      ),
+    ),
   };
 }
 
@@ -148,7 +183,8 @@ function cacheReason(
 /**
  * Derives per-stage cache hit/miss/not-applicable reasons from benchmark mode
  * and the pre-stage artifact snapshot. Content-runtime uses fingerprint +
- * output presence; stages without incremental cache report not-applicable.
+ * output presence; search-index emission uses the parsed-documents store;
+ * fingerprint writing reports not-applicable.
  */
 export function deriveStaticExportCacheReasons(input: {
   mode: StaticExportBenchmarkMode;
@@ -165,23 +201,32 @@ export function deriveStaticExportCacheReasons(input: {
         : cacheReason("miss", "fingerprint-store-or-outputs-absent");
 
   const fumadocsGeneration =
-    mode === "clean" || !snapshot.sourceDirectoryPresent
-      ? cacheReason("miss", "source-directory-absent")
-      : cacheReason("hit", "source-directory-present");
+    mode === "clean"
+      ? cacheReason("miss", "clean-mode-regenerates")
+      : snapshot.sourceDirectoryPresent &&
+          snapshot.immutableSnapshotStorePresent
+        ? cacheReason("hit", "immutable-snapshot-store-and-source-present")
+        : cacheReason("miss", "immutable-snapshot-store-or-source-absent");
 
   const nextCompilationStaticRendering =
-    mode === "clean" || !snapshot.nextCacheDirectoryPresent
-      ? cacheReason("miss", "next-cache-directory-absent")
-      : cacheReason("hit", "next-cache-directory-present");
+    mode === "clean"
+      ? cacheReason("miss", "clean-mode-regenerates")
+      : snapshot.nextCacheDirectoryPresent
+        ? cacheReason("hit", "next-compiler-cache-present")
+        : cacheReason("miss", "next-compiler-cache-absent");
+
+  const searchIndexEmission =
+    mode === "clean"
+      ? cacheReason("miss", "clean-mode-regenerates")
+      : snapshot.exportSearchParsedDocumentsStorePresent
+        ? cacheReason("hit", "parsed-documents-store-present")
+        : cacheReason("miss", "parsed-documents-store-absent");
 
   return {
     contentRuntimePreparation,
     fumadocsGeneration,
     nextCompilationStaticRendering,
-    searchIndexEmission: cacheReason(
-      "not-applicable",
-      "always-regenerates-from-export",
-    ),
+    searchIndexEmission,
     fingerprintWriting: cacheReason(
       "not-applicable",
       "always-writes-fingerprint",

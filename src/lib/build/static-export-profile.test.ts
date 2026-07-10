@@ -24,15 +24,15 @@ const fixtureCacheReasons = {
   },
   fumadocsGeneration: {
     status: "miss" as const,
-    reason: "source-directory-absent",
+    reason: "clean-mode-regenerates",
   },
   nextCompilationStaticRendering: {
     status: "miss" as const,
-    reason: "next-cache-directory-absent",
+    reason: "clean-mode-regenerates",
   },
   searchIndexEmission: {
-    status: "not-applicable" as const,
-    reason: "always-regenerates-from-export",
+    status: "miss" as const,
+    reason: "clean-mode-regenerates",
   },
   fingerprintWriting: {
     status: "not-applicable" as const,
@@ -82,7 +82,13 @@ describe("static-export-profile", () => {
     const nextStage = STATIC_EXPORT_PROFILE_STAGE_COMMANDS.find(
       (stage) => stage.id === "nextCompilationStaticRendering",
     );
-    expect(nextStage?.env?.NEXT_STATIC_EXPORT).toBe("1");
+    expect(nextStage?.argv).toEqual([
+      "bun",
+      "./scripts/run-static-export-next-build.ts",
+    ]);
+    // NEXT_STATIC_EXPORT is set inside the wrapper (with post-build legacy
+    // compile-graph verification), not as stage env.
+    expect(nextStage?.env?.NEXT_STATIC_EXPORT).toBeUndefined();
   });
 
   test("measureWallTimeMs records injectable clock deltas", () => {
@@ -134,13 +140,13 @@ describe("static-export-profile", () => {
       "contentRuntimePreparationCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
-      "fumadocsGenerationCache=miss:source-directory-absent",
+      "fumadocsGenerationCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
-      "nextCompilationStaticRenderingCache=miss:next-cache-directory-absent",
+      "nextCompilationStaticRenderingCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
-      "searchIndexEmissionCache=not-applicable:always-regenerates-from-export",
+      "searchIndexEmissionCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
       "fingerprintWritingCache=not-applicable:always-writes-fingerprint",

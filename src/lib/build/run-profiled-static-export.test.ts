@@ -27,15 +27,15 @@ describe("runProfiledStaticExport", () => {
     },
     fumadocsGeneration: {
       status: "miss" as const,
-      reason: "source-directory-absent",
+      reason: "immutable-snapshot-store-or-source-absent",
     },
     nextCompilationStaticRendering: {
       status: "miss" as const,
-      reason: "next-cache-directory-absent",
+      reason: "next-compiler-cache-absent",
     },
     searchIndexEmission: {
-      status: "not-applicable" as const,
-      reason: "always-regenerates-from-export",
+      status: "miss" as const,
+      reason: "parsed-documents-store-absent",
     },
     fingerprintWriting: {
       status: "not-applicable" as const,
@@ -96,7 +96,7 @@ describe("runProfiledStaticExport", () => {
     expect(result.summary).toContain("contentRuntimePreparationMs=10");
     expect(result.summary).toContain("totalWallTimeMs=50");
     expect(result.summary).toContain(
-      "nextCompilationStaticRenderingCache=miss:next-cache-directory-absent",
+      "nextCompilationStaticRenderingCache=miss:next-compiler-cache-absent",
     );
     expect(result.summary).toContain("staticRouteCount=3");
     expect(result.summary).toContain("localeCount=2");
@@ -242,7 +242,7 @@ describe("runProfiledStaticExport", () => {
     ) as { scripts: Record<string, string> };
 
     expect(packageJson.scripts["build:export"]).toBe(
-      "fumadocs-mdx && NEXT_STATIC_EXPORT=1 bun ./scripts/run-next.ts build --webpack && bun ./scripts/emit-export-search-index.ts && bun ./scripts/write-build-source-fingerprint.ts",
+      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && bun ./scripts/run-static-export-next-build.ts && bun ./scripts/emit-export-search-index.ts && bun ./scripts/write-build-source-fingerprint.ts",
     );
     expect(packageJson.scripts["build:export"]).not.toContain(
       "run-profiled-static-export",

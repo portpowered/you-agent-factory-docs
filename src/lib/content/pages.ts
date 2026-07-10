@@ -1,7 +1,6 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DOCS_ROOT } from "@/lib/content/content-paths";
-import { loadPageMessages } from "@/lib/content/page-messages-load";
 import {
   type PageFrontmatter,
   type PageMessages,
@@ -87,37 +86,31 @@ export function isDocsPageShippedForLocale(
   ].includes(docsSlug);
 }
 
-export async function loadPublishedDocsPages(
+/**
+ * Process/build-scoped published/shipped page-load cache.
+ *
+ * Static route generation and index surfaces repeatedly scan the same docs
+ * tree. Memoize successful scans so each unique (root, locale, variant) parse
+ * runs once per process.
+ */
+type DocsPageLoadVariant = "published" | "shipped";
+
+const docsPageLoadCache = new Map<string, DocsPageSource[]>();
+let docsPageParseCount = 0;
+
+function docsPageLoadCacheKey(
+  rootDir: string,
   locale: SiteLocale,
-  rootDir = DOCS_ROOT,
-): Promise<DocsPageSource[]> {
-  const pages: DocsPageSource[] = [];
-
-  for (const pageDir of findPageDirectories(rootDir)) {
-    const pageMdx = path.join(pageDir, "page.mdx");
-    const frontmatter = parseFrontmatter(pageMdx);
-    if (frontmatter.status !== "published") {
-      continue;
-    }
-
-    const docsSlug = path.relative(rootDir, pageDir);
-    const url = docsUrlFromSlug(docsSlug, locale);
-    pages.push({
-      pageDir,
-      docsSlug,
-      url,
-      frontmatter,
-      messages: await loadPageMessages(pageDir, locale, { route: url }),
-    });
-  }
-
-  return pages;
+  variant: DocsPageLoadVariant,
+): string {
+  return `${rootDir}\0${locale}\0${variant}`;
 }
 
-export function loadPublishedDocsPagesSync(
+function loadPublishedDocsPagesUncached(
   locale: SiteLocale,
-  rootDir = DOCS_ROOT,
+  rootDir: string,
 ): DocsPageSource[] {
+  docsPageParseCount += 1;
   const pages: DocsPageSource[] = [];
 
   for (const pageDir of findPageDirectories(rootDir)) {
@@ -141,14 +134,11 @@ export function loadPublishedDocsPagesSync(
   return pages;
 }
 
-export function loadShippedLocalizedDocsPagesSync(
+function loadShippedLocalizedDocsPagesUncached(
   locale: SiteLocale,
-  rootDir = DOCS_ROOT,
+  rootDir: string,
 ): DocsPageSource[] {
-  if (locale === defaultLocale) {
-    return loadPublishedDocsPagesSync(locale, rootDir);
-  }
-
+  docsPageParseCount += 1;
   const pages: DocsPageSource[] = [];
 
   for (const pageDir of findPageDirectories(rootDir)) {
@@ -180,6 +170,50 @@ export function loadShippedLocalizedDocsPagesSync(
   }
 
   return pages;
+}
+
+function getOrLoadDocsPages(
+  locale: SiteLocale,
+  rootDir: string,
+  variant: DocsPageLoadVariant,
+): DocsPageSource[] {
+  const key = docsPageLoadCacheKey(rootDir, locale, variant);
+  const cached = docsPageLoadCache.get(key);
+  if (cached) {
+    return cached;
+  }
+
+  const pages =
+    variant === "published"
+      ? loadPublishedDocsPagesUncached(locale, rootDir)
+      : loadShippedLocalizedDocsPagesUncached(locale, rootDir);
+  docsPageLoadCache.set(key, pages);
+  return pages;
+}
+
+export async function loadPublishedDocsPages(
+  locale: SiteLocale,
+  rootDir = DOCS_ROOT,
+): Promise<DocsPageSource[]> {
+  return getOrLoadDocsPages(locale, rootDir, "published");
+}
+
+export function loadPublishedDocsPagesSync(
+  locale: SiteLocale,
+  rootDir = DOCS_ROOT,
+): DocsPageSource[] {
+  return getOrLoadDocsPages(locale, rootDir, "published");
+}
+
+export function loadShippedLocalizedDocsPagesSync(
+  locale: SiteLocale,
+  rootDir = DOCS_ROOT,
+): DocsPageSource[] {
+  if (locale === defaultLocale) {
+    return loadPublishedDocsPagesSync(locale, rootDir);
+  }
+
+  return getOrLoadDocsPages(locale, rootDir, "shipped");
 }
 
 /**
@@ -194,35 +228,16 @@ export async function loadShippedLocalizedDocsPages(
     return loadPublishedDocsPages(locale, rootDir);
   }
 
-  const pages: DocsPageSource[] = [];
+  return getOrLoadDocsPages(locale, rootDir, "shipped");
+}
 
-  for (const pageDir of findPageDirectories(rootDir)) {
-    const pageMdx = path.join(pageDir, "page.mdx");
-    const frontmatter = parseFrontmatter(pageMdx);
-    if (frontmatter.status !== "published") {
-      continue;
-    }
+/** Test helper: drop docs page-load memo and parse counter. */
+export function resetDocsPageLoadCacheForTests(): void {
+  docsPageLoadCache.clear();
+  docsPageParseCount = 0;
+}
 
-    if (
-      !isDocsPageShippedForLocale(
-        path.relative(rootDir, pageDir),
-        locale,
-        rootDir,
-      )
-    ) {
-      continue;
-    }
-
-    const docsSlug = path.relative(rootDir, pageDir);
-    const url = docsUrlFromSlug(docsSlug, locale);
-    pages.push({
-      pageDir,
-      docsSlug,
-      url,
-      frontmatter,
-      messages: await loadPageMessages(pageDir, locale, { route: url }),
-    });
-  }
-
-  return pages;
+/** Test helper: how many times the docs tree was walked/parsed. */
+export function getDocsPageParseCountForTests(): number {
+  return docsPageParseCount;
 }

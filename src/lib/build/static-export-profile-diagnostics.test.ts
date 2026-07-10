@@ -17,6 +17,8 @@ describe("static-export-profile-diagnostics", () => {
         outDirectoryPresent: false,
         contentRuntimeFingerprintStorePresent: true,
         contentRuntimeOutputsPresent: true,
+        immutableSnapshotStorePresent: false,
+        exportSearchParsedDocumentsStorePresent: false,
       },
     });
 
@@ -26,13 +28,16 @@ describe("static-export-profile-diagnostics", () => {
     });
     expect(reasons.fumadocsGeneration).toEqual({
       status: "miss",
-      reason: "source-directory-absent",
+      reason: "clean-mode-regenerates",
     });
     expect(reasons.nextCompilationStaticRendering).toEqual({
       status: "miss",
-      reason: "next-cache-directory-absent",
+      reason: "clean-mode-regenerates",
     });
-    expect(reasons.searchIndexEmission.status).toBe("not-applicable");
+    expect(reasons.searchIndexEmission).toEqual({
+      status: "miss",
+      reason: "clean-mode-regenerates",
+    });
     expect(reasons.fingerprintWriting.status).toBe("not-applicable");
   });
 
@@ -45,6 +50,8 @@ describe("static-export-profile-diagnostics", () => {
         outDirectoryPresent: true,
         contentRuntimeFingerprintStorePresent: true,
         contentRuntimeOutputsPresent: true,
+        immutableSnapshotStorePresent: true,
+        exportSearchParsedDocumentsStorePresent: true,
       },
     });
 
@@ -54,11 +61,15 @@ describe("static-export-profile-diagnostics", () => {
     });
     expect(reasons.fumadocsGeneration).toEqual({
       status: "hit",
-      reason: "source-directory-present",
+      reason: "immutable-snapshot-store-and-source-present",
     });
     expect(reasons.nextCompilationStaticRendering).toEqual({
       status: "hit",
-      reason: "next-cache-directory-present",
+      reason: "next-compiler-cache-present",
+    });
+    expect(reasons.searchIndexEmission).toEqual({
+      status: "hit",
+      reason: "parsed-documents-store-present",
     });
   });
 
@@ -72,6 +83,8 @@ describe("static-export-profile-diagnostics", () => {
           outDirectoryPresent: true,
           contentRuntimeFingerprintStorePresent: false,
           contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
         },
       }).contentRuntimePreparation,
     ).toEqual({
@@ -88,11 +101,51 @@ describe("static-export-profile-diagnostics", () => {
           outDirectoryPresent: true,
           contentRuntimeFingerprintStorePresent: true,
           contentRuntimeOutputsPresent: false,
+          immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
         },
       }).contentRuntimePreparation,
     ).toEqual({
       status: "miss",
       reason: "fingerprint-store-or-outputs-absent",
+    });
+  });
+
+  test("warm mode reports fumadocs miss when immutable snapshot store or source is absent", () => {
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: false,
+          exportSearchParsedDocumentsStorePresent: false,
+        },
+      }).fumadocsGeneration,
+    ).toEqual({
+      status: "miss",
+      reason: "immutable-snapshot-store-or-source-absent",
+    });
+
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: false,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
+        },
+      }).fumadocsGeneration,
+    ).toEqual({
+      status: "miss",
+      reason: "immutable-snapshot-store-or-source-absent",
     });
   });
 
@@ -102,6 +155,8 @@ describe("static-export-profile-diagnostics", () => {
       "/repo/.source",
       "/repo/out",
       "/repo/src/lib/content/generated/.content-runtime-fingerprints.json",
+      "/repo/.source/.static-export-immutable-snapshot.json",
+      "/repo/.source/.export-search-parsed-documents.json",
       "/repo/src/lib/content/generated/a.generated.ts",
       "/repo/src/lib/content/generated/b.generated.ts",
     ]);
@@ -113,6 +168,9 @@ describe("static-export-profile-diagnostics", () => {
       cwd: "/repo",
       pathExists: (path) => present.has(path),
       fileSize: (path) => sizes.get(path) ?? 0,
+      isDirectory: (path) => path === "/repo/.next/cache",
+      readDirectoryNames: (path) =>
+        path === "/repo/.next/cache" ? ["webpack"] : [],
       contentRuntimeOutputPaths: [
         "src/lib/content/generated/a.generated.ts",
         "src/lib/content/generated/b.generated.ts",
@@ -125,6 +183,60 @@ describe("static-export-profile-diagnostics", () => {
       outDirectoryPresent: true,
       contentRuntimeFingerprintStorePresent: true,
       contentRuntimeOutputsPresent: true,
+      immutableSnapshotStorePresent: true,
+      exportSearchParsedDocumentsStorePresent: true,
+    });
+  });
+
+  test("cache artifact snapshot treats empty .next/cache as absent", () => {
+    const snapshot = collectStaticExportCacheArtifactSnapshot({
+      cwd: "/repo",
+      pathExists: (path) => path === "/repo/.next/cache",
+      isDirectory: (path) => path === "/repo/.next/cache",
+      readDirectoryNames: () => [],
+      contentRuntimeOutputPaths: [],
+    });
+
+    expect(snapshot.nextCacheDirectoryPresent).toBe(false);
+  });
+
+  test("warm mode reports next compiler cache miss when cache is absent", () => {
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: false,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
+        },
+      }).nextCompilationStaticRendering,
+    ).toEqual({
+      status: "miss",
+      reason: "next-compiler-cache-absent",
+    });
+  });
+
+  test("warm mode reports search-index miss when parsed documents store is absent", () => {
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: false,
+        },
+      }).searchIndexEmission,
+    ).toEqual({
+      status: "miss",
+      reason: "parsed-documents-store-absent",
     });
   });
 

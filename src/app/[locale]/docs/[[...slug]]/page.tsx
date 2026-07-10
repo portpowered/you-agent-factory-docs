@@ -5,6 +5,7 @@ import {
   renderDocsSlugPage,
 } from "@/app/docs/docs-slug-renderer";
 import { ensureStaticExportParams } from "@/lib/build/static-export";
+import { omitRetiredAtlasDocsStaticParams } from "@/lib/build/static-export-legacy-compile-graph";
 import {
   isDocsPageShippedForLocale,
   loadShippedLocalizedDocsPages,
@@ -35,7 +36,7 @@ export async function generateStaticParams() {
   }
 
   const [{ locale: placeholderLocale }] = generateStaticLocaleParams();
-  return ensureStaticExportParams(params, {
+  return ensureStaticExportParams(omitRetiredAtlasDocsStaticParams(params), {
     locale: placeholderLocale,
     slug: STATIC_EXPORT_EMPTY_DOCS_SLUG,
   });

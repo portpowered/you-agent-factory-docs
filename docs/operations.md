@@ -260,6 +260,52 @@ bun run benchmark:static-export -- --mode=warm
   `hit:fingerprint-store-and-outputs-present` when
   `.content-runtime-fingerprints.json` and all contracted generated outputs are
   present and non-empty, otherwise `miss:fingerprint-store-or-outputs-absent`.
+- Fumadocs / immutable-snapshot cache reasons: clean mode reports
+  `miss:clean-mode-regenerates`; warm mode reports
+  `hit:immutable-snapshot-store-and-source-present` when `.source` and
+  `.source/.static-export-immutable-snapshot.json` are present, otherwise
+  `miss:immutable-snapshot-store-or-source-absent`. The export path reuses a
+  fingerprint-fresh `.source` via
+  `bun ./scripts/ensure-static-export-immutable-snapshot.ts` instead of always
+  re-running `fumadocs-mdx`.
+- Next compilation / static-rendering cache reasons: clean mode reports
+  `miss:clean-mode-regenerates` (clean prep wipes `.next`, including
+  `.next/cache`); warm mode reports `hit:next-compiler-cache-present` when
+  `.next/cache` exists and is non-empty, otherwise
+  `miss:next-compiler-cache-absent`. Ordinary `make build` /
+  `bun run build:export` never wipe a valid `.next` compiler cache — only the
+  explicit clean benchmark prep path does.
+- Search-index emission cache reasons: clean mode reports
+  `miss:clean-mode-regenerates`; warm mode reports
+  `hit:parsed-documents-store-present` when
+  `.source/.export-search-parsed-documents.json` is present, otherwise
+  `miss:parsed-documents-store-absent`. `emit-export-search-index` reuses
+  fingerprint-fresh parsed search documents across locales (registry loaded
+  once) instead of independently re-walking sources; missing/corrupt store or
+  fingerprint miss falls back to a full parse and refreshes the store.
+  Force with `EXPORT_SEARCH_PARSED_DOCUMENTS_FORCE=1`.
+- Legacy Atlas/AI compile-graph trim: `build:export` runs
+  `scripts/run-static-export-next-build.ts`, which builds with
+  `NEXT_STATIC_EXPORT=1` then verifies that retired public route families
+  (`/docs/models|modules|papers|training|systems`, `/topology`,
+  `/docs/timeline`) are absent from App Router page modules, denylist owned
+  paths, and emitted `out/` HTML. Docs catch-all `generateStaticParams` also
+  filters retired Atlas collection slugs. Re-run the gate alone with
+  `bun run verify:static-export-legacy-compile-graph`.
+- Webpack vs Turbopack bake-off: both bundlers are evaluated against the same
+  correctness suite (export completes, project-site base-path / build-contract
+  expectations, search-bootstrap expectations, and Turbopack whole-project NFT
+  tracing when Turbopack is under test). Recorded comparison
+  (`src/lib/build/static-export-bundler-bakeoff.ts`, UTC 2026-07-10): webpack
+  remains fully compatible; Turbopack failed to complete a static export in
+  this worktree (Next.js 16.2.7 could not resolve `next/package.json` from the
+  App Router tree despite `turbopack.root`). **Correctness winner and locked
+  default: webpack.** Relative clean timing is not claimed from the incomplete
+  Turbopack run; re-check with `bun run compare:static-export-bundlers` (recorded)
+  or `bun run compare:static-export-bundlers --live` after tooling/layout
+  changes. Override a single export with `STATIC_EXPORT_BUNDLER=turbopack` for
+  maintainer probes only — do not change `build:export` / `make build` until
+  Turbopack is fully compatible.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
 - Focused contract coverage (no full timed export):
   `bun run test:static-export-profile-contract`.
@@ -271,17 +317,37 @@ bun run benchmark:static-export -- --mode=warm
 
 #### Reference machine for the <=180-second clean-build target
 
-Agreed reference machine class for later B09b optimization comparison:
+Agreed reference machine class for B09b optimization comparison:
 
 - Machine class: Apple Silicon developer Mac (arm64), M-series (M1 Max class)
 - OS family: macOS 15 (Darwin)
 - CPU summary: 10 logical CPUs
 - Build runtime: Bun (version recorded per profile run in `runtimeVersion`)
 
-This lane (`profile-local-static-build`) **profiles only**. Meeting the
-<=180-second clean local static-export budget is owned by later B09b
-optimization work (for example `optimize-next-static-export`), judged on this
-recorded reference machine class—not claimed as done by the profiling lane.
+#### Recorded optimize-next-static-export evidence (UTC 2026-07-10)
+
+On that reference machine class, the `optimize-next-static-export` lane recorded:
+
+| Gate | Result |
+| --- | --- |
+| Clean `MODE=clean` `totalWallTimeMs` | **111560** (<= 180000) |
+| Warm `MODE=warm` after unchanged tree | **92776** (faster than clean) |
+| Warm cache reuse | hits for content-runtime, fumadocs immutable snapshot, Next `.next/cache`, and search parsed-documents store |
+| Determinism (two clean exports) | matching contracted digests for `api/search` (+ locales) and HTML base-path contracts on `index.html`, `blog.html`, `docs/guides.html` |
+| Bundler default | webpack (see bake-off above) |
+
+Print the recorded gate without rebuilding:
+
+```sh
+bun run prove:static-export-optimization-evidence
+```
+
+Focused contract tests (no full timed export):
+`bun run test:static-export-profile-contract`.
+
+Re-measure after material export-path changes with
+`make benchmark-static-export MODE=clean` then `MODE=warm`, then update
+`src/lib/build/static-export-optimization-evidence-recorded.ts`.
 
 See
 [ci-deploy-foundation-relevant-files.md](./internal/processes/ci-deploy-foundation-relevant-files.md)
