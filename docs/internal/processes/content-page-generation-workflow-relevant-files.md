@@ -285,6 +285,10 @@ before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
   `src/tests/content/section-indexes.test.tsx` to authored-entry assertions;
   leave non-default locale techniques indexes on empty-state until colocated
   `messages/<locale>.json` stubs exist
+- when those locale stubs ship, flip localized techniques indexes to
+  authored-entry assertions (title / href) and regenerate/commit
+  `shipped-localized-docs.generated.ts` plus the matching
+  `shipped-localized-docs.server.test.ts` committed-tree assertion
 - when every CLI section has authored entries, type
   `CLI_EMPTY_SECTION_INDEX_CASES` as `CliSectionIndexCase[]` (or equivalent)
   instead of relying on a filtered `as const` array — an empty filter collapses

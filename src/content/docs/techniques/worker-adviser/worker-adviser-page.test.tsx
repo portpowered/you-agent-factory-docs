@@ -132,4 +132,68 @@ describe("worker-adviser technique page", () => {
       "/docs/techniques/planner-executor",
     );
   });
+
+  test("ships ja / zh-CN / vi message stubs with technique section structure", async () => {
+    const en = await loadLocalDocsPage({
+      section: "techniques",
+      slug: "worker-adviser",
+    });
+    const ja = await loadLocalDocsPage(
+      { section: "techniques", slug: "worker-adviser" },
+      "ja",
+    );
+    const zhCN = await loadLocalDocsPage(
+      { section: "techniques", slug: "worker-adviser" },
+      "zh-CN",
+    );
+    const vi = await loadLocalDocsPage(
+      { section: "techniques", slug: "worker-adviser" },
+      "vi",
+    );
+
+    expect(Object.keys(ja.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(Object.keys(zhCN.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(Object.keys(vi.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
+      "What It Is",
+    );
+    expect(String(zhCN.messages.sections?.whyItMatters?.title ?? "")).toBe(
+      "Why It Matters",
+    );
+    expect(String(vi.messages.sections?.howItWorks?.title ?? "")).toBe(
+      "How It Works",
+    );
+    expect(ja.messages.links?.workersDocumentation).toBe(
+      "Workers configuration",
+    );
+    expect(zhCN.messages.links?.writerReviewerTechnique).toBe(
+      "Writer-reviewer technique",
+    );
+    expect(vi.messages.links?.plannerExecutorTechnique).toBe(
+      "Planner-executor technique",
+    );
+    expect(ja.messages.description).not.toMatch(/Model Atlas/i);
+    expect(zhCN.messages.description).not.toMatch(/Model Atlas/i);
+    expect(vi.messages.description).not.toMatch(/Model Atlas/i);
+
+    render(
+      <main>
+        <ModulePageProviders messages={ja.messages} assets={ja.assets}>
+          {ja.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Why It Matters" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "How It Works" })).toBeTruthy();
+  });
 });
