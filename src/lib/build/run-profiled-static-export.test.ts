@@ -34,8 +34,8 @@ describe("runProfiledStaticExport", () => {
       reason: "next-compiler-cache-absent",
     },
     searchIndexEmission: {
-      status: "not-applicable" as const,
-      reason: "always-regenerates-from-export",
+      status: "miss" as const,
+      reason: "parsed-documents-store-absent",
     },
     fingerprintWriting: {
       status: "not-applicable" as const,

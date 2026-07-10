@@ -31,8 +31,8 @@ const fixtureCacheReasons = {
     reason: "clean-mode-regenerates",
   },
   searchIndexEmission: {
-    status: "not-applicable" as const,
-    reason: "always-regenerates-from-export",
+    status: "miss" as const,
+    reason: "clean-mode-regenerates",
   },
   fingerprintWriting: {
     status: "not-applicable" as const,
@@ -146,7 +146,7 @@ describe("static-export-profile", () => {
       "nextCompilationStaticRenderingCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
-      "searchIndexEmissionCache=not-applicable:always-regenerates-from-export",
+      "searchIndexEmissionCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
       "fingerprintWritingCache=not-applicable:always-writes-fingerprint",

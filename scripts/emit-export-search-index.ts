@@ -12,7 +12,7 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `Wrote advanced Orama search bootstrap to ${result.filePaths.join(", ")}.`,
+    `Wrote advanced Orama search bootstrap to ${result.filePaths.join(", ")} (parsedDocuments=${result.parsedDocumentsSource}:${result.parsedDocumentsReason}).`,
   );
   process.exit(0);
 }

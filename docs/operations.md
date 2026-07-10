@@ -275,6 +275,15 @@ bun run benchmark:static-export -- --mode=warm
   `miss:next-compiler-cache-absent`. Ordinary `make build` /
   `bun run build:export` never wipe a valid `.next` compiler cache — only the
   explicit clean benchmark prep path does.
+- Search-index emission cache reasons: clean mode reports
+  `miss:clean-mode-regenerates`; warm mode reports
+  `hit:parsed-documents-store-present` when
+  `.source/.export-search-parsed-documents.json` is present, otherwise
+  `miss:parsed-documents-store-absent`. `emit-export-search-index` reuses
+  fingerprint-fresh parsed search documents across locales (registry loaded
+  once) instead of independently re-walking sources; missing/corrupt store or
+  fingerprint miss falls back to a full parse and refreshes the store.
+  Force with `EXPORT_SEARCH_PARSED_DOCUMENTS_FORCE=1`.
 - Legacy Atlas/AI compile-graph trim: `build:export` runs
   `scripts/run-static-export-next-build.ts`, which builds with
   `NEXT_STATIC_EXPORT=1` then verifies that retired public route families

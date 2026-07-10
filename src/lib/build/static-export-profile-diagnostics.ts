@@ -8,6 +8,7 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { DEFAULT_EXPORT_OUT_DIR } from "@/lib/build/export-out-directory";
+import { EXPORT_SEARCH_PARSED_DOCUMENTS_STORE_RELATIVE_PATH } from "@/lib/build/export-search-parsed-documents";
 import {
   isNextCompilerCacheUsable,
   NEXT_COMPILER_CACHE_DIRECTORY,
@@ -34,6 +35,8 @@ export const STATIC_EXPORT_CACHE_ARTIFACT_PATHS = {
   chunksDirectory: `${DEFAULT_EXPORT_OUT_DIR}/_next/static/chunks`,
   contentRuntimeFingerprintStore: CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH,
   immutableSnapshotStore: STATIC_EXPORT_IMMUTABLE_SNAPSHOT_STORE_RELATIVE_PATH,
+  exportSearchParsedDocumentsStore:
+    EXPORT_SEARCH_PARSED_DOCUMENTS_STORE_RELATIVE_PATH,
 } as const;
 
 export type PathExistsFn = (path: string) => boolean;
@@ -52,6 +55,8 @@ export type StaticExportCacheArtifactSnapshot = {
   contentRuntimeOutputsPresent: boolean;
   /** Fingerprint store for the fumadocs `.source` immutable snapshot. */
   immutableSnapshotStorePresent: boolean;
+  /** Fingerprint-gated parsed search-document store for emit-export-search-index. */
+  exportSearchParsedDocumentsStorePresent: boolean;
 };
 
 export type CollectCacheArtifactSnapshotOptions = {
@@ -159,6 +164,12 @@ export function collectStaticExportCacheArtifactSnapshot(
         STATIC_EXPORT_CACHE_ARTIFACT_PATHS.immutableSnapshotStore,
       ),
     ),
+    exportSearchParsedDocumentsStorePresent: pathExists(
+      join(
+        options.cwd,
+        STATIC_EXPORT_CACHE_ARTIFACT_PATHS.exportSearchParsedDocumentsStore,
+      ),
+    ),
   };
 }
 
@@ -172,7 +183,8 @@ function cacheReason(
 /**
  * Derives per-stage cache hit/miss/not-applicable reasons from benchmark mode
  * and the pre-stage artifact snapshot. Content-runtime uses fingerprint +
- * output presence; stages without incremental cache report not-applicable.
+ * output presence; search-index emission uses the parsed-documents store;
+ * fingerprint writing reports not-applicable.
  */
 export function deriveStaticExportCacheReasons(input: {
   mode: StaticExportBenchmarkMode;
@@ -203,14 +215,18 @@ export function deriveStaticExportCacheReasons(input: {
         ? cacheReason("hit", "next-compiler-cache-present")
         : cacheReason("miss", "next-compiler-cache-absent");
 
+  const searchIndexEmission =
+    mode === "clean"
+      ? cacheReason("miss", "clean-mode-regenerates")
+      : snapshot.exportSearchParsedDocumentsStorePresent
+        ? cacheReason("hit", "parsed-documents-store-present")
+        : cacheReason("miss", "parsed-documents-store-absent");
+
   return {
     contentRuntimePreparation,
     fumadocsGeneration,
     nextCompilationStaticRendering,
-    searchIndexEmission: cacheReason(
-      "not-applicable",
-      "always-regenerates-from-export",
-    ),
+    searchIndexEmission,
     fingerprintWriting: cacheReason(
       "not-applicable",
       "always-writes-fingerprint",

@@ -18,6 +18,7 @@ describe("static-export-profile-diagnostics", () => {
         contentRuntimeFingerprintStorePresent: true,
         contentRuntimeOutputsPresent: true,
         immutableSnapshotStorePresent: false,
+        exportSearchParsedDocumentsStorePresent: false,
       },
     });
 
@@ -33,7 +34,10 @@ describe("static-export-profile-diagnostics", () => {
       status: "miss",
       reason: "clean-mode-regenerates",
     });
-    expect(reasons.searchIndexEmission.status).toBe("not-applicable");
+    expect(reasons.searchIndexEmission).toEqual({
+      status: "miss",
+      reason: "clean-mode-regenerates",
+    });
     expect(reasons.fingerprintWriting.status).toBe("not-applicable");
   });
 
@@ -47,6 +51,7 @@ describe("static-export-profile-diagnostics", () => {
         contentRuntimeFingerprintStorePresent: true,
         contentRuntimeOutputsPresent: true,
         immutableSnapshotStorePresent: true,
+        exportSearchParsedDocumentsStorePresent: true,
       },
     });
 
@@ -62,6 +67,10 @@ describe("static-export-profile-diagnostics", () => {
       status: "hit",
       reason: "next-compiler-cache-present",
     });
+    expect(reasons.searchIndexEmission).toEqual({
+      status: "hit",
+      reason: "parsed-documents-store-present",
+    });
   });
 
   test("warm mode reports content-runtime miss when fingerprint store or outputs are absent", () => {
@@ -75,6 +84,7 @@ describe("static-export-profile-diagnostics", () => {
           contentRuntimeFingerprintStorePresent: false,
           contentRuntimeOutputsPresent: true,
           immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
         },
       }).contentRuntimePreparation,
     ).toEqual({
@@ -92,6 +102,7 @@ describe("static-export-profile-diagnostics", () => {
           contentRuntimeFingerprintStorePresent: true,
           contentRuntimeOutputsPresent: false,
           immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
         },
       }).contentRuntimePreparation,
     ).toEqual({
@@ -111,6 +122,7 @@ describe("static-export-profile-diagnostics", () => {
           contentRuntimeFingerprintStorePresent: true,
           contentRuntimeOutputsPresent: true,
           immutableSnapshotStorePresent: false,
+          exportSearchParsedDocumentsStorePresent: false,
         },
       }).fumadocsGeneration,
     ).toEqual({
@@ -128,6 +140,7 @@ describe("static-export-profile-diagnostics", () => {
           contentRuntimeFingerprintStorePresent: true,
           contentRuntimeOutputsPresent: true,
           immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
         },
       }).fumadocsGeneration,
     ).toEqual({
@@ -143,6 +156,7 @@ describe("static-export-profile-diagnostics", () => {
       "/repo/out",
       "/repo/src/lib/content/generated/.content-runtime-fingerprints.json",
       "/repo/.source/.static-export-immutable-snapshot.json",
+      "/repo/.source/.export-search-parsed-documents.json",
       "/repo/src/lib/content/generated/a.generated.ts",
       "/repo/src/lib/content/generated/b.generated.ts",
     ]);
@@ -170,6 +184,7 @@ describe("static-export-profile-diagnostics", () => {
       contentRuntimeFingerprintStorePresent: true,
       contentRuntimeOutputsPresent: true,
       immutableSnapshotStorePresent: true,
+      exportSearchParsedDocumentsStorePresent: true,
     });
   });
 
@@ -196,11 +211,32 @@ describe("static-export-profile-diagnostics", () => {
           contentRuntimeFingerprintStorePresent: true,
           contentRuntimeOutputsPresent: true,
           immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: true,
         },
       }).nextCompilationStaticRendering,
     ).toEqual({
       status: "miss",
       reason: "next-compiler-cache-absent",
+    });
+  });
+
+  test("warm mode reports search-index miss when parsed documents store is absent", () => {
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
+          exportSearchParsedDocumentsStorePresent: false,
+        },
+      }).searchIndexEmission,
+    ).toEqual({
+      status: "miss",
+      reason: "parsed-documents-store-absent",
     });
   });
 
