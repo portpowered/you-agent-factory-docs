@@ -117,6 +117,11 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   inventories. Prove with
   `src/lib/content/retired-atlas-collection-routes.test.ts` (included in
   required `bun run test`).
+* `src/lib/content/factory-only-public-inventory.test.tsx`
+  End-to-end shell/navigation proof that the public docs inventory is only
+  guides/concepts/techniques/documentation/glossary, browse/sidebar omit
+  retired Atlas destinations, and Blog + Search stay reachable as separate
+  surfaces (included in required `bun run test`).
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus

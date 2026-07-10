@@ -450,7 +450,9 @@ those paths only accept collection section refs.
   must stay deleted as App Router modules. Those URLs not-found through the
   docs slug renderer and must stay out of `source.generateParams()` /
   docs `generateStaticParams` inventories — see
-  `src/lib/content/retired-atlas-collection-routes.test.ts` and
+  `src/lib/content/retired-atlas-collection-routes.test.ts`,
+  `src/lib/content/factory-only-public-inventory.test.tsx` (factory-only
+  inventory + Blog/Search as separate surfaces), and
   [shell-domain-relevant-files](./shell-domain-relevant-files.md).
 - Glossary-derived helpers in
   `src/lib/docs/glossary-derived-browse-sections.ts` may still exist for
