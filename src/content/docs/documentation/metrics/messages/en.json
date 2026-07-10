@@ -1,0 +1,32 @@
+{
+  "title": "Metrics",
+  "description": "Watch live you-agent-factory factory-ops metrics for a Factory Session: engine activity, work-token lifecycle, optional resource usage, and the local operator dashboard.",
+  "openingSummary": "Factory metrics are the live-run signals operators use to watch a you-agent-factory Factory Session while work is in flight—not Model Atlas evaluation scores or a benchmark leaderboard.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers you-agent-factory factory-ops metrics: the live-run signals operators watch while a Factory Session is up. Use it when you need the web metrics exposure surface for engine activity, work progress, token lifecycle pressure, optional resource bounds, and the local operator dashboard—not evaluation metrics, not a benchmark leaderboard, and not a packaged CLI docs sync."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Factory metrics are scoped to a live Factory Session. Operators watch engine activity and runtime status, work-token lifecycle buckets, optional resource usage when pools are declared, and dashboard activity as a live visual surface. A one-shot status read is a snapshot; watching measures over successive ticks is time-ordered ops monitoring. Field-level status guidance and copyable examples follow in How To Use."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Read session status for the live Factory Session you are watching, then open the local operator dashboard when you want a browser surface for the same live metrics. Use this metrics exposure reference for watching live-run signals; open sibling docs for factory-session lifecycle, SPC control-limit reading, logs, OpenAPI, or bottleneck diagnosis. Copyable status and dashboard examples belong with the how-to-read guidance."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a factory metrics exposure reference for you-agent-factory. It is not a sync of packaged CLI docs, not logs, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

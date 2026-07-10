@@ -1,0 +1,14 @@
+{
+  "id": "documentation.metrics",
+  "slug": "metrics",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["factory metrics", "ops metrics", "session metrics"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T09:12:59.000Z",
+  "updatedAt": "2026-07-10T09:12:59.000Z"
+}
