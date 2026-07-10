@@ -30,8 +30,6 @@ describe("bottlenecks concept page", () => {
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
     expect(loadedPage.messages.description).not.toMatch(/roofline/i);
     expect(loadedPage.messages.description).not.toMatch(/leaderboard/i);
-    // Optional visual deferred: prose teaches the limiting-stage idea.
-    expect(Object.keys(loadedPage.assets)).toEqual([]);
 
     render(
       <main>
@@ -90,7 +88,24 @@ describe("bottlenecks concept page", () => {
     expect(whyItMatters?.textContent).toMatch(/limiting stage/i);
     expect(whyItMatters?.textContent).not.toMatch(/on this page/i);
     expect(whyItMatters?.textContent).not.toMatch(/Model Atlas/i);
+
+    expect(simpleExample?.textContent).toMatch(/write-review/i);
+    expect(simpleExample?.textContent).toMatch(/review harness/i);
+    expect(simpleExample?.textContent).toMatch(/task queue/i);
+    expect(simpleExample?.textContent).toMatch(/bottleneck/i);
+    expect(simpleExample?.textContent).toMatch(
+      /adding more draft workers does not raise/i,
+    );
+    expect(simpleExample?.textContent).toMatch(/spare workers/i);
+    expect(simpleExample?.textContent).not.toMatch(/on this page/i);
+    expect(simpleExample?.textContent).not.toMatch(/Model Atlas/i);
+    // Prose-first: no decorative graphic; teaching visual deferred (shared
+    // concept-page-load switch required for page-local MDX chart components).
+    expect(Object.keys(loadedPage.assets)).toEqual([]);
     expect(document.querySelector("[data-page-asset]")).toBeNull();
     expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
+    expect(
+      document.querySelector("[data-chart-container]"),
+    ).toBeNull();
   });
 });

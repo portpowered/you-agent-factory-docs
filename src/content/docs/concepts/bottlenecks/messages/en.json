@@ -13,7 +13,7 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "Many workers sit idle while a saturated task queue holds ready work. The queue is the bottleneck: end-to-end throughput cannot rise until that waiting backlog drains faster."
+      "body": "A write-review factory has eight workers ready to draft, but only one slow review harness can accept finished drafts. Drafts pile up in the task queue while the review stage crawls. Adding more draft workers does not raise end-to-end completions—the review harness is the bottleneck. Throughput for the whole run stays capped until that limiting stage finishes work faster or gains capacity, even though the draft stage still has spare workers."
     },
     "whereItAppears": {
       "title": "Where It Appears",
