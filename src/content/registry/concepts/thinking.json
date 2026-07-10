@@ -1,0 +1,17 @@
+{
+  "id": "concept.thinking",
+  "slug": "thinking",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["thinking controls", "deliberative reasoning"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T23:34:34.047Z",
+  "updatedAt": "2026-07-09T23:34:34.047Z",
+  "conceptType": "general",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}

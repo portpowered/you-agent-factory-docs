@@ -1,0 +1,37 @@
+{
+  "title": "Thinking",
+  "description": "Thinking is the deliberative reasoning a harness or model may produce before or alongside tool use and final answers, including thinking controls that trade quality against latency and cost.",
+  "openingSummary": "Thinking is deliberative reasoning a harness or model may produce while working toward an answer. Thinking controls let operators raise or lower that effort when quality, latency, and cost need to be balanced.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Thinking is the deliberative reasoning a harness or model may produce before or alongside tool use and final answers. A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. Thinking is not the factory workflow system itself, and it is not the factory thoughts work type used for planner or loopback work."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Thinking and thinking controls trade answer quality against latency and cost. Raising a thinking or effort control can improve hard tasks by giving the model more deliberative reasoning; lowering it can make runs cheaper and faster. Not every harness exposes the same thinking controls, so operators need to know which knobs their chosen harness actually offers."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You start a factory run on a hard coding bug. Before the harness edits files, you raise its thinking or effort control so the model spends more deliberative reasoning on the diagnosis. On a routine rename in the same harness, you lower that control so the run finishes faster and costs less."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "Thinking is not factory thoughts work. Thoughts work is a planner or loopback work type the factory schedules; thinking is deliberative reasoning inside a harness or model turn. Thinking is also not tokens—neither LLM cost or context units nor factory work tokens that move submitted work through places. Tools are named callable actions; compaction shrinks context. Thinking is the deliberative reasoning that may happen before or alongside those actions, not the actions or context shrink itself."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "harnessConcept": "Harness concept",
+    "tokensConcept": "Tokens concept",
+    "harnessSupportDocs": "Harness-support documentation"
+  }
+}
