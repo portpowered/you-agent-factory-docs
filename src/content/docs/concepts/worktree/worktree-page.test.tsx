@@ -34,6 +34,12 @@ describe("worktree concept page", () => {
     const whyItMatters = String(
       loadedPage.messages.sections?.whyItMatters?.body ?? "",
     );
+    const simpleExample = String(
+      loadedPage.messages.sections?.simpleExample?.body ?? "",
+    );
+    const commonConfusions = String(
+      loadedPage.messages.sections?.commonConfusions?.body ?? "",
+    );
     expect(whatItIs).toMatch(/isolated checkout or workspace/i);
     expect(whatItIs).toMatch(/\.claude\/worktrees/i);
     expect(whatItIs).toMatch(/not the factory workflow system/i);
@@ -42,8 +48,17 @@ describe("worktree concept page", () => {
     expect(whyItMatters).toMatch(/without stomping the same files/i);
     expect(whyItMatters).toMatch(/harness or workstation/i);
     expect(whyItMatters).toMatch(/worktree path/i);
+    expect(simpleExample).toMatch(/\.claude\/worktrees/i);
+    expect(simpleExample).toMatch(/work-item-name|executor|review step/i);
+    expect(simpleExample).toMatch(/isolated/i);
+    expect(commonConfusions).toMatch(/not a git branch/i);
+    expect(commonConfusions).toMatch(/working-directory|working directory/i);
+    expect(commonConfusions).toMatch(/not a workstation/i);
+    expect(commonConfusions).toMatch(/not the factory/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
     expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
+    expect(simpleExample).not.toMatch(/on this page|Model Atlas/i);
+    expect(commonConfusions).not.toMatch(/on this page|Model Atlas/i);
 
     render(
       <main>
@@ -82,6 +97,26 @@ describe("worktree concept page", () => {
     );
     expect(whyItMattersSection?.textContent ?? "").toMatch(
       /harness or workstation/i,
+    );
+
+    const simpleExampleSection = document.getElementById("simple-example");
+    expect(simpleExampleSection?.textContent ?? "").toMatch(
+      /\.claude\/worktrees/i,
+    );
+    expect(simpleExampleSection?.textContent ?? "").toMatch(
+      /executor|review step/i,
+    );
+
+    const commonConfusionsSection =
+      document.getElementById("common-confusions");
+    expect(commonConfusionsSection?.textContent ?? "").toMatch(
+      /not a git branch/i,
+    );
+    expect(commonConfusionsSection?.textContent ?? "").toMatch(
+      /not a workstation/i,
+    );
+    expect(commonConfusionsSection?.textContent ?? "").toMatch(
+      /not the factory/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });

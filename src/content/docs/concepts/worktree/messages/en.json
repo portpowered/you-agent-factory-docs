@@ -12,11 +12,11 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": ""
+      "body": "Setup creates an isolated checkout at .claude/worktrees/<work-item-name>/ for a named work item. An executor or review step then runs inside that tree—editing files, running checks, and writing progress there—while other lanes keep their own checkouts. The shared repository history stays available, but each lane’s working files stay separate."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": ""
+      "body": "A worktree is not a git branch. A branch is a pointer along history; a worktree is a separate checkout of files where work actually happens. A worktree is also not a working-directory config field alone—that field may name a path, but the worktree is the isolated tree itself. It is not a workstation (a step or prompt unit in factory config) and not the factory (the workflow system that coordinates runs)."
     },
     "related": {
       "title": "Related Concepts And Modules"
