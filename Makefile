@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -30,6 +30,11 @@ typecheck:
 
 test:
 	bun run test
+
+# Focused accessibility / responsive contract suite (grows in later stories).
+# Not yet wired into `make ci` — story harden-accessibility-responsive-ui-009.
+a11y:
+	bun run test:a11y
 
 test-verify-contract:
 	bun run test:verify-contract
