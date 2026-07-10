@@ -8,7 +8,11 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
-import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import {
+  isLocalDocsCatchAllSlug,
+  loadLocalDocsPage,
+  parseLocalDocsPageRef,
+} from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 
 describe("fusion technique page", () => {
@@ -17,6 +21,12 @@ describe("fusion technique page", () => {
   });
 
   test("publishes /docs/techniques/fusion as a technique page with fusion title", async () => {
+    expect(parseLocalDocsPageRef(["techniques", "fusion"])).toEqual({
+      section: "techniques",
+      slug: "fusion",
+    });
+    expect(isLocalDocsCatchAllSlug(["techniques", "fusion"])).toBe(true);
+
     const fumadocsPage = source.getPage(["techniques", "fusion"]);
     expect(fumadocsPage).toBeDefined();
     expect(fumadocsPage?.url).toBe("/docs/techniques/fusion");
