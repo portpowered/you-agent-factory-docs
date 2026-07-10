@@ -5,6 +5,57 @@ Use these files when changing search document construction, Orama indexing, or
 
 ## Core search boundary
 
+* `src/lib/search/factory-search-kinds.ts`
+  Factory-only public search result kinds (`guide`, `concept`, `technique`,
+  `documentation`, `glossary`, `blog`) plus retired Atlas kind denylist and
+  fail-closed `assertFactorySearchDocuments` used by document builders.
+* `src/lib/content/factory-search-categories.test.tsx`
+  Required `bun run test` proof that pageKind labels, live search meta, and
+  representative `harness` / `ralph` queries stay inside the factory category
+  set and never advertise Model Atlas result kinds.
+* `src/lib/content/factory-search-alias-body-tag.test.ts`
+  Required `bun run test` proof that factory alias, body-phrase, and tag
+  queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
+  `Quickstart` → getting-started, `one-story-per-iteration` → ralph,
+  `foundations` tag → `/blog/bottlenecks`) without needing Atlas tags.
+* `src/lib/search/factory-search-deleted-records.ts`
+  Deleted Atlas URL denylist (retired route prefixes + deleted blog URLs),
+  locale-aware matching, and fail-closed
+  `assertNoDeletedAiSearchDocuments` used by document builders.
+* `src/lib/content/factory-search-deleted-records.test.ts`
+  Required `bun run test` proof that public search documents, advanced
+  indexes, search-result meta, and queries such as `grouped-query attention`
+  / `GQA` / `evolution of diffusion` never surface deleted AI records while
+  `harness` / `ralph` stay searchable.
+* `src/lib/content/factory-locale-base-path.ts`
+  Factory locale + Pages base-path contract (`FACTORY_SHIPPED_LOCALES`,
+  `FACTORY_PAGES_BASE_PATH=/you-agent-factory-docs`) with resolvers for
+  localized search-result hrefs and search bootstrap, plus fail-closed
+  asserts. SearchResultRow / SearchPagePanel use
+  `resolveFactorySearchResultHref`.
+* `src/lib/content/factory-locale-base-path.test.tsx`
+  Required `bun run test` proof that shipped locales (en, ja, zh-CN, vi)
+  preserve locale routing on search/nav hrefs, default-locale roots stay
+  unprefixed, and project-site export prefixes bootstrap + nav under
+  `/you-agent-factory-docs`.
+* `src/lib/content/factory-search-edge-cases.ts`
+  Factory empty/malformed/unavailable/deleted-content contract:
+  `FACTORY_SEARCH_EMPTY_SUGGESTION_TERM` (`harness`) + ralph docs href,
+  Atlas handoff denylist, malformed classification fixtures, unavailable
+  error test ids, and fail-closed asserts. `SearchPagePanel` resolves empty
+  suggestions through `resolveFactorySearchEmptySuggestion`.
+* `src/lib/content/factory-search-edge-cases.test.tsx`
+  Required `bun run test` proof that empty copy stays factory-only, no-match
+  queries return empty, malformed classifications fall back unscoped,
+  unavailable bootstrap stays on `/api/search` with error/retry copy, and
+  deleted Atlas destinations remain not-found / undiscoverable from
+  search/nav chrome.
+* `src/lib/content/factory-search-navigation-convergence.test.tsx`
+  Story 009 cross-cutting end-to-end gate: required-suite proof that factory
+  categories, alias/body/tag discovery, deleted-record exclusion,
+  tags/browse/breadcrumb/sidebar/previous-next/related, locale/base-path,
+  and empty/malformed/unavailable/deleted-content cases stay factory-only
+  together. Per-story suites (001–008) remain the detailed contracts.
 * `src/lib/search/build-base-document.ts`
   Generic base search document construction from localized docs pages and
   registry fields. Produces page-derived fields with empty topology and
@@ -14,8 +65,10 @@ Use these files when changing search document construction, Orama indexing, or
   relationship terms, and legacy taxonomy compatibility onto base documents.
 * `src/lib/search/build-documents.ts`
   Search builder: composes base documents with generic `enrichSearchDocument`
-  only. Model Atlas AI facet enrichment (`modelFamily`, `sourceType`,
-  `modalities`, `trainingRegimeIds`, `optimizes`) is no longer applied.
+  only, then asserts every document kind is in `FACTORY_SEARCH_RESULT_KINDS`
+  and every URL is outside the deleted Atlas inventory denylist. Model Atlas
+  AI facet enrichment (`modelFamily`, `sourceType`, `modalities`,
+  `trainingRegimeIds`, `optimizes`) is no longer applied.
 * `src/lib/search/to-advanced-index.ts`
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`
@@ -23,6 +76,49 @@ Use these files when changing search document construction, Orama indexing, or
   and reranking.
 * `src/app/api/search/route.ts`
   Public search API route; re-exports `docsSearchApi.GET`.
+
+### Pattern: factory-only search result kinds
+
+Public search categories / result-kind labels are the factory set only. Keep
+`FACTORY_SEARCH_RESULT_KINDS` as the single allowlist, assert it when building
+documents, and prove reader-facing labels via `messages.pageKind` (no Atlas
+keys such as `module` / `model` / `paper`). Place the required-suite proof under
+`src/lib/content/` because `src/lib/search/` remains excluded from
+`run-website-functionality-tests.ts` for leftover Atlas-coupled suites.
+
+### Pattern: factory alias / body / tag discovery
+
+Live factory pages are discoverable by frontmatter/registry aliases, distinctive
+body phrases, and published factory tags. Prefer representative factory fixtures
+(`agent runtime`, `Ralph loop`, `Quickstart`, `one-story-per-iteration`,
+`foundations` → `/blog/bottlenecks`) in required-suite proofs. Do not depend on
+retired Atlas tags (`attention`, `model-family`, `inference`, `alignment`) for
+discovery success. Keep these proofs under `src/lib/content/` so `bun run test`
+runs them.
+
+### Pattern: deleted AI records stay out of search
+
+Public search documents, advanced indexes, search-result meta, and `/api/search`
+results must never include retired Atlas route families (`/docs/models`,
+`/docs/modules`, `/docs/papers`, `/docs/training`, `/docs/systems`) or deleted
+Atlas blog URLs (`evolution-of-diffusion`,
+`llms-no-longer-wholly-reliant-on-the-internet`,
+`roofline-throughput-explorer`). Keep the denylist + fail-closed assert in
+`factory-search-deleted-records.ts`, wire it through document builders, and
+prove with required-suite coverage under `src/lib/content/` using
+representative deleted-inventory queries (`grouped-query attention`, `GQA`,
+`evolution of diffusion`) plus live factory keepers (`harness`, `ralph`).
+
+### Pattern: factory search/nav convergence end-to-end gate
+
+When a lane finishes converging search + navigation onto factory-only
+collections, keep a single required-suite cross-cutting proof under
+`src/lib/content/factory-search-navigation-convergence.test.tsx` that exercises
+categories, alias/body/tag discovery, deleted-record exclusion, tags/browse,
+breadcrumb/sidebar, previous/next/related, locale/base-path, and edge cases
+together. Do not replace the per-story suites; the convergence file is the
+PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
+`make linkcheck` and browser verification of representative factory surfaces.
 
 ## Parity and regression tests
 
@@ -83,8 +179,11 @@ Use these files when changing search document construction, Orama indexing, or
   Search empty-state suggestions use `searchEntry.emptySuggestionTerm` +
   `emptySuggestionLinkLabel` pointing at live factory docs (for example
   term `harness` and link `/docs/techniques/ralph`), not Atlas GQA /
-  attention tag handoffs. `SearchPagePanel` owns that wiring; lock with
-  message assertions plus `search-page-panel` empty-state coverage.
+  attention tag handoffs. `SearchPagePanel` owns that wiring via
+  `resolveFactorySearchEmptySuggestion` from
+  `factory-search-edge-cases.ts`; lock with message assertions plus the
+  required `factory-search-edge-cases.test.tsx` suite (and optional
+  `search-page-panel` empty-state coverage).
 * `src/components/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).

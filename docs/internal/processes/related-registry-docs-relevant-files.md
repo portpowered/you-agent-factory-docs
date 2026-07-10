@@ -8,7 +8,15 @@ and the shared related-registry-docs component/blog wrapper.
 * `src/lib/content/related-registry-docs.ts`
   Generic `resolveRelatedRegistryDocs(registryIds)` returning `available` link items
   (`registryId`, `title`, `href`) and `unavailable` entries (`missing` / `unpublished`).
-  Preserves input order; not blog-specific.
+  Preserves input order; not blog-specific. Available hrefs are fail-closed via
+  `assertFactoryRelatedLinkItems` from `factory-prev-next-related.ts`.
+* `src/lib/content/factory-prev-next-related.ts`
+  Shared factory previous/next + related destination contract (footer neighbor
+  resolution + deleted-Atlas URL asserts) used by related-registry resolution
+  and docs related components.
+* `src/lib/content/factory-prev-next-related.test.tsx`
+  Required-suite proof for factory-only previous/next neighbors and
+  related-registry empty/unavailable/published destinations.
 * `src/lib/content/related-registry-docs.test.ts`
   Focused resolver tests with injectable `getRecordById` / `publishedRegistryIds`.
 * `src/lib/content/related-registry-docs.test-fixtures.ts`
@@ -86,6 +94,7 @@ and the shared related-registry-docs component/blog wrapper.
 
 ## Verification
 
+* `bun test src/lib/content/factory-prev-next-related.test.tsx`
 * `bun test src/lib/content/related-registry-docs.test.ts`
 * `bun test src/features/docs/components/RelatedRegistryDocs.test.tsx`
 * `bun test src/features/blog/components/BlogRelatedDocs.test.tsx`
