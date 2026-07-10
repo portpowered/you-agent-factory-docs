@@ -1,0 +1,88 @@
+{
+  "ariaLabel": "Harness support matrix",
+  "featureColumnHeader": "Feature",
+  "harnesses": [
+    { "id": "claude", "label": "claude" },
+    { "id": "codex", "label": "codex" },
+    { "id": "opencode", "label": "opencode" },
+    { "id": "pi", "label": "pi" },
+    { "id": "cursor", "label": "cursor" },
+    { "id": "agy", "label": "agy" }
+  ],
+  "features": [
+    {
+      "id": "mcp",
+      "label": "MCP",
+      "cells": {
+        "claude": "yes",
+        "codex": "yes",
+        "opencode": "yes",
+        "pi": "partial",
+        "cursor": "yes",
+        "agy": "partial"
+      }
+    },
+    {
+      "id": "worktrees",
+      "label": "Worktrees",
+      "cells": {
+        "claude": "yes",
+        "codex": "yes",
+        "opencode": "yes",
+        "pi": "partial",
+        "cursor": "yes",
+        "agy": "partial"
+      }
+    },
+    {
+      "id": "loop",
+      "label": "Loop",
+      "cells": {
+        "claude": "yes",
+        "codex": "yes",
+        "opencode": "yes",
+        "pi": "yes",
+        "cursor": "yes",
+        "agy": "yes"
+      }
+    },
+    {
+      "id": "thinking-controls",
+      "label": "Thinking controls",
+      "cells": {
+        "claude": "yes",
+        "codex": "yes",
+        "opencode": "partial",
+        "pi": "partial",
+        "cursor": "yes",
+        "agy": "partial"
+      }
+    },
+    {
+      "id": "open-source",
+      "label": "Open source",
+      "cells": {
+        "claude": "no",
+        "codex": "no",
+        "opencode": "yes",
+        "pi": "yes",
+        "cursor": "no",
+        "agy": "partial"
+      }
+    },
+    {
+      "id": "external-model-support",
+      "label": "External model support",
+      "cells": {
+        "claude": "partial",
+        "codex": "partial",
+        "opencode": "yes",
+        "pi": "yes",
+        "cursor": "partial",
+        "agy": "partial"
+      }
+    }
+  ],
+  "emptyMessage": "No harness support matrix rows are available.",
+  "errorMessage": "Harness support matrix data failed to load."
+}
