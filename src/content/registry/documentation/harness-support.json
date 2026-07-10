@@ -6,9 +6,16 @@
   "defaultSummaryKey": "description",
   "aliases": ["harness support", "supported harnesses", "harness matrix"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "concept.harness",
+    "concept.worktree",
+    "concept.loop",
+    "concept.thinking",
+    "documentation.cli",
+    "documentation.configuration"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T06:15:00.000Z",
-  "updatedAt": "2026-07-10T06:15:00.000Z"
+  "updatedAt": "2026-07-10T07:00:00.000Z"
 }

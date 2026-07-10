@@ -5,11 +5,11 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Harness Support compares the agent runtimes you-agent-factory can drive and the feature coverage each one offers. Use it when you need a scannable answer to which harnesses are supported and which capabilities — such as MCP, worktrees, loop, thinking controls, open-source status, or external model support — each one covers."
+      "body": "Harness Support compares factory-supported harnesses by feature coverage. Use it when you need a scannable answer to which agent runtimes you-agent-factory can drive and which capabilities — MCP, worktrees, loop, thinking controls, open-source status, or external model support — each one covers."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. This page compares factory-supported harnesses by feature coverage. It does not redefine the harness concept in full; that definition lives on the harness concept page."
+      "body": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. Feature coverage means whether that runtime supports a capability the factory can use with it. This reference compares those harnesses by coverage; the full harness definition lives on the harness concept page."
     },
     "supportMatrix": {
       "title": "Support Matrix",
@@ -17,7 +17,7 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Scan the support matrix for the feature you need, then read across harness columns to see which runtimes cover it. Use clear cell values such as yes, no, or partial to compare options before you pick a harness for MCP, worktrees, loop, thinking controls, open-source status, or external models."
+      "body": "Start with the feature you need — for example MCP, worktrees, or external models — then scan that matrix row across harness columns. Prefer a harness marked yes for that feature; treat partial as incomplete or uncertain coverage, and skip no. Use the related links when you need the harness concept, worktree or loop ideas, thinking controls, CLI commands, or configuration details."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -32,5 +32,13 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "harnessConcept": "Harness concept",
+    "worktreeConcept": "Worktree concept",
+    "loopConcept": "Loop concept",
+    "thinkingConcept": "Thinking concept",
+    "cliDocs": "CLI docs",
+    "configurationDocs": "Configuration"
   }
 }

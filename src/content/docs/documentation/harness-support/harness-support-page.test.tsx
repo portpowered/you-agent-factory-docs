@@ -1,8 +1,9 @@
 /**
  * Page-owned render proof for documentation/harness-support.
- * Covers documentation shell, harness-support identity, and the support-matrix
- * DataTable. Colocated under the page bundle so audit:canonical-page-surface
- * stays within-budget for this ordinary documentation lane.
+ * Covers documentation shell, harness-support identity, support-matrix
+ * DataTable, framing/limits copy, and sibling discovery links. Colocated
+ * under the page bundle so audit:canonical-page-surface stays within-budget
+ * for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -36,15 +37,27 @@ describe("harness-support documentation page", () => {
     const keyConcepts = String(
       loadedPage.messages.sections?.keyConcepts?.body ?? "",
     );
-    expect(whatItCovers).toMatch(/agent runtimes/i);
-    expect(whatItCovers).toMatch(/feature coverage|features/i);
+    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
+    const limits = String(
+      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+    );
+    expect(whatItCovers).toMatch(/factory-supported harnesses/i);
+    expect(whatItCovers).toMatch(/feature coverage/i);
     expect(keyConcepts).toMatch(/agent runtime the factory drives/i);
+    expect(howToUse).toMatch(/MCP|worktrees|external models/i);
+    expect(howToUse).toMatch(/scan/i);
+    expect(limits).toMatch(/web harness-support matrix reference/i);
+    expect(limits).toMatch(/not a full runner or provider field dump/i);
+    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
+    expect(limits).toMatch(/not the harness concept glossary/i);
+    expect(limits).toMatch(/not an agent-factory comparison blog/i);
     expect(whatItCovers).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
     expect(keyConcepts).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
+    expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
 
     render(
       <main>
@@ -77,17 +90,28 @@ describe("harness-support documentation page", () => {
     const supportMatrixSection = document.getElementById("support-matrix");
     const howToUseSection = document.getElementById("how-to-use");
     const limitsSection = document.getElementById("limits-and-assumptions");
+    const relatedSection = document.getElementById("related");
     expect(whatItCoversSection).toBeTruthy();
     expect(keyConceptsSection).toBeTruthy();
     expect(supportMatrixSection).toBeTruthy();
     expect(howToUseSection).toBeTruthy();
     expect(limitsSection).toBeTruthy();
+    expect(relatedSection).toBeTruthy();
     expect(keyConceptsSection?.textContent).toMatch(
       /agent runtime the factory drives/i,
     );
-    expect(whatItCoversSection?.textContent).toMatch(/you-agent-factory/i);
+    expect(whatItCoversSection?.textContent).toMatch(/feature coverage/i);
+    expect(howToUseSection?.textContent).toMatch(
+      /MCP|worktrees|external models/i,
+    );
     expect(limitsSection?.textContent).toMatch(
       /web harness-support matrix reference/i,
+    );
+    expect(limitsSection?.textContent).toMatch(
+      /not the harness concept glossary/i,
+    );
+    expect(limitsSection?.textContent).toMatch(
+      /not an agent-factory comparison blog/i,
     );
 
     const matrix = within(supportMatrixSection as HTMLElement).getByRole(
@@ -117,5 +141,37 @@ describe("harness-support documentation page", () => {
     ]) {
       expect(matrixQueries.getByRole("cell", { name: feature })).toBeTruthy();
     }
+
+    const relatedQueries = within(relatedSection as HTMLElement);
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Harness concept" })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts/harness");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Worktree concept" })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts/worktree");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Loop concept" })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts/loop");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Thinking concept" })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts/thinking");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "CLI docs" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/cli");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Configuration" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/configuration");
   });
 });
