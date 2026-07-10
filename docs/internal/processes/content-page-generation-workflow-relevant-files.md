@@ -255,6 +255,27 @@ shared wiring is still missing. Publishing may trip
   empty-state assertions to authored-entry assertions once the first page
   ships; keep non-default locale empty-state checks until locale stubs exist)
 
+### First published techniques page
+
+`techniques` needs the same first-collection publish wiring as guides when the
+section still lacks local MDX loaders:
+
+- add `techniques` to `LOCAL_DOCS_SECTIONS` and `loadLocalDocsPage`
+- add `technique-page.ts` / `technique-page-load.ts` (mirror guide loaders;
+  `PUBLISHED_DOCS_SECTIONS` + `techniquePageHref` already exist)
+- remove section-root `.gitkeep` files under docs and registry techniques roots
+- flip `src/tests/content/section-indexes.test.tsx` default-locale techniques
+  index from empty-state to authored-entry assertions
+- keep non-default locale techniques indexes on empty-state until colocated
+  `messages/<locale>.json` stubs ship
+- colocate the page render proof under the page bundle
+  (`classify-execute-page.test.tsx`) so the proof stays page-owned
+- document the exception with `--exception-reason` on
+  `bun run audit:canonical-page-surface`
+
+Do not treat excluded `src/lib/docs/` empty-root suites as required CI for this
+lane; update them only when a throughput lane owns that shared surface.
+
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the
 section-index test update plus page-owned bundle/registry files. Document the

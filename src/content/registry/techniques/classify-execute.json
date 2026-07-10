@@ -1,0 +1,18 @@
+{
+  "id": "technique.classify-execute",
+  "slug": "classify-execute",
+  "kind": "technique",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "classify then execute",
+    "triage and route",
+    "specialist handoff"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T00:00:00.000Z",
+  "updatedAt": "2026-07-09T00:00:00.000Z"
+}

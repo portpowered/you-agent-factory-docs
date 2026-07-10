@@ -14,6 +14,8 @@ import { loadPaperPage } from "@/lib/content/paper-page";
 import type { LoadedPaperPage } from "@/lib/content/paper-page-load";
 import { loadSystemPage } from "@/lib/content/system-page";
 import type { LoadedSystemPage } from "@/lib/content/system-page-load";
+import { loadTechniquePage } from "@/lib/content/technique-page";
+import type { LoadedTechniquePage } from "@/lib/content/technique-page-load";
 import { loadTrainingRegimePage } from "@/lib/content/training-regime-page";
 import type { LoadedTrainingRegimePage } from "@/lib/content/training-regime-page-load";
 import {
@@ -25,6 +27,7 @@ import {
 export type LocalDocsPageRef =
   | { section: "guides"; slug: string }
   | { section: "concepts"; slug: string }
+  | { section: "techniques"; slug: string }
   | { section: "documentation"; slug: string }
   | { section: "glossary"; slug: string }
   | { section: "modules"; slug: string }
@@ -36,6 +39,7 @@ export type LocalDocsPageRef =
 export type LoadedLocalDocsPage =
   | LoadedGuidePage
   | LoadedConceptPage
+  | LoadedTechniquePage
   | LoadedDocumentationPage
   | LoadedGlossaryPage
   | LoadedModulePage
@@ -47,6 +51,7 @@ export type LoadedLocalDocsPage =
 const LOCAL_DOCS_SECTIONS = new Set([
   "guides",
   "concepts",
+  "techniques",
   "documentation",
   "glossary",
   "modules",
@@ -106,6 +111,8 @@ export async function loadLocalDocsPage(
       return loadGuidePage(ref.slug, locale);
     case "concepts":
       return loadConceptPage(ref.slug, locale);
+    case "techniques":
+      return loadTechniquePage(ref.slug, locale);
     case "documentation":
       return loadDocumentationPage(ref.slug, locale);
     case "glossary":
