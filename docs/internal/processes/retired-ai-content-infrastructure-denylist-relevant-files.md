@@ -24,7 +24,7 @@ route/kind product teaching fixtures).
 | Path | Role |
 | --- | --- |
 | `src/lib/governance/retired-ai-content-infrastructure-denylist.ts` | Pure audit helpers + live collector |
-| `src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts` | Fixture proofs (owned-path / kind / route reintroduction fail; factory provider exception passes; live tree passes) |
+| `src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts` | Fixture proofs (owned-path / kind / route reintroduction fail; `__generate-fixtures__` reintroduction fails closed; factory provider exception passes; live tree passes) |
 | `scripts/audit-retired-ai-content-infrastructure.ts` | CLI entrypoint |
 | `package.json` → `audit:retired-ai-content-infrastructure` | Maintainer script |
 
@@ -52,7 +52,20 @@ route/kind product teaching fixtures).
 ```sh
 bun test src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts
 bun run audit:retired-ai-content-infrastructure
+# or: bun ./scripts/audit-retired-ai-content-infrastructure.ts
 ```
+
+Confirm denylisted owned paths stay absent on disk (including
+`src/lib/content/__generate-fixtures__`). Existence of any path in
+`RETIRED_AI_CONTENT_OWNED_PATHS` fails the audit as a reintroduction.
+`src/lib/content/__fixtures__/` is a separate live test-fixture directory and
+is not on the denylist.
+
+For the B09 public-copy convergence gate, also keep
+`bun run check:retired-product-docs` green alongside the denylist audit so
+factory provider/model configuration docs remain allowed while Atlas ownership
+copy stays retired (see `search-domain-relevant-files.md` B09 gate pattern).
+
 
 ## End-to-end proof (story 007)
 

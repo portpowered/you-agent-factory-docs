@@ -223,19 +223,19 @@ export function SearchPagePanelContent({
               <button
                 type="button"
                 className="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => setSearch(searchEntry.emptySuggestionGqa)}
+                onClick={() => setSearch(searchEntry.emptySuggestionTerm)}
               >
-                {searchEntry.emptySuggestionGqa}
+                {searchEntry.emptySuggestionTerm}
               </button>{" "}
               {searchEntry.emptySuggestionMiddle}{" "}
               <Link
                 href={buildLocalizedRoute(
-                  { surface: "tag-page", slug: "attention" },
+                  { surface: "docs-page", slug: "techniques/ralph" },
                   locale,
                 )}
                 className="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                {searchEntry.emptySuggestionAttentionLinkLabel}
+                {searchEntry.emptySuggestionLinkLabel}
               </Link>
               {searchEntry.emptySuggestionSuffix}
             </p>

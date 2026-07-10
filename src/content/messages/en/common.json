@@ -3,7 +3,7 @@
     "open": "Open search",
     "placeholder": "Search you-agent-factory…",
     "close": "Close search",
-    "idle": "Type a query to search modules, glossary entries, and tags.",
+    "idle": "Type a query to search guides, concepts, techniques, documentation, glossary entries, and tags.",
     "noResults": "No results found.",
     "loading": "Searching…",
     "error": "Search is temporarily unavailable. The index could not be loaded.",
@@ -37,19 +37,19 @@
   },
   "searchEntry": {
     "title": "Search",
-    "description": "Search Model Atlas by title, alias, or tag. Use the search control to jump to modules, concepts, and glossary entries.",
+    "description": "Search you-agent-factory docs by title, alias, or tag. Use the search control to jump to guides, concepts, techniques, documentation, and glossary entries.",
     "canonicalNote": "Canonical search entry URL: /search. Query handoffs may append ?q=<term>; tag handoffs may append ?tag=<slug> or ?classification=<id-or-slug> (for example /search?classification=activation).",
     "tagFilterDescription": "Showing results for resources tagged {tag}.",
     "classificationScopeDescription": "Showing results scoped to the {classification} classification.",
-    "emptySuggestionGqa": "GQA",
-    "emptySuggestionAttentionLinkLabel": "attention tag index",
+    "emptySuggestionTerm": "harness",
+    "emptySuggestionLinkLabel": "ralph technique page",
     "emptySuggestionPrefix": "Try searching for",
     "emptySuggestionMiddle": "or browse the",
     "emptySuggestionSuffix": "."
   },
   "shell": {
     "sidebarTitle": "Reference",
-    "sidebarDescription": "Browse modules, concepts, and tags.",
+    "sidebarDescription": "Browse guides, concepts, techniques, documentation, and tags.",
     "onThisPage": "On this page",
     "openingSummary": "Opening summary"
   },
@@ -117,7 +117,7 @@
   },
   "conceptsIndex": {
     "title": "Concepts",
-    "description": "Published concept pages that explain broader ideas spanning many models and modules, such as architecture patterns, quantization, and long-context tradeoffs.",
+    "description": "Published concept pages that explain broader ideas spanning many factory workflows, such as harnesses, loops, and bottlenecks.",
     "listLabel": "Concept entries",
     "emptyTitle": "No concept entries yet",
     "emptyDescription": "Published concept pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
@@ -149,31 +149,31 @@
   },
   "glossaryIndex": {
     "title": "Glossary",
-    "description": "Defined machine-learning terms with short summaries. Each entry links to a canonical glossary page when published.",
+    "description": "Short definitions for factory and CLI terms. Each entry links to a canonical glossary page when published.",
     "listLabel": "Glossary entries",
     "emptyTitle": "No glossary entries yet",
-    "emptyDescription": "Published glossary pages will appear here once they are added to the reference. Return home or open search to explore modules and tags in the meantime.",
+    "emptyDescription": "Published glossary pages will appear here once they are added to the reference. Return home or open search to explore guides, concepts, and tags in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "architectureIndex": {
     "title": "Architecture",
-    "description": "Architecture-related concepts, model families, and component patterns. Each entry links to a canonical docs page when published.",
+    "description": "Architecture-related concepts for factory system shape, workstation structure, and related patterns. Each entry links to a canonical docs page when published.",
     "listLabel": "Architecture entries",
     "emptyTitle": "No architecture entries yet",
-    "emptyDescription": "Published architecture concept pages and pages under the architecture content grouping will appear here. Return home or open search to explore modules and tags in the meantime.",
+    "emptyDescription": "Published architecture concept pages and pages under the architecture content grouping will appear here. Return home or open search to explore guides, concepts, and tags in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "blogIndex": {
     "title": "Blog",
-    "description": "Narrative posts that connect releases and serving concepts back to canonical reference pages.",
+    "description": "Narrative posts that connect factory releases and workflow ideas back to canonical reference pages.",
     "listLabel": "Blog posts",
     "emptyTitle": "No blog posts yet",
-    "emptyDescription": "Published narrative posts will appear here once they are added to the atlas. Return home or open search to explore models, modules, and concepts in the meantime.",
+    "emptyDescription": "Published narrative posts will appear here once they are added. Return home or open search to explore guides, concepts, and techniques in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "tagsIndex": {
     "title": "Tags",
-    "description": "Controlled tags for browsing topics across modules, concepts, models, and glossary pages. Each tag links to a landing page listing every published resource with that tag.",
+    "description": "Controlled tags for browsing topics across guides, concepts, techniques, documentation, and glossary pages. Each tag links to a landing page listing every published resource with that tag.",
     "listLabel": "Tags by category"
   },
   "tagLanding": {
@@ -187,27 +187,16 @@
   },
   "tagCategories": {
     "architecture": "Architecture",
-    "module-type": "Module type",
-    "training": "Training",
     "inference": "Inference",
     "systems": "Systems",
-    "modality": "Modality",
-    "paper-topic": "Paper topic",
-    "model-family": "Model family",
     "difficulty": "Difficulty"
   },
   "pageKind": {
-    "module": "Module",
-    "model": "Model",
     "concept": "Concept",
     "guide": "Guide",
     "technique": "Technique",
     "documentation": "Documentation",
-    "paper": "Paper",
     "glossary": "Glossary",
-    "training": "Training",
-    "training-regime": "Training",
-    "system": "System",
     "blog": "Blog"
   }
 }

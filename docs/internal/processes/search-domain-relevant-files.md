@@ -73,8 +73,18 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/features/docs/search/SearchDialog.tsx`
   Dialog input placeholder comes from `messages.search.placeholder`.
 * `src/content/messages/{en,vi,ja,zh-CN}/common.json`
-  Header/dialog search chrome copy. Placeholder must identify
-  `you-agent-factory` (or neutral CLI docs search), not Model Atlas.
+  Header/dialog search chrome and public search metadata
+  (`search.placeholder`, `search.idle`, `searchEntry.description`) must
+  identify you-agent-factory docs (or neutral CLI docs search), not Model
+  Atlas. Prove via `loadUiMessages` / route metadata assertions
+  (`src/tests/content/ui-messages.test.ts`,
+  `src/tests/features/search-ui.test.ts`,
+  `src/tests/layout/localized-route-metadata.test.ts`).
+  Search empty-state suggestions use `searchEntry.emptySuggestionTerm` +
+  `emptySuggestionLinkLabel` pointing at live factory docs (for example
+  term `harness` and link `/docs/techniques/ralph`), not Atlas GQA /
+  attention tag handoffs. `SearchPagePanel` owns that wiring; lock with
+  message assertions plus `search-page-panel` empty-state coverage.
 * `src/components/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).
@@ -131,3 +141,26 @@ with a static property access (see `readBakedDocsSearchStaticFrom`). Dynamic
 `env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV]` is fine in server/build helpers but is
 not inlined into client chunks — that leaves Orama static `from` on the
 fumadocs default `/api/search`.
+
+### Pattern: B09 factory-only search ownership gate
+
+After public-copy / empty-state / denylist repair, prove the cleanup gate with:
+
+```sh
+bun ./scripts/audit-retired-ai-content-infrastructure.ts
+bun run check:retired-product-docs
+bun test src/tests/content/ui-messages.test.ts -t "factory-only public search"
+bun test src/tests/layout/localized-route-metadata.test.ts -t "home and search|localized shell metadata"
+bun test src/tests/search/search-page-panel.test.tsx -t "empty state suggests live factory"
+bun test src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts
+make check
+bun run test
+```
+
+Worktree browser note: Claude worktrees often lack a local `node_modules`
+(hoisted at repo root). Symlinking root `node_modules` makes Turbopack panic
+(`Symlink …/node_modules is invalid, it points out of the filesystem root`).
+For `/search` empty-state + metadata proof in that environment, use
+`generateSearchMetadata()` / `loadUiMessages` plus the happy-dom
+`search-page-panel` empty-state test (harness term + `/docs/techniques/ralph`
+link; no GQA / attention tag handoff) instead of `bun run dev`/`start`.

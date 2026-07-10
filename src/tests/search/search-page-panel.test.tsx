@@ -452,6 +452,33 @@ describe("SearchPagePanel Phase 1 queries", () => {
     const liveRegion = container.querySelector('[aria-live="polite"]');
     expect(liveRegion).toBeTruthy();
   });
+
+  test("empty state suggests live factory docs instead of GQA or attention", async () => {
+    const context = await loadAppTestContext();
+    await renderSearchPagePanelContent(context);
+
+    const user = userEvent.setup();
+    const searchInput = screen.getByLabelText(
+      context.messages.search.placeholder,
+    );
+    await user.type(searchInput, "zzzz-no-matches-zzzz");
+
+    const empty = await screen.findByTestId("search-page-empty");
+    expect(empty.textContent).toContain(
+      context.messages.searchEntry.emptySuggestionTerm,
+    );
+    expect(empty.textContent).toContain(
+      context.messages.searchEntry.emptySuggestionLinkLabel,
+    );
+    expect(empty.textContent).not.toMatch(/GQA/i);
+    expect(empty.textContent).not.toMatch(/attention/i);
+
+    expect(context.messages.searchEntry.emptySuggestionTerm).toBe("harness");
+    const suggestionLink = screen.getByRole("link", {
+      name: context.messages.searchEntry.emptySuggestionLinkLabel,
+    });
+    expect(suggestionLink.getAttribute("href")).toBe("/docs/techniques/ralph");
+  });
 });
 
 describe("SearchPagePanel query handoff", () => {
