@@ -31,11 +31,15 @@ describe("blog content loader lane isolation", () => {
 
     expect(slugs).toEqual(
       [
+        "comparing-agent-factories",
         "evolution-of-diffusion",
         "llms-no-longer-wholly-reliant-on-the-internet",
         "roofline-throughput-explorer",
       ].sort(),
     );
+    await expect(
+      getPublishedBlogPostBySlug("comparing-agent-factories"),
+    ).resolves.toMatchObject({ slug: "comparing-agent-factories" });
     await expect(
       getPublishedBlogPostBySlug("evolution-of-diffusion"),
     ).resolves.toMatchObject({ slug: "evolution-of-diffusion" });

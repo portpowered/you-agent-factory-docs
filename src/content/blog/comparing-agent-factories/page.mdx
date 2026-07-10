@@ -1,0 +1,41 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-09"
+updatedAt: "2026-07-09"
+authors:
+  - site-team
+tags: []
+relatedDocIds:
+  - documentation.what-is-you-agent-factory
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+## Summary
+
+<T k="takeaway" />
+
+## Why compare agent factories
+
+Agent factories and orchestration systems solve overlapping problems: keep work moving, recover when a run stops, and give operators a place to define how agents or jobs cooperate. The options differ in how much they assume about harnesses, how custom workflows are authored, whether workflow files live in the repo, and how durable or stable the runtime feels day to day.
+
+This post compares **you-agent-factory** with common alternatives so readers can match a tool to the kind of agent work they actually run.
+
+## What this comparison covers
+
+The comparison focuses on practical tradeoffs for agent-oriented workflows:
+
+- recursion, fan-in, and stateful work
+- room for custom workflows
+- agent harness support
+- file-first / check-in workflow files
+- durable workflows
+- relative stability
+
+Systems in scope: you-agent-factory, custom scripts, Gas Town, DBOS, Dagster, N8N, and Temporal.

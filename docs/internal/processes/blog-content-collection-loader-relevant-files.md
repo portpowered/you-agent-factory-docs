@@ -86,3 +86,12 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
 ## Patterns
 
 * Blog post `relatedDocIds` frontmatter must use block-list YAML (`relatedDocIds:\n  - concept.example`). Inline `relatedDocIds: []` is parsed as a string by `parseYamlFrontmatterBlock` and as `null` by `compileMDX`, which fails `blogPostFrontmatterSchema`.
+* When adding a new published production blog slug, update the inventory assertion in
+  `src/lib/content/blog-content-loader-scope.test.ts` (sorted slug list +
+  `getPublishedBlogPostBySlug` match). That test is in the required website suite;
+  `src/tests/content/blog-*.test.tsx` rows are excluded from `make test` and are not
+  a substitute for the loader-scope inventory update.
+* Worktree checkouts often resolve `next` from a parent `node_modules`. Turbopack
+  rejects out-of-root `node_modules` symlinks; prefer SSR `renderBlogPostPage` +
+  `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification
+  instead of inventing a second package layout.
