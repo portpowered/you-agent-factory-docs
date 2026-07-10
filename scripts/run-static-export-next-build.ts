@@ -1,12 +1,19 @@
 /**
- * Supported static-export Next build entrypoint: run the webpack export build,
- * then verify the compile graph / `out/` contain no retired Atlas/AI routes.
+ * Supported static-export Next build entrypoint: run the resolved bundler
+ * export build, then verify the compile graph / `out/` contain no retired
+ * Atlas/AI routes.
  *
- * Keeps `NEXT_STATIC_EXPORT=1` on for the Next invocation and inherits caller
- * env (including `GITHUB_PAGES_BASE_PATH`) for project-site exports.
+ * Default bundler is webpack (`STATIC_EXPORT_BUNDLER` unset). Override with
+ * `STATIC_EXPORT_BUNDLER=turbopack` for bake-off runs. Keeps
+ * `NEXT_STATIC_EXPORT=1` on for the Next invocation and inherits caller env
+ * (including `GITHUB_PAGES_BASE_PATH`) for project-site exports.
  */
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import {
+  nextBuildArgsForStaticExportBundler,
+  resolveStaticExportBundler,
+} from "@/lib/build/static-export-bundler";
 
 const cwd = process.cwd();
 const runNextScript = resolve(import.meta.dir, "run-next.ts");
@@ -15,12 +22,15 @@ const verifyScript = resolve(
   "verify-static-export-legacy-compile-graph.ts",
 );
 
+const bundler = resolveStaticExportBundler(process.env);
+const nextArgs = nextBuildArgsForStaticExportBundler(bundler);
+
 const buildEnv = {
   ...process.env,
   NEXT_STATIC_EXPORT: "1",
 };
 
-const buildResult = spawnSync("bun", [runNextScript, "build", "--webpack"], {
+const buildResult = spawnSync("bun", [runNextScript, ...nextArgs], {
   cwd,
   env: buildEnv,
   stdio: "inherit",

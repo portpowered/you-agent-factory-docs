@@ -292,6 +292,20 @@ bun run benchmark:static-export -- --mode=warm
   paths, and emitted `out/` HTML. Docs catch-all `generateStaticParams` also
   filters retired Atlas collection slugs. Re-run the gate alone with
   `bun run verify:static-export-legacy-compile-graph`.
+- Webpack vs Turbopack bake-off: both bundlers are evaluated against the same
+  correctness suite (export completes, project-site base-path / build-contract
+  expectations, search-bootstrap expectations, and Turbopack whole-project NFT
+  tracing when Turbopack is under test). Recorded comparison
+  (`src/lib/build/static-export-bundler-bakeoff.ts`, UTC 2026-07-10): webpack
+  remains fully compatible; Turbopack failed to complete a static export in
+  this worktree (Next.js 16.2.7 could not resolve `next/package.json` from the
+  App Router tree despite `turbopack.root`). **Correctness winner and locked
+  default: webpack.** Relative clean timing is not claimed from the incomplete
+  Turbopack run; re-check with `bun run compare:static-export-bundlers` (recorded)
+  or `bun run compare:static-export-bundlers --live` after tooling/layout
+  changes. Override a single export with `STATIC_EXPORT_BUNDLER=turbopack` for
+  maintainer probes only — do not change `build:export` / `make build` until
+  Turbopack is fully compatible.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
 - Focused contract coverage (no full timed export):
   `bun run test:static-export-profile-contract`.
