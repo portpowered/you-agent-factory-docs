@@ -77,11 +77,23 @@ describe("fusion technique page", () => {
     expect(whatItIs).toBeTruthy();
     expect(whatItIs?.textContent).toMatch(/you-agent-factory technique/i);
     expect(whatItIs?.textContent).toMatch(/two model passes/i);
-    expect(whatItIs?.textContent).toMatch(/draft/i);
-    expect(whatItIs?.textContent).toMatch(/refine/i);
+    expect(whatItIs?.textContent).toMatch(/first pass drafts/i);
+    expect(whatItIs?.textContent).toMatch(/second pass refines/i);
+    expect(whatItIs?.textContent).toMatch(/same input drives both passes/i);
     expect(whatItIs?.textContent).toMatch(/@you\/fusion/);
     expect(whatItIs?.textContent).not.toMatch(/on this page/i);
     expect(whatItIs?.textContent).not.toMatch(/Model Atlas/i);
+
+    const whyItMatters = document.getElementById("why-it-matters");
+    expect(whyItMatters).toBeTruthy();
+    expect(whyItMatters?.textContent).toMatch(/second pass can catch gaps/i);
+    expect(whyItMatters?.textContent).toMatch(
+      /different providers or models for draft versus refine/i,
+    );
+    expect(whyItMatters?.textContent).toMatch(/reusable factory pattern/i);
+    expect(whyItMatters?.textContent).toMatch(/not a one-off chat trick/i);
+    expect(whyItMatters?.textContent).not.toMatch(/on this page/i);
+    expect(whyItMatters?.textContent).not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });
