@@ -78,7 +78,10 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/lib/search/docs-search-bootstrap-path.ts`
   Resolves `/api/search` (root) vs `/you-agent-factory-docs/api/search`
   (project-site export) via `resolveGitHubPagesBasePath` + `withBasePath`.
-  Bakes `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` from `next.config.ts`.
+  `bakeDocsSearchStaticBootstrapFromEnv` writes
+  `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` onto the env object so Next/SWC
+  inlining sees the value on `process.env`, not only via the `next.config`
+  `env` map. `next.config.ts` calls that helper at load time.
 * `src/features/docs/search/search-client.ts`
   Client fetch uses the baked public bootstrap path (no post-build rewrite).
 * `src/lib/build/verify-export-search-bootstrap-client-path.ts`
@@ -88,3 +91,15 @@ Use these files when changing search document construction, Orama indexing, or
   `verify-export-search-bootstrap-client-path` tests). Prefer
   `BUILT_APP_GITHUB_PAGES_BASE_PATH` over retired `/ai-model-reference`
   fixtures.
+
+### Pattern: bake NEXT_PUBLIC search bootstrap onto process.env
+
+Project-site static export must set both:
+
+1. `process.env.NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` (via
+   `bakeDocsSearchStaticBootstrapFromEnv(process.env)` in `next.config.ts`)
+2. `next.config` `env[NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM]`
+
+Setting only the config `env` map can leave client chunks with the
+`/api/search` fallback when SWC reads `process.env` for `NEXT_PUBLIC_*`
+inlining. Do not post-build rewrite chunk files to inject the prefix.

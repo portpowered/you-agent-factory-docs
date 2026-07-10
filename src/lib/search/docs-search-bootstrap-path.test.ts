@@ -4,6 +4,7 @@ import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-pat
 import { docsSearchApi } from "@/lib/search/search-server";
 import { withGlobalFetchOverride } from "@/tests/shared/global-fetch-lock";
 import {
+  bakeDocsSearchStaticBootstrapFromEnv,
   DOCS_SEARCH_API_PATH,
   DOCS_SEARCH_BOOTSTRAP_FROM_ENV,
   readDocsSearchStaticBootstrapFrom,
@@ -45,6 +46,45 @@ describe("resolveDocsSearchStaticBootstrapFrom", () => {
         [DOCS_SEARCH_BOOTSTRAP_FROM_ENV]: PROJECT_SITE_BOOTSTRAP_FROM,
       }),
     ).toBe(PROJECT_SITE_BOOTSTRAP_FROM);
+  });
+});
+
+describe("bakeDocsSearchStaticBootstrapFromEnv", () => {
+  test("writes project-site NEXT_PUBLIC bake during static export", () => {
+    const env: Record<string, string | undefined> = {
+      NEXT_STATIC_EXPORT: "1",
+      GITHUB_PAGES_BASE_PATH: BUILT_APP_GITHUB_PAGES_BASE_PATH,
+    };
+
+    expect(bakeDocsSearchStaticBootstrapFromEnv(env)).toBe(
+      PROJECT_SITE_BOOTSTRAP_FROM,
+    );
+    expect(env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV]).toBe(
+      PROJECT_SITE_BOOTSTRAP_FROM,
+    );
+  });
+
+  test("writes /api/search for root export and non-export builds", () => {
+    const rootExportEnv: Record<string, string | undefined> = {
+      NEXT_STATIC_EXPORT: "1",
+      GITHUB_PAGES_BASE_PATH: "",
+    };
+    expect(bakeDocsSearchStaticBootstrapFromEnv(rootExportEnv)).toBe(
+      DOCS_SEARCH_API_PATH,
+    );
+    expect(rootExportEnv[DOCS_SEARCH_BOOTSTRAP_FROM_ENV]).toBe(
+      DOCS_SEARCH_API_PATH,
+    );
+
+    const nonExportEnv: Record<string, string | undefined> = {
+      GITHUB_PAGES_BASE_PATH: BUILT_APP_GITHUB_PAGES_BASE_PATH,
+    };
+    expect(bakeDocsSearchStaticBootstrapFromEnv(nonExportEnv)).toBe(
+      DOCS_SEARCH_API_PATH,
+    );
+    expect(nonExportEnv[DOCS_SEARCH_BOOTSTRAP_FROM_ENV]).toBe(
+      DOCS_SEARCH_API_PATH,
+    );
   });
 });
 
