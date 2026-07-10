@@ -42,6 +42,9 @@ the project site requires the `/you-agent-factory-docs` repository prefix.
 | `docs/operations.md` | Maintainer-facing CI/deploy posture aligned to the Makefile contract |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`) |
 | `src/lib/build/static-export.ts` | Single `normalizeGitHubPagesBasePath` → `basePath` + `assetPrefix` contract; `next.config.ts` spreads `resolveNextConfigForBuildMode()` (no hardcoded Pages prefix) |
+| `src/lib/build/deploy-pages-workflow-contract.test.ts` | Focused build-contract gate: live `deploy-pages.yml` sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on `make build` and uploads `out/` |
+| `src/lib/build/static-export.test.ts` | Focused build-contract gate: `/you-agent-factory-docs` → identical `basePath` + `assetPrefix` |
+| `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` |
 
 ## `make build` vs `make build-export`
 
@@ -87,6 +90,10 @@ failures from `check`, `test`, or the static-export build behind those skips.
 `make test` (`scripts/run-website-functionality-tests.ts` skips `src/tests/ci/`).
 Do not treat those inventory tests as the live workflow contract; prefer
 command-level verification of the Makefile targets and the YAML files above.
+
+Live project-site coverage belongs in `make test-build-contract` /
+`bun run test:build-contract`, which runs `deploy-pages-workflow-contract`,
+`static-export`, and `verify-export-base-path` tests (plus `export-out-directory`).
 
 ## Repository-facing workflow identity
 
