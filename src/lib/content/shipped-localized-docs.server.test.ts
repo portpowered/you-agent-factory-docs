@@ -141,6 +141,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     expect(derived).toEqual({
       ja: [
         "concepts/checklist",
+        "concepts/compaction",
         "concepts/harness",
         "concepts/loop",
         "concepts/statistical-process-control-graphs",
@@ -155,6 +156,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ],
       "zh-CN": [
         "concepts/checklist",
+        "concepts/compaction",
         "concepts/harness",
         "concepts/loop",
         "concepts/statistical-process-control-graphs",
@@ -169,6 +171,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ],
       vi: [
         "concepts/checklist",
+        "concepts/compaction",
         "concepts/harness",
         "concepts/loop",
         "concepts/statistical-process-control-graphs",

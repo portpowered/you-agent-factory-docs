@@ -2,6 +2,7 @@
 export const SHIPPED_LOCALIZED_DOCS = {
   ja: [
     "concepts/checklist",
+    "concepts/compaction",
     "concepts/harness",
     "concepts/loop",
     "concepts/statistical-process-control-graphs",
@@ -16,6 +17,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ],
   "zh-CN": [
     "concepts/checklist",
+    "concepts/compaction",
     "concepts/harness",
     "concepts/loop",
     "concepts/statistical-process-control-graphs",
@@ -30,6 +32,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ],
   vi: [
     "concepts/checklist",
+    "concepts/compaction",
     "concepts/harness",
     "concepts/loop",
     "concepts/statistical-process-control-graphs",
