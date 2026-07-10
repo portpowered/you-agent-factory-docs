@@ -1,0 +1,49 @@
+---
+title: "Writer-Reviewer"
+description: "Writer-reviewer is a dual-role factory technique: a writer produces a candidate, and a reviewer accepts or rejects it."
+kind: "technique"
+registryId: "technique.writer-reviewer"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "writer reviewer"
+  - "write-reviewer"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="how-it-works" titleKey="sections.howItWorks.title">
+  <T k="sections.howItWorks.body" />
+</Section>
+
+<Section id="compared-to-nearby-techniques" titleKey="sections.comparedToNearbyTechniques.title">
+  <T k="sections.comparedToNearbyTechniques.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="technique.writer-reviewer" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="technique.writer-reviewer" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="technique.writer-reviewer" />
+</Section>

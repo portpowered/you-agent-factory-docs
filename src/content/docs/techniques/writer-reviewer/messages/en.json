@@ -1,0 +1,31 @@
+{
+  "title": "Writer-Reviewer",
+  "description": "Writer-reviewer is a dual-role factory technique: a writer produces a candidate, and a reviewer accepts or rejects it.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Writer-reviewer is a dual-role factory technique. A writer (or executor) produces a candidate, and a reviewer accepts it to complete or rejects it back for another write pass."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Quality-gated agent work can revise until review accepts. Reject cycles stay intentional rather than ending after one chat reply."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "Write or execute produces a candidate. Review accepts to complete or rejects back to write. Bound reject retries with a loop breaker so cycles cannot run forever."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "This technique glossary page defines writer-reviewer in isolation. It is not the write-review use-case guide, not a plain factory loop without a review gate, and not planner-executor or worker-adviser by default."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
