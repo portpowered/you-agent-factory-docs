@@ -8,7 +8,7 @@
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": ""
+      "body": "Parallel agent lanes can edit and verify in separate trees without stomping the same files. When a harness or workstation points at a worktree path, you know that lane is working in its own checkout instead of sharing one tree with every other run."
     },
     "simpleExample": {
       "title": "Simple Example",

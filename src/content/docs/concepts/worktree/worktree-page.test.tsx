@@ -31,9 +31,19 @@ describe("worktree concept page", () => {
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
     const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
+    const whyItMatters = String(
+      loadedPage.messages.sections?.whyItMatters?.body ?? "",
+    );
     expect(whatItIs).toMatch(/isolated checkout or workspace/i);
     expect(whatItIs).toMatch(/\.claude\/worktrees/i);
+    expect(whatItIs).toMatch(/not the factory workflow system/i);
+    expect(whatItIs).toMatch(/not just a branch name/i);
+    expect(whyItMatters).toMatch(/parallel agent lanes/i);
+    expect(whyItMatters).toMatch(/without stomping the same files/i);
+    expect(whyItMatters).toMatch(/harness or workstation/i);
+    expect(whyItMatters).toMatch(/worktree path/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
+    expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
 
     render(
       <main>
@@ -62,6 +72,17 @@ describe("worktree concept page", () => {
       /isolated checkout or workspace/i,
     );
     expect(whatItIsSection?.textContent ?? "").toMatch(/\.claude\/worktrees/i);
+
+    const whyItMattersSection = document.getElementById("why-it-matters");
+    expect(whyItMattersSection?.textContent ?? "").toMatch(
+      /parallel agent lanes/i,
+    );
+    expect(whyItMattersSection?.textContent ?? "").toMatch(
+      /without stomping the same files/i,
+    );
+    expect(whyItMattersSection?.textContent ?? "").toMatch(
+      /harness or workstation/i,
+    );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });
