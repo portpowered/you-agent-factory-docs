@@ -19,12 +19,12 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/content/registry/graphs"), {
@@ -35,11 +35,11 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/docs/modules/example-page/assets.json"),
+        join(repoRoot, "src/content/docs/concepts/example-page/assets.json"),
         [
           {
             graphId: "graph.example-page-flow",
@@ -53,9 +53,9 @@ describe("canonical page surface audit", () => {
         ],
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
         },
       );
       writeJson(
@@ -102,18 +102,18 @@ describe("canonical page surface audit", () => {
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
-          "src/content/registry/modules/example-page.json",
+          "src/content/docs/concepts/example-page/page.mdx",
+          "src/content/registry/concepts/example-page.json",
           "src/content/registry/graphs/example-page-flow.json",
           "src/lib/content/generated/runtime.generated.ts",
           "src/tests/ci/example.test.ts",
         ],
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
 
       expect(audit.pageScope.registryPath).toBe(
-        "src/content/registry/modules/example-page.json",
+        "src/content/registry/concepts/example-page.json",
       );
       expect(audit.pageScope.supportRecordPaths).toEqual([
         "src/content/registry/graphs/example-page-flow.json",
@@ -126,9 +126,9 @@ describe("canonical page surface audit", () => {
           `${classification.path}:${classification.kind}`,
       );
       expect(kinds).toEqual([
-        "src/content/docs/modules/example-page/page.mdx:page-owned",
+        "src/content/docs/concepts/example-page/page.mdx:page-owned",
+        "src/content/registry/concepts/example-page.json:page-owned",
         "src/content/registry/graphs/example-page-flow.json:page-owned",
-        "src/content/registry/modules/example-page.json:page-owned",
         "src/lib/content/generated/runtime.generated.ts:declared-generated-output",
         "src/tests/ci/example.test.ts:shared-hotspot-surface",
       ]);
@@ -148,37 +148,32 @@ describe("canonical page surface audit", () => {
     }
   });
 
-  test("classifies page-specific citation and paper records linked from the module registry as page-owned", () => {
+  test("classifies page-specific citation records linked from the concept registry as page-owned", () => {
     const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/content/registry/citations"), {
         recursive: true,
       });
-      mkdirSync(join(repoRoot, "src/content/registry/papers"), {
-        recursive: true,
-      });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
           citationIds: ["citation.example-page-paper"],
-          sourceId: "paper.example-page-study",
-          introducedByPaperIds: ["paper.example-page-study"],
         },
       );
       writeJson(
@@ -188,12 +183,6 @@ describe("canonical page surface audit", () => {
         ),
         {
           id: "citation.example-page-paper",
-        },
-      );
-      writeJson(
-        join(repoRoot, "src/content/registry/papers/example-page-study.json"),
-        {
-          id: "paper.example-page-study",
         },
       );
 
@@ -208,18 +197,16 @@ describe("canonical page surface audit", () => {
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
-          "src/content/registry/modules/example-page.json",
+          "src/content/docs/concepts/example-page/page.mdx",
+          "src/content/registry/concepts/example-page.json",
           "src/content/registry/citations/example-page-paper.json",
-          "src/content/registry/papers/example-page-study.json",
         ],
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
 
       expect(audit.pageScope.supportRecordPaths).toEqual([
         "src/content/registry/citations/example-page-paper.json",
-        "src/content/registry/papers/example-page-study.json",
       ]);
       expect(audit.budgetStatus).toBe("within-budget");
       expect(audit.guidance.recommendedAction).toBe("keep-routine");
@@ -233,12 +220,12 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/lib/content"), {
@@ -246,13 +233,13 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
         },
       );
 
@@ -275,14 +262,14 @@ describe("canonical page surface audit", () => {
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
+          "src/content/docs/concepts/example-page/page.mdx",
           "src/lib/content/slug-utils.ts",
         ],
         exception: {
           reason:
             "Page publish requires one narrow shared helper update for slug normalization.",
         },
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
 
@@ -302,39 +289,39 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/second-example/messages"),
+        join(repoRoot, "src/content/docs/concepts/second-example/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/second-example/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.second-example"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/second-example/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.second-example"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
         },
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/second-example.json"),
+        join(repoRoot, "src/content/registry/concepts/second-example.json"),
         {
-          id: "module.second-example",
+          id: "concept.second-example",
         },
       );
 
@@ -345,8 +332,8 @@ describe("canonical page surface audit", () => {
             category: "authored-content",
             distinctPaths: 2,
             representativePaths: [
-              "src/content/docs/modules/example-page/page.mdx",
-              "src/content/docs/modules/second-example/page.mdx",
+              "src/content/docs/concepts/example-page/page.mdx",
+              "src/content/docs/concepts/second-example/page.mdx",
             ],
             surface: "src/content/docs",
             touches: 6,
@@ -360,13 +347,13 @@ describe("canonical page surface audit", () => {
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
-          "src/content/docs/modules/second-example/page.mdx",
+          "src/content/docs/concepts/example-page/page.mdx",
+          "src/content/docs/concepts/second-example/page.mdx",
         ],
         exception: {
           reason: "Trying to carry a second page bundle in one branch.",
         },
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
 
@@ -391,12 +378,12 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/lib/content"), {
@@ -407,13 +394,13 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
         },
       );
 
@@ -446,11 +433,11 @@ describe("canonical page surface audit", () => {
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
+          "src/content/docs/concepts/example-page/page.mdx",
           "src/lib/content/slug-utils.ts",
           "src/tests/ci/example.test.ts",
         ],
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
 
@@ -487,12 +474,12 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/tests/ci"), {
@@ -500,13 +487,13 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
         },
       );
       writeFileSync(
@@ -516,10 +503,10 @@ describe("canonical page surface audit", () => {
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
+          "src/content/docs/concepts/example-page/page.mdx",
           "src/tests/ci/example.test.ts",
         ],
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
       });
 
       expect(audit.hotspotEvidence.kind).toBe("static-path-fallback");
@@ -556,12 +543,12 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/lib/content"), {
@@ -572,13 +559,13 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
         },
       );
 
@@ -607,27 +594,27 @@ describe("canonical page surface audit", () => {
       };
 
       const inBudget = collectCanonicalPageSurfaceAudit(repoRoot, {
-        changedPaths: ["src/content/docs/modules/example-page/page.mdx"],
-        pageDirectory: "src/content/docs/modules/example-page",
+        changedPaths: ["src/content/docs/concepts/example-page/page.mdx"],
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
       const exceptionLane = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
+          "src/content/docs/concepts/example-page/page.mdx",
           "src/lib/content/slug-utils.ts",
         ],
         exception: {
           reason: "One shared helper update is required to publish the page.",
         },
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
       const redirectLane = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
+          "src/content/docs/concepts/example-page/page.mdx",
           "src/tests/ci/example.test.ts",
         ],
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
 
@@ -954,12 +941,12 @@ describe("canonical page surface audit", () => {
 
     try {
       mkdirSync(
-        join(repoRoot, "src/content/docs/modules/example-page/messages"),
+        join(repoRoot, "src/content/docs/concepts/example-page/messages"),
         {
           recursive: true,
         },
       );
-      mkdirSync(join(repoRoot, "src/content/registry/modules"), {
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/lib/content/generated"), {
@@ -967,13 +954,13 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/modules/example-page/page.mdx"),
-        `---\nkind: "module"\nregistryId: "module.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/example-page/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.example-page"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags:\n  - "attention"\nupdatedAt: "2026-06-20"\n---\n`,
       );
       writeJson(
-        join(repoRoot, "src/content/registry/modules/example-page.json"),
+        join(repoRoot, "src/content/registry/concepts/example-page.json"),
         {
-          id: "module.example-page",
+          id: "concept.example-page",
         },
       );
 
@@ -998,10 +985,10 @@ describe("canonical page surface audit", () => {
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
-          "src/content/docs/modules/example-page/page.mdx",
+          "src/content/docs/concepts/example-page/page.mdx",
           "src/lib/content/generated/runtime.generated.ts",
         ],
-        pageDirectory: "src/content/docs/modules/example-page",
+        pageDirectory: "src/content/docs/concepts/example-page",
         snapshot,
       });
 

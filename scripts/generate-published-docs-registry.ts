@@ -69,10 +69,6 @@ export const GENERATED_PUBLISHED_DOCS_REGISTRY_IDS = ${renderLiteral(
 export const GENERATED_PUBLISHED_CONCEPT_SECTION_REGISTRY_IDS = ${renderLiteral(
   manifest.publishedConceptSectionRegistryIds,
 )} as const;
-
-export const GENERATED_MODULE_BACKED_CONCEPT_REGISTRY_IDS = ${renderLiteral(
-  manifest.moduleBackedConceptRegistryIds,
-)} as const;
 `;
 
 mkdirSync(dirname(outputPath), { recursive: true });

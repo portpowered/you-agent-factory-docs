@@ -1,16 +1,11 @@
 import { z } from "zod";
 
 export const registryKindSchema = z.enum([
-  "model",
-  "module",
   "concept",
   "guide",
   "technique",
   "documentation",
   "classification",
-  "paper",
-  "training-regime",
-  "system",
   "dataset",
   "hardware",
   "organization",
@@ -22,15 +17,10 @@ export const registryKindSchema = z.enum([
 export const registryStatusSchema = z.enum(["draft", "published", "archived"]);
 
 export const ontologyParticipantKindSchema = z.enum([
-  "model",
-  "module",
   "concept",
   "guide",
   "technique",
   "documentation",
-  "paper",
-  "training-regime",
-  "system",
   "dataset",
 ]);
 

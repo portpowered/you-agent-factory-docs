@@ -5,11 +5,16 @@ rewrite-era CLI collections (`guides`, `concepts`, `techniques`, `documentation`
 
 ## Kind contract (story 001)
 
+Live page/registry kinds are factory-only. Retired Atlas product kinds
+(`model`, `module`, `paper`, `training-regime`, `system`) are absent from
+`pageKindSchema`, `registryKindSchema`, and the live discriminated unions —
+see `delete-ai-content-infrastructure` story 003.
+
 | Path | Role |
 | --- | --- |
-| `src/lib/content/registry-core.ts` | `registryKindSchema` and `ontologyParticipantKindSchema` accept `guide`, `technique`, `documentation` (plus existing `concept`) |
-| `src/lib/content/schemas.ts` | `pageKindSchema` accepts `guide`, `concept`, `technique`, `documentation`; 1:1 record schemas `guideRecordSchema`, `techniqueRecordSchema`, `documentationRecordSchema` |
-| `src/lib/content/schemas.test.ts` | Parses valid CLI kinds and rejects unknown page/registry kinds |
+| `src/lib/content/registry-core.ts` | `registryKindSchema` and `ontologyParticipantKindSchema` accept `guide`, `technique`, `documentation` (plus existing `concept`); no Atlas product kinds |
+| `src/lib/content/schemas.ts` | `pageKindSchema` accepts `guide`, `concept`, `technique`, `documentation`, `glossary`; 1:1 record schemas for factory kinds only |
+| `src/lib/content/schemas.test.ts` | Parses valid CLI kinds and rejects unknown / retired Atlas page/registry kinds |
 | `src/content/messages/{en,ja,vi}/common.json` | `pageKind` labels so `formatPageKind` does not fall back to the raw kind string |
 | `src/tests/content/ui-messages.test.ts` | Asserts localized labels for the new page kinds |
 

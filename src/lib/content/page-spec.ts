@@ -2,10 +2,6 @@ import { readFile } from "node:fs/promises";
 import { z } from "zod";
 import {
   conceptTypeSchema,
-  mathLevelSchema,
-  modelModalitySchema,
-  modelSourceTypeSchema,
-  moduleTypeSchema,
   ontologyRelationshipSchema,
   type PageFrontmatter,
   type PageKind,
@@ -13,28 +9,11 @@ import {
   pageGraphMessagesSchema,
   pageTableMessagesSchema,
   registryStatusSchema,
-  systemTypeSchema,
-  trainingRegimeTypeSchema,
 } from "./schemas";
 
-export const PAGE_SPEC_KINDS = [
-  "concept",
-  "glossary",
-  "module",
-  "model",
-  "paper",
-  "training-regime",
-  "system",
-] as const;
+export const PAGE_SPEC_KINDS = ["concept", "glossary"] as const;
 
 export type PageSpecKind = (typeof PAGE_SPEC_KINDS)[number];
-
-export {
-  modelModalitySchema,
-  modelSourceTypeSchema,
-  systemTypeSchema,
-  trainingRegimeTypeSchema,
-} from "./schemas";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -148,110 +127,13 @@ export const glossaryPageSpecSchema = pageSpecBaseSchema.extend({
   ...conceptBackedPageSpecShape,
 });
 
-export const modulePageSpecSchema = pageSpecBaseSchema.extend({
-  kind: z.literal("module"),
-  ...pageSpecOntologyShape,
-  releaseDate: z.string().optional(),
-  authors: z.array(z.string().min(1)).min(1).optional(),
-  sourceId: z.string().min(1).optional(),
-  moduleType: moduleTypeSchema.optional(),
-  mathLevel: mathLevelSchema.default("none"),
-  moduleFamily: z.string().optional(),
-  variantGroup: z.string().optional(),
-  variantOf: z.string().optional(),
-  optimizes: z.array(z.string()).default([]),
-  exampleModelIds: z.array(z.string()).default([]),
-  improvesOnIds: z.array(z.string()).default([]),
-  tradeoffIds: z.array(z.string()).default([]),
-  usedByModelIds: z.array(z.string()).default([]),
-  introducedByPaperIds: z.array(z.string()).default([]),
-});
-
-export const modelPageSpecSchema = pageSpecBaseSchema.extend({
-  kind: z.literal("model"),
-  releaseDate: z.string().optional(),
-  authors: z.array(z.string().min(1)).min(1).optional(),
-  sourceId: z.string().min(1).optional(),
-  family: z.string().min(1),
-  sourceType: modelSourceTypeSchema,
-  modalities: z.array(modelModalitySchema).min(1),
-  organizationId: z.string().optional(),
-  architectureIds: z.array(z.string()).default([]),
-  moduleIds: z.array(z.string()).default([]),
-  trainingRegimeIds: z.array(z.string()).default([]),
-  datasetIds: z.array(z.string()).default([]),
-  paperIds: z.array(z.string()).default([]),
-  parameterCount: z.string().optional(),
-  activeParameterCount: z.string().optional(),
-  contextLength: z.number().int().positive().optional(),
-  precision: z.array(z.string()).optional(),
-});
-
-export const paperPageSpecSchema = pageSpecBaseSchema.extend({
-  kind: z.literal("paper"),
-  authors: z.array(z.string().min(1)).min(1),
-  publishedAt: z.string().min(1),
-  url: z.string().url(),
-  venue: z.string().optional(),
-  arxivId: z.string().optional(),
-  introducesIds: z.array(z.string()).default([]),
-  supportsIds: z.array(z.string()).default([]),
-  arguesAgainstIds: z.array(z.string()).default([]),
-  modelIds: z.array(z.string()).default([]),
-  moduleIds: z.array(z.string()).default([]),
-  conceptIds: z.array(z.string()).default([]),
-});
-
-export const trainingRegimePageSpecSchema = pageSpecBaseSchema.extend({
-  kind: z.literal("training-regime"),
-  ...pageSpecOntologyShape,
-  releaseDate: z.string().optional(),
-  authors: z.array(z.string().min(1)).min(1).optional(),
-  sourceId: z.string().min(1).optional(),
-  regimeType: trainingRegimeTypeSchema.optional(),
-  conceptType: conceptTypeSchema.optional(),
-  variantGroup: z.string().optional(),
-  usedByModelIds: z.array(z.string()).default([]),
-  relatedModuleIds: z.array(z.string()).default([]),
-  paperIds: z.array(z.string()).default([]),
-});
-
-export const systemPageSpecSchema = pageSpecBaseSchema.extend({
-  kind: z.literal("system"),
-  ...pageSpecOntologyShape,
-  releaseDate: z.string().optional(),
-  authors: z.array(z.string().min(1)).min(1).optional(),
-  sourceId: z.string().min(1).optional(),
-  systemType: systemTypeSchema.optional(),
-  conceptType: conceptTypeSchema.optional(),
-  variantGroup: z.string().optional(),
-  relatedModelIds: z.array(z.string()).default([]),
-  relatedModuleIds: z.array(z.string()).default([]),
-  relatedConceptIds: z.array(z.string()).default([]),
-  paperIds: z.array(z.string()).default([]),
-  datasetIds: z.array(z.string()).default([]),
-  organizationId: z.string().optional(),
-});
-
 export const pageSpecSchema = z.discriminatedUnion("kind", [
   conceptPageSpecSchema,
   glossaryPageSpecSchema,
-  modulePageSpecSchema,
-  modelPageSpecSchema,
-  paperPageSpecSchema,
-  trainingRegimePageSpecSchema,
-  systemPageSpecSchema,
 ]);
 
 export type ConceptPageSpec = z.infer<typeof conceptPageSpecSchema>;
 export type GlossaryPageSpec = z.infer<typeof glossaryPageSpecSchema>;
-export type ModulePageSpec = z.infer<typeof modulePageSpecSchema>;
-export type ModelPageSpec = z.infer<typeof modelPageSpecSchema>;
-export type PaperPageSpec = z.infer<typeof paperPageSpecSchema>;
-export type TrainingRegimePageSpec = z.infer<
-  typeof trainingRegimePageSpecSchema
->;
-export type SystemPageSpec = z.infer<typeof systemPageSpecSchema>;
 export type PageSpec = z.infer<typeof pageSpecSchema>;
 
 export type PageSpecValidationIssue = {
@@ -266,7 +148,7 @@ export type PageSpecWarning = {
 
 type DeprecatedTaxonomyFieldWarningOptions = {
   field: string;
-  recordKind: "concept" | "glossary" | "module" | "training-regime" | "system";
+  recordKind: "concept" | "glossary";
   replacement: string;
 };
 
@@ -296,105 +178,6 @@ export function collectDeprecatedTaxonomyWarnings(
             }),
           ]
         : [];
-    case "module":
-      return [
-        ...(spec.moduleType
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "moduleType",
-                recordKind: "module",
-                replacement:
-                  "primaryClassificationId plus optional secondaryClassificationIds",
-              }),
-            ]
-          : []),
-        ...(spec.moduleFamily
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "moduleFamily",
-                recordKind: "module",
-                replacement:
-                  "secondaryClassificationIds for additional taxonomy membership",
-              }),
-            ]
-          : []),
-        ...(spec.variantGroup
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "variantGroup",
-                recordKind: "module",
-                replacement:
-                  "relationships for variant or related-module topology",
-              }),
-            ]
-          : []),
-      ];
-    case "training-regime":
-      return [
-        ...(spec.regimeType
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "regimeType",
-                recordKind: "training-regime",
-                replacement:
-                  "primaryClassificationId plus optional secondaryClassificationIds",
-              }),
-            ]
-          : []),
-        ...(spec.conceptType
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "conceptType",
-                recordKind: "training-regime",
-                replacement:
-                  "primaryClassificationId plus optional secondaryClassificationIds",
-              }),
-            ]
-          : []),
-        ...(spec.variantGroup
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "variantGroup",
-                recordKind: "training-regime",
-                replacement:
-                  "relationships for variant or nearby-regime topology",
-              }),
-            ]
-          : []),
-      ];
-    case "system":
-      return [
-        ...(spec.systemType
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "systemType",
-                recordKind: "system",
-                replacement:
-                  "primaryClassificationId plus optional secondaryClassificationIds",
-              }),
-            ]
-          : []),
-        ...(spec.conceptType
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "conceptType",
-                recordKind: "system",
-                replacement:
-                  "primaryClassificationId plus optional secondaryClassificationIds",
-              }),
-            ]
-          : []),
-        ...(spec.variantGroup
-          ? [
-              createDeprecatedTaxonomyFieldWarning({
-                field: "variantGroup",
-                recordKind: "system",
-                replacement:
-                  "relationships for variant or related-system topology",
-              }),
-            ]
-          : []),
-      ];
     default:
       return [];
   }
@@ -455,15 +238,9 @@ function collectPageSpecCompatibilityIssues(
 ): PageSpecValidationIssue[] {
   const compatibilityIssues: PageSpecValidationIssue[] = [];
   const ontologyInput = {
-    primaryClassificationId:
-      "primaryClassificationId" in spec
-        ? spec.primaryClassificationId
-        : undefined,
-    secondaryClassificationIds:
-      "secondaryClassificationIds" in spec
-        ? spec.secondaryClassificationIds
-        : [],
-    relationships: "relationships" in spec ? spec.relationships : [],
+    primaryClassificationId: spec.primaryClassificationId,
+    secondaryClassificationIds: spec.secondaryClassificationIds,
+    relationships: spec.relationships,
   };
   const addCompatibilityIssues = (
     legacyFieldLabel: string,
@@ -482,15 +259,6 @@ function collectPageSpecCompatibilityIssues(
     case "concept":
     case "glossary":
       addCompatibilityIssues("conceptType", spec.conceptType);
-      break;
-    case "module":
-      addCompatibilityIssues("moduleType", spec.moduleType);
-      break;
-    case "training-regime":
-      addCompatibilityIssues("regimeType", spec.regimeType);
-      break;
-    case "system":
-      addCompatibilityIssues("systemType", spec.systemType);
       break;
     default:
       break;
@@ -522,17 +290,9 @@ export async function parsePageSpecFile(path: string): Promise<PageSpec> {
   return parsePageSpecJson(raw);
 }
 
-const registryKindByPageKind: Record<
-  PageSpecKind,
-  "concept" | "module" | "model" | "paper" | "training-regime" | "system"
-> = {
+const registryKindByPageKind: Record<PageSpecKind, "concept"> = {
   concept: "concept",
   glossary: "concept",
-  module: "module",
-  model: "model",
-  paper: "paper",
-  "training-regime": "training-regime",
-  system: "system",
 };
 
 export function registryKindForPageSpec(

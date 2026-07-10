@@ -5,7 +5,6 @@ import {
   publishedDocsHrefFromEntry,
 } from "@/lib/content/published-docs-registry-contract";
 import {
-  GENERATED_MODULE_BACKED_CONCEPT_REGISTRY_IDS as GENERATED_MODULE_BACKED_CONCEPT_REGISTRY_IDS_DATA,
   GENERATED_PUBLISHED_CONCEPT_SECTION_REGISTRY_IDS as GENERATED_PUBLISHED_CONCEPT_SECTION_REGISTRY_IDS_DATA,
   GENERATED_PUBLISHED_DOCS_ENTRIES as GENERATED_PUBLISHED_DOCS_ENTRIES_DATA,
   GENERATED_PUBLISHED_DOCS_REGISTRY_IDS as GENERATED_PUBLISHED_DOCS_REGISTRY_IDS_DATA,
@@ -57,24 +56,6 @@ function resolvePublishedDocsRegistryEntryCollision(
   return candidatePriority > existingPriority ? candidateEntry : existingEntry;
 }
 
-function getModuleBackedConceptEntryBySlug(
-  slug: string,
-): PublishedDocsEntry | undefined {
-  const moduleEntries = getPublishedDocsEntriesBySlug(slug).filter(
-    (entry) => entry.section === "modules" && entry.pageKind === "module",
-  );
-
-  if (moduleEntries.length > 1) {
-    throw new Error(
-      `Multiple published module pages share concept slug "${slug}": ${moduleEntries
-        .map((entry) => entry.docsSlug)
-        .join(", ")}`,
-    );
-  }
-
-  return moduleEntries[0];
-}
-
 function buildRuntimePublishedDocsIndex(
   entries: readonly PublishedDocsEntry[],
 ): PublishedDocsIndex {
@@ -122,10 +103,6 @@ export const PUBLISHED_CONCEPT_SECTION_REGISTRY_IDS: ReadonlySet<string> =
     GENERATED_PUBLISHED_CONCEPT_SECTION_REGISTRY_IDS_DATA as readonly string[],
   );
 
-export const MODULE_BACKED_CONCEPT_REGISTRY_IDS: ReadonlySet<string> = new Set(
-  GENERATED_MODULE_BACKED_CONCEPT_REGISTRY_IDS_DATA as readonly string[],
-);
-
 export function listPublishedDocsEntries(): readonly PublishedDocsEntry[] {
   return publishedDocsIndex.entries;
 }
@@ -162,14 +139,5 @@ export function getPublishedDocsHrefForRecord(
 function getPublishedDocsEntryForRecord(
   record: PublishedDocsRecordRef,
 ): PublishedDocsEntry | undefined {
-  const directEntry = getPublishedDocsEntryByRegistryId(record.id);
-  if (directEntry) {
-    return directEntry;
-  }
-
-  if (record.kind !== "concept") {
-    return undefined;
-  }
-
-  return getModuleBackedConceptEntryBySlug(record.slug);
+  return getPublishedDocsEntryByRegistryId(record.id);
 }

@@ -47,7 +47,7 @@ describe("typed taxonomy compatibility budget command", () => {
       );
       expect(result.stdout ?? "").toContain("Status: aligned");
       expect(result.stdout ?? "").toContain(
-        "Approved baseline: 3 entries, 14 field references",
+        "Approved baseline: 3 entries, 2 field references",
       );
       expect(result.stdout ?? "").toContain(
         "No deprecated typed-taxonomy budget growth detected.",
@@ -98,10 +98,10 @@ describe("typed taxonomy compatibility budget command", () => {
       expect(result.status).toBe(1);
       expect(result.stdout ?? "").toContain("Status: drifted");
       expect(result.stdout ?? "").toContain(
-        "Approved baseline: 3 entries, 14 field references",
+        "Approved baseline: 3 entries, 2 field references",
       );
       expect(result.stdout ?? "").toContain(
-        "Current measured: 3 entries, 15 field references",
+        "Current measured: 3 entries, 3 field references",
       );
       expect(result.stdout ?? "").toContain(
         'search typed-taxonomy compatibility cluster entry "search-document-public-facet-shape" at src/lib/search/types.ts approved 1 field references but found 2',
@@ -149,10 +149,10 @@ describe("typed taxonomy compatibility budget command", () => {
       expect(result.status).toBe(0);
       expect(result.stdout ?? "").toContain("Status: aligned");
       expect(result.stdout ?? "").toContain(
-        "Approved baseline: 3 entries, 14 field references",
+        "Approved baseline: 3 entries, 2 field references",
       );
       expect(result.stdout ?? "").toContain(
-        "Current measured: 3 entries, 13 field references",
+        "Current measured: 3 entries, 1 field references",
       );
       expect(result.stdout ?? "").toContain(
         "No deprecated typed-taxonomy budget growth detected.",

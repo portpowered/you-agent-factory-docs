@@ -51,9 +51,9 @@ describe("legacy taxonomy compatibility budget command", () => {
       expect(result.stdout ?? "").toContain(
         "search typed-taxonomy compatibility cluster",
       );
-      expect(result.stdout ?? "").toContain("Approved baseline: 8 bridges");
+      expect(result.stdout ?? "").toContain("Approved baseline: 0 bridges");
       expect(result.stdout ?? "").toContain(
-        "Approved baseline: 3 entries, 14 field references",
+        "Approved baseline: 3 entries, 2 field references",
       );
     } finally {
       rmSync(snapshotRoot, { recursive: true, force: true });

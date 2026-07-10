@@ -16,14 +16,9 @@ import type {
   ClassificationRecord,
   ConceptRecord,
   DatasetRecord,
-  ModelRecord,
-  ModuleRecord,
   OntologyRelationship,
   OrganizationRecord,
   PageMessages,
-  PaperRecord,
-  SystemRecord,
-  TrainingRegimeRecord,
 } from "@/lib/content/schemas";
 
 export const SAME_VARIANT_GROUP = "same-variant-group" as const;
@@ -38,10 +33,6 @@ export const COMPATIBILITY_SAME_VARIANT_GROUP =
 export const COMPATIBILITY_SAME_CONCEPT_TYPE =
   "compatibility-same-concept-type" as const;
 export const CURATED_RELATED = "curated-related" as const;
-export const SAME_MODEL_FAMILY = "same-model-family" as const;
-export const SHARED_MODULES = "shared-modules" as const;
-export const SHARED_TRAINING_REGIMES = "shared-training-regimes" as const;
-export const INTRODUCED_RECORDS = "introduced-records" as const;
 export { registryDisplayTitle };
 
 export type DerivedRelatedDocGroupId =
@@ -51,11 +42,7 @@ export type DerivedRelatedDocGroupId =
   | typeof COMPATIBILITY_SAME_VARIANT_GROUP
   | typeof SHARED_TAGS
   | typeof COMPATIBILITY_SAME_CONCEPT_TYPE
-  | typeof CURATED_RELATED
-  | typeof SAME_MODEL_FAMILY
-  | typeof SHARED_MODULES
-  | typeof SHARED_TRAINING_REGIMES
-  | typeof INTRODUCED_RECORDS;
+  | typeof CURATED_RELATED;
 
 export const DERIVED_RELATED_DOC_GROUP_LABELS: Record<
   DerivedRelatedDocGroupId,
@@ -68,10 +55,6 @@ export const DERIVED_RELATED_DOC_GROUP_LABELS: Record<
   [SHARED_TAGS]: "Shared tag",
   [COMPATIBILITY_SAME_CONCEPT_TYPE]: "Compatibility: same concept type",
   [CURATED_RELATED]: "curated",
-  [SAME_MODEL_FAMILY]: "Same model family",
-  [SHARED_MODULES]: "Shared modules",
-  [SHARED_TRAINING_REGIMES]: "Shared training regimes",
-  [INTRODUCED_RECORDS]: "Introduced by this paper",
 };
 
 export const ONTOLOGY_RELATED_DOC_GROUP_IDS = [
@@ -100,12 +83,7 @@ type RequestedRelatedDocGroupId =
 export const PLANNED_RELATED_REASON_LABEL = "Planned related doc" as const;
 
 export type RelatedRegistryRecord =
-  | ModuleRecord
   | ConceptRecord
-  | ModelRecord
-  | PaperRecord
-  | TrainingRegimeRecord
-  | SystemRecord
   | DatasetRecord
   | OrganizationRecord;
 
@@ -143,10 +121,6 @@ const RELATED_DOC_GROUP_PRIORITY: readonly DerivedRelatedDocGroupId[] = [
   DIRECT_RELATIONSHIPS,
   CLASSIFICATION_SIBLINGS,
   SHARED_PARENT_CLASSIFICATION,
-  INTRODUCED_RECORDS,
-  SAME_MODEL_FAMILY,
-  SHARED_MODULES,
-  SHARED_TRAINING_REGIMES,
   COMPATIBILITY_SAME_VARIANT_GROUP,
   COMPATIBILITY_SAME_CONCEPT_TYPE,
   SHARED_TAGS,
@@ -174,9 +148,6 @@ function dedupeRelatedDocItems(items: RelatedDocItem[]): RelatedDocItem[] {
 
 function getConceptType(record: RelatedRegistryRecord): string | undefined {
   if (record.kind === "concept") {
-    return record.conceptType;
-  }
-  if (record.kind === "module") {
     return record.conceptType;
   }
   return undefined;
@@ -466,11 +437,7 @@ function isDerivedRelatedDocGroupId(
     groupId === COMPATIBILITY_SAME_VARIANT_GROUP ||
     groupId === SHARED_TAGS ||
     groupId === COMPATIBILITY_SAME_CONCEPT_TYPE ||
-    groupId === CURATED_RELATED ||
-    groupId === SAME_MODEL_FAMILY ||
-    groupId === SHARED_MODULES ||
-    groupId === SHARED_TRAINING_REGIMES ||
-    groupId === INTRODUCED_RECORDS
+    groupId === CURATED_RELATED
   );
 }
 
@@ -552,28 +519,6 @@ function deriveCompatibilityRelatedDocGroups(
 ): RelatedDocGroup[] {
   const compatibilityGroups: RelatedDocGroup[] = [];
 
-  if (
-    requestedCompatibilityGroups.has(COMPATIBILITY_SAME_VARIANT_GROUP) &&
-    source.kind === "module"
-  ) {
-    const moduleCandidates = candidates.filter(
-      (candidate): candidate is ModuleRecord => candidate.kind === "module",
-    );
-    const items = deriveSameVariantGroupPeers(
-      source,
-      moduleCandidates,
-      publishedRegistryIds,
-    );
-    if (items.length > 0) {
-      compatibilityGroups.push({
-        id: COMPATIBILITY_SAME_VARIANT_GROUP,
-        reasonLabel:
-          DERIVED_RELATED_DOC_GROUP_LABELS[COMPATIBILITY_SAME_VARIANT_GROUP],
-        items,
-      });
-    }
-  }
-
   if (requestedCompatibilityGroups.has(COMPATIBILITY_SAME_CONCEPT_TYPE)) {
     const items = deriveSameConceptTypePeers(
       source,
@@ -627,31 +572,6 @@ function toRelatedItem(
     reasonLabel: isPlanned ? PLANNED_RELATED_REASON_LABEL : reasonLabel,
     isPlanned,
   };
-}
-
-/** Published peers sharing `variantGroup` with the source module, excluding the source. */
-export function deriveSameVariantGroupPeers(
-  source: ModuleRecord,
-  modules: ModuleRecord[],
-  publishedRegistryIds: PublishedDocsRegistryIds,
-): RelatedDocItem[] {
-  if (!source.variantGroup) {
-    return [];
-  }
-
-  const reasonLabel =
-    DERIVED_RELATED_DOC_GROUP_LABELS[COMPATIBILITY_SAME_VARIANT_GROUP];
-  return dedupeRelatedDocItems(
-    modules
-      .filter(
-        (candidate) =>
-          candidate.id !== source.id &&
-          candidate.variantGroup === source.variantGroup &&
-          hasPublishedDocsPage(candidate, publishedRegistryIds),
-      )
-      .map((record) => toRelatedItem(record, reasonLabel, publishedRegistryIds))
-      .sort((a, b) => a.title.localeCompare(b.title)),
-  );
 }
 
 /** Peers sharing at least one tag with the source record, excluding the source. */
@@ -869,100 +789,6 @@ export function deriveSharedParentClassificationPeers(
   );
 }
 
-export function deriveSameModelFamilyPeers(
-  source: ModelRecord,
-  candidates: ModelRecord[],
-  publishedRegistryIds: PublishedDocsRegistryIds,
-): RelatedDocItem[] {
-  const reasonLabel = DERIVED_RELATED_DOC_GROUP_LABELS[SAME_MODEL_FAMILY];
-  return dedupeRelatedDocItems(
-    candidates
-      .filter(
-        (candidate) =>
-          candidate.id !== source.id && candidate.family === source.family,
-      )
-      .map((record) => toRelatedItem(record, reasonLabel, publishedRegistryIds))
-      .sort((a, b) => a.title.localeCompare(b.title)),
-  );
-}
-
-function sharesAnyId(source: string[], candidate: string[]): boolean {
-  return source.some((id) => candidate.includes(id));
-}
-
-export function deriveSharedModulePeers(
-  source: ModelRecord,
-  candidates: ModelRecord[],
-  publishedRegistryIds: PublishedDocsRegistryIds,
-): RelatedDocItem[] {
-  if (source.moduleIds.length === 0) {
-    return [];
-  }
-
-  const reasonLabel = DERIVED_RELATED_DOC_GROUP_LABELS[SHARED_MODULES];
-  return dedupeRelatedDocItems(
-    candidates
-      .filter(
-        (candidate) =>
-          candidate.id !== source.id &&
-          sharesAnyId(source.moduleIds, candidate.moduleIds),
-      )
-      .map((record) => toRelatedItem(record, reasonLabel, publishedRegistryIds))
-      .sort((a, b) => a.title.localeCompare(b.title)),
-  );
-}
-
-export function deriveSharedTrainingRegimePeers(
-  source: ModelRecord,
-  candidates: ModelRecord[],
-  publishedRegistryIds: PublishedDocsRegistryIds,
-): RelatedDocItem[] {
-  if (source.trainingRegimeIds.length === 0) {
-    return [];
-  }
-
-  const reasonLabel = DERIVED_RELATED_DOC_GROUP_LABELS[SHARED_TRAINING_REGIMES];
-  return dedupeRelatedDocItems(
-    candidates
-      .filter(
-        (candidate) =>
-          candidate.id !== source.id &&
-          sharesAnyId(source.trainingRegimeIds, candidate.trainingRegimeIds),
-      )
-      .map((record) => toRelatedItem(record, reasonLabel, publishedRegistryIds))
-      .sort((a, b) => a.title.localeCompare(b.title)),
-  );
-}
-
-export function deriveIntroducedRecordItems(
-  source: PaperRecord,
-  candidates: RelatedRegistryRecord[],
-  publishedRegistryIds: PublishedDocsRegistryIds,
-): RelatedDocItem[] {
-  const reasonLabel = DERIVED_RELATED_DOC_GROUP_LABELS[INTRODUCED_RECORDS];
-  const ids = [
-    ...source.introducesIds,
-    ...source.modelIds,
-    ...source.moduleIds,
-    ...source.conceptIds,
-  ];
-  const candidatesById = new Map(
-    candidates.map((candidate) => [candidate.id, candidate]),
-  );
-
-  return dedupeRelatedDocItems(
-    ids
-      .map((id) => candidatesById.get(id))
-      .filter(
-        (record): record is RelatedRegistryRecord =>
-          record !== undefined && record.id !== source.id,
-      )
-      .map((record) =>
-        toRelatedItem(record, reasonLabel, publishedRegistryIds),
-      ),
-  );
-}
-
 /** Applies page-message overrides for curated related-doc relationship labels. */
 export function applyRelatedDocMessageOverrides(
   items: RelatedDocItem[],
@@ -1096,87 +922,6 @@ export function deriveRelatedDocGroups(
     publishedRegistryIds,
   )) {
     groupsById.set(group.id, group);
-  }
-
-  if (
-    normalizedRequestedGroups.has(SAME_MODEL_FAMILY) &&
-    source.kind === "model"
-  ) {
-    const modelCandidates = candidates.filter(
-      (candidate): candidate is ModelRecord => candidate.kind === "model",
-    );
-    const items = deriveSameModelFamilyPeers(
-      source,
-      modelCandidates,
-      publishedRegistryIds,
-    );
-    if (items.length > 0) {
-      groupsById.set(SAME_MODEL_FAMILY, {
-        id: SAME_MODEL_FAMILY,
-        reasonLabel: DERIVED_RELATED_DOC_GROUP_LABELS[SAME_MODEL_FAMILY],
-        items,
-      });
-    }
-  }
-
-  if (
-    normalizedRequestedGroups.has(SHARED_MODULES) &&
-    source.kind === "model"
-  ) {
-    const modelCandidates = candidates.filter(
-      (candidate): candidate is ModelRecord => candidate.kind === "model",
-    );
-    const items = deriveSharedModulePeers(
-      source,
-      modelCandidates,
-      publishedRegistryIds,
-    );
-    if (items.length > 0) {
-      groupsById.set(SHARED_MODULES, {
-        id: SHARED_MODULES,
-        reasonLabel: DERIVED_RELATED_DOC_GROUP_LABELS[SHARED_MODULES],
-        items,
-      });
-    }
-  }
-
-  if (
-    normalizedRequestedGroups.has(SHARED_TRAINING_REGIMES) &&
-    source.kind === "model"
-  ) {
-    const modelCandidates = candidates.filter(
-      (candidate): candidate is ModelRecord => candidate.kind === "model",
-    );
-    const items = deriveSharedTrainingRegimePeers(
-      source,
-      modelCandidates,
-      publishedRegistryIds,
-    );
-    if (items.length > 0) {
-      groupsById.set(SHARED_TRAINING_REGIMES, {
-        id: SHARED_TRAINING_REGIMES,
-        reasonLabel: DERIVED_RELATED_DOC_GROUP_LABELS[SHARED_TRAINING_REGIMES],
-        items,
-      });
-    }
-  }
-
-  if (
-    normalizedRequestedGroups.has(INTRODUCED_RECORDS) &&
-    source.kind === "paper"
-  ) {
-    const items = deriveIntroducedRecordItems(
-      source,
-      candidates,
-      publishedRegistryIds,
-    );
-    if (items.length > 0) {
-      groupsById.set(INTRODUCED_RECORDS, {
-        id: INTRODUCED_RECORDS,
-        reasonLabel: DERIVED_RELATED_DOC_GROUP_LABELS[INTRODUCED_RECORDS],
-        items,
-      });
-    }
   }
 
   if (normalizedRequestedGroups.has(SHARED_TAGS)) {

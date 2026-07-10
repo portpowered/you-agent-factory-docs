@@ -10,9 +10,9 @@ import {
 } from "@/features/docs/components/RelatedRegistryDocs";
 import {
   RELATED_REGISTRY_DOCS_MISSING_ID,
-  relatedRegistryDocsDraftModule,
-  relatedRegistryDocsGqa,
-  relatedRegistryDocsMqa,
+  relatedRegistryDocsDraftConcept,
+  relatedRegistryDocsHarness,
+  relatedRegistryDocsLoop,
   relatedRegistryDocsResolveOptions,
 } from "@/lib/content/related-registry-docs.test-fixtures";
 
@@ -29,19 +29,22 @@ describe("RelatedRegistryDocs", () => {
   test("renders compact published links with docs chrome styling", () => {
     const html = renderToStaticMarkup(
       <RelatedRegistryDocs
-        registryIds={[relatedRegistryDocsMqa.id, relatedRegistryDocsGqa.id]}
+        registryIds={[
+          relatedRegistryDocsLoop.id,
+          relatedRegistryDocsHarness.id,
+        ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
     expect(html).toContain('data-testid="related-registry-docs"');
-    expect(html).toContain('href="/docs/modules/multi-query-attention"');
-    expect(html).toContain('href="/docs/modules/grouped-query-attention"');
-    expect(html).toContain("Multi-Query Attention");
-    expect(html).toContain("Grouped Query Attention");
+    expect(html).toContain('href="/docs/concepts/loop"');
+    expect(html).toContain('href="/docs/concepts/harness"');
+    expect(html).toContain("Loop");
+    expect(html).toContain("Harness");
     expect(html).toContain("no-underline");
     expect(html).toContain("focus-visible:ring-2");
-    expect(html).not.toContain(relatedRegistryDocsMqa.id);
+    expect(html).not.toContain(relatedRegistryDocsLoop.id);
   });
 
   test("renders configured empty fallback when input is empty", () => {
@@ -63,7 +66,7 @@ describe("RelatedRegistryDocs", () => {
       <RelatedRegistryDocs
         registryIds={[
           RELATED_REGISTRY_DOCS_MISSING_ID,
-          relatedRegistryDocsDraftModule.id,
+          relatedRegistryDocsDraftConcept.id,
         ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
@@ -82,15 +85,15 @@ describe("RelatedRegistryDocs", () => {
       <RelatedRegistryDocs
         registryIds={[
           RELATED_REGISTRY_DOCS_MISSING_ID,
-          relatedRegistryDocsGqa.id,
-          relatedRegistryDocsDraftModule.id,
+          relatedRegistryDocsHarness.id,
+          relatedRegistryDocsDraftConcept.id,
         ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
-    expect(html).toContain('href="/docs/modules/grouped-query-attention"');
-    expect(html).toContain("Grouped Query Attention");
+    expect(html).toContain('href="/docs/concepts/harness"');
+    expect(html).toContain("Harness");
     expect(html).toContain(
       'data-testid="related-registry-docs-partial-unavailable"',
     );
@@ -98,7 +101,7 @@ describe("RelatedRegistryDocs", () => {
       DEFAULT_RELATED_REGISTRY_DOCS_PARTIAL_UNAVAILABLE_STATUS,
     );
     expect(html).not.toContain(RELATED_REGISTRY_DOCS_MISSING_ID);
-    expect(html).not.toContain("Draft attention");
+    expect(html).not.toContain("Draft concept");
   });
 
   test("localizes shipped docs links from page context", () => {
@@ -109,30 +112,29 @@ describe("RelatedRegistryDocs", () => {
         isDev={false}
       >
         <RelatedRegistryDocs
-          registryIds={[relatedRegistryDocsGqa.id]}
+          registryIds={[relatedRegistryDocsHarness.id]}
           resolveOptions={relatedRegistryDocsResolveOptions}
         />
       </PageMessagesProvider>,
     );
 
-    expect(html).toContain('href="/vi/docs/modules/grouped-query-attention"');
+    expect(html).toContain('href="/vi/docs/concepts/harness"');
   });
 
   test("exposes accessible list semantics for available links", () => {
     render(
       <RelatedRegistryDocs
-        registryIds={[relatedRegistryDocsMqa.id, relatedRegistryDocsGqa.id]}
+        registryIds={[
+          relatedRegistryDocsLoop.id,
+          relatedRegistryDocsHarness.id,
+        ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
     expect(screen.getAllByRole("list")).toHaveLength(1);
-    expect(
-      screen.getByRole("link", { name: "Multi-Query Attention" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("link", { name: "Grouped Query Attention" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Loop" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Harness" })).toBeTruthy();
   });
 
   test("uses default empty fallback copy when none is configured", () => {

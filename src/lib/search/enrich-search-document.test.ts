@@ -3,10 +3,8 @@ import type { RegistryIndexes } from "@/lib/content/registry";
 import type {
   ClassificationRecord,
   ConceptRecord,
-  ModelRecord,
-  ModuleRecord,
+  OrganizationRecord,
 } from "@/lib/content/schemas";
-import { buildBaseSearchDocument } from "./build-base-document";
 import { enrichSearchDocument } from "./enrich-search-document";
 import { toOramaRecord } from "./orama-index";
 import { toStructuredData } from "./to-structured-data";
@@ -15,9 +13,7 @@ import type { BaseSearchDocument } from "./types";
 import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
 
 function buildRegistryIndexes(
-  records: Array<
-    ModuleRecord | ModelRecord | ConceptRecord | ClassificationRecord
-  >,
+  records: Array<ConceptRecord | OrganizationRecord | ClassificationRecord>,
 ): RegistryIndexes {
   const classifications = records.filter(
     (record): record is ClassificationRecord =>
@@ -39,19 +35,19 @@ function buildSyntheticBase(
   overrides: Partial<BaseSearchDocument> = {},
 ): BaseSearchDocument {
   return {
-    id: "/docs/modules/synthetic-module",
-    registryId: "module.synthetic-module",
-    url: "/docs/modules/synthetic-module",
-    kind: "module",
-    title: "Synthetic Module",
-    description: "Synthetic module description",
+    id: "/docs/concepts/synthetic-concept",
+    registryId: "concept.synthetic-concept",
+    url: "/docs/concepts/synthetic-concept",
+    kind: "concept",
+    title: "Synthetic Concept",
+    description: "Synthetic concept description",
     bodyText: "Synthetic body text",
     headings: ["Overview"],
     directAliases: ["synthetic"],
     aliases: ["synthetic"],
     tags: ["attention"],
     relatedIds: [],
-    facets: { kind: "module", tags: ["attention"] },
+    facets: { kind: "concept", tags: ["attention"] },
     topology: { ...EMPTY_SEARCH_DOCUMENT_TOPOLOGY },
     ...overrides,
   };
@@ -61,7 +57,7 @@ function buildClassification(
   overrides: Partial<ClassificationRecord> = {},
 ): ClassificationRecord {
   return {
-    id: "classification.module.attention",
+    id: "classification.concept.attention",
     slug: "attention-mechanisms",
     kind: "classification",
     defaultTitleKey: "title",
@@ -74,17 +70,17 @@ function buildClassification(
     createdAt: "2026-06-20T00:00:00.000Z",
     updatedAt: "2026-06-20T00:00:00.000Z",
     classificationType: "family",
-    classifiesKinds: ["module"],
-    parentClassificationId: "classification.module",
+    classifiesKinds: ["concept"],
+    parentClassificationId: "classification.concept",
     ...overrides,
   };
 }
 
-function buildModule(overrides: Partial<ModuleRecord> = {}): ModuleRecord {
+function buildConcept(overrides: Partial<ConceptRecord> = {}): ConceptRecord {
   return {
-    id: "module.synthetic-module",
-    slug: "synthetic-module",
-    kind: "module",
+    id: "concept.synthetic-concept",
+    slug: "synthetic-concept",
+    kind: "concept",
     defaultTitleKey: "title",
     defaultSummaryKey: "description",
     aliases: [],
@@ -94,15 +90,10 @@ function buildModule(overrides: Partial<ModuleRecord> = {}): ModuleRecord {
     status: "published",
     createdAt: "2026-06-20T00:00:00.000Z",
     updatedAt: "2026-06-20T00:00:00.000Z",
-    moduleType: "other",
-    optimizes: ["kv-cache"],
-    exampleModelIds: [],
-    improvesOnIds: [],
-    tradeoffIds: [],
-    usedByModelIds: [],
-    introducedByPaperIds: [],
-    mathLevel: "none",
-    primaryClassificationId: "classification.module.attention.grouped-query",
+    conceptType: "architecture",
+    prerequisiteIds: [],
+    explainsIds: [],
+    primaryClassificationId: "classification.concept.attention.grouped-query",
     relationships: [
       {
         relationshipType: "uses",
@@ -113,11 +104,13 @@ function buildModule(overrides: Partial<ModuleRecord> = {}): ModuleRecord {
   };
 }
 
-function buildModel(overrides: Partial<ModelRecord> = {}): ModelRecord {
+function buildOrganization(
+  overrides: Partial<OrganizationRecord> = {},
+): OrganizationRecord {
   return {
-    id: "model.synthetic-model",
-    slug: "synthetic-model",
-    kind: "model",
+    id: "organization.synthetic-org",
+    slug: "synthetic-org",
+    kind: "organization",
     defaultTitleKey: "title",
     defaultSummaryKey: "description",
     aliases: [],
@@ -127,60 +120,45 @@ function buildModel(overrides: Partial<ModelRecord> = {}): ModelRecord {
     status: "published",
     createdAt: "2026-06-20T00:00:00.000Z",
     updatedAt: "2026-06-20T00:00:00.000Z",
-    family: "gpt",
-    sourceType: "closed",
-    modalities: ["text"],
-    trainingRegimeIds: ["training-regime.pretraining"],
-    architectureIds: [],
-    moduleIds: [],
-    datasetIds: [],
+    modelIds: [],
     paperIds: [],
+    systemIds: [],
     ...overrides,
   };
 }
 
 describe("enrichSearchDocument", () => {
   test("resolves published classification lineage, ancestors, roots, relationships, and related topology ids", () => {
-    const moduleRoot = buildClassification({
-      id: "classification.module",
-      slug: "module",
+    const conceptRoot = buildClassification({
+      id: "classification.concept",
+      slug: "concept",
       parentClassificationId: undefined,
     });
     const attentionFamily = buildClassification({
-      id: "classification.module.attention",
+      id: "classification.concept.attention",
       slug: "attention-mechanisms",
-      parentClassificationId: moduleRoot.id,
+      parentClassificationId: conceptRoot.id,
     });
     const groupedQuery = buildClassification({
-      id: "classification.module.attention.grouped-query",
+      id: "classification.concept.attention.grouped-query",
       slug: "attention-grouped-query",
       parentClassificationId: attentionFamily.id,
       aliases: ["grouped-query attention", "GQA"],
     });
-    const activationConcept: ConceptRecord = {
+    const activationConcept = buildConcept({
       id: "concept.activation",
       slug: "activation",
-      kind: "concept",
-      defaultTitleKey: "title",
-      defaultSummaryKey: "description",
       aliases: ["activation function"],
-      tags: [],
-      relatedIds: [],
-      citationIds: [],
-      status: "published",
-      createdAt: "2026-06-20T00:00:00.000Z",
-      updatedAt: "2026-06-20T00:00:00.000Z",
-      conceptType: "architecture",
-      prerequisiteIds: [],
-      explainsIds: [],
-    };
-    const moduleRecord = buildModule();
+      primaryClassificationId: undefined,
+      relationships: undefined,
+    });
+    const conceptRecord = buildConcept();
     const indexes = buildRegistryIndexes([
-      moduleRoot,
+      conceptRoot,
       attentionFamily,
       groupedQuery,
       activationConcept,
-      moduleRecord,
+      conceptRecord,
     ]);
 
     const enriched = enrichSearchDocument(buildSyntheticBase(), indexes);
@@ -188,9 +166,9 @@ describe("enrichSearchDocument", () => {
     expect(enriched.topology.primaryClassificationId).toBe(groupedQuery.id);
     expect(enriched.topology.ancestorClassificationIds).toEqual([
       attentionFamily.id,
-      moduleRoot.id,
+      conceptRoot.id,
     ]);
-    expect(enriched.topology.rootClassificationIds).toEqual([moduleRoot.id]);
+    expect(enriched.topology.rootClassificationIds).toEqual([conceptRoot.id]);
     expect(enriched.topology.relationships).toEqual([
       expect.objectContaining({
         relationshipType: "uses",
@@ -203,7 +181,7 @@ describe("enrichSearchDocument", () => {
       expect.arrayContaining([
         groupedQuery.id,
         attentionFamily.id,
-        moduleRoot.id,
+        conceptRoot.id,
         activationConcept.id,
       ]),
     );
@@ -212,7 +190,7 @@ describe("enrichSearchDocument", () => {
         groupedQuery.id,
         "attention-grouped-query",
         attentionFamily.id,
-        moduleRoot.id,
+        conceptRoot.id,
         "uses",
         activationConcept.id,
         activationConcept.slug,
@@ -220,32 +198,30 @@ describe("enrichSearchDocument", () => {
     );
   });
 
-  test("adds classification, relationship, and legacy taxonomy facets without AI-only model or module fields", () => {
-    const moduleRoot = buildClassification({
-      id: "classification.module",
-      slug: "module",
+  test("adds classification and relationship facets plus legacy concept-type compatibility, without retired module fields", () => {
+    const conceptRoot = buildClassification({
+      id: "classification.concept",
+      slug: "concept",
       parentClassificationId: undefined,
     });
     const attentionFamily = buildClassification({
-      id: "classification.module.attention",
+      id: "classification.concept.attention",
       slug: "attention-mechanisms",
-      parentClassificationId: moduleRoot.id,
+      parentClassificationId: conceptRoot.id,
     });
     const groupedQuery = buildClassification({
-      id: "classification.module.attention.grouped-query",
+      id: "classification.concept.attention.grouped-query",
       slug: "attention-grouped-query",
       parentClassificationId: attentionFamily.id,
     });
-    const moduleRecord = buildModule({
-      moduleFamily: "attention",
-      conceptType: "attention-variant",
-      variantGroup: "attention-head-sharing",
+    const conceptRecord = buildConcept({
+      conceptType: "architecture",
     });
     const indexes = buildRegistryIndexes([
-      moduleRoot,
+      conceptRoot,
       attentionFamily,
       groupedQuery,
-      moduleRecord,
+      conceptRecord,
     ]);
 
     const enriched = enrichSearchDocument(buildSyntheticBase(), indexes);
@@ -257,27 +233,27 @@ describe("enrichSearchDocument", () => {
     );
     expect(enriched.facets.ancestorClassificationIds).toEqual([
       attentionFamily.id,
-      moduleRoot.id,
+      conceptRoot.id,
     ]);
-    expect(enriched.facets.rootClassificationSlugs).toEqual([moduleRoot.slug]);
+    expect(enriched.facets.rootClassificationSlugs).toEqual([conceptRoot.slug]);
     expect(enriched.facets.relationshipTypes).toEqual(["uses"]);
     expect(enriched.facets.relatedTopologyIds).toEqual(
-      expect.arrayContaining([groupedQuery.id, moduleRoot.id]),
+      expect.arrayContaining([groupedQuery.id, conceptRoot.id]),
     );
-    expect(enriched.facets.legacyModuleFamily).toBe("attention");
-    expect(enriched.facets.legacyConceptType).toBe("attention-variant");
-    expect(enriched.facets.legacyVariantGroup).toBe("attention-head-sharing");
-    expect(enriched.facets.moduleType).toBe("attention");
+    expect(enriched.facets.legacyConceptType).toBe("architecture");
+    expect(enriched.facets).not.toHaveProperty("legacyModuleFamily");
+    expect(enriched.facets).not.toHaveProperty("legacyVariantGroup");
+    expect(enriched.facets).not.toHaveProperty("moduleType");
     expect(enriched.facets).not.toHaveProperty("optimizes");
   });
 
-  test("does not add AI-only model facets for model records", () => {
-    const modelRecord = buildModel();
-    const indexes = buildRegistryIndexes([modelRecord]);
+  test("does not add retired Atlas-only facets for non-ontology-participating records", () => {
+    const organizationRecord = buildOrganization();
+    const indexes = buildRegistryIndexes([organizationRecord]);
     const base = buildSyntheticBase({
-      registryId: modelRecord.id,
-      kind: "model",
-      facets: { kind: "model", tags: [] },
+      registryId: organizationRecord.id,
+      kind: "organization",
+      facets: { kind: "organization", tags: [] },
     });
 
     const enriched = enrichSearchDocument(base, indexes);
@@ -286,31 +262,32 @@ describe("enrichSearchDocument", () => {
     expect(enriched.facets).not.toHaveProperty("sourceType");
     expect(enriched.facets).not.toHaveProperty("modalities");
     expect(enriched.facets).not.toHaveProperty("trainingRegimeIds");
+    expect(enriched.facets).not.toHaveProperty("legacyConceptType");
   });
 
   test("keeps topology terms searchable through structured data and Orama topology text", () => {
-    const moduleRoot = buildClassification({
-      id: "classification.module",
-      slug: "module",
+    const conceptRoot = buildClassification({
+      id: "classification.concept",
+      slug: "concept",
       parentClassificationId: undefined,
     });
     const attentionFamily = buildClassification({
-      id: "classification.module.attention",
+      id: "classification.concept.attention",
       slug: "attention-mechanisms",
-      parentClassificationId: moduleRoot.id,
+      parentClassificationId: conceptRoot.id,
     });
     const groupedQuery = buildClassification({
-      id: "classification.module.attention.grouped-query",
+      id: "classification.concept.attention.grouped-query",
       slug: "attention-grouped-query",
       parentClassificationId: attentionFamily.id,
       aliases: ["grouped-query attention", "GQA"],
     });
-    const moduleRecord = buildModule();
+    const conceptRecord = buildConcept();
     const indexes = buildRegistryIndexes([
-      moduleRoot,
+      conceptRoot,
       attentionFamily,
       groupedQuery,
-      moduleRecord,
+      conceptRecord,
     ]);
     const enriched = enrichSearchDocument(buildSyntheticBase(), indexes);
 
@@ -330,46 +307,46 @@ describe("enrichSearchDocument", () => {
 
   test("keeps draft classifications out of topology and missing relationship targets non-fatal", () => {
     const draftClassification = buildClassification({
-      id: "classification.module.attention.draft-variant",
+      id: "classification.concept.attention.draft-variant",
       slug: "draft-variant",
       status: "draft",
-      parentClassificationId: "classification.module.attention",
+      parentClassificationId: "classification.concept.attention",
     });
     const attentionFamily = buildClassification({
-      id: "classification.module.attention",
+      id: "classification.concept.attention",
       slug: "attention-mechanisms",
-      parentClassificationId: "classification.module",
+      parentClassificationId: "classification.concept",
     });
-    const moduleRoot = buildClassification({
-      id: "classification.module",
-      slug: "module",
+    const conceptRoot = buildClassification({
+      id: "classification.concept",
+      slug: "concept",
       parentClassificationId: undefined,
     });
-    const moduleRecord = buildModule({
+    const conceptRecord = buildConcept({
       primaryClassificationId: draftClassification.id,
       relationships: [
         {
           relationshipType: "related",
-          targetId: "module.missing-neighbor",
+          targetId: "concept.missing-neighbor",
         },
       ],
     });
     const indexes = buildRegistryIndexes([
-      moduleRoot,
+      conceptRoot,
       attentionFamily,
       draftClassification,
-      moduleRecord,
+      conceptRecord,
     ]);
 
     const enriched = enrichSearchDocument(buildSyntheticBase(), indexes);
 
-    expect(enriched.title).toBe("Synthetic Module");
+    expect(enriched.title).toBe("Synthetic Concept");
     expect(enriched.topology.primaryClassification).toBeUndefined();
     expect(enriched.topology.classificationIds).toEqual([]);
     expect(enriched.topology.relationships).toEqual([
       {
         relationshipType: "related",
-        targetId: "module.missing-neighbor",
+        targetId: "concept.missing-neighbor",
         targetKind: undefined,
         targetSlug: undefined,
         targetAliases: [],
@@ -379,30 +356,5 @@ describe("enrichSearchDocument", () => {
       draftClassification.id,
     );
     expect(enriched.facets.classificationIds).toEqual([]);
-  });
-
-  test("composes with base construction for shipped grouped-query attention parity fields", async () => {
-    const { loadPublishedDocsPages } = await import("@/lib/content/pages");
-    const { loadRegistry } = await import("@/lib/content/registry");
-    const registry = await loadRegistry();
-    const pages = await loadPublishedDocsPages("en");
-    const page = pages.find(
-      (entry) => entry.url === "/docs/modules/grouped-query-attention",
-    );
-    expect(page).toBeDefined();
-    if (!page) {
-      throw new Error("Missing grouped-query attention page");
-    }
-
-    const base = buildBaseSearchDocument(page, registry);
-    const enriched = enrichSearchDocument(base, registry);
-
-    expect(enriched.facets.primaryClassificationId).toBe(
-      "classification.module.attention.grouped-query",
-    );
-    expect(enriched.facets.moduleType).toBe("attention");
-    expect(enriched.topology.terms).toEqual(
-      expect.arrayContaining(["classification.module.attention.grouped-query"]),
-    );
   });
 });

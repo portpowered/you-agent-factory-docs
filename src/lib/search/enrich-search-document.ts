@@ -3,12 +3,10 @@ import type {
   ClassificationRecord,
   ConceptRecord,
   DatasetRecord,
-  ModelRecord,
-  ModuleRecord,
+  DocumentationRecord,
+  GuideRecord,
   OntologyRelationship,
-  PaperRecord,
-  SystemRecord,
-  TrainingRegimeRecord,
+  TechniqueRecord,
 } from "@/lib/content/schemas";
 import { resolveLegacySearchTaxonomyCompatibility } from "./legacy-taxonomy-compat";
 import type {
@@ -26,24 +24,20 @@ function unique(values: string[]): string[] {
 }
 
 type OntologyParticipatingRecord =
-  | ModuleRecord
   | ConceptRecord
-  | ModelRecord
-  | PaperRecord
-  | TrainingRegimeRecord
-  | SystemRecord
+  | GuideRecord
+  | TechniqueRecord
+  | DocumentationRecord
   | DatasetRecord;
 
 function isOntologyParticipatingRecord(
   record: RegistryRecord,
 ): record is OntologyParticipatingRecord {
   return (
-    record.kind === "module" ||
     record.kind === "concept" ||
-    record.kind === "model" ||
-    record.kind === "paper" ||
-    record.kind === "training-regime" ||
-    record.kind === "system" ||
+    record.kind === "guide" ||
+    record.kind === "technique" ||
+    record.kind === "documentation" ||
     record.kind === "dataset"
   );
 }

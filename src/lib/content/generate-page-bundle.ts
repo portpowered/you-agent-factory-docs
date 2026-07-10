@@ -5,13 +5,8 @@ import {
   getConceptsDocsRoot,
   getContentRoot,
   getGlossaryDocsRoot,
-  getModelsDocsRoot,
-  getModulesDocsRoot,
-  getPapersDocsRoot,
   getProjectRoot,
   getRegistryRoot,
-  getSystemsDocsRoot,
-  getTrainingDocsRoot,
 } from "./content-paths";
 import type { GraphRegistryArtifact } from "./generate-page-bundle-graphs";
 import { buildGraphRegistryArtifacts } from "./generate-page-bundle-graphs";
@@ -20,7 +15,6 @@ import {
   deriveDefaultSummaryKey,
   deriveDefaultTitleKey,
   derivePageFrontmatter,
-  type ModulePageSpec,
   type PageSpec,
   type PageSpecKind,
   type PageSpecWarning,
@@ -78,21 +72,11 @@ const registryDirectoryByKind: Record<
   string
 > = {
   concept: "concepts",
-  module: "modules",
-  model: "models",
-  paper: "papers",
-  system: "systems",
-  "training-regime": "training-regimes",
 };
 
 const templateRegistryIdByKind: Record<PageSpecKind, string> = {
   concept: "concept.example-concept",
   glossary: "concept.example-glossary",
-  module: "module.example-module",
-  model: "model.example-model",
-  paper: "paper.example-paper",
-  system: "system.example-system",
-  "training-regime": "training-regime.example-training-regime",
 };
 
 const templateAssetIdReplacementsByKind: Record<
@@ -105,22 +89,6 @@ const templateAssetIdReplacementsByKind: Record<
   glossary: {
     "graph.example-glossary-map": (slug) => `graph.${slug}-concept-map`,
   },
-  module: {
-    "graph.example-module-compute-flow": (slug) => `graph.${slug}-compute-flow`,
-    "table.example-module-comparison": (slug) => `table.${slug}-comparison`,
-  },
-  model: {
-    "graph.example-model-architecture": (slug) => `graph.${slug}-architecture`,
-  },
-  paper: {
-    "graph.example-paper-contribution": (slug) => `graph.${slug}-contribution`,
-  },
-  system: {
-    "graph.example-system-flow": (slug) => `graph.${slug}-system-flow`,
-  },
-  "training-regime": {
-    "graph.example-training-flow": (slug) => `graph.${slug}-training-flow`,
-  },
 };
 
 export class GeneratePageBundleError extends Error {
@@ -129,17 +97,6 @@ export class GeneratePageBundleError extends Error {
     this.name = "GeneratePageBundleError";
   }
 }
-
-const defaultModulePrimaryClassificationByType: Partial<
-  Record<NonNullable<ModulePageSpec["moduleType"]>, string>
-> = {
-  attention: "classification.module.attention",
-  normalization: "classification.module.normalization",
-  "feed-forward": "classification.module.feed-forward",
-  activation: "classification.module.activation",
-  "position-encoding": "classification.module.positional-encoding",
-  tokenizer: "classification.module.tokenization",
-};
 
 function isoDateUtc(): string {
   return new Date().toISOString().slice(0, 10);
@@ -169,16 +126,6 @@ function docsParentForSpec(spec: PageSpec, docsRoot: string): string {
       return getGlossaryDocsRoot(docsRoot);
     case "concept":
       return getConceptsDocsRoot(docsRoot);
-    case "module":
-      return getModulesDocsRoot(docsRoot);
-    case "model":
-      return getModelsDocsRoot(docsRoot);
-    case "paper":
-      return getPapersDocsRoot(docsRoot);
-    case "system":
-      return getSystemsDocsRoot(docsRoot);
-    case "training-regime":
-      return getTrainingDocsRoot(docsRoot);
   }
 }
 
@@ -188,16 +135,6 @@ function routeForSpec(spec: PageSpec): string {
       return `/docs/glossary/${spec.slug}`;
     case "concept":
       return `/docs/concepts/${spec.slug}`;
-    case "module":
-      return `/docs/modules/${spec.slug}`;
-    case "model":
-      return `/docs/models/${spec.slug}`;
-    case "paper":
-      return `/docs/papers/${spec.slug}`;
-    case "system":
-      return `/docs/systems/${spec.slug}`;
-    case "training-regime":
-      return `/docs/training/${spec.slug}`;
   }
 }
 
@@ -437,103 +374,6 @@ function buildRegistryRecord(
         ...(spec.conceptType ? { conceptType: spec.conceptType } : {}),
         prerequisiteIds: spec.prerequisiteIds,
         explainsIds: spec.explainsIds,
-      };
-    case "module": {
-      const primaryClassificationId =
-        spec.primaryClassificationId ??
-        (spec.moduleType
-          ? defaultModulePrimaryClassificationByType[spec.moduleType]
-          : undefined);
-      if (!primaryClassificationId) {
-        throw new GeneratePageBundleError(
-          `Module page specs with moduleType "${spec.moduleType}" must declare primaryClassificationId until the ontology mapping is defined for that module type.`,
-        );
-      }
-
-      return {
-        ...base,
-        ...(spec.releaseDate ? { releaseDate: spec.releaseDate } : {}),
-        ...(spec.authors ? { authors: spec.authors } : {}),
-        ...(spec.sourceId ? { sourceId: spec.sourceId } : {}),
-        primaryClassificationId,
-        mathLevel: spec.mathLevel,
-        optimizes: spec.optimizes,
-        exampleModelIds: spec.exampleModelIds,
-        improvesOnIds: spec.improvesOnIds,
-        tradeoffIds: spec.tradeoffIds,
-        usedByModelIds: spec.usedByModelIds,
-        introducedByPaperIds: spec.introducedByPaperIds,
-        ...(spec.moduleType ? { moduleType: spec.moduleType } : {}),
-        ...(spec.moduleFamily ? { moduleFamily: spec.moduleFamily } : {}),
-        ...(spec.variantGroup ? { variantGroup: spec.variantGroup } : {}),
-        ...(spec.variantOf ? { variantOf: spec.variantOf } : {}),
-      };
-    }
-    case "model":
-      return {
-        ...base,
-        ...(spec.releaseDate ? { releaseDate: spec.releaseDate } : {}),
-        ...(spec.authors ? { authors: spec.authors } : {}),
-        ...(spec.sourceId ? { sourceId: spec.sourceId } : {}),
-        family: spec.family,
-        sourceType: spec.sourceType,
-        modalities: spec.modalities,
-        architectureIds: spec.architectureIds,
-        moduleIds: spec.moduleIds,
-        trainingRegimeIds: spec.trainingRegimeIds,
-        datasetIds: spec.datasetIds,
-        paperIds: spec.paperIds,
-        ...(spec.organizationId ? { organizationId: spec.organizationId } : {}),
-        ...(spec.parameterCount ? { parameterCount: spec.parameterCount } : {}),
-        ...(spec.activeParameterCount
-          ? { activeParameterCount: spec.activeParameterCount }
-          : {}),
-        ...(spec.contextLength ? { contextLength: spec.contextLength } : {}),
-        ...(spec.precision ? { precision: spec.precision } : {}),
-      };
-    case "paper":
-      return {
-        ...base,
-        authors: spec.authors,
-        publishedAt: spec.publishedAt,
-        url: spec.url,
-        introducesIds: spec.introducesIds,
-        supportsIds: spec.supportsIds,
-        arguesAgainstIds: spec.arguesAgainstIds,
-        modelIds: spec.modelIds,
-        moduleIds: spec.moduleIds,
-        conceptIds: spec.conceptIds,
-        ...(spec.venue ? { venue: spec.venue } : {}),
-        ...(spec.arxivId ? { arxivId: spec.arxivId } : {}),
-      };
-    case "training-regime":
-      return {
-        ...base,
-        ...(spec.releaseDate ? { releaseDate: spec.releaseDate } : {}),
-        ...(spec.authors ? { authors: spec.authors } : {}),
-        ...(spec.sourceId ? { sourceId: spec.sourceId } : {}),
-        usedByModelIds: spec.usedByModelIds,
-        relatedModuleIds: spec.relatedModuleIds,
-        paperIds: spec.paperIds,
-        ...(spec.regimeType ? { regimeType: spec.regimeType } : {}),
-        ...(spec.conceptType ? { conceptType: spec.conceptType } : {}),
-        ...(spec.variantGroup ? { variantGroup: spec.variantGroup } : {}),
-      };
-    case "system":
-      return {
-        ...base,
-        ...(spec.releaseDate ? { releaseDate: spec.releaseDate } : {}),
-        ...(spec.authors ? { authors: spec.authors } : {}),
-        ...(spec.sourceId ? { sourceId: spec.sourceId } : {}),
-        relatedModelIds: spec.relatedModelIds,
-        relatedModuleIds: spec.relatedModuleIds,
-        relatedConceptIds: spec.relatedConceptIds,
-        paperIds: spec.paperIds,
-        datasetIds: spec.datasetIds,
-        ...(spec.organizationId ? { organizationId: spec.organizationId } : {}),
-        ...(spec.systemType ? { systemType: spec.systemType } : {}),
-        ...(spec.conceptType ? { conceptType: spec.conceptType } : {}),
-        ...(spec.variantGroup ? { variantGroup: spec.variantGroup } : {}),
       };
   }
 }

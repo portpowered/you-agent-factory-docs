@@ -26,16 +26,12 @@ import {
   type RegistryRecord,
 } from "./registry";
 import {
-  type ModelRecord,
   type ModuleGraphNode,
-  type ModuleRecord,
   type PageAssetConfig,
   type PageKind,
   type PageMessages,
   pageFrontmatterSchema,
-  type SystemRecord,
   type TableRecord,
-  type TrainingRegimeRecord,
   tableRecordSchema,
 } from "./schemas";
 import {
@@ -56,9 +52,7 @@ import {
 import { validatePublishedBlogPosts } from "./validate-blog-posts";
 import { validateDerivedPublishedPageBundles } from "./validate-derived-published-page-bundles";
 import {
-  validateGeneratedAssetRules,
   validateGeneratedFoldedSummary,
-  validateGeneratedGraphPlacement,
   validateGeneratedKindSpecificStructure,
 } from "./validate-generated-canonical-docs";
 import { parseYamlFrontmatterBlock } from "./yaml-frontmatter";
@@ -75,16 +69,11 @@ const defaultContentRoot = CONTENT_ROOT;
 const defaultDocsRoot = DOCS_ROOT;
 
 const registryKindDirectories: Record<string, string> = {
-  module: "modules",
   concept: "concepts",
   guide: "guides",
   technique: "techniques",
   documentation: "documentation",
-  model: "models",
   classification: "classifications",
-  paper: "papers",
-  "training-regime": "training-regimes",
-  system: "systems",
   dataset: "datasets",
   organization: "organizations",
   tag: "tags",
@@ -101,120 +90,6 @@ const pageKindRegistryKindAliases: Partial<
 
 /** Docs sections whose `page.mdx` slugs must match a concept registry record slug. */
 const conceptBackedDocsSections = new Set(["glossary", "concepts"]);
-
-const requiredCitationExceptionReasons: Partial<
-  Record<RegistryRecord["id"], string>
-> = {
-  "module.absolute-positional-embeddings":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.attention":
-    "Legacy module overview predates the citation backfill requirement.",
-  "module.batch-norm":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.feed-forward-network":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.group-norm":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.layer-norm":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.leaky-relu":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.learned-positional-embeddings":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.mixture-of-experts":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.nope":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.qk-norm":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.relative-position-bias":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.relu":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.rmsnorm":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.silu":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.sliding-window-attention":
-    "Legacy module is published before citation backfill is complete.",
-  "module.sparse-attention":
-    "Legacy module is published before citation backfill is complete.",
-  "module.standard-ffn":
-    "Legacy migrated module is published before citation backfill is complete.",
-  "module.swiglu":
-    "Legacy migrated module is published before citation backfill is complete.",
-};
-
-const releaseMetadataExceptionReasons: Partial<
-  Record<RegistryRecord["id"], string>
-> = {
-  "module.absolute-positional-embeddings":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.alibi":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.attention":
-    "Legacy module overview predates the At a Glance release metadata backfill requirement.",
-  "module.batch-norm":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.feed-forward-network":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.group-norm":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.layer-norm":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.leaky-relu":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.learned-positional-embeddings":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.linear-attention":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.longrope":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.mixture-of-experts":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.multi-head-attention":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.multi-head-latent-attention":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.multi-query-attention":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.nope":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.ntk-aware-rope-scaling":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.positional-interpolation":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.qk-norm":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.relative-position-bias":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.relu":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.rmsnorm":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.rope":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.silu":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.sinusoidal-positional-embeddings":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.sliding-window-attention":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.sparse-attention":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.standard-ffn":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.superhot-rope":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.swiglu":
-    "Legacy migrated module is published before At a Glance release metadata backfill is complete.",
-  "module.t5-relative-position-bias":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-  "module.tokenizer-mismatch":
-    "Failure-mode module documents tokenizer compatibility behavior rather than a discrete released component.",
-  "module.yarn":
-    "Legacy module is published before At a Glance release metadata backfill is complete.",
-};
 
 function pageKindMatchesRegistryRecord(
   pageKind: PageKind,
@@ -242,65 +117,6 @@ function conceptBackedDocsSectionFromPath(
 
 function isPublishedSourceRecord(record: RegistryRecord): boolean {
   return record.status === "published";
-}
-
-function requiresAtLeastOneCitation(record: RegistryRecord): boolean {
-  if (record.status !== "published") {
-    return false;
-  }
-
-  if (record.kind !== "module" && record.kind !== "model") {
-    return false;
-  }
-
-  if (requiredCitationExceptionReasons[record.id]) {
-    return false;
-  }
-
-  return record.citationIds.length === 0;
-}
-
-type ReleaseMetadataRecord =
-  | ModuleRecord
-  | ModelRecord
-  | SystemRecord
-  | TrainingRegimeRecord;
-
-function requiresReleaseMetadata(
-  record: RegistryRecord,
-): record is ReleaseMetadataRecord {
-  return (
-    record.kind === "module" ||
-    record.kind === "model" ||
-    record.kind === "system" ||
-    record.kind === "training-regime"
-  );
-}
-
-function missingReleaseMetadataFields(record: RegistryRecord): string[] {
-  if (!requiresReleaseMetadata(record) || record.status !== "published") {
-    return [];
-  }
-
-  if (releaseMetadataExceptionReasons[record.id]) {
-    return [];
-  }
-
-  const missingFields: string[] = [];
-
-  if (!record.releaseDate) {
-    missingFields.push("releaseDate");
-  }
-
-  if (!record.authors?.length) {
-    missingFields.push("authors");
-  }
-
-  if (!record.sourceId) {
-    missingFields.push("sourceId");
-  }
-
-  return missingFields;
 }
 
 /** Phase 1 page directories validated even when `page.mdx` is not present yet. */
@@ -368,24 +184,6 @@ function resolveTagRecord(
     return byId;
   }
   return undefined;
-}
-
-function moduleReferenceFields(
-  record: ModuleRecord,
-): Array<{ field: string; ids: string[] }> {
-  const fields = [
-    { field: "relatedIds", ids: record.relatedIds },
-    { field: "citationIds", ids: record.citationIds },
-    { field: "exampleModelIds", ids: record.exampleModelIds },
-    { field: "improvesOnIds", ids: record.improvesOnIds },
-    { field: "tradeoffIds", ids: record.tradeoffIds },
-    { field: "usedByModelIds", ids: record.usedByModelIds },
-    { field: "introducedByPaperIds", ids: record.introducedByPaperIds },
-  ];
-  if (record.sourceId) {
-    fields.push({ field: "sourceId", ids: [record.sourceId] });
-  }
-  return fields;
 }
 
 function hasPublishedDocsPage(record: RegistryRecord): boolean {
@@ -539,69 +337,11 @@ function validateRegistryRecordReferences(
     { field: "citationIds", ids: record.citationIds },
   ];
 
-  if (record.kind === "module") {
-    referenceFields.push(...moduleReferenceFields(record));
-  }
-
   if (record.kind === "concept") {
     referenceFields.push(
       { field: "prerequisiteIds", ids: record.prerequisiteIds },
       { field: "explainsIds", ids: record.explainsIds },
     );
-    if (record.sourceId) {
-      referenceFields.push({ field: "sourceId", ids: [record.sourceId] });
-    }
-  }
-
-  if (record.kind === "model") {
-    referenceFields.push(
-      { field: "architectureIds", ids: record.architectureIds },
-      { field: "moduleIds", ids: record.moduleIds },
-      { field: "trainingRegimeIds", ids: record.trainingRegimeIds },
-      { field: "datasetIds", ids: record.datasetIds },
-      { field: "paperIds", ids: record.paperIds },
-    );
-    if (record.sourceId) {
-      referenceFields.push({ field: "sourceId", ids: [record.sourceId] });
-    }
-  }
-
-  if (record.kind === "paper") {
-    referenceFields.push(
-      { field: "introducesIds", ids: record.introducesIds },
-      { field: "supportsIds", ids: record.supportsIds },
-      { field: "arguesAgainstIds", ids: record.arguesAgainstIds },
-      { field: "modelIds", ids: record.modelIds },
-      { field: "moduleIds", ids: record.moduleIds },
-      { field: "conceptIds", ids: record.conceptIds },
-    );
-  }
-
-  if (record.kind === "training-regime") {
-    referenceFields.push(
-      { field: "usedByModelIds", ids: record.usedByModelIds },
-      { field: "relatedModuleIds", ids: record.relatedModuleIds },
-      { field: "paperIds", ids: record.paperIds },
-    );
-    if (record.sourceId) {
-      referenceFields.push({ field: "sourceId", ids: [record.sourceId] });
-    }
-  }
-
-  if (record.kind === "system") {
-    referenceFields.push(
-      { field: "relatedModelIds", ids: record.relatedModelIds },
-      { field: "relatedModuleIds", ids: record.relatedModuleIds },
-      { field: "relatedConceptIds", ids: record.relatedConceptIds },
-      { field: "paperIds", ids: record.paperIds },
-      { field: "datasetIds", ids: record.datasetIds },
-    );
-    if (record.organizationId) {
-      referenceFields.push({
-        field: "organizationId",
-        ids: [record.organizationId],
-      });
-    }
     if (record.sourceId) {
       referenceFields.push({ field: "sourceId", ids: [record.sourceId] });
     }
@@ -662,14 +402,10 @@ function validateRegistryRecordReferences(
           continue;
         }
 
-        if (
-          field === "sourceId" &&
-          referenced.kind !== "citation" &&
-          referenced.kind !== "paper"
-        ) {
+        if (field === "sourceId" && referenced.kind !== "citation") {
           errors.push({
             code: "invalid-source-reference",
-            message: `${record.id}: sourceId must reference a paper or citation record, found "${referenced.kind}" for "${id}"`,
+            message: `${record.id}: sourceId must reference a citation record, found "${referenced.kind}" for "${id}"`,
             path: filePath,
           });
         }
@@ -701,23 +437,6 @@ function validateRegistryRecordReferences(
         path: filePath,
       });
     }
-  }
-
-  if (requiresAtLeastOneCitation(record)) {
-    errors.push({
-      code: "missing-required-citation",
-      message: `${record.id}: published ${record.kind} pages must include at least one reference via citationIds`,
-      path: filePath,
-    });
-  }
-
-  const missingReleaseMetadata = missingReleaseMetadataFields(record);
-  if (missingReleaseMetadata.length > 0) {
-    errors.push({
-      code: "missing-release-metadata",
-      message: `${record.id}: published ${record.kind} records must provide releaseDate, authors, and sourceId so release metadata stays standardized across at-a-glance surfaces; missing ${missingReleaseMetadata.join(", ")}`,
-      path: filePath,
-    });
   }
 
   return errors;
@@ -1218,44 +937,12 @@ async function validatePageMdx(
     }),
   );
 
-  if (
-    frontmatter.data.kind === "model" ||
-    frontmatter.data.kind === "paper" ||
-    frontmatter.data.kind === "training-regime" ||
-    frontmatter.data.kind === "system"
-  ) {
-    errors.push(
-      ...validateGeneratedGraphPlacement({
-        pagePath,
-        kind: frontmatter.data.kind,
-        mdxSource: raw,
-        assets,
-      }),
-    );
-  }
-
-  if (
-    frontmatter.data.kind === "concept" ||
-    frontmatter.data.kind === "paper" ||
-    frontmatter.data.kind === "training-regime" ||
-    frontmatter.data.kind === "system"
-  ) {
+  if (frontmatter.data.kind === "concept") {
     errors.push(
       ...validateGeneratedKindSpecificStructure({
         pagePath,
         kind: frontmatter.data.kind,
         mdxSource: raw,
-      }),
-    );
-  }
-
-  if (frontmatter.data.kind === "model") {
-    errors.push(
-      ...validateGeneratedAssetRules({
-        pagePath,
-        kind: frontmatter.data.kind,
-        assets,
-        messages,
       }),
     );
   }

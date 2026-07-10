@@ -16,26 +16,6 @@ export const SIDEBAR_GROUP_LABELS = {
     architecture: "Architecture",
     "reference-samples": "Reference Samples",
   },
-  modules: {
-    "attention-foundations": "Attention Foundations",
-    "attention-variants": "Attention Variants",
-    "feed-forward-and-activation": "Feed-Forward And Activation",
-    normalization: "Normalization",
-    tokenizers: "Tokenizers",
-    "positional-embeddings": "Positional Embeddings",
-  },
-  training: {
-    pretraining: "Pretraining",
-    alignment: "Alignment",
-    "post-training": "Post-Training",
-    distillation: "Distillation",
-    optimization: "Optimization",
-  },
-  systems: {
-    memory: "Memory",
-    routing: "Routing",
-    serving: "Serving",
-  },
 } as const;
 
 export type SidebarGroupingSection = keyof typeof SIDEBAR_GROUP_LABELS;
@@ -52,9 +32,6 @@ export type SidebarGrouping = Partial<{
 
 export const SIDEBAR_GROUPING_SECTIONS_BY_KIND = {
   concept: ["glossary", "concepts"],
-  module: ["modules"],
-  "training-regime": ["training"],
-  system: ["systems"],
 } as const;
 
 export type SidebarGroupingKind =
@@ -67,9 +44,6 @@ export type SidebarGroupingValidationIssue = {
 
 type SidebarGroupingRecordByKind = {
   concept: ConceptsSidebarRecord;
-  module: ModulesSidebarRecord;
-  "training-regime": TrainingSidebarRecord;
-  system: SystemsSidebarRecord;
 };
 
 type GlossarySidebarRecord = {
@@ -79,25 +53,6 @@ type GlossarySidebarRecord = {
 };
 
 type ConceptsSidebarRecord = GlossarySidebarRecord;
-
-type ModulesSidebarRecord = {
-  primaryClassificationId?: string;
-  secondaryClassificationIds?: readonly string[];
-  sidebarGrouping?: SidebarGrouping;
-};
-
-type TrainingSidebarRecord = {
-  primaryClassificationId?: string;
-  secondaryClassificationIds?: readonly string[];
-  sidebarGrouping?: SidebarGrouping;
-};
-
-type SystemsSidebarRecord = {
-  primaryClassificationId?: string;
-  secondaryClassificationIds?: readonly string[];
-  sidebarGrouping?: SidebarGrouping;
-  systemType?: string;
-};
 
 export type SidebarGroupingSource =
   (typeof SIDEBAR_GROUPING_PRECEDENCE)[number];
@@ -149,11 +104,7 @@ function createSidebarGroupResolution<
 
 function getCanonicalClassificationMembership(
   record: Pick<
-    | GlossarySidebarRecord
-    | ConceptsSidebarRecord
-    | ModulesSidebarRecord
-    | TrainingSidebarRecord
-    | SystemsSidebarRecord,
+    GlossarySidebarRecord | ConceptsSidebarRecord,
     "primaryClassificationId" | "secondaryClassificationIds"
   >,
 ): Set<string> {
@@ -171,183 +122,6 @@ function getCanonicalClassificationMembership(
   }
 
   return membership;
-}
-
-function resolveOntologyModulesSidebarGroup(
-  record: ModulesSidebarRecord,
-):
-  | SidebarGroupResolution<
-      SidebarGroupIdBySection["modules"],
-      "derived-taxonomy"
-    >
-  | undefined {
-  const membership = getCanonicalClassificationMembership(record);
-  if (membership.has("classification.module.normalization")) {
-    return createSidebarGroupResolution("normalization", "derived-taxonomy");
-  }
-
-  if (membership.has("classification.module.tokenization")) {
-    return createSidebarGroupResolution("tokenizers", "derived-taxonomy");
-  }
-
-  if (membership.has("classification.module.positional-encoding")) {
-    return createSidebarGroupResolution(
-      "positional-embeddings",
-      "derived-taxonomy",
-    );
-  }
-
-  if (
-    membership.has("classification.module.feed-forward") ||
-    membership.has("classification.module.activation")
-  ) {
-    return createSidebarGroupResolution(
-      "feed-forward-and-activation",
-      "derived-taxonomy",
-    );
-  }
-
-  if (membership.has("classification.module.attention")) {
-    return createSidebarGroupResolution(
-      "attention-variants",
-      "derived-taxonomy",
-    );
-  }
-
-  return undefined;
-}
-
-function resolveEditorialModulesSidebarGroup(
-  record: ModulesSidebarRecord,
-):
-  | SidebarGroupResolution<
-      SidebarGroupIdBySection["modules"],
-      "editorial-sidebar-grouping"
-    >
-  | undefined {
-  const editorialGroup = record.sidebarGrouping?.modules;
-  if (!editorialGroup) {
-    return undefined;
-  }
-
-  return createSidebarGroupResolution(
-    editorialGroup,
-    "editorial-sidebar-grouping",
-  );
-}
-
-function shouldUseEditorialModulesSidebarFallback(
-  record: ModulesSidebarRecord,
-  ontologyGroup: SidebarGroupResolution<
-    SidebarGroupIdBySection["modules"],
-    "derived-taxonomy"
-  >,
-): boolean {
-  return (
-    ontologyGroup.groupId === "attention-variants" &&
-    record.primaryClassificationId === "classification.module.attention" &&
-    record.sidebarGrouping?.modules === "attention-foundations"
-  );
-}
-
-export function resolveModulesSidebarGroupWithSource(
-  record: ModulesSidebarRecord,
-): SidebarGroupResolution<SidebarGroupIdBySection["modules"]> | undefined {
-  const ontologyGroup = resolveOntologyModulesSidebarGroup(record);
-  if (
-    ontologyGroup &&
-    !shouldUseEditorialModulesSidebarFallback(record, ontologyGroup)
-  ) {
-    return ontologyGroup;
-  }
-
-  return resolveEditorialModulesSidebarGroup(record) ?? ontologyGroup;
-}
-
-function resolveOntologyTrainingSidebarGroup(
-  record: TrainingSidebarRecord,
-):
-  | SidebarGroupResolution<
-      SidebarGroupIdBySection["training"],
-      "derived-taxonomy"
-    >
-  | undefined {
-  const membership = getCanonicalClassificationMembership(record);
-  if (membership.has("classification.training.pretraining")) {
-    return createSidebarGroupResolution("pretraining", "derived-taxonomy");
-  }
-
-  if (membership.has("classification.training.alignment")) {
-    return createSidebarGroupResolution("alignment", "derived-taxonomy");
-  }
-
-  return undefined;
-}
-
-export function resolveTrainingSidebarGroupWithSource(
-  record: TrainingSidebarRecord,
-): SidebarGroupResolution<SidebarGroupIdBySection["training"]> | undefined {
-  const ontologyGroup = resolveOntologyTrainingSidebarGroup(record);
-  if (ontologyGroup) {
-    return ontologyGroup;
-  }
-
-  const editorialGroup = record.sidebarGrouping?.training;
-  if (!editorialGroup) {
-    return undefined;
-  }
-
-  return createSidebarGroupResolution(
-    editorialGroup,
-    "editorial-sidebar-grouping",
-  );
-}
-
-function resolveOntologySystemsSidebarGroup(
-  record: SystemsSidebarRecord,
-):
-  | SidebarGroupResolution<
-      SidebarGroupIdBySection["systems"],
-      "derived-taxonomy"
-    >
-  | undefined {
-  const membership = getCanonicalClassificationMembership(record);
-  if (membership.has("classification.system.routing")) {
-    return createSidebarGroupResolution("routing", "derived-taxonomy");
-  }
-
-  if (record.systemType === "memory") {
-    return createSidebarGroupResolution("memory", "derived-taxonomy");
-  }
-
-  if (record.systemType === "routing") {
-    return createSidebarGroupResolution("routing", "derived-taxonomy");
-  }
-
-  if (record.systemType === "serving") {
-    return createSidebarGroupResolution("serving", "derived-taxonomy");
-  }
-
-  return undefined;
-}
-
-export function resolveSystemsSidebarGroupWithSource(
-  record: SystemsSidebarRecord,
-): SidebarGroupResolution<SidebarGroupIdBySection["systems"]> | undefined {
-  const ontologyGroup = resolveOntologySystemsSidebarGroup(record);
-  if (ontologyGroup) {
-    return ontologyGroup;
-  }
-
-  const editorialGroup = record.sidebarGrouping?.systems;
-  if (!editorialGroup) {
-    return undefined;
-  }
-
-  return createSidebarGroupResolution(
-    editorialGroup,
-    "editorial-sidebar-grouping",
-  );
 }
 
 function resolveOntologyGlossarySidebarGroup(
@@ -470,24 +244,6 @@ export function resolveConceptsSidebarGroup(
   return resolveConceptsSidebarGroupWithSource(record)?.groupId;
 }
 
-export function resolveModulesSidebarGroup(
-  record: ModulesSidebarRecord,
-): SidebarGroupIdBySection["modules"] | undefined {
-  return resolveModulesSidebarGroupWithSource(record)?.groupId;
-}
-
-export function resolveTrainingSidebarGroup(
-  record: TrainingSidebarRecord,
-): SidebarGroupIdBySection["training"] | undefined {
-  return resolveTrainingSidebarGroupWithSource(record)?.groupId;
-}
-
-export function resolveSystemsSidebarGroup(
-  record: SystemsSidebarRecord,
-): SidebarGroupIdBySection["systems"] | undefined {
-  return resolveSystemsSidebarGroupWithSource(record)?.groupId;
-}
-
 export function validateSidebarGroupingForRecord(
   kind: SidebarGroupingKind,
   recordId: string,
@@ -541,14 +297,10 @@ export function validateSidebarGroupingForRecord(
     return issues;
   }
 
-  const redundantOntologyGroup =
-    kind === "concept"
-      ? sectionHasRedundantConceptSidebarGrouping(record, sidebarGrouping)
-      : kind === "module"
-        ? sectionHasRedundantModuleSidebarGrouping(record, sidebarGrouping)
-        : kind === "training-regime"
-          ? sectionHasRedundantTrainingSidebarGrouping(record, sidebarGrouping)
-          : sectionHasRedundantSystemSidebarGrouping(record, sidebarGrouping);
+  const redundantOntologyGroup = sectionHasRedundantConceptSidebarGrouping(
+    record,
+    sidebarGrouping,
+  );
 
   if (redundantOntologyGroup) {
     issues.push({
@@ -601,98 +353,4 @@ function sectionHasRedundantConceptSidebarGrouping(
   }
 
   return undefined;
-}
-
-function sectionHasRedundantModuleSidebarGrouping(
-  record: ModulesSidebarRecord,
-  sidebarGrouping: SidebarGrouping,
-):
-  | {
-      section: "modules";
-      editorialGroup: string;
-      ontologyGroup: string;
-    }
-  | undefined {
-  const editorialGroup = sidebarGrouping.modules;
-  if (!editorialGroup) {
-    return undefined;
-  }
-
-  const ontologyGroup = resolveOntologyModulesSidebarGroup(record);
-  if (!ontologyGroup) {
-    return undefined;
-  }
-
-  if (
-    shouldUseEditorialModulesSidebarFallback(record, ontologyGroup) &&
-    editorialGroup !== ontologyGroup.groupId
-  ) {
-    return undefined;
-  }
-
-  return {
-    section: "modules",
-    editorialGroup,
-    ontologyGroup: ontologyGroup.groupId,
-  };
-}
-
-function sectionHasRedundantTrainingSidebarGrouping(
-  record: TrainingSidebarRecord,
-  sidebarGrouping: SidebarGrouping,
-):
-  | {
-      section: "training";
-      editorialGroup: string;
-      ontologyGroup: string;
-    }
-  | undefined {
-  const editorialGroup = sidebarGrouping.training;
-  if (!editorialGroup) {
-    return undefined;
-  }
-
-  const ontologyGroup = resolveTrainingSidebarGroupWithSource({
-    ...record,
-    sidebarGrouping: undefined,
-  });
-  if (!ontologyGroup) {
-    return undefined;
-  }
-
-  return {
-    section: "training",
-    editorialGroup,
-    ontologyGroup: ontologyGroup.groupId,
-  };
-}
-
-function sectionHasRedundantSystemSidebarGrouping(
-  record: SystemsSidebarRecord,
-  sidebarGrouping: SidebarGrouping,
-):
-  | {
-      section: "systems";
-      editorialGroup: string;
-      ontologyGroup: string;
-    }
-  | undefined {
-  const editorialGroup = sidebarGrouping.systems;
-  if (!editorialGroup) {
-    return undefined;
-  }
-
-  const ontologyGroup = resolveSystemsSidebarGroupWithSource({
-    ...record,
-    sidebarGrouping: undefined,
-  });
-  if (!ontologyGroup) {
-    return undefined;
-  }
-
-  return {
-    section: "systems",
-    editorialGroup,
-    ontologyGroup: ontologyGroup.groupId,
-  };
 }

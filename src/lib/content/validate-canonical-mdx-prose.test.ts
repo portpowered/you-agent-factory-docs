@@ -157,8 +157,8 @@ describe("validateCanonicalMdxProse", () => {
 `;
 
     const errors = validateCanonicalMdxProse({
-      pagePath: "/docs/modules/example/page.mdx",
-      kind: "module",
+      pagePath: "/docs/concepts/example/page.mdx",
+      kind: "concept",
       mdxSource,
     });
 

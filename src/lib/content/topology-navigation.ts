@@ -163,10 +163,10 @@ export function listTopologyNavigationOptions({
   locale = defaultLocale,
   tree = buildClassificationSubtree({
     classificationTraversal: {
-      classifiesKinds: ["module"],
+      classifiesKinds: ["concept"],
       statuses: ["published"],
     },
-    memberKinds: ["module"],
+    memberKinds: ["concept"],
   }).roots,
   labels,
 }: TopologyNavigationInput = {}): TopologyNavigationOption[] {

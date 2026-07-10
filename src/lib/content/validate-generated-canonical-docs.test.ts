@@ -6,6 +6,7 @@ import {
   validateGeneratedCanonicalDocs,
   validateGeneratedFoldedSummary,
   validateGeneratedGraphPlacement,
+  validateGeneratedKindSpecificStructure,
 } from "./validate-generated-canonical-docs";
 
 const templateRoot = join(process.cwd(), "docs/templates");
@@ -43,9 +44,9 @@ describe("validateGeneratedFoldedSummary", () => {
 
   test("fails legacy split summary message keys", () => {
     const errors = validateGeneratedFoldedSummary({
-      pagePath: "/docs/modules/example/page.mdx",
-      kind: "module",
-      mdxSource: readTemplateMdx("module"),
+      pagePath: "/docs/concepts/example/page.mdx",
+      kind: "concept",
+      mdxSource: readTemplateMdx("concept"),
       messages: {
         title: "Example",
         description: "Summary",
@@ -59,11 +60,11 @@ describe("validateGeneratedFoldedSummary", () => {
     expect(errors[0]?.message).toContain("problemStatement");
   });
 
-  test("does not require openingSummary to render inside module MDX", () => {
+  test("does not require openingSummary to render inside concept MDX", () => {
     const errors = validateGeneratedFoldedSummary({
-      pagePath: "/docs/modules/example/page.mdx",
-      kind: "module",
-      mdxSource: readTemplateMdx("module"),
+      pagePath: "/docs/concepts/example/page.mdx",
+      kind: "concept",
+      mdxSource: readTemplateMdx("concept"),
       messages: {
         title: "Example",
         description: "Summary",
@@ -91,32 +92,14 @@ describe("validateGeneratedFoldedSummary", () => {
 });
 
 describe("validateGeneratedGraphPlacement", () => {
-  test("passes module template without required Atlas graph components", () => {
+  test("passes concept template without any rendered graph component", () => {
     const errors = validateGeneratedGraphPlacement({
-      pagePath: "/docs/modules/example/page.mdx",
-      kind: "module",
-      mdxSource: readTemplateMdx("module"),
-      assets: readTemplateAssets("module"),
+      pagePath: "/docs/concepts/example/page.mdx",
+      kind: "concept",
+      mdxSource: readTemplateMdx("concept"),
+      assets: readTemplateAssets("concept"),
     });
     expect(errors).toEqual([]);
-  });
-
-  test("fails leftover module graph embedded in math section", () => {
-    const moduleMdx = readTemplateMdx("module").replace(
-      '<Section id="math-or-compute-schema" titleKey="sections.mathOrComputeSchema.title">\n  <T k="sections.mathOrComputeSchema.body" />',
-      '<Section id="math-or-compute-schema" titleKey="sections.mathOrComputeSchema.title">\n  <T k="sections.mathOrComputeSchema.body" />\n  <ModuleGraph registryId="module.example-module" assetId="computeFlow" />',
-    );
-
-    const errors = validateGeneratedGraphPlacement({
-      pagePath: "/docs/modules/example/page.mdx",
-      kind: "module",
-      mdxSource: moduleMdx,
-      assets: readTemplateAssets("module"),
-    });
-
-    expect(
-      errors.some((error) => error.code === "graph-forbidden-section"),
-    ).toBe(true);
   });
 
   test("fails leftover graph components without assetId", () => {
@@ -137,35 +120,39 @@ describe("validateGeneratedGraphPlacement", () => {
     ).toBe(true);
   });
 
-  test("passes leftover module teaching visuals when assetIds resolve", () => {
-    const moduleMdx = readTemplateMdx("module").replace(
-      '<Section id="how-it-works" titleKey="sections.howItWorks.title">\n  <T k="sections.howItWorks.body" />',
-      [
-        '<Section id="how-it-works" titleKey="sections.howItWorks.title">',
-        '  <T k="sections.howItWorks.body" />',
-        '  <ModuleGraph registryId="module.example-module" assetId="computeFlow" />',
-        '  <ModuleChart registryId="module.example-module" assetId="activationHeatmap" />',
-      ].join("\n"),
+  test("passes leftover concept graph when assetId resolves to a graph asset", () => {
+    const conceptMdx = readTemplateMdx("concept").replace(
+      '<Section id="simple-example" titleKey="sections.simpleExample.title">\n  <T k="sections.simpleExample.body" />',
+      '<Section id="simple-example" titleKey="sections.simpleExample.title">\n  <T k="sections.simpleExample.body" />\n  <ConceptMap registryId="concept.example-concept" assetId="conceptMap" />',
     );
 
-    const assets = {
-      ...readTemplateAssets("module"),
-      activationHeatmap: {
-        type: "chart" as const,
-        chartId: "chart.activation-family.relu-hidden-state-heatmap",
-        altKey: "assets.activationHeatmap.alt",
-        captionKey: "assets.activationHeatmap.caption",
-      },
-    };
-
     const errors = validateGeneratedGraphPlacement({
-      pagePath: "/docs/modules/example/page.mdx",
-      kind: "module",
-      mdxSource: moduleMdx,
-      assets,
+      pagePath: "/docs/concepts/example/page.mdx",
+      kind: "concept",
+      mdxSource: conceptMdx,
+      assets: readTemplateAssets("concept"),
     });
 
     expect(errors).toEqual([]);
+  });
+});
+
+describe("validateGeneratedKindSpecificStructure", () => {
+  test("requires RelatedDocs inside the related section for concept pages", () => {
+    const conceptMdx = readTemplateMdx("concept").replace(
+      /<RelatedDocs registryId="concept\.example-concept" \/>\n?/,
+      "",
+    );
+
+    const errors = validateGeneratedKindSpecificStructure({
+      pagePath: "/docs/concepts/example/page.mdx",
+      kind: "concept",
+      mdxSource: conceptMdx,
+    });
+
+    expect(
+      errors.some((error) => error.code === "missing-related-docs-component"),
+    ).toBe(true);
   });
 });
 
@@ -206,80 +193,5 @@ describe("validateGeneratedCanonicalDocs", () => {
       errors.some((error) => error.code === "mdx-hard-coded-heading"),
     ).toBe(true);
     expect(errors[0]?.message).toContain("/docs/concepts/example/page.mdx");
-  });
-
-  test("fails paper templates that keep duplicate relationship sections", () => {
-    const errors = validateGeneratedCanonicalDocs({
-      pagePath: "/docs/papers/example/page.mdx",
-      kind: "paper",
-      mdxSource: `${readTemplateMdx("paper")}\n<Section id="what-it-connects-to" titleKey="sections.related.title" />\n`,
-      messages: {
-        title: "Example",
-        description: "Summary",
-      },
-      assets: readTemplateAssets("paper"),
-    });
-
-    expect(
-      errors.some(
-        (error) => error.code === "forbidden-duplicate-related-section",
-      ),
-    ).toBe(true);
-  });
-
-  test("fails model assets that define captions", () => {
-    const errors = validateGeneratedCanonicalDocs({
-      pagePath: "/docs/models/example/page.mdx",
-      kind: "model",
-      mdxSource: readTemplateMdx("model"),
-      messages: {
-        ...readTemplateMessages("model"),
-        title: "Example",
-        description: "Summary",
-        assets: {
-          architectureGraph: {
-            alt: "Alt text",
-            caption: "Caption should not exist",
-          },
-        },
-      },
-      assets: {
-        ...readTemplateAssets("model"),
-        architectureGraph: {
-          ...readTemplateAssets("model").architectureGraph,
-          captionKey: "assets.architectureGraph.caption",
-        },
-      },
-    });
-
-    expect(
-      errors.some((error) => error.code === "forbidden-model-asset-caption"),
-    ).toBe(true);
-    expect(
-      errors.some(
-        (error) => error.code === "forbidden-model-asset-caption-message",
-      ),
-    ).toBe(true);
-  });
-
-  test("fails training pages without formulas", () => {
-    const mdx = readTemplateMdx("training-regime").replace(
-      /<BlockMath[\s\S]*?\/>\n?/,
-      "",
-    );
-    const errors = validateGeneratedCanonicalDocs({
-      pagePath: "/docs/training/example/page.mdx",
-      kind: "training-regime",
-      mdxSource: mdx,
-      messages: {
-        title: "Example",
-        description: "Summary",
-      },
-      assets: readTemplateAssets("training-regime"),
-    });
-
-    expect(errors.some((error) => error.code === "missing-required-math")).toBe(
-      true,
-    );
   });
 });

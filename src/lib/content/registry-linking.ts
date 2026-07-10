@@ -10,27 +10,17 @@ import type {
   DocumentationRecord,
   GraphRecord,
   GuideRecord,
-  ModelRecord,
-  ModuleRecord,
   OrganizationRecord,
-  PaperRecord,
-  SystemRecord,
   TagRecord,
   TechniqueRecord,
-  TrainingRegimeRecord,
 } from "@/lib/content/schemas";
 
 export type LinkableRegistryRecord =
-  | ModuleRecord
   | ConceptRecord
   | GuideRecord
   | TechniqueRecord
   | DocumentationRecord
   | ClassificationRecord
-  | ModelRecord
-  | PaperRecord
-  | TrainingRegimeRecord
-  | SystemRecord
   | DatasetRecord
   | OrganizationRecord
   | CitationRecord
@@ -52,15 +42,10 @@ export function registryRecordHref(
   record: LinkableRegistryRecord,
 ): string | undefined {
   if (
-    record.kind === "module" ||
     record.kind === "concept" ||
     record.kind === "guide" ||
     record.kind === "technique" ||
-    record.kind === "documentation" ||
-    record.kind === "model" ||
-    record.kind === "paper" ||
-    record.kind === "training-regime" ||
-    record.kind === "system"
+    record.kind === "documentation"
   ) {
     return getPublishedDocsHrefForRecord(record) ?? undefined;
   }

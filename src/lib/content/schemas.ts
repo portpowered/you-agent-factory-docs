@@ -25,22 +25,6 @@ export {
   tagRecordSchema,
 } from "./registry-core";
 
-export const moduleTypeSchema = z.enum([
-  "attention",
-  "normalization",
-  "feed-forward",
-  "activation",
-  "position-encoding",
-  "tokenizer",
-  "optimizer",
-  "quantization",
-  "inference-optimization",
-  "training-method",
-  "systems",
-  "state-space",
-  "other",
-]);
-
 export const mathLevelSchema = z.enum(["none", "light", "detailed"]);
 
 const releaseMetadataShape = {
@@ -53,32 +37,9 @@ const sidebarGroupingSchema = z
   .object({
     glossary: z.string().optional(),
     concepts: z.string().optional(),
-    modules: z.string().optional(),
-    training: z.string().optional(),
-    systems: z.string().optional(),
   })
   .strict()
   .optional() as z.ZodType<SidebarGrouping | undefined>;
-
-export const moduleRecordSchema = z.object({
-  ...baseRecordShape,
-  kind: z.literal("module"),
-  ...releaseMetadataShape,
-  ...ontologyMembershipShape,
-  moduleType: moduleTypeSchema.optional(),
-  optimizes: z.array(z.string()),
-  exampleModelIds: z.array(z.string()),
-  improvesOnIds: z.array(z.string()),
-  tradeoffIds: z.array(z.string()),
-  usedByModelIds: z.array(z.string()),
-  introducedByPaperIds: z.array(z.string()),
-  mathLevel: mathLevelSchema,
-  moduleFamily: z.string().optional(),
-  conceptType: z.string().optional(),
-  variantGroup: z.string().optional(),
-  variantOf: z.string().optional(),
-  sidebarGrouping: sidebarGroupingSchema,
-});
 
 export const conceptTypeSchema = z.enum([
   "architecture",
@@ -125,109 +86,6 @@ export const documentationRecordSchema = z.object({
   ...ontologyMembershipShape,
 });
 
-export const modelSourceTypeSchema = z.enum([
-  "open-weights",
-  "closed",
-  "research",
-  "unknown",
-]);
-
-export const modelModalitySchema = z.enum([
-  "text",
-  "image",
-  "audio",
-  "video",
-  "multimodal",
-]);
-
-export const modelRecordSchema = z.object({
-  ...baseRecordShape,
-  kind: z.literal("model"),
-  ...releaseMetadataShape,
-  ...ontologyMembershipShape,
-  family: z.string().min(1),
-  sourceType: modelSourceTypeSchema,
-  modalities: z.array(modelModalitySchema).min(1),
-  architectureIds: z.array(z.string()),
-  moduleIds: z.array(z.string()),
-  trainingRegimeIds: z.array(z.string()),
-  datasetIds: z.array(z.string()),
-  paperIds: z.array(z.string()),
-  organizationId: z.string().optional(),
-  parameterCount: z.string().optional(),
-  activeParameterCount: z.string().optional(),
-  contextLength: z.number().int().positive().optional(),
-  precision: z.array(z.string()).optional(),
-});
-
-export const paperRecordSchema = z.object({
-  ...baseRecordShape,
-  kind: z.literal("paper"),
-  ...ontologyMembershipShape,
-  authors: z.array(z.string().min(1)).min(1),
-  publishedAt: z.string().min(1),
-  url: z.string().url(),
-  introducesIds: z.array(z.string()),
-  supportsIds: z.array(z.string()),
-  arguesAgainstIds: z.array(z.string()),
-  modelIds: z.array(z.string()),
-  moduleIds: z.array(z.string()),
-  conceptIds: z.array(z.string()),
-  venue: z.string().optional(),
-  arxivId: z.string().optional(),
-});
-
-export const trainingRegimeTypeSchema = z.enum([
-  "pretraining",
-  "post-training",
-  "rl",
-  "distillation",
-  "optimization",
-  "alignment",
-  "other",
-]);
-
-export const trainingRegimeRecordSchema = z.object({
-  ...baseRecordShape,
-  kind: z.literal("training-regime"),
-  ...releaseMetadataShape,
-  ...ontologyMembershipShape,
-  regimeType: trainingRegimeTypeSchema.optional(),
-  usedByModelIds: z.array(z.string()),
-  relatedModuleIds: z.array(z.string()),
-  paperIds: z.array(z.string()),
-  conceptType: conceptTypeSchema.optional(),
-  variantGroup: z.string().optional(),
-  sidebarGrouping: sidebarGroupingSchema,
-});
-
-export const systemTypeSchema = z.enum([
-  "runtime",
-  "memory",
-  "routing",
-  "serving",
-  "training-infrastructure",
-  "kernel",
-  "other",
-]);
-
-export const systemRecordSchema = z.object({
-  ...baseRecordShape,
-  kind: z.literal("system"),
-  ...releaseMetadataShape,
-  ...ontologyMembershipShape,
-  systemType: systemTypeSchema.optional(),
-  relatedModelIds: z.array(z.string()),
-  relatedModuleIds: z.array(z.string()),
-  relatedConceptIds: z.array(z.string()),
-  paperIds: z.array(z.string()),
-  datasetIds: z.array(z.string()),
-  organizationId: z.string().optional(),
-  conceptType: conceptTypeSchema.optional(),
-  variantGroup: z.string().optional(),
-  sidebarGrouping: sidebarGroupingSchema,
-});
-
 export const datasetRecordSchema = z.object({
   ...baseRecordShape,
   kind: z.literal("dataset"),
@@ -254,11 +112,6 @@ export const generatedPageBundleRegistryRecordSchema = z.discriminatedUnion(
     guideRecordSchema,
     techniqueRecordSchema,
     documentationRecordSchema,
-    moduleRecordSchema,
-    modelRecordSchema,
-    paperRecordSchema,
-    trainingRegimeRecordSchema,
-    systemRecordSchema,
   ],
 );
 
@@ -396,16 +249,11 @@ export const graphRecordSchema = z.object({
 });
 
 export const registryRecordSchema = z.discriminatedUnion("kind", [
-  moduleRecordSchema,
   conceptRecordSchema,
   guideRecordSchema,
   techniqueRecordSchema,
   documentationRecordSchema,
   classificationRecordSchema,
-  modelRecordSchema,
-  paperRecordSchema,
-  trainingRegimeRecordSchema,
-  systemRecordSchema,
   datasetRecordSchema,
   organizationRecordSchema,
   tagRecordSchema,
@@ -418,11 +266,6 @@ export const pageKindSchema = z.enum([
   "guide",
   "technique",
   "documentation",
-  "model",
-  "module",
-  "paper",
-  "training-regime",
-  "system",
   "glossary",
 ]);
 
@@ -636,15 +479,10 @@ export type {
   RegistryStatus,
   TagRecord,
 } from "./registry-core";
-export type ModuleRecord = z.infer<typeof moduleRecordSchema>;
 export type ConceptRecord = z.infer<typeof conceptRecordSchema>;
 export type GuideRecord = z.infer<typeof guideRecordSchema>;
 export type TechniqueRecord = z.infer<typeof techniqueRecordSchema>;
 export type DocumentationRecord = z.infer<typeof documentationRecordSchema>;
-export type ModelRecord = z.infer<typeof modelRecordSchema>;
-export type PaperRecord = z.infer<typeof paperRecordSchema>;
-export type TrainingRegimeRecord = z.infer<typeof trainingRegimeRecordSchema>;
-export type SystemRecord = z.infer<typeof systemRecordSchema>;
 export type DatasetRecord = z.infer<typeof datasetRecordSchema>;
 export type OrganizationRecord = z.infer<typeof organizationRecordSchema>;
 export type GeneratedPageBundleRegistryRecord = z.infer<

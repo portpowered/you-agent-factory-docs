@@ -321,7 +321,7 @@ updatedAt: "2026-06-02"
       docsRoot,
       slug,
       registryId: "concept.kind-mismatch-page",
-      kind: "module",
+      kind: "guide",
     });
 
     try {
@@ -333,7 +333,7 @@ updatedAt: "2026-06-02"
         errors.some(
           (error) =>
             error.code === "kind-mismatch" &&
-            error.message.includes('page kind "module"') &&
+            error.message.includes('page kind "guide"') &&
             error.message.includes('registry record kind "concept"'),
         ),
       ).toBe(true);

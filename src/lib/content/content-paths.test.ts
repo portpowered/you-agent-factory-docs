@@ -22,26 +22,16 @@ import {
   getGlossaryDocsRoot,
   getGuidesDocsRoot,
   getMessagesRoot,
-  getModelsDocsRoot,
-  getModulesDocsRoot,
-  getPapersDocsRoot,
   getProjectRoot,
   getRegistryCollectionRoot,
   getRegistryRoot,
-  getSystemsDocsRoot,
   getTagMessagesRoot,
   getTechniquesDocsRoot,
-  getTrainingDocsRoot,
   MESSAGES_ROOT,
-  MODELS_DOCS_ROOT,
-  MODULES_DOCS_ROOT,
-  PAPERS_DOCS_ROOT,
   REGISTRY_COLLECTIONS,
   REGISTRY_ROOT,
-  SYSTEMS_DOCS_ROOT,
   TAG_MESSAGES_ROOT,
   TECHNIQUES_DOCS_ROOT,
-  TRAINING_DOCS_ROOT,
 } from "./content-paths";
 import {
   findNewOrdinaryPageDirExports,
@@ -56,7 +46,6 @@ describe("content-paths", () => {
     expect(contentRoot).toBe(join(projectRoot, "src/content"));
     expect(getDocsRoot(contentRoot)).toBe(join(contentRoot, "docs"));
     expect(getGlossaryDocsRoot()).toBe(join(contentRoot, "docs", "glossary"));
-    expect(getModulesDocsRoot()).toBe(join(contentRoot, "docs", "modules"));
     expect(getRegistryRoot(contentRoot)).toBe(join(contentRoot, "registry"));
     expect(getMessagesRoot(contentRoot)).toBe(join(contentRoot, "messages"));
     expect(getTagMessagesRoot()).toBe(
@@ -70,7 +59,6 @@ describe("content-paths", () => {
     }
 
     expect(getGlossaryDocsRoot()).toBe(getDocsSectionRoot("glossary"));
-    expect(getModulesDocsRoot()).toBe(getDocsSectionRoot("modules"));
   });
 
   test("generic docs page helper derives representative page directories for every docs section", () => {
@@ -92,23 +80,6 @@ describe("content-paths", () => {
         sectionRoot: DOCUMENTATION_DOCS_ROOT,
       },
       { section: "glossary", slug: "token", sectionRoot: GLOSSARY_DOCS_ROOT },
-      {
-        section: "modules",
-        slug: "grouped-query-attention",
-        sectionRoot: MODULES_DOCS_ROOT,
-      },
-      { section: "models", slug: "gpt-2", sectionRoot: MODELS_DOCS_ROOT },
-      {
-        section: "papers",
-        slug: "attention-is-all-you-need",
-        sectionRoot: PAPERS_DOCS_ROOT,
-      },
-      {
-        section: "training",
-        slug: "instruction-tuning",
-        sectionRoot: TRAINING_DOCS_ROOT,
-      },
-      { section: "systems", slug: "vllm", sectionRoot: SYSTEMS_DOCS_ROOT },
     ] as const;
 
     for (const { section, slug, sectionRoot } of representativePages) {
@@ -120,18 +91,13 @@ describe("content-paths", () => {
   });
 
   test("generic docs page helper preserves section-plus-slug invariants for custom roots", () => {
-    const docsRoot = "/tmp/model-reference/docs";
+    const docsRoot = "/tmp/factory-docs/docs";
     const representativePages = [
       { section: "guides", slug: "getting-started" },
       { section: "concepts", slug: "alibi" },
       { section: "techniques", slug: "prompt-caching" },
       { section: "documentation", slug: "cli-reference" },
       { section: "glossary", slug: "token" },
-      { section: "modules", slug: "grouped-query-attention" },
-      { section: "models", slug: "gpt-2" },
-      { section: "papers", slug: "attention-is-all-you-need" },
-      { section: "training", slug: "instruction-tuning" },
-      { section: "systems", slug: "vllm" },
     ] as const;
 
     for (const { section, slug } of representativePages) {
@@ -157,7 +123,7 @@ describe("content-paths", () => {
   });
 
   test("generic registry helpers preserve collection derivation invariants for custom roots", () => {
-    const registryRoot = "/tmp/model-reference/registry";
+    const registryRoot = "/tmp/factory-docs/registry";
 
     for (const collection of REGISTRY_COLLECTIONS) {
       expect(getRegistryCollectionRoot(collection, registryRoot)).toBe(
@@ -178,11 +144,6 @@ describe("content-paths", () => {
     expect(CONCEPTS_DOCS_ROOT).toBe(getConceptsDocsRoot());
     expect(TECHNIQUES_DOCS_ROOT).toBe(getTechniquesDocsRoot());
     expect(DOCUMENTATION_DOCS_ROOT).toBe(getDocumentationDocsRoot());
-    expect(MODULES_DOCS_ROOT).toBe(getModulesDocsRoot());
-    expect(MODELS_DOCS_ROOT).toBe(getModelsDocsRoot());
-    expect(PAPERS_DOCS_ROOT).toBe(getPapersDocsRoot());
-    expect(TRAINING_DOCS_ROOT).toBe(getTrainingDocsRoot());
-    expect(SYSTEMS_DOCS_ROOT).toBe(getSystemsDocsRoot());
     expect(REGISTRY_ROOT).toBe(getRegistryRoot());
     expect(GENERATED_CONTENT_RUNTIME_ROOT).toBe(
       getGeneratedContentRuntimeRoot(),
@@ -213,7 +174,7 @@ describe("content-paths", () => {
 
     expect(newExports).toEqual(["GPT_2_MODEL_PAGE_DIR"]);
     expect(message).toContain("getDocsPageDir");
-    expect(message).toContain('getDocsPageDir("modules", "my-page-slug")');
+    expect(message).toContain('getDocsPageDir("concepts", "my-page-slug")');
     expect(message).toContain("section and slug");
     expect(message).toContain("getDocsRoot");
     expect(message).toContain("getDocsSectionRoot");

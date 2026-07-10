@@ -23,13 +23,6 @@ type RuntimeRegistryDirectory = {
 
 const runtimeRegistryDirectories: RuntimeRegistryDirectory[] = [
   {
-    directory: "modules",
-    recordType: "ModuleRecord",
-    schemaName: "moduleRecordSchema",
-    recordsConst: "moduleRecords",
-    mapConst: "modulesById",
-  },
-  {
     directory: "concepts",
     recordType: "ConceptRecord",
     schemaName: "conceptRecordSchema",
@@ -58,39 +51,11 @@ const runtimeRegistryDirectories: RuntimeRegistryDirectory[] = [
     mapConst: "documentationById",
   },
   {
-    directory: "models",
-    recordType: "ModelRecord",
-    schemaName: "modelRecordSchema",
-    recordsConst: "modelRecords",
-    mapConst: "modelsById",
-  },
-  {
     directory: "classifications",
     recordType: "ClassificationRecord",
     schemaName: "classificationRecordSchema",
     recordsConst: "classificationRecords",
     mapConst: "classificationsById",
-  },
-  {
-    directory: "papers",
-    recordType: "PaperRecord",
-    schemaName: "paperRecordSchema",
-    recordsConst: "paperRecords",
-    mapConst: "papersById",
-  },
-  {
-    directory: "training-regimes",
-    recordType: "TrainingRegimeRecord",
-    schemaName: "trainingRegimeRecordSchema",
-    recordsConst: "trainingRegimeRecords",
-    mapConst: "trainingRegimesById",
-  },
-  {
-    directory: "systems",
-    recordType: "SystemRecord",
-    schemaName: "systemRecordSchema",
-    recordsConst: "systemRecords",
-    mapConst: "systemsById",
   },
   {
     directory: "datasets",
@@ -307,14 +272,9 @@ function buildGeneratedSource(
     "type DatasetRecord",
     "type DocumentationRecord",
     "type GuideRecord",
-    "type ModelRecord",
-    "type ModuleRecord",
     "type OrganizationRecord",
-    "type PaperRecord",
-    "type SystemRecord",
     "type TagRecord",
     "type TechniqueRecord",
-    "type TrainingRegimeRecord",
   ];
   const schemaImports = [
     "citationRecordSchema",
@@ -323,14 +283,9 @@ function buildGeneratedSource(
     "datasetRecordSchema",
     "documentationRecordSchema",
     "guideRecordSchema",
-    "modelRecordSchema",
-    "moduleRecordSchema",
     "organizationRecordSchema",
-    "paperRecordSchema",
-    "systemRecordSchema",
     "tagRecordSchema",
     "techniqueRecordSchema",
-    "trainingRegimeRecordSchema",
   ].filter((schemaName) => usedSchemaNames.has(schemaName));
   const recordImports = [...recordTypeImports, ...schemaImports].join(",\n  ");
 
@@ -364,24 +319,9 @@ for (const record of classificationRecords) {
   );
 }
 
-type TaggedRegistryRecord =
-  | ModuleRecord
-  | ConceptRecord
-  | ModelRecord
-  | PaperRecord
-  | TrainingRegimeRecord
-  | SystemRecord
-  | DatasetRecord
-  | OrganizationRecord;
+type TaggedRegistryRecord = ConceptRecord | DatasetRecord | OrganizationRecord;
 
-type OntologyParticipatingRegistryRecord =
-  | ModuleRecord
-  | ConceptRecord
-  | ModelRecord
-  | PaperRecord
-  | TrainingRegimeRecord
-  | SystemRecord
-  | DatasetRecord;
+type OntologyParticipatingRegistryRecord = ConceptRecord | DatasetRecord;
 
 type RuntimeRegistryRecord =
   | TaggedRegistryRecord
@@ -707,12 +647,7 @@ function getTaggedRecordById(
   registryId: string,
 ): TaggedRegistryRecord | undefined {
   return (
-    modulesById.get(registryId) ??
     conceptsById.get(registryId) ??
-    modelsById.get(registryId) ??
-    papersById.get(registryId) ??
-    trainingRegimesById.get(registryId) ??
-    systemsById.get(registryId) ??
     datasetsById.get(registryId) ??
     organizationsById.get(registryId)
   );
@@ -721,15 +656,7 @@ function getTaggedRecordById(
 function getOntologyParticipatingRecordById(
   registryId: string,
 ): OntologyParticipatingRegistryRecord | undefined {
-  return (
-    modulesById.get(registryId) ??
-    conceptsById.get(registryId) ??
-    modelsById.get(registryId) ??
-    papersById.get(registryId) ??
-    trainingRegimesById.get(registryId) ??
-    systemsById.get(registryId) ??
-    datasetsById.get(registryId)
-  );
+  return conceptsById.get(registryId) ?? datasetsById.get(registryId);
 }
 
 function getRuntimeRecordById(
@@ -743,19 +670,9 @@ function getRuntimeRecordById(
   );
 }
 
-/** Synchronous module lookup for client MDX components and tests. */
-export function getModuleById(registryId: string): ModuleRecord | undefined {
-  return modulesById.get(registryId);
-}
-
 /** Synchronous concept lookup for client MDX components and tests. */
 export function getConceptById(registryId: string): ConceptRecord | undefined {
   return conceptsById.get(registryId);
-}
-
-/** Synchronous model lookup for docs components and tests. */
-export function getModelById(registryId: string): ModelRecord | undefined {
-  return modelsById.get(registryId);
 }
 
 export function getClassificationById(
@@ -800,20 +717,6 @@ export function listLegacyClassificationBridges(): LegacyClassificationBridge[] 
   );
 }
 
-export function getPaperById(registryId: string): PaperRecord | undefined {
-  return papersById.get(registryId);
-}
-
-export function getTrainingRegimeById(
-  registryId: string,
-): TrainingRegimeRecord | undefined {
-  return trainingRegimesById.get(registryId);
-}
-
-export function getSystemById(registryId: string): SystemRecord | undefined {
-  return systemsById.get(registryId);
-}
-
 export function getDatasetById(registryId: string): DatasetRecord | undefined {
   return datasetsById.get(registryId);
 }
@@ -836,16 +739,8 @@ export function getCitationById(
   return citationsById.get(registryId);
 }
 
-export function listModuleRecords(): ModuleRecord[] {
-  return [...moduleRecords];
-}
-
 export function listConceptRecords(): ConceptRecord[] {
   return [...conceptRecords];
-}
-
-export function listModelRecords(): ModelRecord[] {
-  return [...modelRecords];
 }
 
 export function listClassificationRecords(): ClassificationRecord[] {
@@ -955,18 +850,6 @@ export function listClassificationDescendants(
   return descendants;
 }
 
-export function listPaperRecords(): PaperRecord[] {
-  return [...paperRecords];
-}
-
-export function listTrainingRegimeRecords(): TrainingRegimeRecord[] {
-  return [...trainingRegimeRecords];
-}
-
-export function listSystemRecords(): SystemRecord[] {
-  return [...systemRecords];
-}
-
 export function listDatasetRecords(): DatasetRecord[] {
   return [...datasetRecords];
 }
@@ -985,16 +868,7 @@ export function listCitationRecords(): CitationRecord[] {
 
 /** Registry records used for derived related-document groups. */
 export function listRelatedRegistryRecords(): RelatedRegistryRecord[] {
-  return [
-    ...moduleRecords,
-    ...conceptRecords,
-    ...modelRecords,
-    ...paperRecords,
-    ...trainingRegimeRecords,
-    ...systemRecords,
-    ...datasetRecords,
-    ...organizationRecords,
-  ];
+  return [...conceptRecords, ...datasetRecords, ...organizationRecords];
 }
 
 /** Synchronous registry lookup for related-doc capable registry records. */

@@ -9,7 +9,7 @@ import {
 } from "./registry-core";
 
 const validBaseFields = {
-  id: "module.grouped-query-attention",
+  id: "concept.grouped-query-attention",
   slug: "grouped-query-attention",
   defaultTitleKey: "title",
   defaultSummaryKey: "description",
@@ -32,7 +32,7 @@ describe("registry core contracts", () => {
   test("parses a valid base record through the core surface", () => {
     const result = baseRecordSchema.safeParse({
       ...validBaseFields,
-      kind: "module",
+      kind: "concept",
     });
     expect(result.success).toBe(true);
   });
@@ -68,12 +68,12 @@ describe("registry core contracts", () => {
   test("parses a valid classification record through the core surface", () => {
     const result = classificationRecordSchema.safeParse({
       ...validBaseFields,
-      id: "classification.module.activation",
+      id: "classification.concept.activation",
       slug: "activation-functions",
       kind: "classification",
       classificationType: "family",
-      classifiesKinds: ["module"],
-      parentClassificationId: "classification.module",
+      classifiesKinds: ["concept"],
+      parentClassificationId: "classification.concept",
       legacyIds: ["classification.activation-functions"],
     });
     expect(result.success).toBe(true);
@@ -89,8 +89,8 @@ describe("registry core contracts", () => {
 
   test("rejects base records missing required fields", () => {
     const result = baseRecordSchema.safeParse({
-      id: "module.incomplete",
-      kind: "module",
+      id: "concept.incomplete",
+      kind: "concept",
     });
     expect(result.success).toBe(false);
   });
