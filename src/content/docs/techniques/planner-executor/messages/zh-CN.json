@@ -1,0 +1,35 @@
+{
+  "title": "Planner-Executor",
+  "description": "Planner-executor separates planning work into reviewable slices from executing those slices so independent factory streams can move in parallel.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Planner-executor is a technique that separates planning from execution. Planning turns a customer ask into small, reviewable work slices and checks real dependencies between them. Execution implements those slices. Independent streams can proceed in parallel without waiting on a global phase gate that holds the whole factory until every plan is finished."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Planner-executor matters when a factory runs many agent lanes at once. Non-overlapping lanes keep moving instead of idling while one shared planning phase finishes. Work holds only when there is a real collision or a missing prerequisite. Finished planning for one stream does not stall unrelated ready work that can already execute."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "A planner turns a customer ask into implementation-ready slices: a product requirements document with acceptance criteria and ordered stories that name real dependencies. Each slice is a small vertical piece of work a reviewer can check on its own. Executors then implement those slices. Non-overlapping lanes run in parallel. A lane holds only for a concrete reason, such as a file collision or a missing prerequisite. The planner re-enters through loopback or queue health when more planning is needed, instead of freezing every ready lane behind one shared planning phase name."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Planner-executor is easy to mix up with nearby factory techniques. Writer-reviewer is a quality loop: one role writes, another reviews, and the pair iterates until the work meets the bar. Workqueue-executor drains or organizes an ordered work queue—it focuses on consuming queued items, not on deciding how to slice a customer ask into parallel lanes. Classify-execute routes work by class and then runs the matching path; the split is classify-then-run, not plan-then-execute across independent streams. Planner-executor separates planning (turn the ask into reviewable slices with real dependency checks) from execution (implement those slices) so non-overlapping lanes can move without a global phase gate."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "checklist": "Checklist",
+    "taskQueue": "Task queue"
+  }
+}

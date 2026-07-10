@@ -169,4 +169,51 @@ describe("planner-executor technique page", () => {
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
   });
+
+  test("loads ja locale with technique section structure", async () => {
+    const loadedPage = await loadLocalDocsPage(
+      {
+        section: "techniques",
+        slug: "planner-executor",
+      },
+      "ja",
+    );
+
+    expect(loadedPage.frontmatter.kind).toBe("technique");
+    expect(loadedPage.messages.title).toBe("Planner-Executor");
+    expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(
+      String(loadedPage.messages.sections?.whatItIs?.body ?? ""),
+    ).not.toMatch(/Model Atlas/i);
+    expect(
+      String(loadedPage.messages.sections?.whatItIs?.body ?? ""),
+    ).not.toMatch(/on this page/i);
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          <h1>{loadedPage.messages.title}</h1>
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Planner-Executor" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Why It Matters" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "How It Works" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+  });
 });
