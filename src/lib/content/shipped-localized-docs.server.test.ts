@@ -206,4 +206,5 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "techniques/writer-reviewer",
       ],
     });
+  });
 });
