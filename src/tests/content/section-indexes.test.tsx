@@ -62,13 +62,18 @@ const CLI_SECTION_INDEX_CASES = [
   },
 ] as const;
 
-const CLI_EMPTY_SECTION_INDEX_CASES = CLI_SECTION_INDEX_CASES.filter(
-  (section) =>
-    section.collectionId !== "documentation" &&
-    section.collectionId !== "guides" &&
-    section.collectionId !== "concepts" &&
-    section.collectionId !== "techniques",
-);
+type CliSectionIndexCase = (typeof CLI_SECTION_INDEX_CASES)[number];
+
+// All CLI section indexes currently have authored entries. Keep this list typed
+// explicitly so an empty filter does not collapse to `never[]` under `as const`.
+const CLI_EMPTY_SECTION_INDEX_CASES: CliSectionIndexCase[] =
+  CLI_SECTION_INDEX_CASES.filter(
+    (section) =>
+      section.collectionId !== "documentation" &&
+      section.collectionId !== "guides" &&
+      section.collectionId !== "concepts" &&
+      section.collectionId !== "techniques",
+  );
 
 describe("CLI section index messages", () => {
   it("loads index copy for guides, concepts, techniques, and documentation", async () => {

@@ -271,6 +271,10 @@ before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
   `src/tests/content/section-indexes.test.tsx` to authored-entry assertions;
   leave non-default locale techniques indexes on empty-state until colocated
   `messages/<locale>.json` stubs exist
+- when every CLI section has authored entries, type
+  `CLI_EMPTY_SECTION_INDEX_CASES` as `CliSectionIndexCase[]` (or equivalent)
+  instead of relying on a filtered `as const` array — an empty filter collapses
+  to `never[]` and breaks `tsc` on the empty-state loop
 
 Declare the first-CLI-section exception with
 `bun run audit:canonical-page-surface -- --exception-reason "..."` and repeat

@@ -58,5 +58,19 @@ describe("worker-adviser technique page", () => {
     expect(
       screen.queryByRole("heading", { name: "Worker-Adviser" }),
     ).toBeNull();
+
+    const whatItIs = loadedPage.messages.sections.whatItIs.body as string;
+    const whyItMatters = loadedPage.messages.sections.whyItMatters
+      .body as string;
+    expect(whatItIs).toMatch(/Worker-adviser/i);
+    expect(whatItIs).toMatch(/adviser role/i);
+    expect(whatItIs).toMatch(/worker role|performer/i);
+    expect(whatItIs).toMatch(/recommend|critique|guide/i);
+    expect(whatItIs).toMatch(/unreviewed agent pass/i);
+    expect(whyItMatters).toMatch(/ownership|distinct|critique/i);
+    expect(whyItMatters).toMatch(/before or beside execution/i);
+    expect(whyItMatters).toMatch(/advisory guidance|performed change/i);
+    expect(screen.getByText(whatItIs)).toBeTruthy();
+    expect(screen.getByText(whyItMatters)).toBeTruthy();
   });
 });
