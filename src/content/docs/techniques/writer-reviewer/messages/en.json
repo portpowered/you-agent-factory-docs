@@ -12,11 +12,11 @@
     },
     "howItWorks": {
       "title": "How It Works",
-      "body": "Write or execute produces a candidate. Review accepts to complete or rejects back to write. Bound reject retries with a loop breaker so cycles cannot run forever."
+      "body": "Write or execute produces a candidate—a draft, change set, or other deliverable. Review then decides the outcome: accept completes the goal; reject returns the work to write for another pass under the same goal. Bound reject retries with a loop breaker so cycles stop on purpose instead of running forever."
     },
     "comparedToNearbyTechniques": {
       "title": "Compared To Nearby Techniques",
-      "body": "This technique glossary page defines writer-reviewer in isolation. It is not the write-review use-case guide, not a plain factory loop without a review gate, and not planner-executor or worker-adviser by default."
+      "body": "Writer-reviewer is the dual-role technique itself: write produces a candidate, and review accepts or rejects. A write-review use-case guide shows how to run that pattern in the factory; it is not the technique definition. A plain factory loop keeps iterating until the goal is done, but it does not require an explicit review gate before completion. Planner-executor and worker-adviser split roles differently—planning versus executing, or advising versus doing—without making accept-or-reject review the completion gate."
     },
     "related": {
       "title": "Related To"
