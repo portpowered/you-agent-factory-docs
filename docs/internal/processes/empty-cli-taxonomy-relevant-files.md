@@ -78,11 +78,11 @@ Do not author customer page bundles under content roots in this lane.
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/guides/.gitkeep` | Present only while guides docs content root has no authored `page.mdx` bundles; remove when the first page ships |
-| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles once a first-techniques-section lane ships (remove `.gitkeep` with the first page) |
+| `src/content/docs/guides/` | CLI guides content root; may contain authored guide page bundles |
+| `src/content/docs/techniques/` | CLI techniques content root; may contain authored technique page bundles (e.g. `workqueue-executor`, `classify-execute`, `planner-executor`, `ralph`, `worker-adviser`, `writer-reviewer`) |
 | `src/content/docs/documentation/` | CLI documentation content root; may contain authored topic page bundles |
-| `src/content/registry/guides/.gitkeep` | Present only while guides registry dir has no authored topic records; remove when the first record ships |
-| `src/content/registry/techniques/` | CLI techniques registry dir; may contain authored technique records once first pages ship |
+| `src/content/registry/guides/` | CLI guides registry dir; may contain authored guide records |
+| `src/content/registry/techniques/` | CLI techniques registry dir; may contain authored technique records |
 | `src/content/registry/documentation/` | CLI documentation registry dir; may contain authored topic records |
 | `src/lib/docs/cli-empty-content-roots.ts` | Designates the four CLI collection ids as content-root targets; `EMPTY_CLI_REGISTRY_COLLECTION_DIRS` historically listed guides/techniques while those roots stayed empty — update or retire those empty-root assertions when the first authored guide/technique pages ship (required `make test` excludes `src/lib/docs/`) |
 | `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks for empty vs authored CLI roots; keep aligned when first pages land, but do not treat excluded `src/lib/docs/` suites as required CI for page-only lanes — first authored techniques pages update allowlisted `section-indexes.test.tsx` instead |

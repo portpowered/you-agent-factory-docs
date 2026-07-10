@@ -89,8 +89,9 @@ describe("CLI section index messages", () => {
       "techniques",
       "documentation",
     ]);
-    // All four CLI section indexes now have authored pages; empty-state
-    // contract coverage lives in section-collection-index empty-state tests.
+    // All four CLI section indexes now have authored page entries; keep the
+    // case table for metadata/localized helpers without an empty-state loop.
+    // Empty-state contract coverage lives in section-collection-index tests.
     expect(
       CLI_SECTION_INDEX_CASES.map((section) => section.collectionId),
     ).toEqual([...CLI_DOCS_COLLECTION_IDS]);
@@ -236,6 +237,8 @@ describe("CLI section index page render", () => {
     );
     expect(html).toContain("Worker-Adviser");
     expect(html).toContain("/docs/techniques/worker-adviser");
+    expect(html).toContain("Workqueue Executor");
+    expect(html).toContain("/docs/techniques/workqueue-executor");
     expect(html).toContain("Writer-Reviewer");
     expect(html).toContain("/docs/techniques/writer-reviewer");
     expect(html).toContain(

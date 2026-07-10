@@ -1,0 +1,14 @@
+{
+  "id": "technique.workqueue-executor",
+  "slug": "workqueue-executor",
+  "kind": "technique",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["workqueue executor", "queue executor", "work queue executor"],
+  "tags": [],
+  "relatedIds": ["concept.task-queue"],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T03:12:00.000Z",
+  "updatedAt": "2026-07-10T03:12:00.000Z"
+}

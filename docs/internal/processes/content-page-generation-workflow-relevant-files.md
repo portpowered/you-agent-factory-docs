@@ -24,6 +24,36 @@ exported `*_PAGE_DIR` constant to `src/lib/content/content-paths.ts`.
 
 ## First CLI collection page (guides / techniques / documentation)
 
+The first authored `techniques/` page needs the same local-docs loader pair as
+guides/documentation (`technique-page.ts` / `technique-page-load.ts`) plus
+`techniques` in `LOCAL_DOCS_SECTIONS` / `parseLocalDocsPageRef`. Published-docs
+section membership and `techniquePageHref` already exist on main; still remove
+section-root `.gitkeep` files and flip
+`src/tests/content/section-indexes.test.tsx` from empty-state to authored-entry
+assertions. Prefer a colocated `<slug>-page.test.tsx` under the page bundle.
+Later technique pages stay page-local beside that wiring.
+
+Technique → concept / documentation / unpublished sibling technique discovery
+needs page-local `<LocalizedLinkList>` today: `getRegistryRecordById()` /
+`listRelatedRegistryRecords()` omit `techniques` (and documentation/guides), so
+`<RelatedDocs registryId="technique.*" />` returns null even when
+`relatedIds` lists a published concept. Keep curated `relatedIds` only for
+targets that exist in this worktree (validation still resolves them), and wire
+reviewer-visible discovery under `#related` with message-backed
+`LocalizedLinkList` hrefs — published siblings such as `/docs/concepts/task-queue`
+and `/docs/documentation/submitting-work`, plus published or planned technique
+hrefs for nearby techniques (for example classify-execute, planner-executor,
+ralph, worker-adviser, and writer-reviewer when published). Do not put
+unpublished technique registry ids in `relatedIds`.
+
+Optional technique teaching graphs: baseline `technique.assets.json` is empty.
+Atlas-era `<ConceptMap />` / `<ModuleGraph />` MDX tags are retired from
+templates; `PageAsset` graph slots only stub `data-graph-id` without a real
+React Flow canvas. Prefer strengthening how-it-works prose (for example the
+waiting → consume → remaining ready work drain loop) and keep `assets.json`
+empty rather than shipping a decorative or stub-only graph. Mirror the
+concepts/task-queue no-graph proof pattern in the colocated page test.
+
 Before the first authored page under a rewrite-era CLI collection can pass
 `prepare:content-runtime` / `make validate-data` and render under
 `/docs/<section>/<slug>`:
@@ -307,7 +337,10 @@ before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
   `shipped-localized-docs.generated.ts` plus the matching
   `shipped-localized-docs.server.test.ts` committed-tree assertion
 - colocate the page render proof under the page bundle
-  (`<slug>-page.test.tsx`) so the proof stays page-owned
+  (`<slug>-page.test.tsx`, e.g. `workqueue-executor-page.test.tsx` /
+  `classify-execute-page.test.tsx`) so the proof stays page-owned
+- document the exception with `--exception-reason` on
+  `bun run audit:canonical-page-surface`
 - when every CLI section has authored entries, type
   `CLI_EMPTY_SECTION_INDEX_CASES` as `CliSectionIndexCase[]` (or equivalent)
   instead of relying on a filtered `as const` array — an empty filter collapses
