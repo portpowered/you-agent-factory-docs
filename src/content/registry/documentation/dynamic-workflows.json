@@ -1,0 +1,18 @@
+{
+  "id": "documentation.dynamic-workflows",
+  "slug": "dynamic-workflows",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "dynamic workflows",
+    "JavaScript workflows",
+    "Factory Session workflows"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T07:01:57.000Z",
+  "updatedAt": "2026-07-10T08:15:00.000Z"
+}

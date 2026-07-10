@@ -1,0 +1,481 @@
+---
+title: "Dynamic Workflows"
+description: "Define JavaScript dynamic workflows and look up Factory Session API interface and configuration for you-agent-factory."
+kind: "documentation"
+registryId: "documentation.dynamic-workflows"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "dynamic workflows"
+  - "JavaScript workflows"
+  - "Factory Session workflows"
+updatedAt: "2026-07-10"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="api-interface" titleKey="sections.apiInterface.title">
+  <T k="sections.apiInterface.body" />
+  <T k="callouts.cliSurface.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.cliMatrixCommandHeader" />
+        </th>
+        <th>
+          <T k="links.cliMatrixPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.cliValidateCommand" />
+        </td>
+        <td>
+          <T k="links.cliValidatePurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cliStartCommand" />
+        </td>
+        <td>
+          <T k="links.cliStartPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cliStatusCommand" />
+        </td>
+        <td>
+          <T k="links.cliStatusPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cliResultCommand" />
+        </td>
+        <td>
+          <T k="links.cliResultPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cliDispatchesCommand" />
+        </td>
+        <td>
+          <T k="links.cliDispatchesPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cliArtifactsCommand" />
+        </td>
+        <td>
+          <T k="links.cliArtifactsPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cliEventsCommand" />
+        </td>
+        <td>
+          <T k="links.cliEventsPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.mcpSurface.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.mcpMatrixToolHeader" />
+        </th>
+        <th>
+          <T k="links.mcpMatrixPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.mcpListTool" />
+        </td>
+        <td>
+          <T k="links.mcpListPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpValidateSourceTool" />
+        </td>
+        <td>
+          <T k="links.mcpValidateSourcePurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpStartSyncTool" />
+        </td>
+        <td>
+          <T k="links.mcpStartSyncPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpStartAsyncTool" />
+        </td>
+        <td>
+          <T k="links.mcpStartAsyncPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpGetTool" />
+        </td>
+        <td>
+          <T k="links.mcpGetPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpGetResultTool" />
+        </td>
+        <td>
+          <T k="links.mcpGetResultPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpListDispatchesTool" />
+        </td>
+        <td>
+          <T k="links.mcpListDispatchesPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpListArtifactsTool" />
+        </td>
+        <td>
+          <T k="links.mcpListArtifactsPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpControlTool" />
+        </td>
+        <td>
+          <T k="links.mcpControlPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpReadEventsTool" />
+        </td>
+        <td>
+          <T k="links.mcpReadEventsPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.mcpAliasMatrixAliasHeader" />
+        </th>
+        <th>
+          <T k="links.mcpAliasMatrixCanonicalHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.mcpAliasValidate" />
+        </td>
+        <td>
+          <T k="links.mcpAliasValidateCanonical" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpAliasRun" />
+        </td>
+        <td>
+          <T k="links.mcpAliasRunCanonical" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpAliasStatus" />
+        </td>
+        <td>
+          <T k="links.mcpAliasStatusCanonical" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpAliasResult" />
+        </td>
+        <td>
+          <T k="links.mcpAliasResultCanonical" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpAliasArtifacts" />
+        </td>
+        <td>
+          <T k="links.mcpAliasArtifactsCanonical" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.durableInspection.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.inspectionMatrixSurfaceHeader" />
+        </th>
+        <th>
+          <T k="links.inspectionMatrixPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.inspectionSessionList" />
+        </td>
+        <td>
+          <T k="links.inspectionSessionListPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.inspectionSessionShow" />
+        </td>
+        <td>
+          <T k="links.inspectionSessionShowPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.inspectionEvents" />
+        </td>
+        <td>
+          <T k="links.inspectionEventsPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.inspectionPreview" />
+        </td>
+        <td>
+          <T k="links.inspectionPreviewPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</Section>
+
+<Section id="configuration" titleKey="sections.configuration.title">
+  <T k="sections.configuration.body" />
+  <T k="callouts.sourceResolution.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.sourceMatrixKnobHeader" />
+        </th>
+        <th>
+          <T k="links.sourceMatrixPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.sourceDirKnob" />
+        </td>
+        <td>
+          <T k="links.sourceDirPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.sourceWorkflowNameKnob" />
+        </td>
+        <td>
+          <T k="links.sourceWorkflowNamePurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.sourceInlineWorkflowKnob" />
+        </td>
+        <td>
+          <T k="links.sourceInlineWorkflowPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.sourceArgsSchemaKnob" />
+        </td>
+        <td>
+          <T k="links.sourceArgsSchemaPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.sourceRequestedPolicyKnob" />
+        </td>
+        <td>
+          <T k="links.sourceRequestedPolicyPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.mcpHostConfig.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.mcpHostMatrixFieldHeader" />
+        </th>
+        <th>
+          <T k="links.mcpHostMatrixPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.mcpHostCommandField" />
+        </td>
+        <td>
+          <T k="links.mcpHostCommandPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpHostArgsField" />
+        </td>
+        <td>
+          <T k="links.mcpHostArgsPurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.mcpHostCwdField" />
+        </td>
+        <td>
+          <T k="links.mcpHostCwdPurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.serveModes.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.serveModeMatrixModeHeader" />
+        </th>
+        <th>
+          <T k="links.serveModeMatrixArgsHeader" />
+        </th>
+        <th>
+          <T k="links.serveModeMatrixPurposeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.serveModeFixtureName" />
+        </td>
+        <td>
+          <T k="links.serveModeFixtureArgs" />
+        </td>
+        <td>
+          <T k="links.serveModeFixturePurpose" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.serveModeRuntimeName" />
+        </td>
+        <td>
+          <T k="links.serveModeRuntimeArgs" />
+        </td>
+        <td>
+          <T k="links.serveModeRuntimePurpose" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.serveModeBoundary.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflowsGuide",
+      },
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/harness-support",
+        labelKey: "links.harnessSupportDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="documentation.dynamic-workflows" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.dynamic-workflows" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.dynamic-workflows" />
+</Section>

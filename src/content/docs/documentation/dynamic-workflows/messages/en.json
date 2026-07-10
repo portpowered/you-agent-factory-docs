@@ -1,0 +1,158 @@
+{
+  "title": "Dynamic Workflows",
+  "description": "Define JavaScript dynamic workflows and look up Factory Session API interface and configuration for you-agent-factory.",
+  "openingSummary": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory. The live run is a Factory Session — the same durable runtime object used for every live orchestration — not a separate DynamicWorkflowRun type.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory in you-agent-factory. Customers author JavaScript or TypeScript orchestrator source, then validate, start, and inspect the live run as a Factory Session. This documentation defines that idea in isolation, names the session nouns a live run depends on, and then documents the callable API interface and configuration knobs for source resolution and Model Context Protocol (MCP) serve modes."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A Factory is the authored orchestration definition a live session loads. A Factory Orchestrator (FactoryOrchestrator) is the orchestrator identity on that factory — Petri (PETRI) or JavaScript (JAVASCRIPT). Dynamic workflow is shorthand for the JavaScript kind. A Factory Session (FactorySession) is the canonical runtime instance for one live orchestration; a dynamic-workflow run is still that Factory Session with JavaScript orchestrator kind, not a separate DynamicWorkflowRun noun. A Dispatch is a shared execution request the session sends. A Factory Artifact (FactoryArtifact) is a session-owned durable output such as a result, finding, log, or checkpoint reference. A Factory Event (FactoryEvent) is a durable event-stream record for session lifecycle, dispatch lifecycle, progress, and artifacts."
+    },
+    "apiInterface": {
+      "title": "API Interface",
+      "body": "Dynamic workflows use the shared Factory Session API surface. Call the CLI workflow path to validate source and start or inspect a durable JavaScript Factory Session. Call Model Context Protocol (MCP) Factory Session tools from an MCP host. Read the same session through durable list, show, events, and preview style lookups. There is no separate dynamic-workflow resource type — every live run is still a Factory Session."
+    },
+    "configuration": {
+      "title": "Configuration",
+      "body": "Dynamic-workflow configuration covers two jobs: resolve JavaScript orchestrator source from a project root, and choose how a Model Context Protocol (MCP) host launches you mcp serve. Source knobs select the workflow and optional args or policy overrides. Serve knobs choose fixture-backed or runtime-backed execution behind the same Factory Session tools. This page stays at that dynamic-workflow depth and does not absorb the full Petri factory.json topology reference."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start from the definition and key concepts to learn what a dynamic workflow is and which Factory Session nouns it uses. Open the API interface section when you need callable CLI, Model Context Protocol (MCP), or session inspection surfaces. Open the configuration section when you need source-resolution or MCP serve-mode knobs. Continue with the Cursor dynamic-workflows guide for a first MCP host loop, the configuration documentation for Petri factory.json topology, the CLI documentation for the broader command matrix, or harness support when you need MCP and harness coverage across agents."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This documentation is a web reference for JavaScript dynamic-workflow API interface and configuration. It is not the Cursor first-loop guide, not the full Model Context Protocol (MCP) host catalog deep dive beyond dynamic-workflow needs, and not the Petri factory.json topology overview owned by the configuration documentation page. Sibling links aid discovery; they are not required to understand the dynamic-workflow definition, API surface, or configuration knobs on this page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "callouts": {
+    "cliSurface": {
+      "body": "Use the you workflow CLI path for JavaScript Factory Session work. Validate source before execution, start a durable session, then inspect status, result, dispatches, artifacts, and events for that same Factory Session id."
+    },
+    "mcpSurface": {
+      "body": "Model Context Protocol (MCP) hosts discover Factory Session tools through you mcp serve. Prefer the canonical you.factory_session.* tool names. Compatibility you.workflow.* aliases resolve to the same handlers."
+    },
+    "durableInspection": {
+      "body": "Durable inspection uses shared Factory Session reads. List or show sessions, read session-scoped events, and use the Factory preview contract for source validation without inventing a separate dynamic-workflow resource type."
+    },
+    "sourceResolution": {
+      "body": "Resolve workflow source from a project root before validation or start. Use you workflow validate with --dir for ordered lookup, --kind for the source kind, and optional --args-schema or --requested-policy JSON when the orchestrator needs those overrides."
+    },
+    "mcpHostConfig": {
+      "body": "Model Context Protocol (MCP) hosts launch you as a stdio child process. Configure command, args, and cwd so the host can discover Factory Session tools and resolve workflow sources from the project root."
+    },
+    "serveModes": {
+      "body": "you mcp serve exposes the same you.factory_session.* tool catalog in both backing modes. Only the execution service behind the tools changes."
+    },
+    "serveModeBoundary": {
+      "body": "Do not combine --runtime with --fixture-catalog. Fixture-backed mode may take --fixture-catalog when the catalog lives outside the discovered project root. Runtime-backed mode resolves sources from the host working directory or an explicit --project-root."
+    }
+  },
+  "links": {
+    "cliMatrixCommandHeader": "Command",
+    "cliMatrixPurposeHeader": "Purpose",
+    "cliValidateCommand": "you workflow validate",
+    "cliValidatePurpose": "Resolve and validate JavaScript workflow source without creating a Factory Session.",
+    "cliStartCommand": "you workflow start",
+    "cliStartPurpose": "Start one durable Factory Session asynchronously and return inspection links.",
+    "cliStatusCommand": "you workflow status",
+    "cliStatusPurpose": "Read durable Factory Session lifecycle status and progress.",
+    "cliResultCommand": "you workflow result",
+    "cliResultPurpose": "Read the durable Factory Session final or partial result.",
+    "cliDispatchesCommand": "you workflow dispatches",
+    "cliDispatchesPurpose": "List durable Dispatch summaries for one Factory Session.",
+    "cliArtifactsCommand": "you workflow artifacts",
+    "cliArtifactsPurpose": "List durable Factory Artifact summaries for one Factory Session.",
+    "cliEventsCommand": "you workflow events",
+    "cliEventsPurpose": "Poll ordered durable Factory Event history for one Factory Session.",
+    "mcpMatrixToolHeader": "Tool",
+    "mcpMatrixPurposeHeader": "Purpose",
+    "mcpListTool": "you.factory_session.list",
+    "mcpListPurpose": "List durable Factory Sessions.",
+    "mcpValidateSourceTool": "you.factory_session.validate_source",
+    "mcpValidateSourcePurpose": "Validate JavaScript orchestrator source through the Factory preview contract.",
+    "mcpStartSyncTool": "you.factory_session.start_sync",
+    "mcpStartSyncPurpose": "Start one sync Factory Session and wait for terminal completion or timeout.",
+    "mcpStartAsyncTool": "you.factory_session.start_async",
+    "mcpStartAsyncPurpose": "Start one async Factory Session for polling.",
+    "mcpGetTool": "you.factory_session.get",
+    "mcpGetPurpose": "Read one durable Factory Session status and progress.",
+    "mcpGetResultTool": "you.factory_session.get_result",
+    "mcpGetResultPurpose": "Read one durable Factory Session result.",
+    "mcpListDispatchesTool": "you.factory_session.list_dispatches",
+    "mcpListDispatchesPurpose": "List Dispatch summaries for one session.",
+    "mcpListArtifactsTool": "you.factory_session.list_artifacts",
+    "mcpListArtifactsPurpose": "List Factory Artifact summaries for one session.",
+    "mcpControlTool": "you.factory_session.control",
+    "mcpControlPurpose": "Apply lifecycle controls such as pause, resume, cancel, or terminate.",
+    "mcpReadEventsTool": "you.factory_session.read_events",
+    "mcpReadEventsPurpose": "Read ordered Factory Session event facts.",
+    "mcpAliasMatrixAliasHeader": "Compatibility alias",
+    "mcpAliasMatrixCanonicalHeader": "Canonical tool",
+    "mcpAliasValidate": "you.workflow.validate",
+    "mcpAliasValidateCanonical": "you.factory_session.validate_source",
+    "mcpAliasRun": "you.workflow.run",
+    "mcpAliasRunCanonical": "you.factory_session.start_sync",
+    "mcpAliasStatus": "you.workflow.status",
+    "mcpAliasStatusCanonical": "you.factory_session.get",
+    "mcpAliasResult": "you.workflow.result",
+    "mcpAliasResultCanonical": "you.factory_session.get_result",
+    "mcpAliasArtifacts": "you.workflow.artifacts",
+    "mcpAliasArtifactsCanonical": "you.factory_session.list_artifacts",
+    "inspectionMatrixSurfaceHeader": "Surface",
+    "inspectionMatrixPurposeHeader": "Purpose",
+    "inspectionSessionList": "you session list",
+    "inspectionSessionListPurpose": "List live Factory Sessions with orchestrator kind on a running host.",
+    "inspectionSessionShow": "you session show",
+    "inspectionSessionShowPurpose": "Show one Factory Session projection, including JavaScript runtime fields when present.",
+    "inspectionEvents": "GET /factory-sessions/{session_id}/events",
+    "inspectionEventsPurpose": "Read the session-scoped Factory Event stream for one Factory Session.",
+    "inspectionPreview": "POST /factories/preview",
+    "inspectionPreviewPurpose": "Validate source and policy through the Factory preview contract without creating a session.",
+    "sourceMatrixKnobHeader": "Knob",
+    "sourceMatrixPurposeHeader": "Purpose",
+    "sourceDirKnob": "--dir / project root",
+    "sourceDirPurpose": "Project root used for ordered workflow source lookup. you workflow validate defaults --dir to factory.",
+    "sourceWorkflowNameKnob": "--kind WORKFLOW_NAME",
+    "sourceWorkflowNamePurpose": "Resolve a named workflow from the project root. Pair with --value for the workflow name.",
+    "sourceInlineWorkflowKnob": "--kind INLINE_WORKFLOW",
+    "sourceInlineWorkflowPurpose": "Validate inline orchestrator source text. Pair with --inline for the JavaScript or TypeScript source.",
+    "sourceArgsSchemaKnob": "--args-schema",
+    "sourceArgsSchemaPurpose": "Optional orchestrator.javascript argsSchema JSON for validation and start contracts.",
+    "sourceRequestedPolicyKnob": "--requested-policy",
+    "sourceRequestedPolicyPurpose": "Optional requested policy override JSON applied through the shared validation and preview contract.",
+    "mcpHostMatrixFieldHeader": "Field",
+    "mcpHostMatrixPurposeHeader": "Purpose",
+    "mcpHostCommandField": "command",
+    "mcpHostCommandPurpose": "Absolute path to the you binary when the host PATH cannot resolve you.",
+    "mcpHostArgsField": "args",
+    "mcpHostArgsPurpose": "mcp serve for fixture-backed default, or mcp serve --runtime for runtime-backed live execution.",
+    "mcpHostCwdField": "cwd",
+    "mcpHostCwdPurpose": "Workflow project root where sources and the durable session fixture catalog resolve.",
+    "serveModeMatrixModeHeader": "Mode",
+    "serveModeMatrixArgsHeader": "Launch args",
+    "serveModeMatrixPurposeHeader": "Purpose",
+    "serveModeFixtureName": "Fixture-backed (default)",
+    "serveModeFixtureArgs": "mcp serve",
+    "serveModeFixturePurpose": "Deterministic durable session fixture catalog for install smoke, fixture-driven polling, and offline host validation.",
+    "serveModeRuntimeName": "Runtime-backed",
+    "serveModeRuntimeArgs": "mcp serve --runtime",
+    "serveModeRuntimePurpose": "Shared durable JavaScript runtime for live INLINE_WORKFLOW execution with real async start, status polling, and result reads.",
+    "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows",
+    "configurationDocs": "Configuration",
+    "cliDocs": "CLI",
+    "harnessSupportDocs": "Harness support"
+  }
+}
