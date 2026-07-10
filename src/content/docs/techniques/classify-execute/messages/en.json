@@ -5,11 +5,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Classify-execute is a two-stage technique: a classify step assigns an item to a known class or route, then an execute step runs the specialist path for that class."
+      "body": "Classify-execute is a two-stage technique for handling mixed work. A classify step assigns an item to a known class or route from a bounded set of labels. An execute step then runs the specialist path for that class—often a tighter prompt, model, or tool set tuned to that route. Classify-execute is not the whole factory runtime, and it is not one agent that both decides the class and does the work in a single undifferentiated pass."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Separating triage from specialized doing lets each execute path use a tighter prompt, model, or tool set instead of one mixed-intent pass for every class."
+      "body": "When one prompt tries to handle every class at once, mixed-intent failures are common: the agent hedges, picks the wrong tools, or blends instructions that belong to different routes. Narrowing the label space first lets each execute path use a tighter prompt, model, or tool set for its class. That separation reduces mixed-intent failures compared with one prompt optimized for every class at once, so triage stays cheap and specialized doing stays focused."
     },
     "howItWorks": {
       "title": "How It Works",

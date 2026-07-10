@@ -32,6 +32,26 @@ describe("classify-execute technique page", () => {
     expect(loadedPage.messages.description).toContain("specialist execute");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
+    const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
+    const whyItMatters = String(
+      loadedPage.messages.sections?.whyItMatters?.body ?? "",
+    );
+    expect(whatItIs).toMatch(/Classify-execute/i);
+    expect(whatItIs).toMatch(/two-stage technique/i);
+    expect(whatItIs).toMatch(/classify step/i);
+    expect(whatItIs).toMatch(/known class or route/i);
+    expect(whatItIs).toMatch(/execute step/i);
+    expect(whatItIs).toMatch(/specialist path/i);
+    expect(whatItIs).toMatch(/not the whole factory runtime/i);
+    expect(whatItIs).toMatch(/single undifferentiated pass/i);
+    expect(whyItMatters).toMatch(/mixed-intent failures/i);
+    expect(whyItMatters).toMatch(/tighter prompt, model, or tool set/i);
+    expect(whyItMatters).toMatch(/every class at once/i);
+    expect(whatItIs).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+    expect(whyItMatters).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
+    );
+
     render(
       <main>
         <ModulePageProviders
@@ -53,5 +73,12 @@ describe("classify-execute technique page", () => {
         name: "Compared To Nearby Techniques",
       }),
     ).toBeTruthy();
+    expect(
+      screen.getByText(/two-stage technique for handling mixed work/i),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(/tighter prompt, model, or tool set for its class/i),
+    ).toBeTruthy();
+    expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });
