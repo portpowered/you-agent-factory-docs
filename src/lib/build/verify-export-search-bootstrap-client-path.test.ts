@@ -1,6 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
+  bakeDocsSearchStaticBootstrapFromEnv,
+  DOCS_SEARCH_API_PATH,
+} from "@/lib/search/docs-search-bootstrap-path";
+import {
   exportClientBundleIncludesBootstrapFrom,
   exportContentReferencesUnprefixedSearchBootstrap,
   resolveExportSearchBootstrapClientFrom,
@@ -14,6 +18,24 @@ describe("verify-export-search-bootstrap-client-path", () => {
       resolveExportSearchBootstrapClientFrom(BUILT_APP_GITHUB_PAGES_BASE_PATH),
     ).toBe(PROJECT_SITE_BOOTSTRAP_FROM);
     expect(resolveExportSearchBootstrapClientFrom("")).toBe("/api/search");
+  });
+
+  test("env bake maps to the same chunk-contract bootstrap path for root vs project-site", () => {
+    const projectSiteBake = bakeDocsSearchStaticBootstrapFromEnv({
+      NEXT_STATIC_EXPORT: "1",
+      GITHUB_PAGES_BASE_PATH: BUILT_APP_GITHUB_PAGES_BASE_PATH,
+    });
+    const rootBake = bakeDocsSearchStaticBootstrapFromEnv({
+      NEXT_STATIC_EXPORT: "1",
+      GITHUB_PAGES_BASE_PATH: "",
+    });
+
+    expect(projectSiteBake).toBe(PROJECT_SITE_BOOTSTRAP_FROM);
+    expect(rootBake).toBe(DOCS_SEARCH_API_PATH);
+    expect(
+      resolveExportSearchBootstrapClientFrom(BUILT_APP_GITHUB_PAGES_BASE_PATH),
+    ).toBe(projectSiteBake);
+    expect(resolveExportSearchBootstrapClientFrom("")).toBe(rootBake);
   });
 
   test("exportClientBundleIncludesBootstrapFrom matches baked bootstrap literals", () => {
@@ -30,6 +52,29 @@ describe("verify-export-search-bootstrap-client-path", () => {
         PROJECT_SITE_BOOTSTRAP_FROM,
       ),
     ).toBe(false);
+  });
+
+  test("chunk contract accepts SWC-inlined return of the project-site bake", () => {
+    const inlinedChunks = `function v(){return"${PROJECT_SITE_BOOTSTRAP_FROM}"}let o="${DOCS_SEARCH_API_PATH}"`;
+    expect(
+      exportClientBundleIncludesBootstrapFrom(
+        inlinedChunks,
+        PROJECT_SITE_BOOTSTRAP_FROM,
+      ),
+    ).toBe(true);
+  });
+
+  test("chunk contract fails when only an unprefixed /api/search bake is present", () => {
+    const unprefixedOnly = 'from:"/api/search",type:"static"';
+    expect(
+      exportClientBundleIncludesBootstrapFrom(
+        unprefixedOnly,
+        PROJECT_SITE_BOOTSTRAP_FROM,
+      ),
+    ).toBe(false);
+    expect(
+      exportContentReferencesUnprefixedSearchBootstrap(unprefixedOnly),
+    ).toBe(true);
   });
 
   test("exportContentReferencesUnprefixedSearchBootstrap detects bare /api/search literals", () => {

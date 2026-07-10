@@ -89,9 +89,15 @@ Use these files when changing search document construction, Orama indexing, or
   path is inlined into `out/_next/static/chunks` (no post-build rewrite).
 * `src/lib/build/verify-export-search-bootstrap-client-path.ts`
   Export-chunk verifier for the baked bootstrap literal.
+* `src/lib/build/verify-project-site-export-consumers.ts`
+  Composite export-consumer gate: project-site chunk content must include
+  `/you-agent-factory-docs/api/search` and fails when only an unprefixed
+  `/api/search` bootstrap bake is present.
 * Focused coverage: `bun run test:website:static-search` (includes
   `docs-search-bootstrap-path`, `export-search-bootstrap`, and
-  `verify-export-search-bootstrap-client-path` tests). Prefer
+  `verify-export-search-bootstrap-client-path` tests) plus
+  `bun run test:website:export-consumers` / `test:build-contract` for the
+  chunk-contract failure when only `/api/search` ships. Prefer
   `BUILT_APP_GITHUB_PAGES_BASE_PATH` over retired `/ai-model-reference`
   fixtures.
 
