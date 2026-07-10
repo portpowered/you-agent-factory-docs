@@ -23,7 +23,8 @@ failing workflow stage with the same `make <target>` locally (see
 | Trigger | `push` to `main` |
 | Install | `make setup` (`bun install --frozen-lockfile`) |
 | Validate stages | `make check`, `make test`, `make build`, `make budget` (same targets as local/CI) |
-| Build entrypoint | `make build` → `bun run build:export` (`NEXT_STATIC_EXPORT=1`) |
+| Build entrypoint | `make build` → `bun run build:export` (`NEXT_STATIC_EXPORT=1`) with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` |
+| Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
 | Quality gates | `.github/workflows/ci.yml` runs `make setup` → `check` → `test` → `build` → `budget` → `component-coverage`; deploy-pages validate does not replace CI |
 
@@ -34,6 +35,23 @@ The **`deploy`** job (`needs: validate`) publishes that artifact via
 
 Atlas/Phase-1 export route verifiers and `make build-export` were retired with
 `rewrite-delete-atlas-domain`. CI and deploy-pages call `make build` only.
+
+### Project-site export base path
+
+The live site is a GitHub Pages **project site** at
+`https://portpowered.github.io/you-agent-factory-docs`. Deploy-pages sets
+`GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the build step so exported
+HTML references `/you-agent-factory-docs/_next` assets rather than bare `/_next`.
+
+Reproduce that artifact locally with the same env:
+
+```sh
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+```
+
+When `GITHUB_PAGES_BASE_PATH` is unset, export builds keep `/` as the base for
+local preview and user/org root Pages sites. The project site requires the
+repository prefix.
 
 ### Why GitHub Pages works for this repository
 
@@ -182,9 +200,11 @@ only.
 
 - Local Makefile targets do not publish status to GitHub; push or open/update a
   PR to surface the **verify** check.
-- `make build` locally produces the same `out/` artifact deploy-pages uploads;
-  it does not push to GitHub Pages. Use `make build` for the static export.
-  Former Phase 1 export route/search verifiers were retired with Atlas deletion.
+- `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` locally produces
+  the same project-site `out/` artifact deploy-pages uploads; it does not push
+  to GitHub Pages. Plain `make build` (unset base path) keeps `/` for local
+  preview. Former Phase 1 export route/search verifiers were retired with Atlas
+  deletion.
 
 ### Matching local and CI
 

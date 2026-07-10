@@ -10,18 +10,33 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Install | `make setup` | `bun install --frozen-lockfile` |
 | Static analysis | `make check` | `typecheck` then `lint` (fails if either fails) |
 | Tests | `make test` | Existing website test entrypoint |
-| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages |
+| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Exported-site budget | `make budget` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
 | Component coverage | `make component-coverage` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
 
 Workflows that call this contract:
 
 - `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → build → budget → component-coverage
-- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build → budget, then upload `out/`
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → budget, then upload `out/`
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
 tests need a browser).
+
+### Project-site export (local match for deploy-pages)
+
+```sh
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+```
+
+Unset `GITHUB_PAGES_BASE_PATH` keeps `/` for local preview and root Pages sites;
+the project site requires the `/you-agent-factory-docs` repository prefix.
+
+After that export, `out/index.html` (and other shipped pages) must reference
+`/you-agent-factory-docs/_next/...` assets — not bare `/_next/...`. Confirm with
+`exportHtmlReferencesBasePathAssets` from `src/lib/build/verify-export-base-path.ts`
+or by grepping the exported HTML for the prefixed asset path. Quality gate for
+this lane: `make check` plus `make test-build-contract`.
 
 ## Key files
 
@@ -32,6 +47,10 @@ tests need a browser).
 | `.github/workflows/deploy-pages.yml` | Main-branch Pages validate + deploy; artifact path `out/` |
 | `docs/operations.md` | Maintainer-facing CI/deploy posture aligned to the Makefile contract |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`) |
+| `src/lib/build/static-export.ts` | Single `normalizeGitHubPagesBasePath` → `basePath` + `assetPrefix` contract; `next.config.ts` spreads `resolveNextConfigForBuildMode()` (no hardcoded Pages prefix) |
+| `src/lib/build/deploy-pages-workflow-contract.test.ts` | Focused build-contract gate: live `deploy-pages.yml` sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on `make build` and uploads `out/` |
+| `src/lib/build/static-export.test.ts` | Focused build-contract gate: `/you-agent-factory-docs` → identical `basePath` + `assetPrefix` |
+| `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` |
 
 ## `make build` vs `make build-export`
 
@@ -77,6 +96,10 @@ failures from `check`, `test`, or the static-export build behind those skips.
 `make test` (`scripts/run-website-functionality-tests.ts` skips `src/tests/ci/`).
 Do not treat those inventory tests as the live workflow contract; prefer
 command-level verification of the Makefile targets and the YAML files above.
+
+Live project-site coverage belongs in `make test-build-contract` /
+`bun run test:build-contract`, which runs `deploy-pages-workflow-contract`,
+`static-export`, and `verify-export-base-path` tests (plus `export-out-directory`).
 
 ## Repository-facing workflow identity
 

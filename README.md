@@ -140,18 +140,20 @@ You do not need to run `fumadocs-mdx` manually. Supported command scripts run
 ## Static export (GitHub Pages)
 
 `make build` runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`) and emits
-`out/`. CI and deploy-pages both call `make build`.
+`out/`. CI calls plain `make build` for verification. Deploy-pages sets
+`GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on its build step so the
+uploaded `out/` matches the project site at
+`https://portpowered.github.io/you-agent-factory-docs`.
 
-For GitHub Pages **project sites** served from
-`https://<org>.github.io/<repo>/`, set `GITHUB_PAGES_BASE_PATH` to the repository
-name when running the export build:
+Reproduce the project-site artifact locally with the same command deploy-pages
+uses:
 
 ```sh
 GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
 ```
 
 When unset, export builds keep `/` as the base for local preview and user/org
-root Pages sites.
+root Pages sites. The project site requires the repository prefix.
 
 ## Docs authoring
 
