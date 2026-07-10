@@ -538,8 +538,10 @@ import { getDocsPageDir } from "@/lib/content/content-paths";
 const pageDir = getDocsPageDir("modules", "grouped-query-attention");
 ```
 
-Supported `section` values: `glossary`, `concepts`, `modules`, `models`,
-`papers`, `training`, `systems`, `guides`, `techniques`, `documentation`.
+Supported `section` values for local-docs dispatch: `glossary`, `concepts`,
+`guides`, `techniques`, `documentation`. Retired Atlas sections (`modules`,
+`models`, `papers`, `training`, `systems`) are not accepted by
+`parseLocalDocsPageRef` / `loadLocalDocsPage`.
 
 When publishing the first authored page under a rewrite-era CLI section
 (`guides`, `techniques`, or `documentation`), also confirm:
@@ -549,7 +551,7 @@ When publishing the first authored page under a rewrite-era CLI section
    with matching `*PageHref` helpers in `src/lib/content/content-hrefs.ts`.
 2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
    `src/lib/content/local-docs-page.ts` include the section, with a matching
-   `*-page.ts` / `*-page-load.ts` pair (same shape as `system-page*`) so
+   `*-page.ts` / `*-page-load.ts` pair (same shape as `guide-page*`) so
    message-backed MDX resolves through `ModulePageProviders`.
 3. `bun run audit:canonical-page-surface -- --page-dir src/content/docs/<section>/<slug> --exception-reason "..."`
    reports `declare-exception` for that first-page wiring (not

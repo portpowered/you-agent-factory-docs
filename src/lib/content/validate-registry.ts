@@ -8,7 +8,6 @@ import {
 } from "@/lib/i18n/locale-routing";
 import { tagPageHref } from "./content-hrefs";
 import { CONTENT_ROOT, DOCS_ROOT } from "./content-paths";
-import { collectTableMessageKeys } from "./module-comparison-table";
 import { assetMessageKeys, loadPageAssets } from "./page-assets-load";
 import {
   getMessageString,
@@ -47,6 +46,7 @@ import {
   resetDerivedShippedLocalizedDocsManifestCache,
   resolveDerivedShippedLocalizedDocsManifest,
 } from "./shipped-localized-docs.server";
+import { collectTableMessageKeys } from "./table-message-keys";
 import { getTableById } from "./table-registry-runtime";
 import { loadTagMessages, TagMessagesLoadError } from "./tag-messages";
 import {

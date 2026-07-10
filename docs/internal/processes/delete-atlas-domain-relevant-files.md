@@ -133,7 +133,18 @@ When merging main after empty-CLI taxonomy lands:
 | `docs/templates/{guide,technique,documentation}.*` | Accept main's CLI templates |
 | `src/content/docs/{guides,techniques,documentation}/.gitkeep` | Accept empty CLI content roots from main |
 
-## Related
+## Story: delete Atlas page loaders / local-docs dispatch
 
-- [ci-deploy-foundation-relevant-files.md](./ci-deploy-foundation-relevant-files.md) — required make targets must not re-chain Atlas verifiers
-- [empty-cli-taxonomy-relevant-files.md](./empty-cli-taxonomy-relevant-files.md) — CLI kinds/templates/empty roots from the sibling lane
+| Path | Role |
+| --- | --- |
+| `src/lib/content/{model,module,paper,training-regime,system}-page*.ts` | Deleted Atlas page + page-load modules |
+| `src/lib/content/{module,system}-shell-render.tsx` | Deleted Atlas shell-render helpers |
+| `src/lib/content/compile-module-mdx.ts` / `module-comparison-table.ts` / `module-test-helpers.ts` | Deleted kind-only helpers; `collectTableMessageKeys` lives in `table-message-keys.ts` |
+| `src/lib/content/local-docs-page.ts` | Factory-only sections: guides, concepts, techniques, documentation, glossary |
+| `src/app/docs/docs-slug-renderer.tsx` | No Atlas section branches (systems FoldedOpeningSummary removed) |
+| `src/lib/navigation/local-docs-toc.test.ts` | Asserts retired Atlas sections are rejected by `parseLocalDocsPageRef` |
+
+Do not reintroduce Atlas section cases in `loadLocalDocsPage`. Empty Atlas
+content/registry trees and live kind contracts are owned by later
+`delete-ai-content-infrastructure` stories.
+
