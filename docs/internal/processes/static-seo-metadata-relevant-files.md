@@ -10,6 +10,8 @@ social assets, sitemap, robots).
 | --- | --- |
 | `src/lib/seo/production-metadata-base.ts` | Production origin + `resolveProductionMetadataBase` / `resolveProductionMetadataHref` |
 | `src/lib/seo/production-metadata-base.test.ts` | Origin/base-path resolution for project-site vs root modes |
+| `src/lib/seo/export-absolute-canonical.ts` | Absolute production canonical HTML checks + export-dir verification for home/docs/blog proof routes |
+| `src/lib/seo/export-absolute-canonical.test.ts` | Fixture + metadata + temp-`out/` proofs that canonicals are absolute under the production origin/base path and never legacy Atlas routes |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
 | `src/lib/navigation/site-metadata-path.ts` | Public-asset / non-Metadata path helpers; do not double-prefix Metadata fields |
@@ -30,6 +32,14 @@ social assets, sitemap, robots).
    double-prefixes under project-site export.
 5. Use `site-metadata-path` helpers for hardcoded `public/` assets and other
    non-Metadata absolute href contexts that do not go through `metadataBase`.
+6. **Absolute canonicals** (story 002): exported HTML must emit
+   `rel=canonical` as an absolute production URL (for example
+   `https://portpowered.github.io/you-agent-factory-docs/docs/concepts/harness`),
+   not a path-prefixed relative href. Use
+   `exportHtmlHasAbsoluteProductionCanonical` /
+   `verifyExportAbsoluteCanonicals` for that stricter check; keep
+   `exportHtmlReferencesPrefixedMetadataHrefs` for base-path consumer proofs
+   that still accept either shape.
 
 ## Sibling lanes
 
