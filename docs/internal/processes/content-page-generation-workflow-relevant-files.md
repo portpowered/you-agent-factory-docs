@@ -413,7 +413,14 @@ When publishing the first authored page under a rewrite-era CLI section
    `redirect-to-throughput-prd`). The audit maps CLI registry kinds
    (`guide` / `technique` / `documentation`) and ignores section-root
    `.gitkeep` when inferring page scope. Repeat the exception reason in the PR
-   conversation comment.
+   conversation comment. Do not add a shared
+   `src/lib/content/local-docs-page.test.ts` for the new section — that path is
+   outside the first-CLI-section allowlist and forces
+   `redirect-to-throughput-prd`. Colocate `parseLocalDocsPageRef` /
+   `isLocalDocsCatchAllSlug` proofs under the page bundle
+   (`src/content/docs/<section>/<slug>/<slug>-page.test.tsx`) instead, and flip
+   `src/tests/content/section-indexes.test.tsx` from empty-state to
+   authored-entry for the default-locale index.
 
 Without (1), `bun run prepare:content-runtime` fails while generating the
 published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to
