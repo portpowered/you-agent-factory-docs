@@ -1558,4 +1558,309 @@ exec "${realBunxPath}" "$@"
     },
     { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
   );
+
+  test(
+    "incremental proof: cache hit leaves contracted outputs byte-identical",
+    () => {
+      clearContentRuntimeFingerprintStore();
+      const seed = runPrepareContentRuntime();
+      expect(seed.status).toBe(0);
+
+      const before = Object.fromEntries(
+        CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => [
+          step.id,
+          readFileSync(join(repoRoot, step.outputPath)),
+        ]),
+      );
+
+      const warm = runPrepareContentRuntime();
+      const warmOutput = `${warm.stdout}\n${warm.stderr}`;
+      expect(warm.status).toBe(0);
+      expect(warmOutput).toContain(
+        `${CONTENT_RUNTIME_PREPARATION_STEPS.length} cache hits`,
+      );
+      expect(warmOutput).not.toContain("[content-runtime] Preparing");
+
+      for (const step of CONTENT_RUNTIME_PREPARATION_STEPS) {
+        expect(readFileSync(join(repoRoot, step.outputPath))).toEqual(
+          before[step.id],
+        );
+      }
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS * 2 },
+  );
+
+  test("incremental proof: schema change invalidates the affected step", async () => {
+    const step = CONTENT_RUNTIME_PREPARATION_STEPS.find(
+      (candidate) => candidate.id === "published-docs-registry",
+    );
+    expect(step).toBeDefined();
+    if (!step) {
+      return;
+    }
+    const inputs = getContentRuntimeStepFingerprintInputs(step.id);
+    expect(inputs).toBeDefined();
+    if (!inputs) {
+      return;
+    }
+
+    const files = new Map<string, string>();
+    const directories = new Set<string>([
+      join(repoRoot, "src/content/docs"),
+      join(repoRoot, "src/lib/content/generated"),
+    ]);
+    for (const relativePath of [
+      ...inputs.inputPaths,
+      ...inputs.generatorPaths,
+      ...inputs.schemaPaths,
+    ]) {
+      if (relativePath === "src/content/docs") {
+        continue;
+      }
+      files.set(join(repoRoot, relativePath), `contents:${relativePath}`);
+    }
+    files.set(join(repoRoot, step.outputPath), "generated-output");
+
+    const dependencies = {
+      fileExists(path: string) {
+        return files.has(path) || directories.has(path);
+      },
+      isDirectory(path: string) {
+        return directories.has(path);
+      },
+      listDirectoryNames(path: string) {
+        if (path === join(repoRoot, "src/content/docs")) {
+          return [];
+        }
+        return [];
+      },
+      readFile(path: string) {
+        const contents = files.get(path);
+        if (contents === undefined) {
+          throw new Error(`missing file ${path}`);
+        }
+        return contents;
+      },
+      writeFile(path: string, contents: string) {
+        files.set(path, contents);
+      },
+      fileSize(path: string) {
+        return files.get(path)?.length ?? 0;
+      },
+    };
+
+    const fingerprint = computeContentRuntimeStepFingerprint(
+      repoRoot,
+      inputs,
+      dependencies,
+    );
+    writeContentRuntimeStepFingerprint(
+      repoRoot,
+      step.id,
+      fingerprint,
+      dependencies,
+    );
+    expect(
+      evaluateContentRuntimeStepCache({
+        cwd: repoRoot,
+        stepId: step.id,
+        outputPath: step.outputPath,
+        fingerprintInputs: inputs,
+        dependencies,
+      }).action,
+    ).toBe("skip");
+
+    const schemaPath = inputs.schemaPaths[0];
+    expect(schemaPath).toBeDefined();
+    if (!schemaPath) {
+      return;
+    }
+    files.set(join(repoRoot, schemaPath), "schema-v2-invalidates");
+
+    const lifecycle: string[] = [];
+    const result = await runContentRuntimePreparation({
+      cwd: repoRoot,
+      steps: [step],
+      log: () => {},
+      logError: () => {},
+      fingerprintDependencies: dependencies,
+      runCommand(command) {
+        lifecycle.push(command.join(" "));
+        return { signal: null, status: 0 };
+      },
+    });
+    expect(result.ok).toBe(true);
+    expect(result.skippedSteps).toEqual([]);
+    expect(lifecycle).toEqual([step.command.join(" ")]);
+  });
+
+  test("incremental proof: empty (corrupt) output regenerates without force-clean", async () => {
+    const step = CONTENT_RUNTIME_PREPARATION_STEPS.find(
+      (candidate) => candidate.id === "table-registry-runtime",
+    );
+    expect(step).toBeDefined();
+    if (!step) {
+      return;
+    }
+    const inputs = getContentRuntimeStepFingerprintInputs(step.id);
+    expect(inputs).toBeDefined();
+    if (!inputs) {
+      return;
+    }
+
+    const files = new Map<string, string>();
+    const directories = new Set<string>([
+      join(repoRoot, "src/content/registry/tables"),
+      join(repoRoot, "src/lib/content/generated"),
+    ]);
+    for (const relativePath of [
+      ...inputs.inputPaths,
+      ...inputs.generatorPaths,
+      ...inputs.schemaPaths,
+    ]) {
+      if (relativePath.endsWith(".ts") || relativePath.endsWith(".tsx")) {
+        files.set(join(repoRoot, relativePath), `contents:${relativePath}`);
+      }
+    }
+    // Corrupt / truncated: present but zero bytes.
+    files.set(join(repoRoot, step.outputPath), "");
+
+    const dependencies = {
+      fileExists(path: string) {
+        return files.has(path) || directories.has(path);
+      },
+      isDirectory(path: string) {
+        return directories.has(path);
+      },
+      listDirectoryNames() {
+        return [];
+      },
+      readFile(path: string) {
+        const contents = files.get(path);
+        if (contents === undefined) {
+          throw new Error(`missing file ${path}`);
+        }
+        return contents;
+      },
+      writeFile(path: string, contents: string) {
+        files.set(path, contents);
+      },
+      fileSize(path: string) {
+        return files.get(path)?.length ?? 0;
+      },
+    };
+
+    const fingerprint = computeContentRuntimeStepFingerprint(
+      repoRoot,
+      inputs,
+      dependencies,
+    );
+    writeContentRuntimeStepFingerprint(
+      repoRoot,
+      step.id,
+      fingerprint,
+      dependencies,
+    );
+
+    const decision = evaluateContentRuntimeStepCache({
+      cwd: repoRoot,
+      stepId: step.id,
+      outputPath: step.outputPath,
+      fingerprintInputs: inputs,
+      dependencies,
+    });
+    expect(decision).toEqual({
+      action: "run",
+      reason: "unusable-output",
+      fingerprint,
+    });
+
+    const lifecycle: string[] = [];
+    const result = await runContentRuntimePreparation({
+      cwd: repoRoot,
+      steps: [step],
+      log: () => {},
+      logError: () => {},
+      fingerprintDependencies: dependencies,
+      runCommand(command) {
+        lifecycle.push(command.join(" "));
+        files.set(join(repoRoot, step.outputPath), "recovered-output");
+        return { signal: null, status: 0 };
+      },
+    });
+    expect(result.ok).toBe(true);
+    expect(result.skippedSteps).toEqual([]);
+    expect(lifecycle).toEqual([step.command.join(" ")]);
+    expect(files.get(join(repoRoot, step.outputPath))).toBe("recovered-output");
+  });
+
+  test(
+    "incremental proof: force-clean outputs are byte-equivalent to incremental regeneration",
+    () => {
+      const forceClean = runPrepareContentRuntime({ forceClean: true });
+      expect(forceClean.status).toBe(0);
+      const forceCleanBytes = Object.fromEntries(
+        CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => [
+          step.id,
+          readFileSync(join(repoRoot, step.outputPath)),
+        ]),
+      );
+
+      // Warm cache-hit path must leave the same bytes.
+      const warm = runPrepareContentRuntime();
+      expect(warm.status).toBe(0);
+      expect(`${warm.stdout}\n${warm.stderr}`).toContain(
+        `${CONTENT_RUNTIME_PREPARATION_STEPS.length} cache hits`,
+      );
+      for (const step of CONTENT_RUNTIME_PREPARATION_STEPS) {
+        expect(readFileSync(join(repoRoot, step.outputPath))).toEqual(
+          forceCleanBytes[step.id],
+        );
+      }
+
+      // Cleared fingerprints force generators to re-run; write-if-changed still
+      // yields byte-identical contracted outputs versus force-clean.
+      clearContentRuntimeFingerprintStore();
+      const regenerated = runPrepareContentRuntime();
+      expect(regenerated.status).toBe(0);
+      expect(`${regenerated.stdout}\n${regenerated.stderr}`).toContain(
+        "0 cache hits",
+      );
+      for (const step of CONTENT_RUNTIME_PREPARATION_STEPS) {
+        expect(readFileSync(join(repoRoot, step.outputPath))).toEqual(
+          forceCleanBytes[step.id],
+        );
+      }
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS * 3 },
+  );
+
+  test(
+    "incremental proof: warm content-runtime stage improves vs force-clean baseline",
+    () => {
+      // Pre-incremental prepares always regenerated (equivalent to force-clean).
+      // Warm fingerprint hits must complete faster on the same machine.
+      const forceCleanStarted = performance.now();
+      const forceClean = runPrepareContentRuntime({ forceClean: true });
+      const forceCleanMs = performance.now() - forceCleanStarted;
+      expect(forceClean.status).toBe(0);
+
+      const warmStarted = performance.now();
+      const warm = runPrepareContentRuntime();
+      const warmMs = performance.now() - warmStarted;
+      const warmOutput = `${warm.stdout}\n${warm.stderr}`;
+      expect(warm.status).toBe(0);
+      expect(warmOutput).toContain(
+        `${CONTENT_RUNTIME_PREPARATION_STEPS.length} cache hits`,
+      );
+      expect(warmOutput).not.toContain("[content-runtime] Preparing");
+
+      // Improvement vs the pre-incremental (always-regenerate) baseline proxy.
+      // Keep the bound loose: fingerprint hashing still costs wall time on warm
+      // runs, so require a clear win without a brittle percentage.
+      expect(warmMs).toBeLessThan(forceCleanMs);
+      expect(warmMs / forceCleanMs).toBeLessThan(0.9);
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS * 3 },
+  );
 });

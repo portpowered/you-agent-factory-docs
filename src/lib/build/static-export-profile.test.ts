@@ -19,8 +19,8 @@ import {
 
 const fixtureCacheReasons = {
   contentRuntimePreparation: {
-    status: "not-applicable" as const,
-    reason: "no-incremental-cache",
+    status: "miss" as const,
+    reason: "clean-mode-regenerates",
   },
   fumadocsGeneration: {
     status: "miss" as const,
@@ -131,7 +131,7 @@ describe("static-export-profile", () => {
     expect(summary).toContain("fingerprintWritingMs=55");
     expect(summary).toContain("totalWallTimeMs=165");
     expect(summary).toContain(
-      "contentRuntimePreparationCache=not-applicable:no-incremental-cache",
+      "contentRuntimePreparationCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
       "fumadocsGenerationCache=miss:source-directory-absent",

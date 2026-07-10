@@ -17,6 +17,8 @@ import {
   type StaticExportProfileScaleCounts,
   type StaticExportScaleCountValue,
 } from "@/lib/build/static-export-profile";
+import { CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH } from "@/lib/content/content-runtime-fingerprints";
+import { CONTENT_RUNTIME_PREPARATION_STEPS } from "@/lib/content/content-runtime-preparation";
 import { defaultLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 
 /** Relative paths used to diagnose warm vs clean cache presence before stages. */
@@ -25,21 +27,30 @@ export const STATIC_EXPORT_CACHE_ARTIFACT_PATHS = {
   sourceDirectory: ".source",
   outDirectory: DEFAULT_EXPORT_OUT_DIR,
   chunksDirectory: `${DEFAULT_EXPORT_OUT_DIR}/_next/static/chunks`,
+  contentRuntimeFingerprintStore: CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH,
 } as const;
 
 export type PathExistsFn = (path: string) => boolean;
 export type ReadDirectoryNamesFn = (path: string) => readonly string[];
 export type IsDirectoryFn = (path: string) => boolean;
+export type FileSizeFn = (path: string) => number;
 
 export type StaticExportCacheArtifactSnapshot = {
   nextCacheDirectoryPresent: boolean;
   sourceDirectoryPresent: boolean;
   outDirectoryPresent: boolean;
+  /** Fingerprint store from a prior prepare:content-runtime. */
+  contentRuntimeFingerprintStorePresent: boolean;
+  /** All contracted content-runtime outputs exist and are non-empty. */
+  contentRuntimeOutputsPresent: boolean;
 };
 
 export type CollectCacheArtifactSnapshotOptions = {
   cwd: string;
   pathExists?: PathExistsFn;
+  fileSize?: FileSizeFn;
+  /** Override contracted output paths (tests). Defaults to preparation steps. */
+  contentRuntimeOutputPaths?: readonly string[];
 };
 
 export type CollectScaleCountsOptions = {
@@ -63,6 +74,32 @@ function defaultIsDirectory(path: string): boolean {
   }
 }
 
+function defaultFileSize(path: string): number {
+  return statSync(path).size;
+}
+
+function areContentRuntimeOutputsPresent(
+  cwd: string,
+  outputPaths: readonly string[],
+  pathExists: PathExistsFn,
+  fileSize: FileSizeFn,
+): boolean {
+  for (const relativePath of outputPaths) {
+    const absolutePath = join(cwd, relativePath);
+    if (!pathExists(absolutePath)) {
+      return false;
+    }
+    try {
+      if (fileSize(absolutePath) <= 0) {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  }
+  return outputPaths.length > 0;
+}
+
 /**
  * Snapshots cache-relevant artifact presence before timed stages run. Used to
  * label hit/miss for stages with observable warm reuse.
@@ -71,6 +108,11 @@ export function collectStaticExportCacheArtifactSnapshot(
   options: CollectCacheArtifactSnapshotOptions,
 ): StaticExportCacheArtifactSnapshot {
   const pathExists = options.pathExists ?? existsSync;
+  const fileSize = options.fileSize ?? defaultFileSize;
+  const contentRuntimeOutputPaths =
+    options.contentRuntimeOutputPaths ??
+    CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => step.outputPath);
+
   return {
     nextCacheDirectoryPresent: pathExists(
       join(options.cwd, STATIC_EXPORT_CACHE_ARTIFACT_PATHS.nextCacheDirectory),
@@ -80,6 +122,18 @@ export function collectStaticExportCacheArtifactSnapshot(
     ),
     outDirectoryPresent: pathExists(
       join(options.cwd, STATIC_EXPORT_CACHE_ARTIFACT_PATHS.outDirectory),
+    ),
+    contentRuntimeFingerprintStorePresent: pathExists(
+      join(
+        options.cwd,
+        STATIC_EXPORT_CACHE_ARTIFACT_PATHS.contentRuntimeFingerprintStore,
+      ),
+    ),
+    contentRuntimeOutputsPresent: areContentRuntimeOutputsPresent(
+      options.cwd,
+      contentRuntimeOutputPaths,
+      pathExists,
+      fileSize,
     ),
   };
 }
@@ -93,14 +147,22 @@ function cacheReason(
 
 /**
  * Derives per-stage cache hit/miss/not-applicable reasons from benchmark mode
- * and the pre-stage artifact snapshot. Stages without incremental cache today
- * report not-applicable rather than inventing a hit.
+ * and the pre-stage artifact snapshot. Content-runtime uses fingerprint +
+ * output presence; stages without incremental cache report not-applicable.
  */
 export function deriveStaticExportCacheReasons(input: {
   mode: StaticExportBenchmarkMode;
   snapshot: StaticExportCacheArtifactSnapshot;
 }): StaticExportProfileCacheReasons {
   const { mode, snapshot } = input;
+
+  const contentRuntimePreparation =
+    mode === "clean"
+      ? cacheReason("miss", "clean-mode-regenerates")
+      : snapshot.contentRuntimeFingerprintStorePresent &&
+          snapshot.contentRuntimeOutputsPresent
+        ? cacheReason("hit", "fingerprint-store-and-outputs-present")
+        : cacheReason("miss", "fingerprint-store-or-outputs-absent");
 
   const fumadocsGeneration =
     mode === "clean" || !snapshot.sourceDirectoryPresent
@@ -113,10 +175,7 @@ export function deriveStaticExportCacheReasons(input: {
       : cacheReason("hit", "next-cache-directory-present");
 
   return {
-    contentRuntimePreparation: cacheReason(
-      "not-applicable",
-      "no-incremental-cache",
-    ),
+    contentRuntimePreparation,
     fumadocsGeneration,
     nextCompilationStaticRendering,
     searchIndexEmission: cacheReason(

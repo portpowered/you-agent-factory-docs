@@ -255,9 +255,19 @@ bun run benchmark:static-export -- --mode=warm
   `runtimeVersion`). Missing optional diagnostics print explicit
   `not-available:…` reasons instead of omitting fields. Summaries never include
   hostname, username, home path, or other identifying fields.
+- Content-runtime cache reasons reflect incremental preparation: clean mode
+  reports `miss:clean-mode-regenerates`; warm mode reports
+  `hit:fingerprint-store-and-outputs-present` when
+  `.content-runtime-fingerprints.json` and all contracted generated outputs are
+  present and non-empty, otherwise `miss:fingerprint-store-or-outputs-absent`.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
 - Focused contract coverage (no full timed export):
   `bun run test:static-export-profile-contract`.
+- Warm unchanged `prepare:content-runtime` (fingerprint cache hits) is the
+  incremental path; force-clean / full regeneration is the pre-incremental
+  baseline proxy for stage comparison. Focused proofs live in
+  `src/tests/ci/content-runtime-preparation.test.ts` (`incremental proof:`
+  cases).
 
 #### Reference machine for the <=180-second clean-build target
 

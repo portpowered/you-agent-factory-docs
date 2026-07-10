@@ -366,8 +366,9 @@ export function clearContentRuntimeFingerprints(
 }
 
 /**
- * Output is usable when it exists and has non-zero size. Deeper corrupt
- * recovery belongs to later incremental-proof stories.
+ * Output is usable when it exists and has non-zero size. Empty (corrupt /
+ * truncated) files are treated as unusable so the next default prepare
+ * regenerates without requiring force-clean.
  */
 export function isContentRuntimeOutputUsable(
   cwd: string,

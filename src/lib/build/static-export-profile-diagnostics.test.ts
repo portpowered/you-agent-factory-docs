@@ -8,19 +8,21 @@ import {
 } from "./static-export-profile-diagnostics";
 
 describe("static-export-profile-diagnostics", () => {
-  test("clean mode reports miss for fumadocs and next cache stages", () => {
+  test("clean mode reports miss for content-runtime, fumadocs, and next cache stages", () => {
     const reasons = deriveStaticExportCacheReasons({
       mode: "clean",
       snapshot: {
         nextCacheDirectoryPresent: false,
         sourceDirectoryPresent: false,
         outDirectoryPresent: false,
+        contentRuntimeFingerprintStorePresent: true,
+        contentRuntimeOutputsPresent: true,
       },
     });
 
     expect(reasons.contentRuntimePreparation).toEqual({
-      status: "not-applicable",
-      reason: "no-incremental-cache",
+      status: "miss",
+      reason: "clean-mode-regenerates",
     });
     expect(reasons.fumadocsGeneration).toEqual({
       status: "miss",
@@ -41,9 +43,15 @@ describe("static-export-profile-diagnostics", () => {
         nextCacheDirectoryPresent: true,
         sourceDirectoryPresent: true,
         outDirectoryPresent: true,
+        contentRuntimeFingerprintStorePresent: true,
+        contentRuntimeOutputsPresent: true,
       },
     });
 
+    expect(reasons.contentRuntimePreparation).toEqual({
+      status: "hit",
+      reason: "fingerprint-store-and-outputs-present",
+    });
     expect(reasons.fumadocsGeneration).toEqual({
       status: "hit",
       reason: "source-directory-present",
@@ -54,22 +62,86 @@ describe("static-export-profile-diagnostics", () => {
     });
   });
 
-  test("cache artifact snapshot uses injectable pathExists", () => {
+  test("warm mode reports content-runtime miss when fingerprint store or outputs are absent", () => {
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: false,
+          contentRuntimeOutputsPresent: true,
+        },
+      }).contentRuntimePreparation,
+    ).toEqual({
+      status: "miss",
+      reason: "fingerprint-store-or-outputs-absent",
+    });
+
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: false,
+        },
+      }).contentRuntimePreparation,
+    ).toEqual({
+      status: "miss",
+      reason: "fingerprint-store-or-outputs-absent",
+    });
+  });
+
+  test("cache artifact snapshot uses injectable pathExists and fileSize", () => {
     const present = new Set([
       "/repo/.next/cache",
       "/repo/.source",
       "/repo/out",
+      "/repo/src/lib/content/generated/.content-runtime-fingerprints.json",
+      "/repo/src/lib/content/generated/a.generated.ts",
+      "/repo/src/lib/content/generated/b.generated.ts",
+    ]);
+    const sizes = new Map([
+      ["/repo/src/lib/content/generated/a.generated.ts", 12],
+      ["/repo/src/lib/content/generated/b.generated.ts", 8],
     ]);
     const snapshot = collectStaticExportCacheArtifactSnapshot({
       cwd: "/repo",
       pathExists: (path) => present.has(path),
+      fileSize: (path) => sizes.get(path) ?? 0,
+      contentRuntimeOutputPaths: [
+        "src/lib/content/generated/a.generated.ts",
+        "src/lib/content/generated/b.generated.ts",
+      ],
     });
 
     expect(snapshot).toEqual({
       nextCacheDirectoryPresent: true,
       sourceDirectoryPresent: true,
       outDirectoryPresent: true,
+      contentRuntimeFingerprintStorePresent: true,
+      contentRuntimeOutputsPresent: true,
     });
+  });
+
+  test("cache artifact snapshot treats empty content-runtime outputs as absent", () => {
+    const present = new Set([
+      "/repo/src/lib/content/generated/.content-runtime-fingerprints.json",
+      "/repo/src/lib/content/generated/a.generated.ts",
+    ]);
+    const snapshot = collectStaticExportCacheArtifactSnapshot({
+      cwd: "/repo",
+      pathExists: (path) => present.has(path),
+      fileSize: () => 0,
+      contentRuntimeOutputPaths: ["src/lib/content/generated/a.generated.ts"],
+    });
+
+    expect(snapshot.contentRuntimeFingerprintStorePresent).toBe(true);
+    expect(snapshot.contentRuntimeOutputsPresent).toBe(false);
   });
 
   test("scale counts report routes, locales, and major bundles from fixtures", () => {
