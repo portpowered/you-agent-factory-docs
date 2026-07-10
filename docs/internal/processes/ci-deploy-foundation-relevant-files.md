@@ -110,6 +110,11 @@ to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —
 do not invent a second prefix mechanism beside `normalizeGitHubPagesBasePath` /
 `withBasePath`.
 
+Search bootstrap path consumers (`docs-search-bootstrap-path`, export-search
+bootstrap emit/verify, and the baked `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM`
+client path) are covered by `bun run test:website:static-search`. Those fixtures
+must also use the live project-site prefix, not retired `/ai-model-reference`.
+
 ## Repository-facing workflow identity
 
 - Live workflow display names are project-neutral: `CI` and `Deploy GitHub Pages`

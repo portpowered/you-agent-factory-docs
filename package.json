@@ -29,7 +29,7 @@
     "test:full-fast": "bun ./scripts/run-fast-tests.ts",
     "pretest:website": "bun run prepare:content-runtime && fumadocs-mdx",
     "test:website": "bun ./scripts/run-website-functionality-tests.ts",
-    "test:website:static-search": "bun test src/lib/build/export-search-bootstrap.test.ts src/lib/build/verify-export-search-bootstrap-client-path.test.ts",
+    "test:website:static-search": "bun test src/lib/search/docs-search-bootstrap-path.test.ts src/lib/build/export-search-bootstrap.test.ts src/lib/build/verify-export-search-bootstrap-client-path.test.ts",
     "pretest:build-contract": "bun run prepare:content-runtime && fumadocs-mdx",
     "test:build-contract": "bun test src/lib/build/export-out-directory.test.ts src/lib/build/verify-export-base-path.test.ts src/lib/build/static-export.test.ts src/lib/build/deploy-pages-workflow-contract.test.ts src/lib/build/built-app-html-paths.test.ts src/lib/navigation/site-path.test.ts",
     "pretest:verify-contract": "bun run prepare:content-runtime && fumadocs-mdx",
