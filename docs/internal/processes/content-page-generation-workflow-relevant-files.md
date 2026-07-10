@@ -695,6 +695,21 @@ Orient from `you workflow validate --help` and `you docs mcp-hosts`. Stay at
 dynamic-workflow configuration depth; do not absorb the full Petri
 `factory.json` topology owned by the configuration documentation page.
 
+### Documentation dynamic-workflows limits and sibling discovery (page-local)
+
+For `documentation/dynamic-workflows`, keep `#limits-and-assumptions` as the
+scope boundary: web reference for JavaScript dynamic-workflow API interface and
+configuration only — not the Cursor first-loop guide, not the full MCP host
+catalog deep dive beyond dynamic-workflow needs, and not the Petri
+`factory.json` topology overview. Keep the page isolation-first: sibling links
+aid discovery but must not be required to define the topic.
+
+Wire reviewer-visible next steps with page-local `<LocalizedLinkList>` and
+`links.*` labels under `#how-to-use` (Cursor dynamic-workflows guide,
+configuration, CLI, harness support). Leave registry `relatedIds` empty for
+guide and documentation targets while related-runtime omits those kinds;
+keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
+
 ## Core content paths
 
 * `src/lib/content/content-paths.ts`
