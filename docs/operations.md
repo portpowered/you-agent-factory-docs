@@ -225,6 +225,36 @@ make component-coverage
 That sequence matches `.github/workflows/ci.yml`, so a local green run is the
 practical preflight for the **verify** check contributors see on GitHub.
 
+### Local static-export benchmark (optional profiling)
+
+To compare clean versus warm local static-export timings without changing the
+CI/Pages `make build` path, use the opt-in benchmark:
+
+```sh
+make setup
+make benchmark-static-export MODE=clean
+make benchmark-static-export MODE=warm
+```
+
+Equivalent package scripts:
+
+```sh
+bun run benchmark:static-export -- --mode=clean
+bun run benchmark:static-export -- --mode=warm
+```
+
+- **Clean** leaves dependencies installed and removes `.next`, `out`, `.source`,
+  and ignored generated content-runtime outputs before the measured profiled
+  export.
+- **Warm** is an unchanged repeat: it does not wipe those artifacts.
+- Each successful run prints a stable timing summary that includes `mode=clean`
+  or `mode=warm`, per-stage wall times, and `totalWallTimeMs`.
+- Ordinary `make build` / `bun run build:export` stay uninstrumented.
+
+See
+[ci-deploy-foundation-relevant-files.md](./internal/processes/ci-deploy-foundation-relevant-files.md)
+for the file map.
+
 ### Governance audit reviewer path
 
 Checklist mechanism coverage for Phase 1 governance passes is recorded in

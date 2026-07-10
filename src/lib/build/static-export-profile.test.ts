@@ -6,6 +6,8 @@ import {
   isStaticExportProfilingEnabled,
   measureWallTimeMs,
   PROFILE_STATIC_EXPORT_ENV,
+  resolveStaticExportBenchmarkMode,
+  STATIC_EXPORT_BENCHMARK_MODE_ENV,
   STATIC_EXPORT_PROFILE_STAGE_COMMANDS,
   STATIC_EXPORT_PROFILE_STAGE_IDS,
 } from "./static-export-profile";
@@ -57,7 +59,7 @@ describe("static-export-profile", () => {
     expect(elapsed).toBe(40);
   });
 
-  test("timing summary includes required stage fields and total wall time", () => {
+  test("timing summary includes mode label, required stage fields, and total wall time", () => {
     const timings = finalizeProfileTimings(
       {
         ...createEmptyStageTimingsMs(),
@@ -70,14 +72,31 @@ describe("static-export-profile", () => {
       165,
     );
 
-    const summary = formatStageTimingSummary(timings);
+    const summary = formatStageTimingSummary({ mode: "clean", timings });
 
     expect(summary).toContain("static-export-profile");
+    expect(summary).toContain("mode=clean");
     expect(summary).toContain("contentRuntimePreparationMs=11");
     expect(summary).toContain("fumadocsGenerationMs=22");
     expect(summary).toContain("nextCompilationStaticRenderingMs=33");
     expect(summary).toContain("searchIndexEmissionMs=44");
     expect(summary).toContain("fingerprintWritingMs=55");
     expect(summary).toContain("totalWallTimeMs=165");
+  });
+
+  test("resolveStaticExportBenchmarkMode prefers CLI over env", () => {
+    expect(
+      resolveStaticExportBenchmarkMode(
+        { [STATIC_EXPORT_BENCHMARK_MODE_ENV]: "warm" },
+        "clean",
+      ),
+    ).toBe("clean");
+    expect(
+      resolveStaticExportBenchmarkMode({
+        [STATIC_EXPORT_BENCHMARK_MODE_ENV]: "warm",
+      }),
+    ).toBe("warm");
+    expect(resolveStaticExportBenchmarkMode({})).toBeNull();
+    expect(resolveStaticExportBenchmarkMode({}, "nope")).toBeNull();
   });
 });

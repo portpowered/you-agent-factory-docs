@@ -5,6 +5,7 @@ import {
   formatStageTimingSummary,
   measureWallTimeMs,
   STATIC_EXPORT_PROFILE_STAGE_COMMANDS,
+  type StaticExportBenchmarkMode,
   type StaticExportProfileClock,
   type StaticExportProfileStageCommand,
   type StaticExportProfileStageId,
@@ -27,6 +28,11 @@ export type ProfiledStaticExportSpawn = (
 export type RunProfiledStaticExportOptions = {
   cwd: string;
   env?: Record<string, string | undefined>;
+  /**
+   * Benchmark mode label printed in the timing summary. Defaults to `warm`
+   * when the caller did not run clean prep (e.g. `build:export:profile`).
+   */
+  mode?: StaticExportBenchmarkMode;
   /** Injectable stage list for tests; defaults to the production stage commands. */
   stages?: readonly StaticExportProfileStageCommand[];
   spawn?: ProfiledStaticExportSpawn;
@@ -40,6 +46,7 @@ export type RunProfiledStaticExportResult = {
   ok: boolean;
   status: number | null;
   failedStageId: StaticExportProfileStageId | null;
+  mode: StaticExportBenchmarkMode;
   timings: StaticExportProfileTimings;
   summary: string;
   stdout: string;
@@ -85,6 +92,7 @@ export function runProfiledStaticExport(
   const clock = options.clock ?? (() => performance.now());
   const log = options.log ?? ((message: string) => console.log(message));
   const printSummary = options.printSummary ?? true;
+  const mode = options.mode ?? "warm";
 
   const baseEnv = {
     ...process.env,
@@ -140,7 +148,7 @@ export function runProfiledStaticExport(
   }, clock);
 
   const timings = finalizeProfileTimings(stageTimingsMs, totalWallTimeMs);
-  const summary = formatStageTimingSummary(timings);
+  const summary = formatStageTimingSummary({ mode, timings });
 
   if (printSummary) {
     log(summary);
@@ -150,6 +158,7 @@ export function runProfiledStaticExport(
     ok: failedStageId === null && status === 0,
     status,
     failedStageId,
+    mode,
     timings,
     summary,
     stdout: stdoutChunks.join(""),

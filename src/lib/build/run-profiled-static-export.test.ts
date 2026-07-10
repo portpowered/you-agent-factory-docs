@@ -51,8 +51,31 @@ describe("runProfiledStaticExport", () => {
     expect(result.timings.searchIndexEmission).toBe(10);
     expect(result.timings.fingerprintWriting).toBe(10);
     expect(result.timings.totalWallTimeMs).toBe(50);
+    expect(result.mode).toBe("warm");
+    expect(result.summary).toContain("mode=warm");
     expect(result.summary).toContain("contentRuntimePreparationMs=10");
     expect(result.summary).toContain("totalWallTimeMs=50");
+  });
+
+  test("includes the requested clean mode label in the timing summary", () => {
+    let nowMs = 0;
+    const spawn: ProfiledStaticExportSpawn = () => {
+      nowMs += 1;
+      return { status: 0, signal: null, stdout: "", stderr: "" };
+    };
+
+    const result = runProfiledStaticExport({
+      cwd: repoRoot,
+      mode: "clean",
+      stages: stubStages(),
+      spawn,
+      clock: () => nowMs,
+      printSummary: false,
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.mode).toBe("clean");
+    expect(result.summary).toContain("mode=clean");
   });
 
   test("stops at the first failing stage and still returns a timing summary", () => {
@@ -105,6 +128,12 @@ describe("runProfiledStaticExport", () => {
     );
     expect(packageJson.scripts["build:export:profile"]).toContain(
       "run-profiled-static-export-build.ts",
+    );
+    expect(packageJson.scripts["benchmark:static-export"]).toContain(
+      "PROFILE_STATIC_EXPORT=1",
+    );
+    expect(packageJson.scripts["benchmark:static-export"]).toContain(
+      "run-static-export-benchmark.ts",
     );
   });
 });
