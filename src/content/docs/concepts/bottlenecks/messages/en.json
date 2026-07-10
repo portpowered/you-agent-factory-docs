@@ -5,11 +5,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A factory bottleneck is the stage or resource that limits overall you-agent-factory throughput even when other stages have spare capacity."
+      "body": "A factory bottleneck is the stage or resource that limits overall you-agent-factory throughput even when other stages have spare capacity. In a long-running factory, work moves through queues, workers or workstations, harness and tool calls, and shared resources such as tokens or context. Throughput for the whole run is set by the slowest or scarcest of those stages—not by how much spare capacity sits elsewhere. A saturated work queue, too few workers, slow harness or tool calls, or contention on a shared resource can each be the bottleneck while neighboring stages sit idle."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Finding the bottleneck focuses capacity and configuration changes on the stage that actually caps the factory, instead of adding agents where spare capacity already exists."
+      "body": "Adding more agents does not raise end-to-end throughput when the queue or a shared resource is already saturated—the new agents wait on the same limiting stage. Finding the factory bottleneck focuses capacity and configuration changes on the stage that actually caps the run, so you spend effort where it moves finished work instead of where spare capacity already exists."
     },
     "simpleExample": {
       "title": "Simple Example",

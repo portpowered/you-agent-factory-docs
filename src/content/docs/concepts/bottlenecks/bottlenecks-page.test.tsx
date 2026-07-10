@@ -82,6 +82,14 @@ describe("bottlenecks concept page", () => {
 
     expect(whatItIs?.textContent).toMatch(/factory bottleneck/i);
     expect(whatItIs?.textContent).toMatch(/throughput/i);
+    expect(whatItIs?.textContent).toMatch(/spare capacity/i);
+    expect(whatItIs?.textContent).toMatch(
+      /saturated work queue|slow harness|shared resource/i,
+    );
+    expect(whyItMatters?.textContent).toMatch(/adding more agents/i);
+    expect(whyItMatters?.textContent).toMatch(/limiting stage/i);
+    expect(whyItMatters?.textContent).not.toMatch(/on this page/i);
+    expect(whyItMatters?.textContent).not.toMatch(/Model Atlas/i);
     expect(document.querySelector("[data-page-asset]")).toBeNull();
     expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
   });
