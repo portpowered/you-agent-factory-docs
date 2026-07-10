@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { renderSearchPage } from "@/app/(site)/site-renderers";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
+import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
 import { resolveMetadataLocale } from "../localized-shell-metadata";
 
 type LocalizedSearchPageProps = {
@@ -15,11 +16,11 @@ export async function generateMetadata({
   const locale = await resolveMetadataLocale(params);
   const messages = await loadUiMessages(locale);
 
-  return {
+  return withPageOpenGraph({
     title: messages.searchEntry.title,
     description: messages.searchEntry.description,
     alternates: localizedRouteAlternates({ surface: "search" }),
-  };
+  });
 }
 
 export default async function LocalizedSearchPage({

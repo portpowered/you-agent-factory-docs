@@ -5,6 +5,7 @@ import {
   DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
 import { createRelativeLink } from "fumadocs-ui/mdx";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ComponentProps, ComponentType } from "react";
 import { DocsAutoLinkedDescription } from "@/features/docs/components/DocsAutoLinkedDescription";
@@ -19,6 +20,7 @@ import { isDocsPageShippedForLocale } from "@/lib/content/pages";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
+import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
 import { getMDXComponents } from "../../../mdx-components";
 
 type DocsSlugPageBody = ComponentType<{
@@ -167,7 +169,7 @@ export async function renderDocsSlugPage(
 export async function buildDocsPageMetadata(
   slug: string[] | undefined,
   locale: SiteLocale = defaultLocale,
-) {
+): Promise<Metadata> {
   const docsSlug = slug?.join("/");
   if (docsSlug && !isDocsPageShippedForLocale(docsSlug, locale)) {
     notFound();
@@ -180,11 +182,11 @@ export async function buildDocsPageMetadata(
     const page = source.getPage(slug);
     if (page && docsSlug) {
       const loadedPage = await loadLocalDocsPage(localRef, locale);
-      return {
+      return withPageOpenGraph({
         title: loadedPage.messages.title,
         description: loadedPage.messages.description,
         alternates: buildDocsPageAlternates(docsSlug),
-      };
+      });
     }
   }
 
@@ -197,9 +199,19 @@ export async function buildDocsPageMetadata(
     };
   }
 
-  return {
-    title: page.data.title,
-    description: page.data.description,
-    alternates: docsSlug ? buildDocsPageAlternates(docsSlug) : undefined,
-  };
+  const title = page.data.title ?? "Page not found";
+  const description = page.data.description ?? "";
+
+  if (!docsSlug) {
+    return {
+      title,
+      description,
+    };
+  }
+
+  return withPageOpenGraph({
+    title,
+    description,
+    alternates: buildDocsPageAlternates(docsSlug),
+  });
 }

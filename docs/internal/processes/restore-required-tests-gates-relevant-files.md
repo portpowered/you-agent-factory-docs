@@ -167,7 +167,7 @@ Do not reintroduce helpers that call `runStaticExportBuild` from read-only probe
 | --- | --- |
 | `src/lib/ci-required-path.ts` | Shared inventory of `make ci` prerequisites, CI workflow make targets, and shared restored suites |
 | `src/lib/ci-required-path.test.ts` | Proves Makefile `ci:` and `.github/workflows/ci.yml` stay aligned on the shared suite set |
-| `src/lib/build/build-contract-required-test-paths.ts` | Explicit build-contract path list + `make test-build-contract` reproduction command |
+| `src/lib/build/build-contract-required-test-paths.ts` | Explicit build-contract path list + `make test-build-contract` reproduction command (include SEO focused tests under `src/lib/seo/` when that lane lands) |
 | `scripts/run-build-contract-required-tests.ts` | Runner for `bun run test:build-contract`; prints reproduction command on failure |
 | `Makefile` `ci:` | Local full required path: suites through `build` → `test-integration` → `budget` → `component-coverage` → `validate-data` → `linkcheck` |
 | `.github/workflows/ci.yml` | Same restored suites as `make ci` (uses `make check` instead of separate lint/typecheck) |

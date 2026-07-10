@@ -1,7 +1,8 @@
+import type { Metadata } from "next";
 import { renderBlogPostPage } from "@/app/(site)/site-renderers";
 import { blogPostHref, listBlogSlugs } from "@/lib/content/blog-page-load";
 import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
-import { resolveSiteAbsoluteHref } from "@/lib/navigation/site-metadata-path";
+import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -11,7 +12,9 @@ export function generateStaticParams() {
   return listBlogSlugs().map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({ params }: BlogPostPageProps) {
+export async function generateMetadata({
+  params,
+}: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   const published = await getPublishedBlogPostBySlug(slug);
 
@@ -19,13 +22,14 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     return {};
   }
 
-  return {
+  return withPageOpenGraph({
     title: published.messages.title,
     description: published.messages.description,
     alternates: {
-      canonical: resolveSiteAbsoluteHref(blogPostHref(slug)),
+      // App-relative: root metadataBase owns production origin + base path.
+      canonical: blogPostHref(slug),
     },
-  };
+  });
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {

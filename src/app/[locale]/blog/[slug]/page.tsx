@@ -9,7 +9,7 @@ import {
   generateStaticLocaleParams,
   resolveRouteLocaleOrNotFound,
 } from "@/lib/i18n/route-locale";
-import { resolveSiteAbsoluteHref } from "@/lib/navigation/site-metadata-path";
+import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
 
 type LocalizedBlogPostPageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -52,13 +52,14 @@ export async function generateMetadata({
     return {};
   }
 
-  return {
+  return withPageOpenGraph({
     title: published.messages.title,
     description: published.messages.description,
     alternates: {
-      canonical: resolveSiteAbsoluteHref(blogPostHref(slug, locale)),
+      // App-relative: root metadataBase owns production origin + base path.
+      canonical: blogPostHref(slug, locale),
     },
-  };
+  });
 }
 
 export default async function LocalizedBlogPostPage({

@@ -19,6 +19,17 @@ export const BUILD_CONTRACT_REQUIRED_TEST_PATHS = [
   "src/lib/navigation/site-navigation-href.test.ts",
   "src/lib/navigation/site-metadata-path.test.ts",
   "src/lib/i18n/route-locale.test.ts",
+  "src/lib/seo/production-metadata-base.test.ts",
+  "src/lib/seo/export-absolute-canonical.test.ts",
+  "src/lib/seo/page-open-graph.test.ts",
+  "src/lib/seo/export-page-open-graph.test.ts",
+  "src/lib/seo/social-preview-assets.test.ts",
+  "src/lib/seo/export-social-preview-images.test.ts",
+  "src/lib/seo/export-localized-alternates.test.ts",
+  "src/lib/seo/public-sitemap-routes.test.ts",
+  "src/lib/seo/export-sitemap.test.ts",
+  "src/lib/seo/export-robots.test.ts",
+  "src/lib/seo/verify-export-seo-discovery.test.ts",
 ] as const;
 
 export const BUILD_CONTRACT_REQUIRED_SUITE_COMMAND = "make test-build-contract";

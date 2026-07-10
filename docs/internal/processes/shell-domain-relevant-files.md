@@ -79,13 +79,20 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
   Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
   routes via shared `withBasePath`.
+* `src/lib/seo/production-metadata-base.ts` / `production-metadata-base.test.ts`
+  Production origin + `metadataBase` resolution. Project-site export uses
+  `https://portpowered.github.io/you-agent-factory-docs`; root / unset stays
+  origin-only. Compose absolute SEO URLs with `resolveProductionMetadataHref`.
 * `src/lib/navigation/site-metadata-path.ts` / `site-metadata-path.test.ts`
-  Canonical/hreflang and public-asset absolute href helpers (`resolveSiteAbsoluteHref`,
-  `resolvePublicAssetHref`, `prefixMetadataAlternates`). Next Metadata does not
-  auto-apply `basePath` — use these instead of hardcoding root paths.
+  Public-asset and non-Metadata absolute href helpers (`resolveSiteAbsoluteHref`,
+  `resolvePublicAssetHref`, `prefixMetadataAlternates`). Metadata canonical /
+  hreflang fields should stay app-relative under root `metadataBase` — do not
+  also prefix those fields or project-site export double-prefixes.
 * `src/lib/i18n/route-locale.ts` (`localizedRouteAlternates`)
-  Shared metadata alternates consumer; project-site export prefixes through
-  `resolveGitHubPagesBasePath` + `prefixMetadataAlternates`.
+  Shared metadata alternates consumer; emits app-relative hrefs so root
+  `metadataBase` owns production origin + base path.
+* `src/app/root-layout.shared.tsx` (`siteMetadata.metadataBase`)
+  Wires `resolveProductionMetadataBase()` into every shell layout metadata.
 
 ## AI shell parity regression
 
