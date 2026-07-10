@@ -134,8 +134,9 @@ describe("localized route metadata alternates", () => {
 
     expect(jaSearchMetadata.title).toBe("検索");
     expect(jaSearchMetadata.description).toBe(
-      "タイトル、別名、タグで Model Atlas を検索します。検索コントロールを使ってモジュール、概念、用語集の項目へ移動できます。",
+      "タイトル、別名、タグで you-agent-factory のドキュメントを検索します。検索コントロールを使ってガイド、概念、技法、ドキュメント、用語集の項目へ移動できます。",
     );
+    expect(String(jaSearchMetadata.description)).not.toMatch(/Model Atlas/i);
 
     expect(jaArchitectureMetadata.title).toBe("アーキテクチャ");
     expect(jaGlossaryMetadata.title).toBe("用語集");

@@ -3,7 +3,7 @@
     "open": "Mở tìm kiếm",
     "placeholder": "Tìm trong you-agent-factory…",
     "close": "Đóng tìm kiếm",
-    "idle": "Nhập truy vấn để tìm module, mục thuật ngữ, và thẻ.",
+    "idle": "Nhập truy vấn để tìm hướng dẫn, khái niệm, kỹ thuật, tài liệu, mục thuật ngữ, và thẻ.",
     "noResults": "Không tìm thấy kết quả.",
     "loading": "Đang tìm…",
     "error": "Tìm kiếm hiện tạm thời chưa khả dụng. Không thể tải chỉ mục.",
@@ -37,7 +37,7 @@
   },
   "searchEntry": {
     "title": "Tìm kiếm",
-    "description": "Tìm trong Model Atlas theo tiêu đề, tên gọi khác, hoặc thẻ. Dùng ô tìm kiếm để chuyển nhanh tới module, khái niệm, và mục thuật ngữ.",
+    "description": "Tìm trong tài liệu you-agent-factory theo tiêu đề, tên gọi khác, hoặc thẻ. Dùng ô tìm kiếm để chuyển nhanh tới hướng dẫn, khái niệm, kỹ thuật, tài liệu, và mục thuật ngữ.",
     "canonicalNote": "URL tìm kiếm chuẩn là /search. Các liên kết chuyển tiếp có thể thêm ?q=<term>; theo thẻ có thể thêm ?tag=<slug>; theo phân loại có thể thêm ?classification=<id-or-slug> (ví dụ /search?classification=activation).",
     "tagFilterDescription": "Đang hiển thị kết quả cho các tài nguyên gắn thẻ {tag}.",
     "classificationScopeDescription": "Đang hiển thị kết quả trong phân loại {classification}.",
@@ -49,7 +49,7 @@
   },
   "shell": {
     "sidebarTitle": "Tham chiếu",
-    "sidebarDescription": "Duyệt module, khái niệm, và thẻ.",
+    "sidebarDescription": "Duyệt hướng dẫn, khái niệm, kỹ thuật, tài liệu, và thẻ.",
     "onThisPage": "Trên trang này",
     "openingSummary": "Tóm tắt mở đầu"
   },
@@ -117,7 +117,7 @@
   },
   "conceptsIndex": {
     "title": "Khái niệm",
-    "description": "Các trang khái niệm đã xuất bản giải thích những ý tưởng rộng hơn xuất hiện trên nhiều mô hình và module, như mẫu kiến trúc, lượng tử hóa, và đánh đổi của ngữ cảnh dài.",
+    "description": "Các trang khái niệm đã xuất bản giải thích những ý tưởng rộng hơn xuất hiện trên nhiều quy trình factory, như harness, vòng lặp, và bottleneck.",
     "listLabel": "Các mục khái niệm",
     "emptyTitle": "Chưa có mục khái niệm nào",
     "emptyDescription": "Các trang khái niệm đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở Duyệt để khám phá các bộ sưu tập khác.",
@@ -149,31 +149,31 @@
   },
   "glossaryIndex": {
     "title": "Thuật ngữ",
-    "description": "Các thuật ngữ machine learning được định nghĩa ngắn gọn. Mỗi mục liên kết tới một trang thuật ngữ chuẩn khi đã được xuất bản.",
+    "description": "Các định nghĩa ngắn về thuật ngữ factory và CLI. Mỗi mục liên kết tới một trang thuật ngữ chuẩn khi đã được xuất bản.",
     "listLabel": "Các mục thuật ngữ",
     "emptyTitle": "Chưa có mục thuật ngữ nào",
-    "emptyDescription": "Các trang thuật ngữ đã xuất bản sẽ xuất hiện ở đây khi được thêm vào bộ tham chiếu. Trong lúc này, hãy quay lại trang chủ hoặc mở tìm kiếm để khám phá module và thẻ.",
+    "emptyDescription": "Các trang thuật ngữ đã xuất bản sẽ xuất hiện ở đây khi được thêm vào bộ tham chiếu. Trong lúc này, hãy quay lại trang chủ hoặc mở tìm kiếm để khám phá hướng dẫn, khái niệm, và thẻ.",
     "emptyHomeLink": "Về trang chủ"
   },
   "architectureIndex": {
     "title": "Kiến trúc",
-    "description": "Các khái niệm về kiến trúc, họ mô hình, và mẫu thành phần. Mỗi mục liên kết tới một trang tài liệu chuẩn khi đã được xuất bản.",
+    "description": "Các khái niệm kiến trúc về hình dạng hệ thống factory, cấu trúc workstation, và các mẫu liên quan. Mỗi mục liên kết tới một trang tài liệu chuẩn khi đã được xuất bản.",
     "listLabel": "Các mục kiến trúc",
     "emptyTitle": "Chưa có mục kiến trúc nào",
-    "emptyDescription": "Các trang khái niệm kiến trúc đã xuất bản và các trang trong nhóm nội dung kiến trúc sẽ xuất hiện ở đây. Trong lúc này, hãy quay lại trang chủ hoặc mở tìm kiếm để khám phá module và thẻ.",
+    "emptyDescription": "Các trang khái niệm kiến trúc đã xuất bản và các trang trong nhóm nội dung kiến trúc sẽ xuất hiện ở đây. Trong lúc này, hãy quay lại trang chủ hoặc mở tìm kiếm để khám phá hướng dẫn, khái niệm, và thẻ.",
     "emptyHomeLink": "Về trang chủ"
   },
   "blogIndex": {
     "title": "Blog",
-    "description": "Các bài viết kể chuyện kết nối bản phát hành và khái niệm serving với các trang tham chiếu chuẩn.",
+    "description": "Các bài viết kể chuyện kết nối bản phát hành factory và ý tưởng quy trình với các trang tham chiếu chuẩn.",
     "listLabel": "Bài viết blog",
     "emptyTitle": "Chưa có bài viết blog nào",
-    "emptyDescription": "Các bài viết kể chuyện đã xuất bản sẽ xuất hiện ở đây khi được thêm vào atlas. Trong lúc này, hãy quay lại trang chủ hoặc mở tìm kiếm để khám phá mô hình, module, và khái niệm.",
+    "emptyDescription": "Các bài viết kể chuyện đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ hoặc mở tìm kiếm để khám phá hướng dẫn, khái niệm, và kỹ thuật.",
     "emptyHomeLink": "Về trang chủ"
   },
   "tagsIndex": {
     "title": "Thẻ",
-    "description": "Các thẻ được kiểm soát để duyệt chủ đề xuyên suốt module, khái niệm, mô hình, và trang thuật ngữ. Mỗi thẻ liên kết tới một trang đích liệt kê mọi tài nguyên đã xuất bản mang thẻ đó.",
+    "description": "Các thẻ được kiểm soát để duyệt chủ đề xuyên suốt hướng dẫn, khái niệm, kỹ thuật, tài liệu, và trang thuật ngữ. Mỗi thẻ liên kết tới một trang đích liệt kê mọi tài nguyên đã xuất bản mang thẻ đó.",
     "listLabel": "Thẻ theo danh mục"
   },
   "tagLanding": {
@@ -187,27 +187,16 @@
   },
   "tagCategories": {
     "architecture": "Kiến trúc",
-    "module-type": "Loại module",
-    "training": "Huấn luyện",
     "inference": "Suy luận",
     "systems": "Hệ thống",
-    "modality": "Phương thức",
-    "paper-topic": "Chủ đề bài báo",
-    "model-family": "Họ mô hình",
     "difficulty": "Độ khó"
   },
   "pageKind": {
-    "module": "Module",
-    "model": "Mô hình",
     "concept": "Khái niệm",
     "guide": "Hướng dẫn",
     "technique": "Kỹ thuật",
     "documentation": "Tài liệu",
-    "paper": "Bài báo",
     "glossary": "Thuật ngữ",
-    "training": "Huấn luyện",
-    "training-regime": "Huấn luyện",
-    "system": "Hệ thống",
     "blog": "Blog"
   }
 }

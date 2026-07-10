@@ -125,7 +125,13 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
-  `browseIndex` hub + CLI section blurbs. Do not ship retired Atlas
+  `browseIndex` hub + CLI section blurbs. Also keep
+  `search.idle`, `searchEntry.description`, `shell.sidebarDescription`,
+  blog/tags/architecture/glossary index copy, and `pageKind` /
+  `tagCategories` free of Model Atlas / atlas product ownership and
+  retired models/modules/papers/training live-surface labels (keep
+  factory kinds + live tag categories such as `architecture` /
+  `inference`). Do not ship retired Atlas
   `models|modules|papers|training|systems` index blocks, Atlas browse
   section keys (including Model Types / Inference / Module Components),
   retired `/topology` explorer `topologyPrototype` product copy, or

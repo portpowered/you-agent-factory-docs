@@ -27,9 +27,11 @@ describe("search UI messages", () => {
     expect(messages.search.resultPath.length).toBeGreaterThan(0);
   });
 
-  test("formatPageKind resolves module kind for search results", async () => {
+  test("formatPageKind resolves factory kinds for search results", async () => {
     const messages = await loadUiMessages();
-    expect(formatPageKind(messages, "module")).toBe("Module");
+    expect(formatPageKind(messages, "guide")).toBe("Guide");
+    expect(formatPageKind(messages, "concept")).toBe("Concept");
+    expect(formatPageKind(messages, "module")).toBe("module");
   });
 });
 

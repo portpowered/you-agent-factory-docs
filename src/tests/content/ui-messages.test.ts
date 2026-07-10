@@ -99,6 +99,7 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages("vi");
     expect(messages.search.placeholder).toBe("Tìm trong you-agent-factory…");
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.searchEntry.description).not.toMatch(/Model Atlas/i);
     expect(messages.shell.openingSummary).toBe("Tóm tắt mở đầu");
   });
 
@@ -106,6 +107,7 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages("ja");
     expect(messages.search.placeholder).toBe("you-agent-factory を検索…");
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.searchEntry.description).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("ホーム");
     expect(messages.browseIndex.title).toBe("参照");
     expect(messages.shell.openingSummary).toBe("要約を開く");
@@ -117,10 +119,64 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.nav.search).toBe("搜索");
     expect(messages.search.placeholder).toBe("搜索 you-agent-factory…");
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
+    expect(messages.searchEntry.description).not.toMatch(/Model Atlas/i);
     expect(messages.language.selectorLabel).toBe("语言");
     expect(messages.language.locales["zh-CN"]).toBe("简体中文");
     expect(messages.browseIndex.title).toBe("浏览");
     expect(messages.conceptsIndex.title).toBe("概念");
+  });
+
+  it("loads factory-only public search and index copy across shipped locales", async () => {
+    const atlasOwnership =
+      /Model Atlas|\batlas\b|アトラス|图谱|Duyệt Atlas|Browse the Atlas/i;
+    const retiredSurfaceInvite =
+      /\bmodels?\b|\bmodules?\b|\bpapers?\b|\btraining\b|モジュール|モデル|論文|学习|训练|论文|mô hình|module|bài báo|huấn luyện/i;
+
+    for (const locale of ["en", "ja", "zh-CN", "vi"] as const) {
+      const messages = await loadUiMessages(locale);
+      const publicCopy = [
+        messages.search.idle,
+        messages.searchEntry.description,
+        messages.shell.sidebarDescription,
+        messages.conceptsIndex.description,
+        messages.glossaryIndex.description,
+        messages.glossaryIndex.emptyDescription,
+        messages.architectureIndex.description,
+        messages.architectureIndex.emptyDescription,
+        messages.blogIndex.description,
+        messages.blogIndex.emptyDescription,
+        messages.tagsIndex.description,
+      ];
+
+      for (const value of publicCopy) {
+        expect(value).not.toMatch(atlasOwnership);
+      }
+
+      expect(messages.pageKind.concept).toBeTruthy();
+      expect(messages.pageKind.guide).toBeTruthy();
+      expect(messages.pageKind.technique).toBeTruthy();
+      expect(messages.pageKind.documentation).toBeTruthy();
+      expect(messages.pageKind.glossary).toBeTruthy();
+      expect(messages.pageKind.blog).toBeTruthy();
+      expect(messages.pageKind.module).toBeUndefined();
+      expect(messages.pageKind.model).toBeUndefined();
+      expect(messages.pageKind.paper).toBeUndefined();
+      expect(messages.pageKind.training).toBeUndefined();
+      expect(messages.tagCategories["module-type"]).toBeUndefined();
+      expect(messages.tagCategories["paper-topic"]).toBeUndefined();
+      expect(messages.tagCategories["model-family"]).toBeUndefined();
+      expect(messages.tagCategories.training).toBeUndefined();
+
+      // Idle/sidebar/search metadata should invite factory collections, not
+      // retired Atlas product surfaces, without scanning source files.
+      expect(messages.search.idle).not.toMatch(retiredSurfaceInvite);
+      expect(messages.shell.sidebarDescription).not.toMatch(
+        retiredSurfaceInvite,
+      );
+      expect(messages.searchEntry.description).toMatch(
+        /you-agent-factory|ガイド|指南|hướng dẫn|guides|concepts|techniques|documentation|glossary/i,
+      );
+    }
   });
 
   it("includes zh-CN language selector labels across shipped shell locales", async () => {
@@ -154,13 +210,15 @@ describe("loadUiMessages shell keys", () => {
     }
   });
 
-  it("formatPageKind resolves known kinds and falls back for unknown kinds", async () => {
+  it("formatPageKind resolves known factory kinds and falls back for unknown kinds", async () => {
     const messages = await loadUiMessages();
-    expect(formatPageKind(messages, "module")).toBe("Module");
     expect(formatPageKind(messages, "concept")).toBe("Concept");
     expect(formatPageKind(messages, "guide")).toBe("Guide");
     expect(formatPageKind(messages, "technique")).toBe("Technique");
     expect(formatPageKind(messages, "documentation")).toBe("Documentation");
+    expect(formatPageKind(messages, "glossary")).toBe("Glossary");
+    expect(formatPageKind(messages, "blog")).toBe("Blog");
+    expect(formatPageKind(messages, "module")).toBe("module");
     expect(formatPageKind(messages, "not-a-real-kind")).toBe("not-a-real-kind");
   });
 

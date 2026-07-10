@@ -73,8 +73,10 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/features/docs/search/SearchDialog.tsx`
   Dialog input placeholder comes from `messages.search.placeholder`.
 * `src/content/messages/{en,vi,ja,zh-CN}/common.json`
-  Header/dialog search chrome copy. Placeholder must identify
-  `you-agent-factory` (or neutral CLI docs search), not Model Atlas.
+  Header/dialog search chrome and public search metadata
+  (`search.placeholder`, `search.idle`, `searchEntry.description`) must
+  identify you-agent-factory docs (or neutral CLI docs search), not Model
+  Atlas. Prove via `loadUiMessages` / route metadata assertions.
 * `src/components/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).

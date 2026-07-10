@@ -3,7 +3,7 @@
     "open": "検索を開く",
     "placeholder": "you-agent-factory を検索…",
     "close": "検索を閉じる",
-    "idle": "クエリを入力して、モジュール、用語集、タグを検索します。",
+    "idle": "クエリを入力して、ガイド、概念、技法、ドキュメント、用語集、タグを検索します。",
     "noResults": "結果が見つかりませんでした。",
     "loading": "検索中…",
     "error": "検索は一時的に利用できません。インデックスを読み込めませんでした。",
@@ -37,7 +37,7 @@
   },
   "searchEntry": {
     "title": "検索",
-    "description": "タイトル、別名、タグで Model Atlas を検索します。検索コントロールを使ってモジュール、概念、用語集の項目へ移動できます。",
+    "description": "タイトル、別名、タグで you-agent-factory のドキュメントを検索します。検索コントロールを使ってガイド、概念、技法、ドキュメント、用語集の項目へ移動できます。",
     "canonicalNote": "正規の検索エントリ URL: /search。検索クエリの受け渡しでは ?q=<term>、タグでは ?tag=<slug>、分類では ?classification=<id-or-slug> を付けることがあります（例: /search?classification=activation）。",
     "tagFilterDescription": "{tag} タグの付いたリソースの結果を表示しています。",
     "classificationScopeDescription": "{classification} 分類に絞った結果を表示しています。",
@@ -49,7 +49,7 @@
   },
   "shell": {
     "sidebarTitle": "リファレンス",
-    "sidebarDescription": "モジュール、概念、タグを参照します。",
+    "sidebarDescription": "ガイド、概念、技法、ドキュメント、タグを参照します。",
     "onThisPage": "このページ内",
     "openingSummary": "要約を開く"
   },
@@ -117,7 +117,7 @@
   },
   "conceptsIndex": {
     "title": "概念",
-    "description": "公開済みの概念ページでは、アーキテクチャパターン、量子化、長文コンテキストのトレードオフのように、多くのモデルやモジュールにまたがる広い考え方を説明します。",
+    "description": "公開済みの概念ページでは、ハーネス、ループ、ボトルネックのように、多くのファクトリーワークフローにまたがる広い考え方を説明します。",
     "listLabel": "概念項目",
     "emptyTitle": "概念項目はまだありません",
     "emptyDescription": "公開された概念ページは、追加されるとここに表示されます。それまではホームに戻るか、参照を開いて他のコレクションを探索してください。",
@@ -149,31 +149,31 @@
   },
   "glossaryIndex": {
     "title": "用語集",
-    "description": "短い要約付きの機械学習用語です。公開済みの各項目は正規の用語集ページにリンクします。",
+    "description": "ファクトリーと CLI まわりの短い定義です。公開済みの各項目は正規の用語集ページにリンクします。",
     "listLabel": "用語集の項目",
     "emptyTitle": "用語集の項目はまだありません",
-    "emptyDescription": "公開された用語集ページは、このリファレンスに追加されるとここに表示されます。それまではホームに戻るか検索を開いて、モジュールやタグを参照してください。",
+    "emptyDescription": "公開された用語集ページは、このリファレンスに追加されるとここに表示されます。それまではホームに戻るか検索を開いて、ガイド、概念、タグを参照してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "architectureIndex": {
     "title": "アーキテクチャ",
-    "description": "アーキテクチャ関連の概念、モデルファミリー、コンポーネントのパターンです。各項目は公開済みなら正規のドキュメントページにリンクします。",
+    "description": "ファクトリーのシステム形状、ワークステーション構成、関連パターンなど、アーキテクチャ関連の概念です。各項目は公開済みなら正規のドキュメントページにリンクします。",
     "listLabel": "アーキテクチャ項目",
     "emptyTitle": "アーキテクチャ項目はまだありません",
-    "emptyDescription": "公開されたアーキテクチャ概念ページと、architecture コンテンツ群のページがここに表示されます。それまではホームに戻るか検索を開いて、モジュールやタグを参照してください。",
+    "emptyDescription": "公開されたアーキテクチャ概念ページと、architecture コンテンツ群のページがここに表示されます。それまではホームに戻るか検索を開いて、ガイド、概念、タグを参照してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "blogIndex": {
     "title": "Blog",
-    "description": "リリースや serving の概念を正規リファレンスページへつなぐナラティブ投稿です。",
+    "description": "ファクトリーのリリースやワークフローの考え方を正規リファレンスページへつなぐナラティブ投稿です。",
     "listLabel": "ブログ投稿",
     "emptyTitle": "ブログ投稿はまだありません",
-    "emptyDescription": "公開されたナラティブ投稿は、アトラスに追加されるとここに表示されます。それまではホームに戻るか検索を開いて、モデル、モジュール、概念を参照してください。",
+    "emptyDescription": "公開されたナラティブ投稿は、追加されるとここに表示されます。それまではホームに戻るか検索を開いて、ガイド、概念、技法を参照してください。",
     "emptyHomeLink": "ホームに戻る"
   },
   "tagsIndex": {
     "title": "タグ",
-    "description": "モジュール、概念、モデル、用語集ページを横断して参照するための統制タグです。各タグは、そのタグが付いた公開リソースを一覧するランディングページにリンクします。",
+    "description": "ガイド、概念、技法、ドキュメント、用語集ページを横断して参照するための統制タグです。各タグは、そのタグが付いた公開リソースを一覧するランディングページにリンクします。",
     "listLabel": "カテゴリ別タグ"
   },
   "tagLanding": {
@@ -187,27 +187,16 @@
   },
   "tagCategories": {
     "architecture": "アーキテクチャ",
-    "module-type": "モジュール種別",
-    "training": "学習",
     "inference": "推論",
     "systems": "システム",
-    "modality": "モダリティ",
-    "paper-topic": "論文トピック",
-    "model-family": "モデルファミリー",
     "difficulty": "難易度"
   },
   "pageKind": {
-    "module": "モジュール",
-    "model": "モデル",
     "concept": "概念",
     "guide": "ガイド",
     "technique": "手法",
     "documentation": "ドキュメント",
-    "paper": "論文",
     "glossary": "用語集",
-    "training": "学習",
-    "training-regime": "学習",
-    "system": "システム",
     "blog": "ブログ"
   }
 }

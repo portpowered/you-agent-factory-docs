@@ -3,7 +3,7 @@
     "open": "打开搜索",
     "placeholder": "搜索 you-agent-factory…",
     "close": "关闭搜索",
-    "idle": "输入查询以搜索模块、术语表条目和标签。",
+    "idle": "输入查询以搜索指南、概念、技巧、文档、术语表条目和标签。",
     "noResults": "未找到结果。",
     "loading": "正在搜索…",
     "error": "搜索暂时不可用。无法加载索引。",
@@ -35,7 +35,7 @@
   },
   "searchEntry": {
     "title": "搜索",
-    "description": "按标题、别名或标签搜索 Model Atlas。使用搜索控件跳转到模块、概念和术语表条目。",
+    "description": "按标题、别名或标签搜索 you-agent-factory 文档。使用搜索控件跳转到指南、概念、技巧、文档和术语表条目。",
     "canonicalNote": "规范搜索入口 URL：/search。查询交接可附加 ?q=<term>；标签交接可附加 ?tag=<slug> 或 ?classification=<id-or-slug>（例如 /search?classification=activation）。",
     "tagFilterDescription": "正在显示带有 {tag} 标签的资源结果。",
     "classificationScopeDescription": "正在显示限定在 {classification} 分类范围内的结果。",
@@ -47,7 +47,7 @@
   },
   "shell": {
     "sidebarTitle": "参考",
-    "sidebarDescription": "浏览模块、概念和标签。",
+    "sidebarDescription": "浏览指南、概念、技巧、文档和标签。",
     "onThisPage": "本页内容",
     "openingSummary": "开篇摘要"
   },
@@ -115,7 +115,7 @@
   },
   "conceptsIndex": {
     "title": "概念",
-    "description": "已发布的概念页解释跨越许多模型与模块的更广想法，例如架构模式、量化与长上下文权衡。",
+    "description": "已发布的概念页解释跨越许多工厂工作流的更广想法，例如 harness、循环与瓶颈。",
     "listLabel": "概念条目",
     "emptyTitle": "尚无概念条目",
     "emptyDescription": "已发布的概念页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
@@ -147,31 +147,31 @@
   },
   "glossaryIndex": {
     "title": "术语表",
-    "description": "带有简短摘要的机器学习术语定义。每个条目在已发布时链接到规范术语表页。",
+    "description": "工厂与 CLI 术语的简短定义。每个条目在已发布时链接到规范术语表页。",
     "listLabel": "术语表条目",
     "emptyTitle": "尚无术语表条目",
-    "emptyDescription": "已发布的术语表页加入参考资料后会出现在这里。在此之前可返回首页或打开搜索探索模块与标签。",
+    "emptyDescription": "已发布的术语表页加入参考资料后会出现在这里。在此之前可返回首页或打开搜索探索指南、概念与标签。",
     "emptyHomeLink": "返回首页"
   },
   "architectureIndex": {
     "title": "架构",
-    "description": "与架构相关的概念、模型族与组件模式。每个条目在已发布时链接到规范文档页。",
+    "description": "与工厂系统形态、工作站结构及相关模式有关的架构概念。每个条目在已发布时链接到规范文档页。",
     "listLabel": "架构条目",
     "emptyTitle": "尚无架构条目",
-    "emptyDescription": "已发布的架构概念页以及架构内容分组下的页面会出现在这里。在此之前可返回首页或打开搜索探索模块与标签。",
+    "emptyDescription": "已发布的架构概念页以及架构内容分组下的页面会出现在这里。在此之前可返回首页或打开搜索探索指南、概念与标签。",
     "emptyHomeLink": "返回首页"
   },
   "blogIndex": {
     "title": "博客",
-    "description": "将发布与服务概念连回规范参考页的叙述性文章。",
+    "description": "将工厂发布与工作流思路连回规范参考页的叙述性文章。",
     "listLabel": "博客文章",
     "emptyTitle": "尚无博客文章",
-    "emptyDescription": "已发布的叙述性文章加入图谱后会出现在这里。在此之前可返回首页或打开搜索探索模型、模块与概念。",
+    "emptyDescription": "已发布的叙述性文章加入后会出现在这里。在此之前可返回首页或打开搜索探索指南、概念与技巧。",
     "emptyHomeLink": "返回首页"
   },
   "tagsIndex": {
     "title": "标签",
-    "description": "用于跨模块、概念、模型与术语表页面浏览主题的受控标签。每个标签链接到列出该标签下全部已发布资源的落地页。",
+    "description": "用于跨指南、概念、技巧、文档与术语表页面浏览主题的受控标签。每个标签链接到列出该标签下全部已发布资源的落地页。",
     "listLabel": "按类别的标签"
   },
   "tagLanding": {
@@ -185,24 +185,16 @@
   },
   "tagCategories": {
     "architecture": "架构",
-    "module-type": "模块类型",
-    "training": "训练",
     "inference": "推理",
     "systems": "系统",
-    "modality": "模态",
-    "paper-topic": "论文主题",
-    "model-family": "模型族",
     "difficulty": "难度"
   },
   "pageKind": {
-    "module": "模块",
-    "model": "模型",
     "concept": "概念",
-    "paper": "论文",
+    "guide": "指南",
+    "technique": "技巧",
+    "documentation": "文档",
     "glossary": "术语表",
-    "training": "训练",
-    "training-regime": "训练",
-    "system": "系统",
     "blog": "博客"
   }
 }
