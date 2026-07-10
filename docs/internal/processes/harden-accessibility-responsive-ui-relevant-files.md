@@ -140,14 +140,33 @@ surfaces (home, browse, search, docs/harness-support, blog).
   Playwright `emulateMedia({ reducedMotion: "reduce" })` proves drawer
   transition ≤ threshold; `no-preference` keeps duration-300.
 
+## Layout snapshot / lightweight visual equivalent (story 008)
+
+* Prefer the lightweight layout-snapshot contract over full-page screenshot
+  baselines: landmarks, h1 texts, primary-nav hrefs, page overflow, and
+  rounded chrome boxes (when geometry is non-zero).
+* `src/lib/verify/a11y-layout-snapshot.ts` — `captureCriticalLayoutSnapshot`,
+  `serializeLayoutSnapshot` / `hashLayoutSnapshot`, `diffLayoutSnapshots`,
+  `expectLayoutSnapshotMatches`, `assertCriticalLayoutContract`, and
+  `evaluateCriticalLayoutSnapshotInBrowser` (self-contained for Playwright).
+* `src/tests/a11y/layout-snapshot.a11y.test.tsx` — always-on: home/browse
+  baselines pass the contract; deliberate main/h1 regressions change the hash
+  and fail `expectLayoutSnapshotMatches`.
+* `src/lib/verify/a11y-layout-snapshot-page.test.ts` — opt-in served probe:
+  all critical routes at laptop viewport pass the contract with non-empty
+  chrome boxes under Chromium.
+* Chrome box geometry is optional under happy-dom (often zero rects); structural
+  fields + hash diffs are the always-on regression signal.
+
 ## Focused gate
 
 * `Makefile` target `a11y` → `bun run test:a11y`
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure/
-  reduced-motion unit tests plus home/browse, search, docs/harness-support,
-  blog, responsive overflow, and reduced-motion a11y smokes (and the
-  skipped-by-default served-page probes). Later stories expand coverage and may
-  fold in remaining `src/tests/a11y/` once those smokes are factory-current.
+  reduced-motion/layout-snapshot unit tests plus home/browse, search,
+  docs/harness-support, blog, responsive overflow, reduced-motion, and layout
+  snapshot a11y smokes (and the skipped-by-default served-page probes). Later
+  stories expand coverage and may fold in remaining `src/tests/a11y/` once those
+  smokes are factory-current.
 * Not yet part of `make ci` (wire in story `harden-accessibility-responsive-ui-009`).
 
 ## Existing component a11y smokes
