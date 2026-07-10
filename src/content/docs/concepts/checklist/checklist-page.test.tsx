@@ -1,3 +1,8 @@
+/**
+ * Page-owned render proof for concepts/checklist.
+ * Colocated under the page bundle so audit:canonical-page-surface stays
+ * within page-owned budget for the checklist bundle (shared tests live elsewhere).
+ */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
@@ -90,5 +95,51 @@ describe("checklist concept page", () => {
     expect(screen.getByText(/Picture a compact board/i)).toBeTruthy();
     expect(screen.getByText(/not a task queue/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
+
+    const taskQueueLink = screen.getByRole("link", { name: "Task queue" });
+    expect(taskQueueLink.getAttribute("href")).toBe(
+      "/docs/concepts/task-queue",
+    );
+  });
+
+  test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {
+    const en = await loadLocalDocsPage({
+      section: "concepts",
+      slug: "checklist",
+    });
+    const ja = await loadLocalDocsPage(
+      { section: "concepts", slug: "checklist" },
+      "ja",
+    );
+    const zhCN = await loadLocalDocsPage(
+      { section: "concepts", slug: "checklist" },
+      "zh-CN",
+    );
+    const vi = await loadLocalDocsPage(
+      { section: "concepts", slug: "checklist" },
+      "vi",
+    );
+
+    expect(Object.keys(ja.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(Object.keys(zhCN.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(Object.keys(vi.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(ja.messages.links?.taskQueue).toBe("Task queue");
+    expect(zhCN.messages.links?.taskQueue).toBe("Task queue");
+    expect(vi.messages.links?.taskQueue).toBe("Task queue");
+    expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
+      "What It Is",
+    );
+    expect(String(zhCN.messages.sections?.whatItIs?.title ?? "")).toBe(
+      "What It Is",
+    );
+    expect(String(vi.messages.sections?.whatItIs?.title ?? "")).toBe(
+      "What It Is",
+    );
   });
 });
