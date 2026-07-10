@@ -1,9 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import { runStaticExportBuild } from "@/lib/build/run-static-export-build";
 import { exportHtmlReferencesBasePathAssets } from "@/lib/build/verify-export-base-path";
-
-const DEFAULT_GITHUB_PAGES_BASE_PATH = "/ai-model-reference";
 
 export type EnsureExportSearchArtifactsOptions = {
   repoRoot: string;
@@ -27,7 +26,7 @@ function exportSearchHtmlMatchesBasePath(
   if (!basePath || basePath.trim() === "") {
     return !exportHtmlReferencesBasePathAssets(
       html,
-      DEFAULT_GITHUB_PAGES_BASE_PATH,
+      BUILT_APP_GITHUB_PAGES_BASE_PATH,
     );
   }
 

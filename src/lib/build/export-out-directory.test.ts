@@ -48,13 +48,13 @@ describe("export-out-directory", () => {
 
   test("stripBasePathFromExportHtml normalizes prefixed internal hrefs", () => {
     const html =
-      '<a href="/ai-model-reference/docs/glossary">Glossary</a><a href="/ai-model-reference">Home</a>';
-    expect(stripBasePathFromExportHtml(html, "/ai-model-reference")).toContain(
-      'href="/docs/glossary"',
-    );
-    expect(stripBasePathFromExportHtml(html, "/ai-model-reference")).toContain(
-      'href="/"',
-    );
+      '<a href="/you-agent-factory-docs/docs/glossary">Glossary</a><a href="/you-agent-factory-docs">Home</a>';
+    expect(
+      stripBasePathFromExportHtml(html, "/you-agent-factory-docs"),
+    ).toContain('href="/docs/glossary"');
+    expect(
+      stripBasePathFromExportHtml(html, "/you-agent-factory-docs"),
+    ).toContain('href="/"');
   });
 
   test("verifyExportOutDirectory accepts a non-empty index.html", () => {
