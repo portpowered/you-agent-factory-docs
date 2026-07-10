@@ -1,0 +1,20 @@
+{
+  "id": "concept.checklist",
+  "slug": "checklist",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["planner checklist", "factory checklist"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T23:33:55.000Z",
+  "updatedAt": "2026-07-09T23:33:55.000Z",
+  "conceptType": "general",
+  "prerequisiteIds": [],
+  "explainsIds": [],
+  "sidebarGrouping": {
+    "concepts": "reference-samples"
+  }
+}
