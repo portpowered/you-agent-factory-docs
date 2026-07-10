@@ -1,0 +1,19 @@
+{
+  "id": "technique.fusion",
+  "slug": "fusion",
+  "kind": "technique",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["fusion", "@you/fusion", "draft-then-refine"],
+  "tags": [],
+  "relatedIds": [
+    "concept.harness",
+    "guide.getting-started",
+    "concept.loop",
+    "guide.write-review-loops"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T00:00:00.000Z",
+  "updatedAt": "2026-07-09T00:00:00.000Z"
+}

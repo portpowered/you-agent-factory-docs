@@ -1,0 +1,37 @@
+{
+  "title": "Fusion",
+  "description": "Fusion is a you-agent-factory technique that runs two model passes on the same request: a first pass drafts an answer and a second pass refines it.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Fusion is a you-agent-factory technique that runs two model passes on the same request: a first pass drafts an answer and a second pass refines it. The same input drives both passes in sequence, so the refine stage works from the draft instead of starting over. Customers meet this shape as packaged @you/fusion."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "A second pass can catch gaps, weak wording, or missed constraints the first draft left behind. Callers can use different providers or models for draft versus refine, so each stage can use the backend that fits that job. Fusion is a reusable factory pattern you can invoke by name, not a one-off chat trick you rebuild by hand each time."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "The caller supplies the request input. A first model pass drafts an answer from that input. A second model pass then refines the draft, still grounded in the same request, and that refined answer is the customer-facing result. When an output path is supplied, callers can treat the refined answer as file-oriented markdown at that path. Each pass can use its own provider, model, or effort setting, so draft and refine may run on different backends. A reader watching a fusion run should see two sequential passes — draft, then refine — and optionally different backends per pass."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Fusion is a draft-then-refine two-pass flow on the same request. Writer-reviewer is a role-split write→review quality loop: one role authors, another reviews against a gate, rather than a second model pass that simply refines the draft. Ralph is a persistent keep-going loop that continues work across many iterations until the goal is done; fusion stops after the refine pass. Planner-executor plans work into slices and then executes those slices; fusion does not invent a plan—it drafts an answer and then refines that answer. Fusion here is also not GPU kernel fusion (merging compute kernels) and not multimodal model fusion (combining modalities into one model)."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "harnessConcept": "Harness concept",
+    "gettingStarted": "Getting started",
+    "loopConcept": "Loop concept",
+    "writeReviewLoopsGuide": "Write-review loops"
+  }
+}
