@@ -1,15 +1,15 @@
 {
   "title": "Petri / Colored Petri Net (CPN)",
   "description": "How you-agent-factory maps factory topology onto a Petri / Colored Petri Net (CPN) execution model: places, colored tokens, transitions, and markings.",
-  "openingSummary": "Petri / Colored Petri Net (CPN) framing is how you-agent-factory reads factory topology as a net: work tokens move through places under workstation transitions.",
+  "openingSummary": "you-agent-factory runs Petri / Colored Petri Net (CPN) factories: work tokens move through places under workstation transitions.",
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This page explains Petri / Colored Petri Net (CPN) framing for you-agent-factory. It covers how authored factory topology becomes a net the runtime executes, and how places, tokens, transitions, and markings map onto factory nouns."
+      "body": "This page explains how you-agent-factory runs Petri / Colored Petri Net (CPN) factories: work tokens move through places under workstation transitions. Petri / CPN framing is how the runtime reads authored factory topology as a net. Places hold work, workstations act as transitions that fire when their inputs are ready, and the current token distribution is the marking the session advances."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "In factory terms, a place is a work-type state such as task:init. A colored token is submitted work occupying a place, carrying work-type identity and payload. A transition is a workstation that consumes inputs and emits outcomes. A marking is which tokens currently sit in which places."
+      "body": "A place is a work-type state such as task:init. A colored token is submitted work occupying a place; it carries work-type identity and payload so the runtime can tell which work sits where. A transition is a workstation that consumes tokens from its input places and emits outcomes onto output places. A marking is which tokens currently sit in which places. A transition is enabled when its input places have matching tokens ready to consume."
     },
     "howToUse": {
       "title": "How To Use",

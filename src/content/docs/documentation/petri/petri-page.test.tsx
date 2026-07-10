@@ -1,6 +1,6 @@
 /**
- * Page-owned render proof for documentation/petri scaffold.
- * Covers documentation shell, Petri / CPN identity, and section headings.
+ * Page-owned render proof for documentation/petri.
+ * Covers documentation shell, Petri / CPN framing narrative, and section headings.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -34,6 +34,33 @@ describe("petri documentation page", () => {
       );
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
+      const whatItCovers = String(
+        loadedPage.messages.sections?.whatItCovers?.body ?? "",
+      );
+      const keyConcepts = String(
+        loadedPage.messages.sections?.keyConcepts?.body ?? "",
+      );
+
+      expect(whatItCovers).toMatch(/Petri\s*\/\s*Colored Petri Net\s*\(CPN\)/);
+      expect(whatItCovers).toMatch(/you-agent-factory/);
+      expect(whatItCovers).toMatch(/work tokens move through places/i);
+      expect(whatItCovers).toMatch(/workstation transitions/i);
+      expect(whatItCovers).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+
+      expect(keyConcepts).toMatch(/place/i);
+      expect(keyConcepts).toMatch(/task:init/);
+      expect(keyConcepts).toMatch(/colored token/i);
+      expect(keyConcepts).toMatch(/work-type identity and payload/i);
+      expect(keyConcepts).toMatch(/transition/i);
+      expect(keyConcepts).toMatch(/workstation/i);
+      expect(keyConcepts).toMatch(/marking/i);
+      expect(keyConcepts).toMatch(/tokens currently sit in which places/i);
+      expect(keyConcepts).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+
       render(
         <main>
           <ModulePageProviders
@@ -66,6 +93,19 @@ describe("petri documentation page", () => {
       expect(document.getElementById("related")).toBeTruthy();
       expect(document.getElementById("tags")).toBeTruthy();
       expect(document.getElementById("references")).toBeTruthy();
+
+      // Prose auto-linking may wrap terms in anchors; assert via textContent.
+      const whatItCoversSection = document.getElementById("what-it-covers");
+      const keyConceptsSection = document.getElementById("key-concepts");
+      expect(whatItCoversSection?.textContent).toMatch(
+        /Colored Petri Net \(CPN\)/,
+      );
+      expect(whatItCoversSection?.textContent).toMatch(
+        /work tokens move through places/i,
+      );
+      expect(keyConceptsSection?.textContent).toMatch(/task:init/);
+      expect(keyConceptsSection?.textContent).toMatch(/colored token/i);
+      expect(keyConceptsSection?.textContent).toMatch(/marking/i);
 
       expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
     },
