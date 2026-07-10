@@ -222,6 +222,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain(
       "Classify an item into a known class, then run the specialist execute path for that class.",
     );
+    expect(html).toContain("Planner-Executor");
+    expect(html).toContain("/docs/techniques/planner-executor");
     expect(html).toContain("Ralph");
     expect(html).toContain("/docs/techniques/ralph");
     expect(html).toContain(
@@ -272,8 +274,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(
       `aria-label="${messages.techniquesIndex.listLabel}"`,
     );
-    expect(html).toContain("Classify-Execute");
-    expect(html).toContain("/ja/docs/techniques/classify-execute");
+    expect(html).toContain("Planner-Executor");
+    expect(html).toContain("/ja/docs/techniques/planner-executor");
     expect(html).toContain("Ralph");
     expect(html).toContain("/ja/docs/techniques/ralph");
     expect(html).toContain(
@@ -281,8 +283,6 @@ describe("localized CLI section index page render", () => {
     );
     expect(html).toContain("Worker-Adviser");
     expect(html).toContain("/ja/docs/techniques/worker-adviser");
-    expect(html).toContain("Workqueue Executor");
-    expect(html).toContain("/ja/docs/techniques/workqueue-executor");
     expect(html).not.toContain(messages.techniquesIndex.emptyTitle);
     expect(messages.techniquesIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,

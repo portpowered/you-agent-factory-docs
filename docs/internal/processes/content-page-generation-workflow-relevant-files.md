@@ -42,8 +42,8 @@ targets that exist in this worktree (validation still resolves them), and wire
 reviewer-visible discovery under `#related` with message-backed
 `LocalizedLinkList` hrefs — published siblings such as `/docs/concepts/task-queue`
 and `/docs/documentation/submitting-work`, plus published or planned technique
-hrefs for nearby techniques (for example classify-execute, ralph, and
-worker-adviser when published; planner-executor / writer-reviewer when still
+hrefs for nearby techniques (for example classify-execute, planner-executor,
+ralph, and worker-adviser when published; writer-reviewer when still
 unpublished). Do not put unpublished technique registry ids in `relatedIds`.
 
 Optional technique teaching graphs: baseline `technique.assets.json` is empty.
