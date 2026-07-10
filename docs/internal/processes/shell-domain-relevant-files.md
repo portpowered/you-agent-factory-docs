@@ -122,6 +122,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   guides/concepts/techniques/documentation/glossary, browse/sidebar omit
   retired Atlas destinations, and Blog + Search stay reachable as separate
   surfaces (included in required `bun run test`).
+* `src/lib/content/factory-tags-browse.ts`
+  Factory tags/browse contract: published factory tag slugs, deleted Atlas
+  tag denylist, factory tag-resource kind order, and fail-closed asserts used
+  by `tags.ts` / `tag-resources.ts` so tags index and landings never advertise
+  retired Atlas tags or deleted AI destinations.
+* `src/lib/content/factory-tags-browse.test.tsx`
+  Required-suite proof that browse hub cards stay on CLI collections (+
+  glossary quick route), tags index lists only factory tags, tag landings
+  keep factory destinations or factory empty next-steps, and empty
+  section-index copy stays Atlas-free.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
