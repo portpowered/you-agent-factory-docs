@@ -153,6 +153,20 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   docs pages (or omit a direction at the ends), related-registry docs render
   only factory destinations, and empty/unavailable related targets use clear
   fallbacks without Atlas hrefs.
+* `src/lib/content/factory-locale-base-path.ts`
+  Factory locale + Pages base-path contract for search/nav hrefs
+  (`FACTORY_SHIPPED_LOCALES`, `FACTORY_PAGES_BASE_PATH`). Resolvers compose
+  `buildLocalizedRoute` / `switchRouteLocale` / `withBasePath`; search
+  bootstrap uses `resolveDocsSearchBootstrapFromForLocale`. Collection
+  breadcrumb crumbs may stay unprefixed when the section index is not a
+  shipped localized docs slug (`localizeDocsHref` fail-open to default
+  locale) — home, search, tags, browse, and shipped page destinations still
+  localize.
+* `src/lib/content/factory-locale-base-path.test.tsx`
+  Required-suite proof that en/ja/zh-CN/vi preserve locale routing on
+  breadcrumbs (home), sidebar previous/next, tags/browse/related, and search
+  result hrefs; default-locale roots stay unprefixed; project-site export
+  prefixes bootstrap + nav under `/you-agent-factory-docs`.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus

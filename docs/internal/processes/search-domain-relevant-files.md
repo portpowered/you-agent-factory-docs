@@ -27,6 +27,17 @@ Use these files when changing search document construction, Orama indexing, or
   indexes, search-result meta, and queries such as `grouped-query attention`
   / `GQA` / `evolution of diffusion` never surface deleted AI records while
   `harness` / `ralph` stay searchable.
+* `src/lib/content/factory-locale-base-path.ts`
+  Factory locale + Pages base-path contract (`FACTORY_SHIPPED_LOCALES`,
+  `FACTORY_PAGES_BASE_PATH=/you-agent-factory-docs`) with resolvers for
+  localized search-result hrefs and search bootstrap, plus fail-closed
+  asserts. SearchResultRow / SearchPagePanel use
+  `resolveFactorySearchResultHref`.
+* `src/lib/content/factory-locale-base-path.test.tsx`
+  Required `bun run test` proof that shipped locales (en, ja, zh-CN, vi)
+  preserve locale routing on search/nav hrefs, default-locale roots stay
+  unprefixed, and project-site export prefixes bootstrap + nav under
+  `/you-agent-factory-docs`.
 * `src/lib/search/build-base-document.ts`
   Generic base search document construction from localized docs pages and
   registry fields. Produces page-derived fields with empty topology and

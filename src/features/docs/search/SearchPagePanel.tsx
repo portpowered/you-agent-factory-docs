@@ -7,12 +7,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { searchInlineResultsListClassName } from "@/features/docs/components/list-decoration";
+import { resolveFactorySearchResultHref } from "@/lib/content/factory-locale-base-path";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import {
   buildLocalizedRoute,
   defaultLocale,
   type SiteLocale,
-  switchRouteLocale,
 } from "@/lib/i18n/locale-routing";
 import { resolveSearchClassificationScope } from "@/lib/search/classification-scope";
 import { documentsByUrlFromMeta } from "@/lib/search/collapse-search-results-from-meta";
@@ -140,7 +140,7 @@ export function SearchPagePanelContent({
     if (item.type === "action") {
       return;
     }
-    router.push(switchRouteLocale(item.url, locale));
+    router.push(resolveFactorySearchResultHref(item.url, locale));
   };
 
   return (
