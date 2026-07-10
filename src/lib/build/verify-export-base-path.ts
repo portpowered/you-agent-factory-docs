@@ -13,6 +13,14 @@ export function exportHtmlReferencesBasePathAssets(
 }
 
 /**
+ * True when exported HTML references bare root-level `/_next` assets
+ * (`src`/`href` starting at `/_next/`), which escape a project-site prefix.
+ */
+export function exportHtmlReferencesRootLevelNextAssets(html: string): boolean {
+  return /(?:src|href)=["']\/_next\//.test(html);
+}
+
+/**
  * True when exported HTML advertises a canonical (and optional hreflang)
  * href under the configured base path — not a bare site-root escape.
  */

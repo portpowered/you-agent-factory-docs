@@ -5,6 +5,7 @@ import {
   exportHtmlReferencesPrefixedMetadataHrefs,
   exportHtmlReferencesPrefixedNavigationHrefs,
   exportHtmlReferencesPrefixedPublicAsset,
+  exportHtmlReferencesRootLevelNextAssets,
 } from "./verify-export-base-path";
 
 const PROJECT_SITE_BASE_PATH = "/you-agent-factory-docs";
@@ -39,6 +40,8 @@ describe("verify-export-base-path", () => {
     expect(
       exportHtmlReferencesBasePathAssets(bareHtml, PROJECT_SITE_BASE_PATH),
     ).toBe(false);
+    expect(exportHtmlReferencesRootLevelNextAssets(prefixedHtml)).toBe(false);
+    expect(exportHtmlReferencesRootLevelNextAssets(bareHtml)).toBe(true);
     expect(prefixedHtml.includes(`${PROJECT_SITE_BASE_PATH}/_next/`)).toBe(
       true,
     );
