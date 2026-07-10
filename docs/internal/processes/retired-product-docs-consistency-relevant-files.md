@@ -49,3 +49,46 @@ unless a later story explicitly owns that surface.
 
 - `docs/contributors/CONTRIBUTING.md` — fast-loop command table + when to run
 - `docs/architecture.md` — CI / contributor verification list
+
+## End-to-end proof for architecture/authoring rewrites
+
+When proving a factory product-architecture docs rewrite lane, run this sequence
+on the lane checkout (not Atlas Phase-1 verifier sprawl):
+
+```sh
+bun run check:retired-product-docs
+make linkcheck
+make typecheck
+make lint
+make test
+```
+
+Browser-verify published factory routes when a local `node_modules` is available
+(pick a free port; kill the server when done):
+
+```sh
+PORT=3458
+bun run dev -- -p "$PORT" &
+server_pid=$!
+trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+# wait until ready, then:
+curl --fail --silent --show-error --max-time 10 \
+  "http://127.0.0.1:$PORT/docs/guides/getting-started"
+curl --fail --silent --show-error --max-time 10 \
+  "http://127.0.0.1:$PORT/docs/documentation/harness-support"
+curl --fail --silent --show-error --max-time 10 \
+  "http://127.0.0.1:$PORT/docs/documentation/cli"
+```
+
+Worktree note: factory lanes often hoist `node_modules` at the repo root.
+Turbopack then rejects out-of-root resolution even with `turbopack.root` set.
+In that case, treat `make linkcheck` plus the published-page route tests under
+`src/content/docs/**` as the local route proof, and keep contributor docs
+pointing at factory routes (`/docs/guides/getting-started`,
+`/docs/documentation/harness-support`) rather than Atlas Phase-1 verifier
+sprawl.
+
+Owned docs should already describe primary collections as
+`guides` / `concepts` / `techniques` / `documentation` / `glossary`, with blog
+and search as separate surfaces, messages/assets/registry as content layers, and
+tables/graphs as optional teaching tools.
