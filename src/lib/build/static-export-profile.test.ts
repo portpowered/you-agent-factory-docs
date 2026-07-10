@@ -1,7 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import {
   createEmptyStageTimingsMs,
+  createNotAvailableCacheReasons,
+  createNotAvailableScaleCounts,
   finalizeProfileTimings,
+  formatCacheReason,
+  formatScaleCountValue,
   formatStageTimingSummary,
   isStaticExportProfilingEnabled,
   measureWallTimeMs,
@@ -11,6 +15,35 @@ import {
   STATIC_EXPORT_PROFILE_STAGE_COMMANDS,
   STATIC_EXPORT_PROFILE_STAGE_IDS,
 } from "./static-export-profile";
+
+const fixtureCacheReasons = {
+  contentRuntimePreparation: {
+    status: "not-applicable" as const,
+    reason: "no-incremental-cache",
+  },
+  fumadocsGeneration: {
+    status: "miss" as const,
+    reason: "source-directory-absent",
+  },
+  nextCompilationStaticRendering: {
+    status: "miss" as const,
+    reason: "next-cache-directory-absent",
+  },
+  searchIndexEmission: {
+    status: "not-applicable" as const,
+    reason: "always-regenerates-from-export",
+  },
+  fingerprintWriting: {
+    status: "not-applicable" as const,
+    reason: "always-writes-fingerprint",
+  },
+};
+
+const fixtureScaleCounts = {
+  staticRouteCount: { available: true as const, value: 12 },
+  localeCount: { available: true as const, value: 4 },
+  majorBundleModuleCount: { available: true as const, value: 9 },
+};
 
 describe("static-export-profile", () => {
   test("profiling defaults off for ordinary builds", () => {
@@ -59,7 +92,7 @@ describe("static-export-profile", () => {
     expect(elapsed).toBe(40);
   });
 
-  test("timing summary includes mode label, required stage fields, and total wall time", () => {
+  test("timing summary includes mode, stage timings, cache reasons, and scale counts", () => {
     const timings = finalizeProfileTimings(
       {
         ...createEmptyStageTimingsMs(),
@@ -72,7 +105,12 @@ describe("static-export-profile", () => {
       165,
     );
 
-    const summary = formatStageTimingSummary({ mode: "clean", timings });
+    const summary = formatStageTimingSummary({
+      mode: "clean",
+      timings,
+      cacheReasons: fixtureCacheReasons,
+      scaleCounts: fixtureScaleCounts,
+    });
 
     expect(summary).toContain("static-export-profile");
     expect(summary).toContain("mode=clean");
@@ -82,6 +120,57 @@ describe("static-export-profile", () => {
     expect(summary).toContain("searchIndexEmissionMs=44");
     expect(summary).toContain("fingerprintWritingMs=55");
     expect(summary).toContain("totalWallTimeMs=165");
+    expect(summary).toContain(
+      "contentRuntimePreparationCache=not-applicable:no-incremental-cache",
+    );
+    expect(summary).toContain(
+      "fumadocsGenerationCache=miss:source-directory-absent",
+    );
+    expect(summary).toContain(
+      "nextCompilationStaticRenderingCache=miss:next-cache-directory-absent",
+    );
+    expect(summary).toContain(
+      "searchIndexEmissionCache=not-applicable:always-regenerates-from-export",
+    );
+    expect(summary).toContain(
+      "fingerprintWritingCache=not-applicable:always-writes-fingerprint",
+    );
+    expect(summary).toContain("staticRouteCount=12");
+    expect(summary).toContain("localeCount=4");
+    expect(summary).toContain("majorBundleModuleCount=9");
+  });
+
+  test("missing optional diagnostics format as not-available reasons", () => {
+    expect(
+      formatCacheReason({
+        status: "not-available",
+        reason: "cache-diagnostics-failed",
+      }),
+    ).toBe("not-available:cache-diagnostics-failed");
+    expect(
+      formatScaleCountValue({
+        available: false,
+        reason: "export-out-missing",
+      }),
+    ).toBe("not-available:export-out-missing");
+
+    const summary = formatStageTimingSummary({
+      mode: "warm",
+      timings: finalizeProfileTimings(createEmptyStageTimingsMs(), 0),
+      cacheReasons: createNotAvailableCacheReasons("cache-diagnostics-failed"),
+      scaleCounts: createNotAvailableScaleCounts("export-out-missing"),
+    });
+
+    expect(summary).toContain(
+      "nextCompilationStaticRenderingCache=not-available:cache-diagnostics-failed",
+    );
+    expect(summary).toContain(
+      "staticRouteCount=not-available:export-out-missing",
+    );
+    expect(summary).toContain("localeCount=not-available:export-out-missing");
+    expect(summary).toContain(
+      "majorBundleModuleCount=not-available:export-out-missing",
+    );
   });
 
   test("resolveStaticExportBenchmarkMode prefers CLI over env", () => {

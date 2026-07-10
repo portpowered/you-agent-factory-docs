@@ -34,9 +34,46 @@ export type StaticExportProfileTimings = StaticExportProfileStageTimingsMs & {
   totalWallTimeMs: number;
 };
 
+export const STATIC_EXPORT_CACHE_STATUSES = [
+  "hit",
+  "miss",
+  "not-applicable",
+  "not-available",
+] as const;
+
+export type StaticExportCacheStatus =
+  (typeof STATIC_EXPORT_CACHE_STATUSES)[number];
+
+/** Per-stage cache diagnosis: status plus a short reason string. */
+export type StaticExportCacheReason = {
+  status: StaticExportCacheStatus;
+  reason: string;
+};
+
+export type StaticExportProfileCacheReasons = Record<
+  StaticExportProfileStageId,
+  StaticExportCacheReason
+>;
+
+/**
+ * Observable scale counts from the export. Missing diagnostics use
+ * `available: false` with an explicit reason instead of omitting the field.
+ */
+export type StaticExportScaleCountValue =
+  | { available: true; value: number }
+  | { available: false; reason: string };
+
+export type StaticExportProfileScaleCounts = {
+  staticRouteCount: StaticExportScaleCountValue;
+  localeCount: StaticExportScaleCountValue;
+  majorBundleModuleCount: StaticExportScaleCountValue;
+};
+
 export type StaticExportProfileSummaryInput = {
   mode: StaticExportBenchmarkMode;
   timings: StaticExportProfileTimings;
+  cacheReasons: StaticExportProfileCacheReasons;
+  scaleCounts: StaticExportProfileScaleCounts;
 };
 
 export type StaticExportProfileClock = () => number;
@@ -94,6 +131,45 @@ export function finalizeProfileTimings(
   };
 }
 
+export function formatCacheReason(reason: StaticExportCacheReason): string {
+  return `${reason.status}:${reason.reason}`;
+}
+
+export function formatScaleCountValue(
+  value: StaticExportScaleCountValue,
+): string {
+  if (value.available) {
+    return String(value.value);
+  }
+  return `not-available:${value.reason}`;
+}
+
+export function createNotAvailableScaleCounts(
+  reason: string,
+): StaticExportProfileScaleCounts {
+  return {
+    staticRouteCount: { available: false, reason },
+    localeCount: { available: false, reason },
+    majorBundleModuleCount: { available: false, reason },
+  };
+}
+
+export function createNotAvailableCacheReasons(
+  reason: string,
+): StaticExportProfileCacheReasons {
+  const entry: StaticExportCacheReason = {
+    status: "not-available",
+    reason,
+  };
+  return {
+    contentRuntimePreparation: entry,
+    fumadocsGeneration: entry,
+    nextCompilationStaticRendering: entry,
+    searchIndexEmission: entry,
+    fingerprintWriting: entry,
+  };
+}
+
 /**
  * Measures wall time for a synchronous stage body. Uses an injectable clock so
  * tests can stub time without sleeping.
@@ -108,13 +184,13 @@ export function measureWallTimeMs(
 }
 
 /**
- * Stable key order for timing summaries. Later stories extend this shape with
- * cache reasons, scale counts, and machine metadata.
+ * Stable key order for timing summaries. Machine metadata is added by a later
+ * story; cache reasons and scale counts are part of this contract.
  */
 export function formatStageTimingSummaryLines(
   input: StaticExportProfileSummaryInput,
 ): string[] {
-  const { mode, timings } = input;
+  const { mode, timings, cacheReasons, scaleCounts } = input;
   return [
     `mode=${mode}`,
     `contentRuntimePreparationMs=${timings.contentRuntimePreparation}`,
@@ -123,6 +199,14 @@ export function formatStageTimingSummaryLines(
     `searchIndexEmissionMs=${timings.searchIndexEmission}`,
     `fingerprintWritingMs=${timings.fingerprintWriting}`,
     `totalWallTimeMs=${timings.totalWallTimeMs}`,
+    `contentRuntimePreparationCache=${formatCacheReason(cacheReasons.contentRuntimePreparation)}`,
+    `fumadocsGenerationCache=${formatCacheReason(cacheReasons.fumadocsGeneration)}`,
+    `nextCompilationStaticRenderingCache=${formatCacheReason(cacheReasons.nextCompilationStaticRendering)}`,
+    `searchIndexEmissionCache=${formatCacheReason(cacheReasons.searchIndexEmission)}`,
+    `fingerprintWritingCache=${formatCacheReason(cacheReasons.fingerprintWriting)}`,
+    `staticRouteCount=${formatScaleCountValue(scaleCounts.staticRouteCount)}`,
+    `localeCount=${formatScaleCountValue(scaleCounts.localeCount)}`,
+    `majorBundleModuleCount=${formatScaleCountValue(scaleCounts.majorBundleModuleCount)}`,
   ];
 }
 

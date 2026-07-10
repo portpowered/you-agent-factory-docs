@@ -11,7 +11,7 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Static analysis | `make check` | `typecheck` then `lint` (fails if either fails) |
 | Tests | `make test` | Existing website test entrypoint |
 | Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
-| Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=` and stage wall times. Not part of CI/Pages. |
+| Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=`, stage wall times, cache reasons, and scale counts. Not part of CI/Pages. |
 | Exported-site budget | `make budget` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
 | Component coverage | `make component-coverage` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
 
@@ -58,9 +58,10 @@ and `bun run test:website:export-consumers`.
 | `.github/workflows/deploy-pages.yml` | Main-branch Pages validate + deploy; artifact path `out/` |
 | `docs/operations.md` | Maintainer-facing CI/deploy posture aligned to the Makefile contract |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`, `benchmark:static-export`) |
-| `src/lib/build/static-export-profile.ts` | Optional static-export stage timing contract (`PROFILE_STATIC_EXPORT=1`); off by default; summary includes `mode=` |
+| `src/lib/build/static-export-profile.ts` | Optional static-export stage timing contract (`PROFILE_STATIC_EXPORT=1`); off by default; summary includes `mode=`, stage timings, cache reasons, and scale counts |
+| `src/lib/build/static-export-profile-diagnostics.ts` | Cache artifact snapshot + scale-count collectors (routes/locales/chunks); missing diagnostics degrade to `not-available` |
 | `src/lib/build/static-export-benchmark-prep.ts` | Clean/warm prep: clean wipes `.next`/`out`/`.source`/ignored generated outputs; warm is a no-op |
-| `src/lib/build/run-profiled-static-export.ts` | Opt-in profiled runner: discrete timed stages + stable timing summary |
+| `src/lib/build/run-profiled-static-export.ts` | Opt-in profiled runner: discrete timed stages + stable timing summary with cache/scale diagnostics |
 | `scripts/run-profiled-static-export-build.ts` / `bun run build:export:profile` | Maintainer entrypoint for profiled export without clean wipe; does not replace `make build` / `build:export` |
 | `scripts/run-static-export-benchmark.ts` / `bun run benchmark:static-export` / `make benchmark-static-export MODE=…` | Documented clean/warm benchmark: prep + profiled export + mode-labeled summary |
 | `src/lib/build/static-export.ts` | Single `normalizeGitHubPagesBasePath` → `basePath` + `assetPrefix` contract; `next.config.ts` spreads `resolveNextConfigForBuildMode()` (no hardcoded Pages prefix) |

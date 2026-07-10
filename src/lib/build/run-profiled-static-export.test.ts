@@ -20,6 +20,35 @@ function stubStages(): readonly StaticExportProfileStageCommand[] {
 }
 
 describe("runProfiledStaticExport", () => {
+  const stubCacheReasons = {
+    contentRuntimePreparation: {
+      status: "not-applicable" as const,
+      reason: "no-incremental-cache",
+    },
+    fumadocsGeneration: {
+      status: "miss" as const,
+      reason: "source-directory-absent",
+    },
+    nextCompilationStaticRendering: {
+      status: "miss" as const,
+      reason: "next-cache-directory-absent",
+    },
+    searchIndexEmission: {
+      status: "not-applicable" as const,
+      reason: "always-regenerates-from-export",
+    },
+    fingerprintWriting: {
+      status: "not-applicable" as const,
+      reason: "always-writes-fingerprint",
+    },
+  };
+
+  const stubScaleCounts = {
+    staticRouteCount: { available: true as const, value: 3 },
+    localeCount: { available: true as const, value: 2 },
+    majorBundleModuleCount: { available: true as const, value: 4 },
+  };
+
   test("records wall-time measurements for every required stage when profiling runs", () => {
     const spawnCalls: string[] = [];
     let nowMs = 0;
@@ -35,6 +64,8 @@ describe("runProfiledStaticExport", () => {
       spawn,
       clock: () => nowMs,
       printSummary: false,
+      cacheReasons: stubCacheReasons,
+      scaleCounts: stubScaleCounts,
     });
 
     expect(result.ok).toBe(true);
@@ -55,6 +86,12 @@ describe("runProfiledStaticExport", () => {
     expect(result.summary).toContain("mode=warm");
     expect(result.summary).toContain("contentRuntimePreparationMs=10");
     expect(result.summary).toContain("totalWallTimeMs=50");
+    expect(result.summary).toContain(
+      "nextCompilationStaticRenderingCache=miss:next-cache-directory-absent",
+    );
+    expect(result.summary).toContain("staticRouteCount=3");
+    expect(result.summary).toContain("localeCount=2");
+    expect(result.summary).toContain("majorBundleModuleCount=4");
   });
 
   test("includes the requested clean mode label in the timing summary", () => {
@@ -71,11 +108,73 @@ describe("runProfiledStaticExport", () => {
       spawn,
       clock: () => nowMs,
       printSummary: false,
+      cacheReasons: stubCacheReasons,
+      scaleCounts: stubScaleCounts,
     });
 
     expect(result.ok).toBe(true);
     expect(result.mode).toBe("clean");
     expect(result.summary).toContain("mode=clean");
+  });
+
+  test("keeps printing cache and scale fields when optional diagnostics are unavailable", () => {
+    let nowMs = 0;
+    const spawn: ProfiledStaticExportSpawn = () => {
+      nowMs += 1;
+      return { status: 0, signal: null, stdout: "", stderr: "" };
+    };
+
+    const result = runProfiledStaticExport({
+      cwd: repoRoot,
+      stages: stubStages(),
+      spawn,
+      clock: () => nowMs,
+      printSummary: false,
+      cacheReasons: {
+        contentRuntimePreparation: {
+          status: "not-available",
+          reason: "cache-diagnostics-failed",
+        },
+        fumadocsGeneration: {
+          status: "not-available",
+          reason: "cache-diagnostics-failed",
+        },
+        nextCompilationStaticRendering: {
+          status: "not-available",
+          reason: "cache-diagnostics-failed",
+        },
+        searchIndexEmission: {
+          status: "not-available",
+          reason: "cache-diagnostics-failed",
+        },
+        fingerprintWriting: {
+          status: "not-available",
+          reason: "cache-diagnostics-failed",
+        },
+      },
+      scaleCounts: {
+        staticRouteCount: {
+          available: false,
+          reason: "export-out-missing",
+        },
+        localeCount: { available: false, reason: "export-out-missing" },
+        majorBundleModuleCount: {
+          available: false,
+          reason: "chunks-directory-missing",
+        },
+      },
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.summary).toContain(
+      "fumadocsGenerationCache=not-available:cache-diagnostics-failed",
+    );
+    expect(result.summary).toContain(
+      "staticRouteCount=not-available:export-out-missing",
+    );
+    expect(result.summary).toContain(
+      "majorBundleModuleCount=not-available:chunks-directory-missing",
+    );
   });
 
   test("stops at the first failing stage and still returns a timing summary", () => {
@@ -100,6 +199,8 @@ describe("runProfiledStaticExport", () => {
       spawn,
       clock: () => nowMs,
       printSummary: false,
+      cacheReasons: stubCacheReasons,
+      scaleCounts: stubScaleCounts,
     });
 
     expect(result.ok).toBe(false);
@@ -110,6 +211,7 @@ describe("runProfiledStaticExport", () => {
     expect(result.timings.nextCompilationStaticRendering).toBe(0);
     expect(result.timings.totalWallTimeMs).toBe(10);
     expect(result.summary).toContain("fumadocsGenerationMs=5");
+    expect(result.summary).toContain("staticRouteCount=3");
   });
 
   test("ordinary build:export package script stays the uninstrumented chain", () => {

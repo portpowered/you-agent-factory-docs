@@ -248,7 +248,10 @@ bun run benchmark:static-export -- --mode=warm
   export.
 - **Warm** is an unchanged repeat: it does not wipe those artifacts.
 - Each successful run prints a stable timing summary that includes `mode=clean`
-  or `mode=warm`, per-stage wall times, and `totalWallTimeMs`.
+  or `mode=warm`, per-stage wall times, `totalWallTimeMs`, per-stage cache
+  hit/miss/not-applicable reasons, and scale counts (`staticRouteCount`,
+  `localeCount`, `majorBundleModuleCount`). Missing optional diagnostics print
+  explicit `not-available:…` reasons instead of omitting fields.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
 
 See

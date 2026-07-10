@@ -6,11 +6,17 @@ import {
   measureWallTimeMs,
   STATIC_EXPORT_PROFILE_STAGE_COMMANDS,
   type StaticExportBenchmarkMode,
+  type StaticExportProfileCacheReasons,
   type StaticExportProfileClock,
+  type StaticExportProfileScaleCounts,
   type StaticExportProfileStageCommand,
   type StaticExportProfileStageId,
   type StaticExportProfileTimings,
 } from "@/lib/build/static-export-profile";
+import {
+  safeCollectStaticExportCacheReasons,
+  safeCollectStaticExportScaleCounts,
+} from "@/lib/build/static-export-profile-diagnostics";
 
 export type ProfiledStaticExportSpawnResult = Pick<
   SpawnSyncReturns<string>,
@@ -40,6 +46,13 @@ export type RunProfiledStaticExportOptions = {
   /** When false, skip printing the timing summary (tests). Default true. */
   printSummary?: boolean;
   log?: (message: string) => void;
+  /**
+   * Optional overrides for cache/scale diagnostics (tests). When omitted, the
+   * runner snapshots cache artifacts before stages and collects scale counts
+   * after stages from the workspace.
+   */
+  cacheReasons?: StaticExportProfileCacheReasons;
+  scaleCounts?: StaticExportProfileScaleCounts;
 };
 
 export type RunProfiledStaticExportResult = {
@@ -48,6 +61,8 @@ export type RunProfiledStaticExportResult = {
   failedStageId: StaticExportProfileStageId | null;
   mode: StaticExportBenchmarkMode;
   timings: StaticExportProfileTimings;
+  cacheReasons: StaticExportProfileCacheReasons;
+  scaleCounts: StaticExportProfileScaleCounts;
   summary: string;
   stdout: string;
   stderr: string;
@@ -99,6 +114,13 @@ export function runProfiledStaticExport(
     ...options.env,
   };
 
+  const cacheReasons =
+    options.cacheReasons ??
+    safeCollectStaticExportCacheReasons({
+      cwd: options.cwd,
+      mode,
+    });
+
   const stageTimingsMs = createEmptyStageTimingsMs();
   const stdoutChunks: string[] = [];
   const stderrChunks: string[] = [];
@@ -148,7 +170,17 @@ export function runProfiledStaticExport(
   }, clock);
 
   const timings = finalizeProfileTimings(stageTimingsMs, totalWallTimeMs);
-  const summary = formatStageTimingSummary({ mode, timings });
+  const scaleCounts =
+    options.scaleCounts ??
+    safeCollectStaticExportScaleCounts({
+      cwd: options.cwd,
+    });
+  const summary = formatStageTimingSummary({
+    mode,
+    timings,
+    cacheReasons,
+    scaleCounts,
+  });
 
   if (printSummary) {
     log(summary);
@@ -160,6 +192,8 @@ export function runProfiledStaticExport(
     failedStageId,
     mode,
     timings,
+    cacheReasons,
+    scaleCounts,
     summary,
     stdout: stdoutChunks.join(""),
     stderr: stderrChunks.join(""),
