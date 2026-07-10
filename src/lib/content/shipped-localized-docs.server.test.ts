@@ -155,6 +155,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/fusion",
         "techniques/planner-executor",
         "techniques/ralph",
         "techniques/worker-adviser",
@@ -176,6 +177,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/fusion",
         "techniques/planner-executor",
         "techniques/ralph",
         "techniques/worker-adviser",
@@ -197,11 +199,11 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/fusion",
         "techniques/planner-executor",
         "techniques/ralph",
         "techniques/worker-adviser",
         "techniques/writer-reviewer",
       ],
     });
-  });
 });

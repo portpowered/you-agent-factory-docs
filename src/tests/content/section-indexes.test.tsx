@@ -222,6 +222,11 @@ describe("CLI section index page render", () => {
     expect(html).toContain(
       "Classify an item into a known class, then run the specialist execute path for that class.",
     );
+    expect(html).toContain("Fusion");
+    expect(html).toContain("/docs/techniques/fusion");
+    expect(html).toContain(
+      "Fusion is a you-agent-factory technique that runs two model passes on the same request: a first pass drafts an answer and a second pass refines it.",
+    );
     expect(html).toContain("Planner-Executor");
     expect(html).toContain("/docs/techniques/planner-executor");
     expect(html).toContain("Ralph");
@@ -276,6 +281,11 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(messages.techniquesIndex.title);
     expect(html).toContain(
       `aria-label="${messages.techniquesIndex.listLabel}"`,
+    );
+    expect(html).toContain("Fusion");
+    expect(html).toContain("/ja/docs/techniques/fusion");
+    expect(html).toContain(
+      "Fusion is a you-agent-factory technique that runs two model passes on the same request: a first pass drafts an answer and a second pass refines it.",
     );
     expect(html).toContain("Planner-Executor");
     expect(html).toContain("/ja/docs/techniques/planner-executor");

@@ -146,4 +146,63 @@ describe("fusion technique page", () => {
 
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
+
+  test("loads ja locale stubs with the same technique section structure", async () => {
+    const loadedPage = await loadLocalDocsPage(
+      {
+        section: "techniques",
+        slug: "fusion",
+      },
+      "ja",
+    );
+
+    expect(loadedPage.messages.title).toBe("Fusion");
+    expect(loadedPage.messages.description).toContain("you-agent-factory");
+    expect(loadedPage.messages.description).toMatch(/two model passes/i);
+    expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+
+    const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
+    const whyItMatters = String(
+      loadedPage.messages.sections?.whyItMatters?.body ?? "",
+    );
+    const howItWorks = String(
+      loadedPage.messages.sections?.howItWorks?.body ?? "",
+    );
+    const compared = String(
+      loadedPage.messages.sections?.comparedToNearbyTechniques?.body ?? "",
+    );
+    expect(whatItIs.length).toBeGreaterThan(0);
+    expect(whyItMatters.length).toBeGreaterThan(0);
+    expect(howItWorks.length).toBeGreaterThan(0);
+    expect(compared.length).toBeGreaterThan(0);
+    expect(whatItIs).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+    expect(whyItMatters).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
+    );
+    expect(howItWorks).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
+    );
+    expect(compared).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Why It Matters" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "How It Works" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+  });
 });
