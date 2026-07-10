@@ -254,7 +254,12 @@ shared wiring is still missing. Publishing may trip
 - empty-root / section-index tests that previously forbade authored bundles
   (`src/tests/content/section-indexes.test.tsx` must move that section from
   empty-state assertions to authored-entry assertions once the first page
-  ships; keep non-default locale empty-state checks until locale stubs exist)
+  ships; keep non-default locale empty-state checks until locale stubs exist).
+  When every CLI section is authored in the default locale, remove the
+  `CLI_EMPTY_SECTION_INDEX_CASES` filter loop entirely — filtering all
+  sections out yields `never[]` and breaks `tsc` on the empty-state `for`
+  loop. Keep locale-specific empty-state `it(...)` cases (for example ja
+  techniques) as standalone tests instead.
 
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the

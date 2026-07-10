@@ -4,11 +4,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Ralph is an autonomous execution technique that works through a product requirements backlog one user story per iteration. A product requirements document (PRD) backlog such as prd.json, plus progress notes, drives which story comes next. Ralph is not the factory itself and not a one-shot chat reply."
+      "body": "Ralph is an autonomous execution technique that works through a product requirements backlog one user story per iteration. A product requirements document (PRD) backlog such as prd.json, plus progress notes, drives which unfinished story comes next. Each iteration picks that story, implements and verifies it, then records what changed before the next pass. Ralph is not the factory itself—the factory is the workflow system that keeps agent work persistent—and it is not a one-shot chat reply that ends when a single answer returns."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Long product requirements stay mergeable and reviewable because each iteration finishes one small story, carries learnings forward, and avoids stuffing an entire feature into one context window."
+      "body": "Long PRDs stay mergeable and reviewable when each iteration finishes one small story instead of stuffing an entire feature into one context window. Learnings carry forward in progress notes, so later iterations reuse what earlier passes discovered. That keeps large backlogs moving as a sequence of reviewable changes rather than one oversized attempt that runs out of context mid-feature."
     },
     "howItWorks": {
       "title": "How It Works",

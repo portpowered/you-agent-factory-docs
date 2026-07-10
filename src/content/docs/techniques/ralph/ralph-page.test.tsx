@@ -57,8 +57,19 @@ describe("ralph technique page", () => {
     expect(whyItMatters.length).toBeGreaterThan(0);
     expect(howItWorks.length).toBeGreaterThan(0);
     expect(compared.length).toBeGreaterThan(0);
-    expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
-    expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
+    expect(whatItIs).toMatch(/product requirements document \(PRD\)/i);
+    expect(whatItIs).toMatch(/prd\.json/i);
+    expect(whatItIs).toMatch(/progress notes/i);
+    expect(whatItIs).toMatch(/one user story per iteration/i);
+    expect(whatItIs).toMatch(/not the factory itself/i);
+    expect(whatItIs).toMatch(/not a one-shot chat reply/i);
+    expect(whyItMatters).toMatch(/mergeable and reviewable/i);
+    expect(whyItMatters).toMatch(/one small story/i);
+    expect(whyItMatters).toMatch(/context window/i);
+    expect(whatItIs).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+    expect(whyItMatters).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
+    );
 
     render(
       <main>
@@ -79,6 +90,9 @@ describe("ralph technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
-    expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
+    const bodyText = document.body.textContent ?? "";
+    expect(bodyText).toMatch(/product requirements document \(PRD\)/i);
+    expect(bodyText).toMatch(/mergeable and reviewable/i);
+    expect(bodyText).not.toMatch(/Model Atlas/i);
   });
 });
