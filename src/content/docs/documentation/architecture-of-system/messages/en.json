@@ -1,0 +1,43 @@
+{
+  "title": "Architecture of system",
+  "description": "How you-agent-factory is structured: factory topology, work, workstations, workers, resources, and live FactorySession runtime.",
+  "openingSummary": "you-agent-factory is a workflow factory. Authored topology on disk and a live Factory Session runtime keep long-running agent work persistent and coordinated.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "you-agent-factory is a workflow factory. An authored factory definition on disk declares the topology; a live Factory Session runtime runs that topology so long-running agent work stays persistent and coordinated. Architecture of system maps the major system nouns—factory topology, work types and states, workstations, workers, optional resources, and Factory Session—so you can see how work moves through the system before opening deeper field-reference pages."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A factory is the authored orchestration definition. Its root file, factory.json, declares the topology the runtime will load: work types and their lifecycle states, workstations that dispatch steps, workers those steps invoke, and optional resources that bound concurrency. That definition lives on disk until a session loads it. Work enters as a token in a work type's initial state. A workstation fires when its input places have matching tokens, dispatches to a bound worker when the step needs execution, and routes the outcome back into work states—accepted, continue, rejected, or failed. Workers are the runtime executors. Resources are optional shared capacity pools a workstation can hold while a dispatch is in flight. A Factory Session is the live runtime instance for one running orchestration. The session loads the factory definition, issues dispatches, and emits events as work moves. The orchestrator kind may be Petri-backed—graph places and transitions—or a JavaScript dynamic workflow; both still run as a Factory Session."
+    },
+    "systemDiagram": {
+      "title": "System Diagram",
+      "body": "The diagram below shows how work moves through a live session: submitted work enters the Factory Session, a workstation dispatches to a worker, an optional resource can bound capacity, and the outcome routes back into work states."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Stay with Architecture of system when you need the system-structure map: how factory topology, work, workstations, workers, resources, and Factory Session fit together. Open Configuration when you need factory.json topology fields. Open Workers, Workstations, or Resources when you need deep contracts for those nouns. Open What is you-agent-factory when you need product framing before system structure. Factory Session, dynamic workflows, and Petri framing belong on their own documentation surfaces when you need live-runtime, JavaScript orchestrator, or CPN depth beyond this overview."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a system-structure overview. It is not a field dump, not a sync of packaged CLI docs, not the docs-site internal architecture document, and not a deep dive into MCP, API, logs, or metrics surfaces. Sibling field-reference and runtime pages own those contracts when they are published."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "whatIsYouAgentFactory": "What is you-agent-factory",
+    "configurationDocs": "Configuration",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "resourcesDocs": "Resources"
+  }
+}

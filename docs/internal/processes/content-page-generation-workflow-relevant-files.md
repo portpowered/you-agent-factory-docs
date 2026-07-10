@@ -211,20 +211,26 @@ where the visual is optional, stay prose-first with empty `assets.json` rather
 than editing the shared loader; see
 `tasks/ideas-to-review/content/concept-page-local-mdx-components-without-shared-loader-switch.md`.
 
-### Documentation page-local DataTable / MDX components
+### Documentation page-local DataTable / graph / MDX components
 
 When a documentation page needs a required factory-ui teaching surface such as
-`DataTable` (for example `documentation/harness-support` support matrix):
+`DataTable` (for example `documentation/harness-support` support matrix) or a
+factory-ui system diagram (for example `documentation/architecture-of-system`):
 
-1. Keep matrix JSON, the page-local renderer, and `page-mdx-components.tsx`
-   under the page bundle.
+1. Keep matrix JSON / graph fixture, the page-local renderer, and
+   `page-mdx-components.tsx` under the page bundle. Import graph primitives from
+   `@/features/factory-ui/graphs` (not package internals, not Atlas graph
+   assets).
 2. Add a static slug switch in `documentation-page-load.ts` that imports
    `@/content/docs/documentation/<slug>/page-mdx-components` (same compileMDX
    constraint as concepts — relative MDX imports do not resolve).
 3. Treat that loader switch as a narrow shared-surface exception: rerun
    `bun run audit:canonical-page-surface` with `--exception-reason` and repeat
    the justification in the PR conversation. Do not edit
-   `src/features/factory-ui/*` or invent shared matrix infrastructure.
+   `src/features/factory-ui/*` or invent shared matrix/graph infrastructure.
+4. React Flow node labels may be absent from curl/SSR HTML; prove the teaching
+   diagram with colocated render tests and, when verifying a served page, a
+   JS-capable browser check (Playwright) for title, legend, and labeled nodes.
 
 Required factory-ui teaching visuals on blog posts use the same pattern under
 the blog loader: colocate `page-mdx-components.tsx` next to `page.mdx` and add a
