@@ -5,12 +5,11 @@ import { act } from "react";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
-  DPO_TRAINING_URL,
-  GROUPED_QUERY_ATTENTION_URL,
+  GETTING_STARTED_GUIDE_URL,
+  HARNESS_CONCEPT_URL,
   PLACEHOLDER_SIDEBAR_DESCRIPTION,
-  ROUTING_SYSTEM_URL,
-  TOKEN_GLOSSARY_URL,
-  WHY_LONG_CONTEXT_IS_HARD_URL,
+  RALPH_TECHNIQUE_URL,
+  TOKENS_CONCEPT_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
@@ -28,7 +27,7 @@ describe("docs sidebar navigation accessibility", () => {
     restoreFetchMock();
   });
 
-  test("CanonicalDocsLayout exposes keyboard-reachable Token and GQA sidebar links", async () => {
+  test("CanonicalDocsLayout exposes keyboard-reachable factory sidebar links", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
@@ -57,34 +56,37 @@ describe("docs sidebar navigation accessibility", () => {
     expect(within(sidebar).queryByLabelText("Toggle Theme")).toBe(null);
     expect(sidebar.querySelector("[data-theme-toggle]")).toBe(null);
 
-    const glossaryFolder = within(sidebar).getByRole("button", {
-      name: "Glossary",
+    const conceptsFolder = within(sidebar).getByRole("button", {
+      name: "Concepts",
     });
     await act(async () => {
-      glossaryFolder.click();
+      conceptsFolder.click();
     });
 
-    const modulesFolder = within(sidebar).getByRole("button", {
-      name: "Modules",
+    const techniquesFolder = within(sidebar).getByRole("button", {
+      name: "Techniques",
     });
     await act(async () => {
-      modulesFolder.click();
+      techniquesFolder.click();
     });
 
-    const tokenLink = within(sidebar).getByRole("link", { name: "Token" });
-    expect(tokenLink.getAttribute("href")).toBe(TOKEN_GLOSSARY_URL);
-    tokenLink.focus();
-    expect(document.activeElement).toBe(tokenLink);
+    const tokensLink = within(sidebar).getByRole("link", { name: "Tokens" });
+    expect(tokensLink.getAttribute("href")).toBe(TOKENS_CONCEPT_URL);
+    tokensLink.focus();
+    expect(document.activeElement).toBe(tokensLink);
 
-    const gqaLink = within(sidebar).getByRole("link", {
-      name: "Grouped-Query Attention",
-    });
-    expect(gqaLink.getAttribute("href")).toBe(GROUPED_QUERY_ATTENTION_URL);
-    gqaLink.focus();
-    expect(document.activeElement).toBe(gqaLink);
+    const harnessLink = within(sidebar).getByRole("link", { name: "Harness" });
+    expect(harnessLink.getAttribute("href")).toBe(HARNESS_CONCEPT_URL);
+    harnessLink.focus();
+    expect(document.activeElement).toBe(harnessLink);
+
+    const ralphLink = within(sidebar).getByRole("link", { name: "Ralph" });
+    expect(ralphLink.getAttribute("href")).toBe(RALPH_TECHNIQUE_URL);
+    ralphLink.focus();
+    expect(document.activeElement).toBe(ralphLink);
   });
 
-  test("rendered docs sidebar shows ontology-derived and editorial-fallback groups across docs sections", async () => {
+  test("rendered docs sidebar shows factory collection folders and representative pages", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
@@ -105,11 +107,10 @@ describe("docs sidebar navigation accessibility", () => {
     }
 
     for (const folderName of [
-      "Glossary",
+      "Guides",
       "Concepts",
-      "Modules",
-      "Training",
-      "Systems",
+      "Techniques",
+      "Documentation",
     ] as const) {
       const folder = within(sidebar).getByRole("button", { name: folderName });
       await act(async () => {
@@ -117,40 +118,26 @@ describe("docs sidebar navigation accessibility", () => {
       });
     }
 
-    expect(within(sidebar).getByText("Sequence And Attention")).toBeTruthy();
-    expect(within(sidebar).getByRole("link", { name: "Token" })).toBeTruthy();
-
-    expect(within(sidebar).getByText("Long Context")).toBeTruthy();
     expect(
-      within(sidebar).getByRole("link", { name: "Context extension" }),
+      within(sidebar).getByRole("link", { name: "Getting Started" }),
     ).toBeTruthy();
-
-    expect(within(sidebar).getByText("Attention Variants")).toBeTruthy();
     expect(
-      within(sidebar).getByRole("link", { name: "Grouped-Query Attention" }),
+      within(sidebar)
+        .getByRole("link", { name: "Getting Started" })
+        .getAttribute("href"),
+    ).toBe(GETTING_STARTED_GUIDE_URL);
+
+    expect(within(sidebar).getByText("Reference Samples")).toBeTruthy();
+    expect(within(sidebar).getByRole("link", { name: "Harness" })).toBeTruthy();
+    expect(within(sidebar).getByRole("link", { name: "Ralph" })).toBeTruthy();
+    expect(
+      within(sidebar).getByRole("link", {
+        name: "Install you-agent-factory",
+      }),
     ).toBeTruthy();
-
-    const longContextLink = within(sidebar).getByRole("link", {
-      name: "Why long context is hard",
-    });
-    expect(longContextLink.getAttribute("href")).toBe(
-      WHY_LONG_CONTEXT_IS_HARD_URL,
-    );
-
-    const dpoLink = within(sidebar).getByRole("link", {
-      name: "Direct Preference Optimization",
-    });
-    expect(dpoLink.getAttribute("href")).toBe(DPO_TRAINING_URL);
-    expect(within(sidebar).queryAllByText("Alignment").length).toBeGreaterThan(
-      0,
-    );
-
-    const routingLink = within(sidebar).getByRole("link", { name: "Routing" });
-    expect(routingLink.getAttribute("href")).toBe(ROUTING_SYSTEM_URL);
-    expect(within(sidebar).queryAllByText("Routing").length).toBeGreaterThan(0);
   });
 
-  test("localized docs shell preserves locale while exposing only shipped Vietnamese docs links", async () => {
+  test("localized docs shell preserves locale while exposing shipped Vietnamese docs links", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
     const [messages, metaMap] = await Promise.all([
@@ -182,54 +169,36 @@ describe("docs sidebar navigation accessibility", () => {
     });
     expect(homeLink.getAttribute("href")).toBe("/vi");
 
-    const glossaryFolder = within(sidebar).getByRole("button", {
-      name: "Glossary",
+    const conceptsFolder = within(sidebar).getByRole("button", {
+      name: "Concepts",
     });
     await act(async () => {
-      glossaryFolder.click();
+      conceptsFolder.click();
     });
 
-    const modulesFolder = within(sidebar).getByRole("button", {
-      name: "Modules",
+    const techniquesFolder = within(sidebar).getByRole("button", {
+      name: "Techniques",
     });
     await act(async () => {
-      modulesFolder.click();
+      techniquesFolder.click();
     });
 
-    const tokenLink = within(sidebar).getByRole("link", { name: "Token" });
-    expect(tokenLink.getAttribute("href")).toBe("/vi/docs/glossary/token");
+    const tokensLink = within(sidebar).getByRole("link", { name: "Tokens" });
+    expect(tokensLink.getAttribute("href")).toBe("/vi/docs/concepts/tokens");
 
-    const gqaLink = within(sidebar).getByRole("link", {
-      name: "Grouped-Query Attention",
-    });
-    expect(gqaLink.getAttribute("href")).toBe(
-      "/vi/docs/modules/grouped-query-attention",
-    );
+    const harnessLink = within(sidebar).getByRole("link", { name: "Harness" });
+    expect(harnessLink.getAttribute("href")).toBe("/vi/docs/concepts/harness");
 
-    const multiHeadLink = within(sidebar).getByRole("link", {
-      name: "Multi-Head Attention",
-    });
-    expect(multiHeadLink.getAttribute("href")).toBe(
-      "/vi/docs/modules/multi-head-attention",
-    );
+    const ralphLink = within(sidebar).getByRole("link", { name: "Ralph" });
+    expect(ralphLink.getAttribute("href")).toBe("/vi/docs/techniques/ralph");
 
-    const linearAttentionLink = within(sidebar).getByRole("link", {
-      name: "Linear Attention",
-    });
-    expect(linearAttentionLink.getAttribute("href")).toBe(
-      "/vi/docs/modules/linear-attention",
-    );
-
-    expect(
-      within(sidebar).queryByRole("link", { name: "Getting started" }),
-    ).toBeNull();
     expect(
       within(sidebar).queryByRole("link", {
-        name: "Multi-Head Latent Attention",
+        name: "Grouped-Query Attention",
       }),
     ).toBeNull();
     expect(
-      within(sidebar).queryByRole("link", { name: "Sparse Attention" }),
+      within(sidebar).queryByRole("button", { name: "Modules" }),
     ).toBeNull();
   });
 });

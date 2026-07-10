@@ -46,6 +46,8 @@
     "test:ci-contract": "bun test src/tests/ci",
     "test:system": "bun run test:build-contract && bun run test:integration",
     "test:integration": "bun ./scripts/run-production-integration-tests.ts",
+    "pretest:reader-facing": "bun run prepare:content-runtime && fumadocs-mdx",
+    "test:reader-facing": "bun ./scripts/run-reader-facing-required-tests.ts",
     "precoverage": "bun run prepare:content-runtime && fumadocs-mdx",
     "coverage": "bun ./scripts/component-coverage-gate.ts",
     "generate:published-docs-registry": "bun ./scripts/generate-published-docs-registry.ts",

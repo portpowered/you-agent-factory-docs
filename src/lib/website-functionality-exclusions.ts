@@ -67,8 +67,8 @@ export const WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS: readonly WebsitePrefixExcl
       prefix: "src/tests/search/",
       classification: "replaced",
       ownedBy:
-        "pending required search suite (restore-required-tests-gates-002)",
-      note: "Current factory search contracts will move into a bounded required suite.",
+        "make test-reader-facing / bun run test:reader-facing (current factory search paths); Atlas-era GQA/module query fixtures remain excluded until rewritten",
+      note: "Current factory search contracts run in the reader-facing required suite; stale Atlas query suites stay out of plain make test.",
     },
     {
       prefix: "src/tests/content/",
@@ -85,16 +85,14 @@ export const WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS: readonly WebsitePrefixExcl
     {
       prefix: "src/tests/features/",
       classification: "replaced",
-      ownedBy:
-        "pending required search suite (restore-required-tests-gates-002)",
-      note: "Factory search UI contracts will join the required search path.",
+      ownedBy: "make test-reader-facing / bun run test:reader-facing",
+      note: "Factory search UI contracts run in the reader-facing required suite.",
     },
     {
       prefix: "src/tests/a11y/",
       classification: "replaced",
-      ownedBy:
-        "pending required accessibility suite (restore-required-tests-gates-002)",
-      note: "Accessibility smoke contracts will join the required path.",
+      ownedBy: "make test-reader-facing / bun run test:reader-facing",
+      note: "Accessibility smoke contracts run in the reader-facing required suite.",
     },
     {
       prefix: "src/tests/fixtures/non-ai-shell/",
@@ -105,8 +103,8 @@ export const WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS: readonly WebsitePrefixExcl
       prefix: "src/lib/navigation/",
       classification: "replaced",
       ownedBy:
-        "make test-build-contract (site-path/navigation helpers); layout shell deferred to restore-required-tests-gates-002",
-      note: "Navigation path helpers are covered by build-contract; remaining layout adapters stay deferred.",
+        "make test-build-contract (site-path/navigation helpers); make test-reader-facing / make test-integration (layout shell)",
+      note: "Navigation path helpers are covered by build-contract; layout shell adapters run in reader-facing and integration suites.",
     },
     {
       prefix: "src/lib/docs/",
@@ -119,8 +117,8 @@ export const WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS: readonly WebsitePrefixExcl
       prefix: "src/lib/search/",
       classification: "replaced",
       ownedBy:
-        "pending required search suite (restore-required-tests-gates-002); build-contract covers export search artifact helpers under src/lib/build/",
-      note: "Search library unit contracts will join the required search path.",
+        "make test-reader-facing / bun run test:reader-facing; build-contract covers export search artifact helpers under src/lib/build/",
+      note: "Current factory search library unit contracts run in the reader-facing required suite.",
     },
     {
       prefix: "src/lib/build/",
@@ -193,17 +191,14 @@ export const WEBSITE_FUNCTIONALITY_FILE_EXCLUSIONS: readonly WebsiteFileExclusio
     },
     {
       path: "src/app/docs/docs-slug-renderer.test.tsx",
-      classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Docs slug renderer contract will join the required layout path.",
+      classification: "active",
+      note: "Docs slug renderer still asserts Atlas-era locale/module fixtures; keep out of plain make test until rewritten for factory pages.",
     },
     {
       path: "src/components/layout/docs-header.test.tsx",
       classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Docs header shell contract will join the required layout path.",
+      ownedBy: "make test-reader-facing / bun run test:reader-facing",
+      note: "Docs header shell contract runs in the reader-facing required suite.",
     },
     {
       path: "src/features/blog/components/BlogRelatedDocs.test.tsx",
@@ -272,17 +267,13 @@ export const WEBSITE_FUNCTIONALITY_FILE_EXCLUSIONS: readonly WebsiteFileExclusio
     },
     {
       path: "src/features/docs/search/SearchResults.test.tsx",
-      classification: "replaced",
-      ownedBy:
-        "pending required search suite (restore-required-tests-gates-002)",
-      note: "Search results UI contract will join the required search path.",
+      classification: "active",
+      note: "SearchResults UI still asserts Atlas-era GQA/module fixtures; keep out until rewritten for factory search hits.",
     },
     {
       path: "src/lib/i18n/localize-page-tree.test.ts",
-      classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Localized page-tree contract will join the required layout path.",
+      classification: "active",
+      note: "Localized page-tree suite still asserts Atlas attention proof sets; keep out until rewritten for factory collections.",
     },
     {
       path: "src/lib/site/site-config-compatibility.test.tsx",
@@ -303,64 +294,56 @@ export const WEBSITE_FUNCTIONALITY_FILE_EXCLUSIONS: readonly WebsiteFileExclusio
       path: "src/tests/layout/docs-sidebar-navigation.test.tsx",
       classification: "replaced",
       ownedBy:
-        "make test-integration (current); pending required layout suite (restore-required-tests-gates-002)",
-      note: "Docs sidebar shell is already on the integration path and will also join required layout coverage.",
+        "make test-reader-facing / bun run test:reader-facing; make test-integration",
+      note: "Docs sidebar shell runs in the reader-facing required suite and the integration path.",
     },
     {
       path: "src/tests/layout/docs-page-toc.test.tsx",
       classification: "replaced",
       ownedBy:
-        "make test-integration (current); pending required layout suite (restore-required-tests-gates-002)",
-      note: "Docs TOC shell is already on the integration path and will also join required layout coverage.",
+        "make test-reader-facing / bun run test:reader-facing; make test-integration",
+      note: "Docs TOC shell runs in the reader-facing required suite and the integration path.",
     },
     {
       path: "src/tests/layout/docs-index-shell.test.tsx",
       classification: "replaced",
       ownedBy:
-        "make test-integration (current); pending required layout suite (restore-required-tests-gates-002)",
-      note: "Docs index shell is already on the integration path and will also join required layout coverage.",
+        "make test-reader-facing / bun run test:reader-facing; make test-integration",
+      note: "Docs index shell runs in the reader-facing required suite and the integration path.",
     },
     {
       path: "src/tests/layout/home-shell-coverage-contract.test.ts",
       classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Home shell coverage contract will join the required layout path.",
+      ownedBy: "make test-reader-facing / bun run test:reader-facing",
+      note: "Home shell coverage contract runs in the reader-facing required suite.",
     },
     {
       path: "src/tests/layout/home-shell-styling-contract.test.tsx",
       classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Home shell styling contract will join the required layout path.",
+      ownedBy: "make test-reader-facing / bun run test:reader-facing",
+      note: "Home shell styling contract runs in the reader-facing required suite.",
     },
     {
       path: "src/tests/layout/japanese-shell-routes.test.tsx",
-      classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Japanese shell route contract will join the required layout path.",
+      classification: "active",
+      note: "Japanese shell route suite still asserts Atlas architecture/glossary indexes; keep out until rewritten for factory collections.",
     },
     {
       path: "src/tests/layout/localized-route-metadata.test.ts",
-      classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Localized route metadata contract will join the required layout path.",
+      classification: "active",
+      note: "Localized route metadata still asserts Atlas module proof sets; keep out until rewritten for factory pages.",
     },
     {
       path: "src/tests/layout/module-page-coverage-contract.test.ts",
       classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Module-page shell coverage contract will join the required layout path.",
+      ownedBy: "make test-reader-facing / bun run test:reader-facing",
+      note: "Module-page shell coverage contract runs in the reader-facing required suite.",
     },
     {
       path: "src/tests/layout/root-layout-locale.test.tsx",
       classification: "replaced",
-      ownedBy:
-        "pending required layout suite (restore-required-tests-gates-002)",
-      note: "Root layout locale contract will join the required layout path.",
+      ownedBy: "make test-reader-facing / bun run test:reader-facing",
+      note: "Root layout locale contract runs in the reader-facing required suite.",
     },
   ];
 

@@ -26,6 +26,9 @@ jobs:
       - name: Run tests
         run: make test
 
+      - name: Run reader-facing required suite
+        run: make test-reader-facing
+
       - name: Build static export
         run: make build
 

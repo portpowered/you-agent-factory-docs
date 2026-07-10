@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration test-reader-facing coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -43,6 +43,9 @@ test-system:
 test-integration:
 	bun run test:integration
 
+test-reader-facing:
+	bun run test:reader-facing
+
 coverage:
 	bun run coverage
 
@@ -73,7 +76,7 @@ guard-pages-deployed-artifact:
 verify-architectural-checklist-mechanism-status:
 	bun run verify:architectural-checklist-mechanism-status
 
-ci: lint typecheck test test-verify-contract coverage test-build-contract test-integration validate-data linkcheck
+ci: lint typecheck test test-reader-facing test-verify-contract coverage test-build-contract test-integration validate-data linkcheck
 
 validate-data:
 	bun run validate-data

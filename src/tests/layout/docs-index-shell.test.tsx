@@ -1,25 +1,26 @@
 import { describe, expect, test } from "bun:test";
 import {
   extractNdSidebarHtml,
+  GETTING_STARTED_GUIDE_URL,
   hasLegacyPlaceholderSidebar,
   PLACEHOLDER_SIDEBAR_DESCRIPTION,
   stripHtmlScripts,
-  TOKEN_GLOSSARY_URL,
+  TOKENS_CONCEPT_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
 import { readBuiltHtmlForConvergenceTests } from "@/lib/verify/built-html-convergence-test-helpers";
 
 const BUILT_HTML_INDEX_ROUTES = [
   {
-    path: "/docs/architecture",
-    file: ".next/server/app/docs/architecture.html",
-    title: "Architecture",
-    entryHref: TOKEN_GLOSSARY_URL,
+    path: "/docs/guides",
+    file: ".next/server/app/docs/guides.html",
+    title: "Guides",
+    entryHref: GETTING_STARTED_GUIDE_URL,
   },
   {
-    path: "/docs/glossary",
-    file: ".next/server/app/docs/glossary.html",
-    title: "Glossary",
-    entryHref: "/docs/glossary/embedding",
+    path: "/docs/concepts",
+    file: ".next/server/app/docs/concepts.html",
+    title: "Concepts",
+    entryHref: TOKENS_CONCEPT_URL,
   },
 ] as const;
 
@@ -42,13 +43,12 @@ describe("docs index routes unified shell (built HTML)", () => {
       expect(visibleHtml).toContain('id="nd-sidebar"');
       expect(visibleHtml).toContain('id="nd-page"');
       expect(sidebar.length).toBeGreaterThan(0);
-      expect(sidebar).toContain(">Modules<");
-      expect(sidebar).toContain(">Glossary<");
-      expect(visibleHtml).toContain(TOKEN_GLOSSARY_URL);
+      expect(sidebar).toContain(">Guides<");
+      expect(sidebar).toContain(">Concepts<");
+      expect(visibleHtml).toContain(route.entryHref);
       expect(visibleHtml).not.toContain(PLACEHOLDER_SIDEBAR_DESCRIPTION);
       expect(hasLegacyPlaceholderSidebar(visibleHtml)).toBe(false);
       expect(visibleHtml).toContain(route.title);
-      expect(visibleHtml).toContain(route.entryHref);
     });
   }
 });

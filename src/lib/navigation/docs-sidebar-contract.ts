@@ -1,14 +1,28 @@
 import type * as PageTree from "fumadocs-core/page-tree";
 import type { Node } from "fumadocs-core/page-tree";
 
+/** Factory concept page used by reader-facing sidebar / a11y contracts. */
+export const TOKENS_CONCEPT_URL = "/docs/concepts/tokens";
+export const HARNESS_CONCEPT_URL = "/docs/concepts/harness";
+export const RALPH_TECHNIQUE_URL = "/docs/techniques/ralph";
+export const GETTING_STARTED_GUIDE_URL = "/docs/guides/getting-started";
+export const INSTALL_DOCS_URL = "/docs/documentation/install";
+
+/** @deprecated Atlas glossary URL retained for soft-skip built-HTML fixtures. */
 export const TOKEN_GLOSSARY_URL = "/docs/glossary/token";
+/** @deprecated Atlas model URL retained for soft-skip built-HTML fixtures. */
 export const GPT_3_MODEL_URL = "/docs/models/gpt-3";
+/** @deprecated Atlas paper URL retained for soft-skip built-HTML fixtures. */
 export const DEEPSEEK_V4_PAPER_URL = "/docs/papers/deepseek-v4";
+/** @deprecated Atlas module URL retained for soft-skip built-HTML fixtures. */
 export const GROUPED_QUERY_ATTENTION_URL =
   "/docs/modules/grouped-query-attention";
+/** @deprecated Atlas concept URL retained for soft-skip built-HTML fixtures. */
 export const WHY_LONG_CONTEXT_IS_HARD_URL =
   "/docs/concepts/why-long-context-is-hard";
+/** @deprecated Atlas training URL retained for soft-skip built-HTML fixtures. */
 export const DPO_TRAINING_URL = "/docs/training/dpo";
+/** @deprecated Atlas system URL retained for soft-skip built-HTML fixtures. */
 export const ROUTING_SYSTEM_URL = "/docs/systems/routing";
 
 /** Copy shown only by the legacy DocsShell placeholder sidebar. */

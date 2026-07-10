@@ -73,16 +73,26 @@ describe("website functionality exclusions", () => {
     ).toBe(true);
   });
 
-  test("replaced build and verify prefixes document their owning suites", () => {
+  test("replaced build, verify, and reader-facing prefixes document their owning suites", () => {
     const build = WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS.find(
       (entry) => entry.prefix === "src/lib/build/",
     );
     const verify = WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS.find(
       (entry) => entry.prefix === "src/lib/verify/",
     );
+    const a11y = WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS.find(
+      (entry) => entry.prefix === "src/tests/a11y/",
+    );
+    const search = WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS.find(
+      (entry) => entry.prefix === "src/tests/search/",
+    );
     expect(build?.classification).toBe("replaced");
     expect(build?.ownedBy).toContain("test-build-contract");
     expect(verify?.classification).toBe("replaced");
     expect(verify?.ownedBy).toContain("test-verify-contract");
+    expect(a11y?.classification).toBe("replaced");
+    expect(a11y?.ownedBy).toContain("test-reader-facing");
+    expect(search?.classification).toBe("replaced");
+    expect(search?.ownedBy).toContain("test-reader-facing");
   });
 });
