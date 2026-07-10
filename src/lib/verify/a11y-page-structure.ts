@@ -45,7 +45,9 @@ function accessibleName(element: Element): string {
       return parts.join(" ");
     }
   }
-  const htmlElement = element as HTMLElement & { labels?: NodeListOf<HTMLLabelElement> | null };
+  const htmlElement = element as HTMLElement & {
+    labels?: NodeListOf<HTMLLabelElement> | null;
+  };
   if (htmlElement.labels && htmlElement.labels.length > 0) {
     const fromLabels = Array.from(htmlElement.labels)
       .map((label) => (label.textContent ?? "").replace(/\s+/g, " ").trim())

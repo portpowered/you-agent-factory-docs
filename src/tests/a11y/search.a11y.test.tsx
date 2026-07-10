@@ -259,9 +259,9 @@ describe("search accessibility", () => {
         );
       });
       const loadingDialog = screen.getByRole("dialog", { name: "Search" });
-      expect(
-        screen.getByTestId("search-dialog-loading").textContent,
-      ).toContain(context.messages.search.loading);
+      expect(screen.getByTestId("search-dialog-loading").textContent).toContain(
+        context.messages.search.loading,
+      );
       await expectNoSeriousAxeViolations(loadingDialog);
     } finally {
       useSearchSpy.mockRestore();
