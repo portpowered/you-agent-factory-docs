@@ -9,7 +9,7 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "OpenAPI (Open Application Programming Interface) is the product contract that describes the HTTP API a running factory host exposes. Callers target that host—not this documentation site—and address work through session-scoped routes keyed by a session id. The primary address model is session-scoped: discover and inspect factory sessions, read status, submit work, and preview factories against the live host. Request bodies use OpenAPI camelCase field names such as workTypeName."
+      "body": "OpenAPI (Open Application Programming Interface) describes the HTTP API a running factory host exposes. The product OpenAPI surface (api/openapi.yaml) is that contract. Callers target the live host—not this documentation site—and address work through session-scoped routes keyed by a session id. The primary address model is session-scoped: discover and inspect factory sessions, read status, submit work, and preview factories against the live host. Request bodies use OpenAPI camelCase field names such as workTypeName."
     },
     "openapiSurface": {
       "title": "OpenAPI Surface",
@@ -21,7 +21,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web OpenAPI and HTTP orientation for the you-agent-factory API surface. It is not a build-time generated OpenAPI UI, not a full schema dump, not a sync of packaged CLI docs, and not the Factory Session, submitting-work, dynamic-workflows, MCP, or CLI deep pages."
+      "body": "This page is a hand-authored web outline of the you-agent-factory OpenAPI and HTTP surface. It is not a build-time generated OpenAPI UI, not a full schema dump, not a sync of packaged CLI docs, and not the Factory Session, submitting-work, dynamic-workflows, MCP, or CLI deep pages."
     },
     "related": {
       "title": "Related To"
@@ -36,6 +36,9 @@
   "callouts": {
     "additionalRoutes": {
       "body": "The same host also exposes additional session-scoped reads and controls—events (GET /factory-sessions/{session_id}/events), factory query (GET /factory-sessions/{session_id}/factory), pause and resume (POST /factory-sessions/{session_id}/pause and /resume), and staged-files upload (POST /factory-sessions/{session_id}/work/staged-files)—without changing the session-scoped address model."
+    },
+    "deferredOpenApiGeneration": {
+      "body": "Follow-up: OpenAPI generation or interactive spec rendering may land later. This outline does not embed generated OpenAPI UI, run OpenAPI codegen, or ship a third-party OpenAPI renderer."
     }
   },
   "links": {
@@ -60,6 +63,11 @@
     "exampleListSessionsLabel": "List live factory sessions on the default local host",
     "exampleListSessionsCode": "curl -s \"http://localhost:7437/factory-sessions\"",
     "exampleSubmitWorkLabel": "Submit one work item to the default compatibility session (~default)",
-    "exampleSubmitWorkCode": "curl -s \\\n  -X POST \\\n  -H \"Content-Type: application/json\" \\\n  \"http://localhost:7437/factory-sessions/~default/work\" \\\n  -d '{\n    \"name\": \"example-task\",\n    \"workTypeName\": \"task\"\n  }'"
+    "exampleSubmitWorkCode": "curl -s \\\n  -X POST \\\n  -H \"Content-Type: application/json\" \\\n  \"http://localhost:7437/factory-sessions/~default/work\" \\\n  -d '{\n    \"name\": \"example-task\",\n    \"workTypeName\": \"task\"\n  }'",
+    "factorySessionDocs": "Factory Session docs",
+    "submittingWorkDocs": "Submitting Work docs",
+    "dynamicWorkflowsDocs": "Dynamic Workflows docs",
+    "cliDocs": "CLI docs",
+    "mcpDocs": "MCP docs"
   }
 }

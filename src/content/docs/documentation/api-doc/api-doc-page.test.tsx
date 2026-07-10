@@ -1,8 +1,9 @@
 /**
  * Page-owned render proof for documentation/api-doc.
  * Covers documentation shell, API / OpenAPI identity, the hand-authored
- * OpenAPI surface outline (grouped method/path families), and how-to-use
- * base-host guidance with representative HTTP examples.
+ * OpenAPI surface outline (grouped method/path families), how-to-use
+ * base-host guidance with representative HTTP examples, key concepts /
+ * limits with deferred OpenAPI-generation follow-up, and sibling discovery.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -21,6 +22,14 @@ const REQUIRED_METHOD_PATHS = [
   "GET /factory-sessions/{session_id}/status",
   "POST /factory-sessions/{session_id}/work",
   "POST /factories/preview",
+] as const;
+
+const RELATED_DISCOVERY_HREFS = [
+  "/docs/documentation/factory-session",
+  "/docs/documentation/submitting-work",
+  "/docs/documentation/dynamic-workflows",
+  "/docs/documentation/cli",
+  "/docs/documentation/mcp",
 ] as const;
 
 describe("api-doc documentation page", () => {
@@ -57,6 +66,12 @@ describe("api-doc documentation page", () => {
       const howToUseBody = String(
         loadedPage.messages.sections?.howToUse?.body ?? "",
       );
+      const limitsBody = String(
+        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+      );
+      const deferredGeneration = String(
+        loadedPage.messages.callouts?.deferredOpenApiGeneration?.body ?? "",
+      );
       const additionalRoutes = String(
         loadedPage.messages.callouts?.additionalRoutes?.body ?? "",
       );
@@ -70,6 +85,8 @@ describe("api-doc documentation page", () => {
       expect(keyConcepts).toMatch(
         /OpenAPI \(Open Application Programming Interface\)/,
       );
+      expect(keyConcepts).toMatch(/api\/openapi\.yaml/);
+      expect(keyConcepts).toMatch(/session-scoped/i);
       expect(keyConcepts).toMatch(/workTypeName/);
       expect(openapiSurface).toMatch(/session/i);
       expect(howToUseBody).toMatch(/http:\/\/localhost:7437/);
@@ -78,6 +95,19 @@ describe("api-doc documentation page", () => {
       expect(howToUseBody).not.toMatch(
         /FACTORY_REQUEST_BATCH|on this page|Model Atlas|reader.?shortcut/i,
       );
+      expect(limitsBody).toMatch(/hand-authored/i);
+      expect(limitsBody).toMatch(/not a build-time generated OpenAPI UI/i);
+      expect(limitsBody).toMatch(/not a full schema dump/i);
+      expect(limitsBody).toMatch(/not a sync of packaged CLI docs/i);
+      expect(limitsBody).toMatch(/Factory Session/i);
+      expect(limitsBody).toMatch(/submitting-work/i);
+      expect(limitsBody).toMatch(/dynamic-workflows/i);
+      expect(limitsBody).toMatch(/MCP/i);
+      expect(limitsBody).toMatch(/CLI/i);
+      expect(deferredGeneration).toMatch(
+        /OpenAPI generation|interactive spec rendering/i,
+      );
+      expect(deferredGeneration).toMatch(/codegen|third-party|renderer/i);
       expect(listSessionsExample).toContain(
         "http://localhost:7437/factory-sessions",
       );
@@ -97,6 +127,12 @@ describe("api-doc documentation page", () => {
       );
       expect(openapiSurface).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(limitsBody).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut|this lane/i,
+      );
+      expect(deferredGeneration).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut|this lane/i,
       );
 
       render(
@@ -139,6 +175,8 @@ describe("api-doc documentation page", () => {
       expect(keyConceptsSection?.textContent).toMatch(
         /OpenAPI \(Open Application Programming Interface\)/,
       );
+      expect(keyConceptsSection?.textContent).toMatch(/api\/openapi\.yaml/);
+      expect(keyConceptsSection?.textContent).toMatch(/session-scoped/i);
       expect(keyConceptsSection?.textContent).toMatch(/workTypeName/);
 
       const outline = within(openapiSurfaceSection as HTMLElement);
@@ -188,6 +226,36 @@ describe("api-doc documentation page", () => {
         /POST[\s\S]*factory-sessions\/~default\/work/,
       );
       expect(howToUseSection?.textContent).toMatch(/workTypeName/);
+
+      const limitsSection = document.getElementById("limits-and-assumptions");
+      expect(limitsSection).toBeTruthy();
+      expect(limitsSection?.textContent).toMatch(/hand-authored/i);
+      expect(limitsSection?.textContent).toMatch(
+        /not a build-time generated OpenAPI UI/i,
+      );
+      expect(limitsSection?.textContent).toMatch(
+        /OpenAPI generation|interactive spec rendering/i,
+      );
+      expect(limitsSection?.textContent).toMatch(
+        /codegen|third-party|renderer/i,
+      );
+      expect(limitsSection?.textContent).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut|this lane/i,
+      );
+
+      const relatedSection = document.getElementById("related");
+      expect(relatedSection).toBeTruthy();
+      const relatedHrefs = Array.from(
+        relatedSection?.querySelectorAll("a[href]") ?? [],
+      ).map((node) => node.getAttribute("href") ?? "");
+      for (const href of RELATED_DISCOVERY_HREFS) {
+        expect(relatedHrefs).toContain(href);
+      }
+      expect(relatedSection?.textContent).toMatch(/Factory Session/i);
+      expect(relatedSection?.textContent).toMatch(/Submitting Work/i);
+      expect(relatedSection?.textContent).toMatch(/Dynamic Workflows/i);
+      expect(relatedSection?.textContent).toMatch(/CLI/i);
+      expect(relatedSection?.textContent).toMatch(/MCP/i);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

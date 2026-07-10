@@ -6,9 +6,15 @@
   "defaultSummaryKey": "description",
   "aliases": ["API", "OpenAPI", "HTTP API", "api-doc"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.factory-session",
+    "documentation.submitting-work",
+    "documentation.dynamic-workflows",
+    "documentation.cli",
+    "documentation.mcp"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T09:00:00.000Z",
-  "updatedAt": "2026-07-10T09:00:00.000Z"
+  "updatedAt": "2026-07-10T11:00:00.000Z"
 }
