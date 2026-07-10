@@ -16,7 +16,7 @@ import {
   defaultLocale,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
-import { resolveAiDocsSidebarFolderLabel } from "@/lib/navigation/ai-docs-sidebar-adapter";
+import { resolveDocsSidebarFolderLabel } from "@/lib/navigation/docs-sidebar-adapter";
 import { source } from "@/lib/source";
 
 type BreadcrumbSegment = {
@@ -34,7 +34,7 @@ type DocsPageBreadcrumbProps = {
 function getFactoryCollectionLabel(section: DocsCollectionId): string {
   return (
     source.getPage([section])?.data.title ??
-    resolveAiDocsSidebarFolderLabel(section)
+    resolveDocsSidebarFolderLabel(section)
   );
 }
 

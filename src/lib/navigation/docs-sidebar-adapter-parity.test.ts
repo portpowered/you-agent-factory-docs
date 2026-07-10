@@ -3,9 +3,9 @@ import type { Node } from "fumadocs-core/page-tree";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import { DOCS_COLLECTION_IDS } from "@/lib/docs/collection-definition-contract";
 import {
-  getAiDocsShellPageTreeSettings,
-  listAiDocsShellSidebarDefinitions,
-} from "@/lib/navigation/ai-docs-sidebar-adapter";
+  getDocsShellPageTreeSettings,
+  listDocsShellSidebarDefinitions,
+} from "@/lib/navigation/docs-sidebar-adapter";
 import {
   collectSidebarPageLinks,
   findSidebarPageLink,
@@ -77,11 +77,11 @@ function getFolderPageLinks(
   return collectSidebarPageLinks(getFolderChildren(pageTree, folderName));
 }
 
-describe("AI docs sidebar adapter extraction parity", () => {
+describe("docs sidebar adapter extraction parity", () => {
   test("adapter-wired collection folders match generated tree for factory collections", () => {
     const baseTree = { name: "Docs", children: [] };
     const generatedTree = buildGeneratedDocsPageTree(baseTree);
-    const { definitions, groupingResolvers } = getAiDocsShellPageTreeSettings();
+    const { definitions, groupingResolvers } = getDocsShellPageTreeSettings();
     const adapterTree = buildShellCollectionPageTree(baseTree, {
       pages: loadPublishedDocsPagesSync("en"),
       definitions,
@@ -159,13 +159,13 @@ describe("AI docs sidebar adapter extraction parity", () => {
     const fixtureLabels = listNonAiShellFixtureCollectionDefinitions().map(
       (definition) => definition.sidebarLabel,
     );
-    const aiLabels = listAiDocsShellSidebarDefinitions().map(
+    const factoryLabels = listDocsShellSidebarDefinitions().map(
       (definition) => definition.sidebarLabel,
     );
 
     expect(getTopLevelFolderNames(fixtureTree)).toEqual([...fixtureLabels]);
     for (const label of fixtureLabels) {
-      expect(aiLabels, label).not.toContain(label);
+      expect(factoryLabels, label).not.toContain(label);
     }
 
     for (const collectionId of ["guides", "reference"] as const) {

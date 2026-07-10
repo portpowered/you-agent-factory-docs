@@ -7,14 +7,14 @@ import {
 } from "@/lib/docs/collection-definition-contract";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
 import {
-  getAiDocsShellPageTreeSettings,
-  getAiDocsShellSidebarGroupingResolvers,
-  listAiDocsCollectionIds,
-  listAiDocsShellSidebarDefinitions,
-  resolveAiDocsSidebarFolderLabel,
-} from "@/lib/navigation/ai-docs-sidebar-adapter";
+  getDocsShellPageTreeSettings,
+  getDocsShellSidebarGroupingResolvers,
+  listDocsShellCollectionIds,
+  listDocsShellSidebarDefinitions,
+  resolveDocsSidebarFolderLabel,
+} from "@/lib/navigation/docs-sidebar-adapter";
 
-const EXPECTED_AI_SIDEBAR_FOLDER_LABELS = [
+const EXPECTED_DOCS_SIDEBAR_FOLDER_LABELS = [
   "Guides",
   "Concepts",
   "Techniques",
@@ -28,9 +28,9 @@ function getSeparatorLabels(nodes: Node[]): string[] {
     .map((node) => String(node.name));
 }
 
-describe("AI docs sidebar adapter", () => {
+describe("docs sidebar adapter", () => {
   test("exposes shell sidebar definitions in configured collection order", () => {
-    const definitions = listAiDocsShellSidebarDefinitions();
+    const definitions = listDocsShellSidebarDefinitions();
     const collectionDefinitions = listDocsCollectionDefinitions();
 
     expect(definitions.map((definition) => definition.id)).toEqual(
@@ -39,24 +39,24 @@ describe("AI docs sidebar adapter", () => {
     expect(definitions.map((definition) => definition.id)).toEqual([
       ...DOCS_COLLECTION_IDS,
     ]);
-    expect(listAiDocsCollectionIds()).toEqual([...DOCS_COLLECTION_IDS]);
+    expect(listDocsShellCollectionIds()).toEqual([...DOCS_COLLECTION_IDS]);
     expect(definitions.map((definition) => definition.sidebarLabel)).toEqual([
-      ...EXPECTED_AI_SIDEBAR_FOLDER_LABELS,
+      ...EXPECTED_DOCS_SIDEBAR_FOLDER_LABELS,
     ]);
   });
 
   test("bundles adapter page-tree settings for generic shell composition", () => {
-    const settings = getAiDocsShellPageTreeSettings();
+    const settings = getDocsShellPageTreeSettings();
 
-    expect(settings.definitions).toEqual(listAiDocsShellSidebarDefinitions());
-    expect(settings.collectionIds).toEqual(listAiDocsCollectionIds());
+    expect(settings.definitions).toEqual(listDocsShellSidebarDefinitions());
+    expect(settings.collectionIds).toEqual(listDocsShellCollectionIds());
     expect(Object.keys(settings.groupingResolvers).sort()).toEqual(
       [...DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS].sort(),
     );
   });
 
   test("preserves collection routing and grouping resolver ids from definitions", () => {
-    const definitions = listAiDocsShellSidebarDefinitions();
+    const definitions = listDocsShellSidebarDefinitions();
     const collectionDefinitions = listDocsCollectionDefinitions();
 
     for (const [index, definition] of definitions.entries()) {
@@ -67,13 +67,13 @@ describe("AI docs sidebar adapter", () => {
         sourceDefinition.sidebarGroupingResolverId,
       );
       expect(definition.sidebarLabel).toBe(
-        resolveAiDocsSidebarFolderLabel(sourceDefinition.id),
+        resolveDocsSidebarFolderLabel(sourceDefinition.id),
       );
     }
   });
 
   test("exposes grouping resolvers for grouped factory collections only", () => {
-    const resolvers = getAiDocsShellSidebarGroupingResolvers();
+    const resolvers = getDocsShellSidebarGroupingResolvers();
 
     expect(Object.keys(resolvers).sort()).toEqual(
       [...DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS].sort(),
@@ -85,7 +85,7 @@ describe("AI docs sidebar adapter", () => {
   });
 
   test("grouping resolvers produce separator labels for configured collections with pages", () => {
-    const resolvers = getAiDocsShellSidebarGroupingResolvers();
+    const resolvers = getDocsShellSidebarGroupingResolvers();
 
     for (const definition of listDocsCollectionDefinitions()) {
       const resolverId = definition.sidebarGroupingResolverId;

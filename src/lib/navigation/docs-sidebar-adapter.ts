@@ -12,7 +12,7 @@ import type {
   ShellSidebarGroupingResolver,
 } from "@/lib/navigation/shell-collection-page-tree";
 
-const AI_SIDEBAR_FOLDER_LABELS: Record<DocsCollectionId, string> = {
+const DOCS_SIDEBAR_FOLDER_LABELS: Record<DocsCollectionId, string> = {
   guides: "Guides",
   concepts: "Concepts",
   techniques: "Techniques",
@@ -20,61 +20,61 @@ const AI_SIDEBAR_FOLDER_LABELS: Record<DocsCollectionId, string> = {
   glossary: "Glossary",
 };
 
-export function resolveAiDocsSidebarFolderLabel(id: DocsCollectionId): string {
-  return AI_SIDEBAR_FOLDER_LABELS[id];
+export function resolveDocsSidebarFolderLabel(id: DocsCollectionId): string {
+  return DOCS_SIDEBAR_FOLDER_LABELS[id];
 }
 
-export function toAiDocsShellSidebarDefinition(
+export function toDocsShellSidebarDefinition(
   definition: DocsCollectionDefinition,
 ): ShellCollectionSidebarDefinition {
   return {
     id: definition.id,
     routeSlug: definition.routeSlug,
     frontmatterKind: definition.frontmatterKind,
-    sidebarLabel: resolveAiDocsSidebarFolderLabel(definition.id),
+    sidebarLabel: resolveDocsSidebarFolderLabel(definition.id),
     sidebarGroupingResolverId: definition.sidebarGroupingResolverId,
   };
 }
 
-export function listAiDocsShellSidebarDefinitions(): ShellCollectionSidebarDefinition[] {
-  return listDocsCollectionDefinitions().map(toAiDocsShellSidebarDefinition);
+export function listDocsShellSidebarDefinitions(): ShellCollectionSidebarDefinition[] {
+  return listDocsCollectionDefinitions().map(toDocsShellSidebarDefinition);
 }
 
-export function listAiDocsCollectionIds(): DocsCollectionId[] {
+export function listDocsShellCollectionIds(): DocsCollectionId[] {
   return listDocsCollectionDefinitions().map((definition) => definition.id);
 }
 
-export type AiDocsShellPageTreeSettings = {
+export type DocsShellPageTreeSettings = {
   definitions: ShellCollectionSidebarDefinition[];
   collectionIds: DocsCollectionId[];
   groupingResolvers: Record<string, ShellSidebarGroupingResolver>;
 };
 
-export function getAiDocsShellPageTreeSettings(): AiDocsShellPageTreeSettings {
-  const definitions = listAiDocsShellSidebarDefinitions();
+export function getDocsShellPageTreeSettings(): DocsShellPageTreeSettings {
+  const definitions = listDocsShellSidebarDefinitions();
 
   return {
     definitions,
-    collectionIds: listAiDocsCollectionIds(),
-    groupingResolvers: getAiDocsShellSidebarGroupingResolvers(),
+    collectionIds: listDocsShellCollectionIds(),
+    groupingResolvers: getDocsShellSidebarGroupingResolvers(),
   };
 }
 
-function createAiDocsGroupingResolver(
+function createDocsGroupingResolver(
   resolverId: DocsCollectionSidebarGroupingResolverId,
 ): ShellSidebarGroupingResolver {
   return (pages) =>
     buildGroupedSidebarNodes(resolverId, pages as DocsPageSource[]);
 }
 
-export function getAiDocsShellSidebarGroupingResolvers(): Record<
+export function getDocsShellSidebarGroupingResolvers(): Record<
   string,
   ShellSidebarGroupingResolver
 > {
   return Object.fromEntries(
     DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS.map((resolverId) => [
       resolverId,
-      createAiDocsGroupingResolver(resolverId),
+      createDocsGroupingResolver(resolverId),
     ]),
   );
 }

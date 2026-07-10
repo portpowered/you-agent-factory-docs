@@ -21,7 +21,7 @@ rewrite-era CLI collections (`guides`, `concepts`, `techniques`, `documentation`
 | `src/lib/docs/docs-collection-definitions.ts` | Empty CLI definitions with matching `routeSlug` and empty `starterSlugs` |
 | `src/lib/docs/docs-collection-definition-inventory-verification.ts` | Allows empty starters for the four CLI collections; asserts kind/route alignment |
 | `src/lib/docs/section-collection-index.ts` | Section frontmatter kind → collection id map includes CLI kinds |
-| `src/lib/navigation/ai-docs-sidebar-adapter.ts` | Sidebar folder labels for CLI collection ids |
+| `src/lib/navigation/docs-sidebar-adapter.ts` | Sidebar folder labels for CLI collection ids |
 | `src/content/messages/{en,ja,vi}/common.json` | `browseIndex.*` + `*Index` copy for guides/techniques/documentation |
 | `src/lib/content/ui-messages.types.ts` | Typed browse/index message keys for the new collections |
 
