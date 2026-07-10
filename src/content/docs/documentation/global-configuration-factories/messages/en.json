@@ -1,0 +1,32 @@
+{
+  "title": "Global Configuration Factories",
+  "description": "Set you-agent-factory operator model defaults and manage global / named factories under ~/.you-agent-factory.",
+  "openingSummary": "Global Configuration Factories is the you-agent-factory reference for operator-wide model defaults and shared named factories outside project factory.json topology.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Global Configuration Factories is the web reference for you-agent-factory operator model defaults and global / named factories. Use it when you need operator-wide defaults in ~/.you-agent-factory/config.json, environment overrides, and global CLI flags, or when you need the shared factories root under ~/.you-agent-factory/factories for you run --named resolution, one-root listing, and save or update under a chosen root."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Operator model defaults are preferred provider and model values for INFERENCE_WORKER and AGENT_WORKER definitions that omit modelProvider or model. They live in the operator config file, environment variables, and global CLI flags, and apply in memory at runtime without rewriting authored worker fields or factory.json. Named factories are persisted factory definitions under a factory root. Project-local roots such as ./factory come first for you run --named; the global shared root is ~/.you-agent-factory/factories. Built-ins materialize into that global root on first use and stay editable on disk."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Set operator defaults in ~/.you-agent-factory/config.json when you want one preferred provider and model across runs, then override with environment variables or global flags when a single invocation needs a different choice. List named factories one root at a time with you factory list for the project-local root, or you factory list --dir ~/.you-agent-factory/factories for the global root. Run a named factory with you run --named, and save or update under the --dir root you intend to own. Use the configuration documentation page when you need factory.json topology instead of operator or global factory settings."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web operator-defaults and global / named-factories reference. It is not a sync of packaged CLI docs, not the factory.json topology overview, not workers, workstations, or resources field dumps, not packaged @you/* invocation deep dives, not factory-session, and not submitting-work."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

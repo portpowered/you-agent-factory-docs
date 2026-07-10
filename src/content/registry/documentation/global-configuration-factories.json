@@ -1,0 +1,22 @@
+{
+  "id": "documentation.global-configuration-factories",
+  "slug": "global-configuration-factories",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "global configuration factories",
+    "operator model defaults",
+    "named factories"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.configuration",
+    "documentation.cli",
+    "documentation.workers"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T07:00:00.000Z",
+  "updatedAt": "2026-07-10T07:00:00.000Z"
+}
