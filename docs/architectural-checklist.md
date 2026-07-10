@@ -440,7 +440,7 @@ make clean     # remove generated artifacts
 
 * Docs templates are authored as MDX files under `docs/templates`.
 * The required factory product templates are `guide.mdx`, `technique.mdx`, `documentation.mdx`, `concept.mdx`, `glossary.mdx`, and `blog-post.mdx`.
-* Sibling Atlas templates (`model`, `module`, `paper`, `training-regime`, `system`) may still exist during migration but are not required starter paths for new factory product pages.
+* Sibling Atlas templates (`model`, `module`, `paper`, `training-regime`, `system`) are removed from the maintained inventory; do not reintroduce them as starter paths.
 * Each template kind has sidecars: `<kind>.content.md`, `<kind>.messages.en.json`, and `<kind>.assets.json`.
 * The `.content.md` sidecar is authoring guidance only and is not copied into production pages.
 * The `.messages.en.json` sidecar is the starter default-locale message shape for `messages/en.json`.

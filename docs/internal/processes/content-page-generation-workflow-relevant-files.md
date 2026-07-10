@@ -767,8 +767,9 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 ## Page bundle and registry workflow
 
 * `docs/templates/*.content.md`
-  Authoring templates for model, module, concept, glossary, paper, training, and
-  system pages.
+  Authoring templates for factory kinds (guide, concept, technique,
+  documentation, glossary) plus blog-post. Atlas model/module/paper/training/
+  system templates are deleted.
 * `docs/guide-to-writing-pages.md`
   High-level page authoring steps, graph requirements, and code/documentation
   separation expectations.

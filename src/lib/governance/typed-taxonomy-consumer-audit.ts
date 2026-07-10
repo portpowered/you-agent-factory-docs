@@ -259,19 +259,6 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
         "Maintainer guidance explicitly documents which legacy fields are still tolerated and why.",
     },
     {
-      id: "module-template-legacy-authoring-guidance",
-      path: "docs/templates/module.content.md",
-      cluster: "authoring-guidance",
-      status: "approved-compatibility-bridge",
-      owner: "content-authoring",
-      fields: ["moduleType", "conceptType", "variantGroup"],
-      evidence: [
-        "Treat `moduleType`, `moduleFamily`, `conceptType`, and `variantGroup` as",
-      ],
-      rationale:
-        "Module authoring templates still explain the temporary compatibility role of legacy taxonomy fields.",
-    },
-    {
       id: "concept-template-legacy-authoring-guidance",
       path: "docs/templates/concept.content.md",
       cluster: "authoring-guidance",
@@ -296,33 +283,6 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       ],
       rationale:
         "Glossary authoring guidance still documents conceptType as temporary compatibility metadata for concept-backed glossary records.",
-    },
-    {
-      id: "training-template-legacy-authoring-guidance",
-      path: "docs/templates/training-regime.content.md",
-      cluster: "authoring-guidance",
-      status: "approved-compatibility-bridge",
-      owner: "content-authoring",
-      fields: ["regimeType", "conceptType", "variantGroup", "sidebarGrouping"],
-      evidence: [
-        "Treat `regimeType`, `conceptType`, `variantGroup`, and `sidebarGrouping` as",
-      ],
-      rationale:
-        "Training-regime authoring guidance still documents the staged compatibility path for deprecated taxonomy fields.",
-    },
-    {
-      id: "system-template-legacy-authoring-guidance",
-      path: "docs/templates/system.content.md",
-      cluster: "authoring-guidance",
-      status: "approved-compatibility-bridge",
-      owner: "content-authoring",
-      fields: ["systemType", "conceptType", "variantGroup", "sidebarGrouping"],
-      evidence: [
-        "Treat `systemType`, `conceptType`,",
-        "`variantGroup`, and `sidebarGrouping` as deprecated compatibility fields",
-      ],
-      rationale:
-        "System authoring guidance still documents the staged compatibility path for deprecated taxonomy fields.",
     },
   ] as const;
 

@@ -84,10 +84,9 @@ pages):
 | Glossary | `glossary.mdx` | `glossary.content.md`, `glossary.messages.en.json`, `glossary.assets.json` | `src/content/docs/glossary/<slug>/` |
 | Blog post | `blog-post.mdx` | `blog-post.content.md`, `blog-post.messages.en.json`, `blog-post.assets.json` | `src/content/blog/<slug>/` |
 
-Sibling Atlas templates (`model`, `module`, `paper`, `training-regime`,
-`system`) may still exist in the tree during migration. They are not required
-starter paths for new factory product pages. Prefer the factory inventory above
-unless you are maintaining an existing Atlas-era page.
+Atlas authoring templates (`model`, `module`, `paper`, `training-regime`,
+`system`) are no longer in the maintained inventory. Use the factory inventory
+above for new product pages.
 
 Starter artifact roles:
 

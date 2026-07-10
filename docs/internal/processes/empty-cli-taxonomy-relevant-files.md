@@ -101,8 +101,10 @@ Do not author customer page bundles under content roots in this lane.
 for inventory/browse wiring. Authored concept topic pages and
 `src/content/registry/concepts/*.json` records are allowed once a B05 (or later)
 concept lane ships them—same posture as `documentation` after its first pages.
-Do not delete Atlas models/modules/papers/training/systems in empty-taxonomy
-lanes; Atlas concept deletion stays owned by `rewrite-delete-atlas-domain`.
+Do not recreate empty Atlas models/modules/papers/training/systems content or
+registry `.gitkeep` trees in empty-taxonomy lanes; those placeholders are
+deleted by `delete-ai-content-infrastructure`. Atlas concept deletion stays
+owned by `rewrite-delete-atlas-domain`.
 Required `make test` already excludes the older empty-concepts SSR proofs under
 `src/lib/docs/`, so the first published concept page does not need those suites
 rewritten in the page-only lane.

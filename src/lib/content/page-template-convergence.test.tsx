@@ -5,30 +5,22 @@ import { join } from "node:path";
 const templateRoot = join(process.cwd(), "docs/templates");
 
 type TemplateKind =
-  | "model"
-  | "paper"
   | "concept"
   | "guide"
   | "technique"
   | "documentation"
-  | "system"
-  | "training-regime"
   | "glossary";
 
 /**
- * After Atlas graph/chart MDX deletion, templates keep writing-standards
- * convergence without requiring deleted PageAsset/ModuleGraph tags.
- * CLI kinds (guide/technique/documentation) never had graph assets.
+ * Factory templates keep writing-standards convergence without requiring
+ * deleted Atlas PageAsset/ModuleGraph tags. CLI kinds
+ * (guide/technique/documentation) never had graph assets.
  */
-const nonModuleTemplates: TemplateKind[] = [
-  "model",
-  "paper",
+const factoryTemplates: TemplateKind[] = [
   "concept",
   "guide",
   "technique",
   "documentation",
-  "training-regime",
-  "system",
   "glossary",
 ];
 
@@ -42,8 +34,8 @@ function readStarterMessages(kind: TemplateKind): Record<string, unknown> {
   ) as Record<string, unknown>;
 }
 
-describe("non-module page template convergence", () => {
-  for (const kind of nonModuleTemplates) {
+describe("factory page template convergence", () => {
+  for (const kind of factoryTemplates) {
     test(`${kind}.mdx follows writing standards without deleted Atlas graph tags`, () => {
       const template = readTemplate(kind);
 
