@@ -2,7 +2,13 @@
 
 import type { SharedProps } from "fumadocs-ui/contexts/search";
 import { RootProvider } from "fumadocs-ui/provider/next";
-import { type ComponentType, lazy, type ReactNode, useMemo } from "react";
+import {
+  type ComponentType,
+  lazy,
+  type ReactNode,
+  Suspense,
+  useMemo,
+} from "react";
 import type { SearchResultMetaRecord } from "@/features/docs/search/search-result-meta-client";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 
@@ -26,11 +32,13 @@ export function AppProviders({
   const SearchDialog = useMemo((): ComponentType<SharedProps> => {
     return function SearchDialogWithMeta(props) {
       return (
-        <DocsSearchDialog
-          {...props}
-          metaByUrl={metaByUrl}
-          messages={messages}
-        />
+        <Suspense fallback={null}>
+          <DocsSearchDialog
+            {...props}
+            metaByUrl={metaByUrl}
+            messages={messages}
+          />
+        </Suspense>
       );
     };
   }, [metaByUrl, messages]);

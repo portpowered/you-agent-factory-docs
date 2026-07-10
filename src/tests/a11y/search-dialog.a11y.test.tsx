@@ -37,8 +37,12 @@ describe("search dialog accessibility smoke", () => {
     const dialog = await waitFor(() =>
       screen.getByRole("dialog", { name: "Search" }),
     );
-    const searchInput = within(dialog).getByRole("textbox");
-    expect(searchInput.getAttribute("placeholder")).toBeTruthy();
+    const searchInput = within(dialog).getByLabelText(
+      context.messages.search.placeholder,
+    );
+    expect(searchInput.getAttribute("aria-label")).toBe(
+      context.messages.search.placeholder,
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId("search-dialog-idle").textContent).toContain(

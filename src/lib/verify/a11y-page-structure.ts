@@ -36,12 +36,32 @@ function accessibleName(element: Element): string {
   }
   const labelledBy = element.getAttribute("aria-labelledby");
   if (labelledBy) {
+    const scope = element.ownerDocument ?? document;
     const parts = labelledBy
       .split(/\s+/)
-      .map((id) => document.getElementById(id)?.textContent?.trim() ?? "")
+      .map((id) => scope.getElementById(id)?.textContent?.trim() ?? "")
       .filter(Boolean);
     if (parts.length > 0) {
       return parts.join(" ");
+    }
+  }
+  const htmlElement = element as HTMLElement & { labels?: NodeListOf<HTMLLabelElement> | null };
+  if (htmlElement.labels && htmlElement.labels.length > 0) {
+    const fromLabels = Array.from(htmlElement.labels)
+      .map((label) => (label.textContent ?? "").replace(/\s+/g, " ").trim())
+      .filter(Boolean)
+      .join(" ");
+    if (fromLabels) {
+      return fromLabels;
+    }
+  }
+  const id = element.getAttribute("id");
+  if (id) {
+    const scope = element.ownerDocument ?? document;
+    const forLabel = scope.querySelector(`label[for="${CSS.escape(id)}"]`);
+    const fromFor = (forLabel?.textContent ?? "").replace(/\s+/g, " ").trim();
+    if (fromFor) {
+      return fromFor;
     }
   }
   const title = element.getAttribute("title")?.trim();

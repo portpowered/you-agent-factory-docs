@@ -43,6 +43,25 @@ describe("a11y-page-structure probes", () => {
     ]);
   });
 
+  test("resolves accessible names from label[for] associations", () => {
+    document.body.innerHTML = `
+      <header>
+        <nav aria-label="Primary"><a href="/">Home</a></nav>
+      </header>
+      <main>
+        <h1>Search</h1>
+        <label for="search-page-input">Search you-agent-factory…</label>
+        <input id="search-page-input" type="search" />
+      </main>
+    `;
+
+    const controls = listKeyboardFocusableControls(document);
+    expect(controls.map((c) => c.name)).toEqual([
+      "Home",
+      "Search you-agent-factory…",
+    ]);
+  });
+
   test("expectCriticalPageStructure fails when main is missing", () => {
     document.body.innerHTML = `
       <header>
