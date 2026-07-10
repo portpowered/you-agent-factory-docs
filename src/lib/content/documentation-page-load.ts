@@ -48,6 +48,12 @@ async function loadDocumentationPageMdxComponents(
   slug: string,
 ): Promise<MDXComponents> {
   switch (slug) {
+    case "architecture-of-system": {
+      const mod = await import(
+        "@/content/docs/documentation/architecture-of-system/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
     case "harness-support": {
       const mod = await import(
         "@/content/docs/documentation/harness-support/page-mdx-components"

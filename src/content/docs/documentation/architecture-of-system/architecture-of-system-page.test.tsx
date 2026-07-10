@@ -80,6 +80,9 @@ describe("architecture-of-system documentation page", () => {
       screen.getByRole("heading", { name: "What It Covers" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "System Diagram" }),
+    ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -90,5 +93,18 @@ describe("architecture-of-system documentation page", () => {
     expect(screen.getByText(/workflow factory/i)).toBeTruthy();
     expect(screen.getByText(/factory\.json/i)).toBeTruthy();
     expect(screen.getByText(/Petri-backed/i)).toBeTruthy();
+    expect(
+      screen.getByText("How work moves through you-agent-factory"),
+    ).toBeTruthy();
+    expect(screen.getByTestId("system-diagram-illustration")).toBeTruthy();
+    expect(
+      screen.getByRole("region", {
+        name: "How work moves through you-agent-factory",
+      }),
+    ).toBeTruthy();
+    expect(screen.getByText("Submitted work")).toBeTruthy();
+    expect(screen.getByText("Factory Session")).toBeTruthy();
+    expect(screen.getByText("Workstation")).toBeTruthy();
+    expect(screen.getByText("Worker")).toBeTruthy();
   });
 });
