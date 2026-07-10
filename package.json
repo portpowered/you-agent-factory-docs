@@ -15,6 +15,7 @@
     "build": "fumadocs-mdx && bun ./scripts/run-next.ts build --webpack && bun ./scripts/write-build-source-fingerprint.ts",
     "prebuild:export": "bun run prepare:content-runtime",
     "build:export": "fumadocs-mdx && NEXT_STATIC_EXPORT=1 bun ./scripts/run-next.ts build --webpack && bun ./scripts/emit-export-search-index.ts && bun ./scripts/write-build-source-fingerprint.ts",
+    "build:export:profile": "PROFILE_STATIC_EXPORT=1 bun ./scripts/run-profiled-static-export-build.ts",
     "prestart": "bun run prepare:content-runtime",
     "start": "bun ./scripts/run-next.ts start",
     "prelint": "bun run prepare:content-runtime",

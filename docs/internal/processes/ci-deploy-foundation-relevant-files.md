@@ -57,6 +57,9 @@ and `bun run test:website:export-consumers`.
 | `.github/workflows/deploy-pages.yml` | Main-branch Pages validate + deploy; artifact path `out/` |
 | `docs/operations.md` | Maintainer-facing CI/deploy posture aligned to the Makefile contract |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`) |
+| `src/lib/build/static-export-profile.ts` | Optional static-export stage timing contract (`PROFILE_STATIC_EXPORT=1`); off by default |
+| `src/lib/build/run-profiled-static-export.ts` | Opt-in profiled runner: discrete timed stages + stable timing summary |
+| `scripts/run-profiled-static-export-build.ts` / `bun run build:export:profile` | Maintainer entrypoint for profiled export; does not replace `make build` / `build:export` |
 | `src/lib/build/static-export.ts` | Single `normalizeGitHubPagesBasePath` → `basePath` + `assetPrefix` contract; `next.config.ts` spreads `resolveNextConfigForBuildMode()` (no hardcoded Pages prefix) |
 | `src/lib/build/built-app-html-paths.ts` | Live project-site fixture default `BUILT_APP_GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` (not retired `/ai-model-reference`); shared by export-search artifact matching and built-HTML path normalization |
 | `src/lib/navigation/site-path.ts` | Runtime `withBasePath(href, basePath)` / `stripBasePathFromHref` — prefixes or strips internal absolute hrefs; leaves empty-base, external, hash, and already-prefixed hrefs unchanged |
