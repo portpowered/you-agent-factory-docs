@@ -12,6 +12,10 @@ social assets, sitemap, robots).
 | `src/lib/seo/production-metadata-base.test.ts` | Origin/base-path resolution for project-site vs root modes |
 | `src/lib/seo/export-absolute-canonical.ts` | Absolute production canonical HTML checks + export-dir verification for home/docs/blog proof routes |
 | `src/lib/seo/export-absolute-canonical.test.ts` | Fixture + metadata + temp-`out/` proofs that canonicals are absolute under the production origin/base path and never legacy Atlas routes |
+| `src/lib/seo/page-open-graph.ts` | `pageOpenGraph` / `withPageOpenGraph` — page-specific OG title/description/url mirroring Metadata fields |
+| `src/lib/seo/page-open-graph.test.ts` | Helper unit proofs for OG field mirroring |
+| `src/lib/seo/export-page-open-graph.ts` | Export HTML OG extraction + verification for home/search/docs/blog proof routes |
+| `src/lib/seo/export-page-open-graph.test.ts` | Metadata + temp-`out/` proofs that OG matches page identity and absolute production `og:url` |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
 | `src/lib/navigation/site-metadata-path.ts` | Public-asset / non-Metadata path helpers; do not double-prefix Metadata fields |
@@ -40,6 +44,13 @@ social assets, sitemap, robots).
    `verifyExportAbsoluteCanonicals` for that stricter check; keep
    `exportHtmlReferencesPrefixedMetadataHrefs` for base-path consumer proofs
    that still accept either shape.
+7. **Page-specific Open Graph** (story 003): use `withPageOpenGraph` (or
+   `pageOpenGraph`) so `openGraph.title` / `openGraph.description` mirror the
+   page Metadata title/description and `openGraph.url` stays app-relative like
+   the canonical. Exported HTML must emit `og:title`, `og:description`, and
+   absolute production `og:url` matching the canonical. Proof routes: `/`,
+   `/search`, `/docs/concepts/harness`, `/blog/bottlenecks`. Use
+   `exportHtmlHasPageSpecificOpenGraph` / `verifyExportPageOpenGraph`.
 
 ## Sibling lanes
 
