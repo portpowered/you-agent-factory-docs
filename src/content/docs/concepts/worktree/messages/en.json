@@ -1,0 +1,31 @@
+{
+  "title": "Worktree",
+  "description": "A worktree is an isolated checkout or workspace the factory uses so agent lanes can run without colliding on the same tree.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A worktree is an isolated checkout or workspace the factory uses for a work item or lane—for example under .claude/worktrees/<name>/. It is a separate tree of files so that lane can edit and verify without sharing the same working tree as other lanes. A worktree is not the factory workflow system itself, and it is not just a branch name."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": ""
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": ""
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": ""
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

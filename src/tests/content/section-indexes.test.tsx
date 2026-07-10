@@ -161,6 +161,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/concepts/tokens");
     expect(html).toContain("Tool");
     expect(html).toContain("/docs/concepts/tool");
+    expect(html).toContain("Worktree");
+    expect(html).toContain("/docs/concepts/worktree");
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
