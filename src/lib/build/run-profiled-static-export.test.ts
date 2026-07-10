@@ -235,6 +235,8 @@ describe("runProfiledStaticExport", () => {
   });
 
   test("ordinary build:export package script stays the uninstrumented chain", () => {
+    // Observable default-off contract: the supported export path must not
+    // invoke the profiled runner. Do not inventory opt-in script registration.
     const packageJson = JSON.parse(
       readFileSync(join(repoRoot, "package.json"), "utf8"),
     ) as { scripts: Record<string, string> };
@@ -245,17 +247,11 @@ describe("runProfiledStaticExport", () => {
     expect(packageJson.scripts["build:export"]).not.toContain(
       "run-profiled-static-export",
     );
-    expect(packageJson.scripts["build:export:profile"]).toContain(
-      "PROFILE_STATIC_EXPORT=1",
+    expect(packageJson.scripts["build:export"]).not.toContain(
+      "PROFILE_STATIC_EXPORT",
     );
-    expect(packageJson.scripts["build:export:profile"]).toContain(
-      "run-profiled-static-export-build.ts",
-    );
-    expect(packageJson.scripts["benchmark:static-export"]).toContain(
-      "PROFILE_STATIC_EXPORT=1",
-    );
-    expect(packageJson.scripts["benchmark:static-export"]).toContain(
-      "run-static-export-benchmark.ts",
+    expect(packageJson.scripts["build:export"]).not.toContain(
+      "run-static-export-benchmark",
     );
   });
 });

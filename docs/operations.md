@@ -256,6 +256,8 @@ bun run benchmark:static-export -- --mode=warm
   `not-available:…` reasons instead of omitting fields. Summaries never include
   hostname, username, home path, or other identifying fields.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
+- Focused contract coverage (no full timed export):
+  `bun run test:static-export-profile-contract`.
 
 #### Reference machine for the <=180-second clean-build target
 

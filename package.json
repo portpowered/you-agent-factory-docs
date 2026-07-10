@@ -36,6 +36,7 @@
     "test:website:export-consumers": "bun test src/lib/build/verify-project-site-export-consumers.test.ts src/lib/build/project-site-export-consumers.proof.test.ts",
     "pretest:build-contract": "bun run prepare:content-runtime && fumadocs-mdx",
     "test:build-contract": "bun test src/lib/build/export-out-directory.test.ts src/lib/build/verify-export-base-path.test.ts src/lib/build/static-export.test.ts src/lib/build/deploy-pages-workflow-contract.test.ts src/lib/build/built-app-html-paths.test.ts src/lib/build/verify-project-site-export-consumers.test.ts src/lib/build/acquire-trusted-project-site-export.test.ts src/lib/build/guard-pages-deployed-artifact.test.ts src/lib/navigation/site-path.test.ts src/lib/navigation/site-navigation-href.test.ts src/lib/navigation/site-metadata-path.test.ts src/lib/i18n/route-locale.test.ts",
+    "test:static-export-profile-contract": "bun test src/lib/build/static-export-profile.test.ts src/lib/build/static-export-profile-diagnostics.test.ts src/lib/build/static-export-benchmark-prep.test.ts src/lib/build/run-profiled-static-export.test.ts",
     "guard:pages-deployed-artifact": "bun ./scripts/guard-pages-deployed-artifact.ts",
     "pretest:verify-contract": "bun run prepare:content-runtime && fumadocs-mdx",
     "test:verify-contract": "bun ./scripts/run-website-verifier-tests.ts",
