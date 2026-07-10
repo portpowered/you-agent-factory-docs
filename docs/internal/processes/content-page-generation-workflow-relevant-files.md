@@ -421,6 +421,17 @@ with `ModulePageProviders`, and assert visible command text plus next-step
 hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
 as sufficient page coverage.
 
+Worktree browser verify for documentation pages: factory worktrees often have
+no local `node_modules` (Next resolves from the repo root). Turbopack then
+fails with an inferred workspace-root / `next/package.json` error. Run
+`bun install` in the worktree before `bun run dev` on a unique port. Warm the
+target docs route once (first compile can exceed 10s), then `curl --max-time`
+for title and section headings. Do not commit `next-env.d.ts` churn from
+`next dev` (it may rewrite the routes types import to `.next/dev/types/...`).
+Colocate page render proofs under the page bundle (for example
+`src/content/docs/documentation/petri/petri-page.test.tsx`) so
+`audit:canonical-page-surface` stays within ordinary page-owned budget.
+
 ## Glossary-derived browse and sidebar sections
 
 When glossary decomposition needs new reader-facing top-level areas such as
