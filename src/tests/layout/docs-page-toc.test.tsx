@@ -8,16 +8,16 @@ import { readBuiltHtmlForConvergenceTests } from "@/lib/verify/built-html-conver
 
 const BUILT_HTML_DOC_ROUTES = [
   {
-    path: "/docs/glossary/token",
-    file: ".next/server/app/docs/glossary/token.html",
+    path: "/docs/concepts/tokens",
+    file: ".next/server/app/docs/concepts/tokens.html",
     anchorId: "what-it-is",
     label: "What It Is",
   },
   {
-    path: "/docs/modules/grouped-query-attention",
-    file: ".next/server/app/docs/modules/grouped-query-attention.html",
-    anchorId: "how-it-works",
-    label: "How It Works",
+    path: "/docs/concepts/harness",
+    file: ".next/server/app/docs/concepts/harness.html",
+    anchorId: "what-it-is",
+    label: "What It Is",
   },
 ] as const;
 

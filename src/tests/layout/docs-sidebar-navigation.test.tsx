@@ -1,75 +1,75 @@
 import { describe, expect, test } from "bun:test";
 import {
   collectSidebarPageLinks,
-  DPO_TRAINING_URL,
   extractNdSidebarHtml,
   findSidebarPageLink,
-  GROUPED_QUERY_ATTENTION_URL,
+  GETTING_STARTED_GUIDE_URL,
+  HARNESS_CONCEPT_URL,
   hasLegacyPlaceholderSidebar,
+  INSTALL_DOCS_URL,
   PLACEHOLDER_SIDEBAR_DESCRIPTION,
-  ROUTING_SYSTEM_URL,
+  RALPH_TECHNIQUE_URL,
   stripHtmlScripts,
-  TOKEN_GLOSSARY_URL,
-  WHY_LONG_CONTEXT_IS_HARD_URL,
+  TOKENS_CONCEPT_URL,
 } from "@/lib/navigation/docs-sidebar-contract";
 import { source } from "@/lib/source";
 import { readBuiltHtmlForConvergenceTests } from "@/lib/verify/built-html-convergence-test-helpers";
 
 const BUILT_HTML_DOC_ROUTES = [
   {
-    path: "/docs/glossary/token",
-    file: ".next/server/app/docs/glossary/token.html",
-    requiredSidebarUrls: [TOKEN_GLOSSARY_URL],
+    path: "/docs/concepts/tokens",
+    file: ".next/server/app/docs/concepts/tokens.html",
+    requiredSidebarUrls: [TOKENS_CONCEPT_URL],
   },
   {
-    path: "/docs/modules/grouped-query-attention",
-    file: ".next/server/app/docs/modules/grouped-query-attention.html",
-    requiredSidebarUrls: [GROUPED_QUERY_ATTENTION_URL],
+    path: "/docs/concepts/harness",
+    file: ".next/server/app/docs/concepts/harness.html",
+    requiredSidebarUrls: [HARNESS_CONCEPT_URL],
   },
   {
-    path: "/docs/concepts/why-long-context-is-hard",
-    file: ".next/server/app/docs/concepts/why-long-context-is-hard.html",
-    requiredSidebarUrls: [WHY_LONG_CONTEXT_IS_HARD_URL],
+    path: "/docs/techniques/ralph",
+    file: ".next/server/app/docs/techniques/ralph.html",
+    requiredSidebarUrls: [RALPH_TECHNIQUE_URL],
   },
   {
-    path: "/docs/training/dpo",
-    file: ".next/server/app/docs/training/dpo.html",
-    requiredSidebarUrls: [DPO_TRAINING_URL],
+    path: "/docs/guides/getting-started",
+    file: ".next/server/app/docs/guides/getting-started.html",
+    requiredSidebarUrls: [GETTING_STARTED_GUIDE_URL],
   },
   {
-    path: "/docs/systems/routing",
-    file: ".next/server/app/docs/systems/routing.html",
-    requiredSidebarUrls: [ROUTING_SYSTEM_URL],
+    path: "/docs/documentation/install",
+    file: ".next/server/app/docs/documentation/install.html",
+    requiredSidebarUrls: [INSTALL_DOCS_URL],
   },
 ] as const;
 
 const BUILT_HTML_LOCALIZED_DOC_ROUTES = [
   {
-    path: "/vi/docs/modules/grouped-query-attention",
-    file: ".next/server/app/vi/docs/modules/grouped-query-attention.html",
+    path: "/vi/docs/concepts/harness",
+    file: ".next/server/app/vi/docs/concepts/harness.html",
+    // Only assert links from the open Concepts folder. Collapsed Guides /
+    // Techniques folders omit their children from static HTML even when the
+    // localized page tree ships those routes.
     requiredSidebarUrls: [
-      "/vi/docs/modules/grouped-query-attention",
-      "/vi/docs/modules/linear-attention",
-      "/vi/docs/modules/multi-head-attention",
-      "/vi/docs/modules/multi-query-attention",
-      "/vi/docs/modules/sliding-window-attention",
+      "/vi/docs/concepts/harness",
+      "/vi/docs/concepts/tokens",
     ],
+    requiredSidebarLabels: [">Guides<", ">Concepts<", ">Techniques<"],
     forbiddenSidebarUrls: [
-      "/vi/docs/getting-started",
-      "/vi/docs/modules/multi-head-latent-attention",
-      "/vi/docs/modules/sparse-attention",
+      "/vi/docs/modules/grouped-query-attention",
+      "/vi/docs/modules/multi-head-attention",
     ],
   },
 ] as const;
 
 const BUILT_HTML_INDEX_ROUTES = [
   {
-    path: "/docs/architecture",
-    file: ".next/server/app/docs/architecture.html",
+    path: "/docs/guides",
+    file: ".next/server/app/docs/guides.html",
   },
   {
-    path: "/docs/glossary",
-    file: ".next/server/app/docs/glossary.html",
+    path: "/docs/concepts",
+    file: ".next/server/app/docs/concepts.html",
   },
 ] as const;
 
@@ -78,36 +78,39 @@ function readBuiltRouteHtml(relativePath: string): string | null {
 }
 
 describe("docs sidebar page-tree contract", () => {
-  test("page tree includes Token and Grouped-Query Attention reader URLs", () => {
+  test("page tree includes factory guide, concept, and technique reader URLs", () => {
     const links = collectSidebarPageLinks(source.pageTree);
-    const token = findSidebarPageLink(links, TOKEN_GLOSSARY_URL);
-    const gqa = findSidebarPageLink(links, GROUPED_QUERY_ATTENTION_URL);
+    const tokens = findSidebarPageLink(links, TOKENS_CONCEPT_URL);
+    const harness = findSidebarPageLink(links, HARNESS_CONCEPT_URL);
+    const ralph = findSidebarPageLink(links, RALPH_TECHNIQUE_URL);
+    const gettingStarted = findSidebarPageLink(
+      links,
+      GETTING_STARTED_GUIDE_URL,
+    );
 
-    expect(token?.name).toBe("Token");
-    expect(gqa?.name).toBe("Grouped-Query Attention");
+    expect(tokens?.name).toBe("Tokens");
+    expect(harness?.name).toBe("Harness");
+    expect(ralph?.name).toBe("Ralph");
+    expect(gettingStarted?.name).toBe("Getting Started");
   });
 
-  test("page tree includes stable subgroup labels across representative docs sections", () => {
+  test("page tree includes factory collection folder labels", () => {
     const sidebarJson = JSON.stringify(source.pageTree);
 
-    expect(sidebarJson).toContain("Attention Foundations");
-    expect(sidebarJson).toContain("Attention Variants");
-    expect(sidebarJson).toContain("Long Context");
-    expect(sidebarJson).toContain("Alignment");
-    expect(sidebarJson).toContain("Routing");
+    expect(sidebarJson).toContain("Guides");
+    expect(sidebarJson).toContain("Concepts");
+    expect(sidebarJson).toContain("Techniques");
+    expect(sidebarJson).toContain("Documentation");
+    expect(sidebarJson).toContain("Reference Samples");
+    expect(sidebarJson).not.toContain("Attention Foundations");
+    expect(sidebarJson).not.toContain("Attention Variants");
   });
 
-  test("page tree includes concept, training, and system reader URLs", () => {
+  test("page tree includes documentation install reader URL", () => {
     const links = collectSidebarPageLinks(source.pageTree);
 
-    expect(findSidebarPageLink(links, WHY_LONG_CONTEXT_IS_HARD_URL)?.name).toBe(
-      "Why long context is hard",
-    );
-    expect(findSidebarPageLink(links, DPO_TRAINING_URL)?.name).toBe(
-      "Direct Preference Optimization",
-    );
-    expect(findSidebarPageLink(links, ROUTING_SYSTEM_URL)?.name).toBe(
-      "Routing",
+    expect(findSidebarPageLink(links, INSTALL_DOCS_URL)?.name).toBe(
+      "Install you-agent-factory",
     );
   });
 });
@@ -124,11 +127,11 @@ describe("docs sidebar navigation (built HTML)", () => {
       const sidebar = extractNdSidebarHtml(visibleHtml);
 
       expect(sidebar.length).toBeGreaterThan(0);
-      for (const url of route.requiredSidebarUrls) {
-        expect(visibleHtml).toContain(url);
-      }
-      expect(sidebar).not.toContain(PLACEHOLDER_SIDEBAR_DESCRIPTION);
+      expect(visibleHtml).not.toContain(PLACEHOLDER_SIDEBAR_DESCRIPTION);
       expect(hasLegacyPlaceholderSidebar(visibleHtml)).toBe(false);
+      for (const url of route.requiredSidebarUrls) {
+        expect(sidebar).toContain(url);
+      }
     });
   }
 
@@ -143,10 +146,9 @@ describe("docs sidebar navigation (built HTML)", () => {
       const sidebar = extractNdSidebarHtml(visibleHtml);
 
       expect(sidebar.length).toBeGreaterThan(0);
-      expect(sidebar).toContain(">Modules<");
-      expect(sidebar).toContain(">Glossary<");
-      expect(visibleHtml).toContain(TOKEN_GLOSSARY_URL);
-      expect(sidebar).not.toContain(PLACEHOLDER_SIDEBAR_DESCRIPTION);
+      expect(sidebar).toContain(">Guides<");
+      expect(sidebar).toContain(">Concepts<");
+      expect(visibleHtml).not.toContain(PLACEHOLDER_SIDEBAR_DESCRIPTION);
       expect(hasLegacyPlaceholderSidebar(visibleHtml)).toBe(false);
     });
   }
@@ -161,9 +163,11 @@ describe("docs sidebar navigation (built HTML)", () => {
       const visibleHtml = stripHtmlScripts(html);
       const sidebar = extractNdSidebarHtml(visibleHtml);
 
-      expect(sidebar.length).toBeGreaterThan(0);
       for (const url of route.requiredSidebarUrls) {
         expect(sidebar).toContain(url);
+      }
+      for (const label of route.requiredSidebarLabels) {
+        expect(sidebar).toContain(label);
       }
       for (const url of route.forbiddenSidebarUrls) {
         expect(sidebar).not.toContain(url);

@@ -6,13 +6,13 @@
  * `.github/workflows/deploy-pages.yml`, before `upload-pages-artifact`.
  */
 import { guardPagesDeployedArtifact } from "../src/lib/build/guard-pages-deployed-artifact";
+import { formatGuardPagesDeployedArtifactFailureReport } from "../src/lib/build/required-read-only-export-probes";
 
 async function main(): Promise<void> {
   const result = await guardPagesDeployedArtifact();
 
   if (!result.ok) {
-    console.error("Pages deployed-artifact guard failed:");
-    console.error(`  ${result.reason}`);
+    console.error(formatGuardPagesDeployedArtifactFailureReport(result.reason));
     process.exit(1);
   }
 

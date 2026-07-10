@@ -6,22 +6,23 @@ import { join } from "node:path";
 
 const repoRoot = join(import.meta.dir, "../../..");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
+const makefilePath = join(repoRoot, "Makefile");
 
 describe("GitHub Actions Bun install", () => {
-  test("ci workflow runs setup-bun before frozen lockfile install at repo root", () => {
+  test("ci workflow pins Bun then runs make setup (frozen lockfile) at repo root", () => {
     const workflow = readFileSync(ciWorkflowPath, "utf8");
+    const makefile = readFileSync(makefilePath, "utf8");
 
     const setupBunIndex = workflow.indexOf("oven-sh/setup-bun@v2");
     const pinnedBunVersionIndex = workflow.indexOf("bun-version: 1.3.13");
-    const frozenInstallIndex = workflow.indexOf(
-      "bun install --frozen-lockfile",
-    );
+    const makeSetupIndex = workflow.indexOf("run: make setup");
 
     expect(setupBunIndex).toBeGreaterThan(-1);
     expect(pinnedBunVersionIndex).toBeGreaterThan(setupBunIndex);
-    expect(frozenInstallIndex).toBeGreaterThan(setupBunIndex);
+    expect(makeSetupIndex).toBeGreaterThan(pinnedBunVersionIndex);
+    expect(makefile).toMatch(/^setup:\n\tbun install --frozen-lockfile/m);
     expect(workflow).not.toMatch(/\bbun update\b/);
-    expect(workflow).not.toMatch(/\bbun install\b(?!\s+--frozen-lockfile)/);
+    expect(workflow).not.toMatch(/\bbun install\b/);
   });
 
   test("bun install --frozen-lockfile fails when package.json drifts from bun.lock", () => {

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
+import { acquireTrustedProjectSiteExport } from "@/lib/build/acquire-trusted-project-site-export";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
-import { runStaticExportBuild } from "@/lib/build/run-static-export-build";
 import { verifyProjectSiteExportDirectory } from "@/lib/build/verify-project-site-export-consumers";
 
 /** Full Next export + traces regularly exceeds the shared 10-minute build-test ceiling. */
@@ -8,9 +8,11 @@ const PROJECT_SITE_EXPORT_PROOF_TIMEOUT_MS = 1_800_000;
 
 /**
  * Direct project-site export proof for runtime path consumers.
- * Builds with GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs when needed and
- * asserts no root /_next, prefixed search bootstrap, and home/docs/blog links
- * inside the project site — without post-build HTML rewriting.
+ *
+ * Reuses one trusted project-site `out/` via `acquireTrustedProjectSiteExport`
+ * when a matching export is already present; builds at most once when missing
+ * or mismatched. Does not launch a competing full export solely to re-prove a
+ * matching artifact.
  */
 describe("project-site export consumers proof", () => {
   test(
@@ -19,25 +21,17 @@ describe("project-site export consumers proof", () => {
       const repoRoot = process.cwd();
       const basePath = BUILT_APP_GITHUB_PAGES_BASE_PATH;
 
-      let verification = verifyProjectSiteExportDirectory({
-        basePath,
-        outDir: "out",
+      const acquired = acquireTrustedProjectSiteExport({
         cwd: repoRoot,
+        outDir: "out",
+        basePath,
       });
 
-      if (!verification.ok) {
-        const buildResult = runStaticExportBuild({
-          cwd: repoRoot,
-          env: { GITHUB_PAGES_BASE_PATH: basePath },
-        });
-        expect(buildResult.status).toBe(0);
-
-        verification = verifyProjectSiteExportDirectory({
-          basePath,
-          outDir: "out",
-          cwd: repoRoot,
-        });
-      }
+      const verification = verifyProjectSiteExportDirectory({
+        basePath: acquired.basePath,
+        outDir: acquired.outDir,
+        cwd: repoRoot,
+      });
 
       expect(verification).toMatchObject({ ok: true });
       if (verification.ok) {
@@ -50,6 +44,12 @@ describe("project-site export consumers proof", () => {
         );
       } else {
         throw new Error(verification.reason);
+      }
+
+      // When a matching trusted export already existed, acquisition must report
+      // reuse (no competing full static export for this proof alone).
+      if (acquired.source === "reused") {
+        expect(acquired.outDir).toBe("out");
       }
     },
     PROJECT_SITE_EXPORT_PROOF_TIMEOUT_MS,

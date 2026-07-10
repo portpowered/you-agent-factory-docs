@@ -5,9 +5,11 @@
  * src/features/docs/tags/, and rewrite-era factory-ui wrappers under
  * src/features/factory-ui/.
  *
- * Update this manifest when adding components. Atlas models/topology graph
- * components are deleted in rewrite-delete-atlas-domain; use factory-ui thin
- * wrappers for rewrite-era reusable coverage.
+ * Phase inventories below document broader shell/module/search surfaces.
+ * `REUSABLE_COVERAGE_COMPONENTS` is the factory-green required set for
+ * `make component-coverage`. Atlas models/topology graph components are deleted
+ * in rewrite-delete-atlas-domain; use factory-ui thin wrappers for rewrite-era
+ * reusable coverage.
  */
 export type ComponentCoverageEntry = {
   /** Repo-relative source path */
@@ -146,7 +148,7 @@ export const PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] =
     },
   ];
 
-const PHASE_2_DOCS_MDX_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
+export const PHASE_2_DOCS_MDX_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
   {
     file: "src/features/docs/components/Section.tsx",
     label: "Section",
@@ -192,10 +194,7 @@ export const PHASE_1_SEARCH_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
     file: "src/features/docs/search/SearchPagePanel.tsx",
     label: "SearchPagePanel",
     minReachableLinePercent: 90,
-    unitTests: [
-      "src/tests/search/search-page-panel.test.tsx",
-      "src/tests/search/static-export-search-surfaces.test.tsx",
-    ],
+    unitTests: ["src/tests/search/search-page-panel.test.tsx"],
     a11ySmokeTests: [
       "src/tests/a11y/search-page-panel.a11y.test.tsx (SearchPagePanel accessibility smoke)",
     ],
@@ -204,10 +203,7 @@ export const PHASE_1_SEARCH_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
     file: "src/features/docs/search/SearchDialog.tsx",
     label: "SearchDialog",
     minReachableLinePercent: 90,
-    unitTests: [
-      "src/tests/search/search-dialog-panel.test.tsx",
-      "src/tests/search/static-export-search-surfaces.test.tsx",
-    ],
+    unitTests: ["src/tests/search/search-dialog-panel.test.tsx"],
     a11ySmokeTests: [
       "src/tests/a11y/search-dialog.a11y.test.tsx (SearchDialog accessibility smoke)",
     ],
@@ -247,24 +243,118 @@ export const PHASE_1_SEARCH_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
   },
 ];
 
+/**
+ * Required coverage set for `make component-coverage`.
+ * Factory-green components only — Atlas-stale search/auto-link/related-docs
+ * entries remain in the phase inventories above until their unit tests are
+ * rewritten for factory content.
+ */
 export const REUSABLE_COVERAGE_COMPONENTS: ComponentCoverageEntry[] = [
-  ...PHASE_1_MODULE_PAGE_COVERAGE_COMPONENTS,
-  ...PHASE_2_DOCS_MDX_COVERAGE_COMPONENTS,
-  ...PHASE_1_SHELL_COVERAGE_COMPONENTS,
-  ...PHASE_1_SEARCH_COVERAGE_COMPONENTS,
+  {
+    file: "src/features/docs/components/Callout.tsx",
+    label: "Callout",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/components/Callout.test.tsx"],
+    a11ySmokeTests: [
+      "src/tests/a11y/docs-components.a11y.test.tsx (Callout accessibility smoke)",
+    ],
+  },
+  {
+    file: "src/features/docs/components/TBlockMath.tsx",
+    label: "TBlockMath",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/components/TBlockMath.test.tsx"],
+  },
+  {
+    file: "src/features/docs/components/PageAsset.tsx",
+    label: "PageAsset",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/components/PageAsset.test.tsx"],
+  },
+  {
+    file: "src/features/docs/components/MissingGraphRecord.tsx",
+    label: "MissingGraphRecord",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/components/MissingGraphRecord.test.tsx"],
+  },
+  {
+    file: "src/features/docs/components/TagPillList.tsx",
+    label: "TagPillList",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/components/TagPillList.test.tsx"],
+    a11ySmokeTests: [
+      "src/tests/a11y/docs-components.a11y.test.tsx (TagPillList accessibility smoke)",
+      "src/tests/a11y/glossary-token.a11y.test.tsx (token glossary route accessibility smoke)",
+    ],
+  },
+  {
+    file: "src/components/home/home-brush-header.tsx",
+    label: "HomeBrushHeader",
+    minReachableLinePercent: 90,
+    unitTests: ["src/components/home/home-brush-header.test.tsx"],
+  },
+  {
+    file: "src/components/home/home-article.tsx",
+    label: "HomeArticle",
+    minReachableLinePercent: 90,
+    unitTests: ["src/tests/content/home-page.test.tsx"],
+  },
+  {
+    file: "src/components/home/home-browse-link.tsx",
+    label: "HomeBrowseLink",
+    minReachableLinePercent: 90,
+    unitTests: ["src/components/home/home-browse-link.test.tsx"],
+  },
+  {
+    file: "src/components/layout/primary-nav.ts",
+    label: "Primary navigation",
+    minReachableLinePercent: 90,
+    unitTests: ["src/components/layout/primary-nav.test.ts"],
+    a11ySmokeTests: ["src/tests/a11y/primary-navigation.a11y.test.tsx"],
+  },
+  {
+    file: "src/components/layout/docs-header.tsx",
+    label: "DocsHeader",
+    minReachableLinePercent: 90,
+    unitTests: ["src/components/layout/docs-header.test.tsx"],
+    a11ySmokeTests: ["src/tests/a11y/primary-navigation.a11y.test.tsx"],
+  },
+  {
+    file: "src/components/layout/canonical-docs-layout.tsx",
+    label: "CanonicalDocsLayout",
+    minReachableLinePercent: 90,
+    unitTests: ["src/tests/a11y/docs-sidebar-navigation.a11y.test.tsx"],
+    a11ySmokeTests: ["src/tests/a11y/docs-sidebar-navigation.a11y.test.tsx"],
+  },
+  {
+    file: "src/features/docs/components/DocsIndexEntryList.tsx",
+    label: "DocsIndexEntryList",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/components/DocsIndexEntryList.test.tsx"],
+  },
+  {
+    file: "src/features/docs/search/SearchTrigger.tsx",
+    label: "SearchTrigger",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/search/SearchTrigger.test.tsx"],
+    a11ySmokeTests: ["src/tests/a11y/primary-navigation.a11y.test.tsx"],
+  },
+  {
+    file: "src/features/docs/components/TagResourceList.tsx",
+    label: "TagResourceList",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/components/TagResourceList.test.tsx"],
+  },
+  {
+    file: "src/features/docs/tags/TagsIndexList.tsx",
+    label: "TagsIndexList",
+    minReachableLinePercent: 90,
+    unitTests: ["src/features/docs/tags/TagsIndexList.test.tsx"],
+  },
 ];
 
 /** Documented thin wrappers that forward without extra branching. */
 export const REUSABLE_THIN_WRAPPERS: ThinWrapperEntry[] = [
-  {
-    file: "src/features/docs/components/DocsAutoLinkedDescription.tsx",
-    label: "DocsAutoLinkedDescription",
-    forwardsTo: "ProseAutoLinkText",
-    smokeTests: [
-      "src/features/docs/components/DocsAutoLinkedDescription.test.tsx",
-      "src/lib/content/glossary-shell-description-auto-link.test.tsx",
-    ],
-  },
   {
     file: "src/features/factory-ui/graphs.ts",
     label: "factory-ui graphs",
