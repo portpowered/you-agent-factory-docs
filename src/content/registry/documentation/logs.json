@@ -1,0 +1,14 @@
+{
+  "id": "documentation.logs",
+  "slug": "logs",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["runtime logs", "logs", "CLI diagnostics", "runtime-log"],
+  "tags": [],
+  "relatedIds": ["documentation.cli"],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T09:00:00.000Z",
+  "updatedAt": "2026-07-10T09:00:00.000Z"
+}
