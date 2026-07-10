@@ -9,7 +9,11 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "OpenAPI (Open Application Programming Interface) is the product contract that describes the HTTP API a running factory host exposes. Callers target that host—not this documentation site—and address work through session-scoped routes keyed by a session id. The primary address model is session-scoped: discover and inspect factory sessions, read status, submit work, and preview factories against the live host."
+      "body": "OpenAPI (Open Application Programming Interface) is the product contract that describes the HTTP API a running factory host exposes. Callers target that host—not this documentation site—and address work through session-scoped routes keyed by a session id. The primary address model is session-scoped: discover and inspect factory sessions, read status, submit work, and preview factories against the live host. Request bodies use OpenAPI camelCase field names such as workTypeName."
+    },
+    "openapiSurface": {
+      "title": "OpenAPI Surface",
+      "body": "Scan the primary HTTP families a running factory host exposes. Paths are session-scoped unless noted; replace {session_id} with a live session id from discovery (often ~default on single-session local hosts)."
     },
     "howToUse": {
       "title": "How To Use",
@@ -28,5 +32,30 @@
     "references": {
       "title": "References"
     }
+  },
+  "callouts": {
+    "additionalRoutes": {
+      "body": "The same host also exposes additional session-scoped reads and controls—events (GET /factory-sessions/{session_id}/events), factory query (GET /factory-sessions/{session_id}/factory), pause and resume (POST /factory-sessions/{session_id}/pause and /resume), and staged-files upload (POST /factory-sessions/{session_id}/work/staged-files)—without changing the session-scoped address model."
+    }
+  },
+  "links": {
+    "endpointMatrixFamilyHeader": "Family",
+    "endpointMatrixMethodPathHeader": "Method and path",
+    "endpointMatrixPurposeHeader": "Purpose",
+    "endpointSessionsDiscoverFamily": "Factory-sessions discovery",
+    "endpointSessionsListMethodPath": "GET /factory-sessions",
+    "endpointSessionsListPurpose": "List live factory sessions on the host.",
+    "endpointSessionsInspectFamily": "Factory-sessions inspect",
+    "endpointSessionsShowMethodPath": "GET /factory-sessions/{session_id}",
+    "endpointSessionsShowPurpose": "Read one live Factory Session projection.",
+    "endpointSessionStatusFamily": "Session status",
+    "endpointSessionStatusMethodPath": "GET /factory-sessions/{session_id}/status",
+    "endpointSessionStatusPurpose": "Read lifecycle phase, runtime activity, and related status fields for one session.",
+    "endpointWorkSubmitFamily": "Work submit",
+    "endpointWorkSubmitMethodPath": "POST /factory-sessions/{session_id}/work",
+    "endpointWorkSubmitPurpose": "Submit one work item (required camelCase fields include name and workTypeName).",
+    "endpointPreviewFamily": "Preview / validate",
+    "endpointPreviewMethodPath": "POST /factories/preview",
+    "endpointPreviewPurpose": "Validate source and policy without creating a session."
   }
 }

@@ -1,17 +1,26 @@
 /**
  * Page-owned render proof for documentation/api-doc.
- * Covers documentation shell and API / OpenAPI identity for the scaffold story.
+ * Covers documentation shell, API / OpenAPI identity, and the hand-authored
+ * OpenAPI surface outline (grouped method/path families).
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 
 // Cold MDX compile + full-page render can exceed Bun's 5s default under load.
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
+
+const REQUIRED_METHOD_PATHS = [
+  "GET /factory-sessions",
+  "GET /factory-sessions/{session_id}",
+  "GET /factory-sessions/{session_id}/status",
+  "POST /factory-sessions/{session_id}/work",
+  "POST /factories/preview",
+] as const;
 
 describe("api-doc documentation page", () => {
   afterEach(() => {
@@ -41,14 +50,29 @@ describe("api-doc documentation page", () => {
       const keyConcepts = String(
         loadedPage.messages.sections?.keyConcepts?.body ?? "",
       );
+      const openapiSurface = String(
+        loadedPage.messages.sections?.openapiSurface?.body ?? "",
+      );
+      const additionalRoutes = String(
+        loadedPage.messages.callouts?.additionalRoutes?.body ?? "",
+      );
       expect(whatItCovers).toMatch(/OpenAPI|HTTP|API/i);
       expect(keyConcepts).toMatch(
         /OpenAPI \(Open Application Programming Interface\)/,
       );
+      expect(keyConcepts).toMatch(/workTypeName/);
+      expect(openapiSurface).toMatch(/session/i);
+      expect(additionalRoutes).toMatch(/events/i);
+      expect(additionalRoutes).toMatch(/factory/i);
+      expect(additionalRoutes).toMatch(/pause|resume/i);
+      expect(additionalRoutes).toMatch(/staged-files/i);
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
       expect(keyConcepts).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(openapiSurface).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
 
@@ -69,6 +93,9 @@ describe("api-doc documentation page", () => {
       expect(
         screen.getByRole("heading", { name: "Key Concepts" }),
       ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "OpenAPI Surface" }),
+      ).toBeTruthy();
       expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -79,14 +106,32 @@ describe("api-doc documentation page", () => {
 
       const whatItCoversSection = document.getElementById("what-it-covers");
       const keyConceptsSection = document.getElementById("key-concepts");
+      const openapiSurfaceSection = document.getElementById("openapi-surface");
       expect(whatItCoversSection).toBeTruthy();
       expect(keyConceptsSection).toBeTruthy();
+      expect(openapiSurfaceSection).toBeTruthy();
       expect(whatItCoversSection?.textContent).toMatch(
         /you-agent-factory API|OpenAPI/i,
       );
       expect(keyConceptsSection?.textContent).toMatch(
         /OpenAPI \(Open Application Programming Interface\)/,
       );
+      expect(keyConceptsSection?.textContent).toMatch(/workTypeName/);
+
+      const outline = within(openapiSurfaceSection as HTMLElement);
+      expect(outline.getByText("Family")).toBeTruthy();
+      expect(outline.getByText("Method and path")).toBeTruthy();
+      expect(outline.getByText("Purpose")).toBeTruthy();
+      for (const methodPath of REQUIRED_METHOD_PATHS) {
+        expect(outline.getByText(methodPath)).toBeTruthy();
+      }
+      expect(openapiSurfaceSection?.textContent).toMatch(/events/i);
+      expect(openapiSurfaceSection?.textContent).toMatch(
+        /GET \/factory-sessions\/\{session_id\}\/factory/,
+      );
+      expect(openapiSurfaceSection?.textContent).toMatch(/pause/i);
+      expect(openapiSurfaceSection?.textContent).toMatch(/resume/i);
+      expect(openapiSurfaceSection?.textContent).toMatch(/staged-files/i);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
