@@ -2,19 +2,58 @@
 
 ## Product Frame
 
-The site is **Model Reference**: a documentation-native reference for modern AI
-models. It should cover transformers, diffusers, multimodal models, omni
-models, world models, training methods, datasets, serving systems, and papers
-through one consistent docs shell.
+The site is **you-agent-factory docs**: a documentation site for the
+[you-agent-factory](https://github.com/portpowered/you-agent-factory) CLI and
+agent-factory workflow system.
+
+Readers use one consistent docs shell to:
+
+* install and run the CLI (for example `you run --named @goal/blah`)
+* follow use-case guides (loops, Cursor dynamic workflows, write-review loops)
+* look up concepts and techniques (harness, loop, worktree, ralph, planner-executor)
+* read documentation surfaces (configuration, harness support, CLI, MCP, API)
+* browse the glossary, blog, and search/tag discovery
 
 Every page should feel like a documentation page, including the home page,
-glossary pages, tag pages, architecture pages, model pages, module pages, and
-paper pages.
+guides, concepts, techniques, documentation pages, glossary entries, blog posts,
+and search/tag discovery surfaces.
+
+## What this is not
+
+This is **not** the retired Model Atlas / Learn Language Models
+attention-reference product (sometimes called Model Reference). Mention those
+names only to exclude them.
+
+It is also not:
+
+* a benchmark leaderboard
+* a paper-download mirror
+* an LLM attention / model-atlas reference sheet
+
+## Page types
+
+Use the same docs shell across these factory surfaces:
+
+| Surface | Role |
+| --- | --- |
+| Home | Page zero of the docs system: install/run CTA, why the factory exists, and featured links into guides, docs, glossary, and blog |
+| Guides | Use-case walkthroughs (getting started, loops, Cursor workflows, write-review loops) |
+| Concepts | Isolated idea pages (harness, loop, worktree, compaction, tokens, …) |
+| Techniques | Named workflow patterns (ralph, writer-reviewer, planner-executor, …) |
+| Documentation | Reference docs (configuration, harness support, CLI, MCP, API, sessions, …) |
+| Glossary | Short term entries that point at the backing concept when needed |
+| Blog | Product and ecosystem writing, comparisons, and listicles |
+| Search / tags | Discovery across the docs shell (header search and tag browsing) |
+
+Primary collections for rewrite-era content are `guides`, `concepts`,
+`techniques`, and `documentation`, plus glossary and blog. See
+[documentation-site-pages-needed.md](./documentation-site-pages-needed.md) for
+the page inventory.
 
 ## Visual Direction
 
-The design direction is a restrained technical atlas with subtle fantasy and
-game-world influence. It should feel like a weathered model-system field guide,
+The design direction is a restrained technical field guide with subtle fantasy
+and game-world influence. It should feel like a weathered CLI/workflow handbook,
 not a marketing site and not a rainbow dashboard.
 
 Use:
@@ -23,7 +62,7 @@ Use:
 * mostly white, off-white, and muted gray text
 * dull blue-teal for focus and navigation state
 * pastel pink/coral as a sparse editorial highlight
-* weathered cream, charcoal, teal-gray, and pale pink atlas textures
+* weathered cream, charcoal, teal-gray, and pale pink textures
 * etched grid, compass, and technical linework as low-contrast background detail
 
 Avoid:
@@ -41,8 +80,8 @@ Use shadcn's semantic token model: components should consume tokens such as
 `background`, `foreground`, `primary`, `accent`, `border`, `ring`, and
 `sidebar`, rather than hard-coded brand colors.
 
-The default product theme is dark. A light theme can be added later, but Phase 1
-should implement the dark token set first.
+The default product theme is dark. A light theme can be added later; implement
+the dark token set first.
 
 ```css
 :root {
@@ -83,7 +122,7 @@ should implement the dark token set first.
   --input: oklch(0.28 0.018 205);
   --ring: oklch(0.59 0.07 205);
 
-  /* Optional chart palette: low saturation, atlas compatible */
+  /* Optional chart palette: low saturation, field-guide compatible */
   --chart-1: oklch(0.59 0.07 205);
   --chart-2: oklch(0.74 0.105 21);
   --chart-3: oklch(0.78 0.055 92);
@@ -156,7 +195,7 @@ Use `accent` for:
 * the home-page brush-stroke header treatment
 * sparse title or subtitle emphasis
 * selected sidebar state when a warmer editorial highlight is needed
-* occasional links such as `View all papers`
+* occasional featured links such as `Browse guides` or `Read the docs`
 
 Do not use `accent` for every tag, badge, icon, and table highlight. Pastel pink
 should feel intentional, not decorative noise.
@@ -172,7 +211,8 @@ weathered cream, charcoal ink, and dull teal-gray. It should not be a rectangula
 banner or a separate callout card.
 
 The search bar and page sections should follow after the header in normal docs
-article flow.
+article flow. Featured links should point at factory destinations (guides, docs,
+glossary, blog), not retired atlas collections.
 
 ## Typography
 
@@ -196,3 +236,7 @@ Use the same docs shell for every page type:
 
 The home page is page zero of the docs system. It should not become a marketing
 landing page or a dashboard with unrelated columns.
+
+Primary nav for the factory product is Home, Guides, Docs, Glossary, and Blog.
+Search is a configured route surface for the header trigger, not a duplicate
+primary-nav item.
