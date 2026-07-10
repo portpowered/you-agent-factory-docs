@@ -42,6 +42,8 @@ export const CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS: readonly ContentRuntimeSte
         "scripts/generate-shipped-localized-docs.ts",
         "src/lib/content/shipped-localized-docs.server.ts",
         "src/lib/content/shipped-localized-docs.ts",
+        "src/lib/content/render-typescript-literal.ts",
+        "src/lib/content/write-file-if-changed.ts",
         "src/lib/i18n/locale-routing.ts",
       ],
       schemaPaths: [
@@ -66,6 +68,8 @@ export const CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS: readonly ContentRuntimeSte
         "src/lib/content/published-docs-registry-source.ts",
         "src/lib/content/published-docs-registry-contract.ts",
         "src/lib/content/pages.ts",
+        "src/lib/content/render-typescript-literal.ts",
+        "src/lib/content/write-file-if-changed.ts",
       ],
       schemaPaths: [
         "src/lib/content/schemas.ts",

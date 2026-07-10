@@ -1210,4 +1210,91 @@ describe("content runtime preparation", () => {
     },
     { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
   );
+
+  test(
+    "content-runtime generators emit biome-stable modules without per-file biome subprocesses",
+    () => {
+      const realBunx = spawnSync("bash", ["-lc", "command -v bunx"], {
+        cwd: repoRoot,
+        encoding: "utf8",
+        env: process.env,
+      });
+      expect(realBunx.status).toBe(0);
+      const realBunxPath = realBunx.stdout.trim();
+      expect(realBunxPath.length).toBeGreaterThan(0);
+
+      const shimDir = join(
+        repoRoot,
+        "src/lib/content/generated/.biome-spawn-guard-test",
+      );
+      rmSync(shimDir, { recursive: true, force: true });
+      mkdirSync(shimDir, { recursive: true });
+
+      // Fail the run if any generator still shells out to `bunx biome …`.
+      writeFileSync(
+        join(shimDir, "bunx"),
+        `#!/usr/bin/env bash
+set -euo pipefail
+if [[ "\${1:-}" == "biome" ]]; then
+  echo "unexpected bunx biome subprocess: $*" >&2
+  exit 97
+fi
+exec "${realBunxPath}" "$@"
+`,
+        { mode: 0o755 },
+      );
+
+      const guardedEnv = {
+        ...process.env,
+        PATH: `${shimDir}:${process.env.PATH ?? ""}`,
+      };
+
+      const generatorScripts = [
+        "scripts/generate-shipped-localized-docs.ts",
+        "scripts/generate-published-docs-registry.ts",
+      ] as const;
+
+      for (const script of generatorScripts) {
+        const result = spawnSync("bun", ["run", script], {
+          cwd: repoRoot,
+          encoding: "utf8",
+          env: guardedEnv,
+        });
+        expect(result.status, `${script}: ${result.stderr}`).toBe(0);
+        expect(`${result.stdout}\n${result.stderr}`).not.toContain(
+          "unexpected bunx biome subprocess",
+        );
+      }
+
+      const generatedOutputs = [
+        "src/lib/content/generated/shipped-localized-docs.generated.ts",
+        "src/lib/content/generated/published-docs-registry.generated.ts",
+      ] as const;
+
+      for (const relativePath of generatedOutputs) {
+        const absolutePath = join(repoRoot, relativePath);
+        const before = readFileSync(absolutePath, "utf8");
+        const formatResult = spawnSync(
+          "bunx",
+          [
+            "biome",
+            "format",
+            "--write",
+            "--vcs-use-ignore-file=false",
+            absolutePath,
+          ],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            env: process.env,
+          },
+        );
+        expect(formatResult.status, relativePath).toBe(0);
+        expect(readFileSync(absolutePath, "utf8")).toBe(before);
+      }
+
+      rmSync(shimDir, { recursive: true, force: true });
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
+  );
 });
