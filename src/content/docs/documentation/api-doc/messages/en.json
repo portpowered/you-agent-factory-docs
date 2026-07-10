@@ -1,0 +1,73 @@
+{
+  "title": "API",
+  "description": "Orient around the you-agent-factory OpenAPI and HTTP surface: session-scoped routes, preview, and representative calls against a running local factory host.",
+  "openingSummary": "The you-agent-factory API is the HTTP contract a running factory host exposes. OpenAPI (Open Application Programming Interface) describes that contract so web readers can discover session-scoped routes without reverse-engineering CLI wrappers.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers the you-agent-factory API and OpenAPI surface for web readers: what the HTTP contract is for, the host and session nouns callers address, and how to scan the primary route families a live factory exposes. Use it when you need the published HTTP/OpenAPI orientation rather than a CLI matrix, MCP host setup, or a packaged docs sync."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "OpenAPI (Open Application Programming Interface) describes the HTTP API a running factory host exposes. The product OpenAPI surface (api/openapi.yaml) is that contract. Callers target the live host—not this documentation site—and address work through session-scoped routes keyed by a session id. The primary address model is session-scoped: discover and inspect factory sessions, read status, submit work, and preview factories against the live host. Request bodies use OpenAPI camelCase field names such as workTypeName."
+    },
+    "openapiSurface": {
+      "title": "OpenAPI Surface",
+      "body": "Scan the primary HTTP families a running factory host exposes. Paths are session-scoped unless noted; replace {session_id} with a live session id from discovery (often ~default on single-session local hosts)."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Call the HTTP API on a live factory host—not this documentation site. The default local host is http://localhost:7437. Replace {session_id} with a live session id from discovery; on single-session local hosts that is often ~default. The examples below are representative calls only; they do not own submitting-work batch schema or the full Factory Session operator playbook."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a hand-authored web outline of the you-agent-factory OpenAPI and HTTP surface. It is not a build-time generated OpenAPI UI, not a full schema dump, not a sync of packaged CLI docs, and not the Factory Session, submitting-work, dynamic-workflows, MCP, or CLI deep pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "callouts": {
+    "additionalRoutes": {
+      "body": "The same host also exposes additional session-scoped reads and controls—events (GET /factory-sessions/{session_id}/events), factory query (GET /factory-sessions/{session_id}/factory), pause and resume (POST /factory-sessions/{session_id}/pause and /resume), and staged-files upload (POST /factory-sessions/{session_id}/work/staged-files)—without changing the session-scoped address model."
+    },
+    "deferredOpenApiGeneration": {
+      "body": "Follow-up: OpenAPI generation or interactive spec rendering may land later. This outline does not embed generated OpenAPI UI, run OpenAPI codegen, or ship a third-party OpenAPI renderer."
+    }
+  },
+  "links": {
+    "endpointMatrixFamilyHeader": "Family",
+    "endpointMatrixMethodPathHeader": "Method and path",
+    "endpointMatrixPurposeHeader": "Purpose",
+    "endpointSessionsDiscoverFamily": "Factory-sessions discovery",
+    "endpointSessionsListMethodPath": "GET /factory-sessions",
+    "endpointSessionsListPurpose": "List live factory sessions on the host.",
+    "endpointSessionsInspectFamily": "Factory-sessions inspect",
+    "endpointSessionsShowMethodPath": "GET /factory-sessions/{session_id}",
+    "endpointSessionsShowPurpose": "Read one live Factory Session projection.",
+    "endpointSessionStatusFamily": "Session status",
+    "endpointSessionStatusMethodPath": "GET /factory-sessions/{session_id}/status",
+    "endpointSessionStatusPurpose": "Read lifecycle phase, runtime activity, and related status fields for one session.",
+    "endpointWorkSubmitFamily": "Work submit",
+    "endpointWorkSubmitMethodPath": "POST /factory-sessions/{session_id}/work",
+    "endpointWorkSubmitPurpose": "Submit one work item (required camelCase fields include name and workTypeName).",
+    "endpointPreviewFamily": "Preview / validate",
+    "endpointPreviewMethodPath": "POST /factories/preview",
+    "endpointPreviewPurpose": "Validate source and policy without creating a session.",
+    "exampleListSessionsLabel": "List live factory sessions on the default local host",
+    "exampleListSessionsCode": "curl -s \"http://localhost:7437/factory-sessions\"",
+    "exampleSubmitWorkLabel": "Submit one work item to the default compatibility session (~default)",
+    "exampleSubmitWorkCode": "curl -s \\\n  -X POST \\\n  -H \"Content-Type: application/json\" \\\n  \"http://localhost:7437/factory-sessions/~default/work\" \\\n  -d '{\n    \"name\": \"example-task\",\n    \"workTypeName\": \"task\"\n  }'",
+    "factorySessionDocs": "Factory Session docs",
+    "submittingWorkDocs": "Submitting Work docs",
+    "dynamicWorkflowsDocs": "Dynamic Workflows docs",
+    "cliDocs": "CLI docs",
+    "mcpDocs": "MCP docs"
+  }
+}
