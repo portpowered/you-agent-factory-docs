@@ -86,13 +86,29 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * Render docs pages for a11y via `renderDocsSlugPage` + `CanonicalDocsLayout`
   (same shell as production), not a bare `<main>` wrapper alone.
 
+## Blog accessibility (story 005)
+
+* `src/tests/a11y/blog.a11y.test.tsx`
+  Always-on smokes: `/blog` index landmarks/headings/labeled post links + axe;
+  representative post `/blog/comparing-agent-factories` landmarks/headings/
+  keyboard chrome/labeled comparison table + related docs links + axe.
+* `src/lib/verify/a11y-blog-page.test.ts`
+  Opt-in served-page probe (`VERIFY_PRODUCTION_INTEGRATION_TESTS=1` + fresh
+  `.next`): blog index + representative post landmarks, focus rings, Playwright
+  axe at laptop viewport.
+* Contract routes: `blog-index` → `/blog`, `blog-post` →
+  `/blog/comparing-agent-factories`.
+* Render blog surfaces via `renderBlogIndexPage` / `renderBlogPostPage` +
+  `CanonicalDocsLayout` (same shell as production).
+
 ## Focused gate
 
 * `Makefile` target `a11y` → `bun run test:a11y`
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure unit
-  tests plus home/browse, search, and docs/harness-support a11y smokes (and the
-  skipped-by-default served-page probes). Later stories expand coverage and may
-  fold in remaining `src/tests/a11y/` once those smokes are factory-current.
+  tests plus home/browse, search, docs/harness-support, and blog a11y smokes
+  (and the skipped-by-default served-page probes). Later stories expand coverage
+  and may fold in remaining `src/tests/a11y/` once those smokes are
+  factory-current.
 * Not yet part of `make ci` (wire in story `harden-accessibility-responsive-ui-009`).
 
 ## Existing component a11y smokes
