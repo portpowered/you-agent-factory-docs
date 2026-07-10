@@ -28,5 +28,14 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "tokensConcept": "Tokens concept",
+    "thinkingConcept": "Thinking concept",
+    "harnessConcept": "Harness concept",
+    "loopConcept": "Loop concept",
+    "configurationDocs": "Configuration documentation",
+    "worktreeConcept": "Worktree concept",
+    "harnessSupportDocs": "Harness-support documentation"
   }
 }
