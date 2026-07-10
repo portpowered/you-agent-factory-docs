@@ -1,0 +1,31 @@
+{
+  "title": "Fusion",
+  "description": "Fusion is a you-agent-factory technique that runs two model passes on the same request: a first pass drafts an answer and a second pass refines it.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Fusion is a you-agent-factory technique that runs two model passes on the same request: a first pass drafts an answer and a second pass refines it. Customers meet this shape as packaged @you/fusion."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "A second pass can catch gaps the first draft missed, and callers can use different providers or models for draft versus refine."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "The caller supplies input; the first pass drafts an answer; the second pass refines that draft into the customer-facing result."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Fusion is a draft-then-refine two-pass flow, not a role-split write-review loop, not a persistent keep-going loop, and not a plan-then-execute split."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
