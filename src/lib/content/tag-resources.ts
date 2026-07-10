@@ -1,4 +1,9 @@
 import type { PublishedBlogPostRecord } from "@/lib/content/blog-post-list";
+import {
+  assertFactoryTagResourceEntries,
+  assertNoDeletedAtlasTagSlug,
+  FACTORY_TAG_RESOURCE_KIND_ORDER,
+} from "@/lib/content/factory-tags-browse";
 import { publishedResourceMatchesTag } from "@/lib/content/phase-1-published-resources";
 import {
   buildLocalizedRoute,
@@ -11,16 +16,7 @@ import type { TagRecord } from "./schemas";
 import type { UiMessages } from "./ui-messages.types";
 import { formatPageKind } from "./ui-messages.types";
 
-const TAG_RESOURCE_KIND_ORDER = [
-  "model",
-  "module",
-  "concept",
-  "paper",
-  "blog",
-  "training-regime",
-  "system",
-  "glossary",
-] as const;
+const TAG_RESOURCE_KIND_ORDER = FACTORY_TAG_RESOURCE_KIND_ORDER;
 
 export type TagResourceEntry = {
   title: string;
@@ -143,6 +139,7 @@ export async function loadTagResourceEntries(
   locale: SiteLocale = defaultLocale,
   options: LoadTagResourceEntriesOptions = {},
 ): Promise<TagResourceEntry[]> {
+  assertNoDeletedAtlasTagSlug(tagSlug);
   const { loadRegistry } = await import("./registry");
   const { loadShippedLocalizedDocsPages } = await import("./pages");
   const { listPublishedBlogPosts } = await import("./blog-post-list");
@@ -157,7 +154,9 @@ export async function loadTagResourceEntries(
     .filter((post) => publishedBlogPostMatchesTag(post, tagSlug))
     .map((post) => toBlogTagResourceEntry(post, locale));
 
-  return [...docsEntries, ...blogEntries];
+  const entries = [...docsEntries, ...blogEntries];
+  assertFactoryTagResourceEntries(entries);
+  return entries;
 }
 
 export function groupTagResourceEntriesByKind(

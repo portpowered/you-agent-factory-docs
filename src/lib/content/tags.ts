@@ -1,5 +1,9 @@
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { tagPageHref } from "./content-hrefs";
+import {
+  assertNoDeletedAtlasTagSlug,
+  FACTORY_TAG_CATEGORY_ORDER,
+} from "./factory-tags-browse";
 import type { TagRecord } from "./schemas";
 import { formatTagLabel } from "./tag-labels";
 
@@ -7,17 +11,7 @@ export { formatTagLabel, tagPageHref };
 
 import type { UiMessages } from "./ui-messages.types";
 
-const TAG_CATEGORY_ORDER = [
-  "architecture",
-  "module-type",
-  "training",
-  "inference",
-  "systems",
-  "modality",
-  "paper-topic",
-  "model-family",
-  "difficulty",
-] as const;
+const TAG_CATEGORY_ORDER = FACTORY_TAG_CATEGORY_ORDER;
 
 export type TagIndexEntry = {
   slug: string;
@@ -57,6 +51,7 @@ export async function toTagIndexEntry(
   messages: UiMessages,
   locale: SiteLocale,
 ): Promise<TagIndexEntry> {
+  assertNoDeletedAtlasTagSlug(record.slug);
   const { loadTagMessages } = await import("./tag-messages");
   const url = tagPageHref(record.slug, locale);
   const tagMessages = loadTagMessages(record.slug, locale, { route: url });

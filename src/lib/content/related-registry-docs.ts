@@ -1,3 +1,4 @@
+import { assertFactoryRelatedLinkItems } from "@/lib/content/factory-prev-next-related";
 import {
   PUBLISHED_DOCS_REGISTRY_IDS,
   type PublishedDocsRegistryIds,
@@ -73,5 +74,6 @@ export function resolveRelatedRegistryDocs(
     });
   }
 
+  assertFactoryRelatedLinkItems(available);
   return { available, unavailable };
 }

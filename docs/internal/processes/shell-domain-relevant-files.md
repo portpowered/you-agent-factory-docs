@@ -122,6 +122,55 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   guides/concepts/techniques/documentation/glossary, browse/sidebar omit
   retired Atlas destinations, and Blog + Search stay reachable as separate
   surfaces (included in required `bun run test`).
+* `src/lib/content/factory-tags-browse.ts`
+  Factory tags/browse contract: published factory tag slugs, deleted Atlas
+  tag denylist, factory tag-resource kind order, and fail-closed asserts used
+  by `tags.ts` / `tag-resources.ts` so tags index and landings never advertise
+  retired Atlas tags or deleted AI destinations.
+* `src/lib/content/factory-tags-browse.test.tsx`
+  Required-suite proof that browse hub cards stay on CLI collections (+
+  glossary quick route), tags index lists only factory tags, tag landings
+  keep factory destinations or factory empty next-steps, and empty
+  section-index copy stays Atlas-free.
+* `src/lib/content/factory-breadcrumb-sidebar.ts`
+  Factory breadcrumb/sidebar contract: `FACTORY_NAV_COLLECTION_IDS`,
+  `FACTORY_SIDEBAR_FOLDER_LABELS`, retired Atlas nav collection/label
+  denylists, and fail-closed asserts used by `DocsPageBreadcrumb` /
+  `buildDocsSidebarSectionNodes` so chrome never advertises retired Atlas
+  collection crumbs or sidebar destinations.
+* `src/lib/content/factory-breadcrumb-sidebar.test.tsx`
+  Required-suite proof that breadcrumbs resolve Home → factory collection →
+  page for guides/concepts/techniques/documentation, sidebar folders stay
+  factory-only with published page links, and retired Atlas section slugs
+  never become collection crumbs.
+* `src/lib/content/factory-prev-next-related.ts`
+  Factory previous/next and related-link contract: footer neighbor resolution
+  mirroring Fumadocs `useFooterItems`, plus fail-closed asserts used by
+  `resolveRelatedRegistryDocs` / `RelatedDocs` / `DerivedRelatedDocs` so
+  navigation never advertises deleted Atlas destinations.
+* `src/lib/content/factory-prev-next-related.test.tsx`
+  Required-suite proof that previous/next neighbors stay on published factory
+  docs pages (or omit a direction at the ends), related-registry docs render
+  only factory destinations, and empty/unavailable related targets use clear
+  fallbacks without Atlas hrefs.
+* `src/lib/content/factory-locale-base-path.ts`
+  Factory locale + Pages base-path contract for search/nav hrefs
+  (`FACTORY_SHIPPED_LOCALES`, `FACTORY_PAGES_BASE_PATH`). Resolvers compose
+  `buildLocalizedRoute` / `switchRouteLocale` / `withBasePath`; search
+  bootstrap uses `resolveDocsSearchBootstrapFromForLocale`. Collection
+  breadcrumb crumbs may stay unprefixed when the section index is not a
+  shipped localized docs slug (`localizeDocsHref` fail-open to default
+  locale) — home, search, tags, browse, and shipped page destinations still
+  localize.
+* `src/lib/content/factory-locale-base-path.test.tsx`
+  Required-suite proof that en/ja/zh-CN/vi preserve locale routing on
+  breadcrumbs (home), sidebar previous/next, tags/browse/related, and search
+  result hrefs; default-locale roots stay unprefixed; project-site export
+  prefixes bootstrap + nav under `/you-agent-factory-docs`.
+* `src/lib/content/factory-search-navigation-convergence.test.tsx`
+  Cross-cutting end-to-end gate (story 009) that also covers tags/browse,
+  breadcrumb/sidebar, previous/next/related, and locale/base-path together
+  with search. See `search-domain-relevant-files.md` for the full pattern.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus

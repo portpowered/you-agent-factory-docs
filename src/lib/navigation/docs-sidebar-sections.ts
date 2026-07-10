@@ -1,4 +1,10 @@
 import type { Node } from "fumadocs-core/page-tree";
+import {
+  assertFactorySidebarFolderLabels,
+  assertFactorySidebarPageUrls,
+  assertFactorySidebarSectionOrder,
+  FACTORY_NAV_COLLECTION_IDS,
+} from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
 import { isDocsCollectionSidebarGroupingResolverId } from "@/lib/docs/collection-definition-contract";
 import { buildGroupedSidebarNodes } from "@/lib/navigation/docs-sidebar-grouping-adapter";
@@ -10,13 +16,24 @@ import {
 type DocsSidebarSectionRef = { kind: "collection"; id: string };
 
 /** Reader-visible sidebar folder order for factory docs collections. */
-export const DOCS_SIDEBAR_SECTION_ORDER = [
-  { kind: "collection", id: "guides" },
-  { kind: "collection", id: "concepts" },
-  { kind: "collection", id: "techniques" },
-  { kind: "collection", id: "documentation" },
-  { kind: "collection", id: "glossary" },
-] as const satisfies readonly DocsSidebarSectionRef[];
+export const DOCS_SIDEBAR_SECTION_ORDER = FACTORY_NAV_COLLECTION_IDS.map(
+  (id) => ({ kind: "collection" as const, id }),
+);
+
+function collectSidebarPageUrls(nodes: Node[]): string[] {
+  const urls: string[] = [];
+
+  for (const node of nodes) {
+    if (node.type === "page" && "url" in node && typeof node.url === "string") {
+      urls.push(node.url);
+    }
+    if (node.type === "folder" && "children" in node) {
+      urls.push(...collectSidebarPageUrls(node.children));
+    }
+  }
+
+  return urls;
+}
 
 export function buildDocsSidebarSectionNodes({
   pages,
@@ -32,6 +49,8 @@ export function buildDocsSidebarSectionNodes({
   >;
   sectionOrder?: readonly DocsSidebarSectionRef[];
 }): Node[] {
+  assertFactorySidebarSectionOrder(sectionOrder.map((section) => section.id));
+
   const definitionsById = new Map(
     definitions.map((definition) => [definition.id, definition]),
   );
@@ -52,7 +71,7 @@ export function buildDocsSidebarSectionNodes({
     pagesByCollection.get(collectionId)?.push(page);
   }
 
-  return sectionOrder.map((sectionRef) => {
+  const folders = sectionOrder.map((sectionRef) => {
     const definition = definitionsById.get(sectionRef.id);
     if (!definition) {
       throw new Error(
@@ -82,4 +101,11 @@ export function buildDocsSidebarSectionNodes({
       children,
     } satisfies Node;
   });
+
+  assertFactorySidebarFolderLabels(
+    folders.map((folder) => String(folder.name)),
+  );
+  assertFactorySidebarPageUrls(collectSidebarPageUrls(folders));
+
+  return folders;
 }
