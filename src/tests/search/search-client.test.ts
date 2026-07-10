@@ -4,8 +4,10 @@ import {
   createModelAtlasSearchClient,
   DOCS_SEARCH_API_PATH,
   docsSearchStaticOptions,
+  readBakedDocsSearchStaticFrom,
 } from "@/features/docs/search/search-client";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { DOCS_SEARCH_BOOTSTRAP_FROM_ENV } from "@/lib/search/docs-search-bootstrap-path";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { docsSearchApi } from "@/lib/search/search-server";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
@@ -45,6 +47,27 @@ const CROSS_SURFACE_PARITY_QUERIES: string[] = [
   "Token",
 ];
 
+function withDocsSearchBootstrapFromEnv<T>(
+  value: string | undefined,
+  run: () => T,
+): T {
+  const previous = process.env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV];
+  if (value === undefined) {
+    delete process.env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV];
+  } else {
+    process.env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV] = value;
+  }
+  try {
+    return run();
+  } finally {
+    if (previous === undefined) {
+      delete process.env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV];
+    } else {
+      process.env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV] = previous;
+    }
+  }
+}
+
 describe("createModelAtlasSearchClient", () => {
   let metaByUrl: ReturnType<typeof searchResultMetaMapToRecord>;
 
@@ -52,17 +75,45 @@ describe("createModelAtlasSearchClient", () => {
     metaByUrl = searchResultMetaMapToRecord(await loadSearchResultMetaMap());
   });
 
+  test("readBakedDocsSearchStaticFrom falls back to /api/search when unset", () => {
+    withDocsSearchBootstrapFromEnv(undefined, () => {
+      expect(readBakedDocsSearchStaticFrom()).toBe(DOCS_SEARCH_API_PATH);
+    });
+  });
+
+  test("readBakedDocsSearchStaticFrom prefers the project-site NEXT_PUBLIC bake", () => {
+    withDocsSearchBootstrapFromEnv(PROJECT_SITE_BOOTSTRAP_FROM, () => {
+      expect(readBakedDocsSearchStaticFrom()).toBe(PROJECT_SITE_BOOTSTRAP_FROM);
+    });
+  });
+
+  test("buildDocsSearchStaticOptions embeds the baked project-site static from", () => {
+    withDocsSearchBootstrapFromEnv(PROJECT_SITE_BOOTSTRAP_FROM, () => {
+      expect(buildDocsSearchStaticOptions().from).toBe(
+        PROJECT_SITE_BOOTSTRAP_FROM,
+      );
+      expect(buildDocsSearchStaticOptions("vi").from).toBe(
+        `${PROJECT_SITE_BOOTSTRAP_FROM}.vi`,
+      );
+      expect(buildDocsSearchStaticOptions("ja").from).toBe(
+        `${PROJECT_SITE_BOOTSTRAP_FROM}.ja`,
+      );
+    });
+  });
+
   test("docsSearchStaticOptions.from resolves to the static bootstrap path", () => {
     expect(docsSearchStaticOptions.from).toBe(DOCS_SEARCH_API_PATH);
   });
 
   test("buildDocsSearchStaticOptions uses a locale-specific bootstrap path", () => {
-    expect(buildDocsSearchStaticOptions("vi").from).toBe(
-      "/api/search?locale=vi",
-    );
-    expect(buildDocsSearchStaticOptions("ja").from).toBe(
-      "/api/search?locale=ja",
-    );
+    withDocsSearchBootstrapFromEnv(undefined, () => {
+      expect(buildDocsSearchStaticOptions("vi").from).toBe(
+        "/api/search?locale=vi",
+      );
+      expect(buildDocsSearchStaticOptions("ja").from).toBe(
+        "/api/search?locale=ja",
+      );
+    });
   });
 
   test("loads vietnamese result metadata for shipped localized pages", async () => {

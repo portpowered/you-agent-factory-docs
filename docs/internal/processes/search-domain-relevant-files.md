@@ -83,7 +83,10 @@ Use these files when changing search document construction, Orama indexing, or
   inlining sees the value on `process.env`, not only via the `next.config`
   `env` map. `next.config.ts` calls that helper at load time.
 * `src/features/docs/search/search-client.ts`
-  Client fetch uses the baked public bootstrap path (no post-build rewrite).
+  Client `"use client"` module. `readBakedDocsSearchStaticFrom` and
+  `docsSearchStaticOptions` / `buildDocsSearchStaticOptions` use a literal
+  `process.env.NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` access so the baked
+  path is inlined into `out/_next/static/chunks` (no post-build rewrite).
 * `src/lib/build/verify-export-search-bootstrap-client-path.ts`
   Export-chunk verifier for the baked bootstrap literal.
 * Focused coverage: `bun run test:website:static-search` (includes
@@ -103,3 +106,11 @@ Project-site static export must set both:
 Setting only the config `env` map can leave client chunks with the
 `/api/search` fallback when SWC reads `process.env` for `NEXT_PUBLIC_*`
 inlining. Do not post-build rewrite chunk files to inject the prefix.
+
+### Pattern: literal NEXT_PUBLIC access in search-client static from
+
+Client code must read `process.env.NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM`
+with a static property access (see `readBakedDocsSearchStaticFrom`). Dynamic
+`env[DOCS_SEARCH_BOOTSTRAP_FROM_ENV]` is fine in server/build helpers but is
+not inlined into client chunks — that leaves Orama static `from` on the
+fumadocs default `/api/search`.
