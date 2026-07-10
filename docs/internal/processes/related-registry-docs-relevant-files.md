@@ -60,6 +60,18 @@ and the shared related-registry-docs component/blog wrapper.
   `related-registry-docs-unavailable` examples on `/component-examples` (dev or
   `ENABLE_COMPONENT_EXAMPLES=1`).
 
+## Related-section chrome copy
+
+* Live docs related headings use factory wording **`Related To`**
+  (`sections.related.title` in page messages).
+* Do not reintroduce Atlas chrome **`Related Concepts And Modules`** in concept
+  (or other) page messages, `docs/templates/concept.messages.en.json`,
+  `docs/templates/glossary.messages.en.json`, or generate fixtures under
+  `src/lib/content/__generate-fixtures__/`.
+* Home browse chrome must not ship retired Atlas featured-link keys
+  (`atlasLinkTitle` / “Browse the atlas”); see
+  `rewrite-home-page-relevant-files.md`.
+
 ## Verification
 
 * `bun test src/lib/content/related-registry-docs.test.ts`
@@ -67,7 +79,11 @@ and the shared related-registry-docs component/blog wrapper.
 * `bun test src/features/docs/components/RelatedRegistryDocs.test.tsx`
 * `bun test src/features/blog/components/BlogRelatedDocs.test.tsx`
 * `bun test src/features/blog/components/blog-related-docs-blog-integration.test.tsx`
+* `bun test src/content/docs/concepts/bottlenecks/bottlenecks-page.test.tsx src/content/docs/concepts/task-queue/task-queue-page.test.tsx src/tests/content/home-page.test.tsx`
 * `bun run typecheck`
 * `bun run lint`
 * Blog browser check: build then curl `/blog/bottlenecks` for
   `data-testid="blog-related-docs"` and concept hrefs.
+* Concept/home chrome check: render or curl a concept page and `/` and assert
+  HTML has `Related To` (or factory browse links) and does not contain
+  `Related Concepts And Modules` or `Browse the atlas`.

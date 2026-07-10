@@ -24,7 +24,7 @@
       "body": "Factory and work tokens are not LLM tokenizer or model-input tokens. In this system a token is the unit of submitted work that occupies a place; it is not a piece of text a model reads. Design-system or UI tokens are also a different idea and are out of scope here."
     },
     "related": {
-      "title": "Related Concepts And Modules"
+      "title": "Related To"
     },
     "tags": {
       "title": "Tags"

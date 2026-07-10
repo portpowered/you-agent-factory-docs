@@ -24,7 +24,7 @@
       "body": "A task queue is not a checklist. A checklist is the planner’s live outcomes and workstream board; the task queue is the runtime backlog of work waiting in work-type places. Submitting work is how batches enter the factory—it is the ingress step, not the waiting backlog those items join afterward. Factory and work tokens name the unit that occupies a place; the task queue is the set of those waiting places holding ready work. A workqueue-executor is a technique pattern for draining or organizing queued work; it is not the queue concept itself."
     },
     "related": {
-      "title": "Related Concepts And Modules"
+      "title": "Related To"
     },
     "tags": {
       "title": "Tags"
