@@ -16,6 +16,7 @@ updatedAt: "2026-07-10"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -37,6 +38,30 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/what-is-you-agent-factory",
+        labelKey: "links.whatIsYouAgentFactory",
+      },
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.resourcesDocs",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
