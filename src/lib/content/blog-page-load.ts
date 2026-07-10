@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { TOCItemType } from "fumadocs-core/toc";
+import type { MDXComponents } from "mdx/types";
 import { compileMDX } from "next-mdx-remote/rsc";
 import type { ReactElement } from "react";
 import { parsePageAssetConfig } from "@/lib/content/assets";
@@ -20,6 +21,28 @@ import {
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
 import { buildLocalDocsTableOfContents } from "@/lib/navigation/local-docs-toc";
+
+/**
+ * Merge post-owned MDX components for a blog slug.
+ *
+ * Blog posts compile through `compileMDX` with a fixed component map, so
+ * relative imports in `page.mdx` do not resolve. Use a static
+ * `import("@/content/blog/<slug>/page-mdx-components")` literal (bundlers
+ * cannot resolve expression-based imports at build time). Keep post charts
+ * out of the shared `blog-mdx-components.tsx` registry.
+ */
+async function loadBlogPostMdxComponents(slug: string): Promise<MDXComponents> {
+  switch (slug) {
+    case "bottlenecks": {
+      const mod = await import(
+        "@/content/blog/bottlenecks/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
+    default:
+      return {};
+  }
+}
 
 export type LoadedBlogPost = {
   slug: string;
@@ -77,10 +100,14 @@ export async function loadBlogPostFromDisk(
   const assets = existsSync(assetsPath)
     ? parsePageAssetConfig(readJsonFile(assetsPath))
     : {};
+  const pageMdxComponents = await loadBlogPostMdxComponents(slug);
 
   const { content, frontmatter } = await compileMDX<BlogPostFrontmatter>({
     source,
-    components: blogMdxComponents,
+    components: {
+      ...blogMdxComponents,
+      ...pageMdxComponents,
+    },
     options: moduleMdxCompileOptions,
   });
 

@@ -1,0 +1,94 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-09"
+updatedAt: "2026-07-10"
+authors:
+  - site-team
+tags:
+  - foundations
+relatedDocIds:
+  - concept.bottlenecks
+status: "published"
+---
+
+import { Callout } from "@/features/docs/components/Callout";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+<TagPillList tags={["foundations"]} />
+
+## Summary
+
+<T k="takeaway" />
+
+## What usually caps a factory run
+
+Long-running you-agent-factory work moves through queues, workers or workstations, harness and tool calls, shared resources, and token or context budgets. End-to-end throughput rises only when the scarce stage gains capacity. Adding agents elsewhere does not help if that stage is already saturated.
+
+The patterns below compare the limiting stages operators see most often. Use them to name the stage that is full while neighbors still have spare capacity, then decide where to spend the next change.
+
+<Callout type="note" titleKey="callouts.stableDefinition.title">
+  <T k="callouts.stableDefinition.body" />
+</Callout>
+
+## Saturated task queue
+
+Work arrives or finishes upstream faster than the queue can hand out the next ready item. Downstream workers look idle even though the backlog is the real wait. A healthy-looking concurrency setting does not raise completions when claim latency or backlog depth is already the cap.
+
+Compare this with scarce workers: if the queue is empty and seats are full, concurrency is the limit. If seats are free and the backlog keeps growing, the queue path is the limit.
+
+## Where one stage caps the run
+
+The chart below compares stage capacity with end-to-end throughput for a teaching fixture. Queue, workers, shared I/O, and context still have spare capacity, but harness capacity is already saturated. Completions per interval stay at that scarce-stage limit until the harness path gains capacity.
+
+<BottlenecksStageThroughputChart />
+
+## Scarce workers or workstations
+
+There are not enough agents, worktrees, or review seats to keep the pipeline moving. The queue may look calm while completed work per interval stays flat because concurrency is already maxed out. Adding queue capacity alone does not help when every seat is busy.
+
+Compare this with slow harness calls: more workers help only when each worker still spends most of its time on useful work. If every new seat blocks on the same slow tool path, concurrency rises while throughput stays flat.
+
+## Slow harness or tool calls
+
+Each step spends most of its wall time waiting on the harness, shell, browser, or an external tool rather than on model tokens. The factory looks busy, but finished work per interval barely moves. Scaling workers multiplies waiters on the same slow call path.
+
+Compare this with shared-resource contention: a slow tool is often one call site. Shared contention shows up when many stages hit the same disk, network, API budget, or lock together and serialize work that looked parallel in isolation.
+
+## Shared-resource contention
+
+Disk, network, API rate limits, or a shared lock serialize otherwise parallel work. One stage can look fine in a solo run and collapse when several stages share the scarce resource. Throughput charts that ignore the shared resource often blame the wrong stage.
+
+Compare this with token or context pressure: shared resources are usually external capacity. Token pressure is internal to the run—prompts, transcripts, or context windows grow until otherwise ready work stalls on compaction, truncation, or budget limits even when workers and tools are free.
+
+## Token or context pressure
+
+Prompts, transcripts, or context windows grow until each turn costs more tokens than the run can afford. Workers sit ready, tools respond, and the queue still has items, but turns stall on compaction or budget. Raising concurrency without shrinking context often makes the pressure worse.
+
+Compare this with a saturated queue: queue pressure shows as backlog depth and claim wait. Token pressure shows as rising cost or truncation per turn while the backlog may still look manageable.
+
+## How to choose the next reading path
+
+Start with the stage that is saturated while neighbors still have spare capacity. Treat model quality as a separate question until that limiting stage is named.
+
+- If backlog grows while seats sit free, read the task-queue path next.
+- If seats are full and the queue is calm, raise or reshape worker and workstation capacity before chasing tool latency.
+- If workers are free but wall time sits in harness or tool waits, profile the call path before adding seats.
+- If solo stages look fine and multi-stage runs collapse, inspect shared locks, rate limits, and I/O budgets.
+- If turns stall on compaction or context budget with free workers, shrink or compact context before scaling concurrency.
+
+For the stable definition of a factory bottleneck—the limiting stage that caps overall throughput even when other stages have spare capacity—use the related concept page below. This listicle stays on examples and tradeoffs rather than restating that glossary entry.
+
+## Related reference pages
+
+<BlogRelatedDocs relatedDocIds={["concept.bottlenecks"]} />
+
+## Tags
+
+<TagPillList tags={["foundations"]} showDescriptions />
