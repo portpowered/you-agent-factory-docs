@@ -16,7 +16,7 @@
     },
     "comparedToNearbyTechniques": {
       "title": "Compared To Nearby Techniques",
-      "body": "Worker-adviser is about separating advise from perform. Writer-reviewer is a write then review accept-or-reject quality loop. Planner-executor plans slices then executes them. Classify-execute routes by work class then runs. Workqueue-executor drains an ordered work queue. The workers configuration reference explains how to declare worker backends; it is not the advise-versus-perform technique itself."
+      "body": "Worker-adviser separates advise from perform: one role recommends or critiques, another role does the work. Writer-reviewer is different — it is a write then review accept-or-reject quality loop, not an advise-versus-perform split. Planner-executor plans work into slices and then executes those slices; the split is plan versus run, not advice versus performance. Classify-execute routes a task by work class and then runs the matching path. Workqueue-executor drains an ordered work queue. The workers configuration reference explains how to declare worker backends; it is not the advise-versus-perform technique itself."
     },
     "related": {
       "title": "Related To"
@@ -27,5 +27,10 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "workersDocumentation": "Workers configuration",
+    "writerReviewerTechnique": "Writer-reviewer technique",
+    "plannerExecutorTechnique": "Planner-executor technique"
   }
 }

@@ -122,6 +122,20 @@ targets until related-runtime includes documentation records; keep
 `<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
 discovery when those ids can resolve.
 
+Technique → sibling technique / documentation discovery follows the same
+page-local rule while sibling technique pages are still unpublished: put
+planned routes such as `/docs/techniques/writer-reviewer`,
+`/docs/techniques/planner-executor`, and published documentation such as
+`/docs/documentation/workers` on the technique page with message-backed
+`<LocalizedLinkList>` under `#related`. Leave technique `relatedIds` empty for
+those unpublished sibling technique ids so `validate-data` stays clean; keep
+`<RelatedDocs />` for curated targets that already resolve. Technique kind is
+not in the page-template-conformance supported set, so adding
+`LocalizedLinkList` does not require a conformance exception entry.
+When asserting compared-to-nearby prose in colocated page tests, prefer
+section `textContent` matchers — prose auto-links can fragment exact
+`getByText` sentence matches.
+
 ## Shipping non-en locale stubs on a page bundle
 
 Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
