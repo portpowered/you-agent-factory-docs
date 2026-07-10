@@ -29,6 +29,37 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.keyConcepts.body" />
 </Section>
 
+<Section id="how-to-integrate" titleKey="sections.howToIntegrate.title">
+  <T k="sections.howToIntegrate.body" />
+  <p>
+    <T k="links.serveCommandLabel" />
+  </p>
+
+```bash
+you mcp serve
+```
+
+  <T k="callouts.stdioTransport.body" />
+  <p>
+    <T k="links.hostJsonLabel" />
+  </p>
+
+```json
+{
+  "mcpServers": {
+    "you-agent-factory": {
+      "command": "/absolute/path/to/you",
+      "args": ["mcp", "serve"],
+      "cwd": "/absolute/path/to/your-workflow-project"
+    }
+  }
+}
+```
+
+  <T k="callouts.hostJsonNotes.body" />
+  <T k="callouts.reloadHost.body" />
+</Section>
+
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
 </Section>

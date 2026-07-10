@@ -10,6 +10,10 @@
       "title": "Key Concepts",
       "body": "Model Context Protocol (MCP) is how an editor or other host discovers and calls tools over a child-process transport. you-agent-factory exposes Factory Session tools to MCP hosts through you mcp serve. The host spawns that command as a stdio child process: stdin and stdout carry MCP JSON-RPC, and stderr stays reserved for diagnostics."
     },
+    "howToIntegrate": {
+      "title": "How To Integrate",
+      "body": "Install the you CLI, then point your MCP-capable host at the canonical serve entrypoint. The host must launch you mcp serve as a stdio child process—not as an interactive terminal command—so the host owns stdin and stdout for MCP traffic."
+    },
     "howToUse": {
       "title": "How To Use",
       "body": "Install the you CLI, add an MCP server entry that launches you mcp serve, set the working directory to your workflow project root, then restart or reload the host so the child process starts. After reload, the host should discover you.factory_session.* tools for validate, start, status, and result flows."
@@ -26,6 +30,21 @@
     },
     "references": {
       "title": "References"
+    }
+  },
+  "links": {
+    "serveCommandLabel": "Canonical serve command",
+    "hostJsonLabel": "Generic MCP host JSON"
+  },
+  "callouts": {
+    "stdioTransport": {
+      "body": "Hosts must spawn you mcp serve as a stdio child process. stdin and stdout carry MCP JSON-RPC over newline-delimited messages. stderr is reserved for process diagnostics only—hosts must not parse MCP traffic from stderr."
+    },
+    "hostJsonNotes": {
+      "body": "Prefer an absolute path for command when the host PATH is limited. Keep args as mcp serve. Set cwd to the absolute path of the workflow or project root whose sources you want Factory Session tools to resolve. You can use command you when the binary is already on the host PATH."
+    },
+    "reloadHost": {
+      "body": "After you save the host configuration, restart or reload the host so it respawns the MCP child process. Saving the file alone is not enough for most hosts."
     }
   }
 }

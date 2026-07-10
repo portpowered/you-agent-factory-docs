@@ -1,6 +1,6 @@
 /**
  * Page-owned render proof for documentation/mcp.
- * Covers documentation shell and MCP identity for the scaffold story.
+ * Covers documentation shell, MCP identity, and how-to-integrate steps.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -62,6 +62,9 @@ describe("mcp documentation page", () => {
       screen.getByRole("heading", { name: "What It Covers" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "How To Integrate" }),
+    ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -78,5 +81,42 @@ describe("mcp documentation page", () => {
       /Model Context Protocol \(MCP\)/,
     );
     expect(keyConceptsSection?.textContent).toMatch(/you mcp serve/);
+  });
+
+  test("shows how-to-integrate serve command and host JSON", async () => {
+    const loadedPage = await loadLocalDocsPage({
+      section: "documentation",
+      slug: "mcp",
+    });
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    const integrateSection = document.getElementById("how-to-integrate");
+    expect(integrateSection).toBeTruthy();
+    expect(integrateSection?.textContent).toMatch(/you mcp serve/);
+    expect(integrateSection?.textContent).toMatch(/stdio/i);
+    expect(integrateSection?.textContent).toMatch(/stdin/i);
+    expect(integrateSection?.textContent).toMatch(/stdout/i);
+    expect(integrateSection?.textContent).toMatch(/stderr/i);
+    expect(integrateSection?.textContent).toMatch(/restart|reload/i);
+
+    const codeBlocks = integrateSection?.querySelectorAll("pre, code") ?? [];
+    const codeText = Array.from(codeBlocks)
+      .map((node) => node.textContent ?? "")
+      .join("\n");
+    expect(codeText).toMatch(/you mcp serve/);
+    expect(codeText).toMatch(/"mcpServers"/);
+    expect(codeText).toMatch(/"args"\s*:\s*\[\s*"mcp"\s*,\s*"serve"\s*\]/);
+    expect(codeText).toMatch(/"cwd"/);
+    expect(codeText).toMatch(/"command"/);
   });
 });
