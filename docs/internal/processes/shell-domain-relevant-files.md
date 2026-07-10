@@ -167,6 +167,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   breadcrumbs (home), sidebar previous/next, tags/browse/related, and search
   result hrefs; default-locale roots stay unprefixed; project-site export
   prefixes bootstrap + nav under `/you-agent-factory-docs`.
+* `src/lib/content/factory-search-navigation-convergence.test.tsx`
+  Cross-cutting end-to-end gate (story 009) that also covers tags/browse,
+  breadcrumb/sidebar, previous/next/related, and locale/base-path together
+  with search. See `search-domain-relevant-files.md` for the full pattern.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus

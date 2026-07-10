@@ -50,6 +50,12 @@ Use these files when changing search document construction, Orama indexing, or
   unavailable bootstrap stays on `/api/search` with error/retry copy, and
   deleted Atlas destinations remain not-found / undiscoverable from
   search/nav chrome.
+* `src/lib/content/factory-search-navigation-convergence.test.tsx`
+  Story 009 cross-cutting end-to-end gate: required-suite proof that factory
+  categories, alias/body/tag discovery, deleted-record exclusion,
+  tags/browse/breadcrumb/sidebar/previous-next/related, locale/base-path,
+  and empty/malformed/unavailable/deleted-content cases stay factory-only
+  together. Per-story suites (001–008) remain the detailed contracts.
 * `src/lib/search/build-base-document.ts`
   Generic base search document construction from localized docs pages and
   registry fields. Produces page-derived fields with empty topology and
@@ -102,6 +108,17 @@ Atlas blog URLs (`evolution-of-diffusion`,
 prove with required-suite coverage under `src/lib/content/` using
 representative deleted-inventory queries (`grouped-query attention`, `GQA`,
 `evolution of diffusion`) plus live factory keepers (`harness`, `ralph`).
+
+### Pattern: factory search/nav convergence end-to-end gate
+
+When a lane finishes converging search + navigation onto factory-only
+collections, keep a single required-suite cross-cutting proof under
+`src/lib/content/factory-search-navigation-convergence.test.tsx` that exercises
+categories, alias/body/tag discovery, deleted-record exclusion, tags/browse,
+breadcrumb/sidebar, previous/next/related, locale/base-path, and edge cases
+together. Do not replace the per-story suites; the convergence file is the
+PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
+`make linkcheck` and browser verification of representative factory surfaces.
 
 ## Parity and regression tests
 
