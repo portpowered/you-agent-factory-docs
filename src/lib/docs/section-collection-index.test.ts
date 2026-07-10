@@ -159,7 +159,7 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).not.toContain(indexMessages.emptyTitle);
   });
 
-  test("renders concepts index with the tokens page entry", async () => {
+  test("renders concepts index with checklist, thinking, and tokens page entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = sectionIndexMessages(messages, "concepts");
     const html = renderToStaticMarkup(
@@ -169,6 +169,10 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/docs/concepts/checklist");
+    expect(html).toContain("Thinking");
+    expect(html).toContain("/docs/concepts/thinking");
     expect(html).toContain("Tokens");
     expect(html).toContain("/docs/concepts/tokens");
     expect(html).toContain(

@@ -157,7 +157,7 @@ describe("CLI section index page render", () => {
     );
   });
 
-  it("renders the concepts index with the tokens page entry", async () => {
+  it("renders the concepts index with checklist, thinking, and tokens page entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = messages.conceptsIndex;
     const html = renderToStaticMarkup(await ConceptsIndexPage());
@@ -165,6 +165,10 @@ describe("CLI section index page render", () => {
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/docs/concepts/checklist");
+    expect(html).toContain("Thinking");
+    expect(html).toContain("/docs/concepts/thinking");
     expect(html).toContain("Tokens");
     expect(html).toContain("/docs/concepts/tokens");
     expect(html).toContain(
@@ -239,7 +243,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese concepts index with localized title and the tokens page entry", async () => {
+  it("renders the japanese concepts index with checklist and tokens page entries", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedConceptsIndexPage({
@@ -250,11 +254,14 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(messages.conceptsIndex.title);
     expect(html).toContain(messages.conceptsIndex.description);
     expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/ja/docs/concepts/checklist");
     expect(html).toContain("Tokens");
     expect(html).toContain("/ja/docs/concepts/tokens");
     expect(html).toContain(
       "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
     );
+    expect(html).not.toContain("/ja/docs/concepts/thinking");
     expect(html).not.toContain(messages.conceptsIndex.emptyTitle);
     expect(messages.conceptsIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,

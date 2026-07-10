@@ -123,12 +123,15 @@ files is what derives the page as shipped for that locale
 Missing non-default messages fail closed (no English fallback at load time).
 
 Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
-locale message files (the derive test requires it). On a first CLI-section page,
-that generated file plus a narrow `shipped-localized-docs.server.test.ts`
-expectation update stay inside the documented `declare-exception` allowlist —
+locale message files (the derive test requires it). On a first CLI-section page
+(including the first authored `concepts/` page), that generated file plus a
+narrow `shipped-localized-docs.server.test.ts` expectation update stay inside
+the documented `declare-exception` allowlist —
 see [canonical-page-surface-budget-relevant-files.md](./canonical-page-surface-budget-relevant-files.md#first-authored-page-under-a-rewrite-era-cli-section).
 Leave other `prepare:content-runtime` outputs uncommitted when they stay
-gitignored.
+gitignored. Colocate new concept page render proofs under
+`src/content/docs/concepts/<slug>/<slug>-page.test.tsx` so the page test stays
+page-owned rather than under `src/lib/content/`.
 
 ## Routine preflight for ordinary page branches
 
