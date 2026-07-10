@@ -1,0 +1,157 @@
+---
+title: "Replays / Records"
+description: "Capture a live you-agent-factory run as a replay artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again."
+kind: "documentation"
+registryId: "documentation.replays-records"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "replays"
+  - "records"
+  - "record and replay"
+  - "replay artifacts"
+updatedAt: "2026-07-10"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.defaultPathLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.defaultPathValue" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.shutdownSignalLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.shutdownSignalValue" />
+    </code>
+  </pre>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.runControlsFlagHeader" />
+        </th>
+        <th>
+          <T k="links.runControlsEffectHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.runControlsDefaultFlag" />
+        </td>
+        <td>
+          <T k="links.runControlsDefaultEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.runControlsNoRecordFlag" />
+        </td>
+        <td>
+          <T k="links.runControlsNoRecordEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.runControlsRecordFlag" />
+        </td>
+        <td>
+          <T k="links.runControlsRecordEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.runControlsReplayFlag" />
+        </td>
+        <td>
+          <T k="links.runControlsReplayEffect" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.incompatiblePairsLabel" />
+  </p>
+  <ul>
+    <li>
+      <T k="links.incompatibleRecordReplay" />
+    </li>
+    <li>
+      <T k="links.incompatibleNoRecordRecord" />
+    </li>
+  </ul>
+  <p>
+    <T k="links.recordExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.recordExampleCommand" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.replayExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.replayExampleCommand" />
+    </code>
+  </pre>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWorkDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.replays-records" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.replays-records" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.replays-records" />
+</Section>

@@ -1,0 +1,18 @@
+{
+  "id": "documentation.replays-records",
+  "slug": "replays-records",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["replays", "records", "record and replay", "replay artifacts"],
+  "tags": [],
+  "relatedIds": [
+    "documentation.cli",
+    "documentation.configuration",
+    "documentation.submitting-work"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T07:00:00.000Z",
+  "updatedAt": "2026-07-10T07:30:00.000Z"
+}
