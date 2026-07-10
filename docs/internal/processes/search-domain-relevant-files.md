@@ -13,6 +13,11 @@ Use these files when changing search document construction, Orama indexing, or
   Required `bun run test` proof that pageKind labels, live search meta, and
   representative `harness` / `ralph` queries stay inside the factory category
   set and never advertise Model Atlas result kinds.
+* `src/lib/content/factory-search-alias-body-tag.test.ts`
+  Required `bun run test` proof that factory alias, body-phrase, and tag
+  queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
+  `Quickstart` → getting-started, `one-story-per-iteration` → ralph,
+  `foundations` tag → `/blog/bottlenecks`) without needing Atlas tags.
 * `src/lib/search/build-base-document.ts`
   Generic base search document construction from localized docs pages and
   registry fields. Produces page-derived fields with empty topology and
@@ -41,6 +46,16 @@ documents, and prove reader-facing labels via `messages.pageKind` (no Atlas
 keys such as `module` / `model` / `paper`). Place the required-suite proof under
 `src/lib/content/` because `src/lib/search/` remains excluded from
 `run-website-functionality-tests.ts` for leftover Atlas-coupled suites.
+
+### Pattern: factory alias / body / tag discovery
+
+Live factory pages are discoverable by frontmatter/registry aliases, distinctive
+body phrases, and published factory tags. Prefer representative factory fixtures
+(`agent runtime`, `Ralph loop`, `Quickstart`, `one-story-per-iteration`,
+`foundations` → `/blog/bottlenecks`) in required-suite proofs. Do not depend on
+retired Atlas tags (`attention`, `model-family`, `inference`, `alignment`) for
+discovery success. Keep these proofs under `src/lib/content/` so `bun run test`
+runs them.
 
 ## Parity and regression tests
 
