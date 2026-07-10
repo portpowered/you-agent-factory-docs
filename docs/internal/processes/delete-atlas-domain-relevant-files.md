@@ -148,3 +148,15 @@ Do not reintroduce Atlas section cases in `loadLocalDocsPage`. Empty Atlas
 content/registry trees and live kind contracts are owned by later
 `delete-ai-content-infrastructure` stories.
 
+## Denylist audit (anti-regression)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/governance/retired-ai-content-infrastructure-denylist.ts` | Maintainer denylist for retired routes/kinds/owned paths |
+| `scripts/audit-retired-ai-content-infrastructure.ts` | CLI: `bun run audit:retired-ai-content-infrastructure` |
+| `docs/internal/processes/retired-ai-content-infrastructure-denylist-relevant-files.md` | Process map for the denylist |
+
+Run the denylist after infrastructure deletion work. It must fail on
+reintroduction fixtures and pass for genuine factory provider / external-model
+configuration wording.
+
