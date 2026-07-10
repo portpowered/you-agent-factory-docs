@@ -378,11 +378,11 @@ then confirming deploy-pages published the merge commit.
    green and branch up to date if that rule is enabled).
 3. **Confirm post-merge CI** on the merge commit: a push to `main` triggers
    `.github/workflows/ci.yml` again on the integrated SHA.
-4. **Confirm post-merge deploy** on the same SHA: `.github/workflows/deploy-pages.yml`
-   validates with `make build`, runs `make guard-pages-deployed-artifact` (reuses
-   `out/`, no second full export), uploads `out/`, and publishes to GitHub Pages.
-   A green **Deploy to GitHub Pages** check means the public site reflects that
-   commit.
+4. **Confirm post-merge deploy** on the same SHA: workflow **Deploy GitHub Pages**
+   (`.github/workflows/deploy-pages.yml`) runs **Canonical validation** (`make
+   build`, `make guard-pages-deployed-artifact` reusing `out/`, upload) then
+   **Deploy to GitHub Pages**. A green **Deploy to GitHub Pages** check means the
+   public site reflects that commit.
 5. **Optionally tag a release point** on `main` when maintainers want a named
    version in git history, for example `git tag v0.1.0 <merge-commit-sha>` followed
    by `git push origin v0.1.0`. Tags do not replace the deploy-on-`main` flow
@@ -391,8 +391,9 @@ then confirming deploy-pages published the merge commit.
    and run the [read-only post-deploy checks](#read-only-post-deploy-checks)
    against the live project site.
 
-Do not claim the public site was updated until **deploy** succeeds on the target
-`main` commit.
+Do not claim the public site was updated until the **Deploy to GitHub Pages**
+job succeeds on the target `main` commit (see
+[Commit-SHA traceability](#commit-sha-traceability)).
 
 ### Manual or tagged deploy (future extension)
 
@@ -491,41 +492,72 @@ rather than re-running deploy from a local test harness.
 
 ## Commit-SHA traceability
 
-Maintainers must tie integration and deployment to an exact git commit.
+Maintainers must prove which source commit is live on the project site
+(`https://portpowered.github.io/you-agent-factory-docs`) by tying the merge
+commit on `main` to the Actions runs that verified and published it.
+
+Do **not** claim the public site was updated for a SHA until the **Deploy to
+GitHub Pages** job for that SHA succeeds. A green **CI** / **verify** check alone
+is not publish proof; **Canonical validation** without a green deploy also is
+not publish proof.
+
+### Live workflows and jobs used for proof
+
+| Display name | Workflow file | Job(s) | Role in proof |
+| --- | --- | --- | --- |
+| **CI** | `.github/workflows/ci.yml` | **verify** | Confirms the merge commit passed the Makefile contract on `main`. |
+| **Deploy GitHub Pages** | `.github/workflows/deploy-pages.yml` | **Canonical validation**, then **Deploy to GitHub Pages** | Builds/uploads `out/` for that SHA, then publishes it to Pages. |
+
+Both workflows run against `${{ github.sha }}` for the `main` push (the merge
+commit). The project site URL after a successful deploy is
+`https://portpowered.github.io/you-agent-factory-docs`.
 
 ### SHAs in CI and deploy
 
 | SHA role | Where it appears | Phase 1 meaning |
 | --- | --- | --- |
 | PR head commit | PR **Checks** tab **verify** run | Validates the proposed merge tip before integration. |
-| Merge commit on `main` | Commit page; **verify** and deploy-pages runs | Authoritative integrated and published state after green checks. |
+| Merge commit on `main` | Commit page; **CI** (**verify**) and **Deploy GitHub Pages** runs | Authoritative integrated SHA; published only after **Deploy to GitHub Pages** is green. |
 | `github.sha` in workflows | GitHub Actions context for `ci.yml` and `deploy-pages.yml` | The commit `actions/checkout@v4` built for that run—matches the trigger commit. |
-| Deploy workflow output | **deploy** job summary and Pages deployment record | Should reference the same SHA as the `main` push that triggered publish. |
+| Deploy workflow output | **Deploy to GitHub Pages** job summary and Pages deployment record | Must reference the same SHA as the `main` push that triggered publish. |
 
-**Proof of what shipped to production** is: the merge commit SHA on `main`, a
-green **verify** run for that SHA, a green deploy-pages run for that SHA, and
-the live site updated after that deploy.
+**Proof of what shipped to production** is all of: the merge commit SHA on
+`main`, a green **CI** / **verify** run for that SHA, a green **Deploy GitHub
+Pages** run for that SHA (**Canonical validation** + **Deploy to GitHub
+Pages**), and the live project site reflecting that deploy.
 
 | Artifact | Purpose |
 | --- | --- |
 | Deploy workflow `github.sha` | Build and publish steps log and deploy this commit. |
-| GitHub Actions run URL / run ID | Links a deploy attempt to workflow logs and timing. |
-| GitHub Pages deployment record | Platform deployment should reference the same commit SHA as the workflow. |
+| GitHub Actions run URL / run ID | Links a verify or deploy attempt to workflow logs and timing. |
+| GitHub Pages deployment record | Platform deployment under the `github-pages` environment should reference the same commit SHA as the workflow. |
 | Optional git tag | Human-friendly name (`v0.2.0`) pointing at a release SHA; does not replace SHA traceability in Actions. |
 
 **Rollback traceability:** keep pairs of `(good_sha, bad_sha)` and the Actions run
 IDs for failed and successful deploys so redeploy targets an earlier green commit
 without guessing.
 
-### Practical lookup steps
+### Practical lookup steps (record the shipping SHA)
+
+Record these fields for every release you need to prove later: `merge_sha`,
+`ci_run_id` (or URL), `deploy_pages_run_id` (or URL), and the Pages deployment
+record / environment URL when available.
 
 1. On GitHub, open **Commits** on `main` and copy the full SHA of the merge or
-   release point.
-2. Open **Actions**, select the **CI** workflow, and confirm a successful
-   **verify** run exists for that SHA.
-3. Open the **Deploy GitHub Pages** workflow run for the same SHA and confirm
-   the **deploy** job succeeded and the run summary repeats the commit hash.
-4. Run the [read-only post-deploy checks](#read-only-post-deploy-checks) against
-   the live project site (deploy propagation can take a short time).
-5. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on `main` must match
-   the SHA recorded in CI and deploy for that release.
+   release point (`merge_sha`).
+2. Open **Actions** → workflow **CI**, filter or open the run for that SHA, and
+   confirm job **verify** succeeded. Record the run ID or URL as `ci_run_id`.
+3. Open **Actions** → workflow **Deploy GitHub Pages** for the same SHA.
+   Confirm **Canonical validation** succeeded (artifact built/uploaded) and
+   **Deploy to GitHub Pages** succeeded (artifact published). Confirm the run
+   summary / commit hash matches `merge_sha`. Record the run ID or URL as
+   `deploy_pages_run_id`.
+4. Open the **github-pages** environment / Pages deployment record for that
+   deploy and confirm it references the same commit SHA (and note the
+   deployment URL when present).
+5. Only after step 3 is green, treat the public site as updated for that SHA.
+   Optionally run the [read-only post-deploy checks](#read-only-post-deploy-checks)
+   against `https://portpowered.github.io/you-agent-factory-docs` (deploy
+   propagation can take a short time).
+6. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on an up-to-date
+   `main` must match the SHA recorded in CI and deploy for that release.

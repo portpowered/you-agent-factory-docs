@@ -198,6 +198,13 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
 
 - Live workflow display names are project-neutral: `CI` and `Deploy GitHub Pages`
   (jobs `verify`, `Canonical validation`, `Deploy to GitHub Pages`).
+- Source-SHA → Pages proof for maintainers lives in
+  `docs/operations.md` under **Commit-SHA traceability**: record
+  `merge_sha` + **CI**/**verify** run + **Deploy GitHub Pages**
+  (**Canonical validation** / **Deploy to GitHub Pages**) run + Pages
+  deployment record; do not claim the live project site
+  (`https://portpowered.github.io/you-agent-factory-docs`) updated until
+  **Deploy to GitHub Pages** is green for that SHA.
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.
