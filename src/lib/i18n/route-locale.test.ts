@@ -1,21 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   generateStaticLocaleParams,
   localizedRouteAlternates,
   localizeStaticParams,
   resolveRouteLocaleOrNotFound,
 } from "./route-locale";
-
-const PROJECT_SITE_BASE_PATH = BUILT_APP_GITHUB_PAGES_BASE_PATH;
-const PROJECT_SITE_EXPORT_ENV = {
-  NEXT_STATIC_EXPORT: "1",
-  GITHUB_PAGES_BASE_PATH: PROJECT_SITE_BASE_PATH,
-} as const;
-const ROOT_EXPORT_ENV = {
-  NEXT_STATIC_EXPORT: "1",
-  GITHUB_PAGES_BASE_PATH: "",
-} as const;
 
 describe("route-locale", () => {
   test("generates static locale params for every non-default locale", () => {
@@ -63,10 +52,10 @@ describe("route-locale", () => {
     });
   });
 
-  test("keeps metadata alternates unprefixed for root export builds", () => {
-    expect(
-      localizedRouteAlternates({ surface: "home" }, ROOT_EXPORT_ENV),
-    ).toEqual({
+  test("keeps metadata alternates app-relative for home and blog surfaces", () => {
+    // Production origin + project-site base path live on root metadataBase;
+    // these hrefs must stay unprefixed so Next.js does not double-prefix.
+    expect(localizedRouteAlternates({ surface: "home" })).toEqual({
       canonical: "/",
       languages: {
         en: "/",
@@ -75,32 +64,13 @@ describe("route-locale", () => {
         vi: "/vi",
       },
     });
-  });
-
-  test("prefixes metadata alternates for project-site export builds", () => {
-    expect(
-      localizedRouteAlternates({ surface: "home" }, PROJECT_SITE_EXPORT_ENV),
-    ).toEqual({
-      canonical: `${PROJECT_SITE_BASE_PATH}/`,
+    expect(localizedRouteAlternates({ surface: "blog-index" })).toEqual({
+      canonical: "/blog",
       languages: {
-        en: `${PROJECT_SITE_BASE_PATH}/`,
-        ja: `${PROJECT_SITE_BASE_PATH}/ja`,
-        "zh-CN": `${PROJECT_SITE_BASE_PATH}/zh-CN`,
-        vi: `${PROJECT_SITE_BASE_PATH}/vi`,
-      },
-    });
-    expect(
-      localizedRouteAlternates(
-        { surface: "blog-index" },
-        PROJECT_SITE_EXPORT_ENV,
-      ),
-    ).toEqual({
-      canonical: `${PROJECT_SITE_BASE_PATH}/blog`,
-      languages: {
-        en: `${PROJECT_SITE_BASE_PATH}/blog`,
-        ja: `${PROJECT_SITE_BASE_PATH}/ja/blog`,
-        "zh-CN": `${PROJECT_SITE_BASE_PATH}/zh-CN/blog`,
-        vi: `${PROJECT_SITE_BASE_PATH}/vi/blog`,
+        en: "/blog",
+        ja: "/ja/blog",
+        "zh-CN": "/zh-CN/blog",
+        vi: "/vi/blog",
       },
     });
   });

@@ -6,8 +6,13 @@ import {
 import { withBasePath } from "@/lib/navigation/site-path";
 
 /**
- * Resolves an absolute site href for metadata or public-asset contexts that
+ * Resolves an absolute site href for public-asset or non-Metadata contexts that
  * bypass Next `<Link>` / automatic `assetPrefix` rewriting.
+ *
+ * For Next.js Metadata canonical/hreflang/OG fields, prefer app-relative hrefs
+ * and let root `metadataBase` (`resolveProductionMetadataBase`) own the
+ * production origin + project-site base path. Prefixing those fields as well
+ * double-prefixes under project-site export.
  *
  * Pass an explicit base path string, or omit / pass env to read the export
  * GitHub Pages base path (`""` for root / non-export builds).
@@ -48,6 +53,10 @@ function prefixAlternateHref(
  * Applies the project-site (or root) base path to canonical + language
  * alternate hrefs. Leaves descriptor objects and external URLs unchanged via
  * `withBasePath`.
+ *
+ * Prefer app-relative alternates with root `metadataBase` for Next Metadata
+ * fields. Use this helper only when emitting path-prefixed hrefs outside
+ * metadataBase composition (for example raw export HTML assertions).
  */
 export function prefixMetadataAlternates(
   alternates: NonNullable<Metadata["alternates"]>,

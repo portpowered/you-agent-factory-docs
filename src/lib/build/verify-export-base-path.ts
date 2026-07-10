@@ -1,4 +1,5 @@
 import { withBasePath } from "@/lib/navigation/site-path";
+import { PRODUCTION_SITE_ORIGIN } from "@/lib/seo/production-metadata-base";
 
 /** True when exported HTML references bundled assets under the configured base path. */
 export function exportHtmlReferencesBasePathAssets(
@@ -20,9 +21,28 @@ export function exportHtmlReferencesRootLevelNextAssets(html: string): boolean {
   return /(?:src|href)=["']\/_next\//.test(html);
 }
 
+function metadataHrefCandidates(path: string, basePath: string): string[] {
+  const prefixed = withBasePath(path, basePath);
+  const absolute =
+    basePath === ""
+      ? `${PRODUCTION_SITE_ORIGIN}${prefixed === "/" ? "/" : prefixed}`
+      : `${PRODUCTION_SITE_ORIGIN}${prefixed}`;
+  return prefixed === absolute ? [prefixed] : [prefixed, absolute];
+}
+
+function htmlIncludesMetadataHref(html: string, href: string): boolean {
+  return (
+    html.includes(`href="${href}"`) ||
+    html.includes(`href='${href}'`) ||
+    html.includes(`rel="canonical" href="${href}"`) ||
+    html.includes(`href="${href}" rel="canonical"`)
+  );
+}
+
 /**
  * True when exported HTML advertises a canonical (and optional hreflang)
- * href under the configured base path — not a bare site-root escape.
+ * href under the configured base path — either as a path-prefixed relative
+ * href or as an absolute production URL composed with metadataBase.
  */
 export function exportHtmlReferencesPrefixedMetadataHrefs(
   html: string,
@@ -30,20 +50,21 @@ export function exportHtmlReferencesPrefixedMetadataHrefs(
   canonicalPath: string,
   languagePaths: readonly string[] = [],
 ): boolean {
-  const canonicalHref = withBasePath(canonicalPath, basePath);
-  const hasCanonical =
-    html.includes(`rel="canonical" href="${canonicalHref}"`) ||
-    html.includes(`href="${canonicalHref}" rel="canonical"`);
+  const hasCanonical = metadataHrefCandidates(canonicalPath, basePath).some(
+    (href) =>
+      html.includes(`rel="canonical" href="${href}"`) ||
+      html.includes(`href="${href}" rel="canonical"`),
+  );
 
   if (!hasCanonical) {
     return false;
   }
 
   return languagePaths.every((path) => {
-    const href = withBasePath(path, basePath);
+    const candidates = metadataHrefCandidates(path, basePath);
     return (
       html.includes(`hreflang=`) &&
-      (html.includes(`href="${href}"`) || html.includes(`href='${href}'`))
+      candidates.some((href) => htmlIncludesMetadataHref(html, href))
     );
   });
 }

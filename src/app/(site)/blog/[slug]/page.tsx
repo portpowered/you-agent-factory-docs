@@ -1,7 +1,6 @@
 import { renderBlogPostPage } from "@/app/(site)/site-renderers";
 import { blogPostHref, listBlogSlugs } from "@/lib/content/blog-page-load";
 import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
-import { resolveSiteAbsoluteHref } from "@/lib/navigation/site-metadata-path";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -23,7 +22,8 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     title: published.messages.title,
     description: published.messages.description,
     alternates: {
-      canonical: resolveSiteAbsoluteHref(blogPostHref(slug)),
+      // App-relative: root metadataBase owns production origin + base path.
+      canonical: blogPostHref(slug),
     },
   };
 }
