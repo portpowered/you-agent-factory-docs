@@ -1,0 +1,85 @@
+---
+title: "Task Queue"
+description: "The you-agent-factory task queue is the backlog of submitted work waiting in work-type states until workstations consume it."
+kind: "concept"
+registryId: "concept.task-queue"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "task queue"
+  - "work queue"
+  - "factory task queue"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="simple-example" titleKey="sections.simpleExample.title">
+  <T k="sections.simpleExample.body" />
+</Section>
+
+<Section id="where-it-appears" titleKey="sections.whereItAppears.title">
+  <T k="sections.whereItAppears.body" />
+</Section>
+
+<Section id="common-confusions" titleKey="sections.commonConfusions.title">
+  <T k="sections.commonConfusions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <DerivedRelatedDocs
+    registryId="concept.task-queue"
+    groups={[
+      "same-concept-type",
+      "shared-tags",
+      "used-by-models",
+      "curated-related"
+    ]}
+  />
+
+  <RelatedDocs registryId="concept.task-queue" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWork",
+      },
+      {
+        href: "/docs/concepts/checklist",
+        labelKey: "links.checklist",
+      },
+      {
+        href: "/docs/concepts/tokens",
+        labelKey: "links.tokens",
+      },
+      {
+        href: "/docs/techniques/workqueue-executor",
+        labelKey: "links.workqueueExecutor",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="concept.task-queue" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="concept.task-queue" />
+</Section>
