@@ -43,6 +43,10 @@ describe("harness-support documentation page", () => {
     );
     expect(whatItCovers).toMatch(/factory-supported harnesses/i);
     expect(whatItCovers).toMatch(/feature coverage/i);
+    expect(whatItCovers).toMatch(/Model Context Protocol \(MCP\)/);
+    expect(loadedPage.messages.description).toMatch(
+      /Model Context Protocol \(MCP\)/,
+    );
     expect(keyConcepts).toMatch(/agent runtime the factory drives/i);
     expect(howToUse).toMatch(/MCP|worktrees|external models/i);
     expect(howToUse).toMatch(/scan/i);
