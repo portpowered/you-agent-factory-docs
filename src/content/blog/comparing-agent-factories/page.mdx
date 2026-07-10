@@ -44,6 +44,14 @@ Dimensions that matter for agent-oriented workflows:
 
 Systems in scope: you-agent-factory, custom scripts, Gas Town, DBOS, Dagster, N8N, and Temporal.
 
+## Comparison matrix
+
+Scan systems against the dimensions above. Yes means the system covers that
+dimension in practice for agent-oriented work; an em dash means it does not
+(or only with substantial custom work outside the product’s main path).
+
+<AgentFactoriesComparisonTable />
+
 ## you-agent-factory
 
 you-agent-factory is a file-first agent factory. Workflow and agent definitions live in the repo; operators run a CLI binary and keep long-running agent work persistent across sessions. It supports recursion, fan-in, and stateful loops, and it is built around agent harnesses rather than treating harnesses as an afterthought.

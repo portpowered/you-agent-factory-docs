@@ -25,7 +25,8 @@ Use these files when extending the default English blog surface at `/blog` and
 * `src/lib/content/blog-post-list.ts`
   Published post discovery, draft filtering, and newest-first sorting for index cards.
 * `src/lib/content/blog-page-load.ts`
-  Full MDX post loading, `blogPostHref`, and `blogIndexHref`.
+  Full MDX post loading, `blogPostHref`, and `blogIndexHref`. Single-slug
+  `page-mdx-components` merge for post-owned illustrations (mirrors concept SPC).
 * `docs/internal/processes/blog-content-collection-loader-relevant-files.md`
   Loader-only scope and fixture tests.
 
