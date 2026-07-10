@@ -239,6 +239,14 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
   green **CI**/**verify** on the PR. Checklist mapping and governance status
   language must stay **Deferred** with that owner/alternative until a preview
   workflow ships.
+- Contributor-facing entry points must link the operations runbooks by section
+  (release, SHA proof, smoke, rollback, incident diagnosis, deployment status,
+  PR preview), not only a generic “CI/deploy posture” blurb:
+  - `docs/contributors/CONTRIBUTING.md` → **Operations runbooks**
+  - Root `README.md` Important Docs + Quality Gates operations pointer
+  Keep workflow/job display names and Makefile stages aligned with live
+  `.github/workflows/ci.yml` / `deploy-pages.yml` (no retired `deploy.yml` /
+  `ai-model-reference` / Atlas-only required paths as current).
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.
