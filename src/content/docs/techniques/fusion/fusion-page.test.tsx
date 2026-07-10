@@ -94,6 +94,30 @@ describe("fusion technique page", () => {
     expect(whyItMatters?.textContent).toMatch(/not a one-off chat trick/i);
     expect(whyItMatters?.textContent).not.toMatch(/on this page/i);
     expect(whyItMatters?.textContent).not.toMatch(/Model Atlas/i);
+
+    const howItWorks = document.getElementById("how-it-works");
+    expect(howItWorks).toBeTruthy();
+    expect(howItWorks?.textContent).toMatch(
+      /caller supplies the request input/i,
+    );
+    expect(howItWorks?.textContent).toMatch(/first model pass drafts/i);
+    expect(howItWorks?.textContent).toMatch(/second model pass then refines/i);
+    expect(howItWorks?.textContent).toMatch(
+      /refined answer is the customer-facing result/i,
+    );
+    expect(howItWorks?.textContent).toMatch(/file-oriented markdown/i);
+    expect(howItWorks?.textContent).toMatch(
+      /provider, model, or effort setting/i,
+    );
+    expect(howItWorks?.textContent).toMatch(/two sequential passes/i);
+    expect(howItWorks?.textContent).toMatch(/draft, then refine/i);
+    expect(howItWorks?.textContent).toMatch(
+      /optionally different backends per pass/i,
+    );
+    expect(howItWorks?.textContent).not.toMatch(/invocationSignature/i);
+    expect(howItWorks?.textContent).not.toMatch(/--first-provider/i);
+    expect(howItWorks?.textContent).not.toMatch(/on this page/i);
+    expect(howItWorks?.textContent).not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });

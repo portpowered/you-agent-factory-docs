@@ -12,7 +12,7 @@
     },
     "howItWorks": {
       "title": "How It Works",
-      "body": "The caller supplies input; the first pass drafts an answer; the second pass refines that draft into the customer-facing result."
+      "body": "The caller supplies the request input. A first model pass drafts an answer from that input. A second model pass then refines the draft, still grounded in the same request, and that refined answer is the customer-facing result. When an output path is supplied, callers can treat the refined answer as file-oriented markdown at that path. Each pass can use its own provider, model, or effort setting, so draft and refine may run on different backends. A reader watching a fusion run should see two sequential passes — draft, then refine — and optionally different backends per pass."
     },
     "comparedToNearbyTechniques": {
       "title": "Compared To Nearby Techniques",
