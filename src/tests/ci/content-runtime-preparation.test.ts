@@ -13,6 +13,15 @@ import {
   getGeneratedDocsSourceRoot,
 } from "@/lib/content/content-paths";
 import {
+  CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH,
+  CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS,
+  clearContentRuntimeFingerprints,
+  computeContentRuntimeStepFingerprint,
+  evaluateContentRuntimeStepCache,
+  getContentRuntimeStepFingerprintInputs,
+  writeContentRuntimeStepFingerprint,
+} from "@/lib/content/content-runtime-fingerprints";
+import {
   CONTENT_RUNTIME_COMPLETENESS_CONTRACT,
   CONTENT_RUNTIME_PREPARATION_STEPS,
   type ContentRuntimeGitCommandResult,
@@ -53,6 +62,12 @@ function runPrepareContentRuntime(options?: { forceClean?: boolean }) {
     cwd: repoRoot,
     encoding: "utf8",
     env: process.env,
+  });
+}
+
+function clearContentRuntimeFingerprintStore() {
+  rmSync(join(repoRoot, CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH), {
+    force: true,
   });
 }
 
@@ -147,6 +162,7 @@ describe("content runtime preparation", () => {
     const defaultLifecycle: string[] = [];
     const defaultResult = runContentRuntimePreparation({
       cwd: repoRoot,
+      useFingerprints: false,
       log: () => {},
       logError: () => {},
       removeDirectory(path) {
@@ -167,6 +183,7 @@ describe("content runtime preparation", () => {
     expect(defaultResult).toEqual({
       ok: true,
       completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+      skippedSteps: [],
     });
     expect(defaultLifecycle).toEqual(
       CONTENT_RUNTIME_PREPARATION_STEPS.map(
@@ -178,6 +195,7 @@ describe("content runtime preparation", () => {
     const forceCleanResult = runContentRuntimePreparation({
       cwd: repoRoot,
       forceClean: true,
+      useFingerprints: false,
       log: () => {},
       logError: () => {},
       removeDirectory(path) {
@@ -198,6 +216,7 @@ describe("content runtime preparation", () => {
     expect(forceCleanResult).toEqual({
       ok: true,
       completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+      skippedSteps: [],
     });
     expect(forceCleanLifecycle[0]).toBe("remove .source");
     expect(forceCleanLifecycle.slice(1)).toEqual([
@@ -247,6 +266,7 @@ describe("content runtime preparation", () => {
     const commands: string[] = [];
     const result = runContentRuntimePreparation({
       cwd: repoRoot,
+      useFingerprints: false,
       log: () => {},
       logError: () => {},
       runCommand(command) {
@@ -261,6 +281,7 @@ describe("content runtime preparation", () => {
     expect(result).toEqual({
       ok: true,
       completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+      skippedSteps: [],
     });
     expect(commands).toEqual(
       CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => step.command.join(" ")),
@@ -271,6 +292,7 @@ describe("content runtime preparation", () => {
     const errors: string[] = [];
     const result = runContentRuntimePreparation({
       cwd: repoRoot,
+      useFingerprints: false,
       log: () => {},
       logError(message) {
         errors.push(message);
@@ -292,11 +314,259 @@ describe("content runtime preparation", () => {
     expect(result.completedSteps.map((step) => step.id)).toEqual([
       "shipped-localized-docs",
     ]);
+    expect(result.skippedSteps).toEqual([]);
     expect(result.failedStep.id).toBe("graph-registry-runtime");
     expect(result.commandResult.status).toBe(23);
     expect(errors).toEqual([
       expect.stringContaining('Failed step "graph-registry-runtime"'),
     ]);
+  });
+
+  test("declares fingerprint inputs for every contracted preparation step", () => {
+    expect(
+      CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS.map((entry) => entry.stepId),
+    ).toEqual(CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => step.id));
+    for (const step of CONTENT_RUNTIME_PREPARATION_STEPS) {
+      const inputs = getContentRuntimeStepFingerprintInputs(step.id);
+      expect(inputs).toBeDefined();
+      expect(inputs?.inputPaths.length).toBeGreaterThan(0);
+      expect(inputs?.generatorPaths.length).toBeGreaterThan(0);
+      expect(inputs?.schemaPaths.length).toBeGreaterThan(0);
+    }
+  });
+
+  test("fingerprint cache hits skip generation; input changes and force-clean regenerate", () => {
+    const step = CONTENT_RUNTIME_PREPARATION_STEPS[0];
+    const inputs = getContentRuntimeStepFingerprintInputs(step.id);
+    expect(inputs).toBeDefined();
+    if (!inputs) {
+      return;
+    }
+
+    const files = new Map<string, string>([
+      [
+        join(repoRoot, "src/content/docs/page.mdx"),
+        "---\nstatus: published\n---\n",
+      ],
+      [
+        join(repoRoot, "scripts/generate-shipped-localized-docs.ts"),
+        "generator-v1",
+      ],
+      [
+        join(repoRoot, "src/lib/content/shipped-localized-docs.server.ts"),
+        "server-v1",
+      ],
+      [join(repoRoot, "src/lib/content/shipped-localized-docs.ts"), "types-v1"],
+      [join(repoRoot, "src/lib/i18n/locale-routing.ts"), "locale-v1"],
+      [join(repoRoot, "src/lib/content/schemas.ts"), "schema-v1"],
+      [join(repoRoot, "src/lib/content/yaml-frontmatter.ts"), "yaml-v1"],
+      [join(repoRoot, step.outputPath), "generated-output"],
+    ]);
+    const directories = new Set<string>([
+      join(repoRoot, "src/content/docs"),
+      join(repoRoot, "src/lib/content/generated"),
+    ]);
+
+    const dependencies = {
+      fileExists(path: string) {
+        return files.has(path) || directories.has(path);
+      },
+      isDirectory(path: string) {
+        return directories.has(path);
+      },
+      listDirectoryNames(path: string) {
+        if (path === join(repoRoot, "src/content/docs")) {
+          return ["page.mdx"];
+        }
+        return [];
+      },
+      readFile(path: string) {
+        const contents = files.get(path);
+        if (contents === undefined) {
+          throw new Error(`missing file ${path}`);
+        }
+        return contents;
+      },
+      writeFile(path: string, contents: string) {
+        files.set(path, contents);
+      },
+      fileSize(path: string) {
+        return files.get(path)?.length ?? 0;
+      },
+    };
+
+    const fingerprint = computeContentRuntimeStepFingerprint(
+      repoRoot,
+      inputs,
+      dependencies,
+    );
+    writeContentRuntimeStepFingerprint(
+      repoRoot,
+      step.id,
+      fingerprint,
+      dependencies,
+    );
+
+    const hit = evaluateContentRuntimeStepCache({
+      cwd: repoRoot,
+      stepId: step.id,
+      outputPath: step.outputPath,
+      fingerprintInputs: inputs,
+      dependencies,
+    });
+    expect(hit).toEqual({
+      action: "skip",
+      reason: "cache-hit",
+      fingerprint,
+    });
+
+    const lifecycle: string[] = [];
+    const cacheHitResult = runContentRuntimePreparation({
+      cwd: repoRoot,
+      steps: [step],
+      log: () => {},
+      logError: () => {},
+      fingerprintDependencies: dependencies,
+      runCommand(command) {
+        lifecycle.push(`run ${command.join(" ")}`);
+        return { signal: null, status: 0 };
+      },
+    });
+    expect(cacheHitResult).toEqual({
+      ok: true,
+      completedSteps: [step],
+      skippedSteps: [step],
+    });
+    expect(lifecycle).toEqual([]);
+
+    files.set(
+      join(repoRoot, "scripts/generate-shipped-localized-docs.ts"),
+      "generator-v2",
+    );
+    const missLifecycle: string[] = [];
+    const missResult = runContentRuntimePreparation({
+      cwd: repoRoot,
+      steps: [step],
+      log: () => {},
+      logError: () => {},
+      fingerprintDependencies: dependencies,
+      runCommand(command) {
+        missLifecycle.push(`run ${command.join(" ")}`);
+        return { signal: null, status: 0 };
+      },
+    });
+    expect(missResult.ok).toBe(true);
+    expect(missResult.skippedSteps).toEqual([]);
+    expect(missLifecycle).toEqual([`run ${step.command.join(" ")}`]);
+
+    const forceCleanLifecycle: string[] = [];
+    const forceCleanResult = runContentRuntimePreparation({
+      cwd: repoRoot,
+      steps: [step],
+      forceClean: true,
+      log: () => {},
+      logError: () => {},
+      fingerprintDependencies: dependencies,
+      removeDirectory() {},
+      removeFile() {},
+      clearFingerprints(cwd, deps) {
+        clearContentRuntimeFingerprints(cwd, deps);
+        forceCleanLifecycle.push("clear-fingerprints");
+      },
+      runCommand(command) {
+        forceCleanLifecycle.push(`run ${command.join(" ")}`);
+        return { signal: null, status: 0 };
+      },
+    });
+    expect(forceCleanResult.ok).toBe(true);
+    expect(forceCleanResult.skippedSteps).toEqual([]);
+    expect(forceCleanLifecycle).toEqual([
+      "clear-fingerprints",
+      `run ${step.command.join(" ")}`,
+    ]);
+  });
+
+  test("missing output regenerates even when a stored fingerprint matches", () => {
+    const step = CONTENT_RUNTIME_PREPARATION_STEPS.find(
+      (candidate) => candidate.id === "graph-registry-runtime",
+    );
+    expect(step).toBeDefined();
+    if (!step) {
+      return;
+    }
+    const inputs = getContentRuntimeStepFingerprintInputs(step.id);
+    expect(inputs).toBeDefined();
+    if (!inputs) {
+      return;
+    }
+
+    const files = new Map<string, string>();
+    const directories = new Set<string>([
+      join(repoRoot, "src/content/registry/graphs"),
+      join(repoRoot, "src/lib/content/generated"),
+    ]);
+    for (const relativePath of [
+      ...inputs.inputPaths,
+      ...inputs.generatorPaths,
+      ...inputs.schemaPaths,
+    ]) {
+      if (relativePath.endsWith(".ts") || relativePath.endsWith(".tsx")) {
+        files.set(join(repoRoot, relativePath), `contents:${relativePath}`);
+      }
+    }
+
+    const dependencies = {
+      fileExists(path: string) {
+        return files.has(path) || directories.has(path);
+      },
+      isDirectory(path: string) {
+        return directories.has(path);
+      },
+      listDirectoryNames() {
+        return [];
+      },
+      readFile(path: string) {
+        const contents = files.get(path);
+        if (contents === undefined) {
+          throw new Error(`missing file ${path}`);
+        }
+        return contents;
+      },
+      writeFile(path: string, contents: string) {
+        files.set(path, contents);
+      },
+      fileSize(path: string) {
+        return files.get(path)?.length ?? 0;
+      },
+    };
+
+    const fingerprint = computeContentRuntimeStepFingerprint(
+      repoRoot,
+      inputs,
+      dependencies,
+    );
+    writeContentRuntimeStepFingerprint(
+      repoRoot,
+      step.id,
+      fingerprint,
+      dependencies,
+    );
+
+    const decision = evaluateContentRuntimeStepCache({
+      cwd: repoRoot,
+      stepId: step.id,
+      outputPath: step.outputPath,
+      fingerprintInputs: inputs,
+      dependencies,
+    });
+    expect(decision).toEqual({
+      action: "run",
+      reason: "missing-output",
+      fingerprint,
+    });
+    expect(
+      files.has(join(repoRoot, CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH)),
+    ).toBe(true);
   });
 
   test("completeness gate fails with targeted guidance when a required ignored runtime output is still missing after preparation", () => {
@@ -308,6 +578,7 @@ describe("content runtime preparation", () => {
         return {
           ok: true,
           completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+          skippedSteps: [],
         };
       },
       fileExists(path) {
@@ -358,6 +629,7 @@ describe("content runtime preparation", () => {
         return {
           ok: true,
           completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+          skippedSteps: [],
         };
       },
       fileExists() {
@@ -514,6 +786,7 @@ describe("content runtime preparation", () => {
       } else {
         writeFileSync(manifestPath, originalManifest, "utf8");
       }
+      clearContentRuntimeFingerprintStore();
     }
   });
 
@@ -528,6 +801,7 @@ describe("content runtime preparation", () => {
       : null;
 
     try {
+      clearContentRuntimeFingerprintStore();
       rmSync(manifestPath, { force: true });
       rmSync(pagePath, { force: true, recursive: true });
       writePublishedDocsPage(RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH, {
@@ -580,6 +854,7 @@ describe("content runtime preparation", () => {
       } else {
         writeFileSync(manifestPath, originalManifest, "utf8");
       }
+      clearContentRuntimeFingerprintStore();
     }
   });
 
@@ -599,6 +874,7 @@ describe("content runtime preparation", () => {
         : null;
 
       try {
+        clearContentRuntimeFingerprintStore();
         rmSync(pagePath, { force: true, recursive: true });
         writePublishedDocsPage(RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH, {
           kind: "glossary",
@@ -657,6 +933,7 @@ describe("content runtime preparation", () => {
         } else {
           writeFileSync(manifestPath, originalManifest, "utf8");
         }
+        clearContentRuntimeFingerprintStore();
       }
     },
     { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
@@ -834,6 +1111,39 @@ describe("content runtime preparation", () => {
     expect(generatedRuntimePath).toBe(GENERATED_REGISTRY_RUNTIME_RELATIVE_PATH);
     expect(checkIgnore.status).toBe(0);
   });
+
+  test(
+    "warm prepare:content-runtime skips fingerprint-fresh steps",
+    () => {
+      clearContentRuntimeFingerprintStore();
+      const cold = runPrepareContentRuntime();
+      const coldOutput = `${cold.stdout}\n${cold.stderr}`;
+      expect(cold.status).toBe(0);
+      expect(coldOutput).toContain("[content-runtime] Preparing");
+      expect(coldOutput).toContain("0 cache hits");
+
+      const warm = runPrepareContentRuntime();
+      const warmOutput = `${warm.stdout}\n${warm.stderr}`;
+      expect(warm.status).toBe(0);
+      expect(warmOutput).toContain("Cache hit for");
+      expect(warmOutput).toContain(
+        `${CONTENT_RUNTIME_PREPARATION_STEPS.length} cache hits`,
+      );
+      for (const step of CONTENT_RUNTIME_PREPARATION_STEPS) {
+        expect(warmOutput).toContain(
+          `Cache hit for ${step.id} -> ${step.outputPath}; skipping generation.`,
+        );
+      }
+
+      const forceClean = runPrepareContentRuntime({ forceClean: true });
+      const forceCleanOutput = `${forceClean.stdout}\n${forceClean.stderr}`;
+      expect(forceClean.status).toBe(0);
+      expect(forceCleanOutput).toContain("Force-clean:");
+      expect(forceCleanOutput).not.toContain("Cache hit for");
+      expect(forceCleanOutput).toContain("0 cache hits");
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS * 3 },
+  );
 
   test(
     "verify:content-runtime-completeness succeeds on the healthy repo checkout",

@@ -2,6 +2,13 @@ import { spawnSync } from "node:child_process";
 import { existsSync, rmSync } from "node:fs";
 import { join, relative } from "node:path";
 import { getGeneratedDocsSourceRoot } from "./content-paths";
+import {
+  type ContentRuntimeFingerprintDependencies,
+  type ContentRuntimeStepCacheDecision,
+  clearContentRuntimeFingerprints,
+  evaluateContentRuntimeStepCache,
+  writeContentRuntimeStepFingerprint,
+} from "./content-runtime-fingerprints";
 
 export type ContentRuntimePreparationStep = {
   id: string;
@@ -101,6 +108,11 @@ export type RunContentRuntimePreparationOptions = {
    * regenerating all steps. Default preparation preserves those artifacts.
    */
   forceClean?: boolean;
+  /**
+   * When false, every step runs without fingerprint cache checks.
+   * Defaults to true so warm prepares can skip unchanged generators.
+   */
+  useFingerprints?: boolean;
   log?: ContentRuntimePreparationLogger;
   logError?: ContentRuntimePreparationLogger;
   runCommand?: RunContentRuntimePreparationCommand;
@@ -110,6 +122,24 @@ export type RunContentRuntimePreparationOptions = {
   ) => void;
   removeFile?: (path: string, options: { force: boolean }) => void;
   steps?: readonly ContentRuntimePreparationStep[];
+  fingerprintDependencies?: ContentRuntimeFingerprintDependencies;
+  evaluateStepCache?: (options: {
+    cwd: string;
+    stepId: string;
+    outputPath: string;
+    forceClean?: boolean;
+    dependencies?: ContentRuntimeFingerprintDependencies;
+  }) => ContentRuntimeStepCacheDecision;
+  recordStepFingerprint?: (
+    cwd: string,
+    stepId: string,
+    fingerprint: string,
+    dependencies?: ContentRuntimeFingerprintDependencies,
+  ) => void;
+  clearFingerprints?: (
+    cwd: string,
+    dependencies?: ContentRuntimeFingerprintDependencies,
+  ) => void;
 };
 
 /**
@@ -145,10 +175,13 @@ export type ContentRuntimePreparationResult =
   | {
       ok: true;
       completedSteps: readonly ContentRuntimePreparationStep[];
+      /** Steps skipped because fingerprints matched and outputs were usable. */
+      skippedSteps: readonly ContentRuntimePreparationStep[];
     }
   | {
       ok: false;
       completedSteps: readonly ContentRuntimePreparationStep[];
+      skippedSteps: readonly ContentRuntimePreparationStep[];
       failedStep: ContentRuntimePreparationStep;
       commandResult: ContentRuntimePreparationCommandResult;
     };
@@ -453,7 +486,16 @@ export function runContentRuntimePreparation(
   const steps = options.steps ?? CONTENT_RUNTIME_PREPARATION_STEPS;
   const removeFile = options.removeFile ?? rmSync;
   const forceClean = options.forceClean === true;
+  const useFingerprints = options.useFingerprints !== false;
+  const fingerprintDependencies = options.fingerprintDependencies;
+  const evaluateStepCache =
+    options.evaluateStepCache ?? evaluateContentRuntimeStepCache;
+  const recordStepFingerprint =
+    options.recordStepFingerprint ?? writeContentRuntimeStepFingerprint;
+  const clearFingerprints =
+    options.clearFingerprints ?? clearContentRuntimeFingerprints;
   const completedSteps: ContentRuntimePreparationStep[] = [];
+  const skippedSteps: ContentRuntimePreparationStep[] = [];
 
   if (forceClean) {
     const removedSourceRoot = removeGeneratedDocsSource(
@@ -465,6 +507,9 @@ export function runContentRuntimePreparation(
       steps,
       removeFile,
     );
+    if (useFingerprints) {
+      clearFingerprints(options.cwd, fingerprintDependencies);
+    }
 
     log(
       `[content-runtime] Force-clean: removing generated Fumadocs bindings -> ${relative(options.cwd, removedSourceRoot) || ".source"}`,
@@ -481,8 +526,31 @@ export function runContentRuntimePreparation(
   }
 
   for (const step of steps) {
+    const cacheDecision = useFingerprints
+      ? evaluateStepCache({
+          cwd: options.cwd,
+          stepId: step.id,
+          outputPath: step.outputPath,
+          forceClean,
+          dependencies: fingerprintDependencies,
+        })
+      : ({
+          action: "run",
+          reason: "fingerprint-miss",
+          fingerprint: null,
+        } satisfies ContentRuntimeStepCacheDecision);
+
+    if (cacheDecision.action === "skip") {
+      log(
+        `[content-runtime] Cache hit for ${step.id} -> ${step.outputPath}; skipping generation.`,
+      );
+      skippedSteps.push(step);
+      completedSteps.push(step);
+      continue;
+    }
+
     log(
-      `[content-runtime] Preparing ${step.id} -> ${step.outputPath} (${formatCommand(step.command)})`,
+      `[content-runtime] Preparing ${step.id} -> ${step.outputPath} (${formatCommand(step.command)}) [${cacheDecision.reason}]`,
     );
     const commandResult = runCommand(step.command, {
       cwd: options.cwd,
@@ -502,21 +570,32 @@ export function runContentRuntimePreparation(
       return {
         ok: false,
         completedSteps,
+        skippedSteps,
         failedStep: step,
         commandResult,
       };
+    }
+
+    if (useFingerprints && cacheDecision.fingerprint) {
+      recordStepFingerprint(
+        options.cwd,
+        step.id,
+        cacheDecision.fingerprint,
+        fingerprintDependencies,
+      );
     }
 
     completedSteps.push(step);
   }
 
   log(
-    `[content-runtime] Prepared ${completedSteps.length} runtime steps successfully.`,
+    `[content-runtime] Prepared ${completedSteps.length} runtime steps successfully (${skippedSteps.length} cache hits).`,
   );
 
   return {
     ok: true,
     completedSteps,
+    skippedSteps,
   };
 }
 

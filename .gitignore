@@ -19,6 +19,7 @@ ui/coverage/
 
 # Derived by `bun run prepare:content-runtime`; do not commit regenerated manifest output.
 /src/lib/content/generated/published-docs-registry.generated.ts
+/src/lib/content/generated/.content-runtime-fingerprints.json
 
 # Local environment and OS files
 .env
