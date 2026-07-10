@@ -132,6 +132,17 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   glossary quick route), tags index lists only factory tags, tag landings
   keep factory destinations or factory empty next-steps, and empty
   section-index copy stays Atlas-free.
+* `src/lib/content/factory-breadcrumb-sidebar.ts`
+  Factory breadcrumb/sidebar contract: `FACTORY_NAV_COLLECTION_IDS`,
+  `FACTORY_SIDEBAR_FOLDER_LABELS`, retired Atlas nav collection/label
+  denylists, and fail-closed asserts used by `DocsPageBreadcrumb` /
+  `buildDocsSidebarSectionNodes` so chrome never advertises retired Atlas
+  collection crumbs or sidebar destinations.
+* `src/lib/content/factory-breadcrumb-sidebar.test.tsx`
+  Required-suite proof that breadcrumbs resolve Home → factory collection →
+  page for guides/concepts/techniques/documentation, sidebar folders stay
+  factory-only with published page links, and retired Atlas section slugs
+  never become collection crumbs.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
