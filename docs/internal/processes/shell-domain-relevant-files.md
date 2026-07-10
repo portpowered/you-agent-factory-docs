@@ -60,6 +60,13 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
   Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
   routes via shared `withBasePath`.
+* `src/lib/navigation/site-metadata-path.ts` / `site-metadata-path.test.ts`
+  Canonical/hreflang and public-asset absolute href helpers (`resolveSiteAbsoluteHref`,
+  `resolvePublicAssetHref`, `prefixMetadataAlternates`). Next Metadata does not
+  auto-apply `basePath` — use these instead of hardcoding root paths.
+* `src/lib/i18n/route-locale.ts` (`localizedRouteAlternates`)
+  Shared metadata alternates consumer; project-site export prefixes through
+  `resolveGitHubPagesBasePath` + `prefixMetadataAlternates`.
 
 ## AI shell parity regression
 

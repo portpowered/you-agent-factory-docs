@@ -2,7 +2,9 @@ import { describe, expect, test } from "bun:test";
 import {
   exportHtmlReferencesBasePathAssets,
   exportHtmlReferencesBasePathInternalLinks,
+  exportHtmlReferencesPrefixedMetadataHrefs,
   exportHtmlReferencesPrefixedNavigationHrefs,
+  exportHtmlReferencesPrefixedPublicAsset,
 } from "./verify-export-base-path";
 
 const PROJECT_SITE_BASE_PATH = "/you-agent-factory-docs";
@@ -90,6 +92,47 @@ describe("verify-export-base-path", () => {
         '<a href="/docs/guides"><a href="/blog">',
         PROJECT_SITE_BASE_PATH,
         ["/", "/docs/guides", "/blog"],
+      ),
+    ).toBe(false);
+  });
+
+  test("exportHtmlReferencesPrefixedMetadataHrefs requires prefixed canonical and hreflang", () => {
+    const html = [
+      '<link rel="canonical" href="/you-agent-factory-docs/docs/guides">',
+      '<link rel="alternate" href="/you-agent-factory-docs/vi/docs/guides" hreflang="vi">',
+      '<link rel="alternate" href="/you-agent-factory-docs/ja/docs/guides" hreflang="ja">',
+    ].join("");
+
+    expect(
+      exportHtmlReferencesPrefixedMetadataHrefs(
+        html,
+        PROJECT_SITE_BASE_PATH,
+        "/docs/guides",
+        ["/vi/docs/guides", "/ja/docs/guides"],
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedMetadataHrefs(
+        '<link rel="canonical" href="/docs/guides">',
+        PROJECT_SITE_BASE_PATH,
+        "/docs/guides",
+      ),
+    ).toBe(false);
+  });
+
+  test("exportHtmlReferencesPrefixedPublicAsset detects project-site asset URLs", () => {
+    expect(
+      exportHtmlReferencesPrefixedPublicAsset(
+        '<link rel="icon" href="/you-agent-factory-docs/favicon.ico">',
+        PROJECT_SITE_BASE_PATH,
+        "/favicon.ico",
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedPublicAsset(
+        '<img src="/images/diagram.png">',
+        PROJECT_SITE_BASE_PATH,
+        "/images/diagram.png",
       ),
     ).toBe(false);
   });
