@@ -133,6 +133,34 @@ The gate never passes via an unconditional skip/`exit 0`. Reproduce locally with
 make component-coverage
 ```
 
+## Story 006: reuse one trusted export for read-only probes
+
+| Path | Role |
+| --- | --- |
+| `src/lib/build/acquire-trusted-project-site-export.ts` | Shared acquisition: reuse matching project-site `out/` or build once; `allowBuild: false` for probe-only posture |
+| `src/lib/build/guard-pages-deployed-artifact.ts` | Pages HTTP guard: always acquires with `allowBuild: false`, then loopback-probes home / getting-started / comparing-agent-factories / search / CSS / JS |
+| `scripts/guard-pages-deployed-artifact.ts` / `make guard-pages-deployed-artifact` | Deploy-path CLI; prints `make guard-pages-deployed-artifact` on failure; never runs a second `build:export` |
+| `scripts/run-exported-site-budget.ts` / `make budget` | Measures existing `out/` only (no competing export) |
+| `src/lib/build/required-read-only-export-probes.ts` | Inventory of required read-only probes + forbidden rebuild markers + guard failure report helper |
+| `src/lib/build/required-read-only-export-probes.test.ts` | Build-contract proofs that probe CLIs never invoke `build:export` / `runStaticExportBuild`, and the guard acquires with `allowBuild: false` |
+| `src/lib/build/project-site-export-consumers.proof.test.ts` | Opt-in export proof (`test:website:export-consumers`) acquires via `acquireTrustedProjectSiteExport` so a matching `out/` is reused |
+| `src/lib/build/ensure-export-search-artifacts.ts` | **Deleted** — unused helper that called `runStaticExportBuild` directly and risked competing exports |
+
+Required read-only probes after one trusted `make build`:
+
+1. `make guard-pages-deployed-artifact` — reuse or fail closed (`allowBuild: false`)
+2. `make budget` — measure existing `out/` only
+
+Reproduce locally with:
+
+```sh
+make build
+make guard-pages-deployed-artifact
+make budget
+```
+
+Do not reintroduce helpers that call `runStaticExportBuild` from read-only probe CLIs. Prefer `acquireTrustedProjectSiteExport({ allowBuild: false })` for HTTP/HTML probes on an already-built artifact.
+
 ## Related
 
 - [ci-deploy-foundation-relevant-files.md](./ci-deploy-foundation-relevant-files.md) — Makefile / workflow contract map

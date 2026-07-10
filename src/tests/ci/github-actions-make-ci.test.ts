@@ -132,6 +132,9 @@ describe("GitHub Actions make ci", () => {
     expect(scripts["test:build-contract"]).toContain(
       "src/lib/build/exported-site-budget.test.ts",
     );
+    expect(scripts["test:build-contract"]).toContain(
+      "src/lib/build/required-read-only-export-probes.test.ts",
+    );
     expect(scripts["test:build-contract"]).not.toContain(
       "static-export-search-ux-integration.test.ts",
     );
