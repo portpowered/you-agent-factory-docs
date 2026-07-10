@@ -109,6 +109,30 @@ describe("CLI section index page render", () => {
     );
   });
 
+  it("renders the techniques index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.techniquesIndex;
+    const html = renderToStaticMarkup(await TechniquesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Classify-Execute");
+    expect(html).toContain("/docs/techniques/classify-execute");
+    expect(html).toContain(
+      "Classify an item into a known class, then run the specialist execute path for that class.",
+    );
+    expect(html).toContain("Workqueue Executor");
+    expect(html).toContain("/docs/techniques/workqueue-executor");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
   it("renders the concepts index with authored page entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = messages.conceptsIndex;
@@ -169,25 +193,6 @@ describe("CLI section index page render", () => {
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
   });
-
-  it("renders the techniques index with authored page entries", async () => {
-    const messages = await loadUiMessages();
-    const indexMessages = messages.techniquesIndex;
-    const html = renderToStaticMarkup(await TechniquesIndexPage());
-
-    expect(html).toContain(indexMessages.title);
-    expect(html).toContain(indexMessages.description);
-    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
-    expect(html).toContain("Workqueue Executor");
-    expect(html).toContain("/docs/techniques/workqueue-executor");
-    expect(html).not.toContain(indexMessages.emptyTitle);
-    expect(indexMessages.emptyTitle).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-    expect(indexMessages.emptyDescription).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-  });
 });
 
 describe("localized CLI section index page render", () => {
@@ -221,6 +226,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(
       `aria-label="${messages.techniquesIndex.listLabel}"`,
     );
+    expect(html).toContain("Classify-Execute");
+    expect(html).toContain("/ja/docs/techniques/classify-execute");
     expect(html).toContain("Workqueue Executor");
     expect(html).toContain("/ja/docs/techniques/workqueue-executor");
     expect(html).not.toContain(messages.techniquesIndex.emptyTitle);

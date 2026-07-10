@@ -41,9 +41,10 @@ needs page-local `<LocalizedLinkList>` today: `getRegistryRecordById()` /
 targets that exist in this worktree (validation still resolves them), and wire
 reviewer-visible discovery under `#related` with message-backed
 `LocalizedLinkList` hrefs — published siblings such as `/docs/concepts/task-queue`
-and `/docs/documentation/submitting-work`, plus planned technique hrefs for
-unpublished nearby techniques (planner-executor, classify-execute, ralph,
-writer-reviewer). Do not put unpublished technique registry ids in `relatedIds`.
+and `/docs/documentation/submitting-work`, plus published or planned technique
+hrefs for nearby techniques (for example classify-execute when published;
+planner-executor, ralph, writer-reviewer when still unpublished). Do not put
+unpublished technique registry ids in `relatedIds`.
 
 Optional technique teaching graphs: baseline `technique.assets.json` is empty.
 Atlas-era `<ConceptMap />` / `<ModuleGraph />` MDX tags are retired from
@@ -283,6 +284,28 @@ shared wiring is still missing. Publishing may trip
   (`src/tests/content/section-indexes.test.tsx` must move that section from
   empty-state assertions to authored-entry assertions once the first page
   ships; keep non-default locale empty-state checks until locale stubs exist)
+
+### First published techniques page
+
+`techniques` needs the same first-collection publish wiring as guides when the
+section still lacks local MDX loaders:
+
+- add `techniques` to `LOCAL_DOCS_SECTIONS` and `loadLocalDocsPage`
+- add `technique-page.ts` / `technique-page-load.ts` (mirror guide loaders;
+  `PUBLISHED_DOCS_SECTIONS` + `techniquePageHref` already exist)
+- remove section-root `.gitkeep` files under docs and registry techniques roots
+- flip `src/tests/content/section-indexes.test.tsx` default-locale techniques
+  index from empty-state to authored-entry assertions
+- keep non-default locale techniques indexes on empty-state until colocated
+  `messages/<locale>.json` stubs ship
+- colocate the page render proof under the page bundle
+  (`<slug>-page.test.tsx`, e.g. `workqueue-executor-page.test.tsx` /
+  `classify-execute-page.test.tsx`) so the proof stays page-owned
+- document the exception with `--exception-reason` on
+  `bun run audit:canonical-page-surface`
+
+Do not treat excluded `src/lib/docs/` empty-root suites as required CI for this
+lane; update them only when a throughput lane owns that shared surface.
 
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the
