@@ -211,6 +211,12 @@ where the visual is optional, stay prose-first with empty `assets.json` rather
 than editing the shared loader; see
 `tasks/ideas-to-review/content/concept-page-local-mdx-components-without-shared-loader-switch.md`.
 
+Required factory-ui teaching visuals on blog posts use the same pattern under
+the blog loader: colocate `page-mdx-components.tsx` next to `page.mdx` and add a
+static `import("@/content/blog/<slug>/page-mdx-components")` switch case in
+`blog-page-load.ts`. Keep the chart/graph component post-owned; do not register
+it in shared `blog-mdx-components.tsx` / `mdx-components.tsx`.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |

@@ -43,6 +43,12 @@ Work arrives or finishes upstream faster than the queue can hand out the next re
 
 Compare this with scarce workers: if the queue is empty and seats are full, concurrency is the limit. If seats are free and the backlog keeps growing, the queue path is the limit.
 
+## Where one stage caps the run
+
+The chart below compares stage capacity with end-to-end throughput for a teaching fixture. Queue, workers, shared I/O, and context still have spare capacity, but harness capacity is already saturated. Completions per interval stay at that scarce-stage limit until the harness path gains capacity.
+
+<BottlenecksStageThroughputChart />
+
 ## Scarce workers or workstations
 
 There are not enough agents, worktrees, or review seats to keep the pipeline moving. The queue may look calm while completed work per interval stays flat because concurrency is already maxed out. Adding queue capacity alone does not help when every seat is busy.
