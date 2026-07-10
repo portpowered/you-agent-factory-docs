@@ -35,7 +35,7 @@ Atlas skips, and restoring bounded required gates after rewrite foundation.
 | Layout shell files under `src/tests/layout/` (sidebar/TOC/index/home) | `make test-reader-facing` (+ `make test-integration` for sidebar/TOC/index) |
 | `src/tests/search/` (current factory paths), `src/tests/features/`, `src/tests/a11y/`, `src/lib/search/` (current factory paths) | `make test-reader-facing` / `bun run test:reader-facing` |
 | `src/lib/docs/`, `src/tests/docs/` | `make component-coverage` (story 005) |
-| `src/tests/ci/` | Build-contract for Pages/workflow pieces; remaining CI inventory in story 003 |
+| `src/tests/ci/` | `make test-ci-contract` (workflow/Makefile alignment); `make test-build-contract` for Pages/export pieces |
 
 ## Story 002: reader-facing search / layout / a11y required suite
 
@@ -55,6 +55,33 @@ Reproduce a failing reader-facing gate locally with:
 
 ```sh
 make test-reader-facing
+```
+
+## Story 003: CI, build, verify, and integration contracts
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/verify-contract-required-test-paths.ts` | Explicit bounded path list for current factory verifier/tooling contracts; empty list is a misconfiguration |
+| `src/lib/verify/verify-contract-required-test-paths.test.ts` | Proves the path list is non-empty, files exist, and Atlas built-app/built-route patterns stay out |
+| `scripts/run-website-verifier-tests.ts` | `make test-verify-contract` runner; fails closed when the required set is empty; prints `make test-verify-contract` on failure |
+| `src/lib/ci-contract-required-test-paths.ts` | Explicit bounded path list for workflow/Makefile alignment contracts (not the full heavy `src/tests/ci/` tree) |
+| `src/lib/ci-contract-required-test-paths.test.ts` | Proves the CI contract path list is non-empty and excludes fresh-checkout/content-runtime proofs |
+| `scripts/run-ci-contract-required-tests.ts` | Runner for `bun run test:ci-contract`; prints `make test-ci-contract` on failure |
+| `Makefile` `test-ci-contract` / `test-verify-contract` / `test-build-contract` / `test-integration` | Maintainer + CI entrypoints; included in `make ci` |
+| `.github/workflows/ci.yml` | Linear required path invokes the same story-003 suites after `make test` / reader-facing; runs `make build` before `make test-integration` |
+| `src/lib/verify/production-integration-test-paths.ts` | Post-build integration path set for live shell/lifecycle contracts |
+| `src/tests/ci/github-actions-make-ci.test.ts` | Asserts Makefile `ci:` order and that the workflow invokes the required make targets |
+| `src/tests/ci/github-actions-bun-install.test.ts` | Asserts pinned Bun + `make setup` (frozen lockfile) install posture |
+
+Do **not** restore the Atlas empty-shell skip that exited 0 when `websiteVerifierPatterns` was empty. Verify-contract must run the factory tooling list or fail closed.
+
+Reproduce failing gates locally with:
+
+```sh
+make test-ci-contract
+make test-verify-contract
+make test-build-contract
+make test-integration
 ```
 
 ## Related

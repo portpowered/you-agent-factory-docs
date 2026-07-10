@@ -11,6 +11,10 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Static analysis | `make check` | `typecheck` then `lint` (fails if either fails) |
 | Tests | `make test` | Existing website test entrypoint |
 | Reader-facing contracts | `make test-reader-facing` | Bounded search / layout shell / a11y suite (`bun run test:reader-facing`); included in `make ci` and `.github/workflows/ci.yml` |
+| CI alignment contracts | `make test-ci-contract` | Bounded workflow/Makefile alignment suite (`bun run test:ci-contract`); included in `make ci` and CI |
+| Verify-contract | `make test-verify-contract` | Factory verifier/tooling contracts; fails closed if the required path list is empty |
+| Build-contract | `make test-build-contract` | Build/export/base-path/Pages contracts |
+| Integration | `make test-integration` | Production-integration path set for live shell/lifecycle contracts (prefer after `make build`) |
 | Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=`, stage wall times, cache reasons, scale counts, and non-identifying machine metadata. Reference machine + recorded <=180s evidence live in `docs/operations.md`; print the gate with `bun run prove:static-export-optimization-evidence`. Not part of CI/Pages. |
 | Exported-site budget | `make budget` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
@@ -18,7 +22,7 @@ Pages deploy for the rewrite-era foundation pipeline.
 
 Workflows that call this contract:
 
-- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → build → budget → component-coverage
+- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → test-reader-facing → test-ci-contract → test-verify-contract → test-build-contract → build → test-integration → budget → component-coverage
 - `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/`
 
 Reproduce any failing workflow stage locally with the same `make <target>` after

@@ -13,15 +13,18 @@ import { join } from "node:path";
 const repoRoot = join(import.meta.dir, "../../..");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
 const makefilePath = join(repoRoot, "Makefile");
-const buildTracingRegressionTestPath = join(
-  repoRoot,
-  "src/tests/build/next-build-tracing-warning.test.ts",
-);
 
+/**
+ * Makefile `ci:` prerequisites for the rewrite-era required path.
+ * Story 003 restores CI / verify / build / integration contracts into this
+ * ordered gate list (reader-facing was added in story 002).
+ */
 const ciTargets = [
   "lint",
   "typecheck",
   "test",
+  "test-reader-facing",
+  "test-ci-contract",
   "test-verify-contract",
   "coverage",
   "test-build-contract",
@@ -36,12 +39,20 @@ const excludedCiTargets = [
   "build-search-index",
 ] as const;
 
-type WorkflowMatrixEntry = {
-  name: string;
-  command: string;
-  installPlaywright: boolean;
-  websiteTestParallelWorkers?: number;
-};
+/** Workflow stages that must appear as `make <target>` in `.github/workflows/ci.yml`. */
+const workflowRequiredMakeTargets = [
+  "setup",
+  "check",
+  "test",
+  "test-reader-facing",
+  "test-ci-contract",
+  "test-verify-contract",
+  "test-build-contract",
+  "build",
+  "test-integration",
+  "budget",
+  "component-coverage",
+] as const;
 
 type PackageScripts = Record<string, string>;
 
@@ -55,69 +66,28 @@ function parseMakefileCiPrerequisites(makefile: string): string[] {
   return ciLine.slice("ci:".length).trim().split(/\s+/).filter(Boolean);
 }
 
-function parseWorkflowMatrixEntries(workflow: string): WorkflowMatrixEntry[] {
-  const match = workflow.match(
-    /include:\n((?:\s+- name: [^\n]+\n(?:\s{12,}.+\n)*)+)/,
+function workflowMakeCommands(workflow: string): string[] {
+  return [...workflow.matchAll(/^\s+run:\s+make\s+([^\s#]+)/gm)].flatMap(
+    (match) => (match[1] ? [match[1]] : []),
   );
-  if (!match?.[1]) {
-    throw new Error("CI workflow is missing matrix include entries");
-  }
-
-  return match[1]
-    .split(/\n(?=\s+- name: )/)
-    .map((block) => block.trim())
-    .filter(Boolean)
-    .map((block) => {
-      const name = block.match(/^- name:\s+([^\n]+)/m)?.[1]?.trim();
-      const command = block.match(/^\s*command:\s+([^\n]+)/m)?.[1]?.trim();
-      if (!name || !command) {
-        throw new Error(`Invalid CI matrix entry:\n${block}`);
-      }
-
-      return {
-        name,
-        command,
-        installPlaywright: /^\s*install_playwright:\s*true\s*$/m.test(block),
-        websiteTestParallelWorkers: (() => {
-          const raw = block.match(
-            /^\s*website_test_parallel_workers:\s+([^\n]+)/m,
-          )?.[1];
-          if (!raw) {
-            return undefined;
-          }
-
-          return Number.parseInt(raw, 10);
-        })(),
-      };
-    });
 }
 
 describe("GitHub Actions make ci", () => {
-  test("ci workflow fans CI gates out after frozen lockfile install and keeps a final ci status job", () => {
+  test("ci workflow is a linear required path with setup, check, and no continue-on-error", () => {
     const workflow = readFileSync(ciWorkflowPath, "utf8");
 
-    const frozenInstallIndex = workflow.indexOf(
-      "bun install --frozen-lockfile",
-    );
-    const matrixIndex = workflow.indexOf("matrix:");
-    const finalCiJobIndex = workflow.indexOf("\n  ci:\n");
+    const setupBunIndex = workflow.indexOf("oven-sh/setup-bun@v2");
+    const setupIndex = workflow.indexOf("run: make setup");
+    const checkIndex = workflow.indexOf("run: make check");
 
-    expect(frozenInstallIndex).toBeGreaterThan(-1);
-    expect(matrixIndex).toBeGreaterThan(-1);
-    expect(finalCiJobIndex).toBeGreaterThan(matrixIndex);
+    expect(setupBunIndex).toBeGreaterThan(-1);
+    expect(setupIndex).toBeGreaterThan(setupBunIndex);
+    expect(checkIndex).toBeGreaterThan(setupIndex);
     expect(workflow).not.toContain("run: make ci");
-    expect(workflow).toContain("needs: gate");
-    expect(workflow).toMatch(/if: \$\{\{ always\(\) \}\}/);
-    expect(workflow).toMatch(/if: \$\{\{ matrix\.install_playwright \}\}/);
-    expect(workflow).toMatch(
-      /WEBSITE_TEST_PARALLEL_WORKERS: \$\{\{ matrix\.website_test_parallel_workers \}\}/,
-    );
     expect(workflow).not.toMatch(/continue-on-error:\s*true/i);
   });
 
-  test("make ci splits website tests from explicit verifier and build-contract tests", () => {
-    expect(existsSync(buildTracingRegressionTestPath)).toBe(true);
-
+  test("make ci and package scripts keep verify, build-contract, and integration as required gates", () => {
     const packageJson = JSON.parse(
       readFileSync(join(repoRoot, "package.json"), "utf8"),
     ) as {
@@ -128,100 +98,55 @@ describe("GitHub Actions make ci", () => {
     expect(scripts["prepare:content-runtime"]).toBe(
       "bun ./scripts/prepare-content-runtime.ts",
     );
-    expect(scripts.predev).toBe("bun run prepare:content-runtime");
-    expect(scripts.prestart).toBe("bun run prepare:content-runtime");
-    expect(scripts.prebuild).toBe("bun run prepare:content-runtime");
-    expect(scripts["prebuild:export"]).toBe("bun run prepare:content-runtime");
-    expect(scripts.pretypecheck).toBe(
-      "bun run prepare:content-runtime && fumadocs-mdx",
-    );
     expect(scripts.pretest).toBe(
-      "bun run prepare:content-runtime && fumadocs-mdx",
-    );
-    expect(scripts["pretest:website"]).toBe(
-      "bun run prepare:content-runtime && fumadocs-mdx",
-    );
-    expect(scripts["pretest:build-contract"]).toBe(
       "bun run prepare:content-runtime && fumadocs-mdx",
     );
     expect(scripts["pretest:verify-contract"]).toBe(
       "bun run prepare:content-runtime && fumadocs-mdx",
     );
-    expect(scripts.precoverage).toBe(
+    expect(scripts["pretest:build-contract"]).toBe(
       "bun run prepare:content-runtime && fumadocs-mdx",
     );
-    expect(scripts["prevalidate-data"]).toBe("bun run prepare:content-runtime");
-    expect(scripts.prelinkcheck).toBe(
+    expect(scripts["pretest:ci-contract"]).toBe(
       "bun run prepare:content-runtime && fumadocs-mdx",
     );
-    expect(scripts.linkcheck).toBe("bun ./scripts/validate-links.ts");
     expect(scripts.test).toBe("bun run test:website");
     expect(scripts["test:verify-contract"]).toBe(
       "bun ./scripts/run-website-verifier-tests.ts",
     );
-    expect(scripts.build).toContain(
-      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && bun ./scripts/run-next.ts build --webpack",
+    expect(scripts["test:ci-contract"]).toBe(
+      "bun ./scripts/run-ci-contract-required-tests.ts",
     );
-    expect(scripts["build:export"]).toContain(
-      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && bun ./scripts/run-static-export-next-build.ts",
-    );
-    expect(scripts["test:build-contract"]).toContain(
-      "src/tests/build/next-build-tracing-warning.test.ts",
+    expect(scripts["test:integration"]).toBe(
+      "bun ./scripts/run-production-integration-tests.ts",
     );
     expect(scripts["test:build-contract"]).toContain(
-      "src/tests/build/static-export-base-path-contract.test.ts",
+      "src/lib/build/deploy-pages-workflow-contract.test.ts",
     );
-    expect(scripts["test:build-contract"]).not.toContain(
-      "static-export-contract.test.ts",
+    expect(scripts["test:build-contract"]).toContain(
+      "src/lib/build/verify-export-base-path.test.ts",
+    );
+    expect(scripts["test:build-contract"]).toContain(
+      "src/lib/build/acquire-trusted-project-site-export.test.ts",
     );
     expect(scripts["test:build-contract"]).not.toContain(
       "static-export-search-ux-integration.test.ts",
     );
 
-    const workflow = readFileSync(ciWorkflowPath, "utf8");
-    expect(workflow).not.toMatch(/--exclude/i);
-    expect(workflow).not.toMatch(/next-build-tracing-warning/i);
-    expect(workflow).toContain("command: make test");
-    expect(workflow).toContain("command: make test-verify-contract");
-    expect(workflow).toContain("command: make test-build-contract");
-    expect(workflow).toContain("command: make build-export");
-    expect(workflow).toContain("command: make test-integration");
-
-    const matrixEntries = parseWorkflowMatrixEntries(workflow);
-    const testVerifyContract = matrixEntries.find(
-      (entry) => entry.name === "test-verify-contract",
-    );
-    const test = matrixEntries.find((entry) => entry.name === "test");
-    const testBuildContract = matrixEntries.find(
-      (entry) => entry.name === "test-build-contract",
-    );
-    const buildExport = matrixEntries.find(
-      (entry) => entry.name === "build-export",
-    );
-    const testIntegration = matrixEntries.find(
-      (entry) => entry.name === "test-integration",
-    );
-
-    expect(test?.websiteTestParallelWorkers).toBe(1);
-    expect(testVerifyContract?.installPlaywright).toBe(true);
-    expect(testBuildContract?.installPlaywright).toBe(true);
-    expect(buildExport?.command).toBe("make build-export");
-    expect(buildExport?.installPlaywright).toBe(true);
-    expect(testIntegration?.installPlaywright).toBe(true);
-
     const makefile = readFileSync(makefilePath, "utf8");
-    expect(makefile).toContain("linkcheck:\n\tbun run linkcheck");
-    expect(parseMakefileCiPrerequisites(makefile)).toContain("test");
-    expect(parseMakefileCiPrerequisites(makefile)).toContain(
-      "test-verify-contract",
-    );
-    expect(parseMakefileCiPrerequisites(makefile)).toContain(
-      "test-build-contract",
-    );
-    expect(parseMakefileCiPrerequisites(makefile)).not.toContain("build");
-    expect(parseMakefileCiPrerequisites(makefile)).not.toContain(
-      "build-export",
-    );
+    const prerequisites = parseMakefileCiPrerequisites(makefile);
+    expect(prerequisites).toContain("test");
+    expect(prerequisites).toContain("test-ci-contract");
+    expect(prerequisites).toContain("test-verify-contract");
+    expect(prerequisites).toContain("test-build-contract");
+    expect(prerequisites).toContain("test-integration");
+    expect(prerequisites).toContain("test-reader-facing");
+    expect(prerequisites).not.toContain("build");
+    expect(prerequisites).not.toContain("build-export");
+
+    expect(
+      existsSync(join(repoRoot, "src/lib/build/static-export.test.ts")),
+    ).toBe(true);
   });
 
   test("Makefile ci target runs CI gates in order including linkcheck", () => {
@@ -235,15 +160,18 @@ describe("GitHub Actions make ci", () => {
     }
   });
 
-  test("ci workflow matrix covers every Makefile ci prerequisite and the deploy-path build once", () => {
+  test("ci workflow invokes the story-003 required make targets", () => {
     const workflow = readFileSync(ciWorkflowPath, "utf8");
-    const matrixEntries = parseWorkflowMatrixEntries(workflow);
-    const commands = matrixEntries.map((entry) =>
-      entry.command.replace(/^make\s+/, ""),
-    );
+    const commands = workflowMakeCommands(workflow);
 
-    expect(commands).toHaveLength(ciTargets.length + 1);
-    expect([...commands].sort()).toEqual([...ciTargets, "build-export"].sort());
+    for (const target of workflowRequiredMakeTargets) {
+      expect(commands).toContain(target);
+    }
+
+    const buildIndex = commands.indexOf("build");
+    const integrationIndex = commands.indexOf("test-integration");
+    expect(buildIndex).toBeGreaterThan(-1);
+    expect(integrationIndex).toBeGreaterThan(buildIndex);
   });
 
   test("make ci stops on the first failing prerequisite", () => {

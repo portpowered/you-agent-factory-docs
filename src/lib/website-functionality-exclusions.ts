@@ -44,7 +44,7 @@ export const WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS: readonly WebsitePrefixExcl
       prefix: "src/lib/verify/",
       classification: "replaced",
       ownedBy: "make test-verify-contract / bun run test:verify-contract",
-      note: "Website verifier and production-server helpers run in the verify-contract / integration gates.",
+      note: "Factory verifier tooling contracts run in the verify-contract gate; production-server lifecycle soft-gates also re-run under make test-integration.",
     },
     {
       prefix: "src/lib/governance/",
@@ -55,8 +55,8 @@ export const WEBSITE_FUNCTIONALITY_PREFIX_EXCLUSIONS: readonly WebsitePrefixExcl
       prefix: "src/tests/ci/",
       classification: "replaced",
       ownedBy:
-        "make test-build-contract (Pages/workflow contracts); remaining CI inventory deferred to restore-required-tests-gates-003",
-      note: "CI workflow inventory and planner CI helpers stay out of the serialized website suite.",
+        "make test-ci-contract / bun run test:ci-contract (workflow/Makefile alignment); make test-build-contract (Pages/export contracts)",
+      note: "Bounded CI alignment contracts run in test-ci-contract; heavy fresh-checkout/planner suites stay out of plain make test.",
     },
     {
       prefix: "src/tests/discovery/",
