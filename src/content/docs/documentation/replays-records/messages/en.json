@@ -5,15 +5,15 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Replays / Records is the web reference for you-agent-factory record and replay behavior. Use it when you need to capture a live factory run as a replay-compatible artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again."
+      "body": "Replays / Records is the web reference for you-agent-factory record and replay behavior. Use it when you need to capture a live factory run as a replay-compatible artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again. It covers record mode versus replay mode, the default recording root, run-control flags, incompatible flag pairs, and copyable record and replay commands."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A recording is a replay-compatible artifact that stores observed runtime history from a live factory run. Record mode writes that history during a live run. Replay mode reads an existing artifact and reuses the saved history instead of starting live workers again. This page is the record and replay documentation surface; it is not factory-session pause, resume, or status inspection."
+      "body": "A recording is a replay-compatible artifact that stores observed runtime history from a live factory run. Record mode starts a live run and writes that history to an artifact — either the default generated path or an explicit --record path. Replay mode reads an existing artifact with --replay and reuses the saved history instead of dispatching live workers again. Normal live you run invocations record by default when you pass neither --record nor --replay. This page is the record and replay documentation surface; it is not factory-session pause, resume, or status inspection."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start from a normal live you run when you want a recording written by default. Use this page to learn how record and replay modes differ, where default artifacts land, which run-control flags change recording behavior, and how to replay a saved path later. Deeper flag tables, copyable examples, and retention guidance expand in the sections that follow as this reference is completed."
+      "body": "Start from a normal live you run when you want a recording written by default. On shutdown, the CLI prints Recording saved: <path> so you can find the artifact after a failure or an unexpected stop. Use the run-controls table below to skip recording, write to an explicit path, or replay a saved artifact. Do not combine the incompatible flag pairs on the same invocation."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -28,5 +28,28 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "defaultPathLabel": "Default recording root",
+    "defaultPathValue": "~/.you-agent-factory/recordings/YYYY-MM/YYYY-MM-DD/",
+    "shutdownSignalLabel": "Shutdown signal",
+    "shutdownSignalValue": "Recording saved: <path>",
+    "runControlsFlagHeader": "Flag",
+    "runControlsEffectHeader": "Effect",
+    "runControlsDefaultFlag": "(none on a live run)",
+    "runControlsDefaultEffect": "Record to the generated path under ~/.you-agent-factory/recordings/",
+    "runControlsNoRecordFlag": "--no-record",
+    "runControlsNoRecordEffect": "Skip the default recording for one invocation",
+    "runControlsRecordFlag": "--record <path>",
+    "runControlsRecordEffect": "Write the replay artifact to an explicit path you own",
+    "runControlsReplayFlag": "--replay <path>",
+    "runControlsReplayEffect": "Replay an existing artifact instead of starting a live run",
+    "incompatiblePairsLabel": "Incompatible combinations (rejected for the same invocation)",
+    "incompatibleRecordReplay": "--record with --replay",
+    "incompatibleNoRecordRecord": "--no-record with --record",
+    "recordExampleLabel": "Record to an explicit path",
+    "recordExampleCommand": "you run --dir ./factory --record ./docs/examples/sample-run.replay.json",
+    "replayExampleLabel": "Replay a saved artifact",
+    "replayExampleCommand": "you run --dir ./factory --replay ./docs/examples/sample-run.replay.json"
   }
 }
