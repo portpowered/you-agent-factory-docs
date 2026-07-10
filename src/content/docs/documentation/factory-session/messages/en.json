@@ -1,0 +1,32 @@
+{
+  "title": "Factory Session",
+  "description": "Discover, inspect, and control a live you-agent-factory Factory Session, including the bounded durable JavaScript validate → start → status/result path.",
+  "openingSummary": "A Factory Session is the canonical live runtime object on a running you-agent-factory host: the unit you discover, inspect, pause or resume, and address when submitting work.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers the you-agent-factory Factory Session: how to confirm a live session exists before submit or work commands, how to inspect one session’s identity and runtime state, how to apply pause and resume where supported, and the bounded durable JavaScript path from validate through start to status and result. Use it when you need the web Factory Session surface rather than a full CLI flag dump or a packaged docs sync."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A Factory Session is the live runtime unit on a running host. Session list confirms something is listening before you submit work. Each live session owns its own runtime state—loaded factory, work, and relative paths—so submit and work commands must target the intended session when more than one exists. Durable JavaScript runs are still Factory Sessions; dynamic workflow is shorthand for a JavaScript orchestrator-backed session, not a separate runtime object."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Confirm a live session with session list before submitting work. Inspect one session with session show when you need its identity and runtime projection. Apply pause or resume for that same session id when you need lifecycle control, then re-read status to confirm the outcome. For durable JavaScript work, validate source without creating a session, start one durable Factory Session, then read status and result for that same session id."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web Factory Session reference for discover, inspect, lifecycle, and durable overview. It is not a full CLI flag dump, not a sync of packaged you docs, not MCP host setup, not dynamic-workflow authoring, not submitting-work batch schema, and not the OpenAPI or API reference. Those surfaces stay on sibling documentation and guide pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

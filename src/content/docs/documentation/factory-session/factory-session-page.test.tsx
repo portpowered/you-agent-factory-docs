@@ -1,0 +1,97 @@
+/**
+ * Page-owned render proof for documentation/factory-session.
+ * Covers documentation shell and Factory Session identity for the scaffold
+ * story — not route inventories or shared helper contracts. Colocated under
+ * the page bundle so audit:canonical-page-surface stays within-budget for
+ * this ordinary documentation lane.
+ */
+import { afterEach, describe, expect, test } from "bun:test";
+import { cleanup, render, screen } from "@testing-library/react";
+import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import { source } from "@/lib/source";
+
+describe("factory-session documentation page", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  test("publishes /docs/documentation/factory-session as a documentation page", async () => {
+    const fumadocsPage = source.getPage(["documentation", "factory-session"]);
+    expect(fumadocsPage).toBeDefined();
+    expect(fumadocsPage?.url).toBe("/docs/documentation/factory-session");
+
+    const loadedPage = await loadLocalDocsPage({
+      section: "documentation",
+      slug: "factory-session",
+    });
+
+    expect(loadedPage.messages.title).toBe("Factory Session");
+    expect(loadedPage.messages.description).toContain("you-agent-factory");
+    expect(loadedPage.messages.description).toMatch(/Factory Session/i);
+    expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+
+    const whatItCovers = String(
+      loadedPage.messages.sections?.whatItCovers?.body ?? "",
+    );
+    const keyConcepts = String(
+      loadedPage.messages.sections?.keyConcepts?.body ?? "",
+    );
+    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
+    const limits = String(
+      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+    );
+    expect(whatItCovers).toMatch(/Factory Session/i);
+    expect(whatItCovers).toMatch(/live session/i);
+    expect(keyConcepts).toMatch(/live runtime unit/i);
+    expect(keyConcepts).toMatch(/Session list confirms/i);
+    expect(howToUse).toMatch(/session list/i);
+    expect(limits).toMatch(/web Factory Session reference/i);
+    expect(limits).toMatch(/not a full CLI flag dump/i);
+    expect(whatItCovers).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
+    );
+    expect(keyConcepts).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
+    );
+    expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "What It Covers" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+
+    const whatItCoversSection = document.getElementById("what-it-covers");
+    const keyConceptsSection = document.getElementById("key-concepts");
+    const howToUseSection = document.getElementById("how-to-use");
+    const limitsSection = document.getElementById("limits-and-assumptions");
+    expect(whatItCoversSection).toBeTruthy();
+    expect(keyConceptsSection).toBeTruthy();
+    expect(howToUseSection).toBeTruthy();
+    expect(limitsSection).toBeTruthy();
+    expect(whatItCoversSection?.textContent).toMatch(/Factory Session/i);
+    expect(keyConceptsSection?.textContent).toMatch(/live runtime unit/i);
+    expect(howToUseSection?.textContent).toMatch(/session list/i);
+    expect(limitsSection?.textContent).toMatch(
+      /web Factory Session reference/i,
+    );
+  });
+});

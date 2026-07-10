@@ -1,0 +1,14 @@
+{
+  "id": "documentation.factory-session",
+  "slug": "factory-session",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["factory session", "FactorySession", "sessions"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T06:58:40.000Z",
+  "updatedAt": "2026-07-10T06:58:40.000Z"
+}
