@@ -155,6 +155,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/ralph",
         "techniques/worker-adviser",
       ],
       "zh-CN": [
@@ -173,6 +174,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/ralph",
         "techniques/worker-adviser",
       ],
       vi: [
@@ -191,6 +193,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/ralph",
         "techniques/worker-adviser",
       ],
     });

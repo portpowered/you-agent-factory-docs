@@ -217,6 +217,11 @@ describe("CLI section index page render", () => {
     expect(html).toContain(
       "Classify an item into a known class, then run the specialist execute path for that class.",
     );
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
+    );
     expect(html).toContain("Worker-Adviser");
     expect(html).toContain("/docs/techniques/worker-adviser");
     expect(html).not.toContain(indexMessages.emptyTitle);
@@ -259,6 +264,11 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(messages.techniquesIndex.title);
     expect(html).toContain(
       `aria-label="${messages.techniquesIndex.listLabel}"`,
+    );
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/ja/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
     );
     expect(html).toContain("Worker-Adviser");
     expect(html).toContain("/ja/docs/techniques/worker-adviser");
