@@ -1,0 +1,14 @@
+{
+  "id": "technique.planner-executor",
+  "slug": "planner-executor",
+  "kind": "technique",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["planner executor", "plan then execute", "planner → executor"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T03:10:00.000Z",
+  "updatedAt": "2026-07-10T03:10:00.000Z"
+}

@@ -1,0 +1,64 @@
+---
+title: "Planner-Executor"
+description: "Planner-executor separates planning work into reviewable slices from executing those slices so independent factory streams can move in parallel."
+kind: "technique"
+registryId: "technique.planner-executor"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "planner executor"
+  - "plan then execute"
+  - "planner → executor"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="how-it-works" titleKey="sections.howItWorks.title">
+  <T k="sections.howItWorks.body" />
+</Section>
+
+<Section id="compared-to-nearby-techniques" titleKey="sections.comparedToNearbyTechniques.title">
+  <T k="sections.comparedToNearbyTechniques.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/concepts/checklist",
+        labelKey: "links.checklist",
+      },
+      {
+        href: "/docs/concepts/task-queue",
+        labelKey: "links.taskQueue",
+      },
+    ]}
+  />
+
+  <RelatedDocs registryId="technique.planner-executor" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="technique.planner-executor" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="technique.planner-executor" />
+</Section>
