@@ -6,6 +6,7 @@ import {
   buildBlogSearchDocuments,
 } from "./build-blog-search-document";
 import { enrichSearchDocument } from "./enrich-search-document";
+import { assertNoDeletedAiSearchDocuments } from "./factory-search-deleted-records";
 import { assertFactorySearchDocuments } from "./factory-search-kinds";
 import type { SearchDocument } from "./types";
 
@@ -17,6 +18,7 @@ export function buildSearchDocuments(
     enrichSearchDocument(buildBaseSearchDocument(page, indexes), indexes),
   );
   assertFactorySearchDocuments(documents);
+  assertNoDeletedAiSearchDocuments(documents);
   return documents;
 }
 
@@ -46,5 +48,6 @@ export function buildSearchDocumentsForLocale(
     ...buildBlogSearchDocuments(blogPosts, indexes),
   ];
   assertFactorySearchDocuments(documents);
+  assertNoDeletedAiSearchDocuments(documents);
   return documents;
 }

@@ -22,6 +22,18 @@ export {
   enrichSearchDocuments,
 } from "./enrich-search-document";
 export {
+  assertNoDeletedAiSearchDocuments,
+  assertNoDeletedAiSearchUrl,
+  DELETED_ATLAS_BLOG_URLS,
+  DELETED_ATLAS_RECORD_URLS,
+  type DeletedAtlasBlogUrl,
+  type DeletedAtlasRecordUrl,
+  isDeletedAiSearchUrl,
+  RETIRED_ATLAS_SEARCH_URL_PREFIXES,
+  type RetiredAtlasSearchUrlPrefix,
+  stripSearchUrlLocalePrefix,
+} from "./factory-search-deleted-records";
+export {
   assertFactorySearchDocuments,
   assertFactorySearchResultKind,
   FACTORY_SEARCH_RESULT_KINDS,

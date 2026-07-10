@@ -18,6 +18,15 @@ Use these files when changing search document construction, Orama indexing, or
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
   `Quickstart` → getting-started, `one-story-per-iteration` → ralph,
   `foundations` tag → `/blog/bottlenecks`) without needing Atlas tags.
+* `src/lib/search/factory-search-deleted-records.ts`
+  Deleted Atlas URL denylist (retired route prefixes + deleted blog URLs),
+  locale-aware matching, and fail-closed
+  `assertNoDeletedAiSearchDocuments` used by document builders.
+* `src/lib/content/factory-search-deleted-records.test.ts`
+  Required `bun run test` proof that public search documents, advanced
+  indexes, search-result meta, and queries such as `grouped-query attention`
+  / `GQA` / `evolution of diffusion` never surface deleted AI records while
+  `harness` / `ralph` stay searchable.
 * `src/lib/search/build-base-document.ts`
   Generic base search document construction from localized docs pages and
   registry fields. Produces page-derived fields with empty topology and
@@ -27,9 +36,10 @@ Use these files when changing search document construction, Orama indexing, or
   relationship terms, and legacy taxonomy compatibility onto base documents.
 * `src/lib/search/build-documents.ts`
   Search builder: composes base documents with generic `enrichSearchDocument`
-  only, then asserts every document kind is in `FACTORY_SEARCH_RESULT_KINDS`.
-  Model Atlas AI facet enrichment (`modelFamily`, `sourceType`,
-  `modalities`, `trainingRegimeIds`, `optimizes`) is no longer applied.
+  only, then asserts every document kind is in `FACTORY_SEARCH_RESULT_KINDS`
+  and every URL is outside the deleted Atlas inventory denylist. Model Atlas
+  AI facet enrichment (`modelFamily`, `sourceType`, `modalities`,
+  `trainingRegimeIds`, `optimizes`) is no longer applied.
 * `src/lib/search/to-advanced-index.ts`
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`
@@ -56,6 +66,19 @@ body phrases, and published factory tags. Prefer representative factory fixtures
 retired Atlas tags (`attention`, `model-family`, `inference`, `alignment`) for
 discovery success. Keep these proofs under `src/lib/content/` so `bun run test`
 runs them.
+
+### Pattern: deleted AI records stay out of search
+
+Public search documents, advanced indexes, search-result meta, and `/api/search`
+results must never include retired Atlas route families (`/docs/models`,
+`/docs/modules`, `/docs/papers`, `/docs/training`, `/docs/systems`) or deleted
+Atlas blog URLs (`evolution-of-diffusion`,
+`llms-no-longer-wholly-reliant-on-the-internet`,
+`roofline-throughput-explorer`). Keep the denylist + fail-closed assert in
+`factory-search-deleted-records.ts`, wire it through document builders, and
+prove with required-suite coverage under `src/lib/content/` using
+representative deleted-inventory queries (`grouped-query attention`, `GQA`,
+`evolution of diffusion`) plus live factory keepers (`harness`, `ralph`).
 
 ## Parity and regression tests
 
