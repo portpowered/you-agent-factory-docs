@@ -1,0 +1,17 @@
+{
+  "id": "concept.bottlenecks",
+  "slug": "bottlenecks",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["bottleneck", "factory bottleneck", "throughput bottleneck"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T02:35:28.000Z",
+  "updatedAt": "2026-07-10T02:35:28.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}

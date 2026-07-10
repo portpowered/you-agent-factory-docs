@@ -169,6 +169,8 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Bottlenecks");
+    expect(html).toContain("/docs/concepts/bottlenecks");
     expect(html).toContain("Checklist");
     expect(html).toContain("/docs/concepts/checklist");
     expect(html).toContain("Harness");

@@ -1,0 +1,36 @@
+{
+  "title": "Bottlenecks",
+  "description": "A factory bottleneck is the stage or resource that caps overall you-agent-factory throughput even when other stages have spare capacity.",
+  "openingSummary": "A factory bottleneck is the limiting stage or resource that caps overall you-agent-factory throughput even when other stages still have spare capacity.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A factory bottleneck is the stage or resource that limits overall you-agent-factory throughput even when other stages have spare capacity."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Finding the bottleneck focuses capacity and configuration changes on the stage that actually caps the factory, instead of adding agents where spare capacity already exists."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "Many workers sit idle while a saturated task queue holds ready work. The queue is the bottleneck: end-to-end throughput cannot rise until that waiting backlog drains faster."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "Factory bottlenecks show up in queues, worker or workstation capacity, harness and tool latency, shared resources, and token or context pressure during long-running runs."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A factory bottleneck is not a hardware-only roofline essay and not an SPC control chart. It names the limiting stage that caps factory throughput."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
