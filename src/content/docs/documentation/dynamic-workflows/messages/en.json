@@ -1,15 +1,15 @@
 {
   "title": "Dynamic Workflows",
-  "description": "Look up JavaScript dynamic-workflow API interface and configuration for you-agent-factory Factory Session work.",
-  "openingSummary": "A dynamic workflow is a JavaScript orchestrator-backed factory. The live run is a Factory Session you validate, start, and inspect through CLI, Model Context Protocol (MCP), and shared session surfaces.",
+  "description": "Define JavaScript dynamic workflows and look up Factory Session API interface and configuration for you-agent-factory.",
+  "openingSummary": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory. The live run is a Factory Session — the same durable runtime object used for every live orchestration — not a separate DynamicWorkflowRun type.",
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This reference covers JavaScript dynamic workflows in you-agent-factory: what a dynamic workflow is, the nouns a live run depends on, the callable API interface for validate and start work, and the configuration knobs for source resolution and MCP serve modes. Use it when you need the durable web contract for dynamic-workflow API and configuration without opening packaged CLI docs first."
+      "body": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory in you-agent-factory. Customers author JavaScript or TypeScript orchestrator source, then validate, start, and inspect the live run as a Factory Session. This documentation defines that idea in isolation, names the session nouns a live run depends on, and then documents the callable API interface and configuration knobs for source resolution and Model Context Protocol (MCP) serve modes."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory. The live run is a Factory Session — not a separate DynamicWorkflowRun runtime noun. A Factory owns the orchestrator-backed workflow. A FactoryOrchestrator drives that JavaScript factory. A FactorySession is the durable live run. A Dispatch is work the session sends. A FactoryArtifact is a durable output from the session. A FactoryEvent is a durable progress or outcome signal from the session."
+      "body": "A Factory is the authored orchestration definition a live session loads. A Factory Orchestrator (FactoryOrchestrator) is the orchestrator identity on that factory — Petri (PETRI) or JavaScript (JAVASCRIPT). Dynamic workflow is shorthand for the JavaScript kind. A Factory Session (FactorySession) is the canonical runtime instance for one live orchestration; a dynamic-workflow run is still that Factory Session with JavaScript orchestrator kind, not a separate DynamicWorkflowRun noun. A Dispatch is a shared execution request the session sends. A Factory Artifact (FactoryArtifact) is a session-owned durable output such as a result, finding, log, or checkpoint reference. A Factory Event (FactoryEvent) is a durable event-stream record for session lifecycle, dispatch lifecycle, progress, and artifacts."
     },
     "apiInterface": {
       "title": "API Interface",
@@ -21,11 +21,11 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Use this page as the durable lookup for dynamic-workflow API interface and configuration. Start from the definition and key concepts, then open the API interface and configuration sections when you need callable surfaces or serve-mode knobs."
+      "body": "Start from the definition and key concepts to learn what a dynamic workflow is and which Factory Session nouns it uses. Open the API interface section when you need callable CLI, Model Context Protocol (MCP), or session inspection surfaces. Open the configuration section when you need source-resolution or MCP serve-mode knobs."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web reference for JavaScript dynamic-workflow API interface and configuration. It is not the Cursor first-loop guide, not the full Model Context Protocol (MCP) host catalog deep dive beyond dynamic-workflow needs, and not the Petri factory.json topology overview owned by the configuration documentation page."
+      "body": "This documentation is a web reference for JavaScript dynamic-workflow API interface and configuration. It is not the Cursor first-loop guide, not the full Model Context Protocol (MCP) host catalog deep dive beyond dynamic-workflow needs, and not the Petri factory.json topology overview owned by the configuration documentation page."
     },
     "related": {
       "title": "Related To"
