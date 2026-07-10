@@ -3,11 +3,13 @@ import { spawnSync } from "node:child_process";
 import {
   existsSync,
   mkdirSync,
+  mkdtempSync,
   readFileSync,
   rmSync,
   statSync,
   writeFileSync,
 } from "node:fs";
+import { tmpdir } from "node:os";
 import { basename, join, relative } from "node:path";
 import {
   getGeneratedContentRuntimeRoot,
@@ -27,6 +29,8 @@ import {
   CONTENT_RUNTIME_PREPARATION_STEPS,
   type ContentRuntimeGitCommandResult,
   type ContentRuntimePreparationCommandResult,
+  type ContentRuntimePreparationStep,
+  planContentRuntimePreparationWaves,
   resolveContentRuntimeForceClean,
   runContentRuntimeCompletenessGate,
   runContentRuntimePreparation,
@@ -159,11 +163,12 @@ describe("content runtime preparation", () => {
     ]);
   });
 
-  test("default preparation preserves .source and ignored outputs; force-clean wipes them first", () => {
+  test("default preparation preserves .source and ignored outputs; force-clean wipes them first", async () => {
     const defaultLifecycle: string[] = [];
-    const defaultResult = runContentRuntimePreparation({
+    const defaultResult = await runContentRuntimePreparation({
       cwd: repoRoot,
       useFingerprints: false,
+      concurrency: false,
       log: () => {},
       logError: () => {},
       removeDirectory(path) {
@@ -193,10 +198,11 @@ describe("content runtime preparation", () => {
     );
 
     const forceCleanLifecycle: string[] = [];
-    const forceCleanResult = runContentRuntimePreparation({
+    const forceCleanResult = await runContentRuntimePreparation({
       cwd: repoRoot,
       forceClean: true,
       useFingerprints: false,
+      concurrency: false,
       log: () => {},
       logError: () => {},
       removeDirectory(path) {
@@ -263,11 +269,12 @@ describe("content runtime preparation", () => {
     ).toBe(false);
   });
 
-  test("runs required runtime generation steps in canonical order", () => {
+  test("runs required runtime generation steps in canonical order", async () => {
     const commands: string[] = [];
-    const result = runContentRuntimePreparation({
+    const result = await runContentRuntimePreparation({
       cwd: repoRoot,
       useFingerprints: false,
+      concurrency: false,
       log: () => {},
       logError: () => {},
       runCommand(command) {
@@ -289,11 +296,12 @@ describe("content runtime preparation", () => {
     );
   });
 
-  test("stops at the first failing step and reports the step id", () => {
+  test("stops at the first failing step and reports the step id", async () => {
     const errors: string[] = [];
-    const result = runContentRuntimePreparation({
+    const result = await runContentRuntimePreparation({
       cwd: repoRoot,
       useFingerprints: false,
+      concurrency: false,
       log: () => {},
       logError(message) {
         errors.push(message);
@@ -323,6 +331,208 @@ describe("content runtime preparation", () => {
     ]);
   });
 
+  test("plans one concurrent wave for contracted steps with disjoint outputs", () => {
+    const waves = planContentRuntimePreparationWaves(
+      CONTENT_RUNTIME_PREPARATION_STEPS,
+    );
+    expect(waves).toHaveLength(1);
+    expect(waves[0]?.map((step) => step.id)).toEqual(
+      CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => step.id),
+    );
+
+    const serialWaves = planContentRuntimePreparationWaves(
+      CONTENT_RUNTIME_PREPARATION_STEPS,
+      { concurrency: false },
+    );
+    expect(serialWaves).toEqual(
+      CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => [step]),
+    );
+  });
+
+  test("sequences steps that share an output path or declare dependsOn", () => {
+    const sharedOutputSteps: ContentRuntimePreparationStep[] = [
+      {
+        id: "first",
+        command: ["bun", "run", "generate:first"],
+        outputPath: "src/lib/content/generated/shared.generated.ts",
+        gitClassification: "ignored",
+        owningSurface: "shared output A",
+      },
+      {
+        id: "second",
+        command: ["bun", "run", "generate:second"],
+        outputPath: "src/lib/content/generated/shared.generated.ts",
+        gitClassification: "ignored",
+        owningSurface: "shared output B",
+      },
+      {
+        id: "third",
+        command: ["bun", "run", "generate:third"],
+        outputPath: "src/lib/content/generated/third.generated.ts",
+        gitClassification: "ignored",
+        owningSurface: "independent",
+      },
+    ];
+
+    expect(
+      planContentRuntimePreparationWaves(sharedOutputSteps).map((wave) =>
+        wave.map((step) => step.id),
+      ),
+    ).toEqual([["first", "third"], ["second"]]);
+
+    const dependentSteps: ContentRuntimePreparationStep[] = [
+      {
+        id: "producer",
+        command: ["bun", "run", "generate:producer"],
+        outputPath: "src/lib/content/generated/producer.generated.ts",
+        gitClassification: "ignored",
+        owningSurface: "producer",
+      },
+      {
+        id: "consumer",
+        command: ["bun", "run", "generate:consumer"],
+        outputPath: "src/lib/content/generated/consumer.generated.ts",
+        gitClassification: "ignored",
+        owningSurface: "consumer",
+        dependsOn: ["producer"],
+      },
+      {
+        id: "peer",
+        command: ["bun", "run", "generate:peer"],
+        outputPath: "src/lib/content/generated/peer.generated.ts",
+        gitClassification: "ignored",
+        owningSurface: "peer",
+      },
+    ];
+
+    expect(
+      planContentRuntimePreparationWaves(dependentSteps).map((wave) =>
+        wave.map((step) => step.id),
+      ),
+    ).toEqual([["producer", "peer"], ["consumer"]]);
+  });
+
+  test("runs disjoint generators concurrently when multiple steps must regenerate", async () => {
+    let running = 0;
+    let maxRunning = 0;
+    const result = await runContentRuntimePreparation({
+      cwd: repoRoot,
+      useFingerprints: false,
+      log: () => {},
+      logError: () => {},
+      async runCommand() {
+        running += 1;
+        maxRunning = Math.max(maxRunning, running);
+        await Bun.sleep(40);
+        running -= 1;
+        return {
+          signal: null,
+          status: 0,
+        } satisfies ContentRuntimePreparationCommandResult;
+      },
+    });
+
+    expect(result).toEqual({
+      ok: true,
+      completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+      skippedSteps: [],
+    });
+    expect(maxRunning).toBe(CONTENT_RUNTIME_PREPARATION_STEPS.length);
+  });
+
+  test("concurrent failure reports the earliest contract-order failed step", async () => {
+    const errors: string[] = [];
+    const result = await runContentRuntimePreparation({
+      cwd: repoRoot,
+      useFingerprints: false,
+      log: () => {},
+      logError(message) {
+        errors.push(message);
+      },
+      async runCommand(command) {
+        await Bun.sleep(
+          command[2] === "generate:graph-registry-runtime" ? 5 : 20,
+        );
+        return {
+          signal: null,
+          status: command[2] === "generate:graph-registry-runtime" ? 23 : 0,
+        } satisfies ContentRuntimePreparationCommandResult;
+      },
+    });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) {
+      return;
+    }
+
+    expect(result.failedStep.id).toBe("graph-registry-runtime");
+    expect(result.commandResult.status).toBe(23);
+    expect(result.completedSteps.map((step) => step.id)).toEqual([
+      "shipped-localized-docs",
+      "published-docs-registry",
+      "registry-runtime",
+      "table-registry-runtime",
+    ]);
+    expect(errors).toEqual([
+      expect.stringContaining('Failed step "graph-registry-runtime"'),
+    ]);
+  });
+
+  test("concurrent and serial preparation write identical output bytes", async () => {
+    const tempRoot = mkdtempSync(join(tmpdir(), "content-runtime-concurrent-"));
+    const steps: ContentRuntimePreparationStep[] =
+      CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => ({
+        ...step,
+        outputPath: join("generated", `${step.id}.ts`),
+      }));
+
+    const runMode = async (concurrency: boolean) => {
+      const modeRoot = join(tempRoot, concurrency ? "concurrent" : "serial");
+      mkdirSync(join(modeRoot, "generated"), { recursive: true });
+      const result = await runContentRuntimePreparation({
+        cwd: modeRoot,
+        steps,
+        useFingerprints: false,
+        concurrency,
+        log: () => {},
+        logError: () => {},
+        async runCommand(command) {
+          const step = steps.find(
+            (candidate) => candidate.command.join(" ") === command.join(" "),
+          );
+          expect(step).toBeDefined();
+          if (!step) {
+            return { signal: null, status: 1 };
+          }
+          await Bun.sleep(concurrency ? 15 : 0);
+          writeFileSync(
+            join(modeRoot, step.outputPath),
+            `export const id = ${JSON.stringify(step.id)};\n`,
+            "utf8",
+          );
+          return { signal: null, status: 0 };
+        },
+      });
+      expect(result.ok).toBe(true);
+      return Object.fromEntries(
+        steps.map((step) => [
+          step.id,
+          readFileSync(join(modeRoot, step.outputPath), "utf8"),
+        ]),
+      );
+    };
+
+    try {
+      const [serialOutputs, concurrentOutputs] = await Promise.all([
+        runMode(false),
+        runMode(true),
+      ]);
+      expect(concurrentOutputs).toEqual(serialOutputs);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
   test("declares fingerprint inputs for every contracted preparation step", () => {
     expect(
       CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS.map((entry) => entry.stepId),
@@ -336,7 +546,7 @@ describe("content runtime preparation", () => {
     }
   });
 
-  test("fingerprint cache hits skip generation; input changes and force-clean regenerate", () => {
+  test("fingerprint cache hits skip generation; input changes and force-clean regenerate", async () => {
     const step = CONTENT_RUNTIME_PREPARATION_STEPS[0];
     const inputs = getContentRuntimeStepFingerprintInputs(step.id);
     expect(inputs).toBeDefined();
@@ -422,7 +632,7 @@ describe("content runtime preparation", () => {
     });
 
     const lifecycle: string[] = [];
-    const cacheHitResult = runContentRuntimePreparation({
+    const cacheHitResult = await runContentRuntimePreparation({
       cwd: repoRoot,
       steps: [step],
       log: () => {},
@@ -445,7 +655,7 @@ describe("content runtime preparation", () => {
       "generator-v2",
     );
     const missLifecycle: string[] = [];
-    const missResult = runContentRuntimePreparation({
+    const missResult = await runContentRuntimePreparation({
       cwd: repoRoot,
       steps: [step],
       log: () => {},
@@ -461,7 +671,7 @@ describe("content runtime preparation", () => {
     expect(missLifecycle).toEqual([`run ${step.command.join(" ")}`]);
 
     const forceCleanLifecycle: string[] = [];
-    const forceCleanResult = runContentRuntimePreparation({
+    const forceCleanResult = await runContentRuntimePreparation({
       cwd: repoRoot,
       steps: [step],
       forceClean: true,
@@ -570,8 +780,8 @@ describe("content runtime preparation", () => {
     ).toBe(true);
   });
 
-  test("completeness gate fails with targeted guidance when a required ignored runtime output is still missing after preparation", () => {
-    const result = runContentRuntimeCompletenessGate({
+  test("completeness gate fails with targeted guidance when a required ignored runtime output is still missing after preparation", async () => {
+    const result = await runContentRuntimeCompletenessGate({
       cwd: repoRoot,
       log: () => {},
       logError: () => {},
@@ -621,8 +831,8 @@ describe("content runtime preparation", () => {
     expect(result.repairGuidance).toContain("leave it out of the commit");
   });
 
-  test("completeness gate fails when a required committed runtime output is classified as ignored", () => {
-    const result = runContentRuntimeCompletenessGate({
+  test("completeness gate fails when a required committed runtime output is classified as ignored", async () => {
+    const result = await runContentRuntimeCompletenessGate({
       cwd: repoRoot,
       log: () => {},
       logError: () => {},

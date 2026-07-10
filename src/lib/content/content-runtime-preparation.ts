@@ -1,4 +1,4 @@
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { existsSync, rmSync } from "node:fs";
 import { join, relative } from "node:path";
 import { getGeneratedDocsSourceRoot } from "./content-paths";
@@ -16,6 +16,12 @@ export type ContentRuntimePreparationStep = {
   outputPath: string;
   gitClassification: "committed" | "ignored";
   owningSurface: string;
+  /**
+   * Other preparation step ids that must finish before this step may start.
+   * Empty/omitted means the step only needs a disjoint output path to share a
+   * concurrent wave with peers.
+   */
+  dependsOn?: readonly string[];
 };
 
 export type ContentRuntimePreparationCommandResult = {
@@ -35,7 +41,9 @@ export type RunContentRuntimePreparationCommand = (
   options: {
     cwd: string;
   },
-) => ContentRuntimePreparationCommandResult;
+) =>
+  | ContentRuntimePreparationCommandResult
+  | Promise<ContentRuntimePreparationCommandResult>;
 
 export type RunContentRuntimeGitCommand = (
   command: readonly [string, ...string[]],
@@ -113,6 +121,12 @@ export type RunContentRuntimePreparationOptions = {
    * Defaults to true so warm prepares can skip unchanged generators.
    */
   useFingerprints?: boolean;
+  /**
+   * When true (default), independent steps with disjoint outputs and satisfied
+   * `dependsOn` edges run concurrently in waves. Set false to force serial
+   * execution (byte-equivalence proofs / debugging).
+   */
+  concurrency?: boolean;
   log?: ContentRuntimePreparationLogger;
   logError?: ContentRuntimePreparationLogger;
   runCommand?: RunContentRuntimePreparationCommand;
@@ -221,7 +235,9 @@ export type RunContentRuntimeCompletenessGateOptions = {
   logError?: ContentRuntimePreparationLogger;
   runPreparation?: (
     options: RunContentRuntimePreparationOptions,
-  ) => ContentRuntimePreparationResult;
+  ) =>
+    | ContentRuntimePreparationResult
+    | Promise<ContentRuntimePreparationResult>;
   runGitCommand?: RunContentRuntimeGitCommand;
   steps?: readonly ContentRuntimePreparationStep[];
   fileExists?: (path: string) => boolean;
@@ -303,6 +319,111 @@ function runCommandSync(
     signal: result.signal,
     status: result.status,
   };
+}
+
+function runCommandAsync(
+  command: readonly [string, ...string[]],
+  options: {
+    cwd: string;
+  },
+): Promise<ContentRuntimePreparationCommandResult> {
+  return new Promise((resolve) => {
+    const [binary, ...args] = command;
+    const child = spawn(binary, args, {
+      cwd: options.cwd,
+      env: process.env,
+      stdio: "inherit",
+    });
+
+    child.on("error", (error) => {
+      resolve({
+        error: error instanceof Error ? error : new Error(String(error)),
+        signal: null,
+        status: null,
+      });
+    });
+
+    child.on("close", (status, signal) => {
+      resolve({
+        signal,
+        status,
+      });
+    });
+  });
+}
+
+/**
+ * Partition preparation steps into concurrent waves.
+ *
+ * A step may share a wave with peers only when:
+ * - every `dependsOn` edge is satisfied by an earlier wave (or by
+ *   `alreadyCompletedIds`, e.g. fingerprint cache hits), and
+ * - its `outputPath` does not collide with any other step already in the wave.
+ *
+ * Steps are considered in contract order so wave membership stays deterministic.
+ * When `concurrency` is false, each runnable step becomes its own wave (serial).
+ */
+export function planContentRuntimePreparationWaves(
+  steps: readonly ContentRuntimePreparationStep[],
+  options: {
+    concurrency?: boolean;
+    alreadyCompletedIds?: ReadonlySet<string>;
+  } = {},
+): ContentRuntimePreparationStep[][] {
+  if (options.concurrency === false) {
+    return steps.map((step) => [step]);
+  }
+
+  const waves: ContentRuntimePreparationStep[][] = [];
+  const completedIds = new Set<string>(options.alreadyCompletedIds ?? []);
+
+  for (const step of steps) {
+    const dependencies = step.dependsOn ?? [];
+    const dependenciesSatisfied = dependencies.every((dependencyId) =>
+      completedIds.has(dependencyId),
+    );
+    if (!dependenciesSatisfied) {
+      throw new Error(
+        `Content-runtime step "${step.id}" depends on [${dependencies.join(", ")}] but those steps are missing or out of order in the preparation contract.`,
+      );
+    }
+
+    let placed = false;
+    for (const wave of waves) {
+      const waveDependsOnCurrent = wave.some((candidate) =>
+        (candidate.dependsOn ?? []).includes(step.id),
+      );
+      if (waveDependsOnCurrent) {
+        continue;
+      }
+
+      const dependsOnWaveMate = dependencies.some((dependencyId) =>
+        wave.some((candidate) => candidate.id === dependencyId),
+      );
+      if (dependsOnWaveMate) {
+        continue;
+      }
+
+      const outputCollides = wave.some(
+        (candidate) => candidate.outputPath === step.outputPath,
+      );
+      if (outputCollides) {
+        continue;
+      }
+
+      wave.push(step);
+      placed = true;
+      break;
+    }
+
+    if (!placed) {
+      waves.push([step]);
+    }
+
+    completedIds.add(step.id);
+  }
+
+  return waves;
 }
 
 function runGitCommandSync(
@@ -476,10 +597,13 @@ export function verifyContentRuntimeCompleteness(options: {
   };
 }
 
-export function runContentRuntimePreparation(
+export async function runContentRuntimePreparation(
   options: RunContentRuntimePreparationOptions,
-): ContentRuntimePreparationResult {
-  const runCommand = options.runCommand ?? runCommandSync;
+): Promise<ContentRuntimePreparationResult> {
+  const concurrencyEnabled = options.concurrency !== false;
+  const runCommand =
+    options.runCommand ??
+    (concurrencyEnabled ? runCommandAsync : runCommandSync);
   const log = options.log ?? console.log;
   const logError = options.logError ?? console.error;
   const removeDirectory = options.removeDirectory ?? rmSync;
@@ -496,6 +620,8 @@ export function runContentRuntimePreparation(
     options.clearFingerprints ?? clearContentRuntimeFingerprints;
   const completedSteps: ContentRuntimePreparationStep[] = [];
   const skippedSteps: ContentRuntimePreparationStep[] = [];
+  const skippedStepIds = new Set<string>();
+  const succeededStepIds = new Set<string>();
 
   if (forceClean) {
     const removedSourceRoot = removeGeneratedDocsSource(
@@ -525,6 +651,13 @@ export function runContentRuntimePreparation(
     );
   }
 
+  type StepExecutionPlan = {
+    step: ContentRuntimePreparationStep;
+    cacheDecision: ContentRuntimeStepCacheDecision;
+  };
+
+  const runnablePlans: StepExecutionPlan[] = [];
+
   for (const step of steps) {
     const cacheDecision = useFingerprints
       ? evaluateStepCache({
@@ -544,50 +677,123 @@ export function runContentRuntimePreparation(
       log(
         `[content-runtime] Cache hit for ${step.id} -> ${step.outputPath}; skipping generation.`,
       );
-      skippedSteps.push(step);
-      completedSteps.push(step);
+      skippedStepIds.add(step.id);
+      succeededStepIds.add(step.id);
       continue;
     }
 
-    log(
-      `[content-runtime] Preparing ${step.id} -> ${step.outputPath} (${formatCommand(step.command)}) [${cacheDecision.reason}]`,
-    );
-    const commandResult = runCommand(step.command, {
-      cwd: options.cwd,
-    });
+    runnablePlans.push({ step, cacheDecision });
+  }
 
-    if (commandResult.status !== 0) {
+  const waves = planContentRuntimePreparationWaves(
+    runnablePlans.map((plan) => plan.step),
+    {
+      concurrency: concurrencyEnabled,
+      alreadyCompletedIds: succeededStepIds,
+    },
+  );
+  const planByStepId = new Map(
+    runnablePlans.map((plan) => [plan.step.id, plan] as const),
+  );
+
+  if (concurrencyEnabled && waves.some((wave) => wave.length > 1)) {
+    log(
+      `[content-runtime] Running ${runnablePlans.length} generator step(s) across ${waves.length} concurrent wave(s).`,
+    );
+  }
+
+  const buildOrderedCompletedSteps = () => {
+    skippedSteps.length = 0;
+    completedSteps.length = 0;
+    for (const step of steps) {
+      if (skippedStepIds.has(step.id)) {
+        skippedSteps.push(step);
+      }
+      if (succeededStepIds.has(step.id)) {
+        completedSteps.push(step);
+      }
+    }
+  };
+
+  for (const wave of waves) {
+    if (wave.length > 1) {
+      log(
+        `[content-runtime] Concurrent wave (${wave.length}): ${wave.map((step) => step.id).join(", ")}`,
+      );
+    }
+
+    const waveResults = await Promise.all(
+      wave.map(async (step) => {
+        const plan = planByStepId.get(step.id);
+        if (!plan) {
+          throw new Error(
+            `Missing cache decision for content-runtime step "${step.id}".`,
+          );
+        }
+
+        log(
+          `[content-runtime] Preparing ${step.id} -> ${step.outputPath} (${formatCommand(step.command)}) [${plan.cacheDecision.reason}]`,
+        );
+        const commandResult = await runCommand(step.command, {
+          cwd: options.cwd,
+        });
+
+        return {
+          step,
+          cacheDecision: plan.cacheDecision,
+          commandResult,
+        };
+      }),
+    );
+
+    // Prefer the earliest contract-order failure when a concurrent wave has
+    // more than one failing command.
+    const orderedFailure = waveResults.find(
+      (result) => result.commandResult.status !== 0,
+    );
+
+    // Record fingerprints for successes before surfacing a wave failure so a
+    // concurrent sibling that finished cleanly does not lose its cache entry.
+    for (const result of waveResults) {
+      if (result.commandResult.status !== 0) {
+        continue;
+      }
+
+      if (useFingerprints && result.cacheDecision.fingerprint) {
+        recordStepFingerprint(
+          options.cwd,
+          result.step.id,
+          result.cacheDecision.fingerprint,
+          fingerprintDependencies,
+        );
+      }
+
+      succeededStepIds.add(result.step.id);
+    }
+
+    if (orderedFailure) {
       const failureReason =
-        commandResult.status === null
-          ? commandResult.signal
-            ? `signal ${commandResult.signal}`
-            : (commandResult.error?.message ?? "unknown failure")
-          : `exit status ${commandResult.status}`;
+        orderedFailure.commandResult.status === null
+          ? orderedFailure.commandResult.signal
+            ? `signal ${orderedFailure.commandResult.signal}`
+            : (orderedFailure.commandResult.error?.message ?? "unknown failure")
+          : `exit status ${orderedFailure.commandResult.status}`;
       logError(
-        `[content-runtime] Failed step "${step.id}" while running ${formatCommand(step.command)} (${failureReason}).`,
+        `[content-runtime] Failed step "${orderedFailure.step.id}" while running ${formatCommand(orderedFailure.step.command)} (${failureReason}).`,
       );
 
+      buildOrderedCompletedSteps();
       return {
         ok: false,
         completedSteps,
         skippedSteps,
-        failedStep: step,
-        commandResult,
+        failedStep: orderedFailure.step,
+        commandResult: orderedFailure.commandResult,
       };
     }
-
-    if (useFingerprints && cacheDecision.fingerprint) {
-      recordStepFingerprint(
-        options.cwd,
-        step.id,
-        cacheDecision.fingerprint,
-        fingerprintDependencies,
-      );
-    }
-
-    completedSteps.push(step);
   }
 
+  buildOrderedCompletedSteps();
   log(
     `[content-runtime] Prepared ${completedSteps.length} runtime steps successfully (${skippedSteps.length} cache hits).`,
   );
@@ -599,13 +805,13 @@ export function runContentRuntimePreparation(
   };
 }
 
-export function runContentRuntimeCompletenessGate(
+export async function runContentRuntimeCompletenessGate(
   options: RunContentRuntimeCompletenessGateOptions,
-): ContentRuntimeCompletenessGateResult {
+): Promise<ContentRuntimeCompletenessGateResult> {
   const runPreparation = options.runPreparation ?? runContentRuntimePreparation;
   const log = options.log ?? console.log;
   const steps = options.steps ?? CONTENT_RUNTIME_PREPARATION_STEPS;
-  const preparationResult = runPreparation({
+  const preparationResult = await runPreparation({
     cwd: options.cwd,
     forceClean: options.forceClean,
     log: options.log,

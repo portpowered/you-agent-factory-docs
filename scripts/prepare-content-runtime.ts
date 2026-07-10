@@ -9,7 +9,7 @@ const forceClean = resolveContentRuntimeForceClean(
   process.env,
   process.argv.slice(2),
 );
-const result = runContentRuntimePreparation({
+const result = await runContentRuntimePreparation({
   cwd: repoRoot,
   forceClean,
 });
