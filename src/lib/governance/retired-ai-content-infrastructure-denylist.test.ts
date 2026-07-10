@@ -40,6 +40,18 @@ describe("retired-ai-content-infrastructure-denylist", () => {
     expect(findings[0]?.matchedText).toBe("src/features/ai");
   });
 
+  test("fails closed when src/lib/content/__generate-fixtures__ is reintroduced", () => {
+    const findings = auditRetiredOwnedPaths([
+      { path: "src/lib/content/__generate-fixtures__", exists: true },
+    ]);
+
+    expect(findings).toHaveLength(1);
+    expect(findings[0]?.kind).toBe("retired-owned-path");
+    expect(findings[0]?.matchedText).toBe(
+      "src/lib/content/__generate-fixtures__",
+    );
+  });
+
   test("fails when a live kind inventory includes retired Atlas kinds", () => {
     const findings = auditRetiredKindInventory("fixture-kinds", [
       "guide",

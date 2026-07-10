@@ -31,6 +31,13 @@ describe("localized route metadata alternates", () => {
     expect(homeMetadata.alternates?.languages?.ja).toBe("/ja");
     expect(homeMetadata.alternates?.languages?.["zh-CN"]).toBe("/zh-CN");
 
+    expect(searchMetadata.title).toBe("Search");
+    expect(String(searchMetadata.description)).toMatch(/you-agent-factory/i);
+    expect(String(searchMetadata.description)).not.toMatch(/Model Atlas/i);
+    expect(String(searchMetadata.description)).not.toMatch(
+      /\batlas\b|Browse the Atlas/i,
+    );
+
     expect(searchMetadata.alternates?.canonical).toBe("/search");
     expect(searchMetadata.alternates?.languages?.en).toBe("/search");
     expect(searchMetadata.alternates?.languages?.vi).toBe("/vi/search");
@@ -136,7 +143,11 @@ describe("localized route metadata alternates", () => {
     expect(jaSearchMetadata.description).toBe(
       "タイトル、別名、タグで you-agent-factory のドキュメントを検索します。検索コントロールを使ってガイド、概念、技法、ドキュメント、用語集の項目へ移動できます。",
     );
+    expect(String(jaSearchMetadata.description)).toMatch(/you-agent-factory/i);
     expect(String(jaSearchMetadata.description)).not.toMatch(/Model Atlas/i);
+    expect(String(jaSearchMetadata.description)).not.toMatch(
+      /アトラス|\batlas\b/i,
+    );
 
     expect(jaArchitectureMetadata.title).toBe("アーキテクチャ");
     expect(jaGlossaryMetadata.title).toBe("用語集");

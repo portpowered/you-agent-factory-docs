@@ -176,6 +176,13 @@ describe("loadUiMessages shell keys", () => {
       expect(messages.searchEntry.description).toMatch(
         /you-agent-factory|ガイド|指南|hướng dẫn|guides|concepts|techniques|documentation|glossary/i,
       );
+      expect(messages.searchEntry.emptySuggestionTerm).not.toMatch(
+        /GQA|attention/i,
+      );
+      expect(messages.searchEntry.emptySuggestionLinkLabel).not.toMatch(
+        /GQA|attention|アテンション|注意力/i,
+      );
+      expect(messages.searchEntry.emptySuggestionTerm).toBe("harness");
     }
   });
 

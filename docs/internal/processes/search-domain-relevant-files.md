@@ -76,11 +76,15 @@ Use these files when changing search document construction, Orama indexing, or
   Header/dialog search chrome and public search metadata
   (`search.placeholder`, `search.idle`, `searchEntry.description`) must
   identify you-agent-factory docs (or neutral CLI docs search), not Model
-  Atlas. Prove via `loadUiMessages` / route metadata assertions.
+  Atlas. Prove via `loadUiMessages` / route metadata assertions
+  (`src/tests/content/ui-messages.test.ts`,
+  `src/tests/features/search-ui.test.ts`,
+  `src/tests/layout/localized-route-metadata.test.ts`).
   Search empty-state suggestions use `searchEntry.emptySuggestionTerm` +
   `emptySuggestionLinkLabel` pointing at live factory docs (for example
   term `harness` and link `/docs/techniques/ralph`), not Atlas GQA /
-  attention tag handoffs. `SearchPagePanel` owns that wiring.
+  attention tag handoffs. `SearchPagePanel` owns that wiring; lock with
+  message assertions plus `search-page-panel` empty-state coverage.
 * `src/components/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).

@@ -24,7 +24,7 @@ route/kind product teaching fixtures).
 | Path | Role |
 | --- | --- |
 | `src/lib/governance/retired-ai-content-infrastructure-denylist.ts` | Pure audit helpers + live collector |
-| `src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts` | Fixture proofs (owned-path / kind / route reintroduction fail; factory provider exception passes; live tree passes) |
+| `src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts` | Fixture proofs (owned-path / kind / route reintroduction fail; `__generate-fixtures__` reintroduction fails closed; factory provider exception passes; live tree passes) |
 | `scripts/audit-retired-ai-content-infrastructure.ts` | CLI entrypoint |
 | `package.json` → `audit:retired-ai-content-infrastructure` | Maintainer script |
 
