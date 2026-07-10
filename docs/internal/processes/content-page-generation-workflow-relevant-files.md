@@ -42,9 +42,9 @@ targets that exist in this worktree (validation still resolves them), and wire
 reviewer-visible discovery under `#related` with message-backed
 `LocalizedLinkList` hrefs — published siblings such as `/docs/concepts/task-queue`
 and `/docs/documentation/submitting-work`, plus published or planned technique
-hrefs for nearby techniques (for example classify-execute when published;
-planner-executor, ralph, writer-reviewer when still unpublished). Do not put
-unpublished technique registry ids in `relatedIds`.
+hrefs for nearby techniques (for example classify-execute, ralph, and
+worker-adviser when published; planner-executor / writer-reviewer when still
+unpublished). Do not put unpublished technique registry ids in `relatedIds`.
 
 Optional technique teaching graphs: baseline `technique.assets.json` is empty.
 Atlas-era `<ConceptMap />` / `<ModuleGraph />` MDX tags are retired from
@@ -66,9 +66,10 @@ Before the first authored page under a rewrite-era CLI collection can pass
 2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
    `src/lib/content/local-docs-page.ts` must include the section with a
    colocated loader (for example `documentation-page.ts` /
-   `documentation-page-load.ts`). Without that, Fumadocs renders the MDX body
-   without `ModulePageProviders` and `Section` / `T` throw
-   `usePageMessages must be used within PageMessagesProvider`.
+   `documentation-page-load.ts`, or `technique-page.ts` /
+   `technique-page-load.ts` for the first techniques page). Without that,
+   Fumadocs renders the MDX body without `ModulePageProviders` and
+   `Section` / `T` throw `usePageMessages must be used within PageMessagesProvider`.
 3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
    even when reader copy is message-backed — mirror the glossary template.
 4. `registryDirectoryByKind` in
@@ -151,6 +152,21 @@ must wire those destinations with page-local `<LocalizedLinkList>` and
 targets until related-runtime includes documentation records; keep
 `<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
 discovery when those ids can resolve.
+
+Technique → sibling technique / documentation / guide / concept discovery
+follows the same page-local rule while sibling technique pages are still
+unpublished: put planned routes such as `/docs/techniques/writer-reviewer`,
+`/docs/techniques/planner-executor`, `/docs/techniques/workqueue-executor`,
+published documentation such as `/docs/documentation/workers`, and useful
+concept/guide destinations on the technique page with message-backed
+`<LocalizedLinkList>` under `#related`. Leave technique `relatedIds` empty for
+unpublished sibling technique ids so `validate-data` stays clean; keep
+`<RelatedDocs />` for curated targets that already resolve. Technique kind is
+not in the page-template-conformance supported set, so adding
+`LocalizedLinkList` does not require a conformance exception entry.
+When asserting compared-to-nearby prose in colocated page tests, prefer
+section `textContent` matchers — prose auto-links can fragment exact
+`getByText` sentence matches.
 
 ## Shipping non-en locale stubs on a page bundle
 
@@ -283,29 +299,52 @@ shared wiring is still missing. Publishing may trip
 - empty-root / section-index tests that previously forbade authored bundles
   (`src/tests/content/section-indexes.test.tsx` must move that section from
   empty-state assertions to authored-entry assertions once the first page
-  ships; keep non-default locale empty-state checks until locale stubs exist)
+  ships; keep non-default locale empty-state checks until locale stubs exist).
+  When every CLI section is authored in the default locale, remove the
+  `CLI_EMPTY_SECTION_INDEX_CASES` filter loop entirely — filtering all
+  sections out yields `never[]` and breaks `tsc` on the empty-state `for`
+  loop. Keep locale-specific empty-state `it(...)` cases as standalone tests
+  until that locale ships stubs; when techniques (or another section) ships
+  `messages/{ja,zh-CN,vi}.json`, flip the matching localized index assertion
+  to authored-entry and regenerate/commit
+  `shipped-localized-docs.generated.ts` plus the derive-test expectation.
 
 ### First published techniques page
 
-`techniques` needs the same first-collection publish wiring as guides when the
-section still lacks local MDX loaders:
+`techniques` already has `PUBLISHED_DOCS_SECTIONS` / `techniquePageHref` and
+`registryDirectoryByKind.technique`, but still needs the local-docs loader path
+before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
 
-- add `techniques` to `LOCAL_DOCS_SECTIONS` and `loadLocalDocsPage`
-- add `technique-page.ts` / `technique-page-load.ts` (mirror guide loaders;
-  `PUBLISHED_DOCS_SECTIONS` + `techniquePageHref` already exist)
-- remove section-root `.gitkeep` files under docs and registry techniques roots
-- flip `src/tests/content/section-indexes.test.tsx` default-locale techniques
-  index from empty-state to authored-entry assertions
-- keep non-default locale techniques indexes on empty-state until colocated
-  `messages/<locale>.json` stubs ship
+- add `src/lib/content/technique-page.ts` + `technique-page-load.ts`
+- include `techniques` in `LOCAL_DOCS_SECTIONS` / `parseLocalDocsPageRef` /
+  `loadLocalDocsPage` in `src/lib/content/local-docs-page.ts`
+- remove `src/content/docs/techniques/.gitkeep` and
+  `src/content/registry/techniques/.gitkeep` when the first authored bundle and
+  registry record ship
+- update default-locale techniques expectations in
+  `src/tests/content/section-indexes.test.tsx` to authored-entry assertions;
+  leave non-default locale techniques indexes on empty-state until colocated
+  `messages/<locale>.json` stubs exist
+- when those locale stubs ship, flip localized techniques indexes to
+  authored-entry assertions (title / href) and regenerate/commit
+  `shipped-localized-docs.generated.ts` plus the matching
+  `shipped-localized-docs.server.test.ts` committed-tree assertion
 - colocate the page render proof under the page bundle
   (`<slug>-page.test.tsx`, e.g. `workqueue-executor-page.test.tsx` /
   `classify-execute-page.test.tsx`) so the proof stays page-owned
 - document the exception with `--exception-reason` on
   `bun run audit:canonical-page-surface`
+- when every CLI section has authored entries, type
+  `CLI_EMPTY_SECTION_INDEX_CASES` as `CliSectionIndexCase[]` (or equivalent)
+  instead of relying on a filtered `as const` array — an empty filter collapses
+  to `never[]` and breaks `tsc` on the empty-state loop
 
-Do not treat excluded `src/lib/docs/` empty-root suites as required CI for this
-lane; update them only when a throughput lane owns that shared surface.
+Declare the first-CLI-section exception with
+`bun run audit:canonical-page-surface -- --exception-reason "..."` and repeat
+that justification in the PR conversation. Later technique pages should stay
+page-local once this wiring lands. Do not treat excluded `src/lib/docs/`
+empty-root suites as required CI for this lane; update them only when a
+throughput lane owns that shared surface.
 
 When the section loader wiring already exists (for example `concepts` after
 empty-CLI taxonomy work), the first authored page may only need the
@@ -464,7 +503,14 @@ When publishing the first authored page under a rewrite-era CLI section
    `redirect-to-throughput-prd`). The audit maps CLI registry kinds
    (`guide` / `technique` / `documentation`) and ignores section-root
    `.gitkeep` when inferring page scope. Repeat the exception reason in the PR
-   conversation comment.
+   conversation comment. Do not add a shared
+   `src/lib/content/local-docs-page.test.ts` for the new section — that path is
+   outside the first-CLI-section allowlist and forces
+   `redirect-to-throughput-prd`. Colocate `parseLocalDocsPageRef` /
+   `isLocalDocsCatchAllSlug` proofs under the page bundle
+   (`src/content/docs/<section>/<slug>/<slug>-page.test.tsx`) instead, and flip
+   `src/tests/content/section-indexes.test.tsx` from empty-state to
+   authored-entry for the default-locale index.
 
 Without (1), `bun run prepare:content-runtime` fails while generating the
 published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to

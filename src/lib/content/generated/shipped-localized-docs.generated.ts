@@ -16,6 +16,8 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "guides/getting-started",
     "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
+    "techniques/ralph",
+    "techniques/worker-adviser",
   ],
   "zh-CN": [
     "concepts/bottlenecks",
@@ -33,6 +35,8 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "guides/getting-started",
     "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
+    "techniques/ralph",
+    "techniques/worker-adviser",
   ],
   vi: [
     "concepts/bottlenecks",
@@ -50,5 +54,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "guides/getting-started",
     "guides/using-you-agent-factory-for-loops",
     "guides/write-review-loops",
+    "techniques/ralph",
+    "techniques/worker-adviser",
   ],
 } as const;

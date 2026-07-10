@@ -62,6 +62,19 @@ const CLI_SECTION_INDEX_CASES = [
   },
 ] as const;
 
+type CliSectionIndexCase = (typeof CLI_SECTION_INDEX_CASES)[number];
+
+// All CLI section indexes currently have authored entries. Keep this list typed
+// explicitly so an empty filter does not collapse to `never[]` under `as const`.
+const CLI_EMPTY_SECTION_INDEX_CASES: CliSectionIndexCase[] =
+  CLI_SECTION_INDEX_CASES.filter(
+    (section) =>
+      section.collectionId !== "documentation" &&
+      section.collectionId !== "guides" &&
+      section.collectionId !== "concepts" &&
+      section.collectionId !== "techniques",
+  );
+
 describe("CLI section index messages", () => {
   it("loads index copy for guides, concepts, techniques, and documentation", async () => {
     const messages = await loadUiMessages();
@@ -88,6 +101,32 @@ const CLI_EMPTY_STATE_ATLAS_PHRASING =
   /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
 
 describe("CLI section index page render", () => {
+  for (const section of CLI_EMPTY_SECTION_INDEX_CASES) {
+    it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
+      const messages = await loadUiMessages();
+      const indexMessages = messages[section.messageKey];
+      const html = renderToStaticMarkup(await section.renderDefault());
+
+      expect(html).toContain(indexMessages.title);
+      expect(html).toContain(indexMessages.description);
+      expect(html).toContain(indexMessages.emptyTitle);
+      expect(html).toContain(indexMessages.emptyDescription);
+      expect(html).toContain(indexMessages.emptyHomeLink);
+      expect(html).toContain('href="/"');
+      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+      // Empty-state copy only — SearchTrigger may still carry residual Atlas search chrome.
+      expect(indexMessages.emptyTitle).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyDescription).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyHomeLink).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+    });
+  }
+
   it("renders the guides index with authored page entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = messages.guidesIndex;
@@ -100,30 +139,6 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/guides/getting-started");
     expect(html).toContain("Using you-agent-factory for Loops");
     expect(html).toContain("/docs/guides/using-you-agent-factory-for-loops");
-    expect(html).not.toContain(indexMessages.emptyTitle);
-    expect(indexMessages.emptyTitle).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-    expect(indexMessages.emptyDescription).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-  });
-
-  it("renders the techniques index with authored page entries", async () => {
-    const messages = await loadUiMessages();
-    const indexMessages = messages.techniquesIndex;
-    const html = renderToStaticMarkup(await TechniquesIndexPage());
-
-    expect(html).toContain(indexMessages.title);
-    expect(html).toContain(indexMessages.description);
-    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
-    expect(html).toContain("Classify-Execute");
-    expect(html).toContain("/docs/techniques/classify-execute");
-    expect(html).toContain(
-      "Classify an item into a known class, then run the specialist execute path for that class.",
-    );
-    expect(html).toContain("Workqueue Executor");
-    expect(html).toContain("/docs/techniques/workqueue-executor");
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
@@ -193,6 +208,37 @@ describe("CLI section index page render", () => {
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
   });
+
+  it("renders the techniques index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.techniquesIndex;
+    const html = renderToStaticMarkup(await TechniquesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Classify-Execute");
+    expect(html).toContain("/docs/techniques/classify-execute");
+    expect(html).toContain(
+      "Classify an item into a known class, then run the specialist execute path for that class.",
+    );
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
+    );
+    expect(html).toContain("Worker-Adviser");
+    expect(html).toContain("/docs/techniques/worker-adviser");
+    expect(html).toContain("Workqueue Executor");
+    expect(html).toContain("/docs/techniques/workqueue-executor");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
 });
 
 describe("localized CLI section index page render", () => {
@@ -228,6 +274,13 @@ describe("localized CLI section index page render", () => {
     );
     expect(html).toContain("Classify-Execute");
     expect(html).toContain("/ja/docs/techniques/classify-execute");
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/ja/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
+    );
+    expect(html).toContain("Worker-Adviser");
+    expect(html).toContain("/ja/docs/techniques/worker-adviser");
     expect(html).toContain("Workqueue Executor");
     expect(html).toContain("/ja/docs/techniques/workqueue-executor");
     expect(html).not.toContain(messages.techniquesIndex.emptyTitle);
