@@ -566,6 +566,9 @@ paths:
 
 * `make validate-data` — registry, messages, assets, and page-bundle correctness
 * `make linkcheck` — internal docs and route links
+* `bun run check:retired-product-docs` — owned architecture/authoring docs do
+  not reintroduce retired product names or retired public route families
+  (exclusion/denylist wording is allowed)
 * `make typecheck` / `make lint` / tests — code quality
 * browser verification of published factory routes (for example
   `/docs/guides/getting-started` or `/docs/documentation/cli`)

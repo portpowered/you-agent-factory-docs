@@ -505,6 +505,7 @@ run these lightweight checks often:
 | --- | --- | --- |
 | `make validate-data` | `bun ./scripts/validate-registry.ts` | Registry schema, frontmatter ↔ registry alignment, derived published-page bundle coverage for ordinary docs pages, message keys referenced from MDX, asset ids, graph/table references, tag and citation resolution, and colocated `messages/` + `assets.json` bundles under `src/content/docs/` |
 | `bun run audit:canonical-page-surface` | `bun ./scripts/audit-canonical-page-surface.ts` | Whether one canonical-page branch still fits the routine owned-file budget or has spilled into shared hotspot surfaces that need either a visible exception or a broader throughput lane |
+| `bun run check:retired-product-docs` | `bun ./scripts/check-retired-product-docs-consistency.ts` | Architecture/authoring docs do not reintroduce retired product identity (Model Reference / Model Atlas / Learn Language Models) or retired public route families (`/docs/models`, `/docs/modules`, `/docs/papers`, `/docs/training`) as the live product; exclusion/denylist wording is allowed |
 | `make linkcheck` | `bun ./scripts/validate-links.ts` | Internal links and `#section` anchors in published docs pages served through the Fumadocs catch-all route (`src/content/docs/**/page.mdx`) |
 
 `make validate-data` is the primary gate for docs content work. It catches the
@@ -530,6 +531,14 @@ confirms the page bundle and registry shape, rerun
 validation, and use the audit to confirm the review commit stays on the owned
 page surface instead of carrying shared tests, generated runtime churn, or
 other hotspot edits into review.
+
+When editing product framing or authoring guidance under `docs/site-fundamentals.md`,
+`docs/data-model.md`, `docs/architecture.md`, templates/writing guides,
+`docs/contributors/CONTRIBUTING.md`, `docs/architectural-checklist.md`, or
+`factory/docs/standards/docs-writing-standards.md`, also run
+`bun run check:retired-product-docs`. That check fails if those owned docs
+present retired Atlas product names or retired collection routes as the current
+product, while still allowing explicit “what this is not” / denylist wording.
 
 Optional during iteration:
 
