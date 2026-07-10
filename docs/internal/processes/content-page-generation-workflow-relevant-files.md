@@ -660,56 +660,6 @@ page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 
-### Documentation dynamic-workflows API interface matrices (page-local)
-
-For `documentation/dynamic-workflows` API interface copy, keep a single
-`#api-interface` `Section`. Put overview prose in `sections.apiInterface.body`,
-surface intros in `callouts.{cliSurface,mcpSurface,durableInspection}.body`,
-and matrix headers/cells under page `links.*` keys — `pageSectionSchema` only
-keeps `title`/`body` on sections. Render always-visible HTML `<table>` blocks
-with `<T k="links.…" />` so CLI commands (`you workflow validate|start|status|
-result|dispatches|artifacts|events`), canonical MCP tools
-(`you.factory_session.*`), compatibility aliases (`you.workflow.*`), and durable
-inspection surfaces (`you session list|show`, session-scoped events, Factory
-preview) are reviewer-visible without hard-coded command strings in MDX.
-
-Orient from `you docs orchestrators`, `you docs mcp-hosts`, and
-`you docs sessions`. Keep the live-run noun as `FactorySession`; do not invent
-a separate dynamic-workflow resource type.
-
-### Documentation dynamic-workflows configuration matrices (page-local)
-
-For `documentation/dynamic-workflows` configuration copy, keep a single
-`#configuration` `Section`. Put overview prose in `sections.configuration.body`,
-surface intros and the serve-mode boundary in
-`callouts.{sourceResolution,mcpHostConfig,serveModes,serveModeBoundary}.body`,
-and matrix headers/cells under page `links.*` keys — same strip-avoidance as the
-API interface matrices. Render always-visible HTML `<table>` blocks with
-`<T k="links.…" />` so source knobs (`--dir`, `WORKFLOW_NAME`, `INLINE_WORKFLOW`,
-`--args-schema`, `--requested-policy`), MCP host fields (`command`, `args`,
-`cwd`), and serve modes (fixture-backed `mcp serve` vs runtime-backed
-`mcp serve --runtime`, including do-not-combine `--runtime` with
-`--fixture-catalog`) are reviewer-visible without hard-coded strings in MDX.
-
-Orient from `you workflow validate --help` and `you docs mcp-hosts`. Stay at
-dynamic-workflow configuration depth; do not absorb the full Petri
-`factory.json` topology owned by the configuration documentation page.
-
-### Documentation dynamic-workflows limits and sibling discovery (page-local)
-
-For `documentation/dynamic-workflows`, keep `#limits-and-assumptions` as the
-scope boundary: web reference for JavaScript dynamic-workflow API interface and
-configuration only — not the Cursor first-loop guide, not the full MCP host
-catalog deep dive beyond dynamic-workflow needs, and not the Petri
-`factory.json` topology overview. Keep the page isolation-first: sibling links
-aid discovery but must not be required to define the topic.
-
-Wire reviewer-visible next steps with page-local `<LocalizedLinkList>` and
-`links.*` labels under `#how-to-use` (Cursor dynamic-workflows guide,
-configuration, CLI, harness support). Leave registry `relatedIds` empty for
-guide and documentation targets while related-runtime omits those kinds;
-keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
-
 ## Core content paths
 
 * `src/lib/content/content-paths.ts`
