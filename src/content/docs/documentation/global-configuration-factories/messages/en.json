@@ -15,9 +15,13 @@
       "title": "Operator Model Defaults",
       "body": "Use operator defaults when you want one preferred provider and model across runs without editing every factory worker. Defaults apply only to INFERENCE_WORKER and AGENT_WORKER entries that omit modelProvider or model. Authored worker values stay as written. Script workers and poller workers never receive operator defaults. The runtime fills omitted fields in memory at startup and does not persist those fills into factory.json."
     },
+    "namedFactories": {
+      "title": "Named Factories",
+      "body": "Named factories are persisted factory definitions under a factory root. The project-local root defaults to ./factory (or the path you pass with --dir). The global shared root is ~/.you-agent-factory/factories. Use you run --named <name> to resolve a canonical persisted name: project-local first, then the global shared root, then built-in catalog materialization on first use. Listing, saving, updating, and deleting always target exactly one root via --dir; they never merge project-local and global entries in one command."
+    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Create ~/.you-agent-factory/config.json with defaults.workerModelProvider and defaults.workerModel when you want one preferred provider and model across runs. Override a single invocation with YOU_DEFAULT_WORKER_MODEL_PROVIDER and YOU_DEFAULT_WORKER_MODEL, or with --default-worker-model-provider and --default-worker-model on the root you command. Precedence is independent per field: file, then env, then flag. List named factories one root at a time with you factory list for the project-local root, or you factory list --dir ~/.you-agent-factory/factories for the global root. Run a named factory with you run --named, and save or update under the --dir root you intend to own. Use the configuration documentation page when you need factory.json topology instead of operator or global factory settings."
+      "body": "Create ~/.you-agent-factory/config.json with defaults.workerModelProvider and defaults.workerModel when you want one preferred provider and model across runs. Override a single invocation with YOU_DEFAULT_WORKER_MODEL_PROVIDER and YOU_DEFAULT_WORKER_MODEL, or with --default-worker-model-provider and --default-worker-model on the root you command. Precedence is independent per field: file, then env, then flag. For named factories, list one root at a time, run with you run --named, and save or update under the --dir root you intend to own. Use the configuration documentation page when you need factory.json topology instead of operator or global factory settings. Packaged @you/* invocation signatures stay on their sibling docs surfaces."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -49,7 +53,14 @@
     "flagProviderName": "--default-worker-model-provider",
     "flagProviderPurpose": "Overrides file and environment for the worker model provider",
     "flagModelName": "--default-worker-model",
-    "flagModelPurpose": "Overrides file and environment for the worker model"
+    "flagModelPurpose": "Overrides file and environment for the worker model",
+    "globalRootLabel": "Global shared factories root:",
+    "projectLocalRootLabel": "Default project-local root:",
+    "listProjectLocalLabel": "List named factories under the project-local root:",
+    "listGlobalLabel": "List named factories under the global shared root:",
+    "runNamedLabel": "Run a named factory (project-local first, then global, then built-in materialization):",
+    "saveNamedLabel": "Save a named factory under a chosen root:",
+    "updateNamedLabel": "Update an existing named factory under a chosen root:"
   },
   "callouts": {
     "configFileNotes": {
@@ -63,6 +74,15 @@
     },
     "runnerDistinction": {
       "body": "Operator defaults are distinct from factory-level runner in factory.json. Public factory.json and OpenAPI runner fields stay topology-owned; operator defaults do not rewrite those runner fields. Set operator defaults or author modelProvider on workers when you need a preferred model worker provider — do not expect runner to stand in for operator defaults."
+    },
+    "namedResolution": {
+      "body": "you run --named <name> resolves a canonical persisted factory name in this order:"
+    },
+    "oneRootListing": {
+      "body": "you factory list lists exactly one root at a time and never merges project-local and global entries. By default it lists ./factory. Point --dir at ~/.you-agent-factory/factories to list global built-ins and shared factories."
+    },
+    "builtInMaterialization": {
+      "body": "Built-ins such as @you/goal, @you/fusion, and @you/tts materialize into the global root on first use and remain editable on disk for later runs. Deep packaged invocation signatures stay on sibling docs surfaces; this page only covers where those factories live and how named resolution finds them."
     }
   }
 }

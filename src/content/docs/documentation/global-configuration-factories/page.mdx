@@ -126,8 +126,62 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="callouts.runnerDistinction.body" />
 </Section>
 
+<Section id="named-factories" titleKey="sections.namedFactories.title">
+  <T k="sections.namedFactories.body" />
+  <p>
+    <T k="links.globalRootLabel" />
+  </p>
+  ```text
+  ~/.you-agent-factory/factories
+  ```
+  <p>
+    <T k="links.projectLocalRootLabel" />
+  </p>
+  ```text
+  ./factory
+  ```
+  <T k="callouts.namedResolution.body" />
+  ```text
+  project-local ./factory (or --dir)
+  → global ~/.you-agent-factory/factories
+  → built-in catalog materialization on first use
+  ```
+  <T k="callouts.oneRootListing.body" />
+  <T k="callouts.builtInMaterialization.body" />
+</Section>
+
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.listProjectLocalLabel" />
+  </p>
+  ```bash
+  you factory list
+  ```
+  <p>
+    <T k="links.listGlobalLabel" />
+  </p>
+  ```bash
+  you factory list --dir ~/.you-agent-factory/factories
+  ```
+  <p>
+    <T k="links.runNamedLabel" />
+  </p>
+  ```bash
+  you run --named @you/goal
+  ```
+  <p>
+    <T k="links.saveNamedLabel" />
+  </p>
+  ```bash
+  you factory save staging --from ./factory.json --dir ~/.you-agent-factory/factories
+  ```
+  <p>
+    <T k="links.updateNamedLabel" />
+  </p>
+  ```bash
+  you factory update staging --from ./factory.json --dir ~/.you-agent-factory/factories
+  ```
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
