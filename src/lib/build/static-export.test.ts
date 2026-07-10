@@ -34,48 +34,64 @@ describe("static export build mode", () => {
     expect(normalizeGitHubPagesBasePath(undefined)).toBe("");
     expect(normalizeGitHubPagesBasePath("")).toBe("");
     expect(normalizeGitHubPagesBasePath("/")).toBe("");
-    expect(normalizeGitHubPagesBasePath("ai-model-reference")).toBe(
-      "/ai-model-reference",
+    expect(normalizeGitHubPagesBasePath("you-agent-factory-docs")).toBe(
+      "/you-agent-factory-docs",
     );
-    expect(normalizeGitHubPagesBasePath("/ai-model-reference/")).toBe(
-      "/ai-model-reference",
+    expect(normalizeGitHubPagesBasePath("/you-agent-factory-docs/")).toBe(
+      "/you-agent-factory-docs",
     );
   });
 
   test("reads base path only during static export builds", () => {
     expect(
       resolveGitHubPagesBasePath({
-        [GITHUB_PAGES_BASE_PATH_ENV]: "/ai-model-reference",
+        [GITHUB_PAGES_BASE_PATH_ENV]: "/you-agent-factory-docs",
       }),
     ).toBe("");
     expect(
       resolveGitHubPagesBasePath({
         [STATIC_EXPORT_ENV]: "1",
-        [GITHUB_PAGES_BASE_PATH_ENV]: "ai-model-reference",
+        [GITHUB_PAGES_BASE_PATH_ENV]: "you-agent-factory-docs",
       }),
-    ).toBe("/ai-model-reference");
+    ).toBe("/you-agent-factory-docs");
   });
 
   test("reads base path for export verification without NEXT_STATIC_EXPORT", () => {
     expect(
       resolveBasePathForExportVerification({
-        [GITHUB_PAGES_BASE_PATH_ENV]: "ai-model-reference",
+        [GITHUB_PAGES_BASE_PATH_ENV]: "you-agent-factory-docs",
       }),
-    ).toBe("/ai-model-reference");
+    ).toBe("/you-agent-factory-docs");
     expect(resolveBasePathForExportVerification({})).toBe("");
   });
 
-  test("applies basePath and assetPrefix during export when configured", () => {
-    expect(
-      resolveNextConfigForBuildMode({
-        [STATIC_EXPORT_ENV]: "1",
-        [GITHUB_PAGES_BASE_PATH_ENV]: "/ai-model-reference",
-      }),
-    ).toEqual({
-      ...staticExportNextConfig,
-      basePath: "/ai-model-reference",
-      assetPrefix: "/ai-model-reference",
+  test("applies the same normalized basePath and assetPrefix for the project site", () => {
+    const config = resolveNextConfigForBuildMode({
+      [STATIC_EXPORT_ENV]: "1",
+      [GITHUB_PAGES_BASE_PATH_ENV]: "/you-agent-factory-docs",
     });
+    expect(config).toEqual({
+      ...staticExportNextConfig,
+      basePath: "/you-agent-factory-docs",
+      assetPrefix: "/you-agent-factory-docs",
+    });
+    expect(config.basePath).toBe(config.assetPrefix);
+  });
+
+  test("slash-normalized project-site forms share one basePath and assetPrefix", () => {
+    for (const raw of [
+      "you-agent-factory-docs",
+      "/you-agent-factory-docs",
+      "/you-agent-factory-docs/",
+    ]) {
+      const config = resolveNextConfigForBuildMode({
+        [STATIC_EXPORT_ENV]: "1",
+        [GITHUB_PAGES_BASE_PATH_ENV]: raw,
+      });
+      expect(config.basePath).toBe("/you-agent-factory-docs");
+      expect(config.assetPrefix).toBe("/you-agent-factory-docs");
+      expect(config.basePath).toBe(config.assetPrefix);
+    }
   });
 
   test("keeps real generateStaticParams when non-empty", () => {
