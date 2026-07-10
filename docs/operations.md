@@ -317,17 +317,37 @@ bun run benchmark:static-export -- --mode=warm
 
 #### Reference machine for the <=180-second clean-build target
 
-Agreed reference machine class for later B09b optimization comparison:
+Agreed reference machine class for B09b optimization comparison:
 
 - Machine class: Apple Silicon developer Mac (arm64), M-series (M1 Max class)
 - OS family: macOS 15 (Darwin)
 - CPU summary: 10 logical CPUs
 - Build runtime: Bun (version recorded per profile run in `runtimeVersion`)
 
-This lane (`profile-local-static-build`) **profiles only**. Meeting the
-<=180-second clean local static-export budget is owned by later B09b
-optimization work (for example `optimize-next-static-export`), judged on this
-recorded reference machine class—not claimed as done by the profiling lane.
+#### Recorded optimize-next-static-export evidence (UTC 2026-07-10)
+
+On that reference machine class, the `optimize-next-static-export` lane recorded:
+
+| Gate | Result |
+| --- | --- |
+| Clean `MODE=clean` `totalWallTimeMs` | **111560** (<= 180000) |
+| Warm `MODE=warm` after unchanged tree | **92776** (faster than clean) |
+| Warm cache reuse | hits for content-runtime, fumadocs immutable snapshot, Next `.next/cache`, and search parsed-documents store |
+| Determinism (two clean exports) | matching contracted digests for `api/search` (+ locales) and HTML base-path contracts on `index.html`, `blog.html`, `docs/guides.html` |
+| Bundler default | webpack (see bake-off above) |
+
+Print the recorded gate without rebuilding:
+
+```sh
+bun run prove:static-export-optimization-evidence
+```
+
+Focused contract tests (no full timed export):
+`bun run test:static-export-profile-contract`.
+
+Re-measure after material export-path changes with
+`make benchmark-static-export MODE=clean` then `MODE=warm`, then update
+`src/lib/build/static-export-optimization-evidence-recorded.ts`.
 
 See
 [ci-deploy-foundation-relevant-files.md](./internal/processes/ci-deploy-foundation-relevant-files.md)
