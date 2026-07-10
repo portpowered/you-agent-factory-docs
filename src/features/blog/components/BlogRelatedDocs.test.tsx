@@ -9,9 +9,9 @@ import {
 } from "@/features/blog/components/BlogRelatedDocs";
 import {
   RELATED_REGISTRY_DOCS_MISSING_ID,
-  relatedRegistryDocsDraftModule,
-  relatedRegistryDocsGqa,
-  relatedRegistryDocsMqa,
+  relatedRegistryDocsBottlenecks,
+  relatedRegistryDocsDraftConcept,
+  relatedRegistryDocsHarness,
   relatedRegistryDocsResolveOptions,
 } from "@/lib/content/related-registry-docs.test-fixtures";
 
@@ -23,18 +23,21 @@ describe("BlogRelatedDocs", () => {
   test("passes explicit relatedDocIds through to compact published links", () => {
     const html = renderToStaticMarkup(
       <BlogRelatedDocs
-        relatedDocIds={[relatedRegistryDocsMqa.id, relatedRegistryDocsGqa.id]}
+        relatedDocIds={[
+          relatedRegistryDocsHarness.id,
+          relatedRegistryDocsBottlenecks.id,
+        ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
     expect(html).toContain('data-testid="blog-related-docs"');
-    expect(html).toContain('href="/docs/modules/multi-query-attention"');
-    expect(html).toContain('href="/docs/modules/grouped-query-attention"');
-    expect(html).toContain("Multi-Query Attention");
-    expect(html).toContain("Grouped Query Attention");
+    expect(html).toContain('href="/docs/concepts/harness"');
+    expect(html).toContain('href="/docs/concepts/bottlenecks"');
+    expect(html).toContain("Harness");
+    expect(html).toContain("Bottlenecks");
     expect(html).toContain("no-underline");
-    expect(html).not.toContain(relatedRegistryDocsMqa.id);
+    expect(html).not.toContain(relatedRegistryDocsHarness.id);
   });
 
   test("renders blog empty fallback when relatedDocIds is empty", () => {
@@ -55,7 +58,7 @@ describe("BlogRelatedDocs", () => {
       <BlogRelatedDocs
         relatedDocIds={[
           RELATED_REGISTRY_DOCS_MISSING_ID,
-          relatedRegistryDocsDraftModule.id,
+          relatedRegistryDocsDraftConcept.id,
         ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
@@ -72,37 +75,36 @@ describe("BlogRelatedDocs", () => {
       <BlogRelatedDocs
         relatedDocIds={[
           RELATED_REGISTRY_DOCS_MISSING_ID,
-          relatedRegistryDocsGqa.id,
-          relatedRegistryDocsDraftModule.id,
+          relatedRegistryDocsBottlenecks.id,
+          relatedRegistryDocsDraftConcept.id,
         ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
-    expect(html).toContain('href="/docs/modules/grouped-query-attention"');
-    expect(html).toContain("Grouped Query Attention");
+    expect(html).toContain('href="/docs/concepts/bottlenecks"');
+    expect(html).toContain("Bottlenecks");
     expect(html).toContain(
       'data-testid="blog-related-docs-partial-unavailable"',
     );
     expect(html).toContain(BLOG_RELATED_DOCS_PARTIAL_UNAVAILABLE_STATUS);
     expect(html).not.toContain(RELATED_REGISTRY_DOCS_MISSING_ID);
-    expect(html).not.toContain("Draft attention");
+    expect(html).not.toContain("Draft related");
   });
 
   test("exposes accessible list semantics for available links", () => {
     render(
       <BlogRelatedDocs
-        relatedDocIds={[relatedRegistryDocsMqa.id, relatedRegistryDocsGqa.id]}
+        relatedDocIds={[
+          relatedRegistryDocsHarness.id,
+          relatedRegistryDocsBottlenecks.id,
+        ]}
         resolveOptions={relatedRegistryDocsResolveOptions}
       />,
     );
 
     expect(screen.getAllByRole("list")).toHaveLength(1);
-    expect(
-      screen.getByRole("link", { name: "Multi-Query Attention" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("link", { name: "Grouped Query Attention" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Harness" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Bottlenecks" })).toBeTruthy();
   });
 });

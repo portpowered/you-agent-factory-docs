@@ -11,7 +11,7 @@ collections.
 | `src/content/docs/{models,modules,papers,training,systems,glossary,concepts}/` | Atlas MDX page bundles (cleared; section dirs may remain empty) |
 | `src/content/docs/getting-started.mdx` | Non-Atlas shell placeholder kept for Fumadocs wiring |
 | `src/content/registry/{models,modules,papers,training-regimes,systems,concepts,graphs,tables,classifications,citations,datasets,organizations}/` | Atlas registry collections cleared for empty-shell validation |
-| `src/content/registry/tags/` | Keep only tags still referenced by remaining blog posts (plus `taxonomy` parent) |
+| `src/content/registry/tags/` | Keep factory-facing tags (`taxonomy`, `foundations`, `local-models`); purge Atlas-only tags such as `model-family`, `inference`, and `alignment` plus orphaned tag locale messages |
 | `src/content/blog/*/page.mdx` | Clear `relatedDocIds` and `/docs/...` prose links when Atlas targets are gone |
 | `scripts/validate-registry.ts` / `bun run validate-data` | Maintainer registry/content validation path that must pass without Atlas fixtures |
 | `src/lib/content/validate-registry.ts` | `phase1PageDirectories` is empty after Atlas deletion |
@@ -52,6 +52,9 @@ collections.
 | `src/features/ai/topology.ts` / `src/features/ai/server.ts` | Stop re-exporting deleted topology explorers |
 | `src/lib/site/you-agent-factory-site-config.ts` | CLI site config after `rewrite-site-config-contracts`; topology is not in `primaryNav` |
 | `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Keep browse classification helpers; they are not the `/topology` explorer product |
+| `src/content/messages/*/common.json` (`topologyPrototype`) | Removed retired `/topology` explorer product copy; do not reintroduce |
+| `src/lib/content/ui-messages.types.ts` | `AiDomainMessages` / `UI_MESSAGES_COMPATIBILITY_KEYS` omit `topologyPrototype` |
+| `src/tests/content/ui-messages.test.ts` | Asserts shipped messages do not expose `topologyPrototype` as live product copy |
 
 ## Story 004: remove Model Atlas AI search enrichment
 

@@ -24,7 +24,7 @@
       "body": "A checklist is not a task queue. A task queue is ordered work waiting to run; a checklist is the live outcomes and workstream board that shows done, active, ready next, and held status across streams. A checklist is also not an architectural checklist or a review acceptance-criteria list—those are static verification lists you tick once. And it is not a phase-gated project plan that forces every stream to finish one global phase before the next can start."
     },
     "related": {
-      "title": "Related Concepts And Modules"
+      "title": "Related To"
     },
     "tags": {
       "title": "Tags"

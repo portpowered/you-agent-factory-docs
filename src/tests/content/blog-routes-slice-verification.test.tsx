@@ -20,10 +20,11 @@ import {
 } from "@/app/(site)/site-renderers";
 import { blogIndexHref, blogPostHref } from "@/lib/content/blog-page-load";
 
-const ROOFLINE_SLUG = "roofline-throughput-explorer";
-const ROOFLINE_TITLE = "the best computer for local language models (2026)";
-const ROOFLINE_DESCRIPTION =
-  "An overall guide to the best computer to buy for local language models. We recommend an M-series laptop or a 5090.";
+const BOTTLENECKS_SLUG = "bottlenecks";
+const BOTTLENECKS_TITLE =
+  "Factory bottlenecks: where long-running agent work actually stalls";
+const BOTTLENECKS_DESCRIPTION =
+  "A listicle comparison of common you-agent-factory limiting stages—queues, workers, harness latency, shared resources, and token pressure—and how to read them against the bottlenecks concept.";
 
 function frontmatterBlock(input: {
   status: "published" | "draft";
@@ -105,12 +106,12 @@ describe("blog routes slice verification (blog-routes-layout-index-004)", () => 
 
   it("publishes canonical metadata for a published blog post route", async () => {
     const metadata = await generateBlogPostMetadata({
-      params: Promise.resolve({ slug: ROOFLINE_SLUG }),
+      params: Promise.resolve({ slug: BOTTLENECKS_SLUG }),
     });
 
-    expect(metadata.title).toBe(ROOFLINE_TITLE);
-    expect(metadata.description).toBe(ROOFLINE_DESCRIPTION);
-    expect(metadata.alternates?.canonical).toBe(blogPostHref(ROOFLINE_SLUG));
+    expect(metadata.title).toBe(BOTTLENECKS_TITLE);
+    expect(metadata.description).toBe(BOTTLENECKS_DESCRIPTION);
+    expect(metadata.alternates?.canonical).toBe(blogPostHref(BOTTLENECKS_SLUG));
   });
 
   it("returns empty metadata for an unknown blog post slug", async () => {
@@ -123,13 +124,20 @@ describe("blog routes slice verification (blog-routes-layout-index-004)", () => 
     expect(metadata).toEqual({});
   });
 
-  it("includes published blog slugs in static params", () => {
+  it("includes published blog slugs in static params and omits unpublished legacy Atlas slugs", () => {
     const params = generateBlogPostStaticParams();
 
     expect(params).toEqual(
       expect.arrayContaining([
-        { slug: ROOFLINE_SLUG },
+        { slug: BOTTLENECKS_SLUG },
+        { slug: "comparing-agent-factories" },
+      ]),
+    );
+    expect(params).not.toEqual(
+      expect.arrayContaining([
+        { slug: "evolution-of-diffusion" },
         { slug: "llms-no-longer-wholly-reliant-on-the-internet" },
+        { slug: "roofline-throughput-explorer" },
       ]),
     );
   });
@@ -138,23 +146,24 @@ describe("blog routes slice verification (blog-routes-layout-index-004)", () => 
     const page = await renderBlogIndexPage();
     const html = renderToStaticMarkup(page);
 
-    expect(html).toContain(ROOFLINE_TITLE);
-    expect(html).toContain(ROOFLINE_DESCRIPTION);
-    expect(html).toContain('dateTime="2026-07-02"');
-    expect(html).toContain(`href="/blog/${ROOFLINE_SLUG}"`);
-    expect(html).toContain(`aria-label="Read blog post: ${ROOFLINE_TITLE}"`);
+    expect(html).toContain(BOTTLENECKS_TITLE);
+    expect(html).toContain(BOTTLENECKS_DESCRIPTION);
+    expect(html).toContain('dateTime="2026-07-09"');
+    expect(html).toContain(`href="/blog/${BOTTLENECKS_SLUG}"`);
+    expect(html).toContain(`aria-label="Read blog post: ${BOTTLENECKS_TITLE}"`);
+    expect(html).not.toContain('href="/blog/roofline-throughput-explorer"');
   });
 
   it("renders /blog/<slug> body content for a published post", async () => {
-    const page = await renderBlogPostPage(ROOFLINE_SLUG);
+    const page = await renderBlogPostPage(BOTTLENECKS_SLUG);
     const html = renderToStaticMarkup(page);
 
-    expect(html).toContain(ROOFLINE_TITLE);
-    expect(html).toContain(ROOFLINE_DESCRIPTION);
-    expect(html).toContain(`data-blog-slug="${ROOFLINE_SLUG}"`);
-    expect(html).toContain("Problem");
-    expect(html).toContain("Models are constrained by memory and compute");
-    expect(html).toContain('data-roofline-throughput-explorer="explorer"');
+    expect(html).toContain(BOTTLENECKS_TITLE);
+    expect(html).toContain(BOTTLENECKS_DESCRIPTION);
+    expect(html).toContain(`data-blog-slug="${BOTTLENECKS_SLUG}"`);
+    expect(html).toContain("Saturated task queue");
+    expect(html).toContain("Where one stage caps the run");
+    expect(html).toContain("bottlenecks-stage-throughput-chart");
   });
 
   it("renders fixture post body content through /blog/<slug>", async () => {

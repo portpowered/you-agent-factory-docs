@@ -238,71 +238,6 @@ export type TopologyBrowseMessages = {
   totalMembersLabel: string;
 };
 
-/** Topology prototype graph copy for the AI domain pack. */
-export type TopologyPrototypeMessages = {
-  title: string;
-  description: string;
-  selectedViewLabel: string;
-  selectedViewValue: string;
-  selectedViewDefault: string;
-  selectedViewNone: string;
-  chipListLabel: string;
-  chipHint: string;
-  clearSelectionLabel: string;
-  loadingTitle: string;
-  loadingDescription: string;
-  emptyTitle: string;
-  emptyDescription: string;
-  emptySelectedPrefix: string;
-  emptyNoSelectionDescription: string;
-  emptyReturnAction: string;
-  errorTitle: string;
-  errorDescription: string;
-  errorInvalidPrefix: string;
-  errorReturnAction: string;
-  successTitle: string;
-  successDescription: string;
-  graphLabel: string;
-  fitGraphLabel: string;
-  resetGraphLabel: string;
-  legendTitle: string;
-  membershipLegendDescription: string;
-  relationshipLegendDescription: string;
-  accessibleNodeListTitle: string;
-  accessibleRelationshipListTitle: string;
-  classificationNodeLabel: string;
-  recordNodeLabel: string;
-  classificationTypeDomain: string;
-  classificationTypeFamily: string;
-  classificationTypeTopology: string;
-  detailPanelTitle: string;
-  detailPanelHint: string;
-  detailPanelDismissLabel: string;
-  detailPanelEmptyTitle: string;
-  detailPanelEmptyDescription: string;
-  detailLabelSummary: string;
-  detailLabelPrimaryClassification: string;
-  detailLabelSecondaryClassifications: string;
-  detailLabelCanonicalPage: string;
-  detailLabelScope: string;
-  detailLabelAppliesTo: string;
-  detailLabelVisibleMembers: string;
-  detailLabelRelationship: string;
-  detailLabelSource: string;
-  detailLabelTarget: string;
-  detailNoSecondaryClassifications: string;
-  detailMissingSummary: string;
-  detailOpenCanonicalPage: string;
-  activationChip: string;
-  activationFunctionChip: string;
-  feedForwardChip: string;
-  nodeActivation: string;
-  nodeRelu: string;
-  nodeSilu: string;
-  nodeSwiGLU: string;
-  nodeFeedForward: string;
-};
-
 /** Factory collection index landing pages (guides, concepts, techniques, documentation). */
 export type AiCollectionIndexMessages = {
   conceptsIndex: SectionIndexMessages;
@@ -319,15 +254,15 @@ export type AiTagMessages = {
 };
 
 /**
- * AI domain UI messages: topology browse/prototype, timeline page,
- * collection indexes, and tag surfaces.
+ * AI domain UI messages: topology browse, timeline page, collection indexes,
+ * and tag surfaces. The retired `/topology` explorer `topologyPrototype`
+ * message block is intentionally absent from the public product surface.
  * Excludes generic shell search, nav, language, and layout chrome.
  */
 export type AiDomainMessages = AiCollectionIndexMessages &
   AiTagMessages & {
     timelinePage: TimelinePageMessages;
     topologyBrowse: TopologyBrowseMessages;
-    topologyPrototype: TopologyPrototypeMessages;
   };
 
 /**
@@ -352,7 +287,6 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "glossaryIndex",
   "architectureIndex",
   "blogIndex",
-  "topologyPrototype",
   "tagsIndex",
   "tagLanding",
   "tagCategories",

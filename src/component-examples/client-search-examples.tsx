@@ -55,7 +55,7 @@ export function SearchInlineResultWithMetaExample({
       item={{
         id: "page-gqa",
         type: "page",
-        url: context.sampleModuleUrl,
+        url: context.sampleDocsUrl,
         content: "Grouped-Query Attention",
       }}
       query="GQA"
@@ -91,7 +91,7 @@ export function SearchResultListItemExample({ context }: SearchExampleProps) {
     {
       id: "page-gqa",
       type: "page",
-      url: context.sampleModuleUrl,
+      url: context.sampleDocsUrl,
       content: "Grouped-Query Attention",
     },
     "GQA",

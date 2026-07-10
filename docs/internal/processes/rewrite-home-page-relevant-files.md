@@ -97,6 +97,11 @@ Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
   `gqaLinkTitle`, `swigluLinkTitle`, `reluLinkTitle`, and their descriptions) in
   `common.json` / `HomeMessages`; site config must bind only the CLI featured-link
   keys above.
+- Reader-facing home HTML must not contain “Browse the atlas”; featured browse
+  copy comes from `guidesLink*` / `docsLink*` / `glossaryLink*` / `blogLink*` only.
+- Docs related-section titles are separate from home browse chrome: use
+  `Related To` on live pages/templates, never `Related Concepts And Modules`
+  (see `related-registry-docs-relevant-files.md`).
 - Worktree browser verify: this lane often has no local `node_modules` (hoisted at
   repo root). Turbopack rejects out-of-root `node_modules` symlinks. Prefer
   `renderToStaticMarkup(HomeArticle)` + `generateMetadata()` for identity checks

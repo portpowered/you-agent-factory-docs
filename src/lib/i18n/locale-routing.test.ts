@@ -79,17 +79,14 @@ describe("locale-routing", () => {
       "/zh-CN/blog",
     );
     expect(
-      buildLocalizedRoute(
-        { surface: "blog-post", slug: "roofline-throughput-explorer" },
-        "ja",
-      ),
-    ).toBe("/ja/blog/roofline-throughput-explorer");
+      buildLocalizedRoute({ surface: "blog-post", slug: "bottlenecks" }, "ja"),
+    ).toBe("/ja/blog/bottlenecks");
     expect(
       buildLocalizedRoute(
-        { surface: "blog-post", slug: "roofline-throughput-explorer" },
+        { surface: "blog-post", slug: "bottlenecks" },
         "zh-CN",
       ),
-    ).toBe("/zh-CN/blog/roofline-throughput-explorer");
+    ).toBe("/zh-CN/blog/bottlenecks");
     expect(
       buildLocalizedRoute(
         { surface: "docs-page", slug: "modules/grouped-query-attention" },
@@ -182,15 +179,13 @@ describe("locale-routing", () => {
       destination: { surface: "blog-index" },
     });
 
-    expect(
-      matchLocalizedRoute("/ja/blog/roofline-throughput-explorer"),
-    ).toEqual({
+    expect(matchLocalizedRoute("/ja/blog/bottlenecks")).toEqual({
       kind: "matched",
       locale: "ja",
-      pathname: "/blog/roofline-throughput-explorer",
+      pathname: "/blog/bottlenecks",
       destination: {
         surface: "blog-post",
-        slug: "roofline-throughput-explorer",
+        slug: "bottlenecks",
       },
     });
 
@@ -275,9 +270,9 @@ describe("locale-routing", () => {
     expect(switchRouteLocale("/vi/topology", "ja")).toBe("/ja/topology");
     expect(switchRouteLocale("/vi/topology", "zh-CN")).toBe("/zh-CN/topology");
     expect(switchRouteLocale("/blog", "vi")).toBe("/vi/blog");
-    expect(
-      switchRouteLocale("/vi/blog/roofline-throughput-explorer", "en"),
-    ).toBe("/blog/roofline-throughput-explorer");
+    expect(switchRouteLocale("/vi/blog/bottlenecks", "en")).toBe(
+      "/blog/bottlenecks",
+    );
     expect(switchRouteLocale("/search?tag=attention", "ja")).toBe(
       "/ja/search?tag=attention",
     );

@@ -6,7 +6,7 @@
   "defaultSummaryKey": "summary",
   "aliases": [
     "foundational concepts",
-    "phase 2 foundations",
+    "factory foundations",
     "core vocabulary"
   ],
   "tags": [],
@@ -14,7 +14,7 @@
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-06-04T00:00:00.000Z",
-  "updatedAt": "2026-06-04T00:00:00.000Z",
+  "updatedAt": "2026-07-10T00:00:00.000Z",
   "category": "architecture",
   "landingPage": "generated-tag-page",
   "parentTagId": "tag.taxonomy"

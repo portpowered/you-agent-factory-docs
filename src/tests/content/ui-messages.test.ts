@@ -30,7 +30,6 @@ const DOCS_MESSAGE_KEYS = [
 const AI_DOMAIN_MESSAGE_KEYS = [
   "timelinePage",
   "topologyBrowse",
-  "topologyPrototype",
   "conceptsIndex",
   "guidesIndex",
   "techniquesIndex",
@@ -61,7 +60,6 @@ function pickAiDomainMessages(messages: AiDomainMessages): AiDomainMessages {
   return {
     timelinePage: messages.timelinePage,
     topologyBrowse: messages.topologyBrowse,
-    topologyPrototype: messages.topologyPrototype,
     conceptsIndex: messages.conceptsIndex,
     guidesIndex: messages.guidesIndex,
     techniquesIndex: messages.techniquesIndex,
@@ -263,10 +261,7 @@ describe("message boundary contracts", () => {
     expect(
       messages.topologyBrowse.classificationLabels.attentionMechanisms,
     ).toBe("Attention Mechanisms");
-    expect(messages.topologyPrototype.title).toBe("Topology");
-    expect(messages.topologyPrototype.graphLabel).toBe(
-      "Activation/feed-forward topology preview",
-    );
+    expect("topologyPrototype" in messages).toBe(false);
     expect(messages.conceptsIndex.title).toBe("Concepts");
     expect(messages.tagLanding.searchHandoff).toBe("Search this tag");
   });

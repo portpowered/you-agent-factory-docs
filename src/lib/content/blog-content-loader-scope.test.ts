@@ -29,15 +29,7 @@ describe("blog content loader lane isolation", () => {
     const published = await listPublishedBlogPosts();
     const slugs = published.map((post) => post.slug).sort();
 
-    expect(slugs).toEqual(
-      [
-        "bottlenecks",
-        "comparing-agent-factories",
-        "evolution-of-diffusion",
-        "llms-no-longer-wholly-reliant-on-the-internet",
-        "roofline-throughput-explorer",
-      ].sort(),
-    );
+    expect(slugs).toEqual(["bottlenecks", "comparing-agent-factories"].sort());
     await expect(
       getPublishedBlogPostBySlug("bottlenecks"),
     ).resolves.toMatchObject({ slug: "bottlenecks" });
@@ -46,17 +38,15 @@ describe("blog content loader lane isolation", () => {
     ).resolves.toMatchObject({ slug: "comparing-agent-factories" });
     await expect(
       getPublishedBlogPostBySlug("evolution-of-diffusion"),
-    ).resolves.toMatchObject({ slug: "evolution-of-diffusion" });
+    ).resolves.toBeNull();
     await expect(
       getPublishedBlogPostBySlug(
         "llms-no-longer-wholly-reliant-on-the-internet",
       ),
-    ).resolves.toMatchObject({
-      slug: "llms-no-longer-wholly-reliant-on-the-internet",
-    });
+    ).resolves.toBeNull();
     await expect(
       getPublishedBlogPostBySlug("roofline-throughput-explorer"),
-    ).resolves.toMatchObject({ slug: "roofline-throughput-explorer" });
+    ).resolves.toBeNull();
     await expect(
       getPublishedBlogPostBySlug("example-post"),
     ).resolves.toBeNull();
