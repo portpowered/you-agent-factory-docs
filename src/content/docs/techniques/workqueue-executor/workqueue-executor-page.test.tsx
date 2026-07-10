@@ -62,19 +62,35 @@ describe("workqueue-executor technique page", () => {
     expect(compared).toBeTruthy();
 
     expect(whatItIs?.textContent).toMatch(/workqueue executor/i);
+    expect(whatItIs?.textContent).toMatch(/technique pattern/i);
     expect(whatItIs?.textContent).toMatch(/task queue/i);
     expect(whatItIs?.textContent).toMatch(/executor workstation/i);
+    expect(whatItIs?.textContent).toMatch(/workqueue-executor/i);
+    expect(whatItIs?.textContent).not.toMatch(/on this page/i);
+    expect(whatItIs?.textContent).not.toMatch(/page-meta/i);
 
     expect(whyItMatters?.textContent).toMatch(/queued work/i);
+    expect(whyItMatters?.textContent).toMatch(/after submit/i);
+    expect(whyItMatters?.textContent).toMatch(/executor workstation/i);
+    expect(whyItMatters?.textContent).toMatch(
+      /without treating the queue itself/i,
+    );
+
     expect(howItWorks?.textContent).toMatch(/task-queue/i);
+    expect(howItWorks?.textContent).toMatch(/executor workstation/i);
+    expect(howItWorks?.textContent).toMatch(/consume/i);
+    expect(howItWorks?.textContent).toMatch(/ordering/i);
+    expect(howItWorks?.textContent).toMatch(/concurrency/i);
+    expect(howItWorks?.textContent).toMatch(/batching/i);
+
     expect(compared?.textContent).toMatch(/planner-executor/i);
 
     expect(document.querySelector("[data-page-asset]")).toBeNull();
     expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
 
-    expect(whatItIs?.textContent?.trim().length).toBeGreaterThan(40);
-    expect(whyItMatters?.textContent?.trim().length).toBeGreaterThan(40);
-    expect(howItWorks?.textContent?.trim().length).toBeGreaterThan(40);
+    expect(whatItIs?.textContent?.trim().length).toBeGreaterThan(120);
+    expect(whyItMatters?.textContent?.trim().length).toBeGreaterThan(120);
+    expect(howItWorks?.textContent?.trim().length).toBeGreaterThan(120);
     expect(compared?.textContent?.trim().length).toBeGreaterThan(40);
   });
 });

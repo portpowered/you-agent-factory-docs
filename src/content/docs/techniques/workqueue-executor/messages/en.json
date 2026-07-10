@@ -4,15 +4,15 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A workqueue executor is a you-agent-factory technique pattern for draining or organizing a factory task queue by having executor workstations consume ready queued work. The workqueue-executor pattern is about how executors take items from the waiting backlog—not the backlog concept itself, and not a single named worker."
+      "body": "A workqueue executor is a you-agent-factory technique pattern for draining or organizing a factory task queue by having executor workstations consume ready queued work. After work is submitted, items wait in the task queue until an executor whose inputs match can take them. The workqueue-executor pattern is that consume-and-advance organization—how executors drain the waiting backlog—not the backlog concept itself, and not a single named worker."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Long-running factories accumulate queued work after submit. The workqueue-executor pattern is how operators keep that backlog moving through executor workstations without treating the queue itself as the technique."
+      "body": "Long-running factories accumulate queued work after submit. Without a drain pattern, that backlog sits until someone manually picks items or a one-off session ends. The workqueue-executor pattern is how operators keep that backlog moving through executor workstations: ready work is consumed and advanced while remaining items stay organized for further drain, without treating the queue itself as the technique."
     },
     "howItWorks": {
       "title": "How It Works",
-      "body": "Work waits in task-queue places and states until matching executor workstation inputs become enabled. Executors consume and advance ready items. Remaining ready work stays organized for further drain through ordering, concurrency, or batching at the technique level."
+      "body": "Work waits in task-queue places and states until matching executor workstation inputs become enabled. When those inputs are ready, executors consume waiting items and advance them through the factory. Remaining ready work stays organized for further drain. At the technique level, that organization can mean ordering which items go next, concurrency across several executors, or batching related items—without turning the page into a full configuration matrix."
     },
     "comparedToNearbyTechniques": {
       "title": "Compared To Nearby Techniques",
