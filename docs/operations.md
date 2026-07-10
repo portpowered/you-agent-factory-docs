@@ -275,6 +275,14 @@ bun run benchmark:static-export -- --mode=warm
   `miss:next-compiler-cache-absent`. Ordinary `make build` /
   `bun run build:export` never wipe a valid `.next` compiler cache — only the
   explicit clean benchmark prep path does.
+- Legacy Atlas/AI compile-graph trim: `build:export` runs
+  `scripts/run-static-export-next-build.ts`, which builds with
+  `NEXT_STATIC_EXPORT=1` then verifies that retired public route families
+  (`/docs/models|modules|papers|training|systems`, `/topology`,
+  `/docs/timeline`) are absent from App Router page modules, denylist owned
+  paths, and emitted `out/` HTML. Docs catch-all `generateStaticParams` also
+  filters retired Atlas collection slugs. Re-run the gate alone with
+  `bun run verify:static-export-legacy-compile-graph`.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
 - Focused contract coverage (no full timed export):
   `bun run test:static-export-profile-contract`.

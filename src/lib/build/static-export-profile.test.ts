@@ -82,7 +82,13 @@ describe("static-export-profile", () => {
     const nextStage = STATIC_EXPORT_PROFILE_STAGE_COMMANDS.find(
       (stage) => stage.id === "nextCompilationStaticRendering",
     );
-    expect(nextStage?.env?.NEXT_STATIC_EXPORT).toBe("1");
+    expect(nextStage?.argv).toEqual([
+      "bun",
+      "./scripts/run-static-export-next-build.ts",
+    ]);
+    // NEXT_STATIC_EXPORT is set inside the wrapper (with post-build legacy
+    // compile-graph verification), not as stage env.
+    expect(nextStage?.env?.NEXT_STATIC_EXPORT).toBeUndefined();
   });
 
   test("measureWallTimeMs records injectable clock deltas", () => {

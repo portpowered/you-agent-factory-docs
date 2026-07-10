@@ -163,7 +163,7 @@ describe("GitHub Actions make ci", () => {
       "bun ./scripts/ensure-static-export-immutable-snapshot.ts && bun ./scripts/run-next.ts build --webpack",
     );
     expect(scripts["build:export"]).toContain(
-      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && NEXT_STATIC_EXPORT=1 bun ./scripts/run-next.ts build --webpack",
+      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && bun ./scripts/run-static-export-next-build.ts",
     );
     expect(scripts["test:build-contract"]).toContain(
       "src/tests/build/next-build-tracing-warning.test.ts",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ensureStaticExportParams } from "@/lib/build/static-export";
+import { omitRetiredAtlasDocsStaticParams } from "@/lib/build/static-export-legacy-compile-graph";
 import { source } from "@/lib/source";
 import {
   buildDocsPageMetadata,
@@ -14,10 +15,13 @@ type DocsPageProps = {
 const STATIC_EXPORT_EMPTY_DOCS_SLUG = ["__no_docs_pages__"];
 
 export function generateStaticParams() {
-  return ensureStaticExportParams(source.generateParams(), {
-    slug: STATIC_EXPORT_EMPTY_DOCS_SLUG,
-    lang: "en",
-  });
+  return ensureStaticExportParams(
+    omitRetiredAtlasDocsStaticParams(source.generateParams()),
+    {
+      slug: STATIC_EXPORT_EMPTY_DOCS_SLUG,
+      lang: "en",
+    },
+  );
 }
 
 export async function generateMetadata({

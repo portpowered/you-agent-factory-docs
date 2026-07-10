@@ -300,8 +300,9 @@ export function formatStageTimingSummary(
 /**
  * Stage commands that mirror the supported static-export pipeline:
  * prepare:content-runtime → ensure-static-export-immutable-snapshot
- * (fingerprint-gated fumadocs `.source`) → NEXT_STATIC_EXPORT next build →
- * emit-export-search-index → write-build-source-fingerprint.
+ * (fingerprint-gated fumadocs `.source`) → static-export next build + legacy
+ * compile-graph verify → emit-export-search-index →
+ * write-build-source-fingerprint.
  *
  * The profiled runner invokes these as discrete timed stages instead of the
  * shell `&&` chain in package.json `build:export` (plus npm `prebuild:export`).
@@ -325,8 +326,9 @@ export const STATIC_EXPORT_PROFILE_STAGE_COMMANDS: readonly StaticExportProfileS
     },
     {
       id: "nextCompilationStaticRendering",
-      argv: ["bun", "./scripts/run-next.ts", "build", "--webpack"],
-      env: { NEXT_STATIC_EXPORT: "1" },
+      // Wrapper sets NEXT_STATIC_EXPORT=1, runs next build, then verifies the
+      // export compile graph has no retired Atlas/AI routes or HTML artifacts.
+      argv: ["bun", "./scripts/run-static-export-next-build.ts"],
     },
     {
       id: "searchIndexEmission",
