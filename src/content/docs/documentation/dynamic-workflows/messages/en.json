@@ -1,0 +1,40 @@
+{
+  "title": "Dynamic Workflows",
+  "description": "Look up JavaScript dynamic-workflow API interface and configuration for you-agent-factory Factory Session work.",
+  "openingSummary": "A dynamic workflow is a JavaScript orchestrator-backed factory. The live run is a Factory Session you validate, start, and inspect through CLI, Model Context Protocol (MCP), and shared session surfaces.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers JavaScript dynamic workflows in you-agent-factory: what a dynamic workflow is, the nouns a live run depends on, the callable API interface for validate and start work, and the configuration knobs for source resolution and MCP serve modes. Use it when you need the durable web contract for dynamic-workflow API and configuration without opening packaged CLI docs first."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory. The live run is a Factory Session — not a separate DynamicWorkflowRun runtime noun. A Factory owns the orchestrator-backed workflow. A FactoryOrchestrator drives that JavaScript factory. A FactorySession is the durable live run. A Dispatch is work the session sends. A FactoryArtifact is a durable output from the session. A FactoryEvent is a durable progress or outcome signal from the session."
+    },
+    "apiInterface": {
+      "title": "API Interface",
+      "body": "The API interface for dynamic workflows covers CLI workflow commands for JavaScript Factory Session work, Model Context Protocol (MCP) Factory Session tools with compatibility aliases, and durable session inspection for list, show, events, and preview style lookups."
+    },
+    "configuration": {
+      "title": "Configuration",
+      "body": "Configuration for dynamic workflows covers workflow source resolution from a project root, source kinds such as WORKFLOW_NAME and INLINE_WORKFLOW, optional args and policy overrides, and Model Context Protocol (MCP) serve backing modes for fixture-backed versus runtime-backed hosts."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Use this page as the durable lookup for dynamic-workflow API interface and configuration. Start from the definition and key concepts, then open the API interface and configuration sections when you need callable surfaces or serve-mode knobs."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web reference for JavaScript dynamic-workflow API interface and configuration. It is not the Cursor first-loop guide, not the full Model Context Protocol (MCP) host catalog deep dive beyond dynamic-workflow needs, and not the Petri factory.json topology overview owned by the configuration documentation page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
