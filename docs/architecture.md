@@ -2,26 +2,38 @@
 
 ## Purpose
 
-This document describes how content files, registry data, localized messages, asset references, search indexes, website components, markdown structure, and validation scripts work together.
+This document describes how content files, registry data, localized messages,
+asset references, search indexes, website components, markdown structure, and
+validation scripts work together for **you-agent-factory docs**.
 
-The site is a static-first Next.js App Router application using Fumadocs for MDX documentation, Orama for search, React Flow for model/module graphs, Recharts for explanatory charts, Tailwind and shadcn/ui for interface components, and Bun/Biome for the local toolchain.
+The site is a static-first Next.js App Router application using Fumadocs for MDX
+documentation, Orama for search, React Flow and Recharts (via `factory-ui`) when
+a page needs a graph or chart, Tailwind and shadcn/ui for interface components,
+and Bun/Biome for the local toolchain.
+
+This is the documentation site for the you-agent-factory CLI and agent-factory
+workflow system — guides, concepts, techniques, documentation (including CLI,
+harness support, configuration, MCP, and API), glossary, blog, and search. It is
+not the retired Model Atlas / Model Reference product. Atlas-era package trees,
+PDF set contracts, and recursive module-graph atlas machinery are not the
+primary architecture for this product.
 
 ## System Overview
 
 ```txt
-Shared MDX page structure      Machine-readable JSON registry
-src/content/docs/**/page.mdx   src/content/registry
-src/content/blog/**/page.mdx          |
-       |                             |
-       v                             v
-Colocated messages             Registry validation
-messages/<locale>.json         scripts/validate-registry.ts
-       |                             |
-       v                             v
-Colocated asset config         Fumadocs source + registry loaders
-assets.json                    source.config.ts
-       |                        src/lib/content
-       +------------+----------------+
+Shared MDX page structure         Machine-readable JSON registry
+src/content/docs/**/page.mdx      src/content/registry
+src/content/blog/**/page.mdx             |
+       |                                |
+       v                                v
+Colocated messages                Registry validation
+messages/<locale>.json            scripts/validate-registry.ts
+       |                                |
+       v                                v
+Colocated asset config            Fumadocs source + registry loaders
+assets.json                       source.config.ts
+       |                           src/lib/content
+       +------------+-------------------+
                     |
                     v
         localized page model and search documents
@@ -30,42 +42,60 @@ assets.json                    source.config.ts
         |                        |
         v                        v
   rendered pages            Orama search index
-  src/app/docs              src/app/api/search
-  src/app/blog              src/features/docs/search
+  src/app/(site)/docs       src/app/api/search
+  src/app/(site)/blog       src/features/docs/search
         |                        |
         +-----------+------------+
                     |
                     v
              website experience
-             docs, blog, search, cards, graphs
+             docs, blog, search, cards,
+             optional graphs/charts
 ```
+
+Primary factory collections under `src/content/docs` are `guides`, `concepts`,
+`techniques`, `documentation`, and `glossary`, plus `blog` as a separate
+narrative surface. See [data-model.md](./data-model.md) for the storage contract
+and [site-fundamentals.md](./site-fundamentals.md) for the product shell.
 
 ## Content Layers
 
 ### MDX Page Structure
 
-MDX files define page structure. They contain frontmatter, component order, registry references, message keys, asset IDs, citations, and structural cross-links.
+MDX files define page structure. They contain frontmatter, component order,
+registry references, message keys, asset IDs, citations, and structural
+cross-links.
 
-Canonical docs pages should not contain raw user-visible prose. Section titles, section bodies, callout text, graph labels, chart captions, image alt text, code schemas, comparison table values, and other display values resolve through colocated messages, registry records, or asset config. Blog posts are the exception because they are narrative documents rather than reusable reference templates.
+Canonical docs pages should not contain raw user-visible prose. Section titles,
+section bodies, callout text, graph labels, chart captions, image alt text, code
+schemas, comparison table values, and other display values resolve through
+colocated messages, registry records, or asset config. Blog posts are the
+exception because they are narrative documents rather than reusable reference
+templates.
 
-Template authoring guidance lives in sidecar files under `docs/templates`. The production `*.mdx` template defines structure; `<kind>.content.md` explains how to write the page; `<kind>.messages.en.json` provides the starter default-locale message shape; `<kind>.assets.json` provides the starter asset config. Generated docs pages should not copy authoring guidance into `page.mdx`.
+Template authoring guidance lives in sidecar files under `docs/templates`. The
+production `*.mdx` template defines structure; `<kind>.content.md` explains how
+to write the page; `<kind>.messages.en.json` provides the starter default-locale
+message shape; `<kind>.assets.json` provides the starter asset config. Generated
+docs pages should not copy authoring guidance into `page.mdx`.
 
-Docs pages live under:
+Factory docs pages live under:
 
 ```txt
 src/content/docs/
-  concepts/
-    kv-cache/
+  guides/
+    getting-started/
       page.mdx
       messages/
         en.json
         vi.json
       assets.json
-  models/
-  modules/
-  papers/
-  training/
-  systems/
+  concepts/
+  techniques/
+  documentation/
+    cli/
+    harness-support/
+    configuration/
   glossary/
 ```
 
@@ -73,65 +103,82 @@ Blog posts live under:
 
 ```txt
 src/content/blog/
-  why-gqa-matters/
+  comparing-agent-factories/
     page.mdx
     messages/
       en.json
-      vi.json
     assets.json
 ```
 
-MDX frontmatter links page structure to structured data through `registryId`. Localized display metadata and body text come from colocated message files. Concrete image, graph, chart, and media values come from colocated asset config.
+MDX frontmatter links page structure to structured data through `registryId`.
+Localized display metadata and body text come from colocated message files.
+Concrete image, graph, chart, and media values come from colocated asset config
+when a page needs them (`assets.json` may be `{}`).
 
 ### Localized Messages
 
 Page-specific localized values live next to the page:
 
 ```txt
-src/content/docs/modules/grouped-query-attention/
+src/content/docs/documentation/cli/
   page.mdx
   messages/
     en.json
     vi.json
 ```
 
-Message files provide localized titles, descriptions, summaries, section headings, section bodies, callouts, captions, and alt text. Shared UI chrome uses common message files outside the page tree.
+Message files provide localized titles, descriptions, summaries, section
+headings, section bodies, callouts, captions, and alt text. Shared UI chrome
+uses common message files outside the page tree.
 
 ### Asset Config
 
-Structured files reference asset IDs rather than concrete file paths or graph values. Colocated `assets.json` files resolve those IDs:
+Structured files reference asset IDs rather than concrete file paths or graph
+values. Colocated `assets.json` files resolve those IDs when media is present:
 
 ```txt
-src/content/docs/modules/grouped-query-attention/
+src/content/docs/guides/getting-started/
   assets.json
   assets/
-    mha-vs-gqa.png
+    getting-started-hero.png
 ```
 
-Asset config resolves images, generated images, graph IDs, chart IDs, captions, alt text keys, dimensions, and other display values. Components consume resolved assets, not raw string paths scattered through MDX.
+Many factory pages ship an empty `assets.json` (`{}`) until they need media.
+Asset config resolves images, generated images, graph IDs, chart IDs, captions,
+alt text keys, dimensions, and other display values. Components consume resolved
+assets, not raw string paths scattered through MDX.
 
 ### JSON Registry
 
-Registry JSON files are the structured source of truth for search metadata, semantic relationships, model cards, module lists, graph data, related links, and validation.
+Registry JSON files are the structured source of truth for search metadata,
+semantic relationships, factory records, optional graph/table data, related
+links, and validation.
 
-Registry records live under:
+Primary factory registry folders:
 
 ```txt
 src/content/registry/
-  models/
-  modules/
+  guides/
   concepts/
-  papers/
-  training-regimes/
-  datasets/
-  hardware/
-  organizations/
+  techniques/
+  documentation/
   citations/
   tags/
+  classifications/
   graphs/
+  tables/
 ```
 
-The registry stores stable IDs, slugs, aliases, tags, relationships, citations, and type-specific fields. It should be easy for agents to generate and easy for humans to review in diffs.
+Factory-facing record kinds for new product pages are `guide`, `concept`,
+`technique`, and `documentation` (for example `guide.getting-started`,
+`concept.harness`, `technique.ralph`, `documentation.cli`,
+`documentation.harness-support`). Glossary pages use frontmatter
+`kind: "glossary"` with a backing `concept.<slug>` record.
+
+The registry stores stable IDs, slugs, aliases, tags, relationships, citations,
+and type-specific fields. It should be easy for agents to generate and easy for
+humans to review in diffs. Legacy Atlas entity folders may still exist during
+migration; they are not the primary product inventory for new factory pages.
 
 ### TypeScript Schemas
 
@@ -144,15 +191,36 @@ src/lib/content/messages.ts
 src/lib/content/assets.ts
 ```
 
-The schemas validate JSON records, message files, and asset config. They provide inferred types to components, loaders, graph renderers, and search builders. Zod or an equivalent TypeScript-first schema library should be used.
+The schemas validate JSON records, message files, and asset config. They provide
+inferred types to components, loaders, optional graph/chart renderers, and
+search builders. Zod or an equivalent TypeScript-first schema library should be
+used.
+
+### First-Class Factory Surfaces
+
+Architecture treats these documentation surfaces as first-class, not secondary
+to Atlas entity pages:
+
+* **CLI workflows** — install, run named workflows, sessions, submitting work,
+  and related documentation pages under `documentation/` and guides under
+  `guides/`.
+* **Harness support** — harness matrix and support docs (for example
+  `documentation.harness-support`) that explain which harnesses the factory
+  supports.
+* **Factory records** — registry-backed `guide.*`, `concept.*`, `technique.*`,
+  and `documentation.*` records that drive search, related links, and
+  validation for the product collections.
 
 ## Build-Time Flow
 
 ### 1. Load Content
 
-Fumadocs loads MDX page structures from `src/content/docs`. Blog loading may use the same source pattern or a separate collection, but should reuse the same MDX component mapping for code, math, callouts, tables, citations, and diagrams.
+Fumadocs loads MDX page structures from `src/content/docs`. Blog loading may use
+the same source pattern or a separate collection, but should reuse the same MDX
+component mapping for code, math, callouts, tables, citations, and diagrams.
 
-The content loaders read page structure, colocated messages, colocated asset config, and registry records, then build lookup maps:
+The content loaders read page structure, colocated messages, colocated asset
+config, and registry records, then build lookup maps:
 
 ```txt
 id -> record
@@ -167,7 +235,8 @@ record id -> citations
 
 ### 2. Validate Registry Data
 
-`scripts/validate-registry.ts` validates the registry before the site builds.
+`scripts/validate-registry.ts` / `make validate-data` validates the registry
+before the site builds.
 
 It should verify:
 
@@ -177,17 +246,20 @@ It should verify:
 * Relationship IDs resolve.
 * Tags resolve to tag records.
 * Published docs pages have valid `registryId` values where required.
-* Published registry records have matching canonical MDX pages unless marked data-only.
+* Published registry records have matching canonical MDX pages unless marked
+  data-only.
 * Published pages have default-locale message files.
 * Required message keys exist for the page template.
-* Canonical docs MDX does not contain raw user-visible prose outside approved structural components.
-* Asset references resolve to concrete config values.
+* Canonical docs MDX does not contain raw user-visible prose outside approved
+  structural components.
+* Asset references resolve to concrete config values when assets are declared.
 * Asset alt text and caption keys resolve through messages.
-* Graph nodes and edges are valid.
+* Referenced graph or table records are valid when used.
 
 ### 3. Validate Links
 
-`scripts/validate-links.ts` uses the Fumadocs Validate Links integration with `next-validate-link`.
+`scripts/validate-links.ts` / `make linkcheck` uses the Fumadocs Validate Links
+integration with `next-validate-link`.
 
 It checks:
 
@@ -200,7 +272,8 @@ It checks:
 
 ### 4. Build Search Documents
 
-Search documents are derived from MDX page structure, localized messages, asset metadata, and registry records.
+Search documents are derived from MDX page structure, localized messages, asset
+metadata, and registry records.
 
 MDX structure contributes:
 
@@ -235,21 +308,12 @@ Registry records contribute:
 * stable `registryId`
 * aliases
 * canonical tags
-* page kind
-* model family
-* module type
-* module family
-* concept type
-* variant group
-* optimization targets
-* example model IDs
-* training regime IDs
-* modalities
-* source type
+* page kind (`guide`, `concept`, `technique`, `documentation`, and related)
+* classification membership when present
 * relationship IDs
 * citation IDs
 
-Asset config contributes:
+Asset config contributes when present:
 
 * graph IDs
 * image IDs
@@ -259,10 +323,11 @@ Asset config contributes:
 The result is a normalized search document:
 
 ```txt
-MDX page structure + locale messages + asset config + registry record -> SearchDocument -> Orama index
+MDX page structure + locale messages + asset config + registry record
+  -> SearchDocument -> Orama index
 ```
 
-Orama handles retrieval. The registry remains the authority for relationships and graph traversal.
+Orama handles retrieval. The registry remains the authority for relationships.
 
 ## Runtime Flow
 
@@ -271,13 +336,17 @@ Orama handles retrieval. The registry remains the authority for relationships an
 Route files in `src/app` should compose data loaders and feature components:
 
 ```txt
-src/app/page.tsx
-src/app/docs/[[...slug]]/page.tsx
-src/app/blog/page.tsx
-src/app/blog/[slug]/page.tsx
+src/app/(site)/page.tsx
+src/app/(site)/docs/[[...slug]]/page.tsx
+src/app/(site)/blog/page.tsx
+src/app/(site)/blog/[slug]/page.tsx
+src/app/(site)/search/page.tsx
+src/app/(site)/tags/...
 ```
 
-The route layer should stay thin. It loads validated page structure, locale messages, resolved assets, and registry records, then passes a localized page model to feature components.
+The route layer should stay thin. It loads validated page structure, locale
+messages, resolved assets, and registry records, then passes a localized page
+model to feature components.
 
 ### Docs Components
 
@@ -288,11 +357,14 @@ The route layer should stay thin. It loads validated page structure, locale mess
 * callouts
 * citations
 * related links
-* search dialog
-* docs cards
+* search dialog and search page
+* docs cards and index lists
 * previous/next navigation
+* page-local teaching components (for example harness support matrix)
 
-Docs components consume validated localized page data, resolved assets, and registry data. They should not parse registry JSON, read message files directly, resolve asset paths manually, or infer relationships from raw prose.
+Docs components consume validated localized page data, resolved assets, and
+registry data. They should not parse registry JSON, read message files directly,
+resolve asset paths manually, or infer relationships from raw prose.
 
 ### Blog Components
 
@@ -308,18 +380,22 @@ Docs components consume validated localized page data, resolved assets, and regi
 
 Blog posts should link back to canonical docs pages for stable definitions.
 
-### Model Components
+### Factory UI (Optional Graphs And Charts)
 
-`src/features/models` owns model and module visualization:
+`src/features/factory-ui` owns thin host wrappers for shared graph, chart, and
+data-display primitives used when a factory page needs a teaching diagram or
+comparison chart.
 
-* model cards
-* module lists
-* architecture summaries
-* React Flow graph viewers
-* graph legends
-* node detail panels
+Factory UI components:
 
-Model components read validated registry records, resolved localized values, resolved asset references, and graph records. React Flow receives graph data that has already been validated and normalized.
+* re-export package graph/chart primitives for rewrite-era pages
+* do not own Atlas model/module viewers or recursive module-atlas contracts
+* are optional — many factory pages render without graphs or charts
+
+There is no mandatory `src/features/models` Atlas viewer package-tree contract
+for this product. When a page needs a graph, React Flow receives graph data that
+has already been validated and normalized; visual quality comes from semantic
+node/edge styles and readable layout, not from React Flow defaults alone.
 
 ## Search Architecture
 
@@ -345,60 +421,65 @@ Orama indexes:
 * tag names
 * tag aliases
 
-This supports normal user queries like `attention`, `gqa`, `kv cache`, and `models using sliding window attention`.
+This supports normal user queries like `getting started`, `ralph`,
+`harness support`, `worktree`, and `you run --named`.
 
 ### Tags And Facets
 
-Tags are a general search mechanism. They are controlled registry records and appear in both MDX frontmatter and JSON registry records.
+Tags are a general search mechanism. They are controlled registry records and
+appear in both MDX frontmatter and JSON registry records.
 
-Search UI filters should be built from registry fields:
+Search UI filters should be built from registry fields relevant to factory
+docs:
 
-* page kind
+* page kind (`guide`, `concept`, `technique`, `documentation`, blog, …)
 * tags
-* model family
-* module type
-* optimization target
-* training regime
-* modality
-* source type
+* classification membership when present
 
-The search dialog may use Fumadocs tag filtering for simple filters, and registry-derived client filtering for richer facets.
+The search dialog may use Fumadocs tag filtering for simple filters, and
+registry-derived client filtering for richer facets.
 
 Tag pages provide a browsing surface for broad topics:
 
 ```txt
 /tags
-/tags/attention
-/tags/kv-cache
+/tags/<slug>
 ```
 
-Tag pages derive their lists from registry data and MDX frontmatter. They should group results by page kind so a reader can scan models, modules, concepts, papers, blog posts, training regimes, and systems pages associated with the same tag.
+Tag pages derive their lists from registry data and MDX frontmatter. They should
+group results by page kind so a reader can scan guides, concepts, techniques,
+documentation pages, glossary entries, and blog posts associated with the same
+tag.
 
 ### Semantic Relationships
 
-Relationship fields such as `relatedIds`, `moduleIds`, `paperIds`, `usedByModelIds`, and `introducedByPaperIds` may be indexed into Orama for result enrichment.
+Relationship fields such as `relatedIds`, typed ontology edges, and
+classification membership may be indexed into Orama for result enrichment.
 
-However, relationship truth stays in the registry. Multi-hop questions should be answered by registry traversal first, then search can retrieve or rank candidate pages.
+However, relationship truth stays in the registry. Multi-hop questions should be
+answered by registry traversal first, then search can retrieve or rank candidate
+pages.
 
 Example:
 
 ```txt
 User query:
-  attention variants used by llama models
+  techniques related to write-review loops
 
 Registry traversal:
-  model family llama -> moduleIds -> attention modules
+  guide.write-review-loops -> related technique / concept records
 
 Search ranking:
-  rank matching module pages by text, aliases, tags, and summaries
+  rank matching technique and concept pages by text, aliases, tags, and summaries
 ```
 
 ### Derived Related Documents
 
-Related-document sections are derived from taxonomy, tags, and typed registry fields. They answer questions like:
+Related-document sections are derived from taxonomy, tags, and typed registry
+fields. They answer questions like:
 
 ```txt
-If I am reading Multi-Head Attention, what nearby module variants should I inspect next?
+If I am reading Getting Started, what nearby guides and docs should I open next?
 ```
 
 The registry should not require every page to manually list every nearby page.
@@ -413,146 +494,60 @@ Compatibility-only fallbacks may still exist for records without usable
 ontology peer data, but they are not the default contract. Those fallback
 inputs may include:
 
-* `variantGroup`
-* `conceptType`
+* `conceptType` (for concept-backed pages)
 * `tags`
-* `usedByModelIds`
-* `introducedByPaperIds`
-* `paperIds`
 * `relatedIds`
 
-Page components render those relationships as grouped sections:
+Page components render those relationships as grouped sections when data
+exists:
 
 ```txt
 Direct relationships
 Same classification
 Shared parent classification
-Compatibility: same variant group
-Compatibility: same concept type
 Shared tag
 Curated related links
 ```
 
 `relatedIds` remains an override for high-value links that cannot be derived
-from ontology or classification data, such as a paper arguing against a method
-or a prerequisite concept that intentionally does not share tags.
+from ontology or classification data. Factory pages often start with empty
+`relatedIds` and empty tags; curated MDX links remain valid while ontology
+coverage grows.
 
-MDX can introduce the section, but the component should read the registry and derive the current related documents.
+MDX can introduce the section, but the component should read the registry and
+derive the current related documents.
 
-## Recursive Module Graph Architecture
+## Optional Graphs, Charts, And Tables
 
-All model and module structures are represented as recursive module graphs.
+Graphs, charts, and tables are optional teaching assets for factory docs. They
+are not a mandatory recursive module-atlas contract for every page.
 
-A model is a root module. A module can contain submodules. Submodules can contain more submodules. This single abstraction should cover transformer models, diffusion models, FFT modules, attention blocks, audio/image encoders, training pipelines, and systems diagrams.
+When a page needs a diagram, harness matrix, or comparison chart:
 
-The graph structure, localized labels, page assets, and page MDX should stay close together:
+* declare a page-local asset in `assets.json`, or
+* point at a reusable registry graph/table record when the structure is shared,
+  or
+* use a page-local teaching component (for example the harness support matrix)
 
-```txt
-src/content/docs/modules/grouped-query-attention/
-  page.mdx
-  messages/
-    en.json
-    vi.json
-  assets.json
-  assets/
-```
+Web graph rendering uses React Flow through `src/features/factory-ui` when a
+graph asset is present. Chart rendering uses the factory-ui chart wrappers when
+a chart asset is present.
 
-Reusable graphs may live under `src/content/registry/graphs`, but page-specific graph references and renderer choices should be declared in colocated `assets.json`.
+Validation should fail when a referenced graph ID, table ID, chart ID, or print
+renderer configuration cannot be resolved. Pages with empty `assets.json` do not
+require graphs, charts, or tables.
 
-Graph rendering flow:
-
-```txt
-recursive module graph
-  + messages/<locale>.json
-  + assets.json
-  -> expanded/collapsed graph state
-  -> vertical layout
-  -> renderer selection
-       web: React Flow
-       PDF: static vertical SVG, Mermaid, or image fallback
-```
-
-Graph viewers should include:
-
-* localized labels
-* legends
-* node details
-* pan and zoom
-* fit-to-view
-* reset controls
-* expand node
-* collapse node
-* expand all
-* collapse all
-* text summaries for accessibility and search
-
-Graph renderer rules:
-
-* Web routes use React Flow as the interactive graph engine.
-* React Flow should not dictate visual style. Visual quality comes from semantic module node styles, semantic edge styles, and deterministic vertical layout.
-* Layout is vertical-first on desktop and mobile.
-* Expand and collapse controls are icon buttons with accessible labels.
-* The graph state is recursive: expanding a module replaces or opens that module's submodules while preserving the vertical flow.
-* Print/PDF routes use a static vertical SVG renderer for recursive module graphs.
-* Print/PDF routes may use Mermaid for simple directional graphs.
-* Print/PDF routes use image fallback only when graph complexity requires it.
-* PDF generation must not screenshot the whole page. Playwright is used to call Chromium `page.pdf()` on print-safe routes.
-* Graph assets declare `webRenderer` and `printRenderer` in `assets.json`.
-* `validate-pdf` checks that selected graph assets have a valid print renderer and localized labels/alt text.
-
-## PDF Export Architecture
-
-PDF export is a build artifact from resolved localized page models.
-
-```txt
-page.mdx structure
-  + messages/<locale>.json
-  + assets.json
-  + registry records
-  -> print route
-  -> Chromium page.pdf()
-  -> dist/pdf/<locale>/*.pdf
-```
-
-PDF routes:
-
-```txt
-src/app/print/[locale]/docs/[[...slug]]/page.tsx
-src/app/print/[locale]/sets/[set]/page.tsx
-```
-
-Required commands:
-
-```txt
-make validate-pdf LOCALE=en
-make pdf LOCALE=en
-make pdf-page LOCALE=en PAGE=docs/modules/grouped-query-attention
-make pdf-set LOCALE=en SET=attention
-```
-
-`scripts/build-pdf.ts` should:
-
-* parse `LOCALE`, `PAGE`, and `SET`
-* validate registry, message, asset, and PDF set inputs
-* build or start the site
-* visit print-safe routes with Playwright
-* wait for fonts, math, charts, Mermaid, and print graph renderers
-* call `page.pdf()`
-* write output under `dist/pdf/<locale>/`
-
-PDF sets live under:
-
-```txt
-src/content/pdf-sets/
-  attention.json
-  core-transformers.json
-```
-
-CI should run `make validate-pdf` to catch unresolved print inputs. CI does not need to generate every PDF on every pull request unless the project chooses that as a release gate.
+Print/PDF export paths and recursive module-graph atlas contracts from the
+retired Model Atlas product are not the primary architecture for factory docs.
+If print helpers remain in the toolchain as stubs or migration leftovers, they
+are not required package-tree or content contracts for new factory pages.
 
 ## CI And Quality Gates
 
-Production build output is guarded against Turbopack NFT whole-project filesystem tracing warnings; see [turbopack-nft-tracing-warning-closure.md](./turbopack-nft-tracing-warning-closure.md) for detector locations, guarded pattern families, and maintenance notes.
+Production build output is guarded against Turbopack NFT whole-project
+filesystem tracing warnings; see
+[turbopack-nft-tracing-warning-closure.md](./turbopack-nft-tracing-warning-closure.md)
+for detector locations, guarded pattern families, and maintenance notes.
 
 The root `make ci` command should run:
 
@@ -566,9 +561,22 @@ make linkcheck
 make build
 ```
 
+Contributor verification for architecture and authoring work should use current
+paths:
+
+* `make validate-data` — registry, messages, assets, and page-bundle correctness
+* `make linkcheck` — internal docs and route links
+* `bun run check:retired-product-docs` — owned architecture/authoring docs do
+  not reintroduce retired product names or retired public route families
+  (exclusion/denylist wording is allowed)
+* `make typecheck` / `make lint` / tests — code quality
+* browser verification of published factory routes (for example
+  `/docs/guides/getting-started` or `/docs/documentation/cli`)
+
 Required tool ownership:
 
-* Biome owns linting and formatting; CI should run Biome in check mode rather than write mode.
+* Biome owns linting and formatting; CI should run Biome in check mode rather
+  than write mode.
 * Bun owns tests and coverage.
 * TypeScript owns type checking.
 * Fumadocs and `next-validate-link` own docs link validation.
@@ -576,6 +584,10 @@ Required tool ownership:
 
 ## Design Principle
 
-Do not let runtime components discover meaning by scraping prose or raw file paths.
+Do not let runtime components discover meaning by scraping prose or raw file
+paths.
 
-The registry defines meaning. MDX defines structure. Messages provide localized values. Asset config resolves concrete media and graph references. Search indexes the resolved page model. Components render validated data.
+The registry defines meaning. MDX defines structure. Messages provide localized
+values. Asset config resolves concrete media and optional graph/chart
+references. Search indexes the resolved page model. Components render validated
+data.

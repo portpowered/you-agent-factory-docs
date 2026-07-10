@@ -33,7 +33,7 @@ Follow [docs writing standards](../../factory/docs/standards/docs-writing-standa
 
 ## Registry Expectations
 
-The backing concept registry record at `src/content/registry/concepts/<slug>.json` should include `conceptType`, useful `tags`, `prerequisiteIds`, `explainsIds`, `citationIds`, and curated `relatedIds` only when derived relationships are insufficient. Set frontmatter `status` to `published` when the entry is ready for readers.
+The backing concept registry record at `src/content/registry/concepts/<slug>.json` should include useful `tags`, `prerequisiteIds`, `explainsIds`, `citationIds`, and curated `relatedIds` only when derived relationships are insufficient. Prefer `primaryClassificationId` / `relationships` when taxonomy fields are in use; treat `conceptType` as a compatibility field, not the preferred starter path. Set frontmatter `status` to `published` when the entry is ready for readers. Placeholder registry ids still use the `concept.` namespace (for example `concept.harness`) even though the page route is `/docs/glossary/<slug>`.
 
 ## Math and Code Examples
 

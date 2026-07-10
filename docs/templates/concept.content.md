@@ -44,4 +44,5 @@ unless a current compatibility workflow still requires them.
 
 The concept registry record should still include useful `tags`,
 `prerequisiteIds`, `explainsIds`, `citationIds`, and curated `relatedIds` only
-when derived relationships are insufficient.
+when derived relationships are insufficient. Placeholder registry ids use the
+`concept.` namespace (for example `concept.worktree`).

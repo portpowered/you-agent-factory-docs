@@ -1,18 +1,22 @@
 # Contributing documentation
 
-This guide explains how to add or request new documentation in the Model Reference
-repository. It describes only workflows that exist in the codebase today.
+This guide explains how to add or request new documentation in the
+you-agent-factory docs repository. It describes only workflows that exist in the
+codebase today.
 
 ## What this repository is for
 
-Model Reference is a documentation-native reference for modern AI models,
-modules, concepts, papers, training methods, and related topics. Published pages
-live under `src/content/docs/` and `src/content/blog/` and render through the
-shared docs shell described in [site fundamentals](../site-fundamentals.md).
+**you-agent-factory docs** is the documentation site for the you-agent-factory
+CLI and agent-factory workflow system. Readers use it to install and run the
+CLI, follow use-case guides, look up concepts and techniques, read
+documentation (configuration, harness support, CLI, MCP, API), browse the
+glossary, and follow blog posts — through the shared docs shell described in
+[site fundamentals](../site-fundamentals.md).
 
-Docs contributions should help readers look up concepts, compare variants, and
-follow links between related pages. This site is a technical explainer and
-reference sheet, not a benchmark leaderboard or a paper download service.
+Primary published collections live under `src/content/docs/` as `guides`,
+`concepts`, `techniques`, `documentation`, and `glossary`, plus narrative posts
+under `src/content/blog/`. This is not the retired Model Reference / Model Atlas
+product, not a benchmark leaderboard, and not a paper-download mirror.
 
 The content model separates page structure (MDX), structured data (registry
 records), and reader-facing prose (colocated message files). See
@@ -26,7 +30,7 @@ Read these references before authoring or reviewing docs:
 | --- | --- |
 | [documentation template](../documentation-template.md) | Page structure, MDX components, message keys, and asset placement |
 | [writing standards](../../factory/docs/standards/docs-writing-standards.md) | Tone, isolation-first writing, symbol-only math, graph/equation expectations, and customer-facing copy rules |
-| [graphing standards](../graphing-standards.md) | Single primary graph, node theme, and attention-variant comparison |
+| [graphing standards](../graphing-standards.md) | Single primary graph, node theme, and comparison patterns when a page uses a graph |
 | [data model](../data-model.md) | Registry IDs, tags, aliases, citations, and storage layout |
 | [site fundamentals](../site-fundamentals.md) | Product frame, visual direction, and docs shell expectations |
 
@@ -68,15 +72,22 @@ Each page kind has a production template and three starter sidecars. Copy the
 sidecars into the published page folder; do not copy `.content.md` into
 `src/content/`.
 
+**Default factory product kinds** (use these for new you-agent-factory docs
+pages):
+
 | Page kind | Production template | Starter sidecars | Published route parent |
 | --- | --- | --- | --- |
+| Guide | `guide.mdx` | `guide.content.md`, `guide.messages.en.json`, `guide.assets.json` | `src/content/docs/guides/<slug>/` |
+| Technique | `technique.mdx` | `technique.content.md`, `technique.messages.en.json`, `technique.assets.json` | `src/content/docs/techniques/<slug>/` |
+| Documentation | `documentation.mdx` | `documentation.content.md`, `documentation.messages.en.json`, `documentation.assets.json` | `src/content/docs/documentation/<slug>/` |
 | Concept | `concept.mdx` | `concept.content.md`, `concept.messages.en.json`, `concept.assets.json` | `src/content/docs/concepts/<slug>/` |
 | Glossary | `glossary.mdx` | `glossary.content.md`, `glossary.messages.en.json`, `glossary.assets.json` | `src/content/docs/glossary/<slug>/` |
-| Model | `model.mdx` | `model.content.md`, `model.messages.en.json`, `model.assets.json` | `src/content/docs/models/<slug>/` |
-| Module | `module.mdx` | `module.content.md`, `module.messages.en.json`, `module.assets.json` | `src/content/docs/modules/<slug>/` |
-| Paper | `paper.mdx` | `paper.content.md`, `paper.messages.en.json`, `paper.assets.json` | `src/content/docs/papers/<slug>/` |
-| Training regime | `training-regime.mdx` | `training-regime.content.md`, `training-regime.messages.en.json`, `training-regime.assets.json` | `src/content/docs/training/<slug>/` |
 | Blog post | `blog-post.mdx` | `blog-post.content.md`, `blog-post.messages.en.json`, `blog-post.assets.json` | `src/content/blog/<slug>/` |
+
+Sibling Atlas templates (`model`, `module`, `paper`, `training-regime`,
+`system`) may still exist in the tree during migration. They are not required
+starter paths for new factory product pages. Prefer the factory inventory above
+unless you are maintaining an existing Atlas-era page.
 
 Starter artifact roles:
 
@@ -89,7 +100,8 @@ Starter artifact roles:
 
 Some kinds also ship optional `*.graph.json` examples next to the template
 bundle. Use them as references when filling `assets.json`, not as files to copy
-verbatim into published pages.
+verbatim into published pages. Many factory pages correctly ship an empty
+`assets.json` (`{}`) when no graph or table is needed.
 
 Glossary entries share the concept registry record shape and section structure.
 They differ in frontmatter `kind: glossary`, route prefix
@@ -98,9 +110,11 @@ They differ in frontmatter `kind: glossary`, route prefix
 
 ### Page generation for canonical bundles
 
-For **concept**, **glossary**, **module**, **model**, **paper**, and
-**training-regime** pages, the preferred direct-authoring path is the page-spec
-workflow:
+For **concept** and **glossary** pages (and for sibling Atlas kinds the
+generator still supports), the preferred direct-authoring path is the page-spec
+workflow. Guide, technique, and documentation pages commonly start from the
+matching rewrite-era template sidecars under `docs/templates/` when a page-spec
+path is not yet the common case for that kind:
 
 ```sh
 bun run generate:page-bundle -- --help
@@ -211,7 +225,7 @@ these two repository policies:
    `src/lib/content/content-paths.ts`. Do not add new page-specific
    `*_PAGE_DIR` exports or hand-maintained content-path constants for a single
    page. Shared roots and section helpers such as `getDocsRoot`,
-   `getDocsSectionRoot(section)`, and `getModulesDocsRoot` remain the right
+   `getDocsSectionRoot(section)`, and section-root helpers remain the right
    surface for tree-wide or section-wide operations.
 
 2. **Scanner-backed ordinary page validation** — Content-only published page
@@ -228,8 +242,9 @@ Maintainer references with the full contract:
 
 ## Ontology-first taxonomy contract
 
-Canonical authoring for **modules**, **concepts/glossary entries**,
-**training regimes**, and **systems** is moving to the ontology-backed shape:
+Canonical authoring for **concepts/glossary entries** (and for sibling Atlas
+kinds such as modules, training regimes, and systems when those pages are still
+maintained) is moving to the ontology-backed shape:
 
 - `primaryClassificationId`
 - `secondaryClassificationIds`
@@ -277,9 +292,10 @@ These fields must stay aligned across the page folder, MDX frontmatter, message
 files, and registry records. See [data model](../data-model.md) for the full
 schema.
 
-**Slug** — Kebab-case route segment and folder name (`grouped-query-attention`).
-Use lowercase letters, digits, and single hyphens only. The slug does not include
-the route prefix (`modules/`, `concepts/`, and so on).
+**Slug** — Kebab-case route segment and folder name (`getting-started`,
+`harness-support`, `worktree`). Use lowercase letters, digits, and single
+hyphens only. The slug does not include the route prefix (`guides/`,
+`concepts/`, `documentation/`, and so on).
 
 **Title** — Reader-facing display name. Put the canonical title in
 `messages/en.json` under `title`. Registry records point to it through
@@ -290,12 +306,11 @@ docs:
 
 | Page kind | registryId pattern | Registry file location |
 | --- | --- | --- |
+| Guide | `guide.<slug>` | `src/content/registry/guides/<slug>.json` |
+| Technique | `technique.<slug>` | `src/content/registry/techniques/<slug>.json` |
+| Documentation | `documentation.<slug>` | `src/content/registry/documentation/<slug>.json` |
 | Concept | `concept.<slug>` | `src/content/registry/concepts/<slug>.json` |
 | Glossary | `concept.<slug>` | `src/content/registry/concepts/<slug>.json` |
-| Model | `model.<slug>` | `src/content/registry/models/<slug>.json` |
-| Module | `module.<slug>` | `src/content/registry/modules/<slug>.json` |
-| Paper | `paper.<slug>` | `src/content/registry/papers/<slug>.json` |
-| Training regime | `training-regime.<slug>` | `src/content/registry/training-regimes/<slug>.json` |
 
 Set the same `registryId` in `page.mdx` frontmatter and in the registry record
 `id` field. Frontmatter `kind` must match the registry record `kind` (glossary
@@ -303,28 +318,25 @@ pages use `kind: glossary` in frontmatter while the registry record remains
 `kind: concept`).
 
 **Aliases** — Abbreviations, spelling variants, and common names readers might
-search for (`GQA`, `grouped-query attention`). Keep frontmatter `aliases` and
-the registry record `aliases` array in sync.
+search for (`GQA` is an Atlas-era example; factory pages use names such as
+`ralph loop`, `worktree`). Keep frontmatter `aliases` and the registry record
+`aliases` array in sync.
 
 **Tags** — Controlled search metadata, not casual labels. Use tag **slugs** that
 resolve to published records in `src/content/registry/tags/` (for example
-`attention` maps to `tag.attention`). Repeat the same slugs in frontmatter and in
+`harness` maps to `tag.harness`). Repeat the same slugs in frontmatter and in
 the registry record `tags` array.
 
-When using `generate:page-bundle`, the checked-in page-spec validator now
-accepts ontology-first inputs for module, concept, glossary, training-regime,
-and system pages through `primaryClassificationId` plus optional
-`secondaryClassificationIds` and `relationships`. Legacy typed taxonomy fields
-such as `conceptType`, `moduleType`, `regimeType`, and `systemType` are still
-accepted as temporary compatibility inputs, but they are no longer required for
-those ontology-backed authoring paths. Model pages still require `family`,
-`sourceType`, and `modalities`, and paper pages still require `authors`,
-`publishedAt`, and `url`. Valid `conceptType` values remain `architecture`,
-`math`, `training`, `inference`, `systems`, `evaluation`, and `general` when a
-compatibility input is still needed. Optional spec fields (`tags`, `aliases`,
-`relatedIds`, `citationIds`) seed registry and frontmatter fields in one step.
-The legacy `scaffold:doc-page` CLI accepts the concept/glossary subset through
-`--concept-type` and comma-separated optional flags.
+When using `generate:page-bundle`, the checked-in page-spec validator accepts
+ontology-first inputs for concept and glossary pages (and for sibling Atlas
+kinds the generator still supports) through `primaryClassificationId` plus
+optional `secondaryClassificationIds` and `relationships`. Legacy typed taxonomy
+fields such as `conceptType` are still accepted as temporary compatibility
+inputs, but they are no longer required for those ontology-backed authoring
+paths. Optional spec fields (`tags`, `aliases`, `relatedIds`, `citationIds`)
+seed registry and frontmatter fields in one step. The legacy `scaffold:doc-page`
+CLI accepts the concept/glossary subset through `--concept-type` and
+comma-separated optional flags.
 
 ## Canonical content requirements
 
@@ -398,25 +410,25 @@ review checklist.
 These fields power search, related-doc cards, tag browsing, and reference
 sections. Keep frontmatter, registry records, and message keys aligned.
 
-**Aliases** — Abbreviations and alternate names readers might search for (`GQA`,
-`grouped-query attention`). Mirror the same values in frontmatter `aliases` and
+**Aliases** — Abbreviations and alternate names readers might search for
+(`ralph loop`, `worktree`). Mirror the same values in frontmatter `aliases` and
 the registry record `aliases` array.
 
 **Tags** — Controlled topic labels, not free-form keywords. Use tag **slugs**
 that resolve to published records under `src/content/registry/tags/` (for example
-`attention` → `tag.attention`). Repeat the same slugs in frontmatter and in the
+`harness` → `tag.harness`). Repeat the same slugs in frontmatter and in the
 registry record `tags` array. Tags drive `/tags/<slug>` browsing and search
 filters.
 
 **Related IDs** — Prefer relationships the registry can derive from taxonomy,
-shared tags, model usage, or paper links. Add curated `relatedIds` on the
+shared tags, or factory record links. Add curated `relatedIds` on the
 registry record only when a high-value link cannot be derived automatically
 (for example a prerequisite concept that shares no tags with the page).
 
 **Citations** — Technical claims should point to citation registry records, not
 hand-formatted source lists. Create or reuse records under
 `src/content/registry/citations/` with stable IDs such as
-`citation.gqa-paper`. List supporting sources in the page registry record
+`citation.example-source`. List supporting sources in the page registry record
 `citationIds` array and render them through `<CitationList />` in MDX.
 
 Citation records should include authors, title, year, a stable canonical `url`,
@@ -448,30 +460,32 @@ Example asset entry shape (from `docs/templates/concept.assets.json`):
 }
 ```
 
-Reference assets from MDX by `assetId`:
+Reference assets from MDX by `assetId`, or use a dedicated factory component when
+the page has one:
 
 ```mdx
-<ModuleGraph registryId="module.grouped-query-attention" assetId="computeFlow" />
-<ModuleComparisonTable registryId="module.grouped-query-attention" assetId="comparisonTable" />
+<PageAsset assetId="workflowDiagram" />
+<HarnessSupportMatrix />
 ```
 
-Placement rules by page kind:
+Use `PageAsset` with factory registry ids such as
+`documentation.harness-support` or `concept.worktree` when teaching with a graph
+or chart. Many factory pages correctly leave `assets.json` as `{}` when no
+visual is needed. Do not treat Atlas `ModuleGraph` /
+`ModuleComparisonTable` examples as the default product pattern.
+
+Placement rules for factory pages:
 
 | Visual type | Where it belongs |
 | --- | --- |
-| Primary React Flow graph (module pages) | **How it works** section only — one canvas per page |
-| Math / compute schema | Equations and symbol definitions only — no second React Flow canvas |
-| Comparison tables | **Compared to nearby modules** or the page-kind equivalent section |
-| Optional concept-map graphs | The section that teaches relationships (concept, glossary, training-regime) |
-| Model architecture graphs | Architecture section when structure is the teaching goal |
-| Paper contribution graphs | Method or architecture section when dependencies are the teaching goal |
-
-Module pages render **exactly one** primary React Flow graph on the published
-page. Do not place a second graph under the math/schema section. Graph node
-labels, edge labels, captions, and alt text resolve from colocated messages.
+| Optional workflow / relationship graph | The section that teaches the mechanism or comparison |
+| Comparison tables or harness matrices | The section that compares options or support surfaces |
+| Math / schema | Equations and symbol definitions only when the topic needs them |
+| Empty `assets.json` | Valid default when prose alone teaches the topic |
 
 See [graphing standards](../graphing-standards.md) for the readable node theme,
-zoom/pan interaction rules, and attention-variant comparison pattern.
+zoom/pan interaction rules, and comparison patterns when a page does use a
+graph.
 
 Images, charts, and code schemas follow the same split: define the asset in
 `assets.json`, put display text in messages, and reference the `assetId` from
@@ -491,6 +505,7 @@ run these lightweight checks often:
 | --- | --- | --- |
 | `make validate-data` | `bun ./scripts/validate-registry.ts` | Registry schema, frontmatter ↔ registry alignment, derived published-page bundle coverage for ordinary docs pages, message keys referenced from MDX, asset ids, graph/table references, tag and citation resolution, and colocated `messages/` + `assets.json` bundles under `src/content/docs/` |
 | `bun run audit:canonical-page-surface` | `bun ./scripts/audit-canonical-page-surface.ts` | Whether one canonical-page branch still fits the routine owned-file budget or has spilled into shared hotspot surfaces that need either a visible exception or a broader throughput lane |
+| `bun run check:retired-product-docs` | `bun ./scripts/check-retired-product-docs-consistency.ts` | Architecture/authoring docs do not reintroduce retired product identity (Model Reference / Model Atlas / Learn Language Models) or retired public route families (`/docs/models`, `/docs/modules`, `/docs/papers`, `/docs/training`) as the live product; exclusion/denylist wording is allowed |
 | `make linkcheck` | `bun ./scripts/validate-links.ts` | Internal links and `#section` anchors in published docs pages served through the Fumadocs catch-all route (`src/content/docs/**/page.mdx`) |
 
 `make validate-data` is the primary gate for docs content work. It catches the
@@ -505,8 +520,9 @@ structural mistakes contributors make most often:
 
 `make linkcheck` runs after content shape is stable. It verifies that links
 between docs routes resolve (for example
-`/docs/modules/grouped-query-attention`, `/docs/glossary/token`, and in-page
-`#section` anchors). Fix broken relative links in MDX before review.
+`/docs/guides/getting-started`, `/docs/documentation/harness-support`,
+`/docs/glossary/token`, and in-page `#section` anchors). Fix broken relative
+links in MDX before review.
 
 `bun run audit:canonical-page-surface` fits between the content checks and PR
 review for ordinary canonical-page work. Run it after `make validate-data`
@@ -515,6 +531,14 @@ confirms the page bundle and registry shape, rerun
 validation, and use the audit to confirm the review commit stays on the owned
 page surface instead of carrying shared tests, generated runtime churn, or
 other hotspot edits into review.
+
+When editing product framing or authoring guidance under `docs/site-fundamentals.md`,
+`docs/data-model.md`, `docs/architecture.md`, templates/writing guides,
+`docs/contributors/CONTRIBUTING.md`, `docs/architectural-checklist.md`, or
+`factory/docs/standards/docs-writing-standards.md`, also run
+`bun run check:retired-product-docs`. That check fails if those owned docs
+present retired Atlas product names or retired collection routes as the current
+product, while still allowing explicit “what this is not” / denylist wording.
 
 Optional during iteration:
 
@@ -670,7 +694,8 @@ make dev
 ```
 
 Open the page route in the browser (for example
-`http://localhost:3000/docs/modules/grouped-query-attention`). Pick a free port
+`http://localhost:3000/docs/guides/getting-started` or
+`http://localhost:3000/docs/documentation/harness-support`). Pick a free port
 if `3000` is already in use: `bun run dev -- -p 3456`.
 
 ### Full quality gate before PR
@@ -901,9 +926,9 @@ the following are true:
 
 Current examples:
 
-- published module pages with the merged `attention` tag enter the critical
-  attention smoke set automatically
-- published glossary pages with the merged `token-to-probability-chain` tag
+- published documentation or guide pages with merged factory tags enter the
+  critical smoke set automatically when they match an existing critical rule
+- published glossary pages with the merged tags that a critical rule requires
   enter the glossary smoke set automatically
 
 Do not add a bespoke smoke entry just because a new eligible page exists. A
@@ -951,9 +976,11 @@ bun run generate:page-bundle -- --spec page-specs/page-spec-workflow-sample.json
 
 For a new page, copy `page-specs/page-spec-workflow-sample.json`, adjust
 `kind`, `slug`, `title`, `summary`, and the kind-specific required fields, then
-dry-run before writing files. For module, model, paper, and training-regime
-pages, this page-spec flow is the supported common path; template-copy work is
-for exceptional cases only.
+dry-run before writing files. For concept and glossary pages, this page-spec
+flow is the supported common path. For guide, technique, and documentation
+pages, start from the matching rewrite-era template sidecars when a page-spec
+path is not yet the common case. Template-copy work remains available for
+exceptional cases.
 
 **Legacy scaffold** — when you need the older CLI-flag workflow, `scaffold:doc-page`
 still supports concept and glossary dry runs:
@@ -1009,7 +1036,7 @@ Examples of factory-appropriate requests:
 
 Examples of direct-PR work:
 
-- A single new glossary or concept page from a page spec or legacy scaffold.
+- A single new guide, concept, technique, documentation, or glossary page.
 - Corrections to messages, citations, tags, or assets on an existing page.
 - Template-aligned edits that pass `make validate-data` and `make linkcheck`.
 
@@ -1024,7 +1051,7 @@ The checked-in factory docs describe the real batch workflow:
 | [factory/docs/batch-input-example.json](../../factory/docs/batch-input-example.json) | Example `FACTORY_REQUEST_BATCH` with `idea` work items and `DEPENDS_ON` relations |
 
 At a behavioral level, docs-related factory work starts as **`idea` work items**.
-Each idea names the outcome (for example “add a module page for flash-attention”)
+Each idea names the outcome (for example “add a documentation page for MCP”)
 and carries enough payload for planners to turn it into a PRD and executor tasks.
 Batches group related ideas so prerequisites run in order.
 
@@ -1032,13 +1059,13 @@ Minimal request shape contributors and maintainers should recognize:
 
 ```json
 {
-  "requestId": "docs-module-flash-attention-001",
+  "requestId": "docs-documentation-mcp-001",
   "type": "FACTORY_REQUEST_BATCH",
   "works": [
     {
-      "name": "module-flash-attention-page",
+      "name": "documentation-mcp-page",
       "workTypeName": "idea",
-      "payload": "Add a canonical module page for flash-attention: kind module, slug flash-attention, source paper and existing attention concept links, use generate:page-bundle with a page spec and keep the emitted page bundle, registry record, messages, assets, and graph record aligned."
+      "payload": "Add a canonical documentation page for MCP: kind documentation, slug mcp, link related CLI and harness-support docs, use the documentation template sidecars and keep the page bundle, registry record, messages, and assets aligned."
     }
   ]
 }
@@ -1067,12 +1094,14 @@ a maintainer instead of submitting batches directly. Provide the same behavioral
 fields an `idea` payload needs:
 
 - **Outcome** — what page or transformation you need.
-- **Page kind and slug** — for example `module` / `flash-attention`.
-- **Source material** — paper links, existing pages to align with, or draft
+- **Page kind and slug** — for example `documentation` / `mcp` or
+  `guide` / `getting-started`.
+- **Source material** — upstream docs, existing pages to align with, or draft
   outline.
-- **Starting path** — `generate:page-bundle` for canonical bundles in the
-  common case, legacy scaffold only for older concept/glossary flows, or a
-  broader factory transformation.
+- **Starting path** — rewrite-era template sidecars for guide/technique/
+  documentation, `generate:page-bundle` for concept/glossary when applicable,
+  legacy scaffold only for older concept/glossary flows, or a broader factory
+  transformation.
 - **Scope** — single page vs multi-page batch; whether registry or template
   changes are in scope.
 
@@ -1115,7 +1144,7 @@ need to scope the work without implying the tooling already exists:
 
 | Field | What to specify |
 | --- | --- |
-| Source page | Published route or `registryId` (for example `module.grouped-query-attention`) |
+| Source page | Published route or `registryId` (for example `documentation.harness-support` or `/docs/guides/getting-started`) |
 | Target locales | BCP-47 locale codes to add (for example `es`, `fr`) |
 | Message scope | Whether to translate the full `messages/en.json` tree or named key prefixes only |
 | Asset text | Whether graph labels, captions, and alt text in `assets.json` need locale-specific message keys |

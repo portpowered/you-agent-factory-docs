@@ -1,7 +1,9 @@
 # Docs Writing Standards
 
-Reviewer-checkable rules for canonical docs pages such as modules, models,
-papers, concepts, training regimes, systems, and glossary entries.
+Reviewer-checkable rules for canonical factory docs pages such as guides,
+concepts, techniques, documentation, glossary entries, and related blog posts
+that teach you-agent-factory CLI workflows, harness support, and factory
+records.
 
 ## Usage
 
@@ -70,14 +72,16 @@ Before approval, reviewers **MUST** check each rule below and mark it `PASS` or
 
 ### Tone and audience
 
-Write for a technical layperson, meaning someone learning AI concepts without
-reading papers first.
+Write for a technical layperson using the you-agent-factory CLI and agent-factory
+workflows — someone who needs clear guidance on install/run, guides, concepts,
+techniques, harness support, and related factory topics without reverse-
+engineering the runtime.
 
 Rules:
 
 - Use short sentences, concrete nouns, and active voice.
 - Prefer reader-visible consequences over unexplained implementation jargon.
-- Define terms in ordinary language before narrowing into architecture-specific
+- Define terms in ordinary language before narrowing into factory-specific
   usage.
 - Expand acronyms on first mention in narrative copy, then use the short form
   after the full name is established.
@@ -87,7 +91,7 @@ Rules:
 ### Independence and structure
 
 Every canonical page should make sense in isolation before it explains where
-the topic appears in a larger architecture.
+the topic appears in a larger factory workflow or system.
 
 Rules:
 
@@ -149,5 +153,6 @@ Do not reintroduce these patterns:
 - Reader-shortcut callouts in baseline templates
 - Phase, process, or page-meta copy in customer-facing content
 - Verbose math definitions instead of short symbol lines
-- Unexpanded acronyms such as `FFN` or `ReLU` before teaching the full term
+- Unexpanded acronyms such as `MCP` or `CLI` before teaching the full term when
+  the short form is not already established for the reader
 - Pages that explain their role in the docs set instead of the concept itself

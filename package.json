@@ -61,6 +61,7 @@
     "report:planner-root-main-lag-current-truth-reconciliation": "bun ./scripts/report-planner-root-main-lag-current-truth-reconciliation.ts",
     "report:terminal-lane-main-branch-landing-audit": "bun ./scripts/report-terminal-lane-main-branch-landing-audit.ts",
     "audit:canonical-page-surface": "bun ./scripts/audit-canonical-page-surface.ts",
+    "check:retired-product-docs": "bun ./scripts/check-retired-product-docs-consistency.ts",
     "prereport:legacy-taxonomy-compatibility-budget": "bun run prepare:content-runtime",
     "report:legacy-taxonomy-compatibility-budget": "bun ./scripts/report-legacy-taxonomy-compatibility-budget.ts",
     "preverify:legacy-classification-budget": "bun run prepare:content-runtime",

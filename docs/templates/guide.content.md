@@ -39,4 +39,4 @@ for the staged deprecation matrix.
 The guide registry record should still include useful `tags`, aliases, citations,
 and curated `relatedIds` only when derived relationships are insufficient.
 Placeholder registry ids use the `guide.` namespace (for example
-`guide.example-guide`).
+`guide.getting-started`).

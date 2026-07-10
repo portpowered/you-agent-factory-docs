@@ -1,13 +1,29 @@
 # This is a guide to writing pages
 
-1. given a request to write a page. 
-2. check if the page is conformant to an existing template, such as model, module, etc under docs/templates. 
-3. check in the code base to see if there are similar pages,  
-4. add a new page under src/contents/docs/XX that aligns with your description. following the structure of the docs/templates
-4.0. ensure the page can stand on its own, avoids page-meta prose, and follows the [docs-writing-standards](../factory/docs/standards/docs-writing-standards.md)
-4.1. we should structure our page content as related, and associated with the appropriate tags to similar pages.
-4.2. if we are adding modules/models/training regimes/etc, we want customers to quickly be able to switch between model presentations. consider if we should add a new graph for our module/model/etc, as well as for pre-existing model/module. 
-4.3. if we are adding modules/models/training regimes/etc, we want customers to quickly be able to switch, so consider if we should add a new equestion for our new page, as well as add a corresponding additions to the existing models/modules. 
+1. Given a request to write a page, choose the factory collection that matches
+   the ask: `guides`, `concepts`, `techniques`, `documentation`, `glossary`, or
+   `blog`.
+2. Check that the page conforms to the matching rewrite-era template under
+   `docs/templates/` (`guide`, `technique`, `documentation`, `concept`,
+   `glossary`, or `blog-post`). See
+   [documentation-template.md](./documentation-template.md).
+3. Check the codebase for similar published pages in that collection (for
+   example other guides under `src/content/docs/guides/` or documentation pages
+   under `src/content/docs/documentation/`).
+4. Add a new page under `src/content/docs/<collection>/<slug>/` (or
+   `src/content/blog/<slug>/` for blog posts) that follows the matching template
+   structure, registry id namespace, messages, and assets.
+4.0. Ensure the page can stand on its own, avoids page-meta prose, and follows
+   the [docs-writing-standards](../factory/docs/standards/docs-writing-standards.md).
+4.1. Structure page content with tags and related links so readers can move
+   between nearby factory topics (CLI, harness, loops, worktrees, techniques).
+4.2. Add a graph, chart, diagram, or table only when it teaches the factory
+   topic better than prose. Many shipped pages correctly use an empty
+   `assets.json`.
+4.3. If the topic is mathematically or structurally heavy (for example a
+   workflow loop, token flow, or comparison matrix), add the equations, graphs,
+   or tables needed to teach it clearly—and update nearby related pages only
+   when the comparison itself is part of the teaching contract.
 
 ## Review preflight for ordinary page branches
 
@@ -67,77 +83,114 @@ rules 5.2.1–5.2.5, and attempt the smallest disciplined fix before returning
 continue. Full command routing:
 [content-page-generation-workflow-relevant-files](./internal/processes/content-page-generation-workflow-relevant-files.md#pr-head-mergeability-for-page-branches-process-executors).
 
-Examples: 
-1. there was an FFN page that explained the FFN as a concept, but what we wanted when we compared it to the MOE page is the variant in the expert count and the router, rather than the internal activation behavior.Therefore we added a new graph to the FFN. 
+## Choosing a factory page kind
+
+| Ask | Collection | Template | Example registry id |
+| --- | --- | --- | --- |
+| Install, first run, or a concrete workflow walkthrough | `guides` | `guide.mdx` | `guide.getting-started` |
+| A named idea readers look up in isolation (harness, loop, worktree) | `concepts` | `concept.mdx` | `concept.worktree` |
+| A reusable agent-factory pattern (ralph, writer-reviewer, planner-executor) | `techniques` | `technique.mdx` | `technique.ralph` |
+| CLI, configuration, harness support, MCP, API, or other reference | `documentation` | `documentation.mdx` | `documentation.cli` |
+| A short term definition that shares the concept registry shape | `glossary` | `glossary.mdx` | `concept.<slug>` |
+| Time-specific product or ecosystem writing | `blog` | `blog-post.mdx` | related via `relatedDocIds` |
+
+Examples:
+
+1. A reader needs to install and run a named workflow → write a **guide**.
+2. A reader looks up what a worktree is → write a **concept** (or glossary entry
+   when the ask is a short term definition).
+3. A reader wants the ralph loop pattern → write a **technique**.
+4. A reader needs harness capability lookup → write a **documentation** page
+   (and use a matrix or diagram only when it teaches the reference surface).
 
 ## Adding graphs
 
-You must ensure to follow the [graphing-standards](./graphing-standards.md)
+You must ensure to follow the [graphing-standards](./graphing-standards.md).
 
-If the concept is mathematically heavy or conceptually heavy, we must add the
-equations, graphs, charts, or diagrams needed to teach it clearly.
+If the concept, technique, or documentation topic is structurally heavy, add the
+equations, graphs, charts, or diagrams needed to teach it clearly. Prefer one
+primary teaching visual over decorative extras.
 
-When adding new graphs for a family: 
-0. we should be very sure what we should present as the graph. sometimes the best graph is a chart function like for silu/relu, sometimes its a node graph like ffn/moe. we should consider what si the best presentation. Sometimes its useful to have multiple charts. 
+When adding a new graph:
 
+0. Be sure what the graph should teach. Sometimes the best presentation is a
+   flow of factory steps, sometimes a comparison matrix, sometimes a token or
+   worktree diagram. Empty `assets.json` is correct when prose is enough.
 
-#### general 
-the default introduction concept like attention, ffn, relu should be a singular graph. 
-the variant formats like MOE, SwiGLU should be a comparator. 
+#### General
 
-#### node graphs
-1. the various nodes positions within a family's specific graph shapes we should try align positions. i.e. for the attention over time, we should try to keep the positions of the Q the same, and the KV positions the same. Similary thing for QKV interation differences between GQA, MHA, etc. 
-2. graph nodes should not overlap with text blocks. 
+- Default isolated concepts (for example harness, loop, worktree) should use a
+  singular teaching graph when a graph is needed.
+- Nearby techniques or documentation comparisons (for example ralph vs
+  writer-reviewer, or harness support across tools) may use a comparator or
+  matrix when the comparison itself is the teaching point.
 
+#### Node graphs
 
-### function charts
-for funtion charts
-1. always model 0. 
-2. always show labels for x/y
-3. always have a title
-4. always present a legend denoting what each node is. 
+1. Keep shared node roles aligned across related pages when readers will compare
+   them (for example planner, worker, and review roles across technique pages).
+2. Graph nodes should not overlap with text blocks.
+
+### Function charts
+
+For function or metric charts:
+
+1. Always model from a clear origin or baseline.
+2. Always show labels for x/y.
+3. Always have a title.
+4. Always present a legend denoting what each series is.
 
 ## Adding algorithms
-Please ensure that the algorithms are reflective. 
+
+Please ensure that the algorithms are reflective of the factory workflow or
+technique being taught.
 
 ## Types of pages
 
-We define pages as generally as follows: 
+We define factory teaching pages as generally as follows:
 
-1. a baseline. 
-2. a variant. 
+1. a baseline
+2. a variant
 3. generic
 
 ### Baselines
 
-base line pages are those that define the standard for a type of component or abstraction and exist in isolation. 
+Baseline pages define a standard idea or workflow in isolation. In this product,
+examples include the harness concept, the loop concept, or the getting-started
+guide.
 
-in our systems RELU, and FFNs are baselins. 
-
-They don't put comparisons to other models, they exist independently. 
-
-Some ones we should add later on include stuff like adamW, cross entropy, kaiming/he, dropout + weight decay.
+They do not force comparisons to every nearby page; they exist independently.
 
 ### Variants
 
-Variants are concepts like new training regimes or modules or whatever that modify the original abstract concept. 
+Variant pages modify or specialize a baseline idea. Technique pages often behave
+this way: ralph, writer-reviewer, and planner-executor are specialized loop or
+role patterns.
 
-These pages tends to have: 
-1. a comparison between the function and the original baseline, or another variant. 
-2. the text is still written in isolation of the paper, but provides some smaller affordances towards the thing it improves on. i.e. variants to MOE, variants to optimizers. 
-3. Papers tend to start as variants, then slowly evolve to become baselines as more things become compared to it. 
+These pages tend to have:
+
+1. a comparison between the technique and a nearby baseline or sibling technique
+2. text still written in isolation, with small affordances toward the thing it
+   improves on
+3. optional comparison graphs or matrices only when the difference is hard to
+   teach in prose
 
 ### Generic
 
-Generic pages are just pages that are not variants or not baselines. This could just be one offs where no variants are expected to exist or it doesn't make sense to do so. 
+Generic pages are neither baselines nor variants. They are one-off reference or
+narrative surfaces where no variant family is expected.
 
-Some examples could be like: 
-1. loss
-2. training
-3. neural network
+Examples:
+
+1. CLI reference documentation
+2. configuration documentation
+3. a blog post about a release or ecosystem change
 
 ## Code/Documentation separation
-in as much as possible, we want to make as minimal code changes as we can when adding new docs. sometimes its necessary, but its preferable to have zero test/code changes.
+
+In as much as possible, make as few code changes as possible when adding new
+docs. Sometimes code is necessary, but it is preferable to have zero test/code
+changes for ordinary content-only pages.
 
 When code must reference a page bundle path, use
 `getDocsPageDir(section, slug)` from `src/lib/content/content-paths.ts` instead

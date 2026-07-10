@@ -39,4 +39,4 @@ for the staged deprecation matrix.
 The documentation registry record should still include useful `tags`, aliases,
 citations, and curated `relatedIds` only when derived relationships are
 insufficient. Placeholder registry ids use the `documentation.` namespace (for
-example `documentation.example-documentation`).
+example `documentation.harness-support`).

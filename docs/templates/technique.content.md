@@ -39,4 +39,4 @@ for the staged deprecation matrix.
 The technique registry record should still include useful `tags`, aliases,
 citations, and curated `relatedIds` only when derived relationships are
 insufficient. Placeholder registry ids use the `technique.` namespace (for
-example `technique.example-technique`).
+example `technique.ralph`).

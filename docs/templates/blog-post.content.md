@@ -8,7 +8,7 @@ Blog posts may contain raw MDX prose because they are narrative content. Use `bl
 * `contextSentence`: short context line for the post.
 * `takeaway`: short reader-facing takeaway.
 * `summary`: compact version first.
-* `context`: what changed, what was released, what paper appeared, or what confusion this post addresses.
+* `context`: what changed, what was released, what factory workflow shifted, or what confusion this post addresses.
 * `mainIdea`: argument or interpretation.
 * `whyItMatters`: practical implication for readers.
 
