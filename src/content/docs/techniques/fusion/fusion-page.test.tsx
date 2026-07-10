@@ -118,6 +118,32 @@ describe("fusion technique page", () => {
     expect(howItWorks?.textContent).not.toMatch(/--first-provider/i);
     expect(howItWorks?.textContent).not.toMatch(/on this page/i);
     expect(howItWorks?.textContent).not.toMatch(/Model Atlas/i);
+
+    const compared = document.getElementById("compared-to-nearby-techniques");
+    expect(compared).toBeTruthy();
+    expect(compared?.textContent).toMatch(/draft-then-refine two-pass flow/i);
+    expect(compared?.textContent).toMatch(/writer-reviewer/i);
+    expect(compared?.textContent).toMatch(/role-split write/i);
+    expect(compared?.textContent).toMatch(/ralph/i);
+    expect(compared?.textContent).toMatch(/persistent keep-going loop/i);
+    expect(compared?.textContent).toMatch(/planner-executor/i);
+    expect(compared?.textContent).toMatch(/plan.*slices|slices.*execute/i);
+    expect(compared?.textContent).toMatch(/GPU kernel fusion/i);
+    expect(compared?.textContent).toMatch(/multimodal model fusion/i);
+    expect(compared?.textContent).not.toMatch(/on this page/i);
+    expect(compared?.textContent).not.toMatch(/Model Atlas/i);
+
+    const related = document.getElementById("related");
+    expect(related).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/concepts/harness"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/guides/getting-started"]'),
+    ).toBeTruthy();
+    expect(related?.textContent).toMatch(/Harness concept/i);
+    expect(related?.textContent).toMatch(/Getting started/i);
+
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });
