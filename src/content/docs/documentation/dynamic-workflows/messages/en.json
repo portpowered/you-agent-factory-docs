@@ -17,7 +17,7 @@
     },
     "configuration": {
       "title": "Configuration",
-      "body": "Configuration for dynamic workflows covers workflow source resolution from a project root, source kinds such as WORKFLOW_NAME and INLINE_WORKFLOW, optional args and policy overrides, and Model Context Protocol (MCP) serve backing modes for fixture-backed versus runtime-backed hosts."
+      "body": "Dynamic-workflow configuration covers two jobs: resolve JavaScript orchestrator source from a project root, and choose how a Model Context Protocol (MCP) host launches you mcp serve. Source knobs select the workflow and optional args or policy overrides. Serve knobs choose fixture-backed or runtime-backed execution behind the same Factory Session tools. This page stays at that dynamic-workflow depth and does not absorb the full Petri factory.json topology reference."
     },
     "howToUse": {
       "title": "How To Use",
@@ -46,6 +46,18 @@
     },
     "durableInspection": {
       "body": "Durable inspection uses shared Factory Session reads. List or show sessions, read session-scoped events, and use the Factory preview contract for source validation without inventing a separate dynamic-workflow resource type."
+    },
+    "sourceResolution": {
+      "body": "Resolve workflow source from a project root before validation or start. Use you workflow validate with --dir for ordered lookup, --kind for the source kind, and optional --args-schema or --requested-policy JSON when the orchestrator needs those overrides."
+    },
+    "mcpHostConfig": {
+      "body": "Model Context Protocol (MCP) hosts launch you as a stdio child process. Configure command, args, and cwd so the host can discover Factory Session tools and resolve workflow sources from the project root."
+    },
+    "serveModes": {
+      "body": "you mcp serve exposes the same you.factory_session.* tool catalog in both backing modes. Only the execution service behind the tools changes."
+    },
+    "serveModeBoundary": {
+      "body": "Do not combine --runtime with --fixture-catalog. Fixture-backed mode may take --fixture-catalog when the catalog lives outside the discovered project root. Runtime-backed mode resolves sources from the host working directory or an explicit --project-root."
     }
   },
   "links": {
@@ -108,6 +120,35 @@
     "inspectionEvents": "GET /factory-sessions/{session_id}/events",
     "inspectionEventsPurpose": "Read the session-scoped Factory Event stream for one Factory Session.",
     "inspectionPreview": "POST /factories/preview",
-    "inspectionPreviewPurpose": "Validate source and policy through the Factory preview contract without creating a session."
+    "inspectionPreviewPurpose": "Validate source and policy through the Factory preview contract without creating a session.",
+    "sourceMatrixKnobHeader": "Knob",
+    "sourceMatrixPurposeHeader": "Purpose",
+    "sourceDirKnob": "--dir / project root",
+    "sourceDirPurpose": "Project root used for ordered workflow source lookup. you workflow validate defaults --dir to factory.",
+    "sourceWorkflowNameKnob": "--kind WORKFLOW_NAME",
+    "sourceWorkflowNamePurpose": "Resolve a named workflow from the project root. Pair with --value for the workflow name.",
+    "sourceInlineWorkflowKnob": "--kind INLINE_WORKFLOW",
+    "sourceInlineWorkflowPurpose": "Validate inline orchestrator source text. Pair with --inline for the JavaScript or TypeScript source.",
+    "sourceArgsSchemaKnob": "--args-schema",
+    "sourceArgsSchemaPurpose": "Optional orchestrator.javascript argsSchema JSON for validation and start contracts.",
+    "sourceRequestedPolicyKnob": "--requested-policy",
+    "sourceRequestedPolicyPurpose": "Optional requested policy override JSON applied through the shared validation and preview contract.",
+    "mcpHostMatrixFieldHeader": "Field",
+    "mcpHostMatrixPurposeHeader": "Purpose",
+    "mcpHostCommandField": "command",
+    "mcpHostCommandPurpose": "Absolute path to the you binary when the host PATH cannot resolve you.",
+    "mcpHostArgsField": "args",
+    "mcpHostArgsPurpose": "mcp serve for fixture-backed default, or mcp serve --runtime for runtime-backed live execution.",
+    "mcpHostCwdField": "cwd",
+    "mcpHostCwdPurpose": "Workflow project root where sources and the durable session fixture catalog resolve.",
+    "serveModeMatrixModeHeader": "Mode",
+    "serveModeMatrixArgsHeader": "Launch args",
+    "serveModeMatrixPurposeHeader": "Purpose",
+    "serveModeFixtureName": "Fixture-backed (default)",
+    "serveModeFixtureArgs": "mcp serve",
+    "serveModeFixturePurpose": "Deterministic durable session fixture catalog for install smoke, fixture-driven polling, and offline host validation.",
+    "serveModeRuntimeName": "Runtime-backed",
+    "serveModeRuntimeArgs": "mcp serve --runtime",
+    "serveModeRuntimePurpose": "Shared durable JavaScript runtime for live INLINE_WORKFLOW execution with real async start, status polling, and result reads."
   }
 }

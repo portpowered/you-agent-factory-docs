@@ -677,6 +677,24 @@ Orient from `you docs orchestrators`, `you docs mcp-hosts`, and
 `you docs sessions`. Keep the live-run noun as `FactorySession`; do not invent
 a separate dynamic-workflow resource type.
 
+### Documentation dynamic-workflows configuration matrices (page-local)
+
+For `documentation/dynamic-workflows` configuration copy, keep a single
+`#configuration` `Section`. Put overview prose in `sections.configuration.body`,
+surface intros and the serve-mode boundary in
+`callouts.{sourceResolution,mcpHostConfig,serveModes,serveModeBoundary}.body`,
+and matrix headers/cells under page `links.*` keys — same strip-avoidance as the
+API interface matrices. Render always-visible HTML `<table>` blocks with
+`<T k="links.…" />` so source knobs (`--dir`, `WORKFLOW_NAME`, `INLINE_WORKFLOW`,
+`--args-schema`, `--requested-policy`), MCP host fields (`command`, `args`,
+`cwd`), and serve modes (fixture-backed `mcp serve` vs runtime-backed
+`mcp serve --runtime`, including do-not-combine `--runtime` with
+`--fixture-catalog`) are reviewer-visible without hard-coded strings in MDX.
+
+Orient from `you workflow validate --help` and `you docs mcp-hosts`. Stay at
+dynamic-workflow configuration depth; do not absorb the full Petri
+`factory.json` topology owned by the configuration documentation page.
+
 ## Core content paths
 
 * `src/lib/content/content-paths.ts`
