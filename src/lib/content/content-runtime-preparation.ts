@@ -88,8 +88,19 @@ export const CONTENT_RUNTIME_COMPLETENESS_CONTRACT: readonly ContentRuntimePrepa
 export const CONTENT_RUNTIME_PREPARATION_STEPS =
   CONTENT_RUNTIME_COMPLETENESS_CONTRACT;
 
+/**
+ * Env flag that enables force-clean for `prepare:content-runtime`.
+ * Accepted truthy values: `1`, `true`, `yes` (case-insensitive).
+ */
+export const CONTENT_RUNTIME_FORCE_CLEAN_ENV = "CONTENT_RUNTIME_FORCE_CLEAN";
+
 export type RunContentRuntimePreparationOptions = {
   cwd: string;
+  /**
+   * When true, wipe `.source` and ignored generated runtime outputs before
+   * regenerating all steps. Default preparation preserves those artifacts.
+   */
+  forceClean?: boolean;
   log?: ContentRuntimePreparationLogger;
   logError?: ContentRuntimePreparationLogger;
   runCommand?: RunContentRuntimePreparationCommand;
@@ -100,6 +111,35 @@ export type RunContentRuntimePreparationOptions = {
   removeFile?: (path: string, options: { force: boolean }) => void;
   steps?: readonly ContentRuntimePreparationStep[];
 };
+
+/**
+ * Resolve whether force-clean is requested from CLI argv and/or env.
+ * CLI `--force-clean` / `--force-clean=true|1|yes` wins over env when present.
+ */
+export function resolveContentRuntimeForceClean(
+  env: Record<string, string | undefined> = process.env,
+  argv: readonly string[] = [],
+): boolean {
+  for (const arg of argv) {
+    if (arg === "--force-clean") {
+      return true;
+    }
+    if (arg.startsWith("--force-clean=")) {
+      return isTruthyFlagValue(arg.slice("--force-clean=".length));
+    }
+  }
+
+  return isTruthyFlagValue(env[CONTENT_RUNTIME_FORCE_CLEAN_ENV]);
+}
+
+function isTruthyFlagValue(value: string | undefined): boolean {
+  if (value === undefined) {
+    return false;
+  }
+
+  const normalized = value.trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes";
+}
 
 export type ContentRuntimePreparationResult =
   | {
@@ -143,6 +183,7 @@ export type VerifyContentRuntimeCompletenessResult =
 
 export type RunContentRuntimeCompletenessGateOptions = {
   cwd: string;
+  forceClean?: boolean;
   log?: ContentRuntimePreparationLogger;
   logError?: ContentRuntimePreparationLogger;
   runPreparation?: (
@@ -411,23 +452,31 @@ export function runContentRuntimePreparation(
   const removeDirectory = options.removeDirectory ?? rmSync;
   const steps = options.steps ?? CONTENT_RUNTIME_PREPARATION_STEPS;
   const removeFile = options.removeFile ?? rmSync;
+  const forceClean = options.forceClean === true;
   const completedSteps: ContentRuntimePreparationStep[] = [];
-  const removedSourceRoot = removeGeneratedDocsSource(
-    options.cwd,
-    removeDirectory,
-  );
-  const removedIgnoredOutputs = removeIgnoredGeneratedRuntimeOutputs(
-    options.cwd,
-    steps,
-    removeFile,
-  );
 
-  log(
-    `[content-runtime] Removing stale generated Fumadocs bindings -> ${relative(options.cwd, removedSourceRoot) || ".source"}`,
-  );
-  for (const removedOutputPath of removedIgnoredOutputs) {
+  if (forceClean) {
+    const removedSourceRoot = removeGeneratedDocsSource(
+      options.cwd,
+      removeDirectory,
+    );
+    const removedIgnoredOutputs = removeIgnoredGeneratedRuntimeOutputs(
+      options.cwd,
+      steps,
+      removeFile,
+    );
+
     log(
-      `[content-runtime] Invalidating stale ignored generated runtime output -> ${relative(options.cwd, removedOutputPath)}`,
+      `[content-runtime] Force-clean: removing generated Fumadocs bindings -> ${relative(options.cwd, removedSourceRoot) || ".source"}`,
+    );
+    for (const removedOutputPath of removedIgnoredOutputs) {
+      log(
+        `[content-runtime] Force-clean: invalidating ignored generated runtime output -> ${relative(options.cwd, removedOutputPath)}`,
+      );
+    }
+  } else {
+    log(
+      "[content-runtime] Preserving existing .source and ignored generated runtime outputs (pass --force-clean to wipe).",
     );
   }
 
@@ -479,6 +528,7 @@ export function runContentRuntimeCompletenessGate(
   const steps = options.steps ?? CONTENT_RUNTIME_PREPARATION_STEPS;
   const preparationResult = runPreparation({
     cwd: options.cwd,
+    forceClean: options.forceClean,
     log: options.log,
     logError: options.logError,
     steps,

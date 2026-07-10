@@ -17,6 +17,7 @@ import {
   CONTENT_RUNTIME_PREPARATION_STEPS,
   type ContentRuntimeGitCommandResult,
   type ContentRuntimePreparationCommandResult,
+  resolveContentRuntimeForceClean,
   runContentRuntimeCompletenessGate,
   runContentRuntimePreparation,
 } from "@/lib/content/content-runtime-preparation";
@@ -25,13 +26,14 @@ const repoRoot = join(import.meta.dir, "../../..");
 const CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS = 30_000;
 const GENERATED_REGISTRY_RUNTIME_RELATIVE_PATH =
   "src/lib/content/generated/registry-runtime.generated.ts";
-const INVALID_REGISTRY_FIXTURE_RELATIVE_PATH =
-  "src/content/registry/modules/__invalid-runtime-preparation-test.json";
 const LEGACY_TOP_LEVEL_GENERATED_RUNTIME_PATHS = [
   "src/lib/content/published-docs-registry-manifest.ts",
 ] as const;
 const GENERATED_PUBLISHED_DOCS_REGISTRY_RELATIVE_PATH =
   "src/lib/content/generated/published-docs-registry.generated.ts";
+/** Stable published page used by recovery/import proofs (rewrite-era content). */
+const STABLE_PUBLISHED_DOCS_REGISTRY_ID = "guide.getting-started";
+const STABLE_PUBLISHED_DOCS_SLUG = "guides/getting-started";
 const RUNTIME_DISCOVERY_TEST_DOCS_SLUG = "glossary/runtime-recovery-smoke-test";
 const RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH = join(
   "src/content/docs",
@@ -39,9 +41,15 @@ const RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH = join(
 );
 const RUNTIME_DISCOVERY_TEST_REGISTRY_ID =
   "concept.runtime-recovery-smoke-test";
+const INVALID_REGISTRY_FIXTURE_RELATIVE_PATH =
+  "src/content/registry/guides/__invalid-runtime-preparation-test.json";
 
-function runPrepareContentRuntime() {
-  return spawnSync("bun", ["run", "prepare:content-runtime"], {
+function runPrepareContentRuntime(options?: { forceClean?: boolean }) {
+  const args = ["run", "prepare:content-runtime"];
+  if (options?.forceClean) {
+    args.push("--", "--force-clean");
+  }
+  return spawnSync("bun", args, {
     cwd: repoRoot,
     encoding: "utf8",
     env: process.env,
@@ -135,21 +143,113 @@ describe("content runtime preparation", () => {
     ]);
   });
 
-  test("runs required runtime generation steps in canonical order", () => {
-    const commands: string[] = [];
-    const lifecycle: string[] = [];
-    const result = runContentRuntimePreparation({
+  test("default preparation preserves .source and ignored outputs; force-clean wipes them first", () => {
+    const defaultLifecycle: string[] = [];
+    const defaultResult = runContentRuntimePreparation({
       cwd: repoRoot,
       log: () => {},
       logError: () => {},
       removeDirectory(path) {
-        lifecycle.push(`remove ${relative(repoRoot, path)}`);
+        defaultLifecycle.push(`remove ${relative(repoRoot, path)}`);
       },
       removeFile(path) {
-        lifecycle.push(`invalidate ${relative(repoRoot, path)}`);
+        defaultLifecycle.push(`invalidate ${relative(repoRoot, path)}`);
       },
       runCommand(command) {
-        lifecycle.push(`run ${command.join(" ")}`);
+        defaultLifecycle.push(`run ${command.join(" ")}`);
+        return {
+          signal: null,
+          status: 0,
+        } satisfies ContentRuntimePreparationCommandResult;
+      },
+    });
+
+    expect(defaultResult).toEqual({
+      ok: true,
+      completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+    });
+    expect(defaultLifecycle).toEqual(
+      CONTENT_RUNTIME_PREPARATION_STEPS.map(
+        (step) => `run ${step.command.join(" ")}`,
+      ),
+    );
+
+    const forceCleanLifecycle: string[] = [];
+    const forceCleanResult = runContentRuntimePreparation({
+      cwd: repoRoot,
+      forceClean: true,
+      log: () => {},
+      logError: () => {},
+      removeDirectory(path) {
+        forceCleanLifecycle.push(`remove ${relative(repoRoot, path)}`);
+      },
+      removeFile(path) {
+        forceCleanLifecycle.push(`invalidate ${relative(repoRoot, path)}`);
+      },
+      runCommand(command) {
+        forceCleanLifecycle.push(`run ${command.join(" ")}`);
+        return {
+          signal: null,
+          status: 0,
+        } satisfies ContentRuntimePreparationCommandResult;
+      },
+    });
+
+    expect(forceCleanResult).toEqual({
+      ok: true,
+      completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
+    });
+    expect(forceCleanLifecycle[0]).toBe("remove .source");
+    expect(forceCleanLifecycle.slice(1)).toEqual([
+      ...CONTENT_RUNTIME_PREPARATION_STEPS.filter(
+        (step) => step.gitClassification === "ignored",
+      ).map((step) => `invalidate ${step.outputPath}`),
+      ...CONTENT_RUNTIME_PREPARATION_STEPS.map(
+        (step) => `run ${step.command.join(" ")}`,
+      ),
+    ]);
+    expect(CONTENT_RUNTIME_PREPARATION_STEPS).toContainEqual({
+      id: "graph-registry-runtime",
+      command: ["bun", "run", "generate:graph-registry-runtime"],
+      outputPath:
+        "src/lib/content/generated/graph-registry-runtime.generated.ts",
+      gitClassification: "ignored",
+      owningSurface: "graph registry runtime lookups",
+    });
+  });
+
+  test("resolveContentRuntimeForceClean reads CLI and env flags", () => {
+    expect(resolveContentRuntimeForceClean({}, [])).toBe(false);
+    expect(resolveContentRuntimeForceClean({}, ["--force-clean"])).toBe(true);
+    expect(resolveContentRuntimeForceClean({}, ["--force-clean=true"])).toBe(
+      true,
+    );
+    expect(resolveContentRuntimeForceClean({}, ["--force-clean=0"])).toBe(
+      false,
+    );
+    expect(
+      resolveContentRuntimeForceClean({ CONTENT_RUNTIME_FORCE_CLEAN: "1" }, []),
+    ).toBe(true);
+    expect(
+      resolveContentRuntimeForceClean(
+        { CONTENT_RUNTIME_FORCE_CLEAN: "yes" },
+        [],
+      ),
+    ).toBe(true);
+    expect(
+      resolveContentRuntimeForceClean({ CONTENT_RUNTIME_FORCE_CLEAN: "1" }, [
+        "--force-clean=false",
+      ]),
+    ).toBe(false);
+  });
+
+  test("runs required runtime generation steps in canonical order", () => {
+    const commands: string[] = [];
+    const result = runContentRuntimePreparation({
+      cwd: repoRoot,
+      log: () => {},
+      logError: () => {},
+      runCommand(command) {
         commands.push(command.join(" "));
         return {
           signal: null,
@@ -162,26 +262,9 @@ describe("content runtime preparation", () => {
       ok: true,
       completedSteps: [...CONTENT_RUNTIME_PREPARATION_STEPS],
     });
-    expect(lifecycle[0]).toBe("remove .source");
-    expect(lifecycle.slice(1)).toEqual([
-      ...CONTENT_RUNTIME_PREPARATION_STEPS.filter(
-        (step) => step.gitClassification === "ignored",
-      ).map((step) => `invalidate ${step.outputPath}`),
-      ...CONTENT_RUNTIME_PREPARATION_STEPS.map(
-        (step) => `run ${step.command.join(" ")}`,
-      ),
-    ]);
     expect(commands).toEqual(
       CONTENT_RUNTIME_PREPARATION_STEPS.map((step) => step.command.join(" ")),
     );
-    expect(CONTENT_RUNTIME_PREPARATION_STEPS).toContainEqual({
-      id: "graph-registry-runtime",
-      command: ["bun", "run", "generate:graph-registry-runtime"],
-      outputPath:
-        "src/lib/content/generated/graph-registry-runtime.generated.ts",
-      gitClassification: "ignored",
-      owningSurface: "graph registry runtime lookups",
-    });
   });
 
   test("stops at the first failing step and reports the step id", () => {
@@ -410,8 +493,8 @@ describe("content runtime preparation", () => {
           "--eval",
           [
             'import { getPublishedDocsEntryByRegistryId } from "./src/lib/content/published-docs-registry-ids";',
-            'const entry = getPublishedDocsEntryByRegistryId("module.grouped-query-attention");',
-            'if (!entry) throw new Error("missing grouped-query-attention published docs entry");',
+            `const entry = getPublishedDocsEntryByRegistryId("${STABLE_PUBLISHED_DOCS_REGISTRY_ID}");`,
+            `if (!entry) throw new Error("missing ${STABLE_PUBLISHED_DOCS_REGISTRY_ID} published docs entry");`,
             "console.log(entry.docsSlug);",
           ].join(" "),
         ],
@@ -423,7 +506,7 @@ describe("content runtime preparation", () => {
       );
 
       expect(importResult.status).toBe(0);
-      expect(importResult.stdout).toContain("modules/grouped-query-attention");
+      expect(importResult.stdout).toContain(STABLE_PUBLISHED_DOCS_SLUG);
       expect(existsSync(manifestPath)).toBe(true);
     } finally {
       if (originalManifest === null) {
@@ -500,74 +583,87 @@ describe("content runtime preparation", () => {
     }
   });
 
-  test("fresh-checkout preparation removes deleted pages from the ignored published docs manifest", () => {
-    const manifestPath = join(
-      repoRoot,
-      GENERATED_PUBLISHED_DOCS_REGISTRY_RELATIVE_PATH,
-    );
-    const pagePath = join(repoRoot, RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH);
-    const originalManifest = existsSync(manifestPath)
-      ? readFileSync(manifestPath, "utf8")
-      : null;
-
-    try {
-      rmSync(pagePath, { force: true, recursive: true });
-      writePublishedDocsPage(RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH, {
-        kind: "glossary",
-        registryId: RUNTIME_DISCOVERY_TEST_REGISTRY_ID,
-        status: "published",
-      });
-
-      const firstPrepare = runPrepareContentRuntime();
-      expect(firstPrepare.status).toBe(0);
-      expect(readFileSync(manifestPath, "utf8")).toContain(
-        RUNTIME_DISCOVERY_TEST_DOCS_SLUG,
+  test(
+    "fresh-checkout preparation removes deleted pages from the ignored published docs manifest",
+    () => {
+      const manifestPath = join(
+        repoRoot,
+        GENERATED_PUBLISHED_DOCS_REGISTRY_RELATIVE_PATH,
       );
-
-      rmSync(pagePath, { force: true, recursive: true });
-
-      const secondPrepare = runPrepareContentRuntime();
-      const secondPrepareOutput = `${secondPrepare.stdout}\n${secondPrepare.stderr}`;
-
-      expect(secondPrepare.status).toBe(0);
-      expect(secondPrepareOutput).toContain(
-        `[content-runtime] Invalidating stale ignored generated runtime output -> ${GENERATED_PUBLISHED_DOCS_REGISTRY_RELATIVE_PATH}`,
+      const pagePath = join(
+        repoRoot,
+        RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH,
       );
-      expect(readFileSync(manifestPath, "utf8")).not.toContain(
-        RUNTIME_DISCOVERY_TEST_DOCS_SLUG,
-      );
+      const originalManifest = existsSync(manifestPath)
+        ? readFileSync(manifestPath, "utf8")
+        : null;
 
-      const importResult = spawnSync(
-        "bun",
-        [
-          "--eval",
+      try {
+        rmSync(pagePath, { force: true, recursive: true });
+        writePublishedDocsPage(RUNTIME_DISCOVERY_TEST_PAGE_RELATIVE_PATH, {
+          kind: "glossary",
+          registryId: RUNTIME_DISCOVERY_TEST_REGISTRY_ID,
+          status: "published",
+        });
+
+        const firstPrepare = runPrepareContentRuntime();
+        expect(firstPrepare.status).toBe(0);
+        expect(readFileSync(manifestPath, "utf8")).toContain(
+          RUNTIME_DISCOVERY_TEST_DOCS_SLUG,
+        );
+
+        rmSync(pagePath, { force: true, recursive: true });
+
+        const secondPrepare = runPrepareContentRuntime();
+        const secondPrepareOutput = `${secondPrepare.stdout}\n${secondPrepare.stderr}`;
+
+        expect(secondPrepare.status).toBe(0);
+        expect(secondPrepareOutput).toContain(
+          `[content-runtime] Preparing published-docs-registry -> ${GENERATED_PUBLISHED_DOCS_REGISTRY_RELATIVE_PATH}`,
+        );
+        expect(secondPrepareOutput).toContain(
+          "[content-runtime] Preserving existing .source and ignored generated runtime outputs",
+        );
+        expect(secondPrepareOutput).not.toContain(
+          "Force-clean: invalidating ignored generated runtime output",
+        );
+        expect(readFileSync(manifestPath, "utf8")).not.toContain(
+          RUNTIME_DISCOVERY_TEST_DOCS_SLUG,
+        );
+
+        const importResult = spawnSync(
+          "bun",
           [
-            'import { getPublishedDocsEntryByRegistryId } from "./src/lib/content/published-docs-registry-ids";',
-            `const entry = getPublishedDocsEntryByRegistryId("${RUNTIME_DISCOVERY_TEST_REGISTRY_ID}");`,
-            "console.log(entry === undefined ? 'missing' : entry.docsSlug);",
-          ].join(" "),
-        ],
-        {
-          cwd: repoRoot,
-          encoding: "utf8",
-          env: process.env,
-        },
-      );
+            "--eval",
+            [
+              'import { getPublishedDocsEntryByRegistryId } from "./src/lib/content/published-docs-registry-ids";',
+              `const entry = getPublishedDocsEntryByRegistryId("${RUNTIME_DISCOVERY_TEST_REGISTRY_ID}");`,
+              "console.log(entry === undefined ? 'missing' : entry.docsSlug);",
+            ].join(" "),
+          ],
+          {
+            cwd: repoRoot,
+            encoding: "utf8",
+            env: process.env,
+          },
+        );
 
-      expect(importResult.status).toBe(0);
-      expect(importResult.stdout.trim()).toBe("missing");
-    } finally {
-      rmSync(pagePath, { force: true, recursive: true });
-      if (originalManifest === null) {
-        rmSync(manifestPath, { force: true });
-      } else {
-        writeFileSync(manifestPath, originalManifest, "utf8");
+        expect(importResult.status).toBe(0);
+        expect(importResult.stdout.trim()).toBe("missing");
+      } finally {
+        rmSync(pagePath, { force: true, recursive: true });
+        if (originalManifest === null) {
+          rmSync(manifestPath, { force: true });
+        } else {
+          writeFileSync(manifestPath, originalManifest, "utf8");
+        }
       }
-    }
-  });
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
+  );
 
   test(
-    "prepare:content-runtime clears stale Fumadocs bindings so deleted docs pages disappear after regeneration",
+    "prepare:content-runtime force-clean clears stale Fumadocs bindings so deleted docs pages disappear after regeneration",
     () => {
       const pagePath = join(
         repoRoot,
@@ -601,8 +697,12 @@ describe("content runtime preparation", () => {
 
         rmSync(pagePath, { force: true, recursive: true });
 
-        const secondPrepare = runPrepareContentRuntime();
+        const secondPrepare = runPrepareContentRuntime({ forceClean: true });
+        const secondPrepareOutput = `${secondPrepare.stdout}\n${secondPrepare.stderr}`;
         expect(secondPrepare.status).toBe(0);
+        expect(secondPrepareOutput).toContain(
+          "Force-clean: removing generated Fumadocs bindings",
+        );
         expect(existsSync(sourceRoot)).toBe(false);
 
         const secondGenerate = spawnSync("bunx", ["fumadocs-mdx"], {
@@ -617,11 +717,38 @@ describe("content runtime preparation", () => {
         expect(regeneratedServer).not.toContain(
           RUNTIME_DISCOVERY_TEST_DOCS_SLUG,
         );
-        expect(regeneratedServer).toContain("modules/grouped-query-attention");
+        expect(regeneratedServer).toContain(STABLE_PUBLISHED_DOCS_SLUG);
       } finally {
         rmSync(pagePath, { force: true, recursive: true });
         rmSync(sourceRoot, { force: true, recursive: true });
         runPrepareContentRuntime();
+      }
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
+  );
+
+  test(
+    "default prepare:content-runtime preserves existing .source bindings",
+    () => {
+      const sourceRoot = getGeneratedDocsSourceRoot(repoRoot);
+      const sourceServerPath = join(sourceRoot, "server.ts");
+      const marker = "// content-runtime-preserve-marker\n";
+
+      try {
+        mkdirSync(sourceRoot, { recursive: true });
+        writeFileSync(sourceServerPath, marker, "utf8");
+
+        const prepareResult = runPrepareContentRuntime();
+        const prepareOutput = `${prepareResult.stdout}\n${prepareResult.stderr}`;
+
+        expect(prepareResult.status).toBe(0);
+        expect(prepareOutput).toContain(
+          "[content-runtime] Preserving existing .source and ignored generated runtime outputs",
+        );
+        expect(existsSync(sourceServerPath)).toBe(true);
+        expect(readFileSync(sourceServerPath, "utf8")).toBe(marker);
+      } finally {
+        rmSync(sourceRoot, { force: true, recursive: true });
       }
     },
     { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
@@ -657,30 +784,34 @@ describe("content runtime preparation", () => {
     expect(checkTracked.status).not.toBe(0);
   });
 
-  test("prepare:content-runtime reports the registry runtime step for invalid registry JSON", () => {
-    const invalidRegistryFixturePath = join(
-      repoRoot,
-      INVALID_REGISTRY_FIXTURE_RELATIVE_PATH,
-    );
-    writeFileSync(
-      invalidRegistryFixturePath,
-      "{ invalid registry json",
-      "utf8",
-    );
+  test(
+    "prepare:content-runtime reports the registry runtime step for invalid registry JSON",
+    () => {
+      const invalidRegistryFixturePath = join(
+        repoRoot,
+        INVALID_REGISTRY_FIXTURE_RELATIVE_PATH,
+      );
+      writeFileSync(
+        invalidRegistryFixturePath,
+        "{ invalid registry json",
+        "utf8",
+      );
 
-    try {
-      const result = runPrepareContentRuntime();
-      const output = `${result.stdout}\n${result.stderr}`;
+      try {
+        const result = runPrepareContentRuntime();
+        const output = `${result.stdout}\n${result.stderr}`;
 
-      expect(result.status).not.toBe(0);
-      expect(output).toContain('Failed step "registry-runtime"');
-      expect(output).toContain("bun run generate:registry-runtime");
-      expect(output).toContain(INVALID_REGISTRY_FIXTURE_RELATIVE_PATH);
-    } finally {
-      rmSync(invalidRegistryFixturePath, { force: true });
-      runPrepareContentRuntime();
-    }
-  });
+        expect(result.status).not.toBe(0);
+        expect(output).toContain('Failed step "registry-runtime"');
+        expect(output).toContain("bun run generate:registry-runtime");
+        expect(output).toContain(INVALID_REGISTRY_FIXTURE_RELATIVE_PATH);
+      } finally {
+        rmSync(invalidRegistryFixturePath, { force: true });
+        runPrepareContentRuntime();
+      }
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
+  );
 
   test("generated registry runtime is ignored as a derived artifact", () => {
     const generatedRuntimePath = relative(
@@ -704,20 +835,24 @@ describe("content runtime preparation", () => {
     expect(checkIgnore.status).toBe(0);
   });
 
-  test("verify:content-runtime-completeness succeeds on the healthy repo checkout", () => {
-    const result = spawnSync(
-      "bun",
-      ["run", "verify:content-runtime-completeness"],
-      {
-        cwd: repoRoot,
-        encoding: "utf8",
-        env: process.env,
-      },
-    );
+  test(
+    "verify:content-runtime-completeness succeeds on the healthy repo checkout",
+    () => {
+      const result = spawnSync(
+        "bun",
+        ["run", "verify:content-runtime-completeness"],
+        {
+          cwd: repoRoot,
+          encoding: "utf8",
+          env: process.env,
+        },
+      );
 
-    expect(result.status).toBe(0);
-    expect(`${result.stdout}\n${result.stderr}`).toContain(
-      "Generated-runtime completeness gate passed",
-    );
-  });
+      expect(result.status).toBe(0);
+      expect(`${result.stdout}\n${result.stderr}`).toContain(
+        "Generated-runtime completeness gate passed",
+      );
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
+  );
 });
