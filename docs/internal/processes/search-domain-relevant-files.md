@@ -93,6 +93,11 @@ Use these files when changing search document construction, Orama indexing, or
   Composite export-consumer gate: project-site chunk content must include
   `/you-agent-factory-docs/api/search` and fails when only an unprefixed
   `/api/search` bootstrap bake is present.
+* `src/lib/build/guard-pages-deployed-artifact.ts`
+  Deploy-path HTTP probe. Prefixed bootstrap presence uses
+  `readExportClientChunkContents` (all `out/_next/static/chunks/*.js`), not
+  only the first HTML script tag — Next code-splits the search-client bake
+  into a separate chunk. Single-chunk HTTP GET still proves asset URL prefix.
 * Focused coverage: `bun run test:website:static-search` (includes
   `docs-search-bootstrap-path`, `export-search-bootstrap`, and
   `verify-export-search-bootstrap-client-path` tests) plus

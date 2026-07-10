@@ -13,6 +13,7 @@ import {
 import {
   exportClientBundleIncludesBootstrapFrom,
   exportContentReferencesUnprefixedSearchBootstrap,
+  readExportClientChunkContents,
   resolveExportSearchBootstrapClientFrom,
 } from "@/lib/build/verify-export-search-bootstrap-client-path";
 import { DOCS_SEARCH_API_PATH } from "@/lib/search/docs-search-bootstrap-path";
@@ -372,9 +373,15 @@ export async function probePagesDeployedArtifact(
       };
     }
 
+    // Bootstrap bake lives in a code-split search chunk, not necessarily the
+    // first HTML-referenced script. Match export-consumer: concatenate all
+    // out/_next/static/chunks/*.js. Keep the single-chunk HTTP GET above for
+    // hasJsChunkUrl / prefix serving only.
+    const jsChunkContent = readExportClientChunkContents(outDir, cwd);
+
     const evaluation = evaluatePagesDeployedArtifactProbes({
       html: combinedHtml,
-      jsChunkContent: jsResponse.body,
+      jsChunkContent,
       basePath,
       cssAssetUrl: cssAssetPath,
       jsChunkUrl: jsChunkPath,
