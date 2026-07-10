@@ -13,7 +13,7 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "Imagine counting successful goal completions in each ten-minute interval while a factory run is active. Most intervals land near the same center line and stay between the upper and lower control limits. One interval then spikes above the upper limit after a bad retry storm. The chart makes that special-cause excursion visible against the earlier in-control stretch, so the reader can tell unusual behavior from ordinary jitter."
+      "body": "Imagine counting successful goal completions in each ten-minute interval while a factory run is active. Most intervals land near the same center line and stay between the upper and lower control limits. One interval then spikes above the upper limit after a bad retry storm. The control chart below makes that special-cause excursion visible against the earlier in-control stretch, so the reader can tell unusual behavior from ordinary jitter."
     },
     "whereItAppears": {
       "title": "Where It Appears",

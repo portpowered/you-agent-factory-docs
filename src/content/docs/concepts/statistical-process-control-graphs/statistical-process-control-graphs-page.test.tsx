@@ -85,5 +85,37 @@ describe("statistical-process-control-graphs concept page", () => {
     expect(whyItMattersSection?.textContent).toMatch(
       /throughput, failure rate, queue depth, and token spend/i,
     );
+
+    const simpleExample = String(
+      loadedPage.messages.sections?.simpleExample?.body ?? "",
+    );
+    expect(simpleExample).toMatch(/ten-minute interval|completions/i);
+    expect(simpleExample).toMatch(/upper limit|control limit/i);
+    expect(simpleExample).toMatch(/special-cause/i);
+
+    const simpleExampleSection = document.getElementById("simple-example");
+    expect(simpleExampleSection?.textContent).toMatch(
+      /goal completions|ten-minute interval/i,
+    );
+
+    const chart = screen.getByRole("img", {
+      name: "Control chart: goal completions per ten-minute interval",
+    });
+    expect(chart.getAttribute("data-chart-container")).toBe("");
+    expect(
+      simpleExampleSection?.querySelector(
+        '[data-testid="spc-control-chart-illustration"]',
+      ),
+    ).toBeTruthy();
+    const legend = simpleExampleSection?.querySelector(
+      "[data-spc-control-chart-legend]",
+    );
+    expect(legend?.textContent).toMatch(/Completions/);
+    expect(legend?.textContent).toMatch(/Center line/);
+    expect(legend?.textContent).toMatch(/Upper control limit/);
+    expect(legend?.textContent).toMatch(/Lower control limit/);
+    expect(simpleExampleSection?.textContent).toMatch(
+      /X axis: Interval \(ten-minute ticks\)/i,
+    );
   });
 });
