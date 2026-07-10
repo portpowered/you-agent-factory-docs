@@ -51,3 +51,9 @@ jobs:
 
       - name: Component coverage enforcement
         run: make component-coverage
+
+      - name: Validate registry data
+        run: make validate-data
+
+      - name: Linkcheck
+        run: make linkcheck

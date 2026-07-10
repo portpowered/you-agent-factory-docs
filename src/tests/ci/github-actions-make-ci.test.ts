@@ -9,50 +9,17 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { BUILD_CONTRACT_REQUIRED_TEST_PATHS } from "@/lib/build/build-contract-required-test-paths";
+import {
+  CI_WORKFLOW_REQUIRED_MAKE_TARGETS,
+  EXCLUDED_MAKE_CI_TARGETS,
+  MAKE_CI_PREREQUISITES,
+  SHARED_REQUIRED_SUITE_TARGETS,
+} from "@/lib/ci-required-path";
 
 const repoRoot = join(import.meta.dir, "../../..");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
 const makefilePath = join(repoRoot, "Makefile");
-
-/**
- * Makefile `ci:` prerequisites for the rewrite-era required path.
- * Story 003 restores CI / verify / build / integration contracts into this
- * ordered gate list (reader-facing was added in story 002).
- */
-const ciTargets = [
-  "lint",
-  "typecheck",
-  "test",
-  "test-reader-facing",
-  "test-ci-contract",
-  "test-verify-contract",
-  "coverage",
-  "test-build-contract",
-  "test-integration",
-  "validate-data",
-  "linkcheck",
-] as const;
-
-const excludedCiTargets = [
-  "validate-pdf",
-  "deploy",
-  "build-search-index",
-] as const;
-
-/** Workflow stages that must appear as `make <target>` in `.github/workflows/ci.yml`. */
-const workflowRequiredMakeTargets = [
-  "setup",
-  "check",
-  "test",
-  "test-reader-facing",
-  "test-ci-contract",
-  "test-verify-contract",
-  "test-build-contract",
-  "build",
-  "test-integration",
-  "budget",
-  "component-coverage",
-] as const;
 
 type PackageScripts = Record<string, string>;
 
@@ -120,24 +87,32 @@ describe("GitHub Actions make ci", () => {
     expect(scripts["test:integration"]).toBe(
       "bun ./scripts/run-production-integration-tests.ts",
     );
-    expect(scripts["test:build-contract"]).toContain(
+    expect(scripts["test:build-contract"]).toBe(
+      "bun ./scripts/run-build-contract-required-tests.ts",
+    );
+    expect(BUILD_CONTRACT_REQUIRED_TEST_PATHS).toContain(
       "src/lib/build/deploy-pages-workflow-contract.test.ts",
     );
-    expect(scripts["test:build-contract"]).toContain(
+    expect(BUILD_CONTRACT_REQUIRED_TEST_PATHS).toContain(
       "src/lib/build/verify-export-base-path.test.ts",
     );
-    expect(scripts["test:build-contract"]).toContain(
+    expect(BUILD_CONTRACT_REQUIRED_TEST_PATHS).toContain(
       "src/lib/build/acquire-trusted-project-site-export.test.ts",
     );
-    expect(scripts["test:build-contract"]).toContain(
+    expect(BUILD_CONTRACT_REQUIRED_TEST_PATHS).toContain(
       "src/lib/build/exported-site-budget.test.ts",
     );
-    expect(scripts["test:build-contract"]).toContain(
+    expect(BUILD_CONTRACT_REQUIRED_TEST_PATHS).toContain(
       "src/lib/build/required-read-only-export-probes.test.ts",
     );
-    expect(scripts["test:build-contract"]).not.toContain(
-      "static-export-search-ux-integration.test.ts",
+    expect(BUILD_CONTRACT_REQUIRED_TEST_PATHS).toContain(
+      "src/lib/build/build-contract-required-test-paths.test.ts",
     );
+    expect(
+      BUILD_CONTRACT_REQUIRED_TEST_PATHS.some((path) =>
+        path.includes("static-export-search-ux-integration.test.ts"),
+      ),
+    ).toBe(false);
     expect(scripts.budget).toBe("bun ./scripts/run-exported-site-budget.ts");
     expect(scripts.coverage).toBe("bun ./scripts/component-coverage-gate.ts");
 
@@ -149,7 +124,10 @@ describe("GitHub Actions make ci", () => {
     expect(prerequisites).toContain("test-build-contract");
     expect(prerequisites).toContain("test-integration");
     expect(prerequisites).toContain("test-reader-facing");
-    expect(prerequisites).not.toContain("build");
+    expect(prerequisites).toContain("build");
+    expect(prerequisites).toContain("budget");
+    expect(prerequisites).toContain("component-coverage");
+    expect(prerequisites).not.toContain("coverage");
     expect(prerequisites).not.toContain("build-export");
 
     expect(makefile).toMatch(/^budget:\n\tbun run budget$/m);
@@ -175,29 +153,43 @@ describe("GitHub Actions make ci", () => {
     ).toBe(true);
   });
 
-  test("Makefile ci target runs CI gates in order including linkcheck", () => {
+  test("Makefile ci target runs the aligned required gates in order", () => {
     const makefile = readFileSync(makefilePath, "utf8");
     const prerequisites = parseMakefileCiPrerequisites(makefile);
 
-    expect(prerequisites).toEqual([...ciTargets]);
+    expect(prerequisites).toEqual([...MAKE_CI_PREREQUISITES]);
 
-    for (const excluded of excludedCiTargets) {
+    for (const excluded of EXCLUDED_MAKE_CI_TARGETS) {
       expect(prerequisites).not.toContain(excluded);
     }
   });
 
-  test("ci workflow invokes the story-003 required make targets", () => {
+  test("ci workflow invokes the aligned required make targets", () => {
     const workflow = readFileSync(ciWorkflowPath, "utf8");
     const commands = workflowMakeCommands(workflow);
 
-    for (const target of workflowRequiredMakeTargets) {
+    for (const target of CI_WORKFLOW_REQUIRED_MAKE_TARGETS) {
       expect(commands).toContain(target);
     }
 
     const buildIndex = commands.indexOf("build");
     const integrationIndex = commands.indexOf("test-integration");
+    const budgetIndex = commands.indexOf("budget");
     expect(buildIndex).toBeGreaterThan(-1);
     expect(integrationIndex).toBeGreaterThan(buildIndex);
+    expect(budgetIndex).toBeGreaterThan(buildIndex);
+  });
+
+  test("shared restored suites appear in both make ci and the CI workflow", () => {
+    const makefile = readFileSync(makefilePath, "utf8");
+    const prerequisites = new Set(parseMakefileCiPrerequisites(makefile));
+    const workflow = readFileSync(ciWorkflowPath, "utf8");
+    const commands = new Set(workflowMakeCommands(workflow));
+
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(prerequisites.has(target)).toBe(true);
+      expect(commands.has(target)).toBe(true);
+    }
   });
 
   test("make ci stops on the first failing prerequisite", () => {

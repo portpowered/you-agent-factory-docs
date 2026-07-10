@@ -77,7 +77,9 @@ guard-pages-deployed-artifact:
 verify-architectural-checklist-mechanism-status:
 	bun run verify:architectural-checklist-mechanism-status
 
-ci: lint typecheck test test-reader-facing test-ci-contract test-verify-contract coverage test-build-contract test-integration validate-data linkcheck
+# Aligned with .github/workflows/ci.yml required suites (see src/lib/ci-required-path.ts).
+# build produces one trusted out/ for test-integration + budget.
+ci: lint typecheck test test-reader-facing test-ci-contract test-verify-contract test-build-contract build test-integration budget component-coverage validate-data linkcheck
 
 validate-data:
 	bun run validate-data

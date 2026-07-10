@@ -110,8 +110,13 @@ const testFiles = listTestFiles(repoRoot)
   .filter((relativePath) => !isExcluded(relativePath))
   .sort();
 
+const WEBSITE_FUNCTIONALITY_SUITE_COMMAND = "make test";
+
 if (testFiles.length === 0) {
   console.error("No website functionality test files found.");
+  console.error(
+    `Reproduce locally with: ${WEBSITE_FUNCTIONALITY_SUITE_COMMAND}`,
+  );
   process.exit(1);
 }
 
@@ -121,6 +126,9 @@ const statuses = await Promise.all(
 );
 const failingStatus = statuses.find((status) => status !== 0);
 if (failingStatus !== undefined) {
+  console.error(
+    `website functionality suite failed. Reproduce locally with: ${WEBSITE_FUNCTIONALITY_SUITE_COMMAND}`,
+  );
   process.exit(failingStatus);
 }
 

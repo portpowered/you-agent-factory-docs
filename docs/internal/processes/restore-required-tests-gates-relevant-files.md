@@ -161,6 +161,32 @@ make budget
 
 Do not reintroduce helpers that call `runStaticExportBuild` from read-only probe CLIs. Prefer `acquireTrustedProjectSiteExport({ allowBuild: false })` for HTTP/HTML probes on an already-built artifact.
 
+## Story 007: align make ci / workflows, reproduction commands, green required path
+
+| Path | Role |
+| --- | --- |
+| `src/lib/ci-required-path.ts` | Shared inventory of `make ci` prerequisites, CI workflow make targets, and shared restored suites |
+| `src/lib/ci-required-path.test.ts` | Proves Makefile `ci:` and `.github/workflows/ci.yml` stay aligned on the shared suite set |
+| `src/lib/build/build-contract-required-test-paths.ts` | Explicit build-contract path list + `make test-build-contract` reproduction command |
+| `scripts/run-build-contract-required-tests.ts` | Runner for `bun run test:build-contract`; prints reproduction command on failure |
+| `Makefile` `ci:` | Local full required path: suites through `build` → `test-integration` → `budget` → `component-coverage` → `validate-data` → `linkcheck` |
+| `.github/workflows/ci.yml` | Same restored suites as `make ci` (uses `make check` instead of separate lint/typecheck) |
+| `.github/workflows/deploy-pages.yml` | Pages-focused subset (check / test / build / guard / budget); not required to mirror the full verify path |
+| Gate CLIs (`run-website-functionality-tests`, reader-facing, ci-contract, verify-contract, build-contract, integration, budget, component-coverage, validate-registry, validate-links) | Print `Reproduce locally with: make <target>` on failure |
+
+Aligned required suites (both `make ci` and CI):
+
+`test`, `test-reader-facing`, `test-ci-contract`, `test-verify-contract`, `test-build-contract`, `build`, `test-integration`, `budget`, `component-coverage`, `validate-data`, `linkcheck`
+
+Reproduce the full local required path with:
+
+```sh
+make setup
+make ci
+```
+
+Or reproduce a single failing stage with the printed `make <target>` from that gate's failure output.
+
 ## Related
 
 - [ci-deploy-foundation-relevant-files.md](./ci-deploy-foundation-relevant-files.md) — Makefile / workflow contract map

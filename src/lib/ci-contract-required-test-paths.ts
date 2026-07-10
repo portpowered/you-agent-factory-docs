@@ -9,6 +9,7 @@
  */
 
 export const CI_CONTRACT_REQUIRED_TEST_PATHS = [
+  "src/lib/ci-required-path.test.ts",
   "src/tests/ci/github-actions-bun-install.test.ts",
   "src/tests/ci/github-actions-make-ci.test.ts",
   "src/tests/ci/system-test-gates.test.ts",

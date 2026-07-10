@@ -27,7 +27,7 @@ failing workflow stage with the same `make <target>` locally (see
 | Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
 | Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
-| Quality gates | `.github/workflows/ci.yml` runs `make setup` → `check` → `test` → `build` → `budget` → `component-coverage`; deploy-pages validate does not replace CI |
+| Quality gates | `.github/workflows/ci.yml` runs the aligned required path (`make check` → test suites → build → integration → budget → component-coverage → validate-data → linkcheck); deploy-pages validate does not replace CI |
 
 The workflow **`validate`** job checks out the pushed commit, runs the Makefile
 stages above (including `make guard-pages-deployed-artifact` after `make build`),
@@ -111,8 +111,10 @@ Related operational rows not closed in this section alone:
 ### What contributors should expect today
 
 - **Pull requests and pushes** run the **verify** job in `.github/workflows/ci.yml`
-  (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`).
-  Reproduce a failing stage locally with the same `make <target>`.
+  (aligned with `make ci`: `check` → test suites → build → integration →
+  budget → component-coverage → validate-data → linkcheck).
+  Reproduce a failing stage locally with the same `make <target>`, or run
+  `make ci` for the full local required path.
 - **Pushes to `main`** also run `.github/workflows/deploy-pages.yml`, which
   validates with the same Makefile targets (through `budget`), uploads `out/`,
   and publishes to GitHub Pages when deploy succeeds.
@@ -158,10 +160,11 @@ the rule is active.
 
 The baseline quality gate is workflow file `.github/workflows/ci.yml`, job
 **`verify`**. It checks out the branch, runs `make setup`, installs Playwright
-Chromium for browser-backed website tests, then runs the Makefile contract in
-order: `make check`, `make test`, `make build`, `make budget`, and
-`make component-coverage`. Deploy and preview steps are intentionally excluded
-from CI.
+Chromium for browser-backed website tests, then runs the Makefile contract
+aligned with `make ci`: `make check`, reader-facing / CI / verify / build
+contracts, `make build`, `make test-integration`, `make budget`,
+`make component-coverage`, `make validate-data`, and `make linkcheck`. Deploy
+and preview steps are intentionally excluded from CI.
 
 Production publish is workflow file `.github/workflows/deploy-pages.yml`. The
 **`validate`** job runs the same Makefile stages through `make budget`, uploads

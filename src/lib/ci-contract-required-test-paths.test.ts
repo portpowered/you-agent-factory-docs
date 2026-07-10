@@ -12,7 +12,10 @@ describe("CI_CONTRACT_REQUIRED_TEST_PATHS", () => {
   test("lists a non-empty set of existing CI alignment contract files", () => {
     expect(CI_CONTRACT_REQUIRED_TEST_PATHS.length).toBeGreaterThan(0);
     for (const relativePath of CI_CONTRACT_REQUIRED_TEST_PATHS) {
-      expect(relativePath.startsWith("src/tests/ci/")).toBe(true);
+      expect(
+        relativePath.startsWith("src/tests/ci/") ||
+          relativePath.startsWith("src/lib/ci-"),
+      ).toBe(true);
       expect(existsSync(join(repoRoot, relativePath))).toBe(true);
     }
   });

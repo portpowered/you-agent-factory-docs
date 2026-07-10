@@ -14,20 +14,22 @@ Pages deploy for the rewrite-era foundation pipeline.
 | CI alignment contracts | `make test-ci-contract` | Bounded workflow/Makefile alignment suite (`bun run test:ci-contract`); included in `make ci` and CI |
 | Verify-contract | `make test-verify-contract` | Factory verifier/tooling contracts; fails closed if the required path list is empty |
 | Build-contract | `make test-build-contract` | Build/export/base-path/Pages contracts |
-| Integration | `make test-integration` | Production-integration path set for live shell/lifecycle contracts (prefer after `make build`) |
-| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
+| Integration | `make test-integration` | Production-integration path set for live shell/lifecycle contracts (after `make build`) |
+| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages and for budget/integration. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=`, stage wall times, cache reasons, scale counts, and non-identifying machine metadata. Reference machine + recorded <=180s evidence live in `docs/operations.md`; print the gate with `bun run prove:static-export-optimization-evidence`. Not part of CI/Pages. |
 | Exported-site budget | `make budget` | Measures existing `out/` against factory baselines (total size, Next static JS, search bootstrap); never unconditional skip/`exit 0` |
 | Component coverage | `make component-coverage` | Evaluates factory component + verifier coverage manifests via `bun run coverage`; never unconditional skip/`exit 0` |
+| Registry validation | `make validate-data` | Registry content validation; included in `make ci` and CI |
+| Linkcheck | `make linkcheck` | Documentation link validation; included in `make ci` and CI |
 
 Workflows that call this contract:
 
-- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → test-reader-facing → test-ci-contract → test-verify-contract → test-build-contract → build → test-integration → budget → component-coverage
-- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/`
+- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → test-reader-facing → test-ci-contract → test-verify-contract → test-build-contract → build → test-integration → budget → component-coverage → validate-data → linkcheck (aligned with `make ci` / `src/lib/ci-required-path.ts`)
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/` (Pages-focused subset; does not replace CI)
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
-tests need a browser).
+tests need a browser). The full local required path is `make ci`.
 
 ### Project-site export (local match for deploy-pages)
 
