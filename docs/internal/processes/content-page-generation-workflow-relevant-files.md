@@ -86,6 +86,11 @@ Before the first authored page under a rewrite-era CLI collection can pass
    use `bun run dev`) before curling the route, or the HTML will still show
    the previous copy. Prefer a unique port in `3100-3999`,
    `curl --max-time 10`, and kill the server before the command exits.
+   If a fresh `bun run build` still serves pre-edit MDX structure (for
+   example missing a newly added failure-modes table or `LocalizedLinkList`
+   under `#related`) while colocated page tests pass against filesystem
+   messages, clear `.next` and rebuild — webpack/fumadocs-mdx can keep a
+   stale pack cache across ordinary rebuilds in this worktree.
 7. Do not run overlapping `prepare:content-runtime` / `fumadocs-mdx`
    invocations in parallel on the same worktree — concurrent prep can delete
    `.source` mid-validate and fail with `Cannot find module '../../.source/server'`.

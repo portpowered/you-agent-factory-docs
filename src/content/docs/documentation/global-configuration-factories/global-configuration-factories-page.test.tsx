@@ -122,6 +122,46 @@ describe("global-configuration-factories documentation page", () => {
       );
       expect(limits).toMatch(/not a sync of packaged CLI docs/i);
       expect(limits).toMatch(/not the factory\.json topology overview/i);
+      expect(limits).toMatch(
+        /not workers, workstations, or resources field dumps/i,
+      );
+      expect(limits).toMatch(/not packaged @you\/\* invocation deep dives/i);
+      expect(limits).toMatch(/not factory-session/i);
+      expect(limits).toMatch(/not submitting-work/i);
+      expect(limits).toMatch(/missing config continues with no defaults/i);
+      expect(limits).toMatch(/unsupported providers/i);
+      expect(limits).toMatch(
+        /DEFAULT without a concrete lower-precedence provider/i,
+      );
+      expect(
+        String(loadedPage.messages.links?.failureMissingConfigBehavior ?? ""),
+      ).toMatch(/no operator defaults/i);
+      expect(
+        String(loadedPage.messages.links?.failureMalformedConfigBehavior ?? ""),
+      ).toMatch(/names the config path/i);
+      expect(
+        String(
+          loadedPage.messages.links?.failureUnsupportedProviderBehavior ?? "",
+        ),
+      ).toMatch(/accepted provider/i);
+      expect(
+        String(
+          loadedPage.messages.links?.failureDefaultWithoutProviderBehavior ??
+            "",
+        ),
+      ).toMatch(/resolution guidance/i);
+      expect(
+        String(
+          loadedPage.messages.links?.failureAuthoredWorkerFieldsBehavior ?? "",
+        ),
+      ).toMatch(/do not override authored values/i);
+      expect(
+        String(loadedPage.messages.links?.configurationDocs ?? ""),
+      ).toMatch(/Configuration/i);
+      expect(String(loadedPage.messages.links?.cliDocs ?? "")).toMatch(/CLI/i);
+      expect(String(loadedPage.messages.links?.workersDocs ?? "")).toMatch(
+        /Workers/i,
+      );
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
@@ -238,6 +278,48 @@ describe("global-configuration-factories documentation page", () => {
       expect(limitsSection?.textContent).toMatch(
         /not the factory\.json topology overview/i,
       );
+      expect(limitsSection?.textContent).toMatch(/not factory-session/i);
+      expect(limitsSection?.textContent).toMatch(/not submitting-work/i);
+      expect(limitsSection?.textContent).toMatch(
+        /Missing ~\/\.you-agent-factory\/config\.json/,
+      );
+      expect(limitsSection?.textContent).toMatch(
+        /Startup continues with no operator defaults/i,
+      );
+      expect(limitsSection?.textContent).toMatch(/Malformed config JSON/i);
+      expect(limitsSection?.textContent).toMatch(/names the config path/i);
+      expect(limitsSection?.textContent).toMatch(
+        /Unsupported workerModelProvider/i,
+      );
+      expect(limitsSection?.textContent).toMatch(/accepted provider summary/i);
+      expect(limitsSection?.textContent).toMatch(
+        /DEFAULT without a lower-precedence concrete provider/i,
+      );
+      expect(limitsSection?.textContent).toMatch(/resolution guidance/i);
+      expect(limitsSection?.textContent).toMatch(
+        /Authored worker modelProvider or model/i,
+      );
+      expect(limitsSection?.textContent).toMatch(
+        /do not override authored values/i,
+      );
+
+      const relatedSection = document.getElementById("related");
+      expect(relatedSection).toBeTruthy();
+      const configurationLink = screen.getByRole("link", {
+        name: /Configuration \(factory\.json topology\)/i,
+      });
+      const cliLink = screen.getByRole("link", { name: /^CLI$/i });
+      const workersLink = screen.getByRole("link", { name: /^Workers$/i });
+      expect(configurationLink.getAttribute("href")).toBe(
+        "/docs/documentation/configuration",
+      );
+      expect(cliLink.getAttribute("href")).toBe("/docs/documentation/cli");
+      expect(workersLink.getAttribute("href")).toBe(
+        "/docs/documentation/workers",
+      );
+      expect(relatedSection?.contains(configurationLink)).toBe(true);
+      expect(relatedSection?.contains(cliLink)).toBe(true);
+      expect(relatedSection?.contains(workersLink)).toBe(true);
     },
     { timeout: 30_000 },
   );

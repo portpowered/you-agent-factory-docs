@@ -15,6 +15,7 @@ updatedAt: "2026-07-10"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -186,9 +187,82 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
+  <p>
+    <T k="links.failureModesLabel" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.failureConditionHeader" />
+        </th>
+        <th>
+          <T k="links.failureBehaviorHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.failureMissingConfigCondition" />
+        </td>
+        <td>
+          <T k="links.failureMissingConfigBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureMalformedConfigCondition" />
+        </td>
+        <td>
+          <T k="links.failureMalformedConfigBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureUnsupportedProviderCondition" />
+        </td>
+        <td>
+          <T k="links.failureUnsupportedProviderBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureDefaultWithoutProviderCondition" />
+        </td>
+        <td>
+          <T k="links.failureDefaultWithoutProviderBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureAuthoredWorkerFieldsCondition" />
+        </td>
+        <td>
+          <T k="links.failureAuthoredWorkerFieldsBehavior" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </Section>
 
 <Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+    ]}
+  />
   <RelatedDocs registryId="documentation.global-configuration-factories" />
 </Section>
 

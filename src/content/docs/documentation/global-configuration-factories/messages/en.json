@@ -25,7 +25,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web operator-defaults and global / named-factories reference. It is not a sync of packaged CLI docs, not the factory.json topology overview, not workers, workstations, or resources field dumps, not packaged @you/* invocation deep dives, not factory-session, and not submitting-work."
+      "body": "This page is the web operator-defaults and global / named-factories reference. It is not a sync of packaged CLI docs, not the factory.json topology overview, not workers, workstations, or resources field dumps, not packaged @you/* invocation deep dives, not factory-session, and not submitting-work. Use the related documentation links for factory.json topology, CLI command surfaces, and worker field contracts. Operator-default startup failures stay short here: missing config continues with no defaults; malformed config, unsupported providers, and DEFAULT without a concrete lower-precedence provider fail before dispatch."
     },
     "related": {
       "title": "Related To"
@@ -60,7 +60,23 @@
     "listGlobalLabel": "List named factories under the global shared root:",
     "runNamedLabel": "Run a named factory (project-local first, then global, then built-in materialization):",
     "saveNamedLabel": "Save a named factory under a chosen root:",
-    "updateNamedLabel": "Update an existing named factory under a chosen root:"
+    "updateNamedLabel": "Update an existing named factory under a chosen root:",
+    "failureModesLabel": "Operator-default failure modes:",
+    "failureConditionHeader": "Condition",
+    "failureBehaviorHeader": "Behavior",
+    "failureMissingConfigCondition": "Missing ~/.you-agent-factory/config.json",
+    "failureMissingConfigBehavior": "Startup continues with no operator defaults",
+    "failureMalformedConfigCondition": "Malformed config JSON",
+    "failureMalformedConfigBehavior": "Fails before service construction; error names the config path",
+    "failureUnsupportedProviderCondition": "Unsupported workerModelProvider",
+    "failureUnsupportedProviderBehavior": "Fails before dispatch with accepted provider summary",
+    "failureDefaultWithoutProviderCondition": "DEFAULT without a lower-precedence concrete provider",
+    "failureDefaultWithoutProviderBehavior": "Fails before dispatch with resolution guidance",
+    "failureAuthoredWorkerFieldsCondition": "Authored worker modelProvider or model",
+    "failureAuthoredWorkerFieldsBehavior": "Operator defaults do not override authored values",
+    "configurationDocs": "Configuration (factory.json topology)",
+    "cliDocs": "CLI",
+    "workersDocs": "Workers"
   },
   "callouts": {
     "configFileNotes": {
