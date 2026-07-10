@@ -1,0 +1,32 @@
+{
+  "title": "API",
+  "description": "Orient around the you-agent-factory OpenAPI and HTTP surface: session-scoped routes, preview, and representative calls against a running local factory host.",
+  "openingSummary": "The you-agent-factory API is the HTTP contract a running factory host exposes. OpenAPI (Open Application Programming Interface) describes that contract so web readers can discover session-scoped routes without reverse-engineering CLI wrappers.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers the you-agent-factory API and OpenAPI surface for web readers: what the HTTP contract is for, the host and session nouns callers address, and how to scan the primary route families a live factory exposes. Use it when you need the published HTTP/OpenAPI orientation rather than a CLI matrix, MCP host setup, or a packaged docs sync."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "OpenAPI (Open Application Programming Interface) is the product contract that describes the HTTP API a running factory host exposes. Callers target that host—not this documentation site—and address work through session-scoped routes keyed by a session id. The primary address model is session-scoped: discover and inspect factory sessions, read status, submit work, and preview factories against the live host."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start or attach a local factory so an HTTP host is listening, then call the session-scoped routes against that host. Use a live session id from session discovery—often ~default on single-session local hosts."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web OpenAPI and HTTP orientation for the you-agent-factory API surface. It is not a build-time generated OpenAPI UI, not a full schema dump, not a sync of packaged CLI docs, and not the Factory Session, submitting-work, dynamic-workflows, MCP, or CLI deep pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
