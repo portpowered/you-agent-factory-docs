@@ -36,10 +36,9 @@ Before the first authored page under a rewrite-era CLI collection can pass
 2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
    `src/lib/content/local-docs-page.ts` must include the section with a
    colocated loader (for example `documentation-page.ts` /
-   `documentation-page-load.ts`, or `technique-page.ts` /
-   `technique-page-load.ts` for the first techniques page). Without that,
-   Fumadocs renders the MDX body without `ModulePageProviders` and
-   `Section` / `T` throw `usePageMessages must be used within PageMessagesProvider`.
+   `documentation-page-load.ts`). Without that, Fumadocs renders the MDX body
+   without `ModulePageProviders` and `Section` / `T` throw
+   `usePageMessages must be used within PageMessagesProvider`.
 3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
    even when reader copy is message-backed — mirror the glossary template.
 4. `registryDirectoryByKind` in
