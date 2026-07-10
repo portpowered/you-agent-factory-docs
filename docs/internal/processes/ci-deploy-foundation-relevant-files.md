@@ -217,6 +217,14 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
   Force-push and hard-reset of `main` are prohibited. Direct redeploy of a
   prior SHA is **not available today** (`deploy-pages.yml` is `push` to `main`
   only — no `workflow_dispatch`).
+- Incident diagnosis for live Pages failure modes lives in `docs/operations.md`
+  under **Incident diagnosis**: bare `/_next` / missing project-site prefix,
+  broken or empty search bootstrap, browser/CDN cache serving old HTML/assets,
+  and stale or wrong uploaded artifact. Each mode lists observable symptoms and
+  a next action that points back to **Commit-SHA traceability**, **Read-only
+  post-deploy checks**, and **Rollback process** — do not invent a second
+  recovery path. Prefer fresh GET-only `curl` over a single browser tab when
+  distinguishing cache from a bad artifact.
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.

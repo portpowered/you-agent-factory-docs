@@ -106,7 +106,7 @@ Related operational rows not closed in this section alone:
 | Website has CI checks on every pull request and merge | **Implemented** | `.github/workflows/ci.yml` runs on `pull_request` and `push`. |
 | The build has deterministic install behavior through a lockfile | **Implemented** | `bun.lock` + `make setup` (`bun install --frozen-lockfile`) in CI and deploy-pages. |
 | Preview deployments for pull requests | **Deferred** | Out of scope for Phase 1; production deploy is active on `main` only. |
-| Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), [Commit-SHA traceability](#commit-sha-traceability), and [read-only post-deploy checks](#read-only-post-deploy-checks) using the live deploy check and published site. |
+| Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), [Commit-SHA traceability](#commit-sha-traceability), [read-only post-deploy checks](#read-only-post-deploy-checks), and [Incident diagnosis](#incident-diagnosis) using the live deploy check and published site. |
 
 ### What contributors should expect today
 
@@ -638,3 +638,45 @@ record / environment URL when available.
    propagation can take a short time).
 6. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on an up-to-date
    `main` must match the SHA recorded in CI and deploy for that release.
+
+## Incident diagnosis
+
+Use this section when the live project site at
+`https://portpowered.github.io/you-agent-factory-docs` looks wrong after a
+deploy (or after a suspected bad publish). Diagnose first; do not invent a
+second recovery path.
+
+**Always start here:**
+
+1. Prove which SHA should be live with
+   [Commit-SHA traceability](#commit-sha-traceability) (`merge_sha`,
+   `ci_run_id`, `deploy_pages_run_id`, Pages deployment record).
+2. Re-run the [read-only post-deploy checks](#read-only-post-deploy-checks)
+   (GET-only) against the live site.
+3. Match symptoms to a failure mode below and take that next action.
+4. If the published artifact is bad and `main` needs recovery, follow
+   [Rollback process](#rollback-process) (revert or fix-forward — never
+   force-push or hard-reset `main`).
+
+Do not push, open PRs, or call Pages deploy APIs from a local smoke harness
+while diagnosing. Operator curls stay GET-only.
+
+### Failure modes
+
+| Failure mode | Observable symptoms | Next action |
+| --- | --- | --- |
+| **Bare `/_next` / missing project-site prefix** | Live HTML has `src="/_next/..."` or `href="/_next/..."`; CSS/JS 404 at the org root; smoke prefix checks fail (`grep` for `/you-agent-factory-docs/_next/` fails or bare `/_next` matches). | Confirm the **Deploy GitHub Pages** run for the intended SHA set `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on `make build` and that **Canonical validation** / `make guard-pages-deployed-artifact` passed. Re-run the project-site asset-prefix curls under [read-only post-deploy checks](#read-only-post-deploy-checks). If the uploaded artifact was built without the prefix, [roll back or fix-forward](#rollback-process) — do not “fix” by force-pushing. |
+| **Broken or empty search bootstrap** | `$SITE/api/search` returns non-200, empty body, or non-JSON; in-browser search shows no results / fails to bootstrap; other smoke routes may still be 200. | Re-run the search curl from [read-only post-deploy checks](#read-only-post-deploy-checks). Inspect the **Canonical validation** logs for that SHA (`make build` / search-index emit). Confirm `out/api/search` was part of the uploaded artifact. If the index is missing or empty in the published artifact, fix-forward the emit path or [roll back](#rollback-process) to a `good_sha` that had a healthy search bootstrap. |
+| **Browser / CDN cache serving old HTML or assets** | Actions show a green **Deploy to GitHub Pages** for the new SHA, but the browser still shows pre-deploy content or mixed old/new assets; a fresh `curl` (no browser cache) already returns the new HTML while the browser does not. | Prefer a hard-refresh / private window, or `curl` with `--max-time 10` from [read-only post-deploy checks](#read-only-post-deploy-checks) as the source of truth. Wait briefly for CDN propagation, then re-check. Do **not** treat cache alone as a reason to force-push or re-run deploy from a local harness. If `curl` still shows the old artifact after a green deploy, treat it as [stale or wrong uploaded artifact](#failure-modes) instead. |
+| **Stale or wrong uploaded artifact relative to the intended SHA** | Live site (via `curl`) does not match what the intended `merge_sha` should have published; Pages deployment record / run summary SHA disagrees with the merge commit you think shipped; or a failed deploy left the prior successful deployment live while `main` moved. | Reconcile with [Commit-SHA traceability](#commit-sha-traceability): confirm **Deploy to GitHub Pages** succeeded for the SHA you expect. A failed deploy leaves the prior successful Pages deployment live until a later green deploy. If the wrong artifact is live, record `(good_sha, bad_sha)` and recover via [Rollback process](#rollback-process) (revert/fix-forward → new tip deploy). Direct redeploy of a prior SHA is not available today. |
+
+### Distinguishing cache from a bad artifact
+
+| Signal | Likely cache | Likely bad / stale artifact |
+| --- | --- | --- |
+| Fresh `curl` matches the new SHA’s expected content; browser does not | Yes | No |
+| Fresh `curl` still shows old or broken content after green deploy for `merge_sha` | No | Yes — prove SHA, then roll back or fix-forward |
+| Deploy job red; site still serves the previous green deploy | N/A | Expected until the next green **Deploy to GitHub Pages**; do not claim the new SHA is live |
+
+When in doubt, trust GET-only `curl` results plus the Actions / Pages records from
+[Commit-SHA traceability](#commit-sha-traceability) over a single browser tab.
