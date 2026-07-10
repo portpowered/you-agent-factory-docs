@@ -88,6 +88,15 @@ describe("ralph technique page", () => {
       /on this page|Model Atlas|reader.?shortcut|AGENTS\.md|skill converter/i,
     );
 
+    const links = loadedPage.messages.links as
+      | Record<string, string>
+      | undefined;
+    expect(links?.loopConcept).toMatch(/loop concept/i);
+    expect(links?.loopsGuide).toMatch(/using you-agent-factory for loops/i);
+    expect(links?.plannerExecutor).toMatch(/planner-executor/i);
+    expect(links?.writerReviewer).toMatch(/writer-reviewer/i);
+    expect(links?.workqueueExecutor).toMatch(/workqueue-executor/i);
+
     render(
       <main>
         <ModulePageProviders
@@ -107,6 +116,30 @@ describe("ralph technique page", () => {
     expect(
       screen.getByRole("heading", { name: "Compared To Nearby Techniques" }),
     ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Loop concept" }).getAttribute("href"),
+    ).toBe("/docs/concepts/loop");
+    expect(
+      screen
+        .getByRole("link", { name: "Using you-agent-factory for loops" })
+        .getAttribute("href"),
+    ).toBe("/docs/guides/using-you-agent-factory-for-loops");
+    expect(
+      screen
+        .getByRole("link", { name: "Planner-executor" })
+        .getAttribute("href"),
+    ).toBe("/docs/techniques/planner-executor");
+    expect(
+      screen
+        .getByRole("link", { name: "Writer-reviewer" })
+        .getAttribute("href"),
+    ).toBe("/docs/techniques/writer-reviewer");
+    expect(
+      screen
+        .getByRole("link", { name: "Workqueue-executor" })
+        .getAttribute("href"),
+    ).toBe("/docs/techniques/workqueue-executor");
     const bodyText = document.body.textContent ?? "";
     expect(bodyText).toMatch(/product requirements document \(PRD\)/i);
     expect(bodyText).toMatch(/mergeable and reviewable/i);

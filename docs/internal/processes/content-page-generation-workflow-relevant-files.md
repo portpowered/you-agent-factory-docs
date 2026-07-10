@@ -123,6 +123,17 @@ targets until related-runtime includes documentation records; keep
 `<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
 discovery when those ids can resolve.
 
+Technique → concept / guide / planned sibling discovery follows the same
+page-local pattern: put loop concept, loops guide, and planned sibling
+technique hrefs (`/docs/techniques/planner-executor`,
+`/docs/techniques/writer-reviewer`, `/docs/techniques/workqueue-executor`) on
+the technique page with message-backed `<LocalizedLinkList>` under `#related`.
+Omit unpublished sibling technique ids from registry `relatedIds` so
+`validate-data` stays clean; keep `<RelatedDocs />` for curated ids that can
+resolve. Technique kind is outside the strict page-template conformance set, so
+adding `LocalizedLinkList` does not need a `page-template-conformance.ts`
+exception.
+
 ## Shipping non-en locale stubs on a page bundle
 
 Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those

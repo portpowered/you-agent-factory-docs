@@ -27,5 +27,12 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "loopConcept": "Loop concept",
+    "loopsGuide": "Using you-agent-factory for loops",
+    "plannerExecutor": "Planner-executor",
+    "writerReviewer": "Writer-reviewer",
+    "workqueueExecutor": "Workqueue-executor"
   }
 }
