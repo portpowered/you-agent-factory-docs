@@ -291,9 +291,8 @@ make clean     # remove generated artifacts
 * `make validate-data` should run `bun ./scripts/validate-registry.ts`.
 * `make validate-pdf` should run `bun ./scripts/validate-pdf.ts`.
 * `make linkcheck` should run `bun ./scripts/validate-links.ts`.
-* `make pdf LOCALE=en` should run `bun ./scripts/build-pdf.ts --locale en`.
-* `make pdf-page LOCALE=en PAGE=docs/modules/grouped-query-attention` should run `bun ./scripts/build-pdf.ts --locale en --page docs/modules/grouped-query-attention`.
-* `make pdf-set LOCALE=en SET=attention` should run `bun ./scripts/build-pdf.ts --locale en --set attention`.
+* `make pdf LOCALE=en` should run `bun ./scripts/build-pdf.ts --locale en` when PDF tooling is implemented.
+* `make pdf-page` / `make pdf-set` may exist as optional PDF helpers; Atlas-era `PAGE=docs/modules/...` examples are not required product contracts for this site.
 * Build output is deterministic.
 * Generated files are either committed intentionally or excluded consistently.
 * CI caching is configured for Bun dependencies and build artifacts where appropriate.
@@ -309,37 +308,35 @@ make clean     # remove generated artifacts
 * Docs use shared MDX page structures under `src/content/docs`.
 * Localized page text lives in colocated `messages/<locale>.json` files next to each `page.mdx`.
 * Page-specific asset references resolve from colocated `assets.json` files next to each `page.mdx`.
-* Structured content data lives under `src/content/registry` and is validated before build. Registry data powers search facets, related links, model/module graphs, and model cards.
+* Structured content data lives under `src/content/registry` and is validated before build. Registry data powers search facets, related links, factory records, and optional graphs/tables when a page uses them.
 * Tailwind is the styling system. Design tokens are defined once in `src/tokens` and wired into `tailwind.config.ts` plus global CSS variables.
 * shadcn/ui is the base component system for accessible primitives.
 * Magic UI may be used for polished non-core visual moments, but core docs, search, graph, and navigation components must remain accessible, stable, and lightweight.
-* React Flow is used for model, module, and pipeline graph rendering.
+* React Flow is used for optional teaching graphs when a factory page needs a topology or workflow diagram.
 * Recharts is used for small explanatory charts, timelines, and comparative visualizations that are not graph/topology diagrams.
 * KaTeX or an equivalent build-compatible LaTeX renderer is used for math rendering in MDX.
 * Search uses Fumadocs built-in Orama search as the default implementation: https://www.fumadocs.dev/docs/headless/search/orama
-* Search is backed by Fumadocs source data, colocated localized messages, colocated asset config, and structured registry data. The index includes localized titles, descriptions, headings, body text, tags, aliases, page kind, model family, module type, training regime, asset captions/alt text where useful, and registry relationships.
+* Search is backed by Fumadocs source data, colocated localized messages, colocated asset config, and structured registry data. The index includes localized titles, descriptions, headings, body text, tags, aliases, page kind, asset captions/alt text where useful, and registry relationships.
 * Search should use Fumadocs static search mode for a fully static export when practical. If static index payloads become too large, the site may use the Fumadocs Orama API route instead.
-* PDF export is supported for selected docs pages or doc sets through a documented build or route-level export mechanism.
+* PDF export may exist as a build or route-level mechanism, but Atlas-era PDF set / recursive module-graph contracts are not the primary product architecture for this site.
 
 ## App Structure Contract
 
 * `src/app/layout.tsx` defines the root shell, global metadata defaults, font loading, global CSS, and providers.
-* `src/app/page.tsx` is the first user-facing reference/search surface, not a marketing landing page.
-* `src/app/docs/[[...slug]]/page.tsx` is the canonical documentation route for MDX pages.
+* `src/app/page.tsx` is the first user-facing docs/search surface for you-agent-factory docs.
+* `src/app/docs/[[...slug]]/page.tsx` (or the equivalent App Router docs catch-all under the site layout) is the canonical documentation route for MDX pages.
 * `src/app/blog/page.tsx` is the blog index route.
 * `src/app/blog/[slug]/page.tsx` is the canonical blog post route.
 * `src/app/tags/page.tsx` is the tag index route.
 * `src/app/tags/[slug]/page.tsx` is the tag landing page route.
-* `src/app/print/[locale]/docs/[[...slug]]/page.tsx` is the print-safe route for single-page PDF generation.
-* `src/app/print/[locale]/sets/[set]/page.tsx` is the print-safe route for curated PDF bundles.
 * `source.config.ts` defines Fumadocs collections and points at shared `page.mdx` files under `src/content/docs`.
-* `src/content/docs` contains shared MDX page structures grouped by page type: concepts, models, modules, papers, training, systems, and glossary.
-* `src/content/blog` contains shared MDX blog structures for release notes, paper walkthroughs, research commentary, and site updates.
+* `src/content/docs` contains shared MDX page structures grouped by factory page type: `guides`, `concepts`, `techniques`, `documentation`, and `glossary`. Sibling Atlas collections may still exist during migration but are not required product structure for this site.
+* `src/content/blog` contains shared MDX blog structures for product and ecosystem writing.
 * `src/content/registry` contains machine-readable structured records. Each record has a stable `id`, `slug`, `defaultTitleKey`, `defaultSummaryKey`, `kind`, `tags`, `aliases`, `relatedIds`, and citations where applicable.
 * Each page directory may contain `messages/<locale>.json`, `assets.json`, and local assets. Page components consume resolved localized values and resolved asset references.
 * `src/features/docs` owns document rendering concerns: search UI, related links, citations, callouts, table of contents, previous/next controls, and MDX component mappings.
 * `src/features/blog` owns blog rendering concerns: blog index, post layout, author/date metadata, tag lists, related reference links, and post navigation.
-* `src/features/models` owns model-specific rendering concerns: model cards, module listings, graph viewers, graph schemas, node detail panels, and model architecture summaries.
+* `src/features/factory-ui` owns thin host wrappers for shared graph, chart, and data-display primitives used when a factory page needs a teaching diagram or comparison. There is no mandatory `src/features/models` Atlas viewer package-tree contract for this product.
 * `src/lib/content` owns content normalization and validation helpers. Rendering components should consume validated data rather than parse frontmatter ad hoc.
 * `src/lib/search` owns index generation, query normalization, ranking, and facet filtering.
 * `src/lib/seo` owns metadata helpers, canonical URLs, Open Graph data, sitemap data, and structured data where useful.
@@ -349,22 +346,18 @@ make clean     # remove generated artifacts
 
 ## Routing Contract
 
-* `/` opens the searchable reference home.
+* `/` opens the searchable docs home.
 * `/docs` opens the documentation index.
+* `/docs/guides/<slug>` renders guide pages.
 * `/docs/concepts/<slug>` renders concept pages.
-* `/docs/models/<slug>` renders model pages.
-* `/docs/modules/<slug>` renders module/component pages.
-* `/docs/papers/<slug>` renders paper explainer pages.
-* `/docs/training/<slug>` renders training regime and optimization pages.
-* `/docs/systems/<slug>` renders hardware, distributed systems, and inference systems pages.
+* `/docs/techniques/<slug>` renders technique pages.
+* `/docs/documentation/<slug>` renders documentation pages (CLI, harness support, configuration, MCP, API, and related surfaces).
 * `/docs/glossary/<slug>` renders glossary entries.
 * `/blog` renders the blog index.
 * `/blog/<slug>` renders individual blog posts.
 * `/tags` renders the tag index.
-* `/tags/<slug>` renders a tag landing page that lists all docs, blog posts, and registry records associated with the tag.
-* `/print/<locale>/docs/<slug>` renders a print-safe version of one docs page for PDF generation.
-* `/print/<locale>/sets/<set>` renders a print-safe curated page bundle for PDF generation.
-* Search results must support query text plus structured filters for page kind, tags, model family, module type, and training regime where data exists.
+* `/tags/<slug>` renders a tag landing page that lists docs, blog posts, and registry records associated with the tag.
+* Search results must support query text plus structured filters for page kind and tags where data exists. Atlas-only filters such as model family / module type are not required product search facets for this site.
 
 ## Search Components Contract
 
@@ -374,26 +367,24 @@ make clean     # remove generated artifacts
 * `src/features/docs/search/SearchDialog.tsx` is the customized Fumadocs UI search dialog. It composes `SearchDialog`, `SearchDialogOverlay`, `SearchDialogContent`, `SearchDialogHeader`, `SearchDialogIcon`, `SearchDialogInput`, `SearchDialogClose`, `SearchDialogList`, `SearchDialogFooter`, `TagsList`, and `TagsListItem` from `fumadocs-ui/components/dialog/search` where those pieces are needed.
 * `src/features/docs/search/SearchTrigger.tsx` owns the visible command/search button in the app shell and docs pages.
 * `src/features/docs/search/SearchResults.tsx` owns result rendering only when the default Fumadocs list is insufficient for the reference-site result shape.
-* `src/features/docs/search/SearchFilters.tsx` owns structured filters for page kind, tags, model family, module type, and training regime.
+* `src/features/docs/search/SearchFilters.tsx` owns structured filters for page kind and tags (factory-relevant facets).
 * `src/features/docs/search/search-client.ts` wraps `useDocsSearch` configuration so the search mode, locale, tag filter, and Orama initialization are defined in one place.
 * The root provider in `src/app/layout.tsx` or a client provider wrapper registers the custom `SearchDialog` through the Fumadocs UI `RootProvider` search configuration.
-* Search result items must show title, page kind, short summary, matched tags, and enough context for a normal reader to distinguish concepts, modules, models, and papers.
+* Search result items must show title, page kind, short summary, matched tags, and enough context for a normal reader to distinguish guides, concepts, techniques, documentation, glossary, and blog posts.
 * Search must support keyboard opening, keyboard result navigation, visible focus states, empty state, loading state, and no-JavaScript fallback navigation to `/docs`.
 
 ## Derived Related Documents And Tags Contract
 
 * `src/features/docs/components/DerivedRelatedDocs.tsx` renders grouped related resources from the shared ontology peer policy, compatibility metadata, and optional `relatedIds` overrides.
-* `src/features/docs/components/RelatedDocs.tsx` should render default page-side related links from curated overrides plus ontology-derived relationship, classification-sibling, and shared-parent groups instead of `variantGroup` as the main module peer source.
+* `src/features/docs/components/RelatedDocs.tsx` should render default page-side related links from curated overrides plus ontology-derived relationship, classification-sibling, and shared-parent groups.
 * `src/lib/content/ontology-peer-policy.ts` defines the cross-surface peer precedence: direct ontology relationships first, same-classification siblings second, and shared-parent classification peers only as a fallback.
 * Relationship types `variant`, `part-of`, and `explains` must outrank generic classification siblings when both apply.
 * Legacy taxonomy fields such as `variantGroup`, `conceptType`, and `moduleFamily` remain compatibility metadata and should not be treated as the primary peer-discovery contract once ontology ancestry exists.
-* Module pages should use `DerivedRelatedDocs` to show nearby variants and alternatives according to ontology relationships and classification structure rather than broad legacy grouping strings.
-* `src/features/models/components/ModuleAtAGlance.tsx` renders module `optimizes` and `exampleModelIds` near the top of module pages.
-* Model pages should derive related models, modules, training regimes, datasets, and papers from model family, shared modules, training regimes, datasets, organizations, tags, and optional `relatedIds`.
-* Paper pages should derive introduced models/modules/concepts from typed paper fields, plus supporting or conflicting papers from contribution type, tags, and optional `relatedIds`.
+* Factory pages should use `DerivedRelatedDocs` to show nearby guides, concepts, techniques, and documentation according to ontology relationships, shared tags, and curated `relatedIds`.
+* Atlas-era `src/features/models` module/model at-a-glance viewers are not required package-tree structure for this product.
 * `src/features/docs/components/TagPillList.tsx` renders clickable tag links for docs, blog posts, cards, and search results.
 * Every tag pill links to `/tags/<slug>` or an equivalent search URL with that tag filter applied.
-* `src/features/docs/components/TagResourceList.tsx` renders tag landing page results grouped by kind: models, modules, concepts, papers, blog posts, training regimes, systems pages, and glossary entries.
+* `src/features/docs/components/TagResourceList.tsx` renders tag landing page results grouped by factory kind: guides, concepts, techniques, documentation, glossary entries, and blog posts.
 * Tag landing pages derive their result lists from registry records and MDX frontmatter, not manual page lists.
 * Tag landing pages should include a search handoff link such as `/search?tag=<slug>` when a dedicated search page exists.
 
@@ -412,7 +403,7 @@ make clean     # remove generated artifacts
 
 ## Blog Components Contract
 
-* The blog is secondary to the reference docs. Blog posts should point readers back to canonical docs pages for stable definitions, model pages, module pages, and concepts.
+* The blog is secondary to the factory docs. Blog posts should point readers back to canonical docs pages for stable definitions (guides, concepts, techniques, documentation, glossary).
 * Blog posts are authored in MDX under `src/content/blog`.
 * Blog frontmatter must include `title`, `description`, `slug`, `publishedAt`, `updatedAt` when revised, `authors`, `tags`, `relatedDocIds`, and `status`.
 * Blog status is one of `draft`, `published`, or `archived`.
@@ -431,106 +422,75 @@ make clean     # remove generated artifacts
 ## Documentation features
 
 * Supports documentation search.
-* Supports export to PDF.
 * Supports in-page navigation.
 * Supports cross-file navigation.
 * Supports previous/next navigation.
-* Supports versioned documentation.
-* Supports changelog or release-note pages.
-* Supports rendering graphs for ML models, modules, and pipelines.
-* Supports math equations.
+* Supports changelog or release-note pages via the blog.
+* Supports optional graphs and charts for factory workflows, comparisons, and teaching diagrams.
+* Supports math equations when a topic needs them.
 * Supports syntax-highlighted code blocks.
 * Supports copy buttons for code snippets.
 * Supports callouts such as notes, warnings, tips, and limitations.
-* Supports diagrams and architecture visuals.
+* Supports diagrams and architecture visuals when useful.
 * Supports tables with responsive behavior.
-* Supports glossary pages for ML terms.
+* Supports glossary pages for factory terms.
 * Supports citations or source references where technical claims need grounding.
-* Supports model cards or structured model documentation.
-* Supports API reference pages if the ML system exposes APIs.
+* Supports CLI, harness, configuration, MCP, and API documentation surfaces.
 * Supports downloadable assets where appropriate.
 * Supports canonical URLs and sitemap generation.
+* Atlas-era PDF export, model cards, and recursive module-graph atlas contracts are not required primary features for this product.
 
 ## Template Contract
 
 * Docs templates are authored as MDX files under `docs/templates`.
-* The required templates are `concept.mdx`, `model.mdx`, `module.mdx`, `paper.mdx`, `training-regime.mdx`, and `blog-post.mdx`.
+* The required factory product templates are `guide.mdx`, `technique.mdx`, `documentation.mdx`, `concept.mdx`, `glossary.mdx`, and `blog-post.mdx`.
+* Sibling Atlas templates (`model`, `module`, `paper`, `training-regime`, `system`) may still exist during migration but are not required starter paths for new factory product pages.
 * Each template kind has sidecars: `<kind>.content.md`, `<kind>.messages.en.json`, and `<kind>.assets.json`.
 * The `.content.md` sidecar is authoring guidance only and is not copied into production pages.
 * The `.messages.en.json` sidecar is the starter default-locale message shape for `messages/en.json`.
-* The `.assets.json` sidecar is the starter asset config shape for page-local `assets.json`.
+* The `.assets.json` sidecar is the starter asset config shape for page-local `assets.json` (may be empty `{}` when no visual is needed).
 * Templates include frontmatter, registry IDs where applicable, message namespace references, asset namespace references, tags, imported MDX components, derived related-document components, tag components, and citation components.
 * Templates show component usage patterns but do not define implementation code.
 * Canonical docs templates use `registryId`.
 * Canonical docs templates use message keys and resolved assets for user-facing text and media rather than hard-coded localized values.
 * Canonical docs templates render sections through localized section components, such as `Section` with `titleKey` and `T` with body keys.
-* Canonical docs templates reference graphs, charts, code schemas, images, and comparison tables by `assetId` or registry-backed component props.
+* Canonical docs templates reference graphs, charts, code schemas, images, and comparison tables by `assetId` or registry-backed component props when used.
 * Validation fails when canonical docs MDX contains raw user-visible prose outside approved structural wrappers, message components, or registry-backed components.
 * Blog templates use `relatedDocIds` and should point back to canonical docs pages.
 * Templates should not rely on manual related lists when registry-derived related sections can do the job.
 
 ## PDF Export Contract
 
-* PDF export is generated from resolved localized page models through print-safe Next.js routes.
-* Playwright is used to drive Chromium's `page.pdf()` API. The PDF pipeline must not screenshot whole pages and wrap screenshots into PDFs.
-* Print routes live under `src/app/print/[locale]/docs/[[...slug]]/page.tsx` and `src/app/print/[locale]/sets/[set]/page.tsx`.
-* PDF output is written under `dist/pdf/<locale>/`.
-* `scripts/build-pdf.ts` owns PDF generation.
-* `scripts/validate-pdf.ts` owns PDF input validation.
-* Curated PDF bundles live under `src/content/pdf-sets`.
-* `make validate-pdf` runs in CI.
-* `make pdf LOCALE=en` generates all default PDFs for one locale.
-* `make pdf-page LOCALE=en PAGE=docs/modules/grouped-query-attention` generates one docs-page PDF.
-* `make pdf-set LOCALE=en SET=attention` generates one curated PDF bundle.
-* PDF routes use print CSS, resolved localized messages, resolved assets, registry records, visible citations, and print-safe graph renderers. Recursive module graphs should render through static vertical SVG by default.
-* PDF export does not include draft, archived, private, or locale-incomplete pages unless explicitly requested by an internal-only command.
+* PDF export may exist as an optional build or route-level mechanism, but Atlas-era PDF set / recursive module-graph atlas contracts are not the primary product architecture for you-agent-factory docs.
+* When PDF tooling is present, print-safe routes and Playwright-driven generation may live under documented scripts; `make validate-pdf` may remain a stub until implemented.
+* Do not treat `make pdf-page ... PAGE=docs/modules/...` Atlas examples as required contributor or architecture contracts for this product.
 
-## ML-specific documentation quality
+## Factory documentation quality
 
-* Model pages clearly state model purpose, inputs, outputs, and constraints.
-* Model pages document architecture at a high level.
-* Model pages document important modules, such as attention, normalization, feed-forward layers, embeddings, tokenizers, and output heads.
-* Model pages document training regime where relevant.
-* Model pages document evaluation metrics and benchmark caveats.
-* Model pages document hardware assumptions and performance characteristics.
-* Model pages distinguish between conceptual explanation and implementation detail.
-* Graphs show clear labels, legends, and directional flow.
+* Guide pages clearly state the workflow outcome and the steps a reader can run.
+* Documentation pages cover CLI, harness support, configuration, MCP, API, and related factory surfaces as first-class content.
+* Concept and technique pages define the idea in isolation before linking related factory topics.
+* Graphs and tables appear only when they teach the factory topic better than prose.
+* Graphs show clear labels, legends, and directional flow when used.
 * Graphs avoid visual ambiguity between data flow, control flow, and dependency relationships.
-* Model diagrams have textual summaries for accessibility and search.
-* Mathematical notation is consistent across docs.
-* Terms such as tokens, embeddings, KV cache, attention heads, hidden size, and parameters are defined consistently.
-* Performance claims include context, such as hardware, batch size, sequence length, precision, and measurement method.
-* Limitations and failure modes are documented.
+* Diagrams have textual summaries for accessibility and search when used.
+* Atlas-era model-card / module-atlas quality rules are not the required primary quality contract for this product.
+* Mathematical notation is consistent across docs when equations are used.
+* Factory terms (harness, loop, worktree, compaction, and related vocabulary) are defined consistently.
+* Limitations and failure modes are documented where relevant.
 * Security, safety, and privacy considerations are documented where relevant.
 
-## Graph and model rendering
+## Graph and chart rendering
 
-* Uses React Flow for interactive web model and module rendering.
-* Uses static vertical SVG, Mermaid, or image fallback for print/PDF graph rendering.
-* Has a standard graph viewer component.
-* Has a standard model viewer component.
-* Has a standard recursive module graph viewer component.
-* Graph viewer supports pan, zoom, fit-to-view, reset, minimap where useful, and keyboard navigation where possible.
-* Graph viewer supports recursive expand and collapse for module nodes.
-* Graph viewer supports expand all and collapse all.
-* Expand and collapse controls are icon buttons with accessible labels.
-* Models are rendered as root modules. Modules can contain submodules recursively.
-* The graph layout is vertical-first on mobile and desktop.
-* Graph nodes use consistent visual semantics.
-* Graph edges use consistent visual semantics.
-* Graphs support legends.
-* Graphs support node details panels.
-* Graphs support deep linking to selected nodes where useful.
-* Graphs support responsive behavior.
+* Uses React Flow through `src/features/factory-ui` for optional interactive web graphs when a page needs one.
+* Uses Mermaid or image fallback for print/PDF graph rendering when PDF tooling is present.
+* Has standard graph and chart wrappers in `src/features/factory-ui` rather than a mandatory Atlas model/module viewer package tree.
+* Graph viewer supports pan, zoom, fit-to-view, and reset where useful.
+* The graph layout is readable on mobile and desktop.
+* Graph nodes and edges use consistent visual semantics.
+* Graphs support legends and text alternatives or summaries for accessibility when used.
 * Graph data is separated from graph rendering.
-* Graph schemas are versioned.
-* Graph rendering has tests for layout, node rendering, and interaction.
-* Large graphs have performance safeguards.
-* Graphs provide text alternatives or summaries for accessibility.
-* Graph assets declare web and print renderers. Web rendering defaults to React Flow; print rendering should prefer static vertical SVG for recursive module graphs, Mermaid for simple directional graphs, and image fallback only when needed.
-* Mermaid conversion is validated for graph assets that request `printRenderer: "mermaid"`.
-* Recursive module graph labels and edge labels resolve from localized message keys.
-* Recursive module graph data, page structure, messages, and asset config should stay colocated when the graph is page-specific.
+* Empty `assets.json` pages are valid; recursive module-atlas graph machinery is not required for every factory page.
 
 ## README
 * readme has one line description of what the project problem, is and how it solves it. 
@@ -546,8 +506,7 @@ make clean     # remove generated artifacts
 
 * Uses standard shadcn/ui components where possible.
 * Uses Magic UI components only when they improve communication and do not harm accessibility or performance.
-* Has a standard graph viewer component.
-* Has a standard model viewer component.
+* Has a standard graph viewer component via `src/features/factory-ui` when graphs are used.
 * Has standard page layout components.
 * Has standard docs navigation components.
 * Has standard callout components.
@@ -558,6 +517,7 @@ make clean     # remove generated artifacts
 * Has standard loading, empty, error, and fallback components.
 * Has standard SEO metadata helpers.
 * Has standard analytics/event helpers if analytics are used.
+* Does not require a mandatory Atlas model viewer package as product structure.
 
 ## Content governance
 
