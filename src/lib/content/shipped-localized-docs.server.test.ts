@@ -142,6 +142,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       ja: [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -152,6 +153,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       "zh-CN": [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",
@@ -162,6 +164,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
       vi: [
         "concepts/checklist",
         "concepts/harness",
+        "concepts/tool",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
         "guides/cursor-dynamic-workflows",

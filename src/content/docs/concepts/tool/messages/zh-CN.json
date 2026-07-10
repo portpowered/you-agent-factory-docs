@@ -1,0 +1,37 @@
+{
+  "title": "Tool",
+  "description": "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A tool is a named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing work. Calling a tool means asking for a concrete action by name—read a file, run a command, or call a Factory Session tool such as you.factory_session.validate_source. The tool is that callable action, not the factory that schedules work and not the harness that runs the agent."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Without tools, agents and hosts mostly produce text. With tools, they can inspect a project, validate a workflow, start a session, or change work in the factory and on the machine. That is how factory work moves from advice into actions you can check and repeat."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "An MCP host running Cursor opens a Factory Session and calls you.factory_session.validate_source on a workflow file. That named call is one tool in use: the host asks for validation, gets a result, and can act on it. The same idea shows up when a harness agent invokes a file or shell tool while executing dispatched work—still one named action, not the whole runtime."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A tool is the named action you call. The harness is the agent runtime that can choose and run tools; it is not itself a tool. MCP documentation and host setup explain how to connect a host and list available tools; they are not the tools those pages describe. A worker is a configured executor that does assigned work; tools are the callable actions that worker or host may use. Thinking is internal reasoning before or between actions; it is not a callable capability with a tool name."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "cursorDynamicWorkflows": "Cursor dynamic workflows",
+    "mcpDocs": "MCP documentation",
+    "harnessConcept": "Harness",
+    "thinkingConcept": "Thinking"
+  }
+}

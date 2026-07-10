@@ -3,6 +3,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   ja: [
     "concepts/checklist",
     "concepts/harness",
+    "concepts/tool",
     "documentation/install",
     "documentation/what-is-you-agent-factory",
     "guides/cursor-dynamic-workflows",
@@ -13,6 +14,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   "zh-CN": [
     "concepts/checklist",
     "concepts/harness",
+    "concepts/tool",
     "documentation/install",
     "documentation/what-is-you-agent-factory",
     "guides/cursor-dynamic-workflows",
@@ -23,6 +25,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
   vi: [
     "concepts/checklist",
     "concepts/harness",
+    "concepts/tool",
     "documentation/install",
     "documentation/what-is-you-agent-factory",
     "guides/cursor-dynamic-workflows",
