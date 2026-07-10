@@ -1,0 +1,34 @@
+{
+  "title": "Writer-Reviewer",
+  "description": "Writer-reviewer is a dual-role factory technique: a writer produces a candidate, and a reviewer accepts or rejects it.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Writer-reviewer is a dual-role factory technique: one role writes or executes, and another role reviews. The writer (or executor) produces a candidate—a draft, change set, or other deliverable. The reviewer then accepts that candidate to complete the goal, or rejects it and sends the work back for another write pass. Completion is gated on review, not on the first write finishing."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Quality-gated agent work can keep revising until review accepts, instead of treating the first candidate as final. Reject cycles stay intentional: each reject returns work for another write pass under the same goal, rather than ending after one chat reply. That makes review a real gate on completion, not an optional afterthought."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "Write or execute produces a candidate—a draft, change set, or other deliverable. Review then decides the outcome: accept completes the goal; reject returns the work to write for another pass under the same goal. Bound reject retries with a loop breaker so cycles stop on purpose instead of running forever."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Writer-reviewer is the dual-role technique itself: write produces a candidate, and review accepts or rejects. A write-review use-case guide shows how to run that pattern in the factory; it is not the technique definition. A plain factory loop keeps iterating until the goal is done, but it does not require an explicit review gate before completion. Planner-executor and worker-adviser split roles differently—planning versus executing, or advising versus doing—without making accept-or-reject review the completion gate."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "writeReviewLoopsGuide": "Write-review loops guide"
+  }
+}

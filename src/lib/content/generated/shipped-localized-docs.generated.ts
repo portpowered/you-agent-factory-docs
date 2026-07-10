@@ -19,6 +19,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "techniques/planner-executor",
     "techniques/ralph",
     "techniques/worker-adviser",
+    "techniques/writer-reviewer",
   ],
   "zh-CN": [
     "concepts/bottlenecks",
@@ -39,6 +40,7 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "techniques/planner-executor",
     "techniques/ralph",
     "techniques/worker-adviser",
+    "techniques/writer-reviewer",
   ],
   vi: [
     "concepts/bottlenecks",
@@ -59,5 +61,6 @@ export const SHIPPED_LOCALIZED_DOCS = {
     "techniques/planner-executor",
     "techniques/ralph",
     "techniques/worker-adviser",
+    "techniques/writer-reviewer",
   ],
 } as const;

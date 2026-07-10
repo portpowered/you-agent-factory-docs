@@ -1,0 +1,14 @@
+{
+  "id": "technique.writer-reviewer",
+  "slug": "writer-reviewer",
+  "kind": "technique",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["writer reviewer", "write-reviewer"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T00:00:00.000Z",
+  "updatedAt": "2026-07-09T00:00:00.000Z"
+}

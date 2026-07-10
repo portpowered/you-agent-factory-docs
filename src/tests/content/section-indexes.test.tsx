@@ -89,6 +89,11 @@ describe("CLI section index messages", () => {
       "techniques",
       "documentation",
     ]);
+    // All four CLI section indexes now have authored pages; empty-state
+    // contract coverage lives in section-collection-index empty-state tests.
+    expect(
+      CLI_SECTION_INDEX_CASES.map((section) => section.collectionId),
+    ).toEqual([...CLI_DOCS_COLLECTION_IDS]);
   });
 });
 
@@ -226,6 +231,11 @@ describe("CLI section index page render", () => {
     );
     expect(html).toContain("Worker-Adviser");
     expect(html).toContain("/docs/techniques/worker-adviser");
+    expect(html).toContain("Writer-Reviewer");
+    expect(html).toContain("/docs/techniques/writer-reviewer");
+    expect(html).toContain(
+      "Writer-reviewer is a dual-role factory technique: a writer produces a candidate, and a reviewer accepts or rejects it.",
+    );
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
@@ -276,6 +286,8 @@ describe("localized CLI section index page render", () => {
     );
     expect(html).toContain("Worker-Adviser");
     expect(html).toContain("/ja/docs/techniques/worker-adviser");
+    expect(html).toContain("Writer-Reviewer");
+    expect(html).toContain("/ja/docs/techniques/writer-reviewer");
     expect(html).not.toContain(messages.techniquesIndex.emptyTitle);
     expect(messages.techniquesIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
