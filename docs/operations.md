@@ -97,7 +97,7 @@ with owner), or **N/A** (not applicable).
 | --- | --- | --- | --- |
 | Merges to `main` are blocked unless CI passes | **Implemented** (CI workflow) + **GitHub settings assumed** | Repository maintainers | Configure **Settings → Branches** on GitHub per the [Branch protection](#branch-protection) section; rules cannot be enforced from git. |
 | Website deploys automatically via GitHub Actions (GitHub Pages or equivalent) | **Implemented** | Repository maintainers | `.github/workflows/deploy-pages.yml` runs on `main` pushes; confirm Pages source is **GitHub Actions** on first enablement. |
-| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | The **Deploy to GitHub Pages** job from `.github/workflows/deploy-pages.yml` reports status on each `main` push alongside CI. PRs do not run deploy (preview deploy is deferred). |
+| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | Follow [Deployment status expectations](#deployment-status-expectations): pushes to `main` show **CI** (**verify**) plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**); PRs show **verify** only (no production deploy). |
 
 Related operational rows not closed in this section alone:
 
@@ -110,14 +110,17 @@ Related operational rows not closed in this section alone:
 
 ### What contributors should expect today
 
-- **Pull requests and pushes** run the **verify** job in `.github/workflows/ci.yml`
+- **Pull requests** run **CI** / **verify** only
   (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`).
-  Reproduce a failing stage locally with the same `make <target>`.
-- **Pushes to `main`** also run `.github/workflows/deploy-pages.yml`, which
-  validates with the same Makefile targets (through `budget`), uploads `out/`,
-  and publishes to GitHub Pages when deploy succeeds.
+  They do **not** run production deploy. Reproduce a failing stage locally with
+  the same `make <target>`. See [Deployment status expectations](#deployment-status-expectations).
+- **Pushes to `main`** show **CI** / **verify** plus **Deploy GitHub Pages**
+  (**Canonical validation** / **Deploy to GitHub Pages**), which validates with
+  the same Makefile targets (through `budget`), uploads `out/`, and publishes to
+  GitHub Pages when deploy succeeds.
 - Confirm the **Deploy to GitHub Pages** check on the merge commit before
-  claiming the site was updated.
+  claiming the site was updated. A failed deploy leaves the prior successful
+  Pages deployment live until a later green deploy.
 - Atlas / Phase 1 export verifiers (`make build-export`, `make verify-atlas-*`)
   were deleted with `rewrite-delete-atlas-domain` and must not be re-chained into
   CI or deploy-pages.
@@ -154,49 +157,66 @@ Contributors cannot verify branch protection from a local clone alone; open the
 repository **Settings** tab (maintainer access) or ask a maintainer to confirm
 the rule is active.
 
-## CI status expectations
+## Deployment status expectations
 
-The baseline quality gate is workflow file `.github/workflows/ci.yml`, job
-**`verify`**. It checks out the branch, runs `make setup`, installs Playwright
+Contributors and maintainers read deployment status from GitHub **Checks** /
+**Actions**. Green checks mean different things on `main` versus pull requests.
+
+### Live workflows and jobs
+
+| Surface | Workflow display name | Workflow file | Job display name(s) | When it runs |
+| --- | --- | --- | --- | --- |
+| Quality gate | **CI** | `.github/workflows/ci.yml` | **verify** | Every `pull_request` and every `push` (including `main`) |
+| Production publish | **Deploy GitHub Pages** | `.github/workflows/deploy-pages.yml` | **Canonical validation**, then **Deploy to GitHub Pages** | `push` to `main` only |
+
+**CI** / **verify** checks out the branch, runs `make setup`, installs Playwright
 Chromium for browser-backed website tests, then runs the Makefile contract in
 order: `make check`, `make test`, `make build`, `make budget`, and
 `make component-coverage`. Deploy and preview steps are intentionally excluded
 from CI.
 
-Production publish is workflow file `.github/workflows/deploy-pages.yml`. The
-**`validate`** job runs the same Makefile stages through `make budget`, uploads
-`out/`, and the **`deploy`** job publishes that artifact on `push` to `main`
-only.
+**Deploy GitHub Pages** runs **Canonical validation** (same Makefile stages
+through `make budget`, plus `make guard-pages-deployed-artifact`, then upload
+`out/`) and **Deploy to GitHub Pages** (publishes that artifact). Failed
+**Canonical validation** never starts **Deploy to GitHub Pages** for that run.
 
 ### When checks run
 
 | Event | Workflow trigger | Expected checks |
 | --- | --- | --- |
-| Pull request opened or updated | `on: pull_request` in `ci.yml` | **verify** runs against the PR head commit and appears in the PR **Checks** tab. No deploy check on PRs. |
-| Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **verify** plus deploy-pages **validate** / **deploy** run against the pushed commit. |
-| Push to other branches without a PR | `on: push` in `ci.yml` | **verify** runs; deploy-pages does not. |
+| Pull request opened or updated | `on: pull_request` in `ci.yml` | **CI** / **verify** against the PR head. **No** **Deploy GitHub Pages** run (production deploy does not run on PRs unless [preview policy](#phase-1-operational-checklist-mapping) later changes). |
+| Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **CI** / **verify** plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**) against the pushed commit. |
+| Push to other branches without a PR | `on: push` in `ci.yml` | **CI** / **verify** only; **Deploy GitHub Pages** does not run. |
 
 ### What contributors see
 
 **On pull requests**
 
-- The **Checks** tab shows the **verify** job from `.github/workflows/ci.yml`.
+- The **Checks** tab shows **CI** / **verify** only.
 - A green **verify** check means every Makefile contract stage passed on the PR
-  head SHA.
+  head SHA. It does **not** mean the public site was updated.
 - A red **verify** check blocks merge when branch protection requires status
   checks (see [Branch protection](#branch-protection)); open the failed step to
   see which `make <target>` broke, then reproduce it locally.
-- No deploy-pages check appears on PRs; production deploy runs after merge to
-  `main`.
+- Pull requests do **not** run production deploy. No **Canonical validation** or
+  **Deploy to GitHub Pages** check appears on PRs today. Production publish runs
+  only after merge to `main` (preview deploys remain deferred — see the
+  checklist mapping above — unless that policy later changes).
 
 **On pushes to `main`**
 
-- Each commit on `main` shows **verify** plus deploy-pages **Canonical
-  validation** / **Deploy to GitHub Pages**.
+- Each commit on `main` shows **CI** / **verify** plus **Deploy GitHub Pages**
+  (**Canonical validation** / **Deploy to GitHub Pages**).
+- A green **verify** on `main` means the integration tip passed the Makefile
+  contract. A green **Deploy to GitHub Pages** means that SHA was published to
+  the project site (see [Commit-SHA traceability](#commit-sha-traceability)).
 - Failed **verify** on `main` signals the integration branch is unhealthy; fix
-  forward with a follow-up commit or revert—do not force-push.
-- Failed deploy-pages on `main` means the static export did not publish; the
-  prior successful Pages deployment remains live until a later green deploy.
+  forward with a follow-up commit or revert — do not force-push.
+- A failed **Deploy GitHub Pages** run on `main` (failed **Canonical
+  validation** or failed **Deploy to GitHub Pages**) means that SHA did **not**
+  publish. The **prior successful Pages deployment remains live** until a later
+  green **Deploy to GitHub Pages** succeeds. Do not claim the new SHA is live
+  while deploy is red.
 
 **Local versus GitHub**
 
@@ -373,7 +393,7 @@ then confirming deploy-pages published the merge commit.
 ### Standard release on `main`
 
 1. **Open a pull request** against `main` and wait for the **verify** check to
-   pass on the PR head commit (see [CI status expectations](#ci-status-expectations)).
+   pass on the PR head commit (see [Deployment status expectations](#deployment-status-expectations)).
 2. **Merge to `main`** only when branch protection allows it (required **verify**
    green and branch up to date if that rule is enabled).
 3. **Confirm post-merge CI** on the merge commit: a push to `main` triggers

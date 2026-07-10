@@ -225,6 +225,13 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
   post-deploy checks**, and **Rollback process** — do not invent a second
   recovery path. Prefer fresh GET-only `curl` over a single browser tab when
   distinguishing cache from a bad artifact.
+- Deployment status expectations live in `docs/operations.md` under
+  **Deployment status expectations**: pushes to `main` show **CI**/**verify**
+  plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub
+  Pages**); pull requests show **verify** only and do not run production deploy
+  (unless preview policy later changes). A failed deploy on `main` leaves the
+  prior successful Pages deployment live until a later green **Deploy to GitHub
+  Pages**.
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.
