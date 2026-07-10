@@ -13,11 +13,11 @@
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "You submit work for a task work type. The runtime places a token in the initial place task:init. An enabled workstation consumes that token, a worker runs, and the outcome routes the token to another place such as accepted, continue, rejection, or failure."
+      "body": "You submit work for a task work type. The runtime creates a factory token in the initial place task:init. A workstation whose inputs include task:init becomes enabled, consumes that token, and dispatches its worker. When the worker finishes, the workstation routes the token to another place based on the outcome — an accepted success place, a continue place for ordinary partial progress, a rejection place, or a failure place."
     },
     "whereItAppears": {
       "title": "Where It Appears",
-      "body": "Tokens show up wherever the factory talks about places and routing: work types and states in factory.json form places named like task:init, workstation inputs and outputs consume and emit tokens, and inspection surfaces such as you work list or session work views show which tokens sit in which states."
+      "body": "Tokens appear on three observable surfaces. In factory.json, each work type and state pair becomes a place named like task:init. Workstation inputs and outputs wire those places so a step can consume a token and emit it on an outcome route. Inspection surfaces such as you work list and session work views show which tokens currently sit in which states."
     },
     "commonConfusions": {
       "title": "Common Confusions",
