@@ -143,4 +143,65 @@ describe("worktree concept page", () => {
       "/docs/documentation/harness-support",
     );
   });
+
+  test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
+    const en = await loadLocalDocsPage({
+      section: "concepts",
+      slug: "worktree",
+    });
+    const ja = await loadLocalDocsPage(
+      { section: "concepts", slug: "worktree" },
+      "ja",
+    );
+    const zhCN = await loadLocalDocsPage(
+      { section: "concepts", slug: "worktree" },
+      "zh-CN",
+    );
+    const vi = await loadLocalDocsPage(
+      { section: "concepts", slug: "worktree" },
+      "vi",
+    );
+
+    expect(Object.keys(ja.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(Object.keys(zhCN.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(Object.keys(vi.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+    expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
+      "What It Is",
+    );
+    expect(String(zhCN.messages.sections?.whyItMatters?.title ?? "")).toBe(
+      "Why It Matters",
+    );
+    expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
+      "Simple Example",
+    );
+    expect(ja.messages.links?.workstations).toBe("Workstations");
+    expect(zhCN.messages.links?.harnessConcept).toBe("Harness concept");
+    expect(vi.messages.links?.harnessSupport).toBe("Harness support");
+
+    render(
+      <main>
+        <ModulePageProviders messages={ja.messages} assets={ja.assets}>
+          {ja.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Why It Matters" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Simple Example" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Common Confusions" }),
+    ).toBeTruthy();
+    expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
+  });
 });

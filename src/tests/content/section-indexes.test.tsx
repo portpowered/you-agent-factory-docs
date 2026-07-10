@@ -279,6 +279,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/tokens");
     expect(html).toContain("Tool");
     expect(html).toContain("/ja/docs/concepts/tool");
+    expect(html).toContain("Worktree");
+    expect(html).toContain("/ja/docs/concepts/worktree");
     expect(html).not.toContain("Thinking");
     expect(html).not.toContain("/ja/docs/concepts/thinking");
     expect(html).not.toContain("Task Queue");
