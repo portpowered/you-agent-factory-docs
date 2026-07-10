@@ -48,6 +48,10 @@ jobs:
 
       - name: Build static export
         run: make build
+        env:
+          # Project-site prefix for https://portpowered.github.io/you-agent-factory-docs
+          # so exported HTML references /you-agent-factory-docs/_next (not bare /_next).
+          GITHUB_PAGES_BASE_PATH: /you-agent-factory-docs
 
       - name: Enforce exported-site budget gate
         run: make budget

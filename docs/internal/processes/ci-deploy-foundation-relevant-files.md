@@ -10,14 +10,14 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Install | `make setup` | `bun install --frozen-lockfile` |
 | Static analysis | `make check` | `typecheck` then `lint` (fails if either fails) |
 | Tests | `make test` | Existing website test entrypoint |
-| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages |
+| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Exported-site budget | `make budget` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
 | Component coverage | `make component-coverage` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
 
 Workflows that call this contract:
 
 - `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → build → budget → component-coverage
-- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build → budget, then upload `out/`
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → budget, then upload `out/`
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
