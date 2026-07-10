@@ -151,6 +151,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("Loop");
     expect(html).toContain("/docs/concepts/loop");
+    expect(html).toContain("Statistical Process Control Graphs");
+    expect(html).toContain("/docs/concepts/statistical-process-control-graphs");
     expect(html).toContain("Task Queue");
     expect(html).toContain("/docs/concepts/task-queue");
     expect(html).toContain("Thinking");
@@ -267,6 +269,10 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/harness");
     expect(html).toContain("Loop");
     expect(html).toContain("/ja/docs/concepts/loop");
+    expect(html).toContain("Statistical Process Control Graphs");
+    expect(html).toContain(
+      "/ja/docs/concepts/statistical-process-control-graphs",
+    );
     expect(html).toContain("Tokens");
     expect(html).toContain("/ja/docs/concepts/tokens");
     expect(html).toContain("Tool");

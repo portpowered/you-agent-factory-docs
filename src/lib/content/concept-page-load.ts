@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { TOCItemType } from "fumadocs-core/toc";
+import type { MDXComponents } from "mdx/types";
 import { compileMDX } from "next-mdx-remote/rsc";
 import type { ReactElement } from "react";
 import { parsePageAssetConfig } from "@/lib/content/assets";
@@ -34,6 +35,30 @@ function readJsonFile<T>(path: string): T {
   return JSON.parse(readFileSync(path, "utf8")) as T;
 }
 
+/**
+ * Merge page-owned MDX components for a concept slug.
+ *
+ * Local docs compile through `compileMDX` with a fixed component map, so
+ * relative imports in `page.mdx` do not resolve. Use a static
+ * `import("@/content/docs/concepts/<slug>/page-mdx-components")` literal
+ * (webpack cannot resolve expression-based imports at build time). Keep page
+ * charts out of the shared `mdx-components.tsx` registry.
+ */
+async function loadConceptPageMdxComponents(
+  slug: string,
+): Promise<MDXComponents> {
+  switch (slug) {
+    case "statistical-process-control-graphs": {
+      const mod = await import(
+        "@/content/docs/concepts/statistical-process-control-graphs/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
+    default:
+      return {};
+  }
+}
+
 export async function loadConceptPageFromDisk(
   slug: string,
   locale: SiteLocale = defaultLocale,
@@ -51,10 +76,14 @@ export async function loadConceptPageFromDisk(
   const messages = await loadPageMessages(pageDir, locale, { route });
   const assets = parsePageAssetConfig(readJsonFile(assetsPath));
   syncGraphRegistryForContentRoot(join(conceptsDocsRoot, "..", ".."));
+  const pageMdxComponents = await loadConceptPageMdxComponents(slug);
 
   const { content, frontmatter } = await compileMDX<PageFrontmatter>({
     source,
-    components: moduleMdxComponents,
+    components: {
+      ...moduleMdxComponents,
+      ...pageMdxComponents,
+    },
     options: moduleMdxCompileOptions,
   });
 

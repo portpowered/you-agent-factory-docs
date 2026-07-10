@@ -140,6 +140,17 @@ gitignored. Colocate new concept page render proofs under
 `src/content/docs/concepts/<slug>/<slug>-page.test.tsx` so the page test stays
 page-owned rather than under `src/lib/content/`.
 
+For later concept pages (not first-CLI-section), the same locale shipping trio
+is still required to publish non-en routes. Update
+`src/tests/content/section-indexes.test.tsx` so default and localized concepts
+indexes assert the authored page entry instead of the empty-state contract.
+When the branch also touches a section loader (for example
+`concept-page-load.ts` for page-local MDX components), rerun
+`audit:canonical-page-surface` with `--exception-reason` and repeat that
+justification in the PR conversation — the classifier may still recommend
+`redirect-to-throughput-prd` until the locale-shipping exception lane is
+widened; sibling concept locale stories document the same narrow exception.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |

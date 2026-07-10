@@ -1,0 +1,82 @@
+---
+title: "Statistical Process Control Graphs"
+description: "Statistical process control graphs, also called control charts, plot a factory process metric over time with a center line and control limits so readers can tell routine variation from unusual signals."
+kind: "concept"
+registryId: "concept.statistical-process-control-graphs"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "SPC graphs"
+  - "control charts"
+  - "statistical process control"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="simple-example" titleKey="sections.simpleExample.title">
+  <T k="sections.simpleExample.body" />
+  <SpcControlChartIllustration />
+</Section>
+
+<Section id="where-it-appears" titleKey="sections.whereItAppears.title">
+  <T k="sections.whereItAppears.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/metrics",
+        labelKey: "links.metricsDocs",
+      },
+      {
+        href: "/docs/concepts/bottlenecks",
+        labelKey: "links.bottlenecksConcept",
+      },
+      {
+        href: "/docs/concepts/tokens",
+        labelKey: "links.tokensConcept",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="common-confusions" titleKey="sections.commonConfusions.title">
+  <T k="sections.commonConfusions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <DerivedRelatedDocs
+    registryId="concept.statistical-process-control-graphs"
+    groups={[
+      "same-concept-type",
+      "shared-tags",
+      "used-by-models",
+      "curated-related"
+    ]}
+  />
+
+  <RelatedDocs registryId="concept.statistical-process-control-graphs" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="concept.statistical-process-control-graphs" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="concept.statistical-process-control-graphs" />
+</Section>

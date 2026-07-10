@@ -1,0 +1,17 @@
+{
+  "id": "concept.statistical-process-control-graphs",
+  "slug": "statistical-process-control-graphs",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["SPC graphs", "control charts", "statistical process control"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-09T23:34:19.000Z",
+  "updatedAt": "2026-07-09T23:34:19.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}
