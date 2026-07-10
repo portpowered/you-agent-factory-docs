@@ -61,6 +61,12 @@ Confirm denylisted owned paths stay absent on disk (including
 `src/lib/content/__fixtures__/` is a separate live test-fixture directory and
 is not on the denylist.
 
+For the B09 public-copy convergence gate, also keep
+`bun run check:retired-product-docs` green alongside the denylist audit so
+factory provider/model configuration docs remain allowed while Atlas ownership
+copy stays retired (see `search-domain-relevant-files.md` B09 gate pattern).
+
+
 ## End-to-end proof (story 007)
 
 After infrastructure deletion, prove the cleaned tree stays factory-only:
