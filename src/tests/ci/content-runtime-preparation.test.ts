@@ -35,6 +35,10 @@ import {
   runContentRuntimeCompletenessGate,
   runContentRuntimePreparation,
 } from "@/lib/content/content-runtime-preparation";
+import {
+  ensureGraphRegistryRuntimeOnce,
+  resetGraphRegistryRuntimeEnsureStateForTests,
+} from "@/lib/content/ensure-graph-registry-runtime";
 
 const repoRoot = join(import.meta.dir, "../../..");
 const CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS = 30_000;
@@ -1504,6 +1508,53 @@ exec "${realBunxPath}" "$@"
       }
 
       rmSync(shimDir, { recursive: true, force: true });
+    },
+    { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
+  );
+
+  test(
+    "prepare then ensureGraphRegistryRuntimeOnce regenerates live graphs at most once",
+    async () => {
+      resetGraphRegistryRuntimeEnsureStateForTests();
+
+      const prepareResult = spawnSync(
+        "bun",
+        ["run", "prepare:content-runtime"],
+        {
+          cwd: repoRoot,
+          encoding: "utf8",
+          env: process.env,
+        },
+      );
+      expect(prepareResult.status).toBe(0);
+
+      let generatorCalls = 0;
+      const ensureResult = ensureGraphRegistryRuntimeOnce({
+        cwd: repoRoot,
+        runGenerator: () => {
+          generatorCalls += 1;
+        },
+        log: () => {},
+      });
+
+      expect(ensureResult.action).toBe("skipped");
+      expect(ensureResult.reason).toBe("cache-hit");
+      expect(generatorCalls).toBe(0);
+
+      // A second build-path ensure in the same process stays skipped without
+      // re-entering generation (run-next after prepare).
+      const secondEnsure = ensureGraphRegistryRuntimeOnce({
+        cwd: repoRoot,
+        runGenerator: () => {
+          generatorCalls += 1;
+        },
+        log: () => {},
+      });
+      expect(secondEnsure.action).toBe("skipped");
+      expect(secondEnsure.reason).toBe("process-memo");
+      expect(generatorCalls).toBe(0);
+
+      resetGraphRegistryRuntimeEnsureStateForTests();
     },
     { timeout: CONTENT_RUNTIME_PREPARATION_TIMEOUT_MS },
   );
