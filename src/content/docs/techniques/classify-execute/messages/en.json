@@ -1,0 +1,32 @@
+{
+  "title": "Classify-Execute",
+  "description": "Classify an item into a known class, then run the specialist execute path for that class.",
+  "openingSummary": "Classify-execute is a two-stage technique: label or route an item into a known class, then run the specialist path for that class.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Classify-execute is a two-stage technique: a classify step assigns an item to a known class or route, then an execute step runs the specialist path for that class."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Separating triage from specialized doing lets each execute path use a tighter prompt, model, or tool set instead of one mixed-intent pass for every class."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "Intake an item, classify it into a bounded set of classes, hand it to the matching execute path, and complete or escalate when no class fits."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Classify-execute labels an item then runs its specialist path. Nearby techniques such as planner-executor, writer-reviewer, and workqueue-executor organize different factory jobs and are not the same pattern."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
