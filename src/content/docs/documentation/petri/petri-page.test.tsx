@@ -1,6 +1,7 @@
 /**
  * Page-owned render proof for documentation/petri.
- * Covers documentation shell, Petri / CPN framing narrative, and section headings.
+ * Covers documentation shell, Petri / CPN framing narrative, how-to-read
+ * walkthrough, teaching diagram, and section headings.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -40,6 +41,9 @@ describe("petri documentation page", () => {
       const keyConcepts = String(
         loadedPage.messages.sections?.keyConcepts?.body ?? "",
       );
+      const howToUse = String(
+        loadedPage.messages.sections?.howToUse?.body ?? "",
+      );
 
       expect(whatItCovers).toMatch(/Petri\s*\/\s*Colored Petri Net\s*\(CPN\)/);
       expect(whatItCovers).toMatch(/you-agent-factory/);
@@ -60,6 +64,27 @@ describe("petri documentation page", () => {
       expect(keyConcepts).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
+
+      expect(howToUse).toMatch(/task:init/);
+      expect(howToUse).toMatch(/enabled/i);
+      expect(howToUse).toMatch(/fires/i);
+      expect(howToUse).toMatch(/dispatches its worker/i);
+      expect(howToUse).toMatch(/accepted/i);
+      expect(howToUse).toMatch(/continue/i);
+      expect(howToUse).toMatch(/rejection/i);
+      expect(howToUse).toMatch(/failure/i);
+      expect(howToUse).not.toMatch(
+        /factory\.json field|on this page|Model Atlas|reader.?shortcut/i,
+      );
+
+      const tokenFlowAsset = loadedPage.assets.tokenFlow;
+      expect(tokenFlowAsset).toBeDefined();
+      expect(tokenFlowAsset?.type).toBe("image");
+      if (tokenFlowAsset?.type === "image") {
+        expect(tokenFlowAsset.src).toMatch(/^data:image\/svg\+xml,/);
+        expect(tokenFlowAsset.altKey).toBe("assets.tokenFlow.alt");
+        expect(tokenFlowAsset.captionKey).toBe("assets.tokenFlow.caption");
+      }
 
       render(
         <main>
@@ -97,6 +122,7 @@ describe("petri documentation page", () => {
       // Prose auto-linking may wrap terms in anchors; assert via textContent.
       const whatItCoversSection = document.getElementById("what-it-covers");
       const keyConceptsSection = document.getElementById("key-concepts");
+      const howToUseSection = document.getElementById("how-to-use");
       expect(whatItCoversSection?.textContent).toMatch(
         /Colored Petri Net \(CPN\)/,
       );
@@ -106,6 +132,24 @@ describe("petri documentation page", () => {
       expect(keyConceptsSection?.textContent).toMatch(/task:init/);
       expect(keyConceptsSection?.textContent).toMatch(/colored token/i);
       expect(keyConceptsSection?.textContent).toMatch(/marking/i);
+      expect(howToUseSection?.textContent).toMatch(/task:init/);
+      expect(howToUseSection?.textContent).toMatch(/dispatches its worker/i);
+      expect(howToUseSection?.textContent).toMatch(/accepted/i);
+
+      const diagram = howToUseSection?.querySelector(
+        '[data-page-asset="tokenFlow"]',
+      );
+      expect(diagram).toBeTruthy();
+      expect(diagram?.getAttribute("data-asset-type")).toBe("image");
+      const diagramImage = diagram?.querySelector("img");
+      expect(diagramImage).toBeTruthy();
+      expect(diagramImage?.getAttribute("src") ?? "").toMatch(
+        /^data:image\/svg\+xml,/,
+      );
+      expect(diagramImage?.getAttribute("alt") ?? "").toMatch(/task:init/);
+      expect(diagram?.querySelector("figcaption")?.textContent).toMatch(
+        /Token flow/i,
+      );
 
       expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
     },

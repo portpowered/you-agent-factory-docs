@@ -54,6 +54,15 @@ waiting → consume → remaining ready work drain loop) and keep `assets.json`
 empty rather than shipping a decorative or stub-only graph. Mirror the
 concepts/task-queue no-graph proof pattern in the colocated page test.
 
+When a documentation page **requires** a teaching diagram and must stay
+page-only (no `documentation-page-load.ts` switch): keep a readable SVG under
+the page bundle (`assets/<name>.svg`), ship it through `PageAsset` as
+`type: "image"` with a `data:image/svg+xml,...` `src` in `assets.json`, and put
+`alt` / `caption` under `messages.assets.<assetId>`. That keeps the diagram
+visible without hovering, avoids stub-only graph slots, and stays inside the
+ordinary page-owned surface budget. Re-encode the data URI when the SVG source
+changes (see `documentation/petri`).
+
 Before the first authored page under a rewrite-era CLI collection can pass
 `prepare:content-runtime` / `make validate-data` and render under
 `/docs/<section>/<slug>`:

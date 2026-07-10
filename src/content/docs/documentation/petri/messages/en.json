@@ -13,7 +13,7 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Read a factory run as a Petri / CPN: work enters an initial place, a workstation becomes enabled when its input places have matching tokens, the transition fires and dispatches a worker, and the token routes to an accepted, continue, rejection, or failure place."
+      "body": "Read one compact factory run as a Petri / Colored Petri Net (CPN). You submit work for a task work type; the runtime places a colored token in the initial place task:init. A workstation whose inputs include task:init becomes enabled when that matching token is present. The transition fires: the workstation consumes the token and dispatches its worker. When the worker finishes, the workstation routes the token to an outcome place — accepted success, continue for ordinary partial progress, rejection, or failure. The diagram below shows that place → transition → place token flow for the accepted path, with the other outcome places drawn as alternate routes."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -27,6 +27,13 @@
     },
     "references": {
       "title": "References"
+    }
+  },
+  "assets": {
+    "tokenFlow": {
+      "alt": "Place to transition to place token flow: task:init place, process workstation transition, then accepted, continue, rejection, and failure outcome places.",
+      "caption": "Token flow: task:init → process workstation → outcome places. Circles are places; the box is a workstation transition; arrows show token routing.",
+      "title": "Petri / CPN token flow"
     }
   }
 }
