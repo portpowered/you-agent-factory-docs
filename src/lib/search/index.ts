@@ -21,6 +21,16 @@ export {
   enrichSearchDocument,
   enrichSearchDocuments,
 } from "./enrich-search-document";
+export {
+  assertFactorySearchDocuments,
+  assertFactorySearchResultKind,
+  FACTORY_SEARCH_RESULT_KINDS,
+  type FactorySearchResultKind,
+  isFactorySearchResultKind,
+  isRetiredAtlasSearchResultKind,
+  RETIRED_ATLAS_SEARCH_RESULT_KINDS,
+  type RetiredAtlasSearchResultKind,
+} from "./factory-search-kinds";
 export type { OramaSearchRecord, OramaSnapshotDocument } from "./orama-index";
 export {
   createOramaDatabase,

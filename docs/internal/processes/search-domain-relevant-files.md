@@ -5,6 +5,14 @@ Use these files when changing search document construction, Orama indexing, or
 
 ## Core search boundary
 
+* `src/lib/search/factory-search-kinds.ts`
+  Factory-only public search result kinds (`guide`, `concept`, `technique`,
+  `documentation`, `glossary`, `blog`) plus retired Atlas kind denylist and
+  fail-closed `assertFactorySearchDocuments` used by document builders.
+* `src/lib/content/factory-search-categories.test.tsx`
+  Required `bun run test` proof that pageKind labels, live search meta, and
+  representative `harness` / `ralph` queries stay inside the factory category
+  set and never advertise Model Atlas result kinds.
 * `src/lib/search/build-base-document.ts`
   Generic base search document construction from localized docs pages and
   registry fields. Produces page-derived fields with empty topology and
@@ -14,7 +22,8 @@ Use these files when changing search document construction, Orama indexing, or
   relationship terms, and legacy taxonomy compatibility onto base documents.
 * `src/lib/search/build-documents.ts`
   Search builder: composes base documents with generic `enrichSearchDocument`
-  only. Model Atlas AI facet enrichment (`modelFamily`, `sourceType`,
+  only, then asserts every document kind is in `FACTORY_SEARCH_RESULT_KINDS`.
+  Model Atlas AI facet enrichment (`modelFamily`, `sourceType`,
   `modalities`, `trainingRegimeIds`, `optimizes`) is no longer applied.
 * `src/lib/search/to-advanced-index.ts`
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
@@ -23,6 +32,15 @@ Use these files when changing search document construction, Orama indexing, or
   and reranking.
 * `src/app/api/search/route.ts`
   Public search API route; re-exports `docsSearchApi.GET`.
+
+### Pattern: factory-only search result kinds
+
+Public search categories / result-kind labels are the factory set only. Keep
+`FACTORY_SEARCH_RESULT_KINDS` as the single allowlist, assert it when building
+documents, and prove reader-facing labels via `messages.pageKind` (no Atlas
+keys such as `module` / `model` / `paper`). Place the required-suite proof under
+`src/lib/content/` because `src/lib/search/` remains excluded from
+`run-website-functionality-tests.ts` for leftover Atlas-coupled suites.
 
 ## Parity and regression tests
 

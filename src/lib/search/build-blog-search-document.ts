@@ -8,10 +8,11 @@ import type { BlogPostMessages } from "@/lib/content/blog-post-messages";
 import type { RegistryIndexes, RegistryRecord } from "@/lib/content/registry";
 import type { TagRecord } from "@/lib/content/schemas";
 import { enrichSearchDocument } from "./enrich-search-document";
+import { BLOG_SEARCH_DOCUMENT_KIND } from "./factory-search-kinds";
 import type { BaseSearchDocument, SearchDocument } from "./types";
 import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
 
-export const BLOG_SEARCH_DOCUMENT_KIND = "blog";
+export { BLOG_SEARCH_DOCUMENT_KIND };
 
 export type BlogSearchPostSource = LoadedBlogPostSidecars & {
   mdxBody: string;
