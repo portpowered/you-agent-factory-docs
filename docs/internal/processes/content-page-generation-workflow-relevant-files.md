@@ -490,6 +490,10 @@ from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
   `assets.<assetId>.title` and `assets.<assetId>.legend` entries (same shape as
   `<ModuleGraph />`); `ConceptMap` delegates to `RegistryGraphFlow` via
   `buildRegistryGraphLegend`.
+* Optional concept graphs: keep `assets.json` as `{}` and omit graph registry
+  records when prose already teaches the relationship (for example submit →
+  waiting place → workstation consume) or when shipping a graph would be decorative
+  only. Do not commit scaffold/template placeholder concept-map graphs.
 * `src/content/registry/`
   Registry JSON records that connect published pages to taxonomy, graphs, and
   runtime loaders.

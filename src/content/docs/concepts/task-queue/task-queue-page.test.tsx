@@ -26,6 +26,8 @@ describe("task-queue concept page", () => {
     expect(loadedPage.messages.description).toMatch(/task queue/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
     expect(loadedPage.messages.description).not.toMatch(/tokenizer/i);
+    // Optional graph omitted: prose teaches submit → waiting place → consume.
+    expect(Object.keys(loadedPage.assets)).toEqual([]);
 
     render(
       <main>
@@ -82,11 +84,17 @@ describe("task-queue concept page", () => {
 
     expect(simpleExample?.textContent).toMatch(/submit/i);
     expect(simpleExample?.textContent).toMatch(/task:init/i);
+    expect(simpleExample?.textContent).toMatch(/queued place/i);
     expect(simpleExample?.textContent).toMatch(/consume/i);
 
     expect(whereItAppears?.textContent).toMatch(/submitting work/i);
     expect(whereItAppears?.textContent).toMatch(/you work list/i);
+    expect(whereItAppears?.textContent).toMatch(/waiting work-type place/i);
     expect(whereItAppears?.textContent).toMatch(/workstation/i);
+
+    // No decorative / broken placeholder graph figure on the page.
+    expect(document.querySelector("[data-page-asset]")).toBeNull();
+    expect(document.querySelector("[data-asset-type='graph']")).toBeNull();
 
     expect(commonConfusions?.textContent).toMatch(/checklist/i);
     expect(commonConfusions?.textContent).toMatch(/submitting work/i);
