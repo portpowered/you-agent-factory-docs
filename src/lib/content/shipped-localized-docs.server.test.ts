@@ -140,6 +140,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     expect(derived).toEqual(resolveShippedLocalizedDocsManifest());
     expect(derived).toEqual({
       ja: [
+        "concepts/bottlenecks",
         "concepts/checklist",
         "concepts/compaction",
         "concepts/harness",
@@ -156,6 +157,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       "zh-CN": [
+        "concepts/bottlenecks",
         "concepts/checklist",
         "concepts/compaction",
         "concepts/harness",
@@ -172,6 +174,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       vi: [
+        "concepts/bottlenecks",
         "concepts/checklist",
         "concepts/compaction",
         "concepts/harness",

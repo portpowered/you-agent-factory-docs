@@ -151,6 +151,13 @@ justification in the PR conversation — the classifier may still recommend
 `redirect-to-throughput-prd` until the locale-shipping exception lane is
 widened; sibling concept locale stories document the same narrow exception.
 
+Optional factory-ui teaching visuals on concept pages need that same
+`page-mdx-components.tsx` + `concept-page-load.ts` switch pattern (relative
+imports in `page.mdx` do not resolve under `compileMDX`). On a page-only lane
+where the visual is optional, stay prose-first with empty `assets.json` rather
+than editing the shared loader; see
+`tasks/ideas-to-review/content/concept-page-local-mdx-components-without-shared-loader-switch.md`.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |

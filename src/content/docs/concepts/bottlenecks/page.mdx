@@ -1,0 +1,85 @@
+---
+title: "Bottlenecks"
+description: "A factory bottleneck is the stage or resource that caps overall you-agent-factory throughput even when other stages have spare capacity."
+kind: "concept"
+registryId: "concept.bottlenecks"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "bottleneck"
+  - "factory bottleneck"
+  - "throughput bottleneck"
+updatedAt: "2026-07-10"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="simple-example" titleKey="sections.simpleExample.title">
+  <T k="sections.simpleExample.body" />
+</Section>
+
+<Section id="where-it-appears" titleKey="sections.whereItAppears.title">
+  <T k="sections.whereItAppears.body" />
+</Section>
+
+<Section id="common-confusions" titleKey="sections.commonConfusions.title">
+  <T k="sections.commonConfusions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <DerivedRelatedDocs
+    registryId="concept.bottlenecks"
+    groups={[
+      "same-concept-type",
+      "shared-tags",
+      "used-by-models",
+      "curated-related"
+    ]}
+  />
+
+  <RelatedDocs registryId="concept.bottlenecks" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/blog/bottlenecks",
+        labelKey: "links.blogBottlenecks",
+      },
+      {
+        href: "/docs/concepts/task-queue",
+        labelKey: "links.taskQueueConcept",
+      },
+      {
+        href: "/docs/concepts/statistical-process-control-graphs",
+        labelKey: "links.spcGraphsConcept",
+      },
+      {
+        href: "/docs/concepts/harness",
+        labelKey: "links.harnessConcept",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="concept.bottlenecks" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="concept.bottlenecks" />
+</Section>

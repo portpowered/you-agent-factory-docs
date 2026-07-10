@@ -1,0 +1,42 @@
+{
+  "title": "Bottlenecks",
+  "description": "A factory bottleneck is the stage or resource that caps overall you-agent-factory throughput even when other stages have spare capacity.",
+  "openingSummary": "A factory bottleneck is the limiting stage or resource that caps overall you-agent-factory throughput even when other stages still have spare capacity.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A factory bottleneck is the stage or resource that limits overall you-agent-factory throughput even when other stages have spare capacity. In a long-running factory, work moves through queues, workers or workstations, harness and tool calls, and shared resources such as tokens or context. Throughput for the whole run is set by the slowest or scarcest of those stages—not by how much spare capacity sits elsewhere. A saturated work queue, too few workers, slow harness or tool calls, or contention on a shared resource can each be the bottleneck while neighboring stages sit idle."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Adding more agents does not raise end-to-end throughput when the queue or a shared resource is already saturated—the new agents wait on the same limiting stage. Finding the factory bottleneck focuses capacity and configuration changes on the stage that actually caps the run, so you spend effort where it moves finished work instead of where spare capacity already exists."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "A write-review factory has eight workers ready to draft, but only one slow review harness can accept finished drafts. Drafts pile up in the task queue while the review stage crawls. Adding more draft workers does not raise end-to-end completions—the review harness is the bottleneck. Throughput for the whole run stays capped until that limiting stage finishes work faster or gains capacity, even though the draft stage still has spare workers."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "Factory bottlenecks show up wherever a long-running you-agent-factory run waits on one scarce stage while other stages still have spare capacity. Operators see them in saturated task queues, scarce workers or workstations, slow harness or tool calls, contention on shared resources, and token or context pressure that stalls otherwise ready work. Nearby concepts such as the task queue, harness, and statistical process control graphs sit next to the same ops work when you want the backlog, the agent runtime, or time-ordered metrics—not a second definition of the limiting stage itself."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A factory bottleneck is not every slow run. Treating a stalled factory as a model-quality problem misses cases where the model is fine and a queue, harness, or shared resource is already saturated. It is also not the future bottlenecks blog listicle: that post collects comparisons and reading paths, while this concept page names the limiting stage in isolation. Statistical process control graphs are a different idea too—they watch a metric over time with a center line and control limits; they do not by themselves identify which stage caps throughput."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "blogBottlenecks": "Bottlenecks blog",
+    "taskQueueConcept": "Task queue",
+    "spcGraphsConcept": "Statistical process control graphs",
+    "harnessConcept": "Harness"
+  }
+}
