@@ -32,6 +32,12 @@ GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
 Unset `GITHUB_PAGES_BASE_PATH` keeps `/` for local preview and root Pages sites;
 the project site requires the `/you-agent-factory-docs` repository prefix.
 
+After that export, `out/index.html` (and other shipped pages) must reference
+`/you-agent-factory-docs/_next/...` assets — not bare `/_next/...`. Confirm with
+`exportHtmlReferencesBasePathAssets` from `src/lib/build/verify-export-base-path.ts`
+or by grepping the exported HTML for the prefixed asset path. Quality gate for
+this lane: `make check` plus `make test-build-contract`.
+
 ## Key files
 
 | Path | Role |
