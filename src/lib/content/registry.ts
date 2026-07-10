@@ -573,10 +573,21 @@ export type LoadRegistryOptions = {
   registryRoot?: string;
 };
 
-export async function loadRegistry(
-  options: LoadRegistryOptions = {},
+/**
+ * Process/build-scoped registry load cache.
+ *
+ * Static export and other multi-route consumers call `loadRegistry` repeatedly
+ * for the same root. Memoize successful loads so each unique root is parsed
+ * once per process. Failed loads are not retained so callers can retry after
+ * fixing inputs.
+ */
+const registryLoadCache = new Map<string, Promise<RegistryIndexes>>();
+let registryParseCount = 0;
+
+async function loadRegistryUncached(
+  registryRoot: string,
 ): Promise<RegistryIndexes> {
-  const registryRoot = options.registryRoot ?? defaultRegistryRoot;
+  registryParseCount += 1;
   const files: ParsedRegistryFile[] = [];
 
   for (const directory of registryDirectories) {
@@ -587,4 +598,34 @@ export async function loadRegistry(
   const indexes = buildIndexes(files);
   validateOntologyReferences(files, indexes);
   return indexes;
+}
+
+export async function loadRegistry(
+  options: LoadRegistryOptions = {},
+): Promise<RegistryIndexes> {
+  const registryRoot = options.registryRoot ?? defaultRegistryRoot;
+  const existing = registryLoadCache.get(registryRoot);
+  if (existing) {
+    return existing;
+  }
+
+  const pending = loadRegistryUncached(registryRoot);
+  registryLoadCache.set(registryRoot, pending);
+  try {
+    return await pending;
+  } catch (error) {
+    registryLoadCache.delete(registryRoot);
+    throw error;
+  }
+}
+
+/** Test helper: drop registry load memo and parse counter. */
+export function resetRegistryLoadCacheForTests(): void {
+  registryLoadCache.clear();
+  registryParseCount = 0;
+}
+
+/** Test helper: how many times registry JSON was parsed from disk. */
+export function getRegistryParseCountForTests(): number {
+  return registryParseCount;
 }

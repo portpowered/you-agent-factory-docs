@@ -1,7 +1,11 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { mkdir, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { loadRegistry, RegistryLoadError } from "./registry";
+import {
+  loadRegistry,
+  RegistryLoadError,
+  resetRegistryLoadCacheForTests,
+} from "./registry";
 
 const fixtureRoot = join(
   import.meta.dir,
@@ -101,6 +105,7 @@ async function writeMinimalRegistry(
 }
 
 afterEach(async () => {
+  resetRegistryLoadCacheForTests();
   await rm(fixtureRoot, { recursive: true, force: true });
 });
 
