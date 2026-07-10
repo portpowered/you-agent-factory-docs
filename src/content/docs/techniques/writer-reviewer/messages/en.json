@@ -4,11 +4,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Writer-reviewer is a dual-role factory technique. A writer (or executor) produces a candidate, and a reviewer accepts it to complete or rejects it back for another write pass."
+      "body": "Writer-reviewer is a dual-role factory technique: one role writes or executes, and another role reviews. The writer (or executor) produces a candidate—a draft, change set, or other deliverable. The reviewer then accepts that candidate to complete the goal, or rejects it and sends the work back for another write pass. Completion is gated on review, not on the first write finishing."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Quality-gated agent work can revise until review accepts. Reject cycles stay intentional rather than ending after one chat reply."
+      "body": "Quality-gated agent work can keep revising until review accepts, instead of treating the first candidate as final. Reject cycles stay intentional: each reject returns work for another write pass under the same goal, rather than ending after one chat reply. That makes review a real gate on completion, not an optional afterthought."
     },
     "howItWorks": {
       "title": "How It Works",
