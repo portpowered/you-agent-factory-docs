@@ -1,0 +1,67 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-09"
+updatedAt: "2026-07-09"
+authors:
+  - site-team
+tags:
+  - foundations
+relatedDocIds:
+  - concept.bottlenecks
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+<TagPillList tags={["foundations"]} />
+
+## Summary
+
+<T k="takeaway" />
+
+## Why this post exists
+
+The bottlenecks concept page names the limiting stage in isolation. This post is the comparison path: common places a you-agent-factory run stalls, how those stages trade off, and which reading path to take next.
+
+## Common limiting stages
+
+Factory runs often wait on one scarce stage while others still have spare capacity. The patterns below are the ones operators see most often when end-to-end throughput stops climbing.
+
+### Saturated task queue
+
+Work piles up faster than it is claimed. Downstream workers sit idle only because the queue cannot hand out the next ready item quickly enough, or because the backlog itself becomes the visible wait.
+
+### Scarce workers or workstations
+
+There are not enough agents, worktrees, or review seats to keep the pipeline moving. The queue may look healthy while completed work per interval stays flat because concurrency is already maxed out.
+
+### Slow harness or tool calls
+
+Each step spends most of its time waiting on the harness, shell, browser, or external tool rather than on model tokens. Adding more workers does little when every worker blocks on the same slow call path.
+
+### Shared-resource contention
+
+Disk, network, API rate limits, or a shared lock serialize otherwise parallel work. Throughput looks fine in isolation and collapses when many stages hit the same scarce resource together.
+
+### Token or context pressure
+
+Prompts, transcripts, or context windows grow until otherwise ready work stalls on compaction, truncation, or budget limits. The factory still has free workers, but each turn costs more tokens than the run can afford.
+
+## How to read the comparison
+
+Start with the stage that is saturated while neighbors still have spare capacity. Treat model quality as a separate question until the limiting stage is named. For the stable definition of a factory bottleneck, use the related concept page linked below instead of treating this listicle as a glossary.
+
+## Related reference pages
+
+<BlogRelatedDocs relatedDocIds={["concept.bottlenecks"]} />
+
+## Tags
+
+<TagPillList tags={["foundations"]} showDescriptions />
