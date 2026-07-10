@@ -225,6 +225,58 @@ make component-coverage
 That sequence matches `.github/workflows/ci.yml`, so a local green run is the
 practical preflight for the **verify** check contributors see on GitHub.
 
+### Local static-export benchmark (optional profiling)
+
+To compare clean versus warm local static-export timings without changing the
+CI/Pages `make build` path, use the opt-in benchmark:
+
+```sh
+make setup
+make benchmark-static-export MODE=clean
+make benchmark-static-export MODE=warm
+```
+
+Equivalent package scripts:
+
+```sh
+bun run benchmark:static-export -- --mode=clean
+bun run benchmark:static-export -- --mode=warm
+```
+
+- **Clean** leaves dependencies installed and removes `.next`, `out`, `.source`,
+  and ignored generated content-runtime outputs before the measured profiled
+  export.
+- **Warm** is an unchanged repeat: it does not wipe those artifacts.
+- Each successful run prints a stable timing summary that includes `mode=clean`
+  or `mode=warm`, per-stage wall times, `totalWallTimeMs`, per-stage cache
+  hit/miss/not-applicable reasons, scale counts (`staticRouteCount`,
+  `localeCount`, `majorBundleModuleCount`), and non-identifying machine
+  metadata (`osFamily`, `cpuArchitecture`, `logicalCpuCount`, `runtimeName`,
+  `runtimeVersion`). Missing optional diagnostics print explicit
+  `not-available:…` reasons instead of omitting fields. Summaries never include
+  hostname, username, home path, or other identifying fields.
+- Ordinary `make build` / `bun run build:export` stay uninstrumented.
+- Focused contract coverage (no full timed export):
+  `bun run test:static-export-profile-contract`.
+
+#### Reference machine for the <=180-second clean-build target
+
+Agreed reference machine class for later B09b optimization comparison:
+
+- Machine class: Apple Silicon developer Mac (arm64), M-series (M1 Max class)
+- OS family: macOS 15 (Darwin)
+- CPU summary: 10 logical CPUs
+- Build runtime: Bun (version recorded per profile run in `runtimeVersion`)
+
+This lane (`profile-local-static-build`) **profiles only**. Meeting the
+<=180-second clean local static-export budget is owned by later B09b
+optimization work (for example `optimize-next-static-export`), judged on this
+recorded reference machine class—not claimed as done by the profiling lane.
+
+See
+[ci-deploy-foundation-relevant-files.md](./internal/processes/ci-deploy-foundation-relevant-files.md)
+for the file map.
+
 ### Governance audit reviewer path
 
 Checklist mechanism coverage for Phase 1 governance passes is recorded in
