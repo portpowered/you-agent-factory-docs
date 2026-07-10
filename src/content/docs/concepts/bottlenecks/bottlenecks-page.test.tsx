@@ -139,4 +139,45 @@ describe("bottlenecks concept page", () => {
       screen.getByRole("link", { name: "Harness" }).getAttribute("href"),
     ).toBe("/docs/concepts/harness");
   });
+
+  test("loads ja locale with concept section structure", async () => {
+    const loadedPage = await loadLocalDocsPage(
+      {
+        section: "concepts",
+        slug: "bottlenecks",
+      },
+      "ja",
+    );
+
+    expect(loadedPage.frontmatter.kind).toBe("concept");
+    expect(loadedPage.messages.title).toBe("Bottlenecks");
+    expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+
+    render(
+      <main>
+        <ModulePageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          <h1>{loadedPage.messages.title}</h1>
+          {loadedPage.content}
+        </ModulePageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: "Bottlenecks" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Why It Matters" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Simple Example" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Where It Appears" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Common Confusions" }),
+    ).toBeTruthy();
+  });
 });

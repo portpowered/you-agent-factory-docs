@@ -265,6 +265,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(messages.conceptsIndex.title);
     expect(html).toContain(messages.conceptsIndex.description);
     expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
+    expect(html).toContain("Bottlenecks");
+    expect(html).toContain("/ja/docs/concepts/bottlenecks");
     expect(html).toContain("Checklist");
     expect(html).toContain("/ja/docs/concepts/checklist");
     expect(html).toContain("Harness");
@@ -279,8 +281,6 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/tokens");
     expect(html).toContain("Tool");
     expect(html).toContain("/ja/docs/concepts/tool");
-    expect(html).not.toContain("Bottlenecks");
-    expect(html).not.toContain("/ja/docs/concepts/bottlenecks");
     expect(html).not.toContain("Thinking");
     expect(html).not.toContain("/ja/docs/concepts/thinking");
     expect(html).not.toContain("Task Queue");
