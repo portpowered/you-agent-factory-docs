@@ -40,6 +40,7 @@ social assets, sitemap, robots).
 | `src/lib/build/static-export.ts` | `resolveGitHubPagesBasePath` / normalize helpers shared with metadataBase |
 | `src/lib/build/built-app-html-paths.ts` | Live project-site base path constant `/you-agent-factory-docs` |
 | `src/lib/build/verify-export-base-path.ts` | Export HTML checks accept path-prefixed or absolute production metadata hrefs |
+| `src/lib/build/build-contract-required-test-paths.ts` | Register focused SEO `*.test.ts` paths here for `make test-build-contract` / `bun run test:build-contract` (do not inline them in `package.json`) |
 
 ## Contract
 
@@ -104,6 +105,11 @@ social assets, sitemap, robots).
     exported `out/`. Both `src/app/sitemap.ts` and `src/app/robots.ts` must
     export `dynamic = "force-static"` so `output: "export"` can emit the
     discovery files at build time.
+12. **Build-contract wiring:** keep `package.json` `test:build-contract` as
+    `bun ./scripts/run-build-contract-required-tests.ts`. Add new SEO focused
+    tests to `BUILD_CONTRACT_REQUIRED_TEST_PATHS` in
+    `src/lib/build/build-contract-required-test-paths.ts` so they stay in
+    `make test-build-contract` after merges with required-gates work.
 
 ## Sibling lanes
 

@@ -91,32 +91,38 @@ from meta-doc rewrite work):
 | Install | `make setup` | `bun install --frozen-lockfile` |
 | Static analysis | `make check` | typecheck then lint |
 | Tests | `make test` | website functionality suite |
+| Reader-facing | `make test-reader-facing` | search / layout / a11y contracts |
+| CI / verify / build contracts | `make test-ci-contract` / `test-verify-contract` / `test-build-contract` | workflow alignment + tooling contracts |
 | Static export | `make build` | `bun run build:export` → `out/` |
-| Budget | `make budget` | rewrite-era transitional skip/pass allowed |
-| Component coverage | `make component-coverage` | rewrite-era transitional skip/pass allowed |
+| Integration | `make test-integration` | live shell / lifecycle contracts on trusted `out/` |
+| Budget | `make budget` | measures existing `out/` against factory baselines (fails closed) |
+| Component coverage | `make component-coverage` | factory component + verifier coverage baselines |
+| Data / links | `make validate-data` / `make linkcheck` | registry + internal link validation |
+| Full local path | `make ci` | same required suites as CI `verify` |
 
 Fresh checkout proof:
 
 ```sh
 make setup
-make check
-make test
-make build
+make ci
 ```
 
-`.github/workflows/ci.yml` runs `make setup` → `check` → `test` → `build` →
-`budget` → `component-coverage` on pull requests and pushes.
-`.github/workflows/deploy-pages.yml` validates with the same Makefile stages on
-`main`, then publishes `out/` to GitHub Pages.
+`.github/workflows/ci.yml` runs the aligned required path (`make setup` →
+`check` → `test` → `test-reader-facing` → `test-ci-contract` →
+`test-verify-contract` → `test-build-contract` → `build` → `test-integration` →
+`budget` → `component-coverage` → `validate-data` → `linkcheck`) on pull
+requests and pushes — the same suites as `make ci` (see
+`src/lib/ci-required-path.ts`).
+`.github/workflows/deploy-pages.yml` validates with a Pages-focused subset on
+`main` (check / test / build / guard / budget), then publishes `out/` to GitHub
+Pages.
 
 Retired Atlas / Phase 1 route-verifier sprawl is **not** part of the required
-contributor path. Prefer the Makefile stages above. Broader local aggregates such
-as `make ci` still exist for optional maintainer use but are not what rewrite-era
-CI invokes.
+contributor path. Prefer `make ci` (or the individual Makefile stages above).
 
 See [docs/operations.md](./docs/operations.md) and
 [docs/internal/processes/ci-deploy-foundation-relevant-files.md](./docs/internal/processes/ci-deploy-foundation-relevant-files.md)
-for deploy posture, Pages settings, and transitional gate behavior. Contributor
+for deploy posture, Pages settings, and required-gate behavior. Contributor
 and maintainer entry points for the live runbooks:
 
 | Concern | Runbook |
@@ -139,8 +145,11 @@ make setup              # bun install --frozen-lockfile
 make check              # typecheck then lint
 make test               # website functionality suite
 make build              # static export to out/
-make budget             # exported-site budget gate (transitional skip/pass ok)
-make component-coverage # component coverage gate (transitional skip/pass ok)
+make budget             # exported-site budget gate (measures out/; fails closed)
+make component-coverage # component + verifier coverage gate
+make test-reader-facing # search / layout / a11y contracts
+make test-integration   # production-integration path on trusted out/
+make ci                 # full local required path (aligned with CI verify)
 make lint               # Biome check
 make format             # Biome format --write
 make typecheck          # tsc --noEmit (after content-runtime prep)

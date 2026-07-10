@@ -6,13 +6,13 @@ import type { LoadedLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { expectNoSeriousAxeViolations } from "@/tests/a11y/axe";
 
-describe("token glossary route accessibility smoke", () => {
+describe("tokens concept route accessibility smoke", () => {
   let loadedPage: LoadedLocalDocsPage;
 
   beforeAll(async () => {
     loadedPage = await loadLocalDocsPage({
-      section: "glossary",
-      slug: "token",
+      section: "concepts",
+      slug: "tokens",
     });
   });
 
@@ -20,7 +20,7 @@ describe("token glossary route accessibility smoke", () => {
     cleanup();
   });
 
-  test("passes axe for converged token glossary article body", async () => {
+  test("passes axe for factory tokens concept article body", async () => {
     const { container } = render(
       <main>
         <DocsPageProviders
@@ -32,13 +32,12 @@ describe("token glossary route accessibility smoke", () => {
       </main>,
     );
 
-    expect(screen.queryByTestId("glossary-opening")).toBeNull();
     expect(screen.getByRole("heading", { name: "What It Is" })).toBeTruthy();
-    expect(screen.getByRole("list", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Attention" })).toBeTruthy();
     expect(
-      screen.getByRole("link", { name: "Token To Probability Chain" }),
+      screen.getByRole("heading", { name: "Why It Matters" }),
     ).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Configuration" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Workstations" })).toBeTruthy();
     await expectNoSeriousAxeViolations(container);
   });
 });

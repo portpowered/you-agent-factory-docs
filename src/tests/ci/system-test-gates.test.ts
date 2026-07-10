@@ -5,7 +5,7 @@ import { join, relative } from "node:path";
 const repoRoot = join(import.meta.dir, "../../..");
 
 const allowedSystemTestPrefixes = [
-  "src/tests/build/",
+  "src/lib/build/project-site-export-consumers.proof.test.ts",
   "src/lib/build/run-static-export-build.test.ts",
 ];
 

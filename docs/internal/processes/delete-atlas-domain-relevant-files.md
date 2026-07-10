@@ -19,7 +19,7 @@ collections.
 | `src/lib/content/graph-message-runtime.ts` | Must not statically import deleted page message JSON |
 | `src/lib/content/yaml-frontmatter.ts` | Treat YAML `[]` as an empty array (align with next-mdx-remote) |
 | `src/lib/content/table-registry-generation.ts` | Emit biome-friendly `[] as const` when no table records remain |
-| `scripts/run-website-functionality-tests.ts` | Exclude Atlas discovery/search/layout/feature suites from required `make test` |
+| `scripts/run-website-functionality-tests.ts` / `src/lib/website-functionality-exclusions.ts` | Classified exclusions for plain `make test` after Atlas deletion; obsolete Atlas suites/prefixes removed in restore-required-tests-gates (see [restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)) |
 
 ## Validation sequence after deletion
 
@@ -79,7 +79,7 @@ collections.
 | `src/lib/build/export-out-directory.ts` | Generic `out/` helpers relocated from deleted Phase-1 export verifier for `emit-export-search-index` |
 | `src/lib/build/built-app-html-paths.ts` | Generic base-path HTML normalizer relocated from deleted built-app test utils |
 | `src/lib/verify/phase-1*`, `*module-convergence*`, `*gqa*`, rendered-quality / customer-ask Atlas helpers | Deleted Atlas-only verify helpers |
-| `scripts/run-website-verifier-tests.ts` | Empty-shell skip when no website verifier suites remain |
+| `scripts/run-website-verifier-tests.ts` | Required verify-contract runner for factory verifier/tooling paths; fails closed when empty (Atlas empty-shell skip removed in restore-required-tests-gates-003) |
 | `src/lib/verify/production-integration-test-paths.ts` | Dropped retired Atlas built-route integration paths |
 
 Required `make check` / `make test` / `make build` must not invoke deleted Atlas verifiers.

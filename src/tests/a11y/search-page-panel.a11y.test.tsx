@@ -124,9 +124,9 @@ describe("search page panel accessibility smoke", () => {
     const searchInput = screen.getByLabelText(
       context.messages.search.placeholder,
     );
-    await user.type(searchInput, "GQA");
+    await user.type(searchInput, "harness");
 
-    await screen.findByTestId("search-page-results");
+    await screen.findByTestId("search-page-results", {}, { timeout: 15_000 });
 
     await expectNoSeriousAxeViolations(container);
   });

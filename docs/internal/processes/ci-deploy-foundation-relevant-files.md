@@ -10,19 +10,26 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Install | `make setup` | `bun install --frozen-lockfile` |
 | Static analysis | `make check` | `typecheck` then `lint` (fails if either fails) |
 | Tests | `make test` | Existing website test entrypoint |
-| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
+| Reader-facing contracts | `make test-reader-facing` | Bounded search / layout shell / a11y suite (`bun run test:reader-facing`); included in `make ci` and `.github/workflows/ci.yml` |
+| CI alignment contracts | `make test-ci-contract` | Bounded workflow/Makefile alignment suite (`bun run test:ci-contract`); included in `make ci` and CI |
+| Verify-contract | `make test-verify-contract` | Factory verifier/tooling contracts; fails closed if the required path list is empty |
+| Build-contract | `make test-build-contract` | Build/export/base-path/Pages contracts |
+| Integration | `make test-integration` | Production-integration path set for live shell/lifecycle contracts (after `make build`) |
+| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages and for budget/integration. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=`, stage wall times, cache reasons, scale counts, and non-identifying machine metadata. Reference machine + recorded <=180s evidence live in `docs/operations.md`; print the gate with `bun run prove:static-export-optimization-evidence`. Not part of CI/Pages. |
-| Exported-site budget | `make budget` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
-| Component coverage | `make component-coverage` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
+| Exported-site budget | `make budget` | Measures existing `out/` against factory baselines (total size, Next static JS, search bootstrap); never unconditional skip/`exit 0` |
+| Component coverage | `make component-coverage` | Evaluates factory component + verifier coverage manifests via `bun run coverage`; never unconditional skip/`exit 0` |
+| Registry validation | `make validate-data` | Registry content validation; included in `make ci` and CI |
+| Linkcheck | `make linkcheck` | Documentation link validation; included in `make ci` and CI |
 
 Workflows that call this contract:
 
-- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → build → budget → component-coverage
-- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/`
+- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → test-reader-facing → test-ci-contract → test-verify-contract → test-build-contract → build → test-integration → budget → component-coverage → validate-data → linkcheck (aligned with `make ci` / `src/lib/ci-required-path.ts`)
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/` (Pages-focused subset; does not replace CI)
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
-tests need a browser).
+tests need a browser). The full local required path is `make ci`.
 
 ### Project-site export (local match for deploy-pages)
 
@@ -95,7 +102,9 @@ and `bun run test:website:export-consumers`.
 | `src/lib/build/acquire-trusted-project-site-export.test.ts` | Focused build-contract gate: reuse vs single rebuild vs `allowBuild: false` without a real Next export |
 | `src/lib/build/guard-pages-deployed-artifact.ts` | Pages deploy guard: `guardPagesDeployedArtifact` reuses trusted `out/` with `allowBuild: false`, then `probePagesDeployedArtifact` serves via `runStaticExportServerLifecycle` / `createStaticExportHttpServer` and HTTP-probes home, getting-started, comparing-agent-factories, search bootstrap, one CSS asset, and a JS chunk for `/you-agent-factory-docs` prefix correctness. Prefixed search-bootstrap presence is evaluated from concatenated `out/_next/static/chunks/*.js` (same as export-consumer) — not only the first HTML-referenced script — because the Orama static `from` bake is code-split into a search chunk |
 | `src/lib/build/guard-pages-deployed-artifact.test.ts` | Focused build-contract gate: repaired fixture passes; code-split bake in a non-entry chunk passes; unprefixed fixture fails; missing `out/` fails without rebuild — no production-scale rebuild required |
+| `src/lib/build/required-read-only-export-probes.ts` / `required-read-only-export-probes.test.ts` | Story 006 inventory of required read-only probes (Pages guard + budget); forbids competing `build:export` / `runStaticExportBuild` in probe CLIs; guard failure report prints `make guard-pages-deployed-artifact` |
 | `scripts/guard-pages-deployed-artifact.ts` / `make guard-pages-deployed-artifact` / `bun run guard:pages-deployed-artifact` | Thin deploy-path entrypoint: reuse existing `out/` only and probe; never runs a second `make build` / `build:export` |
+| `src/lib/build/exported-site-budget.ts` / `exported-site-budget.test.ts` / `scripts/run-exported-site-budget.ts` / `make budget` / `bun run budget` | Factory exported-site budget gate: measures existing `out/` (total size, Next static JS, `api/search*`) against factory baselines; fails closed on missing/incomplete export or breach; no unconditional skip |
 | `src/lib/build/built-app-html-paths.test.ts` / `src/lib/navigation/site-path.test.ts` / `src/lib/navigation/site-navigation-href.test.ts` / `src/lib/navigation/site-metadata-path.test.ts` / `src/lib/i18n/route-locale.test.ts` | Focused helper gates: live project-site default + root vs `/you-agent-factory-docs` navigation/locale/metadata/asset href behavior |
 | `src/features/docs/components/LocalizedLinkList.tsx` | MDX link lists use Next `<Link>` so project-site `basePath` prefixes hrefs (raw `<a>` would escape to the org root) |
 
@@ -114,9 +123,12 @@ convergence passes, GQA built-route checks, and related `src/lib/verify`
 helpers). Do not reintroduce those targets into `make build`, `make check`,
 `make test`, CI, or deploy-pages.
 
-`scripts/run-website-functionality-tests.ts` (plain `make test`) still excludes
-Atlas discovery/search/content/feature packages that require deleted Model Atlas
-page fixtures. See [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
+`scripts/run-website-functionality-tests.ts` (plain `make test`) consumes the
+classified exclusion inventory in
+`src/lib/website-functionality-exclusions.ts` (`active` / `replaced`; obsolete
+Atlas package prefixes and dead paths removed). See
+[restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)
+and [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
 
 ## Empty `generateStaticParams` under static export
 
@@ -128,9 +140,13 @@ Atlas page deletion leaves empty collections).
 
 ## Transitional skip/pass gates
 
-During rewrite foundation, `budget` and `component-coverage` may print a clear
-skip message and exit 0 when no rewrite-safe enforcement exists yet. Do not hide
-failures from `check`, `test`, or the static-export build behind those skips.
+`make budget` now enforces factory exported-site baselines via
+`bun run budget` / `scripts/run-exported-site-budget.ts` (see
+[restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)).
+`make component-coverage` now enforces factory component and verifier coverage
+baselines via `bun run coverage` / `scripts/component-coverage-gate.ts` (same
+doc). Do not hide failures from `check`, `test`, `budget`, `component-coverage`,
+or the static-export build behind skip stubs.
 
 ## Related
 
