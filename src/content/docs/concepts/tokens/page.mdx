@@ -12,11 +12,12 @@ aliases:
   - "work token"
   - "factory tokens"
   - "work tokens"
-updatedAt: "2026-07-09"
+updatedAt: "2026-07-10"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
 import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -50,6 +51,23 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
       "shared-tags",
       "used-by-models",
       "curated-related"
+    ]}
+  />
+
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWorkDocs",
+      },
     ]}
   />
 

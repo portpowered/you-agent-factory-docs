@@ -106,6 +106,15 @@ under `<RelatedDocs />` even when the target guide is published. Keep
 getting-started and planned concept/write-review destinations on the page via
 message-backed `LocalizedLinkList` hrefs.
 
+Concept → documentation discovery has the same gap: `listRelatedRegistryRecords()`
+omits `documentation` kinds, so a concept page that needs visible links to
+configuration / workstations / submitting-work (or other published docs pages)
+must wire those destinations with page-local `<LocalizedLinkList>` and
+`links.*` labels. Leave concept `relatedIds` empty for those documentation
+targets until related-runtime includes documentation records; keep
+`<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
+discovery when those ids can resolve.
+
 ## Shipping non-en locale stubs on a page bundle
 
 Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
