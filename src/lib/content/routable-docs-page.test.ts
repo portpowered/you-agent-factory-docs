@@ -80,5 +80,22 @@ describe("routable local docs pages", () => {
     expect(slugPaths).not.toContain("concepts/page-spec-workflow-sample");
     expect(slugPaths).not.toContain("glossary/token");
     expect(slugPaths).not.toContain("modules/attention");
+
+    for (const retired of [
+      "models",
+      "modules",
+      "papers",
+      "training",
+      "systems",
+    ] as const) {
+      expect(source.getPage([retired])).toBeUndefined();
+      expect(slugPaths).not.toContain(retired);
+      expect(
+        slugPaths.some(
+          (slugPath) =>
+            slugPath === retired || slugPath.startsWith(`${retired}/`),
+        ),
+      ).toBe(false);
+    }
   });
 });

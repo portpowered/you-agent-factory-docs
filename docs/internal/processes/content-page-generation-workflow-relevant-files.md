@@ -445,6 +445,13 @@ those paths only accept collection section refs.
 - Docs breadcrumbs (`DocsPageBreadcrumb`) only add a collection crumb when
   `isAcceptedDocsSourceSection` accepts the slug section; retired Atlas
   prefixes must not become live crumb labels or `/docs/{atlas}` hrefs.
+- Retired Atlas collection index routes
+  (`/docs/{models,modules,papers,training,systems}` and localized equivalents)
+  must stay deleted as App Router modules. Those URLs not-found through the
+  docs slug renderer and must stay out of `source.generateParams()` /
+  docs `generateStaticParams` inventories — see
+  `src/lib/content/retired-atlas-collection-routes.test.ts` and
+  [shell-domain-relevant-files](./shell-domain-relevant-files.md).
 - Glossary-derived helpers in
   `src/lib/docs/glossary-derived-browse-sections.ts` may still exist for
   message/legacy tests until the localized-message cleanup story removes

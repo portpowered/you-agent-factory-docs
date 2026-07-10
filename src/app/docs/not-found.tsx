@@ -9,7 +9,7 @@ export default function DocsNotFound() {
         or return to the docs index.
       </p>
       <Link
-        href="/docs/getting-started"
+        href="/docs/guides/getting-started"
         className="text-primary underline-offset-4 hover:underline"
       >
         Go to Getting Started

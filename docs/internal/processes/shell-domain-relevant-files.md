@@ -107,6 +107,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Default-locale CLI section index routes via `renderSectionCollectionIndexPage`.
 * `src/app/[locale]/docs/{guides,concepts,techniques,documentation}/page.tsx`
   Localized CLI section index routes mirroring the default-locale pattern.
+* Retired Atlas collection index modules under
+  `src/app/(site)/docs/{models,modules,papers,training,systems}/` and
+  `src/app/[locale]/docs/{models,modules,papers,training,systems}/` must stay
+  deleted. Old URLs such as `/docs/models` and `/ja/docs/models` hit the docs
+  catch-all / slug renderer and return the normal docs not-found page
+  (`src/app/docs/not-found.tsx`); they must not appear in
+  `source.generateParams()` or default/localized docs `generateStaticParams`
+  inventories. Prove with
+  `src/lib/content/retired-atlas-collection-routes.test.ts` (included in
+  required `bun run test`).
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
