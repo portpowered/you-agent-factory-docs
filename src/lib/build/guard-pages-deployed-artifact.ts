@@ -424,7 +424,9 @@ export function absoluteSitePathToRequestUrl(
 
 /**
  * Deploy-path Pages guard: reuse an existing trusted project-site `out/`
- * (`allowBuild: false` — never a second full export) and HTTP-probe it.
+ * (`allowBuild: false` — never a second full export) and HTTP-probe it over
+ * loopback. Does not deploy to GitHub Pages, push branches, open PRs, or
+ * mutate remotes — live site checks stay maintainer-only (see operations.md).
  * Intended for `deploy-pages.yml` after `make build` and before upload.
  */
 export async function guardPagesDeployedArtifact(

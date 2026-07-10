@@ -17,7 +17,7 @@ Pages deploy for the rewrite-era foundation pipeline.
 Workflows that call this contract:
 
 - `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → build → budget → component-coverage
-- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → budget, then upload `out/`
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/`
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
@@ -158,6 +158,15 @@ The deploy validate job must call `make guard-pages-deployed-artifact` (→
 `make build` and before `actions/upload-pages-artifact@v3`. That entrypoint
 always acquires with `allowBuild: false` so it reuses the validate job’s
 just-built `out/` and never triggers a redundant `build:export`.
+
+Read-only post-deploy operator checks (live
+`https://portpowered.github.io/you-agent-factory-docs` home / getting-started /
+comparing-agent-factories / search / prefixed `_next` CSS+JS) live in
+`docs/operations.md` under **Read-only post-deploy checks**. Those curls are
+maintainer GET-only verification after a green deploy; they must not be wired
+into tests or the guard. The guard and `test:build-contract` only probe local
+`out/` over loopback and must never deploy to Pages, push branches, open PRs,
+or submit other external changes.
 
 When path-helper fixtures still encode retired `/ai-model-reference`, update them
 to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —
