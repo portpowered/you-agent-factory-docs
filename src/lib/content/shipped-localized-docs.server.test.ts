@@ -140,6 +140,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     expect(derived).toEqual(resolveShippedLocalizedDocsManifest());
     expect(derived).toEqual({
       ja: [
+        "concepts/checklist",
         "concepts/loop",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
@@ -149,6 +150,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       "zh-CN": [
+        "concepts/checklist",
         "concepts/loop",
         "documentation/install",
         "documentation/what-is-you-agent-factory",
@@ -158,6 +160,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/write-review-loops",
       ],
       vi: [
+        "concepts/checklist",
         "concepts/loop",
         "documentation/install",
         "documentation/what-is-you-agent-factory",

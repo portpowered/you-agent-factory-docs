@@ -85,9 +85,9 @@ Over-budget output groups shared paths into reviewer-readable buckets:
 
 ## First authored page under a rewrite-era CLI section
 
-When publishing the first page under `guides`, `techniques`, `documentation`,
-or `concepts`, the audit recognizes a narrow `declare-exception` lane for the
-required published-docs + local-docs loader wiring (and section `.gitkeep`
+When publishing the first page under `guides`, `techniques`, `documentation`, or
+`concepts`, the audit recognizes a narrow `declare-exception` lane for the
+required first-page publish and locale-shipping wiring (and section `.gitkeep`
 removal). When loader wiring already exists, the first page may only need
 section-index empty→authored test updates plus page-owned files.
 Allowed shared paths stay limited to:
@@ -95,7 +95,8 @@ Allowed shared paths stay limited to:
 - `src/lib/content/published-docs-registry-contract.ts`
 - `src/lib/content/content-hrefs.ts`
 - `src/lib/content/local-docs-page.ts`
-- matching `*-page.ts` / `*-page-load.ts` for that section
+- matching `*-page.ts` / `*-page-load.ts` for that section (not needed for
+  `concepts`, which already had published-docs + local-docs wiring)
 - section-root `.gitkeep` removals under docs and registry
 - the process notes that document the first-page wiring
 - `src/lib/content/shipped-localized-docs.server.test.ts` when the page ships
@@ -112,6 +113,12 @@ when locale message files change. The audit's first-CLI-section exception
 covers `concepts`, `documentation`, `guides`, and `techniques` registry kinds
 and treats the tracked shipped-locale manifest as allowed declared output for
 that lane.
+
+For the first authored `concepts/` page specifically, prefer colocating the
+page render proof under the page bundle (`<slug>-page.test.tsx`) so the page
+test itself stays page-owned; keep shared touches limited to `.gitkeep`
+removal, empty-taxonomy process notes, and the tracked shipped-locale manifest
+plus derive-test expectation update.
 
 Rerun with `--exception-reason` and repeat the same justification in the PR
 conversation comment. Later pages in the same section should stay page-local.

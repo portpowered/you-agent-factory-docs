@@ -801,66 +801,72 @@ describe("canonical page surface audit", () => {
     }
   });
 
-  test("allows first concepts page locale stubs and section-index updates in declare-exception lane", () => {
+  test("allows first concepts page locale-shipping and empty-taxonomy notes in declare-exception lane", () => {
     const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
 
     try {
-      mkdirSync(join(repoRoot, "src/content/docs/concepts/loop/messages"), {
-        recursive: true,
-      });
+      mkdirSync(
+        join(repoRoot, "src/content/docs/concepts/checklist/messages"),
+        {
+          recursive: true,
+        },
+      );
       mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
       mkdirSync(join(repoRoot, "src/lib/content/generated"), {
         recursive: true,
       });
-      mkdirSync(join(repoRoot, "src/tests/content"), { recursive: true });
+      mkdirSync(join(repoRoot, "docs/internal/processes"), {
+        recursive: true,
+      });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/concepts/loop/page.mdx"),
-        `---\nkind: "concept"\nregistryId: "concept.loop"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/checklist/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.checklist"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
       );
-      writeJson(join(repoRoot, "src/content/registry/concepts/loop.json"), {
-        id: "concept.loop",
-      });
-      writeFileSync(
-        join(repoRoot, "src/content/docs/concepts/loop/messages/ja.json"),
-        "{}\n",
+      writeJson(
+        join(repoRoot, "src/content/registry/concepts/checklist.json"),
+        {
+          id: "concept.checklist",
+        },
       );
       writeFileSync(
         join(
           repoRoot,
           "src/lib/content/generated/shipped-localized-docs.generated.ts",
         ),
-        "export const SHIPPED_LOCALIZED_DOCS = {};\n",
+        "export const SHIPPED_LOCALIZED_DOCS = { ja: ['concepts/checklist'], 'zh-CN': [], vi: [] } as const;\n",
       );
       writeFileSync(
         join(repoRoot, "src/lib/content/shipped-localized-docs.server.test.ts"),
-        "test('shipped', () => {});\n",
+        'test("derived", () => {});\n',
       );
       writeFileSync(
-        join(repoRoot, "src/tests/content/section-indexes.test.tsx"),
-        "test('section indexes', () => {});\n",
+        join(
+          repoRoot,
+          "docs/internal/processes/empty-cli-taxonomy-relevant-files.md",
+        ),
+        "# empty cli taxonomy\n",
       );
 
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
           "src/content/docs/concepts/.gitkeep",
-          "src/content/docs/concepts/loop/page.mdx",
-          "src/content/docs/concepts/loop/messages/ja.json",
-          "src/content/registry/concepts/.gitkeep",
-          "src/content/registry/concepts/loop.json",
+          "src/content/docs/concepts/checklist/page.mdx",
+          "src/content/docs/concepts/checklist/messages/en.json",
+          "src/content/docs/concepts/checklist/messages/ja.json",
+          "src/content/docs/concepts/checklist/checklist-page.test.tsx",
+          "src/content/registry/concepts/checklist.json",
           "src/lib/content/generated/shipped-localized-docs.generated.ts",
           "src/lib/content/shipped-localized-docs.server.test.ts",
-          "src/tests/content/section-indexes.test.tsx",
-          "docs/internal/processes/canonical-page-surface-budget-relevant-files.md",
-          "docs/internal/processes/content-page-generation-workflow-relevant-files.md",
+          "docs/internal/processes/empty-cli-taxonomy-relevant-files.md",
         ],
         exception: {
           reason:
-            "First concepts page shipping non-en locale stubs requires tracked shipped-localized-docs manifest and section-index authored-entry expectations.",
+            "First concepts page ships non-en locale stubs; tracked shipped-localized-docs.generated.ts plus derive-test expectation update are required.",
         },
-        pageDirectory: "src/content/docs/concepts/loop",
+        pageDirectory: "src/content/docs/concepts/checklist",
         snapshot: {
           generatedAtUtc: "2026-07-09T12:00:00.000Z",
           rankedSurfaces: [],
@@ -872,11 +878,14 @@ describe("canonical page surface audit", () => {
       });
 
       expect(audit.guidance.recommendedAction).toBe("declare-exception");
+      expect(audit.guidance.details.join("\n")).toContain(
+        "Visible exception declared",
+      );
       expect(formatCanonicalPageSurfaceAudit(audit)).toContain(
         "first CLI-section page exception",
       );
       expect(formatCanonicalPageSurfaceAudit(audit)).toContain(
-        "Visible exception",
+        "First authored page under rewrite-era CLI section concepts",
       );
     } finally {
       rmSync(repoRoot, { force: true, recursive: true });

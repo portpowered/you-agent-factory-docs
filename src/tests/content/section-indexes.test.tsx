@@ -145,11 +145,12 @@ describe("CLI section index page render", () => {
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.description);
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/docs/concepts/checklist");
     expect(html).toContain("Loop");
     expect(html).toContain("/docs/concepts/loop");
-    expect(html).toContain(
-      "A factory loop keeps iterating under you-agent-factory until the goal is done.",
-    );
+    expect(html).toContain("Thinking");
+    expect(html).toContain("/docs/concepts/thinking");
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
@@ -251,11 +252,12 @@ describe("localized CLI section index page render", () => {
 
     expect(html).toContain(messages.conceptsIndex.title);
     expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
+    expect(html).toContain("Checklist");
+    expect(html).toContain("/ja/docs/concepts/checklist");
     expect(html).toContain("Loop");
     expect(html).toContain("/ja/docs/concepts/loop");
-    expect(html).toContain(
-      "A factory loop keeps iterating under you-agent-factory until the goal is done.",
-    );
+    expect(html).not.toContain("Thinking");
+    expect(html).not.toContain("/ja/docs/concepts/thinking");
     expect(html).not.toContain(messages.conceptsIndex.emptyTitle);
     expect(messages.conceptsIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,

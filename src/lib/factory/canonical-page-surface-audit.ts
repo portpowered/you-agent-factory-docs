@@ -31,7 +31,7 @@ const registryDirectoryByKind: Record<string, string> = {
   technique: "techniques",
 };
 
-/** Rewrite-era CLI docs sections that need first-page published-docs + local-docs wiring. */
+/** Rewrite-era CLI docs sections that need first-page publish / locale-shipping wiring. */
 const FIRST_CLI_SECTION_PAGE_SECTIONS = [
   "concepts",
   "documentation",
@@ -766,14 +766,27 @@ function isAllowedFirstCliSectionPageSharedPath(
     return true;
   }
 
+  // Allow relocating a misplaced page proof out of shared content tests when
+  // the first concepts page colocates it under the page bundle instead.
+  if (
+    section === "concepts" &&
+    /^src\/lib\/content\/[a-z0-9-]+-(?:concept-)?page\.test\.tsx$/.test(path)
+  ) {
+    return true;
+  }
+
+  if (section === "concepts") {
+    // Concepts already have published-docs + local-docs wiring; first-page
+    // allows only gitkeep / process notes / shipped-locale derive updates above.
+    return false;
+  }
+
   const singular =
     section === "documentation"
       ? "documentation"
       : section === "guides"
         ? "guide"
-        : section === "concepts"
-          ? "concept"
-          : "technique";
+        : "technique";
 
   return (
     path === `src/lib/content/${singular}-page.ts` ||
@@ -818,7 +831,10 @@ function evaluateFirstCliSectionPageBudget(
   }
 
   return {
-    reason: `First authored page under rewrite-era CLI section ${section}: published-docs + local-docs loader wiring, section .gitkeep removal, and process notes required so /docs/${section}/${scope.slug} publishes with colocated messages.`,
+    reason:
+      section === "concepts"
+        ? `First authored page under rewrite-era CLI section concepts: section .gitkeep removal, empty-taxonomy process notes, and tracked shipped-locale manifest / derive-test updates required so /docs/concepts/${scope.slug} publishes with colocated messages.`
+        : `First authored page under rewrite-era CLI section ${section}: published-docs + local-docs loader wiring, section .gitkeep removal, and process notes required so /docs/${section}/${scope.slug} publishes with colocated messages.`,
   };
 }
 
