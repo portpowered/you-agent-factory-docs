@@ -22,6 +22,11 @@ social assets, sitemap, robots).
 | `src/lib/seo/export-social-preview-images.test.ts` | Metadata + temp-`out/` proofs that social images resolve under production origin/base path |
 | `src/lib/seo/export-localized-alternates.ts` | Export HTML hreflang extraction + shipped-only absolute production alternate verification |
 | `src/lib/seo/export-localized-alternates.test.ts` | Multi-locale home + subset-locale docs (`concepts/task-queue`) metadata and temp-`out/` proofs |
+| `src/lib/seo/public-sitemap-routes.ts` | Live public factory route inventory for sitemap (shell, docs sections/articles, blog, tags) |
+| `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths |
+| `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml` |
+| `src/lib/seo/export-sitemap.test.ts` | Absolute production sitemap URL proofs + temp-`out/` verification |
+| `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`) |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
@@ -75,6 +80,14 @@ social assets, sitemap, robots).
    `/docs/concepts/task-queue` (en only). Use
    `exportHtmlHasShippedAbsoluteAlternates` /
    `verifyExportLocalizedAlternates`. Never advertise deleted Atlas paths.
+10. **Sitemap** (story 006): `listPublicSitemapRoutes` / `buildPublicSitemapEntries`
+    emit only current public factory routes as absolute production URLs.
+    Project-site export writes `out/sitemap.xml` via `src/app/sitemap.ts`.
+    Inclusion proofs: `/`, `/search`, `/browse`, `/tags`, `/blog`,
+    `/blog/bottlenecks`, `/docs/concepts`, `/docs/concepts/harness`.
+    Exclusion proofs: retired `/docs/models|modules|papers|training|systems`,
+    `/topology`, `/docs/timeline`, deleted Atlas blog slugs. Use
+    `verifyExportSitemap` / `sitemapLocsMatchPublicFactoryContract`.
 
 ## Sibling lanes
 
