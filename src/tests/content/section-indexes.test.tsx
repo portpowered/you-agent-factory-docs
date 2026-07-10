@@ -178,6 +178,11 @@ describe("CLI section index page render", () => {
     expect(html).toContain(
       "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
     );
+    expect(html).toContain("Tool");
+    expect(html).toContain("/docs/concepts/tool");
+    expect(html).toContain(
+      "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
+    );
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
@@ -247,7 +252,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese concepts index with checklist, harness, and tokens page entries", async () => {
+  it("renders the japanese concepts index with checklist, harness, tokens, and tool page entries", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedConceptsIndexPage({
@@ -266,6 +271,11 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/tokens");
     expect(html).toContain(
       "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
+    );
+    expect(html).toContain("Tool");
+    expect(html).toContain("/ja/docs/concepts/tool");
+    expect(html).toContain(
+      "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
     );
     expect(html).not.toContain("/ja/docs/concepts/thinking");
     expect(html).not.toContain("/ja/docs/concepts/task-queue");

@@ -182,6 +182,11 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain(
       "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
     );
+    expect(html).toContain("Tool");
+    expect(html).toContain("/docs/concepts/tool");
+    expect(html).toContain(
+      "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
+    );
     expect(html).not.toContain(indexMessages.emptyTitle);
   });
 
