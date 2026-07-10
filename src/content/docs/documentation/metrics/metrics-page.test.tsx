@@ -1,10 +1,10 @@
 /**
- * Page-owned render proof for documentation/metrics scaffold.
- * Covers documentation shell, factory-ops metrics identity, and published
- * route — not full narrative, status/dashboard guidance, or chart proofs
- * (those land in later stories). Colocated under the page bundle so
- * audit:canonical-page-surface stays within-budget for this ordinary
- * documentation lane.
+ * Page-owned render proof for documentation/metrics.
+ * Covers documentation shell, factory-ops metrics identity, and the
+ * what-it-covers / key-concepts live-run narrative. Status/dashboard
+ * copyable guidance and chart proofs land in later stories. Colocated
+ * under the page bundle so audit:canonical-page-surface stays
+ * within-budget for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -48,10 +48,29 @@ describe("metrics documentation page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/factory-ops metrics/i);
+    expect(whatItCovers).toMatch(/live-run signals/i);
     expect(whatItCovers).toMatch(/Factory Session/i);
+    expect(whatItCovers).toMatch(/engine activity/i);
+    expect(whatItCovers).toMatch(/work-token lifecycle/i);
+    expect(whatItCovers).toMatch(/resource/i);
+    expect(whatItCovers).toMatch(/dashboard/i);
     expect(whatItCovers).not.toMatch(/Model Atlas/i);
+
     expect(keyConcepts).toMatch(/Factory Session/i);
+    expect(keyConcepts).toMatch(/factoryState/);
+    expect(keyConcepts).toMatch(/runtimeStatus/);
+    expect(keyConcepts).toMatch(/RUNNING/);
+    expect(keyConcepts).toMatch(/IDLE/);
+    expect(keyConcepts).toMatch(
+      /RUNNING while runtimeStatus is IDLE|runtimeStatus is IDLE when/i,
+    );
+    expect(keyConcepts).toMatch(/categories/);
+    expect(keyConcepts).toMatch(/totalTokens/);
+    expect(keyConcepts).toMatch(/resources/);
+    expect(keyConcepts).toMatch(/dashboard/i);
+    expect(keyConcepts).toMatch(/snapshot/i);
+    expect(keyConcepts).toMatch(/time-ordered/i);
+
     expect(howToUse).toMatch(/dashboard|status/i);
     expect(limits).toMatch(/factory metrics exposure reference/i);
     expect(limits).toMatch(/not Model Atlas/i);
@@ -85,7 +104,18 @@ describe("metrics documentation page", () => {
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
     const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent).toMatch(/factory-ops metrics/i);
+    expect(whatItCoversSection?.textContent).toMatch(/live-run signals/i);
+    expect(whatItCoversSection?.textContent).toMatch(/engine activity/i);
+
+    const keyConceptsSection = document.getElementById("key-concepts");
+    expect(keyConceptsSection?.textContent).toMatch(/factoryState/);
+    expect(keyConceptsSection?.textContent).toMatch(/runtimeStatus/);
+    expect(keyConceptsSection?.textContent).toMatch(
+      /RUNNING while runtimeStatus is IDLE/i,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(/categories/);
+    expect(keyConceptsSection?.textContent).toMatch(/totalTokens/);
+    expect(keyConceptsSection?.textContent).toMatch(/time-ordered/i);
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
   });
 });
