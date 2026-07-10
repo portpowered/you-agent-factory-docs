@@ -68,6 +68,8 @@ and `bun run test:website:export-consumers`.
 | `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` plus representative home/docs/blog navigation hrefs, prefixed canonical/hreflang, and public-asset URL checks |
 | `src/lib/build/verify-project-site-export-consumers.ts` | Composite project-site export consumer proof: no root `/_next`, prefixed search bootstrap, home/docs/blog nav under `/you-agent-factory-docs` |
 | `src/lib/build/project-site-export-consumers.proof.test.ts` | Direct export proof (`bun run test:website:export-consumers`): builds with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` and runs `verifyProjectSiteExportDirectory` |
+| `src/lib/build/acquire-trusted-project-site-export.ts` | Guard helper: reuse a matching `/you-agent-factory-docs` `out/` (validate-job artifact) or build once when missing/mismatched; `allowBuild: false` for probe-only CI steps that must not re-export |
+| `src/lib/build/acquire-trusted-project-site-export.test.ts` | Focused build-contract gate: reuse vs single rebuild vs `allowBuild: false` without a real Next export |
 | `src/lib/build/built-app-html-paths.test.ts` / `src/lib/navigation/site-path.test.ts` / `src/lib/navigation/site-navigation-href.test.ts` / `src/lib/navigation/site-metadata-path.test.ts` / `src/lib/i18n/route-locale.test.ts` | Focused helper gates: live project-site default + root vs `/you-agent-factory-docs` navigation/locale/metadata/asset href behavior |
 | `src/features/docs/components/LocalizedLinkList.tsx` | MDX link lists use Next `<Link>` so project-site `basePath` prefixes hrefs (raw `<a>` would escape to the org root) |
 
@@ -127,9 +129,18 @@ Live project-site coverage belongs in `make test-build-contract` /
 `bun run test:build-contract`, which runs `deploy-pages-workflow-contract`,
 `static-export`, `verify-export-base-path`, `export-out-directory`,
 `built-app-html-paths`, `verify-project-site-export-consumers` (fixture gate),
+`acquire-trusted-project-site-export` (reuse vs single rebuild),
 `site-path`, `site-navigation-href`, `site-metadata-path`, and `route-locale`
 tests. Direct project-site `out/` proof (real export build) is
 `bun run test:website:export-consumers`.
+
+Trusted export acquisition for the Pages guard should call
+`acquireTrustedProjectSiteExport` (default base
+`BUILT_APP_GITHUB_PAGES_BASE_PATH`). Matching `out/index.html` that already
+references `/you-agent-factory-docs/_next` is reused — including the validate
+job’s just-built artifact — so the guard must not pay for a second full
+`build:export`. Inject `runBuild` in unit tests; use `allowBuild: false` in
+workflow probe steps that only verify an existing artifact.
 
 When path-helper fixtures still encode retired `/ai-model-reference`, update them
 to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —
