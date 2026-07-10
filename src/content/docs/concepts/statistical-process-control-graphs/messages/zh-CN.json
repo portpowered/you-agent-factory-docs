@@ -1,0 +1,41 @@
+{
+  "title": "Statistical Process Control Graphs",
+  "description": "Statistical process control graphs, also called control charts, plot a factory process metric over time with a center line and control limits so readers can tell routine variation from unusual signals.",
+  "openingSummary": "Statistical process control graphs, also called control charts, help factory readers watch a process metric over time and separate everyday noise from unusual drift.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Statistical process control (SPC) uses control charts to watch a process over time. A control chart is a time-ordered plot of a process metric with a center line for the typical level and control limits that mark the band of routine variation. Points inside the limits usually reflect common-cause variation — the ordinary noise of a stable process. Points that break the limits, or form clear non-random patterns, are special-cause signals: unusual shifts that deserve a closer look."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long-running agent factory work keeps producing metrics every interval: throughput, failure rate, queue depth, and token spend. Without control limits, every bump can look like an incident and every quiet stretch can look healthy. Control charts help operators spot real drift during a multi-hour run — for example a rising failure rate or a jump in token spend — and tell that signal apart from ordinary process noise before anyone treats the blip as a special cause."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "Imagine counting successful goal completions in each ten-minute interval while a factory run is active. Most intervals land near the same center line and stay between the upper and lower control limits. One interval then spikes above the upper limit after a bad retry storm. The control chart below makes that special-cause excursion visible against the earlier in-control stretch, so the reader can tell unusual behavior from ordinary jitter."
+    },
+    "whereItAppears": {
+      "title": "Where It Appears",
+      "body": "SPC graphs belong in factory ops and metrics work when a run lasts long enough to watch the same measure across many intervals. Operators use them while a session is live: completions per tick, failure rate, queue depth, and token spend as time-ordered series with a center line and control limits. That is different from a one-shot status panel. Metrics docs cover how those series are exposed in the product; bottlenecks and tokens sit next to the same watching work when interpreters want nearby concepts."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A control chart is not a one-off dashboard snapshot that shows the latest value with no center line or limits. It is not a benchmark or eval leaderboard that ranks models or runs. It is also not a rule that every spike is a deploy bug: a point that stays inside the limits is usually common-cause noise, and a point that breaks the limits is a special-cause signal worth investigating — not an automatic proof of a bad release."
+    },
+    "related": {
+      "title": "Related Concepts And Modules"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "metricsDocs": "Metrics documentation",
+    "bottlenecksConcept": "Bottlenecks",
+    "tokensConcept": "Tokens"
+  }
+}
