@@ -4,11 +4,11 @@
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "Planner-executor is a technique that separates planning from execution so independent factory streams can move without a global phase gate."
+      "body": "Planner-executor is a technique that separates planning from execution. Planning turns a customer ask into small, reviewable work slices and checks real dependencies between them. Execution implements those slices. Independent streams can proceed in parallel without waiting on a global phase gate that holds the whole factory until every plan is finished."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Planner-executor matters when multiple agent lanes should keep moving on ready work instead of waiting for one shared planning phase to finish."
+      "body": "Planner-executor matters when a factory runs many agent lanes at once. Non-overlapping lanes keep moving instead of idling while one shared planning phase finishes. Work holds only when there is a real collision or a missing prerequisite. Finished planning for one stream does not stall unrelated ready work that can already execute."
     },
     "howItWorks": {
       "title": "How It Works",

@@ -47,12 +47,28 @@ describe("planner-executor technique page", () => {
     expect(loadedPage.messages.sections?.related?.title).toBe("Related To");
     expect(loadedPage.messages.sections?.tags?.title).toBe("Tags");
     expect(loadedPage.messages.sections?.references?.title).toBe("References");
-    expect(String(loadedPage.messages.sections?.whatItIs?.body ?? "")).toMatch(
-      /Planner-executor/i,
+    const whatItIsBody = String(
+      loadedPage.messages.sections?.whatItIs?.body ?? "",
     );
-    expect(String(loadedPage.messages.sections?.whatItIs?.body ?? "")).toMatch(
-      /separates planning from execution/i,
+    expect(whatItIsBody).toMatch(/Planner-executor/i);
+    expect(whatItIsBody).toMatch(/separates planning from execution/i);
+    expect(whatItIsBody).toMatch(/small, reviewable work slices/i);
+    expect(whatItIsBody).toMatch(/real dependencies/i);
+    expect(whatItIsBody).toMatch(/global phase gate/i);
+    expect(whatItIsBody).not.toMatch(/Model Atlas/i);
+    expect(whatItIsBody).not.toMatch(/on this page/i);
+
+    const whyItMattersBody = String(
+      loadedPage.messages.sections?.whyItMatters?.body ?? "",
     );
+    expect(whyItMattersBody).toMatch(/Planner-executor/i);
+    expect(whyItMattersBody).toMatch(/Non-overlapping lanes/i);
+    expect(whyItMattersBody).toMatch(
+      /real collision or a missing prerequisite/i,
+    );
+    expect(whyItMattersBody).toMatch(/does not stall unrelated ready work/i);
+    expect(whyItMattersBody).not.toMatch(/Model Atlas/i);
+    expect(whyItMattersBody).not.toMatch(/on this page/i);
 
     render(
       <main>
@@ -79,6 +95,15 @@ describe("planner-executor technique page", () => {
     expect(document.getElementById("what-it-is")?.textContent ?? "").toMatch(
       /Planner-executor/i,
     );
+    expect(document.getElementById("what-it-is")?.textContent ?? "").toMatch(
+      /small, reviewable work slices/i,
+    );
+    expect(
+      document.getElementById("why-it-matters")?.textContent ?? "",
+    ).toMatch(/Non-overlapping lanes/i);
+    expect(
+      document.getElementById("why-it-matters")?.textContent ?? "",
+    ).toMatch(/does not stall unrelated ready work/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toMatch(/on this page/i);
   });
