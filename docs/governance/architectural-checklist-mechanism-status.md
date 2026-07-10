@@ -159,7 +159,7 @@ entries unless direct repository evidence exists.
 | **GitHub Pages source and permissions** | Pages **Build and deployment → Source** and **Actions → Workflow permissions** are repository settings, not workflow file contents. | Source must be **GitHub Actions**; workflow permissions must allow `pages: write` and `id-token: write` for deploy. See [docs/operations.md](../operations.md#required-github-repository-settings). |
 | **Production hosting configuration** | Custom domains, TLS, CDN, and Pages environment protection rules are configured in GitHub (or another host) outside git. | Phase 1 publishes `out/` to the GitHub Pages project site documented in `docs/operations.md`. |
 | **Environment secrets** | No production API keys, analytics tokens, or deployment secrets are committed; `.gitignore` excludes local env files. | CI and deploy use lockfile installs only; no secret-backed deploy steps in workflow files today. |
-| **Preview deployment infrastructure** | No PR preview workflow exists in `.github/workflows/`. | Deferred for Phase 1; production deploy runs on `main` pushes only. |
+| **Preview deployment infrastructure** | No PR preview workflow exists in `.github/workflows/`. | **Deferred** (owner: repository maintainers). Production deploy runs on `main` pushes only. PR authors use local `make build` / project-site export + **CI**/**verify** instead of a preview URL — see [PR preview policy](../operations.md#pr-preview-policy). |
 | **External monitoring and analytics** | Client error tracking, Core Web Vitals, search analytics, and 404 telemetry are absent from application source. | Operator-owned if added later via a hosting or analytics provider. |
 | **Dependency and security dashboards** | No Dependabot config or automated vulnerability gate in repository source. | Operator-owned security review cadence until a repo-local gate lands. |
 
@@ -222,8 +222,8 @@ secrets to satisfy this artifact.
 | **Summary** | CI runs on pull requests and `main` pushes; static export deploys to GitHub Pages on `main` via a separate workflow. Lockfile-backed installs, release/rollback guidance, and SHA traceability are documented. PR preview deploys and GitHub branch protection are not enforced from repository source. |
 | **Repository evidence** | `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, `docs/operations.md`, `bun.lock`, `Makefile` (`ci`, `build-export`), `src/tests/ci/github-actions-*.test.ts` |
 | **Verification commands** | `make ci`, `make build-export`, `bun test src/tests/ci` |
-| **Gaps** | No PR preview deployment workflow; branch protection rules live in GitHub settings only; `make validate-pdf` is stubbed; environment secrets and Pages UI settings are operator-owned. |
-| **Follow-up or operator requirement** | Configure GitHub branch protection per `docs/operations.md`; treat preview deploys as deferred Phase 1 scope. |
+| **Gaps** | No PR preview deployment workflow (**Deferred** — owner: repository maintainers; alternative: local Makefile contract + **CI**/**verify**); branch protection rules live in GitHub settings only; `make validate-pdf` is stubbed; environment secrets and Pages UI settings are operator-owned. |
+| **Follow-up or operator requirement** | Configure GitHub branch protection per `docs/operations.md`; keep PR preview **Deferred** per [PR preview policy](../operations.md#pr-preview-policy) until maintainers ship a preview workflow and flip that row to **Implemented**. |
 
 ### Testing
 
@@ -570,7 +570,7 @@ this pass.
 
 | Mechanism | Status in this artifact | Why deferred | Reviewer expectation |
 | --- | --- | --- | --- |
-| **PR preview deployments** | Operator/manual; Operational gaps | No preview workflow in `.github/workflows/` | Confirm in GitHub UI; do not expect repository proof. |
+| **PR preview deployments** | **Deferred** (owner: repository maintainers) | No preview workflow in `.github/workflows/`; production deploy is `main`-only | Do not expect a PR preview URL. Use local `make build` / `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` plus green **CI**/**verify** — see [PR preview policy](../operations.md#pr-preview-policy). |
 | **Storybook / visual regression** | Testing and Component quality gaps | `src/component-examples/` substitutes for interactive catalog review | Do not fail this pass for absent Storybook. |
 | **Lighthouse / bundle budgets** | Performance and Quality gaps | No CI performance regression gate | Manual spot-check is acceptable for Phase 1. |
 | **Print routes and PDF validation** | PDF Export Contract **missing**; `make validate-pdf` stub | No `src/app/print/**`, `scripts/build-pdf.ts`, or real `scripts/validate-pdf.ts` | Treat PDF checklist rows as a future phase unless routes land. |

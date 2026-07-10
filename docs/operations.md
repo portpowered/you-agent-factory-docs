@@ -84,7 +84,8 @@ source **GitHub Actions**. Until that setting is saved, deploy workflow runs may
 fail at the Pages configuration step. After the first successful deploy, the
 public URL above should resolve.
 
-Preview deployments for pull requests remain **out of scope** for Phase 1.
+Preview deployments for pull requests are **Deferred** — see
+[PR preview policy](#pr-preview-policy).
 
 ## Phase 1 operational checklist mapping
 
@@ -97,7 +98,8 @@ with owner), or **N/A** (not applicable).
 | --- | --- | --- | --- |
 | Merges to `main` are blocked unless CI passes | **Implemented** (CI workflow) + **GitHub settings assumed** | Repository maintainers | Configure **Settings → Branches** on GitHub per the [Branch protection](#branch-protection) section; rules cannot be enforced from git. |
 | Website deploys automatically via GitHub Actions (GitHub Pages or equivalent) | **Implemented** | Repository maintainers | `.github/workflows/deploy-pages.yml` runs on `main` pushes; confirm Pages source is **GitHub Actions** on first enablement. |
-| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | The **Deploy to GitHub Pages** job from `.github/workflows/deploy-pages.yml` reports status on each `main` push alongside CI. PRs do not run deploy (preview deploy is deferred). |
+| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | Follow [Deployment status expectations](#deployment-status-expectations): pushes to `main` show **CI** (**verify**) plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**); PRs show **verify** only (no production deploy). |
+| Preview deployments for pull requests | **Deferred** | Repository maintainers | No PR preview workflow today. Follow [PR preview policy](#pr-preview-policy) for owner, alternative verification, and when this row may flip to **Implemented**. |
 
 Related operational rows not closed in this section alone:
 
@@ -105,22 +107,77 @@ Related operational rows not closed in this section alone:
 | --- | --- | --- |
 | Website has CI checks on every pull request and merge | **Implemented** | `.github/workflows/ci.yml` runs on `pull_request` and `push`. |
 | The build has deterministic install behavior through a lockfile | **Implemented** | `bun.lock` + `make setup` (`bun install --frozen-lockfile`) in CI and deploy-pages. |
-| Preview deployments for pull requests | **Deferred** | Out of scope for Phase 1; production deploy is active on `main` only. |
-| Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), [Commit-SHA traceability](#commit-sha-traceability), and [read-only post-deploy checks](#read-only-post-deploy-checks) using the live deploy check and published site. |
+| Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), [Commit-SHA traceability](#commit-sha-traceability), [read-only post-deploy checks](#read-only-post-deploy-checks), and [Incident diagnosis](#incident-diagnosis) using the live deploy check and published site. |
 
 ### What contributors should expect today
 
-- **Pull requests and pushes** run the **verify** job in `.github/workflows/ci.yml`
+- **Pull requests** run **CI** / **verify** only
   (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`).
-  Reproduce a failing stage locally with the same `make <target>`.
-- **Pushes to `main`** also run `.github/workflows/deploy-pages.yml`, which
-  validates with the same Makefile targets (through `budget`), uploads `out/`,
-  and publishes to GitHub Pages when deploy succeeds.
+  They do **not** run production deploy and do **not** publish a PR preview URL.
+  Reproduce a failing stage locally with the same `make <target>`. See
+  [Deployment status expectations](#deployment-status-expectations) and
+  [PR preview policy](#pr-preview-policy).
+- **Pushes to `main`** show **CI** / **verify** plus **Deploy GitHub Pages**
+  (**Canonical validation** / **Deploy to GitHub Pages**), which validates with
+  the same Makefile targets (through `budget`), uploads `out/`, and publishes to
+  GitHub Pages when deploy succeeds.
 - Confirm the **Deploy to GitHub Pages** check on the merge commit before
-  claiming the site was updated.
+  claiming the site was updated. A failed deploy leaves the prior successful
+  Pages deployment live until a later green deploy.
 - Atlas / Phase 1 export verifiers (`make build-export`, `make verify-atlas-*`)
   were deleted with `rewrite-delete-atlas-domain` and must not be re-chained into
   CI or deploy-pages.
+
+## PR preview policy
+
+**Decision: Deferred.** Pull requests do **not** get a hosted preview URL in
+Phase 1. There is no preview workflow under `.github/workflows/` today
+(`.github/workflows/ci.yml` runs **verify** on PRs; `.github/workflows/deploy-pages.yml`
+publishes production only on `push` to `main`).
+
+| Field | Value |
+| --- | --- |
+| Status | **Deferred** (not **Implemented**) |
+| Owner | Repository maintainers |
+| Why deferred | Production publish is `main`-only via **Deploy GitHub Pages**; adding PR previews needs a separate hosting/auth path and is out of Phase 1 scope. |
+| Checklist alignment | The architectural checklist row “Preview deployments are generated for pull requests” maps to **Deferred** in [Phase 1 operational checklist mapping](#phase-1-operational-checklist-mapping) until maintainers ship a preview workflow and flip that row to **Implemented**. |
+
+### Alternative verification for PR authors
+
+Until previews exist, authors verify a change with the same contract CI runs,
+plus a local project-site export when base-path or static-export behavior
+matters:
+
+```sh
+make setup
+make check
+make test
+make build
+make budget
+make component-coverage
+```
+
+Optional project-site export smoke (matches deploy-pages base path; does **not**
+publish):
+
+```sh
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+```
+
+Then confirm **CI** / **verify** is green on the pull request (see
+[Deployment status expectations](#deployment-status-expectations)). Do not expect
+a preview link in the PR conversation, and do not treat a green **verify** as a
+live Pages publish.
+
+### When this policy may change
+
+If maintainers later add a PR preview path, update this section to
+**Implemented**, name the workflow/job and preview URL shape, flip the checklist
+mapping row to **Implemented**, and keep
+[Deployment status expectations](#deployment-status-expectations) aligned so PR
+checks document the new preview job. Until then, production remains the only
+hosted surface (`https://portpowered.github.io/you-agent-factory-docs` after a
+green **Deploy to GitHub Pages** on `main`).
 
 ## Branch protection
 
@@ -154,49 +211,66 @@ Contributors cannot verify branch protection from a local clone alone; open the
 repository **Settings** tab (maintainer access) or ask a maintainer to confirm
 the rule is active.
 
-## CI status expectations
+## Deployment status expectations
 
-The baseline quality gate is workflow file `.github/workflows/ci.yml`, job
-**`verify`**. It checks out the branch, runs `make setup`, installs Playwright
+Contributors and maintainers read deployment status from GitHub **Checks** /
+**Actions**. Green checks mean different things on `main` versus pull requests.
+
+### Live workflows and jobs
+
+| Surface | Workflow display name | Workflow file | Job display name(s) | When it runs |
+| --- | --- | --- | --- | --- |
+| Quality gate | **CI** | `.github/workflows/ci.yml` | **verify** | Every `pull_request` and every `push` (including `main`) |
+| Production publish | **Deploy GitHub Pages** | `.github/workflows/deploy-pages.yml` | **Canonical validation**, then **Deploy to GitHub Pages** | `push` to `main` only |
+
+**CI** / **verify** checks out the branch, runs `make setup`, installs Playwright
 Chromium for browser-backed website tests, then runs the Makefile contract in
 order: `make check`, `make test`, `make build`, `make budget`, and
 `make component-coverage`. Deploy and preview steps are intentionally excluded
 from CI.
 
-Production publish is workflow file `.github/workflows/deploy-pages.yml`. The
-**`validate`** job runs the same Makefile stages through `make budget`, uploads
-`out/`, and the **`deploy`** job publishes that artifact on `push` to `main`
-only.
+**Deploy GitHub Pages** runs **Canonical validation** (same Makefile stages
+through `make budget`, plus `make guard-pages-deployed-artifact`, then upload
+`out/`) and **Deploy to GitHub Pages** (publishes that artifact). Failed
+**Canonical validation** never starts **Deploy to GitHub Pages** for that run.
 
 ### When checks run
 
 | Event | Workflow trigger | Expected checks |
 | --- | --- | --- |
-| Pull request opened or updated | `on: pull_request` in `ci.yml` | **verify** runs against the PR head commit and appears in the PR **Checks** tab. No deploy check on PRs. |
-| Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **verify** plus deploy-pages **validate** / **deploy** run against the pushed commit. |
-| Push to other branches without a PR | `on: push` in `ci.yml` | **verify** runs; deploy-pages does not. |
+| Pull request opened or updated | `on: pull_request` in `ci.yml` | **CI** / **verify** against the PR head. **No** **Deploy GitHub Pages** run and **no** hosted PR preview (see [PR preview policy](#pr-preview-policy)). |
+| Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **CI** / **verify** plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**) against the pushed commit. |
+| Push to other branches without a PR | `on: push` in `ci.yml` | **CI** / **verify** only; **Deploy GitHub Pages** does not run. |
 
 ### What contributors see
 
 **On pull requests**
 
-- The **Checks** tab shows the **verify** job from `.github/workflows/ci.yml`.
+- The **Checks** tab shows **CI** / **verify** only.
 - A green **verify** check means every Makefile contract stage passed on the PR
-  head SHA.
+  head SHA. It does **not** mean the public site was updated.
 - A red **verify** check blocks merge when branch protection requires status
   checks (see [Branch protection](#branch-protection)); open the failed step to
   see which `make <target>` broke, then reproduce it locally.
-- No deploy-pages check appears on PRs; production deploy runs after merge to
-  `main`.
+- Pull requests do **not** run production deploy. No **Canonical validation** or
+  **Deploy to GitHub Pages** check appears on PRs today. Production publish runs
+  only after merge to `main`. Hosted PR previews are **Deferred** — see
+  [PR preview policy](#pr-preview-policy).
 
 **On pushes to `main`**
 
-- Each commit on `main` shows **verify** plus deploy-pages **Canonical
-  validation** / **Deploy to GitHub Pages**.
+- Each commit on `main` shows **CI** / **verify** plus **Deploy GitHub Pages**
+  (**Canonical validation** / **Deploy to GitHub Pages**).
+- A green **verify** on `main` means the integration tip passed the Makefile
+  contract. A green **Deploy to GitHub Pages** means that SHA was published to
+  the project site (see [Commit-SHA traceability](#commit-sha-traceability)).
 - Failed **verify** on `main` signals the integration branch is unhealthy; fix
-  forward with a follow-up commit or revert—do not force-push.
-- Failed deploy-pages on `main` means the static export did not publish; the
-  prior successful Pages deployment remains live until a later green deploy.
+  forward with a follow-up commit or revert — do not force-push.
+- A failed **Deploy GitHub Pages** run on `main` (failed **Canonical
+  validation** or failed **Deploy to GitHub Pages**) means that SHA did **not**
+  publish. The **prior successful Pages deployment remains live** until a later
+  green **Deploy to GitHub Pages** succeeds. Do not claim the new SHA is live
+  while deploy is red.
 
 **Local versus GitHub**
 
@@ -373,16 +447,16 @@ then confirming deploy-pages published the merge commit.
 ### Standard release on `main`
 
 1. **Open a pull request** against `main` and wait for the **verify** check to
-   pass on the PR head commit (see [CI status expectations](#ci-status-expectations)).
+   pass on the PR head commit (see [Deployment status expectations](#deployment-status-expectations)).
 2. **Merge to `main`** only when branch protection allows it (required **verify**
    green and branch up to date if that rule is enabled).
 3. **Confirm post-merge CI** on the merge commit: a push to `main` triggers
    `.github/workflows/ci.yml` again on the integrated SHA.
-4. **Confirm post-merge deploy** on the same SHA: `.github/workflows/deploy-pages.yml`
-   validates with `make build`, runs `make guard-pages-deployed-artifact` (reuses
-   `out/`, no second full export), uploads `out/`, and publishes to GitHub Pages.
-   A green **Deploy to GitHub Pages** check means the public site reflects that
-   commit.
+4. **Confirm post-merge deploy** on the same SHA: workflow **Deploy GitHub Pages**
+   (`.github/workflows/deploy-pages.yml`) runs **Canonical validation** (`make
+   build`, `make guard-pages-deployed-artifact` reusing `out/`, upload) then
+   **Deploy to GitHub Pages**. A green **Deploy to GitHub Pages** check means the
+   public site reflects that commit.
 5. **Optionally tag a release point** on `main` when maintainers want a named
    version in git history, for example `git tag v0.1.0 <merge-commit-sha>` followed
    by `git push origin v0.1.0`. Tags do not replace the deploy-on-`main` flow
@@ -391,8 +465,9 @@ then confirming deploy-pages published the merge commit.
    and run the [read-only post-deploy checks](#read-only-post-deploy-checks)
    against the live project site.
 
-Do not claim the public site was updated until **deploy** succeeds on the target
-`main` commit.
+Do not claim the public site was updated until the **Deploy to GitHub Pages**
+job succeeds on the target `main` commit (see
+[Commit-SHA traceability](#commit-sha-traceability)).
 
 ### Manual or tagged deploy (future extension)
 
@@ -403,46 +478,117 @@ hosted artifact matches source control.
 
 ## Rollback process
 
-Rollback means **republishing a prior known-good commit** to GitHub Pages and/or
-**moving `main` back to a healthy integration state**.
+Rollback means restoring a **known-good source state on `main`** and letting
+**Deploy GitHub Pages** republish from the new tip — without destructive local
+Git on `main`.
 
-### Redeploy a prior SHA
+### Prohibited on `main`
 
-When the latest deploy is bad but an older artifact is still valid:
+| Action | Status | Why |
+| --- | --- | --- |
+| Force-push to `main` | **Prohibited** | Branch protection disables force-push; history repair must use revert or fix-forward PRs. |
+| Hard-reset of `main` (`git reset --hard` then push) | **Prohibited** | Rewrites the integration tip and requires a force-push; use revert-forward instead. |
+| Direct local Pages deploy / deploy API calls | **Prohibited** | Publish only via the live **Deploy GitHub Pages** workflow on a `main` push. |
 
-1. **Identify the last good commit** on `main` with green **verify** and
-   deploy-pages in GitHub Actions.
-2. **Re-run deploy for that SHA**—today this means restoring `main` to that
-   commit via revert (preferred) or merging a fix-forward PR, then letting
-   deploy-pages run on the new `main` tip. If `workflow_dispatch` is added later,
-   re-run deploy against the good SHA directly.
-3. **Confirm** the **Deploy to GitHub Pages** check reflects the target SHA
-   (see [Commit-SHA traceability](#commit-sha-traceability)).
+### Identify the last good SHA
 
-### Revert on `main`, then redeploy
+Before changing anything, pick the last commit on `main` that has **both**:
 
-When code on `main` must change:
+1. A green **CI** / **verify** run for that SHA, and
+2. A green **Deploy GitHub Pages** run for that SHA (**Canonical validation** and
+   **Deploy to GitHub Pages**).
 
-1. **`git revert`** the bad merge commit or commits on a branch, open a PR, and
-   merge after **verify** passes. This preserves history and avoids force-push
-   (branch protection disallows force-push to `main`).
-2. Let deploy-pages run on the post-revert merge commit on `main`.
-3. **Use GitHub Actions run metadata**—note the failing deploy run ID, the SHA it
-   built, and the prior successful deploy run/SHA when documenting the incident.
+Use [Commit-SHA traceability](#commit-sha-traceability) to confirm those runs
+(and the Pages deployment record) for the candidate `good_sha`. A green **verify**
+alone is not enough; a green **Canonical validation** without **Deploy to GitHub
+Pages** is also not enough.
 
-Do not force-push `main`; roll forward with revert + redeploy unless host
-documentation explicitly requires a different emergency path.
+### Record the incident pair
+
+Before opening a revert or fix-forward PR, record:
+
+| Field | Meaning |
+| --- | --- |
+| `good_sha` | Last known-good merge commit with green **verify** + green **Deploy to GitHub Pages**. |
+| `bad_sha` | The merge commit (or tip) that published or attempted the bad artifact. |
+| `bad_ci_run_id` / `bad_deploy_pages_run_id` | Actions run IDs (or URLs) for the failing or suspect **CI** / **Deploy GitHub Pages** runs. |
+| `good_ci_run_id` / `good_deploy_pages_run_id` | Actions run IDs (or URLs) that proved `good_sha` was healthy. |
+
+Keep this pair with the incident notes so the next maintainer does not guess the
+redeploy target.
+
+### Direct redeploy of a prior SHA (not available today)
+
+**Not available today.** `.github/workflows/deploy-pages.yml` triggers only on
+`push` to `main`. There is no `workflow_dispatch` (or tag) path to rebuild and
+publish an older SHA without moving `main`.
+
+Do **not** invent a local workaround (force-push, hard-reset, or calling Pages
+deploy APIs). The current non-destructive alternative is below.
+
+### Current non-destructive path: revert or fix-forward, then redeploy
+
+Prefer restoring healthy source on `main`, then letting deploy run on the new tip:
+
+1. **Choose the recovery shape**
+   - **`git revert`** (preferred when the bad change is clear): on a branch,
+     revert the bad merge commit(s) that introduced `bad_sha`, open a PR, and
+     merge after **verify** passes.
+   - **Fix-forward**: open a PR that corrects the defect without reverting, merge
+     after **verify** passes, when a targeted fix is safer than a full revert.
+2. **Merge to `main`** under normal branch protection (required **verify** green).
+3. **Let deploy run** on the post-merge tip: workflow **Deploy GitHub Pages**
+   runs **Canonical validation** then **Deploy to GitHub Pages** for the new
+   `main` SHA (not for the historical `good_sha` itself).
+4. **Confirm publish** with [Commit-SHA traceability](#commit-sha-traceability)
+   for the new tip, then run the
+   [read-only post-deploy checks](#read-only-post-deploy-checks) against
+   `https://portpowered.github.io/you-agent-factory-docs`.
+5. **Update the incident record** with the recovery merge SHA and its
+   `ci_run_id` / `deploy_pages_run_id`.
+
+Until a later green **Deploy to GitHub Pages** succeeds, the prior successful
+Pages deployment remains live (a failed deploy does not automatically roll the
+site back).
+
+If maintainers later add `workflow_dispatch` or tag triggers, that path must
+still pass an explicit SHA into build and deploy so the hosted artifact matches
+source control — and this section must be updated to name the new trigger.
 
 ## Read-only post-deploy checks
 
-After a green **Deploy to GitHub Pages** run on `main`, maintainers can confirm
-the live project site at
-`https://portpowered.github.io/you-agent-factory-docs` without deploying,
-pushing, opening PRs, or mutating remotes. These checks are **GET-only**
-operator curls (or equivalent browser loads). They are not part of CI, the
-Pages guard, or any automated test — `make guard-pages-deployed-artifact` and
-`make test-build-contract` only probe a local `out/` over loopback and never
-call GitHub Pages deploy APIs or push branches.
+After a green **Deploy to GitHub Pages** run on `main`, maintainers confirm the
+live project site at `https://portpowered.github.io/you-agent-factory-docs`
+with **GET-only** operator curls (or equivalent browser loads). Pair these
+checks with [Commit-SHA traceability](#commit-sha-traceability) so you know
+which SHA you are smoking.
+
+### Operator-only constraints
+
+These checks are **maintainer operator verification only**. They are **not** CI
+deploy steps, not part of the Pages guard, and not automated tests.
+
+| Must | Must not |
+| --- | --- |
+| Use `GET` (or a browser load) against the live project site | Push branches, open PRs, or mutate remotes |
+| Use short timeouts (`--max-time 10` or shorter) | Call GitHub Pages deploy APIs or re-run deploy from a local harness |
+| Fail closed on HTTP errors and bare `/_next` references | Wire these curls into `make test`, CI, or `make guard-pages-deployed-artifact` |
+
+`make guard-pages-deployed-artifact` and `make test-build-contract` only probe a
+local `out/` over loopback. They never hit the public site and must stay
+separate from this runbook.
+
+### Check inventory
+
+| Surface | URL under `https://portpowered.github.io/you-agent-factory-docs` | What a 200 proves |
+| --- | --- | --- |
+| Home | `/` | Project-site root HTML is reachable |
+| Docs page | `/docs/guides/getting-started` | A representative docs route is live |
+| Blog page | `/blog/comparing-agent-factories` | A representative blog route is live |
+| Search bootstrap | `/api/search` | Prefixed static Orama bootstrap is reachable |
+| Prefixed assets | `/you-agent-factory-docs/_next/...` CSS + JS from home HTML | Asset prefix is correct; bare `/_next` is absent |
+
+### Copy-paste smoke curls
 
 Use short timeouts so a hung host fails fast:
 
@@ -465,67 +611,146 @@ curl --fail --silent --show-error --max-time 10 \
   "$SITE/api/search" >/dev/null
 ```
 
-Confirm HTML still references the project-site asset prefix (not bare `/_next`):
+### Project-site asset prefix (reject bare `/_next`)
+
+Confirm live HTML references `/you-agent-factory-docs/_next/` and does **not**
+emit root-level `/_next` `src`/`href` attributes, then fetch one CSS and one JS
+asset from that HTML. Prefixed asset paths in HTML are host-absolute (they
+already include `/you-agent-factory-docs`), so fetch them from the Pages host
+origin — do not append them to `$SITE` or the path doubles.
 
 ```sh
 SITE=https://portpowered.github.io/you-agent-factory-docs
+ORIGIN=https://portpowered.github.io
 html="$(curl --fail --silent --show-error --max-time 10 "$SITE/")"
 printf '%s' "$html" | grep -q '/you-agent-factory-docs/_next/'
 ! printf '%s' "$html" | grep -q 'src="/_next/'
 ! printf '%s' "$html" | grep -q 'href="/_next/'
+
+CSS_PATH="$(printf '%s' "$html" | grep -oE '/you-agent-factory-docs/_next/[^"[:space:]]+\.css' | head -n 1)"
+JS_PATH="$(printf '%s' "$html" | grep -oE '/you-agent-factory-docs/_next/[^"[:space:]]+\.js' | head -n 1)"
+test -n "$CSS_PATH" && test -n "$JS_PATH"
+curl --fail --silent --show-error --max-time 10 "$ORIGIN$CSS_PATH" >/dev/null
+curl --fail --silent --show-error --max-time 10 "$ORIGIN$JS_PATH" >/dev/null
 ```
 
-Pick one CSS and one JS URL from that HTML (paths under
-`/you-agent-factory-docs/_next/...`) and fetch them:
-
-```sh
-SITE=https://portpowered.github.io/you-agent-factory-docs
-# Replace CSS_PATH / JS_PATH with href/src values from the home HTML above.
-curl --fail --silent --show-error --max-time 10 "$SITE$CSS_PATH" >/dev/null
-curl --fail --silent --show-error --max-time 10 "$SITE$JS_PATH" >/dev/null
-```
-
-A failed curl or a bare `/_next` match means the published artifact drifted from
-the project-site contract; investigate the latest deploy-pages run for that SHA
-rather than re-running deploy from a local test harness.
+A failed curl, a missing prefixed asset path, or a bare `/_next` match means the
+published artifact drifted from the project-site contract. Investigate the
+latest **Deploy GitHub Pages** run for that SHA (see
+[Commit-SHA traceability](#commit-sha-traceability)) rather than re-running
+deploy from a local test harness.
 
 ## Commit-SHA traceability
 
-Maintainers must tie integration and deployment to an exact git commit.
+Maintainers must prove which source commit is live on the project site
+(`https://portpowered.github.io/you-agent-factory-docs`) by tying the merge
+commit on `main` to the Actions runs that verified and published it.
+
+Do **not** claim the public site was updated for a SHA until the **Deploy to
+GitHub Pages** job for that SHA succeeds. A green **CI** / **verify** check alone
+is not publish proof; **Canonical validation** without a green deploy also is
+not publish proof.
+
+### Live workflows and jobs used for proof
+
+| Display name | Workflow file | Job(s) | Role in proof |
+| --- | --- | --- | --- |
+| **CI** | `.github/workflows/ci.yml` | **verify** | Confirms the merge commit passed the Makefile contract on `main`. |
+| **Deploy GitHub Pages** | `.github/workflows/deploy-pages.yml` | **Canonical validation**, then **Deploy to GitHub Pages** | Builds/uploads `out/` for that SHA, then publishes it to Pages. |
+
+Both workflows run against `${{ github.sha }}` for the `main` push (the merge
+commit). The project site URL after a successful deploy is
+`https://portpowered.github.io/you-agent-factory-docs`.
 
 ### SHAs in CI and deploy
 
 | SHA role | Where it appears | Phase 1 meaning |
 | --- | --- | --- |
 | PR head commit | PR **Checks** tab **verify** run | Validates the proposed merge tip before integration. |
-| Merge commit on `main` | Commit page; **verify** and deploy-pages runs | Authoritative integrated and published state after green checks. |
+| Merge commit on `main` | Commit page; **CI** (**verify**) and **Deploy GitHub Pages** runs | Authoritative integrated SHA; published only after **Deploy to GitHub Pages** is green. |
 | `github.sha` in workflows | GitHub Actions context for `ci.yml` and `deploy-pages.yml` | The commit `actions/checkout@v4` built for that run—matches the trigger commit. |
-| Deploy workflow output | **deploy** job summary and Pages deployment record | Should reference the same SHA as the `main` push that triggered publish. |
+| Deploy workflow output | **Deploy to GitHub Pages** job summary and Pages deployment record | Must reference the same SHA as the `main` push that triggered publish. |
 
-**Proof of what shipped to production** is: the merge commit SHA on `main`, a
-green **verify** run for that SHA, a green deploy-pages run for that SHA, and
-the live site updated after that deploy.
+**Proof of what shipped to production** is all of: the merge commit SHA on
+`main`, a green **CI** / **verify** run for that SHA, a green **Deploy GitHub
+Pages** run for that SHA (**Canonical validation** + **Deploy to GitHub
+Pages**), and the live project site reflecting that deploy.
 
 | Artifact | Purpose |
 | --- | --- |
 | Deploy workflow `github.sha` | Build and publish steps log and deploy this commit. |
-| GitHub Actions run URL / run ID | Links a deploy attempt to workflow logs and timing. |
-| GitHub Pages deployment record | Platform deployment should reference the same commit SHA as the workflow. |
+| GitHub Actions run URL / run ID | Links a verify or deploy attempt to workflow logs and timing. |
+| GitHub Pages deployment record | Platform deployment under the `github-pages` environment should reference the same commit SHA as the workflow. |
 | Optional git tag | Human-friendly name (`v0.2.0`) pointing at a release SHA; does not replace SHA traceability in Actions. |
 
 **Rollback traceability:** keep pairs of `(good_sha, bad_sha)` and the Actions run
-IDs for failed and successful deploys so redeploy targets an earlier green commit
-without guessing.
+IDs for failed and successful deploys (see [Rollback process](#rollback-process)).
+Direct redeploy of a prior SHA is not available today; recover with revert or
+fix-forward on `main`, then confirm the new tip’s deploy.
 
-### Practical lookup steps
+### Practical lookup steps (record the shipping SHA)
+
+Record these fields for every release you need to prove later: `merge_sha`,
+`ci_run_id` (or URL), `deploy_pages_run_id` (or URL), and the Pages deployment
+record / environment URL when available.
 
 1. On GitHub, open **Commits** on `main` and copy the full SHA of the merge or
-   release point.
-2. Open **Actions**, select the **CI** workflow, and confirm a successful
-   **verify** run exists for that SHA.
-3. Open the **Deploy GitHub Pages** workflow run for the same SHA and confirm
-   the **deploy** job succeeded and the run summary repeats the commit hash.
-4. Run the [read-only post-deploy checks](#read-only-post-deploy-checks) against
-   the live project site (deploy propagation can take a short time).
-5. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on `main` must match
-   the SHA recorded in CI and deploy for that release.
+   release point (`merge_sha`).
+2. Open **Actions** → workflow **CI**, filter or open the run for that SHA, and
+   confirm job **verify** succeeded. Record the run ID or URL as `ci_run_id`.
+3. Open **Actions** → workflow **Deploy GitHub Pages** for the same SHA.
+   Confirm **Canonical validation** succeeded (artifact built/uploaded) and
+   **Deploy to GitHub Pages** succeeded (artifact published). Confirm the run
+   summary / commit hash matches `merge_sha`. Record the run ID or URL as
+   `deploy_pages_run_id`.
+4. Open the **github-pages** environment / Pages deployment record for that
+   deploy and confirm it references the same commit SHA (and note the
+   deployment URL when present).
+5. Only after step 3 is green, treat the public site as updated for that SHA.
+   Optionally run the [read-only post-deploy checks](#read-only-post-deploy-checks)
+   against `https://portpowered.github.io/you-agent-factory-docs` (deploy
+   propagation can take a short time).
+6. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on an up-to-date
+   `main` must match the SHA recorded in CI and deploy for that release.
+
+## Incident diagnosis
+
+Use this section when the live project site at
+`https://portpowered.github.io/you-agent-factory-docs` looks wrong after a
+deploy (or after a suspected bad publish). Diagnose first; do not invent a
+second recovery path.
+
+**Always start here:**
+
+1. Prove which SHA should be live with
+   [Commit-SHA traceability](#commit-sha-traceability) (`merge_sha`,
+   `ci_run_id`, `deploy_pages_run_id`, Pages deployment record).
+2. Re-run the [read-only post-deploy checks](#read-only-post-deploy-checks)
+   (GET-only) against the live site.
+3. Match symptoms to a failure mode below and take that next action.
+4. If the published artifact is bad and `main` needs recovery, follow
+   [Rollback process](#rollback-process) (revert or fix-forward — never
+   force-push or hard-reset `main`).
+
+Do not push, open PRs, or call Pages deploy APIs from a local smoke harness
+while diagnosing. Operator curls stay GET-only.
+
+### Failure modes
+
+| Failure mode | Observable symptoms | Next action |
+| --- | --- | --- |
+| **Bare `/_next` / missing project-site prefix** | Live HTML has `src="/_next/..."` or `href="/_next/..."`; CSS/JS 404 at the org root; smoke prefix checks fail (`grep` for `/you-agent-factory-docs/_next/` fails or bare `/_next` matches). | Confirm the **Deploy GitHub Pages** run for the intended SHA set `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on `make build` and that **Canonical validation** / `make guard-pages-deployed-artifact` passed. Re-run the project-site asset-prefix curls under [read-only post-deploy checks](#read-only-post-deploy-checks). If the uploaded artifact was built without the prefix, [roll back or fix-forward](#rollback-process) — do not “fix” by force-pushing. |
+| **Broken or empty search bootstrap** | `$SITE/api/search` returns non-200, empty body, or non-JSON; in-browser search shows no results / fails to bootstrap; other smoke routes may still be 200. | Re-run the search curl from [read-only post-deploy checks](#read-only-post-deploy-checks). Inspect the **Canonical validation** logs for that SHA (`make build` / search-index emit). Confirm `out/api/search` was part of the uploaded artifact. If the index is missing or empty in the published artifact, fix-forward the emit path or [roll back](#rollback-process) to a `good_sha` that had a healthy search bootstrap. |
+| **Browser / CDN cache serving old HTML or assets** | Actions show a green **Deploy to GitHub Pages** for the new SHA, but the browser still shows pre-deploy content or mixed old/new assets; a fresh `curl` (no browser cache) already returns the new HTML while the browser does not. | Prefer a hard-refresh / private window, or `curl` with `--max-time 10` from [read-only post-deploy checks](#read-only-post-deploy-checks) as the source of truth. Wait briefly for CDN propagation, then re-check. Do **not** treat cache alone as a reason to force-push or re-run deploy from a local harness. If `curl` still shows the old artifact after a green deploy, treat it as [stale or wrong uploaded artifact](#failure-modes) instead. |
+| **Stale or wrong uploaded artifact relative to the intended SHA** | Live site (via `curl`) does not match what the intended `merge_sha` should have published; Pages deployment record / run summary SHA disagrees with the merge commit you think shipped; or a failed deploy left the prior successful deployment live while `main` moved. | Reconcile with [Commit-SHA traceability](#commit-sha-traceability): confirm **Deploy to GitHub Pages** succeeded for the SHA you expect. A failed deploy leaves the prior successful Pages deployment live until a later green deploy. If the wrong artifact is live, record `(good_sha, bad_sha)` and recover via [Rollback process](#rollback-process) (revert/fix-forward → new tip deploy). Direct redeploy of a prior SHA is not available today. |
+
+### Distinguishing cache from a bad artifact
+
+| Signal | Likely cache | Likely bad / stale artifact |
+| --- | --- | --- |
+| Fresh `curl` matches the new SHA’s expected content; browser does not | Yes | No |
+| Fresh `curl` still shows old or broken content after green deploy for `merge_sha` | No | Yes — prove SHA, then roll back or fix-forward |
+| Deploy job red; site still serves the previous green deploy | N/A | Expected until the next green **Deploy to GitHub Pages**; do not claim the new SHA is live |
+
+When in doubt, trust GET-only `curl` results plus the Actions / Pages records from
+[Commit-SHA traceability](#commit-sha-traceability) over a single browser tab.

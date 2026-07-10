@@ -178,11 +178,16 @@ just-built `out/` and never triggers a redundant `build:export`.
 Read-only post-deploy operator checks (live
 `https://portpowered.github.io/you-agent-factory-docs` home / getting-started /
 comparing-agent-factories / search / prefixed `_next` CSS+JS) live in
-`docs/operations.md` under **Read-only post-deploy checks**. Those curls are
-maintainer GET-only verification after a green deploy; they must not be wired
-into tests or the guard. The guard and `test:build-contract` only probe local
-`out/` over loopback and must never deploy to Pages, push branches, open PRs,
-or submit other external changes.
+`docs/operations.md` under **Read-only post-deploy checks**. That runbook
+includes an operator-only constraints table (GET-only; no push/PR/Pages deploy
+API), a check inventory, copy-paste curls, and auto-extracted prefixed CSS/JS
+fetches that reject bare `/_next`. Prefixed asset paths in live HTML are
+host-absolute (`/you-agent-factory-docs/_next/...`); fetch them from
+`https://portpowered.github.io` — do not append them to the `$SITE` base URL.
+Those curls are maintainer verification after a green deploy; they must not be
+wired into tests or the guard. The guard and `test:build-contract` only probe
+local `out/` over loopback and must never deploy to Pages, push branches, open
+PRs, or submit other external changes.
 
 When path-helper fixtures still encode retired `/ai-model-reference`, update them
 to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —
@@ -198,6 +203,50 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
 
 - Live workflow display names are project-neutral: `CI` and `Deploy GitHub Pages`
   (jobs `verify`, `Canonical validation`, `Deploy to GitHub Pages`).
+- Source-SHA → Pages proof for maintainers lives in
+  `docs/operations.md` under **Commit-SHA traceability**: record
+  `merge_sha` + **CI**/**verify** run + **Deploy GitHub Pages**
+  (**Canonical validation** / **Deploy to GitHub Pages**) run + Pages
+  deployment record; do not claim the live project site
+  (`https://portpowered.github.io/you-agent-factory-docs`) updated until
+  **Deploy to GitHub Pages** is green for that SHA.
+- Non-destructive rollback lives in `docs/operations.md` under **Rollback
+  process**: identify `good_sha` with green **verify** + green **Deploy to
+  GitHub Pages**; record `(good_sha, bad_sha)` and Actions run IDs; prefer
+  `git revert` via PR (or fix-forward) then redeploy on the new `main` tip.
+  Force-push and hard-reset of `main` are prohibited. Direct redeploy of a
+  prior SHA is **not available today** (`deploy-pages.yml` is `push` to `main`
+  only — no `workflow_dispatch`).
+- Incident diagnosis for live Pages failure modes lives in `docs/operations.md`
+  under **Incident diagnosis**: bare `/_next` / missing project-site prefix,
+  broken or empty search bootstrap, browser/CDN cache serving old HTML/assets,
+  and stale or wrong uploaded artifact. Each mode lists observable symptoms and
+  a next action that points back to **Commit-SHA traceability**, **Read-only
+  post-deploy checks**, and **Rollback process** — do not invent a second
+  recovery path. Prefer fresh GET-only `curl` over a single browser tab when
+  distinguishing cache from a bad artifact.
+- Deployment status expectations live in `docs/operations.md` under
+  **Deployment status expectations**: pushes to `main` show **CI**/**verify**
+  plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub
+  Pages**); pull requests show **verify** only and do not run production deploy.
+  A failed deploy on `main` leaves the prior successful Pages deployment live
+  until a later green **Deploy to GitHub Pages**.
+- PR preview policy lives in `docs/operations.md` under **PR preview policy**:
+  status is **Deferred** (not **Implemented**); owner is repository
+  maintainers; alternative for PR authors is the local Makefile contract
+  (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`)
+  plus optional `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` and
+  green **CI**/**verify** on the PR. Checklist mapping and governance status
+  language must stay **Deferred** with that owner/alternative until a preview
+  workflow ships.
+- Contributor-facing entry points must link the operations runbooks by section
+  (release, SHA proof, smoke, rollback, incident diagnosis, deployment status,
+  PR preview), not only a generic “CI/deploy posture” blurb:
+  - `docs/contributors/CONTRIBUTING.md` → **Operations runbooks**
+  - Root `README.md` Important Docs + Quality Gates operations pointer
+  Keep workflow/job display names and Makefile stages aligned with live
+  `.github/workflows/ci.yml` / `deploy-pages.yml` (no retired `deploy.yml` /
+  `ai-model-reference` / Atlas-only required paths as current).
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.

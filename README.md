@@ -65,7 +65,7 @@ Committed orientation docs:
 * [docs/data-model.md](./docs/data-model.md)
 * [docs/documentation-template.md](./docs/documentation-template.md)
 * [factory/docs/standards/docs-writing-standards.md](./factory/docs/standards/docs-writing-standards.md)
-* [docs/operations.md](./docs/operations.md) — CI/deploy posture
+* [docs/operations.md](./docs/operations.md) — CI/deploy posture and maintainer runbooks ([release](./docs/operations.md#release-process), [SHA proof](./docs/operations.md#commit-sha-traceability), [smoke](./docs/operations.md#read-only-post-deploy-checks), [rollback](./docs/operations.md#rollback-process), [incidents](./docs/operations.md#incident-diagnosis), [status](./docs/operations.md#deployment-status-expectations), [PR preview](./docs/operations.md#pr-preview-policy))
 
 ## Local Development
 
@@ -116,7 +116,21 @@ CI invokes.
 
 See [docs/operations.md](./docs/operations.md) and
 [docs/internal/processes/ci-deploy-foundation-relevant-files.md](./docs/internal/processes/ci-deploy-foundation-relevant-files.md)
-for deploy posture, Pages settings, and transitional gate behavior.
+for deploy posture, Pages settings, and transitional gate behavior. Contributor
+and maintainer entry points for the live runbooks:
+
+| Concern | Runbook |
+| --- | --- |
+| Release on `main` | [Release process](./docs/operations.md#release-process) |
+| Prove which SHA is live | [Commit-SHA traceability](./docs/operations.md#commit-sha-traceability) |
+| Read-only live-site smoke | [Read-only post-deploy checks](./docs/operations.md#read-only-post-deploy-checks) |
+| Non-destructive recovery | [Rollback process](./docs/operations.md#rollback-process) |
+| Incident diagnosis | [Incident diagnosis](./docs/operations.md#incident-diagnosis) |
+| Checks on `main` vs PRs | [Deployment status expectations](./docs/operations.md#deployment-status-expectations) |
+| Hosted PR previews | [PR preview policy](./docs/operations.md#pr-preview-policy) (**Deferred**) |
+
+Also linked from
+[docs/contributors/CONTRIBUTING.md](./docs/contributors/CONTRIBUTING.md#operations-runbooks).
 
 ### Useful individual targets
 
