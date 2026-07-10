@@ -1,0 +1,195 @@
+---
+title: "Logs"
+description: "Find you-agent-factory runtime logs under the selected log root, manage rolling retention, and use CLI --verbose / --debug diagnostics without confusing logs with metrics or record/replay."
+kind: "documentation"
+registryId: "documentation.logs"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "runtime logs"
+  - "logs"
+  - "CLI diagnostics"
+  - "runtime-log"
+updatedAt: "2026-07-10"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.defaultPathLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.defaultPathValue" />
+    </code>
+  </pre>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.retentionFlagHeader" />
+        </th>
+        <th>
+          <T k="links.retentionEffectHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.runtimeLogDirFlag" />
+        </td>
+        <td>
+          <T k="links.runtimeLogDirEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.runtimeLogMaxAgeFlag" />
+        </td>
+        <td>
+          <T k="links.runtimeLogMaxAgeEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.runtimeLogMaxBackupsFlag" />
+        </td>
+        <td>
+          <T k="links.runtimeLogMaxBackupsEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.runtimeLogMaxSizeFlag" />
+        </td>
+        <td>
+          <T k="links.runtimeLogMaxSizeEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.runtimeLogCompressFlag" />
+        </td>
+        <td>
+          <T k="links.runtimeLogCompressEffect" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.exampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.exampleCommand" />
+    </code>
+  </pre>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.diagnosticsFlagHeader" />
+        </th>
+        <th>
+          <T k="links.diagnosticsEffectHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.verboseFlag" />
+        </td>
+        <td>
+          <T k="links.verboseEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.debugFlag" />
+        </td>
+        <td>
+          <T k="links.debugEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.jsonFlag" />
+        </td>
+        <td>
+          <T k="links.jsonEffect" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.diagnosticsExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.diagnosticsExampleCommand" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.channelBoundaryLabel" />
+  </p>
+  <ul>
+    <li>
+      <T k="links.systemLogsBoundary" />
+    </li>
+    <li>
+      <T k="links.environmentDetailsBoundary" />
+    </li>
+  </ul>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/factory-session",
+        labelKey: "links.factorySessionDocs",
+      },
+      {
+        href: "/docs/documentation/replays-records",
+        labelKey: "links.replaysRecordsDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.logs" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.logs" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.logs" />
+</Section>
