@@ -27,5 +27,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "cursorDynamicWorkflows": "Cursor dynamic workflows",
+    "mcpDocs": "MCP documentation",
+    "harnessConcept": "Harness",
+    "thinkingConcept": "Thinking"
   }
 }
