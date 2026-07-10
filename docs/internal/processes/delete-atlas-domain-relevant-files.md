@@ -52,6 +52,9 @@ collections.
 | `src/features/ai/topology.ts` / `src/features/ai/server.ts` | Stop re-exporting deleted topology explorers |
 | `src/lib/site/you-agent-factory-site-config.ts` | CLI site config after `rewrite-site-config-contracts`; topology is not in `primaryNav` |
 | `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Keep browse classification helpers; they are not the `/topology` explorer product |
+| `src/content/messages/*/common.json` (`topologyPrototype`) | Removed retired `/topology` explorer product copy; do not reintroduce |
+| `src/lib/content/ui-messages.types.ts` | `AiDomainMessages` / `UI_MESSAGES_COMPATIBILITY_KEYS` omit `topologyPrototype` |
+| `src/tests/content/ui-messages.test.ts` | Asserts shipped messages do not expose `topologyPrototype` as live product copy |
 
 ## Story 004: remove Model Atlas AI search enrichment
 

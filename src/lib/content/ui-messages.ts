@@ -20,7 +20,6 @@ export type {
   TimelinePageMessages,
   TopologyBrowseClassificationLabels,
   TopologyBrowseMessages,
-  TopologyPrototypeMessages,
   UiMessages,
   UiMessagesCompatibility,
   UiMessagesCompatibilityKey,
