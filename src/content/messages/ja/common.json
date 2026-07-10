@@ -41,8 +41,8 @@
     "canonicalNote": "正規の検索エントリ URL: /search。検索クエリの受け渡しでは ?q=<term>、タグでは ?tag=<slug>、分類では ?classification=<id-or-slug> を付けることがあります（例: /search?classification=activation）。",
     "tagFilterDescription": "{tag} タグの付いたリソースの結果を表示しています。",
     "classificationScopeDescription": "{classification} 分類に絞った結果を表示しています。",
-    "emptySuggestionGqa": "GQA",
-    "emptySuggestionAttentionLinkLabel": "attention タグ一覧",
+    "emptySuggestionTerm": "harness",
+    "emptySuggestionLinkLabel": "ralph 技法ページ",
     "emptySuggestionPrefix": "たとえば",
     "emptySuggestionMiddle": "を検索するか、",
     "emptySuggestionSuffix": "を参照してください。"

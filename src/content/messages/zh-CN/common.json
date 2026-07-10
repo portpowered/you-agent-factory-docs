@@ -39,8 +39,8 @@
     "canonicalNote": "规范搜索入口 URL：/search。查询交接可附加 ?q=<term>；标签交接可附加 ?tag=<slug> 或 ?classification=<id-or-slug>（例如 /search?classification=activation）。",
     "tagFilterDescription": "正在显示带有 {tag} 标签的资源结果。",
     "classificationScopeDescription": "正在显示限定在 {classification} 分类范围内的结果。",
-    "emptySuggestionGqa": "GQA",
-    "emptySuggestionAttentionLinkLabel": "attention 标签索引",
+    "emptySuggestionTerm": "harness",
+    "emptySuggestionLinkLabel": "ralph 技巧页面",
     "emptySuggestionPrefix": "试试搜索",
     "emptySuggestionMiddle": "或浏览",
     "emptySuggestionSuffix": "。"

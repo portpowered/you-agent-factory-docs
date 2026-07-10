@@ -41,8 +41,8 @@
     "canonicalNote": "Canonical search entry URL: /search. Query handoffs may append ?q=<term>; tag handoffs may append ?tag=<slug> or ?classification=<id-or-slug> (for example /search?classification=activation).",
     "tagFilterDescription": "Showing results for resources tagged {tag}.",
     "classificationScopeDescription": "Showing results scoped to the {classification} classification.",
-    "emptySuggestionGqa": "GQA",
-    "emptySuggestionAttentionLinkLabel": "attention tag index",
+    "emptySuggestionTerm": "harness",
+    "emptySuggestionLinkLabel": "ralph technique page",
     "emptySuggestionPrefix": "Try searching for",
     "emptySuggestionMiddle": "or browse the",
     "emptySuggestionSuffix": "."

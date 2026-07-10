@@ -41,8 +41,8 @@
     "canonicalNote": "URL tìm kiếm chuẩn là /search. Các liên kết chuyển tiếp có thể thêm ?q=<term>; theo thẻ có thể thêm ?tag=<slug>; theo phân loại có thể thêm ?classification=<id-or-slug> (ví dụ /search?classification=activation).",
     "tagFilterDescription": "Đang hiển thị kết quả cho các tài nguyên gắn thẻ {tag}.",
     "classificationScopeDescription": "Đang hiển thị kết quả trong phân loại {classification}.",
-    "emptySuggestionGqa": "GQA",
-    "emptySuggestionAttentionLinkLabel": "chỉ mục thẻ attention",
+    "emptySuggestionTerm": "harness",
+    "emptySuggestionLinkLabel": "trang kỹ thuật ralph",
     "emptySuggestionPrefix": "Hãy thử tìm",
     "emptySuggestionMiddle": "hoặc duyệt",
     "emptySuggestionSuffix": "."

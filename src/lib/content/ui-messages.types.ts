@@ -137,8 +137,8 @@ export type SearchEntryMessages = {
   canonicalNote: string;
   tagFilterDescription: string;
   classificationScopeDescription: string;
-  emptySuggestionGqa: string;
-  emptySuggestionAttentionLinkLabel: string;
+  emptySuggestionTerm: string;
+  emptySuggestionLinkLabel: string;
   emptySuggestionPrefix: string;
   emptySuggestionMiddle: string;
   emptySuggestionSuffix: string;
