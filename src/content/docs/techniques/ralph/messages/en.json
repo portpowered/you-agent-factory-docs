@@ -12,11 +12,11 @@
     },
     "howItWorks": {
       "title": "How It Works",
-      "body": "Read the PRD backlog, pick the highest-priority unfinished story, implement and verify that story, mark it complete, record progress and learnings, then continue until stories pass or an explicit stop path ends the run."
+      "body": "Each Ralph iteration starts by reading the PRD backlog and progress notes, then picks the highest-priority unfinished user story. The run implements and verifies only that story, marks it complete in the backlog, and records what changed plus learnings for later passes. The loop continues with the next unfinished story until every story passes, or until an explicit stop path ends the run. One iteration owns one story; the backlog and progress notes carry state across iterations."
     },
     "comparedToNearbyTechniques": {
       "title": "Compared To Nearby Techniques",
-      "body": "Ralph is not a plain factory loop that only keeps iterating until a goal is done. It is also not planner-executor (plan then execute as a role split), writer-reviewer (draft plus an explicit review gate), or workqueue-executor (drain a work queue)."
+      "body": "A plain factory loop keeps iterating under the factory until a goal is done; Ralph is a specific loop that advances a PRD backlog one user story per iteration, not a generic keep-iterating format. Planner-executor splits plan work from execute work across roles; Ralph does not require that role split—it executes the next unfinished story in the backlog. Writer-reviewer pairs draft work with an explicit review gate before the goal can complete; Ralph’s gate is finishing and verifying one story, then recording progress, not a separate writer-plus-reviewer handoff. Workqueue-executor drains or organizes a work queue; Ralph’s driver is the ordered PRD story list and progress notes, not a queue-drain pattern."
     },
     "related": {
       "title": "Related To"

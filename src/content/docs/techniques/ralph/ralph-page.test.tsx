@@ -66,9 +66,26 @@ describe("ralph technique page", () => {
     expect(whyItMatters).toMatch(/mergeable and reviewable/i);
     expect(whyItMatters).toMatch(/one small story/i);
     expect(whyItMatters).toMatch(/context window/i);
+    expect(howItWorks).toMatch(/highest-priority unfinished/i);
+    expect(howItWorks).toMatch(/implements and verifies/i);
+    expect(howItWorks).toMatch(/marks it complete/i);
+    expect(howItWorks).toMatch(/progress notes/i);
+    expect(howItWorks).toMatch(/explicit stop/i);
+    expect(howItWorks).toMatch(/one story/i);
+    expect(compared).toMatch(/plain factory loop/i);
+    expect(compared).toMatch(/planner-executor/i);
+    expect(compared).toMatch(/writer-reviewer/i);
+    expect(compared).toMatch(/workqueue-executor/i);
+    expect(compared).toMatch(/one user story per iteration/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
     expect(whyItMatters).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
+    );
+    expect(howItWorks).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut|AGENTS\.md|skill converter/i,
+    );
+    expect(compared).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut|AGENTS\.md|skill converter/i,
     );
 
     render(
@@ -93,6 +110,10 @@ describe("ralph technique page", () => {
     const bodyText = document.body.textContent ?? "";
     expect(bodyText).toMatch(/product requirements document \(PRD\)/i);
     expect(bodyText).toMatch(/mergeable and reviewable/i);
+    expect(bodyText).toMatch(/highest-priority unfinished/i);
+    expect(bodyText).toMatch(/plain factory loop/i);
+    expect(bodyText).toMatch(/planner-executor/i);
+    expect(bodyText).toMatch(/writer-reviewer/i);
     expect(bodyText).not.toMatch(/Model Atlas/i);
   });
 });
