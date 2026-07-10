@@ -13,7 +13,15 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Read session status for the live Factory Session you are watching, then open the local operator dashboard when you want a browser surface for the same live metrics. Use this metrics exposure reference for watching live-run signals; open sibling docs for factory-session lifecycle, SPC control-limit reading, logs, OpenAPI, or bottleneck diagnosis."
+      "body": "Read session status for the live Factory Session you are watching, then open the local operator dashboard when you want a browser surface for the same live metrics. Use this metrics exposure reference for watching live-run signals from the status API and the dashboard. Open factory-session docs for discover, inspect, and lifecycle control. Open SPC graphs for control-limit reading. Open logs for diagnostic event and log surfaces. Open the API doc for broader OpenAPI contracts. Open bottlenecks or tokens concepts when you need interpretation depth beyond exposure."
+    },
+    "statusRead": {
+      "title": "Read Session Status",
+      "body": "Call GET /factory-sessions/{session_id}/status for a deeper runtime health read than session list or factory query. Replace {session_id} with a live session id from session list—often ~default on single-session hosts. The response carries the factory-ops metrics fields operators watch during a live run."
+    },
+    "operatorDashboard": {
+      "title": "Open The Operator Dashboard",
+      "body": "When the service was started via you or you run without quiet mode, open the local operator dashboard as the browser surface for the same live metrics. The dashboard shows live session selection, work position, and factory activity alongside CLI and API status reads."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -28,5 +36,24 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "statusReadLabel": "Example status read against the default local host:",
+    "statusFieldsIntro": "Read these fields in the status response:",
+    "statusFieldHeader": "Field",
+    "statusMeaningHeader": "Meaning",
+    "statusFactoryStateField": "factoryState",
+    "statusFactoryStateMeaning": "Factory lifecycle phase — for example IDLE, RUNNING, PAUSED, COMPLETED, or FAILED.",
+    "statusRuntimeStatusField": "runtimeStatus",
+    "statusRuntimeStatusMeaning": "Whether the engine is actively processing — IDLE, ACTIVE, or FINISHED.",
+    "statusCategoriesField": "categories",
+    "statusCategoriesMeaning": "Token counts by lifecycle bucket: initial, processing, terminal, and failed.",
+    "statusTotalTokensField": "totalTokens",
+    "statusTotalTokensMeaning": "Total tokens across categories.",
+    "statusResourcesField": "resources",
+    "statusResourcesMeaning": "Optional resource usage entries when the factory declares resources.",
+    "statusReadTogetherNote": "A factory can be RUNNING while runtimeStatus is IDLE when the host is up but no work is in flight. Read factoryState, runtimeStatus, and categories together when deciding whether to submit more work or wait for completion.",
+    "dashboardUrlLabel": "Default local dashboard URL (service started without quiet mode):",
+    "dashboardHostNote": "Use the same host and port as the API unless the process that bound the listener used a different server or port setting."
   }
 }

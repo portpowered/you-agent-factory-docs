@@ -33,6 +33,85 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.howToUse.body" />
 </Section>
 
+<Section id="status-read" titleKey="sections.statusRead.title">
+  <T k="sections.statusRead.body" />
+  <p>
+    <T k="links.statusReadLabel" />
+  </p>
+  ```bash
+  curl -s "http://localhost:7437/factory-sessions/~default/status"
+  ```
+  <p>
+    <T k="links.statusFieldsIntro" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.statusFieldHeader" />
+        </th>
+        <th>
+          <T k="links.statusMeaningHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.statusFactoryStateField" />
+        </td>
+        <td>
+          <T k="links.statusFactoryStateMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusRuntimeStatusField" />
+        </td>
+        <td>
+          <T k="links.statusRuntimeStatusMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusCategoriesField" />
+        </td>
+        <td>
+          <T k="links.statusCategoriesMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusTotalTokensField" />
+        </td>
+        <td>
+          <T k="links.statusTotalTokensMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusResourcesField" />
+        </td>
+        <td>
+          <T k="links.statusResourcesMeaning" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="links.statusReadTogetherNote" />
+</Section>
+
+<Section id="operator-dashboard" titleKey="sections.operatorDashboard.title">
+  <T k="sections.operatorDashboard.body" />
+  <p>
+    <T k="links.dashboardUrlLabel" />
+  </p>
+  ```text
+  http://localhost:7437/dashboard/ui
+  ```
+  <T k="links.dashboardHostNote" />
+</Section>
+
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
   <T k="sections.limitsAndAssumptions.body" />
 </Section>

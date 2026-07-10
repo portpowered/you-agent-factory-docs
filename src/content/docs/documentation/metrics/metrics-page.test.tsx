@@ -1,10 +1,10 @@
 /**
  * Page-owned render proof for documentation/metrics.
- * Covers documentation shell, factory-ops metrics identity, and the
- * what-it-covers / key-concepts live-run narrative. Status/dashboard
- * copyable guidance and chart proofs land in later stories. Colocated
- * under the page bundle so audit:canonical-page-surface stays
- * within-budget for this ordinary documentation lane.
+ * Covers documentation shell, factory-ops metrics identity, the
+ * what-it-covers / key-concepts live-run narrative, and status/dashboard
+ * copyable guidance. Chart proofs land in a later story. Colocated under
+ * the page bundle so audit:canonical-page-surface stays within-budget for
+ * this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -44,6 +44,12 @@ describe("metrics documentation page", () => {
       loadedPage.messages.sections?.keyConcepts?.body ?? "",
     );
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
+    const statusRead = String(
+      loadedPage.messages.sections?.statusRead?.body ?? "",
+    );
+    const operatorDashboard = String(
+      loadedPage.messages.sections?.operatorDashboard?.body ?? "",
+    );
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
@@ -72,12 +78,30 @@ describe("metrics documentation page", () => {
     expect(keyConcepts).toMatch(/time-ordered/i);
 
     expect(howToUse).toMatch(/dashboard|status/i);
+    expect(howToUse).toMatch(/factory-session/i);
+    expect(howToUse).toMatch(/SPC|control-limit/i);
+    expect(howToUse).toMatch(/logs/i);
+    expect(howToUse).toMatch(/OpenAPI|API doc/i);
+    expect(howToUse).toMatch(/bottlenecks|tokens/i);
+
+    expect(statusRead).toMatch(
+      /GET \/factory-sessions\/\{session_id\}\/status/,
+    );
+    expect(statusRead).toMatch(/factory-ops metrics|runtime health/i);
+
+    expect(operatorDashboard).toMatch(/dashboard/i);
+    expect(operatorDashboard).toMatch(/session selection/i);
+    expect(operatorDashboard).toMatch(/work position/i);
+    expect(operatorDashboard).toMatch(/factory activity/i);
+
     expect(limits).toMatch(/factory metrics exposure reference/i);
     expect(limits).toMatch(/not Model Atlas/i);
     // Scope copy may say "not Model Atlas"; reject page-meta / shortcut prose only.
     expect(whatItCovers).not.toMatch(/on this page|reader.?shortcut/i);
     expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
     expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
+    expect(statusRead).not.toMatch(/on this page|reader.?shortcut/i);
+    expect(operatorDashboard).not.toMatch(/on this page|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|reader.?shortcut/i);
 
     render(
@@ -96,6 +120,12 @@ describe("metrics documentation page", () => {
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Read Session Status" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Open The Operator Dashboard" }),
+    ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
@@ -116,6 +146,33 @@ describe("metrics documentation page", () => {
     expect(keyConceptsSection?.textContent).toMatch(/categories/);
     expect(keyConceptsSection?.textContent).toMatch(/totalTokens/);
     expect(keyConceptsSection?.textContent).toMatch(/time-ordered/i);
+
+    const howToUseSection = document.getElementById("how-to-use");
+    expect(howToUseSection?.textContent).toMatch(/factory-session/i);
+    expect(howToUseSection?.textContent).toMatch(/control-limit/i);
+    expect(howToUseSection?.textContent).toMatch(/logs/i);
+
+    const statusReadSection = document.getElementById("status-read");
+    expect(statusReadSection?.textContent).toMatch(
+      /GET \/factory-sessions\/\{session_id\}\/status/,
+    );
+    expect(statusReadSection?.textContent).toMatch(
+      /curl -s "http:\/\/localhost:7437\/factory-sessions\/~default\/status"/,
+    );
+    expect(statusReadSection?.textContent).toMatch(/factoryState/);
+    expect(statusReadSection?.textContent).toMatch(/runtimeStatus/);
+    expect(statusReadSection?.textContent).toMatch(/categories/);
+    expect(statusReadSection?.textContent).toMatch(/totalTokens/);
+    expect(statusReadSection?.textContent).toMatch(/resources/);
+
+    const dashboardSection = document.getElementById("operator-dashboard");
+    expect(dashboardSection?.textContent).toMatch(
+      /http:\/\/localhost:7437\/dashboard\/ui/,
+    );
+    expect(dashboardSection?.textContent).toMatch(/session selection/i);
+    expect(dashboardSection?.textContent).toMatch(/work position/i);
+    expect(dashboardSection?.textContent).toMatch(/factory activity/i);
+
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
   });
 });
