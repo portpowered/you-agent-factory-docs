@@ -1,0 +1,81 @@
+---
+title: "Tool"
+description: "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work."
+kind: "concept"
+registryId: "concept.tool"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "Tools"
+  - "MCP tool"
+updatedAt: "2026-07-09"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-is" titleKey="sections.whatItIs.title">
+  <T k="sections.whatItIs.body" />
+</Section>
+
+<Section id="why-it-matters" titleKey="sections.whyItMatters.title">
+  <T k="sections.whyItMatters.body" />
+</Section>
+
+<Section id="simple-example" titleKey="sections.simpleExample.title">
+  <T k="sections.simpleExample.body" />
+</Section>
+
+<Section id="common-confusions" titleKey="sections.commonConfusions.title">
+  <T k="sections.commonConfusions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflows",
+      },
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/concepts/harness",
+        labelKey: "links.harnessConcept",
+      },
+      {
+        href: "/docs/concepts/thinking",
+        labelKey: "links.thinkingConcept",
+      },
+    ]}
+  />
+
+  <DerivedRelatedDocs
+    registryId="concept.tool"
+    groups={[
+      "same-concept-type",
+      "shared-tags",
+      "used-by-models",
+      "curated-related"
+    ]}
+  />
+
+  <RelatedDocs registryId="concept.tool" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="concept.tool" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="concept.tool" />
+</Section>
