@@ -2,11 +2,11 @@ import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import type { UiMessages } from "./ui-messages.types";
 
 export type {
-  AiCollectionIndexMessages,
-  AiDomainMessages,
-  AiTagMessages,
   BrowseIndexMessages,
   DocsMessages,
+  FactoryCollectionIndexMessages,
+  FactoryDomainMessages,
+  FactoryTagMessages,
   HomeMessages,
   LanguageMessages,
   NavMessages,
@@ -17,10 +17,6 @@ export type {
   ShellMessages,
   TagLandingMessages,
   TagsIndexMessages,
-  TimelinePageMessages,
-  TopologyBrowseClassificationLabels,
-  TopologyBrowseMessages,
-  TopologyPrototypeMessages,
   UiMessages,
   UiMessagesCompatibility,
   UiMessagesCompatibilityKey,

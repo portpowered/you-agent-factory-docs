@@ -4,7 +4,7 @@ import { type StaticOptions, useDocsSearch } from "fumadocs-core/search/client";
 import type { DependencyList } from "react";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { DOCS_SEARCH_API_PATH } from "@/lib/search/docs-search-bootstrap-path";
-import { modelAtlasOramaSearchClient } from "./model-atlas-search-client";
+import { docsOramaSearchClient } from "./docs-orama-search-client";
 import type { SearchResultMetaRecord } from "./search-result-meta-client";
 
 export { DOCS_SEARCH_API_PATH } from "@/lib/search/docs-search-bootstrap-path";
@@ -49,37 +49,34 @@ export function buildDocsSearchStaticOptions(
   };
 }
 
-export type ModelAtlasDocsSearchOptions = {
+export type DocsSearchOptions = {
   metaByUrl: SearchResultMetaRecord;
   locale?: SiteLocale;
   client?: StaticOptions;
   classification?: string | null;
 };
 
-export function createModelAtlasSearchClient({
+export function createDocsSearchClient({
   metaByUrl,
   locale = defaultLocale,
   client = buildDocsSearchStaticOptions(locale),
   classification,
-}: ModelAtlasDocsSearchOptions) {
-  return modelAtlasOramaSearchClient(client, metaByUrl, { classification });
+}: DocsSearchOptions) {
+  return docsOramaSearchClient(client, metaByUrl, { classification });
 }
 
-/** @deprecated Use createModelAtlasSearchClient */
-export const createDocsSearchClient = createModelAtlasSearchClient;
-
-export function useModelAtlasDocsSearch(
+export function useDocsSearchClient(
   {
     metaByUrl,
     locale = defaultLocale,
     client = buildDocsSearchStaticOptions(locale),
     classification,
-  }: ModelAtlasDocsSearchOptions,
+  }: DocsSearchOptions,
   deps?: DependencyList,
 ) {
   return useDocsSearch(
     {
-      client: createModelAtlasSearchClient({
+      client: createDocsSearchClient({
         metaByUrl,
         locale,
         client,

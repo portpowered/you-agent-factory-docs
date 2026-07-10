@@ -12,7 +12,7 @@ import {
   docsResourceCardLinkClassName,
 } from "./list-decoration";
 
-type BrowseAtlasPageProps = {
+type BrowseIndexPageProps = {
   messages: UiMessages;
   locale?: SiteLocale;
   sections: BrowseCollectionSection[];
@@ -99,11 +99,11 @@ export function BrowseCollectionSectionList({
   );
 }
 
-export function BrowseAtlasPage({
+export function BrowseIndexPage({
   messages,
   locale = defaultLocale,
   sections,
-}: BrowseAtlasPageProps) {
+}: BrowseIndexPageProps) {
   const {
     browseIndex,
     searchEntry,

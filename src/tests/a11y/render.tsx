@@ -2,7 +2,7 @@ import { type RenderOptions, render } from "@testing-library/react";
 import type { SharedProps } from "fumadocs-ui/contexts/search";
 import { RootProvider } from "fumadocs-ui/provider/next";
 import type { ComponentType, ReactElement, ReactNode } from "react";
-import { ModelAtlasSearchDialog } from "@/features/docs/search/SearchDialog";
+import { DocsSearchDialog } from "@/features/docs/search/SearchDialog";
 import { DOCS_SEARCH_API_PATH } from "@/features/docs/search/search-client";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
@@ -65,7 +65,7 @@ export function captureOriginalFetch(): void {
 
 type RenderWithProvidersOptions = Omit<RenderOptions, "wrapper"> & {
   context?: AppTestContext;
-  /** When set, replaces the default ModelAtlas search dialog (use `() => null` for nav-only tests). */
+  /** When set, replaces the default docs search dialog (use `() => null` for nav-only tests). */
   SearchDialog?: ComponentType<SharedProps>;
 };
 
@@ -80,7 +80,7 @@ export async function renderWithAppProviders(
       options.SearchDialog ??
       function SearchDialogWithMeta(props) {
         return (
-          <ModelAtlasSearchDialog
+          <DocsSearchDialog
             {...props}
             metaByUrl={context.metaByUrl}
             messages={context.messages}

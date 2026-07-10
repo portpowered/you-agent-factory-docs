@@ -39,20 +39,16 @@ the temporary legacy-id bridge.
   (`sortOrder -> slug -> id` for classifications; record-aware ordering for
   members), explicit empty-branch behavior, and
   `listLegacyClassificationBridges`.
-* `src/lib/content/topology-navigation.ts`
-  Current proving consumer for runtime-owned module-branch discovery on the
-  `/browse` topology surface; this consumer should derive candidate branches
-  from `buildClassificationSubtree(...)` roots rather than a hardcoded parent
-  classification id, and localized browse labels must cover every
-  runtime-discovered branch that can ship on `/vi/browse`, `/ja/browse`, and
-  other locale-prefixed surfaces.
+* `/browse` Atlas topology navigation (`topology-navigation.ts`, `TopologyBrowsePage`)
+  was deleted by `delete-ai-content-infrastructure` story 005. Classification
+  subtree helpers remain available via registry runtime for search/related-docs;
+  do not reintroduce module-seed browse surfaces.
 * `src/lib/search/build-documents.ts`
   Search-term expansion that keeps canonical and legacy classification terms
   discoverable during migration.
 * `src/lib/content/ontology-classification-selectors.ts`
-  Shared canonical-plus-compatibility selector contract for customer-visible
-  ontology consumers. Use this when topology and timeline must accept the same
-  supported selector set across static preload and client hydration.
+  Deleted with Atlas topology browse/timeline selector consumers. Prefer
+  registry runtime id/slug resolution for remaining classification lookups.
 * `src/lib/content/sidebar-grouping.ts`
   Docs-shell sidebar subgroup resolver. Module, training, and system subgroup
   placement should derive from canonical classification membership first, with

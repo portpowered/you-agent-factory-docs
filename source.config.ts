@@ -14,7 +14,7 @@ export const docs = defineDocs({
   dir: "src/content/docs",
   docs: {
     // Glossary and module MDX are catch-all routes only (no per-slug App Router stubs).
-    // Local message-key pages render via next-mdx-remote + ModulePageProviders in [[...slug]]/page.tsx.
+    // Local message-key pages render via next-mdx-remote + DocsPageProviders in [[...slug]]/page.tsx.
     files: ["**/*.{md,mdx}"],
     schema: docsPageSchema,
   },

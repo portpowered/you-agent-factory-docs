@@ -6,7 +6,7 @@ import { PageMessagesProvider } from "@/features/docs/components/page-messages-c
 import type { PageAssetConfig, PageMessages } from "@/lib/content/schemas";
 import type { SiteLocale } from "@/lib/i18n/locale-routing";
 
-export function ModulePageProviders({
+export function DocsPageProviders({
   messages,
   assets,
   locale,

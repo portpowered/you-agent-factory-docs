@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, test } from "bun:test";
 import {
   buildDocsSearchStaticOptions,
-  createModelAtlasSearchClient,
+  createDocsSearchClient,
   DOCS_SEARCH_API_PATH,
   docsSearchStaticOptions,
   readBakedDocsSearchStaticFrom,
@@ -68,7 +68,7 @@ function withDocsSearchBootstrapFromEnv<T>(
   }
 }
 
-describe("createModelAtlasSearchClient", () => {
+describe("createDocsSearchClient", () => {
   let metaByUrl: ReturnType<typeof searchResultMetaMapToRecord>;
 
   beforeAll(async () => {
@@ -168,7 +168,7 @@ describe("createModelAtlasSearchClient", () => {
         return new Response(JSON.stringify(payload), { status: 200 });
       }) as typeof fetch,
       async () => {
-        const client = createModelAtlasSearchClient({
+        const client = createDocsSearchClient({
           metaByUrl,
           client: { from: bootstrapFrom },
         });
@@ -186,7 +186,7 @@ describe("createModelAtlasSearchClient", () => {
     );
     globalThis.fetch = createDocsSearchRouteFetch();
 
-    const client = createModelAtlasSearchClient({
+    const client = createDocsSearchClient({
       metaByUrl,
       locale: "ja",
     });
@@ -212,7 +212,7 @@ describe("createModelAtlasSearchClient", () => {
         return createDocsSearchRouteFetch()(input);
       }) as unknown as typeof fetch,
       async () => {
-        const client = createModelAtlasSearchClient({
+        const client = createDocsSearchClient({
           metaByUrl,
           client: { from: TEST_DOCS_SEARCH_URL },
         });
@@ -227,7 +227,7 @@ describe("createModelAtlasSearchClient", () => {
 
   test("returns at most one hit per canonical page URL for attention query", async () => {
     await withGlobalFetchOverride(createDocsSearchRouteFetch(), async () => {
-      const client = createModelAtlasSearchClient({
+      const client = createDocsSearchClient({
         metaByUrl,
         client: { from: TEST_DOCS_SEARCH_URL },
       });
@@ -241,7 +241,7 @@ describe("createModelAtlasSearchClient", () => {
 
   test("uses a classification scope when the static client searches without q text", async () => {
     await withGlobalFetchOverride(createDocsSearchRouteFetch(), async () => {
-      const client = createModelAtlasSearchClient({
+      const client = createDocsSearchClient({
         metaByUrl,
         client: { from: TEST_DOCS_SEARCH_URL },
         classification: "activation",
@@ -255,7 +255,7 @@ describe("createModelAtlasSearchClient", () => {
 
   test("resolves ancestor classifications as scopes for descendant searches", async () => {
     await withGlobalFetchOverride(createDocsSearchRouteFetch(), async () => {
-      const client = createModelAtlasSearchClient({
+      const client = createDocsSearchClient({
         metaByUrl,
         client: { from: TEST_DOCS_SEARCH_URL },
         classification: "neural-network-components",
@@ -270,7 +270,7 @@ describe("createModelAtlasSearchClient", () => {
 
   test("returns at most one hit per canonical page URL for KV cache query", async () => {
     await withGlobalFetchOverride(createDocsSearchRouteFetch(), async () => {
-      const client = createModelAtlasSearchClient({
+      const client = createDocsSearchClient({
         metaByUrl,
         client: { from: TEST_DOCS_SEARCH_URL },
       });
@@ -284,7 +284,7 @@ describe("createModelAtlasSearchClient", () => {
 
   test("ranks token glossary first for Token query", async () => {
     await withGlobalFetchOverride(createDocsSearchRouteFetch(), async () => {
-      const client = createModelAtlasSearchClient({
+      const client = createDocsSearchClient({
         metaByUrl,
         client: { from: TEST_DOCS_SEARCH_URL },
       });
@@ -300,7 +300,7 @@ describe("createModelAtlasSearchClient", () => {
     "tokenizer",
   ] as const)("includes token glossary for %s query", async (query) => {
     await withGlobalFetchOverride(createDocsSearchRouteFetch(), async () => {
-      const client = createModelAtlasSearchClient({
+      const client = createDocsSearchClient({
         metaByUrl,
         client: { from: TEST_DOCS_SEARCH_URL },
       });
@@ -315,7 +315,7 @@ describe("createModelAtlasSearchClient", () => {
     CROSS_SURFACE_PARITY_QUERIES,
   )("matches server search results for representative %s queries", async (query) => {
     await withGlobalFetchOverride(createDocsSearchRouteFetch(), async () => {
-      const client = createModelAtlasSearchClient({
+      const client = createDocsSearchClient({
         metaByUrl,
         client: { from: TEST_DOCS_SEARCH_URL },
       });

@@ -5,7 +5,7 @@ import {
   DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
 import { renderShellSectionCollectionIndexPage } from "@/app/(site)/site-renderers";
-import { BrowseCollectionSectionList } from "@/features/docs/components/BrowseAtlasPage";
+import { BrowseCollectionSectionList } from "@/features/docs/components/BrowseIndexPage";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { buildBrowseCollectionSections } from "@/lib/docs/browse-collection-sections";
 import { defaultLocale } from "@/lib/i18n/locale-routing";

@@ -5,7 +5,7 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 
 describe("statistical-process-control-graphs concept page", () => {
@@ -52,13 +52,13 @@ describe("statistical-process-control-graphs concept page", () => {
 
     render(
       <main>
-        <ModulePageProviders
+        <DocsPageProviders
           messages={loadedPage.messages}
           assets={loadedPage.assets}
         >
           <h1>{loadedPage.messages.title}</h1>
           {loadedPage.content}
-        </ModulePageProviders>
+        </DocsPageProviders>
       </main>,
     );
 
@@ -182,13 +182,13 @@ describe("statistical-process-control-graphs concept page", () => {
 
     render(
       <main>
-        <ModulePageProviders
+        <DocsPageProviders
           messages={loadedPage.messages}
           assets={loadedPage.assets}
         >
           <h1>{loadedPage.messages.title}</h1>
           {loadedPage.content}
-        </ModulePageProviders>
+        </DocsPageProviders>
       </main>,
     );
 

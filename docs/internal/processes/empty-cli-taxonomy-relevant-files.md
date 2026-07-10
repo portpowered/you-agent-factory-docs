@@ -93,7 +93,7 @@ Do not author customer page bundles under content roots in this lane.
 | `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks for empty vs authored CLI roots; keep aligned when first pages land, but do not treat excluded `src/lib/docs/` suites as required CI for page-only lanes — first authored techniques pages update allowlisted `section-indexes.test.tsx` instead |
 | `src/lib/content/published-docs-registry-contract.ts` | Includes `documentation` / `guides` / `techniques` in `PUBLISHED_DOCS_SECTIONS` with matching `*PageHref` routing |
 | `src/lib/content/content-hrefs.ts` | `documentationPageHref` / `guidePageHref` / `techniquePageHref` for `/docs/<section>/<slug>` |
-| `src/lib/content/local-docs-page.ts` | `LOCAL_DOCS_SECTIONS` plus section loaders so `ModulePageProviders` wraps colocated MDX |
+| `src/lib/content/local-docs-page.ts` | `LOCAL_DOCS_SECTIONS` plus section loaders so `DocsPageProviders` wraps colocated MDX |
 | `src/lib/content/technique-page.ts` / `technique-page-load.ts` | First-techniques-collection local MDX loader path (mirror guide loaders) |
 | `src/lib/factory/canonical-page-surface-audit.ts` | `registryDirectoryByKind` includes `documentation` (and guide/technique) for routine page-surface audits |
 

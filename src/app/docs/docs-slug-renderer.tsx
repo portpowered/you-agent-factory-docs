@@ -10,7 +10,7 @@ import type { ComponentProps, ComponentType } from "react";
 import { DocsAutoLinkedDescription } from "@/features/docs/components/DocsAutoLinkedDescription";
 import { DocsOpeningSummary } from "@/features/docs/components/DocsOpeningSummary";
 import { DocsPageBreadcrumb } from "@/features/docs/components/DocsPageBreadcrumb";
-import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import {
   loadLocalDocsPage,
   parseLocalDocsPageRef,
@@ -82,7 +82,7 @@ async function renderLocalDocsPage(
 
   return (
     <DocsPage breadcrumb={{ enabled: false }} toc={loadedPage.toc}>
-      <ModulePageProviders
+      <DocsPageProviders
         messages={loadedPage.messages}
         assets={loadedPage.assets}
         locale={locale}
@@ -105,7 +105,7 @@ async function renderLocalDocsPage(
             {loadedPage.content}
           </article>
         </DocsBody>
-      </ModulePageProviders>
+      </DocsPageProviders>
     </DocsPage>
   );
 }

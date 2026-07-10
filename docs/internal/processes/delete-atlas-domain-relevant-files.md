@@ -48,10 +48,10 @@ collections.
 | --- | --- |
 | `src/features/topology/` | Deleted Cytoscape topology explorer package |
 | `src/app/(site)/topology/` / `src/app/[locale]/topology/` | Deleted live `/topology` product route modules |
-| `src/app/(site)/site-renderers.tsx` | No longer renders `TopologyPrototype`; browse graph-map still uses `TopologyBrowsePage` |
+| `src/app/(site)/site-renderers.tsx` | No longer renders `TopologyPrototype` or Atlas topology browse; `/browse` uses factory `BrowseIndexPage` only |
 | `src/features/ai/topology.ts` / `src/features/ai/server.ts` | Stop re-exporting deleted topology explorers |
 | `src/lib/site/you-agent-factory-site-config.ts` | CLI site config after `rewrite-site-config-contracts`; topology is not in `primaryNav` |
-| `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Keep browse classification helpers; they are not the `/topology` explorer product |
+| `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Deleted by `delete-ai-content-infrastructure` story 005; `/browse` is factory collection index only |
 
 ## Story 004: remove Model Atlas AI search enrichment
 

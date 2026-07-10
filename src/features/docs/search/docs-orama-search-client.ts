@@ -21,7 +21,7 @@ const DEFAULT_STATIC_SEARCH_OPTIONS = {
   },
 } as const;
 
-export function modelAtlasOramaSearchClient(
+export function docsOramaSearchClient(
   options: StaticOptions,
   metaByUrl: Record<string, SearchResultMetaForCollapse>,
   searchOptions: { classification?: string | null } = {},

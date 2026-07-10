@@ -14,7 +14,7 @@ Published local page bundles must include Fumadocs `title` (and usually
 the page is no longer excluded as draft. Local-message documentation pages also
 need `documentation` in `LOCAL_DOCS_SECTIONS` plus
 `documentation-page.ts` / `documentation-page-load.ts` so
-`ModulePageProviders` wraps the compiled MDX (same pattern as concepts/systems).
+`DocsPageProviders` wraps the compiled MDX (same pattern as concepts/systems).
 
 ## Derived page directory contract
 
@@ -68,7 +68,7 @@ Before the first authored page under a rewrite-era CLI collection can pass
    colocated loader (for example `documentation-page.ts` /
    `documentation-page-load.ts`, or `technique-page.ts` /
    `technique-page-load.ts` for the first techniques page). Without that,
-   Fumadocs renders the MDX body without `ModulePageProviders` and
+   Fumadocs renders the MDX body without `DocsPageProviders` and
    `Section` / `T` throw `usePageMessages must be used within PageMessagesProvider`.
 3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
    even when reader copy is message-backed — mirror the glossary template.
@@ -359,7 +359,7 @@ shared wiring is still missing. Publishing may trip
 
 `techniques` already has `PUBLISHED_DOCS_SECTIONS` / `techniquePageHref` and
 `registryDirectoryByKind.technique`, but still needs the local-docs loader path
-before `/docs/techniques/<slug>` can render with `ModulePageProviders`:
+before `/docs/techniques/<slug>` can render with `DocsPageProviders`:
 
 - add `src/lib/content/technique-page.ts` + `technique-page-load.ts`
 - include `techniques` in `LOCAL_DOCS_SECTIONS` / `parseLocalDocsPageRef` /
@@ -427,7 +427,7 @@ and next-step links) over inventory-only “slug exists on disk” assertions.
 For documentation pages with copyable commands, mirror
 `src/lib/content/what-is-you-agent-factory-page.test.tsx` /
 `src/lib/content/install-page.test.tsx`: load via `loadLocalDocsPage`, render
-with `ModulePageProviders`, and assert visible command text plus next-step
+with `DocsPageProviders`, and assert visible command text plus next-step
 hrefs. Do not treat `shipped-localized-docs.server.test.ts` route-list updates
 as sufficient page coverage.
 
@@ -552,7 +552,7 @@ When publishing the first authored page under a rewrite-era CLI section
 2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
    `src/lib/content/local-docs-page.ts` include the section, with a matching
    `*-page.ts` / `*-page-load.ts` pair (same shape as `guide-page*`) so
-   message-backed MDX resolves through `ModulePageProviders`.
+   message-backed MDX resolves through `DocsPageProviders`.
 3. `bun run audit:canonical-page-surface -- --page-dir src/content/docs/<section>/<slug> --exception-reason "..."`
    reports `declare-exception` for that first-page wiring (not
    `redirect-to-throughput-prd`). The audit maps CLI registry kinds
@@ -578,7 +578,7 @@ Fumadocs `pageSchema` still requires frontmatter `title` (and accepts optional
 `title: ""` and `description: ""` on that page's `page.mdx` frontmatter (same
 pattern as published glossary pages) so the Fumadocs collection validates, while
 the shell continues to render `messages.title` / `messages.description` via
-`ModulePageProviders`. Do not put the real reader title only in Fumadocs
+`DocsPageProviders`. Do not put the real reader title only in Fumadocs
 frontmatter, and do not edit shared `docs/templates/{concept,documentation,guide,technique}.mdx`
 just to add those empty keys — that pulls a page lane out of the documented
 first-CLI-section `declare-exception` allowlist into `redirect-to-throughput-prd`.
