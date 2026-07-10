@@ -90,13 +90,17 @@ and the shared related-registry-docs component/blog wrapper.
 * `bun test src/features/blog/components/BlogRelatedDocs.test.tsx`
 * `bun test src/features/blog/components/blog-related-docs-blog-integration.test.tsx`
 * `bun test src/tests/content/purge-legacy-related-links.test.tsx`
+* `bun test src/lib/content/purge-legacy-public-indexes.test.ts`
 * `bun test src/content/docs/concepts/bottlenecks/bottlenecks-page.test.tsx src/content/docs/concepts/task-queue/task-queue-page.test.tsx src/tests/content/home-page.test.tsx`
 * `bun run typecheck`
 * `bun run lint`
-* Blog browser check: build then curl `/blog` and `/blog/bottlenecks` and assert
-  HTML has no `/blog/evolution-of-diffusion`,
+* `bun run validate-data` and `bun run linkcheck` after the purge
+* Blog/tags/search browser check: build then curl `/blog`, `/tags`, `/search`,
+  and `/blog/bottlenecks` and assert HTML has no
+  `/blog/evolution-of-diffusion`,
   `/blog/llms-no-longer-wholly-reliant-on-the-internet`,
-  `/blog/roofline-throughput-explorer`, or `/tags/model-family` hrefs.
+  `/blog/roofline-throughput-explorer`, `/tags/model-family`,
+  `/tags/inference`, or `/tags/alignment` hrefs.
 * Concept/home chrome check: render or curl a concept page and `/` and assert
   HTML has `Related To` (or factory browse links) and does not contain
   `Related Concepts And Modules` or `Browse the atlas`.

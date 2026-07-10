@@ -75,6 +75,11 @@ Use these files when extending the default English blog surface at `/blog` and
   `src/tests/content/purge-legacy-related-links.test.tsx` that blog lists/posts
   and registry related-id graphs do not advertise deleted blog or Atlas-only tag
   destinations.
+* After the purge is complete, prove public indexes with
+  `src/lib/content/purge-legacy-public-indexes.test.ts` (search documents,
+  meta map, tag index, blog/tags/search HTML) plus `bun run validate-data`,
+  `bun run linkcheck`, and a served-page curl of `/blog`, `/tags`, and
+  `/search` asserting zero deleted blog/tag hrefs.
 
 ## Patterns
 

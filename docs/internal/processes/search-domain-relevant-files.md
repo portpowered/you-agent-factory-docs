@@ -26,6 +26,12 @@ Use these files when changing search document construction, Orama indexing, or
 
 ## Parity and regression tests
 
+* `src/lib/content/purge-legacy-public-indexes.test.ts`
+  Story proof that public search documents, advanced indexes, search-result
+  meta, tag registry/index, and blog/tags/search HTML omit deleted Atlas blog
+  URLs (`evolution-of-diffusion`, `llms-no-longer-wholly-reliant-on-the-internet`,
+  `roofline-throughput-explorer`) and Atlas-only tags (`model-family`,
+  `inference`, `alignment`) while keeping factory blog posts and tags.
 * `src/tests/search/search-behavior-parity.test.ts`
   Focused baseline for attention, GQA alias, tag, and classification-scoped
   search. Extend this file when adding new parity assertions for enrichment.
