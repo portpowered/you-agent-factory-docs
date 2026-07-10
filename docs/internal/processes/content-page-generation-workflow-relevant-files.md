@@ -245,7 +245,10 @@ list the page title / summary / href instead of empty-state copy:
 Do not treat that index-expectation update as a redirect-to-throughput lane.
 Non-default locales stay on the empty concepts index until colocated
 `messages/<locale>.json` files exist for the page (shipped-localized-docs is
-derived from those files).
+derived from those files). When those locale stubs ship, update the localized
+concepts section-index expectations the same way (list title / summary / href)
+and regenerate/commit `shipped-localized-docs.generated.ts` plus the matching
+`shipped-localized-docs.server.test.ts` committed-tree assertion.
 
 Prefer behavioral coverage for the shipped page (section-index listing title /
 summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy

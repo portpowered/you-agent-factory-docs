@@ -239,7 +239,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese concepts index with localized title and empty-state copy until locale messages ship", async () => {
+  it("renders the japanese concepts index with localized title and the tokens page entry", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedConceptsIndexPage({
@@ -247,13 +247,15 @@ describe("localized CLI section index page render", () => {
       }),
     );
 
-    // Default-locale concepts lists Tokens; non-en locales stay empty until
-    // colocated ja/zh-CN/vi messages ship for the page bundle.
     expect(html).toContain(messages.conceptsIndex.title);
-    expect(html).toContain(messages.conceptsIndex.emptyTitle);
-    expect(html).toContain(messages.conceptsIndex.emptyDescription);
-    expect(html).toContain('href="/ja"');
-    expect(html).not.toContain("/ja/docs/concepts/tokens");
+    expect(html).toContain(messages.conceptsIndex.description);
+    expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
+    expect(html).toContain("Tokens");
+    expect(html).toContain("/ja/docs/concepts/tokens");
+    expect(html).toContain(
+      "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
+    );
+    expect(html).not.toContain(messages.conceptsIndex.emptyTitle);
     expect(messages.conceptsIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
