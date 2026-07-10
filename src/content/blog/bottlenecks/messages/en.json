@@ -1,0 +1,12 @@
+{
+  "title": "Factory bottlenecks: where long-running agent work actually stalls",
+  "description": "A listicle comparison of common you-agent-factory limiting stages—queues, workers, harness latency, shared resources, and token pressure—and how to read them against the bottlenecks concept.",
+  "contextSentence": "When a long-running factory run slows down, the model is not always the problem. One scarce stage can cap end-to-end throughput while every other stage still has spare capacity.",
+  "takeaway": "Name the stage that is saturated while neighbors still have spare capacity, compare the common limiting patterns side by side, then use the bottlenecks concept page for the stable definition when you need a glossary anchor rather than another example.",
+  "callouts": {
+    "stableDefinition": {
+      "title": "Stable definition",
+      "body": "The bottlenecks concept page names the limiting stage in isolation. Use it when you need the glossary definition; keep this post for side-by-side patterns and reading paths."
+    }
+  }
+}

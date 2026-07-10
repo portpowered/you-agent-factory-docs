@@ -22,6 +22,34 @@ import {
 } from "@/lib/i18n/locale-routing";
 import { buildLocalDocsTableOfContents } from "@/lib/navigation/local-docs-toc";
 
+/**
+ * Merge post-owned MDX components for a blog slug.
+ *
+ * Blog posts compile through `compileMDX` with a fixed component map, so
+ * relative imports in `page.mdx` do not resolve. Use a static
+ * `import("@/content/blog/<slug>/page-mdx-components")` literal (bundlers
+ * cannot resolve expression-based imports at build time). Keep post charts
+ * and tables out of the shared `blog-mdx-components.tsx` registry.
+ */
+async function loadBlogPostMdxComponents(slug: string): Promise<MDXComponents> {
+  switch (slug) {
+    case "bottlenecks": {
+      const mod = await import(
+        "@/content/blog/bottlenecks/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
+    case "comparing-agent-factories": {
+      const mod = await import(
+        "@/content/blog/comparing-agent-factories/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
+    default:
+      return {};
+  }
+}
+
 export type LoadedBlogPost = {
   slug: string;
   frontmatter: BlogPostFrontmatter;
@@ -63,28 +91,6 @@ export type LoadBlogPostFromDiskOptions = {
   blogRoot?: string;
 };
 
-/**
- * Merge page-owned MDX components for a blog slug.
- *
- * Local posts compile through `compileMDX` with a fixed component map, so
- * relative imports in `page.mdx` do not resolve. Use a static
- * `import("@/content/blog/<slug>/page-mdx-components")` literal (webpack
- * cannot resolve expression-based imports at build time). Keep post charts
- * and tables out of the shared `blog-mdx-components.tsx` registry.
- */
-async function loadBlogPageMdxComponents(slug: string): Promise<MDXComponents> {
-  switch (slug) {
-    case "comparing-agent-factories": {
-      const mod = await import(
-        "@/content/blog/comparing-agent-factories/page-mdx-components"
-      );
-      return mod.pageMdxComponents ?? {};
-    }
-    default:
-      return {};
-  }
-}
-
 export async function loadBlogPostFromDisk(
   slug: string,
   locale: SiteLocale = defaultLocale,
@@ -100,7 +106,7 @@ export async function loadBlogPostFromDisk(
   const assets = existsSync(assetsPath)
     ? parsePageAssetConfig(readJsonFile(assetsPath))
     : {};
-  const pageMdxComponents = await loadBlogPageMdxComponents(slug);
+  const pageMdxComponents = await loadBlogPostMdxComponents(slug);
 
   const { content, frontmatter } = await compileMDX<BlogPostFrontmatter>({
     source,
