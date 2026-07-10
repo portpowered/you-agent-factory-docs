@@ -228,10 +228,17 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
 - Deployment status expectations live in `docs/operations.md` under
   **Deployment status expectations**: pushes to `main` show **CI**/**verify**
   plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub
-  Pages**); pull requests show **verify** only and do not run production deploy
-  (unless preview policy later changes). A failed deploy on `main` leaves the
-  prior successful Pages deployment live until a later green **Deploy to GitHub
-  Pages**.
+  Pages**); pull requests show **verify** only and do not run production deploy.
+  A failed deploy on `main` leaves the prior successful Pages deployment live
+  until a later green **Deploy to GitHub Pages**.
+- PR preview policy lives in `docs/operations.md` under **PR preview policy**:
+  status is **Deferred** (not **Implemented**); owner is repository
+  maintainers; alternative for PR authors is the local Makefile contract
+  (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`)
+  plus optional `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` and
+  green **CI**/**verify** on the PR. Checklist mapping and governance status
+  language must stay **Deferred** with that owner/alternative until a preview
+  workflow ships.
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.

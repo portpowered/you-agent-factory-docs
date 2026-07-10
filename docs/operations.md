@@ -84,7 +84,8 @@ source **GitHub Actions**. Until that setting is saved, deploy workflow runs may
 fail at the Pages configuration step. After the first successful deploy, the
 public URL above should resolve.
 
-Preview deployments for pull requests remain **out of scope** for Phase 1.
+Preview deployments for pull requests are **Deferred** — see
+[PR preview policy](#pr-preview-policy).
 
 ## Phase 1 operational checklist mapping
 
@@ -98,6 +99,7 @@ with owner), or **N/A** (not applicable).
 | Merges to `main` are blocked unless CI passes | **Implemented** (CI workflow) + **GitHub settings assumed** | Repository maintainers | Configure **Settings → Branches** on GitHub per the [Branch protection](#branch-protection) section; rules cannot be enforced from git. |
 | Website deploys automatically via GitHub Actions (GitHub Pages or equivalent) | **Implemented** | Repository maintainers | `.github/workflows/deploy-pages.yml` runs on `main` pushes; confirm Pages source is **GitHub Actions** on first enablement. |
 | Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | Follow [Deployment status expectations](#deployment-status-expectations): pushes to `main` show **CI** (**verify**) plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**); PRs show **verify** only (no production deploy). |
+| Preview deployments for pull requests | **Deferred** | Repository maintainers | No PR preview workflow today. Follow [PR preview policy](#pr-preview-policy) for owner, alternative verification, and when this row may flip to **Implemented**. |
 
 Related operational rows not closed in this section alone:
 
@@ -105,15 +107,16 @@ Related operational rows not closed in this section alone:
 | --- | --- | --- |
 | Website has CI checks on every pull request and merge | **Implemented** | `.github/workflows/ci.yml` runs on `pull_request` and `push`. |
 | The build has deterministic install behavior through a lockfile | **Implemented** | `bun.lock` + `make setup` (`bun install --frozen-lockfile`) in CI and deploy-pages. |
-| Preview deployments for pull requests | **Deferred** | Out of scope for Phase 1; production deploy is active on `main` only. |
 | Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), [Commit-SHA traceability](#commit-sha-traceability), [read-only post-deploy checks](#read-only-post-deploy-checks), and [Incident diagnosis](#incident-diagnosis) using the live deploy check and published site. |
 
 ### What contributors should expect today
 
 - **Pull requests** run **CI** / **verify** only
   (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`).
-  They do **not** run production deploy. Reproduce a failing stage locally with
-  the same `make <target>`. See [Deployment status expectations](#deployment-status-expectations).
+  They do **not** run production deploy and do **not** publish a PR preview URL.
+  Reproduce a failing stage locally with the same `make <target>`. See
+  [Deployment status expectations](#deployment-status-expectations) and
+  [PR preview policy](#pr-preview-policy).
 - **Pushes to `main`** show **CI** / **verify** plus **Deploy GitHub Pages**
   (**Canonical validation** / **Deploy to GitHub Pages**), which validates with
   the same Makefile targets (through `budget`), uploads `out/`, and publishes to
@@ -124,6 +127,57 @@ Related operational rows not closed in this section alone:
 - Atlas / Phase 1 export verifiers (`make build-export`, `make verify-atlas-*`)
   were deleted with `rewrite-delete-atlas-domain` and must not be re-chained into
   CI or deploy-pages.
+
+## PR preview policy
+
+**Decision: Deferred.** Pull requests do **not** get a hosted preview URL in
+Phase 1. There is no preview workflow under `.github/workflows/` today
+(`.github/workflows/ci.yml` runs **verify** on PRs; `.github/workflows/deploy-pages.yml`
+publishes production only on `push` to `main`).
+
+| Field | Value |
+| --- | --- |
+| Status | **Deferred** (not **Implemented**) |
+| Owner | Repository maintainers |
+| Why deferred | Production publish is `main`-only via **Deploy GitHub Pages**; adding PR previews needs a separate hosting/auth path and is out of Phase 1 scope. |
+| Checklist alignment | The architectural checklist row “Preview deployments are generated for pull requests” maps to **Deferred** in [Phase 1 operational checklist mapping](#phase-1-operational-checklist-mapping) until maintainers ship a preview workflow and flip that row to **Implemented**. |
+
+### Alternative verification for PR authors
+
+Until previews exist, authors verify a change with the same contract CI runs,
+plus a local project-site export when base-path or static-export behavior
+matters:
+
+```sh
+make setup
+make check
+make test
+make build
+make budget
+make component-coverage
+```
+
+Optional project-site export smoke (matches deploy-pages base path; does **not**
+publish):
+
+```sh
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+```
+
+Then confirm **CI** / **verify** is green on the pull request (see
+[Deployment status expectations](#deployment-status-expectations)). Do not expect
+a preview link in the PR conversation, and do not treat a green **verify** as a
+live Pages publish.
+
+### When this policy may change
+
+If maintainers later add a PR preview path, update this section to
+**Implemented**, name the workflow/job and preview URL shape, flip the checklist
+mapping row to **Implemented**, and keep
+[Deployment status expectations](#deployment-status-expectations) aligned so PR
+checks document the new preview job. Until then, production remains the only
+hosted surface (`https://portpowered.github.io/you-agent-factory-docs` after a
+green **Deploy to GitHub Pages** on `main`).
 
 ## Branch protection
 
@@ -184,7 +238,7 @@ through `make budget`, plus `make guard-pages-deployed-artifact`, then upload
 
 | Event | Workflow trigger | Expected checks |
 | --- | --- | --- |
-| Pull request opened or updated | `on: pull_request` in `ci.yml` | **CI** / **verify** against the PR head. **No** **Deploy GitHub Pages** run (production deploy does not run on PRs unless [preview policy](#phase-1-operational-checklist-mapping) later changes). |
+| Pull request opened or updated | `on: pull_request` in `ci.yml` | **CI** / **verify** against the PR head. **No** **Deploy GitHub Pages** run and **no** hosted PR preview (see [PR preview policy](#pr-preview-policy)). |
 | Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **CI** / **verify** plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**) against the pushed commit. |
 | Push to other branches without a PR | `on: push` in `ci.yml` | **CI** / **verify** only; **Deploy GitHub Pages** does not run. |
 
@@ -200,8 +254,8 @@ through `make budget`, plus `make guard-pages-deployed-artifact`, then upload
   see which `make <target>` broke, then reproduce it locally.
 - Pull requests do **not** run production deploy. No **Canonical validation** or
   **Deploy to GitHub Pages** check appears on PRs today. Production publish runs
-  only after merge to `main` (preview deploys remain deferred — see the
-  checklist mapping above — unless that policy later changes).
+  only after merge to `main`. Hosted PR previews are **Deferred** — see
+  [PR preview policy](#pr-preview-policy).
 
 **On pushes to `main`**
 
