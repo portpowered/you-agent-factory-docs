@@ -23,6 +23,10 @@
       "title": "Open The Operator Dashboard",
       "body": "When the service was started via you or you run without quiet mode, open the local operator dashboard as the browser surface for the same live metrics. The dashboard shows live session selection, work position, and factory activity alongside CLI and API status reads."
     },
+    "metricsChart": {
+      "title": "Watch Metrics Over Time",
+      "body": "A one-shot status read is a snapshot. Time-ordered watching means reading the same factory measures across successive ticks so trends become visible. The teaching chart below plots work-token lifecycle buckets — processing, terminal, and failed — over successive status ticks, the same categories totals operators watch while a Factory Session runs."
+    },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
       "body": "This page is a factory metrics exposure reference for you-agent-factory. It is not a sync of packaged CLI docs, not logs, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."

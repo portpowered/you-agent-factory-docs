@@ -1,13 +1,13 @@
 /**
  * Page-owned render proof for documentation/metrics.
  * Covers documentation shell, factory-ops metrics identity, the
- * what-it-covers / key-concepts live-run narrative, and status/dashboard
- * copyable guidance. Chart proofs land in a later story. Colocated under
- * the page bundle so audit:canonical-page-surface stays within-budget for
- * this ordinary documentation lane.
+ * what-it-covers / key-concepts live-run narrative, status/dashboard
+ * copyable guidance, and the factory-ui metrics teaching chart.
+ * Colocated under the page bundle so audit:canonical-page-surface stays
+ * within-budget for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -49,6 +49,9 @@ describe("metrics documentation page", () => {
     );
     const operatorDashboard = String(
       loadedPage.messages.sections?.operatorDashboard?.body ?? "",
+    );
+    const metricsChart = String(
+      loadedPage.messages.sections?.metricsChart?.body ?? "",
     );
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
@@ -94,6 +97,9 @@ describe("metrics documentation page", () => {
     expect(operatorDashboard).toMatch(/work position/i);
     expect(operatorDashboard).toMatch(/factory activity/i);
 
+    expect(metricsChart).toMatch(/time-ordered|successive ticks/i);
+    expect(metricsChart).toMatch(/processing|terminal|failed|categories/i);
+
     expect(limits).toMatch(/factory metrics exposure reference/i);
     expect(limits).toMatch(/not Model Atlas/i);
     // Scope copy may say "not Model Atlas"; reject page-meta / shortcut prose only.
@@ -102,6 +108,7 @@ describe("metrics documentation page", () => {
     expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
     expect(statusRead).not.toMatch(/on this page|reader.?shortcut/i);
     expect(operatorDashboard).not.toMatch(/on this page|reader.?shortcut/i);
+    expect(metricsChart).not.toMatch(/on this page|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|reader.?shortcut/i);
 
     render(
@@ -125,6 +132,9 @@ describe("metrics documentation page", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Open The Operator Dashboard" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Watch Metrics Over Time" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -172,6 +182,21 @@ describe("metrics documentation page", () => {
     expect(dashboardSection?.textContent).toMatch(/session selection/i);
     expect(dashboardSection?.textContent).toMatch(/work position/i);
     expect(dashboardSection?.textContent).toMatch(/factory activity/i);
+
+    const metricsChartSection = document.getElementById("metrics-chart");
+    expect(metricsChartSection?.textContent).toMatch(
+      /Work-token lifecycle buckets over successive status ticks/,
+    );
+    expect(metricsChartSection?.textContent).toMatch(/X axis: Status tick/i);
+    expect(metricsChartSection?.textContent).toMatch(/Y axis: Token count/i);
+    const chart = screen.getByTestId("metrics-teaching-chart");
+    expect(chart).toBeTruthy();
+    const legend = chart.querySelector("[data-metrics-teaching-chart-legend]");
+    expect(legend).toBeTruthy();
+    const legendQueries = within(legend as HTMLElement);
+    expect(legendQueries.getByText("Processing")).toBeTruthy();
+    expect(legendQueries.getByText("Terminal")).toBeTruthy();
+    expect(legendQueries.getByText("Failed")).toBeTruthy();
 
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
   });

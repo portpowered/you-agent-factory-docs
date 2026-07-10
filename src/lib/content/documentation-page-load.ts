@@ -60,6 +60,12 @@ async function loadDocumentationPageMdxComponents(
       );
       return mod.pageMdxComponents ?? {};
     }
+    case "metrics": {
+      const mod = await import(
+        "@/content/docs/documentation/metrics/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
     default:
       return {};
   }
