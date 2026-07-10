@@ -128,18 +128,14 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       cluster: "search",
       status: "approved-compatibility-bridge",
       owner: "search/discovery",
-      fields: ["moduleType", "conceptType", "variantGroup"],
-      evidence: [
-        "deriveModuleTypeFromTopology(topology) ?? registryRecord.moduleType",
-        "legacyConceptType: registryRecord.conceptType,",
-        "legacyVariantGroup: registryRecord.variantGroup,",
-      ],
+      fields: ["conceptType"],
+      evidence: ["legacyConceptType: registryRecord.conceptType,"],
       rationale:
-        "Search now routes legacy module, concept, and variant facets through an explicit compatibility adapter while downstream filters still depend on those fields.",
+        "Search still routes legacy concept-type facets through an explicit compatibility adapter while downstream filters depend on that field.",
     },
     {
       id: "search-document-ontology-first-facet-builder",
-      path: "src/lib/search/build-documents.ts",
+      path: "src/lib/search/enrich-search-document.ts",
       cluster: "search",
       status: "migrated-ontology-first-consumer",
       owner: "search/discovery",
@@ -148,7 +144,7 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
         "resolveLegacySearchTaxonomyCompatibility(registryRecord, topology)",
       ],
       rationale:
-        "Search facet building now derives module taxonomy from ontology topology first and delegates any remaining legacy facet emission to the named compatibility adapter.",
+        "Search facet enrichment now derives concept taxonomy from ontology topology first and delegates any remaining legacy facet emission to the named compatibility adapter.",
     },
     {
       id: "search-document-public-facet-shape",
@@ -160,40 +156,6 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       evidence: ["moduleType?: string;"],
       rationale:
         "The indexed search-document facet shape still exposes moduleType while downstream filters remain compatibility-bound.",
-    },
-    {
-      id: "sidebar-group-derivation-module-training-system",
-      path: "src/lib/content/sidebar-grouping.ts",
-      cluster: "sidebar-topology",
-      status: "migrated-ontology-first-consumer",
-      owner: "navigation/docs-shell",
-      fields: ["systemType", "sidebarGrouping"],
-      evidence: [
-        'membership.has("classification.module.attention")',
-        'membership.has("classification.training.alignment")',
-        'membership.has("classification.system.routing")',
-        "systemType?: string;",
-        'if (record.systemType === "memory") {',
-        'if (record.systemType === "routing") {',
-        'if (record.systemType === "serving") {',
-        "record.sidebarGrouping?.modules",
-        "record.sidebarGrouping?.training",
-        "record.sidebarGrouping?.systems",
-      ],
-      fieldReferenceScopeSnippets: [
-        'membership.has("classification.module.attention")',
-        'membership.has("classification.training.alignment")',
-        'membership.has("classification.system.routing")',
-        "systemType?: string;",
-        'if (record.systemType === "memory") {',
-        'if (record.systemType === "routing") {',
-        'if (record.systemType === "serving") {',
-        "record.sidebarGrouping?.modules",
-        "record.sidebarGrouping?.training",
-        "record.sidebarGrouping?.systems",
-      ],
-      rationale:
-        "Module and training sidebar subgroup placement now resolves through canonical classification membership first, while system sidebar placement still carries an explicit compatibility fallback for legacy systemType records alongside editorial sidebarGrouping overrides.",
     },
     {
       id: "sidebar-group-derivation-concept-glossary",
@@ -227,16 +189,15 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       cluster: "related-doc-derivation",
       status: "approved-compatibility-bridge",
       owner: "docs/discovery",
-      fields: ["conceptType", "variantGroup"],
+      fields: ["conceptType"],
       evidence: [
         "const shouldPreferOntologyPeerGroups = hasOntologyPeerData(source);",
         "function deriveRequestedCompatibilityGroups(",
         "function deriveCompatibilityRelatedDocGroups(",
         "if (!shouldRouteLegacyAliasesToCompatibility) {",
-        "candidate.variantGroup === source.variantGroup",
       ],
       rationale:
-        "Related-doc derivation is now ontology-first by default; legacy peer aliases expand to ontology groups when ontology data exists, and the remaining conceptType and variantGroup reads are confined to explicitly named compatibility-only peer groups for records that still lack usable ontology peers.",
+        "Related-doc derivation is now ontology-first by default; legacy peer aliases expand to ontology groups when ontology data exists, and the remaining conceptType reads are confined to explicitly named compatibility-only peer groups for records that still lack usable ontology peers.",
     },
     {
       id: "page-spec-legacy-authoring-fields",
@@ -244,22 +205,10 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       cluster: "authoring-page-spec",
       status: "approved-compatibility-bridge",
       owner: "content-authoring",
-      fields: [
-        "conceptType",
-        "moduleType",
-        "variantGroup",
-        "regimeType",
-        "systemType",
-      ],
-      evidence: [
-        "conceptType: conceptTypeSchema.optional(),",
-        "moduleType: moduleTypeSchema.optional(),",
-        "variantGroup: z.string().optional(),",
-        "regimeType: trainingRegimeTypeSchema.optional(),",
-        "systemType: systemTypeSchema.optional(),",
-      ],
+      fields: ["conceptType"],
+      evidence: ["conceptType: conceptTypeSchema.optional(),"],
       rationale:
-        "Page specs still accept deprecated typed taxonomy fields as temporary compatibility inputs while ontology-first authoring is staged in.",
+        "Page specs still accept the deprecated conceptType field as a temporary compatibility input while ontology-first authoring is staged in.",
     },
     {
       id: "page-bundle-legacy-record-emission",
@@ -267,22 +216,10 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       cluster: "generation-page-bundle",
       status: "approved-compatibility-bridge",
       owner: "content-generation",
-      fields: [
-        "conceptType",
-        "moduleType",
-        "variantGroup",
-        "regimeType",
-        "systemType",
-      ],
-      evidence: [
-        "spec.conceptType ? { conceptType: spec.conceptType } : {}",
-        "spec.moduleType ? { moduleType: spec.moduleType } : {}",
-        "spec.variantGroup ? { variantGroup: spec.variantGroup } : {}",
-        "spec.regimeType ? { regimeType: spec.regimeType } : {}",
-        "spec.systemType ? { systemType: spec.systemType } : {}",
-      ],
+      fields: ["conceptType"],
+      evidence: ["spec.conceptType ? { conceptType: spec.conceptType } : {}"],
       rationale:
-        "Generated registry records still carry selected legacy typed taxonomy fields to keep unmigrated content and downstream readers functioning.",
+        "Generated registry records still carry the legacy conceptType field to keep unmigrated content and downstream readers functioning.",
     },
     {
       id: "registry-sidebar-grouping-validation",
@@ -290,58 +227,13 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       cluster: "registry-validation",
       status: "approved-compatibility-bridge",
       owner: "content-runtime",
-      fields: [
-        "moduleType",
-        "conceptType",
-        "regimeType",
-        "systemType",
-        "sidebarGrouping",
-      ],
+      fields: ["conceptType", "sidebarGrouping"],
       evidence: [
         "validateSidebarGroupingForRecord(",
-        'expectation: { field: "moduleType", expectedValue: "attention" },',
         'expectation: { field: "conceptType", expectedValue: "architecture" },',
-        'expectation: { field: "regimeType", expectedValue: "alignment" },',
-        'expectation: { field: "systemType", expectedValue: "routing" },',
       ],
       rationale:
         "Registry validation still enforces compatibility expectations that keep legacy typed taxonomy aligned with the ontology bridge during migration.",
-    },
-    {
-      id: "training-regime-at-a-glance-legacy-display",
-      path: "src/lib/content/metadata-labels.ts",
-      cluster: "metadata-ui",
-      status: "approved-compatibility-bridge",
-      owner: "reader-experience",
-      fields: ["regimeType"],
-      evidence: [
-        'if (record.kind === "training-regime" && record.regimeType) {',
-        "return formatMetadataToken(record.regimeType);",
-      ],
-      fieldReferenceScopeSnippets: [
-        'if (record.kind === "training-regime" && record.regimeType) {',
-        "return formatMetadataToken(record.regimeType);",
-      ],
-      rationale:
-        "Training regime metadata cards now route their last compatibility-only regimeType fallback through the shared ontology metadata helper.",
-    },
-    {
-      id: "system-at-a-glance-legacy-display",
-      path: "src/lib/content/metadata-labels.ts",
-      cluster: "metadata-ui",
-      status: "approved-compatibility-bridge",
-      owner: "reader-experience",
-      fields: ["systemType"],
-      evidence: [
-        'if (record.kind === "system" && record.systemType) {',
-        "return formatMetadataToken(record.systemType);",
-      ],
-      fieldReferenceScopeSnippets: [
-        'if (record.kind === "system" && record.systemType) {',
-        "return formatMetadataToken(record.systemType);",
-      ],
-      rationale:
-        "System metadata cards now route their last compatibility-only systemType fallback through the shared ontology metadata helper.",
     },
     {
       id: "contributor-guide-legacy-authoring-matrix",
@@ -367,19 +259,6 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
         "Maintainer guidance explicitly documents which legacy fields are still tolerated and why.",
     },
     {
-      id: "module-template-legacy-authoring-guidance",
-      path: "docs/templates/module.content.md",
-      cluster: "authoring-guidance",
-      status: "approved-compatibility-bridge",
-      owner: "content-authoring",
-      fields: ["moduleType", "conceptType", "variantGroup"],
-      evidence: [
-        "Treat `moduleType`, `moduleFamily`, `conceptType`, and `variantGroup` as",
-      ],
-      rationale:
-        "Module authoring templates still explain the temporary compatibility role of legacy taxonomy fields.",
-    },
-    {
       id: "concept-template-legacy-authoring-guidance",
       path: "docs/templates/concept.content.md",
       cluster: "authoring-guidance",
@@ -400,37 +279,10 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       owner: "content-authoring",
       fields: ["conceptType"],
       evidence: [
-        "The backing concept registry record at `src/content/registry/concepts/<slug>.json` should include `conceptType`,",
+        "treat `conceptType` as a compatibility field, not the preferred starter path",
       ],
       rationale:
         "Glossary authoring guidance still documents conceptType as temporary compatibility metadata for concept-backed glossary records.",
-    },
-    {
-      id: "training-template-legacy-authoring-guidance",
-      path: "docs/templates/training-regime.content.md",
-      cluster: "authoring-guidance",
-      status: "approved-compatibility-bridge",
-      owner: "content-authoring",
-      fields: ["regimeType", "conceptType", "variantGroup", "sidebarGrouping"],
-      evidence: [
-        "Treat `regimeType`, `conceptType`, `variantGroup`, and `sidebarGrouping` as",
-      ],
-      rationale:
-        "Training-regime authoring guidance still documents the staged compatibility path for deprecated taxonomy fields.",
-    },
-    {
-      id: "system-template-legacy-authoring-guidance",
-      path: "docs/templates/system.content.md",
-      cluster: "authoring-guidance",
-      status: "approved-compatibility-bridge",
-      owner: "content-authoring",
-      fields: ["systemType", "conceptType", "variantGroup", "sidebarGrouping"],
-      evidence: [
-        "Treat `systemType`, `conceptType`,",
-        "`variantGroup`, and `sidebarGrouping` as deprecated compatibility fields",
-      ],
-      rationale:
-        "System authoring guidance still documents the staged compatibility path for deprecated taxonomy fields.",
     },
   ] as const;
 
@@ -474,11 +326,6 @@ const TYPED_TAXONOMY_CONSUMER_FENCE_TARGETS: readonly TypedTaxonomyConsumerFence
     {
       cluster: "registry-validation",
       path: "src/lib/content/registry.ts",
-      type: "file",
-    },
-    {
-      cluster: "metadata-ui",
-      path: "src/lib/content/metadata-labels.ts",
       type: "file",
     },
     {

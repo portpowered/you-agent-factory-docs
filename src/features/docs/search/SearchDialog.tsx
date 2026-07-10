@@ -19,10 +19,10 @@ import { consumePendingSearchQuery } from "@/features/docs/search/search-prefill
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { matchLocalizedRoute } from "@/lib/i18n/locale-routing";
 import { SearchResultListItem } from "./SearchResults";
-import { useModelAtlasDocsSearch } from "./search-client";
+import { useDocsSearchClient } from "./search-client";
 import type { SearchResultMetaRecord } from "./search-result-meta-client";
 
-type ModelAtlasSearchDialogProps = SharedProps & {
+type DocsSearchDialogProps = SharedProps & {
   metaByUrl: SearchResultMetaRecord;
   messages: UiMessages;
   /** Test hook: override static bootstrap client options. */
@@ -33,18 +33,18 @@ function reloadSearchPage(): void {
   window.location.reload();
 }
 
-export function ModelAtlasSearchDialog({
+export function DocsSearchDialog({
   open,
   onOpenChange,
   metaByUrl,
   messages,
   searchClient,
-}: ModelAtlasSearchDialogProps) {
+}: DocsSearchDialogProps) {
   const pathname = usePathname();
   const routeMatch = pathname ? matchLocalizedRoute(pathname) : null;
   const activeLocale =
     routeMatch?.kind === "matched" ? routeMatch.locale : "en";
-  const { search, setSearch, query } = useModelAtlasDocsSearch({
+  const { search, setSearch, query } = useDocsSearchClient({
     metaByUrl,
     locale: activeLocale,
     client: searchClient,

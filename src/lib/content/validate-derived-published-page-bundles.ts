@@ -83,7 +83,7 @@ function resolveCitationReference(
   indexes: RegistryIndexes,
 ): RegistryRecord | undefined {
   const referenced = indexes.byId.get(citationId);
-  if (referenced?.kind === "citation" || referenced?.kind === "paper") {
+  if (referenced?.kind === "citation") {
     return referenced;
   }
   return undefined;

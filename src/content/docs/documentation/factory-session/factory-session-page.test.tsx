@@ -9,7 +9,7 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 
@@ -92,12 +92,12 @@ describe("factory-session documentation page", () => {
 
     render(
       <main>
-        <ModulePageProviders
+        <DocsPageProviders
           messages={loadedPage.messages}
           assets={loadedPage.assets}
         >
           {loadedPage.content}
-        </ModulePageProviders>
+        </DocsPageProviders>
       </main>,
     );
 

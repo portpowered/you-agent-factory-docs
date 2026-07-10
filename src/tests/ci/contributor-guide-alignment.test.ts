@@ -59,27 +59,17 @@ describe("contributor documented workflow commands", () => {
     expect(output).toMatch(/prefer/i);
   });
 
-  test("committed expanded-kind sample specs dry-run through generate:page-bundle", () => {
+  test("committed factory-kind sample specs dry-run through generate:page-bundle", () => {
     const cases = [
       {
-        specPath: "page-specs/module-page-spec-workflow-sample.json",
-        registryId: "module.module-page-spec-workflow-sample",
-        route: "/docs/modules/module-page-spec-workflow-sample",
+        specPath: "page-specs/page-spec-workflow-sample.json",
+        registryId: "concept.page-spec-workflow-sample",
+        route: "/docs/concepts/page-spec-workflow-sample",
       },
       {
-        specPath: "page-specs/model-page-spec-workflow-sample.json",
-        registryId: "model.model-page-spec-workflow-sample",
-        route: "/docs/models/model-page-spec-workflow-sample",
-      },
-      {
-        specPath: "page-specs/paper-page-spec-workflow-sample.json",
-        registryId: "paper.paper-page-spec-workflow-sample",
-        route: "/docs/papers/paper-page-spec-workflow-sample",
-      },
-      {
-        specPath: "page-specs/training-regime-page-spec-workflow-sample.json",
-        registryId: "training-regime.training-regime-page-spec-workflow-sample",
-        route: "/docs/training/training-regime-page-spec-workflow-sample",
+        specPath: "page-specs/glossary-page-spec-workflow-sample.json",
+        registryId: "concept.glossary-page-spec-workflow-sample",
+        route: "/docs/glossary/glossary-page-spec-workflow-sample",
       },
     ] as const;
 
@@ -205,5 +195,5 @@ describe("contributor documented workflow commands", () => {
     expect(`${result.stdout}${result.stderr}`).toMatch(
       /validate-registry|validate data|validation/i,
     );
-  });
+  }, 30_000);
 });

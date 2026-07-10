@@ -9,10 +9,10 @@ const fixtureRoot = join(
   "loader-error-compat",
 );
 
-const validModuleRecord = {
-  id: "module.grouped-query-attention",
+const validConceptRecord = {
+  id: "concept.grouped-query-attention",
   slug: "grouped-query-attention",
-  kind: "module",
+  kind: "concept",
   defaultTitleKey: "title",
   defaultSummaryKey: "description",
   aliases: ["GQA"],
@@ -22,15 +22,9 @@ const validModuleRecord = {
   status: "published",
   createdAt: "2026-06-01T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z",
-  primaryClassificationId: "classification.module.attention",
-  moduleType: "attention",
-  optimizes: ["kv-cache"],
-  exampleModelIds: [],
-  improvesOnIds: [],
-  tradeoffIds: [],
-  usedByModelIds: [],
-  introducedByPaperIds: [],
-  mathLevel: "light",
+  primaryClassificationId: "classification.concept.attention",
+  prerequisiteIds: [],
+  explainsIds: [],
 };
 
 const validTagRecord = {
@@ -72,12 +66,12 @@ const validCitationRecord = {
 };
 
 const validClassificationRecord = {
-  id: "classification.module.activation",
-  slug: "activation-functions",
+  id: "classification.concept.attention",
+  slug: "attention-mechanisms",
   kind: "classification",
   defaultTitleKey: "title",
   defaultSummaryKey: "description",
-  aliases: ["activation family"],
+  aliases: ["attention family"],
   tags: [],
   relatedIds: [],
   citationIds: [],
@@ -85,9 +79,9 @@ const validClassificationRecord = {
   createdAt: "2026-06-01T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z",
   classificationType: "family",
-  classifiesKinds: ["module"],
-  parentClassificationId: "classification.module",
-  legacyIds: ["classification.activation-functions"],
+  classifiesKinds: ["concept"],
+  parentClassificationId: "classification.concept",
+  legacyIds: ["classification.attention-mechanisms"],
 };
 
 async function writeMinimalRegistry(
@@ -113,9 +107,9 @@ afterEach(async () => {
 describe("registry loader error compatibility unchanged after core type split", () => {
   test("rejects ontology participants that reference missing classifications", async () => {
     await writeMinimalRegistry("missing-classification", {
-      modules: {
+      concepts: {
         "grouped-query-attention.json": {
-          ...validModuleRecord,
+          ...validConceptRecord,
           primaryClassificationId: "classification.missing",
         },
       },
@@ -142,20 +136,24 @@ describe("registry loader error compatibility unchanged after core type split", 
 
   test("rejects ontology relationships that point at missing records", async () => {
     await writeMinimalRegistry("missing-relationship-target", {
-      modules: {
+      concepts: {
         "grouped-query-attention.json": {
-          ...validModuleRecord,
-          primaryClassificationId: "classification.module.activation",
+          ...validConceptRecord,
+          primaryClassificationId: "classification.concept.attention",
           relationships: [
             {
               relationshipType: "uses",
-              targetId: "module.missing-target",
+              targetId: "concept.missing-target",
             },
           ],
         },
       },
       classifications: {
-        "activation-functions.json": validClassificationRecord,
+        "attention.json": {
+          ...validClassificationRecord,
+          parentClassificationId: undefined,
+          legacyIds: undefined,
+        },
       },
       tags: { "attention.json": validTagRecord },
       citations: { "gqa-paper.json": validCitationRecord },
@@ -171,7 +169,7 @@ describe("registry loader error compatibility unchanged after core type split", 
         expect.objectContaining({
           type: "parse-error",
           message: expect.stringContaining(
-            'relationships targetId references missing record "module.missing-target"',
+            'relationships targetId references missing record "concept.missing-target"',
           ),
         }),
       ]),
@@ -211,28 +209,28 @@ describe("registry loader error compatibility unchanged after core type split", 
   test("rejects classifications whose parentClassificationId skips the direct namespace parent", async () => {
     await writeMinimalRegistry("invalid-classification-parent", {
       classifications: {
-        "module.json": {
+        "concept.json": {
           ...validClassificationRecord,
-          id: "classification.module",
-          slug: "module",
+          id: "classification.concept",
+          slug: "concept",
           aliases: [],
           classificationType: "domain",
-          classifiesKinds: ["module"],
+          classifiesKinds: ["concept"],
           parentClassificationId: undefined,
           legacyIds: undefined,
         },
         "attention.json": {
           ...validClassificationRecord,
-          id: "classification.module.attention",
+          id: "classification.concept.attention",
           slug: "attention-mechanisms",
-          parentClassificationId: "classification.module",
+          parentClassificationId: "classification.concept",
           legacyIds: ["classification.attention-mechanisms"],
         },
         "grouped-query.json": {
           ...validClassificationRecord,
-          id: "classification.module.attention.grouped-query",
+          id: "classification.concept.attention.grouped-query",
           slug: "attention-grouped-query",
-          parentClassificationId: "classification.module",
+          parentClassificationId: "classification.concept",
           legacyIds: undefined,
         },
       },
@@ -248,7 +246,7 @@ describe("registry loader error compatibility unchanged after core type split", 
         expect.objectContaining({
           type: "parse-error",
           message: expect.stringContaining(
-            'must reference its direct namespace parent "classification.module.attention"',
+            'must reference its direct namespace parent "classification.concept.attention"',
           ),
         }),
       ]),
@@ -256,14 +254,21 @@ describe("registry loader error compatibility unchanged after core type split", 
   });
 
   test("throws structured duplicate-id errors", async () => {
-    const duplicateModule = {
-      ...validModuleRecord,
+    const duplicateConcept = {
+      ...validConceptRecord,
       slug: "grouped-query-attention-alt",
     };
     await writeMinimalRegistry("duplicate-id", {
-      modules: {
-        "module-a.json": validModuleRecord,
-        "module-b.json": duplicateModule,
+      concepts: {
+        "concept-a.json": validConceptRecord,
+        "concept-b.json": duplicateConcept,
+      },
+      classifications: {
+        "attention.json": {
+          ...validClassificationRecord,
+          parentClassificationId: undefined,
+          legacyIds: undefined,
+        },
       },
       tags: { "attention.json": validTagRecord },
       citations: { "gqa-paper.json": validCitationRecord },
@@ -276,21 +281,28 @@ describe("registry loader error compatibility unchanged after core type split", 
       details: [
         {
           type: "duplicate-id",
-          id: "module.grouped-query-attention",
+          id: "concept.grouped-query-attention",
         },
       ],
     });
   });
 
   test("throws structured duplicate-slug errors", async () => {
-    const duplicateSlugModule = {
-      ...validModuleRecord,
-      id: "module.grouped-query-attention-copy",
+    const duplicateSlugConcept = {
+      ...validConceptRecord,
+      id: "concept.grouped-query-attention-copy",
     };
     await writeMinimalRegistry("duplicate-slug", {
-      modules: {
-        "module-a.json": validModuleRecord,
-        "module-b.json": duplicateSlugModule,
+      concepts: {
+        "concept-a.json": validConceptRecord,
+        "concept-b.json": duplicateSlugConcept,
+      },
+      classifications: {
+        "attention.json": {
+          ...validClassificationRecord,
+          parentClassificationId: undefined,
+          legacyIds: undefined,
+        },
       },
       tags: { "attention.json": validTagRecord },
       citations: { "gqa-paper.json": validCitationRecord },

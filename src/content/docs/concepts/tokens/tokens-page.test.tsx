@@ -5,7 +5,7 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 
@@ -67,12 +67,12 @@ describe("tokens concept page", () => {
 
     render(
       <main>
-        <ModulePageProviders
+        <DocsPageProviders
           messages={loadedPage.messages}
           assets={loadedPage.assets}
         >
           {loadedPage.content}
-        </ModulePageProviders>
+        </DocsPageProviders>
       </main>,
     );
 
@@ -187,9 +187,9 @@ describe("tokens concept page", () => {
 
     render(
       <main>
-        <ModulePageProviders messages={ja.messages} assets={ja.assets}>
+        <DocsPageProviders messages={ja.messages} assets={ja.assets}>
           {ja.content}
-        </ModulePageProviders>
+        </DocsPageProviders>
       </main>,
     );
 

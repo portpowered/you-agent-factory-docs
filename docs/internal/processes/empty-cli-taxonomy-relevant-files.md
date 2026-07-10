@@ -5,11 +5,16 @@ rewrite-era CLI collections (`guides`, `concepts`, `techniques`, `documentation`
 
 ## Kind contract (story 001)
 
+Live page/registry kinds are factory-only. Retired Atlas product kinds
+(`model`, `module`, `paper`, `training-regime`, `system`) are absent from
+`pageKindSchema`, `registryKindSchema`, and the live discriminated unions —
+see `delete-ai-content-infrastructure` story 003.
+
 | Path | Role |
 | --- | --- |
-| `src/lib/content/registry-core.ts` | `registryKindSchema` and `ontologyParticipantKindSchema` accept `guide`, `technique`, `documentation` (plus existing `concept`) |
-| `src/lib/content/schemas.ts` | `pageKindSchema` accepts `guide`, `concept`, `technique`, `documentation`; 1:1 record schemas `guideRecordSchema`, `techniqueRecordSchema`, `documentationRecordSchema` |
-| `src/lib/content/schemas.test.ts` | Parses valid CLI kinds and rejects unknown page/registry kinds |
+| `src/lib/content/registry-core.ts` | `registryKindSchema` and `ontologyParticipantKindSchema` accept `guide`, `technique`, `documentation` (plus existing `concept`); no Atlas product kinds |
+| `src/lib/content/schemas.ts` | `pageKindSchema` accepts `guide`, `concept`, `technique`, `documentation`, `glossary`; 1:1 record schemas for factory kinds only |
+| `src/lib/content/schemas.test.ts` | Parses valid CLI kinds and rejects unknown / retired Atlas page/registry kinds |
 | `src/content/messages/{en,ja,vi}/common.json` | `pageKind` labels so `formatPageKind` does not fall back to the raw kind string |
 | `src/tests/content/ui-messages.test.ts` | Asserts localized labels for the new page kinds |
 
@@ -21,7 +26,7 @@ rewrite-era CLI collections (`guides`, `concepts`, `techniques`, `documentation`
 | `src/lib/docs/docs-collection-definitions.ts` | Empty CLI definitions with matching `routeSlug` and empty `starterSlugs` |
 | `src/lib/docs/docs-collection-definition-inventory-verification.ts` | Allows empty starters for the four CLI collections; asserts kind/route alignment |
 | `src/lib/docs/section-collection-index.ts` | Section frontmatter kind → collection id map includes CLI kinds |
-| `src/lib/navigation/ai-docs-sidebar-adapter.ts` | Sidebar folder labels for CLI collection ids |
+| `src/lib/navigation/docs-sidebar-adapter.ts` | Sidebar folder labels for CLI collection ids |
 | `src/content/messages/{en,ja,vi}/common.json` | `browseIndex.*` + `*Index` copy for guides/techniques/documentation |
 | `src/lib/content/ui-messages.types.ts` | Typed browse/index message keys for the new collections |
 
@@ -88,7 +93,7 @@ Do not author customer page bundles under content roots in this lane.
 | `src/lib/docs/cli-empty-content-roots.test.ts` | Behavioral checks for empty vs authored CLI roots; keep aligned when first pages land, but do not treat excluded `src/lib/docs/` suites as required CI for page-only lanes — first authored techniques pages update allowlisted `section-indexes.test.tsx` instead |
 | `src/lib/content/published-docs-registry-contract.ts` | Includes `documentation` / `guides` / `techniques` in `PUBLISHED_DOCS_SECTIONS` with matching `*PageHref` routing |
 | `src/lib/content/content-hrefs.ts` | `documentationPageHref` / `guidePageHref` / `techniquePageHref` for `/docs/<section>/<slug>` |
-| `src/lib/content/local-docs-page.ts` | `LOCAL_DOCS_SECTIONS` plus section loaders so `ModulePageProviders` wraps colocated MDX |
+| `src/lib/content/local-docs-page.ts` | `LOCAL_DOCS_SECTIONS` plus section loaders so `DocsPageProviders` wraps colocated MDX |
 | `src/lib/content/technique-page.ts` / `technique-page-load.ts` | First-techniques-collection local MDX loader path (mirror guide loaders) |
 | `src/lib/factory/canonical-page-surface-audit.ts` | `registryDirectoryByKind` includes `documentation` (and guide/technique) for routine page-surface audits |
 
@@ -96,8 +101,10 @@ Do not author customer page bundles under content roots in this lane.
 for inventory/browse wiring. Authored concept topic pages and
 `src/content/registry/concepts/*.json` records are allowed once a B05 (or later)
 concept lane ships them—same posture as `documentation` after its first pages.
-Do not delete Atlas models/modules/papers/training/systems in empty-taxonomy
-lanes; Atlas concept deletion stays owned by `rewrite-delete-atlas-domain`.
+Do not recreate empty Atlas models/modules/papers/training/systems content or
+registry `.gitkeep` trees in empty-taxonomy lanes; those placeholders are
+deleted by `delete-ai-content-infrastructure`. Atlas concept deletion stays
+owned by `rewrite-delete-atlas-domain`.
 Required `make test` already excludes the older empty-concepts SSR proofs under
 `src/lib/docs/`, so the first published concept page does not need those suites
 rewritten in the page-only lane.

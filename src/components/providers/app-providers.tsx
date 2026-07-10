@@ -6,9 +6,9 @@ import { type ComponentType, lazy, type ReactNode, useMemo } from "react";
 import type { SearchResultMetaRecord } from "@/features/docs/search/search-result-meta-client";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 
-const ModelAtlasSearchDialog = lazy(() =>
+const DocsSearchDialog = lazy(() =>
   import("@/features/docs/search/SearchDialog").then((mod) => ({
-    default: mod.ModelAtlasSearchDialog,
+    default: mod.DocsSearchDialog,
   })),
 );
 
@@ -26,7 +26,7 @@ export function AppProviders({
   const SearchDialog = useMemo((): ComponentType<SharedProps> => {
     return function SearchDialogWithMeta(props) {
       return (
-        <ModelAtlasSearchDialog
+        <DocsSearchDialog
           {...props}
           metaByUrl={metaByUrl}
           messages={messages}

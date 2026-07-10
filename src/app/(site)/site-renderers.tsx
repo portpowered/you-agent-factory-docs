@@ -6,21 +6,14 @@ import {
 } from "fumadocs-ui/layouts/docs/page";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { HomeArticle } from "@/components/home/home-article";
 import { BlogIndexPostList } from "@/features/blog/components/BlogIndexPostList";
 import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
-import { BrowseAtlasPage } from "@/features/docs/components/BrowseAtlasPage";
+import { BrowseIndexPage } from "@/features/docs/components/BrowseIndexPage";
 import { DocsIndexEmptyState } from "@/features/docs/components/DocsIndexEmptyState";
 import { DocsIndexEntryList } from "@/features/docs/components/DocsIndexEntryList";
-import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
-import { StaticExportBrowsePage } from "@/features/docs/components/StaticExportBrowsePage";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { TagResourceList } from "@/features/docs/components/TagResourceList";
-import {
-  TopologyBrowsePage,
-  topologyBrowseDescription,
-  topologyBrowseTitle,
-} from "@/features/docs/components/TopologyBrowsePage";
 import { SearchPagePanelContent } from "@/features/docs/search/SearchPagePanel";
 import {
   EMPTY_SEARCH_PAGE_HANDOFF,
@@ -37,10 +30,7 @@ import {
 import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
 import { listPublishedBlogPosts } from "@/lib/content/blog-post-list";
 import { loadPublishedGlossaryEntries } from "@/lib/content/glossary";
-import {
-  loadPublishedDocsPages,
-  loadShippedLocalizedDocsPages,
-} from "@/lib/content/pages";
+import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
 import {
   loadTagLandingContext,
   loadTagResourceGroups,
@@ -49,18 +39,6 @@ import {
   loadPublishedTagIndexEntries,
   loadPublishedTagIndexGroups,
 } from "@/lib/content/tags";
-import {
-  resolveTopologyBrowseState,
-  type TopologySearchParams,
-} from "@/lib/content/topology-browse";
-import {
-  getTopologyNavigationLabels,
-  listTopologyNavigationOptions,
-} from "@/lib/content/topology-navigation";
-import {
-  buildTopologyTreeEntries,
-  type TopologyClassificationEntry,
-} from "@/lib/content/topology-tree-entries";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { buildDocsBrowseSections } from "@/lib/docs/browse-collection-sections";
@@ -90,7 +68,7 @@ export type SearchPageProps = {
 };
 
 export type BrowseIndexPageProps = {
-  searchParams?: Promise<TopologySearchParams>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export type TagLandingPageProps = {
@@ -131,7 +109,7 @@ export async function renderBlogPostPage(
       footer={{ enabled: false }}
       toc={post.toc}
     >
-      <ModulePageProviders messages={post.messages} assets={post.assets}>
+      <DocsPageProviders messages={post.messages} assets={post.assets}>
         <DocsTitle>{post.messages.title}</DocsTitle>
         <DocsDescription>{post.messages.description}</DocsDescription>
         <BlogPostMeta
@@ -142,7 +120,7 @@ export async function renderBlogPostPage(
         <DocsBody>
           <article data-blog-slug={post.slug}>{post.content}</article>
         </DocsBody>
-      </ModulePageProviders>
+      </DocsPageProviders>
     </DocsPage>
   );
 }
@@ -212,31 +190,22 @@ export async function renderHomePage(locale: SiteLocale = defaultLocale) {
 
 export async function renderBrowseIndexPage(
   locale: SiteLocale = defaultLocale,
-  { searchParams }: BrowseIndexPageProps = {},
+  _props: BrowseIndexPageProps = {},
 ) {
   const messages = await loadUiMessages(locale);
   const pages = await loadShippedLocalizedDocsPages(locale);
-  const canonicalPages =
-    locale === defaultLocale
-      ? pages
-      : await loadPublishedDocsPages(defaultLocale);
-  const topologyLabels = getTopologyNavigationLabels(messages);
-  const topologyOptions = listTopologyNavigationOptions({
-    locale,
-    labels: topologyLabels,
-  });
-  const isStaticExport = process.env.NEXT_STATIC_EXPORT === "1";
   const browseSections = buildDocsBrowseSections({
     pages,
     locale,
     messages,
   });
-  const defaultPage = (
+
+  return (
     <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
       <DocsTitle>{messages.browseIndex.title}</DocsTitle>
       <DocsDescription>{messages.browseIndex.description}</DocsDescription>
       <DocsBody>
-        <BrowseAtlasPage
+        <BrowseIndexPage
           messages={messages}
           locale={locale}
           sections={browseSections}
@@ -244,68 +213,6 @@ export async function renderBrowseIndexPage(
       </DocsBody>
     </DocsPage>
   );
-
-  if (isStaticExport) {
-    const treeByClassificationSlug = Object.fromEntries(
-      topologyOptions.map((option) => [
-        option.classificationSlug,
-        buildTopologyTreeEntries({
-          tree: option.tree,
-          localizedPages: pages,
-          canonicalPages,
-          locale,
-          topologyLabels,
-        }),
-      ]),
-    ) as Record<string, TopologyClassificationEntry[]>;
-
-    return (
-      <Suspense fallback={defaultPage}>
-        <StaticExportBrowsePage
-          messages={messages}
-          options={topologyOptions}
-          treeByClassificationSlug={treeByClassificationSlug}
-          defaultPage={defaultPage}
-        />
-      </Suspense>
-    );
-  }
-
-  const topologyState = resolveTopologyBrowseState(
-    await searchParams,
-    topologyOptions,
-  );
-
-  if (topologyState.kind !== "not-requested") {
-    const topologyTree =
-      topologyState.kind === "selected"
-        ? buildTopologyTreeEntries({
-            tree: topologyState.option.tree,
-            localizedPages: pages,
-            canonicalPages,
-            locale,
-            topologyLabels,
-          })
-        : [];
-
-    return (
-      <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
-        <DocsTitle>{topologyBrowseTitle(messages, topologyState)}</DocsTitle>
-        <DocsDescription>
-          {topologyBrowseDescription(messages, topologyState)}
-        </DocsDescription>
-        <DocsBody>
-          <TopologyBrowsePage
-            messages={messages}
-            state={topologyState}
-            tree={topologyTree}
-          />
-        </DocsBody>
-      </DocsPage>
-    );
-  }
-
-  return defaultPage;
 }
 
 export type ShellSectionCollectionIndexDefinition = Pick<

@@ -34,15 +34,15 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Docs breadcrumbs only emit a collection crumb for accepted factory route
   slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are
   not public crumbs.
-* `src/lib/navigation/ai-docs-sidebar-adapter.ts`
+* `src/lib/navigation/docs-sidebar-adapter.ts`
   Factory docs shell sidebar labels, grouping resolvers, collection ids, and
-  `getAiDocsShellPageTreeSettings()` for public docs collections.
+  `getDocsShellPageTreeSettings()` for public docs collections.
 * `src/lib/navigation/generated-docs-page-tree.ts`
   Docs page tree; composes adapter settings into `buildDocsSidebarSectionNodes`.
 * `src/lib/navigation/generated-docs-page-tree-wiring.test.ts`
   Adapter-to-shell wiring regression for base-tree preservation and page inclusion.
-* `src/lib/navigation/ai-docs-sidebar-adapter-parity.test.ts`
-  Consolidated AI adapter parity and non-AI fixture sidebar independence regression.
+* `src/lib/navigation/docs-sidebar-adapter-parity.test.ts`
+  Consolidated factory docs adapter parity and non-AI fixture sidebar independence regression.
 * `src/app/(site)/site-renderers.tsx`
   AI browse and section-index render entry points used by public routes.
 

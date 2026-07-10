@@ -374,7 +374,7 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | implemented |
 | **Summary** | Custom search dialog, trigger, results, filters, and client wrapper integrate Fumadocs Orama search with registry-backed metadata, keyboard opening, empty/loading states, and static-export bootstrap. API route and static index emission are present. |
-| **Repository evidence** | `src/features/docs/search/SearchDialog.tsx`, `SearchTrigger.tsx`, `SearchResults.tsx`, `SearchPagePanel.tsx`, `search-client.ts`, `model-atlas-search-client.ts`, `src/app/api/search/route.ts`, `scripts/emit-export-search-index.ts`, `src/tests/search/` |
+| **Repository evidence** | `src/features/docs/search/SearchDialog.tsx`, `SearchTrigger.tsx`, `SearchResults.tsx`, `SearchPagePanel.tsx`, `search-client.ts`, `docs-orama-search-client.ts`, `src/app/api/search/route.ts`, `scripts/emit-export-search-index.ts`, `src/tests/search/` |
 | **Verification commands** | `bun test src/tests/search`, `bun run verify:export-search-handoff` |
 | **Gaps** | Structured filter UI (`SearchFilters.tsx`) is not a separate module name in tree; tag filter handoff relies on tag landing/search page rather than a standalone `/search?tag=` contract in all cases. |
 | **Follow-up or operator requirement** | none |

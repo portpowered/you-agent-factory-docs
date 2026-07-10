@@ -1,19 +1,12 @@
-import { modulePageHref, tagPageHref } from "@/lib/content/content-hrefs";
+import { tagPageHref } from "@/lib/content/content-hrefs";
 import {
   buildProseAutoLinkPhrases,
   type ProseAutoLinkCandidate,
   type ProseAutoLinkPhrase,
 } from "@/lib/content/prose-auto-link";
 import { getPublishedDocsHrefForRecord } from "@/lib/content/published-docs-registry-ids";
-import {
-  listConceptRecords,
-  listModuleRecords,
-} from "@/lib/content/registry-runtime";
-import type {
-  ConceptRecord,
-  ModuleRecord,
-  TagRecord,
-} from "@/lib/content/schemas";
+import { listConceptRecords } from "@/lib/content/registry-runtime";
+import type { ConceptRecord, TagRecord } from "@/lib/content/schemas";
 import { listTagRecords } from "@/lib/content/tag-registry-runtime";
 
 function uniquePhrases(phrases: string[]): string[] {
@@ -25,13 +18,6 @@ function aliasCandidates(
   href: string,
 ): ProseAutoLinkCandidate[] {
   return uniquePhrases(aliases).map((phrase) => ({ phrase, href }));
-}
-
-function moduleCandidates(record: ModuleRecord): ProseAutoLinkCandidate[] {
-  if (record.status !== "published") {
-    return [];
-  }
-  return aliasCandidates(record.aliases, modulePageHref(record.slug));
 }
 
 function conceptCandidates(record: ConceptRecord): ProseAutoLinkCandidate[] {
@@ -54,7 +40,6 @@ function tagCandidates(record: TagRecord): ProseAutoLinkCandidate[] {
 
 function buildCandidates(): ProseAutoLinkCandidate[] {
   return [
-    ...listModuleRecords().flatMap(moduleCandidates),
     ...listConceptRecords().flatMap(conceptCandidates),
     ...listTagRecords().flatMap(tagCandidates),
   ];

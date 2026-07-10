@@ -47,14 +47,7 @@ function isCitationIntroducingRecord(
   registryRecord: RegistryRecord,
   citationId: string,
 ): boolean {
-  if ("sourceId" in registryRecord && registryRecord.sourceId === citationId) {
-    return true;
-  }
-
-  return (
-    registryRecord.kind === "paper" &&
-    registryRecord.citationIds?.includes(citationId) === true
-  );
+  return "sourceId" in registryRecord && registryRecord.sourceId === citationId;
 }
 
 function citationDirectSearchTerms(

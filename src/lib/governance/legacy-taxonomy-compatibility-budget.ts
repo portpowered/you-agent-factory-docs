@@ -55,16 +55,12 @@ export const legacyTaxonomyCompatibilityBudgetContract = {
       {
         id: "search-document-facet-compatibility",
         path: "src/lib/search/legacy-taxonomy-compat.ts",
-        approvedFieldInventory: [
-          "conceptType",
-          "moduleType",
-          "variantGroup",
-        ] as const,
-        approvedFieldReferenceCount: 13,
+        approvedFieldInventory: ["conceptType"] as const,
+        approvedFieldReferenceCount: 1,
       },
       {
         id: "search-document-ontology-first-facet-builder",
-        path: "src/lib/search/build-documents.ts",
+        path: "src/lib/search/enrich-search-document.ts",
         approvedFieldInventory: [] as const,
         approvedFieldReferenceCount: 0,
       },
@@ -75,12 +71,8 @@ export const legacyTaxonomyCompatibilityBudgetContract = {
         approvedFieldReferenceCount: 1,
       },
     ] as const,
-    approvedFieldInventory: [
-      "conceptType",
-      "moduleType",
-      "variantGroup",
-    ] as const,
-    approvedFieldReferenceCount: 14,
+    approvedFieldInventory: ["conceptType", "moduleType"] as const,
+    approvedFieldReferenceCount: 2,
     rationale:
       "Search still owns the temporary typed-taxonomy compatibility cluster that emits or bridges legacy module, concept, and variant facets while downstream filters migrate to ontology-first taxonomy.",
   } satisfies TypedTaxonomyBudgetSurfaceContract,
@@ -88,43 +80,10 @@ export const legacyTaxonomyCompatibilityBudgetContract = {
     surfaceId: "registry-runtime-legacy-classification-bridges",
     surfaceLabel: "registry runtime legacy classification bridges",
     owner: "content-runtime",
-    approvedBridgeCount: 8,
-    approvedBridges: [
-      {
-        legacyId: "classification.activation-functions",
-        canonicalId: "classification.module.activation",
-      },
-      {
-        legacyId: "classification.attention-mechanisms",
-        canonicalId: "classification.module.attention",
-      },
-      {
-        legacyId: "classification.feed-forward-networks",
-        canonicalId: "classification.module.feed-forward",
-      },
-      {
-        legacyId: "classification.neural-network-components",
-        canonicalId: "classification.module",
-      },
-      {
-        legacyId: "classification.normalization-layers",
-        canonicalId: "classification.module.normalization",
-      },
-      {
-        legacyId: "classification.position-encoding-methods",
-        canonicalId: "classification.module.positional-encoding",
-      },
-      {
-        legacyId: "classification.tokenization-methods",
-        canonicalId: "classification.module.tokenization",
-      },
-      {
-        legacyId: "classification.transformer-block-structures",
-        canonicalId: "classification.module.transformer-block",
-      },
-    ] as const,
+    approvedBridgeCount: 0,
+    approvedBridges: [] as const,
     rationale:
-      "The generated registry runtime keeps one explicit legacy classification-id bridge inventory so canonical ontology records can still resolve the approved pre-ontology aliases without silently adding more aliases.",
+      "The generated registry runtime keeps zero legacy classification-id bridges now that the module-era classification records they aliased have been removed; canonical ontology records no longer need pre-ontology alias resolution.",
   } satisfies LegacyClassificationBudgetSurfaceContract,
 } as const;
 

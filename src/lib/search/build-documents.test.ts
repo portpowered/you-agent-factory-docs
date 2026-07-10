@@ -3,8 +3,8 @@ import type { DocsPageSource } from "@/lib/content/pages";
 import type { RegistryIndexes } from "@/lib/content/registry";
 import type {
   ClassificationRecord,
-  ModelRecord,
-  ModuleRecord,
+  ConceptRecord,
+  OrganizationRecord,
 } from "@/lib/content/schemas";
 import {
   buildSearchDocument,
@@ -13,7 +13,7 @@ import {
 } from "./build-documents";
 import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
 
-const MODEL_ATLAS_AI_ONLY_FACET_KEYS = [
+const RETIRED_ATLAS_ONLY_FACET_KEYS = [
   "modelFamily",
   "sourceType",
   "modalities",
@@ -22,7 +22,7 @@ const MODEL_ATLAS_AI_ONLY_FACET_KEYS = [
 ] as const;
 
 function buildRegistryIndexes(
-  records: Array<ModuleRecord | ModelRecord | ClassificationRecord>,
+  records: Array<ConceptRecord | OrganizationRecord | ClassificationRecord>,
 ): RegistryIndexes {
   const classifications = records.filter(
     (record): record is ClassificationRecord =>
@@ -57,38 +57,35 @@ function buildSyntheticPage(
   };
 }
 
-function buildModule(overrides: Partial<ModuleRecord> = {}): ModuleRecord {
+function buildConcept(overrides: Partial<ConceptRecord> = {}): ConceptRecord {
   return {
-    id: "module.synthetic-module",
-    slug: "synthetic-module",
-    kind: "module",
+    id: "concept.synthetic-concept",
+    slug: "synthetic-concept",
+    kind: "concept",
     defaultTitleKey: "title",
     defaultSummaryKey: "description",
-    aliases: ["synthetic module"],
+    aliases: ["synthetic concept"],
     tags: ["attention"],
     relatedIds: [],
     citationIds: [],
     status: "published",
     createdAt: "2026-06-20T00:00:00.000Z",
     updatedAt: "2026-06-20T00:00:00.000Z",
-    moduleType: "other",
-    optimizes: ["kv-cache", "memory-bandwidth"],
-    exampleModelIds: [],
-    improvesOnIds: [],
-    tradeoffIds: [],
-    usedByModelIds: [],
-    introducedByPaperIds: [],
-    mathLevel: "none",
-    primaryClassificationId: "classification.module.attention",
+    conceptType: "architecture",
+    prerequisiteIds: [],
+    explainsIds: [],
+    primaryClassificationId: "classification.concept.attention",
     ...overrides,
   };
 }
 
-function buildModel(overrides: Partial<ModelRecord> = {}): ModelRecord {
+function buildOrganization(
+  overrides: Partial<OrganizationRecord> = {},
+): OrganizationRecord {
   return {
-    id: "model.synthetic-model",
-    slug: "synthetic-model",
-    kind: "model",
+    id: "organization.synthetic-org",
+    slug: "synthetic-org",
+    kind: "organization",
     defaultTitleKey: "title",
     defaultSummaryKey: "description",
     aliases: [],
@@ -98,14 +95,9 @@ function buildModel(overrides: Partial<ModelRecord> = {}): ModelRecord {
     status: "published",
     createdAt: "2026-06-20T00:00:00.000Z",
     updatedAt: "2026-06-20T00:00:00.000Z",
-    family: "gpt",
-    sourceType: "closed",
-    modalities: ["text"],
-    trainingRegimeIds: ["training-regime.pretraining"],
-    architectureIds: [],
-    moduleIds: [],
-    datasetIds: [],
+    modelIds: [],
     paperIds: [],
+    systemIds: [],
     ...overrides,
   };
 }
@@ -114,7 +106,7 @@ function buildClassification(
   overrides: Partial<ClassificationRecord> = {},
 ): ClassificationRecord {
   return {
-    id: "classification.module.attention",
+    id: "classification.concept.attention",
     slug: "attention-mechanisms",
     kind: "classification",
     defaultTitleKey: "title",
@@ -127,24 +119,24 @@ function buildClassification(
     createdAt: "2026-06-20T00:00:00.000Z",
     updatedAt: "2026-06-20T00:00:00.000Z",
     classificationType: "family",
-    classifiesKinds: ["module"],
+    classifiesKinds: ["concept"],
     parentClassificationId: undefined,
     ...overrides,
   };
 }
 
 describe("buildSearchDocument", () => {
-  test("builds generic enriched documents without Model Atlas AI facet keys", () => {
-    const moduleRecord = buildModule();
+  test("builds generic enriched documents without retired Atlas AI facet keys", () => {
+    const conceptRecord = buildConcept();
     const classification = buildClassification();
-    const indexes = buildRegistryIndexes([moduleRecord, classification]);
+    const indexes = buildRegistryIndexes([conceptRecord, classification]);
     const page = buildSyntheticPage({
-      pageDir: "/tmp/synthetic-module",
-      docsSlug: "modules/synthetic-module",
-      url: "/docs/modules/synthetic-module",
+      pageDir: "/tmp/synthetic-concept",
+      docsSlug: "concepts/synthetic-concept",
+      url: "/docs/concepts/synthetic-concept",
       frontmatter: {
-        kind: "module",
-        registryId: moduleRecord.id,
+        kind: "concept",
+        registryId: conceptRecord.id,
         messageNamespace: "local",
         assetNamespace: "local",
         tags: ["attention"],
@@ -152,34 +144,33 @@ describe("buildSearchDocument", () => {
         updatedAt: "2026-06-20T00:00:00.000Z",
       },
       messages: {
-        title: "Synthetic Module",
-        description: "Synthetic module description",
+        title: "Synthetic Concept",
+        description: "Synthetic concept description",
       },
     });
 
     const document = buildSearchDocument(page, indexes);
 
-    expect(document.registryId).toBe(moduleRecord.id);
-    expect(document.title).toBe("Synthetic Module");
-    expect(document.facets.kind).toBe("module");
+    expect(document.registryId).toBe(conceptRecord.id);
+    expect(document.title).toBe("Synthetic Concept");
+    expect(document.facets.kind).toBe("concept");
     expect(document.facets.tags).toEqual(["attention"]);
     expect(document.facets.primaryClassificationId).toBe(classification.id);
-    expect(document.facets.moduleType).toBe("attention");
-    for (const facetKey of MODEL_ATLAS_AI_ONLY_FACET_KEYS) {
+    for (const facetKey of RETIRED_ATLAS_ONLY_FACET_KEYS) {
       expect(document.facets).not.toHaveProperty(facetKey);
     }
   });
 
-  test("keeps model documents free of Atlas AI-only facets", () => {
-    const modelRecord = buildModel();
-    const indexes = buildRegistryIndexes([modelRecord]);
+  test("keeps organization documents free of retired Atlas AI-only facets", () => {
+    const organizationRecord = buildOrganization();
+    const indexes = buildRegistryIndexes([organizationRecord]);
     const page = buildSyntheticPage({
-      pageDir: "/tmp/synthetic-model",
-      docsSlug: "models/synthetic-model",
-      url: "/docs/models/synthetic-model",
+      pageDir: "/tmp/synthetic-org",
+      docsSlug: "organizations/synthetic-org",
+      url: "/docs/organizations/synthetic-org",
       frontmatter: {
-        kind: "model",
-        registryId: modelRecord.id,
+        kind: "documentation",
+        registryId: organizationRecord.id,
         messageNamespace: "local",
         assetNamespace: "local",
         tags: [],
@@ -187,15 +178,15 @@ describe("buildSearchDocument", () => {
         updatedAt: "2026-06-20T00:00:00.000Z",
       },
       messages: {
-        title: "Synthetic Model",
-        description: "Synthetic model description",
+        title: "Synthetic Organization",
+        description: "Synthetic organization description",
       },
     });
 
     const document = buildSearchDocument(page, indexes);
 
-    expect(document.facets.kind).toBe("model");
-    for (const facetKey of MODEL_ATLAS_AI_ONLY_FACET_KEYS) {
+    expect(document.facets.kind).toBe("documentation");
+    for (const facetKey of RETIRED_ATLAS_ONLY_FACET_KEYS) {
       expect(document.facets).not.toHaveProperty(facetKey);
     }
   });
@@ -231,7 +222,7 @@ describe("buildSearchDocument", () => {
       relatedTopologyIds: [],
       relationshipTypes: [],
     });
-    for (const facetKey of MODEL_ATLAS_AI_ONLY_FACET_KEYS) {
+    for (const facetKey of RETIRED_ATLAS_ONLY_FACET_KEYS) {
       expect(document.facets).not.toHaveProperty(facetKey);
     }
   });
@@ -245,18 +236,17 @@ describe("buildSearchDocumentsForLocale", () => {
   });
 
   test("maps pages through the generic enrichment path only", () => {
-    const moduleRecord = buildModule({
+    const conceptRecord = buildConcept({
       primaryClassificationId: undefined,
-      optimizes: ["kv-cache"],
     });
-    const indexes = buildRegistryIndexes([moduleRecord]);
+    const indexes = buildRegistryIndexes([conceptRecord]);
     const page = buildSyntheticPage({
-      pageDir: "/tmp/synthetic-module",
-      docsSlug: "modules/synthetic-module",
-      url: "/docs/modules/synthetic-module",
+      pageDir: "/tmp/synthetic-concept",
+      docsSlug: "concepts/synthetic-concept",
+      url: "/docs/concepts/synthetic-concept",
       frontmatter: {
-        kind: "module",
-        registryId: moduleRecord.id,
+        kind: "concept",
+        registryId: conceptRecord.id,
         messageNamespace: "local",
         assetNamespace: "local",
         tags: ["attention"],
@@ -264,8 +254,8 @@ describe("buildSearchDocumentsForLocale", () => {
         updatedAt: "2026-06-20T00:00:00.000Z",
       },
       messages: {
-        title: "Synthetic Module",
-        description: "Synthetic module description",
+        title: "Synthetic Concept",
+        description: "Synthetic concept description",
       },
     });
 

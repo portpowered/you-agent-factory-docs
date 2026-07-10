@@ -3,23 +3,13 @@ import {
   documentationPageHref,
   glossaryPageHref,
   guidePageHref,
-  modelPageHref,
-  modulePageHref,
-  paperPageHref,
-  systemPageHref,
   techniquePageHref,
-  trainingPageHref,
 } from "@/lib/content/content-hrefs";
 import type { PageKind } from "@/lib/content/schemas";
 
 export const PUBLISHED_DOCS_SECTIONS = [
   "glossary",
   "concepts",
-  "modules",
-  "models",
-  "papers",
-  "training",
-  "systems",
   "guides",
   "techniques",
   "documentation",
@@ -64,16 +54,6 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return glossaryPageHref(entry.slug);
     case "concepts":
       return conceptPageHref(entry.slug);
-    case "modules":
-      return modulePageHref(entry.slug);
-    case "models":
-      return modelPageHref(entry.slug);
-    case "papers":
-      return paperPageHref(entry.slug);
-    case "training":
-      return trainingPageHref(entry.slug);
-    case "systems":
-      return systemPageHref(entry.slug);
     case "guides":
       return guidePageHref(entry.slug);
     case "techniques":

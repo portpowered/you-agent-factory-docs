@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { DocsAutoLinkedDescription } from "@/features/docs/components/DocsAutoLinkedDescription";
-import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import type { LoadedGlossaryPage } from "@/lib/content/glossary-page-load";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 
@@ -14,7 +14,7 @@ export function renderGlossaryDocsShell(
 ): string {
   return renderToStaticMarkup(
     createElement(
-      ModulePageProviders,
+      DocsPageProviders,
       {
         messages: loadedPage.messages,
         assets: loadedPage.assets,

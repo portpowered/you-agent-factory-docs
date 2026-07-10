@@ -28,7 +28,7 @@ describe("legacy classification compatibility budget guard command", () => {
       "Legacy classification compatibility budget guard",
     );
     expect(result.stdout ?? "").toContain("Status: aligned");
-    expect(result.stdout ?? "").toContain("Approved baseline: 8 bridges");
+    expect(result.stdout ?? "").toContain("Approved baseline: 0 bridges");
     expect(result.stdout ?? "").toContain(
       "No legacy classification bridge growth detected.",
     );
@@ -77,8 +77,8 @@ describe("legacy classification compatibility budget guard command", () => {
 
       expect(result.status).toBe(1);
       expect(result.stdout ?? "").toContain("Status: drifted");
-      expect(result.stdout ?? "").toContain("Approved baseline: 8 bridges");
-      expect(result.stdout ?? "").toContain("Current measured: 9 bridges");
+      expect(result.stdout ?? "").toContain("Approved baseline: 0 bridges");
+      expect(result.stdout ?? "").toContain("Current measured: 1 bridges");
       expect(result.stdout ?? "").toContain(
         'registry runtime legacy classification bridges added "classification.extra-legacy-bridge -> classification.module.attention"',
       );
@@ -126,8 +126,8 @@ describe("legacy classification compatibility budget guard command", () => {
 
       expect(result.status).toBe(0);
       expect(result.stdout ?? "").toContain("Status: aligned");
-      expect(result.stdout ?? "").toContain("Approved baseline: 8 bridges");
-      expect(result.stdout ?? "").toContain("Current measured: 7 bridges");
+      expect(result.stdout ?? "").toContain("Approved baseline: 0 bridges");
+      expect(result.stdout ?? "").toContain("Current measured: 0 bridges");
       expect(result.stdout ?? "").toContain(
         "No legacy classification bridge growth detected.",
       );

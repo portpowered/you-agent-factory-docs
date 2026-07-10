@@ -569,6 +569,9 @@ paths:
 * `bun run check:retired-product-docs` — owned architecture/authoring docs do
   not reintroduce retired product names or retired public route families
   (exclusion/denylist wording is allowed)
+* `bun run audit:retired-ai-content-infrastructure` — deleted Atlas content
+  infrastructure (retired routes, kinds, owned paths) is not reintroduced;
+  factory provider / external-model configuration wording remains allowed
 * `make typecheck` / `make lint` / tests — code quality
 * browser verification of published factory routes (for example
   `/docs/guides/getting-started` or `/docs/documentation/cli`)

@@ -1,11 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import {
+  loadLocalDocsPage,
+  parseLocalDocsPageRef,
+} from "@/lib/content/local-docs-page";
 
 describe("local docs page TOC", () => {
-  test("token page exposes section heading anchors in TOC order", async () => {
+  test("loop concept page exposes section heading anchors in TOC order", async () => {
     const page = await loadLocalDocsPage({
-      section: "glossary",
-      slug: "token",
+      section: "concepts",
+      slug: "loop",
     });
 
     expect(page.toc.length).toBeGreaterThan(0);
@@ -18,18 +21,17 @@ describe("local docs page TOC", () => {
     expect(page.toc.some((item) => item.title === "References")).toBe(true);
   });
 
-  test("grouped-query-attention page exposes module section TOC entries", async () => {
-    const page = await loadLocalDocsPage({
-      section: "modules",
-      slug: "grouped-query-attention",
-    });
-
-    expect(page.toc.some((item) => item.url === "#how-it-works")).toBe(true);
+  test("retired Atlas sections are not loadable via local-docs dispatch", () => {
     expect(
-      page.toc.some((item) => item.title === "Compared To Nearby Modules"),
-    ).toBe(true);
+      parseLocalDocsPageRef(["modules", "grouped-query-attention"]),
+    ).toBeNull();
+    expect(parseLocalDocsPageRef(["models", "gpt-2"])).toBeNull();
     expect(
-      page.toc.some((item) => item.title === "Variants And Nearby Modules"),
-    ).toBe(false);
+      parseLocalDocsPageRef(["papers", "attention-is-all-you-need"]),
+    ).toBeNull();
+    expect(
+      parseLocalDocsPageRef(["training", "instruction-tuning"]),
+    ).toBeNull();
+    expect(parseLocalDocsPageRef(["systems", "vllm"])).toBeNull();
   });
 });

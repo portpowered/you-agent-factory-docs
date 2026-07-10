@@ -1,6 +1,3 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
-import { getRegistryCollectionRoot } from "@/lib/content/content-paths";
 import {
   type DocsPageSource,
   loadPublishedDocsPagesSync,
@@ -27,7 +24,6 @@ export type PublishedDocsRuntimeManifest = {
   entries: readonly PublishedDocsEntry[];
   registryIds: readonly string[];
   publishedConceptSectionRegistryIds: readonly string[];
-  moduleBackedConceptRegistryIds: readonly string[];
 };
 
 function publishedDocsRegistryEntryPriority(entry: PublishedDocsEntry): number {
@@ -122,12 +118,6 @@ export function buildPublishedDocsIndex(
   };
 }
 
-function hasConceptRegistryRecord(slug: string): boolean {
-  return existsSync(
-    join(getRegistryCollectionRoot("concepts"), `${slug}.json`),
-  );
-}
-
 export function derivePublishedConceptSectionRegistryIds(
   index: ScannedPublishedDocsIndex,
 ): readonly string[] {
@@ -139,31 +129,10 @@ export function derivePublishedConceptSectionRegistryIds(
     .sort();
 }
 
-export function deriveModuleBackedConceptRegistryIds(
-  index: ScannedPublishedDocsIndex,
-): readonly string[] {
-  const conceptIds = new Set<string>();
-
-  for (const entry of index.entries) {
-    if (entry.section !== "modules" || !hasConceptRegistryRecord(entry.slug)) {
-      continue;
-    }
-
-    conceptIds.add(`concept.${entry.slug}`);
-  }
-
-  return [...conceptIds].sort();
-}
-
 export function derivePublishedDocsRegistryIds(
   index: ScannedPublishedDocsIndex,
 ): readonly string[] {
   const registryIds = new Set(index.entries.map((entry) => entry.registryId));
-
-  for (const conceptId of deriveModuleBackedConceptRegistryIds(index)) {
-    registryIds.add(conceptId);
-  }
-
   return [...registryIds].sort();
 }
 
@@ -175,7 +144,6 @@ export function derivePublishedDocsRuntimeManifest(
     registryIds: derivePublishedDocsRegistryIds(index),
     publishedConceptSectionRegistryIds:
       derivePublishedConceptSectionRegistryIds(index),
-    moduleBackedConceptRegistryIds: deriveModuleBackedConceptRegistryIds(index),
   };
 }
 

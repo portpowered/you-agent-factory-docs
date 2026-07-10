@@ -1,18 +1,9 @@
-import { modulePageHref } from "@/lib/content/content-hrefs";
 import type { DocsPageSource } from "@/lib/content/pages";
 import {
   getRegistryRecord,
   type RegistryIndexes,
 } from "@/lib/content/registry-index";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
-
-/** Phase 1 attention discovery tag slug shared by tag landing and search. */
-export const PHASE_1_ATTENTION_TAG_SLUG = "attention" as const;
-
-/** Canonical grouped-query-attention module URL for Phase 1 discovery checks. */
-export const PHASE_1_GROUPED_QUERY_ATTENTION_MODULE_URL = modulePageHref(
-  "grouped-query-attention",
-);
 
 function uniqueTagSlugs(tagSlugs: readonly string[]): string[] {
   return [...new Set(tagSlugs.filter(Boolean))];
@@ -55,22 +46,4 @@ export async function loadPublishedResourcesForTag(
   return pages.filter((page) =>
     publishedResourceMatchesTag(page, tagSlug, indexes),
   );
-}
-
-/** Module docs URLs for the Phase 1 attention tag, sorted by reader-facing title. */
-export async function loadPhase1AttentionModuleUrls(
-  locale: SiteLocale = defaultLocale,
-): Promise<string[]> {
-  const pages = await loadPublishedResourcesForTag(
-    PHASE_1_ATTENTION_TAG_SLUG,
-    locale,
-  );
-  return pages
-    .filter((page) => page.frontmatter.kind === "module")
-    .sort((a, b) =>
-      a.messages.title.localeCompare(b.messages.title, "en", {
-        sensitivity: "base",
-      }),
-    )
-    .map((page) => page.url);
 }

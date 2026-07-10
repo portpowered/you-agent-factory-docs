@@ -48,13 +48,13 @@ collections.
 | --- | --- |
 | `src/features/topology/` | Deleted Cytoscape topology explorer package |
 | `src/app/(site)/topology/` / `src/app/[locale]/topology/` | Deleted live `/topology` product route modules |
-| `src/app/(site)/site-renderers.tsx` | No longer renders `TopologyPrototype`; browse graph-map still uses `TopologyBrowsePage` |
+| `src/app/(site)/site-renderers.tsx` | No longer renders `TopologyPrototype` or Atlas topology browse; `/browse` uses factory `BrowseIndexPage` only |
 | `src/features/ai/topology.ts` / `src/features/ai/server.ts` | Stop re-exporting deleted topology explorers |
 | `src/lib/site/you-agent-factory-site-config.ts` | CLI site config after `rewrite-site-config-contracts`; topology is not in `primaryNav` |
-| `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Keep browse classification helpers; they are not the `/topology` explorer product |
-| `src/content/messages/*/common.json` (`topologyPrototype`) | Removed retired `/topology` explorer product copy; do not reintroduce |
-| `src/lib/content/ui-messages.types.ts` | `AiDomainMessages` / `UI_MESSAGES_COMPATIBILITY_KEYS` omit `topologyPrototype` |
-| `src/tests/content/ui-messages.test.ts` | Asserts shipped messages do not expose `topologyPrototype` as live product copy |
+| `src/lib/content/topology-*.ts` / `TopologyBrowsePage` | Deleted by `delete-ai-content-infrastructure` story 005; `/browse` is factory collection index only |
+| `src/content/messages/*/common.json` | Removed retired `/topology` explorer and topology-browse product copy (`topologyPrototype`, `topologyBrowse`, `timelinePage`); do not reintroduce |
+| `src/lib/content/ui-messages.types.ts` | `FactoryDomainMessages` / `UI_MESSAGES_COMPATIBILITY_KEYS` omit topology/timeline packs |
+| `src/tests/content/ui-messages.test.ts` | Asserts shipped messages stay factory-domain only without topology/timeline product copy |
 
 ## Story 004: remove Model Atlas AI search enrichment
 
@@ -136,7 +136,30 @@ When merging main after empty-CLI taxonomy lands:
 | `docs/templates/{guide,technique,documentation}.*` | Accept main's CLI templates |
 | `src/content/docs/{guides,techniques,documentation}/.gitkeep` | Accept empty CLI content roots from main |
 
-## Related
+## Story: delete Atlas page loaders / local-docs dispatch
 
-- [ci-deploy-foundation-relevant-files.md](./ci-deploy-foundation-relevant-files.md) — required make targets must not re-chain Atlas verifiers
-- [empty-cli-taxonomy-relevant-files.md](./empty-cli-taxonomy-relevant-files.md) — CLI kinds/templates/empty roots from the sibling lane
+| Path | Role |
+| --- | --- |
+| `src/lib/content/{model,module,paper,training-regime,system}-page*.ts` | Deleted Atlas page + page-load modules |
+| `src/lib/content/{module,system}-shell-render.tsx` | Deleted Atlas shell-render helpers |
+| `src/lib/content/compile-module-mdx.ts` / `module-comparison-table.ts` / `module-test-helpers.ts` | Deleted kind-only helpers; `collectTableMessageKeys` lives in `table-message-keys.ts` |
+| `src/lib/content/local-docs-page.ts` | Factory-only sections: guides, concepts, techniques, documentation, glossary |
+| `src/app/docs/docs-slug-renderer.tsx` | No Atlas section branches (systems FoldedOpeningSummary removed) |
+| `src/lib/navigation/local-docs-toc.test.ts` | Asserts retired Atlas sections are rejected by `parseLocalDocsPageRef` |
+
+Do not reintroduce Atlas section cases in `loadLocalDocsPage`. Empty Atlas
+content/registry trees and live kind contracts are owned by later
+`delete-ai-content-infrastructure` stories.
+
+## Denylist audit (anti-regression)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/governance/retired-ai-content-infrastructure-denylist.ts` | Maintainer denylist for retired routes/kinds/owned paths |
+| `scripts/audit-retired-ai-content-infrastructure.ts` | CLI: `bun run audit:retired-ai-content-infrastructure` |
+| `docs/internal/processes/retired-ai-content-infrastructure-denylist-relevant-files.md` | Process map for the denylist |
+
+Run the denylist after infrastructure deletion work. It must fail on
+reintroduction fixtures and pass for genuine factory provider / external-model
+configuration wording.
+

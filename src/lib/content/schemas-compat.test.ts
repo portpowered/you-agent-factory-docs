@@ -9,31 +9,27 @@ import {
   datasetRecordSchema,
   generatedPageBundleRegistryRecordSchema,
   graphRecordSchema,
-  modelRecordSchema,
   ontologyParticipantKindSchema,
   ontologyRelationshipSchema,
   ontologyRelationshipTypeSchema,
   organizationRecordSchema,
-  paperRecordSchema,
   registryKindSchema,
   registryRecordSchema,
   registryStatusSchema,
-  systemRecordSchema,
   tagCategorySchema,
   tagLandingPageSchema,
   tagRecordSchema,
-  trainingRegimeRecordSchema,
 } from "./schemas";
 
 const validBaseFields = {
-  id: "module.grouped-query-attention",
-  slug: "grouped-query-attention",
+  id: "concept.harness",
+  slug: "harness",
   defaultTitleKey: "title",
   defaultSummaryKey: "description",
-  aliases: ["GQA"],
-  tags: ["attention"],
+  aliases: ["Harness"],
+  tags: ["systems"],
   relatedIds: [],
-  citationIds: ["citation.gqa-paper"],
+  citationIds: [],
   status: "published" as const,
   createdAt: "2026-06-01T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z",
@@ -60,68 +56,7 @@ describe("schemas export compatibility", () => {
     );
   });
 
-  test("parses AI-domain records through the existing schema module exports", () => {
-    expect(
-      modelRecordSchema.safeParse({
-        ...validBaseFields,
-        id: "model.demo",
-        slug: "demo",
-        kind: "model",
-        family: "demo",
-        sourceType: "open-weights",
-        modalities: ["text"],
-        architectureIds: [],
-        moduleIds: [],
-        trainingRegimeIds: [],
-        datasetIds: [],
-        paperIds: [],
-      }).success,
-    ).toBe(true);
-
-    expect(
-      paperRecordSchema.safeParse({
-        ...validBaseFields,
-        id: "paper.demo",
-        slug: "demo-paper",
-        kind: "paper",
-        authors: ["A. Author"],
-        publishedAt: "2024-01-01",
-        url: "https://example.com/paper",
-        introducesIds: [],
-        supportsIds: [],
-        arguesAgainstIds: [],
-        modelIds: [],
-        moduleIds: [],
-        conceptIds: [],
-      }).success,
-    ).toBe(true);
-
-    expect(
-      trainingRegimeRecordSchema.safeParse({
-        ...validBaseFields,
-        id: "training-regime.demo",
-        slug: "demo-training",
-        kind: "training-regime",
-        usedByModelIds: [],
-        relatedModuleIds: [],
-        paperIds: [],
-      }).success,
-    ).toBe(true);
-
-    expect(
-      systemRecordSchema.safeParse({
-        ...validBaseFields,
-        id: "system.demo",
-        slug: "demo-system",
-        kind: "system",
-        relatedModelIds: [],
-        relatedModuleIds: [],
-        relatedConceptIds: [],
-        paperIds: [],
-        datasetIds: [],
-      }).success,
-    ).toBe(true);
-
+  test("parses factory-kind records through the existing schema module exports", () => {
     expect(
       datasetRecordSchema.safeParse({
         ...validBaseFields,
@@ -151,8 +86,8 @@ describe("schemas export compatibility", () => {
         id: "graph.demo",
         slug: "demo-graph",
         kind: "graph",
-        subjectId: "module.grouped-query-attention",
-        graphType: "module-compute-flow",
+        subjectId: "concept.harness",
+        graphType: "concept-map",
         rootNodeId: "node.root",
         layout: "vertical-expandable",
         defaultExpandedDepth: 1,
@@ -171,19 +106,14 @@ describe("schemas export compatibility", () => {
   });
 
   test("keeps registry union and generated bundle schemas available from schemas.ts", () => {
-    const moduleResult = registryRecordSchema.safeParse({
+    const conceptResult = registryRecordSchema.safeParse({
       ...validBaseFields,
-      kind: "module",
-      moduleType: "attention",
-      optimizes: ["kv-cache"],
-      exampleModelIds: [],
-      improvesOnIds: [],
-      tradeoffIds: [],
-      usedByModelIds: [],
-      introducedByPaperIds: [],
-      mathLevel: "light",
+      kind: "concept",
+      conceptType: "systems",
+      prerequisiteIds: [],
+      explainsIds: [],
     });
-    expect(moduleResult.success).toBe(true);
+    expect(conceptResult.success).toBe(true);
 
     const bundleResult = generatedPageBundleRegistryRecordSchema.safeParse({
       ...validBaseFields,

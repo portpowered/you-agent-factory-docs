@@ -5,9 +5,9 @@ message-key references, and asset references. Localized prose lives in colocated
 `messages/<locale>.json` files next to each page.
 
 This site is **you-agent-factory docs**. New product pages start from rewrite-era
-factory templates. Sibling Atlas templates (model, module, paper, training-regime,
-system) may still exist in the tree during migration, but they are not required
-starter paths for new factory product pages.
+factory templates (`guide`, `technique`, `documentation`, `concept`, `glossary`,
+and `blog-post`). Atlas authoring templates for model, module, paper,
+training-regime, and system are removed from the maintained inventory.
 
 For canonical docs pages, templates should be production-shaped. They should not
 contain authoring instructions, placeholder body prose, hard-coded section

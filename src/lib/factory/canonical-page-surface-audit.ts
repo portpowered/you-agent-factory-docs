@@ -22,11 +22,6 @@ const registryDirectoryByKind: Record<string, string> = {
   documentation: "documentation",
   graph: "graphs",
   guide: "guides",
-  module: "modules",
-  model: "models",
-  paper: "papers",
-  "training-regime": "training-regimes",
-  system: "systems",
   table: "tables",
   technique: "techniques",
 };
@@ -252,12 +247,7 @@ function collectPageSpecificLinkedRegistryPaths(
     }
 
     const kind = recordId.split(".")[0];
-    if (
-      kind !== "citation" &&
-      kind !== "graph" &&
-      kind !== "paper" &&
-      kind !== "table"
-    ) {
+    if (kind !== "citation" && kind !== "graph" && kind !== "table") {
       continue;
     }
 
@@ -267,7 +257,7 @@ function collectPageSpecificLinkedRegistryPaths(
   return supportRecordPaths;
 }
 
-function collectModuleLinkedSupportRecordPaths(
+function collectRegistryRecordLinkedSupportRecordPaths(
   repoRoot: string,
   registryPath: string,
   pageSlug: string,
@@ -279,12 +269,10 @@ function collectModuleLinkedSupportRecordPaths(
 
   const record = JSON.parse(readFileSync(absoluteRegistryPath, "utf8")) as {
     citationIds?: string[];
-    introducedByPaperIds?: string[];
     sourceId?: string;
   };
   const linkedRecordIds = [
     ...(record.citationIds ?? []),
-    ...(record.introducedByPaperIds ?? []),
     ...(record.sourceId ? [record.sourceId] : []),
   ];
 
@@ -298,7 +286,11 @@ function collectSupportRecordPaths(
   registryPath: string,
 ): readonly string[] {
   const supportRecordPaths = new Set<string>(
-    collectModuleLinkedSupportRecordPaths(repoRoot, registryPath, pageSlug),
+    collectRegistryRecordLinkedSupportRecordPaths(
+      repoRoot,
+      registryPath,
+      pageSlug,
+    ),
   );
   const assetsPath = resolve(repoRoot, pageDirectory, "assets.json");
   if (!existsSync(assetsPath)) {

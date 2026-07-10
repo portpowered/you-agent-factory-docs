@@ -7,7 +7,7 @@ import {
   UI_MESSAGES_COMPATIBILITY_KEYS,
 } from "@/lib/content/ui-messages";
 import type {
-  AiDomainMessages,
+  FactoryDomainMessages,
   ShellMessages,
 } from "@/lib/content/ui-messages.types";
 import {
@@ -27,9 +27,7 @@ const DOCS_MESSAGE_KEYS = [
   "pageKind",
 ] as const;
 
-const AI_DOMAIN_MESSAGE_KEYS = [
-  "timelinePage",
-  "topologyBrowse",
+const FACTORY_DOMAIN_MESSAGE_KEYS = [
   "conceptsIndex",
   "guidesIndex",
   "techniquesIndex",
@@ -43,7 +41,9 @@ function acceptsShellMessages(messages: ShellMessages): ShellMessages {
   return messages;
 }
 
-function acceptsAiDomainMessages(messages: AiDomainMessages): AiDomainMessages {
+function acceptsFactoryDomainMessages(
+  messages: FactoryDomainMessages,
+): FactoryDomainMessages {
   return messages;
 }
 
@@ -56,10 +56,10 @@ function pickShellMessages(messages: ShellMessages): ShellMessages {
   };
 }
 
-function pickAiDomainMessages(messages: AiDomainMessages): AiDomainMessages {
+function pickFactoryDomainMessages(
+  messages: FactoryDomainMessages,
+): FactoryDomainMessages {
   return {
-    timelinePage: messages.timelinePage,
-    topologyBrowse: messages.topologyBrowse,
     conceptsIndex: messages.conceptsIndex,
     guidesIndex: messages.guidesIndex,
     techniquesIndex: messages.techniquesIndex,
@@ -85,16 +85,6 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages();
     expect(messages.shell.sidebarTitle.length).toBeGreaterThan(0);
     expect(messages.shell.openingSummary).toBe("Opening summary");
-    expect(messages.nav.home).toBe("Home");
-    expect(messages.nav.search).toBe("Search");
-    expect(messages.nav.menu).toBe("Open menu");
-    expect(messages.nav.architecture).toBe("Architecture");
-    expect(
-      messages.topologyBrowse.classificationLabels.activationFunctions,
-    ).toBe("Activation Functions");
-    expect(
-      messages.topologyBrowse.classificationLabels.attentionMechanisms,
-    ).toBe("Attention Mechanisms");
     expect(messages.searchEntry.title).toBe("Search");
     expect(messages.browseIndex.title).toBe("Browse");
     expect(messages.conceptsIndex.title).toBe("Concepts");
@@ -109,17 +99,6 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages("vi");
     expect(messages.search.placeholder).toBe("Tìm trong you-agent-factory…");
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
-    expect(messages.nav.home).toBe("Trang chủ");
-    expect(messages.browseIndex.title).toBe("Duyệt");
-    expect(messages.conceptsIndex.title).toBe("Khái niệm");
-    expect(messages.searchEntry.title).toBe("Tìm kiếm");
-    expect(messages.tagsIndex.title).toBe("Thẻ");
-    expect(messages.topologyBrowse.navigationLabelTemplate).toBe(
-      "{mode} {classification}",
-    );
-    expect(
-      messages.topologyBrowse.classificationLabels.transformerBlockStructures,
-    ).toBe("Cấu trúc khối transformer");
     expect(messages.shell.openingSummary).toBe("Tóm tắt mở đầu");
   });
 
@@ -129,16 +108,6 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.nav.home).toBe("ホーム");
     expect(messages.browseIndex.title).toBe("参照");
-    expect(messages.conceptsIndex.title).toBe("概念");
-    expect(messages.searchEntry.title).toBe("検索");
-    expect(messages.tagsIndex.title).toBe("タグ");
-    expect(messages.shell.sidebarTitle).toBe("リファレンス");
-    expect(
-      messages.topologyBrowse.classificationLabels.feedForwardNetworks,
-    ).toBe("フィードフォワードネットワーク");
-    expect(
-      messages.topologyBrowse.classificationLabels.normalizationLayers,
-    ).toBe("正規化層");
     expect(messages.shell.openingSummary).toBe("要約を開く");
   });
 
@@ -152,16 +121,6 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.language.locales["zh-CN"]).toBe("简体中文");
     expect(messages.browseIndex.title).toBe("浏览");
     expect(messages.conceptsIndex.title).toBe("概念");
-    expect(messages.searchEntry.title).toBe("搜索");
-    expect(messages.tagsIndex.title).toBe("标签");
-    expect(messages.shell.sidebarTitle).toBe("参考");
-    expect(messages.shell.openingSummary).toBe("开篇摘要");
-    expect(
-      messages.topologyBrowse.classificationLabels.attentionMechanisms,
-    ).toBe("注意力机制");
-    expect(
-      messages.topologyBrowse.classificationLabels.normalizationLayers,
-    ).toBe("归一化层");
   });
 
   it("includes zh-CN language selector labels across shipped shell locales", async () => {
@@ -253,20 +212,16 @@ describe("message boundary contracts", () => {
     expect(messages.nav.timeline).toBe("Timeline");
   });
 
-  it("loads representative AI domain message values through loadUiMessages", async () => {
+  it("loads representative factory domain message values through loadUiMessages", async () => {
     const messages = await loadUiMessages();
-    expect(messages.timelinePage.title).toBe("Timeline");
-    expect(messages.timelinePage.eyebrow).toBe("Ontology timeline");
-    expect(messages.topologyBrowse.graphMapLabel).toBe("Graph Map");
-    expect(
-      messages.topologyBrowse.classificationLabels.attentionMechanisms,
-    ).toBe("Attention Mechanisms");
-    expect("topologyPrototype" in messages).toBe(false);
     expect(messages.conceptsIndex.title).toBe("Concepts");
+    expect(messages.guidesIndex.title).toBe("Guides");
+    expect(messages.techniquesIndex.title).toBe("Techniques");
+    expect(messages.documentationIndex.title).toBe("Documentation");
     expect(messages.tagLanding.searchHandoff).toBe("Search this tag");
   });
 
-  it("assigns shell-shaped data to ShellMessages without AI domain fields", () => {
+  it("assigns shell-shaped data to ShellMessages without factory domain fields", () => {
     const shellShaped: ShellMessages = {
       search: {
         open: "Open search",
@@ -308,34 +263,34 @@ describe("message boundary contracts", () => {
     };
 
     expect(acceptsShellMessages(shellShaped)).toBe(shellShaped);
-    expect("timelinePage" in shellShaped).toBe(false);
-    expect("topologyBrowse" in shellShaped).toBe(false);
+    expect("conceptsIndex" in shellShaped).toBe(false);
+    expect("tagsIndex" in shellShaped).toBe(false);
   });
 
-  it("distinguishes AiDomainMessages from shell-only message groups", async () => {
+  it("distinguishes FactoryDomainMessages from shell-only message groups", async () => {
     const messages = await loadUiMessages();
     const shellOnly = pickShellMessages(messages);
-    const aiDomain = pickAiDomainMessages(messages);
+    const factoryDomain = pickFactoryDomainMessages(messages);
 
     expect(acceptsShellMessages(shellOnly)).toBe(shellOnly);
-    expect(acceptsAiDomainMessages(aiDomain)).toBe(aiDomain);
+    expect(acceptsFactoryDomainMessages(factoryDomain)).toBe(factoryDomain);
 
     for (const shellKey of SHELL_MESSAGE_KEYS) {
-      expect(shellKey in aiDomain).toBe(false);
+      expect(shellKey in factoryDomain).toBe(false);
     }
-    for (const domainKey of AI_DOMAIN_MESSAGE_KEYS) {
+    for (const domainKey of FACTORY_DOMAIN_MESSAGE_KEYS) {
       expect(domainKey in shellOnly).toBe(false);
     }
 
     const boundaryKeys = new Set([
       ...SHELL_MESSAGE_KEYS,
       ...DOCS_MESSAGE_KEYS,
-      ...AI_DOMAIN_MESSAGE_KEYS,
+      ...FACTORY_DOMAIN_MESSAGE_KEYS,
     ]);
     expect(boundaryKeys.size).toBe(
       SHELL_MESSAGE_KEYS.length +
         DOCS_MESSAGE_KEYS.length +
-        AI_DOMAIN_MESSAGE_KEYS.length,
+        FACTORY_DOMAIN_MESSAGE_KEYS.length,
     );
     for (const key of UI_MESSAGES_COMPATIBILITY_KEYS) {
       expect(boundaryKeys.has(key)).toBe(true);

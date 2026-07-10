@@ -1,7 +1,7 @@
 import "./mock-navigation";
 import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
-import { ModulePageProviders } from "@/features/docs/components/ModulePageProviders";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import type { LoadedLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { expectNoSeriousAxeViolations } from "@/tests/a11y/axe";
@@ -23,12 +23,12 @@ describe("token glossary route accessibility smoke", () => {
   test("passes axe for converged token glossary article body", async () => {
     const { container } = render(
       <main>
-        <ModulePageProviders
+        <DocsPageProviders
           messages={loadedPage.messages}
           assets={loadedPage.assets}
         >
           {loadedPage.content}
-        </ModulePageProviders>
+        </DocsPageProviders>
       </main>,
     );
 

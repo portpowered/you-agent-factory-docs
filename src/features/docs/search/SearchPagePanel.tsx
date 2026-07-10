@@ -17,7 +17,7 @@ import {
 import { resolveSearchClassificationScope } from "@/lib/search/classification-scope";
 import { documentsByUrlFromMeta } from "@/lib/search/collapse-search-results-from-meta";
 import { SearchInlineResultItem } from "./SearchResults";
-import { useModelAtlasDocsSearch } from "./search-client";
+import { useDocsSearchClient } from "./search-client";
 import {
   EMPTY_SEARCH_PAGE_HANDOFF,
   encodeSearchPageHandoffKey,
@@ -86,7 +86,7 @@ export function SearchPagePanelContent({
   const activeClassification = classificationScope
     ? effectiveHandoff.classification
     : null;
-  const { search, setSearch, query } = useModelAtlasDocsSearch(
+  const { search, setSearch, query } = useDocsSearchClient(
     {
       metaByUrl,
       locale,

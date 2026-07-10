@@ -9,7 +9,7 @@ import {
 } from "bun:test";
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { ModelAtlasSearchDialog } from "@/features/docs/search/SearchDialog";
+import { DocsSearchDialog } from "@/features/docs/search/SearchDialog";
 import {
   captureOriginalFetch,
   loadAppTestContext,
@@ -34,7 +34,7 @@ function renderSearchDialog(
   context: Awaited<ReturnType<typeof loadAppTestContext>>,
 ) {
   return renderWithAppProviders(
-    <ModelAtlasSearchDialog
+    <DocsSearchDialog
       open
       onOpenChange={() => {}}
       metaByUrl={context.metaByUrl}

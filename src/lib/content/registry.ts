@@ -15,15 +15,10 @@ import {
   documentationRecordSchema,
   graphRecordSchema,
   guideRecordSchema,
-  modelRecordSchema,
-  moduleRecordSchema,
   organizationRecordSchema,
-  paperRecordSchema,
-  systemRecordSchema,
   type TagRecord,
   tagRecordSchema,
   techniqueRecordSchema,
-  trainingRegimeRecordSchema,
 } from "./schemas";
 import { validateSidebarGroupingForRecord } from "./sidebar-grouping";
 
@@ -50,16 +45,11 @@ const defaultRegistryRoot = REGISTRY_ROOT;
 type RegistryDirectory = {
   name: Exclude<RegistryCollection, "tables">;
   schema:
-    | typeof moduleRecordSchema
     | typeof conceptRecordSchema
     | typeof guideRecordSchema
     | typeof techniqueRecordSchema
     | typeof documentationRecordSchema
-    | typeof modelRecordSchema
     | typeof classificationRecordSchema
-    | typeof paperRecordSchema
-    | typeof trainingRegimeRecordSchema
-    | typeof systemRecordSchema
     | typeof datasetRecordSchema
     | typeof organizationRecordSchema
     | typeof tagRecordSchema
@@ -68,16 +58,11 @@ type RegistryDirectory = {
 };
 
 const registryDirectories: RegistryDirectory[] = [
-  { name: "modules", schema: moduleRecordSchema },
   { name: "concepts", schema: conceptRecordSchema },
   { name: "guides", schema: guideRecordSchema },
   { name: "techniques", schema: techniqueRecordSchema },
   { name: "documentation", schema: documentationRecordSchema },
-  { name: "models", schema: modelRecordSchema },
   { name: "classifications", schema: classificationRecordSchema },
-  { name: "papers", schema: paperRecordSchema },
-  { name: "training-regimes", schema: trainingRegimeRecordSchema },
-  { name: "systems", schema: systemRecordSchema },
   { name: "datasets", schema: datasetRecordSchema },
   { name: "organizations", schema: organizationRecordSchema },
   { name: "tags", schema: tagRecordSchema },
@@ -143,12 +128,7 @@ async function readRegistryDirectory(
     const sidebarGroupingRecord = result.data as
       | RegistryRecord
       | (RegistryRecord & { sidebarGrouping?: unknown });
-    if (
-      sidebarGroupingRecord.kind === "concept" ||
-      sidebarGroupingRecord.kind === "module" ||
-      sidebarGroupingRecord.kind === "training-regime" ||
-      sidebarGroupingRecord.kind === "system"
-    ) {
+    if (sidebarGroupingRecord.kind === "concept") {
       const sidebarIssues = validateSidebarGroupingForRecord(
         sidebarGroupingRecord.kind,
         sidebarGroupingRecord.id,
@@ -279,18 +259,10 @@ const classificationIdPattern = /^classification\.[a-z0-9]+(?:\.[a-z0-9-]+)*$/;
 const canonicalClassificationDomainKinds = new Map<
   string,
   ClassificationRecord["classifiesKinds"][number]
->([
-  ["module", "module"],
-  ["concept", "concept"],
-  ["training", "training-regime"],
-  ["system", "system"],
-]);
+>([["concept", "concept"]]);
 
 const recordsRequiringOntologyPrimaryClassification = new Set<string>([
   "concept.activation",
-  "training-regime.dpo",
-  "training-regime.grpo",
-  "system.routing",
 ]);
 
 const taxonomyExpectationPrefixes: Array<{
@@ -298,48 +270,8 @@ const taxonomyExpectationPrefixes: Array<{
   expectation: OntologyTaxonomyExpectation;
 }> = [
   {
-    classificationIdPrefix: "classification.module.activation",
-    expectation: { field: "moduleType", expectedValue: "activation" },
-  },
-  {
-    classificationIdPrefix: "classification.module.attention",
-    expectation: { field: "moduleType", expectedValue: "attention" },
-  },
-  {
-    classificationIdPrefix: "classification.module.feed-forward",
-    expectation: { field: "moduleType", expectedValue: "feed-forward" },
-  },
-  {
-    classificationIdPrefix: "classification.module.normalization",
-    expectation: { field: "moduleType", expectedValue: "normalization" },
-  },
-  {
-    classificationIdPrefix: "classification.module.positional-encoding",
-    expectation: { field: "moduleType", expectedValue: "position-encoding" },
-  },
-  {
-    classificationIdPrefix: "classification.module.tokenization",
-    expectation: { field: "moduleType", expectedValue: "tokenizer" },
-  },
-  {
-    classificationIdPrefix: "classification.module.transformer-block",
-    expectation: { field: "moduleType", expectedValue: "other" },
-  },
-  {
-    classificationIdPrefix: "classification.module.state-space",
-    expectation: { field: "moduleType", expectedValue: "state-space" },
-  },
-  {
     classificationIdPrefix: "classification.concept.architecture",
     expectation: { field: "conceptType", expectedValue: "architecture" },
-  },
-  {
-    classificationIdPrefix: "classification.training.alignment",
-    expectation: { field: "regimeType", expectedValue: "alignment" },
-  },
-  {
-    classificationIdPrefix: "classification.system.routing",
-    expectation: { field: "systemType", expectedValue: "routing" },
   },
 ];
 
@@ -367,24 +299,13 @@ function getExpectedParentClassificationId(
 function isOntologyParticipatingRecord(
   record: RegistryRecord,
 ): record is OntologyParticipatingRecord {
-  return (
-    record.kind === "module" ||
-    record.kind === "concept" ||
-    record.kind === "model" ||
-    record.kind === "paper" ||
-    record.kind === "training-regime" ||
-    record.kind === "system" ||
-    record.kind === "dataset"
-  );
+  return record.kind === "concept" || record.kind === "dataset";
 }
 
 function requiresPrimaryClassification(
   record: OntologyParticipatingRecord,
 ): boolean {
-  return (
-    record.kind === "module" ||
-    recordsRequiringOntologyPrimaryClassification.has(record.id)
-  );
+  return recordsRequiringOntologyPrimaryClassification.has(record.id);
 }
 
 function classificationMatchesPrefix(

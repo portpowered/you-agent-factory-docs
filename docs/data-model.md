@@ -243,9 +243,9 @@ to fill the page and should not be copied into `src/content/docs`. The
 `.messages.en.json` and `.assets.json` files are starter shapes for colocated
 page files.
 
-Use these factory templates as the default authoring path. Sibling Atlas
-templates (model, module, paper, training-regime, system) are not the starter
-path for new factory product pages.
+Use these factory templates as the default authoring path. Atlas authoring
+templates (model, module, paper, training-regime, system) are removed from the
+maintained inventory.
 
 The frontmatter schema for docs pages is:
 

@@ -24,36 +24,21 @@ function createTypedTaxonomyAuditResult(
         cluster: "search",
         status: "approved-compatibility-bridge",
         owner: "search/discovery",
-        fields: ["moduleType", "conceptType", "variantGroup"],
+        fields: ["conceptType"],
         evidence: [],
         rationale: "Compatibility bridge.",
         contractDrift: [],
         fieldReferences: [
           {
-            field: "moduleType",
-            line: 1,
-            text: "moduleType",
-          },
-          {
             field: "conceptType",
-            line: 2,
+            line: 1,
             text: "conceptType",
           },
-          {
-            field: "variantGroup",
-            line: 3,
-            text: "variantGroup",
-          },
-          ...Array.from({ length: 10 }, () => ({
-            field: "moduleType" as const,
-            line: 4,
-            text: "moduleType",
-          })),
         ],
       },
       {
         id: "search-document-ontology-first-facet-builder",
-        path: "src/lib/search/build-documents.ts",
+        path: "src/lib/search/enrich-search-document.ts",
         cluster: "search",
         status: "migrated-ontology-first-consumer",
         owner: "search/discovery",
@@ -80,11 +65,11 @@ function createTypedTaxonomyAuditResult(
         })),
       },
     ],
-    fieldInventory: ["moduleType", "conceptType", "variantGroup"],
+    fieldInventory: ["conceptType", "moduleType"],
     nextMigrationTarget: null,
     totals: {
       entryCount: 3,
-      fieldReferenceCount: 14,
+      fieldReferenceCount: 2,
       statusCounts: {
         "approved-compatibility-bridge": 2,
         "migrated-ontology-first-consumer": 1,
@@ -165,7 +150,7 @@ describe("legacy taxonomy compatibility budget", () => {
     expect(snapshot.status).toBe("drifted");
     expect(snapshot.legacyClassificationSurface.drift).toEqual(
       expect.arrayContaining([
-        "approved 8 bridges but found 9",
+        "approved 0 bridges but found 1",
         expect.stringContaining(
           'registry runtime legacy classification bridges added "classification.extra-legacy-bridge -> classification.module.attention"',
         ),
@@ -174,7 +159,7 @@ describe("legacy taxonomy compatibility budget", () => {
     expect(snapshot.deprecatedTypedTaxonomySurface.drift).toEqual(
       expect.arrayContaining([
         "approved 3 search-cluster entries but found 4",
-        "approved 14 search-cluster field references but found 15",
+        "approved 2 search-cluster field references but found 3",
         expect.stringContaining(
           'search typed-taxonomy compatibility cluster entries added "search-extra-compatibility-consumer"',
         ),
@@ -190,30 +175,21 @@ describe("legacy taxonomy compatibility budget", () => {
       auditedAtUtc: "2026-06-21T00:00:00.000Z",
       legacyClassificationBridges: approvedBridges.slice(0, -1),
       typedTaxonomyAudit: createTypedTaxonomyAuditResult({
-        entries: createTypedTaxonomyAuditResult()
-          .entries.filter(
-            (entry) => entry.id !== "search-document-public-facet-shape",
-          )
-          .map((entry) =>
-            entry.id === "search-document-facet-compatibility"
-              ? {
-                  ...entry,
-                  fieldReferences: entry.fieldReferences.slice(0, 4),
-                }
-              : entry,
-          ),
+        entries: createTypedTaxonomyAuditResult().entries.filter(
+          (entry) => entry.id !== "search-document-public-facet-shape",
+        ),
       }),
     });
 
     expect(result.status).toBe("aligned");
-    expect(result.legacyClassificationSurface.currentBridgeCount).toBe(7);
+    expect(result.legacyClassificationSurface.currentBridgeCount).toBe(0);
     expect(result.legacyClassificationSurface.drift).toEqual([]);
     expect(result.deprecatedTypedTaxonomySurface.currentEntryCount).toBe(2);
     expect(
       result.deprecatedTypedTaxonomySurface.currentFieldReferenceCount,
-    ).toBe(4);
+    ).toBe(1);
     expect(result.deprecatedTypedTaxonomySurface.currentFieldInventory).toEqual(
-      ["conceptType", "moduleType", "variantGroup"],
+      ["conceptType"],
     );
     expect(result.deprecatedTypedTaxonomySurface.drift).toEqual([]);
   });
@@ -235,7 +211,7 @@ describe("legacy taxonomy compatibility budget", () => {
     expect(result.status).toBe("drifted");
     expect(result.drift).toEqual(
       expect.arrayContaining([
-        "approved 8 bridges but found 9",
+        "approved 0 bridges but found 1",
         expect.stringContaining(
           'registry runtime legacy classification bridges added "classification.extra-legacy-bridge -> classification.module.attention"',
         ),
@@ -247,8 +223,8 @@ describe("legacy taxonomy compatibility budget", () => {
       "Legacy classification compatibility budget guard",
     );
     expect(report).toContain("Status: drifted");
-    expect(report).toContain("Approved baseline: 8 bridges");
-    expect(report).toContain("Current measured: 9 bridges");
+    expect(report).toContain("Approved baseline: 0 bridges");
+    expect(report).toContain("Current measured: 1 bridges");
   });
 
   test("keeps the legacy bridge guard green when the approved bridge inventory shrinks", () => {
@@ -262,12 +238,12 @@ describe("legacy taxonomy compatibility budget", () => {
     });
 
     expect(result.status).toBe("aligned");
-    expect(result.currentBridgeCount).toBe(7);
+    expect(result.currentBridgeCount).toBe(0);
     expect(result.drift).toEqual([]);
 
     const report = formatLegacyClassificationBudgetGuard(result);
     expect(report).toContain("Status: aligned");
-    expect(report).toContain("Current measured: 7 bridges");
+    expect(report).toContain("Current measured: 0 bridges");
     expect(report).toContain(
       "No legacy classification bridge growth detected.",
     );
@@ -281,17 +257,17 @@ describe("legacy taxonomy compatibility budget", () => {
 
     expect(result.status).toBe("aligned");
     expect(result.currentEntryCount).toBe(3);
-    expect(result.currentFieldReferenceCount).toBe(14);
+    expect(result.currentFieldReferenceCount).toBe(2);
     expect(result.currentEntries).toEqual([
       {
         id: "search-document-facet-compatibility",
         path: "src/lib/search/legacy-taxonomy-compat.ts",
-        fieldInventory: ["conceptType", "moduleType", "variantGroup"],
-        fieldReferenceCount: 13,
+        fieldInventory: ["conceptType"],
+        fieldReferenceCount: 1,
       },
       {
         id: "search-document-ontology-first-facet-builder",
-        path: "src/lib/search/build-documents.ts",
+        path: "src/lib/search/enrich-search-document.ts",
         fieldInventory: [],
         fieldReferenceCount: 0,
       },
@@ -309,7 +285,7 @@ describe("legacy taxonomy compatibility budget", () => {
     );
     expect(report).toContain("Status: aligned");
     expect(report).toContain(
-      "Approved baseline: 3 entries, 14 field references",
+      "Approved baseline: 3 entries, 2 field references",
     );
     expect(report).toContain(
       "No deprecated typed-taxonomy budget growth detected.",
@@ -417,12 +393,12 @@ describe("legacy taxonomy compatibility budget", () => {
 
     expect(result.status).toBe("aligned");
     expect(result.currentEntryCount).toBe(2);
-    expect(result.currentFieldReferenceCount).toBe(4);
+    expect(result.currentFieldReferenceCount).toBe(1);
     expect(result.drift).toEqual([]);
 
     const report = formatTypedTaxonomyBudgetGuard(result);
     expect(report).toContain("Status: aligned");
-    expect(report).toContain("Current measured: 2 entries, 4 field references");
+    expect(report).toContain("Current measured: 2 entries, 1 field references");
     expect(report).toContain(
       "No deprecated typed-taxonomy budget growth detected.",
     );

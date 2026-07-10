@@ -6,7 +6,6 @@ import {
   conceptRecordSchema,
   documentationRecordSchema,
   guideRecordSchema,
-  moduleRecordSchema,
   pageAssetConfigSchema,
   pageFrontmatterSchema,
   pageKindSchema,
@@ -19,7 +18,7 @@ import {
 import { validateSidebarGroupingForRecord } from "./sidebar-grouping";
 
 const validBaseFields = {
-  id: "module.grouped-query-attention",
+  id: "concept.grouped-query-attention",
   slug: "grouped-query-attention",
   defaultTitleKey: "title",
   defaultSummaryKey: "description",
@@ -34,25 +33,6 @@ const validBaseFields = {
 };
 
 describe("registry schemas", () => {
-  test("accepts a valid module record", () => {
-    const result = moduleRecordSchema.safeParse({
-      ...validBaseFields,
-      kind: "module",
-      moduleType: "attention",
-      optimizes: ["kv-cache"],
-      exampleModelIds: [],
-      improvesOnIds: [],
-      tradeoffIds: [],
-      usedByModelIds: [],
-      introducedByPaperIds: [],
-      mathLevel: "light",
-      sidebarGrouping: {
-        modules: "attention-foundations",
-      },
-    });
-    expect(result.success).toBe(true);
-  });
-
   test("accepts a valid tag record", () => {
     const result = tagRecordSchema.safeParse({
       ...validBaseFields,
@@ -100,12 +80,12 @@ describe("registry schemas", () => {
   test("accepts a valid classification record", () => {
     const result = classificationRecordSchema.safeParse({
       ...validBaseFields,
-      id: "classification.module.activation",
+      id: "classification.concept.activation",
       slug: "activation-functions",
       kind: "classification",
       classificationType: "family",
-      classifiesKinds: ["module"],
-      parentClassificationId: "classification.module",
+      classifiesKinds: ["concept"],
+      parentClassificationId: "classification.concept",
       legacyIds: ["classification.activation-functions"],
     });
     expect(result.success).toBe(true);
@@ -128,36 +108,31 @@ describe("registry schemas", () => {
 
   test("rejects base records missing required fields", () => {
     const result = baseRecordSchema.safeParse({
-      id: "module.incomplete",
-      kind: "module",
+      id: "concept.incomplete",
+      kind: "concept",
     });
     expect(result.success).toBe(false);
   });
 
-  test("rejects module records missing moduleType and related arrays", () => {
-    const result = moduleRecordSchema.safeParse({
+  test("rejects concept records missing conceptType or relationship arrays", () => {
+    const result = conceptRecordSchema.safeParse({
       ...validBaseFields,
-      kind: "module",
-      optimizes: ["kv-cache"],
-      mathLevel: "none",
+      id: "concept.token",
+      slug: "token",
+      kind: "concept",
     });
     expect(result.success).toBe(false);
   });
 
   test("accepts ontology metadata on participating records", () => {
-    const result = moduleRecordSchema.safeParse({
+    const result = conceptRecordSchema.safeParse({
       ...validBaseFields,
-      kind: "module",
-      moduleType: "activation",
-      optimizes: ["activation-sparsity"],
-      exampleModelIds: [],
-      improvesOnIds: [],
-      tradeoffIds: [],
-      usedByModelIds: [],
-      introducedByPaperIds: [],
-      mathLevel: "none",
-      primaryClassificationId: "classification.module.activation",
-      secondaryClassificationIds: ["classification.module.feed-forward"],
+      kind: "concept",
+      conceptType: "architecture",
+      prerequisiteIds: [],
+      explainsIds: [],
+      primaryClassificationId: "classification.concept.activation",
+      secondaryClassificationIds: ["classification.concept.architecture"],
       relationships: [
         {
           relationshipType: "uses",
@@ -169,17 +144,12 @@ describe("registry schemas", () => {
   });
 
   test("rejects malformed ontology relationships", () => {
-    const result = moduleRecordSchema.safeParse({
+    const result = conceptRecordSchema.safeParse({
       ...validBaseFields,
-      kind: "module",
-      moduleType: "activation",
-      optimizes: ["activation-sparsity"],
-      exampleModelIds: [],
-      improvesOnIds: [],
-      tradeoffIds: [],
-      usedByModelIds: [],
-      introducedByPaperIds: [],
-      mathLevel: "none",
+      kind: "concept",
+      conceptType: "architecture",
+      prerequisiteIds: [],
+      explainsIds: [],
       relationships: [
         {
           relationshipType: "uses",
@@ -191,61 +161,60 @@ describe("registry schemas", () => {
 
   test("reports unsupported sidebar grouping values with record id and value", () => {
     const issues = validateSidebarGroupingForRecord(
-      "module",
-      "module.grouped-query-attention",
+      "concept",
+      "concept.grouped-query-attention",
       {
-        primaryClassificationId: "classification.module.attention",
+        primaryClassificationId: "classification.concept.architecture",
         sidebarGrouping: {
-          modules: "wrong-group" as never,
+          concepts: "wrong-group" as never,
         },
       },
     );
     expect(issues).toHaveLength(1);
-    expect(issues[0]?.message).toContain("module.grouped-query-attention");
+    expect(issues[0]?.message).toContain("concept.grouped-query-attention");
     expect(issues[0]?.message).toContain('"wrong-group"');
   });
 
-  test("reports sidebar grouping sections that do not apply to the record kind", () => {
+  test("reports sidebar grouping sections that are not recognized at all", () => {
     const issues = validateSidebarGroupingForRecord(
-      "module",
-      "module.grouped-query-attention",
+      "concept",
+      "concept.grouped-query-attention",
       {
         sidebarGrouping: {
-          glossary: "model-taxonomy",
-        },
-      },
-    );
-    expect(issues).toHaveLength(1);
-    expect(issues[0]?.message).toContain("module.grouped-query-attention");
-    expect(issues[0]?.message).toContain("sidebarGrouping.glossary");
-  });
-
-  test("rejects redundant sidebar grouping overrides when ontology already resolves placement", () => {
-    const issues = validateSidebarGroupingForRecord(
-      "training-regime",
-      "training-regime.dpo",
-      {
-        primaryClassificationId: "classification.training.alignment",
-        sidebarGrouping: {
+          // @ts-expect-error unrecognized sidebar grouping section
           training: "alignment",
         },
       },
     );
     expect(issues).toHaveLength(1);
-    expect(issues[0]?.message).toContain("training-regime.dpo");
+    expect(issues[0]?.message).toContain("concept.grouped-query-attention");
     expect(issues[0]?.message).toContain(
-      'sidebarGrouping.training = "alignment"',
+      'unsupported sidebarGrouping section "training"',
+    );
+  });
+
+  test("rejects redundant sidebar grouping overrides when ontology already resolves placement", () => {
+    const issues = validateSidebarGroupingForRecord("concept", "concept.gelu", {
+      primaryClassificationId: "classification.concept.inference",
+      sidebarGrouping: {
+        concepts: "inference",
+      },
+    });
+    expect(issues).toHaveLength(1);
+    expect(issues[0]?.message).toContain("concept.gelu");
+    expect(issues[0]?.message).toContain(
+      'sidebarGrouping.concepts = "inference"',
     );
   });
 
   test("allows explicit sidebar overrides only when ontology is still too coarse", () => {
     const issues = validateSidebarGroupingForRecord(
-      "module",
-      "module.attention",
+      "concept",
+      "concept.attention",
       {
-        primaryClassificationId: "classification.module.attention",
+        primaryClassificationId: "classification.concept.architecture",
         sidebarGrouping: {
-          modules: "attention-foundations",
+          concepts: "long-context",
         },
       },
     );
@@ -273,16 +242,6 @@ describe("registry schemas", () => {
       title: "",
       url: "not-a-url",
       mla: "",
-    });
-    expect(result.success).toBe(false);
-  });
-
-  test("rejects concept records missing conceptType or relationship arrays", () => {
-    const result = conceptRecordSchema.safeParse({
-      ...validBaseFields,
-      id: "concept.token",
-      slug: "token",
-      kind: "concept",
     });
     expect(result.success).toBe(false);
   });
@@ -323,11 +282,23 @@ describe("registry schemas", () => {
       }).success,
     ).toBe(false);
   });
+
+  test("rejects retired Atlas product registry kinds", () => {
+    for (const kind of [
+      "model",
+      "module",
+      "paper",
+      "training-regime",
+      "system",
+    ] as const) {
+      expect(registryKindSchema.safeParse(kind).success).toBe(false);
+    }
+  });
 });
 
-const validModuleFrontmatter = {
-  kind: "module" as const,
-  registryId: "module.grouped-query-attention",
+const validConceptFrontmatter = {
+  kind: "concept" as const,
+  registryId: "concept.grouped-query-attention",
   messageNamespace: "local" as const,
   assetNamespace: "local" as const,
   tags: ["attention", "kv-cache"],
@@ -393,8 +364,8 @@ const validPageAssetConfig = {
 };
 
 describe("page schemas", () => {
-  test("accepts valid module page frontmatter", () => {
-    const result = pageFrontmatterSchema.safeParse(validModuleFrontmatter);
+  test("accepts valid concept page frontmatter", () => {
+    const result = pageFrontmatterSchema.safeParse(validConceptFrontmatter);
     expect(result.success).toBe(true);
   });
 
@@ -408,7 +379,7 @@ describe("page schemas", () => {
       expect(pageKindSchema.safeParse(kind).success).toBe(true);
       expect(
         pageFrontmatterSchema.safeParse({
-          ...validModuleFrontmatter,
+          ...validConceptFrontmatter,
           kind,
           registryId: `${kind}.example`,
         }).success,
@@ -418,10 +389,20 @@ describe("page schemas", () => {
     expect(pageKindSchema.safeParse("not-a-kind").success).toBe(false);
     expect(
       pageFrontmatterSchema.safeParse({
-        ...validModuleFrontmatter,
+        ...validConceptFrontmatter,
         kind: "not-a-kind",
       }).success,
     ).toBe(false);
+
+    for (const kind of [
+      "model",
+      "module",
+      "paper",
+      "training-regime",
+      "system",
+    ] as const) {
+      expect(pageKindSchema.safeParse(kind).success).toBe(false);
+    }
   });
 
   test("accepts valid page messages with nested sections and asset keys", () => {
@@ -434,10 +415,10 @@ describe("page schemas", () => {
     expect(result.success).toBe(true);
   });
 
-  test("rejects module frontmatter missing required fields", () => {
+  test("rejects concept frontmatter missing required fields", () => {
     const result = pageFrontmatterSchema.safeParse({
-      kind: "module",
-      registryId: "module.grouped-query-attention",
+      kind: "concept",
+      registryId: "concept.grouped-query-attention",
     });
     expect(result.success).toBe(false);
   });

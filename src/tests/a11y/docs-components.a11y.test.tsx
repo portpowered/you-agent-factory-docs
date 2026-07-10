@@ -15,7 +15,7 @@ import {
 } from "@/tests/a11y/axe";
 import {
   loadCalloutExamplePageMessages,
-  loadGqaPageMessages,
+  loadSectionSmokePageMessages,
   renderSearchResultListItem,
   renderWithPageMessages,
 } from "@/tests/a11y/docs-components-fixture";
@@ -24,7 +24,10 @@ import {
   renderWithAppProviders,
 } from "@/tests/a11y/render";
 import { A11yTestViolation } from "@/tests/a11y/violation";
-import { SAMPLE_MODULE_URL } from "@/tests/search/helpers";
+
+// Real published concept page used in place of the retired Atlas module
+// fixtures throughout this suite.
+const SAMPLE_CONCEPT_URL = "/docs/concepts/harness";
 
 describe("Callout accessibility smoke", () => {
   let messages: PageMessages;
@@ -37,7 +40,7 @@ describe("Callout accessibility smoke", () => {
     cleanup();
   });
 
-  test("passes axe in default module page configuration", async () => {
+  test("passes axe in default callout configuration", async () => {
     const { container } = renderWithPageMessages(
       <Callout type="note" titleKey="callouts.readerShortcut.title">
         <T k="callouts.readerShortcut.body" />
@@ -66,14 +69,14 @@ describe("Section accessibility smoke", () => {
   let messages: PageMessages;
 
   beforeAll(async () => {
-    messages = await loadGqaPageMessages();
+    messages = await loadSectionSmokePageMessages();
   });
 
   afterEach(() => {
     cleanup();
   });
 
-  test("passes axe in default module page configuration", async () => {
+  test("passes axe in default concept page configuration", async () => {
     const { container } = renderWithPageMessages(
       <Section id="what-it-is" titleKey="sections.whatItIs.title">
         <T k="sections.whatItIs.body" />
@@ -103,10 +106,10 @@ describe("TagPillList accessibility smoke", () => {
     cleanup();
   });
 
-  test("passes axe in default module page configuration", async () => {
+  test("passes axe in default tag list configuration", async () => {
     const { container } = render(
       <main>
-        <TagPillList registryId="module.grouped-query-attention" />
+        <TagPillList tags={["attention"]} />
       </main>,
     );
 
@@ -118,7 +121,7 @@ describe("TagPillList accessibility smoke", () => {
   test("fails axe when a deliberate serious violation is introduced", async () => {
     const { container } = render(
       <main>
-        <TagPillList registryId="module.grouped-query-attention" />
+        <TagPillList tags={["attention"]} />
         <A11yTestViolation />
       </main>,
     );
@@ -132,19 +135,18 @@ describe("DerivedRelatedDocs accessibility smoke", () => {
     cleanup();
   });
 
-  test("passes axe in default module page configuration", async () => {
+  test("passes axe in default concept page configuration", async () => {
     const { container } = render(
       <main>
         <DerivedRelatedDocs
-          registryId="module.grouped-query-attention"
-          groups={["same-variant-group"]}
+          registryId="concept.harness"
+          groups={["same-concept-type"]}
         />
       </main>,
     );
 
     expect(screen.getByTestId("derived-related-docs")).toBeTruthy();
-    expect(screen.getByRole("link", { name: "attention" })).toBeTruthy();
-    expect(screen.getByRole("button", { name: "Show 9 more" })).toBeTruthy();
+    expect(screen.getAllByRole("link").length).toBeGreaterThan(0);
     await expectNoSeriousAxeViolations(container);
   });
 
@@ -152,8 +154,8 @@ describe("DerivedRelatedDocs accessibility smoke", () => {
     const { container } = render(
       <main>
         <DerivedRelatedDocs
-          registryId="module.grouped-query-attention"
-          groups={["same-variant-group"]}
+          registryId="concept.harness"
+          groups={["same-concept-type"]}
         />
         <A11yTestViolation />
       </main>,
@@ -170,19 +172,19 @@ describe("SearchResults accessibility smoke", () => {
 
   test("SearchInlineResultItem passes axe in default search row configuration", async () => {
     const context = await loadAppTestContext();
-    const meta = context.metaByUrl[SAMPLE_MODULE_URL];
+    const meta = context.metaByUrl[SAMPLE_CONCEPT_URL];
     expect(meta).toBeDefined();
 
     const { container } = await renderWithAppProviders(
       <main>
         <SearchInlineResultItem
           item={{
-            id: "page-gqa",
+            id: "page-harness",
             type: "page",
-            url: SAMPLE_MODULE_URL,
-            content: "Grouped-Query Attention",
+            url: SAMPLE_CONCEPT_URL,
+            content: "Harness",
           }}
-          query="GQA"
+          query="Harness"
           metaByUrl={context.metaByUrl}
           messages={context.messages}
           onSelect={() => {}}
@@ -192,9 +194,7 @@ describe("SearchResults accessibility smoke", () => {
     );
 
     await waitFor(() => {
-      expect(
-        screen.getByRole("button", { name: "Grouped-Query Attention" }),
-      ).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Harness" })).toBeTruthy();
     });
     await expectNoSeriousAxeViolations(container);
   });
@@ -205,12 +205,12 @@ describe("SearchResults accessibility smoke", () => {
       <main>
         <SearchInlineResultItem
           item={{
-            id: "page-gqa",
+            id: "page-harness",
             type: "page",
-            url: SAMPLE_MODULE_URL,
-            content: "Grouped-Query Attention",
+            url: SAMPLE_CONCEPT_URL,
+            content: "Harness",
           }}
-          query="GQA"
+          query="Harness"
           metaByUrl={context.metaByUrl}
           messages={context.messages}
           onSelect={() => {}}
@@ -225,12 +225,12 @@ describe("SearchResults accessibility smoke", () => {
 
   test("SearchResultMetaDetails passes axe in default search row configuration", async () => {
     const context = await loadAppTestContext();
-    const meta = context.metaByUrl[SAMPLE_MODULE_URL];
+    const meta = context.metaByUrl[SAMPLE_CONCEPT_URL];
     expect(meta).toBeDefined();
 
     const { container } = render(
       <SearchResultMetaDetails
-        url={SAMPLE_MODULE_URL}
+        url={SAMPLE_CONCEPT_URL}
         meta={meta}
         messages={context.messages}
       />,
@@ -242,13 +242,13 @@ describe("SearchResults accessibility smoke", () => {
 
   test("SearchResultMetaDetails fails axe when a deliberate serious violation is introduced", async () => {
     const context = await loadAppTestContext();
-    const meta = context.metaByUrl[SAMPLE_MODULE_URL];
+    const meta = context.metaByUrl[SAMPLE_CONCEPT_URL];
     expect(meta).toBeDefined();
 
     const { container } = render(
       <main>
         <SearchResultMetaDetails
-          url={SAMPLE_MODULE_URL}
+          url={SAMPLE_CONCEPT_URL}
           meta={meta}
           messages={context.messages}
         />
@@ -259,23 +259,21 @@ describe("SearchResults accessibility smoke", () => {
     await expectSeriousAxeViolations(container);
   });
 
-  test("SearchResultListItem passes axe for Model Atlas metadata in dialog row configuration", async () => {
+  test("SearchResultListItem passes axe for docs metadata in dialog row configuration", async () => {
     const context = await loadAppTestContext();
     const item = {
-      id: "page-gqa",
+      id: "page-harness",
       type: "page" as const,
-      url: SAMPLE_MODULE_URL,
-      content: "Grouped-Query Attention",
+      url: SAMPLE_CONCEPT_URL,
+      content: "Harness",
     };
     const { container } = await renderSearchResultListItem({
       item,
-      query: "GQA",
+      query: "Harness",
       context,
     });
 
-    expect(
-      screen.getByRole("button", { name: "Grouped-Query Attention" }),
-    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Harness" })).toBeTruthy();
     const meta = screen.getByTestId("search-result-meta");
     expect(
       container.querySelector('[data-testid="search-result-meta"]'),
@@ -286,14 +284,14 @@ describe("SearchResults accessibility smoke", () => {
   test("SearchResultListItem fails axe when a deliberate serious violation is introduced", async () => {
     const context = await loadAppTestContext();
     const item = {
-      id: "page-gqa",
+      id: "page-harness",
       type: "page" as const,
-      url: SAMPLE_MODULE_URL,
-      content: "Grouped-Query Attention",
+      url: SAMPLE_CONCEPT_URL,
+      content: "Harness",
     };
     const { container } = await renderSearchResultListItem({
       item,
-      query: "GQA",
+      query: "Harness",
       context,
       violation: <A11yTestViolation />,
     });

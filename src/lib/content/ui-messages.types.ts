@@ -45,7 +45,7 @@ export type ShellLayoutMessages = {
 
 /**
  * Shell-level UI messages: search, navigation, language selector, and layout chrome.
- * Reusable across generic documentation shells without AI domain topology/timeline copy.
+ * Reusable across generic documentation shells without retired Atlas topology/timeline copy.
  */
 export type ShellMessages = {
   search: SearchMessages;
@@ -175,95 +175,27 @@ export type DocsMessages = {
   pageKind: Record<string, string>;
 };
 
-/** Ontology timeline page copy for the AI domain pack. */
-export type TimelinePageMessages = {
-  title: string;
-  description: string;
-  eyebrow: string;
-  successSummary: string;
-  loadingTitle: string;
-  loadingDescription: string;
-  errorTitle: string;
-  errorDescription: string;
-  selectorLabel: string;
-  eventCountLabel: string;
-  regionLabel: string;
-  docsLink: string;
-  sourcePrefix: string;
-  emptyTitle: string;
-  emptyDescription: string;
-  activationLink: string;
-};
-
-/** Classification labels used by topology browse surfaces. */
-export type TopologyBrowseClassificationLabels = {
-  activationFunctions: string;
-  attentionMechanisms: string;
-  feedForwardNetworks: string;
-  normalizationLayers: string;
-  positionEncodingMethods: string;
-  tokenizationMethods: string;
-  transformerBlockStructures: string;
-};
-
-/** Topology browse page copy for the AI domain pack. */
-export type TopologyBrowseMessages = {
-  titleTemplate: string;
-  descriptionTemplate: string;
-  navigationLabelTemplate: string;
-  graphMapLabel: string;
-  timelineLabel: string;
-  classificationLabels: TopologyBrowseClassificationLabels;
-  classificationSummaries: TopologyBrowseClassificationLabels;
-  classificationSelectorTitle: string;
-  classificationSelectorDescription: string;
-  classificationSelectorLabel: string;
-  selectedClassificationLabel: string;
-  selectedModeLabel: string;
-  membersTitle: string;
-  graphMapDescription: string;
-  timelineDescription: string;
-  invalidTitle: string;
-  invalidDescription: string;
-  invalidClassificationLabel: string;
-  invalidModeLabel: string;
-  missingValue: string;
-  emptyTitle: string;
-  emptyDescription: string;
-  validOptionsTitle: string;
-  memberListLabel: string;
-  classificationChildrenLabel: string;
-  recordChildrenLabel: string;
-  directMembersLabel: string;
-  totalMembersLabel: string;
-};
-
 /** Factory collection index landing pages (guides, concepts, techniques, documentation). */
-export type AiCollectionIndexMessages = {
+export type FactoryCollectionIndexMessages = {
   conceptsIndex: SectionIndexMessages;
   guidesIndex: SectionIndexMessages;
   techniquesIndex: SectionIndexMessages;
   documentationIndex: SectionIndexMessages;
 };
 
-/** AI tag index, landing, and category labels for the domain pack. */
-export type AiTagMessages = {
+/** Tag index, landing, and category labels for factory docs surfaces. */
+export type FactoryTagMessages = {
   tagsIndex: TagsIndexMessages;
   tagLanding: TagLandingMessages;
   tagCategories: Record<string, string>;
 };
 
 /**
- * AI domain UI messages: topology browse, timeline page, collection indexes,
- * and tag surfaces. The retired `/topology` explorer `topologyPrototype`
- * message block is intentionally absent from the public product surface.
+ * Factory docs surface messages: collection indexes and tag surfaces.
  * Excludes generic shell search, nav, language, and layout chrome.
  */
-export type AiDomainMessages = AiCollectionIndexMessages &
-  AiTagMessages & {
-    timelinePage: TimelinePageMessages;
-    topologyBrowse: TopologyBrowseMessages;
-  };
+export type FactoryDomainMessages = FactoryCollectionIndexMessages &
+  FactoryTagMessages;
 
 /**
  * Top-level message groups retained for current {@link UiMessages} consumers.
@@ -275,11 +207,9 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "nav",
   "language",
   "searchEntry",
-  "timelinePage",
   "shell",
   "home",
   "browseIndex",
-  "topologyBrowse",
   "conceptsIndex",
   "guidesIndex",
   "techniquesIndex",
@@ -297,13 +227,13 @@ export type UiMessagesCompatibilityKey =
   (typeof UI_MESSAGES_COMPATIBILITY_KEYS)[number];
 
 /**
- * Compatibility surface composing shell, docs, and AI domain message boundaries.
- * Preserves the exact top-level shape consumed by existing layout, search,
- * navigation, browse, topology, timeline, tags, and page-kind helpers.
+ * Compatibility surface composing shell, docs, and factory domain message boundaries.
+ * Preserves the top-level shape consumed by layout, search, navigation, browse,
+ * tags, and page-kind helpers.
  */
 export type UiMessagesCompatibility = ShellMessages &
   DocsMessages &
-  AiDomainMessages;
+  FactoryDomainMessages;
 
 /** Full shipped UI messages for current consumers. Alias of {@link UiMessagesCompatibility}. */
 export type UiMessages = UiMessagesCompatibility;

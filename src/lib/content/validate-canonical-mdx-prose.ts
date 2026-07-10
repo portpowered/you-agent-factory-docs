@@ -10,11 +10,6 @@ export const canonicalDocsPageKinds = new Set<PageKind>([
   "technique",
   "documentation",
   "glossary",
-  "module",
-  "model",
-  "paper",
-  "training-regime",
-  "system",
 ]);
 
 const MIN_LEAKED_PROSE_LENGTH = 24;

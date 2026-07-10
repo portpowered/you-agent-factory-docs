@@ -2,18 +2,16 @@ import { describe, expect, test } from "bun:test";
 import type { DocsPageSource } from "@/lib/content/pages";
 import { loadPublishedDocsPages } from "@/lib/content/pages";
 import { loadRegistry, type RegistryIndexes } from "@/lib/content/registry";
-import type { ModelRecord, ModuleRecord } from "@/lib/content/schemas";
+import type { ConceptRecord } from "@/lib/content/schemas";
 import {
   buildBaseSearchDocument,
   buildBaseSearchDocuments,
 } from "./build-base-document";
 import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
 
-const SAMPLE_URL = "/docs/modules/grouped-query-attention";
+const SAMPLE_URL = "/docs/concepts/harness";
 
-function buildRegistryIndexes(
-  records: Array<ModuleRecord | ModelRecord>,
-): RegistryIndexes {
+function buildRegistryIndexes(records: Array<ConceptRecord>): RegistryIndexes {
   return {
     byId: new Map(records.map((record) => [record.id, record])),
     bySlug: new Map(records.map((record) => [record.slug, record])),
@@ -25,11 +23,11 @@ function buildRegistryIndexes(
 
 function buildSyntheticPage(registryId: string): DocsPageSource {
   return {
-    pageDir: "/tmp/synthetic-module",
-    docsSlug: "modules/synthetic-module",
-    url: "/docs/modules/synthetic-module",
+    pageDir: "/tmp/synthetic-concept",
+    docsSlug: "concepts/synthetic-concept",
+    url: "/docs/concepts/synthetic-concept",
     frontmatter: {
-      kind: "module",
+      kind: "concept",
       registryId,
       messageNamespace: "local",
       assetNamespace: "local",
@@ -38,19 +36,19 @@ function buildSyntheticPage(registryId: string): DocsPageSource {
       updatedAt: "2026-06-20T00:00:00.000Z",
     },
     messages: {
-      title: "Synthetic Module",
-      description: "Synthetic module description",
+      title: "Synthetic Concept",
+      description: "Synthetic concept description",
     },
   };
 }
 
-function buildSyntheticModule(
-  overrides: Partial<ModuleRecord> = {},
-): ModuleRecord {
+function buildSyntheticConcept(
+  overrides: Partial<ConceptRecord> = {},
+): ConceptRecord {
   return {
-    id: "module.synthetic-module",
-    slug: "synthetic-module",
-    kind: "module",
+    id: "concept.synthetic-concept",
+    slug: "synthetic-concept",
+    kind: "concept",
     defaultTitleKey: "title",
     defaultSummaryKey: "description",
     aliases: [],
@@ -60,49 +58,16 @@ function buildSyntheticModule(
     status: "published",
     createdAt: "2026-06-20T00:00:00.000Z",
     updatedAt: "2026-06-20T00:00:00.000Z",
-    moduleType: "other",
-    optimizes: ["kv-cache"],
-    exampleModelIds: [],
-    improvesOnIds: [],
-    tradeoffIds: [],
-    usedByModelIds: [],
-    introducedByPaperIds: [],
-    mathLevel: "none",
-    primaryClassificationId: "classification.module.attention",
+    conceptType: "systems",
+    prerequisiteIds: [],
+    explainsIds: [],
+    primaryClassificationId: "classification.concept.architecture",
     relationships: [
       {
         relationshipType: "related",
-        targetId: "module.missing-neighbor",
+        targetId: "concept.missing-neighbor",
       },
     ],
-    ...overrides,
-  };
-}
-
-function buildSyntheticModel(
-  overrides: Partial<ModelRecord> = {},
-): ModelRecord {
-  return {
-    id: "model.synthetic-model",
-    slug: "synthetic-model",
-    kind: "model",
-    defaultTitleKey: "title",
-    defaultSummaryKey: "description",
-    aliases: [],
-    tags: [],
-    relatedIds: [],
-    citationIds: [],
-    status: "published",
-    createdAt: "2026-06-20T00:00:00.000Z",
-    updatedAt: "2026-06-20T00:00:00.000Z",
-    family: "gpt",
-    sourceType: "closed",
-    modalities: ["text"],
-    trainingRegimeIds: ["training-regime.pretraining"],
-    architectureIds: [],
-    moduleIds: [],
-    datasetIds: [],
-    paperIds: [],
     ...overrides,
   };
 }
@@ -120,86 +85,45 @@ describe("buildBaseSearchDocument", () => {
     const document = buildBaseSearchDocument(page, registry);
 
     expect(document.id).toBe(page.url);
-    expect(document.registryId).toBe("module.grouped-query-attention");
+    expect(document.registryId).toBe("concept.harness");
     expect(document.url).toBe(SAMPLE_URL);
-    expect(document.kind).toBe("module");
-    expect(document.title).toBe("Grouped-Query Attention");
-    expect(document.description).toContain("key-value cache");
-    expect(document.bodyText).toContain("GQA");
+    expect(document.kind).toBe("concept");
+    expect(document.title).toBe("Harness");
+    expect(document.description).toContain("agent runtime");
+    expect(document.bodyText).toContain("harness");
     expect(document.headings.length).toBeGreaterThan(0);
     expect(document.directAliases).toEqual(
-      expect.arrayContaining([
-        "GQA",
-        "grouped-query attention",
-        "grouped query attention",
-      ]),
+      expect.arrayContaining(["harness", "agent runtime"]),
     );
-    expect(document.aliases).toEqual(
-      expect.arrayContaining([
-        "GQA",
-        "grouped-query attention",
-        "grouped query attention",
-        "attention",
-        "kv-cache",
-      ]),
-    );
-    expect(document.tags).toEqual(
-      expect.arrayContaining(["attention", "kv-cache"]),
-    );
-    expect(document.relatedIds.length).toBeGreaterThan(0);
   });
 
   test("does not compute ontology, model, or module optimization facets", () => {
-    const moduleRecord = buildSyntheticModule({
-      moduleFamily: "attention",
-      conceptType: "attention-variant",
-      variantGroup: "attention-head-sharing",
-    });
-    const modelRecord = buildSyntheticModel();
-    const indexes = buildRegistryIndexes([moduleRecord, modelRecord]);
+    const conceptRecord = buildSyntheticConcept();
+    const indexes = buildRegistryIndexes([conceptRecord]);
 
-    const moduleDocument = buildBaseSearchDocument(
-      buildSyntheticPage(moduleRecord.id),
-      indexes,
-    );
-    const modelDocument = buildBaseSearchDocument(
-      {
-        ...buildSyntheticPage(modelRecord.id),
-        frontmatter: {
-          ...buildSyntheticPage(modelRecord.id).frontmatter,
-          kind: "model",
-        },
-      },
+    const conceptDocument = buildBaseSearchDocument(
+      buildSyntheticPage(conceptRecord.id),
       indexes,
     );
 
-    expect(moduleDocument.facets).toEqual({
-      kind: "module",
+    expect(conceptDocument.facets).toEqual({
+      kind: "concept",
       tags: [],
     });
-    expect(moduleDocument.topology).toEqual(EMPTY_SEARCH_DOCUMENT_TOPOLOGY);
-    expect(moduleDocument.facets).not.toHaveProperty("moduleType");
-    expect(moduleDocument.facets).not.toHaveProperty("optimizes");
-    expect(moduleDocument.facets).not.toHaveProperty("primaryClassificationId");
-    expect(moduleDocument.facets).not.toHaveProperty("legacyModuleFamily");
-
-    expect(modelDocument.facets).toEqual({
-      kind: "model",
-      tags: [],
-    });
-    expect(modelDocument.topology).toEqual(EMPTY_SEARCH_DOCUMENT_TOPOLOGY);
-    expect(modelDocument.facets).not.toHaveProperty("modelFamily");
-    expect(modelDocument.facets).not.toHaveProperty("sourceType");
-    expect(modelDocument.facets).not.toHaveProperty("modalities");
-    expect(modelDocument.facets).not.toHaveProperty("trainingRegimeIds");
+    expect(conceptDocument.topology).toEqual(EMPTY_SEARCH_DOCUMENT_TOPOLOGY);
+    expect(conceptDocument.facets).not.toHaveProperty("moduleType");
+    expect(conceptDocument.facets).not.toHaveProperty("optimizes");
+    expect(conceptDocument.facets).not.toHaveProperty(
+      "primaryClassificationId",
+    );
+    expect(conceptDocument.facets).not.toHaveProperty("legacyModuleFamily");
   });
 
   test("keeps pages without ontology fields searchable with empty topology and generic facets", () => {
-    const record = buildSyntheticModule({
+    const record = buildSyntheticConcept({
       primaryClassificationId: undefined,
       secondaryClassificationIds: undefined,
       relationships: undefined,
-      optimizes: undefined,
     });
     const document = buildBaseSearchDocuments(
       [buildSyntheticPage(record.id)],
@@ -208,10 +132,10 @@ describe("buildBaseSearchDocument", () => {
 
     expect(document?.topology).toEqual(EMPTY_SEARCH_DOCUMENT_TOPOLOGY);
     expect(document?.facets).toEqual({
-      kind: "module",
+      kind: "concept",
       tags: [],
     });
-    expect(document?.title).toBe("Synthetic Module");
+    expect(document?.title).toBe("Synthetic Concept");
     expect(document?.aliases).toEqual([]);
     expect(document?.relatedIds).toEqual([]);
   });

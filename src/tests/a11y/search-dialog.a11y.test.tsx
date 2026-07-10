@@ -1,7 +1,7 @@
 import "./mock-navigation";
 import { afterEach, beforeAll, describe, expect, spyOn, test } from "bun:test";
 import { cleanup, screen, waitFor, within } from "@testing-library/react";
-import { ModelAtlasSearchDialog } from "@/features/docs/search/SearchDialog";
+import { DocsSearchDialog } from "@/features/docs/search/SearchDialog";
 import { expectNoSeriousAxeViolations } from "@/tests/a11y/axe";
 import {
   captureOriginalFetch,
@@ -25,7 +25,7 @@ describe("search dialog accessibility smoke", () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
     await renderWithAppProviders(
-      <ModelAtlasSearchDialog
+      <DocsSearchDialog
         open
         onOpenChange={() => {}}
         metaByUrl={context.metaByUrl}
@@ -54,7 +54,7 @@ describe("search dialog accessibility smoke", () => {
     const searchClient = await import("@/features/docs/search/search-client");
     const useSearchSpy = spyOn(
       searchClient,
-      "useModelAtlasDocsSearch",
+      "useDocsSearchClient",
     ).mockReturnValue({
       search: "GQA",
       setSearch: () => {},
@@ -62,11 +62,11 @@ describe("search dialog accessibility smoke", () => {
         isLoading: true,
         data: undefined,
       },
-    } as unknown as ReturnType<typeof searchClient.useModelAtlasDocsSearch>);
+    } as unknown as ReturnType<typeof searchClient.useDocsSearchClient>);
 
     try {
       await renderWithAppProviders(
-        <ModelAtlasSearchDialog
+        <DocsSearchDialog
           open
           onOpenChange={() => {}}
           metaByUrl={context.metaByUrl}

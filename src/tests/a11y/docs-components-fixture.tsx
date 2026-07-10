@@ -29,12 +29,11 @@ const messageFixture = JSON.parse(
   ),
 );
 
-let cachedGqaMessages: PageMessages | null = null;
+let cachedSectionSmokeMessages: PageMessages | null = null;
 let cachedCalloutExampleMessages: PageMessages | null = null;
-const groupedQueryAttentionPageDir = getDocsPageDir(
-  "modules",
-  "grouped-query-attention",
-);
+// Real published concept page used as a stand-in for a "default module page
+// configuration" fixture now that Atlas module pages no longer exist.
+const sectionSmokePageDir = getDocsPageDir("concepts", "harness");
 
 export function loadCalloutExamplePageMessages(): PageMessages {
   if (cachedCalloutExampleMessages) {
@@ -44,15 +43,15 @@ export function loadCalloutExamplePageMessages(): PageMessages {
   return cachedCalloutExampleMessages;
 }
 
-export async function loadGqaPageMessages(): Promise<PageMessages> {
-  if (cachedGqaMessages) {
-    return cachedGqaMessages;
+export async function loadSectionSmokePageMessages(): Promise<PageMessages> {
+  if (cachedSectionSmokeMessages) {
+    return cachedSectionSmokeMessages;
   }
-  cachedGqaMessages = await loadPageMessages(
-    groupedQueryAttentionPageDir,
+  cachedSectionSmokeMessages = await loadPageMessages(
+    sectionSmokePageDir,
     "en",
   );
-  return cachedGqaMessages;
+  return cachedSectionSmokeMessages;
 }
 
 type RenderWithPageMessagesOptions = Omit<RenderOptions, "wrapper"> & {

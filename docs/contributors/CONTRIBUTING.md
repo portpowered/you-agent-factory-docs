@@ -84,10 +84,9 @@ pages):
 | Glossary | `glossary.mdx` | `glossary.content.md`, `glossary.messages.en.json`, `glossary.assets.json` | `src/content/docs/glossary/<slug>/` |
 | Blog post | `blog-post.mdx` | `blog-post.content.md`, `blog-post.messages.en.json`, `blog-post.assets.json` | `src/content/blog/<slug>/` |
 
-Sibling Atlas templates (`model`, `module`, `paper`, `training-regime`,
-`system`) may still exist in the tree during migration. They are not required
-starter paths for new factory product pages. Prefer the factory inventory above
-unless you are maintaining an existing Atlas-era page.
+Atlas authoring templates (`model`, `module`, `paper`, `training-regime`,
+`system`) are no longer in the maintained inventory. Use the factory inventory
+above for new product pages.
 
 Starter artifact roles:
 
@@ -128,9 +127,10 @@ the registry record:
 bun run generate:page-bundle -- --spec page-specs/page-spec-workflow-sample.json --dry-run
 ```
 
-See `page-specs/` for checked-in sample inputs across the supported canonical
-kinds and `bun run generate:page-bundle -- --help` for the full checked-in
-contract.
+See `page-specs/` for checked-in sample inputs across the supported page-spec
+kinds (`concept` and `glossary`) and `bun run generate:page-bundle -- --help`
+for the full checked-in contract. Atlas model/module/paper/training-regime
+samples are retired — do not restore them.
 
 **Legacy scaffold** — `scaffold:doc-page` still generates concept and glossary
 bundles from CLI flags for backward compatibility. Its `--help` output points
@@ -506,6 +506,7 @@ run these lightweight checks often:
 | `make validate-data` | `bun ./scripts/validate-registry.ts` | Registry schema, frontmatter ↔ registry alignment, derived published-page bundle coverage for ordinary docs pages, message keys referenced from MDX, asset ids, graph/table references, tag and citation resolution, and colocated `messages/` + `assets.json` bundles under `src/content/docs/` |
 | `bun run audit:canonical-page-surface` | `bun ./scripts/audit-canonical-page-surface.ts` | Whether one canonical-page branch still fits the routine owned-file budget or has spilled into shared hotspot surfaces that need either a visible exception or a broader throughput lane |
 | `bun run check:retired-product-docs` | `bun ./scripts/check-retired-product-docs-consistency.ts` | Architecture/authoring docs do not reintroduce retired product identity (Model Reference / Model Atlas / Learn Language Models) or retired public route families (`/docs/models`, `/docs/modules`, `/docs/papers`, `/docs/training`) as the live product; exclusion/denylist wording is allowed |
+| `bun run audit:retired-ai-content-infrastructure` | `bun ./scripts/audit-retired-ai-content-infrastructure.ts` | Deleted Atlas content infrastructure stays gone: retired routes/kinds/owned paths are not reintroduced as live product surfaces; genuine factory provider / external-model configuration wording remains allowed |
 | `make linkcheck` | `bun ./scripts/validate-links.ts` | Internal links and `#section` anchors in published docs pages served through the Fumadocs catch-all route (`src/content/docs/**/page.mdx`) |
 
 `make validate-data` is the primary gate for docs content work. It catches the
@@ -1167,7 +1168,7 @@ workflows behave as described.
 | Verification surface | Path |
 | --- | --- |
 | Contributor workflow command test | `src/tests/ci/contributor-guide-alignment.test.ts` |
-| Page-spec workflow | `scripts/generate-page-bundle.ts`, `page-specs/page-spec-workflow-sample.json` |
+| Page-spec workflow | `scripts/generate-page-bundle.ts`, `page-specs/page-spec-workflow-sample.json`, `page-specs/glossary-page-spec-workflow-sample.json` |
 | Legacy scaffold kinds | `src/lib/content/scaffold-doc-page.ts` (`SCAFFOLD_DOC_PAGE_KINDS`) |
 | Production templates | `docs/templates/*.mdx` and starter sidecars |
 | Factory batch docs | `factory/docs/overview.md`, `factory/docs/batch-inputs.md`, `factory/docs/batch-input-example.json` |

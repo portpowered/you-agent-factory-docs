@@ -14,15 +14,7 @@ const LEGACY_SUMMARY_MDX_MARKERS = [
   "<GlossaryOpening",
 ] as const;
 
-const GRAPH_COMPONENT_NAMES = [
-  "ModuleGraph",
-  "ModuleChart",
-  "ConceptMap",
-  "ModelArchitectureGraph",
-  "PaperContributionGraph",
-  "SystemFlowGraph",
-  "TrainingRegimeFlow",
-] as const;
+const GRAPH_COMPONENT_NAMES = ["ConceptMap"] as const;
 
 type GraphComponentName = (typeof GRAPH_COMPONENT_NAMES)[number];
 
@@ -33,11 +25,6 @@ type GraphPlacementRule = {
   minPrimaryGraphComponents?: number;
 };
 
-/**
- * Atlas graph/chart MDX components were deleted with `src/features/models`.
- * Rules no longer require those tags on templates; they only validate leftover
- * tags if an author still embeds them (assetId / section placement).
- */
 const graphPlacementRulesByKind: Partial<Record<PageKind, GraphPlacementRule>> =
   {
     concept: {
@@ -46,22 +33,6 @@ const graphPlacementRulesByKind: Partial<Record<PageKind, GraphPlacementRule>> =
     glossary: {
       components: ["ConceptMap"],
     },
-    module: {
-      components: ["ModuleGraph", "ModuleChart"],
-      forbiddenSectionIds: ["math-or-compute-schema"],
-    },
-    model: {
-      components: ["ModelArchitectureGraph"],
-    },
-    paper: {
-      components: ["PaperContributionGraph"],
-    },
-    "training-regime": {
-      components: ["TrainingRegimeFlow"],
-    },
-    system: {
-      components: ["SystemFlowGraph"],
-    },
   };
 
 function isGraphAssetType(type: string): boolean {
@@ -69,13 +40,9 @@ function isGraphAssetType(type: string): boolean {
 }
 
 function matchesSupportedAssetType(
-  component: GraphComponentName,
+  _component: GraphComponentName,
   assetType: string,
 ): boolean {
-  if (component === "ModuleChart") {
-    return assetType === "chart";
-  }
-
   return isGraphAssetType(assetType);
 }
 
@@ -211,121 +178,21 @@ export function validateGeneratedKindSpecificStructure(options: {
     );
   }
 
-  if (kind === "paper") {
-    for (const sectionId of [
-      "what-the-paper-introduced",
-      "what-it-connects-to",
-    ]) {
-      if (sectionSlice(mdxBody, sectionId)) {
-        errors.push({
-          code: "forbidden-duplicate-related-section",
-          message: `${pagePath}: paper pages must not include section id="${sectionId}"`,
-          path: pagePath,
-        });
-      }
-    }
-  }
-
-  if (kind === "paper" || kind === "training-regime" || kind === "system") {
-    errors.push(
-      ...sectionMustContain(
-        pagePath,
-        mdxBody,
-        "related",
-        "<RelatedDocs",
-        "missing-related-docs-component",
-        "RelatedDocs",
-      ),
-    );
-
-    for (const forbiddenComponent of [
-      "RegistryAssociatedRecords",
-      "RegistryDeepLinkList",
-      "DerivedRelatedDocs",
-    ]) {
-      if (mdxBody.includes(`<${forbiddenComponent}`)) {
-        errors.push({
-          code: "forbidden-duplicate-related-component",
-          message: `${pagePath}: ${kind} pages must not include ${forbiddenComponent}; use RelatedDocs in the related section`,
-          path: pagePath,
-        });
-      }
-    }
-  }
-
-  if (
-    kind === "training-regime" &&
-    sectionSlice(mdxBody, "models-and-papers")
-  ) {
-    errors.push({
-      code: "forbidden-duplicate-related-section",
-      message: `${pagePath}: training-regime pages must not include section id="models-and-papers"`,
-      path: pagePath,
-    });
-  }
-
-  if (kind === "system" && sectionSlice(mdxBody, "associated-records")) {
-    errors.push({
-      code: "forbidden-duplicate-related-section",
-      message: `${pagePath}: system pages must not include section id="associated-records"`,
-      path: pagePath,
-    });
-  }
-
-  if (kind === "training-regime" || kind === "system") {
-    if (!mdxBody.includes("<BlockMath") && !mdxBody.includes("$$")) {
-      errors.push({
-        code: "missing-required-math",
-        message: `${pagePath}: ${kind} pages must include at least one formula or BlockMath expression`,
-        path: pagePath,
-      });
-    }
-  }
-
   return errors;
 }
 
-export function validateGeneratedAssetRules(options: {
+/**
+ * Model-kind asset caption rules applied only to the retired Model Atlas
+ * `model` page kind. No current factory page kind opts in, so this is a
+ * no-op today; kept as a stable extension point for `validateGeneratedCanonicalDocs`.
+ */
+export function validateGeneratedAssetRules(_options: {
   pagePath: string;
   kind: PageKind;
   assets: PageAssetConfig;
   messages: PageMessages;
 }): ValidationError[] {
-  const { pagePath, kind, assets, messages } = options;
-  const assetsPath = pagePath.replace(/page\.mdx$/, "assets.json");
-  const messagesPath = pagePath.replace(/page\.mdx$/, "messages/en.json");
-  const errors: ValidationError[] = [];
-
-  if (kind !== "model") {
-    return errors;
-  }
-
-  for (const [assetId, asset] of Object.entries(assets)) {
-    const disallowCaption = asset.type === "graph" || asset.type === "table";
-
-    if (!disallowCaption) {
-      continue;
-    }
-
-    if ("captionKey" in asset && asset.captionKey) {
-      errors.push({
-        code: "forbidden-model-asset-caption",
-        message: `${assetsPath}: model asset "${assetId}" must not define captionKey`,
-        path: assetsPath,
-      });
-    }
-
-    const caption = messages.assets?.[assetId]?.caption;
-    if (caption) {
-      errors.push({
-        code: "forbidden-model-asset-caption-message",
-        message: `${messagesPath}: model asset "${assetId}" must not define caption text`,
-        path: messagesPath,
-      });
-    }
-  }
-
-  return errors;
+  return [];
 }
 
 export function validateGeneratedGraphPlacement(options: {
@@ -388,10 +255,7 @@ export function validateGeneratedGraphPlacement(options: {
     }
 
     if (!matchesSupportedAssetType(component, asset.type)) {
-      const requiredType =
-        component === "ModuleChart"
-          ? 'type "chart"'
-          : 'type "graph" or "attention-variant-graph"';
+      const requiredType = 'type "graph" or "attention-variant-graph"';
       errors.push({
         code: "graph-asset-type-mismatch",
         message: `${assetsPath}: asset "${assetId}" referenced by ${component} must have ${requiredType}`,
