@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a factory metrics exposure reference for you-agent-factory. It is not a sync of packaged CLI docs, not logs, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."
+      "body": "This page is a factory metrics exposure reference for you-agent-factory operators watching a live Factory Session. It is not a sync of packaged CLI docs, not a logs or diagnostic-event reference, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."
     },
     "related": {
       "title": "Related To"
@@ -58,6 +58,11 @@
     "statusResourcesMeaning": "Optional resource usage entries when the factory declares resources.",
     "statusReadTogetherNote": "A factory can be RUNNING while runtimeStatus is IDLE when the host is up but no work is in flight. Read factoryState, runtimeStatus, and categories together when deciding whether to submit more work or wait for completion.",
     "dashboardUrlLabel": "Default local dashboard URL (service started without quiet mode):",
-    "dashboardHostNote": "Use the same host and port as the API unless the process that bound the listener used a different server or port setting."
+    "dashboardHostNote": "Use the same host and port as the API unless the process that bound the listener used a different server or port setting.",
+    "siblingDiscoveryIntro": "Use factory-session for discover, inspect, and lifecycle control; SPC graphs for control-limit reading; bottlenecks and tokens for interpretation depth. Logs and API doc pages will cover diagnostic event surfaces and broader OpenAPI contracts when those documentation siblings are published.",
+    "factorySessionDocs": "Factory session",
+    "spcGraphsConcept": "Statistical process control graphs",
+    "bottlenecksConcept": "Bottlenecks",
+    "tokensConcept": "Tokens"
   }
 }

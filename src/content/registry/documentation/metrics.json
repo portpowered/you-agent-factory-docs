@@ -6,9 +6,14 @@
   "defaultSummaryKey": "description",
   "aliases": ["factory metrics", "ops metrics", "session metrics"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.factory-session",
+    "concept.statistical-process-control-graphs",
+    "concept.bottlenecks",
+    "concept.tokens"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T09:12:59.000Z",
-  "updatedAt": "2026-07-10T09:12:59.000Z"
+  "updatedAt": "2026-07-10T10:30:00.000Z"
 }

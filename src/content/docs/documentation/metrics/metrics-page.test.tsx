@@ -2,7 +2,8 @@
  * Page-owned render proof for documentation/metrics.
  * Covers documentation shell, factory-ops metrics identity, the
  * what-it-covers / key-concepts live-run narrative, status/dashboard
- * copyable guidance, and the factory-ui metrics teaching chart.
+ * copyable guidance, the factory-ui metrics teaching chart, limits
+ * scope copy, and sibling discovery links.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -101,6 +102,11 @@ describe("metrics documentation page", () => {
     expect(metricsChart).toMatch(/processing|terminal|failed|categories/i);
 
     expect(limits).toMatch(/factory metrics exposure reference/i);
+    expect(limits).toMatch(/not a sync of packaged CLI/i);
+    expect(limits).toMatch(/not a logs|not logs/i);
+    expect(limits).toMatch(/not OpenAPI|API reference/i);
+    expect(limits).toMatch(/not SPC control-chart/i);
+    expect(limits).toMatch(/not bottleneck diagnosis/i);
     expect(limits).toMatch(/not Model Atlas/i);
     // Scope copy may say "not Model Atlas"; reject page-meta / shortcut prose only.
     expect(whatItCovers).not.toMatch(/on this page|reader.?shortcut/i);
@@ -197,6 +203,43 @@ describe("metrics documentation page", () => {
     expect(legendQueries.getByText("Processing")).toBeTruthy();
     expect(legendQueries.getByText("Terminal")).toBeTruthy();
     expect(legendQueries.getByText("Failed")).toBeTruthy();
+
+    const limitsSection = document.getElementById("limits-and-assumptions");
+    expect(limitsSection?.textContent).toMatch(
+      /factory metrics exposure reference/i,
+    );
+    expect(limitsSection?.textContent).toMatch(/not a sync of packaged CLI/i);
+    expect(limitsSection?.textContent).toMatch(/not Model Atlas/i);
+    expect(limitsSection?.textContent).toMatch(/not bottleneck diagnosis/i);
+    expect(limitsSection?.textContent).toMatch(/not SPC control-chart/i);
+
+    const relatedSection = document.getElementById("related");
+    expect(relatedSection?.textContent).toMatch(/factory-session/i);
+    expect(relatedSection?.textContent).toMatch(/SPC graphs|control-limit/i);
+    expect(relatedSection?.textContent).toMatch(/bottlenecks/i);
+    expect(relatedSection?.textContent).toMatch(/tokens/i);
+    expect(relatedSection?.textContent).toMatch(/Logs|API doc/i);
+    const relatedQueries = within(relatedSection as HTMLElement);
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Factory session" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/factory-session");
+    expect(
+      relatedQueries
+        .getByRole("link", {
+          name: "Statistical process control graphs",
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts/statistical-process-control-graphs");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Bottlenecks" })
+        .getAttribute("href"),
+    ).toBe("/docs/concepts/bottlenecks");
+    expect(
+      relatedQueries.getByRole("link", { name: "Tokens" }).getAttribute("href"),
+    ).toBe("/docs/concepts/tokens");
 
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
   });
