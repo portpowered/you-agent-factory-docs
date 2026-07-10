@@ -113,6 +113,15 @@ equivalent discovery section). Leave concept `relatedIds` empty for those guide
 ids — they will not render under `<RelatedDocs />` until guides join the related
 registry runtime.
 
+Concept → documentation discovery has the same gap: `listRelatedRegistryRecords()`
+omits `documentation` kinds, so a concept page that needs visible links to
+configuration / workstations / submitting-work (or other published docs pages)
+must wire those destinations with page-local `<LocalizedLinkList>` and
+`links.*` labels. Leave concept `relatedIds` empty for those documentation
+targets until related-runtime includes documentation records; keep
+`<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
+discovery when those ids can resolve.
+
 ## Shipping non-en locale stubs on a page bundle
 
 Colocated `messages/{ja,zh-CN,vi}.json` may stub English copy. Adding those
@@ -235,6 +244,27 @@ first-collection publish-wiring exception in the work-item PRD when shared
 paths remain required so review does not reject a necessary shared diff as
 “page-only AC failure.” Later pages in the same collection should stay
 page-local and in-budget.
+
+### First published concepts page (collection already wired)
+
+`concepts` already has published-section wiring (`PUBLISHED_DOCS_SECTIONS`,
+`LOCAL_DOCS_SECTIONS`, concept page loaders, `registryDirectoryByKind.concept`).
+The first authored published page under `src/content/docs/concepts/<slug>/`
+still needs a narrow section-index expectation update so default-locale indexes
+list the page title / summary / href instead of empty-state copy:
+
+- `src/tests/content/section-indexes.test.tsx`
+- `src/lib/docs/section-collection-index.test.ts`
+- optional verification helpers such as
+  `src/lib/docs/empty-cli-browse-indexes-verification.test.tsx`
+
+Do not treat that index-expectation update as a redirect-to-throughput lane.
+Non-default locales stay on the empty concepts index until colocated
+`messages/<locale>.json` files exist for the page (shipped-localized-docs is
+derived from those files). When those locale stubs ship, update the localized
+concepts section-index expectations the same way (list title / summary / href)
+and regenerate/commit `shipped-localized-docs.generated.ts` plus the matching
+`shipped-localized-docs.server.test.ts` committed-tree assertion.
 
 Prefer behavioral coverage for the shipped page (section-index listing title /
 summary / href, or `loadLocalDocsPage` + rendered body asserting framing copy

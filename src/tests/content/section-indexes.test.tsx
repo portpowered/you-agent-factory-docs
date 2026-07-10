@@ -155,6 +155,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/concepts/task-queue");
     expect(html).toContain("Thinking");
     expect(html).toContain("/docs/concepts/thinking");
+    expect(html).toContain("Tokens");
+    expect(html).toContain("/docs/concepts/tokens");
     expect(html).toContain("Tool");
     expect(html).toContain("/docs/concepts/tool");
     expect(html).not.toContain(indexMessages.emptyTitle);
@@ -257,6 +259,7 @@ describe("localized CLI section index page render", () => {
     );
 
     expect(html).toContain(messages.conceptsIndex.title);
+    expect(html).toContain(messages.conceptsIndex.description);
     expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
     expect(html).toContain("Checklist");
     expect(html).toContain("/ja/docs/concepts/checklist");
@@ -264,6 +267,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/harness");
     expect(html).toContain("Loop");
     expect(html).toContain("/ja/docs/concepts/loop");
+    expect(html).toContain("Tokens");
+    expect(html).toContain("/ja/docs/concepts/tokens");
     expect(html).toContain("Tool");
     expect(html).toContain("/ja/docs/concepts/tool");
     expect(html).not.toContain("Thinking");
