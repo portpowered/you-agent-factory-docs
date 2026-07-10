@@ -433,20 +433,18 @@ as sufficient page coverage.
 
 ## Glossary-derived browse and sidebar sections
 
-When glossary decomposition needs new reader-facing top-level areas such as
-Model Types or Inference without changing canonical `/docs/glossary/<slug>`
-routes:
+Public `/browse` is factory-only (guides, concepts, techniques, documentation).
+Do not reintroduce Model Types / Inference / Module Components as browse hub
+cards through `buildDocsBrowseSections` — that path only accepts collection
+section refs.
 
-- Add or extend ontology classifications under `classification.concept.*` (for
-  example `classification.concept.model-type`, `classification.concept.module`).
-- Derive browse cards through `buildDocsBrowseSections` and
-  `src/lib/docs/glossary-derived-browse-sections.ts`, using
-  `primaryClassificationId` / `secondaryClassificationIds` membership rather
-  than new docs collection route slugs.
-- Split sidebar folders through `src/lib/navigation/docs-sidebar-sections.ts`
-  and keep the remaining glossary pages in the `Glossary` folder.
-- Pass `config.starterSlugs.length` into `toDocsIndexEntries` for derived browse
-  sections when starter slugs exceed the default six-entry preview cap.
+Glossary-derived helpers in
+`src/lib/docs/glossary-derived-browse-sections.ts` still exist for sidebar
+folder decomposition until the sidebar cleanup story removes them:
+
+- Derive sidebar folders through `src/lib/navigation/docs-sidebar-sections.ts`
+  when that surface still needs Atlas-era glossary splits; keep remaining
+  glossary pages in the `Glossary` folder.
 - Sidebar reconciliation tests that previously compared every glossary page to the
   `Glossary` folder must union `Model Types`, `Inference`, `Module Components`, and remaining
   `Glossary` URLs, or filter out `isGlossaryPageAssignedToDerivedSection`
@@ -454,9 +452,7 @@ routes:
 - Inference terms with canonical concept routes (`concepts/prefill`,
   `concepts/quantization`, `concepts/kv-cache-quantization`,
   `concepts/post-training-quantization`) still expose inference classification
-  in search even when they are absent from glossary-derived browse sections.
-- Update `browseIndex.*Section*` copy in `src/content/messages/*/common.json`
-  and extend `DOCS_BROWSE_SECTION_ORDER` when introducing another derived area.
+  in search even when they are absent from the public browse hub.
 - Classify every remaining published glossary concept with `primaryClassificationId`;
   align `conceptType` with `classification.concept.architecture`, and rely on ontology
   sidebar resolution for math/training/evaluation before editorial `sidebarGrouping`
@@ -480,9 +476,10 @@ routes:
   blocks published glossary pages that lack `primaryClassificationId` unless
   `sidebarGrouping.glossary` provides an explicit editorial fallback; wired through
   `validateDerivedPublishedPageBundles` and `make validate-data`.
-- Story-006 gates: `glossary-decomposition-validation.test.ts` for browse/search
-  placement fixtures and `glossary-decomposition-browse-built-app.test.tsx` for
-  desktop and narrow `/browse` category verification when integration tests run.
+- Browse proof: `src/tests/content/browse-index.test.tsx` and
+  `src/tests/content/glossary-decomposition-browse-built-app.test.tsx` assert
+  factory CLI browse headings and the absence of retired Atlas browse cards at
+  desktop and narrow viewports when integration tests run.
 
 ## PR-head mergeability for page branches (process executors)
 

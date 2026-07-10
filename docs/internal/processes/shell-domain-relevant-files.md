@@ -18,8 +18,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/docs/browse-collection-sections.ts`
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
-  `DOCS_BROWSE_SECTION_ORDER`. Pass an explicit `sectionOrder` when a test or
-  fixture still needs glossary-derived browse sections.
+  `DOCS_BROWSE_SECTION_ORDER`. Public browse no longer accepts glossary-derived
+  Atlas section refs (Model Types / Inference / Module Components); those
+  helpers remain only for sidebar decomposition until that surface is cleaned.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
   `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,

@@ -76,10 +76,20 @@ describe("browse collection sections", () => {
       messages.browseIndex.trainingSectionTitle,
       messages.browseIndex.systemsSectionTitle,
       messages.browseIndex.glossarySectionTitle,
+      messages.browseIndex.modelTypesSectionTitle,
+      messages.browseIndex.inferenceSectionTitle,
+      messages.browseIndex.moduleComponentsSectionTitle,
     ] as const) {
       expect(sections.some((section) => section.title === atlasTitle)).toBe(
         false,
       );
+    }
+    for (const derivedId of [
+      "model-types",
+      "inference",
+      "module-components",
+    ] as const) {
+      expect(sections.some((section) => section.id === derivedId)).toBe(false);
     }
   });
 

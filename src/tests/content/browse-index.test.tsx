@@ -124,6 +124,18 @@ describe("collection-driven browse behavior", () => {
     for (const headingId of ATLAS_BROWSE_SECTION_HEADING_IDS) {
       expect(html).not.toContain(`id="${headingId}"`);
     }
+    for (const atlasLabel of [
+      "Model Types",
+      "Inference",
+      "Module Components",
+      "Models",
+      "Modules",
+      "Papers",
+      "Training",
+      "Systems",
+    ] as const) {
+      expect(html).not.toContain(`>${atlasLabel}</h2>`);
+    }
 
     const headingPositions = BROWSE_COLLECTION_SECTION_HEADING_IDS.map(
       (headingId) => headingIdPosition(html, headingId),
