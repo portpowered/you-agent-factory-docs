@@ -677,6 +677,23 @@ getting-started or install deep-dive). Omit unpublished sibling ids from
 `relatedIds` so validation and related rendering stay clean; do not invent
 page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 
+### Documentation petri limits and sibling discovery (page-local)
+
+For `documentation/petri`, keep `#limits-and-assumptions` as the framing
+boundary: Petri / Colored Petri Net (CPN) factory mapping only — not academic
+Petri-net theory, not the JavaScript dynamic-workflow deep dive, not the
+configuration field reference, and not the architecture-of-system diagram.
+Distinguish `PETRI` vs `JAVASCRIPT` orchestrators at overview depth, and note
+that compatibility defaults to Petri when no orchestrator block is authored.
+
+Wire reviewer-visible discovery under `#related` with page-local
+`<LocalizedLinkList>` to published tokens / configuration / workstations plus
+planned `/docs/documentation/architecture-of-system` and
+`/docs/documentation/factory-session` hrefs. Put only published registry ids
+in `relatedIds` (`concept.tokens`, `documentation.configuration`,
+`documentation.workstations`); omit unpublished architecture / factory-session
+ids so `validate-data` stays clean. Keep `<RelatedDocs />` beside the list.
+
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 

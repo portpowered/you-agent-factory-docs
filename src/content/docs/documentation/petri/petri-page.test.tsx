@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for documentation/petri.
  * Covers documentation shell, Petri / CPN framing narrative, how-to-read
- * walkthrough, teaching diagram, and section headings.
+ * walkthrough, teaching diagram, limits / PETRI-vs-JAVASCRIPT boundaries,
+ * related discovery links, and section headings.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -44,6 +45,9 @@ describe("petri documentation page", () => {
       const howToUse = String(
         loadedPage.messages.sections?.howToUse?.body ?? "",
       );
+      const limits = String(
+        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+      );
 
       expect(whatItCovers).toMatch(/Petri\s*\/\s*Colored Petri Net\s*\(CPN\)/);
       expect(whatItCovers).toMatch(/you-agent-factory/);
@@ -76,6 +80,18 @@ describe("petri documentation page", () => {
       expect(howToUse).not.toMatch(
         /factory\.json field|on this page|Model Atlas|reader.?shortcut/i,
       );
+
+      expect(limits).toMatch(
+        /Petri\s*\/\s*Colored Petri Net\s*\(CPN\) framing/i,
+      );
+      expect(limits).toMatch(/not academic Petri-net theory/i);
+      expect(limits).toMatch(/not the JavaScript dynamic-workflow/i);
+      expect(limits).toMatch(/not the configuration field reference/i);
+      expect(limits).toMatch(/not the architecture-of-system/i);
+      expect(limits).toMatch(/PETRI/);
+      expect(limits).toMatch(/JAVASCRIPT/);
+      expect(limits).toMatch(/defaults to Petri/i);
+      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
 
       const tokenFlowAsset = loadedPage.assets.tokenFlow;
       expect(tokenFlowAsset).toBeDefined();
@@ -123,6 +139,8 @@ describe("petri documentation page", () => {
       const whatItCoversSection = document.getElementById("what-it-covers");
       const keyConceptsSection = document.getElementById("key-concepts");
       const howToUseSection = document.getElementById("how-to-use");
+      const limitsSection = document.getElementById("limits-and-assumptions");
+      const relatedSection = document.getElementById("related");
       expect(whatItCoversSection?.textContent).toMatch(
         /Colored Petri Net \(CPN\)/,
       );
@@ -135,6 +153,12 @@ describe("petri documentation page", () => {
       expect(howToUseSection?.textContent).toMatch(/task:init/);
       expect(howToUseSection?.textContent).toMatch(/dispatches its worker/i);
       expect(howToUseSection?.textContent).toMatch(/accepted/i);
+      expect(limitsSection?.textContent).toMatch(/PETRI/);
+      expect(limitsSection?.textContent).toMatch(/JAVASCRIPT/);
+      expect(limitsSection?.textContent).toMatch(/defaults to Petri/i);
+      expect(limitsSection?.textContent).toMatch(
+        /not academic Petri-net theory/i,
+      );
 
       const diagram = howToUseSection?.querySelector(
         '[data-page-asset="tokenFlow"]',
@@ -150,6 +174,35 @@ describe("petri documentation page", () => {
       expect(diagram?.querySelector("figcaption")?.textContent).toMatch(
         /Token flow/i,
       );
+
+      expect(
+        relatedSection?.querySelector('a[href="/docs/concepts/tokens"]'),
+      ).toBeTruthy();
+      expect(
+        relatedSection?.querySelector(
+          'a[href="/docs/documentation/configuration"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        relatedSection?.querySelector(
+          'a[href="/docs/documentation/workstations"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        relatedSection?.querySelector(
+          'a[href="/docs/documentation/architecture-of-system"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        relatedSection?.querySelector(
+          'a[href="/docs/documentation/factory-session"]',
+        ),
+      ).toBeTruthy();
+      expect(relatedSection?.textContent).toMatch(/Tokens concept/i);
+      expect(relatedSection?.textContent).toMatch(/Configuration/i);
+      expect(relatedSection?.textContent).toMatch(/Workstations/i);
+      expect(relatedSection?.textContent).toMatch(/Architecture of system/i);
+      expect(relatedSection?.textContent).toMatch(/Factory session/i);
 
       expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
     },

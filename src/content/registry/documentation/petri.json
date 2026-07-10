@@ -6,9 +6,13 @@
   "defaultSummaryKey": "description",
   "aliases": ["petri", "CPN", "colored petri net", "petri net"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "concept.tokens",
+    "documentation.configuration",
+    "documentation.workstations"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T07:00:00.000Z",
-  "updatedAt": "2026-07-10T07:00:00.000Z"
+  "updatedAt": "2026-07-10T07:35:00.000Z"
 }
