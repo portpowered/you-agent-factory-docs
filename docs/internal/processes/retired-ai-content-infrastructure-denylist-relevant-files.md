@@ -53,3 +53,28 @@ route/kind product teaching fixtures).
 bun test src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts
 bun run audit:retired-ai-content-infrastructure
 ```
+
+## End-to-end proof (story 007)
+
+After infrastructure deletion, prove the cleaned tree stays factory-only:
+
+```sh
+bun run audit:retired-ai-content-infrastructure
+bun run validate-data
+bun test \
+  src/lib/content/cli-page-templates.test.ts \
+  src/lib/content/page-template-convergence.test.tsx \
+  src/lib/content/validate-generated-canonical-docs.test.ts \
+  src/lib/governance/retired-ai-content-infrastructure-denylist.test.ts
+bun run generate:page-bundle -- --spec page-specs/page-spec-workflow-sample.json --dry-run
+bun run typecheck
+bun run lint
+bun run test
+```
+
+- Deleted owned paths must not exist on disk (denylist).
+- No runtime/test import should resolve deleted AI surfaces; `typecheck` fails
+  if a deleted module is still imported.
+- Focused generation proofs use factory templates under `docs/templates/` and
+  factory page-specs under `page-specs/` (concept + glossary only). Do not
+  restore Atlas model/module/paper/training-regime samples.

@@ -127,9 +127,10 @@ the registry record:
 bun run generate:page-bundle -- --spec page-specs/page-spec-workflow-sample.json --dry-run
 ```
 
-See `page-specs/` for checked-in sample inputs across the supported canonical
-kinds and `bun run generate:page-bundle -- --help` for the full checked-in
-contract.
+See `page-specs/` for checked-in sample inputs across the supported page-spec
+kinds (`concept` and `glossary`) and `bun run generate:page-bundle -- --help`
+for the full checked-in contract. Atlas model/module/paper/training-regime
+samples are retired — do not restore them.
 
 **Legacy scaffold** — `scaffold:doc-page` still generates concept and glossary
 bundles from CLI flags for backward compatibility. Its `--help` output points
@@ -1167,7 +1168,7 @@ workflows behave as described.
 | Verification surface | Path |
 | --- | --- |
 | Contributor workflow command test | `src/tests/ci/contributor-guide-alignment.test.ts` |
-| Page-spec workflow | `scripts/generate-page-bundle.ts`, `page-specs/page-spec-workflow-sample.json` |
+| Page-spec workflow | `scripts/generate-page-bundle.ts`, `page-specs/page-spec-workflow-sample.json`, `page-specs/glossary-page-spec-workflow-sample.json` |
 | Legacy scaffold kinds | `src/lib/content/scaffold-doc-page.ts` (`SCAFFOLD_DOC_PAGE_KINDS`) |
 | Production templates | `docs/templates/*.mdx` and starter sidecars |
 | Factory batch docs | `factory/docs/overview.md`, `factory/docs/batch-inputs.md`, `factory/docs/batch-input-example.json` |

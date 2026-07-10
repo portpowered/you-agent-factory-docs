@@ -238,9 +238,9 @@ the temporary legacy-id bridge.
 * `scripts/verify-typed-taxonomy-consumer-fence.ts`
   Maintainer and CI entrypoint that fails when new targeted typed-taxonomy
   usage lands outside the approved audit contract.
-* `src/lib/content/topology-browse.test.ts`
-  Browse graph-map assertions for canonical selection and invalid-selector
-  recovery after Atlas topology/timeline product deletion.
+* Atlas topology browse tests (`topology-browse.test.ts`) were deleted with
+  `delete-ai-content-infrastructure` story 005. Do not reintroduce browse
+  graph-map assertions for retired Atlas selectors.
 * `docs/data-model.md`
   Human-readable ontology contract, runtime ordering rules, empty-branch
   behavior, and temporary bridge rules.

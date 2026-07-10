@@ -1,0 +1,22 @@
+{
+  "kind": "glossary",
+  "slug": "glossary-page-spec-workflow-sample",
+  "title": "Glossary Page Spec Workflow Sample",
+  "summary": "A small generated glossary page that demonstrates the page-spec bundle workflow for glossary entries.",
+  "status": "draft",
+  "conceptType": "general",
+  "aliases": ["glossary page spec sample"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "sections": {
+    "definition": {
+      "title": "Definition",
+      "body": "A reviewable glossary page bundle produced by the page-spec generator instead of hand-written MDX boilerplate."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Maintainers can validate one glossary input shape and trust matching page, message, asset, and registry files."
+    }
+  }
+}
