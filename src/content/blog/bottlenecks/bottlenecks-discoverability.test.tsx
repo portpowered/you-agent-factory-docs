@@ -40,15 +40,15 @@ describe("bottlenecks blog discoverability (004)", () => {
     expect(html).toContain(`aria-label="Read blog post: ${BLOG_TITLE}"`);
   });
 
-  test("blog index orders the post ahead of older published entries", async () => {
+  test("blog index orders the post ahead of comparing-agent-factories by slug tie-break when dates match", async () => {
     const page = await renderBlogIndexPage();
     const html = renderToStaticMarkup(page);
 
     const bottlenecksPos = html.indexOf(`href="${BLOG_ROUTE}"`);
-    const olderPos = html.indexOf('href="/blog/roofline-throughput-explorer"');
+    const comparingPos = html.indexOf('href="/blog/comparing-agent-factories"');
     expect(bottlenecksPos).toBeGreaterThanOrEqual(0);
-    expect(olderPos).toBeGreaterThanOrEqual(0);
-    expect(bottlenecksPos).toBeLessThan(olderPos);
+    expect(comparingPos).toBeGreaterThanOrEqual(0);
+    expect(bottlenecksPos).toBeLessThan(comparingPos);
   });
 
   test.each(DISCOVERY_QUERIES.map((query) => [query] as const))(

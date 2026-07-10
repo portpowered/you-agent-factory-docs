@@ -59,12 +59,12 @@ describe("TagResourceList", () => {
             kindLabel: "Blog",
             resources: [
               {
-                title: "Why throughput follows a roofline",
-                summary: "Roofline explainer",
-                url: "/blog/roofline-throughput-explorer",
-                slug: "roofline-throughput-explorer",
+                title: "Factory bottlenecks listicle",
+                summary: "Bottlenecks explainer",
+                url: "/blog/bottlenecks",
+                slug: "bottlenecks",
                 kind: "blog",
-                publishedAt: "2026-07-02",
+                publishedAt: "2026-07-09",
                 tags: ["foundations", "kv-cache"],
               },
             ],
@@ -76,7 +76,7 @@ describe("TagResourceList", () => {
       />,
     );
 
-    expect(html).toContain('dateTime="2026-07-02"');
+    expect(html).toContain('dateTime="2026-07-09"');
     expect(html).toContain("July 2026");
     expect(html).toContain('href="/tags/foundations"');
     expect(html).not.toContain('href="/tags/kv-cache"');

@@ -93,44 +93,32 @@ describe("blog index page render", () => {
     );
   }
 
-  it("renders the production llms-no-longer-wholly-reliant-on-the-internet post with title, description, date, and tags", async () => {
+  it("renders the production bottlenecks and comparing-agent-factories posts without unpublished legacy Atlas slugs", async () => {
     const page = await renderBlogIndexPage();
     const html = renderToStaticMarkup(page);
 
-    expect(html).toContain("LLMs are no longer wholly reliant on the internet");
     expect(html).toContain(
-      "Why modern language-model quality still starts with internet-scale pretraining",
+      "Factory bottlenecks: where long-running agent work actually stalls",
     );
-    expect(html).toContain('dateTime="2026-07-08"');
-    expect(html).toContain("July 8, 2026");
-    expect(html).toContain("Foundations");
-    expect(html).toContain("Alignment");
     expect(html).toContain(
+      "A listicle comparison of common you-agent-factory limiting stages",
+    );
+    expect(html).toContain('dateTime="2026-07-09"');
+    expect(html).toContain("July 9, 2026");
+    expect(html).toContain("Foundations");
+    expect(html).toContain('href="/blog/bottlenecks"');
+    expect(html).toContain(
+      'aria-label="Read blog post: Factory bottlenecks: where long-running agent work actually stalls"',
+    );
+    expect(html).toContain(
+      "Comparing agent factories and orchestration systems",
+    );
+    expect(html).toContain('href="/blog/comparing-agent-factories"');
+    expect(html).not.toContain('href="/blog/evolution-of-diffusion"');
+    expect(html).not.toContain(
       'href="/blog/llms-no-longer-wholly-reliant-on-the-internet"',
     );
-    expect(html).toContain(
-      'aria-label="Read blog post: LLMs are no longer wholly reliant on the internet"',
-    );
-  });
-
-  it("renders the production roofline post with title, description, date, and tags", async () => {
-    const page = await renderBlogIndexPage();
-    const html = renderToStaticMarkup(page);
-
-    expect(html).toContain(
-      "the best computer for local language models (2026)",
-    );
-    expect(html).toContain(
-      "An overall guide to the best computer to buy for local language models",
-    );
-    expect(html).toContain('dateTime="2026-07-02"');
-    expect(html).toContain("July 2, 2026");
-    expect(html).toContain("Inference");
-    expect(html).toContain("Local Models");
-    expect(html).toContain('href="/blog/roofline-throughput-explorer"');
-    expect(html).toContain(
-      'aria-label="Read blog post: the best computer for local language models (2026)"',
-    );
+    expect(html).not.toContain('href="/blog/roofline-throughput-explorer"');
   });
 
   it("renders fixture posts as compact accessible index cards", async () => {

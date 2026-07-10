@@ -47,8 +47,9 @@ and the shared related-registry-docs component/blog wrapper.
 * `src/features/blog/components/BlogRelatedDocs.test.tsx`
   Wrapper render/fallback tests with injectable `resolveOptions`.
 * `src/features/blog/components/blog-related-docs-blog-integration.test.tsx`
-  Loads `roofline-throughput-explorer` blog post and asserts explicit frontmatter ids
-  render as compact published docs links via `renderBlogPostShell`.
+  Loads remaining factory blog posts (`bottlenecks`, `comparing-agent-factories`)
+  and asserts explicit frontmatter ids render as compact published docs links via
+  `renderBlogPostShell`.
 * `src/lib/content/blog-mdx-components.tsx`
   Registers `BlogRelatedDocs` for MDX blog posts.
 
@@ -68,5 +69,5 @@ and the shared related-registry-docs component/blog wrapper.
 * `bun test src/features/blog/components/blog-related-docs-blog-integration.test.tsx`
 * `bun run typecheck`
 * `bun run lint`
-* Blog browser check: build then curl `/blog/roofline-throughput-explorer` for
+* Blog browser check: build then curl `/blog/bottlenecks` for
   `data-testid="blog-related-docs"` and concept hrefs.
