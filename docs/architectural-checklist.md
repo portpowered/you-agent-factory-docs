@@ -96,17 +96,11 @@ src/
       page.tsx         # tag index
       [slug]/
         page.tsx       # tag landing/search page
-    print/
-      [locale]/
-        docs/
-          [[...slug]]/
-            page.tsx   # print-safe docs route for PDF generation
-        sets/
-          [set]/
-            page.tsx   # print-safe curated PDF set route
+    search/
+      page.tsx         # dedicated search surface when used
     api/
       search/
-        route.ts       # optional static search endpoint if client-only search is insufficient
+        route.ts       # Fumadocs Orama search endpoint (static or fetch mode)
   components/          # shared UI components
     ui/                # shadcn/ui primitives and thin wrappers
     layout/            # app shell, sidebars, headers, footers, page chrome
@@ -131,42 +125,44 @@ src/
         BlogDate.tsx
         BlogTagList.tsx
         BlogRelatedDocs.tsx
-    models/            # ML model viewers, graph viewers, module diagrams
-      components/      # model cards, graph viewer, module viewer, detail panels
-        ConceptMap.tsx
-        ModelAtAGlance.tsx
-        ModelArchitectureGraph.tsx
-        ModelModuleList.tsx
-        ModelTrainingSummary.tsx
-        ModuleAtAGlance.tsx
-        PaperAtAGlance.tsx
-        PaperContributionGraph.tsx
-        TrainingRegimeAtAGlance.tsx
-        TrainingRegimeFlow.tsx
-      schemas/         # model/module/concept graph schemas
-      data/            # typed structured model data imported by content
-    state/             # feature-level state
-    hooks/             # feature-level hooks
-    messages/          # localized strings
+    factory-ui/        # thin host wrappers for optional teaching graphs/charts
+      graphs.ts
+      charts.ts
+      data-display.ts
   content/
     docs/              # shared MDX page structures rendered by Fumadocs
-      concepts/
-        example-concept/
+      guides/
+        getting-started/
           page.mdx
           messages/
             en.json
-            vi.json
           assets.json
-          assets/
-      models/
-      modules/
-      papers/
-      training/
-      systems/
+      concepts/
+        harness/
+          page.mdx
+          messages/
+            en.json
+          assets.json
+      techniques/
+        ralph/
+          page.mdx
+          messages/
+            en.json
+          assets.json
+      documentation/
+        harness-support/
+          page.mdx
+          messages/
+            en.json
+          assets.json
       glossary/
+        example-term/
+          page.mdx
+          messages/
+            en.json
+          assets.json
     blog/              # shared MDX blog structures rendered with the same MDX component set
-    pdf-sets/          # curated page bundles for PDF export
-    registry/          # structured JSON/TS data used for search, links, and graphs
+    registry/          # structured JSON/TS data used for search, links, and optional graphs
   tokens/              # design tokens exported to Tailwind and CSS variables
   lib/                 # framework-agnostic utilities
     content/           # content loaders, messages, assets, slug helpers, citation helpers
@@ -176,14 +172,14 @@ src/
 scripts/
   validate-links.ts    # Fumadocs/next-validate-link docs link checker
   validate-registry.ts # JSON registry schema and relationship checker
-  validate-pdf.ts      # PDF export input and print-renderer checker
-  build-pdf.ts         # locale-aware PDF generation through print routes
 source.config.ts       # Fumadocs source configuration
 next.config.ts         # Next.js static/runtime configuration
 tailwind.config.ts     # Tailwind theme and token wiring
 components.json        # shadcn/ui configuration
 biome.json             # Biome lint and format configuration
 ```
+
+Atlas-era `src/features/models` viewers and `models` / `modules` / `papers` / `training` / `systems` content inventories are not required product structure for this site. Sibling Atlas paths may still exist during migration; do not treat them as the required tree above. Print/PDF routes and `pdf-sets` may exist as optional tooling, but they are not the primary package-structure contract for factory docs.
 
 * Components are grouped by responsibility, not only by visual type.
 * Feature-specific components live inside the feature directory.
