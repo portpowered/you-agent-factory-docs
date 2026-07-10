@@ -50,6 +50,9 @@ Use these files when extending the default English blog surface at `/blog` and
 * `bun test src/tests/content/blog-routes-slice-verification.test.tsx`
   Consolidated route proof for `/blog` metadata/render, `/blog/<slug>` body
   content, newest-first ordering, and unknown-slug missing-page behavior.
+* `bun test src/content/blog/comparing-agent-factories/comparing-agent-factories-discoverability.test.tsx`
+  Blog-local index + prose/title search + post SSR proof for empty-tag posts
+  (no tag-landing assertions when `tags: []`).
 * Browser-verify `/blog` and `/blog/<slug>` on a unique local port after `bun run build`.
 * PR review may require a clean local `make test`; unrelated search/glossary convergence
   rows can time out under full-suite load—extend per-test timeouts rather than

@@ -105,3 +105,8 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
   switch as concept SPC graphs: relative imports in `page.mdx` do not resolve
   under `compileMDX`. Keep the component out of shared `blog-mdx-components.tsx`.
+* Empty `tags: []` is valid when no published tag fits. Discoverability then
+  relies on the blog index card plus prose/title search documents (not tag
+  landings). Keep that proof colocated under
+  `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
+  blog-local and still runs in the required website suite.
