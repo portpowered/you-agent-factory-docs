@@ -657,6 +657,28 @@ getting-started or install deep-dive). Omit unpublished sibling ids from
 `relatedIds` so validation and related rendering stay clean; do not invent
 page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 
+### Documentation replays-records sensitivity, limits, and sibling discovery
+
+For `documentation/replays-records`, keep sensitivity and retention in default-locale
+prose (key concepts / how-to-use / limits): artifacts can contain prompts, payloads,
+stdout, stderr, and diagnostic metadata; the product does not auto-delete; operators
+manage retention; real customer-run recordings must not be committed. Keep
+`#limits-and-assumptions` as the scope boundary: web record/replay reference — not a
+packaged CLI sync, not factory-session pause/resume/status, not mock-worker selection,
+not logs/metrics/API, and not a full factory-authoring walkthrough. Mention packaged
+`you docs record-replay` / `you docs mock-workers` / `you docs authoring-factories` as
+external CLI topics in prose without embedding those docs wholesale.
+
+Wire published sibling discovery with page-local `<LocalizedLinkList>` and `links.*`
+labels under `#related` (for example `/docs/documentation/cli`,
+`/docs/documentation/configuration`, `/docs/documentation/submitting-work`).
+Documentation kind is outside `listRelatedRegistryRecords()` /
+`getRegistryRecordById()`, so `<RelatedDocs />` alone will not render
+documentation→documentation curated links. Keep registry `relatedIds` aligned with
+those published siblings for search/metadata when useful; omit unpublished ids such
+as factory-session until those registry records and pages exist. Keep
+`<RelatedDocs />` in `#related` for when related-runtime can resolve curated ids.
+
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
 
