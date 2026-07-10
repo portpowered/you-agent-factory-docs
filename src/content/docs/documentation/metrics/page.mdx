@@ -1,0 +1,156 @@
+---
+title: "Metrics"
+description: "Watch live you-agent-factory factory-ops metrics for a Factory Session: engine activity, work-token lifecycle, optional resource usage, and the local operator dashboard."
+kind: "documentation"
+registryId: "documentation.metrics"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "factory metrics"
+  - "ops metrics"
+  - "session metrics"
+updatedAt: "2026-07-10"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="status-read" titleKey="sections.statusRead.title">
+  <T k="sections.statusRead.body" />
+  <p>
+    <T k="links.statusReadLabel" />
+  </p>
+  ```bash
+  curl -s "http://localhost:7437/factory-sessions/~default/status"
+  ```
+  <p>
+    <T k="links.statusFieldsIntro" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.statusFieldHeader" />
+        </th>
+        <th>
+          <T k="links.statusMeaningHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.statusFactoryStateField" />
+        </td>
+        <td>
+          <T k="links.statusFactoryStateMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusRuntimeStatusField" />
+        </td>
+        <td>
+          <T k="links.statusRuntimeStatusMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusCategoriesField" />
+        </td>
+        <td>
+          <T k="links.statusCategoriesMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusTotalTokensField" />
+        </td>
+        <td>
+          <T k="links.statusTotalTokensMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.statusResourcesField" />
+        </td>
+        <td>
+          <T k="links.statusResourcesMeaning" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="links.statusReadTogetherNote" />
+</Section>
+
+<Section id="operator-dashboard" titleKey="sections.operatorDashboard.title">
+  <T k="sections.operatorDashboard.body" />
+  <p>
+    <T k="links.dashboardUrlLabel" />
+  </p>
+  ```text
+  http://localhost:7437/dashboard/ui
+  ```
+  <T k="links.dashboardHostNote" />
+</Section>
+
+<Section id="metrics-chart" titleKey="sections.metricsChart.title">
+  <T k="sections.metricsChart.body" />
+  <MetricsTeachingChart />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <T k="links.siblingDiscoveryIntro" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/factory-session",
+        labelKey: "links.factorySessionDocs",
+      },
+      {
+        href: "/docs/concepts/statistical-process-control-graphs",
+        labelKey: "links.spcGraphsConcept",
+      },
+      {
+        href: "/docs/concepts/bottlenecks",
+        labelKey: "links.bottlenecksConcept",
+      },
+      {
+        href: "/docs/concepts/tokens",
+        labelKey: "links.tokensConcept",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.metrics" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.metrics" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.metrics" />
+</Section>

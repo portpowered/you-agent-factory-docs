@@ -1,0 +1,68 @@
+{
+  "title": "Metrics",
+  "description": "Watch live you-agent-factory factory-ops metrics for a Factory Session: engine activity, work-token lifecycle, optional resource usage, and the local operator dashboard.",
+  "openingSummary": "Factory metrics are the live-run signals operators use to watch a you-agent-factory Factory Session while work is in flight—not Model Atlas evaluation scores or a benchmark leaderboard.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Factory metrics are the live-run signals operators use to watch a you-agent-factory Factory Session while the session is up. They cover engine activity and runtime status, work progress through work-token lifecycle buckets, optional resource bounds when pools are declared, and dashboard activity as a live visual surface. Use this reference when you need to watch those measures during a run—not evaluation scores, not a benchmark leaderboard, and not a packaged CLI docs sync."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Factory metrics are scoped to one live Factory Session. That session is the unit of watching: engine activity, work-token pressure, optional resource bounds, and dashboard activity all describe that same live runtime. factoryState is the factory lifecycle phase—for example IDLE, RUNNING, PAUSED, COMPLETED, or FAILED. runtimeStatus says whether the engine is actively processing—IDLE, ACTIVE, or FINISHED. A factory can be RUNNING while runtimeStatus is IDLE when the host is up but no work is in flight. Read both fields together before deciding the engine is busy or quiet. Work-token lifecycle buckets live in categories: counts for initial, processing, terminal, and failed tokens. totalTokens is the sum across those buckets. Together they show where work sits in the pipeline and how much pressure is building. When the factory declares resource pools, optional resources usage entries show how much of each declared bound is held. When no pools are declared, that signal is simply absent. The local operator dashboard is the browser surface for the same live metrics: session selection, work position, and factory activity updating while the session runs. A one-shot status read is a snapshot of those fields at one moment. Time-ordered watching means reading the same measures across successive ticks so trends—rising failed tokens, a quiet engine, or a draining processing bucket—become visible."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Read session status for the live Factory Session you are watching, then open the local operator dashboard when you want a browser surface for the same live metrics. Use this metrics exposure reference for watching live-run signals from the status API and the dashboard. Open factory-session docs for discover, inspect, and lifecycle control. Open SPC graphs for control-limit reading. Open logs for diagnostic event and log surfaces. Open the API doc for broader OpenAPI contracts. Open bottlenecks or tokens concepts when you need interpretation depth beyond exposure."
+    },
+    "statusRead": {
+      "title": "Read Session Status",
+      "body": "Call GET /factory-sessions/{session_id}/status for a deeper runtime health read than session list or factory query. Replace {session_id} with a live session id from session list—often ~default on single-session hosts. The response carries the factory-ops metrics fields operators watch during a live run."
+    },
+    "operatorDashboard": {
+      "title": "Open The Operator Dashboard",
+      "body": "When the service was started via you or you run without quiet mode, open the local operator dashboard as the browser surface for the same live metrics. The dashboard shows live session selection, work position, and factory activity alongside CLI and API status reads."
+    },
+    "metricsChart": {
+      "title": "Watch Metrics Over Time",
+      "body": "A one-shot status read is a snapshot. Time-ordered watching means reading the same factory measures across successive ticks so trends become visible. The teaching chart below plots work-token lifecycle buckets — processing, terminal, and failed — over successive status ticks, the same categories totals operators watch while a Factory Session runs."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a factory metrics exposure reference for you-agent-factory operators watching a live Factory Session. It is not a sync of packaged CLI docs, not a logs or diagnostic-event reference, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "statusReadLabel": "Example status read against the default local host:",
+    "statusFieldsIntro": "Read these fields in the status response:",
+    "statusFieldHeader": "Field",
+    "statusMeaningHeader": "Meaning",
+    "statusFactoryStateField": "factoryState",
+    "statusFactoryStateMeaning": "Factory lifecycle phase — for example IDLE, RUNNING, PAUSED, COMPLETED, or FAILED.",
+    "statusRuntimeStatusField": "runtimeStatus",
+    "statusRuntimeStatusMeaning": "Whether the engine is actively processing — IDLE, ACTIVE, or FINISHED.",
+    "statusCategoriesField": "categories",
+    "statusCategoriesMeaning": "Token counts by lifecycle bucket: initial, processing, terminal, and failed.",
+    "statusTotalTokensField": "totalTokens",
+    "statusTotalTokensMeaning": "Total tokens across categories.",
+    "statusResourcesField": "resources",
+    "statusResourcesMeaning": "Optional resource usage entries when the factory declares resources.",
+    "statusReadTogetherNote": "A factory can be RUNNING while runtimeStatus is IDLE when the host is up but no work is in flight. Read factoryState, runtimeStatus, and categories together when deciding whether to submit more work or wait for completion.",
+    "dashboardUrlLabel": "Default local dashboard URL (service started without quiet mode):",
+    "dashboardHostNote": "Use the same host and port as the API unless the process that bound the listener used a different server or port setting.",
+    "siblingDiscoveryIntro": "Use factory-session for discover, inspect, and lifecycle control; SPC graphs for control-limit reading; bottlenecks and tokens for interpretation depth. Logs and API doc pages will cover diagnostic event surfaces and broader OpenAPI contracts when those documentation siblings are published.",
+    "factorySessionDocs": "Factory session",
+    "spcGraphsConcept": "Statistical process control graphs",
+    "bottlenecksConcept": "Bottlenecks",
+    "tokensConcept": "Tokens"
+  }
+}
