@@ -190,7 +190,7 @@ Verification: `make ci`, `bun test src/tests/ci/github-actions-make-ci.test.ts`
 | **Deploy job** | Publishes artifact via `actions/deploy-pages@v4` to environment `github-pages`. |
 | **What it does not do** | Run `make ci` (quality gates stay in `ci.yml`); deploy PR heads; validate branch protection. |
 
-Verification: `make build-export`, `bun test src/tests/ci/github-actions-deploy.test.ts` (if present), `docs/operations.md`
+Verification: `make build`, `bun run test:build-contract` (includes `deploy-pages-workflow-contract`), `docs/operations.md`
 
 Maintainer narrative for release, rollback, and SHA traceability lives in
 [docs/operations.md](../operations.md). That doc explains operational

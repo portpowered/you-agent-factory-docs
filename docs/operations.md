@@ -22,14 +22,16 @@ failing workflow stage with the same `make <target>` locally (see
 | Workflow file | `.github/workflows/deploy-pages.yml` (separate from `.github/workflows/ci.yml`) |
 | Trigger | `push` to `main` |
 | Install | `make setup` (`bun install --frozen-lockfile`) |
-| Validate stages | `make check`, `make test`, `make build`, `make budget` (same targets as local/CI) |
+| Validate stages | `make check`, `make test`, `make build`, `make guard-pages-deployed-artifact`, `make budget` (same targets as local/CI) |
 | Build entrypoint | `make build` → `bun run build:export` (`NEXT_STATIC_EXPORT=1`) with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` |
+| Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
 | Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
 | Quality gates | `.github/workflows/ci.yml` runs `make setup` → `check` → `test` → `build` → `budget` → `component-coverage`; deploy-pages validate does not replace CI |
 
 The workflow **`validate`** job checks out the pushed commit, runs the Makefile
-stages above, and uploads `out/` with `actions/upload-pages-artifact@v3`.
+stages above (including `make guard-pages-deployed-artifact` after `make build`),
+and uploads `out/` with `actions/upload-pages-artifact@v3`.
 The **`deploy`** job (`needs: validate`) publishes that artifact via
 `actions/deploy-pages@v4`. Failed validation never starts deploy for that run.
 
@@ -104,7 +106,7 @@ Related operational rows not closed in this section alone:
 | Website has CI checks on every pull request and merge | **Implemented** | `.github/workflows/ci.yml` runs on `pull_request` and `push`. |
 | The build has deterministic install behavior through a lockfile | **Implemented** | `bun.lock` + `make setup` (`bun install --frozen-lockfile`) in CI and deploy-pages. |
 | Preview deployments for pull requests | **Deferred** | Out of scope for Phase 1; production deploy is active on `main` only. |
-| Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), and [Commit-SHA traceability](#commit-sha-traceability) using the live deploy check and published site. |
+| Documented release / rollback / SHA traceability | **Implemented** | Follow [Release process](#release-process), [Rollback process](#rollback-process), [Commit-SHA traceability](#commit-sha-traceability), and [read-only post-deploy checks](#read-only-post-deploy-checks) using the live deploy check and published site. |
 
 ### What contributors should expect today
 
@@ -249,15 +251,17 @@ then confirming deploy-pages published the merge commit.
 3. **Confirm post-merge CI** on the merge commit: a push to `main` triggers
    `.github/workflows/ci.yml` again on the integrated SHA.
 4. **Confirm post-merge deploy** on the same SHA: `.github/workflows/deploy-pages.yml`
-   validates with `make build`, uploads `out/`, and publishes to GitHub Pages. A
-   green **Deploy to GitHub Pages** check means the public site reflects that
+   validates with `make build`, runs `make guard-pages-deployed-artifact` (reuses
+   `out/`, no second full export), uploads `out/`, and publishes to GitHub Pages.
+   A green **Deploy to GitHub Pages** check means the public site reflects that
    commit.
 5. **Optionally tag a release point** on `main` when maintainers want a named
    version in git history, for example `git tag v0.1.0 <merge-commit-sha>` followed
    by `git push origin v0.1.0`. Tags do not replace the deploy-on-`main` flow
    unless a future workflow adds tag triggers.
 6. **Record the shipping SHA** using [Commit-SHA traceability](#commit-sha-traceability)
-   and verify the published site matches that commit.
+   and run the [read-only post-deploy checks](#read-only-post-deploy-checks)
+   against the live project site.
 
 Do not claim the public site was updated until **deploy** succeeds on the target
 `main` commit.
@@ -301,6 +305,62 @@ When code on `main` must change:
 Do not force-push `main`; roll forward with revert + redeploy unless host
 documentation explicitly requires a different emergency path.
 
+## Read-only post-deploy checks
+
+After a green **Deploy to GitHub Pages** run on `main`, maintainers can confirm
+the live project site at
+`https://portpowered.github.io/you-agent-factory-docs` without deploying,
+pushing, opening PRs, or mutating remotes. These checks are **GET-only**
+operator curls (or equivalent browser loads). They are not part of CI, the
+Pages guard, or any automated test — `make guard-pages-deployed-artifact` and
+`make test-build-contract` only probe a local `out/` over loopback and never
+call GitHub Pages deploy APIs or push branches.
+
+Use short timeouts so a hung host fails fast:
+
+```sh
+SITE=https://portpowered.github.io/you-agent-factory-docs
+
+# Home
+curl --fail --silent --show-error --max-time 10 "$SITE/" >/dev/null
+
+# Docs page (getting started)
+curl --fail --silent --show-error --max-time 10 \
+  "$SITE/docs/guides/getting-started" >/dev/null
+
+# Blog page (comparing agent factories)
+curl --fail --silent --show-error --max-time 10 \
+  "$SITE/blog/comparing-agent-factories" >/dev/null
+
+# Search bootstrap (static Orama index under the project-site prefix)
+curl --fail --silent --show-error --max-time 10 \
+  "$SITE/api/search" >/dev/null
+```
+
+Confirm HTML still references the project-site asset prefix (not bare `/_next`):
+
+```sh
+SITE=https://portpowered.github.io/you-agent-factory-docs
+html="$(curl --fail --silent --show-error --max-time 10 "$SITE/")"
+printf '%s' "$html" | grep -q '/you-agent-factory-docs/_next/'
+! printf '%s' "$html" | grep -q 'src="/_next/'
+! printf '%s' "$html" | grep -q 'href="/_next/'
+```
+
+Pick one CSS and one JS URL from that HTML (paths under
+`/you-agent-factory-docs/_next/...`) and fetch them:
+
+```sh
+SITE=https://portpowered.github.io/you-agent-factory-docs
+# Replace CSS_PATH / JS_PATH with href/src values from the home HTML above.
+curl --fail --silent --show-error --max-time 10 "$SITE$CSS_PATH" >/dev/null
+curl --fail --silent --show-error --max-time 10 "$SITE$JS_PATH" >/dev/null
+```
+
+A failed curl or a bare `/_next` match means the published artifact drifted from
+the project-site contract; investigate the latest deploy-pages run for that SHA
+rather than re-running deploy from a local test harness.
+
 ## Commit-SHA traceability
 
 Maintainers must tie integration and deployment to an exact git commit.
@@ -337,7 +397,7 @@ without guessing.
    **verify** run exists for that SHA.
 3. Open the **Deploy GitHub Pages** workflow run for the same SHA and confirm
    the **deploy** job succeeded and the run summary repeats the commit hash.
-4. Load the published Pages site and spot-check that content matches the
-   expected release (deploy propagation can take a short time).
+4. Run the [read-only post-deploy checks](#read-only-post-deploy-checks) against
+   the live project site (deploy propagation can take a short time).
 5. Locally, `git rev-parse HEAD` or `git log -1 --format=%H` on `main` must match
    the SHA recorded in CI and deploy for that release.
