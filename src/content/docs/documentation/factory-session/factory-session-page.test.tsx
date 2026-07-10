@@ -1,8 +1,9 @@
 /**
  * Page-owned render proof for documentation/factory-session.
  * Covers documentation shell, Factory Session identity, discovery/inspect,
- * lifecycle pause/resume, and durable JavaScript validate → start →
- * status/result guidance — not route inventories or shared helper contracts.
+ * lifecycle pause/resume, durable JavaScript validate → start →
+ * status/result guidance, key concepts / limits, and sibling discovery
+ * links — not route inventories or shared helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -58,6 +59,9 @@ describe("factory-session documentation page", () => {
     expect(whatItCovers).toMatch(/live session/i);
     expect(keyConcepts).toMatch(/live runtime unit/i);
     expect(keyConcepts).toMatch(/Session list confirms/i);
+    expect(keyConcepts).toMatch(
+      /Durable JavaScript runs are still Factory Sessions/i,
+    );
     expect(howToUse).toMatch(/session list/i);
     expect(sessionList).toMatch(/liveness check/i);
     expect(sessionList).toMatch(/empty list|connection failure/i);
@@ -72,6 +76,11 @@ describe("factory-session documentation page", () => {
     );
     expect(limits).toMatch(/web Factory Session reference/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
+    expect(limits).toMatch(/not a sync of packaged you docs/i);
+    expect(limits).toMatch(/not MCP host setup/i);
+    expect(limits).toMatch(/not dynamic-workflow authoring/i);
+    expect(limits).toMatch(/not submitting-work batch schema/i);
+    expect(limits).toMatch(/not the OpenAPI or API reference/i);
     expect(whatItCovers).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -79,6 +88,7 @@ describe("factory-session documentation page", () => {
       /on this page|Model Atlas|reader.?shortcut/i,
     );
     expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+    expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
 
     render(
       <main>
@@ -125,6 +135,7 @@ describe("factory-session documentation page", () => {
       "durable-javascript-session",
     );
     const limitsSection = document.getElementById("limits-and-assumptions");
+    const relatedSection = document.getElementById("related");
     expect(whatItCoversSection).toBeTruthy();
     expect(keyConceptsSection).toBeTruthy();
     expect(howToUseSection).toBeTruthy();
@@ -133,8 +144,15 @@ describe("factory-session documentation page", () => {
     expect(lifecycleSection).toBeTruthy();
     expect(durableSection).toBeTruthy();
     expect(limitsSection).toBeTruthy();
+    expect(relatedSection).toBeTruthy();
     expect(whatItCoversSection?.textContent).toMatch(/Factory Session/i);
     expect(keyConceptsSection?.textContent).toMatch(/live runtime unit/i);
+    expect(keyConceptsSection?.textContent).toMatch(
+      /Session list confirms something is listening/i,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(
+      /Durable JavaScript runs are still Factory Sessions/i,
+    );
     expect(howToUseSection?.textContent).toMatch(/session list/i);
     expect(sessionListSection?.textContent).toMatch(/you session list/);
     expect(sessionListSection?.textContent).toMatch(
@@ -171,5 +189,31 @@ describe("factory-session documentation page", () => {
     expect(limitsSection?.textContent).toMatch(
       /web Factory Session reference/i,
     );
+    expect(limitsSection?.textContent).toMatch(/not a full CLI flag dump/i);
+    expect(limitsSection?.textContent).toMatch(/not MCP host setup/i);
+    expect(limitsSection?.textContent).toMatch(
+      /not dynamic-workflow authoring/i,
+    );
+    expect(limitsSection?.textContent).toMatch(
+      /not submitting-work batch schema/i,
+    );
+
+    const cliDocs = screen.getByRole("link", { name: "CLI docs" });
+    const submittingWork = screen.getByRole("link", {
+      name: "Submitting work",
+    });
+    const cursorDynamicWorkflows = screen.getByRole("link", {
+      name: "Cursor dynamic workflows",
+    });
+    expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
+    expect(submittingWork.getAttribute("href")).toBe(
+      "/docs/documentation/submitting-work",
+    );
+    expect(cursorDynamicWorkflows.getAttribute("href")).toBe(
+      "/docs/guides/cursor-dynamic-workflows",
+    );
+    expect(relatedSection?.contains(cliDocs)).toBe(true);
+    expect(relatedSection?.contains(submittingWork)).toBe(true);
+    expect(relatedSection?.contains(cursorDynamicWorkflows)).toBe(true);
   });
 });

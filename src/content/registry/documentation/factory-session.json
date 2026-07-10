@@ -6,9 +6,13 @@
   "defaultSummaryKey": "description",
   "aliases": ["factory session", "FactorySession", "sessions"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.cli",
+    "documentation.submitting-work",
+    "guide.cursor-dynamic-workflows"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T06:58:40.000Z",
-  "updatedAt": "2026-07-10T06:58:40.000Z"
+  "updatedAt": "2026-07-10T07:45:00.000Z"
 }

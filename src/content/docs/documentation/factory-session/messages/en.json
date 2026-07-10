@@ -9,11 +9,11 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A Factory Session is the live runtime unit on a running host. Session list confirms something is listening before you submit work. Each live session owns its own runtime state—loaded factory, work, and relative paths—so submit and work commands must target the intended session when more than one exists. Durable JavaScript runs are still Factory Sessions; dynamic workflow is shorthand for a JavaScript orchestrator-backed session, not a separate runtime object."
+      "body": "A Factory Session is the live runtime unit on a running host—the object you discover, inspect, and control. Session list confirms something is listening before you submit work. Each live session owns its own runtime state—loaded factory, work, and relative paths—so submit and work commands must target the intended session when more than one exists. Durable JavaScript runs are still Factory Sessions; dynamic workflow is shorthand for a JavaScript orchestrator-backed session, not a separate runtime object."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Confirm a live session with session list before submitting work. Inspect one session with session show when you need its identity and runtime projection. Apply pause or resume for that same session id when you need lifecycle control, then re-read status to confirm the outcome. For durable JavaScript work, validate source without creating a session, start one durable Factory Session, then read status and result for that same session id."
+      "body": "Confirm a live session with session list before submitting work. Inspect one session with session show when you need its identity and runtime projection. Apply pause or resume for that same session id when you need lifecycle control, then re-read status to confirm the outcome. For durable JavaScript work, validate source without creating a session, start one durable Factory Session, then read status and result for that same session id. Open the CLI docs for the broader command matrix, submitting work for batch schema, or the Cursor dynamic workflows guide when you need MCP host setup or dynamic-workflow authoring."
     },
     "sessionList": {
       "title": "Discover Sessions",
@@ -33,7 +33,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web Factory Session reference for discover, inspect, lifecycle, and durable overview. It is not a full CLI flag dump, not a sync of packaged you docs, not MCP host setup, not dynamic-workflow authoring, not submitting-work batch schema, and not the OpenAPI or API reference. Those surfaces stay on sibling documentation and guide pages."
+      "body": "This page is a web Factory Session reference for discover, inspect, lifecycle, and durable overview. It is not a full CLI flag dump, not a sync of packaged you docs, not MCP host setup, not dynamic-workflow authoring, not submitting-work batch schema, and not the OpenAPI or API reference. CLI flags, batch schema, MCP host install, and dynamic-workflow authoring stay on sibling documentation and guide pages linked from how to use and related."
     },
     "related": {
       "title": "Related To"
@@ -57,6 +57,9 @@
     "workflowStartLabel": "Start one durable Factory Session asynchronously:",
     "workflowStatusLabel": "Read lifecycle status and progress for that same session id:",
     "workflowResultLabel": "Read the final or partial result for that same session id:",
-    "durableInspectionNounsNote": "Dispatch, FactoryArtifact, and FactoryEvent records for child work all point back to the same Factory Session id returned at start. Keep validate → start → status/result on one session; MCP host setup and full dynamic-workflow authoring stay on sibling pages."
+    "durableInspectionNounsNote": "Dispatch, FactoryArtifact, and FactoryEvent records for child work all point back to the same Factory Session id returned at start. Keep validate → start → status/result on one session; MCP host setup and full dynamic-workflow authoring stay on sibling pages.",
+    "cliDocs": "CLI docs",
+    "submittingWorkDocs": "Submitting work",
+    "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows"
   }
 }
