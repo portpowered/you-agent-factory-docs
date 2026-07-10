@@ -217,6 +217,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain(
       "Classify an item into a known class, then run the specialist execute path for that class.",
     );
+    expect(html).toContain("Planner-Executor");
+    expect(html).toContain("/docs/techniques/planner-executor");
     expect(html).toContain("Ralph");
     expect(html).toContain("/docs/techniques/ralph");
     expect(html).toContain(
@@ -265,6 +267,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(
       `aria-label="${messages.techniquesIndex.listLabel}"`,
     );
+    expect(html).toContain("Planner-Executor");
+    expect(html).toContain("/ja/docs/techniques/planner-executor");
     expect(html).toContain("Ralph");
     expect(html).toContain("/ja/docs/techniques/ralph");
     expect(html).toContain(

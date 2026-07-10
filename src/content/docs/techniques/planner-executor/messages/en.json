@@ -1,0 +1,31 @@
+{
+  "title": "Planner-Executor",
+  "description": "Planner-executor separates planning work into reviewable slices from executing those slices so independent factory streams can move in parallel.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Planner-executor is a technique that separates planning from execution so independent factory streams can move without a global phase gate."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Planner-executor matters when multiple agent lanes should keep moving on ready work instead of waiting for one shared planning phase to finish."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "A planner turns a customer ask into reviewable work slices; executors implement those slices while the planner re-enters through loopback or queue health rather than blocking the whole factory."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Planner-executor is not the same as writer-reviewer, workqueue-executor, or classify-execute: it splits plan-from-execute so parallel streams can proceed without a global phase gate."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
