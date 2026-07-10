@@ -23,6 +23,15 @@ Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
 tests need a browser).
 
+### Project-site export (local match for deploy-pages)
+
+```sh
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+```
+
+Unset `GITHUB_PAGES_BASE_PATH` keeps `/` for local preview and root Pages sites;
+the project site requires the `/you-agent-factory-docs` repository prefix.
+
 ## Key files
 
 | Path | Role |
