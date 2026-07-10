@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for documentation/api-doc.
- * Covers documentation shell, API / OpenAPI identity, and the hand-authored
- * OpenAPI surface outline (grouped method/path families).
+ * Covers documentation shell, API / OpenAPI identity, the hand-authored
+ * OpenAPI surface outline (grouped method/path families), and how-to-use
+ * base-host guidance with representative HTTP examples.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -53,8 +54,17 @@ describe("api-doc documentation page", () => {
       const openapiSurface = String(
         loadedPage.messages.sections?.openapiSurface?.body ?? "",
       );
+      const howToUseBody = String(
+        loadedPage.messages.sections?.howToUse?.body ?? "",
+      );
       const additionalRoutes = String(
         loadedPage.messages.callouts?.additionalRoutes?.body ?? "",
+      );
+      const listSessionsExample = String(
+        loadedPage.messages.links?.exampleListSessionsCode ?? "",
+      );
+      const submitWorkExample = String(
+        loadedPage.messages.links?.exampleSubmitWorkCode ?? "",
       );
       expect(whatItCovers).toMatch(/OpenAPI|HTTP|API/i);
       expect(keyConcepts).toMatch(
@@ -62,6 +72,19 @@ describe("api-doc documentation page", () => {
       );
       expect(keyConcepts).toMatch(/workTypeName/);
       expect(openapiSurface).toMatch(/session/i);
+      expect(howToUseBody).toMatch(/http:\/\/localhost:7437/);
+      expect(howToUseBody).toMatch(/~default/);
+      expect(howToUseBody).toMatch(/not this documentation site/i);
+      expect(howToUseBody).not.toMatch(
+        /FACTORY_REQUEST_BATCH|on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(listSessionsExample).toContain(
+        "http://localhost:7437/factory-sessions",
+      );
+      expect(submitWorkExample).toContain(
+        "http://localhost:7437/factory-sessions/~default/work",
+      );
+      expect(submitWorkExample).toMatch(/workTypeName/);
       expect(additionalRoutes).toMatch(/events/i);
       expect(additionalRoutes).toMatch(/factory/i);
       expect(additionalRoutes).toMatch(/pause|resume/i);
@@ -132,6 +155,39 @@ describe("api-doc documentation page", () => {
       expect(openapiSurfaceSection?.textContent).toMatch(/pause/i);
       expect(openapiSurfaceSection?.textContent).toMatch(/resume/i);
       expect(openapiSurfaceSection?.textContent).toMatch(/staged-files/i);
+
+      const howToUseSection = document.getElementById("how-to-use");
+      expect(howToUseSection).toBeTruthy();
+      expect(howToUseSection?.textContent).toMatch(/http:\/\/localhost:7437/);
+      expect(howToUseSection?.textContent).toMatch(/~default/);
+      expect(howToUseSection?.textContent).toMatch(
+        /not this documentation site/i,
+      );
+      expect(howToUseSection?.textContent).not.toMatch(
+        /FACTORY_REQUEST_BATCH|on this page|Model Atlas|reader.?shortcut/i,
+      );
+
+      const howToUse = within(howToUseSection as HTMLElement);
+      const exampleBlocks = howToUse.getAllByText((_, element) => {
+        if (element?.tagName !== "CODE") {
+          return false;
+        }
+        const text = element.textContent ?? "";
+        return (
+          text.includes("http://localhost:7437/factory-sessions") ||
+          text.includes("http://localhost:7437/factory-sessions/~default/work")
+        );
+      });
+      expect(exampleBlocks.length).toBeGreaterThanOrEqual(2);
+      expect(
+        howToUse.getByText(
+          /curl -s "http:\/\/localhost:7437\/factory-sessions"/,
+        ),
+      ).toBeTruthy();
+      expect(howToUseSection?.textContent).toMatch(
+        /POST[\s\S]*factory-sessions\/~default\/work/,
+      );
+      expect(howToUseSection?.textContent).toMatch(/workTypeName/);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
