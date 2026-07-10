@@ -13,11 +13,11 @@
     },
     "howItWorks": {
       "title": "How It Works",
-      "body": "Intake an item, classify it into a bounded set of classes, hand it to the matching execute path, and complete or escalate when no class fits."
+      "body": "Classify-execute runs as a short handoff chain. Intake accepts an item that still needs a route. Classify assigns that item to one label from a bounded set of known classes—not an open-ended freeform guess. The matching execute path then runs with the specialist prompt, model, or tools for that class. When the item completes under that path, the chain ends. When no class fits, escalate instead of forcing a weak label or inventing a catch-all executor that tries to do every job."
     },
     "comparedToNearbyTechniques": {
       "title": "Compared To Nearby Techniques",
-      "body": "Classify-execute labels an item then runs its specialist path. Nearby techniques such as planner-executor, writer-reviewer, and workqueue-executor organize different factory jobs and are not the same pattern."
+      "body": "Planner-executor chooses or enqueues the next work item for a factory run; classify-execute already has an item and asks which specialist path should run it. Writer-reviewer is a quality-gated write → review → revise loop; classify-execute is a triage-then-specialist handoff, not a revise cycle. Workqueue-executor drains or organizes queued work across a backlog; classify-execute routes one item into a class and runs that class’s path. Those nearby techniques solve different factory jobs and are not the same pattern as classify then execute."
     },
     "related": {
       "title": "Related To"

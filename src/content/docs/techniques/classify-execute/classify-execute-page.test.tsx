@@ -36,6 +36,12 @@ describe("classify-execute technique page", () => {
     const whyItMatters = String(
       loadedPage.messages.sections?.whyItMatters?.body ?? "",
     );
+    const howItWorks = String(
+      loadedPage.messages.sections?.howItWorks?.body ?? "",
+    );
+    const comparedToNearbyTechniques = String(
+      loadedPage.messages.sections?.comparedToNearbyTechniques?.body ?? "",
+    );
     expect(whatItIs).toMatch(/Classify-execute/i);
     expect(whatItIs).toMatch(/two-stage technique/i);
     expect(whatItIs).toMatch(/classify step/i);
@@ -47,6 +53,30 @@ describe("classify-execute technique page", () => {
     expect(whyItMatters).toMatch(/mixed-intent failures/i);
     expect(whyItMatters).toMatch(/tighter prompt, model, or tool set/i);
     expect(whyItMatters).toMatch(/every class at once/i);
+    expect(howItWorks).toMatch(/Intake/i);
+    expect(howItWorks).toMatch(/Classify/i);
+    expect(howItWorks).toMatch(/bounded set of known classes/i);
+    expect(howItWorks).toMatch(/matching execute path/i);
+    expect(howItWorks).toMatch(/escalate/i);
+    expect(howItWorks).toMatch(/no class fits/i);
+    expect(comparedToNearbyTechniques).toMatch(/Planner-executor/i);
+    expect(comparedToNearbyTechniques).toMatch(
+      /chooses or enqueues the next work item/i,
+    );
+    expect(comparedToNearbyTechniques).toMatch(/Writer-reviewer/i);
+    expect(comparedToNearbyTechniques).toMatch(
+      /write → review → revise|write -> review -> revise/i,
+    );
+    expect(comparedToNearbyTechniques).toMatch(/Workqueue-executor/i);
+    expect(comparedToNearbyTechniques).toMatch(
+      /drains or organizes queued work/i,
+    );
+    expect(howItWorks).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut|workstation field|harness-support/i,
+    );
+    expect(comparedToNearbyTechniques).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut|batch schema|harness-support/i,
+    );
     expect(whatItIs).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
     expect(whyItMatters).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
@@ -79,6 +109,8 @@ describe("classify-execute technique page", () => {
     expect(
       screen.getByText(/tighter prompt, model, or tool set for its class/i),
     ).toBeTruthy();
+    expect(screen.getByText(/short handoff chain/i)).toBeTruthy();
+    expect(screen.getByText(/triage-then-specialist handoff/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
 });
