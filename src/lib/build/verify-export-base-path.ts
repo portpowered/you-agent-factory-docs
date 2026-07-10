@@ -1,3 +1,5 @@
+import { withBasePath } from "@/lib/navigation/site-path";
+
 /** True when exported HTML references bundled assets under the configured base path. */
 export function exportHtmlReferencesBasePathAssets(
   html: string,
@@ -21,11 +23,39 @@ export function exportHtmlReferencesBasePathInternalLinks(
 
   const docsHref = `href="${basePath}/docs/`;
   const tagsHref = `href="${basePath}/tags`;
+  const blogHref = `href="${basePath}/blog`;
   const rootHref = `href="${basePath}"`;
 
   return (
     html.includes(docsHref) ||
     html.includes(tagsHref) ||
-    html.includes(`${rootHref}/`)
+    html.includes(blogHref) ||
+    html.includes(`${rootHref}/`) ||
+    html.includes(`${rootHref}"`)
   );
+}
+
+/**
+ * True when exported HTML includes every representative navigation href under
+ * the configured base path (home, docs, blog, and optional locale variants).
+ */
+export function exportHtmlReferencesPrefixedNavigationHrefs(
+  html: string,
+  basePath: string,
+  hrefs: readonly string[],
+): boolean {
+  return hrefs.every((href) => {
+    const absolute = withBasePath(href, basePath);
+    if (html.includes(`href="${absolute}"`)) {
+      return true;
+    }
+    // Home may serialize as href="/base" or href="/base/" depending on Link.
+    if (href === "/" && basePath !== "") {
+      return (
+        html.includes(`href="${basePath}"`) ||
+        html.includes(`href="${basePath}/"`)
+      );
+    }
+    return false;
+  });
 }

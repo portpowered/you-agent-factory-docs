@@ -49,11 +49,13 @@ this lane: `make check` plus `make test-build-contract`.
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`) |
 | `src/lib/build/static-export.ts` | Single `normalizeGitHubPagesBasePath` → `basePath` + `assetPrefix` contract; `next.config.ts` spreads `resolveNextConfigForBuildMode()` (no hardcoded Pages prefix) |
 | `src/lib/build/built-app-html-paths.ts` | Live project-site fixture default `BUILT_APP_GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` (not retired `/ai-model-reference`); shared by export-search artifact matching and built-HTML path normalization |
-| `src/lib/navigation/site-path.ts` | Runtime `withBasePath(href, basePath)` — prefixes internal absolute hrefs; leaves empty-base, external, hash, and already-prefixed hrefs unchanged |
+| `src/lib/navigation/site-path.ts` | Runtime `withBasePath(href, basePath)` / `stripBasePathFromHref` — prefixes or strips internal absolute hrefs; leaves empty-base, external, hash, and already-prefixed hrefs unchanged |
+| `src/lib/navigation/site-navigation-href.ts` | Absolute navigation/locale href resolution via `resolveLocalizedSiteHref` / `resolveLocaleSwitchedSiteHref` / `resolveSiteNavigationHrefs` (compose locale routes + `withBasePath`). Do not pass results to Next `<Link>` when `basePath` is already set in next.config |
 | `src/lib/build/deploy-pages-workflow-contract.test.ts` | Focused build-contract gate: live `deploy-pages.yml` sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on `make build` and uploads `out/` |
 | `src/lib/build/static-export.test.ts` | Focused build-contract gate: `/you-agent-factory-docs` → identical `basePath` + `assetPrefix` |
-| `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` |
-| `src/lib/build/built-app-html-paths.test.ts` / `src/lib/navigation/site-path.test.ts` | Focused helper gates: live project-site default + root vs `/you-agent-factory-docs` `withBasePath` behavior |
+| `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` plus representative home/docs/blog navigation hrefs |
+| `src/lib/build/built-app-html-paths.test.ts` / `src/lib/navigation/site-path.test.ts` / `src/lib/navigation/site-navigation-href.test.ts` | Focused helper gates: live project-site default + root vs `/you-agent-factory-docs` navigation/locale href behavior |
+| `src/features/docs/components/LocalizedLinkList.tsx` | MDX link lists use Next `<Link>` so project-site `basePath` prefixes hrefs (raw `<a>` would escape to the org root) |
 
 ## `make build` vs `make build-export`
 
@@ -103,7 +105,7 @@ command-level verification of the Makefile targets and the YAML files above.
 Live project-site coverage belongs in `make test-build-contract` /
 `bun run test:build-contract`, which runs `deploy-pages-workflow-contract`,
 `static-export`, `verify-export-base-path`, `export-out-directory`,
-`built-app-html-paths`, and `site-path` tests.
+`built-app-html-paths`, `site-path`, and `site-navigation-href` tests.
 
 When path-helper fixtures still encode retired `/ai-model-reference`, update them
 to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { MissingMessageKey } from "@/features/docs/components/MissingMessageKey";
 import { usePageMessages } from "@/features/docs/components/page-messages-context";
 import { lookupMessage } from "@/lib/content/messages";
@@ -9,6 +10,10 @@ type LocalizedLinkListItem = {
   labelKey: string;
 };
 
+/**
+ * Renders MDX link lists through Next `<Link>` so GitHub Pages `basePath`
+ * prefixes project-site hrefs. Raw `<a href>` would escape to the org root.
+ */
 export function LocalizedLinkList({
   items,
 }: {
@@ -23,7 +28,7 @@ export function LocalizedLinkList({
 
         return (
           <li key={`${item.href}:${item.labelKey}`}>
-            <a href={item.href}>
+            <Link href={item.href}>
               {result.ok ? (
                 result.value
               ) : isDev ? (
@@ -32,7 +37,7 @@ export function LocalizedLinkList({
                   reason={result.reason}
                 />
               ) : null}
-            </a>
+            </Link>
           </li>
         );
       })}

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { withBasePath } from "./site-path";
+import { stripBasePathFromHref, withBasePath } from "./site-path";
 
 const PROJECT_SITE_BASE_PATH = "/you-agent-factory-docs";
 
@@ -28,5 +28,26 @@ describe("withBasePath", () => {
         PROJECT_SITE_BASE_PATH,
       ),
     ).toBe("/you-agent-factory-docs/docs/glossary");
+  });
+});
+
+describe("stripBasePathFromHref", () => {
+  test("strips the live project-site prefix from absolute hrefs", () => {
+    expect(
+      stripBasePathFromHref(
+        "/you-agent-factory-docs/docs/glossary",
+        PROJECT_SITE_BASE_PATH,
+      ),
+    ).toBe("/docs/glossary");
+    expect(
+      stripBasePathFromHref("/you-agent-factory-docs/", PROJECT_SITE_BASE_PATH),
+    ).toBe("/");
+  });
+
+  test("leaves hrefs unchanged when base path is empty or absent", () => {
+    expect(stripBasePathFromHref("/docs/glossary", "")).toBe("/docs/glossary");
+    expect(
+      stripBasePathFromHref("/docs/glossary", PROJECT_SITE_BASE_PATH),
+    ).toBe("/docs/glossary");
   });
 });

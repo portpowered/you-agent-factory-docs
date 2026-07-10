@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   exportHtmlReferencesBasePathAssets,
   exportHtmlReferencesBasePathInternalLinks,
+  exportHtmlReferencesPrefixedNavigationHrefs,
 } from "./verify-export-base-path";
 
 const PROJECT_SITE_BASE_PATH = "/you-agent-factory-docs";
@@ -42,7 +43,7 @@ describe("verify-export-base-path", () => {
     expect(bareHtml.includes(`${PROJECT_SITE_BASE_PATH}/_next/`)).toBe(false);
   });
 
-  test("exportHtmlReferencesBasePathInternalLinks detects docs/tags/root hrefs", () => {
+  test("exportHtmlReferencesBasePathInternalLinks detects docs/tags/blog/root hrefs", () => {
     expect(
       exportHtmlReferencesBasePathInternalLinks(
         '<a href="/docs-site/docs/getting-started">',
@@ -57,8 +58,38 @@ describe("verify-export-base-path", () => {
     ).toBe(true);
     expect(
       exportHtmlReferencesBasePathInternalLinks(
+        '<a href="/docs-site/blog">',
+        "/docs-site",
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesBasePathInternalLinks(
         '<a href="/docs/getting-started">',
         "/docs-site",
+      ),
+    ).toBe(false);
+  });
+
+  test("exportHtmlReferencesPrefixedNavigationHrefs requires home/docs/blog under project site", () => {
+    const html = [
+      '<a href="/you-agent-factory-docs/">Home</a>',
+      '<a href="/you-agent-factory-docs/docs/guides">Guides</a>',
+      '<a href="/you-agent-factory-docs/blog">Blog</a>',
+      '<a href="/you-agent-factory-docs/vi/blog">VI Blog</a>',
+    ].join("");
+
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        html,
+        PROJECT_SITE_BASE_PATH,
+        ["/", "/docs/guides", "/blog", "/vi/blog"],
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        '<a href="/docs/guides"><a href="/blog">',
+        PROJECT_SITE_BASE_PATH,
+        ["/", "/docs/guides", "/blog"],
       ),
     ).toBe(false);
   });
