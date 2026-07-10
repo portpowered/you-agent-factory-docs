@@ -95,3 +95,9 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   rejects out-of-root `node_modules` symlinks; prefer SSR `renderBlogPostPage` +
   `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification
   instead of inventing a second package layout.
+* `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve related-doc kinds
+  wired through `getRegistryRecordById` (concept, module, model, …). Published
+  `documentation.*` ids validate in frontmatter `relatedDocIds` but render as
+  missing in the component; until that lookup gap is fixed, keep the id in
+  frontmatter and link the documentation route in MDX (or pass only resolvable
+  ids to `<BlogRelatedDocs />`) so readers still reach the page.
