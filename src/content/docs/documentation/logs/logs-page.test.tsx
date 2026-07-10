@@ -1,9 +1,10 @@
 /**
- * Page-owned render proof for documentation/logs scaffold.
- * Covers documentation shell, Logs identity, and runtime-log surface
- * framing — not route inventories or shared helper contracts.
+ * Page-owned render proof for documentation/logs.
+ * Covers documentation shell, Logs identity, runtime-log channel
+ * framing, retention/rotation controls, and a copyable example —
+ * not route inventories or shared helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
- * within-budget for this ordinary documentation lane.
+ * within budget for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -48,10 +49,15 @@ describe("logs documentation page", () => {
 
     expect(whatItCovers).toMatch(/runtime logs/i);
     expect(whatItCovers).toMatch(/CLI diagnostics/i);
+    expect(whatItCovers).toMatch(/UTC-date grouping/i);
+    expect(whatItCovers).toMatch(/Runtime metrics/i);
     expect(keyConcepts).toMatch(/structured JSON rolling files/i);
+    expect(keyConcepts).toMatch(/UTC start date/i);
     expect(keyConcepts).toMatch(/~\/\.you-agent-factory\/logs/);
     expect(keyConcepts).toMatch(/Runtime metrics/i);
+    expect(keyConcepts).toMatch(/structured JSONL/i);
     expect(howToUse).toMatch(/log root/i);
+    expect(howToUse).toMatch(/retention and rotation/i);
     expect(limits).toMatch(/web runtime-logs and CLI-diagnostics reference/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(whatItCovers).not.toMatch(
@@ -88,5 +94,30 @@ describe("logs documentation page", () => {
 
     expect(document.body.textContent).toMatch(/Logs is the web reference/i);
     expect(document.body.textContent).toMatch(/~\/\.you-agent-factory\/logs/);
+
+    const howToUseSection = document.getElementById("how-to-use");
+    expect(howToUseSection).toBeTruthy();
+    expect(howToUseSection?.textContent).toMatch(
+      /~\/\.you-agent-factory\/logs/,
+    );
+    expect(howToUseSection?.textContent).toMatch(/--runtime-log-dir/);
+    expect(howToUseSection?.textContent).toMatch(/--runtime-log-max-age-days/);
+    expect(howToUseSection?.textContent).toMatch(/default 30/);
+    expect(howToUseSection?.textContent).toMatch(/--runtime-log-max-backups/);
+    expect(howToUseSection?.textContent).toMatch(/default 20/);
+    expect(howToUseSection?.textContent).toMatch(/--runtime-log-max-size-mb/);
+    expect(howToUseSection?.textContent).toMatch(/default 100/);
+    expect(howToUseSection?.textContent).toMatch(/--runtime-log-compress/);
+    expect(howToUseSection?.textContent).toMatch(
+      /you run --dir \.\/factory --runtime-log-dir ~\/\.you-agent-factory\/logs/,
+    );
+
+    const keyConceptsSection = document.getElementById("key-concepts");
+    expect(keyConceptsSection?.textContent).toMatch(
+      /structured JSON rolling files/i,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(/UTC start date/i);
+    expect(keyConceptsSection?.textContent).toMatch(/Runtime metrics/i);
+    expect(keyConceptsSection?.textContent).toMatch(/structured JSONL/i);
   });
 });
