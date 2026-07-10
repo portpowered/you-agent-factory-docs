@@ -19,7 +19,7 @@ collections.
 | `src/lib/content/graph-message-runtime.ts` | Must not statically import deleted page message JSON |
 | `src/lib/content/yaml-frontmatter.ts` | Treat YAML `[]` as an empty array (align with next-mdx-remote) |
 | `src/lib/content/table-registry-generation.ts` | Emit biome-friendly `[] as const` when no table records remain |
-| `scripts/run-website-functionality-tests.ts` | Exclude Atlas discovery/search/layout/feature suites from required `make test` |
+| `scripts/run-website-functionality-tests.ts` / `src/lib/website-functionality-exclusions.ts` | Classified exclusions for plain `make test` after Atlas deletion; obsolete Atlas suites/prefixes removed in restore-required-tests-gates (see [restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)) |
 
 ## Validation sequence after deletion
 

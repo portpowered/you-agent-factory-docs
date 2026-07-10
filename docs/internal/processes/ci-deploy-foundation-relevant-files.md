@@ -107,9 +107,12 @@ convergence passes, GQA built-route checks, and related `src/lib/verify`
 helpers). Do not reintroduce those targets into `make build`, `make check`,
 `make test`, CI, or deploy-pages.
 
-`scripts/run-website-functionality-tests.ts` (plain `make test`) still excludes
-Atlas discovery/search/content/feature packages that require deleted Model Atlas
-page fixtures. See [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
+`scripts/run-website-functionality-tests.ts` (plain `make test`) consumes the
+classified exclusion inventory in
+`src/lib/website-functionality-exclusions.ts` (`active` / `replaced`; obsolete
+Atlas package prefixes and dead paths removed). See
+[restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)
+and [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
 
 ## Empty `generateStaticParams` under static export
 

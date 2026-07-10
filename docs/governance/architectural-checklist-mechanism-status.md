@@ -386,7 +386,7 @@ secrets to satisfy this artifact.
 | **Status** | implemented |
 | **Summary** | Registry-derived related docs, tag pills, and tag landing lists are implemented and tested. Module pages surface variant relationships through `DerivedRelatedDocs` and registry taxonomy. |
 | **Repository evidence** | `src/features/docs/components/DerivedRelatedDocs.tsx`, `TagPillList.tsx`, `TagResourceList.tsx`, `src/features/docs/tags/TagsIndexList.tsx`, `src/lib/content/related-docs.ts`, `src/lib/content/tag-resources.ts`, `src/features/models/components/ModuleAtAGlance.tsx` |
-| **Verification commands** | `bun test src/features/docs/components/DerivedRelatedDocs.test.tsx`, `bun test src/tests/content/attention-tag-landing.test.ts` |
+| **Verification commands** | `bun test src/features/docs/components/DerivedRelatedDocs.test.tsx`, `bun test src/features/docs/components/TagPillList.test.tsx` |
 | **Gaps** | Paper and model related-group coverage is thinner than module variant coverage. |
 | **Follow-up or operator requirement** | Extend registry relationships for model/paper pages as content grows. |
 
