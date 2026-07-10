@@ -1,4 +1,5 @@
 import { RelatedDocList } from "@/features/docs/components/RelatedDocList";
+import { assertFactoryRelatedLinkItems } from "@/lib/content/factory-prev-next-related";
 import {
   getPublishedDocsRegistryIds,
   getRegistryRecordById,
@@ -32,6 +33,9 @@ export function DerivedRelatedDocs({
       items: group.items.filter((item) => item.href),
     }))
     .filter((group) => group.items.length > 0);
+
+  assertFactoryRelatedLinkItems(derivedGroups.flatMap((group) => group.items));
+
   if (derivedGroups.length === 0) {
     return null;
   }

@@ -143,6 +143,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   page for guides/concepts/techniques/documentation, sidebar folders stay
   factory-only with published page links, and retired Atlas section slugs
   never become collection crumbs.
+* `src/lib/content/factory-prev-next-related.ts`
+  Factory previous/next and related-link contract: footer neighbor resolution
+  mirroring Fumadocs `useFooterItems`, plus fail-closed asserts used by
+  `resolveRelatedRegistryDocs` / `RelatedDocs` / `DerivedRelatedDocs` so
+  navigation never advertises deleted Atlas destinations.
+* `src/lib/content/factory-prev-next-related.test.tsx`
+  Required-suite proof that previous/next neighbors stay on published factory
+  docs pages (or omit a direction at the ends), related-registry docs render
+  only factory destinations, and empty/unavailable related targets use clear
+  fallbacks without Atlas hrefs.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
   `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
