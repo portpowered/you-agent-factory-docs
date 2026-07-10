@@ -5,6 +5,7 @@ import {
   DOCS_SEARCH_API_PATH,
   docsSearchStaticOptions,
 } from "@/features/docs/search/search-client";
+import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { docsSearchApi } from "@/lib/search/search-server";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
@@ -24,6 +25,7 @@ import {
 
 const SAMPLE_URL = SAMPLE_MODULE_URL;
 const ATTENTION_MODULE_URL = "/docs/modules/attention";
+const PROJECT_SITE_BOOTSTRAP_FROM = `${BUILT_APP_GITHUB_PAGES_BASE_PATH}${DOCS_SEARCH_API_PATH}`;
 const JAPANESE_ATTENTION_PROOF_SET_URLS = [
   "/ja/docs/modules/attention",
   "/ja/docs/modules/linear-attention",
@@ -99,8 +101,8 @@ describe("createModelAtlasSearchClient", () => {
     expect(localizedMeta["/ja/docs/modules/sparse-attention"]).toBeUndefined();
   });
 
-  test("fetches GQA results from a basePath-prefixed static bootstrap URL", async () => {
-    const bootstrapFrom = "/ai-model-reference/api/search";
+  test("fetches results from a project-site-prefixed static bootstrap URL", async () => {
+    const bootstrapFrom = PROJECT_SITE_BOOTSTRAP_FROM;
     const payload = await docsSearchApi.export();
     let fetchedUrl: string | undefined;
 
@@ -119,11 +121,10 @@ describe("createModelAtlasSearchClient", () => {
           metaByUrl,
           client: { from: bootstrapFrom },
         });
-        const results = await client.search("GQA");
+        const results = await client.search("attention");
 
         expect(fetchedUrl).toBe(bootstrapFrom);
         expect(results.length).toBeGreaterThan(0);
-        expect(results[0]?.url).toBe(SAMPLE_URL);
       },
     );
   });

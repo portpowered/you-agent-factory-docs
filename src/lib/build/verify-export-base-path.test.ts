@@ -2,6 +2,10 @@ import { describe, expect, test } from "bun:test";
 import {
   exportHtmlReferencesBasePathAssets,
   exportHtmlReferencesBasePathInternalLinks,
+  exportHtmlReferencesPrefixedMetadataHrefs,
+  exportHtmlReferencesPrefixedNavigationHrefs,
+  exportHtmlReferencesPrefixedPublicAsset,
+  exportHtmlReferencesRootLevelNextAssets,
 } from "./verify-export-base-path";
 
 const PROJECT_SITE_BASE_PATH = "/you-agent-factory-docs";
@@ -36,13 +40,15 @@ describe("verify-export-base-path", () => {
     expect(
       exportHtmlReferencesBasePathAssets(bareHtml, PROJECT_SITE_BASE_PATH),
     ).toBe(false);
+    expect(exportHtmlReferencesRootLevelNextAssets(prefixedHtml)).toBe(false);
+    expect(exportHtmlReferencesRootLevelNextAssets(bareHtml)).toBe(true);
     expect(prefixedHtml.includes(`${PROJECT_SITE_BASE_PATH}/_next/`)).toBe(
       true,
     );
     expect(bareHtml.includes(`${PROJECT_SITE_BASE_PATH}/_next/`)).toBe(false);
   });
 
-  test("exportHtmlReferencesBasePathInternalLinks detects docs/tags/root hrefs", () => {
+  test("exportHtmlReferencesBasePathInternalLinks detects docs/tags/blog/root hrefs", () => {
     expect(
       exportHtmlReferencesBasePathInternalLinks(
         '<a href="/docs-site/docs/getting-started">',
@@ -57,8 +63,79 @@ describe("verify-export-base-path", () => {
     ).toBe(true);
     expect(
       exportHtmlReferencesBasePathInternalLinks(
+        '<a href="/docs-site/blog">',
+        "/docs-site",
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesBasePathInternalLinks(
         '<a href="/docs/getting-started">',
         "/docs-site",
+      ),
+    ).toBe(false);
+  });
+
+  test("exportHtmlReferencesPrefixedNavigationHrefs requires home/docs/blog under project site", () => {
+    const html = [
+      '<a href="/you-agent-factory-docs/">Home</a>',
+      '<a href="/you-agent-factory-docs/docs/guides">Guides</a>',
+      '<a href="/you-agent-factory-docs/blog">Blog</a>',
+      '<a href="/you-agent-factory-docs/vi/blog">VI Blog</a>',
+    ].join("");
+
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        html,
+        PROJECT_SITE_BASE_PATH,
+        ["/", "/docs/guides", "/blog", "/vi/blog"],
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        '<a href="/docs/guides"><a href="/blog">',
+        PROJECT_SITE_BASE_PATH,
+        ["/", "/docs/guides", "/blog"],
+      ),
+    ).toBe(false);
+  });
+
+  test("exportHtmlReferencesPrefixedMetadataHrefs requires prefixed canonical and hreflang", () => {
+    const html = [
+      '<link rel="canonical" href="/you-agent-factory-docs/docs/guides">',
+      '<link rel="alternate" href="/you-agent-factory-docs/vi/docs/guides" hreflang="vi">',
+      '<link rel="alternate" href="/you-agent-factory-docs/ja/docs/guides" hreflang="ja">',
+    ].join("");
+
+    expect(
+      exportHtmlReferencesPrefixedMetadataHrefs(
+        html,
+        PROJECT_SITE_BASE_PATH,
+        "/docs/guides",
+        ["/vi/docs/guides", "/ja/docs/guides"],
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedMetadataHrefs(
+        '<link rel="canonical" href="/docs/guides">',
+        PROJECT_SITE_BASE_PATH,
+        "/docs/guides",
+      ),
+    ).toBe(false);
+  });
+
+  test("exportHtmlReferencesPrefixedPublicAsset detects project-site asset URLs", () => {
+    expect(
+      exportHtmlReferencesPrefixedPublicAsset(
+        '<link rel="icon" href="/you-agent-factory-docs/favicon.ico">',
+        PROJECT_SITE_BASE_PATH,
+        "/favicon.ico",
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedPublicAsset(
+        '<img src="/images/diagram.png">',
+        PROJECT_SITE_BASE_PATH,
+        "/images/diagram.png",
       ),
     ).toBe(false);
   });

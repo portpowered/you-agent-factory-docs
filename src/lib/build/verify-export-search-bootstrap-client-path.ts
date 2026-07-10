@@ -29,3 +29,13 @@ export function resolveExportSearchBootstrapClientFrom(
 ): string {
   return withBasePath(DOCS_SEARCH_API_PATH, basePath);
 }
+
+/**
+ * True when content references an unprefixed `/api/search` bootstrap literal
+ * (quoted path starting at `/api/search`), not a project-site-prefixed variant.
+ */
+export function exportContentReferencesUnprefixedSearchBootstrap(
+  content: string,
+): boolean {
+  return /["']\/api\/search(?:[?"']|\.[\w-]+["'])/.test(content);
+}

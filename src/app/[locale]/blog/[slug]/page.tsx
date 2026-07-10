@@ -9,6 +9,7 @@ import {
   generateStaticLocaleParams,
   resolveRouteLocaleOrNotFound,
 } from "@/lib/i18n/route-locale";
+import { resolveSiteAbsoluteHref } from "@/lib/navigation/site-metadata-path";
 
 type LocalizedBlogPostPageProps = {
   params: Promise<{ locale: string; slug: string }>;
@@ -55,7 +56,7 @@ export async function generateMetadata({
     title: published.messages.title,
     description: published.messages.description,
     alternates: {
-      canonical: blogPostHref(slug, locale),
+      canonical: resolveSiteAbsoluteHref(blogPostHref(slug, locale)),
     },
   };
 }

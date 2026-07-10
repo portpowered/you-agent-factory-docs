@@ -72,3 +72,19 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/components/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).
+
+## Static export bootstrap path (GitHub Pages)
+
+* `src/lib/search/docs-search-bootstrap-path.ts`
+  Resolves `/api/search` (root) vs `/you-agent-factory-docs/api/search`
+  (project-site export) via `resolveGitHubPagesBasePath` + `withBasePath`.
+  Bakes `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM` from `next.config.ts`.
+* `src/features/docs/search/search-client.ts`
+  Client fetch uses the baked public bootstrap path (no post-build rewrite).
+* `src/lib/build/verify-export-search-bootstrap-client-path.ts`
+  Export-chunk verifier for the baked bootstrap literal.
+* Focused coverage: `bun run test:website:static-search` (includes
+  `docs-search-bootstrap-path`, `export-search-bootstrap`, and
+  `verify-export-search-bootstrap-client-path` tests). Prefer
+  `BUILT_APP_GITHUB_PAGES_BASE_PATH` over retired `/ai-model-reference`
+  fixtures.

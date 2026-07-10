@@ -34,9 +34,19 @@ the project site requires the `/you-agent-factory-docs` repository prefix.
 
 After that export, `out/index.html` (and other shipped pages) must reference
 `/you-agent-factory-docs/_next/...` assets — not bare `/_next/...`. Confirm with
-`exportHtmlReferencesBasePathAssets` from `src/lib/build/verify-export-base-path.ts`
-or by grepping the exported HTML for the prefixed asset path. Quality gate for
-this lane: `make check` plus `make test-build-contract`.
+`exportHtmlReferencesBasePathAssets` / `exportHtmlReferencesRootLevelNextAssets`
+from `src/lib/build/verify-export-base-path.ts`, or run the consumer proof:
+
+```sh
+bun run test:website:export-consumers
+```
+
+That proof builds with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` and
+checks representative home/docs/blog hrefs plus the baked search bootstrap
+(`/you-agent-factory-docs/api/search`) via
+`verifyProjectSiteExportDirectory`. Quality gate for the runtime-path-consumers
+lane: `make check`, `make test-build-contract`, `bun run test:website:static-search`,
+and `bun run test:website:export-consumers`.
 
 ## Key files
 
@@ -48,9 +58,18 @@ this lane: `make check` plus `make test-build-contract`.
 | `docs/operations.md` | Maintainer-facing CI/deploy posture aligned to the Makefile contract |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`) |
 | `src/lib/build/static-export.ts` | Single `normalizeGitHubPagesBasePath` → `basePath` + `assetPrefix` contract; `next.config.ts` spreads `resolveNextConfigForBuildMode()` (no hardcoded Pages prefix) |
+| `src/lib/build/built-app-html-paths.ts` | Live project-site fixture default `BUILT_APP_GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` (not retired `/ai-model-reference`); shared by export-search artifact matching and built-HTML path normalization |
+| `src/lib/navigation/site-path.ts` | Runtime `withBasePath(href, basePath)` / `stripBasePathFromHref` — prefixes or strips internal absolute hrefs; leaves empty-base, external, hash, and already-prefixed hrefs unchanged |
+| `src/lib/navigation/site-navigation-href.ts` | Absolute navigation/locale href resolution via `resolveLocalizedSiteHref` / `resolveLocaleSwitchedSiteHref` / `resolveSiteNavigationHrefs` (compose locale routes + `withBasePath`). Do not pass results to Next `<Link>` when `basePath` is already set in next.config |
+| `src/lib/navigation/site-metadata-path.ts` | Metadata + public-asset absolute href helpers (`resolveSiteAbsoluteHref` / `resolvePublicAssetHref` / `prefixMetadataAlternates`) — Next Metadata API does **not** auto-apply `basePath`, so canonical/hreflang and hardcoded `public/` paths must use these |
+| `src/lib/i18n/route-locale.ts` (`localizedRouteAlternates`) | Canonical + language-alternate metadata; prefixes via `resolveGitHubPagesBasePath` + `prefixMetadataAlternates` on project-site export |
 | `src/lib/build/deploy-pages-workflow-contract.test.ts` | Focused build-contract gate: live `deploy-pages.yml` sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on `make build` and uploads `out/` |
 | `src/lib/build/static-export.test.ts` | Focused build-contract gate: `/you-agent-factory-docs` → identical `basePath` + `assetPrefix` |
-| `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` |
+| `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` plus representative home/docs/blog navigation hrefs, prefixed canonical/hreflang, and public-asset URL checks |
+| `src/lib/build/verify-project-site-export-consumers.ts` | Composite project-site export consumer proof: no root `/_next`, prefixed search bootstrap, home/docs/blog nav under `/you-agent-factory-docs` |
+| `src/lib/build/project-site-export-consumers.proof.test.ts` | Direct export proof (`bun run test:website:export-consumers`): builds with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` and runs `verifyProjectSiteExportDirectory` |
+| `src/lib/build/built-app-html-paths.test.ts` / `src/lib/navigation/site-path.test.ts` / `src/lib/navigation/site-navigation-href.test.ts` / `src/lib/navigation/site-metadata-path.test.ts` / `src/lib/i18n/route-locale.test.ts` | Focused helper gates: live project-site default + root vs `/you-agent-factory-docs` navigation/locale/metadata/asset href behavior |
+| `src/features/docs/components/LocalizedLinkList.tsx` | MDX link lists use Next `<Link>` so project-site `basePath` prefixes hrefs (raw `<a>` would escape to the org root) |
 
 ## `make build` vs `make build-export`
 
@@ -99,7 +118,21 @@ command-level verification of the Makefile targets and the YAML files above.
 
 Live project-site coverage belongs in `make test-build-contract` /
 `bun run test:build-contract`, which runs `deploy-pages-workflow-contract`,
-`static-export`, and `verify-export-base-path` tests (plus `export-out-directory`).
+`static-export`, `verify-export-base-path`, `export-out-directory`,
+`built-app-html-paths`, `verify-project-site-export-consumers` (fixture gate),
+`site-path`, `site-navigation-href`, `site-metadata-path`, and `route-locale`
+tests. Direct project-site `out/` proof (real export build) is
+`bun run test:website:export-consumers`.
+
+When path-helper fixtures still encode retired `/ai-model-reference`, update them
+to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —
+do not invent a second prefix mechanism beside `normalizeGitHubPagesBasePath` /
+`withBasePath`.
+
+Search bootstrap path consumers (`docs-search-bootstrap-path`, export-search
+bootstrap emit/verify, and the baked `NEXT_PUBLIC_DOCS_SEARCH_BOOTSTRAP_FROM`
+client path) are covered by `bun run test:website:static-search`. Those fixtures
+must also use the live project-site prefix, not retired `/ai-model-reference`.
 
 ## Repository-facing workflow identity
 

@@ -54,7 +54,19 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/a11y/primary-navigation.a11y.test.tsx`
   A11y smoke for brand + Primary landmark + Search on the canonical docs layout.
 * `src/components/layout/primary-nav.ts` / `primary-nav.test.ts`
-  Site-config-driven CLI primary nav item resolution.
+  Site-config-driven CLI primary nav item resolution. Link hrefs stay unprefixed
+  (Next `basePath` prefixes at render); absolute/export resolution uses
+  `resolveSiteNavigationHrefs` from `site-navigation-href.ts`.
+* `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
+  Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
+  routes via shared `withBasePath`.
+* `src/lib/navigation/site-metadata-path.ts` / `site-metadata-path.test.ts`
+  Canonical/hreflang and public-asset absolute href helpers (`resolveSiteAbsoluteHref`,
+  `resolvePublicAssetHref`, `prefixMetadataAlternates`). Next Metadata does not
+  auto-apply `basePath` — use these instead of hardcoding root paths.
+* `src/lib/i18n/route-locale.ts` (`localizedRouteAlternates`)
+  Shared metadata alternates consumer; project-site export prefixes through
+  `resolveGitHubPagesBasePath` + `prefixMetadataAlternates`.
 
 ## AI shell parity regression
 
