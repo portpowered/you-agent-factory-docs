@@ -66,7 +66,8 @@ const CLI_EMPTY_SECTION_INDEX_CASES = CLI_SECTION_INDEX_CASES.filter(
   (section) =>
     section.collectionId !== "documentation" &&
     section.collectionId !== "guides" &&
-    section.collectionId !== "concepts",
+    section.collectionId !== "concepts" &&
+    section.collectionId !== "techniques",
 );
 
 describe("CLI section index messages", () => {
@@ -188,6 +189,28 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(html).toContain(
       "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+    );
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
+  it("renders the techniques index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.techniquesIndex;
+    const html = renderToStaticMarkup(await TechniquesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
     );
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(

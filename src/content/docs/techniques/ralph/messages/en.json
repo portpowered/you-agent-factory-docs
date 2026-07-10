@@ -1,0 +1,31 @@
+{
+  "title": "Ralph",
+  "description": "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Ralph is an autonomous execution technique that works through a product requirements backlog one user story per iteration. A product requirements document (PRD) backlog such as prd.json, plus progress notes, drives which story comes next. Ralph is not the factory itself and not a one-shot chat reply."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Long product requirements stay mergeable and reviewable because each iteration finishes one small story, carries learnings forward, and avoids stuffing an entire feature into one context window."
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "body": "Read the PRD backlog, pick the highest-priority unfinished story, implement and verify that story, mark it complete, record progress and learnings, then continue until stories pass or an explicit stop path ends the run."
+    },
+    "comparedToNearbyTechniques": {
+      "title": "Compared To Nearby Techniques",
+      "body": "Ralph is not a plain factory loop that only keeps iterating until a goal is done. It is also not planner-executor (plan then execute as a role split), writer-reviewer (draft plus an explicit review gate), or workqueue-executor (drain a work queue)."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
