@@ -1,0 +1,32 @@
+{
+  "title": "Replays / Records",
+  "description": "Capture a live you-agent-factory run as a replay artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again.",
+  "openingSummary": "Replays / Records is the you-agent-factory reference for capturing live runs as replay artifacts and replaying saved history without dispatching live workers again.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Replays / Records is the web reference for you-agent-factory record and replay behavior. Use it when you need to capture a live factory run as a replay-compatible artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A recording is a replay-compatible artifact that stores observed runtime history from a live factory run. Record mode writes that history during a live run. Replay mode reads an existing artifact and reuses the saved history instead of starting live workers again. This page is the record and replay documentation surface; it is not factory-session pause, resume, or status inspection."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start from a normal live you run when you want a recording written by default. Use this page to learn how record and replay modes differ, where default artifacts land, which run-control flags change recording behavior, and how to replay a saved path later. Deeper flag tables, copyable examples, and retention guidance expand in the sections that follow as this reference is completed."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web record and replay reference for you-agent-factory. It is not a sync of packaged CLI docs, not factory-session pause or resume, not mock-worker selection contracts, and not a logs, metrics, or API reference."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
