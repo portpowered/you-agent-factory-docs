@@ -100,13 +100,18 @@ Allowed shared paths stay limited to:
 - the process notes that document the first-page wiring
 - `src/lib/content/shipped-localized-docs.server.test.ts` when the page ships
   non-en locale stubs (the derive test asserts the committed manifest)
+- `src/tests/content/section-indexes.test.tsx` when the section flips from
+  empty-state to authored-entry assertions (default locale and non-en indexes)
 
 Retiring an Atlas-era root placeholder at `src/content/docs/<slug>.mdx` when
 publishing `src/content/docs/<section>/<slug>/` is **page-owned** for that
 slug, not a shared hotspot. Tracked
 `src/lib/content/generated/shipped-localized-docs.generated.ts` may appear as a
 declared generated output alongside the first-page exception; keep it committed
-when locale message files change.
+when locale message files change. The audit's first-CLI-section exception
+covers `concepts`, `documentation`, `guides`, and `techniques` registry kinds
+and treats the tracked shipped-locale manifest as allowed declared output for
+that lane.
 
 Rerun with `--exception-reason` and repeat the same justification in the PR
 conversation comment. Later pages in the same section should stay page-local.

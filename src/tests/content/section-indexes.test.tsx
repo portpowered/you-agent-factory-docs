@@ -241,7 +241,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese concepts index with localized title and empty-state copy", async () => {
+  it("renders the japanese concepts index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedConceptsIndexPage({
@@ -250,9 +250,13 @@ describe("localized CLI section index page render", () => {
     );
 
     expect(html).toContain(messages.conceptsIndex.title);
-    expect(html).toContain(messages.conceptsIndex.emptyTitle);
-    expect(html).toContain(messages.conceptsIndex.emptyDescription);
-    expect(html).toContain('href="/ja"');
+    expect(html).toContain(`aria-label="${messages.conceptsIndex.listLabel}"`);
+    expect(html).toContain("Loop");
+    expect(html).toContain("/ja/docs/concepts/loop");
+    expect(html).toContain(
+      "A factory loop keeps iterating under you-agent-factory until the goal is done.",
+    );
+    expect(html).not.toContain(messages.conceptsIndex.emptyTitle);
     expect(messages.conceptsIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );

@@ -801,6 +801,88 @@ describe("canonical page surface audit", () => {
     }
   });
 
+  test("allows first concepts page locale stubs and section-index updates in declare-exception lane", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
+
+    try {
+      mkdirSync(join(repoRoot, "src/content/docs/concepts/loop/messages"), {
+        recursive: true,
+      });
+      mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
+        recursive: true,
+      });
+      mkdirSync(join(repoRoot, "src/lib/content/generated"), {
+        recursive: true,
+      });
+      mkdirSync(join(repoRoot, "src/tests/content"), { recursive: true });
+
+      writeFileSync(
+        join(repoRoot, "src/content/docs/concepts/loop/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.loop"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+      );
+      writeJson(join(repoRoot, "src/content/registry/concepts/loop.json"), {
+        id: "concept.loop",
+      });
+      writeFileSync(
+        join(repoRoot, "src/content/docs/concepts/loop/messages/ja.json"),
+        "{}\n",
+      );
+      writeFileSync(
+        join(
+          repoRoot,
+          "src/lib/content/generated/shipped-localized-docs.generated.ts",
+        ),
+        "export const SHIPPED_LOCALIZED_DOCS = {};\n",
+      );
+      writeFileSync(
+        join(repoRoot, "src/lib/content/shipped-localized-docs.server.test.ts"),
+        "test('shipped', () => {});\n",
+      );
+      writeFileSync(
+        join(repoRoot, "src/tests/content/section-indexes.test.tsx"),
+        "test('section indexes', () => {});\n",
+      );
+
+      const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
+        changedPaths: [
+          "src/content/docs/concepts/.gitkeep",
+          "src/content/docs/concepts/loop/page.mdx",
+          "src/content/docs/concepts/loop/messages/ja.json",
+          "src/content/registry/concepts/.gitkeep",
+          "src/content/registry/concepts/loop.json",
+          "src/lib/content/generated/shipped-localized-docs.generated.ts",
+          "src/lib/content/shipped-localized-docs.server.test.ts",
+          "src/tests/content/section-indexes.test.tsx",
+          "docs/internal/processes/canonical-page-surface-budget-relevant-files.md",
+          "docs/internal/processes/content-page-generation-workflow-relevant-files.md",
+        ],
+        exception: {
+          reason:
+            "First concepts page shipping non-en locale stubs requires tracked shipped-localized-docs manifest and section-index authored-entry expectations.",
+        },
+        pageDirectory: "src/content/docs/concepts/loop",
+        snapshot: {
+          generatedAtUtc: "2026-07-09T12:00:00.000Z",
+          rankedSurfaces: [],
+          recentCommitLimit: 40,
+          repoRoot,
+          topPaths: [],
+          worktrees: [],
+        },
+      });
+
+      expect(audit.guidance.recommendedAction).toBe("declare-exception");
+      expect(formatCanonicalPageSurfaceAudit(audit)).toContain(
+        "first CLI-section page exception",
+      );
+      expect(formatCanonicalPageSurfaceAudit(audit)).toContain(
+        "Visible exception",
+      );
+    } finally {
+      rmSync(repoRoot, { force: true, recursive: true });
+    }
+  });
+
   test("allows glossary-bridge dual-route discovery and convergence fixture updates in declare-exception lane", () => {
     const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
 

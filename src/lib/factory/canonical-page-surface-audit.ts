@@ -33,6 +33,7 @@ const registryDirectoryByKind: Record<string, string> = {
 
 /** Rewrite-era CLI docs sections that need first-page published-docs + local-docs wiring. */
 const FIRST_CLI_SECTION_PAGE_SECTIONS = [
+  "concepts",
   "documentation",
   "guides",
   "techniques",
@@ -759,7 +760,8 @@ function isAllowedFirstCliSectionPageSharedPath(
     path === "src/lib/content/published-docs-registry-contract.ts" ||
     path === "src/lib/content/content-hrefs.ts" ||
     path === "src/lib/content/local-docs-page.ts" ||
-    path === "src/lib/content/shipped-localized-docs.server.test.ts"
+    path === "src/lib/content/shipped-localized-docs.server.test.ts" ||
+    path === "src/tests/content/section-indexes.test.tsx"
   ) {
     return true;
   }
@@ -769,7 +771,9 @@ function isAllowedFirstCliSectionPageSharedPath(
       ? "documentation"
       : section === "guides"
         ? "guide"
-        : "technique";
+        : section === "concepts"
+          ? "concept"
+          : "technique";
 
   return (
     path === `src/lib/content/${singular}-page.ts` ||
@@ -791,7 +795,9 @@ function evaluateFirstCliSectionPageBudget(
       ? "guide."
       : section === "techniques"
         ? "technique."
-        : "documentation.";
+        : section === "concepts"
+          ? "concept."
+          : "documentation.";
   if (!scope.registryId.startsWith(expectedKindPrefix)) {
     return null;
   }
