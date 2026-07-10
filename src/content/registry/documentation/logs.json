@@ -6,9 +6,13 @@
   "defaultSummaryKey": "description",
   "aliases": ["runtime logs", "logs", "CLI diagnostics", "runtime-log"],
   "tags": [],
-  "relatedIds": ["documentation.cli"],
+  "relatedIds": [
+    "documentation.cli",
+    "documentation.factory-session",
+    "documentation.replays-records"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-10T09:00:00.000Z",
-  "updatedAt": "2026-07-10T09:00:00.000Z"
+  "updatedAt": "2026-07-10T10:05:00.000Z"
 }

@@ -16,6 +16,7 @@ updatedAt: "2026-07-10"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -102,6 +103,63 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
       <T k="links.exampleCommand" />
     </code>
   </pre>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.diagnosticsFlagHeader" />
+        </th>
+        <th>
+          <T k="links.diagnosticsEffectHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.verboseFlag" />
+        </td>
+        <td>
+          <T k="links.verboseEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.debugFlag" />
+        </td>
+        <td>
+          <T k="links.debugEffect" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.jsonFlag" />
+        </td>
+        <td>
+          <T k="links.jsonEffect" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.diagnosticsExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.diagnosticsExampleCommand" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.channelBoundaryLabel" />
+  </p>
+  <ul>
+    <li>
+      <T k="links.systemLogsBoundary" />
+    </li>
+    <li>
+      <T k="links.environmentDetailsBoundary" />
+    </li>
+  </ul>
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
@@ -109,6 +167,22 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 </Section>
 
 <Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/factory-session",
+        labelKey: "links.factorySessionDocs",
+      },
+      {
+        href: "/docs/documentation/replays-records",
+        labelKey: "links.replaysRecordsDocs",
+      },
+    ]}
+  />
   <RelatedDocs registryId="documentation.logs" />
 </Section>
 
