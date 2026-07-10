@@ -160,10 +160,10 @@ describe("GitHub Actions make ci", () => {
       "bun ./scripts/run-website-verifier-tests.ts",
     );
     expect(scripts.build).toContain(
-      "fumadocs-mdx && bun ./scripts/run-next.ts build --webpack",
+      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && bun ./scripts/run-next.ts build --webpack",
     );
     expect(scripts["build:export"]).toContain(
-      "fumadocs-mdx && NEXT_STATIC_EXPORT=1 bun ./scripts/run-next.ts build --webpack",
+      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && NEXT_STATIC_EXPORT=1 bun ./scripts/run-next.ts build --webpack",
     );
     expect(scripts["test:build-contract"]).toContain(
       "src/tests/build/next-build-tracing-warning.test.ts",

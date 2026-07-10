@@ -260,6 +260,14 @@ bun run benchmark:static-export -- --mode=warm
   `hit:fingerprint-store-and-outputs-present` when
   `.content-runtime-fingerprints.json` and all contracted generated outputs are
   present and non-empty, otherwise `miss:fingerprint-store-or-outputs-absent`.
+- Fumadocs / immutable-snapshot cache reasons: clean mode reports
+  `miss:clean-mode-regenerates`; warm mode reports
+  `hit:immutable-snapshot-store-and-source-present` when `.source` and
+  `.source/.static-export-immutable-snapshot.json` are present, otherwise
+  `miss:immutable-snapshot-store-or-source-absent`. The export path reuses a
+  fingerprint-fresh `.source` via
+  `bun ./scripts/ensure-static-export-immutable-snapshot.ts` instead of always
+  re-running `fumadocs-mdx`.
 - Ordinary `make build` / `bun run build:export` stay uninstrumented.
 - Focused contract coverage (no full timed export):
   `bun run test:static-export-profile-contract`.

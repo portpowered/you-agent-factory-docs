@@ -8,6 +8,7 @@
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { DEFAULT_EXPORT_OUT_DIR } from "@/lib/build/export-out-directory";
+import { STATIC_EXPORT_IMMUTABLE_SNAPSHOT_STORE_RELATIVE_PATH } from "@/lib/build/static-export-immutable-snapshot";
 import {
   createNotAvailableCacheReasons,
   createNotAvailableScaleCounts,
@@ -28,6 +29,7 @@ export const STATIC_EXPORT_CACHE_ARTIFACT_PATHS = {
   outDirectory: DEFAULT_EXPORT_OUT_DIR,
   chunksDirectory: `${DEFAULT_EXPORT_OUT_DIR}/_next/static/chunks`,
   contentRuntimeFingerprintStore: CONTENT_RUNTIME_FINGERPRINTS_RELATIVE_PATH,
+  immutableSnapshotStore: STATIC_EXPORT_IMMUTABLE_SNAPSHOT_STORE_RELATIVE_PATH,
 } as const;
 
 export type PathExistsFn = (path: string) => boolean;
@@ -43,6 +45,8 @@ export type StaticExportCacheArtifactSnapshot = {
   contentRuntimeFingerprintStorePresent: boolean;
   /** All contracted content-runtime outputs exist and are non-empty. */
   contentRuntimeOutputsPresent: boolean;
+  /** Fingerprint store for the fumadocs `.source` immutable snapshot. */
+  immutableSnapshotStorePresent: boolean;
 };
 
 export type CollectCacheArtifactSnapshotOptions = {
@@ -135,6 +139,12 @@ export function collectStaticExportCacheArtifactSnapshot(
       pathExists,
       fileSize,
     ),
+    immutableSnapshotStorePresent: pathExists(
+      join(
+        options.cwd,
+        STATIC_EXPORT_CACHE_ARTIFACT_PATHS.immutableSnapshotStore,
+      ),
+    ),
   };
 }
 
@@ -165,9 +175,12 @@ export function deriveStaticExportCacheReasons(input: {
         : cacheReason("miss", "fingerprint-store-or-outputs-absent");
 
   const fumadocsGeneration =
-    mode === "clean" || !snapshot.sourceDirectoryPresent
-      ? cacheReason("miss", "source-directory-absent")
-      : cacheReason("hit", "source-directory-present");
+    mode === "clean"
+      ? cacheReason("miss", "clean-mode-regenerates")
+      : snapshot.sourceDirectoryPresent &&
+          snapshot.immutableSnapshotStorePresent
+        ? cacheReason("hit", "immutable-snapshot-store-and-source-present")
+        : cacheReason("miss", "immutable-snapshot-store-or-source-absent");
 
   const nextCompilationStaticRendering =
     mode === "clean" || !snapshot.nextCacheDirectoryPresent

@@ -27,7 +27,7 @@ describe("runProfiledStaticExport", () => {
     },
     fumadocsGeneration: {
       status: "miss" as const,
-      reason: "source-directory-absent",
+      reason: "immutable-snapshot-store-or-source-absent",
     },
     nextCompilationStaticRendering: {
       status: "miss" as const,
@@ -242,7 +242,7 @@ describe("runProfiledStaticExport", () => {
     ) as { scripts: Record<string, string> };
 
     expect(packageJson.scripts["build:export"]).toBe(
-      "fumadocs-mdx && NEXT_STATIC_EXPORT=1 bun ./scripts/run-next.ts build --webpack && bun ./scripts/emit-export-search-index.ts && bun ./scripts/write-build-source-fingerprint.ts",
+      "bun ./scripts/ensure-static-export-immutable-snapshot.ts && NEXT_STATIC_EXPORT=1 bun ./scripts/run-next.ts build --webpack && bun ./scripts/emit-export-search-index.ts && bun ./scripts/write-build-source-fingerprint.ts",
     );
     expect(packageJson.scripts["build:export"]).not.toContain(
       "run-profiled-static-export",

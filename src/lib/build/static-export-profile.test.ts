@@ -24,7 +24,7 @@ const fixtureCacheReasons = {
   },
   fumadocsGeneration: {
     status: "miss" as const,
-    reason: "source-directory-absent",
+    reason: "clean-mode-regenerates",
   },
   nextCompilationStaticRendering: {
     status: "miss" as const,
@@ -134,7 +134,7 @@ describe("static-export-profile", () => {
       "contentRuntimePreparationCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
-      "fumadocsGenerationCache=miss:source-directory-absent",
+      "fumadocsGenerationCache=miss:clean-mode-regenerates",
     );
     expect(summary).toContain(
       "nextCompilationStaticRenderingCache=miss:next-cache-directory-absent",

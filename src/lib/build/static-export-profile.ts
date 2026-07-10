@@ -299,7 +299,8 @@ export function formatStageTimingSummary(
 
 /**
  * Stage commands that mirror the supported static-export pipeline:
- * prepare:content-runtime → fumadocs-mdx → NEXT_STATIC_EXPORT next build →
+ * prepare:content-runtime → ensure-static-export-immutable-snapshot
+ * (fingerprint-gated fumadocs `.source`) → NEXT_STATIC_EXPORT next build →
  * emit-export-search-index → write-build-source-fingerprint.
  *
  * The profiled runner invokes these as discrete timed stages instead of the
@@ -320,7 +321,7 @@ export const STATIC_EXPORT_PROFILE_STAGE_COMMANDS: readonly StaticExportProfileS
     },
     {
       id: "fumadocsGeneration",
-      argv: ["bunx", "fumadocs-mdx"],
+      argv: ["bun", "./scripts/ensure-static-export-immutable-snapshot.ts"],
     },
     {
       id: "nextCompilationStaticRendering",

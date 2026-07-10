@@ -17,6 +17,7 @@ describe("static-export-profile-diagnostics", () => {
         outDirectoryPresent: false,
         contentRuntimeFingerprintStorePresent: true,
         contentRuntimeOutputsPresent: true,
+        immutableSnapshotStorePresent: false,
       },
     });
 
@@ -26,7 +27,7 @@ describe("static-export-profile-diagnostics", () => {
     });
     expect(reasons.fumadocsGeneration).toEqual({
       status: "miss",
-      reason: "source-directory-absent",
+      reason: "clean-mode-regenerates",
     });
     expect(reasons.nextCompilationStaticRendering).toEqual({
       status: "miss",
@@ -45,6 +46,7 @@ describe("static-export-profile-diagnostics", () => {
         outDirectoryPresent: true,
         contentRuntimeFingerprintStorePresent: true,
         contentRuntimeOutputsPresent: true,
+        immutableSnapshotStorePresent: true,
       },
     });
 
@@ -54,7 +56,7 @@ describe("static-export-profile-diagnostics", () => {
     });
     expect(reasons.fumadocsGeneration).toEqual({
       status: "hit",
-      reason: "source-directory-present",
+      reason: "immutable-snapshot-store-and-source-present",
     });
     expect(reasons.nextCompilationStaticRendering).toEqual({
       status: "hit",
@@ -72,6 +74,7 @@ describe("static-export-profile-diagnostics", () => {
           outDirectoryPresent: true,
           contentRuntimeFingerprintStorePresent: false,
           contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
         },
       }).contentRuntimePreparation,
     ).toEqual({
@@ -88,11 +91,48 @@ describe("static-export-profile-diagnostics", () => {
           outDirectoryPresent: true,
           contentRuntimeFingerprintStorePresent: true,
           contentRuntimeOutputsPresent: false,
+          immutableSnapshotStorePresent: true,
         },
       }).contentRuntimePreparation,
     ).toEqual({
       status: "miss",
       reason: "fingerprint-store-or-outputs-absent",
+    });
+  });
+
+  test("warm mode reports fumadocs miss when immutable snapshot store or source is absent", () => {
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: true,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: false,
+        },
+      }).fumadocsGeneration,
+    ).toEqual({
+      status: "miss",
+      reason: "immutable-snapshot-store-or-source-absent",
+    });
+
+    expect(
+      deriveStaticExportCacheReasons({
+        mode: "warm",
+        snapshot: {
+          nextCacheDirectoryPresent: true,
+          sourceDirectoryPresent: false,
+          outDirectoryPresent: true,
+          contentRuntimeFingerprintStorePresent: true,
+          contentRuntimeOutputsPresent: true,
+          immutableSnapshotStorePresent: true,
+        },
+      }).fumadocsGeneration,
+    ).toEqual({
+      status: "miss",
+      reason: "immutable-snapshot-store-or-source-absent",
     });
   });
 
@@ -102,6 +142,7 @@ describe("static-export-profile-diagnostics", () => {
       "/repo/.source",
       "/repo/out",
       "/repo/src/lib/content/generated/.content-runtime-fingerprints.json",
+      "/repo/.source/.static-export-immutable-snapshot.json",
       "/repo/src/lib/content/generated/a.generated.ts",
       "/repo/src/lib/content/generated/b.generated.ts",
     ]);
@@ -125,6 +166,7 @@ describe("static-export-profile-diagnostics", () => {
       outDirectoryPresent: true,
       contentRuntimeFingerprintStorePresent: true,
       contentRuntimeOutputsPresent: true,
+      immutableSnapshotStorePresent: true,
     });
   });
 
