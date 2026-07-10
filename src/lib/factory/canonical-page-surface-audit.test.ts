@@ -805,9 +805,12 @@ describe("canonical page surface audit", () => {
     const repoRoot = mkdtempSync(join(tmpdir(), "canonical-page-surface-"));
 
     try {
-      mkdirSync(join(repoRoot, "src/content/docs/concepts/tool/messages"), {
-        recursive: true,
-      });
+      mkdirSync(
+        join(repoRoot, "src/content/docs/concepts/checklist/messages"),
+        {
+          recursive: true,
+        },
+      );
       mkdirSync(join(repoRoot, "src/content/registry/concepts"), {
         recursive: true,
       });
@@ -819,18 +822,21 @@ describe("canonical page surface audit", () => {
       });
 
       writeFileSync(
-        join(repoRoot, "src/content/docs/concepts/tool/page.mdx"),
-        `---\nkind: "concept"\nregistryId: "concept.tool"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
+        join(repoRoot, "src/content/docs/concepts/checklist/page.mdx"),
+        `---\nkind: "concept"\nregistryId: "concept.checklist"\nmessageNamespace: "local"\nassetNamespace: "local"\nstatus: "published"\ntags: []\nupdatedAt: "2026-07-09"\n---\n`,
       );
-      writeJson(join(repoRoot, "src/content/registry/concepts/tool.json"), {
-        id: "concept.tool",
-      });
+      writeJson(
+        join(repoRoot, "src/content/registry/concepts/checklist.json"),
+        {
+          id: "concept.checklist",
+        },
+      );
       writeFileSync(
         join(
           repoRoot,
           "src/lib/content/generated/shipped-localized-docs.generated.ts",
         ),
-        "export const SHIPPED_LOCALIZED_DOCS = { ja: ['concepts/tool'], 'zh-CN': [], vi: [] } as const;\n",
+        "export const SHIPPED_LOCALIZED_DOCS = { ja: ['concepts/checklist'], 'zh-CN': [], vi: [] } as const;\n",
       );
       writeFileSync(
         join(repoRoot, "src/lib/content/shipped-localized-docs.server.test.ts"),
@@ -847,11 +853,11 @@ describe("canonical page surface audit", () => {
       const audit = collectCanonicalPageSurfaceAudit(repoRoot, {
         changedPaths: [
           "src/content/docs/concepts/.gitkeep",
-          "src/content/docs/concepts/tool/page.mdx",
-          "src/content/docs/concepts/tool/messages/en.json",
-          "src/content/docs/concepts/tool/messages/ja.json",
-          "src/content/docs/concepts/tool/tool-page.test.tsx",
-          "src/content/registry/concepts/tool.json",
+          "src/content/docs/concepts/checklist/page.mdx",
+          "src/content/docs/concepts/checklist/messages/en.json",
+          "src/content/docs/concepts/checklist/messages/ja.json",
+          "src/content/docs/concepts/checklist/checklist-page.test.tsx",
+          "src/content/registry/concepts/checklist.json",
           "src/lib/content/generated/shipped-localized-docs.generated.ts",
           "src/lib/content/shipped-localized-docs.server.test.ts",
           "docs/internal/processes/empty-cli-taxonomy-relevant-files.md",
@@ -860,7 +866,7 @@ describe("canonical page surface audit", () => {
           reason:
             "First concepts page ships non-en locale stubs; tracked shipped-localized-docs.generated.ts plus derive-test expectation update are required.",
         },
-        pageDirectory: "src/content/docs/concepts/tool",
+        pageDirectory: "src/content/docs/concepts/checklist",
         snapshot: {
           generatedAtUtc: "2026-07-09T12:00:00.000Z",
           rankedSurfaces: [],
