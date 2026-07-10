@@ -186,6 +186,28 @@ describe("CLI section index page render", () => {
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
   });
+
+  it("renders the techniques index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.techniquesIndex;
+    const html = renderToStaticMarkup(await TechniquesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
+    );
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
 });
 
 describe("localized CLI section index page render", () => {
@@ -207,7 +229,7 @@ describe("localized CLI section index page render", () => {
     );
   });
 
-  it("renders the japanese techniques index with localized title and empty-state copy", async () => {
+  it("renders the japanese techniques index with localized title and authored page entries", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedTechniquesIndexPage({
@@ -216,9 +238,15 @@ describe("localized CLI section index page render", () => {
     );
 
     expect(html).toContain(messages.techniquesIndex.title);
-    expect(html).toContain(messages.techniquesIndex.emptyTitle);
-    expect(html).toContain(messages.techniquesIndex.emptyDescription);
-    expect(html).toContain('href="/ja"');
+    expect(html).toContain(
+      `aria-label="${messages.techniquesIndex.listLabel}"`,
+    );
+    expect(html).toContain("Ralph");
+    expect(html).toContain("/ja/docs/techniques/ralph");
+    expect(html).toContain(
+      "Ralph is an autonomous one-story-per-iteration execution loop driven by a product requirements backlog.",
+    );
+    expect(html).not.toContain(messages.techniquesIndex.emptyTitle);
     expect(messages.techniquesIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );

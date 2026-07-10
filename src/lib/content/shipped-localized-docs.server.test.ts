@@ -155,6 +155,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/ralph",
       ],
       "zh-CN": [
         "concepts/bottlenecks",
@@ -172,6 +173,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/ralph",
       ],
       vi: [
         "concepts/bottlenecks",
@@ -189,6 +191,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "techniques/ralph",
       ],
     });
   });

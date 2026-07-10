@@ -36,9 +36,10 @@ Before the first authored page under a rewrite-era CLI collection can pass
 2. `parseLocalDocsPageRef` / `loadLocalDocsPage` in
    `src/lib/content/local-docs-page.ts` must include the section with a
    colocated loader (for example `documentation-page.ts` /
-   `documentation-page-load.ts`). Without that, Fumadocs renders the MDX body
-   without `ModulePageProviders` and `Section` / `T` throw
-   `usePageMessages must be used within PageMessagesProvider`.
+   `documentation-page-load.ts`, or `technique-page.ts` /
+   `technique-page-load.ts` for the first techniques page). Without that,
+   Fumadocs renders the MDX body without `ModulePageProviders` and
+   `Section` / `T` throw `usePageMessages must be used within PageMessagesProvider`.
 3. Fumadocs MDX frontmatter still needs `title` (and usually `description`)
    even when reader copy is message-backed — mirror the glossary template.
 4. `registryDirectoryByKind` in
@@ -121,6 +122,17 @@ must wire those destinations with page-local `<LocalizedLinkList>` and
 targets until related-runtime includes documentation records; keep
 `<RelatedDocs />` / `<DerivedRelatedDocs />` for concept-to-concept curated
 discovery when those ids can resolve.
+
+Technique → concept / guide / planned sibling discovery follows the same
+page-local pattern: put loop concept, loops guide, and planned sibling
+technique hrefs (`/docs/techniques/planner-executor`,
+`/docs/techniques/writer-reviewer`, `/docs/techniques/workqueue-executor`) on
+the technique page with message-backed `<LocalizedLinkList>` under `#related`.
+Omit unpublished sibling technique ids from registry `relatedIds` so
+`validate-data` stays clean; keep `<RelatedDocs />` for curated ids that can
+resolve. Technique kind is outside the strict page-template conformance set, so
+adding `LocalizedLinkList` does not need a `page-template-conformance.ts`
+exception.
 
 ## Shipping non-en locale stubs on a page bundle
 
@@ -253,7 +265,15 @@ shared wiring is still missing. Publishing may trip
 - empty-root / section-index tests that previously forbade authored bundles
   (`src/tests/content/section-indexes.test.tsx` must move that section from
   empty-state assertions to authored-entry assertions once the first page
-  ships; keep non-default locale empty-state checks until locale stubs exist)
+  ships; keep non-default locale empty-state checks until locale stubs exist).
+  When every CLI section is authored in the default locale, remove the
+  `CLI_EMPTY_SECTION_INDEX_CASES` filter loop entirely — filtering all
+  sections out yields `never[]` and breaks `tsc` on the empty-state `for`
+  loop. Keep locale-specific empty-state `it(...)` cases as standalone tests
+  until that locale ships stubs; when techniques (or another section) ships
+  `messages/{ja,zh-CN,vi}.json`, flip the matching localized index assertion
+  to authored-entry and regenerate/commit
+  `shipped-localized-docs.generated.ts` plus the derive-test expectation.
 
 ### First published techniques page
 
@@ -433,7 +453,14 @@ When publishing the first authored page under a rewrite-era CLI section
    `redirect-to-throughput-prd`). The audit maps CLI registry kinds
    (`guide` / `technique` / `documentation`) and ignores section-root
    `.gitkeep` when inferring page scope. Repeat the exception reason in the PR
-   conversation comment.
+   conversation comment. Do not add a shared
+   `src/lib/content/local-docs-page.test.ts` for the new section — that path is
+   outside the first-CLI-section allowlist and forces
+   `redirect-to-throughput-prd`. Colocate `parseLocalDocsPageRef` /
+   `isLocalDocsCatchAllSlug` proofs under the page bundle
+   (`src/content/docs/<section>/<slug>/<slug>-page.test.tsx`) instead, and flip
+   `src/tests/content/section-indexes.test.tsx` from empty-state to
+   authored-entry for the default-locale index.
 
 Without (1), `bun run prepare:content-runtime` fails while generating the
 published-docs registry. Without (2), `/docs/<section>/<slug>` falls through to
