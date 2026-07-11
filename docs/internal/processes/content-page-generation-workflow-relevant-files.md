@@ -104,7 +104,9 @@ When a guide needs copyable shell commands (install, first-run, submit):
    through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents`.
    `DocsCodeBlock` keeps inset padding on the scroll viewport and a dedicated
    copy rail (`data-docs-code-actions="rail"`) so long-line scroll never
-   overlaps the control (see `docs-code-block.css`).
+   overlaps the control (see `docs-code-block.css`). Copy buttons are marked
+   `data-docs-code-copy="control"` with persistent secondary-blue hover/focus
+   chrome (`docs-code-copy-chrome.ts`).
 2. Keep OS labels and short prose in colocated messages. `pageSectionSchema`
    only allows `title` / `body` per section — extra keys under
    `sections.<id>` are stripped by Zod and then fail

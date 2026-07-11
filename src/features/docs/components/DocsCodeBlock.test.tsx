@@ -4,6 +4,11 @@ import {
   DOCS_CODE_BLOCK_INSET_INLINE,
   DocsPre,
 } from "@/features/docs/components/DocsCodeBlock";
+import {
+  DOCS_CODE_COPY_BUTTON_CLASS,
+  DOCS_CODE_COPY_CONTROL_ATTR,
+  DOCS_CODE_COPY_CONTROL_VALUE,
+} from "@/features/docs/styles/docs-code-copy-chrome";
 
 describe("DocsCodeBlock", () => {
   test("renders fenced code with rich-content scroll marker on the viewport region", () => {
@@ -56,5 +61,20 @@ describe("DocsCodeBlock", () => {
     expect(railIndex).toBeGreaterThanOrEqual(0);
     expect(buttonIndex).toBeGreaterThan(railIndex);
     expect(viewportIndex).toBeGreaterThan(buttonIndex);
+  });
+
+  test("marks the copy control for persistent secondary-blue chrome", () => {
+    const html = renderToStaticMarkup(
+      <DocsPre className="language-sh">{`you docs agents`}</DocsPre>,
+    );
+
+    expect(html).toContain(
+      `${DOCS_CODE_COPY_CONTROL_ATTR}="${DOCS_CODE_COPY_CONTROL_VALUE}"`,
+    );
+    expect(html).toContain(DOCS_CODE_COPY_BUTTON_CLASS);
+    expect(html).toContain('aria-label="Copy Text"');
+    // Control stays in the DOM at rest (not hover-gated markup).
+    const copyIndex = html.indexOf(DOCS_CODE_COPY_BUTTON_CLASS);
+    expect(copyIndex).toBeGreaterThanOrEqual(0);
   });
 });
