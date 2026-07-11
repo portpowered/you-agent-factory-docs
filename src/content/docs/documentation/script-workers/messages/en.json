@@ -1,0 +1,32 @@
+{
+  "title": "Script workers",
+  "description": "Author you-agent-factory SCRIPT_WORKER backends: command and args on the worker, SCRIPT_RUN binding on the workstation, and a minimal command-backed example.",
+  "openingSummary": "A Script worker is a command-backed runtime executor. factory.json names the worker; workers/<name>/AGENTS.md supplies command and args; a SCRIPT_RUN workstation binds that name for script dispatch.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Script workers is the you-agent-factory web reference for SCRIPT_WORKER backends. Use it when you need to place command and args on a command-backed worker, bind that worker from a SCRIPT_RUN workstation, and copy a minimal working example. It covers ownership, the execution contract, lifecycle and timeout expectations, and operational cautions for script workers."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A Script worker (SCRIPT_WORKER) is a command-backed runtime executor. factory.json declares the worker name. The worker directory at workers/<name>/AGENTS.md (or inline worker fields) supplies command and args. A workstation binds that worker for script dispatch with SCRIPT_RUN. The markdown body is descriptive only; the executed fields are command and args."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a SCRIPT_WORKER with type, command, and args, declare the same name in factory.json, and bind it from a SCRIPT_RUN workstation. Put command and args on the worker; put routing, limits, workingDirectory, worktree, env, and optional copyReferencedScripts on the workstation. Start from a minimal command-backed worker when you need a copyable SCRIPT_WORKER shape."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web Script workers reference for you-agent-factory. It is not the Workers taxonomy overview, not a workstation lifecycle deep-dive, and not a sync of packaged CLI docs (you docs workers). Sibling Workers, Workstations, Submitting work, Logs, and Troubleshooting pages aid discovery; they are not required to define what a Script worker is."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
