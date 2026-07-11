@@ -12,6 +12,7 @@ aliases:
   - "INFERENCE_WORKER"
   - "INFERENCE_RUN"
   - "modelLocality"
+  - "operations"
 updatedAt: "2026-07-11"
 ---
 
@@ -32,6 +33,153 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.ownershipIntro" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.ownershipWorkerHeader" />
+        </th>
+        <th>
+          <T k="links.ownershipWorkstationHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerFields" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationFields" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.localityNote" />
+  </p>
+  <p>
+    <T k="links.localExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.localExample" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.cloudExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.cloudExample" />
+    </code>
+  </pre>
+</Section>
+
+<Section id="declared-operations" titleKey="sections.declaredOperations.title">
+  <T k="sections.declaredOperations.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.validationRuleHeader" />
+        </th>
+        <th>
+          <T k="links.validationOutcomeHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.validationDuplicateOps" />
+        </td>
+        <td>
+          <T k="links.validationDuplicateOpsOutcome" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.validationDuplicateSlots" />
+        </td>
+        <td>
+          <T k="links.validationDuplicateSlotsOutcome" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.validationInvalidEnums" />
+        </td>
+        <td>
+          <T k="links.validationInvalidEnumsOutcome" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.validationIncompatibleContent" />
+        </td>
+        <td>
+          <T k="links.validationIncompatibleContentOutcome" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.agentSubstituteCaution" />
+  </p>
+</Section>
+
+<Section id="failure-and-security" titleKey="sections.failureAndSecurity.title">
+  <T k="sections.failureAndSecurity.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.cautionTopicHeader" />
+        </th>
+        <th>
+          <T k="links.cautionGuidanceHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.cautionValidationTopic" />
+        </td>
+        <td>
+          <T k="links.cautionValidationGuidance" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cautionLocalityTopic" />
+        </td>
+        <td>
+          <T k="links.cautionLocalityGuidance" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cautionSecretsTopic" />
+        </td>
+        <td>
+          <T k="links.cautionSecretsGuidance" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cautionAgentLoopTopic" />
+        </td>
+        <td>
+          <T k="links.cautionAgentLoopGuidance" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">

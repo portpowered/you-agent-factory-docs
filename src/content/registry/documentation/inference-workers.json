@@ -8,12 +8,13 @@
     "inference workers",
     "INFERENCE_WORKER",
     "INFERENCE_RUN",
-    "modelLocality"
+    "modelLocality",
+    "operations"
   ],
   "tags": [],
   "relatedIds": [],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-11T07:30:00.000Z",
-  "updatedAt": "2026-07-11T07:30:00.000Z"
+  "updatedAt": "2026-07-11T07:45:00.000Z"
 }
