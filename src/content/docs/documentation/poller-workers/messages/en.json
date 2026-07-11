@@ -1,0 +1,54 @@
+{
+  "title": "Poller workers",
+  "description": "Author you-agent-factory POLLER_WORKER backends: hosted provider and secret refs on the worker, behavior POLLER on the workstation, and poller ingress for external work.",
+  "openingSummary": "A Poller worker supplies the hosted or script-backed backend for a workstation with behavior POLLER. factory.json names the worker; the worker directory supplies provider and auth; the workstation keeps behavior POLLER and routing.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Poller workers is the you-agent-factory web reference for POLLER_WORKER backends. Use it when you need a hosted poller integration (current built-in provider: LINEAR) or a script-backed poller that emits canonical batch stdout for a workstation with behavior POLLER. It covers the hosted-versus-script choice, worker-versus-workstation ownership, service-mode lifecycle, one minimal hosted Linear example, stable requestId idempotency for poller submissions, and security cautions."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A Poller worker supplies the backend for a workstation with behavior POLLER. Use POLLER_WORKER for built-in hosted providers (current: LINEAR). Use a SCRIPT_WORKER when custom poller logic should emit canonical batch stdout instead. factory.json declares the worker name. The worker directory at workers/<name>/AGENTS.md (or inline worker fields) supplies the poller backend. Legacy HOSTED_WORKER still loads and projects to POLLER_WORKER; prefer POLLER_WORKER in new configs. In service mode, behavior POLLER keeps an external ingress loop active, restarts it with bounded backoff, and stops it cleanly on shutdown or replacement. Poller stdout submissions must carry a stable non-empty requestId; reusing the same requestId on a later poll is an idempotent no-op instead of creating duplicate work."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a POLLER_WORKER for a built-in hosted provider, or a SCRIPT_WORKER when you need custom poller stdout, declare the same name in factory.json, and bind it from a workstation with behavior POLLER. Put provider, auth.secretRef, and hosted provider fields on the worker. Put behavior POLLER, worker binding, and routing (outputs / onFailure) on the workstation. Resolve secrets through auth.secretRef only—environment variable or factory-relative secret file—never inline credentials. Start from the minimal hosted Linear example below when you need a copyable POLLER_WORKER shape."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Never put inline credentials on the worker body; use auth.secretRef only. Raw factory event emission from poller stdout is unsupported. OAuth hosted auth and advanced multi-instance poller coordination are out of scope for v1. Script pollers emit one complete batch payload per run (FACTORY_REQUEST_BATCH or submissions shape). This page is the web Poller workers reference for you-agent-factory. It is not Submitting work’s full batch manual, not the Workers taxonomy overview, and not a sync of packaged CLI docs (you docs workers)."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "ownershipWorkerHeader": "Put it on the worker",
+    "ownershipWorkstationHeader": "Put it on the workstation",
+    "ownershipWorkerFields": "type POLLER_WORKER, provider, auth.secretRef, hosted provider fields (for Linear: pollInterval, teamIds, stateIds, mapping, optional claim)",
+    "ownershipWorkstationFields": "behavior POLLER, worker binding, outputs / onFailure",
+    "lifecycleLabel": "Service-mode lifecycle:",
+    "lifecycleBody": "behavior POLLER keeps an external ingress loop active in service mode, restarts it with bounded backoff, and stops it cleanly on shutdown or replacement. Do not invent multi-instance coordination guarantees from this page.",
+    "idempotencyLabel": "Idempotency:",
+    "idempotencyBody": "Poller stdout submissions must carry a stable non-empty requestId. Reusing the same requestId on a later poll is an idempotent no-op instead of creating duplicate work. Script pollers emit one complete batch payload per run (FACTORY_REQUEST_BATCH or submissions shape).",
+    "secretCautionLabel": "Secret handling:",
+    "secretCautionBody": "Authenticate hosted pollers through auth.secretRef only. Resolve the referenced secret from an environment variable derived from the secret name, or from a factory-relative secret file beside factory.json. Never put inline API keys, OAuth tokens, or other credential fields on the worker body.",
+    "minimalWorkerExampleLabel": "Minimal hosted Linear Poller worker (workers/linear-poller/AGENTS.md):",
+    "minimalPollerWorkerExample": "---\ntype: POLLER_WORKER\nprovider: LINEAR\nauth:\n  secretRef: secrets/linear-api-key\nlinear:\n  pollInterval: 2m\n  teamIds: [\"team-a\"]\n  stateIds: [\"state-b\"]\n  mapping:\n    workType: task\n    state: init\n  claim:\n    assigneeField: assignee.email\n---\n\nRepository-owned Linear poller.",
+    "minimalWorkstationExampleLabel": "Bound poller workstation (factory.json excerpt):",
+    "minimalPollerWorkstationExample": "{\n  \"name\": \"linear-intake\",\n  \"behavior\": \"POLLER\",\n  \"worker\": \"linear-poller\",\n  \"outputs\": [{ \"workType\": \"task\", \"state\": \"init\" }],\n  \"onFailure\": { \"workType\": \"task\", \"state\": \"failed\" }\n}",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "submittingWorkDocs": "Submitting work",
+    "logsDocs": "Logs",
+    "troubleshootingDocs": "Troubleshooting",
+    "scriptWorkersDocs": "Script workers"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "id": "documentation.script-workers",
+  "slug": "script-workers",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["SCRIPT_WORKER", "script worker", "command-backed worker"],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers",
+    "documentation.workstations",
+    "documentation.submitting-work",
+    "documentation.logs",
+    "documentation.troubleshooting",
+    "documentation.poller-workers"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T07:00:00.000Z",
+  "updatedAt": "2026-07-11T07:40:00.000Z"
+}
