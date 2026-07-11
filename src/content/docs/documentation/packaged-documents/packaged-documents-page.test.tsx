@@ -1,6 +1,7 @@
 /**
  * Page-owned render proof for documentation/packaged-documents.
- * Covers documentation shell and Packaged documents / you docs identity.
+ * Covers documentation shell, you docs discovery/freshness teaching,
+ * and selectable minimal command examples.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -46,16 +47,31 @@ describe("packaged-documents documentation page", () => {
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
+    const discovery = String(
+      loadedPage.messages.callouts?.discovery?.body ?? "",
+    );
+    const referenceAndFreshness = String(
+      loadedPage.messages.callouts?.referenceAndFreshness?.body ?? "",
+    );
 
     expect(whatItCovers).toMatch(/packaged markdown reference topics/i);
     expect(whatItCovers).toMatch(/you docs/i);
-    expect(whatItCovers).toMatch(/no live factory/i);
+    expect(whatItCovers).toMatch(/installed you binary/i);
     expect(keyConcepts).toMatch(/topic id/i);
-    expect(keyConcepts).toMatch(/installed .+ binary|CLI binary/i);
-    expect(howToUse).toMatch(/you docs/);
-    expect(howToUse).toMatch(/you docs agents/);
+    expect(keyConcepts).toMatch(/agents|config|packaged-goal/);
+    expect(discovery).toMatch(/you docs with no topic/i);
+    expect(discovery).toMatch(/packaged topic index/i);
+    expect(discovery).toMatch(/supported topic argument/i);
+    expect(referenceAndFreshness).toMatch(/topic id/i);
+    expect(referenceAndFreshness).toMatch(/installed CLI binary/i);
+    expect(referenceAndFreshness).toMatch(/upgrade the CLI/i);
+    expect(referenceAndFreshness).toMatch(/not a live sync/i);
+    expect(howToUse).toMatch(/packaged topic index/i);
+    expect(howToUse).toMatch(/no live factory/i);
     expect(limits).toMatch(/not a full topic dump/i);
     expect(limits).toMatch(/not a sync of packaged markdown/i);
+    expect(limits).toMatch(/not factory-local/i);
+    expect(limits).toMatch(/not the CLI install/i);
     expect(whatItCovers).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -87,6 +103,35 @@ describe("packaged-documents documentation page", () => {
     expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+
+    const keyConceptsSection = document.getElementById("key-concepts");
+    const howToUseSection = document.getElementById("how-to-use");
+    const limitsSection = document.getElementById("limits-and-assumptions");
+    expect(keyConceptsSection).toBeTruthy();
+    expect(howToUseSection).toBeTruthy();
+    expect(limitsSection).toBeTruthy();
+
+    expect(keyConceptsSection?.textContent).toMatch(/packaged topic index/i);
+    expect(keyConceptsSection?.textContent).toMatch(/installed CLI binary/i);
+    expect(keyConceptsSection?.textContent).toMatch(/upgrade the CLI/i);
+    expect(keyConceptsSection?.textContent).toMatch(/not a live sync/i);
+
+    // Selectable command examples must be visible without hovering.
+    expect(howToUseSection?.textContent).toMatch(/you docs/);
+    expect(howToUseSection?.textContent).toMatch(/you docs agents/);
+    const codeBlocks = howToUseSection?.querySelectorAll("pre, code") ?? [];
+    const codeText = Array.from(codeBlocks)
+      .map((node) => node.textContent ?? "")
+      .join("\n");
+    expect(codeText).toMatch(/you docs/);
+    expect(codeText).toMatch(/you docs agents/);
+
+    expect(limitsSection?.textContent).toMatch(/not a full topic dump/i);
+    expect(limitsSection?.textContent).toMatch(
+      /not a sync of packaged markdown/i,
+    );
+    expect(limitsSection?.textContent).toMatch(/not factory-local/i);
+    expect(limitsSection?.textContent).toMatch(/not the CLI install/i);
 
     expect(document.body.textContent).toMatch(
       /Packaged documents are packaged markdown reference topics/i,
