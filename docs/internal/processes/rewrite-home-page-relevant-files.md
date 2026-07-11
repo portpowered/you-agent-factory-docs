@@ -8,7 +8,7 @@ install/run CTAs, why/features sections, featured links, or locale shell copy.
 | File | Role |
 | --- | --- |
 | `src/content/messages/en/common.json` (`home.title` / `home.subtitle` / `home.intro`) | Default-locale product identity rendered by `HomeBrushHeader` and used as page metadata description |
-| `src/content/messages/{ja,zh-CN,vi}/common.json` | Localized home shell strings (en complete; non-en may stub English identity/CTA copy, but must not say Model Atlas) |
+| `src/content/messages/{ja,zh-CN,vi}/common.json` | Localized home shell strings (reader-facing `home.*` prose filled for ja / zh-CN / vi; install/run command literals stay identical to en; must not say Model Atlas) |
 | `src/components/home/home-article.tsx` | Renders `home.title` / `home.subtitle` via `HomeBrushHeader`; does not currently render `home.intro` in the article body |
 | `src/app/(site)/page.tsx` / `src/app/[locale]/page.tsx` | `generateMetadata` binds `title` ← `messages.home.title`, `description` ← `messages.home.intro` |
 | `src/app/root-layout.shared.tsx` (`siteMetadata`) | Layout-level fallback metadata; keep aligned with you-agent-factory identity (not Model Atlas) |
@@ -85,10 +85,12 @@ Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
   keys and `siteMetadata` in `root-layout.shared.tsx`, plus home/metadata tests.
 - When adding home message keys, update `HomeMessages` and all four locale
   `common.json` files together so loaders do not fail (non-en may stub labels).
-- Non-en home `title` / `subtitle` / `intro` may stub English copy, but must identify
+- Non-en home reader-facing prose (`subtitle`, `intro`, section titles, why/features,
+  browse CTAs) should be real target-language copy, not English stubs. Product
+  `title` and install/run command literals stay identical to en. Must identify
   you-agent-factory and must not say Model Atlas (story 006 regression).
 - Install/run command strings live in messages (not hard-coded in the component)
-  so locales can stub labels while keeping the same runnable commands.
+  so locales can translate labels while keeping the same runnable commands.
 - Why/features stay single-column article sections with stable `#why` / `#features`
   anchors; use `bulletlessListClassName` for the feature list (no `list-disc`).
 - Default `homeFeaturedLinks` bind CLI route surfaces to `guidesLink*` / `docsLink*` /

@@ -134,10 +134,13 @@ describe("localized route metadata alternates", () => {
 
     expect(jaHomeMetadata.title).toBe("you-agent-factory");
     expect(jaHomeMetadata.description).toBe(
-      "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
+      "you-agent-factory は、ファクトリーのインストール、名前付きゴールの実行、およびハーネス、ループ、レビュー、プランナー、cron、イベントストリームの運用に関する CLI ドキュメントです。",
     );
     expect(String(jaHomeMetadata.title)).not.toMatch(/Model Atlas/i);
     expect(String(jaHomeMetadata.description)).not.toMatch(/Model Atlas/i);
+    expect(String(jaHomeMetadata.description)).not.toBe(
+      "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
+    );
 
     expect(jaSearchMetadata.title).toBe("検索");
     expect(jaSearchMetadata.description).toBe(
