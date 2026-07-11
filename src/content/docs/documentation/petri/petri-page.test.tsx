@@ -177,7 +177,7 @@ describe("petri documentation page", () => {
 
       expect(
         relatedSection?.querySelector('a[href="/docs/concepts/tokens"]'),
-      ).toBeTruthy();
+      ).toBeNull();
       expect(
         relatedSection?.querySelector(
           'a[href="/docs/documentation/configuration"]',
@@ -198,11 +198,17 @@ describe("petri documentation page", () => {
           'a[href="/docs/documentation/factory-session"]',
         ),
       ).toBeTruthy();
-      expect(relatedSection?.textContent).toMatch(/Tokens concept/i);
+      expect(
+        relatedSection?.querySelector(
+          'a[href="/docs/documentation/submitting-work"]',
+        ),
+      ).toBeTruthy();
+      expect(relatedSection?.textContent).not.toMatch(/Tokens concept/i);
       expect(relatedSection?.textContent).toMatch(/Configuration/i);
       expect(relatedSection?.textContent).toMatch(/Workstations/i);
       expect(relatedSection?.textContent).toMatch(/Architecture of system/i);
       expect(relatedSection?.textContent).toMatch(/Factory session/i);
+      expect(relatedSection?.textContent).toMatch(/Submitting work/i);
 
       expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
     },

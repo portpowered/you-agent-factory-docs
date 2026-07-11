@@ -217,7 +217,10 @@ describe("metrics documentation page", () => {
     expect(relatedSection?.textContent).toMatch(/factory-session/i);
     expect(relatedSection?.textContent).toMatch(/SPC graphs|control-limit/i);
     expect(relatedSection?.textContent).toMatch(/bottlenecks/i);
-    expect(relatedSection?.textContent).toMatch(/tokens/i);
+    expect(relatedSection?.textContent).toMatch(/Petri/i);
+    expect(
+      relatedSection?.querySelector('a[href="/docs/concepts/tokens"]'),
+    ).toBeNull();
     expect(relatedSection?.textContent).toMatch(/Logs|API doc/i);
     const relatedQueries = within(relatedSection as HTMLElement);
     expect(
@@ -238,8 +241,11 @@ describe("metrics documentation page", () => {
         .getAttribute("href"),
     ).toBe("/docs/concepts/bottlenecks");
     expect(
-      relatedQueries.getByRole("link", { name: "Tokens" }).getAttribute("href"),
-    ).toBe("/docs/concepts/tokens");
+      relatedQueries
+        .getByRole("link", { name: "Petri / Colored Petri Net (CPN)" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/petri");
+    expect(relatedQueries.queryByRole("link", { name: "Tokens" })).toBeNull();
 
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
   });

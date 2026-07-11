@@ -1,22 +1,22 @@
 {
   "title": "Tool",
-  "description": "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
+  "description": "A named callable capability an agent or Model Context Protocol (MCP) host can use while doing factory work.",
   "sections": {
     "whatItIs": {
       "title": "What It Is",
-      "body": "A tool is a named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing work. Calling a tool means asking for a concrete action by name—read a file, run a command, or call a Factory Session tool such as you.factory_session.validate_source. The tool is that callable action, not the factory that schedules work and not the harness that runs the agent."
+      "body": "A tool is a named callable capability an agent or Model Context Protocol (MCP) host can use while doing work—for example read a file, run a command, or call a Factory Session action such as you.factory_session.validate_source. The tool is that named capability and its contract (name, arguments, result), not the model-inference act of selecting and invoking it during a turn, not the factory that schedules work, and not the harness that runs the agent."
     },
     "whyItMatters": {
       "title": "Why It Matters",
-      "body": "Without tools, agents and hosts mostly produce text. With tools, they can inspect a project, validate a workflow, start a session, or change work in the factory and on the machine. That is how factory work moves from advice into actions you can check and repeat."
+      "body": "Named tools give agents and hosts a stable catalog of actions they can discover and request by name. Operators and authors can reason about what a host or worker is allowed to do—validate a workflow, start a session, read a path—because each capability has an identity separate from any one turn. Without that catalog, factory work stays stuck in free-form text with no shared action vocabulary."
     },
     "simpleExample": {
       "title": "Simple Example",
-      "body": "An MCP host running Cursor opens a Factory Session and calls you.factory_session.validate_source on a workflow file. That named call is one tool in use: the host asks for validation, gets a result, and can act on it. The same idea shows up when a harness agent invokes a file or shell tool while executing dispatched work—still one named action, not the whole runtime."
+      "body": "Factory Session exposes you.factory_session.validate_source as a named tool: a host or agent that knows that name can request validation of a workflow file and receive a structured result. The tool is the named capability. How a model chooses and invokes that name during a turn is tool calling; how an editor discovers it over stdio is MCP."
     },
     "commonConfusions": {
       "title": "Common Confusions",
-      "body": "A tool is the named action you call. The harness is the agent runtime that can choose and run tools; it is not itself a tool. MCP documentation and host setup explain how to connect a host and list available tools; they are not the tools those pages describe. A worker is a configured executor that does assigned work; tools are the callable actions that worker or host may use. Thinking is internal reasoning before or between actions; it is not a callable capability with a tool name."
+      "body": "A tool is the named callable capability. Tool calling is the model-inference behavior of selecting and invoking that capability during a turn—see the Tool calling concept. MCP is the host↔server protocol that can expose tools to an editor; it is not itself a tool. A skill is a reusable instruction package that may tell an agent when to use tools; it is not a callable tool name. The harness is the agent runtime that can load skills and run tools; it is not a tool. Thinking is internal reasoning before or between actions; it is not a callable capability with a tool name."
     },
     "related": {
       "title": "Related To"
@@ -29,9 +29,11 @@
     }
   },
   "links": {
-    "cursorDynamicWorkflows": "Cursor dynamic workflows",
-    "mcpDocs": "MCP documentation",
+    "toolCallingConcept": "Tool calling",
+    "mcpConcept": "MCP",
+    "skillsConcept": "Skills",
     "harnessConcept": "Harness",
-    "thinkingConcept": "Thinking"
+    "mcpDocs": "MCP documentation",
+    "cursorDynamicWorkflows": "Cursor dynamic workflows"
   }
 }

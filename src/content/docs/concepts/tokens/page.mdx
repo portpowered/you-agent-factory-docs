@@ -1,6 +1,6 @@
 ---
 title: "Tokens"
-description: "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory."
+description: "Model-inference tokens: units of model input and output used for context limits and cost accounting when running harnesses, workers, or inference."
 kind: "concept"
 registryId: "concept.tokens"
 messageNamespace: "local"
@@ -8,11 +8,11 @@ assetNamespace: "local"
 status: "published"
 tags: []
 aliases:
-  - "factory token"
-  - "work token"
-  - "factory tokens"
-  - "work tokens"
-updatedAt: "2026-07-10"
+  - "model-inference tokens"
+  - "LLM tokens"
+  - "context tokens"
+  - "token usage"
+updatedAt: "2026-07-11"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
@@ -35,27 +35,29 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <T k="sections.simpleExample.body" />
 </Section>
 
-<Section id="where-it-appears" titleKey="sections.whereItAppears.title">
-  <T k="sections.whereItAppears.body" />
-</Section>
-
 <Section id="common-confusions" titleKey="sections.commonConfusions.title">
   <T k="sections.commonConfusions.body" />
 </Section>
 
 <Section id="related" titleKey="sections.related.title">
-  <DerivedRelatedDocs
-    registryId="concept.tokens"
-    groups={[
-      "same-concept-type",
-      "shared-tags",
-      "used-by-models",
-      "curated-related"
-    ]}
-  />
-
   <LocalizedLinkList
     items={[
+      {
+        href: "/docs/concepts/thinking",
+        labelKey: "links.thinkingConcept",
+      },
+      {
+        href: "/docs/concepts/compaction",
+        labelKey: "links.compactionConcept",
+      },
+      {
+        href: "/docs/concepts/harness",
+        labelKey: "links.harnessConcept",
+      },
+      {
+        href: "/docs/documentation/petri",
+        labelKey: "links.petriDocs",
+      },
       {
         href: "/docs/documentation/configuration",
         labelKey: "links.configurationDocs",
@@ -68,6 +70,24 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
         href: "/docs/documentation/submitting-work",
         labelKey: "links.submittingWorkDocs",
       },
+      {
+        href: "/docs/documentation/harness-support",
+        labelKey: "links.harnessSupportDocs",
+      },
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+    ]}
+  />
+
+  <DerivedRelatedDocs
+    registryId="concept.tokens"
+    groups={[
+      "same-concept-type",
+      "shared-tags",
+      "used-by-models",
+      "curated-related"
     ]}
   />
 

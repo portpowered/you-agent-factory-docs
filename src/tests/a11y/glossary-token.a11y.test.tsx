@@ -20,7 +20,7 @@ describe("tokens concept route accessibility smoke", () => {
     cleanup();
   });
 
-  test("passes axe for factory tokens concept article body", async () => {
+  test("passes axe for model-inference tokens concept article body", async () => {
     const { container } = render(
       <main>
         <DocsPageProviders

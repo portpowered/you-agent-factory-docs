@@ -523,9 +523,54 @@ those paths only accept collection section refs.
   align `conceptType` with `classification.concept.architecture`, and rely on ontology
   sidebar resolution for math/training/evaluation before editorial `sidebarGrouping`
   fallbacks for generation-and-diffusion or sequence-and-attention subgroups.
-- Concepts-section `sidebarGrouping.concepts` only allows `long-context`,
-  `inference`, `architecture`, and `reference-samples`; `generation-and-diffusion`
-  is glossary-only until a concepts generation subgroup exists.
+- Concepts-section `sidebarGrouping.concepts` allows legacy Atlas-era ids
+  (`long-context`, `inference`, `architecture`, `reference-samples`) plus the
+  planned post-rewrite ids (`harnesses`, `industrial-engineering`,
+  `model-inference`). Concept-page lanes may set the planned ids on owned
+  registry records; the sidebar IA lane still owns explorer order, folder
+  construction, and locale-aware subgroup labels. `generation-and-diffusion`
+  remains glossary-only until a concepts generation subgroup exists.
+- `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
+  units). When rewriting or consuming that page, retarget program-doc related
+  links and `relatedIds` that treated Tokens as the factory/work-token glossary
+  (for example Petri, Metrics) to program documentation surfaces such as
+  `/docs/documentation/petri`, configuration, workstations, or submitting-work.
+  Keep Petri/CPN teaching body intact; change only href/label/message keys,
+  registry `relatedIds`, and matching focused tests.
+- `/docs/concepts/skills` teaches agent/harness skills as reusable instruction
+  packages (Cursor Agent Skills / `SKILL.md` practice), not tools, not MCP, and
+  not this repo's frontend `docs/design-skills.md` authoring guide. Assign
+  `sidebarGrouping.concepts: harnesses`. Once sibling concept pages ship, add
+  them to `relatedIds` (Skills includes `concept.mcp` and `concept.tool-calling`
+  when those pages exist); use `LocalizedLinkList` planned hrefs only while a
+  sibling is still unpublished.
+- `/docs/concepts/mcp` teaches Model Context Protocol as the host↔server
+  protocol that exposes named tools (including Factory Session tools via
+  `you mcp serve`). It is isolation-first and distinct from
+  `/docs/documentation/mcp` (install/host JSON / serve-mode reference). Assign
+  `sidebarGrouping.concepts: harnesses`. Related links must include the MCP
+  program-documentation page; include `concept.tool-calling` in `relatedIds`
+  once that page ships.
+- `/docs/concepts/tool-calling` teaches tool calling as the model-inference
+  behavior of selecting and invoking named tools during an agent/model turn,
+  grounded in `agentTools.policy` on `AGENT_WORKER` (`DISABLED` default,
+  `READ_ONLY` / `ENABLED` for bounded filesystem tools). Assign
+  `sidebarGrouping.concepts: model-inference`. Distinguish from Tool (named
+  capability), MCP (host↔server protocol), and Thinking (deliberative
+  reasoning). Link Workers documentation for the full field contract; do not
+  absorb the workers reference on the concept page.
+- `/docs/concepts/tool` retains a distinct scope as the named callable
+  capability (name/arguments/result contract). Do not re-teach the
+  select-and-invoke / `agentTools.policy` story on Tool—that belongs on Tool
+  calling. Cross-link Tool ↔ Tool calling, MCP, Skills, and Harness so readers
+  get one canonical explanation path per idea.
+- Multi-page concept repair lanes (for example Tokens rewrite + Skills/MCP/Tool
+  calling) should colocate `<slug>-discoverability.test.tsx` under each owned
+  bundle to prove concepts-index listing, `docsSearchApi` / search-document
+  aliases, `listPublicSitemapRoutes()`, and `buildDocsPageMetadata` without
+  editing shared search helpers. Keep locale stubs key-shape-aligned with `en`
+  (`ja` / `zh-CN` / `vi`); section-index and shipped-localized-docs expectations
+  already cover non-en browse listing when stubs ship.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.

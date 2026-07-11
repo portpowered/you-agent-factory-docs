@@ -7,6 +7,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
 
 describe("tokens concept page", () => {
@@ -14,10 +15,22 @@ describe("tokens concept page", () => {
     cleanup();
   });
 
-  test("publishes /docs/concepts/tokens as a docs concept page", async () => {
+  test("publishes /docs/concepts/tokens as a model-inference concept page", async () => {
     const fumadocsPage = source.getPage(["concepts", "tokens"]);
     expect(fumadocsPage).toBeDefined();
     expect(fumadocsPage?.url).toBe("/docs/concepts/tokens");
+
+    const indexes = await loadRegistry();
+    const tokensRecord = getRegistryRecord(indexes, "concept.tokens");
+    expect(tokensRecord?.kind).toBe("concept");
+    if (tokensRecord?.kind === "concept") {
+      expect(tokensRecord.sidebarGrouping?.concepts).toBe("model-inference");
+      expect(tokensRecord.aliases).toContain("model-inference tokens");
+      expect(tokensRecord.aliases).not.toContain("factory token");
+      expect(tokensRecord.aliases).not.toContain("work token");
+      expect(tokensRecord.relatedIds).toContain("concept.thinking");
+      expect(tokensRecord.relatedIds).toContain("documentation.petri");
+    }
 
     const loadedPage = await loadLocalDocsPage({
       section: "concepts",
@@ -25,8 +38,9 @@ describe("tokens concept page", () => {
     });
 
     expect(loadedPage.messages.title).toBe("Tokens");
-    expect(loadedPage.messages.description).toContain(
-      "Factory and work tokens",
+    expect(loadedPage.messages.description).toMatch(/model-inference tokens/i);
+    expect(loadedPage.messages.description).not.toMatch(
+      /Factory and work tokens/i,
     );
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
@@ -37,32 +51,25 @@ describe("tokens concept page", () => {
     const simpleExample = String(
       loadedPage.messages.sections?.simpleExample?.body ?? "",
     );
-    const whereItAppears = String(
-      loadedPage.messages.sections?.whereItAppears?.body ?? "",
-    );
     const commonConfusions = String(
       loadedPage.messages.sections?.commonConfusions?.body ?? "",
     );
-    expect(whatItIs).toMatch(/factory token/i);
-    expect(whatItIs).toMatch(/work token/i);
-    expect(whatItIs).toMatch(/work-type state/i);
-    expect(whatItIs).toMatch(/place/i);
-    expect(whatItIs).toMatch(/not an LLM tokenizer piece/i);
-    expect(whyItMatters).toMatch(/workstation is enabled/i);
-    expect(whyItMatters).toMatch(/you work list/i);
-    expect(whyItMatters).toMatch(/initial state/i);
-    expect(simpleExample).toMatch(/task:init/i);
-    expect(simpleExample).toMatch(/consumes that token/i);
-    expect(simpleExample).toMatch(/accepted|continue|rejection|failure/i);
-    expect(whereItAppears).toMatch(/factory\.json/i);
-    expect(whereItAppears).toMatch(/Workstation inputs and outputs/i);
-    expect(whereItAppears).toMatch(/you work list/i);
-    expect(commonConfusions).toMatch(/LLM tokenizer|model-input tokens/i);
+    expect(whatItIs).toMatch(/model-inference token/i);
+    expect(whatItIs).toMatch(/context and cost accounting/i);
+    expect(whatItIs).toMatch(/harness|worker|inference/i);
+    expect(whatItIs).toMatch(/not factory work tokens/i);
+    expect(whatItIs).not.toMatch(/runtime unit that represents one submitted/i);
+    expect(whyItMatters).toMatch(/context window|token spend|compaction/i);
+    expect(whyItMatters).toMatch(/cost|latency|context pressure/i);
+    expect(simpleExample).toMatch(/context window/i);
+    expect(simpleExample).toMatch(/compaction/i);
+    expect(simpleExample).toMatch(/model-inference tokens/i);
+    expect(commonConfusions).toMatch(/not factory or work tokens/i);
+    expect(commonConfusions).toMatch(/Petri|CPN|configuration|workstations/i);
     expect(commonConfusions).toMatch(/Design-system or UI tokens/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
     expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
     expect(simpleExample).not.toMatch(/on this page|Model Atlas/i);
-    expect(whereItAppears).not.toMatch(/on this page|Model Atlas/i);
     expect(commonConfusions).not.toMatch(/on this page|Model Atlas/i);
 
     render(
@@ -84,9 +91,6 @@ describe("tokens concept page", () => {
       screen.getByRole("heading", { name: "Simple Example" }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Where It Appears" }),
-    ).toBeTruthy();
-    expect(
       screen.getByRole("heading", { name: "Common Confusions" }),
     ).toBeTruthy();
 
@@ -95,35 +99,34 @@ describe("tokens concept page", () => {
     const whatItIsSection = document.getElementById("what-it-is");
     const whyItMattersSection = document.getElementById("why-it-matters");
     const simpleExampleSection = document.getElementById("simple-example");
-    const whereItAppearsSection = document.getElementById("where-it-appears");
     const commonConfusionsSection =
       document.getElementById("common-confusions");
-    expect(whatItIsSection?.textContent ?? "").toMatch(/factory token/i);
-    expect(whatItIsSection?.textContent ?? "").toMatch(/work token/i);
-    expect(whatItIsSection?.textContent ?? "").toMatch(/work-type state/i);
     expect(whatItIsSection?.textContent ?? "").toMatch(
-      /not an LLM tokenizer piece/i,
+      /model-inference token/i,
+    );
+    expect(whatItIsSection?.textContent ?? "").toMatch(
+      /not factory work tokens/i,
     );
     expect(whyItMattersSection?.textContent ?? "").toMatch(
-      /workstation is enabled/i,
+      /context window|token spend|compaction/i,
     );
-    expect(whyItMattersSection?.textContent ?? "").toMatch(/you work list/i);
-    expect(simpleExampleSection?.textContent ?? "").toMatch(/task:init/i);
-    expect(simpleExampleSection?.textContent ?? "").toMatch(
-      /consumes that token/i,
-    );
-    expect(whereItAppearsSection?.textContent ?? "").toMatch(/factory\.json/i);
-    expect(whereItAppearsSection?.textContent ?? "").toMatch(
-      /Workstation inputs and outputs/i,
+    expect(simpleExampleSection?.textContent ?? "").toMatch(/context window/i);
+    expect(simpleExampleSection?.textContent ?? "").toMatch(/compaction/i);
+    expect(commonConfusionsSection?.textContent ?? "").toMatch(
+      /not factory or work tokens/i,
     );
     expect(commonConfusionsSection?.textContent ?? "").toMatch(
-      /LLM tokenizer|model-input tokens/i,
+      /Petri|CPN|configuration|workstations/i,
     );
     expect(commonConfusionsSection?.textContent ?? "").toMatch(
       /Design-system or UI tokens/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
+    const thinkingLink = screen.getByRole("link", { name: "Thinking" });
+    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
+    const petriLink = screen.getByRole("link", { name: "Petri / CPN" });
+    expect(petriLink.getAttribute("href")).toBe("/docs/documentation/petri");
     const configurationLink = screen.getByRole("link", {
       name: "Configuration",
     });
@@ -178,12 +181,12 @@ describe("tokens concept page", () => {
     expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
       "Simple Example",
     );
-    expect(String(ja.messages.sections?.whereItAppears?.title ?? "")).toBe(
-      "Where It Appears",
+    expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
+      "Common Confusions",
     );
-    expect(ja.messages.links?.configurationDocs).toBe("Configuration");
-    expect(zhCN.messages.links?.workstationsDocs).toBe("Workstations");
-    expect(vi.messages.links?.submittingWorkDocs).toBe("Submitting work");
+    expect(ja.messages.links?.thinkingConcept).toBe("Thinking");
+    expect(zhCN.messages.links?.petriDocs).toBe("Petri / CPN");
+    expect(vi.messages.links?.configurationDocs).toBe("Configuration");
 
     render(
       <main>
@@ -199,9 +202,6 @@ describe("tokens concept page", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Simple Example" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Where It Appears" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Common Confusions" }),

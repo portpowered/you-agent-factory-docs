@@ -167,6 +167,10 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/concepts/harness");
     expect(html).toContain("Loop");
     expect(html).toContain("/docs/concepts/loop");
+    expect(html).toContain("Skills");
+    expect(html).toContain("/docs/concepts/skills");
+    expect(html).toContain("MCP");
+    expect(html).toContain("/docs/concepts/mcp");
     expect(html).toContain("Statistical Process Control Graphs");
     expect(html).toContain("/docs/concepts/statistical-process-control-graphs");
     expect(html).toContain("Task Queue");
@@ -177,6 +181,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/concepts/tokens");
     expect(html).toContain("Tool");
     expect(html).toContain("/docs/concepts/tool");
+    expect(html).toContain("Tool calling");
+    expect(html).toContain("/docs/concepts/tool-calling");
     expect(html).toContain("Worktree");
     expect(html).toContain("/docs/concepts/worktree");
     expect(html).not.toContain(indexMessages.emptyTitle);
@@ -353,6 +359,10 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/harness");
     expect(html).toContain("Loop");
     expect(html).toContain("/ja/docs/concepts/loop");
+    expect(html).toContain("Skills");
+    expect(html).toContain("/ja/docs/concepts/skills");
+    expect(html).toContain("MCP");
+    expect(html).toContain("/ja/docs/concepts/mcp");
     expect(html).toContain("Statistical Process Control Graphs");
     expect(html).toContain(
       "/ja/docs/concepts/statistical-process-control-graphs",
@@ -361,6 +371,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/tokens");
     expect(html).toContain("Tool");
     expect(html).toContain("/ja/docs/concepts/tool");
+    expect(html).toContain("Tool calling");
+    expect(html).toContain("/ja/docs/concepts/tool-calling");
     expect(html).toContain("Worktree");
     expect(html).toContain("/ja/docs/concepts/worktree");
     expect(html).not.toContain("Thinking");

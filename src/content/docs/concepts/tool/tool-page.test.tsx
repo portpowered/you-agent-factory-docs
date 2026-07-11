@@ -7,6 +7,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
 
 describe("tool concept page", () => {
@@ -14,10 +15,21 @@ describe("tool concept page", () => {
     cleanup();
   });
 
-  test("publishes /docs/concepts/tool as a docs concept page", async () => {
+  test("publishes /docs/concepts/tool as a distinct capability concept page", async () => {
     const fumadocsPage = source.getPage(["concepts", "tool"]);
     expect(fumadocsPage).toBeDefined();
     expect(fumadocsPage?.url).toBe("/docs/concepts/tool");
+
+    const indexes = await loadRegistry();
+    const toolRecord = getRegistryRecord(indexes, "concept.tool");
+    expect(toolRecord?.kind).toBe("concept");
+    if (toolRecord?.kind === "concept") {
+      expect(toolRecord.relatedIds).toContain("concept.tool-calling");
+      expect(toolRecord.relatedIds).toContain("concept.mcp");
+      expect(toolRecord.relatedIds).toContain("concept.skills");
+      expect(toolRecord.relatedIds).toContain("concept.harness");
+      expect(toolRecord.relatedIds).toContain("documentation.mcp");
+    }
 
     const loadedPage = await loadLocalDocsPage({
       section: "concepts",
@@ -43,14 +55,29 @@ describe("tool concept page", () => {
     expect(whatItIs).toMatch(/named callable capability/i);
     expect(whatItIs).toMatch(/Model Context Protocol \(MCP\)/i);
     expect(whatItIs).toMatch(/you\.factory_session\.validate_source/);
+    expect(whatItIs).toMatch(
+      /not the model-inference act of selecting and invoking/i,
+    );
+    expect(whatItIs).not.toMatch(/Calling a tool means/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
-    expect(whyItMatters).toMatch(/inspect|validate|start|change/i);
+    expect(whyItMatters).toMatch(/stable catalog/i);
+    expect(whyItMatters).toMatch(/shared action vocabulary/i);
+    expect(whyItMatters).not.toMatch(/agentTools\.policy/i);
     expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
     expect(simpleExample).toMatch(/you\.factory_session\.validate_source/);
+    expect(simpleExample).toMatch(/named capability/i);
+    expect(simpleExample).toMatch(/tool calling/i);
+    expect(simpleExample).not.toMatch(/agentTools\.policy/i);
     expect(simpleExample).not.toMatch(/on this page|Model Atlas/i);
-    expect(commonConfusions).toMatch(/harness/i);
-    expect(commonConfusions).toMatch(/worker/i);
-    expect(commonConfusions).toMatch(/thinking/i);
+    expect(commonConfusions).toMatch(
+      /Tool calling is the model-inference behavior/i,
+    );
+    expect(commonConfusions).toMatch(/MCP is the host↔server protocol/i);
+    expect(commonConfusions).toMatch(
+      /skill is a reusable instruction package/i,
+    );
+    expect(commonConfusions).toMatch(/harness is the agent runtime/i);
+    expect(commonConfusions).toMatch(/Thinking is internal reasoning/i);
     expect(commonConfusions).not.toMatch(/on this page|Model Atlas/i);
 
     render(
@@ -77,25 +104,40 @@ describe("tool concept page", () => {
     expect(
       screen.getAllByText(/named callable capability/i).length,
     ).toBeGreaterThanOrEqual(1);
+
+    const whatItIsSection = document.getElementById("what-it-is");
+    const commonConfusionsSection =
+      document.getElementById("common-confusions");
+    expect(whatItIsSection?.textContent ?? "").toMatch(
+      /not the model-inference act of selecting and invoking/i,
+    );
+    expect(commonConfusionsSection?.textContent ?? "").toMatch(
+      /Tool calling is the model-inference behavior/i,
+    );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const cursorLink = screen.getByRole("link", {
-      name: "Cursor dynamic workflows",
-    });
-    expect(cursorLink.getAttribute("href")).toBe(
-      "/docs/guides/cursor-dynamic-workflows",
+    expect(
+      screen.getByRole("link", { name: "Tool calling" }).getAttribute("href"),
+    ).toBe("/docs/concepts/tool-calling");
+    expect(screen.getByRole("link", { name: "MCP" }).getAttribute("href")).toBe(
+      "/docs/concepts/mcp",
     );
+    expect(
+      screen.getByRole("link", { name: "Skills" }).getAttribute("href"),
+    ).toBe("/docs/concepts/skills");
+    expect(
+      screen.getByRole("link", { name: "Harness" }).getAttribute("href"),
+    ).toBe("/docs/concepts/harness");
     expect(
       screen
         .getByRole("link", { name: "MCP documentation" })
         .getAttribute("href"),
     ).toBe("/docs/documentation/mcp");
     expect(
-      screen.getByRole("link", { name: "Harness" }).getAttribute("href"),
-    ).toBe("/docs/concepts/harness");
-    expect(
-      screen.getByRole("link", { name: "Thinking" }).getAttribute("href"),
-    ).toBe("/docs/concepts/thinking");
+      screen
+        .getByRole("link", { name: "Cursor dynamic workflows" })
+        .getAttribute("href"),
+    ).toBe("/docs/guides/cursor-dynamic-workflows");
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {
@@ -125,15 +167,9 @@ describe("tool concept page", () => {
     expect(Object.keys(vi.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
-    expect(ja.messages.links?.cursorDynamicWorkflows).toBe(
-      "Cursor dynamic workflows",
-    );
-    expect(zhCN.messages.links?.cursorDynamicWorkflows).toBe(
-      "Cursor dynamic workflows",
-    );
-    expect(vi.messages.links?.cursorDynamicWorkflows).toBe(
-      "Cursor dynamic workflows",
-    );
+    expect(ja.messages.links?.toolCallingConcept).toBe("Tool calling");
+    expect(zhCN.messages.links?.mcpConcept).toBe("MCP");
+    expect(vi.messages.links?.skillsConcept).toBe("Skills");
     expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
       "What It Is",
     );

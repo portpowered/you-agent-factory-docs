@@ -1,0 +1,28 @@
+{
+  "id": "concept.mcp",
+  "slug": "mcp",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["Model Context Protocol", "you mcp serve", "MCP server"],
+  "tags": [],
+  "relatedIds": [
+    "concept.harness",
+    "concept.tool",
+    "concept.skills",
+    "concept.tool-calling",
+    "documentation.mcp",
+    "documentation.harness-support",
+    "guide.cursor-dynamic-workflows"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T08:00:00.000Z",
+  "updatedAt": "2026-07-11T08:00:00.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": [],
+  "sidebarGrouping": {
+    "concepts": "harnesses"
+  }
+}
