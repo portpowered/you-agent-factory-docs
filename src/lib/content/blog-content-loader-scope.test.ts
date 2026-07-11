@@ -32,6 +32,7 @@ describe("blog content loader lane isolation", () => {
     expect(slugs).toEqual(
       [
         "bottlenecks",
+        "changelog",
         "comparing-agent-factories",
         "cursor-composer-six-billion-tokens",
         "factories-building-factory-docs",
@@ -42,6 +43,9 @@ describe("blog content loader lane isolation", () => {
     await expect(
       getPublishedBlogPostBySlug("bottlenecks"),
     ).resolves.toMatchObject({ slug: "bottlenecks" });
+    await expect(
+      getPublishedBlogPostBySlug("changelog"),
+    ).resolves.toMatchObject({ slug: "changelog" });
     await expect(
       getPublishedBlogPostBySlug("comparing-agent-factories"),
     ).resolves.toMatchObject({ slug: "comparing-agent-factories" });

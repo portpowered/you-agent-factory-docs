@@ -81,6 +81,10 @@ Before the first authored page under a rewrite-era CLI collection can pass
    `pageSectionSchema`. Put OS labels and similar short strings under
    `links.*` (or another allowed top-level message field), not under
    `sections.<id>.*`.
+5a. Empty-string section `body` values also fail `make validate-data` as
+   missing MDX message keys. Draft documentation scaffolds must use
+   non-empty placeholder bodies (even before story copy lands); do not
+   leave `""` for keys referenced by `<T k="sections.*.body" />`.
 6. Browser verify with `bun run start` serves the last production build.
    After editing page MDX or colocated messages, run `bun run build` (or
    use `bun run dev`) before curling the route, or the HTML will still show
@@ -213,6 +217,18 @@ gitignored. Colocate new concept page render proofs under
 `src/content/docs/concepts/<slug>/<slug>-page.test.tsx` so the page test stays
 page-owned rather than under `src/lib/content/`.
 
+When an intentional multi-page PRD ships locale stubs for more than one page
+bundle, bare `bun run audit:canonical-page-surface` cannot infer a single page
+scope. Audit each page with `--page-dir src/content/docs/<section>/<slug>
+--files <that-page paths…> shipped-localized-docs.generated.ts
+shipped-localized-docs.server.test.ts --exception-reason "…"`, and repeat the
+exception reason in the PR conversation. Do not treat the sibling page bundle
+as shared hotspot churn for the page under audit.
+
+When colocated page tests assert non-guarantee / denial copy, match the denial
+positively (for example `/not a compliance certification claim/i`) instead of
+negating the denied phrase — otherwise correct “not a …” prose fails the test.
+
 For later concept pages (not first-CLI-section), the same locale shipping trio
 is still required to publish non-en routes. Update
 `src/tests/content/section-indexes.test.tsx` so default and localized concepts
@@ -269,6 +285,13 @@ shared search helpers. Published posts are already indexed by
 `docsSearchApi` / tag resource groups once the bundle is `status: published`
 with resolving tags — the test asserts that contract, it does not regenerate
 search artifacts.
+
+Documentation discoverability proofs for a page-local lane should likewise
+colocate under `src/content/docs/<section>/<slug>/` (for example
+`<slug>-discoverability.test.tsx`): assert the section index card, representative
+`docsSearchApi.search` hits, and `buildDocsPageMetadata` title/description/
+canonical/OG. Prefer that over editing shared `section-indexes` or search
+helpers when the lane owns only the new page.
 
 ## Routine preflight for ordinary page branches
 
@@ -695,6 +718,30 @@ when the sibling registry records and published pages exist (for example
 getting-started or install deep-dive). Omit unpublished sibling ids from
 `relatedIds` so validation and related rendering stay clean; do not invent
 page-meta “on this page” prose or hard-coded sibling route lists in MDX.
+
+### Freshness ownership on maintainer-facing surfaces (page-local)
+
+When a PRD asks for freshness ownership on a changelog hub or structured
+command inventory, put reader-visible maintainer copy on the page itself:
+owner role (for example site docs maintainers), source of truth (GitHub
+Releases for release hubs; product CLI / `you docs agents` for command
+inventories), and refresh trigger (new product release, command add/rename,
+or running-factory semantics change). Prefer a dedicated
+`#freshness-ownership` section on documentation pages (message-backed) or a
+`## Freshness ownership` heading on blog hubs. State explicitly that this is
+a human maintainer checklist — do not invent automated governance CI, owner
+registry fields, or Atlas-era process prose. Bump `updatedAt` (and blog
+`publishedAt` when first authored) to match the content change.
+
+When a lane ships both a releases/changelog blog hub and a CLI command-index
+documentation page, wire one-click quick-reach among install, commands, and
+release changes on both surfaces: blog hubs use in-prose markdown links (and
+`relatedDocIds` for metadata) because `BlogRelatedDocs` only resolves concept
+ids; documentation pages use message-backed `<LocalizedLinkList>` under
+`#related` for `/docs/documentation/install`, `/docs/documentation/cli`,
+`/blog/changelog`, and the GitHub Releases archive URL. Keep registry
+`relatedIds` on the command-index record for published documentation siblings
+(install/cli) without inventing blog registry ids.
 
 ### Documentation replays-records sensitivity, limits, and sibling discovery
 

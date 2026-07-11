@@ -1,0 +1,29 @@
+{
+  "id": "documentation.security-trust-boundaries",
+  "slug": "security-trust-boundaries",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "security",
+    "trust boundaries",
+    "trust-boundary",
+    "operator surface",
+    "local service bind"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.dashboard-ui-overview",
+    "documentation.configuration",
+    "documentation.factory-session",
+    "documentation.metrics",
+    "documentation.mcp",
+    "documentation.logs",
+    "documentation.cli",
+    "documentation.replays-records"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T00:00:00.000Z",
+  "updatedAt": "2026-07-11T02:45:00.000Z"
+}

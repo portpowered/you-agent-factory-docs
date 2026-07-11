@@ -1,0 +1,25 @@
+{
+  "id": "documentation.dashboard-ui-overview",
+  "slug": "dashboard-ui-overview",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "dashboard",
+    "operator UI",
+    "dashboard/ui",
+    "local operator dashboard",
+    "Factory Session dashboard"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.security-trust-boundaries",
+    "documentation.factory-session",
+    "documentation.metrics",
+    "documentation.configuration"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T00:00:00.000Z",
+  "updatedAt": "2026-07-11T02:45:00.000Z"
+}
