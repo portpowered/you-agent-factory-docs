@@ -6,6 +6,7 @@
 export const PRODUCTION_INTEGRATION_TEST_PATHS = [
   "src/lib/verify/built-html-convergence-test-helpers.test.ts",
   "src/lib/verify/server-lifecycle.test.ts",
+  "src/lib/verify/a11y-content-column-brand-alignment-page.test.ts",
   "src/tests/layout/docs-index-shell.test.tsx",
   "src/tests/layout/docs-page-toc.test.tsx",
   "src/tests/layout/docs-sidebar-navigation.test.tsx",

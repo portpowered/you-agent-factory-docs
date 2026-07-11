@@ -9,7 +9,10 @@ import {
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
 import { HomeArticle } from "@/components/home/home-article";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
-import { DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS } from "@/components/layout/docs-header";
+import {
+  DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,
+  DOCS_HEADER_SHELL_CLASS,
+} from "@/components/layout/docs-header";
 import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import {
   CONTENT_COLUMN_INSET_CLASS,
@@ -73,6 +76,10 @@ describe("brand + content-column alignment layout coverage (always-on)", () => {
     expect(
       usesNegativeMarginCompensation(DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS),
     ).toBe(false);
+    // Desktop header column gap must be zero so nav track matches #nd-page
+    // (two gap-4 gutters previously caused ~32px drift).
+    expect(DOCS_HEADER_SHELL_CLASS).toContain("md:gap-0");
+    expect(usesNegativeMarginCompensation(DOCS_HEADER_SHELL_CLASS)).toBe(false);
   });
 
   test("home article + Browse layout snapshot gates brand, surface, and left-edge contract", async () => {

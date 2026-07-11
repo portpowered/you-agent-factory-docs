@@ -26,6 +26,17 @@ import { resolveSiteConfigLayoutNav } from "@/lib/site/site-config-layout-nav";
 import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 import { cn } from "@/lib/utils";
 
+/**
+ * Header shell grid: mirrors Fumadocs `#nd-docs-layout` track math so the
+ * primary-nav column (col 3) shares the same left edge as `#nd-page`.
+ *
+ * Mobile keeps `gap-4` between the menu control and brand/actions. Desktop
+ * must use `md:gap-0` — `#nd-docs-layout` has no column gap, and two `gap-4`
+ * gutters (~32px) push the nav track right of `#nd-page`.
+ */
+export const DOCS_HEADER_SHELL_CLASS =
+  "grid w-full grid-cols-[auto_1fr] items-center gap-4 px-4 py-3 [--fd-layout-width:97rem] [--fd-sidebar-width:0px] [--fd-toc-width:0px] md:grid-cols-[minmax(min-content,1fr)_var(--fd-sidebar-width,268px)_minmax(0,calc(var(--fd-layout-width,97rem)-var(--fd-sidebar-width,268px)-var(--fd-toc-width,0px)))_var(--fd-toc-width,0px)_minmax(min-content,1fr)] md:gap-0 md:px-0 md:[--fd-sidebar-width:268px] xl:[--fd-toc-width:268px]";
+
 /** Brand link chrome in the docs header (sidebar column on desktop). */
 export const DOCS_HEADER_BRAND_LINK_CLASS =
   "shrink-0 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:col-start-2 md:col-end-3 md:row-start-1 md:flex md:items-center md:px-4";
@@ -75,7 +86,7 @@ export function DocsHeader({
 
   return (
     <header className="border-b border-border">
-      <div className="grid w-full grid-cols-[auto_1fr] items-center gap-4 px-4 py-3 [--fd-layout-width:97rem] [--fd-sidebar-width:0px] [--fd-toc-width:0px] md:grid-cols-[minmax(min-content,1fr)_var(--fd-sidebar-width,268px)_minmax(0,calc(var(--fd-layout-width,97rem)-var(--fd-sidebar-width,268px)-var(--fd-toc-width,0px)))_var(--fd-toc-width,0px)_minmax(min-content,1fr)] md:px-0 md:[--fd-sidebar-width:268px] xl:[--fd-toc-width:268px]">
+      <div className={DOCS_HEADER_SHELL_CLASS} data-docs-header-shell="">
         <div className="col-start-1 row-start-1 flex min-w-0 items-center gap-2 md:contents">
           <Button
             type="button"

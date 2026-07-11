@@ -15,6 +15,7 @@ import {
   DOCS_HEADER_ACTIONS_COLUMN_CLASS,
   DOCS_HEADER_BRAND_LINK_CLASS,
   DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,
+  DOCS_HEADER_SHELL_CLASS,
   DocsHeader,
 } from "@/components/layout/docs-header";
 import {
@@ -396,6 +397,10 @@ describe("DocsHeader", () => {
     expect(html).toContain(
       "md:col-start-3 md:col-end-4 md:row-start-1 md:block",
     );
+    // Desktop column gap must be zero so nav track matches #nd-page.
+    expect(DOCS_HEADER_SHELL_CLASS).toContain("md:gap-0");
+    expect(html).toContain('data-docs-header-shell=""');
+    expect(html).toContain(DOCS_HEADER_SHELL_CLASS);
   });
 
   test("desktop primary nav and actions use the shared content-column left edge", async () => {
@@ -429,6 +434,9 @@ describe("DocsHeader", () => {
     // Mobile shell keeps a single px-4 inset; no negative-margin compensation.
     expect(html).toContain("px-4 py-3");
     expect(html).toContain("md:px-0");
+    // Mobile gap is fine; desktop must not add column gutters vs #nd-docs-layout.
+    expect(DOCS_HEADER_SHELL_CLASS).toContain("gap-4");
+    expect(DOCS_HEADER_SHELL_CLASS).toContain("md:gap-0");
     expect(html).not.toMatch(/(?:^|[\s"'])-m[trblxy]?-/);
   });
 

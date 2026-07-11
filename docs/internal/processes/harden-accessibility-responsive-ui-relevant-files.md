@@ -177,9 +177,12 @@ surfaces (home, browse, search, docs/harness-support, blog).
   chrome boxes under Chromium.
 * Brand + content-column alignment matrix (repair-layout-brand-alignment):
   `content-column-brand-alignment-coverage.ts`, always-on
-  `content-column-brand-alignment.a11y.test.tsx`, and opt-in
-  `a11y-content-column-brand-alignment-page.test.ts` (four viewports, brand,
-  surfaces, overflow, md+ left-edge geometry).
+  `content-column-brand-alignment.a11y.test.tsx`, always-on Playwright
+  `a11y-content-column-left-edge-geometry.test.ts` (fixture proves `md:gap-0`
+  vs historical ~32px gap drift), and served
+  `a11y-content-column-brand-alignment-page.test.ts` (also in
+  `PRODUCTION_INTEGRATION_TEST_PATHS`; four viewports, brand, surfaces,
+  overflow, md+ left-edge geometry).
 * Chrome box geometry is optional under happy-dom (often zero rects); structural
   fields + hash diffs are the always-on regression signal.
 
