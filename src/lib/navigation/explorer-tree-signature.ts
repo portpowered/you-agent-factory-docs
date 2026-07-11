@@ -106,3 +106,34 @@ export function pageEntriesInFolder(
     .filter((node) => node.type === "page")
     .map((node) => ({ name: node.name, url: node.url }));
 }
+
+/**
+ * Pages listed under a named subgroup separator until the next separator.
+ * Used to prove declared explorer membership (e.g. mock-workers under Functions).
+ */
+export function pageEntriesUnderSeparator(
+  folder: Extract<ExplorerNodeSignature, { type: "folder" }>,
+  separatorName: string,
+): Array<{ name: string; url: string }> {
+  const start = folder.children.findIndex(
+    (node) => node.type === "separator" && node.name === separatorName,
+  );
+  if (start === -1) {
+    return [];
+  }
+
+  const pages: Array<{ name: string; url: string }> = [];
+  for (let index = start + 1; index < folder.children.length; index += 1) {
+    const node = folder.children[index];
+    if (!node) {
+      break;
+    }
+    if (node.type === "separator") {
+      break;
+    }
+    if (node.type === "page") {
+      pages.push({ name: node.name, url: node.url });
+    }
+  }
+  return pages;
+}

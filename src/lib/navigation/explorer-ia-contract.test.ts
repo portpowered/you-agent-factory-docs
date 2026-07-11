@@ -2,6 +2,9 @@
  * Focused explorer IA contract proofs for exact order and fail-closed locale
  * behavior. Desktop/mobile parity lives in desktop-mobile-explorer-parity;
  * accessible names / keyboard reachability live in docs-sidebar-navigation.a11y.
+ *
+ * R02 story 002 also locks eight Program documentation page membership under
+ * declared subgroups and Concepts Skills / MCP / Tool calling / Tokens groups.
  */
 import { describe, expect, test } from "bun:test";
 import {
@@ -10,7 +13,11 @@ import {
   FACTORY_EXPLORER_FOLDER_LABELS,
   FACTORY_EXPLORER_SECTION_ORDER,
 } from "@/lib/content/factory-breadcrumb-sidebar";
-import { SIDEBAR_GROUP_LABELS } from "@/lib/content/sidebar-grouping";
+import {
+  FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG,
+  FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
+  SIDEBAR_GROUP_LABELS,
+} from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import {
@@ -23,6 +30,7 @@ import {
   buildExplorerTreeSignature,
   folderSignatureByName,
   pageEntriesInFolder,
+  pageEntriesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
   topLevelPageEntries,
@@ -44,6 +52,26 @@ const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
   FACTORY_EXPLORER_FOLDER_LABELS.documentation,
 ] as const;
 
+/** R01 eight Program documentation pages with declared explorer subgroups. */
+const R01_PROGRAM_DOCUMENTATION_PAGES = [
+  { slug: "mock-workers", group: "functions" },
+  { slug: "throttling-and-limits", group: "operational" },
+  { slug: "script-workers", group: "configuration" },
+  { slug: "poller-workers", group: "configuration" },
+  { slug: "agent-workers", group: "configuration" },
+  { slug: "inference-workers", group: "configuration" },
+  { slug: "packaged-documents", group: "cli" },
+  { slug: "packaged-factories", group: "configuration" },
+] as const;
+
+/** R00 Concepts pages required under declared explorer subgroups. */
+const R00_CONCEPTS_PAGES = [
+  { slug: "skills", group: "harnesses" },
+  { slug: "mcp", group: "harnesses" },
+  { slug: "tool-calling", group: "model-inference" },
+  { slug: "tokens", group: "model-inference" },
+] as const;
+
 function isSubsequence(
   actual: readonly string[],
   declared: readonly string[],
@@ -57,6 +85,14 @@ function isSubsequence(
     declaredIndex = next + 1;
   }
   return true;
+}
+
+function urlEndsWithSlug(
+  url: string,
+  collection: string,
+  slug: string,
+): boolean {
+  return url.endsWith(`/docs/${collection}/${slug}`);
 }
 
 describe("explorer IA exact-order contract", () => {
@@ -128,6 +164,59 @@ describe("explorer IA exact-order contract", () => {
     ).toBe(false);
   });
 
+  test("default-locale explorer places Concepts and eight Program pages under declared subgroups", async () => {
+    const messages = await loadUiMessages("en");
+    const signature = buildExplorerTreeSignature(
+      localizePageTree(source.pageTree, "en", { messages }),
+    );
+
+    const concepts = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.concepts,
+    );
+    expect(concepts).toBeTruthy();
+    if (!concepts) {
+      throw new Error("expected Concepts folder");
+    }
+
+    for (const page of R00_CONCEPTS_PAGES) {
+      expect(FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG[page.slug]).toBe(
+        page.group,
+      );
+      const groupLabel = SIDEBAR_GROUP_LABELS.concepts[page.group];
+      const underGroup = pageEntriesUnderSeparator(concepts, groupLabel);
+      expect(
+        underGroup.some((entry) =>
+          urlEndsWithSlug(entry.url, "concepts", page.slug),
+        ),
+        `${page.slug} must sit under Concepts subgroup ${groupLabel}`,
+      ).toBe(true);
+    }
+
+    const documentation = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+    );
+    expect(documentation).toBeTruthy();
+    if (!documentation) {
+      throw new Error("expected Program documentation folder");
+    }
+
+    for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
+      expect(FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[page.slug]).toBe(
+        page.group,
+      );
+      const groupLabel = SIDEBAR_GROUP_LABELS.documentation[page.group];
+      const underGroup = pageEntriesUnderSeparator(documentation, groupLabel);
+      expect(
+        underGroup.some((entry) =>
+          urlEndsWithSlug(entry.url, "documentation", page.slug),
+        ),
+        `${page.slug} must sit under Program documentation subgroup ${groupLabel}`,
+      ).toBe(true);
+    }
+  });
+
   test("every locale preserves declared subgroup order as a subsequence of present separators", async () => {
     for (const locale of supportedLocales) {
       const messages = await loadUiMessages(locale);
@@ -162,6 +251,17 @@ describe("explorer IA exact-order contract", () => {
         explorer.conceptsGroups["model-inference"],
       ]);
 
+      for (const page of R00_CONCEPTS_PAGES) {
+        const groupLabel = explorer.conceptsGroups[page.group];
+        const underGroup = pageEntriesUnderSeparator(concepts, groupLabel);
+        expect(
+          underGroup.some((entry) =>
+            entry.url.includes(`/concepts/${page.slug}`),
+          ),
+          `${locale}: ${page.slug} under ${groupLabel}`,
+        ).toBe(true);
+      }
+
       const documentation = folderSignatureByName(
         signature,
         explorer.folders.documentation,
@@ -184,6 +284,17 @@ describe("explorer IA exact-order contract", () => {
       expect(documentationSeparators.at(-1)).toBe(
         explorer.documentationGroups["additional-reference"],
       );
+
+      for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
+        const groupLabel = explorer.documentationGroups[page.group];
+        const underGroup = pageEntriesUnderSeparator(documentation, groupLabel);
+        expect(
+          underGroup.some((entry) =>
+            entry.url.includes(`/documentation/${page.slug}`),
+          ),
+          `${locale}: ${page.slug} under ${groupLabel}`,
+        ).toBe(true);
+      }
     }
   });
 });

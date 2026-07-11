@@ -12,11 +12,13 @@ cross-lane drift, or proving the close gate.
 | Repair plan / R02 close gate | `docs/temp/big-docs/plan.md` |
 | Explorer brand, FAQ, folder labels | `src/lib/content/factory-breadcrumb-sidebar.ts` |
 | Concepts / Program documentation subgroup maps | `src/lib/content/sidebar-grouping.ts` |
-| Explorer tree signatures | `src/lib/navigation/explorer-tree-signature.ts` |
+| Explorer tree signatures | `src/lib/navigation/explorer-tree-signature.ts` (`pageEntriesUnderSeparator` for subgroup membership) |
 | Published docs inventory | `src/lib/content/published-docs-registry-ids.ts` |
 | Theme tokens (factory-dark) | `src/lib/theme/host-semantic-theme-tokens.ts` |
 | Code-copy chrome | `src/features/docs/styles/docs-code-copy-chrome.ts` |
 | Story 001 tip reconciliation proofs | `src/lib/verify/plan-issues-r02-reconciliation.test.ts` |
+| Story 002 explorer IA + eight-page membership | `src/lib/navigation/explorer-ia-contract.test.ts` |
+| Story 002 desktop/mobile explorer parity | `src/tests/layout/desktop-mobile-explorer-parity.test.tsx` |
 
 ## Tip ancestry (story 001 evidence)
 
@@ -71,7 +73,7 @@ make typecheck
 
 ## Later R02 stories
 
-- **002** — Explorer IA / locale parity / eight-page membership browser check
+- **002** — DONE: Explorer IA / locale parity / eight-page membership (IA contract + parity suites)
 - **003** — Brand, alignment, theme, code-copy browser check
 - **004** — Concepts + Program documentation discovery / links
 - **005–007** — Focused suites, full `make` gates, Pages-prefixed guard
@@ -79,3 +81,16 @@ make typecheck
 
 Do not author net-new product pages here. Repair only cross-lane integration,
 registry drift, ordering/parity, broken links, or combined-result test failures.
+
+## Story 002 membership contract
+
+| Surface | Declared subgroup | Proof |
+| --- | --- | --- |
+| Concepts skills, mcp | Harnesses | `pageEntriesUnderSeparator` in `explorer-ia-contract.test.ts` |
+| Concepts tool-calling, tokens | Model inference | same |
+| mock-workers | Functions | same + desktop/mobile parity link lists |
+| throttling-and-limits | Operational | same |
+| script/poller/agent/inference-workers, packaged-factories | Configuration | same |
+| packaged-documents | CLI | same |
+| FAQ | Top-level (not in Program folder) | IA + parity suites |
+| Glossary folder | Absent | IA + parity suites |

@@ -10,6 +10,7 @@ import {
   type ExplorerTreeSignature,
   folderSignatureByName,
   pageEntriesInFolder,
+  pageEntriesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
   topLevelPageEntries,
@@ -23,6 +24,18 @@ import {
   restoreFetchMock,
 } from "@/tests/a11y/render";
 import "@/tests/a11y/mock-navigation";
+
+/** Representative R01 pages that must appear in both desktop and mobile explorers. */
+const R01_EXPLORER_MEMBERSHIP_SLUGS = [
+  "mock-workers",
+  "throttling-and-limits",
+  "script-workers",
+  "poller-workers",
+  "agent-workers",
+  "inference-workers",
+  "packaged-documents",
+  "packaged-factories",
+] as const;
 
 async function localizedExplorerSignature(locale: SiteLocale): Promise<{
   messages: Awaited<ReturnType<typeof loadUiMessages>>;
@@ -143,6 +156,30 @@ describe("desktop/mobile explorer tree parity", () => {
           page.url.endsWith("/docs/documentation/faq"),
         ),
       ).toBe(false);
+
+      for (const slug of R01_EXPLORER_MEMBERSHIP_SLUGS) {
+        expect(
+          pageEntriesInFolder(documentation).some((page) =>
+            page.url.includes(`/documentation/${slug}`),
+          ),
+          `${locale}: ${slug} in Program documentation folder`,
+        ).toBe(true);
+      }
+
+      expect(
+        pageEntriesUnderSeparator(
+          documentation,
+          messages.explorer.documentationGroups.functions,
+        ).some((page) => page.url.includes("/documentation/mock-workers")),
+      ).toBe(true);
+      expect(
+        pageEntriesUnderSeparator(
+          documentation,
+          messages.explorer.documentationGroups.cli,
+        ).some((page) =>
+          page.url.includes("/documentation/packaged-documents"),
+        ),
+      ).toBe(true);
     }
   });
 
@@ -215,6 +252,15 @@ describe("desktop/mobile explorer tree parity", () => {
         folderNames.includes(name),
       );
 
+      for (const slug of R01_EXPLORER_MEMBERSHIP_SLUGS) {
+        expect(
+          desktopLinks.some((link) =>
+            link.href.includes(`/documentation/${slug}`),
+          ),
+          `${locale} desktop: ${slug}`,
+        ).toBe(true);
+      }
+
       const menuButton = within(document.body).getByRole("button", {
         name: context.messages.nav.menu,
       });
@@ -258,6 +304,15 @@ describe("desktop/mobile explorer tree parity", () => {
 
       expect(mobileFolders).toEqual(desktopFolders);
       expect(mobileLinks).toEqual(desktopLinks);
+
+      for (const slug of R01_EXPLORER_MEMBERSHIP_SLUGS) {
+        expect(
+          mobileLinks.some((link) =>
+            link.href.includes(`/documentation/${slug}`),
+          ),
+          `${locale} mobile: ${slug}`,
+        ).toBe(true);
+      }
 
       cleanup();
     }

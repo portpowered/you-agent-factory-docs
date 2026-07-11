@@ -4,6 +4,7 @@ import {
   buildExplorerTreeSignature,
   folderSignatureByName,
   pageEntriesInFolder,
+  pageEntriesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
   topLevelPageEntries,
@@ -71,5 +72,12 @@ describe("explorer-tree-signature", () => {
       { name: "Harness", url: "/docs/concepts/harness" },
       { name: "Tokens", url: "/docs/concepts/tokens" },
     ]);
+    expect(pageEntriesUnderSeparator(concepts, "Harnesses")).toEqual([
+      { name: "Harness", url: "/docs/concepts/harness" },
+    ]);
+    expect(pageEntriesUnderSeparator(concepts, "Model inference")).toEqual([
+      { name: "Tokens", url: "/docs/concepts/tokens" },
+    ]);
+    expect(pageEntriesUnderSeparator(concepts, "Missing")).toEqual([]);
   });
 });
