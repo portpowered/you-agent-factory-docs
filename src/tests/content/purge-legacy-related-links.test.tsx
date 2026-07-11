@@ -42,11 +42,16 @@ describe("purge legacy related links and registries (005)", () => {
 
     expect(html).toContain('href="/blog/bottlenecks"');
     expect(html).toContain('href="/blog/comparing-agent-factories"');
+    expect(html).toContain('href="/blog/factories-building-factory-docs"');
     assertNoDeletedBlogOrTagHrefs(html);
   });
 
   test("remaining blog posts do not advertise deleted blog or Atlas-only tag destinations", async () => {
-    for (const slug of ["bottlenecks", "comparing-agent-factories"] as const) {
+    for (const slug of [
+      "bottlenecks",
+      "comparing-agent-factories",
+      "factories-building-factory-docs",
+    ] as const) {
       const html = renderToStaticMarkup(await renderBlogPostPage(slug));
       assertNoDeletedBlogOrTagHrefs(html);
       expect(html).toContain('data-testid="blog-related-docs"');

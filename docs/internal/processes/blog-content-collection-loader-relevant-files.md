@@ -96,11 +96,13 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification
   instead of inventing a second package layout.
 * `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve related-doc kinds
-  wired through `getRegistryRecordById` (concept, module, model, …). Published
-  `documentation.*` ids validate in frontmatter `relatedDocIds` but render as
-  missing in the component; until that lookup gap is fixed, keep the id in
-  frontmatter and link the documentation route in MDX (or pass only resolvable
-  ids to `<BlogRelatedDocs />`) so readers still reach the page.
+  wired through `getRegistryRecordById` (concept, and other tagged kinds in that
+  lookup). Published `documentation.*` and `technique.*` ids validate in
+  frontmatter `relatedDocIds` but currently render as missing in the component
+  (`getRegistryRecordById` returns undefined for those kinds). Until that lookup
+  gap is fixed, keep those ids in frontmatter and link their routes in MDX (or
+  pass only resolvable concept ids to `<BlogRelatedDocs />`) so readers still
+  reach the page without a partial-unavailable status.
 * Page-local blog illustrations (DataTable, charts) need the same
   `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
   switch as concept SPC graphs: relative imports in `page.mdx` do not resolve

@@ -1,0 +1,73 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-10"
+updatedAt: "2026-07-10"
+authors:
+  - site-team
+tags:
+  - foundations
+relatedDocIds:
+  - documentation.what-is-you-agent-factory
+  - technique.planner-executor
+  - concept.harness
+  - concept.worktree
+  - concept.loop
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+<TagPillList tags={["foundations"]} />
+
+## Summary
+
+<T k="takeaway" />
+
+## Why this docs site is a factory workload
+
+Shipping a documentation site for an agent factory is itself long-running agent work. Pages arrive as many small vertical slices—concepts, techniques, guides, and documentation—each with metadata, related links, and mergeability constraints. A single chat session cannot keep that queue honest across days of review and revision.
+
+The product overview at
+[What is you-agent-factory](/docs/documentation/what-is-you-agent-factory)
+names the lightweight orchestrator behind those lanes. The rest of this post examines how factory patterns showed up while building these docs—not as a systems matrix, and not as a rewrite-board status page.
+
+## Patterns that showed up
+
+### Planner and executor lanes
+
+Docs work was planned as a queue of small stories, then executed one lane at a time. A planner shaped the next vertical page; executors authored the bundle, ran checks, and left the next story for a later pass. That [planner-executor](/docs/techniques/planner-executor) split kept long-running authorship from collapsing into one unbounded prompt.
+
+### Harness-driven loops
+
+Each page lane ran inside an agent harness: edit, validate, fix, repeat until the bundle passed. The harness was the place where typecheck, lint, and content validation stayed attached to the same work item instead of drifting into a separate checklist outside the run.
+
+### Worktrees and isolation
+
+Parallel page lanes needed isolation so one story’s edits did not collide with another. Worktrees kept each factory lane on its own branch and working tree until the post or docs page was ready to review.
+
+## What to take away
+
+If you are building a large docs surface with agents, borrow the same discipline this site used: dispatch small pages, keep harness loops and isolation explicit, and point readers at published concepts and techniques rather than redefining them in blog prose.
+
+## Related reference pages
+
+Start with the product overview at
+[What is you-agent-factory](/docs/documentation/what-is-you-agent-factory)
+and the
+[planner-executor](/docs/techniques/planner-executor)
+technique. The concept links below cover harness, worktree, and loop definitions used in the patterns above.
+
+<BlogRelatedDocs
+  relatedDocIds={[
+    "concept.harness",
+    "concept.worktree",
+    "concept.loop",
+  ]}
+/>
