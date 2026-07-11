@@ -117,3 +117,9 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `hasBlogPostMessagesForLocale(slug, locale)` false for `ja`/`zh-CN`/`vi` and
   `generateStaticParams` from `src/app/[locale]/blog/[slug]/page.tsx` omitting
   the slug (locale-prefixed routes generate only when colocated messages exist).
+* Final blog-lane validation (story 004): run `make validate-data` as the primary
+  bundle proof, and colocate a `*-validation.test.tsx` that asserts published
+  frontmatter tags via `indexes.tagsBySlug`, `relatedDocIds` via
+  `PUBLISHED_DOCS_REGISTRY_IDS`, Atlas-free messages/render, and English-only
+  message shipping. Do not edit sibling B10 bundles or shared validators for
+  that proof.
