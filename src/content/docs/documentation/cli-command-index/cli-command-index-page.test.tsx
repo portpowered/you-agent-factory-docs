@@ -50,6 +50,9 @@ describe("cli-command-index documentation page", () => {
       const limits = String(
         loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
       );
+      const freshness = String(
+        loadedPage.messages.sections?.freshnessOwnership?.body ?? "",
+      );
       expect(whatItCovers).toMatch(/structured inventory/i);
       expect(whatItCovers).toMatch(/run|submit|session|work|docs/i);
       expect(keyConcepts).toMatch(/product CLI|you docs agents/i);
@@ -57,12 +60,17 @@ describe("cli-command-index documentation page", () => {
       expect(howToUse).toMatch(/CLI documentation page/i);
       expect(limits).toMatch(/structured web command index/i);
       expect(limits).toMatch(/not a sync of packaged you docs agents/i);
+      expect(freshness).toMatch(/site docs maintainers/i);
+      expect(freshness).toMatch(/product CLI|you docs agents/i);
+      expect(freshness).toMatch(/added or renamed|running-factory semantics/i);
+      expect(freshness).toMatch(/not automated governance CI/i);
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
       expect(keyConcepts).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
+      expect(freshness).not.toMatch(/Model Atlas|reader.?shortcut/i);
 
       render(
         <main>
@@ -86,10 +94,22 @@ describe("cli-command-index documentation page", () => {
       ).toBeTruthy();
       expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
       expect(
+        screen.getByRole("heading", { name: "Freshness Ownership" }),
+      ).toBeTruthy();
+      expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
       expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
 
+      const freshnessSection = document.getElementById("freshness-ownership");
+      expect(freshnessSection).toBeTruthy();
+      expect(freshnessSection?.textContent).toMatch(/site docs maintainers/i);
+      expect(freshnessSection?.textContent).toMatch(
+        /you docs agents|product CLI/i,
+      );
+      expect(freshnessSection?.textContent).toMatch(
+        /added or renamed|running-factory semantics/i,
+      );
       const commandIndexSection = document.getElementById("command-index");
       expect(commandIndexSection).toBeTruthy();
 

@@ -696,6 +696,20 @@ getting-started or install deep-dive). Omit unpublished sibling ids from
 `relatedIds` so validation and related rendering stay clean; do not invent
 page-meta “on this page” prose or hard-coded sibling route lists in MDX.
 
+### Freshness ownership on maintainer-facing surfaces (page-local)
+
+When a PRD asks for freshness ownership on a changelog hub or structured
+command inventory, put reader-visible maintainer copy on the page itself:
+owner role (for example site docs maintainers), source of truth (GitHub
+Releases for release hubs; product CLI / `you docs agents` for command
+inventories), and refresh trigger (new product release, command add/rename,
+or running-factory semantics change). Prefer a dedicated
+`#freshness-ownership` section on documentation pages (message-backed) or a
+`## Freshness ownership` heading on blog hubs. State explicitly that this is
+a human maintainer checklist — do not invent automated governance CI, owner
+registry fields, or Atlas-era process prose. Bump `updatedAt` (and blog
+`publishedAt` when first authored) to match the content change.
+
 ### Documentation replays-records sensitivity, limits, and sibling discovery
 
 For `documentation/replays-records`, keep sensitivity and retention in default-locale

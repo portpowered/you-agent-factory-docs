@@ -19,6 +19,10 @@
       "title": "How To Use",
       "body": "Find the command you need in the index, confirm whether a factory must already be running, then run that form. For install steps and the teaching matrix narrative, open the CLI documentation page. For agent orientation after install, run you docs agents from the installed binary."
     },
+    "freshnessOwnership": {
+      "title": "Freshness Ownership",
+      "body": "Site docs maintainers own the structured command inventory on this index. The behavioral source of truth is the product CLI and packaged you docs agents (web rewrite), not a verbatim sync of packaged markdown. Refresh the inventory when CLI commands are added or renamed, or when running-factory semantics change for a listed form. Treat this as a human maintainer checklist after a product release or notable CLI change — not automated governance CI or an owner-registry field."
+    },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
       "body": "This page is a structured web command index for core customer ingress. It is not a full flag dump, not a sync of packaged you docs agents markdown, and not a replacement for the CLI install and teaching page. Deeper contracts stay in packaged you docs and sibling documentation pages."

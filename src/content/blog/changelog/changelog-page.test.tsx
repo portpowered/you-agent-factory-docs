@@ -47,6 +47,14 @@ describe("changelog blog hub (001)", () => {
     expect(html).not.toContain("blog-related-docs-partial-unavailable");
     expect(html).toContain('href="/docs/concepts/harness"');
     expect(html).toContain('href="/docs/concepts/worktree"');
+    expect(html).toContain("Freshness ownership");
+    expect(html).toContain("Site docs maintainers");
+    expect(html).toContain("source of truth");
+    expect(html).toContain("GitHub Releases");
+    expect(html).toContain(
+      "Refresh the hub when a new you-agent-factory product release",
+    );
+    expect(html).toContain("not automated governance CI");
     expect(html).not.toContain("Give the compact version first");
     expect(html).not.toContain("Created from the blog-post MDX template");
   });
