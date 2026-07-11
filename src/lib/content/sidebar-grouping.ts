@@ -66,6 +66,7 @@ export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = {
   "what-is-you-agent-factory": "basics",
   "harness-support": "feature-support",
   "dynamic-workflows": "functions",
+  "mock-workers": "functions",
   "replays-records": "functions",
   "submitting-work": "functions",
   configuration: "configuration",

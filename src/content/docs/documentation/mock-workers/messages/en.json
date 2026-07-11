@@ -1,0 +1,32 @@
+{
+  "title": "Mock workers",
+  "description": "Run you-agent-factory with deterministic mock worker outcomes via --with-mock-workers instead of live provider dispatch.",
+  "openingSummary": "Mock workers replace live worker dispatch with deterministic mock outcomes so you can validate routing and failure paths without live provider calls.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Mock workers is the you-agent-factory Program documentation surface for deterministic mock-worker runs. Use it when you need to understand --with-mock-workers and how mock outcomes differ from ordinary live worker dispatch. This page is not a live worker taxonomy, not a record/replay guide, and not Model Atlas material."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Mock-worker mode replaces live worker dispatch with deterministic mock outcomes for a you run. Pass --with-mock-workers to enable that mode. An optional JSON path selects mock entries; omitting the path enables mock mode with an empty config. Mock workers are distinct from live workers and from record/replay artifact reuse."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Enable mock-worker mode on you run with --with-mock-workers, optionally pointing at a mock-workers JSON config. Later teaching on this page will cover the JSON selection contract, runType outcomes, and unmatchedDispatchPolicy. Start from the flag itself when you need a deterministic run without live provider calls."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web mock-workers reference for you-agent-factory. It is not a live workers taxonomy, not a resources capacity deep-dive, not a record/replay guide, and not a sync of packaged CLI docs. Scaffold sections identify the surface; detailed contract teaching, examples, and operational cautions land in follow-on authoring."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
