@@ -98,11 +98,13 @@ after concurrent launch-extra pages reached ~85.08 MiB against the prior
 85 MiB ceiling; raised again 2026-07-11 UTC after concepts taxonomy repair
 measured ~99.78 MiB total and ~4.08 MiB search bootstrap on CI; raised again
 2026-07-11 UTC after packaged-documents/factories (~106.78 MiB / ~4.27 MiB
-search) and Script/Poller workers (~106.98 MiB / ~4.32 MiB search) lanes):
+search) and Script/Poller workers (~106.98 MiB / ~4.32 MiB search) lanes;
+raised again 2026-07-11 UTC after the combined packaged + Script/Poller head
+measured ~113.28 MiB total and ~4.51 MiB search bootstrap on CI):
 
-- `maxTotalOutBytes`: 110_000_000
+- `maxTotalOutBytes`: 116_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 4_500_000
+- `maxSearchBootstrapBytes`: 4_600_000
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
 `out/` fails closed. Reproduce locally with:
