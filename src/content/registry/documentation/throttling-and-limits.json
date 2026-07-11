@@ -1,0 +1,18 @@
+{
+  "id": "documentation.throttling-and-limits",
+  "slug": "throttling-and-limits",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["throttling", "limits", "capacity limits", "retry limits"],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers",
+    "documentation.resources",
+    "documentation.troubleshooting"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T08:00:00.000Z",
+  "updatedAt": "2026-07-11T09:00:00.000Z"
+}

@@ -1,0 +1,94 @@
+{
+  "title": "Mock workers",
+  "description": "Run you-agent-factory with deterministic mock worker outcomes via --with-mock-workers instead of live provider dispatch.",
+  "openingSummary": "Mock workers replace live worker dispatch with deterministic mock outcomes so you can validate routing and failure paths without live provider calls.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Mock workers let you run a factory with deterministic worker outcomes instead of live provider calls. Pass --with-mock-workers on you run to replace live worker dispatch with configured accept, reject, or script results. Use this when you need to verify routing, rejection loops, failure paths, or local script side effects without calling a live model provider."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Mock-worker mode is a run-time replacement for live worker dispatch. Matched mockWorkers[] entries return the configured runType outcome. Unmatched dispatches follow unmatchedDispatchPolicy: accept (default) returns a synthetic accepted result; passthrough falls through to the real worker path. Mock workers are not ordinary live worker runs, and they are not record/replay artifact reuse — record and replay capture or replay a prior live run, while mock mode synthesizes outcomes from a JSON selection contract."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Enable mock-worker mode on you run with --with-mock-workers. Omit the path for an empty config, or pass a JSON file path to select mock entries. Omitting the path is equivalent to { \"mockWorkers\": [] }. With that empty array and the default unmatched policy, every dispatch returns the default accepted mock result."
+    },
+    "jsonContract": {
+      "title": "JSON Contract",
+      "body": "The config file is one JSON object. The required top-level mockWorkers array holds selection entries. Each entry may select by workerName, workstationName, workInputs, and an optional id. Every entry requires runType: accept, reject, or script. Use rejectConfig when runType is reject, and scriptConfig (at least command) when runType is script. Optional unmatchedDispatchPolicy is accept (default) or passthrough."
+    },
+    "minimalExample": {
+      "title": "Minimal Example",
+      "body": "Start with a pure-mock rejection when you need a copyable command and JSON pair. The command enables mock mode with a config path. The JSON matches a reviewer dispatch and returns a deterministic rejection."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "Unknown JSON fields are rejected at load time — keep the config to the documented fields. unmatchedDispatchPolicy passthrough is not a pure-deterministic run: unmatched steps call the real worker and may hit live providers. A mock accept proves only that the mock path returned success; it does not prove live-provider success, live model quality, or that the same step would pass without mocks."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web mock-workers reference for --with-mock-workers and the JSON selection contract. It is not a live workers taxonomy, not a resources capacity deep-dive, not a record/replay guide, and not a packaged CLI sync. Packaged you docs mock-workers remains the CLI topic for the same contract."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "enableWithoutPathLabel": "Enable mock mode without a config file",
+    "enableWithoutPathCommand": "you run --dir ./factory --with-mock-workers",
+    "enableWithPathLabel": "Enable mock mode with a JSON config path",
+    "enableWithPathCommand": "you run --dir ./factory --with-mock-workers ./path/to/mock-workers.json",
+    "emptyConfigEquivalentLabel": "Omitting the path is equivalent to this empty config",
+    "emptyConfigEquivalentJson": "{\n  \"mockWorkers\": []\n}",
+    "emptyConfigDefaultBehavior": "With no matching entries and the default unmatched policy, every dispatch returns the default accepted mock result.",
+    "contractFieldHeader": "Field",
+    "contractRequiredHeader": "Required",
+    "contractMeaningHeader": "Meaning",
+    "contractMockWorkersField": "mockWorkers",
+    "contractMockWorkersRequired": "Yes",
+    "contractMockWorkersMeaning": "Array of mock-worker selection entries",
+    "contractUnmatchedPolicyField": "unmatchedDispatchPolicy",
+    "contractUnmatchedPolicyRequired": "No",
+    "contractUnmatchedPolicyMeaning": "accept (default) or passthrough for real-worker fallback",
+    "contractIdField": "id",
+    "contractIdRequired": "No",
+    "contractIdMeaning": "Stable label for diagnostics and fixtures",
+    "contractWorkerNameField": "workerName",
+    "contractWorkerNameRequired": "No",
+    "contractWorkerNameMeaning": "Matches workers[].name from factory.json",
+    "contractWorkstationNameField": "workstationName",
+    "contractWorkstationNameRequired": "No",
+    "contractWorkstationNameMeaning": "Matches the workstation currently executing",
+    "contractWorkInputsField": "workInputs",
+    "contractWorkInputsRequired": "No",
+    "contractWorkInputsMeaning": "Filters on consumed work input fields such as workType, state, and inputName",
+    "contractRunTypeField": "runType",
+    "contractRunTypeRequired": "Yes",
+    "contractRunTypeMeaning": "accept, reject, or script",
+    "contractRejectConfigField": "rejectConfig",
+    "contractRejectConfigRequired": "When runType is reject",
+    "contractRejectConfigMeaning": "Optional stdout, stderr, and exitCode for the rejected result",
+    "contractScriptConfigField": "scriptConfig",
+    "contractScriptConfigRequired": "When runType is script",
+    "contractScriptConfigMeaning": "Local command runner fields; command is required",
+    "runTypesSummary": "accept returns a successful accepted result with no extra config. reject returns a rejected result and may set rejectConfig.stdout, rejectConfig.stderr, and rejectConfig.exitCode (1–255). script runs a local command through the shared command-runner boundary and requires scriptConfig.command; optional fields include args, env, workingDirectory, stdin, and timeout.",
+    "unmatchedPolicySummary": "When no mockWorkers entry matches, omitted or accept keeps the dispatch deterministic with a synthetic accepted result. passthrough executes the unmatched dispatch through the normal worker runner instead. An empty mockWorkers array with accept therefore accepts every dispatch; the same empty array with passthrough runs every dispatch through the real worker path.",
+    "rejectionExampleCommandLabel": "Pure-mock rejection command",
+    "rejectionExampleCommand": "you run --dir ./factory --with-mock-workers ./mock-workers.json",
+    "rejectionExampleJsonLabel": "Matching mock-workers.json",
+    "rejectionExampleJson": "{\n  \"mockWorkers\": [\n    {\n      \"id\": \"reviewer-rejects-first-pass\",\n      \"workerName\": \"reviewer\",\n      \"workstationName\": \"review-story\",\n      \"workInputs\": [\n        {\n          \"workType\": \"story\",\n          \"state\": \"in-review\",\n          \"inputName\": \"work\"\n        }\n      ],\n      \"runType\": \"reject\",\n      \"rejectConfig\": {\n        \"stdout\": \"needs changes\",\n        \"stderr\": \"missing acceptance criteria\",\n        \"exitCode\": 42\n      }\n    }\n  ]\n}",
+    "rejectionExampleMeaning": "The entry matches a reviewer dispatch at review-story for an in-review story work input and returns a deterministic rejection. Unmatched dispatches still follow the default accept policy unless you set unmatchedDispatchPolicy to passthrough.",
+    "siblingDiscoveryIntro": "Continue with these sibling documentation surfaces when you need live worker backends, resource capacity, or failure recovery beyond mock-worker selection.",
+    "workersDocs": "Workers",
+    "resourcesDocs": "Resources",
+    "troubleshootingDocs": "Troubleshooting"
+  }
+}
