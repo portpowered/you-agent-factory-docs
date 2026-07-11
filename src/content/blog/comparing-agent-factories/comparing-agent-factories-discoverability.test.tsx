@@ -104,4 +104,13 @@ describe("comparing-agent-factories blog discoverability (004)", () => {
     expect(html).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(html).toContain('data-testid="blog-related-docs"');
   });
+
+  test("post title is a relative self-link for Pages representative nav hrefs", async () => {
+    const page = await renderBlogPostPage(BLOG_SLUG);
+    const html = renderToStaticMarkup(page);
+
+    expect(html).toContain(`href="${BLOG_ROUTE}"`);
+    expect(html).toContain('aria-current="page"');
+    expect(html).toContain(BLOG_TITLE);
+  });
 });

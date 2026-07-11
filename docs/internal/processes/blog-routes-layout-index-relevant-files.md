@@ -11,6 +11,12 @@ Use these files when extending the default English blog surface at `/blog` and
   English blog post route (story 003).
 * `src/app/(site)/site-renderers.tsx`
   `renderBlogIndexPage` and `renderBlogPostPage` for docs-shell blog surfaces.
+  Post titles are self-links (`blogPostHref`) so project-site exports emit a
+  relative post href for Pages representative-nav probes (comparing is not in
+  the docs sidebar).
+* `src/lib/content/blog-shell-render.tsx`
+  Layout/viewport shell markup; keeps the same title self-link as
+  `renderBlogPostPage`.
 * `src/features/blog/components/BlogIndexPostList.tsx`
   Compact index cards with title, description, published date, tags, and accessible post links.
 * `src/features/blog/components/BlogPostMeta.tsx`

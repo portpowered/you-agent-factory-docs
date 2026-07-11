@@ -1,17 +1,35 @@
 import { DocsDescription, DocsTitle } from "fumadocs-ui/layouts/docs/page";
+import Link from "next/link";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
-import type { LoadedBlogPost } from "@/lib/content/blog-page-load";
+import {
+  type LoadedBlogPost,
+  blogPostHref,
+} from "@/lib/content/blog-page-load";
 
 /** Renders blog post shell markup for layout and viewport probes. */
 export function renderBlogPostShell(loadedPost: LoadedBlogPost): string {
+  const postHref = blogPostHref(loadedPost.slug);
+
   return renderToStaticMarkup(
     createElement(
       "div",
       null,
-      createElement(DocsTitle, null, loadedPost.messages.title),
+      createElement(
+        DocsTitle,
+        null,
+        createElement(
+          Link,
+          {
+            href: postHref,
+            className: "text-inherit no-underline hover:underline",
+            "aria-current": "page",
+          },
+          loadedPost.messages.title,
+        ),
+      ),
       createElement(DocsDescription, null, loadedPost.messages.description),
       createElement(BlogPostMeta, {
         publishedAt: loadedPost.frontmatter.publishedAt,

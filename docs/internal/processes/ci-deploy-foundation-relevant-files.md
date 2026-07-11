@@ -193,6 +193,16 @@ comparing-agent-factories HTML, search bootstrap, CSS, or JS expose unprefixed
 asset, search, or internal URLs. Fixture coverage for the failure mode is
 enough — do not require a second production-scale export solely to prove fail.
 
+Representative nav hrefs (`PAGES_DEPLOYED_ARTIFACT_PROBE_NAV_HREFS`) require
+relative `href="${basePath}${path}"` strings in combined probed HTML — absolute
+production canonical/OG URLs do not satisfy
+`exportHtmlReferencesPrefixedNavigationHrefs`. Home and getting-started usually
+appear via primary nav / docs sidebar; the comparing blog probe route is not in
+that tree, so `renderBlogPostPage` / `renderBlogPostShell` emit a title self-link
+(`blogPostHref(slug)` via Next `Link`) that project-site `basePath` rewrites to
+`href="/you-agent-factory-docs/blog/comparing-agent-factories"`. Do not post-build
+rewrite `out/` HTML to inject those hrefs.
+
 The deploy validate job must call `make guard-pages-deployed-artifact` (→
 `bun run guard:pages-deployed-artifact` → `guardPagesDeployedArtifact`) after
 `make build` and before `actions/upload-pages-artifact@v3`. That entrypoint

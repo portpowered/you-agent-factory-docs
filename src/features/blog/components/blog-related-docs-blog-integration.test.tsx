@@ -31,6 +31,7 @@ describe("blog related docs integration", () => {
       "documentation.what-is-you-agent-factory",
       "concept.harness",
     ]);
+    expect(html).toContain('href="/blog/comparing-agent-factories"');
     expect(html).toContain('data-testid="blog-related-docs"');
     expect(html).toContain(
       'href="/docs/documentation/what-is-you-agent-factory"',
