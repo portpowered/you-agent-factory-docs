@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web mock-workers reference for --with-mock-workers and the JSON selection contract. It is not a live workers taxonomy, not a resources capacity deep-dive, not a record/replay guide, and not a sync of packaged CLI docs. Packaged you docs mock-workers remains the CLI topic for the same contract."
+      "body": "This page is the web mock-workers reference for --with-mock-workers and the JSON selection contract. It is not a live workers taxonomy, not a resources capacity deep-dive, not a record/replay guide, and not a packaged CLI sync. Packaged you docs mock-workers remains the CLI topic for the same contract."
     },
     "related": {
       "title": "Related To"
@@ -85,6 +85,10 @@
     "rejectionExampleCommand": "you run --dir ./factory --with-mock-workers ./mock-workers.json",
     "rejectionExampleJsonLabel": "Matching mock-workers.json",
     "rejectionExampleJson": "{\n  \"mockWorkers\": [\n    {\n      \"id\": \"reviewer-rejects-first-pass\",\n      \"workerName\": \"reviewer\",\n      \"workstationName\": \"review-story\",\n      \"workInputs\": [\n        {\n          \"workType\": \"story\",\n          \"state\": \"in-review\",\n          \"inputName\": \"work\"\n        }\n      ],\n      \"runType\": \"reject\",\n      \"rejectConfig\": {\n        \"stdout\": \"needs changes\",\n        \"stderr\": \"missing acceptance criteria\",\n        \"exitCode\": 42\n      }\n    }\n  ]\n}",
-    "rejectionExampleMeaning": "The entry matches a reviewer dispatch at review-story for an in-review story work input and returns a deterministic rejection. Unmatched dispatches still follow the default accept policy unless you set unmatchedDispatchPolicy to passthrough."
+    "rejectionExampleMeaning": "The entry matches a reviewer dispatch at review-story for an in-review story work input and returns a deterministic rejection. Unmatched dispatches still follow the default accept policy unless you set unmatchedDispatchPolicy to passthrough.",
+    "siblingDiscoveryIntro": "Continue with these sibling documentation surfaces when you need live worker backends, resource capacity, or failure recovery beyond mock-worker selection.",
+    "workersDocs": "Workers",
+    "resourcesDocs": "Resources",
+    "troubleshootingDocs": "Troubleshooting"
   }
 }

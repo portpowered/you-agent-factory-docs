@@ -6,9 +6,13 @@
   "defaultSummaryKey": "description",
   "aliases": ["mock workers", "with-mock-workers", "mock-worker mode"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.workers",
+    "documentation.resources",
+    "documentation.troubleshooting"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-11T07:00:00.000Z",
-  "updatedAt": "2026-07-11T07:30:00.000Z"
+  "updatedAt": "2026-07-11T09:00:00.000Z"
 }
