@@ -55,11 +55,13 @@ const BUILT_HTML_LOCALIZED_DOC_ROUTES = [
       "/vi/docs/concepts/harness",
       "/vi/docs/concepts/tokens",
     ],
-    requiredSidebarLabels: [">Guides<", ">Concepts<", ">Techniques<"],
+    // Folder button labels are locale-aware (vi common.json explorer.folders).
+    requiredSidebarLabels: [">Hướng dẫn<", ">Khái niệm<", ">Kỹ thuật<"],
     forbiddenSidebarUrls: [
       "/vi/docs/modules/grouped-query-attention",
       "/vi/docs/modules/multi-head-attention",
     ],
+    forbiddenSidebarLabels: [">Guides<", ">Concepts<", ">Techniques<"],
   },
 ] as const;
 
@@ -206,6 +208,9 @@ describe("docs sidebar navigation (built HTML)", () => {
       }
       for (const url of route.forbiddenSidebarUrls) {
         expect(sidebar).not.toContain(url);
+      }
+      for (const label of route.forbiddenSidebarLabels ?? []) {
+        expect(sidebar).not.toContain(label);
       }
     });
   }
