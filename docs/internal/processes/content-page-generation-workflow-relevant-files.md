@@ -515,6 +515,10 @@ those paths only accept collection section refs.
   is driven by `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` first; editorial
   `sidebarGrouping.concepts` is for exceptions not covered by that map.
   `generation-and-diffusion` remains glossary-only.
+- Program documentation explorer membership is driven by
+  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (Basics → Additional
+  reference). FAQ is omitted from that map because it is a top-level explorer
+  page outside the Program documentation folder.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.

@@ -15,6 +15,18 @@ export const SIDEBAR_GROUP_LABELS = {
     "industrial-engineering": "Industrial engineering",
     "model-inference": "Model inference",
   },
+  documentation: {
+    basics: "Basics",
+    "feature-support": "Feature support",
+    functions: "Functions",
+    configuration: "Configuration",
+    api: "API",
+    cli: "CLI",
+    mcp: "MCP",
+    operational: "Operational",
+    "internal-architecture": "Internal architecture",
+    "additional-reference": "Additional reference",
+  },
 } as const;
 
 /**
@@ -44,6 +56,44 @@ export const FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG = {
 
 export type FactoryConceptsSidebarSlug =
   keyof typeof FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG;
+
+/**
+ * Explicit Program documentation explorer membership by page slug.
+ * FAQ is a top-level explorer page and is intentionally omitted here.
+ * Empty groups are omitted until assigned pages publish.
+ */
+export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = {
+  "what-is-you-agent-factory": "basics",
+  "harness-support": "feature-support",
+  "dynamic-workflows": "functions",
+  "replays-records": "functions",
+  "submitting-work": "functions",
+  configuration: "configuration",
+  workers: "configuration",
+  workstations: "configuration",
+  resources: "configuration",
+  "global-configuration-factories": "configuration",
+  "factory-session": "configuration",
+  "api-doc": "api",
+  cli: "cli",
+  "cli-command-index": "cli",
+  mcp: "mcp",
+  metrics: "operational",
+  troubleshooting: "operational",
+  logs: "operational",
+  "architecture-of-system": "internal-architecture",
+  petri: "internal-architecture",
+  install: "additional-reference",
+  "contributing-to-these-docs": "additional-reference",
+  "dashboard-ui-overview": "additional-reference",
+  "security-trust-boundaries": "additional-reference",
+} as const satisfies Record<
+  string,
+  keyof (typeof SIDEBAR_GROUP_LABELS)["documentation"]
+>;
+
+export type FactoryDocumentationSidebarSlug =
+  keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG;
 
 export type SidebarGroupingSection = keyof typeof SIDEBAR_GROUP_LABELS;
 
@@ -81,6 +131,11 @@ type GlossarySidebarRecord = {
 
 type ConceptsSidebarRecord = GlossarySidebarRecord & {
   slug?: string;
+};
+
+type DocumentationSidebarRecord = {
+  slug?: string;
+  sidebarGrouping?: SidebarGrouping;
 };
 
 export type SidebarGroupingSource =
@@ -259,6 +314,60 @@ export function resolveConceptsSidebarGroupWithSource(
   );
 }
 
+function resolveFactoryAssignedDocumentationSidebarGroup(
+  record: DocumentationSidebarRecord,
+):
+  | SidebarGroupResolution<
+      SidebarGroupIdBySection["documentation"],
+      "derived-taxonomy"
+    >
+  | undefined {
+  const slug = record.slug;
+  if (!slug) {
+    return undefined;
+  }
+
+  const groupId =
+    FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+      slug as FactoryDocumentationSidebarSlug
+    ];
+  if (!groupId) {
+    return undefined;
+  }
+
+  return createSidebarGroupResolution(groupId, "derived-taxonomy");
+}
+
+function resolveEditorialDocumentationSidebarGroup(
+  record: DocumentationSidebarRecord,
+):
+  | SidebarGroupResolution<
+      SidebarGroupIdBySection["documentation"],
+      "editorial-sidebar-grouping"
+    >
+  | undefined {
+  const editorialGroup = record.sidebarGrouping?.documentation;
+  if (!editorialGroup) {
+    return undefined;
+  }
+
+  return createSidebarGroupResolution(
+    editorialGroup,
+    "editorial-sidebar-grouping",
+  );
+}
+
+export function resolveDocumentationSidebarGroupWithSource(
+  record: DocumentationSidebarRecord,
+):
+  | SidebarGroupResolution<SidebarGroupIdBySection["documentation"]>
+  | undefined {
+  return (
+    resolveFactoryAssignedDocumentationSidebarGroup(record) ??
+    resolveEditorialDocumentationSidebarGroup(record)
+  );
+}
+
 export function resolveGlossarySidebarGroup(
   record: GlossarySidebarRecord,
 ): SidebarGroupIdBySection["glossary"] | undefined {
@@ -269,6 +378,12 @@ export function resolveConceptsSidebarGroup(
   record: ConceptsSidebarRecord,
 ): SidebarGroupIdBySection["concepts"] | undefined {
   return resolveConceptsSidebarGroupWithSource(record)?.groupId;
+}
+
+export function resolveDocumentationSidebarGroup(
+  record: DocumentationSidebarRecord,
+): SidebarGroupIdBySection["documentation"] | undefined {
+  return resolveDocumentationSidebarGroupWithSource(record)?.groupId;
 }
 
 export function validateSidebarGroupingForRecord(

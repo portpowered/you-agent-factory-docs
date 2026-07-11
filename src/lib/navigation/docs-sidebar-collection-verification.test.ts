@@ -41,6 +41,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     folderName: "Program documentation",
     url: "/docs/documentation/what-is-you-agent-factory",
     name: "What is you-agent-factory",
+    separatorLabel: "Basics",
   },
 ] as const;
 
@@ -172,11 +173,7 @@ describe("collection-driven docs sidebar verification", () => {
     const pageTree = buildVerificationPageTree();
     const links = collectSidebarPageLinks(pageTree);
 
-    for (const folderName of [
-      "Guides",
-      "Techniques",
-      "Program documentation",
-    ] as const) {
+    for (const folderName of ["Guides", "Techniques"] as const) {
       const children = getFolderChildren(pageTree, folderName);
       expect(getSeparatorLabels(children), folderName).toEqual([]);
     }
@@ -188,5 +185,28 @@ describe("collection-driven docs sidebar verification", () => {
     expect(
       findSidebarPageLink(links, "/docs/papers/deepseek-v4"),
     ).toBeUndefined();
+  });
+
+  test("Program documentation subgroups follow declared order without FAQ", () => {
+    const pageTree = buildVerificationPageTree();
+    const children = getFolderChildren(pageTree, "Program documentation");
+
+    expect(getSeparatorLabels(children)).toEqual([
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ]);
+    expect(
+      collectSidebarPageLinks(children).some(
+        (link) => link.url === "/docs/documentation/faq",
+      ),
+    ).toBe(false);
   });
 });

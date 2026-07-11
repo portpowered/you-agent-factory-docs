@@ -143,6 +143,28 @@ describe("docs sidebar navigation accessibility", () => {
       }),
     ).toBeTruthy();
 
+    for (const subgroup of [
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ] as const) {
+      expect(within(sidebar).getByText(subgroup)).toBeTruthy();
+    }
+    // Configuration / API / CLI / MCP are both subgroup separators and page titles.
+    for (const sharedLabel of ["Configuration", "API", "CLI", "MCP"] as const) {
+      expect(
+        within(sidebar).getAllByText(sharedLabel).length,
+      ).toBeGreaterThanOrEqual(2);
+    }
+    expect(
+      within(sidebar).getByRole("link", {
+        name: "What is you-agent-factory",
+      }),
+    ).toBeTruthy();
+
     const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
     expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
     faqLink.focus();

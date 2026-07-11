@@ -5,6 +5,7 @@ import {
   getSidebarGroupIdsForSection,
   getSidebarGroupLabel,
   resolveConceptsSidebarGroup,
+  resolveDocumentationSidebarGroup,
   resolveGlossarySidebarGroup,
   type SidebarGroupIdBySection,
   type SidebarGroupingSection,
@@ -112,12 +113,23 @@ function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
   });
 }
 
+function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
+  return groupPagesBySection("documentation", pages, (page) => {
+    const slug = page.docsSlug.startsWith("documentation/")
+      ? page.docsSlug.slice("documentation/".length)
+      : page.docsSlug;
+
+    return resolveDocumentationSidebarGroup({ slug });
+  });
+}
+
 const GROUPED_NODE_BUILDERS: Record<
   DocsCollectionSidebarGroupingResolverId,
   (pages: DocsPageSource[]) => Node[]
 > = {
   glossary: buildGlossaryGroupedNodes,
   concepts: buildConceptsGroupedNodes,
+  documentation: buildDocumentationGroupedNodes,
 };
 
 export function buildGroupedSidebarNodes(

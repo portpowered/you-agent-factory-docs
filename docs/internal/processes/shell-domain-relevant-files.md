@@ -10,21 +10,29 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   subgroups are **Harnesses → Industrial engineering → Model inference** via
   `SIDEBAR_GROUP_LABELS.concepts` and explicit slug membership in
   `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` (including reserved skills/mcp/
-  tool-calling slots). Glossary still uses ontology-first classification
-  membership with editorial `sidebarGrouping.glossary` fallback.
+  tool-calling slots). Program documentation subgroups are **Basics → Feature
+  support → Functions → Configuration → API → CLI → MCP → Operational →
+  Internal architecture → Additional reference** via
+  `SIDEBAR_GROUP_LABELS.documentation` and
+  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (FAQ omitted; top-level
+  explorer page). Glossary still uses ontology-first classification membership
+  with editorial `sidebarGrouping.glossary` fallback.
 * `src/lib/navigation/docs-sidebar-grouping-adapter.ts`
-  Builds grouped Concepts/Glossary sidebar nodes; Concepts resolution passes
-  page slug into `resolveConceptsSidebarGroup` so factory assignment applies.
+  Builds grouped Concepts/Glossary/Program documentation sidebar nodes;
+  Concepts and documentation resolution pass page slug into the factory
+  assignment maps so explicit membership applies.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
   `guides`, `concepts`, `techniques`, `documentation`, `glossary`. Retired
   Atlas ids (`models`, `modules`, `papers`, `training`, `systems`) are not in
-  the public collection contract; sidebar grouping resolvers are only
-  `glossary` and `concepts`.
+  the public collection contract; sidebar grouping resolvers are
+  `glossary`, `concepts`, and `documentation`.
 * `src/lib/docs/docs-collection-definitions.ts`
   Canonical inventory matching `DOCS_COLLECTION_IDS`. CLI collections keep
-  empty `starterSlugs`; glossary keeps route-relative starters.
+  empty `starterSlugs`; glossary keeps route-relative starters. Concepts,
+  glossary, and documentation set `sidebarGroupingResolverId`.
+
 * `src/lib/docs/browse-collection-sections.ts`
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /

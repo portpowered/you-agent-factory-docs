@@ -167,6 +167,7 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       evidence: [
         'membership.has("classification.concept.math")',
         "FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG",
+        "FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG",
         "record.sidebarGrouping?.glossary",
         "record.sidebarGrouping?.concepts",
       ],
@@ -178,11 +179,14 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
         "record.sidebarGrouping?.glossary",
         "FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG",
         "resolveFactoryAssignedConceptsSidebarGroup",
+        "FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG",
+        "resolveFactoryAssignedDocumentationSidebarGroup",
         "record.sidebarGrouping?.concepts",
       ],
       rationale:
-        "Glossary sidebar subgroup placement still checks canonical concept classification membership first with an editorial fallback. Factory Concepts explorer subgroups resolve from the explicit FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG assignment map first, then editorial sidebarGrouping.concepts for exceptions.",
+        "Glossary sidebar subgroup placement still checks canonical concept classification membership first with an editorial fallback. Factory Concepts explorer subgroups resolve from the explicit FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG assignment map first, then editorial sidebarGrouping.concepts for exceptions. Program documentation explorer subgroups resolve from FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG (FAQ omitted as a top-level explorer page).",
     },
+
     {
       id: "related-doc-legacy-peer-fallbacks",
       path: "src/lib/content/related-docs.ts",

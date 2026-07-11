@@ -43,6 +43,7 @@ export type DocsCollectionFrontmatterKind = Extract<
 export const DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS = [
   "glossary",
   "concepts",
+  "documentation",
 ] as const;
 
 export type DocsCollectionSidebarGroupingResolverId =

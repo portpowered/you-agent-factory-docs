@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
+import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import {
   FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG,
+  FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   getSidebarGroupLabel,
 } from "@/lib/content/sidebar-grouping";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
@@ -30,7 +32,7 @@ function collectGroupedPageUrls(nodes: Node[]): Record<string, string[]> {
 
     if (node.type === "page" && "url" in node && typeof node.url === "string") {
       if (!currentGroup) {
-        throw new Error(`ungrouped concepts page at ${node.url}`);
+        throw new Error(`ungrouped page at ${node.url}`);
       }
       byGroup[currentGroup].push(node.url);
     }
@@ -103,6 +105,74 @@ describe("docs sidebar grouping adapter", () => {
 
     const pageNodeCount = nodes.filter((node) => node.type === "page").length;
     expect(pageNodeCount).toBe(pages.length);
+  });
+
+  test("Program documentation subgroups follow declared order with every published page except FAQ assigned", () => {
+    const pages = loadPublishedDocsPagesSync("en").filter(
+      (page) =>
+        page.docsSlug.startsWith("documentation/") &&
+        !isDocsExplorerTopLevelFaqPage(page.docsSlug),
+    );
+    const nodes = buildGroupedSidebarNodes("documentation", pages);
+    const separators = getSeparatorLabels(nodes);
+    const byGroup = collectGroupedPageUrls(nodes);
+
+    expect(separators).toEqual([
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ]);
+
+    const expectedByGroup: Record<string, string[]> = {
+      Basics: [],
+      "Feature support": [],
+      Functions: [],
+      Configuration: [],
+      API: [],
+      CLI: [],
+      MCP: [],
+      Operational: [],
+      "Internal architecture": [],
+      "Additional reference": [],
+    };
+
+    for (const page of pages) {
+      const slug = page.docsSlug.slice("documentation/".length);
+      expect(slug).not.toBe("faq");
+      const groupId =
+        FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+          slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+        ];
+      expect(
+        groupId,
+        `${slug} must have an explicit Program documentation subgroup`,
+      ).toBeDefined();
+      if (!groupId) {
+        continue;
+      }
+      expectedByGroup[getSidebarGroupLabel("documentation", groupId)].push(
+        page.url,
+      );
+    }
+
+    for (const [label, urls] of Object.entries(expectedByGroup)) {
+      expect(byGroup[label]?.slice().sort()).toEqual(urls.slice().sort());
+    }
+
+    const pageNodeCount = nodes.filter((node) => node.type === "page").length;
+    expect(pageNodeCount).toBe(pages.length);
+    expect(
+      FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+        "faq" as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+      ],
+    ).toBeUndefined();
   });
 
   test("rejects unsupported and retired Atlas resolver ids at runtime", () => {

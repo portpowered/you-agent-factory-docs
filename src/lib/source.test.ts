@@ -187,4 +187,28 @@ describe("docs navigation source", () => {
       expect(folderNames).not.toContain(retiredFolder);
     }
   });
+
+  test("page tree exposes Program documentation subgroups in declared order without FAQ nested inside", () => {
+    const children = getFolderChildren("Program documentation");
+    const separatorNames = children
+      .filter((node) => node.type === "separator")
+      .map((node) => String(node.name));
+    const pageUrls = collectPageUrls(children);
+
+    expect(separatorNames).toEqual([
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ]);
+    expect(pageUrls).not.toContain("/docs/documentation/faq");
+    expect(pageUrls).toContain("/docs/documentation/what-is-you-agent-factory");
+    expect(pageUrls).toContain("/docs/documentation/cli");
+  });
 });

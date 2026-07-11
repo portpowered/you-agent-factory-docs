@@ -151,6 +151,31 @@ describe("docs sidebar adapter extraction parity", () => {
     ]);
   });
 
+  test("grouped Program documentation folder keeps separator order and representative page placement", () => {
+    const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
+    const children = getFolderChildren(pageTree, "Program documentation");
+    const links = collectSidebarPageLinks(children);
+    const basicsUrl = "/docs/documentation/what-is-you-agent-factory";
+
+    expect(findSidebarPageLink(links, basicsUrl)?.url).toBe(basicsUrl);
+    expect(findPrecedingSeparatorLabel(children, basicsUrl)).toBe("Basics");
+    expect(getSeparatorLabels(children)).toEqual([
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ]);
+    expect(links.some((link) => link.url === "/docs/documentation/faq")).toBe(
+      false,
+    );
+  });
+
   test("factory sidebar excludes retired Atlas collection destinations", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const folderNames = getTopLevelFolderNames(pageTree);
