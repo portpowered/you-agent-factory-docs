@@ -50,7 +50,13 @@ describe("PRODUCTION_INTEGRATION_TEST_PATHS", () => {
       "src/lib/verify/built-html-convergence-test-helpers.test.ts",
     );
     expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/lib/verify/a11y-content-column-brand-alignment-page.test.ts",
+    );
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
       "src/tests/content/high-traffic-locales-browser.test.ts",
+    );
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/lib/verify/theme-code-copy-r00-page.test.ts",
     );
   });
 });

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { SITE_BRAND_NAME } from "@/lib/scaffold";
 import { resolveProductionMetadataBase } from "@/lib/seo/production-metadata-base";
 import {
   defaultSocialOpenGraphImages,
@@ -8,7 +9,7 @@ import {
 
 export const siteMetadata: Metadata = {
   metadataBase: resolveProductionMetadataBase(),
-  title: "you-agent-factory",
+  title: SITE_BRAND_NAME,
   description:
     "CLI documentation for installing the factory, running named goals, and operating agent workflows",
   openGraph: {
@@ -24,7 +25,12 @@ type RootDocumentProps = {
 
 export function RootDocument({ children, lang }: RootDocumentProps) {
   return (
-    <html lang={lang} className="dark" suppressHydrationWarning>
+    <html
+      lang={lang}
+      className="dark"
+      data-color-palette="factory-dark"
+      suppressHydrationWarning
+    >
       <body>{children}</body>
     </html>
   );

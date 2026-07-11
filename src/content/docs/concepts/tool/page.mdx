@@ -1,6 +1,6 @@
 ---
 title: "Tool"
-description: "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work."
+description: "A named callable capability an agent or Model Context Protocol (MCP) host can use while doing factory work."
 kind: "concept"
 registryId: "concept.tool"
 messageNamespace: "local"
@@ -10,7 +10,7 @@ tags: []
 aliases:
   - "Tools"
   - "MCP tool"
-updatedAt: "2026-07-09"
+updatedAt: "2026-07-11"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
@@ -41,20 +41,28 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   <LocalizedLinkList
     items={[
       {
-        href: "/docs/guides/cursor-dynamic-workflows",
-        labelKey: "links.cursorDynamicWorkflows",
+        href: "/docs/concepts/tool-calling",
+        labelKey: "links.toolCallingConcept",
       },
       {
-        href: "/docs/documentation/mcp",
-        labelKey: "links.mcpDocs",
+        href: "/docs/concepts/mcp",
+        labelKey: "links.mcpConcept",
+      },
+      {
+        href: "/docs/concepts/skills",
+        labelKey: "links.skillsConcept",
       },
       {
         href: "/docs/concepts/harness",
         labelKey: "links.harnessConcept",
       },
       {
-        href: "/docs/concepts/thinking",
-        labelKey: "links.thinkingConcept",
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflows",
       },
     ]}
   />

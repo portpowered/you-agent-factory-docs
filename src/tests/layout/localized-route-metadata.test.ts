@@ -20,7 +20,7 @@ describe("localized route metadata alternates", () => {
     const homeMetadata = await generateHomeMetadata();
     const searchMetadata = await generateSearchMetadata();
 
-    expect(homeMetadata.title).toBe("you-agent-factory");
+    expect(homeMetadata.title).toBe("You Agent Factory");
     expect(homeMetadata.description).toContain("you-agent-factory");
     expect(String(homeMetadata.title)).not.toMatch(/Model Atlas/i);
     expect(String(homeMetadata.description)).not.toMatch(/Model Atlas/i);
@@ -156,7 +156,7 @@ describe("localized route metadata alternates", () => {
     const englishHomeIntro =
       "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.";
 
-    expect(jaHomeMetadata.title).toBe("you-agent-factory");
+    expect(jaHomeMetadata.title).toBe("You Agent Factory");
     expect(jaHomeMetadata.description).toBe(
       "you-agent-factory は、ファクトリーのインストール、名前付きゴールの実行、およびハーネス、ループ、レビュー、プランナー、cron、イベントストリームの運用に関する CLI ドキュメントです。",
     );
@@ -164,14 +164,14 @@ describe("localized route metadata alternates", () => {
     expect(String(jaHomeMetadata.description)).not.toMatch(/Model Atlas/i);
     expect(String(jaHomeMetadata.description)).not.toBe(englishHomeIntro);
 
-    expect(zhCnHomeMetadata.title).toBe("you-agent-factory");
+    expect(zhCnHomeMetadata.title).toBe("You Agent Factory");
     expect(zhCnHomeMetadata.description).toBe(
       "you-agent-factory 是用于安装工厂、运行命名目标，以及操作 harness、循环、审查、规划器、cron 与事件流的 CLI 文档。",
     );
     expect(String(zhCnHomeMetadata.description)).not.toBe(englishHomeIntro);
     expect(zhCnHomeMetadata.alternates?.languages?.["zh-CN"]).toBe("/zh-CN");
 
-    expect(viHomeMetadata.title).toBe("you-agent-factory");
+    expect(viHomeMetadata.title).toBe("You Agent Factory");
     expect(viHomeMetadata.description).toBe(
       "you-agent-factory là tài liệu CLI để cài đặt factory, chạy các mục tiêu có tên, và vận hành harness, vòng lặp, review, planner, cron, cùng luồng sự kiện.",
     );

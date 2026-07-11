@@ -1,0 +1,40 @@
+{
+  "title": "Skills",
+  "description": "Reusable instruction packages a harness or coding agent can load to specialize behavior for a task class.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A skill is a reusable instruction package a harness or coding agent can load to specialize behavior for a task class. In Cursor and similar agent environments, skills are typically markdown packages—often a SKILL.md file plus optional helpers—that teach the agent how to perform a specific workflow, such as reviewing a pull request or following a project convention. A skill is not a tool you call by name, not Model Context Protocol (MCP) host setup, and not this documentation site's frontend design-skills authoring guide."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Without skills, every agent turn starts from general instructions. With skills, the harness can load focused guidance when a task matches the skill's description, so repeated workflows stay consistent without pasting the same playbook into every prompt. Operators and authors who want agents to follow a known procedure package that procedure as a skill."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You keep a project skill that explains how to open a pull request against your team's review checklist. When a Cursor-backed harness starts work that matches that skill's description, the agent loads the skill and follows those steps instead of inventing a one-off process. The skill is the loaded instruction package; the file-edit or shell actions the agent takes while following it are tools."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A skill is not a tool. A tool is a named callable capability—read a file, run a command, or call an MCP action. A skill is the instruction package that tells the agent when and how to use those capabilities for a task class. A skill is also not MCP: Model Context Protocol is how a host exposes tools from servers; skills do not replace that protocol. A skill is not the harness itself—the harness is the agent runtime that can load skills. This page is not the repository's design-skills frontend authoring guide."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "harnessConcept": "Harness",
+    "toolConcept": "Tool",
+    "mcpConcept": "MCP",
+    "toolCallingConcept": "Tool calling",
+    "mcpDocs": "MCP documentation",
+    "harnessSupportDocs": "Harness support",
+    "cursorDynamicWorkflows": "Cursor dynamic workflows"
+  }
+}

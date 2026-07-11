@@ -82,16 +82,98 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/fixtures/non-ai-shell/search.test.ts`
   Fixture base search document and Orama query coverage without AI enrichment.
 
+## Shared content-column alignment contract
+
+* `src/lib/layout/content-column-alignment.ts`
+  Single shared left-edge / horizontal-inset contract for shell content
+  columns. Tokens and utility classes (`CONTENT_COLUMN_INSET_CLASS`,
+  `CONTENT_COLUMN_INSET_FROM_MD_CLASS`, `CONTENT_COLUMN_CLASS`,
+  `CONTENT_COLUMN_FULL_CLASS`) match Fumadocs DocsPage `#nd-page` padding
+  (`px-4 md:px-6 xl:px-8`) and max-widths (`900px` / `1168px`). Use
+  `CONTENT_COLUMN_INSET_FROM_MD_CLASS` for nested chrome whose parent already
+  applies the mobile `px-4` shell inset. Do not fake alignment with negative
+  margins — apply the shared inset directly. Intended consumers:
+  `CONTENT_COLUMN_CONSUMER_SURFACES` (header/docs nav, home article/Browse,
+  `/browse`, `/blog`, normal docs pages).
+* `src/lib/layout/content-column-alignment.test.ts`
+  Contract tests: inset matches Fumadocs page padding, reusable column
+  classes share one inset, from-md nested inset, no negative-margin
+  compensation, CSS var names, and consumer-surface inventory.
+* `src/app/globals.css` (`:root` `--site-content-column-*`)
+  CSS custom properties mirroring the TypeScript inset / max-width tokens
+  for any stylesheet consumers of the same contract.
+* Home article + Browse (`home-article-browse`): consume the shared left edge
+  via DocsPage `#nd-page` inset — do **not** nest `CONTENT_COLUMN_INSET_CLASS`
+  on `HomeArticle`. Wire `data-content-column-surface="home-article-browse"`
+  and keep `HOME_ARTICLE_CLASS` width-only (`max-w-3xl`). Remove Browse/list
+  card indentation at the source with `bulletlessListMarkersClassName`
+  (`list-none ps-0`) in `src/features/docs/components/list-decoration.ts` —
+  DocsBody `prose` adds `padding-inline-start` to `ul` even when markers are
+  removed; never fake alignment with negative margins.
+* `src/components/home/home-article-alignment.test.tsx`
+  Locks home article/Browse shared left-edge contract (surface marker, no
+  nested inset, `ps-0` bulletless lists, no negative-margin compensation).
+* `/browse` (`browse-index`) and `/blog` (`blog-index`): wire
+  `data-content-column-surface` on the DocsPage `#nd-page` container in
+  `renderBrowseIndexPage` / `renderBlogIndexPage` so DocsTitle header and
+  DocsBody share one left edge. Keep index card lists on
+  `bulletlessListClassName` (`list-none ps-0`); do not nest
+  `CONTENT_COLUMN_INSET_CLASS` inside the body or fake alignment with
+  negative margins. Surface constants:
+  `BROWSE_INDEX_CONTENT_COLUMN_SURFACE` (`BrowseIndexPage.tsx`),
+  `BLOG_INDEX_CONTENT_COLUMN_SURFACE` (`BlogIndexPostList.tsx`).
+* `src/features/docs/components/browse-blog-index-alignment.test.tsx`
+  Locks `/browse` and `/blog` shared left-edge contract (surface markers on
+  `#nd-page`, DocsTitle + body present, `ps-0` bulletless lists, no
+  negative-margin compensation).
+* Normal docs pages (`docs-page`): wire `data-content-column-surface` on the
+  DocsPage `#nd-page` container in `renderLocalDocsPage` /
+  `renderDocsSlugPage` (`src/app/docs/docs-slug-renderer.tsx`) so article
+  content shares the same left edge as header/docs nav. Do not nest
+  `CONTENT_COLUMN_INSET_CLASS` on the article body or fake alignment with
+  negative margins; leave sidebar taxonomy and MDX prose untouched. Surface
+  constant: `DOCS_PAGE_CONTENT_COLUMN_SURFACE`.
+* `src/app/docs/docs-page-alignment.test.tsx`
+  Locks normal docs page shared left-edge contract (surface marker on
+  `#nd-page`, shared inset tokens with header nav, no nested article inset,
+  no negative-margin compensation).
+* `src/lib/layout/content-column-brand-alignment-coverage.ts`
+  Brand + content-column verification matrix: home/browse/blog/docs routes ×
+  mobile/tablet/laptop/wide viewports, expected display brand
+  (`You Agent Factory`), and when inline left-edge geometry applies (`md+`).
+* `src/lib/layout/content-column-brand-alignment-coverage.test.ts`
+  Contract tests for the brand-alignment matrix and viewport widths.
+* `src/tests/a11y/content-column-brand-alignment.a11y.test.tsx`
+  Always-on focused layout coverage: brand text, shared surfaces, header inset,
+  `DOCS_HEADER_SHELL_CLASS` `md:gap-0` contract, and layout-snapshot coverage
+  across home/browse/blog/docs (gates meaningful brand regressions via
+  hash/contract failure).
+* `src/lib/verify/a11y-content-column-left-edge-geometry.test.ts`
+  Always-on Playwright fixture: zero header column gap keeps the nav track
+  aligned with `#nd-page`; a 16px (`gap-4`) header gap reproduces the
+  historical ~32px drift — no production build required.
+* `src/lib/verify/a11y-content-column-brand-alignment-page.test.ts`
+  Served matrix (also in `PRODUCTION_INTEGRATION_TEST_PATHS`): brand,
+  content-column surface, no page overflow, and `#nd-page` ↔ header-nav
+  left-edge geometry at all four viewports after `make build`.
+
 ## CLI docs header / primary-nav regression
 
 * `src/components/layout/docs-header.tsx`
   Product-neutral docs shell header (`DocsHeader`); brand via
   `data-docs-header-brand`, CLI primary nav, and header `SearchTrigger`.
+  Shell grid is `DOCS_HEADER_SHELL_CLASS` (`gap-4 md:gap-0` — desktop must
+  match zero-gap `#nd-docs-layout` tracks). Desktop primary nav uses
+  `DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS` (`CONTENT_COLUMN_CLASS`); actions use
+  `DOCS_HEADER_ACTIONS_COLUMN_CLASS` (`CONTENT_COLUMN_INSET_FROM_MD_CLASS` +
+  full max-width). Mobile shell keeps outer `px-4 md:px-0` — no
+  negative-margin compensation.
 * `src/components/layout/docs-header.test.tsx`
   Unit regression locking you-agent-factory brand, Home/Guides/Docs/Glossary/Blog
-  primary destinations (no Topology/Timeline), and Search chrome without Model
+  primary destinations (no Topology/Timeline), Search chrome without Model
   Atlas copy — including the consolidated "locks CLI shell header brand,
-  primary nav, and Search together" case.
+  primary nav, and Search together" case — plus shared content-column left-edge
+  alignment for desktop nav/actions and `md:gap-0` shell contract.
 * `src/tests/a11y/primary-navigation.a11y.test.tsx`
   A11y smoke for brand + Primary landmark + Search on the canonical docs layout.
 * `src/components/layout/primary-nav.ts` / `primary-nav.test.ts`

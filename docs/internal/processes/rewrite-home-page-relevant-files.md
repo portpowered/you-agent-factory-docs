@@ -93,6 +93,10 @@ Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
   so locales can translate labels while keeping the same runnable commands.
 - Why/features stay single-column article sections with stable `#why` / `#features`
   anchors; use `bulletlessListClassName` for the feature list (no `list-disc`).
+  Bulletless lists must include `ps-0` so DocsBody `prose` list
+  `padding-inline-start` does not inset Browse/feature cards; do not use
+  negative margins to compensate. Home article width is `HOME_ARTICLE_CLASS`
+  only — horizontal inset comes from DocsPage `#nd-page`.
 - Default `homeFeaturedLinks` bind CLI route surfaces to `guidesLink*` / `docsLink*` /
   `glossaryLink*` / `blogLink*` message keys; do not hard-code hrefs in `HomeArticle`.
 - Do not ship retired Atlas home featured-link message keys (`atlasLinkTitle`,

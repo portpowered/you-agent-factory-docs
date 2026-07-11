@@ -5,38 +5,55 @@
 @import "fumadocs-ui/css/shadcn.css";
 @import "katex/dist/katex.min.css";
 @import "../features/docs/styles/docs-page-footer-chrome.css";
+@import "../features/docs/styles/docs-code-block.css";
 @import "../features/docs/styles/registry-graph-flow-theme.css";
 @import "@xyflow/react/dist/style.css";
 
+/*
+ * Host shadcn semantic tokens → @you-agent-factory/components factory-dark
+ * foundation keys (see src/lib/theme/host-semantic-theme-tokens.ts).
+ * Do not reintroduce legacy teal/coral oklch values here.
+ */
 :root {
+  /*
+   * Shared content-column alignment contract (see
+   * src/lib/layout/content-column-alignment.ts). Matches Fumadocs DocsPage
+   * `#nd-page` horizontal inset so shell surfaces share one left edge.
+   */
+  --site-content-column-inset-mobile: 1rem;
+  --site-content-column-inset-md: 1.5rem;
+  --site-content-column-inset-xl: 2rem;
+  --site-content-column-max-width: 900px;
+  --site-content-column-max-width-full: 1168px;
+
   --radius: 0.5rem;
-  --background: oklch(0.145 0.018 205);
-  --foreground: oklch(0.955 0.018 82);
-  --card: oklch(0.18 0.018 205);
-  --card-foreground: oklch(0.955 0.018 82);
-  --popover: oklch(0.17 0.018 205);
-  --popover-foreground: oklch(0.955 0.018 82);
-  --primary: oklch(0.59 0.07 205);
-  --primary-foreground: oklch(0.98 0.01 82);
-  --secondary: oklch(0.24 0.018 205);
-  --secondary-foreground: oklch(0.9 0.014 82);
-  --muted: oklch(0.24 0.012 205);
-  --muted-foreground: oklch(0.68 0.018 82);
-  --accent: oklch(0.74 0.105 21);
-  --accent-foreground: oklch(0.16 0.02 205);
-  --destructive: oklch(0.56 0.16 24);
-  --destructive-foreground: oklch(0.98 0.01 82);
-  --border: oklch(0.32 0.018 205);
-  --input: oklch(0.28 0.018 205);
-  --ring: oklch(0.59 0.07 205);
-  --sidebar: oklch(0.155 0.018 205);
-  --sidebar-foreground: oklch(0.9 0.014 82);
-  --sidebar-primary: oklch(0.59 0.07 205);
-  --sidebar-primary-foreground: oklch(0.98 0.01 82);
-  --sidebar-accent: oklch(0.24 0.018 205);
-  --sidebar-accent-foreground: oklch(0.955 0.018 82);
-  --sidebar-border: oklch(0.29 0.018 205);
-  --sidebar-ring: oklch(0.59 0.07 205);
+  --background: var(--color-af-foundation-background);
+  --foreground: var(--color-af-foundation-ink);
+  --card: var(--color-af-foundation-surface);
+  --card-foreground: var(--color-af-foundation-ink);
+  --popover: var(--color-af-foundation-background-mid);
+  --popover-foreground: var(--color-af-foundation-ink);
+  --primary: var(--color-af-foundation-accent);
+  --primary-foreground: var(--color-af-foundation-accent-ink);
+  --secondary: var(--color-af-foundation-secondary-accent);
+  --secondary-foreground: var(--color-af-foundation-canvas);
+  --muted: var(--color-af-foundation-background-mid);
+  --muted-foreground: var(--color-af-foundation-secondary-accent-ink);
+  --accent: var(--color-af-foundation-accent-strong);
+  --accent-foreground: var(--color-af-foundation-accent-ink);
+  --destructive: var(--color-af-foundation-danger);
+  --destructive-foreground: var(--color-af-foundation-canvas);
+  --border: rgb(from var(--color-af-foundation-overlay) r g b / 0.18);
+  --input: var(--color-af-foundation-surface);
+  --ring: var(--color-af-foundation-accent);
+  --sidebar: var(--color-af-foundation-background-start);
+  --sidebar-foreground: var(--color-af-foundation-ink);
+  --sidebar-primary: var(--color-af-foundation-accent);
+  --sidebar-primary-foreground: var(--color-af-foundation-accent-ink);
+  --sidebar-accent: var(--color-af-foundation-surface);
+  --sidebar-accent-foreground: var(--color-af-foundation-ink);
+  --sidebar-border: rgb(from var(--color-af-foundation-overlay) r g b / 0.18);
+  --sidebar-ring: var(--color-af-foundation-accent);
 }
 
 @theme inline {

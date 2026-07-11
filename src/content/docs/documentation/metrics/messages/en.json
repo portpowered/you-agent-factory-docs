@@ -13,7 +13,7 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Read session status for the live Factory Session you are watching, then open the local operator dashboard when you want a browser surface for the same live metrics. Use this metrics exposure reference for watching live-run signals from the status API and the dashboard. Open factory-session docs for discover, inspect, and lifecycle control. Open SPC graphs for control-limit reading. Open logs for diagnostic event and log surfaces. Open the API doc for broader OpenAPI contracts. Open bottlenecks or tokens concepts when you need interpretation depth beyond exposure."
+      "body": "Read session status for the live Factory Session you are watching, then open the local operator dashboard when you want a browser surface for the same live metrics. Use this metrics exposure reference for watching live-run signals from the status API and the dashboard. Open factory-session docs for discover, inspect, and lifecycle control. Open SPC graphs for control-limit reading. Open logs for diagnostic event and log surfaces. Open the API doc for broader OpenAPI contracts. Open bottlenecks concept or Petri docs when you need interpretation depth beyond exposure—Petri covers work-token place and transition meaning."
     },
     "statusRead": {
       "title": "Read Session Status",
@@ -59,10 +59,10 @@
     "statusReadTogetherNote": "A factory can be RUNNING while runtimeStatus is IDLE when the host is up but no work is in flight. Read factoryState, runtimeStatus, and categories together when deciding whether to submit more work or wait for completion.",
     "dashboardUrlLabel": "Default local dashboard URL (service started without quiet mode):",
     "dashboardHostNote": "Use the same host and port as the API unless the process that bound the listener used a different server or port setting.",
-    "siblingDiscoveryIntro": "Use factory-session for discover, inspect, and lifecycle control; SPC graphs for control-limit reading; bottlenecks and tokens for interpretation depth. Logs and API doc pages will cover diagnostic event surfaces and broader OpenAPI contracts when those documentation siblings are published.",
+    "siblingDiscoveryIntro": "Use factory-session for discover, inspect, and lifecycle control; SPC graphs for control-limit reading; bottlenecks and Petri for interpretation depth. Logs and API doc pages will cover diagnostic event surfaces and broader OpenAPI contracts when those documentation siblings are published.",
     "factorySessionDocs": "Factory session",
     "spcGraphsConcept": "Statistical process control graphs",
     "bottlenecksConcept": "Bottlenecks",
-    "tokensConcept": "Tokens"
+    "petriDocs": "Petri / Colored Petri Net (CPN)"
   }
 }

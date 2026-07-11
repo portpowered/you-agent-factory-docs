@@ -7,8 +7,23 @@ import { HomeCommandBlock } from "@/components/home/home-command-block";
 import { bulletlessListClassName } from "@/features/docs/components/list-decoration";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
+import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
 import { resolveSiteConfigHomeFeaturedLinks } from "@/lib/site/site-config-resolution";
+
+/**
+ * Home article + Browse consume the shared content-column left edge via the
+ * surrounding DocsPage `#nd-page` inset (`CONTENT_COLUMN_INSET_CLASS`). Do not
+ * nest another horizontal inset here — that would double-pad the column.
+ */
+export const HOME_ARTICLE_CONTENT_COLUMN_SURFACE =
+  "home-article-browse" as const satisfies ContentColumnConsumerSurface;
+
+/**
+ * Article width only. Horizontal inset comes from DocsPage; keep this free of
+ * `px-*` / negative-margin compensation so body text and Browse share one edge.
+ */
+export const HOME_ARTICLE_CLASS = "max-w-3xl";
 
 type HomeArticleProps = {
   messages: UiMessages;
@@ -37,7 +52,10 @@ export function HomeArticle({
   ] as const;
 
   return (
-    <article className="max-w-3xl">
+    <article
+      className={HOME_ARTICLE_CLASS}
+      data-content-column-surface={HOME_ARTICLE_CONTENT_COLUMN_SURFACE}
+    >
       <HomeBrushHeader title={home.title} subtitle={home.subtitle} />
 
       <section

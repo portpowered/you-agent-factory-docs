@@ -79,7 +79,7 @@
     }
   },
   "home": {
-    "title": "you-agent-factory",
+    "title": "You Agent Factory",
     "subtitle": "エージェントファクトリー CLI のドキュメント",
     "intro": "you-agent-factory は、ファクトリーのインストール、名前付きゴールの実行、およびハーネス、ループ、レビュー、プランナー、cron、イベントストリームの運用に関する CLI ドキュメントです。",
     "installSectionTitle": "インストール",

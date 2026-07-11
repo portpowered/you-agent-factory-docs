@@ -1,0 +1,71 @@
+/**
+ * Shared fenced-code layout: inset code viewport + dedicated copy rail.
+ * Untitled blocks use a two-column grid so horizontal scroll stays in the
+ * viewport column and never paints over or under the copy control.
+ *
+ * Copy chrome: keep the affordance visible at rest, hover, and copied
+ * (data-checked); use semantic secondary blue for hover/focus/checked.
+ */
+@layer components {
+  .docs-code-block:has(> [data-docs-code-actions="rail"]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: stretch;
+  }
+
+  .docs-code-block > [data-docs-code-actions="rail"] {
+    grid-column: 2;
+    grid-row: 1;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-block: 0.75rem;
+    padding-inline: 0.25rem 0.5rem;
+    background-color: var(--color-fd-card, var(--card));
+  }
+
+  .docs-code-block
+    > [data-rich-content-scroll="code"].docs-code-block__viewport {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .docs-code-block .docs-code-block__copy-button {
+    opacity: 1;
+    color: var(--muted-foreground);
+    transition:
+      color 100ms,
+      background-color 100ms,
+      box-shadow 100ms;
+  }
+}
+
+/*
+ * Utilities layer so hover/focus/checked stay on secondary blue (never
+ * accent-ink) and the control remains visible through the copied state.
+ */
+@layer utilities {
+  .docs-code-block .docs-code-block__copy-button {
+    opacity: 1 !important;
+  }
+
+  .docs-code-block
+    .docs-code-block__copy-button:is(:hover, :focus-visible, [data-checked]) {
+    opacity: 1 !important;
+    color: var(--secondary) !important;
+    background-color: color-mix(
+      in oklab,
+      var(--secondary) 22%,
+      transparent
+    ) !important;
+  }
+
+  .docs-code-block .docs-code-block__copy-button:focus-visible {
+    outline: none !important;
+    box-shadow:
+      0 0 0 2px var(--card),
+      0 0 0 4px var(--secondary) !important;
+  }
+}

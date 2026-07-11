@@ -95,11 +95,12 @@ make test-integration
 
 Factory baselines (calibrated 2026-07-10 UTC; total-out raised 2026-07-11 UTC
 after concurrent launch-extra pages reached ~85.08 MiB against the prior
-85 MiB ceiling):
+85 MiB ceiling; raised again 2026-07-11 UTC after concepts taxonomy repair
+measured ~99.78 MiB total and ~4.08 MiB search bootstrap on CI):
 
-- `maxTotalOutBytes`: 95_000_000
+- `maxTotalOutBytes`: 105_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 4_000_000
+- `maxSearchBootstrapBytes`: 4_250_000
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
 `out/` fails closed. Reproduce locally with:

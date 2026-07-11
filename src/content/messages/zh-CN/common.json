@@ -79,7 +79,7 @@
     }
   },
   "home": {
-    "title": "you-agent-factory",
+    "title": "You Agent Factory",
     "subtitle": "代理工厂 CLI 文档",
     "intro": "you-agent-factory 是用于安装工厂、运行命名目标，以及操作 harness、循环、审查、规划器、cron 与事件流的 CLI 文档。",
     "installSectionTitle": "安装",

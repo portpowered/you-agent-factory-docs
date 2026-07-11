@@ -101,8 +101,21 @@ Before the first authored page under a rewrite-era CLI collection can pass
 When a guide needs copyable shell commands (install, first-run, submit):
 
 1. Put fenced code blocks in `page.mdx` (not in message JSON). They render
-   through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents` and
-   stay always-visible with a copy control.
+   through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents`.
+   `DocsCodeBlock` keeps inset padding on the scroll viewport and a dedicated
+   copy rail (`data-docs-code-actions="rail"`) so long-line scroll never
+   overlaps the control (see `docs-code-block.css`). Host `DocsCodeCopyButton`
+   owns clipboard + checkmark + accessible copied status (`Copied Text` label
+   + `aria-live` status) with secondary-blue hover/focus/checked chrome
+   (`docs-code-copy-chrome.ts`); it resets after `DOCS_CODE_COPY_RESET_MS`.
+   Regression lock: contrast pairings (`color-contrast.ts` /
+   `HOST_SEMANTIC_CONTRAST_PAIRINGS`), rail non-overlap
+   (`docs-code-block-layout.ts`), and
+   `src/tests/a11y/docs-code-block.a11y.test.tsx`.
+   R00 served-page gate: `theme-code-copy-r00-gate.ts` +
+   `theme-code-copy-r00-page.test.ts` (opt-in
+   `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`) proves factory-dark chrome and the
+   full copy interaction on `/docs/guides/getting-started` at desktop + narrow.
 2. Keep OS labels and short prose in colocated messages. `pageSectionSchema`
    only allows `title` / `body` per section — extra keys under
    `sections.<id>` are stripped by Zod and then fail
@@ -519,6 +532,50 @@ those paths only accept collection section refs.
   `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (Basics → Additional
   reference). FAQ is omitted from that map because it is a top-level explorer
   page outside the Program documentation folder.
+- `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
+  units). When rewriting or consuming that page, retarget program-doc related
+  links and `relatedIds` that treated Tokens as the factory/work-token glossary
+  (for example Petri, Metrics) to program documentation surfaces such as
+  `/docs/documentation/petri`, configuration, workstations, or submitting-work.
+  Keep Petri/CPN teaching body intact; change only href/label/message keys,
+  registry `relatedIds`, and matching focused tests.
+- `/docs/concepts/skills` teaches agent/harness skills as reusable instruction
+  packages (Cursor Agent Skills / `SKILL.md` practice), not tools, not MCP, and
+  not this repo's frontend `docs/design-skills.md` authoring guide. Factory map
+  `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG.skills` already places it under
+  Harnesses — do not add a redundant editorial `sidebarGrouping.concepts`.
+  Once sibling concept pages ship, add them to `relatedIds` (Skills includes
+  `concept.mcp` and `concept.tool-calling` when those pages exist); use
+  `LocalizedLinkList` planned hrefs only while a sibling is still unpublished.
+- `/docs/concepts/mcp` teaches Model Context Protocol as the host↔server
+  protocol that exposes named tools (including Factory Session tools via
+  `you mcp serve`). It is isolation-first and distinct from
+  `/docs/documentation/mcp` (install/host JSON / serve-mode reference). Factory
+  map already places `mcp` under Harnesses — omit redundant editorial
+  `sidebarGrouping.concepts`. Related links must include the MCP
+  program-documentation page; include `concept.tool-calling` in `relatedIds`
+  once that page ships.
+- `/docs/concepts/tool-calling` teaches tool calling as the model-inference
+  behavior of selecting and invoking named tools during an agent/model turn,
+  grounded in `agentTools.policy` on `AGENT_WORKER` (`DISABLED` default,
+  `READ_ONLY` / `ENABLED` for bounded filesystem tools). Factory map already
+  places `tool-calling` under Model inference — omit redundant editorial
+  `sidebarGrouping.concepts`. Distinguish from Tool (named capability), MCP
+  (host↔server protocol), and Thinking (deliberative reasoning). Link Workers
+  documentation for the full field contract; do not absorb the workers
+  reference on the concept page.
+- `/docs/concepts/tool` retains a distinct scope as the named callable
+  capability (name/arguments/result contract). Do not re-teach the
+  select-and-invoke / `agentTools.policy` story on Tool—that belongs on Tool
+  calling. Cross-link Tool ↔ Tool calling, MCP, Skills, and Harness so readers
+  get one canonical explanation path per idea.
+- Multi-page concept repair lanes (for example Tokens rewrite + Skills/MCP/Tool
+  calling) should colocate `<slug>-discoverability.test.tsx` under each owned
+  bundle to prove concepts-index listing, `docsSearchApi` / search-document
+  aliases, `listPublicSitemapRoutes()`, and `buildDocsPageMetadata` without
+  editing shared search helpers. Keep locale stubs key-shape-aligned with `en`
+  (`ja` / `zh-CN` / `vi`); section-index and shipped-localized-docs expectations
+  already cover non-en browse listing when stubs ship.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.

@@ -1,0 +1,25 @@
+{
+  "id": "concept.skills",
+  "slug": "skills",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["agent skills", "Cursor Agent Skills", "SKILL.md"],
+  "tags": [],
+  "relatedIds": [
+    "concept.harness",
+    "concept.tool",
+    "concept.mcp",
+    "concept.tool-calling",
+    "documentation.mcp",
+    "documentation.harness-support",
+    "guide.cursor-dynamic-workflows"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T07:00:00.000Z",
+  "updatedAt": "2026-07-11T07:00:00.000Z",
+  "conceptType": "systems",
+  "prerequisiteIds": [],
+  "explainsIds": []
+}

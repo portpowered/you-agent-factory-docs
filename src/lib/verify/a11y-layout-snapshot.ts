@@ -32,6 +32,10 @@ export type CriticalLayoutSnapshot = {
   h1Texts: string[];
   primaryNavHrefs: string[];
   primaryNavLinkCount: number;
+  /** Reader-visible header brand text from `a[data-docs-header-brand]`. */
+  brandText: string | null;
+  /** Values of `[data-content-column-surface]` markers in document order. */
+  contentColumnSurfaces: string[];
   pageOverflowPx: number;
   hasUnintendedPageOverflow: boolean;
   /** Rounded integer boxes; omitted entries stay empty when geometry is zero. */
@@ -47,6 +51,10 @@ export type CriticalLayoutContractOptions = {
   expectedH1?: string | RegExp;
   /** Minimum primary-nav link count (default 1). */
   minPrimaryNavLinks?: number;
+  /** Optional exact or regex match against header brand text. */
+  expectedBrand?: string | RegExp;
+  /** Optional exact content-column surface marker that must be present. */
+  expectedContentColumnSurface?: string;
 };
 
 function normalizeText(value: string): string {
@@ -121,6 +129,17 @@ export function captureCriticalLayoutSnapshot(
       )
     : [];
 
+  const brandEl =
+    root.querySelector("a[data-docs-header-brand]") ??
+    scope.querySelector("a[data-docs-header-brand]");
+  const brandText = brandEl
+    ? normalizeText(brandEl.textContent ?? "") || null
+    : null;
+
+  const contentColumnSurfaces = Array.from(
+    root.querySelectorAll("[data-content-column-surface]"),
+  ).map((el) => el.getAttribute("data-content-column-surface") ?? "");
+
   const overflowDoc = root instanceof Document ? root : (scope as Document);
   const overflow = measurePageLevelOverflow(
     {
@@ -155,6 +174,8 @@ export function captureCriticalLayoutSnapshot(
     h1Texts,
     primaryNavHrefs,
     primaryNavLinkCount: primaryNavHrefs.length,
+    brandText,
+    contentColumnSurfaces,
     pageOverflowPx: overflow.overflowPx,
     hasUnintendedPageOverflow: overflow.hasUnintendedOverflow,
     chromeBoxes,
@@ -172,6 +193,7 @@ export function serializeLayoutSnapshot(
     ...snapshot,
     h1Texts: [...snapshot.h1Texts],
     primaryNavHrefs: [...snapshot.primaryNavHrefs],
+    contentColumnSurfaces: [...snapshot.contentColumnSurfaces],
     chromeBoxes: [...snapshot.chromeBoxes].sort((a, b) =>
       a.selector.localeCompare(b.selector),
     ),
@@ -227,6 +249,19 @@ export function diffLayoutSnapshots(
   ) {
     diffs.push(
       `primaryNavHrefs: expected ${JSON.stringify(expected.primaryNavHrefs)}, got ${JSON.stringify(actual.primaryNavHrefs)}`,
+    );
+  }
+  if (expected.brandText !== actual.brandText) {
+    diffs.push(
+      `brandText: expected ${JSON.stringify(expected.brandText)}, got ${JSON.stringify(actual.brandText)}`,
+    );
+  }
+  if (
+    JSON.stringify(expected.contentColumnSurfaces) !==
+    JSON.stringify(actual.contentColumnSurfaces)
+  ) {
+    diffs.push(
+      `contentColumnSurfaces: expected ${JSON.stringify(expected.contentColumnSurfaces)}, got ${JSON.stringify(actual.contentColumnSurfaces)}`,
     );
   }
   // Chrome boxes are optional geometry — only diff when both sides recorded them.
@@ -300,6 +335,30 @@ export function assertCriticalLayoutContract(
       `Layout contract: expected ≥${minPrimaryNavLinks} primary nav links; found ${snapshot.primaryNavLinkCount}`,
     );
   }
+  if (options.expectedBrand) {
+    const expectedBrand = options.expectedBrand;
+    const brand = snapshot.brandText ?? "";
+    const matched =
+      typeof expectedBrand === "string"
+        ? brand === expectedBrand
+        : expectedBrand.test(brand);
+    if (!matched) {
+      throw new Error(
+        `Layout contract: expected brand matching ${String(expectedBrand)}; found: ${snapshot.brandText ?? "(none)"}`,
+      );
+    }
+  }
+  if (options.expectedContentColumnSurface) {
+    if (
+      !snapshot.contentColumnSurfaces.includes(
+        options.expectedContentColumnSurface,
+      )
+    ) {
+      throw new Error(
+        `Layout contract: expected content-column surface "${options.expectedContentColumnSurface}"; found: ${snapshot.contentColumnSurfaces.join(", ") || "(none)"}`,
+      );
+    }
+  }
   if (requireNoPageOverflow && snapshot.hasUnintendedPageOverflow) {
     throw new Error(
       `Layout contract: unintended page overflow of ${snapshot.pageOverflowPx}px`,
@@ -334,6 +393,14 @@ export function evaluateCriticalLayoutSnapshotInBrowser(
       )
     : [];
 
+  const brandEl = document.querySelector("a[data-docs-header-brand]");
+  const brandText = brandEl
+    ? normalize(brandEl.textContent ?? "") || null
+    : null;
+  const contentColumnSurfaces = Array.from(
+    document.querySelectorAll("[data-content-column-surface]"),
+  ).map((el) => el.getAttribute("data-content-column-surface") ?? "");
+
   const root = document.documentElement;
   const body = document.body;
   const clientWidth = Math.max(root.clientWidth, body?.clientWidth ?? 0);
@@ -367,8 +434,58 @@ export function evaluateCriticalLayoutSnapshotInBrowser(
     h1Texts,
     primaryNavHrefs,
     primaryNavLinkCount: primaryNavHrefs.length,
+    brandText,
+    contentColumnSurfaces,
     pageOverflowPx,
     hasUnintendedPageOverflow,
     chromeBoxes,
+  };
+}
+
+export type ContentColumnLeftEdgeProbe = {
+  headerNavLeft: number | null;
+  contentColumnLeft: number | null;
+  deltaPx: number | null;
+  aligned: boolean;
+};
+
+/**
+ * Self-contained Playwright helper: compare header primary-nav column left
+ * edge to the DocsPage `#nd-page` content column (shared inset). Surface
+ * markers are asserted separately via the layout snapshot; geometry uses
+ * `#nd-page` so inner article markers (home) do not double-count padding.
+ */
+export function evaluateContentColumnLeftEdgeAlignmentInBrowser(args: {
+  tolerancePx: number;
+}): ContentColumnLeftEdgeProbe {
+  const navColumn = document.querySelector(
+    'nav[aria-label="Primary"] > div',
+  ) as HTMLElement | null;
+  const contentColumn = document.querySelector(
+    "#nd-page",
+  ) as HTMLElement | null;
+
+  const navRect = navColumn?.getBoundingClientRect();
+  const contentRect = contentColumn?.getBoundingClientRect();
+  const headerNavLeft =
+    navRect && navRect.width > 0 ? Math.round(navRect.left) : null;
+  const contentColumnLeft =
+    contentRect && contentRect.width > 0 ? Math.round(contentRect.left) : null;
+
+  if (headerNavLeft === null || contentColumnLeft === null) {
+    return {
+      headerNavLeft,
+      contentColumnLeft,
+      deltaPx: null,
+      aligned: false,
+    };
+  }
+
+  const deltaPx = Math.abs(headerNavLeft - contentColumnLeft);
+  return {
+    headerNavLeft,
+    contentColumnLeft,
+    deltaPx,
+    aligned: deltaPx <= args.tolerancePx,
   };
 }

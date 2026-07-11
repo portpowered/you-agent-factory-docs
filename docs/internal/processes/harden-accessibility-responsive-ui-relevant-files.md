@@ -77,6 +77,43 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * `INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS` includes
   `[data-rich-content-scroll="code"]` (Fumadocs `DocsCodeBlock` viewport) in
   addition to `[data-harness-support-matrix]`, `pre`, and `.overflow-x-auto`.
+* Untitled fenced blocks use `DocsCodeBlock` with
+  `data-docs-code-actions="rail"` beside the viewport (not `absolute top-3
+  right-2`). Layout CSS is `src/features/docs/styles/docs-code-block.css`
+  (imported from `globals.css`). Horizontal scroll stays in the viewport
+  column so it never paints over the copy control; inset is
+  `padding-inline` on the viewport (`DOCS_CODE_BLOCK_INSET_INLINE`).
+* Copy controls use host `DocsCodeCopyButton` (not stock Fumadocs CopyButton),
+  marked `data-docs-code-copy="control"` / `.docs-code-block__copy-button`
+  (see `docs-code-copy-chrome.ts`). Clipboard write excludes `.nd-copy-ignore`.
+  Successful copy sets `data-checked`, swaps to a checkmark icon, updates
+  `aria-label` to `Copied Text`, and announces via an `aria-live="polite"`
+  status span; state resets after `DOCS_CODE_COPY_RESET_MS` (1500). Host CSS
+  keeps `opacity: 1` at rest/hover/checked and uses semantic `--secondary`
+  (cool blue) for hover/focus/checked — never accent-ink. Focus-visible uses
+  a secondary ring. Native `<button>` covers pointer, keyboard (Enter/Space),
+  and touch.
+* Theme/code-copy regression lock (repair-theme-code-blocks-005):
+  - Contrast: `src/lib/theme/color-contrast.ts` +
+    `HOST_SEMANTIC_CONTRAST_PAIRINGS` in `host-semantic-theme-tokens.ts`
+    (behavioral WCAG ratios on resolved factory-dark hex, not CSS inventories).
+  - Overflow non-overlap: `src/lib/verify/docs-code-block-layout.ts` asserts
+    the copy control lives in the rail sibling, not inside the scroll viewport.
+  - A11y: `src/tests/a11y/docs-code-block.a11y.test.tsx` — keyboard reach,
+    default/copied accessible names, axe on a representative fixture.
+  - Interaction: `DocsCodeCopyButton.test.tsx` + `docs-code-copy-chrome.test.ts`
+    cover persistent visibility, secondary hover/focus, checkmark, live status,
+    and reset.
+* R00 theme/code-copy served-page gate (repair-theme-code-blocks-006):
+  - Helpers: `src/lib/verify/theme-code-copy-r00-gate.ts` (factory-dark RGB
+    proofs, chrome/block probes, Playwright evaluators).
+  - Always-on unit: `theme-code-copy-r00-gate.test.ts`.
+  - Opt-in served page: `theme-code-copy-r00-page.test.ts` on
+    `/docs/guides/getting-started` at laptop + mobile — black/yellow chrome,
+    inset/rail, persistent secondary-blue hover/focus, checkmark + accessible
+    copied text + reset, scroll non-overlap. Listed in
+    `PRODUCTION_INTEGRATION_TEST_PATHS`. Use `localhost` (not `127.0.0.1`) for
+    any ad-hoc `next dev` Playwright probes.
 * `HarnessSupportMatrix` puts `data-harness-support-matrix` /
   `data-testid="harness-support-matrix"` on DataTable `containerProps` (the
   real `overflow-x-auto` scroller). Do not wrap DataTable in a second
@@ -159,18 +196,30 @@ surfaces (home, browse, search, docs/harness-support, blog).
 ## Layout snapshot / lightweight visual equivalent (story 008)
 
 * Prefer the lightweight layout-snapshot contract over full-page screenshot
-  baselines: landmarks, h1 texts, primary-nav hrefs, page overflow, and
-  rounded chrome boxes (when geometry is non-zero).
+  baselines: landmarks, h1 texts, primary-nav hrefs, header brand text,
+  content-column surface markers, page overflow, and rounded chrome boxes
+  (when geometry is non-zero).
 * `src/lib/verify/a11y-layout-snapshot.ts` — `captureCriticalLayoutSnapshot`,
   `serializeLayoutSnapshot` / `hashLayoutSnapshot`, `diffLayoutSnapshots`,
-  `expectLayoutSnapshotMatches`, `assertCriticalLayoutContract`, and
-  `evaluateCriticalLayoutSnapshotInBrowser` (self-contained for Playwright).
+  `expectLayoutSnapshotMatches`, `assertCriticalLayoutContract` (optional
+  `expectedBrand` / `expectedContentColumnSurface`),
+  `evaluateCriticalLayoutSnapshotInBrowser`, and
+  `evaluateContentColumnLeftEdgeAlignmentInBrowser` (self-contained for
+  Playwright; compare header primary-nav column left to `#nd-page`).
 * `src/tests/a11y/layout-snapshot.a11y.test.tsx` — always-on: home/browse
-  baselines pass the contract; deliberate main/h1 regressions change the hash
-  and fail `expectLayoutSnapshotMatches`.
+  baselines pass the contract (including display brand); deliberate main/h1
+  regressions change the hash and fail `expectLayoutSnapshotMatches`.
 * `src/lib/verify/a11y-layout-snapshot-page.test.ts` — opt-in served probe:
   all critical routes at laptop viewport pass the contract with non-empty
   chrome boxes under Chromium.
+* Brand + content-column alignment matrix (repair-layout-brand-alignment):
+  `content-column-brand-alignment-coverage.ts`, always-on
+  `content-column-brand-alignment.a11y.test.tsx`, always-on Playwright
+  `a11y-content-column-left-edge-geometry.test.ts` (fixture proves `md:gap-0`
+  vs historical ~32px gap drift), and served
+  `a11y-content-column-brand-alignment-page.test.ts` (also in
+  `PRODUCTION_INTEGRATION_TEST_PATHS`; four viewports, brand, surfaces,
+  overflow, md+ left-edge geometry).
 * Chrome box geometry is optional under happy-dom (often zero rects); structural
   fields + hash diffs are the always-on regression signal.
 
