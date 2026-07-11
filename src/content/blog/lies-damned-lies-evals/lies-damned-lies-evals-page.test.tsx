@@ -1,6 +1,6 @@
 /**
- * Post-owned shell proof for blog/lies-damned-lies-evals (story 001).
- * Covers published title, context, takeaway, and prepared metrics relatedDocId.
+ * Post-owned shell and narrative proof for blog/lies-damned-lies-evals.
+ * Story 001: published shell. Story 002: operational-evidence vs leaderboard narrative.
  */
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -49,5 +49,26 @@ describe("lies-damned-lies-evals blog post shell (001)", () => {
     );
     expect(html).not.toContain("Give the compact version first");
     expect(html).not.toContain("Created from the blog-post MDX template");
+  });
+});
+
+describe("lies-damned-lies-evals operational-evidence narrative (002)", () => {
+  test("states core claim and contrasts three factory-ops signals with leaderboards", async () => {
+    const page = await renderBlogPostPage(BLOG_SLUG);
+    const html = renderToStaticMarkup(page);
+
+    expect(html).toContain(
+      "Useful evaluation of agent-factory workflows comes from operational evidence",
+    );
+    expect(html).toContain("Completions and failures over time");
+    expect(html).toContain("Queue or harness saturation");
+    expect(html).toContain("Token or context pressure");
+    expect(html).toContain("A leaderboard score does not tell you that");
+    expect(html).toContain("A leaderboard score does not name that stage");
+    expect(html).toContain("A leaderboard score does not show that either");
+    expect(html).toContain("you-agent-factory");
+    expect(html).not.toContain("Model Atlas");
+    expect(html).not.toContain("on this page");
+    expect(html).not.toContain("Give the compact version first");
   });
 });

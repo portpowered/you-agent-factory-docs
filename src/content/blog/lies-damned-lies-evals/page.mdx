@@ -2,7 +2,7 @@
 messageNamespace: "local"
 assetNamespace: "local"
 publishedAt: "2026-07-10"
-updatedAt: "2026-07-10"
+updatedAt: "2026-07-11"
 authors:
   - site-team
 tags: []
@@ -27,9 +27,29 @@ import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
 
 Model benchmark leaderboards measure how a model performs on fixed tasks. They do not measure whether a you-agent-factory run is finishing work, recovering from failures, or stalling on queues, harness calls, or token pressure. Treating a leaderboard rank as a factory health check answers the wrong question.
 
-## What operators should watch instead
+Useful evaluation of agent-factory workflows comes from operational evidence: completions and failures over time, queue or harness saturation, token or context pressure, and live session metrics. Those signals tell an operator whether the factory setup is working. A leaderboard score does not.
 
-Useful evaluation of agent-factory workflows comes from operational evidence: completions and failures over time, queue or harness saturation, token or context pressure, and live session metrics. Those signals tell an operator whether the factory setup is working.
+## Completions and failures over time
+
+Watch how many work items reach a terminal state and how many fail across successive status ticks. Rising completions with stable failures mean the pipeline is moving. Flat completions with rising failures mean the run is burning cycles without finishing work.
+
+A leaderboard score does not tell you that. The same model can sit at the top of a fixed-task ranking while your Factory Session stalls, retries the same failing path, or never drains the backlog. Completions and failures over time answer whether *this* workflow is producing finished work.
+
+## Queue or harness saturation
+
+When the task queue grows while seats sit free, claim latency or backlog depth is the cap. When every seat is busy and finished work per interval stays flat, concurrency is already maxed. When workers look busy but each step waits on the harness, shell, browser, or an external tool, the scarce stage is the call path—not the model.
+
+A leaderboard score does not name that stage. Rankings compare models on fixed prompts. They do not show whether your you-agent-factory run is blocked on queue depth, review seats, or slow harness calls. Operators need those saturation signals before they change models or add agents.
+
+## Token or context pressure
+
+Prompts, transcripts, or context windows can grow until each turn costs more than the run can afford. Workers sit ready, tools respond, and the queue still has items, but turns stall on compaction or budget. Raising concurrency without shrinking context often makes the pressure worse.
+
+A leaderboard score does not show that either. Benchmarks usually run short, fixed contexts. They do not report whether your long-running session is choking on work-token lifecycle pressure or context growth. Live session metrics—engine activity, work-token buckets, and optional resource bounds—are the evidence that matches the factory you are actually running.
+
+## What to do instead
+
+Judge you-agent-factory health from the live Factory Session: completions and failures over time, queue or harness saturation, token or context pressure, and the session metrics surface. Use model benchmarks when you are choosing or comparing models. Do not use them as a substitute for factory-ops evidence.
 
 Stable definitions for factory metrics live on the
 [metrics documentation](/docs/documentation/metrics) page. Control-chart style
