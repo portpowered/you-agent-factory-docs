@@ -21,6 +21,8 @@ cross-lane drift, or proving the close gate.
 | Story 002 desktop/mobile explorer parity | `src/tests/layout/desktop-mobile-explorer-parity.test.tsx` |
 | Story 003 brand / alignment / theme / code-copy | `src/lib/verify/brand-theme-code-copy-r02-convergence.test.tsx` |
 | Story 004 Concepts + Program docs discovery / links | `src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts` |
+| Story 005 focused inventory/search/sitemap/link lock | `src/lib/verify/focused-repair-suites-r02-convergence.test.ts` |
+| Link inventory (factory URLs, not Atlas) | `src/lib/build/validate-links.test.ts` |
 
 ## Tip ancestry (story 001 evidence)
 
@@ -65,25 +67,60 @@ Every section checked against tip runtime / registry / explorer evidence.
 
 ```bash
 bun run prepare:content-runtime && bunx fumadocs-mdx
-bun test src/lib/verify/plan-issues-r02-reconciliation.test.ts
-bun test src/lib/navigation/explorer-ia-contract.test.ts \
+bun test \
+  src/lib/navigation/explorer-ia-contract.test.ts \
   src/tests/layout/desktop-mobile-explorer-parity.test.tsx \
+  src/lib/i18n/route-locale.test.ts \
+  src/lib/i18n/locale-routing.test.ts \
+  src/lib/content/factory-locale-base-path.test.tsx \
   src/lib/theme/host-semantic-theme-tokens.test.ts \
   src/features/docs/styles/docs-code-copy-chrome.test.ts \
   src/lib/verify/brand-theme-code-copy-r02-convergence.test.tsx \
-  src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts \
+  src/lib/verify/theme-code-copy-r00-gate.test.ts \
+  src/features/docs/components/DocsCodeCopyButton.test.tsx \
+  src/lib/verify/a11y-responsive-contract.test.ts \
+  src/tests/a11y/responsive-overflow.a11y.test.tsx \
   src/tests/a11y/content-column-brand-alignment.a11y.test.tsx \
-  src/features/docs/components/DocsCodeCopyButton.test.tsx
+  src/tests/a11y/docs-code-block.a11y.test.tsx \
+  src/tests/a11y/docs-sidebar-navigation.a11y.test.tsx \
+  src/tests/a11y/primary-navigation.a11y.test.tsx \
+  src/lib/content/factory-only-public-inventory.test.tsx \
+  src/lib/docs/docs-collection-definition-inventory-verification.test.ts \
+  src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts \
+  src/lib/content/factory-search-navigation-convergence.test.tsx \
+  src/lib/content/factory-search-categories.test.tsx \
+  src/lib/content/factory-search-alias-body-tag.test.ts \
+  src/lib/content/factory-search-deleted-records.test.ts \
+  src/lib/seo/public-sitemap-routes.test.ts \
+  src/lib/seo/export-sitemap.test.ts \
+  src/lib/content/factory-prev-next-related.test.tsx \
+  src/lib/build/validate-links.test.ts \
+  src/lib/verify/plan-issues-r02-reconciliation.test.ts \
+  src/lib/verify/focused-repair-suites-r02-convergence.test.ts
 make typecheck
 ```
+
+Do **not** include Atlas-era `src/tests/search/orama-index.test.ts` in this focused set;
+factory search proofs live under `src/lib/content/factory-search-*` and story 004/005
+R02 suites (website-functionality exclusions route Atlas search under reader-facing).
 
 ## Later R02 stories
 
 - **002** — DONE: Explorer IA / locale parity / eight-page membership (IA contract + parity suites)
 - **003** — DONE: Brand, alignment, theme, code-copy (R02 convergence suite + browser verify on port 3533)
 - **004** — DONE: Concepts + Program documentation discovery / links (R02 convergence suite + browser verify)
-- **005–007** — Focused suites, full `make` gates, Pages-prefixed guard
+- **005** — DONE: Focused nav/locale/copy/theme/responsive/a11y/inventory/search/sitemap/link suites green; Atlas link-inventory assertions repaired
+- **006–007** — Full `make` gates, Pages-prefixed guard
 - **008** — Browser/visual review across required shells
+
+## Story 005 focused suites contract
+
+| Surface | Expected | Proof |
+| --- | --- | --- |
+| Navigation / locale | Explorer IA + desktop/mobile parity + locale routing | `explorer-ia-contract`, `desktop-mobile-explorer-parity`, `route-locale`, `locale-routing`, `factory-locale-base-path` |
+| Code-copy / theme / responsive / a11y | R00 contracts hold on combined tip | brand-theme-code-copy R02 + theme-code-copy-r00-gate + DocsCodeCopyButton + a11y/responsive suites |
+| Inventory / search / sitemap / links | Concepts + eight Program docs present; Atlas glossary/modules absent | `focused-repair-suites-r02-convergence.test.ts` + factory-search-* + sitemap + `validate-links.test.ts` |
+| Combined-result repair | Link inventory no longer asserts retired Atlas module/glossary URLs | `validate-links.test.ts` factory URL membership |
 
 Do not author net-new product pages here. Repair only cross-lane integration,
 registry drift, ordering/parity, broken links, or combined-result test failures.
