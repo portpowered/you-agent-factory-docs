@@ -524,6 +524,12 @@ those paths only accept collection section refs.
   `/docs/documentation/petri`, configuration, workstations, or submitting-work.
   Keep Petri/CPN teaching body intact; change only href/label/message keys,
   registry `relatedIds`, and matching focused tests.
+- `/docs/concepts/skills` teaches agent/harness skills as reusable instruction
+  packages (Cursor Agent Skills / `SKILL.md` practice), not tools, not MCP, and
+  not this repo's frontend `docs/design-skills.md` authoring guide. Assign
+  `sidebarGrouping.concepts: harnesses`. Keep unpublished sibling concept ids
+  (`concept.mcp`, `concept.tool-calling`) out of `relatedIds` until those pages
+  ship; use `LocalizedLinkList` planned hrefs for forward discovery.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.
