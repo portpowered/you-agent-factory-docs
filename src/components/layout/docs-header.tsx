@@ -17,13 +17,38 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
+import {
+  CONTENT_COLUMN_CLASS,
+  CONTENT_COLUMN_INSET_FROM_MD_CLASS,
+} from "@/lib/layout/content-column-alignment";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
 import { resolveSiteConfigLayoutNav } from "@/lib/site/site-config-layout-nav";
 import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
+import { cn } from "@/lib/utils";
 
 /** Brand link chrome in the docs header (sidebar column on desktop). */
 export const DOCS_HEADER_BRAND_LINK_CLASS =
   "shrink-0 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:col-start-2 md:col-end-3 md:row-start-1 md:flex md:items-center md:px-4";
+
+/**
+ * Desktop primary-nav content column: shared left-edge contract + nav flex.
+ * Visible only at `md+` (parent nav is `hidden md:block`).
+ */
+export const DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS = cn(
+  CONTENT_COLUMN_CLASS,
+  "flex flex-wrap items-center gap-x-4 gap-y-2 text-sm",
+);
+
+/**
+ * Header actions row: full-width content column at `md+`.
+ * Mobile inset comes from the outer header shell (`px-4 md:px-0`); use the
+ * from-md shared inset so nested chrome does not double-pad below `md`.
+ * `md:max-w-[1168px]` matches `CONTENT_COLUMN_MAX_WIDTH.full` (static for Tailwind).
+ */
+export const DOCS_HEADER_ACTIONS_COLUMN_CLASS = cn(
+  "pointer-events-none col-start-2 row-start-1 flex min-w-0 w-full items-center gap-2 md:col-start-3 md:col-end-5 md:mx-auto md:max-w-[1168px] md:justify-end",
+  CONTENT_COLUMN_INSET_FROM_MD_CLASS,
+);
 
 type DocsHeaderProps = {
   messages: UiMessages;
@@ -77,7 +102,7 @@ export function DocsHeader({
             className="hidden md:col-start-3 md:col-end-4 md:row-start-1 md:block"
             aria-label="Primary"
           >
-            <div className="mx-auto flex w-full max-w-[900px] flex-wrap items-center gap-x-4 gap-y-2 px-6 text-sm xl:px-8">
+            <div className={DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS}>
               {primaryNavItems.map((item) => (
                 <Link
                   key={item.href}
@@ -90,7 +115,7 @@ export function DocsHeader({
             </div>
           </nav>
         ) : null}
-        <div className="pointer-events-none col-start-2 row-start-1 flex min-w-0 w-full items-center gap-2 md:col-start-3 md:col-end-5 md:mx-auto md:max-w-[1168px] md:justify-end md:px-6 xl:px-8">
+        <div className={DOCS_HEADER_ACTIONS_COLUMN_CLASS}>
           <div className="pointer-events-auto min-w-0 flex-1 md:flex-none">
             <SearchTrigger
               messages={messages}

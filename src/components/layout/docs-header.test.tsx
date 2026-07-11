@@ -12,7 +12,9 @@ import { RootProvider } from "fumadocs-ui/provider/next";
 import type { ComponentType, ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
+  DOCS_HEADER_ACTIONS_COLUMN_CLASS,
   DOCS_HEADER_BRAND_LINK_CLASS,
+  DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS,
   DocsHeader,
 } from "@/components/layout/docs-header";
 import {
@@ -23,6 +25,12 @@ import {
   PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
 } from "@/components/layout/primary-nav";
 import { loadUiMessages } from "@/lib/content/ui-messages";
+import {
+  CONTENT_COLUMN_CLASS,
+  CONTENT_COLUMN_INSET_CLASS,
+  CONTENT_COLUMN_INSET_FROM_MD_CLASS,
+  usesNegativeMarginCompensation,
+} from "@/lib/layout/content-column-alignment";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
 import { resolveSiteConfigLayoutNav } from "@/lib/site/site-config-layout-nav";
 import {
@@ -388,6 +396,40 @@ describe("DocsHeader", () => {
     expect(html).toContain(
       "md:col-start-3 md:col-end-4 md:row-start-1 md:block",
     );
+  });
+
+  test("desktop primary nav and actions use the shared content-column left edge", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader messages={messages} pageTree={source.pageTree} />
+      </RootProvider>,
+    );
+
+    expect(DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS).toContain(
+      CONTENT_COLUMN_CLASS,
+    );
+    expect(DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS).toContain(
+      CONTENT_COLUMN_INSET_CLASS,
+    );
+    expect(DOCS_HEADER_ACTIONS_COLUMN_CLASS).toContain(
+      CONTENT_COLUMN_INSET_FROM_MD_CLASS,
+    );
+    expect(DOCS_HEADER_ACTIONS_COLUMN_CLASS).toContain("md:max-w-[1168px]");
+    expect(
+      usesNegativeMarginCompensation(DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS),
+    ).toBe(false);
+    expect(
+      usesNegativeMarginCompensation(DOCS_HEADER_ACTIONS_COLUMN_CLASS),
+    ).toBe(false);
+
+    expect(html).toContain(DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS);
+    expect(html).toContain(DOCS_HEADER_ACTIONS_COLUMN_CLASS);
+    // Mobile shell keeps a single px-4 inset; no negative-margin compensation.
+    expect(html).toContain("px-4 py-3");
+    expect(html).toContain("md:px-0");
+    expect(html).not.toMatch(/(?:^|[\s"'])-m[trblxy]?-/);
   });
 
   test("desktop primary nav exposes CLI destinations without Topology or Timeline", async () => {

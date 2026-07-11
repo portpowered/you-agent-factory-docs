@@ -40,6 +40,12 @@ export const CONTENT_COLUMN_MAX_WIDTH = {
  */
 export const CONTENT_COLUMN_INSET_CLASS = "px-4 md:px-6 xl:px-8";
 
+/**
+ * md+ portion of the shared inset, for nested chrome whose parent already
+ * applies the mobile `px-4` shell inset (avoids double padding below `md`).
+ */
+export const CONTENT_COLUMN_INSET_FROM_MD_CLASS = "md:px-6 xl:px-8";
+
 /** Centered standard content column (max-width + shared inset). */
 export const CONTENT_COLUMN_CLASS = `mx-auto w-full max-w-[900px] ${CONTENT_COLUMN_INSET_CLASS}`;
 

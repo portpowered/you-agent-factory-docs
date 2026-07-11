@@ -65,16 +65,18 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/layout/content-column-alignment.ts`
   Single shared left-edge / horizontal-inset contract for shell content
   columns. Tokens and utility classes (`CONTENT_COLUMN_INSET_CLASS`,
-  `CONTENT_COLUMN_CLASS`, `CONTENT_COLUMN_FULL_CLASS`) match Fumadocs
-  DocsPage `#nd-page` padding (`px-4 md:px-6 xl:px-8`) and max-widths
-  (`900px` / `1168px`). Do not fake alignment with negative margins —
-  apply the shared inset directly. Intended consumers:
+  `CONTENT_COLUMN_INSET_FROM_MD_CLASS`, `CONTENT_COLUMN_CLASS`,
+  `CONTENT_COLUMN_FULL_CLASS`) match Fumadocs DocsPage `#nd-page` padding
+  (`px-4 md:px-6 xl:px-8`) and max-widths (`900px` / `1168px`). Use
+  `CONTENT_COLUMN_INSET_FROM_MD_CLASS` for nested chrome whose parent already
+  applies the mobile `px-4` shell inset. Do not fake alignment with negative
+  margins — apply the shared inset directly. Intended consumers:
   `CONTENT_COLUMN_CONSUMER_SURFACES` (header/docs nav, home article/Browse,
   `/browse`, `/blog`, normal docs pages).
 * `src/lib/layout/content-column-alignment.test.ts`
   Contract tests: inset matches Fumadocs page padding, reusable column
-  classes share one inset, no negative-margin compensation, CSS var names,
-  and consumer-surface inventory.
+  classes share one inset, from-md nested inset, no negative-margin
+  compensation, CSS var names, and consumer-surface inventory.
 * `src/app/globals.css` (`:root` `--site-content-column-*`)
   CSS custom properties mirroring the TypeScript inset / max-width tokens
   for any stylesheet consumers of the same contract.
@@ -84,11 +86,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/components/layout/docs-header.tsx`
   Product-neutral docs shell header (`DocsHeader`); brand via
   `data-docs-header-brand`, CLI primary nav, and header `SearchTrigger`.
+  Desktop primary nav uses `DOCS_HEADER_PRIMARY_NAV_COLUMN_CLASS`
+  (`CONTENT_COLUMN_CLASS`); actions use `DOCS_HEADER_ACTIONS_COLUMN_CLASS`
+  (`CONTENT_COLUMN_INSET_FROM_MD_CLASS` + full max-width). Mobile shell keeps
+  outer `px-4 md:px-0` — no negative-margin compensation.
 * `src/components/layout/docs-header.test.tsx`
   Unit regression locking you-agent-factory brand, Home/Guides/Docs/Glossary/Blog
-  primary destinations (no Topology/Timeline), and Search chrome without Model
+  primary destinations (no Topology/Timeline), Search chrome without Model
   Atlas copy — including the consolidated "locks CLI shell header brand,
-  primary nav, and Search together" case.
+  primary nav, and Search together" case — plus shared content-column left-edge
+  alignment for desktop nav/actions.
 * `src/tests/a11y/primary-navigation.a11y.test.tsx`
   A11y smoke for brand + Primary landmark + Search on the canonical docs layout.
 * `src/components/layout/primary-nav.ts` / `primary-nav.test.ts`

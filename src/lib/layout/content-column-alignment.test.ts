@@ -6,6 +6,7 @@ import {
   CONTENT_COLUMN_FULL_CLASS,
   CONTENT_COLUMN_INSET,
   CONTENT_COLUMN_INSET_CLASS,
+  CONTENT_COLUMN_INSET_FROM_MD_CLASS,
   CONTENT_COLUMN_MAX_WIDTH,
   usesNegativeMarginCompensation,
 } from "@/lib/layout/content-column-alignment";
@@ -28,6 +29,16 @@ describe("content-column alignment contract", () => {
     expect(CONTENT_COLUMN_FULL_CLASS).toContain("max-w-[1168px]");
     expect(CONTENT_COLUMN_MAX_WIDTH.default).toBe("900px");
     expect(CONTENT_COLUMN_MAX_WIDTH.full).toBe("1168px");
+  });
+
+  test("exposes from-md inset for nested chrome that already has mobile shell padding", () => {
+    expect(CONTENT_COLUMN_INSET_FROM_MD_CLASS).toBe("md:px-6 xl:px-8");
+    expect(CONTENT_COLUMN_INSET_CLASS).toContain(
+      CONTENT_COLUMN_INSET_FROM_MD_CLASS,
+    );
+    expect(
+      usesNegativeMarginCompensation(CONTENT_COLUMN_INSET_FROM_MD_CLASS),
+    ).toBe(false);
   });
 
   test("does not rely on negative-margin compensation", () => {
