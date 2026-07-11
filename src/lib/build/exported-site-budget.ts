@@ -27,13 +27,16 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * static JS and search bootstrap remained under their limits). Raised again
  * on 2026-07-11 UTC after the concepts taxonomy repair lane (Tokens rewrite +
  * Skills/MCP/Tool calling) measured ~99.78 MiB total and ~4.08 MiB search
+ * bootstrap on CI. Raised total-out to 110 MiB and search bootstrap to
+ * 4.35 MiB on 2026-07-11 UTC after packaged-documents/factories plus sibling
+ * documentation lanes measured ~106.78 MiB total and ~4.27 MiB search
  * bootstrap on CI. Keep modest headroom for ordinary content growth without
  * silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 105_000_000,
+  maxTotalOutBytes: 110_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 4_250_000,
+  maxSearchBootstrapBytes: 4_350_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =
