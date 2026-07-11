@@ -109,4 +109,17 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   relies on the blog index card plus prose/title search documents (not tag
   landings). Keep that proof colocated under
   `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
-  blog-local and still runs in the required website suite.
+  blog-local and still runs in the required website suite. English-only
+  bundles should also assert `hasBlogPostMessagesForLocale(slug, "en")` and
+  that non-default locales lack `messages/<locale>.json` so localized
+  `/[locale]/blog/<slug>` params are not generated without message files.
+* `T` / prose auto-link rewrites registry aliases inside message strings (for
+  example `harness` and `agent runtime` → `/docs/concepts/harness`). When SSR
+  tests assert exact takeaway/context substrings, avoid those alias phrases or
+  assert around the inserted `<a data-prose-auto-link>` markup.
+* Curated-links blog posts: prefer published internal docs routes for stable
+  factory topics; include external URLs only when factory-relevant. Check
+  reachability at author time (`curl -sL -o /dev/null -w "%{http_code}"
+  --max-time 10`) and drop or replace dead/off-topic destinations—do not add a
+  CI external-link scanner in a blog-local lane. Treat npmjs HTML 403 / registry
+  `"Not found"` as non-shippable unless a real package exists.
