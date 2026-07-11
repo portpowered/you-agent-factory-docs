@@ -625,10 +625,12 @@ blocked. Document mergeability-only follow-ups in `progress.txt` and PR
 conversation comments.
 
 When several documentation lanes land close together, the exported-site
-`totalOutBytes` gate in `src/lib/build/exported-site-budget.ts` can fail even
-though each lane alone was under budget. Raising
-`FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes` (and the matching
-expectation in `exported-site-budget.test.ts` plus the documented baseline in
+`totalOutBytes` or `searchBootstrapBytes` gates in
+`src/lib/build/exported-site-budget.ts` can fail even though each lane alone
+was under budget. Raising
+`FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes` and/or
+`maxSearchBootstrapBytes` (and the matching expectations in
+`exported-site-budget.test.ts` plus the documented baselines in
 `restore-required-tests-gates-relevant-files.md`) is valid mergeability work
 when the measured `out/` size is the concrete CI blocker—keep the bump modest
 and recalibrate from the observed CI measurement rather than inventing a second
