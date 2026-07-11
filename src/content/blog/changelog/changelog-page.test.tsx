@@ -42,6 +42,11 @@ describe("changelog blog hub (001)", () => {
 
     expect(html).toContain('href="/docs/documentation/install"');
     expect(html).toContain('href="/docs/documentation/cli"');
+    expect(html).toContain('href="/docs/documentation/cli-command-index"');
+    expect(html).toContain("Quick reach");
+    expect(html).toContain("Install documentation");
+    expect(html).toContain("CLI documentation");
+    expect(html).toContain("CLI command index");
     expect(html).toContain('data-testid="blog-related-docs"');
     expect(html).not.toContain("blog-related-docs-unavailable");
     expect(html).not.toContain("blog-related-docs-partial-unavailable");

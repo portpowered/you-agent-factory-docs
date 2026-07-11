@@ -710,6 +710,16 @@ a human maintainer checklist — do not invent automated governance CI, owner
 registry fields, or Atlas-era process prose. Bump `updatedAt` (and blog
 `publishedAt` when first authored) to match the content change.
 
+When a lane ships both a releases/changelog blog hub and a CLI command-index
+documentation page, wire one-click quick-reach among install, commands, and
+release changes on both surfaces: blog hubs use in-prose markdown links (and
+`relatedDocIds` for metadata) because `BlogRelatedDocs` only resolves concept
+ids; documentation pages use message-backed `<LocalizedLinkList>` under
+`#related` for `/docs/documentation/install`, `/docs/documentation/cli`,
+`/blog/changelog`, and the GitHub Releases archive URL. Keep registry
+`relatedIds` on the command-index record for published documentation siblings
+(install/cli) without inventing blog registry ids.
+
 ### Documentation replays-records sensitivity, limits, and sibling discovery
 
 For `documentation/replays-records`, keep sensitivity and retention in default-locale

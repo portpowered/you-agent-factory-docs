@@ -17,7 +17,7 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Find the command you need in the index, confirm whether a factory must already be running, then run that form. For install steps and the teaching matrix narrative, open the CLI documentation page. For agent orientation after install, run you docs agents from the installed binary."
+      "body": "Find the command you need in the index, confirm whether a factory must already be running, then run that form. For install steps and the teaching matrix narrative, open the CLI documentation page. For release changes that affect those commands, open the releases and changelog hub or GitHub Releases. For agent orientation after install, run you docs agents from the installed binary."
     },
     "freshnessOwnership": {
       "title": "Freshness Ownership",
@@ -39,6 +39,8 @@
   },
   "links": {
     "cliDocs": "CLI docs",
-    "installDocs": "Install"
+    "installDocs": "Install",
+    "changelogHub": "Releases and changelog",
+    "githubReleases": "GitHub Releases"
   }
 }

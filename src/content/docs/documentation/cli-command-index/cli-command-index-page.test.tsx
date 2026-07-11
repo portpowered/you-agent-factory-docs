@@ -145,6 +145,16 @@ describe("cli-command-index documentation page", () => {
           .getByRole("link", { name: "Install" })
           .getAttribute("href"),
       ).toBe("/docs/documentation/install");
+      expect(
+        relatedQueries
+          .getByRole("link", { name: "Releases and changelog" })
+          .getAttribute("href"),
+      ).toBe("/blog/changelog");
+      expect(
+        relatedQueries
+          .getByRole("link", { name: "GitHub Releases" })
+          .getAttribute("href"),
+      ).toBe("https://github.com/portpowered/you-agent-factory/releases");
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

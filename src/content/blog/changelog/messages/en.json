@@ -2,5 +2,5 @@
   "title": "you-agent-factory releases and changelog",
   "description": "A docs-site hub for recent you-agent-factory product releases, with version and date metadata and a link to the full GitHub Releases archive.",
   "contextSentence": "When you need to see what changed in you-agent-factory without leaving this docs site, start here for rewritten release notes and jump to GitHub Releases for the full archive.",
-  "takeaway": "Scan recent you-agent-factory release changes on this hub, then open GitHub Releases for the complete list—or follow install and CLI docs when a release changes how you run the factory."
+  "takeaway": "Scan recent you-agent-factory release changes on this hub, then open GitHub Releases for the complete list—or follow install docs, the CLI teaching page, and the CLI command index when a release changes how you run the factory."
 }
