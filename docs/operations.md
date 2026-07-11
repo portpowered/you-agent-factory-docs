@@ -27,7 +27,7 @@ failing workflow stage with the same `make <target>` locally (see
 | Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
 | Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
-| Quality gates | `.github/workflows/ci.yml` runs the aligned required path (`make check` → test suites → build → integration → budget → component-coverage → validate-data → linkcheck); deploy-pages validate does not replace CI |
+| Quality gates | `.github/workflows/ci.yml` runs the aligned required path (`make check` → test suites → `a11y` → build → integration → budget → component-coverage → validate-data → linkcheck); deploy-pages validate does not replace CI |
 
 The workflow **`validate`** job checks out the pushed commit, runs the Makefile
 stages above (including `make guard-pages-deployed-artifact` after `make build`),
@@ -112,9 +112,10 @@ Related operational rows not closed in this section alone:
 ### What contributors should expect today
 
 - **Pull requests** run **CI** / **verify** only (aligned with `make ci`:
-  `make setup` → `check` → `test` → `test-reader-facing` → `test-ci-contract` →
-  `test-verify-contract` → `test-build-contract` → `build` → `test-integration` →
-  `budget` → `component-coverage` → `validate-data` → `linkcheck`).
+  `make setup` → `check` → `test` → `test-reader-facing` → `a11y` →
+  `test-ci-contract` → `test-verify-contract` → `test-build-contract` →
+  `build` → `test-integration` → `budget` → `component-coverage` →
+  `validate-data` → `linkcheck`).
   They do **not** run production deploy and do **not** publish a PR preview URL.
   Reproduce a failing stage locally with the same `make <target>`, or run
   `make ci` for the full local required path. See
@@ -158,9 +159,10 @@ make ci
 ```
 
 Or the same stages individually (`make check`, `make test`,
-`make test-reader-facing`, `make test-ci-contract`, `make test-verify-contract`,
-`make test-build-contract`, `make build`, `make test-integration`, `make budget`,
-`make component-coverage`, `make validate-data`, `make linkcheck`).
+`make test-reader-facing`, `make a11y`, `make test-ci-contract`,
+`make test-verify-contract`, `make test-build-contract`, `make build`,
+`make test-integration`, `make budget`, `make component-coverage`,
+`make validate-data`, `make linkcheck`).
 
 Optional project-site export smoke (matches deploy-pages base path; does **not**
 publish):
@@ -231,10 +233,10 @@ Contributors and maintainers read deployment status from GitHub **Checks** /
 **CI** / **verify** checks out the branch, runs `make setup`, installs Playwright
 Chromium for browser-backed website tests, then runs the Makefile contract
 aligned with `make ci`: `make check`, `make test`, `make test-reader-facing`,
-`make test-ci-contract`, `make test-verify-contract`, `make test-build-contract`,
-`make build`, `make test-integration`, `make budget`, `make component-coverage`,
-`make validate-data`, and `make linkcheck`. Deploy and preview steps are
-intentionally excluded from CI.
+`make a11y`, `make test-ci-contract`, `make test-verify-contract`,
+`make test-build-contract`, `make build`, `make test-integration`, `make budget`,
+`make component-coverage`, `make validate-data`, and `make linkcheck`. Deploy and
+preview steps are intentionally excluded from CI.
 
 **Deploy GitHub Pages** runs **Canonical validation** (Pages-focused Makefile
 stages through `make budget`, plus `make guard-pages-deployed-artifact`, then

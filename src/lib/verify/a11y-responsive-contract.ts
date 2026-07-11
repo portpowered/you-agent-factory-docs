@@ -107,6 +107,9 @@ export function listCriticalRoutePaths(): string[] {
   return CRITICAL_ROUTES.map((route) => route.path);
 }
 
+/** Focused reproduction command for the critical-route a11y/responsive suite. */
+export const A11Y_SUITE_REPRODUCTION_COMMAND = "make a11y";
+
 export type CriticalOverflowMatrixCase = {
   route: CriticalRoute;
   viewport: CriticalViewport;

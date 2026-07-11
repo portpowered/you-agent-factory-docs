@@ -31,6 +31,9 @@ jobs:
       - name: Run reader-facing required suite
         run: make test-reader-facing
 
+      - name: Run accessibility / responsive / layout suite
+        run: make a11y
+
       - name: Run CI workflow/Makefile alignment contracts
         run: make test-ci-contract
 

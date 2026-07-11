@@ -164,17 +164,24 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure/
   reduced-motion/layout-snapshot unit tests plus home/browse, search,
   docs/harness-support, blog, responsive overflow, reduced-motion, and layout
-  snapshot a11y smokes (and the skipped-by-default served-page probes). Later
-  stories expand coverage and may fold in remaining `src/tests/a11y/` once those
-  smokes are factory-current.
-* Not yet part of `make ci` (wire in story `harden-accessibility-responsive-ui-009`).
+  snapshot a11y smokes (and the skipped-by-default served-page probes).
+* Required by `make ci` and `.github/workflows/ci.yml` (after
+  `test-reader-facing`, before `test-ci-contract`) via
+  `src/lib/ci-required-path.ts` (`MAKE_CI_PREREQUISITES`,
+  `CI_WORKFLOW_REQUIRED_MAKE_TARGETS`, `SHARED_REQUIRED_SUITE_TARGETS`).
+* On failure, reproduce with `make a11y` (constant
+  `A11Y_SUITE_REPRODUCTION_COMMAND` in `a11y-responsive-contract.ts`).
+* Distinct from `make test-reader-facing`, which covers older component a11y
+  smokes plus search/layout contracts — do not fold Atlas-era
+  `src/tests/a11y/*` wholesale into `make a11y`.
 
 ## Existing component a11y smokes
 
 * `src/tests/a11y/*.a11y.test.tsx` — still excluded from default
   `scripts/run-website-functionality-tests.ts`. Some rows still assert retired
   Atlas sidebar labels; do not fold the whole directory into `make a11y` until
-  those smokes are updated in later stories.
+  those smokes are updated in later stories. A bounded subset is already
+  required via `make test-reader-facing`.
 
 ## Patterns
 
@@ -187,3 +194,6 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * For critical-page a11y stories: assert banner + `nav[aria-label="Primary"]` +
   `main` + coherent h1/h2 outline, keyboard focus with `focus-visible:ring`,
   then serious/critical axe on the verified surface.
+* Wire new required a11y gates through `src/lib/ci-required-path.ts` so
+  `make ci` and CI stay aligned — do not add a workflow-only or Makefile-only
+  required stage.

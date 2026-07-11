@@ -29,8 +29,9 @@ typecheck:
 test:
 	bun run test
 
-# Focused accessibility / responsive contract suite (grows in later stories).
-# Not yet wired into `make ci` — story harden-accessibility-responsive-ui-009.
+# Critical-route accessibility / responsive / layout-snapshot suite.
+# Required by `make ci` and `.github/workflows/ci.yml`. On failure, reproduce
+# with: make a11y  (or: bun run test:a11y)
 a11y:
 	bun run test:a11y
 
@@ -84,7 +85,7 @@ verify-architectural-checklist-mechanism-status:
 
 # Aligned with .github/workflows/ci.yml required suites (see src/lib/ci-required-path.ts).
 # build produces one trusted out/ for test-integration + budget.
-ci: lint typecheck test test-reader-facing test-ci-contract test-verify-contract test-build-contract build test-integration budget component-coverage validate-data linkcheck
+ci: lint typecheck test test-reader-facing a11y test-ci-contract test-verify-contract test-build-contract build test-integration budget component-coverage validate-data linkcheck
 
 validate-data:
 	bun run validate-data

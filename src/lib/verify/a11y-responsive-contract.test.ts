@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  A11Y_SUITE_REPRODUCTION_COMMAND,
   CRITICAL_ROUTE_IDS,
   CRITICAL_ROUTES,
   CRITICAL_VIEWPORT_IDS,
@@ -13,6 +14,10 @@ import {
 } from "./a11y-responsive-contract";
 
 describe("a11y-responsive critical-route contract", () => {
+  test("documents the focused reproduction command for CI failures", () => {
+    expect(A11Y_SUITE_REPRODUCTION_COMMAND).toBe("make a11y");
+  });
+
   test("enumerates home, browse, search, docs article, harness-support, blog index, and blog post", () => {
     const byId = Object.fromEntries(
       CRITICAL_ROUTES.map((route) => [route.id, route.path]),
