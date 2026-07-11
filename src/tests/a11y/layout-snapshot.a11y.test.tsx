@@ -63,8 +63,14 @@ describe("critical layout snapshot (always-on lightweight visual equivalent)", (
     expectLayoutSnapshotMatches(baseline, baseline);
     const baselineHash = hashLayoutSnapshot(baseline);
 
-    // Deliberate meaningful layout regression: strip main landmark.
-    document.querySelector("main")?.remove();
+    // Deliberate meaningful layout regression: strip every main landmark.
+    // Capture may match `main` or `[role="main"]`; remove all so the contract
+    // fails even when Fumadocs/shell chrome leaves more than one.
+    for (const node of Array.from(
+      document.querySelectorAll('main, [role="main"]'),
+    )) {
+      node.remove();
+    }
     const regress = captureCriticalLayoutSnapshot(document);
     expect(() => assertCriticalLayoutContract(regress)).toThrow(
       /expected main landmark/,

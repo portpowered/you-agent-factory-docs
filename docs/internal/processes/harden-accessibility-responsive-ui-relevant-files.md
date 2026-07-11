@@ -171,6 +171,8 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `CI_WORKFLOW_REQUIRED_MAKE_TARGETS`, `SHARED_REQUIRED_SUITE_TARGETS`).
 * On failure, reproduce with `make a11y` (constant
   `A11Y_SUITE_REPRODUCTION_COMMAND` in `a11y-responsive-contract.ts`).
+* `test:a11y` runs with `--max-concurrency=1` so happy-dom component smokes
+  that share `document` do not race (same pattern as `test:reader-facing`).
 * Distinct from `make test-reader-facing`, which covers older component a11y
   smokes plus search/layout contracts — do not fold Atlas-era
   `src/tests/a11y/*` wholesale into `make a11y`.
