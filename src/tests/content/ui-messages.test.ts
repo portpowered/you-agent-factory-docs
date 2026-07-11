@@ -117,6 +117,10 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages("zh-CN");
     expect(messages.nav.home).toBe("首页");
     expect(messages.nav.search).toBe("搜索");
+    expect(messages.nav.guides).toBe("指南");
+    expect(messages.nav.docs).toBe("文档");
+    expect(messages.nav.guides).not.toBe("Guides");
+    expect(messages.nav.docs).not.toBe("Docs");
     expect(messages.search.placeholder).toBe("搜索 you-agent-factory…");
     expect(messages.search.placeholder).not.toMatch(/Model Atlas/i);
     expect(messages.searchEntry.description).not.toMatch(/Model Atlas/i);

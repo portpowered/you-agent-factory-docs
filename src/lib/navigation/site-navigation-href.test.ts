@@ -80,6 +80,20 @@ describe("site navigation href consumers", () => {
         PROJECT_SITE_BASE_PATH,
       ),
     ).toBe("/you-agent-factory-docs/vi/docs/guides");
+    expect(
+      resolveLocaleSwitchedSiteHref(
+        "/docs/guides/getting-started",
+        "zh-CN",
+        PROJECT_SITE_BASE_PATH,
+      ),
+    ).toBe("/you-agent-factory-docs/zh-CN/docs/guides/getting-started");
+    expect(
+      resolveLocaleSwitchedSiteHref(
+        "/docs/documentation/cli",
+        "ja",
+        PROJECT_SITE_BASE_PATH,
+      ),
+    ).toBe("/you-agent-factory-docs/ja/docs/documentation/cli");
   });
 
   test("root builds keep locale routes unprefixed", () => {

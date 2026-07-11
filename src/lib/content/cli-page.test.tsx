@@ -1,7 +1,7 @@
 /**
- * Page-owned render proof for documentation/install.
- * Covers localized ja / zh-CN / vi prose beyond English stubs and keeps
- * install command literals copyable in the MDX body.
+ * Page-owned render proof for documentation/cli.
+ * Covers newly shipped ja / zh-CN / vi prose beyond English stubs and keeps
+ * install command literals + command matrix commands copyable.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -13,20 +13,19 @@ const INSTALL_SH =
   "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh";
 const INSTALL_PS1 =
   "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex";
-const CLAUDE_INIT = "you init --executor claude";
 
-describe("install documentation page", () => {
+describe("cli documentation page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("renders OS install commands, Claude init, Codex default, and next-step hrefs", async () => {
+  test("renders install commands, command matrix, and core section headings", async () => {
     const loadedPage = await loadLocalDocsPage({
       section: "documentation",
-      slug: "install",
+      slug: "cli",
     });
 
-    expect(loadedPage.messages.title).toBe("Install you-agent-factory");
+    expect(loadedPage.messages.title).toBe("CLI");
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
@@ -45,81 +44,83 @@ describe("install documentation page", () => {
       screen.getByRole("heading", { name: "What It Covers" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Install" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Commands" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
 
     expect(screen.getByText(INSTALL_SH)).toBeTruthy();
     expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
-    expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
-    expect(
-      screen.getByText(/omit it for the default Codex-backed scaffold/i),
-    ).toBeTruthy();
-
-    const gettingStarted = screen.getByRole("link", {
-      name: "Getting started",
-    });
-    const cliDocs = screen.getByRole("link", {
-      name: "CLI docs",
-    });
-    expect(gettingStarted.getAttribute("href")).toBe(
-      "/docs/guides/getting-started",
-    );
-    expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
+    expect(screen.getByText("you")).toBeTruthy();
+    expect(screen.getByText("you submit")).toBeTruthy();
+    expect(screen.getByText("you docs / you docs <topic>")).toBeTruthy();
   });
 
   test.each([
     {
       locale: "ja" as SiteLocale,
-      title: "you-agent-factory のインストール",
       howToUseHeading: "使い方",
-      proseNeedle: /インストールは、you-agent-factory/,
-      gettingStartedLabel: "はじめに",
-      cliDocsLabel: "CLI ドキュメント",
+      commandsHeading: "コマンド",
+      proseNeedle: /このリファレンスは you-agent-factory CLI/,
+      purposeHeader: "目的",
+      youPurposeNeedle: /デフォルトのローカルファクトリー/,
     },
     {
       locale: "zh-CN" as SiteLocale,
-      title: "安装 you-agent-factory",
       howToUseHeading: "如何使用",
-      proseNeedle: /安装是将 you-agent-factory/,
-      gettingStartedLabel: "快速开始",
-      cliDocsLabel: "CLI 文档",
+      commandsHeading: "命令",
+      proseNeedle: /本参考说明涵盖 you-agent-factory CLI/,
+      purposeHeader: "用途",
+      youPurposeNeedle: /从当前项目启动默认本地工厂/,
     },
     {
       locale: "vi" as SiteLocale,
-      title: "Cài đặt you-agent-factory",
       howToUseHeading: "Cách dùng",
-      proseNeedle: /Cài đặt là tài liệu tham chiếu/,
-      gettingStartedLabel: "Bắt đầu",
-      cliDocsLabel: "Tài liệu CLI",
+      commandsHeading: "Lệnh",
+      proseNeedle: /Tài liệu tham chiếu này gồm CLI you-agent-factory/,
+      purposeHeader: "Mục đích",
+      youPurposeNeedle: /Khởi động factory cục bộ mặc định/,
     },
-  ])("renders $locale install with real target-language prose and copyable commands", async ({
+  ])("renders $locale CLI with real target-language prose and copyable commands", async ({
     locale,
-    title,
     howToUseHeading,
+    commandsHeading,
     proseNeedle,
-    gettingStartedLabel,
-    cliDocsLabel,
+    purposeHeader,
+    youPurposeNeedle,
   }) => {
     const en = await loadLocalDocsPage({
       section: "documentation",
-      slug: "install",
+      slug: "cli",
     });
     const localized = await loadLocalDocsPage(
-      { section: "documentation", slug: "install" },
+      { section: "documentation", slug: "cli" },
       locale,
     );
 
-    expect(localized.messages.title).toBe(title);
-    expect(localized.messages.title).not.toBe(en.messages.title);
+    expect(localized.messages.title).toBe("CLI");
     expect(localized.messages.description).not.toBe(en.messages.description);
+    expect(localized.messages.openingSummary).not.toBe(
+      en.messages.openingSummary,
+    );
     expect(localized.messages.description).toContain("you-agent-factory");
     expect(
       String(localized.messages.sections?.whatItCovers?.body ?? ""),
     ).toMatch(proseNeedle);
-    expect(localized.messages.links?.macosLinuxLabel).toBe("macOS / Linux");
-    expect(localized.messages.links?.windowsLabel).toBe("Windows (PowerShell)");
+    expect(localized.messages.links?.installMacosLinuxLabel).toBe(
+      "macOS / Linux",
+    );
+    expect(localized.messages.links?.installWindowsLabel).toBe(
+      "Windows (PowerShell)",
+    );
+    expect(localized.messages.links?.installMacosLinuxCommand).toBe(INSTALL_SH);
+    expect(localized.messages.links?.installWindowsCommand).toBe(INSTALL_PS1);
+    expect(localized.messages.links?.commandMatrixYouCommand).toBe("you");
+    expect(localized.messages.links?.commandMatrixYouSubmitCommand).toBe(
+      "you submit",
+    );
     expect(Object.keys(localized.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
@@ -137,16 +138,16 @@ describe("install documentation page", () => {
     );
 
     expect(screen.getByRole("heading", { name: howToUseHeading })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: commandsHeading })).toBeTruthy();
+    expect(screen.getByText(purposeHeader)).toBeTruthy();
+    expect(screen.getByText(youPurposeNeedle)).toBeTruthy();
     expect(screen.getByText(INSTALL_SH)).toBeTruthy();
     expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
-    expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
-    expect(
-      screen.getByRole("link", { name: gettingStartedLabel }),
-    ).toBeTruthy();
-    expect(screen.getByRole("link", { name: cliDocsLabel })).toBeTruthy();
+    expect(screen.getByText("you")).toBeTruthy();
+    expect(screen.getByText("you submit")).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toContain(
-      "Install is the reference for getting you-agent-factory onto a machine",
+      "This reference covers the you-agent-factory CLI: how to install the you binary",
     );
   });
 });

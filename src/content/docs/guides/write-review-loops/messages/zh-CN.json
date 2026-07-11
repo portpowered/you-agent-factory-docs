@@ -1,53 +1,53 @@
 {
-  "title": "Write-Review Loops",
-  "description": "Use you-agent-factory for write → review → revise loops with a bounded retry path.",
+  "title": "写-审循环",
+  "description": "用 you-agent-factory 做带有界重试路径的写 → 审 → 改循环。",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "A write-review loop is a factory workflow where write or execute work produces a candidate, then a review step decides the outcome. Accepted work moves to a complete state. Rejected work returns to write for another pass, so the same goal can revise until review accepts it."
+      "title": "是什么",
+      "body": "写-审循环是一种工厂工作流：写或执行工作产出候选结果，然后由审查步骤决定结果。被接受的工作进入完成状态。被拒绝的工作回到写阶段再过一轮，因此同一目标可以持续修订，直到审查接受。"
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this guide when agent output must pass an explicit review gate before completion, for example quality-gated docs, code, or plans. Follow it when you want a clear write → review → revise path in the factory. The outcome you should reach is accepted work that completes only after review, with rejected work routed back for another write pass."
+      "title": "何时使用",
+      "body": "当代理输出在完成前必须通过明确的审查门控时使用本指南，例如有质量门控的文档、代码或计划。当你希望在工厂中有清晰的写 → 审 → 改路径时，请按本指南操作。应达到的结果是：只有审查通过后工作才完成，被拒绝的工作则回到另一次写轮次。"
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Confirm a live factory, submit or advance write or execute work, let review accept to complete or reject back to write, and bound retries with a loop breaker so reject cycles cannot run forever."
+      "title": "步骤或工作流",
+      "body": "确认工厂处于活跃状态，提交或推进写或执行工作，让审查接受以完成或拒绝回写，并用循环断路器限制重试，使拒绝循环不会永远运行。"
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not review or submit against a factory that is not live. Do not treat reject-without-a-breaker as safe forever. Do not confuse this use-case guide with the later writer-reviewer technique glossary page."
+      "title": "常见陷阱",
+      "body": "不要对未活跃的工厂进行审查或提交。不要把没有断路器的拒绝当作永远安全。不要把本用例指南与后续的 writer-reviewer 技法术语页混淆。"
     },
     "related": {
-      "title": "Related To"
+      "title": "相关内容"
     },
     "tags": {
-      "title": "Tags"
+      "title": "标签"
     },
     "references": {
-      "title": "References"
+      "title": "参考资料"
     }
   },
   "links": {
-    "confirmSessionLabel": "Confirm a live factory",
-    "startFactoryLabel": "Start a factory when no session is active",
-    "namedRunLabel": "Named run",
-    "submitWorkLabel": "Submit write or execute work",
-    "batchSubmitLabel": "Batch submit",
-    "writerReviewerTechnique": "Writer-reviewer technique"
+    "confirmSessionLabel": "确认活跃的工厂",
+    "startFactoryLabel": "没有会话时启动工厂",
+    "namedRunLabel": "命名运行",
+    "submitWorkLabel": "提交写或执行工作",
+    "batchSubmitLabel": "批量提交",
+    "writerReviewerTechnique": "Writer-reviewer 技法"
   },
   "callouts": {
     "sessionCheck": {
-      "body": "Start with you or you run when you need a factory, then confirm it with you session list before you submit. If no session is active, start the factory again and re-check."
+      "body": "需要工厂时从 you 或 you run 开始，然后在提交前用 you session list 确认。若没有活跃会话，再次启动工厂并重新检查。"
     },
     "routing": {
-      "body": "Shape the factory so a write or execute workstation routes successful work into an in-review state for a paired review workstation. On accept, review routes work toward a complete state. On reject, set onRejection to return work to the write or init state for another pass. That execute and review pair, with outcome routes, is the write → review → revise path."
+      "body": "塑造工厂，使写或执行工作站将成功的工作路由到配对审查工作站的审查中状态。接受时，审查将工作导向完成状态。拒绝时，设置 onRejection，将工作返回写或 init 状态再过一轮。该执行与审查配对及结果路由，就是写 → 审 → 改路径。"
     },
     "loopBreaker": {
-      "body": "Add a bounded retry so endless reject cycles stop on purpose. A common pattern is a LOGICAL_MOVE guarded by VISIT_COUNT on the write or review workstation: when visits exceed the limit, move the work to a failed or other terminal state instead of sending it around again."
+      "body": "添加有界重试，使无尽的拒绝循环按设计停止。常见模式是在写或审查工作站上用 VISIT_COUNT 守卫的 LOGICAL_MOVE：当访问次数超过上限时，将工作移到失败或其他终止状态，而不是再次送回。"
     },
     "submitAgainstLive": {
-      "body": "Submit only against a running factory. After enqueue, the write or execute workstation produces the candidate; review decides accept or reject."
+      "body": "仅对正在运行的工厂提交。入队后，写或执行工作站产出候选；审查决定接受或拒绝。"
     }
   }
 }

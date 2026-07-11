@@ -182,6 +182,26 @@ files is what derives the page as shipped for that locale
 (`deriveShippedLocalizedDocsManifest` / `bun run generate:shipped-localized-docs`).
 Missing non-default messages fail closed (no English fallback at load time).
 
+When a later lane **fills** high-traffic stubs with real target-language prose
+(for example `guides/getting-started`, `guides/using-you-agent-factory-for-loops`,
+`guides/write-review-loops`, `guides/cursor-dynamic-workflows`,
+`documentation/install`, `documentation/what-is-you-agent-factory`,
+`documentation/cli`), keep the same key shape, leave install/run/submit and
+MCP tool-name command literals unchanged (in `page.mdx` or under `links.*` for
+CLI), keep OS platform labels such as `macOS / Linux` /
+`Windows (PowerShell)` identical across locales, and update any section-index
+title/description assertions that previously expected the English stub (for
+example `src/tests/content/section-indexes.test.tsx` for `vi` documentation
+index). Prefer extending the existing page-owned test
+(`src/lib/content/install-page.test.tsx` /
+`src/lib/content/what-is-you-agent-factory-page.test.tsx` /
+`src/lib/content/cli-page.test.tsx`, or a colocated `<slug>-page.test.tsx`) with
+locale cases that assert reader-facing fields differ from English rather than
+only that files exist. For `documentation/cli`, authoring new
+`messages/{ja,zh-CN,vi}.json` (not just filling stubs) is what ships the page
+in those locales — regenerate and commit
+`shipped-localized-docs.generated.ts` plus the derive-test expectation.
+
 Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
 locale message files (the derive test requires it). On a first CLI-section page
 (including the first authored `concepts/` page), that generated file plus a
@@ -832,7 +852,36 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   always get a locale-preserving `href` via `switchRouteLocale`; docs pages mark
   unshipped locales unavailable (`href: null`) instead of linking to wrong-language
   copy. Cover available zh-CN navigation + query preservation and unavailable
-  docs behavior in `src/components/layout/docs-header.test.tsx`.
+  docs behavior in `src/components/layout/docs-header.test.tsx`. When filling
+  high-traffic locales, also prove language switching stays available on a filled
+  docs slug (for example `/docs/guides/getting-started`) and that localized
+  metadata titles/descriptions resolve from page message bundles in
+  `src/tests/layout/localized-route-metadata.test.ts`. Shell `nav.guides` /
+  `nav.docs` must exist for every shipped locale (including `zh-CN`) so primary
+  nav labels are not `undefined` on locale-prefixed routes.
+* After filling the high-traffic install/run journey, keep a focused suite at
+  `src/tests/content/high-traffic-locales.test.ts` that proves (via
+  `loadUiMessages` / `loadPageMessages` + shipped-manifest helpers, not source
+  scans): reader-facing prose differs from English on home + filled docs;
+  shipped-localized-docs includes those docs slugs including
+  `documentation/cli`; an intentionally unfilled published page such as
+  `documentation/configuration` stays fail-closed (`MessageLoadError`, not
+  shipped); and at least one non-high-traffic shipped stub (for example
+  `concepts/harness`) still reuses English wording so the lane does not claim
+  full-corpus translation.
+* Browser-verify the filled install/run journey with
+  `src/tests/content/high-traffic-locales-browser.test.ts` (listed in
+  `PRODUCTION_INTEGRATION_TEST_PATHS`). It is opt-in via
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` + a fresh production build, and walks
+  home → getting-started → install/CLI for `ja` / `zh-CN` / `vi`, asserting
+  target-language prose, copyable install/run command literals, and language
+  switching among filled surfaces without English stub body copy. Scope
+  "no English stub" checks to `article` (not all of `main`) because the docs
+  sidebar page tree still surfaces English frontmatter titles. `home.intro` is
+  metadata-only and is not rendered in the home body. Worktree `bun run dev`
+  may still fail under Turbopack/`node_modules` hoist — prefer `bun run build`
+  then `make test-integration` (or the focused browser file under the same env)
+  for this proof.
 
 ## Representative migrated consumers
 

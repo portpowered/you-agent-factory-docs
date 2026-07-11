@@ -1,36 +1,36 @@
 {
-  "title": "What is you-agent-factory",
-  "description": "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
-  "openingSummary": "you-agent-factory is a command-line interface (CLI) and agent-factory workflow system. It keeps long-running agent work moving across sessions instead of treating each run as a one-off chat.",
+  "title": "you-agent-factory とは",
+  "description": "you-agent-factory は、長時間のエージェント作業を持続させる CLI およびエージェントファクトリーのワークフローシステムです。",
+  "openingSummary": "you-agent-factory は、コマンドラインインターフェース（CLI）およびエージェントファクトリーのワークフローシステムです。各実行を一度きりのチャットとして扱うのではなく、セッションをまたいで長時間のエージェント作業を進め続けます。",
   "sections": {
     "whatItCovers": {
-      "title": "What It Covers",
-      "body": "you-agent-factory is software you install and run from a terminal. It organizes agent work into factory workflows so goals can continue over long periods of time. Customers use it to install the CLI, start named runs, and operate multi-agent workflows with shared harnesses and formats such as loops, reviews, planners, scheduled runs, and event streams. The product focus is persistent factory work, not a single disposable agent session."
+      "title": "対象範囲",
+      "body": "you-agent-factory は、ターミナルからインストールして実行するソフトウェアです。エージェント作業をファクトリーワークフローに整理し、ゴールを長期間にわたって継続できるようにします。顧客は CLI のインストール、名前付き実行の開始、ループ・レビュー・プランナー・スケジュール実行・イベントストリームなどの共有ハーネスと形式を使ったマルチエージェントワークフローの運用に使います。製品の焦点は、使い捨てエージェントセッションではなく、持続するファクトリー作業です。"
     },
     "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A factory is the workflow system that keeps agent work persistent and coordinated. A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. A named run, often expressed as a goal, is a concrete piece of work you start with the CLI so the factory can track and continue it. These ideas are enough to understand the product before you dig into install steps or system structure."
+      "title": "主要概念",
+      "body": "ファクトリーは、エージェント作業を持続させ調整するワークフローシステムです。ハーネスは、共有ファクトリープロセス配下のコーディングエージェントなど、ファクトリーが駆動するエージェントランタイムです。名前付き実行（しばしばゴールとして表される）は、CLI で開始する具体的な作業単位で、ファクトリーが追跡し継続できるようにします。これらの考え方だけで、インストール手順やシステム構造に入る前に製品を理解できます。"
     },
     "howToUse": {
-      "title": "How To Use",
-      "body": "Start with getting started to install the CLI and run a named goal. Use guides when you want a concrete workflow path such as loops or write-review flows. Open architecture of system when you need how the factory is structured internally. Product framing does not replace install docs or a full command reference."
+      "title": "使い方",
+      "body": "はじめに から CLI をインストールし、名前付きゴールを実行します。ループや write-review フローなど具体的なワークフロー経路が欲しいときはガイドを使います。ファクトリーの内部構造が必要なときはシステムのアーキテクチャを開きます。製品の位置づけは、インストールドキュメントや完全なコマンドリファレンスの代わりにはなりません。"
     },
     "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "Product framing stops at the overview. It is not a full architecture reference, component inventory, or runtime internals guide. you-agent-factory is not Model Atlas, an attention-reference sheet, a benchmark leaderboard, or a paper-download mirror. Readers who need install steps should use getting started; readers who need system structure should use architecture of system when that documentation is available."
+      "title": "限界と前提",
+      "body": "製品の位置づけは概要までです。完全なアーキテクチャリファレンス、コンポーネント一覧、ランタイム内部ガイドではありません。you-agent-factory は Model Atlas でも、アテンション参照シートでも、ベンチマークリーダーボードでも、論文ダウンロードミラーでもありません。インストール手順が必要な読者ははじめにを、システム構造が必要な読者はそのドキュメントが利用可能なときにシステムのアーキテクチャを使ってください。"
     },
     "related": {
-      "title": "Related To"
+      "title": "関連"
     },
     "tags": {
-      "title": "Tags"
+      "title": "タグ"
     },
     "references": {
-      "title": "References"
+      "title": "参考文献"
     }
   },
   "links": {
-    "gettingStarted": "Getting started",
-    "architectureOfSystem": "Architecture of system"
+    "gettingStarted": "はじめに",
+    "architectureOfSystem": "システムのアーキテクチャ"
   }
 }

@@ -1,36 +1,36 @@
 {
-  "title": "What is you-agent-factory",
-  "description": "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
-  "openingSummary": "you-agent-factory is a command-line interface (CLI) and agent-factory workflow system. It keeps long-running agent work moving across sessions instead of treating each run as a one-off chat.",
+  "title": "什么是 you-agent-factory",
+  "description": "you-agent-factory 是一个 CLI 与代理工厂工作流系统，可让长时间运行的代理工作保持持续。",
+  "openingSummary": "you-agent-factory 是一个命令行界面（CLI）与代理工厂工作流系统。它让长时间运行的代理工作跨会话持续推进，而不是把每次运行当作一次性聊天。",
   "sections": {
     "whatItCovers": {
-      "title": "What It Covers",
-      "body": "you-agent-factory is software you install and run from a terminal. It organizes agent work into factory workflows so goals can continue over long periods of time. Customers use it to install the CLI, start named runs, and operate multi-agent workflows with shared harnesses and formats such as loops, reviews, planners, scheduled runs, and event streams. The product focus is persistent factory work, not a single disposable agent session."
+      "title": "涵盖内容",
+      "body": "you-agent-factory 是你从终端安装并运行的软件。它将代理工作组织成工厂工作流，使目标可以在很长一段时间内持续推进。客户用它安装 CLI、启动命名运行，并借助循环、评审、规划器、定时运行与事件流等共享 harness 与格式来运营多智能体工作流。产品重点是持续的工厂工作，而不是一次性的代理会话。"
     },
     "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A factory is the workflow system that keeps agent work persistent and coordinated. A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. A named run, often expressed as a goal, is a concrete piece of work you start with the CLI so the factory can track and continue it. These ideas are enough to understand the product before you dig into install steps or system structure."
+      "title": "关键概念",
+      "body": "工厂是让代理工作保持持续并协调的工作流系统。harness 是工厂驱动的代理运行时，例如共享工厂进程下的编码代理。命名运行（常表示为目标）是你用 CLI 启动的具体工作单元，以便工厂跟踪并继续。这些概念足以在深入安装步骤或系统结构之前理解产品。"
     },
     "howToUse": {
-      "title": "How To Use",
-      "body": "Start with getting started to install the CLI and run a named goal. Use guides when you want a concrete workflow path such as loops or write-review flows. Open architecture of system when you need how the factory is structured internally. Product framing does not replace install docs or a full command reference."
+      "title": "如何使用",
+      "body": "从快速开始入手安装 CLI 并运行命名目标。当你需要循环或 write-review 流程等具体工作流路径时，使用指南。当你需要了解工厂内部结构时，打开系统架构。产品定位不能替代安装文档或完整命令参考。"
     },
     "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "Product framing stops at the overview. It is not a full architecture reference, component inventory, or runtime internals guide. you-agent-factory is not Model Atlas, an attention-reference sheet, a benchmark leaderboard, or a paper-download mirror. Readers who need install steps should use getting started; readers who need system structure should use architecture of system when that documentation is available."
+      "title": "限制与假设",
+      "body": "产品定位止于概览。它不是完整架构参考、组件清单或运行时内部指南。you-agent-factory 不是 Model Atlas、注意力参考表、基准排行榜或论文下载镜像。需要安装步骤的读者应使用快速开始；需要系统结构的读者应在该文档可用时使用系统架构。"
     },
     "related": {
-      "title": "Related To"
+      "title": "相关内容"
     },
     "tags": {
-      "title": "Tags"
+      "title": "标签"
     },
     "references": {
-      "title": "References"
+      "title": "参考资料"
     }
   },
   "links": {
-    "gettingStarted": "Getting started",
-    "architectureOfSystem": "Architecture of system"
+    "gettingStarted": "快速开始",
+    "architectureOfSystem": "系统架构"
   }
 }

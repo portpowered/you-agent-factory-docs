@@ -1,0 +1,76 @@
+{
+  "title": "CLI",
+  "description": "Cài đặt CLI you-agent-factory và tra cứu các lệnh you cốt lõi để khởi động factory, gửi công việc, kiểm tra session, và đọc tài liệu đã đóng gói.",
+  "openingSummary": "CLI you-agent-factory là điểm vào dòng lệnh để cài đặt công cụ factory và vận hành công việc agent chạy dài từ máy của bạn.",
+  "sections": {
+    "whatItCovers": {
+      "title": "Nội dung bao gồm",
+      "body": "Tài liệu tham chiếu này gồm CLI you-agent-factory: cách cài binary you, và các lệnh cốt lõi nào khởi động factory, gửi công việc, kiểm tra session và công việc, hoặc in tài liệu đã đóng gói. Đây là bề mặt tra cứu CLI bền vững cho khách hàng cần điểm vào cài đặt và mục đích lệnh trong một cái nhìn."
+    },
+    "keyConcepts": {
+      "title": "Khái niệm chính",
+      "body": "Factory là runtime chạy dài giữ công việc agent bền vững trên máy của bạn. Khởi động factory nghĩa là khởi chạy runtime đó bằng các dạng như you hoặc you run để host có thể nhận công việc. Gửi công việc nghĩa là gửi một mục công việc hoặc batch tới factory đang chạy, với các dạng như you submit hoặc you submit batch. Lệnh session và work kiểm tra trạng thái factory đang sống. Lệnh tài liệu đã đóng gói in markdown tham chiếu mà không cần factory đang chạy."
+    },
+    "install": {
+      "title": "Cài đặt",
+      "body": "Cài đặt CLI you bằng điểm vào phát hành đã công bố cho hệ điều hành của bạn. Các lệnh này cài binary; chúng không khởi động factory."
+    },
+    "howToUse": {
+      "title": "Cách dùng",
+      "body": "Cài CLI, rồi dùng ma trận lệnh bên dưới để chọn lệnh you phù hợp. Khởi động factory khi bạn cần runtime cục bộ. Chỉ gửi công việc sau khi factory đã chạy. Dùng lệnh session và work để kiểm tra trạng thái đang sống, và you docs khi bạn cần chủ đề tham chiếu đã đóng gói mà không cần factory đang chạy."
+    },
+    "commands": {
+      "title": "Lệnh",
+      "body": "Dùng ma trận này để chọn lệnh you cốt lõi và xem liệu factory đã phải chạy sẵn chưa. Các dạng khởi động tạo hoặc gắn vào runtime cục bộ. Các dạng gửi xếp hàng công việc vào factory đang sống. Docs in markdown tham chiếu đã đóng gói ngoại tuyến."
+    },
+    "limitsAndAssumptions": {
+      "title": "Giới hạn và giả định",
+      "body": "Trang này là tài liệu tham chiếu CLI trên web cho điểm vào cài đặt và ma trận lệnh cốt lõi. Nó không phải dump cờ đầy đủ, không phải đồng bộ tài liệu CLI đã đóng gói, và không phải trang sâu về harness, MCP, hay cấu hình. Hướng dẫn chạy lần đầu và biến thể cài đặt theo OS hoặc executor thuộc các bề mặt cài đặt và Bắt đầu riêng khi các trang đó được xuất bản."
+    },
+    "related": {
+      "title": "Liên quan"
+    },
+    "tags": {
+      "title": "Thẻ"
+    },
+    "references": {
+      "title": "Tài liệu tham khảo"
+    }
+  },
+  "links": {
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    "commandMatrixCommandHeader": "Lệnh",
+    "commandMatrixPurposeHeader": "Mục đích",
+    "commandMatrixRunningFactoryHeader": "Factory đã phải chạy sẵn?",
+    "commandMatrixYouCommand": "you",
+    "commandMatrixYouPurpose": "Khởi động factory cục bộ mặc định và dashboard từ dự án hiện tại.",
+    "commandMatrixYouRunning": "Không — lệnh này khởi động runtime.",
+    "commandMatrixYouRunDirCommand": "you run --dir <factory>",
+    "commandMatrixYouRunDirPurpose": "Khởi động hoặc gắn vào factory cục bộ từ thư mục factory tường minh.",
+    "commandMatrixYouRunDirRunning": "Không — lệnh này khởi động runtime.",
+    "commandMatrixYouRunNamedCommand": "you run --named <factory> / you run --factory <path>",
+    "commandMatrixYouRunNamedPurpose": "Chạy factory có tên hoặc portable mà không đoán bố cục thư mục cục bộ.",
+    "commandMatrixYouRunNamedRunning": "Không — lệnh này khởi động runtime.",
+    "commandMatrixYouRunWorkCommand": "you run --work <batch.json>",
+    "commandMatrixYouRunWorkPurpose": "Gửi batch JSON như một phần khởi động factory cục bộ, không phải ingress trạng thái ổn định.",
+    "commandMatrixYouRunWorkRunning": "Không khi dùng với dạng khởi động như --dir.",
+    "commandMatrixYouSubmitCommand": "you submit",
+    "commandMatrixYouSubmitPurpose": "Gửi một mục công việc tới factory đang nhận công việc.",
+    "commandMatrixYouSubmitRunning": "Có",
+    "commandMatrixYouSubmitBatchCommand": "you submit batch",
+    "commandMatrixYouSubmitBatchPurpose": "Upsert batch JSON vào session factory đang chạy.",
+    "commandMatrixYouSubmitBatchRunning": "Có",
+    "commandMatrixYouSessionListCommand": "you session list",
+    "commandMatrixYouSessionListPurpose": "Kiểm tra host factory có session mở trước khi gửi công việc.",
+    "commandMatrixYouSessionListRunning": "Có — nói chuyện với host đang chạy.",
+    "commandMatrixYouWorkCommand": "you work list / you work show",
+    "commandMatrixYouWorkPurpose": "Kiểm tra mục công việc từ factory đang chạy.",
+    "commandMatrixYouWorkRunning": "Có",
+    "commandMatrixYouDocsCommand": "you docs / you docs <topic>",
+    "commandMatrixYouDocsPurpose": "In markdown tham chiếu đã đóng gói từ binary đã cài.",
+    "commandMatrixYouDocsRunning": "Không"
+  }
+}

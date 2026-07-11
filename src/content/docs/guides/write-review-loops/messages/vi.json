@@ -1,53 +1,53 @@
 {
-  "title": "Write-Review Loops",
-  "description": "Use you-agent-factory for write → review → revise loops with a bounded retry path.",
+  "title": "Vòng lặp viết-duyệt",
+  "description": "Dùng you-agent-factory cho vòng lặp viết → duyệt → sửa với đường thử lại có giới hạn.",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "A write-review loop is a factory workflow where write or execute work produces a candidate, then a review step decides the outcome. Accepted work moves to a complete state. Rejected work returns to write for another pass, so the same goal can revise until review accepts it."
+      "title": "Nó là gì",
+      "body": "Vòng lặp viết-duyệt là quy trình factory trong đó công việc viết hoặc thực thi tạo ra ứng viên, rồi bước duyệt quyết định kết quả. Công việc được chấp nhận chuyển sang trạng thái hoàn tất. Công việc bị từ chối quay lại viết cho lượt khác, nên cùng một mục tiêu có thể sửa cho đến khi duyệt chấp nhận."
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this guide when agent output must pass an explicit review gate before completion, for example quality-gated docs, code, or plans. Follow it when you want a clear write → review → revise path in the factory. The outcome you should reach is accepted work that completes only after review, with rejected work routed back for another write pass."
+      "title": "Khi nào dùng",
+      "body": "Dùng hướng dẫn này khi đầu ra agent phải qua cổng duyệt rõ ràng trước khi hoàn tất, ví dụ tài liệu, mã hoặc kế hoạch có cổng chất lượng. Làm theo khi bạn muốn đường viết → duyệt → sửa rõ ràng trong factory. Kết quả cần đạt là công việc được chấp nhận chỉ hoàn tất sau duyệt, còn công việc bị từ chối được đưa lại cho lượt viết khác."
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Confirm a live factory, submit or advance write or execute work, let review accept to complete or reject back to write, and bound retries with a loop breaker so reject cycles cannot run forever."
+      "title": "Các bước hoặc quy trình",
+      "body": "Xác nhận factory đang sống, gửi hoặc đẩy công việc viết hoặc thực thi, để duyệt chấp nhận để hoàn tất hoặc từ chối về viết, và giới hạn thử lại bằng bộ ngắt vòng lặp để chu kỳ từ chối không chạy mãi."
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not review or submit against a factory that is not live. Do not treat reject-without-a-breaker as safe forever. Do not confuse this use-case guide with the later writer-reviewer technique glossary page."
+      "title": "Cạm bẫy thường gặp",
+      "body": "Đừng duyệt hoặc gửi với factory không đang sống. Đừng coi từ chối không có bộ ngắt là an toàn mãi mãi. Đừng nhầm hướng dẫn use-case này với trang thuật ngữ kỹ thuật writer-reviewer sau này."
     },
     "related": {
-      "title": "Related To"
+      "title": "Liên quan"
     },
     "tags": {
-      "title": "Tags"
+      "title": "Thẻ"
     },
     "references": {
-      "title": "References"
+      "title": "Tài liệu tham khảo"
     }
   },
   "links": {
-    "confirmSessionLabel": "Confirm a live factory",
-    "startFactoryLabel": "Start a factory when no session is active",
-    "namedRunLabel": "Named run",
-    "submitWorkLabel": "Submit write or execute work",
-    "batchSubmitLabel": "Batch submit",
-    "writerReviewerTechnique": "Writer-reviewer technique"
+    "confirmSessionLabel": "Xác nhận factory đang sống",
+    "startFactoryLabel": "Khởi động factory khi không có phiên",
+    "namedRunLabel": "Lần chạy có tên",
+    "submitWorkLabel": "Gửi công việc viết hoặc thực thi",
+    "batchSubmitLabel": "Gửi theo lô",
+    "writerReviewerTechnique": "Kỹ thuật writer-reviewer"
   },
   "callouts": {
     "sessionCheck": {
-      "body": "Start with you or you run when you need a factory, then confirm it with you session list before you submit. If no session is active, start the factory again and re-check."
+      "body": "Bắt đầu bằng you hoặc you run khi bạn cần factory, rồi xác nhận bằng you session list trước khi gửi. Nếu không có phiên đang hoạt động, khởi động lại factory và kiểm tra lại."
     },
     "routing": {
-      "body": "Shape the factory so a write or execute workstation routes successful work into an in-review state for a paired review workstation. On accept, review routes work toward a complete state. On reject, set onRejection to return work to the write or init state for another pass. That execute and review pair, with outcome routes, is the write → review → revise path."
+      "body": "Định hình factory sao cho workstation viết hoặc thực thi đưa công việc thành công vào trạng thái đang duyệt cho workstation duyệt ghép đôi. Khi chấp nhận, duyệt đưa công việc về trạng thái hoàn tất. Khi từ chối, đặt onRejection để trả công việc về trạng thái viết hoặc init cho lượt khác. Cặp thực thi và duyệt đó, cùng các đường kết quả, chính là đường viết → duyệt → sửa."
     },
     "loopBreaker": {
-      "body": "Add a bounded retry so endless reject cycles stop on purpose. A common pattern is a LOGICAL_MOVE guarded by VISIT_COUNT on the write or review workstation: when visits exceed the limit, move the work to a failed or other terminal state instead of sending it around again."
+      "body": "Thêm thử lại có giới hạn để chu kỳ từ chối vô tận dừng có chủ đích. Mẫu phổ biến là LOGICAL_MOVE được VISIT_COUNT bảo vệ trên workstation viết hoặc duyệt: khi số lần thăm vượt giới hạn, chuyển công việc sang trạng thái thất bại hoặc kết thúc khác thay vì gửi vòng lại."
     },
     "submitAgainstLive": {
-      "body": "Submit only against a running factory. After enqueue, the write or execute workstation produces the candidate; review decides accept or reject."
+      "body": "Chỉ gửi với factory đang chạy. Sau khi xếp hàng, workstation viết hoặc thực thi tạo ứng viên; duyệt quyết định chấp nhận hoặc từ chối."
     }
   }
 }

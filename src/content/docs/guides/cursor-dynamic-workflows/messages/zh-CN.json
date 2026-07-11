@@ -1,65 +1,65 @@
 {
-  "title": "Cursor Dynamic Workflows",
-  "description": "Use Cursor as an MCP host for you-agent-factory Factory Session and dynamic-workflow tools.",
-  "openingSummary": "Connect Cursor to you-agent-factory over Model Context Protocol (MCP) so you can drive Factory Session and dynamic-workflow tools from the editor.",
+  "title": "Cursor 动态工作流",
+  "description": "将 Cursor 用作 you-agent-factory Factory Session 与动态工作流工具的 MCP 主机。",
+  "openingSummary": "通过 Model Context Protocol (MCP) 将 Cursor 连接到 you-agent-factory，以便在编辑器中驱动 Factory Session 与动态工作流工具。",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "Cursor dynamic workflows mean using Cursor as a Model Context Protocol (MCP) host for you-agent-factory. Cursor launches you mcp serve as a child process, then calls Factory Session tools that validate, start, and inspect JavaScript or TypeScript dynamic workflows. In this product, a dynamic workflow is a JavaScript orchestrator-backed factory; the live run is still a Factory Session. The MCP path keeps that work inside the editor instead of switching to a separate terminal for every validate, start, or status step."
+      "title": "是什么",
+      "body": "Cursor 动态工作流是指将 Cursor 用作 you-agent-factory 的 Model Context Protocol (MCP) 主机。Cursor 将 you mcp serve 作为子进程启动，然后调用用于验证、启动和检查 JavaScript 或 TypeScript 动态工作流的 Factory Session 工具。在本产品中，动态工作流是由 JavaScript 编排器驱动的工厂；活跃运行仍是 Factory Session。MCP 路径把这些工作留在编辑器内，而不是每次验证、启动或查看状态都切换到单独终端。"
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this path when you author or drive JavaScript or TypeScript dynamic workflows from Cursor and want Factory Session tools available as MCP tools in the editor. Prefer ordinary factory loops and submit batches without MCP when you only need the CLI install → run → submit path and do not need Cursor to call Factory Session tools. Prefer another MCP host guide when your editor or agent is not Cursor, even if it also speaks MCP."
+      "title": "何时使用",
+      "body": "当你从 Cursor 编写或驱动 JavaScript 或 TypeScript 动态工作流，并希望在编辑器中将 Factory Session 工具作为 MCP 工具使用时，请走这条路径。当你只需要 CLI 的安装 → 运行 → 提交路径、不需要 Cursor 调用 Factory Session 工具时，优先使用不带 MCP 的普通工厂循环与提交批次。当你的编辑器或代理不是 Cursor（即使它也支持 MCP）时，优先使用其他 MCP 主机指南。"
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Confirm the you CLI is installed, add a Cursor Model Context Protocol (MCP) server entry for you mcp serve, reload Cursor so the child process starts, then run a first Factory Session loop: validate source, start a session, and check status or result."
+      "title": "步骤或工作流",
+      "body": "确认已安装 you CLI，为 you mcp serve 添加 Cursor Model Context Protocol (MCP) 服务器条目，重新加载 Cursor 以使子进程启动，然后运行第一个 Factory Session 循环：验证源、启动会话，并检查状态或结果。"
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "If Cursor cannot find you on PATH, set command to the absolute path of the you binary instead of relying on the shell PATH. If validate or start fails to resolve workflow sources, check that cwd is the workflow project root, not a nested package or home directory. After you change MCP config, restart Cursor or run Developer: Reload Window so the MCP child process respawns; saving the file alone is not enough. Treat this guide as a first Cursor integration loop only — full tool catalogs, serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages linked below."
+      "title": "常见陷阱",
+      "body": "若 Cursor 在 PATH 上找不到 you，请将 command 设为 you 二进制的绝对路径，而不是依赖 shell PATH。若 validate 或 start 无法解析工作流源，请检查 cwd 是工作流项目根目录，而不是嵌套包或主目录。更改 MCP 配置后，请重启 Cursor 或运行 Developer: Reload Window，以便 MCP 子进程重新生成；仅保存文件不够。将本指南仅视为首次 Cursor 集成循环 — 完整工具目录、serve 标志与动态工作流 API 细节见下方链接的 MCP 与动态工作流文档页。"
     },
     "related": {
-      "title": "Related To"
+      "title": "相关内容"
     },
     "tags": {
-      "title": "Tags"
+      "title": "标签"
     },
     "references": {
-      "title": "References"
+      "title": "参考资料"
     }
   },
   "links": {
-    "mcpConfigLocationsLabel": "Cursor MCP config locations",
-    "mcpServerJsonLabel": "Example Cursor MCP server entry",
-    "firstLoopLabel": "First Factory Session loop from Cursor",
-    "firstLoopValidateLabel": "Validate workflow source",
-    "firstLoopStartLabel": "Start a Factory Session",
-    "firstLoopStatusLabel": "Check status and result",
-    "mcpDocs": "MCP documentation",
-    "dynamicWorkflowsDocs": "Dynamic-workflows documentation"
+    "mcpConfigLocationsLabel": "Cursor MCP 配置位置",
+    "mcpServerJsonLabel": "Cursor MCP 服务器条目示例",
+    "firstLoopLabel": "从 Cursor 发起的首次 Factory Session 循环",
+    "firstLoopValidateLabel": "验证工作流源",
+    "firstLoopStartLabel": "启动 Factory Session",
+    "firstLoopStatusLabel": "检查状态与结果",
+    "mcpDocs": "MCP 文档",
+    "dynamicWorkflowsDocs": "动态工作流文档"
   },
   "callouts": {
     "mcpConfigLocations": {
-      "body": "Put the server entry in the project file at .cursor/mcp.json when the workflow lives in that repository, or in the global file at ~/.cursor/mcp.json when you want the same server across projects. Project config is usually enough for one workflow root."
+      "body": "当工作流位于该仓库时，将服务器条目放在项目文件 .cursor/mcp.json；若希望跨项目使用同一服务器，则放在全局文件 ~/.cursor/mcp.json。对于一个工作流根目录，项目配置通常已足够。"
     },
     "mcpReload": {
-      "body": "Replace command with the absolute path to your you binary when Cursor cannot see your shell PATH. Keep args as mcp serve. Set cwd to the workflow project root so sources resolve. After you save the file, restart Cursor or run Developer: Reload Window so Cursor respawns the MCP child process."
+      "body": "当 Cursor 看不到你的 shell PATH 时，将 command 替换为 you 二进制的绝对路径。保持 args 为 mcp serve。将 cwd 设为工作流项目根目录以便解析源。保存文件后，重启 Cursor 或运行 Developer: Reload Window，使 Cursor 重新生成 MCP 子进程。"
     },
     "firstLoopIntro": {
-      "body": "After reload, confirm Factory Session tools appear in Cursor. Prefer the you.factory_session.* names. Older you.workflow.* aliases still resolve to the same handlers if your host lists them."
+      "body": "重新加载后，确认 Cursor 中出现 Factory Session 工具。优先使用 you.factory_session.* 名称。若主机仍列出较旧的 you.workflow.* 别名，它们仍会解析到相同处理程序。"
     },
     "firstLoopValidate": {
-      "body": "Call you.factory_session.validate_source on your JavaScript or TypeScript orchestrator source. Compatibility alias: you.workflow.validate. A clean validate confirms Cursor reached you mcp serve and the project cwd can resolve the workflow."
+      "body": "对你的 JavaScript 或 TypeScript 编排器源调用 you.factory_session.validate_source。兼容别名：you.workflow.validate。验证通过可确认 Cursor 已到达 you mcp serve，且项目 cwd 能解析工作流。"
     },
     "firstLoopStart": {
-      "body": "Start one session with you.factory_session.start_async when you want to poll, or you.factory_session.start_sync when you want the tool to wait for completion. Compatibility alias for a sync start: you.workflow.run."
+      "body": "需要轮询时用 you.factory_session.start_async 启动一个会话，需要工具等待完成时用 you.factory_session.start_sync。同步启动的兼容别名：you.workflow.run。"
     },
     "firstLoopStatus": {
-      "body": "Read progress with you.factory_session.get, then read the outcome with you.factory_session.get_result when the session is ready. Compatibility aliases: you.workflow.status and you.workflow.result. That validate → start → status or result path is enough to prove the Cursor integration."
+      "body": "用 you.factory_session.get 读取进度，会话就绪后用 you.factory_session.get_result 读取结果。兼容别名：you.workflow.status 与 you.workflow.result。该验证 → 启动 → 状态或结果路径足以证明 Cursor 集成。"
     },
     "firstLoopDeeperDocs": {
-      "body": "Full tool catalogs, runtime-backed serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages. You do not need those pages open to finish this first loop."
+      "body": "完整工具目录、运行时支持的 serve 标志与动态工作流 API 细节见 MCP 与动态工作流文档页。完成本次首次循环无需打开那些页面。"
     }
   }
 }

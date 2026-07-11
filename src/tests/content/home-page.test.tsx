@@ -170,6 +170,7 @@ describe("home page render", () => {
 
   it("renders you-agent-factory home shell structure on the vietnamese route without Model Atlas identity", async () => {
     const messages = await loadUiMessages("vi");
+    const en = await loadUiMessages("en");
     const html = renderToStaticMarkup(
       <HomeArticle
         messages={messages}
@@ -180,12 +181,27 @@ describe("home page render", () => {
     const toc = buildHomeTableOfContents(messages.home);
 
     expect(messages.home.title).toBe("you-agent-factory");
-    expect(messages.home.subtitle).toBe("Docs for the agent factory CLI");
+    expect(messages.home.subtitle).toBe("Tài liệu CLI cho agent factory");
+    expect(messages.home.subtitle).not.toBe(en.home.subtitle);
     expect(messages.home.intro).toContain("you-agent-factory");
+    expect(messages.home.intro).not.toBe(en.home.intro);
+    expect(messages.home.installSectionTitle).toBe("Cài đặt");
+    expect(messages.home.runSectionTitle).toBe("Chạy một mục tiêu có tên");
+    expect(messages.home.whyBody).toMatch(/hàng trăm agent/i);
+    expect(messages.home.whyBody).not.toBe(en.home.whyBody);
+    expect(messages.home.installMacosLinuxCommand).toBe(
+      en.home.installMacosLinuxCommand,
+    );
+    expect(messages.home.installWindowsCommand).toBe(
+      en.home.installWindowsCommand,
+    );
+    expect(messages.home.runCommand).toBe(en.home.runCommand);
     expect(messages.home.title).not.toMatch(/Model Atlas/i);
     expect(messages.home.intro).not.toMatch(/Model Atlas/i);
     expect(html).toContain("you-agent-factory");
-    expect(html).toContain("Docs for the agent factory CLI");
+    expect(html).toContain("Tài liệu CLI cho agent factory");
+    expect(html).toContain("Cài đặt");
+    expect(html).toContain("Chạy một mục tiêu có tên");
     expect(html).not.toContain("Model Atlas");
     expect(html).toContain('id="install"');
     expect(html).toContain('id="run"');
@@ -193,7 +209,7 @@ describe("home page render", () => {
     expect(html).toContain('id="features"');
     expect(html).toContain('id="browse"');
     expect(html).toContain("you run --named @goal/blah");
-    expect(html).toContain("hundreds of agents");
+    expect(html).toContain("hàng trăm agent");
     expect(html).toContain("loop");
     expect(html).toContain("review");
     expect(html).toContain("planner");
@@ -219,6 +235,7 @@ describe("home page render", () => {
 
   it("renders you-agent-factory home shell structure on the japanese route without Model Atlas identity", async () => {
     const messages = await loadUiMessages("ja");
+    const en = await loadUiMessages("en");
     const html = renderToStaticMarkup(
       <HomeArticle
         messages={messages}
@@ -229,12 +246,29 @@ describe("home page render", () => {
     const toc = buildHomeTableOfContents(messages.home);
 
     expect(messages.home.title).toBe("you-agent-factory");
-    expect(messages.home.subtitle).toBe("Docs for the agent factory CLI");
+    expect(messages.home.subtitle).toBe(
+      "エージェントファクトリー CLI のドキュメント",
+    );
+    expect(messages.home.subtitle).not.toBe(en.home.subtitle);
     expect(messages.home.intro).toContain("you-agent-factory");
+    expect(messages.home.intro).not.toBe(en.home.intro);
+    expect(messages.home.installSectionTitle).toBe("インストール");
+    expect(messages.home.runSectionTitle).toBe("名前付きゴールを実行する");
+    expect(messages.home.whyBody).toMatch(/数百のエージェント/);
+    expect(messages.home.whyBody).not.toBe(en.home.whyBody);
+    expect(messages.home.installMacosLinuxCommand).toBe(
+      en.home.installMacosLinuxCommand,
+    );
+    expect(messages.home.installWindowsCommand).toBe(
+      en.home.installWindowsCommand,
+    );
+    expect(messages.home.runCommand).toBe(en.home.runCommand);
     expect(messages.home.title).not.toMatch(/Model Atlas/i);
     expect(messages.home.intro).not.toMatch(/Model Atlas/i);
     expect(html).toContain("you-agent-factory");
-    expect(html).toContain("Docs for the agent factory CLI");
+    expect(html).toContain("エージェントファクトリー CLI のドキュメント");
+    expect(html).toContain("インストール");
+    expect(html).toContain("名前付きゴールを実行する");
     expect(html).not.toContain("Model Atlas");
     expect(html).toContain('id="install"');
     expect(html).toContain('id="run"');
@@ -242,7 +276,7 @@ describe("home page render", () => {
     expect(html).toContain('id="features"');
     expect(html).toContain('id="browse"');
     expect(html).toContain("you run --named @goal/blah");
-    expect(html).toContain("hundreds of agents");
+    expect(html).toContain("数百のエージェント");
     expect(html).toContain('href="/ja/docs/guides"');
     expect(html).toContain('href="/ja/browse"');
     expect(html).toContain('href="/ja/docs/glossary"');
@@ -263,6 +297,7 @@ describe("home page render", () => {
 
   it("renders you-agent-factory home shell structure on the zh-CN route without Model Atlas identity", async () => {
     const messages = await loadUiMessages("zh-CN");
+    const en = await loadUiMessages("en");
     const html = renderToStaticMarkup(
       <HomeArticle
         messages={messages}
@@ -273,15 +308,34 @@ describe("home page render", () => {
     const toc = buildHomeTableOfContents(messages.home);
 
     expect(messages.home.title).toBe("you-agent-factory");
+    expect(messages.home.subtitle).toBe("代理工厂 CLI 文档");
+    expect(messages.home.subtitle).not.toBe(en.home.subtitle);
     expect(messages.home.intro).toContain("you-agent-factory");
+    expect(messages.home.intro).not.toBe(en.home.intro);
+    expect(messages.home.installSectionTitle).toBe("安装");
+    expect(messages.home.runSectionTitle).toBe("运行命名目标");
+    expect(messages.home.whyBody).toMatch(/数百个代理/);
+    expect(messages.home.whyBody).not.toBe(en.home.whyBody);
+    expect(messages.home.installMacosLinuxCommand).toBe(
+      en.home.installMacosLinuxCommand,
+    );
+    expect(messages.home.installWindowsCommand).toBe(
+      en.home.installWindowsCommand,
+    );
+    expect(messages.home.runCommand).toBe(en.home.runCommand);
     expect(messages.home.title).not.toMatch(/Model Atlas/i);
     expect(html).toContain("you-agent-factory");
+    expect(html).toContain("代理工厂 CLI 文档");
+    expect(html).toContain("安装");
+    expect(html).toContain("运行命名目标");
     expect(html).not.toContain("Model Atlas");
     expect(html).toContain('id="install"');
     expect(html).toContain('id="run"');
     expect(html).toContain('id="why"');
     expect(html).toContain('id="features"');
     expect(html).toContain('id="browse"');
+    expect(html).toContain("you run --named @goal/blah");
+    expect(html).toContain("数百个代理");
     expect(html).toContain('href="/zh-CN/docs/guides"');
     expect(html).toContain('href="/zh-CN/browse"');
     expect(toc.map((item) => item.url)).toEqual([

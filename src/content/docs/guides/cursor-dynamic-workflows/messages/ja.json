@@ -1,65 +1,65 @@
 {
-  "title": "Cursor Dynamic Workflows",
-  "description": "Use Cursor as an MCP host for you-agent-factory Factory Session and dynamic-workflow tools.",
-  "openingSummary": "Connect Cursor to you-agent-factory over Model Context Protocol (MCP) so you can drive Factory Session and dynamic-workflow tools from the editor.",
+  "title": "Cursor 動的ワークフロー",
+  "description": "you-agent-factory の Factory Session と動的ワークフローツール向けに、Cursor を MCP ホストとして使います。",
+  "openingSummary": "Model Context Protocol (MCP) 経由で Cursor を you-agent-factory に接続し、エディターから Factory Session と動的ワークフローツールを操作します。",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "Cursor dynamic workflows mean using Cursor as a Model Context Protocol (MCP) host for you-agent-factory. Cursor launches you mcp serve as a child process, then calls Factory Session tools that validate, start, and inspect JavaScript or TypeScript dynamic workflows. In this product, a dynamic workflow is a JavaScript orchestrator-backed factory; the live run is still a Factory Session. The MCP path keeps that work inside the editor instead of switching to a separate terminal for every validate, start, or status step."
+      "title": "概要",
+      "body": "Cursor 動的ワークフローとは、you-agent-factory 向けに Cursor を Model Context Protocol (MCP) ホストとして使うことです。Cursor は you mcp serve を子プロセスとして起動し、JavaScript または TypeScript の動的ワークフローを検証・開始・検査する Factory Session ツールを呼び出します。この製品では、動的ワークフローは JavaScript オーケストレーター駆動のファクトリーであり、稼働中の実行は依然として Factory Session です。MCP パスは、検証・開始・状態確認のたびに別ターミナルへ切り替える代わりに、その作業をエディター内に保ちます。"
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this path when you author or drive JavaScript or TypeScript dynamic workflows from Cursor and want Factory Session tools available as MCP tools in the editor. Prefer ordinary factory loops and submit batches without MCP when you only need the CLI install → run → submit path and do not need Cursor to call Factory Session tools. Prefer another MCP host guide when your editor or agent is not Cursor, even if it also speaks MCP."
+      "title": "いつ使うか",
+      "body": "Cursor から JavaScript または TypeScript の動的ワークフローを作成・駆動し、エディター内で Factory Session ツールを MCP ツールとして使いたいときに、この道筋を使います。CLI のインストール → 実行 → 投入だけでよく、Cursor から Factory Session ツールを呼ぶ必要が無いときは、MCP なしの通常のファクトリーループと投入バッチを優先します。エディターやエージェントが Cursor でなくても MCP を話す場合は、別の MCP ホストガイドを優先します。"
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Confirm the you CLI is installed, add a Cursor Model Context Protocol (MCP) server entry for you mcp serve, reload Cursor so the child process starts, then run a first Factory Session loop: validate source, start a session, and check status or result."
+      "title": "手順またはワークフロー",
+      "body": "you CLI がインストールされていることを確認し、you mcp serve 用の Cursor Model Context Protocol (MCP) サーバー項目を追加し、子プロセスが起動するよう Cursor を再読み込みし、最初の Factory Session ループを実行します。ソースを検証し、セッションを開始し、状態または結果を確認します。"
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "If Cursor cannot find you on PATH, set command to the absolute path of the you binary instead of relying on the shell PATH. If validate or start fails to resolve workflow sources, check that cwd is the workflow project root, not a nested package or home directory. After you change MCP config, restart Cursor or run Developer: Reload Window so the MCP child process respawns; saving the file alone is not enough. Treat this guide as a first Cursor integration loop only — full tool catalogs, serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages linked below."
+      "title": "よくある落とし穴",
+      "body": "Cursor が PATH 上で you を見つけられない場合は、シェル PATH に頼らず you バイナリの絶対パスを command に設定してください。validate や start がワークフローソースを解決できない場合は、cwd が入れ子のパッケージやホームディレクトリではなく、ワークフローのプロジェクトルートであることを確認してください。MCP 設定を変えたあとは、MCP 子プロセスが再起動するよう Cursor を再起動するか Developer: Reload Window を実行してください。ファイルを保存しただけでは足りません。このガイドは最初の Cursor 統合ループだけを扱います — 完全なツール一覧、serve フラグ、動的ワークフロー API の詳細は、下にリンクした MCP と動的ワークフローのドキュメントページにあります。"
     },
     "related": {
-      "title": "Related To"
+      "title": "関連"
     },
     "tags": {
-      "title": "Tags"
+      "title": "タグ"
     },
     "references": {
-      "title": "References"
+      "title": "参考文献"
     }
   },
   "links": {
-    "mcpConfigLocationsLabel": "Cursor MCP config locations",
-    "mcpServerJsonLabel": "Example Cursor MCP server entry",
-    "firstLoopLabel": "First Factory Session loop from Cursor",
-    "firstLoopValidateLabel": "Validate workflow source",
-    "firstLoopStartLabel": "Start a Factory Session",
-    "firstLoopStatusLabel": "Check status and result",
-    "mcpDocs": "MCP documentation",
-    "dynamicWorkflowsDocs": "Dynamic-workflows documentation"
+    "mcpConfigLocationsLabel": "Cursor MCP 設定の場所",
+    "mcpServerJsonLabel": "Cursor MCP サーバー項目の例",
+    "firstLoopLabel": "Cursor からの最初の Factory Session ループ",
+    "firstLoopValidateLabel": "ワークフローソースを検証する",
+    "firstLoopStartLabel": "Factory Session を開始する",
+    "firstLoopStatusLabel": "状態と結果を確認する",
+    "mcpDocs": "MCP ドキュメント",
+    "dynamicWorkflowsDocs": "動的ワークフローのドキュメント"
   },
   "callouts": {
     "mcpConfigLocations": {
-      "body": "Put the server entry in the project file at .cursor/mcp.json when the workflow lives in that repository, or in the global file at ~/.cursor/mcp.json when you want the same server across projects. Project config is usually enough for one workflow root."
+      "body": "ワークフローがそのリポジトリにあるときはプロジェクトファイル .cursor/mcp.json にサーバー項目を置き、複数プロジェクトで同じサーバーを使いたいときはグローバルファイル ~/.cursor/mcp.json に置きます。1 つのワークフロールートなら、通常はプロジェクト設定で十分です。"
     },
     "mcpReload": {
-      "body": "Replace command with the absolute path to your you binary when Cursor cannot see your shell PATH. Keep args as mcp serve. Set cwd to the workflow project root so sources resolve. After you save the file, restart Cursor or run Developer: Reload Window so Cursor respawns the MCP child process."
+      "body": "Cursor がシェル PATH を見られないときは、command を you バイナリの絶対パスに置き換えてください。args は mcp serve のままにします。ソースが解決されるよう cwd をワークフローのプロジェクトルートに設定します。ファイルを保存したあと、Cursor を再起動するか Developer: Reload Window を実行し、Cursor が MCP 子プロセスを再起動するようにします。"
     },
     "firstLoopIntro": {
-      "body": "After reload, confirm Factory Session tools appear in Cursor. Prefer the you.factory_session.* names. Older you.workflow.* aliases still resolve to the same handlers if your host lists them."
+      "body": "再読み込み後、Cursor に Factory Session ツールが表示されることを確認します。you.factory_session.* 名を優先してください。ホストが古い you.workflow.* エイリアスを一覧表示しても、同じハンドラーに解決されます。"
     },
     "firstLoopValidate": {
-      "body": "Call you.factory_session.validate_source on your JavaScript or TypeScript orchestrator source. Compatibility alias: you.workflow.validate. A clean validate confirms Cursor reached you mcp serve and the project cwd can resolve the workflow."
+      "body": "JavaScript または TypeScript のオーケストレーターソースに対して you.factory_session.validate_source を呼び出します。互換エイリアス: you.workflow.validate。検証が通れば、Cursor が you mcp serve に到達し、プロジェクト cwd がワークフローを解決できることが確認できます。"
     },
     "firstLoopStart": {
-      "body": "Start one session with you.factory_session.start_async when you want to poll, or you.factory_session.start_sync when you want the tool to wait for completion. Compatibility alias for a sync start: you.workflow.run."
+      "body": "ポーリングしたいときは you.factory_session.start_async で、完了を待ちたいときは you.factory_session.start_sync で 1 つのセッションを開始します。同期開始の互換エイリアス: you.workflow.run。"
     },
     "firstLoopStatus": {
-      "body": "Read progress with you.factory_session.get, then read the outcome with you.factory_session.get_result when the session is ready. Compatibility aliases: you.workflow.status and you.workflow.result. That validate → start → status or result path is enough to prove the Cursor integration."
+      "body": "進捗は you.factory_session.get で読み、セッションの準備ができたら結果は you.factory_session.get_result で読みます。互換エイリアス: you.workflow.status と you.workflow.result。その検証 → 開始 → 状態または結果の道筋で、Cursor 統合を証明するのに十分です。"
     },
     "firstLoopDeeperDocs": {
-      "body": "Full tool catalogs, runtime-backed serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages. You do not need those pages open to finish this first loop."
+      "body": "完全なツール一覧、ランタイム対応の serve フラグ、動的ワークフロー API の詳細は、MCP と動的ワークフローのドキュメントページにあります。この最初のループを終えるために、それらのページを開く必要はありません。"
     }
   }
 }

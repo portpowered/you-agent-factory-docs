@@ -78,6 +78,45 @@ describe("getPrimaryNavItems", () => {
     ]);
   });
 
+  it("emits japanese and zh-CN prefixed navigation routes with localized labels", async () => {
+    const jaMessages = await loadUiMessages("ja");
+    const zhCnMessages = await loadUiMessages("zh-CN");
+    const jaItems = getPrimaryNavItems(jaMessages, "ja");
+    const zhCnItems = getPrimaryNavItems(zhCnMessages, "zh-CN");
+
+    expect(jaItems.map((item) => item.href)).toEqual([
+      "/ja",
+      "/ja/docs/guides",
+      "/ja/browse",
+      "/ja/docs/glossary",
+      "/ja/blog",
+    ]);
+    expect(jaItems.map((item) => item.label)).toEqual([
+      "ホーム",
+      "ガイド",
+      "ドキュメント",
+      "用語集",
+      jaMessages.nav.blog,
+    ]);
+
+    expect(zhCnItems.map((item) => item.href)).toEqual([
+      "/zh-CN",
+      "/zh-CN/docs/guides",
+      "/zh-CN/browse",
+      "/zh-CN/docs/glossary",
+      "/zh-CN/blog",
+    ]);
+    expect(zhCnItems.map((item) => item.label)).toEqual([
+      "首页",
+      "指南",
+      "文档",
+      "术语表",
+      zhCnMessages.nav.blog,
+    ]);
+    expect(zhCnMessages.nav.guides).not.toBe("Guides");
+    expect(zhCnMessages.nav.docs).not.toBe("Docs");
+  });
+
   it("resolves primary nav home/docs/blog under project-site base path without changing Link hrefs", async () => {
     const messages = await loadUiMessages();
     const items = getPrimaryNavItems(messages);
