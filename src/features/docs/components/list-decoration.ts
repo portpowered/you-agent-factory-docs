@@ -3,8 +3,13 @@
  * resource links used across home browse, docs index, tags index, and tag resources.
  */
 
-/** Removes list markers without imposing flex column layout (e.g. divide-y stacks). */
-export const bulletlessListMarkersClassName = "list-none";
+/**
+ * Removes list markers and resets prose list inset.
+ * DocsBody `prose` applies `padding-inline-start` to `ul`/`ol`; `list-none` alone
+ * does not clear that, so card stacks (home Browse, indexes) would drift inward.
+ * Zero the start padding at the source — do not compensate with negative margins.
+ */
+export const bulletlessListMarkersClassName = "list-none ps-0";
 
 /** Base flex column list without markers. Pair with a margin-top utility. */
 export const bulletlessListBaseClassName = `flex ${bulletlessListMarkersClassName} flex-col gap-3`;

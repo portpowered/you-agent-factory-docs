@@ -165,6 +165,7 @@ describe("home page render", () => {
     expect(html).toContain("crons");
     expect(html).toContain("event streams");
     expect(html).toContain("list-none");
+    expect(html).toContain("ps-0");
     expect(html).not.toContain("list-disc");
   });
 

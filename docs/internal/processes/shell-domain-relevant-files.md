@@ -80,6 +80,17 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/app/globals.css` (`:root` `--site-content-column-*`)
   CSS custom properties mirroring the TypeScript inset / max-width tokens
   for any stylesheet consumers of the same contract.
+* Home article + Browse (`home-article-browse`): consume the shared left edge
+  via DocsPage `#nd-page` inset — do **not** nest `CONTENT_COLUMN_INSET_CLASS`
+  on `HomeArticle`. Wire `data-content-column-surface="home-article-browse"`
+  and keep `HOME_ARTICLE_CLASS` width-only (`max-w-3xl`). Remove Browse/list
+  card indentation at the source with `bulletlessListMarkersClassName`
+  (`list-none ps-0`) in `src/features/docs/components/list-decoration.ts` —
+  DocsBody `prose` adds `padding-inline-start` to `ul` even when markers are
+  removed; never fake alignment with negative margins.
+* `src/components/home/home-article-alignment.test.tsx`
+  Locks home article/Browse shared left-edge contract (surface marker, no
+  nested inset, `ps-0` bulletless lists, no negative-margin compensation).
 
 ## CLI docs header / primary-nav regression
 

@@ -15,16 +15,20 @@ function expectNoUnderlineUtilities(className: string): void {
 }
 
 describe("list decoration classes", () => {
-  test("bulletlessListMarkersClassName omits list markers", () => {
-    expect(bulletlessListMarkersClassName).toBe("list-none");
+  test("bulletlessListMarkersClassName omits list markers and prose list inset", () => {
+    expect(bulletlessListMarkersClassName).toContain("list-none");
+    expect(bulletlessListMarkersClassName).toContain("ps-0");
     expect(bulletlessListMarkersClassName).not.toContain("list-disc");
+    expect(bulletlessListMarkersClassName).not.toMatch(/(?:^|\s)-m[trblxy]?-/);
   });
 
-  test("bulletlessListBaseClassName omits list markers", () => {
+  test("bulletlessListBaseClassName omits list markers and prose list inset", () => {
     expect(bulletlessListBaseClassName).toContain(
       bulletlessListMarkersClassName,
     );
+    expect(bulletlessListBaseClassName).toContain("ps-0");
     expect(bulletlessListBaseClassName).not.toContain("list-disc");
+    expect(bulletlessListBaseClassName).not.toMatch(/(?:^|\s)-m[trblxy]?-/);
   });
 
   test("bulletlessListClassName applies margin presets", () => {
@@ -34,6 +38,8 @@ describe("list decoration classes", () => {
     expect(bulletlessListClassName("mt-3")).toContain(
       bulletlessListBaseClassName,
     );
+    expect(bulletlessListClassName("mt-4")).toContain("ps-0");
+    expect(bulletlessListClassName("mt-4")).not.toMatch(/(?:^|\s)-m[trblxy]?-/);
   });
 
   test("docsResourceCardLinkClassName omits underline utilities", () => {

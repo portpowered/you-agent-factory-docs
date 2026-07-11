@@ -85,7 +85,9 @@ describe("Phase 1 home shell styling contracts", () => {
       </HomeBrowseList>,
     );
     expect(browseListHtml).toContain("list-none");
+    expect(browseListHtml).toContain("ps-0");
     expect(browseListHtml).not.toContain("list-disc");
+    expect(browseListHtml).not.toMatch(/(?:^|[\s"'])-m[trblxy]?-/);
 
     const browseLinkHtml = renderToStaticMarkup(
       <HomeBrowseLink
