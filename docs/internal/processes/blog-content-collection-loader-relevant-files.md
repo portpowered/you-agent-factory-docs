@@ -112,3 +112,8 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   landings). Keep that proof colocated under
   `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
   blog-local and still runs in the required website suite.
+* English-only blog posts should ship only `messages/en.json`. Prove fail-closed
+  locale behavior in the colocated discoverability test with
+  `hasBlogPostMessagesForLocale(slug, locale)` false for `ja`/`zh-CN`/`vi` and
+  `generateStaticParams` from `src/app/[locale]/blog/[slug]/page.tsx` omitting
+  the slug (locale-prefixed routes generate only when colocated messages exist).
