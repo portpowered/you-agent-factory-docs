@@ -1,0 +1,104 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-10"
+updatedAt: "2026-07-11"
+authors:
+  - site-team
+tags:
+  - foundations
+relatedDocIds:
+  - documentation.what-is-you-agent-factory
+  - technique.planner-executor
+  - technique.writer-reviewer
+  - concept.harness
+  - concept.worktree
+  - concept.loop
+  - concept.checklist
+  - concept.task-queue
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+<TagPillList tags={["foundations"]} />
+
+## Summary
+
+<T k="takeaway" />
+
+## Why this docs site is a factory workload
+
+Shipping a documentation site for an agent factory is itself long-running agent work. Pages arrive as many small vertical slices—concepts, techniques, guides, and documentation—each with metadata, related links, and mergeability constraints. A single chat session cannot keep that queue honest across days of review and revision.
+
+The product overview at
+[What is you-agent-factory](/docs/documentation/what-is-you-agent-factory)
+names the lightweight orchestrator behind those lanes. The rest of this post examines how factory patterns showed up while building these docs—not as a systems matrix, and not as a status board about the rewrite itself.
+
+## Patterns that showed up
+
+### Planner and executor lanes
+
+Docs work was planned as a queue of small stories, then executed one lane at a time. A planner shaped the next vertical page; executors authored the bundle, ran checks, and left the next story for a later pass. That
+[planner-executor](/docs/techniques/planner-executor)
+split kept long-running authorship from collapsing into one unbounded prompt.
+
+The ready work itself behaved like a
+[task queue](/docs/concepts/task-queue):
+stories waited until a lane claimed them, finished one page, and returned control instead of inventing unbounded follow-on edits in the same run.
+
+### Harness-driven loops
+
+Each page lane ran inside an agent
+[harness](/docs/concepts/harness):
+edit, validate, fix, repeat until the bundle passed. The harness was the place where typecheck, lint, and content validation stayed attached to the same work item instead of drifting into a separate checklist outside the run.
+
+Those turns formed a factory
+[loop](/docs/concepts/loop):
+the same lane resumed with the prior failure in view, so fixes stayed local to the page under construction rather than restarting from a blank prompt.
+
+### Worktrees and isolation
+
+Parallel page lanes needed isolation so one story’s edits did not collide with another.
+[Worktrees](/docs/concepts/worktree)
+kept each factory lane on its own branch and working tree until the post or docs page was ready to review. Isolation made merge conflicts a review concern instead of a mid-run surprise across unrelated pages.
+
+### Writer-reviewer before merge
+
+Authorship alone was not the finish line. A separate review pass accepted or rejected the candidate page against writing standards, related-link correctness, and validation. That
+[writer-reviewer](/docs/techniques/writer-reviewer)
+split kept “looks done in the harness” from meaning “ready to publish.”
+
+A live
+[checklist](/docs/concepts/checklist)
+tracked which pages were done, active, ready next, or intentionally held—so planners could see remaining work without rereading every lane transcript.
+
+## What to take away
+
+If you are building a large docs surface with agents, borrow the same discipline this site used: dispatch small pages through a planner/executor queue, keep harness loops and worktree isolation explicit, separate write from review, and point readers at published concepts and techniques rather than redefining them in blog prose.
+
+## Related reference pages
+
+Start with the product overview at
+[What is you-agent-factory](/docs/documentation/what-is-you-agent-factory),
+the
+[planner-executor](/docs/techniques/planner-executor)
+technique, and
+[writer-reviewer](/docs/techniques/writer-reviewer).
+The concept links below cover harness, worktree, loop, checklist, and task-queue definitions used in the patterns above.
+
+<BlogRelatedDocs
+  relatedDocIds={[
+    "concept.harness",
+    "concept.worktree",
+    "concept.loop",
+    "concept.checklist",
+    "concept.task-queue",
+  ]}
+/>

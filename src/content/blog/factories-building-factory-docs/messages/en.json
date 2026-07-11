@@ -1,0 +1,6 @@
+{
+  "title": "Factories building the factory docs",
+  "description": "A grounded examination of how agent-factory workflows—planner/executor lanes, harness loops, worktrees, and writer-reviewer—were used to build the you-agent-factory documentation site.",
+  "contextSentence": "This documentation site was not authored as a one-shot chat dump. It was built with the same agent-factory patterns the product teaches: persistent work queues, harness-driven loops, isolated worktrees, and review before merge.",
+  "takeaway": "Treat large docs work as a factory workload: plan and dispatch small vertical pages, keep harness loops and worktree isolation honest, separate write from review, and link claims back to published concepts and techniques instead of inventing a second glossary in the blog."
+}
