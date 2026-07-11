@@ -49,5 +49,8 @@ describe("PRODUCTION_INTEGRATION_TEST_PATHS", () => {
     expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
       "src/lib/verify/built-html-convergence-test-helpers.test.ts",
     );
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/tests/content/high-traffic-locales-browser.test.ts",
+    );
   });
 });

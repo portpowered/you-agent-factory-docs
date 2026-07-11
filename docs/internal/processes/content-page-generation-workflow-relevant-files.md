@@ -869,6 +869,19 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   shipped); and at least one non-high-traffic shipped stub (for example
   `concepts/harness`) still reuses English wording so the lane does not claim
   full-corpus translation.
+* Browser-verify the filled install/run journey with
+  `src/tests/content/high-traffic-locales-browser.test.ts` (listed in
+  `PRODUCTION_INTEGRATION_TEST_PATHS`). It is opt-in via
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` + a fresh production build, and walks
+  home → getting-started → install/CLI for `ja` / `zh-CN` / `vi`, asserting
+  target-language prose, copyable install/run command literals, and language
+  switching among filled surfaces without English stub body copy. Scope
+  "no English stub" checks to `article` (not all of `main`) because the docs
+  sidebar page tree still surfaces English frontmatter titles. `home.intro` is
+  metadata-only and is not rendered in the home body. Worktree `bun run dev`
+  may still fail under Turbopack/`node_modules` hoist — prefer `bun run build`
+  then `make test-integration` (or the focused browser file under the same env)
+  for this proof.
 
 ## Representative migrated consumers
 
