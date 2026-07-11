@@ -1,0 +1,76 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-11"
+updatedAt: "2026-07-11"
+authors:
+  - site-team
+tags:
+  - foundations
+relatedDocIds:
+  - concept.harness
+  - concept.bottlenecks
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+<TagPillList tags={["foundations"]} />
+
+## Summary
+
+<T k="takeaway" />
+
+## Why this examination exists
+
+Cursor Composer can burn through enormous token budgets when agents stay in the loop for hours or days. That scale is interesting as an operational signal, not as a model scorecard. This post reads that signal through **you-agent-factory**: long-running workflows, harness behavior, scarce stages, and the lessons operators need when many agents keep working over time.
+
+The thesis stays on factory operations. Parameter counts, architecture tables, and product marketing are out of scope. Composer is the occasion; harnesses, bottlenecks, and compaction are the subject.
+
+## Harness behavior under sustained turns
+
+A harness is the boundary between the agent and the tools, shells, and editors it uses. Under short demos the harness looks invisible. Under sustained Composer-scale turns it becomes a first-class stage: every tool call, every wait, and every recovery path shows up in wall time.
+
+When agents keep iterating for long stretches, harness latency and failure modes compound. A factory that treats the harness as a thin wrapper will misread stalls as “model quality” when the scarce path is actually the call surface. Name the harness stage explicitly before you scale concurrency.
+
+## Bottlenecks and scarce stages
+
+Long-running factory work moves through queues, workers, harness calls, shared resources, and token budgets. End-to-end throughput rises only when the scarce stage gains capacity. Adding agents elsewhere does not help if that stage is already saturated.
+
+Composer-scale token spend often coincides with a scarce stage that was already waiting to show itself: a slow tool path, a full review seat, a shared lock, or a growing backlog. The useful move is to name the stage that is full while neighbors still have spare capacity, then spend the next change there.
+
+## Compaction and token pressure
+
+Prompts, transcripts, and context windows grow until each turn costs more than the run can afford. Workers may sit ready and tools may respond, but turns stall on compaction or budget. Raising concurrency without shrinking or compacting context often makes the pressure worse.
+
+Large Composer token totals are one way that pressure becomes visible. The operational lesson is not “use fewer tokens forever.” It is to treat context growth as a limiting stage: compact, truncate, or reshape what the agent carries forward so later turns stay useful.
+
+## Operational lessons for many agents over time
+
+Running many agents across long horizons needs the same discipline as any scarce-resource system:
+
+- Keep workflow and agent definitions file-first so recovery does not depend on a single chat session.
+- Measure harness wait separately from model think time.
+- Name the bottleneck stage before adding seats.
+- Budget for compaction when transcripts grow across loops.
+- Prefer durable factory loops over disposable one-shot prompts when the work must survive restarts.
+
+Those lessons hold whether the occasion is Composer after billions of tokens or any other long-horizon agent coding surface. The factory lens stays the same.
+
+## Related reference pages
+
+Stable definitions for harness and bottlenecks live on the concept pages linked below. Use those pages when you need glossary anchors; keep this post for the examination narrative.
+
+<BlogRelatedDocs
+  relatedDocIds={["concept.harness", "concept.bottlenecks"]}
+/>
+
+## Tags
+
+<TagPillList tags={["foundations"]} showDescriptions />

@@ -1,0 +1,6 @@
+{
+  "title": "Cursor Composer after six billion tokens: factory-ops lessons",
+  "description": "An examination of Cursor Composer after large token spend through long-running you-agent-factory workflows—harnesses, bottlenecks, compaction, and operational lessons for sustained agent work.",
+  "contextSentence": "Large Composer token spend is a useful occasion to examine how long-running agent-factory workflows behave under harness load, scarce stages, and context pressure—not a reason to turn the blog into a model-reference page.",
+  "takeaway": "Treat Composer-scale token use as a stress test of the factory: name the harness path, the bottleneck stage, and the compaction pressure that actually cap throughput, then carry those operational lessons into how you run many agents over time."
+}
