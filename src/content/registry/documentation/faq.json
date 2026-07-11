@@ -1,0 +1,14 @@
+{
+  "id": "documentation.faq",
+  "slug": "faq",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["FAQ", "common questions", "frequently asked questions"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T05:00:00.000Z",
+  "updatedAt": "2026-07-11T05:00:00.000Z"
+}
