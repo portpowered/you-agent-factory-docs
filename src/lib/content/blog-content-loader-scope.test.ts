@@ -34,6 +34,7 @@ describe("blog content loader lane isolation", () => {
         "bottlenecks",
         "comparing-agent-factories",
         "lies-damned-lies-evals",
+        "useful-factory-links",
       ].sort(),
     );
     await expect(
@@ -45,6 +46,9 @@ describe("blog content loader lane isolation", () => {
     await expect(
       getPublishedBlogPostBySlug("lies-damned-lies-evals"),
     ).resolves.toMatchObject({ slug: "lies-damned-lies-evals" });
+    await expect(
+      getPublishedBlogPostBySlug("useful-factory-links"),
+    ).resolves.toMatchObject({ slug: "useful-factory-links" });
     await expect(
       getPublishedBlogPostBySlug("evolution-of-diffusion"),
     ).resolves.toBeNull();
