@@ -120,7 +120,7 @@
     "description": "已发布的概念页解释跨越许多工厂工作流的更广想法，例如 harness、循环与瓶颈。",
     "listLabel": "概念条目",
     "emptyTitle": "尚无概念条目",
-    "emptyDescription": "已发布的概念页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
+    "emptyDescription": "已发布的概念页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
     "emptyHomeLink": "返回首页"
   },
   "guidesIndex": {
@@ -128,7 +128,7 @@
     "description": "已发布的指南页逐步介绍实用的 CLI 工作流，以及如何把参考资料应用到日常工作中。",
     "listLabel": "指南条目",
     "emptyTitle": "尚无指南条目",
-    "emptyDescription": "已发布的指南页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
+    "emptyDescription": "已发布的指南页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
     "emptyHomeLink": "返回首页"
   },
   "techniquesIndex": {
@@ -136,7 +136,7 @@
     "description": "已发布的技巧页解释可在 CLI 工作流与文档任务中应用的具名方法与实践。",
     "listLabel": "技巧条目",
     "emptyTitle": "尚无技巧条目",
-    "emptyDescription": "已发布的技巧页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
+    "emptyDescription": "已发布的技巧页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
     "emptyHomeLink": "返回首页"
   },
   "documentationIndex": {
@@ -144,7 +144,7 @@
     "description": "已发布的文档页涵盖 CLI 表面的参考资料，包括契约、约定与补充细节。",
     "listLabel": "文档条目",
     "emptyTitle": "尚无文档条目",
-    "emptyDescription": "已发布的文档页加入后会出现在这里。在此之前可返回首页或打开浏览探索其他集合。",
+    "emptyDescription": "已发布的文档页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
     "emptyHomeLink": "返回首页"
   },
   "glossaryIndex": {
@@ -152,7 +152,7 @@
     "description": "工厂与 CLI 术语的简短定义。每个条目在已发布时链接到规范术语表页。",
     "listLabel": "术语表条目",
     "emptyTitle": "尚无术语表条目",
-    "emptyDescription": "已发布的术语表页加入参考资料后会出现在这里。在此之前可返回首页或打开搜索探索指南、概念与标签。",
+    "emptyDescription": "已发布的术语表页加入参考资料后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
     "emptyHomeLink": "返回首页"
   },
   "architectureIndex": {
@@ -160,7 +160,7 @@
     "description": "与工厂系统形态、工作站结构及相关模式有关的架构概念。每个条目在已发布时链接到规范文档页。",
     "listLabel": "架构条目",
     "emptyTitle": "尚无架构条目",
-    "emptyDescription": "已发布的架构概念页以及架构内容分组下的页面会出现在这里。在此之前可返回首页或打开搜索探索指南、概念与标签。",
+    "emptyDescription": "已发布的架构概念页以及架构内容分组下的页面会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
     "emptyHomeLink": "返回首页"
   },
   "blogIndex": {
@@ -168,7 +168,7 @@
     "description": "将工厂发布与工作流思路连回规范参考页的叙述性文章。",
     "listLabel": "博客文章",
     "emptyTitle": "尚无博客文章",
-    "emptyDescription": "已发布的叙述性文章加入后会出现在这里。在此之前可返回首页或打开搜索探索指南、概念与技巧。",
+    "emptyDescription": "已发布的叙述性文章加入后会出现在这里。在此之前可返回首页、打开浏览，或搜索文档以探索指南、概念与技巧。",
     "emptyHomeLink": "返回首页"
   },
   "tagsIndex": {

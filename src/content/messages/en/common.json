@@ -120,7 +120,7 @@
     "description": "Published concept pages that explain broader ideas spanning many factory workflows, such as harnesses, loops, and bottlenecks.",
     "listLabel": "Concept entries",
     "emptyTitle": "No concept entries yet",
-    "emptyDescription": "Published concept pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
+    "emptyDescription": "Published concept pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "guidesIndex": {
@@ -128,7 +128,7 @@
     "description": "Published guide pages that walk through practical CLI workflows and how to apply the reference in day-to-day work.",
     "listLabel": "Guide entries",
     "emptyTitle": "No guide entries yet",
-    "emptyDescription": "Published guide pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
+    "emptyDescription": "Published guide pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "techniquesIndex": {
@@ -136,7 +136,7 @@
     "description": "Published technique pages that explain named methods and practices you can apply across CLI workflows and documentation tasks.",
     "listLabel": "Technique entries",
     "emptyTitle": "No technique entries yet",
-    "emptyDescription": "Published technique pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
+    "emptyDescription": "Published technique pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "documentationIndex": {
@@ -144,7 +144,7 @@
     "description": "Published documentation pages covering reference material for the CLI surface, including contracts, conventions, and supporting detail.",
     "listLabel": "Documentation entries",
     "emptyTitle": "No documentation entries yet",
-    "emptyDescription": "Published documentation pages will appear here once they are added. Return home or open Browse to explore other collections in the meantime.",
+    "emptyDescription": "Published documentation pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "glossaryIndex": {
@@ -152,7 +152,7 @@
     "description": "Short definitions for factory and CLI terms. Each entry links to a canonical glossary page when published.",
     "listLabel": "Glossary entries",
     "emptyTitle": "No glossary entries yet",
-    "emptyDescription": "Published glossary pages will appear here once they are added to the reference. Return home or open search to explore guides, concepts, and tags in the meantime.",
+    "emptyDescription": "Published glossary pages will appear here once they are added to the reference. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "architectureIndex": {
@@ -160,7 +160,7 @@
     "description": "Architecture-related concepts for factory system shape, workstation structure, and related patterns. Each entry links to a canonical docs page when published.",
     "listLabel": "Architecture entries",
     "emptyTitle": "No architecture entries yet",
-    "emptyDescription": "Published architecture concept pages and pages under the architecture content grouping will appear here. Return home or open search to explore guides, concepts, and tags in the meantime.",
+    "emptyDescription": "Published architecture concept pages and pages under the architecture content grouping will appear here. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "blogIndex": {
@@ -168,7 +168,7 @@
     "description": "Narrative posts that connect factory releases and workflow ideas back to canonical reference pages.",
     "listLabel": "Blog posts",
     "emptyTitle": "No blog posts yet",
-    "emptyDescription": "Published narrative posts will appear here once they are added. Return home or open search to explore guides, concepts, and techniques in the meantime.",
+    "emptyDescription": "Published narrative posts will appear here once they are added. Return home, open Browse, or search the docs to explore guides, concepts, and techniques in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "tagsIndex": {

@@ -275,6 +275,7 @@ export function renderShellSectionCollectionIndexPage({
             homeLinkLabel={sectionMessages.emptyHomeLink}
             messages={emptyStateMessages}
             locale={locale}
+            includeBlogLink
           />
         ) : (
           <DocsIndexEntryList
@@ -366,6 +367,7 @@ export async function renderArchitectureIndexPage(
             homeLinkLabel={architectureIndex.emptyHomeLink}
             messages={messages}
             locale={locale}
+            includeBlogLink
           />
         ) : (
           <DocsIndexEntryList
@@ -397,6 +399,7 @@ export async function renderGlossaryIndexPage(
             homeLinkLabel={glossaryIndex.emptyHomeLink}
             messages={messages}
             locale={locale}
+            includeBlogLink
           />
         ) : (
           <DocsIndexEntryList

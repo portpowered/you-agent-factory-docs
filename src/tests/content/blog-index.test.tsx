@@ -195,6 +195,11 @@ describe("blog index page render", () => {
 
     expect(html).toContain("No blog posts yet");
     expect(html).toContain("Published narrative posts will appear here");
+    expect(html).toContain('href="/"');
+    expect(html).toContain('href="/browse"');
+    expect(html).toContain("data-search");
+    expect(html).not.toContain('href="/blog"');
     expect(html).not.toContain('href="/blog/draft-only"');
+    expect(html).not.toMatch(/Model Atlas|coming soon/i);
   });
 });

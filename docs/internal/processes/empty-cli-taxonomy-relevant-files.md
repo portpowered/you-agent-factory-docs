@@ -38,8 +38,10 @@ under `src/app/(site)/docs/{id}/page.tsx` and
 CLI `*Index.emptyTitle` / `emptyDescription` / `emptyHomeLink` copy must stay
 free of Model Atlas / “Browse the Atlas” / “the atlas” product phrasing (and
 locale equivalents such as アトラス, Duyệt Atlas, 浏览图谱). Assert those
-message fields directly — `DocsIndexEmptyState` still mounts `SearchTrigger`,
-which may retain residual Atlas search chrome outside this lane.
+message fields directly — `DocsIndexEmptyState` mounts home + browse recovery
+links plus `SearchTrigger`, and non-blog empties also include a Blog link via
+`includeBlogLink` (blog index omits the self-link). SearchTrigger may still
+retain residual Atlas search chrome outside this lane.
 `browseIndex.title` / `description` and CLI section
 `*SectionTitle` / `*SectionDescription` / `*SectionLinkLabel` keys must follow
 the same no-Model-Atlas rule across en/ja/vi/zh-CN.

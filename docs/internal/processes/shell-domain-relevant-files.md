@@ -127,6 +127,13 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Model Atlas / retired-collection advertising. Prove with
   `src/lib/content/retired-atlas-collection-routes.test.ts` and
   `src/app/docs/not-found.test.tsx` (included in required `bun run test`).
+* `src/features/docs/components/DocsIndexEmptyState.tsx`
+  Shared empty-state for collection/blog/glossary/architecture indexes.
+  Always offers home + browse + search (`SearchTrigger`); non-blog empties also
+  pass `includeBlogLink` so Blog is a recovery path. Empty title/description/
+  home-link copy in `src/content/messages/*/common.json` must stay free of
+  Model Atlas / coming-soon Atlas advertising. Prove with
+  `src/features/docs/components/DocsIndexEmptyState.test.tsx`.
 * `src/lib/content/factory-only-public-inventory.test.tsx`
   End-to-end shell/navigation proof that the public docs inventory is only
   guides/concepts/techniques/documentation/glossary, browse/sidebar omit
