@@ -68,22 +68,28 @@ describe("validateDocumentationLinks", () => {
     expect(results).toEqual([]);
   });
 
-  test("collectDocumentationLinkFiles includes catch-all-served glossary and module MDX once", async () => {
+  test("collectDocumentationLinkFiles includes factory Concepts and Program documentation once", async () => {
     const files = await collectDocumentationLinkFiles();
     const urls = files.map((file) => file.url).sort();
     const paths = files.map((file) => file.path);
 
-    expect(urls).toContain("/docs/getting-started");
-    expect(urls).toContain("/docs/modules/grouped-query-attention");
-    expect(urls).toContain("/docs/modules/linear-attention");
-    expect(urls).toContain("/docs/modules/multi-head-attention");
-    expect(urls).toContain("/docs/modules/multi-head-latent-attention");
-    expect(urls).toContain("/docs/modules/multi-query-attention");
-    expect(urls).toContain("/docs/modules/sliding-window-attention");
-    expect(urls).toContain("/docs/modules/sparse-attention");
-    expect(urls).toContain("/docs/glossary/token");
+    expect(urls).toContain("/docs/guides/getting-started");
+    expect(urls).toContain("/docs/concepts/skills");
+    expect(urls).toContain("/docs/concepts/mcp");
+    expect(urls).toContain("/docs/concepts/tool-calling");
+    expect(urls).toContain("/docs/concepts/tokens");
+    expect(urls).toContain("/docs/documentation/mock-workers");
+    expect(urls).toContain("/docs/documentation/throttling-and-limits");
+    expect(urls).toContain("/docs/documentation/script-workers");
+    expect(urls).toContain("/docs/documentation/poller-workers");
+    expect(urls).toContain("/docs/documentation/agent-workers");
+    expect(urls).toContain("/docs/documentation/inference-workers");
+    expect(urls).toContain("/docs/documentation/packaged-documents");
+    expect(urls).toContain("/docs/documentation/packaged-factories");
+    expect(urls).not.toContain("/docs/glossary/token");
+    expect(urls).not.toContain("/docs/modules/grouped-query-attention");
     expect(new Set(paths).size).toBe(paths.length);
-    expect(files.length).toBeGreaterThan(100);
+    expect(files.length).toBeGreaterThan(40);
   });
 
   test("reports a broken internal docs target with an actionable URL", async () => {
