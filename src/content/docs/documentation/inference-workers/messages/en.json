@@ -68,6 +68,15 @@
     "cautionSecretsTopic": "Secrets in worker bodies",
     "cautionSecretsGuidance": "Do not put API keys, tokens, or other secret material in the worker markdown body. Keep credentials in the secret and config surfaces the runtime already resolves.",
     "cautionAgentLoopTopic": "Agent-loop substitution",
-    "cautionAgentLoopGuidance": "Do not add agentTools or expect agent-loop behavior on an inference worker. Agent tool policy and loop ownership belong on AGENT_WORKER."
+    "cautionAgentLoopGuidance": "Do not add agentTools or expect agent-loop behavior on an inference worker. Agent tool policy and loop ownership belong on AGENT_WORKER.",
+    "siblingDiscoveryIntro": "Continue with these sibling surfaces when you need the Workers taxonomy, workstation routing, resource capacity, model-inference tokens, tool calling, logs, troubleshooting, or the Agent workers contract. Sibling links aid discovery; they are not required to define what an Inference worker is.",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "resourcesDocs": "Resources",
+    "tokensConcept": "Tokens",
+    "toolCallingConcept": "Tool calling",
+    "logsDocs": "Logs",
+    "troubleshootingDocs": "Troubleshooting",
+    "agentWorkersDocs": "Agent workers"
   }
 }

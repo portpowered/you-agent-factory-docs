@@ -78,6 +78,15 @@
     "failureCanceledClass": "agent_run_canceled",
     "failureCanceledCause": "Factory session or dispatch canceled",
     "failureCanceledRecovery": "Resubmit or resume according to workflow policy",
-    "inferenceSubstituteCaution": "Do not treat INFERENCE_WORKER or operations as a substitute for an agent loop. Inference workers declare one-shot model operations for INFERENCE_RUN. Agent workers do not declare operations; validation rejects capability declarations on AGENT_WORKER."
+    "inferenceSubstituteCaution": "Do not treat INFERENCE_WORKER or operations as a substitute for an agent loop. Inference workers declare one-shot model operations for INFERENCE_RUN. Agent workers do not declare operations; validation rejects capability declarations on AGENT_WORKER.",
+    "siblingDiscoveryIntro": "Continue with these sibling surfaces when you need the Workers taxonomy, workstation routing, resource capacity, model-inference tokens, tool calling, logs, troubleshooting, or the Inference workers contract. Sibling links aid discovery; they are not required to define what an Agent worker is.",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "resourcesDocs": "Resources",
+    "tokensConcept": "Tokens",
+    "toolCallingConcept": "Tool calling",
+    "logsDocs": "Logs",
+    "troubleshootingDocs": "Troubleshooting",
+    "inferenceWorkersDocs": "Inference workers"
   }
 }

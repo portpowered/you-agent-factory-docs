@@ -6,9 +6,18 @@
   "defaultSummaryKey": "description",
   "aliases": ["agent workers", "AGENT_WORKER", "AGENT_RUN", "agentTools"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.workers",
+    "documentation.workstations",
+    "documentation.resources",
+    "concept.tokens",
+    "concept.tool-calling",
+    "documentation.logs",
+    "documentation.troubleshooting",
+    "documentation.inference-workers"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-11T07:00:00.000Z",
-  "updatedAt": "2026-07-11T07:15:00.000Z"
+  "updatedAt": "2026-07-11T08:00:00.000Z"
 }

@@ -12,9 +12,18 @@
     "operations"
   ],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.workers",
+    "documentation.workstations",
+    "documentation.resources",
+    "concept.tokens",
+    "concept.tool-calling",
+    "documentation.logs",
+    "documentation.troubleshooting",
+    "documentation.agent-workers"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-11T07:30:00.000Z",
-  "updatedAt": "2026-07-11T07:45:00.000Z"
+  "updatedAt": "2026-07-11T08:00:00.000Z"
 }
