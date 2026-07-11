@@ -34,14 +34,17 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * stubs) measured ~107.22 MiB total and ~4.42 MiB search bootstrap on CI.
  * Raised again on 2026-07-11 UTC after rebasing Mock workers / Throttling onto
  * main with Script/Poller already landed — combined export measured ~113.75 MiB
- * total and ~4.66 MiB search bootstrap on CI (118 MiB / 4.80 MiB ceilings).
- * Packaged + Script/Poller alone had measured ~113.28 MiB / ~4.51 MiB. Keep
+ * total and ~4.66 MiB search bootstrap on CI. Packaged + Script/Poller alone
+ * had measured ~113.28 MiB / ~4.51 MiB. Raised again on 2026-07-11 UTC after
+ * merging packaged-documents/factories onto main with Mock/Throttling +
+ * Script/Poller already landed — combined export measured ~120.24 MiB total
+ * and ~4.84 MiB search bootstrap on CI (124 MiB / 5.00 MiB ceilings). Keep
  * modest headroom for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 118_000_000,
+  maxTotalOutBytes: 124_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 4_800_000,
+  maxSearchBootstrapBytes: 5_000_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =
