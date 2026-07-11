@@ -1,0 +1,36 @@
+{
+  "title": "Contributing to these docs",
+  "description": "How to add factory documentation pages to the you-agent-factory docs site without recreating retired product patterns.",
+  "openingSummary": "This page is the published contributing surface for the you-agent-factory docs site. Use it when you want to add factory documentation without reverse-engineering the repository layout.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Contributing to these docs explains how to add pages to the you-agent-factory documentation site. The site documents the you-agent-factory CLI and agent-factory workflow system: install and first run, use-case guides, concepts, techniques, documentation topics, glossary entries, and blog posts. It is not a benchmark leaderboard and not a paper-download mirror."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Published collections live under guides, concepts, techniques, documentation, and glossary, plus narrative posts under blog. Each canonical docs page keeps structure in MDX, reader-facing prose in colocated message files, and discovery metadata in a registry record. Choose the collection that matches the reader job, then follow the matching production template."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Pick a collection, copy the matching production template and starter message and asset sidecars, fill isolation-first prose in messages, and add the matching registry record. Run the ordinary local validation path before opening a pull request. Deeper maintainer runbooks stay in the repository contributing guide and site fundamentals; this page is the published orientation, not a full paste of those runbooks."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the published contributing orientation for factory docs. It is not the full maintainer runbook, not a paste of every validation command, and not a place to recreate retired collection ownership. Product framing for the CLI itself belongs on what is you-agent-factory; first-run steps belong on getting started."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "whatIsYouAgentFactory": "What is you-agent-factory",
+    "gettingStarted": "Getting started"
+  }
+}
