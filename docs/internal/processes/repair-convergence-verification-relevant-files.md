@@ -22,6 +22,8 @@ cross-lane drift, or proving the close gate.
 | Story 003 brand / alignment / theme / code-copy | `src/lib/verify/brand-theme-code-copy-r02-convergence.test.tsx` |
 | Story 004 Concepts + Program docs discovery / links | `src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts` |
 | Story 005 focused inventory/search/sitemap/link lock | `src/lib/verify/focused-repair-suites-r02-convergence.test.ts` |
+| Story 007 Pages-prefixed rebuild + guard lock | `src/lib/verify/pages-prefixed-rebuild-r02-convergence.test.ts` |
+| Pages deploy guard implementation | `src/lib/build/guard-pages-deployed-artifact.ts` / `scripts/guard-pages-deployed-artifact.ts` |
 | Link inventory (factory URLs, not Atlas) | `src/lib/build/validate-links.test.ts` |
 
 ## Tip ancestry (story 001 evidence)
@@ -96,9 +98,22 @@ bun test \
   src/lib/content/factory-prev-next-related.test.tsx \
   src/lib/build/validate-links.test.ts \
   src/lib/verify/plan-issues-r02-reconciliation.test.ts \
-  src/lib/verify/focused-repair-suites-r02-convergence.test.ts
+  src/lib/verify/focused-repair-suites-r02-convergence.test.ts \
+  src/lib/verify/pages-prefixed-rebuild-r02-convergence.test.ts \
+  src/lib/build/guard-pages-deployed-artifact.test.ts \
+  src/lib/build/deploy-pages-workflow-contract.test.ts
 make typecheck
 ```
+
+### Story 007 Pages-prefixed rebuild commands
+
+```bash
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+make guard-pages-deployed-artifact
+```
+
+Run the guard immediately against the same `out/` from the prefixed rebuild.
+Do not run an intervening unprefixed `make build` before the guard.
 
 Do **not** include Atlas-era `src/tests/search/orama-index.test.ts` in this focused set;
 factory search proofs live under `src/lib/content/factory-search-*` and story 004/005
@@ -111,8 +126,18 @@ R02 suites (website-functionality exclusions route Atlas search under reader-fac
 - **004** — DONE: Concepts + Program documentation discovery / links (R02 convergence suite + browser verify)
 - **005** — DONE: Focused nav/locale/copy/theme/responsive/a11y/inventory/search/sitemap/link suites green; Atlas link-inventory assertions repaired
 - **006** — DONE: Full local gates green (`make check/test/build/linkcheck/budget/component-coverage`); biome format on story 004 suite was the only combined-result fix
-- **007** — Pages-prefixed rebuild + `make guard-pages-deployed-artifact`
+- **007** — DONE: Pages-prefixed rebuild + `make guard-pages-deployed-artifact` (live gate + R02 lock suite)
 - **008** — Browser/visual review across required shells
+
+## Story 007 Pages-prefixed rebuild + guard (2026-07-11 UTC)
+
+| Gate | Command | Result |
+| --- | --- | --- |
+| Prefixed rebuild | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` | PASS (`out/` references `/you-agent-factory-docs/_next/...`) |
+| Deployed-artifact guard | `make guard-pages-deployed-artifact` | PASS (`source=reused`, `basePath=/you-agent-factory-docs`) |
+| R02 lock suite | `pages-prefixed-rebuild-r02-convergence.test.ts` | PASS (base path, probe inventory, prefixed accept / unprefixed reject) |
+
+Live proof: home HTML uses `/you-agent-factory-docs/_next/static/css/...`; no root `/_next` asset hrefs; guard HTTP-probes home, getting-started, comparing-agent-factories, search bootstrap, CSS, and JS under the project-site prefix. No unprefixed asset/search regressions found — no cross-lane repair required.
 
 ## Story 006 full local gates (2026-07-11 UTC)
 
