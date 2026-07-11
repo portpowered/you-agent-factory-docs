@@ -49,75 +49,96 @@ describe("localized route metadata alternates", () => {
 
   it("publishes alternate-language metadata for tag and docs pages", async () => {
     const tagMetadata = await generateTagMetadata({
-      params: Promise.resolve({ slug: "attention" }),
+      params: Promise.resolve({ slug: "foundations" }),
     });
     const docsMetadata = await generateDocsMetadata({
-      params: Promise.resolve({ slug: ["modules", "grouped-query-attention"] }),
+      params: Promise.resolve({ slug: ["concepts", "harness"] }),
     });
 
-    expect(tagMetadata.alternates?.canonical).toBe("/tags/attention");
-    expect(tagMetadata.alternates?.languages?.vi).toBe("/vi/tags/attention");
-    expect(tagMetadata.alternates?.languages?.ja).toBe("/ja/tags/attention");
-
-    expect(docsMetadata.alternates?.canonical).toBe(
-      "/docs/modules/grouped-query-attention",
+    expect(tagMetadata.alternates?.canonical).toBe("/tags/foundations");
+    expect(tagMetadata.alternates?.languages?.vi).toBe("/vi/tags/foundations");
+    expect(tagMetadata.alternates?.languages?.ja).toBe("/ja/tags/foundations");
+    expect(tagMetadata.alternates?.languages?.["zh-CN"]).toBe(
+      "/zh-CN/tags/foundations",
     );
+
+    expect(docsMetadata.alternates?.canonical).toBe("/docs/concepts/harness");
     expect(docsMetadata.alternates?.languages?.vi).toBe(
-      "/vi/docs/modules/grouped-query-attention",
+      "/vi/docs/concepts/harness",
     );
     expect(docsMetadata.alternates?.languages?.ja).toBe(
-      "/ja/docs/modules/grouped-query-attention",
+      "/ja/docs/concepts/harness",
+    );
+    expect(docsMetadata.alternates?.languages?.["zh-CN"]).toBe(
+      "/zh-CN/docs/concepts/harness",
     );
   });
 
-  it("keeps localized docs alternates fail closed for the shipped japanese attention proof set", async () => {
-    const multiQueryMetadata = await generateLocalizedDocsMetadata({
+  it("keeps localized docs alternates fail closed for unfilled pages while advertising filled high-traffic locales", async () => {
+    const gettingStartedMetadata = await generateLocalizedDocsMetadata({
       params: Promise.resolve({
         locale: "ja",
-        slug: ["modules", "multi-query-attention"],
+        slug: ["guides", "getting-started"],
       }),
     });
-    const slidingWindowMetadata = await generateLocalizedDocsMetadata({
+    const cliMetadata = await generateLocalizedDocsMetadata({
       params: Promise.resolve({
-        locale: "ja",
-        slug: ["modules", "sliding-window-attention"],
+        locale: "zh-CN",
+        slug: ["documentation", "cli"],
       }),
     });
-    const kvCacheMetadata = await generateDocsMetadata({
-      params: Promise.resolve({ slug: ["glossary", "kv-cache"] }),
+    const unfilledConfigurationMetadata = await generateDocsMetadata({
+      params: Promise.resolve({
+        slug: ["documentation", "configuration"],
+      }),
     });
 
-    expect(multiQueryMetadata.alternates).toEqual({
-      canonical: "/docs/modules/multi-query-attention",
+    expect(gettingStartedMetadata.title).toBe("はじめに");
+    expect(gettingStartedMetadata.alternates).toEqual({
+      canonical: "/docs/guides/getting-started",
       languages: {
-        en: "/docs/modules/multi-query-attention",
-        ja: "/ja/docs/modules/multi-query-attention",
-        vi: "/vi/docs/modules/multi-query-attention",
+        en: "/docs/guides/getting-started",
+        ja: "/ja/docs/guides/getting-started",
+        "zh-CN": "/zh-CN/docs/guides/getting-started",
+        vi: "/vi/docs/guides/getting-started",
       },
     });
-    expect(slidingWindowMetadata.alternates).toEqual({
-      canonical: "/docs/modules/sliding-window-attention",
+    expect(cliMetadata.title).toBe("CLI");
+    expect(cliMetadata.alternates).toEqual({
+      canonical: "/docs/documentation/cli",
       languages: {
-        en: "/docs/modules/sliding-window-attention",
-        ja: "/ja/docs/modules/sliding-window-attention",
-        vi: "/vi/docs/modules/sliding-window-attention",
+        en: "/docs/documentation/cli",
+        ja: "/ja/docs/documentation/cli",
+        "zh-CN": "/zh-CN/docs/documentation/cli",
+        vi: "/vi/docs/documentation/cli",
       },
     });
-    expect(multiQueryMetadata.title).toBe("マルチクエリ attention");
-    expect(slidingWindowMetadata.title).toBe(
-      "スライディングウィンドウ attention",
-    );
-    expect(kvCacheMetadata.alternates).toEqual({
-      canonical: "/docs/glossary/kv-cache",
+    expect(unfilledConfigurationMetadata.alternates).toEqual({
+      canonical: "/docs/documentation/configuration",
       languages: {
-        en: "/docs/glossary/kv-cache",
+        en: "/docs/documentation/configuration",
       },
     });
+
+    await expect(
+      generateLocalizedDocsMetadata({
+        params: Promise.resolve({
+          locale: "ja",
+          slug: ["documentation", "configuration"],
+        }),
+      }),
+    ).rejects.toThrow(/notFound\(\)|NEXT_HTTP_ERROR_FALLBACK;404/);
   });
 
   it("loads localized shell metadata copy from the requested locale", async () => {
     const jaHomeMetadata = await generateLocalizedHomeMetadata({
       params: Promise.resolve({ locale: "ja" }),
+    });
+    const zhCnHomeMetadata = await generateLocalizedHomeMetadata({
+      params: Promise.resolve({ locale: "zh-CN" }),
+    });
+    const viHomeMetadata = await generateLocalizedHomeMetadata({
+      params: Promise.resolve({ locale: "vi" }),
     });
     const jaSearchMetadata = await generateLocalizedSearchMetadata({
       params: Promise.resolve({ locale: "ja" }),
@@ -132,15 +153,30 @@ describe("localized route metadata alternates", () => {
       params: Promise.resolve({ locale: "ja" }),
     });
 
+    const englishHomeIntro =
+      "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.";
+
     expect(jaHomeMetadata.title).toBe("you-agent-factory");
     expect(jaHomeMetadata.description).toBe(
       "you-agent-factory は、ファクトリーのインストール、名前付きゴールの実行、およびハーネス、ループ、レビュー、プランナー、cron、イベントストリームの運用に関する CLI ドキュメントです。",
     );
     expect(String(jaHomeMetadata.title)).not.toMatch(/Model Atlas/i);
     expect(String(jaHomeMetadata.description)).not.toMatch(/Model Atlas/i);
-    expect(String(jaHomeMetadata.description)).not.toBe(
-      "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
+    expect(String(jaHomeMetadata.description)).not.toBe(englishHomeIntro);
+
+    expect(zhCnHomeMetadata.title).toBe("you-agent-factory");
+    expect(zhCnHomeMetadata.description).toBe(
+      "you-agent-factory 是用于安装工厂、运行命名目标，以及操作 harness、循环、审查、规划器、cron 与事件流的 CLI 文档。",
     );
+    expect(String(zhCnHomeMetadata.description)).not.toBe(englishHomeIntro);
+    expect(zhCnHomeMetadata.alternates?.languages?.["zh-CN"]).toBe("/zh-CN");
+
+    expect(viHomeMetadata.title).toBe("you-agent-factory");
+    expect(viHomeMetadata.description).toBe(
+      "you-agent-factory là tài liệu CLI để cài đặt factory, chạy các mục tiêu có tên, và vận hành harness, vòng lặp, review, planner, cron, cùng luồng sự kiện.",
+    );
+    expect(String(viHomeMetadata.description)).not.toBe(englishHomeIntro);
+    expect(viHomeMetadata.alternates?.languages?.vi).toBe("/vi");
 
     expect(jaSearchMetadata.title).toBe("検索");
     expect(jaSearchMetadata.description).toBe(
@@ -162,73 +198,97 @@ describe("localized route metadata alternates", () => {
     expect(jaHomeMetadata.alternates?.languages?.ja).toBe("/ja");
   });
 
-  it("generates japanese docs routes for the shipped attention proof set", async () => {
-    const params = await generateLocalizedDocsStaticParams();
+  it("resolves high-traffic docs metadata from filled locale message bundles", async () => {
+    const highTrafficPages = [
+      {
+        slug: ["guides", "getting-started"],
+        titles: {
+          ja: "はじめに",
+          "zh-CN": "快速开始",
+          vi: "Bắt đầu",
+        },
+      },
+      {
+        slug: ["documentation", "install"],
+        titles: {
+          ja: "you-agent-factory のインストール",
+          "zh-CN": "安装 you-agent-factory",
+          vi: "Cài đặt you-agent-factory",
+        },
+      },
+      {
+        slug: ["documentation", "cli"],
+        titles: {
+          ja: "CLI",
+          "zh-CN": "CLI",
+          vi: "CLI",
+        },
+      },
+      {
+        slug: ["guides", "using-you-agent-factory-for-loops"],
+        titles: {
+          ja: "you-agent-factory でループを使う",
+          "zh-CN": "用 you-agent-factory 做循环",
+          vi: "Dùng you-agent-factory cho vòng lặp",
+        },
+      },
+    ] as const;
 
-    expect(
+    for (const page of highTrafficPages) {
+      const canonical = `/docs/${page.slug.join("/")}`;
+      for (const locale of ["ja", "zh-CN", "vi"] as const) {
+        const metadata = await generateLocalizedDocsMetadata({
+          params: Promise.resolve({ locale, slug: [...page.slug] }),
+        });
+
+        expect(metadata.title).toBe(page.titles[locale]);
+        expect(String(metadata.description).length).toBeGreaterThan(0);
+        expect(metadata.alternates).toEqual({
+          canonical,
+          languages: {
+            en: canonical,
+            ja: `/ja${canonical}`,
+            "zh-CN": `/zh-CN${canonical}`,
+            vi: `/vi${canonical}`,
+          },
+        });
+      }
+    }
+
+    const jaGettingStarted = await generateLocalizedDocsMetadata({
+      params: Promise.resolve({
+        locale: "ja",
+        slug: ["guides", "getting-started"],
+      }),
+    });
+    expect(String(jaGettingStarted.description)).not.toBe(
+      "Install you-agent-factory, start a factory, and submit your first work.",
+    );
+  });
+
+  it("generates localized docs routes for filled high-traffic pages and omits unfilled ones", async () => {
+    const params = await generateLocalizedDocsStaticParams();
+    const hasLocaleSlug = (locale: string, docsSlug: string) =>
       params.some(
-        ({ locale, slug }) =>
-          locale === "ja" &&
-          slug?.join("/") === "modules/grouped-query-attention",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" && slug?.join("/") === "modules/attention",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" && slug?.join("/") === "glossary/token",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" &&
-          slug?.join("/") === "concepts/transformer-architecture",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" && slug?.join("/") === "modules/multi-head-attention",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" &&
-          slug?.join("/") === "modules/multi-query-attention",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" &&
-          slug?.join("/") === "modules/sliding-window-attention",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" && slug?.join("/") === "modules/linear-attention",
-      ),
-    ).toBe(true);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "ja" && slug?.join("/") === "modules/swiglu",
-      ),
-    ).toBe(false);
-    expect(
-      params.some(
-        ({ locale, slug }) =>
-          locale === "vi" &&
-          slug?.join("/") === "modules/grouped-query-attention",
-      ),
-    ).toBe(true);
+        ({ locale: paramLocale, slug }) =>
+          paramLocale === locale && slug?.join("/") === docsSlug,
+      );
+
+    for (const locale of ["ja", "zh-CN", "vi"] as const) {
+      expect(hasLocaleSlug(locale, "guides/getting-started")).toBe(true);
+      expect(hasLocaleSlug(locale, "documentation/install")).toBe(true);
+      expect(hasLocaleSlug(locale, "documentation/cli")).toBe(true);
+      expect(
+        hasLocaleSlug(locale, "guides/using-you-agent-factory-for-loops"),
+      ).toBe(true);
+      expect(hasLocaleSlug(locale, "guides/write-review-loops")).toBe(true);
+      expect(hasLocaleSlug(locale, "guides/cursor-dynamic-workflows")).toBe(
+        true,
+      );
+      expect(hasLocaleSlug(locale, "documentation/configuration")).toBe(false);
+      expect(hasLocaleSlug(locale, "modules/grouped-query-attention")).toBe(
+        false,
+      );
+    }
   });
 });

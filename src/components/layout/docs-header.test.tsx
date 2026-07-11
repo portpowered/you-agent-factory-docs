@@ -806,6 +806,83 @@ describe("DocsHeader", () => {
     ).toBe("/ja/search?q=attention&tag=attention");
   });
 
+  test("keeps language switching available on filled high-traffic docs pages", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const user = userEvent.setup();
+    const pathname = "/docs/guides/getting-started";
+    window.history.replaceState({}, "", pathname);
+    renderHeaderWithNavigation(
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
+      {
+        SearchDialog,
+        pathname,
+      },
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: messages.language.open }),
+    );
+
+    const dialog = screen.getByRole("menu");
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /English/i })
+        .getAttribute("href"),
+    ).toBe(pathname);
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /日本語/ })
+        .getAttribute("href"),
+    ).toBe(`/ja${pathname}`);
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /简体中文/ })
+        .getAttribute("href"),
+    ).toBe(`/zh-CN${pathname}`);
+    expect(
+      within(dialog)
+        .getByRole("menuitem", { name: /^Tiếng Việt$/i })
+        .getAttribute("href"),
+    ).toBe(`/vi${pathname}`);
+    for (const name of [/日本語/, /简体中文/, /^Tiếng Việt$/i]) {
+      expect(
+        within(dialog)
+          .getByRole("menuitem", { name })
+          .getAttribute("aria-disabled"),
+      ).not.toBe("true");
+    }
+  });
+
+  test("renders localized simplified header labels on a zh-CN route", async () => {
+    const messages = await loadUiMessages("zh-CN");
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const html = renderToStaticMarkup(
+      <RootProvider search={{ SearchDialog, enabled: true }}>
+        <DocsHeader
+          messages={messages}
+          pageTree={source.pageTree}
+          locale="zh-CN"
+        />
+      </RootProvider>,
+    );
+
+    const expectedItems = getPrimaryNavItems(messages, "zh-CN");
+    const desktopNavMatch = html.match(
+      /<nav[^>]*aria-label="Primary"[^>]*>([\s\S]*?)<\/nav>/,
+    );
+    expect(desktopNavMatch).toBeTruthy();
+    for (const item of expectedItems) {
+      const escapedHref = item.href.replaceAll("&", "&amp;");
+      expect(desktopNavMatch?.[1]).toContain(`href="${escapedHref}"`);
+      expect(desktopNavMatch?.[1]).toContain(`>${item.label}<`);
+    }
+    expect(html).toContain(">首页<");
+    expect(html).toContain(">指南<");
+    expect(html).toContain(">文档<");
+    expect(html).toContain(">术语表<");
+  });
+
   test("keeps the language and GitHub header controls on the same outline button contract", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;

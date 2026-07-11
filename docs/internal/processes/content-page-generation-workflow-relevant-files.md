@@ -852,7 +852,13 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   always get a locale-preserving `href` via `switchRouteLocale`; docs pages mark
   unshipped locales unavailable (`href: null`) instead of linking to wrong-language
   copy. Cover available zh-CN navigation + query preservation and unavailable
-  docs behavior in `src/components/layout/docs-header.test.tsx`.
+  docs behavior in `src/components/layout/docs-header.test.tsx`. When filling
+  high-traffic locales, also prove language switching stays available on a filled
+  docs slug (for example `/docs/guides/getting-started`) and that localized
+  metadata titles/descriptions resolve from page message bundles in
+  `src/tests/layout/localized-route-metadata.test.ts`. Shell `nav.guides` /
+  `nav.docs` must exist for every shipped locale (including `zh-CN`) so primary
+  nav labels are not `undefined` on locale-prefixed routes.
 
 ## Representative migrated consumers
 
