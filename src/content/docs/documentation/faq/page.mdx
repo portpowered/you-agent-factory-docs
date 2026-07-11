@@ -15,6 +15,7 @@ updatedAt: "2026-07-11"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -31,6 +32,114 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+</Section>
+
+<Section
+  id="what-is-you-agent-factory"
+  titleKey="sections.whatIsYouAgentFactory.title"
+>
+  <T k="sections.whatIsYouAgentFactory.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/what-is-you-agent-factory",
+        labelKey: "links.whatIsYouAgentFactory",
+      },
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="how-to-install" titleKey="sections.howToInstall.title">
+  <T k="sections.howToInstall.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="how-to-run-named-workflow"
+  titleKey="sections.howToRunNamedWorkflow.title"
+>
+  <T k="sections.howToRunNamedWorkflow.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/factory-session",
+        labelKey: "links.factorySession",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="where-configuration-lives"
+  titleKey="sections.whereConfigurationLives.title"
+>
+  <T k="sections.whereConfigurationLives.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/global-configuration-factories",
+        labelKey: "links.globalConfigurationFactories",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="how-mcp-or-cursor-connects"
+  titleKey="sections.howMcpOrCursorConnects.title"
+>
+  <T k="sections.howMcpOrCursorConnects.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/documentation/dynamic-workflows",
+        labelKey: "links.dynamicWorkflows",
+      },
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflows",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="something-failed" titleKey="sections.somethingFailed.title">
+  <T k="sections.somethingFailed.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/troubleshooting",
+        labelKey: "links.troubleshooting",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
