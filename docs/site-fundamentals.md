@@ -58,21 +58,21 @@ not a marketing site and not a rainbow dashboard.
 
 Use:
 
-* dark documentation surfaces
-* mostly white, off-white, and muted gray text
-* dull blue-teal for focus and navigation state
-* pastel pink/coral as a sparse editorial highlight
-* weathered cream, charcoal, teal-gray, and pale pink textures
+* dark documentation surfaces (near-black factory-dark canvas)
+* warm off-white ink for body text
+* yellow primary brand accent for focus, links, and primary actions
+* cool blue/cyan secondary for supporting interactive highlights
 * etched grid, compass, and technical linework as low-contrast background detail
 
 Avoid:
 
 * many saturated colors competing on one page
 * bright red as the default primary color
-* bright cyan focus states
+* legacy dull teal primary or pastel coral accent values
 * purple gradients
 * colorful tag chips by default
 * dashboard-like home-page segmentation
+* page-local hard-coded brand hex on content pages (consume semantic tokens)
 
 ## shadcn Theme Tokens
 
@@ -80,64 +80,60 @@ Use shadcn's semantic token model: components should consume tokens such as
 `background`, `foreground`, `primary`, `accent`, `border`, `ring`, and
 `sidebar`, rather than hard-coded brand colors.
 
-The default product theme is dark. A light theme can be added later; implement
-the dark token set first.
+The default product theme is dark (`factory-dark` from
+`@you-agent-factory/components`). Host `:root` shadcn variables must reference
+package foundation keys (`--color-af-foundation-*`), not invent a second
+palette. Keep the TypeScript contract in
+`src/lib/theme/host-semantic-theme-tokens.ts` aligned with `src/app/globals.css`.
 
 ```css
 :root {
   --radius: 0.5rem;
 
-  /* Base document shell */
-  --background: oklch(0.145 0.018 205);
-  --foreground: oklch(0.955 0.018 82);
+  /* Base document shell — factory-dark near-black + warm ink */
+  --background: var(--color-af-foundation-background);
+  --foreground: var(--color-af-foundation-ink);
 
   /* Cards, panels, popovers, tables, and inline doc figures */
-  --card: oklch(0.18 0.018 205);
-  --card-foreground: oklch(0.955 0.018 82);
-  --popover: oklch(0.17 0.018 205);
-  --popover-foreground: oklch(0.955 0.018 82);
+  --card: var(--color-af-foundation-surface);
+  --card-foreground: var(--color-af-foundation-ink);
+  --popover: var(--color-af-foundation-background-mid);
+  --popover-foreground: var(--color-af-foundation-ink);
 
-  /* Dull blue-teal focus color */
-  --primary: oklch(0.59 0.07 205);
-  --primary-foreground: oklch(0.98 0.01 82);
+  /* Yellow brand primary */
+  --primary: var(--color-af-foundation-accent);
+  --primary-foreground: var(--color-af-foundation-accent-ink);
 
-  /* Quiet secondary surfaces */
-  --secondary: oklch(0.24 0.018 205);
-  --secondary-foreground: oklch(0.9 0.014 82);
+  /* Cool blue/cyan secondary */
+  --secondary: var(--color-af-foundation-secondary-accent);
+  --secondary-foreground: var(--color-af-foundation-canvas);
 
   /* Muted text and inactive UI */
-  --muted: oklch(0.24 0.012 205);
-  --muted-foreground: oklch(0.68 0.018 82);
+  --muted: var(--color-af-foundation-background-mid);
+  --muted-foreground: var(--color-af-foundation-secondary-accent-ink);
 
-  /* Pastel pink/coral editorial highlight */
-  --accent: oklch(0.74 0.105 21);
-  --accent-foreground: oklch(0.16 0.02 205);
+  /* Stronger yellow accent for hover/highlight chrome */
+  --accent: var(--color-af-foundation-accent-strong);
+  --accent-foreground: var(--color-af-foundation-accent-ink);
 
   /* Destructive state, used sparingly and not as brand color */
-  --destructive: oklch(0.56 0.16 24);
-  --destructive-foreground: oklch(0.98 0.01 82);
+  --destructive: var(--color-af-foundation-danger);
+  --destructive-foreground: var(--color-af-foundation-canvas);
 
   /* Hairlines and input states */
-  --border: oklch(0.32 0.018 205);
-  --input: oklch(0.28 0.018 205);
-  --ring: oklch(0.59 0.07 205);
-
-  /* Optional chart palette: low saturation, field-guide compatible */
-  --chart-1: oklch(0.59 0.07 205);
-  --chart-2: oklch(0.74 0.105 21);
-  --chart-3: oklch(0.78 0.055 92);
-  --chart-4: oklch(0.55 0.035 165);
-  --chart-5: oklch(0.72 0.025 75);
+  --border: rgb(from var(--color-af-foundation-overlay) r g b / 0.18);
+  --input: var(--color-af-foundation-surface);
+  --ring: var(--color-af-foundation-accent);
 
   /* Sidebar shell */
-  --sidebar: oklch(0.155 0.018 205);
-  --sidebar-foreground: oklch(0.9 0.014 82);
-  --sidebar-primary: oklch(0.59 0.07 205);
-  --sidebar-primary-foreground: oklch(0.98 0.01 82);
-  --sidebar-accent: oklch(0.24 0.018 205);
-  --sidebar-accent-foreground: oklch(0.955 0.018 82);
-  --sidebar-border: oklch(0.29 0.018 205);
-  --sidebar-ring: oklch(0.59 0.07 205);
+  --sidebar: var(--color-af-foundation-background-start);
+  --sidebar-foreground: var(--color-af-foundation-ink);
+  --sidebar-primary: var(--color-af-foundation-accent);
+  --sidebar-primary-foreground: var(--color-af-foundation-accent-ink);
+  --sidebar-accent: var(--color-af-foundation-surface);
+  --sidebar-accent-foreground: var(--color-af-foundation-ink);
+  --sidebar-border: rgb(from var(--color-af-foundation-overlay) r g b / 0.18);
+  --sidebar-ring: var(--color-af-foundation-accent);
 }
 ```
 

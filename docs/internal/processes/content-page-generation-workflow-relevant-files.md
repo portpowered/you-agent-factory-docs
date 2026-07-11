@@ -101,8 +101,21 @@ Before the first authored page under a rewrite-era CLI collection can pass
 When a guide needs copyable shell commands (install, first-run, submit):
 
 1. Put fenced code blocks in `page.mdx` (not in message JSON). They render
-   through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents` and
-   stay always-visible with a copy control.
+   through the Fumadocs `pre` → `DocsPre` mapping in `moduleMdxComponents`.
+   `DocsCodeBlock` keeps inset padding on the scroll viewport and a dedicated
+   copy rail (`data-docs-code-actions="rail"`) so long-line scroll never
+   overlaps the control (see `docs-code-block.css`). Host `DocsCodeCopyButton`
+   owns clipboard + checkmark + accessible copied status (`Copied Text` label
+   + `aria-live` status) with secondary-blue hover/focus/checked chrome
+   (`docs-code-copy-chrome.ts`); it resets after `DOCS_CODE_COPY_RESET_MS`.
+   Regression lock: contrast pairings (`color-contrast.ts` /
+   `HOST_SEMANTIC_CONTRAST_PAIRINGS`), rail non-overlap
+   (`docs-code-block-layout.ts`), and
+   `src/tests/a11y/docs-code-block.a11y.test.tsx`.
+   R00 served-page gate: `theme-code-copy-r00-gate.ts` +
+   `theme-code-copy-r00-page.test.ts` (opt-in
+   `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`) proves factory-dark chrome and the
+   full copy interaction on `/docs/guides/getting-started` at desktop + narrow.
 2. Keep OS labels and short prose in colocated messages. `pageSectionSchema`
    only allows `title` / `body` per section — extra keys under
    `sections.<id>` are stripped by Zod and then fail

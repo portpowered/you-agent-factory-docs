@@ -23,7 +23,9 @@ entry. Do not vendor or fork package source into this repo.
 | `package.json` | Runtime dependency on `@you-agent-factory/components@0.0.0` |
 | `next.config.ts` | `transpilePackages: ["@you-agent-factory/components"]` so Next compiles TS source exports |
 | `src/lib/factory-components/host-package-surface.ts` | Minimal host import proving root + category resolution/typecheck |
-| `src/app/globals.css` | Single `@import "@you-agent-factory/components/styles.css"` after Tailwind (package README order) |
+| `src/app/globals.css` | Single `@import "@you-agent-factory/components/styles.css"` after Tailwind (package README order); host `:root` shadcn tokens map to `--color-af-foundation-*` (factory-dark), not legacy teal/coral oklch |
+| `src/lib/theme/host-semantic-theme-tokens.ts` | Contract for host semantic → foundation bindings + resolved factory-dark hex; keep aligned with `globals.css` `:root` |
+| `src/app/root-layout.shared.tsx` | Root `<html className="dark" data-color-palette="factory-dark">` so package palette presets stay explicit |
 | `src/lib/factory-components/host-package-styles.ts` | Resolves the published `styles.css` export map entry for smoke verification |
 | `src/features/factory-ui/graphs.ts` | Thin re-export of `@you-agent-factory/components/graphs` (viewport/node/edge helpers); no domain logic or styles import |
 | `src/features/factory-ui/charts.ts` | Thin re-export of `@you-agent-factory/components/charts` (ChartContainer, ChartStatePanel, tooltip/legend helpers); no domain series models or styles import |
@@ -40,6 +42,28 @@ entry. Do not vendor or fork package source into this repo.
 - Do **not** re-import package styles from `src/features/factory-ui/*` wrappers.
 - Prove the styles export resolves with `resolveFactoryComponentsStylesPath()`;
   do not add tests that only count `@import` lines in `globals.css`.
+
+## Host semantic theme remap (factory-dark)
+
+- Package `color-palette-presets.css` defines `--color-af-foundation-*` for
+  `factory-dark` (near-black `#050b10`, warm ink `#f7f2e8`, yellow accent
+  `#f5c76f` / strong `#ecbf58`, cool secondary `#507f8c`).
+- Host shadcn variables (`--background`, `--primary`, `--secondary`, …) in
+  `globals.css` must `var()` those foundation keys. Do not paste a second
+  teal/coral oklch palette into `:root`.
+- Keep `src/lib/theme/host-semantic-theme-tokens.ts` as the binding contract;
+  prove resolved primary/secondary/background with
+  `host-semantic-theme-tokens.test.ts` (behavioral color checks, not a CSS
+  source inventory).
+- Contrast lock: `HOST_SEMANTIC_CONTRAST_PAIRINGS` +
+  `src/lib/theme/color-contrast.ts` assert readable WCAG ratios for
+  primary/secondary/foreground pairings on the dark product theme
+  (`color-contrast.test.ts`). Secondary button fill is ~4.48:1 — lane floor
+  is 4.4 for that pairing; body/primary stay at 4.5+.
+- Set `data-color-palette="factory-dark"` on the root document element.
+- R00 served-page gate: `src/lib/verify/theme-code-copy-r00-gate.ts` +
+  `theme-code-copy-r00-page.test.ts` prove factory-dark chrome and shared
+  code-copy interaction on `/docs/guides/getting-started` (desktop + narrow).
 
 ## Thin factory-ui graph wrappers
 
