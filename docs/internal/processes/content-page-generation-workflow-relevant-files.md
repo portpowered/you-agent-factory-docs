@@ -184,16 +184,21 @@ Missing non-default messages fail closed (no English fallback at load time).
 
 When a later lane **fills** high-traffic stubs with real target-language prose
 (for example `guides/getting-started`, `documentation/install`,
-`documentation/what-is-you-agent-factory`), keep the same key shape, leave
-install command literals in `page.mdx` unchanged, keep OS platform labels such
-as `macOS / Linux` / `Windows (PowerShell)` identical across locales, and update
-any section-index title/description assertions that previously expected the
-English stub (for example `src/tests/content/section-indexes.test.tsx` for
-`vi` documentation index). Prefer extending the existing page-owned test
+`documentation/what-is-you-agent-factory`, `documentation/cli`), keep the same
+key shape, leave install command literals unchanged (in `page.mdx` or under
+`links.*` for CLI), keep OS platform labels such as `macOS / Linux` /
+`Windows (PowerShell)` identical across locales, and update any section-index
+title/description assertions that previously expected the English stub (for
+example `src/tests/content/section-indexes.test.tsx` for `vi` documentation
+index). Prefer extending the existing page-owned test
 (`src/lib/content/install-page.test.tsx` /
-`src/lib/content/what-is-you-agent-factory-page.test.tsx`, or a colocated
-`<slug>-page.test.tsx`) with locale cases that assert reader-facing fields
-differ from English rather than only that files exist.
+`src/lib/content/what-is-you-agent-factory-page.test.tsx` /
+`src/lib/content/cli-page.test.tsx`, or a colocated `<slug>-page.test.tsx`) with
+locale cases that assert reader-facing fields differ from English rather than
+only that files exist. For `documentation/cli`, authoring new
+`messages/{ja,zh-CN,vi}.json` (not just filling stubs) is what ships the page
+in those locales — regenerate and commit
+`shipped-localized-docs.generated.ts` plus the derive-test expectation.
 
 Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
 locale message files (the derive test requires it). On a first CLI-section page

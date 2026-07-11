@@ -1,0 +1,76 @@
+{
+  "title": "CLI",
+  "description": "you-agent-factory CLI をインストールし、ファクトリーの起動、作業の投入、セッションの確認、パッケージ化されたドキュメントの参照に使う主要な you コマンドを調べます。",
+  "openingSummary": "you-agent-factory CLI は、ファクトリーツールをインストールし、マシン上で長時間続くエージェント作業を操作するためのコマンドライン入口です。",
+  "sections": {
+    "whatItCovers": {
+      "title": "対象範囲",
+      "body": "このリファレンスは you-agent-factory CLI を扱います。you バイナリのインストール方法と、ファクトリーの起動、作業の投入、セッションと作業の確認、パッケージ化されたドキュメントの表示に使う主要なコマンドです。インストール入口とコマンドの目的を一目で把握したい顧客向けの、耐久性のある CLI 参照面です。"
+    },
+    "keyConcepts": {
+      "title": "主要概念",
+      "body": "ファクトリーは、マシン上でエージェント作業を永続的に保つ長時間実行ランタイムです。ファクトリーを起動するとは、you や you run などの形でそのランタイムを立ち上げ、ホストが作業を受け付けられるようにすることです。作業の投入とは、すでに動いているファクトリーへ作業項目やバッチを送ることであり、you submit や you submit batch などの形を使います。セッションと作業のコマンドは、稼働中のファクトリー状態を確認します。パッケージ化されたドキュメントのコマンドは、稼働中のファクトリーなしで参照用マークダウンを表示します。"
+    },
+    "install": {
+      "title": "インストール",
+      "body": "お使いの OS 向けに公開されているリリース入口で you CLI をインストールします。これらのコマンドはバイナリを入れます。ファクトリーは起動しません。"
+    },
+    "howToUse": {
+      "title": "使い方",
+      "body": "CLI をインストールしたら、下のコマンド一覧で適切な you コマンドを選びます。ローカルランタイムが必要なときはファクトリーを起動します。作業の投入は、ファクトリーがすでに動いているときだけ行います。稼働中の状態を確認するにはセッションと作業のコマンドを使い、稼働中のファクトリーなしでパッケージ化された参照トピックが必要なときは you docs を使います。"
+    },
+    "commands": {
+      "title": "コマンド",
+      "body": "この一覧で主要な you コマンドを選び、ファクトリーがすでに動いている必要があるかを確認します。起動系はローカルランタイムを作成または接続します。投入系は稼働中のファクトリーへ作業をキューします。ドキュメント系はオフラインでパッケージ化された参照マークダウンを表示します。"
+    },
+    "limitsAndAssumptions": {
+      "title": "限界と前提",
+      "body": "このページは、インストール入口と主要なコマンド一覧のための Web CLI リファレンスです。完全なフラグ一覧でも、パッケージ化された CLI ドキュメントの同期でもなく、ハーネス、MCP、設定の詳細ページでもありません。初回実行の手順や OS / エグゼキューター別のインストール変形は、それらのページが公開されているとき、インストールとはじめにの面に属します。"
+    },
+    "related": {
+      "title": "関連"
+    },
+    "tags": {
+      "title": "タグ"
+    },
+    "references": {
+      "title": "参考文献"
+    }
+  },
+  "links": {
+    "installMacosLinuxLabel": "macOS / Linux",
+    "installMacosLinuxCommand": "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh",
+    "installWindowsLabel": "Windows (PowerShell)",
+    "installWindowsCommand": "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex",
+    "commandMatrixCommandHeader": "コマンド",
+    "commandMatrixPurposeHeader": "目的",
+    "commandMatrixRunningFactoryHeader": "ファクトリーがすでに動いている必要があるか？",
+    "commandMatrixYouCommand": "you",
+    "commandMatrixYouPurpose": "現在のプロジェクトから、デフォルトのローカルファクトリーとダッシュボードを起動します。",
+    "commandMatrixYouRunning": "いいえ — これがランタイムを起動します。",
+    "commandMatrixYouRunDirCommand": "you run --dir <factory>",
+    "commandMatrixYouRunDirPurpose": "明示したファクトリーディレクトリから、ローカルファクトリーを起動または接続します。",
+    "commandMatrixYouRunDirRunning": "いいえ — これがランタイムを起動します。",
+    "commandMatrixYouRunNamedCommand": "you run --named <factory> / you run --factory <path>",
+    "commandMatrixYouRunNamedPurpose": "ローカルのディレクトリ構成を推測せずに、名前付きまたはポータブルなファクトリーを実行します。",
+    "commandMatrixYouRunNamedRunning": "いいえ — これがランタイムを起動します。",
+    "commandMatrixYouRunWorkCommand": "you run --work <batch.json>",
+    "commandMatrixYouRunWorkPurpose": "定常状態の投入ではなく、ローカルファクトリー起動の一部としてバッチ JSON を投入します。",
+    "commandMatrixYouRunWorkRunning": "--dir などの起動形と一緒に使う場合はいいえ。",
+    "commandMatrixYouSubmitCommand": "you submit",
+    "commandMatrixYouSubmitPurpose": "すでに作業を受け付けているファクトリーへ、1 件の作業項目を投入します。",
+    "commandMatrixYouSubmitRunning": "はい",
+    "commandMatrixYouSubmitBatchCommand": "you submit batch",
+    "commandMatrixYouSubmitBatchPurpose": "稼働中のファクトリーセッションへバッチ JSON を upsert します。",
+    "commandMatrixYouSubmitBatchRunning": "はい",
+    "commandMatrixYouSessionListCommand": "you session list",
+    "commandMatrixYouSessionListPurpose": "作業を投入する前に、ファクトリーホストに開いているセッションがあるか確認します。",
+    "commandMatrixYouSessionListRunning": "はい — 稼働中のホストと通信します。",
+    "commandMatrixYouWorkCommand": "you work list / you work show",
+    "commandMatrixYouWorkPurpose": "稼働中のファクトリーから作業項目を確認します。",
+    "commandMatrixYouWorkRunning": "はい",
+    "commandMatrixYouDocsCommand": "you docs / you docs <topic>",
+    "commandMatrixYouDocsPurpose": "インストール済みバイナリから、パッケージ化された参照マークダウンを表示します。",
+    "commandMatrixYouDocsRunning": "いいえ"
+  }
+}
