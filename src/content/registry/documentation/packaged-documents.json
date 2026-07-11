@@ -1,0 +1,14 @@
+{
+  "id": "documentation.packaged-documents",
+  "slug": "packaged-documents",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["packaged docs", "you docs", "packaged topics"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T07:00:00.000Z",
+  "updatedAt": "2026-07-11T07:00:00.000Z"
+}

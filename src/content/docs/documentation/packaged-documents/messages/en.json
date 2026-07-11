@@ -1,0 +1,32 @@
+{
+  "title": "Packaged documents",
+  "description": "Packaged markdown reference topics printed from the installed you-agent-factory CLI via you docs.",
+  "openingSummary": "Packaged documents are markdown reference topics embedded in the installed you binary and printed with you docs.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Packaged documents are packaged markdown reference topics printed from the installed you-agent-factory CLI. Use you docs with no topic to print the packaged topic index, or you docs <topic> to print one authored topic. No live factory is required. Packaged documents ship inside the installed binary; the Program documentation surface is not a live sync of that packaged markdown."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A packaged document is a markdown reference topic shipped inside the installed you binary. Topics are referenced by topic id, such as agents, config, or packaged-goal. Discovery starts from the packaged topic index printed by you docs. Content freshness tracks the installed CLI binary: upgrade the CLI to receive updated packaged topics. Factory-local docs under a factory root are separate from these binary-embedded topics."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Run you docs to print the quick-start blurb and packaged topic index. Run you docs agents for agent orientation and the command matrix, or pass another supported topic id to print that topic’s authored markdown. Open the CLI documentation page when you need the broader command matrix beyond packaged topic lookup."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Packaged documents are binary-embedded you docs topics. This Program documentation surface is not a full topic dump, not a sync of packaged markdown into the site, not factory-local factory/docs authorship, and not the CLI install or command-matrix deep page. Sibling documentation links aid discovery only."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
