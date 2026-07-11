@@ -1,0 +1,31 @@
+/**
+ * Shared fenced-code layout: inset code viewport + dedicated copy rail.
+ * Untitled blocks use a two-column grid so horizontal scroll stays in the
+ * viewport column and never paints over or under the copy control.
+ */
+@layer components {
+  .docs-code-block:has(> [data-docs-code-actions="rail"]) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: stretch;
+  }
+
+  .docs-code-block > [data-docs-code-actions="rail"] {
+    grid-column: 2;
+    grid-row: 1;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-block: 0.75rem;
+    padding-inline: 0.25rem 0.5rem;
+    background-color: var(--color-fd-card, var(--card));
+  }
+
+  .docs-code-block
+    > [data-rich-content-scroll="code"].docs-code-block__viewport {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+}

@@ -77,6 +77,12 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * `INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS` includes
   `[data-rich-content-scroll="code"]` (Fumadocs `DocsCodeBlock` viewport) in
   addition to `[data-harness-support-matrix]`, `pre`, and `.overflow-x-auto`.
+* Untitled fenced blocks use `DocsCodeBlock` with
+  `data-docs-code-actions="rail"` beside the viewport (not `absolute top-3
+  right-2`). Layout CSS is `src/features/docs/styles/docs-code-block.css`
+  (imported from `globals.css`). Horizontal scroll stays in the viewport
+  column so it never paints over the copy control; inset is
+  `padding-inline` on the viewport (`DOCS_CODE_BLOCK_INSET_INLINE`).
 * `HarnessSupportMatrix` puts `data-harness-support-matrix` /
   `data-testid="harness-support-matrix"` on DataTable `containerProps` (the
   real `overflow-x-auto` scroller). Do not wrap DataTable in a second

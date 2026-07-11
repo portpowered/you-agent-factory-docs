@@ -1,21 +1,79 @@
+"use client";
+
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
-import type { ComponentProps } from "react";
+import type { ComponentProps, CSSProperties, ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 type DocsCodeBlockProps = ComponentProps<typeof CodeBlock>;
 
-/** Fumadocs fenced-code wrapper with a stable rich-content scroll marker. */
+/** Horizontal inset for fenced code text (left and right). */
+export const DOCS_CODE_BLOCK_INSET_INLINE = "1rem";
+
+type DocsCodeBlockActionsProps = {
+  className?: string;
+  children?: ReactNode;
+};
+
+/**
+ * Fumadocs passes absolute overlay classes for untitled blocks. Replace that
+ * overlay with a dedicated rail so horizontal scroll never paints under the
+ * copy control. Title-bar actions keep their in-flow placement.
+ */
+function DocsCodeBlockActions({
+  className,
+  children,
+}: DocsCodeBlockActionsProps) {
+  const isOverlay = className?.includes("absolute") ?? false;
+
+  if (!isOverlay) {
+    return (
+      <div
+        data-docs-code-actions="title"
+        className={cn("empty:hidden", className)}
+      >
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      data-docs-code-actions="rail"
+      className="docs-code-block__actions empty:hidden text-fd-muted-foreground"
+    >
+      {children}
+    </div>
+  );
+}
+
+/** Fumadocs fenced-code wrapper with inset padding and a non-overlapping copy rail. */
 export function DocsCodeBlock({
   viewportProps,
   children,
+  className,
+  Actions,
   ...props
 }: DocsCodeBlockProps) {
+  const viewportStyle = {
+    // Inset lives on the viewport so plain <pre> and .line rows share one edge.
+    // Zero shiki line padding vars to avoid double horizontal inset.
+    "--padding-left": "0px",
+    "--padding-right": "0px",
+    paddingInline: DOCS_CODE_BLOCK_INSET_INLINE,
+    ...viewportProps?.style,
+  } as CSSProperties;
+
   return (
     <CodeBlock
       {...props}
+      className={cn("docs-code-block", className)}
+      Actions={Actions ?? DocsCodeBlockActions}
       viewportProps={
         {
           ...viewportProps,
           "data-rich-content-scroll": "code",
+          className: cn("docs-code-block__viewport", viewportProps?.className),
+          style: viewportStyle,
         } as DocsCodeBlockProps["viewportProps"]
       }
     >
