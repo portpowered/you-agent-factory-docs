@@ -1,0 +1,82 @@
+---
+title: "CLI Command Index"
+description: "Scan the core you-agent-factory CLI commands — run, submit, session, work, docs, and install entrypoints — with purpose and running-factory requirements in one structured index."
+kind: "documentation"
+registryId: "documentation.cli-command-index"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "CLI command index"
+  - "command reference"
+  - "you command index"
+updatedAt: "2026-07-11"
+---
+
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="command-index" titleKey="sections.commandIndex.title">
+  <T k="sections.commandIndex.body" />
+  <CliCommandIndex />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="freshness-ownership" titleKey="sections.freshnessOwnership.title">
+  <T k="sections.freshnessOwnership.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+      {
+        href: "/blog/changelog",
+        labelKey: "links.changelogHub",
+      },
+      {
+        href: "https://github.com/portpowered/you-agent-factory/releases",
+        labelKey: "links.githubReleases",
+      },
+    ]}
+  />
+
+  <RelatedDocs registryId="documentation.cli-command-index" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.cli-command-index" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.cli-command-index" />
+</Section>

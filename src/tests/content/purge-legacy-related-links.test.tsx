@@ -41,6 +41,7 @@ describe("purge legacy related links and registries (005)", () => {
     const html = renderToStaticMarkup(await renderBlogIndexPage());
 
     expect(html).toContain('href="/blog/bottlenecks"');
+    expect(html).toContain('href="/blog/changelog"');
     expect(html).toContain('href="/blog/comparing-agent-factories"');
     expect(html).toContain('href="/blog/cursor-composer-six-billion-tokens"');
     expect(html).toContain('href="/blog/factories-building-factory-docs"');
@@ -52,6 +53,7 @@ describe("purge legacy related links and registries (005)", () => {
   test("remaining blog posts do not advertise deleted blog or Atlas-only tag destinations", async () => {
     for (const slug of [
       "bottlenecks",
+      "changelog",
       "comparing-agent-factories",
       "cursor-composer-six-billion-tokens",
       "factories-building-factory-docs",

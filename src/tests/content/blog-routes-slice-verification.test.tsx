@@ -130,6 +130,7 @@ describe("blog routes slice verification (blog-routes-layout-index-004)", () => 
     expect(params).toEqual(
       expect.arrayContaining([
         { slug: BOTTLENECKS_SLUG },
+        { slug: "changelog" },
         { slug: "comparing-agent-factories" },
         { slug: "cursor-composer-six-billion-tokens" },
         { slug: "factories-building-factory-docs" },

@@ -270,6 +270,13 @@ shared search helpers. Published posts are already indexed by
 with resolving tags — the test asserts that contract, it does not regenerate
 search artifacts.
 
+Documentation discoverability proofs for a page-local lane should likewise
+colocate under `src/content/docs/<section>/<slug>/` (for example
+`<slug>-discoverability.test.tsx`): assert the section index card, representative
+`docsSearchApi.search` hits, and `buildDocsPageMetadata` title/description/
+canonical/OG. Prefer that over editing shared `section-indexes` or search
+helpers when the lane owns only the new page.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |
@@ -695,6 +702,30 @@ when the sibling registry records and published pages exist (for example
 getting-started or install deep-dive). Omit unpublished sibling ids from
 `relatedIds` so validation and related rendering stay clean; do not invent
 page-meta “on this page” prose or hard-coded sibling route lists in MDX.
+
+### Freshness ownership on maintainer-facing surfaces (page-local)
+
+When a PRD asks for freshness ownership on a changelog hub or structured
+command inventory, put reader-visible maintainer copy on the page itself:
+owner role (for example site docs maintainers), source of truth (GitHub
+Releases for release hubs; product CLI / `you docs agents` for command
+inventories), and refresh trigger (new product release, command add/rename,
+or running-factory semantics change). Prefer a dedicated
+`#freshness-ownership` section on documentation pages (message-backed) or a
+`## Freshness ownership` heading on blog hubs. State explicitly that this is
+a human maintainer checklist — do not invent automated governance CI, owner
+registry fields, or Atlas-era process prose. Bump `updatedAt` (and blog
+`publishedAt` when first authored) to match the content change.
+
+When a lane ships both a releases/changelog blog hub and a CLI command-index
+documentation page, wire one-click quick-reach among install, commands, and
+release changes on both surfaces: blog hubs use in-prose markdown links (and
+`relatedDocIds` for metadata) because `BlogRelatedDocs` only resolves concept
+ids; documentation pages use message-backed `<LocalizedLinkList>` under
+`#related` for `/docs/documentation/install`, `/docs/documentation/cli`,
+`/blog/changelog`, and the GitHub Releases archive URL. Keep registry
+`relatedIds` on the command-index record for published documentation siblings
+(install/cli) without inventing blog registry ids.
 
 ### Documentation replays-records sensitivity, limits, and sibling discovery
 

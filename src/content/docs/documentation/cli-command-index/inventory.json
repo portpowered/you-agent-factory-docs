@@ -1,0 +1,76 @@
+{
+  "ariaLabel": "CLI command reference index",
+  "commandColumnHeader": "Command",
+  "purposeColumnHeader": "Purpose",
+  "runningFactoryColumnHeader": "Factory must already be running?",
+  "commands": [
+    {
+      "id": "you",
+      "command": "you",
+      "purpose": "Start the default local factory and dashboard from the current project.",
+      "runningFactory": "No — this starts the runtime."
+    },
+    {
+      "id": "you-run-dir",
+      "command": "you run --dir <factory>",
+      "purpose": "Start or attach to a local factory from an explicit factory directory.",
+      "runningFactory": "No — this starts the runtime."
+    },
+    {
+      "id": "you-run-named",
+      "command": "you run --named <factory> / you run --factory <path>",
+      "purpose": "Run a named or portable factory without guessing the local directory layout.",
+      "runningFactory": "No — this starts the runtime."
+    },
+    {
+      "id": "you-run-work",
+      "command": "you run --work <batch.json>",
+      "purpose": "Submit batch JSON as part of local factory startup, not steady-state ingress.",
+      "runningFactory": "No when used with a startup form such as --dir."
+    },
+    {
+      "id": "you-submit",
+      "command": "you submit",
+      "purpose": "Submit one work item to a factory that is already accepting work.",
+      "runningFactory": "Yes"
+    },
+    {
+      "id": "you-submit-batch",
+      "command": "you submit batch",
+      "purpose": "Upsert batch JSON to a running factory session.",
+      "runningFactory": "Yes"
+    },
+    {
+      "id": "you-session-list",
+      "command": "you session list",
+      "purpose": "Check whether a factory host has open sessions before submitting work.",
+      "runningFactory": "Yes — talks to a running host."
+    },
+    {
+      "id": "you-work",
+      "command": "you work list / you work show",
+      "purpose": "Inspect work items from a running factory.",
+      "runningFactory": "Yes"
+    },
+    {
+      "id": "you-docs",
+      "command": "you docs / you docs <topic>",
+      "purpose": "Print packaged reference markdown from the installed binary.",
+      "runningFactory": "No"
+    },
+    {
+      "id": "install-macos-linux",
+      "command": "curl … | sh (install.sh)",
+      "purpose": "Install the you binary on macOS or Linux from GitHub Releases.",
+      "runningFactory": "No — install only."
+    },
+    {
+      "id": "install-windows",
+      "command": "irm … | iex (install.ps1)",
+      "purpose": "Install the you binary on Windows from GitHub Releases.",
+      "runningFactory": "No — install only."
+    }
+  ],
+  "emptyMessage": "No CLI command index rows are available.",
+  "errorMessage": "CLI command index data failed to load."
+}
