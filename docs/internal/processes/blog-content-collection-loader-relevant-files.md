@@ -114,3 +114,9 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   example `harness` and `agent runtime` → `/docs/concepts/harness`). When SSR
   tests assert exact takeaway/context substrings, avoid those alias phrases or
   assert around the inserted `<a data-prose-auto-link>` markup.
+* Curated-links blog posts: prefer published internal docs routes for stable
+  factory topics; include external URLs only when factory-relevant. Check
+  reachability at author time (`curl -sL -o /dev/null -w "%{http_code}"
+  --max-time 10`) and drop or replace dead/off-topic destinations—do not add a
+  CI external-link scanner in a blog-local lane. Treat npmjs HTML 403 / registry
+  `"Not found"` as non-shippable unless a real package exists.

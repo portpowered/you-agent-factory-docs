@@ -29,44 +29,84 @@ import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
 
 ## What this list covers
 
-This post is a scannable shortlist of factory-focused destinations for
-you-agent-factory readers. It is not a second docs index, not a Model Atlas or
-attention-reference dump, and not a benchmark or paper-download mirror.
-
-The groups below organize the shortlist: CLI and repository entry points,
-harnesses, workflow techniques, MCP and dynamic workflows, and a short set of
-ecosystem readings. Prefer the published docs routes in related reference pages
-when you need the stable definition.
+A short factory-focused reading path for you-agent-factory operators: CLI and
+repository entry points, supported runtimes, workflow techniques, MCP and
+dynamic workflows, and a few ecosystem reads. It is not a second docs sidebar,
+not a Model Atlas or attention-reference dump, and not a benchmark or
+paper-download mirror.
 
 ## CLI and repository
 
-Start with the [CLI documentation](/docs/documentation/cli) for install and
-first-run commands, and keep the repository nearby when you check in workflow
-and agent files.
+- [CLI documentation](/docs/documentation/cli) — install, first-run, and the
+  day-to-day `you` commands operators use to start and inspect factory work.
+- [Install documentation](/docs/documentation/install) — platform install paths
+  when you need the install script or package steps without the full CLI
+  reference.
+- [Getting started guide](/docs/guides/getting-started) — a first successful run
+  before you specialize into loops, review passes, or dynamic workflows.
+- [What is you-agent-factory](/docs/documentation/what-is-you-agent-factory) —
+  product shape: file-first workflows, persistent agent work, and why a
+  lightweight factory exists.
+- [you-agent-factory on GitHub](https://github.com/portpowered/you-agent-factory)
+  — source, releases, and install scripts for the CLI binary.
 
 ## Harnesses
 
-Use [harness support](/docs/documentation/harness-support) when you need to know
-which agent runtimes the factory can drive and how those attachments behave in a
-long-running run.
+- [Harness support](/docs/documentation/harness-support) — which agent runtimes
+  the factory can drive and how those attachments behave across a long-running
+  run.
+- [Harness concept](/docs/concepts/harness) — the stable definition of a harness
+  as the runtime attachment the factory orchestrates.
+- [Cursor Agent docs](https://cursor.com/docs/agent/overview) — Cursor agent
+  surface when that runtime is the attachment you are wiring into factory work.
+- [Claude Code docs](https://docs.anthropic.com/en/docs/claude-code) — Claude
+  Code as another common agent runtime operators attach through harness
+  support.
 
 ## Workflow techniques
 
-Reach for technique pages when the work is a loop, a worktree split, compaction,
-or a writer-reviewer pass rather than a one-shot prompt.
+- [Ralph](/docs/techniques/ralph) — one-story-per-iteration execution against a
+  product-requirements backlog.
+- [Writer-reviewer](/docs/techniques/writer-reviewer) — a write pass followed by
+  an explicit review pass instead of a single unchecked generation.
+- [Planner-executor](/docs/techniques/planner-executor) — separate planning from
+  execution when the work needs a durable plan before agents act.
+- [Using you-agent-factory for loops](/docs/guides/using-you-agent-factory-for-loops)
+  — how to run loop-shaped factory work without reverse-engineering the
+  runtime.
+- [Write-review loops](/docs/guides/write-review-loops) — the guide path for
+  write-then-review factory workflows.
+- [Loop](/docs/concepts/loop), [worktree](/docs/concepts/worktree), and
+  [compaction](/docs/concepts/compaction) — the concepts behind iteration,
+  isolated worktrees, and keeping long runs within context limits.
 
 ## MCP and dynamic workflows
 
-Use [MCP documentation](/docs/documentation/mcp) when tools arrive through the
-Model Context Protocol, and
-[dynamic workflows](/docs/documentation/dynamic-workflows) when the workflow
-shape itself is assembled at runtime.
+- [MCP documentation](/docs/documentation/mcp) — how Model Context Protocol tools
+  show up inside factory workflows.
+- [Dynamic workflows](/docs/documentation/dynamic-workflows) — workflows whose
+  shape is assembled at runtime rather than fixed ahead of time.
+- [Cursor dynamic workflows guide](/docs/guides/cursor-dynamic-workflows) —
+  Cursor-oriented dynamic workflow setup on top of the factory.
+- [Model Context Protocol](https://modelcontextprotocol.io/) — the protocol
+  home page when you need the external MCP contract behind the factory MCP
+  docs.
 
 ## Relevant ecosystem reading
 
-Keep a short set of factory-relevant external reads for context outside this
-docs site—CLI and repository hubs, agent-runtime ecosystems, and
-workflow-pattern writing that stays useful for operators.
+- [Comparing agent factories](/blog/comparing-agent-factories) — practical
+  tradeoffs across you-agent-factory, custom scripts, Gas Town, DBOS, Dagster,
+  N8N, and Temporal.
+- [Gas Town](https://github.com/steveyegge/gastown) — an opinionated agent
+  orchestration alternative useful when comparing factory shapes.
+- [Temporal docs](https://docs.temporal.io/) — durable workflow semantics when
+  recovery guarantees outweigh a lightweight file-first factory.
+- [DBOS docs](https://docs.dbos.dev/) — a lighter durable-workflow path among
+  engines that still emphasize durable execution.
+- [Dagster docs](https://docs.dagster.io/) — DAG-shaped data and pipeline work,
+  useful contrast when agent loops are cyclic rather than acyclic.
+- [Claude Code best practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+  — operator-facing guidance for a common agent runtime used with factories.
 
 ## Related reference pages
 
