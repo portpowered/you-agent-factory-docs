@@ -12,10 +12,11 @@ aliases:
   - "errors"
   - "failure modes"
   - "recovery"
-updatedAt: "2026-07-10"
+updatedAt: "2026-07-11"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -32,6 +33,54 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="command-not-found" titleKey="sections.commandNotFound.title">
+  <T k="sections.commandNotFound.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="os-install-or-init" titleKey="sections.osInstallOrInit.title">
+  <T k="sections.osInstallOrInit.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="no-live-factory" titleKey="sections.noLiveFactory.title">
+  <T k="sections.noLiveFactory.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/factory-session",
+        labelKey: "links.factorySession",
+      },
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+    ]}
+  />
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">

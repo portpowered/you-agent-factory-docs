@@ -1,8 +1,9 @@
 /**
  * Page-owned render proof for documentation/troubleshooting.
  * Covers documentation shell, Troubleshooting identity, recovery-lookup
- * framing, and absence of Model Atlas / reader-shortcut / page-meta copy —
- * not route inventories or shared helper contracts.
+ * framing, install/run failure entries with canonical-doc links, and
+ * absence of Model Atlas / reader-shortcut / page-meta copy — not route
+ * inventories or shared helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -41,6 +42,15 @@ describe("troubleshooting documentation page", () => {
       loadedPage.messages.sections?.keyConcepts?.body ?? "",
     );
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
+    const commandNotFound = String(
+      loadedPage.messages.sections?.commandNotFound?.body ?? "",
+    );
+    const osInstallOrInit = String(
+      loadedPage.messages.sections?.osInstallOrInit?.body ?? "",
+    );
+    const noLiveFactory = String(
+      loadedPage.messages.sections?.noLiveFactory?.body ?? "",
+    );
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
@@ -53,6 +63,25 @@ describe("troubleshooting documentation page", () => {
     expect(keyConcepts).toMatch(/canonical/i);
     expect(howToUse).toMatch(/symptom/i);
     expect(howToUse).toMatch(/recovery/i);
+
+    expect(commandNotFound).toMatch(/command not found/i);
+    expect(commandNotFound).toMatch(/PATH/i);
+    expect(commandNotFound).toMatch(/Symptom:/i);
+    expect(commandNotFound).toMatch(/Recovery:/i);
+    expect(commandNotFound).not.toMatch(/curl -fsSL/i);
+
+    expect(osInstallOrInit).toMatch(/Symptom:/i);
+    expect(osInstallOrInit).toMatch(/Recovery:/i);
+    expect(osInstallOrInit).toMatch(/you init/i);
+    expect(osInstallOrInit).toMatch(/executor/i);
+    expect(osInstallOrInit).not.toMatch(/curl -fsSL/i);
+
+    expect(noLiveFactory).toMatch(/Symptom:/i);
+    expect(noLiveFactory).toMatch(/Recovery:/i);
+    expect(noLiveFactory).toMatch(/session list/i);
+    expect(noLiveFactory).toMatch(/empty|connection failure/i);
+    expect(noLiveFactory).not.toMatch(/you submit --help/i);
+
     expect(limits).toMatch(/web recovery lookup/i);
     expect(limits).toMatch(/not the install command matrix/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
@@ -82,6 +111,19 @@ describe("troubleshooting documentation page", () => {
     expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
+      screen.getByRole("heading", { name: "you Not Found After Install" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "OS Install Or Executor Init Confusion",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "Submit Or Work Against A Factory That Is Not Live",
+      }),
+    ).toBeTruthy();
+    expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
@@ -91,9 +133,35 @@ describe("troubleshooting documentation page", () => {
     expect(document.body.textContent).toMatch(
       /Troubleshooting is the you-agent-factory recovery lookup/i,
     );
+    expect(document.body.textContent).toMatch(/you: command not found/i);
+    expect(document.body.textContent).toMatch(/you init --executor claude/i);
+    expect(document.body.textContent).toMatch(/session list is empty/i);
     expect(document.body.textContent).not.toMatch(/Model Atlas/i);
     expect(document.body.textContent).not.toMatch(/reader.?shortcut/i);
     // Docs shell owns the page title; body must not duplicate an h1 title.
     expect(screen.queryByRole("heading", { level: 1 })).toBeNull();
+
+    const installLinks = screen.getAllByRole("link", { name: "Install" });
+    expect(installLinks.length).toBeGreaterThanOrEqual(1);
+    expect(installLinks[0]?.getAttribute("href")).toBe(
+      "/docs/documentation/install",
+    );
+
+    const gettingStartedLinks = screen.getAllByRole("link", {
+      name: "Getting Started",
+    });
+    expect(gettingStartedLinks.length).toBeGreaterThanOrEqual(1);
+    expect(gettingStartedLinks[0]?.getAttribute("href")).toBe(
+      "/docs/guides/getting-started",
+    );
+
+    expect(
+      screen
+        .getByRole("link", { name: "Factory Session" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/factory-session");
+    expect(screen.getByRole("link", { name: "CLI" }).getAttribute("href")).toBe(
+      "/docs/documentation/cli",
+    );
   });
 });
