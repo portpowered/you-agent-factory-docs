@@ -1,16 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import type { DocsCollectionId } from "@/lib/docs/collection-definition-contract";
 import { source } from "@/lib/source";
 
 const SECTION_FOLDER_NAMES = {
   guides: "Guides",
   concepts: "Concepts",
   techniques: "Techniques",
-  documentation: "Documentation",
-  glossary: "Glossary",
-} as const satisfies Record<DocsCollectionId, string>;
+  documentation: "Program documentation",
+} as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [
   "Modules",
@@ -28,7 +26,6 @@ const REPRESENTATIVE_SECTION_URLS = {
   concepts: ["/docs/concepts/harness", "/docs/concepts/compaction"],
   techniques: ["/docs/techniques/ralph", "/docs/techniques/writer-reviewer"],
   documentation: ["/docs/documentation/what-is-you-agent-factory"],
-  glossary: [],
 } as const;
 
 function collectPageUrls(nodes: Node[]): string[] {
@@ -88,6 +85,8 @@ describe("docs navigation source", () => {
       .map((node) => String(node.name));
 
     expect(folderNames).toEqual(Object.values(SECTION_FOLDER_NAMES));
+    expect(folderNames).not.toContain("Glossary");
+    expect(source.pageTree.name).toBe("You Agent Factory");
     for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
       expect(folderNames).not.toContain(retiredFolder);
     }

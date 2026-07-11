@@ -1,4 +1,8 @@
-import { resolveFactorySidebarFolderLabel } from "@/lib/content/factory-breadcrumb-sidebar";
+import {
+  FACTORY_SIDEBAR_COLLECTION_IDS,
+  type FactorySidebarCollectionId,
+  resolveFactorySidebarFolderLabel,
+} from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
 import {
   DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS,
@@ -12,6 +16,10 @@ import type {
   ShellCollectionSidebarDefinition,
   ShellSidebarGroupingResolver,
 } from "@/lib/navigation/shell-collection-page-tree";
+
+const FACTORY_SIDEBAR_COLLECTION_ID_SET = new Set<string>(
+  FACTORY_SIDEBAR_COLLECTION_IDS,
+);
 
 export function resolveDocsSidebarFolderLabel(id: DocsCollectionId): string {
   return resolveFactorySidebarFolderLabel(id);
@@ -29,17 +37,26 @@ export function toDocsShellSidebarDefinition(
   };
 }
 
+/**
+ * Explorer-facing shell sidebar definitions. Glossary remains in the full
+ * docs collection inventory for browse/search/direct routes, but is omitted
+ * from the explorer folder list.
+ */
 export function listDocsShellSidebarDefinitions(): ShellCollectionSidebarDefinition[] {
-  return listDocsCollectionDefinitions().map(toDocsShellSidebarDefinition);
+  return listDocsCollectionDefinitions()
+    .filter((definition) =>
+      FACTORY_SIDEBAR_COLLECTION_ID_SET.has(definition.id),
+    )
+    .map(toDocsShellSidebarDefinition);
 }
 
-export function listDocsShellCollectionIds(): DocsCollectionId[] {
-  return listDocsCollectionDefinitions().map((definition) => definition.id);
+export function listDocsShellCollectionIds(): FactorySidebarCollectionId[] {
+  return [...FACTORY_SIDEBAR_COLLECTION_IDS];
 }
 
 export type DocsShellPageTreeSettings = {
   definitions: ShellCollectionSidebarDefinition[];
-  collectionIds: DocsCollectionId[];
+  collectionIds: FactorySidebarCollectionId[];
   groupingResolvers: Record<string, ShellSidebarGroupingResolver>;
 };
 

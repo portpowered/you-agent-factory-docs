@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
+import { FACTORY_SIDEBAR_COLLECTION_IDS } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import { DOCS_COLLECTION_IDS } from "@/lib/docs/collection-definition-contract";
 import {
   getDocsShellPageTreeSettings,
   listDocsShellSidebarDefinitions,
@@ -85,7 +85,7 @@ describe("docs sidebar adapter extraction parity", () => {
     const adapterTree = buildShellCollectionPageTree(baseTree, {
       pages: loadPublishedDocsPagesSync("en"),
       definitions,
-      collectionIds: [...DOCS_COLLECTION_IDS],
+      collectionIds: [...FACTORY_SIDEBAR_COLLECTION_IDS],
       groupingResolvers,
     });
 
@@ -93,16 +93,17 @@ describe("docs sidebar adapter extraction parity", () => {
       "Guides",
       "Concepts",
       "Techniques",
-      "Documentation",
-      "Glossary",
+      "Program documentation",
     ] as const;
 
     expect(getTopLevelFolderNames(generatedTree)).toEqual([
       ...factoryFolderNames,
     ]);
     expect(DOCS_SIDEBAR_SECTION_ORDER.map((section) => section.id)).toEqual([
-      ...DOCS_COLLECTION_IDS,
+      ...FACTORY_SIDEBAR_COLLECTION_IDS,
     ]);
+    expect(getTopLevelFolderNames(generatedTree)).not.toContain("Glossary");
+    expect(generatedTree.name).toBe("You Agent Factory");
 
     for (const folderName of factoryFolderNames) {
       expect(getFolderPageLinks(generatedTree, folderName)).toEqual(

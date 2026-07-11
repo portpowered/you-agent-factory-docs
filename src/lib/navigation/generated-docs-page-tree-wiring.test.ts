@@ -19,7 +19,7 @@ function collectPageUrls(nodes: Node[]): string[] {
 }
 
 describe("generated docs page tree wiring", () => {
-  test("preserves base tree metadata while replacing docs root children", () => {
+  test("preserves base tree children replacement while setting explorer brand name", () => {
     const baseTree = {
       name: "Fixture Docs Root",
       children: [
@@ -32,11 +32,16 @@ describe("generated docs page tree wiring", () => {
     };
     const pageTree = buildGeneratedDocsPageTree(baseTree);
 
-    expect(pageTree.name).toBe("Fixture Docs Root");
+    expect(pageTree.name).toBe("You Agent Factory");
     expect(pageTree.children).not.toEqual(baseTree.children);
     expect(pageTree.children.every((node) => node.type === "folder")).toBe(
       true,
     );
+    expect(
+      pageTree.children.some(
+        (node) => node.type === "folder" && node.name === "Glossary",
+      ),
+    ).toBe(false);
   });
 
   test("lists every published page exactly once under its collection folder", () => {

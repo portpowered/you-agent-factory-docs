@@ -19,8 +19,14 @@ function collectLinks(children: Node[]): string[] {
   return links;
 }
 
+function topLevelFolderNames(children: Node[]): string[] {
+  return children
+    .filter((child) => child.type === "folder")
+    .map((folder) => String(folder.name));
+}
+
 describe("localizePageTree", () => {
-  test("omits unshipped vi docs links from the localized page tree", () => {
+  test("omits unshipped and retired Atlas docs links from the localized page tree", () => {
     const localizedTree = localizePageTree(source.pageTree, "vi");
     const links = collectLinks(localizedTree.children);
 
@@ -28,61 +34,46 @@ describe("localizePageTree", () => {
     expect(links).not.toContain("/vi/docs/getting-started");
     expect(links).not.toContain("/vi/docs/modules/multi-head-latent-attention");
     expect(links).not.toContain("/vi/docs/modules/sparse-attention");
+    expect(links).not.toContain("/vi/docs/glossary/token");
   });
 
-  test("localizes shipped docs links for vi page trees", () => {
+  test("localizes shipped factory docs links for vi page trees", () => {
     const localizedTree = localizePageTree(source.pageTree, "vi");
     const links = collectLinks(localizedTree.children);
 
-    expect(links).toContain("/vi/docs/modules/grouped-query-attention");
-    expect(links).toContain("/vi/docs/modules/multi-head-attention");
-    expect(links).toContain("/vi/docs/modules/multi-query-attention");
-    expect(links).toContain("/vi/docs/modules/sliding-window-attention");
-    expect(links).toContain("/vi/docs/modules/linear-attention");
-    expect(links).toContain("/vi/docs/glossary/token");
+    expect(links).toContain("/vi/docs/guides/getting-started");
+    expect(links).toContain("/vi/docs/concepts/harness");
+    expect(links).toContain("/vi/docs/techniques/ralph");
+    expect(links).toContain("/vi/docs/documentation/what-is-you-agent-factory");
+    expect(topLevelFolderNames(localizedTree.children)).not.toContain(
+      "Glossary",
+    );
   });
 
-  test("localizes the shipped japanese attention proof set in the page tree", () => {
+  test("localizes shipped factory docs links for japanese page trees", () => {
     const localizedTree = localizePageTree(source.pageTree, "ja");
     const links = collectLinks(localizedTree.children);
 
-    expect(links).toContain("/ja/docs/concepts/transformer-architecture");
-    expect(links).toContain("/ja/docs/glossary/token");
-    expect(links).toContain("/ja/docs/modules/attention");
-    expect(links).toContain("/ja/docs/modules/grouped-query-attention");
-    expect(links).toContain("/ja/docs/modules/multi-head-attention");
-    expect(links).toContain("/ja/docs/modules/multi-query-attention");
-    expect(links).toContain("/ja/docs/modules/sliding-window-attention");
-    expect(links).toContain("/ja/docs/modules/linear-attention");
-    expect(links).not.toContain("/ja/docs/modules/swiglu");
-    expect(links).not.toContain("/ja/docs/modules/relu");
-    expect(links).not.toContain("/ja/docs/getting-started");
+    expect(links).toContain("/ja/docs/guides/getting-started");
+    expect(links).toContain("/ja/docs/concepts/harness");
+    expect(links).toContain("/ja/docs/techniques/ralph");
+    expect(links).toContain("/ja/docs/documentation/what-is-you-agent-factory");
+    expect(links).not.toContain("/ja/docs/modules/attention");
+    expect(links).not.toContain("/ja/docs/glossary/token");
+    expect(topLevelFolderNames(localizedTree.children)).not.toContain(
+      "Glossary",
+    );
   });
 
-  test("removes empty separators left behind by locale pruning", () => {
+  test("keeps explorer folders free of Glossary after locale pruning", () => {
     const localizedTree = localizePageTree(source.pageTree, "vi");
-    const glossaryFolder = localizedTree.children.find((child) => {
-      return (
-        child.type === "folder" &&
-        child.name === "Glossary" &&
-        "children" in child &&
-        Array.isArray(child.children)
-      );
-    });
 
-    expect(glossaryFolder).toBeTruthy();
-    if (
-      !glossaryFolder ||
-      !("children" in glossaryFolder) ||
-      !Array.isArray(glossaryFolder.children)
-    ) {
-      throw new Error("expected localized glossary folder");
-    }
-
-    expect(glossaryFolder.children[0]?.type).not.toBe("separator");
-    expect(glossaryFolder.children.at(-1)?.type).not.toBe("separator");
-    expect(glossaryFolder.children.some((child) => child.type === "page")).toBe(
-      true,
-    );
+    expect(topLevelFolderNames(localizedTree.children)).toEqual([
+      "Guides",
+      "Concepts",
+      "Techniques",
+      "Program documentation",
+    ]);
+    expect(localizedTree.name).toBe("You Agent Factory");
   });
 });

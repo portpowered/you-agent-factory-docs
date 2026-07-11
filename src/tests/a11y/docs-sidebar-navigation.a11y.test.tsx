@@ -110,13 +110,17 @@ describe("docs sidebar navigation accessibility", () => {
       "Guides",
       "Concepts",
       "Techniques",
-      "Documentation",
+      "Program documentation",
     ] as const) {
       const folder = within(sidebar).getByRole("button", { name: folderName });
       await act(async () => {
         folder.click();
       });
     }
+
+    expect(
+      within(sidebar).queryByRole("button", { name: "Glossary" }),
+    ).toBeNull();
 
     expect(
       within(sidebar).getByRole("link", { name: "Getting Started" }),

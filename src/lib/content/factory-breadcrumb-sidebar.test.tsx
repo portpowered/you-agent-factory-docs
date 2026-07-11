@@ -18,7 +18,10 @@ import {
   assertFactorySidebarPageUrl,
   assertFactorySidebarPageUrls,
   assertFactorySidebarSectionOrder,
+  DOCS_PAGE_TREE_ROOT_NAME,
+  FACTORY_EXPLORER_FOLDER_LABELS,
   FACTORY_NAV_COLLECTION_IDS,
+  FACTORY_SIDEBAR_COLLECTION_IDS,
   FACTORY_SIDEBAR_FOLDER_LABELS,
   isFactoryNavCollectionId,
   isRetiredAtlasNavCollectionId,
@@ -63,7 +66,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     slug: ["documentation", "what-is-you-agent-factory"],
     title: "What is you-agent-factory",
     href: "/docs/documentation/what-is-you-agent-factory",
-    folderLabel: "Documentation",
+    folderLabel: "Program documentation",
   },
 ] as const;
 
@@ -78,6 +81,12 @@ function topLevelFolderNames(
 describe("factory breadcrumbs and sidebar collections", () => {
   test("factory nav contract matches docs collections and excludes Atlas ids", () => {
     expect([...FACTORY_NAV_COLLECTION_IDS]).toEqual([...DOCS_COLLECTION_IDS]);
+    expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
+      "guides",
+      "concepts",
+      "techniques",
+      "documentation",
+    ]);
     expect([...FACTORY_NAV_COLLECTION_IDS]).toEqual([
       "guides",
       "concepts",
@@ -86,17 +95,21 @@ describe("factory breadcrumbs and sidebar collections", () => {
       "glossary",
     ]);
     expect(
-      FACTORY_NAV_COLLECTION_IDS.map((id) =>
+      FACTORY_SIDEBAR_COLLECTION_IDS.map((id) =>
         resolveFactorySidebarFolderLabel(id),
       ),
-    ).toEqual([
+    ).toEqual(["Guides", "Concepts", "Techniques", "Program documentation"]);
+    expect(Object.values(FACTORY_EXPLORER_FOLDER_LABELS)).toEqual([
       "Guides",
       "Concepts",
       "Techniques",
-      "Documentation",
-      "Glossary",
+      "Program documentation",
     ]);
+    expect(FACTORY_SIDEBAR_FOLDER_LABELS.documentation).toBe(
+      "Program documentation",
+    );
     expect(FACTORY_SIDEBAR_FOLDER_LABELS.glossary).toBe("Glossary");
+    expect(DOCS_PAGE_TREE_ROOT_NAME).toBe("You Agent Factory");
 
     for (const id of FACTORY_NAV_COLLECTION_IDS) {
       expect(isFactoryNavCollectionId(id)).toBe(true);
@@ -141,8 +154,11 @@ describe("factory breadcrumbs and sidebar collections", () => {
       assertFactorySidebarPageUrls(["/docs/concepts/harness"]),
     ).not.toThrow();
     expect(() =>
-      assertFactorySidebarSectionOrder([...FACTORY_NAV_COLLECTION_IDS]),
+      assertFactorySidebarSectionOrder([...FACTORY_SIDEBAR_COLLECTION_IDS]),
     ).not.toThrow();
+    expect(() =>
+      assertFactorySidebarSectionOrder([...FACTORY_NAV_COLLECTION_IDS]),
+    ).toThrow(/section order/);
     expect(() =>
       assertFactorySidebarSectionOrder(["guides", "models"]),
     ).toThrow(/section order/);
@@ -204,7 +220,7 @@ describe("factory breadcrumbs and sidebar collections", () => {
 
   test("docs sidebar folders and page links stay factory-only", () => {
     expect(DOCS_SIDEBAR_SECTION_ORDER.map((section) => section.id)).toEqual([
-      ...FACTORY_NAV_COLLECTION_IDS,
+      ...FACTORY_SIDEBAR_COLLECTION_IDS,
     ]);
     assertFactorySidebarSectionOrder(
       DOCS_SIDEBAR_SECTION_ORDER.map((section) => section.id),
@@ -216,12 +232,14 @@ describe("factory breadcrumbs and sidebar collections", () => {
     });
     const folderNames = topLevelFolderNames(pageTree);
 
+    expect(pageTree.name).toBe(DOCS_PAGE_TREE_ROOT_NAME);
     expect(folderNames).toEqual(
-      FACTORY_NAV_COLLECTION_IDS.map((id) =>
+      FACTORY_SIDEBAR_COLLECTION_IDS.map((id) =>
         resolveFactorySidebarFolderLabel(id),
       ),
     );
     expect(folderNames).toEqual(topLevelFolderNames(source.pageTree));
+    expect(folderNames).not.toContain("Glossary");
     assertFactorySidebarFolderLabels(folderNames);
 
     for (const retired of RETIRED_ATLAS_NAV_FOLDER_LABELS) {

@@ -3,7 +3,7 @@ import {
   assertFactorySidebarFolderLabels,
   assertFactorySidebarPageUrls,
   assertFactorySidebarSectionOrder,
-  FACTORY_NAV_COLLECTION_IDS,
+  FACTORY_SIDEBAR_COLLECTION_IDS,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
 import { isDocsCollectionSidebarGroupingResolverId } from "@/lib/docs/collection-definition-contract";
@@ -15,8 +15,11 @@ import {
 
 type DocsSidebarSectionRef = { kind: "collection"; id: string };
 
-/** Reader-visible sidebar folder order for factory docs collections. */
-export const DOCS_SIDEBAR_SECTION_ORDER = FACTORY_NAV_COLLECTION_IDS.map(
+/**
+ * Reader-visible explorer folder order for factory docs collections.
+ * Glossary is intentionally omitted; it remains on browse/search/direct routes.
+ */
+export const DOCS_SIDEBAR_SECTION_ORDER = FACTORY_SIDEBAR_COLLECTION_IDS.map(
   (id) => ({ kind: "collection" as const, id }),
 );
 

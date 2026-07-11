@@ -5,6 +5,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 ## Generic shell primitives
 
+* `src/lib/content/factory-breadcrumb-sidebar.ts`
+  Factory explorer folder order (`FACTORY_SIDEBAR_COLLECTION_IDS` =
+  guides → concepts → techniques → documentation), page-tree brand
+  (`DOCS_PAGE_TREE_ROOT_NAME` = `You Agent Factory`), and folder/crumb labels
+  (`FACTORY_SIDEBAR_FOLDER_LABELS`; documentation explorer label is
+  **Program documentation**). Glossary remains in `FACTORY_NAV_COLLECTION_IDS` /
+  `DOCS_COLLECTION_IDS` for browse/search/direct routes and breadcrumb
+  validation, but is omitted from the explorer folder list.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
@@ -27,20 +35,22 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/navigation/shell-collection-page-tree.ts`
   Generic sidebar/page-tree builder with optional grouping resolvers.
 * `src/lib/navigation/docs-sidebar-sections.ts`
-  Default `DOCS_SIDEBAR_SECTION_ORDER` is the five factory collection folders
-  (guides → glossary). Section refs are collection-only; glossary pages stay in
-  the Glossary folder (no Model Types / Inference / Module Components splits).
+  Default `DOCS_SIDEBAR_SECTION_ORDER` is the four CLI explorer folders
+  (guides → documentation). Section refs are collection-only; Glossary is not
+  an explorer folder.
 * `src/features/docs/components/DocsPageBreadcrumb.tsx`
   Docs breadcrumbs only emit a collection crumb for accepted factory route
   slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are
   not public crumbs.
 * `src/lib/navigation/docs-sidebar-adapter.ts`
-  Factory docs shell sidebar labels, grouping resolvers, collection ids, and
-  `getDocsShellPageTreeSettings()` for public docs collections.
+  Factory docs shell sidebar labels, grouping resolvers, explorer collection
+  ids (no Glossary folder), and `getDocsShellPageTreeSettings()` for public
+  docs explorer composition.
 * `src/lib/navigation/generated-docs-page-tree.ts`
-  Docs page tree; composes adapter settings into `buildDocsSidebarSectionNodes`.
+  Docs page tree; sets explorer brand `You Agent Factory` and composes adapter
+  settings into `buildDocsSidebarSectionNodes`.
 * `src/lib/navigation/generated-docs-page-tree-wiring.test.ts`
-  Adapter-to-shell wiring regression for base-tree preservation and page inclusion.
+  Adapter-to-shell wiring regression for explorer brand and page inclusion.
 * `src/lib/navigation/docs-sidebar-adapter-parity.test.ts`
   Consolidated factory docs adapter parity and non-AI fixture sidebar independence regression.
 * `src/app/(site)/site-renderers.tsx`

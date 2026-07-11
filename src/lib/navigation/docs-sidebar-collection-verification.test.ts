@@ -11,8 +11,7 @@ const EXPECTED_TOP_LEVEL_FOLDER_NAMES = [
   "Guides",
   "Concepts",
   "Techniques",
-  "Documentation",
-  "Glossary",
+  "Program documentation",
 ] as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [
@@ -39,7 +38,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     separatorLabel: "Reference Samples",
   },
   {
-    folderName: "Documentation",
+    folderName: "Program documentation",
     url: "/docs/documentation/what-is-you-agent-factory",
     name: "What is you-agent-factory",
   },
@@ -163,7 +162,7 @@ describe("collection-driven docs sidebar verification", () => {
     for (const folderName of [
       "Guides",
       "Techniques",
-      "Documentation",
+      "Program documentation",
     ] as const) {
       const children = getFolderChildren(pageTree, folderName);
       expect(getSeparatorLabels(children), folderName).toEqual([]);
