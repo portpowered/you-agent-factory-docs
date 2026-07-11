@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   collectSidebarPageLinks,
   extractNdSidebarHtml,
+  FAQ_DOCS_URL,
   findSidebarPageLink,
   GETTING_STARTED_GUIDE_URL,
   HARNESS_CONCEPT_URL,
@@ -54,11 +55,13 @@ const BUILT_HTML_LOCALIZED_DOC_ROUTES = [
       "/vi/docs/concepts/harness",
       "/vi/docs/concepts/tokens",
     ],
-    requiredSidebarLabels: [">Guides<", ">Concepts<", ">Techniques<"],
+    // Folder button labels are locale-aware (vi common.json explorer.folders).
+    requiredSidebarLabels: [">Hướng dẫn<", ">Khái niệm<", ">Kỹ thuật<"],
     forbiddenSidebarUrls: [
       "/vi/docs/modules/grouped-query-attention",
       "/vi/docs/modules/multi-head-attention",
     ],
+    forbiddenSidebarLabels: [">Guides<", ">Concepts<", ">Techniques<"],
   },
 ] as const;
 
@@ -100,8 +103,13 @@ describe("docs sidebar page-tree contract", () => {
     expect(sidebarJson).toContain("Guides");
     expect(sidebarJson).toContain("Concepts");
     expect(sidebarJson).toContain("Techniques");
-    expect(sidebarJson).toContain("Documentation");
-    expect(sidebarJson).toContain("Reference Samples");
+    expect(sidebarJson).toContain("Program documentation");
+    expect(sidebarJson).toContain("You Agent Factory");
+    expect(sidebarJson).toContain("Harnesses");
+    expect(sidebarJson).toContain("Industrial engineering");
+    expect(sidebarJson).toContain("Model inference");
+    expect(sidebarJson).not.toContain("Reference Samples");
+    expect(sidebarJson).not.toContain('"name":"Glossary"');
     expect(sidebarJson).not.toContain("Attention Foundations");
     expect(sidebarJson).not.toContain("Attention Variants");
   });
@@ -112,6 +120,35 @@ describe("docs sidebar page-tree contract", () => {
     expect(findSidebarPageLink(links, INSTALL_DOCS_URL)?.name).toBe(
       "Install you-agent-factory",
     );
+  });
+
+  test("FAQ is a top-level explorer page outside Program documentation", () => {
+    const links = collectSidebarPageLinks(source.pageTree);
+    const topLevelFaq = source.pageTree.children.find(
+      (node) =>
+        node.type === "page" && "url" in node && node.url === FAQ_DOCS_URL,
+    );
+    const documentationFolder = source.pageTree.children.find(
+      (node) => node.type === "folder" && node.name === "Program documentation",
+    );
+
+    expect(findSidebarPageLink(links, FAQ_DOCS_URL)).toEqual({
+      name: "FAQ",
+      url: FAQ_DOCS_URL,
+    });
+    expect(topLevelFaq).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: FAQ_DOCS_URL,
+    });
+    expect(source.pageTree.children.at(-1)).toEqual(topLevelFaq);
+    if (documentationFolder?.type === "folder") {
+      expect(
+        collectSidebarPageLinks(documentationFolder.children).some(
+          (link) => link.url === FAQ_DOCS_URL,
+        ),
+      ).toBe(false);
+    }
   });
 });
 
@@ -171,6 +208,9 @@ describe("docs sidebar navigation (built HTML)", () => {
       }
       for (const url of route.forbiddenSidebarUrls) {
         expect(sidebar).not.toContain(url);
+      }
+      for (const label of route.forbiddenSidebarLabels ?? []) {
+        expect(sidebar).not.toContain(label);
       }
     });
   }

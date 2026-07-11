@@ -53,6 +53,31 @@
     "onThisPage": "Trên trang này",
     "openingSummary": "Tóm tắt mở đầu"
   },
+  "explorer": {
+    "folders": {
+      "guides": "Hướng dẫn",
+      "concepts": "Khái niệm",
+      "techniques": "Kỹ thuật",
+      "documentation": "Tài liệu chương trình"
+    },
+    "conceptsGroups": {
+      "harnesses": "Các harness",
+      "industrial-engineering": "Kỹ thuật công nghiệp",
+      "model-inference": "Suy luận mô hình"
+    },
+    "documentationGroups": {
+      "basics": "Cơ bản",
+      "feature-support": "Hỗ trợ tính năng",
+      "functions": "Chức năng",
+      "configuration": "Cấu hình",
+      "api": "API",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "operational": "Vận hành",
+      "internal-architecture": "Kiến trúc nội bộ",
+      "additional-reference": "Tham chiếu bổ sung"
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "Tài liệu CLI cho agent factory",

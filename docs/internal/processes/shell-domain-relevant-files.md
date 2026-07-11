@@ -5,16 +5,34 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 ## Generic shell primitives
 
+* `src/lib/content/sidebar-grouping.ts`
+  Docs-shell sidebar subgroup labels and resolvers. Factory Concepts explorer
+  subgroups are **Harnesses → Industrial engineering → Model inference** via
+  `SIDEBAR_GROUP_LABELS.concepts` and explicit slug membership in
+  `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` (including reserved skills/mcp/
+  tool-calling slots). Program documentation subgroups are **Basics → Feature
+  support → Functions → Configuration → API → CLI → MCP → Operational →
+  Internal architecture → Additional reference** via
+  `SIDEBAR_GROUP_LABELS.documentation` and
+  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (FAQ omitted; top-level
+  explorer page). Glossary still uses ontology-first classification membership
+  with editorial `sidebarGrouping.glossary` fallback.
+* `src/lib/navigation/docs-sidebar-grouping-adapter.ts`
+  Builds grouped Concepts/Glossary/Program documentation sidebar nodes;
+  Concepts and documentation resolution pass page slug into the factory
+  assignment maps so explicit membership applies.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
   `guides`, `concepts`, `techniques`, `documentation`, `glossary`. Retired
   Atlas ids (`models`, `modules`, `papers`, `training`, `systems`) are not in
-  the public collection contract; sidebar grouping resolvers are only
-  `glossary` and `concepts`.
+  the public collection contract; sidebar grouping resolvers are
+  `glossary`, `concepts`, and `documentation`.
 * `src/lib/docs/docs-collection-definitions.ts`
   Canonical inventory matching `DOCS_COLLECTION_IDS`. CLI collections keep
-  empty `starterSlugs`; glossary keeps route-relative starters.
+  empty `starterSlugs`; glossary keeps route-relative starters. Concepts,
+  glossary, and documentation set `sidebarGroupingResolverId`.
+
 * `src/lib/docs/browse-collection-sections.ts`
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
@@ -27,20 +45,24 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/navigation/shell-collection-page-tree.ts`
   Generic sidebar/page-tree builder with optional grouping resolvers.
 * `src/lib/navigation/docs-sidebar-sections.ts`
-  Default `DOCS_SIDEBAR_SECTION_ORDER` is the five factory collection folders
-  (guides → glossary). Section refs are collection-only; glossary pages stay in
-  the Glossary folder (no Model Types / Inference / Module Components splits).
+  Default `DOCS_SIDEBAR_SECTION_ORDER` is `FACTORY_EXPLORER_SECTION_ORDER`
+  (guides → documentation folders, then top-level FAQ page). Collection refs
+  build folders; the FAQ page ref is emitted as a top-level page node and is
+  excluded from Program documentation children. Glossary is not an explorer
+  folder.
 * `src/features/docs/components/DocsPageBreadcrumb.tsx`
   Docs breadcrumbs only emit a collection crumb for accepted factory route
   slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are
   not public crumbs.
 * `src/lib/navigation/docs-sidebar-adapter.ts`
-  Factory docs shell sidebar labels, grouping resolvers, collection ids, and
-  `getDocsShellPageTreeSettings()` for public docs collections.
+  Factory docs shell sidebar labels, grouping resolvers, explorer collection
+  ids (no Glossary folder), and `getDocsShellPageTreeSettings()` for public
+  docs explorer composition.
 * `src/lib/navigation/generated-docs-page-tree.ts`
-  Docs page tree; composes adapter settings into `buildDocsSidebarSectionNodes`.
+  Docs page tree; sets explorer brand `You Agent Factory` and composes adapter
+  settings into `buildDocsSidebarSectionNodes`.
 * `src/lib/navigation/generated-docs-page-tree-wiring.test.ts`
-  Adapter-to-shell wiring regression for base-tree preservation and page inclusion.
+  Adapter-to-shell wiring regression for explorer brand and page inclusion.
 * `src/lib/navigation/docs-sidebar-adapter-parity.test.ts`
   Consolidated factory docs adapter parity and non-AI fixture sidebar independence regression.
 * `src/app/(site)/site-renderers.tsx`
@@ -293,6 +315,33 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   retired `/topology` explorer `topologyPrototype` product copy, or
   home `atlasLink*` / module featured-link keys. Preserve legitimate factory
   model-provider / external-model product wording when present.
+  Explorer chrome labels live under top-level `explorer` (`folders`,
+  `conceptsGroups`, `documentationGroups`) for en/ja/zh-CN/vi; English
+  values must stay aligned with `FACTORY_EXPLORER_FOLDER_LABELS` /
+  `SIDEBAR_GROUP_LABELS`. Literal `API` / `CLI` / `MCP` stay untranslated.
+  `localizePageTree` overlays those labels plus shipped page-message titles
+  and fails closed via `assertExplorerMessages` when catalogs are incomplete.
+* `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
+  Locale-aware explorer folder/subgroup/page label resolution consumed by
+  desktop sidebar and mobile drawer through the same localized page tree.
+* `src/lib/navigation/explorer-tree-signature.ts`
+  Serializes a page tree into the explorer IA contract (top-level order, FAQ
+  placement, subgroup separators, page membership/labels/hrefs) for
+  desktop/mobile parity comparisons.
+* `src/lib/navigation/explorer-ia-contract.test.ts`
+  Exact-order proofs against `FACTORY_EXPLORER_SECTION_ORDER` /
+  `SIDEBAR_GROUP_LABELS` (top-level folders + FAQ, Concepts subgroups, Program
+  documentation subgroups) plus fail-closed `localizePageTree` /
+  `assertExplorerMessages` coverage when explorer catalogs are missing or empty.
+* `src/tests/layout/desktop-mobile-explorer-parity.test.tsx`
+  Focused proof that every locale’s constructed explorer tree matches the IA
+  contract and that CanonicalDocsLayout’s desktop `#nd-sidebar` and mobile
+  drawer expose the same docs explorer folders/links after excluding the
+  drawer’s primary-nav landmark.
+* `src/tests/a11y/docs-sidebar-navigation.a11y.test.tsx`
+  Keyboard-reachable FAQ and Concepts subgroup page links, no Glossary folder
+  control, Program documentation accessible name, and localized Vietnamese
+  folder/sidebar accessible names on CanonicalDocsLayout.
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only

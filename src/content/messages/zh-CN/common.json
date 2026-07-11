@@ -53,6 +53,31 @@
     "onThisPage": "本页内容",
     "openingSummary": "开篇摘要"
   },
+  "explorer": {
+    "folders": {
+      "guides": "指南",
+      "concepts": "概念",
+      "techniques": "技巧",
+      "documentation": "程序文档"
+    },
+    "conceptsGroups": {
+      "harnesses": "运行框架",
+      "industrial-engineering": "工业工程",
+      "model-inference": "模型推理"
+    },
+    "documentationGroups": {
+      "basics": "基础",
+      "feature-support": "功能支持",
+      "functions": "功能",
+      "configuration": "配置",
+      "api": "API",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "operational": "运维",
+      "internal-architecture": "内部架构",
+      "additional-reference": "补充参考"
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "代理工厂 CLI 文档",

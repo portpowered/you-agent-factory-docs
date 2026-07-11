@@ -1,10 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
+import { FACTORY_SIDEBAR_COLLECTION_IDS } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import {
-  DOCS_COLLECTION_IDS,
-  DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS,
-} from "@/lib/docs/collection-definition-contract";
+import { DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS } from "@/lib/docs/collection-definition-contract";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
 import {
   getDocsShellPageTreeSettings,
@@ -18,8 +16,7 @@ const EXPECTED_DOCS_SIDEBAR_FOLDER_LABELS = [
   "Guides",
   "Concepts",
   "Techniques",
-  "Documentation",
-  "Glossary",
+  "Program documentation",
 ] as const;
 
 function getSeparatorLabels(nodes: Node[]): string[] {
@@ -31,18 +28,28 @@ function getSeparatorLabels(nodes: Node[]): string[] {
 describe("docs sidebar adapter", () => {
   test("exposes shell sidebar definitions in configured collection order", () => {
     const definitions = listDocsShellSidebarDefinitions();
-    const collectionDefinitions = listDocsCollectionDefinitions();
+    const collectionDefinitions = listDocsCollectionDefinitions().filter(
+      (definition) =>
+        (FACTORY_SIDEBAR_COLLECTION_IDS as readonly string[]).includes(
+          definition.id,
+        ),
+    );
 
     expect(definitions.map((definition) => definition.id)).toEqual(
       collectionDefinitions.map((definition) => definition.id),
     );
     expect(definitions.map((definition) => definition.id)).toEqual([
-      ...DOCS_COLLECTION_IDS,
+      ...FACTORY_SIDEBAR_COLLECTION_IDS,
     ]);
-    expect(listDocsShellCollectionIds()).toEqual([...DOCS_COLLECTION_IDS]);
+    expect(listDocsShellCollectionIds()).toEqual([
+      ...FACTORY_SIDEBAR_COLLECTION_IDS,
+    ]);
     expect(definitions.map((definition) => definition.sidebarLabel)).toEqual([
       ...EXPECTED_DOCS_SIDEBAR_FOLDER_LABELS,
     ]);
+    expect(definitions.some((definition) => definition.id === "glossary")).toBe(
+      false,
+    );
   });
 
   test("bundles adapter page-tree settings for generic shell composition", () => {
@@ -57,7 +64,12 @@ describe("docs sidebar adapter", () => {
 
   test("preserves collection routing and grouping resolver ids from definitions", () => {
     const definitions = listDocsShellSidebarDefinitions();
-    const collectionDefinitions = listDocsCollectionDefinitions();
+    const collectionDefinitions = listDocsCollectionDefinitions().filter(
+      (definition) =>
+        (FACTORY_SIDEBAR_COLLECTION_IDS as readonly string[]).includes(
+          definition.id,
+        ),
+    );
 
     for (const [index, definition] of definitions.entries()) {
       const sourceDefinition = collectionDefinitions[index];

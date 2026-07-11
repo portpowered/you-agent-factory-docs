@@ -5,6 +5,7 @@ import {
   getSidebarGroupIdsForSection,
   getSidebarGroupLabel,
   resolveConceptsSidebarGroup,
+  resolveDocumentationSidebarGroup,
   resolveGlossarySidebarGroup,
   type SidebarGroupIdBySection,
   type SidebarGroupingSection,
@@ -99,7 +100,26 @@ function buildGlossaryGroupedNodes(pages: DocsPageSource[]): Node[] {
 function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
   return groupPagesBySection("concepts", pages, (page) => {
     const record = getConceptById(page.frontmatter.registryId);
-    return record ? resolveConceptsSidebarGroup(record) : undefined;
+    const slug =
+      record?.slug ??
+      (page.docsSlug.startsWith("concepts/")
+        ? page.docsSlug.slice("concepts/".length)
+        : page.docsSlug);
+
+    return resolveConceptsSidebarGroup({
+      ...(record ?? {}),
+      slug,
+    });
+  });
+}
+
+function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
+  return groupPagesBySection("documentation", pages, (page) => {
+    const slug = page.docsSlug.startsWith("documentation/")
+      ? page.docsSlug.slice("documentation/".length)
+      : page.docsSlug;
+
+    return resolveDocumentationSidebarGroup({ slug });
   });
 }
 
@@ -109,6 +129,7 @@ const GROUPED_NODE_BUILDERS: Record<
 > = {
   glossary: buildGlossaryGroupedNodes,
   concepts: buildConceptsGroupedNodes,
+  documentation: buildDocumentationGroupedNodes,
 };
 
 export function buildGroupedSidebarNodes(

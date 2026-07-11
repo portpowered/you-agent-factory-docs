@@ -20,7 +20,7 @@ export function CanonicalDocsLayout({
   locale = defaultLocale,
 }: CanonicalDocsLayoutProps) {
   const options = baseOptions(locale);
-  const pageTree = localizePageTree(source.pageTree, locale);
+  const pageTree = localizePageTree(source.pageTree, locale, { messages });
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">

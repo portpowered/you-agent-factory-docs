@@ -8,24 +8,57 @@ import {
 import { source } from "@/lib/source";
 
 const REQUIRED_SUBGROUP_LABELS = {
-  Concepts: ["Reference Samples"],
+  Concepts: ["Harnesses", "Industrial engineering", "Model inference"],
+  "Program documentation": [
+    "Basics",
+    "Feature support",
+    "Functions",
+    "Configuration",
+    "API",
+    "CLI",
+    "MCP",
+    "Operational",
+    "Internal architecture",
+    "Additional reference",
+  ],
 } as const;
 
 const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   {
     folderName: "Concepts",
-    separator: "Reference Samples",
+    separator: "Harnesses",
     url: "/docs/concepts/harness",
   },
   {
     folderName: "Concepts",
-    separator: "Reference Samples",
+    separator: "Industrial engineering",
     url: "/docs/concepts/checklist",
+  },
+  {
+    folderName: "Concepts",
+    separator: "Model inference",
+    url: "/docs/concepts/tokens",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Basics",
+    url: "/docs/documentation/what-is-you-agent-factory",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "CLI",
+    url: "/docs/documentation/cli",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Additional reference",
+    url: "/docs/documentation/install",
   },
 ] as const;
 
 const GROUPED_SECTION_BY_FOLDER = {
   Concepts: "concepts",
+  "Program documentation": "documentation",
 } as const satisfies Record<
   keyof typeof REQUIRED_SUBGROUP_LABELS,
   SidebarGroupingSection
@@ -141,9 +174,10 @@ describe("generated docs page tree", () => {
       "Guides",
       "Concepts",
       "Techniques",
-      "Documentation",
-      "Glossary",
+      "Program documentation",
     ]);
+    expect(folderNames).not.toContain("Glossary");
+    expect(source.pageTree.name).toBe("You Agent Factory");
     for (const retired of [
       "Modules",
       "Models",

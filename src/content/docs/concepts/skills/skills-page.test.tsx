@@ -8,6 +8,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
+import { resolveConceptsSidebarGroup } from "@/lib/content/sidebar-grouping";
 import { source } from "@/lib/source";
 
 describe("skills concept page", () => {
@@ -24,7 +25,8 @@ describe("skills concept page", () => {
     const skillsRecord = getRegistryRecord(indexes, "concept.skills");
     expect(skillsRecord?.kind).toBe("concept");
     if (skillsRecord?.kind === "concept") {
-      expect(skillsRecord.sidebarGrouping?.concepts).toBe("harnesses");
+      expect(resolveConceptsSidebarGroup(skillsRecord)).toBe("harnesses");
+      expect(skillsRecord.sidebarGrouping?.concepts).toBeUndefined();
       expect(skillsRecord.aliases).toContain("agent skills");
       expect(skillsRecord.aliases).toContain("Cursor Agent Skills");
       expect(skillsRecord.aliases).toContain("SKILL.md");

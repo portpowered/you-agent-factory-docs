@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
+import { FACTORY_SIDEBAR_COLLECTION_IDS } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import { DOCS_COLLECTION_IDS } from "@/lib/docs/collection-definition-contract";
 import {
   getDocsShellPageTreeSettings,
   listDocsShellSidebarDefinitions,
@@ -85,7 +85,7 @@ describe("docs sidebar adapter extraction parity", () => {
     const adapterTree = buildShellCollectionPageTree(baseTree, {
       pages: loadPublishedDocsPagesSync("en"),
       definitions,
-      collectionIds: [...DOCS_COLLECTION_IDS],
+      collectionIds: [...FACTORY_SIDEBAR_COLLECTION_IDS],
       groupingResolvers,
     });
 
@@ -93,21 +93,43 @@ describe("docs sidebar adapter extraction parity", () => {
       "Guides",
       "Concepts",
       "Techniques",
-      "Documentation",
-      "Glossary",
+      "Program documentation",
     ] as const;
 
     expect(getTopLevelFolderNames(generatedTree)).toEqual([
       ...factoryFolderNames,
     ]);
-    expect(DOCS_SIDEBAR_SECTION_ORDER.map((section) => section.id)).toEqual([
-      ...DOCS_COLLECTION_IDS,
-    ]);
+    expect(
+      DOCS_SIDEBAR_SECTION_ORDER.flatMap((section) =>
+        section.kind === "collection" ? [section.id] : [],
+      ),
+    ).toEqual([...FACTORY_SIDEBAR_COLLECTION_IDS]);
+    expect(DOCS_SIDEBAR_SECTION_ORDER.at(-1)).toEqual({
+      kind: "page",
+      docsSlug: "documentation/faq",
+    });
+    expect(getTopLevelFolderNames(generatedTree)).not.toContain("Glossary");
+    expect(generatedTree.name).toBe("You Agent Factory");
+    expect(generatedTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(
+      getFolderPageLinks(generatedTree, "Program documentation").some(
+        (link) => link.url === "/docs/documentation/faq",
+      ),
+    ).toBe(false);
 
     for (const folderName of factoryFolderNames) {
-      expect(getFolderPageLinks(generatedTree, folderName)).toEqual(
-        getFolderPageLinks(adapterTree, folderName),
+      const generatedLinks = getFolderPageLinks(generatedTree, folderName);
+      const adapterLinks = getFolderPageLinks(adapterTree, folderName).filter(
+        (link) =>
+          folderName !== "Program documentation" ||
+          link.url !== "/docs/documentation/faq",
       );
+
+      expect(generatedLinks).toEqual(adapterLinks);
     }
   });
 
@@ -121,10 +143,37 @@ describe("docs sidebar adapter extraction parity", () => {
       name: "Harness",
       url: harnessUrl,
     });
-    expect(findPrecedingSeparatorLabel(children, harnessUrl)).toBe(
-      "Reference Samples",
+    expect(findPrecedingSeparatorLabel(children, harnessUrl)).toBe("Harnesses");
+    expect(getSeparatorLabels(children)).toEqual([
+      "Harnesses",
+      "Industrial engineering",
+      "Model inference",
+    ]);
+  });
+
+  test("grouped Program documentation folder keeps separator order and representative page placement", () => {
+    const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
+    const children = getFolderChildren(pageTree, "Program documentation");
+    const links = collectSidebarPageLinks(children);
+    const basicsUrl = "/docs/documentation/what-is-you-agent-factory";
+
+    expect(findSidebarPageLink(links, basicsUrl)?.url).toBe(basicsUrl);
+    expect(findPrecedingSeparatorLabel(children, basicsUrl)).toBe("Basics");
+    expect(getSeparatorLabels(children)).toEqual([
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ]);
+    expect(links.some((link) => link.url === "/docs/documentation/faq")).toBe(
+      false,
     );
-    expect(getSeparatorLabels(children)).toContain("Reference Samples");
   });
 
   test("factory sidebar excludes retired Atlas collection destinations", () => {

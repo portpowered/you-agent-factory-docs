@@ -15,7 +15,13 @@ import {
   UiMessagesLoadError,
 } from "@/lib/content/ui-messages-load";
 
-const SHELL_MESSAGE_KEYS = ["search", "nav", "language", "shell"] as const;
+const SHELL_MESSAGE_KEYS = [
+  "search",
+  "nav",
+  "language",
+  "shell",
+  "explorer",
+] as const;
 
 const DOCS_MESSAGE_KEYS = [
   "searchEntry",
@@ -53,6 +59,7 @@ function pickShellMessages(messages: ShellMessages): ShellMessages {
     nav: messages.nav,
     language: messages.language,
     shell: messages.shell,
+    explorer: messages.explorer,
   };
 }
 
@@ -277,6 +284,10 @@ describe("message boundary contracts", () => {
     expect(messages.language.locales.en).toBe("English");
     expect(messages.shell.sidebarTitle).toBe("Reference");
     expect(messages.shell.onThisPage).toBe("On this page");
+    expect(messages.explorer.folders.documentation).toBe(
+      "Program documentation",
+    );
+    expect(messages.explorer.conceptsGroups.harnesses).toBe("Harnesses");
     expect(messages.nav.topology).toBe("Topology");
     expect(messages.nav.timeline).toBe("Timeline");
   });
@@ -328,6 +339,31 @@ describe("message boundary contracts", () => {
         sidebarDescription: "Browse modules.",
         onThisPage: "On this page",
         openingSummary: "Opening summary",
+      },
+      explorer: {
+        folders: {
+          guides: "Guides",
+          concepts: "Concepts",
+          techniques: "Techniques",
+          documentation: "Program documentation",
+        },
+        conceptsGroups: {
+          harnesses: "Harnesses",
+          "industrial-engineering": "Industrial engineering",
+          "model-inference": "Model inference",
+        },
+        documentationGroups: {
+          basics: "Basics",
+          "feature-support": "Feature support",
+          functions: "Functions",
+          configuration: "Configuration",
+          api: "API",
+          cli: "CLI",
+          mcp: "MCP",
+          operational: "Operational",
+          "internal-architecture": "Internal architecture",
+          "additional-reference": "Additional reference",
+        },
       },
     };
 

@@ -51,8 +51,8 @@ const REPRESENTATIVE_FACTORY_PAGES = [
   },
   {
     href: "/docs/documentation/what-is-you-agent-factory",
-    previous: "/docs/documentation/troubleshooting",
-    next: "/docs/documentation/workers",
+    previous: "/docs/techniques/writer-reviewer",
+    next: "/docs/documentation/harness-support",
   },
 ] as const;
 

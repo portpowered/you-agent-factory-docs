@@ -523,13 +523,15 @@ those paths only accept collection section refs.
   align `conceptType` with `classification.concept.architecture`, and rely on ontology
   sidebar resolution for math/training/evaluation before editorial `sidebarGrouping`
   fallbacks for generation-and-diffusion or sequence-and-attention subgroups.
-- Concepts-section `sidebarGrouping.concepts` allows legacy Atlas-era ids
-  (`long-context`, `inference`, `architecture`, `reference-samples`) plus the
-  planned post-rewrite ids (`harnesses`, `industrial-engineering`,
-  `model-inference`). Concept-page lanes may set the planned ids on owned
-  registry records; the sidebar IA lane still owns explorer order, folder
-  construction, and locale-aware subgroup labels. `generation-and-diffusion`
-  remains glossary-only until a concepts generation subgroup exists.
+- Concepts-section `sidebarGrouping.concepts` only allows `harnesses`,
+  `industrial-engineering`, and `model-inference`. Factory explorer membership
+  is driven by `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` first; editorial
+  `sidebarGrouping.concepts` is for exceptions not covered by that map.
+  `generation-and-diffusion` remains glossary-only.
+- Program documentation explorer membership is driven by
+  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (Basics → Additional
+  reference). FAQ is omitted from that map because it is a top-level explorer
+  page outside the Program documentation folder.
 - `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
   units). When rewriting or consuming that page, retarget program-doc related
   links and `relatedIds` that treated Tokens as the factory/work-token glossary
@@ -539,26 +541,29 @@ those paths only accept collection section refs.
   registry `relatedIds`, and matching focused tests.
 - `/docs/concepts/skills` teaches agent/harness skills as reusable instruction
   packages (Cursor Agent Skills / `SKILL.md` practice), not tools, not MCP, and
-  not this repo's frontend `docs/design-skills.md` authoring guide. Assign
-  `sidebarGrouping.concepts: harnesses`. Once sibling concept pages ship, add
-  them to `relatedIds` (Skills includes `concept.mcp` and `concept.tool-calling`
-  when those pages exist); use `LocalizedLinkList` planned hrefs only while a
-  sibling is still unpublished.
+  not this repo's frontend `docs/design-skills.md` authoring guide. Factory map
+  `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG.skills` already places it under
+  Harnesses — do not add a redundant editorial `sidebarGrouping.concepts`.
+  Once sibling concept pages ship, add them to `relatedIds` (Skills includes
+  `concept.mcp` and `concept.tool-calling` when those pages exist); use
+  `LocalizedLinkList` planned hrefs only while a sibling is still unpublished.
 - `/docs/concepts/mcp` teaches Model Context Protocol as the host↔server
   protocol that exposes named tools (including Factory Session tools via
   `you mcp serve`). It is isolation-first and distinct from
-  `/docs/documentation/mcp` (install/host JSON / serve-mode reference). Assign
-  `sidebarGrouping.concepts: harnesses`. Related links must include the MCP
+  `/docs/documentation/mcp` (install/host JSON / serve-mode reference). Factory
+  map already places `mcp` under Harnesses — omit redundant editorial
+  `sidebarGrouping.concepts`. Related links must include the MCP
   program-documentation page; include `concept.tool-calling` in `relatedIds`
   once that page ships.
 - `/docs/concepts/tool-calling` teaches tool calling as the model-inference
   behavior of selecting and invoking named tools during an agent/model turn,
   grounded in `agentTools.policy` on `AGENT_WORKER` (`DISABLED` default,
-  `READ_ONLY` / `ENABLED` for bounded filesystem tools). Assign
-  `sidebarGrouping.concepts: model-inference`. Distinguish from Tool (named
-  capability), MCP (host↔server protocol), and Thinking (deliberative
-  reasoning). Link Workers documentation for the full field contract; do not
-  absorb the workers reference on the concept page.
+  `READ_ONLY` / `ENABLED` for bounded filesystem tools). Factory map already
+  places `tool-calling` under Model inference — omit redundant editorial
+  `sidebarGrouping.concepts`. Distinguish from Tool (named capability), MCP
+  (host↔server protocol), and Thinking (deliberative reasoning). Link Workers
+  documentation for the full field contract; do not absorb the workers
+  reference on the concept page.
 - `/docs/concepts/tool` retains a distinct scope as the named callable
   capability (name/arguments/result contract). Do not re-teach the
   select-and-invoke / `agentTools.policy` story on Tool—that belongs on Tool

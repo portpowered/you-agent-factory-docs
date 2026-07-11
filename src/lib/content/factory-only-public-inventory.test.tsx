@@ -64,8 +64,7 @@ const FACTORY_SIDEBAR_FOLDER_NAMES = [
   "Guides",
   "Concepts",
   "Techniques",
-  "Documentation",
-  "Glossary",
+  "Program documentation",
 ] as const;
 
 const FACTORY_SECTION_INDEX_CASES = [

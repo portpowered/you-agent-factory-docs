@@ -11,18 +11,89 @@ export const SIDEBAR_GROUP_LABELS = {
     "generation-and-diffusion": "Generation And Diffusion",
   },
   concepts: {
-    "long-context": "Long Context",
-    inference: "Inference",
-    architecture: "Architecture",
-    "reference-samples": "Reference Samples",
-    // Planned post-rewrite Concepts subgroup ids (sidebar IA lane owns
-    // explorer order/locale labels; allowlist unlock lets concept registry
-    // metadata attach without waiting on tree construction).
     harnesses: "Harnesses",
     "industrial-engineering": "Industrial engineering",
     "model-inference": "Model inference",
   },
+  documentation: {
+    basics: "Basics",
+    "feature-support": "Feature support",
+    functions: "Functions",
+    configuration: "Configuration",
+    api: "API",
+    cli: "CLI",
+    mcp: "MCP",
+    operational: "Operational",
+    "internal-architecture": "Internal architecture",
+    "additional-reference": "Additional reference",
+  },
 } as const;
+
+/**
+ * Explicit factory Concepts explorer membership by page slug.
+ * Slugs for sibling-authored pages (skills, mcp, tool-calling) are declared
+ * so they land in the correct group when published; empty groups are omitted.
+ */
+export const FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG = {
+  compaction: "harnesses",
+  loop: "harnesses",
+  worktree: "harnesses",
+  harness: "harnesses",
+  skills: "harnesses",
+  mcp: "harnesses",
+  "statistical-process-control-graphs": "industrial-engineering",
+  "task-queue": "industrial-engineering",
+  bottlenecks: "industrial-engineering",
+  checklist: "industrial-engineering",
+  tokens: "model-inference",
+  thinking: "model-inference",
+  tool: "model-inference",
+  "tool-calling": "model-inference",
+} as const satisfies Record<
+  string,
+  keyof (typeof SIDEBAR_GROUP_LABELS)["concepts"]
+>;
+
+export type FactoryConceptsSidebarSlug =
+  keyof typeof FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG;
+
+/**
+ * Explicit Program documentation explorer membership by page slug.
+ * FAQ is a top-level explorer page and is intentionally omitted here.
+ * Empty groups are omitted until assigned pages publish.
+ */
+export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = {
+  "what-is-you-agent-factory": "basics",
+  "harness-support": "feature-support",
+  "dynamic-workflows": "functions",
+  "replays-records": "functions",
+  "submitting-work": "functions",
+  configuration: "configuration",
+  workers: "configuration",
+  workstations: "configuration",
+  resources: "configuration",
+  "global-configuration-factories": "configuration",
+  "factory-session": "configuration",
+  "api-doc": "api",
+  cli: "cli",
+  "cli-command-index": "cli",
+  mcp: "mcp",
+  metrics: "operational",
+  troubleshooting: "operational",
+  logs: "operational",
+  "architecture-of-system": "internal-architecture",
+  petri: "internal-architecture",
+  install: "additional-reference",
+  "contributing-to-these-docs": "additional-reference",
+  "dashboard-ui-overview": "additional-reference",
+  "security-trust-boundaries": "additional-reference",
+} as const satisfies Record<
+  string,
+  keyof (typeof SIDEBAR_GROUP_LABELS)["documentation"]
+>;
+
+export type FactoryDocumentationSidebarSlug =
+  keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG;
 
 export type SidebarGroupingSection = keyof typeof SIDEBAR_GROUP_LABELS;
 
@@ -58,7 +129,14 @@ type GlossarySidebarRecord = {
   sidebarGrouping?: SidebarGrouping;
 };
 
-type ConceptsSidebarRecord = GlossarySidebarRecord;
+type ConceptsSidebarRecord = GlossarySidebarRecord & {
+  slug?: string;
+};
+
+type DocumentationSidebarRecord = {
+  slug?: string;
+  sidebarGrouping?: SidebarGrouping;
+};
 
 export type SidebarGroupingSource =
   (typeof SIDEBAR_GROUPING_PRECEDENCE)[number];
@@ -186,7 +264,7 @@ export function resolveGlossarySidebarGroupWithSource(
   );
 }
 
-function resolveOntologyConceptsSidebarGroup(
+function resolveFactoryAssignedConceptsSidebarGroup(
   record: ConceptsSidebarRecord,
 ):
   | SidebarGroupResolution<
@@ -194,20 +272,18 @@ function resolveOntologyConceptsSidebarGroup(
       "derived-taxonomy"
     >
   | undefined {
-  const membership = getCanonicalClassificationMembership(record);
-
-  if (membership.has("classification.concept.inference")) {
-    return createSidebarGroupResolution("inference", "derived-taxonomy");
+  const slug = record.slug;
+  if (!slug) {
+    return undefined;
   }
 
-  if (
-    membership.has("classification.concept.architecture") ||
-    membership.has("classification.concept.architecture.activation")
-  ) {
-    return createSidebarGroupResolution("architecture", "derived-taxonomy");
+  const groupId =
+    FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG[slug as FactoryConceptsSidebarSlug];
+  if (!groupId) {
+    return undefined;
   }
 
-  return undefined;
+  return createSidebarGroupResolution(groupId, "derived-taxonomy");
 }
 
 function resolveEditorialConceptsSidebarGroup(
@@ -233,8 +309,62 @@ export function resolveConceptsSidebarGroupWithSource(
   record: ConceptsSidebarRecord,
 ): SidebarGroupResolution<SidebarGroupIdBySection["concepts"]> | undefined {
   return (
-    resolveOntologyConceptsSidebarGroup(record) ??
+    resolveFactoryAssignedConceptsSidebarGroup(record) ??
     resolveEditorialConceptsSidebarGroup(record)
+  );
+}
+
+function resolveFactoryAssignedDocumentationSidebarGroup(
+  record: DocumentationSidebarRecord,
+):
+  | SidebarGroupResolution<
+      SidebarGroupIdBySection["documentation"],
+      "derived-taxonomy"
+    >
+  | undefined {
+  const slug = record.slug;
+  if (!slug) {
+    return undefined;
+  }
+
+  const groupId =
+    FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+      slug as FactoryDocumentationSidebarSlug
+    ];
+  if (!groupId) {
+    return undefined;
+  }
+
+  return createSidebarGroupResolution(groupId, "derived-taxonomy");
+}
+
+function resolveEditorialDocumentationSidebarGroup(
+  record: DocumentationSidebarRecord,
+):
+  | SidebarGroupResolution<
+      SidebarGroupIdBySection["documentation"],
+      "editorial-sidebar-grouping"
+    >
+  | undefined {
+  const editorialGroup = record.sidebarGrouping?.documentation;
+  if (!editorialGroup) {
+    return undefined;
+  }
+
+  return createSidebarGroupResolution(
+    editorialGroup,
+    "editorial-sidebar-grouping",
+  );
+}
+
+export function resolveDocumentationSidebarGroupWithSource(
+  record: DocumentationSidebarRecord,
+):
+  | SidebarGroupResolution<SidebarGroupIdBySection["documentation"]>
+  | undefined {
+  return (
+    resolveFactoryAssignedDocumentationSidebarGroup(record) ??
+    resolveEditorialDocumentationSidebarGroup(record)
   );
 }
 
@@ -248,6 +378,12 @@ export function resolveConceptsSidebarGroup(
   record: ConceptsSidebarRecord,
 ): SidebarGroupIdBySection["concepts"] | undefined {
   return resolveConceptsSidebarGroupWithSource(record)?.groupId;
+}
+
+export function resolveDocumentationSidebarGroup(
+  record: DocumentationSidebarRecord,
+): SidebarGroupIdBySection["documentation"] | undefined {
+  return resolveDocumentationSidebarGroupWithSource(record)?.groupId;
 }
 
 export function validateSidebarGroupingForRecord(
@@ -311,7 +447,7 @@ export function validateSidebarGroupingForRecord(
   if (redundantOntologyGroup) {
     issues.push({
       path: [redundantOntologyGroup.section],
-      message: `Record ${recordId} defines redundant sidebarGrouping.${redundantOntologyGroup.section} = "${redundantOntologyGroup.editorialGroup}". Canonical classification membership already resolves this subgroup to "${redundantOntologyGroup.ontologyGroup}". Remove the editorial override until the ontology model needs a true exception.`,
+      message: `Record ${recordId} defines redundant sidebarGrouping.${redundantOntologyGroup.section} = "${redundantOntologyGroup.editorialGroup}". Factory assignment or canonical classification membership already resolves this subgroup to "${redundantOntologyGroup.ontologyGroup}". Remove the editorial override until the placement model needs a true exception.`,
     });
   }
 

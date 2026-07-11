@@ -8,6 +8,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
+import { resolveConceptsSidebarGroup } from "@/lib/content/sidebar-grouping";
 import { source } from "@/lib/source";
 
 describe("tool-calling concept page", () => {
@@ -27,9 +28,10 @@ describe("tool-calling concept page", () => {
     );
     expect(toolCallingRecord?.kind).toBe("concept");
     if (toolCallingRecord?.kind === "concept") {
-      expect(toolCallingRecord.sidebarGrouping?.concepts).toBe(
+      expect(resolveConceptsSidebarGroup(toolCallingRecord)).toBe(
         "model-inference",
       );
+      expect(toolCallingRecord.sidebarGrouping?.concepts).toBeUndefined();
       expect(toolCallingRecord.aliases).toContain("tool use");
       expect(toolCallingRecord.aliases).toContain("function calling");
       expect(toolCallingRecord.aliases).toContain("agentTools");

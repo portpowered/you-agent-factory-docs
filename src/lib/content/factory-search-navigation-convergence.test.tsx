@@ -25,8 +25,9 @@ import { SearchResultMetaDetails } from "@/features/docs/search/SearchResultMeta
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   assertFactoryBreadcrumbSegments,
+  FACTORY_EXPLORER_FOLDER_LABELS,
   FACTORY_NAV_COLLECTION_IDS,
-  FACTORY_SIDEBAR_FOLDER_LABELS,
+  FACTORY_SIDEBAR_COLLECTION_IDS,
   RETIRED_ATLAS_NAV_COLLECTION_IDS,
   RETIRED_ATLAS_NAV_FOLDER_LABELS,
 } from "@/lib/content/factory-breadcrumb-sidebar";
@@ -133,7 +134,7 @@ const REPRESENTATIVE_PAGES = [
     title: "What is you-agent-factory",
     href: "/docs/documentation/what-is-you-agent-factory",
     collectionId: "documentation",
-    collectionLabel: "Documentation",
+    collectionLabel: "Program documentation",
   },
 ] as const;
 
@@ -312,7 +313,15 @@ describe("factory search and navigation convergence end-to-end", () => {
       "documentation",
       "glossary",
     ]);
-    expect(folderNames).toEqual(Object.values(FACTORY_SIDEBAR_FOLDER_LABELS));
+    expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
+      "guides",
+      "concepts",
+      "techniques",
+      "documentation",
+    ]);
+    expect(folderNames).toEqual(Object.values(FACTORY_EXPLORER_FOLDER_LABELS));
+    expect(folderNames).not.toContain("Glossary");
+    expect(pageTree.name).toBe("You Agent Factory");
     for (const label of RETIRED_ATLAS_NAV_FOLDER_LABELS) {
       expect(folderNames).not.toContain(label);
     }

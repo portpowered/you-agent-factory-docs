@@ -90,12 +90,16 @@ describe("collection definition contract", () => {
   test("constrains sidebar grouping resolver ids to factory collections", () => {
     expect(isDocsCollectionSidebarGroupingResolverId("glossary")).toBe(true);
     expect(isDocsCollectionSidebarGroupingResolverId("concepts")).toBe(true);
+    expect(isDocsCollectionSidebarGroupingResolverId("documentation")).toBe(
+      true,
+    );
     expect(isDocsCollectionSidebarGroupingResolverId("modules")).toBe(false);
     expect(isDocsCollectionSidebarGroupingResolverId("models")).toBe(false);
     expect(isDocsCollectionSidebarGroupingResolverId("guides")).toBe(false);
     expect(DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS).toEqual([
       "glossary",
       "concepts",
+      "documentation",
     ]);
   });
 });

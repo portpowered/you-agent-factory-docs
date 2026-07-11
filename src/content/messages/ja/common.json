@@ -53,6 +53,31 @@
     "onThisPage": "このページ内",
     "openingSummary": "要約を開く"
   },
+  "explorer": {
+    "folders": {
+      "guides": "ガイド",
+      "concepts": "概念",
+      "techniques": "技法",
+      "documentation": "プログラムドキュメント"
+    },
+    "conceptsGroups": {
+      "harnesses": "ハーネス",
+      "industrial-engineering": "インダストリアルエンジニアリング",
+      "model-inference": "モデル推論"
+    },
+    "documentationGroups": {
+      "basics": "基礎",
+      "feature-support": "機能サポート",
+      "functions": "機能",
+      "configuration": "設定",
+      "api": "API",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "operational": "運用",
+      "internal-architecture": "内部アーキテクチャ",
+      "additional-reference": "追加リファレンス"
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "エージェントファクトリー CLI のドキュメント",

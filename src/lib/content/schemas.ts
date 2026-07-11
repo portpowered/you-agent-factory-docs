@@ -37,6 +37,7 @@ const sidebarGroupingSchema = z
   .object({
     glossary: z.string().optional(),
     concepts: z.string().optional(),
+    documentation: z.string().optional(),
   })
   .strict()
   .optional() as z.ZodType<SidebarGrouping | undefined>;

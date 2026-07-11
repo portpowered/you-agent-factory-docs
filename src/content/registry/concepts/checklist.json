@@ -13,8 +13,5 @@
   "updatedAt": "2026-07-09T23:33:55.000Z",
   "conceptType": "general",
   "prerequisiteIds": [],
-  "explainsIds": [],
-  "sidebarGrouping": {
-    "concepts": "reference-samples"
-  }
+  "explainsIds": []
 }

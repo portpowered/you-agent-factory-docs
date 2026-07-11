@@ -1,16 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
-import type { DocsCollectionId } from "@/lib/docs/collection-definition-contract";
 import { source } from "@/lib/source";
 
 const SECTION_FOLDER_NAMES = {
   guides: "Guides",
   concepts: "Concepts",
   techniques: "Techniques",
-  documentation: "Documentation",
-  glossary: "Glossary",
-} as const satisfies Record<DocsCollectionId, string>;
+  documentation: "Program documentation",
+} as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [
   "Modules",
@@ -28,7 +26,6 @@ const REPRESENTATIVE_SECTION_URLS = {
   concepts: ["/docs/concepts/harness", "/docs/concepts/compaction"],
   techniques: ["/docs/techniques/ralph", "/docs/techniques/writer-reviewer"],
   documentation: ["/docs/documentation/what-is-you-agent-factory"],
-  glossary: [],
 } as const;
 
 function collectPageUrls(nodes: Node[]): string[] {
@@ -88,6 +85,8 @@ describe("docs navigation source", () => {
       .map((node) => String(node.name));
 
     expect(folderNames).toEqual(Object.values(SECTION_FOLDER_NAMES));
+    expect(folderNames).not.toContain("Glossary");
+    expect(source.pageTree.name).toBe("You Agent Factory");
     for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
       expect(folderNames).not.toContain(retiredFolder);
     }
@@ -180,9 +179,36 @@ describe("docs navigation source", () => {
       .filter((node) => node.type === "folder")
       .map((node) => String(node.name));
 
-    expect(separatorNames).toContain("Reference Samples");
+    expect(separatorNames).toContain("Harnesses");
+    expect(separatorNames).toContain("Industrial engineering");
+    expect(separatorNames).toContain("Model inference");
+    expect(separatorNames).not.toContain("Reference Samples");
     for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
       expect(folderNames).not.toContain(retiredFolder);
     }
+  });
+
+  test("page tree exposes Program documentation subgroups in declared order without FAQ nested inside", () => {
+    const children = getFolderChildren("Program documentation");
+    const separatorNames = children
+      .filter((node) => node.type === "separator")
+      .map((node) => String(node.name));
+    const pageUrls = collectPageUrls(children);
+
+    expect(separatorNames).toEqual([
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ]);
+    expect(pageUrls).not.toContain("/docs/documentation/faq");
+    expect(pageUrls).toContain("/docs/documentation/what-is-you-agent-factory");
+    expect(pageUrls).toContain("/docs/documentation/cli");
   });
 });

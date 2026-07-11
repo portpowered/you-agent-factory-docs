@@ -193,28 +193,32 @@ describe("registry schemas", () => {
     );
   });
 
-  test("rejects redundant sidebar grouping overrides when ontology already resolves placement", () => {
-    const issues = validateSidebarGroupingForRecord("concept", "concept.gelu", {
-      primaryClassificationId: "classification.concept.inference",
-      sidebarGrouping: {
-        concepts: "inference",
+  test("rejects redundant sidebar grouping overrides when factory assignment already resolves placement", () => {
+    const issues = validateSidebarGroupingForRecord(
+      "concept",
+      "concept.harness",
+      {
+        slug: "harness",
+        sidebarGrouping: {
+          concepts: "harnesses",
+        },
       },
-    });
+    );
     expect(issues).toHaveLength(1);
-    expect(issues[0]?.message).toContain("concept.gelu");
+    expect(issues[0]?.message).toContain("concept.harness");
     expect(issues[0]?.message).toContain(
-      'sidebarGrouping.concepts = "inference"',
+      'sidebarGrouping.concepts = "harnesses"',
     );
   });
 
-  test("allows explicit sidebar overrides only when ontology is still too coarse", () => {
+  test("allows explicit sidebar overrides only when factory assignment does not cover the page", () => {
     const issues = validateSidebarGroupingForRecord(
       "concept",
-      "concept.attention",
+      "concept.custom-exception",
       {
-        primaryClassificationId: "classification.concept.architecture",
+        slug: "custom-exception",
         sidebarGrouping: {
-          concepts: "long-context",
+          concepts: "model-inference",
         },
       },
     );

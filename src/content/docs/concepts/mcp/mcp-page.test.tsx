@@ -8,6 +8,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
+import { resolveConceptsSidebarGroup } from "@/lib/content/sidebar-grouping";
 import { source } from "@/lib/source";
 
 describe("mcp concept page", () => {
@@ -24,7 +25,8 @@ describe("mcp concept page", () => {
     const mcpRecord = getRegistryRecord(indexes, "concept.mcp");
     expect(mcpRecord?.kind).toBe("concept");
     if (mcpRecord?.kind === "concept") {
-      expect(mcpRecord.sidebarGrouping?.concepts).toBe("harnesses");
+      expect(resolveConceptsSidebarGroup(mcpRecord)).toBe("harnesses");
+      expect(mcpRecord.sidebarGrouping?.concepts).toBeUndefined();
       expect(mcpRecord.aliases).toContain("Model Context Protocol");
       expect(mcpRecord.aliases).toContain("you mcp serve");
       expect(mcpRecord.aliases).toContain("MCP server");

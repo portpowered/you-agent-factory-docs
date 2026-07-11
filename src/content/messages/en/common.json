@@ -53,6 +53,31 @@
     "onThisPage": "On this page",
     "openingSummary": "Opening summary"
   },
+  "explorer": {
+    "folders": {
+      "guides": "Guides",
+      "concepts": "Concepts",
+      "techniques": "Techniques",
+      "documentation": "Program documentation"
+    },
+    "conceptsGroups": {
+      "harnesses": "Harnesses",
+      "industrial-engineering": "Industrial engineering",
+      "model-inference": "Model inference"
+    },
+    "documentationGroups": {
+      "basics": "Basics",
+      "feature-support": "Feature support",
+      "functions": "Functions",
+      "configuration": "Configuration",
+      "api": "API",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "operational": "Operational",
+      "internal-architecture": "Internal architecture",
+      "additional-reference": "Additional reference"
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "Docs for the agent factory CLI",

@@ -66,6 +66,7 @@ export const DOCS_COLLECTION_DEFINITIONS = [
     frontmatterKind: "documentation",
     starterSlugs: [],
     messageKeys: collectionMessageKeys("documentation", "documentation"),
+    sidebarGroupingResolverId: "documentation",
   },
   {
     id: "glossary",

@@ -2,27 +2,97 @@ import {
   DOCS_COLLECTION_IDS,
   type DocsCollectionId,
 } from "@/lib/docs/collection-definition-contract";
+import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 import { isDeletedAiSearchUrl } from "@/lib/search/factory-search-deleted-records";
 
 /**
- * Reader-visible docs sidebar / breadcrumb collection order after domain
- * cleanup. Matches `DOCS_COLLECTION_IDS` (guides → glossary).
+ * Reader-visible docs explorer folder order after the sidebar IA repair.
+ * Matches the four CLI collections; Glossary stays reachable via browse,
+ * search, and direct routes but is not an explorer folder.
+ */
+export const FACTORY_SIDEBAR_COLLECTION_IDS = CLI_DOCS_COLLECTION_IDS;
+
+/**
+ * Factory nav collection ids used for breadcrumb / collection validation.
+ * Includes glossary so glossary crumbs and route sections stay valid even
+ * though glossary is omitted from the explorer folder list.
  */
 export const FACTORY_NAV_COLLECTION_IDS = DOCS_COLLECTION_IDS;
+
+export type FactorySidebarCollectionId =
+  (typeof FACTORY_SIDEBAR_COLLECTION_IDS)[number];
 
 export type FactoryNavCollectionId = DocsCollectionId;
 
 /**
+ * FAQ stays on its published documentation route but is promoted out of the
+ * Program documentation folder into a top-level explorer page entry.
+ */
+export const DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG =
+  "documentation/faq" as const;
+
+export const DOCS_EXPLORER_TOP_LEVEL_FAQ_URL =
+  "/docs/documentation/faq" as const;
+
+export type FactoryExplorerCollectionSectionRef = {
+  kind: "collection";
+  id: FactorySidebarCollectionId;
+};
+
+export type FactoryExplorerPageSectionRef = {
+  kind: "page";
+  docsSlug: typeof DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG;
+};
+
+export type FactoryExplorerSectionRef =
+  | FactoryExplorerCollectionSectionRef
+  | FactoryExplorerPageSectionRef;
+
+/**
+ * Full explorer top-level order: CLI collection folders, then FAQ as a
+ * sibling page entry outside Program documentation.
+ */
+export const FACTORY_EXPLORER_SECTION_ORDER = [
+  ...FACTORY_SIDEBAR_COLLECTION_IDS.map(
+    (id) =>
+      ({
+        kind: "collection",
+        id,
+      }) as const satisfies FactoryExplorerCollectionSectionRef,
+  ),
+  {
+    kind: "page",
+    docsSlug: DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG,
+  } as const satisfies FactoryExplorerPageSectionRef,
+] as const satisfies readonly FactoryExplorerSectionRef[];
+
+/**
+ * Explorer-visible page-tree root / brand name for the docs sidebar chrome.
+ * Technical package/repo/route identifiers remain literal `you-agent-factory`.
+ */
+export const DOCS_PAGE_TREE_ROOT_NAME = "You Agent Factory" as const;
+
+/**
  * Sidebar folder labels and breadcrumb collection crumb labels for factory
  * docs collections. Retired Atlas folder names are not part of this map.
+ * Documentation's explorer label is Program documentation; glossary keeps a
+ * crumb label for direct glossary routes outside the explorer folder list.
  */
 export const FACTORY_SIDEBAR_FOLDER_LABELS = {
   guides: "Guides",
   concepts: "Concepts",
   techniques: "Techniques",
-  documentation: "Documentation",
+  documentation: "Program documentation",
   glossary: "Glossary",
 } as const satisfies Record<FactoryNavCollectionId, string>;
+
+/** Explorer folder labels only (no Glossary folder). */
+export const FACTORY_EXPLORER_FOLDER_LABELS = {
+  guides: FACTORY_SIDEBAR_FOLDER_LABELS.guides,
+  concepts: FACTORY_SIDEBAR_FOLDER_LABELS.concepts,
+  techniques: FACTORY_SIDEBAR_FOLDER_LABELS.techniques,
+  documentation: FACTORY_SIDEBAR_FOLDER_LABELS.documentation,
+} as const satisfies Record<FactorySidebarCollectionId, string>;
 
 /**
  * Deleted Atlas collection route ids that must never appear as breadcrumb
@@ -129,20 +199,24 @@ export function assertFactoryBreadcrumbSegments(
 }
 
 /**
- * Fail closed when sidebar section order drifts from the factory collection
- * contract.
+ * Fail closed when sidebar collection-folder order drifts from the explorer
+ * folder contract (CLI collections only; Glossary is not an explorer folder).
  */
 export function assertFactorySidebarSectionOrder(
   sectionIds: readonly string[],
 ): void {
-  if (sectionIds.length !== FACTORY_NAV_COLLECTION_IDS.length) {
+  if (sectionIds.length !== FACTORY_SIDEBAR_COLLECTION_IDS.length) {
     throw new Error(
-      `Docs sidebar section order length ${sectionIds.length} does not match factory nav collections (${FACTORY_NAV_COLLECTION_IDS.join(", ")}).`,
+      `Docs sidebar section order length ${sectionIds.length} does not match factory explorer collections (${FACTORY_SIDEBAR_COLLECTION_IDS.join(", ")}).`,
     );
   }
 
-  for (let index = 0; index < FACTORY_NAV_COLLECTION_IDS.length; index += 1) {
-    const expected = FACTORY_NAV_COLLECTION_IDS[index];
+  for (
+    let index = 0;
+    index < FACTORY_SIDEBAR_COLLECTION_IDS.length;
+    index += 1
+  ) {
+    const expected = FACTORY_SIDEBAR_COLLECTION_IDS[index];
     const actual = sectionIds[index];
     if (actual !== expected) {
       throw new Error(
@@ -150,6 +224,64 @@ export function assertFactorySidebarSectionOrder(
       );
     }
   }
+}
+
+function describeExplorerSectionRef(
+  section: FactoryExplorerSectionRef | undefined,
+): string {
+  if (!section) {
+    return "(missing)";
+  }
+
+  if (section.kind === "collection") {
+    return `collection:${section.id}`;
+  }
+
+  return `page:${section.docsSlug}`;
+}
+
+/**
+ * Fail closed when the full explorer top-level order drifts from the
+ * collection-folder + top-level FAQ contract.
+ */
+export function assertFactoryExplorerSectionOrder(
+  sections: ReadonlyArray<FactoryExplorerSectionRef>,
+): void {
+  if (sections.length !== FACTORY_EXPLORER_SECTION_ORDER.length) {
+    throw new Error(
+      `Docs explorer section order length ${sections.length} does not match factory explorer contract (${FACTORY_EXPLORER_SECTION_ORDER.map(describeExplorerSectionRef).join(", ")}).`,
+    );
+  }
+
+  for (
+    let index = 0;
+    index < FACTORY_EXPLORER_SECTION_ORDER.length;
+    index += 1
+  ) {
+    const expected = FACTORY_EXPLORER_SECTION_ORDER[index];
+    const actual = sections[index];
+    const expectedKey = describeExplorerSectionRef(expected);
+    const actualKey = describeExplorerSectionRef(actual);
+
+    if (actualKey !== expectedKey) {
+      throw new Error(
+        `Docs explorer section order mismatch at index ${index}: expected "${expectedKey}", got "${actualKey}".`,
+      );
+    }
+  }
+
+  assertFactorySidebarSectionOrder(
+    sections
+      .filter(
+        (section): section is FactoryExplorerCollectionSectionRef =>
+          section.kind === "collection",
+      )
+      .map((section) => section.id),
+  );
+}
+
+export function isDocsExplorerTopLevelFaqPage(docsSlug: string): boolean {
+  return docsSlug === DOCS_EXPLORER_TOP_LEVEL_FAQ_DOCS_SLUG;
 }
 
 /**
