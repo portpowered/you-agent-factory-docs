@@ -242,6 +242,15 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
   Locale-aware explorer folder/subgroup/page label resolution consumed by
   desktop sidebar and mobile drawer through the same localized page tree.
+* `src/lib/navigation/explorer-tree-signature.ts`
+  Serializes a page tree into the explorer IA contract (top-level order, FAQ
+  placement, subgroup separators, page membership/labels/hrefs) for
+  desktop/mobile parity comparisons.
+* `src/tests/layout/desktop-mobile-explorer-parity.test.tsx`
+  Focused proof that every locale’s constructed explorer tree matches the IA
+  contract and that CanonicalDocsLayout’s desktop `#nd-sidebar` and mobile
+  drawer expose the same docs explorer folders/links after excluding the
+  drawer’s primary-nav landmark.
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only
