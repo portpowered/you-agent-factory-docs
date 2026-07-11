@@ -1,23 +1,31 @@
 {
   "title": "Agent workers",
   "description": "Configure you-agent-factory AGENT_WORKER backends for AGENT_RUN loops, including model identity, agentTools.policy, and agent-run failure cautions.",
-  "openingSummary": "Agent workers supply the model backend and shared system-prompt body for prompt-rendered AGENT_RUN workstations. Use this page when you need the durable web contract for AGENT_WORKER authoring.",
+  "openingSummary": "Agent workers supply the model backend and shared system-prompt body for prompt-rendered AGENT_RUN workstations. Use this page when you need the durable web contract for AGENT_WORKER authoring, tool policy, and agent-run failure recovery.",
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This reference covers you-agent-factory Agent workers: what an AGENT_WORKER is, how it pairs with AGENT_RUN workstations, where model identity and the shared system prompt belong, and enough orientation to distinguish agent loops from one-shot inference operations. Use it when you need the durable web Agent workers contract before deeper tool-policy and failure teaching lands on this page."
+      "body": "An Agent worker is the model-backed executor for prompt-rendered AGENT_RUN workstations in you-agent-factory. This reference covers AGENT_WORKER identity, how one agent loop runs per dispatch, where model and modelProvider belong, explicit agentTools.policy, bounded tool diagnostics, and recognizable agent-run failure classes. Use it when you need to author an agent backend without confusing it with one-shot inference operations."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "An AGENT_WORKER is the model-backed executor for prompt-rendered AGENT_RUN workstations. The worker owns backend type, model identity, and the markdown body used as the shared system prompt. The factory runtime owns one agent loop per dispatch, including session cancellation, timeout, and final-result selection. Agent workers are not INFERENCE_WORKER backends and do not declare inference operations."
+      "body": "An AGENT_WORKER supplies the model backend and the markdown body used as the shared system prompt for every AGENT_RUN workstation that binds that worker name. The factory runtime owns one agent loop per dispatch, including session cancellation, timeout, and final-result selection. Customers configure agent behavior through factory vocabulary—AGENT_WORKER, AGENT_RUN, and worker or workstation fields—rather than by invoking an external harness CLI. Agent workers are not INFERENCE_WORKER backends: they do not declare operations, and validation rejects capability declarations on AGENT_WORKER."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author an AGENT_WORKER under workers/<name>/AGENTS.md with type AGENT_WORKER, put model and modelProvider on the worker when you need authored identity, and keep the shared system prompt in the markdown body. Bind the worker from an AGENT_RUN workstation. Later sections on this page will expand agentTools.policy, diagnostics, and failure cautions; start from the Workers overview when you need the full public worker taxonomy."
+      "body": "Author an AGENT_WORKER under workers/<name>/AGENTS.md with type AGENT_WORKER. Put model and modelProvider on the worker when you need authored identity; authored values always win over operator defaults. Keep the shared system prompt in the markdown body. Bind the worker from an AGENT_RUN workstation. Runner selection is separate from modelProvider—choose the built-in runner through factory or workstation runner fields, not by overloading modelProvider."
+    },
+    "toolPolicy": {
+      "title": "Explicit Tool Policy",
+      "body": "Agent tool use is disabled unless the worker declares an explicit agentTools.policy. Omit agentTools to keep the default DISABLED behavior. agentTools is valid only on AGENT_WORKER; validation fails when tool configuration is present without a policy, when the policy is unsupported, or when agentTools appears on a non-agent worker type."
+    },
+    "failureAndSecurity": {
+      "title": "Failure And Security Cautions",
+      "body": "Agent dispatches surface stable failure_class values in work and session inspection metadata. Use the recovery hints below for lease and model readiness, tool-policy violations, harness failures, and timeout or cancel paths. Do not treat INFERENCE_WORKER or operations as an agent-loop substitute—validation rejects capability declarations on AGENT_WORKER. Keep secrets out of worker bodies; allowed tool execution records only bounded tool_diagnostics summaries."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web Agent workers reference for AGENT_WORKER / AGENT_RUN authoring. It is not a sync of packaged CLI docs, not the full Workers taxonomy overview, not workstation routing or lifecycle depth, not resource-capacity deep-dive, and not the Inference workers full contract. Sibling pages aid discovery; they are not required to define what an Agent worker is."
+      "body": "This page is a web Agent workers reference for AGENT_WORKER / AGENT_RUN authoring, tool policy, and agent-run failure recovery. It is not a sync of packaged CLI docs, not the full Workers taxonomy overview, not workstation routing or lifecycle depth, not resource-capacity deep-dive, and not the Inference workers full contract. Sibling pages aid discovery; they are not required to define what an Agent worker is."
     },
     "related": {
       "title": "Related To"
@@ -28,5 +36,48 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "ownershipIntro": "Put backend identity on the worker. Authored model and modelProvider values win over operator defaults from config, environment, or global flags.",
+    "ownershipWorkerHeader": "Put it on the worker",
+    "ownershipWorkstationHeader": "Put it on the workstation",
+    "ownershipWorkerFields": "type, model, modelProvider, executorProvider, openCodeAgent, agentTools, shared system-prompt body",
+    "ownershipWorkstationFields": "type AGENT_RUN, worker binding, prompt body, limits, outputs, onContinue, onRejection, onFailure",
+    "ownershipRunnerNote": "Runner selection is separate from modelProvider. Use factory or workstation runner fields for built-in runner IDs such as codex, gemini, kiro, cursor-cli, or opencode.",
+    "minimalExampleLabel": "Minimal AGENT_WORKER with authored model identity:",
+    "minimalExample": "---\ntype: AGENT_WORKER\nmodel: gpt-5-codex\nmodelProvider: CODEX\n---\n\nYou are a software engineer. Follow the workstation instructions and keep changes scoped to the current work item.",
+    "policyHeader": "Policy",
+    "policyBehaviorHeader": "Behavior",
+    "policyDisabled": "DISABLED",
+    "policyDisabledBehavior": "Default. The agent loop runs with tool execution disabled. Tool calls are denied with stable diagnostics instead of being silently ignored.",
+    "policyReadOnly": "READ_ONLY",
+    "policyReadOnlyBehavior": "Allows bounded filesystem inspection tools: read_file and list_directory under the dispatch working directory. Write tools are denied.",
+    "policyEnabled": "ENABLED",
+    "policyEnabledBehavior": "Allows read_file, list_directory, and write_file under the dispatch working directory. Paths outside the working directory are rejected.",
+    "toolPolicyExampleLabel": "AGENT_WORKER with read-only tool policy:",
+    "toolPolicyExample": "---\ntype: AGENT_WORKER\nmodel: gpt-5-codex\nmodelProvider: CODEX\nagentTools:\n  policy: READ_ONLY\n---\n\nYou are a software engineer. Use read-only filesystem tools only when the workstation prompt requires repository inspection.",
+    "toolDiagnosticsNote": "Allowed tool execution records bounded tool_diagnostics summaries for tool start, success, and failure. Diagnostics do not expose raw process output, secrets, or unrestricted host paths as primary customer results.",
+    "failureClassHeader": "failure_class",
+    "failureCauseHeader": "Typical cause",
+    "failureRecoveryHeader": "Recovery hint",
+    "failureLeaseClass": "agent_run_lease_denied",
+    "failureLeaseCause": "Managed runtime capacity exhausted",
+    "failureLeaseRecovery": "Retry later or increase MODEL resource capacity",
+    "failureModelReadyClass": "agent_run_model_not_ready",
+    "failureModelReadyCause": "Managed runtime missing or still loading",
+    "failureModelReadyRecovery": "Pull or wait for readiness before retrying",
+    "failureToolPolicyClass": "agent_run_tool_policy_violation",
+    "failureToolPolicyCause": "Tool call denied by agentTools.policy",
+    "failureToolPolicyRecovery": "Change tool policy or workstation prompt expectations",
+    "failureHarnessClass": "agent_run_harness_failure",
+    "failureHarnessCause": "Agent loop runtime failure",
+    "failureHarnessRecovery": "Inspect dispatch failure details and factory logs",
+    "failureTimeoutClass": "agent_run_timeout",
+    "failureTimeoutCause": "Dispatch or worker timeout exceeded",
+    "failureTimeoutRecovery": "Increase limits or narrow workstation scope",
+    "failureCanceledClass": "agent_run_canceled",
+    "failureCanceledCause": "Factory session or dispatch canceled",
+    "failureCanceledRecovery": "Resubmit or resume according to workflow policy",
+    "inferenceSubstituteCaution": "Do not treat INFERENCE_WORKER or operations as a substitute for an agent loop. Inference workers declare one-shot model operations for INFERENCE_RUN. Agent workers do not declare operations; validation rejects capability declarations on AGENT_WORKER."
   }
 }

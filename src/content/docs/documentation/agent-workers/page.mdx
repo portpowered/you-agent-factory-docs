@@ -11,6 +11,7 @@ aliases:
   - "agent workers"
   - "AGENT_WORKER"
   - "AGENT_RUN"
+  - "agentTools"
 updatedAt: "2026-07-11"
 ---
 
@@ -31,6 +32,185 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 
 <Section id="how-to-use" titleKey="sections.howToUse.title">
   <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.ownershipIntro" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.ownershipWorkerHeader" />
+        </th>
+        <th>
+          <T k="links.ownershipWorkstationHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerFields" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationFields" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.ownershipRunnerNote" />
+  </p>
+  <p>
+    <T k="links.minimalExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.minimalExample" />
+    </code>
+  </pre>
+</Section>
+
+<Section id="tool-policy" titleKey="sections.toolPolicy.title">
+  <T k="sections.toolPolicy.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.policyHeader" />
+        </th>
+        <th>
+          <T k="links.policyBehaviorHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.policyDisabled" />
+        </td>
+        <td>
+          <T k="links.policyDisabledBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.policyReadOnly" />
+        </td>
+        <td>
+          <T k="links.policyReadOnlyBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.policyEnabled" />
+        </td>
+        <td>
+          <T k="links.policyEnabledBehavior" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.toolPolicyExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.toolPolicyExample" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.toolDiagnosticsNote" />
+  </p>
+</Section>
+
+<Section id="failure-and-security" titleKey="sections.failureAndSecurity.title">
+  <T k="sections.failureAndSecurity.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.failureClassHeader" />
+        </th>
+        <th>
+          <T k="links.failureCauseHeader" />
+        </th>
+        <th>
+          <T k="links.failureRecoveryHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.failureLeaseClass" />
+        </td>
+        <td>
+          <T k="links.failureLeaseCause" />
+        </td>
+        <td>
+          <T k="links.failureLeaseRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureModelReadyClass" />
+        </td>
+        <td>
+          <T k="links.failureModelReadyCause" />
+        </td>
+        <td>
+          <T k="links.failureModelReadyRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureToolPolicyClass" />
+        </td>
+        <td>
+          <T k="links.failureToolPolicyCause" />
+        </td>
+        <td>
+          <T k="links.failureToolPolicyRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureHarnessClass" />
+        </td>
+        <td>
+          <T k="links.failureHarnessCause" />
+        </td>
+        <td>
+          <T k="links.failureHarnessRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureTimeoutClass" />
+        </td>
+        <td>
+          <T k="links.failureTimeoutCause" />
+        </td>
+        <td>
+          <T k="links.failureTimeoutRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureCanceledClass" />
+        </td>
+        <td>
+          <T k="links.failureCanceledCause" />
+        </td>
+        <td>
+          <T k="links.failureCanceledRecovery" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.inferenceSubstituteCaution" />
+  </p>
 </Section>
 
 <Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
