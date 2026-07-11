@@ -9,15 +9,15 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A Script worker (SCRIPT_WORKER) is a command-backed runtime executor. factory.json declares the worker name. The worker directory at workers/<name>/AGENTS.md (or inline worker fields) supplies command and args. A workstation binds that worker for script dispatch with SCRIPT_RUN. The markdown body is descriptive only; the executed fields are command and args."
+      "body": "A Script worker (SCRIPT_WORKER) is a command-backed runtime executor. factory.json declares the worker name. The worker directory at workers/<name>/AGENTS.md (or inline worker fields) supplies command and args. A workstation binds that worker for script dispatch with SCRIPT_RUN. The markdown body is descriptive only and is not executed; the executed fields are command and args. Args may use Go template expressions. Optional timeout and resources on the worker bound each attempt; workstation limits and routing decide how long the step may run and where accepted, continue, rejection, or failure outcomes go."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a SCRIPT_WORKER with type, command, and args, declare the same name in factory.json, and bind it from a SCRIPT_RUN workstation. Put command and args on the worker; put routing, limits, workingDirectory, worktree, env, and optional copyReferencedScripts on the workstation. Start from a minimal command-backed worker when you need a copyable SCRIPT_WORKER shape."
+      "body": "Author a SCRIPT_WORKER with type, command, and args, declare the same name in factory.json, and bind it from a SCRIPT_RUN workstation. Put type, command, args, and optional timeout or resources on the worker. Put routing (outputs, onFailure, onContinue, onRejection), limits, workingDirectory, worktree, env, and optional copyReferencedScripts on the workstation. Start from the minimal command-backed worker below when you need a copyable SCRIPT_WORKER shape."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web Script workers reference for you-agent-factory. It is not the Workers taxonomy overview, not a workstation lifecycle deep-dive, and not a sync of packaged CLI docs (you docs workers). Sibling Workers, Workstations, Submitting work, Logs, and Troubleshooting pages aid discovery; they are not required to define what a Script worker is."
+      "body": "Operator model defaults never apply to script workers. Absolute script paths and escaping .. paths are not portable expand targets; copyReferencedScripts only copies supported relative paths rooted in the authored factory bundle. This page is the web Script workers reference for you-agent-factory. It is not the Workers taxonomy overview, not a workstation lifecycle deep-dive, and not a sync of packaged CLI docs (you docs workers). Sibling Workers, Workstations, Submitting work, Logs, and Troubleshooting pages aid discovery; they are not required to define what a Script worker is."
     },
     "related": {
       "title": "Related To"
@@ -28,5 +28,15 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "ownershipWorkerHeader": "Put it on the worker",
+    "ownershipWorkstationHeader": "Put it on the workstation",
+    "ownershipWorkerFields": "type, command, args, optional timeout, optional resources",
+    "ownershipWorkstationFields": "type SCRIPT_RUN, worker binding, outputs / onFailure / onContinue / onRejection, limits, workingDirectory, worktree, env, optional copyReferencedScripts",
+    "executionContractLabel": "Execution contract:",
+    "executionContractBody": "The markdown body is descriptive only and is not executed. The runtime runs command with args. Args may use Go template expressions. Optional worker timeout bounds each attempt; workstation limits.maxExecutionTime and routing own step lifetime and outcome places.",
+    "minimalExampleLabel": "Minimal Script worker (workers/<name>/AGENTS.md):",
+    "minimalScriptExample": "---\ntype: SCRIPT_WORKER\ncommand: go\nargs: [\"test\", \"./...\"]\ntimeout: 10m\n---\n\nRuns the Go test suite."
   }
 }
