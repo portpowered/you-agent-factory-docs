@@ -101,6 +101,22 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * Render blog surfaces via `renderBlogIndexPage` / `renderBlogPostPage` +
   `CanonicalDocsLayout` (same shell as production).
 
+## Contributing / not-found / empty-state accessibility (launch extras)
+
+* `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx`
+  Always-on smokes: contributing-to-these-docs landmarks/headings/keyboard
+  chrome/Atlas-free copy + axe; docs not-found recovery links (Getting Started,
+  Browse, Search, Blog) with focus-visible rings + Atlas-free copy + axe;
+  glossary empty state factory recovery (home/browse/blog/search) with keyboard
+  focus + Atlas-free copy + axe.
+* Render contributing via `renderDocsSlugPage` + `CanonicalDocsLayout`; wrap
+  `DocsNotFound` in the same shell; empty proof via `renderGlossaryIndexPage`.
+* Colocated contract proofs (required `bun run test`): 
+  `contributing-to-these-docs-page.test.tsx`, `src/app/docs/not-found.test.tsx`,
+  `DocsIndexEmptyState.test.tsx`.
+* Live empty surface for browser proof: `/docs/glossary`. Missing docs and
+  retired Atlas paths (for example `/docs/models`) share `src/app/docs/not-found.tsx`.
+
 ## Responsive overflow matrix (story 006)
 
 * `listCriticalOverflowMatrixCases()` in `a11y-responsive-contract.ts`
@@ -163,8 +179,9 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * `Makefile` target `a11y` → `bun run test:a11y`
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure/
   reduced-motion/layout-snapshot unit tests plus home/browse, search,
-  docs/harness-support, blog, responsive overflow, reduced-motion, and layout
-  snapshot a11y smokes (and the skipped-by-default served-page probes).
+  docs/harness-support, blog, contributing/not-found/empty-state, responsive
+  overflow, reduced-motion, and layout snapshot a11y smokes (and the
+  skipped-by-default served-page probes).
 * Required by `make ci` and `.github/workflows/ci.yml` (after
   `test-reader-facing`, before `test-ci-contract`) via
   `src/lib/ci-required-path.ts` (`MAKE_CI_PREREQUISITES`,

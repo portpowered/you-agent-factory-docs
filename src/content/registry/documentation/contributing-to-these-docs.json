@@ -1,0 +1,18 @@
+{
+  "id": "documentation.contributing-to-these-docs",
+  "slug": "contributing-to-these-docs",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "contributing",
+    "contributing to these docs",
+    "docs contributing"
+  ],
+  "tags": [],
+  "relatedIds": ["documentation.what-is-you-agent-factory"],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-10T19:15:00.000Z",
+  "updatedAt": "2026-07-10T19:15:00.000Z"
+}

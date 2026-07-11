@@ -121,9 +121,27 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   catch-all / slug renderer and return the normal docs not-found page
   (`src/app/docs/not-found.tsx`); they must not appear in
   `source.generateParams()` or default/localized docs `generateStaticParams`
-  inventories. Prove with
-  `src/lib/content/retired-atlas-collection-routes.test.ts` (included in
-  required `bun run test`).
+  inventories.   The docs not-found page must offer factory recovery links to
+  Getting Started (`/docs/guides/getting-started`), Browse (`/browse`),
+  Search (`/search`), and Blog (`/blog`) with visible focus styles and no
+  Model Atlas / retired-collection advertising. Prove with
+  `src/lib/content/retired-atlas-collection-routes.test.ts` and
+  `src/app/docs/not-found.test.tsx` (included in required `bun run test`),
+  plus a11y smoke
+  `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx` (`make a11y`).
+* `src/features/docs/components/DocsIndexEmptyState.tsx`
+  Shared empty-state for collection/blog/glossary/architecture indexes.
+  Always offers home + browse + search (`SearchTrigger`); non-blog empties also
+  pass `includeBlogLink` so Blog is a recovery path. Empty title/description/
+  home-link copy in `src/content/messages/*/common.json` must stay free of
+  Model Atlas / coming-soon Atlas advertising. Prove with
+  `src/features/docs/components/DocsIndexEmptyState.test.tsx` and the empty-state
+  case in `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx`.
+* `src/content/docs/documentation/contributing-to-these-docs/`
+  Published contributing guidance page (`documentation.contributing-to-these-docs`).
+  Colocated publish/copy proof:
+  `contributing-to-these-docs-page.test.tsx`. A11y landmarks/keyboard/Atlas-free
+  smoke lives in `contributing-not-found-empty.a11y.test.tsx`.
 * `src/lib/content/factory-only-public-inventory.test.tsx`
   End-to-end shell/navigation proof that the public docs inventory is only
   guides/concepts/techniques/documentation/glossary, browse/sidebar omit

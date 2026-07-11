@@ -93,9 +93,11 @@ make test-integration
 | `scripts/run-exported-site-budget.ts` | CLI for `bun run budget` / `make budget`; measures existing `out/` only (no competing full export) |
 | `Makefile` `budget` / `package.json` `budget` | Maintainer + CI/deploy entrypoint; invoked after `make build` in `.github/workflows/ci.yml` and `deploy-pages.yml` |
 
-Factory baselines (calibrated 2026-07-10 UTC against a clean factory export with headroom):
+Factory baselines (calibrated 2026-07-10 UTC; total-out raised 2026-07-11 UTC
+after concurrent launch-extra pages reached ~85.08 MiB against the prior
+85 MiB ceiling):
 
-- `maxTotalOutBytes`: 85_000_000
+- `maxTotalOutBytes`: 90_000_000
 - `maxNextStaticJsBytes`: 3_500_000
 - `maxSearchBootstrapBytes`: 4_000_000
 
