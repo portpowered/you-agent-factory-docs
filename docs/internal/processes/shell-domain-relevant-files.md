@@ -104,6 +104,17 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Locks `/browse` and `/blog` shared left-edge contract (surface markers on
   `#nd-page`, DocsTitle + body present, `ps-0` bulletless lists, no
   negative-margin compensation).
+* Normal docs pages (`docs-page`): wire `data-content-column-surface` on the
+  DocsPage `#nd-page` container in `renderLocalDocsPage` /
+  `renderDocsSlugPage` (`src/app/docs/docs-slug-renderer.tsx`) so article
+  content shares the same left edge as header/docs nav. Do not nest
+  `CONTENT_COLUMN_INSET_CLASS` on the article body or fake alignment with
+  negative margins; leave sidebar taxonomy and MDX prose untouched. Surface
+  constant: `DOCS_PAGE_CONTENT_COLUMN_SURFACE`.
+* `src/app/docs/docs-page-alignment.test.tsx`
+  Locks normal docs page shared left-edge contract (surface marker on
+  `#nd-page`, shared inset tokens with header nav, no nested article inset,
+  no negative-margin compensation).
 
 ## CLI docs header / primary-nav regression
 
