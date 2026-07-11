@@ -60,6 +60,9 @@ Use these files when extending the default English blog surface at `/blog` and
 * `bun test src/content/blog/useful-factory-links/useful-factory-links-discoverability.test.tsx`
   Blog-local index + prose/title search + English-only locale contract + post
   SSR proof for the curated useful-links listicle (`tags: []`).
+* `bun test src/content/blog/cursor-composer-six-billion-tokens/cursor-composer-six-billion-tokens-discoverability.test.tsx`
+  Blog-local index + search + foundations tag landing + English-only locale +
+  post SSR proof for the Composer factory-ops examination.
 * Browser-verify `/blog` and `/blog/<slug>` on a unique local port after `bun run build`.
 * PR review may require a clean local `make test`; unrelated search/glossary convergence
   rows can time out under full-suite load—extend per-test timeouts rather than
@@ -71,9 +74,15 @@ Use these files when extending the default English blog surface at `/blog` and
   the 15s default and can fail under full-suite load; align them with the 90s GQA
   `test.each` budget when CI is already green.
 * After purging Atlas editorial posts, production blog assertions should track the
-  remaining factory posts (`bottlenecks`, `comparing-agent-factories`) and treat
+  remaining factory posts (`bottlenecks`, `comparing-agent-factories`,
+  `cursor-composer-six-billion-tokens`, `factories-building-factory-docs`,
+  `lies-damned-lies-evals`, `useful-factory-links`) and treat
   `evolution-of-diffusion`, `llms-no-longer-wholly-reliant-on-the-internet`, and
   `roofline-throughput-explorer` as unpublished (loader null / route notFound).
+* When a new published blog slug lands, update the exact published-slug inventory
+  in `src/lib/content/blog-content-loader-scope.test.ts` (and purge-legacy
+  remaining-post loops) so `make test` stays green—filesystem discovery alone
+  does not refresh those allowlists.
 * After purging Atlas-only tags, keep factory tags (`taxonomy`, `foundations`,
   `local-models`) and assert absence of `model-family` / `inference` / `alignment`
   from published tag index/landing surfaces. Reparent `local-models` so it does

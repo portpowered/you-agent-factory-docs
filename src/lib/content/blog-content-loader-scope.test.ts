@@ -33,6 +33,7 @@ describe("blog content loader lane isolation", () => {
       [
         "bottlenecks",
         "comparing-agent-factories",
+        "cursor-composer-six-billion-tokens",
         "factories-building-factory-docs",
         "lies-damned-lies-evals",
         "useful-factory-links",
@@ -45,6 +46,9 @@ describe("blog content loader lane isolation", () => {
       getPublishedBlogPostBySlug("comparing-agent-factories"),
     ).resolves.toMatchObject({ slug: "comparing-agent-factories" });
     await expect(
+      getPublishedBlogPostBySlug("cursor-composer-six-billion-tokens"),
+    ).resolves.toMatchObject({ slug: "cursor-composer-six-billion-tokens" });
+    await expect(
       getPublishedBlogPostBySlug("factories-building-factory-docs"),
     ).resolves.toMatchObject({ slug: "factories-building-factory-docs" });
     await expect(
@@ -53,7 +57,6 @@ describe("blog content loader lane isolation", () => {
     await expect(
       getPublishedBlogPostBySlug("useful-factory-links"),
     ).resolves.toMatchObject({ slug: "useful-factory-links" });
-
     await expect(
       getPublishedBlogPostBySlug("evolution-of-diffusion"),
     ).resolves.toBeNull();
