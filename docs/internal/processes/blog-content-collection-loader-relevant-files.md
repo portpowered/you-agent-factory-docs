@@ -90,7 +90,10 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `src/lib/content/blog-content-loader-scope.test.ts` (sorted slug list +
   `getPublishedBlogPostBySlug` match). That test is in the required website suite;
   `src/tests/content/blog-*.test.tsx` rows are excluded from `make test` and are not
-  a substitute for the loader-scope inventory update.
+  a substitute for the loader-scope inventory update. Also extend
+  `src/tests/content/purge-legacy-related-links.test.tsx` so the new slug is
+  included in the remaining-factory-posts loop (index href + per-post deleted-
+  destination check).
 * Worktree checkouts often resolve `next` from a parent `node_modules`. Turbopack
   rejects out-of-root `node_modules` symlinks; prefer SSR `renderBlogPostPage` +
   `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification

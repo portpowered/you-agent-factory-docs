@@ -29,13 +29,22 @@ describe("blog content loader lane isolation", () => {
     const published = await listPublishedBlogPosts();
     const slugs = published.map((post) => post.slug).sort();
 
-    expect(slugs).toEqual(["bottlenecks", "comparing-agent-factories"].sort());
+    expect(slugs).toEqual(
+      [
+        "bottlenecks",
+        "comparing-agent-factories",
+        "lies-damned-lies-evals",
+      ].sort(),
+    );
     await expect(
       getPublishedBlogPostBySlug("bottlenecks"),
     ).resolves.toMatchObject({ slug: "bottlenecks" });
     await expect(
       getPublishedBlogPostBySlug("comparing-agent-factories"),
     ).resolves.toMatchObject({ slug: "comparing-agent-factories" });
+    await expect(
+      getPublishedBlogPostBySlug("lies-damned-lies-evals"),
+    ).resolves.toMatchObject({ slug: "lies-damned-lies-evals" });
     await expect(
       getPublishedBlogPostBySlug("evolution-of-diffusion"),
     ).resolves.toBeNull();

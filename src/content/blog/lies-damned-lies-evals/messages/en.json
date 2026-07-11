@@ -1,0 +1,6 @@
+{
+  "title": "Lies, damned lies, and evals",
+  "description": "Why you-agent-factory operators should judge workflow health from operational evidence—throughput, failures, queue and harness pressure—rather than model benchmark leaderboards alone.",
+  "contextSentence": "A high model benchmark score does not tell you whether a long-running you-agent-factory workflow is healthy. Operators need operational evidence from the factory itself.",
+  "takeaway": "Evaluate agent-factory workflows with live operational signals—completions and failures over time, queue or harness saturation, token pressure, and session metrics—not with model leaderboard ranks that answer a different question."
+}

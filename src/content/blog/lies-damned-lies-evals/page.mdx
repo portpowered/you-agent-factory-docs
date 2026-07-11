@@ -1,0 +1,46 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-10"
+updatedAt: "2026-07-10"
+authors:
+  - site-team
+tags: []
+relatedDocIds:
+  - documentation.metrics
+  - concept.statistical-process-control-graphs
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+## Summary
+
+<T k="takeaway" />
+
+## The wrong scoreboard
+
+Model benchmark leaderboards measure how a model performs on fixed tasks. They do not measure whether a you-agent-factory run is finishing work, recovering from failures, or stalling on queues, harness calls, or token pressure. Treating a leaderboard rank as a factory health check answers the wrong question.
+
+## What operators should watch instead
+
+Useful evaluation of agent-factory workflows comes from operational evidence: completions and failures over time, queue or harness saturation, token or context pressure, and live session metrics. Those signals tell an operator whether the factory setup is working.
+
+Stable definitions for factory metrics live on the
+[metrics documentation](/docs/documentation/metrics) page. Control-chart style
+watching is covered on the SPC graphs concept page linked below. This post stays
+on the evaluation argument rather than restating those references.
+
+## Related reference pages
+
+<BlogRelatedDocs
+  relatedDocIds={[
+    "documentation.metrics",
+    "concept.statistical-process-control-graphs",
+  ]}
+/>
