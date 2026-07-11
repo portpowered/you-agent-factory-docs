@@ -859,6 +859,16 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   `src/tests/layout/localized-route-metadata.test.ts`. Shell `nav.guides` /
   `nav.docs` must exist for every shipped locale (including `zh-CN`) so primary
   nav labels are not `undefined` on locale-prefixed routes.
+* After filling the high-traffic install/run journey, keep a focused suite at
+  `src/tests/content/high-traffic-locales.test.ts` that proves (via
+  `loadUiMessages` / `loadPageMessages` + shipped-manifest helpers, not source
+  scans): reader-facing prose differs from English on home + filled docs;
+  shipped-localized-docs includes those docs slugs including
+  `documentation/cli`; an intentionally unfilled published page such as
+  `documentation/configuration` stays fail-closed (`MessageLoadError`, not
+  shipped); and at least one non-high-traffic shipped stub (for example
+  `concepts/harness`) still reuses English wording so the lane does not claim
+  full-corpus translation.
 
 ## Representative migrated consumers
 
