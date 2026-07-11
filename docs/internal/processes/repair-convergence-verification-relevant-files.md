@@ -20,6 +20,7 @@ cross-lane drift, or proving the close gate.
 | Story 002 explorer IA + eight-page membership | `src/lib/navigation/explorer-ia-contract.test.ts` |
 | Story 002 desktop/mobile explorer parity | `src/tests/layout/desktop-mobile-explorer-parity.test.tsx` |
 | Story 003 brand / alignment / theme / code-copy | `src/lib/verify/brand-theme-code-copy-r02-convergence.test.tsx` |
+| Story 004 Concepts + Program docs discovery / links | `src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts` |
 
 ## Tip ancestry (story 001 evidence)
 
@@ -70,6 +71,7 @@ bun test src/lib/navigation/explorer-ia-contract.test.ts \
   src/lib/theme/host-semantic-theme-tokens.test.ts \
   src/features/docs/styles/docs-code-copy-chrome.test.ts \
   src/lib/verify/brand-theme-code-copy-r02-convergence.test.tsx \
+  src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts \
   src/tests/a11y/content-column-brand-alignment.a11y.test.tsx \
   src/features/docs/components/DocsCodeCopyButton.test.tsx
 make typecheck
@@ -79,7 +81,7 @@ make typecheck
 
 - **002** — DONE: Explorer IA / locale parity / eight-page membership (IA contract + parity suites)
 - **003** — DONE: Brand, alignment, theme, code-copy (R02 convergence suite + browser verify on port 3533)
-- **004** — Concepts + Program documentation discovery / links
+- **004** — DONE: Concepts + Program documentation discovery / links (R02 convergence suite + browser verify)
 - **005–007** — Focused suites, full `make` gates, Pages-prefixed guard
 - **008** — Browser/visual review across required shells
 
@@ -107,3 +109,15 @@ registry drift, ordering/parity, broken links, or combined-result test failures.
 | Home / browse / blog / docs left edge | Shared `CONTENT_COLUMN_*` surfaces, no `-m*` compensation | same + `content-column-brand-alignment.a11y.test.tsx` |
 | Theme | `factory-dark` black/yellow (`#050b10` / `#f5c76f` / `#507f8c`) | same + `host-semantic-theme-tokens.test.ts` |
 | Code-heavy guide | inset `1rem`, rail copy control, secondary hover/focus, checkmark + polite status | same + `DocsCodeCopyButton.test.tsx`; browser `/docs/guides/getting-started` |
+
+## Story 004 Concepts / Program documentation discovery contract
+
+| Surface | Expected | Proof |
+| --- | --- | --- |
+| Concepts Skills / MCP / Tool calling / Tokens | Route + metadata + concepts index card | `concepts-program-docs-discovery-r02-convergence.test.ts` |
+| Eight Program documentation pages | Route + metadata + documentation index card | same |
+| Search documents + representative queries | Indexed under `concept` / `documentation` kinds | same |
+| Public sitemap | All twelve URLs included | same |
+| Locale path policy | `en` unprefixed; `ja` / `zh-CN` / `vi` prefixed | same |
+| LocalizedLinkList + registry `relatedIds` | Resolve to published docs URLs (use `getPublishedDocsEntryByRegistryId` / `source.getPage`; documentation kinds are not in `getRegistryRecordById`) | same |
+| Browser spot-check | One Concepts + two Program pages load with title + at least one related link | port 3544 static serve |
