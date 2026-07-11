@@ -5,19 +5,19 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Packaged factories are first-party built-in named factories such as @you/goal, @you/fusion, and @you/tts. Use this surface when you need the shipped you-agent-factory terminology for choosing a packaged factory, referencing it by canonical name, and understanding first-use materialization under ~/.you-agent-factory/factories."
+      "body": "Packaged factories are first-party built-in named factories such as @you/goal, @you/fusion, and @you/tts. Use this surface when you need the shipped you-agent-factory terminology for choosing a packaged factory, referencing it by canonical name, understanding first-use materialization under ~/.you-agent-factory/factories, and knowing where editability and portability end."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A packaged factory is a catalog-backed built-in under the @you/* namespace. Invoke it with you run --named <canonical-name>. Built-ins such as @you/tts and @you/goal materialize lazily into ~/.you-agent-factory/factories on first use and stay editable on disk for later runs. Project-local or saved named factories and portable --factory <factory.json> runs are separate invocation paths."
+      "body": "A packaged factory is a catalog-backed built-in under the @you/* namespace. Invoke it with you run --named <canonical-name>. Built-ins ship with the CLI catalog and materialize lazily into ~/.you-agent-factory/factories on first use. Project-local or saved named factories and portable --factory <factory.json> runs are separate invocation paths."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Run a packaged factory by its canonical name with you run --named. Open the CLI documentation page when you need the broader command matrix, and use packaged CLI topics such as you docs packaged-goal when you need per-factory invocation signatures."
+      "body": "Run a packaged factory by its canonical name with you run --named. Pass one-shot invocation text when the factory accepts shared DEFAULT handling. Open packaged CLI topics such as you docs packaged-goal when you need per-factory invocation signatures."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web reference for first-party @you/* packaged factories. It is not a sync of packaged CLI markdown, not operator-defaults depth, not factory.json topology, and not a per-factory invocation-signature deep dive. Sibling documentation links aid discovery only."
+      "body": "This page is the web reference for first-party @you/* packaged factories. It is not a sync of packaged CLI markdown, not operator-defaults depth (see Global configuration factories), not factory.json topology (see Configuration), and not a per-factory invocation-signature deep dive. Sibling documentation links aid discovery only."
     },
     "related": {
       "title": "Related To"
@@ -27,6 +27,24 @@
     },
     "references": {
       "title": "References"
+    }
+  },
+  "links": {
+    "goalCommandLabel": "Run the packaged goal factory with one-shot invocation text:",
+    "ttsCommandLabel": "Run the packaged text-to-speech factory:"
+  },
+  "callouts": {
+    "whenToChoose": {
+      "body": "Choose a packaged factory when you want a catalog-backed named invocation by canonical name such as @you/goal. Use a project-local or saved named factory when you own the definition under a chosen root. Use --factory <factory.json> for a portable one-shot config path without guessing --dir."
+    },
+    "referenceAndResolution": {
+      "body": "Invoke with you run --named <canonical-name>. Resolution order is project-local ./factory (or --dir), then global ~/.you-agent-factory/factories, then built-in catalog materialization on first use. On-disk scoped names are URL-encoded—for example ~/.you-agent-factory/factories/@you%2Ftts/."
+    },
+    "freshnessAndPortability": {
+      "body": "The built-in catalog ships with the CLI. First use materializes an editable on-disk factory; later runs load that materialized copy under the resolved root instead of overwriting customer edits. Deep per-factory invocation signatures stay on packaged CLI topics such as you docs packaged-goal, you docs packaged-fusion, and you docs packaged-tts. This page does not invent auto-refresh or package-lock semantics."
+    },
+    "exampleNotes": {
+      "body": "Replace @you/goal or @you/tts with another packaged canonical name when you need that built-in. Inspect factory-defined arguments with you run --named <canonical-name> --help."
     }
   }
 }

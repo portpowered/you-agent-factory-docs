@@ -1,8 +1,9 @@
 /**
  * Page-owned render proof for documentation/packaged-factories.
- * Covers documentation shell identity for first-party @you/* packaged
- * factories. Colocated under the page bundle so audit:canonical-page-surface
- * stays within-budget for this ordinary documentation lane.
+ * Covers documentation shell, choice/resolution/portability teaching,
+ * and selectable minimal @you/* command examples.
+ * Colocated under the page bundle so audit:canonical-page-surface stays
+ * within-budget for this ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -47,6 +48,15 @@ describe("packaged-factories documentation page", () => {
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
+    const whenToChoose = String(
+      loadedPage.messages.callouts?.whenToChoose?.body ?? "",
+    );
+    const referenceAndResolution = String(
+      loadedPage.messages.callouts?.referenceAndResolution?.body ?? "",
+    );
+    const freshnessAndPortability = String(
+      loadedPage.messages.callouts?.freshnessAndPortability?.body ?? "",
+    );
 
     expect(whatItCovers).toMatch(/@you\/goal/);
     expect(whatItCovers).toMatch(/@you\/fusion/);
@@ -55,6 +65,21 @@ describe("packaged-factories documentation page", () => {
     expect(keyConcepts).toMatch(/you run --named/i);
     expect(keyConcepts).toMatch(/~\/\.you-agent-factory\/factories/);
     expect(keyConcepts).toMatch(/materialize/i);
+    expect(whenToChoose).toMatch(/catalog-backed named invocation/i);
+    expect(whenToChoose).toMatch(/project-local or saved named factory/i);
+    expect(whenToChoose).toMatch(/--factory <factory\.json>/);
+    expect(referenceAndResolution).toMatch(/you run --named/i);
+    expect(referenceAndResolution).toMatch(/project-local \.\/factory/);
+    expect(referenceAndResolution).toMatch(/~\/\.you-agent-factory\/factories/);
+    expect(referenceAndResolution).toMatch(/built-in catalog materialization/i);
+    expect(referenceAndResolution).toMatch(/URL-encoded/i);
+    expect(referenceAndResolution).toMatch(/@you%2Ftts/);
+    expect(freshnessAndPortability).toMatch(
+      /built-in catalog ships with the CLI/i,
+    );
+    expect(freshnessAndPortability).toMatch(/editable on-disk factory/i);
+    expect(freshnessAndPortability).toMatch(/you docs packaged-goal/);
+    expect(freshnessAndPortability).toMatch(/does not invent auto-refresh/i);
     expect(howToUse).toMatch(/you run --named/i);
     expect(howToUse).toMatch(/canonical name/i);
     expect(limits).toMatch(/not a sync of packaged CLI markdown/i);
@@ -92,6 +117,49 @@ describe("packaged-factories documentation page", () => {
     expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
+
+    const keyConceptsSection = document.getElementById("key-concepts");
+    const howToUseSection = document.getElementById("how-to-use");
+    const limitsSection = document.getElementById("limits-and-assumptions");
+    expect(keyConceptsSection).toBeTruthy();
+    expect(howToUseSection).toBeTruthy();
+    expect(limitsSection).toBeTruthy();
+
+    expect(keyConceptsSection?.textContent).toMatch(
+      /catalog-backed named invocation/i,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(
+      /project-local \.\/factory/,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(/URL-encoded/i);
+    expect(keyConceptsSection?.textContent).toMatch(/@you%2Ftts/);
+    expect(keyConceptsSection?.textContent).toMatch(
+      /editable on-disk factory/i,
+    );
+    expect(keyConceptsSection?.textContent).toMatch(
+      /does not invent auto-refresh/i,
+    );
+
+    // Selectable command examples must be visible without hovering.
+    expect(howToUseSection?.textContent).toMatch(/you run --named @you\/goal/);
+    expect(howToUseSection?.textContent).toMatch(/you run --named @you\/tts/);
+    const codeBlocks = howToUseSection?.querySelectorAll("pre, code") ?? [];
+    const codeText = Array.from(codeBlocks)
+      .map((node) => node.textContent ?? "")
+      .join("\n");
+    expect(codeText).toMatch(
+      /you run --named @you\/goal "Ship the login bug fix"/,
+    );
+    expect(codeText).toMatch(/you run --named @you\/tts "hi there"/);
+
+    expect(limitsSection?.textContent).toMatch(
+      /not a sync of packaged CLI markdown/i,
+    );
+    expect(limitsSection?.textContent).toMatch(/not operator-defaults/i);
+    expect(limitsSection?.textContent).toMatch(/not factory\.json topology/i);
+    expect(limitsSection?.textContent).toMatch(
+      /not a per-factory invocation-signature/i,
+    );
 
     expect(document.body.textContent).toMatch(
       /Packaged factories are first-party built-in named factories/i,
