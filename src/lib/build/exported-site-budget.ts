@@ -31,13 +31,15 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * documentation pages measured ~106.98 MiB total and ~4.32 MiB search
  * bootstrap on CI, and after Mock workers / Throttling and limits pages (plus
  * locale stubs) measured ~107.22 MiB total and ~4.42 MiB search bootstrap on
- * CI. Keep modest headroom for ordinary content growth without silent
- * skip/pass.
+ * CI. Raised again on 2026-07-11 UTC after rebasing Mock workers / Throttling
+ * onto main with Script/Poller already landed — combined export measured
+ * ~113.75 MiB total and ~4.66 MiB search bootstrap on CI. Keep modest headroom
+ * for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 110_000_000,
+  maxTotalOutBytes: 118_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 4_500_000,
+  maxSearchBootstrapBytes: 4_800_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =
