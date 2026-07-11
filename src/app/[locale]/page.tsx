@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { renderHomePage } from "@/app/(site)/site-renderers";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
+import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
 import { resolveMetadataLocale } from "./localized-shell-metadata";
 
 type LocalizedHomePageProps = {
@@ -14,11 +15,11 @@ export async function generateMetadata({
   const locale = await resolveMetadataLocale(params);
   const messages = await loadUiMessages(locale);
 
-  return {
+  return withPageOpenGraph({
     title: messages.home.title,
     description: messages.home.intro,
     alternates: localizedRouteAlternates({ surface: "home" }),
-  };
+  });
 }
 
 export default async function LocalizedHomePage({

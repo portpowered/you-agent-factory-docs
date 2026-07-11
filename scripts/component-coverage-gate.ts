@@ -1,3 +1,8 @@
+/**
+ * Component + verifier coverage CLI: evaluate factory manifests against
+ * `bun test --coverage` rows. Invoked by `make component-coverage` /
+ * `make coverage` / `bun run coverage`.
+ */
 import {
   evaluateComponentCoverageGate,
   formatComponentCoverageSummaryLine,
@@ -7,6 +12,8 @@ import {
   evaluateVerifierCoverageGate,
   formatVerifierCoverageSummaryLine,
 } from "../src/lib/verify/verifier-coverage-gate";
+
+const REPRODUCTION_COMMAND = "make component-coverage";
 
 const { rows: coverageRows } = runCoverageSubprocess(process.cwd());
 
@@ -43,6 +50,7 @@ if (failedGates.length > 0) {
       console.error(`  - ${message}`);
     }
   }
+  console.error(`\nReproduce locally with: ${REPRODUCTION_COMMAND}`);
   process.exit(1);
 }
 

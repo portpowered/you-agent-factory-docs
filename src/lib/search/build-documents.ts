@@ -6,21 +6,31 @@ import {
   buildBlogSearchDocuments,
 } from "./build-blog-search-document";
 import { enrichSearchDocument } from "./enrich-search-document";
+import { assertNoDeletedAiSearchDocuments } from "./factory-search-deleted-records";
+import { assertFactorySearchDocuments } from "./factory-search-kinds";
 import type { SearchDocument } from "./types";
-
-export function buildSearchDocument(
-  page: DocsPageSource,
-  indexes: RegistryIndexes,
-): SearchDocument {
-  const base = buildBaseSearchDocument(page, indexes);
-  return enrichSearchDocument(base, indexes);
-}
 
 export function buildSearchDocuments(
   pages: DocsPageSource[],
   indexes: RegistryIndexes,
 ): SearchDocument[] {
-  return pages.map((page) => buildSearchDocument(page, indexes));
+  const documents = pages.map((page) =>
+    enrichSearchDocument(buildBaseSearchDocument(page, indexes), indexes),
+  );
+  assertFactorySearchDocuments(documents);
+  assertNoDeletedAiSearchDocuments(documents);
+  return documents;
+}
+
+export function buildSearchDocument(
+  page: DocsPageSource,
+  indexes: RegistryIndexes,
+): SearchDocument {
+  const [document] = buildSearchDocuments([page], indexes);
+  if (!document) {
+    throw new Error("Expected a search document for the provided page.");
+  }
+  return document;
 }
 
 export function buildSearchDocumentsForLocale(
@@ -33,8 +43,11 @@ export function buildSearchDocumentsForLocale(
     throw new Error("Search document locale must be non-empty.");
   }
 
-  return [
+  const documents = [
     ...buildSearchDocuments(pages, indexes),
     ...buildBlogSearchDocuments(blogPosts, indexes),
   ];
+  assertFactorySearchDocuments(documents);
+  assertNoDeletedAiSearchDocuments(documents);
+  return documents;
 }

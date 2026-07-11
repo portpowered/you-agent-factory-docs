@@ -7,13 +7,10 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { searchInlineResultsListClassName } from "@/features/docs/components/list-decoration";
+import { resolveFactorySearchResultHref } from "@/lib/content/factory-locale-base-path";
+import { resolveFactorySearchEmptySuggestion } from "@/lib/content/factory-search-edge-cases";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
-import {
-  buildLocalizedRoute,
-  defaultLocale,
-  type SiteLocale,
-  switchRouteLocale,
-} from "@/lib/i18n/locale-routing";
+import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { resolveSearchClassificationScope } from "@/lib/search/classification-scope";
 import { documentsByUrlFromMeta } from "@/lib/search/collapse-search-results-from-meta";
 import { SearchInlineResultItem } from "./SearchResults";
@@ -64,6 +61,14 @@ export function SearchPagePanelContent({
     null,
   );
   const { searchEntry, search: searchCopy } = messages;
+  const emptySuggestion = resolveFactorySearchEmptySuggestion(locale, {
+    emptySuggestionTerm: searchEntry.emptySuggestionTerm,
+    emptySuggestionLinkLabel: searchEntry.emptySuggestionLinkLabel,
+    emptySuggestionPrefix: searchEntry.emptySuggestionPrefix,
+    emptySuggestionMiddle: searchEntry.emptySuggestionMiddle,
+    emptySuggestionSuffix: searchEntry.emptySuggestionSuffix,
+    noResults: searchCopy.noResults,
+  });
   const effectiveHandoff = resolveEffectiveSearchPageHandoff(
     handoff,
     clientHandoff,
@@ -140,7 +145,7 @@ export function SearchPagePanelContent({
     if (item.type === "action") {
       return;
     }
-    router.push(switchRouteLocale(item.url, locale));
+    router.push(resolveFactorySearchResultHref(item.url, locale));
   };
 
   return (
@@ -223,16 +228,13 @@ export function SearchPagePanelContent({
               <button
                 type="button"
                 className="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                onClick={() => setSearch(searchEntry.emptySuggestionTerm)}
+                onClick={() => setSearch(emptySuggestion.term)}
               >
-                {searchEntry.emptySuggestionTerm}
+                {emptySuggestion.term}
               </button>{" "}
               {searchEntry.emptySuggestionMiddle}{" "}
               <Link
-                href={buildLocalizedRoute(
-                  { surface: "docs-page", slug: "techniques/ralph" },
-                  locale,
-                )}
+                href={emptySuggestion.href}
                 className="font-medium text-foreground underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 {searchEntry.emptySuggestionLinkLabel}

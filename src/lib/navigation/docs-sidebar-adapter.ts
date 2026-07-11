@@ -1,3 +1,4 @@
+import { resolveFactorySidebarFolderLabel } from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
 import {
   DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS,
@@ -12,16 +13,8 @@ import type {
   ShellSidebarGroupingResolver,
 } from "@/lib/navigation/shell-collection-page-tree";
 
-const DOCS_SIDEBAR_FOLDER_LABELS: Record<DocsCollectionId, string> = {
-  guides: "Guides",
-  concepts: "Concepts",
-  techniques: "Techniques",
-  documentation: "Documentation",
-  glossary: "Glossary",
-};
-
 export function resolveDocsSidebarFolderLabel(id: DocsCollectionId): string {
-  return DOCS_SIDEBAR_FOLDER_LABELS[id];
+  return resolveFactorySidebarFolderLabel(id);
 }
 
 export function toDocsShellSidebarDefinition(

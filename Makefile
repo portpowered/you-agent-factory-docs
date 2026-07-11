@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -9,12 +9,10 @@ setup:
 check: typecheck lint
 
 budget:
-	@echo "budget: exported-site budget gate temporarily skipped during rewrite foundation"
-	@exit 0
+	bun run budget
 
 component-coverage:
-	@echo "component-coverage: coverage gate temporarily skipped during rewrite foundation"
-	@exit 0
+	bun run coverage
 
 dev:
 	bun run dev
@@ -48,6 +46,12 @@ test-system:
 test-integration:
 	bun run test:integration
 
+test-reader-facing:
+	bun run test:reader-facing
+
+test-ci-contract:
+	bun run test:ci-contract
+
 coverage:
 	bun run coverage
 
@@ -78,7 +82,9 @@ guard-pages-deployed-artifact:
 verify-architectural-checklist-mechanism-status:
 	bun run verify:architectural-checklist-mechanism-status
 
-ci: lint typecheck test test-verify-contract coverage test-build-contract test-integration validate-data linkcheck
+# Aligned with .github/workflows/ci.yml required suites (see src/lib/ci-required-path.ts).
+# build produces one trusted out/ for test-integration + budget.
+ci: lint typecheck test test-reader-facing test-ci-contract test-verify-contract test-build-contract build test-integration budget component-coverage validate-data linkcheck
 
 validate-data:
 	bun run validate-data

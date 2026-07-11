@@ -354,6 +354,9 @@ export async function validateDocumentationLinks(
   });
 }
 
+/** Maintainer reproduction command printed on linkcheck failure. */
+export const LINKCHECK_COMMAND = "make linkcheck";
+
 /** Prints validation results and exits the process with status 1 when links are broken. */
 export function reportDocumentationLinkValidation(
   results: ValidateResult[],
@@ -363,5 +366,6 @@ export function reportDocumentationLinkValidation(
     return;
   }
 
+  console.error(`\nReproduce locally with: ${LINKCHECK_COMMAND}`);
   printErrors(results, true);
 }

@@ -123,6 +123,22 @@ describe("verify-export-base-path", () => {
     ).toBe(false);
   });
 
+  test("exportHtmlReferencesPrefixedMetadataHrefs accepts absolute production metadataBase URLs", () => {
+    const html = [
+      '<link rel="canonical" href="https://portpowered.github.io/you-agent-factory-docs/docs/guides">',
+      '<link rel="alternate" href="https://portpowered.github.io/you-agent-factory-docs/vi/docs/guides" hreflang="vi">',
+    ].join("");
+
+    expect(
+      exportHtmlReferencesPrefixedMetadataHrefs(
+        html,
+        PROJECT_SITE_BASE_PATH,
+        "/docs/guides",
+        ["/vi/docs/guides"],
+      ),
+    ).toBe(true);
+  });
+
   test("exportHtmlReferencesPrefixedPublicAsset detects project-site asset URLs", () => {
     expect(
       exportHtmlReferencesPrefixedPublicAsset(

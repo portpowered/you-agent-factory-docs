@@ -4,12 +4,9 @@ import {
   SearchDialogListItem,
   type SearchItemType,
 } from "fumadocs-ui/components/dialog/search";
+import { resolveFactorySearchResultHref } from "@/lib/content/factory-locale-base-path";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
-import {
-  defaultLocale,
-  type SiteLocale,
-  switchRouteLocale,
-} from "@/lib/i18n/locale-routing";
+import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { cn } from "@/lib/utils";
 import { SearchResultMetaDetails } from "./SearchResultMetaDetails";
 import { SearchResultTitle } from "./SearchResultTitle";
@@ -62,7 +59,7 @@ export function SearchResultRow({
 }: SearchResultRowProps) {
   const localizedItem =
     item.type === "page"
-      ? { ...item, url: switchRouteLocale(item.url, locale) }
+      ? { ...item, url: resolveFactorySearchResultHref(item.url, locale) }
       : item;
 
   if (!isPageSearchItem(item)) {

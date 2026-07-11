@@ -144,6 +144,28 @@ describe("getPrimaryNavItems", () => {
     ]);
   });
 
+  it("throws when a primary nav entry references a missing route surface", async () => {
+    const messages = await loadUiMessages();
+    const brokenConfig = {
+      brand: {
+        scaffoldId: "example-scaffold",
+        brandName: "Example Atlas",
+        siteHeading: "Example Reference",
+      },
+      repositoryUrl: "https://github.com/example/example",
+      routeSurfaces: {
+        home: { surface: "home" },
+      },
+      primaryNav: [{ routeSurface: "missingSurface", labelKey: "home" }],
+      collections: [],
+      homeFeaturedLinks: [],
+    } as SiteConfig;
+
+    expect(() =>
+      getPrimaryNavItems(messages, "en", { siteConfig: brokenConfig }),
+    ).toThrow("Missing site config route surface: missingSurface");
+  });
+
   it("uses ring token focus styles on nav links", () => {
     expect(PRIMARY_NAV_LINK_CLASS).toContain("focus-visible:ring-ring");
   });

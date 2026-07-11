@@ -2,6 +2,7 @@
 
 import { useOptionalPageMessages } from "@/features/docs/components/page-messages-context";
 import { RelatedDocList } from "@/features/docs/components/RelatedDocList";
+import { assertFactoryRelatedLinkItems } from "@/lib/content/factory-prev-next-related";
 import {
   getPublishedDocsRegistryIds,
   getRegistryRecordById,
@@ -48,6 +49,8 @@ export function RelatedDocs({ registryId }: { registryId: string }) {
       items: group.items.filter((item) => item.href),
     }))
     .filter((group) => group.items.length > 0);
+
+  assertFactoryRelatedLinkItems(groups.flatMap((group) => group.items));
 
   if (groups.length === 0) {
     return null;

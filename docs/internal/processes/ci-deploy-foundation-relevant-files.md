@@ -10,19 +10,26 @@ Pages deploy for the rewrite-era foundation pipeline.
 | Install | `make setup` | `bun install --frozen-lockfile` |
 | Static analysis | `make check` | `typecheck` then `lint` (fails if either fails) |
 | Tests | `make test` | Existing website test entrypoint |
-| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
+| Reader-facing contracts | `make test-reader-facing` | Bounded search / layout shell / a11y suite (`bun run test:reader-facing`); included in `make ci` and `.github/workflows/ci.yml` |
+| CI alignment contracts | `make test-ci-contract` | Bounded workflow/Makefile alignment suite (`bun run test:ci-contract`); included in `make ci` and CI |
+| Verify-contract | `make test-verify-contract` | Factory verifier/tooling contracts; fails closed if the required path list is empty |
+| Build-contract | `make test-build-contract` | Build/export/base-path/Pages contracts |
+| Integration | `make test-integration` | Production-integration path set for live shell/lifecycle contracts (after `make build`) |
+| Static export / build | `make build` | Runs `bun run build:export` (`NEXT_STATIC_EXPORT=1`); produces `out/` for Pages and for budget/integration. Deploy-pages sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on this step so project-site HTML references `/you-agent-factory-docs/_next`. |
 | Local static-export benchmark (optional) | `make benchmark-static-export MODE=clean\|warm` | Opt-in profiled export with clean/warm prep. Clean removes `.next`, `out`, `.source`, and ignored generated outputs (deps stay installed); warm leaves artifacts in place. Prints a stable timing summary with `mode=`, stage wall times, cache reasons, scale counts, and non-identifying machine metadata. Reference machine + recorded <=180s evidence live in `docs/operations.md`; print the gate with `bun run prove:static-export-optimization-evidence`. Not part of CI/Pages. |
-| Exported-site budget | `make budget` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
-| Component coverage | `make component-coverage` | Rewrite-safe gate, or honest transitional skip/pass exiting 0 |
+| Exported-site budget | `make budget` | Measures existing `out/` against factory baselines (total size, Next static JS, search bootstrap); never unconditional skip/`exit 0` |
+| Component coverage | `make component-coverage` | Evaluates factory component + verifier coverage manifests via `bun run coverage`; never unconditional skip/`exit 0` |
+| Registry validation | `make validate-data` | Registry content validation; included in `make ci` and CI |
+| Linkcheck | `make linkcheck` | Documentation link validation; included in `make ci` and CI |
 
 Workflows that call this contract:
 
-- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → build → budget → component-coverage
-- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/`
+- `.github/workflows/ci.yml` — setup → Playwright Chromium → check → test → test-reader-facing → test-ci-contract → test-verify-contract → test-build-contract → build → test-integration → budget → component-coverage → validate-data → linkcheck (aligned with `make ci` / `src/lib/ci-required-path.ts`)
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/` (Pages-focused subset; does not replace CI)
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
-tests need a browser).
+tests need a browser). The full local required path is `make ci`.
 
 ### Project-site export (local match for deploy-pages)
 
@@ -77,8 +84,15 @@ and `bun run test:website:export-consumers`.
 | `src/lib/build/built-app-html-paths.ts` | Live project-site fixture default `BUILT_APP_GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` (not retired `/ai-model-reference`); shared by export-search artifact matching and built-HTML path normalization |
 | `src/lib/navigation/site-path.ts` | Runtime `withBasePath(href, basePath)` / `stripBasePathFromHref` — prefixes or strips internal absolute hrefs; leaves empty-base, external, hash, and already-prefixed hrefs unchanged |
 | `src/lib/navigation/site-navigation-href.ts` | Absolute navigation/locale href resolution via `resolveLocalizedSiteHref` / `resolveLocaleSwitchedSiteHref` / `resolveSiteNavigationHrefs` (compose locale routes + `withBasePath`). Do not pass results to Next `<Link>` when `basePath` is already set in next.config |
-| `src/lib/navigation/site-metadata-path.ts` | Metadata + public-asset absolute href helpers (`resolveSiteAbsoluteHref` / `resolvePublicAssetHref` / `prefixMetadataAlternates`) — Next Metadata API does **not** auto-apply `basePath`, so canonical/hreflang and hardcoded `public/` paths must use these |
-| `src/lib/i18n/route-locale.ts` (`localizedRouteAlternates`) | Canonical + language-alternate metadata; prefixes via `resolveGitHubPagesBasePath` + `prefixMetadataAlternates` on project-site export |
+| `src/lib/seo/production-metadata-base.ts` | Production origin (`https://portpowered.github.io`) + `resolveProductionMetadataBase` / `resolveProductionMetadataHref`. Project-site export `metadataBase` is origin + `/you-agent-factory-docs`; root / unset-base-path stays origin-only. Metadata field hrefs must stay app-relative so Next.js does not double-prefix. |
+| `src/lib/seo/export-absolute-canonical.ts` / `export-absolute-canonical.test.ts` | Stricter absolute-canonical gate for project-site export HTML (home + docs article + blog post); rejects path-prefixed-only relative canonicals and retired Atlas routes |
+| `src/lib/seo/page-open-graph.ts` / `export-page-open-graph.ts` (+ tests) | Page-specific Open Graph title/description/url mirroring Metadata; export HTML gate for home/search/docs/blog proof routes |
+| `src/lib/seo/social-preview-assets.ts` / `export-social-preview-images.ts` (+ tests) / `public/images/og-default.png` | Default OG/Twitter social card path; project-site vs root public-asset prefix; export HTML `og:image` / `twitter:image` gate |
+| `src/lib/seo/export-localized-alternates.ts` (+ tests) | Shipped-only absolute production hreflang gate; multi-locale home + subset-locale docs (`concepts/task-queue`) proofs |
+| `src/lib/seo/public-sitemap-routes.ts` / `export-sitemap.ts` (+ tests) / `src/app/sitemap.ts` | Public factory route inventory + absolute production `out/sitemap.xml` gate (live routes only; no retired Atlas paths) |
+| `src/lib/seo/export-robots.ts` (+ tests) / `src/app/robots.ts` / `verify-export-seo-discovery.ts` (+ tests) | `out/robots.txt` production sitemap reference + composite SEO discovery export gate (canonicals/OG/social/alternates/sitemap/robots) |
+| `src/lib/navigation/site-metadata-path.ts` | Public-asset / non-Metadata path helpers (`resolveSiteAbsoluteHref` / `resolvePublicAssetHref` / `prefixMetadataAlternates`). Prefer app-relative Metadata fields + root `metadataBase`; use these for hardcoded `public/` paths and non-Metadata absolute hrefs. |
+| `src/lib/i18n/route-locale.ts` (`localizedRouteAlternates`) | Canonical + language-alternate metadata; emits app-relative hrefs. Production origin/base path come from root `metadataBase`. |
 | `src/lib/build/deploy-pages-workflow-contract.test.ts` | Focused build-contract gate: live `deploy-pages.yml` sets `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on `make build`, runs `make guard-pages-deployed-artifact` after build and before `upload-pages-artifact`, and uploads `out/` |
 | `src/lib/build/static-export.test.ts` | Focused build-contract gate: `/you-agent-factory-docs` → identical `basePath` + `assetPrefix` |
 | `src/lib/build/verify-export-base-path.test.ts` | Focused build-contract gate: HTML asset-prefix check for `/you-agent-factory-docs/_next` plus representative home/docs/blog navigation hrefs, prefixed canonical/hreflang, and public-asset URL checks |
@@ -88,7 +102,9 @@ and `bun run test:website:export-consumers`.
 | `src/lib/build/acquire-trusted-project-site-export.test.ts` | Focused build-contract gate: reuse vs single rebuild vs `allowBuild: false` without a real Next export |
 | `src/lib/build/guard-pages-deployed-artifact.ts` | Pages deploy guard: `guardPagesDeployedArtifact` reuses trusted `out/` with `allowBuild: false`, then `probePagesDeployedArtifact` serves via `runStaticExportServerLifecycle` / `createStaticExportHttpServer` and HTTP-probes home, getting-started, comparing-agent-factories, search bootstrap, one CSS asset, and a JS chunk for `/you-agent-factory-docs` prefix correctness. Prefixed search-bootstrap presence is evaluated from concatenated `out/_next/static/chunks/*.js` (same as export-consumer) — not only the first HTML-referenced script — because the Orama static `from` bake is code-split into a search chunk |
 | `src/lib/build/guard-pages-deployed-artifact.test.ts` | Focused build-contract gate: repaired fixture passes; code-split bake in a non-entry chunk passes; unprefixed fixture fails; missing `out/` fails without rebuild — no production-scale rebuild required |
+| `src/lib/build/required-read-only-export-probes.ts` / `required-read-only-export-probes.test.ts` | Story 006 inventory of required read-only probes (Pages guard + budget); forbids competing `build:export` / `runStaticExportBuild` in probe CLIs; guard failure report prints `make guard-pages-deployed-artifact` |
 | `scripts/guard-pages-deployed-artifact.ts` / `make guard-pages-deployed-artifact` / `bun run guard:pages-deployed-artifact` | Thin deploy-path entrypoint: reuse existing `out/` only and probe; never runs a second `make build` / `build:export` |
+| `src/lib/build/exported-site-budget.ts` / `exported-site-budget.test.ts` / `scripts/run-exported-site-budget.ts` / `make budget` / `bun run budget` | Factory exported-site budget gate: measures existing `out/` (total size, Next static JS, `api/search*`) against factory baselines; fails closed on missing/incomplete export or breach; no unconditional skip |
 | `src/lib/build/built-app-html-paths.test.ts` / `src/lib/navigation/site-path.test.ts` / `src/lib/navigation/site-navigation-href.test.ts` / `src/lib/navigation/site-metadata-path.test.ts` / `src/lib/i18n/route-locale.test.ts` | Focused helper gates: live project-site default + root vs `/you-agent-factory-docs` navigation/locale/metadata/asset href behavior |
 | `src/features/docs/components/LocalizedLinkList.tsx` | MDX link lists use Next `<Link>` so project-site `basePath` prefixes hrefs (raw `<a>` would escape to the org root) |
 
@@ -107,9 +123,12 @@ convergence passes, GQA built-route checks, and related `src/lib/verify`
 helpers). Do not reintroduce those targets into `make build`, `make check`,
 `make test`, CI, or deploy-pages.
 
-`scripts/run-website-functionality-tests.ts` (plain `make test`) still excludes
-Atlas discovery/search/content/feature packages that require deleted Model Atlas
-page fixtures. See [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
+`scripts/run-website-functionality-tests.ts` (plain `make test`) consumes the
+classified exclusion inventory in
+`src/lib/website-functionality-exclusions.ts` (`active` / `replaced`; obsolete
+Atlas package prefixes and dead paths removed). See
+[restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)
+and [delete-atlas-domain-relevant-files.md](./delete-atlas-domain-relevant-files.md).
 
 ## Empty `generateStaticParams` under static export
 
@@ -121,9 +140,13 @@ Atlas page deletion leaves empty collections).
 
 ## Transitional skip/pass gates
 
-During rewrite foundation, `budget` and `component-coverage` may print a clear
-skip message and exit 0 when no rewrite-safe enforcement exists yet. Do not hide
-failures from `check`, `test`, or the static-export build behind those skips.
+`make budget` now enforces factory exported-site baselines via
+`bun run budget` / `scripts/run-exported-site-budget.ts` (see
+[restore-required-tests-gates-relevant-files.md](./restore-required-tests-gates-relevant-files.md)).
+`make component-coverage` now enforces factory component and verifier coverage
+baselines via `bun run coverage` / `scripts/component-coverage-gate.ts` (same
+doc). Do not hide failures from `check`, `test`, `budget`, `component-coverage`,
+or the static-export build behind skip stubs.
 
 ## Related
 
@@ -178,11 +201,16 @@ just-built `out/` and never triggers a redundant `build:export`.
 Read-only post-deploy operator checks (live
 `https://portpowered.github.io/you-agent-factory-docs` home / getting-started /
 comparing-agent-factories / search / prefixed `_next` CSS+JS) live in
-`docs/operations.md` under **Read-only post-deploy checks**. Those curls are
-maintainer GET-only verification after a green deploy; they must not be wired
-into tests or the guard. The guard and `test:build-contract` only probe local
-`out/` over loopback and must never deploy to Pages, push branches, open PRs,
-or submit other external changes.
+`docs/operations.md` under **Read-only post-deploy checks**. That runbook
+includes an operator-only constraints table (GET-only; no push/PR/Pages deploy
+API), a check inventory, copy-paste curls, and auto-extracted prefixed CSS/JS
+fetches that reject bare `/_next`. Prefixed asset paths in live HTML are
+host-absolute (`/you-agent-factory-docs/_next/...`); fetch them from
+`https://portpowered.github.io` — do not append them to the `$SITE` base URL.
+Those curls are maintainer verification after a green deploy; they must not be
+wired into tests or the guard. The guard and `test:build-contract` only probe
+local `out/` over loopback and must never deploy to Pages, push branches, open
+PRs, or submit other external changes.
 
 When path-helper fixtures still encode retired `/ai-model-reference`, update them
 to `/you-agent-factory-docs` (or import `BUILT_APP_GITHUB_PAGES_BASE_PATH`) —
@@ -198,6 +226,50 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
 
 - Live workflow display names are project-neutral: `CI` and `Deploy GitHub Pages`
   (jobs `verify`, `Canonical validation`, `Deploy to GitHub Pages`).
+- Source-SHA → Pages proof for maintainers lives in
+  `docs/operations.md` under **Commit-SHA traceability**: record
+  `merge_sha` + **CI**/**verify** run + **Deploy GitHub Pages**
+  (**Canonical validation** / **Deploy to GitHub Pages**) run + Pages
+  deployment record; do not claim the live project site
+  (`https://portpowered.github.io/you-agent-factory-docs`) updated until
+  **Deploy to GitHub Pages** is green for that SHA.
+- Non-destructive rollback lives in `docs/operations.md` under **Rollback
+  process**: identify `good_sha` with green **verify** + green **Deploy to
+  GitHub Pages**; record `(good_sha, bad_sha)` and Actions run IDs; prefer
+  `git revert` via PR (or fix-forward) then redeploy on the new `main` tip.
+  Force-push and hard-reset of `main` are prohibited. Direct redeploy of a
+  prior SHA is **not available today** (`deploy-pages.yml` is `push` to `main`
+  only — no `workflow_dispatch`).
+- Incident diagnosis for live Pages failure modes lives in `docs/operations.md`
+  under **Incident diagnosis**: bare `/_next` / missing project-site prefix,
+  broken or empty search bootstrap, browser/CDN cache serving old HTML/assets,
+  and stale or wrong uploaded artifact. Each mode lists observable symptoms and
+  a next action that points back to **Commit-SHA traceability**, **Read-only
+  post-deploy checks**, and **Rollback process** — do not invent a second
+  recovery path. Prefer fresh GET-only `curl` over a single browser tab when
+  distinguishing cache from a bad artifact.
+- Deployment status expectations live in `docs/operations.md` under
+  **Deployment status expectations**: pushes to `main` show **CI**/**verify**
+  plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub
+  Pages**); pull requests show **verify** only and do not run production deploy.
+  A failed deploy on `main` leaves the prior successful Pages deployment live
+  until a later green **Deploy to GitHub Pages**.
+- PR preview policy lives in `docs/operations.md` under **PR preview policy**:
+  status is **Deferred** (not **Implemented**); owner is repository
+  maintainers; alternative for PR authors is the local Makefile contract
+  (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`)
+  plus optional `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` and
+  green **CI**/**verify** on the PR. Checklist mapping and governance status
+  language must stay **Deferred** with that owner/alternative until a preview
+  workflow ships.
+- Contributor-facing entry points must link the operations runbooks by section
+  (release, SHA proof, smoke, rollback, incident diagnosis, deployment status,
+  PR preview), not only a generic “CI/deploy posture” blurb:
+  - `docs/contributors/CONTRIBUTING.md` → **Operations runbooks**
+  - Root `README.md` Important Docs + Quality Gates operations pointer
+  Keep workflow/job display names and Makefile stages aligned with live
+  `.github/workflows/ci.yml` / `deploy-pages.yml` (no retired `deploy.yml` /
+  `ai-model-reference` / Atlas-only required paths as current).
 - The README CI badge must point at
   `portpowered/you-agent-factory-docs` / `.github/workflows/ci.yml`, not the
   legacy `ai-model-reference` repository.
