@@ -29,8 +29,10 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * Skills/MCP/Tool calling) measured ~99.78 MiB total and ~4.08 MiB search
  * bootstrap on CI. Raised again on 2026-07-11 UTC after Script/Poller workers
  * documentation pages measured ~106.98 MiB total and ~4.32 MiB search
- * bootstrap on CI. Keep modest headroom for ordinary content growth without
- * silent skip/pass.
+ * bootstrap on CI, and after Mock workers / Throttling and limits pages (plus
+ * locale stubs) measured ~107.22 MiB total and ~4.42 MiB search bootstrap on
+ * CI. Keep modest headroom for ordinary content growth without silent
+ * skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
   maxTotalOutBytes: 110_000_000,
