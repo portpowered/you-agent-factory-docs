@@ -44,7 +44,45 @@ export type ShellLayoutMessages = {
 };
 
 /**
- * Shell-level UI messages: search, navigation, language selector, and layout chrome.
+ * Locale-aware docs explorer labels for collection folders and subgroup
+ * separators. Page link titles come from page message catalogs instead.
+ * Literal CLI/API/MCP identifiers stay untranslated across locales.
+ */
+export type ExplorerFolderMessages = {
+  guides: string;
+  concepts: string;
+  techniques: string;
+  documentation: string;
+};
+
+export type ExplorerConceptsGroupMessages = {
+  harnesses: string;
+  "industrial-engineering": string;
+  "model-inference": string;
+};
+
+export type ExplorerDocumentationGroupMessages = {
+  basics: string;
+  "feature-support": string;
+  functions: string;
+  configuration: string;
+  api: string;
+  cli: string;
+  mcp: string;
+  operational: string;
+  "internal-architecture": string;
+  "additional-reference": string;
+};
+
+export type ExplorerMessages = {
+  folders: ExplorerFolderMessages;
+  conceptsGroups: ExplorerConceptsGroupMessages;
+  documentationGroups: ExplorerDocumentationGroupMessages;
+};
+
+/**
+ * Shell-level UI messages: search, navigation, language selector, layout chrome,
+ * and docs explorer folder/subgroup labels.
  * Reusable across generic documentation shells without retired Atlas topology/timeline copy.
  */
 export type ShellMessages = {
@@ -52,6 +90,7 @@ export type ShellMessages = {
   nav: NavMessages;
   language: LanguageMessages;
   shell: ShellLayoutMessages;
+  explorer: ExplorerMessages;
 };
 
 /** Shared section-index copy shape for docs collection landing pages. */
@@ -208,6 +247,7 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "language",
   "searchEntry",
   "shell",
+  "explorer",
   "home",
   "browseIndex",
   "conceptsIndex",

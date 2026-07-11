@@ -57,14 +57,14 @@ describe("docs sidebar navigation accessibility", () => {
     expect(sidebar.querySelector("[data-theme-toggle]")).toBe(null);
 
     const conceptsFolder = within(sidebar).getByRole("button", {
-      name: "Concepts",
+      name: context.messages.explorer.folders.concepts,
     });
     await act(async () => {
       conceptsFolder.click();
     });
 
     const techniquesFolder = within(sidebar).getByRole("button", {
-      name: "Techniques",
+      name: context.messages.explorer.folders.techniques,
     });
     await act(async () => {
       techniquesFolder.click();
@@ -107,10 +107,10 @@ describe("docs sidebar navigation accessibility", () => {
     }
 
     for (const folderName of [
-      "Guides",
-      "Concepts",
-      "Techniques",
-      "Program documentation",
+      context.messages.explorer.folders.guides,
+      context.messages.explorer.folders.concepts,
+      context.messages.explorer.folders.techniques,
+      context.messages.explorer.folders.documentation,
     ] as const) {
       const folder = within(sidebar).getByRole("button", { name: folderName });
       await act(async () => {
@@ -131,9 +131,21 @@ describe("docs sidebar navigation accessibility", () => {
         .getAttribute("href"),
     ).toBe(GETTING_STARTED_GUIDE_URL);
 
-    expect(within(sidebar).getByText("Harnesses")).toBeTruthy();
-    expect(within(sidebar).getByText("Industrial engineering")).toBeTruthy();
-    expect(within(sidebar).getByText("Model inference")).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.conceptsGroups.harnesses,
+      ),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.conceptsGroups["industrial-engineering"],
+      ),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.conceptsGroups["model-inference"],
+      ),
+    ).toBeTruthy();
     expect(within(sidebar).queryByText("Reference Samples")).toBeNull();
     expect(within(sidebar).getByRole("link", { name: "Harness" })).toBeTruthy();
     expect(within(sidebar).getByRole("link", { name: "Ralph" })).toBeTruthy();
@@ -144,17 +156,22 @@ describe("docs sidebar navigation accessibility", () => {
     ).toBeTruthy();
 
     for (const subgroup of [
-      "Basics",
-      "Feature support",
-      "Functions",
-      "Operational",
-      "Internal architecture",
-      "Additional reference",
+      context.messages.explorer.documentationGroups.basics,
+      context.messages.explorer.documentationGroups["feature-support"],
+      context.messages.explorer.documentationGroups.functions,
+      context.messages.explorer.documentationGroups.operational,
+      context.messages.explorer.documentationGroups["internal-architecture"],
+      context.messages.explorer.documentationGroups["additional-reference"],
     ] as const) {
       expect(within(sidebar).getByText(subgroup)).toBeTruthy();
     }
     // Configuration / API / CLI / MCP are both subgroup separators and page titles.
-    for (const sharedLabel of ["Configuration", "API", "CLI", "MCP"] as const) {
+    for (const sharedLabel of [
+      context.messages.explorer.documentationGroups.configuration,
+      context.messages.explorer.documentationGroups.api,
+      context.messages.explorer.documentationGroups.cli,
+      context.messages.explorer.documentationGroups.mcp,
+    ] as const) {
       expect(
         within(sidebar).getAllByText(sharedLabel).length,
       ).toBeGreaterThanOrEqual(2);
@@ -203,19 +220,38 @@ describe("docs sidebar navigation accessibility", () => {
     });
     expect(homeLink.getAttribute("href")).toBe("/vi");
 
-    const conceptsFolder = within(sidebar).getByRole("button", {
-      name: "Concepts",
-    });
-    await act(async () => {
-      conceptsFolder.click();
-    });
+    expect(sidebar.getAttribute("aria-label")).toBe(
+      context.messages.shell.sidebarTitle,
+    );
 
-    const techniquesFolder = within(sidebar).getByRole("button", {
-      name: "Techniques",
-    });
-    await act(async () => {
-      techniquesFolder.click();
-    });
+    for (const folderName of [
+      context.messages.explorer.folders.guides,
+      context.messages.explorer.folders.concepts,
+      context.messages.explorer.folders.techniques,
+      context.messages.explorer.folders.documentation,
+    ] as const) {
+      const folder = within(sidebar).getByRole("button", { name: folderName });
+      await act(async () => {
+        folder.click();
+      });
+    }
+
+    expect(
+      within(sidebar).queryByRole("button", { name: "Concepts" }),
+    ).toBeNull();
+    expect(
+      within(sidebar).queryByRole("button", { name: "Program documentation" }),
+    ).toBeNull();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.conceptsGroups.harnesses,
+      ),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.documentationGroups.basics,
+      ),
+    ).toBeTruthy();
 
     const tokensLink = within(sidebar).getByRole("link", { name: "Tokens" });
     expect(tokensLink.getAttribute("href")).toBe("/vi/docs/concepts/tokens");

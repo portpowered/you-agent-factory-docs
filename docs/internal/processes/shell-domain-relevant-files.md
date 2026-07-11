@@ -233,6 +233,15 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   retired `/topology` explorer `topologyPrototype` product copy, or
   home `atlasLink*` / module featured-link keys. Preserve legitimate factory
   model-provider / external-model product wording when present.
+  Explorer chrome labels live under top-level `explorer` (`folders`,
+  `conceptsGroups`, `documentationGroups`) for en/ja/zh-CN/vi; English
+  values must stay aligned with `FACTORY_EXPLORER_FOLDER_LABELS` /
+  `SIDEBAR_GROUP_LABELS`. Literal `API` / `CLI` / `MCP` stay untranslated.
+  `localizePageTree` overlays those labels plus shipped page-message titles
+  and fails closed via `assertExplorerMessages` when catalogs are incomplete.
+* `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
+  Locale-aware explorer folder/subgroup/page label resolution consumed by
+  desktop sidebar and mobile drawer through the same localized page tree.
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only

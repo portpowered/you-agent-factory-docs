@@ -4,6 +4,10 @@ import type { UiMessages } from "./ui-messages.types";
 export type {
   BrowseIndexMessages,
   DocsMessages,
+  ExplorerConceptsGroupMessages,
+  ExplorerDocumentationGroupMessages,
+  ExplorerFolderMessages,
+  ExplorerMessages,
   FactoryCollectionIndexMessages,
   FactoryDomainMessages,
   FactoryTagMessages,
