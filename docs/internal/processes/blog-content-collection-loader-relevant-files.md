@@ -99,15 +99,17 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification
   instead of inventing a second package layout.
 * `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve related-doc kinds
-  wired through `getRegistryRecordById` (concept, module, model, …). Published
-  `documentation.*` ids validate in frontmatter `relatedDocIds` but render as
-  missing in the component; until that lookup gap is fixed, keep the id in
-  frontmatter, link the documentation route in MDX prose, and pass only
-  resolvable concept (or other lookup-backed) ids to `<BlogRelatedDocs />`.
-  Passing an unresolved `documentation.*` id into the component still shows
+  wired through `getRegistryRecordById` (concept, module, model, and other tagged
+  kinds in that lookup). Published `documentation.*` and `technique.*` ids
+  validate in frontmatter `relatedDocIds` but currently render as missing in the
+  component (`getRegistryRecordById` returns undefined for those kinds). Until
+  that lookup gap is fixed, keep those ids in frontmatter, link their routes in
+  MDX prose, and pass only resolvable concept (or other lookup-backed) ids to
+  `<BlogRelatedDocs />` so readers still reach the page. Passing an unresolved
+  `documentation.*` or `technique.*` id into the component still shows
   `blog-related-docs` when at least one concept resolves, but also emits
-  `blog-related-docs-partial-unavailable` — prefer prose for documentation
-  routes so the related list stays clean.
+  `blog-related-docs-partial-unavailable` — prefer prose for those routes so the
+  related list stays clean.
 * Page-local blog illustrations (DataTable, charts) need the same
   `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
   switch as concept SPC graphs: relative imports in `page.mdx` do not resolve
@@ -124,6 +126,17 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `hasBlogPostMessagesForLocale(slug, "en")` and that non-default locales lack
   `messages/<locale>.json` so localized `/[locale]/blog/<slug>` params are not
   generated without message files.
+* English-only blog posts should ship only `messages/en.json`. Prove fail-closed
+  locale behavior in the colocated discoverability test with
+  `hasBlogPostMessagesForLocale(slug, locale)` false for `ja`/`zh-CN`/`vi` and
+  `generateStaticParams` from `src/app/[locale]/blog/[slug]/page.tsx` omitting
+  the slug (locale-prefixed routes generate only when colocated messages exist).
+* Final blog-lane validation (story 004): run `make validate-data` as the primary
+  bundle proof, and colocate a `*-validation.test.tsx` that asserts published
+  frontmatter tags via `indexes.tagsBySlug`, `relatedDocIds` via
+  `PUBLISHED_DOCS_REGISTRY_IDS`, Atlas-free messages/render, and English-only
+  message shipping. Do not edit sibling B10 bundles or shared validators for
+  that proof.
 * `T` / prose auto-link rewrites registry aliases inside message strings (for
   example `harness` and `agent runtime` → `/docs/concepts/harness`). When SSR
   tests assert exact takeaway/context substrings, avoid those alias phrases or
