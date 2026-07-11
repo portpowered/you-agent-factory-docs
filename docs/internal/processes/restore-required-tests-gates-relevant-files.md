@@ -104,11 +104,13 @@ on CI, and after Mock workers / Throttling and limits documentation pages
 measured ~107.22 MiB total and ~4.42 MiB search bootstrap on CI; raised again
 2026-07-11 UTC after rebasing Mock workers / Throttling onto main with
 Script/Poller already landed — combined export measured ~113.75 MiB total and
-~4.66 MiB search bootstrap on CI):
+~4.66 MiB search bootstrap on CI; raised again 2026-07-11 UTC after rebasing
+Agent/Inference workers onto that combined main — six-page export measured
+~120.83 MiB total and ~4.97 MiB search bootstrap on CI):
 
-- `maxTotalOutBytes`: 118_000_000
+- `maxTotalOutBytes`: 124_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 4_800_000
+- `maxSearchBootstrapBytes`: 5_100_000
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
 `out/` fails closed. Reproduce locally with:
