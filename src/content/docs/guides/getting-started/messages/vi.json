@@ -1,66 +1,66 @@
 {
-  "title": "Getting Started",
-  "description": "Install you-agent-factory, start a factory, and submit your first work.",
-  "openingSummary": "This quickstart walks install, first factory start, and first submit so you can run the CLI end to end.",
+  "title": "Bắt đầu",
+  "description": "Cài đặt you-agent-factory, khởi động factory, và gửi công việc đầu tiên của bạn.",
+  "openingSummary": "Hướng dẫn nhanh này đi qua cài đặt, lần khởi động factory đầu tiên, và lần gửi đầu tiên để bạn chạy CLI từ đầu đến cuối.",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "Getting started is the short path from installing the CLI to submitting your first work against a running factory."
+      "title": "Nó là gì",
+      "body": "Bắt đầu là đường ngắn từ cài đặt CLI đến gửi công việc đầu tiên vào một factory đang chạy."
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this guide when you are installing for the first time or verifying the install → run → submit loop on a new machine."
+      "title": "Khi nào dùng",
+      "body": "Dùng hướng dẫn này khi bạn cài đặt lần đầu hoặc kiểm tra vòng cài đặt → chạy → gửi trên máy mới."
     },
     "install": {
-      "title": "Install",
-      "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system."
+      "title": "Cài đặt",
+      "body": "Cài đặt CLI you bằng các lệnh giống trang chủ. Chọn đường phù hợp với hệ điều hành của bạn."
     },
     "firstYou": {
-      "title": "First You",
-      "body": "Start a factory so the runtime is live before you submit work. Use a named run for a concrete goal, or start the default factory."
+      "title": "Lần you đầu tiên",
+      "body": "Khởi động một factory để runtime sống trước khi bạn gửi công việc. Dùng named run cho một mục tiêu cụ thể, hoặc khởi động factory mặc định."
     },
     "firstSubmit": {
-      "title": "First Submit",
-      "body": "Enqueue work against the running factory. Use unary submit for one item, or submit batch for a small JSON batch file."
+      "title": "Lần gửi đầu tiên",
+      "body": "Xếp hàng công việc vào factory đang chạy. Dùng unary submit cho một mục, hoặc submit batch cho một tệp JSON batch nhỏ."
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Install the CLI, start a factory (or named run) and confirm it with session list, then submit work — in that order."
+      "title": "Các bước hoặc quy trình",
+      "body": "Cài đặt CLI, khởi động factory (hoặc named run) và xác nhận bằng session list, rồi gửi công việc — theo đúng thứ tự đó."
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not submit work before a factory session is running. For OS-specific install edge cases, use the install deep-dive. For the full CLI command matrix, use the CLI docs."
+      "title": "Cạm bẫy thường gặp",
+      "body": "Đừng gửi công việc trước khi có phiên factory đang chạy. Với các trường hợp cài đặt theo hệ điều hành, dùng trang cài đặt chi tiết. Với ma trận lệnh CLI đầy đủ, dùng tài liệu CLI."
     },
     "related": {
-      "title": "Related To"
+      "title": "Liên quan"
     },
     "tags": {
-      "title": "Tags"
+      "title": "Thẻ"
     },
     "references": {
-      "title": "References"
+      "title": "Tham chiếu"
     }
   },
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
-    "firstYouNamedRunLabel": "Named run",
-    "firstYouDefaultStartLabel": "Default factory start",
-    "firstYouSessionListLabel": "Confirm a live factory",
-    "firstSubmitUnaryLabel": "Unary submit",
-    "firstSubmitBatchLabel": "Batch submit",
-    "installDeepDive": "Install deep-dive",
-    "cliDocs": "CLI docs"
+    "firstYouNamedRunLabel": "Chạy có tên",
+    "firstYouDefaultStartLabel": "Khởi động factory mặc định",
+    "firstYouSessionListLabel": "Xác nhận factory đang chạy",
+    "firstSubmitUnaryLabel": "Gửi đơn lẻ",
+    "firstSubmitBatchLabel": "Gửi theo batch",
+    "installDeepDive": "Cài đặt chi tiết",
+    "cliDocs": "Tài liệu CLI"
   },
   "callouts": {
     "installDeepDive": {
-      "body": "These commands cover a basic install. OS-specific edge cases, custom install locations, and pinned versions live on the install deep-dive; you do not need that page open to finish a standard install."
+      "body": "Các lệnh này phủ một lần cài đặt cơ bản. Các trường hợp biên theo hệ điều hành, vị trí cài đặt tùy chỉnh, và phiên bản ghim nằm trên trang cài đặt chi tiết; bạn không cần mở trang đó để hoàn tất cài đặt tiêu chuẩn."
     },
     "firstYouSessionCheck": {
-      "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."
+      "body": "Xác nhận factory đang chạy bằng session list trước khi gửi. Nếu không có phiên hoạt động, khởi động lại factory rồi kiểm tra lại."
     },
     "firstSubmitRunningFactory": {
-      "body": "Submit targets a running factory. Confirm a live session with session list before you enqueue work. Batch schema, relations, and dry-run details live on submitting-work and CLI docs."
+      "body": "Submit nhắm tới một factory đang chạy. Xác nhận phiên sống bằng session list trước khi xếp hàng công việc. Chi tiết schema batch, quan hệ, và dry-run nằm trên submitting-work và tài liệu CLI."
     }
   }
 }

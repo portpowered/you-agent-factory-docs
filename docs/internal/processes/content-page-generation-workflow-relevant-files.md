@@ -182,6 +182,16 @@ files is what derives the page as shipped for that locale
 (`deriveShippedLocalizedDocsManifest` / `bun run generate:shipped-localized-docs`).
 Missing non-default messages fail closed (no English fallback at load time).
 
+When a later lane **fills** high-traffic stubs with real target-language prose
+(for example `guides/getting-started`), keep the same key shape, leave install
+command literals in `page.mdx` unchanged, keep OS platform labels such as
+`macOS / Linux` / `Windows (PowerShell)` identical across locales, and update
+any section-index title assertions that previously expected the English stub
+title (for example `src/tests/content/section-indexes.test.tsx` for `vi`).
+Colocate locale render proofs under
+`src/content/docs/<section>/<slug>/<slug>-page.test.tsx` and assert
+reader-facing fields differ from English rather than only that files exist.
+
 Commit the regenerated tracked `shipped-localized-docs.generated.ts` when adding
 locale message files (the derive test requires it). On a first CLI-section page
 (including the first authored `concepts/` page), that generated file plus a

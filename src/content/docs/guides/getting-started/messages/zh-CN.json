@@ -1,66 +1,66 @@
 {
-  "title": "Getting Started",
-  "description": "Install you-agent-factory, start a factory, and submit your first work.",
-  "openingSummary": "This quickstart walks install, first factory start, and first submit so you can run the CLI end to end.",
+  "title": "快速开始",
+  "description": "安装 you-agent-factory，启动工厂，并提交你的第一项工作。",
+  "openingSummary": "本快速入门带你完成安装、首次启动工厂以及首次提交，从而端到端地运行 CLI。",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "Getting started is the short path from installing the CLI to submitting your first work against a running factory."
+      "title": "它是什么",
+      "body": "快速开始是从安装 CLI 到向正在运行的工厂提交第一项工作的简短路径。"
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this guide when you are installing for the first time or verifying the install → run → submit loop on a new machine."
+      "title": "何时使用",
+      "body": "在首次安装时，或在新机器上验证安装 → 运行 → 提交循环时，使用本指南。"
     },
     "install": {
-      "title": "Install",
-      "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system."
+      "title": "安装",
+      "body": "使用与首页相同的命令安装 you CLI。按你的操作系统选择对应路径。"
     },
     "firstYou": {
-      "title": "First You",
-      "body": "Start a factory so the runtime is live before you submit work. Use a named run for a concrete goal, or start the default factory."
+      "title": "第一次运行 you",
+      "body": "在提交工作之前先启动工厂，使运行时处于活动状态。对具体目标使用命名运行，或启动默认工厂。"
     },
     "firstSubmit": {
-      "title": "First Submit",
-      "body": "Enqueue work against the running factory. Use unary submit for one item, or submit batch for a small JSON batch file."
+      "title": "第一次提交",
+      "body": "向正在运行的工厂排队工作。单项使用一元提交，小型 JSON 批处理文件使用批量提交。"
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Install the CLI, start a factory (or named run) and confirm it with session list, then submit work — in that order."
+      "title": "步骤或工作流",
+      "body": "安装 CLI，启动工厂（或命名运行）并用 session list 确认，然后提交工作 — 按此顺序进行。"
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not submit work before a factory session is running. For OS-specific install edge cases, use the install deep-dive. For the full CLI command matrix, use the CLI docs."
+      "title": "常见陷阱",
+      "body": "不要在工厂会话运行之前提交工作。操作系统相关的安装边界情况请参阅安装详解；完整 CLI 命令矩阵请参阅 CLI 文档。"
     },
     "related": {
-      "title": "Related To"
+      "title": "相关内容"
     },
     "tags": {
-      "title": "Tags"
+      "title": "标签"
     },
     "references": {
-      "title": "References"
+      "title": "参考资料"
     }
   },
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
-    "firstYouNamedRunLabel": "Named run",
-    "firstYouDefaultStartLabel": "Default factory start",
-    "firstYouSessionListLabel": "Confirm a live factory",
-    "firstSubmitUnaryLabel": "Unary submit",
-    "firstSubmitBatchLabel": "Batch submit",
-    "installDeepDive": "Install deep-dive",
-    "cliDocs": "CLI docs"
+    "firstYouNamedRunLabel": "命名运行",
+    "firstYouDefaultStartLabel": "默认工厂启动",
+    "firstYouSessionListLabel": "确认工厂已在运行",
+    "firstSubmitUnaryLabel": "一元提交",
+    "firstSubmitBatchLabel": "批量提交",
+    "installDeepDive": "安装详解",
+    "cliDocs": "CLI 文档"
   },
   "callouts": {
     "installDeepDive": {
-      "body": "These commands cover a basic install. OS-specific edge cases, custom install locations, and pinned versions live on the install deep-dive; you do not need that page open to finish a standard install."
+      "body": "这些命令覆盖基本安装。操作系统相关边界情况、自定义安装位置和固定版本见安装详解；完成标准安装不必打开该页。"
     },
     "firstYouSessionCheck": {
-      "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."
+      "body": "提交前用 session list 确认工厂已在运行。若没有活动会话，请再次启动工厂，然后重新检查。"
     },
     "firstSubmitRunningFactory": {
-      "body": "Submit targets a running factory. Confirm a live session with session list before you enqueue work. Batch schema, relations, and dry-run details live on submitting-work and CLI docs."
+      "body": "提交面向正在运行的工厂。排队工作前用 session list 确认有活动会话。批处理模式、关系与 dry-run 详情见 submitting-work 和 CLI 文档。"
     }
   }
 }

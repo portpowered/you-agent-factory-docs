@@ -265,7 +265,7 @@ describe("localized CLI section index page render", () => {
 
     expect(html).toContain(messages.guidesIndex.title);
     expect(html).toContain(`aria-label="${messages.guidesIndex.listLabel}"`);
-    expect(html).toContain("Getting Started");
+    expect(html).toContain("Bắt đầu");
     expect(html).toContain("/vi/docs/guides/getting-started");
     expect(html).not.toContain(messages.guidesIndex.emptyTitle);
     expect(messages.guidesIndex.emptyDescription).not.toMatch(

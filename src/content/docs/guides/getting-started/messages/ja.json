@@ -1,66 +1,66 @@
 {
-  "title": "Getting Started",
-  "description": "Install you-agent-factory, start a factory, and submit your first work.",
-  "openingSummary": "This quickstart walks install, first factory start, and first submit so you can run the CLI end to end.",
+  "title": "はじめに",
+  "description": "you-agent-factory をインストールし、ファクトリーを起動して、最初の作業を投入します。",
+  "openingSummary": "このクイックスタートでは、インストール、最初のファクトリー起動、最初の投入までを案内し、CLI を端から端まで動かせるようにします。",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "Getting started is the short path from installing the CLI to submitting your first work against a running factory."
+      "title": "概要",
+      "body": "はじめには、CLI のインストールから、稼働中のファクトリーに対する最初の作業投入までの短い道筋です。"
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this guide when you are installing for the first time or verifying the install → run → submit loop on a new machine."
+      "title": "いつ使うか",
+      "body": "初めてインストールするときや、新しいマシンでインストール → 実行 → 投入のループを確認するときに、このガイドを使います。"
     },
     "install": {
-      "title": "Install",
-      "body": "Install the you CLI with the same commands as the home page. Pick the path for your operating system."
+      "title": "インストール",
+      "body": "ホームページと同じコマンドで you CLI をインストールします。お使いの OS に合った手順を選んでください。"
     },
     "firstYou": {
-      "title": "First You",
-      "body": "Start a factory so the runtime is live before you submit work. Use a named run for a concrete goal, or start the default factory."
+      "title": "最初の you",
+      "body": "作業を投入する前に、ランタイムが動くようファクトリーを起動します。具体的なゴールには名前付き実行を使うか、デフォルトのファクトリーを起動します。"
     },
     "firstSubmit": {
-      "title": "First Submit",
-      "body": "Enqueue work against the running factory. Use unary submit for one item, or submit batch for a small JSON batch file."
+      "title": "最初の投入",
+      "body": "稼働中のファクトリーに作業をキューします。1 件なら単一投入、小さな JSON バッチファイルならバッチ投入を使います。"
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Install the CLI, start a factory (or named run) and confirm it with session list, then submit work — in that order."
+      "title": "手順またはワークフロー",
+      "body": "CLI をインストールし、ファクトリー（または名前付き実行）を起動して session list で確認し、その後に作業を投入します — この順番で進めます。"
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not submit work before a factory session is running. For OS-specific install edge cases, use the install deep-dive. For the full CLI command matrix, use the CLI docs."
+      "title": "よくある落とし穴",
+      "body": "ファクトリーセッションが動く前に作業を投入しないでください。OS 固有のインストールの例外はインストール詳細を、CLI コマンド一覧は CLI ドキュメントを参照してください。"
     },
     "related": {
-      "title": "Related To"
+      "title": "関連"
     },
     "tags": {
-      "title": "Tags"
+      "title": "タグ"
     },
     "references": {
-      "title": "References"
+      "title": "参考文献"
     }
   },
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
-    "firstYouNamedRunLabel": "Named run",
-    "firstYouDefaultStartLabel": "Default factory start",
-    "firstYouSessionListLabel": "Confirm a live factory",
-    "firstSubmitUnaryLabel": "Unary submit",
-    "firstSubmitBatchLabel": "Batch submit",
-    "installDeepDive": "Install deep-dive",
-    "cliDocs": "CLI docs"
+    "firstYouNamedRunLabel": "名前付き実行",
+    "firstYouDefaultStartLabel": "デフォルトのファクトリー起動",
+    "firstYouSessionListLabel": "稼働中のファクトリーを確認",
+    "firstSubmitUnaryLabel": "単一投入",
+    "firstSubmitBatchLabel": "バッチ投入",
+    "installDeepDive": "インストール詳細",
+    "cliDocs": "CLI ドキュメント"
   },
   "callouts": {
     "installDeepDive": {
-      "body": "These commands cover a basic install. OS-specific edge cases, custom install locations, and pinned versions live on the install deep-dive; you do not need that page open to finish a standard install."
+      "body": "これらのコマンドは基本的なインストールをカバーします。OS 固有の例外、カスタムインストール先、ピン留めバージョンはインストール詳細にあります。標準インストールを終えるためにそのページを開く必要はありません。"
     },
     "firstYouSessionCheck": {
-      "body": "Confirm a live factory with session list before you submit. If no session is active, start the factory again, then re-check."
+      "body": "投入する前に session list で稼働中のファクトリーを確認してください。セッションがなければ、ファクトリーを再度起動してから再確認します。"
     },
     "firstSubmitRunningFactory": {
-      "body": "Submit targets a running factory. Confirm a live session with session list before you enqueue work. Batch schema, relations, and dry-run details live on submitting-work and CLI docs."
+      "body": "投入の対象は稼働中のファクトリーです。作業をキューする前に session list でライブセッションを確認してください。バッチスキーマ、リレーション、dry-run の詳細は submitting-work と CLI ドキュメントにあります。"
     }
   }
 }
