@@ -11,9 +11,16 @@
     "poller requestId"
   ],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.workers",
+    "documentation.workstations",
+    "documentation.submitting-work",
+    "documentation.logs",
+    "documentation.troubleshooting",
+    "documentation.script-workers"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-11T07:30:00.000Z",
-  "updatedAt": "2026-07-11T07:30:00.000Z"
+  "updatedAt": "2026-07-11T07:40:00.000Z"
 }

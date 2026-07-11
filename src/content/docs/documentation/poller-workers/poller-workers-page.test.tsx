@@ -153,5 +153,68 @@ describe("poller-workers documentation page", () => {
     expect(body).toMatch(/Never put inline/i);
     expect(body).toMatch(/auth\.secretRef/i);
     expect(body).not.toMatch(/Model Atlas/i);
+
+    expect(
+      screen.getByRole("link", { name: "Workers" }).getAttribute("href"),
+    ).toBe("/docs/documentation/workers");
+    expect(
+      screen.getByRole("link", { name: "Workstations" }).getAttribute("href"),
+    ).toBe("/docs/documentation/workstations");
+    expect(
+      screen
+        .getByRole("link", { name: "Submitting work" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/submitting-work");
+    expect(
+      screen.getByRole("link", { name: "Logs" }).getAttribute("href"),
+    ).toBe("/docs/documentation/logs");
+    expect(
+      screen
+        .getByRole("link", { name: "Troubleshooting" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/troubleshooting");
+    expect(
+      screen.getByRole("link", { name: "Script workers" }).getAttribute("href"),
+    ).toBe("/docs/documentation/script-workers");
+  });
+
+  test("ships ja locale messages with the same key shape as en", async () => {
+    const loadedPage = await loadLocalDocsPage(
+      {
+        section: "documentation",
+        slug: "poller-workers",
+      },
+      "ja",
+    );
+
+    expect(loadedPage.messages.title).toBe("Poller workers");
+    expect(loadedPage.messages.sections?.whatItCovers?.title).toBeTruthy();
+    expect(loadedPage.messages.sections?.keyConcepts?.title).toBeTruthy();
+    expect(loadedPage.messages.sections?.howToUse?.title).toBeTruthy();
+    expect(
+      loadedPage.messages.sections?.limitsAndAssumptions?.title,
+    ).toBeTruthy();
+    expect(loadedPage.messages.sections?.related?.title).toBeTruthy();
+    expect(loadedPage.messages.links?.workersDocs).toBe("Workers");
+    expect(loadedPage.messages.links?.scriptWorkersDocs).toBe("Script workers");
+
+    render(
+      <main>
+        <DocsPageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "What It Covers" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: "Workers" }).getAttribute("href"),
+    ).toBe("/docs/documentation/workers");
   });
 });
