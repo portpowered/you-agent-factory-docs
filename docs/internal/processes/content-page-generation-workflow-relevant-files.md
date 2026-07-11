@@ -238,6 +238,14 @@ shipped-localized-docs.server.test.ts --exception-reason "…"`, and repeat the
 exception reason in the PR conversation. Do not treat the sibling page bundle
 as shared hotspot churn for the page under audit.
 
+When the same multi-page documentation lane also needs
+`FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` Configuration membership
+(`src/lib/content/sidebar-grouping.ts`), do not combine that shared helper with
+locale-shipping files in one `--files` set — two shared hotspot categories
+force `redirect-to-throughput-prd`. Audit page-owned+sidebar and
+page-owned+locale-shipping as separate `declare-exception` runs (each with one
+shared category), and repeat both justifications in the PR conversation.
+
 When colocated page tests assert non-guarantee / denial copy, match the denial
 positively (for example `/not a compliance certification claim/i`) instead of
 negating the denied phrase — otherwise correct “not a …” prose fails the test.
@@ -625,7 +633,7 @@ blocked. Document mergeability-only follow-ups in `progress.txt` and PR
 conversation comments.
 
 When several documentation lanes land close together, the exported-site
-`totalOutBytes` or `searchBootstrapBytes` gates in
+`totalOutBytes` / `searchBootstrapBytes` gates in
 `src/lib/build/exported-site-budget.ts` can fail even though each lane alone
 was under budget. Raising
 `FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes` and/or

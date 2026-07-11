@@ -1,0 +1,268 @@
+---
+title: "Agent workers"
+description: "Configure you-agent-factory AGENT_WORKER backends for AGENT_RUN loops, including model identity, agentTools.policy, and agent-run failure cautions."
+kind: "documentation"
+registryId: "documentation.agent-workers"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "agent workers"
+  - "AGENT_WORKER"
+  - "AGENT_RUN"
+  - "agentTools"
+updatedAt: "2026-07-11"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.ownershipIntro" />
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.ownershipWorkerHeader" />
+        </th>
+        <th>
+          <T k="links.ownershipWorkstationHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerFields" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationFields" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.ownershipRunnerNote" />
+  </p>
+  <p>
+    <T k="links.minimalExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.minimalExample" />
+    </code>
+  </pre>
+</Section>
+
+<Section id="tool-policy" titleKey="sections.toolPolicy.title">
+  <T k="sections.toolPolicy.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.policyHeader" />
+        </th>
+        <th>
+          <T k="links.policyBehaviorHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.policyDisabled" />
+        </td>
+        <td>
+          <T k="links.policyDisabledBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.policyReadOnly" />
+        </td>
+        <td>
+          <T k="links.policyReadOnlyBehavior" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.policyEnabled" />
+        </td>
+        <td>
+          <T k="links.policyEnabledBehavior" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.toolPolicyExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.toolPolicyExample" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.toolDiagnosticsNote" />
+  </p>
+</Section>
+
+<Section id="failure-and-security" titleKey="sections.failureAndSecurity.title">
+  <T k="sections.failureAndSecurity.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.failureClassHeader" />
+        </th>
+        <th>
+          <T k="links.failureCauseHeader" />
+        </th>
+        <th>
+          <T k="links.failureRecoveryHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.failureLeaseClass" />
+        </td>
+        <td>
+          <T k="links.failureLeaseCause" />
+        </td>
+        <td>
+          <T k="links.failureLeaseRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureModelReadyClass" />
+        </td>
+        <td>
+          <T k="links.failureModelReadyCause" />
+        </td>
+        <td>
+          <T k="links.failureModelReadyRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureToolPolicyClass" />
+        </td>
+        <td>
+          <T k="links.failureToolPolicyCause" />
+        </td>
+        <td>
+          <T k="links.failureToolPolicyRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureHarnessClass" />
+        </td>
+        <td>
+          <T k="links.failureHarnessCause" />
+        </td>
+        <td>
+          <T k="links.failureHarnessRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureTimeoutClass" />
+        </td>
+        <td>
+          <T k="links.failureTimeoutCause" />
+        </td>
+        <td>
+          <T k="links.failureTimeoutRecovery" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureCanceledClass" />
+        </td>
+        <td>
+          <T k="links.failureCanceledCause" />
+        </td>
+        <td>
+          <T k="links.failureCanceledRecovery" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.inferenceSubstituteCaution" />
+  </p>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <T k="links.siblingDiscoveryIntro" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.resourcesDocs",
+      },
+      {
+        href: "/docs/concepts/tokens",
+        labelKey: "links.tokensConcept",
+      },
+      {
+        href: "/docs/concepts/tool-calling",
+        labelKey: "links.toolCallingConcept",
+      },
+      {
+        href: "/docs/documentation/logs",
+        labelKey: "links.logsDocs",
+      },
+      {
+        href: "/docs/documentation/troubleshooting",
+        labelKey: "links.troubleshootingDocs",
+      },
+      {
+        href: "/docs/documentation/inference-workers",
+        labelKey: "links.inferenceWorkersDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.agent-workers" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.agent-workers" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.agent-workers" />
+</Section>
