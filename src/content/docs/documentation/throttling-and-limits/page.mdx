@@ -1,0 +1,157 @@
+---
+title: "Throttling and limits"
+description: "Distinguish you-agent-factory resource capacity, provider limits, queue pressure, and retry/limit behavior without inventing a global throttle guarantee."
+kind: "documentation"
+registryId: "documentation.throttling-and-limits"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "throttling"
+  - "limits"
+  - "capacity limits"
+  - "retry limits"
+updatedAt: "2026-07-11"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.surfaceHeader" />
+        </th>
+        <th>
+          <T k="links.surfaceMeaningHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.surfaceCapacityName" />
+        </td>
+        <td>
+          <T k="links.surfaceCapacityMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.surfaceProviderName" />
+        </td>
+        <td>
+          <T k="links.surfaceProviderMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.surfaceQueueName" />
+        </td>
+        <td>
+          <T k="links.surfaceQueueMeaning" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.surfaceRetryName" />
+        </td>
+        <td>
+          <T k="links.surfaceRetryMeaning" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.capacityTeaching" />
+  </p>
+  <p>
+    <T k="links.providerTeaching" />
+  </p>
+  <p>
+    <T k="links.queueTeaching" />
+  </p>
+  <p>
+    <T k="links.retryTeaching" />
+  </p>
+</Section>
+
+<Section id="minimal-example" titleKey="sections.minimalExample.title">
+  <T k="sections.minimalExample.body" />
+  <p>
+    <T k="links.capacityExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.capacityExampleJson" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.capacityExampleMeaning" />
+  </p>
+  <p>
+    <T k="links.limitsExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.limitsExampleYaml" />
+    </code>
+  </pre>
+  <p>
+    <T k="links.limitsExampleMeaning" />
+  </p>
+</Section>
+
+<Section id="operational-cautions" titleKey="sections.operationalCautions.title">
+  <T k="sections.operationalCautions.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <T k="links.siblingDiscoveryIntro" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.resourcesDocs",
+      },
+      {
+        href: "/docs/documentation/troubleshooting",
+        labelKey: "links.troubleshootingDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.throttling-and-limits" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.throttling-and-limits" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.throttling-and-limits" />
+</Section>
