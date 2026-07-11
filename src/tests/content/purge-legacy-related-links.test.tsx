@@ -43,6 +43,7 @@ describe("purge legacy related links and registries (005)", () => {
     expect(html).toContain('href="/blog/bottlenecks"');
     expect(html).toContain('href="/blog/comparing-agent-factories"');
     expect(html).toContain('href="/blog/factories-building-factory-docs"');
+    expect(html).toContain('href="/blog/lies-damned-lies-evals"');
     expect(html).toContain('href="/blog/useful-factory-links"');
     assertNoDeletedBlogOrTagHrefs(html);
   });
@@ -52,6 +53,7 @@ describe("purge legacy related links and registries (005)", () => {
       "bottlenecks",
       "comparing-agent-factories",
       "factories-building-factory-docs",
+      "lies-damned-lies-evals",
       "useful-factory-links",
     ] as const) {
       const html = renderToStaticMarkup(await renderBlogPostPage(slug));

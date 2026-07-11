@@ -90,19 +90,26 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   `src/lib/content/blog-content-loader-scope.test.ts` (sorted slug list +
   `getPublishedBlogPostBySlug` match). That test is in the required website suite;
   `src/tests/content/blog-*.test.tsx` rows are excluded from `make test` and are not
-  a substitute for the loader-scope inventory update.
+  a substitute for the loader-scope inventory update. Also extend
+  `src/tests/content/purge-legacy-related-links.test.tsx` so the new slug is
+  included in the remaining-factory-posts loop (index href + per-post deleted-
+  destination check).
 * Worktree checkouts often resolve `next` from a parent `node_modules`. Turbopack
   rejects out-of-root `node_modules` symlinks; prefer SSR `renderBlogPostPage` +
   `renderToStaticMarkup` (or `next dev --webpack`) for local post-shell verification
   instead of inventing a second package layout.
 * `BlogRelatedDocs` / `resolveRelatedRegistryDocs` only resolve related-doc kinds
-  wired through `getRegistryRecordById` (concept, and other tagged kinds in that
-  lookup). Published `documentation.*` and `technique.*` ids validate in
-  frontmatter `relatedDocIds` but currently render as missing in the component
-  (`getRegistryRecordById` returns undefined for those kinds). Until that lookup
-  gap is fixed, keep those ids in frontmatter and link their routes in MDX (or
-  pass only resolvable concept ids to `<BlogRelatedDocs />`) so readers still
-  reach the page without a partial-unavailable status.
+  wired through `getRegistryRecordById` (concept, module, model, and other tagged
+  kinds in that lookup). Published `documentation.*` and `technique.*` ids
+  validate in frontmatter `relatedDocIds` but currently render as missing in the
+  component (`getRegistryRecordById` returns undefined for those kinds). Until
+  that lookup gap is fixed, keep those ids in frontmatter, link their routes in
+  MDX prose, and pass only resolvable concept (or other lookup-backed) ids to
+  `<BlogRelatedDocs />` so readers still reach the page. Passing an unresolved
+  `documentation.*` or `technique.*` id into the component still shows
+  `blog-related-docs` when at least one concept resolves, but also emits
+  `blog-related-docs-partial-unavailable` — prefer prose for those routes so the
+  related list stays clean.
 * Page-local blog illustrations (DataTable, charts) need the same
   `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
   switch as concept SPC graphs: relative imports in `page.mdx` do not resolve
@@ -111,10 +118,14 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   relies on the blog index card plus prose/title search documents (not tag
   landings). Keep that proof colocated under
   `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
-  blog-local and still runs in the required website suite. English-only
-  bundles should also assert `hasBlogPostMessagesForLocale(slug, "en")` and
-  that non-default locales lack `messages/<locale>.json` so localized
-  `/[locale]/blog/<slug>` params are not generated without message files.
+  blog-local and still runs in the required website suite. When the story
+  requires locale fail-closed behavior, assert `messages/` contains only
+  `en.json` and `hasBlogPostMessagesForLocale(slug, locale)` is false for
+  every non-`en` supported locale — do not add incomplete `ja` / `zh-CN` /
+  `vi` stubs. English-only bundles should also assert
+  `hasBlogPostMessagesForLocale(slug, "en")` and that non-default locales lack
+  `messages/<locale>.json` so localized `/[locale]/blog/<slug>` params are not
+  generated without message files.
 * English-only blog posts should ship only `messages/en.json`. Prove fail-closed
   locale behavior in the colocated discoverability test with
   `hasBlogPostMessagesForLocale(slug, locale)` false for `ja`/`zh-CN`/`vi` and
