@@ -54,6 +54,12 @@ async function loadDocumentationPageMdxComponents(
       );
       return mod.pageMdxComponents ?? {};
     }
+    case "cli-command-index": {
+      const mod = await import(
+        "@/content/docs/documentation/cli-command-index/page-mdx-components"
+      );
+      return mod.pageMdxComponents ?? {};
+    }
     case "harness-support": {
       const mod = await import(
         "@/content/docs/documentation/harness-support/page-mdx-components"

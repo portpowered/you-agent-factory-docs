@@ -1,0 +1,19 @@
+{
+  "id": "documentation.cli-command-index",
+  "slug": "cli-command-index",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "CLI command index",
+    "command reference",
+    "you command index",
+    "CLI command reference"
+  ],
+  "tags": [],
+  "relatedIds": ["documentation.cli", "documentation.install"],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T02:30:00.000Z",
+  "updatedAt": "2026-07-11T02:30:00.000Z"
+}

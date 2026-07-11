@@ -1,0 +1,40 @@
+{
+  "title": "CLI Command Index",
+  "description": "Scan the core you-agent-factory CLI commands — run, submit, session, work, docs, and install entrypoints — with purpose and running-factory requirements in one structured index.",
+  "openingSummary": "The CLI Command Index is a scannable, source-linked lookup of core you commands for starting a factory, submitting work, inspecting sessions, reading packaged docs, and installing the binary.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "CLI Command Index lists the core you-agent-factory customer ingress commands in a structured inventory: run and startup forms, submit forms, session and work inspection, packaged docs, and install entrypoints. Use it when you need command purpose and whether a factory must already be running, without reading a full teaching narrative."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A command inventory row pairs a you command form with a short purpose and a running-factory requirement. Startup forms create or attach to a local runtime. Submit forms enqueue work against a live factory. Session and work commands inspect live state. Docs and install entrypoints work without a live factory. Behavioral truth for these commands comes from the product CLI and packaged you docs agents (web rewrite), not from a verbatim sync of packaged markdown."
+    },
+    "commandIndex": {
+      "title": "Command Index",
+      "body": "Scan each row for the command form, what it does, and whether a factory must already be running. Rows cover the same core ingress set taught on the CLI page: you, you run, you submit, you session, you work, you docs, and install scripts."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Find the command you need in the index, confirm whether a factory must already be running, then run that form. For install steps and the teaching matrix narrative, open the CLI documentation page. For agent orientation after install, run you docs agents from the installed binary."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a structured web command index for core customer ingress. It is not a full flag dump, not a sync of packaged you docs agents markdown, and not a replacement for the CLI install and teaching page. Deeper contracts stay in packaged you docs and sibling documentation pages."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "cliDocs": "CLI docs",
+    "installDocs": "Install"
+  }
+}
