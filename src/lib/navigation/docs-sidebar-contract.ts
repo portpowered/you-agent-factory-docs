@@ -7,6 +7,8 @@ export const HARNESS_CONCEPT_URL = "/docs/concepts/harness";
 export const RALPH_TECHNIQUE_URL = "/docs/techniques/ralph";
 export const GETTING_STARTED_GUIDE_URL = "/docs/guides/getting-started";
 export const INSTALL_DOCS_URL = "/docs/documentation/install";
+/** Top-level explorer FAQ entry; content stays on the documentation route. */
+export const FAQ_DOCS_URL = "/docs/documentation/faq";
 
 /** @deprecated Atlas glossary URL retained for soft-skip built-HTML fixtures. */
 export const TOKEN_GLOSSARY_URL = "/docs/glossary/token";

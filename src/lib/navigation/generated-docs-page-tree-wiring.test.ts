@@ -34,24 +34,47 @@ describe("generated docs page tree wiring", () => {
 
     expect(pageTree.name).toBe("You Agent Factory");
     expect(pageTree.children).not.toEqual(baseTree.children);
-    expect(pageTree.children.every((node) => node.type === "folder")).toBe(
-      true,
-    );
+    expect(
+      pageTree.children.every(
+        (node) => node.type === "folder" || node.type === "page",
+      ),
+    ).toBe(true);
     expect(
       pageTree.children.some(
         (node) => node.type === "folder" && node.name === "Glossary",
       ),
     ).toBe(false);
+    expect(
+      pageTree.children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/documentation/faq",
+      ),
+    ).toBe(true);
   });
 
-  test("lists every published page exactly once under its collection folder", () => {
+  test("lists every published page exactly once in the explorer tree", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const publishedPages = loadPublishedDocsPagesSync("en");
     const sidebarUrls = collectPageUrls(pageTree.children).sort();
+    const documentationFolder = pageTree.children.find(
+      (node) => node.type === "folder" && node.name === "Program documentation",
+    );
 
     expect(sidebarUrls).toEqual(
       [...publishedPages].map((page) => page.url).sort(),
     );
     expect(new Set(sidebarUrls).size).toBe(sidebarUrls.length);
+    expect(pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    if (documentationFolder?.type === "folder") {
+      expect(collectPageUrls(documentationFolder.children)).not.toContain(
+        "/docs/documentation/faq",
+      );
+    }
   });
 });

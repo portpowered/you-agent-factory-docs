@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   collectSidebarPageLinks,
   extractNdSidebarHtml,
+  FAQ_DOCS_URL,
   findSidebarPageLink,
   GETTING_STARTED_GUIDE_URL,
   HARNESS_CONCEPT_URL,
@@ -114,6 +115,35 @@ describe("docs sidebar page-tree contract", () => {
     expect(findSidebarPageLink(links, INSTALL_DOCS_URL)?.name).toBe(
       "Install you-agent-factory",
     );
+  });
+
+  test("FAQ is a top-level explorer page outside Program documentation", () => {
+    const links = collectSidebarPageLinks(source.pageTree);
+    const topLevelFaq = source.pageTree.children.find(
+      (node) =>
+        node.type === "page" && "url" in node && node.url === FAQ_DOCS_URL,
+    );
+    const documentationFolder = source.pageTree.children.find(
+      (node) => node.type === "folder" && node.name === "Program documentation",
+    );
+
+    expect(findSidebarPageLink(links, FAQ_DOCS_URL)).toEqual({
+      name: "FAQ",
+      url: FAQ_DOCS_URL,
+    });
+    expect(topLevelFaq).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: FAQ_DOCS_URL,
+    });
+    expect(source.pageTree.children.at(-1)).toEqual(topLevelFaq);
+    if (documentationFolder?.type === "folder") {
+      expect(
+        collectSidebarPageLinks(documentationFolder.children).some(
+          (link) => link.url === FAQ_DOCS_URL,
+        ),
+      ).toBe(false);
+    }
   });
 });
 

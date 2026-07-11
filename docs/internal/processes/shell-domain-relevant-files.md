@@ -7,12 +7,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 * `src/lib/content/factory-breadcrumb-sidebar.ts`
   Factory explorer folder order (`FACTORY_SIDEBAR_COLLECTION_IDS` =
-  guides → concepts → techniques → documentation), page-tree brand
-  (`DOCS_PAGE_TREE_ROOT_NAME` = `You Agent Factory`), and folder/crumb labels
+  guides → concepts → techniques → documentation), full explorer top-level
+  order (`FACTORY_EXPLORER_SECTION_ORDER` = those folders then top-level FAQ
+  page `documentation/faq`), page-tree brand (`DOCS_PAGE_TREE_ROOT_NAME` =
+  `You Agent Factory`), and folder/crumb labels
   (`FACTORY_SIDEBAR_FOLDER_LABELS`; documentation explorer label is
   **Program documentation**). Glossary remains in `FACTORY_NAV_COLLECTION_IDS` /
   `DOCS_COLLECTION_IDS` for browse/search/direct routes and breadcrumb
-  validation, but is omitted from the explorer folder list.
+  validation, but is omitted from the explorer folder list. FAQ keeps its
+  published `/docs/documentation/faq` route while appearing as a sibling page
+  outside the Program documentation folder.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
@@ -35,9 +39,11 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/navigation/shell-collection-page-tree.ts`
   Generic sidebar/page-tree builder with optional grouping resolvers.
 * `src/lib/navigation/docs-sidebar-sections.ts`
-  Default `DOCS_SIDEBAR_SECTION_ORDER` is the four CLI explorer folders
-  (guides → documentation). Section refs are collection-only; Glossary is not
-  an explorer folder.
+  Default `DOCS_SIDEBAR_SECTION_ORDER` is `FACTORY_EXPLORER_SECTION_ORDER`
+  (guides → documentation folders, then top-level FAQ page). Collection refs
+  build folders; the FAQ page ref is emitted as a top-level page node and is
+  excluded from Program documentation children. Glossary is not an explorer
+  folder.
 * `src/features/docs/components/DocsPageBreadcrumb.tsx`
   Docs breadcrumbs only emit a collection crumb for accepted factory route
   slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are

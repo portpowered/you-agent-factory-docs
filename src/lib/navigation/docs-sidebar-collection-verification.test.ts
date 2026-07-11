@@ -110,6 +110,19 @@ describe("collection-driven docs sidebar verification", () => {
     expect(
       pageTree.children.filter((node) => node.type === "folder"),
     ).toHaveLength(EXPECTED_TOP_LEVEL_FOLDER_NAMES.length);
+    expect(pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(
+      getFolderChildren(pageTree, "Program documentation").some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/documentation/faq",
+      ),
+    ).toBe(false);
 
     for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
       expect(getTopLevelFolderNames(pageTree)).not.toContain(retiredFolder);

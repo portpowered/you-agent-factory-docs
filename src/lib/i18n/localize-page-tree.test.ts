@@ -75,5 +75,12 @@ describe("localizePageTree", () => {
       "Program documentation",
     ]);
     expect(localizedTree.name).toBe("You Agent Factory");
+    expect(localizedTree.children.at(-1)).toMatchObject({
+      type: "page",
+      url: "/vi/docs/documentation/faq",
+    });
+    expect(collectLinks(localizedTree.children)).toContain(
+      "/vi/docs/documentation/faq",
+    );
   });
 });

@@ -139,6 +139,11 @@ describe("docs sidebar navigation accessibility", () => {
         name: "Install you-agent-factory",
       }),
     ).toBeTruthy();
+
+    const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
+    expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
+    faqLink.focus();
+    expect(document.activeElement).toBe(faqLink);
   });
 
   test("localized docs shell preserves locale while exposing shipped Vietnamese docs links", async () => {

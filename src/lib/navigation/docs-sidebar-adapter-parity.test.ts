@@ -99,16 +99,37 @@ describe("docs sidebar adapter extraction parity", () => {
     expect(getTopLevelFolderNames(generatedTree)).toEqual([
       ...factoryFolderNames,
     ]);
-    expect(DOCS_SIDEBAR_SECTION_ORDER.map((section) => section.id)).toEqual([
-      ...FACTORY_SIDEBAR_COLLECTION_IDS,
-    ]);
+    expect(
+      DOCS_SIDEBAR_SECTION_ORDER.flatMap((section) =>
+        section.kind === "collection" ? [section.id] : [],
+      ),
+    ).toEqual([...FACTORY_SIDEBAR_COLLECTION_IDS]);
+    expect(DOCS_SIDEBAR_SECTION_ORDER.at(-1)).toEqual({
+      kind: "page",
+      docsSlug: "documentation/faq",
+    });
     expect(getTopLevelFolderNames(generatedTree)).not.toContain("Glossary");
     expect(generatedTree.name).toBe("You Agent Factory");
+    expect(generatedTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(
+      getFolderPageLinks(generatedTree, "Program documentation").some(
+        (link) => link.url === "/docs/documentation/faq",
+      ),
+    ).toBe(false);
 
     for (const folderName of factoryFolderNames) {
-      expect(getFolderPageLinks(generatedTree, folderName)).toEqual(
-        getFolderPageLinks(adapterTree, folderName),
+      const generatedLinks = getFolderPageLinks(generatedTree, folderName);
+      const adapterLinks = getFolderPageLinks(adapterTree, folderName).filter(
+        (link) =>
+          folderName !== "Program documentation" ||
+          link.url !== "/docs/documentation/faq",
       );
+
+      expect(generatedLinks).toEqual(adapterLinks);
     }
   });
 
