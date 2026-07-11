@@ -23,6 +23,7 @@ cross-lane drift, or proving the close gate.
 | Story 004 Concepts + Program docs discovery / links | `src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts` |
 | Story 005 focused inventory/search/sitemap/link lock | `src/lib/verify/focused-repair-suites-r02-convergence.test.ts` |
 | Story 007 Pages-prefixed rebuild + guard lock | `src/lib/verify/pages-prefixed-rebuild-r02-convergence.test.ts` |
+| Story 008 browser/visual review inventory + lock | `src/lib/verify/browser-visual-review-r02-gate.ts` / `browser-visual-review-r02-convergence.test.tsx` |
 | Pages deploy guard implementation | `src/lib/build/guard-pages-deployed-artifact.ts` / `scripts/guard-pages-deployed-artifact.ts` |
 | Link inventory (factory URLs, not Atlas) | `src/lib/build/validate-links.test.ts` |
 
@@ -100,6 +101,7 @@ bun test \
   src/lib/verify/plan-issues-r02-reconciliation.test.ts \
   src/lib/verify/focused-repair-suites-r02-convergence.test.ts \
   src/lib/verify/pages-prefixed-rebuild-r02-convergence.test.ts \
+  src/lib/verify/browser-visual-review-r02-convergence.test.tsx \
   src/lib/build/guard-pages-deployed-artifact.test.ts \
   src/lib/build/deploy-pages-workflow-contract.test.ts
 make typecheck
@@ -127,7 +129,22 @@ R02 suites (website-functionality exclusions route Atlas search under reader-fac
 - **005** — DONE: Focused nav/locale/copy/theme/responsive/a11y/inventory/search/sitemap/link suites green; Atlas link-inventory assertions repaired
 - **006** — DONE: Full local gates green (`make check/test/build/linkcheck/budget/component-coverage`); biome format on story 004 suite was the only combined-result fix
 - **007** — DONE: Pages-prefixed rebuild + `make guard-pages-deployed-artifact` (live gate + R02 lock suite)
-- **008** — Browser/visual review across required shells
+- **008** — DONE: Browser/visual review across required shells (live port 3555 + R02 lock suite)
+
+## Story 008 browser / visual review (2026-07-11 UTC)
+
+| Surface | Result (served HTML, port 3555) |
+| --- | --- |
+| home / browse / blog | You Agent Factory brand, `factory-dark`, content-column surfaces |
+| `/docs/guides/getting-started` | brand, theme, inset copy rail + status |
+| Concepts `/docs/concepts/skills` | title Skills; Program documentation + FAQ; no Glossary folder |
+| Program docs mock-workers + packaged-factories | titles; Program documentation folder; related internal hrefs |
+| Mobile drawer chrome | `nd-sidebar`, Open menu, Sidebar, `aria-controls`, Sheet markers |
+| Locale shells `en` / `ja` / `zh-CN` / `vi` | `lang` attr + brand + factory-dark on Concepts sample |
+
+No cross-lane integration defects found — tip contracts already hold. Lock suite:
+`browser-visual-review-r02-convergence.test.tsx` (inventory, locale paths,
+published titles, explorer IA per locale, mobile drawer markers).
 
 ## Story 007 Pages-prefixed rebuild + guard (2026-07-11 UTC)
 
