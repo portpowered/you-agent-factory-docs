@@ -35,9 +35,9 @@ The thesis stays on factory operations. Parameter counts, architecture tables, a
 
 ## Harness behavior under sustained turns
 
-A harness is the boundary between the agent and the tools, shells, and editors it uses. Under short demos the harness looks invisible. Under sustained Composer-scale turns it becomes a first-class stage: every tool call, every wait, and every recovery path shows up in wall time.
+In you-agent-factory, a harness is the agent runtime the factory drives—the coding agent or agent command-line interface that actually executes work while the factory keeps the run persistent and coordinated. Under short demos the harness looks invisible. Under sustained Composer-scale turns it becomes a first-class stage: every tool call, every wait, and every recovery path shows up in wall time.
 
-When agents keep iterating for long stretches, harness latency and failure modes compound. A factory that treats the harness as a thin wrapper will misread stalls as “model quality” when the scarce path is actually the call surface. Name the harness stage explicitly before you scale concurrency.
+When agents keep iterating for long stretches, harness latency and failure modes compound. A factory that treats the harness as a thin wrapper will misread stalls as “model quality” when the scarce path is actually the call surface. Name the harness stage explicitly before you scale concurrency. Measure harness wait separately from model think time so you can tell whether the next change belongs in the agent runtime path or somewhere else in the workflow.
 
 ## Bottlenecks and scarce stages
 
@@ -45,11 +45,15 @@ Long-running factory work moves through queues, workers, harness calls, shared r
 
 Composer-scale token spend often coincides with a scarce stage that was already waiting to show itself: a slow tool path, a full review seat, a shared lock, or a growing backlog. The useful move is to name the stage that is full while neighbors still have spare capacity, then spend the next change there.
 
+A write-review loop makes the pattern concrete. Eight draft workers can look healthy while a single slow review harness crawls. Drafts pile up; completions stay flat. Adding more draft seats does not raise finished work. The review harness is the bottleneck until that stage finishes faster or gains capacity.
+
 ## Compaction and token pressure
 
 Prompts, transcripts, and context windows grow until each turn costs more than the run can afford. Workers may sit ready and tools may respond, but turns stall on compaction or budget. Raising concurrency without shrinking or compacting context often makes the pressure worse.
 
-Large Composer token totals are one way that pressure becomes visible. The operational lesson is not “use fewer tokens forever.” It is to treat context growth as a limiting stage: compact, truncate, or reshape what the agent carries forward so later turns stay useful.
+Compaction shrinks retained context—history, transcripts, or stream windows—so later turns still fit and the run can continue. Large Composer token totals are one way that pressure becomes visible. The operational lesson is not “use fewer tokens forever.” It is to treat context growth as a limiting stage: compact, truncate, or reshape what the agent carries forward so later turns stay useful.
+
+When a long loop keeps every prior pass in the window, later turns pay for history that no longer helps. Prefer a smaller retained window that still carries the goal, the current diff, and the open failures over an ever-growing transcript that crowds out useful work.
 
 ## Operational lessons for many agents over time
 
@@ -61,7 +65,7 @@ Running many agents across long horizons needs the same discipline as any scarce
 - Budget for compaction when transcripts grow across loops.
 - Prefer durable factory loops over disposable one-shot prompts when the work must survive restarts.
 
-Those lessons hold whether the occasion is Composer after billions of tokens or any other long-horizon agent coding surface. The factory lens stays the same.
+Those lessons hold whether the occasion is Composer after billions of tokens or any other long-horizon agent coding surface. The factory lens stays the same: treat large token spend as a stress test of the workflow, the harness path, and the scarce stages that actually cap throughput.
 
 ## Related reference pages
 
