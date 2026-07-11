@@ -2,14 +2,14 @@
  * Page-owned render proof for documentation/troubleshooting.
  * Covers documentation shell, Troubleshooting identity, recovery-lookup
  * framing, install/run plus configuration/MCP/dynamic-workflow failure
- * entries with canonical-doc links, and absence of Model Atlas /
- * reader-shortcut / page-meta copy — not route inventories or shared
- * helper contracts.
+ * entries with canonical-doc links, non-en locale stub structure, and
+ * absence of Model Atlas / reader-shortcut / page-meta copy — not route
+ * inventories or shared helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
- * within-budget for this ordinary documentation lane.
+ * within the ordinary page-owned + locale-shipping surface for this lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -249,9 +249,13 @@ describe("troubleshooting documentation page", () => {
         .getByRole("link", { name: "Global Configuration Factories" })
         .getAttribute("href"),
     ).toBe("/docs/documentation/global-configuration-factories");
-    expect(
-      screen.getByRole("link", { name: "Configuration" }).getAttribute("href"),
-    ).toBe("/docs/documentation/configuration");
+    const configurationLinks = screen.getAllByRole("link", {
+      name: "Configuration",
+    });
+    expect(configurationLinks.length).toBeGreaterThanOrEqual(1);
+    expect(configurationLinks[0]?.getAttribute("href")).toBe(
+      "/docs/documentation/configuration",
+    );
 
     const mcpLinks = screen.getAllByRole("link", { name: "MCP" });
     expect(mcpLinks.length).toBeGreaterThanOrEqual(1);
@@ -272,5 +276,68 @@ describe("troubleshooting documentation page", () => {
     expect(cursorGuideLinks[0]?.getAttribute("href")).toBe(
       "/docs/guides/cursor-dynamic-workflows",
     );
+
+    const relatedSection = document.getElementById("related");
+    expect(relatedSection).toBeTruthy();
+    const relatedQueries = within(relatedSection as HTMLElement);
+    expect(
+      relatedQueries.getByRole("link", { name: "FAQ" }).getAttribute("href"),
+    ).toBe("/docs/documentation/faq");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Install" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/install");
+    expect(
+      relatedQueries
+        .getByRole("link", { name: "Getting Started" })
+        .getAttribute("href"),
+    ).toBe("/docs/guides/getting-started");
+  });
+
+  test("loads ja locale messages with the same section structure", async () => {
+    const loadedPage = await loadLocalDocsPage(
+      {
+        section: "documentation",
+        slug: "troubleshooting",
+      },
+      "ja",
+    );
+
+    expect(loadedPage.messages.title).toBe("Troubleshooting");
+    expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
+      "What It Covers",
+    );
+    expect(loadedPage.messages.sections?.commandNotFound?.title).toBe(
+      "you Not Found After Install",
+    );
+    expect(loadedPage.messages.sections?.operatorDefaultsStartup?.title).toBe(
+      "Operator Defaults Fail At Startup",
+    );
+    expect(loadedPage.messages.sections?.mcpPath?.title).toBe(
+      "MCP Host Cannot Resolve you On PATH",
+    );
+    expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
+      "Limits And Assumptions",
+    );
+
+    render(
+      <main>
+        <DocsPageProviders
+          messages={loadedPage.messages}
+          assets={loadedPage.assets}
+        >
+          {loadedPage.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "What It Covers" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "you Not Found After Install" }),
+    ).toBeTruthy();
+    expect(document.body.textContent).not.toMatch(/Model Atlas/i);
   });
 });

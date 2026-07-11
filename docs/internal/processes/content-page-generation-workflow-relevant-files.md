@@ -764,6 +764,9 @@ documentation→documentation curated links. Keep registry `relatedIds` aligned 
 those published siblings for search/metadata when useful; omit unpublished ids such
 as factory-session until those registry records and pages exist. Keep
 `<RelatedDocs />` in `#related` for when related-runtime can resolve curated ids.
+The same `#related` + `<LocalizedLinkList>` pattern applies to other documentation
+lookup surfaces such as `documentation/troubleshooting` and `documentation/faq`
+(cross-link FAQ↔Troubleshooting plus a short curated canonical set).
 
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.
