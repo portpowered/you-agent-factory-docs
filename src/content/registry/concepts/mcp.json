@@ -10,6 +10,7 @@
     "concept.harness",
     "concept.tool",
     "concept.skills",
+    "concept.tool-calling",
     "documentation.mcp",
     "documentation.harness-support",
     "guide.cursor-dynamic-workflows"

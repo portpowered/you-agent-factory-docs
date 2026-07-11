@@ -31,6 +31,7 @@ describe("skills concept page", () => {
       expect(skillsRecord.relatedIds).toContain("concept.harness");
       expect(skillsRecord.relatedIds).toContain("concept.tool");
       expect(skillsRecord.relatedIds).toContain("concept.mcp");
+      expect(skillsRecord.relatedIds).toContain("concept.tool-calling");
       expect(skillsRecord.relatedIds).toContain("documentation.mcp");
     }
 

@@ -1,0 +1,40 @@
+{
+  "title": "Tool calling",
+  "description": "Tool calling is the model-inference behavior of selecting and invoking named tools during an agent or model turn, gated by worker tool policy such as agentTools.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Tool calling is the model-inference behavior of selecting and invoking named tools during an agent or model turn. The model chooses a tool by name, supplies arguments, and receives a result before continuing the turn. In you-agent-factory, AGENT_WORKER loops gate that behavior with agentTools.policy—DISABLED by default, or READ_ONLY / ENABLED for bounded filesystem tools under the dispatch working directory. Tool calling is the act of invoking tools, not the tool definition itself and not the MCP host setup that exposes tools to an editor."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Without tool calling, an agent turn mostly produces text. With tool calling, the model can inspect files, list directories, or write under policy during the same turn, so factory work can move from advice into checked actions. Operators set agentTools.policy on AGENT_WORKER so tool execution is explicit: denied calls get stable diagnostics instead of silent ignore, and allowed calls stay bounded to the working directory."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "An AGENT_WORKER declares agentTools.policy: READ_ONLY. During an AGENT_RUN turn the model selects read_file on a path under the dispatch working directory, gets the file contents back, and continues reasoning. A write_file request in the same turn is denied by policy. That select-and-invoke cycle is tool calling; read_file is the tool; agentTools.policy is the gate."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "A tool is the named callable capability. Tool calling is the model selecting and invoking that capability during a turn. MCP is the host↔server protocol that can expose tools to an editor; it is not the inference-time selection act. Thinking is deliberative reasoning before or alongside actions; it is not a named tool call. This page is not the full workers field reference—use Workers documentation for the complete agentTools contract."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "thinkingConcept": "Thinking",
+    "tokensConcept": "Tokens",
+    "toolConcept": "Tool",
+    "mcpConcept": "MCP",
+    "workersDocs": "Workers",
+    "harnessSupportDocs": "Harness support",
+    "mcpDocs": "MCP documentation"
+  }
+}

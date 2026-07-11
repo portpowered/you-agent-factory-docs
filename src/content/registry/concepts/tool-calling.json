@@ -1,0 +1,28 @@
+{
+  "id": "concept.tool-calling",
+  "slug": "tool-calling",
+  "kind": "concept",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["tool use", "function calling", "agentTools"],
+  "tags": [],
+  "relatedIds": [
+    "concept.thinking",
+    "concept.tokens",
+    "concept.tool",
+    "concept.mcp",
+    "documentation.workers",
+    "documentation.harness-support",
+    "documentation.mcp"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T09:00:00.000Z",
+  "updatedAt": "2026-07-11T09:00:00.000Z",
+  "conceptType": "inference",
+  "prerequisiteIds": [],
+  "explainsIds": [],
+  "sidebarGrouping": {
+    "concepts": "model-inference"
+  }
+}

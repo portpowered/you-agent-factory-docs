@@ -1,7 +1,7 @@
 /**
- * Page-owned render proof for concepts/mcp.
+ * Page-owned render proof for concepts/tool-calling.
  * Colocated under the page bundle so audit:canonical-page-surface stays
- * within page-owned budget for the mcp bundle (shared tests live elsewhere).
+ * within page-owned budget for the tool-calling bundle (shared tests live elsewhere).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -10,39 +10,46 @@ import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
 
-describe("mcp concept page", () => {
+describe("tool-calling concept page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("publishes /docs/concepts/mcp as a harnesses concept page", async () => {
-    const fumadocsPage = source.getPage(["concepts", "mcp"]);
+  test("publishes /docs/concepts/tool-calling as a model-inference concept page", async () => {
+    const fumadocsPage = source.getPage(["concepts", "tool-calling"]);
     expect(fumadocsPage).toBeDefined();
-    expect(fumadocsPage?.url).toBe("/docs/concepts/mcp");
+    expect(fumadocsPage?.url).toBe("/docs/concepts/tool-calling");
 
     const indexes = await loadRegistry();
-    const mcpRecord = getRegistryRecord(indexes, "concept.mcp");
-    expect(mcpRecord?.kind).toBe("concept");
-    if (mcpRecord?.kind === "concept") {
-      expect(mcpRecord.sidebarGrouping?.concepts).toBe("harnesses");
-      expect(mcpRecord.aliases).toContain("Model Context Protocol");
-      expect(mcpRecord.aliases).toContain("you mcp serve");
-      expect(mcpRecord.aliases).toContain("MCP server");
-      expect(mcpRecord.relatedIds).toContain("concept.harness");
-      expect(mcpRecord.relatedIds).toContain("concept.tool");
-      expect(mcpRecord.relatedIds).toContain("concept.skills");
-      expect(mcpRecord.relatedIds).toContain("concept.tool-calling");
-      expect(mcpRecord.relatedIds).toContain("documentation.mcp");
+    const toolCallingRecord = getRegistryRecord(
+      indexes,
+      "concept.tool-calling",
+    );
+    expect(toolCallingRecord?.kind).toBe("concept");
+    if (toolCallingRecord?.kind === "concept") {
+      expect(toolCallingRecord.sidebarGrouping?.concepts).toBe(
+        "model-inference",
+      );
+      expect(toolCallingRecord.aliases).toContain("tool use");
+      expect(toolCallingRecord.aliases).toContain("function calling");
+      expect(toolCallingRecord.aliases).toContain("agentTools");
+      expect(toolCallingRecord.relatedIds).toContain("concept.thinking");
+      expect(toolCallingRecord.relatedIds).toContain("concept.tokens");
+      expect(toolCallingRecord.relatedIds).toContain("concept.tool");
+      expect(toolCallingRecord.relatedIds).toContain("concept.mcp");
+      expect(toolCallingRecord.relatedIds).toContain("documentation.workers");
     }
 
     const loadedPage = await loadLocalDocsPage({
       section: "concepts",
-      slug: "mcp",
+      slug: "tool-calling",
     });
 
-    expect(loadedPage.messages.title).toBe("MCP");
-    expect(loadedPage.messages.description).toMatch(/Model Context Protocol/i);
-    expect(loadedPage.messages.description).toMatch(/you mcp serve/i);
+    expect(loadedPage.messages.title).toBe("Tool calling");
+    expect(loadedPage.messages.description).toMatch(
+      /model-inference behavior/i,
+    );
+    expect(loadedPage.messages.description).toMatch(/agentTools/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
     const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
@@ -55,19 +62,21 @@ describe("mcp concept page", () => {
     const commonConfusions = String(
       loadedPage.messages.sections?.commonConfusions?.body ?? "",
     );
-    expect(whatItIs).toMatch(/Model Context Protocol \(MCP\)/i);
-    expect(whatItIs).toMatch(/host↔server protocol/i);
-    expect(whatItIs).toMatch(/you mcp serve/i);
-    expect(whatItIs).toMatch(/Factory Session tools/i);
-    expect(whatItIs).toMatch(/not the factory runtime itself/i);
-    expect(whyItMatters).toMatch(/stdio MCP clients/i);
-    expect(whyItMatters).toMatch(/you\.factory_session\.\*/i);
-    expect(simpleExample).toMatch(/workflow project root/i);
-    expect(simpleExample).toMatch(/you\.factory_session\.validate_source/i);
-    expect(simpleExample).toMatch(/named actions it receives are tools/i);
-    expect(commonConfusions).toMatch(/not the MCP program-documentation page/i);
-    expect(commonConfusions).toMatch(/not a tool and not tool calling/i);
-    expect(commonConfusions).toMatch(/not the factory runtime itself/i);
+    expect(whatItIs).toMatch(/selecting and invoking named tools/i);
+    expect(whatItIs).toMatch(/agentTools\.policy/i);
+    expect(whatItIs).toMatch(/AGENT_WORKER/i);
+    expect(whatItIs).toMatch(/not the tool definition itself/i);
+    expect(whyItMatters).toMatch(/agentTools\.policy/i);
+    expect(whyItMatters).toMatch(/stable diagnostics/i);
+    expect(simpleExample).toMatch(/READ_ONLY/i);
+    expect(simpleExample).toMatch(/read_file/i);
+    expect(simpleExample).toMatch(/write_file/i);
+    expect(commonConfusions).toMatch(
+      /A tool is the named callable capability/i,
+    );
+    expect(commonConfusions).toMatch(/MCP is the host↔server protocol/i);
+    expect(commonConfusions).toMatch(/Thinking is deliberative reasoning/i);
+    expect(commonConfusions).toMatch(/not the full workers field reference/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
     expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
     expect(simpleExample).not.toMatch(/on this page|Model Atlas/i);
@@ -103,66 +112,60 @@ describe("mcp concept page", () => {
     const commonConfusionsSection =
       document.getElementById("common-confusions");
     expect(whatItIsSection?.textContent ?? "").toMatch(
-      /Model Context Protocol \(MCP\)/i,
+      /selecting and invoking named tools/i,
     );
-    expect(whatItIsSection?.textContent ?? "").toMatch(/you mcp serve/i);
+    expect(whatItIsSection?.textContent ?? "").toMatch(/agentTools\.policy/i);
     expect(whyItMattersSection?.textContent ?? "").toMatch(
-      /you\.factory_session\.\*/i,
+      /stable diagnostics/i,
     );
-    expect(simpleExampleSection?.textContent ?? "").toMatch(
-      /you\.factory_session\.validate_source/i,
+    expect(simpleExampleSection?.textContent ?? "").toMatch(/read_file/i);
+    expect(commonConfusionsSection?.textContent ?? "").toMatch(
+      /A tool is the named callable capability/i,
     );
     expect(commonConfusionsSection?.textContent ?? "").toMatch(
-      /not the MCP program-documentation page/i,
-    );
-    expect(commonConfusionsSection?.textContent ?? "").toMatch(
-      /not a tool and not tool calling/i,
+      /Thinking is deliberative reasoning/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
-    const harnessLink = screen.getByRole("link", { name: "Harness" });
-    expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
+    const thinkingLink = screen.getByRole("link", { name: "Thinking" });
+    expect(thinkingLink.getAttribute("href")).toBe("/docs/concepts/thinking");
+    const tokensLink = screen.getByRole("link", { name: "Tokens" });
+    expect(tokensLink.getAttribute("href")).toBe("/docs/concepts/tokens");
     const toolLink = screen.getByRole("link", { name: "Tool" });
     expect(toolLink.getAttribute("href")).toBe("/docs/concepts/tool");
-    const skillsLink = screen.getByRole("link", { name: "Skills" });
-    expect(skillsLink.getAttribute("href")).toBe("/docs/concepts/skills");
-    const toolCallingLink = screen.getByRole("link", { name: "Tool calling" });
-    expect(toolCallingLink.getAttribute("href")).toBe(
-      "/docs/concepts/tool-calling",
+    const mcpLink = screen.getByRole("link", { name: "MCP" });
+    expect(mcpLink.getAttribute("href")).toBe("/docs/concepts/mcp");
+    const workersLink = screen.getByRole("link", { name: "Workers" });
+    expect(workersLink.getAttribute("href")).toBe(
+      "/docs/documentation/workers",
     );
-    const mcpDocsLink = screen.getByRole("link", {
-      name: "MCP documentation",
-    });
-    expect(mcpDocsLink.getAttribute("href")).toBe("/docs/documentation/mcp");
     const harnessSupportLink = screen.getByRole("link", {
       name: "Harness support",
     });
     expect(harnessSupportLink.getAttribute("href")).toBe(
       "/docs/documentation/harness-support",
     );
-    const cursorGuideLink = screen.getByRole("link", {
-      name: "Cursor dynamic workflows",
+    const mcpDocsLink = screen.getByRole("link", {
+      name: "MCP documentation",
     });
-    expect(cursorGuideLink.getAttribute("href")).toBe(
-      "/docs/guides/cursor-dynamic-workflows",
-    );
+    expect(mcpDocsLink.getAttribute("href")).toBe("/docs/documentation/mcp");
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
     const en = await loadLocalDocsPage({
       section: "concepts",
-      slug: "mcp",
+      slug: "tool-calling",
     });
     const ja = await loadLocalDocsPage(
-      { section: "concepts", slug: "mcp" },
+      { section: "concepts", slug: "tool-calling" },
       "ja",
     );
     const zhCN = await loadLocalDocsPage(
-      { section: "concepts", slug: "mcp" },
+      { section: "concepts", slug: "tool-calling" },
       "zh-CN",
     );
     const vi = await loadLocalDocsPage(
-      { section: "concepts", slug: "mcp" },
+      { section: "concepts", slug: "tool-calling" },
       "vi",
     );
 
@@ -187,9 +190,9 @@ describe("mcp concept page", () => {
     expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
       "Common Confusions",
     );
-    expect(ja.messages.links?.harnessConcept).toBe("Harness");
+    expect(ja.messages.links?.thinkingConcept).toBe("Thinking");
     expect(zhCN.messages.links?.toolConcept).toBe("Tool");
-    expect(vi.messages.links?.mcpDocs).toBe("MCP documentation");
+    expect(vi.messages.links?.workersDocs).toBe("Workers");
 
     render(
       <main>

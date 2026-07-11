@@ -527,16 +527,25 @@ those paths only accept collection section refs.
 - `/docs/concepts/skills` teaches agent/harness skills as reusable instruction
   packages (Cursor Agent Skills / `SKILL.md` practice), not tools, not MCP, and
   not this repo's frontend `docs/design-skills.md` authoring guide. Assign
-  `sidebarGrouping.concepts: harnesses`. Keep unpublished sibling concept ids
-  out of `relatedIds` until those pages ship; use `LocalizedLinkList` planned
-  hrefs for forward discovery (`concept.tool-calling` until that page ships).
+  `sidebarGrouping.concepts: harnesses`. Once sibling concept pages ship, add
+  them to `relatedIds` (Skills includes `concept.mcp` and `concept.tool-calling`
+  when those pages exist); use `LocalizedLinkList` planned hrefs only while a
+  sibling is still unpublished.
 - `/docs/concepts/mcp` teaches Model Context Protocol as the host↔server
   protocol that exposes named tools (including Factory Session tools via
   `you mcp serve`). It is isolation-first and distinct from
   `/docs/documentation/mcp` (install/host JSON / serve-mode reference). Assign
   `sidebarGrouping.concepts: harnesses`. Related links must include the MCP
-  program-documentation page; omit unpublished `concept.tool-calling` from
-  `relatedIds` until that page ships.
+  program-documentation page; include `concept.tool-calling` in `relatedIds`
+  once that page ships.
+- `/docs/concepts/tool-calling` teaches tool calling as the model-inference
+  behavior of selecting and invoking named tools during an agent/model turn,
+  grounded in `agentTools.policy` on `AGENT_WORKER` (`DISABLED` default,
+  `READ_ONLY` / `ENABLED` for bounded filesystem tools). Assign
+  `sidebarGrouping.concepts: model-inference`. Distinguish from Tool (named
+  capability), MCP (host↔server protocol), and Thinking (deliberative
+  reasoning). Link Workers documentation for the full field contract; do not
+  absorb the workers reference on the concept page.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.
