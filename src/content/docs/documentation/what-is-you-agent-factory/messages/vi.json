@@ -1,36 +1,36 @@
 {
-  "title": "What is you-agent-factory",
-  "description": "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
-  "openingSummary": "you-agent-factory is a command-line interface (CLI) and agent-factory workflow system. It keeps long-running agent work moving across sessions instead of treating each run as a one-off chat.",
+  "title": "you-agent-factory là gì",
+  "description": "you-agent-factory là CLI và hệ thống workflow agent-factory giúp công việc agent chạy dài được duy trì liên tục.",
+  "openingSummary": "you-agent-factory là giao diện dòng lệnh (CLI) và hệ thống workflow agent-factory. Nó giữ công việc agent chạy dài tiếp tục qua các phiên thay vì coi mỗi lần chạy là một cuộc trò chuyện một lần.",
   "sections": {
     "whatItCovers": {
-      "title": "What It Covers",
-      "body": "you-agent-factory is software you install and run from a terminal. It organizes agent work into factory workflows so goals can continue over long periods of time. Customers use it to install the CLI, start named runs, and operate multi-agent workflows with shared harnesses and formats such as loops, reviews, planners, scheduled runs, and event streams. The product focus is persistent factory work, not a single disposable agent session."
+      "title": "Nội dung bao gồm",
+      "body": "you-agent-factory là phần mềm bạn cài đặt và chạy từ terminal. Nó tổ chức công việc agent thành workflow factory để các mục tiêu có thể tiếp tục trong thời gian dài. Khách hàng dùng nó để cài đặt CLI, khởi động named run, và vận hành workflow đa agent với harness cùng định dạng dùng chung như vòng lặp, review, planner, lịch chạy, và luồng sự kiện. Trọng tâm sản phẩm là công việc factory bền vững, không phải một phiên agent dùng một lần."
     },
     "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A factory is the workflow system that keeps agent work persistent and coordinated. A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. A named run, often expressed as a goal, is a concrete piece of work you start with the CLI so the factory can track and continue it. These ideas are enough to understand the product before you dig into install steps or system structure."
+      "title": "Khái niệm chính",
+      "body": "Factory là hệ thống workflow giữ công việc agent bền vững và phối hợp. Harness là runtime agent mà factory điều khiển, ví dụ một coding agent dưới quy trình factory dùng chung. Named run, thường biểu diễn dưới dạng goal, là một phần công việc cụ thể bạn khởi động bằng CLI để factory theo dõi và tiếp tục. Những ý này đủ để hiểu sản phẩm trước khi đi sâu vào bước cài đặt hoặc cấu trúc hệ thống."
     },
     "howToUse": {
-      "title": "How To Use",
-      "body": "Start with getting started to install the CLI and run a named goal. Use guides when you want a concrete workflow path such as loops or write-review flows. Open architecture of system when you need how the factory is structured internally. Product framing does not replace install docs or a full command reference."
+      "title": "Cách dùng",
+      "body": "Bắt đầu với Bắt đầu để cài đặt CLI và chạy một goal có tên. Dùng hướng dẫn khi bạn muốn một đường workflow cụ thể như vòng lặp hoặc write-review. Mở kiến trúc hệ thống khi bạn cần hiểu factory được cấu trúc nội bộ như thế nào. Khung sản phẩm không thay thế tài liệu cài đặt hay tham chiếu lệnh đầy đủ."
     },
     "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "Product framing stops at the overview. It is not a full architecture reference, component inventory, or runtime internals guide. you-agent-factory is not Model Atlas, an attention-reference sheet, a benchmark leaderboard, or a paper-download mirror. Readers who need install steps should use getting started; readers who need system structure should use architecture of system when that documentation is available."
+      "title": "Giới hạn và giả định",
+      "body": "Khung sản phẩm dừng ở tổng quan. Nó không phải tham chiếu kiến trúc đầy đủ, danh mục thành phần, hay hướng dẫn nội bộ runtime. you-agent-factory không phải Model Atlas, bảng tham chiếu attention, bảng xếp hạng benchmark, hay gương tải paper. Độc giả cần bước cài đặt nên dùng Bắt đầu; độc giả cần cấu trúc hệ thống nên dùng kiến trúc hệ thống khi tài liệu đó sẵn có."
     },
     "related": {
-      "title": "Related To"
+      "title": "Liên quan"
     },
     "tags": {
-      "title": "Tags"
+      "title": "Thẻ"
     },
     "references": {
-      "title": "References"
+      "title": "Tài liệu tham khảo"
     }
   },
   "links": {
-    "gettingStarted": "Getting started",
-    "architectureOfSystem": "Architecture of system"
+    "gettingStarted": "Bắt đầu",
+    "architectureOfSystem": "Kiến trúc hệ thống"
   }
 }

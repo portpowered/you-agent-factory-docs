@@ -1,38 +1,38 @@
 {
-  "title": "Install you-agent-factory",
-  "description": "Install the you-agent-factory CLI on macOS, Linux, or Windows with the release install scripts, then scaffold a factory.",
+  "title": "安装 you-agent-factory",
+  "description": "使用发布安装脚本在 macOS、Linux 或 Windows 上安装 you-agent-factory CLI，然后搭建工厂脚手架。",
   "sections": {
     "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Install is the reference for getting you-agent-factory onto a machine. It covers the macOS and Linux curl install script, the Windows PowerShell install script, and the related first-scaffold notes that follow a successful install. Use it when you need the full OS install commands rather than a short home CTA."
+      "title": "涵盖内容",
+      "body": "安装是将 you-agent-factory 装到机器上的参考说明。它涵盖 macOS 与 Linux 的 curl 安装脚本、Windows PowerShell 安装脚本，以及安装成功后的首次脚手架相关说明。当你需要完整的操作系统安装命令，而不是首页上的简短 CTA 时，请使用本页。"
     },
     "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "An install script downloads the CLI release for your operating system and places the you binary on your PATH so the you command is available in your shell. After install, you init scaffolds a factory directory. The --executor flag chooses which starter worker scaffold is generated: omit it for the default Codex-backed scaffold, or pass claude for a Claude-backed scaffold. Supported starter values are codex and claude."
+      "title": "关键概念",
+      "body": "安装脚本会下载适用于你操作系统的 CLI 发布包，并将 you 二进制放到 PATH 中，以便在 shell 中使用 you 命令。安装后，you init 会搭建工厂目录脚手架。--executor 标志选择生成哪种入门 worker 脚手架：省略则使用默认的 Codex 脚手架，传入 claude 则使用 Claude 脚手架。支持的入门值为 codex 和 claude。"
     },
     "howToUse": {
-      "title": "How To Use",
-      "body": "Run the install command for your operating system. Both paths use the same GitHub Releases assets as the home install CTA. After the script finishes, confirm you is available in your shell. Then scaffold a factory. Omitting --executor keeps the default Codex-backed starter scaffold. Pass --executor claude when you want a Claude-backed default scaffold instead. After install, continue with getting started for the first run and submit loop, or open the CLI docs when you need the broader command matrix."
+      "title": "如何使用",
+      "body": "运行适用于你操作系统的安装命令。两条路径都使用与首页安装 CTA 相同的 GitHub Releases 资源。脚本结束后，确认 shell 中可以使用 you。然后搭建工厂脚手架。省略 --executor 会保留默认的 Codex 入门脚手架。若需要 Claude 默认脚手架，请传入 --executor claude。安装后，继续阅读快速开始以完成首次运行与提交循环，或在需要更完整命令矩阵时打开 CLI 文档。"
     },
     "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the install reference only. It is not the getting-started quickstart, not the full CLI command matrix, and it does not replace packaged you docs topics. For agent and factory orientation after install, run you docs agents. Deeper CLI and factory contracts stay in packaged you docs and sibling documentation pages."
+      "title": "限制与假设",
+      "body": "本页仅是安装参考。它不是快速开始入门、不是完整 CLI 命令矩阵，也不能替代已打包的 you docs 主题。安装后的代理与工厂导览，请运行 you docs agents。更深的 CLI 与工厂约定仍在已打包的 you docs 以及相邻文档页中。"
     },
     "related": {
-      "title": "Related To"
+      "title": "相关内容"
     },
     "tags": {
-      "title": "Tags"
+      "title": "标签"
     },
     "references": {
-      "title": "References"
+      "title": "参考资料"
     }
   },
   "links": {
     "macosLinuxLabel": "macOS / Linux",
     "windowsLabel": "Windows (PowerShell)",
-    "claudeInitLabel": "Claude-backed scaffold",
-    "gettingStarted": "Getting started",
-    "cliDocs": "CLI docs"
+    "claudeInitLabel": "Claude 脚手架",
+    "gettingStarted": "快速开始",
+    "cliDocs": "CLI 文档"
   }
 }

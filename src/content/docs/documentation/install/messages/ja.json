@@ -1,38 +1,38 @@
 {
-  "title": "Install you-agent-factory",
-  "description": "Install the you-agent-factory CLI on macOS, Linux, or Windows with the release install scripts, then scaffold a factory.",
+  "title": "you-agent-factory のインストール",
+  "description": "リリースのインストールスクリプトで macOS、Linux、または Windows に you-agent-factory CLI を入れ、ファクトリーをスキャフォールドします。",
   "sections": {
     "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Install is the reference for getting you-agent-factory onto a machine. It covers the macOS and Linux curl install script, the Windows PowerShell install script, and the related first-scaffold notes that follow a successful install. Use it when you need the full OS install commands rather than a short home CTA."
+      "title": "対象範囲",
+      "body": "インストールは、you-agent-factory をマシンに入れるためのリファレンスです。macOS / Linux の curl インストールスクリプト、Windows PowerShell のインストールスクリプト、およびインストール成功後の最初のスキャフォールド関連の注意を扱います。ホームの短い CTA ではなく、OS ごとの完全なインストールコマンドが必要なときに使います。"
     },
     "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "An install script downloads the CLI release for your operating system and places the you binary on your PATH so the you command is available in your shell. After install, you init scaffolds a factory directory. The --executor flag chooses which starter worker scaffold is generated: omit it for the default Codex-backed scaffold, or pass claude for a Claude-backed scaffold. Supported starter values are codex and claude."
+      "title": "主要概念",
+      "body": "インストールスクリプトは、お使いの OS 向けの CLI リリースをダウンロードし、you バイナリを PATH に置いてシェルで you コマンドを使えるようにします。インストール後、you init でファクトリーディレクトリをスキャフォールドします。--executor フラグは生成するスターターワーカーのスキャフォールドを選びます。省略するとデフォルトの Codex ベースのスキャフォールド、claude を渡すと Claude ベースのスキャフォールドになります。サポートされるスターター値は codex と claude です。"
     },
     "howToUse": {
-      "title": "How To Use",
-      "body": "Run the install command for your operating system. Both paths use the same GitHub Releases assets as the home install CTA. After the script finishes, confirm you is available in your shell. Then scaffold a factory. Omitting --executor keeps the default Codex-backed starter scaffold. Pass --executor claude when you want a Claude-backed default scaffold instead. After install, continue with getting started for the first run and submit loop, or open the CLI docs when you need the broader command matrix."
+      "title": "使い方",
+      "body": "お使いの OS 向けのインストールコマンドを実行します。どちらの経路も、ホームのインストール CTA と同じ GitHub Releases アセットを使います。スクリプトが終わったら、シェルで you が使えることを確認します。その後、ファクトリーをスキャフォールドします。--executor を省略するとデフォルトの Codex ベースのスタータースキャフォールドのままです。Claude ベースのデフォルトスキャフォールドが欲しいときは --executor claude を渡します。インストール後は、はじめに で最初の実行と投入ループへ進むか、より広いコマンド一覧が必要なときは CLI ドキュメントを開きます。"
     },
     "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the install reference only. It is not the getting-started quickstart, not the full CLI command matrix, and it does not replace packaged you docs topics. For agent and factory orientation after install, run you docs agents. Deeper CLI and factory contracts stay in packaged you docs and sibling documentation pages."
+      "title": "限界と前提",
+      "body": "このページはインストールリファレンスのみです。はじめのクイックスタートでも、完全な CLI コマンド一覧でもなく、パッケージ化された you docs のトピックの代わりにもなりません。インストール後のエージェントとファクトリーの向き合い方は you docs agents を実行してください。より深い CLI とファクトリーの契約は、パッケージ化された you docs と隣接するドキュメントページにあります。"
     },
     "related": {
-      "title": "Related To"
+      "title": "関連"
     },
     "tags": {
-      "title": "Tags"
+      "title": "タグ"
     },
     "references": {
-      "title": "References"
+      "title": "参考文献"
     }
   },
   "links": {
     "macosLinuxLabel": "macOS / Linux",
     "windowsLabel": "Windows (PowerShell)",
-    "claudeInitLabel": "Claude-backed scaffold",
-    "gettingStarted": "Getting started",
-    "cliDocs": "CLI docs"
+    "claudeInitLabel": "Claude ベースのスキャフォールド",
+    "gettingStarted": "はじめに",
+    "cliDocs": "CLI ドキュメント"
   }
 }

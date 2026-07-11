@@ -319,10 +319,10 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(
       `aria-label="${messages.documentationIndex.listLabel}"`,
     );
-    expect(html).toContain("What is you-agent-factory");
+    expect(html).toContain("you-agent-factory là gì");
     expect(html).toContain("/vi/docs/documentation/what-is-you-agent-factory");
     expect(html).toContain(
-      "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
+      "you-agent-factory là CLI và hệ thống workflow agent-factory giúp công việc agent chạy dài được duy trì liên tục.",
     );
     expect(html).not.toContain(messages.documentationIndex.emptyTitle);
     expect(messages.documentationIndex.emptyDescription).not.toMatch(

@@ -1,7 +1,12 @@
+/**
+ * Page-owned render proof for documentation/what-is-you-agent-factory.
+ * Covers localized ja / zh-CN / vi prose beyond English stubs.
+ */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
+import type { SiteLocale } from "@/lib/i18n/locale-routing";
 
 describe("what-is-you-agent-factory documentation page", () => {
   afterEach(() => {
@@ -55,6 +60,85 @@ describe("what-is-you-agent-factory documentation page", () => {
     );
     expect(architecture.getAttribute("href")).toBe(
       "/docs/documentation/architecture-of-system",
+    );
+  });
+
+  test.each([
+    {
+      locale: "ja" as SiteLocale,
+      title: "you-agent-factory とは",
+      howToUseHeading: "使い方",
+      proseNeedle: /ターミナルからインストールして実行するソフトウェア/,
+      gettingStartedLabel: "はじめに",
+      architectureLabel: "システムのアーキテクチャ",
+    },
+    {
+      locale: "zh-CN" as SiteLocale,
+      title: "什么是 you-agent-factory",
+      howToUseHeading: "如何使用",
+      proseNeedle: /从终端安装并运行的软件/,
+      gettingStartedLabel: "快速开始",
+      architectureLabel: "系统架构",
+    },
+    {
+      locale: "vi" as SiteLocale,
+      title: "you-agent-factory là gì",
+      howToUseHeading: "Cách dùng",
+      proseNeedle: /phần mềm bạn cài đặt và chạy từ terminal/,
+      gettingStartedLabel: "Bắt đầu",
+      architectureLabel: "Kiến trúc hệ thống",
+    },
+  ])("renders $locale what-is with real target-language prose", async ({
+    locale,
+    title,
+    howToUseHeading,
+    proseNeedle,
+    gettingStartedLabel,
+    architectureLabel,
+  }) => {
+    const en = await loadLocalDocsPage({
+      section: "documentation",
+      slug: "what-is-you-agent-factory",
+    });
+    const localized = await loadLocalDocsPage(
+      { section: "documentation", slug: "what-is-you-agent-factory" },
+      locale,
+    );
+
+    expect(localized.messages.title).toBe(title);
+    expect(localized.messages.title).not.toBe(en.messages.title);
+    expect(localized.messages.description).not.toBe(en.messages.description);
+    expect(localized.messages.openingSummary).not.toBe(
+      en.messages.openingSummary,
+    );
+    expect(localized.messages.description).toContain("you-agent-factory");
+    expect(
+      String(localized.messages.sections?.whatItCovers?.body ?? ""),
+    ).toMatch(proseNeedle);
+    expect(Object.keys(localized.messages).sort()).toEqual(
+      Object.keys(en.messages).sort(),
+    );
+
+    render(
+      <main>
+        <DocsPageProviders
+          messages={localized.messages}
+          assets={localized.assets}
+          locale={locale}
+        >
+          {localized.content}
+        </DocsPageProviders>
+      </main>,
+    );
+
+    expect(screen.getByRole("heading", { name: howToUseHeading })).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: gettingStartedLabel }),
+    ).toBeTruthy();
+    expect(screen.getByRole("link", { name: architectureLabel })).toBeTruthy();
+    expect(document.body.textContent ?? "").toMatch(/Model Atlas/);
+    expect(document.body.textContent ?? "").not.toContain(
+      "software you install and run from a terminal",
     );
   });
 });
