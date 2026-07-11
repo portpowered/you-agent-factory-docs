@@ -1,0 +1,19 @@
+{
+  "id": "documentation.inference-workers",
+  "slug": "inference-workers",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "inference workers",
+    "INFERENCE_WORKER",
+    "INFERENCE_RUN",
+    "modelLocality"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T07:30:00.000Z",
+  "updatedAt": "2026-07-11T07:30:00.000Z"
+}

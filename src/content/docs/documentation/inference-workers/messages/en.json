@@ -1,0 +1,32 @@
+{
+  "title": "Inference workers",
+  "description": "Configure you-agent-factory INFERENCE_WORKER backends for INFERENCE_RUN bounded model operations, including declared operations and provider or locality ownership.",
+  "openingSummary": "Inference workers perform one bounded model operation such as TTS or ASR through INFERENCE_RUN. Use this page when you need the durable web contract for INFERENCE_WORKER authoring, declared operations, and provider or locality ownership.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "An Inference worker is the model-backed executor for one-shot INFERENCE_RUN workstations in you-agent-factory. This reference covers INFERENCE_WORKER identity, bounded model operations, where declared operations and provider or locality fields belong, and how inference backends differ from agent-loop workers. Use it when you need to author a one-shot model backend without confusing it with AGENT_WORKER loops or agentTools policy."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "An INFERENCE_WORKER performs one bounded model operation such as TTS or ASR through INFERENCE_RUN. The markdown body describes operation context. Slot bindings and operation names used at dispatch live with the workstation contract. Inference workers can declare provider-agnostic operations, typed input and output slots, modelLocality, and concrete model identity so INFERENCE_RUN workstations can validate compatibility before dispatch. Inference workers are not AGENT_WORKER backends: they do not own agent loops or agentTools.policy."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author an INFERENCE_WORKER under workers/<name>/AGENTS.md with type INFERENCE_WORKER. Put model, modelProvider, and modelLocality on the worker when you need authored identity and locality. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep operation context in the markdown body. Bind the worker from an INFERENCE_RUN workstation that supplies slot bindings and the operation name used at dispatch."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web Inference workers reference for INFERENCE_WORKER / INFERENCE_RUN authoring. It is not a sync of packaged CLI docs, not the full Workers taxonomy overview, not workstation routing or lifecycle depth, not resource-capacity deep-dive, and not the Agent workers full contract. Sibling pages aid discovery; they are not required to define what an Inference worker is."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
