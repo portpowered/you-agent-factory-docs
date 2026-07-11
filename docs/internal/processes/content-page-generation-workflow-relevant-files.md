@@ -81,6 +81,10 @@ Before the first authored page under a rewrite-era CLI collection can pass
    `pageSectionSchema`. Put OS labels and similar short strings under
    `links.*` (or another allowed top-level message field), not under
    `sections.<id>.*`.
+5a. Empty-string section `body` values also fail `make validate-data` as
+   missing MDX message keys. Draft documentation scaffolds must use
+   non-empty placeholder bodies (even before story copy lands); do not
+   leave `""` for keys referenced by `<T k="sections.*.body" />`.
 6. Browser verify with `bun run start` serves the last production build.
    After editing page MDX or colocated messages, run `bun run build` (or
    use `bun run dev`) before curling the route, or the HTML will still show

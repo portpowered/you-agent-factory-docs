@@ -1,0 +1,31 @@
+{
+  "title": "Security / Trust Boundaries",
+  "description": "Trust boundaries for the local you-agent-factory service, operator surfaces, and sensitive artifacts.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Draft coverage for you-agent-factory trust boundaries on the local factory service, operator surfaces, and sensitive artifacts."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Draft key concepts for local service bind, operator versus autonomous-agent ingress, sensitive replay and config handling, and MCP serve scope."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Draft guidance pointing readers to configuration and operational docs for concrete setup."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Draft limits separating current you-agent-factory behavior from roadmap and unsupported security guarantees."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

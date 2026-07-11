@@ -1,0 +1,14 @@
+{
+  "id": "documentation.security-trust-boundaries",
+  "slug": "security-trust-boundaries",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["security", "trust boundaries"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "draft",
+  "createdAt": "2026-07-10T00:00:00.000Z",
+  "updatedAt": "2026-07-10T00:00:00.000Z"
+}
