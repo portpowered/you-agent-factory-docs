@@ -5,19 +5,27 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This page is the you-agent-factory reference for throttling and limits: how configured resource capacity, provider limits, queue pressure, and retry/limit behavior show up as distinct pressure surfaces when a factory run slows or stops. It is not a Model Atlas page, not a resources-only deep-dive, and not a fabricated global rate-limit SLA."
+      "body": "Throttling and limits in you-agent-factory are four distinct pressure surfaces that can slow or stop a run: configured resource capacity, provider limits, queue pressure, and retry/limit (circuit-breaker) behavior. Use this page when a factory feels constrained and you need to tell those surfaces apart. It is not a Model Atlas page, not a resources-only deep-dive, and not a fabricated global rate-limit SLA."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "Configured resource capacity, provider limits, queue pressure, and retry/limit (circuit-breaker) behavior are different mechanisms. Treat them as separate surfaces when diagnosing load — not as one undifferentiated throttle guarantee."
+      "body": "These four surfaces are different mechanisms, not one global throttle. Diagnose load by naming which surface is active before changing capacity, provider settings, or workstation limits."
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Use this page when a run feels constrained and you need to tell capacity, provider quota, queue backlog, and workstation limits apart. Ground each surface in current product behavior only; do not invent backoff schedules, numeric SLAs, or undocumented auto-throttles."
+      "body": "Ground each surface in current product behavior only. Start with the capacity and workstation-limits examples below when you need copyable fragments, then match the slowdown you see to one of the four surfaces."
+    },
+    "minimalExample": {
+      "title": "Minimal Example",
+      "body": "Use a small resources-plus-requirement fragment for configured capacity, and a workstation limits fragment for retry/timeout circuit-breaker settings. Keep both readable without hovering."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "This page does not invent an exponential backoff algorithm, numeric SLA, or undocumented auto-throttle. Factory-authored PROVIDER_QUOTA and INVOCATION_SLOT pools do not mean cloud provider quotas are fully enforced solely by factory config — the provider can still reject or rate-limit outside the factory. Do not collapse render-queue or terminal-output backlog into resource capacity: a progress backlog notice is a CLI rendering pressure signal, not proof that a resource pool is exhausted. Do not rely on retired top-level global_limits or exhaustionRules examples; current safety behavior uses workstation limits and guarded LOGICAL_MOVE workstations. For deeper sibling detail, continue with Resources, Workers, and Troubleshooting without treating those pages as the definition of these four distinctions."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page publishes the throttling-and-limits documentation route and registry identity for you-agent-factory. It does not invent backoff schedules, numeric SLAs, or undocumented auto-throttles, and it is not a guarantee sheet for provider cloud quotas."
+      "body": "This page is the web throttling-and-limits reference for distinguishing capacity, provider limits, queue pressure, and retry/limit behavior. It is not a resources-only page, not a workers taxonomy, not a troubleshooting catalog, not a packaged CLI sync, and not a guarantee sheet for provider cloud quotas or invented backoff schedules."
     },
     "related": {
       "title": "Related To"
@@ -28,5 +36,27 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "surfaceHeader": "Surface",
+    "surfaceMeaningHeader": "What it is",
+    "surfaceCapacityName": "Configured resource capacity",
+    "surfaceCapacityMeaning": "Named pools under resources[] with a capacity, consumed by workstation requirements while a dispatch is in flight. Later matching dispatches wait when the pool is exhausted.",
+    "surfaceProviderName": "Provider limits",
+    "surfaceProviderMeaning": "Typed pools such as PROVIDER_QUOTA and INVOCATION_SLOT, plus process-level local-model capacity boundaries, that bound provider-backed or model-backed concurrency — not a claim that the cloud provider itself is fully controlled by factory.json.",
+    "surfaceQueueName": "Queue pressure",
+    "surfaceQueueMeaning": "Waiting work when capacity is held, plus documented progress and terminal-output backlog / render-queue pressure signals when CLI stdout cannot keep up with the internal response stream.",
+    "surfaceRetryName": "Retry / limit behavior",
+    "surfaceRetryMeaning": "Workstation limits.maxExecutionTime and limits.maxRetries (circuit breaker), plus evidenced failure-class guidance such as retrying later when managed capacity is exhausted.",
+    "capacityTeaching": "Configured resource capacity: declare shared pools under top-level resources with {name, capacity}, then reference the pool from workstations[].resources[] so the step holds capacity while it runs. Matching dispatches wait when the pool is exhausted. Keep worker-only resources for worker-runtime metadata; the scheduling-facing requirement belongs on the workstation.",
+    "providerTeaching": "Provider limits: use typed resources when a generic pool is not enough. PROVIDER_QUOTA declares a provider-wide cloud quota or request budget and requires provider and model. INVOCATION_SLOT bounds per-model or per-provider concurrency and should carry the provider or model identity the scheduler should throttle. Local MODEL capacity and host leases are a related boundary: concurrent factories that target the same local model still share one process-level capacity limit keyed by canonical model metadata.",
+    "queueTeaching": "Queue pressure has two evidenced shapes. Capacity wait is scheduling pressure: later matching dispatches wait until held resource capacity is released. Separately, response-stream progress can show a terminal output backlog notice when stdout rendering is slower than internal stream delivery, and JSON response-stream mode can emit stream_gap records with reason terminal_output_backlog when progress lines were dropped from the bounded render queue. Treat those backlog signals as CLI render pressure, not as resource-pool exhaustion.",
+    "retryTeaching": "Retry and limit behavior lives on the workstation. limits.maxExecutionTime is the execution timeout (for example 30m or 1h). limits.maxRetries is the per-workstation retry/failure limit used by the circuit breaker. Agent-run failure classes include agent_run_lease_denied when managed runtime capacity is exhausted — the evidenced recovery hint is to retry later or increase MODEL resource capacity. Do not invent exponential backoff schedules, numeric SLAs, or undocumented auto-throttles beyond those authored limits and failure-class hints.",
+    "capacityExampleLabel": "Minimal resources plus workstation requirement",
+    "capacityExampleJson": "{\n  \"resources\": [\n    { \"name\": \"agent-slot\", \"capacity\": 2 }\n  ],\n  \"workstations\": [\n    {\n      \"name\": \"execute\",\n      \"worker\": \"executor\",\n      \"inputs\": [{ \"workType\": \"story\", \"state\": \"init\" }],\n      \"outputs\": [{ \"workType\": \"story\", \"state\": \"complete\" }],\n      \"onFailure\": { \"workType\": \"story\", \"state\": \"failed\" },\n      \"resources\": [{ \"name\": \"agent-slot\", \"capacity\": 1 }]\n    }\n  ]\n}",
+    "capacityExampleMeaning": "resources[0] declares a pool named agent-slot with total capacity 2. The execute workstation holds one slot while the dispatch is in flight, so up to two matching dispatches can run at once before later ones wait for capacity.",
+    "limitsExampleLabel": "Minimal workstation limits fragment",
+    "limitsExampleYaml": "---\ntype: AGENT_RUN\nlimits:\n  maxExecutionTime: 30m\n  maxRetries: 3\n---",
+    "limitsExampleMeaning": "maxExecutionTime bounds how long one dispatch may run before timeout failure routing. maxRetries is the per-workstation circuit-breaker retry/failure limit. Pair these with capacity pools when you need both concurrency bounds and per-step safety limits."
   }
 }
