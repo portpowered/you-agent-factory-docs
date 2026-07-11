@@ -27,5 +27,11 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "securityTrustBoundariesDocs": "Security / Trust Boundaries",
+    "factorySessionDocs": "Factory Session",
+    "metricsDocs": "Metrics",
+    "configurationDocs": "Configuration"
   }
 }

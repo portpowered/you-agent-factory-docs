@@ -27,5 +27,15 @@
     "references": {
       "title": "References"
     }
+  },
+  "links": {
+    "dashboardUiOverviewDocs": "Dashboard / UI Overview",
+    "configurationDocs": "Configuration",
+    "factorySessionDocs": "Factory Session",
+    "metricsDocs": "Metrics",
+    "mcpDocs": "MCP",
+    "logsDocs": "Logs",
+    "cliDocs": "CLI",
+    "replaysRecordsDocs": "Replays / Records"
   }
 }

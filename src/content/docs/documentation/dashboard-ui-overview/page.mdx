@@ -10,10 +10,14 @@ tags: []
 aliases:
   - "dashboard"
   - "operator UI"
+  - "dashboard/ui"
+  - "local operator dashboard"
+  - "Factory Session dashboard"
 updatedAt: "2026-07-11"
 ---
 
 import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
@@ -37,6 +41,26 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 </Section>
 
 <Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/security-trust-boundaries",
+        labelKey: "links.securityTrustBoundariesDocs",
+      },
+      {
+        href: "/docs/documentation/factory-session",
+        labelKey: "links.factorySessionDocs",
+      },
+      {
+        href: "/docs/documentation/metrics",
+        labelKey: "links.metricsDocs",
+      },
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+    ]}
+  />
   <RelatedDocs registryId="documentation.dashboard-ui-overview" />
 </Section>
 
