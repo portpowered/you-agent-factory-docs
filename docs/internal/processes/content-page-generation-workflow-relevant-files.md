@@ -270,6 +270,13 @@ shared search helpers. Published posts are already indexed by
 with resolving tags — the test asserts that contract, it does not regenerate
 search artifacts.
 
+Documentation discoverability proofs for a page-local lane should likewise
+colocate under `src/content/docs/<section>/<slug>/` (for example
+`<slug>-discoverability.test.tsx`): assert the section index card, representative
+`docsSearchApi.search` hits, and `buildDocsPageMetadata` title/description/
+canonical/OG. Prefer that over editing shared `section-indexes` or search
+helpers when the lane owns only the new page.
+
 ## Routine preflight for ordinary page branches
 
 | When | Command |
