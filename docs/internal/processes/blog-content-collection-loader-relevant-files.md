@@ -109,7 +109,10 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   relies on the blog index card plus prose/title search documents (not tag
   landings). Keep that proof colocated under
   `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
-  blog-local and still runs in the required website suite.
+  blog-local and still runs in the required website suite. English-only
+  bundles should also assert `hasBlogPostMessagesForLocale(slug, "en")` and
+  that non-default locales lack `messages/<locale>.json` so localized
+  `/[locale]/blog/<slug>` params are not generated without message files.
 * `T` / prose auto-link rewrites registry aliases inside message strings (for
   example `harness` and `agent runtime` → `/docs/concepts/harness`). When SSR
   tests assert exact takeaway/context substrings, avoid those alias phrases or
