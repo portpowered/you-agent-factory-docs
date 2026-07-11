@@ -110,3 +110,7 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   landings). Keep that proof colocated under
   `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
   blog-local and still runs in the required website suite.
+* `T` / prose auto-link rewrites registry aliases inside message strings (for
+  example `harness` and `agent runtime` → `/docs/concepts/harness`). When SSR
+  tests assert exact takeaway/context substrings, avoid those alias phrases or
+  assert around the inserted `<a data-prose-auto-link>` markup.
