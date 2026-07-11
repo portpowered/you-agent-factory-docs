@@ -124,7 +124,7 @@ describe("search page panel accessibility smoke", () => {
     const searchInput = screen.getByLabelText(
       context.messages.search.placeholder,
     );
-    await user.type(searchInput, "harness");
+    await user.type(searchInput, "ralph");
 
     await screen.findByTestId("search-page-results", {}, { timeout: 15_000 });
 

@@ -19,6 +19,7 @@ export const MAKE_CI_PREREQUISITES = [
   "typecheck",
   "test",
   "test-reader-facing",
+  "a11y",
   "test-ci-contract",
   "test-verify-contract",
   "test-build-contract",
@@ -40,6 +41,7 @@ export const CI_WORKFLOW_REQUIRED_MAKE_TARGETS = [
   "check",
   "test",
   "test-reader-facing",
+  "a11y",
   "test-ci-contract",
   "test-verify-contract",
   "test-build-contract",
@@ -58,6 +60,7 @@ export const CI_WORKFLOW_REQUIRED_MAKE_TARGETS = [
 export const SHARED_REQUIRED_SUITE_TARGETS = [
   "test",
   "test-reader-facing",
+  "a11y",
   "test-ci-contract",
   "test-verify-contract",
   "test-build-contract",

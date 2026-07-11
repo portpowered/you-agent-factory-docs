@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -28,6 +28,12 @@ typecheck:
 
 test:
 	bun run test
+
+# Critical-route accessibility / responsive / layout-snapshot suite.
+# Required by `make ci` and `.github/workflows/ci.yml`. On failure, reproduce
+# with: make a11y  (or: bun run test:a11y)
+a11y:
+	bun run test:a11y
 
 test-verify-contract:
 	bun run test:verify-contract
@@ -79,7 +85,7 @@ verify-architectural-checklist-mechanism-status:
 
 # Aligned with .github/workflows/ci.yml required suites (see src/lib/ci-required-path.ts).
 # build produces one trusted out/ for test-integration + budget.
-ci: lint typecheck test test-reader-facing test-ci-contract test-verify-contract test-build-contract build test-integration budget component-coverage validate-data linkcheck
+ci: lint typecheck test test-reader-facing a11y test-ci-contract test-verify-contract test-build-contract build test-integration budget component-coverage validate-data linkcheck
 
 validate-data:
 	bun run validate-data

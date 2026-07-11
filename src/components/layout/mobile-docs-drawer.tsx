@@ -73,8 +73,9 @@ export function MobileDocsDrawer({
   return (
     <div className="md:hidden" data-state="open">
       <div
-        className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-opacity duration-300 motion-reduce:transition-none motion-reduce:duration-0"
         aria-hidden="true"
+        data-motion-chrome="mobile-drawer-backdrop"
         onClick={() => onOpenChange(false)}
       />
       <aside
@@ -83,7 +84,8 @@ export function MobileDocsDrawer({
         aria-modal="true"
         aria-label={messages.shell.sidebarTitle}
         data-state="open"
-        className="fixed inset-y-0 left-0 z-50 flex w-screen max-w-none flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl transition-transform duration-300 ease-out"
+        data-motion-chrome="mobile-drawer"
+        className="fixed inset-y-0 left-0 z-50 flex w-screen max-w-none flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
       >
         <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-4">
           <div className="min-w-0">

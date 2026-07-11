@@ -70,10 +70,25 @@ export function DocsSearchDialog({
     }
   }, [open, setSearch]);
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    onOpenChange(nextOpen);
+    if (nextOpen) {
+      return;
+    }
+    // Radix may restore focus to document.body after the lazy dialog unmounts.
+    // Return keyboard users to the header search trigger.
+    requestAnimationFrame(() => {
+      const trigger = document.querySelector<HTMLElement>(
+        'button[data-search], button[aria-label="Open search"]',
+      );
+      trigger?.focus();
+    });
+  };
+
   return (
     <FumaSearchDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={handleOpenChange}
       search={search}
       onSearchChange={setSearch}
       isLoading={query.isLoading}
@@ -82,7 +97,10 @@ export function DocsSearchDialog({
       <SearchDialogContent>
         <SearchDialogHeader>
           <SearchDialogIcon />
-          <SearchDialogInput placeholder={messages.search.placeholder} />
+          <SearchDialogInput
+            placeholder={messages.search.placeholder}
+            aria-label={messages.search.placeholder}
+          />
           <SearchDialogClose>{messages.search.close}</SearchDialogClose>
         </SearchDialogHeader>
         {showIdle ? (

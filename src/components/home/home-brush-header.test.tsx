@@ -11,7 +11,8 @@ describe("HomeBrushHeader", () => {
       />,
     );
 
-    expect(html).toContain("<header");
+    expect(html).toContain("<div");
+    expect(html).not.toContain("<header");
     expect(html).not.toContain("mb-8");
     expect(html).toContain("Model Atlas");
     expect(html).toContain("A reference for LLM concepts");

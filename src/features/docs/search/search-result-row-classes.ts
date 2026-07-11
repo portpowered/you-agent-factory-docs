@@ -19,6 +19,8 @@ export const searchResultMetaEmbeddedPanelClassName = cn(
   "group-hover:text-accent-foreground",
   "group-focus-visible:text-accent-foreground",
   "group-aria-selected:text-fd-accent-foreground",
+  // Dialog active rows use fumadocs bg-fd-accent (aria-selected is cleared for axe).
+  "group-[.bg-fd-accent]:text-fd-accent-foreground",
 );
 
 /** Embedded metadata fields inherit panel foreground, including accent states. */
@@ -29,6 +31,7 @@ export const searchResultTitleInteractiveClassName = cn(
   "group-hover:text-inherit",
   "group-focus-visible:text-inherit",
   "group-aria-selected:text-inherit",
+  "group-[.bg-fd-accent]:text-inherit",
 );
 
 /** Query-match marks stay legible on default, hovered, and selected accent rows. */
@@ -38,4 +41,5 @@ export const searchResultTitleMarkClassName = cn(
   "group-hover:text-accent-foreground group-hover:decoration-accent-foreground/80",
   "group-focus-visible:text-accent-foreground group-focus-visible:decoration-accent-foreground/80",
   "group-aria-selected:text-fd-accent-foreground group-aria-selected:decoration-fd-accent-foreground/80",
+  "group-[.bg-fd-accent]:text-fd-accent-foreground group-[.bg-fd-accent]:decoration-fd-accent-foreground/80",
 );

@@ -109,6 +109,10 @@ export function SearchResultRow({
       <SearchDialogListItem
         item={localizedItem}
         onClick={onActivate}
+        // Fumadocs sets aria-selected on a native <button>, which fails axe
+        // aria-allowed-attr (critical). Clear it; active row chrome still uses
+        // fumadocs bg-fd-accent / text-fd-accent-foreground classes.
+        aria-selected={undefined}
         aria-label={accessibleTitle}
         data-testid="search-result-row"
         className={cn(

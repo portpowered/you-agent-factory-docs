@@ -92,6 +92,7 @@ from meta-doc rewrite work):
 | Static analysis | `make check` | typecheck then lint |
 | Tests | `make test` | website functionality suite |
 | Reader-facing | `make test-reader-facing` | search / layout / a11y contracts |
+| Critical a11y / responsive | `make a11y` | critical-route axe, overflow, reduced-motion, layout snapshot |
 | CI / verify / build contracts | `make test-ci-contract` / `test-verify-contract` / `test-build-contract` | workflow alignment + tooling contracts |
 | Static export | `make build` | `bun run build:export` → `out/` |
 | Integration | `make test-integration` | live shell / lifecycle contracts on trusted `out/` |
@@ -108,7 +109,7 @@ make ci
 ```
 
 `.github/workflows/ci.yml` runs the aligned required path (`make setup` →
-`check` → `test` → `test-reader-facing` → `test-ci-contract` →
+`check` → `test` → `test-reader-facing` → `a11y` → `test-ci-contract` →
 `test-verify-contract` → `test-build-contract` → `build` → `test-integration` →
 `budget` → `component-coverage` → `validate-data` → `linkcheck`) on pull
 requests and pushes — the same suites as `make ci` (see
@@ -148,6 +149,7 @@ make build              # static export to out/
 make budget             # exported-site budget gate (measures out/; fails closed)
 make component-coverage # component + verifier coverage gate
 make test-reader-facing # search / layout / a11y contracts
+make a11y               # critical-route a11y / responsive / layout suite
 make test-integration   # production-integration path on trusted out/
 make ci                 # full local required path (aligned with CI verify)
 make lint               # Biome check
