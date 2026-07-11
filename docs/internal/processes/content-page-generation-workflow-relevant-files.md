@@ -528,8 +528,15 @@ those paths only accept collection section refs.
   packages (Cursor Agent Skills / `SKILL.md` practice), not tools, not MCP, and
   not this repo's frontend `docs/design-skills.md` authoring guide. Assign
   `sidebarGrouping.concepts: harnesses`. Keep unpublished sibling concept ids
-  (`concept.mcp`, `concept.tool-calling`) out of `relatedIds` until those pages
-  ship; use `LocalizedLinkList` planned hrefs for forward discovery.
+  out of `relatedIds` until those pages ship; use `LocalizedLinkList` planned
+  hrefs for forward discovery (`concept.tool-calling` until that page ships).
+- `/docs/concepts/mcp` teaches Model Context Protocol as the host↔server
+  protocol that exposes named tools (including Factory Session tools via
+  `you mcp serve`). It is isolation-first and distinct from
+  `/docs/documentation/mcp` (install/host JSON / serve-mode reference). Assign
+  `sidebarGrouping.concepts: harnesses`. Related links must include the MCP
+  program-documentation page; omit unpublished `concept.tool-calling` from
+  `relatedIds` until that page ships.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.

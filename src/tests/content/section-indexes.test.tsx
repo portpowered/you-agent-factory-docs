@@ -169,6 +169,8 @@ describe("CLI section index page render", () => {
     expect(html).toContain("/docs/concepts/loop");
     expect(html).toContain("Skills");
     expect(html).toContain("/docs/concepts/skills");
+    expect(html).toContain("MCP");
+    expect(html).toContain("/docs/concepts/mcp");
     expect(html).toContain("Statistical Process Control Graphs");
     expect(html).toContain("/docs/concepts/statistical-process-control-graphs");
     expect(html).toContain("Task Queue");
@@ -357,6 +359,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain("/ja/docs/concepts/loop");
     expect(html).toContain("Skills");
     expect(html).toContain("/ja/docs/concepts/skills");
+    expect(html).toContain("MCP");
+    expect(html).toContain("/ja/docs/concepts/mcp");
     expect(html).toContain("Statistical Process Control Graphs");
     expect(html).toContain(
       "/ja/docs/concepts/statistical-process-control-graphs",

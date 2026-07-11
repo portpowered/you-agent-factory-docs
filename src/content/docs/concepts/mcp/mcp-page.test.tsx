@@ -1,7 +1,7 @@
 /**
- * Page-owned render proof for concepts/skills.
+ * Page-owned render proof for concepts/mcp.
  * Colocated under the page bundle so audit:canonical-page-surface stays
- * within page-owned budget for the skills bundle (shared tests live elsewhere).
+ * within page-owned budget for the mcp bundle (shared tests live elsewhere).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -10,41 +10,39 @@ import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
 import { source } from "@/lib/source";
 
-describe("skills concept page", () => {
+describe("mcp concept page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("publishes /docs/concepts/skills as a harnesses concept page", async () => {
-    const fumadocsPage = source.getPage(["concepts", "skills"]);
+  test("publishes /docs/concepts/mcp as a harnesses concept page", async () => {
+    const fumadocsPage = source.getPage(["concepts", "mcp"]);
     expect(fumadocsPage).toBeDefined();
-    expect(fumadocsPage?.url).toBe("/docs/concepts/skills");
+    expect(fumadocsPage?.url).toBe("/docs/concepts/mcp");
 
     const indexes = await loadRegistry();
-    const skillsRecord = getRegistryRecord(indexes, "concept.skills");
-    expect(skillsRecord?.kind).toBe("concept");
-    if (skillsRecord?.kind === "concept") {
-      expect(skillsRecord.sidebarGrouping?.concepts).toBe("harnesses");
-      expect(skillsRecord.aliases).toContain("agent skills");
-      expect(skillsRecord.aliases).toContain("Cursor Agent Skills");
-      expect(skillsRecord.aliases).toContain("SKILL.md");
-      expect(skillsRecord.relatedIds).toContain("concept.harness");
-      expect(skillsRecord.relatedIds).toContain("concept.tool");
-      expect(skillsRecord.relatedIds).toContain("concept.mcp");
-      expect(skillsRecord.relatedIds).toContain("documentation.mcp");
+    const mcpRecord = getRegistryRecord(indexes, "concept.mcp");
+    expect(mcpRecord?.kind).toBe("concept");
+    if (mcpRecord?.kind === "concept") {
+      expect(mcpRecord.sidebarGrouping?.concepts).toBe("harnesses");
+      expect(mcpRecord.aliases).toContain("Model Context Protocol");
+      expect(mcpRecord.aliases).toContain("you mcp serve");
+      expect(mcpRecord.aliases).toContain("MCP server");
+      expect(mcpRecord.relatedIds).toContain("concept.harness");
+      expect(mcpRecord.relatedIds).toContain("concept.tool");
+      expect(mcpRecord.relatedIds).toContain("concept.skills");
+      expect(mcpRecord.relatedIds).toContain("documentation.mcp");
     }
 
     const loadedPage = await loadLocalDocsPage({
       section: "concepts",
-      slug: "skills",
+      slug: "mcp",
     });
 
-    expect(loadedPage.messages.title).toBe("Skills");
-    expect(loadedPage.messages.description).toMatch(
-      /reusable instruction packages/i,
-    );
+    expect(loadedPage.messages.title).toBe("MCP");
+    expect(loadedPage.messages.description).toMatch(/Model Context Protocol/i);
+    expect(loadedPage.messages.description).toMatch(/you mcp serve/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-    expect(loadedPage.messages.description).not.toMatch(/design-skills/i);
 
     const whatItIs = String(loadedPage.messages.sections?.whatItIs?.body ?? "");
     const whyItMatters = String(
@@ -56,24 +54,19 @@ describe("skills concept page", () => {
     const commonConfusions = String(
       loadedPage.messages.sections?.commonConfusions?.body ?? "",
     );
-    expect(whatItIs).toMatch(/reusable instruction package/i);
-    expect(whatItIs).toMatch(/harness or coding agent/i);
-    expect(whatItIs).toMatch(/SKILL\.md/i);
-    expect(whatItIs).toMatch(/not a tool/i);
     expect(whatItIs).toMatch(/Model Context Protocol \(MCP\)/i);
-    expect(whatItIs).toMatch(
-      /not this documentation site's frontend design-skills/i,
-    );
-    expect(whyItMatters).toMatch(/load focused guidance/i);
-    expect(whyItMatters).toMatch(/repeated workflows stay consistent/i);
-    expect(simpleExample).toMatch(/project skill/i);
-    expect(simpleExample).toMatch(/Cursor-backed harness/i);
-    expect(simpleExample).toMatch(/loaded instruction package/i);
-    expect(simpleExample).toMatch(/are tools/i);
-    expect(commonConfusions).toMatch(/not a tool/i);
-    expect(commonConfusions).toMatch(/not MCP/i);
-    expect(commonConfusions).toMatch(/not the harness itself/i);
-    expect(commonConfusions).toMatch(/design-skills frontend authoring guide/i);
+    expect(whatItIs).toMatch(/host↔server protocol/i);
+    expect(whatItIs).toMatch(/you mcp serve/i);
+    expect(whatItIs).toMatch(/Factory Session tools/i);
+    expect(whatItIs).toMatch(/not the factory runtime itself/i);
+    expect(whyItMatters).toMatch(/stdio MCP clients/i);
+    expect(whyItMatters).toMatch(/you\.factory_session\.\*/i);
+    expect(simpleExample).toMatch(/workflow project root/i);
+    expect(simpleExample).toMatch(/you\.factory_session\.validate_source/i);
+    expect(simpleExample).toMatch(/named actions it receives are tools/i);
+    expect(commonConfusions).toMatch(/not the MCP program-documentation page/i);
+    expect(commonConfusions).toMatch(/not a tool and not tool calling/i);
+    expect(commonConfusions).toMatch(/not the factory runtime itself/i);
     expect(whatItIs).not.toMatch(/on this page|Model Atlas/i);
     expect(whyItMatters).not.toMatch(/on this page|Model Atlas/i);
     expect(simpleExample).not.toMatch(/on this page|Model Atlas/i);
@@ -109,20 +102,20 @@ describe("skills concept page", () => {
     const commonConfusionsSection =
       document.getElementById("common-confusions");
     expect(whatItIsSection?.textContent ?? "").toMatch(
-      /reusable instruction package/i,
+      /Model Context Protocol \(MCP\)/i,
     );
-    expect(whatItIsSection?.textContent ?? "").toMatch(/SKILL\.md/i);
+    expect(whatItIsSection?.textContent ?? "").toMatch(/you mcp serve/i);
     expect(whyItMattersSection?.textContent ?? "").toMatch(
-      /load focused guidance/i,
+      /you\.factory_session\.\*/i,
     );
     expect(simpleExampleSection?.textContent ?? "").toMatch(
-      /Cursor-backed harness/i,
+      /you\.factory_session\.validate_source/i,
     );
-    expect(simpleExampleSection?.textContent ?? "").toMatch(/are tools/i);
-    expect(commonConfusionsSection?.textContent ?? "").toMatch(/not a tool/i);
-    expect(commonConfusionsSection?.textContent ?? "").toMatch(/not MCP/i);
     expect(commonConfusionsSection?.textContent ?? "").toMatch(
-      /not the harness itself/i,
+      /not the MCP program-documentation page/i,
+    );
+    expect(commonConfusionsSection?.textContent ?? "").toMatch(
+      /not a tool and not tool calling/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
 
@@ -130,8 +123,8 @@ describe("skills concept page", () => {
     expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
     const toolLink = screen.getByRole("link", { name: "Tool" });
     expect(toolLink.getAttribute("href")).toBe("/docs/concepts/tool");
-    const mcpConceptLink = screen.getByRole("link", { name: "MCP" });
-    expect(mcpConceptLink.getAttribute("href")).toBe("/docs/concepts/mcp");
+    const skillsLink = screen.getByRole("link", { name: "Skills" });
+    expect(skillsLink.getAttribute("href")).toBe("/docs/concepts/skills");
     const toolCallingLink = screen.getByRole("link", { name: "Tool calling" });
     expect(toolCallingLink.getAttribute("href")).toBe(
       "/docs/concepts/tool-calling",
@@ -157,18 +150,18 @@ describe("skills concept page", () => {
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
     const en = await loadLocalDocsPage({
       section: "concepts",
-      slug: "skills",
+      slug: "mcp",
     });
     const ja = await loadLocalDocsPage(
-      { section: "concepts", slug: "skills" },
+      { section: "concepts", slug: "mcp" },
       "ja",
     );
     const zhCN = await loadLocalDocsPage(
-      { section: "concepts", slug: "skills" },
+      { section: "concepts", slug: "mcp" },
       "zh-CN",
     );
     const vi = await loadLocalDocsPage(
-      { section: "concepts", slug: "skills" },
+      { section: "concepts", slug: "mcp" },
       "vi",
     );
 

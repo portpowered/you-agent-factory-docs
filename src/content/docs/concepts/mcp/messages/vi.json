@@ -1,0 +1,40 @@
+{
+  "title": "MCP",
+  "description": "Model Context Protocol: the host↔server protocol that exposes named tools, including Factory Session tools via you mcp serve.",
+  "sections": {
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "Model Context Protocol (MCP) is the host↔server protocol that lets an editor or other host discover and call named tools from a child-process server. In you-agent-factory, you mcp serve exposes Factory Session tools over stdio so an MCP-capable host can validate sources, start sessions, and read status or results. MCP is the protocol and transport contract—not the install matrix, not a single tool, and not the factory runtime itself."
+    },
+    "whyItMatters": {
+      "title": "Why It Matters",
+      "body": "Without MCP, hosts have no standard way to discover factory tools. With MCP, Cursor and other stdio MCP clients spawn you mcp serve, reload, and then call you.factory_session.* tools against a workflow project. Operators who want an editor to drive Factory Session flows use MCP as the integration path instead of inventing a one-off host bridge."
+    },
+    "simpleExample": {
+      "title": "Simple Example",
+      "body": "You point an MCP-capable host at you mcp serve with the working directory set to your workflow project root. After the host reloads and starts the child process, it discovers tools such as you.factory_session.validate_source and you.factory_session.start_async. The host is speaking MCP; the named actions it receives are tools; the factory runtime behind those tools is still the factory."
+    },
+    "commonConfusions": {
+      "title": "Common Confusions",
+      "body": "This concept page is not the MCP program-documentation page. The documentation page covers host JSON, serve modes, and Factory Session tool names in detail; this page defines the protocol idea. MCP is also not a tool and not tool calling: a tool is a named callable capability, and tool calling is the model selecting and invoking tools during a turn—MCP is how a host exposes those tools from a server. MCP is not the factory runtime itself; you mcp serve is a stdio bridge into Factory Session tools, not a replacement for the factory."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "harnessConcept": "Harness",
+    "toolConcept": "Tool",
+    "skillsConcept": "Skills",
+    "toolCallingConcept": "Tool calling",
+    "mcpDocs": "MCP documentation",
+    "harnessSupportDocs": "Harness support",
+    "cursorDynamicWorkflows": "Cursor dynamic workflows"
+  }
+}
