@@ -1,0 +1,32 @@
+{
+  "title": "Agent workers",
+  "description": "Configure you-agent-factory AGENT_WORKER backends for AGENT_RUN loops, including model identity, agentTools.policy, and agent-run failure cautions.",
+  "openingSummary": "Agent workers supply the model backend and shared system-prompt body for prompt-rendered AGENT_RUN workstations. Use this page when you need the durable web contract for AGENT_WORKER authoring.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers you-agent-factory Agent workers: what an AGENT_WORKER is, how it pairs with AGENT_RUN workstations, where model identity and the shared system prompt belong, and enough orientation to distinguish agent loops from one-shot inference operations. Use it when you need the durable web Agent workers contract before deeper tool-policy and failure teaching lands on this page."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "An AGENT_WORKER is the model-backed executor for prompt-rendered AGENT_RUN workstations. The worker owns backend type, model identity, and the markdown body used as the shared system prompt. The factory runtime owns one agent loop per dispatch, including session cancellation, timeout, and final-result selection. Agent workers are not INFERENCE_WORKER backends and do not declare inference operations."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author an AGENT_WORKER under workers/<name>/AGENTS.md with type AGENT_WORKER, put model and modelProvider on the worker when you need authored identity, and keep the shared system prompt in the markdown body. Bind the worker from an AGENT_RUN workstation. Later sections on this page will expand agentTools.policy, diagnostics, and failure cautions; start from the Workers overview when you need the full public worker taxonomy."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web Agent workers reference for AGENT_WORKER / AGENT_RUN authoring. It is not a sync of packaged CLI docs, not the full Workers taxonomy overview, not workstation routing or lifecycle depth, not resource-capacity deep-dive, and not the Inference workers full contract. Sibling pages aid discovery; they are not required to define what an Agent worker is."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
