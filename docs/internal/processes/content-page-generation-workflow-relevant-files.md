@@ -238,6 +238,23 @@ shipped-localized-docs.server.test.ts --exception-reason "…"`, and repeat the
 exception reason in the PR conversation. Do not treat the sibling page bundle
 as shared hotspot churn for the page under audit.
 
+When the same documentation lane also needs a narrow
+`FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` membership entry
+(`src/lib/content/sidebar-grouping.ts`), prove the owned surface and each
+exception separately rather than stuffing every shared path into one
+`--files` list:
+
+1. Page-owned paths only → expect `keep-routine` / `within-budget`.
+2. Page-owned + locale-shipping trio → `--exception-reason` for locale
+   shipping → expect `declare-exception`.
+3. Page-owned + `sidebar-grouping.ts` → `--exception-reason` for the
+   membership entry → expect `declare-exception`.
+
+Combining sidebar membership and locale-shipping shared paths in one audit
+still recommends `redirect-to-throughput-prd` today (multiple shared
+categories). Document both exception reasons in the PR conversation; do not
+redesign the shared audit classifier on a routine page lane.
+
 When colocated page tests assert non-guarantee / denial copy, match the denial
 positively (for example `/not a compliance certification claim/i`) instead of
 negating the denied phrase — otherwise correct “not a …” prose fails the test.
