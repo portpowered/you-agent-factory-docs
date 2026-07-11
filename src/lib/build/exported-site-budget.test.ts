@@ -72,7 +72,7 @@ describe("exported-site-budget baselines", () => {
       3_500_000,
     );
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes).toBe(
-      4_350_000,
+      4_500_000,
     );
   });
 });

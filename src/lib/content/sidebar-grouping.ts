@@ -70,6 +70,8 @@ export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = {
   "submitting-work": "functions",
   configuration: "configuration",
   workers: "configuration",
+  "script-workers": "configuration",
+  "poller-workers": "configuration",
   workstations: "configuration",
   resources: "configuration",
   "global-configuration-factories": "configuration",

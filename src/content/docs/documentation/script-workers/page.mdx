@@ -1,0 +1,113 @@
+---
+title: "Script workers"
+description: "Author you-agent-factory SCRIPT_WORKER backends: command and args on the worker, SCRIPT_RUN binding on the workstation, and a minimal command-backed example."
+kind: "documentation"
+registryId: "documentation.script-workers"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "SCRIPT_WORKER"
+  - "script worker"
+  - "command-backed worker"
+updatedAt: "2026-07-11"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.ownershipWorkerHeader" />
+        </th>
+        <th>
+          <T k="links.ownershipWorkstationHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.ownershipWorkerFields" />
+        </td>
+        <td>
+          <T k="links.ownershipWorkstationFields" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    <T k="links.executionContractLabel" />{" "}
+    <T k="links.executionContractBody" />
+  </p>
+  <p>
+    <T k="links.minimalExampleLabel" />
+  </p>
+  <pre>
+    <code>
+      <T k="links.minimalScriptExample" />
+    </code>
+  </pre>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWorkDocs",
+      },
+      {
+        href: "/docs/documentation/logs",
+        labelKey: "links.logsDocs",
+      },
+      {
+        href: "/docs/documentation/troubleshooting",
+        labelKey: "links.troubleshootingDocs",
+      },
+      {
+        href: "/docs/documentation/poller-workers",
+        labelKey: "links.pollerWorkersDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.script-workers" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.script-workers" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.script-workers" />
+</Section>
