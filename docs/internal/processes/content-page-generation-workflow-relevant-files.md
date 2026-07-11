@@ -183,10 +183,12 @@ files is what derives the page as shipped for that locale
 Missing non-default messages fail closed (no English fallback at load time).
 
 When a later lane **fills** high-traffic stubs with real target-language prose
-(for example `guides/getting-started`, `documentation/install`,
-`documentation/what-is-you-agent-factory`, `documentation/cli`), keep the same
-key shape, leave install command literals unchanged (in `page.mdx` or under
-`links.*` for CLI), keep OS platform labels such as `macOS / Linux` /
+(for example `guides/getting-started`, `guides/using-you-agent-factory-for-loops`,
+`guides/write-review-loops`, `guides/cursor-dynamic-workflows`,
+`documentation/install`, `documentation/what-is-you-agent-factory`,
+`documentation/cli`), keep the same key shape, leave install/run/submit and
+MCP tool-name command literals unchanged (in `page.mdx` or under `links.*` for
+CLI), keep OS platform labels such as `macOS / Linux` /
 `Windows (PowerShell)` identical across locales, and update any section-index
 title/description assertions that previously expected the English stub (for
 example `src/tests/content/section-indexes.test.tsx` for `vi` documentation

@@ -1,65 +1,65 @@
 {
-  "title": "Cursor Dynamic Workflows",
-  "description": "Use Cursor as an MCP host for you-agent-factory Factory Session and dynamic-workflow tools.",
-  "openingSummary": "Connect Cursor to you-agent-factory over Model Context Protocol (MCP) so you can drive Factory Session and dynamic-workflow tools from the editor.",
+  "title": "Quy trình động Cursor",
+  "description": "Dùng Cursor làm máy chủ MCP cho các công cụ Factory Session và quy trình động của you-agent-factory.",
+  "openingSummary": "Kết nối Cursor với you-agent-factory qua Model Context Protocol (MCP) để điều khiển các công cụ Factory Session và quy trình động từ trình soạn thảo.",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "Cursor dynamic workflows mean using Cursor as a Model Context Protocol (MCP) host for you-agent-factory. Cursor launches you mcp serve as a child process, then calls Factory Session tools that validate, start, and inspect JavaScript or TypeScript dynamic workflows. In this product, a dynamic workflow is a JavaScript orchestrator-backed factory; the live run is still a Factory Session. The MCP path keeps that work inside the editor instead of switching to a separate terminal for every validate, start, or status step."
+      "title": "Nó là gì",
+      "body": "Quy trình động Cursor nghĩa là dùng Cursor làm máy chủ Model Context Protocol (MCP) cho you-agent-factory. Cursor khởi chạy you mcp serve như tiến trình con, rồi gọi các công cụ Factory Session để xác thực, khởi động và kiểm tra quy trình động JavaScript hoặc TypeScript. Trong sản phẩm này, quy trình động là factory do bộ điều phối JavaScript hỗ trợ; lần chạy đang sống vẫn là Factory Session. Đường MCP giữ công việc đó trong trình soạn thảo thay vì chuyển sang terminal riêng cho mỗi bước xác thực, khởi động hoặc trạng thái."
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this path when you author or drive JavaScript or TypeScript dynamic workflows from Cursor and want Factory Session tools available as MCP tools in the editor. Prefer ordinary factory loops and submit batches without MCP when you only need the CLI install → run → submit path and do not need Cursor to call Factory Session tools. Prefer another MCP host guide when your editor or agent is not Cursor, even if it also speaks MCP."
+      "title": "Khi nào dùng",
+      "body": "Dùng đường này khi bạn soạn hoặc điều khiển quy trình động JavaScript hoặc TypeScript từ Cursor và muốn các công cụ Factory Session sẵn có dưới dạng công cụ MCP trong trình soạn thảo. Ưu tiên vòng lặp factory thông thường và gửi theo lô không cần MCP khi bạn chỉ cần đường cài CLI → chạy → gửi và không cần Cursor gọi công cụ Factory Session. Ưu tiên hướng dẫn máy chủ MCP khác khi trình soạn thảo hoặc agent của bạn không phải Cursor, dù nó cũng nói MCP."
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Confirm the you CLI is installed, add a Cursor Model Context Protocol (MCP) server entry for you mcp serve, reload Cursor so the child process starts, then run a first Factory Session loop: validate source, start a session, and check status or result."
+      "title": "Các bước hoặc quy trình",
+      "body": "Xác nhận CLI you đã được cài, thêm mục máy chủ Cursor Model Context Protocol (MCP) cho you mcp serve, tải lại Cursor để tiến trình con khởi động, rồi chạy vòng lặp Factory Session đầu tiên: xác thực nguồn, khởi động phiên, và kiểm tra trạng thái hoặc kết quả."
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "If Cursor cannot find you on PATH, set command to the absolute path of the you binary instead of relying on the shell PATH. If validate or start fails to resolve workflow sources, check that cwd is the workflow project root, not a nested package or home directory. After you change MCP config, restart Cursor or run Developer: Reload Window so the MCP child process respawns; saving the file alone is not enough. Treat this guide as a first Cursor integration loop only — full tool catalogs, serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages linked below."
+      "title": "Cạm bẫy thường gặp",
+      "body": "Nếu Cursor không tìm thấy you trên PATH, hãy đặt command thành đường dẫn tuyệt đối tới nhị phân you thay vì dựa vào PATH của shell. Nếu validate hoặc start không giải quyết được nguồn quy trình, hãy kiểm tra cwd là gốc dự án quy trình, không phải gói lồng nhau hoặc thư mục home. Sau khi đổi cấu hình MCP, hãy khởi động lại Cursor hoặc chạy Developer: Reload Window để tiến trình con MCP được tạo lại; chỉ lưu tệp là chưa đủ. Coi hướng dẫn này chỉ là vòng tích hợp Cursor đầu tiên — danh mục công cụ đầy đủ, cờ serve và chi tiết API quy trình động nằm trên các trang tài liệu MCP và quy trình động được liên kết bên dưới."
     },
     "related": {
-      "title": "Related To"
+      "title": "Liên quan"
     },
     "tags": {
-      "title": "Tags"
+      "title": "Thẻ"
     },
     "references": {
-      "title": "References"
+      "title": "Tài liệu tham khảo"
     }
   },
   "links": {
-    "mcpConfigLocationsLabel": "Cursor MCP config locations",
-    "mcpServerJsonLabel": "Example Cursor MCP server entry",
-    "firstLoopLabel": "First Factory Session loop from Cursor",
-    "firstLoopValidateLabel": "Validate workflow source",
-    "firstLoopStartLabel": "Start a Factory Session",
-    "firstLoopStatusLabel": "Check status and result",
-    "mcpDocs": "MCP documentation",
-    "dynamicWorkflowsDocs": "Dynamic-workflows documentation"
+    "mcpConfigLocationsLabel": "Vị trí cấu hình MCP của Cursor",
+    "mcpServerJsonLabel": "Ví dụ mục máy chủ MCP Cursor",
+    "firstLoopLabel": "Vòng lặp Factory Session đầu tiên từ Cursor",
+    "firstLoopValidateLabel": "Xác thực nguồn quy trình",
+    "firstLoopStartLabel": "Khởi động Factory Session",
+    "firstLoopStatusLabel": "Kiểm tra trạng thái và kết quả",
+    "mcpDocs": "Tài liệu MCP",
+    "dynamicWorkflowsDocs": "Tài liệu quy trình động"
   },
   "callouts": {
     "mcpConfigLocations": {
-      "body": "Put the server entry in the project file at .cursor/mcp.json when the workflow lives in that repository, or in the global file at ~/.cursor/mcp.json when you want the same server across projects. Project config is usually enough for one workflow root."
+      "body": "Đặt mục máy chủ trong tệp dự án tại .cursor/mcp.json khi quy trình nằm trong kho đó, hoặc trong tệp toàn cục tại ~/.cursor/mcp.json khi bạn muốn cùng một máy chủ trên nhiều dự án. Cấu hình dự án thường đủ cho một gốc quy trình."
     },
     "mcpReload": {
-      "body": "Replace command with the absolute path to your you binary when Cursor cannot see your shell PATH. Keep args as mcp serve. Set cwd to the workflow project root so sources resolve. After you save the file, restart Cursor or run Developer: Reload Window so Cursor respawns the MCP child process."
+      "body": "Thay command bằng đường dẫn tuyệt đối tới nhị phân you khi Cursor không thấy PATH của shell. Giữ args là mcp serve. Đặt cwd thành gốc dự án quy trình để nguồn được giải quyết. Sau khi lưu tệp, khởi động lại Cursor hoặc chạy Developer: Reload Window để Cursor tạo lại tiến trình con MCP."
     },
     "firstLoopIntro": {
-      "body": "After reload, confirm Factory Session tools appear in Cursor. Prefer the you.factory_session.* names. Older you.workflow.* aliases still resolve to the same handlers if your host lists them."
+      "body": "Sau khi tải lại, xác nhận các công cụ Factory Session xuất hiện trong Cursor. Ưu tiên tên you.factory_session.*. Các bí danh you.workflow.* cũ hơn vẫn giải quyết về cùng handler nếu máy chủ liệt kê chúng."
     },
     "firstLoopValidate": {
-      "body": "Call you.factory_session.validate_source on your JavaScript or TypeScript orchestrator source. Compatibility alias: you.workflow.validate. A clean validate confirms Cursor reached you mcp serve and the project cwd can resolve the workflow."
+      "body": "Gọi you.factory_session.validate_source trên nguồn bộ điều phối JavaScript hoặc TypeScript của bạn. Bí danh tương thích: you.workflow.validate. Xác thực sạch xác nhận Cursor đã tới you mcp serve và cwd dự án có thể giải quyết quy trình."
     },
     "firstLoopStart": {
-      "body": "Start one session with you.factory_session.start_async when you want to poll, or you.factory_session.start_sync when you want the tool to wait for completion. Compatibility alias for a sync start: you.workflow.run."
+      "body": "Khởi động một phiên bằng you.factory_session.start_async khi bạn muốn thăm dò, hoặc you.factory_session.start_sync khi bạn muốn công cụ chờ hoàn tất. Bí danh tương thích cho khởi động đồng bộ: you.workflow.run."
     },
     "firstLoopStatus": {
-      "body": "Read progress with you.factory_session.get, then read the outcome with you.factory_session.get_result when the session is ready. Compatibility aliases: you.workflow.status and you.workflow.result. That validate → start → status or result path is enough to prove the Cursor integration."
+      "body": "Đọc tiến độ bằng you.factory_session.get, rồi đọc kết quả bằng you.factory_session.get_result khi phiên sẵn sàng. Bí danh tương thích: you.workflow.status và you.workflow.result. Đường xác thực → khởi động → trạng thái hoặc kết quả đó đủ để chứng minh tích hợp Cursor."
     },
     "firstLoopDeeperDocs": {
-      "body": "Full tool catalogs, runtime-backed serve flags, and dynamic-workflow API detail live on the MCP and dynamic-workflows documentation pages. You do not need those pages open to finish this first loop."
+      "body": "Danh mục công cụ đầy đủ, cờ serve hỗ trợ runtime và chi tiết API quy trình động nằm trên các trang tài liệu MCP và quy trình động. Bạn không cần mở các trang đó để hoàn thành vòng đầu tiên này."
     }
   }
 }

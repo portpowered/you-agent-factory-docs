@@ -1,53 +1,53 @@
 {
-  "title": "Write-Review Loops",
-  "description": "Use you-agent-factory for write → review → revise loops with a bounded retry path.",
+  "title": "書き込み・レビューループ",
+  "description": "境界付き再試行パスで、書き込み → レビュー → 改訂のループに you-agent-factory を使います。",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "A write-review loop is a factory workflow where write or execute work produces a candidate, then a review step decides the outcome. Accepted work moves to a complete state. Rejected work returns to write for another pass, so the same goal can revise until review accepts it."
+      "title": "概要",
+      "body": "書き込み・レビューループは、書き込みまたは実行の作業が候補を作り、その後レビュー手順が結果を決めるファクトリーワークフローです。受理された作業は完了状態へ進みます。却下された作業は書き込みへ戻り、同じゴールをレビューが受理するまで改訂できます。"
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use this guide when agent output must pass an explicit review gate before completion, for example quality-gated docs, code, or plans. Follow it when you want a clear write → review → revise path in the factory. The outcome you should reach is accepted work that completes only after review, with rejected work routed back for another write pass."
+      "title": "いつ使うか",
+      "body": "品質ゲート付きのドキュメント、コード、計画など、エージェント出力が完了前に明示的なレビューゲートを通る必要があるときに、このガイドを使います。ファクトリー内で明確な書き込み → レビュー → 改訂の道筋が欲しいときに従ってください。到達すべき結果は、レビュー後にのみ完了する受理済み作業であり、却下された作業は別の書き込みパスへ戻されます。"
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "Confirm a live factory, submit or advance write or execute work, let review accept to complete or reject back to write, and bound retries with a loop breaker so reject cycles cannot run forever."
+      "title": "手順またはワークフロー",
+      "body": "稼働中のファクトリーを確認し、書き込みまたは実行の作業を投入または進め、レビューが受理して完了するか書き込みへ却下して戻し、却下サイクルが永遠に続かないようループブレーカーで再試行を境界付けます。"
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not review or submit against a factory that is not live. Do not treat reject-without-a-breaker as safe forever. Do not confuse this use-case guide with the later writer-reviewer technique glossary page."
+      "title": "よくある落とし穴",
+      "body": "稼働していないファクトリーに対してレビューや投入をしないでください。ブレーカーなしの却下を永遠に安全だと扱わないでください。このユースケースガイドを、後続の writer-reviewer 技法の用語ページと混同しないでください。"
     },
     "related": {
-      "title": "Related To"
+      "title": "関連"
     },
     "tags": {
-      "title": "Tags"
+      "title": "タグ"
     },
     "references": {
-      "title": "References"
+      "title": "参考文献"
     }
   },
   "links": {
-    "confirmSessionLabel": "Confirm a live factory",
-    "startFactoryLabel": "Start a factory when no session is active",
-    "namedRunLabel": "Named run",
-    "submitWorkLabel": "Submit write or execute work",
-    "batchSubmitLabel": "Batch submit",
-    "writerReviewerTechnique": "Writer-reviewer technique"
+    "confirmSessionLabel": "稼働中のファクトリーを確認する",
+    "startFactoryLabel": "セッションが無いときにファクトリーを起動する",
+    "namedRunLabel": "名前付き実行",
+    "submitWorkLabel": "書き込みまたは実行の作業を投入する",
+    "batchSubmitLabel": "バッチ投入",
+    "writerReviewerTechnique": "Writer-reviewer 技法"
   },
   "callouts": {
     "sessionCheck": {
-      "body": "Start with you or you run when you need a factory, then confirm it with you session list before you submit. If no session is active, start the factory again and re-check."
+      "body": "ファクトリーが必要なときは you または you run から始め、投入前に you session list で確認します。セッションが無ければ、ファクトリーを再度起動して再確認します。"
     },
     "routing": {
-      "body": "Shape the factory so a write or execute workstation routes successful work into an in-review state for a paired review workstation. On accept, review routes work toward a complete state. On reject, set onRejection to return work to the write or init state for another pass. That execute and review pair, with outcome routes, is the write → review → revise path."
+      "body": "書き込みまたは実行のワークステーションが成功した作業を、対になるレビューワークステーション向けのレビュー中状態へ送るようファクトリーを形作ります。受理時、レビューは作業を完了状態へ進めます。却下時は onRejection を設定し、作業を書き込みまたは init 状態へ戻して別のパスを回します。その実行とレビューのペアと結果ルートが、書き込み → レビュー → 改訂の道筋です。"
     },
     "loopBreaker": {
-      "body": "Add a bounded retry so endless reject cycles stop on purpose. A common pattern is a LOGICAL_MOVE guarded by VISIT_COUNT on the write or review workstation: when visits exceed the limit, move the work to a failed or other terminal state instead of sending it around again."
+      "body": "却下サイクルが終わらないよう、境界付き再試行を追加します。よくあるパターンは、書き込みまたはレビューのワークステーションで VISIT_COUNT にガードされた LOGICAL_MOVE です。訪問回数が上限を超えたら、再び回す代わりに失敗または他の終了状態へ移します。"
     },
     "submitAgainstLive": {
-      "body": "Submit only against a running factory. After enqueue, the write or execute workstation produces the candidate; review decides accept or reject."
+      "body": "稼働中のファクトリーに対してのみ投入します。キュー後、書き込みまたは実行のワークステーションが候補を作り、レビューが受理か却下かを決めます。"
     }
   }
 }

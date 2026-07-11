@@ -1,46 +1,46 @@
 {
-  "title": "Using you-agent-factory for Loops",
-  "description": "Run iterative factory loops that keep work cycling until a goal is done.",
-  "openingSummary": "Run a factory loop when a goal needs repeated agent passes under you-agent-factory until the work is done.",
+  "title": "Dùng you-agent-factory cho vòng lặp",
+  "description": "Chạy vòng lặp factory lặp lại để công việc tiếp tục xoay vòng cho đến khi mục tiêu xong.",
+  "openingSummary": "Chạy vòng lặp factory khi mục tiêu cần các lượt agent lặp lại dưới you-agent-factory cho đến khi công việc xong.",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done, or until you take an explicit stop or terminal path. The factory keeps the session and continues agent passes across that loop. It is not a one-shot chat session that ends when a single reply finishes. You start or continue a named run, submit work the factory can cycle on, and keep going until the goal is complete or you stop the run."
+      "title": "Nó là gì",
+      "body": "Vòng lặp factory là công việc tiếp tục lặp dưới you-agent-factory cho đến khi mục tiêu xong, hoặc cho đến khi bạn chủ động dừng hay kết thúc. Factory giữ phiên và tiếp tục các lượt agent xuyên suốt vòng lặp đó. Đây không phải phiên chat một lần kết thúc khi một câu trả lời xong. Bạn khởi động hoặc tiếp tục một lần chạy có tên, gửi công việc factory có thể xoay vòng, và tiếp tục cho đến khi mục tiêu hoàn tất hoặc bạn dừng lần chạy."
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use a factory loop when a goal needs repeated agent passes under a live factory—for example a long-running feature, a multi-step migration, or any outcome that is not finished in one submit. Prefer a write-review loop when the work should alternate between drafting and review gates. Prefer Cursor dynamic workflows when the loop should be driven from Cursor session automation rather than a plain factory loop. If you still need to install the command-line interface (CLI) or confirm a first run, start with getting started first."
+      "title": "Khi nào dùng",
+      "body": "Dùng vòng lặp factory khi mục tiêu cần các lượt agent lặp lại dưới một factory đang chạy—ví dụ tính năng dài hạn, di chuyển nhiều bước, hoặc bất kỳ kết quả nào không xong trong một lần gửi. Ưu tiên vòng lặp viết-duyệt khi công việc nên xen kẽ giữa soạn thảo và cổng duyệt. Ưu tiên quy trình động Cursor khi vòng lặp nên được điều khiển từ tự động hóa phiên Cursor thay vì vòng lặp factory thuần. Nếu bạn vẫn cần cài CLI hoặc xác nhận lần chạy đầu, hãy bắt đầu với Bắt đầu trước."
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "If the CLI is not installed yet, finish getting started first, then return here. Start or continue a named factory run for the goal, confirm a live session, submit work the factory can iterate on, and keep submitting until the goal is done or you stop the run."
+      "title": "Các bước hoặc quy trình",
+      "body": "Nếu CLI chưa được cài, hãy hoàn thành Bắt đầu trước, rồi quay lại đây. Khởi động hoặc tiếp tục lần chạy factory có tên cho mục tiêu, xác nhận phiên đang sống, gửi công việc factory có thể lặp, và tiếp tục gửi cho đến khi mục tiêu xong hoặc bạn dừng lần chạy."
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not submit work when no factory session is live—confirm with session list first, or start a named run again. Do not treat a factory loop as a disposable one-shot chat; the factory keeps the session across passes until the goal is done or you stop. Do not use a plain loop when the work should alternate draft and review gates—that path belongs to a write-review loop instead."
+      "title": "Cạm bẫy thường gặp",
+      "body": "Đừng gửi công việc khi không có phiên factory đang sống—xác nhận bằng session list trước, hoặc khởi động lại lần chạy có tên. Đừng coi vòng lặp factory như chat một lần dùng rồi bỏ; factory giữ phiên xuyên các lượt cho đến khi mục tiêu xong hoặc bạn dừng. Đừng dùng vòng lặp thuần khi công việc nên xen kẽ cổng soạn thảo và duyệt—đường đó thuộc về vòng lặp viết-duyệt."
     },
     "related": {
-      "title": "Related To"
+      "title": "Liên quan"
     },
     "tags": {
-      "title": "Tags"
+      "title": "Thẻ"
     },
     "references": {
-      "title": "References"
+      "title": "Tài liệu tham khảo"
     }
   },
   "links": {
-    "stepsNamedRunLabel": "Start or continue a named run",
-    "stepsSessionListLabel": "Confirm a live factory session",
-    "stepsSubmitLabel": "Submit work for this loop pass",
-    "stepsSubmitBatchLabel": "Or submit a small batch",
-    "gettingStarted": "Getting started",
-    "loopConcept": "Loop concept",
-    "writeReviewLoopsGuide": "Write-Review Loops"
+    "stepsNamedRunLabel": "Khởi động hoặc tiếp tục lần chạy có tên",
+    "stepsSessionListLabel": "Xác nhận phiên factory đang sống",
+    "stepsSubmitLabel": "Gửi công việc cho lượt vòng lặp này",
+    "stepsSubmitBatchLabel": "Hoặc gửi một lô nhỏ",
+    "gettingStarted": "Bắt đầu",
+    "loopConcept": "Khái niệm vòng lặp",
+    "writeReviewLoopsGuide": "Vòng lặp viết-duyệt"
   },
   "callouts": {
     "stepsKeepIterating": {
-      "body": "After each pass, check session list again and submit the next piece of work. The factory keeps the loop alive across submits until the goal is complete or you take an explicit stop path. Replace @goal/blah, work names, and payload paths with your own goal and files."
+      "body": "Sau mỗi lượt, kiểm tra lại session list và gửi phần công việc tiếp theo. Factory giữ vòng lặp sống xuyên các lần gửi cho đến khi mục tiêu hoàn tất hoặc bạn chủ động dừng. Thay @goal/blah, tên công việc và đường dẫn payload bằng mục tiêu và tệp của bạn."
     }
   }
 }

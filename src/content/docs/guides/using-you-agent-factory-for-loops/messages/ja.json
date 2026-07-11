@@ -1,46 +1,46 @@
 {
-  "title": "Using you-agent-factory for Loops",
-  "description": "Run iterative factory loops that keep work cycling until a goal is done.",
-  "openingSummary": "Run a factory loop when a goal needs repeated agent passes under you-agent-factory until the work is done.",
+  "title": "you-agent-factory でループを使う",
+  "description": "ゴールが完了するまで作業を繰り返し回す、反復的なファクトリーループを実行します。",
+  "openingSummary": "ゴールが完了するまで you-agent-factory の下でエージェントのパスを繰り返す必要があるとき、ファクトリーループを実行します。",
   "sections": {
     "whatItIs": {
-      "title": "What It Is",
-      "body": "A factory loop is work that keeps iterating under you-agent-factory until the goal is done, or until you take an explicit stop or terminal path. The factory keeps the session and continues agent passes across that loop. It is not a one-shot chat session that ends when a single reply finishes. You start or continue a named run, submit work the factory can cycle on, and keep going until the goal is complete or you stop the run."
+      "title": "概要",
+      "body": "ファクトリーループとは、ゴールが完了するまで、または明示的な停止・終了パスを取るまで、you-agent-factory の下で作業を反復し続けることです。ファクトリーはセッションを保持し、そのループにわたってエージェントのパスを続けます。1 回の返信で終わるワンショットのチャットセッションではありません。名前付き実行を開始または継続し、ファクトリーが循環できる作業を投入し、ゴールが完了するか実行を停止するまで続けます。"
     },
     "whenToUse": {
-      "title": "When To Use",
-      "body": "Use a factory loop when a goal needs repeated agent passes under a live factory—for example a long-running feature, a multi-step migration, or any outcome that is not finished in one submit. Prefer a write-review loop when the work should alternate between drafting and review gates. Prefer Cursor dynamic workflows when the loop should be driven from Cursor session automation rather than a plain factory loop. If you still need to install the command-line interface (CLI) or confirm a first run, start with getting started first."
+      "title": "いつ使うか",
+      "body": "長期の機能開発、多段階の移行、1 回の投入では終わらない成果など、稼働中のファクトリーの下でエージェントのパスを繰り返す必要があるゴールには、ファクトリーループを使います。下書きとレビューゲートを交互に進めるべき作業には、書き込み・レビューループを優先します。プレーンなファクトリーループではなく Cursor セッション自動化からループを駆動したい場合は、Cursor 動的ワークフローを優先します。まだ CLI のインストールや初回実行の確認が必要なら、先に「はじめに」から始めてください。"
     },
     "stepsOrWorkflow": {
-      "title": "Steps Or Workflow",
-      "body": "If the CLI is not installed yet, finish getting started first, then return here. Start or continue a named factory run for the goal, confirm a live session, submit work the factory can iterate on, and keep submitting until the goal is done or you stop the run."
+      "title": "手順またはワークフロー",
+      "body": "CLI がまだインストールされていなければ、先に「はじめに」を終えてからここに戻ってください。ゴール用の名前付きファクトリー実行を開始または継続し、稼働中のセッションを確認し、ファクトリーが反復できる作業を投入し、ゴールが完了するか実行を停止するまで投入を続けます。"
     },
     "commonPitfalls": {
-      "title": "Common Pitfalls",
-      "body": "Do not submit work when no factory session is live—confirm with session list first, or start a named run again. Do not treat a factory loop as a disposable one-shot chat; the factory keeps the session across passes until the goal is done or you stop. Do not use a plain loop when the work should alternate draft and review gates—that path belongs to a write-review loop instead."
+      "title": "よくある落とし穴",
+      "body": "ファクトリーセッションが稼働していないときに作業を投入しないでください—先に session list で確認するか、名前付き実行を再度開始してください。ファクトリーループを使い捨てワンショットチャットとして扱わないでください。ファクトリーはゴールが完了するか停止するまで、パスをまたいでセッションを保持します。下書きとレビューゲートを交互に進めるべき作業にプレーンなループを使わないでください—その道筋は書き込み・レビューループに属します。"
     },
     "related": {
-      "title": "Related To"
+      "title": "関連"
     },
     "tags": {
-      "title": "Tags"
+      "title": "タグ"
     },
     "references": {
-      "title": "References"
+      "title": "参考文献"
     }
   },
   "links": {
-    "stepsNamedRunLabel": "Start or continue a named run",
-    "stepsSessionListLabel": "Confirm a live factory session",
-    "stepsSubmitLabel": "Submit work for this loop pass",
-    "stepsSubmitBatchLabel": "Or submit a small batch",
-    "gettingStarted": "Getting started",
-    "loopConcept": "Loop concept",
-    "writeReviewLoopsGuide": "Write-Review Loops"
+    "stepsNamedRunLabel": "名前付き実行を開始または継続する",
+    "stepsSessionListLabel": "稼働中のファクトリーセッションを確認する",
+    "stepsSubmitLabel": "このループパス用の作業を投入する",
+    "stepsSubmitBatchLabel": "または小さなバッチを投入する",
+    "gettingStarted": "はじめに",
+    "loopConcept": "ループの概念",
+    "writeReviewLoopsGuide": "書き込み・レビューループ"
   },
   "callouts": {
     "stepsKeepIterating": {
-      "body": "After each pass, check session list again and submit the next piece of work. The factory keeps the loop alive across submits until the goal is complete or you take an explicit stop path. Replace @goal/blah, work names, and payload paths with your own goal and files."
+      "body": "各パスのあと、再度 session list を確認し、次の作業を投入します。ファクトリーはゴールが完了するか明示的な停止パスを取るまで、投入をまたいでループを維持します。@goal/blah、作業名、ペイロードパスは、ご自身のゴールとファイルに置き換えてください。"
     }
   }
 }

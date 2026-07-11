@@ -267,6 +267,8 @@ describe("localized CLI section index page render", () => {
     expect(html).toContain(`aria-label="${messages.guidesIndex.listLabel}"`);
     expect(html).toContain("Bắt đầu");
     expect(html).toContain("/vi/docs/guides/getting-started");
+    expect(html).toContain("Dùng you-agent-factory cho vòng lặp");
+    expect(html).toContain("/vi/docs/guides/using-you-agent-factory-for-loops");
     expect(html).not.toContain(messages.guidesIndex.emptyTitle);
     expect(messages.guidesIndex.emptyDescription).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
