@@ -91,6 +91,19 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/components/home/home-article-alignment.test.tsx`
   Locks home article/Browse shared left-edge contract (surface marker, no
   nested inset, `ps-0` bulletless lists, no negative-margin compensation).
+* `/browse` (`browse-index`) and `/blog` (`blog-index`): wire
+  `data-content-column-surface` on the DocsPage `#nd-page` container in
+  `renderBrowseIndexPage` / `renderBlogIndexPage` so DocsTitle header and
+  DocsBody share one left edge. Keep index card lists on
+  `bulletlessListClassName` (`list-none ps-0`); do not nest
+  `CONTENT_COLUMN_INSET_CLASS` inside the body or fake alignment with
+  negative margins. Surface constants:
+  `BROWSE_INDEX_CONTENT_COLUMN_SURFACE` (`BrowseIndexPage.tsx`),
+  `BLOG_INDEX_CONTENT_COLUMN_SURFACE` (`BlogIndexPostList.tsx`).
+* `src/features/docs/components/browse-blog-index-alignment.test.tsx`
+  Locks `/browse` and `/blog` shared left-edge contract (surface markers on
+  `#nd-page`, DocsTitle + body present, `ps-0` bulletless lists, no
+  negative-margin compensation).
 
 ## CLI docs header / primary-nav regression
 

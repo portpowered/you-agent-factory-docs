@@ -18,7 +18,14 @@ Use these files when extending the default English blog surface at `/blog` and
   Layout/viewport shell markup; keeps the same title self-link as
   `renderBlogPostPage`.
 * `src/features/blog/components/BlogIndexPostList.tsx`
-  Compact index cards with title, description, published date, tags, and accessible post links.
+  Compact index cards with title, description, published date, tags, and
+  accessible post links. Exports `BLOG_INDEX_CONTENT_COLUMN_SURFACE`
+  (`blog-index`); `renderBlogIndexPage` wires that marker on DocsPage
+  `#nd-page` so DocsTitle and the post list share the shared content-column
+  left edge. Card lists use `bulletlessListClassName` (`ps-0`) — do not nest
+  another horizontal inset or compensate with negative margins.
+* `src/features/docs/components/browse-blog-index-alignment.test.tsx`
+  Shared `/browse` + `/blog` left-edge alignment coverage.
 * `src/features/blog/components/BlogPostMeta.tsx`
   Post metadata row with published date, authors, and tags above the article body.
 * `src/lib/content/blog-author-name.ts`

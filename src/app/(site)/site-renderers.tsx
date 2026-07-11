@@ -7,9 +7,15 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HomeArticle } from "@/components/home/home-article";
-import { BlogIndexPostList } from "@/features/blog/components/BlogIndexPostList";
+import {
+  BLOG_INDEX_CONTENT_COLUMN_SURFACE,
+  BlogIndexPostList,
+} from "@/features/blog/components/BlogIndexPostList";
 import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
-import { BrowseIndexPage } from "@/features/docs/components/BrowseIndexPage";
+import {
+  BROWSE_INDEX_CONTENT_COLUMN_SURFACE,
+  BrowseIndexPage,
+} from "@/features/docs/components/BrowseIndexPage";
 import { DocsIndexEmptyState } from "@/features/docs/components/DocsIndexEmptyState";
 import { DocsIndexEntryList } from "@/features/docs/components/DocsIndexEntryList";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -147,7 +153,11 @@ export async function renderBlogIndexPage(
   const { blogIndex } = messages;
 
   return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
+    <DocsPage
+      breadcrumb={{ enabled: false }}
+      footer={{ enabled: false }}
+      data-content-column-surface={BLOG_INDEX_CONTENT_COLUMN_SURFACE}
+    >
       <DocsTitle>{blogIndex.title}</DocsTitle>
       <DocsDescription>{blogIndex.description}</DocsDescription>
       <DocsBody>
@@ -211,7 +221,11 @@ export async function renderBrowseIndexPage(
   });
 
   return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
+    <DocsPage
+      breadcrumb={{ enabled: false }}
+      footer={{ enabled: false }}
+      data-content-column-surface={BROWSE_INDEX_CONTENT_COLUMN_SURFACE}
+    >
       <DocsTitle>{messages.browseIndex.title}</DocsTitle>
       <DocsDescription>{messages.browseIndex.description}</DocsDescription>
       <DocsBody>
