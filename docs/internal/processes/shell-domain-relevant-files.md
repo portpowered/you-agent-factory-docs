@@ -60,6 +60,25 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/fixtures/non-ai-shell/search.test.ts`
   Fixture base search document and Orama query coverage without AI enrichment.
 
+## Shared content-column alignment contract
+
+* `src/lib/layout/content-column-alignment.ts`
+  Single shared left-edge / horizontal-inset contract for shell content
+  columns. Tokens and utility classes (`CONTENT_COLUMN_INSET_CLASS`,
+  `CONTENT_COLUMN_CLASS`, `CONTENT_COLUMN_FULL_CLASS`) match Fumadocs
+  DocsPage `#nd-page` padding (`px-4 md:px-6 xl:px-8`) and max-widths
+  (`900px` / `1168px`). Do not fake alignment with negative margins —
+  apply the shared inset directly. Intended consumers:
+  `CONTENT_COLUMN_CONSUMER_SURFACES` (header/docs nav, home article/Browse,
+  `/browse`, `/blog`, normal docs pages).
+* `src/lib/layout/content-column-alignment.test.ts`
+  Contract tests: inset matches Fumadocs page padding, reusable column
+  classes share one inset, no negative-margin compensation, CSS var names,
+  and consumer-surface inventory.
+* `src/app/globals.css` (`:root` `--site-content-column-*`)
+  CSS custom properties mirroring the TypeScript inset / max-width tokens
+  for any stylesheet consumers of the same contract.
+
 ## CLI docs header / primary-nav regression
 
 * `src/components/layout/docs-header.tsx`
