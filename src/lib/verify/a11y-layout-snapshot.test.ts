@@ -5,6 +5,7 @@ import {
   type CriticalLayoutSnapshot,
   captureCriticalLayoutSnapshot,
   diffLayoutSnapshots,
+  evaluateContentColumnLeftEdgeAlignmentInBrowser,
   evaluateCriticalLayoutSnapshotInBrowser,
   expectLayoutSnapshotMatches,
   hashLayoutSnapshot,
@@ -15,6 +16,7 @@ import { PAGE_OVERFLOW_TOLERANCE_PX } from "./a11y-responsive-contract";
 function goodPageHtml(): string {
   return `
     <header role="banner">
+      <a data-docs-header-brand href="/">You Agent Factory</a>
       <nav aria-label="Primary">
         <a href="/">Home</a>
         <a href="/browse">Browse</a>
@@ -24,8 +26,10 @@ function goodPageHtml(): string {
       </nav>
     </header>
     <main>
-      <h1>Factory docs</h1>
-      <p>Welcome</p>
+      <article id="nd-page" data-content-column-surface="home-article-browse">
+        <h1>Factory docs</h1>
+        <p>Welcome</p>
+      </article>
     </main>
   `;
 }
@@ -50,6 +54,8 @@ describe("captureCriticalLayoutSnapshot", () => {
       "/blog",
       "/search",
     ]);
+    expect(snapshot.brandText).toBe("You Agent Factory");
+    expect(snapshot.contentColumnSurfaces).toEqual(["home-article-browse"]);
     expect(snapshot.hasUnintendedPageOverflow).toBe(false);
   });
 
@@ -72,6 +78,8 @@ describe("serialize / hash / diff layout snapshots", () => {
     h1Texts: ["Factory docs"],
     primaryNavHrefs: ["/", "/browse"],
     primaryNavLinkCount: 2,
+    brandText: "You Agent Factory",
+    contentColumnSurfaces: ["home-article-browse"],
     pageOverflowPx: 0,
     hasUnintendedPageOverflow: false,
     chromeBoxes: [],
@@ -123,6 +131,8 @@ describe("assertCriticalLayoutContract", () => {
     const good = captureCriticalLayoutSnapshot(document);
     assertCriticalLayoutContract(good, {
       expectedH1: "Factory docs",
+      expectedBrand: "You Agent Factory",
+      expectedContentColumnSurface: "home-article-browse",
       minPrimaryNavLinks: 5,
     });
 
@@ -133,6 +143,34 @@ describe("assertCriticalLayoutContract", () => {
       /expected main landmark/,
     );
     expect(hashLayoutSnapshot(regress)).not.toBe(hashLayoutSnapshot(good));
+  });
+
+  test("fails when brand or content-column surface regresses", () => {
+    document.body.innerHTML = goodPageHtml();
+    const good = captureCriticalLayoutSnapshot(document);
+    assertCriticalLayoutContract(good, {
+      expectedBrand: "You Agent Factory",
+      expectedContentColumnSurface: "home-article-browse",
+    });
+
+    document.querySelector("a[data-docs-header-brand]")?.remove();
+    const noBrand = captureCriticalLayoutSnapshot(document);
+    expect(() =>
+      assertCriticalLayoutContract(noBrand, {
+        expectedBrand: "You Agent Factory",
+      }),
+    ).toThrow(/expected brand matching/);
+
+    document.body.innerHTML = goodPageHtml();
+    document
+      .querySelector("[data-content-column-surface]")
+      ?.removeAttribute("data-content-column-surface");
+    const noSurface = captureCriticalLayoutSnapshot(document);
+    expect(() =>
+      assertCriticalLayoutContract(noSurface, {
+        expectedContentColumnSurface: "home-article-browse",
+      }),
+    ).toThrow(/expected content-column surface/);
   });
 
   test("fails when h1 is removed (meaningful layout regression)", () => {
@@ -166,5 +204,50 @@ describe("evaluateCriticalLayoutSnapshotInBrowser", () => {
     expect(fromEvaluate.hasMain).toBe(fromCapture.hasMain);
     expect(fromEvaluate.h1Texts).toEqual(fromCapture.h1Texts);
     expect(fromEvaluate.primaryNavHrefs).toEqual(fromCapture.primaryNavHrefs);
+    expect(fromEvaluate.brandText).toEqual(fromCapture.brandText);
+    expect(fromEvaluate.contentColumnSurfaces).toEqual(
+      fromCapture.contentColumnSurfaces,
+    );
+  });
+});
+
+describe("evaluateContentColumnLeftEdgeAlignmentInBrowser", () => {
+  afterEach(() => {
+    document.body.innerHTML = "";
+  });
+
+  test("reports aligned when header nav column and #nd-page share a left edge", () => {
+    document.body.innerHTML = `
+      <header>
+        <nav aria-label="Primary"><div id="nav-col">Nav</div></nav>
+      </header>
+      <main><article id="nd-page">Page</article></main>
+    `;
+    const nav = document.getElementById("nav-col") as HTMLElement;
+    const page = document.getElementById("nd-page") as HTMLElement;
+    for (const el of [nav, page]) {
+      el.getBoundingClientRect = () =>
+        ({
+          x: 24,
+          y: 0,
+          left: 24,
+          top: 0,
+          width: 800,
+          height: 40,
+          right: 824,
+          bottom: 40,
+          toJSON() {
+            return {};
+          },
+        }) as DOMRect;
+    }
+
+    const probe = evaluateContentColumnLeftEdgeAlignmentInBrowser({
+      tolerancePx: 2,
+    });
+    expect(probe.aligned).toBe(true);
+    expect(probe.deltaPx).toBe(0);
+    expect(probe.headerNavLeft).toBe(24);
+    expect(probe.contentColumnLeft).toBe(24);
   });
 });

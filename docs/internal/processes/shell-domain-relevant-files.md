@@ -115,6 +115,19 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Locks normal docs page shared left-edge contract (surface marker on
   `#nd-page`, shared inset tokens with header nav, no nested article inset,
   no negative-margin compensation).
+* `src/lib/layout/content-column-brand-alignment-coverage.ts`
+  Brand + content-column verification matrix: home/browse/blog/docs routes ×
+  mobile/tablet/laptop/wide viewports, expected display brand
+  (`You Agent Factory`), and when inline left-edge geometry applies (`md+`).
+* `src/lib/layout/content-column-brand-alignment-coverage.test.ts`
+  Contract tests for the brand-alignment matrix and viewport widths.
+* `src/tests/a11y/content-column-brand-alignment.a11y.test.tsx`
+  Always-on focused layout coverage: brand text, shared surfaces, header inset,
+  and layout-snapshot contract across home/browse/blog/docs (gates meaningful
+  brand regressions via hash/contract failure).
+* `src/lib/verify/a11y-content-column-brand-alignment-page.test.ts`
+  Opt-in served matrix: brand, content-column surface, no page overflow, and
+  `#nd-page` ↔ header-nav left-edge geometry at all four viewports.
 
 ## CLI docs header / primary-nav regression
 
