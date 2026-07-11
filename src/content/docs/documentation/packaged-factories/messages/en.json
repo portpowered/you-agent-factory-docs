@@ -1,0 +1,32 @@
+{
+  "title": "Packaged factories",
+  "description": "First-party @you/* packaged factories invoked with you run --named from the you-agent-factory CLI.",
+  "openingSummary": "Packaged factories are first-party built-in named factories such as @you/goal, @you/fusion, and @you/tts that you invoke with you run --named.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Packaged factories are first-party built-in named factories such as @you/goal, @you/fusion, and @you/tts. Use this surface when you need the shipped you-agent-factory terminology for choosing a packaged factory, referencing it by canonical name, and understanding first-use materialization under ~/.you-agent-factory/factories."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A packaged factory is a catalog-backed built-in under the @you/* namespace. Invoke it with you run --named <canonical-name>. Built-ins such as @you/tts and @you/goal materialize lazily into ~/.you-agent-factory/factories on first use and stay editable on disk for later runs. Project-local or saved named factories and portable --factory <factory.json> runs are separate invocation paths."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Run a packaged factory by its canonical name with you run --named. Open the CLI documentation page when you need the broader command matrix, and use packaged CLI topics such as you docs packaged-goal when you need per-factory invocation signatures."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web reference for first-party @you/* packaged factories. It is not a sync of packaged CLI markdown, not operator-defaults depth, not factory.json topology, and not a per-factory invocation-signature deep dive. Sibling documentation links aid discovery only."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
