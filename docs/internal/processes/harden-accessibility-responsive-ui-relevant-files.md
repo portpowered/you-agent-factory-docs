@@ -93,6 +93,17 @@ surfaces (home, browse, search, docs/harness-support, blog).
   (cool blue) for hover/focus/checked — never accent-ink. Focus-visible uses
   a secondary ring. Native `<button>` covers pointer, keyboard (Enter/Space),
   and touch.
+* Theme/code-copy regression lock (repair-theme-code-blocks-005):
+  - Contrast: `src/lib/theme/color-contrast.ts` +
+    `HOST_SEMANTIC_CONTRAST_PAIRINGS` in `host-semantic-theme-tokens.ts`
+    (behavioral WCAG ratios on resolved factory-dark hex, not CSS inventories).
+  - Overflow non-overlap: `src/lib/verify/docs-code-block-layout.ts` asserts
+    the copy control lives in the rail sibling, not inside the scroll viewport.
+  - A11y: `src/tests/a11y/docs-code-block.a11y.test.tsx` — keyboard reach,
+    default/copied accessible names, axe on a representative fixture.
+  - Interaction: `DocsCodeCopyButton.test.tsx` + `docs-code-copy-chrome.test.ts`
+    cover persistent visibility, secondary hover/focus, checkmark, live status,
+    and reset.
 * `HarnessSupportMatrix` puts `data-harness-support-matrix` /
   `data-testid="harness-support-matrix"` on DataTable `containerProps` (the
   real `overflow-x-auto` scroller). Do not wrap DataTable in a second

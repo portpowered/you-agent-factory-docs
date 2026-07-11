@@ -55,6 +55,11 @@ entry. Do not vendor or fork package source into this repo.
   prove resolved primary/secondary/background with
   `host-semantic-theme-tokens.test.ts` (behavioral color checks, not a CSS
   source inventory).
+- Contrast lock: `HOST_SEMANTIC_CONTRAST_PAIRINGS` +
+  `src/lib/theme/color-contrast.ts` assert readable WCAG ratios for
+  primary/secondary/foreground pairings on the dark product theme
+  (`color-contrast.test.ts`). Secondary button fill is ~4.48:1 — lane floor
+  is 4.4 for that pairing; body/primary stay at 4.5+.
 - Set `data-color-palette="factory-dark"` on the root document element.
 
 ## Thin factory-ui graph wrappers

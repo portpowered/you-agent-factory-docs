@@ -49,4 +49,21 @@ describe("docs code copy chrome contract", () => {
     expect(DOCS_CODE_COPY_RESET_MS).toBe(1500);
     expect(DOCS_CODE_COPY_IGNORE_SELECTOR).toBe(".nd-copy-ignore");
   });
+
+  test("persistent visibility contract keeps secondary blue for hover focus and copied", () => {
+    // Rest and interactive colors must both resolve to visible cool blues —
+    // never transparent / accent-ink (the Fumadocs disappear-on-hover trap).
+    expect(DOCS_CODE_COPY_CHROME_FACTORY_DARK.restColor).toMatch(/^#/);
+    expect(DOCS_CODE_COPY_CHROME_FACTORY_DARK.interactiveColor).toMatch(/^#/);
+    expect(DOCS_CODE_COPY_CHROME_FACTORY_DARK.restColor).not.toBe(
+      "transparent",
+    );
+    expect(DOCS_CODE_COPY_CHROME_FACTORY_DARK.interactiveColor).not.toBe(
+      "transparent",
+    );
+    expect(DOCS_CODE_COPY_CHROME_TOKENS.interactiveColor).toBe(
+      "var(--secondary)",
+    );
+    expect(DOCS_CODE_COPY_CHROME_TOKENS.focusRing).toBe("var(--secondary)");
+  });
 });

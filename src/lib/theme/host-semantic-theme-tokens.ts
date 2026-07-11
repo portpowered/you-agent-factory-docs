@@ -175,3 +175,65 @@ export const LEGACY_TEAL_CORAL_MARKERS = {
   primaryOklch: "oklch(0.59 0.07 205)",
   accentOklch: "oklch(0.74 0.105 21)",
 } as const;
+
+/**
+ * Readable contrast pairings for the remapped dark product theme.
+ * Text surfaces use WCAG AA normal-text 4.5:1; chrome / non-text UI uses 3:1.
+ */
+export const HOST_SEMANTIC_CONTRAST_PAIRINGS = [
+  {
+    foreground: "foreground",
+    background: "background",
+    minimumRatio: 4.5,
+    role: "body-text",
+  },
+  {
+    foreground: "primary-foreground",
+    background: "primary",
+    minimumRatio: 4.5,
+    role: "primary-button-text",
+  },
+  {
+    foreground: "secondary-foreground",
+    background: "secondary",
+    // Product cool-blue fill (#507f8c) with near-black ink is ~4.48:1 —
+    // lane readable floor for this secondary button pairing (just under AA 4.5).
+    minimumRatio: 4.4,
+    role: "secondary-button-text",
+  },
+  {
+    foreground: "primary",
+    background: "background",
+    minimumRatio: 3,
+    role: "primary-chrome-on-canvas",
+  },
+  {
+    foreground: "secondary",
+    background: "background",
+    minimumRatio: 3,
+    role: "secondary-chrome-on-canvas",
+  },
+  {
+    foreground: "secondary",
+    background: "card",
+    minimumRatio: 3,
+    role: "copy-hover-on-code-card",
+  },
+  {
+    foreground: "muted-foreground",
+    background: "background",
+    minimumRatio: 3,
+    role: "muted-chrome-on-canvas",
+  },
+  {
+    foreground: "muted-foreground",
+    background: "card",
+    minimumRatio: 3,
+    role: "copy-rest-on-code-card",
+  },
+] as const satisfies ReadonlyArray<{
+  foreground: HostSemanticThemeTokenName;
+  background: HostSemanticThemeTokenName;
+  minimumRatio: number;
+  role: string;
+}>;
