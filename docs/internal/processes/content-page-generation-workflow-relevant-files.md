@@ -217,6 +217,18 @@ gitignored. Colocate new concept page render proofs under
 `src/content/docs/concepts/<slug>/<slug>-page.test.tsx` so the page test stays
 page-owned rather than under `src/lib/content/`.
 
+When an intentional multi-page PRD ships locale stubs for more than one page
+bundle, bare `bun run audit:canonical-page-surface` cannot infer a single page
+scope. Audit each page with `--page-dir src/content/docs/<section>/<slug>
+--files <that-page paths…> shipped-localized-docs.generated.ts
+shipped-localized-docs.server.test.ts --exception-reason "…"`, and repeat the
+exception reason in the PR conversation. Do not treat the sibling page bundle
+as shared hotspot churn for the page under audit.
+
+When colocated page tests assert non-guarantee / denial copy, match the denial
+positively (for example `/not a compliance certification claim/i`) instead of
+negating the denied phrase — otherwise correct “not a …” prose fails the test.
+
 For later concept pages (not first-CLI-section), the same locale shipping trio
 is still required to publish non-en routes. Update
 `src/tests/content/section-indexes.test.tsx` so default and localized concepts
