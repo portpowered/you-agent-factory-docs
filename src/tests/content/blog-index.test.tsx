@@ -119,6 +119,7 @@ describe("blog index page render", () => {
     );
     expect(html).toContain('href="/blog/cursor-composer-six-billion-tokens"');
     expect(html).toContain('href="/blog/factories-building-factory-docs"');
+    expect(html).toContain('href="/blog/lies-damned-lies-evals"');
     expect(html).toContain('href="/blog/useful-factory-links"');
     expect(html).not.toContain('href="/blog/evolution-of-diffusion"');
     expect(html).not.toContain(
