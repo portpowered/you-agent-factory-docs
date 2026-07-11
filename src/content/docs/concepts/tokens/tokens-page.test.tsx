@@ -8,6 +8,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
+import { resolveConceptsSidebarGroup } from "@/lib/content/sidebar-grouping";
 import { source } from "@/lib/source";
 
 describe("tokens concept page", () => {
@@ -24,7 +25,8 @@ describe("tokens concept page", () => {
     const tokensRecord = getRegistryRecord(indexes, "concept.tokens");
     expect(tokensRecord?.kind).toBe("concept");
     if (tokensRecord?.kind === "concept") {
-      expect(tokensRecord.sidebarGrouping?.concepts).toBe("model-inference");
+      expect(resolveConceptsSidebarGroup(tokensRecord)).toBe("model-inference");
+      expect(tokensRecord.sidebarGrouping?.concepts).toBeUndefined();
       expect(tokensRecord.aliases).toContain("model-inference tokens");
       expect(tokensRecord.aliases).not.toContain("factory token");
       expect(tokensRecord.aliases).not.toContain("work token");
