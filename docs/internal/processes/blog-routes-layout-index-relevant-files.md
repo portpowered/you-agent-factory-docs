@@ -60,6 +60,9 @@ Use these files when extending the default English blog surface at `/blog` and
 * `bun test src/content/blog/useful-factory-links/useful-factory-links-discoverability.test.tsx`
   Blog-local index + prose/title search + English-only locale contract + post
   SSR proof for the curated useful-links listicle (`tags: []`).
+* `bun test src/content/blog/cursor-composer-six-billion-tokens/cursor-composer-six-billion-tokens-discoverability.test.tsx`
+  Blog-local index + search + foundations tag landing + English-only locale +
+  post SSR proof for the Composer factory-ops examination.
 * Browser-verify `/blog` and `/blog/<slug>` on a unique local port after `bun run build`.
 * PR review may require a clean local `make test`; unrelated search/glossary convergence
   rows can time out under full-suite load—extend per-test timeouts rather than
