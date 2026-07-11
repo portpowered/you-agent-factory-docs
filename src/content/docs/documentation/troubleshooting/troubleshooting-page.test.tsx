@@ -1,9 +1,10 @@
 /**
  * Page-owned render proof for documentation/troubleshooting.
  * Covers documentation shell, Troubleshooting identity, recovery-lookup
- * framing, install/run failure entries with canonical-doc links, and
- * absence of Model Atlas / reader-shortcut / page-meta copy — not route
- * inventories or shared helper contracts.
+ * framing, install/run plus configuration/MCP/dynamic-workflow failure
+ * entries with canonical-doc links, and absence of Model Atlas /
+ * reader-shortcut / page-meta copy — not route inventories or shared
+ * helper contracts.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -51,6 +52,19 @@ describe("troubleshooting documentation page", () => {
     const noLiveFactory = String(
       loadedPage.messages.sections?.noLiveFactory?.body ?? "",
     );
+    const operatorDefaultsStartup = String(
+      loadedPage.messages.sections?.operatorDefaultsStartup?.body ?? "",
+    );
+    const mcpPath = String(loadedPage.messages.sections?.mcpPath?.body ?? "");
+    const mcpWrongCwd = String(
+      loadedPage.messages.sections?.mcpWrongCwd?.body ?? "",
+    );
+    const mcpHostNotReloaded = String(
+      loadedPage.messages.sections?.mcpHostNotReloaded?.body ?? "",
+    );
+    const cursorDynamicWorkflow = String(
+      loadedPage.messages.sections?.cursorDynamicWorkflow?.body ?? "",
+    );
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
@@ -81,6 +95,38 @@ describe("troubleshooting documentation page", () => {
     expect(noLiveFactory).toMatch(/session list/i);
     expect(noLiveFactory).toMatch(/empty|connection failure/i);
     expect(noLiveFactory).not.toMatch(/you submit --help/i);
+
+    expect(operatorDefaultsStartup).toMatch(/Symptom:/i);
+    expect(operatorDefaultsStartup).toMatch(/Recovery:/i);
+    expect(operatorDefaultsStartup).toMatch(/missing/i);
+    expect(operatorDefaultsStartup).toMatch(/malformed/i);
+    expect(operatorDefaultsStartup).toMatch(/unsupported/i);
+    expect(operatorDefaultsStartup).toMatch(/DEFAULT/i);
+    expect(operatorDefaultsStartup).not.toMatch(
+      /defaults\.workerModelProvider.*defaults\.workerModel.*YOU_DEFAULT/i,
+    );
+
+    expect(mcpPath).toMatch(/Symptom:/i);
+    expect(mcpPath).toMatch(/Recovery:/i);
+    expect(mcpPath).toMatch(/PATH/i);
+    expect(mcpPath).toMatch(/absolute path/i);
+    expect(mcpPath).toMatch(/mcp serve/i);
+
+    expect(mcpWrongCwd).toMatch(/Symptom:/i);
+    expect(mcpWrongCwd).toMatch(/Recovery:/i);
+    expect(mcpWrongCwd).toMatch(/cwd/i);
+    expect(mcpWrongCwd).toMatch(/project root|workflow/i);
+
+    expect(mcpHostNotReloaded).toMatch(/Symptom:/i);
+    expect(mcpHostNotReloaded).toMatch(/Recovery:/i);
+    expect(mcpHostNotReloaded).toMatch(/reload/i);
+    expect(mcpHostNotReloaded).toMatch(/saving the file alone/i);
+
+    expect(cursorDynamicWorkflow).toMatch(/Symptom:/i);
+    expect(cursorDynamicWorkflow).toMatch(/Recovery:/i);
+    expect(cursorDynamicWorkflow).toMatch(/Cursor/i);
+    expect(cursorDynamicWorkflow).toMatch(/validate/i);
+    expect(cursorDynamicWorkflow).not.toMatch(/args-schema|OpenAPI/i);
 
     expect(limits).toMatch(/web recovery lookup/i);
     expect(limits).toMatch(/not the install command matrix/i);
@@ -124,6 +170,31 @@ describe("troubleshooting documentation page", () => {
       }),
     ).toBeTruthy();
     expect(
+      screen.getByRole("heading", {
+        name: "Operator Defaults Fail At Startup",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "MCP Host Cannot Resolve you On PATH",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "MCP Sources Fail Because cwd Is Wrong",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "MCP Host Not Reloaded After Config Save",
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", {
+        name: "Cursor Dynamic Workflow Loop Fails",
+      }),
+    ).toBeTruthy();
+    expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
@@ -136,6 +207,15 @@ describe("troubleshooting documentation page", () => {
     expect(document.body.textContent).toMatch(/you: command not found/i);
     expect(document.body.textContent).toMatch(/you init --executor claude/i);
     expect(document.body.textContent).toMatch(/session list is empty/i);
+    expect(document.body.textContent).toMatch(/malformed JSON/i);
+    expect(document.body.textContent).toMatch(
+      /absolute path of the you binary/i,
+    );
+    expect(document.body.textContent).toMatch(/cwd to the absolute path/i);
+    expect(document.body.textContent).toMatch(
+      /saving the file alone is not enough/i,
+    );
+    expect(document.body.textContent).toMatch(/validate → start → status/i);
     expect(document.body.textContent).not.toMatch(/Model Atlas/i);
     expect(document.body.textContent).not.toMatch(/reader.?shortcut/i);
     // Docs shell owns the page title; body must not duplicate an h1 title.
@@ -162,6 +242,35 @@ describe("troubleshooting documentation page", () => {
     ).toBe("/docs/documentation/factory-session");
     expect(screen.getByRole("link", { name: "CLI" }).getAttribute("href")).toBe(
       "/docs/documentation/cli",
+    );
+
+    expect(
+      screen
+        .getByRole("link", { name: "Global Configuration Factories" })
+        .getAttribute("href"),
+    ).toBe("/docs/documentation/global-configuration-factories");
+    expect(
+      screen.getByRole("link", { name: "Configuration" }).getAttribute("href"),
+    ).toBe("/docs/documentation/configuration");
+
+    const mcpLinks = screen.getAllByRole("link", { name: "MCP" });
+    expect(mcpLinks.length).toBeGreaterThanOrEqual(1);
+    expect(mcpLinks[0]?.getAttribute("href")).toBe("/docs/documentation/mcp");
+
+    const dynamicWorkflowLinks = screen.getAllByRole("link", {
+      name: "Dynamic Workflows",
+    });
+    expect(dynamicWorkflowLinks.length).toBeGreaterThanOrEqual(1);
+    expect(dynamicWorkflowLinks[0]?.getAttribute("href")).toBe(
+      "/docs/documentation/dynamic-workflows",
+    );
+
+    const cursorGuideLinks = screen.getAllByRole("link", {
+      name: "Cursor dynamic workflows guide",
+    });
+    expect(cursorGuideLinks.length).toBeGreaterThanOrEqual(1);
+    expect(cursorGuideLinks[0]?.getAttribute("href")).toBe(
+      "/docs/guides/cursor-dynamic-workflows",
     );
   });
 });

@@ -27,6 +27,26 @@
       "title": "Submit Or Work Against A Factory That Is Not Live",
       "body": "Symptom: you session list is empty, or the host connection fails, when you try to submit or inspect work. Recovery: start or attach a factory with you or you run first, then confirm a live Factory Session with you session list before you submit. An empty list means the host responded but no session is registered yet; a connection failure means nothing is listening—start the factory and retry. For session liveness and the broader command matrix, open Factory Session, Getting Started, and CLI."
     },
+    "operatorDefaultsStartup": {
+      "title": "Operator Defaults Fail At Startup",
+      "body": "Symptom: the factory fails before dispatch with a config-path error, an unsupported workerModelProvider summary, or DEFAULT resolution guidance—or you expected operator defaults and nothing applied. Recovery: a missing ~/.you-agent-factory/config.json is valid and applies no defaults; create the file only when you want defaults.workerModelProvider and defaults.workerModel. Fix malformed JSON so the file parses, replace unsupported providers with an accepted value, and never leave DEFAULT without a concrete lower-precedence provider from file, env, or flag. For operator-default failure modes and named factories, open Global Configuration Factories; for factory.json topology, open Configuration."
+    },
+    "mcpPath": {
+      "title": "MCP Host Cannot Resolve you On PATH",
+      "body": "Symptom: the MCP host fails to spawn you mcp serve because command you is not found on the host PATH. Recovery: set the host command field to the absolute path of the you binary instead of relying on the shell PATH, keep args as mcp serve, then reload the host so the child process respawns. For host JSON shape and serve modes, open MCP; for a Cursor first-loop walkthrough, open the Cursor dynamic workflows guide."
+    },
+    "mcpWrongCwd": {
+      "title": "MCP Sources Fail Because cwd Is Wrong",
+      "body": "Symptom: validate or start fails to resolve workflow sources even though the MCP child process starts. Recovery: set cwd to the absolute path of the workflow or project root whose sources Factory Session tools should resolve—not a nested package, home directory, or unrelated checkout—then retry validate. For host cwd notes, open MCP; for dynamic-workflow source and configuration depth, open Dynamic Workflows."
+    },
+    "mcpHostNotReloaded": {
+      "title": "MCP Host Not Reloaded After Config Save",
+      "body": "Symptom: you saved MCP host configuration, but Factory Session tools still do not appear under you.factory_session.* names. Recovery: restart the host or run its reload-window action so it respawns the MCP child process—saving the file alone is not enough for most hosts. After reload, confirm the tools appear before calling validate or start. For reload and tool discovery, open MCP; for Cursor reload steps, open the Cursor dynamic workflows guide."
+    },
+    "cursorDynamicWorkflow": {
+      "title": "Cursor Dynamic Workflow Loop Fails",
+      "body": "Symptom: Cursor cannot complete a first Factory Session loop—tools missing after MCP setup, validate_source fails, or start/status never reaches a live session. Recovery: confirm you mcp serve is configured with an absolute command path when needed, cwd at the workflow project root, and a host reload after every MCP config change, then retry validate → start → status or result. Treat the Cursor guide as the first-loop walkthrough; open Dynamic Workflows and MCP when you need API or host-contract depth beyond that loop."
+    },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
       "body": "This page is a web recovery lookup for you-agent-factory failure modes. It is not the install command matrix, not the getting-started quickstart, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short recovery actions here."
@@ -45,6 +65,11 @@
     "installDocs": "Install",
     "gettingStarted": "Getting Started",
     "cliDocs": "CLI",
-    "factorySession": "Factory Session"
+    "factorySession": "Factory Session",
+    "configurationDocs": "Configuration",
+    "globalConfigurationFactories": "Global Configuration Factories",
+    "mcpDocs": "MCP",
+    "dynamicWorkflows": "Dynamic Workflows",
+    "cursorDynamicWorkflows": "Cursor dynamic workflows guide"
   }
 }
