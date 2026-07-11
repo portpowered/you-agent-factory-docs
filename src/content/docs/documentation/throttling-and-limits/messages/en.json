@@ -1,0 +1,32 @@
+{
+  "title": "Throttling and limits",
+  "description": "Distinguish you-agent-factory resource capacity, provider limits, queue pressure, and retry/limit behavior without inventing a global throttle guarantee.",
+  "openingSummary": "Factory slowdowns and stops come from different pressure surfaces — configured capacity, provider quotas, queue backlog, and workstation retry limits — not one global throttle.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This page is the you-agent-factory reference for throttling and limits: how configured resource capacity, provider limits, queue pressure, and retry/limit behavior show up as distinct pressure surfaces when a factory run slows or stops. It is not a Model Atlas page, not a resources-only deep-dive, and not a fabricated global rate-limit SLA."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Configured resource capacity, provider limits, queue pressure, and retry/limit (circuit-breaker) behavior are different mechanisms. Treat them as separate surfaces when diagnosing load — not as one undifferentiated throttle guarantee."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Use this page when a run feels constrained and you need to tell capacity, provider quota, queue backlog, and workstation limits apart. Ground each surface in current product behavior only; do not invent backoff schedules, numeric SLAs, or undocumented auto-throttles."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page publishes the throttling-and-limits documentation route and registry identity for you-agent-factory. It does not invent backoff schedules, numeric SLAs, or undocumented auto-throttles, and it is not a guarantee sheet for provider cloud quotas."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

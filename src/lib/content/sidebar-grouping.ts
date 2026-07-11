@@ -84,6 +84,7 @@ export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = {
   metrics: "operational",
   troubleshooting: "operational",
   logs: "operational",
+  "throttling-and-limits": "operational",
   "architecture-of-system": "internal-architecture",
   petri: "internal-architecture",
   install: "additional-reference",
