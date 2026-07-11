@@ -74,9 +74,15 @@ Use these files when extending the default English blog surface at `/blog` and
   the 15s default and can fail under full-suite load; align them with the 90s GQA
   `test.each` budget when CI is already green.
 * After purging Atlas editorial posts, production blog assertions should track the
-  remaining factory posts (`bottlenecks`, `comparing-agent-factories`) and treat
+  remaining factory posts (`bottlenecks`, `comparing-agent-factories`,
+  `cursor-composer-six-billion-tokens`, `factories-building-factory-docs`,
+  `useful-factory-links`) and treat
   `evolution-of-diffusion`, `llms-no-longer-wholly-reliant-on-the-internet`, and
   `roofline-throughput-explorer` as unpublished (loader null / route notFound).
+* When a new published blog slug lands, update the exact published-slug inventory
+  in `src/lib/content/blog-content-loader-scope.test.ts` (and purge-legacy
+  remaining-post loops) so `make test` stays green—filesystem discovery alone
+  does not refresh those allowlists.
 * After purging Atlas-only tags, keep factory tags (`taxonomy`, `foundations`,
   `local-models`) and assert absence of `model-family` / `inference` / `alignment`
   from published tag index/landing surfaces. Reparent `local-models` so it does
