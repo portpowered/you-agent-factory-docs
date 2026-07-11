@@ -546,6 +546,11 @@ those paths only accept collection section refs.
   capability), MCP (host↔server protocol), and Thinking (deliberative
   reasoning). Link Workers documentation for the full field contract; do not
   absorb the workers reference on the concept page.
+- `/docs/concepts/tool` retains a distinct scope as the named callable
+  capability (name/arguments/result contract). Do not re-teach the
+  select-and-invoke / `agentTools.policy` story on Tool—that belongs on Tool
+  calling. Cross-link Tool ↔ Tool calling, MCP, Skills, and Harness so readers
+  get one canonical explanation path per idea.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.
