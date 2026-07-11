@@ -19,10 +19,7 @@ import {
   listPublishedDocsEntries,
 } from "@/lib/content/published-docs-registry-ids";
 import { loadRegistry } from "@/lib/content/registry";
-import {
-  localizePath,
-  supportedLocales,
-} from "@/lib/i18n/locale-routing";
+import { localizePath, supportedLocales } from "@/lib/i18n/locale-routing";
 import { buildSearchDocuments } from "@/lib/search/build-documents";
 import { docsSearchApi } from "@/lib/search/search-server";
 import { listPublicSitemapRoutes } from "@/lib/seo/public-sitemap-routes";
@@ -145,13 +142,7 @@ function publishedUrlSet(): Set<string> {
 }
 
 function extractLocalizedLinkHrefs(section: string, slug: string): string[] {
-  const mdxPath = join(
-    repoRoot,
-    "src/content/docs",
-    section,
-    slug,
-    "page.mdx",
-  );
+  const mdxPath = join(repoRoot, "src/content/docs", section, slug, "page.mdx");
   const mdx = readFileSync(mdxPath, "utf8");
   return [...mdx.matchAll(/href:\s*"(\/docs\/[^"]+)"/g)].map(
     (match) => match[1] ?? "",
@@ -297,7 +288,10 @@ describe("R02 Concepts + Program documentation discovery / links", () => {
       }
 
       const record = indexes.byId.get(page.registryId);
-      expect(record, `${page.registryId} must exist in loadRegistry`).toBeDefined();
+      expect(
+        record,
+        `${page.registryId} must exist in loadRegistry`,
+      ).toBeDefined();
       expect(record?.relatedIds.length).toBeGreaterThan(0);
 
       for (const relatedId of record?.relatedIds ?? []) {

@@ -110,8 +110,25 @@ R02 suites (website-functionality exclusions route Atlas search under reader-fac
 - **003** — DONE: Brand, alignment, theme, code-copy (R02 convergence suite + browser verify on port 3533)
 - **004** — DONE: Concepts + Program documentation discovery / links (R02 convergence suite + browser verify)
 - **005** — DONE: Focused nav/locale/copy/theme/responsive/a11y/inventory/search/sitemap/link suites green; Atlas link-inventory assertions repaired
-- **006–007** — Full `make` gates, Pages-prefixed guard
+- **006** — DONE: Full local gates green (`make check/test/build/linkcheck/budget/component-coverage`); biome format on story 004 suite was the only combined-result fix
+- **007** — Pages-prefixed rebuild + `make guard-pages-deployed-artifact`
 - **008** — Browser/visual review across required shells
+
+## Story 006 full local gates (2026-07-11 UTC)
+
+| Gate | Command | Result |
+| --- | --- | --- |
+| check | `make check` | PASS (typecheck + lint) |
+| test | `make test` | PASS (756 tests) |
+| build | `make build` | PASS (static export) |
+| linkcheck | `make linkcheck` | PASS |
+| budget | `make budget` | PASS (out/ 127.50 MB / 130; search 5.16 / 5.30) |
+| component-coverage | `make component-coverage` | PASS |
+
+Combined-result repair: biome format drift in
+`src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts`
+(import / join / expect wrapping) blocked `make check`; fixed with
+`biome check --write`. No budget raise required.
 
 ## Story 005 focused suites contract
 
