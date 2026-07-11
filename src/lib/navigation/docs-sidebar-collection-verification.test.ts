@@ -35,7 +35,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     folderName: "Concepts",
     url: "/docs/concepts/harness",
     name: "Harness",
-    separatorLabel: "Reference Samples",
+    separatorLabel: "Harnesses",
   },
   {
     folderName: "Program documentation",

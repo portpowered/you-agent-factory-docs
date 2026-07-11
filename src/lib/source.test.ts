@@ -179,7 +179,10 @@ describe("docs navigation source", () => {
       .filter((node) => node.type === "folder")
       .map((node) => String(node.name));
 
-    expect(separatorNames).toContain("Reference Samples");
+    expect(separatorNames).toContain("Harnesses");
+    expect(separatorNames).toContain("Industrial engineering");
+    expect(separatorNames).toContain("Model inference");
+    expect(separatorNames).not.toContain("Reference Samples");
     for (const retiredFolder of RETIRED_ATLAS_FOLDER_NAMES) {
       expect(folderNames).not.toContain(retiredFolder);
     }

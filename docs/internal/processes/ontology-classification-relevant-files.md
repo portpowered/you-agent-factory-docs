@@ -50,15 +50,20 @@ the temporary legacy-id bridge.
   Deleted with Atlas topology browse/timeline selector consumers. Prefer
   registry runtime id/slug resolution for remaining classification lookups.
 * `src/lib/content/sidebar-grouping.ts`
-  Docs-shell sidebar subgroup resolver. Module, training, and system subgroup
-  placement should derive from canonical classification membership first, with
-  any remaining customer-visible exceptions fenced behind explicit
-  `sidebarGrouping` editorial overrides instead of scattered typed-taxonomy
-  reads. Backfill those override entries onto the specific registry records
+  Docs-shell sidebar subgroup resolver. Glossary subgroup placement should
+  derive from canonical classification membership first, with remaining
+  customer-visible exceptions fenced behind explicit `sidebarGrouping.glossary`
+  editorial overrides. Factory Concepts explorer subgroups
+  (Harnesses → Industrial engineering → Model inference) resolve from
+  `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` first, then editorial
+  `sidebarGrouping.concepts` for pages outside that map. Module, training, and
+  system subgroup placement notes below are historical Atlas guidance retained
+  for glossary/module compatibility paths.
+  Backfill those override entries onto the specific registry records
   that still need manual placement before removing a legacy typed branch. For
   concept/glossary slices,
-  migrate the currently grouped published records onto canonical concept
-  classifications first, then keep any still-curated families on one named
+  migrate the currently grouped published glossary records onto canonical concept
+  classifications first, then keep any still-curated glossary families on one named
   editorial fallback helper instead of reintroducing `conceptType` branching.
   For modules, only use the editorial bridge when the canonical classification
   is still too coarse to distinguish the intended subgroup, such as the

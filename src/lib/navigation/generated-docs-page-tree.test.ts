@@ -8,19 +8,24 @@ import {
 import { source } from "@/lib/source";
 
 const REQUIRED_SUBGROUP_LABELS = {
-  Concepts: ["Reference Samples"],
+  Concepts: ["Harnesses", "Industrial engineering", "Model inference"],
 } as const;
 
 const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   {
     folderName: "Concepts",
-    separator: "Reference Samples",
+    separator: "Harnesses",
     url: "/docs/concepts/harness",
   },
   {
     folderName: "Concepts",
-    separator: "Reference Samples",
+    separator: "Industrial engineering",
     url: "/docs/concepts/checklist",
+  },
+  {
+    folderName: "Concepts",
+    separator: "Model inference",
+    url: "/docs/concepts/tokens",
   },
 ] as const;
 

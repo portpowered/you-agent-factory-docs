@@ -103,7 +103,10 @@ describe("docs sidebar page-tree contract", () => {
     expect(sidebarJson).toContain("Techniques");
     expect(sidebarJson).toContain("Program documentation");
     expect(sidebarJson).toContain("You Agent Factory");
-    expect(sidebarJson).toContain("Reference Samples");
+    expect(sidebarJson).toContain("Harnesses");
+    expect(sidebarJson).toContain("Industrial engineering");
+    expect(sidebarJson).toContain("Model inference");
+    expect(sidebarJson).not.toContain("Reference Samples");
     expect(sidebarJson).not.toContain('"name":"Glossary"');
     expect(sidebarJson).not.toContain("Attention Foundations");
     expect(sidebarJson).not.toContain("Attention Variants");

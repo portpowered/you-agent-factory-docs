@@ -166,7 +166,7 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
       fields: ["sidebarGrouping"],
       evidence: [
         'membership.has("classification.concept.math")',
-        'membership.has("classification.concept.inference")',
+        "FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG",
         "record.sidebarGrouping?.glossary",
         "record.sidebarGrouping?.concepts",
       ],
@@ -176,12 +176,12 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
         'membership.has("classification.concept.evaluation")',
         'membership.has("classification.concept.architecture.activation")',
         "record.sidebarGrouping?.glossary",
-        'membership.has("classification.concept.inference")',
-        'membership.has("classification.concept.architecture")',
+        "FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG",
+        "resolveFactoryAssignedConceptsSidebarGroup",
         "record.sidebarGrouping?.concepts",
       ],
       rationale:
-        "Concept and glossary sidebar subgroup placement now checks canonical concept classification membership first and funnels the remaining curated labels through one explicit editorial fallback path.",
+        "Glossary sidebar subgroup placement still checks canonical concept classification membership first with an editorial fallback. Factory Concepts explorer subgroups resolve from the explicit FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG assignment map first, then editorial sidebarGrouping.concepts for exceptions.",
     },
     {
       id: "related-doc-legacy-peer-fallbacks",

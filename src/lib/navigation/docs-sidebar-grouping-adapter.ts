@@ -99,7 +99,16 @@ function buildGlossaryGroupedNodes(pages: DocsPageSource[]): Node[] {
 function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
   return groupPagesBySection("concepts", pages, (page) => {
     const record = getConceptById(page.frontmatter.registryId);
-    return record ? resolveConceptsSidebarGroup(record) : undefined;
+    const slug =
+      record?.slug ??
+      (page.docsSlug.startsWith("concepts/")
+        ? page.docsSlug.slice("concepts/".length)
+        : page.docsSlug);
+
+    return resolveConceptsSidebarGroup({
+      ...(record ?? {}),
+      slug,
+    });
   });
 }
 

@@ -5,18 +5,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 
 ## Generic shell primitives
 
-* `src/lib/content/factory-breadcrumb-sidebar.ts`
-  Factory explorer folder order (`FACTORY_SIDEBAR_COLLECTION_IDS` =
-  guides → concepts → techniques → documentation), full explorer top-level
-  order (`FACTORY_EXPLORER_SECTION_ORDER` = those folders then top-level FAQ
-  page `documentation/faq`), page-tree brand (`DOCS_PAGE_TREE_ROOT_NAME` =
-  `You Agent Factory`), and folder/crumb labels
-  (`FACTORY_SIDEBAR_FOLDER_LABELS`; documentation explorer label is
-  **Program documentation**). Glossary remains in `FACTORY_NAV_COLLECTION_IDS` /
-  `DOCS_COLLECTION_IDS` for browse/search/direct routes and breadcrumb
-  validation, but is omitted from the explorer folder list. FAQ keeps its
-  published `/docs/documentation/faq` route while appearing as a sibling page
-  outside the Program documentation folder.
+* `src/lib/content/sidebar-grouping.ts`
+  Docs-shell sidebar subgroup labels and resolvers. Factory Concepts explorer
+  subgroups are **Harnesses → Industrial engineering → Model inference** via
+  `SIDEBAR_GROUP_LABELS.concepts` and explicit slug membership in
+  `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` (including reserved skills/mcp/
+  tool-calling slots). Glossary still uses ontology-first classification
+  membership with editorial `sidebarGrouping.glossary` fallback.
+* `src/lib/navigation/docs-sidebar-grouping-adapter.ts`
+  Builds grouped Concepts/Glossary sidebar nodes; Concepts resolution passes
+  page slug into `resolveConceptsSidebarGroup` so factory assignment applies.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:

@@ -143,10 +143,12 @@ describe("docs sidebar adapter extraction parity", () => {
       name: "Harness",
       url: harnessUrl,
     });
-    expect(findPrecedingSeparatorLabel(children, harnessUrl)).toBe(
-      "Reference Samples",
-    );
-    expect(getSeparatorLabels(children)).toContain("Reference Samples");
+    expect(findPrecedingSeparatorLabel(children, harnessUrl)).toBe("Harnesses");
+    expect(getSeparatorLabels(children)).toEqual([
+      "Harnesses",
+      "Industrial engineering",
+      "Model inference",
+    ]);
   });
 
   test("factory sidebar excludes retired Atlas collection destinations", () => {

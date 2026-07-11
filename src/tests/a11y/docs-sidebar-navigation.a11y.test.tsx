@@ -131,7 +131,10 @@ describe("docs sidebar navigation accessibility", () => {
         .getAttribute("href"),
     ).toBe(GETTING_STARTED_GUIDE_URL);
 
-    expect(within(sidebar).getByText("Reference Samples")).toBeTruthy();
+    expect(within(sidebar).getByText("Harnesses")).toBeTruthy();
+    expect(within(sidebar).getByText("Industrial engineering")).toBeTruthy();
+    expect(within(sidebar).getByText("Model inference")).toBeTruthy();
+    expect(within(sidebar).queryByText("Reference Samples")).toBeNull();
     expect(within(sidebar).getByRole("link", { name: "Harness" })).toBeTruthy();
     expect(within(sidebar).getByRole("link", { name: "Ralph" })).toBeTruthy();
     expect(
