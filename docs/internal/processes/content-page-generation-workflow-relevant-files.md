@@ -238,13 +238,22 @@ shipped-localized-docs.server.test.ts --exception-reason "…"`, and repeat the
 exception reason in the PR conversation. Do not treat the sibling page bundle
 as shared hotspot churn for the page under audit.
 
-When the same multi-page documentation lane also needs
-`FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` Configuration membership
-(`src/lib/content/sidebar-grouping.ts`), do not combine that shared helper with
-locale-shipping files in one `--files` set — two shared hotspot categories
-force `redirect-to-throughput-prd`. Audit page-owned+sidebar and
-page-owned+locale-shipping as separate `declare-exception` runs (each with one
-shared category), and repeat both justifications in the PR conversation.
+When the same documentation lane also needs a narrow
+`FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` membership entry
+(`src/lib/content/sidebar-grouping.ts`), prove the owned surface and each
+exception separately rather than stuffing every shared path into one
+`--files` list:
+
+1. Page-owned paths only → expect `keep-routine` / `within-budget`.
+2. Page-owned + locale-shipping trio → `--exception-reason` for locale
+   shipping → expect `declare-exception`.
+3. Page-owned + `sidebar-grouping.ts` → `--exception-reason` for the
+   membership entry → expect `declare-exception`.
+
+Combining sidebar membership and locale-shipping shared paths in one audit
+still recommends `redirect-to-throughput-prd` today (multiple shared
+categories). Document both exception reasons in the PR conversation; do not
+redesign the shared audit classifier on a routine page lane.
 
 When colocated page tests assert non-guarantee / denial copy, match the denial
 positively (for example `/not a compliance certification claim/i`) instead of
@@ -540,6 +549,12 @@ those paths only accept collection section refs.
   `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (Basics → Additional
   reference). FAQ is omitted from that map because it is a top-level explorer
   page outside the Program documentation folder.
+- Packaged CLI reference surfaces: place `packaged-documents` under the `cli`
+  subgroup and `packaged-factories` under `configuration` (nearest ownership —
+  named-factory materialization beside global-configuration-factories). Wire
+  documentation→documentation discovery with page-local `<LocalizedLinkList>`
+  plus aligned registry `relatedIds`; `<RelatedDocs />` alone will not render
+  documentation-kind siblings.
 - `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
   units). When rewriting or consuming that page, retarget program-doc related
   links and `relatedIds` that treated Tokens as the factory/work-token glossary

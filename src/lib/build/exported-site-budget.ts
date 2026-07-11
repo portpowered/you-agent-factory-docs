@@ -29,22 +29,26 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * Skills/MCP/Tool calling) measured ~99.78 MiB total and ~4.08 MiB search
  * bootstrap on CI. Raised again on 2026-07-11 UTC after Script/Poller workers
  * documentation pages measured ~106.98 MiB total and ~4.32 MiB search
- * bootstrap on CI, after Agent/Inference workers Program docs measured
- * ~107.37 MiB total and ~4.40 MiB search bootstrap on CI, and after Mock
- * workers / Throttling and limits pages (plus locale stubs) measured
- * ~107.22 MiB total and ~4.42 MiB search bootstrap on CI. Raised again on
- * 2026-07-11 UTC after rebasing Mock workers / Throttling onto main with
- * Script/Poller already landed — combined export measured ~113.75 MiB total
- * and ~4.66 MiB search bootstrap on CI. Raised again on 2026-07-11 UTC after
+ * bootstrap on CI; after packaged-documents/factories (~106.78 MiB / ~4.27 MiB
+ * search); after Agent/Inference workers Program docs (~107.37 MiB / ~4.40 MiB
+ * search); and after Mock workers / Throttling and limits pages (plus locale
+ * stubs) measured ~107.22 MiB total and ~4.42 MiB search bootstrap on CI.
+ * Raised again on 2026-07-11 UTC after rebasing Mock workers / Throttling onto
+ * main with Script/Poller already landed — combined export measured ~113.75 MiB
+ * total and ~4.66 MiB search bootstrap on CI. Packaged + Script/Poller alone
+ * had measured ~113.28 MiB / ~4.51 MiB. Raised again on 2026-07-11 UTC after
  * rebasing Agent/Inference workers onto that combined main — six-page export
- * measured ~120.83 MiB total and ~4.97 MiB search bootstrap on CI (total-out
- * 124 MiB / search bootstrap 5.10 MiB). Keep modest headroom for ordinary
- * content growth without silent skip/pass.
+ * measured ~120.83 MiB total and ~4.97 MiB search bootstrap on CI. Packaged +
+ * Mock/Throttling + Script/Poller measured ~120.24 MiB / ~4.84 MiB. Projected
+ * eight-page union (packaged + Agent/Inference + Mock/Throttling +
+ * Script/Poller) from those observed deltas is ~127 MiB / ~5.15 MiB; ceilings
+ * are 130 MiB / 5.30 MiB. Keep modest headroom for ordinary content growth
+ * without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 124_000_000,
+  maxTotalOutBytes: 130_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 5_100_000,
+  maxSearchBootstrapBytes: 5_300_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =

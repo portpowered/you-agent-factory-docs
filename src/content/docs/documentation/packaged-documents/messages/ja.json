@@ -1,0 +1,51 @@
+{
+  "title": "Packaged documents",
+  "description": "Packaged markdown reference topics printed from the installed you-agent-factory CLI via you docs.",
+  "openingSummary": "Packaged documents are markdown reference topics embedded in the installed you binary and printed with you docs.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Packaged documents are packaged markdown reference topics printed from the installed you binary via you docs or you docs <topic>. Use this surface when you need the shipped CLI terminology for discovery, topic reference, and freshness—without treating the web page as a live sync of that packaged markdown."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A packaged document is a markdown reference topic shipped inside the installed you binary. Topics are referenced by topic id, such as agents, config, or packaged-goal. Factory-local docs under a factory root are separate from these binary-embedded topics."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Print the packaged topic index first, then pass a supported topic id to print that topic’s authored markdown. No live factory is required. Open the CLI documentation page when you need the broader command matrix beyond packaged topic lookup."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web reference for packaged you docs topics. It is not a full topic dump, not a sync of packaged markdown into the site, not factory-local factory/docs authorship, and not the CLI install or command-matrix deep page. Sibling documentation links aid discovery only."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "indexCommandLabel": "Print the quick-start blurb and packaged topic index:",
+    "topicCommandLabel": "Print one authored topic (agents is the orientation topic):",
+    "configurationDocs": "Configuration",
+    "dynamicWorkflowsDocs": "Dynamic workflows",
+    "cliDocs": "CLI",
+    "packagedFactoriesDocs": "Packaged factories"
+  },
+  "callouts": {
+    "discovery": {
+      "body": "Discovery starts from you docs with no topic: that command prints the quick-start blurb and the packaged topic index. A supported topic argument prints that topic’s authored markdown with no wrapper formatting."
+    },
+    "referenceAndFreshness": {
+      "body": "Reference topics by topic id from the packaged index. Content freshness tracks the installed CLI binary—upgrade the CLI to receive updated packaged topics. This Program documentation page is not a live sync of packaged markdown."
+    },
+    "exampleNotes": {
+      "body": "Replace agents with any other supported topic id from the index, such as config or packaged-goal, when you need that topic’s authored markdown."
+    }
+  }
+}
