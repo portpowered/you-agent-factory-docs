@@ -510,9 +510,13 @@ those paths only accept collection section refs.
   align `conceptType` with `classification.concept.architecture`, and rely on ontology
   sidebar resolution for math/training/evaluation before editorial `sidebarGrouping`
   fallbacks for generation-and-diffusion or sequence-and-attention subgroups.
-- Concepts-section `sidebarGrouping.concepts` only allows `long-context`,
-  `inference`, `architecture`, and `reference-samples`; `generation-and-diffusion`
-  is glossary-only until a concepts generation subgroup exists.
+- Concepts-section `sidebarGrouping.concepts` allows legacy Atlas-era ids
+  (`long-context`, `inference`, `architecture`, `reference-samples`) plus the
+  planned post-rewrite ids (`harnesses`, `industrial-engineering`,
+  `model-inference`). Concept-page lanes may set the planned ids on owned
+  registry records; the sidebar IA lane still owns explorer order, folder
+  construction, and locale-aware subgroup labels. `generation-and-diffusion`
+  remains glossary-only until a concepts generation subgroup exists.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.

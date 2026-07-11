@@ -15,6 +15,12 @@ export const SIDEBAR_GROUP_LABELS = {
     inference: "Inference",
     architecture: "Architecture",
     "reference-samples": "Reference Samples",
+    // Planned post-rewrite Concepts subgroup ids (sidebar IA lane owns
+    // explorer order/locale labels; allowlist unlock lets concept registry
+    // metadata attach without waiting on tree construction).
+    harnesses: "Harnesses",
+    "industrial-engineering": "Industrial engineering",
+    "model-inference": "Model inference",
   },
 } as const;
 

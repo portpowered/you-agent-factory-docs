@@ -183,7 +183,7 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain("Tokens");
     expect(html).toContain("/docs/concepts/tokens");
     expect(html).toContain(
-      "Factory and work tokens: the unit of submitted work that occupies a work-type state as it moves through you-agent-factory.",
+      "Model-inference tokens: units of model input and output used for context limits and cost accounting when running harnesses, workers, or inference.",
     );
     expect(html).toContain("Tool");
     expect(html).toContain("/docs/concepts/tool");
