@@ -81,6 +81,10 @@ Before the first authored page under a rewrite-era CLI collection can pass
    `pageSectionSchema`. Put OS labels and similar short strings under
    `links.*` (or another allowed top-level message field), not under
    `sections.<id>.*`.
+5a. Empty-string section `body` values also fail `make validate-data` as
+   missing MDX message keys. Draft documentation scaffolds must use
+   non-empty placeholder bodies (even before story copy lands); do not
+   leave `""` for keys referenced by `<T k="sections.*.body" />`.
 6. Browser verify with `bun run start` serves the last production build.
    After editing page MDX or colocated messages, run `bun run build` (or
    use `bun run dev`) before curling the route, or the HTML will still show
@@ -212,6 +216,18 @@ Leave other `prepare:content-runtime` outputs uncommitted when they stay
 gitignored. Colocate new concept page render proofs under
 `src/content/docs/concepts/<slug>/<slug>-page.test.tsx` so the page test stays
 page-owned rather than under `src/lib/content/`.
+
+When an intentional multi-page PRD ships locale stubs for more than one page
+bundle, bare `bun run audit:canonical-page-surface` cannot infer a single page
+scope. Audit each page with `--page-dir src/content/docs/<section>/<slug>
+--files <that-page paths…> shipped-localized-docs.generated.ts
+shipped-localized-docs.server.test.ts --exception-reason "…"`, and repeat the
+exception reason in the PR conversation. Do not treat the sibling page bundle
+as shared hotspot churn for the page under audit.
+
+When colocated page tests assert non-guarantee / denial copy, match the denial
+positively (for example `/not a compliance certification claim/i`) instead of
+negating the denied phrase — otherwise correct “not a …” prose fails the test.
 
 For later concept pages (not first-CLI-section), the same locale shipping trio
 is still required to publish non-en routes. Update
