@@ -98,12 +98,13 @@ after concurrent launch-extra pages reached ~85.08 MiB against the prior
 85 MiB ceiling; raised again 2026-07-11 UTC after concepts taxonomy repair
 measured ~99.78 MiB total and ~4.08 MiB search bootstrap on CI; raised again
 2026-07-11 UTC after Script/Poller workers documentation pages measured
-~106.98 MiB total and ~4.32 MiB search bootstrap on CI, and after Mock workers
-/ Throttling and limits documentation pages measured ~107.22 MiB total and
-~4.42 MiB search bootstrap on CI; raised again 2026-07-11 UTC after rebasing
-Mock workers / Throttling onto main with Script/Poller already landed —
-combined export measured ~113.75 MiB total and ~4.66 MiB search bootstrap on
-CI):
+~106.98 MiB total and ~4.32 MiB search bootstrap on CI, after Agent/Inference
+workers Program docs measured ~107.37 MiB total and ~4.40 MiB search bootstrap
+on CI, and after Mock workers / Throttling and limits documentation pages
+measured ~107.22 MiB total and ~4.42 MiB search bootstrap on CI; raised again
+2026-07-11 UTC after rebasing Mock workers / Throttling onto main with
+Script/Poller already landed — combined export measured ~113.75 MiB total and
+~4.66 MiB search bootstrap on CI):
 
 - `maxTotalOutBytes`: 118_000_000
 - `maxNextStaticJsBytes`: 3_500_000
