@@ -24,7 +24,12 @@ type RootDocumentProps = {
 
 export function RootDocument({ children, lang }: RootDocumentProps) {
   return (
-    <html lang={lang} className="dark" suppressHydrationWarning>
+    <html
+      lang={lang}
+      className="dark"
+      data-color-palette="factory-dark"
+      suppressHydrationWarning
+    >
       <body>{children}</body>
     </html>
   );
