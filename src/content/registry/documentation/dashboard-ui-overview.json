@@ -1,0 +1,14 @@
+{
+  "id": "documentation.dashboard-ui-overview",
+  "slug": "dashboard-ui-overview",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["dashboard", "operator UI"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "draft",
+  "createdAt": "2026-07-11T00:00:00.000Z",
+  "updatedAt": "2026-07-11T00:00:00.000Z"
+}

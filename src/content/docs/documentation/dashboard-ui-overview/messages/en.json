@@ -1,0 +1,31 @@
+{
+  "title": "Dashboard / UI Overview",
+  "description": "Draft overview of the you-agent-factory local operator dashboard and UI surfaces.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Draft placeholder for what the dashboard/UI overview covers. English copy lands in a later story."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Draft placeholder for dashboard/UI key concepts. English copy lands in a later story."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Draft placeholder for how to use the dashboard/UI overview. English copy lands in a later story."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Draft placeholder for dashboard/UI limits and assumptions. English copy lands in a later story."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}
