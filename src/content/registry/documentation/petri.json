@@ -7,9 +7,9 @@
   "aliases": ["petri", "CPN", "colored petri net", "petri net"],
   "tags": [],
   "relatedIds": [
-    "concept.tokens",
     "documentation.configuration",
-    "documentation.workstations"
+    "documentation.workstations",
+    "documentation.submitting-work"
   ],
   "citationIds": [],
   "status": "published",

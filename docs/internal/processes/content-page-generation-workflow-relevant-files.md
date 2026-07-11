@@ -517,6 +517,13 @@ those paths only accept collection section refs.
   registry records; the sidebar IA lane still owns explorer order, folder
   construction, and locale-aware subgroup labels. `generation-and-diffusion`
   remains glossary-only until a concepts generation subgroup exists.
+- `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
+  units). When rewriting or consuming that page, retarget program-doc related
+  links and `relatedIds` that treated Tokens as the factory/work-token glossary
+  (for example Petri, Metrics) to program documentation surfaces such as
+  `/docs/documentation/petri`, configuration, workstations, or submitting-work.
+  Keep Petri/CPN teaching body intact; change only href/label/message keys,
+  registry `relatedIds`, and matching focused tests.
 - Registry `relatedIds` should omit records without published docs pages; for
   example `paper.ltx-2` can stay in model/paper metadata but must not appear in
   concept `relatedIds` until `/docs/papers/ltx-2` ships.

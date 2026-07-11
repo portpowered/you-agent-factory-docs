@@ -30,11 +30,11 @@
     }
   },
   "links": {
-    "tokensConcept": "Tokens concept",
     "configurationDocs": "Configuration",
     "workstationsDocs": "Workstations",
     "architectureOfSystem": "Architecture of system",
-    "factorySession": "Factory session"
+    "factorySession": "Factory session",
+    "submittingWork": "Submitting work"
   },
   "assets": {
     "tokenFlow": {
