@@ -176,6 +176,16 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain("/docs/concepts/checklist");
     expect(html).toContain("Harness");
     expect(html).toContain("/docs/concepts/harness");
+    expect(html).toContain("MCP");
+    expect(html).toContain("/docs/concepts/mcp");
+    expect(html).toContain(
+      "Model Context Protocol: the host↔server protocol that exposes named tools, including Factory Session tools via you mcp serve.",
+    );
+    expect(html).toContain("Skills");
+    expect(html).toContain("/docs/concepts/skills");
+    expect(html).toContain(
+      "Reusable instruction packages a harness or coding agent can load to specialize behavior for a task class.",
+    );
     expect(html).toContain("Task Queue");
     expect(html).toContain("/docs/concepts/task-queue");
     expect(html).toContain("Thinking");
@@ -188,7 +198,12 @@ describe("renderSectionCollectionIndexPage empty CLI collections", () => {
     expect(html).toContain("Tool");
     expect(html).toContain("/docs/concepts/tool");
     expect(html).toContain(
-      "A named callable capability an agent or Model Context Protocol (MCP) host can invoke while doing factory work.",
+      "A named callable capability an agent or Model Context Protocol (MCP) host can use while doing factory work.",
+    );
+    expect(html).toContain("Tool calling");
+    expect(html).toContain("/docs/concepts/tool-calling");
+    expect(html).toContain(
+      "Tool calling is the model-inference behavior of selecting and invoking named tools during an agent or model turn, gated by worker tool policy such as agentTools.",
     );
     expect(html).not.toContain(indexMessages.emptyTitle);
   });
