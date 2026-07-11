@@ -6,9 +6,15 @@
   "defaultSummaryKey": "description",
   "aliases": ["packaged factories", "@you/goal", "you run --named"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": [
+    "documentation.configuration",
+    "documentation.dynamic-workflows",
+    "documentation.cli",
+    "documentation.global-configuration-factories",
+    "documentation.packaged-documents"
+  ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-11T07:30:00.000Z",
-  "updatedAt": "2026-07-11T07:30:00.000Z"
+  "updatedAt": "2026-07-11T07:45:00.000Z"
 }

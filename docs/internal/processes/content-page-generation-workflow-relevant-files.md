@@ -532,6 +532,12 @@ those paths only accept collection section refs.
   `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (Basics → Additional
   reference). FAQ is omitted from that map because it is a top-level explorer
   page outside the Program documentation folder.
+- Packaged CLI reference surfaces: place `packaged-documents` under the `cli`
+  subgroup and `packaged-factories` under `configuration` (nearest ownership —
+  named-factory materialization beside global-configuration-factories). Wire
+  documentation→documentation discovery with page-local `<LocalizedLinkList>`
+  plus aligned registry `relatedIds`; `<RelatedDocs />` alone will not render
+  documentation-kind siblings.
 - `/docs/concepts/tokens` is the model-inference token concept (LLM/context/cost
   units). When rewriting or consuming that page, retarget program-doc related
   links and `relatedIds` that treated Tokens as the factory/work-token glossary
