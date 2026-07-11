@@ -5,8 +5,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import {
-  type LoadedBlogPost,
   blogPostHref,
+  type LoadedBlogPost,
 } from "@/lib/content/blog-page-load";
 
 /** Renders blog post shell markup for layout and viewport probes. */

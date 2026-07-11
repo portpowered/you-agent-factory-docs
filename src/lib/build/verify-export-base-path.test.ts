@@ -99,6 +99,40 @@ describe("verify-export-base-path", () => {
     ).toBe(false);
   });
 
+  test("Pages representative nav hrefs require relative home/getting-started/comparing under project site", () => {
+    const representativeHrefs = [
+      "/",
+      "/docs/guides/getting-started",
+      "/blog/comparing-agent-factories",
+    ] as const;
+    const relativePrefixedHtml = [
+      '<a href="/you-agent-factory-docs">Home</a>',
+      '<a href="/you-agent-factory-docs/docs/guides/getting-started">Getting started</a>',
+      '<a href="/you-agent-factory-docs/blog/comparing-agent-factories">Comparing</a>',
+    ].join("");
+    const comparingAbsoluteOnlyHtml = [
+      '<a href="/you-agent-factory-docs">Home</a>',
+      '<a href="/you-agent-factory-docs/docs/guides/getting-started">Getting started</a>',
+      '<link rel="canonical" href="https://portpowered.github.io/you-agent-factory-docs/blog/comparing-agent-factories">',
+      '<meta property="og:url" content="https://portpowered.github.io/you-agent-factory-docs/blog/comparing-agent-factories">',
+    ].join("");
+
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        relativePrefixedHtml,
+        PROJECT_SITE_BASE_PATH,
+        representativeHrefs,
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        comparingAbsoluteOnlyHtml,
+        PROJECT_SITE_BASE_PATH,
+        representativeHrefs,
+      ),
+    ).toBe(false);
+  });
+
   test("exportHtmlReferencesPrefixedMetadataHrefs requires prefixed canonical and hreflang", () => {
     const html = [
       '<link rel="canonical" href="/you-agent-factory-docs/docs/guides">',
