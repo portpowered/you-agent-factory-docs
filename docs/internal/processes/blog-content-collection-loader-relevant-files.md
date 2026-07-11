@@ -102,8 +102,12 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   wired through `getRegistryRecordById` (concept, module, model, …). Published
   `documentation.*` ids validate in frontmatter `relatedDocIds` but render as
   missing in the component; until that lookup gap is fixed, keep the id in
-  frontmatter and link the documentation route in MDX (or pass only resolvable
-  ids to `<BlogRelatedDocs />`) so readers still reach the page.
+  frontmatter, link the documentation route in MDX prose, and pass only
+  resolvable concept (or other lookup-backed) ids to `<BlogRelatedDocs />`.
+  Passing an unresolved `documentation.*` id into the component still shows
+  `blog-related-docs` when at least one concept resolves, but also emits
+  `blog-related-docs-partial-unavailable` — prefer prose for documentation
+  routes so the related list stays clean.
 * Page-local blog illustrations (DataTable, charts) need the same
   `page-mdx-components.tsx` + `blog-page-load.ts` single-slug static-import
   switch as concept SPC graphs: relative imports in `page.mdx` do not resolve

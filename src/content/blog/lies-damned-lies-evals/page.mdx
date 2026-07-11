@@ -9,6 +9,7 @@ tags: []
 relatedDocIds:
   - documentation.metrics
   - concept.statistical-process-control-graphs
+  - concept.bottlenecks
 status: "published"
 ---
 
@@ -52,7 +53,9 @@ A leaderboard score does not show that either. Benchmarks usually run short, fix
 Judge you-agent-factory health from the live Factory Session: completions and failures over time, queue or harness saturation, token or context pressure, and the session metrics surface. Use model benchmarks when you are choosing or comparing models. Do not use them as a substitute for factory-ops evidence.
 
 Stable definitions for factory metrics live on the
-[metrics documentation](/docs/documentation/metrics) page. Control-chart style
+[metrics documentation](/docs/documentation/metrics) page. When a run stalls,
+name the scarce stage with the
+[bottlenecks](/docs/concepts/bottlenecks) concept page. Control-chart style
 watching is covered on the SPC graphs concept page linked below. This post stays
 on the evaluation argument rather than restating those references.
 
@@ -60,7 +63,7 @@ on the evaluation argument rather than restating those references.
 
 <BlogRelatedDocs
   relatedDocIds={[
-    "documentation.metrics",
     "concept.statistical-process-control-graphs",
+    "concept.bottlenecks",
   ]}
 />

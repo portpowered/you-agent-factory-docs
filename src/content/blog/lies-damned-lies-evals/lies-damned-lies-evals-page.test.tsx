@@ -1,6 +1,7 @@
 /**
- * Post-owned shell and narrative proof for blog/lies-damned-lies-evals.
- * Story 001: published shell. Story 002: operational-evidence vs leaderboard narrative.
+ * Post-owned shell, narrative, and related-docs proof for blog/lies-damned-lies-evals.
+ * Story 001: published shell. Story 002: operational-evidence narrative.
+ * Story 003: metrics + concept related links.
  */
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -21,6 +22,7 @@ describe("lies-damned-lies-evals blog post shell (001)", () => {
         relatedDocIds: [
           "documentation.metrics",
           "concept.statistical-process-control-graphs",
+          "concept.bottlenecks",
         ],
         tags: [],
       },
@@ -70,5 +72,35 @@ describe("lies-damned-lies-evals operational-evidence narrative (002)", () => {
     expect(html).not.toContain("Model Atlas");
     expect(html).not.toContain("on this page");
     expect(html).not.toContain("Give the compact version first");
+  });
+});
+
+describe("lies-damned-lies-evals related factory docs (003)", () => {
+  test("frontmatter lists metrics plus SPC and bottlenecks concept ids", async () => {
+    const post = await getPublishedBlogPostBySlug(BLOG_SLUG);
+
+    expect(post?.frontmatter.relatedDocIds).toEqual([
+      "documentation.metrics",
+      "concept.statistical-process-control-graphs",
+      "concept.bottlenecks",
+    ]);
+  });
+
+  test("renders metrics prose link and BlogRelatedDocs concept routes", async () => {
+    const page = await renderBlogPostPage(BLOG_SLUG);
+    const html = renderToStaticMarkup(page);
+
+    expect(html).toContain('data-testid="blog-related-docs"');
+    expect(html).not.toContain('data-testid="blog-related-docs-unavailable"');
+    expect(html).not.toContain(
+      'data-testid="blog-related-docs-partial-unavailable"',
+    );
+    expect(html).toContain('href="/docs/documentation/metrics"');
+    expect(html).toContain(
+      'href="/docs/concepts/statistical-process-control-graphs"',
+    );
+    expect(html).toContain('href="/docs/concepts/bottlenecks"');
+    expect(html).toContain("metrics documentation");
+    expect(html).toContain("bottlenecks");
   });
 });
