@@ -116,4 +116,8 @@ Canonical frontmatter reference: `docs/templates/blog-post.mdx`.
   relies on the blog index card plus prose/title search documents (not tag
   landings). Keep that proof colocated under
   `src/content/blog/<slug>/*-discoverability.test.tsx` so the lane stays
-  blog-local and still runs in the required website suite.
+  blog-local and still runs in the required website suite. When the story
+  requires locale fail-closed behavior, assert `messages/` contains only
+  `en.json` and `hasBlogPostMessagesForLocale(slug, locale)` is false for
+  every non-`en` supported locale — do not add incomplete `ja` / `zh-CN` /
+  `vi` stubs.
