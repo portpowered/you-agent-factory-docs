@@ -648,7 +648,7 @@ blocked. Document mergeability-only follow-ups in `progress.txt` and PR
 conversation comments.
 
 When several documentation lanes land close together, the exported-site
-`totalOutBytes` or `searchBootstrapBytes` gates in
+`totalOutBytes` / `searchBootstrapBytes` gates in
 `src/lib/build/exported-site-budget.ts` can fail even though each lane alone
 was under budget. Raising
 `FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes` and/or
