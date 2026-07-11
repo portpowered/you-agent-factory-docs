@@ -1,0 +1,69 @@
+---
+messageNamespace: "local"
+assetNamespace: "local"
+publishedAt: "2026-07-10"
+updatedAt: "2026-07-10"
+authors:
+  - site-team
+tags: []
+relatedDocIds:
+  - documentation.install
+  - documentation.cli
+  - concept.harness
+  - concept.worktree
+status: "published"
+---
+
+import { T } from "@/features/docs/components/T";
+import { BlogRelatedDocs } from "@/features/blog/components/BlogRelatedDocs";
+
+# <T k="title" />
+
+<T k="contextSentence" />
+
+## Summary
+
+<T k="takeaway" />
+
+## Full release archive
+
+The complete product release list lives on
+[GitHub Releases](https://github.com/portpowered/you-agent-factory/releases).
+Use that archive for every published tag, assets, and raw release notes. This
+hub rewrites selected releases for web readers on the docs site.
+
+## Recent releases
+
+### you-agent-factory v0.0.5 — 2026-06-02
+
+**Version:** v0.0.5  
+**Released:** 2026-06-02
+
+you 0.0.5 is the latest published product release. For operators, the release
+focuses on configuration, multi-session factory work, and day-to-day CLI
+ingress:
+
+- Configure the factory directly from the website instead of only through local
+  file edits.
+- Fix website system-state rendering bugs that made live factory status harder
+  to trust.
+- Standardize interface names and configuration chrome so the UI reads as one
+  consistent surface.
+- Add CLI support for enumerating work, moving work, submitting work, and
+  querying sessions.
+- Keep multiple factory sessions in one instance and deploy to multiple
+  workspaces concurrently.
+
+Install or upgrade with the paths on the
+[install documentation](/docs/documentation/install) page, then use the
+[CLI documentation](/docs/documentation/cli) for the day-to-day `you` commands
+those release notes describe. The raw tag and assets are on
+[v0.0.5 on GitHub Releases](https://github.com/portpowered/you-agent-factory/releases/tag/v0.0.5).
+
+## Related reference pages
+
+Stable definitions for the harness runtime and worktree isolation used by
+multi-session factory work live on the concept pages below. Install and CLI
+docs are linked in the release notes above.
+
+<BlogRelatedDocs relatedDocIds={["concept.harness", "concept.worktree"]} />
