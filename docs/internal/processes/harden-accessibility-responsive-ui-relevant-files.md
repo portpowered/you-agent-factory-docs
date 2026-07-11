@@ -196,18 +196,30 @@ surfaces (home, browse, search, docs/harness-support, blog).
 ## Layout snapshot / lightweight visual equivalent (story 008)
 
 * Prefer the lightweight layout-snapshot contract over full-page screenshot
-  baselines: landmarks, h1 texts, primary-nav hrefs, page overflow, and
-  rounded chrome boxes (when geometry is non-zero).
+  baselines: landmarks, h1 texts, primary-nav hrefs, header brand text,
+  content-column surface markers, page overflow, and rounded chrome boxes
+  (when geometry is non-zero).
 * `src/lib/verify/a11y-layout-snapshot.ts` — `captureCriticalLayoutSnapshot`,
   `serializeLayoutSnapshot` / `hashLayoutSnapshot`, `diffLayoutSnapshots`,
-  `expectLayoutSnapshotMatches`, `assertCriticalLayoutContract`, and
-  `evaluateCriticalLayoutSnapshotInBrowser` (self-contained for Playwright).
+  `expectLayoutSnapshotMatches`, `assertCriticalLayoutContract` (optional
+  `expectedBrand` / `expectedContentColumnSurface`),
+  `evaluateCriticalLayoutSnapshotInBrowser`, and
+  `evaluateContentColumnLeftEdgeAlignmentInBrowser` (self-contained for
+  Playwright; compare header primary-nav column left to `#nd-page`).
 * `src/tests/a11y/layout-snapshot.a11y.test.tsx` — always-on: home/browse
-  baselines pass the contract; deliberate main/h1 regressions change the hash
-  and fail `expectLayoutSnapshotMatches`.
+  baselines pass the contract (including display brand); deliberate main/h1
+  regressions change the hash and fail `expectLayoutSnapshotMatches`.
 * `src/lib/verify/a11y-layout-snapshot-page.test.ts` — opt-in served probe:
   all critical routes at laptop viewport pass the contract with non-empty
   chrome boxes under Chromium.
+* Brand + content-column alignment matrix (repair-layout-brand-alignment):
+  `content-column-brand-alignment-coverage.ts`, always-on
+  `content-column-brand-alignment.a11y.test.tsx`, always-on Playwright
+  `a11y-content-column-left-edge-geometry.test.ts` (fixture proves `md:gap-0`
+  vs historical ~32px gap drift), and served
+  `a11y-content-column-brand-alignment-page.test.ts` (also in
+  `PRODUCTION_INTEGRATION_TEST_PATHS`; four viewports, brand, surfaces,
+  overflow, md+ left-edge geometry).
 * Chrome box geometry is optional under happy-dom (often zero rects); structural
   fields + hash diffs are the always-on regression signal.
 

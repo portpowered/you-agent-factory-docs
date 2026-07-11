@@ -6,6 +6,16 @@ import {
 } from "@/features/docs/components/list-decoration";
 import { formatBlogPublishedDate } from "@/lib/content/blog-published-date";
 import { formatTagLabel } from "@/lib/content/tag-labels";
+import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";
+
+/**
+ * /blog header (DocsTitle) + body consume the shared content-column left edge
+ * via DocsPage `#nd-page` inset. Wire this surface on the DocsPage container —
+ * do not nest another horizontal inset on the post list, and keep cards on
+ * `bulletlessListClassName` (`ps-0`) so prose list padding does not drift cards.
+ */
+export const BLOG_INDEX_CONTENT_COLUMN_SURFACE =
+  "blog-index" as const satisfies ContentColumnConsumerSurface;
 
 export type BlogIndexPostCard = {
   slug: string;

@@ -15,6 +15,17 @@
  * Do not reintroduce legacy teal/coral oklch values here.
  */
 :root {
+  /*
+   * Shared content-column alignment contract (see
+   * src/lib/layout/content-column-alignment.ts). Matches Fumadocs DocsPage
+   * `#nd-page` horizontal inset so shell surfaces share one left edge.
+   */
+  --site-content-column-inset-mobile: 1rem;
+  --site-content-column-inset-md: 1.5rem;
+  --site-content-column-inset-xl: 2rem;
+  --site-content-column-max-width: 900px;
+  --site-content-column-max-width-full: 1168px;
+
   --radius: 0.5rem;
   --background: var(--color-af-foundation-background);
   --foreground: var(--color-af-foundation-ink);

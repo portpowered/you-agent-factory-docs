@@ -7,7 +7,7 @@ import {
 } from "./you-agent-factory-site-config";
 
 describe("you-agent-factory site config", () => {
-  test("contains you-agent-factory scaffold brand values", () => {
+  test("contains You Agent Factory display brand values", () => {
     expect(youAgentFactorySiteConfig.brand).toEqual({
       scaffoldId: SCAFFOLD_ID,
       brandName: SITE_BRAND_NAME,
@@ -16,9 +16,9 @@ describe("you-agent-factory site config", () => {
     expect(youAgentFactorySiteConfig.brand.scaffoldId).toBe(
       "you-agent-factory-scaffold",
     );
-    expect(youAgentFactorySiteConfig.brand.brandName).toBe("you-agent-factory");
+    expect(youAgentFactorySiteConfig.brand.brandName).toBe("You Agent Factory");
     expect(youAgentFactorySiteConfig.brand.siteHeading).toBe(
-      "you-agent-factory",
+      "You Agent Factory",
     );
   });
 
@@ -31,9 +31,9 @@ describe("you-agent-factory site config", () => {
     );
   });
 
-  test("layout nav brand resolution returns you-agent-factory", () => {
+  test("layout nav brand resolution returns You Agent Factory", () => {
     expect(resolveSiteConfigLayoutNav(youAgentFactorySiteConfig).title).toBe(
-      "you-agent-factory",
+      "You Agent Factory",
     );
   });
 

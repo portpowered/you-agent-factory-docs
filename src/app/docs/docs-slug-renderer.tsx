@@ -20,8 +20,18 @@ import { isDocsPageShippedForLocale } from "@/lib/content/pages";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
+import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";
 import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
 import { getMDXComponents } from "../../../mdx-components";
+
+/**
+ * Normal docs pages consume the shared content-column left edge via DocsPage
+ * `#nd-page` inset. Wire this surface on the DocsPage container — do not nest
+ * another horizontal inset on the article body or fake alignment with
+ * negative margins. Sidebar taxonomy and MDX prose stay untouched.
+ */
+export const DOCS_PAGE_CONTENT_COLUMN_SURFACE =
+  "docs-page" as const satisfies ContentColumnConsumerSurface;
 
 type DocsSlugPageBody = ComponentType<{
   components?: Record<string, unknown>;
@@ -83,7 +93,11 @@ async function renderLocalDocsPage(
     );
 
   return (
-    <DocsPage breadcrumb={{ enabled: false }} toc={loadedPage.toc}>
+    <DocsPage
+      breadcrumb={{ enabled: false }}
+      toc={loadedPage.toc}
+      data-content-column-surface={DOCS_PAGE_CONTENT_COLUMN_SURFACE}
+    >
       <DocsPageProviders
         messages={loadedPage.messages}
         assets={loadedPage.assets}
@@ -146,6 +160,7 @@ export async function renderDocsSlugPage(
       breadcrumb={{ enabled: false }}
       toc={docsPageData.toc}
       full={docsPageData.full}
+      data-content-column-surface={DOCS_PAGE_CONTENT_COLUMN_SURFACE}
     >
       <DocsPageBreadcrumb
         locale={locale}

@@ -17,7 +17,7 @@ const ATLAS_MODULE_FEATURED_HREFS = [
 describe("home page messages", () => {
   it("loads localized copy for title, search, and browse sections", async () => {
     const { home } = await loadUiMessages();
-    expect(home.title).toBe("you-agent-factory");
+    expect(home.title).toBe("You Agent Factory");
     expect(home.subtitle).toBe("Docs for the agent factory CLI");
     expect(home.intro).toContain("you-agent-factory");
     expect(home.title).not.toMatch(/Model Atlas/i);
@@ -165,6 +165,7 @@ describe("home page render", () => {
     expect(html).toContain("crons");
     expect(html).toContain("event streams");
     expect(html).toContain("list-none");
+    expect(html).toContain("ps-0");
     expect(html).not.toContain("list-disc");
   });
 
@@ -180,7 +181,7 @@ describe("home page render", () => {
     );
     const toc = buildHomeTableOfContents(messages.home);
 
-    expect(messages.home.title).toBe("you-agent-factory");
+    expect(messages.home.title).toBe("You Agent Factory");
     expect(messages.home.subtitle).toBe("Tài liệu CLI cho agent factory");
     expect(messages.home.subtitle).not.toBe(en.home.subtitle);
     expect(messages.home.intro).toContain("you-agent-factory");
@@ -245,7 +246,7 @@ describe("home page render", () => {
     );
     const toc = buildHomeTableOfContents(messages.home);
 
-    expect(messages.home.title).toBe("you-agent-factory");
+    expect(messages.home.title).toBe("You Agent Factory");
     expect(messages.home.subtitle).toBe(
       "エージェントファクトリー CLI のドキュメント",
     );
@@ -307,7 +308,7 @@ describe("home page render", () => {
     );
     const toc = buildHomeTableOfContents(messages.home);
 
-    expect(messages.home.title).toBe("you-agent-factory");
+    expect(messages.home.title).toBe("You Agent Factory");
     expect(messages.home.subtitle).toBe("代理工厂 CLI 文档");
     expect(messages.home.subtitle).not.toBe(en.home.subtitle);
     expect(messages.home.intro).toContain("you-agent-factory");

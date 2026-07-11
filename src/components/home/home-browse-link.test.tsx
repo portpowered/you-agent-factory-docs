@@ -6,7 +6,7 @@ import {
 } from "@/components/home/home-browse-link";
 
 describe("HomeBrowseList", () => {
-  test("uses bulletless list styling without list-disc", () => {
+  test("uses bulletless list styling without list-disc or prose list inset", () => {
     const html = renderToStaticMarkup(
       <HomeBrowseList ariaLabel="Browse">
         <HomeBrowseLink href="/tags" title="Tags" description="Browse by tag" />
@@ -14,7 +14,10 @@ describe("HomeBrowseList", () => {
     );
 
     expect(html).toContain("list-none");
+    expect(html).toContain("ps-0");
     expect(html).not.toContain("list-disc");
+    // Alignment comes from zeroing list padding, not negative-margin hacks.
+    expect(html).not.toMatch(/(?:^|[\s"'])-m[trblxy]?-/);
   });
 });
 

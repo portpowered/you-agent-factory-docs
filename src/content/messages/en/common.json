@@ -54,7 +54,7 @@
     "openingSummary": "Opening summary"
   },
   "home": {
-    "title": "you-agent-factory",
+    "title": "You Agent Factory",
     "subtitle": "Docs for the agent factory CLI",
     "intro": "you-agent-factory is the CLI documentation for installing the factory, running named goals, and operating harnesses, loops, reviews, planners, crons, and event streams.",
     "installSectionTitle": "Install",

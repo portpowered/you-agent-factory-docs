@@ -6,11 +6,21 @@ import {
   defaultLocale,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
+import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";
 import { DocsIndexEntryList } from "./DocsIndexEntryList";
 import {
   bulletlessListClassName,
   docsResourceCardLinkClassName,
 } from "./list-decoration";
+
+/**
+ * /browse header (DocsTitle) + body consume the shared content-column left edge
+ * via DocsPage `#nd-page` inset. Wire this surface on the DocsPage container —
+ * do not nest another horizontal inset on the body, and keep card lists on
+ * `bulletlessListClassName` (`ps-0`) so prose list padding does not drift cards.
+ */
+export const BROWSE_INDEX_CONTENT_COLUMN_SURFACE =
+  "browse-index" as const satisfies ContentColumnConsumerSurface;
 
 type BrowseIndexPageProps = {
   messages: UiMessages;

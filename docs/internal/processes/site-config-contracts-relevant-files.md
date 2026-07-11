@@ -35,13 +35,18 @@ contract for the you-agent-factory CLI docs product.
 
 ## Brand / repository identity
 
-- Default brand resolves to `you-agent-factory` via scaffold constants and
-  `youAgentFactorySiteConfig.brand`.
+- Default **display brand** resolves to `You Agent Factory` via scaffold
+  constants (`SITE_BRAND_NAME`, `SITE_HEADING`) and
+  `youAgentFactorySiteConfig.brand`. Use this for reader-visible header chrome,
+  home title identity, and document/metadata brand surfaces.
+- Technical package/CLI/repo/route literals remain `you-agent-factory`
+  (executable name, repository URL path, install commands, technical prose).
 - Default repository URL is
   `https://github.com/portpowered/you-agent-factory`
   (`YOU_AGENT_FACTORY_REPOSITORY_URL`).
 - Layout brand title comes from `resolveSiteConfigLayoutNav` →
-  `config.brand.brandName` (not UI message `home.title`).
+  `config.brand.brandName` (not UI message `home.title`). Keep `home.title` and
+  root `siteMetadata.title` aligned with the same display brand string.
 - Docs header brand chrome (`DocsHeader`) imports layout-nav from
   `site-config-layout-nav.ts` (not `site-config-resolution.ts`) so the client
   bundle does not pull Node-only featured-link helpers. It renders the resolved
@@ -92,8 +97,9 @@ contract for the you-agent-factory CLI docs product.
 - Shell compatibility tests that assert primary nav must expect CLI labels
   (Home/Guides/Docs/Glossary/Blog) and must not require Topology/Timeline/
   Tags as primary destinations.
-- Sidebar/layout brand link assertions should use `you-agent-factory`, not
-  `Model Atlas`, when driven by the default site config.
+- Sidebar/layout brand link assertions should use `You Agent Factory`, not
+  `Model Atlas` or the package slug alone, when driven by the default site
+  config.
 - CLI docs header regression lock-in lives in
   `src/components/layout/docs-header.test.tsx` ("locks CLI shell header brand,
   primary nav, and Search together") and
