@@ -19,6 +19,7 @@ cross-lane drift, or proving the close gate.
 | Story 001 tip reconciliation proofs | `src/lib/verify/plan-issues-r02-reconciliation.test.ts` |
 | Story 002 explorer IA + eight-page membership | `src/lib/navigation/explorer-ia-contract.test.ts` |
 | Story 002 desktop/mobile explorer parity | `src/tests/layout/desktop-mobile-explorer-parity.test.tsx` |
+| Story 003 brand / alignment / theme / code-copy | `src/lib/verify/brand-theme-code-copy-r02-convergence.test.tsx` |
 
 ## Tip ancestry (story 001 evidence)
 
@@ -67,14 +68,17 @@ bun test src/lib/verify/plan-issues-r02-reconciliation.test.ts
 bun test src/lib/navigation/explorer-ia-contract.test.ts \
   src/tests/layout/desktop-mobile-explorer-parity.test.tsx \
   src/lib/theme/host-semantic-theme-tokens.test.ts \
-  src/features/docs/styles/docs-code-copy-chrome.test.ts
+  src/features/docs/styles/docs-code-copy-chrome.test.ts \
+  src/lib/verify/brand-theme-code-copy-r02-convergence.test.tsx \
+  src/tests/a11y/content-column-brand-alignment.a11y.test.tsx \
+  src/features/docs/components/DocsCodeCopyButton.test.tsx
 make typecheck
 ```
 
 ## Later R02 stories
 
 - **002** — DONE: Explorer IA / locale parity / eight-page membership (IA contract + parity suites)
-- **003** — Brand, alignment, theme, code-copy browser check
+- **003** — DONE: Brand, alignment, theme, code-copy (R02 convergence suite + browser verify on port 3533)
 - **004** — Concepts + Program documentation discovery / links
 - **005–007** — Focused suites, full `make` gates, Pages-prefixed guard
 - **008** — Browser/visual review across required shells
@@ -94,3 +98,12 @@ registry drift, ordering/parity, broken links, or combined-result test failures.
 | packaged-documents | CLI | same |
 | FAQ | Top-level (not in Program folder) | IA + parity suites |
 | Glossary folder | Absent | IA + parity suites |
+
+## Story 003 brand / theme / code-copy contract
+
+| Surface | Expected | Proof |
+| --- | --- | --- |
+| Header + explorer brand | You Agent Factory | `brand-theme-code-copy-r02-convergence.test.tsx` + browser curl |
+| Home / browse / blog / docs left edge | Shared `CONTENT_COLUMN_*` surfaces, no `-m*` compensation | same + `content-column-brand-alignment.a11y.test.tsx` |
+| Theme | `factory-dark` black/yellow (`#050b10` / `#f5c76f` / `#507f8c`) | same + `host-semantic-theme-tokens.test.ts` |
+| Code-heavy guide | inset `1rem`, rail copy control, secondary hover/focus, checkmark + polite status | same + `DocsCodeCopyButton.test.tsx`; browser `/docs/guides/getting-started` |
