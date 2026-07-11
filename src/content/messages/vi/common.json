@@ -54,7 +54,7 @@
     "openingSummary": "Tóm tắt mở đầu"
   },
   "home": {
-    "title": "you-agent-factory",
+    "title": "You Agent Factory",
     "subtitle": "Tài liệu CLI cho agent factory",
     "intro": "you-agent-factory là tài liệu CLI để cài đặt factory, chạy các mục tiêu có tên, và vận hành harness, vòng lặp, review, planner, cron, cùng luồng sự kiện.",
     "installSectionTitle": "Cài đặt",

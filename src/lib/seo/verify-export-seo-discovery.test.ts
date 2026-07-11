@@ -25,7 +25,7 @@ const PAGE_COPY: Record<
   { title: string; description: string; languages: Record<string, string> }
 > = {
   "/": {
-    title: "you-agent-factory",
+    title: "You Agent Factory",
     description: "CLI documentation",
     languages: {
       en: "/",

@@ -68,12 +68,12 @@ describe("site config scaffold compatibility", () => {
     }
   });
 
-  test("keeps the layout nav title aligned with the you-agent-factory brand name", () => {
-    expect(youAgentFactorySiteConfig.brand.brandName).toBe("you-agent-factory");
+  test("keeps the layout nav title aligned with the You Agent Factory display brand", () => {
+    expect(youAgentFactorySiteConfig.brand.brandName).toBe("You Agent Factory");
     expect(resolveSiteConfigLayoutNav(youAgentFactorySiteConfig).title).toBe(
-      "you-agent-factory",
+      "You Agent Factory",
     );
-    expect(baseOptions().nav?.title).toBe("you-agent-factory");
+    expect(baseOptions().nav?.title).toBe("You Agent Factory");
     expect(baseOptions().nav?.title).toBe(
       youAgentFactorySiteConfig.brand.brandName,
     );

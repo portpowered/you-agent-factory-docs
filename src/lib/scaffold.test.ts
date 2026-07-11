@@ -7,7 +7,7 @@ describe("scaffold smoke", () => {
   });
 
   test("exports site copy constants rendered on the home page", () => {
-    expect(SITE_BRAND_NAME).toBe("you-agent-factory");
-    expect(SITE_HEADING).toBe("you-agent-factory");
+    expect(SITE_BRAND_NAME).toBe("You Agent Factory");
+    expect(SITE_HEADING).toBe("You Agent Factory");
   });
 });
