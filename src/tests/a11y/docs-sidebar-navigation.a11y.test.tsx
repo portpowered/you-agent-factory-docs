@@ -271,4 +271,137 @@ describe("docs sidebar navigation accessibility", () => {
       within(sidebar).queryByRole("button", { name: "Modules" }),
     ).toBeNull();
   });
+
+  test("keyboard focus reaches FAQ and a Concepts subgroup page with localized accessible names", async () => {
+    captureOriginalFetch();
+    await installDocsSearchFetchMock();
+    const context = await loadAppTestContext();
+
+    await act(async () => {
+      await renderWithAppProviders(
+        <CanonicalDocsLayout messages={context.messages}>
+          <p>Fixture article</p>
+        </CanonicalDocsLayout>,
+        { context },
+      );
+    });
+
+    const sidebar = document.getElementById("nd-sidebar");
+    expect(sidebar).toBeTruthy();
+    if (!sidebar) {
+      throw new Error("expected Fumadocs docs sidebar");
+    }
+
+    expect(sidebar.getAttribute("aria-label")).toBe(
+      context.messages.shell.sidebarTitle,
+    );
+    expect(
+      within(sidebar).queryByRole("button", { name: "Glossary" }),
+    ).toBeNull();
+
+    const programDocumentationFolder = within(sidebar).getByRole("button", {
+      name: context.messages.explorer.folders.documentation,
+    });
+    expect(
+      programDocumentationFolder.getAttribute("aria-expanded"),
+    ).toBeTruthy();
+
+    const conceptsFolder = within(sidebar).getByRole("button", {
+      name: context.messages.explorer.folders.concepts,
+    });
+    conceptsFolder.focus();
+    expect(document.activeElement).toBe(conceptsFolder);
+    await act(async () => {
+      conceptsFolder.click();
+    });
+
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.conceptsGroups.harnesses,
+      ),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.conceptsGroups["industrial-engineering"],
+      ),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.conceptsGroups["model-inference"],
+      ),
+    ).toBeTruthy();
+
+    const harnessLink = within(sidebar).getByRole("link", { name: "Harness" });
+    expect(harnessLink.getAttribute("href")).toBe(HARNESS_CONCEPT_URL);
+    harnessLink.focus();
+    expect(document.activeElement).toBe(harnessLink);
+
+    const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
+    expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
+    faqLink.focus();
+    expect(document.activeElement).toBe(faqLink);
+  });
+
+  test("localized Vietnamese explorer keeps keyboard-reachable FAQ and Concepts page with locale accessible names", async () => {
+    captureOriginalFetch();
+    await installDocsSearchFetchMock();
+    const [messages, metaMap] = await Promise.all([
+      loadUiMessages("vi"),
+      loadSearchResultMetaMap("vi"),
+    ]);
+    const context = {
+      messages,
+      metaByUrl: searchResultMetaMapToRecord(metaMap),
+    };
+
+    await act(async () => {
+      await renderWithAppProviders(
+        <CanonicalDocsLayout messages={context.messages} locale="vi">
+          <p>Fixture article</p>
+        </CanonicalDocsLayout>,
+        { context },
+      );
+    });
+
+    const sidebar = document.getElementById("nd-sidebar");
+    expect(sidebar).toBeTruthy();
+    if (!sidebar) {
+      throw new Error("expected Fumadocs docs sidebar");
+    }
+
+    expect(sidebar.getAttribute("aria-label")).toBe(
+      context.messages.shell.sidebarTitle,
+    );
+
+    const conceptsFolder = within(sidebar).getByRole("button", {
+      name: context.messages.explorer.folders.concepts,
+    });
+    const documentationFolder = within(sidebar).getByRole("button", {
+      name: context.messages.explorer.folders.documentation,
+    });
+    expect(
+      within(sidebar).queryByRole("button", { name: "Glossary" }),
+    ).toBeNull();
+    expect(
+      within(sidebar).queryByRole("button", { name: "Program documentation" }),
+    ).toBeNull();
+
+    conceptsFolder.focus();
+    expect(document.activeElement).toBe(conceptsFolder);
+    await act(async () => {
+      conceptsFolder.click();
+    });
+    documentationFolder.focus();
+    expect(document.activeElement).toBe(documentationFolder);
+
+    const harnessLink = within(sidebar).getByRole("link", { name: "Harness" });
+    expect(harnessLink.getAttribute("href")).toBe("/vi/docs/concepts/harness");
+    harnessLink.focus();
+    expect(document.activeElement).toBe(harnessLink);
+
+    const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
+    expect(faqLink.getAttribute("href")).toBe("/vi/docs/documentation/faq");
+    faqLink.focus();
+    expect(document.activeElement).toBe(faqLink);
+  });
 });

@@ -246,11 +246,20 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Serializes a page tree into the explorer IA contract (top-level order, FAQ
   placement, subgroup separators, page membership/labels/hrefs) for
   desktop/mobile parity comparisons.
+* `src/lib/navigation/explorer-ia-contract.test.ts`
+  Exact-order proofs against `FACTORY_EXPLORER_SECTION_ORDER` /
+  `SIDEBAR_GROUP_LABELS` (top-level folders + FAQ, Concepts subgroups, Program
+  documentation subgroups) plus fail-closed `localizePageTree` /
+  `assertExplorerMessages` coverage when explorer catalogs are missing or empty.
 * `src/tests/layout/desktop-mobile-explorer-parity.test.tsx`
   Focused proof that every locale’s constructed explorer tree matches the IA
   contract and that CanonicalDocsLayout’s desktop `#nd-sidebar` and mobile
   drawer expose the same docs explorer folders/links after excluding the
   drawer’s primary-nav landmark.
+* `src/tests/a11y/docs-sidebar-navigation.a11y.test.tsx`
+  Keyboard-reachable FAQ and Concepts subgroup page links, no Glossary folder
+  control, Program documentation accessible name, and localized Vietnamese
+  folder/sidebar accessible names on CanonicalDocsLayout.
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only

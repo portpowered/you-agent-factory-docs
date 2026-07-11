@@ -1,0 +1,237 @@
+/**
+ * Focused explorer IA contract proofs for exact order and fail-closed locale
+ * behavior. Desktop/mobile parity lives in desktop-mobile-explorer-parity;
+ * accessible names / keyboard reachability live in docs-sidebar-navigation.a11y.
+ */
+import { describe, expect, test } from "bun:test";
+import {
+  DOCS_EXPLORER_TOP_LEVEL_FAQ_URL,
+  DOCS_PAGE_TREE_ROOT_NAME,
+  FACTORY_EXPLORER_FOLDER_LABELS,
+  FACTORY_EXPLORER_SECTION_ORDER,
+} from "@/lib/content/factory-breadcrumb-sidebar";
+import { SIDEBAR_GROUP_LABELS } from "@/lib/content/sidebar-grouping";
+import { loadUiMessages } from "@/lib/content/ui-messages";
+import type { UiMessages } from "@/lib/content/ui-messages.types";
+import {
+  ExplorerLabelsError,
+  resolveExplorerMessages,
+} from "@/lib/i18n/explorer-labels";
+import { supportedLocales } from "@/lib/i18n/locale-routing";
+import { localizePageTree } from "@/lib/i18n/localize-page-tree";
+import {
+  buildExplorerTreeSignature,
+  folderSignatureByName,
+  pageEntriesInFolder,
+  separatorNamesInFolder,
+  topLevelFolderNames,
+  topLevelPageEntries,
+} from "@/lib/navigation/explorer-tree-signature";
+import { source } from "@/lib/source";
+
+const DECLARED_CONCEPTS_GROUP_ORDER = Object.values(
+  SIDEBAR_GROUP_LABELS.concepts,
+);
+
+const DECLARED_DOCUMENTATION_GROUP_ORDER = Object.values(
+  SIDEBAR_GROUP_LABELS.documentation,
+);
+
+const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
+  FACTORY_EXPLORER_FOLDER_LABELS.guides,
+  FACTORY_EXPLORER_FOLDER_LABELS.concepts,
+  FACTORY_EXPLORER_FOLDER_LABELS.techniques,
+  FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+] as const;
+
+function isSubsequence(
+  actual: readonly string[],
+  declared: readonly string[],
+): boolean {
+  let declaredIndex = 0;
+  for (const label of actual) {
+    const next = declared.indexOf(label, declaredIndex);
+    if (next === -1) {
+      return false;
+    }
+    declaredIndex = next + 1;
+  }
+  return true;
+}
+
+describe("explorer IA exact-order contract", () => {
+  test("declared top-level section order is collection folders then FAQ", () => {
+    expect(FACTORY_EXPLORER_SECTION_ORDER).toEqual([
+      { kind: "collection", id: "guides" },
+      { kind: "collection", id: "concepts" },
+      { kind: "collection", id: "techniques" },
+      { kind: "collection", id: "documentation" },
+      { kind: "page", docsSlug: "documentation/faq" },
+    ]);
+  });
+
+  test("default-locale constructed tree matches exact top-level, Concepts, and Program documentation order", async () => {
+    const messages = await loadUiMessages("en");
+    const signature = buildExplorerTreeSignature(
+      localizePageTree(source.pageTree, "en", { messages }),
+    );
+
+    expect(signature.rootName).toBe(DOCS_PAGE_TREE_ROOT_NAME);
+    expect(topLevelFolderNames(signature)).toEqual([
+      ...DECLARED_TOP_LEVEL_FOLDER_ORDER,
+    ]);
+    expect(topLevelFolderNames(signature)).not.toContain("Glossary");
+
+    const topLevelPages = topLevelPageEntries(signature);
+    expect(topLevelPages).toEqual([
+      { name: "FAQ", url: DOCS_EXPLORER_TOP_LEVEL_FAQ_URL },
+    ]);
+    expect(signature.children.at(-1)).toMatchObject({
+      type: "page",
+      name: "FAQ",
+      url: DOCS_EXPLORER_TOP_LEVEL_FAQ_URL,
+    });
+
+    const concepts = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.concepts,
+    );
+    expect(concepts).toBeTruthy();
+    if (!concepts) {
+      throw new Error("expected Concepts folder");
+    }
+    expect(separatorNamesInFolder(concepts)).toEqual([
+      ...DECLARED_CONCEPTS_GROUP_ORDER,
+    ]);
+    expect(pageEntriesInFolder(concepts).length).toBeGreaterThan(0);
+    expect(
+      pageEntriesInFolder(concepts).some((page) =>
+        page.url.endsWith("/docs/concepts/harness"),
+      ),
+    ).toBe(true);
+
+    const documentation = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+    );
+    expect(documentation).toBeTruthy();
+    if (!documentation) {
+      throw new Error("expected Program documentation folder");
+    }
+    expect(separatorNamesInFolder(documentation)).toEqual([
+      ...DECLARED_DOCUMENTATION_GROUP_ORDER,
+    ]);
+    expect(
+      pageEntriesInFolder(documentation).some((page) =>
+        page.url.endsWith("/docs/documentation/faq"),
+      ),
+    ).toBe(false);
+  });
+
+  test("every locale preserves declared subgroup order as a subsequence of present separators", async () => {
+    for (const locale of supportedLocales) {
+      const messages = await loadUiMessages(locale);
+      const explorer = resolveExplorerMessages(messages);
+      const signature = buildExplorerTreeSignature(
+        localizePageTree(source.pageTree, locale, { messages }),
+      );
+
+      expect(topLevelFolderNames(signature)).toEqual([
+        explorer.folders.guides,
+        explorer.folders.concepts,
+        explorer.folders.techniques,
+        explorer.folders.documentation,
+      ]);
+
+      const faq = topLevelPageEntries(signature);
+      expect(faq).toHaveLength(1);
+      expect(faq[0]?.url).toMatch(/\/docs\/documentation\/faq$/);
+      expect(signature.children.at(-1)?.type).toBe("page");
+
+      const concepts = folderSignatureByName(
+        signature,
+        explorer.folders.concepts,
+      );
+      expect(concepts).toBeTruthy();
+      if (!concepts) {
+        throw new Error(`expected Concepts folder for ${locale}`);
+      }
+      expect(separatorNamesInFolder(concepts)).toEqual([
+        explorer.conceptsGroups.harnesses,
+        explorer.conceptsGroups["industrial-engineering"],
+        explorer.conceptsGroups["model-inference"],
+      ]);
+
+      const documentation = folderSignatureByName(
+        signature,
+        explorer.folders.documentation,
+      );
+      expect(documentation).toBeTruthy();
+      if (!documentation) {
+        throw new Error(`expected Program documentation folder for ${locale}`);
+      }
+
+      const documentationSeparators = separatorNamesInFolder(documentation);
+      const declaredLocalizedOrder = Object.values(
+        explorer.documentationGroups,
+      );
+      expect(
+        isSubsequence(documentationSeparators, declaredLocalizedOrder),
+      ).toBe(true);
+      expect(documentationSeparators[0]).toBe(
+        explorer.documentationGroups.basics,
+      );
+      expect(documentationSeparators.at(-1)).toBe(
+        explorer.documentationGroups["additional-reference"],
+      );
+    }
+  });
+});
+
+describe("explorer IA fail-closed locale contract", () => {
+  test("localizePageTree fails closed when explorer catalogs are missing", async () => {
+    const messages = await loadUiMessages("en");
+    const broken = {
+      ...messages,
+      explorer: undefined,
+    } as unknown as UiMessages;
+
+    expect(() =>
+      localizePageTree(source.pageTree, "en", { messages: broken }),
+    ).toThrow(ExplorerLabelsError);
+  });
+
+  test("localizePageTree fails closed when a subgroup label is empty", async () => {
+    const messages = await loadUiMessages("en");
+    const broken: UiMessages = {
+      ...messages,
+      explorer: {
+        ...messages.explorer,
+        conceptsGroups: {
+          ...messages.explorer.conceptsGroups,
+          harnesses: "   ",
+        },
+      },
+    };
+
+    expect(() =>
+      localizePageTree(source.pageTree, "en", { messages: broken }),
+    ).toThrow(/harnesses/);
+  });
+
+  test("assertExplorerMessages rejects incomplete documentation group catalogs", async () => {
+    const messages = await loadUiMessages("vi");
+    const incomplete = {
+      folders: messages.explorer.folders,
+      conceptsGroups: messages.explorer.conceptsGroups,
+      documentationGroups: {
+        ...messages.explorer.documentationGroups,
+        cli: "",
+      },
+    };
+
+    expect(() =>
+      resolveExplorerMessages({ ...messages, explorer: incomplete }),
+    ).toThrow(/cli/);
+  });
+});
