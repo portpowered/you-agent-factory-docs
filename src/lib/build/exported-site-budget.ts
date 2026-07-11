@@ -21,12 +21,14 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  *
  * Calibrated against a clean `make build` on 2026-07-10 UTC (~64.5 MiB total,
  * ~2.51 MiB Next static JS, ~2.89 MiB search bootstrap). Raised total-out to
- * 90 MiB on 2026-07-11 UTC after concurrent launch-extra pages pushed a clean
- * export to ~85.08 MiB (just over the prior 85 MiB ceiling) while Next static
- * JS and search bootstrap remained well under their limits.
+ * 90 MiB on 2026-07-11 UTC after concurrent launch-extra pages reached
+ * ~85.08 MiB, then to 95 MiB the same day after Troubleshooting/FAQ plus
+ * sibling documentation lanes measured ~87.8 MiB on a combined head (Next
+ * static JS and search bootstrap remained under their limits). Keep modest
+ * headroom for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 90_000_000,
+  maxTotalOutBytes: 95_000_000,
   maxNextStaticJsBytes: 3_500_000,
   maxSearchBootstrapBytes: 4_000_000,
 } as const;
