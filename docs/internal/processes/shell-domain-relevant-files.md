@@ -121,9 +121,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   catch-all / slug renderer and return the normal docs not-found page
   (`src/app/docs/not-found.tsx`); they must not appear in
   `source.generateParams()` or default/localized docs `generateStaticParams`
-  inventories. Prove with
-  `src/lib/content/retired-atlas-collection-routes.test.ts` (included in
-  required `bun run test`).
+  inventories. The docs not-found page must offer factory recovery links to
+  Getting Started (`/docs/guides/getting-started`), Browse (`/browse`),
+  Search (`/search`), and Blog (`/blog`) with visible focus styles and no
+  Model Atlas / retired-collection advertising. Prove with
+  `src/lib/content/retired-atlas-collection-routes.test.ts` and
+  `src/app/docs/not-found.test.tsx` (included in required `bun run test`).
 * `src/lib/content/factory-only-public-inventory.test.tsx`
   End-to-end shell/navigation proof that the public docs inventory is only
   guides/concepts/techniques/documentation/glossary, browse/sidebar omit

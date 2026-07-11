@@ -92,10 +92,18 @@ describe("retired Atlas collection index routes", () => {
 
     expect(html).toContain("Page not found");
     expect(html).toContain(
-      "No documentation page matches this path. Choose a page from the sidebar or return to the docs index.",
+      "No documentation page matches this path. Continue from Getting Started, browse the factory collections, search the docs, or read the blog.",
     );
-    expect(html).toContain("Go to Getting Started");
+    expect(html).toContain("Getting Started");
+    expect(html).toContain("Browse");
+    expect(html).toContain("Search");
+    expect(html).toContain("Blog");
     expect(html).toContain('href="/docs/guides/getting-started"');
+    expect(html).toContain('href="/browse"');
+    expect(html).toContain('href="/search"');
+    expect(html).toContain('href="/blog"');
+    expect(html).toContain("focus-visible:ring-2");
     expect(html).not.toMatch(/Models|Modules|Papers|Training|Systems/i);
+    expect(html).not.toMatch(/Model Atlas|coming soon|Browse the Atlas/i);
   });
 });
