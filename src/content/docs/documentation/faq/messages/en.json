@@ -1,0 +1,69 @@
+{
+  "title": "FAQ",
+  "description": "Short answers to common you-agent-factory questions that point at the owning canonical docs for install, run, configuration, MCP, and dynamic workflows.",
+  "openingSummary": "FAQ is the you-agent-factory short-answer surface for common product questions. Each reply stays brief and sends you to the canonical doc that owns the full contract.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "FAQ is the you-agent-factory short-answer surface for common product and how-to questions about install, first run, configuration, MCP, and dynamic workflows. Use it when you need a scannable question, a short reply, and a link into the owning canonical doc rather than a second copy of that doc."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "An FAQ entry pairs a common question with a short reply and a pointer to the canonical documentation page that owns the deeper contract. Answers stay link-forward: read the short guidance first, then open what-is, getting started, install, CLI, configuration, MCP, dynamic workflows, or Troubleshooting when you need the full reference. This surface does not replace those pages."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Scan for the question that matches what you need, read the short reply, then follow the link into the owning canonical doc when you need commands, flags, or deeper setup. Use this page for common-question lookup. Open the linked what-is, getting-started, install, CLI, configuration, MCP, dynamic-workflows, or Troubleshooting pages when you need the full contract those surfaces own."
+    },
+    "whatIsYouAgentFactory": {
+      "title": "What Is You-Agent-Factory, And Where Do I Start?",
+      "body": "you-agent-factory is the CLI and workflow system that keeps long-running agent work persistent. Start with the product overview, then follow Getting Started for first-run order before you dig into install or CLI depth."
+    },
+    "howToInstall": {
+      "title": "How Do I Install You?",
+      "body": "Install with the OS-specific script for your machine, then confirm you resolves on PATH. Open Install for the full command matrix and post-install scaffold notes—this FAQ does not repeat those commands."
+    },
+    "howToRunNamedWorkflow": {
+      "title": "How Do I Run A Named Workflow Or Confirm A Live Session?",
+      "body": "Start or attach a factory, then confirm a live Factory Session with you session list before you submit work. For first-run order open Getting Started; for the command matrix open CLI; for empty-list vs connection-failure language open Factory Session."
+    },
+    "whereConfigurationLives": {
+      "title": "Where Does Configuration Live?",
+      "body": "Per-factory topology lives in factory.json under the factory root; optional operator defaults live in ~/.you-agent-factory/config.json. Open Configuration for factory.json shape and Global Configuration Factories for operator-default modes—do not treat this FAQ as a second config reference."
+    },
+    "howMcpOrCursorConnects": {
+      "title": "How Do MCP Or Cursor Dynamic Workflows Connect?",
+      "body": "Hosts spawn you mcp serve so Factory Session tools appear under you.factory_session.* names; Cursor uses that MCP bridge for its first dynamic-workflow loop. Open MCP for host JSON and serve modes, Dynamic Workflows for source depth, and the Cursor guide for the first-loop walkthrough."
+    },
+    "somethingFailed": {
+      "title": "Something Failed—Where Do I Recover?",
+      "body": "When install, run, configuration, MCP, or dynamic-workflow steps fail, open Troubleshooting for symptom-scoped recovery that links into the owning canonical docs. Use this FAQ for common how-to questions; use Troubleshooting when you already have a failure symptom."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web FAQ for common you-agent-factory questions. It is not the install command matrix, not the getting-started quickstart, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short replies here."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "whatIsYouAgentFactory": "What is you-agent-factory",
+    "gettingStarted": "Getting Started",
+    "installDocs": "Install",
+    "cliDocs": "CLI",
+    "factorySession": "Factory Session",
+    "configurationDocs": "Configuration",
+    "globalConfigurationFactories": "Global Configuration Factories",
+    "mcpDocs": "MCP",
+    "dynamicWorkflows": "Dynamic Workflows",
+    "cursorDynamicWorkflows": "Cursor dynamic workflows guide",
+    "troubleshooting": "Troubleshooting"
+  }
+}

@@ -561,6 +561,16 @@ the original page slice when they are the concrete reason the reviewed head is
 blocked. Document mergeability-only follow-ups in `progress.txt` and PR
 conversation comments.
 
+When several documentation lanes land close together, the exported-site
+`totalOutBytes` gate in `src/lib/build/exported-site-budget.ts` can fail even
+though each lane alone was under budget. Raising
+`FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes` (and the matching
+expectation in `exported-site-budget.test.ts` plus the documented baseline in
+`restore-required-tests-gates-relevant-files.md`) is valid mergeability work
+when the measured `out/` size is the concrete CI blocker—keep the bump modest
+and recalibrate from the observed CI measurement rather than inventing a second
+budget policy.
+
 **Do not add** page-specific directory exports for ordinary page work. A focused
 guard in `content-paths.test.ts` fails when new `export const *_PAGE_DIR`
 constants appear outside the grandfathered allowlist.
@@ -764,6 +774,9 @@ documentation→documentation curated links. Keep registry `relatedIds` aligned 
 those published siblings for search/metadata when useful; omit unpublished ids such
 as factory-session until those registry records and pages exist. Keep
 `<RelatedDocs />` in `#related` for when related-runtime can resolve curated ids.
+The same `#related` + `<LocalizedLinkList>` pattern applies to other documentation
+lookup surfaces such as `documentation/troubleshooting` and `documentation/faq`
+(cross-link FAQ↔Troubleshooting plus a short curated canonical set).
 
 For page tests that read bundle files, keep the same assertions after switching
 from a `*_PAGE_DIR` import or `join(sectionRoot, slug)` to the derived lookup.

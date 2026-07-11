@@ -1,0 +1,26 @@
+{
+  "id": "documentation.faq",
+  "slug": "faq",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["FAQ", "common questions", "frequently asked questions"],
+  "tags": [],
+  "relatedIds": [
+    "documentation.troubleshooting",
+    "documentation.what-is-you-agent-factory",
+    "guide.getting-started",
+    "documentation.install",
+    "documentation.cli",
+    "documentation.factory-session",
+    "documentation.configuration",
+    "documentation.global-configuration-factories",
+    "documentation.mcp",
+    "documentation.dynamic-workflows",
+    "guide.cursor-dynamic-workflows"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T05:00:00.000Z",
+  "updatedAt": "2026-07-11T07:00:00.000Z"
+}

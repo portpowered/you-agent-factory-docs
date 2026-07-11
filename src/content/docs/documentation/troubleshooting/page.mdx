@@ -1,0 +1,214 @@
+---
+title: "Troubleshooting"
+description: "Recover from you-agent-factory install, run, configuration, MCP, and dynamic-workflow failures with short symptom-scoped guidance that links to the owning canonical docs."
+kind: "documentation"
+registryId: "documentation.troubleshooting"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "troubleshooting"
+  - "errors"
+  - "failure modes"
+  - "recovery"
+updatedAt: "2026-07-11"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="command-not-found" titleKey="sections.commandNotFound.title">
+  <T k="sections.commandNotFound.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="os-install-or-init" titleKey="sections.osInstallOrInit.title">
+  <T k="sections.osInstallOrInit.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="no-live-factory" titleKey="sections.noLiveFactory.title">
+  <T k="sections.noLiveFactory.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/factory-session",
+        labelKey: "links.factorySession",
+      },
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="operator-defaults-startup"
+  titleKey="sections.operatorDefaultsStartup.title"
+>
+  <T k="sections.operatorDefaultsStartup.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/global-configuration-factories",
+        labelKey: "links.globalConfigurationFactories",
+      },
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="mcp-path" titleKey="sections.mcpPath.title">
+  <T k="sections.mcpPath.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflows",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="mcp-wrong-cwd" titleKey="sections.mcpWrongCwd.title">
+  <T k="sections.mcpWrongCwd.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/documentation/dynamic-workflows",
+        labelKey: "links.dynamicWorkflows",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="mcp-host-not-reloaded" titleKey="sections.mcpHostNotReloaded.title">
+  <T k="sections.mcpHostNotReloaded.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflows",
+      },
+    ]}
+  />
+</Section>
+
+<Section
+  id="cursor-dynamic-workflow"
+  titleKey="sections.cursorDynamicWorkflow.title"
+>
+  <T k="sections.cursorDynamicWorkflow.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflows",
+      },
+      {
+        href: "/docs/documentation/dynamic-workflows",
+        labelKey: "links.dynamicWorkflows",
+      },
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/faq",
+        labelKey: "links.faq",
+      },
+      {
+        href: "/docs/documentation/install",
+        labelKey: "links.installDocs",
+      },
+      {
+        href: "/docs/guides/getting-started",
+        labelKey: "links.gettingStarted",
+      },
+      {
+        href: "/docs/documentation/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/documentation/mcp",
+        labelKey: "links.mcpDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.troubleshooting" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.troubleshooting" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.troubleshooting" />
+</Section>
