@@ -24,13 +24,16 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * 90 MiB on 2026-07-11 UTC after concurrent launch-extra pages reached
  * ~85.08 MiB, then to 95 MiB the same day after Troubleshooting/FAQ plus
  * sibling documentation lanes measured ~87.8 MiB on a combined head (Next
- * static JS and search bootstrap remained under their limits). Keep modest
- * headroom for ordinary content growth without silent skip/pass.
+ * static JS and search bootstrap remained under their limits). Raised again
+ * on 2026-07-11 UTC after the concepts taxonomy repair lane (Tokens rewrite +
+ * Skills/MCP/Tool calling) measured ~99.78 MiB total and ~4.08 MiB search
+ * bootstrap on CI. Keep modest headroom for ordinary content growth without
+ * silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 95_000_000,
+  maxTotalOutBytes: 105_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 4_000_000,
+  maxSearchBootstrapBytes: 4_250_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =
