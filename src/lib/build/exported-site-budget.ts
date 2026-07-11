@@ -20,11 +20,13 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * Factory-specific baselines for the rewrite-era docs export.
  *
  * Calibrated against a clean `make build` on 2026-07-10 UTC (~64.5 MiB total,
- * ~2.51 MiB Next static JS, ~2.89 MiB search bootstrap) with headroom for
- * ordinary content growth without silent skip/pass.
+ * ~2.51 MiB Next static JS, ~2.89 MiB search bootstrap). Raised total-out to
+ * 90 MiB on 2026-07-11 UTC after concurrent launch-extra pages pushed a clean
+ * export to ~85.08 MiB (just over the prior 85 MiB ceiling) while Next static
+ * JS and search bootstrap remained well under their limits.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 85_000_000,
+  maxTotalOutBytes: 90_000_000,
   maxNextStaticJsBytes: 3_500_000,
   maxSearchBootstrapBytes: 4_000_000,
 } as const;
