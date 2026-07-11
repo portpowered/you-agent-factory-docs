@@ -112,6 +112,10 @@ When a guide needs copyable shell commands (install, first-run, submit):
    `HOST_SEMANTIC_CONTRAST_PAIRINGS`), rail non-overlap
    (`docs-code-block-layout.ts`), and
    `src/tests/a11y/docs-code-block.a11y.test.tsx`.
+   R00 served-page gate: `theme-code-copy-r00-gate.ts` +
+   `theme-code-copy-r00-page.test.ts` (opt-in
+   `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`) proves factory-dark chrome and the
+   full copy interaction on `/docs/guides/getting-started` at desktop + narrow.
 2. Keep OS labels and short prose in colocated messages. `pageSectionSchema`
    only allows `title` / `body` per section — extra keys under
    `sections.<id>` are stripped by Zod and then fail

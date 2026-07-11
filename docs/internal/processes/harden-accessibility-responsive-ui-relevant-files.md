@@ -104,6 +104,16 @@ surfaces (home, browse, search, docs/harness-support, blog).
   - Interaction: `DocsCodeCopyButton.test.tsx` + `docs-code-copy-chrome.test.ts`
     cover persistent visibility, secondary hover/focus, checkmark, live status,
     and reset.
+* R00 theme/code-copy served-page gate (repair-theme-code-blocks-006):
+  - Helpers: `src/lib/verify/theme-code-copy-r00-gate.ts` (factory-dark RGB
+    proofs, chrome/block probes, Playwright evaluators).
+  - Always-on unit: `theme-code-copy-r00-gate.test.ts`.
+  - Opt-in served page: `theme-code-copy-r00-page.test.ts` on
+    `/docs/guides/getting-started` at laptop + mobile — black/yellow chrome,
+    inset/rail, persistent secondary-blue hover/focus, checkmark + accessible
+    copied text + reset, scroll non-overlap. Listed in
+    `PRODUCTION_INTEGRATION_TEST_PATHS`. Use `localhost` (not `127.0.0.1`) for
+    any ad-hoc `next dev` Playwright probes.
 * `HarnessSupportMatrix` puts `data-harness-support-matrix` /
   `data-testid="harness-support-matrix"` on DataTable `containerProps` (the
   real `overflow-x-auto` scroller). Do not wrap DataTable in a second

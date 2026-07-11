@@ -61,6 +61,9 @@ entry. Do not vendor or fork package source into this repo.
   (`color-contrast.test.ts`). Secondary button fill is ~4.48:1 — lane floor
   is 4.4 for that pairing; body/primary stay at 4.5+.
 - Set `data-color-palette="factory-dark"` on the root document element.
+- R00 served-page gate: `src/lib/verify/theme-code-copy-r00-gate.ts` +
+  `theme-code-copy-r00-page.test.ts` prove factory-dark chrome and shared
+  code-copy interaction on `/docs/guides/getting-started` (desktop + narrow).
 
 ## Thin factory-ui graph wrappers
 
