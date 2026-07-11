@@ -83,12 +83,16 @@ surfaces (home, browse, search, docs/harness-support, blog).
   (imported from `globals.css`). Horizontal scroll stays in the viewport
   column so it never paints over the copy control; inset is
   `padding-inline` on the viewport (`DOCS_CODE_BLOCK_INSET_INLINE`).
-* Copy controls are marked `data-docs-code-copy="control"` /
-  `.docs-code-block__copy-button` (see `docs-code-copy-chrome.ts`). Host CSS
-  keeps `opacity: 1` at rest and on hover, and uses semantic `--secondary`
-  (cool blue) for hover/focus — override Fumadocs
-  `hover:text-fd-accent-foreground` which resolves to dark accent-ink and
-  disappears on the card. Focus-visible uses a secondary ring.
+* Copy controls use host `DocsCodeCopyButton` (not stock Fumadocs CopyButton),
+  marked `data-docs-code-copy="control"` / `.docs-code-block__copy-button`
+  (see `docs-code-copy-chrome.ts`). Clipboard write excludes `.nd-copy-ignore`.
+  Successful copy sets `data-checked`, swaps to a checkmark icon, updates
+  `aria-label` to `Copied Text`, and announces via an `aria-live="polite"`
+  status span; state resets after `DOCS_CODE_COPY_RESET_MS` (1500). Host CSS
+  keeps `opacity: 1` at rest/hover/checked and uses semantic `--secondary`
+  (cool blue) for hover/focus/checked — never accent-ink. Focus-visible uses
+  a secondary ring. Native `<button>` covers pointer, keyboard (Enter/Space),
+  and touch.
 * `HarnessSupportMatrix` puts `data-harness-support-matrix` /
   `data-testid="harness-support-matrix"` on DataTable `containerProps` (the
   real `overflow-x-auto` scroller). Do not wrap DataTable in a second

@@ -3,9 +3,8 @@
  * Untitled blocks use a two-column grid so horizontal scroll stays in the
  * viewport column and never paints over or under the copy control.
  *
- * Copy chrome: keep the affordance visible at rest and on hover; use semantic
- * secondary blue for hover/focus (override Fumadocs accent-foreground hover
- * that resolves to dark accent-ink and disappears on the dark card).
+ * Copy chrome: keep the affordance visible at rest, hover, and copied
+ * (data-checked); use semantic secondary blue for hover/focus/checked.
  */
 @layer components {
   .docs-code-block:has(> [data-docs-code-actions="rail"]) {
@@ -44,15 +43,16 @@
 }
 
 /*
- * Utilities layer so these beat Fumadocs Tailwind hover:text-fd-accent-foreground
- * (dark accent-ink) and keep the control visible with secondary blue.
+ * Utilities layer so hover/focus/checked stay on secondary blue (never
+ * accent-ink) and the control remains visible through the copied state.
  */
 @layer utilities {
   .docs-code-block .docs-code-block__copy-button {
     opacity: 1 !important;
   }
 
-  .docs-code-block .docs-code-block__copy-button:is(:hover, :focus-visible) {
+  .docs-code-block
+    .docs-code-block__copy-button:is(:hover, :focus-visible, [data-checked]) {
     opacity: 1 !important;
     color: var(--secondary) !important;
     background-color: color-mix(

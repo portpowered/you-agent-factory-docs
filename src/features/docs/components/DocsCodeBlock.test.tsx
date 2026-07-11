@@ -8,6 +8,8 @@ import {
   DOCS_CODE_COPY_BUTTON_CLASS,
   DOCS_CODE_COPY_CONTROL_ATTR,
   DOCS_CODE_COPY_CONTROL_VALUE,
+  DOCS_CODE_COPY_LABEL,
+  DOCS_CODE_COPY_STATUS_ATTR,
 } from "@/features/docs/styles/docs-code-copy-chrome";
 
 describe("DocsCodeBlock", () => {
@@ -55,7 +57,7 @@ describe("DocsCodeBlock", () => {
     );
 
     const railIndex = html.indexOf('data-docs-code-actions="rail"');
-    const buttonIndex = html.indexOf('aria-label="Copy Text"');
+    const buttonIndex = html.indexOf(`aria-label="${DOCS_CODE_COPY_LABEL}"`);
     const viewportIndex = html.indexOf('data-rich-content-scroll="code"');
 
     expect(railIndex).toBeGreaterThanOrEqual(0);
@@ -63,7 +65,7 @@ describe("DocsCodeBlock", () => {
     expect(viewportIndex).toBeGreaterThan(buttonIndex);
   });
 
-  test("marks the copy control for persistent secondary-blue chrome", () => {
+  test("renders the host copy control with secondary chrome markers and live status", () => {
     const html = renderToStaticMarkup(
       <DocsPre className="language-sh">{`you docs agents`}</DocsPre>,
     );
@@ -72,7 +74,10 @@ describe("DocsCodeBlock", () => {
       `${DOCS_CODE_COPY_CONTROL_ATTR}="${DOCS_CODE_COPY_CONTROL_VALUE}"`,
     );
     expect(html).toContain(DOCS_CODE_COPY_BUTTON_CLASS);
-    expect(html).toContain('aria-label="Copy Text"');
+    expect(html).toContain(`aria-label="${DOCS_CODE_COPY_LABEL}"`);
+    expect(html).toContain(`${DOCS_CODE_COPY_STATUS_ATTR}=""`);
+    expect(html).toContain('aria-live="polite"');
+    expect(html).toContain('data-docs-code-copy-icon="clipboard"');
     // Control stays in the DOM at rest (not hover-gated markup).
     const copyIndex = html.indexOf(DOCS_CODE_COPY_BUTTON_CLASS);
     expect(copyIndex).toBeGreaterThanOrEqual(0);

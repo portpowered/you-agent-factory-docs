@@ -1,20 +1,8 @@
 "use client";
 
 import { CodeBlock, Pre } from "fumadocs-ui/components/codeblock";
-import {
-  Children,
-  type ComponentProps,
-  type CSSProperties,
-  cloneElement,
-  isValidElement,
-  type ReactElement,
-  type ReactNode,
-} from "react";
-import {
-  DOCS_CODE_COPY_BUTTON_CLASS,
-  DOCS_CODE_COPY_CONTROL_ATTR,
-  DOCS_CODE_COPY_CONTROL_VALUE,
-} from "@/features/docs/styles/docs-code-copy-chrome";
+import type { ComponentProps, CSSProperties, ReactNode } from "react";
+import { DocsCodeCopyButton } from "@/features/docs/components/DocsCodeCopyButton";
 import { cn } from "@/lib/utils";
 
 type DocsCodeBlockProps = ComponentProps<typeof CodeBlock>;
@@ -27,40 +15,21 @@ type DocsCodeBlockActionsProps = {
   children?: ReactNode;
 };
 
-type CopyControlChildProps = {
-  className?: string;
-  [DOCS_CODE_COPY_CONTROL_ATTR]?: string;
-};
-
-/**
- * Mark Fumadocs CopyButton children so host CSS can keep them visible and
- * apply secondary-blue hover/focus without rewriting page MDX.
- */
-function markCopyControlChildren(children: ReactNode): ReactNode {
-  return Children.map(children, (child) => {
-    if (!isValidElement(child)) {
-      return child;
-    }
-
-    const element = child as ReactElement<CopyControlChildProps>;
-    return cloneElement(element, {
-      className: cn(element.props.className, DOCS_CODE_COPY_BUTTON_CLASS),
-      [DOCS_CODE_COPY_CONTROL_ATTR]: DOCS_CODE_COPY_CONTROL_VALUE,
-    });
-  });
-}
-
 /**
  * Fumadocs passes absolute overlay classes for untitled blocks. Replace that
  * overlay with a dedicated rail so horizontal scroll never paints under the
  * copy control. Title-bar actions keep their in-flow placement.
+ *
+ * When Fumadocs requests a copy control (`children` truthy), render the host
+ * `DocsCodeCopyButton` instead of the stock Fumadocs button so checkmark,
+ * accessible copied status, and reset stay under host control.
  */
 function DocsCodeBlockActions({
   className,
   children,
 }: DocsCodeBlockActionsProps) {
   const isOverlay = className?.includes("absolute") ?? false;
-  const markedChildren = markCopyControlChildren(children);
+  const copyControl = children ? <DocsCodeCopyButton /> : null;
 
   if (!isOverlay) {
     return (
@@ -68,7 +37,7 @@ function DocsCodeBlockActions({
         data-docs-code-actions="title"
         className={cn("empty:hidden", className)}
       >
-        {markedChildren}
+        {copyControl}
       </div>
     );
   }
@@ -78,7 +47,7 @@ function DocsCodeBlockActions({
       data-docs-code-actions="rail"
       className="docs-code-block__actions empty:hidden text-fd-muted-foreground"
     >
-      {markedChildren}
+      {copyControl}
     </div>
   );
 }

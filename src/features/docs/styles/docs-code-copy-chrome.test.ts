@@ -5,6 +5,11 @@ import {
   DOCS_CODE_COPY_CHROME_TOKENS,
   DOCS_CODE_COPY_CONTROL_ATTR,
   DOCS_CODE_COPY_CONTROL_VALUE,
+  DOCS_CODE_COPY_COPIED_LABEL,
+  DOCS_CODE_COPY_IGNORE_SELECTOR,
+  DOCS_CODE_COPY_LABEL,
+  DOCS_CODE_COPY_RESET_MS,
+  DOCS_CODE_COPY_STATUS_ATTR,
 } from "@/features/docs/styles/docs-code-copy-chrome";
 import { FACTORY_DARK_FOUNDATION } from "@/lib/theme/host-semantic-theme-tokens";
 
@@ -34,9 +39,14 @@ describe("docs code copy chrome contract", () => {
     );
   });
 
-  test("copy control markers are stable for DocsCodeBlock wiring", () => {
+  test("copy control markers and copied-state labels are stable for DocsCodeBlock wiring", () => {
     expect(DOCS_CODE_COPY_CONTROL_ATTR).toBe("data-docs-code-copy");
     expect(DOCS_CODE_COPY_CONTROL_VALUE).toBe("control");
     expect(DOCS_CODE_COPY_BUTTON_CLASS).toBe("docs-code-block__copy-button");
+    expect(DOCS_CODE_COPY_STATUS_ATTR).toBe("data-docs-code-copy-status");
+    expect(DOCS_CODE_COPY_LABEL).toBe("Copy Text");
+    expect(DOCS_CODE_COPY_COPIED_LABEL).toBe("Copied Text");
+    expect(DOCS_CODE_COPY_RESET_MS).toBe(1500);
+    expect(DOCS_CODE_COPY_IGNORE_SELECTOR).toBe(".nd-copy-ignore");
   });
 });
