@@ -103,6 +103,8 @@ export async function renderBlogPostPage(
     blogRoot: options.blogRoot,
   });
 
+  const postHref = blogPostHref(post.slug, locale);
+
   return (
     <DocsPage
       breadcrumb={{ enabled: false }}
@@ -110,7 +112,15 @@ export async function renderBlogPostPage(
       toc={post.toc}
     >
       <DocsPageProviders messages={post.messages} assets={post.assets}>
-        <DocsTitle>{post.messages.title}</DocsTitle>
+        <DocsTitle>
+          <Link
+            href={postHref}
+            className="text-inherit no-underline hover:underline"
+            aria-current="page"
+          >
+            {post.messages.title}
+          </Link>
+        </DocsTitle>
         <DocsDescription>{post.messages.description}</DocsDescription>
         <BlogPostMeta
           publishedAt={post.frontmatter.publishedAt}

@@ -8,6 +8,7 @@ import {
   evaluatePagesDeployedArtifactProbes,
   extractNextAssetUrlFromHtml,
   guardPagesDeployedArtifact,
+  PAGES_DEPLOYED_ARTIFACT_PROBE_NAV_HREFS,
   PAGES_DEPLOYED_ARTIFACT_PROBE_ROUTES,
   probePagesDeployedArtifact,
 } from "./guard-pages-deployed-artifact";
@@ -195,6 +196,35 @@ describe("evaluatePagesDeployedArtifactProbes", () => {
     expect(evaluation.hasUnprefixedSearchBootstrap).toBe(true);
     expect(evaluation.hasCssAssetUrl).toBe(false);
     expect(evaluation.hasJsChunkUrl).toBe(false);
+  });
+
+  test("fails representative nav when comparing is only an absolute production URL", () => {
+    const comparingAbsoluteOnlyHtml = `<html><head>
+<link rel="stylesheet" href="${CSS_PATH}"/>
+<script src="${JS_PATH}"></script>
+<link rel="canonical" href="https://portpowered.github.io${BASE}/blog/comparing-agent-factories"/>
+<meta property="og:url" content="https://portpowered.github.io${BASE}/blog/comparing-agent-factories"/>
+</head><body>
+<a href="${BASE}/">Home</a>
+<a href="${BASE}/docs/guides/getting-started">Getting started</a>
+<h1>comparing-agent-factories</h1>
+</body></html>`;
+
+    const evaluation = evaluatePagesDeployedArtifactProbes({
+      html: comparingAbsoluteOnlyHtml,
+      jsChunkContent: `from:"${BOOTSTRAP}",type:"static"`,
+      basePath: BASE,
+      cssAssetUrl: CSS_PATH,
+      jsChunkUrl: JS_PATH,
+      navigationHrefs: PAGES_DEPLOYED_ARTIFACT_PROBE_NAV_HREFS,
+    });
+
+    expect(evaluation.hasPrefixedNextAssets).toBe(true);
+    expect(evaluation.hasRootLevelNextAssets).toBe(false);
+    expect(evaluation.hasPrefixedNavigation).toBe(false);
+    expect(evaluation.hasPrefixedSearchBootstrap).toBe(true);
+    expect(evaluation.hasCssAssetUrl).toBe(true);
+    expect(evaluation.hasJsChunkUrl).toBe(true);
   });
 });
 
