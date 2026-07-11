@@ -1,0 +1,32 @@
+{
+  "title": "Poller workers",
+  "description": "Author you-agent-factory POLLER_WORKER backends: hosted provider and secret refs on the worker, behavior POLLER on the workstation, and poller ingress for external work.",
+  "openingSummary": "A Poller worker supplies the hosted or script-backed backend for a workstation with behavior POLLER. factory.json names the worker; the worker directory supplies provider and auth; the workstation keeps behavior POLLER and routing.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Poller workers is the you-agent-factory web reference for POLLER_WORKER backends. Use it when you need a hosted poller integration (current built-in provider: LINEAR) or a script-backed poller that emits canonical batch stdout for a workstation with behavior POLLER. It covers how poller workers fit the worker and workstation split, and points to sibling Workers, Workstations, Submitting work, Logs, and Troubleshooting pages for discovery."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A Poller worker (POLLER_WORKER) is the execution backend for workstations with behavior POLLER. Use POLLER_WORKER for built-in hosted providers such as LINEAR. Use a SCRIPT_WORKER when custom poller logic should emit canonical batch stdout instead. factory.json declares the worker name. The worker directory at workers/<name>/AGENTS.md (or inline worker fields) supplies the poller backend. Legacy HOSTED_WORKER still loads and projects to POLLER_WORKER; prefer POLLER_WORKER in new configs."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a POLLER_WORKER for a built-in hosted provider, or a SCRIPT_WORKER when you need custom poller stdout, declare the same name in factory.json, and bind it from a workstation with behavior POLLER. Keep provider and auth on the worker. Keep behavior POLLER and routing on the workstation. Start from this page when you need the web Poller workers reference for you-agent-factory."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web Poller workers reference for you-agent-factory. It is not the Workers taxonomy overview, not Submitting work’s full batch manual, and not a sync of packaged CLI docs (you docs workers). Sibling Workers, Workstations, Submitting work, Logs, and Troubleshooting pages aid discovery; they are not required to define what a Poller worker is."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  }
+}

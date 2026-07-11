@@ -1,0 +1,19 @@
+{
+  "id": "documentation.poller-workers",
+  "slug": "poller-workers",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "POLLER_WORKER",
+    "hosted poller",
+    "Linear poller",
+    "poller requestId"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-11T07:30:00.000Z",
+  "updatedAt": "2026-07-11T07:30:00.000Z"
+}
