@@ -195,6 +195,12 @@
   "factoriesIndex": {
     "title": "工厂",
     "description": "已发布的工厂页说明已打包的工厂面及其配置与运行方式。",
+    "overviewTitle": "什么是工厂",
+    "overviewBody": "工厂是 you-agent-factory 运行的工作流拓扑。它声明工作类型、工作器、工作站以及可选资源，使长时间运行的智能体工作保持持久与协调，而不是在每次对话后重置。本系列帮助你了解 factory.json 拓扑、命名与全局操作员默认值如何交互、打包工厂如何被发现与刷新、动态工作流 API 如何与工厂配置相关，以及 Factory Session 如何标识正在运行的工厂。",
+    "schemaSummaryTitle": "工厂根定义",
+    "schemaSummaryBody": "实时的 Factory 模式根列出 factory.json 可声明的拓扑字段。本索引只显示该根摘要。需要穷尽字段或操作查阅时，请打开完整的 Factory 模式与 API 参考。",
+    "fullFactorySchemaLink": "完整 Factory 模式",
+    "fullFactoryApiLink": "Factory API 参考",
     "listLabel": "工厂条目",
     "emptyTitle": "尚无工厂条目",
     "emptyDescription": "已发布的工厂页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",

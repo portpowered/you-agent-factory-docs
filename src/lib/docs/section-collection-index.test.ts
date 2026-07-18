@@ -247,10 +247,6 @@ const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
     messageKey: "referencesIndex" as const,
   },
   {
-    collectionId: "factories" as const,
-    messageKey: "factoriesIndex" as const,
-  },
-  {
     collectionId: "workers" as const,
     messageKey: "workersIndex" as const,
   },
@@ -264,7 +260,7 @@ const W05_EMPTY_STATE_ATLAS_PHRASING =
   /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
 
 describe("renderSectionCollectionIndexPage W05 direct route families", () => {
-  test("renders empty-state indexes for all four families without leaking documentation entries", async () => {
+  test("renders empty-state indexes for empty families without leaking documentation entries", async () => {
     const messages = await loadUiMessages();
 
     for (const {
@@ -296,13 +292,17 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
     }
   });
 
-  test("keeps factories empty even though it reuses the documentation frontmatter kind", async () => {
+  test("keeps factories authored entries scoped to the factories route family", async () => {
     const messages = await loadUiMessages();
     const html = renderToStaticMarkup(
       await renderSectionCollectionIndexPage("factories"),
     );
 
-    expect(html).toContain(messages.factoriesIndex.emptyTitle);
+    expect(html).toContain(messages.factoriesIndex.title);
+    expect(html).toContain(`aria-label="${messages.factoriesIndex.listLabel}"`);
+    expect(html).toContain("/docs/factories/configuration");
+    expect(html).toContain("/docs/factories/sessions");
+    expect(html).not.toContain(messages.factoriesIndex.emptyTitle);
     expect(html).not.toContain("What is you-agent-factory");
     expect(html).not.toContain("/docs/documentation/what-is-you-agent-factory");
   });

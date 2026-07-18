@@ -1,0 +1,105 @@
+{
+  "title": "Dynamic Workflows",
+  "description": "Author JavaScript orchestrator-backed factories and relate dynamic workflow APIs to Factory configuration.",
+  "openingSummary": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory. The live run is a Factory Session — the same durable runtime object used for every live orchestration — not a separate DynamicWorkflowRun type.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory in you-agent-factory. Customers author JavaScript or TypeScript orchestrator source, then validate, start, and inspect the live run as a Factory Session. This surface defines that idea in isolation, names the session nouns a live run depends on, and shows the live orchestrator and invocation schema fragments that configuration and callable APIs share."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A Factory is the authored orchestration definition a live session loads. A Factory Orchestrator (FactoryOrchestrator) is the orchestrator identity on that factory — Petri (PETRI) or JavaScript (JAVASCRIPT). Dynamic workflow is shorthand for the JavaScript kind. A Factory Session (FactorySession) is the canonical runtime instance for one live orchestration; a dynamic-workflow run is still that Factory Session with JavaScript orchestrator kind, not a separate DynamicWorkflowRun noun. A Dispatch is a shared execution request the session sends. A Factory Artifact (FactoryArtifact) is a session-owned durable output such as a result, finding, log, or checkpoint reference. A Factory Event (FactoryEvent) is a durable event-stream record for session lifecycle, dispatch lifecycle, progress, and artifacts."
+    },
+    "orchestratorSchema": {
+      "title": "Orchestrator Identity",
+      "body": "The live FactoryOrchestrator definition is the authored orchestrator identity on one factory. Dynamic workflows use kind JAVASCRIPT with javascript configuration instead of Petri graph fields. When orchestrator is omitted, existing Petri factories load through compatibility defaulting to PETRI. Exhaustive Factory field inventories stay on the full schema and API reference pages."
+    },
+    "javascriptConfigSchema": {
+      "title": "JavaScript Orchestrator Configuration",
+      "body": "The live FactoryOrchestratorJavaScriptConfig fragment carries workflow source identity, metadata, argsSchema, defaultPolicy, and optional inline source for JavaScript factories. Source-resolution knobs on the CLI and Model Context Protocol (MCP) surfaces resolve into this shared configuration shape rather than inventing a separate dynamic-workflow contract."
+    },
+    "invocationSchema": {
+      "title": "Invocation Signature",
+      "body": "The live FactoryInvocationSignature fragment is the callable argument contract CLI, API, dashboard, and packaged-factory surfaces share when invoking one factory. Teaching embeds show the signature shape; exhaustive operation inventories and OpenAPI catalogs stay on the full schema and API reference pages."
+    },
+    "apiAndConfiguration": {
+      "title": "API And Configuration Relationship",
+      "body": "Dynamic workflows use the shared Factory Session API surface. Call the CLI workflow path to validate source and start or inspect a durable JavaScript Factory Session. Call Model Context Protocol (MCP) Factory Session tools from an MCP host. Read the same session through durable list, show, events, and preview style lookups. There is no separate dynamic-workflow resource type — every live run is still a Factory Session. Configuration covers two jobs: resolve JavaScript orchestrator source from a project root, and choose how an MCP host launches you mcp serve."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start from the definition and key concepts to learn what a dynamic workflow is and which Factory Session nouns it uses. Open the schema sections when you need live orchestrator, JavaScript config, or invocation fragments beside the prose. Continue with the Cursor dynamic-workflows guide for a first MCP host loop, the factories configuration page for Petri factory.json topology, the CLI documentation for the broader command matrix, or harness support when you need MCP and harness coverage across agents."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web reference for JavaScript dynamic-workflow API and configuration relationship. It is not the Cursor first-loop guide, not the full Model Context Protocol (MCP) host catalog deep dive beyond dynamic-workflow needs, not a duplicated OpenAPI or operation inventory, and not the Petri factory.json topology overview owned by the factories configuration page. Sibling links aid discovery only. Exhaustive orchestrator, invocation, and session inventories live on the schema and API reference pages linked from the schema sections."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "fullFactorySchema": "Full Factory schema",
+    "fullFactoryApi": "Factory API reference",
+    "cliMatrixCommandHeader": "Command",
+    "cliMatrixPurposeHeader": "Purpose",
+    "cliValidateCommand": "you workflow validate",
+    "cliValidatePurpose": "Resolve and validate JavaScript workflow source without creating a Factory Session.",
+    "cliStartCommand": "you workflow start",
+    "cliStartPurpose": "Start one durable Factory Session asynchronously and return inspection links.",
+    "cliStatusCommand": "you workflow status",
+    "cliStatusPurpose": "Read durable Factory Session lifecycle status and progress.",
+    "cliResultCommand": "you workflow result",
+    "cliResultPurpose": "Read the durable Factory Session final or partial result.",
+    "sourceMatrixKnobHeader": "Knob",
+    "sourceMatrixPurposeHeader": "Purpose",
+    "sourceDirKnob": "--dir / project root",
+    "sourceDirPurpose": "Project root used for ordered workflow source lookup. you workflow validate defaults --dir to factory.",
+    "sourceWorkflowNameKnob": "--kind WORKFLOW_NAME",
+    "sourceWorkflowNamePurpose": "Resolve a named workflow from the project root. Pair with --value for the workflow name.",
+    "sourceInlineWorkflowKnob": "--kind INLINE_WORKFLOW",
+    "sourceInlineWorkflowPurpose": "Validate inline orchestrator source text. Pair with --inline for the JavaScript or TypeScript source.",
+    "sourceArgsSchemaKnob": "--args-schema",
+    "sourceArgsSchemaPurpose": "Optional orchestrator.javascript argsSchema JSON for validation and start contracts.",
+    "sourceRequestedPolicyKnob": "--requested-policy",
+    "sourceRequestedPolicyPurpose": "Optional requested policy override JSON applied through the shared validation and preview contract.",
+    "serveModeMatrixModeHeader": "Mode",
+    "serveModeMatrixArgsHeader": "Launch args",
+    "serveModeMatrixPurposeHeader": "Purpose",
+    "serveModeFixtureName": "Fixture-backed (default)",
+    "serveModeFixtureArgs": "mcp serve",
+    "serveModeFixturePurpose": "Deterministic durable session fixture catalog for install smoke, fixture-driven polling, and offline host validation.",
+    "serveModeRuntimeName": "Runtime-backed",
+    "serveModeRuntimeArgs": "mcp serve --runtime",
+    "serveModeRuntimePurpose": "Shared durable JavaScript runtime for live INLINE_WORKFLOW execution with real async start, status polling, and result reads.",
+    "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows",
+    "configurationDocs": "Configuration (factory.json topology)",
+    "globalConfigurationDocs": "Global configuration",
+    "packagedDocs": "Packaged factories",
+    "sessionsDocs": "Factory sessions",
+    "cliDocs": "CLI",
+    "harnessSupportDocs": "Harness support",
+    "workersDocs": "Workers"
+  },
+  "callouts": {
+    "cliSurface": {
+      "body": "Use the you workflow CLI path for JavaScript Factory Session work. Validate source before execution, start a durable session, then inspect status and result for that same Factory Session id. Full MCP tool catalogs and OpenAPI operation inventories stay on the API reference."
+    },
+    "sourceResolution": {
+      "body": "Resolve workflow source from a project root before validation or start. Use you workflow validate with --dir for ordered lookup, --kind for the source kind, and optional --args-schema or --requested-policy JSON when the orchestrator needs those overrides."
+    },
+    "serveModes": {
+      "body": "you mcp serve exposes the same you.factory_session.* tool catalog in both backing modes. Only the execution service behind the tools changes. Do not combine --runtime with --fixture-catalog."
+    },
+    "schemaEmbedNote": {
+      "body": "Teaching embeds show the live orchestrator, JavaScript config, and invocation signature fragments that matter for dynamic workflows. They are not a substitute for the full schema or API inventories."
+    }
+  }
+}

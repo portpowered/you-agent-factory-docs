@@ -971,6 +971,36 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 * `src/lib/content/route-family-local-docs-page.ts` /
   `route-family-local-docs-page-load.ts`
   Generic local-message disk loader for the four direct route families; uses
+  `getDocsPageDir` so nested child bundles resolve. Page-local MDX components
+  use the same `page-mdx-components.tsx` + static slug switch pattern as
+  documentation/concept loaders (relative imports in `page.mdx` do not resolve
+  under `compileMDX`). Factories examples:
+  `factories/configuration` →
+  `@/content/docs/factories/configuration/page-mdx-components` for the W07
+  `FactoryRootSchemaEmbed`; `factories/global-configuration` →
+  `@/content/docs/factories/global-configuration/page-mdx-components` for
+  You-config root plus addressed Factory `FactoryName` / `RunnerID` embeds;
+  `factories/packaged` →
+  `@/content/docs/factories/packaged/page-mdx-components` for addressed
+  `FactoryName` plus root Factory metadata/`sourceDirectory` teaching embed
+  (property pointers do not resolve as addressed catalog definitions);
+  `factories/dynamic-workflows` →
+  `@/content/docs/factories/dynamic-workflows/page-mdx-components` for addressed
+  `FactoryOrchestrator`, `FactoryOrchestratorJavaScriptConfig`, and
+  `FactoryInvocationSignature` teaching embeds (link out for exhaustive
+  schema/API lookup; do not paste OpenAPI/operation inventories into the page);
+  `factories/sessions` →
+  `@/content/docs/factories/sessions/page-mdx-components` for addressed
+  `FactoryName` teaching the Factory a session loads (FactorySession /
+  Dispatch / event contracts live in OpenAPI — link
+  `/docs/references/{schema,api,events}` rather than inventing session schema
+  embeds outside W07 JSON Schema package models).
+  Treat each loader switch as a narrow shared-surface exception and declare it
+  with `audit:canonical-page-surface --exception-reason`.
+* `src/lib/content/published-docs-registry-contract.ts` /
+  `src/lib/content/content-hrefs.ts`
+  `PUBLISHED_DOCS_SECTIONS` includes `factories` with `factoriesPageHref` and
+  `publishedDocsHrefFromEntry` so authored `/docs/factories/<slug>` (including
   `getDocsPageDir` so nested child bundles resolve.
 * `src/lib/content/published-docs-registry-contract.ts` /
   `src/lib/content/content-hrefs.ts`
@@ -980,6 +1010,8 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `Unsupported published docs section`. Do not treat this as W15–W18 nav /
   search / sitemap / compat inventory ownership — those stay deferred.
 * `src/lib/content/published-docs-registry-contract.test.ts`
+  Factories section membership, nested href proofs, and unchanged CLI section
+  href behavior.
   Workers section membership, nested href proofs, and unchanged CLI section
   href behavior.
 * `src/content/docs/workers/` family index composition (W13)
@@ -1131,8 +1163,42 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   families. Empty collections call `renderSectionCollectionIndexPage` with
   matching `*Index` messages (`DocsIndexEmptyState`). Authored family indexes
   (W14 workstations) call page-local `render*FamilyIndexPage` instead.
+  families. References/workers/workstations call
+  `renderSectionCollectionIndexPage` with matching `*Index` messages; empty
+  collections render `DocsIndexEmptyState`. Factories uses the factories-owned
+  `renderFactoriesIndexPage` composition (overview + W07 root Factory summary
+  embed + child entry list) once authored factories pages exist.
 * `src/app/[locale]/docs/{references,factories,workers,workstations}/page.tsx`
   Shipped-locale mirrors of the same four family indexes.
+* `src/content/docs/factories/index/render-factories-index-page.tsx` /
+  `FactoryRootSummaryEmbed.tsx` / `factories-index.test.tsx`
+  Factories-lane index ownership: isolation-first overview copy from
+  `factoriesIndex` messages, live root Factory SchemaReference embed
+  (`showCatalog={false}`), links to `/docs/references/{schema,api}`, and the
+  factories child-page list. Do not fold this into shared nav/search/sitemap
+  inventories (W15–W18).
+* `src/content/messages/*/common.json` (`factoriesIndex`)
+  Extended factories index messages with `overviewTitle` / `overviewBody` /
+  `schemaSummaryTitle` / `schemaSummaryBody` / full schema+API link labels
+  (`FactoriesIndexMessages`).
+* Factories sibling discovery (W12 related wiring): keep family-local
+  `relatedIds` on each `documentation.factories-*` registry record pointing at
+  sibling factories pages plus published workers/workstations/resources/
+  sessions-adjacent documentation targets that already exist. Render
+  reviewer-visible discovery with page-local `#related` `<LocalizedLinkList>`
+  hrefs to `/docs/factories/...`, existing `/docs/documentation/{workers,
+  workstations,resources,...}`, and planned `/docs/references/{schema,api,
+  events}` — documentation kind still will not render under `<RelatedDocs />`
+  alone. Do not invent workers/workstations content or references registry ids
+  in this lane; keep `<RelatedDocs />` beside the LocalizedLinkList for when
+  related-runtime can resolve curated documentation ids.
+* Factories schema embeds under webpack static export: keep
+  `serverExternalPackages: ["@you-agent-factory/api"]` in `next.config.ts`, and
+  harden `resolveSchemaVerificationFsPath` to fall back from broken
+  `require.resolve` / numeric module ids to the installed package `exports`
+  map under `node_modules/@you-agent-factory/api/package.json`. Without that,
+  prerender of `/docs/factories` (and localized factories indexes) fails with
+  package-resolution TypeErrors during `make build`.
 * `src/app/(site)/site-renderers.tsx`
   `renderShellSectionCollectionIndexPage` filters index entries by
   `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not
@@ -1144,6 +1210,8 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   authored workstations index asserts `data-workstations-family-index` instead
   of the empty-state contract; factories must not list documentation child
   pages.
+  factories flips to authored-entry + overview assertions and must not list
+  documentation child pages.
 * `src/lib/content/docs-catch-all-static-params.ts`
   Catch-all static-param helpers for nested docs slugs. Default-locale
   `generateStaticParams` merges Fumadocs source params with published-page
@@ -1345,6 +1413,14 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   may still fail under Turbopack/`node_modules` hoist — prefer `bun run build`
   then `make test-integration` (or the focused browser file under the same env)
   for this proof.
+* Under heavier W12+ factories/workers/references exports, CI can flake when
+  `next start` writes to a closed parent stdout pipe (`Error: write EPIPE` via
+  Next `console-exit`) during `acquireVerifyServerSession` for
+  `high-traffic-locales-browser.test.ts`. `defaultSpawnProductionServer` now
+  redirects stdout/stderr to a temp log (so the child cannot EPIPE a parent
+  pipe), `isRetryableVerifyServerStartupError` treats EPIPE/EADDRINUSE early
+  exits as retryable, and `attachChildOutputCapture` ignores parent-side pipe
+  resets. Prefer those harness fixes over widening Playwright timeouts alone.
 
 ## Representative migrated consumers
 

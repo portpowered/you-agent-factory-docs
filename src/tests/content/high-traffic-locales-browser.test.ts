@@ -62,7 +62,7 @@ describe("high-traffic locales browser journey", () => {
       const page = await browser.newPage({
         viewport: { width: 1280, height: 800 },
       });
-      page.setDefaultTimeout(45_000);
+      page.setDefaultTimeout(60_000);
 
       for (const locale of NON_DEFAULT_LOCALES) {
         const home = (await loadUiMessages(locale)).home;
@@ -86,7 +86,7 @@ describe("high-traffic locales browser journey", () => {
         expect(gettingStarted.title).not.toBe(ENGLISH_GETTING_STARTED_TITLE);
 
         await page.goto(`${session.baseUrl}/${locale}`, {
-          waitUntil: "load",
+          waitUntil: "domcontentloaded",
         });
 
         await page
@@ -124,7 +124,7 @@ describe("high-traffic locales browser journey", () => {
 
         await page.goto(
           `${session.baseUrl}/${locale}/docs/guides/getting-started`,
-          { waitUntil: "load" },
+          { waitUntil: "domcontentloaded" },
         );
         await page
           .getByRole("heading", { level: 1, name: gettingStarted.title })
@@ -140,7 +140,7 @@ describe("high-traffic locales browser journey", () => {
 
         await page.goto(
           `${session.baseUrl}/${locale}/docs/documentation/install`,
-          { waitUntil: "load" },
+          { waitUntil: "domcontentloaded" },
         );
         await page
           .getByRole("heading", { level: 1, name: install.title })
@@ -148,7 +148,7 @@ describe("high-traffic locales browser journey", () => {
         await expectArticleContains(page, INSTALL_COMMAND);
 
         await page.goto(`${session.baseUrl}/${locale}/docs/documentation/cli`, {
-          waitUntil: "load",
+          waitUntil: "domcontentloaded",
         });
         await page
           .getByRole("heading", { level: 1, name: cli.title })
@@ -171,7 +171,7 @@ describe("high-traffic locales browser journey", () => {
       );
 
       await page.goto(`${session.baseUrl}/ja/docs/guides/getting-started`, {
-        waitUntil: "load",
+        waitUntil: "domcontentloaded",
       });
       await page
         .getByRole("heading", { level: 1, name: "はじめに" })

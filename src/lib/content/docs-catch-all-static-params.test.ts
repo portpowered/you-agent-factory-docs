@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default generateStaticParams include authored references, workers, and workstations children", () => {
+  test("live default generateStaticParams include authored factories, references, workers, and workstations children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,8 +183,17 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    // references (W11 schema + events) and workers (W13) have authored
-    // children; empty families still contribute no catch-all children.
+    // W12 authored factories pages contribute catch-all child params.
+    expect(defaultPaths.some((path) => path.startsWith("factories/"))).toBe(
+      true,
+    );
+    expect(defaultPaths).toContain("factories/configuration");
+    expect(defaultPaths).toContain("factories/global-configuration");
+    expect(defaultPaths).toContain("factories/packaged");
+    expect(defaultPaths).toContain("factories/dynamic-workflows");
+    expect(defaultPaths).toContain("factories/sessions");
+
+    // references (W11 schema + events) and workers (W13) have authored children.
     expect(defaultPaths.some((path) => path.startsWith("references/"))).toBe(
       true,
     );
@@ -208,13 +217,9 @@ describe("W05 route-family static params and not-found", () => {
       ]),
     );
 
-    for (const id of ["factories"] as const) {
-      expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
-        false,
-      );
-    }
-
-    // W14 authored Workstation variant pages enter default catch-all params.
+    // Families without authored nested pages still contribute no catch-all
+    // children (indexes remain dedicated App Router routes).
+// W14 authored Workstation variant pages enter default catch-all params.
     const workstationChildren = defaultPaths.filter((path) =>
       path.startsWith("workstations/"),
     );
@@ -236,6 +241,7 @@ describe("W05 route-family static params and not-found", () => {
       ]),
     );
 
+    
     // Empty-param static export still emits a placeholder rather than failing.
     expect(
       ensureStaticExportParams(
@@ -252,12 +258,12 @@ describe("W05 route-family static params and not-found", () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
-    // Route-family local pages are default-locale published discovery only
-    // (unshipped-locale fallback); localized catch-all stays free of nested
-    // family children until those pages ship localized message trees.
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
+    // Factories, references/schema+events, and workers currently ship
+    // English-only messages, so they do not enter shipped-locale catch-all
+    // params yet.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

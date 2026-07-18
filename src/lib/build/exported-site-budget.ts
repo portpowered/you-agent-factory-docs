@@ -62,13 +62,16 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * Raised again on 2026-07-18 UTC after merging W14 with main (W11 schema +
  * events + W13 workers already landed) — combined export measured ~184.93 MiB
  * total and ~5.82 MiB search bootstrap on CI while Next static JS (~2.81 MiB)
- * remained under its limit; ceiling is now 195 MiB total / 6.10 MiB search.
+ * remained under its limit; ceiling was 195 MiB total / 6.10 MiB search. Raised again on
+ * 2026-07-18 UTC after merging W12 factories authored pages onto the
+ * W14+main head; ceiling is now 210 MiB total / 6.50 MiB search
+ * (headroom for the combined four-family authored export).
  * Keep modest headroom for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 195_000_000,
+  maxTotalOutBytes: 210_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 6_100_000,
+  maxSearchBootstrapBytes: 6_500_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =
