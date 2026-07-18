@@ -48,3 +48,21 @@ Also record manifest root `packageId`, `packageVersion`, `formatVersion`,
 installed artifact membership (currently 10); do not copy plan prose if the
 package differs. With `packageVersion` `0.0.0`, prefer format versions and
 hashes over semver for freshness.
+
+## OpenAPI inventory
+
+Read `@you-agent-factory/api/openapi` (resolves to
+`generated/openapi/openapi.yaml`). Parse the YAML and record:
+
+- OpenAPI version (`openapi` root field) and `info.title` / `info.version`
+- Path count: `Object.keys(paths).length`
+- Operation count: HTTP method entries on each path item (`get`/`put`/`post`/
+  `delete`/`options`/`head`/`patch`/`trace`)
+- Tag count: document-level `tags` array length (and names when useful)
+- Component schema count: `components.schemas` keys
+- Shared parameter count: `components.parameters` keys
+- Shared response count: `components.responses` keys
+
+Derive counts from the installed artifact. Do not copy plan prose when the
+package differs. Counts are baseline drift observations, not permanent product
+limits.

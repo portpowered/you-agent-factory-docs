@@ -109,3 +109,47 @@ matches the export id for every row above. On this install, each export’s
 
 These counts and hashes are baseline observations for later drift detection,
 not permanent product limits.
+
+## OpenAPI inventory
+
+Source: installed `@you-agent-factory/api/openapi`
+(`node_modules/@you-agent-factory/api/generated/openapi/openapi.yaml`), parsed
+from the published YAML artifact—not copied from plan prose.
+
+### Document identity
+
+| Field | Value |
+| --- | --- |
+| OpenAPI version | `3.0.3` (`openapi` root field) |
+| `info.title` | `Agent Factory API` |
+| `info.version` | `0.1.0` |
+| Manifest export | `generated.openapi.openapi` (see Manifest exports) |
+
+### Inventory counts
+
+Counts are derived by walking the installed document:
+
+- **Paths:** number of keys under `paths`
+- **Operations:** HTTP method entries under each path item (`get` / `put` /
+  `post` / `delete` / `options` / `head` / `patch` / `trace`)
+- **Tags:** entries in the document-level `tags` array
+- **Component schemas:** keys under `components.schemas`
+- **Shared parameters:** keys under `components.parameters`
+- **Shared responses:** keys under `components.responses`
+
+| Inventory | Count |
+| --- | --- |
+| Paths | **41** |
+| Operations | **45** |
+| Tags | **6** |
+| Component schemas | **405** |
+| Shared parameters | **24** |
+| Shared responses | **14** |
+
+Document-level tag names (order as published): `Work`, `Factory`, `Runtime`,
+`Provider Sessions`, `Models`, `Workflows`.
+
+These counts match the installed artifact on this checkout (plan prose currently
+states the same path/operation/schema/parameter/response numbers). They are
+baseline observations for later drift detection, not permanent product limits or
+UI quotas.
