@@ -71,6 +71,55 @@ async function loadRouteFamilyPageMdxComponents(
     return mod.pageMdxComponents ?? {};
   }
 
+  if (section === "workers") {
+    switch (slug) {
+      case "agent": {
+        const mod = await import(
+          "@/content/docs/workers/agent/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "inference": {
+        const mod = await import(
+          "@/content/docs/workers/inference/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "script": {
+        const mod = await import(
+          "@/content/docs/workers/script/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "poller": {
+        const mod = await import(
+          "@/content/docs/workers/poller/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "model": {
+        const mod = await import(
+          "@/content/docs/workers/model/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "hosted": {
+        const mod = await import(
+          "@/content/docs/workers/hosted/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mock": {
+        const mod = await import(
+          "@/content/docs/workers/mock/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
   return {};
 }
 

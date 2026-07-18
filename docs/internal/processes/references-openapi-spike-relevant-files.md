@@ -8,7 +8,9 @@ the shipped `/docs/references/api` surface.
 - `src/lib/references-openapi-spike/dependency-selection.ts` — temporary
   `fumadocs-openapi` pin (`10.10.3` on Fumadocs 16.9) plus coordinated upgrade
   candidate (`11.2.2` with Fumadocs 16.10). Status is
-  `non-production-temporary`; W08 chooses production pins.
+  `non-production-temporary`. Production pins now live under W08:
+  `src/components/references/api/dependency-selection.ts` (see
+  `unified-api-reference-renderer-relevant-files.md`).
 - `src/lib/references-openapi-spike/dependency-selection.test.ts` — asserts
   installed package versions match the recorded selection and upgrade-risk
   notes.

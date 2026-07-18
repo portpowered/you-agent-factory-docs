@@ -13,7 +13,8 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   family renderers (W10)
 - publish final `/docs/references/*-schema` pages, nav, sitemap, or search
   inventories (W11+)
-- permanently pin production Fumadocs OpenAPI/AsyncAPI versions
+- permanently pin production Fumadocs OpenAPI/AsyncAPI versions (W08 owns
+  production OpenAPI pins under `src/components/references/api/`)
 - patch `node_modules`
 - read raw package JSON or filesystem paths from UI components — consume W04
   models / display projections (callers acquire via W03, normalize via W04)
