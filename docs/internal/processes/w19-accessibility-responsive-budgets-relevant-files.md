@@ -34,6 +34,7 @@ gates stay documented in
   - `src/lib/verify/a11y-reference-surface-contract.test.ts`
   - `src/lib/verify/a11y-reference-surface-probes.test.ts`
   - `src/lib/verify/a11y-reference-keyboard-contract.test.ts`
+  - `src/lib/verify/a11y-reference-screen-reader-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -109,10 +110,31 @@ gates stay documented in
   `[data-schema-field-expand]` is optional on the contract and proven via
   SchemaFieldTree fixtures.
 
+## Reference screen-reader / non-color status (story 005)
+
+* `src/lib/verify/a11y-reference-screen-reader-contract.ts` — labeled chrome
+  selectors (filters, nav/copy, schema `$ref`), non-color status kinds (HTTP
+  method, required/optional, canonicality, optional lifecycle), heading
+  hierarchy probe, and `expectReferenceScreenReaderChrome`. Failures fire when
+  a required control lacks an accessible name or status chrome is color-only.
+* Probe binders re-exported from `a11y-reference-surface-probes.ts`
+  (`expectReferenceLabeledChrome`, `expectReferenceNonColorStatus`,
+  `expectCoherentReferenceHeadingHierarchy`, `expectNoSeriousAxeViolations`).
+* Always-on proofs:
+  - `src/lib/verify/a11y-reference-screen-reader-contract.test.ts`
+  - `src/tests/a11y/reference-screen-reader.a11y.test.tsx` (API harness, events
+    stream + copy, FactorySchemaReference, lifecycle chrome; axe serious /
+    critical on each fixture)
+* Opt-in served probe:
+  `src/lib/verify/a11y-reference-screen-reader-page.test.ts` — API / events /
+  factory-schema at laptop + mobile with landmarks/headings/labels/non-color
+  status + Playwright axe. Same `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate;
+  prefer `VERIFY_BASE_URL` against static `out/` for local browser verify.
+
 ## Focused gate
 
 * Reproduce with `make a11y` (or `bun run test:a11y`).
-* Later W19 stories (axe, hash-focus, copy live regions, reduced motion,
+* Later W19 stories (hash-focus, copy live regions, reduced motion,
   long-token overflow, no-JS HTML) must enumerate
   `listReferenceOverflowMatrixCases()` / route ids from the contract — do not
   hard-code widths or reference paths in story tests.

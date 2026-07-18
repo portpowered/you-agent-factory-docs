@@ -268,6 +268,10 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `src/tests/a11y/reference-keyboard-navigation.a11y.test.tsx` +
   `a11y-reference-keyboard-contract` + opt-in served
   `a11y-reference-keyboard-page.test.ts`.
+* W19 story 005 screen-reader / non-color status: always-on
+  `src/tests/a11y/reference-screen-reader.a11y.test.tsx` +
+  `a11y-reference-screen-reader-contract` + opt-in served
+  `a11y-reference-screen-reader-page.test.ts` (axe serious/critical).
 
 ## Existing component a11y smokes
 

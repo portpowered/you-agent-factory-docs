@@ -28,6 +28,27 @@ import {
   type ReferenceKeyboardControlSpec,
 } from "./a11y-reference-keyboard-contract";
 import {
+  accessibleNameOf,
+  expectCoherentReferenceHeadingHierarchy,
+  expectReferenceLabeledChrome,
+  expectReferenceNonColorStatus,
+  expectReferenceScreenReaderChrome,
+  listReferenceLabeledControlsForRoute,
+  listReferenceNonColorStatusForRoute,
+  listRequiredReferenceLabeledControls,
+  listRequiredReferenceNonColorStatus,
+  probeReferenceHeadingHierarchy,
+  probeReferenceLabeledControl,
+  probeReferenceNonColorStatus,
+  REFERENCE_LABELED_CONTROLS,
+  REFERENCE_NON_COLOR_STATUS,
+  type ReferenceHeadingHierarchyProbe,
+  type ReferenceLabeledControlProbe,
+  type ReferenceLabeledControlSpec,
+  type ReferenceNonColorStatusProbe,
+  type ReferenceNonColorStatusSpec,
+} from "./a11y-reference-screen-reader-contract";
+import {
   getReferenceSurfaceRoute,
   getReferenceSurfaceViewport,
   INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS,
@@ -56,30 +77,52 @@ import {
   type ResponsiveOverflowProbeResult,
 } from "./a11y-responsive-probes";
 
-export type { ReferenceKeyboardControlProbe, ReferenceKeyboardControlSpec };
+export type {
+  ReferenceHeadingHierarchyProbe,
+  ReferenceKeyboardControlProbe,
+  ReferenceKeyboardControlSpec,
+  ReferenceLabeledControlProbe,
+  ReferenceLabeledControlSpec,
+  ReferenceNonColorStatusProbe,
+  ReferenceNonColorStatusSpec,
+};
 export {
+  accessibleNameOf,
   collectResponsiveOverflowProbe,
   evaluateReducedMotionChromeInBrowser,
   evaluateResponsiveOverflowInBrowser,
+  expectCoherentReferenceHeadingHierarchy,
   expectNoSeriousAxeViolations,
   expectReferenceKeyboardChrome,
+  expectReferenceLabeledChrome,
+  expectReferenceNonColorStatus,
+  expectReferenceScreenReaderChrome,
   findIntentionalHorizontalScrollContainers,
   hasReferenceVisibleFocusRingClass,
   isEffectivelyInstantMotion,
   isKeyboardFocusableElement,
   isPointerOnlyInteractiveElement,
   listReferenceKeyboardControlsForRoute,
+  listReferenceLabeledControlsForRoute,
+  listReferenceNonColorStatusForRoute,
   listRequiredReferenceKeyboardControls,
+  listRequiredReferenceLabeledControls,
+  listRequiredReferenceNonColorStatus,
   measurePageLevelOverflow,
   openA11yResponsiveBrowserSession,
   openA11yResponsivePageProbe,
   pageOverflowAllowsIntentionalScrollers,
   probeMotionDurationsFromStyle,
+  probeReferenceHeadingHierarchy,
   probeReferenceKeyboardControl,
   probeReferenceKeyboardControlsForRoute,
+  probeReferenceLabeledControl,
+  probeReferenceNonColorStatus,
   REDUCED_MOTION_CHROME_SELECTOR,
   REDUCED_MOTION_DURATION_THRESHOLD_MS,
   REFERENCE_KEYBOARD_CONTROLS,
+  REFERENCE_LABELED_CONTROLS,
+  REFERENCE_NON_COLOR_STATUS,
   resolveA11yResponsiveProbeUrl,
   runAxeOnElement,
 };
@@ -161,6 +204,7 @@ export type ReferenceSurfaceProbeBinding = {
     overflow: "collectReferenceSurfaceOverflowProbe";
     axe: "expectNoSeriousAxeViolations";
     keyboard: "expectReferenceKeyboardChrome";
+    screenReader: "expectReferenceScreenReaderChrome";
     reducedMotion: "evaluateReducedMotionChromeInBrowser";
     pageSession: "openReferenceSurfacePageProbe";
   };
@@ -178,6 +222,7 @@ export function listReferenceSurfaceProbeBindings(): ReferenceSurfaceProbeBindin
       overflow: "collectReferenceSurfaceOverflowProbe",
       axe: "expectNoSeriousAxeViolations",
       keyboard: "expectReferenceKeyboardChrome",
+      screenReader: "expectReferenceScreenReaderChrome",
       reducedMotion: "evaluateReducedMotionChromeInBrowser",
       pageSession: "openReferenceSurfacePageProbe",
     },

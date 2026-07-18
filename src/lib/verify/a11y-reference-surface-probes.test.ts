@@ -50,6 +50,7 @@ describe("a11y-reference-surface probe helpers", () => {
       overflow: "collectReferenceSurfaceOverflowProbe",
       axe: "expectNoSeriousAxeViolations",
       keyboard: "expectReferenceKeyboardChrome",
+      screenReader: "expectReferenceScreenReaderChrome",
       reducedMotion: "evaluateReducedMotionChromeInBrowser",
       pageSession: "openReferenceSurfacePageProbe",
     });
