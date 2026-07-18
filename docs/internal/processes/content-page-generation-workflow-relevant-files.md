@@ -945,6 +945,27 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `route-family-local-docs-page-load.ts`
   Generic local-message disk loader for the four direct route families; uses
   `getDocsPageDir` so nested child bundles resolve.
+* `src/lib/content/published-docs-registry-contract.ts` /
+  `src/lib/content/content-hrefs.ts`
+  `PUBLISHED_DOCS_SECTIONS` includes `workers` with `workersPageHref` and
+  `publishedDocsHrefFromEntry` so authored `/docs/workers/<slug>` (including
+  nested slugs) validate and resolve without
+  `Unsupported published docs section`. Do not treat this as W15–W18 nav /
+  search / sitemap / compat inventory ownership — those stay deferred.
+* `src/lib/content/published-docs-registry-contract.test.ts`
+  Workers section membership, nested href proofs, and unchanged CLI section
+  href behavior.
+* `src/content/docs/workers/` family index composition (W13)
+  `/docs/workers` stays an App Router family index (not
+  `workers/page.mdx` — `isLocalDocsPageBundlePath` rejects section-root
+  bundles). Authored overview/selection/shared-fields/schema embed live as
+  page-local messages + React composition under `src/content/docs/workers/`
+  (`render-workers-family-index.tsx`, `WorkersFamilyIndexContent.tsx`,
+  `WorkerBaseSchemaEmbed.tsx` via W07 `SchemaReference` addressed to
+  `/$defs/Worker`). Registry id `documentation.workers-family`. Unshipped
+  locales fall back to `messages/en.json`. Wire
+  `src/app/(site)/docs/workers/page.tsx` and the locale mirror to
+  `renderWorkersFamilyIndexPage` instead of the empty collection contract.
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).

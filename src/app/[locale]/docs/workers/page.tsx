@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { renderSectionCollectionIndexPage } from "@/app/(site)/site-renderers";
-import { loadUiMessages } from "@/lib/content/ui-messages";
+import { loadWorkersFamilyIndexBundle } from "@/content/docs/workers/load-workers-family-index";
+import { renderWorkersFamilyIndexPage } from "@/content/docs/workers/render-workers-family-index";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { resolveMetadataLocale } from "../../localized-shell-metadata";
 
@@ -12,11 +12,11 @@ export async function generateMetadata({
   params,
 }: LocalizedWorkersIndexPageProps): Promise<Metadata> {
   const locale = await resolveMetadataLocale(params);
-  const messages = await loadUiMessages(locale);
+  const bundle = await loadWorkersFamilyIndexBundle(locale);
 
   return {
-    title: messages.workersIndex.title,
-    description: messages.workersIndex.description,
+    title: bundle.messages.title,
+    description: bundle.messages.description,
     alternates: localizedRouteAlternates({
       surface: "docs-page",
       slug: "workers",
@@ -28,5 +28,5 @@ export default async function LocalizedWorkersIndexPage({
   params,
 }: LocalizedWorkersIndexPageProps) {
   const locale = await resolveMetadataLocale(params);
-  return renderSectionCollectionIndexPage("workers", locale);
+  return renderWorkersFamilyIndexPage(locale);
 }
