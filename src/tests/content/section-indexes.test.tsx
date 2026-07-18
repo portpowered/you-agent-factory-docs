@@ -490,6 +490,9 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain("You-config schema");
     expect(html).toContain("/docs/references/you-config-schema");
     expect(html).toContain("You operator and system configuration JSON Schema");
+    expect(html).toContain("Mock-workers schema");
+    expect(html).toContain("/docs/references/mock-workers-schema");
+    expect(html).toContain("mock-worker configuration JSON Schema");
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,

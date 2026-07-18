@@ -191,6 +191,7 @@ describe("W05 route-family static params and not-found", () => {
     );
     expect(defaultPaths).toContain("references/factory-schema");
     expect(defaultPaths).toContain("references/you-config-schema");
+    expect(defaultPaths).toContain("references/mock-workers-schema");
 
     for (const id of ["factories", "workers", "workstations"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
