@@ -184,6 +184,9 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultPaths).not.toContain("__no_docs_pages__");
     expect(defaultPaths).toContain("references/api");
 
+    // W11 published the events reference page under the references family.
+    expect(defaultPaths).toContain("references/events");
+
     // W13 authored Worker variant pages enter the default-locale catch-all
     // compile graph via published-page discovery.
     const workersChildren = defaultPaths.filter((path) =>
@@ -221,7 +224,7 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams include shipped references children without unshipped workers children", async () => {
+  test("live localized generateStaticParams include shipped references/api without unshipped events or workers children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
@@ -229,8 +232,11 @@ describe("W05 route-family static params and not-found", () => {
       (entry.slug ?? []).join("/"),
     );
     expect(slugPaths).toContain("references/api");
-    // Worker variant pages currently ship English-only messages, so they do
-    // not enter shipped-locale catch-all params yet.
+    // references/events and worker variants currently ship English-only
+    // messages, so they do not enter shipped-locale catch-all params yet.
+    expect(slugPaths.some((path) => path.startsWith("references/events"))).toBe(
+      false,
+    );
     for (const id of ["factories", "workers", "workstations"] as const) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

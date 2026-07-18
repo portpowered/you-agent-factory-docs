@@ -1,0 +1,436 @@
+/**
+ * Page-owned behavioral coverage for /docs/references/events.
+ *
+ * Proves published-route success and non-success outcomes, hybrid ownership
+ * markers, and no-live-connection safety markers. Does not scan renderer
+ * source trees, enforce global registration inventories, or re-test W09
+ * inventory-drift logic.
+ */
+import { afterEach, describe, expect, test } from "bun:test";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import {
+  isLocalDocsCatchAllSlug,
+  loadLocalDocsPage,
+  parseLocalDocsPageRef,
+} from "@/lib/content/local-docs-page";
+import {
+  EVENT_IDENTITY_HANDSHAKE_HEADER_NAMES,
+  EVENT_RECONNECT_CURSOR_PARAM_NAMES,
+  EVENT_STREAM_SAFETY,
+  LOCKED_EVENT_STREAM_PLACEMENT,
+  type SseStaticExamplesCorpus,
+} from "@/lib/references/events";
+import { source } from "@/lib/source";
+import {
+  EventsCorpusMountView,
+  type ResolvedCorpusMount,
+} from "./EventsCorpusMount";
+
+const PAGE_OWNED_SSE_FIXTURE: SseStaticExamplesCorpus = {
+  examples: [
+    {
+      id: "frame-example",
+      kind: "sse-frame",
+      title: "Static frame",
+      description: "Wire-shape fixture only.",
+      language: "text",
+      code: "id: 1\nevent: factory\ndata: {}\n\n",
+      origin: "illustrative-static-fixture",
+      originLabel: "Illustrative static fixture",
+      includesSseWireFields: true,
+    },
+    {
+      id: "reconnect-example",
+      kind: "reconnect-request",
+      title: "Static reconnect",
+      description: "No live EventSource.",
+      language: "http",
+      code: "GET /factory-sessions/{session_id}/events?after_event_id=42\n",
+      origin: "illustrative-static-fixture",
+      originLabel: "Illustrative static fixture",
+    },
+  ],
+  safety: EVENT_STREAM_SAFETY,
+  anchors: {
+    section: "event-sse-static-examples",
+    frame: "event-sse-frame-example",
+    reconnect: "event-sse-reconnect-example",
+    jsonProbe: "event-sse-json-reconnect-probe-example",
+  },
+};
+
+const PAGE_RENDER_TIMEOUT_MS = 60_000;
+
+describe("events reference page published-route states", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  test("parses references local-docs refs for the events page", () => {
+    expect(parseLocalDocsPageRef(["references", "events"])).toEqual({
+      section: "references",
+      slug: "events",
+    });
+    expect(isLocalDocsCatchAllSlug(["references", "events"])).toBe(true);
+    expect(parseLocalDocsPageRef(["unknown", "events"])).toBeNull();
+  });
+
+  test(
+    "success corpus render presents EventsSurface success state on the published route",
+    async () => {
+      const fumadocsPage = source.getPage(["references", "events"]);
+      expect(fumadocsPage).toBeDefined();
+      expect(fumadocsPage?.url).toBe("/docs/references/events");
+
+      const loadedPage = await loadLocalDocsPage({
+        section: "references",
+        slug: "events",
+      });
+
+      expect(loadedPage.frontmatter.kind).toBe("reference");
+      expect(loadedPage.frontmatter.registryId).toBe("reference.events");
+      expect(loadedPage.messages.title).toBe("Events");
+      expect(loadedPage.messages.description).toMatch(
+        /FactoryEvent and FactoryResponseEvent/i,
+      );
+      expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+
+      const whatItCovers = String(
+        loadedPage.messages.sections?.whatItCovers?.body ?? "",
+      );
+      const keyConcepts = String(
+        loadedPage.messages.sections?.keyConcepts?.body ?? "",
+      );
+      const eventCorpus = String(
+        loadedPage.messages.sections?.eventCorpus?.body ?? "",
+      );
+      const howToUse = String(
+        loadedPage.messages.sections?.howToUse?.body ?? "",
+      );
+      const limits = String(
+        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+      );
+      expect(whatItCovers).toMatch(/FactoryEvent and FactoryResponseEvent/i);
+      expect(whatItCovers).toMatch(/stream-role labeling/i);
+      expect(whatItCovers).toMatch(
+        /HTTP transport mechanics stay with the API/i,
+      );
+      expect(keyConcepts).toMatch(/Hybrid placement/i);
+      expect(eventCorpus).toMatch(/packaged OpenAPI/i);
+      expect(eventCorpus).toMatch(/three stream operations/i);
+      expect(eventCorpus).toMatch(/FactoryEvent envelope/i);
+      expect(eventCorpus).toMatch(/FactoryResponseEvent envelope/i);
+      expect(eventCorpus).toMatch(/reconnect cursor precedence/i);
+      expect(eventCorpus).toMatch(/JSON reconnect-probe/i);
+      expect(eventCorpus).toMatch(/static SSE frame examples/i);
+      expect(eventCorpus).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(howToUse).toMatch(/durable event-stream lookup/i);
+      expect(howToUse).toMatch(/static SSE frame examples/i);
+      expect(limits).toMatch(/static hybrid events reference/i);
+      expect(limits).toMatch(/does not open a live EventSource/i);
+      expect(limits).toMatch(/wire-shape fixtures only/i);
+      expect(limits).toMatch(/does not re-implement the API OpenAPI UI/i);
+      expect(whatItCovers).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(keyConcepts).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(howToUse).not.toMatch(
+        /on this page|Model Atlas|reader.?shortcut/i,
+      );
+      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+
+      const links = loadedPage.messages.links as
+        | Record<string, string>
+        | undefined;
+      expect(links?.apiReference).toMatch(/API reference/i);
+
+      render(
+        <main>
+          <DocsPageProviders
+            messages={loadedPage.messages}
+            assets={loadedPage.assets}
+          >
+            {loadedPage.content}
+          </DocsPageProviders>
+        </main>,
+      );
+
+      expect(
+        screen.getByRole("heading", { name: "What It Covers" }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Key Concepts" }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Event Corpus" }),
+      ).toBeTruthy();
+      expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { name: "Limits And Assumptions" }),
+      ).toBeTruthy();
+      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+
+      const related = document.getElementById("related");
+      expect(related).toBeTruthy();
+      const relatedQueries = within(related as HTMLElement);
+      expect(
+        relatedQueries
+          .getByRole("link", { name: "API reference" })
+          .getAttribute("href"),
+      ).toBe("/docs/references/api");
+
+      const mount = screen.getByTestId("events-corpus-mount");
+      expect(mount.getAttribute("data-events-page-path")).toBe(
+        "/docs/references/events",
+      );
+
+      const surface = screen.getByTestId("events-surface");
+      expect(surface.getAttribute("data-events-status")).toBe("success");
+      expect(surface.getAttribute("data-events-ownership")).toBe(
+        "w09-production",
+      );
+      expect(surface.getAttribute("data-events-placement")).toBe(
+        LOCKED_EVENT_STREAM_PLACEMENT,
+      );
+      expect(surface.getAttribute("data-events-asyncapi-permanent-pin")).toBe(
+        "false",
+      );
+
+      const operations = screen.getByTestId("event-stream-operations-list");
+      expect(operations.getAttribute("data-event-stream-count")).toBe("3");
+      expect(
+        screen.getByText("Canonical session-scoped FactoryEvent stream"),
+      ).toBeTruthy();
+      expect(
+        screen.getByText("Ephemeral FactoryResponseEvent stream"),
+      ).toBeTruthy();
+      expect(
+        screen.getByText(
+          "Compatibility-only process-global FactoryEvent stream",
+        ),
+      ).toBeTruthy();
+      const operationsQueries = within(operations);
+      expect(
+        operationsQueries.getByText("/factory-sessions/{session_id}/events"),
+      ).toBeTruthy();
+      expect(
+        operationsQueries.getByText(
+          "/factory-sessions/{session_id}/response-events",
+        ),
+      ).toBeTruthy();
+      expect(operationsQueries.getByText("/events")).toBeTruthy();
+
+      const factoryEventCatalog = screen.getByTestId(
+        "factory-event-catalog-section",
+      );
+      expect(factoryEventCatalog.getAttribute("data-event-catalog")).toBe(
+        "FactoryEvent",
+      );
+      expect(
+        Number(
+          factoryEventCatalog.getAttribute("data-event-catalog-mapping-count"),
+        ),
+      ).toBeGreaterThan(0);
+
+      const factoryResponseCatalog = screen.getByTestId(
+        "factory-response-event-catalog-section",
+      );
+      expect(factoryResponseCatalog.getAttribute("data-event-catalog")).toBe(
+        "FactoryResponseEvent",
+      );
+      expect(
+        factoryResponseCatalog.getAttribute("data-event-cartesian-valid"),
+      ).toBe("false");
+      expect(factoryResponseCatalog.getAttribute("data-event-ephemeral")).toBe(
+        "true",
+      );
+      expect(
+        Number(
+          factoryResponseCatalog.getAttribute(
+            "data-event-catalog-payload-count",
+          ),
+        ),
+      ).toBeGreaterThan(0);
+
+      const reconnectLifecycle = screen.getByTestId(
+        "event-reconnect-lifecycle-section",
+      );
+      expect(reconnectLifecycle).toBeTruthy();
+
+      const reconnectContract = screen.getByTestId("event-reconnect-contract");
+      expect(
+        reconnectContract.getAttribute("data-event-reconnect-precedence"),
+      ).toBe("after_event_id-wins-when-both-present");
+      for (const name of EVENT_RECONNECT_CURSOR_PARAM_NAMES) {
+        expect(
+          reconnectContract.querySelector(
+            `[data-event-reconnect-cursor-param="${name}"]`,
+          ),
+        ).toBeTruthy();
+      }
+
+      const identity = screen.getByTestId("event-identity-handshake");
+      expect(
+        identity.getAttribute("data-event-stream-generation-invalidates"),
+      ).toBe("true");
+      for (const name of EVENT_IDENTITY_HANDSHAKE_HEADER_NAMES) {
+        expect(
+          identity.querySelector(
+            `[data-event-identity-handshake-header="${name}"]`,
+          ),
+        ).toBeTruthy();
+      }
+
+      const lifecycle = screen.getByTestId("event-stream-lifecycle");
+      expect(lifecycle.getAttribute("data-event-stream-gap-kind")).toBe(
+        "STREAM_GAP",
+      );
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-retained]")?.textContent,
+      ).toMatch(/retained history/i);
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-keepalive]")
+          ?.textContent,
+      ).toMatch(/keep-alive/i);
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-gap]")?.textContent,
+      ).toContain("STREAM_GAP");
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-stale-cursor]")
+          ?.textContent,
+      ).toMatch(/CURSOR_STALE|stale/i);
+
+      const jsonProbe = screen.getByTestId("event-json-reconnect-probe");
+      expect(
+        jsonProbe.getAttribute("data-event-json-reconnect-recovery-schema"),
+      ).toBe("FactorySessionEventStreamRecovery");
+      expect(
+        jsonProbe.getAttribute("data-event-http-transport-ownership"),
+      ).toBe("api-operation-page");
+
+      const sseExamples = screen.getByTestId("sse-static-examples-section");
+      expect(sseExamples.getAttribute("data-sse-live-connection")).toBe(
+        "false",
+      );
+      expect(sseExamples.getAttribute("data-sse-proxy")).toBe("false");
+      expect(screen.getAllByTestId("sse-frame-example").length).toBeGreaterThan(
+        0,
+      );
+      expect(
+        screen.getAllByTestId("sse-reconnect-example").length,
+      ).toBeGreaterThan(0);
+
+      const bodyText = document.body.textContent ?? "";
+      expect(bodyText).toMatch(/FactoryEvent and FactoryResponseEvent/i);
+      expect(bodyText).toMatch(/Hybrid placement/i);
+      expect(bodyText).toMatch(/never preferred/i);
+      expect(bodyText).toMatch(/Reconnect cursors/i);
+      expect(bodyText).toMatch(/JSON reconnect probe/i);
+      expect(bodyText).toMatch(/Static SSE frame and reconnect examples/i);
+      expect(bodyText).not.toMatch(/Model Atlas/i);
+      expect(bodyText).not.toMatch(/Non-production events renderer harness/i);
+    },
+    PAGE_RENDER_TIMEOUT_MS,
+  );
+
+  test("empty corpus mount shows accessible EventsStatus empty messaging", () => {
+    const resolved: ResolvedCorpusMount = {
+      status: "empty",
+      statusTitle: "Empty event corpus",
+      statusMessage:
+        "No FactoryEvent or FactoryResponseEvent stream operations were published for this artifact.",
+      summaries: [],
+    };
+
+    render(<EventsCorpusMountView resolved={resolved} />);
+
+    const mount = screen.getByTestId("events-corpus-mount");
+    expect(mount.getAttribute("data-events-page-path")).toBe(
+      "/docs/references/events",
+    );
+
+    const status = screen.getByTestId("events-status");
+    expect(status.getAttribute("data-events-status")).toBe("empty");
+    expect(status.getAttribute("role")).toBe("status");
+    expect(
+      screen.getByRole("status", { name: "Empty event corpus" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        "No FactoryEvent or FactoryResponseEvent stream operations were published for this artifact.",
+      ),
+    ).toBeTruthy();
+
+    expect(screen.queryByTestId("event-stream-operations-list")).toBeNull();
+    expect(screen.queryByTestId("factory-event-catalog-section")).toBeNull();
+    expect(
+      screen.queryByTestId("factory-response-event-catalog-section"),
+    ).toBeNull();
+    expect(
+      screen.queryByTestId("event-reconnect-lifecycle-section"),
+    ).toBeNull();
+    expect(screen.queryByTestId("sse-static-examples-section")).toBeNull();
+    expect(document.body.textContent ?? "").not.toMatch(/^\s*$/);
+  });
+
+  test("error corpus mount shows accessible EventsStatus alert messaging", () => {
+    const resolved: ResolvedCorpusMount = {
+      status: "error",
+      statusTitle: "Corpus error",
+      statusMessage: "OpenAPI resolution rejected the event corpus.",
+      summaries: [],
+    };
+
+    render(<EventsCorpusMountView resolved={resolved} />);
+
+    const mount = screen.getByTestId("events-corpus-mount");
+    expect(mount.getAttribute("data-events-page-path")).toBe(
+      "/docs/references/events",
+    );
+
+    const status = screen.getByTestId("events-status");
+    expect(status.getAttribute("data-events-status")).toBe("error");
+    expect(status.getAttribute("role")).toBe("alert");
+    expect(screen.getByRole("alert", { name: "Corpus error" })).toBeTruthy();
+    expect(
+      screen.getByText("OpenAPI resolution rejected the event corpus."),
+    ).toBeTruthy();
+
+    expect(screen.queryByTestId("event-stream-operations-list")).toBeNull();
+    expect(screen.queryByTestId("sse-static-examples-section")).toBeNull();
+    expect(document.body.textContent ?? "").not.toMatch(/^\s*$/);
+  });
+
+  test("hybrid ownership and no-live-connection markers stay page-owned", () => {
+    const resolved: ResolvedCorpusMount = {
+      status: "success",
+      summaries: [],
+      sseStaticExamples: PAGE_OWNED_SSE_FIXTURE,
+    };
+
+    render(<EventsCorpusMountView resolved={resolved} />);
+
+    const surface = screen.getByTestId("events-surface");
+    expect(surface.getAttribute("data-events-status")).toBe("success");
+    expect(surface.getAttribute("data-events-ownership")).toBe(
+      "w09-production",
+    );
+    expect(surface.getAttribute("data-events-placement")).toBe(
+      LOCKED_EVENT_STREAM_PLACEMENT,
+    );
+    expect(surface.getAttribute("data-events-asyncapi-permanent-pin")).toBe(
+      "false",
+    );
+
+    const sseExamples = screen.getByTestId("sse-static-examples-section");
+    expect(sseExamples.getAttribute("data-sse-live-connection")).toBe("false");
+    expect(sseExamples.getAttribute("data-sse-proxy")).toBe("false");
+    expect(screen.getByTestId("sse-frame-example")).toBeTruthy();
+    expect(screen.getByTestId("sse-reconnect-example")).toBeTruthy();
+  });
+});

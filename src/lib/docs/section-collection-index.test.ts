@@ -283,6 +283,7 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("API");
     expect(html).toContain("/docs/references/api");
+    expect(html).toContain("/docs/references/events");
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(html).not.toContain("/docs/documentation/");
   });
@@ -382,7 +383,7 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
     }
   });
 
-  test("renders localized references indexes with authored page entries", async () => {
+  test("renders localized references indexes with authored api entries only", async () => {
     for (const locale of ["ja", "zh-CN", "vi"] as const) {
       const messages = await loadUiMessages(locale);
       const html = renderToStaticMarkup(
@@ -394,6 +395,7 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
         `aria-label="${messages.referencesIndex.listLabel}"`,
       );
       expect(html).toContain(`/${locale}/docs/references/api`);
+      expect(html).not.toContain(`/${locale}/docs/references/events`);
       expect(html).not.toContain(messages.referencesIndex.emptyTitle);
     }
   });

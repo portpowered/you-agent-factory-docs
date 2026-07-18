@@ -478,7 +478,7 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.workstationsIndex.title).toBe("Workstations");
   });
 
-  it("renders the references index with authored page entries", async () => {
+  it("renders the references index with authored api and events entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = messages.referencesIndex;
     const html = renderToStaticMarkup(await ReferencesIndexPage());
@@ -488,7 +488,9 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("API");
     expect(html).toContain("/docs/references/api");
+    expect(html).toContain("/docs/references/events");
     expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(html).not.toContain("/docs/documentation/");
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
@@ -497,7 +499,7 @@ describe("W05 direct route-family section index pages", () => {
     );
   });
 
-  it("renders the japanese references index with localized title and authored page entries", async () => {
+  it("renders the japanese references index with localized api entries only", async () => {
     const messages = await loadUiMessages("ja");
     const html = renderToStaticMarkup(
       await LocalizedReferencesIndexPage({
@@ -510,6 +512,7 @@ describe("W05 direct route-family section index pages", () => {
       `aria-label="${messages.referencesIndex.listLabel}"`,
     );
     expect(html).toContain("/ja/docs/references/api");
+    expect(html).not.toContain("/ja/docs/references/events");
     expect(html).not.toContain(messages.referencesIndex.emptyTitle);
   });
 
