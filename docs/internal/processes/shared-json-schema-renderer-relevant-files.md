@@ -33,6 +33,10 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-constraint-list.tsx` | Enum/const/pattern/range/length/items/uniqueness/additionalProperties list |
 | `src/components/references/schema/schema-constraint-entries.ts` | Pure constraint → labeled entry projection (no invented values) |
 | `src/components/references/schema/schema-field-metadata.test.tsx` | Field metadata display proofs (type/required/default/constraints) |
+| `src/components/references/schema/schema-field-path.ts` | Pure path/leaf helpers + tree-node builders; `$ref` expand guard |
+| `src/components/references/schema/schema-field-row.tsx` | Accessible field row (name/path/type/required/description + expand) |
+| `src/components/references/schema/schema-field-tree.tsx` | Recursive field tree with disclosure semantics and `$ref` placeholder |
+| `src/components/references/schema/schema-field-tree.test.tsx` | Field tree/row keyboard expand + path + `$ref` non-recursion proofs |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -58,6 +62,11 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   rows without inventing absent enum/const/pattern/range facts.
 - `SchemaDefaultValue` is a client component (clipboard via `useCopyButton`);
   keep pure formatting in `formatSchemaValue` / `listSchemaConstraintEntries`.
+- `SchemaFieldTree` / `SchemaFieldRow` are client components (expand state).
+  Pass pre-resolved `SchemaFieldTreeNode` children — do not walk `$ref`
+  targets in the UI. `$ref` rows show a placeholder until SchemaRefLink.
+  Use `schemaFieldTreeNodeCanExpand` so refs never recurse even if children
+  were accidentally attached.
 
 ## Verification preference
 

@@ -23,6 +23,21 @@ export {
   type SchemaDefaultValueProps,
 } from "./schema-default-value";
 export {
+  schemaFieldHasRefTarget,
+  schemaFieldLeafName,
+  schemaFieldTreeNodeCanExpand,
+  schemaFieldTreeNodesFromFields,
+  schemaFieldTreeNodesFromProperties,
+} from "./schema-field-path";
+export {
+  SchemaFieldRow,
+  type SchemaFieldRowProps,
+} from "./schema-field-row";
+export {
+  SchemaFieldTree,
+  type SchemaFieldTreeProps,
+} from "./schema-field-tree";
+export {
   SchemaRequiredBadge,
   type SchemaRequiredBadgeProps,
 } from "./schema-required-badge";
@@ -40,6 +55,7 @@ export {
   type SchemaDefinitionInput,
   type SchemaDisplayInput,
   type SchemaFieldInput,
+  type SchemaFieldTreeNode,
   type SchemaStatusProps,
   type SchemaUiStatus,
   type SchemaUiStatusKind,
