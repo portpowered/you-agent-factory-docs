@@ -29,6 +29,8 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/factory-variant-overlay-registry.test.ts` | Registry completeness against installed Factory enums via W03 `resolveApiPackageArtifact("schemas/factory")`; missing/unknown fail closed; mock-workers excluded |
 | `src/lib/references/overlays/factory-variant-field-semantics.ts` | Typed shared/selected/excluded/conditional meanings + `resolveFactoryVariantApplicableFields` against W04 `SchemaDefinitionModel` (no IO; never invents absent fields) |
 | `src/lib/references/overlays/factory-variant-field-semantics.test.ts` | Applicability resolution: excluded omission, conditional `conditionId` gates, no invented base fields |
+| `src/lib/references/overlays/factory-variant-compatibility-matrix.ts` | Pure `FactoryVariantCompatibilityMatrix` + companion validation against the overlay registry (no IO); minimal authored Worker ↔ Workstation ↔ behavior facts |
+| `src/lib/references/overlays/factory-variant-compatibility-matrix.test.ts` | Missing required / unknown compatible companions fail closed with overlay + companion diagnostics; minimal matrix validates against installed registry |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
@@ -60,8 +62,16 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   active `conditionId` (default: none active). Never invent
   `SchemaFieldModel` entries for paths absent from the base — fail closed by
   default, or omit when `failOnUnknownBaseFields: false`.
-- Later stories own companion matrices and package-backed
-  field/discriminator validation.
+- Companion facts live in `FactoryVariantCompatibilityMatrix` (overlay ID →
+  compatible/required companion overlay IDs). Validate with
+  `validateFactoryVariantCompanionRefs` /
+  `validateFactoryVariantCompatibilityMatrix`: unknown compatible IDs and
+  required IDs absent from the registry fail closed; required implies
+  compatible. Minimal authored facts may deepen later without changing the
+  contract shape. Apply facts onto overlays with
+  `applyFactoryVariantCompatibilityFactToOverlay` when needed.
+- Later stories own package-backed field/discriminator validation and
+  incompatible field-selection detection.
 
 ## Verification
 
