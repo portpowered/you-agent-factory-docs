@@ -61,6 +61,10 @@ describe("primary navigation accessibility smoke", () => {
       "Home",
       "Guides",
       "Docs",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
       "Glossary",
       "Blog",
     ]);
@@ -68,6 +72,10 @@ describe("primary navigation accessibility smoke", () => {
       "/",
       "/docs/guides",
       "/browse",
+      "/docs/references",
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
       "/docs/glossary",
       "/blog",
     ]);

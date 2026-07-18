@@ -32,7 +32,15 @@ and the shared related-registry-docs component/blog wrapper.
 * `src/lib/content/published-docs-registry-ids.ts`
   `PUBLISHED_DOCS_REGISTRY_IDS`, `getPublishedDocsHrefForRecord`.
 * `src/lib/content/registry-runtime.ts`
-  `getRegistryRecordById` for synchronous registry lookup.
+  `getRegistryRecordById` / `listRelatedRegistryRecords` for synchronous
+  related-doc lookup (includes documentation + reference family records for
+  W15 topology, not only concept/dataset/organization).
+* `src/lib/content/w15-family-related-overrides.ts`
+  Explicit high-value cross-family related override pairs consumed by
+  curated related-doc derivation (`related-docs.ts`).
+* `src/lib/navigation/w15-family-related-docs.test.tsx`
+  W15 story 006 behavioral proof for family-aware related-doc derivation and
+  cross-family override rendering.
 
 ## Shared UI component (story 002)
 

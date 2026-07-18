@@ -22,7 +22,11 @@
     "blog": "Blog",
     "glossary": "Glossary",
     "timeline": "Timeline",
-    "tags": "Tags"
+    "tags": "Tags",
+    "references": "References",
+    "factories": "Factories",
+    "workers": "Workers",
+    "workstations": "Workstations"
   },
   "language": {
     "open": "Switch language",
@@ -58,7 +62,11 @@
       "guides": "Guides",
       "concepts": "Concepts",
       "techniques": "Techniques",
-      "documentation": "Program documentation"
+      "documentation": "Program documentation",
+      "references": "References",
+      "factories": "Factories",
+      "workers": "Workers",
+      "workstations": "Workstations"
     },
     "conceptsGroups": {
       "harnesses": "Harnesses",

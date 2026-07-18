@@ -59,6 +59,10 @@ describe("Phase 1 home shell styling contracts", () => {
       "/",
       "/docs/guides",
       "/browse",
+      "/docs/references",
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
       "/docs/glossary",
       "/blog",
     ]);

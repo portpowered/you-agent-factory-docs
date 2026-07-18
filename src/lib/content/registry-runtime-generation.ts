@@ -604,7 +604,7 @@ function listDirectClassificationMembers(
   const members: ClassificationMember[] = [];
 
   for (const record of listRelatedRegistryRecords()) {
-    if (record.kind === "organization") {
+    if (record.kind !== "concept" && record.kind !== "dataset") {
       continue;
     }
 
@@ -875,16 +875,32 @@ export function listCitationRecords(): CitationRecord[] {
   return [...citationRecords];
 }
 
+function getRelatedCapableRecordById(
+  registryId: string,
+): RelatedRegistryRecord | undefined {
+  return (
+    getTaggedRecordById(registryId) ??
+    documentationById.get(registryId) ??
+    referencesById.get(registryId)
+  );
+}
+
 /** Registry records used for derived related-document groups. */
 export function listRelatedRegistryRecords(): RelatedRegistryRecord[] {
-  return [...conceptRecords, ...datasetRecords, ...organizationRecords];
+  return [
+    ...conceptRecords,
+    ...datasetRecords,
+    ...organizationRecords,
+    ...documentationRecords,
+    ...referenceRecords,
+  ];
 }
 
 /** Synchronous registry lookup for related-doc capable registry records. */
 export function getRegistryRecordById(
   registryId: string,
 ): RelatedRegistryRecord | undefined {
-  return getTaggedRecordById(registryId);
+  return getRelatedCapableRecordById(registryId);
 }
 
 /** Registry ids with a published docs page (used to avoid broken related links). */

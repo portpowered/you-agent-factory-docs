@@ -21,6 +21,10 @@ describe("explorer labels", () => {
       concepts: FACTORY_EXPLORER_FOLDER_LABELS.concepts,
       techniques: FACTORY_EXPLORER_FOLDER_LABELS.techniques,
       documentation: FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+      references: FACTORY_EXPLORER_FOLDER_LABELS.references,
+      factories: FACTORY_EXPLORER_FOLDER_LABELS.factories,
+      workers: FACTORY_EXPLORER_FOLDER_LABELS.workers,
+      workstations: FACTORY_EXPLORER_FOLDER_LABELS.workstations,
     });
     expect(explorer.folders.documentation).toBe(
       FACTORY_SIDEBAR_FOLDER_LABELS.documentation,
@@ -87,6 +91,10 @@ describe("explorer labels", () => {
           concepts: "Concepts",
           techniques: "Techniques",
           documentation: "Program documentation",
+          references: "References",
+          factories: "Factories",
+          workers: "Workers",
+          workstations: "Workstations",
         },
         conceptsGroups: {
           harnesses: "Harnesses",

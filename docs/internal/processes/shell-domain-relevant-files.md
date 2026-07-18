@@ -53,7 +53,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/features/docs/components/DocsPageBreadcrumb.tsx`
   Docs breadcrumbs only emit a collection crumb for accepted factory route
   slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are
-  not public crumbs.
+  not public crumbs. W15 family crumbs use topology `messages.nav.*` labels
+  (references/factories/workers/workstations); explorer folder messages cover
+  CLI collection crumbs; deeper slug ancestry (segments between family and
+  leaf) becomes intermediate linked crumbs rather than collapsing to one path.
+* `src/lib/navigation/w15-family-breadcrumbs.test.tsx`
+  Nested-family breadcrumb proofs: Home → family index → page title for each
+  W15 family, localized nav labels across shipped locales, and deeper ancestry
+  between family and leaf.
 * `src/lib/navigation/docs-sidebar-adapter.ts`
   Factory docs shell sidebar labels, grouping resolvers, explorer collection
   ids (no Glossary folder), and `getDocsShellPageTreeSettings()` for public
@@ -263,20 +270,52 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   section-index copy stays Atlas-free.
 * `src/lib/content/factory-breadcrumb-sidebar.ts`
   Factory breadcrumb/sidebar contract: `FACTORY_NAV_COLLECTION_IDS`,
+  `FACTORY_SIDEBAR_COLLECTION_IDS` (CLI collections + W15 route families in
+  topology order references → factories → workers → workstations),
   `FACTORY_SIDEBAR_FOLDER_LABELS`, retired Atlas nav collection/label
   denylists, and fail-closed asserts used by `DocsPageBreadcrumb` /
   `buildDocsSidebarSectionNodes` so chrome never advertises retired Atlas
-  collection crumbs or sidebar destinations.
+  collection crumbs or sidebar destinations. Glossary stays out of the
+  explorer folder list.
 * `src/lib/content/factory-breadcrumb-sidebar.test.tsx`
   Required-suite proof that breadcrumbs resolve Home → factory collection →
   page for guides/concepts/techniques/documentation, sidebar folders stay
-  factory-only with published page links, and retired Atlas section slugs
-  never become collection crumbs.
+  factory-only with published page links (including W15 family folders), and
+  retired Atlas section slugs never become collection crumbs.
+* `src/lib/navigation/w15-family-sidebar-discovery.test.ts`
+  W15 story 003 proof: four family folders appear in topology relative order
+  with settled published page children only (no operation / event-variant /
+  schema-definition inventory paths in the global explorer).
 * `src/lib/content/factory-prev-next-related.ts`
   Factory previous/next and related-link contract: footer neighbor resolution
-  mirroring Fumadocs `useFooterItems`, plus fail-closed asserts used by
+  mirroring Fumadocs `useFooterItems`, W15 family-scoped linearization
+  (`collectFamilyDocsFooterPageItems` / `resolveFamilyScopedDocsFooterNeighbors`)
+  so family pages omit directions at family edges instead of crossing into
+  other collections, plus fail-closed asserts used by
   `resolveRelatedRegistryDocs` / `RelatedDocs` / `DerivedRelatedDocs` so
   navigation never advertises deleted Atlas destinations.
+* `src/lib/content/resolve-family-docs-footer.ts`
+  Server helper that loads locale UI messages + pruned page tree and returns
+  family-scoped previous/next neighbors for W15 family index/nested slugs
+  (`resolveFamilyDocsFooterNeighborsForSlug`).
+* `src/features/docs/components/FamilyDocsFooterNeighbors.tsx`
+  Renders those neighbors without Fumadocs `Footer` / `useFooterItems`, so App
+  Router entry unit tests and DocsPage surfaces stay free of DocsLayout tree
+  context while keeping family-scoped prev/next cards.
+* `src/lib/navigation/w15-family-prev-next.test.ts`
+  W15 story 005 proof: index + nested pages keep previous/next inside each
+  family topology; edges omit cleanly; localized trees keep locale-prefixed
+  family destinations.
+* `src/lib/content/w15-family-related-overrides.ts`
+  W15 story 006 high-value cross-family related-doc override pairs
+  (references ↔ factories, workers ↔ workstations, schema ↔ factories),
+  merged into curated related derivation via
+  `listCuratedRelatedTargetIds` / `deriveCuratedRelatedItems`.
+* `src/lib/navigation/w15-family-related-docs.test.tsx`
+  W15 story 006 proof: documentation/reference records participate in
+  related-doc lookup, override pairs emit published family hrefs, RelatedDocs
+  renders representative cross-family links, and empty/missing targets keep
+  clear fallbacks without broken hrefs.
 * `src/lib/content/factory-prev-next-related.test.tsx`
   Required-suite proof that previous/next neighbors stay on published factory
   docs pages (or omit a direction at the ends), related-registry docs render

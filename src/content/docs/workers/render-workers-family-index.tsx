@@ -5,6 +5,8 @@ import {
   DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { FamilyDocsFooterNeighbors } from "@/features/docs/components/FamilyDocsFooterNeighbors";
+import { resolveFamilyDocsFooterNeighborsForSlug } from "@/lib/content/resolve-family-docs-footer";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { loadWorkersFamilyIndexBundle } from "./load-workers-family-index";
 import { WorkersFamilyIndexContent } from "./WorkersFamilyIndexContent";
@@ -17,6 +19,10 @@ export async function renderWorkersFamilyIndexPage(
   locale: SiteLocale = defaultLocale,
 ) {
   const bundle = await loadWorkersFamilyIndexBundle(locale);
+  const familyNeighbors = await resolveFamilyDocsFooterNeighborsForSlug(
+    "workers",
+    locale,
+  );
 
   return (
     <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
@@ -34,6 +40,9 @@ export async function renderWorkersFamilyIndexPage(
             </p>
           ) : null}
           <WorkersFamilyIndexContent />
+          {familyNeighbors ? (
+            <FamilyDocsFooterNeighbors neighbors={familyNeighbors} />
+          ) : null}
         </DocsBody>
       </DocsPageProviders>
     </DocsPage>

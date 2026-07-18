@@ -15,7 +15,8 @@
     "documentation.workstations-family",
     "documentation.workstations",
     "documentation.configuration",
-    "documentation.resources"
+    "documentation.resources",
+    "documentation.workers-agent"
   ],
   "citationIds": [],
   "status": "published",

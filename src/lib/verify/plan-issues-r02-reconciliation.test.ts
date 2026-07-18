@@ -165,6 +165,10 @@ describe("plan-issues R02 tip reconciliation", () => {
       "Concepts",
       "Techniques",
       "Program documentation",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
     ]);
     expect(topLevelFolderNames(signature)).not.toContain("Glossary");
     expect(topLevelPageEntries(signature).map((page) => page.url)).toContain(

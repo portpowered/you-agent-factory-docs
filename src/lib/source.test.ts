@@ -8,6 +8,10 @@ const SECTION_FOLDER_NAMES = {
   concepts: "Concepts",
   techniques: "Techniques",
   documentation: "Program documentation",
+  references: "References",
+  factories: "Factories",
+  workers: "Workers",
+  workstations: "Workstations",
 } as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [

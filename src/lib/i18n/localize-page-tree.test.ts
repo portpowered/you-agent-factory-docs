@@ -86,6 +86,7 @@ describe("localizePageTree", () => {
       "Khái niệm",
       "Kỹ thuật",
       "Tài liệu chương trình",
+      "Tham chiếu",
     ]);
     expect(localizedTree.name).toBe("You Agent Factory");
     expect(localizedTree.children.at(-1)).toMatchObject({
@@ -106,7 +107,13 @@ describe("localizePageTree", () => {
       messages.explorer.folders.concepts,
       messages.explorer.folders.techniques,
       messages.explorer.folders.documentation,
+      messages.explorer.folders.references,
     ]);
+    // Factories / workers / workstations folders prune when no pages are
+    // shipped for the locale (current shipped set includes references/api).
+    expect(topLevelFolderNames(localizedTree.children)).not.toContain(
+      messages.explorer.folders.factories,
+    );
 
     const concepts = folderByName(
       localizedTree.children,

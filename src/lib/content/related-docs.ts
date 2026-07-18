@@ -16,10 +16,13 @@ import type {
   ClassificationRecord,
   ConceptRecord,
   DatasetRecord,
+  DocumentationRecord,
   OntologyRelationship,
   OrganizationRecord,
   PageMessages,
+  ReferenceRecord,
 } from "@/lib/content/schemas";
+import { getW15CrossFamilyRelatedOverrideIds } from "@/lib/content/w15-family-related-overrides";
 
 export const SAME_VARIANT_GROUP = "same-variant-group" as const;
 export const SHARED_TAGS = "shared-tags" as const;
@@ -82,10 +85,18 @@ type RequestedRelatedDocGroupId =
 
 export const PLANNED_RELATED_REASON_LABEL = "Planned related doc" as const;
 
+/**
+ * Records that can participate in related-doc derivation. Includes W15
+ * documentation/reference family pages so curated and cross-family overrides
+ * resolve to published `/docs/{references,factories,workers,workstations}/*`
+ * destinations (not only concept/dataset/organization peers).
+ */
 export type RelatedRegistryRecord =
   | ConceptRecord
   | DatasetRecord
-  | OrganizationRecord;
+  | OrganizationRecord
+  | DocumentationRecord
+  | ReferenceRecord;
 
 export type RelatedDocItem = {
   registryId: string;
@@ -825,13 +836,38 @@ export function excludeRelatedDocItems(
   return items.filter((item) => !excluded.has(item.registryId));
 }
 
-/** Curated `relatedIds` on the source record, preserving registry order. */
+/**
+ * Curated related targets: registry `relatedIds` first, then W15 high-value
+ * cross-family overrides, preserving order and skipping the source id.
+ */
+export function listCuratedRelatedTargetIds(
+  source: RelatedRegistryRecord,
+): string[] {
+  const seen = new Set<string>([source.id]);
+  const ids: string[] = [];
+
+  for (const id of [
+    ...source.relatedIds,
+    ...getW15CrossFamilyRelatedOverrideIds(source.id),
+  ]) {
+    if (seen.has(id)) {
+      continue;
+    }
+    seen.add(id);
+    ids.push(id);
+  }
+
+  return ids;
+}
+
+/** Curated `relatedIds` plus W15 cross-family overrides, preserving order. */
 export function deriveCuratedRelatedItems(
   source: RelatedRegistryRecord,
   candidates: RelatedRegistryRecord[],
   publishedRegistryIds: PublishedDocsRegistryIds,
 ): RelatedDocItem[] {
-  if (source.relatedIds.length === 0) {
+  const curatedIds = listCuratedRelatedTargetIds(source);
+  if (curatedIds.length === 0) {
     return [];
   }
 
@@ -841,7 +877,7 @@ export function deriveCuratedRelatedItems(
   const reasonLabel = DERIVED_RELATED_DOC_GROUP_LABELS[CURATED_RELATED];
 
   return dedupeRelatedDocItems(
-    source.relatedIds
+    curatedIds
       .map((id) => candidatesById.get(id))
       .filter(
         (record): record is RelatedRegistryRecord =>

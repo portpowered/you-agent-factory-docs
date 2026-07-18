@@ -17,8 +17,9 @@ import {
 } from "@/lib/navigation/shell-collection-page-tree";
 
 /**
- * Reader-visible explorer top-level order: CLI collection folders, then FAQ
- * as a sibling page outside Program documentation. Glossary is omitted.
+ * Reader-visible explorer top-level order: CLI + W15 family collection
+ * folders, then FAQ as a sibling page outside Program documentation.
+ * Glossary is omitted.
  */
 export const DOCS_SIDEBAR_SECTION_ORDER = FACTORY_EXPLORER_SECTION_ORDER;
 

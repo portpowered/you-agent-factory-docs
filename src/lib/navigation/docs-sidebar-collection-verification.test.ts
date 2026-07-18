@@ -12,6 +12,10 @@ const EXPECTED_TOP_LEVEL_FOLDER_NAMES = [
   "Concepts",
   "Techniques",
   "Program documentation",
+  "References",
+  "Factories",
+  "Workers",
+  "Workstations",
 ] as const;
 
 const RETIRED_ATLAS_FOLDER_NAMES = [
@@ -42,6 +46,26 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     url: "/docs/documentation/what-is-you-agent-factory",
     name: "What is you-agent-factory",
     separatorLabel: "Basics",
+  },
+  {
+    folderName: "References",
+    url: "/docs/references/api",
+    name: "API",
+  },
+  {
+    folderName: "Factories",
+    url: "/docs/factories/configuration",
+    name: "Configuration",
+  },
+  {
+    folderName: "Workers",
+    url: "/docs/workers/agent",
+    name: "Agent worker",
+  },
+  {
+    folderName: "Workstations",
+    url: "/docs/workstations/inference-run",
+    name: "Inference-run type",
   },
 ] as const;
 

@@ -17,7 +17,9 @@
     "documentation.factories-sessions",
     "documentation.workers",
     "documentation.workstations",
-    "documentation.resources"
+    "documentation.resources",
+    "reference.api",
+    "reference.factory-schema"
   ],
   "citationIds": [],
   "status": "published",

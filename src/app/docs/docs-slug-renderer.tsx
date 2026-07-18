@@ -12,11 +12,13 @@ import { DocsAutoLinkedDescription } from "@/features/docs/components/DocsAutoLi
 import { DocsOpeningSummary } from "@/features/docs/components/DocsOpeningSummary";
 import { DocsPageBreadcrumb } from "@/features/docs/components/DocsPageBreadcrumb";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { FamilyDocsFooterNeighbors } from "@/features/docs/components/FamilyDocsFooterNeighbors";
 import {
   loadLocalDocsPage,
   parseLocalDocsPageRef,
 } from "@/lib/content/local-docs-page";
 import { isDocsPageShippedForLocale } from "@/lib/content/pages";
+import { resolveFamilyDocsFooterNeighborsForSlug } from "@/lib/content/resolve-family-docs-footer";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
@@ -69,6 +71,10 @@ async function renderLocalDocsPage(
 
   const loadedPage = await loadLocalDocsPage(localRef, locale);
   const uiMessages = await loadUiMessages(locale);
+  const docsSlug = slug?.join("/") ?? "";
+  const familyNeighbors = docsSlug
+    ? await resolveFamilyDocsFooterNeighborsForSlug(docsSlug, locale)
+    : undefined;
   const description =
     localRef.section === "glossary" ? (
       <DocsAutoLinkedDescription text={loadedPage.messages.description} />
@@ -79,6 +85,7 @@ async function renderLocalDocsPage(
   return (
     <DocsPage
       breadcrumb={{ enabled: false }}
+      footer={{ enabled: false }}
       toc={loadedPage.toc}
       data-content-column-surface={DOCS_PAGE_CONTENT_COLUMN_SURFACE}
     >
@@ -105,6 +112,9 @@ async function renderLocalDocsPage(
           <article data-registry-id={loadedPage.frontmatter.registryId}>
             {loadedPage.content}
           </article>
+          {familyNeighbors ? (
+            <FamilyDocsFooterNeighbors neighbors={familyNeighbors} />
+          ) : null}
         </DocsBody>
       </DocsPageProviders>
     </DocsPage>
@@ -139,10 +149,14 @@ export async function renderDocsSlugPage(
     notFound();
   }
   const uiMessages = await loadUiMessages(locale);
+  const familyNeighbors = docsSlug
+    ? await resolveFamilyDocsFooterNeighborsForSlug(docsSlug, locale)
+    : undefined;
 
   return (
     <DocsPage
       breadcrumb={{ enabled: false }}
+      footer={{ enabled: false }}
       toc={docsPageData.toc}
       full={docsPageData.full}
       data-content-column-surface={DOCS_PAGE_CONTENT_COLUMN_SURFACE}
@@ -161,6 +175,9 @@ export async function renderDocsSlugPage(
             a: createRelativeLink(source, page),
           })}
         />
+        {familyNeighbors ? (
+          <FamilyDocsFooterNeighbors neighbors={familyNeighbors} />
+        ) : null}
       </DocsBody>
     </DocsPage>
   );

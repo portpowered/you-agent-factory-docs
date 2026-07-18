@@ -50,6 +50,10 @@ const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
   FACTORY_EXPLORER_FOLDER_LABELS.concepts,
   FACTORY_EXPLORER_FOLDER_LABELS.techniques,
   FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+  FACTORY_EXPLORER_FOLDER_LABELS.references,
+  FACTORY_EXPLORER_FOLDER_LABELS.factories,
+  FACTORY_EXPLORER_FOLDER_LABELS.workers,
+  FACTORY_EXPLORER_FOLDER_LABELS.workstations,
 ] as const;
 
 /** R01 eight Program documentation pages with declared explorer subgroups. */
@@ -102,6 +106,10 @@ describe("explorer IA exact-order contract", () => {
       { kind: "collection", id: "concepts" },
       { kind: "collection", id: "techniques" },
       { kind: "collection", id: "documentation" },
+      { kind: "collection", id: "references" },
+      { kind: "collection", id: "factories" },
+      { kind: "collection", id: "workers" },
+      { kind: "collection", id: "workstations" },
       { kind: "page", docsSlug: "documentation/faq" },
     ]);
   });
@@ -230,6 +238,14 @@ describe("explorer IA exact-order contract", () => {
         explorer.folders.concepts,
         explorer.folders.techniques,
         explorer.folders.documentation,
+        explorer.folders.references,
+        ...(locale === "en"
+          ? [
+              explorer.folders.factories,
+              explorer.folders.workers,
+              explorer.folders.workstations,
+            ]
+          : []),
       ]);
 
       const faq = topLevelPageEntries(signature);

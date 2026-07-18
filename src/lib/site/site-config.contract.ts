@@ -13,6 +13,10 @@ export const SITE_NAMED_ROUTE_SURFACES = [
   "glossary",
   "blogIndex",
   "search",
+  "references",
+  "factories",
+  "workers",
+  "workstations",
 ] as const;
 
 export type SiteNamedRouteSurface = (typeof SITE_NAMED_ROUTE_SURFACES)[number];

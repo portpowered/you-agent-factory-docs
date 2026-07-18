@@ -69,6 +69,10 @@ const FACTORY_SIDEBAR_FOLDER_NAMES = [
   "Concepts",
   "Techniques",
   "Program documentation",
+  "References",
+  "Factories",
+  "Workers",
+  "Workstations",
 ] as const;
 
 const FACTORY_SECTION_INDEX_CASES = [
@@ -207,6 +211,10 @@ describe("factory-only public inventory end-to-end", () => {
       "Home",
       "Guides",
       "Docs",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
       "Glossary",
       "Blog",
     ]);
@@ -214,6 +222,10 @@ describe("factory-only public inventory end-to-end", () => {
       "/",
       "/docs/guides",
       "/browse",
+      "/docs/references",
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
       "/docs/glossary",
       "/blog",
     ]);

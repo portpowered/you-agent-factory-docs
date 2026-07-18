@@ -22,7 +22,11 @@
     "blog": "Blog",
     "glossary": "用語集",
     "timeline": "タイムライン",
-    "tags": "タグ"
+    "tags": "タグ",
+    "references": "リファレンス",
+    "factories": "ファクトリー",
+    "workers": "ワーカー",
+    "workstations": "ワークステーション"
   },
   "language": {
     "open": "言語を切り替える",
@@ -58,7 +62,11 @@
       "guides": "ガイド",
       "concepts": "概念",
       "techniques": "技法",
-      "documentation": "プログラムドキュメント"
+      "documentation": "プログラムドキュメント",
+      "references": "リファレンス",
+      "factories": "ファクトリー",
+      "workers": "ワーカー",
+      "workstations": "ワークステーション"
     },
     "conceptsGroups": {
       "harnesses": "ハーネス",

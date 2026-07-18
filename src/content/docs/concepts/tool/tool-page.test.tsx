@@ -119,9 +119,11 @@ describe("tool concept page", () => {
     expect(
       screen.getByRole("link", { name: "Tool calling" }).getAttribute("href"),
     ).toBe("/docs/concepts/tool-calling");
-    expect(screen.getByRole("link", { name: "MCP" }).getAttribute("href")).toBe(
-      "/docs/concepts/mcp",
-    );
+    expect(
+      screen
+        .getAllByRole("link", { name: "MCP" })
+        .some((link) => link.getAttribute("href") === "/docs/concepts/mcp"),
+    ).toBe(true);
     expect(
       screen.getByRole("link", { name: "Skills" }).getAttribute("href"),
     ).toBe("/docs/concepts/skills");

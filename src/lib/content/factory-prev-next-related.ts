@@ -1,5 +1,16 @@
 import type * as PageTree from "fumadocs-core/page-tree";
 import {
+  isDirectDocsRouteFamilyId,
+  isDirectDocsRouteFamilySlug,
+} from "@/lib/content/docs-catch-all-static-params";
+import type { DirectDocsRouteFamilyId } from "@/lib/docs/collection-definition-contract";
+import {
+  buildLocalizedRoute,
+  defaultLocale,
+  matchLocalizedRoute,
+  type SiteLocale,
+} from "@/lib/i18n/locale-routing";
+import {
   DELETED_ATLAS_BLOG_URLS,
   DELETED_ATLAS_RECORD_URLS,
   isDeletedAiSearchUrl,
@@ -25,6 +36,12 @@ export type FactoryFooterNeighbor = {
 export type FactoryFooterNeighbors = {
   previous?: FactoryFooterNeighbor;
   next?: FactoryFooterNeighbor;
+};
+
+export type FamilyDocsFooterIndexOptions = {
+  /** Reader-visible family index label (topology `messages.nav.*`). */
+  indexLabel: string;
+  locale?: SiteLocale;
 };
 
 /**
@@ -83,6 +100,110 @@ export function resolveFactoryDocsFooterNeighbors(
   };
   assertFactoryFooterNeighbors(neighbors);
   return neighbors;
+}
+
+/**
+ * Resolve the W15 direct route family for a docs URL (index or nested),
+ * including locale-prefixed paths. Non-family docs URLs return null.
+ */
+export function resolveDirectDocsRouteFamilyFromUrl(
+  url: string,
+): DirectDocsRouteFamilyId | null {
+  const match = matchLocalizedRoute(url);
+  if (match.kind !== "matched") {
+    return null;
+  }
+  if (match.destination.surface !== "docs-page") {
+    return null;
+  }
+  if (!isDirectDocsRouteFamilySlug(match.destination.slug)) {
+    return null;
+  }
+  const section = match.destination.slug.split("/")[0];
+  if (!section || !isDirectDocsRouteFamilyId(section)) {
+    return null;
+  }
+  return section;
+}
+
+/**
+ * Linearize one W15 family for previous/next: family index (synthetic when
+ * absent from the page tree) followed by that family's published nested pages
+ * in page-tree order. Keeps neighbors inside the family topology.
+ */
+export function collectFamilyDocsFooterPageItems(
+  root: PageTree.Root,
+  familyId: DirectDocsRouteFamilyId,
+  options: FamilyDocsFooterIndexOptions,
+): FactoryFooterNeighbor[] {
+  const locale = options.locale ?? defaultLocale;
+  const indexUrl = buildLocalizedRoute(
+    { surface: "docs-page", slug: familyId },
+    locale,
+  );
+  const nestedPrefix = `${indexUrl}/`;
+  const nested = collectDocsFooterPageItems(root).filter(
+    (item) => item.url === indexUrl || item.url.startsWith(nestedPrefix),
+  );
+
+  const withoutDuplicateIndex = nested.filter((item) => item.url !== indexUrl);
+  return [
+    { name: options.indexLabel, url: indexUrl },
+    ...withoutDuplicateIndex,
+  ];
+}
+
+/**
+ * Resolve previous/next for a W15 family page from that family's settled
+ * page-tree linearization only. Returns null when the URL is outside the four
+ * route families so callers can keep the global footer. Omits a direction at
+ * family edges instead of crossing into another family or CLI collection.
+ */
+export function resolveFamilyScopedDocsFooterNeighbors(
+  root: PageTree.Root,
+  url: string,
+  options: FamilyDocsFooterIndexOptions,
+): FactoryFooterNeighbors | null {
+  const familyId = resolveDirectDocsRouteFamilyFromUrl(url);
+  if (!familyId) {
+    return null;
+  }
+
+  const match = matchLocalizedRoute(url);
+  const locale =
+    match.kind === "matched" ? match.locale : (options.locale ?? defaultLocale);
+  const footerList = collectFamilyDocsFooterPageItems(root, familyId, {
+    indexLabel: options.indexLabel,
+    locale,
+  });
+  const idx = footerList.findIndex((item) => item.url === url);
+  if (idx === -1) {
+    return {};
+  }
+
+  const neighbors: FactoryFooterNeighbors = {
+    previous: footerList[idx - 1],
+    next: footerList[idx + 1],
+  };
+  assertFactoryFooterNeighbors(neighbors);
+  return neighbors;
+}
+
+/**
+ * DocsPage `footer` prop for a family URL: custom items when a neighbor
+ * exists, otherwise disable the footer. Returns undefined for non-family URLs
+ * so the default global Fumadocs footer remains.
+ */
+export function toFamilyDocsPageFooterOptions(
+  neighbors: FactoryFooterNeighbors | null,
+): { items: FactoryFooterNeighbors } | { enabled: false } | undefined {
+  if (neighbors === null) {
+    return undefined;
+  }
+  if (!neighbors.previous && !neighbors.next) {
+    return { enabled: false };
+  }
+  return { items: neighbors };
 }
 
 /**

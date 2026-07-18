@@ -309,17 +309,23 @@ describe("global-configuration-factories documentation page", () => {
         name: /Configuration \(factory\.json topology\)/i,
       });
       const cliLink = screen.getByRole("link", { name: /^CLI$/i });
-      const workersLink = screen.getByRole("link", { name: /^Workers$/i });
       expect(configurationLink.getAttribute("href")).toBe(
         "/docs/documentation/configuration",
       );
       expect(cliLink.getAttribute("href")).toBe("/docs/documentation/cli");
-      expect(workersLink.getAttribute("href")).toBe(
-        "/docs/documentation/workers",
-      );
+      expect(
+        screen
+          .getAllByRole("link", { name: /^Workers$/i })
+          .some(
+            (link) =>
+              link.getAttribute("href") === "/docs/documentation/workers",
+          ),
+      ).toBe(true);
       expect(relatedSection?.contains(configurationLink)).toBe(true);
       expect(relatedSection?.contains(cliLink)).toBe(true);
-      expect(relatedSection?.contains(workersLink)).toBe(true);
+      expect(
+        relatedSection?.querySelector('a[href="/docs/documentation/workers"]'),
+      ).toBeTruthy();
     },
     { timeout: 30_000 },
   );

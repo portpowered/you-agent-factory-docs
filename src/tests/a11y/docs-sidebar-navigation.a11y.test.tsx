@@ -111,6 +111,10 @@ describe("docs sidebar navigation accessibility", () => {
       context.messages.explorer.folders.concepts,
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
+      context.messages.explorer.folders.references,
+      context.messages.explorer.folders.factories,
+      context.messages.explorer.folders.workers,
+      context.messages.explorer.folders.workstations,
     ] as const) {
       const folder = within(sidebar).getByRole("button", { name: folderName });
       await act(async () => {
@@ -130,6 +134,35 @@ describe("docs sidebar navigation accessibility", () => {
         .getByRole("link", { name: "Getting Started" })
         .getAttribute("href"),
     ).toBe(GETTING_STARTED_GUIDE_URL);
+
+    expect(
+      within(sidebar)
+        .getAllByRole("link", { name: "API" })
+        .some((link) => link.getAttribute("href") === "/docs/references/api"),
+    ).toBe(true);
+    expect(
+      within(sidebar)
+        .getAllByRole("link", { name: "Configuration" })
+        .some(
+          (link) =>
+            link.getAttribute("href") === "/docs/factories/configuration",
+        ),
+    ).toBe(true);
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Agent worker" })
+        .getAttribute("href"),
+    ).toBe("/docs/workers/agent");
+    expect(
+      within(sidebar)
+        .getByRole("link", { name: "Inference-run type" })
+        .getAttribute("href"),
+    ).toBe("/docs/workstations/inference-run");
+    expect(
+      within(sidebar).queryByRole("link", {
+        name: "submitWorkBySessionId",
+      }),
+    ).toBeNull();
 
     expect(
       within(sidebar).getByText(
