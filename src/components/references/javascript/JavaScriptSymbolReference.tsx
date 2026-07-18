@@ -3,6 +3,7 @@ import {
   CopyableReferenceAnchor,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { JavascriptSymbolNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
 import {
@@ -54,9 +55,9 @@ export function JavaScriptSymbolReference({
           />
         </div>
         {symbol.description !== undefined ? (
-          <p className="m-0 text-sm text-muted-foreground">
+          <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
             {symbol.description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
       </header>
 

@@ -6,6 +6,7 @@
  * public adapter types exist on main.
  */
 
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type {
   SchemaCompositionModel,
   SchemaDefinitionModel,
@@ -109,9 +110,9 @@ export function SchemaDefinitionEmbed({
       </dl>
 
       {definition.description !== undefined ? (
-        <p className="m-0 text-sm text-muted-foreground">
+        <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
           {definition.description}
-        </p>
+        </ContractDescriptionProse>
       ) : null}
 
       {propertyEntries.length > 0 ? (
@@ -150,9 +151,9 @@ export function SchemaDefinitionEmbed({
                   </span>
                 </div>
                 {field.description !== undefined ? (
-                  <p className="m-0 mt-1 text-sm text-muted-foreground">
+                  <ContractDescriptionProse className="m-0 mt-1 text-sm text-muted-foreground">
                     {field.description}
-                  </p>
+                  </ContractDescriptionProse>
                 ) : null}
                 {field.enum !== undefined && field.enum.length > 0 ? (
                   <p className="m-0 mt-1 font-mono text-xs text-foreground">

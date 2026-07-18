@@ -32,6 +32,27 @@ Do **not**:
 | `src/lib/i18n/contract-language-policy.test.ts` | Observable policy proofs (identifier preservation, boundary attrs, fail-closed chrome misuse, generated-example rules) |
 | `src/lib/i18n/contract-language-boundary.tsx` | `EnglishContractDescription` React helper — emits `lang="en"` on non-default locales |
 | `src/lib/i18n/contract-language-boundary.test.tsx` | Render proofs for language boundary + fail-closed chrome misuse |
+| `src/lib/i18n/contract-description-prose.tsx` | Locale-aware client wrapper — resolves UI locale from prop / `PageMessagesProvider` / default, then applies `EnglishContractDescription` |
+| `src/lib/i18n/contract-description-prose.test.tsx` | Locale resolution + boundary proofs with page context |
+
+## Applying language boundaries (story 004)
+
+Wrap package-sourced contract description / summary fields with
+`ContractDescriptionProse` (not chrome empty/error copy, not overlay hints).
+Representative call sites:
+
+| Surface | Path |
+| --- | --- |
+| API operation summary/description/params/body/responses | `src/components/references/api/api-operation-section.tsx` |
+| API local-server OpenAPI server description | `src/components/references/api/api-local-server-base-url.tsx` |
+| CLI short/long description | `src/components/references/cli/CliCommandReference.tsx` |
+| MCP tool description | `src/components/references/mcp/McpToolReference.tsx` |
+| JS symbol / shared-schema description | `src/components/references/javascript/JavaScript*Reference.tsx` |
+| Schema definition + field description | `src/components/references/schema/schema-definition.tsx`, `schema-field-row.tsx`, `shared/SchemaDefinitionEmbed.tsx` |
+| Events reconnect / handshake / JSON probe contract fields | `src/components/references/events/event-*.tsx` |
+
+Do **not** wrap schema variant overlay hints (`data-schema-variant-hint`) — those
+are display-only and are not contract description prose.
 
 ## Reference chrome catalogs (story 002)
 
@@ -49,7 +70,7 @@ Do **not**:
 
 | Text role | Correct path |
 | --- | --- |
-| `contract-description` | `EnglishContractDescription` (`textRole`) / `resolveEnglishContractLanguageBoundary` |
+| `contract-description` | `ContractDescriptionProse` (preferred at reference call sites) / `EnglishContractDescription` (`textRole`) / `resolveEnglishContractLanguageBoundary` |
 | `contract-identifier` | `preserveUntranslatedContractIdentifier` (never translate; never chrome catalogs) |
 | `generated-example-payload` | Locale-neutral literals/identifiers; do not translate payload bodies |
 | `chrome` | Message catalogs only; language-boundary helpers fail closed if misused |
@@ -70,8 +91,6 @@ Do **not**:
 
 ## Later W17 stories (do not jump ahead unless selected)
 
-- **003** — collection/page chrome under fail-closed shipping
-- **004** — apply `EnglishContractDescription` on rendered contract descriptions
 - **005** — locale manifests + alternates for shipped reference routes only
 - **006** — locale parity + untranslated-identifier behavioral suite
 

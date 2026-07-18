@@ -3,6 +3,7 @@ import {
   CopyableReferenceAnchor,
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
 import { resolveMcpToolExample } from "@/lib/references/mcp-example-generation";
 import { cn } from "@/lib/utils";
@@ -56,9 +57,9 @@ export function McpToolReference({
           />
         </div>
         {tool.description !== undefined ? (
-          <p className="m-0 text-sm text-muted-foreground">
+          <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
             {tool.description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
       </header>
 

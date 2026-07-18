@@ -4,6 +4,7 @@ import {
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { JavascriptSharedSchemaNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
 import {
@@ -55,9 +56,9 @@ export function JavaScriptSharedSchemaReference({
           />
         </div>
         {schema.description !== undefined ? (
-          <p className="m-0 text-sm text-muted-foreground">
+          <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
             {schema.description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
       </header>
 
