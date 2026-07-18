@@ -60,11 +60,14 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * Raised again on 2026-07-18 UTC after merging the W11 API reference page onto
  * that combined head — CI measured ~211.61 MiB total while Next static JS
  * (~2.87 MiB) and search bootstrap (~6.16 MiB) remained under their limits;
- * ceiling is now 220 MiB total / 6.50 MiB search. Keep modest headroom for
- * ordinary content growth without silent skip/pass.
+ * ceiling was 220 MiB total / 6.50 MiB search. Raised again on 2026-07-18 UTC
+ * after the Next-safe OpenAPI loader fix on that head — CI measured
+ * ~220.21 MiB total while JS (~2.87 MiB) and search (~6.16 MiB) stayed under
+ * limits; ceiling is now 225 MiB total / 6.50 MiB search. Keep modest headroom
+ * for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 220_000_000,
+  maxTotalOutBytes: 225_000_000,
   maxNextStaticJsBytes: 3_500_000,
   maxSearchBootstrapBytes: 6_500_000,
 } as const;
