@@ -522,3 +522,192 @@ identity without promoting provider-native schemas into the public vocabulary.
 These counts match the installed OpenAPI artifact on this checkout (plan prose
 currently states the same numbers). They are baseline observations for later
 drift detection, not permanent product limits or UI quotas.
+
+## Documentation-route and runtime assumptions
+
+Evidence is from live site code and generated contracts on this checkout, not
+plan-only claims. The live factory docs surface for product documentation is
+**flat** `/docs/documentation/<slug>` (currently **33** published page bundles
+under `src/content/docs/documentation/` with matching
+`src/content/registry/documentation/<slug>.json`).
+
+There is **no** live top-level `/docs/references`, `/docs/factories`,
+`/docs/workers`, or `/docs/workstations` route family today. Worker and
+workstation material ships as sibling flat documentation pages (for example
+`/docs/documentation/workers`, `/docs/documentation/agent-workers`,
+`/docs/documentation/workstations`).
+
+### Collections and page discovery
+
+Supported canonical docs sections (`DOCS_SECTIONS` /
+`DOCS_COLLECTION_DEFINITIONS`):
+
+| Collection id | `routeSlug` | Registry / frontmatter kind |
+| --- | --- | --- |
+| `guides` | `guides` | `guide` |
+| `concepts` | `concepts` | `concept` |
+| `techniques` | `techniques` | `technique` |
+| `documentation` | `documentation` | `documentation` |
+| `glossary` | `glossary` | glossary frontmatter; registry kind `concept` |
+
+Ordinary page bundle layout:
+
+```text
+src/content/docs/<section>/<slug>/page.mdx
+src/content/docs/<section>/<slug>/messages/<locale>.json
+src/content/docs/<section>/<slug>/assets.json
+src/content/registry/<section>/<slug>.json
+```
+
+Fumadocs scans `src/content/docs/**/*.{md,mdx}` (`source.config.ts`). Page
+frontmatter requires `kind`, `registryId`, `messageNamespace`, `assetNamespace`,
+`tags`, `status`, and `updatedAt`. Documentation pages use
+`kind: "documentation"` and `messageNamespace: "local"`.
+
+`docsSlug` is the path relative to `src/content/docs` (for example
+`documentation/workers`). Filesystem walkers can discover nested `page.mdx`
+directories, but the local rendering/registry/nav contract assumes **exactly**
+`<section>/<slug>` (two segments).
+
+### Registry
+
+- Authoritative per-page JSON: `src/content/registry/documentation/<slug>.json`
+  (id pattern `documentation.<slug>`).
+- Build-time generator `bun run prepare:content-runtime` emits:
+  - `src/lib/content/generated/published-docs-registry.generated.ts` —
+    `registryId`, leaf `slug`, `docsSlug`, `url`, `pageKind`, `section`
+  - `src/lib/content/generated/registry-runtime.generated.ts` — typed getters
+    such as `getDocumentationById`
+- Published section inventory (`PUBLISHED_DOCS_SECTIONS`): `glossary`,
+  `concepts`, `guides`, `techniques`, `documentation`.
+- Leaf `slug` derivation uses the **last** `/`-split segment of `docsSlug`
+  (`published-docs-registry-source.ts`). Nested parents would be discarded.
+- Canonical href helper
+  `documentationPageHref(slug)` → `/docs/documentation/<slug>` (locale-aware
+  via `buildLocalizedRoute`).
+
+### Loaders and App Router
+
+| Surface | Path |
+| --- | --- |
+| Default-locale catch-all | `src/app/docs/[[...slug]]/page.tsx` |
+| Localized catch-all | `src/app/[locale]/docs/[[...slug]]/page.tsx` |
+| Section index | `src/app/(site)/docs/documentation/page.tsx` and locale twin |
+
+Catch-all rendering goes through `renderDocsSlugPage` → local-message loader
+first (`renderLocalDocsPage`), then Fumadocs fallback.
+
+**Critical two-segment contract** (`parseLocalDocsPageRef` in
+`local-docs-page.ts`):
+
+- Accepts only `slug.length === 2` with first segment in
+  `{guides,concepts,techniques,documentation,glossary}`.
+- `isLocalDocsPageBundlePath` likewise requires exactly two path segments
+  before `page.mdx`.
+- Disk loader `loadDocumentationPageFromDisk(slug)` joins a **single** leaf
+  slug under `DOCUMENTATION_DOCS_ROOT`.
+
+Fumadocs `source` (`src/lib/source.ts`) maps `.../page.mdx` paths to slug
+arrays via `pageBundleSlug`, accepting only
+`isAcceptedDocsSourceSection` first segments. Nested paths could appear in
+slug arrays from disk, but local docs pages would fail the length-2 gate and
+would not load messages/assets through the supported pipeline.
+
+Static params:
+
+- Default locale: `source.generateParams()` filtered by
+  `omitRetiredAtlasDocsStaticParams`, then
+  `ensureStaticExportParams` (placeholder when empty under static export).
+- Localized: `loadShippedLocalizedDocsPages(locale)` →
+  `slug: page.docsSlug.split("/")`.
+
+### Navigation
+
+Explorer order (`FACTORY_EXPLORER_SECTION_ORDER`): Guides → Concepts →
+Techniques → Program documentation, plus FAQ as a **top-level** explorer page
+(`documentation/faq` is not nested under the Program documentation folder).
+
+Sidebar bucketing uses the **first** `docsSlug` segment only
+(`docs-sidebar-sections.ts`). Documentation grouping keys off the leaf slug
+after the `documentation/` prefix
+(`FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG`). Breadcrumbs expose collection
+index + page title only (no intermediate nested crumbs).
+
+### Locales
+
+Supported locales (`supportedLocales`): `en`, `ja`, `zh-CN`, `vi`. Default
+`en` uses unprefixed `/docs/...`. Other locales use `/<locale>/docs/...`.
+
+Non-default locales are **opt-in per page**: a page ships for a locale only
+when its localized messages file is present
+(`isDocsPageShippedForLocale`). Unshipped localized slugs `notFound()`.
+Metadata alternates include only shipped locales.
+
+### Search
+
+Orama pipeline (`src/lib/search/`):
+
+1. `loadShippedLocalizedDocsPages(locale)`
+2. `buildSearchDocuments` / `buildSearchDocumentsForLocale` (registry enrichment)
+3. Orama index (`orama-index.ts`)
+4. Static-export bootstrap JSON (`emit-export-search-index.ts`;
+   `DOCS_SEARCH_BOOTSTRAP_FROM_ENV` in `next.config.ts`)
+
+Document ids/URLs follow flat published `page.url` values. Retired Atlas URL
+prefixes are excluded from search inventories.
+
+### Sitemap
+
+`src/app/sitemap.ts` → `listPublicSitemapRoutes()` (`force-static`):
+
+- Shell routes (`/`, `/search`, `/browse`, `/blog`, `/tags`)
+- Docs section indexes from `PUBLISHED_DOCS_SECTIONS` plus `/docs/architecture`
+- Article URLs from `listPublishedDocsEntries()` (includes
+  `/docs/documentation/<slug>`)
+- Blog posts and tag pages
+- Filtered through `isLiveFactoryCanonicalPath` (drops retired Atlas /
+  deleted paths)
+
+### Static export
+
+When `NEXT_STATIC_EXPORT=1`, Next config merges `output: "export"` and
+`images.unoptimized: true` (`static-export.ts`). Constraints that affect route
+families:
+
+- Every public docs page must appear in `generateStaticParams`.
+- Empty dynamic param lists get placeholders that 404
+  (`ensureStaticExportParams`).
+- Required factory index page markers include
+  `docs/documentation/page.tsx`
+  (`SUPPORTED_FACTORY_EXPORT_APP_PAGE_MARKERS`).
+- Optional GitHub Pages `basePath` via `GITHUB_PAGES_BASE_PATH`.
+
+Static export implies **no** assumed server-side redirects at runtime; route
+compatibility must be static HTML / client-safe patterns (recorded in the
+compatibility baseline story).
+
+### Blockers for nested `/docs/references|factories|workers|workstations/...`
+
+Assumptions that would block the planned nested route families until
+route-foundation work lands:
+
+1. **Collection inventory** — only five `DOCS_SECTIONS` /
+   `DOCS_COLLECTION_DEFINITIONS`; unknown first segments are rejected by
+   `isAcceptedDocsSourceSection` / local-page parsing.
+2. **Exactly two slug segments** — `parseLocalDocsPageRef`,
+   `isLocalDocsPageBundlePath`, documentation disk loader, and
+   `documentationPageHref` all assume `<collection>/<leaf-slug>`.
+3. **No App Router indexes** for `references` / `factories` / `workers` /
+   `workstations`; static-export compile-graph markers only list the five
+   current section indexes (+ blog).
+4. **Published registry / sitemap / search** derive section from the first
+   path segment and leaf slug from the last; nested parents are not modeled.
+5. **Sidebar explorer** order and documentation grouping are fixed to the
+   current four CLI folders + FAQ exception; no hierarchy for nested leaves.
+6. **Live worker/workstation URLs** remain under `/docs/documentation/*`, not
+   separate families — treating those prefixes as already live would conflict
+   with today’s published registry and sitemap.
+
+Adding the planned families is therefore a coordinated collection, loader,
+href, navigation, generator, sitemap, search, and static-export change — not a
+content-only addition under the current documentation route contract.

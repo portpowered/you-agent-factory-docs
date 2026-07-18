@@ -135,3 +135,25 @@ semantics from operation prose + component schemas. Key schemas:
 - Cursor precedence on canonical stream: `after_event_id` wins over
   `after_sequence`; sequence prefers `context.sessionSequence` then
   `context.sequence`
+
+## Documentation-route and runtime assumptions
+
+Record live `/docs/documentation/*` behavior from site code, not plan prose:
+
+| Concern | Primary sources |
+| --- | --- |
+| Collections | `src/lib/docs/docs-collection-definitions.ts`, `src/lib/content/content-paths.ts` (`DOCS_SECTIONS`) |
+| Page bundles | `src/content/docs/documentation/<slug>/`, `src/content/registry/documentation/<slug>.json` |
+| Loaders / 2-segment gate | `src/lib/content/local-docs-page.ts` (`parseLocalDocsPageRef`), `routable-docs-page.ts`, `documentation-page-load.ts` |
+| Catch-all routes | `src/app/docs/[[...slug]]/page.tsx`, `src/app/[locale]/docs/[[...slug]]/page.tsx`, `docs-slug-renderer.tsx` |
+| Registry / hrefs | `published-docs-registry*.ts`, `content-hrefs.ts` (`documentationPageHref`) |
+| Navigation | `src/lib/navigation/docs-sidebar-sections.ts`, explorer IA contracts |
+| Locales | `src/lib/i18n/locale-routing.ts`, `isDocsPageShippedForLocale` in `pages.ts` |
+| Search | `src/lib/search/` (Orama + shipped localized pages) |
+| Sitemap | `src/lib/seo/public-sitemap-routes.ts` |
+| Static export | `src/lib/build/static-export.ts`, `static-export-legacy-compile-graph.ts` |
+
+Baseline must call out that nested `/docs/references|factories|workers|workstations/...`
+families are blocked by the five-collection inventory and the exactly-two-slug-segment
+local-docs contract until route-foundation work lands. Live worker/workstation pages
+today are flat under `/docs/documentation/*`.
