@@ -105,3 +105,33 @@ From `@you-agent-factory/api/schemas/factory`:
 variant applicability often lives in descriptions. Mock workers are a separate
 schema (`schemas/mock-workers`), not a `WorkerType` value. `type` and
 `behavior` on Workstation are independent axes (`POLLER_RUN` ≠ `POLLER`).
+
+## SSE stream contract inventory
+
+From `@you-agent-factory/api/openapi`, record the three Runtime SSE operations:
+
+| Path | Role | `x-event-schema` |
+| --- | --- | --- |
+| `GET /events` | Compatibility-only (never preferred/canonical) | `FactoryEvent` |
+| `GET /factory-sessions/{session_id}/events` | Canonical (+ dual Accept JSON recovery) | `FactoryEvent` |
+| `GET /factory-sessions/{session_id}/response-events` | Ephemeral | `FactoryResponseEvent` |
+
+OpenAPI 3.0.3 declares `text/event-stream` as a string schema; resolve the real
+payload root from `x-event-schema` on that media type. Do not flatten SSE into
+a plain string response in docs or projectors.
+
+For each stream record role, envelope, discriminator/payload inventory,
+reconnect/cursor rules, headers, and keepalive/stale/stream-generation
+semantics from operation prose + component schemas. Key schemas:
+
+- `FactoryEvent` — envelope + `type` discriminator mapping (**31** payloads)
+- `FactoryResponseEvent` — ephemeral envelope; `kind` (**12**), `phase` (**6**),
+  `FactoryResponseEventPayload` `oneOf` (**14**); select payload via kind+phase
+  + structural decoding (no envelope-level discriminator mapping)
+- Canonical-only: identity handshake headers
+  `X-Factory-Session-{Backend-Scope,Logical-Session-Key,Factory-Session,Stream-Generation}-Id`;
+  JSON probe `FactorySessionEventStreamRecovery` (`outcome` /
+  `STREAM_READY`|`CURSOR_STALE`|`UNKNOWN_SESSION`|`INTERNAL_ERROR`)
+- Cursor precedence on canonical stream: `after_event_id` wins over
+  `after_sequence`; sequence prefers `context.sessionSequence` then
+  `context.sequence`

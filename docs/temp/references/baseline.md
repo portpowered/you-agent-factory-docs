@@ -284,3 +284,241 @@ These discriminator inventories match the installed Factory schema on this
 checkout (plan prose currently lists the same membership). They are baseline
 observations for later drift detection, not permanent product limits or UI
 quotas.
+
+## SSE stream contracts
+
+Source: installed `@you-agent-factory/api/openapi`
+(`generated/openapi/openapi.yaml`). All three operations are under the Runtime
+tag. OpenAPI 3.0.3 represents each stream `200` body as `text/event-stream`
+with a **string** schema; the real JSON payload root is carried by the
+project-specific `x-event-schema` extension. Later lanes must not flatten these
+into a generic “string response.”
+
+### Presentation roles (explicit)
+
+| Operation | Role | Preferred / canonical? |
+| --- | --- | --- |
+| `GET /events` | **Compatibility-only** process-global stream | **Never** preferred or canonical |
+| `GET /factory-sessions/{session_id}/events` | **Canonical** session-scoped FactoryEvent stream (+ JSON reconnect probe) | Yes — default for dashboard / durable replay |
+| `GET /factory-sessions/{session_id}/response-events` | **Ephemeral** FactoryResponseEvent observation stream | Ephemeral only; never presents as canonical replay state |
+
+### Stream inventory
+
+| Path | `operationId` | Summary (as published) | `x-event-schema` | Dual `Accept` |
+| --- | --- | --- | --- | --- |
+| `/events` | `getEvents` | Stream process-global factory events (compatibility-only) | `#/components/schemas/FactoryEvent` | No (SSE only) |
+| `/factory-sessions/{session_id}/events` | `getEventsBySessionId` | Stream factory events for one session | `#/components/schemas/FactoryEvent` | Yes: `text/event-stream` **or** `application/json` → `FactorySessionEventStreamRecovery` |
+| `/factory-sessions/{session_id}/response-events` | `getFactoryResponseEventsBySessionId` | Stream ephemeral response events for one Factory Session | `#/components/schemas/FactoryResponseEvent` | No (SSE only) |
+
+### Shared OpenAPI limitation
+
+OpenAPI 3.0.3 cannot structurally declare SSE event ids, comment keepalives, or
+per-connection ordering. Lifecycle rules below are documented in operation
+prose (and this baseline), not as unsupported response fields.
+
+---
+
+### 1. `GET /events` — compatibility-only
+
+- **Role:** Legacy / operator diagnostics process-global stream. Does **not**
+  carry session identity handshakes and must **not** govern default-session
+  dashboard recovery.
+- **Parameters:** `after_event_id`, `after_sequence` (shared
+  `AfterEventId` / `AfterSequence` components).
+- **Envelope:** each SSE `data` frame is JSON matching `FactoryEvent`.
+- **Ordering:** retained history first in ascending tick order, then live
+  events on the same connection.
+- **Reconnect:** clients may pass `after_event_id` or `after_sequence` for
+  events newer than the acknowledged point.
+- **Identity headers:** none on this route.
+- **JSON recovery probe:** absent.
+- **Canonical presentation rule:** never mark this route preferred/canonical;
+  new Factory Session and durable replay consumers use the session-scoped
+  route instead.
+
+---
+
+### 2. `GET /factory-sessions/{session_id}/events` — canonical
+
+- **Role:** Canonical `FactoryEvent` SSE for dashboard, Factory Session, and
+  durable replay traffic scoped to one explicit `session_id`.
+- **Doc id:** `agent-factory/api/factory-session-events` (`x-doc-id`).
+- **Parameters:** `session_id` (path; `~default` targets the default
+  compatibility session explicitly), plus `after_event_id` / `after_sequence`.
+- **Envelope:** each SSE `data` frame is JSON matching `FactoryEvent`
+  (`x-event-schema`).
+- **Ordering:** retained history first in ascending tick order, then live
+  `FactoryEvent` records on the same connection.
+- **Reconnect cursor precedence:** when both cursors are present,
+  **`after_event_id` wins**. For session-scoped streams, `after_sequence`
+  prefers `FactoryEvent.context.sessionSequence` when present; otherwise falls
+  back to `FactoryEvent.context.sequence`. Omitting both starts replay from the
+  beginning of the session’s currently retained history.
+- **Replay bounds:** live sessions replay only events retained for the current
+  **stream generation** of the targeted Factory Session. Durable execution
+  session identifiers replay persisted canonical records for that session
+  without crossing into another session. Cursors that no longer match the
+  retained-history boundary return typed invalid-cursor handling (**400** on
+  SSE open; **`CURSOR_STALE`** on JSON reconnect probe) rather than silently
+  skipping events.
+- **Identity handshake headers** (compare with sync-preflight / session-read
+  before reusing a persisted reconnect cursor or stream-derived cache):
+  - `X-Factory-Session-Backend-Scope-Id`
+  - `X-Factory-Session-Logical-Session-Key-Id`
+  - `X-Factory-Session-Factory-Session-Id`
+  - `X-Factory-Session-Stream-Generation-Id`
+  A changed `streamGenerationId` invalidates prior cursors even when
+  `factorySessionId` is unchanged.
+- **Keepalives:** successful SSE responses use Connection keep-alive. Idle
+  periods while waiting for new canonical events are normal waiting state, not
+  terminal completion, unless the HTTP connection closes.
+- **Dual Accept / JSON recovery probe:** when `Accept` includes
+  `application/json`, the same route returns
+  `FactorySessionEventStreamRecovery` instead of opening SSE:
+  - Required fields: `factorySessionId`, `outcome`, `retry`
+  - `outcome` ∈ `STREAM_READY` | `CURSOR_STALE` | `UNKNOWN_SESSION` |
+    `INTERNAL_ERROR`
+  - `retry`: `{ omitAfterEventId, omitAfterSequence }` — `CURSOR_STALE` tells
+    clients to retry with both omit flags set so the next open drops stale
+    cursors
+  - `UNKNOWN_SESSION` means the selector does not resolve to a live or durable
+    session and **never** falls back to the default session
+- **Unknown session:** returns **404** `NOT_FOUND` (no default-session
+  fallback).
+
+---
+
+### 3. `GET /factory-sessions/{session_id}/response-events` — ephemeral
+
+- **Role:** Ephemeral `FactoryResponseEvent` observation records for one
+  Factory Session. Outside canonical `FactoryEvent` replay; **must not** derive
+  canonical Factory state.
+- **Parameters:** `session_id` (path); `after_sequence` (response-event cursor,
+  last acknowledged `FactoryResponseEvent.sequence`); optional filters
+  `dispatch_id`, repeated `kind` (`FactoryResponseEventKind`).
+- **Envelope:** each SSE `data` record is JSON matching `FactoryResponseEvent`;
+  each SSE `id` is the decimal `FactoryResponseEvent.sequence`.
+- **Ordering:** retained matching records first in ascending response sequence,
+  then live matching records.
+- **Reconnect:** omit `after_sequence` to start at the beginning of retained
+  history. When a cursor predates retained history, the first emitted record is
+  **`STREAM_GAP`** describing the lost range (no silent skip).
+- **Identity handshake headers / JSON recovery probe:** absent on this route.
+- **Error surface (typed):** 400 `ResponseEventBadRequest`, 404
+  `ResponseEventSessionNotFound` (never falls back to current/default session),
+  410 `ResponseEventStreamExpired`, 500 `InternalError`.
+
+---
+
+### `FactoryEvent` envelope and discriminator
+
+Schema: `#/components/schemas/FactoryEvent`.
+
+| Field | Notes |
+| --- | --- |
+| `schemaVersion` | enum `agent-factory.event.v1` |
+| `id` | Stable event identifier (preserve in record/replay) |
+| `type` | Discriminator → `FactoryEventType` |
+| `context` | `FactoryEventContext` (required: `sequence`, `tick`, `eventTime`; also `sessionId`, `sessionSequence`, …) |
+| `payload` | `oneOf` payload schemas keyed by `type` |
+
+**Discriminator:** `propertyName: type` with **31** mappings (matches
+`FactoryEventType` enum length on this install):
+
+| `type` | Payload schema |
+| --- | --- |
+| `RUN_REQUEST` | `RunRequestEventPayload` |
+| `INITIAL_STRUCTURE_REQUEST` | `InitialStructureRequestEventPayload` |
+| `FACTORY_CHANGE` | `FactoryChangeEventPayload` |
+| `WORK_REQUEST` | `WorkRequestEventPayload` |
+| `RELATIONSHIP_CHANGE_REQUEST` | `RelationshipChangeRequestEventPayload` |
+| `DISPATCH_REQUEST` | `DispatchRequestEventPayload` |
+| `MODEL_REQUEST` | `ModelRequestEventPayload` |
+| `MODEL_RESPONSE` | `ModelResponseEventPayload` |
+| `INFERENCE_REQUEST` | `InferenceRequestEventPayload` |
+| `INFERENCE_RESPONSE` | `InferenceResponseEventPayload` |
+| `SCRIPT_REQUEST` | `ScriptRequestEventPayload` |
+| `SCRIPT_RESPONSE` | `ScriptResponseEventPayload` |
+| `AGENT_RUN_RESPONSE` | `AgentRunResponseEventPayload` |
+| `DISPATCH_RESPONSE` | `DispatchResponseEventPayload` |
+| `WORK_STATE_CHANGE` | `WorkStateChangeEventPayload` |
+| `FACTORY_STATE_RESPONSE` | `FactoryStateResponseEventPayload` |
+| `RUN_RESPONSE` | `RunResponseEventPayload` |
+| `SESSION_STARTED` | `SessionStartedEventPayload` |
+| `SESSION_PAUSED` | `SessionPausedEventPayload` |
+| `SESSION_RESUMED` | `SessionResumedEventPayload` |
+| `SESSION_RESULT_UPDATED` | `SessionResultUpdatedEventPayload` |
+| `SESSION_COMPLETED` | `SessionCompletedEventPayload` |
+| `SESSION_LIFECYCLE_CONTROL` | `SessionLifecycleControlEventPayload` |
+| `ORCHESTRATOR_PHASE_CHANGED` | `OrchestratorPhaseChangedEventPayload` |
+| `ORCHESTRATOR_CHECKPOINT_WRITTEN` | `OrchestratorCheckpointWrittenEventPayload` |
+| `DISPATCH_QUEUED` | `DispatchQueuedEventPayload` |
+| `DISPATCH_INTERRUPTED` | `DispatchInterruptedEventPayload` |
+| `DISPATCH_RECONCILED` | `DispatchReconciledEventPayload` |
+| `JAVASCRIPT_CHECKPOINT_REF` | `JavaScriptCheckpointRefEventPayload` |
+| `JAVASCRIPT_PHASE_CHANGE` | `JavaScriptPhaseChangeEventPayload` |
+| `ARTIFACT_CREATED` | `ArtifactCreatedEventPayload` |
+
+Payload schemas are **payload-only**; projectors must not present them as
+complete event envelopes without the shared `FactoryEvent` fields.
+
+---
+
+### `FactoryResponseEvent` envelope and dimensions
+
+Schema: `#/components/schemas/FactoryResponseEvent`. Explicitly ephemeral;
+must not derive canonical work state after replay.
+
+**Required envelope fields:** `schemaVersion` (`agent-factory.response-event.v1`),
+`eventId`, `sequence`, `recordedAt`, `factorySessionId`, `runId`, `kind`,
+`phase`, `provenance`, `payload`. Optional correlation:
+`dispatchId`, `turnId`, `itemId`, `parentItemId`, `providerSessionRef`.
+
+**`FactoryResponseEventKind` (12):** `SESSION`, `RUN`, `TURN`, `MESSAGE`,
+`REASONING`, `TOOL`, `FILE_CHANGE`, `PLAN`, `PROGRESS`, `USAGE`, `ERROR`,
+`STREAM_GAP`.
+
+**`FactoryResponseEventPhase` (6):** `STARTED`, `DELTA`, `UPDATED`,
+`COMPLETED`, `FAILED`, `CANCELED`. Allowed kind/phase combinations are
+validated before publication.
+
+**`FactoryResponseEventPayload` `oneOf` (14 shapes):**
+
+| Payload schema |
+| --- |
+| `FactoryResponseEventSessionPayload` |
+| `FactoryResponseEventRunPayload` |
+| `FactoryResponseEventTurnPayload` |
+| `FactoryResponseEventMessagePayload` |
+| `FactoryResponseEventMessageDeltaPayload` |
+| `FactoryResponseEventReasoningPayload` |
+| `FactoryResponseEventToolPayload` |
+| `FactoryResponseEventToolDeltaPayload` |
+| `FactoryResponseEventFileChangePayload` |
+| `FactoryResponseEventPlanPayload` |
+| `FactoryResponseEventProgressPayload` |
+| `FactoryResponseEventUsagePayload` |
+| `FactoryResponseEventErrorPayload` |
+| `FactoryResponseEventStreamGapPayload` |
+
+`MESSAGE` and `TOOL` kinds use distinct snapshot vs delta payload shapes;
+consumers select the variant using envelope `kind` and `phase` together with
+structural decoding (no single OpenAPI discriminator mapping on the envelope).
+
+**Provenance** (`FactoryResponseEventProvenance`): required `provider`,
+`nativeEventType`, `delivery`, `representation`, `fidelity` — diagnostic
+identity without promoting provider-native schemas into the public vocabulary.
+
+### Inventory summary (baseline observations)
+
+| Signal | Count (this install) |
+| --- | --- |
+| SSE operations | **3** |
+| `FactoryEvent.type` mappings | **31** |
+| `FactoryResponseEventKind` | **12** |
+| `FactoryResponseEventPhase` | **6** |
+| `FactoryResponseEventPayload` `oneOf` | **14** |
+
+These counts match the installed OpenAPI artifact on this checkout (plan prose
+currently states the same numbers). They are baseline observations for later
+drift detection, not permanent product limits or UI quotas.
