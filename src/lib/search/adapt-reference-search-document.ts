@@ -5,6 +5,11 @@
  * Pure mapping — does not load inventories, touch Orama, or invent anchors.
  * Owning-page paths and fragments must already be present on the shape
  * (from `ReferenceSearchDocumentBuilder` / event corpus builders).
+ *
+ * Alias enrichment (story 005): every item gets its title and registry
+ * anchor as searchable aliases alongside shape-provided common names /
+ * discriminator literals (for example event `type` values and payload
+ * schema names). Does not invent competing IDs.
  */
 
 import type { ReferenceSearchDocumentShape } from "@/lib/references/reference-search-projection";
@@ -14,6 +19,16 @@ import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
 
 function unique(values: readonly string[]): string[] {
   return [...new Set(values.filter((value) => value.length > 0))];
+}
+
+/**
+ * Merge shape-provided aliases with identity strings (title + registry
+ * anchor) so common names and literal discriminator values stay searchable.
+ */
+export function enrichReferenceItemAliases(
+  shape: Pick<ReferenceSearchDocumentShape, "title" | "anchor" | "aliases">,
+): string[] {
+  return unique([shape.title, shape.anchor, ...shape.aliases]);
 }
 
 /**
@@ -39,7 +54,7 @@ export function adaptReferenceSearchShapeToSearchDocument(
     );
   }
 
-  const aliases = unique(shape.aliases);
+  const aliases = enrichReferenceItemAliases(shape);
   const tags = unique(shape.tags);
   const description = shape.description ?? "";
 

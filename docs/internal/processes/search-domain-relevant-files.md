@@ -14,6 +14,8 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/lib/search/adapt-reference-search-document.ts`
   Pure adapter from W04/W09 `ReferenceSearchDocumentShape` → live Orama
   `SearchDocument` (kind `reference`, fragment URL required, empty topology).
+  `enrichReferenceItemAliases` merges title + registry anchor with
+  shape-provided common-name / discriminator aliases (W16 story 005).
 * `src/lib/search/build-reference-search-documents.ts`
   Loads settled inventory shapes (events corpus, API operations, schema
   definitions/fields, CLI commands, MCP tools, JavaScript runtime symbols /
@@ -56,6 +58,12 @@ Use these files when changing search document construction, Orama indexing, or
   correct owning-page deep links and that representative
   `you config init` / `you.factory_session.get` / `javascript.log` /
   `RUN_REQUEST` queries return item hits.
+* `src/lib/content/factory-search-authored-pages-aliases.test.ts`
+  W16 story 005 required-suite proof that authored factories / workers /
+  workstations pages remain normal page documents (no fragment, kind
+  `documentation`) and that reference item aliases cover literal
+  discriminators (`RUN_REQUEST`) plus common names
+  (`RunRequestEventPayload`), with representative page + alias queries.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
@@ -133,7 +141,11 @@ reference-item Orama projection reuses `REFERENCE_SEARCH_DOCUMENT_KIND` rather
 than inventing a second public category. Adapt W04/W09 shapes through
 `adaptReferenceSearchShapeToSearchDocument` and include them via
 `buildReferenceItemSearchDocuments` in `buildSearchDocumentsForLocale` /
-`loadSearchDocumentsByLocale` (shared once across locales).
+`loadSearchDocumentsByLocale` (shared once across locales). Authored
+factories / workers / workstations pages stay normal page documents;
+`enrichReferenceItemAliases` adds title + registry anchor alongside
+shape-provided common-name / discriminator aliases so literals like
+`RUN_REQUEST` and names like `RunRequestEventPayload` stay searchable.
 
 ### Pattern: factory alias / body / tag discovery
 

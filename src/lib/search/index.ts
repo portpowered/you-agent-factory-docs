@@ -1,6 +1,7 @@
 export {
   adaptReferenceSearchShapesToSearchDocuments,
   adaptReferenceSearchShapeToSearchDocument,
+  enrichReferenceItemAliases,
 } from "./adapt-reference-search-document";
 export {
   API_OPERATION_SEARCH_DOCUMENT_TAGS,

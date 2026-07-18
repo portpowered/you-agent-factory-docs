@@ -3,6 +3,7 @@ import type { ReferenceSearchDocumentShape } from "@/lib/references/reference-se
 import {
   adaptReferenceSearchShapesToSearchDocuments,
   adaptReferenceSearchShapeToSearchDocument,
+  enrichReferenceItemAliases,
 } from "./adapt-reference-search-document";
 import { REFERENCE_SEARCH_DOCUMENT_KIND } from "./factory-search-kinds";
 import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
@@ -31,6 +32,25 @@ function sampleShape(
   };
 }
 
+describe("enrichReferenceItemAliases", () => {
+  test("includes title, anchor, and shape-provided common-name aliases", () => {
+    expect(
+      enrichReferenceItemAliases({
+        title: "RUN_REQUEST",
+        anchor: "RUN_REQUEST",
+        aliases: [
+          "RunRequestEventPayload",
+          "#/components/schemas/RunRequestEventPayload",
+        ],
+      }),
+    ).toEqual([
+      "RUN_REQUEST",
+      "RunRequestEventPayload",
+      "#/components/schemas/RunRequestEventPayload",
+    ]);
+  });
+});
+
 describe("adaptReferenceSearchShapeToSearchDocument", () => {
   test("maps W04/W09 shape fields into a live Orama SearchDocument", () => {
     const document = adaptReferenceSearchShapeToSearchDocument(sampleShape());
@@ -44,8 +64,8 @@ describe("adaptReferenceSearchShapeToSearchDocument", () => {
       bodyText:
         "session.created\nFactoryEvent.type session.created → SessionCreatedPayload",
       headings: ["session.created"],
-      directAliases: ["SessionCreatedPayload"],
-      aliases: ["SessionCreatedPayload"],
+      directAliases: ["session.created", "SessionCreatedPayload"],
+      aliases: ["session.created", "SessionCreatedPayload"],
       tags: ["events", "factory-event-type"],
       relatedIds: [],
       facets: {
