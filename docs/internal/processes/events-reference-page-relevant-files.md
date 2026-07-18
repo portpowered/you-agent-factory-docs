@@ -22,14 +22,16 @@ Do **not**:
 - touch `src/content/docs/factories/**`, `workers/**`, or `workstations/**`
 - patch `node_modules`
 
-## Key host files (events page shell — story 001)
+## Key host files (events page shell + corpus mount)
 
 | Path | Role |
 | --- | --- |
 | `src/content/docs/references/events/page.mdx` | Published reference page structure |
 | `src/content/docs/references/events/messages/en.json` | Default-locale copy |
 | `src/content/docs/references/events/assets.json` | Empty baseline assets |
-| `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render shell proof |
+| `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount |
+| `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
+| `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount proof |
 | `src/content/registry/references/events.json` | `reference.events` registry record |
 
 ## Additive registry / published-docs wiring
@@ -46,6 +48,7 @@ other W11 reference page lanes):
 | `src/lib/content/content-hrefs.ts` | `referencePageHref` |
 | `src/lib/content/registry-linking.ts` | Reference records are linkable when published |
 | `src/lib/factory/canonical-page-surface-audit.ts` | `reference` → `references` registry directory |
+| `src/lib/content/route-family-local-docs-page-load.ts` | Static `page-mdx-components` switch for `references/events` |
 
 ## Upstream dependencies (consume, do not reimplement)
 
@@ -53,7 +56,7 @@ other W11 reference page lanes):
 | --- | --- |
 | `src/components/references/events/` | Public W09 events corpus surfaces (`EventsSurface`, catalogs, reconnect, SSE examples) |
 | `src/lib/references/events/` | Corpus resolution, hybrid placement, OpenAPI load helpers |
-| `src/app/(dev)/events-renderer-harness/page.tsx` | Production composition reference for later mount stories |
+| `src/app/(dev)/events-renderer-harness/page.tsx` | Production composition reference for mount stories |
 
 ## Patterns
 
@@ -61,10 +64,19 @@ other W11 reference page lanes):
   `/docs/references/api`; leave `relatedIds` empty until sibling registry records exist.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
-- Story 001 is shell-only; mount `EventsSurface` / corpus sections in later
-  stories without editing renderer internals.
+- Mount corpus via page-local `EventsCorpusMount` + `page-mdx-components.tsx`;
+  add a static import switch in `route-family-local-docs-page-load.ts` (relative
+  MDX imports do not resolve under `compileMDX`). Do not register page mounts in
+  shared `mdx-components.tsx`, and do not edit renderer internals.
+- Use `eventsOpenApiTurbopackLoadDependencies()` for Next/compileMDX OpenAPI
+  resolution (same Turbopack-safe path as the W09 harness).
+- Story 002 mounts stream roles + FactoryEvent / FactoryResponseEvent catalogs;
+  reconnect / lifecycle / static SSE sections land in later stories.
 - Force-clean content runtime after adding the first `reference.*` record so
   published-docs and registry generated artifacts include the new page.
 - When updating `docs-catch-all-static-params` / section-index tests, expect
   `references/events` on the default locale and empty localized indexes until
   non-en message bundles ship.
+- Treat the route-family `page-mdx-components` switch as a narrow shared-surface
+  exception: rerun `bun run audit:canonical-page-surface` with
+  `--exception-reason` and repeat the justification in the PR conversation.

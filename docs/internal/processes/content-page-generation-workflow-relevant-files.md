@@ -308,6 +308,29 @@ static `import("@/content/blog/<slug>/page-mdx-components")` switch case in
 `blog-page-load.ts`. Keep the chart/graph component post-owned; do not register
 it in shared `blog-mdx-components.tsx` / `mdx-components.tsx`.
 
+### Route-family page-local MDX components (references / factories / workers / workstations)
+
+When a route-family page under `src/content/docs/references/` (or factories /
+workers / workstations) needs a page-owned mount such as the W11 events corpus
+`EventsCorpusMount`:
+
+1. Keep the page-local renderer and `page-mdx-components.tsx` under the page
+   bundle. Import public surfaces from `@/components/references/...` and helpers
+   from `@/lib/references/...` — do not edit renderer internals on a page-wiring
+   lane.
+2. Add a static section+slug switch in
+   `route-family-local-docs-page-load.ts` that imports
+   `@/content/docs/<section>/<slug>/page-mdx-components` (same compileMDX
+   constraint as documentation/concept/blog — relative MDX imports do not
+   resolve).
+3. Treat that loader switch as a narrow shared-surface exception: rerun
+   `bun run audit:canonical-page-surface` with `--exception-reason` and repeat
+   the justification in the PR conversation. Do not register page mounts in
+   shared `mdx-components.tsx`.
+
+For `/docs/references/events`, also see
+[events-reference-page-relevant-files](./events-reference-page-relevant-files.md).
+
 Blog discoverability proofs (index card, search queries, tag landing) for a
 blog-local lane should colocate under `src/content/blog/<slug>/` (for example
 `<slug>-discoverability.test.tsx`) rather than editing sibling B07 posts or
