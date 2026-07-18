@@ -993,6 +993,42 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Nested-slug discovery proofs (temp fixtures under new families; no
   production content pages).
 
+### First authored page under `/docs/references` (W05 route family)
+
+The first published `references/<slug>` page needs more than the page bundle.
+W05 already provides nested discovery, family indexes, and
+`loadRouteFamilyLocalDocsPage`. Before the page can pass
+`prepare:content-runtime` / `make validate-data` and appear in
+`generateStaticParams` / the references index:
+
+1. Add `references` to `PUBLISHED_DOCS_SECTIONS` and `referencePageHref` /
+   `publishedDocsHrefFromEntry` in `published-docs-registry-contract.ts` +
+   `content-hrefs.ts`. Without that, `docsSectionFromSlug("references/…")`
+   throws and the published-docs scanner cannot index the page.
+2. Add `references` to `REGISTRY_COLLECTIONS`, load `referenceRecordSchema`
+   from `src/content/registry/references/` in `registry.ts`, include the
+   directory in `registry-runtime-generation.ts`, and treat `reference` as
+   linkable in `registry-linking.ts`. Schema/kind support already exists;
+   the loader path was empty until the first record.
+3. Map `reference` → `references` in
+   `canonical-page-surface-audit.ts` `registryDirectoryByKind`. The audit
+   also documents a first W05 route-family page exception for the narrow
+   shared wiring above (plus section-index empty-state flips).
+4. Remove `src/content/docs/references/.gitkeep` when the first page bundle
+   lands. Prefer colocated `<slug>-page.test.tsx` under the page bundle.
+5. Flip `section-indexes.test.tsx` and
+   `section-collection-index.test.ts` from references empty-state to
+   authored-entry assertions. Leave factories/workers/workstations empty
+   until those families get their first pages.
+6. Ship non-default locale message files when the page should appear on
+   localized family indexes (shipped-locale manifest derives from
+   `messages/<locale>.json` presence). English-first copies are fine.
+
+Do not edit shared nav/sidebar/search/sitemap/compat inventory owners
+(W15–W18) by hand for this first page — published-docs membership is enough
+for nested static params and the family index. Do not create sibling
+reference pages or a contended shared references `meta.json`.
+
 ## Page bundle and registry workflow
 
 * `docs/templates/*.content.md`

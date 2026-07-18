@@ -1,0 +1,14 @@
+{
+  "id": "reference.api",
+  "slug": "api",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["API", "OpenAPI", "HTTP API", "HTTP/OpenAPI reference"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T00:00:00.000Z",
+  "updatedAt": "2026-07-18T00:00:00.000Z"
+}

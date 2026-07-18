@@ -51,6 +51,13 @@ const runtimeRegistryDirectories: RuntimeRegistryDirectory[] = [
     mapConst: "documentationById",
   },
   {
+    directory: "references",
+    recordType: "ReferenceRecord",
+    schemaName: "referenceRecordSchema",
+    recordsConst: "referenceRecords",
+    mapConst: "referencesById",
+  },
+  {
     directory: "classifications",
     recordType: "ClassificationRecord",
     schemaName: "classificationRecordSchema",
@@ -273,6 +280,7 @@ function buildGeneratedSource(
     "type DocumentationRecord",
     "type GuideRecord",
     "type OrganizationRecord",
+    "type ReferenceRecord",
     "type TagRecord",
     "type TechniqueRecord",
   ];
@@ -284,6 +292,7 @@ function buildGeneratedSource(
     "documentationRecordSchema",
     "guideRecordSchema",
     "organizationRecordSchema",
+    "referenceRecordSchema",
     "tagRecordSchema",
     "techniqueRecordSchema",
   ].filter((schemaName) => usedSchemaNames.has(schemaName));

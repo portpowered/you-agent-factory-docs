@@ -3,6 +3,7 @@ import {
   documentationPageHref,
   glossaryPageHref,
   guidePageHref,
+  referencePageHref,
   techniquePageHref,
 } from "@/lib/content/content-hrefs";
 import type { PageKind } from "@/lib/content/schemas";
@@ -13,6 +14,7 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "guides",
   "techniques",
   "documentation",
+  "references",
 ] as const;
 
 export type PublishedDocsSection = (typeof PUBLISHED_DOCS_SECTIONS)[number];
@@ -60,5 +62,7 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return techniquePageHref(entry.slug);
     case "documentation":
       return documentationPageHref(entry.slug);
+    case "references":
+      return referencePageHref(entry.slug);
   }
 }

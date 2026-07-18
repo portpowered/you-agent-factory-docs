@@ -260,17 +260,38 @@ const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
   },
 ] as const;
 
+const W05_EMPTY_ROUTE_FAMILY_INDEX_CASES =
+  W05_DIRECT_ROUTE_FAMILY_INDEX_CASES.filter(
+    (section) => section.collectionId !== "references",
+  );
+
 const W05_EMPTY_STATE_ATLAS_PHRASING =
   /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
 
 describe("renderSectionCollectionIndexPage W05 direct route families", () => {
-  test("renders empty-state indexes for all four families without leaking documentation entries", async () => {
+  test("renders the references index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.referencesIndex;
+    const html = renderToStaticMarkup(
+      await renderSectionCollectionIndexPage("references"),
+    );
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("API");
+    expect(html).toContain("/docs/references/api");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(html).not.toContain("/docs/documentation/");
+  });
+
+  test("renders empty-state indexes for factories, workers, and workstations without leaking documentation entries", async () => {
     const messages = await loadUiMessages();
 
     for (const {
       collectionId,
       messageKey,
-    } of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+    } of W05_EMPTY_ROUTE_FAMILY_INDEX_CASES) {
       const indexMessages = messages[messageKey];
       const html = renderToStaticMarkup(
         await renderSectionCollectionIndexPage(collectionId),
@@ -307,14 +328,14 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
     expect(html).not.toContain("/docs/documentation/what-is-you-agent-factory");
   });
 
-  test("renders localized empty-state indexes for shipped locales", async () => {
+  test("renders localized empty-state indexes for remaining empty families", async () => {
     for (const locale of ["ja", "zh-CN", "vi"] as const) {
       const messages = await loadUiMessages(locale);
 
       for (const {
         collectionId,
         messageKey,
-      } of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+      } of W05_EMPTY_ROUTE_FAMILY_INDEX_CASES) {
         const indexMessages = messages[messageKey];
         const html = renderToStaticMarkup(
           await renderSectionCollectionIndexPage(collectionId, locale),
@@ -325,6 +346,22 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
         expect(html).toContain(indexMessages.emptyHomeLink);
         expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
       }
+    }
+  });
+
+  test("renders localized references indexes with authored page entries", async () => {
+    for (const locale of ["ja", "zh-CN", "vi"] as const) {
+      const messages = await loadUiMessages(locale);
+      const html = renderToStaticMarkup(
+        await renderSectionCollectionIndexPage("references", locale),
+      );
+
+      expect(html).toContain(messages.referencesIndex.title);
+      expect(html).toContain(
+        `aria-label="${messages.referencesIndex.listLabel}"`,
+      );
+      expect(html).toContain(`/${locale}/docs/references/api`);
+      expect(html).not.toContain(messages.referencesIndex.emptyTitle);
     }
   });
 });

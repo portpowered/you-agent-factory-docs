@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default and localized generateStaticParams stay valid with empty families", () => {
+  test("live default and localized generateStaticParams include published references children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -182,9 +182,10 @@ describe("W05 route-family static params and not-found", () => {
 
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
+    expect(defaultPaths).toContain("references/api");
 
-    for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
-      // Empty collections contribute no catch-all child params yet.
+    for (const id of ["factories", "workers", "workstations"] as const) {
+      // Remaining empty families contribute no catch-all child params yet.
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -202,14 +203,15 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty with empty families", async () => {
+  test("live localized generateStaticParams include published references children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
-    for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
+    expect(slugPaths).toContain("references/api");
+    for (const id of ["factories", "workers", "workstations"] as const) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }
   });

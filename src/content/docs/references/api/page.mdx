@@ -1,0 +1,69 @@
+---
+title: "API"
+description: "HTTP/OpenAPI reference for the you-agent-factory API: published operations, local-server base URL, and static-only docs with no live request playground."
+kind: "reference"
+registryId: "reference.api"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "API"
+  - "OpenAPI"
+  - "HTTP API"
+  - "HTTP/OpenAPI reference"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/events",
+        labelKey: "links.eventsReference",
+      },
+      {
+        href: "/docs/documentation/api-doc",
+        labelKey: "links.apiDocOrientation",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocumentation",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="reference.api" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="reference.api" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="reference.api" />
+</Section>

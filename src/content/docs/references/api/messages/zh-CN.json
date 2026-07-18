@@ -1,0 +1,37 @@
+{
+  "title": "API",
+  "description": "HTTP/OpenAPI reference for the you-agent-factory API: published operations, local-server base URL, and static-only docs with no live request playground.",
+  "openingSummary": "The you-agent-factory API is the HTTP contract a running factory host exposes. This reference page is the published OpenAPI (Open Application Programming Interface) surface for that contract—operations, request and response shapes, and local-server base URL—without treating this documentation host as the live API.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference covers the you-agent-factory HTTP/OpenAPI surface for web readers: the published operations a factory host exposes, how those operations are grouped and addressed, and the local-server base URL callers use against a running host. Use it when you need the stable docs route for the OpenAPI projection rather than a CLI matrix, MCP host setup, or a hand-authored orientation outline."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "OpenAPI (Open Application Programming Interface) describes the HTTP API a running factory host exposes. An operation is one method-and-path pair with a stable operation id. Tags group related operations for navigation. The local-server base URL comes from the OpenAPI servers list and names where callers send requests—typically a local factory host—not this documentation site. Server-Sent Events (SSE) stream operations use HTTP transport summaries here and link toward the events reference for the event catalog."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Open this page to look up published HTTP operations on one searchable surface. Use tag-grouped navigation and method, path, summary, or operation-id filtering to move between endpoints without leaving the route. Deep-link an operation with its page hash when you need a shareable anchor. Read request parameters, bodies, responses, media types, and authored examples from the operation sections. Call the live factory host at the local-server base URL shown on the page—not this documentation host. For stream payload catalogs, follow the events reference link."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is static documentation. It does not run a request playground, open a live EventSource or fetch stream, or require a reachable Factory host to render. It does not replace the events reference catalog, the CLI or MCP references, or operator playbooks such as Factory Session and submitting work. Hybrid SSE coverage here is limited to HTTP transport and reconnect summaries that link toward /docs/references/events."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "eventsReference": "Events reference",
+    "apiDocOrientation": "API documentation orientation",
+    "cliDocumentation": "CLI"
+  }
+}
