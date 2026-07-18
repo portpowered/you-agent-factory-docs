@@ -1,0 +1,168 @@
+---
+title: "Agent worker"
+description: "Configure an AGENT_WORKER for agent-loop execution: model and provider identity, agentTools policy, permissions, resources, and AGENT_RUN workstation companionship."
+kind: "documentation"
+registryId: "documentation.workers-agent"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "agent worker"
+  - "AGENT_WORKER"
+  - "AGENT_RUN"
+  - "agentTools"
+  - "docs workers agent"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+  <p>
+    <T k="links.discriminatorLabel" />
+    {": "}
+    <T k="links.discriminatorValue" />
+  </p>
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.companionIntro" />
+  </p>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/workstations/agent-run",
+        labelKey: "links.companionWorkstation",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="variant-fields" titleKey="sections.variantFields.title">
+  <T k="sections.variantFields.body" />
+  <AgentWorkerVariantSchemaEmbed />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.fullFactorySchema",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="examples" titleKey="sections.examples.title">
+  <T k="sections.examples.body" />
+  <AgentWorkerExamples />
+</Section>
+
+<Section id="operational-cautions" titleKey="sections.operationalCautions.title">
+  <T k="sections.operationalCautions.body" />
+  <table data-agent-worker-failure-table="">
+    <thead>
+      <tr>
+        <th>
+          <T k="links.failureClassHeader" />
+        </th>
+        <th>
+          <T k="links.failureCauseHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.failureLeaseClass" />
+        </td>
+        <td>
+          <T k="links.failureLeaseCause" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureModelReadyClass" />
+        </td>
+        <td>
+          <T k="links.failureModelReadyCause" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureToolPolicyClass" />
+        </td>
+        <td>
+          <T k="links.failureToolPolicyCause" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureHarnessClass" />
+        </td>
+        <td>
+          <T k="links.failureHarnessCause" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.failureTimeoutClass" />
+        </td>
+        <td>
+          <T k="links.failureTimeoutCause" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/workers",
+        labelKey: "links.workersFamilyIndex",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.siblingWorkstations",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.siblingResources",
+      },
+      {
+        href: "/docs/documentation/inference-workers",
+        labelKey: "links.siblingInferenceWorkers",
+      },
+      {
+        href: "/docs/concepts/tool-calling",
+        labelKey: "links.siblingToolCalling",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.workers-agent" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.workers-agent" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.workers-agent" />
+</Section>

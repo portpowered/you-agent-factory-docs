@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default and localized generateStaticParams stay valid with empty families", () => {
+  test("live default generateStaticParams include authored workers children and keep empty families empty", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,9 +183,8 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    // references now has authored schema pages; other W05 families stay empty
-    // until their lanes publish. Catch-all params should include references
-    // children and still omit empty-family child params.
+    // references (W11) and workers (W13) have authored children; empty
+    // families still contribute no catch-all children.
     expect(defaultPaths.some((path) => path.startsWith("references/"))).toBe(
       true,
     );
@@ -193,7 +192,22 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultPaths).toContain("references/you-config-schema");
     expect(defaultPaths).toContain("references/mock-workers-schema");
 
-    for (const id of ["factories", "workers", "workstations"] as const) {
+    const workersChildren = defaultPaths.filter((path) =>
+      path.startsWith("workers/"),
+    );
+    expect(workersChildren).toEqual(
+      expect.arrayContaining([
+        "workers/agent",
+        "workers/inference",
+        "workers/script",
+        "workers/poller",
+        "workers/model",
+        "workers/hosted",
+        "workers/mock",
+      ]),
+    );
+
+    for (const id of ["factories", "workstations"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -211,15 +225,15 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty with empty families", async () => {
+  test("live localized generateStaticParams stay non-empty without unshipped route-family children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
-    // Default-locale-only schema pages are not shipped for ja/zh-CN/vi, so
-    // localized catch-all params still omit all four direct route families.
+    // Default-locale-only references/workers pages are not shipped for
+    // ja/zh-CN/vi, so localized catch-all params still omit all four families.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }
