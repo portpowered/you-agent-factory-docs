@@ -11,7 +11,8 @@
  *
  * Optional `upstreamDefinition` migration preference is owned by a later story;
  * this validator checks the overlay's `baseDefinition` (+ field slots /
- * discriminator / examples) as declared.
+ * discriminator / examples) as declared. Pass `fieldAttribution` on the
+ * validation context to enable incompatible companion field-selection checks.
  */
 
 import {
@@ -24,6 +25,11 @@ import {
   type SchemaFieldModel,
 } from "../schema-model";
 import { indexSchemaDefinitionFieldsByPath } from "./factory-variant-field-semantics";
+import {
+  type FactoryVariantFieldAttribution,
+  FactoryVariantIncompatibleFieldSelectionError,
+  validateFactoryVariantIncompatibleFieldSelection,
+} from "./factory-variant-incompatible-field-selection";
 import {
   FACTORY_SCHEMAS_ARTIFACT_ID,
   FACTORY_VARIANT_BASE_DEFINITION_POINTER,
@@ -42,7 +48,8 @@ export type FactoryVariantOverlayValidationErrorCode =
   | "unknown-discriminator-field"
   | "unknown-discriminator-value"
   | "unknown-field-path"
-  | "missing-example-ref";
+  | "missing-example-ref"
+  | "incompatible-field-selection";
 
 export class FactoryVariantOverlayValidationError extends Error {
   readonly code: FactoryVariantOverlayValidationErrorCode;
@@ -50,6 +57,7 @@ export class FactoryVariantOverlayValidationError extends Error {
   readonly fieldPath?: string;
   readonly exampleId?: string;
   readonly identity?: string;
+  readonly conflictingVariantId?: string;
 
   constructor(
     code: FactoryVariantOverlayValidationErrorCode,
@@ -59,6 +67,7 @@ export class FactoryVariantOverlayValidationError extends Error {
       fieldPath?: string;
       exampleId?: string;
       identity?: string;
+      conflictingVariantId?: string;
       cause?: unknown;
     } = {},
   ) {
@@ -72,6 +81,7 @@ export class FactoryVariantOverlayValidationError extends Error {
     this.fieldPath = options.fieldPath;
     this.exampleId = options.exampleId;
     this.identity = options.identity;
+    this.conflictingVariantId = options.conflictingVariantId;
   }
 }
 
@@ -91,11 +101,17 @@ export type FactoryVariantOverlayValidationContext = {
    * values absent from this set fail closed.
    */
   knownExampleIds: ReadonlySet<string>;
+  /**
+   * Optional field attribution from overlay `selected` slots. When present,
+   * selected fields attributed only to incompatible companions fail closed.
+   */
+  fieldAttribution?: FactoryVariantFieldAttribution;
 };
 
 export type FactoryVariantOverlayValidationContextInput = {
   definitions: Iterable<SchemaDefinitionModel>;
   knownExampleIds?: Iterable<string>;
+  fieldAttribution?: FactoryVariantFieldAttribution;
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -152,7 +168,13 @@ export function createFactoryVariantOverlayValidationContext(
     }
   }
 
-  return { definitions, knownExampleIds };
+  return {
+    definitions,
+    knownExampleIds,
+    ...(input.fieldAttribution !== undefined
+      ? { fieldAttribution: input.fieldAttribution }
+      : {}),
+  };
 }
 
 function lookupDefinition(
@@ -296,6 +318,30 @@ export function validateFactoryVariantOverlay(
           identity: example.exampleId,
         },
       );
+    }
+  }
+
+  if (context.fieldAttribution !== undefined) {
+    try {
+      validateFactoryVariantIncompatibleFieldSelection(
+        overlay,
+        context.fieldAttribution,
+      );
+    } catch (cause) {
+      if (cause instanceof FactoryVariantIncompatibleFieldSelectionError) {
+        throw new FactoryVariantOverlayValidationError(
+          "incompatible-field-selection",
+          cause.message,
+          {
+            overlayId: cause.overlayId ?? overlayId,
+            fieldPath: cause.fieldPath,
+            identity: cause.fieldPath,
+            conflictingVariantId: cause.conflictingVariantId,
+            cause,
+          },
+        );
+      }
+      throw cause;
     }
   }
 }

@@ -6,6 +6,7 @@ import {
   createSchemaFieldModel,
   formatSchemaAddress,
 } from "../schema-model";
+import { buildFactoryVariantFieldAttribution } from "./factory-variant-incompatible-field-selection";
 import {
   createCanonicalFactoryVariantOverlay,
   createFactoryVariantOverlayRegistryFromInventory,
@@ -21,6 +22,7 @@ import {
   validateFactoryVariantOverlay,
   validateFactoryVariantOverlays,
 } from "./factory-variant-overlay-validator";
+import { createIncompatibleFieldSelectionFixtureOverlays } from "./fixtures/incompatible-field-selection";
 
 function installedValidationContext(knownExampleIds: string[] = []) {
   const artifact = resolveApiPackageArtifact("schemas/factory");
@@ -280,6 +282,35 @@ describe("FactoryVariantOverlayValidator", () => {
       expect(validationError.identity).toBe("worker.agent.does-not-exist");
       expect(validationError.message).toContain("worker:AGENT_WORKER");
       expect(validationError.message).toContain("worker.agent.does-not-exist");
+    }
+  });
+
+  test("fails closed when selected fields are attributed only to incompatible companions", () => {
+    const { agentWorker, scriptWorker } =
+      createIncompatibleFieldSelectionFixtureOverlays();
+    const attribution = buildFactoryVariantFieldAttribution([agentWorker]);
+    const context = createFactoryVariantOverlayValidationContext({
+      definitions: installedValidationContext().definitions.values(),
+      fieldAttribution: attribution,
+    });
+
+    expect(() =>
+      validateFactoryVariantOverlay(agentWorker, context),
+    ).not.toThrow();
+
+    try {
+      validateFactoryVariantOverlay(scriptWorker, context);
+      throw new Error("expected incompatible-field-selection failure");
+    } catch (error) {
+      expect(error).toBeInstanceOf(FactoryVariantOverlayValidationError);
+      const validationError = error as FactoryVariantOverlayValidationError;
+      expect(validationError.code).toBe("incompatible-field-selection");
+      expect(validationError.overlayId).toBe("worker:SCRIPT_WORKER");
+      expect(validationError.fieldPath).toBe("agentTools");
+      expect(validationError.conflictingVariantId).toBe("worker:AGENT_WORKER");
+      expect(validationError.message).toContain("worker:SCRIPT_WORKER");
+      expect(validationError.message).toContain("agentTools");
+      expect(validationError.message).toContain("worker:AGENT_WORKER");
     }
   });
 

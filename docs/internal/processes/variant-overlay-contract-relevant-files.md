@@ -31,8 +31,11 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/factory-variant-field-semantics.test.ts` | Applicability resolution: excluded omission, conditional `conditionId` gates, no invented base fields |
 | `src/lib/references/overlays/factory-variant-compatibility-matrix.ts` | Pure `FactoryVariantCompatibilityMatrix` + companion validation against the overlay registry (no IO); minimal authored Worker ↔ Workstation ↔ behavior facts |
 | `src/lib/references/overlays/factory-variant-compatibility-matrix.test.ts` | Missing required / unknown compatible companions fail closed with overlay + companion diagnostics; minimal matrix validates against installed registry |
-| `src/lib/references/overlays/factory-variant-overlay-validator.ts` | Pure `FactoryVariantOverlayValidator` — field paths + discriminators against W04 models; example-ref existence catalog; Factory schema → W04 projection helper (no IO) |
-| `src/lib/references/overlays/factory-variant-overlay-validator.test.ts` | Missing base, unknown discriminator field/value, absent field paths, missing example refs fail closed; installed package via W03 + W04 projection |
+| `src/lib/references/overlays/factory-variant-overlay-validator.ts` | Pure `FactoryVariantOverlayValidator` — field paths + discriminators against W04 models; example-ref existence catalog; optional field-attribution incompatible selection; Factory schema → W04 projection helper (no IO) |
+| `src/lib/references/overlays/factory-variant-overlay-validator.test.ts` | Missing base, unknown discriminator field/value, absent field paths, missing example refs, incompatible field selection fail closed; installed package via W03 + W04 projection |
+| `src/lib/references/overlays/factory-variant-incompatible-field-selection.ts` | Pure field attribution from overlay `selected` slots + incompatible companion field-selection check (no IO) |
+| `src/lib/references/overlays/factory-variant-incompatible-field-selection.test.ts` | Incompatible selection fails with overlay/field/conflicting-variant diagnostics; compatible joint selection does not fail |
+| `src/lib/references/overlays/fixtures/incompatible-field-selection.ts` | Focused overlay fixtures for incompatible vs jointly-allowed field selection |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
@@ -74,14 +77,23 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   `applyFactoryVariantCompatibilityFactToOverlay` when needed.
 - Validate overlays with `validateFactoryVariantOverlay` against a
   `FactoryVariantOverlayValidationContext` (W04 definition catalog +
-  `knownExampleIds`). Project installed Factory schema data with
-  `factoryVariantOverlayDefinitionsFromFactorySchemaData` /
+  `knownExampleIds` + optional `fieldAttribution`). Project installed Factory
+  schema data with `factoryVariantOverlayDefinitionsFromFactorySchemaData` /
   `createFactoryVariantOverlayValidationContextFromFactorySchemaData` after
   W03 `resolveApiPackageArtifact("schemas/factory")`. Discriminator enums
   resolve via field `enum` or `refTarget` → enum `$defs`. Diagnostics name
-  the overlay and offending identity (base address, field path, example ID).
-- Later stories own incompatible field-selection detection and optional
-  `upstreamDefinition` migration preference.
+  the overlay and offending identity (base address, field path, example ID,
+  conflicting variant ID).
+- Detect incompatible field selection with
+  `buildFactoryVariantFieldAttribution` (from overlay `selected` slots) +
+  `validateFactoryVariantIncompatibleFieldSelection`. A selected path
+  attributed only to foreign overlays absent from `companions.compatible`
+  fails closed. Compatible companions that jointly list a field do not fail
+  solely for that overlap. Pass attribution on the validation context or call
+  the dedicated helpers / fixture under `overlays/fixtures/`.
+- Later stories own optional `upstreamDefinition` migration preference and
+  broader drift fixtures (removed fields, renamed enums, missing refs,
+  incompatible examples).
 
 ## Verification
 
