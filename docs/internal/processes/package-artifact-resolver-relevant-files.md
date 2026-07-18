@@ -33,6 +33,9 @@ use the `joined/*` wildcard export.
 | `src/lib/references/api-package-manifest.ts` | Pure manifest parse + membership field shape checks + path index (no IO) |
 | `src/lib/references/api-package-manifest-membership.ts` | Build/server: load manifest via public subpath; validate consumed exports against published membership |
 | `src/lib/references/api-package-manifest-membership.test.ts` | Manifest authority load, membership success, missing/malformed failure proofs |
+| `src/lib/references/api-package-format-versions.ts` | Pure docs-build format-version allowlist + fail-closed checks (no IO) |
+| `src/lib/references/api-package-format-version-gate.ts` | Build/server: membership + format-version gate; missing-artifact errors name subpath + dependent reference family |
+| `src/lib/references/api-package-format-version-gate.test.ts` | Known-version success, unsupported-version failure, missing-artifact consumer-identity proofs |
 | `package.json` | Runtime dependency on `@you-agent-factory/api@0.0.0` |
 
 ## Patterns
@@ -53,15 +56,21 @@ use the `joined/*` wildcard export.
   derived from the resolved file URL. Validate `family`, `path`,
   `artifactHash`, `lifecycle`, and `documentation` shapes; never invent missing
   membership entries.
-- Later stories (format-version gate, consumed-hash ledger, prepare wiring,
-  browser-bundle exclusion) should extend this surface rather than inventing a
-  second acquisition path.
+- Pin docs-build format versions in `api-package-format-versions.ts` (manifest
+  `formatVersion`, `familyFormatVersions`, documentation/lifecycle versions, and
+  per-family artifact body `formatVersion` when published). Unsupported versions
+  fail closed naming family/subpath/observed version and that the docs build does
+  not support it. Missing required artifacts after resolution/membership name
+  the public subpath and the caller `dependentReferenceFamily`.
+- Later stories (consumed-hash ledger, prepare wiring, browser-bundle exclusion)
+  should extend this surface rather than inventing a second acquisition path.
 
 ## Verification
 
 ```bash
 bun test src/lib/references/api-package-artifact-resolver.test.ts \
-  src/lib/references/api-package-manifest-membership.test.ts
+  src/lib/references/api-package-manifest-membership.test.ts \
+  src/lib/references/api-package-format-version-gate.test.ts
 bunx biome check src/lib/references/
 bun run typecheck
 ```
