@@ -8,6 +8,12 @@
  */
 
 export {
+  API_METHOD_BADGE_ATTR,
+  ApiMethodBadge,
+  type ApiMethodBadgeProps,
+  apiMethodBadgeLabel,
+} from "./api-method-badge";
+export {
   ApiNavigationVerificationHarness,
   type ApiNavigationVerificationHarnessProps,
 } from "./api-navigation-verification-harness";
@@ -15,6 +21,11 @@ export {
   ApiOperationCopyLink,
   type ApiOperationCopyLinkProps,
 } from "./api-operation-copy-link";
+export {
+  API_EXAMPLES_ATTR,
+  ApiOperationExamples,
+  type ApiOperationExamplesProps,
+} from "./api-operation-examples";
 export {
   ApiOperationFilter,
   type ApiOperationFilterProps,
@@ -28,6 +39,10 @@ export {
   type ApiOperationNavigatorProps,
 } from "./api-operation-navigator";
 export {
+  ApiOperationSection,
+  type ApiOperationSectionProps,
+} from "./api-operation-section";
+export {
   ApiReferenceHashController,
   type ApiReferenceHashControllerProps,
   focusApiOperationAnchor,
@@ -36,6 +51,10 @@ export {
   ApiReferenceMobileNavigator,
   type ApiReferenceMobileNavigatorProps,
 } from "./api-reference-mobile-navigator";
+export {
+  ApiResponseMediaType,
+  type ApiResponseMediaTypeProps,
+} from "./api-response-media-type";
 export { ApiStatus } from "./api-status";
 export { ApiSurface, type ApiSurfaceProps } from "./api-surface";
 export {
@@ -63,6 +82,10 @@ export {
   resolveApiOpenApiArtifactFsPath,
   resolveApiOpenApiExportUrl,
 } from "./load-openapi-artifact";
+export {
+  type ApiOperationDetailProjection,
+  buildApiOperationDetailsFromArtifact,
+} from "./load-operation-details";
 export {
   type ApiOperationNavigationProjection,
   buildApiOperationNavigationFromArtifact,
@@ -93,6 +116,31 @@ export {
   readLocationHashAnchor,
   resolveApiOperationAnchor,
 } from "./operation-anchors";
+export {
+  API_MEDIA_TYPE_ATTR,
+  API_MEDIA_TYPE_KINDS,
+  API_OPERATION_DETAIL_ATTR,
+  API_PARAMETER_LOCATIONS,
+  API_PARAMETERS_ATTR,
+  API_REQUEST_BODY_ATTR,
+  API_RESPONSES_ATTR,
+  type ApiMediaContentDetail,
+  type ApiMediaTypeKind,
+  type ApiOperationDetail,
+  type ApiOperationExample,
+  type ApiOperationParameterDetail,
+  type ApiOperationRequestBodyDetail,
+  type ApiOperationResponseDetail,
+  type ApiParameterLocation,
+  apiMediaTypeKindLabel,
+  apiMediaTypeLanguage,
+  classifyApiMediaType,
+  countApiOperationsWithAuthoredExamples,
+  countApiOperationsWithEventStream,
+  projectApiOperationDetail,
+  projectApiOperationDetailsFromDocument,
+  resolveOpenApiParameter,
+} from "./operation-detail";
 export {
   API_OPERATION_FILTER_ATTR,
   API_OPERATION_FILTER_EMPTY_MESSAGE,

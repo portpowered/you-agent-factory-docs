@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
+import { buildApiOperationDetailsFromArtifact } from "@/components/references/api/load-operation-details";
 import { buildApiOperationNavigationFromArtifact } from "@/components/references/api/load-operation-navigation";
 
 /**
- * Non-production W08 API navigation harness.
+ * Non-production W08 API navigation + operation-detail harness.
  *
  * Publishes no /docs/references/api nav, sitemap, or search inventory.
  * Hidden in production unless ENABLE_API_RENDERER_HARNESS=1.
@@ -17,5 +18,11 @@ export default async function ApiRendererHarnessPage() {
   }
 
   const { model } = buildApiOperationNavigationFromArtifact();
-  return <ApiNavigationVerificationHarness model={model} />;
+  const { byAnchor } = buildApiOperationDetailsFromArtifact();
+  return (
+    <ApiNavigationVerificationHarness
+      detailsByAnchor={byAnchor}
+      model={model}
+    />
+  );
 }

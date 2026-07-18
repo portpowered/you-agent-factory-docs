@@ -71,7 +71,13 @@ hooks, and SSR cost.
 | `src/components/references/api/api-operation-filter.tsx` | Keyboard-accessible filter search + Clear control |
 | `src/components/references/api/load-operation-navigation.ts` | Build nav model from live package artifact + document tag order |
 | `src/components/references/api/assert-operation-navigation.ts` | Happy-dom-safe subprocess proof: nav anchors ↔ `per:"file"` projection |
-| `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + stub sections matching nav anchors + copy links + hash controller |
+| `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + operation sections (detail or stub) + copy links + hash controller |
+| `src/components/references/api/operation-detail.ts` | Pure projectors for parameters, bodies, responses, media types, authored examples |
+| `src/components/references/api/load-operation-details.ts` | Build detail inventory + anchor map from the live package artifact |
+| `src/components/references/api/api-method-badge.tsx` | Accessible HTTP method text badge (theme tokens; not color-only meaning) |
+| `src/components/references/api/api-response-media-type.tsx` | Distinguishes JSON vs `text/event-stream` vs other with text labels |
+| `src/components/references/api/api-operation-examples.tsx` | CodePanel + `useCopyButton` for authored examples only (no fabricated payloads) |
+| `src/components/references/api/api-operation-section.tsx` | Full operation section: method/path/summary, params, body, responses, examples |
 | `src/components/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
 | `src/components/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
 | `src/components/references/api/api-reference-hash-controller.tsx` | Hash-to-focus + back/forward (`hashchange` / `popstate`) without rewriting content |
@@ -144,6 +150,21 @@ hooks, and SSR cost.
 - Harness stub sections keep `id={anchor}` so `/api-renderer-harness#…` and
   production `/docs/references/api#…` share the same fragment contract.
 
+## Operation request/response detail
+
+- Pure projectors live in `operation-detail.ts` — shallow-resolve
+  `#/components/parameters/*` refs; project request/response media types and
+  **authored** `example` / `examples` only (never invent payloads or walk W07
+  schema field trees).
+- `ApiMethodBadge` carries HTTP method meaning in text; theme tokens style only.
+- `ApiResponseMediaType` distinguishes JSON vs `text/event-stream` vs other with
+  explicit kind labels (`JSON` / `Server-Sent Events` / `Other`).
+- `ApiOperationSection` renders method/path/summary/description, parameters,
+  request body, responses, media types, and examples; section `id` stays the
+  W04/operationId anchor shared with nav + hash focus.
+- `ApiOperationExamples` uses site `CodePanel` + fumadocs `useCopyButton`.
+- Load via `buildApiOperationDetailsFromArtifact()` (happy-dom-safe).
+
 ## Patterns
 
 - Keep production API UI under `src/components/references/api/` so ownership
@@ -154,8 +175,8 @@ hooks, and SSR cost.
   `aria-live="polite"`, `aria-busy` when loading).
 - Prefer migrating helpers from the W01 spike into this tree over editing the
   spike in place.
-- Later stories: request/response rendering, playground suppression, hybrid
-  SSE summaries, theme/code-copy, and responsive/a11y/print verification.
+- Later stories: playground suppression, hybrid SSE summaries, theme/code-copy
+  polish, and responsive/a11y/print verification.
 
 ## Focused verification
 
@@ -169,5 +190,7 @@ bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/load-operation-navigation.test.ts \
   src/components/references/api/api-operation-navigation.test.tsx \
   src/components/references/api/operation-anchors.test.ts \
-  src/components/references/api/api-operation-anchors.test.tsx
+  src/components/references/api/api-operation-anchors.test.tsx \
+  src/components/references/api/operation-detail.test.ts \
+  src/components/references/api/api-operation-section.test.tsx
 ```
