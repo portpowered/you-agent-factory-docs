@@ -19,6 +19,18 @@ describe("routable local docs pages", () => {
       isLocalDocsPageBundlePath("documentation/cli-reference/page.mdx"),
     ).toBe(true);
     expect(isLocalDocsPageBundlePath("glossary/token/page.mdx")).toBe(true);
+    expect(isLocalDocsPageBundlePath("workers/agent/variant/page.mdx")).toBe(
+      true,
+    );
+    expect(isLocalDocsPageBundlePath("references/openapi/paths/page.mdx")).toBe(
+      true,
+    );
+    expect(
+      isLocalDocsPageBundlePath("factories/docs/write-review/page.mdx"),
+    ).toBe(true);
+    expect(
+      isLocalDocsPageBundlePath("workstations/inference/run/page.mdx"),
+    ).toBe(true);
     expect(isLocalDocsPageBundlePath("modules/attention/page.mdx")).toBe(false);
     expect(isLocalDocsPageBundlePath("models/foo/page.mdx")).toBe(false);
     expect(isLocalDocsPageBundlePath("papers/foo/page.mdx")).toBe(false);
@@ -26,6 +38,22 @@ describe("routable local docs pages", () => {
     expect(isLocalDocsPageBundlePath("systems/batching/page.mdx")).toBe(false);
     expect(isLocalDocsPageBundlePath("getting-started.mdx")).toBe(false);
     expect(isLocalDocsPageBundlePath("unknown/foo/page.mdx")).toBe(false);
+    expect(isLocalDocsPageBundlePath("workers/page.mdx")).toBe(false);
+  });
+
+  test("flags draft nested local docs bundles for routing exclusion", () => {
+    expect(
+      shouldExcludeLocalDocsPageFromRouting("workers/agent/variant/page.mdx", {
+        messageNamespace: "local",
+        status: "draft",
+      }),
+    ).toBe(true);
+    expect(
+      shouldExcludeLocalDocsPageFromRouting("workers/agent/variant/page.mdx", {
+        messageNamespace: "local",
+        status: "published",
+      }),
+    ).toBe(false);
   });
 
   test("requires published status for local message bundles", () => {

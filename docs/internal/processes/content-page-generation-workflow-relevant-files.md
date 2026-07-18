@@ -923,14 +923,27 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 
 * `src/lib/content/content-paths.ts`
   Canonical path helpers. Module JSDoc documents the derived page directory
-  contract. Add shared roots or section helpers here only when the path is not
-  an ordinary single-page directory.
+  contract. `getDocsPageDir(section, slug)` accepts nested slug paths
+  (`parent/child`) so route-family child pages resolve beyond two segments.
+  Add shared roots or section helpers here only when the path is not an
+  ordinary single-page directory.
+* `src/lib/content/docs-page-directories.ts`
+  Shared `findDocsPageDirectories` walker used by published-page load,
+  shipped-locale manifests, and derived bundle validation. Continues under
+  directories that already contain `page.mdx` so nested child bundles are
+  discovered.
+* `src/lib/content/routable-docs-page.ts`
+  `isLocalDocsPageBundlePath` accepts section + one-or-more slug segments
+  (`guides/foo` and `workers/agent/variant`) for Fumadocs routing exclusion.
 * `src/lib/content/content-paths-page-dir-guard.ts`
   Grandfathered allowlist for legacy `*_PAGE_DIR` exports and the guard failure
   message that points reviewers to `getDocsPageDir(section, slug)`.
 * `src/lib/content/content-paths.test.ts`
   Contract tests for derived directories across every docs section, exported
   production roots, and the no-new-page-constants guard.
+* `src/lib/content/docs-page-directories.test.ts`
+  Nested-slug discovery proofs (temp fixtures under new families; no
+  production content pages).
 
 ## Page bundle and registry workflow
 

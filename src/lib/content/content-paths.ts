@@ -2,7 +2,8 @@
  * Canonical filesystem paths for committed content and generated runtime artifacts.
  *
  * **Derived page directory contract.** Ordinary canonical docs pages live under
- * `src/content/docs/<section>/<slug>`. Callers should resolve a page directory with
+ * `src/content/docs/<section>/<slug>` where `<slug>` may include nested path
+ * segments (`parent/child`). Callers should resolve a page directory with
  * {@link getDocsPageDir} from a {@link DocsSection} and slug instead of importing
  * page-specific exported constants. Shared roots ({@link getDocsRoot},
  * {@link getRegistryRoot}, {@link getMessagesRoot}, generated roots) and section
@@ -81,16 +82,18 @@ export function getDocsSectionRoot(
 /**
  * Derived docs page directory under `src/content/docs/<section>/<slug>`.
  *
- * Use this for ordinary canonical page bundles (guide, concept, technique,
- * documentation, or glossary). Do not add new page-specific exported constants
- * for routine page additions; pass the section and slug here instead.
+ * `slug` may be a single segment (`getting-started`) or a nested path
+ * (`agent/openai`) so child pages under route families resolve to the correct
+ * directory. Do not add new page-specific exported constants for routine page
+ * additions; pass the section and slug here instead.
  */
 export function getDocsPageDir(
   section: DocsSection,
   slug: string,
   docsRoot = getDocsRoot(),
 ): string {
-  return join(getDocsSectionRoot(section, docsRoot), slug);
+  const slugSegments = slug.split("/").filter(Boolean);
+  return join(getDocsSectionRoot(section, docsRoot), ...slugSegments);
 }
 
 /** Glossary docs under `src/content/docs/glossary`. */
