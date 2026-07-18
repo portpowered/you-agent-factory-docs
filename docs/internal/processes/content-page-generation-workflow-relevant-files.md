@@ -1073,11 +1073,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   content pages).
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
-  families. References/workers/workstations call
-  `renderSectionCollectionIndexPage` with matching `*Index` messages; empty
-  collections render `DocsIndexEmptyState`. Factories uses the factories-owned
-  `renderFactoriesIndexPage` composition (overview + W07 root Factory summary
-  embed + child entry list) once authored factories pages exist.
+  families. Workstations (still empty) call `renderSectionCollectionIndexPage`
+  with matching `*Index` messages and render `DocsIndexEmptyState`. Factories
+  uses the factories-owned `renderFactoriesIndexPage` composition (overview +
+  W07 root Factory summary embed + child entry list). Workers uses the
+  workers-owned family index. References uses
+  `renderReferencesFamilyIndexPage` (authored intro owned under
+  `src/content/docs/references/family-index/`) instead of empty-state-only UX.
 * `src/app/[locale]/docs/{references,factories,workers,workstations}/page.tsx`
   Shipped-locale mirrors of the same four family indexes.
 * `src/content/docs/factories/index/render-factories-index-page.tsx` /
@@ -1109,16 +1111,31 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   map under `node_modules/@you-agent-factory/api/package.json`. Without that,
   prerender of `/docs/factories` (and localized factories indexes) fails with
   package-resolution TypeErrors during `make build`.
+* `src/content/docs/references/family-index/`
+  References family index ownership surface: `frontmatter.json` (`kind:
+  reference`, `registryId: reference.references`), page-local `messages/en.json`,
+  `assets.json`, composition (`ReferencesFamilyIndex.tsx`), loader, planned
+  eight-route constants, and colocated tests. Do not put sibling W11 page
+  bodies (`api/`, `events/`, …) in this lane.
+* `src/content/registry/references/`
+  First `reference` registry collection. Wire new records through
+  `REGISTRY_COLLECTIONS`, `registry.ts` directories, and
+  `registry-runtime-generation.ts` (plus `canonical-page-surface-audit`
+  `registryDirectoryByKind.reference`) the same way the first documentation
+  records needed their loader path.
 * `src/app/(site)/site-renderers.tsx`
   `renderShellSectionCollectionIndexPage` filters index entries by
   `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not
   frontmatter kind alone — required because factories/workers/workstations
   reuse `documentation` kind while keeping an independent public route.
+  `renderReferencesFamilyIndexPage` loads the family-index ownership surface
+  for `/docs/references`.
 * `src/lib/docs/section-collection-index.test.ts` /
   `src/tests/content/section-indexes.test.tsx`
-  Empty-state + localized metadata proofs for still-empty family indexes;
-  factories flips to authored-entry + overview assertions and must not list
-  documentation child pages.
+  Empty-state + localized metadata proofs for still-empty family indexes
+  (workstations); factories authored-entry + overview assertions; workers
+  family-index proofs; authored introduction proofs for the references family
+  index; factories must not list documentation child pages.
 * `src/lib/content/docs-catch-all-static-params.ts`
   Catch-all static-param helpers for nested docs slugs. Default-locale
   `generateStaticParams` merges Fumadocs source params with published-page

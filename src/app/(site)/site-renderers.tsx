@@ -7,6 +7,8 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HomeArticle } from "@/components/home/home-article";
+import { loadReferencesFamilyIndex } from "@/content/docs/references/family-index/load-references-family-index";
+import { ReferencesFamilyIndex } from "@/content/docs/references/family-index/ReferencesFamilyIndex";
 import {
   BLOG_INDEX_CONTENT_COLUMN_SURFACE,
   BlogIndexPostList,
@@ -320,6 +322,33 @@ export async function renderSectionCollectionIndexPage(
     locale,
     emptyStateMessages: messages,
   });
+}
+
+/**
+ * Authored `/docs/references` family index: localized introduction owned by
+ * the references index lane. Discoverability links and freshness summary land
+ * in later stories on the same ownership surface.
+ */
+export async function renderReferencesFamilyIndexPage(
+  locale: SiteLocale = defaultLocale,
+) {
+  const uiMessages = await loadUiMessages(locale);
+  const index = await loadReferencesFamilyIndex(locale);
+  const title = index.messages.title || uiMessages.referencesIndex.title;
+  const description =
+    index.messages.description || uiMessages.referencesIndex.description;
+
+  return (
+    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
+      <DocsTitle>{title}</DocsTitle>
+      <DocsDescription>{description}</DocsDescription>
+      <DocsBody>
+        <DocsPageProviders messages={index.messages} assets={index.assets}>
+          <ReferencesFamilyIndex messages={index.messages} />
+        </DocsPageProviders>
+      </DocsBody>
+    </DocsPage>
+  );
 }
 
 export async function renderSectionKindIndexPage(
