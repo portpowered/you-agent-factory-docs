@@ -1,0 +1,27 @@
+{
+  "id": "documentation.workers-inference",
+  "slug": "workers-inference",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "inference worker",
+    "INFERENCE_WORKER",
+    "INFERENCE_RUN",
+    "operations",
+    "modelLocality",
+    "docs workers inference"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers-family",
+    "documentation.workers-agent",
+    "documentation.workstations",
+    "documentation.resources",
+    "concept.tokens"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T14:00:00.000Z",
+  "updatedAt": "2026-07-18T14:00:00.000Z"
+}

@@ -72,6 +72,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "inference": {
+        const mod = await import(
+          "@/content/docs/workers/inference/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }
