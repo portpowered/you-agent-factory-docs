@@ -1,0 +1,37 @@
+/**
+ * Prop contracts for W10 MCP family reference renderers.
+ *
+ * Callers pass already-normalized MCP projections (W03 → W04). These types do
+ * not acquire package artifacts or invent missing input schema fields.
+ */
+
+import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
+
+export type McpToolReferenceProps = {
+  /** Normalized MCP tool from W04 projections. */
+  tool: McpToolNormalized;
+  /**
+   * Package version when known from the resolved manifest identity. Absent
+   * when the caller has no package version — never invent a version string.
+   */
+  packageVersion?: string;
+  className?: string;
+};
+
+/**
+ * Inventory input for the MCP reference list. Success carries normalized
+ * tools only — never page-local copied inventory JSON as source of truth.
+ */
+export type McpToolInventoryInput =
+  | {
+      state: "success";
+      tools: readonly McpToolNormalized[];
+      packageVersion?: string;
+    }
+  | { state: "empty" }
+  | { state: "error"; detail?: string };
+
+export type McpToolInventoryProps = {
+  inventory: McpToolInventoryInput;
+  className?: string;
+};

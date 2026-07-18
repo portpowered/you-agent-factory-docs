@@ -3,6 +3,7 @@ import {
   type CliCommandNormalized,
   createCliCommandNormalized,
   createEventTypeNormalized,
+  createJavascriptSharedSchemaNormalized,
   createJavascriptSymbolNormalized,
   createMcpToolNormalized,
   createOpenApiOperationSummary,
@@ -27,6 +28,7 @@ import {
   serializeMcpToolNormalized,
   serializeOpenApiOperationSummary,
 } from "./family-normalized-models";
+import { createSchemaDefinitionModel } from "./schema-model";
 
 const OPENAPI_ARTIFACT = "@you-agent-factory/api/openapi";
 
@@ -94,6 +96,15 @@ function sampleJs(
     symbolPath: "log",
     kind: "function",
     description: "Synchronously emits one workflow-scoped log record.",
+    visibility: "public",
+    examples: ['log("checkpoint", { step: 1 })'],
+    sharedSchemaLinks: [
+      {
+        schemaId: "javascript.schema.json_compatible",
+        ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+        anchor: "javascript.schema.json_compatible",
+      },
+    ],
     lifecycle: { state: "active", since: "1.0.0" },
     source: {
       publicArtifactId: "@you-agent-factory/api/javascript/runtime",
@@ -200,6 +211,25 @@ describe("CliCommandNormalized / McpToolNormalized / JavascriptSymbolNormalized 
     expect(model.anchor).toBe("you-config-init");
   });
 
+  test("CLI model preserves optional published metadata fields", () => {
+    const model = createCliCommandNormalized(
+      sampleCli({
+        shortDescription: "Short help",
+        longDescription: "Long help",
+        example: "  you config init",
+        visibility: "visible",
+        runnable: true,
+        handlerPresent: false,
+      }),
+    );
+    expect(model.shortDescription).toBe("Short help");
+    expect(model.longDescription).toBe("Long help");
+    expect(model.example).toBe("  you config init");
+    expect(model.visibility).toBe("visible");
+    expect(model.runnable).toBe(true);
+    expect(model.handlerPresent).toBe(false);
+  });
+
   test("MCP model exposes tool name and leaves lifecycle absent when unpublished", () => {
     const model = createMcpToolNormalized(sampleMcp());
     expect(model.name).toBe("you.factory_session.get");
@@ -207,10 +237,68 @@ describe("CliCommandNormalized / McpToolNormalized / JavascriptSymbolNormalized 
     expect("lifecycle" in model).toBe(false);
   });
 
+  test("MCP model preserves optional published handler and input schema fields", () => {
+    const model = createMcpToolNormalized(
+      sampleMcp({
+        handlerRegistered: true,
+        requiredInputs: ["sessionId"],
+        inputSchema: {
+          address: {
+            publicArtifactId: "@you-agent-factory/api/mcp",
+            pointer: "/tools/1/inputSchema",
+          },
+          type: "object",
+          required: ["sessionId"],
+          properties: {
+            sessionId: {
+              path: "sessionId",
+              typeSummary: "string",
+              required: true,
+            },
+          },
+        },
+      }),
+    );
+    expect(model.handlerRegistered).toBe(true);
+    expect(model.requiredInputs).toEqual(["sessionId"]);
+    expect(model.inputSchema?.type).toBe("object");
+    expect(model.inputSchema?.properties?.sessionId?.typeSummary).toBe(
+      "string",
+    );
+  });
+
   test("JavaScript model exposes symbol path and kind", () => {
     const model = createJavascriptSymbolNormalized(sampleJs());
     expect(model.symbolPath).toBe("log");
     expect(model.kind).toBe("function");
+    expect(model.visibility).toBe("public");
+    expect(model.examples).toEqual(['log("checkpoint", { step: 1 })']);
+    expect(model.sharedSchemaLinks?.[0]?.schemaId).toBe(
+      "javascript.schema.json_compatible",
+    );
+  });
+
+  test("JavaScript shared schema model exposes schema projection", () => {
+    const model = createJavascriptSharedSchemaNormalized({
+      id: "javascript.schema.checkpoint_spec",
+      name: "checkpoint_spec",
+      title: "Checkpoint specification object",
+      schema: createSchemaDefinitionModel({
+        address: {
+          publicArtifactId: "@you-agent-factory/api/javascript/runtime",
+          pointer: "/sharedSchemas/javascript.schema.checkpoint_spec/schema",
+        },
+        type: "object",
+        required: ["label"],
+      }),
+      source: {
+        publicArtifactId: "@you-agent-factory/api/javascript/runtime",
+        pointer: "/sharedSchemas/javascript.schema.checkpoint_spec",
+      },
+      anchor: "javascript.schema.checkpoint_spec",
+    });
+    expect(model.schema?.type).toBe("object");
+    expect(model.schema?.required).toEqual(["label"]);
   });
 
   test("event model exposes event type and payload schema ref", () => {

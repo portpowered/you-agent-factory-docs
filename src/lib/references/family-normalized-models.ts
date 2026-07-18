@@ -13,6 +13,10 @@ import {
   type ReferenceLifecycle,
   type ReferenceSourcePointer,
 } from "./reference-item";
+import {
+  parseSchemaDefinitionModel,
+  type SchemaDefinitionModel,
+} from "./schema-model";
 
 /** HTTP methods published on OpenAPI path items. */
 export const OPENAPI_HTTP_METHODS = [
@@ -55,6 +59,9 @@ export type OpenApiOperationSummary = {
 
 /**
  * Normalized CLI command identity for later CLI reference pages.
+ *
+ * Optional metadata fields stay absent when the published contract omitted
+ * them — never invent flags, arguments, defaults, or conflicts here.
  */
 export type CliCommandNormalized = {
   id: string;
@@ -63,7 +70,26 @@ export type CliCommandNormalized = {
   /** Full command path (for example `you config init`). */
   commandPath: string;
   aliases: string[];
+  /**
+   * Preferred single-line description when published (`short`, else `long`).
+   * Kept for display/search projections that need one summary string.
+   */
   description?: string;
+  /** Published short help text when present. */
+  shortDescription?: string;
+  /** Published long help text when present. */
+  longDescription?: string;
+  /** Published example block when present. */
+  example?: string;
+  /**
+   * Published documentation visibility string from the CLI contract
+   * (for example `visible`). Left as the contract value — not remapped here.
+   */
+  visibility?: string;
+  /** Whether the command is marked runnable in the published contract. */
+  runnable?: boolean;
+  /** Whether a handler is present in the published contract. */
+  handlerPresent?: boolean;
   lifecycle?: ReferenceLifecycle;
   source: ReferenceSourcePointer;
   anchor: string;
@@ -71,19 +97,57 @@ export type CliCommandNormalized = {
 
 /**
  * Normalized MCP tool identity for later MCP reference pages.
+ *
+ * Optional metadata fields stay absent when the published contract omitted
+ * them — never invent input properties, required lists, or handler state.
  */
 export type McpToolNormalized = {
   id: string;
   /** Published tool name (for example `you.factory_session.get`). */
   name: string;
   description?: string;
+  /** Whether a handler is registered in the published MCP contract. */
+  handlerRegistered?: boolean;
+  /**
+   * Required input property names when published on the tool input schema.
+   * Derived from the schema `required` array — never invented.
+   */
+  requiredInputs?: string[];
+  /**
+   * Tool input schema as a W04 `SchemaDefinitionModel` projection when the
+   * published contract includes `inputSchema`.
+   */
+  inputSchema?: SchemaDefinitionModel;
+  /**
+   * Authored tool input example when published on the MCP contract.
+   * Absent when the artifact omitted examples — renderers may generate a
+   * schema-valid illustration and must label that illustration as generated.
+   */
+  example?: unknown;
   lifecycle?: ReferenceLifecycle;
   source: ReferenceSourcePointer;
   anchor: string;
 };
 
 /**
+ * Link from a JavaScript symbol to a shared schema published on the same
+ * runtime contract. `schemaId` matches the sharedSchemas map key; `anchor` is
+ * the shared schema's provisional URL fragment for in-page linking.
+ */
+export type JavascriptSharedSchemaLink = {
+  /** Shared schema identity (for example `javascript.schema.json_compatible`). */
+  schemaId: string;
+  /** Published `$ref` string when present on the symbol surface. */
+  ref?: string;
+  /** URL fragment (without `#`) for the shared schema reference card. */
+  anchor: string;
+};
+
+/**
  * Normalized JavaScript runtime symbol for later JS reference pages.
+ *
+ * Optional metadata fields stay absent when the published contract omitted
+ * them — never invent mutability, nullability, examples, or schema links.
  */
 export type JavascriptSymbolNormalized = {
   id: string;
@@ -93,6 +157,49 @@ export type JavascriptSymbolNormalized = {
   /** Published kind when present (for example `function` or `value`). */
   kind?: string;
   description?: string;
+  /**
+   * Published documentation visibility string from the JavaScript contract
+   * (for example `public`). Left as the contract value — not remapped here.
+   */
+  visibility?: string;
+  /** Published mutability label when present (for example `mutable-object`). */
+  mutability?: string;
+  /** Published nullability label when present (for example `non-null`). */
+  nullability?: string;
+  /** Published binding-lifecycle label when present. */
+  bindingLifecycle?: string;
+  /** Authored documentation examples when published (string snippets). */
+  examples?: string[];
+  /**
+   * Shared schema links discovered on the published symbol surface
+   * (`$ref` into `#/sharedSchemas/...`). Deduped by schemaId.
+   */
+  sharedSchemaLinks?: JavascriptSharedSchemaLink[];
+  lifecycle?: ReferenceLifecycle;
+  source: ReferenceSourcePointer;
+  anchor: string;
+};
+
+/**
+ * Normalized shared schema from the JavaScript runtime contract.
+ *
+ * Optional metadata stays absent when the published contract omitted it —
+ * never invent schema properties, titles, or examples.
+ */
+export type JavascriptSharedSchemaNormalized = {
+  id: string;
+  /** Short display name derived from the schema id leaf when no title exists. */
+  name: string;
+  title?: string;
+  description?: string;
+  visibility?: string;
+  /** Authored documentation examples when published. */
+  examples?: string[];
+  /**
+   * Schema body as a W04 `SchemaDefinitionModel` projection when the published
+   * contract includes `schema`.
+   */
+  schema?: SchemaDefinitionModel;
   lifecycle?: ReferenceLifecycle;
   source: ReferenceSourcePointer;
   anchor: string;
@@ -348,6 +455,44 @@ export function parseCliCommandNormalized(
   if (value.description !== undefined) {
     model.description = requireNonEmptyString(value.description, "description");
   }
+  if (value.shortDescription !== undefined) {
+    model.shortDescription = requireNonEmptyString(
+      value.shortDescription,
+      "shortDescription",
+    );
+  }
+  if (value.longDescription !== undefined) {
+    model.longDescription = requireNonEmptyString(
+      value.longDescription,
+      "longDescription",
+    );
+  }
+  if (value.example !== undefined) {
+    model.example = requireNonEmptyString(value.example, "example");
+  }
+  if (value.visibility !== undefined) {
+    model.visibility = requireNonEmptyString(value.visibility, "visibility");
+  }
+  if (value.runnable !== undefined) {
+    if (typeof value.runnable !== "boolean") {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "runnable" must be a boolean.`,
+        { field: "runnable" },
+      );
+    }
+    model.runnable = value.runnable;
+  }
+  if (value.handlerPresent !== undefined) {
+    if (typeof value.handlerPresent !== "boolean") {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "handlerPresent" must be a boolean.`,
+        { field: "handlerPresent" },
+      );
+    }
+    model.handlerPresent = value.handlerPresent;
+  }
 
   const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");
   if (lifecycle !== undefined) {
@@ -394,6 +539,40 @@ export function parseMcpToolNormalized(value: unknown): McpToolNormalized {
     model.description = requireNonEmptyString(value.description, "description");
   }
 
+  if (value.handlerRegistered !== undefined) {
+    if (typeof value.handlerRegistered !== "boolean") {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "handlerRegistered" must be a boolean.`,
+        { field: "handlerRegistered" },
+      );
+    }
+    model.handlerRegistered = value.handlerRegistered;
+  }
+
+  if (value.requiredInputs !== undefined) {
+    model.requiredInputs = requireStringArray(
+      value.requiredInputs,
+      "requiredInputs",
+    );
+  }
+
+  if (value.inputSchema !== undefined) {
+    try {
+      model.inputSchema = parseSchemaDefinitionModel(value.inputSchema);
+    } catch (cause) {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "inputSchema" must be a SchemaDefinitionModel.`,
+        { field: "inputSchema", cause },
+      );
+    }
+  }
+
+  if (value.example !== undefined) {
+    model.example = value.example;
+  }
+
   const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");
   if (lifecycle !== undefined) {
     model.lifecycle = lifecycle;
@@ -414,6 +593,27 @@ export function createJavascriptSymbolNormalized(
   input: JavascriptSymbolNormalized,
 ): JavascriptSymbolNormalized {
   return parseJavascriptSymbolNormalized(input);
+}
+
+function parseJavascriptSharedSchemaLink(
+  value: unknown,
+  field: string,
+): JavascriptSharedSchemaLink {
+  if (!isPlainObject(value)) {
+    throw new FamilyNormalizedModelParseError(
+      "malformed-model",
+      `Malformed family model: field "${field}" must be an object.`,
+      { field },
+    );
+  }
+  const link: JavascriptSharedSchemaLink = {
+    schemaId: requireNonEmptyString(value.schemaId, `${field}.schemaId`),
+    anchor: requireNonEmptyString(value.anchor, `${field}.anchor`),
+  };
+  if (value.ref !== undefined) {
+    link.ref = requireNonEmptyString(value.ref, `${field}.ref`);
+  }
+  return link;
 }
 
 export function parseJavascriptSymbolNormalized(
@@ -440,6 +640,36 @@ export function parseJavascriptSymbolNormalized(
   if (value.description !== undefined) {
     model.description = requireNonEmptyString(value.description, "description");
   }
+  if (value.visibility !== undefined) {
+    model.visibility = requireNonEmptyString(value.visibility, "visibility");
+  }
+  if (value.mutability !== undefined) {
+    model.mutability = requireNonEmptyString(value.mutability, "mutability");
+  }
+  if (value.nullability !== undefined) {
+    model.nullability = requireNonEmptyString(value.nullability, "nullability");
+  }
+  if (value.bindingLifecycle !== undefined) {
+    model.bindingLifecycle = requireNonEmptyString(
+      value.bindingLifecycle,
+      "bindingLifecycle",
+    );
+  }
+  if (value.examples !== undefined) {
+    model.examples = requireStringArray(value.examples, "examples");
+  }
+  if (value.sharedSchemaLinks !== undefined) {
+    if (!Array.isArray(value.sharedSchemaLinks)) {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "sharedSchemaLinks" must be an array.`,
+        { field: "sharedSchemaLinks" },
+      );
+    }
+    model.sharedSchemaLinks = value.sharedSchemaLinks.map((entry, index) =>
+      parseJavascriptSharedSchemaLink(entry, `sharedSchemaLinks[${index}]`),
+    );
+  }
 
   const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");
   if (lifecycle !== undefined) {
@@ -460,6 +690,75 @@ export function deserializeJavascriptSymbolNormalized(
 ): JavascriptSymbolNormalized {
   return parseJavascriptSymbolNormalized(
     parseJson(json, "JavascriptSymbolNormalized"),
+  );
+}
+
+export function createJavascriptSharedSchemaNormalized(
+  input: JavascriptSharedSchemaNormalized,
+): JavascriptSharedSchemaNormalized {
+  return parseJavascriptSharedSchemaNormalized(input);
+}
+
+export function parseJavascriptSharedSchemaNormalized(
+  value: unknown,
+): JavascriptSharedSchemaNormalized {
+  if (!isPlainObject(value)) {
+    throw new FamilyNormalizedModelParseError(
+      "malformed-model",
+      "Malformed JavascriptSharedSchemaNormalized: expected a plain object.",
+    );
+  }
+
+  const model: JavascriptSharedSchemaNormalized = {
+    id: requireNonEmptyString(value.id, "id"),
+    name: requireNonEmptyString(value.name, "name"),
+    source: parseSourcePointer(value.source),
+    anchor: requireNonEmptyString(value.anchor, "anchor"),
+  };
+
+  if (value.title !== undefined) {
+    model.title = requireNonEmptyString(value.title, "title");
+  }
+  if (value.description !== undefined) {
+    model.description = requireNonEmptyString(value.description, "description");
+  }
+  if (value.visibility !== undefined) {
+    model.visibility = requireNonEmptyString(value.visibility, "visibility");
+  }
+  if (value.examples !== undefined) {
+    model.examples = requireStringArray(value.examples, "examples");
+  }
+  if (value.schema !== undefined) {
+    try {
+      model.schema = parseSchemaDefinitionModel(value.schema);
+    } catch (cause) {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "schema" must be a SchemaDefinitionModel.`,
+        { field: "schema", cause },
+      );
+    }
+  }
+
+  const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");
+  if (lifecycle !== undefined) {
+    model.lifecycle = lifecycle;
+  }
+
+  return model;
+}
+
+export function serializeJavascriptSharedSchemaNormalized(
+  model: JavascriptSharedSchemaNormalized,
+): string {
+  return JSON.stringify(createJavascriptSharedSchemaNormalized(model));
+}
+
+export function deserializeJavascriptSharedSchemaNormalized(
+  json: string,
+): JavascriptSharedSchemaNormalized {
+  return parseJavascriptSharedSchemaNormalized(
+    parseJson(json, "JavascriptSharedSchemaNormalized"),
   );
 }
 

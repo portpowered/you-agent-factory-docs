@@ -4,6 +4,7 @@ import {
   FamilyArtifactNormalizeError,
   normalizeCliCommandsFromArtifact,
   normalizeEventTypesFromOpenApiArtifact,
+  normalizeJavascriptSharedSchemasFromArtifact,
   normalizeJavascriptSymbolsFromArtifact,
   normalizeMcpToolsFromArtifact,
   normalizeOpenApiOperationsFromArtifact,
@@ -112,12 +113,61 @@ describe("normalizeCliCommandsFromArtifact", () => {
       id: "you",
       commandPath: "you",
       description: "Run and manage factories",
+      shortDescription: "Run and manage factories",
       lifecycle: { state: "active" },
       anchor: "you",
     });
     expect(commands[1].description).toBeUndefined();
     expect(commands[1].aliases).toEqual(["bootstrap"]);
     expect(commands[1].anchor).toBe("you-config-init");
+  });
+
+  test("preserves example, visibility, runnable, and handler metadata when published", () => {
+    const fixture = {
+      formatVersion: "cli-command-identity/v1",
+      rootPath: "you",
+      commands: [
+        {
+          idCandidate: "you",
+          name: "you",
+          path: "you",
+          aliases: [],
+          short: "Run factories",
+          long: "Run factories with a longer help block.",
+          example: "  you docs agents",
+          visibility: "visible",
+          lifecycle: "active",
+          runnable: true,
+          handlerPresent: true,
+        },
+        {
+          idCandidate: "you.mcp",
+          name: "mcp",
+          path: "you mcp",
+          aliases: [],
+          short: "MCP servers",
+          long: "",
+          example: "",
+          visibility: "visible",
+          lifecycle: "active",
+          runnable: false,
+          handlerPresent: false,
+        },
+      ],
+    };
+
+    const commands = normalizeCliCommandsFromArtifact(fixture);
+    expect(commands[0]).toMatchObject({
+      shortDescription: "Run factories",
+      longDescription: "Run factories with a longer help block.",
+      example: "you docs agents",
+      visibility: "visible",
+      runnable: true,
+      handlerPresent: true,
+    });
+    expect(commands[1].example).toBeUndefined();
+    expect(commands[1].runnable).toBe(false);
+    expect(commands[1].handlerPresent).toBe(false);
   });
 
   test("consumes W03-resolved CLI public-subpath data", () => {
@@ -131,6 +181,9 @@ describe("normalizeCliCommandsFromArtifact", () => {
     expect(init?.commandPath).toBe("you config init");
     expect(init?.description).toBeTruthy();
     expect(init?.source.publicArtifactId).toBe("@you-agent-factory/api/cli");
+    expect(init?.visibility).toBe("visible");
+    expect(typeof init?.runnable).toBe("boolean");
+    expect(typeof init?.handlerPresent).toBe("boolean");
   });
 });
 
@@ -143,6 +196,18 @@ describe("normalizeMcpToolsFromArtifact", () => {
           idCandidate: "factory-session.get",
           name: "you.factory_session.get",
           description: "Get one durable Factory Session.",
+          handlerRegistered: true,
+          inputSchema: {
+            type: "object",
+            additionalProperties: false,
+            required: ["sessionId"],
+            properties: {
+              sessionId: {
+                type: "string",
+                description: "Stable durable Factory Session identifier.",
+              },
+            },
+          },
         },
         {
           idCandidate: "factory-session.control",
@@ -155,8 +220,49 @@ describe("normalizeMcpToolsFromArtifact", () => {
     const tools = normalizeMcpToolsFromArtifact(fixture);
     expect(tools).toHaveLength(2);
     expect(tools[0].description).toBe("Get one durable Factory Session.");
+    expect(tools[0].handlerRegistered).toBe(true);
+    expect(tools[0].requiredInputs).toEqual(["sessionId"]);
+    expect(tools[0].inputSchema?.type).toBe("object");
+    expect(tools[0].inputSchema?.properties?.sessionId?.typeSummary).toBe(
+      "string",
+    );
     expect(tools[1].description).toBeUndefined();
+    expect(tools[1].lifecycle).toBeUndefined();
+    expect(tools[1].inputSchema).toBeUndefined();
     expect(tools[0].lifecycle).toBeUndefined();
+    expect(tools[0].example).toBeUndefined();
+  });
+
+  test("preserves authored tool examples when published", () => {
+    const authored = { sessionId: "sess_1", operation: "APPROVE" };
+    const tools = normalizeMcpToolsFromArtifact({
+      tools: [
+        {
+          idCandidate: "factory-session.control",
+          name: "you.factory_session.control",
+          example: authored,
+          inputSchema: {
+            type: "object",
+            additionalProperties: false,
+            required: ["sessionId", "operation"],
+            properties: {
+              sessionId: { type: "string" },
+              operation: {
+                type: "string",
+                enum: ["APPROVE", "PAUSE"],
+              },
+            },
+            examples: [{ sessionId: "ignored", operation: "PAUSE" }],
+          },
+        },
+      ],
+    });
+
+    expect(tools[0].example).toEqual(authored);
+    expect(tools[0].inputSchema?.examples?.[0]).toEqual({
+      sessionId: "ignored",
+      operation: "PAUSE",
+    });
   });
 
   test("consumes W03-resolved MCP public-subpath data", () => {
@@ -169,6 +275,9 @@ describe("normalizeMcpToolsFromArtifact", () => {
     const get = tools.find((tool) => tool.id === "factory-session.get");
     expect(get?.name).toBe("you.factory_session.get");
     expect(get?.source.publicArtifactId).toBe("@you-agent-factory/api/mcp");
+    expect(get?.handlerRegistered).toBe(true);
+    expect(get?.requiredInputs).toEqual(["sessionId"]);
+    expect(get?.inputSchema?.properties?.sessionId?.typeSummary).toBe("string");
   });
 });
 
@@ -188,14 +297,27 @@ describe("normalizeJavascriptSymbolsFromArtifact", () => {
                 canonicalEnglish: "Emits one workflow-scoped log record.",
               },
             },
+            examples: ['log("hi")'],
+            visibility: "public",
           },
           lifecycle: { state: "active", since: "1.0.0" },
+          parameters: [
+            {
+              name: "fields",
+              serializableValue: {
+                $ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+              },
+            },
+          ],
         },
         "javascript.args": {
           id: "javascript.args",
           name: "args",
           path: "args",
           kind: "value",
+          mutability: "mutable-object",
+          nullability: "non-null",
+          bindingLifecycle: "snapshot-at-bind",
           lifecycle: { state: "active" },
         },
       },
@@ -209,10 +331,22 @@ describe("normalizeJavascriptSymbolsFromArtifact", () => {
       symbolPath: "log",
       kind: "function",
       description: "Emits one workflow-scoped log record.",
+      visibility: "public",
+      examples: ['log("hi")'],
       lifecycle: { state: "active", since: "1.0.0" },
     });
+    expect(log?.sharedSchemaLinks).toEqual([
+      {
+        schemaId: "javascript.schema.json_compatible",
+        ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+        anchor: "javascript.schema.json_compatible",
+      },
+    ]);
     const args = symbols.find((symbol) => symbol.id === "javascript.args");
     expect(args?.description).toBeUndefined();
+    expect(args?.mutability).toBe("mutable-object");
+    expect(args?.nullability).toBe("non-null");
+    expect(args?.bindingLifecycle).toBe("snapshot-at-bind");
   });
 
   test("consumes W03-resolved JavaScript runtime public-subpath data", () => {
@@ -225,7 +359,88 @@ describe("normalizeJavascriptSymbolsFromArtifact", () => {
     const log = symbols.find((symbol) => symbol.id === "javascript.log");
     expect(log?.kind).toBe("function");
     expect(log?.description).toBeTruthy();
+    expect(log?.examples?.length).toBeGreaterThan(0);
+    expect(
+      log?.sharedSchemaLinks?.some(
+        (link) => link.schemaId === "javascript.schema.json_compatible",
+      ),
+    ).toBe(true);
     expect(log?.source.publicArtifactId).toBe(
+      "@you-agent-factory/api/javascript/runtime",
+    );
+  });
+});
+
+describe("normalizeJavascriptSharedSchemasFromArtifact", () => {
+  test("normalizes fixture-shaped shared schemas with thin schema embeds", () => {
+    const fixture = {
+      formatVersion: "1.0.0",
+      sharedSchemas: {
+        "javascript.schema.checkpoint_spec": {
+          id: "javascript.schema.checkpoint_spec",
+          documentation: {
+            documentation: {
+              title: {
+                canonicalEnglish: "Checkpoint specification object",
+              },
+              description: {
+                canonicalEnglish:
+                  "Closed object shape for workflow.checkpoint spec arguments.",
+              },
+            },
+            examples: ['{ "label": "draft" }'],
+            visibility: "public",
+          },
+          lifecycle: { state: "active", since: "1.0.0" },
+          schema: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              label: { type: "string" },
+              state: {
+                $ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+              },
+            },
+            required: ["label"],
+          },
+        },
+      },
+    };
+
+    const schemas = normalizeJavascriptSharedSchemasFromArtifact(fixture);
+    expect(schemas).toHaveLength(1);
+    const checkpoint = schemas[0];
+    expect(checkpoint).toMatchObject({
+      id: "javascript.schema.checkpoint_spec",
+      name: "Checkpoint specification object",
+      title: "Checkpoint specification object",
+      visibility: "public",
+      examples: ['{ "label": "draft" }'],
+    });
+    expect(checkpoint?.schema?.type).toBe("object");
+    expect(checkpoint?.schema?.required).toEqual(["label"]);
+    expect(checkpoint?.schema?.properties?.state?.typeSummary).toBe(
+      "#/sharedSchemas/javascript.schema.json_compatible/schema",
+    );
+  });
+
+  test("consumes W03-resolved JavaScript runtime sharedSchemas", () => {
+    const artifact = resolveApiPackageArtifact("javascript/runtime");
+    const schemas = normalizeJavascriptSharedSchemasFromArtifact(
+      artifact.data,
+      {
+        publicArtifactId: artifact.specifier,
+      },
+    );
+
+    expect(schemas.length).toBeGreaterThan(3);
+    const jsonCompatible = schemas.find(
+      (schema) => schema.id === "javascript.schema.json_compatible",
+    );
+    expect(jsonCompatible?.schema?.composition?.oneOf?.length).toBeGreaterThan(
+      0,
+    );
+    expect(jsonCompatible?.source.publicArtifactId).toBe(
       "@you-agent-factory/api/javascript/runtime",
     );
   });
