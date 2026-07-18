@@ -71,7 +71,10 @@ hooks, and SSR cost.
 | `src/components/references/api/api-operation-filter.tsx` | Keyboard-accessible filter search + Clear control |
 | `src/components/references/api/load-operation-navigation.ts` | Build nav model from live package artifact + document tag order |
 | `src/components/references/api/assert-operation-navigation.ts` | Happy-dom-safe subprocess proof: nav anchors ↔ `per:"file"` projection |
-| `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + stub sections matching nav anchors |
+| `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + stub sections matching nav anchors + copy links + hash controller |
+| `src/components/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
+| `src/components/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
+| `src/components/references/api/api-reference-hash-controller.tsx` | Hash-to-focus + back/forward (`hashchange` / `popstate`) without rewriting content |
 | `src/app/(dev)/api-renderer-harness/page.tsx` | Non-production harness route (`ENABLE_API_RENDERER_HARNESS=1` in production) |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition used by the production loader |
 | `src/lib/references/normalize-family-artifacts.ts` | W04 `normalizeOpenApiOperationsFromArtifact` — same corpus, not a second OpenAPI source |
@@ -126,6 +129,21 @@ hooks, and SSR cost.
 - Clearing the query (Clear button or emptying the field) restores the full
   tag-grouped set from the original model.
 
+## Stable anchors, copy links, and hash focus
+
+- Prefer W04 / published `operationId` fragments via `resolveApiOperationAnchor`
+  and prove collision-freedom with `collectCollisionFreeApiOperationAnchors`
+  against the live package inventory (same corpus as nav / projection).
+- Copy links use `ApiOperationCopyLink` + fumadocs `useCopyButton`, defaulting
+  to `/docs/references/api#<anchor>` (`API_REFERENCE_PAGE_PATH`) so shared URLs
+  match the eventual W11 mount even when verifying on the harness route.
+- `ApiReferenceHashController` listens for `hashchange` and `popstate`, then
+  scrolls/focuses the matching `[data-api-operation-section]` (`tabIndex={-1}`)
+  and sets `data-api-hash-focused`. Respects `prefers-reduced-motion`. Does not
+  rewrite operation content.
+- Harness stub sections keep `id={anchor}` so `/api-renderer-harness#…` and
+  production `/docs/references/api#…` share the same fragment contract.
+
 ## Patterns
 
 - Keep production API UI under `src/components/references/api/` so ownership
@@ -136,9 +154,8 @@ hooks, and SSR cost.
   `aria-live="polite"`, `aria-busy` when loading).
 - Prefer migrating helpers from the W01 spike into this tree over editing the
   spike in place.
-- Later stories: anchors/hash focus, request/response rendering,
-  playground suppression, hybrid SSE summaries, theme/code-copy, and
-  responsive/a11y/print verification.
+- Later stories: request/response rendering, playground suppression, hybrid
+  SSE summaries, theme/code-copy, and responsive/a11y/print verification.
 
 ## Focused verification
 
@@ -150,5 +167,7 @@ bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/operation-navigation.test.ts \
   src/components/references/api/operation-filter.test.ts \
   src/components/references/api/load-operation-navigation.test.ts \
-  src/components/references/api/api-operation-navigation.test.tsx
+  src/components/references/api/api-operation-navigation.test.tsx \
+  src/components/references/api/operation-anchors.test.ts \
+  src/components/references/api/api-operation-anchors.test.tsx
 ```

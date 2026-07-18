@@ -12,6 +12,10 @@ export {
   type ApiNavigationVerificationHarnessProps,
 } from "./api-navigation-verification-harness";
 export {
+  ApiOperationCopyLink,
+  type ApiOperationCopyLinkProps,
+} from "./api-operation-copy-link";
+export {
   ApiOperationFilter,
   type ApiOperationFilterProps,
 } from "./api-operation-filter";
@@ -23,6 +27,11 @@ export {
   ApiOperationNavigator,
   type ApiOperationNavigatorProps,
 } from "./api-operation-navigator";
+export {
+  ApiReferenceHashController,
+  type ApiReferenceHashControllerProps,
+  focusApiOperationAnchor,
+} from "./api-reference-hash-controller";
 export {
   ApiReferenceMobileNavigator,
   type ApiReferenceMobileNavigatorProps,
@@ -65,6 +74,25 @@ export {
   apiOpenApiServer,
   loadApiOpenApiSinglePageProjection,
 } from "./openapi-server";
+export {
+  API_HASH_CONTROLLER_ATTR,
+  API_HASH_FOCUSED_ATTR,
+  API_OPERATION_ANCHOR_ATTR,
+  API_OPERATION_COPY_LINK_ATTR,
+  API_OPERATION_COPY_LINK_COPIED_LABEL,
+  API_OPERATION_COPY_LINK_LABEL,
+  API_OPERATION_SECTION_ATTR,
+  API_REFERENCE_PAGE_PATH,
+  type ApiOperationAnchorCollision,
+  type ApiOperationAnchorInventory,
+  type ApiOperationAnchorLike,
+  apiOperationAnchorUrl,
+  apiOperationCopyLinkValue,
+  collectCollisionFreeApiOperationAnchors,
+  normalizeApiOperationAnchor,
+  readLocationHashAnchor,
+  resolveApiOperationAnchor,
+} from "./operation-anchors";
 export {
   API_OPERATION_FILTER_ATTR,
   API_OPERATION_FILTER_EMPTY_MESSAGE,

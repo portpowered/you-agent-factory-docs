@@ -1,5 +1,6 @@
 /**
- * Focused W08 verification surface for tag-grouped operation navigation.
+ * Focused W08 verification surface for tag-grouped operation navigation,
+ * filtering, stable anchors, copy links, and hash-to-focus.
  *
  * Renders navigators against the package-resolved single-page projection and
  * stub operation sections whose `id` matches each nav anchor. Not a final
@@ -7,12 +8,21 @@
  */
 
 import { cn } from "@/lib/utils";
+import { ApiOperationCopyLink } from "./api-operation-copy-link";
 import { ApiOperationNavigation } from "./api-operation-navigation";
+import { ApiReferenceHashController } from "./api-reference-hash-controller";
 import { ApiSurface } from "./api-surface";
+import {
+  API_OPERATION_ANCHOR_ATTR,
+  API_OPERATION_SECTION_ATTR,
+  API_REFERENCE_PAGE_PATH,
+} from "./operation-anchors";
 import type { ApiOperationNavModel } from "./operation-navigation";
 
 export type ApiNavigationVerificationHarnessProps = {
   model: ApiOperationNavModel;
+  /** Owning page path used for copy-link URLs (defaults to production API path). */
+  pagePath?: string;
   className?: string;
   "data-testid"?: string;
 };
@@ -22,6 +32,7 @@ export type ApiNavigationVerificationHarnessProps = {
  */
 export function ApiNavigationVerificationHarness({
   model,
+  pagePath = API_REFERENCE_PAGE_PATH,
   className,
   "data-testid": testId = "api-navigation-verification-harness",
 }: ApiNavigationVerificationHarnessProps) {
@@ -36,59 +47,70 @@ export function ApiNavigationVerificationHarness({
 
   return (
     <ApiSurface status="ready" className={cn("min-w-0", className)}>
-      <div
-        className="mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden px-4 py-6"
-        data-api-navigation-verification-harness=""
-        data-testid={testId}
-      >
-        <header className="min-w-0 space-y-2 border-b border-border pb-6">
-          <p className="text-sm text-muted-foreground">
-            Non-production API renderer harness (W08)
-          </p>
-          <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-            Tag-grouped operation navigation
-          </h1>
-          <p className="max-w-3xl text-sm text-muted-foreground">
-            Exercises desktop and phone/tablet navigators plus
-            method/path/summary/operation-ID filtering against the
-            package-resolved OpenAPI projection ({model.operationCount}{" "}
-            operations / {model.groups.length} tags). Stub sections only prove
-            deep-link targets — request/response rendering is a later story.
-          </p>
-        </header>
+      <ApiReferenceHashController>
+        <div
+          className="mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden px-4 py-6"
+          data-api-navigation-verification-harness=""
+          data-testid={testId}
+        >
+          <header className="min-w-0 space-y-2 border-b border-border pb-6">
+            <p className="text-sm text-muted-foreground">
+              Non-production API renderer harness (W08)
+            </p>
+            <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+              Tag-grouped operation navigation
+            </h1>
+            <p className="max-w-3xl text-sm text-muted-foreground">
+              Exercises desktop and phone/tablet navigators, operation
+              filtering, stable anchors, copy links, and hash-to-focus against
+              the package-resolved OpenAPI projection ({model.operationCount}{" "}
+              operations / {model.groups.length} tags). Stub sections prove
+              deep-link targets — request/response rendering is a later story.
+            </p>
+          </header>
 
-        <ApiOperationNavigation groups={model.groups} model={model} />
+          <ApiOperationNavigation groups={model.groups} model={model} />
 
-        <div className="space-y-16" data-api-operation-sections="">
-          {uniqueItems.map((item) => (
-            <section
-              key={item.id}
-              id={item.anchor}
-              className="scroll-mt-20 min-w-0 border-t border-border pt-8"
-              data-api-operation-section=""
-              data-api-operation-id={item.operationId ?? item.id}
-              data-api-operation-method={item.method}
-              data-api-operation-path={item.path}
-              data-api-operation-anchor={item.anchor}
-            >
-              <h2 className="text-lg font-semibold text-foreground">
-                <span className="font-mono text-sm text-muted-foreground">
-                  {item.method.toUpperCase()}
-                </span>{" "}
-                {item.path}
-              </h2>
-              {item.summary !== undefined ? (
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {item.summary}
+          <div className="space-y-16" data-api-operation-sections="">
+            {uniqueItems.map((item) => (
+              <section
+                key={item.id}
+                id={item.anchor}
+                className="scroll-mt-20 min-w-0 border-t border-border pt-8 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                data-api-operation-id={item.operationId ?? item.id}
+                data-api-operation-method={item.method}
+                data-api-operation-path={item.path}
+                tabIndex={-1}
+                {...{
+                  [API_OPERATION_SECTION_ATTR]: "",
+                  [API_OPERATION_ANCHOR_ATTR]: item.anchor,
+                }}
+              >
+                <div className="flex min-w-0 flex-wrap items-start justify-between gap-3">
+                  <h2 className="text-lg font-semibold text-foreground">
+                    <span className="font-mono text-sm text-muted-foreground">
+                      {item.method.toUpperCase()}
+                    </span>{" "}
+                    {item.path}
+                  </h2>
+                  <ApiOperationCopyLink
+                    anchor={item.anchor}
+                    pagePath={pagePath}
+                  />
+                </div>
+                {item.summary !== undefined ? (
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {item.summary}
+                  </p>
+                ) : null}
+                <p className="mt-2 font-mono text-xs text-muted-foreground">
+                  #{item.anchor}
                 </p>
-              ) : null}
-              <p className="mt-2 font-mono text-xs text-muted-foreground">
-                #{item.anchor}
-              </p>
-            </section>
-          ))}
+              </section>
+            ))}
+          </div>
         </div>
-      </div>
+      </ApiReferenceHashController>
     </ApiSurface>
   );
 }
