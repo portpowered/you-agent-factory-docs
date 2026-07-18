@@ -35,6 +35,8 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 | `src/lib/references/reference-display-projection.test.ts` | Non-mutation, missing-description, type/constraints/link projection proofs |
 | `src/lib/references/reference-search-projection.ts` | Search-document shapes + `ReferenceSearchDocumentBuilder` with owning-page anchor URLs (`/docs/references/api#…`); no Orama/nav wiring |
 | `src/lib/references/reference-search-projection.test.ts` | Anchor URL, per-item documents, missing-description, display/search separation proofs |
+| `src/lib/references/fixtures/w04-normalized-model-fixtures.ts` | Shared W04 fixtures: recursion/cycles, composition + discriminator, maps/arrays/enums/defaults, missing descriptions, malformed refs, representative items, colliding anchor registrations |
+| `src/lib/references/reference-model-fixtures.test.ts` | Fixture-backed integration proofs for cycle-safe resolve, source pointers, deterministic anchors, per-page collisions, and display/search projections |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 build/server acquisition — consume artifacts only through this public-subpath surface |
 | `src/lib/references/api-package-public-exports.ts` | Documented public subpath allowlist (for source `publicArtifactId` / subpath values) |
 
@@ -98,6 +100,14 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
   javascript family maps to `/docs/references/javascript-runtime`.
 - Projections must clone source/aliases/constraints/links so callers cannot
   mutate canonical model data through the projected object.
+- Shared W04 fixtures live in
+  `src/lib/references/fixtures/w04-normalized-model-fixtures.ts`. Prefer those
+  builders (`buildRecursionCycleDefinitions`, `buildCompositionDefinitions`,
+  `buildMapArrayEnumDefaultDefinitions`, `W04_MALFORMED_REF_FIXTURES`, …) over
+  inventing one-off catalogs in new tests. Fixture-backed proofs belong in
+  `reference-model-fixtures.test.ts`. When real package artifacts are needed,
+  still acquire them via W03 `resolveApiPackageArtifact` — never package root
+  or package-internal imports.
 
 ## Verification
 
@@ -110,6 +120,7 @@ bun test src/lib/references/reference-anchor-registry.test.ts
 bun test src/lib/references/reference-cross-link-resolver.test.ts
 bun test src/lib/references/reference-display-projection.test.ts
 bun test src/lib/references/reference-search-projection.test.ts
+bun test src/lib/references/reference-model-fixtures.test.ts
 bun run typecheck
 bun run lint
 ```
