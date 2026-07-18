@@ -192,6 +192,10 @@ measures the expanded bootstrap via
 `FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes` (raise the
 ceiling only with measured evidence — ~29.69 MiB after ~585 item documents).
 Prove representative family queries through live `docsSearchApi.search`.
+When search loads the events corpus during static-export catalog build,
+`eventsOpenApiTurbopackLoadDependencies` must use the ancestor
+`node_modules` walk (`resolveApiPackageManifestFsPath`) — webpack stubs
+`createRequire().resolve` and can return a non-string module id.
 
 ### Pattern: factory alias / body / tag discovery
 
