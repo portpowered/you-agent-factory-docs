@@ -944,7 +944,15 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 * `src/lib/content/route-family-local-docs-page.ts` /
   `route-family-local-docs-page-load.ts`
   Generic local-message disk loader for the four direct route families; uses
-  `getDocsPageDir` so nested child bundles resolve.
+  `getDocsPageDir` so nested child bundles resolve. Page-local MDX components
+  use the same `page-mdx-components.tsx` + static slug switch pattern as
+  documentation/concept loaders (relative imports in `page.mdx` do not resolve
+  under `compileMDX`). First factories example:
+  `factories/configuration` →
+  `@/content/docs/factories/configuration/page-mdx-components` for the W07
+  `FactoryRootSchemaEmbed`. Treat the loader switch as a narrow shared-surface
+  exception and declare it with `audit:canonical-page-surface
+  --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
   `src/lib/content/content-hrefs.ts`
   `PUBLISHED_DOCS_SECTIONS` includes `factories` with `factoriesPageHref` and

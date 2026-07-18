@@ -1,0 +1,23 @@
+{
+  "id": "documentation.factories-configuration",
+  "slug": "factories-configuration",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "factories configuration",
+    "factory.json topology",
+    "factory topology"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.configuration",
+    "documentation.workers",
+    "documentation.workstations",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T12:45:00.000Z",
+  "updatedAt": "2026-07-18T12:45:00.000Z"
+}

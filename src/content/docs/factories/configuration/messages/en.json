@@ -1,0 +1,79 @@
+{
+  "title": "Configuration",
+  "description": "Configure you-agent-factory with factory.json topology: work types, workers, workstations, resources, and how the pieces fit.",
+  "openingSummary": "factory.json is the topology root for a you-agent-factory run. It declares the work types, workers, workstations, optional resources, and routing the runtime turns into executable workflow.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Configuration is the web overview of factory.json topology for you-agent-factory. It explains what the factory root file owns, how the recommended directory layout splits workers, workstations, and inputs, and how work moves through workstations and workers. Use it when you need the factory topology picture before opening the deeper workers, workstations, or resources references."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "factory.json declares the workflow topology for a you-agent-factory run. It names the work types and their lifecycle states, the workers that do the work, the workstations that dispatch and route outcomes, and optional resources that bound concurrency. The runtime turns that declaration into executable workflow. Split files under workers/ and workstations/ hold the runtime instructions those entries call. Watched submission data lives under inputs/. Operator model defaults in ~/.you-agent-factory/config.json are separate from this factory topology."
+    },
+    "whatLivesWhere": {
+      "title": "What Lives Where",
+      "body": "Put topology in factory.json. Keep worker runtime instructions in workers/<name>/AGENTS.md and workstation runtime instructions in workstations/<name>/AGENTS.md. Drop watched single-work-type requests under inputs/<work-type>/default/, and mixed or relation-heavy batch files under inputs/BATCH/default/. The recommended factory directory layout looks like this:"
+    },
+    "howPiecesFit": {
+      "title": "How The Pieces Fit",
+      "body": "Work enters the factory as a token in a work type's initial state. A workstation is enabled when its configured input places have matching tokens. The workstation dispatches to its worker, then routes the token based on the worker outcome:"
+    },
+    "factoryRootSchema": {
+      "title": "Factory Root Properties",
+      "body": "The live Factory schema root lists the topology fields factory.json can declare. Required fields define executable workflow. Optional resources bound concurrency. Identity and runner fields set factory-level defaults. layout and supportingFiles are non-executable portability metadata — they do not change runtime topology. Open the full Factory schema and API references when you need exhaustive contract lookup beyond this root summary."
+    },
+    "minimalFactory": {
+      "title": "Minimal Factory",
+      "body": "A minimal factory needs one work type, one worker, and one workstation that moves submitted work from an initial state to a terminal state. Copy this shape, then add matching workers/processor/AGENTS.md and workstations/process/AGENTS.md files:"
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start from factory.json as the topology root, then add split worker and workstation instruction files named to match the entries in that file. Use this page for the layout, live root-property summary, and minimal factory shape. This overview stays at topology depth. Open the child documentation pages below when you need the deep contracts those pieces own: workers, workstations, and resources."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a web topology overview for factory.json. It is not a sync of packaged CLI docs, not the operator model-defaults deep dive in ~/.you-agent-factory/config.json, and not the submitting-work, batch, relationships, or harness-support references. Deep worker-type, workstation-kind, and resource-pool field contracts belong on the workers, workstations, and resources documentation pages — this overview does not absorb those contracts. Exhaustive Factory field and operation inventories live on the schema and API reference pages linked from the root-properties section."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "routingOutcomeHeader": "Worker outcome",
+    "routingFieldHeader": "Routing field",
+    "routingAcceptedOutcome": "Accepted",
+    "routingAcceptedField": "outputs",
+    "routingContinueOutcome": "Continue",
+    "routingContinueField": "onContinue",
+    "routingRejectedOutcome": "Rejected",
+    "routingRejectedField": "onRejection",
+    "routingFailedOutcome": "Failed, timed out, or errored",
+    "routingFailedField": "onFailure",
+    "fullFactorySchema": "Full Factory schema",
+    "fullFactoryApi": "Factory API reference",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "resourcesDocs": "Resources"
+  },
+  "callouts": {
+    "layoutNotes": {
+      "body": "Inline runtime fields in factory.json still work for portable single-file configs, but the split layout is the recommended authoring path. Live saves persist the split layout: a thin factory.json plus workers/, workstations/, and default inputs/ channels when definitions exist."
+    },
+    "placeNote": {
+      "body": "Each workType and state pair becomes a place named <workType>:<state>, such as task:init. That place naming is how workstation inputs and outputs connect to the work-type lifecycle."
+    },
+    "schemaEmbedNote": {
+      "body": "Runtime topology is workTypes, workers, workstations, and optional resources. layout and supportingFiles travel with the factory for portability and presentation only. Do not treat them as executable workflow fields."
+    },
+    "minimalFactoryNote": {
+      "body": "Accepted work moves through outputs to task:complete. Failures route through onFailure to task:failed. Add onContinue or onRejection only when those outcomes are part of the workstation contract."
+    }
+  }
+}
