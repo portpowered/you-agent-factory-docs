@@ -999,7 +999,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `/docs/workstations/poller-run`). Non-CRON behaviors share empty `selected`
   and exclude `cron` — STANDARD/REPEATER misuse stays on the cron field;
   POLLER's primary misuse is axis collapse (`type: "POLLER"`); CRON flips
-  the cron pattern (selected `cron`, misuse omits it).
+  the cron pattern (selected `cron`, misuse omits it). Type pages so far:
+  `workstations/inference-run` / `documentation.workstations-inference-run`
+  (`workstation:INFERENCE_RUN`, requires `worker:INFERENCE_WORKER`, empty
+  `selected`, misuse = `classificationRoutes`; link behaviors + `/docs/workers`
+  without authoring W13). Mirror this bundle for later WorkstationType pages
+  with `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
   families. Empty collections call `renderSectionCollectionIndexPage` with

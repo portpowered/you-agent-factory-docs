@@ -90,6 +90,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "inference-run": {
+        const mod = await import(
+          "@/content/docs/workstations/inference-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }
