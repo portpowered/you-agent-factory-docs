@@ -27,8 +27,8 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 | `src/lib/references/family-normalized-models.test.ts` | Family identity fields, missing-optional handling, and JSON round-trip proofs |
 | `src/lib/references/normalize-family-artifacts.ts` | Pure artifact→model normalizers for OpenAPI/CLI/MCP/JS/events (consumes W03-resolved data or fixtures; no package imports) |
 | `src/lib/references/normalize-family-artifacts.test.ts` | Fixture-shaped normalization + W03 public-subpath consumption proofs |
-| `src/lib/references/reference-anchor-registry.ts` | Deterministic URL-safe `ReferenceAnchorRegistry` + kind-specific anchor builders (register by owning page; no IO) |
-| `src/lib/references/reference-anchor-registry.test.ts` | Kind coverage, determinism, URL-safety, page grouping, and idempotent re-register proofs |
+| `src/lib/references/reference-anchor-registry.ts` | Deterministic URL-safe `ReferenceAnchorRegistry` + kind-specific anchor builders; fails closed on per-owning-page fragment collisions (no IO) |
+| `src/lib/references/reference-anchor-registry.test.ts` | Kind coverage, determinism, URL-safety, page grouping, idempotent re-register, and per-page collision proofs |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 build/server acquisition — consume artifacts only through this public-subpath surface |
 | `src/lib/references/api-package-public-exports.ts` | Documented public subpath allowlist (for source `publicArtifactId` / subpath values) |
 
@@ -67,9 +67,13 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
   Schema pointers accept `/…` or `#/…` forms; leading `#`/`/` are stripped
   before slugifying. Anchor algorithm matches provisional slug rules
   (RFC 3986 unreserved kept; other runs → `-`).
-- Register against an owning page id (family id or page path) so later
-  collision checks and projections can `listPage`. Per-page fail-closed
-  collision detection is the next story — do not invent collision suffixes here.
+- Register against an owning page id (family id or page path). Collision
+  policy: identical same-item re-register is idempotent; two distinct items
+  on the same page that resolve to the same fragment throw
+  `ReferenceAnchorRegistryError` with `code: "anchor-collision"` naming the
+  fragment, both item ids, and owning page; the same fragment on two different
+  owning pages is allowed. Distinct-payload re-register of the same `itemId`
+  also fails closed.
 - Later stories add cross-link resolver and display/search projections beside
   these modules without widening W04 into UI/pages.
 

@@ -192,6 +192,121 @@ describe("ReferenceAnchorRegistry", () => {
     expect(registry.listPage("api")).toHaveLength(1);
   });
 
+  test("fails closed when two distinct items on the same page share an anchor", () => {
+    const registry = createReferenceAnchorRegistry();
+
+    registry.register({
+      owningPageId: "api",
+      itemId: "op.submit",
+      kind: "operation",
+      identity: "submitWorkBySessionId",
+    });
+
+    // Distinct identity that slugifies to the same fragment.
+    expect(() =>
+      registry.register({
+        owningPageId: "api",
+        itemId: "op.submit-alias",
+        kind: "operation",
+        identity: "submitWorkBySessionId!!!",
+      }),
+    ).toThrow(ReferenceAnchorRegistryError);
+
+    try {
+      registry.register({
+        owningPageId: "api",
+        itemId: "op.submit-alias",
+        kind: "operation",
+        identity: "submitWorkBySessionId!!!",
+      });
+      throw new Error("expected anchor-collision");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ReferenceAnchorRegistryError);
+      const collision = error as ReferenceAnchorRegistryError;
+      expect(collision.code).toBe("anchor-collision");
+      expect(collision.owningPageId).toBe("api");
+      expect(collision.anchor).toBe("submitWorkBySessionId");
+      expect(collision.itemId).toBe("op.submit-alias");
+      expect(collision.collidingItemId).toBe("op.submit");
+      expect(collision.message).toContain("submitWorkBySessionId");
+      expect(collision.message).toContain("op.submit");
+      expect(collision.message).toContain("op.submit-alias");
+      expect(collision.message).toContain("api");
+    }
+
+    // First registration remains the sole owner of the fragment.
+    expect(registry.listPage("api")).toHaveLength(1);
+    expect(registry.getAnchor("api", "op.submit")).toBe(
+      "submitWorkBySessionId",
+    );
+  });
+
+  test("same anchor string on different owning pages does not collide", () => {
+    const registry = createReferenceAnchorRegistry();
+
+    const apiAnchor = registry.register({
+      owningPageId: "api",
+      itemId: "op.alpha",
+      kind: "operation",
+      identity: "alpha",
+    });
+    const eventsAnchor = registry.register({
+      owningPageId: "events",
+      itemId: "ev.alpha",
+      kind: "event",
+      identity: "alpha",
+    });
+
+    expect(apiAnchor).toBe("alpha");
+    expect(eventsAnchor).toBe("alpha");
+    expect(registry.getAnchor("api", "op.alpha")).toBe("alpha");
+    expect(registry.getAnchor("events", "ev.alpha")).toBe("alpha");
+    expect(registry.listPage("api")).toHaveLength(1);
+    expect(registry.listPage("events")).toHaveLength(1);
+  });
+
+  test("fails closed when the same itemId is re-registered with a different payload", () => {
+    const registry = createReferenceAnchorRegistry();
+
+    registry.register({
+      owningPageId: "cli",
+      itemId: "cli.you.config.init",
+      kind: "command",
+      identity: "you config init",
+    });
+
+    expect(() =>
+      registry.register({
+        owningPageId: "cli",
+        itemId: "cli.you.config.init",
+        kind: "command",
+        identity: "you config show",
+      }),
+    ).toThrow(ReferenceAnchorRegistryError);
+
+    try {
+      registry.register({
+        owningPageId: "cli",
+        itemId: "cli.you.config.init",
+        kind: "command",
+        identity: "you config show",
+      });
+      throw new Error("expected anchor-collision");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ReferenceAnchorRegistryError);
+      const collision = error as ReferenceAnchorRegistryError;
+      expect(collision.code).toBe("anchor-collision");
+      expect(collision.owningPageId).toBe("cli");
+      expect(collision.itemId).toBe("cli.you.config.init");
+      expect(collision.message).toContain("you-config-init");
+      expect(collision.message).toContain("you-config-show");
+    }
+
+    expect(registry.getAnchor("cli", "cli.you.config.init")).toBe(
+      "you-config-init",
+    );
+  });
+
   test("toJSON snapshots page-grouped plain objects", () => {
     const registry = createReferenceAnchorRegistry();
     registry.register({

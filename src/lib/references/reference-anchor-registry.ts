@@ -4,7 +4,8 @@
  * Pure build-time helpers — no filesystem, package resolution, or UI. Maps
  * operation IDs, schema pointers, command paths, tool names, symbols, and
  * event types to fragment identifiers registered against an owning page.
- * Per-page collision fail-closed behavior lands in the next story.
+ * Registration fails closed when two distinct items on the same owning page
+ * would share an anchor fragment.
  */
 
 /** Identity kinds the registry can turn into URL-safe anchors. */
@@ -44,7 +45,8 @@ export type RegisteredReferenceAnchor = {
 export type ReferenceAnchorRegistryErrorCode =
   | "malformed-input"
   | "unsupported-kind"
-  | "unknown-entry";
+  | "unknown-entry"
+  | "anchor-collision";
 
 export class ReferenceAnchorRegistryError extends Error {
   readonly code: ReferenceAnchorRegistryErrorCode;
@@ -52,6 +54,10 @@ export class ReferenceAnchorRegistryError extends Error {
   readonly owningPageId?: string;
   readonly itemId?: string;
   readonly kind?: ReferenceAnchorKind;
+  /** Colliding fragment when `code` is `anchor-collision`. */
+  readonly anchor?: string;
+  /** Other item id already holding the colliding fragment. */
+  readonly collidingItemId?: string;
 
   constructor(
     code: ReferenceAnchorRegistryErrorCode,
@@ -61,6 +67,8 @@ export class ReferenceAnchorRegistryError extends Error {
       owningPageId?: string;
       itemId?: string;
       kind?: ReferenceAnchorKind;
+      anchor?: string;
+      collidingItemId?: string;
       cause?: unknown;
     } = {},
   ) {
@@ -74,6 +82,8 @@ export class ReferenceAnchorRegistryError extends Error {
     this.owningPageId = options.owningPageId;
     this.itemId = options.itemId;
     this.kind = options.kind;
+    this.anchor = options.anchor;
+    this.collidingItemId = options.collidingItemId;
   }
 }
 
@@ -197,7 +207,7 @@ function pageKey(owningPageId: string, itemId: string): string {
 
 /**
  * Build-time registry that maps addressable reference identities to URL-safe
- * anchors, grouped by owning page for later collision checks and projections.
+ * anchors, grouped by owning page. Fails closed on per-page fragment collisions.
  */
 export class ReferenceAnchorRegistry {
   private readonly byPageAndItem = new Map<string, RegisteredReferenceAnchor>();
@@ -205,10 +215,16 @@ export class ReferenceAnchorRegistry {
     string,
     Map<string, RegisteredReferenceAnchor>
   >();
+  /** Per owning page: anchor fragment → itemId that owns it. */
+  private readonly byPageAndAnchor = new Map<string, Map<string, string>>();
 
   /**
    * Register (or idempotently re-register) an item against an owning page and
    * return its deterministic URL-safe anchor fragment.
+   *
+   * Fails closed when a distinct item on the same page would share the
+   * fragment, or when the same itemId is re-registered with a different
+   * kind/identity/anchor payload.
    */
   register(input: RegisterReferenceAnchorInput): string {
     const owningPageId = requireNonEmptyString(
@@ -241,8 +257,7 @@ export class ReferenceAnchorRegistry {
     const key = pageKey(owningPageId, itemId);
     const existing = this.byPageAndItem.get(key);
     if (existing !== undefined) {
-      // Idempotent same-item re-register: allow identical payload; leave
-      // distinct-payload / cross-item collision fail-closed to story 005.
+      // Idempotent same-item re-register: identical payload is a no-op.
       if (
         existing.anchor === entry.anchor &&
         existing.kind === entry.kind &&
@@ -250,12 +265,37 @@ export class ReferenceAnchorRegistry {
       ) {
         return existing.anchor;
       }
-      this.byPageAndItem.set(key, entry);
-      const pageMap = this.byPage.get(owningPageId);
-      if (pageMap !== undefined) {
-        pageMap.set(itemId, entry);
-      }
-      return entry.anchor;
+      throw new ReferenceAnchorRegistryError(
+        "anchor-collision",
+        `Anchor collision on owning page "${owningPageId}": item "${itemId}" is already registered with anchor "${existing.anchor}" (kind=${existing.kind}, identity="${existing.identity}"); refusing re-registration with anchor "${entry.anchor}" (kind=${entry.kind}, identity="${entry.identity}").`,
+        {
+          owningPageId,
+          itemId,
+          kind: entry.kind,
+          anchor: entry.anchor,
+          collidingItemId: itemId,
+        },
+      );
+    }
+
+    let anchorIndex = this.byPageAndAnchor.get(owningPageId);
+    if (anchorIndex === undefined) {
+      anchorIndex = new Map();
+      this.byPageAndAnchor.set(owningPageId, anchorIndex);
+    }
+    const occupantItemId = anchorIndex.get(anchor);
+    if (occupantItemId !== undefined && occupantItemId !== itemId) {
+      throw new ReferenceAnchorRegistryError(
+        "anchor-collision",
+        `Anchor collision on owning page "${owningPageId}": fragment "${anchor}" is claimed by both item "${occupantItemId}" and item "${itemId}".`,
+        {
+          owningPageId,
+          itemId,
+          kind: entry.kind,
+          anchor,
+          collidingItemId: occupantItemId,
+        },
+      );
     }
 
     this.byPageAndItem.set(key, entry);
@@ -265,6 +305,7 @@ export class ReferenceAnchorRegistry {
       this.byPage.set(owningPageId, pageMap);
     }
     pageMap.set(itemId, entry);
+    anchorIndex.set(anchor, itemId);
     return entry.anchor;
   }
 
