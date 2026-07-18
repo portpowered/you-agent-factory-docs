@@ -7,6 +7,8 @@
  * contract.
  */
 
+import { stripSearchUrlLocalePrefix } from "@/lib/search/factory-search-deleted-records";
+
 /** Open until story 005 closes every row with proven compatibility outcomes. */
 export type DocumentationRouteMigrationStatus = "open" | "closed";
 
@@ -221,6 +223,56 @@ export function listDocumentationRouteMigrationOldSlugs(): string[][] {
     }
     return slug;
   });
+}
+
+/** Every §10 old inbound path (sitemap exclusion / discovery proofs). */
+export function listDocumentationRouteMigrationOldRoutes(): readonly `/${string}`[] {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER.map((row) => row.oldRoute);
+}
+
+/** Every §10 family target path (sitemap inclusion / canonical proofs). */
+export function listDocumentationRouteMigrationTargetRoutes(): readonly `/${string}`[] {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER.map((row) => row.targetRoute);
+}
+
+/**
+ * True when `appPath` is a plan §10 old documentation route (locale prefix
+ * stripped). Compatibility HTML still ships; the path is non-canonical for
+ * sitemap / discovery only.
+ */
+export function isDocumentationRouteMigrationOldPath(appPath: string): boolean {
+  const path = stripSearchUrlLocalePrefix(appPath);
+  return findDocumentationRouteMigrationByOldRoute(path) !== undefined;
+}
+
+/**
+ * Resolves the family canonical path for a §10 old route. Returns `undefined`
+ * when `appPath` is not a ledger old route.
+ */
+export function resolveDocumentationRouteMigrationCanonicalPath(
+  appPath: string,
+): string | undefined {
+  const path = stripSearchUrlLocalePrefix(appPath);
+  return resolveDocumentationRouteMigrationTarget(path);
+}
+
+/**
+ * Docs catch-all slug used for Metadata canonical / hreflang. §10 old slugs
+ * remap to their family target slug; other slugs pass through unchanged.
+ */
+export function resolveDocumentationRouteMigrationCanonicalDocsSlug(
+  docsSlug: string,
+): string {
+  const oldRoute = `/docs/${docsSlug}`;
+  const targetRoute = resolveDocumentationRouteMigrationTarget(oldRoute);
+  if (!targetRoute) {
+    return docsSlug;
+  }
+  const prefix = "/docs/";
+  if (!targetRoute.startsWith(prefix)) {
+    throw new Error(`Invalid migration targetRoute: ${targetRoute}`);
+  }
+  return targetRoute.slice(prefix.length);
 }
 
 /** Structural shape accepted by the export-safety predicate (tests + callers). */

@@ -4,7 +4,11 @@ import { tagPageHref } from "@/lib/content/content-hrefs";
 import { FACTORY_PUBLISHED_TAG_SLUGS } from "@/lib/content/factory-tags-browse";
 import { PUBLISHED_DOCS_SECTIONS } from "@/lib/content/published-docs-registry-contract";
 import { listPublishedDocsEntries } from "@/lib/content/published-docs-registry-ids";
-import { isLiveFactoryCanonicalPath } from "@/lib/seo/export-absolute-canonical";
+import {
+  listDocumentationRouteMigrationOldRoutes,
+  listDocumentationRouteMigrationTargetRoutes,
+} from "@/lib/seo/documentation-route-migration";
+import { isCanonicalPublicDiscoveryPath } from "@/lib/seo/export-absolute-canonical";
 import { resolveProductionMetadataHref } from "@/lib/seo/production-metadata-base";
 
 /**
@@ -58,14 +62,27 @@ export const SITEMAP_EXCLUSION_PROOF_ROUTES = [
   "/blog/roofline-throughput-explorer",
 ] as const;
 
+/**
+ * Plan §10 old `/docs/documentation/*` paths — still served as compatibility
+ * HTML, but excluded from canonical sitemap discovery.
+ */
+export const DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES =
+  listDocumentationRouteMigrationOldRoutes();
+
+/**
+ * Plan §10 family targets that must remain in the canonical sitemap.
+ */
+export const DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES =
+  listDocumentationRouteMigrationTargetRoutes();
+
 function uniqueSortedPaths(paths: readonly string[]): string[] {
   return [...new Set(paths)].sort((left, right) => left.localeCompare(right));
 }
 
 /**
  * Lists app-relative public factory routes for the sitemap. Fail-closed against
- * retired Atlas collections and deleted Atlas blogs via
- * {@link isLiveFactoryCanonicalPath}.
+ * retired Atlas collections, deleted Atlas blogs, and §10 migration old routes
+ * via {@link isCanonicalPublicDiscoveryPath}.
  */
 export function listPublicSitemapRoutes(): string[] {
   const docsArticles = listPublishedDocsEntries().map((entry) => entry.url);
@@ -81,7 +98,7 @@ export function listPublicSitemapRoutes(): string[] {
   ];
 
   return uniqueSortedPaths(
-    candidates.filter((path) => isLiveFactoryCanonicalPath(path)),
+    candidates.filter((path) => isCanonicalPublicDiscoveryPath(path)),
   );
 }
 

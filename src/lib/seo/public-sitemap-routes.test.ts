@@ -5,6 +5,8 @@ import {
   resolveProductionMetadataHref,
 } from "@/lib/seo/production-metadata-base";
 import {
+  DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
+  DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES,
   listPublicSitemapAbsoluteUrls,
   listPublicSitemapRoutes,
   SITEMAP_EXCLUSION_PROOF_ROUTES,
@@ -37,6 +39,16 @@ describe("public-sitemap-routes unit", () => {
     const routes = new Set(listPublicSitemapRoutes());
     for (const route of SITEMAP_EXCLUSION_PROOF_ROUTES) {
       expect(routes.has(route)).toBe(false);
+    }
+  });
+
+  test("§10 migration old routes stay out of the sitemap while targets remain", () => {
+    const routes = new Set(listPublicSitemapRoutes());
+    for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES) {
+      expect(routes.has(route)).toBe(false);
+    }
+    for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES) {
+      expect(routes.has(route)).toBe(true);
     }
   });
 });

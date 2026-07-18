@@ -32,9 +32,11 @@ social assets, sitemap, robots).
 | `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
 | `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract |
-| `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects) |
+| `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects); canonical slug/path remap helpers |
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
+| `src/lib/seo/documentation-route-migration-canonical.test.ts` | §10 old→target Metadata canonical/OG + sitemap exclusion/inclusion proofs |
+| `src/lib/seo/export-absolute-canonical.ts` | Also exports `isCanonicalPublicDiscoveryPath` (Atlas live + W18 migration old-path discovery gate) |
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.tsx` | Shared static compatibility document for §10 old `/docs/documentation/*` routes |
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx` | Component-level old→target link + unknown-route error proofs |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
@@ -139,8 +141,17 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    Next `<Link>` to the family target — no live factory host and no server
    redirects. Keep every old route in published docs / catch-all static params
    (silent removal is forbidden).
-4. Later W18 stories declare new canonicals / sitemap exclusion, retarget
-   links, and close ledger rows; do not invent per-route redirect helpers.
+4. **Canonical + sitemap (story 003):** `localizedShippedDocsPageAlternates`
+   remaps §10 old docs slugs to the family target slug so Metadata
+   `alternates.canonical` and Open Graph `url` name the new path only.
+   `isCanonicalPublicDiscoveryPath` (Atlas live-path gate + migration old-path
+   exclusion) filters `listPublicSitemapRoutes` so old `/docs/documentation/*`
+   URLs stay out of sitemap while compatibility HTML remains published.
+   Target family routes stay in the sitemap. Helpers live under
+   `src/lib/seo/documentation-route-migration.ts` and
+   `src/lib/seo/export-absolute-canonical.ts`.
+5. Later W18 stories retarget links and close ledger rows; do not invent
+   per-route redirect helpers.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and

@@ -13,6 +13,7 @@ import {
   RETIRED_ATLAS_SEARCH_URL_PREFIXES,
   stripSearchUrlLocalePrefix,
 } from "@/lib/search/factory-search-deleted-records";
+import { isDocumentationRouteMigrationOldPath } from "@/lib/seo/documentation-route-migration";
 import {
   PRODUCTION_SITE_ORIGIN,
   resolveProductionMetadataHref,
@@ -103,6 +104,19 @@ export function isLiveFactoryCanonicalPath(appPath: string): boolean {
   }
 
   return true;
+}
+
+/**
+ * True when an app-relative path may appear in canonical sitemap / discovery
+ * inventories. Atlas-retired paths fail via {@link isLiveFactoryCanonicalPath}.
+ * Plan §10 migration old routes also fail here — they still serve static
+ * compatibility HTML, but must not compete as canonical discovery URLs.
+ */
+export function isCanonicalPublicDiscoveryPath(appPath: string): boolean {
+  if (!isLiveFactoryCanonicalPath(appPath)) {
+    return false;
+  }
+  return !isDocumentationRouteMigrationOldPath(appPath);
 }
 
 /**

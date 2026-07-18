@@ -10,6 +10,7 @@ import {
   supportedLocales,
   UnsupportedLocaleError,
 } from "@/lib/i18n/locale-routing";
+import { resolveDocumentationRouteMigrationCanonicalDocsSlug } from "@/lib/seo/documentation-route-migration";
 
 export function resolveRouteLocaleOrNotFound(locale?: string): SiteLocale {
   try {
@@ -50,15 +51,20 @@ export function localizedRouteAlternates(
  * fail-closed rules (W17). Unshipped locales are omitted from hreflang rather
  * than advertised. Use for `/docs/<slug>` pages and reference family routes.
  *
+ * Plan §10 migration old slugs remap canonical + hreflang to the family target
+ * slug (W18) so compatibility HTML does not compete as a canonical URL.
+ *
  * Uses the generated shipped-locale manifest (same gate as the language
  * switcher) so this helper stays free of server-only page loaders.
  */
 export function localizedShippedDocsPageAlternates(
   docsSlug: string,
 ): NonNullable<Metadata["alternates"]> {
+  const canonicalDocsSlug =
+    resolveDocumentationRouteMigrationCanonicalDocsSlug(docsSlug);
   const alternates = localizedRouteAlternates({
     surface: "docs-page",
-    slug: docsSlug,
+    slug: canonicalDocsSlug,
   });
   const languages = alternates.languages ?? {};
 
@@ -66,7 +72,7 @@ export function localizedShippedDocsPageAlternates(
     ...alternates,
     languages: Object.fromEntries(
       Object.entries(languages).filter(([locale]) =>
-        isShippedLocalizedDocsSlug(docsSlug, locale as SiteLocale),
+        isShippedLocalizedDocsSlug(canonicalDocsSlug, locale as SiteLocale),
       ),
     ),
   };
