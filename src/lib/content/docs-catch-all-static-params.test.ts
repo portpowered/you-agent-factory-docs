@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default and localized generateStaticParams stay valid with empty families", () => {
+  test("live default and localized generateStaticParams stay valid with authored references and empty sibling families", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,8 +183,14 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
+    // W11 published the events reference page under the references family.
+    expect(defaultPaths).toContain("references/events");
+
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
-      // Empty collections contribute no catch-all child params yet.
+      if (id === "references") {
+        continue;
+      }
+      // Remaining empty collections contribute no catch-all child params yet.
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -202,13 +208,14 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty with empty families", async () => {
+  test("live localized generateStaticParams stay non-empty without unshipped route-family children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
+    // references/events ships default-locale only until localized message bundles exist.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

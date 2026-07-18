@@ -474,6 +474,11 @@ const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
   },
 ] as const;
 
+const W05_EMPTY_ROUTE_FAMILY_INDEX_CASES =
+  W05_DIRECT_ROUTE_FAMILY_INDEX_CASES.filter(
+    (section) => section.collectionId !== "references",
+  );
+
 describe("W05 direct route-family section index pages", () => {
   it("loads index copy for references, factories, workers, and workstations", async () => {
     const messages = await loadUiMessages();
@@ -484,7 +489,35 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.workstationsIndex.title).toBe("Workstations");
   });
 
-  for (const section of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+  it("renders the references index with the authored events reference entry", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.referencesIndex;
+    const html = renderToStaticMarkup(await ReferencesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("/docs/references/events");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(html).not.toContain("/docs/documentation/");
+  });
+
+  it("keeps the localized references index empty until events messages ship", async () => {
+    const messages = await loadUiMessages("ja");
+    const indexMessages = messages.referencesIndex;
+    const html = renderToStaticMarkup(
+      await LocalizedReferencesIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.emptyTitle);
+    expect(html).toContain(indexMessages.emptyHomeLink);
+    expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+  });
+
+  for (const section of W05_EMPTY_ROUTE_FAMILY_INDEX_CASES) {
     it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
       const messages = await loadUiMessages();
       const indexMessages = messages[section.messageKey];
@@ -523,7 +556,9 @@ describe("W05 direct route-family section index pages", () => {
       expect(html).toContain(indexMessages.emptyHomeLink);
       expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
     });
+  }
 
+  for (const section of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
     it(`keeps default and localized ${section.collectionId} index metadata aligned`, async () => {
       const defaultMetadata = await section.generateDefaultMetadata();
       const localizedMetadata = await section.generateLocalizedMetadata({

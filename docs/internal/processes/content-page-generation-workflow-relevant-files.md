@@ -995,6 +995,14 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 
 ## Page bundle and registry workflow
 
+* First published `reference.*` page also needs `references` in
+  `REGISTRY_COLLECTIONS` / registry disk loader / `PUBLISHED_DOCS_SECTIONS` /
+  `referencePageHref`, plus `registryDirectoryByKind.reference` and
+  `validate-registry` path-kind mapping. See
+  [events-reference-page-relevant-files.md](./events-reference-page-relevant-files.md).
+  Route-family pages load through `loadRouteFamilyLocalDocsPage`; keep curated
+  sibling discovery under `#related` with `LocalizedLinkList` when sibling
+  `reference.*` records are not yet published.
 * `docs/templates/*.content.md`
   Authoring templates for factory kinds (guide, concept, technique,
   documentation, reference, glossary) plus blog-post. Atlas

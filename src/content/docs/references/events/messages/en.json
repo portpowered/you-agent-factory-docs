@@ -1,0 +1,35 @@
+{
+  "title": "Events",
+  "description": "Look up the complete FactoryEvent and FactoryResponseEvent corpus, stream roles, reconnect and lifecycle contracts, and static SSE examples on a stable hybrid docs route.",
+  "openingSummary": "This hybrid reference publishes the Factory event-stream corpus so readers can decode session and response streams, reconnect correctly, and study static SSE examples without opening a live Factory connection.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference publishes the FactoryEvent and FactoryResponseEvent corpus for you-agent-factory. Readers can look up stream-role labeling across the three stream operations, the complete FactoryEvent envelope and discriminator payload catalog, FactoryResponseEvent envelope and kind/phase/provenance/payload dimensions, reconnect and lifecycle contracts, and static SSE frame examples. HTTP transport mechanics stay with the API reference family."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A FactoryEvent is the preferred session stream envelope. A FactoryResponseEvent is the ephemeral response stream envelope. Stream roles mark which operation is canonical, ephemeral, or compatibility-only. Hybrid placement means this page owns the event corpus and client-facing reconnect docs, while the API reference retains HTTP operation transport ownership."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Open this page when you need the durable event-stream lookup surface. Use it to decode envelopes, confirm stream roles, and follow reconnect or identity contracts. Prefer the API reference for HTTP operation mechanics such as Accept negotiation and transport-level request details."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a static hybrid events reference. It does not open a live EventSource or fetch stream, does not add a proxy route, and does not require a reachable Factory host. It does not re-implement the API OpenAPI UI. Sibling API and schema reference routes may be linked before those pages exist in every checkout."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "apiReference": "API reference"
+  }
+}
