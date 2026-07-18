@@ -110,6 +110,43 @@ Upstream lane docs (do not fork ownership):
 * [content-page-generation-workflow-relevant-files](./content-page-generation-workflow-relevant-files.md)
 * [derived-page-validation-relevant-files](./derived-page-validation-relevant-files.md)
 
+## Story 004 — search functional / static-search verification
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-search-functional-convergence.ts` | Catalog of static-search command gate + W16 item deep-link suite paths and §17 gate families |
+| `src/lib/verify/w20-search-functional-convergence.test.ts` | Catalog completeness / file-existence / family-coverage proofs |
+| `src/lib/verify/w20-search-functional-browser-verify.test.tsx` | Browser-path proof: live `docsSearchApi.search` → item deep-link → navigable fragment href |
+| `scripts/run-w20-search-functional-tests.ts` | Runner: catalog → `make test-website-static-search` → focused suites |
+| `package.json` → `test:w20-search-functional` | Maintainer / automation entry |
+| `Makefile` → `test-w20-search-functional` | Shared Makefile contract |
+| `Makefile` → `test-website-static-search` | Command gate wrapping `test:website:static-search` |
+
+### Command gate
+
+* `make test-website-static-search` — `docs-search-bootstrap-path`, `export-search-bootstrap`, and `verify-export-search-bootstrap-client-path`
+
+### Focused suites (W16 item deep-links + representative queries)
+
+* `src/lib/content/factory-search-reference-shape-adaptation.test.ts` — event-corpus shape → fragment URL adaptation
+* `src/lib/content/factory-search-api-schema-indexing.test.ts` — API operation + schema field owning-page deep links
+* `src/lib/content/factory-search-cli-mcp-js-event-indexing.test.ts` — CLI / MCP / JS / event item deep links
+* `src/lib/content/factory-search-item-hits-above-page-crowding.test.ts` — item `#…` hits above owning-page crowding
+* `src/lib/content/factory-search-payload-gate-representative-queries.test.ts` — bootstrap budget + representative family queries
+* `src/lib/verify/w20-search-functional-browser-verify.test.tsx` — browser-path item deep-link + navigable href
+
+### Reproduce
+
+```bash
+make test-w20-search-functional
+# or: bun run test:w20-search-functional
+```
+
+Worktree note: Next/Turbopack often cannot start without local `node_modules`.
+Prove search → item deep-link navigation via live `docsSearchApi.search` (same
+`/api/search` pipeline) plus the browser-verify suite above — do not redesign
+search ranking or W16 projection ownership.
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,
