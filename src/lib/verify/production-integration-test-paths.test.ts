@@ -58,5 +58,8 @@ describe("PRODUCTION_INTEGRATION_TEST_PATHS", () => {
     expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
       "src/lib/verify/theme-code-copy-r00-page.test.ts",
     );
+    expect(PRODUCTION_INTEGRATION_TEST_PATHS).toContain(
+      "src/content/docs/references/cli-mcp-js-static-export-success.test.ts",
+    );
   });
 });

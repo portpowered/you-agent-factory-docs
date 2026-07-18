@@ -37,7 +37,7 @@ Do **not**:
 | `src/content/docs/references/cli/cli-page.test.tsx` | Colocated route/render proof |
 | `src/content/registry/references/cli.json` | `reference.cli` registry record |
 | `src/lib/references/load-cli-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
-| `src/lib/references/cli-reference-turbopack.ts` | Turbopack-safe CLI export resolution via manifest |
+| `src/lib/references/cli-reference-turbopack.ts` | Webpack-safe CLI export resolution via ancestor `node_modules` + manifest join |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Merges page-local MDX components for references/cli |
 
 ## Key host files (MCP page — story 002)
@@ -52,7 +52,7 @@ Do **not**:
 | `src/content/docs/references/mcp/mcp-page.test.tsx` | Colocated route/render proof |
 | `src/content/registry/references/mcp.json` | `reference.mcp` registry record |
 | `src/lib/references/load-mcp-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
-| `src/lib/references/mcp-reference-turbopack.ts` | Turbopack-safe MCP export resolution via manifest |
+| `src/lib/references/mcp-reference-turbopack.ts` | Webpack-safe MCP export resolution via ancestor `node_modules` + manifest join |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Also merges page-local MDX for references/mcp |
 
 ## Key host files (JavaScript runtime page — story 003)
@@ -67,7 +67,7 @@ Do **not**:
 | `src/content/docs/references/javascript-runtime/javascript-runtime-page.test.tsx` | Colocated route/render proof |
 | `src/content/registry/references/javascript-runtime.json` | `reference.javascript-runtime` registry record |
 | `src/lib/references/load-javascript-runtime-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
-| `src/lib/references/javascript-runtime-reference-turbopack.ts` | Turbopack-safe JS runtime export resolution via manifest |
+| `src/lib/references/javascript-runtime-reference-turbopack.ts` | Webpack-safe JS runtime export resolution via ancestor `node_modules` + manifest join |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Also merges page-local MDX for references/javascript-runtime |
 
 ## Additive registry / published-docs wiring
@@ -97,6 +97,8 @@ Do **not**:
 | Path | Role |
 | --- | --- |
 | `src/content/docs/references/published-route-states.test.tsx` | Page-owned success / empty / error / no-host / sibling-route fence proofs across the three published routes |
+| `src/lib/references/cli-mcp-js-reference-turbopack.test.ts` | Ancestor `node_modules` filesystem resolution proofs (webpack-safe) |
+| `src/content/docs/references/cli-mcp-js-static-export-success.test.ts` | Post-`make build` `out/` HTML asserts `data-inventory-state="success"` (production integration) |
 
 Page mounts accept an optional `inventory` override solely so empty/error proofs can render the same W10 status surface the production MDX path uses, without mocking modules or scanning renderer trees.
 
@@ -108,11 +110,15 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   injected inventory input; do not re-test W10 chrome internals or scan foreign
   renderer trees for ownership fences — assert unpublished sibling routes via
   `source.getPage` instead.
-- Prefer Turbopack-safe `resolveExport` via package `manifest` → sibling JSON
-  (same pattern as schema verification / events OpenAPI). CLI uses
+- Prefer webpack-safe `resolveExport` via ancestor `node_modules` walk
+  (`resolveApiPackageManifestFsPath` from `load-schema-verification-models.ts`)
+  then join to sibling JSON under `generated/`. Do **not** use
+  `createRequire(...).resolve("@you-agent-factory/api/manifest")` — webpack
+  production server chunks stub it with MODULE_NOT_FOUND. CLI uses
   `generated/cli/commands.json`; MCP uses `generated/mcp/tools.json`; JavaScript
   runtime uses `generated/javascript/runtime-api.json` (public subpath
-  `javascript/runtime`).
+  `javascript/runtime`). Prove shipped success with the production-integration
+  `out/` HTML assertion, not Bun-side loader tests alone.
 - Keep curated discovery under `#related` with `LocalizedLinkList` for authored
   docs and planned sibling reference routes; `RelatedDocs` stays for when
   reference records participate in the related-docs runtime.

@@ -1,24 +1,24 @@
 /**
- * Turbopack-safe JavaScript runtime public-export resolution for Next.js
- * server/docs pages.
+ * Webpack-/Turbopack-safe JavaScript runtime public-export resolution for
+ * Next.js server/docs pages.
  *
- * Next/Turbopack does not expose `import.meta.resolve` the same way Bun does.
- * Resolve the package `manifest` JSON export via `createRequire`, then join to
- * `javascript/runtime-api.json` beside it under `generated/` — same pattern as
- * the CLI and MCP reference Turbopack helpers.
+ * Do not use `createRequire(...).resolve("@you-agent-factory/api/manifest")` —
+ * webpack production server chunks stub `createRequire` with a MODULE_NOT_FOUND
+ * resolver. Locate the installed package via the shared ancestor `node_modules`
+ * walk (`resolveApiPackageManifestFsPath`), then join to
+ * `javascript/runtime-api.json` beside the manifest under `generated/`.
  *
  * Still feeds W03 `resolveApiPackageArtifact` via the injectable `resolveExport`
  * dependency — never bypasses public-subpath validation.
  */
 
 import { existsSync, readFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { ApiPackageArtifactResolverDependencies } from "./api-package-artifact-resolver";
 import { toApiPackageExportSpecifier } from "./api-package-public-exports";
+import { resolveApiPackageManifestFsPath } from "./load-schema-verification-models";
 
-const require = createRequire(import.meta.url);
 const TURBOPACK_PROJECT_PREFIX = "[project]/";
 
 /** Path relative to the package `generated/` directory (where `manifest.json` lives). */
@@ -30,6 +30,8 @@ export const JAVASCRIPT_RUNTIME_REFERENCE_PUBLIC_SUBPATH =
 
 export const JAVASCRIPT_RUNTIME_REFERENCE_EXPORT_SPECIFIER =
   toApiPackageExportSpecifier(JAVASCRIPT_RUNTIME_REFERENCE_PUBLIC_SUBPATH);
+
+const MANIFEST_EXPORT_SPECIFIER = toApiPackageExportSpecifier("manifest");
 
 /**
  * Convert bundler-virtual paths (Turbopack `[project]/...`) into real fs paths.
@@ -48,11 +50,13 @@ export function normalizeJavascriptRuntimeReferenceFsPath(
 
 /**
  * Absolute filesystem path for the packaged JavaScript runtime JSON, resolved
- * through the package manifest (avoids Turbopack `import.meta.resolve` gaps).
+ * through the package manifest via ancestor `node_modules` lookup (webpack-safe).
  */
-export function resolveJavascriptRuntimeReferenceFsPath(): string {
+export function resolveJavascriptRuntimeReferenceFsPath(
+  startDir: string = process.cwd(),
+): string {
   const manifestPath = normalizeJavascriptRuntimeReferenceFsPath(
-    require.resolve("@you-agent-factory/api/manifest"),
+    resolveApiPackageManifestFsPath(startDir),
   );
   const generatedDir = dirname(manifestPath);
   const absolutePath = join(
@@ -86,22 +90,25 @@ export function resolveJavascriptRuntimeReferenceFsPath(): string {
 }
 
 /**
- * Resolve `@you-agent-factory/api/javascript/runtime` to a `file:` URL under
- * Next/Turbopack.
+ * Resolve `@you-agent-factory/api/javascript/runtime` (or the package manifest)
+ * to a `file:` URL under Next/webpack.
  */
 export function resolveJavascriptRuntimeReferenceExport(
   specifier: string = JAVASCRIPT_RUNTIME_REFERENCE_EXPORT_SPECIFIER,
 ): string {
+  if (specifier === MANIFEST_EXPORT_SPECIFIER) {
+    return pathToFileURL(resolveApiPackageManifestFsPath()).href;
+  }
   if (specifier !== JAVASCRIPT_RUNTIME_REFERENCE_EXPORT_SPECIFIER) {
     throw new Error(
-      `JavaScript runtime reference Turbopack resolver only accepts "${JAVASCRIPT_RUNTIME_REFERENCE_EXPORT_SPECIFIER}", got "${specifier}".`,
+      `JavaScript runtime reference Turbopack resolver only accepts "${JAVASCRIPT_RUNTIME_REFERENCE_EXPORT_SPECIFIER}" or "${MANIFEST_EXPORT_SPECIFIER}", got "${specifier}".`,
     );
   }
   return pathToFileURL(resolveJavascriptRuntimeReferenceFsPath()).href;
 }
 
 /**
- * W03 resolve dependencies that work inside Next/Turbopack server pages.
+ * W03 resolve dependencies that work inside Next/webpack server pages.
  */
 export function javascriptRuntimeReferenceTurbopackLoadDependencies(): ApiPackageArtifactResolverDependencies {
   return {
