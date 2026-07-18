@@ -58,8 +58,31 @@ hooks, and SSR cost.
 | `src/components/references/api/api-status.tsx` | Accessible non-ready status messaging |
 | `src/components/references/api/api-surface.tsx` | Boundary that short-circuits non-ready statuses or renders ready children |
 | `src/components/references/api/api-surface.test.tsx` | Status semantics proofs for the ownership boundary |
-| `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — later stories feed OpenAPI through this surface |
+| `src/components/references/api/load-openapi-artifact.ts` | W03-backed loader for `@you-agent-factory/api/openapi` (document object + schema id) |
+| `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; attaches W04 normalized ops from the same artifact |
+| `src/components/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
+| `src/components/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
+| `src/components/references/api/single-page-projection.test.ts` | W03 acquisition + single-page projection proofs |
+| `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition used by the production loader |
+| `src/lib/references/normalize-family-artifacts.ts` | W04 `normalizeOpenApiOperationsFromArtifact` — same corpus, not a second OpenAPI source |
 | `src/lib/references-openapi-spike/` | Merged W01 non-production spike — donor of reusable helpers only |
+
+## Single-page OpenAPI projection
+
+- Acquire only through `loadApiOpenApiArtifact()` →
+  `resolveApiPackageArtifact("@you-agent-factory/api/openapi")`.
+- Feed `createOpenAPI` a **document object** (not a filesystem path string) so
+  happy-dom URL polyfills under `bun test` do not break
+  `@apidevtools/json-schema-ref-parser`.
+- Project with `openapiSource(server, { per: "file", baseDir: "references/api" })`
+  so every published operation lands on one virtual page.
+- Assert operation counts against the **live** package inventory
+  (`countOpenApiOperations`), not a frozen product quota. Baseline observation
+  at pin time was 45 operations / 41 paths.
+- Run `assert-single-page-projection.ts` via plain `bun` (subprocess from tests),
+  never call `openapiSource` directly inside `bun test`.
+- W04 normalized summaries are derived from the same loaded document for
+  cross-links/display; do not invent a second OpenAPI corpus.
 
 ## Patterns
 
@@ -71,14 +94,15 @@ hooks, and SSR cost.
   `aria-live="polite"`, `aria-busy` when loading).
 - Prefer migrating helpers from the W01 spike into this tree over editing the
   spike in place.
-- Later stories: single-page OpenAPI projection, tag nav, filtering, anchors,
-  request/response rendering, playground suppression, hybrid SSE summaries,
-  theme/code-copy, and responsive/a11y/print verification.
+- Later stories: tag nav, filtering, anchors, request/response rendering,
+  playground suppression, hybrid SSE summaries, theme/code-copy, and
+  responsive/a11y/print verification.
 
 ## Focused verification
 
 ```bash
 bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/ownership.test.ts \
-  src/components/references/api/api-surface.test.tsx
+  src/components/references/api/api-surface.test.tsx \
+  src/components/references/api/single-page-projection.test.ts
 ```

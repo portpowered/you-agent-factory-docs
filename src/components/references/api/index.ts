@@ -10,6 +10,10 @@
 export { ApiStatus } from "./api-status";
 export { ApiSurface, type ApiSurfaceProps } from "./api-surface";
 export {
+  countOpenApiOperations,
+  countOpenApiPaths,
+} from "./count-openapi-operations";
+export {
   isOpenApiProductionDependency,
   OPENAPI_PRODUCTION_ASYNCAPI_POLICY,
   OPENAPI_PRODUCTION_DEPENDENCY_SET,
@@ -20,6 +24,19 @@ export {
   OPENAPI_PRODUCTION_UPGRADE_CANDIDATE,
   type OpenApiProductionDependencyName,
 } from "./dependency-selection";
+export {
+  API_OPENAPI_PACKAGE_EXPORT,
+  API_OPENAPI_SCHEMA_ID,
+  API_OPENAPI_SOURCE_BASE_DIR,
+  type LoadedApiOpenApiArtifact,
+  loadApiOpenApiArtifact,
+} from "./load-openapi-artifact";
+export {
+  type ApiOpenApiOperation,
+  type ApiOpenApiSinglePageProjection,
+  apiOpenApiServer,
+  loadApiOpenApiSinglePageProjection,
+} from "./openapi-server";
 export {
   API_REFERENCE_FORBIDDEN_OWNERSHIP_ROOTS,
   API_REFERENCE_OWNERSHIP_IMPORT,
