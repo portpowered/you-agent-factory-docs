@@ -1016,6 +1016,13 @@ MDX component merge for schema mounts:
    `loadSchemaVerificationPackageModel("schemas/<name>")` and mount public
    W07 `SchemaReference` with `pagePath="/docs/references/<slug>"`. Do not
    edit renderer internals under `src/components/references/schema/`.
+   Production browser proofs must assert `data-schema-status="ready"` (page
+   intro copy can mention the schema title even when acquisition fails).
+   If production `bun run start` shows `invalid` with
+   `Package export resolution failed`, check that
+   `resolveApiPackageManifestFsPath` uses ancestor `node_modules` filesystem
+   walk — webpack stubs `createRequire().resolve` in production server chunks
+   (MODULE_NOT_FOUND), including runtime-built specifier strings.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.
@@ -1026,7 +1033,8 @@ MDX component merge for schema mounts:
    (W15–W18). Sitemap inclusion follows derived published-docs entries after
    `prepare:content-runtime`.
 
-Representative first page: `src/content/docs/references/factory-schema/`.
+Representative pages: `src/content/docs/references/factory-schema/`,
+`you-config-schema/` (add `page-mdx-components` switch cases per slug).
 
 ## Page bundle and registry workflow
 

@@ -5,13 +5,17 @@
  * Do not import from client/browser UI bundles — depends on Node package
  * resolution via `resolveApiPackageArtifact`.
  *
- * Next/Turbopack note: do not `require.resolve` JSON schema exports directly —
- * Turbopack rewrites them into non-readable virtual module ids. Resolve the
- * package `manifest` JSON export (static string), then join to
- * `schemas/<name>.schema.json` (same pattern as the OpenAPI spike).
+ * Next/bundler notes:
+ * - Do not `require.resolve` / `import` JSON schema exports directly —
+ *   Turbopack/webpack rewrite them into non-readable virtual module ids.
+ * - Do not rely on `createRequire(...).resolve("@you-agent-factory/api/manifest")`
+ *   either — webpack production server chunks stub `createRequire` with a
+ *   MODULE_NOT_FOUND resolver. Locate the installed package via ancestor
+ *   `node_modules` filesystem walk (same class of approach as the SSE spike
+ *   packaged-OpenAPI loader), then join to `generated/schemas/<name>.schema.json`.
  */
 
-import { createRequire } from "node:module";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { resolveApiPackageArtifact } from "./api-package-artifact-resolver";
@@ -24,7 +28,8 @@ import {
 } from "./normalize-json-schema-artifact";
 import type { SchemaDefinitionModel } from "./schema-model";
 
-const require = createRequire(import.meta.url);
+const API_PACKAGE_NAME = "@you-agent-factory/api";
+const MANIFEST_RELATIVE_PATH = join("generated", "manifest.json");
 const TURBOPACK_PROJECT_PREFIX = "[project]/";
 
 export type SchemaVerificationPackageModel = {
@@ -67,17 +72,66 @@ function schemaFileName(subpath: SchemaVerificationPublicSubpath): string {
 }
 
 /**
+ * Walk ancestors from `startDir` for `node_modules/@you-agent-factory/api`.
+ * Supports worktree checkouts that hoist dependencies to a parent repo root.
+ */
+export function findInstalledApiPackageRoot(
+  startDir: string = process.cwd(),
+): string {
+  let dir = startDir;
+  for (;;) {
+    const packageJsonPath = join(
+      dir,
+      "node_modules",
+      API_PACKAGE_NAME,
+      "package.json",
+    );
+    if (existsSync(packageJsonPath)) {
+      return dirname(packageJsonPath);
+    }
+    const parent = dirname(dir);
+    if (parent === dir) {
+      break;
+    }
+    dir = parent;
+  }
+  throw new Error(
+    `Installed ${API_PACKAGE_NAME} package.json not found walking up from ${startDir}. Run bun install.`,
+  );
+}
+
+/**
+ * Resolve the package manifest JSON export to a real filesystem path.
+ *
+ * Uses ancestor `node_modules` lookup instead of `createRequire().resolve`,
+ * which webpack stubs in production server chunks.
+ */
+export function resolveApiPackageManifestFsPath(
+  startDir: string = process.cwd(),
+): string {
+  const packageRoot = findInstalledApiPackageRoot(startDir);
+  const manifestPath = join(packageRoot, MANIFEST_RELATIVE_PATH);
+  if (!existsSync(manifestPath)) {
+    throw new Error(
+      `Packaged API manifest missing at ${manifestPath} (from ${API_PACKAGE_NAME}).`,
+    );
+  }
+  return normalizeSchemaVerificationFsPath(manifestPath);
+}
+
+/**
  * Absolute filesystem path for a schema public export, resolved through the
- * package manifest (avoids Turbopack JSON-export virtualization).
+ * package manifest (avoids Turbopack/webpack JSON-export virtualization).
  */
 export function resolveSchemaVerificationFsPath(
   subpath: SchemaVerificationPublicSubpath,
+  startDir: string = process.cwd(),
 ): string {
-  // Resolve a JSON export so the bundler does not invent a virtual schema id.
-  const manifestPath = normalizeSchemaVerificationFsPath(
-    require.resolve("@you-agent-factory/api/manifest"),
+  return join(
+    dirname(resolveApiPackageManifestFsPath(startDir)),
+    "schemas",
+    schemaFileName(subpath),
   );
-  return join(dirname(manifestPath), "schemas", schemaFileName(subpath));
 }
 
 /**
