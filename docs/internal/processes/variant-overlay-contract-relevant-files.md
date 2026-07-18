@@ -25,8 +25,10 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | --- | --- |
 | `src/lib/references/overlays/factory-variant-overlay-schema.ts` | Pure serializable `FactoryVariantOverlaySchema` + field applicability / companion / example / optional `upstreamDefinition` slots + JSON parse/serialize helpers (no IO) |
 | `src/lib/references/overlays/factory-variant-overlay-schema.test.ts` | Contract coverage: required slots, examples-vs-fields separation, no copied prose, W04 address consumption, JSON round-trip |
+| `src/lib/references/overlays/factory-variant-overlay-registry.ts` | Pure `FactoryVariantOverlayRegistry` + overlay ID helpers + enum-inventory projection from W04 models / Factory schema data + completeness assert (no IO) |
+| `src/lib/references/overlays/factory-variant-overlay-registry.test.ts` | Registry completeness against installed Factory enums via W03 `resolveApiPackageArtifact("schemas/factory")`; missing/unknown fail closed; mock-workers excluded |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
-| `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — later validator stories load Factory schemas only through this surface |
+| `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
 ## Patterns
 
@@ -43,14 +45,22 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 - Prove JSON serializability with `serializeFactoryVariantOverlay` /
   `deserializeFactoryVariantOverlay` round-trips; overlays must be plain
   objects, not class instances.
-- Later stories own registry completeness, field-semantics resolution,
-  companion matrices, and package-backed validation. Story 001 only defines
-  the typed contract.
+- Overlay IDs use `{axis}:{enumValue}` (`worker:…`, `workstation:…`,
+  `behavior:…`). Discriminator fields are `type` for worker/workstation and
+  `behavior` for WorkstationKind. Completeness compares registry IDs to
+  installed `$defs.WorkerType` / `WorkstationType` / `WorkstationKind` enums
+  projected through W04 `SchemaDefinitionModel`; acquire the artifact with
+  W03 `resolveApiPackageArtifact("schemas/factory")` at the call site.
+- Do **not** register mock-worker run types (`accept` / `script` / `reject`)
+  as Factory `WorkerType` overlays — they live on `schemas/mock-workers`.
+- Later stories own field-semantics resolution, companion matrices, and
+  package-backed field/discriminator validation.
 
 ## Verification
 
 ```bash
-bun test src/lib/references/overlays/factory-variant-overlay-schema.test.ts
+bun test src/lib/references/overlays/
+bunx biome check src/lib/references/overlays/
 bun run typecheck
 bun run lint
 ```
