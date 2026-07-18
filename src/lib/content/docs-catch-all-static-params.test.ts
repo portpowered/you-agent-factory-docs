@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default and localized generateStaticParams stay valid with empty families", () => {
+  test("live default generateStaticParams keeps empty families empty and includes authored workstations children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,12 +183,34 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
-      // Empty collections contribute no catch-all child params yet.
+    // Still-empty W05 families contribute no catch-all child params.
+    for (const id of ["references", "factories", "workers"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
     }
+
+    // W14 authored Workstation variant pages enter default catch-all params.
+    const workstationChildren = defaultPaths.filter((path) =>
+      path.startsWith("workstations/"),
+    );
+    expect(workstationChildren.length).toBeGreaterThan(0);
+    expect(workstationChildren).toEqual(
+      expect.arrayContaining([
+        "workstations/standard",
+        "workstations/repeater",
+        "workstations/cron",
+        "workstations/poller",
+        "workstations/inference-run",
+        "workstations/agent-run",
+        "workstations/script-run",
+        "workstations/poller-run",
+        "workstations/model-workstation",
+        "workstations/model-invoke",
+        "workstations/logical-move",
+        "workstations/classifier",
+      ]),
+    );
 
     // Empty-param static export still emits a placeholder rather than failing.
     expect(
@@ -202,10 +224,13 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty with empty families", async () => {
+  test("live localized generateStaticParams stay non-empty without route-family children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
+    // Route-family local pages are default-locale published discovery only
+    // (unshipped-locale fallback); localized catch-all stays free of nested
+    // family children until those pages ship localized message trees.
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );

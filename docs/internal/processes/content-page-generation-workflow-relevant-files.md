@@ -1065,7 +1065,9 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   export never emits an empty param list.
 * `src/lib/content/docs-catch-all-static-params.test.ts`
   Nested fixture proofs for default/shipped catch-all params, empty-family
-  export safety, compile-graph index markers, and invalid nested not-found.
+  export safety for still-empty references/factories/workers, authored
+  workstations children in default catch-all params (W14), compile-graph
+  index markers, and invalid nested not-found.
 * `src/lib/docs/supported-docs-route-family-mechanism.test.ts`
   Focused mechanism tests for the supported route-family contract: accept the
   four direct families (`references`/`factories`/`workers`/`workstations`),
