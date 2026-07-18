@@ -64,11 +64,35 @@ async function loadRouteFamilyPageMdxComponents(
   section: RouteFamilyLocalDocsSection,
   slug: string,
 ): Promise<MDXComponents> {
-  if (section === "references" && slug === "events") {
-    const mod = await import(
-      "@/content/docs/references/events/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
+  if (section === "references") {
+    switch (slug) {
+      case "factory-schema": {
+        const mod = await import(
+          "@/content/docs/references/factory-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "you-config-schema": {
+        const mod = await import(
+          "@/content/docs/references/you-config-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mock-workers-schema": {
+        const mod = await import(
+          "@/content/docs/references/mock-workers-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "events": {
+        const mod = await import(
+          "@/content/docs/references/events/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
   }
 
   if (section === "workers") {
