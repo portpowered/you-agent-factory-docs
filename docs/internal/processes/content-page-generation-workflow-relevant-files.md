@@ -1003,8 +1003,11 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `workstations/inference-run` / `documentation.workstations-inference-run`
   (`workstation:INFERENCE_RUN`, requires `worker:INFERENCE_WORKER`, empty
   `selected`, misuse = `classificationRoutes`; link behaviors + `/docs/workers`
-  without authoring W13). Mirror this bundle for later WorkstationType pages
-  with `createProductionWorkstationTypeOverlay`.
+  without authoring W13);
+  `workstations/agent-run` / `documentation.workstations-agent-run`
+  (`workstation:AGENT_RUN`, requires `worker:AGENT_WORKER`, selects exclusive
+  `openCodeAgent`, misuse = `operation` from MODEL_INVOKE). Mirror this bundle
+  for later WorkstationType pages with `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
   families. Empty collections call `renderSectionCollectionIndexPage` with

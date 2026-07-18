@@ -1,0 +1,76 @@
+{
+  "title": "Agent-run type",
+  "description": "Configure type = AGENT_RUN for agent worker dispatch and OpenCode agent overrides through an AGENT_WORKER backend.",
+  "openingSummary": "AGENT_RUN is the WorkstationType for agent worker dispatch. Set type to AGENT_RUN when a step must run an agent loop through an AGENT_WORKER, optionally with openCodeAgent overrides, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Agent-run is the Factory WorkstationType for agent worker dispatch in you-agent-factory. This page covers the type = AGENT_RUN discriminator, how AGENT_RUN pairs with an AGENT_WORKER backend and optional openCodeAgent overrides, the validated type overlay embed, a minimal valid configuration, an incompatible misuse that borrows model-invoke operation bindings, operational cautions, and compatible WorkstationKind behaviors. Use it when a workstation must run an agent loop rather than a one-shot inference, script, poller worker, or model-invoke operation."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "The discriminator field is type with value AGENT_RUN. AGENT_RUN selects the runtime that dispatches a named AGENT_WORKER for agent-loop work and may select the exclusive openCodeAgent override field. Type is independent of behavior: AGENT_RUN pairs with every published WorkstationKind, including STANDARD and CRON. AGENT_RUN is not a scheduling behavior and is not MODEL_INVOKE — keep operation and operationBindings on the model-invoke type, and keep one-shot inference on INFERENCE_RUN."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a workstation with type AGENT_RUN and bind an AGENT_WORKER. Choose behavior for the scheduling axis you need — STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so agent outcomes route correctly. Optionally set openCodeAgent when this step needs OpenCode agent overrides. Do not set operation, operationBindings, classificationRoutes, promptFile, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose INFERENCE_RUN for bounded inference, SCRIPT_RUN for scripts, or MODEL_INVOKE for provider-neutral operation bindings."
+    },
+    "variantFields": {
+      "title": "Variant Fields",
+      "body": "The embed below shows the live Workstation base definition with AGENT_RUN overlay applicability. AGENT_RUN selects the exclusive openCodeAgent field. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when starting an AGENT_RUN workstation with behavior STANDARD and an openCodeAgent override. The misuse example borrows operation from MODEL_INVOKE — that field is excluded from AGENT_RUN."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "AGENT_RUN steps fail closed when the bound worker is missing or is not an AGENT_WORKER, when concurrency or resource limits block dispatch, when route fields leave an outcome unmapped, or when authors place model-invoke, classifier, model-workstation, or cron exclusives on this type. Do not use operation under AGENT_RUN — that field belongs on MODEL_INVOKE. Keep scheduling on behavior and runtime on type."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workstations/agent-run surface for AGENT_RUN runtime. It is not a sync of packaged CLI docs, not the INFERENCE_RUN or MODEL_INVOKE type guides, and not the STANDARD, REPEATER, CRON, or POLLER behavior contracts. Compatible WorkstationKind companions name the scheduling pairing for this type; they do not redefine AGENT_RUN fields. Worker backends stay on the workers family."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "discriminatorLabel": "Discriminator",
+    "discriminatorValue": "type = AGENT_RUN",
+    "companionIntro": "AGENT_RUN requires an AGENT_WORKER companion and is compatible with every published WorkstationKind. Bind the agent worker, then choose scheduling on the behavior axis.",
+    "companionWorkersIndex": "Workers family index (AGENT_WORKER)",
+    "companionStandard": "Standard behavior",
+    "companionRepeater": "Repeater behavior",
+    "companionCron": "Cron behavior",
+    "companionPoller": "Poller behavior",
+    "minimalExampleLabel": "Minimal valid AGENT_RUN workstation:",
+    "misuseExampleLabel": "Incompatible misuse — operation on AGENT_RUN:",
+    "misuseNote": "operation belongs on MODEL_INVOKE. Keep AGENT_RUN on identity, worker binding, inputs, outputs, routing fields, and optional openCodeAgent overrides only.",
+    "fullFactorySchema": "Full Factory schema reference",
+    "workstationsFamilyIndex": "Workstations family index",
+    "siblingInferenceRun": "Inference-run type",
+    "siblingScriptRun": "Script-run type",
+    "siblingModelInvoke": "Model-invoke type",
+    "siblingConfiguration": "Configuration",
+    "siblingResources": "Resources",
+    "failureWorkerMissingClass": "worker_missing",
+    "failureWorkerMissingCause": "No worker bound, or bound worker is not an AGENT_WORKER — author and bind an agent backend",
+    "failureWorkerMismatchClass": "worker_type_mismatch",
+    "failureWorkerMismatchCause": "Bound worker is INFERENCE_WORKER, SCRIPT_WORKER, or another non-agent type — switch to AGENT_WORKER or change workstation type",
+    "failureConcurrencyClass": "concurrency_limit",
+    "failureConcurrencyCause": "Workstation or resource limits blocked agent dispatch — raise limits or reduce parallel work",
+    "failureRoutingClass": "route_unmapped",
+    "failureRoutingCause": "Outcome has no authored route — wire outputs, onContinue, onRejection, or onFailure",
+    "failureOperationMisuseClass": "operation_on_agent_run",
+    "failureOperationMisuseCause": "operation declared under AGENT_RUN — move provider-neutral operation bindings to type MODEL_INVOKE",
+    "failureClassHeader": "Failure class",
+    "failureCauseHeader": "Typical cause and recovery"
+  }
+}

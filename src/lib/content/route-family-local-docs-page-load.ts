@@ -96,6 +96,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "agent-run": {
+        const mod = await import(
+          "@/content/docs/workstations/agent-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }
