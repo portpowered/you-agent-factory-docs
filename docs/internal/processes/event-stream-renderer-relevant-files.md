@@ -80,6 +80,18 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/components/references/events/factory-event-catalog-section.tsx` | Compose envelope + map + payload catalog |
 | `src/components/references/events/factory-event-catalog.test.tsx` | Live inventory + envelope/payload-only UI proofs |
 
+## Key host files (story 005 — FactoryResponseEvent envelope + dimensions)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/events/factory-response-event-catalog.ts` | Build FactoryResponseEvent envelope + kind/phase/provenance + oneOf payload catalog from packaged OpenAPI |
+| `src/components/references/events/response-event-envelope-reference.tsx` | Shared FactoryResponseEvent envelope fields via W07 `SchemaDefinition` (ephemeral marker) |
+| `src/components/references/events/response-event-matrix.tsx` | Kind / phase / provenance / payload dimensions without claiming Cartesian validity |
+| `src/components/references/events/response-event-payload-variant.tsx` | One payload oneOf shape (payload-only + ephemeral) |
+| `src/components/references/events/response-event-payload-catalog.tsx` | All oneOf payload shapes with schema-backed fields |
+| `src/components/references/events/factory-response-event-catalog-section.tsx` | Compose envelope + matrix + payload catalog |
+| `src/components/references/events/factory-response-event-catalog.test.tsx` | Live inventory + ephemeral / non-Cartesian UI proofs |
+
 ## Related spike (do not ship as production)
 
 | Path | Role |
@@ -124,3 +136,10 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   `EventEnvelopeReference` so `EventDiscriminatorMap` owns mapping chrome.
 - Payload variants must set `data-event-payload-only="true"` and never present
   payload-only schemas as complete FactoryEvent envelopes.
+- Build FactoryResponseEvent catalog via `buildFactoryResponseEventCatalog(doc)` —
+  kind/phase enums + provenance object + payload `oneOf` shapes. Always set
+  `cartesianCombinationsValid: false` and `ephemeral: true`; ResponseEventMatrix
+  must not imply every kind × phase × payload combination is valid.
+- Response-event payload variants use `data-event-ephemeral="true"` plus
+  `data-event-payload-only="true"` and must never be presented as canonical
+  FactoryEvent replay state.

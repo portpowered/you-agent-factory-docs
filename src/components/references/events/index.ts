@@ -56,6 +56,26 @@ export {
   type FactoryEventCatalogSectionProps,
 } from "./factory-event-catalog-section";
 export {
+  FactoryResponseEventCatalogSection,
+  type FactoryResponseEventCatalogSectionProps,
+} from "./factory-response-event-catalog-section";
+export {
+  ResponseEventEnvelopeReference,
+  type ResponseEventEnvelopeReferenceProps,
+} from "./response-event-envelope-reference";
+export {
+  ResponseEventMatrix,
+  type ResponseEventMatrixProps,
+} from "./response-event-matrix";
+export {
+  ResponseEventPayloadCatalog,
+  type ResponseEventPayloadCatalogProps,
+} from "./response-event-payload-catalog";
+export {
+  ResponseEventPayloadVariant,
+  type ResponseEventPayloadVariantProps,
+} from "./response-event-payload-variant";
+export {
   EVENTS_UI_STATUS_DEFAULT_MESSAGES,
   EVENTS_UI_STATUS_DEFAULT_TITLES,
   EVENTS_UI_STATUS_KINDS,

@@ -1,20 +1,26 @@
 /**
- * Focused W09 verification surface for stream roles + FactoryEvent catalog.
+ * Focused W09 verification surface for stream roles + event catalogs.
  *
- * Renders EventStreamOperationsList and FactoryEventCatalogSection from
- * already-resolved corpus models. Not a final /docs/references/events page.
+ * Renders EventStreamOperationsList, FactoryEventCatalogSection, and
+ * FactoryResponseEventCatalogSection from already-resolved corpus models.
+ * Not a final /docs/references/events page.
  */
 
-import type { FactoryEventCatalog } from "@/lib/references/events";
+import type {
+  FactoryEventCatalog,
+  FactoryResponseEventCatalog,
+} from "@/lib/references/events";
 import { cn } from "@/lib/utils";
 import type { EventStreamOperationSummaryModel } from "./event-stream-display";
 import { EventStreamOperationsList } from "./event-stream-operations-list";
 import { EventsSurface } from "./events-surface";
 import { FactoryEventCatalogSection } from "./factory-event-catalog-section";
+import { FactoryResponseEventCatalogSection } from "./factory-response-event-catalog-section";
 
 export type EventsVerificationHarnessProps = {
   summaries: readonly EventStreamOperationSummaryModel[];
   factoryEventCatalog?: FactoryEventCatalog;
+  factoryResponseEventCatalog?: FactoryResponseEventCatalog;
   sourceHash?: string;
   pagePath?: string;
   className?: string;
@@ -24,13 +30,16 @@ export type EventsVerificationHarnessProps = {
 export function EventsVerificationHarness({
   summaries,
   factoryEventCatalog,
+  factoryResponseEventCatalog,
   sourceHash,
   pagePath = "/events-renderer-harness",
   className,
   "data-testid": testId = "events-verification-harness",
 }: EventsVerificationHarnessProps) {
   const status =
-    summaries.length > 0 || factoryEventCatalog !== undefined
+    summaries.length > 0 ||
+    factoryEventCatalog !== undefined ||
+    factoryResponseEventCatalog !== undefined
       ? "success"
       : "empty";
 
@@ -48,10 +57,11 @@ export function EventsVerificationHarness({
           Non-production events renderer harness (W09)
         </p>
         <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-          Event stream operations + FactoryEvent catalog
+          Event stream operations + event catalogs
         </h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Verifies stream roles and the FactoryEvent envelope / discriminator /
+          Verifies stream roles, the FactoryEvent envelope / discriminator /
+          payload catalog, and the FactoryResponseEvent envelope / dimensions /
           payload catalog against packaged OpenAPI. Does not open a live Factory
           connection.
         </p>
@@ -65,6 +75,12 @@ export function EventsVerificationHarness({
           {factoryEventCatalog !== undefined ? (
             <FactoryEventCatalogSection
               catalog={factoryEventCatalog}
+              pagePath={pagePath}
+            />
+          ) : null}
+          {factoryResponseEventCatalog !== undefined ? (
+            <FactoryResponseEventCatalogSection
+              catalog={factoryResponseEventCatalog}
               pagePath={pagePath}
             />
           ) : null}
