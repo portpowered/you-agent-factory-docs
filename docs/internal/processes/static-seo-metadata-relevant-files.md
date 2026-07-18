@@ -34,6 +34,9 @@ social assets, sitemap, robots).
 | `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract |
 | `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects) |
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
+| `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
+| `src/features/docs/components/DocumentationRouteCompatibilityDocument.tsx` | Shared static compatibility document for §10 old `/docs/documentation/*` routes |
+| `src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx` | Component-level old→target link + unknown-route error proofs |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
@@ -127,8 +130,17 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    `_redirects`, runtime server redirects. Silent removal of a published §10
    old URL is forbidden — every old route needs one explicit compatibility
    outcome.
-3. Later W18 stories ship the compatibility documents, retarget links, and
-   close ledger rows; do not invent per-route redirect helpers.
+3. **Compatibility documents (story 002):** each §10 old route’s `page.mdx`
+   mounts `DocumentationRouteCompatibilityDocument` (registered in
+   `src/lib/content/mdx-components.tsx` — local MDX imports do not resolve
+   under `compileMDX`) with the ledger `oldRoute`. The component stamps
+   `data-documentation-route-compatibility`, `data-compatibility-old-route`,
+   `data-compatibility-target-route`, and a `data-compatibility-target-link`
+   Next `<Link>` to the family target — no live factory host and no server
+   redirects. Keep every old route in published docs / catch-all static params
+   (silent removal is forbidden).
+4. Later W18 stories declare new canonicals / sitemap exclusion, retarget
+   links, and close ledger rows; do not invent per-route redirect helpers.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and

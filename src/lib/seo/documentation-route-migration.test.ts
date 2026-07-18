@@ -6,10 +6,13 @@ import {
   DOCUMENTATION_ROUTE_MIGRATION_LEDGER_SIZE,
   DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT,
   DOCUMENTATION_ROUTE_STATIC_COMPATIBILITY_MECHANISM,
+  documentationRouteMigrationOldRouteToSlug,
   findDocumentationRouteMigrationByOldRoute,
   isDocumentationRouteMigrationLedgerFullyClosed,
+  isDocumentationRouteMigrationOldSlug,
   isDocumentationRouteStaticCompatibilityMechanismExportSafe,
   listClosedDocumentationRouteMigrationRows,
+  listDocumentationRouteMigrationOldSlugs,
   listDocumentationRouteMigrationRows,
   listOpenDocumentationRouteMigrationRows,
   resolveDocumentationRouteMigrationTarget,
@@ -98,6 +101,20 @@ describe("documentation route migration ledger", () => {
     expect(
       resolveDocumentationRouteMigrationTarget("/docs/documentation/missing"),
     ).toBeUndefined();
+  });
+
+  test("maps every ledger old route to documentation catch-all slug segments", () => {
+    const slugs = listDocumentationRouteMigrationOldSlugs();
+    expect(slugs).toHaveLength(
+      DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT,
+    );
+
+    for (const [oldRoute] of SECTION_10_EXPECTED_MAPPINGS) {
+      const slug = documentationRouteMigrationOldRouteToSlug(oldRoute);
+      expect(slug?.[0]).toBe("documentation");
+      expect(isDocumentationRouteMigrationOldSlug(slug)).toBe(true);
+      expect(`/docs/${slug?.join("/")}`).toBe(oldRoute);
+    }
   });
 });
 

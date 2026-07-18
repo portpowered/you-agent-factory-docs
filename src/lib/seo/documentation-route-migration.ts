@@ -186,6 +186,43 @@ export function resolveDocumentationRouteMigrationTarget(
   return findDocumentationRouteMigrationByOldRoute(oldRoute)?.targetRoute;
 }
 
+/** Docs catch-all slug segments for a ledger old route (`documentation/...`). */
+export function documentationRouteMigrationOldRouteToSlug(
+  oldRoute: string,
+): string[] | undefined {
+  const prefix = "/docs/";
+  if (!oldRoute.startsWith(prefix)) {
+    return undefined;
+  }
+  const slug = oldRoute.slice(prefix.length);
+  if (!slug || slug.includes("//")) {
+    return undefined;
+  }
+  return slug.split("/");
+}
+
+/** True when a catch-all slug is a plan §10 old documentation route. */
+export function isDocumentationRouteMigrationOldSlug(
+  slug: string[] | undefined,
+): boolean {
+  if (!slug || slug.length < 2 || slug[0] !== "documentation") {
+    return false;
+  }
+  const oldRoute = `/docs/${slug.join("/")}`;
+  return findDocumentationRouteMigrationByOldRoute(oldRoute) !== undefined;
+}
+
+/** Every §10 old route as a docs catch-all slug (static params / export proof). */
+export function listDocumentationRouteMigrationOldSlugs(): string[][] {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER.map((row) => {
+    const slug = documentationRouteMigrationOldRouteToSlug(row.oldRoute);
+    if (!slug) {
+      throw new Error(`Invalid migration oldRoute: ${row.oldRoute}`);
+    }
+    return slug;
+  });
+}
+
 /** Structural shape accepted by the export-safety predicate (tests + callers). */
 export type DocumentationRouteStaticCompatibilityMechanismLike = {
   primaryOutcome: string;

@@ -1,11 +1,5 @@
 /**
- * Page-owned render proof for documentation/factory-session.
- * Covers documentation shell, Factory Session identity, discovery/inspect,
- * lifecycle pause/resume, durable JavaScript validate → start →
- * status/result guidance, key concepts / limits, and sibling discovery
- * links — not route inventories or shared helper contracts.
- * Colocated under the page bundle so audit:canonical-page-surface stays
- * within-budget for this ordinary documentation lane.
+ * Compatibility render proof for /docs/documentation/factory-session → /docs/factories/sessions (W18).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -13,207 +7,63 @@ import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders"
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 
-describe("factory-session documentation page", () => {
+const PAGE_RENDER_TIMEOUT_MS = 30_000;
+
+describe("factory-session documentation compatibility page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("publishes /docs/documentation/factory-session as a documentation page", async () => {
-    const fumadocsPage = source.getPage(["documentation", "factory-session"]);
-    expect(fumadocsPage).toBeDefined();
-    expect(fumadocsPage?.url).toBe("/docs/documentation/factory-session");
+  test(
+    "serves static compatibility HTML linking to /docs/factories/sessions",
+    async () => {
+      const fumadocsPage = source.getPage(["documentation", "factory-session"]);
+      expect(fumadocsPage).toBeDefined();
+      expect(fumadocsPage?.url).toBe("/docs/documentation/factory-session");
 
-    const loadedPage = await loadLocalDocsPage({
-      section: "documentation",
-      slug: "factory-session",
-    });
+      const loadedPage = await loadLocalDocsPage({
+        section: "documentation",
+        slug: "factory-session",
+      });
 
-    expect(loadedPage.messages.title).toBe("Factory Session");
-    expect(loadedPage.messages.description).toContain("you-agent-factory");
-    expect(loadedPage.messages.description).toMatch(/Factory Session/i);
-    expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+      expect(loadedPage.messages.title).toBe("Factory Session");
+      expect(loadedPage.messages.description).toContain(
+        "/docs/factories/sessions",
+      );
+      expect(String(loadedPage.messages.sections?.moved?.body ?? "")).toMatch(
+        /moved to a new family route/i,
+      );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
-    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const sessionList = String(
-      loadedPage.messages.sections?.sessionList?.body ?? "",
-    );
-    const sessionShow = String(
-      loadedPage.messages.sections?.sessionShow?.body ?? "",
-    );
-    const lifecycle = String(
-      loadedPage.messages.sections?.lifecycle?.body ?? "",
-    );
-    const durableJavascriptSession = String(
-      loadedPage.messages.sections?.durableJavascriptSession?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
-    expect(whatItCovers).toMatch(/Factory Session/i);
-    expect(whatItCovers).toMatch(/live session/i);
-    expect(keyConcepts).toMatch(/live runtime unit/i);
-    expect(keyConcepts).toMatch(/Session list confirms/i);
-    expect(keyConcepts).toMatch(
-      /Durable JavaScript runs are still Factory Sessions/i,
-    );
-    expect(howToUse).toMatch(/session list/i);
-    expect(sessionList).toMatch(/liveness check/i);
-    expect(sessionList).toMatch(/empty list|connection failure/i);
-    expect(sessionShow).toMatch(/owns its own runtime state/i);
-    expect(sessionShow).toMatch(/target the intended session/i);
-    expect(lifecycle).toMatch(/Pause and resume/i);
-    expect(lifecycle).toMatch(/re-reading session status/i);
-    expect(durableJavascriptSession).toMatch(/Durable JavaScript runs/i);
-    expect(durableJavascriptSession).toMatch(/Dynamic workflow is shorthand/i);
-    expect(durableJavascriptSession).toMatch(
-      /Dispatch, FactoryArtifact, and FactoryEvent/i,
-    );
-    expect(limits).toMatch(/web Factory Session reference/i);
-    expect(limits).toMatch(/not a full CLI flag dump/i);
-    expect(limits).toMatch(/not a sync of packaged you docs/i);
-    expect(limits).toMatch(/not MCP host setup/i);
-    expect(limits).toMatch(/not dynamic-workflow authoring/i);
-    expect(limits).toMatch(/not submitting-work batch schema/i);
-    expect(limits).toMatch(/not the OpenAPI or API reference/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
-    expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      render(
+        <main>
+          <DocsPageProviders
+            messages={loadedPage.messages}
+            assets={loadedPage.assets}
+          >
+            <article data-registry-id={loadedPage.frontmatter.registryId}>
+              {loadedPage.content}
+            </article>
+          </DocsPageProviders>
+        </main>,
+      );
 
-    render(
-      <main>
-        <DocsPageProviders
-          messages={loadedPage.messages}
-          assets={loadedPage.assets}
-        >
-          {loadedPage.content}
-        </DocsPageProviders>
-      </main>,
-    );
+      const root = document.querySelector(
+        "[data-documentation-route-compatibility]",
+      );
+      expect(root).toBeTruthy();
+      expect(root?.getAttribute("data-compatibility-old-route")).toBe(
+        "/docs/documentation/factory-session",
+      );
+      expect(root?.getAttribute("data-compatibility-target-route")).toBe(
+        "/docs/factories/sessions",
+      );
 
-    expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Discover Sessions" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Inspect A Session" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Pause And Resume" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Durable JavaScript Session" }),
-    ).toBeTruthy();
-    expect(
-      screen.getByRole("heading", { name: "Limits And Assumptions" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
-
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    const keyConceptsSection = document.getElementById("key-concepts");
-    const howToUseSection = document.getElementById("how-to-use");
-    const sessionListSection = document.getElementById("session-list");
-    const sessionShowSection = document.getElementById("session-show");
-    const lifecycleSection = document.getElementById("lifecycle");
-    const durableSection = document.getElementById(
-      "durable-javascript-session",
-    );
-    const limitsSection = document.getElementById("limits-and-assumptions");
-    const relatedSection = document.getElementById("related");
-    expect(whatItCoversSection).toBeTruthy();
-    expect(keyConceptsSection).toBeTruthy();
-    expect(howToUseSection).toBeTruthy();
-    expect(sessionListSection).toBeTruthy();
-    expect(sessionShowSection).toBeTruthy();
-    expect(lifecycleSection).toBeTruthy();
-    expect(durableSection).toBeTruthy();
-    expect(limitsSection).toBeTruthy();
-    expect(relatedSection).toBeTruthy();
-    expect(whatItCoversSection?.textContent).toMatch(/Factory Session/i);
-    expect(keyConceptsSection?.textContent).toMatch(/live runtime unit/i);
-    expect(keyConceptsSection?.textContent).toMatch(
-      /Session list confirms something is listening/i,
-    );
-    expect(keyConceptsSection?.textContent).toMatch(
-      /Durable JavaScript runs are still Factory Sessions/i,
-    );
-    expect(howToUseSection?.textContent).toMatch(/session list/i);
-    expect(sessionListSection?.textContent).toMatch(/you session list/);
-    expect(sessionListSection?.textContent).toMatch(
-      /empty|unreachable|no live session is accepting work/i,
-    );
-    expect(sessionShowSection?.textContent).toMatch(
-      /you session show <session-id>/,
-    );
-    expect(sessionShowSection?.textContent).toMatch(
-      /owns its own runtime state/i,
-    );
-    expect(sessionShowSection?.textContent).toMatch(
-      /target the intended session/i,
-    );
-    expect(lifecycleSection?.textContent).toMatch(
-      /you session pause <session-id>/,
-    );
-    expect(lifecycleSection?.textContent).toMatch(
-      /you session resume <session-id>/,
-    );
-    expect(lifecycleSection?.textContent).toMatch(
-      /confirm the outcome|re-reading session status|you session show/i,
-    );
-    expect(durableSection?.textContent).toMatch(/you workflow validate/);
-    expect(durableSection?.textContent).toMatch(/you workflow start/);
-    expect(durableSection?.textContent).toMatch(/you workflow status/);
-    expect(durableSection?.textContent).toMatch(/you workflow result/);
-    expect(durableSection?.textContent).toMatch(
-      /Dispatch, FactoryArtifact, and FactoryEvent/i,
-    );
-    expect(durableSection?.textContent).toMatch(
-      /Dynamic workflow is shorthand/i,
-    );
-    expect(limitsSection?.textContent).toMatch(
-      /web Factory Session reference/i,
-    );
-    expect(limitsSection?.textContent).toMatch(/not a full CLI flag dump/i);
-    expect(limitsSection?.textContent).toMatch(/not MCP host setup/i);
-    expect(limitsSection?.textContent).toMatch(
-      /not dynamic-workflow authoring/i,
-    );
-    expect(limitsSection?.textContent).toMatch(
-      /not submitting-work batch schema/i,
-    );
-
-    const cliDocs = screen.getByRole("link", { name: "CLI docs" });
-    const submittingWork = screen.getByRole("link", {
-      name: "Submitting work",
-    });
-    const cursorDynamicWorkflows = screen.getByRole("link", {
-      name: "Cursor dynamic workflows",
-    });
-    expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
-    expect(submittingWork.getAttribute("href")).toBe(
-      "/docs/documentation/submitting-work",
-    );
-    expect(cursorDynamicWorkflows.getAttribute("href")).toBe(
-      "/docs/guides/cursor-dynamic-workflows",
-    );
-    expect(relatedSection?.contains(cliDocs)).toBe(true);
-    expect(relatedSection?.contains(submittingWork)).toBe(true);
-    expect(relatedSection?.contains(cursorDynamicWorkflows)).toBe(true);
-  });
+      const link = screen.getByRole("link", {
+        name: "Open the factory sessions page",
+      });
+      expect(link.getAttribute("href")).toBe("/docs/factories/sessions");
+      expect(link.getAttribute("data-compatibility-target-link")).toBe("");
+    },
+    PAGE_RENDER_TIMEOUT_MS,
+  );
 });

@@ -1,5 +1,5 @@
 /**
- * Compatibility render proof for /docs/documentation/inference-workers → /docs/workers/inference (W18).
+ * Compatibility render proof for /docs/documentation/workstations → /docs/workstations (W18).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -9,30 +9,25 @@ import { source } from "@/lib/source";
 
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
 
-describe("inference-workers documentation compatibility page", () => {
+describe("workstations documentation compatibility page", () => {
   afterEach(() => {
     cleanup();
   });
 
   test(
-    "serves static compatibility HTML linking to /docs/workers/inference",
+    "serves static compatibility HTML linking to /docs/workstations",
     async () => {
-      const fumadocsPage = source.getPage([
-        "documentation",
-        "inference-workers",
-      ]);
+      const fumadocsPage = source.getPage(["documentation", "workstations"]);
       expect(fumadocsPage).toBeDefined();
-      expect(fumadocsPage?.url).toBe("/docs/documentation/inference-workers");
+      expect(fumadocsPage?.url).toBe("/docs/documentation/workstations");
 
       const loadedPage = await loadLocalDocsPage({
         section: "documentation",
-        slug: "inference-workers",
+        slug: "workstations",
       });
 
-      expect(loadedPage.messages.title).toBe("Inference workers");
-      expect(loadedPage.messages.description).toContain(
-        "/docs/workers/inference",
-      );
+      expect(loadedPage.messages.title).toBe("Workstations");
+      expect(loadedPage.messages.description).toContain("/docs/workstations");
       expect(String(loadedPage.messages.sections?.moved?.body ?? "")).toMatch(
         /moved to a new family route/i,
       );
@@ -55,16 +50,16 @@ describe("inference-workers documentation compatibility page", () => {
       );
       expect(root).toBeTruthy();
       expect(root?.getAttribute("data-compatibility-old-route")).toBe(
-        "/docs/documentation/inference-workers",
+        "/docs/documentation/workstations",
       );
       expect(root?.getAttribute("data-compatibility-target-route")).toBe(
-        "/docs/workers/inference",
+        "/docs/workstations",
       );
 
       const link = screen.getByRole("link", {
-        name: "Open the inference workers page",
+        name: "Open the Workstations family index",
       });
-      expect(link.getAttribute("href")).toBe("/docs/workers/inference");
+      expect(link.getAttribute("href")).toBe("/docs/workstations");
       expect(link.getAttribute("data-compatibility-target-link")).toBe("");
     },
     PAGE_RENDER_TIMEOUT_MS,

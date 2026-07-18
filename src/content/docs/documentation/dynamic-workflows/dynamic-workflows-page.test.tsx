@@ -1,5 +1,5 @@
 /**
- * Compatibility render proof for /docs/documentation/inference-workers → /docs/workers/inference (W18).
+ * Compatibility render proof for /docs/documentation/dynamic-workflows → /docs/factories/dynamic-workflows (W18).
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -9,29 +9,29 @@ import { source } from "@/lib/source";
 
 const PAGE_RENDER_TIMEOUT_MS = 30_000;
 
-describe("inference-workers documentation compatibility page", () => {
+describe("dynamic-workflows documentation compatibility page", () => {
   afterEach(() => {
     cleanup();
   });
 
   test(
-    "serves static compatibility HTML linking to /docs/workers/inference",
+    "serves static compatibility HTML linking to /docs/factories/dynamic-workflows",
     async () => {
       const fumadocsPage = source.getPage([
         "documentation",
-        "inference-workers",
+        "dynamic-workflows",
       ]);
       expect(fumadocsPage).toBeDefined();
-      expect(fumadocsPage?.url).toBe("/docs/documentation/inference-workers");
+      expect(fumadocsPage?.url).toBe("/docs/documentation/dynamic-workflows");
 
       const loadedPage = await loadLocalDocsPage({
         section: "documentation",
-        slug: "inference-workers",
+        slug: "dynamic-workflows",
       });
 
-      expect(loadedPage.messages.title).toBe("Inference workers");
+      expect(loadedPage.messages.title).toBe("Dynamic Workflows");
       expect(loadedPage.messages.description).toContain(
-        "/docs/workers/inference",
+        "/docs/factories/dynamic-workflows",
       );
       expect(String(loadedPage.messages.sections?.moved?.body ?? "")).toMatch(
         /moved to a new family route/i,
@@ -55,16 +55,18 @@ describe("inference-workers documentation compatibility page", () => {
       );
       expect(root).toBeTruthy();
       expect(root?.getAttribute("data-compatibility-old-route")).toBe(
-        "/docs/documentation/inference-workers",
+        "/docs/documentation/dynamic-workflows",
       );
       expect(root?.getAttribute("data-compatibility-target-route")).toBe(
-        "/docs/workers/inference",
+        "/docs/factories/dynamic-workflows",
       );
 
       const link = screen.getByRole("link", {
-        name: "Open the inference workers page",
+        name: "Open the dynamic workflows page",
       });
-      expect(link.getAttribute("href")).toBe("/docs/workers/inference");
+      expect(link.getAttribute("href")).toBe(
+        "/docs/factories/dynamic-workflows",
+      );
       expect(link.getAttribute("data-compatibility-target-link")).toBe("");
     },
     PAGE_RENDER_TIMEOUT_MS,

@@ -1,104 +1,14 @@
 {
   "title": "Global Configuration Factories",
-  "description": "Set you-agent-factory operator model defaults and manage global / named factories under ~/.you-agent-factory.",
-  "openingSummary": "Global Configuration Factories is the you-agent-factory reference for operator-wide model defaults and shared named factories outside project factory.json topology.",
+  "description": "This documentation page moved to /docs/factories/global-configuration. Continue there for the current family content.",
+  "openingSummary": "This page moved. Open /docs/factories/global-configuration for the current documentation.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Global Configuration Factories is the web reference for you-agent-factory operator model defaults and global / named factories. Use it when you need operator-wide defaults in ~/.you-agent-factory/config.json, environment overrides, and global CLI flags, or when you need the shared factories root under ~/.you-agent-factory/factories for you run --named resolution, one-root listing, and save or update under a chosen root."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "Operator model defaults are preferred provider and model values for INFERENCE_WORKER and AGENT_WORKER definitions that omit modelProvider or model. They live in the operator config file, environment variables, and global CLI flags. The runtime applies them in memory only: authored worker modelProvider and model values are never overwritten, script and poller workers are never touched, and factory.json is never rewritten with those defaults. Named factories are persisted factory definitions under a factory root. Project-local roots such as ./factory come first for you run --named; the global shared root is ~/.you-agent-factory/factories. Built-ins materialize into that global root on first use and stay editable on disk."
-    },
-    "operatorModelDefaults": {
-      "title": "Operator Model Defaults",
-      "body": "Use operator defaults when you want one preferred provider and model across runs without editing every factory worker. Defaults apply only to INFERENCE_WORKER and AGENT_WORKER entries that omit modelProvider or model. Authored worker values stay as written. Script workers and poller workers never receive operator defaults. The runtime fills omitted fields in memory at startup and does not persist those fills into factory.json."
-    },
-    "namedFactories": {
-      "title": "Named Factories",
-      "body": "Named factories are persisted factory definitions under a factory root. The project-local root defaults to ./factory (or the path you pass with --dir). The global shared root is ~/.you-agent-factory/factories. Use you run --named <name> to resolve a canonical persisted name: project-local first, then the global shared root, then built-in catalog materialization on first use. Listing, saving, updating, and deleting always target exactly one root via --dir; they never merge project-local and global entries in one command."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Create ~/.you-agent-factory/config.json with defaults.workerModelProvider and defaults.workerModel when you want one preferred provider and model across runs. Override a single invocation with YOU_DEFAULT_WORKER_MODEL_PROVIDER and YOU_DEFAULT_WORKER_MODEL, or with --default-worker-model-provider and --default-worker-model on the root you command. Precedence is independent per field: file, then env, then flag. For named factories, list one root at a time, run with you run --named, and save or update under the --dir root you intend to own. Use the configuration documentation page when you need factory.json topology instead of operator or global factory settings. Packaged @you/* invocation signatures stay on their sibling docs surfaces."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the web operator-defaults and global / named-factories reference. It is not a sync of packaged CLI docs, not the factory.json topology overview, not workers, workstations, or resources field dumps, not packaged @you/* invocation deep dives, not factory-session, and not submitting-work. Use the related documentation links for factory.json topology, CLI command surfaces, and worker field contracts. Operator-default startup failures stay short here: missing config continues with no defaults; malformed config, unsupported providers, and DEFAULT without a concrete lower-precedence provider fail before dispatch."
-    },
-    "related": {
-      "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
+    "moved": {
+      "title": "Moved",
+      "body": "This documentation page moved to a new family route. The content now lives at /docs/factories/global-configuration. Use the link below to continue — no live factory host is required."
     }
   },
   "links": {
-    "configPathLabel": "Default config path:",
-    "configExampleLabel": "Example operator config:",
-    "envOverridesLabel": "Environment overrides (each field independently):",
-    "envVariableHeader": "Variable",
-    "envPurposeHeader": "Purpose",
-    "envProviderName": "YOU_DEFAULT_WORKER_MODEL_PROVIDER",
-    "envProviderPurpose": "Overrides defaults.workerModelProvider from the config file",
-    "envModelName": "YOU_DEFAULT_WORKER_MODEL",
-    "envModelPurpose": "Overrides defaults.workerModel from the config file",
-    "flagOverridesLabel": "Global CLI flags (highest precedence per field):",
-    "flagNameHeader": "Flag",
-    "flagPurposeHeader": "Purpose",
-    "flagProviderName": "--default-worker-model-provider",
-    "flagProviderPurpose": "Overrides file and environment for the worker model provider",
-    "flagModelName": "--default-worker-model",
-    "flagModelPurpose": "Overrides file and environment for the worker model",
-    "globalRootLabel": "Global shared factories root:",
-    "projectLocalRootLabel": "Default project-local root:",
-    "listProjectLocalLabel": "List named factories under the project-local root:",
-    "listGlobalLabel": "List named factories under the global shared root:",
-    "runNamedLabel": "Run a named factory (project-local first, then global, then built-in materialization):",
-    "saveNamedLabel": "Save a named factory under a chosen root:",
-    "updateNamedLabel": "Update an existing named factory under a chosen root:",
-    "failureModesLabel": "Operator-default failure modes:",
-    "failureConditionHeader": "Condition",
-    "failureBehaviorHeader": "Behavior",
-    "failureMissingConfigCondition": "Missing ~/.you-agent-factory/config.json",
-    "failureMissingConfigBehavior": "Startup continues with no operator defaults",
-    "failureMalformedConfigCondition": "Malformed config JSON",
-    "failureMalformedConfigBehavior": "Fails before service construction; error names the config path",
-    "failureUnsupportedProviderCondition": "Unsupported workerModelProvider",
-    "failureUnsupportedProviderBehavior": "Fails before dispatch with accepted provider summary",
-    "failureDefaultWithoutProviderCondition": "DEFAULT without a lower-precedence concrete provider",
-    "failureDefaultWithoutProviderBehavior": "Fails before dispatch with resolution guidance",
-    "failureAuthoredWorkerFieldsCondition": "Authored worker modelProvider or model",
-    "failureAuthoredWorkerFieldsBehavior": "Operator defaults do not override authored values",
-    "configurationDocs": "Configuration (factory.json topology)",
-    "cliDocs": "CLI",
-    "workersDocs": "Workers"
-  },
-  "callouts": {
-    "configFileNotes": {
-      "body": "A missing config file is valid and applies no operator defaults. Malformed JSON fails before service construction with an error that names the config file path. Unknown top-level JSON fields are rejected. Empty or unset environment values do not clear a lower-precedence layer."
-    },
-    "flagExample": {
-      "body": "These are global persistent flags on the root you command. Both bare you and explicit you run honor them:"
-    },
-    "precedence": {
-      "body": "Effective precedence is independent per field. For each of workerModelProvider and workerModel, the winning layer is:"
-    },
-    "runnerDistinction": {
-      "body": "Operator defaults are distinct from factory-level runner in factory.json. Public factory.json and OpenAPI runner fields stay topology-owned; operator defaults do not rewrite those runner fields. Set operator defaults or author modelProvider on workers when you need a preferred model worker provider — do not expect runner to stand in for operator defaults."
-    },
-    "namedResolution": {
-      "body": "you run --named <name> resolves a canonical persisted factory name in this order:"
-    },
-    "oneRootListing": {
-      "body": "you factory list lists exactly one root at a time and never merges project-local and global entries. By default it lists ./factory. Point --dir at ~/.you-agent-factory/factories to list global built-ins and shared factories."
-    },
-    "builtInMaterialization": {
-      "body": "Built-ins such as @you/goal, @you/fusion, and @you/tts materialize into the global root on first use and remain editable on disk for later runs. Deep packaged invocation signatures stay on sibling docs surfaces; this page only covers where those factories live and how named resolution finds them."
-    }
+    "targetLabel": "Open the global configuration factories page"
   }
 }
