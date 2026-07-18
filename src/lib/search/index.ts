@@ -2,6 +2,8 @@ export {
   adaptReferenceSearchShapesToSearchDocuments,
   adaptReferenceSearchShapeToSearchDocument,
   enrichReferenceItemAliases,
+  type ReferenceItemEnglishSearchFields,
+  referenceItemEnglishSearchFields,
 } from "./adapt-reference-search-document";
 export {
   API_OPERATION_SEARCH_DOCUMENT_TAGS,
@@ -71,6 +73,7 @@ export {
   type SchemaReferenceSearchDocumentsResult,
   schemaReferencePagePathForSubpath,
 } from "./build-schema-reference-search-documents";
+export { FACTORY_SEARCH_ORAMA_LANGUAGE } from "./create-search-catalog-from-documents";
 export {
   enrichSearchDocument,
   enrichSearchDocuments,

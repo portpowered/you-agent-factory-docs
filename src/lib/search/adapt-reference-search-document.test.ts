@@ -4,6 +4,7 @@ import {
   adaptReferenceSearchShapesToSearchDocuments,
   adaptReferenceSearchShapeToSearchDocument,
   enrichReferenceItemAliases,
+  referenceItemEnglishSearchFields,
 } from "./adapt-reference-search-document";
 import { REFERENCE_SEARCH_DOCUMENT_KIND } from "./factory-search-kinds";
 import { EMPTY_SEARCH_DOCUMENT_TOPOLOGY } from "./types";
@@ -110,5 +111,25 @@ describe("adaptReferenceSearchShapeToSearchDocument", () => {
 
     expect(documents).toHaveLength(2);
     expect(documents[1]?.url).toBe("/docs/references/events#work.completed");
+  });
+});
+
+describe("referenceItemEnglishSearchFields", () => {
+  test("projects title, aliases, and fragment URL for cross-locale equality", () => {
+    const document = adaptReferenceSearchShapeToSearchDocument(
+      sampleShape({
+        title: "RUN_REQUEST",
+        anchor: "RUN_REQUEST",
+        aliases: ["RunRequestEventPayload"],
+        url: "/docs/references/events#RUN_REQUEST",
+      }),
+    );
+
+    expect(referenceItemEnglishSearchFields(document)).toEqual({
+      id: "events:factory-event:session.created",
+      title: "RUN_REQUEST",
+      url: "/docs/references/events#RUN_REQUEST",
+      aliases: ["RUN_REQUEST", "RunRequestEventPayload"],
+    });
   });
 });

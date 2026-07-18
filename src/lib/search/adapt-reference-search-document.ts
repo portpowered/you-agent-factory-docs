@@ -79,6 +79,43 @@ export function adaptReferenceSearchShapeToSearchDocument(
 }
 
 /**
+ * Canonical English searchable fields for a reference item document.
+ * Used to prove W16-007: every shipped locale catalog carries the same
+ * English identifiers/aliases (no per-locale translation of contract literals).
+ */
+export type ReferenceItemEnglishSearchFields = {
+  id: string;
+  title: string;
+  url: string;
+  aliases: readonly string[];
+};
+
+/**
+ * Project a reference item document to its English searchable identity fields.
+ * Titles, aliases, and fragment URLs stay English contract literals.
+ */
+export function referenceItemEnglishSearchFields(
+  document: SearchDocument,
+): ReferenceItemEnglishSearchFields {
+  if (document.kind !== REFERENCE_SEARCH_DOCUMENT_KIND) {
+    throw new Error(
+      `Expected kind "${REFERENCE_SEARCH_DOCUMENT_KIND}", received "${document.kind}".`,
+    );
+  }
+  if (!document.url.includes("#")) {
+    throw new Error(
+      `Reference item English fields require a fragment URL: ${document.url}`,
+    );
+  }
+  return {
+    id: document.id,
+    title: document.title,
+    url: document.url,
+    aliases: [...document.aliases],
+  };
+}
+
+/**
  * Adapt many reference search shapes into live `SearchDocument` records.
  */
 export function adaptReferenceSearchShapesToSearchDocuments(

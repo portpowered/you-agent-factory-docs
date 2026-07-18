@@ -16,6 +16,12 @@ Use these files when changing search document construction, Orama indexing, or
   `SearchDocument` (kind `reference`, fragment URL required, empty topology).
   `enrichReferenceItemAliases` merges title + registry anchor with
   shape-provided common-name / discriminator aliases (W16 story 005).
+  `referenceItemEnglishSearchFields` projects English identity fields for
+  cross-locale equality proofs (W16 story 007).
+* `src/lib/search/create-search-catalog-from-documents.ts`
+  Builds the Fumadocs advanced Orama server from parsed documents. Always
+  uses `FACTORY_SEARCH_ORAMA_LANGUAGE` (`english`) so non-`en` UI locale
+  catalogs still tokenize/stem English contract identifiers (W16-007).
 * `src/lib/search/build-reference-search-documents.ts`
   Loads settled inventory shapes (events corpus, API operations, schema
   definitions/fields, CLI commands, MCP tools, JavaScript runtime symbols /
@@ -69,6 +75,13 @@ Use these files when changing search document construction, Orama indexing, or
   reference item deep-link URLs (`#…`) instead of collapsing solely to the
   owning page, while ordinary non-reference pages still collapse to bare
   page URLs.
+* `src/lib/content/factory-search-english-identifiers-every-locale.test.ts`
+  W16 story 007 required-suite proof that shipped locales (`en`, `ja`,
+  `zh-CN`, `vi`) share identical English reference identifiers/aliases in
+  searchable fields, Orama language stays `english` for every UI locale
+  catalog, and representative English identifier queries succeed against
+  non-`en` locale catalogs (same item URL/anchor contract). Does not own
+  W17 chrome localization.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
@@ -157,7 +170,11 @@ shape-provided common-name / discriminator aliases so literals like
 `collapseSearchResultsToPageHits` preserves registered reference item
 documents (kind `reference` + `#fragment`) as deep-link rows instead of
 collapsing them into the bare owning-page URL; ordinary heading/text
-duplicates still collapse to one page hit.
+duplicates still collapse to one page hit. Every locale catalog reuses the
+same English reference item documents and indexes Orama with
+`FACTORY_SEARCH_ORAMA_LANGUAGE` (`english`) so canonical English identifiers
+remain findable from `ja` / `zh-CN` / `vi` UI locales without translating
+those literals (W16-007; W17 owns broader chrome localization).
 
 ### Pattern: factory alias / body / tag discovery
 

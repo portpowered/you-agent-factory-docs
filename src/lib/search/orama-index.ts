@@ -1,4 +1,5 @@
 import { create, insertMultiple, save, search } from "@orama/orama";
+import { FACTORY_SEARCH_ORAMA_LANGUAGE } from "./create-search-catalog-from-documents";
 import { toFumadocsIndexEntry } from "./to-structured-data";
 import { topologySearchText } from "./topology-search-terms";
 import type { FumadocsSearchIndexEntry, SearchDocument } from "./types";
@@ -79,7 +80,7 @@ export async function exportOramaIndexSnapshot(documents: SearchDocument[]) {
   const snapshot = await save(db);
   return {
     version: 1,
-    language: "english",
+    language: FACTORY_SEARCH_ORAMA_LANGUAGE,
     documents: documents.map((document) => toOramaSnapshotDocument(document)),
     orama: snapshot,
   };
