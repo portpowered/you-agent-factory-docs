@@ -120,6 +120,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "model-invoke": {
+        const mod = await import(
+          "@/content/docs/workstations/model-invoke/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }

@@ -1020,7 +1020,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   (`workstation:MODEL_WORKSTATION`, requires `worker:MODEL_WORKER`, selects
   exclusive `promptFile` / `outcomeFormat` / `outputSchema` / `stopWords`,
   misuse = `operation` from MODEL_INVOKE; keep distinct from
-  `model-invoke`). Mirror this bundle for later WorkstationType pages with
+  `model-invoke`);
+  `workstations/model-invoke` / `documentation.workstations-model-invoke`
+  (`workstation:MODEL_INVOKE`, requires `worker:MODEL_WORKER`, selects
+  exclusive `operation` / `operationBindings`, misuse = `outcomeFormat`
+  from MODEL_WORKSTATION; keep distinct from `model-workstation`). Mirror
+  this bundle for later WorkstationType pages with
   `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
