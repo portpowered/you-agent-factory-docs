@@ -1,4 +1,7 @@
-import { ContractSourceBadge } from "@/components/references/shared";
+import {
+  ContractSourceBadge,
+  CopyableReferenceAnchor,
+} from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
 import type { JavascriptSymbolNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
@@ -34,14 +37,17 @@ export function JavaScriptSymbolReference({
       id={symbol.anchor}
     >
       <header className="space-y-2">
-        <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
-          <a
-            className="text-foreground no-underline hover:underline"
-            href={`#${symbol.anchor}`}
-          >
-            {symbol.symbolPath}
-          </a>
-        </h3>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
+            <a
+              className="text-foreground no-underline hover:underline"
+              href={`#${symbol.anchor}`}
+            >
+              {symbol.symbolPath}
+            </a>
+          </h3>
+          <CopyableReferenceAnchor anchor={symbol.anchor} family="javascript" />
+        </div>
         {symbol.description !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
             {symbol.description}

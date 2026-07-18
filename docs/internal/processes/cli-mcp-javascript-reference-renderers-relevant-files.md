@@ -72,6 +72,16 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/components/references/harness/ReferenceJavascriptHarness.tsx` | Dev fixture mount for JS inventory browser verification |
 | `src/lib/references/normalize-family-artifacts.ts` | Also normalizes `sharedSchemas` + enriched symbol metadata |
 
+## Key host files (anchors + filters — story 007)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/assign-family-reference-anchors.ts` | Pure helpers that register CLI/MCP/JS items with `ReferenceAnchorRegistry` and return shallow copies with deterministic anchors (no mutation) |
+| `src/components/references/shared/CopyableReferenceAnchor.tsx` | Copyable `#fragment` chrome; clipboard URL via W04 `referenceAnchorUrl` / family page paths |
+| `src/components/references/shared/reference-inventory-filter.ts` | Pure filter state + match helpers (query / lifecycle / visibility); never invents missing facets |
+| `src/components/references/shared/ReferenceInventoryFilter.tsx` | Keyboard-accessible filter controls (search + selects); ephemeral presentation only |
+| Family inventories (`CliCommandInventory`, `McpToolInventory`, `JavaScriptRuntimeInventory`) | Assign registry anchors on success, host filter state, render filtered lists |
+
 ## Upstream dependencies (do not reimplement)
 
 
@@ -84,7 +94,9 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/lib/references/mcp-example-generation.ts` | Resolve authored vs generated MCP examples; schema-valid generation + conform checks |
 | `src/lib/references/schema-model.ts` | W04 SchemaDefinitionModel / SchemaFieldModel contracts |
 | `src/lib/references/reference-display-projection.ts` | Display projections for later family renderers |
-| `src/lib/references/reference-anchor-registry.ts` | Stable anchors (later stories) |
+| `src/lib/references/reference-search-projection.ts` | Search-document shapes + `referenceAnchorUrl` / family page paths (filter labels / copy URLs; not live Orama) |
+| `src/lib/references/reference-anchor-registry.ts` | Stable anchors (`ReferenceAnchorRegistry`, `anchorForIdentity`) |
+| `src/lib/references/assign-family-reference-anchors.ts` | Apply registry anchors onto CLI/MCP/JS normalized lists |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 acquisition (server/build only) |
 
 ## Patterns
@@ -129,3 +141,9 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   `projectMcpInputSchemaToDefinition`; `$ref`-only properties surface the ref
   as `typeSummary`; oneOf roots record composition member addresses without
   expanding a second schema-tree UI.
+- Story 007: assign anchors through `assign*RegistryAnchors` (wraps
+  `ReferenceAnchorRegistry`) before render; expose `CopyableReferenceAnchor`
+  on every command/tool/symbol/shared-schema card. Inventory filters live in
+  shared pure helpers + `ReferenceInventoryFilter` — ephemeral `useState` only,
+  never mutate projections, never invent visibility/lifecycle values. MCP omits
+  the visibility facet because tools do not publish it.

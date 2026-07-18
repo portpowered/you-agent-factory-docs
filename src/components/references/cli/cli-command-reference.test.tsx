@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import { CliCapabilityNotice } from "./CliCapabilityNotice";
 import { CliCommandInventory } from "./CliCommandInventory";
@@ -228,22 +229,77 @@ describe("CliCommandInventory", () => {
       }),
     ];
 
-    render(
+    const { container } = render(
       <CliCommandInventory
         inventory={{ state: "success", commands, packageVersion: "0.0.0" }}
       />,
     );
 
-    const inventory = screen
-      .getByText(/2 published CLI commands/)
-      .closest("[data-cli-command-inventory]");
-    expect(inventory?.getAttribute("data-inventory-state")).toBe("success");
-    expect(inventory?.getAttribute("data-cli-command-count")).toBe("2");
-    expect(screen.getAllByRole("article")).toHaveLength(2);
+    expect(screen.getByText(/2 published CLI commands/)).toBeTruthy();
     expect(cliCommandInventoryIdentities(commands)).toEqual([
       "you config init",
       "you",
     ]);
+    expect(
+      screen.getByRole("heading", { name: "you config init" }),
+    ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "you" })).toBeTruthy();
+    expect(
+      container.querySelectorAll("[data-reference-copyable-anchor]").length,
+    ).toBe(2);
+    expect(
+      container.querySelector("[data-reference-inventory-filter]"),
+    ).toBeTruthy();
+    expect(
+      container
+        .querySelector("[data-cli-command-reference]#you-config-init")
+        ?.getAttribute("id"),
+    ).toBe("you-config-init");
+  });
+
+  test("filters the inventory ephemerally without mutating projections", async () => {
+    const user = userEvent.setup();
+    const commands = [
+      fixtureCommand(),
+      fixtureCommand({
+        id: "you.legacy",
+        name: "legacy",
+        commandPath: "you legacy",
+        aliases: ["old"],
+        visibility: "internal",
+        lifecycle: { state: "deprecated", deprecated: "0.0.0" },
+        anchor: "you-legacy",
+        example: undefined,
+        longDescription: undefined,
+      }),
+    ];
+    const originalAnchors = commands.map((command) => command.anchor);
+
+    const { container } = render(
+      <CliCommandInventory
+        inventory={{ state: "success", commands, packageVersion: "0.0.0" }}
+      />,
+    );
+
+    await user.type(screen.getByLabelText("Command path"), "legacy");
+    expect(
+      container.getAttribute("data-cli-command-filtered-count") ??
+        container
+          .querySelector("[data-cli-command-inventory]")
+          ?.getAttribute("data-cli-command-filtered-count"),
+    ).toBe("1");
+    expect(screen.getByRole("heading", { name: "you legacy" })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "you config init" }),
+    ).toBeNull();
+    expect(commands.map((command) => command.anchor)).toEqual(originalAnchors);
+
+    await user.clear(screen.getByLabelText("Command path"));
+    await user.selectOptions(screen.getByLabelText("Lifecycle"), "deprecated");
+    expect(screen.getByRole("heading", { name: "you legacy" })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "you config init" }),
+    ).toBeNull();
   });
 
   test("surfaces accessible empty state for empty inventories", () => {

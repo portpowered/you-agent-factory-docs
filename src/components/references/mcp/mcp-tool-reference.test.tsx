@@ -247,6 +247,12 @@ describe("McpToolInventory", () => {
     expect(
       screen.getByRole("heading", { name: "you.factory_session.list" }),
     ).toBeTruthy();
+    expect(
+      container.querySelectorAll("[data-reference-copyable-anchor]").length,
+    ).toBe(2);
+    expect(
+      container.querySelector("[data-reference-inventory-filter]"),
+    ).toBeTruthy();
   });
 
   test("surfaces ReferenceEmptyState for empty inventories", () => {

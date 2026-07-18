@@ -1,5 +1,6 @@
 import {
   ContractSourceBadge,
+  CopyableReferenceAnchor,
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
@@ -37,14 +38,17 @@ export function JavaScriptSharedSchemaReference({
       id={schema.anchor}
     >
       <header className="space-y-2">
-        <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
-          <a
-            className="text-foreground no-underline hover:underline"
-            href={`#${schema.anchor}`}
-          >
-            {heading}
-          </a>
-        </h3>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
+            <a
+              className="text-foreground no-underline hover:underline"
+              href={`#${schema.anchor}`}
+            >
+              {heading}
+            </a>
+          </h3>
+          <CopyableReferenceAnchor anchor={schema.anchor} family="javascript" />
+        </div>
         {schema.description !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
             {schema.description}

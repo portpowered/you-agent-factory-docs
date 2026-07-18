@@ -64,6 +64,24 @@ const fixtureCommands: CliCommandNormalized[] = [
     },
     anchor: "you-mcp",
   },
+  {
+    id: "you.legacy",
+    name: "legacy",
+    commandPath: "you legacy",
+    aliases: ["old"],
+    description: "Deprecated legacy helper retained for migration",
+    shortDescription: "Deprecated legacy helper retained for migration",
+    visibility: "internal",
+    runnable: false,
+    handlerPresent: false,
+    lifecycle: { state: "deprecated", deprecated: "0.0.0" },
+    source: {
+      publicArtifactId: "@you-agent-factory/api/cli",
+      pointer: "/commands/99",
+      path: "generated/cli/commands.json",
+    },
+    anchor: "you-legacy",
+  },
 ];
 
 const successInventory: CliCommandInventoryInput = {

@@ -1,4 +1,7 @@
-import { ContractSourceBadge } from "@/components/references/shared";
+import {
+  ContractSourceBadge,
+  CopyableReferenceAnchor,
+} from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
@@ -49,14 +52,17 @@ export function CliCommandReference({
       id={command.anchor}
     >
       <header className="space-y-2">
-        <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
-          <a
-            className="text-foreground no-underline hover:underline"
-            href={`#${command.anchor}`}
-          >
-            {command.commandPath}
-          </a>
-        </h3>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
+            <a
+              className="text-foreground no-underline hover:underline"
+              href={`#${command.anchor}`}
+            >
+              {command.commandPath}
+            </a>
+          </h3>
+          <CopyableReferenceAnchor anchor={command.anchor} family="cli" />
+        </div>
         {shortDescription !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
             {shortDescription}

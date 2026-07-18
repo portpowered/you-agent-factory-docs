@@ -1,5 +1,6 @@
 import {
   ContractSourceBadge,
+  CopyableReferenceAnchor,
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
 import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
@@ -38,14 +39,17 @@ export function McpToolReference({
       id={tool.anchor}
     >
       <header className="space-y-2">
-        <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
-          <a
-            className="text-foreground no-underline hover:underline"
-            href={`#${tool.anchor}`}
-          >
-            {tool.name}
-          </a>
-        </h3>
+        <div className="flex flex-wrap items-start justify-between gap-2">
+          <h3 className="m-0 font-mono text-base font-semibold tracking-tight">
+            <a
+              className="text-foreground no-underline hover:underline"
+              href={`#${tool.anchor}`}
+            >
+              {tool.name}
+            </a>
+          </h3>
+          <CopyableReferenceAnchor anchor={tool.anchor} family="mcp" />
+        </div>
         {tool.description !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
             {tool.description}
