@@ -27,6 +27,8 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/factory-variant-overlay-schema.test.ts` | Contract coverage: required slots, examples-vs-fields separation, no copied prose, W04 address consumption, JSON round-trip |
 | `src/lib/references/overlays/factory-variant-overlay-registry.ts` | Pure `FactoryVariantOverlayRegistry` + overlay ID helpers + enum-inventory projection from W04 models / Factory schema data + completeness assert (no IO) |
 | `src/lib/references/overlays/factory-variant-overlay-registry.test.ts` | Registry completeness against installed Factory enums via W03 `resolveApiPackageArtifact("schemas/factory")`; missing/unknown fail closed; mock-workers excluded |
+| `src/lib/references/overlays/factory-variant-field-semantics.ts` | Typed shared/selected/excluded/conditional meanings + `resolveFactoryVariantApplicableFields` against W04 `SchemaDefinitionModel` (no IO; never invents absent fields) |
+| `src/lib/references/overlays/factory-variant-field-semantics.test.ts` | Applicability resolution: excluded omission, conditional `conditionId` gates, no invented base fields |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
@@ -53,8 +55,13 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   W03 `resolveApiPackageArtifact("schemas/factory")` at the call site.
 - Do **not** register mock-worker run types (`accept` / `script` / `reject`)
   as Factory `WorkerType` overlays — they live on `schemas/mock-workers`.
-- Later stories own field-semantics resolution, companion matrices, and
-  package-backed field/discriminator validation.
+- Resolve applicable fields with `resolveFactoryVariantApplicableFields`
+  (or path-only helper). `excluded` always wins; `conditional` requires an
+  active `conditionId` (default: none active). Never invent
+  `SchemaFieldModel` entries for paths absent from the base — fail closed by
+  default, or omit when `failOnUnknownBaseFields: false`.
+- Later stories own companion matrices and package-backed
+  field/discriminator validation.
 
 ## Verification
 
