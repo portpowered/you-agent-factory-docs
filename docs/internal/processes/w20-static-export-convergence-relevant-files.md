@@ -259,6 +259,45 @@ Worktree note: the out/ verify suite requires the prefixed rebuild from the
 command gate. Do not run an unprefixed `make build` between the rebuild and
 the guard.
 
+## Story 008 — total-site and reference payload budgets
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-budget-convergence.ts` | Catalog of `make budget` command gate, total-site + focused payload suites, and §17 gate families |
+| `src/lib/verify/w20-budget-convergence.test.ts` | Catalog completeness / file-existence / family-coverage / baseline-lock proofs |
+| `src/lib/verify/w20-budget-out-verify.test.ts` | Trusted `out/` total-site + focused reference payload evaluate |
+| `scripts/run-w20-budget-tests.ts` | Runner: catalog → `make budget` → post-command suites |
+| `package.json` → `test:w20-budget` | Maintainer / automation entry |
+| `Makefile` → `test-w20-budget` | Shared Makefile contract |
+
+### Command gate
+
+* `make budget` — total-site export ceilings (`FACTORY_EXPORTED_SITE_BUDGET_BASELINES`) then W19 focused API / events / factory-schema page payloads against the same trusted `out/`
+
+### Focused suites
+
+* `src/lib/build/exported-site-budget.test.ts` — total-site baseline + fixture evaluation
+* `src/lib/verify/a11y-reference-payload-budget.test.ts` — focused page ceilings + fixture evaluation
+* `src/lib/verify/w20-budget-out-verify.test.ts` — live `out/` total-site + focused evaluate
+
+### Reproduce
+
+```bash
+make test-w20-budget
+# or: bun run test:w20-budget
+```
+
+Live gate sequence (budget reuses `out/`):
+
+```bash
+make build
+make budget
+```
+
+Worktree note: do not silently raise total-site ceilings without evidence-backed
+inventory growth. Focused W19 ceilings stay under story 008 ownership for
+close-out; story 005 only reconfirmed they remain enforced via `make a11y`.
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,
