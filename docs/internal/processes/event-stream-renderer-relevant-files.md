@@ -92,6 +92,18 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/components/references/events/factory-response-event-catalog-section.tsx` | Compose envelope + matrix + payload catalog |
 | `src/components/references/events/factory-response-event-catalog.test.tsx` | Live inventory + ephemeral / non-Cartesian UI proofs |
 
+## Key host files (story 006 — reconnect / identity / lifecycle)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/events/event-reconnect-lifecycle.ts` | Build reconnect cursors, identity handshake, lifecycle, JSON reconnect-probe models from packaged OpenAPI |
+| `src/components/references/events/event-reconnect-contract.tsx` | Cursor params + `after_event_id` precedence |
+| `src/components/references/events/event-identity-handshake.tsx` | `X-Factory-Session-*` headers + stream-generation invalidation |
+| `src/components/references/events/event-stream-lifecycle.tsx` | Retained history, keepalive, `STREAM_GAP`, stale-cursor recovery |
+| `src/components/references/events/event-json-reconnect-probe.tsx` | `Accept: application/json` → `FactorySessionEventStreamRecovery` outcomes |
+| `src/components/references/events/event-reconnect-lifecycle-section.tsx` | Compose reconnect/identity/lifecycle/probe docs |
+| `src/components/references/events/event-reconnect-lifecycle.test.tsx` | Live OpenAPI + UI proofs (no W08 OpenAPI UI re-implementation) |
+
 ## Related spike (do not ship as production)
 
 | Path | Role |
@@ -143,3 +155,9 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 - Response-event payload variants use `data-event-ephemeral="true"` plus
   `data-event-payload-only="true"` and must never be presented as canonical
   FactoryEvent replay state.
+- Build reconnect/lifecycle docs via `buildEventReconnectLifecycleCorpus(doc)` —
+  cursor params from OpenAPI `$ref` parameters, handshake headers from 200
+  response headers, JSON probe from dual-Accept `application/json` +
+  `FactorySessionEventStreamRecovery` outcome enum. Mark
+  `httpTransportOwnership: "api-operation-page"` and link toward API anchors;
+  do not re-implement W08 OpenAPI UI or pin Fumadocs OpenAPI here.

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { eventStreamOperationSummaryModelsFromCorpus } from "@/components/references/events/event-stream-display";
 import { EventsVerificationHarness } from "@/components/references/events/events-verification-harness";
 import {
+  buildEventReconnectLifecycleCorpus,
   buildFactoryEventCatalog,
   buildFactoryResponseEventCatalog,
   eventsOpenApiTurbopackLoadDependencies,
@@ -36,12 +37,16 @@ export default function EventsRendererHarnessPage() {
   const factoryResponseEventCatalog = buildFactoryResponseEventCatalog(
     corpus.openapi.document,
   );
+  const reconnectLifecycle = buildEventReconnectLifecycleCorpus(
+    corpus.openapi.document,
+  );
 
   return (
     <EventsVerificationHarness
       factoryEventCatalog={factoryEventCatalog}
       factoryResponseEventCatalog={factoryResponseEventCatalog}
       pagePath="/events-renderer-harness"
+      reconnectLifecycle={reconnectLifecycle}
       sourceHash={corpus.sourceHash}
       summaries={summaries}
     />

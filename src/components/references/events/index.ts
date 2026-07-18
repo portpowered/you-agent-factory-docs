@@ -19,6 +19,14 @@ export {
   type EventEnvelopeReferenceProps,
 } from "./event-envelope-reference";
 export {
+  EventIdentityHandshake,
+  type EventIdentityHandshakeProps,
+} from "./event-identity-handshake";
+export {
+  EventJsonReconnectProbe,
+  type EventJsonReconnectProbeProps,
+} from "./event-json-reconnect-probe";
+export {
   EventPayloadCatalog,
   type EventPayloadCatalogProps,
 } from "./event-payload-catalog";
@@ -27,6 +35,14 @@ export {
   type EventPayloadVariantProps,
 } from "./event-payload-variant";
 export {
+  EventReconnectContract,
+  type EventReconnectContractProps,
+} from "./event-reconnect-contract";
+export {
+  EventReconnectLifecycleSection,
+  type EventReconnectLifecycleSectionProps,
+} from "./event-reconnect-lifecycle-section";
+export {
   type EventCanonicalityPresentation,
   type EventStreamOperationSummaryModel,
   eventCanonicalityPresentationForRole,
@@ -34,6 +50,10 @@ export {
   eventStreamOperationSummaryModelFromSelected,
   eventStreamOperationSummaryModelsFromCorpus,
 } from "./event-stream-display";
+export {
+  EventStreamLifecycle,
+  type EventStreamLifecycleProps,
+} from "./event-stream-lifecycle";
 export {
   EventStreamOperationSummary,
   type EventStreamOperationSummaryProps,

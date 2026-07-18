@@ -1,16 +1,19 @@
 /**
- * Focused W09 verification surface for stream roles + event catalogs.
+ * Focused W09 verification surface for stream roles + event catalogs +
+ * reconnect/lifecycle docs.
  *
- * Renders EventStreamOperationsList, FactoryEventCatalogSection, and
- * FactoryResponseEventCatalogSection from already-resolved corpus models.
- * Not a final /docs/references/events page.
+ * Renders EventStreamOperationsList, FactoryEventCatalogSection,
+ * FactoryResponseEventCatalogSection, and EventReconnectLifecycleSection from
+ * already-resolved corpus models. Not a final /docs/references/events page.
  */
 
 import type {
+  EventReconnectLifecycleCorpus,
   FactoryEventCatalog,
   FactoryResponseEventCatalog,
 } from "@/lib/references/events";
 import { cn } from "@/lib/utils";
+import { EventReconnectLifecycleSection } from "./event-reconnect-lifecycle-section";
 import type { EventStreamOperationSummaryModel } from "./event-stream-display";
 import { EventStreamOperationsList } from "./event-stream-operations-list";
 import { EventsSurface } from "./events-surface";
@@ -21,6 +24,7 @@ export type EventsVerificationHarnessProps = {
   summaries: readonly EventStreamOperationSummaryModel[];
   factoryEventCatalog?: FactoryEventCatalog;
   factoryResponseEventCatalog?: FactoryResponseEventCatalog;
+  reconnectLifecycle?: EventReconnectLifecycleCorpus;
   sourceHash?: string;
   pagePath?: string;
   className?: string;
@@ -31,6 +35,7 @@ export function EventsVerificationHarness({
   summaries,
   factoryEventCatalog,
   factoryResponseEventCatalog,
+  reconnectLifecycle,
   sourceHash,
   pagePath = "/events-renderer-harness",
   className,
@@ -39,7 +44,8 @@ export function EventsVerificationHarness({
   const status =
     summaries.length > 0 ||
     factoryEventCatalog !== undefined ||
-    factoryResponseEventCatalog !== undefined
+    factoryResponseEventCatalog !== undefined ||
+    reconnectLifecycle !== undefined
       ? "success"
       : "empty";
 
@@ -61,9 +67,9 @@ export function EventsVerificationHarness({
         </h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
           Verifies stream roles, the FactoryEvent envelope / discriminator /
-          payload catalog, and the FactoryResponseEvent envelope / dimensions /
-          payload catalog against packaged OpenAPI. Does not open a live Factory
-          connection.
+          payload catalog, the FactoryResponseEvent envelope / dimensions /
+          payload catalog, and reconnect / identity / lifecycle contracts
+          against packaged OpenAPI. Does not open a live Factory connection.
         </p>
       </header>
 
@@ -83,6 +89,9 @@ export function EventsVerificationHarness({
               catalog={factoryResponseEventCatalog}
               pagePath={pagePath}
             />
+          ) : null}
+          {reconnectLifecycle !== undefined ? (
+            <EventReconnectLifecycleSection corpus={reconnectLifecycle} />
           ) : null}
         </div>
       </EventsSurface>
