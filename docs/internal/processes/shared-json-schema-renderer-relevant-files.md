@@ -58,6 +58,12 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-variant-applicability-badge.tsx` | Selected / excluded / conditional text badges (never color-only) |
 | `src/components/references/schema/schema-variant-reference.tsx` | SchemaVariantReference display adapter over base definition + overlay presentation |
 | `src/components/references/schema/schema-variant-reference.test.tsx` | Variant badges, base prose preservation, missing/empty overlay status proofs |
+| `src/components/references/schema/schema-verification-harness.tsx` | Focused W07 harness: three real schemas + keyboard expand probe (not a published reference page) |
+| `src/components/references/schema/schema-verification-harness.test.tsx` | Real-schema field/composition/filter/example, keyboard, and responsive overflow proofs |
+| `src/app/(dev)/schema-renderer-harness/page.tsx` | Non-production harness route (`ENABLE_SCHEMA_RENDERER_HARNESS=1` in production) |
+| `src/lib/references/normalize-json-schema-artifact.ts` | Pure JSON Schema document → W04 `SchemaDefinitionModel` normalizer (no package IO) |
+| `src/lib/references/normalize-json-schema-artifact.test.ts` | Fixture + W03 public-subpath normalization proofs |
+| `src/lib/references/load-schema-verification-models.ts` | Server helper: `resolveApiPackageArtifact` + normalize for the three schema subpaths |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -122,10 +128,22 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   → `invalid`; empty overlay fields → `empty`. Annotate field trees via
   `annotateSchemaFieldTreeWithVariant`; field descriptions/types always come
   from the base `SchemaFieldModel`.
+- Real-schema verification: acquire via W03 `resolveApiPackageArtifact`
+  (`schemas/factory`, `schemas/you-config`, `schemas/mock-workers`), normalize
+  with `normalizeJsonSchemaArtifact` (pure), then render through
+  `SchemaReference` / `SchemaVerificationHarness`. Use `showCatalog={false}` for
+  large `$defs` catalogs (filter still lists definitions). Root pointers must be
+  anchor-safe (not bare `/`). Harness route:
+  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
+  `/docs/references/*-schema` page.
 
 ## Verification preference
 
 Prove status and ready-path behavior with `@testing-library/react` against
 observable roles/text. Prefer fixture W04 models from
 `createSchemaDefinitionModel` / display projectors over scanning source files
-or inventing package-path inventories in UI tests.
+or inventing package-path inventories in UI tests. For story-level real-schema
+proofs, load through `loadSchemaVerificationPackageModel` /
+`SchemaVerificationHarness` and assert field visibility, composition/`$ref`
+links, filter, examples/empty-examples, keyboard expand (harness probe), and
+responsive `min-w-0` / overflow containment at phone + desktop widths.

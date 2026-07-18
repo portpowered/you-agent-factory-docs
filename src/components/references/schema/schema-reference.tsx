@@ -75,6 +75,12 @@ export type SchemaReferenceProps = {
    * field tree. Filtering is UI state only.
    */
   showFilter?: boolean;
+  /**
+   * When true (default), complete mode also renders each catalog definition
+   * below the primary root. Set false for large schemas (filter still lists
+   * definitions when `showFilter` is enabled).
+   */
+  showCatalog?: boolean;
   className?: string;
   "data-testid"?: string;
 };
@@ -96,6 +102,7 @@ export function SchemaReference({
   pagePath,
   defaultExpanded = false,
   showFilter = true,
+  showCatalog = true,
   className,
   "data-testid": testId = "schema-reference",
 }: SchemaReferenceProps) {
@@ -176,7 +183,9 @@ export function SchemaReference({
           showEmptyExamples={showEmptyExamples}
         />
 
-        {resolved.mode === "complete" && resolved.catalog.length > 0 ? (
+        {resolved.mode === "complete" &&
+        showCatalog &&
+        resolved.catalog.length > 0 ? (
           <section
             aria-label="Schema definitions"
             className="min-w-0 space-y-6"

@@ -151,6 +151,11 @@ export {
   type SchemaVariantReferenceProps,
 } from "./schema-variant-reference";
 export {
+  SchemaVerificationHarness,
+  type SchemaVerificationHarnessProps,
+  type SchemaVerificationPackageView,
+} from "./schema-verification-harness";
+export {
   SCHEMA_UI_STATUS_DEFAULT_MESSAGES,
   SCHEMA_UI_STATUS_DEFAULT_TITLES,
   SCHEMA_UI_STATUS_KINDS,
