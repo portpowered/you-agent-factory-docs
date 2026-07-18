@@ -992,9 +992,14 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `workstations/repeater` / `documentation.workstations-repeater`
   (`behavior:REPEATER`, change-triggered / rejection reloop, misuse = cron);
   `workstations/cron` / `documentation.workstations-cron` (`behavior:CRON`,
-  selects exclusive `cron`, misuse = missing cron). Non-CRON behaviors share
-  empty `selected` and exclude `cron` — keep their misuse examples on the cron
-  field; CRON flips that pattern (selected `cron`, misuse omits it).
+  selects exclusive `cron`, misuse = missing cron);
+  `workstations/poller` / `documentation.workstations-poller`
+  (`behavior:POLLER`, long-lived poller scheduling, misuse = POLLER-as-type
+  axis collapse; keep `POLLER` distinct from type `POLLER_RUN` and link
+  `/docs/workstations/poller-run`). Non-CRON behaviors share empty `selected`
+  and exclude `cron` — STANDARD/REPEATER misuse stays on the cron field;
+  POLLER's primary misuse is axis collapse (`type: "POLLER"`); CRON flips
+  the cron pattern (selected `cron`, misuse omits it).
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
   families. Empty collections call `renderSectionCollectionIndexPage` with
