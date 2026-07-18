@@ -12,12 +12,84 @@ export {
   eventsSurfaceAllowsPermanentAsyncApiPin,
 } from "./asyncapi-dependency-policy";
 export {
+  EVENTS_CORPUS_OWNING_PAGE_ID,
+  type EventSchemaDisplayTarget,
+  eventSchemaDisplayTargetsForStreams,
+  jsonPointerFromComponentsRef,
+  registerEventSchemaTargets,
+  schemaAddressForSelectedEventStream,
+} from "./event-schema-targets";
+export {
+  assertEventCorpusClosureValid,
+  assertEventInventoryMatchesExpected,
+  buildEventOperationInventory,
+  buildEventSemanticInventory,
+  countEventTypesFromSchema,
+  countPayloadVariantsFromRootSchema,
+  EventInventoryValidationError,
+  type EventInventoryValidationErrorCode,
+  type EventOperationInventory,
+  type EventSemanticInventory,
+  hashOpenApiSource,
+  resolveEventCorpusInventory,
+} from "./event-semantic-inventory";
+export {
   assertLockedHybridPlacement,
   HYBRID_EVENT_STREAM_OWNERSHIP,
   isLockedHybridPlacement,
   LOCKED_EVENT_STREAM_PLACEMENT,
   type LockedEventStreamPlacement,
 } from "./hybrid-placement";
+export {
+  EventsOpenApiLoadError,
+  type LoadEventsOpenApiDependencies,
+  type LoadedEventsOpenApi,
+  loadEventsOpenApi,
+} from "./load-events-openapi";
+export {
+  EVENTS_SSE_MEDIA_TYPE,
+  EVENTS_SSE_RESPONSE_STATUS,
+  type EventsOpenApiComponentsSchemasLike,
+  type EventsOpenApiDocument,
+  type EventsOpenApiMediaTypeObject,
+  type EventsOpenApiOperation,
+  type EventsOpenApiPathItem,
+} from "./openapi-document";
+export {
+  channelIdForSelectedEventStream,
+  EVENTS_ASYNCAPI_GENERATED_FILE_NOTICE,
+  EVENTS_ASYNCAPI_VERSION,
+  type EventsOpenApiToAsyncApiProjection,
+  type EventsProjectedAsyncApiChannel,
+  type EventsProjectedAsyncApiDocument,
+  type EventsProjectedAsyncApiMessage,
+  messageIdForSelectedEventStream,
+  type ProjectEventsOpenApiToAsyncApiOptions,
+  projectEventsOpenApiToAsyncApi,
+  projectSelectedEventStreamsToAsyncApi,
+} from "./project-events-asyncapi";
+export {
+  type ResolvedEventCorpus,
+  type ResolveEventCorpusOptions,
+  resolveEventCorpus,
+} from "./resolve-event-corpus";
+export {
+  collectComponentSchemaRefsFromValue,
+  collectEventSchemaRefClosure,
+  type EventSchemaRefClosure,
+  localSchemaNameFromRef,
+} from "./schema-ref-closure";
+export {
+  readEventsSseMediaTypeObject,
+  resolvePayloadRootFromXEventSchema,
+  SelectEventStreamsError,
+  type SelectEventStreamsErrorCode,
+  type SelectedEventStream,
+  schemaNameFromComponentsRef,
+  selectEventStreamFromOpenApi,
+  selectEventStreamsByHardCodedSchemaNamesOnly,
+  selectEventStreamsFromOpenApi,
+} from "./select-event-streams";
 export {
   EVENT_STREAM_OPERATIONS,
   EVENT_STREAM_ROLES,

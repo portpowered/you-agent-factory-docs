@@ -41,6 +41,20 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/lib/references/events/asyncapi-dependency-policy.ts` | No permanent `@fumadocs/asyncapi` pin + upgrade-risk notes |
 | `src/lib/references/events/events-lib.test.ts` | Inventory migration, hybrid lock vs W02 gate, AsyncAPI policy proofs |
 
+## Key host files (story 002 — OpenAPI event truth + fail-closed inventory)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/events/load-events-openapi.ts` | Load packaged OpenAPI via W03 `resolveApiPackageArtifact("@you-agent-factory/api/openapi")` |
+| `src/lib/references/events/openapi-document.ts` | Minimal OpenAPI shapes + SSE status/media-type constants |
+| `src/lib/references/events/select-event-streams.ts` | Select streams by path/operation/status/`text/event-stream`/`x-event-schema` |
+| `src/lib/references/events/schema-ref-closure.ts` | Transitive `$ref` closure for selected payload roots |
+| `src/lib/references/events/event-semantic-inventory.ts` | Source hash, discriminator/payload counts, fail-closed drift/unresolved-ref gates |
+| `src/lib/references/events/project-events-asyncapi.ts` | Optional source-hashed AsyncAPI projection (never a second authored corpus) |
+| `src/lib/references/events/event-schema-targets.ts` | W04 `SchemaAddress` / anchor targets for payload roots |
+| `src/lib/references/events/resolve-event-corpus.ts` | Orchestrate load → select → inventory → optional projection → W04 targets |
+| `src/lib/references/events/events-openapi-resolution.test.ts` | W03 load, selection, inventory drift, unresolved refs, AsyncAPI projection, W04 anchors |
+
 ## Related spike (do not ship as production)
 
 | Path | Role |
@@ -56,5 +70,15 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   importing spike chrome into production pages.
 - Keep tests that compare production lock constants against the W02 decision
   gate in the lib test file (production runtime should not re-open placement).
-- Prefer `@you-agent-factory/api/openapi` public subpath resolution (W03) in
-  later stories — never package-root or package-internal imports.
+- Load event truth only through W03 `resolveApiPackageArtifact` /
+  `loadEventsOpenApi` (`@you-agent-factory/api/openapi`). Never package-root,
+  package-internal `generated/...`, or `node_modules` patches.
+- Select SSE streams by path → GET → response `200` → `text/event-stream` →
+  `x-event-schema`. Reject hard-coded schema-name-only selection.
+- Treat AsyncAPI as optional generated projection only (`projectEventsOpenApiToAsyncApi`);
+  carry source hash + generated-file notice; fail closed on unresolved `$ref`s
+  and semantic inventory drift via `event-semantic-inventory.ts`.
+- Map payload roots to W04 `SchemaAddress` / anchors with
+  `event-schema-targets.ts` — do not invent a second event schema corpus.
+- Prefer `resolveEventCorpus()` as the build/server orchestration entry for
+  later catalog UI stories.
