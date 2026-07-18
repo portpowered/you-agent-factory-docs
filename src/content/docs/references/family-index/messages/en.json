@@ -6,6 +6,42 @@
     "introduction": {
       "title": "What this family covers",
       "body": "References are isolation-first lookup pages for factory contracts. Each linked surface owns one contract family: the HTTP API, durable event corpora, factory and config schemas, the CLI command matrix, MCP tool contracts, or the JavaScript runtime surface. Start here to choose the right contract page; open a child page only when you need that surface’s fields, operations, or examples."
+    },
+    "discoverability": {
+      "title": "Contract surfaces",
+      "body": "Each card opens one contract family. Labels stay readable on narrow viewports; paths remain stable while sibling pages land."
+    },
+    "api": {
+      "title": "HTTP API",
+      "body": "OpenAPI operations and request/response contracts for the factory HTTP surface."
+    },
+    "events": {
+      "title": "Events",
+      "body": "Durable event corpora and envelope shapes for factory response streams."
+    },
+    "factory-schema": {
+      "title": "Factory schema",
+      "body": "JSON Schema for packaged factory documents and their required fields."
+    },
+    "you-config-schema": {
+      "title": "you config schema",
+      "body": "Configuration schema for you-agent-factory runtime and workspace settings."
+    },
+    "mock-workers-schema": {
+      "title": "Mock workers schema",
+      "body": "Schema for mock worker definitions used in local and test harnesses."
+    },
+    "cli": {
+      "title": "CLI",
+      "body": "Command matrix and flags for the you CLI."
+    },
+    "mcp": {
+      "title": "MCP",
+      "body": "Model Context Protocol tool contracts exposed by the factory."
+    },
+    "javascript-runtime": {
+      "title": "JavaScript runtime",
+      "body": "JavaScript runtime bindings and package surface for embedding factory work."
     }
   }
 }

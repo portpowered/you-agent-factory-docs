@@ -1115,8 +1115,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   References family index ownership surface: `frontmatter.json` (`kind:
   reference`, `registryId: reference.references`), page-local `messages/en.json`,
   `assets.json`, composition (`ReferencesFamilyIndex.tsx`), loader, planned
-  eight-route constants, and colocated tests. Do not put sibling W11 page
-  bodies (`api/`, `events/`, …) in this lane.
+  eight-route constants (`reference-family-routes.ts`), discoverability card
+  resolver (`resolve-reference-family-discoverability.ts` — message sections
+  keyed by route id supply title/body; hrefs stay on planned
+  `/docs/references/...` paths even when sibling bodies are unpublished), and
+  colocated tests. Do not put sibling W11 page bodies (`api/`, `events/`, …)
+  in this lane.
 * `src/content/registry/references/`
   First `reference` registry collection. Wire new records through
   `REGISTRY_COLLECTIONS`, `registry.ts` directories, and

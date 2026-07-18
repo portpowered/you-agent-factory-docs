@@ -518,6 +518,20 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain("What this family covers");
     expect(html).toContain("isolation-first lookup");
     expect(html).toContain('data-references-family-index=""');
+    expect(html).toContain("Contract surfaces");
+    expect(html).toContain('data-references-family-discoverability=""');
+    for (const href of [
+      "/docs/references/api",
+      "/docs/references/events",
+      "/docs/references/factory-schema",
+      "/docs/references/you-config-schema",
+      "/docs/references/mock-workers-schema",
+      "/docs/references/cli",
+      "/docs/references/mcp",
+      "/docs/references/javascript-runtime",
+    ]) {
+      expect(html).toContain(`href="${href}"`);
+    }
     expect(html).not.toContain("No reference entries yet");
   });
 

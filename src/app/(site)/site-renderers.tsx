@@ -325,9 +325,9 @@ export async function renderSectionCollectionIndexPage(
 }
 
 /**
- * Authored `/docs/references` family index: localized introduction owned by
- * the references index lane. Discoverability links and freshness summary land
- * in later stories on the same ownership surface.
+ * Authored `/docs/references` family index: localized introduction and
+ * eight-route discoverability cards owned by the references index lane.
+ * Package freshness summary lands in a later story on the same surface.
  */
 export async function renderReferencesFamilyIndexPage(
   locale: SiteLocale = defaultLocale,
