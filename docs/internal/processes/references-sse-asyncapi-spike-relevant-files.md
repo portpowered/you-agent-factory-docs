@@ -18,6 +18,11 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
 - `src/lib/references-sse-asyncapi-spike/observe-sse-operations.ts` — pure
   observers that prove the packaged document still exposes
   `text/event-stream` + `x-event-schema` for each inventory operation.
+- `src/lib/references-sse-asyncapi-spike/native-sse-render-evidence.ts` —
+  cites unmodified media-type objects and classifies native display
+  (`plain-string-schema`) plus `x-event-schema` handling (`ignored` for
+  fumadocs-openapi@10.10.3). Includes an HTML probe helper for spike-route
+  verification.
 - `src/lib/references-sse-asyncapi-spike/create-sse-spike-openapi.ts` —
   `createOpenAPI` + `createAPIPage` with `playground.enabled: false` and no
   `proxyUrl`.
@@ -48,3 +53,9 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
 - Narrative findings: `docs/temp/references/sse-renderer-investigation.md`
   (gitignored local planner state). Commit machine-checkable spike helpers and
   tests; keep long-form measurements under `docs/temp/references/`.
+- Native `text/event-stream` / `x-event-schema` evidence helpers:
+  `src/lib/references-sse-asyncapi-spike/native-sse-render-evidence.ts` (+
+  `native-sse-render-evidence.test.ts`, subprocess
+  `prove-native-sse-render-evidence.ts`). Classification for
+  fumadocs-openapi@10.10.3: plain-string-schema display; `x-event-schema`
+  ignored (retained on the media type, not shown or traversed in the UI).
