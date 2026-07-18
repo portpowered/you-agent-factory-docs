@@ -72,7 +72,7 @@ describe("exported-site-budget baselines", () => {
       3_500_000,
     );
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes).toBe(
-      6_500_000,
+      32_000_000,
     );
   });
 });
@@ -117,6 +117,9 @@ describe("exported-site-budget evaluation", () => {
     );
     expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
       "limit 235.00 MB",
+    );
+    expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
+      "limit 32.00 MB",
     );
   });
 

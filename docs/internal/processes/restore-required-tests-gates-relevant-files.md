@@ -124,11 +124,15 @@ again 2026-07-18 UTC after merging the W11 API reference page onto that head
 after the Next-safe OpenAPI loader fix on that head (CI measured ~220.21 MiB
 total / ~6.16 MiB search); raised again 2026-07-18 UTC after the W17
 localization / contract-language lane (CI measured ~229.44 MiB total /
-~6.16 MiB search):
+~6.16 MiB search); raised again 2026-07-18 UTC after rebasing W16
+search-and-anchor projection onto that W17 head (~585 reference item documents
+in every locale Orama catalog; layout meta omits item rows; local combined
+`make build` measured ~225.54 MiB total / ~29.69 MiB search / ~2.87 MiB Next
+static JS — total stays under the W17 ceiling; search raised):
 
 - `maxTotalOutBytes`: 235_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 6_500_000
+- `maxSearchBootstrapBytes`: 32_000_000
 
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete

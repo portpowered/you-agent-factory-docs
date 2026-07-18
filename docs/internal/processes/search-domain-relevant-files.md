@@ -7,12 +7,93 @@ Use these files when changing search document construction, Orama indexing, or
 
 * `src/lib/search/factory-search-kinds.ts`
   Factory-only public search result kinds (`guide`, `concept`, `technique`,
-  `documentation`, `glossary`, `blog`) plus retired Atlas kind denylist and
-  fail-closed `assertFactorySearchDocuments` used by document builders.
+  `documentation`, `glossary`, `reference`, `blog`) plus retired Atlas kind
+  denylist and fail-closed `assertFactorySearchDocuments` used by document
+  builders. `REFERENCE_SEARCH_DOCUMENT_KIND` is the shared page/item kind for
+  W16 reference search projection (aligned with W04/W09 search shapes).
+* `src/lib/search/adapt-reference-search-document.ts`
+  Pure adapter from W04/W09 `ReferenceSearchDocumentShape` → live Orama
+  `SearchDocument` (kind `reference`, fragment URL required, empty topology).
+  `enrichReferenceItemAliases` merges title + registry anchor with
+  shape-provided common-name / discriminator aliases (W16 story 005).
+  `referenceItemEnglishSearchFields` projects English identity fields for
+  cross-locale equality proofs (W16 story 007).
+* `src/lib/search/create-search-catalog-from-documents.ts`
+  Builds the Fumadocs advanced Orama server from parsed documents. Always
+  uses `FACTORY_SEARCH_ORAMA_LANGUAGE` (`english`) so non-`en` UI locale
+  catalogs still tokenize/stem English contract identifiers (W16-007).
+* `src/lib/search/build-reference-search-documents.ts`
+  Loads settled inventory shapes (events corpus, API operations, schema
+  definitions/fields, CLI commands, MCP tools, JavaScript runtime symbols /
+  shared schemas), adapts them, and caches for shared locale builds.
+* `src/lib/search/build-api-reference-search-documents.ts`
+  W16 story 003: projects packaged OpenAPI operations into reference search
+  shapes deep-linking to `/docs/references/api#<registry-anchor>`.
+* `src/lib/search/build-schema-reference-search-documents.ts`
+  W16 story 003: projects settled factory / you-config / mock-workers schema
+  definitions and addressable field paths onto per-schema owning pages
+  (`factory-schema`, `you-config-schema`, `mock-workers-schema`) — never the
+  placeholder `/docs/references/schema` path.
+* `src/lib/search/build-cli-mcp-javascript-reference-search-documents.ts`
+  W16 story 004: projects packaged CLI commands, MCP tools, and JavaScript
+  runtime symbols / shared schemas into reference search shapes deep-linking
+  to `/docs/references/cli|mcp|javascript-runtime#<registry-anchor>` via
+  shared `assign*RegistryAnchors` helpers.
 * `src/lib/content/factory-search-categories.test.tsx`
   Required `bun run test` proof that pageKind labels, live search meta, and
   representative `harness` / `ralph` queries stay inside the factory category
   set and never advertise Model Atlas result kinds.
+* `src/lib/content/factory-search-reference-kind.test.tsx`
+  W16 story 001 required-suite proof that `reference` is a live search kind
+  for page and item documents, stays aligned with W04
+  `REFERENCE_SEARCH_DOCUMENT_KIND`, and a representative `/docs/references/events`
+  hit exposes the reader-visible Reference category (not a retired Atlas kind).
+* `src/lib/content/factory-search-reference-shape-adaptation.test.ts`
+  W16 story 002 required-suite proof that W04/W09 event-corpus shapes adapt
+  into live Orama documents with registry-anchor fragment URLs, join
+  `buildSearchDocumentsForLocale` for every shipped locale, and remain
+  findable via representative Orama queries.
+* `src/lib/content/factory-search-api-schema-indexing.test.ts`
+  W16 story 003 required-suite proof that API operations and schema
+  definition/field items index as Orama documents with correct owning-page
+  deep links (`/docs/references/api#…`, per-schema pages) and that
+  representative `submitWorkBySessionId` / `workers` queries return item hits.
+* `src/lib/content/factory-search-cli-mcp-js-event-indexing.test.ts`
+  W16 story 004 required-suite proof that CLI commands, MCP tools, JavaScript
+  symbols / shared schemas, and event variants index as Orama documents with
+  correct owning-page deep links and that representative
+  `you config init` / `you.factory_session.get` / `javascript.log` /
+  `RUN_REQUEST` queries return item hits.
+* `src/lib/content/factory-search-authored-pages-aliases.test.ts`
+  W16 story 005 required-suite proof that authored factories / workers /
+  workstations pages remain normal page documents (no fragment, kind
+  `documentation`) and that reference item aliases cover literal
+  discriminators (`RUN_REQUEST`) plus common names
+  (`RunRequestEventPayload`), with representative page + alias queries.
+* `src/lib/content/factory-search-item-hits-above-page-crowding.test.ts`
+  W16 story 006 required-suite proof that collapse/rerank preserves
+  reference item deep-link URLs (`#…`) instead of collapsing solely to the
+  owning page, while ordinary non-reference pages still collapse to bare
+  page URLs.
+* `src/lib/content/factory-search-english-identifiers-every-locale.test.ts`
+  W16 story 007 required-suite proof that shipped locales (`en`, `ja`,
+  `zh-CN`, `vi`) share identical English reference identifiers/aliases in
+  searchable fields, Orama language stays `english` for every UI locale
+  catalog, and representative English identifier queries succeed against
+  non-`en` locale catalogs (same item URL/anchor contract). Does not own
+  W17 chrome localization.
+* `src/lib/search/measure-reference-search-bootstrap-payload.ts`
+  W16 story 008: measures serialized advanced-Orama bootstrap bytes for
+  reference-item documents and each shipped locale catalog (same
+  `JSON.stringify(payload) + "\\n"` shape as `emitExportSearchIndex`), then
+  compares the locale sum to `FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes`.
+* `src/lib/content/factory-search-payload-gate-representative-queries.test.ts`
+  W16 story 008 required-suite proof that the expanded bootstrap payload
+  stays within the factory search budget (raised with measured evidence after
+  ~585 item documents) and that representative
+  `submitWorkBySessionId` / factory-schema `workers` / `Poller behavior` /
+  `RUN_REQUEST` / `you config init` / `you.factory_session.get` queries return
+  item-level deep links via live `docsSearchApi.search`.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
@@ -73,18 +154,54 @@ Use these files when changing search document construction, Orama indexing, or
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`
   Localized search catalog, `/api/search` query handling, classification scope,
-  and reranking.
+  and reranking. Collapse preserves reference item deep links (W16-006).
+* `src/lib/search/collapse-search-results-to-page-hits.ts`
+  Groups ordinary fragment/heading/page duplicates to one bare page URL while
+  keeping registered reference item documents as separate `#fragment` rows.
 * `src/app/api/search/route.ts`
   Public search API route; re-exports `docsSearchApi.GET`.
 
 ### Pattern: factory-only search result kinds
 
 Public search categories / result-kind labels are the factory set only. Keep
-`FACTORY_SEARCH_RESULT_KINDS` as the single allowlist, assert it when building
-documents, and prove reader-facing labels via `messages.pageKind` (no Atlas
-keys such as `module` / `model` / `paper`). Place the required-suite proof under
+`FACTORY_SEARCH_RESULT_KINDS` as the single allowlist (including first-class
+`reference` for page and item documents), assert it when building documents,
+and prove reader-facing labels via `messages.pageKind` (no Atlas keys such as
+`module` / `model` / `paper`). Place the required-suite proof under
 `src/lib/content/` because `src/lib/search/` remains excluded from
-`run-website-functionality-tests.ts` for leftover Atlas-coupled suites.
+`run-website-functionality-tests.ts` for leftover Atlas-coupled suites. W16
+reference-item Orama projection reuses `REFERENCE_SEARCH_DOCUMENT_KIND` rather
+than inventing a second public category. Adapt W04/W09 shapes through
+`adaptReferenceSearchShapeToSearchDocument` and include them via
+`buildReferenceItemSearchDocuments` in `buildSearchDocumentsForLocale` /
+`loadSearchDocumentsByLocale` (shared once across locales). Authored
+factories / workers / workstations pages stay normal page documents;
+`enrichReferenceItemAliases` adds title + registry anchor alongside
+shape-provided common-name / discriminator aliases so literals like
+`RUN_REQUEST` and names like `RunRequestEventPayload` stay searchable.
+`collapseSearchResultsToPageHits` preserves registered reference item
+documents (kind `reference` + `#fragment`) as deep-link rows instead of
+collapsing them into the bare owning-page URL; ordinary heading/text
+duplicates still collapse to one page hit. Every locale catalog reuses the
+same English reference item documents and indexes Orama with
+`FACTORY_SEARCH_ORAMA_LANGUAGE` (`english`) so canonical English identifiers
+remain findable from `ja` / `zh-CN` / `vi` UI locales without translating
+those literals (W16-007; W17 owns broader chrome localization). W16-008
+measures the expanded bootstrap via
+`measureReferenceSearchBootstrapPayload` and gates the locale sum against
+`FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes` (raise the
+ceiling only with measured evidence — ~29.69 MiB after ~585 item documents).
+Prove representative family queries through live `docsSearchApi.search`.
+When search loads the events corpus during static-export catalog build,
+`eventsOpenApiTurbopackLoadDependencies` must use the ancestor
+`node_modules` walk (`resolveApiPackageManifestFsPath`) — webpack stubs
+`createRequire().resolve` and can return a non-string module id.
+Layout `metaByUrl` must **omit** reference item documents (kind
+`reference` + `#fragment`); embedding them previously inflated every
+HTML/RSC payload by ~2 MiB. Client collapse preserves
+`/docs/references/…#…` via URL shape when meta has no item rows; server
+catalogs that include item docs still require membership so ordinary
+reference-page headings collapse.
 
 ### Pattern: factory alias / body / tag discovery
 

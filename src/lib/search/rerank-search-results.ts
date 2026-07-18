@@ -4,7 +4,11 @@ import {
   relationshipOutranksClassificationSibling,
 } from "@/lib/content/ontology-peer-policy";
 import type { SearchClassificationScope } from "./classification-scope";
-import { pageBaseUrl } from "./collapse-search-results-to-page-hits";
+import {
+  isReferenceItemSearchDocument,
+  pageBaseUrl,
+  referenceItemDocumentForResultUrl,
+} from "./collapse-search-results-to-page-hits";
 import { expandTopologySearchTerm } from "./topology-search-terms";
 import type { SearchDocument } from "./types";
 
@@ -263,6 +267,12 @@ export function findBestTitleMatchPageUrl(
   let bestScore = 0;
 
   for (const [url, document] of documentsByUrl) {
+    // Page-title seeding is for bare owning pages only; reference item
+    // deep-links are ranked separately so they are not reduced to a page seed.
+    if (isReferenceItemSearchDocument(document)) {
+      continue;
+    }
+
     const score = scoreDocumentMatch(query, document);
     if (
       shouldReplaceBestTitleMatch(
@@ -300,6 +310,16 @@ export function findBestTitleMatchPageUrl(
   return bestUrl;
 }
 
+function resolveResultDocument(
+  resultUrl: string,
+  documentsByUrl: Map<string, SearchDocument>,
+): SearchDocument | undefined {
+  return (
+    referenceItemDocumentForResultUrl(resultUrl, documentsByUrl) ??
+    documentsByUrl.get(pageBaseUrl(resultUrl))
+  );
+}
+
 function resultPriority(
   query: string,
   scope: SearchClassificationScope | undefined,
@@ -307,8 +327,18 @@ function resultPriority(
   resultUrl: string,
   document: SearchDocument | undefined,
 ): number {
-  if (resultUrl === bestPageUrl) {
+  const resultBaseUrl = pageBaseUrl(resultUrl);
+  if (resultUrl === bestPageUrl || resultBaseUrl === bestPageUrl) {
     return 0;
+  }
+
+  // Exact title / direct-alias matches on reference items outrank incidental
+  // owning-page body hits for the same query.
+  if (
+    isReferenceItemSearchDocument(document) &&
+    scoreDocumentMatch(query, document) >= 95
+  ) {
+    return 1;
   }
 
   const scopePriority = classificationScopePriority(scope, document);
@@ -344,23 +374,27 @@ export function rerankSearchResults(
   return results
     .map((result, index) => ({ result, index }))
     .sort((left, right) => {
-      const leftUrl = pageBaseUrl(left.result.url);
-      const rightUrl = pageBaseUrl(right.result.url);
-      const leftDocument = documentsByUrl.get(leftUrl);
-      const rightDocument = documentsByUrl.get(rightUrl);
+      const leftDocument = resolveResultDocument(
+        left.result.url,
+        documentsByUrl,
+      );
+      const rightDocument = resolveResultDocument(
+        right.result.url,
+        documentsByUrl,
+      );
 
       const leftPriority = resultPriority(
         query,
         classificationScope,
         bestPageUrl,
-        leftUrl,
+        left.result.url,
         leftDocument,
       );
       const rightPriority = resultPriority(
         query,
         classificationScope,
         bestPageUrl,
-        rightUrl,
+        right.result.url,
         rightDocument,
       );
 

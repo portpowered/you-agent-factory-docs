@@ -1,10 +1,14 @@
 /**
- * Turbopack-safe OpenAPI export resolution for Next.js server pages.
+ * Webpack-/Turbopack-safe OpenAPI export resolution for Next.js server pages
+ * (events corpus + W16 search projection that loads it during catalog build).
  *
- * Next/Turbopack does not expose `import.meta.resolve` the same way Bun does.
- * Resolve the package `manifest` JSON export via `createRequire`, then join to
- * the OpenAPI YAML beside it under `generated/openapi/` — same pattern as W07
- * `load-schema-verification-models.ts` (manifest → sibling artifact).
+ * Do not use `createRequire(...).resolve("@you-agent-factory/api/manifest")` —
+ * webpack production server chunks stub `createRequire` so `.resolve` can return
+ * a non-string module id (`TypeError: ….startsWith is not a function`). Locate
+ * the installed package via the shared ancestor `node_modules` walk
+ * (`resolveApiPackageManifestFsPath`), then join to `openapi/openapi.yaml`
+ * beside the manifest under `generated/` — same pattern as
+ * `api-openapi-turbopack.ts` / W07 schema loaders.
  *
  * Still feeds W03 `resolveApiPackageArtifact` / `loadEventsOpenApi` via the
  * injectable `resolveExport` dependency — never bypasses public-subpath
@@ -12,15 +16,17 @@
  */
 
 import { existsSync, readFileSync } from "node:fs";
-import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { parse as parseYaml } from "yaml";
+import { toApiPackageExportSpecifier } from "@/lib/references/api-package-public-exports";
+import { resolveApiPackageManifestFsPath } from "@/lib/references/load-schema-verification-models";
 import type { LoadEventsOpenApiDependencies } from "./load-events-openapi";
 import { EVENTS_OPENAPI_EXPORT } from "./stream-operations";
 
-const require = createRequire(import.meta.url);
 const TURBOPACK_PROJECT_PREFIX = "[project]/";
+
+const MANIFEST_EXPORT_SPECIFIER = toApiPackageExportSpecifier("manifest");
 
 /**
  * Path relative to the package `generated/` directory (where `manifest.json`
@@ -43,15 +49,17 @@ export function normalizeEventsOpenApiFsPath(resolvedPath: string): string {
 }
 
 /**
- * Absolute filesystem path for the packaged OpenAPI YAML, resolved through the
- * package manifest (avoids Turbopack `import.meta.resolve` gaps).
+ * Absolute filesystem path for the packaged OpenAPI YAML, resolved through
+ * the package manifest via ancestor `node_modules` lookup (webpack-safe).
  *
  * Manifest resolves to `.../generated/manifest.json`; OpenAPI sits beside it at
  * `.../generated/openapi/openapi.yaml` (do not re-prefix `generated/`).
  */
-export function resolveEventsOpenApiFsPath(): string {
+export function resolveEventsOpenApiFsPath(
+  startDir: string = process.cwd(),
+): string {
   const manifestPath = normalizeEventsOpenApiFsPath(
-    require.resolve("@you-agent-factory/api/manifest"),
+    resolveApiPackageManifestFsPath(startDir),
   );
   const generatedDir = dirname(manifestPath);
   const absolutePath = join(
@@ -85,22 +93,26 @@ export function resolveEventsOpenApiFsPath(): string {
 }
 
 /**
- * Resolve `@you-agent-factory/api/openapi` to a `file:` URL under Next/Turbopack.
+ * Resolve `@you-agent-factory/api/openapi` (or the package manifest) to a
+ * `file:` URL under Next/webpack.
  */
 export function resolveEventsOpenApiExport(
   specifier: string = EVENTS_OPENAPI_EXPORT,
 ): string {
+  if (specifier === MANIFEST_EXPORT_SPECIFIER) {
+    return pathToFileURL(resolveApiPackageManifestFsPath()).href;
+  }
   if (specifier !== EVENTS_OPENAPI_EXPORT) {
     throw new Error(
-      `Events OpenAPI Turbopack resolver only accepts "${EVENTS_OPENAPI_EXPORT}", got "${specifier}".`,
+      `Events OpenAPI Turbopack resolver only accepts "${EVENTS_OPENAPI_EXPORT}" or "${MANIFEST_EXPORT_SPECIFIER}", got "${specifier}".`,
     );
   }
   return pathToFileURL(resolveEventsOpenApiFsPath()).href;
 }
 
 /**
- * W03 load dependencies that work inside Next/Turbopack server pages.
- * Supplies both Turbopack-safe export resolution and a portable YAML parser
+ * W03 load dependencies that work inside Next/webpack server pages.
+ * Supplies both webpack-safe export resolution and a portable YAML parser
  * (`yaml` package) because `Bun.YAML` is unavailable under Next's Node server.
  */
 export function eventsOpenApiTurbopackLoadDependencies(): LoadEventsOpenApiDependencies {

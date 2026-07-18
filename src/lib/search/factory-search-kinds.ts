@@ -4,13 +4,32 @@ import { pageKindSchema } from "@/lib/content/schemas";
 export const BLOG_SEARCH_DOCUMENT_KIND = "blog" as const;
 
 /**
+ * Search document kind for reference pages and addressable reference items
+ * (API operations, schema fields, CLI commands, MCP tools, JS symbols,
+ * event variants). Matches `pageKindSchema` + W04/W09
+ * `REFERENCE_SEARCH_DOCUMENT_KIND` so page-level and item-level Orama
+ * documents share one public category.
+ */
+export const REFERENCE_SEARCH_DOCUMENT_KIND = "reference" as const;
+
+/**
  * Public search result kinds / category labels for the factory-only site.
  * Matches docs page kinds plus blog; retired Atlas kinds are not included.
+ * `reference` is first-class for both page and item documents (W16).
  */
 export const FACTORY_SEARCH_RESULT_KINDS = [
   ...pageKindSchema.options,
   BLOG_SEARCH_DOCUMENT_KIND,
 ] as const;
+
+const FACTORY_SEARCH_RESULT_KIND_LIST: readonly string[] =
+  FACTORY_SEARCH_RESULT_KINDS;
+
+if (!FACTORY_SEARCH_RESULT_KIND_LIST.includes(REFERENCE_SEARCH_DOCUMENT_KIND)) {
+  throw new Error(
+    `REFERENCE_SEARCH_DOCUMENT_KIND "${REFERENCE_SEARCH_DOCUMENT_KIND}" must remain in FACTORY_SEARCH_RESULT_KINDS.`,
+  );
+}
 
 export type FactorySearchResultKind =
   (typeof FACTORY_SEARCH_RESULT_KINDS)[number];

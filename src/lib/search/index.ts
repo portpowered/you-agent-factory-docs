@@ -1,4 +1,19 @@
 export {
+  adaptReferenceSearchShapesToSearchDocuments,
+  adaptReferenceSearchShapeToSearchDocument,
+  enrichReferenceItemAliases,
+  type ReferenceItemEnglishSearchFields,
+  referenceItemEnglishSearchFields,
+} from "./adapt-reference-search-document";
+export {
+  API_OPERATION_SEARCH_DOCUMENT_TAGS,
+  type ApiOperationSearchDocumentsResult,
+  type BuildApiOperationSearchDocumentsOptions,
+  buildApiOperationSearchDocuments,
+  loadApiOperationReferenceSearchShapes,
+  resolveApiOperationSearchAnchor,
+} from "./build-api-reference-search-documents";
+export {
   buildBaseSearchDocument,
   buildBaseSearchDocuments,
 } from "./build-base-document";
@@ -13,10 +28,52 @@ export {
   splitBlogPostMdxBody,
 } from "./build-blog-search-document";
 export {
+  type BuildCliCommandSearchDocumentsOptions,
+  type BuildJavascriptRuntimeSearchDocumentsOptions,
+  type BuildMcpToolSearchDocumentsOptions,
+  buildCliCommandSearchDocuments,
+  buildJavascriptRuntimeSearchDocuments,
+  buildMcpToolSearchDocuments,
+  CLI_COMMAND_SEARCH_DOCUMENT_TAGS,
+  type CliCommandSearchDocumentsResult,
+  JAVASCRIPT_RUNTIME_SEARCH_DOCUMENT_TAGS,
+  type JavascriptRuntimeSearchDocumentsResult,
+  loadCliCommandReferenceSearchShapes,
+  loadJavascriptRuntimeReferenceSearchShapes,
+  loadMcpToolReferenceSearchShapes,
+  MCP_TOOL_SEARCH_DOCUMENT_TAGS,
+  type McpToolSearchDocumentsResult,
+} from "./build-cli-mcp-javascript-reference-search-documents";
+export {
+  type BuildSearchDocumentsForLocaleOptions,
   buildSearchDocument,
   buildSearchDocuments,
   buildSearchDocumentsForLocale,
 } from "./build-documents";
+export {
+  buildReferenceItemSearchDocuments,
+  loadApiReferenceSearchShapes,
+  loadCliReferenceSearchShapes,
+  loadEventCorpusReferenceSearchShapes,
+  loadJavascriptReferenceSearchShapes,
+  loadMcpReferenceSearchShapes,
+  loadSchemaFamilyReferenceSearchShapes,
+  loadSettledReferenceSearchShapes,
+  resetReferenceItemSearchDocumentsCacheForTests,
+} from "./build-reference-search-documents";
+export {
+  type BuildSchemaPackageSearchDocumentsOptions,
+  buildSchemaPackageSearchDocuments,
+  buildSchemaReferenceSearchDocuments,
+  loadSchemaReferenceSearchShapes,
+  SCHEMA_REFERENCE_PAGE_PATHS,
+  SCHEMA_SEARCH_DOCUMENT_TAGS,
+  type SchemaPackageSearchDocumentsResult,
+  type SchemaReferencePagePath,
+  type SchemaReferenceSearchDocumentsResult,
+  schemaReferencePagePathForSubpath,
+} from "./build-schema-reference-search-documents";
+export { FACTORY_SEARCH_ORAMA_LANGUAGE } from "./create-search-catalog-from-documents";
 export {
   enrichSearchDocument,
   enrichSearchDocuments,
@@ -40,9 +97,16 @@ export {
   type FactorySearchResultKind,
   isFactorySearchResultKind,
   isRetiredAtlasSearchResultKind,
+  REFERENCE_SEARCH_DOCUMENT_KIND,
   RETIRED_ATLAS_SEARCH_RESULT_KINDS,
   type RetiredAtlasSearchResultKind,
 } from "./factory-search-kinds";
+export {
+  measureReferenceSearchBootstrapPayload,
+  measureSearchBootstrapPayloadBytes,
+  type ReferenceSearchBootstrapLocaleMeasurement,
+  type ReferenceSearchBootstrapMeasurement,
+} from "./measure-reference-search-bootstrap-payload";
 export type { OramaSearchRecord, OramaSnapshotDocument } from "./orama-index";
 export {
   createOramaDatabase,

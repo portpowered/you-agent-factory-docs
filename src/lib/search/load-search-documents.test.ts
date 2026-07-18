@@ -59,6 +59,8 @@ describe("loadSearchDocumentsByLocale", () => {
       },
       loadPagesFn: async (locale) => [syntheticPage(locale)],
       loadBlogPostsFn: async () => [] as BlogSearchPostSource[],
+      // Skip OpenAPI inventory load for this shared-path unit proof.
+      referenceItemDocuments: [],
     });
 
     expect(registryLoads).toBe(1);

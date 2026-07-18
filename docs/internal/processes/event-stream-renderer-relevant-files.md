@@ -53,7 +53,7 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/lib/references/events/project-events-asyncapi.ts` | Optional source-hashed AsyncAPI projection (never a second authored corpus) |
 | `src/lib/references/events/event-schema-targets.ts` | W04 `SchemaAddress` / anchor targets for payload roots |
 | `src/lib/references/events/resolve-event-corpus.ts` | Orchestrate load → select → inventory → optional projection → W04 targets |
-| `src/lib/references/events/events-openapi-turbopack.ts` | Turbopack-safe `resolveExport` for Next server pages (manifest → `generated/openapi/openapi.yaml` sibling join) |
+| `src/lib/references/events/events-openapi-turbopack.ts` | Webpack-/Turbopack-safe `resolveExport` for Next server pages (ancestor `node_modules` walk → `generated/openapi/openapi.yaml`; do not use `createRequire`) |
 | `src/lib/references/events/events-openapi-resolution.test.ts` | W03 load, selection, inventory drift, unresolved refs, AsyncAPI projection, W04 anchors |
 
 ## Key host files (story 003 — stream roles / canonicality)

@@ -71,10 +71,10 @@ describe("search result meta", () => {
       }),
     );
     expect(meta?.description.length).toBeGreaterThan(0);
-    expect(meta?.topology.primaryClassificationId).toBe(
+    expect(meta?.topology?.primaryClassificationId).toBe(
       "classification.module.attention.grouped-query",
     );
-    expect(meta?.topology.ancestorClassificationIds).toEqual([
+    expect(meta?.topology?.ancestorClassificationIds).toEqual([
       "classification.module.attention",
       "classification.module",
     ]);

@@ -259,7 +259,9 @@ describe("buildSearchDocumentsForLocale", () => {
       },
     });
 
-    const documents = buildSearchDocumentsForLocale("en", indexes, [page]);
+    const documents = buildSearchDocumentsForLocale("en", indexes, [page], [], {
+      referenceItemDocuments: [],
+    });
 
     expect(documents).toHaveLength(1);
     expect(documents[0]?.facets).not.toHaveProperty("optimizes");
