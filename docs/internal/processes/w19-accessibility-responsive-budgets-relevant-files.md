@@ -63,13 +63,34 @@ gates stay documented in
   1. `make build`
   2. `make budget` (or call `evaluateReferencePayloadBudgets()`)
 
+## Reference overflow matrix (story 003)
+
+* `listReferenceOverflowMatrixCases()` — 6 representative routes × 5 layouts
+  (wide / laptop / tablet / mobile / zoomed).
+* Always-on proofs: `src/tests/a11y/reference-responsive-overflow.a11y.test.tsx`
+  (matrix enumeration + intentional scroller vs page-level overflow fixtures via
+  `collectReferenceSurfaceOverflowProbe`).
+* Opt-in served matrix:
+  `src/lib/verify/a11y-reference-overflow-matrix-page.test.ts` — Playwright via
+  `openReferenceSurfaceBrowserSession` + `evaluateResponsiveOverflowInBrowser`
+  with `referenceSurfaceOverflowEvaluateArgs()`. Same gate as critical overflow:
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` + fresh `.next`. For local browser
+  verify after `make build` (static `out/`), start
+  `runStaticExportServerLifecycle` and set `VERIFY_BASE_URL` to that loopback
+  base (do not assume `next start` works for `output: "export"`).
+* Intentional horizontal scrollers remain the shared contract selectors
+  (`pre`, `[data-rich-content-scroll="code"]`, `.overflow-x-auto`, …); page-level
+  `scrollWidth` overflow beyond `PAGE_OVERFLOW_TOLERANCE_PX` fails the gate.
+* Always-on overflow fixtures that stub `clientWidth`/`scrollWidth` must clear
+  those overrides in `afterEach` so later happy-dom a11y tests stay unpolluted.
+
 ## Focused gate
 
 * Reproduce with `make a11y` (or `bun run test:a11y`).
-* Later W19 stories (overflow matrix, keyboard, axe, hash-focus, copy live
-  regions, reduced motion, long-token overflow, no-JS HTML)
-  must enumerate `listReferenceOverflowMatrixCases()` / route ids from the
-  contract — do not hard-code widths or reference paths in story tests.
+* Later W19 stories (keyboard, axe, hash-focus, copy live regions, reduced
+  motion, long-token overflow, no-JS HTML) must enumerate
+  `listReferenceOverflowMatrixCases()` / route ids from the contract — do not
+  hard-code widths or reference paths in story tests.
 * Do not own W20 static-export/sitemap/canonical/link/search convergence here.
 * Do not reopen W00–W18 feature ownership except narrow gate-fix UI edits.
 

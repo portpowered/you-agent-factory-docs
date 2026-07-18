@@ -259,6 +259,11 @@ surfaces (home, browse, search, docs/harness-support, blog).
 * W19 later stories should assert against `REFERENCE_SURFACE_ROUTES` /
   `REFERENCE_SURFACE_VIEWPORTS` / `listReferenceOverflowMatrixCases()` rather
   than hard-coding reference paths or the zoomed width.
+* W19 story 003 overflow matrix: always-on
+  `src/tests/a11y/reference-responsive-overflow.a11y.test.tsx` + opt-in served
+  `src/lib/verify/a11y-reference-overflow-matrix-page.test.ts` (wired into
+  `test:a11y`). See
+  [w19-accessibility-responsive-budgets-relevant-files](./w19-accessibility-responsive-budgets-relevant-files.md).
 
 ## Existing component a11y smokes
 
