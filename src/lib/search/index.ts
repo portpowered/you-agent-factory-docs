@@ -3,6 +3,14 @@ export {
   adaptReferenceSearchShapeToSearchDocument,
 } from "./adapt-reference-search-document";
 export {
+  API_OPERATION_SEARCH_DOCUMENT_TAGS,
+  type ApiOperationSearchDocumentsResult,
+  type BuildApiOperationSearchDocumentsOptions,
+  buildApiOperationSearchDocuments,
+  loadApiOperationReferenceSearchShapes,
+  resolveApiOperationSearchAnchor,
+} from "./build-api-reference-search-documents";
+export {
   buildBaseSearchDocument,
   buildBaseSearchDocuments,
 } from "./build-base-document";
@@ -24,10 +32,24 @@ export {
 } from "./build-documents";
 export {
   buildReferenceItemSearchDocuments,
+  loadApiReferenceSearchShapes,
   loadEventCorpusReferenceSearchShapes,
+  loadSchemaFamilyReferenceSearchShapes,
   loadSettledReferenceSearchShapes,
   resetReferenceItemSearchDocumentsCacheForTests,
 } from "./build-reference-search-documents";
+export {
+  type BuildSchemaPackageSearchDocumentsOptions,
+  buildSchemaPackageSearchDocuments,
+  buildSchemaReferenceSearchDocuments,
+  loadSchemaReferenceSearchShapes,
+  SCHEMA_REFERENCE_PAGE_PATHS,
+  SCHEMA_SEARCH_DOCUMENT_TAGS,
+  type SchemaPackageSearchDocumentsResult,
+  type SchemaReferencePagePath,
+  type SchemaReferenceSearchDocumentsResult,
+  schemaReferencePagePathForSubpath,
+} from "./build-schema-reference-search-documents";
 export {
   enrichSearchDocument,
   enrichSearchDocuments,

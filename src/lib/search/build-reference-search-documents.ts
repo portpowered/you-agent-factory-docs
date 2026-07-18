@@ -2,8 +2,9 @@
  * Build live Orama `SearchDocument` records from settled reference inventories
  * via W04/W09 search shapes (W16).
  *
- * Story 002 wires the adapter + locale build path. Later W16 stories add
- * API/schema/CLI/MCP/JavaScript family loaders into `loadSettledReferenceSearchShapes`.
+ * Story 002 wired the adapter + locale build path with the events corpus.
+ * Story 003 adds API operation and schema definition/field loaders.
+ * Later W16 stories add CLI/MCP/JavaScript family loaders.
  */
 
 import {
@@ -16,6 +17,14 @@ import {
 } from "@/lib/references/events";
 import type { ReferenceSearchDocumentShape } from "@/lib/references/reference-search-projection";
 import { adaptReferenceSearchShapesToSearchDocuments } from "./adapt-reference-search-document";
+import {
+  type ApiOperationSearchDocumentsResult,
+  loadApiOperationReferenceSearchShapes,
+} from "./build-api-reference-search-documents";
+import {
+  loadSchemaReferenceSearchShapes,
+  type SchemaReferenceSearchDocumentsResult,
+} from "./build-schema-reference-search-documents";
 import type { SearchDocument } from "./types";
 
 export type BuildReferenceItemSearchDocumentsOptions = {
@@ -54,11 +63,39 @@ export function loadEventCorpusReferenceSearchShapes(): {
 }
 
 /**
+ * Load published OpenAPI operation search shapes with registry anchors on
+ * `/docs/references/api`.
+ */
+export function loadApiReferenceSearchShapes(): {
+  shapes: ReferenceSearchDocumentShape[];
+  corpus: ApiOperationSearchDocumentsResult;
+} {
+  const corpus = loadApiOperationReferenceSearchShapes();
+  return { shapes: corpus.documents, corpus };
+}
+
+/**
+ * Load settled schema definition/field search shapes with per-page anchors on
+ * factory-schema / you-config-schema / mock-workers-schema.
+ */
+export function loadSchemaFamilyReferenceSearchShapes(): {
+  shapes: ReferenceSearchDocumentShape[];
+  corpus: SchemaReferenceSearchDocumentsResult;
+} {
+  const corpus = loadSchemaReferenceSearchShapes();
+  return { shapes: corpus.documents, corpus };
+}
+
+/**
  * Collect settled reference search shapes for Orama adaptation.
- * Currently includes the events corpus; other families land in later stories.
+ * Includes events, API operations, and schema definitions/fields.
  */
 export function loadSettledReferenceSearchShapes(): ReferenceSearchDocumentShape[] {
-  return loadEventCorpusReferenceSearchShapes().shapes;
+  return [
+    ...loadEventCorpusReferenceSearchShapes().shapes,
+    ...loadApiReferenceSearchShapes().shapes,
+    ...loadSchemaFamilyReferenceSearchShapes().shapes,
+  ];
 }
 
 /**

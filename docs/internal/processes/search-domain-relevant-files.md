@@ -15,8 +15,17 @@ Use these files when changing search document construction, Orama indexing, or
   Pure adapter from W04/W09 `ReferenceSearchDocumentShape` → live Orama
   `SearchDocument` (kind `reference`, fragment URL required, empty topology).
 * `src/lib/search/build-reference-search-documents.ts`
-  Loads settled inventory shapes (events corpus first; other families in later
-  W16 stories), adapts them, and caches for shared locale builds.
+  Loads settled inventory shapes (events corpus, API operations, schema
+  definitions/fields; CLI/MCP/JS in later W16 stories), adapts them, and
+  caches for shared locale builds.
+* `src/lib/search/build-api-reference-search-documents.ts`
+  W16 story 003: projects packaged OpenAPI operations into reference search
+  shapes deep-linking to `/docs/references/api#<registry-anchor>`.
+* `src/lib/search/build-schema-reference-search-documents.ts`
+  W16 story 003: projects settled factory / you-config / mock-workers schema
+  definitions and addressable field paths onto per-schema owning pages
+  (`factory-schema`, `you-config-schema`, `mock-workers-schema`) — never the
+  placeholder `/docs/references/schema` path.
 * `src/lib/content/factory-search-categories.test.tsx`
   Required `bun run test` proof that pageKind labels, live search meta, and
   representative `harness` / `ralph` queries stay inside the factory category
@@ -31,6 +40,11 @@ Use these files when changing search document construction, Orama indexing, or
   into live Orama documents with registry-anchor fragment URLs, join
   `buildSearchDocumentsForLocale` for every shipped locale, and remain
   findable via representative Orama queries.
+* `src/lib/content/factory-search-api-schema-indexing.test.ts`
+  W16 story 003 required-suite proof that API operations and schema
+  definition/field items index as Orama documents with correct owning-page
+  deep links (`/docs/references/api#…`, per-schema pages) and that
+  representative `submitWorkBySessionId` / `workers` queries return item hits.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
