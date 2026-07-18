@@ -17,6 +17,7 @@ import {
   parseLocalDocsPageRef,
 } from "@/lib/content/local-docs-page";
 import { isDocsPageShippedForLocale } from "@/lib/content/pages";
+import { resolveFamilyDocsPageFooterOptions } from "@/lib/content/resolve-family-docs-footer";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
@@ -85,6 +86,10 @@ async function renderLocalDocsPage(
 
   const loadedPage = await loadLocalDocsPage(localRef, locale);
   const uiMessages = await loadUiMessages(locale);
+  const docsSlug = slug?.join("/") ?? "";
+  const familyFooter = docsSlug
+    ? await resolveFamilyDocsPageFooterOptions(docsSlug, locale)
+    : undefined;
   const description =
     localRef.section === "glossary" ? (
       <DocsAutoLinkedDescription text={loadedPage.messages.description} />
@@ -95,6 +100,7 @@ async function renderLocalDocsPage(
   return (
     <DocsPage
       breadcrumb={{ enabled: false }}
+      footer={familyFooter}
       toc={loadedPage.toc}
       data-content-column-surface={DOCS_PAGE_CONTENT_COLUMN_SURFACE}
     >
@@ -154,10 +160,14 @@ export async function renderDocsSlugPage(
     notFound();
   }
   const uiMessages = await loadUiMessages(locale);
+  const familyFooter = docsSlug
+    ? await resolveFamilyDocsPageFooterOptions(docsSlug, locale)
+    : undefined;
 
   return (
     <DocsPage
       breadcrumb={{ enabled: false }}
+      footer={familyFooter}
       toc={docsPageData.toc}
       full={docsPageData.full}
       data-content-column-surface={DOCS_PAGE_CONTENT_COLUMN_SURFACE}

@@ -40,6 +40,7 @@ import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
 import { listPublishedBlogPosts } from "@/lib/content/blog-post-list";
 import { loadPublishedGlossaryEntries } from "@/lib/content/glossary";
 import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
+import { resolveFamilyDocsPageFooterOptions } from "@/lib/content/resolve-family-docs-footer";
 import {
   loadTagLandingContext,
   loadTagResourceGroups,
@@ -339,9 +340,13 @@ export async function renderReferencesFamilyIndexPage(
   const title = index.messages.title || uiMessages.referencesIndex.title;
   const description =
     index.messages.description || uiMessages.referencesIndex.description;
+  const familyFooter = await resolveFamilyDocsPageFooterOptions(
+    "references",
+    locale,
+  );
 
   return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
+    <DocsPage breadcrumb={{ enabled: false }} footer={familyFooter}>
       <DocsTitle>{title}</DocsTitle>
       <DocsDescription>{description}</DocsDescription>
       <DocsBody>

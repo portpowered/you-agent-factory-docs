@@ -5,6 +5,7 @@ import {
   DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { resolveFamilyDocsPageFooterOptions } from "@/lib/content/resolve-family-docs-footer";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { loadWorkstationsFamilyIndexBundle } from "./load-workstations-family-index";
 import { WorkstationsFamilyIndexContent } from "./WorkstationsFamilyIndexContent";
@@ -17,9 +18,13 @@ export async function renderWorkstationsFamilyIndexPage(
   locale: SiteLocale = defaultLocale,
 ) {
   const bundle = await loadWorkstationsFamilyIndexBundle(locale);
+  const familyFooter = await resolveFamilyDocsPageFooterOptions(
+    "workstations",
+    locale,
+  );
 
   return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
+    <DocsPage breadcrumb={{ enabled: false }} footer={familyFooter}>
       <DocsPageProviders
         messages={bundle.messages}
         assets={bundle.assets}

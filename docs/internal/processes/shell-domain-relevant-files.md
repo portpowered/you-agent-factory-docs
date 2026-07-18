@@ -288,9 +288,19 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   schema-definition inventory paths in the global explorer).
 * `src/lib/content/factory-prev-next-related.ts`
   Factory previous/next and related-link contract: footer neighbor resolution
-  mirroring Fumadocs `useFooterItems`, plus fail-closed asserts used by
+  mirroring Fumadocs `useFooterItems`, W15 family-scoped linearization
+  (`collectFamilyDocsFooterPageItems` / `resolveFamilyScopedDocsFooterNeighbors`)
+  so family pages omit directions at family edges instead of crossing into
+  other collections, plus fail-closed asserts used by
   `resolveRelatedRegistryDocs` / `RelatedDocs` / `DerivedRelatedDocs` so
   navigation never advertises deleted Atlas destinations.
+* `src/lib/content/resolve-family-docs-footer.ts`
+  Server helper that loads locale UI messages + pruned page tree and returns
+  DocsPage `footer` options for W15 family index/nested slugs.
+* `src/lib/navigation/w15-family-prev-next.test.ts`
+  W15 story 005 proof: index + nested pages keep previous/next inside each
+  family topology; edges omit cleanly; localized trees keep locale-prefixed
+  family destinations.
 * `src/lib/content/factory-prev-next-related.test.tsx`
   Required-suite proof that previous/next neighbors stay on published factory
   docs pages (or omit a direction at the ends), related-registry docs render
