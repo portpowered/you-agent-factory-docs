@@ -118,11 +118,13 @@ UTC after W11 schema reference pages merged with W13 workers + W11 events
 measured ~161.68 MiB total and ~5.44 MiB search bootstrap on CI; raised again
 2026-07-18 UTC after the W14 Workstation authored-pages lane measured
 ~161.99 MiB total and ~5.53 MiB search bootstrap on CI (Next static JS ~2.78 MiB
-remained under its limit):
+remained under its limit); raised again 2026-07-18 UTC after merging W14 with
+main (W11 schema + events + W13 workers) measured ~184.93 MiB total and
+~5.82 MiB search bootstrap on CI:
 
-- `maxTotalOutBytes`: 170_000_000
+- `maxTotalOutBytes`: 195_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 5_800_000
+- `maxSearchBootstrapBytes`: 6_100_000
 
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
