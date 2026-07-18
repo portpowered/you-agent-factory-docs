@@ -1,0 +1,24 @@
+{
+  "id": "documentation.workstations-cron",
+  "slug": "workstations-cron",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "cron behavior",
+    "CRON",
+    "WorkstationKind CRON",
+    "docs workstations cron"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workstations-family",
+    "documentation.workstations",
+    "documentation.configuration",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T14:30:00.000Z",
+  "updatedAt": "2026-07-18T14:30:00.000Z"
+}
