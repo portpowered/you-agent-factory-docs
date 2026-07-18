@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-w20-contract-projection test-w20-content-registry test-w20-link-anchor test-w20-search-functional test-w20-a11y-responsive test-w20-static-export test-w20-pages-prefixed-export test-w20-budget test-w20-client-chunk-exclusion test-w20-ownership-migration test-w20-final-evidence test-website-static-search test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -40,6 +40,75 @@ test-verify-contract:
 
 test-build-contract:
 	bun run test:build-contract
+
+# W20 focused contract + projection convergence (package acquisition +
+# normalized reference projections). Reproduce with: make test-w20-contract-projection
+test-w20-contract-projection:
+	bun run test:w20-contract-projection
+
+# W20 content + registry validation convergence (validate-data,
+# content-runtime completeness, published Factory-reference route presence).
+# Reproduce with: make test-w20-content-registry
+test-w20-content-registry:
+	bun run test:w20-content-registry
+
+# W20 link + anchor validation convergence (make linkcheck + reference
+# operation / schema / CLI / MCP / JS / event anchor suites).
+# Reproduce with: make test-w20-link-anchor
+test-w20-link-anchor:
+	bun run test:w20-link-anchor
+
+# Static-search bootstrap + export consumer path proofs (search domain).
+# Also used as the W20 story 004 command gate.
+test-website-static-search:
+	bun run test:website:static-search
+
+# W20 search functional convergence (static-search bootstrap + W16 item
+# deep-link / representative query suites).
+# Reproduce with: make test-w20-search-functional
+test-w20-search-functional:
+	bun run test:w20-search-functional
+
+# W20 a11y / responsive / focused-payload-budget convergence (make a11y +
+# W19 representative surfaces + narrow keyboard browser-path). Total-site
+# budget remains story 008. Reproduce with: make test-w20-a11y-responsive
+test-w20-a11y-responsive:
+	bun run test:w20-a11y-responsive
+
+# W20 full static export convergence (make build + FR-33 corpus / FR-34
+# no-live-host proofs against out/). Reproduce with: make test-w20-static-export
+test-w20-static-export:
+	bun run test:w20-static-export
+
+# W20 Pages-prefixed export + deployed-artifact guard convergence
+# (GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build then
+# make guard-pages-deployed-artifact on the same out/). Reproduce with:
+# make test-w20-pages-prefixed-export
+test-w20-pages-prefixed-export:
+	bun run test:w20-pages-prefixed-export
+
+# W20 total-site + focused reference payload budget convergence
+# (make budget against trusted out/; run make build first when out/ is
+# missing). Reproduce with: make test-w20-budget
+test-w20-budget:
+	bun run test:w20-budget
+
+# W20 package acquisition / resolver client-chunk exclusion convergence
+# (browser-safe helpers stay clean; server-only resolver modules fail closed).
+# Reproduce with: make test-w20-client-chunk-exclusion
+test-w20-client-chunk-exclusion:
+	bun run test:w20-client-chunk-exclusion
+
+# W20 plan §9/§11 ownership map + W18 migration ledger closure convergence.
+# Reproduce with: make test-w20-ownership-migration
+test-w20-ownership-migration:
+	bun run test:w20-ownership-migration
+
+# W20 final evidence + upstream Worker/Workstation discriminated-schema
+# follow-ups (make check + exported-surface browser verify). Reproduce with:
+# make test-w20-final-evidence
+test-w20-final-evidence:
+	bun run test:w20-final-evidence
 
 test-system:
 	bun run test:system
