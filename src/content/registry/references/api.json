@@ -6,7 +6,7 @@
   "defaultSummaryKey": "description",
   "aliases": ["API", "OpenAPI", "HTTP API", "HTTP/OpenAPI reference"],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": ["documentation.factories-configuration"],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-18T00:00:00.000Z",

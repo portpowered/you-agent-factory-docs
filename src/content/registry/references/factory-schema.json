@@ -10,7 +10,7 @@
     "You Factory configuration schema"
   ],
   "tags": [],
-  "relatedIds": [],
+  "relatedIds": ["documentation.factories-configuration"],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-18T13:00:00.000Z",

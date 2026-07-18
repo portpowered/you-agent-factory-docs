@@ -301,6 +301,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   W15 story 005 proof: index + nested pages keep previous/next inside each
   family topology; edges omit cleanly; localized trees keep locale-prefixed
   family destinations.
+* `src/lib/content/w15-family-related-overrides.ts`
+  W15 story 006 high-value cross-family related-doc override pairs
+  (references ↔ factories, workers ↔ workstations, schema ↔ factories),
+  merged into curated related derivation via
+  `listCuratedRelatedTargetIds` / `deriveCuratedRelatedItems`.
+* `src/lib/navigation/w15-family-related-docs.test.tsx`
+  W15 story 006 proof: documentation/reference records participate in
+  related-doc lookup, override pairs emit published family hrefs, RelatedDocs
+  renders representative cross-family links, and empty/missing targets keep
+  clear fallbacks without broken hrefs.
 * `src/lib/content/factory-prev-next-related.test.tsx`
   Required-suite proof that previous/next neighbors stay on published factory
   docs pages (or omit a direction at the ends), related-registry docs render

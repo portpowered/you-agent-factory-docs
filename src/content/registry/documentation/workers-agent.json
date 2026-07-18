@@ -18,7 +18,8 @@
     "documentation.resources",
     "documentation.inference-workers",
     "concept.tool-calling",
-    "concept.tokens"
+    "concept.tokens",
+    "documentation.workstations-agent-run"
   ],
   "citationIds": [],
   "status": "published",
