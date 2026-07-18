@@ -1,0 +1,227 @@
+/**
+ * W18 temporary migration ledger and static compatibility mechanism contract.
+ *
+ * Pure data + policy for `/docs/documentation/*` → family-route moves from
+ * plan §10 / W00 baseline inventory. No filesystem or Next redirect IO —
+ * later stories ship compatibility HTML and SEO/sitemap wiring against this
+ * contract.
+ */
+
+/** Open until story 005 closes every row with proven compatibility outcomes. */
+export type DocumentationRouteMigrationStatus = "open" | "closed";
+
+export type DocumentationRouteMigrationRow = {
+  /** Published inbound URL under `/docs/documentation/*`. */
+  oldRoute: `/${string}`;
+  /** Canonical family destination after migration. */
+  targetRoute: `/${string}`;
+  status: DocumentationRouteMigrationStatus;
+};
+
+/**
+ * Forbidden host/runtime redirect assumptions. Static export cannot rely on
+ * these; W18 must use compatibility HTML + Metadata canonical + sitemap
+ * exclusion instead.
+ */
+export const DOCUMENTATION_ROUTE_MIGRATION_FORBIDDEN_REDIRECT_MECHANISMS = [
+  "next.config-redirects",
+  "host-_redirects",
+  "runtime-server-redirects",
+] as const;
+
+export type DocumentationRouteMigrationForbiddenRedirectMechanism =
+  (typeof DOCUMENTATION_ROUTE_MIGRATION_FORBIDDEN_REDIRECT_MECHANISMS)[number];
+
+/**
+ * Static-export-safe compatibility mechanism locked for every §10 row.
+ *
+ * Each old route must export compatibility HTML that declares the new family
+ * canonical. Silent omission of a published §10 old URL from static params /
+ * export is forbidden.
+ */
+export const DOCUMENTATION_ROUTE_STATIC_COMPATIBILITY_MECHANISM = {
+  id: "static-compatibility-document-with-metadata-canonical-and-sitemap-exclusion",
+  /**
+   * Primary reader outcome: static HTML at the old path that identifies and
+   * links to the target family route (no live factory host required).
+   */
+  primaryOutcome: "static-compatibility-document",
+  /**
+   * SEO pairing: Metadata `alternates.canonical` (and aligned OG url) name the
+   * new family path only; sitemap excludes the old path while still serving
+   * the compatibility HTML.
+   */
+  seoPairing: "metadata-canonical-and-sitemap-exclusion",
+  requiresExplicitCompatibilityHtml: true,
+  requiresNewFamilyCanonicalDeclaration: true,
+  forbidsSilentRemovalOfPublishedOldRoute: true,
+  forbiddenRedirectMechanisms:
+    DOCUMENTATION_ROUTE_MIGRATION_FORBIDDEN_REDIRECT_MECHANISMS,
+} as const;
+
+export type DocumentationRouteStaticCompatibilityMechanism =
+  typeof DOCUMENTATION_ROUTE_STATIC_COMPATIBILITY_MECHANISM;
+
+/**
+ * Temporary ledger for every plan §10 /docs/documentation/* → family mapping.
+ * Rows start `open`; close only when compatibility, canonical, link, and
+ * sitemap outcomes are proven (story 005).
+ */
+export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMigrationRow[] =
+  [
+    {
+      oldRoute: "/docs/documentation/api-doc",
+      targetRoute: "/docs/references/api",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/cli-command-index",
+      targetRoute: "/docs/references/cli",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/configuration",
+      targetRoute: "/docs/factories/configuration",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/global-configuration-factories",
+      targetRoute: "/docs/factories/global-configuration",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/packaged-factories",
+      targetRoute: "/docs/factories/packaged",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/dynamic-workflows",
+      targetRoute: "/docs/factories/dynamic-workflows",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/factory-session",
+      targetRoute: "/docs/factories/sessions",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/workers",
+      targetRoute: "/docs/workers",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/agent-workers",
+      targetRoute: "/docs/workers/agent",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/inference-workers",
+      targetRoute: "/docs/workers/inference",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/script-workers",
+      targetRoute: "/docs/workers/script",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/poller-workers",
+      targetRoute: "/docs/workers/poller",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/mock-workers",
+      targetRoute: "/docs/workers/mock",
+      status: "open",
+    },
+    {
+      oldRoute: "/docs/documentation/workstations",
+      targetRoute: "/docs/workstations",
+      status: "open",
+    },
+  ];
+
+export type DocumentationRouteMigrationLedger =
+  typeof DOCUMENTATION_ROUTE_MIGRATION_LEDGER;
+
+export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER_SIZE =
+  DOCUMENTATION_ROUTE_MIGRATION_LEDGER.length;
+
+/** Expected §10 inventory size from plan / W00 baseline. */
+export const DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT = 14;
+
+export function listDocumentationRouteMigrationRows(): readonly DocumentationRouteMigrationRow[] {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER;
+}
+
+export function listOpenDocumentationRouteMigrationRows(): DocumentationRouteMigrationRow[] {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER.filter(
+    (row) => row.status === "open",
+  );
+}
+
+export function listClosedDocumentationRouteMigrationRows(): DocumentationRouteMigrationRow[] {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER.filter(
+    (row) => row.status === "closed",
+  );
+}
+
+export function isDocumentationRouteMigrationLedgerFullyClosed(): boolean {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER.every(
+    (row) => row.status === "closed",
+  );
+}
+
+export function findDocumentationRouteMigrationByOldRoute(
+  oldRoute: string,
+): DocumentationRouteMigrationRow | undefined {
+  return DOCUMENTATION_ROUTE_MIGRATION_LEDGER.find(
+    (row) => row.oldRoute === oldRoute,
+  );
+}
+
+export function resolveDocumentationRouteMigrationTarget(
+  oldRoute: string,
+): string | undefined {
+  return findDocumentationRouteMigrationByOldRoute(oldRoute)?.targetRoute;
+}
+
+/** Structural shape accepted by the export-safety predicate (tests + callers). */
+export type DocumentationRouteStaticCompatibilityMechanismLike = {
+  primaryOutcome: string;
+  seoPairing: string;
+  requiresExplicitCompatibilityHtml: boolean;
+  requiresNewFamilyCanonicalDeclaration: boolean;
+  forbidsSilentRemovalOfPublishedOldRoute: boolean;
+  forbiddenRedirectMechanisms: readonly string[];
+};
+
+/**
+ * True when the locked mechanism is static-export-safe: requires compatibility
+ * HTML + new canonical, forbids silent removal, and rejects redirect hosts.
+ */
+export function isDocumentationRouteStaticCompatibilityMechanismExportSafe(
+  mechanism: DocumentationRouteStaticCompatibilityMechanismLike = DOCUMENTATION_ROUTE_STATIC_COMPATIBILITY_MECHANISM,
+): boolean {
+  if (!mechanism.requiresExplicitCompatibilityHtml) {
+    return false;
+  }
+  if (!mechanism.requiresNewFamilyCanonicalDeclaration) {
+    return false;
+  }
+  if (!mechanism.forbidsSilentRemovalOfPublishedOldRoute) {
+    return false;
+  }
+  if (mechanism.primaryOutcome !== "static-compatibility-document") {
+    return false;
+  }
+  if (mechanism.seoPairing !== "metadata-canonical-and-sitemap-exclusion") {
+    return false;
+  }
+  for (const forbidden of DOCUMENTATION_ROUTE_MIGRATION_FORBIDDEN_REDIRECT_MECHANISMS) {
+    if (!mechanism.forbiddenRedirectMechanisms.includes(forbidden)) {
+      return false;
+    }
+  }
+  return true;
+}

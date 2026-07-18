@@ -32,6 +32,8 @@ social assets, sitemap, robots).
 | `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
 | `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract |
+| `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects) |
+| `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
@@ -111,8 +113,30 @@ social assets, sitemap, robots).
     `src/lib/build/build-contract-required-test-paths.ts` so they stay in
     `make test-build-contract` after merges with required-gates work.
 
+## W18 documentation → family route migration
+
+Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
+
+1. **Ledger** — `DOCUMENTATION_ROUTE_MIGRATION_LEDGER` enumerates every plan
+   §10 `/docs/documentation/*` → family mapping with `open`/`closed` status
+   (fourteen rows from W00 baseline / plan inventory).
+2. **Mechanism** — `DOCUMENTATION_ROUTE_STATIC_COMPATIBILITY_MECHANISM` locks a
+   static-export-safe pattern: static compatibility HTML at the old path that
+   declares the new family canonical, paired with Metadata canonical + sitemap
+   exclusion of the old path. Forbidden: `next.config` redirects, host
+   `_redirects`, runtime server redirects. Silent removal of a published §10
+   old URL is forbidden — every old route needs one explicit compatibility
+   outcome.
+3. Later W18 stories ship the compatibility documents, retarget links, and
+   close ledger rows; do not invent per-route redirect helpers.
+
+See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
+(Compatibility and redirect mechanisms) and
+`docs/temp/references/baseline.md` (Plan migration inventory).
+
 ## Sibling lanes
 
 Leave search-nav convergence, required-gate inventory, a11y, and ops runbooks
 to sibling B09c lanes. This lane owns SEO/discovery metadata and export
-validation only.
+validation only. W18 consumes that SEO pairing for moved documentation routes
+without redesigning four-family nav (W15) or owning W16/W17.
