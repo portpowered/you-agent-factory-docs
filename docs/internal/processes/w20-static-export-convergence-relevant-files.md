@@ -298,6 +298,33 @@ Worktree note: do not silently raise total-site ceilings without evidence-backed
 inventory growth. Focused W19 ceilings stay under story 008 ownership for
 close-out; story 005 only reconfirmed they remain enforced via `make a11y`.
 
+## Story 009 — package resolver / client-chunk exclusion
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-client-chunk-exclusion-convergence.ts` | Catalog of W03 browser-bundle exclusion suites, browser-safe / server-only module inventories, and §17 / FR-11 gate families |
+| `src/lib/verify/w20-client-chunk-exclusion-convergence.test.ts` | Catalog completeness / file-existence / family-coverage / inventory-lock proofs |
+| `scripts/run-w20-client-chunk-exclusion-tests.ts` | Runner: catalog → focused exclusion suites |
+| `package.json` → `test:w20-client-chunk-exclusion` | Maintainer / automation entry |
+| `Makefile` → `test-w20-client-chunk-exclusion` | Shared Makefile contract |
+
+### Focused suites (W03 acquisition browser exclusion)
+
+* `src/lib/references/api-package-acquisition-browser-exclusion.test.ts` — leak-marker evaluation, browser-safe helper chunks, server-only resolver fail-closed, package-internal illegal-target rejection
+* `src/lib/references/api-package-acquisition-browser-exclusion.ts` — pure module inventories + leak evaluation helpers
+* `src/lib/references/api-package-acquisition-browser-exclusion-bundling.ts` — Bun `target: "browser"` bundler used by exclusion proofs (build/server-only)
+
+### Reproduce
+
+```bash
+make test-w20-client-chunk-exclusion
+# or: bun run test:w20-client-chunk-exclusion
+```
+
+Worktree note: restore the established W03 exclusion boundary when tip drift
+introduces a leak — do not patch `node_modules` or reopen package ownership.
+Upstream lane doc: [package-artifact-resolver-relevant-files](./package-artifact-resolver-relevant-files.md).
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,

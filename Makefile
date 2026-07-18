@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-w20-contract-projection test-w20-content-registry test-w20-link-anchor test-w20-search-functional test-w20-a11y-responsive test-w20-static-export test-w20-pages-prefixed-export test-w20-budget test-website-static-search test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-w20-contract-projection test-w20-content-registry test-w20-link-anchor test-w20-search-functional test-w20-a11y-responsive test-w20-static-export test-w20-pages-prefixed-export test-w20-budget test-w20-client-chunk-exclusion test-website-static-search test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -92,6 +92,12 @@ test-w20-pages-prefixed-export:
 # missing). Reproduce with: make test-w20-budget
 test-w20-budget:
 	bun run test:w20-budget
+
+# W20 package acquisition / resolver client-chunk exclusion convergence
+# (browser-safe helpers stay clean; server-only resolver modules fail closed).
+# Reproduce with: make test-w20-client-chunk-exclusion
+test-w20-client-chunk-exclusion:
+	bun run test:w20-client-chunk-exclusion
 
 test-system:
 	bun run test:system
