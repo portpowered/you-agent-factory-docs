@@ -63,11 +63,16 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * ceiling was 220 MiB total / 6.50 MiB search. Raised again on 2026-07-18 UTC
  * after the Next-safe OpenAPI loader fix on that head — CI measured
  * ~220.21 MiB total while JS (~2.87 MiB) and search (~6.16 MiB) stayed under
- * limits; ceiling is now 225 MiB total / 6.50 MiB search. Keep modest headroom
- * for ordinary content growth without silent skip/pass.
+ * limits; ceiling was 225 MiB total / 6.50 MiB search. Raised again on
+ * 2026-07-18 UTC after the W17 localization / contract-language lane (reference
+ * chrome catalogs + ja/zh-CN/vi family-index messages + language-boundary
+ * helpers) measured ~229.44 MiB total on CI while Next static JS (~2.86 MiB)
+ * and search bootstrap (~6.16 MiB) remained under their limits; ceiling is now
+ * 235 MiB total / 6.50 MiB search. Keep modest headroom for ordinary content
+ * growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 225_000_000,
+  maxTotalOutBytes: 235_000_000,
   maxNextStaticJsBytes: 3_500_000,
   maxSearchBootstrapBytes: 6_500_000,
 } as const;
