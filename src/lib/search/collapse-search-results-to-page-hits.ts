@@ -1,3 +1,14 @@
+/**
+ * Collapse fragment, heading, and duplicate page hits to one canonical row per
+ * page URL — except reference item deep links (`/docs/references/…#…`), which
+ * keep their registry-anchor URLs so item hits are not crowded out by the
+ * owning page.
+ *
+ * Item identity may come from a registered document in `documentsByUrl` or,
+ * when layout meta omits item rows for payload size (W16), from the URL shape
+ * alone.
+ */
+
 import type { SortedResult } from "fumadocs-core/search";
 import { REFERENCE_SEARCH_DOCUMENT_KIND } from "./factory-search-kinds";
 import type { SearchDocument } from "./types";
@@ -22,6 +33,35 @@ export function isReferenceItemSearchDocument(
 }
 
 /**
+ * Canonical deep-link URL for a `/docs/references/…#…` hit (first fragment
+ * only). Used when client layout meta omits item documents.
+ */
+export function resolveReferenceItemDeepLinkUrl(
+  resultUrl: string,
+): string | undefined {
+  const hashIndex = resultUrl.indexOf("#");
+  if (hashIndex < 0) {
+    return undefined;
+  }
+
+  const base = resultUrl.slice(0, hashIndex);
+  if (!base.includes("/docs/references/")) {
+    return undefined;
+  }
+
+  const firstFragment = resultUrl.slice(hashIndex + 1).split("#")[0];
+  if (!firstFragment) {
+    return undefined;
+  }
+  // Fumadocs auto heading ids are not registry item anchors.
+  if (/^heading-\d+$/i.test(firstFragment)) {
+    return undefined;
+  }
+
+  return `${base}#${firstFragment}`;
+}
+
+/**
  * Resolve a search-hit URL to its registered reference item document.
  * Fumadocs may append extra heading fragments (`#item#heading-0`); match the
  * first fragment against the registry item URL.
@@ -35,18 +75,11 @@ export function referenceItemDocumentForResultUrl(
     return exact;
   }
 
-  const hashIndex = resultUrl.indexOf("#");
-  if (hashIndex < 0) {
+  const candidate = resolveReferenceItemDeepLinkUrl(resultUrl);
+  if (candidate === undefined) {
     return undefined;
   }
 
-  const base = resultUrl.slice(0, hashIndex);
-  const firstFragment = resultUrl.slice(hashIndex + 1).split("#")[0];
-  if (!firstFragment) {
-    return undefined;
-  }
-
-  const candidate = `${base}#${firstFragment}`;
   const document = documentsByUrl.get(candidate);
   return isReferenceItemSearchDocument(document) ? document : undefined;
 }
@@ -99,17 +132,19 @@ function pickCanonicalHit(
 
 function normalizeReferenceItemHit(
   result: SortedResult,
-  document: SearchDocument,
+  itemUrl: string,
+  document: SearchDocument | undefined,
 ): SortedResult {
+  const titleFromFragment = itemUrl.split("#")[1] ?? itemUrl;
   return {
     ...result,
     type: "page",
-    url: document.url,
-    id: document.id,
+    url: itemUrl,
+    id: document?.id ?? itemUrl,
     content:
       result.type === "page" && result.content.trim().length > 0
         ? result.content
-        : document.title,
+        : (document?.title ?? titleFromFragment),
   };
 }
 
@@ -117,10 +152,21 @@ type CollapseBucket =
   | { kind: "item"; url: string }
   | { kind: "page"; baseUrl: string };
 
+function documentsByUrlIncludesReferenceItems(
+  documentsByUrl: Map<string, SearchDocument>,
+): boolean {
+  for (const document of documentsByUrl.values()) {
+    if (isReferenceItemSearchDocument(document)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /**
  * Collapse fragment, heading, and duplicate page hits to one canonical row per
- * page URL — except registered reference item documents, which keep their
- * registry-anchor deep links so item hits are not crowded out by the owning page.
+ * page URL — except reference item deep links, which keep their registry-anchor
+ * URLs so item hits are not crowded out by the owning page.
  */
 export function collapseSearchResultsToPageHits(
   results: SortedResult[],
@@ -129,19 +175,29 @@ export function collapseSearchResultsToPageHits(
   const order: CollapseBucket[] = [];
   const pageGroups = new Map<string, SortedResult[]>();
   const itemHits = new Map<string, SortedResult>();
+  // Server/API catalogs include item documents — require membership so ordinary
+  // reference-page headings still collapse. Layout meta omits items for payload
+  // size; then preserve `/docs/references/…#…` via URL shape alone.
+  const allowUrlHeuristic =
+    !documentsByUrlIncludesReferenceItems(documentsByUrl);
 
   for (const result of results) {
     const itemDocument = referenceItemDocumentForResultUrl(
       result.url,
       documentsByUrl,
     );
-    if (itemDocument) {
-      if (!itemHits.has(itemDocument.url)) {
+    const itemUrl =
+      itemDocument?.url ??
+      (allowUrlHeuristic
+        ? resolveReferenceItemDeepLinkUrl(result.url)
+        : undefined);
+    if (itemUrl !== undefined) {
+      if (!itemHits.has(itemUrl)) {
         itemHits.set(
-          itemDocument.url,
-          normalizeReferenceItemHit(result, itemDocument),
+          itemUrl,
+          normalizeReferenceItemHit(result, itemUrl, itemDocument),
         );
-        order.push({ kind: "item", url: itemDocument.url });
+        order.push({ kind: "item", url: itemUrl });
       }
       continue;
     }

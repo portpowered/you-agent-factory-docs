@@ -22,6 +22,7 @@ import {
   DocsPageBreadcrumb,
 } from "@/features/docs/components/DocsPageBreadcrumb";
 import { SearchResultMetaDetails } from "@/features/docs/search/SearchResultMetaDetails";
+import { resolveSearchResultMeta } from "@/features/docs/search/search-result-meta-client";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import {
   assertFactoryBreadcrumbSegments,
@@ -183,8 +184,11 @@ describe("factory search and navigation convergence end-to-end", () => {
       expect(results.length).toBeGreaterThan(0);
       for (const result of results) {
         if (result.type !== "page") continue;
-        const meta = metaByUrl[result.url];
+        const meta = resolveSearchResultMeta(result.url, metaByUrl);
         expect(meta).toBeDefined();
+        if (meta === undefined) {
+          throw new Error(`missing search meta for ${result.url}`);
+        }
         expect(isFactorySearchResultKind(meta.kind)).toBe(true);
         const html = renderToStaticMarkup(
           <SearchResultMetaDetails

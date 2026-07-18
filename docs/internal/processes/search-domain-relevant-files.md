@@ -196,6 +196,12 @@ When search loads the events corpus during static-export catalog build,
 `eventsOpenApiTurbopackLoadDependencies` must use the ancestor
 `node_modules` walk (`resolveApiPackageManifestFsPath`) — webpack stubs
 `createRequire().resolve` and can return a non-string module id.
+Layout `metaByUrl` must **omit** reference item documents (kind
+`reference` + `#fragment`); embedding them previously inflated every
+HTML/RSC payload by ~2 MiB. Client collapse preserves
+`/docs/references/…#…` via URL shape when meta has no item rows; server
+catalogs that include item docs still require membership so ordinary
+reference-page headings collapse.
 
 ### Pattern: factory alias / body / tag discovery
 

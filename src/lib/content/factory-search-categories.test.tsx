@@ -7,6 +7,7 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
 import { SearchResultMetaDetails } from "@/features/docs/search/SearchResultMetaDetails";
+import { resolveSearchResultMeta } from "@/features/docs/search/search-result-meta-client";
 import { formatPageKind, loadUiMessages } from "@/lib/content/ui-messages";
 import { supportedLocales } from "@/lib/i18n/locale-routing";
 import {
@@ -96,8 +97,11 @@ describe("factory search categories", () => {
         if (result.type !== "page") {
           continue;
         }
-        const meta = metaByUrl[result.url];
+        const meta = resolveSearchResultMeta(result.url, metaByUrl);
         expect(meta).toBeDefined();
+        if (meta === undefined) {
+          throw new Error(`missing search meta for ${result.url}`);
+        }
         expect(isFactorySearchResultKind(meta.kind)).toBe(true);
         expect(isRetiredAtlasSearchResultKind(meta.kind)).toBe(false);
 
