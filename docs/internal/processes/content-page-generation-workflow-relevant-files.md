@@ -993,6 +993,41 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Nested-slug discovery proofs (temp fixtures under new families; no
   production content pages).
 
+## First published `references` schema page
+
+The first authored page under `src/content/docs/references/` needs the same
+kind of first-section publish wiring as CLI collections, plus route-family
+MDX component merge for schema mounts:
+
+1. Add `references` to `PUBLISHED_DOCS_SECTIONS` and
+   `publishedDocsHrefFromEntry` / `referencePageHref` so
+   `prepare:content-runtime` / `validateDerivedPublishedPageBundles` accept
+   `references/<slug>` without throwing `Unsupported published docs section`.
+2. Add `references` to `REGISTRY_COLLECTIONS`, `loadRegistry` /
+   `registry-runtime-generation` (`referenceRecordSchema`),
+   `registryDirectoryByKind` / `registryKindDirectories`, and
+   `registryRecordHref` so `reference.*` records resolve and validate.
+3. Extend `route-family-local-docs-page-load.ts` with a static
+   `page-mdx-components` import switch (same pattern as
+   `documentation-page-load.ts`) so page-local mounts such as
+   `<FactorySchemaReference />` compile. Relative MDX imports do not resolve
+   through `compileMDX`.
+4. Keep schema acquisition on the W03 helper
+   `loadSchemaVerificationPackageModel("schemas/<name>")` and mount public
+   W07 `SchemaReference` with `pagePath="/docs/references/<slug>"`. Do not
+   edit renderer internals under `src/components/references/schema/`.
+5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
+   not published yet; do not put unpublished `reference.*` ids in
+   `relatedIds`.
+6. Update `src/tests/content/section-indexes.test.tsx` so the references
+   index asserts authored entries on the default locale while
+   factories/workers/workstations stay on the empty-state contract.
+7. Do not hand-edit shared nav/sidebar/search/sitemap/compat inventories
+   (W15–W18). Sitemap inclusion follows derived published-docs entries after
+   `prepare:content-runtime`.
+
+Representative first page: `src/content/docs/references/factory-schema/`.
+
 ## Page bundle and registry workflow
 
 * `docs/templates/*.content.md`

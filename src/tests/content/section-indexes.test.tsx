@@ -441,14 +441,6 @@ describe("CLI section index metadata", () => {
 
 const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
   {
-    collectionId: "references" as const,
-    messageKey: "referencesIndex" as const,
-    renderDefault: ReferencesIndexPage,
-    renderLocalized: LocalizedReferencesIndexPage,
-    generateDefaultMetadata: generateReferencesMetadata,
-    generateLocalizedMetadata: generateLocalizedReferencesMetadata,
-  },
-  {
     collectionId: "factories" as const,
     messageKey: "factoriesIndex" as const,
     renderDefault: FactoriesIndexPage,
@@ -482,6 +474,68 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.factoriesIndex.title).toBe("Factories");
     expect(messages.workersIndex.title).toBe("Workers");
     expect(messages.workstationsIndex.title).toBe("Workstations");
+  });
+
+  it("renders the references index with authored schema page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.referencesIndex;
+    const html = renderToStaticMarkup(await ReferencesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Factory schema");
+    expect(html).toContain("/docs/references/factory-schema");
+    expect(html).toContain("Factory JSON Schema");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(indexMessages.emptyTitle).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+    expect(indexMessages.emptyDescription).not.toMatch(
+      CLI_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
+  it("renders the localized references index empty when no locale-shipped pages exist", async () => {
+    const messages = await loadUiMessages("ja");
+    const indexMessages = messages.referencesIndex;
+    const html = renderToStaticMarkup(
+      await LocalizedReferencesIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    // Default-locale-only schema pages stay out of ja shipped discovery, so the
+    // localized index keeps the empty-state contract until locale messages ship.
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.emptyTitle);
+    expect(html).toContain(indexMessages.emptyHomeLink);
+    expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+  });
+
+  it("keeps default and localized references index metadata aligned", async () => {
+    const defaultMetadata = await generateReferencesMetadata();
+    const localizedMetadata = await generateLocalizedReferencesMetadata({
+      params: Promise.resolve({ locale: "vi" }),
+    });
+    const expectedAlternates = {
+      canonical: "/docs/references",
+      languages: {
+        en: "/docs/references",
+        ja: "/ja/docs/references",
+        "zh-CN": "/zh-CN/docs/references",
+        vi: "/vi/docs/references",
+      },
+    };
+
+    expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+    expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+
+    const viMessages = await loadUiMessages("vi");
+    expect(localizedMetadata.title).toBe(viMessages.referencesIndex.title);
+    expect(localizedMetadata.description).toBe(
+      viMessages.referencesIndex.description,
+    );
   });
 
   for (const section of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {

@@ -22,6 +22,7 @@ const registryDirectoryByKind: Record<string, string> = {
   documentation: "documentation",
   graph: "graphs",
   guide: "guides",
+  reference: "references",
   table: "tables",
   technique: "techniques",
 };

@@ -114,6 +114,17 @@ export function documentationPageHref(
   );
 }
 
+/** Canonical docs URL for a reference entry slug under `docs/references`. */
+export function referencePageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `references/${slug}` },
+    locale,
+  );
+}
+
 /** Canonical tag landing URL for a registry tag slug. */
 export function tagPageHref(
   slug: string,

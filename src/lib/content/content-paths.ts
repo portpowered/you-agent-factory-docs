@@ -135,6 +135,7 @@ export const REGISTRY_COLLECTIONS = [
   "graphs",
   "guides",
   "organizations",
+  "references",
   "tables",
   "tags",
   "techniques",
