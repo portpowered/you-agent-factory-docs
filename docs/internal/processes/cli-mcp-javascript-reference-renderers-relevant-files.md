@@ -82,6 +82,14 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/components/references/shared/ReferenceInventoryFilter.tsx` | Keyboard-accessible filter controls (search + selects); ephemeral presentation only |
 | Family inventories (`CliCommandInventory`, `McpToolInventory`, `JavaScriptRuntimeInventory`) | Assign registry anchors on success, host filter state, render filtered lists |
 
+## Key host files (contract-count drift — story 008)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/family-inventory-contract-drift.ts` | Pure extract + `compareFamilyInventoryIdentities` for CLI/MCP/JS; dynamic membership, actionable missing-identity messages |
+| `src/lib/references/family-inventory-contract-drift.test.ts` | Focused W03 resolve → W04 normalize → inventory-identity drift tests (no magic counts; omit fails with path/name) |
+| Family `*InventoryIdentities` helpers on CLI/MCP/JS reference cards | Rendered-inventory identity lists used by drift comparison |
+
 ## Upstream dependencies (do not reimplement)
 
 
@@ -147,3 +155,8 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   shared pure helpers + `ReferenceInventoryFilter` — ephemeral `useState` only,
   never mutate projections, never invent visibility/lifecycle values. MCP omits
   the visibility facet because tools do not publish it.
+- Story 008: drift tests extract identities from W03-resolved artifact data,
+  run W04 normalize + registry anchor assignment, then compare against
+  `*InventoryIdentities`. Use `compareFamilyInventoryIdentities` — never assert
+  a hard-coded command/tool/symbol count. Omitting an item must fail with the
+  concrete command path, tool name, or symbol path in the mismatch message.
