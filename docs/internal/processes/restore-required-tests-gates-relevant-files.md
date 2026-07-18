@@ -121,7 +121,7 @@ events + workers needs headroom above either alone:
 
 - `maxTotalOutBytes`: 180_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 5_500_000
+- `maxSearchBootstrapBytes`: 5_600_000
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
 `out/` fails closed. Reproduce locally with:

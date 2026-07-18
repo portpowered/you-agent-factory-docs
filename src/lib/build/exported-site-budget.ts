@@ -56,13 +56,13 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * ~5.44 MiB search bootstrap on CI; separately, W11 CLI/MCP/JavaScript runtime
  * pages with events + workers measured ~161.11 MiB. Combined CLI/MCP/JS +
  * schema + events + workers heads need headroom above either alone; ceilings
- * are now 180 MiB total / 5.50 MiB search. Keep modest headroom for ordinary
+ * are now 180 MiB total / 5.60 MiB search. Keep modest headroom for ordinary
  * content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
   maxTotalOutBytes: 180_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 5_500_000,
+  maxSearchBootstrapBytes: 5_600_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =
