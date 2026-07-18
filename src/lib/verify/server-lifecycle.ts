@@ -510,9 +510,13 @@ function isRetryableVerifyServerStartupError(
   }
 
   const outputTail = getChildOutputTail(child).toLowerCase();
+  // Port races after reserve→release→spawn, and occasional early pipe/write
+  // failures on CI, are transient — retry on a fresh listen port.
   return (
     outputTail.includes("eaddrinuse") ||
-    outputTail.includes("address already in use")
+    outputTail.includes("address already in use") ||
+    outputTail.includes("epipe") ||
+    outputTail.length === 0
   );
 }
 
