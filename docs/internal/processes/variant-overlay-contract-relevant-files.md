@@ -39,6 +39,8 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/factory-variant-upstream-migration.test.ts` | Upstream preference, base fallback, unresolved target, field/discriminator/exclusion contradictions |
 | `src/lib/references/overlays/fixtures/incompatible-field-selection.ts` | Focused overlay fixtures for incompatible vs jointly-allowed field selection |
 | `src/lib/references/overlays/fixtures/upstream-migration.ts` | Focused overlay + W04 definition fixtures for upstream preference / contradiction / unresolved target |
+| `src/lib/references/overlays/fixtures/package-drift.ts` | Focused post-drift definition + overlay fixtures: removed fields, renamed enums, missing refs, incompatible examples |
+| `src/lib/references/overlays/fixtures/package-drift.test.ts` | Drift-class fail-closed diagnostics + minimal valid overlay success (fixture catalog + installed W03 package) |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
@@ -103,8 +105,14 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   contradictory selected/shared/excluded/conditional paths or discriminators
   fail as `upstream-contradiction`. When upstream is absent, validation
   continues against the broad `baseDefinition` as before. Fixtures live under
-  `overlays/fixtures/upstream-migration.ts`. Story 008 broadens drift fixtures
-  (removed fields, renamed enums, missing refs, incompatible examples).
+  `overlays/fixtures/upstream-migration.ts`.
+- Package-drift fixtures under `overlays/fixtures/package-drift.ts` prove
+  fail-closed diagnostics for removed fields (`unknown-field-path`), renamed
+  discriminator enums (`unknown-discriminator-value`), missing base refs
+  (`missing-base-definition`), and incompatible example refs
+  (`missing-example-ref`), plus success for a minimal valid overlay set.
+  Focused tests also re-exercise incompatible companion field selection via
+  the story 006 fixtures against installed W03 package models.
 
 ## Verification
 
