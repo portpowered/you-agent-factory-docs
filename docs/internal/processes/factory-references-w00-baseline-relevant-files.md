@@ -32,3 +32,19 @@ counts in later fixtures as permanent product limits.
 from the installed package root on disk after `bun install`, not via a public
 subpath import. Consume contract artifacts only through public subpaths
 (`@you-agent-factory/api/manifest`, `.../openapi`, `.../schemas/*`, etc.).
+
+## Manifest export inventory
+
+Read `@you-agent-factory/api/manifest` (resolves to
+`generated/manifest.json`). Record every key under `exports` with:
+
+- `family`, `path`, `artifactHash`
+- documentation: `formatVersion`, `visibility`, `sourceHash` (plus title /
+  description when useful)
+- lifecycle: `state`, `since`, `formatVersion`, `itemId`
+
+Also record manifest root `packageId`, `packageVersion`, `formatVersion`,
+`sourceCommit`, and `familyFormatVersions`. Export count must match the
+installed artifact membership (currently 10); do not copy plan prose if the
+package differs. With `packageVersion` `0.0.0`, prefer format versions and
+hashes over semver for freshness.
