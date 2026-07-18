@@ -67,3 +67,13 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   versus native SSE render discoverability (`not-discoverable` while
   `x-event-schema` is ignored). Role markers on `SseSpikeSurfaceChrome` keep
   canonical / ephemeral / compatibility-only distinguishable.
+- Temporary AsyncAPI projector selection path (story 004):
+  `src/lib/references-sse-asyncapi-spike/select-sse-streams.ts` selects SSE
+  streams by path / operation / response status / `text/event-stream` and
+  resolves payload roots from `x-event-schema` (never hard-coded schema names).
+  `src/lib/references-sse-asyncapi-spike/project-openapi-to-asyncapi.ts` emits a
+  regenerated AsyncAPI 3 stub whose channel addresses and message payload
+  `$ref`s come from that selection. Compatibility `GET /events` is projected
+  but labeled `compatibility-only-non-preferred`. Focused tests:
+  `project-openapi-to-asyncapi.test.ts`. Full `$ref` closure / source hash /
+  inventory fail-closed validation belong to story 005.
