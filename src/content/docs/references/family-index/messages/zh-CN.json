@@ -1,0 +1,57 @@
+{
+  "title": "参考",
+  "description": "you-agent-factory 的契约查阅面：HTTP API、事件、schema、命令行界面（CLI）、Model Context Protocol（MCP）以及 JavaScript 运行时。",
+  "openingSummary": "本系列汇总 you-agent-factory 已发布的契约面。需要查阅 API 操作、事件形状、配置 schema、命令行界面（CLI）命令、Model Context Protocol（MCP）工具或 JavaScript 运行时绑定时使用本页。本着陆页不是操作指南。",
+  "sections": {
+    "introduction": {
+      "title": "本系列涵盖的内容",
+      "body": "参考页是面向工厂契约的 isolation-first 查阅页。每个链接面负责一个契约族：HTTP API、持久事件语料、工厂与配置 schema、命令行界面（CLI）命令矩阵、Model Context Protocol（MCP）工具契约，或 JavaScript 运行时面。先在此选择正确的契约页；仅在需要该面的字段、操作或示例时再打开子页。"
+    },
+    "discoverability": {
+      "title": "契约面",
+      "body": "每张卡片打开一个契约族。标签在窄视口上仍保持可读。"
+    },
+    "freshness": {
+      "title": "软件包新鲜度",
+      "body": "本系列记录下方已安装的公开 API 软件包标识。版本与源提交来自已发布的软件包清单——不是手抄字符串。"
+    },
+    "api": {
+      "title": "HTTP API",
+      "body": "工厂 HTTP 面的 OpenAPI 操作与请求/响应契约。"
+    },
+    "events": {
+      "title": "事件",
+      "body": "工厂响应流的持久事件语料与信封形状。"
+    },
+    "factory-schema": {
+      "title": "Factory schema",
+      "body": "已打包工厂文档及其必填字段的 JSON Schema。"
+    },
+    "you-config-schema": {
+      "title": "you 配置 schema",
+      "body": "you-agent-factory 运行时与工作区设置的配置 schema。"
+    },
+    "mock-workers-schema": {
+      "title": "模拟 worker schema",
+      "body": "本地与测试 harness 所用模拟 worker 定义的 schema。"
+    },
+    "cli": {
+      "title": "命令行界面（CLI）",
+      "body": "you 命令行界面（CLI）的命令矩阵与标志。"
+    },
+    "mcp": {
+      "title": "Model Context Protocol（MCP）",
+      "body": "工厂公开的 Model Context Protocol（MCP）工具契约。"
+    },
+    "javascript-runtime": {
+      "title": "JavaScript 运行时",
+      "body": "用于嵌入工厂工作的 JavaScript 运行时绑定与软件包面。"
+    }
+  },
+  "callouts": {
+    "freshnessUnavailable": {
+      "title": "无法获取软件包新鲜度",
+      "body": "此构建无法读取已发布的 API 软件包清单。下方的契约面卡片仍可用；清单解析成功后，软件包标识与版本会显示在此处。"
+    }
+  }
+}

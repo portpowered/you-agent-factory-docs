@@ -7,6 +7,8 @@
  * must not claim "authored".
  */
 
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
+import { formatReferenceChromeTemplate } from "@/lib/i18n/reference-chrome-labels";
 import { formatSchemaValue } from "./format-schema-value";
 
 /** Known example provenance when the caller can distinguish sources. */
@@ -43,6 +45,8 @@ export type SchemaExampleInput = {
 export type ProjectSchemaExamplesOptions = {
   /** Default language when an entry omits one. */
   language?: string;
+  /** Localized chrome for example index labels. */
+  chrome?: ReferenceChromeMessages;
 };
 
 /**
@@ -51,12 +55,13 @@ export type ProjectSchemaExamplesOptions = {
  */
 export function schemaExampleOriginLabel(
   origin: SchemaExampleOrigin | undefined,
+  chrome?: ReferenceChromeMessages,
 ): string | undefined {
   if (origin === "authored") {
-    return "Authored example";
+    return chrome?.examples.authored ?? "Authored example";
   }
   if (origin === "generated") {
-    return "Generated example";
+    return chrome?.examples.generated ?? "Generated example";
   }
   return undefined;
 }
@@ -78,7 +83,10 @@ export function projectSchemaExamplesFromValues(
     const display: SchemaExampleDisplay = {
       id: `example-${index + 1}`,
       code: formatSchemaValue(value),
-      label: `Example ${index + 1}`,
+      label: formatReferenceChromeTemplate(
+        options.chrome?.examples.exampleIndexed ?? "Example {index}",
+        { index: index + 1 },
+      ),
     };
     if (options.language !== undefined) {
       display.language = options.language;
@@ -103,7 +111,12 @@ export function projectSchemaExamplesFromInputs(
     const display: SchemaExampleDisplay = {
       id: input.id ?? `example-${index + 1}`,
       code: formatSchemaValue(input.value),
-      label: input.label ?? `Example ${index + 1}`,
+      label:
+        input.label ??
+        formatReferenceChromeTemplate(
+          options.chrome?.examples.exampleIndexed ?? "Example {index}",
+          { index: index + 1 },
+        ),
     };
     const language = input.language ?? options.language;
     if (language !== undefined) {

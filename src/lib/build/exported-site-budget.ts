@@ -64,16 +64,21 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * after the Next-safe OpenAPI loader fix on that head — CI measured
  * ~220.21 MiB total while JS (~2.87 MiB) and search (~6.16 MiB) stayed under
  * limits; ceiling was 225 MiB total / 6.50 MiB search. Raised again on
- * 2026-07-18 UTC after W16 search-and-anchor projection indexed ~585
- * reference item documents into every locale catalog — measured Orama
- * bootstrap sum across en/ja/zh-CN/vi was ~29.69 MiB (en alone ~8.32 MiB;
- * reference-item-only payload ~5.66 MiB). Prior CI total ~220.21 MiB with
- * ~6.16 MiB search implies ~242 MiB total after the search delta; ceiling is
- * now 250 MiB total / 32 MiB search. Keep modest headroom for ordinary
- * content growth without silent skip/pass.
+ * 2026-07-18 UTC after the W17 localization / contract-language lane (reference
+ * chrome catalogs + ja/zh-CN/vi family-index messages + language-boundary
+ * helpers) measured ~229.44 MiB total on CI while Next static JS (~2.86 MiB)
+ * and search bootstrap (~6.16 MiB) remained under their limits; ceiling was
+ * 235 MiB total / 6.50 MiB search. Raised again on 2026-07-18 UTC after
+ * rebasing W16 search-and-anchor projection onto that W17 head — ~585
+ * reference item documents in every locale catalog, with layout meta omitting
+ * those item rows. Combined local `make build` measured ~225.54 MiB total /
+ * ~29.69 MiB search bootstrap (en/ja/zh-CN/vi) / ~2.87 MiB Next static JS.
+ * Total stays under the W17 235 MiB ceiling (meta omission more than offsets
+ * the Orama delta); search ceiling is now 32 MiB. Keep modest headroom for
+ * ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 250_000_000,
+  maxTotalOutBytes: 235_000_000,
   maxNextStaticJsBytes: 3_500_000,
   maxSearchBootstrapBytes: 32_000_000,
 } as const;

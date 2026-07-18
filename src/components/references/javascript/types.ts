@@ -5,6 +5,7 @@
  * types do not acquire package artifacts or invent missing schema fields.
  */
 
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
 import type {
   JavascriptSharedSchemaNormalized,
   JavascriptSymbolNormalized,
@@ -18,6 +19,7 @@ export type JavaScriptSymbolReferenceProps = {
    * when the caller has no package version — never invent a version string.
    */
   packageVersion?: string;
+  chrome?: ReferenceChromeMessages;
   className?: string;
 };
 
@@ -25,6 +27,7 @@ export type JavaScriptSharedSchemaReferenceProps = {
   /** Normalized shared schema from W04 projections. */
   schema: JavascriptSharedSchemaNormalized;
   packageVersion?: string;
+  chrome?: ReferenceChromeMessages;
   className?: string;
 };
 

@@ -6,6 +6,7 @@
  * Does not invent example payloads or embed live playground controls.
  */
 
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import { cn } from "@/lib/utils";
 import { API_PRINT_CONTENT_ATTR } from "./a11y-verification";
 import { ApiMethodBadge } from "./api-method-badge";
@@ -116,20 +117,20 @@ export function ApiOperationSection({
           <ApiOperationCopyLink anchor={detail.anchor} pagePath={pagePath} />
         </div>
         {detail.summary !== undefined ? (
-          <p
+          <ContractDescriptionProse
             className="text-sm text-muted-foreground"
             data-api-operation-summary=""
           >
             {detail.summary}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
         {detail.description !== undefined ? (
-          <p
+          <ContractDescriptionProse
             className="text-sm text-foreground/90"
             data-api-operation-description=""
           >
             {detail.description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
         {detail.operationId !== undefined ? (
           <p className="font-mono text-xs text-muted-foreground">
@@ -184,9 +185,9 @@ export function ApiOperationSection({
                   ) : null}
                 </div>
                 {parameter.description !== undefined ? (
-                  <p className="mt-2 text-muted-foreground text-sm">
+                  <ContractDescriptionProse className="mt-2 text-muted-foreground text-sm">
                     {parameter.description}
-                  </p>
+                  </ContractDescriptionProse>
                 ) : null}
               </li>
             ))}
@@ -218,9 +219,9 @@ export function ApiOperationSection({
               )}
             </div>
             {detail.requestBody.description !== undefined ? (
-              <p className="text-muted-foreground text-sm">
+              <ContractDescriptionProse className="text-muted-foreground text-sm">
                 {detail.requestBody.description}
-              </p>
+              </ContractDescriptionProse>
             ) : null}
             {detail.requestBody.mediaTypes.length === 0 ? (
               <p className="text-muted-foreground text-sm">
@@ -264,9 +265,12 @@ export function ApiOperationSection({
                     {response.statusCode}
                   </code>
                   {response.description !== undefined ? (
-                    <span className="text-muted-foreground text-sm">
+                    <ContractDescriptionProse
+                      as="span"
+                      className="text-muted-foreground text-sm"
+                    >
                       {response.description}
-                    </span>
+                    </ContractDescriptionProse>
                   ) : null}
                 </div>
                 {response.mediaTypes.length === 0 ? (

@@ -6,6 +6,7 @@
  * ownership is summarized with a link toward the API operation page.
  */
 
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { EventJsonReconnectProbeModel } from "@/lib/references/events";
 import { cn } from "@/lib/utils";
 
@@ -109,10 +110,13 @@ export function EventJsonReconnectProbe({
                   {field.name}
                 </code>
                 {field.description.length > 0 ? (
-                  <span className="text-muted-foreground">
+                  <ContractDescriptionProse
+                    as="span"
+                    className="text-muted-foreground"
+                  >
                     {" "}
                     — {field.description}
-                  </span>
+                  </ContractDescriptionProse>
                 ) : null}
               </li>
             ))}

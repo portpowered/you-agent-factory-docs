@@ -170,6 +170,27 @@ describe("docs slug renderer locale gating", () => {
     });
   });
 
+  test("English docs metadata advertises shipped reference api locales and omits unshipped cli locales", async () => {
+    const apiMetadata = await buildDocsPageMetadata(["references", "api"]);
+    const cliMetadata = await buildDocsPageMetadata(["references", "cli"]);
+
+    expect(apiMetadata.alternates).toEqual({
+      canonical: "/docs/references/api",
+      languages: {
+        en: "/docs/references/api",
+        ja: "/ja/docs/references/api",
+        "zh-CN": "/zh-CN/docs/references/api",
+        vi: "/vi/docs/references/api",
+      },
+    });
+    expect(cliMetadata.alternates).toEqual({
+      canonical: "/docs/references/cli",
+      languages: {
+        en: "/docs/references/cli",
+      },
+    });
+  });
+
   test("unshipped Vietnamese docs routes fail clearly instead of rendering English content", async () => {
     try {
       await renderDocsSlugPage(["getting-started"], "vi");

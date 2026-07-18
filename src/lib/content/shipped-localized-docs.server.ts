@@ -41,6 +41,36 @@ function hasNonDefaultLocaleMessages(
   return existsSync(path.join(pageDirectory, "messages", `${locale}.json`));
 }
 
+/**
+ * References family index ships at `/docs/references` from
+ * `references/family-index/` (frontmatter.json + messages), not a page.mdx
+ * bundle. Include slug `references` when that ownership surface is published
+ * and has colocated locale messages (W17 shipped-locale / hreflang policy).
+ */
+function appendReferencesFamilyIndexShipping(
+  docsRoot: string,
+  shippedDocsByLocale: Record<NonDefaultLocale, string[]>,
+): void {
+  const familyIndexDir = path.join(docsRoot, "references", "family-index");
+  const frontmatterPath = path.join(familyIndexDir, "frontmatter.json");
+  if (!existsSync(frontmatterPath)) {
+    return;
+  }
+
+  const frontmatter = pageFrontmatterSchema.parse(
+    JSON.parse(readFileSync(frontmatterPath, "utf8")),
+  );
+  if (frontmatter.status !== "published") {
+    return;
+  }
+
+  for (const locale of nonDefaultLocales) {
+    if (hasNonDefaultLocaleMessages(familyIndexDir, locale)) {
+      shippedDocsByLocale[locale].push("references");
+    }
+  }
+}
+
 export function deriveShippedLocalizedDocsManifest(
   docsRoot = DOCS_ROOT,
 ): ShippedLocalizedDocsManifest {
@@ -68,6 +98,8 @@ export function deriveShippedLocalizedDocsManifest(
       }
     }
   }
+
+  appendReferencesFamilyIndexShipping(docsRoot, shippedDocsByLocale);
 
   const manifest = createEmptyManifest() as Record<NonDefaultLocale, string[]>;
   for (const locale of nonDefaultLocales) {

@@ -2,10 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parsePageAssetConfig } from "@/lib/content/assets";
 import { getDocsSectionRoot } from "@/lib/content/content-paths";
-import {
-  hasPageMessagesFile,
-  loadPageMessages,
-} from "@/lib/content/page-messages-load";
+import { loadPageMessages } from "@/lib/content/page-messages-load";
 import {
   type PageAssetConfig,
   type PageFrontmatter,
@@ -34,17 +31,15 @@ function readJsonFile<T>(path: string): T {
 /**
  * Loads the page-local references family index ownership surface.
  *
- * Default-locale (`en`) messages are required. Other locales fall back to `en`
- * until localized index copy ships.
+ * Default-locale (`en`) messages are required. Non-default locales fail closed
+ * when that locale’s page messages are missing — no silent English fallback for
+ * authored family-index prose (W17 collection/page chrome policy).
  */
 export async function loadReferencesFamilyIndex(
   locale: SiteLocale = defaultLocale,
   indexDir = REFERENCES_FAMILY_INDEX_DIR,
 ): Promise<LoadedReferencesFamilyIndex> {
-  const messagesLocale = hasPageMessagesFile(indexDir, locale)
-    ? locale
-    : defaultLocale;
-  const messages = await loadPageMessages(indexDir, messagesLocale, {
+  const messages = await loadPageMessages(indexDir, locale, {
     route: "/docs/references",
   });
   const assets = parsePageAssetConfig(

@@ -78,6 +78,115 @@
       "additional-reference": "Tham chiếu bổ sung"
     }
   },
+  "referenceChrome": {
+    "filter": {
+      "queryPlaceholder": "Lọc theo tên hoặc đường dẫn…",
+      "lifecycleLabel": "Vòng đời",
+      "visibilityLabel": "Khả năng hiển thị",
+      "allLifecycles": "Tất cả vòng đời",
+      "allVisibility": "Tất cả khả năng hiển thị",
+      "clearFilters": "Xóa bộ lọc",
+      "showingOf": "Đang hiện {resultCount} / {totalCount}",
+      "schemaQueryPlaceholder": "Lọc định nghĩa và trường…",
+      "schemaQueryLabel": "Lọc định nghĩa và trường schema",
+      "schemaNoMatchesTitle": "Không có kết quả",
+      "schemaNoMatchesMessage": "Không có định nghĩa hoặc trường nào khớp bộ lọc này.",
+      "clear": "Xóa"
+    },
+    "status": {
+      "loadingTitle": "Đang tải",
+      "loadingMessage": "Đang tải schema…",
+      "emptyTitle": "Schema trống",
+      "emptyMessage": "Không có định nghĩa hoặc trường schema khả dụng.",
+      "invalidTitle": "Schema không hợp lệ",
+      "invalidMessage": "Đầu vào schema không vượt qua kiểm tra hoặc chuẩn hóa.",
+      "unsupportedTitle": "Schema không được hỗ trợ",
+      "unsupportedMessage": "Hình dạng hoặc phiên bản schema này không được hỗ trợ để hiển thị."
+    },
+    "badge": {
+      "family": "Họ",
+      "package": "Gói",
+      "packageVersion": "Phiên bản gói",
+      "sourceArtifact": "Artifact nguồn",
+      "sourceCommit": "Source commit",
+      "lifecycle": "Vòng đời",
+      "visibility": "Khả năng hiển thị",
+      "contractSource": "Nguồn hợp đồng",
+      "packageVersionNotPublished": "chưa công bố phiên bản gói",
+      "notPublishedOnProjection": "Chưa công bố trên projection này",
+      "familyWithLabel": "Họ: {family}"
+    },
+    "families": {
+      "api": "API",
+      "schema": "Schema",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "javascript": "JavaScript",
+      "events": "Sự kiện"
+    },
+    "lifecycleStates": {
+      "active": "Đang hoạt động",
+      "deprecated": "Không còn dùng",
+      "removed": "Đã gỡ"
+    },
+    "lifecycleSummary": {
+      "since": "từ {value}",
+      "deprecated": "không còn dùng từ {value}",
+      "removed": "đã gỡ từ {value}",
+      "successor": "kế nhiệm {value}"
+    },
+    "visibilityStates": {
+      "public": "Công khai",
+      "internal": "Nội bộ"
+    },
+    "a11y": {
+      "copyAnchorLink": "Sao chép liên kết neo",
+      "anchorLinkCopied": "Đã sao chép liên kết neo"
+    },
+    "examples": {
+      "authored": "Ví dụ soạn sẵn",
+      "generated": "Ví dụ được tạo",
+      "exampleIndexed": "Ví dụ {index}"
+    },
+    "inventory": {
+      "cli": {
+        "filterLegend": "Lọc lệnh CLI",
+        "queryLabel": "Đường dẫn lệnh",
+        "queryPlaceholder": "Lọc theo đường dẫn lệnh, bí danh hoặc mô tả…",
+        "emptyTitle": "Không có lệnh CLI",
+        "emptyDescription": "Không tìm thấy lệnh CLI đã công bố trong hợp đồng đã giải quyết.",
+        "errorTitle": "Lỗi inventory CLI",
+        "errorDescription": "Không thể chuẩn hóa inventory CLI từ hợp đồng gói.",
+        "filterEmpty": "Không có lệnh CLI nào khớp bộ lọc hiện tại.",
+        "countOne": "{count} lệnh CLI đã công bố từ hợp đồng gói.",
+        "countMany": "{count} lệnh CLI đã công bố từ hợp đồng gói."
+      },
+      "mcp": {
+        "filterLegend": "Lọc công cụ MCP",
+        "queryLabel": "Tên công cụ",
+        "queryPlaceholder": "Lọc theo tên công cụ hoặc mô tả…",
+        "emptyTitle": "Không có công cụ MCP",
+        "emptyDescription": "Không tìm thấy công cụ MCP đã công bố trong hợp đồng đã giải quyết.",
+        "errorTitle": "Lỗi inventory MCP",
+        "errorDescription": "Không thể chuẩn hóa inventory MCP từ hợp đồng gói.",
+        "filterEmpty": "Không có công cụ MCP nào khớp bộ lọc hiện tại.",
+        "countOne": "{count} công cụ MCP đã công bố từ hợp đồng gói.",
+        "countMany": "{count} công cụ MCP đã công bố từ hợp đồng gói."
+      },
+      "javascript": {
+        "filterLegend": "Lọc mục JavaScript runtime",
+        "queryLabel": "Ký hiệu hoặc schema",
+        "queryPlaceholder": "Lọc theo đường dẫn ký hiệu, schema id hoặc mô tả…",
+        "emptyTitle": "Không có mục JavaScript runtime",
+        "emptyDescription": "Không tìm thấy ký hiệu JavaScript hoặc schema dùng chung đã công bố trong hợp đồng đã giải quyết.",
+        "errorTitle": "Lỗi inventory JavaScript",
+        "errorDescription": "Không thể chuẩn hóa inventory JavaScript từ hợp đồng gói.",
+        "filterEmpty": "Không có mục JavaScript runtime nào khớp bộ lọc hiện tại.",
+        "countOne": "{count} mục JavaScript runtime đã công bố từ hợp đồng gói.",
+        "countMany": "{count} mục JavaScript runtime đã công bố từ hợp đồng gói."
+      }
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "Tài liệu CLI cho agent factory",
@@ -140,7 +249,7 @@
     "glossarySectionDescription": "Trang thuật ngữ định nghĩa từ vựng ngắn về factory và CLI để phần còn lại của tài liệu dễ đọc hơn.",
     "glossarySectionLinkLabel": "Duyệt toàn bộ thuật ngữ",
     "referencesSectionTitle": "Tham chiếu",
-    "referencesSectionDescription": "Trang tham chiếu liệt kê schema, hợp đồng, và các bề mặt tra cứu khác cho chủ đề factory.",
+    "referencesSectionDescription": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
     "referencesSectionLinkLabel": "Duyệt tất cả trang tham chiếu",
     "factoriesSectionTitle": "Factory",
     "factoriesSectionDescription": "Trang factory mô tả các bề mặt factory đã đóng gói và cách cấu hình, chạy chúng.",
@@ -186,7 +295,7 @@
   },
   "referencesIndex": {
     "title": "Tham chiếu",
-    "description": "Các trang tham chiếu đã xuất bản liệt kê schema, hợp đồng, và các bề mặt tra cứu khác cho chủ đề factory.",
+    "description": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
     "listLabel": "Các mục tham chiếu",
     "emptyTitle": "Chưa có mục tham chiếu nào",
     "emptyDescription": "Các trang tham chiếu đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",

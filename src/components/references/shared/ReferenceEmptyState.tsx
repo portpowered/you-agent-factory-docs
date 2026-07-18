@@ -3,6 +3,7 @@ import {
   AlertPanelText,
   AlertPanelTitle,
 } from "@you-agent-factory/components/feedback";
+import { formatReferenceChromeTemplate } from "@/lib/i18n/reference-chrome-labels";
 import { cn } from "@/lib/utils";
 import { referenceFamilyLabel } from "./reference-status-labels";
 import type { ReferenceEmptyStateProps } from "./types";
@@ -15,8 +16,11 @@ export function ReferenceEmptyState({
   title,
   description,
   family,
+  chrome,
   className,
 }: ReferenceEmptyStateProps) {
+  const familyWithLabel = chrome?.badge.familyWithLabel ?? "Family: {family}";
+
   return (
     <AlertPanel
       className={cn(className)}
@@ -28,7 +32,9 @@ export function ReferenceEmptyState({
       <AlertPanelText>{description}</AlertPanelText>
       {family !== undefined ? (
         <AlertPanelText variant="supporting">
-          Family: {referenceFamilyLabel(family)}
+          {formatReferenceChromeTemplate(familyWithLabel, {
+            family: referenceFamilyLabel(family, chrome),
+          })}
         </AlertPanelText>
       ) : null}
     </AlertPanel>

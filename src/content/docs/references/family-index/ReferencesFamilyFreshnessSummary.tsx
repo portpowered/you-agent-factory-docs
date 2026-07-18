@@ -9,26 +9,39 @@
 
 import { ReferenceErrorState } from "@/components/references/shared";
 import type { PageMessages } from "@/lib/content/schemas";
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
 import type { ReferencesFamilyFreshnessSummary } from "./load-references-family-freshness";
 
 type ReferencesFamilyFreshnessSummaryProps = {
   freshness: ReferencesFamilyFreshnessSummary;
   messages: PageMessages;
+  chrome: ReferenceChromeMessages;
 };
 
 export function ReferencesFamilyFreshnessSummaryView({
   freshness,
   messages,
+  chrome,
 }: ReferencesFamilyFreshnessSummaryProps) {
   const section = messages.sections?.freshness;
   const unavailable = messages.callouts?.freshnessUnavailable;
+
+  if (!section?.title) {
+    throw new Error(
+      "References family index messages must define sections.freshness.title for collection chrome.",
+    );
+  }
+  if (!unavailable?.title || !unavailable.body) {
+    throw new Error(
+      "References family index messages must define callouts.freshnessUnavailable with title and body.",
+    );
+  }
+
   const headingId = "references-family-freshness-heading";
-  const title = section?.title ?? "Package freshness";
-  const unavailableTitle =
-    unavailable?.title ?? "Package freshness unavailable";
-  const unavailableDescription =
-    unavailable?.body ??
-    "The published API package manifest could not be read for this build. Contract surface cards below remain available; package identity and version appear here when the manifest resolves.";
+  const title = section.title;
+  const unavailableTitle = unavailable.title;
+  const unavailableDescription = unavailable.body;
+  const badge = chrome.badge;
 
   return (
     <section
@@ -44,14 +57,14 @@ export function ReferencesFamilyFreshnessSummaryView({
       >
         {title}
       </h2>
-      {section?.body && freshness.status === "ready" ? (
+      {section.body && freshness.status === "ready" ? (
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           {section.body}
         </p>
       ) : null}
       {freshness.status === "ready" ? (
         <aside
-          aria-label={`Package freshness: ${freshness.packageId} ${freshness.packageVersion}, source commit ${freshness.sourceCommit}`}
+          aria-label={`${title}: ${freshness.packageId} ${freshness.packageVersion}, ${badge.sourceCommit} ${freshness.sourceCommit}`}
           className="mt-4 flex flex-col gap-2 rounded-md border border-border bg-muted/40 px-3 py-2.5 text-sm text-foreground"
           data-package-id={freshness.packageId}
           data-package-version={freshness.packageVersion}
@@ -62,7 +75,7 @@ export function ReferencesFamilyFreshnessSummaryView({
           <dl className="m-0 grid gap-1.5 sm:grid-cols-[auto_1fr] sm:gap-x-3">
             <div className="contents">
               <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Package
+                {badge.package}
               </dt>
               <dd className="m-0 break-all font-mono text-xs">
                 {freshness.packageId}
@@ -70,7 +83,7 @@ export function ReferencesFamilyFreshnessSummaryView({
             </div>
             <div className="contents">
               <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Package version
+                {badge.packageVersion}
               </dt>
               <dd className="m-0 font-mono text-xs">
                 {freshness.packageVersion}
@@ -78,7 +91,7 @@ export function ReferencesFamilyFreshnessSummaryView({
             </div>
             <div className="contents">
               <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Source commit
+                {badge.sourceCommit}
               </dt>
               <dd className="m-0 break-all font-mono text-xs">
                 {freshness.sourceCommit}
@@ -86,7 +99,7 @@ export function ReferencesFamilyFreshnessSummaryView({
             </div>
             <div className="contents">
               <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Source artifact
+                {badge.sourceArtifact}
               </dt>
               <dd className="m-0 break-all font-mono text-xs">
                 {freshness.publicArtifactId}
@@ -97,6 +110,7 @@ export function ReferencesFamilyFreshnessSummaryView({
       ) : (
         <div className="mt-4">
           <ReferenceErrorState
+            chrome={chrome}
             description={unavailableDescription}
             detail={freshness.reason}
             title={unavailableTitle}

@@ -66,6 +66,7 @@ import {
   type LocalizedRouteDestination,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
+import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { buildHomeTableOfContents } from "@/lib/navigation/home-page-toc";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
@@ -334,6 +335,7 @@ export async function renderReferencesFamilyIndexPage(
   locale: SiteLocale = defaultLocale,
 ) {
   const uiMessages = await loadUiMessages(locale);
+  const referenceChrome = resolveReferenceChromeMessages(uiMessages);
   const index = await loadReferencesFamilyIndex(locale);
   const freshness = loadReferencesFamilyFreshnessSummary();
   const title = index.messages.title || uiMessages.referencesIndex.title;
@@ -345,8 +347,14 @@ export async function renderReferencesFamilyIndexPage(
       <DocsTitle>{title}</DocsTitle>
       <DocsDescription>{description}</DocsDescription>
       <DocsBody>
-        <DocsPageProviders messages={index.messages} assets={index.assets}>
+        <DocsPageProviders
+          assets={index.assets}
+          locale={locale}
+          messages={index.messages}
+          referenceChrome={referenceChrome}
+        >
           <ReferencesFamilyIndex
+            chrome={referenceChrome}
             freshness={freshness}
             messages={index.messages}
           />
