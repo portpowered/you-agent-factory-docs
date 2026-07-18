@@ -102,6 +102,21 @@ export {
   type SchemaRefLinkProps,
 } from "./schema-ref-link";
 export {
+  SchemaReference,
+  type SchemaReferenceProps,
+} from "./schema-reference";
+export {
+  collectSchemaReferenceCatalog,
+  findSchemaDefinitionByAddress,
+  type ResolveSchemaReferenceInput,
+  resolveSchemaReferenceInput,
+  type SchemaReferenceMode,
+  type SchemaReferenceReadyResolution,
+  type SchemaReferenceResolution,
+  type SchemaReferenceStatusResolution,
+  schemaAddressesEqual,
+} from "./schema-reference-display";
+export {
   SchemaRequiredBadge,
   type SchemaRequiredBadgeProps,
 } from "./schema-required-badge";

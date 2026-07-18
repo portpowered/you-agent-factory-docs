@@ -51,6 +51,9 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-filter-display.ts` | Pure definition / field-path filter projectors (no canonical mutation) |
 | `src/components/references/schema/schema-filter.tsx` | Keyboard-accessible filter control + filtered definition/field results |
 | `src/components/references/schema/schema-filter.test.tsx` | Filter match, empty-filter status, clear/reset, non-mutation proofs |
+| `src/components/references/schema/schema-reference-display.ts` | Pure complete/addressed resolution + catalog/address lookup helpers |
+| `src/components/references/schema/schema-reference.tsx` | Top-level SchemaReference composing status, definition, filter, catalog |
+| `src/components/references/schema/schema-reference.test.tsx` | Complete vs addressed mode, missing-address invalid, composition wiring |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -103,6 +106,11 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   Active queries with zero hits use `SchemaStatus` `kind="empty"` (empty-filter
   message), not a blank panel. Clear resets via the Clear button or emptying
   the search input.
+- Top-level entry: `SchemaReference` + `resolveSchemaReferenceInput` compose
+  status, `SchemaDefinition`, `SchemaFilter`, and catalog listing. Pass `root`
+  (+ optional `definitions`) for complete mode, or `address` / `definition` for
+  addressed mode on the same component. Missing addresses resolve to `invalid`
+  status (never throw). Root pointers must be anchor-safe (not bare `/`).
 
 ## Verification preference
 
