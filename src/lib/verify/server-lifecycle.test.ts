@@ -29,6 +29,7 @@ import {
   getChildOutputTail,
   hasCompleteNextProductionBuild,
   hasNextProductionBuild,
+  isRetryableVerifyServerStartupError,
   killManagedChild,
   NEXT_BUILD_REQUIRED_MESSAGE,
   normalizeVerifyBaseUrl,
@@ -748,6 +749,47 @@ process.exit(42);
     }
   });
 
+  test("retries when the first production spawn exits with EPIPE before ready", async () => {
+    const projectRoot = mkdtempSync(join(tmpdir(), "verify-epipe-retry-"));
+    mkdirSync(join(projectRoot, ".next"));
+
+    const STUB_EPIPE_EXIT_SCRIPT = `
+console.error("Error: write EPIPE");
+console.error("code: 'EPIPE'");
+process.exit(1);
+`;
+
+    let attempts = 0;
+
+    try {
+      const session = await acquireVerifyServerSession({
+        projectRoot,
+        registerProcessSignals: false,
+        spawnProductionServer: (port, cwd) => {
+          attempts += 1;
+          if (attempts === 1) {
+            const child = spawn("bun", ["-e", STUB_EPIPE_EXIT_SCRIPT], {
+              cwd,
+              stdio: ["ignore", "pipe", "pipe"],
+              detached: true,
+            });
+            spawnedChildren.push(child);
+            return child;
+          }
+          const child = spawnStubProductionServer(port, cwd);
+          spawnedChildren.push(child);
+          return child;
+        },
+      });
+
+      expect(attempts).toBe(2);
+      expect(await httpGetStatus(`${session.baseUrl}/`)).toBe(200);
+      await session.cleanup();
+    } finally {
+      rmSync(projectRoot, { recursive: true, force: true });
+    }
+  }, 15_000);
+
   test("fails with a clear message and cleans up when startup times out", async () => {
     const projectRoot = mkdtempSync(join(tmpdir(), "verify-start-timeout-"));
     mkdirSync(join(projectRoot, ".next"));
@@ -1002,6 +1044,40 @@ describe("pickListenPort integration", () => {
     const port = await pickListenPort();
     expect(port).toBeGreaterThanOrEqual(3100);
     expect(port).toBeLessThanOrEqual(3999);
+  });
+});
+
+describe("isRetryableVerifyServerStartupError", () => {
+  test("treats EPIPE and EADDRINUSE early exits as retryable", () => {
+    expect(
+      isRetryableVerifyServerStartupError(
+        new Error(
+          "Production server exited before becoming ready (port 3100)\nChild output tail:\nError: write EPIPE\ncode: 'EPIPE'",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      isRetryableVerifyServerStartupError(
+        new Error(
+          "Production server exited before becoming ready (port 3100)\nChild output tail:\nError: listen EADDRINUSE: address already in use",
+        ),
+      ),
+    ).toBe(true);
+  });
+
+  test("does not retry unrelated early exits", () => {
+    expect(
+      isRetryableVerifyServerStartupError(
+        new Error(
+          "Production server exited before becoming ready (port 3100)\nChild output tail:\nfatal production boot error",
+        ),
+      ),
+    ).toBe(false);
+    expect(
+      isRetryableVerifyServerStartupError(
+        new Error("Server did not become ready"),
+      ),
+    ).toBe(false);
   });
 });
 

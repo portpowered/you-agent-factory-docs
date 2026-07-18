@@ -1270,6 +1270,14 @@ When extending `supportedLocales` (for example adding `zh-CN`):
   may still fail under Turbopack/`node_modules` hoist — prefer `bun run build`
   then `make test-integration` (or the focused browser file under the same env)
   for this proof.
+* Under heavier W12+ factories/workers/references exports, CI can flake when
+  `next start` writes to a closed parent stdout pipe (`Error: write EPIPE` via
+  Next `console-exit`) during `acquireVerifyServerSession` for
+  `high-traffic-locales-browser.test.ts`. `defaultSpawnProductionServer` now
+  redirects stdout/stderr to a temp log (so the child cannot EPIPE a parent
+  pipe), `isRetryableVerifyServerStartupError` treats EPIPE/EADDRINUSE early
+  exits as retryable, and `attachChildOutputCapture` ignores parent-side pipe
+  resets. Prefer those harness fixes over widening Playwright timeouts alone.
 
 ## Representative migrated consumers
 
