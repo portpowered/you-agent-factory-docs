@@ -71,6 +71,13 @@ async function loadRouteFamilyPageMdxComponents(
     return mod.pageMdxComponents ?? {};
   }
 
+  if (section === "factories" && slug === "global-configuration") {
+    const mod = await import(
+      "@/content/docs/factories/global-configuration/page-mdx-components"
+    );
+    return mod.pageMdxComponents ?? {};
+  }
+
   return {};
 }
 
