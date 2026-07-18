@@ -1028,8 +1028,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `workstations/logical-move` / `documentation.workstations-logical-move`
   (`workstation:LOGICAL_MOVE`, requires `worker:HOSTED_WORKER`, selects
   exclusive `guards`, misuse = `classificationRoutes` from
-  CLASSIFIER_WORKSTATION; keep distinct from `classifier`). Mirror
-  this bundle for later WorkstationType pages with
+  CLASSIFIER_WORKSTATION; keep distinct from `classifier`);
+  `workstations/classifier` / `documentation.workstations-classifier`
+  (`workstation:CLASSIFIER_WORKSTATION`, requires `worker:HOSTED_WORKER`,
+  selects exclusive `classificationRoutes`, excludes `outputs` /
+  `onContinue` / `onRejection`, misuse = `outputs`; keep distinct from
+  `logical-move`). Mirror this bundle for WorkstationType pages with
   `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
