@@ -1,0 +1,14 @@
+{
+  "id": "reference.references",
+  "slug": "references",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["references family index", "reference family"],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T00:00:00.000Z",
+  "updatedAt": "2026-07-18T00:00:00.000Z"
+}
