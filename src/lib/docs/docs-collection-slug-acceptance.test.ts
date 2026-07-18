@@ -76,6 +76,61 @@ describe("docs collection slug acceptance", () => {
     expect(isAcceptedDocsSourceSection("glossary")).toBe(true);
   });
 
+  test("accepts W05 direct route-family prefixes as matching collections", () => {
+    expect(resolveDocsCollectionIdFromDocsSlug("references/api")).toBe(
+      "references",
+    );
+    expect(resolveDocsCollectionIdFromDocsSlug("factories/packaged")).toBe(
+      "factories",
+    );
+    expect(resolveDocsCollectionIdFromDocsSlug("workers/agent")).toBe(
+      "workers",
+    );
+    expect(
+      resolveDocsCollectionIdFromDocsSlug("workstations/inference-run"),
+    ).toBe("workstations");
+
+    expect(docsSlugBelongsToCollection("references/api", "references")).toBe(
+      true,
+    );
+    expect(docsSlugBelongsToCollection("factories/packaged", "factories")).toBe(
+      true,
+    );
+    expect(docsSlugBelongsToCollection("workers/agent", "workers")).toBe(true);
+    expect(
+      docsSlugBelongsToCollection("workstations/inference-run", "workstations"),
+    ).toBe(true);
+
+    expect(isAcceptedDocsSourceSection("references")).toBe(true);
+    expect(isAcceptedDocsSourceSection("factories")).toBe(true);
+    expect(isAcceptedDocsSourceSection("workers")).toBe(true);
+    expect(isAcceptedDocsSourceSection("workstations")).toBe(true);
+  });
+
+  test("preserves CLI collection acceptance for guides/concepts/techniques/documentation", () => {
+    expect([...CLI_DOCS_COLLECTION_IDS]).toEqual([
+      "guides",
+      "concepts",
+      "techniques",
+      "documentation",
+    ]);
+    expect(
+      docsSlugBelongsToCliCollection("guides/getting-started", "guides"),
+    ).toBe(true);
+    expect(
+      docsSlugBelongsToCliCollection("concepts/attention-overview", "concepts"),
+    ).toBe(true);
+    expect(
+      docsSlugBelongsToCliCollection("techniques/prompt-caching", "techniques"),
+    ).toBe(true);
+    expect(
+      docsSlugBelongsToCliCollection(
+        "documentation/cli-reference",
+        "documentation",
+      ),
+    ).toBe(true);
+  });
+
   test("rejects bare section names and unknown prefixes", () => {
     expect(resolveDocsCollectionIdFromDocsSlug("guides")).toBeNull();
     expect(resolveDocsCollectionIdFromDocsSlug("unknown/page")).toBeNull();

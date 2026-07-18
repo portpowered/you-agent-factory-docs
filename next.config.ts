@@ -18,6 +18,16 @@ const docsSearchBootstrapFrom = bakeDocsSearchStaticBootstrapFromEnv(
   process.env,
 );
 
+const enableOpenApiSpike = process.env.ENABLE_OPENAPI_SPIKE === "1";
+const openApiSpikeContentModule = path.resolve(
+  projectRoot,
+  "src/app/(dev)/references-openapi-spike/spike-page-content.tsx",
+);
+const openApiSpikeContentStubModule = path.resolve(
+  projectRoot,
+  "src/app/(dev)/references-openapi-spike/spike-page-content.stub.tsx",
+);
+
 const nextConfig: NextConfig = {
   ...resolveNextConfigForBuildMode(),
   // Package ships TypeScript source through its export map (no dist/); Next must transpile it.
@@ -27,6 +37,27 @@ const nextConfig: NextConfig = {
   },
   turbopack: {
     root: projectRoot,
+  },
+  /**
+   * Keep the W01 OpenAPI spike out of production static-export budgets unless
+   * ENABLE_OPENAPI_SPIKE=1. CI build uses webpack (`next build --webpack`).
+   */
+  webpack: (config, { dev, webpack }) => {
+    if (!dev && !enableOpenApiSpike) {
+      config.plugins = config.plugins ?? [];
+      config.plugins.push(
+        new webpack.NormalModuleReplacementPlugin(
+          /[\\/]references-openapi-spike[\\/]spike-page-content$/,
+          openApiSpikeContentStubModule,
+        ),
+      );
+      config.resolve = config.resolve ?? {};
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        [openApiSpikeContentModule]: openApiSpikeContentStubModule,
+      };
+    }
+    return config;
   },
 };
 

@@ -5,6 +5,7 @@ export const registryKindSchema = z.enum([
   "guide",
   "technique",
   "documentation",
+  "reference",
   "classification",
   "dataset",
   "hardware",
@@ -21,6 +22,7 @@ export const ontologyParticipantKindSchema = z.enum([
   "guide",
   "technique",
   "documentation",
+  "reference",
   "dataset",
 ]);
 

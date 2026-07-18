@@ -138,7 +138,19 @@
     "documentationSectionLinkLabel": "ドキュメントページをすべて見る",
     "glossarySectionTitle": "用語集",
     "glossarySectionDescription": "用語集ページでは、ファクトリーと CLI まわりの短い語彙を定義し、ドキュメント全体を読みやすくします。",
-    "glossarySectionLinkLabel": "用語集をすべて見る"
+    "glossarySectionLinkLabel": "用語集をすべて見る",
+    "referencesSectionTitle": "リファレンス",
+    "referencesSectionDescription": "リファレンスページでは、スキーマ、契約、その他のファクトリー主題の参照面をカタログします。",
+    "referencesSectionLinkLabel": "リファレンスページをすべて見る",
+    "factoriesSectionTitle": "ファクトリー",
+    "factoriesSectionDescription": "ファクトリーのページでは、パッケージ化されたファクトリー面と、その設定・実行のしかたを説明します。",
+    "factoriesSectionLinkLabel": "ファクトリーページをすべて見る",
+    "workersSectionTitle": "ワーカー",
+    "workersSectionDescription": "ワーカーのページでは、ワーカー種別と、それらがファクトリー作業を実行する仕組みを説明します。",
+    "workersSectionLinkLabel": "ワーカーページをすべて見る",
+    "workstationsSectionTitle": "ワークステーション",
+    "workstationsSectionDescription": "ワークステーションのページでは、ワークステーションの役割と、ファクトリー実行への参加のしかたを説明します。",
+    "workstationsSectionLinkLabel": "ワークステーションページをすべて見る"
   },
   "conceptsIndex": {
     "title": "概念",
@@ -170,6 +182,38 @@
     "listLabel": "ドキュメント項目",
     "emptyTitle": "ドキュメント項目はまだありません",
     "emptyDescription": "公開されたドキュメントページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
+    "emptyHomeLink": "ホームに戻る"
+  },
+  "referencesIndex": {
+    "title": "リファレンス",
+    "description": "公開済みのリファレンスページでは、スキーマ、契約、その他のファクトリー主題の参照面をカタログします。",
+    "listLabel": "リファレンス項目",
+    "emptyTitle": "リファレンス項目はまだありません",
+    "emptyDescription": "公開されたリファレンスページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
+    "emptyHomeLink": "ホームに戻る"
+  },
+  "factoriesIndex": {
+    "title": "ファクトリー",
+    "description": "公開済みのファクトリーページでは、パッケージ化されたファクトリー面と、その設定・実行のしかたを説明します。",
+    "listLabel": "ファクトリー項目",
+    "emptyTitle": "ファクトリー項目はまだありません",
+    "emptyDescription": "公開されたファクトリーページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
+    "emptyHomeLink": "ホームに戻る"
+  },
+  "workersIndex": {
+    "title": "ワーカー",
+    "description": "公開済みのワーカーページでは、ワーカー種別と、それらがファクトリー作業を実行する仕組みを説明します。",
+    "listLabel": "ワーカー項目",
+    "emptyTitle": "ワーカー項目はまだありません",
+    "emptyDescription": "公開されたワーカーページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
+    "emptyHomeLink": "ホームに戻る"
+  },
+  "workstationsIndex": {
+    "title": "ワークステーション",
+    "description": "公開済みのワークステーションページでは、ワークステーションの役割と、ファクトリー実行への参加のしかたを説明します。",
+    "listLabel": "ワークステーション項目",
+    "emptyTitle": "ワークステーション項目はまだありません",
+    "emptyDescription": "公開されたワークステーションページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
     "emptyHomeLink": "ホームに戻る"
   },
   "glossaryIndex": {
@@ -222,6 +266,7 @@
     "technique": "手法",
     "documentation": "ドキュメント",
     "glossary": "用語集",
+    "reference": "リファレンス",
     "blog": "ブログ"
   }
 }

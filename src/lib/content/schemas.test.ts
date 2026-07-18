@@ -10,6 +10,7 @@ import {
   pageFrontmatterSchema,
   pageKindSchema,
   pageMessagesSchema,
+  referenceRecordSchema,
   registryKindSchema,
   registryRecordSchema,
   tagRecordSchema,
@@ -250,11 +251,12 @@ describe("registry schemas", () => {
     expect(result.success).toBe(false);
   });
 
-  test("accepts CLI guide, technique, and documentation registry kinds", () => {
+  test("accepts CLI guide, technique, documentation, and reference registry kinds", () => {
     for (const [kind, schema] of [
       ["guide", guideRecordSchema],
       ["technique", techniqueRecordSchema],
       ["documentation", documentationRecordSchema],
+      ["reference", referenceRecordSchema],
     ] as const) {
       const result = schema.safeParse({
         ...validBaseFields,
@@ -379,6 +381,7 @@ describe("page schemas", () => {
       "concept",
       "technique",
       "documentation",
+      "reference",
     ] as const) {
       expect(pageKindSchema.safeParse(kind).success).toBe(true);
       expect(

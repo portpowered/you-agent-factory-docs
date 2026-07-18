@@ -54,9 +54,15 @@ assets.json                       source.config.ts
 ```
 
 Primary factory collections under `src/content/docs` are `guides`, `concepts`,
-`techniques`, `documentation`, and `glossary`, plus `blog` as a separate
-narrative surface. See [data-model.md](./data-model.md) for the storage contract
-and [site-fundamentals.md](./site-fundamentals.md) for the product shell.
+`techniques`, `documentation`, and `glossary`, plus the four direct public route
+families `references`, `factories`, `workers`, and `workstations`, and `blog` as
+a separate narrative surface. Nested child slugs under any docs family are
+supported (for example `/docs/workers/<parent>/<child>`). **Route slug is
+independent from frontmatter/registry kind** — `references` uses kind
+`reference`, while `factories` / `workers` / `workstations` reuse kind
+`documentation` under their own route prefixes. See
+[data-model.md](./data-model.md) for the storage contract and
+[site-fundamentals.md](./site-fundamentals.md) for the product shell.
 
 ## Content Layers
 
@@ -97,7 +103,14 @@ src/content/docs/
     harness-support/
     configuration/
   glossary/
+  references/
+  factories/
+  workers/
+  workstations/
 ```
+
+Nested route-family pages use additional path segments under the family root
+(for example `workers/agent/variant/page.mdx` → `/docs/workers/agent/variant`).
 
 Blog posts live under:
 
@@ -170,10 +183,14 @@ src/content/registry/
 ```
 
 Factory-facing record kinds for new product pages are `guide`, `concept`,
-`technique`, and `documentation` (for example `guide.getting-started`,
-`concept.harness`, `technique.ralph`, `documentation.cli`,
-`documentation.harness-support`). Glossary pages use frontmatter
-`kind: "glossary"` with a backing `concept.<slug>` record.
+`technique`, `documentation`, and `reference` (for example
+`guide.getting-started`, `concept.harness`, `technique.ralph`,
+`documentation.cli`, `documentation.harness-support`,
+`reference.example-reference`). Glossary pages use frontmatter
+`kind: "glossary"` with a backing `concept.<slug>` record. Pages under the
+`factories`, `workers`, and `workstations` route families still use
+`documentation.*` registry records — the public route slug does not require a
+matching registry kind name.
 
 The registry stores stable IDs, slugs, aliases, tags, relationships, citations,
 and type-specific fields. It should be easy for agents to generate and easy for

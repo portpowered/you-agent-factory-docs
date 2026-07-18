@@ -5,8 +5,8 @@ message-key references, and asset references. Localized prose lives in colocated
 `messages/<locale>.json` files next to each page.
 
 This site is **you-agent-factory docs**. New product pages start from rewrite-era
-factory templates (`guide`, `technique`, `documentation`, `concept`, `glossary`,
-and `blog-post`). Atlas authoring templates for model, module, paper,
+factory templates (`guide`, `technique`, `documentation`, `reference`, `concept`,
+`glossary`, and `blog-post`). Atlas authoring templates for model, module, paper,
 training-regime, and system are removed from the maintained inventory.
 
 For canonical docs pages, templates should be production-shaped. They should not
@@ -29,6 +29,7 @@ Use the page-kind template that matches the factory collection:
 docs/templates/guide.mdx
 docs/templates/technique.mdx
 docs/templates/documentation.mdx
+docs/templates/reference.mdx
 docs/templates/concept.mdx
 docs/templates/glossary.mdx
 docs/templates/blog-post.mdx
@@ -38,14 +39,24 @@ docs/templates/blog-post.mdx
 | --- | --- | --- |
 | `guide` | `/docs/guides/<slug>` | `guide.<slug>` |
 | `technique` | `/docs/techniques/<slug>` | `technique.<slug>` |
-| `documentation` | `/docs/documentation/<slug>` | `documentation.<slug>` |
+| `documentation` | `/docs/documentation/<slug>` (also factories/workers/workstations — see below) | `documentation.<slug>` |
+| `reference` | `/docs/references/<slug>` | `reference.<slug>` |
 | `concept` | `/docs/concepts/<slug>` | `concept.<slug>` |
 | `glossary` | `/docs/glossary/<slug>` | `concept.<slug>` (frontmatter `kind: "glossary"`) |
 | `blog-post` | `/blog/<slug>` | related docs via `relatedDocIds` |
 
-Factory collections use matching route prefixes under `src/content/docs/`. Those
+Factory collections use route prefixes under `src/content/docs/`. Those
 templates follow the same production-shaped contract: structure in MDX, prose
 keys in messages, authoring guidance in `.content.md` sidecars only.
+
+**Route slug is independent from frontmatter/registry kind.** Direct public
+route families `references`, `factories`, `workers`, and `workstations` are
+first-class docs collections. `references` uses kind `reference`. `factories`,
+`workers`, and `workstations` reuse kind `documentation` and the
+`documentation.mdx` template while living under `/docs/factories/`,
+`/docs/workers/`, and `/docs/workstations/` (including nested child slugs such
+as `/docs/workers/<parent>/<child>`). Do not invent parallel page kinds just to
+match those URL prefixes.
 
 Glossary entries use `glossary.mdx` with colocated content under
 `src/content/docs/glossary/<slug>/` and render at `/docs/glossary/<slug>`. They
@@ -74,10 +85,10 @@ in
 and should not be presented as the preferred path for new starter content unless
 a current compatibility workflow still requires them.
 
-Guide, technique, and documentation records are base records with optional
-ontology membership. Placeholder registry ids use the matching namespace, for
-example `guide.getting-started`, `technique.ralph`, or
-`documentation.harness-support`.
+Guide, technique, documentation, and reference records are base records with
+optional ontology membership. Placeholder registry ids use the matching
+namespace, for example `guide.getting-started`, `technique.ralph`,
+`documentation.harness-support`, or `reference.example-reference`.
 
 ## Required Pattern
 

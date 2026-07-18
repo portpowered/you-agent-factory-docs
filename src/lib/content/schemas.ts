@@ -87,6 +87,14 @@ export const documentationRecordSchema = z.object({
   ...ontologyMembershipShape,
 });
 
+/** CLI reference registry records (1:1 with page kind `reference`). */
+export const referenceRecordSchema = z.object({
+  ...baseRecordShape,
+  kind: z.literal("reference"),
+  ...releaseMetadataShape,
+  ...ontologyMembershipShape,
+});
+
 export const datasetRecordSchema = z.object({
   ...baseRecordShape,
   kind: z.literal("dataset"),
@@ -113,6 +121,7 @@ export const generatedPageBundleRegistryRecordSchema = z.discriminatedUnion(
     guideRecordSchema,
     techniqueRecordSchema,
     documentationRecordSchema,
+    referenceRecordSchema,
   ],
 );
 
@@ -254,6 +263,7 @@ export const registryRecordSchema = z.discriminatedUnion("kind", [
   guideRecordSchema,
   techniqueRecordSchema,
   documentationRecordSchema,
+  referenceRecordSchema,
   classificationRecordSchema,
   datasetRecordSchema,
   organizationRecordSchema,
@@ -268,6 +278,7 @@ export const pageKindSchema = z.enum([
   "technique",
   "documentation",
   "glossary",
+  "reference",
 ]);
 
 export const blogPostFrontmatterSchema = z.object({
@@ -484,6 +495,7 @@ export type ConceptRecord = z.infer<typeof conceptRecordSchema>;
 export type GuideRecord = z.infer<typeof guideRecordSchema>;
 export type TechniqueRecord = z.infer<typeof techniqueRecordSchema>;
 export type DocumentationRecord = z.infer<typeof documentationRecordSchema>;
+export type ReferenceRecord = z.infer<typeof referenceRecordSchema>;
 export type DatasetRecord = z.infer<typeof datasetRecordSchema>;
 export type OrganizationRecord = z.infer<typeof organizationRecordSchema>;
 export type GeneratedPageBundleRegistryRecord = z.infer<

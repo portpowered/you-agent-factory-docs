@@ -167,6 +167,18 @@ export type BrowseIndexMessages = {
   glossarySectionTitle: string;
   glossarySectionDescription: string;
   glossarySectionLinkLabel: string;
+  referencesSectionTitle: string;
+  referencesSectionDescription: string;
+  referencesSectionLinkLabel: string;
+  factoriesSectionTitle: string;
+  factoriesSectionDescription: string;
+  factoriesSectionLinkLabel: string;
+  workersSectionTitle: string;
+  workersSectionDescription: string;
+  workersSectionLinkLabel: string;
+  workstationsSectionTitle: string;
+  workstationsSectionDescription: string;
+  workstationsSectionLinkLabel: string;
 };
 
 /** Dedicated search entry page copy within the docs surface. */
@@ -214,12 +226,16 @@ export type DocsMessages = {
   pageKind: Record<string, string>;
 };
 
-/** Factory collection index landing pages (guides, concepts, techniques, documentation). */
+/** Factory collection index landing pages (guides, concepts, techniques, documentation, and W05 direct route families). */
 export type FactoryCollectionIndexMessages = {
   conceptsIndex: SectionIndexMessages;
   guidesIndex: SectionIndexMessages;
   techniquesIndex: SectionIndexMessages;
   documentationIndex: SectionIndexMessages;
+  referencesIndex: SectionIndexMessages;
+  factoriesIndex: SectionIndexMessages;
+  workersIndex: SectionIndexMessages;
+  workstationsIndex: SectionIndexMessages;
 };
 
 /** Tag index, landing, and category labels for factory docs surfaces. */
@@ -254,6 +270,10 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "guidesIndex",
   "techniquesIndex",
   "documentationIndex",
+  "referencesIndex",
+  "factoriesIndex",
+  "workersIndex",
+  "workstationsIndex",
   "glossaryIndex",
   "architectureIndex",
   "blogIndex",

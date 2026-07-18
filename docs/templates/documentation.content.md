@@ -4,6 +4,16 @@ Use `documentation.mdx` as the production page structure. Put localized reader-f
 
 Follow [docs writing standards](../../factory/docs/standards/docs-writing-standards.md) for layperson tone and isolation-first writing.
 
+## Route families that reuse this kind
+
+`documentation` pages normally live under `/docs/documentation/<slug>`. The
+direct route families `factories`, `workers`, and `workstations` also use
+frontmatter/registry kind `documentation` and this template, while placing
+bundles under `src/content/docs/{factories,workers,workstations}/` so public
+URLs stay `/docs/factories/…`, `/docs/workers/…`, and `/docs/workstations/…`
+(including nested child slugs). Route slug stays independent from kind — see
+`reference.content.md` for the `references` family (`kind: reference`).
+
 ## Required Content
 
 * `title`: canonical documentation topic name.

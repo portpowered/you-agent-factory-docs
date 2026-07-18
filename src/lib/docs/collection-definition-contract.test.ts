@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  DIRECT_DOCS_ROUTE_FAMILY_IDS,
   DOCS_COLLECTION_IDS,
   DOCS_COLLECTION_SIDEBAR_GROUPING_RESOLVER_IDS,
   type DocsCollectionDefinition,
@@ -75,6 +76,16 @@ describe("collection definition contract", () => {
       "techniques",
       "documentation",
       "glossary",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
+    ]);
+    expect(DIRECT_DOCS_ROUTE_FAMILY_IDS).toEqual([
+      "references",
+      "factories",
+      "workers",
+      "workstations",
     ]);
     for (const retiredId of [
       "modules",
@@ -84,6 +95,7 @@ describe("collection definition contract", () => {
       "systems",
     ] as const) {
       expect(DOCS_COLLECTION_IDS).not.toContain(retiredId);
+      expect(DIRECT_DOCS_ROUTE_FAMILY_IDS).not.toContain(retiredId);
     }
   });
 

@@ -121,7 +121,7 @@ updatedAt: "2026-06-20"
 
 describe("content runtime preparation", () => {
   test("publishes one authoritative completeness contract for all generated runtime outputs", () => {
-    expect(CONTENT_RUNTIME_COMPLETENESS_CONTRACT).toHaveLength(5);
+    expect(CONTENT_RUNTIME_COMPLETENESS_CONTRACT).toHaveLength(6);
     expect(CONTENT_RUNTIME_PREPARATION_STEPS).toBe(
       CONTENT_RUNTIME_COMPLETENESS_CONTRACT,
     );
@@ -163,6 +163,14 @@ describe("content runtime preparation", () => {
         outputPath: "src/lib/content/generated/table-registry.generated.ts",
         gitClassification: "committed",
         owningSurface: "table registry runtime payloads",
+      },
+      {
+        id: "api-package-consumed-hash-ledger",
+        command: ["bun", "run", "generate:api-package-consumed-hash-ledger"],
+        outputPath:
+          "src/lib/content/generated/api-package-consumed-hash-ledger.generated.ts",
+        gitClassification: "ignored",
+        owningSurface: "API package consumed-hash ledger",
       },
     ]);
   });
@@ -476,6 +484,7 @@ describe("content runtime preparation", () => {
       "published-docs-registry",
       "registry-runtime",
       "table-registry-runtime",
+      "api-package-consumed-hash-ledger",
     ]);
     expect(errors).toEqual([
       expect.stringContaining('Failed step "graph-registry-runtime"'),

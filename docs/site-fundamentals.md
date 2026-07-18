@@ -46,7 +46,10 @@ Use the same docs shell across these factory surfaces:
 | Search / tags | Discovery across the docs shell (header search and tag browsing) |
 
 Primary collections for rewrite-era content are `guides`, `concepts`,
-`techniques`, and `documentation`, plus glossary and blog. See
+`techniques`, and `documentation`, plus glossary, blog, and the direct public
+route families `references`, `factories`, `workers`, and `workstations`. Nested
+child slugs are supported under those families. Route slug remains independent
+from frontmatter/registry kind. See
 [documentation-site-pages-needed.md](./documentation-site-pages-needed.md) for
 the page inventory.
 

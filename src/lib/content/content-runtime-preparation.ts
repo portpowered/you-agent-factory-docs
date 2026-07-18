@@ -98,6 +98,14 @@ export const CONTENT_RUNTIME_COMPLETENESS_CONTRACT: readonly ContentRuntimePrepa
       gitClassification: "committed",
       owningSurface: "table registry runtime payloads",
     },
+    {
+      id: "api-package-consumed-hash-ledger",
+      command: ["bun", "run", "generate:api-package-consumed-hash-ledger"],
+      outputPath:
+        "src/lib/content/generated/api-package-consumed-hash-ledger.generated.ts",
+      gitClassification: "ignored",
+      owningSurface: "API package consumed-hash ledger",
+    },
   ] as const;
 
 export const CONTENT_RUNTIME_PREPARATION_STEPS =

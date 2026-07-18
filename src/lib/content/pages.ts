@@ -1,6 +1,7 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import path from "node:path";
 import { DOCS_ROOT } from "@/lib/content/content-paths";
+import { findDocsPageDirectories } from "@/lib/content/docs-page-directories";
 import {
   type PageFrontmatter,
   type PageMessages,
@@ -32,31 +33,6 @@ function parseFrontmatter(pageMdxPath: string): PageFrontmatter {
   }
 
   return pageFrontmatterSchema.parse(parseYamlFrontmatterBlock(match[1]));
-}
-
-function findPageDirectories(
-  rootDir: string,
-  relativeParts: string[] = [],
-): string[] {
-  if (!existsSync(rootDir)) {
-    return [];
-  }
-
-  const directories: string[] = [];
-  for (const entry of readdirSync(rootDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) {
-      continue;
-    }
-    const pageDir = path.join(rootDir, entry.name);
-    const nextParts = [...relativeParts, entry.name];
-    const pageMdx = path.join(pageDir, "page.mdx");
-    if (existsSync(pageMdx)) {
-      directories.push(pageDir);
-      continue;
-    }
-    directories.push(...findPageDirectories(pageDir, nextParts));
-  }
-  return directories;
 }
 
 export function docsUrlFromSlug(docsSlug: string, locale: SiteLocale): string {
@@ -113,14 +89,14 @@ function loadPublishedDocsPagesUncached(
   docsPageParseCount += 1;
   const pages: DocsPageSource[] = [];
 
-  for (const pageDir of findPageDirectories(rootDir)) {
+  for (const pageDir of findDocsPageDirectories(rootDir)) {
     const pageMdx = path.join(pageDir, "page.mdx");
     const frontmatter = parseFrontmatter(pageMdx);
     if (frontmatter.status !== "published") {
       continue;
     }
 
-    const docsSlug = path.relative(rootDir, pageDir);
+    const docsSlug = path.relative(rootDir, pageDir).replace(/\\/g, "/");
     const url = docsUrlFromSlug(docsSlug, locale);
     pages.push({
       pageDir,
@@ -141,7 +117,7 @@ function loadShippedLocalizedDocsPagesUncached(
   docsPageParseCount += 1;
   const pages: DocsPageSource[] = [];
 
-  for (const pageDir of findPageDirectories(rootDir)) {
+  for (const pageDir of findDocsPageDirectories(rootDir)) {
     const pageMdx = path.join(pageDir, "page.mdx");
     const frontmatter = parseFrontmatter(pageMdx);
     if (frontmatter.status !== "published") {
@@ -150,7 +126,7 @@ function loadShippedLocalizedDocsPagesUncached(
 
     if (
       !isDocsPageShippedForLocale(
-        path.relative(rootDir, pageDir),
+        path.relative(rootDir, pageDir).replace(/\\/g, "/"),
         locale,
         rootDir,
       )
@@ -158,7 +134,7 @@ function loadShippedLocalizedDocsPagesUncached(
       continue;
     }
 
-    const docsSlug = path.relative(rootDir, pageDir);
+    const docsSlug = path.relative(rootDir, pageDir).replace(/\\/g, "/");
     const url = docsUrlFromSlug(docsSlug, locale);
     pages.push({
       pageDir,

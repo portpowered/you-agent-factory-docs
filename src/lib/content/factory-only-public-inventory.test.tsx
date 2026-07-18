@@ -32,6 +32,10 @@ const FACTORY_DOCS_COLLECTION_IDS = [
   "techniques",
   "documentation",
   "glossary",
+  "references",
+  "factories",
+  "workers",
+  "workstations",
 ] as const;
 
 const FACTORY_BROWSE_COLLECTION_IDS = [

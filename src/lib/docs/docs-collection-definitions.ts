@@ -28,10 +28,12 @@ function collectionMessageKeys(
 
 /**
  * Canonical docs collection inventory.
- * Public factory collections only: guides, concepts, techniques,
- * documentation, and glossary. CLI collections ship with empty
- * starter/featured slug lists. Default browse order is the four CLI ids in
- * `DOCS_BROWSE_COLLECTION_IDS`.
+ * Public factory collections: guides, concepts, techniques, documentation,
+ * glossary, plus direct route families references, factories, workers, and
+ * workstations. CLI collections and the four direct route families ship with
+ * empty starter/featured slug lists. Default browse order remains the four CLI
+ * ids in `DOCS_BROWSE_COLLECTION_IDS` (new families are registered but not
+ * starred on the browse hub).
  */
 export const DOCS_COLLECTION_DEFINITIONS = [
   {
@@ -76,6 +78,38 @@ export const DOCS_COLLECTION_DEFINITIONS = [
     starterSlugs: ["glossary/token", "glossary/architecture"],
     messageKeys: collectionMessageKeys("glossary", "glossary"),
     sidebarGroupingResolverId: "glossary",
+  },
+  {
+    id: "references",
+    routeSlug: "references",
+    registryKind: "reference",
+    frontmatterKind: "reference",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("references", "references"),
+  },
+  {
+    id: "factories",
+    routeSlug: "factories",
+    registryKind: "documentation",
+    frontmatterKind: "documentation",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("factories", "factories"),
+  },
+  {
+    id: "workers",
+    routeSlug: "workers",
+    registryKind: "documentation",
+    frontmatterKind: "documentation",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("workers", "workers"),
+  },
+  {
+    id: "workstations",
+    routeSlug: "workstations",
+    registryKind: "documentation",
+    frontmatterKind: "documentation",
+    starterSlugs: [],
+    messageKeys: collectionMessageKeys("workstations", "workstations"),
   },
 ] as const satisfies readonly DocsCollectionDefinition[];
 

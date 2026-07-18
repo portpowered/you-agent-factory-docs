@@ -109,9 +109,11 @@ CI; raised again 2026-07-11 UTC after rebasing Agent/Inference workers onto
 that combined main — six-page export measured ~120.83 MiB total and ~4.97 MiB
 search bootstrap on CI (packaged + Mock/Throttling + Script/Poller alone had
 measured ~120.24 MiB / ~4.84 MiB); projected eight-page union from those
-observed deltas is ~127 MiB / ~5.15 MiB:
+observed deltas is ~127 MiB / ~5.15 MiB; raised again 2026-07-18 UTC after the
+W05 route-family foundation lane measured ~138.27 MiB total on CI (Next static
+JS ~2.65 MiB and search bootstrap ~5.16 MiB remained under their limits):
 
-- `maxTotalOutBytes`: 130_000_000
+- `maxTotalOutBytes`: 145_000_000
 - `maxNextStaticJsBytes`: 3_500_000
 - `maxSearchBootstrapBytes`: 5_300_000
 

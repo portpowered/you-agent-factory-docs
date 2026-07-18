@@ -7,6 +7,7 @@ import type {
   GraphRecord,
   GuideRecord,
   OrganizationRecord,
+  ReferenceRecord,
   TagRecord,
   TechniqueRecord,
 } from "./schemas";
@@ -16,6 +17,7 @@ export type RegistryRecord =
   | GuideRecord
   | TechniqueRecord
   | DocumentationRecord
+  | ReferenceRecord
   | ClassificationRecord
   | DatasetRecord
   | OrganizationRecord

@@ -38,6 +38,10 @@ const FACTORY_DOMAIN_MESSAGE_KEYS = [
   "guidesIndex",
   "techniquesIndex",
   "documentationIndex",
+  "referencesIndex",
+  "factoriesIndex",
+  "workersIndex",
+  "workstationsIndex",
   "tagsIndex",
   "tagLanding",
   "tagCategories",
@@ -71,6 +75,10 @@ function pickFactoryDomainMessages(
     guidesIndex: messages.guidesIndex,
     techniquesIndex: messages.techniquesIndex,
     documentationIndex: messages.documentationIndex,
+    referencesIndex: messages.referencesIndex,
+    factoriesIndex: messages.factoriesIndex,
+    workersIndex: messages.workersIndex,
+    workstationsIndex: messages.workstationsIndex,
     tagsIndex: messages.tagsIndex,
     tagLanding: messages.tagLanding,
     tagCategories: messages.tagCategories,
@@ -168,6 +176,7 @@ describe("loadUiMessages shell keys", () => {
       expect(messages.pageKind.technique).toBeTruthy();
       expect(messages.pageKind.documentation).toBeTruthy();
       expect(messages.pageKind.glossary).toBeTruthy();
+      expect(messages.pageKind.reference).toBeTruthy();
       expect(messages.pageKind.blog).toBeTruthy();
       expect(messages.pageKind.module).toBeUndefined();
       expect(messages.pageKind.model).toBeUndefined();
@@ -235,6 +244,7 @@ describe("loadUiMessages shell keys", () => {
     expect(formatPageKind(messages, "technique")).toBe("Technique");
     expect(formatPageKind(messages, "documentation")).toBe("Documentation");
     expect(formatPageKind(messages, "glossary")).toBe("Glossary");
+    expect(formatPageKind(messages, "reference")).toBe("Reference");
     expect(formatPageKind(messages, "blog")).toBe("Blog");
     expect(formatPageKind(messages, "module")).toBe("module");
     expect(formatPageKind(messages, "not-a-real-kind")).toBe("not-a-real-kind");

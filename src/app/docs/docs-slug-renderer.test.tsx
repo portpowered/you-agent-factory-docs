@@ -286,6 +286,47 @@ describe("docs slug renderer locale gating", () => {
     );
   });
 
+  test("missing nested route-family slugs fail closed through the docs slug renderer", async () => {
+    for (const slug of [
+      ["workers", "agent", "variant"],
+      ["references", "openapi", "paths"],
+      ["factories", "docs", "write-review"],
+      ["workstations", "inference", "run"],
+    ] as const) {
+      try {
+        await renderDocsSlugPage([...slug]);
+        throw new Error(
+          `Expected missing nested slug ${slug.join("/")} to fail`,
+        );
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toMatch(
+          /notFound\(\)|NEXT_HTTP_ERROR_FALLBACK;404/,
+        );
+      }
+    }
+  });
+
+  test("two-segment local docs pages still load through the docs slug renderer", async () => {
+    const page = await renderDocsSlugPage(["concepts", "harness"]);
+    captureOriginalFetch();
+    await installDocsSearchFetchMock();
+    const context = await loadAppTestContext();
+
+    await act(async () => {
+      await renderWithAppProviders(
+        <CanonicalDocsLayout messages={context.messages}>
+          {page}
+        </CanonicalDocsLayout>,
+        { context },
+      );
+    });
+
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toContain(
+      "Harness",
+    );
+  });
+
   test("glossary routes omit the folded opening summary in the shared docs shell", async () => {
     const page = await renderDocsSlugPage(["glossary", "token"]);
     captureOriginalFetch();
