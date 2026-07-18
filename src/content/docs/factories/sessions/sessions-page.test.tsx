@@ -157,7 +157,9 @@ describe("factories/sessions documentation page", () => {
     ).toBe("/docs/references/events");
 
     expect(
-      screen.getAllByRole("link", { name: "CLI docs" })[0]?.getAttribute("href"),
+      screen
+        .getAllByRole("link", { name: "CLI docs" })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/documentation/cli");
     expect(
       screen

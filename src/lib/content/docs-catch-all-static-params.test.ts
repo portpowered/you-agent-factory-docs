@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default and localized generateStaticParams stay valid with empty families", () => {
+  test("live default generateStaticParams includes authored factories children and keeps empty families empty", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,8 +183,18 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
-      // Empty collections contribute no catch-all child params yet.
+    // W12 authored factories pages contribute catch-all child params.
+    expect(defaultPaths.some((path) => path.startsWith("factories/"))).toBe(
+      true,
+    );
+    expect(defaultPaths).toContain("factories/configuration");
+    expect(defaultPaths).toContain("factories/global-configuration");
+    expect(defaultPaths).toContain("factories/packaged");
+    expect(defaultPaths).toContain("factories/dynamic-workflows");
+    expect(defaultPaths).toContain("factories/sessions");
+
+    // Still-empty route families contribute no catch-all child params yet.
+    for (const id of ["references", "workers", "workstations"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -202,7 +212,7 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty with empty families", async () => {
+  test("live localized generateStaticParams stay non-empty while empty families and unset factories locale stubs omit children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
@@ -210,6 +220,8 @@ describe("W05 route-family static params and not-found", () => {
       (entry.slug ?? []).join("/"),
     );
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
+      // Localized factories page stubs are not shipped yet, so factories stays
+      // empty here alongside still-empty references/workers/workstations.
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }
   });
