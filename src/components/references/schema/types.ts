@@ -58,14 +58,31 @@ export type SchemaFieldInput = {
 };
 
 /**
+ * Overlay field applicability for SchemaVariantReference display.
+ * Re-exported vocabulary lives on `schema-variant-display` — this alias keeps
+ * the tree node typed without importing the full overlay presentation module.
+ */
+export type SchemaFieldVariantApplicability =
+  | "selected"
+  | "excluded"
+  | "conditional";
+
+/**
  * Tree node for recursive field rendering. Children are pre-resolved field
  * models (callers resolve `childTargets` / nested properties before render).
  * `$ref` nodes should omit children so the row shows SchemaRefLink instead of
  * recursing into the target.
+ *
+ * Optional `variantApplicability` / `variantHint` are UI-only annotations from
+ * overlay-shaped presentation (SchemaVariantReference). They never replace
+ * field descriptions or types from the base `SchemaFieldModel`.
  */
 export type SchemaFieldTreeNode = {
   field: SchemaFieldModel;
   children?: readonly SchemaFieldTreeNode[];
+  variantApplicability?: SchemaFieldVariantApplicability;
+  /** Display-only overlay hint; never used as contract description prose. */
+  variantHint?: string;
 };
 
 export type SchemaStatusProps = {

@@ -128,6 +128,29 @@ export {
   schemaTypeBadgePropsFromProjection,
 } from "./schema-type-badge";
 export {
+  SchemaVariantApplicabilityBadge,
+  type SchemaVariantApplicabilityBadgeProps,
+} from "./schema-variant-applicability-badge";
+export {
+  annotateSchemaFieldTreeWithVariant,
+  indexSchemaVariantFieldApplicability,
+  isSchemaVariantOverlayPresentation,
+  type ResolveSchemaVariantInput,
+  resolveSchemaVariantInput,
+  SCHEMA_VARIANT_FIELD_APPLICABILITIES,
+  type SchemaVariantFieldApplicability,
+  type SchemaVariantFieldPresentation,
+  type SchemaVariantOverlayPresentation,
+  type SchemaVariantReadyResolution,
+  type SchemaVariantResolution,
+  type SchemaVariantStatusResolution,
+  schemaVariantApplicabilityLabel,
+} from "./schema-variant-display";
+export {
+  SchemaVariantReference,
+  type SchemaVariantReferenceProps,
+} from "./schema-variant-reference";
+export {
   SCHEMA_UI_STATUS_DEFAULT_MESSAGES,
   SCHEMA_UI_STATUS_DEFAULT_TITLES,
   SCHEMA_UI_STATUS_KINDS,
@@ -135,6 +158,7 @@ export {
   type SchemaDisplayInput,
   type SchemaFieldInput,
   type SchemaFieldTreeNode,
+  type SchemaFieldVariantApplicability,
   type SchemaStatusProps,
   type SchemaUiStatus,
   type SchemaUiStatusKind,

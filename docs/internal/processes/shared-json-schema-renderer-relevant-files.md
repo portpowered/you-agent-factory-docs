@@ -54,6 +54,10 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-reference-display.ts` | Pure complete/addressed resolution + catalog/address lookup helpers |
 | `src/components/references/schema/schema-reference.tsx` | Top-level SchemaReference composing status, definition, filter, catalog |
 | `src/components/references/schema/schema-reference.test.tsx` | Complete vs addressed mode, missing-address invalid, composition wiring |
+| `src/components/references/schema/schema-variant-display.ts` | Pure overlay-shaped presentation guards + variant resolution / field annotation |
+| `src/components/references/schema/schema-variant-applicability-badge.tsx` | Selected / excluded / conditional text badges (never color-only) |
+| `src/components/references/schema/schema-variant-reference.tsx` | SchemaVariantReference display adapter over base definition + overlay presentation |
+| `src/components/references/schema/schema-variant-reference.test.tsx` | Variant badges, base prose preservation, missing/empty overlay status proofs |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -111,6 +115,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   (+ optional `definitions`) for complete mode, or `address` / `definition` for
   addressed mode on the same component. Missing addresses resolve to `invalid`
   status (never throw). Root pointers must be anchor-safe (not bare `/`).
+- Variant adapter: `SchemaVariantReference` + `resolveSchemaVariantInput` accept
+  a base definition plus overlay-*shaped* presentation
+  (`selected`/`excluded`/`conditional` field paths + optional hints). This is
+  display-only — do not implement W06 validators here. Missing/malformed overlay
+  → `invalid`; empty overlay fields → `empty`. Annotate field trees via
+  `annotateSchemaFieldTreeWithVariant`; field descriptions/types always come
+  from the base `SchemaFieldModel`.
 
 ## Verification preference
 

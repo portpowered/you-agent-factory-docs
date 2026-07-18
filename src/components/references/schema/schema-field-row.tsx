@@ -19,6 +19,7 @@ import {
 import { SchemaRefLink } from "./schema-ref-link";
 import { SchemaRequiredBadge } from "./schema-required-badge";
 import { SchemaTypeBadge } from "./schema-type-badge";
+import { SchemaVariantApplicabilityBadge } from "./schema-variant-applicability-badge";
 import type { SchemaFieldTreeNode } from "./types";
 
 export type SchemaFieldRowProps = {
@@ -57,7 +58,7 @@ export function SchemaFieldRow({
   className,
   "data-testid": testId = "schema-field-row",
 }: SchemaFieldRowProps) {
-  const { field } = node;
+  const { field, variantApplicability, variantHint } = node;
   const canExpand = schemaFieldTreeNodeCanExpand(node) && children != null;
   const [expanded, setExpanded] = useState(defaultExpanded && canExpand);
   const panelId = useId();
@@ -140,6 +141,11 @@ export function SchemaFieldRow({
               nullable={field.nullable}
               typeSummary={field.typeSummary}
             />
+            {variantApplicability !== undefined ? (
+              <SchemaVariantApplicabilityBadge
+                applicability={variantApplicability}
+              />
+            ) : null}
           </div>
 
           {field.description !== undefined ? (
@@ -148,6 +154,15 @@ export function SchemaFieldRow({
               data-schema-field-description=""
             >
               {field.description}
+            </p>
+          ) : null}
+
+          {variantHint !== undefined && variantHint.trim().length > 0 ? (
+            <p
+              className="text-muted-foreground text-xs"
+              data-schema-variant-hint=""
+            >
+              {variantHint}
             </p>
           ) : null}
 
