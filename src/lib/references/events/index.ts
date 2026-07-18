@@ -48,6 +48,17 @@ export {
   schemaAddressForSelectedEventStream,
 } from "./event-schema-targets";
 export {
+  type BuildEventSearchDocumentsOptions,
+  buildEventCorpusSearchDocuments,
+  EVENT_SEARCH_DOCUMENT_TAGS,
+  type EventCatalogNavEntry,
+  type EventCorpusSearchDocumentsResult,
+  eventSearchDocumentAnchors,
+  factoryEventTypeReferenceItems,
+  factoryResponseEventPayloadReferenceItems,
+  registerEventCatalogAnchors,
+} from "./event-search-documents";
+export {
   assertEventCorpusClosureValid,
   assertEventInventoryMatchesExpected,
   buildEventOperationInventory,

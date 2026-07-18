@@ -11,6 +11,14 @@ export {
   type EventCanonicalityBadgeProps,
 } from "./event-canonicality-badge";
 export {
+  EventCatalogAnchorsSection,
+  type EventCatalogAnchorsSectionProps,
+} from "./event-catalog-anchors-section";
+export {
+  EventCatalogNavigation,
+  type EventCatalogNavigationProps,
+} from "./event-catalog-navigation";
+export {
   EventDiscriminatorMap,
   type EventDiscriminatorMapProps,
 } from "./event-discriminator-map";
@@ -18,6 +26,11 @@ export {
   EventEnvelopeReference,
   type EventEnvelopeReferenceProps,
 } from "./event-envelope-reference";
+export {
+  EventHashNavigation,
+  type EventHashNavigationProps,
+  focusEventHashTarget,
+} from "./event-hash-navigation";
 export {
   EventIdentityHandshake,
   type EventIdentityHandshakeProps,

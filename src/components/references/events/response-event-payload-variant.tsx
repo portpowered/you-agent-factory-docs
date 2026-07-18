@@ -3,10 +3,12 @@
  *
  * Renders schema-backed fields via W07 SchemaDefinition. Explicitly marked as
  * payload-only and ephemeral — never a complete FactoryResponseEvent envelope
- * or canonical FactoryEvent replay state.
+ * or canonical FactoryEvent replay state. Stable anchors + copy-link via W04 /
+ * shared CopyableReferenceAnchor.
  */
 
 import { SchemaDefinition } from "@/components/references/schema";
+import { CopyableReferenceAnchor } from "@/components/references/shared";
 import type { FactoryResponseEventPayloadVariant } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
@@ -38,18 +40,28 @@ export function ResponseEventPayloadVariant({
       data-event-payload-schema={variant.payloadSchemaName}
       data-testid={testId}
       id={variant.payloadVariantAnchor}
+      tabIndex={-1}
     >
       <header className="min-w-0 space-y-1">
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
           Payload only — ephemeral; not a complete FactoryResponseEvent envelope
           or canonical FactoryEvent replay
         </p>
-        <h3
-          className="font-semibold text-foreground text-base"
-          id={`response-event-payload-${variant.payloadSchemaName}-heading`}
-        >
-          <code className="font-mono text-sm">{variant.payloadSchemaName}</code>
-        </h3>
+        <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
+          <h3
+            className="min-w-0 font-semibold text-foreground text-base"
+            id={`response-event-payload-${variant.payloadSchemaName}-heading`}
+          >
+            <code className="font-mono text-sm">
+              {variant.payloadSchemaName}
+            </code>
+          </h3>
+          <CopyableReferenceAnchor
+            anchor={variant.payloadVariantAnchor}
+            family="events"
+            pagePath={pagePath}
+          />
+        </div>
       </header>
 
       <SchemaDefinition

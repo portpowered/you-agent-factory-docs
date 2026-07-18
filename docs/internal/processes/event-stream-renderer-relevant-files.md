@@ -114,6 +114,18 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/components/references/events/sse-static-examples-section.tsx` | Compose frame + reconnect examples into the events corpus |
 | `src/components/references/events/sse-static-examples.test.tsx` | Wire-field, contract-name, safety, and UI proofs |
 
+## Key host files (story 008 — stable anchors, search documents, catalog navigation)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/events/event-search-documents.ts` | Build `ReferenceItem` + Orama-ready search documents for FactoryEvent types + FactoryResponseEvent payloads; register collision-checked W04 anchors |
+| `src/components/references/events/event-catalog-navigation.tsx` | Keyboard-accessible `<nav>` + `ReferenceInventoryFilter` (query); overflow-safe (`min-w-0` / `overflow-x-auto`) |
+| `src/components/references/events/event-hash-navigation.tsx` | Hash focus/scroll helper + client mount (`focusEventHashTarget`) |
+| `src/components/references/events/event-catalog-anchors-section.tsx` | Compose search-document nav + hash chrome for the harness |
+| `src/components/references/events/event-payload-variant.tsx` | Payload variant `id` + `CopyableReferenceAnchor` (family `events`) |
+| `src/components/references/events/response-event-payload-variant.tsx` | Response payload variant `id` + `CopyableReferenceAnchor` |
+| `src/components/references/events/event-catalog-navigation.test.tsx` | Search docs, copyable anchors, filter, hash focus, responsive overflow proofs |
+
 ## Related spike (do not ship as production)
 
 | Path | Role |
@@ -179,3 +191,13 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   Always set `EVENT_STREAM_SAFETY` markers (`opensLiveFactoryConnection: false`,
   no proxy). Render through site `CodePanel` (`SseFrameExample` /
   `SseReconnectExample`).
+- Event search documents via `buildEventCorpusSearchDocuments(factory, response)` —
+  W04 `ReferenceItem` + `ReferenceSearchDocumentShape` for every FactoryEvent
+  type and FactoryResponseEvent payload; register anchors with
+  `registerEventCatalogAnchors` (fail closed on fragment collisions). Final
+  Orama / page inventory wiring remains W11/W15/W16.
+- Catalog navigation uses shared `ReferenceInventoryFilter` + semantic `<nav>`
+  (`EventCatalogNavigation`); payload variants expose `CopyableReferenceAnchor`
+  with `family="events"`. Hash deep-links use `EventHashNavigation` /
+  `focusEventHashTarget` (scroll + focus). Keep catalog chrome `min-w-0` +
+  `overflow-x-auto` for narrow viewports.
