@@ -126,6 +126,14 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/components/references/events/response-event-payload-variant.tsx` | Response payload variant `id` + `CopyableReferenceAnchor` |
 | `src/components/references/events/event-catalog-navigation.test.tsx` | Search docs, copyable anchors, filter, hash focus, responsive overflow proofs |
 
+## Key host files (story 009 — fail-closed discriminator / payload inventory drift)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/events/event-catalog-inventory-drift.ts` | Extract live OpenAPI discriminator/payload/kind/phase identities; compare against catalog + search documents; `assertEventCatalogInventoryMatchesLive` fails closed with named missing/unexpected identities |
+| `src/lib/references/events/event-catalog-inventory-drift.test.ts` | Live OpenAPI match + omission/extra failure messages (dynamic inventory, not frozen quotas) |
+| `src/lib/references/family-inventory-contract-drift.ts` | Shared set-diff helper (`compareFamilyInventoryIdentities`) extended with W09 identity kinds |
+
 ## Related spike (do not ship as production)
 
 | Path | Role |
@@ -201,3 +209,10 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   with `family="events"`. Hash deep-links use `EventHashNavigation` /
   `focusEventHashTarget` (scroll + focus). Keep catalog chrome `min-w-0` +
   `overflow-x-auto` for narrow viewports.
+- Story 009 inventory drift: extract identities **directly** from packaged
+  OpenAPI (`discriminator.mapping`, payload `oneOf`, kind/phase enums) via
+  `event-catalog-inventory-drift.ts`, then compare to catalog / search-document
+  identities with `assertEventCatalogInventoryMatchesLive`. Reuse
+  `compareFamilyInventoryIdentities` (shared helper). Failure messages must
+  name every missing/unexpected mapping or payload — never freeze a product
+  quota count.

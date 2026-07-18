@@ -12,6 +12,27 @@ export {
   eventsSurfaceAllowsPermanentAsyncApiPin,
 } from "./asyncapi-dependency-policy";
 export {
+  assertEventCatalogInventoryMatchesLive,
+  compareEventCatalogInventoryIdentities,
+  EventCatalogInventoryDriftError,
+  type EventCatalogInventoryDriftErrorCode,
+  type EventCatalogInventoryIdentityKind,
+  eventSearchDocumentFactoryEventTypeIdentities,
+  eventSearchDocumentResponsePayloadIdentities,
+  extractFactoryEventDiscriminatorMappingsFromOpenApi,
+  extractFactoryEventMappingIdentitiesFromOpenApi,
+  extractFactoryEventTypesFromOpenApi,
+  extractFactoryResponseEventKindValuesFromOpenApi,
+  extractFactoryResponseEventPayloadNamesFromOpenApi,
+  extractFactoryResponseEventPhaseValuesFromOpenApi,
+  factoryEventCatalogMappingIdentities,
+  factoryEventCatalogTypeIdentities,
+  factoryEventMappingIdentity,
+  factoryResponseEventCatalogKindIdentities,
+  factoryResponseEventCatalogPayloadIdentities,
+  factoryResponseEventCatalogPhaseIdentities,
+} from "./event-catalog-inventory-drift";
+export {
   buildEventIdentityHandshake,
   buildEventJsonReconnectProbe,
   buildEventReconnectContract,
