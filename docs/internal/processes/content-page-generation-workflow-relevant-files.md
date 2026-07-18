@@ -987,8 +987,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `/docs/workers` (or planned `/docs/workers/<slug>` hrefs) without authoring
   W13 pages. Keep customer-facing Limits / body copy product-scope only —
   never narrate “planned Worker targets” or “without authoring those pages
-  here.” First behavior page: `workstations/standard` /
-  `documentation.workstations-standard` (`behavior:STANDARD`, misuse = cron).
+  here.” Behavior pages so far: `workstations/standard` /
+  `documentation.workstations-standard` (`behavior:STANDARD`, misuse = cron);
+  `workstations/repeater` / `documentation.workstations-repeater`
+  (`behavior:REPEATER`, change-triggered / rejection reloop, misuse = cron).
+  Non-CRON behaviors share empty `selected` and exclude `cron` — keep misuse
+  examples on the cron field until a behavior-specific exclusive lands.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
   families. Empty collections call `renderSectionCollectionIndexPage` with
