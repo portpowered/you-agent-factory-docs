@@ -1,0 +1,74 @@
+{
+  "title": "Poller worker",
+  "description": "Configure a POLLER_WORKER for hosted poller ingress: provider, auth.secretRef, Linear provider fields, and POLLER_RUN companionship distinct from workstation behavior POLLER.",
+  "openingSummary": "A POLLER_WORKER is the hosted-provider backend for long-lived poller ingress. Set type to POLLER_WORKER, put provider and auth.secretRef on the worker, and keep behavior POLLER plus routing on the workstation.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "A Poller worker is the Factory WorkerType for hosted poller ingress in you-agent-factory. This page covers the POLLER_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid hosted Linear configuration, an incompatible inline-secret misuse, operational cautions, and the distinction between POLLER_RUN workstation type companionship and workstation behavior POLLER. Use it when you need to author a hosted poller backend without confusing worker execution with scheduling behavior."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "The discriminator field is type with value POLLER_WORKER. A POLLER_WORKER supplies the hosted-provider backend for long-lived external ingress. Put provider, auth.secretRef, and provider-specific fields such as linear on the worker. Workstation type POLLER_RUN is the compatible runtime companion for this worker. Workstation behavior POLLER is a separate scheduling axis that keeps the external ingress loop active in service mode. Do not treat POLLER_RUN and behavior POLLER as the same contract. Poller workers are not model-backed backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a worker with type POLLER_WORKER. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear poller needs them. Bind the worker from a POLLER_RUN workstation companion, and keep behavior POLLER with outputs and onFailure on the workstation that owns ingress scheduling."
+    },
+    "variantFields": {
+      "title": "Variant Fields",
+      "body": "The embed below shows the live Worker base definition with POLLER_WORKER overlay applicability. Selected fields are hosted-poller exclusive (provider, auth, linear). Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when starting a hosted Linear POLLER_WORKER. The misuse example shows an inline API key under auth—V1 hosted workers accept only auth.secretRef, and validation rejects inline credential fields."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "Poller workers fail closed on missing provider or invalid auth shapes. Keep secrets out of the worker body. Do not confuse POLLER_RUN type companionship with behavior POLLER scheduling. Do not substitute model or script fields for hosted poller auth."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workers/poller surface for POLLER_WORKER authoring. It is not a sync of packaged CLI docs, not a full Workstation routing guide, and not the Script or Inference worker full contract. OAuth hosted auth and advanced multi-instance poller coordination are out of scope for v1. Workstation companion and behavior links point at planned /docs/workstations targets without authoring those pages here. Legacy HOSTED_WORKER still loads and projects to POLLER_WORKER; prefer POLLER_WORKER in new configs. Mock workers stay on their own route and schema."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "discriminatorLabel": "Discriminator",
+    "discriminatorValue": "type = POLLER_WORKER",
+    "companionIntro": "POLLER_WORKER pairs with a POLLER_RUN workstation type companion. Workstation behavior POLLER is a separate scheduling axis for long-lived ingress—do not treat type and behavior as interchangeable.",
+    "companionWorkstation": "Poller-run workstation (POLLER_RUN type)",
+    "companionBehavior": "Poller behavior (behavior = POLLER)",
+    "minimalExampleLabel": "Minimal valid POLLER_WORKER:",
+    "misuseExampleLabel": "Incompatible misuse — inline secret on POLLER_WORKER (rejected):",
+    "misuseNote": "auth accepts only secretRef. Validation rejects inline API keys and other credential fields. Resolve the referenced secret from an environment variable or a factory-relative secret file.",
+    "fullFactorySchema": "Full Factory schema reference",
+    "workersFamilyIndex": "Workers family index",
+    "siblingScriptWorker": "Script worker",
+    "siblingInferenceWorker": "Inference worker",
+    "siblingAgentWorker": "Agent worker",
+    "siblingWorkstations": "Workstations overview",
+    "siblingResources": "Resources",
+    "siblingTokens": "Tokens",
+    "cautionTopicHeader": "Caution",
+    "cautionGuidanceHeader": "Guidance",
+    "cautionValidationTopic": "Validation failures",
+    "cautionValidationGuidance": "Fix missing provider, invalid auth shapes, and excluded model or script fields before retrying. Unknown exclusive fields also fail validation.",
+    "cautionSecretsTopic": "Inline secrets",
+    "cautionSecretsGuidance": "Never put API keys, OAuth tokens, or other credential fields on the worker body. Use auth.secretRef only.",
+    "cautionTypeVsBehaviorTopic": "Type versus behavior",
+    "cautionTypeVsBehaviorGuidance": "POLLER_RUN is the workstation type companion for this worker. behavior POLLER is the scheduling axis that keeps ingress active. Configure both when you need hosted poller ingress; do not collapse them into one field.",
+    "cautionModelFieldsTopic": "Model or script substitution",
+    "cautionModelFieldsGuidance": "Do not add model, modelProvider, operations, command, or args on a poller worker. Hosted poller ingress uses provider and auth, not model routing or script execution.",
+    "cautionLifecycleTopic": "Ingress lifecycle",
+    "cautionLifecycleGuidance": "behavior POLLER owns the long-lived ingress loop, bounded restart, and clean stop. Do not invent multi-instance coordination guarantees from the worker page alone."
+  }
+}
