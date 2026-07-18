@@ -45,6 +45,8 @@
     "test:w20-contract-projection": "bun ./scripts/run-w20-contract-projection-tests.ts",
     "pretest:w20-content-registry": "bun run prepare:content-runtime && fumadocs-mdx",
     "test:w20-content-registry": "bun ./scripts/run-w20-content-registry-tests.ts",
+    "pretest:w20-link-anchor": "bun run prepare:content-runtime && fumadocs-mdx",
+    "test:w20-link-anchor": "bun ./scripts/run-w20-link-anchor-tests.ts",
     "test:static-export-profile-contract": "bun test src/lib/build/static-export-profile.test.ts src/lib/build/static-export-profile-diagnostics.test.ts src/lib/build/static-export-benchmark-prep.test.ts src/lib/build/static-export-compiler-cache.test.ts src/lib/build/static-export-legacy-compile-graph.test.ts src/lib/build/export-search-parsed-documents.test.ts src/lib/build/emit-export-search-index.test.ts src/lib/build/run-profiled-static-export.test.ts src/lib/build/static-export-bundler.test.ts src/lib/build/static-export-bundler-correctness.test.ts src/lib/build/static-export-bundler-comparison.test.ts src/lib/build/static-export-bundler-bakeoff.test.ts src/lib/build/static-export-optimization-evidence.test.ts src/lib/build/static-export-optimization-evidence-recorded.test.ts src/lib/build/static-export-contracted-export-surfaces.test.ts",
     "guard:pages-deployed-artifact": "bun ./scripts/guard-pages-deployed-artifact.ts",
     "budget": "bun ./scripts/run-exported-site-budget.ts",

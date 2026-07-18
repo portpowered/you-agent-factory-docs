@@ -72,6 +72,35 @@ make test-w20-content-registry
 # or: bun run test:w20-content-registry
 ```
 
+## Story 003 — link and anchor validation
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-link-anchor-convergence.ts` | Catalog of linkcheck command gate + focused link/anchor suite paths and §17 gate families |
+| `src/lib/verify/w20-link-anchor-convergence.test.ts` | Catalog completeness / file-existence / family-coverage proofs |
+| `scripts/run-w20-link-anchor-tests.ts` | Runner: catalog → `make linkcheck` → focused suites |
+| `package.json` → `test:w20-link-anchor` | Maintainer / automation entry |
+| `Makefile` → `test-w20-link-anchor` | Shared Makefile contract |
+
+### Command gate
+
+* `make linkcheck` — documentation link + heading/section anchor validation (`scripts/validate-links.ts`)
+
+### Focused suites
+
+* `src/lib/build/validate-links.test.ts` — link inventory helpers + full `validateDocumentationLinks` pass
+* `src/lib/references/reference-anchor-registry.test.ts` — operations, schema-pointer, CLI, MCP, JS, events + collision fail-closed
+* `src/lib/references/assign-family-reference-anchors.test.ts` — CLI / MCP / JS registry anchor assignment
+* `src/components/references/api/operation-anchors.test.ts` — API operation deep-link anchors
+* `src/components/references/schema/schema-composition.test.tsx` — schema-pointer field anchors
+
+### Reproduce
+
+```bash
+make test-w20-link-anchor
+# or: bun run test:w20-link-anchor
+```
+
 Upstream lane docs (do not fork ownership):
 
 * [package-artifact-resolver-relevant-files](./package-artifact-resolver-relevant-files.md)
