@@ -468,7 +468,7 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.workstationsIndex.title).toBe("Workstations");
   });
 
-  it("renders the references index with authored schema page entries", async () => {
+  it("renders the references index with authored schema and events entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = messages.referencesIndex;
     const html = renderToStaticMarkup(await ReferencesIndexPage());
@@ -485,7 +485,9 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain("Mock-workers schema");
     expect(html).toContain("/docs/references/mock-workers-schema");
     expect(html).toContain("mock-worker configuration JSON Schema");
+    expect(html).toContain("/docs/references/events");
     expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(html).not.toContain("/docs/documentation/");
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,
     );
@@ -503,8 +505,7 @@ describe("W05 direct route-family section index pages", () => {
       }),
     );
 
-    // Default-locale-only schema pages stay out of ja shipped discovery, so the
-    // localized index keeps the empty-state contract until locale messages ship.
+    // Default-locale-only references pages stay out of ja shipped discovery.
     expect(html).toContain(indexMessages.title);
     expect(html).toContain(indexMessages.emptyTitle);
     expect(html).toContain(indexMessages.emptyHomeLink);

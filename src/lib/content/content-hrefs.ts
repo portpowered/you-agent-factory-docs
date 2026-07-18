@@ -114,7 +114,10 @@ export function documentationPageHref(
   );
 }
 
-/** Canonical docs URL for a reference entry slug under `docs/references`. */
+/**
+ * Canonical docs URL for a reference entry slug under `docs/references`.
+ * `slug` may be nested (`openapi/paths`).
+ */
 export function referencePageHref(
   slug: string,
   locale: SiteLocale = defaultLocale,

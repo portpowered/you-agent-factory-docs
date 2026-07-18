@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default generateStaticParams include authored workers children and keep empty families empty", () => {
+  test("live default generateStaticParams include authored references and workers children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,14 +183,15 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    // references (W11) and workers (W13) have authored children; empty
-    // families still contribute no catch-all children.
+    // references (W11 schema + events) and workers (W13) have authored
+    // children; empty families still contribute no catch-all children.
     expect(defaultPaths.some((path) => path.startsWith("references/"))).toBe(
       true,
     );
     expect(defaultPaths).toContain("references/factory-schema");
     expect(defaultPaths).toContain("references/you-config-schema");
     expect(defaultPaths).toContain("references/mock-workers-schema");
+    expect(defaultPaths).toContain("references/events");
 
     const workersChildren = defaultPaths.filter((path) =>
       path.startsWith("workers/"),
