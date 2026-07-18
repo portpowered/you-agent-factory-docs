@@ -28,12 +28,10 @@ import {
   ApiOperationSection,
   ApiReferenceHashController,
   ApiSurface,
-  buildApiLocalServerBaseUrlFromArtifact,
-  buildApiOperationDetailsFromArtifact,
-  buildApiOperationNavigationFromArtifact,
 } from "@/components/references/api";
 import "@/features/docs/styles/references-api-print.css";
 import { cn } from "@/lib/utils";
+import { apiReferenceProductionLoaders } from "./api-reference-production-loaders";
 
 /** Injectable loaders for page-local success / non-success proofs. */
 export type ApiReferenceProjectionLoaders = {
@@ -42,11 +40,13 @@ export type ApiReferenceProjectionLoaders = {
   buildLocalServer: () => ApiLocalServerBaseUrlProjection;
 };
 
-const defaultLoaders: ApiReferenceProjectionLoaders = {
-  buildNavigation: buildApiOperationNavigationFromArtifact,
-  buildDetails: buildApiOperationDetailsFromArtifact,
-  buildLocalServer: buildApiLocalServerBaseUrlFromArtifact,
-};
+/**
+ * Production defaults use Next/webpack-safe OpenAPI resolution (ancestor
+ * `node_modules` walk). W08 default builders still use `createRequire` and
+ * fail under Turbopack `[externals]/` paths — do not swap these back.
+ */
+const defaultLoaders: ApiReferenceProjectionLoaders =
+  apiReferenceProductionLoaders;
 
 export type ApiReferenceProjectionReadyState = {
   status: "ready";

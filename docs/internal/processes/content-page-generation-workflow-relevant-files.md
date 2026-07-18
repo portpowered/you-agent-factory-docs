@@ -1357,15 +1357,24 @@ W05 already provides nested discovery, family indexes, and
    do not re-implement event catalog UI. Prove static-only + three SSE
    summaries with page-local tests and the colocated browser probe
    `assert-api-page-static-sse-browser.ts` (unique port; kill server on exit).
+   Production loaders must use Next/webpack-safe OpenAPI acquisition via
+   `src/lib/references/api-openapi-turbopack.ts` (`resolveApiPackageManifestFsPath`
+   ancestor `node_modules` walk → `openapi/openapi.yaml`) injected through
+   page-local `api-reference-production-loaders.ts` / `loadApiOpenApiArtifact({
+   resolveExport })`. Do not rely on W08 default `createRequire` resolve —
+   under Turbopack it can return unreadable `[externals]/` paths and the
+   published route falls through to `data-api-status="invalid"` while Bun
+   unit tests stay green.
 9. Keep non-success outcomes page-owned: `resolveApiReferenceProjectionState`
    short-circuits to `ApiSurface` `empty` / `invalid` (public `ApiStatus`)
    when the packaged projection has zero operations or loaders throw.
    Inject optional `loaders` only in page-local tests — production MDX omits
-   them. Assert ready `data-api-status="ready"` plus accessible empty/invalid
-   `role="status"` messaging in `ApiReferenceProjection.test.tsx` /
-   `api-page.test.tsx`; do not scan renderer trees or shared inventories.
-   Ownership stays page wiring: no edits under `src/components/references/api/`
-   (or schema/events/CLI/MCP/JS), no sibling W11 pages, no W15–W18 inventories,
+   them (defaults are the Next-safe production loaders). Assert ready
+   `data-api-status="ready"` plus accessible empty/invalid `role="status"`
+   messaging in `ApiReferenceProjection.test.tsx` / `api-page.test.tsx`; do
+   not scan renderer trees or shared inventories. Ownership stays page
+   wiring: no edits under `src/components/references/api/` (or
+   schema/events/CLI/MCP/JS), no sibling W11 pages, no W15–W18 inventories,
    no factories/workers/workstations content, no `node_modules` patches.
 
 Do not edit shared nav/sidebar/search/sitemap/compat inventory owners
