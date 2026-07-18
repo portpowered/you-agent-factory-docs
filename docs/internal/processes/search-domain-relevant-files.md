@@ -82,6 +82,18 @@ Use these files when changing search document construction, Orama indexing, or
   catalog, and representative English identifier queries succeed against
   non-`en` locale catalogs (same item URL/anchor contract). Does not own
   W17 chrome localization.
+* `src/lib/search/measure-reference-search-bootstrap-payload.ts`
+  W16 story 008: measures serialized advanced-Orama bootstrap bytes for
+  reference-item documents and each shipped locale catalog (same
+  `JSON.stringify(payload) + "\\n"` shape as `emitExportSearchIndex`), then
+  compares the locale sum to `FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes`.
+* `src/lib/content/factory-search-payload-gate-representative-queries.test.ts`
+  W16 story 008 required-suite proof that the expanded bootstrap payload
+  stays within the factory search budget (raised with measured evidence after
+  ~585 item documents) and that representative
+  `submitWorkBySessionId` / factory-schema `workers` / `Poller behavior` /
+  `RUN_REQUEST` / `you config init` / `you.factory_session.get` queries return
+  item-level deep links via live `docsSearchApi.search`.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
@@ -174,7 +186,12 @@ duplicates still collapse to one page hit. Every locale catalog reuses the
 same English reference item documents and indexes Orama with
 `FACTORY_SEARCH_ORAMA_LANGUAGE` (`english`) so canonical English identifiers
 remain findable from `ja` / `zh-CN` / `vi` UI locales without translating
-those literals (W16-007; W17 owns broader chrome localization).
+those literals (W16-007; W17 owns broader chrome localization). W16-008
+measures the expanded bootstrap via
+`measureReferenceSearchBootstrapPayload` and gates the locale sum against
+`FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes` (raise the
+ceiling only with measured evidence — ~29.69 MiB after ~585 item documents).
+Prove representative family queries through live `docsSearchApi.search`.
 
 ### Pattern: factory alias / body / tag discovery
 

@@ -63,13 +63,19 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * ceiling was 220 MiB total / 6.50 MiB search. Raised again on 2026-07-18 UTC
  * after the Next-safe OpenAPI loader fix on that head — CI measured
  * ~220.21 MiB total while JS (~2.87 MiB) and search (~6.16 MiB) stayed under
- * limits; ceiling is now 225 MiB total / 6.50 MiB search. Keep modest headroom
- * for ordinary content growth without silent skip/pass.
+ * limits; ceiling was 225 MiB total / 6.50 MiB search. Raised again on
+ * 2026-07-18 UTC after W16 search-and-anchor projection indexed ~585
+ * reference item documents into every locale catalog — measured Orama
+ * bootstrap sum across en/ja/zh-CN/vi was ~29.69 MiB (en alone ~8.32 MiB;
+ * reference-item-only payload ~5.66 MiB). Prior CI total ~220.21 MiB with
+ * ~6.16 MiB search implies ~242 MiB total after the search delta; ceiling is
+ * now 250 MiB total / 32 MiB search. Keep modest headroom for ordinary
+ * content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 225_000_000,
+  maxTotalOutBytes: 250_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 6_500_000,
+  maxSearchBootstrapBytes: 32_000_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =

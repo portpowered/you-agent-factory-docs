@@ -101,6 +101,12 @@ export {
   RETIRED_ATLAS_SEARCH_RESULT_KINDS,
   type RetiredAtlasSearchResultKind,
 } from "./factory-search-kinds";
+export {
+  measureReferenceSearchBootstrapPayload,
+  measureSearchBootstrapPayloadBytes,
+  type ReferenceSearchBootstrapLocaleMeasurement,
+  type ReferenceSearchBootstrapMeasurement,
+} from "./measure-reference-search-bootstrap-payload";
 export type { OramaSearchRecord, OramaSnapshotDocument } from "./orama-index";
 export {
   createOramaDatabase,

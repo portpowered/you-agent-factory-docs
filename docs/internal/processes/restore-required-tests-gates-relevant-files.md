@@ -122,11 +122,15 @@ after merging W12 factories and W11 CLI/MCP/JS onto that combined head; raised
 again 2026-07-18 UTC after merging the W11 API reference page onto that head
 (CI measured ~211.61 MiB total / ~6.16 MiB search); raised again 2026-07-18 UTC
 after the Next-safe OpenAPI loader fix on that head (CI measured ~220.21 MiB
-total / ~6.16 MiB search):
+total / ~6.16 MiB search); raised again 2026-07-18 UTC after W16
+search-and-anchor projection indexed ~585 reference item documents into every
+locale Orama catalog (measured bootstrap sum across en/ja/zh-CN/vi
+~29.69 MiB; prior ~220.21 MiB total with ~6.16 MiB search implies ~242 MiB
+total after the search delta):
 
-- `maxTotalOutBytes`: 225_000_000
+- `maxTotalOutBytes`: 250_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 6_500_000
+- `maxSearchBootstrapBytes`: 32_000_000
 
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
