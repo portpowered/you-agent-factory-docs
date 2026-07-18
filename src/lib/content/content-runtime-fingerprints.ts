@@ -107,6 +107,28 @@ export const CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS: readonly ContentRuntimeSte
       ],
       schemaPaths: ["src/lib/content/schemas.ts"],
     },
+    {
+      stepId: "api-package-consumed-hash-ledger",
+      inputPaths: [
+        "node_modules/@you-agent-factory/api/package.json",
+        "node_modules/@you-agent-factory/api/generated",
+      ],
+      generatorPaths: [
+        "scripts/generate-api-package-consumed-hash-ledger.ts",
+        "src/lib/references/api-package-consumed-hash-ledger-generation.ts",
+        "src/lib/references/api-package-consumed-hash-ledger.ts",
+        "src/lib/references/api-package-artifact-resolver.ts",
+        "src/lib/references/api-package-manifest-membership.ts",
+        "src/lib/references/api-package-format-version-gate.ts",
+        "src/lib/content/render-typescript-literal.ts",
+        "src/lib/content/write-file-if-changed.ts",
+      ],
+      schemaPaths: [
+        "src/lib/references/api-package-public-exports.ts",
+        "src/lib/references/api-package-manifest.ts",
+        "src/lib/references/api-package-format-versions.ts",
+      ],
+    },
   ] as const;
 
 export type ContentRuntimeFingerprintStore = {

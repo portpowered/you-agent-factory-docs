@@ -2,7 +2,7 @@
 
 Use these files when implementing or extending build/server acquisition of
 `@you-agent-factory/api` public export artifacts (resolver, validators, ledger,
-`prepare:content-runtime` wiring).
+and `prepare:content-runtime` wiring).
 
 ## Ownership fence
 
@@ -41,6 +41,8 @@ use the `joined/*` wildcard export.
 | `src/lib/references/api-package-consumed-hash-ledger.test.ts` | Deterministic ledger bytes, identity/hash recording, no-diff rebuild proofs |
 | `scripts/generate-api-package-consumed-hash-ledger.ts` | CLI entry for ledger emission (`bun run generate:api-package-consumed-hash-ledger`) |
 | `src/lib/content/generated/api-package-consumed-hash-ledger.generated.ts` | Generated runtime ledger output (gitignored; regenerated from package inputs) |
+| `src/lib/content/content-runtime-preparation.ts` | Registers `api-package-consumed-hash-ledger` in `CONTENT_RUNTIME_COMPLETENESS_CONTRACT` |
+| `src/lib/content/content-runtime-fingerprints.ts` | Fingerprint inputs for the ledger step (installed package + acquisition generators) |
 | `package.json` | Runtime dependency on `@you-agent-factory/api@0.0.0`; `generate:api-package-consumed-hash-ledger` script |
 
 ## Patterns
@@ -74,8 +76,15 @@ use the `joined/*` wildcard export.
   `generateApiPackageConsumedHashLedger` so unchanged inputs leave the generated
   file untouched. Default consumed set is fixed public subpaths minus
   `manifest`.
-- Later stories (prepare wiring, browser-bundle exclusion) should extend this
-  surface rather than inventing a second acquisition path.
+- Register the ledger generator in `CONTENT_RUNTIME_COMPLETENESS_CONTRACT` (id
+  `api-package-consumed-hash-ledger`, ignored git classification) and declare
+  matching `CONTENT_RUNTIME_STEP_FINGERPRINT_INPUTS` over the installed package
+  (`node_modules/@you-agent-factory/api/package.json` + `generated/`) plus the
+  acquisition generator/schema modules. Do not invent a second prepare pipeline;
+  warm `prepare:content-runtime` skips via fingerprints, and generators still
+  use `writeFileIfChanged` so unchanged package inputs produce no ledger diff.
+- Later stories (browser-bundle exclusion) should extend this surface rather
+  than inventing a second acquisition path.
 
 ## Verification
 
@@ -83,7 +92,10 @@ use the `joined/*` wildcard export.
 bun test src/lib/references/api-package-artifact-resolver.test.ts \
   src/lib/references/api-package-manifest-membership.test.ts \
   src/lib/references/api-package-format-version-gate.test.ts \
-  src/lib/references/api-package-consumed-hash-ledger.test.ts
-bunx biome check src/lib/references/
+  src/lib/references/api-package-consumed-hash-ledger.test.ts \
+  src/tests/ci/content-runtime-preparation.test.ts
+bunx biome check src/lib/references/ src/lib/content/content-runtime-preparation.ts \
+  src/lib/content/content-runtime-fingerprints.ts
+bun run prepare:content-runtime
 bun run typecheck
 ```
