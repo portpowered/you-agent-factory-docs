@@ -142,7 +142,7 @@ describe("SchemaFieldTree", () => {
     expect(screen.queryByText("timeout")).toBeNull();
   });
 
-  test("shows a non-recursive $ref placeholder instead of expanding targets", () => {
+  test("shows a non-recursive SchemaRefLink instead of expanding targets", () => {
     const nodes: SchemaFieldTreeNode[] = [
       {
         field: createSchemaFieldModel({
@@ -165,7 +165,10 @@ describe("SchemaFieldTree", () => {
 
     render(<SchemaFieldTree nodes={nodes} />);
 
-    expect(screen.getByText("$ref → /$defs/Worker")).toBeTruthy();
+    expect(screen.getByText("$ref →")).toBeTruthy();
+    expect(
+      screen.getByRole("link", { name: /schema reference: \/\$defs\/Worker/i }),
+    ).toBeTruthy();
     expect(
       screen.queryByRole("button", { name: /Expand fields under worker/i }),
     ).toBeNull();

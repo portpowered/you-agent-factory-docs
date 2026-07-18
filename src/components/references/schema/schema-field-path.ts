@@ -20,7 +20,7 @@ export function schemaFieldHasRefTarget(field: SchemaFieldModel): boolean {
 
 /**
  * Whether a tree node may expand nested children.
- * `$ref` targets never expand here — they render a link placeholder instead.
+ * `$ref` targets never expand here — they render SchemaRefLink instead.
  */
 export function schemaFieldTreeNodeCanExpand(
   node: SchemaFieldTreeNode,

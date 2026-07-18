@@ -35,8 +35,12 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-field-metadata.test.tsx` | Field metadata display proofs (type/required/default/constraints) |
 | `src/components/references/schema/schema-field-path.ts` | Pure path/leaf helpers + tree-node builders; `$ref` expand guard |
 | `src/components/references/schema/schema-field-row.tsx` | Accessible field row (name/path/type/required/description + expand) |
-| `src/components/references/schema/schema-field-tree.tsx` | Recursive field tree with disclosure semantics and `$ref` placeholder |
+| `src/components/references/schema/schema-field-tree.tsx` | Recursive field tree with disclosure semantics and `$ref` via SchemaRefLink |
 | `src/components/references/schema/schema-field-tree.test.tsx` | Field tree/row keyboard expand + path + `$ref` non-recursion proofs |
+| `src/components/references/schema/schema-ref-display.ts` | Pure `$ref` / composition / discriminator display projectors over W04 outcomes |
+| `src/components/references/schema/schema-ref-link.tsx` | Navigable `$ref` link + cycle sentinel; unresolved missing/malformed status |
+| `src/components/references/schema/schema-composition.tsx` | oneOf/anyOf/allOf + discriminator mapping display |
+| `src/components/references/schema/schema-composition.test.tsx` | Composition, discriminator, cycle, unresolved, and field-tree `$ref` proofs |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -64,9 +68,14 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   keep pure formatting in `formatSchemaValue` / `listSchemaConstraintEntries`.
 - `SchemaFieldTree` / `SchemaFieldRow` are client components (expand state).
   Pass pre-resolved `SchemaFieldTreeNode` children — do not walk `$ref`
-  targets in the UI. `$ref` rows show a placeholder until SchemaRefLink.
+  targets in the UI. `$ref` rows render `SchemaRefLink` (stable W04 anchors;
+  cycle sentinels stay links; missing/malformed are unresolved `role="status"`).
   Use `schemaFieldTreeNodeCanExpand` so refs never recurse even if children
   were accidentally attached.
+- Composition UI: `SchemaComposition` + `projectSchemaCompositionDisplay` /
+  `schemaRefLinkDisplayFromOutcome` consume W04 composition models and
+  `ReferenceCrossLinkResolver` outcomes. Members stay as links — never
+  recursive definition trees.
 
 ## Verification preference
 

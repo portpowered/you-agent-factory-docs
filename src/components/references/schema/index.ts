@@ -8,6 +8,10 @@
 
 export { formatSchemaValue } from "./format-schema-value";
 export {
+  SchemaComposition,
+  type SchemaCompositionProps,
+} from "./schema-composition";
+export {
   listSchemaConstraintEntries,
   type SchemaConstraintEntry,
   type SchemaConstraintSource,
@@ -37,6 +41,24 @@ export {
   SchemaFieldTree,
   type SchemaFieldTreeProps,
 } from "./schema-field-tree";
+export {
+  projectSchemaCompositionDisplay,
+  projectSchemaDiscriminatorDisplay,
+  type SchemaCompositionBranchDisplay,
+  type SchemaCompositionDisplay,
+  type SchemaDiscriminatorDisplay,
+  type SchemaDiscriminatorMappingDisplay,
+  type SchemaRefLinkDisplay,
+  type SchemaRefLinkKind,
+  schemaCompositionKindLabel,
+  schemaRefCompactLabel,
+  schemaRefLinkDisplayFromAddress,
+  schemaRefLinkDisplayFromOutcome,
+} from "./schema-ref-display";
+export {
+  SchemaRefLink,
+  type SchemaRefLinkProps,
+} from "./schema-ref-link";
 export {
   SchemaRequiredBadge,
   type SchemaRequiredBadgeProps,

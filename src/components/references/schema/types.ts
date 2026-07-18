@@ -60,8 +60,8 @@ export type SchemaFieldInput = {
 /**
  * Tree node for recursive field rendering. Children are pre-resolved field
  * models (callers resolve `childTargets` / nested properties before render).
- * `$ref` nodes should omit children so the row shows a non-recursive
- * placeholder until SchemaRefLink lands.
+ * `$ref` nodes should omit children so the row shows SchemaRefLink instead of
+ * recursing into the target.
  */
 export type SchemaFieldTreeNode = {
   field: SchemaFieldModel;

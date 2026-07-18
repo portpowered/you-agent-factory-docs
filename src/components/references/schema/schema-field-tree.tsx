@@ -24,6 +24,8 @@ export type SchemaFieldTreeProps = {
   depth?: number;
   /** Initial expansion for rows that have children. Default: false. */
   defaultExpanded?: boolean;
+  /** Owning page path forwarded to `$ref` links for full href values. */
+  pagePath?: string;
   className?: string;
   "data-testid"?: string;
 };
@@ -31,14 +33,15 @@ export type SchemaFieldTreeProps = {
 /**
  * Recursive, keyboard-accessible field hierarchy.
  *
- * `$ref` fields render a non-recursive placeholder instead of expanding
- * targets (SchemaRefLink lands in a later story).
+ * `$ref` fields render SchemaRefLink (stable-anchor / cycle / unresolved)
+ * instead of expanding targets recursively.
  */
 export function SchemaFieldTree({
   nodes,
   fields,
   depth = 0,
   defaultExpanded = false,
+  pagePath,
   className,
   "data-testid": testId = "schema-field-tree",
 }: SchemaFieldTreeProps) {
@@ -67,6 +70,7 @@ export function SchemaFieldTree({
               defaultExpanded={defaultExpanded}
               depth={depth + 1}
               nodes={node.children}
+              pagePath={pagePath}
             />
           ) : null;
 
@@ -76,6 +80,7 @@ export function SchemaFieldTree({
             depth={depth}
             key={node.field.path}
             node={node}
+            pagePath={pagePath}
           >
             {nested}
           </SchemaFieldRow>

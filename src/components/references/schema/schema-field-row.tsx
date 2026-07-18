@@ -7,6 +7,11 @@ import {
   schemaFieldLeafName,
   schemaFieldTreeNodeCanExpand,
 } from "./schema-field-path";
+import {
+  type SchemaRefLinkDisplay,
+  schemaRefLinkDisplayFromAddress,
+} from "./schema-ref-display";
+import { SchemaRefLink } from "./schema-ref-link";
 import { SchemaRequiredBadge } from "./schema-required-badge";
 import { SchemaTypeBadge } from "./schema-type-badge";
 import type { SchemaFieldTreeNode } from "./types";
@@ -17,6 +22,14 @@ export type SchemaFieldRowProps = {
   depth?: number;
   /** Initial expansion when the row has nested children. Default: false. */
   defaultExpanded?: boolean;
+  /**
+   * Optional pre-resolved `$ref` display (cycle / missing / malformed). When
+   * omitted, `$ref` fields render a navigable stable-anchor link from the
+   * address alone.
+   */
+  refLink?: SchemaRefLinkDisplay;
+  /** Owning page path used when building a default `$ref` href. */
+  pagePath?: string;
   /** Nested field tree rendered when expanded. */
   children?: ReactNode;
   className?: string;
@@ -27,6 +40,8 @@ export function SchemaFieldRow({
   node,
   depth = 0,
   defaultExpanded = false,
+  refLink,
+  pagePath,
   children,
   className,
   "data-testid": testId = "schema-field-row",
@@ -37,6 +52,11 @@ export function SchemaFieldRow({
   const panelId = useId();
   const leafName = schemaFieldLeafName(field.path);
   const refTarget = field.refTarget;
+  const resolvedRefLink =
+    refLink ??
+    (refTarget !== undefined
+      ? schemaRefLinkDisplayFromAddress(refTarget, { pagePath })
+      : undefined);
 
   return (
     <li
@@ -111,17 +131,20 @@ export function SchemaFieldRow({
             </p>
           ) : null}
 
-          {refTarget !== undefined ? (
-            <p
-              className="font-mono text-muted-foreground text-xs"
-              data-schema-ref-placeholder=""
+          {resolvedRefLink !== undefined ? (
+            <div
+              className="flex min-w-0 flex-wrap items-baseline gap-1"
+              data-schema-ref-row=""
             >
-              $ref → {refTarget.pointer}
+              <span className="font-mono text-muted-foreground text-xs">
+                $ref →
+              </span>
+              <SchemaRefLink display={resolvedRefLink} />
               <span className="sr-only">
                 {" "}
                 (reference link; not expanded recursively)
               </span>
-            </p>
+            </div>
           ) : null}
         </div>
       </div>
