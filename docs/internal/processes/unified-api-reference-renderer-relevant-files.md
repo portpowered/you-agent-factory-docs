@@ -66,7 +66,9 @@ hooks, and SSR cost.
 | `src/components/references/api/operation-navigation.ts` | Pure tag-grouped nav model + mobile HTML probe contract |
 | `src/components/references/api/api-operation-navigator.tsx` | Desktop tag-grouped operation deep links |
 | `src/components/references/api/api-reference-mobile-navigator.tsx` | Phone/tablet collapsed `<details>` navigator |
-| `src/components/references/api/api-operation-navigation.tsx` | Responsive composition (`lg+` desktop / `<lg` mobile) |
+| `src/components/references/api/api-operation-navigation.tsx` | Responsive composition (`lg+` desktop / `<lg` mobile) + filter |
+| `src/components/references/api/operation-filter.ts` | Pure method/path/summary/operation-ID filter projectors |
+| `src/components/references/api/api-operation-filter.tsx` | Keyboard-accessible filter search + Clear control |
 | `src/components/references/api/load-operation-navigation.ts` | Build nav model from live package artifact + document tag order |
 | `src/components/references/api/assert-operation-navigation.ts` | Happy-dom-safe subprocess proof: nav anchors ↔ `per:"file"` projection |
 | `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + stub sections matching nav anchors |
@@ -113,6 +115,17 @@ hooks, and SSR cost.
 - Verify at `/api-renderer-harness` (dev) — not a published `/docs/references/api`
   inventory (W11).
 
+## Operation filtering
+
+- Pure projectors live in `operation-filter.ts` — match method, path, summary,
+  and operation ID with case-insensitive substrings; never mutate the nav model.
+- `ApiOperationFilter` is the keyboard-operable search + Clear control.
+- `ApiOperationNavigation` owns filter UI state (controlled or uncontrolled),
+  projects filtered groups into both navigators, and shows `ApiStatus` empty
+  messaging when a non-empty query matches nothing.
+- Clearing the query (Clear button or emptying the field) restores the full
+  tag-grouped set from the original model.
+
 ## Patterns
 
 - Keep production API UI under `src/components/references/api/` so ownership
@@ -123,7 +136,7 @@ hooks, and SSR cost.
   `aria-live="polite"`, `aria-busy` when loading).
 - Prefer migrating helpers from the W01 spike into this tree over editing the
   spike in place.
-- Later stories: filtering, anchors/hash focus, request/response rendering,
+- Later stories: anchors/hash focus, request/response rendering,
   playground suppression, hybrid SSE summaries, theme/code-copy, and
   responsive/a11y/print verification.
 
@@ -135,6 +148,7 @@ bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/api-surface.test.tsx \
   src/components/references/api/single-page-projection.test.ts \
   src/components/references/api/operation-navigation.test.ts \
+  src/components/references/api/operation-filter.test.ts \
   src/components/references/api/load-operation-navigation.test.ts \
   src/components/references/api/api-operation-navigation.test.tsx
 ```

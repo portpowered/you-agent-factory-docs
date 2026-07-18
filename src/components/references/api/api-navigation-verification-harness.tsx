@@ -49,7 +49,8 @@ export function ApiNavigationVerificationHarness({
             Tag-grouped operation navigation
           </h1>
           <p className="max-w-3xl text-sm text-muted-foreground">
-            Exercises desktop and phone/tablet navigators against the
+            Exercises desktop and phone/tablet navigators plus
+            method/path/summary/operation-ID filtering against the
             package-resolved OpenAPI projection ({model.operationCount}{" "}
             operations / {model.groups.length} tags). Stub sections only prove
             deep-link targets — request/response rendering is a later story.

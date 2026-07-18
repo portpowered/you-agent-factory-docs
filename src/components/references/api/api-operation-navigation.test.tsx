@@ -1,10 +1,21 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { createOpenApiOperationSummary } from "@/lib/references/family-normalized-models";
 import { ApiNavigationVerificationHarness } from "./api-navigation-verification-harness";
 import { ApiOperationNavigation } from "./api-operation-navigation";
 import { ApiOperationNavigator } from "./api-operation-navigator";
 import { ApiReferenceMobileNavigator } from "./api-reference-mobile-navigator";
+import {
+  API_OPERATION_FILTER_ATTR,
+  API_OPERATION_FILTER_EMPTY_TITLE,
+  API_OPERATION_FILTER_LABEL,
+} from "./operation-filter";
 import {
   API_MOBILE_NAV_ATTR,
   API_OPERATION_NAV_ATTR,
@@ -166,5 +177,98 @@ describe("ApiOperationNavigation + harness", () => {
       container.querySelector(`[${API_OPERATION_NAV_ATTR}]`),
     ).not.toBeNull();
     expect(container.querySelector(`[${API_MOBILE_NAV_ATTR}]`)).not.toBeNull();
+  });
+
+  test("filters navigation by method, path, summary, and operation ID", () => {
+    const model = buildApiOperationNavModel(sampleOps, [
+      "Work",
+      "Runtime",
+      "Models",
+    ]);
+    const { container } = render(
+      <ApiOperationNavigation groups={model.groups} model={model} />,
+    );
+
+    const filter = screen.getByRole("searchbox", {
+      name: API_OPERATION_FILTER_LABEL,
+    });
+    expect(
+      container.querySelector(`[${API_OPERATION_FILTER_ATTR}]`),
+    ).not.toBeNull();
+
+    fireEvent.change(filter, { target: { value: "submitWork" } });
+    expect(
+      container.querySelectorAll(`[${API_OPERATION_NAV_LINK_ATTR}]`).length,
+    ).toBe(2); // desktop + mobile hosts each show the matching link
+    expect(screen.getByText(/Showing 1 of 3 operations/i)).toBeTruthy();
+    expect(
+      screen.getAllByRole("link", { name: /Submit work/i }).length,
+    ).toBeGreaterThanOrEqual(1);
+    expect(
+      screen.queryByRole("link", { name: /Compatibility event stream/i }),
+    ).toBeNull();
+
+    fireEvent.change(filter, { target: { value: "GET" } });
+    expect(screen.getByText(/Showing 2 of 3 operations/i)).toBeTruthy();
+
+    fireEvent.change(filter, { target: { value: "/models" } });
+    expect(screen.getByText(/Showing 1 of 3 operations/i)).toBeTruthy();
+    expect(
+      container.querySelector('[data-api-operation-nav-path="/models"]'),
+    ).not.toBeNull();
+  });
+
+  test("shows accessible empty state and restores the full set on clear", () => {
+    const model = buildApiOperationNavModel(sampleOps, [
+      "Work",
+      "Runtime",
+      "Models",
+    ]);
+    const { container } = render(
+      <ApiOperationNavigation groups={model.groups} model={model} />,
+    );
+
+    const filter = screen.getByRole("searchbox", {
+      name: API_OPERATION_FILTER_LABEL,
+    });
+    fireEvent.change(filter, { target: { value: "zzzz-no-match" } });
+
+    expect(
+      container.querySelector(
+        '[data-testid="api-operation-navigation-filter-empty"]',
+      ),
+    ).not.toBeNull();
+    expect(screen.getByText(API_OPERATION_FILTER_EMPTY_TITLE)).toBeTruthy();
+    expect(container.querySelector(`[${API_OPERATION_NAV_ATTR}]`)).toBeNull();
+    expect(container.querySelector(`[${API_MOBILE_NAV_ATTR}]`)).toBeNull();
+
+    const clear = screen.getByRole("button", { name: "Clear" });
+    expect(document.activeElement).not.toBe(clear);
+    clear.focus();
+    expect(document.activeElement).toBe(clear);
+    fireEvent.click(clear);
+
+    expect((filter as HTMLInputElement).value).toBe("");
+    expect(
+      container.querySelector(
+        '[data-testid="api-operation-navigation-filter-empty"]',
+      ),
+    ).toBeNull();
+    expect(
+      container.querySelectorAll(`[${API_OPERATION_NAV_LINK_ATTR}]`).length,
+    ).toBeGreaterThanOrEqual(3);
+  });
+
+  test("filter control is keyboard focusable", () => {
+    const model = buildApiOperationNavModel(sampleOps, ["Work"]);
+    render(<ApiOperationNavigation groups={model.groups} model={model} />);
+
+    const filter = screen.getByRole("searchbox", {
+      name: API_OPERATION_FILTER_LABEL,
+    });
+    filter.focus();
+    expect(document.activeElement).toBe(filter);
+    fireEvent.change(filter, { target: { value: "Work" } });
+    expect((filter as HTMLInputElement).value).toBe("Work");
   });
 });

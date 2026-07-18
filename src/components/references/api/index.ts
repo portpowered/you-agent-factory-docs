@@ -12,6 +12,10 @@ export {
   type ApiNavigationVerificationHarnessProps,
 } from "./api-navigation-verification-harness";
 export {
+  ApiOperationFilter,
+  type ApiOperationFilterProps,
+} from "./api-operation-filter";
+export {
   ApiOperationNavigation,
   type ApiOperationNavigationProps,
 } from "./api-operation-navigation";
@@ -61,6 +65,20 @@ export {
   apiOpenApiServer,
   loadApiOpenApiSinglePageProjection,
 } from "./openapi-server";
+export {
+  API_OPERATION_FILTER_ATTR,
+  API_OPERATION_FILTER_EMPTY_MESSAGE,
+  API_OPERATION_FILTER_EMPTY_TITLE,
+  API_OPERATION_FILTER_LABEL,
+  API_OPERATION_FILTER_PLACEHOLDER,
+  apiOperationFilterHasNoMatches,
+  apiOperationFilterQueryIsEmpty,
+  apiOperationNavItemMatchesFilter,
+  apiOperationTextMatchesFilter,
+  filterApiOperationNavGroups,
+  filterApiOperationNavModel,
+  normalizeApiOperationFilterQuery,
+} from "./operation-filter";
 export {
   API_MOBILE_NAV_ATTR,
   API_MOBILE_NAV_CONTRACT,
