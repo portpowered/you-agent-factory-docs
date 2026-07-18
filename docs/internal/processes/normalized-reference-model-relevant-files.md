@@ -23,6 +23,10 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 | `src/lib/references/reference-item.test.ts` | Family coverage, source-pointer shape, and JSON round-trip proofs |
 | `src/lib/references/schema-model.ts` | Pure serializable `SchemaAddress`, `SchemaDefinitionModel`, `SchemaFieldModel`, composition/discriminator, constraints, and JSON parse/serialize helpers (no IO) |
 | `src/lib/references/schema-model.test.ts` | Address/pointer shape, composition, maps/arrays/enums/defaults, missing-description, and JSON round-trip proofs |
+| `src/lib/references/family-normalized-models.ts` | Pure serializable OpenAPI operation summary + CLI/MCP/JS/event normalized types and JSON helpers (no IO) |
+| `src/lib/references/family-normalized-models.test.ts` | Family identity fields, missing-optional handling, and JSON round-trip proofs |
+| `src/lib/references/normalize-family-artifacts.ts` | Pure artifact→model normalizers for OpenAPI/CLI/MCP/JS/events (consumes W03-resolved data or fixtures; no package imports) |
+| `src/lib/references/normalize-family-artifacts.test.ts` | Fixture-shaped normalization + W03 public-subpath consumption proofs |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 build/server acquisition — consume artifacts only through this public-subpath surface |
 | `src/lib/references/api-package-public-exports.ts` | Documented public subpath allowlist (for source `publicArtifactId` / subpath values) |
 
@@ -46,16 +50,25 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
   addresses so cycles remain representable without unbounded nesting. Nested
   `$defs` may be full `SchemaDefinitionModel` or deferred `SchemaAddress`.
 - Never invent missing descriptions, types, or constraints — leave optional
-  fields absent when the contract omits them.
-- Later stories add family-specific normalized types, anchor registry,
-  cross-link resolver, and display/search projections beside these modules
-  without widening W04 into UI/pages.
+  fields absent when the contract omits them. Treat empty package strings
+  (`""`) as absent during family normalization.
+- Family-specific models live in `family-normalized-models.ts`; acquire package
+  data only via W03 `resolveApiPackageArtifact` (or fixtures shaped like
+  resolved `data`), then pass that object into `normalize-family-artifacts.ts`.
+  Do not import `@you-agent-factory/api` package root or `generated/…` internals
+  from W04 modules.
+- Provisional anchors from `provisionalAnchorFromIdentity` only fill the
+  required slot until `ReferenceAnchorRegistry` owns collision-checked anchors.
+- Later stories add anchor registry, cross-link resolver, and display/search
+  projections beside these modules without widening W04 into UI/pages.
 
 ## Verification
 
 ```bash
 bun test src/lib/references/reference-item.test.ts
 bun test src/lib/references/schema-model.test.ts
+bun test src/lib/references/family-normalized-models.test.ts
+bun test src/lib/references/normalize-family-artifacts.test.ts
 bun run typecheck
 bun run lint
 ```
