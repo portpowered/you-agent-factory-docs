@@ -115,8 +115,9 @@ describe("exported-site-budget evaluation", () => {
     expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
       "Exported-site budget gate: PASS",
     );
-    expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
-      "limit 180.00 MB",    );
+      expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
+        "limit 180.00 MB",
+      );
   });
 
   test("fails closed when the export directory is missing", () => {
