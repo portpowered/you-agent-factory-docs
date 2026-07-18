@@ -1,0 +1,182 @@
+---
+title: "Poller worker"
+description: "Configure a POLLER_WORKER for hosted poller ingress: provider, auth.secretRef, Linear provider fields, and POLLER_RUN companionship distinct from workstation behavior POLLER."
+kind: "documentation"
+registryId: "documentation.workers-poller"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "poller worker"
+  - "POLLER_WORKER"
+  - "POLLER_RUN"
+  - "behavior POLLER"
+  - "provider"
+  - "auth.secretRef"
+  - "docs workers poller"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+  <p>
+    <T k="links.discriminatorLabel" />
+    {": "}
+    <T k="links.discriminatorValue" />
+  </p>
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.companionIntro" />
+  </p>
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/workstations/poller-run",
+        labelKey: "links.companionWorkstation",
+      },
+      {
+        href: "/docs/workstations/poller",
+        labelKey: "links.companionBehavior",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="variant-fields" titleKey="sections.variantFields.title">
+  <T k="sections.variantFields.body" />
+  <PollerWorkerVariantSchemaEmbed />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.fullFactorySchema",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="examples" titleKey="sections.examples.title">
+  <T k="sections.examples.body" />
+  <PollerWorkerExamples />
+</Section>
+
+<Section id="operational-cautions" titleKey="sections.operationalCautions.title">
+  <T k="sections.operationalCautions.body" />
+  <table data-poller-worker-failure-table="">
+    <thead>
+      <tr>
+        <th>
+          <T k="links.cautionTopicHeader" />
+        </th>
+        <th>
+          <T k="links.cautionGuidanceHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.cautionValidationTopic" />
+        </td>
+        <td>
+          <T k="links.cautionValidationGuidance" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cautionSecretsTopic" />
+        </td>
+        <td>
+          <T k="links.cautionSecretsGuidance" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cautionTypeVsBehaviorTopic" />
+        </td>
+        <td>
+          <T k="links.cautionTypeVsBehaviorGuidance" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cautionModelFieldsTopic" />
+        </td>
+        <td>
+          <T k="links.cautionModelFieldsGuidance" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.cautionLifecycleTopic" />
+        </td>
+        <td>
+          <T k="links.cautionLifecycleGuidance" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/workers",
+        labelKey: "links.workersFamilyIndex",
+      },
+      {
+        href: "/docs/workers/script",
+        labelKey: "links.siblingScriptWorker",
+      },
+      {
+        href: "/docs/workers/inference",
+        labelKey: "links.siblingInferenceWorker",
+      },
+      {
+        href: "/docs/workers/agent",
+        labelKey: "links.siblingAgentWorker",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.siblingWorkstations",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.siblingResources",
+      },
+      {
+        href: "/docs/concepts/tokens",
+        labelKey: "links.siblingTokens",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.workers-poller" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.workers-poller" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.workers-poller" />
+</Section>

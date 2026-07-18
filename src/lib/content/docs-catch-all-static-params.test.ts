@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default and localized generateStaticParams include published references children", () => {
+  test("live default generateStaticParams include authored references and workers children and keep empty families empty", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -184,8 +184,26 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultPaths).not.toContain("__no_docs_pages__");
     expect(defaultPaths).toContain("references/api");
 
-    for (const id of ["factories", "workers", "workstations"] as const) {
-      // Remaining empty families contribute no catch-all child params yet.
+    // W13 authored Worker variant pages enter the default-locale catch-all
+    // compile graph via published-page discovery.
+    const workersChildren = defaultPaths.filter((path) =>
+      path.startsWith("workers/"),
+    );
+    expect(workersChildren).toEqual(
+      expect.arrayContaining([
+        "workers/agent",
+        "workers/inference",
+        "workers/script",
+        "workers/poller",
+        "workers/model",
+        "workers/hosted",
+        "workers/mock",
+      ]),
+    );
+
+    // Families without authored nested pages still contribute no catch-all
+    // children (indexes remain dedicated App Router routes).
+    for (const id of ["factories", "workstations"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -203,7 +221,7 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams include published references children", async () => {
+  test("live localized generateStaticParams include shipped references children without unshipped workers children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
@@ -211,6 +229,8 @@ describe("W05 route-family static params and not-found", () => {
       (entry.slug ?? []).join("/"),
     );
     expect(slugPaths).toContain("references/api");
+    // Worker variant pages currently ship English-only messages, so they do
+    // not enter shipped-locale catch-all params yet.
     for (const id of ["factories", "workers", "workstations"] as const) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

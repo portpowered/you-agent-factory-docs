@@ -262,7 +262,9 @@ const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
 
 const W05_EMPTY_ROUTE_FAMILY_INDEX_CASES =
   W05_DIRECT_ROUTE_FAMILY_INDEX_CASES.filter(
-    (section) => section.collectionId !== "references",
+    (section) =>
+      section.collectionId !== "references" &&
+      section.collectionId !== "workers",
   );
 
 const W05_EMPTY_STATE_ATLAS_PHRASING =
@@ -285,7 +287,23 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
     expect(html).not.toContain("/docs/documentation/");
   });
 
-  test("renders empty-state indexes for factories, workers, and workstations without leaking documentation entries", async () => {
+  test("renders the workers index with authored page entries", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.workersIndex;
+    const html = renderToStaticMarkup(
+      await renderSectionCollectionIndexPage("workers"),
+    );
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("Agent worker");
+    expect(html).toContain("/docs/workers/agent");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(html).not.toContain("/docs/documentation/");
+  });
+
+  test("renders empty-state indexes for factories and workstations without leaking documentation entries", async () => {
     const messages = await loadUiMessages();
 
     for (const {
@@ -346,6 +364,21 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
         expect(html).toContain(indexMessages.emptyHomeLink);
         expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
       }
+    }
+  });
+
+  test("renders localized workers indexes as empty while variant pages stay English-only", async () => {
+    for (const locale of ["ja", "zh-CN", "vi"] as const) {
+      const messages = await loadUiMessages(locale);
+      const html = renderToStaticMarkup(
+        await renderSectionCollectionIndexPage("workers", locale),
+      );
+
+      expect(html).toContain(messages.workersIndex.title);
+      expect(html).toContain(messages.workersIndex.emptyTitle);
+      expect(html).not.toContain(
+        `aria-label="${messages.workersIndex.listLabel}"`,
+      );
     }
   });
 
