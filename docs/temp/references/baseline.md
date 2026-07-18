@@ -153,3 +153,42 @@ These counts match the installed artifact on this checkout (plan prose currently
 states the same path/operation/schema/parameter/response numbers). They are
 baseline observations for later drift detection, not permanent product limits or
 UI quotas.
+
+## Configuration schema inventory
+
+Sources: installed Draft 2020-12 JSON Schema artifacts via public subpaths
+`@you-agent-factory/api/schemas/factory`,
+`@you-agent-factory/api/schemas/you-config`, and
+`@you-agent-factory/api/schemas/mock-workers` (files under
+`node_modules/@you-agent-factory/api/generated/schemas/`). Counts are derived
+from each schema’s root `properties` and `$defs` maps—not copied from plan
+prose.
+
+### Counting rules
+
+- **Root-property count:** `Object.keys(schema.properties).length`
+- **`$defs` count:** `Object.keys(schema.$defs).length`
+
+### Inventory
+
+| Schema subpath | `$id` | Root properties | `$defs` |
+| --- | --- | --- | --- |
+| `@you-agent-factory/api/schemas/factory` | `https://schemas.portpowered.com/you/config/factory.schema.json` | **18** | **91** |
+| `@you-agent-factory/api/schemas/you-config` | `https://schemas.portpowered.com/you/config/you-config.schema.json` | **3** | **6** |
+| `@you-agent-factory/api/schemas/mock-workers` | `https://schemas.portpowered.com/you/config/mock-workers.schema.json` | **2** | **5** |
+
+All three publish `$schema` `https://json-schema.org/draft/2020-12/schema` and
+root `type` `object`. Titles as published: “You Factory configuration”, “You
+operator and system configuration”, “You mock-worker configuration”.
+
+### Root property names (as published)
+
+| Schema | Root `properties` keys |
+| --- | --- |
+| factory | `factoryDirectory`, `guards`, `id`, `inputTypes`, `invocationReturn`, `invocationSignature`, `layout`, `metadata`, `name`, `orchestrator`, `resources`, `runner`, `sourceDirectory`, `supportingFiles`, `version`, `workTypes`, `workers`, `workstations` |
+| you-config | `backendScopeID`, `defaults`, `workerPresets` |
+| mock-workers | `mockWorkers`, `unmatchedDispatchPolicy` |
+
+These root/`$defs` counts match the installed artifacts on this checkout (plan
+prose currently states the same numbers). They are baseline observations for
+later drift detection, not permanent product limits or UI quotas.

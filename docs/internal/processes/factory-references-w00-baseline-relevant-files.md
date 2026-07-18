@@ -66,3 +66,23 @@ Read `@you-agent-factory/api/openapi` (resolves to
 Derive counts from the installed artifact. Do not copy plan prose when the
 package differs. Counts are baseline drift observations, not permanent product
 limits.
+
+## Configuration schema inventory
+
+Read the three public schema subpaths:
+
+- `@you-agent-factory/api/schemas/factory` → `generated/schemas/factory.schema.json`
+- `@you-agent-factory/api/schemas/you-config` → `generated/schemas/you-config.schema.json`
+- `@you-agent-factory/api/schemas/mock-workers` → `generated/schemas/mock-workers.schema.json`
+
+For each schema record:
+
+- `$id`, `$schema` (Draft 2020-12 on this install), and title when useful
+- Root-property count: `Object.keys(schema.properties).length`
+- `$defs` count: `Object.keys(schema.$defs).length`
+- Root property key names (for reviewer verification)
+
+Derive counts from the installed Draft JSON Schema artifacts. Do not copy plan
+prose when the package differs. Current install: factory 18/91, you-config 3/6,
+mock-workers 2/5. Counts are baseline drift observations, not permanent product
+limits.
