@@ -31,11 +31,14 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/factory-variant-field-semantics.test.ts` | Applicability resolution: excluded omission, conditional `conditionId` gates, no invented base fields |
 | `src/lib/references/overlays/factory-variant-compatibility-matrix.ts` | Pure `FactoryVariantCompatibilityMatrix` + companion validation against the overlay registry (no IO); minimal authored Worker ↔ Workstation ↔ behavior facts |
 | `src/lib/references/overlays/factory-variant-compatibility-matrix.test.ts` | Missing required / unknown compatible companions fail closed with overlay + companion diagnostics; minimal matrix validates against installed registry |
-| `src/lib/references/overlays/factory-variant-overlay-validator.ts` | Pure `FactoryVariantOverlayValidator` — field paths + discriminators against W04 models; example-ref existence catalog; optional field-attribution incompatible selection; Factory schema → W04 projection helper (no IO) |
-| `src/lib/references/overlays/factory-variant-overlay-validator.test.ts` | Missing base, unknown discriminator field/value, absent field paths, missing example refs, incompatible field selection fail closed; installed package via W03 + W04 projection |
+| `src/lib/references/overlays/factory-variant-overlay-validator.ts` | Pure `FactoryVariantOverlayValidator` — field paths + discriminators against W04 models; prefers `upstreamDefinition` when present; example-ref existence catalog; optional field-attribution incompatible selection; Factory schema → W04 projection helper (no IO) |
+| `src/lib/references/overlays/factory-variant-overlay-validator.test.ts` | Missing base, unknown discriminator field/value, absent field paths, missing example refs, incompatible field selection, upstream prefer/contradict/unresolved fail closed; installed package via W03 + W04 projection |
 | `src/lib/references/overlays/factory-variant-incompatible-field-selection.ts` | Pure field attribution from overlay `selected` slots + incompatible companion field-selection check (no IO) |
 | `src/lib/references/overlays/factory-variant-incompatible-field-selection.test.ts` | Incompatible selection fails with overlay/field/conflicting-variant diagnostics; compatible joint selection does not fail |
+| `src/lib/references/overlays/factory-variant-upstream-migration.ts` | Pure upstream migration helpers — prefer resolved `upstreamDefinition`, fail closed on unresolved targets / contradictions, applicability preferring upstream (no IO) |
+| `src/lib/references/overlays/factory-variant-upstream-migration.test.ts` | Upstream preference, base fallback, unresolved target, field/discriminator/exclusion contradictions |
 | `src/lib/references/overlays/fixtures/incompatible-field-selection.ts` | Focused overlay fixtures for incompatible vs jointly-allowed field selection |
+| `src/lib/references/overlays/fixtures/upstream-migration.ts` | Focused overlay + W04 definition fixtures for upstream preference / contradiction / unresolved target |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
@@ -91,9 +94,17 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   fails closed. Compatible companions that jointly list a field do not fail
   solely for that overlap. Pass attribution on the validation context or call
   the dedicated helpers / fixture under `overlays/fixtures/`.
-- Later stories own optional `upstreamDefinition` migration preference and
-  broader drift fixtures (removed fields, renamed enums, missing refs,
-  incompatible examples).
+- Prefer optional `upstreamDefinition` with
+  `resolveFactoryVariantAuthoritativeDefinition` /
+  `assertFactoryVariantUpstreamConsistency` /
+  `resolveFactoryVariantApplicableFieldsPreferringUpstream`. When upstream
+  resolves, it is the authoritative field/discriminator source; unresolved
+  targets fail as `missing-upstream-definition` (no silent base fallback);
+  contradictory selected/shared/excluded/conditional paths or discriminators
+  fail as `upstream-contradiction`. When upstream is absent, validation
+  continues against the broad `baseDefinition` as before. Fixtures live under
+  `overlays/fixtures/upstream-migration.ts`. Story 008 broadens drift fixtures
+  (removed fields, renamed enums, missing refs, incompatible examples).
 
 ## Verification
 

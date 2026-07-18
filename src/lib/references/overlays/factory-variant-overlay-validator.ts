@@ -9,9 +9,9 @@
  * Authored example references are existence-checked against an explicit catalog
  * only; example content authorship stays out of W06 page work.
  *
- * Optional `upstreamDefinition` migration preference is owned by a later story;
- * this validator checks the overlay's `baseDefinition` (+ field slots /
- * discriminator / examples) as declared. Pass `fieldAttribution` on the
+ * When `upstreamDefinition` is declared, migration prefers that definition as
+ * the authoritative field/discriminator source; unresolved targets and
+ * contradictory overlay content fail closed. Pass `fieldAttribution` on the
  * validation context to enable incompatible companion field-selection checks.
  */
 
@@ -41,10 +41,18 @@ import {
   type FactoryVariantOverlayId,
   type FactoryVariantOverlaySchema,
 } from "./factory-variant-overlay-schema";
+import {
+  assertFactoryVariantUpstreamConsistency,
+  type FactoryVariantAuthoritativeDefinition,
+  FactoryVariantUpstreamMigrationError,
+  resolveFactoryVariantAuthoritativeDefinition,
+} from "./factory-variant-upstream-migration";
 
 export type FactoryVariantOverlayValidationErrorCode =
   | "malformed-input"
   | "missing-base-definition"
+  | "missing-upstream-definition"
+  | "upstream-contradiction"
   | "unknown-discriminator-field"
   | "unknown-discriminator-value"
   | "unknown-field-path"
@@ -58,6 +66,7 @@ export class FactoryVariantOverlayValidationError extends Error {
   readonly exampleId?: string;
   readonly identity?: string;
   readonly conflictingVariantId?: string;
+  readonly contradiction?: string;
 
   constructor(
     code: FactoryVariantOverlayValidationErrorCode,
@@ -68,6 +77,7 @@ export class FactoryVariantOverlayValidationError extends Error {
       exampleId?: string;
       identity?: string;
       conflictingVariantId?: string;
+      contradiction?: string;
       cause?: unknown;
     } = {},
   ) {
@@ -82,7 +92,29 @@ export class FactoryVariantOverlayValidationError extends Error {
     this.exampleId = options.exampleId;
     this.identity = options.identity;
     this.conflictingVariantId = options.conflictingVariantId;
+    this.contradiction = options.contradiction;
   }
+}
+
+function rethrowUpstreamMigrationAsValidationError(cause: unknown): never {
+  if (cause instanceof FactoryVariantUpstreamMigrationError) {
+    const code: FactoryVariantOverlayValidationErrorCode =
+      cause.code === "missing-upstream-definition"
+        ? "missing-upstream-definition"
+        : cause.code === "upstream-contradiction"
+          ? "upstream-contradiction"
+          : cause.code === "missing-base-definition"
+            ? "missing-base-definition"
+            : "malformed-input";
+    throw new FactoryVariantOverlayValidationError(code, cause.message, {
+      overlayId: cause.overlayId,
+      fieldPath: cause.fieldPath,
+      identity: cause.identity,
+      contradiction: cause.contradiction,
+      cause,
+    });
+  }
+  throw cause;
 }
 
 /**
@@ -233,6 +265,10 @@ function collectOverlayFieldPaths(
 /**
  * Validate one overlay against installed schema models + example catalog.
  * Fails closed with diagnostics that name the overlay and offending identity.
+ *
+ * When `upstreamDefinition` is present and resolves, field/discriminator
+ * checks prefer that upstream definition. Unresolved upstream targets and
+ * contradictory overlay content fail closed without silent base fallback.
  */
 export function validateFactoryVariantOverlay(
   overlayInput: FactoryVariantOverlaySchema,
@@ -241,69 +277,81 @@ export function validateFactoryVariantOverlay(
   const overlay = createFactoryVariantOverlay(overlayInput);
   const overlayId: FactoryVariantOverlayId = overlay.id;
 
-  const base = lookupDefinition(context, overlay.baseDefinition);
-  if (base === undefined) {
-    const identity = schemaAddressKey(overlay.baseDefinition);
-    throw new FactoryVariantOverlayValidationError(
-      "missing-base-definition",
-      `Overlay "${overlayId}" base definition "${identity}" does not resolve to a known SchemaDefinitionModel.`,
-      { overlayId, identity },
+  let authoritative: FactoryVariantAuthoritativeDefinition;
+  try {
+    authoritative = resolveFactoryVariantAuthoritativeDefinition(
+      overlay,
+      context.definitions,
     );
+    assertFactoryVariantUpstreamConsistency(
+      overlay,
+      context.definitions,
+      authoritative,
+    );
+  } catch (cause) {
+    rethrowUpstreamMigrationAsValidationError(cause);
   }
 
-  const fieldsByPath = indexSchemaDefinitionFieldsByPath(base);
-  const discriminatorField = fieldsByPath.get(overlay.discriminator.field);
-  if (discriminatorField === undefined) {
-    throw new FactoryVariantOverlayValidationError(
-      "unknown-discriminator-field",
-      `Overlay "${overlayId}" discriminator field "${overlay.discriminator.field}" is absent from base definition "${schemaAddressKey(overlay.baseDefinition)}".`,
-      {
-        overlayId,
-        fieldPath: overlay.discriminator.field,
-        identity: overlay.discriminator.field,
-      },
+  // When upstream is authoritative, consistency already covered
+  // field/discriminator checks. Continue with base-path validation only when
+  // migrating against the broad base (no upstream).
+  if (authoritative.source === "base") {
+    const fieldsByPath = indexSchemaDefinitionFieldsByPath(
+      authoritative.definition,
     );
-  }
-
-  const enumValues = resolveDiscriminatorEnumValues(
-    discriminatorField,
-    context,
-  );
-  if (enumValues === undefined) {
-    throw new FactoryVariantOverlayValidationError(
-      "unknown-discriminator-value",
-      `Overlay "${overlayId}" discriminator field "${overlay.discriminator.field}" has no resolvable enum values on the base definition or refTarget; cannot prove value "${overlay.discriminator.value}".`,
-      {
-        overlayId,
-        fieldPath: overlay.discriminator.field,
-        identity: overlay.discriminator.value,
-      },
-    );
-  }
-
-  if (!enumValues.includes(overlay.discriminator.value)) {
-    throw new FactoryVariantOverlayValidationError(
-      "unknown-discriminator-value",
-      `Overlay "${overlayId}" discriminator value "${overlay.discriminator.value}" is not in the published enum for field "${overlay.discriminator.field}".`,
-      {
-        overlayId,
-        fieldPath: overlay.discriminator.field,
-        identity: overlay.discriminator.value,
-      },
-    );
-  }
-
-  for (const entry of collectOverlayFieldPaths(overlay)) {
-    if (!fieldsByPath.has(entry.path)) {
+    const discriminatorField = fieldsByPath.get(overlay.discriminator.field);
+    if (discriminatorField === undefined) {
       throw new FactoryVariantOverlayValidationError(
-        "unknown-field-path",
-        `Overlay "${overlayId}" ${entry.slot} references field path "${entry.path}" that is absent from base definition "${schemaAddressKey(overlay.baseDefinition)}".`,
+        "unknown-discriminator-field",
+        `Overlay "${overlayId}" discriminator field "${overlay.discriminator.field}" is absent from base definition "${schemaAddressKey(authoritative.address)}".`,
         {
           overlayId,
-          fieldPath: entry.path,
-          identity: entry.path,
+          fieldPath: overlay.discriminator.field,
+          identity: overlay.discriminator.field,
         },
       );
+    }
+
+    const enumValues = resolveDiscriminatorEnumValues(
+      discriminatorField,
+      context,
+    );
+    if (enumValues === undefined) {
+      throw new FactoryVariantOverlayValidationError(
+        "unknown-discriminator-value",
+        `Overlay "${overlayId}" discriminator field "${overlay.discriminator.field}" has no resolvable enum values on the base definition or refTarget; cannot prove value "${overlay.discriminator.value}".`,
+        {
+          overlayId,
+          fieldPath: overlay.discriminator.field,
+          identity: overlay.discriminator.value,
+        },
+      );
+    }
+
+    if (!enumValues.includes(overlay.discriminator.value)) {
+      throw new FactoryVariantOverlayValidationError(
+        "unknown-discriminator-value",
+        `Overlay "${overlayId}" discriminator value "${overlay.discriminator.value}" is not in the published enum for field "${overlay.discriminator.field}".`,
+        {
+          overlayId,
+          fieldPath: overlay.discriminator.field,
+          identity: overlay.discriminator.value,
+        },
+      );
+    }
+
+    for (const entry of collectOverlayFieldPaths(overlay)) {
+      if (!fieldsByPath.has(entry.path)) {
+        throw new FactoryVariantOverlayValidationError(
+          "unknown-field-path",
+          `Overlay "${overlayId}" ${entry.slot} references field path "${entry.path}" that is absent from base definition "${schemaAddressKey(authoritative.address)}".`,
+          {
+            overlayId,
+            fieldPath: entry.path,
+            identity: entry.path,
+          },
+        );
+      }
     }
   }
 

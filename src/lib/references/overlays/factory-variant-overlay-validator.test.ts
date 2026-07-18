@@ -23,6 +23,12 @@ import {
   validateFactoryVariantOverlays,
 } from "./factory-variant-overlay-validator";
 import { createIncompatibleFieldSelectionFixtureOverlays } from "./fixtures/incompatible-field-selection";
+import {
+  createUnresolvedUpstreamOverlay,
+  createUpstreamFieldContradictionOverlay,
+  createUpstreamMigrationFixtureDefinitions,
+  createValidUpstreamPreferringOverlay,
+} from "./fixtures/upstream-migration";
 
 function installedValidationContext(knownExampleIds: string[] = []) {
   const artifact = resolveApiPackageArtifact("schemas/factory");
@@ -344,5 +350,45 @@ describe("FactoryVariantOverlayValidator", () => {
     expect(formatSchemaAddress(overlay.baseDefinition)).toBe(
       `${artifact.specifier}#/$defs/Worker`,
     );
+  });
+
+  test("prefers resolved upstreamDefinition and fails closed on unresolved or contradictory upstream", () => {
+    const context = createFactoryVariantOverlayValidationContext({
+      definitions: createUpstreamMigrationFixtureDefinitions(),
+    });
+
+    expect(() =>
+      validateFactoryVariantOverlay(
+        createValidUpstreamPreferringOverlay(),
+        context,
+      ),
+    ).not.toThrow();
+
+    try {
+      validateFactoryVariantOverlay(createUnresolvedUpstreamOverlay(), context);
+      throw new Error("expected missing-upstream-definition failure");
+    } catch (error) {
+      expect(error).toBeInstanceOf(FactoryVariantOverlayValidationError);
+      const validationError = error as FactoryVariantOverlayValidationError;
+      expect(validationError.code).toBe("missing-upstream-definition");
+      expect(validationError.overlayId).toBe("worker:AGENT_WORKER");
+      expect(validationError.identity).toContain("/$defs/MissingAgentWorker");
+    }
+
+    try {
+      validateFactoryVariantOverlay(
+        createUpstreamFieldContradictionOverlay(),
+        context,
+      );
+      throw new Error("expected upstream-contradiction failure");
+    } catch (error) {
+      expect(error).toBeInstanceOf(FactoryVariantOverlayValidationError);
+      const validationError = error as FactoryVariantOverlayValidationError;
+      expect(validationError.code).toBe("upstream-contradiction");
+      expect(validationError.overlayId).toBe("worker:AGENT_WORKER");
+      expect(validationError.fieldPath).toBe("command");
+      expect(validationError.contradiction).toBe("fields.selected");
+      expect(validationError.message).toContain("/$defs/AgentWorker");
+    }
   });
 });
