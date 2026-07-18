@@ -45,12 +45,41 @@ make test-w20-contract-projection
 # or: bun run test:w20-contract-projection
 ```
 
+## Story 002 — content and registry validation
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-content-registry-convergence.ts` | Catalog of command gates, focused suites, and required published Factory-reference URLs |
+| `src/lib/verify/w20-content-registry-convergence.test.ts` | Catalog completeness + published-route presence proofs against `publishedDocsIndex` |
+| `scripts/run-w20-content-registry-tests.ts` | Runner: catalog → `make validate-data` → `make verify-content-runtime-completeness` → focused suites |
+| `package.json` → `test:w20-content-registry` | Maintainer / automation entry |
+| `Makefile` → `test-w20-content-registry` | Shared Makefile contract |
+
+### Command gates
+
+* `make validate-data` — registry / derived page-bundle validation
+* `make verify-content-runtime-completeness` — content-runtime completeness gate
+
+### Focused suites
+
+* `src/lib/content/published-docs-registry-contract.test.ts` — factories / workers / workstations section contracts
+* `src/lib/content/docs-catch-all-static-params.test.ts` — catch-all static params include references / factories / workers / workstations children
+
+### Reproduce
+
+```bash
+make test-w20-content-registry
+# or: bun run test:w20-content-registry
+```
+
 Upstream lane docs (do not fork ownership):
 
 * [package-artifact-resolver-relevant-files](./package-artifact-resolver-relevant-files.md)
 * [normalized-reference-model-relevant-files](./normalized-reference-model-relevant-files.md)
 * [unified-api-reference-renderer-relevant-files](./unified-api-reference-renderer-relevant-files.md)
 * [w19-accessibility-responsive-budgets-relevant-files](./w19-accessibility-responsive-budgets-relevant-files.md)
+* [content-page-generation-workflow-relevant-files](./content-page-generation-workflow-relevant-files.md)
+* [derived-page-validation-relevant-files](./derived-page-validation-relevant-files.md)
 
 ## Ownership fence
 
