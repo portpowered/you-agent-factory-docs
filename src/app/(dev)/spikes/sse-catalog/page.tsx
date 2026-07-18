@@ -1,13 +1,12 @@
 import { notFound } from "next/navigation";
-import { EventCatalogFixtureView } from "@/lib/references-sse-asyncapi-spike/EventCatalogFixtureView";
-import { loadPackagedEventCatalogFixture } from "@/lib/references-sse-asyncapi-spike/load-packaged-event-catalog";
-import { SseCatalogSpikeSurfaceChrome } from "@/lib/references-sse-asyncapi-spike/SseCatalogSpikeSurfaceChrome";
 
 /**
- * Separate-catalog placement spike. Hidden from production static export
- * unless explicitly enabled.
+ * Non-production W02 separate-catalog SSE spike route gate.
+ *
+ * Production static export aliases `./spike-page-content` to the stub unless
+ * an ENABLE_SSE_* spike flag is set.
  */
-export default function SseCatalogSpikePage() {
+export default async function SseCatalogSpikePage() {
   if (
     process.env.NODE_ENV === "production" &&
     process.env.ENABLE_SSE_CATALOG_SPIKE !== "1" &&
@@ -16,11 +15,6 @@ export default function SseCatalogSpikePage() {
     notFound();
   }
 
-  const catalog = loadPackagedEventCatalogFixture();
-
-  return (
-    <SseCatalogSpikeSurfaceChrome>
-      <EventCatalogFixtureView catalog={catalog} />
-    </SseCatalogSpikeSurfaceChrome>
-  );
+  const { SseCatalogSpikePageContent } = await import("./spike-page-content");
+  return <SseCatalogSpikePageContent />;
 }

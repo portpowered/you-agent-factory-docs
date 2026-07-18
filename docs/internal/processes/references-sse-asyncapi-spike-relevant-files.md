@@ -137,3 +137,22 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   production event UI, permanently pin deps, hand-edit AsyncAPI, or own W01
   files. Focused tests: `placement-decision-gate.test.ts`. Narrative decision:
   `docs/temp/references/sse-renderer-investigation.md` (gitignored).
+
+## Production static-export stub (mergeability)
+
+Mirror the W01 OpenAPI spike pattern so fumadocs-openapi / `@fumadocs/asyncapi`
+/ Scalar stay out of the production webpack graph unless an `ENABLE_SSE_*`
+flag is set:
+
+- Each spike route under `src/app/(dev)/spikes/sse-*/` uses a thin `page.tsx`
+  gate that dynamically imports `./spike-page-content`.
+- Heavy UI + CSS imports live in `spike-page-content.tsx`.
+- `spike-page-content.stub.tsx` only calls `notFound()`.
+- `next.config.ts` webpack-aliases the real content module to the stub for
+  production builds when no `ENABLE_SSE_OPENAPI_SPIKE` /
+  `ENABLE_SSE_ASYNCAPI_SPIKE` / `ENABLE_SSE_CATALOG_SPIKE` /
+  `ENABLE_SSE_HYBRID_SPIKE` flag is set (same CI path as W01's
+  `ENABLE_OPENAPI_SPIKE`).
+- Do not import `fumadocs-openapi` / `@fumadocs/asyncapi` CSS or createAPIPage
+  factories from the gate `page.tsx` — that pulls them into the shared export
+  graph and has caused production `next start` EPIPE failures in integration CI.

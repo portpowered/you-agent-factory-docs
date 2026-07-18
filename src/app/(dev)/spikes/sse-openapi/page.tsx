@@ -1,15 +1,12 @@
 import { notFound } from "next/navigation";
-import { getSseSpikeOpenApi } from "@/lib/references-sse-asyncapi-spike/create-sse-spike-openapi";
-import { SseSpikeSurfaceChrome } from "@/lib/references-sse-asyncapi-spike/SseSpikeSurfaceChrome";
-import {
-  SSE_SPIKE_API_PAGE_OPERATIONS,
-  SSE_SPIKE_DOCUMENT_ID,
-} from "@/lib/references-sse-asyncapi-spike/sse-operations";
-import "fumadocs-openapi/css/preset.css";
 
 /**
- * Non-production W02 spike route. Hidden from production static export unless
- * explicitly enabled (same pattern as component-examples).
+ * Non-production W02 OpenAPI SSE spike route gate.
+ *
+ * Production static export (CI) must not pull fumadocs-openapi / Scalar into
+ * the shared JS graph. Heavy UI lives in `./spike-page-content`, which
+ * next.config aliases to `./spike-page-content.stub` unless an ENABLE_SSE_*
+ * spike flag is set.
  */
 export default async function SseOpenApiSpikePage() {
   if (
@@ -19,16 +16,6 @@ export default async function SseOpenApiSpikePage() {
     notFound();
   }
 
-  const { APIPage } = getSseSpikeOpenApi();
-
-  return (
-    <SseSpikeSurfaceChrome>
-      <APIPage
-        document={SSE_SPIKE_DOCUMENT_ID}
-        operations={[...SSE_SPIKE_API_PAGE_OPERATIONS]}
-        showTitle
-        showDescription
-      />
-    </SseSpikeSurfaceChrome>
-  );
+  const { SseOpenApiSpikePageContent } = await import("./spike-page-content");
+  return <SseOpenApiSpikePageContent />;
 }

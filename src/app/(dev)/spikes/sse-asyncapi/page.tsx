@@ -1,13 +1,10 @@
 import { notFound } from "next/navigation";
-import { getSseSpikeAsyncApi } from "@/lib/references-sse-asyncapi-spike/create-sse-spike-asyncapi";
-import { SseAsyncApiSpikeRenderer } from "@/lib/references-sse-asyncapi-spike/SseAsyncApiSpikeRenderer";
-import { SseAsyncApiSpikeSurfaceChrome } from "@/lib/references-sse-asyncapi-spike/SseAsyncApiSpikeSurfaceChrome";
-import "@fumadocs/asyncapi/css/preset.css";
 
 /**
- * Non-production W02 spike route: render the regenerated OpenAPI→AsyncAPI
- * projection with @fumadocs/asyncapi. Hidden from production static export
- * unless explicitly enabled.
+ * Non-production W02 AsyncAPI SSE spike route gate.
+ *
+ * Production static export aliases `./spike-page-content` to the stub unless
+ * an ENABLE_SSE_* spike flag is set.
  */
 export default async function SseAsyncApiSpikePage() {
   if (
@@ -18,17 +15,6 @@ export default async function SseAsyncApiSpikePage() {
     notFound();
   }
 
-  const { bundled, operations, projection, packagePin } = getSseSpikeAsyncApi();
-
-  if (packagePin.permanentProductionPin) {
-    throw new Error(
-      "SSE AsyncAPI spike must not permanently pin production dependencies.",
-    );
-  }
-
-  return (
-    <SseAsyncApiSpikeSurfaceChrome sourceHash={projection.sourceHash}>
-      <SseAsyncApiSpikeRenderer bundled={bundled} operations={operations} />
-    </SseAsyncApiSpikeSurfaceChrome>
-  );
+  const { SseAsyncApiSpikePageContent } = await import("./spike-page-content");
+  return <SseAsyncApiSpikePageContent />;
 }
