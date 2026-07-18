@@ -9,6 +9,11 @@ import {
 } from "./schema-anchor";
 import { SchemaBreadcrumb } from "./schema-breadcrumb";
 import {
+  SchemaConstraintList,
+  schemaConstraintListPropsFromField,
+} from "./schema-constraint-list";
+import { SchemaDefaultValue } from "./schema-default-value";
+import {
   schemaFieldLeafName,
   schemaFieldTreeNodeCanExpand,
 } from "./schema-field-path";
@@ -156,6 +161,14 @@ export function SchemaFieldRow({
               {field.description}
             </p>
           ) : null}
+
+          {field.default !== undefined ? (
+            <SchemaDefaultValue value={field.default} />
+          ) : null}
+
+          <SchemaConstraintList
+            {...schemaConstraintListPropsFromField(field)}
+          />
 
           {variantHint !== undefined && variantHint.trim().length > 0 ? (
             <p

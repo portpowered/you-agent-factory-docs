@@ -104,6 +104,26 @@ describe("schema verification harness (real W03 schemas)", () => {
     expect(
       mockWorkers.querySelector('[data-schema-field-path="mockWorkers"]'),
     ).toBeTruthy();
+
+    // Real mock-workers root publishes default + enum on unmatchedDispatchPolicy;
+    // field rows must compose SchemaDefaultValue / SchemaConstraintList in-tree.
+    const policyRow = mockWorkers.querySelector(
+      '[data-schema-field-path="unmatchedDispatchPolicy"]',
+    );
+    expect(policyRow).toBeTruthy();
+    expect(
+      policyRow?.querySelector('[data-testid="schema-default-value"]'),
+    ).toBeTruthy();
+    expect(
+      policyRow
+        ?.querySelector('[data-testid="schema-default-value"]')
+        ?.querySelector('[data-schema-default="value"]')?.textContent,
+    ).toBe('"accept"');
+    expect(
+      policyRow?.querySelector(
+        '[data-testid="schema-constraint-list"] [data-schema-constraint="enum"]',
+      ),
+    ).toBeTruthy();
   });
 
   test("covers composition/$ref navigation, filter usage, and example states", () => {

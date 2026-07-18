@@ -34,9 +34,9 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-constraint-entries.ts` | Pure constraint → labeled entry projection (no invented values) |
 | `src/components/references/schema/schema-field-metadata.test.tsx` | Field metadata display proofs (type/required/default/constraints) |
 | `src/components/references/schema/schema-field-path.ts` | Pure path/leaf helpers + tree-node builders; `$ref` expand guard |
-| `src/components/references/schema/schema-field-row.tsx` | Accessible field row (name/path/type/required/description + expand) |
+| `src/components/references/schema/schema-field-row.tsx` | Accessible field row (name/path/type/required/default/constraints/description + expand) |
 | `src/components/references/schema/schema-field-tree.tsx` | Recursive field tree with disclosure semantics and `$ref` via SchemaRefLink |
-| `src/components/references/schema/schema-field-tree.test.tsx` | Field tree/row keyboard expand + path + `$ref` non-recursion proofs |
+| `src/components/references/schema/schema-field-tree.test.tsx` | Field tree/row keyboard expand + path + `$ref` non-recursion + in-row default/constraint proofs |
 | `src/components/references/schema/schema-ref-display.ts` | Pure `$ref` / composition / discriminator display projectors over W04 outcomes |
 | `src/components/references/schema/schema-ref-link.tsx` | Navigable `$ref` link + cycle sentinel; unresolved missing/malformed status |
 | `src/components/references/schema/schema-composition.tsx` | oneOf/anyOf/allOf + discriminator mapping display |
@@ -94,7 +94,11 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   targets in the UI. `$ref` rows render `SchemaRefLink` (stable W04 anchors;
   cycle sentinels stay links; missing/malformed are unresolved `role="status"`).
   Use `schemaFieldTreeNodeCanExpand` so refs never recurse even if children
-  were accidentally attached.
+  were accidentally attached. When a field publishes `default` / enum /
+  constraints / const / additionalProperties, the row composes
+  `SchemaDefaultValue` + `SchemaConstraintList` via
+  `schemaConstraintListPropsFromField` — do not leave those components
+  definition-only.
 - Composition UI: `SchemaComposition` + `projectSchemaCompositionDisplay` /
   `schemaRefLinkDisplayFromOutcome` consume W04 composition models and
   `ReferenceCrossLinkResolver` outcomes. Members stay as links — never

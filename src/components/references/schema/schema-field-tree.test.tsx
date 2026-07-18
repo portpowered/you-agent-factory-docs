@@ -221,4 +221,64 @@ describe("SchemaFieldTree", () => {
     ).toBeNull();
     expect(screen.getByText("Optional")).toBeTruthy();
   });
+
+  test("composes default and constraint displays into each field row", () => {
+    const field = createSchemaFieldModel({
+      path: "unmatchedDispatchPolicy",
+      typeSummary: "string",
+      required: false,
+      default: "accept",
+      enum: ["accept", "passthrough"],
+      constraints: { minLength: 1 },
+    });
+
+    render(<SchemaFieldTree fields={[field]} />);
+
+    const row = screen.getByTestId("schema-field-row");
+    expect(row.getAttribute("data-schema-field-path")).toBe(
+      "unmatchedDispatchPolicy",
+    );
+
+    const defaultValue = row.querySelector(
+      '[data-testid="schema-default-value"]',
+    );
+    expect(defaultValue).toBeTruthy();
+    expect(
+      defaultValue?.querySelector('[data-schema-default="value"]')?.textContent,
+    ).toBe('"accept"');
+
+    const constraints = row.querySelector(
+      '[data-testid="schema-constraint-list"]',
+    );
+    expect(constraints).toBeTruthy();
+    expect(
+      constraints?.querySelector('[data-schema-constraint="enum"]'),
+    ).toBeTruthy();
+    expect(
+      constraints?.querySelector('[data-schema-constraint="minLength"]'),
+    ).toBeTruthy();
+    expect(constraints?.textContent).toContain('"accept" | "passthrough"');
+  });
+
+  test("omits default and constraint UI when the field publishes neither", () => {
+    render(
+      <SchemaFieldTree
+        fields={[
+          createSchemaFieldModel({
+            path: "plain",
+            typeSummary: "string",
+            required: true,
+          }),
+        ]}
+      />,
+    );
+
+    const row = screen.getByTestId("schema-field-row");
+    expect(
+      row.querySelector('[data-testid="schema-default-value"]'),
+    ).toBeNull();
+    expect(
+      row.querySelector('[data-testid="schema-constraint-list"]'),
+    ).toBeNull();
+  });
 });
