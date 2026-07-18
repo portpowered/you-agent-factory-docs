@@ -6,6 +6,7 @@ import { OPENAPI_SPIKE_STATUS } from "./dependency-selection";
 import {
   assertFindingsRollupContent,
   OPENAPI_SPIKE_FINDINGS_REQUIRED_TOPICS,
+  OPENAPI_SPIKE_FINDINGS_ROLLUP_COMMITTED_PATH,
   OPENAPI_SPIKE_FINDINGS_ROLLUP_PATH,
   OPENAPI_SPIKE_FINDINGS_SOURCES,
   OPENAPI_SPIKE_PUBLICATION_POLICY,
@@ -72,6 +73,9 @@ describe("W01 OpenAPI spike findings publication", () => {
     expect(OPENAPI_SPIKE_PUBLICATION_POLICY.findingsRollupPath).toBe(
       OPENAPI_SPIKE_FINDINGS_ROLLUP_PATH,
     );
+    expect(OPENAPI_SPIKE_PUBLICATION_POLICY.findingsRollupCommittedPath).toBe(
+      OPENAPI_SPIKE_FINDINGS_ROLLUP_COMMITTED_PATH,
+    );
     expect(OPENAPI_SPIKE_PUBLICATION_POLICY.findingsDirectory).toBe(
       "docs/temp/references",
     );
@@ -82,16 +86,24 @@ describe("W01 OpenAPI spike findings publication", () => {
     }
   });
 
-  test("publishes a consolidated rollup under docs/temp/references/", async () => {
-    const rollupAbs = join(repoRoot, OPENAPI_SPIKE_FINDINGS_ROLLUP_PATH);
-    expect(existsSync(rollupAbs)).toBe(true);
+  test("publishes a committed consolidated rollup covering every required topic", async () => {
+    const committedAbs = join(
+      repoRoot,
+      OPENAPI_SPIKE_FINDINGS_ROLLUP_COMMITTED_PATH,
+    );
+    expect(existsSync(committedAbs)).toBe(true);
 
-    const markdown = await readFile(rollupAbs, "utf8");
+    const markdown = await readFile(committedAbs, "utf8");
     const failures = assertFindingsRollupContent(markdown);
     expect(failures).toEqual([]);
 
-    for (const source of OPENAPI_SPIKE_FINDINGS_SOURCES) {
-      expect(existsSync(join(repoRoot, source.path))).toBe(true);
+    // Planner copy under docs/temp is optional in CI (gitignored). When present
+    // locally, it must match the committed rollup so planners and PR review stay
+    // aligned.
+    const plannerAbs = join(repoRoot, OPENAPI_SPIKE_FINDINGS_ROLLUP_PATH);
+    if (existsSync(plannerAbs)) {
+      const plannerMarkdown = await readFile(plannerAbs, "utf8");
+      expect(assertFindingsRollupContent(plannerMarkdown)).toEqual([]);
     }
   });
 

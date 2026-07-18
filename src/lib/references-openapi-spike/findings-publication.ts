@@ -1,10 +1,9 @@
 /**
  * W01 OpenAPI spike — findings publication inventory + production unpin policy.
  *
- * Narrative rollups live under gitignored `docs/temp/references/`. This module
- * is the machine-checkable contract that the rollup exists, covers every W01
- * topic, stays non-production, and does not claim final OpenAPI pins or W02
- * AsyncAPI ownership.
+ * Planner-facing narrative also lives under gitignored `docs/temp/references/`.
+ * The committed rollup at `findings-rollup.md` (next to this module) is the
+ * CI-checkable source of truth so PR checks do not depend on gitignored files.
  */
 
 import {
@@ -13,11 +12,18 @@ import {
 } from "./cost-measurements";
 import { OPENAPI_SPIKE_STATUS } from "./dependency-selection";
 
-/** Consolidated planner-facing findings document (gitignored local state). */
+/**
+ * Committed consolidated findings rollup (CI / PR review).
+ * Keep in sync with the planner copy under `docs/temp/references/`.
+ */
+export const OPENAPI_SPIKE_FINDINGS_ROLLUP_COMMITTED_PATH =
+  "src/lib/references-openapi-spike/findings-rollup.md" as const;
+
+/** Planner-facing findings document (gitignored local state). */
 export const OPENAPI_SPIKE_FINDINGS_ROLLUP_PATH =
   "docs/temp/references/w01-openapi-spike-findings.md" as const;
 
-/** Per-story narrative findings that the rollup summarizes. */
+/** Per-story narrative findings that the rollup summarizes (planner copies). */
 export const OPENAPI_SPIKE_FINDINGS_SOURCES = [
   {
     storyId: "refs-w01-openapi-single-page-spike-001",
@@ -90,6 +96,7 @@ export const OPENAPI_SPIKE_PUBLICATION_POLICY = {
     SPIKE_SEARCH_PROJECTION_POLICY.expectedSearchProjectionDeltaBytes,
   findingsDirectory: "docs/temp/references",
   findingsRollupPath: OPENAPI_SPIKE_FINDINGS_ROLLUP_PATH,
+  findingsRollupCommittedPath: OPENAPI_SPIKE_FINDINGS_ROLLUP_COMMITTED_PATH,
 } as const;
 
 /** Headings the rollup must include so planners can locate each topic. */

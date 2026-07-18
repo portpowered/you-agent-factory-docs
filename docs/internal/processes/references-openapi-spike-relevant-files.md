@@ -113,13 +113,14 @@ the shipped `/docs/references/api` surface.
 - `src/lib/references-openapi-spike/findings-publication.ts` — machine-checkable
   rollup inventory, required topics/headings, and non-production / temporary-pin
   / no-W02 / no shared-inventory policy. Assert helpers validate the consolidated
-  markdown under `docs/temp/references/w01-openapi-spike-findings.md`.
+  markdown.
+- `src/lib/references-openapi-spike/findings-rollup.md` — **committed** CI
+  rollup (source of truth for PR checks). Keep in sync with the planner mirror
+  at `docs/temp/references/w01-openapi-spike-findings.md` (gitignored).
 - `src/lib/references-openapi-spike/findings-publication.test.ts` — proves the
-  rollup + per-story findings exist locally, policy stays temporary/non-final,
-  and shared search/sitemap modules do not register the spike route.
-- Narrative rollup + per-story findings live under gitignored
-  `docs/temp/references/` (planner state). Commit the TypeScript publication
-  contract; keep long-form measurements in temp.
+  committed rollup covers required headings, policy stays temporary/non-final,
+  and shared search/sitemap modules do not register the spike route. Optionally
+  checks the docs/temp mirror when present locally.
 - Lane does **not** own W02 AsyncAPI projector work and must not edit shared
   final navigation/search/sitemap inventories.
 
