@@ -31,6 +31,10 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 | `src/lib/references/reference-anchor-registry.test.ts` | Kind coverage, determinism, URL-safety, page grouping, idempotent re-register, and per-page collision proofs |
 | `src/lib/references/reference-cross-link-resolver.ts` | Cycle-safe `$ref` / discriminator `ReferenceCrossLinkResolver`; preserves originating source pointers; explicit resolved/cycle/missing/malformed outcomes (no IO) |
 | `src/lib/references/reference-cross-link-resolver.test.ts` | Ref parse, one-hop resolve, chain cycle detection, discriminator one-hop mapping, missing/malformed proofs |
+| `src/lib/references/reference-display-projection.ts` | UI-agnostic display projection helpers (`projectReferenceItemToDisplay`, schema field/definition projectors); never mutates canonical inputs (no IO / no React) |
+| `src/lib/references/reference-display-projection.test.ts` | Non-mutation, missing-description, type/constraints/link projection proofs |
+| `src/lib/references/reference-search-projection.ts` | Search-document shapes + `ReferenceSearchDocumentBuilder` with owning-page anchor URLs (`/docs/references/api#…`); no Orama/nav wiring |
+| `src/lib/references/reference-search-projection.test.ts` | Anchor URL, per-item documents, missing-description, display/search separation proofs |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 build/server acquisition — consume artifacts only through this public-subpath surface |
 | `src/lib/references/api-package-public-exports.ts` | Documented public subpath allowlist (for source `publicArtifactId` / subpath values) |
 
@@ -83,8 +87,17 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
   `refTarget` wrappers, and `resolveDiscriminator` for one-hop mapping
   expansion only. Local `#/…` / `/…` refs inherit the source artifact id;
   anchors come from `anchorForIdentity("schema-pointer", …)`.
-- Later stories add display/search projections beside these modules without
-  widening W04 into UI/pages.
+- Keep display and search projections in separate modules/types
+  (`reference-display-projection.ts` vs `reference-search-projection.ts`).
+  Display is renderer-oriented (title, type summary, constraints, links,
+  source). Search emits Orama-ready *shapes* via
+  `ReferenceSearchDocumentBuilder` / `projectReferenceItemToSearchDocument`
+  with URLs like `/docs/references/api#submitWorkBySessionId` — do not wire
+  Orama indexes, sidebar nav, or sitemap here. Use
+  `REFERENCE_FAMILY_PAGE_PATHS` / `referenceAnchorUrl` for page fragments;
+  javascript family maps to `/docs/references/javascript-runtime`.
+- Projections must clone source/aliases/constraints/links so callers cannot
+  mutate canonical model data through the projected object.
 
 ## Verification
 
@@ -95,6 +108,8 @@ bun test src/lib/references/family-normalized-models.test.ts
 bun test src/lib/references/normalize-family-artifacts.test.ts
 bun test src/lib/references/reference-anchor-registry.test.ts
 bun test src/lib/references/reference-cross-link-resolver.test.ts
+bun test src/lib/references/reference-display-projection.test.ts
+bun test src/lib/references/reference-search-projection.test.ts
 bun run typecheck
 bun run lint
 ```
