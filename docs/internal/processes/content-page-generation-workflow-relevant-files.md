@@ -1014,6 +1014,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   alone. Do not invent workers/workstations content or references registry ids
   in this lane; keep `<RelatedDocs />` beside the LocalizedLinkList for when
   related-runtime can resolve curated documentation ids.
+* Factories schema embeds under webpack static export: keep
+  `serverExternalPackages: ["@you-agent-factory/api"]` in `next.config.ts`, and
+  harden `resolveSchemaVerificationFsPath` to fall back from broken
+  `require.resolve` / numeric module ids to the installed package `exports`
+  map under `node_modules/@you-agent-factory/api/package.json`. Without that,
+  prerender of `/docs/factories` (and localized factories indexes) fails with
+  package-resolution TypeErrors during `make build`.
 * `src/app/(site)/site-renderers.tsx`
   `renderShellSectionCollectionIndexPage` filters index entries by
   `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not

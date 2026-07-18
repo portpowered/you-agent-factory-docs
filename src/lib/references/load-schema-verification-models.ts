@@ -11,6 +11,7 @@
  * `schemas/<name>.schema.json` (same pattern as the OpenAPI spike).
  */
 
+import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -40,6 +41,11 @@ export type SchemaVerificationPackageModel = {
 export function normalizeSchemaVerificationFsPath(
   resolvedPath: string,
 ): string {
+  if (typeof resolvedPath !== "string") {
+    throw new TypeError(
+      `Expected a filesystem path string from package resolution, received ${typeof resolvedPath}.`,
+    );
+  }
   if (resolvedPath.startsWith(TURBOPACK_PROJECT_PREFIX)) {
     return join(
       process.cwd(),
@@ -69,15 +75,80 @@ function schemaFileName(subpath: SchemaVerificationPublicSubpath): string {
 /**
  * Absolute filesystem path for a schema public export, resolved through the
  * package manifest (avoids Turbopack JSON-export virtualization).
+ *
+ * Under webpack static export, `require.resolve` / `createRequire` can return
+ * numeric module ids or fail entirely when the acquisition module is bundled
+ * into the server graph. Fall back to reading the installed package
+ * `exports` map from disk so factories schema embeds can prerender.
  */
 export function resolveSchemaVerificationFsPath(
   subpath: SchemaVerificationPublicSubpath,
 ): string {
-  // Resolve a JSON export so the bundler does not invent a virtual schema id.
-  const manifestPath = normalizeSchemaVerificationFsPath(
-    require.resolve("@you-agent-factory/api/manifest"),
+  const fromRequire = tryResolveManifestViaRequire();
+  if (fromRequire !== null) {
+    return join(dirname(fromRequire), "schemas", schemaFileName(subpath));
+  }
+
+  const fromPackageExports = resolveManifestViaInstalledPackageExports();
+  return join(dirname(fromPackageExports), "schemas", schemaFileName(subpath));
+}
+
+function tryResolveManifestViaRequire(): string | null {
+  try {
+    const resolved: unknown = require.resolve(
+      "@you-agent-factory/api/manifest",
+    );
+    if (typeof resolved !== "string" || resolved.length === 0) {
+      return null;
+    }
+    return normalizeSchemaVerificationFsPath(resolved);
+  } catch {
+    return null;
+  }
+}
+
+function resolveManifestViaInstalledPackageExports(): string {
+  const packageJsonPath = join(
+    process.cwd(),
+    "node_modules",
+    "@you-agent-factory",
+    "api",
+    "package.json",
   );
-  return join(dirname(manifestPath), "schemas", schemaFileName(subpath));
+  let packageJson: {
+    exports?: Record<string, string | { default?: string }>;
+  };
+  try {
+    packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as {
+      exports?: Record<string, string | { default?: string }>;
+    };
+  } catch (cause) {
+    throw new Error(
+      `Could not read installed @you-agent-factory/api package.json at "${packageJsonPath}" for schema verification resolution.`,
+      { cause },
+    );
+  }
+
+  const exportEntry = packageJson.exports?.["./manifest"];
+  const relativePath =
+    typeof exportEntry === "string"
+      ? exportEntry
+      : typeof exportEntry?.default === "string"
+        ? exportEntry.default
+        : null;
+  if (relativePath === null) {
+    throw new Error(
+      `Installed @you-agent-factory/api package.json is missing a string exports["./manifest"] entry needed for schema verification resolution.`,
+    );
+  }
+
+  return join(
+    process.cwd(),
+    "node_modules",
+    "@you-agent-factory",
+    "api",
+    relativePath,
+  );
 }
 
 /**
