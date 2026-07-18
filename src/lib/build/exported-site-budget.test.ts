@@ -66,13 +66,13 @@ describe("exported-site-budget baselines", () => {
   test("declares factory-specific numeric baselines and a reproduction command", () => {
     expect(EXPORTED_SITE_BUDGET_COMMAND).toBe("make budget");
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes).toBe(
-      145_000_000,
+      170_000_000,
     );
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxNextStaticJsBytes).toBe(
       3_500_000,
     );
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes).toBe(
-      5_300_000,
+      5_800_000,
     );
   });
 });

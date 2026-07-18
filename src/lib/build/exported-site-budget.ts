@@ -46,13 +46,17 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * route-family foundation lane (four direct family indexes + nested-slug
  * routing + reference kind/template) measured ~138.27 MiB total on CI while
  * Next static JS (~2.65 MiB) and search bootstrap (~5.16 MiB) remained under
- * their limits; ceiling is now 145 MiB total / 5.30 MiB search. Keep modest
- * headroom for ordinary content growth without silent skip/pass.
+ * their limits; ceiling is now 145 MiB total / 5.30 MiB search. Raised again
+ * on 2026-07-18 UTC after the W14 Workstation authored-pages lane (family
+ * index + 4 behaviors + 8 types with overlay embeds) measured ~161.99 MiB
+ * total and ~5.53 MiB search bootstrap on CI while Next static JS (~2.78 MiB)
+ * remained under its limit; ceiling is now 170 MiB total / 5.80 MiB search.
+ * Keep modest headroom for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 145_000_000,
+  maxTotalOutBytes: 170_000_000,
   maxNextStaticJsBytes: 3_500_000,
-  maxSearchBootstrapBytes: 5_300_000,
+  maxSearchBootstrapBytes: 5_800_000,
 } as const;
 
 export type ExportedSiteBudgetBaselines =
