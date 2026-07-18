@@ -71,9 +71,20 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   `src/lib/references-sse-asyncapi-spike/select-sse-streams.ts` selects SSE
   streams by path / operation / response status / `text/event-stream` and
   resolves payload roots from `x-event-schema` (never hard-coded schema names).
-  `src/lib/references-sse-asyncapi-spike/project-openapi-to-asyncapi.ts` emits a
-  regenerated AsyncAPI 3 stub whose channel addresses and message payload
-  `$ref`s come from that selection. Compatibility `GET /events` is projected
-  but labeled `compatibility-only-non-preferred`. Focused tests:
-  `project-openapi-to-asyncapi.test.ts`. Full `$ref` closure / source hash /
-  inventory fail-closed validation belong to story 005.
+  Compatibility `GET /events` is projected but labeled
+  `compatibility-only-non-preferred`. Focused tests:
+  `project-openapi-to-asyncapi.test.ts`.
+- Temporary AsyncAPI projector closure / inventory (story 005):
+  `src/lib/references-sse-asyncapi-spike/collect-schema-ref-closure.ts` walks
+  the full transitive `#/components/schemas/...` graph from selected
+  `x-event-schema` roots and deep-clones reachable schemas (descriptions,
+  formats, enums, oneOf/allOf, discriminators, examples, vendor extensions).
+  `src/lib/references-sse-asyncapi-spike/projection-inventory.ts` emits SHA-256
+  source hash, per-operation semantic inventory (operation identity, root
+  event schema, event-type count, payload-variant count, unresolved-ref
+  count), and fail-closed checks for missing roots, unresolved transitive
+  `$ref`s, and inventory drift. `project-openapi-to-asyncapi.ts` embeds
+  `components.schemas`, `x-openapi-source-hash`, `x-generated-file-notice`,
+  and `x-semantic-inventory` on the regenerated AsyncAPI document. Focused
+  tests: `projection-inventory.test.ts`. Callers must pass `sourceText` (or
+  `sourceHash`) into `projectOpenApiSseToAsyncApi`.

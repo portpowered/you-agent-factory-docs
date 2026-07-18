@@ -1,16 +1,29 @@
 /**
- * Story 004 — temporary deterministic OpenAPI→AsyncAPI projector (selection
- * path). Input is the packaged OpenAPI document only. Generated AsyncAPI is
- * always regenerated from selection results — never a second authored corpus.
+ * Temporary deterministic OpenAPI→AsyncAPI projector.
  *
- * Full transitive `$ref` closure, source hash, and inventory validation land
- * in story 005. This module emits a minimal AsyncAPI 3 document whose channels
- * and message payload `$ref`s come from selected streams' `x-event-schema`.
+ * Story 004 — selection path (path/operation/status/media-type → x-event-schema).
+ * Story 005 — full transitive `$ref` closure, source hash, semantic inventory,
+ * and fail-closed validation.
  *
- * Pure projection — no filesystem IO.
+ * Input is the packaged OpenAPI document only. Generated AsyncAPI is always
+ * regenerated — never a second authored corpus.
+ *
+ * Pure projection — no filesystem IO. Callers supply already-loaded OpenAPI
+ * text/object (from the public packaged artifact / validated acquisition path).
  */
 
+import {
+  collectSchemaRefClosure,
+  type SchemaRefClosure,
+} from "./collect-schema-ref-closure";
 import type { OpenApiLike } from "./observe-sse-operations";
+import {
+  assertInventoryMatchesExpected,
+  assertProjectionClosureValid,
+  buildSemanticInventory,
+  hashOpenApiSource,
+  type ProjectionSemanticInventory,
+} from "./projection-inventory";
 import {
   type SelectedSseStream,
   selectSseStreamsFromOpenApi,
@@ -46,6 +59,12 @@ export type ProjectedAsyncApiDocument = {
     description: string;
     "x-generated-from": "packaged-openapi";
     "x-spike-status": "non-production-temporary";
+    /** SHA-256 hex of the packaged OpenAPI artifact used for this projection. */
+    "x-openapi-source-hash": string;
+    /** Explicit generated-file notice (also mirrored in description). */
+    "x-generated-file-notice": typeof ASYNCAPI_GENERATED_FILE_NOTICE;
+    /** Machine-checkable semantic inventory for fail-closed drift checks. */
+    "x-semantic-inventory": ProjectionSemanticInventory;
   };
   channels: Record<string, AsyncApiChannel>;
   operations: Record<
@@ -59,6 +78,8 @@ export type ProjectedAsyncApiDocument = {
   >;
   components: {
     messages: Record<string, AsyncApiMessage>;
+    /** Full transitive schema closure for selected payload roots. */
+    schemas: Record<string, unknown>;
   };
 };
 
@@ -69,6 +90,28 @@ export type OpenApiToAsyncApiProjection = {
   selectedStreams: SelectedSseStream[];
   /** Explicit notice that the document is generated. */
   generatedFileNotice: typeof ASYNCAPI_GENERATED_FILE_NOTICE;
+  /** SHA-256 hex of the packaged OpenAPI source. */
+  sourceHash: string;
+  /** Semantic inventory for the projection. */
+  inventory: ProjectionSemanticInventory;
+  /** Union `$ref` closure across selected roots. */
+  schemaClosure: SchemaRefClosure;
+};
+
+export type ProjectOpenApiSseOptions = {
+  inventory?: readonly SseSpikeOperation[];
+  /**
+   * Exact packaged OpenAPI source text used to compute `x-openapi-source-hash`.
+   * Prefer this over a precomputed hash so the digest always matches bytes.
+   */
+  sourceText?: string;
+  /** Precomputed SHA-256 hex when source text is unavailable. */
+  sourceHash?: string;
+  /**
+   * When provided, projection fails closed if the live inventory drifts from
+   * this recorded snapshot (must regenerate instead of shipping stale output).
+   */
+  expectedInventory?: ProjectionSemanticInventory;
 };
 
 /**
@@ -104,13 +147,44 @@ function channelDescription(stream: SelectedSseStream): string {
   ].join(" ");
 }
 
+function resolveSourceHash(options: ProjectOpenApiSseOptions): string {
+  if (typeof options.sourceText === "string") {
+    return hashOpenApiSource(options.sourceText);
+  }
+  if (typeof options.sourceHash === "string" && options.sourceHash.length > 0) {
+    return options.sourceHash;
+  }
+  throw new Error(
+    "Projection requires sourceText or sourceHash so generated AsyncAPI can carry the packaged OpenAPI source hash.",
+  );
+}
+
 /**
- * Project selected SSE streams into a temporary AsyncAPI 3 document.
- * Payload `$ref`s are copied from each stream's resolved `x-event-schema`.
+ * Project selected SSE streams into a temporary AsyncAPI 3 document, copying
+ * the full transitive schema closure for selected payload roots.
  */
 export function projectSelectedStreamsToAsyncApi(
+  doc: OpenApiLike & {
+    components?: { schemas?: Record<string, unknown> };
+  },
   streams: readonly SelectedSseStream[],
-): ProjectedAsyncApiDocument {
+  sourceHash: string,
+): {
+  asyncapi: ProjectedAsyncApiDocument;
+  inventory: ProjectionSemanticInventory;
+  schemaClosure: SchemaRefClosure;
+} {
+  const rootRefs = streams.map((stream) => stream.payloadRootRef);
+  const schemaClosure = collectSchemaRefClosure(doc, rootRefs);
+  assertProjectionClosureValid(streams, doc, schemaClosure);
+
+  const inventory = buildSemanticInventory(
+    doc,
+    streams,
+    sourceHash,
+    schemaClosure,
+  );
+
   const channels: ProjectedAsyncApiDocument["channels"] = {};
   const operations: ProjectedAsyncApiDocument["operations"] = {};
   const messages: ProjectedAsyncApiDocument["components"]["messages"] = {};
@@ -153,33 +227,62 @@ export function projectSelectedStreamsToAsyncApi(
   }
 
   return {
-    asyncapi: ASYNCAPI_SPIKE_VERSION,
-    info: {
-      title: "Factory SSE streams (temporary W02 projection)",
-      version: "0.0.0-spike",
-      description: ASYNCAPI_GENERATED_FILE_NOTICE,
-      "x-generated-from": "packaged-openapi",
-      "x-spike-status": "non-production-temporary",
+    asyncapi: {
+      asyncapi: ASYNCAPI_SPIKE_VERSION,
+      info: {
+        title: "Factory SSE streams (temporary W02 projection)",
+        version: "0.0.0-spike",
+        description: ASYNCAPI_GENERATED_FILE_NOTICE,
+        "x-generated-from": "packaged-openapi",
+        "x-spike-status": "non-production-temporary",
+        "x-openapi-source-hash": sourceHash,
+        "x-generated-file-notice": ASYNCAPI_GENERATED_FILE_NOTICE,
+        "x-semantic-inventory": inventory,
+      },
+      channels,
+      operations,
+      components: {
+        messages,
+        schemas: schemaClosure.schemas,
+      },
     },
-    channels,
-    operations,
-    components: { messages },
+    inventory,
+    schemaClosure,
   };
 }
 
 /**
- * Project packaged OpenAPI SSE operations to AsyncAPI using the selection path.
- * Callers supply an already-loaded unmodified OpenAPI object (from the public
- * packaged artifact / validated acquisition path).
+ * Project packaged OpenAPI SSE operations to AsyncAPI using the selection path,
+ * full `$ref` closure, source hash, and semantic inventory.
  */
 export function projectOpenApiSseToAsyncApi(
-  doc: OpenApiLike,
-  inventory: readonly SseSpikeOperation[] = SSE_SPIKE_OPERATIONS,
+  doc: OpenApiLike & {
+    components?: { schemas?: Record<string, unknown> };
+  },
+  options: ProjectOpenApiSseOptions = {},
 ): OpenApiToAsyncApiProjection {
-  const selectedStreams = selectSseStreamsFromOpenApi(doc, inventory);
+  const inventoryOps = options.inventory ?? SSE_SPIKE_OPERATIONS;
+  const selectedStreams = selectSseStreamsFromOpenApi(doc, inventoryOps);
+  const sourceHash = resolveSourceHash(options);
+  const projected = projectSelectedStreamsToAsyncApi(
+    doc,
+    selectedStreams,
+    sourceHash,
+  );
+
+  if (options.expectedInventory) {
+    assertInventoryMatchesExpected(
+      projected.inventory,
+      options.expectedInventory,
+    );
+  }
+
   return {
-    asyncapi: projectSelectedStreamsToAsyncApi(selectedStreams),
+    asyncapi: projected.asyncapi,
     selectedStreams,
     generatedFileNotice: ASYNCAPI_GENERATED_FILE_NOTICE,
+    sourceHash,
+    inventory: projected.inventory,
+    schemaClosure: projected.schemaClosure,
   };
 }

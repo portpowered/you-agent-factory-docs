@@ -31,12 +31,20 @@ import {
   type SseSpikeOperation,
 } from "./sse-operations";
 
-function parsePackagedOpenApi(): OpenApiLike {
+function parsePackagedOpenApi(): {
+  doc: OpenApiLike & { components?: { schemas?: Record<string, unknown> } };
+  sourceText: string;
+} {
   const artifact = loadPackagedOpenApiArtifact();
-  return Bun.YAML.parse(artifact.rawText) as OpenApiLike;
+  return {
+    doc: Bun.YAML.parse(artifact.rawText) as OpenApiLike & {
+      components?: { schemas?: Record<string, unknown> };
+    },
+    sourceText: artifact.rawText,
+  };
 }
 
-/** Clone packaged OpenAPI and rewrite one path's x-event-schema + schema name. */
+/** Clone packaged OpenAPI and point one path's x-event-schema at a renamed copy. */
 function withRenamedPayloadRoot(
   doc: OpenApiLike,
   path: string,
@@ -64,8 +72,9 @@ function withRenamedPayloadRoot(
     throw new Error(`missing schema ${previousName}`);
   }
 
-  schemas[newSchemaName] = previousSchema;
-  delete schemas[previousName];
+  // Keep the previous schema so other streams that still reference it remain
+  // valid; selection must follow the updated x-event-schema pointer alone.
+  schemas[newSchemaName] = structuredClone(previousSchema);
   media["x-event-schema"] = `#/components/schemas/${newSchemaName}`;
   clone.components = { ...(clone.components ?? {}), schemas };
   return clone;
@@ -78,7 +87,9 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
     expect(artifact.rawText).toContain("x-event-schema");
 
     const doc = Bun.YAML.parse(artifact.rawText) as OpenApiLike;
-    const projection = projectOpenApiSseToAsyncApi(doc);
+    const projection = projectOpenApiSseToAsyncApi(doc, {
+      sourceText: artifact.rawText,
+    });
 
     expect(projection.asyncapi.info["x-generated-from"]).toBe(
       "packaged-openapi",
@@ -91,7 +102,7 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
   });
 
   test("selects all three streams by path/operation/status/media-type", () => {
-    const doc = parsePackagedOpenApi();
+    const { doc } = parsePackagedOpenApi();
     const selected = selectSseStreamsFromOpenApi(doc);
 
     expect(selected).toHaveLength(3);
@@ -113,7 +124,7 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
   });
 
   test("payload roots resolve from x-event-schema, not hard-coded names", () => {
-    const doc = parsePackagedOpenApi();
+    const { doc, sourceText } = parsePackagedOpenApi();
     const selected = selectSseStreamsFromOpenApi(doc);
 
     expect(selected[0]?.payloadRootRef).toBe(
@@ -144,7 +155,7 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
       "RenamedSessionEventEnvelope",
     );
 
-    const projection = projectOpenApiSseToAsyncApi(renamed);
+    const projection = projectOpenApiSseToAsyncApi(renamed, { sourceText });
     const messageId = messageIdForSelectedStream(renamedSelected);
     expect(
       projection.asyncapi.components.messages[messageId]?.payload.$ref,
@@ -152,8 +163,8 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
   });
 
   test("canonical and ephemeral are preferred; compatibility GET /events is labeled non-preferred", () => {
-    const doc = parsePackagedOpenApi();
-    const projection = projectOpenApiSseToAsyncApi(doc);
+    const { doc, sourceText } = parsePackagedOpenApi();
+    const projection = projectOpenApiSseToAsyncApi(doc, { sourceText });
     const byRole = Object.fromEntries(
       projection.selectedStreams.map((s) => [s.role, s]),
     );
@@ -184,8 +195,10 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
   });
 
   test("projected AsyncAPI channels address OpenAPI paths and message payloads use x-event-schema refs", () => {
-    const doc = parsePackagedOpenApi();
-    const { asyncapi, selectedStreams } = projectOpenApiSseToAsyncApi(doc);
+    const { doc, sourceText } = parsePackagedOpenApi();
+    const { asyncapi, selectedStreams } = projectOpenApiSseToAsyncApi(doc, {
+      sourceText,
+    });
 
     expect(Object.keys(asyncapi.channels).sort()).toEqual(
       selectedStreams.map(channelIdForSelectedStream).sort(),
@@ -202,7 +215,7 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
   });
 
   test("rejects hard-coded schema-name-only selection as the spike mechanism", () => {
-    const doc = parsePackagedOpenApi();
+    const { doc } = parsePackagedOpenApi();
 
     expect(() =>
       selectSseStreamsByHardCodedSchemaNamesOnly(doc, [
@@ -216,7 +229,7 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
   });
 
   test("fails closed when text/event-stream or x-event-schema is missing", () => {
-    const doc = parsePackagedOpenApi();
+    const { doc } = parsePackagedOpenApi();
     const broken = structuredClone(doc) as OpenApiLike;
     const content =
       broken.paths?.["/factory-sessions/{session_id}/events"]?.get?.responses?.[
@@ -265,7 +278,7 @@ describe("W02 SSE spike — AsyncAPI projector selection path (004)", () => {
   });
 
   test("inventory-driven selection rejects inventing operations outside OpenAPI paths", () => {
-    const doc = parsePackagedOpenApi();
+    const { doc } = parsePackagedOpenApi();
     const fake: SseSpikeOperation = {
       path: "/does-not-exist",
       method: "get",
