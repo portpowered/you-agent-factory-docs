@@ -978,9 +978,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `page-mdx-components.tsx` and add a static slug switch in
   `route-family-local-docs-page-load.ts` (same compileMDX constraint as
   documentation/concept loaders — relative MDX imports do not resolve). Link
-  Workstation companions with `LocalizedLinkList` planned hrefs under
-  `/docs/workstations/...` without authoring W14 pages. Keep mock workers on
-  `/docs/workers/mock`, not as a Factory WorkerType overlay.   Legacy
+  Workstation companions with `LocalizedLinkList` hrefs under
+  `/docs/workstations/...` (implementers: do not author W14 pages in this
+  lane). Keep customer-facing Limits / body copy product-scope only: say what
+  the Worker is / is not and what companion links mean (run-time pairing),
+  never narrate “planned Workstation targets” or “without authoring those
+  pages here.” Keep mock workers on
+  `/docs/workers/mock`, not as a Factory WorkerType overlay. Legacy
   `MODEL_WORKER` companions are `MODEL_WORKSTATION` (required) plus
   `MODEL_INVOKE` (compatible) at `/docs/workstations/model-workstation` and
   `/docs/workstations/model-invoke`; capability fields stay in overlay

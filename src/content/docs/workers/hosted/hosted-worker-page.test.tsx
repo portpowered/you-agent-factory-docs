@@ -77,6 +77,8 @@ describe("workers hosted page", () => {
     expect(examples).toMatch(/inline|secretRef/i);
     expect(cautions).toMatch(/secret|POLLER_WORKER/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
+    expect(limits).toMatch(/Compatible Workstation companions/i);
+    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(whatItCovers).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );

@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/agent surface for AGENT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference worker full contract. Workstation companion links point at planned /docs/workstations targets without authoring those pages here. Mock workers stay on their own route and schema."
+      "body": "This page is the direct /docs/workers/agent surface for AGENT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference worker full contract. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine AGENT_WORKER fields. Mock workers stay on their own route and schema."
     },
     "related": {
       "title": "Related To"

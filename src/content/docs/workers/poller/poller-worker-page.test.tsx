@@ -79,6 +79,10 @@ describe("workers poller page", () => {
     expect(examples).toMatch(/inline|secretRef/i);
     expect(cautions).toMatch(/POLLER_RUN|behavior POLLER|secret/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
+    expect(limits).toMatch(
+      /Compatible Workstation type and behavior companions/i,
+    );
+    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(whatItCovers).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );

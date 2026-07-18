@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/model surface for MODEL_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference or Agent worker full contract. Workstation companion links point at planned /docs/workstations targets without authoring those pages here. MODEL_WORKER remains loadable as a legacy alias; prefer INFERENCE_WORKER or AGENT_WORKER in new configs. Mock workers stay on their own route and schema."
+      "body": "This page is the direct /docs/workers/model surface for MODEL_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference or Agent worker full contract. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine MODEL_WORKER fields. MODEL_WORKER remains loadable as a legacy alias; prefer INFERENCE_WORKER or AGENT_WORKER in new configs. Mock workers stay on their own route and schema."
     },
     "related": {
       "title": "Related To"

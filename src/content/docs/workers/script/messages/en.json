@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/script surface for SCRIPT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference or Agent worker full contract. Operator model defaults never apply to script workers. Workstation companion links point at planned /docs/workstations targets without authoring those pages here. Mock workers stay on their own route and schema."
+      "body": "This page is the direct /docs/workers/script surface for SCRIPT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference or Agent worker full contract. Operator model defaults never apply to script workers. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine SCRIPT_WORKER fields. Mock workers stay on their own route and schema."
     },
     "related": {
       "title": "Related To"

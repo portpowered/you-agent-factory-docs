@@ -75,6 +75,8 @@ describe("workers agent page", () => {
     expect(examples).toMatch(/operations/i);
     expect(cautions).toMatch(/failure_class/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
+    expect(limits).toMatch(/Compatible Workstation companions/i);
+    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(whatItCovers).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );

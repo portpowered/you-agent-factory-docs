@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/hosted surface for HOSTED_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Poller worker full contract. OAuth hosted auth and advanced multi-instance coordination are out of scope for v1. Workstation companion links point at planned /docs/workstations targets without authoring those pages here. HOSTED_WORKER remains loadable as a legacy alias; prefer POLLER_WORKER in new configs. Mock workers stay on their own route and schema."
+      "body": "This page is the direct /docs/workers/hosted surface for HOSTED_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Poller worker full contract. OAuth hosted auth and advanced multi-instance coordination are out of scope for v1. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine HOSTED_WORKER fields. HOSTED_WORKER remains loadable as a legacy alias; prefer POLLER_WORKER in new configs. Mock workers stay on their own route and schema."
     },
     "related": {
       "title": "Related To"
