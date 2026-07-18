@@ -2,8 +2,8 @@
  * Page-owned render proof for references/events.
  * Covers reference route presence, frontmatter/registry alignment, section
  * copy, related discovery links, and the published EventsSurface corpus mount
- * (stream roles + FactoryEvent / FactoryResponseEvent catalogs). Colocated
- * under the page bundle.
+ * (stream roles + FactoryEvent / FactoryResponseEvent catalogs + reconnect /
+ * lifecycle / identity + static SSE examples). Colocated under the page bundle.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -13,7 +13,11 @@ import {
   loadLocalDocsPage,
   parseLocalDocsPageRef,
 } from "@/lib/content/local-docs-page";
-import { LOCKED_EVENT_STREAM_PLACEMENT } from "@/lib/references/events";
+import {
+  EVENT_IDENTITY_HANDSHAKE_HEADER_NAMES,
+  EVENT_RECONNECT_CURSOR_PARAM_NAMES,
+  LOCKED_EVENT_STREAM_PLACEMENT,
+} from "@/lib/references/events";
 import { source } from "@/lib/source";
 
 const PAGE_RENDER_TIMEOUT_MS = 60_000;
@@ -77,12 +81,17 @@ describe("events reference page shell", () => {
       expect(eventCorpus).toMatch(/three stream operations/i);
       expect(eventCorpus).toMatch(/FactoryEvent envelope/i);
       expect(eventCorpus).toMatch(/FactoryResponseEvent envelope/i);
+      expect(eventCorpus).toMatch(/reconnect cursor precedence/i);
+      expect(eventCorpus).toMatch(/JSON reconnect-probe/i);
+      expect(eventCorpus).toMatch(/static SSE frame examples/i);
       expect(eventCorpus).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
       expect(howToUse).toMatch(/durable event-stream lookup/i);
+      expect(howToUse).toMatch(/static SSE frame examples/i);
       expect(limits).toMatch(/static hybrid events reference/i);
       expect(limits).toMatch(/does not open a live EventSource/i);
+      expect(limits).toMatch(/wire-shape fixtures only/i);
       expect(limits).toMatch(/does not re-implement the API OpenAPI UI/i);
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
@@ -165,13 +174,16 @@ describe("events reference page shell", () => {
           "Compatibility-only process-global FactoryEvent stream",
         ),
       ).toBeTruthy();
+      const operationsQueries = within(operations);
       expect(
-        screen.getByText("/factory-sessions/{session_id}/events"),
+        operationsQueries.getByText("/factory-sessions/{session_id}/events"),
       ).toBeTruthy();
       expect(
-        screen.getByText("/factory-sessions/{session_id}/response-events"),
+        operationsQueries.getByText(
+          "/factory-sessions/{session_id}/response-events",
+        ),
       ).toBeTruthy();
-      expect(screen.getByText("/events")).toBeTruthy();
+      expect(operationsQueries.getByText("/events")).toBeTruthy();
 
       const factoryEventCatalog = screen.getByTestId(
         "factory-event-catalog-section",
@@ -205,10 +217,81 @@ describe("events reference page shell", () => {
         ),
       ).toBeGreaterThan(0);
 
+      const reconnectLifecycle = screen.getByTestId(
+        "event-reconnect-lifecycle-section",
+      );
+      expect(reconnectLifecycle).toBeTruthy();
+
+      const reconnectContract = screen.getByTestId("event-reconnect-contract");
+      expect(
+        reconnectContract.getAttribute("data-event-reconnect-precedence"),
+      ).toBe("after_event_id-wins-when-both-present");
+      for (const name of EVENT_RECONNECT_CURSOR_PARAM_NAMES) {
+        expect(
+          reconnectContract.querySelector(
+            `[data-event-reconnect-cursor-param="${name}"]`,
+          ),
+        ).toBeTruthy();
+      }
+
+      const identity = screen.getByTestId("event-identity-handshake");
+      expect(
+        identity.getAttribute("data-event-stream-generation-invalidates"),
+      ).toBe("true");
+      for (const name of EVENT_IDENTITY_HANDSHAKE_HEADER_NAMES) {
+        expect(
+          identity.querySelector(
+            `[data-event-identity-handshake-header="${name}"]`,
+          ),
+        ).toBeTruthy();
+      }
+
+      const lifecycle = screen.getByTestId("event-stream-lifecycle");
+      expect(lifecycle.getAttribute("data-event-stream-gap-kind")).toBe(
+        "STREAM_GAP",
+      );
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-retained]")?.textContent,
+      ).toMatch(/retained history/i);
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-keepalive]")
+          ?.textContent,
+      ).toMatch(/keep-alive/i);
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-gap]")?.textContent,
+      ).toContain("STREAM_GAP");
+      expect(
+        lifecycle.querySelector("[data-event-lifecycle-stale-cursor]")
+          ?.textContent,
+      ).toMatch(/CURSOR_STALE|stale/i);
+
+      const jsonProbe = screen.getByTestId("event-json-reconnect-probe");
+      expect(
+        jsonProbe.getAttribute("data-event-json-reconnect-recovery-schema"),
+      ).toBe("FactorySessionEventStreamRecovery");
+      expect(
+        jsonProbe.getAttribute("data-event-http-transport-ownership"),
+      ).toBe("api-operation-page");
+
+      const sseExamples = screen.getByTestId("sse-static-examples-section");
+      expect(sseExamples.getAttribute("data-sse-live-connection")).toBe(
+        "false",
+      );
+      expect(sseExamples.getAttribute("data-sse-proxy")).toBe("false");
+      expect(screen.getAllByTestId("sse-frame-example").length).toBeGreaterThan(
+        0,
+      );
+      expect(
+        screen.getAllByTestId("sse-reconnect-example").length,
+      ).toBeGreaterThan(0);
+
       const bodyText = document.body.textContent ?? "";
       expect(bodyText).toMatch(/FactoryEvent and FactoryResponseEvent/i);
       expect(bodyText).toMatch(/Hybrid placement/i);
       expect(bodyText).toMatch(/never preferred/i);
+      expect(bodyText).toMatch(/Reconnect cursors/i);
+      expect(bodyText).toMatch(/JSON reconnect probe/i);
+      expect(bodyText).toMatch(/Static SSE frame and reconnect examples/i);
       expect(bodyText).not.toMatch(/Model Atlas/i);
       expect(bodyText).not.toMatch(/Non-production events renderer harness/i);
     },

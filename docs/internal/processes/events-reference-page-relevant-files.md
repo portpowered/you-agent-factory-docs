@@ -71,7 +71,12 @@ other W11 reference page lanes):
 - Use `eventsOpenApiTurbopackLoadDependencies()` for Next/compileMDX OpenAPI
   resolution (same Turbopack-safe path as the W09 harness).
 - Story 002 mounts stream roles + FactoryEvent / FactoryResponseEvent catalogs;
-  reconnect / lifecycle / static SSE sections land in later stories.
+  story 003 adds reconnect / lifecycle / identity / JSON probe + static SSE
+  sections via the same page-local `EventsCorpusMount` (still no harness chrome).
+- Compose production mount like the W09 harness body: `EventsSurface` + public
+  section components + `buildEventReconnectLifecycleCorpus` /
+  `buildSseStaticExamplesCorpus`. Never mount `EventsVerificationHarness` on the
+  published page.
 - Force-clean content runtime after adding the first `reference.*` record so
   published-docs and registry generated artifacts include the new page.
 - When updating `docs-catch-all-static-params` / section-index tests, expect

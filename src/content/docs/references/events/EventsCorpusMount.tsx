@@ -2,12 +2,12 @@
  * Page-local production mount for /docs/references/events.
  *
  * Resolves the W09 packaged OpenAPI corpus at build/static-render time and
- * mounts the public EventsSurface + stream-role + catalog sections. Page wiring
- * only — does not edit renderer internals under components/references/events.
- *
- * Reconnect / lifecycle / static SSE sections stay for later W11 stories.
+ * mounts the public EventsSurface + stream-role + catalog + reconnect/lifecycle
+ * + static SSE sections. Page wiring only — does not edit renderer internals
+ * under components/references/events.
  */
 
+import { EventReconnectLifecycleSection } from "@/components/references/events/event-reconnect-lifecycle-section";
 import {
   type EventStreamOperationSummaryModel,
   eventStreamOperationSummaryModelsFromCorpus,
@@ -16,14 +16,19 @@ import { EventStreamOperationsList } from "@/components/references/events/event-
 import { EventsSurface } from "@/components/references/events/events-surface";
 import { FactoryEventCatalogSection } from "@/components/references/events/factory-event-catalog-section";
 import { FactoryResponseEventCatalogSection } from "@/components/references/events/factory-response-event-catalog-section";
+import { SseStaticExamplesSection } from "@/components/references/events/sse-static-examples-section";
 import type { EventsUiStatus } from "@/components/references/events/types";
 import {
+  buildEventReconnectLifecycleCorpus,
   buildFactoryEventCatalog,
   buildFactoryResponseEventCatalog,
+  buildSseStaticExamplesCorpus,
+  type EventReconnectLifecycleCorpus,
   eventsOpenApiTurbopackLoadDependencies,
   type FactoryEventCatalog,
   type FactoryResponseEventCatalog,
   resolveEventCorpus,
+  type SseStaticExamplesCorpus,
 } from "@/lib/references/events";
 
 const EVENTS_PAGE_PATH = "/docs/references/events";
@@ -35,6 +40,8 @@ type ResolvedCorpusMount = {
   summaries: readonly EventStreamOperationSummaryModel[];
   factoryEventCatalog?: FactoryEventCatalog;
   factoryResponseEventCatalog?: FactoryResponseEventCatalog;
+  reconnectLifecycle?: EventReconnectLifecycleCorpus;
+  sseStaticExamples?: SseStaticExamplesCorpus;
   sourceHash?: string;
 };
 
@@ -53,6 +60,13 @@ function resolvePublishedEventsCorpus(): ResolvedCorpusMount {
     const factoryResponseEventCatalog = buildFactoryResponseEventCatalog(
       corpus.openapi.document,
     );
+    const reconnectLifecycle = buildEventReconnectLifecycleCorpus(
+      corpus.openapi.document,
+    );
+    const sseStaticExamples = buildSseStaticExamplesCorpus(
+      corpus.openapi.document,
+      reconnectLifecycle,
+    );
 
     if (summaries.length === 0) {
       return {
@@ -69,6 +83,8 @@ function resolvePublishedEventsCorpus(): ResolvedCorpusMount {
       summaries,
       factoryEventCatalog,
       factoryResponseEventCatalog,
+      reconnectLifecycle,
+      sseStaticExamples,
       sourceHash: corpus.sourceHash,
     };
   } catch (error) {
@@ -121,6 +137,14 @@ export function EventsCorpusMount() {
               catalog={resolved.factoryResponseEventCatalog}
               pagePath={EVENTS_PAGE_PATH}
             />
+          ) : null}
+          {resolved.reconnectLifecycle !== undefined ? (
+            <EventReconnectLifecycleSection
+              corpus={resolved.reconnectLifecycle}
+            />
+          ) : null}
+          {resolved.sseStaticExamples !== undefined ? (
+            <SseStaticExamplesSection corpus={resolved.sseStaticExamples} />
           ) : null}
         </div>
       </EventsSurface>

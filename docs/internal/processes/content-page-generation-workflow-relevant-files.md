@@ -312,7 +312,7 @@ it in shared `blog-mdx-components.tsx` / `mdx-components.tsx`.
 
 When a route-family page under `src/content/docs/references/` (or factories /
 workers / workstations) needs a page-owned mount such as the W11 events corpus
-`EventsCorpusMount`:
+`EventsCorpusMount` (stream roles, catalogs, reconnect/lifecycle, static SSE):
 
 1. Keep the page-local renderer and `page-mdx-components.tsx` under the page
    bundle. Import public surfaces from `@/components/references/...` and helpers
