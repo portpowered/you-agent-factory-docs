@@ -86,3 +86,22 @@ Derive counts from the installed Draft JSON Schema artifacts. Do not copy plan
 prose when the package differs. Current install: factory 18/91, you-config 3/6,
 mock-workers 2/5. Counts are baseline drift observations, not permanent product
 limits.
+
+## Worker / Workstation discriminator inventory
+
+From `@you-agent-factory/api/schemas/factory`:
+
+- Worker types: `$defs.WorkerType.enum` via `Worker.type` (currently 6:
+  `INFERENCE_WORKER`, `AGENT_WORKER`, `SCRIPT_WORKER`, `POLLER_WORKER`,
+  `MODEL_WORKER`, `HOSTED_WORKER`)
+- Workstation types: `$defs.WorkstationType.enum` via `Workstation.type`
+  (currently 8: `INFERENCE_RUN`, `AGENT_RUN`, `SCRIPT_RUN`, `POLLER_RUN`,
+  `MODEL_WORKSTATION`, `MODEL_INVOKE`, `LOGICAL_MOVE`, `CLASSIFIER_WORKSTATION`)
+- Workstation behaviors: `$defs.WorkstationKind.enum` via
+  `Workstation.behavior` (currently 4: `STANDARD`, `REPEATER`, `CRON`,
+  `POLLER`)
+
+`Worker` and `Workstation` are broad objects (`type: object`, no `oneOf`);
+variant applicability often lives in descriptions. Mock workers are a separate
+schema (`schemas/mock-workers`), not a `WorkerType` value. `type` and
+`behavior` on Workstation are independent axes (`POLLER_RUN` ≠ `POLLER`).

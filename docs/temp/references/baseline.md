@@ -192,3 +192,95 @@ operator and system configuration”, “You mock-worker configuration”.
 These root/`$defs` counts match the installed artifacts on this checkout (plan
 prose currently states the same numbers). They are baseline observations for
 later drift detection, not permanent product limits or UI quotas.
+
+## Worker types, Workstation types, and behaviors
+
+Source: installed `@you-agent-factory/api/schemas/factory`
+(`generated/schemas/factory.schema.json`). Discriminator values come from
+`$defs.WorkerType`, `$defs.WorkstationType`, and `$defs.WorkstationKind` as
+referenced by `Worker.type`, `Workstation.type`, and `Workstation.behavior`.
+Values are derived from the installed schema enums—not copied from plan prose.
+
+### Shape limitation (explicit)
+
+`$defs.Worker` and `$defs.Workstation` are **broad `type: object` definitions**
+with `additionalProperties: false`. They are **not** upstream `oneOf`
+discriminated variant `$defs`. Variant applicability (for example “used only by
+`CLASSIFIER_WORKSTATION`” or “Explicit agent-loop tool policy for
+`AGENT_WORKER`”) lives primarily in property **descriptions**, not in
+machine-enforced per-variant subschemas. Later authored pages and overlays must
+not assume a schema `oneOf` tree exists for these families.
+
+On this install, the only top-level `$defs` entry with `oneOf` is
+`WorkContentPart` (unrelated to Worker/Workstation discrimination).
+
+### Worker types (`$defs.WorkerType` → `Worker.type`)
+
+Six published values (order as in the installed enum):
+
+| Enum value | Plan page slug alignment |
+| --- | --- |
+| `INFERENCE_WORKER` | `/docs/workers/inference` |
+| `AGENT_WORKER` | `/docs/workers/agent` |
+| `SCRIPT_WORKER` | `/docs/workers/script` |
+| `POLLER_WORKER` | `/docs/workers/poller` |
+| `MODEL_WORKER` | `/docs/workers/model` |
+| `HOSTED_WORKER` | `/docs/workers/hosted` |
+
+`Worker` required property: `name` only. `type` is optional in the schema but
+selects the implementation family when present.
+
+### Mock-worker family (separate schema)
+
+Mock workers are **not** a `WorkerType` enum member. They live in
+`@you-agent-factory/api/schemas/mock-workers` (`$defs.mockWorker`) with
+`runType` ∈ `accept` | `script` | `reject`. Plan alignment treats them as a
+separate authored surface (`/docs/workers/mock`), not as a seventh Factory
+`WorkerType`. Do not merge mock-worker inventory into `WorkerType` counts.
+
+### Workstation types (`$defs.WorkstationType` → `Workstation.type`)
+
+Eight published values (order as in the installed enum):
+
+| Enum value | Plan page slug alignment |
+| --- | --- |
+| `INFERENCE_RUN` | `/docs/workstations/inference-run` |
+| `AGENT_RUN` | `/docs/workstations/agent-run` |
+| `SCRIPT_RUN` | `/docs/workstations/script-run` |
+| `POLLER_RUN` | `/docs/workstations/poller-run` |
+| `MODEL_WORKSTATION` | `/docs/workstations/model-workstation` |
+| `MODEL_INVOKE` | `/docs/workstations/model-invoke` |
+| `LOGICAL_MOVE` | `/docs/workstations/logical-move` |
+| `CLASSIFIER_WORKSTATION` | `/docs/workstations/classifier` |
+
+### Workstation behaviors (`$defs.WorkstationKind` → `Workstation.behavior`)
+
+Four published scheduling behaviors (order as in the installed enum). The field
+on `Workstation` is named `behavior`; the enum `$def` is named
+`WorkstationKind`:
+
+| Enum value | Plan page slug alignment |
+| --- | --- |
+| `STANDARD` | `/docs/workstations/standard` |
+| `REPEATER` | `/docs/workstations/repeater` |
+| `CRON` | `/docs/workstations/cron` |
+| `POLLER` | `/docs/workstations/poller` |
+
+`type` and `behavior` are **independent axes**: runtime implementation vs
+scheduling. In particular, `POLLER_RUN` (type) is distinct from `POLLER`
+(behavior).
+
+`Workstation` required properties: `name`, `worker`, `inputs`.
+
+### Inventory summary
+
+| Axis | Schema `$def` | Field | Count |
+| --- | --- | --- | --- |
+| Worker type | `WorkerType` | `Worker.type` | **6** |
+| Workstation type | `WorkstationType` | `Workstation.type` | **8** |
+| Workstation behavior | `WorkstationKind` | `Workstation.behavior` | **4** |
+
+These discriminator inventories match the installed Factory schema on this
+checkout (plan prose currently lists the same membership). They are baseline
+observations for later drift detection, not permanent product limits or UI
+quotas.
