@@ -84,7 +84,7 @@ export function EventStreamOperationSummary({
         <dd className="m-0 min-w-0">
           {catalogHref !== undefined ? (
             <a
-              className="font-mono text-foreground underline-offset-2 hover:underline"
+              className="font-mono text-foreground underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               data-event-catalog-link=""
               href={catalogHref}
             >
@@ -112,7 +112,7 @@ export function EventStreamOperationSummary({
             </dt>
             <dd className="m-0 min-w-0">
               <a
-                className="break-all font-mono text-xs text-muted-foreground underline-offset-2 hover:underline"
+                className="break-all font-mono text-xs text-muted-foreground underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 data-event-schema-anchor-link=""
                 href={schemaHref}
               >

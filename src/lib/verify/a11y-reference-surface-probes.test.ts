@@ -49,6 +49,7 @@ describe("a11y-reference-surface probe helpers", () => {
     expect(bindings[0]?.harness).toEqual({
       overflow: "collectReferenceSurfaceOverflowProbe",
       axe: "expectNoSeriousAxeViolations",
+      keyboard: "expectReferenceKeyboardChrome",
       reducedMotion: "evaluateReducedMotionChromeInBrowser",
       pageSession: "openReferenceSurfacePageProbe",
     });

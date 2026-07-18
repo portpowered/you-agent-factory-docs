@@ -264,6 +264,10 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `src/lib/verify/a11y-reference-overflow-matrix-page.test.ts` (wired into
   `test:a11y`). See
   [w19-accessibility-responsive-budgets-relevant-files](./w19-accessibility-responsive-budgets-relevant-files.md).
+* W19 story 004 keyboard navigation: always-on
+  `src/tests/a11y/reference-keyboard-navigation.a11y.test.tsx` +
+  `a11y-reference-keyboard-contract` + opt-in served
+  `a11y-reference-keyboard-page.test.ts`.
 
 ## Existing component a11y smokes
 

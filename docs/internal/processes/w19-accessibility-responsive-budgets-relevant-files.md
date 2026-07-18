@@ -28,10 +28,12 @@ gates stay documented in
   Binders over existing axe / overflow / reduced-motion / page-session helpers:
   `collectReferenceSurfaceOverflowProbe`, `openReferenceSurfacePageProbe`,
   `openReferenceSurfaceBrowserSession`, `listReferenceSurfaceProbeBindings`,
+  `expectReferenceKeyboardChrome`, `evaluateReferenceKeyboardChromeInBrowser`,
   `referenceHashFocusScrollBehavior`.
 * Always-on contract proofs (required via `make a11y`):
   - `src/lib/verify/a11y-reference-surface-contract.test.ts`
   - `src/lib/verify/a11y-reference-surface-probes.test.ts`
+  - `src/lib/verify/a11y-reference-keyboard-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -84,11 +86,34 @@ gates stay documented in
 * Always-on overflow fixtures that stub `clientWidth`/`scrollWidth` must clear
   those overrides in `afterEach` so later happy-dom a11y tests stay unpolluted.
 
+## Reference keyboard navigation (story 004)
+
+* `src/lib/verify/a11y-reference-keyboard-contract.ts` — shared selectors for
+  filters, mobile `<details>` disclosures, nav links, copy controls, schema
+  `$ref` links, and optional code-copy / field-expand chrome. Probes fail when
+  a required control is missing, pointer-only, or lacks a `focus-visible:ring`
+  / `focus-visible:outline` class. Disabled filter-clear buttons are ignored
+  until enabled.
+* Probe binders: `expectReferenceKeyboardChrome`,
+  `evaluateReferenceKeyboardChromeInBrowser`, `referenceKeyboardEvaluateArgs`
+  (also re-exported from `a11y-reference-surface-probes.ts`).
+* Always-on proofs:
+  - `src/lib/verify/a11y-reference-keyboard-contract.test.ts`
+  - `src/tests/a11y/reference-keyboard-navigation.a11y.test.tsx` (API harness,
+    events catalog, FactorySchemaReference, nested SchemaFieldTree expand)
+* Opt-in served probe: `src/lib/verify/a11y-reference-keyboard-page.test.ts`
+  (API / events / factory-schema at laptop + mobile). Same
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL` against
+  static `out/` for local browser verify.
+* Production SchemaReference builds flat property trees — nested
+  `[data-schema-field-expand]` is optional on the contract and proven via
+  SchemaFieldTree fixtures.
+
 ## Focused gate
 
 * Reproduce with `make a11y` (or `bun run test:a11y`).
-* Later W19 stories (keyboard, axe, hash-focus, copy live regions, reduced
-  motion, long-token overflow, no-JS HTML) must enumerate
+* Later W19 stories (axe, hash-focus, copy live regions, reduced motion,
+  long-token overflow, no-JS HTML) must enumerate
   `listReferenceOverflowMatrixCases()` / route ids from the contract — do not
   hard-code widths or reference paths in story tests.
 * Do not own W20 static-export/sitemap/canonical/link/search convergence here.

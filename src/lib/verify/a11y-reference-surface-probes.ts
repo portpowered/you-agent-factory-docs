@@ -15,6 +15,19 @@ import {
   REDUCED_MOTION_DURATION_THRESHOLD_MS,
 } from "./a11y-reduced-motion";
 import {
+  expectReferenceKeyboardChrome,
+  hasReferenceVisibleFocusRingClass,
+  isKeyboardFocusableElement,
+  isPointerOnlyInteractiveElement,
+  listReferenceKeyboardControlsForRoute,
+  listRequiredReferenceKeyboardControls,
+  probeReferenceKeyboardControl,
+  probeReferenceKeyboardControlsForRoute,
+  REFERENCE_KEYBOARD_CONTROLS,
+  type ReferenceKeyboardControlProbe,
+  type ReferenceKeyboardControlSpec,
+} from "./a11y-reference-keyboard-contract";
+import {
   getReferenceSurfaceRoute,
   getReferenceSurfaceViewport,
   INTENTIONAL_HORIZONTAL_SCROLL_SELECTORS,
@@ -43,20 +56,30 @@ import {
   type ResponsiveOverflowProbeResult,
 } from "./a11y-responsive-probes";
 
+export type { ReferenceKeyboardControlProbe, ReferenceKeyboardControlSpec };
 export {
   collectResponsiveOverflowProbe,
   evaluateReducedMotionChromeInBrowser,
   evaluateResponsiveOverflowInBrowser,
   expectNoSeriousAxeViolations,
+  expectReferenceKeyboardChrome,
   findIntentionalHorizontalScrollContainers,
+  hasReferenceVisibleFocusRingClass,
   isEffectivelyInstantMotion,
+  isKeyboardFocusableElement,
+  isPointerOnlyInteractiveElement,
+  listReferenceKeyboardControlsForRoute,
+  listRequiredReferenceKeyboardControls,
   measurePageLevelOverflow,
   openA11yResponsiveBrowserSession,
   openA11yResponsivePageProbe,
   pageOverflowAllowsIntentionalScrollers,
   probeMotionDurationsFromStyle,
+  probeReferenceKeyboardControl,
+  probeReferenceKeyboardControlsForRoute,
   REDUCED_MOTION_CHROME_SELECTOR,
   REDUCED_MOTION_DURATION_THRESHOLD_MS,
+  REFERENCE_KEYBOARD_CONTROLS,
   resolveA11yResponsiveProbeUrl,
   runAxeOnElement,
 };
@@ -137,6 +160,7 @@ export type ReferenceSurfaceProbeBinding = {
   harness: {
     overflow: "collectReferenceSurfaceOverflowProbe";
     axe: "expectNoSeriousAxeViolations";
+    keyboard: "expectReferenceKeyboardChrome";
     reducedMotion: "evaluateReducedMotionChromeInBrowser";
     pageSession: "openReferenceSurfacePageProbe";
   };
@@ -153,10 +177,174 @@ export function listReferenceSurfaceProbeBindings(): ReferenceSurfaceProbeBindin
     harness: {
       overflow: "collectReferenceSurfaceOverflowProbe",
       axe: "expectNoSeriousAxeViolations",
+      keyboard: "expectReferenceKeyboardChrome",
       reducedMotion: "evaluateReducedMotionChromeInBrowser",
       pageSession: "openReferenceSurfacePageProbe",
     },
   }));
+}
+
+/**
+ * Playwright `page.evaluate` helper: probe keyboard chrome using control specs
+ * passed as plain args (no Node-module closures — Playwright serializes the
+ * function into the browser).
+ */
+export function evaluateReferenceKeyboardChromeInBrowser(args: {
+  controls: ReadonlyArray<{
+    id: string;
+    selector: string;
+    label: string;
+    required: boolean;
+  }>;
+}): {
+  ok: boolean;
+  error: string | null;
+  probes: Array<{
+    id: string;
+    label: string;
+    required: boolean;
+    found: boolean;
+    hitCount: number;
+    allHitsKeyboardFocusable: boolean;
+    allHitsHaveFocusRing: boolean;
+    pointerOnlyHitCount: number;
+  }>;
+} {
+  const nativeFocusable = new Set([
+    "a",
+    "button",
+    "input",
+    "select",
+    "textarea",
+    "summary",
+  ]);
+
+  function isFocusable(element: Element): boolean {
+    if (!(element instanceof HTMLElement)) {
+      return false;
+    }
+    if (element.hasAttribute("disabled")) {
+      return false;
+    }
+    const tag = element.tagName.toLowerCase();
+    if (tag === "a") {
+      return element.hasAttribute("href");
+    }
+    if (nativeFocusable.has(tag)) {
+      return true;
+    }
+    const tabIndex = element.getAttribute("tabindex");
+    if (tabIndex === null || tabIndex === "") {
+      return false;
+    }
+    const parsed = Number(tabIndex);
+    return Number.isFinite(parsed) && parsed >= 0;
+  }
+
+  function hasFocusRing(className: string): boolean {
+    return (
+      className.includes("focus-visible:ring") ||
+      className.includes("focus-visible:outline")
+    );
+  }
+
+  const probes = args.controls.map((spec) => {
+    const hits = Array.from(document.querySelectorAll(spec.selector));
+    const activeHits = hits.filter(
+      (hit) => !(hit instanceof HTMLElement && hit.hasAttribute("disabled")),
+    );
+    let pointerOnlyHitCount = 0;
+    let keyboardOk = true;
+    let focusRingOk = true;
+    for (const hit of activeHits) {
+      if (!isFocusable(hit)) {
+        keyboardOk = false;
+        pointerOnlyHitCount += 1;
+      }
+      if (!(hit instanceof HTMLElement) || !hasFocusRing(hit.className)) {
+        focusRingOk = false;
+      }
+    }
+    return {
+      id: spec.id,
+      label: spec.label,
+      required: spec.required,
+      found: hits.length > 0,
+      hitCount: hits.length,
+      allHitsKeyboardFocusable:
+        activeHits.length === 0 ? hits.length > 0 : keyboardOk,
+      allHitsHaveFocusRing:
+        activeHits.length === 0 ? hits.length > 0 : focusRingOk,
+      pointerOnlyHitCount,
+    };
+  });
+
+  for (const probe of probes) {
+    if (!probe.required) {
+      if (
+        probe.found &&
+        (probe.pointerOnlyHitCount > 0 || !probe.allHitsKeyboardFocusable)
+      ) {
+        return {
+          ok: false,
+          error: `optional control "${probe.label}" (${probe.id}) is pointer-only / not keyboard focusable`,
+          probes,
+        };
+      }
+      if (probe.found && !probe.allHitsHaveFocusRing) {
+        return {
+          ok: false,
+          error: `optional control "${probe.label}" (${probe.id}) is missing a visible focus-visible ring class`,
+          probes,
+        };
+      }
+      continue;
+    }
+    if (!probe.found) {
+      return {
+        ok: false,
+        error: `required keyboard control "${probe.label}" (${probe.id}) was not found`,
+        probes,
+      };
+    }
+    if (probe.pointerOnlyHitCount > 0 || !probe.allHitsKeyboardFocusable) {
+      return {
+        ok: false,
+        error: `required control "${probe.label}" (${probe.id}) is pointer-only / not keyboard focusable`,
+        probes,
+      };
+    }
+    if (!probe.allHitsHaveFocusRing) {
+      return {
+        ok: false,
+        error: `required control "${probe.label}" (${probe.id}) is missing a visible focus-visible ring class`,
+        probes,
+      };
+    }
+  }
+
+  return { ok: true, error: null, probes };
+}
+
+/** Plain control args for {@link evaluateReferenceKeyboardChromeInBrowser}. */
+export function referenceKeyboardEvaluateArgs(
+  routeId: ReferenceSurfaceRouteId,
+): {
+  controls: Array<{
+    id: string;
+    selector: string;
+    label: string;
+    required: boolean;
+  }>;
+} {
+  return {
+    controls: listReferenceKeyboardControlsForRoute(routeId).map((spec) => ({
+      id: spec.id,
+      selector: spec.selector,
+      label: spec.label,
+      required: spec.required,
+    })),
+  };
 }
 
 /**
