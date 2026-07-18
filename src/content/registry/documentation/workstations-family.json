@@ -1,0 +1,20 @@
+{
+  "id": "documentation.workstations-family",
+  "slug": "workstations-family",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "workstations family",
+    "workstation types",
+    "WorkstationType",
+    "WorkstationKind",
+    "docs workstations index"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T13:20:00.000Z",
+  "updatedAt": "2026-07-18T13:20:00.000Z"
+}

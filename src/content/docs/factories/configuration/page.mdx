@@ -1,0 +1,226 @@
+---
+title: "Configuration"
+description: "Configure you-agent-factory with factory.json topology: work types, workers, workstations, resources, and how the pieces fit."
+kind: "documentation"
+registryId: "documentation.factories-configuration"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "factories configuration"
+  - "factory.json"
+  - "factory topology"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="what-lives-where" titleKey="sections.whatLivesWhere.title">
+  <T k="sections.whatLivesWhere.body" />
+
+```text
+factory/
+  factory.json
+  workers/
+    processor/AGENTS.md
+  workstations/
+    process/AGENTS.md
+  inputs/
+    task/default/request.json
+```
+
+  <T k="callouts.layoutNotes.body" />
+</Section>
+
+<Section id="how-pieces-fit" titleKey="sections.howPiecesFit.title">
+  <T k="sections.howPiecesFit.body" />
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <T k="links.routingOutcomeHeader" />
+        </th>
+        <th>
+          <T k="links.routingFieldHeader" />
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <T k="links.routingAcceptedOutcome" />
+        </td>
+        <td>
+          <T k="links.routingAcceptedField" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.routingContinueOutcome" />
+        </td>
+        <td>
+          <T k="links.routingContinueField" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.routingRejectedOutcome" />
+        </td>
+        <td>
+          <T k="links.routingRejectedField" />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <T k="links.routingFailedOutcome" />
+        </td>
+        <td>
+          <T k="links.routingFailedField" />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <T k="callouts.placeNote.body" />
+</Section>
+
+<Section id="factory-root-schema" titleKey="sections.factoryRootSchema.title">
+  <T k="sections.factoryRootSchema.body" />
+  <FactoryRootSchemaEmbed />
+  <T k="callouts.schemaEmbedNote.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/schema",
+        labelKey: "links.fullFactorySchema",
+      },
+      {
+        href: "/docs/references/api",
+        labelKey: "links.fullFactoryApi",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="minimal-factory" titleKey="sections.minimalFactory.title">
+  <T k="sections.minimalFactory.body" />
+
+```json
+{
+  "workTypes": [
+    {
+      "name": "task",
+      "states": [
+        { "name": "init", "type": "INITIAL" },
+        { "name": "complete", "type": "TERMINAL" },
+        { "name": "failed", "type": "FAILED" }
+      ]
+    }
+  ],
+  "workers": [
+    { "name": "processor" }
+  ],
+  "workstations": [
+    {
+      "name": "process",
+      "worker": "processor",
+      "inputs": [{ "workType": "task", "state": "init" }],
+      "outputs": [{ "workType": "task", "state": "complete" }],
+      "onFailure": { "workType": "task", "state": "failed" }
+    }
+  ]
+}
+```
+
+  <T k="callouts.minimalFactoryNote.body" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.resourcesDocs",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/factories/global-configuration",
+        labelKey: "links.globalConfigurationDocs",
+      },
+      {
+        href: "/docs/factories/packaged",
+        labelKey: "links.packagedDocs",
+      },
+      {
+        href: "/docs/factories/dynamic-workflows",
+        labelKey: "links.dynamicWorkflowsDocs",
+      },
+      {
+        href: "/docs/factories/sessions",
+        labelKey: "links.sessionsDocs",
+      },
+      {
+        href: "/docs/documentation/workers",
+        labelKey: "links.workersDocs",
+      },
+      {
+        href: "/docs/documentation/workstations",
+        labelKey: "links.workstationsDocs",
+      },
+      {
+        href: "/docs/documentation/resources",
+        labelKey: "links.resourcesDocs",
+      },
+      {
+        href: "/docs/references/schema",
+        labelKey: "links.fullFactorySchema",
+      },
+      {
+        href: "/docs/references/api",
+        labelKey: "links.fullFactoryApi",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.factories-configuration" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.factories-configuration" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.factories-configuration" />
+</Section>

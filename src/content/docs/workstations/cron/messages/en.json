@@ -1,0 +1,77 @@
+{
+  "title": "Cron behavior",
+  "description": "Configure behavior = CRON for cron schedules, time work, guards, and input readiness on Workstation steps.",
+  "openingSummary": "CRON is the WorkstationKind scheduling behavior for time-based work. Set behavior to CRON and author the cron field when a step should fire on a schedule, then still honor guards and input readiness before dispatch.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Cron behavior is the Factory WorkstationKind for scheduled time work in you-agent-factory. This page covers the behavior = CRON discriminator, the required cron schedule field, guards and input readiness before dispatch, the validated behavior overlay embed, a minimal valid configuration, an incompatible misuse that omits cron, operational cautions, and compatible WorkstationType companions. Use it when a workstation must run on a schedule rather than fire-once STANDARD, change-triggered REPEATER, or long-lived POLLER ingress."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "The discriminator field is behavior with value CRON. CRON selects the cron schedule field and fires when the schedule matches, then still checks guards and input readiness before dispatch. Behavior is independent of type: CRON pairs with every published WorkstationType, including AGENT_RUN and POLLER_RUN. CRON is not STANDARD fire-once, REPEATER change-triggered looping, or POLLER long-lived scheduling — those behaviors exclude cron."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a workstation with behavior CRON and set the cron expression that owns the schedule. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so scheduled outcomes route correctly. Keep guards and readiness places intentional so a tick does not dispatch when work is blocked. Choose STANDARD, REPEATER, or POLLER when those non-schedule semantics are required."
+    },
+    "variantFields": {
+      "title": "Variant Fields",
+      "body": "The embed below shows the live Workstation base definition with CRON overlay applicability. CRON selects the cron field as its exclusive schedule contract. Excluded fields belong to other WorkstationType families and must not appear on this behavior. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when starting a CRON workstation. The misuse example shows behavior CRON without cron — the schedule field is required on this behavior."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "CRON steps fail closed when cron is missing, when the schedule expression is invalid, when inputs are not ready at tick time, when guards block dispatch, when concurrency limits refuse a new run, or when route fields leave an outcome unmapped. Do not omit cron under CRON, and do not move schedule ownership onto STANDARD, REPEATER, or POLLER — those behaviors exclude the cron field."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workstations/cron surface for CRON scheduling. It is not a sync of packaged CLI docs, not a WorkstationType guide, and not the STANDARD, REPEATER, or POLLER behavior contracts. Compatible WorkstationType companions name the runtime pairing for this behavior; they do not redefine CRON fields. Worker backends stay on the workers family."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "discriminatorLabel": "Discriminator",
+    "discriminatorValue": "behavior = CRON",
+    "companionIntro": "CRON is compatible with every published WorkstationType. Bind a matching Worker for worker-backed types; LOGICAL_MOVE stays worker-free.",
+    "companionAgentRun": "Agent-run workstation",
+    "companionInferenceRun": "Inference-run workstation",
+    "companionScriptRun": "Script-run workstation",
+    "companionWorkersIndex": "Workers family index",
+    "minimalExampleLabel": "Minimal valid CRON workstation:",
+    "misuseExampleLabel": "Incompatible misuse — CRON without cron (required):",
+    "misuseNote": "cron is required under behavior CRON. Omitting it leaves the schedule undefined. Set cron when the step must run on a schedule.",
+    "fullFactorySchema": "Full Factory schema reference",
+    "workstationsFamilyIndex": "Workstations family index",
+    "siblingStandard": "Standard behavior",
+    "siblingRepeater": "Repeater behavior",
+    "siblingPoller": "Poller behavior",
+    "siblingConfiguration": "Configuration",
+    "siblingResources": "Resources",
+    "failureCronMissingClass": "cron_missing",
+    "failureCronMissingCause": "behavior CRON without a cron expression — set cron before publishing the schedule",
+    "failureScheduleClass": "schedule_invalid",
+    "failureScheduleCause": "cron expression cannot be parsed or never matches — fix the schedule string",
+    "failureInputClass": "input_not_ready",
+    "failureInputCause": "Schedule tick fired but inputs were not ready — keep readiness places updated or narrow the schedule",
+    "failureGuardClass": "guard_blocked",
+    "failureGuardCause": "Guards refused dispatch at tick time — adjust guard conditions or wait for allowed windows",
+    "failureConcurrencyClass": "concurrency_limit",
+    "failureConcurrencyCause": "Workstation or resource limits blocked a scheduled dispatch — raise limits or reduce parallel work",
+    "failureRoutingClass": "route_unmapped",
+    "failureRoutingCause": "Outcome has no authored route — wire outputs, onContinue, onRejection, or onFailure",
+    "failureClassHeader": "Failure class",
+    "failureCauseHeader": "Typical cause and recovery"
+  }
+}

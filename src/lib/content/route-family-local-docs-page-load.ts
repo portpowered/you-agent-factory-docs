@@ -52,7 +52,7 @@ function readJsonFile<T>(path: string): T {
 }
 
 /**
- * Merge page-owned MDX components for a route-family section/slug.
+ * Merge page-owned MDX components for a direct route-family page.
  *
  * Local docs compile through `compileMDX` with a fixed component map, so
  * relative imports in `page.mdx` do not resolve. Use a static
@@ -64,11 +64,84 @@ async function loadRouteFamilyPageMdxComponents(
   section: RouteFamilyLocalDocsSection,
   slug: string,
 ): Promise<MDXComponents> {
+  if (section === "factories") {
+    switch (slug) {
+      case "configuration": {
+        const mod = await import(
+          "@/content/docs/factories/configuration/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "global-configuration": {
+        const mod = await import(
+          "@/content/docs/factories/global-configuration/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged": {
+        const mod = await import(
+          "@/content/docs/factories/packaged/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "dynamic-workflows": {
+        const mod = await import(
+          "@/content/docs/factories/dynamic-workflows/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "sessions": {
+        const mod = await import(
+          "@/content/docs/factories/sessions/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
   if (section === "references") {
     switch (slug) {
       case "api": {
         const mod = await import(
           "@/content/docs/references/api/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "cli": {
+        const mod = await import(
+          "@/content/docs/references/cli/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mcp": {
+        const mod = await import(
+          "@/content/docs/references/mcp/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "javascript-runtime": {
+        const mod = await import(
+          "@/content/docs/references/javascript-runtime/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "factory-schema": {
+        const mod = await import(
+          "@/content/docs/references/factory-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "you-config-schema": {
+        const mod = await import(
+          "@/content/docs/references/you-config-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mock-workers-schema": {
+        const mod = await import(
+          "@/content/docs/references/mock-workers-schema/page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }
@@ -124,6 +197,85 @@ async function loadRouteFamilyPageMdxComponents(
       case "mock": {
         const mod = await import(
           "@/content/docs/workers/mock/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
+  if (section === "workstations") {
+    switch (slug) {
+      case "standard": {
+        const mod = await import(
+          "@/content/docs/workstations/standard/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "repeater": {
+        const mod = await import(
+          "@/content/docs/workstations/repeater/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "cron": {
+        const mod = await import(
+          "@/content/docs/workstations/cron/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "poller": {
+        const mod = await import(
+          "@/content/docs/workstations/poller/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "inference-run": {
+        const mod = await import(
+          "@/content/docs/workstations/inference-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "agent-run": {
+        const mod = await import(
+          "@/content/docs/workstations/agent-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "script-run": {
+        const mod = await import(
+          "@/content/docs/workstations/script-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "poller-run": {
+        const mod = await import(
+          "@/content/docs/workstations/poller-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "model-workstation": {
+        const mod = await import(
+          "@/content/docs/workstations/model-workstation/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "model-invoke": {
+        const mod = await import(
+          "@/content/docs/workstations/model-invoke/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "logical-move": {
+        const mod = await import(
+          "@/content/docs/workstations/logical-move/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "classifier": {
+        const mod = await import(
+          "@/content/docs/workstations/classifier/page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }

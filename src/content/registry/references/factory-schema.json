@@ -1,0 +1,18 @@
+{
+  "id": "reference.factory-schema",
+  "slug": "factory-schema",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "Factory schema",
+    "factory JSON Schema",
+    "You Factory configuration schema"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T13:00:00.000Z",
+  "updatedAt": "2026-07-18T13:00:00.000Z"
+}

@@ -115,6 +115,22 @@ export function documentationPageHref(
 }
 
 /**
+ * Canonical docs URL for a factories entry slug under `docs/factories`.
+ *
+ * `slug` may be a single segment (`configuration`) or a nested path
+ * (`docs/write-review`) so route-family child pages resolve correctly.
+ */
+export function factoriesPageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `factories/${slug}` },
+    locale,
+  );
+}
+
+/**
  * Canonical docs URL for a reference entry slug under `docs/references`.
  * `slug` may be nested (`openapi/paths`).
  */
@@ -140,6 +156,22 @@ export function workersPageHref(
 ): string {
   return buildLocalizedRoute(
     { surface: "docs-page", slug: `workers/${slug}` },
+    locale,
+  );
+}
+
+/**
+ * Canonical docs URL for a workstations entry slug under `docs/workstations`.
+ *
+ * `slug` may be a single segment (`agent-run`) or a nested path
+ * (`agent-run/variant`) so route-family child pages resolve correctly.
+ */
+export function workstationsPageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `workstations/${slug}` },
     locale,
   );
 }

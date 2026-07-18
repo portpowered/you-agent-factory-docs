@@ -186,7 +186,7 @@
   },
   "referencesIndex": {
     "title": "References",
-    "description": "Published reference pages that catalog schemas, contracts, and other lookup surfaces for factory subjects.",
+    "description": "Contract lookup surfaces for you-agent-factory: HTTP API, events, schemas, command-line interface (CLI), Model Context Protocol (MCP), and JavaScript runtime.",
     "listLabel": "Reference entries",
     "emptyTitle": "No reference entries yet",
     "emptyDescription": "Published reference pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
@@ -195,6 +195,12 @@
   "factoriesIndex": {
     "title": "Factories",
     "description": "Published factory pages that describe packaged factory surfaces and how they are configured and run.",
+    "overviewTitle": "What a Factory is",
+    "overviewBody": "A Factory is the workflow topology you-agent-factory runs. It declares work types, workers, workstations, and optional resources so long-running agent work stays persistent and coordinated instead of resetting on every chat. Use this family to learn factory.json topology, how named and global operator defaults interact, how packaged factories are discovered and refreshed, how dynamic workflow APIs relate to factory configuration, and how Factory Sessions identify a running factory over time.",
+    "schemaSummaryTitle": "Factory root definition",
+    "schemaSummaryBody": "The live Factory schema root lists the topology fields a factory.json can declare. This index shows that root summary only. Open the full Factory schema and API references when you need exhaustive field or operation lookup.",
+    "fullFactorySchemaLink": "Full Factory schema",
+    "fullFactoryApiLink": "Factory API reference",
     "listLabel": "Factory entries",
     "emptyTitle": "No factory entries yet",
     "emptyDescription": "Published factory pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",

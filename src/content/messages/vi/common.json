@@ -195,6 +195,12 @@
   "factoriesIndex": {
     "title": "Factory",
     "description": "Các trang factory đã xuất bản mô tả các bề mặt factory đã đóng gói và cách cấu hình, chạy chúng.",
+    "overviewTitle": "Factory là gì",
+    "overviewBody": "Factory là topology workflow mà you-agent-factory chạy. Nó khai báo work type, worker, workstation và resource tùy chọn để công việc agent dài hạn được duy trì và phối hợp thay vì reset mỗi phiên chat. Dùng họ trang này để học topology factory.json, cách mặc định operator đặt tên/toàn cục tương tác, cách factory đóng gói được phát hiện và làm mới, cách API workflow động liên hệ với cấu hình factory, và cách Factory Session nhận diện factory đang chạy theo thời gian.",
+    "schemaSummaryTitle": "Định nghĩa gốc Factory",
+    "schemaSummaryBody": "Root schema Factory sống liệt kê các trường topology mà factory.json có thể khai báo. Chỉ mục này chỉ hiện tóm tắt root đó. Mở tham chiếu schema và API Factory đầy đủ khi bạn cần tra cứu trường hoặc thao tác toàn diện.",
+    "fullFactorySchemaLink": "Schema Factory đầy đủ",
+    "fullFactoryApiLink": "Tham chiếu API Factory",
     "listLabel": "Các mục factory",
     "emptyTitle": "Chưa có mục factory nào",
     "emptyDescription": "Các trang factory đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",

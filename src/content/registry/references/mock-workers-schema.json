@@ -1,0 +1,18 @@
+{
+  "id": "reference.mock-workers-schema",
+  "slug": "mock-workers-schema",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "Mock-workers schema",
+    "mock workers JSON Schema",
+    "You mock-worker configuration schema"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T13:55:00.000Z",
+  "updatedAt": "2026-07-18T13:55:00.000Z"
+}

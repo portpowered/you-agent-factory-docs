@@ -1,0 +1,24 @@
+{
+  "id": "documentation.workstations-standard",
+  "slug": "workstations-standard",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "standard behavior",
+    "STANDARD",
+    "WorkstationKind STANDARD",
+    "docs workstations standard"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workstations-family",
+    "documentation.workstations",
+    "documentation.configuration",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T13:30:00.000Z",
+  "updatedAt": "2026-07-18T13:30:00.000Z"
+}

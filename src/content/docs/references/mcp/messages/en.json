@@ -1,0 +1,41 @@
+{
+  "title": "MCP",
+  "description": "Look up every published Factory Session MCP tool and its input schema from the installed package MCP contract on a stable static docs route.",
+  "openingSummary": "This reference lists every published Factory Session MCP tool from the installed @you-agent-factory/api MCP contract so host integrators can look up tool names, descriptions, input schemas, and examples without a live Factory host.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference publishes the package-backed MCP tool inventory for you-agent-factory. Readers can look up every published Factory Session tool from the installed MCP contract, including available descriptions, input-schema embeds, authored or clearly labeled generated examples, stable anchors, and inventory filters."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "An MCP tool name is the published Factory Session tool identity, such as you.factory_session.control. The inventory comes from the installed @you-agent-factory/api/mcp public export, not from a page-local copy of tools. Input schemas are projected from the package contract so hosts can see the structured arguments each tool accepts. Authored examples appear when the package publishes them; otherwise the inventory labels generated examples clearly."
+    },
+    "toolInventory": {
+      "title": "Tool Inventory",
+      "body": "Scan the published MCP tools below. Filter by tool name, description, or lifecycle when those facets are present on a tool. Open a tool card for its input schema and examples, and copy its stable anchor when you need a deep link."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Open this page when you need the durable package MCP lookup surface. Use the inventory filters to narrow the list, then open a tool for its published description, input schema, and examples. Prefer the authored MCP documentation page for host setup and narrative guidance; prefer this inventory when you need every published Factory Session tool from the installed package contract."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a static package-backed MCP inventory. It does not start a Factory host, does not invent tool input fields when the contract omits them, and is not a substitute for host configuration walkthroughs. Sibling CLI and JavaScript runtime reference routes may be linked before those pages exist in every checkout."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "mcpDocs": "MCP documentation",
+    "cliReference": "CLI reference",
+    "javascriptRuntimeReference": "JavaScript runtime reference"
+  }
+}
