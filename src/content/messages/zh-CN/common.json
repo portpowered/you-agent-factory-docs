@@ -62,7 +62,11 @@
       "guides": "指南",
       "concepts": "概念",
       "techniques": "技巧",
-      "documentation": "程序文档"
+      "documentation": "程序文档",
+      "references": "参考",
+      "factories": "工厂",
+      "workers": "工作器",
+      "workstations": "工作站"
     },
     "conceptsGroups": {
       "harnesses": "运行框架",

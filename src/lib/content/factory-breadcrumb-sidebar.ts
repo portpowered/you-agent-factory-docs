@@ -1,4 +1,5 @@
 import {
+  DIRECT_DOCS_ROUTE_FAMILY_IDS,
   DOCS_COLLECTION_IDS,
   type DocsCollectionId,
 } from "@/lib/docs/collection-definition-contract";
@@ -6,11 +7,15 @@ import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-accepta
 import { isDeletedAiSearchUrl } from "@/lib/search/factory-search-deleted-records";
 
 /**
- * Reader-visible docs explorer folder order after the sidebar IA repair.
- * Matches the four CLI collections; Glossary stays reachable via browse,
- * search, and direct routes but is not an explorer folder.
+ * Reader-visible docs explorer folder order: CLI collections, then W15 route
+ * families in topology order (references → factories → workers →
+ * workstations). Glossary stays reachable via browse, search, and direct
+ * routes but is not an explorer folder.
  */
-export const FACTORY_SIDEBAR_COLLECTION_IDS = CLI_DOCS_COLLECTION_IDS;
+export const FACTORY_SIDEBAR_COLLECTION_IDS = [
+  ...CLI_DOCS_COLLECTION_IDS,
+  ...DIRECT_DOCS_ROUTE_FAMILY_IDS,
+] as const satisfies readonly DocsCollectionId[];
 
 /**
  * Factory nav collection ids used for breadcrumb / collection validation.
@@ -49,8 +54,8 @@ export type FactoryExplorerSectionRef =
   | FactoryExplorerPageSectionRef;
 
 /**
- * Full explorer top-level order: CLI collection folders, then FAQ as a
- * sibling page entry outside Program documentation.
+ * Full explorer top-level order: CLI + W15 family collection folders, then
+ * FAQ as a sibling page entry outside Program documentation.
  */
 export const FACTORY_EXPLORER_SECTION_ORDER = [
   ...FACTORY_SIDEBAR_COLLECTION_IDS.map(
@@ -96,6 +101,10 @@ export const FACTORY_EXPLORER_FOLDER_LABELS = {
   concepts: FACTORY_SIDEBAR_FOLDER_LABELS.concepts,
   techniques: FACTORY_SIDEBAR_FOLDER_LABELS.techniques,
   documentation: FACTORY_SIDEBAR_FOLDER_LABELS.documentation,
+  references: FACTORY_SIDEBAR_FOLDER_LABELS.references,
+  factories: FACTORY_SIDEBAR_FOLDER_LABELS.factories,
+  workers: FACTORY_SIDEBAR_FOLDER_LABELS.workers,
+  workstations: FACTORY_SIDEBAR_FOLDER_LABELS.workstations,
 } as const satisfies Record<FactorySidebarCollectionId, string>;
 
 /**
@@ -204,7 +213,7 @@ export function assertFactoryBreadcrumbSegments(
 
 /**
  * Fail closed when sidebar collection-folder order drifts from the explorer
- * folder contract (CLI collections only; Glossary is not an explorer folder).
+ * folder contract (CLI + W15 families; Glossary is not an explorer folder).
  */
 export function assertFactorySidebarSectionOrder(
   sectionIds: readonly string[],

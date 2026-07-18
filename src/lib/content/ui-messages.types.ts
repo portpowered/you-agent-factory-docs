@@ -61,6 +61,10 @@ export type ExplorerFolderMessages = {
   concepts: string;
   techniques: string;
   documentation: string;
+  references: string;
+  factories: string;
+  workers: string;
+  workstations: string;
 };
 
 export type ExplorerConceptsGroupMessages = {

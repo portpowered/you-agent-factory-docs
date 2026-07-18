@@ -323,6 +323,10 @@ describe("factory search and navigation convergence end-to-end", () => {
       "concepts",
       "techniques",
       "documentation",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
     ]);
     expect(folderNames).toEqual(Object.values(FACTORY_EXPLORER_FOLDER_LABELS));
     expect(folderNames).not.toContain("Glossary");

@@ -17,6 +17,10 @@ const EXPECTED_DOCS_SIDEBAR_FOLDER_LABELS = [
   "Concepts",
   "Techniques",
   "Program documentation",
+  "References",
+  "Factories",
+  "Workers",
+  "Workstations",
 ] as const;
 
 function getSeparatorLabels(nodes: Node[]): string[] {

@@ -263,15 +263,22 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   section-index copy stays Atlas-free.
 * `src/lib/content/factory-breadcrumb-sidebar.ts`
   Factory breadcrumb/sidebar contract: `FACTORY_NAV_COLLECTION_IDS`,
+  `FACTORY_SIDEBAR_COLLECTION_IDS` (CLI collections + W15 route families in
+  topology order references → factories → workers → workstations),
   `FACTORY_SIDEBAR_FOLDER_LABELS`, retired Atlas nav collection/label
   denylists, and fail-closed asserts used by `DocsPageBreadcrumb` /
   `buildDocsSidebarSectionNodes` so chrome never advertises retired Atlas
-  collection crumbs or sidebar destinations.
+  collection crumbs or sidebar destinations. Glossary stays out of the
+  explorer folder list.
 * `src/lib/content/factory-breadcrumb-sidebar.test.tsx`
   Required-suite proof that breadcrumbs resolve Home → factory collection →
   page for guides/concepts/techniques/documentation, sidebar folders stay
-  factory-only with published page links, and retired Atlas section slugs
-  never become collection crumbs.
+  factory-only with published page links (including W15 family folders), and
+  retired Atlas section slugs never become collection crumbs.
+* `src/lib/navigation/w15-family-sidebar-discovery.test.ts`
+  W15 story 003 proof: four family folders appear in topology relative order
+  with settled published page children only (no operation / event-variant /
+  schema-definition inventory paths in the global explorer).
 * `src/lib/content/factory-prev-next-related.ts`
   Factory previous/next and related-link contract: footer neighbor resolution
   mirroring Fumadocs `useFooterItems`, plus fail-closed asserts used by

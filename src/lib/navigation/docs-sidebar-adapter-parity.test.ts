@@ -94,6 +94,10 @@ describe("docs sidebar adapter extraction parity", () => {
       "Concepts",
       "Techniques",
       "Program documentation",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
     ] as const;
 
     expect(getTopLevelFolderNames(generatedTree)).toEqual([

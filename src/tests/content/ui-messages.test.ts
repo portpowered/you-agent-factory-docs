@@ -360,6 +360,10 @@ describe("message boundary contracts", () => {
           concepts: "Concepts",
           techniques: "Techniques",
           documentation: "Program documentation",
+          references: "References",
+          factories: "Factories",
+          workers: "Workers",
+          workstations: "Workstations",
         },
         conceptsGroups: {
           harnesses: "Harnesses",

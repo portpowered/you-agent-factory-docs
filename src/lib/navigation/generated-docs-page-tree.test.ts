@@ -175,6 +175,10 @@ describe("generated docs page tree", () => {
       "Concepts",
       "Techniques",
       "Program documentation",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
     ]);
     expect(folderNames).not.toContain("Glossary");
     expect(source.pageTree.name).toBe("You Agent Factory");

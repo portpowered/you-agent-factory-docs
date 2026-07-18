@@ -90,6 +90,10 @@ describe("factory breadcrumbs and sidebar collections", () => {
       "concepts",
       "techniques",
       "documentation",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
     ]);
     expect([...FACTORY_NAV_COLLECTION_IDS]).toEqual([
       "guides",
@@ -106,12 +110,25 @@ describe("factory breadcrumbs and sidebar collections", () => {
       FACTORY_SIDEBAR_COLLECTION_IDS.map((id) =>
         resolveFactorySidebarFolderLabel(id),
       ),
-    ).toEqual(["Guides", "Concepts", "Techniques", "Program documentation"]);
+    ).toEqual([
+      "Guides",
+      "Concepts",
+      "Techniques",
+      "Program documentation",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
+    ]);
     expect(Object.values(FACTORY_EXPLORER_FOLDER_LABELS)).toEqual([
       "Guides",
       "Concepts",
       "Techniques",
       "Program documentation",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
     ]);
     expect(FACTORY_SIDEBAR_FOLDER_LABELS.documentation).toBe(
       "Program documentation",
