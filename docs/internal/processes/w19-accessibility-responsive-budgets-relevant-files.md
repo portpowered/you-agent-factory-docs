@@ -45,11 +45,29 @@ gates stay documented in
   (print/keyboard/viewports); keep production W19 gates on the shared verify
   contract, not a second matrix of hard-coded paths
 
+## Focused reference payload budgets (story 002)
+
+* `src/lib/verify/a11y-reference-payload-budget.ts`
+  Records HTML + attributable `/_next/static/**/*.js` baselines for
+  `/docs/references/api`, `/docs/references/events`, and
+  `/docs/references/factory-schema` (from a prior production static-export
+  measurement on 2026-07-18 UTC) and enforces focused ceilings with ~25%
+  headroom. Aligns route ids/paths with `REFERENCE_SURFACE_ROUTES`. Does
+  **not** raise `FACTORY_EXPORTED_SITE_BUDGET_BASELINES`.
+* Always-on proofs: `src/lib/verify/a11y-reference-payload-budget.test.ts`
+  (wired into `make a11y` / `test:a11y`).
+* CI / maintainer export gate: `scripts/run-exported-site-budget.ts`
+  (`make budget`) runs the total-site evaluation first, then the focused
+  reference page budgets against the same trusted `out/`.
+* Reproduce measurement:
+  1. `make build`
+  2. `make budget` (or call `evaluateReferencePayloadBudgets()`)
+
 ## Focused gate
 
 * Reproduce with `make a11y` (or `bun run test:a11y`).
 * Later W19 stories (overflow matrix, keyboard, axe, hash-focus, copy live
-  regions, reduced motion, long-token overflow, no-JS HTML, payload budgets)
+  regions, reduced motion, long-token overflow, no-JS HTML)
   must enumerate `listReferenceOverflowMatrixCases()` / route ids from the
   contract — do not hard-code widths or reference paths in story tests.
 * Do not own W20 static-export/sitemap/canonical/link/search convergence here.
