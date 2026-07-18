@@ -337,6 +337,10 @@ describe("message boundary contracts", () => {
         glossary: "Glossary",
         timeline: "Timeline",
         tags: "Tags",
+        references: "References",
+        factories: "Factories",
+        workers: "Workers",
+        workstations: "Workstations",
       },
       language: {
         open: "Switch language",

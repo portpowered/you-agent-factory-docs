@@ -22,7 +22,11 @@
     "blog": "Blog",
     "glossary": "用語集",
     "timeline": "タイムライン",
-    "tags": "タグ"
+    "tags": "タグ",
+    "references": "リファレンス",
+    "factories": "ファクトリー",
+    "workers": "ワーカー",
+    "workstations": "ワークステーション"
   },
   "language": {
     "open": "言語を切り替える",

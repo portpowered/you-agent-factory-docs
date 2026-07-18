@@ -30,6 +30,12 @@ export const youAgentFactorySiteConfig = {
     glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
     search: { surface: "search" },
+    // W15 family destinations: available for nav/discovery wiring; primaryNav
+    // membership is owned by the desktop/mobile primary-nav story.
+    references: { surface: "docs-page", slug: "references" },
+    factories: { surface: "docs-page", slug: "factories" },
+    workers: { surface: "docs-page", slug: "workers" },
+    workstations: { surface: "docs-page", slug: "workstations" },
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },

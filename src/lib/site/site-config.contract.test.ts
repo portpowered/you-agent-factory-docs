@@ -55,6 +55,10 @@ describe("site config contract", () => {
       "glossary",
       "blogIndex",
       "search",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
     ]);
     expect(SITE_NAMED_ROUTE_SURFACES).not.toContain("topology");
     expect(SITE_NAMED_ROUTE_SURFACES).not.toContain("timeline");

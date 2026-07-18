@@ -22,7 +22,11 @@
     "blog": "Blog",
     "glossary": "Thuật ngữ",
     "timeline": "Dòng thời gian",
-    "tags": "Thẻ"
+    "tags": "Thẻ",
+    "references": "Tham chiếu",
+    "factories": "Factory",
+    "workers": "Worker",
+    "workstations": "Workstation"
   },
   "language": {
     "open": "Chuyển ngôn ngữ",

@@ -22,7 +22,11 @@
     "blog": "Blog",
     "glossary": "Glossary",
     "timeline": "Timeline",
-    "tags": "Tags"
+    "tags": "Tags",
+    "references": "References",
+    "factories": "Factories",
+    "workers": "Workers",
+    "workstations": "Workstations"
   },
   "language": {
     "open": "Switch language",

@@ -15,13 +15,14 @@ contract for the you-agent-factory CLI docs product.
 | `src/lib/site/site-config-resolution.ts` | Resolves primary nav hrefs and home featured links from `SiteConfig`; re-exports layout-nav helpers |
 | `src/components/layout/primary-nav.ts` | Shell primary nav consumer of `SiteConfig.primaryNav` / `routeSurfaces` |
 | `src/lib/layout.shared.tsx` | Layout `baseOptions` defaults to `youAgentFactorySiteConfig` |
-| `src/content/messages/{en,vi,ja}/common.json` | Shell UI messages; `nav.guides` / `nav.docs` label keys for CLI primary nav |
+| `src/content/messages/{en,vi,ja,zh-CN}/common.json` | Shell UI messages; `nav.guides` / `nav.docs` plus W15 family keys `nav.references` / `nav.factories` / `nav.workers` / `nav.workstations` |
 
 ## Contract shape rules (rewrite era)
 
 - `SITE_NAMED_ROUTE_SURFACES` documents CLI placeholders (`home`, `guides`,
-  `docs`, `glossary`, `blogIndex`, `search`). It is **not** a mandatory closed
-  set on `SiteConfig.routeSurfaces`.
+  `docs`, `glossary`, `blogIndex`, `search`, plus W15 family destinations
+  `references`, `factories`, `workers`, `workstations`). It is **not** a
+  mandatory closed set on `SiteConfig.routeSurfaces`.
 - `routeSurfaces` is `Record<string, LocalizedRouteDestination>` so products can
   omit topology/timeline and add CLI surfaces without fighting the type.
 - `SITE_COLLECTION_FAMILIES` documents CLI families (`guides`, `concepts`,
@@ -58,13 +59,23 @@ contract for the you-agent-factory CLI docs product.
 - Default primary nav is Home, Guides, Docs, Glossary, Blog (no Topology or
   Timeline). Search is a configured `routeSurfaces.search` entry for the header
   trigger, not a primary nav item (avoids duplicating the search control).
+- W15 family destinations are configured as `routeSurfaces.references` /
+  `factories` / `workers` / `workstations` (`docs-page` slugs matching each
+  family index). Primary-nav membership for those four surfaces is a separate
+  wiring story; keep the route surfaces and `nav.*` label keys available so
+  later stories can add them without inventing new destinations.
 - Header search chrome copy (`messages.search.placeholder` / open / shortcut in
   `common.json`) must not say Model Atlas; placeholder identifies
   `you-agent-factory` (or neutral CLI docs search).
 - Resolved default hrefs: `/`, `/docs/guides`, `/browse`, `/docs/glossary`,
   `/blog`. Guides uses `{ surface: "docs-page", slug: "guides" }`; Docs uses
   `{ surface: "browse" }` as the transitional docs landing placeholder.
+  Family surfaces resolve to `/docs/references`, `/docs/factories`,
+  `/docs/workers`, and `/docs/workstations` (locale-prefixed when localized).
 - Nav label keys `guides` and `docs` live on `NavMessages` / `common.json`.
+  W15 topology also requires `references`, `factories`, `workers`, and
+  `workstations` on `NavMessages` / `common.json` (aligned with family index
+  titles; not the full reference chrome corpus).
 - `DocsHeader` / `getPrimaryNavItems` do not accept Atlas `topologyOptions`;
   canonical docs layout no longer wires topology navigation into the header.
   Topology browse remains a separate page-surface concern in site-renderers.

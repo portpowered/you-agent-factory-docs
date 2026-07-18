@@ -25,6 +25,14 @@ export type NavMessages = {
   glossary: string;
   timeline: string;
   tags: string;
+  /** W15 topology: References family destination label. */
+  references: string;
+  /** W15 topology: Factories family destination label. */
+  factories: string;
+  /** W15 topology: Workers family destination label. */
+  workers: string;
+  /** W15 topology: Workstations family destination label. */
+  workstations: string;
 };
 
 /** Language selector copy for the generic documentation shell. */
