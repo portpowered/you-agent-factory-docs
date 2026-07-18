@@ -5,6 +5,10 @@
  * mounts the public EventsSurface + stream-role + catalog + reconnect/lifecycle
  * + static SSE sections. Page wiring only — does not edit renderer internals
  * under components/references/events.
+ *
+ * `EventsCorpusMountView` accepts an already-resolved mount model so page-local
+ * tests can prove empty/error published-route states without mocking OpenAPI
+ * loaders or scanning renderer trees.
  */
 
 import { EventReconnectLifecycleSection } from "@/components/references/events/event-reconnect-lifecycle-section";
@@ -33,7 +37,7 @@ import {
 
 const EVENTS_PAGE_PATH = "/docs/references/events";
 
-type ResolvedCorpusMount = {
+export type ResolvedCorpusMount = {
   status: EventsUiStatus;
   statusTitle?: string;
   statusMessage?: string;
@@ -45,7 +49,7 @@ type ResolvedCorpusMount = {
   sourceHash?: string;
 };
 
-function resolvePublishedEventsCorpus(): ResolvedCorpusMount {
+export function resolvePublishedEventsCorpus(): ResolvedCorpusMount {
   try {
     const corpus = resolveEventCorpus({
       loadDependencies: eventsOpenApiTurbopackLoadDependencies(),
@@ -101,12 +105,17 @@ function resolvePublishedEventsCorpus(): ResolvedCorpusMount {
   }
 }
 
-/**
- * Mounts the published events corpus on the hybrid references page.
- */
-export function EventsCorpusMount() {
-  const resolved = resolvePublishedEventsCorpus();
+export type EventsCorpusMountViewProps = {
+  resolved: ResolvedCorpusMount;
+};
 
+/**
+ * Renders a resolved published-route corpus mount through EventsSurface.
+ * Non-success statuses short-circuit to the public EventsStatus messaging.
+ */
+export function EventsCorpusMountView({
+  resolved,
+}: EventsCorpusMountViewProps) {
   return (
     <div
       className="min-w-0 space-y-12"
@@ -150,4 +159,11 @@ export function EventsCorpusMount() {
       </EventsSurface>
     </div>
   );
+}
+
+/**
+ * Mounts the published events corpus on the hybrid references page.
+ */
+export function EventsCorpusMount() {
+  return <EventsCorpusMountView resolved={resolvePublishedEventsCorpus()} />;
 }

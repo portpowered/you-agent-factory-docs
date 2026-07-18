@@ -327,6 +327,10 @@ workers / workstations) needs a page-owned mount such as the W11 events corpus
    `bun run audit:canonical-page-surface` with `--exception-reason` and repeat
    the justification in the PR conversation. Do not register page mounts in
    shared `mdx-components.tsx`.
+4. For published-route empty/error proofs, export a presentational view (for
+   example `EventsCorpusMountView`) that accepts a resolved mount model so
+   colocated tests can assert accessible `EventsStatus` messaging without
+   mocking OpenAPI loaders or scanning renderer trees.
 
 For `/docs/references/events`, also see
 [events-reference-page-relevant-files](./events-reference-page-relevant-files.md).

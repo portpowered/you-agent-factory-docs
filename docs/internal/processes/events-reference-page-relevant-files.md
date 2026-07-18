@@ -73,10 +73,17 @@ other W11 reference page lanes):
 - Story 002 mounts stream roles + FactoryEvent / FactoryResponseEvent catalogs;
   story 003 adds reconnect / lifecycle / identity / JSON probe + static SSE
   sections via the same page-local `EventsCorpusMount` (still no harness chrome).
+- Story 004 proves published-route success + empty/error states via page-local
+  `EventsCorpusMountView` (inject resolved mount models). Assert route presence,
+  corpus roles, hybrid ownership markers, and `data-sse-live-connection=false`
+  — do not scan renderer trees or global inventories.
 - Compose production mount like the W09 harness body: `EventsSurface` + public
   section components + `buildEventReconnectLifecycleCorpus` /
   `buildSseStaticExamplesCorpus`. Never mount `EventsVerificationHarness` on the
   published page.
+- Keep resolve (`resolvePublishedEventsCorpus`) separate from presentational
+  `EventsCorpusMountView` so empty/error route states are testable without
+  mocking OpenAPI loaders.
 - Force-clean content runtime after adding the first `reference.*` record so
   published-docs and registry generated artifacts include the new page.
 - When updating `docs-catch-all-static-params` / section-index tests, expect

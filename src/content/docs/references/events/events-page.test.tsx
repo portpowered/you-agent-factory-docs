@@ -1,9 +1,10 @@
 /**
- * Page-owned render proof for references/events.
- * Covers reference route presence, frontmatter/registry alignment, section
- * copy, related discovery links, and the published EventsSurface corpus mount
- * (stream roles + FactoryEvent / FactoryResponseEvent catalogs + reconnect /
- * lifecycle / identity + static SSE examples). Colocated under the page bundle.
+ * Page-owned behavioral coverage for /docs/references/events.
+ *
+ * Proves published-route success and non-success outcomes, hybrid ownership
+ * markers, and no-live-connection safety markers. Does not scan renderer
+ * source trees, enforce global registration inventories, or re-test W09
+ * inventory-drift logic.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -16,13 +17,52 @@ import {
 import {
   EVENT_IDENTITY_HANDSHAKE_HEADER_NAMES,
   EVENT_RECONNECT_CURSOR_PARAM_NAMES,
+  EVENT_STREAM_SAFETY,
   LOCKED_EVENT_STREAM_PLACEMENT,
+  type SseStaticExamplesCorpus,
 } from "@/lib/references/events";
 import { source } from "@/lib/source";
+import {
+  EventsCorpusMountView,
+  type ResolvedCorpusMount,
+} from "./EventsCorpusMount";
+
+const PAGE_OWNED_SSE_FIXTURE: SseStaticExamplesCorpus = {
+  examples: [
+    {
+      id: "frame-example",
+      kind: "sse-frame",
+      title: "Static frame",
+      description: "Wire-shape fixture only.",
+      language: "text",
+      code: "id: 1\nevent: factory\ndata: {}\n\n",
+      origin: "illustrative-static-fixture",
+      originLabel: "Illustrative static fixture",
+      includesSseWireFields: true,
+    },
+    {
+      id: "reconnect-example",
+      kind: "reconnect-request",
+      title: "Static reconnect",
+      description: "No live EventSource.",
+      language: "http",
+      code: "GET /factory-sessions/{session_id}/events?after_event_id=42\n",
+      origin: "illustrative-static-fixture",
+      originLabel: "Illustrative static fixture",
+    },
+  ],
+  safety: EVENT_STREAM_SAFETY,
+  anchors: {
+    section: "event-sse-static-examples",
+    frame: "event-sse-frame-example",
+    reconnect: "event-sse-reconnect-example",
+    jsonProbe: "event-sse-json-reconnect-probe-example",
+  },
+};
 
 const PAGE_RENDER_TIMEOUT_MS = 60_000;
 
-describe("events reference page shell", () => {
+describe("events reference page published-route states", () => {
   afterEach(() => {
     cleanup();
   });
@@ -37,7 +77,7 @@ describe("events reference page shell", () => {
   });
 
   test(
-    "publishes /docs/references/events with the mounted event corpus",
+    "success corpus render presents EventsSurface success state on the published route",
     async () => {
       const fumadocsPage = source.getPage(["references", "events"]);
       expect(fumadocsPage).toBeDefined();
@@ -297,4 +337,100 @@ describe("events reference page shell", () => {
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
+
+  test("empty corpus mount shows accessible EventsStatus empty messaging", () => {
+    const resolved: ResolvedCorpusMount = {
+      status: "empty",
+      statusTitle: "Empty event corpus",
+      statusMessage:
+        "No FactoryEvent or FactoryResponseEvent stream operations were published for this artifact.",
+      summaries: [],
+    };
+
+    render(<EventsCorpusMountView resolved={resolved} />);
+
+    const mount = screen.getByTestId("events-corpus-mount");
+    expect(mount.getAttribute("data-events-page-path")).toBe(
+      "/docs/references/events",
+    );
+
+    const status = screen.getByTestId("events-status");
+    expect(status.getAttribute("data-events-status")).toBe("empty");
+    expect(status.getAttribute("role")).toBe("status");
+    expect(
+      screen.getByRole("status", { name: "Empty event corpus" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        "No FactoryEvent or FactoryResponseEvent stream operations were published for this artifact.",
+      ),
+    ).toBeTruthy();
+
+    expect(screen.queryByTestId("event-stream-operations-list")).toBeNull();
+    expect(screen.queryByTestId("factory-event-catalog-section")).toBeNull();
+    expect(
+      screen.queryByTestId("factory-response-event-catalog-section"),
+    ).toBeNull();
+    expect(
+      screen.queryByTestId("event-reconnect-lifecycle-section"),
+    ).toBeNull();
+    expect(screen.queryByTestId("sse-static-examples-section")).toBeNull();
+    expect(document.body.textContent ?? "").not.toMatch(/^\s*$/);
+  });
+
+  test("error corpus mount shows accessible EventsStatus alert messaging", () => {
+    const resolved: ResolvedCorpusMount = {
+      status: "error",
+      statusTitle: "Corpus error",
+      statusMessage: "OpenAPI resolution rejected the event corpus.",
+      summaries: [],
+    };
+
+    render(<EventsCorpusMountView resolved={resolved} />);
+
+    const mount = screen.getByTestId("events-corpus-mount");
+    expect(mount.getAttribute("data-events-page-path")).toBe(
+      "/docs/references/events",
+    );
+
+    const status = screen.getByTestId("events-status");
+    expect(status.getAttribute("data-events-status")).toBe("error");
+    expect(status.getAttribute("role")).toBe("alert");
+    expect(screen.getByRole("alert", { name: "Corpus error" })).toBeTruthy();
+    expect(
+      screen.getByText("OpenAPI resolution rejected the event corpus."),
+    ).toBeTruthy();
+
+    expect(screen.queryByTestId("event-stream-operations-list")).toBeNull();
+    expect(screen.queryByTestId("sse-static-examples-section")).toBeNull();
+    expect(document.body.textContent ?? "").not.toMatch(/^\s*$/);
+  });
+
+  test("hybrid ownership and no-live-connection markers stay page-owned", () => {
+    const resolved: ResolvedCorpusMount = {
+      status: "success",
+      summaries: [],
+      sseStaticExamples: PAGE_OWNED_SSE_FIXTURE,
+    };
+
+    render(<EventsCorpusMountView resolved={resolved} />);
+
+    const surface = screen.getByTestId("events-surface");
+    expect(surface.getAttribute("data-events-status")).toBe("success");
+    expect(surface.getAttribute("data-events-ownership")).toBe(
+      "w09-production",
+    );
+    expect(surface.getAttribute("data-events-placement")).toBe(
+      LOCKED_EVENT_STREAM_PLACEMENT,
+    );
+    expect(surface.getAttribute("data-events-asyncapi-permanent-pin")).toBe(
+      "false",
+    );
+
+    const sseExamples = screen.getByTestId("sse-static-examples-section");
+    expect(sseExamples.getAttribute("data-sse-live-connection")).toBe("false");
+    expect(sseExamples.getAttribute("data-sse-proxy")).toBe("false");
+    expect(screen.getByTestId("sse-frame-example")).toBeTruthy();
+    expect(screen.getByTestId("sse-reconnect-example")).toBeTruthy();
+  });
 });
