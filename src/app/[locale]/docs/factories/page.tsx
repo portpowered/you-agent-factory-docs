@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { renderSectionCollectionIndexPage } from "@/app/(site)/site-renderers";
+import { renderFactoriesIndexPage } from "@/content/docs/factories/index/render-factories-index-page";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { resolveMetadataLocale } from "../../localized-shell-metadata";
@@ -28,5 +28,5 @@ export default async function LocalizedFactoriesIndexPage({
   params,
 }: LocalizedFactoriesIndexPageProps) {
   const locale = await resolveMetadataLocale(params);
-  return renderSectionCollectionIndexPage("factories", locale);
+  return renderFactoriesIndexPage(locale);
 }

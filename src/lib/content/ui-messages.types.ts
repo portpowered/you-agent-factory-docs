@@ -103,6 +103,20 @@ export type SectionIndexMessages = {
   emptyHomeLink: string;
 };
 
+/**
+ * Factories family index copy: shared section-index fields plus the
+ * isolation-first overview and schema-summary labels used by the
+ * factories-owned /docs/factories composition.
+ */
+export type FactoriesIndexMessages = SectionIndexMessages & {
+  overviewTitle: string;
+  overviewBody: string;
+  schemaSummaryTitle: string;
+  schemaSummaryBody: string;
+  fullFactorySchemaLink: string;
+  fullFactoryApiLink: string;
+};
+
 /** Docs home page copy. */
 export type HomeMessages = {
   title: string;
@@ -233,7 +247,7 @@ export type FactoryCollectionIndexMessages = {
   techniquesIndex: SectionIndexMessages;
   documentationIndex: SectionIndexMessages;
   referencesIndex: SectionIndexMessages;
-  factoriesIndex: SectionIndexMessages;
+  factoriesIndex: FactoriesIndexMessages;
   workersIndex: SectionIndexMessages;
   workstationsIndex: SectionIndexMessages;
 };
