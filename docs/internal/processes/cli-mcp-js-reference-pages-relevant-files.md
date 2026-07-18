@@ -92,10 +92,22 @@ Do **not**:
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 acquisition |
 | `src/lib/references/reference-search-projection.ts` | `REFERENCE_FAMILY_PAGE_PATHS.{cli,mcp,javascript}` |
 
+## Cross-route proofs (story 004)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/published-route-states.test.tsx` | Page-owned success / empty / error / no-host / sibling-route fence proofs across the three published routes |
+
+Page mounts accept an optional `inventory` override solely so empty/error proofs can render the same W10 status surface the production MDX path uses, without mocking modules or scanning renderer trees.
+
 ## Patterns
 
 - Pass already-normalized inventory props into client inventory components; never
   import W03 Node acquisition into browser bundles.
+- Prove published-route empty/error through the page mount components with an
+  injected inventory input; do not re-test W10 chrome internals or scan foreign
+  renderer trees for ownership fences — assert unpublished sibling routes via
+  `source.getPage` instead.
 - Prefer Turbopack-safe `resolveExport` via package `manifest` → sibling JSON
   (same pattern as schema verification / events OpenAPI). CLI uses
   `generated/cli/commands.json`; MCP uses `generated/mcp/tools.json`; JavaScript

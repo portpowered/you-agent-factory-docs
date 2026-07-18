@@ -6,10 +6,23 @@
  * `CliCommandInventory` surface. Server-only — do not import into client
  * bundles.
  */
-import { CliCommandInventory } from "@/components/references/cli";
+import {
+  CliCommandInventory,
+  type CliCommandInventoryInput,
+} from "@/components/references/cli";
 import { loadCliReferenceInventory } from "@/lib/references/load-cli-reference-inventory";
 
-export function CliReferenceInventory() {
-  const inventory = loadCliReferenceInventory();
-  return <CliCommandInventory inventory={inventory} />;
+export type CliReferenceInventoryProps = {
+  /**
+   * Optional inventory override for page-local empty/error proofs.
+   * Production MDX omits this and loads the package contract.
+   */
+  inventory?: CliCommandInventoryInput;
+};
+
+export function CliReferenceInventory({
+  inventory,
+}: CliReferenceInventoryProps = {}) {
+  const resolved = inventory ?? loadCliReferenceInventory();
+  return <CliCommandInventory inventory={resolved} />;
 }

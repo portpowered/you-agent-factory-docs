@@ -6,10 +6,23 @@
  * `McpToolInventory` surface. Server-only — do not import into client
  * bundles.
  */
-import { McpToolInventory } from "@/components/references/mcp";
+import {
+  McpToolInventory,
+  type McpToolInventoryInput,
+} from "@/components/references/mcp";
 import { loadMcpReferenceInventory } from "@/lib/references/load-mcp-reference-inventory";
 
-export function McpReferenceInventory() {
-  const inventory = loadMcpReferenceInventory();
-  return <McpToolInventory inventory={inventory} />;
+export type McpReferenceInventoryProps = {
+  /**
+   * Optional inventory override for page-local empty/error proofs.
+   * Production MDX omits this and loads the package contract.
+   */
+  inventory?: McpToolInventoryInput;
+};
+
+export function McpReferenceInventory({
+  inventory,
+}: McpReferenceInventoryProps = {}) {
+  const resolved = inventory ?? loadMcpReferenceInventory();
+  return <McpToolInventory inventory={resolved} />;
 }
