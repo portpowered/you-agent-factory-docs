@@ -7,6 +7,7 @@
  */
 
 import { SchemaReference } from "@/components/references/schema";
+import { ReferenceHashNavigation } from "@/components/references/shared";
 import {
   loadSchemaVerificationPackageModel,
   type SchemaVerificationPackageModel,
@@ -49,15 +50,18 @@ export function FactorySchemaReference({
   try {
     const model = loadModel();
     return (
-      <SchemaReference
-        data-testid="factory-schema-reference"
-        definitions={model.definitions}
-        pagePath={FACTORY_SCHEMA_PAGE_PATH}
-        resolve={buildResolve(model)}
-        root={model.root}
-        showCatalog={false}
-        showEmptyExamples
-      />
+      <>
+        <ReferenceHashNavigation data-testid="factory-schema-hash-navigation" />
+        <SchemaReference
+          data-testid="factory-schema-reference"
+          definitions={model.definitions}
+          pagePath={FACTORY_SCHEMA_PAGE_PATH}
+          resolve={buildResolve(model)}
+          root={model.root}
+          showCatalog={false}
+          showEmptyExamples
+        />
+      </>
     );
   } catch (error) {
     const message =

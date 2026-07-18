@@ -51,6 +51,7 @@ describe("a11y-reference-surface probe helpers", () => {
       axe: "expectNoSeriousAxeViolations",
       keyboard: "expectReferenceKeyboardChrome",
       screenReader: "expectReferenceScreenReaderChrome",
+      hashFocus: "expectReferenceHashFocusAndMobileCollapse",
       reducedMotion: "evaluateReducedMotionChromeInBrowser",
       pageSession: "openReferenceSurfacePageProbe",
     });

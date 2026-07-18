@@ -272,6 +272,11 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `src/tests/a11y/reference-screen-reader.a11y.test.tsx` +
   `a11y-reference-screen-reader-contract` + opt-in served
   `a11y-reference-screen-reader-page.test.ts` (axe serious/critical).
+* W19 story 006 hash focus / sticky / mobile collapse: always-on
+  `src/tests/a11y/reference-hash-focus.a11y.test.tsx` +
+  `a11y-reference-hash-focus-contract` + opt-in served
+  `a11y-reference-hash-focus-page.test.ts`. Shared
+  `ReferenceHashNavigation` mounts on events + factory-schema pages.
 
 ## Existing component a11y smokes
 

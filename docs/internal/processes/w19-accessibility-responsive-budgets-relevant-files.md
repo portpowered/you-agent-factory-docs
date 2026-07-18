@@ -35,6 +35,7 @@ gates stay documented in
   - `src/lib/verify/a11y-reference-surface-probes.test.ts`
   - `src/lib/verify/a11y-reference-keyboard-contract.test.ts`
   - `src/lib/verify/a11y-reference-screen-reader-contract.test.ts`
+  - `src/lib/verify/a11y-reference-hash-focus-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -130,6 +131,29 @@ gates stay documented in
   factory-schema at laptop + mobile with landmarks/headings/labels/non-color
   status + Playwright axe. Same `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate;
   prefer `VERIFY_BASE_URL` against static `out/` for local browser verify.
+
+## Reference hash focus, sticky visibility, mobile collapse (story 006)
+
+* `src/lib/verify/a11y-reference-hash-focus-contract.ts` — hash target selectors
+  (API operation sections, event payload variants, schema definitions), sticky
+  obscuring probe, and API `<details>` mobile navigator open/close/focus-return.
+  Hash focus must not rewrite contract HTML; required targets need
+  `scroll-mt-*` / scroll-margin clearance.
+* Shared client chrome: `src/components/references/shared/ReferenceHashNavigation.tsx`
+  (events wraps it as `EventHashNavigation`). Mounted on production
+  `/docs/references/events` and `/docs/references/factory-schema` page mounts;
+  API already uses `ApiReferenceHashController`.
+* Narrow UI gate fixes: `scroll-mt-20` + `tabIndex={-1}` on schema definitions
+  and event payload variants so deep links can take focus and stay clear of
+  sticky chrome.
+* Always-on proofs:
+  - `src/lib/verify/a11y-reference-hash-focus-contract.test.ts`
+  - `src/tests/a11y/reference-hash-focus.a11y.test.tsx`
+* Opt-in served probe:
+  `src/lib/verify/a11y-reference-hash-focus-page.test.ts` — API / events /
+  factory-schema at wide + laptop (sticky check) and mobile (API nav collapse).
+  Same `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
+  against static `out/` for local browser verify.
 
 ## Focused gate
 
