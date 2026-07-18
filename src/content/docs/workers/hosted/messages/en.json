@@ -1,0 +1,70 @@
+{
+  "title": "Hosted worker",
+  "description": "Configure a HOSTED_WORKER for hosted provider auth: provider, auth.secretRef, Linear provider fields, and LOGICAL_MOVE / CLASSIFIER_WORKSTATION companionship. Prefer POLLER_WORKER for new configs.",
+  "openingSummary": "A HOSTED_WORKER is the legacy hosted-provider WorkerType. Set type to HOSTED_WORKER, put provider and auth.secretRef on the worker, and bind from a LOGICAL_MOVE companion. Prefer POLLER_WORKER for new configs.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "A Hosted worker is the legacy Factory WorkerType for hosted provider backends in you-agent-factory. This page covers the HOSTED_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid hosted Linear configuration, an incompatible inline-secret misuse, operational cautions, auth and secret-reference guidance, and the LOGICAL_MOVE plus CLASSIFIER_WORKSTATION workstation companions. Use it when reviewing or migrating an existing HOSTED_WORKER; prefer POLLER_WORKER for new hosted poller configs."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "The discriminator field is type with value HOSTED_WORKER. A HOSTED_WORKER supplies a hosted-provider backend through provider, auth.secretRef, and provider-specific fields such as linear. LOGICAL_MOVE is the required companion. CLASSIFIER_WORKSTATION is a compatible companion. This surface is a loadable legacy alias of hosted-provider authoring—prefer POLLER_WORKER for new hosted poller backends. Hosted workers are not model-backed or script backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a worker with type HOSTED_WORKER when migrating an existing hosted provider config. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear provider needs them. Bind the worker from a LOGICAL_MOVE companion; use CLASSIFIER_WORKSTATION when the classifier companion applies. For new factories, prefer POLLER_WORKER instead of HOSTED_WORKER."
+    },
+    "variantFields": {
+      "title": "Variant Fields",
+      "body": "The embed below shows the live Worker base definition with HOSTED_WORKER overlay applicability. Shared fields include identity plus hosted-provider fields (provider, auth, linear). Excluded fields belong to model-routing, inference, agent-loop, or script families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when reviewing a HOSTED_WORKER with hosted Linear provider auth. The misuse example shows an inline API key under auth—V1 hosted workers accept only auth.secretRef, and validation rejects inline credential fields."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "Hosted workers fail closed on missing provider or invalid auth shapes. Keep secrets out of the worker body. Do not substitute model or script fields for hosted provider auth. Prefer POLLER_WORKER for new configs."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workers/hosted surface for HOSTED_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Poller worker full contract. OAuth hosted auth and advanced multi-instance coordination are out of scope for v1. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine HOSTED_WORKER fields. HOSTED_WORKER remains loadable as a legacy alias; prefer POLLER_WORKER in new configs. Mock workers stay on their own route and schema."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "discriminatorLabel": "Discriminator",
+    "discriminatorValue": "type = HOSTED_WORKER",
+    "companionIntro": "HOSTED_WORKER requires a LOGICAL_MOVE companion. CLASSIFIER_WORKSTATION is a compatible companion. Prefer POLLER_WORKER with POLLER_RUN for new hosted poller backends.",
+    "companionWorkstation": "Logical move (LOGICAL_MOVE)",
+    "companionClassifier": "Classifier workstation (CLASSIFIER_WORKSTATION)",
+    "minimalExampleLabel": "Minimal valid HOSTED_WORKER:",
+    "misuseExampleLabel": "Incompatible misuse — inline secret on HOSTED_WORKER (rejected):",
+    "misuseNote": "auth accepts only secretRef. Validation rejects inline API keys and other credential fields. Resolve the referenced secret from an environment variable or a factory-relative secret file.",
+    "fullFactorySchema": "Full Factory schema reference",
+    "workersFamilyIndex": "Workers family index",
+    "siblingPollerWorker": "Poller worker",
+    "siblingWorkstations": "Workstations overview",
+    "siblingResources": "Resources",
+    "siblingTokens": "Tokens",
+    "cautionTopicHeader": "Caution",
+    "cautionGuidanceHeader": "Guidance",
+    "cautionValidationTopic": "Validation failures",
+    "cautionValidationGuidance": "Fix missing provider, invalid auth shapes, and excluded model or script fields before retrying. Unknown exclusive fields also fail validation.",
+    "cautionSecretsTopic": "Inline secrets",
+    "cautionSecretsGuidance": "Never put API keys, OAuth tokens, or other credential fields on the worker body. Use auth.secretRef only.",
+    "cautionModelFieldsTopic": "Model or script substitution",
+    "cautionModelFieldsGuidance": "Do not add model, modelProvider, operations, command, or args on a hosted worker. Hosted provider backends use provider and auth, not model routing or script execution.",
+    "cautionLegacyTopic": "Legacy preference",
+    "cautionLegacyGuidance": "Prefer POLLER_WORKER for new hosted poller backends. Keep HOSTED_WORKER only when migrating an existing hosted provider config."
+  }
+}

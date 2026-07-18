@@ -1,0 +1,69 @@
+{
+  "title": "Mock worker",
+  "description": "Configure test-only deterministic mock workers from the mock-workers schema: runType accept, script, or reject — not a Factory WorkerType.",
+  "openingSummary": "Mock workers replace live worker dispatch with deterministic accept, script, or reject outcomes from the mock-workers schema. They are not a seventh Factory WorkerType.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "A Mock worker is a test-only deterministic dispatch surface for you-agent-factory. This page covers the mock-workers schema identity, runType variants accept, script, and reject, selection fields, the live schema embed, a minimal valid configuration, an incompatible Factory WorkerType misuse, operational cautions, and limitations. Use it when you need deterministic worker outcomes without live provider calls. Mock workers are not a Factory WorkerType."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "Mock workers live on the mock-workers schema, not on Factory WorkerType. The required identity field on each selection entry is runType with value accept, script, or reject. Entries may select by workerName, workstationName, workInputs, and an optional id. accept returns a synthetic success. reject returns a configured rejection. script runs a local command through the shared command-runner boundary and requires scriptConfig. Unmatched dispatches follow unmatchedDispatchPolicy: accept by default, or passthrough to the real worker path. Mock workers are not ordinary live worker runs and are not record or replay artifact reuse."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a mock-workers JSON config with a required mockWorkers array. Add selection entries that match the workerName, workstationName, or workInputs you want to intercept. Set runType to accept, reject, or script. Supply rejectConfig when runType is reject, and scriptConfig with at least command when runType is script. Enable the config on you run with --with-mock-workers. Keep Factory WorkerType values and worker body fields out of this file — they belong on factory.json workers, not on mock selection entries."
+    },
+    "schemaFields": {
+      "title": "Schema Fields",
+      "body": "The embed below shows the live mockWorker definition from the mock-workers schema. Required identity is runType. Selection fields include workerName, workstationName, workInputs, and optional id. Conditional fields include rejectConfig and scriptConfig. Open the full mock-workers schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when you need a single accept match for a named factory worker. The misuse example shows Factory Worker fields name and type MOCK_WORKER on a mock entry — mock selection uses workerName, never Factory WorkerType discriminators, and rejects unknown fields."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "Unknown JSON fields fail at load time. passthrough unmatched policy can hit live providers. A mock accept proves only the mock path returned success, not live-provider quality. Do not treat mock workers as a seventh WorkerType."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workers/mock surface for mock-workers schema authoring. It is not a sync of packaged CLI docs, not a Factory WorkerType page, and not a record or replay guide. Packaged you docs mock-workers remains the CLI topic for the same contract. Mock workers stay off the Factory WorkerType enum and off production Worker overlays."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "identityLabel": "Identity",
+    "identityValue": "runType = accept | script | reject (mock-workers schema, not WorkerType)",
+    "enableIntro": "Enable mock-worker mode on you run with a JSON config path:",
+    "enableCommand": "you run --dir ./factory --with-mock-workers ./mock-workers.json",
+    "minimalExampleLabel": "Minimal valid mock-workers config:",
+    "misuseExampleLabel": "Incompatible misuse — Factory WorkerType shape on mock entry (rejected):",
+    "misuseNote": "Mock selection entries use workerName, not name. They never accept type or other Factory WorkerType discriminators. Unknown fields fail validation at load time.",
+    "fullMockWorkersSchema": "Full mock-workers schema reference",
+    "workersFamilyIndex": "Workers family index",
+    "siblingDocumentationMockWorkers": "Mock workers CLI reference",
+    "siblingAgentWorker": "Agent worker",
+    "siblingWorkstations": "Workstations overview",
+    "siblingResources": "Resources",
+    "cautionTopicHeader": "Caution",
+    "cautionGuidanceHeader": "Guidance",
+    "cautionUnknownFieldsTopic": "Unknown fields",
+    "cautionUnknownFieldsGuidance": "Keep the config to documented mock-workers fields. Additional properties fail closed at load time.",
+    "cautionPassthroughTopic": "Passthrough unmatched policy",
+    "cautionPassthroughGuidance": "unmatchedDispatchPolicy passthrough is not a pure-deterministic run. Unmatched steps call the real worker and may hit live providers.",
+    "cautionAcceptProofTopic": "Mock accept proof limits",
+    "cautionAcceptProofGuidance": "A mock accept proves only that the mock path returned success. It does not prove live-provider success or live model quality.",
+    "cautionNotWorkerTypeTopic": "Not a WorkerType",
+    "cautionNotWorkerTypeGuidance": "Do not author mock workers as Factory WorkerType values or as a seventh workers[].type. Keep them on the mock-workers schema."
+  }
+}

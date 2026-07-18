@@ -439,7 +439,7 @@ describe("CLI section index metadata", () => {
   }
 });
 
-const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
+const W05_EMPTY_ROUTE_FAMILY_INDEX_CASES = [
   {
     collectionId: "references" as const,
     messageKey: "referencesIndex" as const,
@@ -455,14 +455,6 @@ const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
     renderLocalized: LocalizedFactoriesIndexPage,
     generateDefaultMetadata: generateFactoriesMetadata,
     generateLocalizedMetadata: generateLocalizedFactoriesMetadata,
-  },
-  {
-    collectionId: "workers" as const,
-    messageKey: "workersIndex" as const,
-    renderDefault: WorkersIndexPage,
-    renderLocalized: LocalizedWorkersIndexPage,
-    generateDefaultMetadata: generateWorkersMetadata,
-    generateLocalizedMetadata: generateLocalizedWorkersMetadata,
   },
   {
     collectionId: "workstations" as const,
@@ -484,7 +476,7 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.workstationsIndex.title).toBe("Workstations");
   });
 
-  for (const section of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+  for (const section of W05_EMPTY_ROUTE_FAMILY_INDEX_CASES) {
     it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
       const messages = await loadUiMessages();
       const indexMessages = messages[section.messageKey];
@@ -549,4 +541,51 @@ describe("W05 direct route-family section index pages", () => {
       expect(localizedMetadata.description).toBe(indexMessages.description);
     });
   }
+
+  it("renders the authored workers family index instead of the empty-state contract", async () => {
+    const html = renderToStaticMarkup(await WorkersIndexPage());
+
+    expect(html).toContain("Workers");
+    expect(html).toContain('data-workers-family-index=""');
+    expect(html).toContain('data-workers-selection-table=""');
+    expect(html).toContain("INFERENCE_WORKER");
+    expect(html).toContain("Mock worker (not a WorkerType)");
+    expect(html).not.toContain("No worker entries yet");
+  });
+
+  it("renders the localized workers family index with page-local selection copy", async () => {
+    const html = renderToStaticMarkup(
+      await LocalizedWorkersIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    expect(html).toContain("Workers");
+    expect(html).toContain('data-workers-family-index=""');
+    expect(html).toContain("AGENT_WORKER");
+    expect(html).not.toContain("No worker entries yet");
+  });
+
+  it("keeps default and localized workers index metadata aligned to page-local messages", async () => {
+    const defaultMetadata = await generateWorkersMetadata();
+    const localizedMetadata = await generateLocalizedWorkersMetadata({
+      params: Promise.resolve({ locale: "vi" }),
+    });
+    const expectedAlternates = {
+      canonical: "/docs/workers",
+      languages: {
+        en: "/docs/workers",
+        ja: "/ja/docs/workers",
+        "zh-CN": "/zh-CN/docs/workers",
+        vi: "/vi/docs/workers",
+      },
+    };
+
+    expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+    expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+    expect(defaultMetadata.title).toBe("Workers");
+    expect(localizedMetadata.title).toBe("Workers");
+    expect(String(defaultMetadata.description)).toMatch(/WorkerType/i);
+    expect(localizedMetadata.description).toBe(defaultMetadata.description);
+  });
 });

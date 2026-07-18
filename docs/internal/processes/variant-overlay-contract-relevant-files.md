@@ -41,6 +41,8 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/fixtures/upstream-migration.ts` | Focused overlay + W04 definition fixtures for upstream preference / contradiction / unresolved target |
 | `src/lib/references/overlays/fixtures/package-drift.ts` | Focused post-drift definition + overlay fixtures: removed fields, renamed enums, missing refs, incompatible examples |
 | `src/lib/references/overlays/fixtures/package-drift.test.ts` | Drift-class fail-closed diagnostics + minimal valid overlay success (fixture catalog + installed W03 package) |
+| `src/lib/references/overlays/production-worker-overlays.ts` | W13 production Worker overlays for all six Factory `WorkerType` values (applicability + companions + example refs; mock workers excluded) |
+| `src/lib/references/overlays/production-worker-overlays.test.ts` | Production overlays validate via W06 against installed Factory schemas; diagnostics name overlay + identity; joint selected-field attribution stays conflict-free |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
@@ -113,6 +115,16 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   (`missing-example-ref`), plus success for a minimal valid overlay set.
   Focused tests also re-exercise incompatible companion field selection via
   the story 006 fixtures against installed W03 package models.
+- Production Worker overlays (W13) live in
+  `overlays/production-worker-overlays.ts`. Put cross-variant applicable
+  fields in `shared` and exclusive fields in `selected` so joint
+  `validateFactoryVariantOverlaysIncompatibleFieldSelection` stays green.
+  Legacy `MODEL_WORKER` / `HOSTED_WORKER` list overlapping capability fields
+  as `shared` (not `selected`) to avoid attribution conflicts with
+  `INFERENCE_WORKER` / `POLLER_WORKER`. Apply companions via
+  `applyFactoryVariantCompatibilityFactToOverlay` +
+  `createMinimalFactoryVariantCompatibilityMatrix`. Do not register
+  mock-worker run types as Factory Worker overlays.
 
 ## Verification
 

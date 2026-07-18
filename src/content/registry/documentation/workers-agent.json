@@ -1,0 +1,27 @@
+{
+  "id": "documentation.workers-agent",
+  "slug": "workers-agent",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "agent worker",
+    "AGENT_WORKER",
+    "AGENT_RUN",
+    "agentTools",
+    "docs workers agent"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers-family",
+    "documentation.workstations",
+    "documentation.resources",
+    "documentation.inference-workers",
+    "concept.tool-calling",
+    "concept.tokens"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T13:00:00.000Z",
+  "updatedAt": "2026-07-18T13:00:00.000Z"
+}
