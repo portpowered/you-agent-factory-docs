@@ -5,9 +5,11 @@
  * suppression, and local-server base URL copy.
  *
  * Renders navigators against the package-resolved single-page projection and
- * full `ApiOperationSection` hosts whose `id` matches each nav anchor. Not a
- * final `/docs/references/api` page — harness / demo only (W11 owns published
- * MDX).
+ * full `ApiOperationSection` hosts whose `id` matches each nav anchor. Marks
+ * the production theme root (`data-api-reference-theme`) so method badges,
+ * CodePanel examples, and operation chrome resolve through host semantic
+ * tokens. Not a final `/docs/references/api` page — harness / demo only
+ * (W11 owns published MDX).
  */
 
 import { cn } from "@/lib/utils";
@@ -22,6 +24,7 @@ import { API_REFERENCE_PAGE_PATH } from "./operation-anchors";
 import type { ApiOperationDetail } from "./operation-detail";
 import type { ApiOperationNavModel } from "./operation-navigation";
 import { API_PLAYGROUND_SUPPRESSED_ATTR } from "./playground-suppression";
+import { API_THEME_ROOT_ATTR } from "./theme-tokens";
 
 export type ApiNavigationVerificationHarnessProps = {
   model: ApiOperationNavModel;
@@ -63,10 +66,13 @@ export function ApiNavigationVerificationHarness({
     <ApiSurface status="ready" className={cn("min-w-0", className)}>
       <ApiReferenceHashController>
         <div
-          className="mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden px-4 py-6"
+          className="mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden px-4 py-6 text-foreground"
           data-api-navigation-verification-harness=""
           data-testid={testId}
-          {...{ [API_PLAYGROUND_SUPPRESSED_ATTR]: "true" }}
+          {...{
+            [API_PLAYGROUND_SUPPRESSED_ATTR]: "true",
+            [API_THEME_ROOT_ATTR]: "",
+          }}
         >
           <header className="min-w-0 space-y-2 border-b border-border pb-6">
             <p className="text-sm text-muted-foreground">
@@ -79,8 +85,9 @@ export function ApiNavigationVerificationHarness({
               Exercises desktop and phone/tablet navigators, operation
               filtering, stable anchors, copy links, hash-to-focus,
               request/response/media-type/example rendering, hybrid SSE
-              transport summaries (with events-catalog links), and static-only
-              local-server base URL copy against the package-resolved OpenAPI
+              transport summaries (with events-catalog links), static-only
+              local-server base URL copy, project theme tokens, and site
+              CodePanel code-copy against the package-resolved OpenAPI
               projection ({model.operationCount} operations /{" "}
               {model.groups.length} tags). Live playground, proxy execution, and
               live event-stream connections are suppressed.

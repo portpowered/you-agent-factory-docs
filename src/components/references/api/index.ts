@@ -240,6 +240,17 @@ export {
   isApiSseOperation,
 } from "./sse-operations";
 export {
+  API_CODE_COPY_POLICY,
+  API_CODE_PANEL_ATTR,
+  API_METHOD_BADGE_TONE_CLASSES,
+  API_SHIKI_OPTIONS,
+  API_THEME_ROOT_ATTR,
+  API_TOKEN_CLASSES,
+  type ApiMethodBadgeToneKey,
+  apiMethodBadgeToneClass,
+  usesSemanticTokenClasses,
+} from "./theme-tokens";
+export {
   API_UI_STATUS_DEFAULT_MESSAGES,
   API_UI_STATUS_DEFAULT_TITLES,
   API_UI_STATUS_KINDS,

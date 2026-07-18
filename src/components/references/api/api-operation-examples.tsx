@@ -13,6 +13,7 @@ import { CodePanel } from "@/features/factory-ui/data-display";
 import { cn } from "@/lib/utils";
 import { ApiStatus } from "./api-status";
 import type { ApiOperationExample } from "./operation-detail";
+import { API_CODE_PANEL_ATTR, API_TOKEN_CLASSES } from "./theme-tokens";
 
 export const API_EXAMPLES_ATTR = "data-api-operation-examples" as const;
 
@@ -41,19 +42,24 @@ function ApiExampleCopyButton({ code }: { code: string }) {
     <>
       <button
         aria-label={checked ? COPIED_LABEL : COPY_LABEL}
-        className="inline-flex shrink-0 items-center justify-center rounded-md border border-border p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&_svg]:size-3.5"
+        className={cn(
+          "inline-flex shrink-0 items-center justify-center rounded-md border p-1 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 [&_svg]:size-3.5",
+          API_TOKEN_CLASSES.border,
+          API_TOKEN_CLASSES.mutedForeground,
+          API_TOKEN_CLASSES.ring,
+        )}
         data-checked={checked || undefined}
         data-api-example="copy"
         onClick={onClick}
         type="button"
       >
         {checked ? (
-          <Check aria-hidden="true" />
+          <Check aria-hidden="true" data-api-code-copy-icon="check" />
         ) : (
-          <Clipboard aria-hidden="true" />
+          <Clipboard aria-hidden="true" data-api-code-copy-icon="clipboard" />
         )}
       </button>
-      <span aria-live="polite" className="sr-only">
+      <span aria-live="polite" className="sr-only" data-api-code-copy-status="">
         {checked ? COPIED_LABEL : ""}
       </span>
     </>
@@ -128,6 +134,7 @@ export function ApiOperationExamples({
               maxHeight="md"
               padding="default"
               surface="low"
+              {...{ [API_CODE_PANEL_ATTR]: example.language }}
             >
               {example.code}
             </CodePanel>
