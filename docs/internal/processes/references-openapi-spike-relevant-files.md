@@ -108,11 +108,28 @@ the shipped `/docs/references/api` surface.
 - Spike SSR HTML is multi-megabyte; treat that as a W08 productionization risk,
   not a CI budget gate for this non-production route.
 
+## Findings publication (production unpin)
+
+- `src/lib/references-openapi-spike/findings-publication.ts` — machine-checkable
+  rollup inventory, required topics/headings, and non-production / temporary-pin
+  / no-W02 / no shared-inventory policy. Assert helpers validate the consolidated
+  markdown under `docs/temp/references/w01-openapi-spike-findings.md`.
+- `src/lib/references-openapi-spike/findings-publication.test.ts` — proves the
+  rollup + per-story findings exist locally, policy stays temporary/non-final,
+  and shared search/sitemap modules do not register the spike route.
+- Narrative rollup + per-story findings live under gitignored
+  `docs/temp/references/` (planner state). Commit the TypeScript publication
+  contract; keep long-form measurements in temp.
+- Lane does **not** own W02 AsyncAPI projector work and must not edit shared
+  final navigation/search/sitemap inventories.
+
 ## Temporary install policy
 
 - Spike may add exact `fumadocs-openapi` and required peers (for example
   `@scalar/api-client-react`) to `package.json` / lockfile for render evidence.
 - Do not treat those pins as the final production OpenAPI dependency set.
+  Story 007 keeps status `temporary-non-final` / `non-production-temporary`;
+  W08 chooses final pins after W01/W02 evidence.
 - Do not install `fumadocs-openapi` 11.2 while remaining on Fumadocs 16.9;
   upgrade requires a coordinated `fumadocs-core` + `fumadocs-ui` 16.10 bump.
 - Temporary CSS import: `fumadocs-openapi/css/preset.css` plus
