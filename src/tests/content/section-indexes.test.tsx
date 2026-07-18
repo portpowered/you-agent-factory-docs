@@ -522,6 +522,9 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain('data-references-family-discoverability=""');
     expect(html).toContain('data-references-family-freshness=""');
     expect(html).toContain("Package freshness");
+    expect(html).toContain('data-freshness-status="ready"');
+    expect(html).toContain('data-references-family-freshness-summary=""');
+    expect(html).toContain("@you-agent-factory/api");
     for (const href of [
       "/docs/references/api",
       "/docs/references/events",
@@ -535,6 +538,7 @@ describe("W05 direct route-family section index pages", () => {
       expect(html).toContain(`href="${href}"`);
     }
     expect(html).not.toContain("No reference entries yet");
+    expect(html).not.toContain("Package freshness unavailable");
   });
 
   it("renders the localized references family index with English fallback copy", async () => {

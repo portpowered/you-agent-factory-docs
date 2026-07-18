@@ -1,13 +1,27 @@
 /**
- * Page-owned render proof for the `/docs/references` family index.
- * Asserts authored introduction, eight discoverability hrefs, and
- * package/version freshness success + unavailable treatments — not sibling
- * page bodies.
+ * Page-owned behavioral proof for the `/docs/references` family index.
+ * Asserts authored introduction, eight discoverability hrefs, package/version
+ * freshness success + unavailable treatments, and ownership-path helpers —
+ * not sibling page bodies, foreign renderer catalogs, or shared inventories.
  */
 import { afterEach, describe, expect, test } from "bun:test";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { cleanup, render, screen, within } from "@testing-library/react";
+import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
 import { loadReferencesFamilyFreshnessSummary } from "./load-references-family-freshness";
 import { loadReferencesFamilyIndex } from "./load-references-family-index";
+import {
+  isForbiddenReferencesFamilyRendererPath,
+  isForbiddenReferencesFamilyRouteFamilyPath,
+  isForbiddenReferencesFamilySiblingPagePath,
+  isReferencesFamilyIndexOwnershipPath,
+  REFERENCES_FAMILY_INDEX_FORBIDDEN_RENDERER_ROOTS,
+  REFERENCES_FAMILY_INDEX_FORBIDDEN_ROUTE_FAMILY_ROOTS,
+  REFERENCES_FAMILY_INDEX_FORBIDDEN_SIBLING_PAGE_ROOTS,
+  REFERENCES_FAMILY_INDEX_OWNERSHIP_IMPORT,
+  REFERENCES_FAMILY_INDEX_OWNERSHIP_ROOT,
+} from "./ownership";
 import { ReferencesFamilyIndex } from "./ReferencesFamilyIndex";
 import {
   REFERENCE_FAMILY_DISCOVERABILITY_ROUTES,
@@ -228,5 +242,77 @@ describe("references family index", () => {
       expect(link.getAttribute("href")).toBe(card.href);
       expect(link.textContent).toContain(card.description);
     }
+  });
+
+  test("exposes a page-local registry record for the family index", async () => {
+    const indexes = await loadRegistry();
+    const record = getRegistryRecord(
+      indexes,
+      REFERENCE_FAMILY_INDEX_REGISTRY_ID,
+    );
+
+    expect(record).toBeTruthy();
+    expect(record?.kind).toBe("reference");
+    expect(record?.id).toBe(REFERENCE_FAMILY_INDEX_REGISTRY_ID);
+    expect(record?.slug).toBe("references");
+    expect(record?.relatedIds).toEqual([]);
+  });
+
+  test("keeps ownership distinct from sibling pages and foreign renderers", () => {
+    expect(REFERENCES_FAMILY_INDEX_OWNERSHIP_ROOT).toBe(
+      "src/content/docs/references/family-index",
+    );
+    expect(REFERENCES_FAMILY_INDEX_OWNERSHIP_IMPORT).toBe(
+      "@/content/docs/references/family-index",
+    );
+    expect(
+      existsSync(join(process.cwd(), REFERENCES_FAMILY_INDEX_OWNERSHIP_ROOT)),
+    ).toBe(true);
+    expect(
+      isReferencesFamilyIndexOwnershipPath(
+        REFERENCES_FAMILY_INDEX_OWNERSHIP_ROOT,
+      ),
+    ).toBe(true);
+    expect(
+      isReferencesFamilyIndexOwnershipPath(
+        `${REFERENCES_FAMILY_INDEX_OWNERSHIP_ROOT}/ReferencesFamilyIndex.tsx`,
+      ),
+    ).toBe(true);
+
+    expect(REFERENCES_FAMILY_INDEX_FORBIDDEN_SIBLING_PAGE_ROOTS).toHaveLength(
+      8,
+    );
+    expect(REFERENCES_FAMILY_INDEX_FORBIDDEN_RENDERER_ROOTS).toContain(
+      "src/components/references/api",
+    );
+    expect(REFERENCES_FAMILY_INDEX_FORBIDDEN_ROUTE_FAMILY_ROOTS).toContain(
+      "src/content/docs/factories",
+    );
+
+    expect(
+      isForbiddenReferencesFamilySiblingPagePath(
+        "src/content/docs/references/api/page.mdx",
+      ),
+    ).toBe(true);
+    expect(
+      isForbiddenReferencesFamilyRendererPath(
+        "src/components/references/schema/schema-surface.tsx",
+      ),
+    ).toBe(true);
+    expect(
+      isForbiddenReferencesFamilyRouteFamilyPath(
+        "src/content/docs/workers/example/page.mdx",
+      ),
+    ).toBe(true);
+    expect(
+      isForbiddenReferencesFamilySiblingPagePath(
+        `${REFERENCES_FAMILY_INDEX_OWNERSHIP_ROOT}/ownership.ts`,
+      ),
+    ).toBe(false);
+    expect(
+      isForbiddenReferencesFamilyRendererPath(
+        `${REFERENCES_FAMILY_INDEX_OWNERSHIP_ROOT}/ownership.ts`,
+      ),
+    ).toBe(false);
   });
 });
