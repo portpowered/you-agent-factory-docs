@@ -8,13 +8,6 @@
 
 import { expectNoSeriousAxeViolations, runAxeOnElement } from "./a11y-axe";
 import {
-  evaluateReducedMotionChromeInBrowser,
-  isEffectivelyInstantMotion,
-  probeMotionDurationsFromStyle,
-  REDUCED_MOTION_CHROME_SELECTOR,
-  REDUCED_MOTION_DURATION_THRESHOLD_MS,
-} from "./a11y-reduced-motion";
-import {
   evaluateReferenceCopyAnnouncementsInBrowser,
   expectReferenceCopyAnnouncementChrome,
   expectReferenceCopyAnnouncements,
@@ -66,6 +59,29 @@ import {
   type ReferenceKeyboardControlProbe,
   type ReferenceKeyboardControlSpec,
 } from "./a11y-reference-keyboard-contract";
+import {
+  evaluateReducedMotionChromeInBrowser,
+  evaluateReferenceReducedMotionInBrowser,
+  expectReferenceReducedMotionChrome,
+  expectReferenceReducedMotionHashFocus,
+  isEffectivelyInstantMotion,
+  listReferenceMotionChromeForRoute,
+  listRequiredReferenceMotionChrome,
+  MOBILE_DRAWER_MOTION_CHROME,
+  probeMotionDurationsFromStyle,
+  probeReferenceMotionChrome,
+  probeReferenceReducedMotionHashFocus,
+  REDUCED_MOTION_CHROME_SELECTOR,
+  REDUCED_MOTION_DURATION_THRESHOLD_MS,
+  REFERENCE_MOTION_CHROME,
+  REFERENCE_REDUCED_MOTION_HASH_ROUTE_IDS,
+  type ReferenceMotionChromeProbe,
+  type ReferenceMotionChromeSpec,
+  type ReferenceReducedMotionEvaluateResult,
+  type ReferenceReducedMotionHashProbe,
+  referenceHashFocusScrollBehavior,
+  referenceReducedMotionEvaluateArgs,
+} from "./a11y-reference-reduced-motion-contract";
 import {
   accessibleNameOf,
   expectCoherentReferenceHeadingHierarchy,
@@ -130,8 +146,12 @@ export type {
   ReferenceLabeledControlSpec,
   ReferenceMobileNavProbe,
   ReferenceMobileNavSpec,
+  ReferenceMotionChromeProbe,
+  ReferenceMotionChromeSpec,
   ReferenceNonColorStatusProbe,
   ReferenceNonColorStatusSpec,
+  ReferenceReducedMotionEvaluateResult,
+  ReferenceReducedMotionHashProbe,
   ReferenceStickyVisibilityProbe,
 };
 export {
@@ -140,6 +160,7 @@ export {
   collectStickyChromeRects,
   evaluateReducedMotionChromeInBrowser,
   evaluateReferenceCopyAnnouncementsInBrowser,
+  evaluateReferenceReducedMotionInBrowser,
   evaluateResponsiveOverflowInBrowser,
   expectCoherentReferenceHeadingHierarchy,
   expectNoSeriousAxeViolations,
@@ -151,6 +172,8 @@ export {
   expectReferenceLabeledChrome,
   expectReferenceMobileNav,
   expectReferenceNonColorStatus,
+  expectReferenceReducedMotionChrome,
+  expectReferenceReducedMotionHashFocus,
   expectReferenceScreenReaderChrome,
   findIntentionalHorizontalScrollContainers,
   focusReferenceHashTarget,
@@ -165,13 +188,16 @@ export {
   listReferenceKeyboardControlsForRoute,
   listReferenceLabeledControlsForRoute,
   listReferenceMobileNavsForRoute,
+  listReferenceMotionChromeForRoute,
   listReferenceNonColorStatusForRoute,
   listRequiredReferenceCopyAnnouncements,
   listRequiredReferenceHashTargets,
   listRequiredReferenceKeyboardControls,
   listRequiredReferenceLabeledControls,
   listRequiredReferenceMobileNavs,
+  listRequiredReferenceMotionChrome,
   listRequiredReferenceNonColorStatus,
+  MOBILE_DRAWER_MOTION_CHROME,
   measurePageLevelOverflow,
   openA11yResponsiveBrowserSession,
   openA11yResponsivePageProbe,
@@ -185,7 +211,9 @@ export {
   probeReferenceKeyboardControlsForRoute,
   probeReferenceLabeledControl,
   probeReferenceMobileNav,
+  probeReferenceMotionChrome,
   probeReferenceNonColorStatus,
+  probeReferenceReducedMotionHashFocus,
   probeReferenceStickyVisibility,
   REDUCED_MOTION_CHROME_SELECTOR,
   REDUCED_MOTION_DURATION_THRESHOLD_MS,
@@ -194,9 +222,13 @@ export {
   REFERENCE_KEYBOARD_CONTROLS,
   REFERENCE_LABELED_CONTROLS,
   REFERENCE_MOBILE_NAVS,
+  REFERENCE_MOTION_CHROME,
   REFERENCE_NON_COLOR_STATUS,
+  REFERENCE_REDUCED_MOTION_HASH_ROUTE_IDS,
   REFERENCE_STICKY_CHROME_SELECTOR,
   referenceCopyAnnouncementEvaluateArgs,
+  referenceHashFocusScrollBehavior,
+  referenceReducedMotionEvaluateArgs,
   resolveA11yResponsiveProbeUrl,
   runAxeOnElement,
 };
@@ -281,7 +313,7 @@ export type ReferenceSurfaceProbeBinding = {
     screenReader: "expectReferenceScreenReaderChrome";
     hashFocus: "expectReferenceHashFocusAndMobileCollapse";
     copyAnnouncement: "expectReferenceCopyAnnouncements";
-    reducedMotion: "evaluateReducedMotionChromeInBrowser";
+    reducedMotion: "evaluateReferenceReducedMotionInBrowser";
     pageSession: "openReferenceSurfacePageProbe";
   };
 };
@@ -301,7 +333,7 @@ export function listReferenceSurfaceProbeBindings(): ReferenceSurfaceProbeBindin
       screenReader: "expectReferenceScreenReaderChrome",
       hashFocus: "expectReferenceHashFocusAndMobileCollapse",
       copyAnnouncement: "expectReferenceCopyAnnouncements",
-      reducedMotion: "evaluateReducedMotionChromeInBrowser",
+      reducedMotion: "evaluateReferenceReducedMotionInBrowser",
       pageSession: "openReferenceSurfacePageProbe",
     },
   }));
@@ -468,15 +500,4 @@ export function referenceKeyboardEvaluateArgs(
       required: spec.required,
     })),
   };
-}
-
-/**
- * Hash-focus scroll behavior for reference surfaces. Matches the API W08
- * contract (`auto` when reduced motion is preferred, otherwise `smooth`)
- * without importing the components-layer helper into verify/.
- */
-export function referenceHashFocusScrollBehavior(
-  reduceMotion: boolean,
-): ScrollBehavior {
-  return reduceMotion ? "auto" : "smooth";
 }

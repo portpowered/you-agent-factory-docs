@@ -282,6 +282,11 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `a11y-reference-copy-announcement-contract` + opt-in served
   `a11y-reference-copy-announcement-page.test.ts`. Status markers on
   deep-link / example copy live regions.
+* W19 story 008 reduced-motion: always-on
+  `src/tests/a11y/reference-reduced-motion.a11y.test.tsx` +
+  `a11y-reference-reduced-motion-contract` + opt-in served
+  `a11y-reference-reduced-motion-page.test.ts`. Extends
+  `a11y-reduced-motion*` for hash `auto` scroll + drawer chrome.
 
 ## Existing component a11y smokes
 

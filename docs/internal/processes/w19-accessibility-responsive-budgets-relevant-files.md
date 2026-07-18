@@ -29,7 +29,8 @@ gates stay documented in
   `collectReferenceSurfaceOverflowProbe`, `openReferenceSurfacePageProbe`,
   `openReferenceSurfaceBrowserSession`, `listReferenceSurfaceProbeBindings`,
   `expectReferenceKeyboardChrome`, `evaluateReferenceKeyboardChromeInBrowser`,
-  `referenceHashFocusScrollBehavior`.
+  `referenceHashFocusScrollBehavior`,
+  `evaluateReferenceReducedMotionInBrowser`.
 * Always-on contract proofs (required via `make a11y`):
   - `src/lib/verify/a11y-reference-surface-contract.test.ts`
   - `src/lib/verify/a11y-reference-surface-probes.test.ts`
@@ -37,6 +38,7 @@ gates stay documented in
   - `src/lib/verify/a11y-reference-screen-reader-contract.test.ts`
   - `src/lib/verify/a11y-reference-hash-focus-contract.test.ts`
   - `src/lib/verify/a11y-reference-copy-announcement-contract.test.ts`
+  - `src/lib/verify/a11y-reference-reduced-motion-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -158,6 +160,31 @@ gates stay documented in
   factory-schema at laptop + mobile. Same
   `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
   against static `out/` for local browser verify. Grants `clipboard-write`.
+
+## Reference reduced-motion (story 008)
+
+* `src/lib/verify/a11y-reference-reduced-motion-contract.ts` — hash scroll
+  behavior (`auto` under reduce / `smooth` otherwise) plus marked motion
+  chrome (`data-motion-chrome` mobile drawer + backdrop) with
+  `motion-reduce:*` class fragments. Extends existing
+  `a11y-reduced-motion*` duration probes — does not invent a parallel
+  framework. `referenceHashFocusScrollBehavior` lives here (re-exported from
+  `a11y-reference-surface-probes.ts`).
+* Probe binders: `expectReferenceReducedMotionHashFocus`,
+  `expectReferenceReducedMotionChrome`,
+  `evaluateReferenceReducedMotionInBrowser`,
+  `referenceReducedMotionEvaluateArgs`.
+* Always-on proofs:
+  - `src/lib/verify/a11y-reference-reduced-motion-contract.test.ts`
+  - `src/tests/a11y/reference-reduced-motion.a11y.test.tsx` (API harness /
+    events payload / FactorySchemaReference hash focus + motion-chrome
+    fixture)
+* Opt-in served probe:
+  `src/lib/verify/a11y-reference-reduced-motion-page.test.ts` — API / events /
+  factory-schema at laptop + mobile with `emulateMedia({ reducedMotion:
+  "reduce" })`, hash focus, and mobile drawer duration probe. Same
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
+  against static `out/` for local browser verify.
 
 ## Reference hash focus, sticky visibility, mobile collapse (story 006)
 
