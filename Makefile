@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-w20-contract-projection test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -40,6 +40,11 @@ test-verify-contract:
 
 test-build-contract:
 	bun run test:build-contract
+
+# W20 focused contract + projection convergence (package acquisition +
+# normalized reference projections). Reproduce with: make test-w20-contract-projection
+test-w20-contract-projection:
+	bun run test:w20-contract-projection
 
 test-system:
 	bun run test:system
