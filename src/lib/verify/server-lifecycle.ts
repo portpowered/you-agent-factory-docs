@@ -559,11 +559,16 @@ export function isRetryableVerifyServerStartupError(
 
   const outputTail = child ? getChildOutputTail(child) : "";
   const haystack = `${error.message}\n${outputTail}`.toLowerCase();
+  // Port races after reserve→release→spawn, and occasional early pipe/write
+  // or connection-reset failures on CI, are transient — retry on a fresh
+  // listen port. Empty early-exit tails (no stderr yet) are also retryable
+  // when a child process was observed.
   return (
     haystack.includes("eaddrinuse") ||
     haystack.includes("address already in use") ||
     haystack.includes("epipe") ||
-    haystack.includes("econnreset")
+    haystack.includes("econnreset") ||
+    (Boolean(child) && outputTail.length === 0)
   );
 }
 

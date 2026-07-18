@@ -103,6 +103,24 @@ async function loadRouteFamilyPageMdxComponents(
 
   if (section === "references") {
     switch (slug) {
+      case "cli": {
+        const mod = await import(
+          "@/content/docs/references/cli/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mcp": {
+        const mod = await import(
+          "@/content/docs/references/mcp/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "javascript-runtime": {
+        const mod = await import(
+          "@/content/docs/references/javascript-runtime/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       case "factory-schema": {
         const mod = await import(
           "@/content/docs/references/factory-schema/page-mdx-components"

@@ -1,0 +1,19 @@
+{
+  "id": "reference.javascript-runtime",
+  "slug": "javascript-runtime",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "JavaScript runtime reference",
+    "runtime symbols",
+    "package JavaScript runtime contract",
+    "you-agent-factory JavaScript runtime reference"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T00:00:00.000Z",
+  "updatedAt": "2026-07-18T00:00:00.000Z"
+}
