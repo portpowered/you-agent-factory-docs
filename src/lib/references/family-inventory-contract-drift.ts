@@ -14,7 +14,17 @@ export type FamilyInventoryIdentityKind =
   | "command path"
   | "tool name"
   | "symbol path"
-  | "shared schema id";
+  | "shared schema id"
+  /** W09 FactoryEvent.type discriminator value. */
+  | "event type"
+  /** W09 FactoryEvent.type → payload schema pair (`TYPE→PayloadSchema`). */
+  | "event type→payload mapping"
+  /** W09 FactoryResponseEvent payload oneOf member schema name. */
+  | "response-event payload"
+  /** W09 FactoryResponseEventKind enum value. */
+  | "response-event kind"
+  /** W09 FactoryResponseEventPhase enum value. */
+  | "response-event phase";
 
 export type FamilyInventoryDriftMatch = {
   ok: true;
