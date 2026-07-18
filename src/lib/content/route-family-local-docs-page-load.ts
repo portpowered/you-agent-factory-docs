@@ -78,6 +78,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "script": {
+        const mod = await import(
+          "@/content/docs/workers/script/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }

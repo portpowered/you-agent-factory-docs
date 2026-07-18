@@ -1,0 +1,29 @@
+{
+  "id": "documentation.workers-script",
+  "slug": "workers-script",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "script worker",
+    "SCRIPT_WORKER",
+    "SCRIPT_RUN",
+    "command",
+    "args",
+    "executorProvider",
+    "docs workers script"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers-family",
+    "documentation.workers-inference",
+    "documentation.workers-agent",
+    "documentation.workstations",
+    "documentation.resources",
+    "concept.tokens"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T15:00:00.000Z",
+  "updatedAt": "2026-07-18T15:00:00.000Z"
+}
