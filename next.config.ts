@@ -57,6 +57,12 @@ const nextConfig: NextConfig = {
   ...resolveNextConfigForBuildMode(),
   // Package ships TypeScript source through its export map (no dist/); Next must transpile it.
   transpilePackages: ["@you-agent-factory/components"],
+  // Keep the data-only API package outside the webpack server graph so
+  // `require.resolve` / package-export reads stay Node filesystem paths during
+  // static export (factories schema embeds call loadSchemaVerificationPackageModel).
+  // Without this, webpack rewrites resolve results to numeric module ids and
+  // prerender of /docs/factories fails with `.startsWith is not a function`.
+  serverExternalPackages: ["@you-agent-factory/api"],
   env: {
     [DOCS_SEARCH_BOOTSTRAP_FROM_ENV]: docsSearchBootstrapFrom,
   },

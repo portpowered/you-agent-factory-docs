@@ -1,0 +1,70 @@
+{
+  "title": "Packaged Factories",
+  "description": "Discover, identify, and run first-party @you/* packaged factories with you run --named.",
+  "openingSummary": "Packaged factories are catalog-backed @you/* built-ins such as @you/goal, @you/fusion, and @you/tts that materialize under ~/.you-agent-factory/factories on first use and stay editable on disk afterward.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "Packaged factories are first-party built-in named factories under the @you/* namespace. Use this surface when you need shipped you-agent-factory terminology for choosing a packaged factory, referencing it by canonical name, understanding first-use materialization under ~/.you-agent-factory/factories, and knowing where editability, portability, and freshness end."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A packaged factory is a catalog-backed built-in under the @you/* namespace. Invoke it with you run --named <canonical-name>. Built-ins ship with the CLI catalog and materialize lazily into ~/.you-agent-factory/factories on first use. Project-local or saved named factories and portable --factory <factory.json> runs are separate invocation paths. Live Factory name, metadata, and sourceDirectory fields describe identity and diagnostic provenance for those materialized definitions."
+    },
+    "discoveryAndResolution": {
+      "title": "Discovery And Resolution",
+      "body": "Choose a packaged factory when you want a catalog-backed named invocation by canonical name such as @you/goal. Use a project-local or saved named factory when you own the definition under a chosen root. Use --factory <factory.json> for a portable one-shot config path without guessing --dir. Invoke with you run --named <canonical-name>. Resolution order is project-local ./factory (or --dir), then global ~/.you-agent-factory/factories, then built-in catalog materialization on first use. On-disk scoped names are URL-encoded — for example ~/.you-agent-factory/factories/@you%2Ftts/."
+    },
+    "factoryNameSchema": {
+      "title": "Factory Name Identity",
+      "body": "The live FactoryName definition is the customer-facing identifier for one packaged or named factory. you run --named and factory-session lookup use that identity. Exhaustive Factory field inventories stay on the full schema and API reference pages."
+    },
+    "metadataAndSourceSchema": {
+      "title": "Metadata And Source Fragments",
+      "body": "The live Factory root contract carries free-form metadata for serialization and replay diagnostics, plus sourceDirectory and factoryDirectory provenance for the on-disk definition. Packaged materialization writes an editable factory under the resolved root; later runs load that copy instead of overwriting customer edits. This page does not invent auto-refresh or package-lock semantics. Open the full schema and API references when you need exhaustive contract lookup beyond these teaching embeds."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Run a packaged factory by its canonical name with you run --named. Pass one-shot invocation text when the factory accepts shared DEFAULT handling. Inspect factory-defined arguments with you run --named <canonical-name> --help. Open packaged CLI topics such as you docs packaged-goal when you need per-factory invocation signatures. Use the factories configuration and global-configuration pages when you need factory.json topology or operator defaults instead of packaged discovery."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the web reference for first-party @you/* packaged factories. It is not a sync of packaged CLI markdown, not operator-defaults depth, not factory.json topology, and not a per-factory invocation-signature deep dive. Sibling factories and documentation links aid discovery only. Exhaustive metadata, sourceDirectory, and Factory field inventories live on the schema and API reference pages linked from the schema sections."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "goalCommandLabel": "Run the packaged goal factory with one-shot invocation text:",
+    "ttsCommandLabel": "Run the packaged text-to-speech factory:",
+    "helpCommandLabel": "Inspect factory-defined arguments for a packaged name:",
+    "globalRootLabel": "Global shared factories root where packaged built-ins materialize:",
+    "fullFactorySchema": "Full Factory schema",
+    "fullFactoryApi": "Factory API reference",
+    "configurationDocs": "Configuration (factory.json topology)",
+    "globalConfigurationDocs": "Global configuration",
+    "dynamicWorkflowsDocs": "Dynamic workflows",
+    "sessionsDocs": "Factory sessions",
+    "cliDocs": "CLI",
+    "packagedDocumentsDocs": "Packaged documents",
+    "workersDocs": "Workers"
+  },
+  "callouts": {
+    "freshnessAndPortability": {
+      "body": "The built-in catalog ships with the CLI. First use materializes an editable on-disk factory; later runs load that materialized copy under the resolved root instead of overwriting customer edits. Deep per-factory invocation signatures stay on packaged CLI topics such as you docs packaged-goal, you docs packaged-fusion, and you docs packaged-tts."
+    },
+    "schemaEmbedNote": {
+      "body": "Teaching embeds show the live Factory name plus metadata and source provenance fields that matter for packaged identity and materialization. They are not a substitute for the full schema or API inventories."
+    },
+    "exampleNotes": {
+      "body": "Replace @you/goal or @you/tts with another packaged canonical name when you need that built-in."
+    }
+  }
+}

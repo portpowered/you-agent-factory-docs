@@ -3,8 +3,9 @@ import {
   type SpawnOptions,
   spawn,
 } from "node:child_process";
-import { existsSync } from "node:fs";
+import { closeSync, existsSync, openSync, readFileSync } from "node:fs";
 import { createRequire } from "node:module";
+import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { isNextProductionBuildFresh } from "./build-source-fingerprint";
 import {
@@ -46,6 +47,8 @@ export const CHILD_KILL_TIMEOUT_MS = 5_000;
 const CHILD_OUTPUT_TAIL_MAX_BYTES = 4_096;
 
 const childOutputChunks = new WeakMap<ChildProcess, Buffer[]>();
+/** File-backed stdout/stderr for default `next start` spawns (avoids pipe EPIPE). */
+const childOutputLogPaths = new WeakMap<ChildProcess, string>();
 
 function appendChildOutput(child: ChildProcess, chunk: Buffer): void {
   const chunks = childOutputChunks.get(child) ?? [];
@@ -62,10 +65,28 @@ function appendChildOutput(child: ChildProcess, chunk: Buffer): void {
   }
 }
 
+function readChildOutputLogTail(logPath: string, maxBytes: number): string {
+  try {
+    const contents = readFileSync(logPath);
+    const tail =
+      contents.length > maxBytes
+        ? contents.subarray(contents.length - maxBytes)
+        : contents;
+    return tail.toString("utf8").trim();
+  } catch {
+    return "";
+  }
+}
+
 export function getChildOutputTail(
   child: ChildProcess,
   maxBytes: number = CHILD_OUTPUT_TAIL_MAX_BYTES,
 ): string {
+  const logPath = childOutputLogPaths.get(child);
+  if (logPath) {
+    return readChildOutputLogTail(logPath, maxBytes);
+  }
+
   const chunks = childOutputChunks.get(child);
   if (!chunks || chunks.length === 0) {
     return "";
@@ -77,6 +98,14 @@ export function getChildOutputTail(
       ? combined.subarray(combined.length - maxBytes)
       : combined;
   return tail.toString("utf8").trim();
+}
+
+function ignoreTransientChildStreamError(error: NodeJS.ErrnoException): void {
+  // Parent-side pipe resets must not fail the verify harness; the child may
+  // still exit with EPIPE (Next console-exit) which is handled as retryable.
+  if (error.code === "EPIPE" || error.code === "ECONNRESET") {
+    return;
+  }
 }
 
 export function attachChildOutputCapture(child: ChildProcess): void {
@@ -95,6 +124,8 @@ export function attachChildOutputCapture(child: ChildProcess): void {
 
   child.stdout?.on("data", onData);
   child.stderr?.on("data", onData);
+  child.stdout?.on("error", ignoreTransientChildStreamError);
+  child.stderr?.on("error", ignoreTransientChildStreamError);
 }
 
 export function normalizeVerifyBaseUrl(url: string): string {
@@ -244,6 +275,9 @@ export function buildDefaultProductionServerSpawnSpec(
     args: ["start", "-p", String(port), "-H", "127.0.0.1"],
     options: {
       cwd: projectRoot,
+      // Spec lists pipes for observability; defaultSpawnProductionServer redirects
+      // stdout/stderr to a temp log file so Next console-exit cannot EPIPE the
+      // parent pipe under heavier integration suites.
       stdio: ["ignore", "pipe", "pipe"],
       env: { ...process.env, NODE_ENV: "production" },
       detached: true,
@@ -259,10 +293,23 @@ export function defaultSpawnProductionServer(
     port,
     projectRoot,
   );
-  const child = spawn(command, args, options);
-  attachChildOutputCapture(child);
-  child.unref();
-  return child;
+  const logPath = join(
+    tmpdir(),
+    `verify-next-start-${process.pid}-${port}-${Date.now()}.log`,
+  );
+  const logFd = openSync(logPath, "w");
+  try {
+    const child = spawn(command, args, {
+      ...options,
+      stdio: ["ignore", logFd, logFd],
+    });
+    childOutputLogPaths.set(child, logPath);
+    childOutputChunks.set(child, []);
+    child.unref();
+    return child;
+  } finally {
+    closeSync(logFd);
+  }
 }
 
 function signalProcessTree(child: ChildProcess, signal: NodeJS.Signals): void {
@@ -493,7 +540,12 @@ function registerProcessSignalHandlers(cleanup: () => Promise<void>): void {
   process.once("SIGTERM", () => onSignal("SIGTERM"));
 }
 
-function isRetryableVerifyServerStartupError(
+/**
+ * True when a production-server early exit is worth another spawn attempt.
+ * Covers port races (EADDRINUSE) and Next console-exit pipe breaks (EPIPE)
+ * seen under heavier static-export integration suites.
+ */
+export function isRetryableVerifyServerStartupError(
   error: unknown,
   child?: ChildProcess,
 ): boolean {
@@ -505,18 +557,18 @@ function isRetryableVerifyServerStartupError(
     return false;
   }
 
-  if (!child) {
-    return false;
-  }
-
-  const outputTail = getChildOutputTail(child).toLowerCase();
+  const outputTail = child ? getChildOutputTail(child) : "";
+  const haystack = `${error.message}\n${outputTail}`.toLowerCase();
   // Port races after reserve→release→spawn, and occasional early pipe/write
-  // failures on CI, are transient — retry on a fresh listen port.
+  // or connection-reset failures on CI, are transient — retry on a fresh
+  // listen port. Empty early-exit tails (no stderr yet) are also retryable
+  // when a child process was observed.
   return (
-    outputTail.includes("eaddrinuse") ||
-    outputTail.includes("address already in use") ||
-    outputTail.includes("epipe") ||
-    outputTail.length === 0
+    haystack.includes("eaddrinuse") ||
+    haystack.includes("address already in use") ||
+    haystack.includes("epipe") ||
+    haystack.includes("econnreset") ||
+    (Boolean(child) && outputTail.length === 0)
   );
 }
 
@@ -595,6 +647,9 @@ async function acquireSpawnedVerifyServerSession(options: {
         isRetryableVerifyServerStartupError(error, child)
       ) {
         await killManagedChild(child);
+        // Brief pause so TIME_WAIT / broken-pipe races from the prior spawn
+        // settle before reserving the next loopback port.
+        await new Promise((resolve) => setTimeout(resolve, 150));
         continue;
       }
       throw error;

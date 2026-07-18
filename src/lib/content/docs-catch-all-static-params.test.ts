@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default generateStaticParams include authored references and workers children and keep empty families empty", () => {
+  test("live default generateStaticParams include authored factories, references, and workers children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,7 +183,20 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
+    // W12 authored factories pages contribute catch-all child params.
+    expect(defaultPaths.some((path) => path.startsWith("factories/"))).toBe(
+      true,
+    );
+    expect(defaultPaths).toContain("factories/configuration");
+    expect(defaultPaths).toContain("factories/global-configuration");
+    expect(defaultPaths).toContain("factories/packaged");
+    expect(defaultPaths).toContain("factories/dynamic-workflows");
+    expect(defaultPaths).toContain("factories/sessions");
+
     // W11 authored references: CLI/MCP/JS runtime, schemas, and events.
+    expect(defaultPaths.some((path) => path.startsWith("references/"))).toBe(
+      true,
+    );
     expect(defaultPaths).toContain("references/cli");
     expect(defaultPaths).toContain("references/mcp");
     expect(defaultPaths).toContain("references/javascript-runtime");
@@ -207,7 +220,9 @@ describe("W05 route-family static params and not-found", () => {
       ]),
     );
 
-    for (const id of ["factories", "workstations"] as const) {
+    // Families without authored nested pages still contribute no catch-all
+    // children (indexes remain dedicated App Router routes).
+    for (const id of ["workstations"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -232,8 +247,9 @@ describe("W05 route-family static params and not-found", () => {
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
-    // Default-locale-only references/workers pages are not shipped for
-    // ja/zh-CN/vi, so localized catch-all params still omit all four families.
+    // Factories, references/schema+events, and workers currently ship
+    // English-only messages, so they do not enter shipped-locale catch-all
+    // params yet.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

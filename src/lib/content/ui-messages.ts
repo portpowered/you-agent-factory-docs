@@ -8,6 +8,7 @@ export type {
   ExplorerDocumentationGroupMessages,
   ExplorerFolderMessages,
   ExplorerMessages,
+  FactoriesIndexMessages,
   FactoryCollectionIndexMessages,
   FactoryDomainMessages,
   FactoryTagMessages,

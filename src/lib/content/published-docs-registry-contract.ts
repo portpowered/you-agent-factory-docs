@@ -1,6 +1,7 @@
 import {
   conceptPageHref,
   documentationPageHref,
+  factoriesPageHref,
   glossaryPageHref,
   guidePageHref,
   referencePageHref,
@@ -15,6 +16,7 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "guides",
   "techniques",
   "documentation",
+  "factories",
   "references",
   "workers",
 ] as const;
@@ -55,7 +57,7 @@ export function docsSectionFromSlug(docsSlug: string): PublishedDocsSection {
 /**
  * Path under the published section used for canonical href helpers.
  *
- * Prefer the docsSlug remainder after `<section>/` so nested workers (and
+ * Prefer the docsSlug remainder after `<section>/` so nested factories, workers (and
  * future nested CLI) pages keep `/docs/<section>/<parent>/<child>` rather than
  * collapsing to the leaf segment alone.
  */
@@ -85,6 +87,8 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return techniquePageHref(relativeSlug);
     case "documentation":
       return documentationPageHref(relativeSlug);
+    case "factories":
+      return factoriesPageHref(relativeSlug);
     case "references":
       return referencePageHref(relativeSlug);
     case "workers":

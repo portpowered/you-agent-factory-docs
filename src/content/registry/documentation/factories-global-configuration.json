@@ -1,0 +1,27 @@
+{
+  "id": "documentation.factories-global-configuration",
+  "slug": "factories-global-configuration",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "factories global configuration",
+    "operator model defaults",
+    "named factories"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.factories-configuration",
+    "documentation.factories-packaged",
+    "documentation.factories-dynamic-workflows",
+    "documentation.factories-sessions",
+    "documentation.cli",
+    "documentation.workers",
+    "documentation.workstations",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T13:00:00.000Z",
+  "updatedAt": "2026-07-18T17:00:00.000Z"
+}

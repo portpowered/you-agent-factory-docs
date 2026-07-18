@@ -52,7 +52,7 @@ function readJsonFile<T>(path: string): T {
 }
 
 /**
- * Merge page-owned MDX components for a route-family section/slug.
+ * Merge page-owned MDX components for a direct route-family page.
  *
  * Local docs compile through `compileMDX` with a fixed component map, so
  * relative imports in `page.mdx` do not resolve. Use a static
@@ -64,6 +64,43 @@ async function loadRouteFamilyPageMdxComponents(
   section: RouteFamilyLocalDocsSection,
   slug: string,
 ): Promise<MDXComponents> {
+  if (section === "factories") {
+    switch (slug) {
+      case "configuration": {
+        const mod = await import(
+          "@/content/docs/factories/configuration/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "global-configuration": {
+        const mod = await import(
+          "@/content/docs/factories/global-configuration/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged": {
+        const mod = await import(
+          "@/content/docs/factories/packaged/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "dynamic-workflows": {
+        const mod = await import(
+          "@/content/docs/factories/dynamic-workflows/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "sessions": {
+        const mod = await import(
+          "@/content/docs/factories/sessions/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
   if (section === "references") {
     switch (slug) {
       case "cli": {
