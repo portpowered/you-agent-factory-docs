@@ -91,13 +91,12 @@ export function ApiNavigationVerificationHarness({
               filtering, stable anchors, copy links, hash-to-focus,
               request/response/media-type/example rendering, hybrid SSE
               transport summaries (with events-catalog links), static-only
-              local-server base URL copy, project theme tokens, site
-              CodePanel code-copy, responsive overflow, keyboard focus,
-              reduced-motion hash focus, and print-readable operation content
-              against the package-resolved OpenAPI projection (
-              {model.operationCount} operations / {model.groups.length} tags).
-              Live playground, proxy execution, and live event-stream
-              connections are suppressed.
+              local-server base URL copy, project theme tokens, site CodePanel
+              code-copy, responsive overflow, keyboard focus, reduced-motion
+              hash focus, and print-readable operation content against the
+              package-resolved OpenAPI projection ({model.operationCount}{" "}
+              operations / {model.groups.length} tags). Live playground, proxy
+              execution, and live event-stream connections are suppressed.
             </p>
           </header>
 
