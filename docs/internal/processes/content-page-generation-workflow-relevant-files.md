@@ -676,14 +676,20 @@ conversation comments.
 
 When rebasing a family-index lane onto `main` that already authored another
 direct route family (workers index, events-on-references collection listing,
-etc.), reconcile `src/tests/content/section-indexes.test.tsx` by keeping each
+schema sibling pages listed via the generic W05 collection index, etc.),
+reconcile `src/tests/content/section-indexes.test.tsx` by keeping each
 authored family-index proof and narrowing empty-state cases to families that
-are still empty (today: factories + workstations). Do not restore
+are still empty (today: factories + workstations). Prefer the authored
+family-index assertions (intro + discoverability hrefs + freshness markers)
+over main’s generic collection-listing proofs for the same route once
+`renderReferencesFamilyIndexPage` owns `/docs/references` — sibling schema /
+events bodies remain published under their own page routes. Do not restore
 empty-state-as-primary for a family this lane authored, and do not drop main’s
 workers family-index assertions while resolving references conflicts. The same
 rebase often dual-edits
 `docs/internal/processes/content-page-generation-workflow-relevant-files.md` —
-keep both sides’ notes.
+keep both sides’ notes (including any “First published `references` schema
+page” section from schema lanes).
 
 When several documentation lanes land close together, the exported-site
 `totalOutBytes` / `searchBootstrapBytes` gates in
