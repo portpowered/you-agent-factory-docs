@@ -241,15 +241,7 @@ describe("renderSectionCollectionIndexPage localized techniques", () => {
   });
 });
 
-const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
-  {
-    collectionId: "references" as const,
-    messageKey: "referencesIndex" as const,
-  },
-  {
-    collectionId: "workers" as const,
-    messageKey: "workersIndex" as const,
-  },
+const W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
   {
     collectionId: "workstations" as const,
     messageKey: "workstationsIndex" as const,
@@ -260,13 +252,13 @@ const W05_EMPTY_STATE_ATLAS_PHRASING =
   /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
 
 describe("renderSectionCollectionIndexPage W05 direct route families", () => {
-  test("renders empty-state indexes for empty families without leaking documentation entries", async () => {
+  test("renders empty-state indexes for still-empty families without leaking documentation entries", async () => {
     const messages = await loadUiMessages();
 
     for (const {
       collectionId,
       messageKey,
-    } of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+    } of W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
       const indexMessages = messages[messageKey];
       const html = renderToStaticMarkup(
         await renderSectionCollectionIndexPage(collectionId),
@@ -307,14 +299,14 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
     expect(html).not.toContain("/docs/documentation/what-is-you-agent-factory");
   });
 
-  test("renders localized empty-state indexes for shipped locales", async () => {
+  test("renders localized empty-state indexes for still-empty families", async () => {
     for (const locale of ["ja", "zh-CN", "vi"] as const) {
       const messages = await loadUiMessages(locale);
 
       for (const {
         collectionId,
         messageKey,
-      } of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+      } of W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
         const indexMessages = messages[messageKey];
         const html = renderToStaticMarkup(
           await renderSectionCollectionIndexPage(collectionId, locale),

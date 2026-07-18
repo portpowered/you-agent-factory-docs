@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { loadUiMessages } from "@/lib/content/ui-messages";
+import { loadReferencesFamilyIndex } from "@/content/docs/references/family-index/load-references-family-index";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
-import { renderSectionCollectionIndexPage } from "../../site-renderers";
+import { renderReferencesFamilyIndexPage } from "../../site-renderers";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const messages = await loadUiMessages();
+  const index = await loadReferencesFamilyIndex();
 
   return {
-    title: messages.referencesIndex.title,
-    description: messages.referencesIndex.description,
+    title: index.messages.title,
+    description: index.messages.description,
     alternates: localizedRouteAlternates({
       surface: "docs-page",
       slug: "references",
@@ -17,5 +17,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ReferencesIndexPage() {
-  return renderSectionCollectionIndexPage("references");
+  return renderReferencesFamilyIndexPage();
 }
