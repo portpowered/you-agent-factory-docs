@@ -64,6 +64,11 @@ Use these files when changing search document construction, Orama indexing, or
   `documentation`) and that reference item aliases cover literal
   discriminators (`RUN_REQUEST`) plus common names
   (`RunRequestEventPayload`), with representative page + alias queries.
+* `src/lib/content/factory-search-item-hits-above-page-crowding.test.ts`
+  W16 story 006 required-suite proof that collapse/rerank preserves
+  reference item deep-link URLs (`#…`) instead of collapsing solely to the
+  owning page, while ordinary non-reference pages still collapse to bare
+  page URLs.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
@@ -124,7 +129,10 @@ Use these files when changing search document construction, Orama indexing, or
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`
   Localized search catalog, `/api/search` query handling, classification scope,
-  and reranking.
+  and reranking. Collapse preserves reference item deep links (W16-006).
+* `src/lib/search/collapse-search-results-to-page-hits.ts`
+  Groups ordinary fragment/heading/page duplicates to one bare page URL while
+  keeping registered reference item documents as separate `#fragment` rows.
 * `src/app/api/search/route.ts`
   Public search API route; re-exports `docsSearchApi.GET`.
 
@@ -146,6 +154,10 @@ factories / workers / workstations pages stay normal page documents;
 `enrichReferenceItemAliases` adds title + registry anchor alongside
 shape-provided common-name / discriminator aliases so literals like
 `RUN_REQUEST` and names like `RunRequestEventPayload` stay searchable.
+`collapseSearchResultsToPageHits` preserves registered reference item
+documents (kind `reference` + `#fragment`) as deep-link rows instead of
+collapsing them into the bare owning-page URL; ordinary heading/text
+duplicates still collapse to one page hit.
 
 ### Pattern: factory alias / body / tag discovery
 

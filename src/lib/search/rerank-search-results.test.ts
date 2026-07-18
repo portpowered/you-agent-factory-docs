@@ -561,4 +561,52 @@ describe("rerankSearchResults", () => {
       relationshipUrl,
     ]);
   });
+
+  test("boosts exact reference item title matches above owning-page body hits", () => {
+    const eventsPage = "/docs/references/events";
+    const runRequest = `${eventsPage}#RUN_REQUEST`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        eventsPage,
+        documentForUrl(eventsPage, {
+          kind: "reference",
+          title: "Events",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "reference", tags: ["events"] },
+        }),
+      ],
+      [
+        runRequest,
+        documentForUrl(runRequest, {
+          kind: "reference",
+          title: "RUN_REQUEST",
+          directAliases: ["RUN_REQUEST", "RunRequestEventPayload"],
+          aliases: ["RUN_REQUEST", "RunRequestEventPayload"],
+          facets: { kind: "reference", tags: ["events"] },
+        }),
+      ],
+    ]);
+
+    const results = rerankSearchResults(
+      "RUN_REQUEST",
+      [
+        {
+          id: eventsPage,
+          type: "page",
+          url: eventsPage,
+          content: "Events",
+        },
+        {
+          id: runRequest,
+          type: "page",
+          url: runRequest,
+          content: "RUN_REQUEST",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    expect(results[0]?.url).toBe(runRequest);
+  });
 });

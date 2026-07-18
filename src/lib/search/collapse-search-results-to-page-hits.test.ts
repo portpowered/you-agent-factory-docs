@@ -146,4 +146,130 @@ describe("collapseSearchResultsToPageHits", () => {
       content: "Grouped-Query Attention",
     });
   });
+
+  test("preserves reference item deep links instead of collapsing to the owning page", () => {
+    const eventsPage = "/docs/references/events";
+    const runRequest = `${eventsPage}#RUN_REQUEST`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        eventsPage,
+        documentForUrl(eventsPage, {
+          kind: "reference",
+          title: "Events",
+          facets: { kind: "reference", tags: ["events"] },
+        }),
+      ],
+      [
+        runRequest,
+        documentForUrl(runRequest, {
+          kind: "reference",
+          title: "RUN_REQUEST",
+          facets: { kind: "reference", tags: ["events"] },
+        }),
+      ],
+    ]);
+
+    const collapsed = collapseSearchResultsToPageHits(
+      [
+        {
+          id: runRequest,
+          type: "page",
+          url: runRequest,
+          content: "RUN_REQUEST",
+        },
+        {
+          id: `${runRequest}-heading`,
+          type: "heading",
+          url: `${runRequest}#heading-0`,
+          content: "RUN_REQUEST",
+        },
+        {
+          id: eventsPage,
+          type: "page",
+          url: eventsPage,
+          content: "Events",
+        },
+        {
+          id: `${eventsPage}-text`,
+          type: "text",
+          url: `${eventsPage}#Events`,
+          content: "FactoryEvent catalog",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    expect(collapsed.map((result) => result.url)).toEqual([
+      runRequest,
+      eventsPage,
+    ]);
+    expect(collapsed[0]).toMatchObject({
+      type: "page",
+      url: runRequest,
+      content: "RUN_REQUEST",
+    });
+  });
+
+  test("does not let duplicate owning-page hits displace a matching reference item", () => {
+    const apiPage = "/docs/references/api";
+    const operation = `${apiPage}#submitWorkBySessionId`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        apiPage,
+        documentForUrl(apiPage, {
+          kind: "reference",
+          title: "API",
+          facets: { kind: "reference", tags: ["api"] },
+        }),
+      ],
+      [
+        operation,
+        documentForUrl(operation, {
+          kind: "reference",
+          title: "submitWorkBySessionId",
+          facets: { kind: "reference", tags: ["api"] },
+        }),
+      ],
+    ]);
+
+    const collapsed = collapseSearchResultsToPageHits(
+      [
+        {
+          id: apiPage,
+          type: "page",
+          url: apiPage,
+          content: "API",
+        },
+        {
+          id: `${apiPage}-body`,
+          type: "text",
+          url: apiPage,
+          content: "submitWorkBySessionId appears in the API catalog",
+        },
+        {
+          id: operation,
+          type: "page",
+          url: operation,
+          content: "submitWorkBySessionId",
+        },
+        {
+          id: `${operation}-text`,
+          type: "text",
+          url: `${operation}#heading-1`,
+          content: "submitWorkBySessionId",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    expect(collapsed.some((result) => result.url === operation)).toBe(true);
+    expect(
+      collapsed.filter((result) => pageBaseUrl(result.url) === apiPage),
+    ).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ url: apiPage }),
+        expect.objectContaining({ url: operation }),
+      ]),
+    );
+  });
 });
