@@ -13,6 +13,7 @@
 import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
 import { Check, Clipboard } from "lucide-react";
 import { CodePanel } from "@/features/factory-ui/data-display";
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
 import { cn } from "@/lib/utils";
 import {
   projectSchemaExamplesFromInputs,
@@ -42,6 +43,11 @@ export type SchemaExamplePanelProps = {
   exampleInputs?: readonly SchemaExampleInput[];
   /** Default language label when entries omit one (for example `json`). */
   language?: string;
+  /**
+   * Localized example chrome (origin badges, indexed labels). Payload bodies
+   * stay locale-neutral English regardless of chrome.
+   */
+  chrome?: ReferenceChromeMessages;
   /**
    * When true (default), render an empty status affordance if no examples are
    * present. When false, return null instead.
@@ -93,7 +99,7 @@ function originBadgeClass(origin: SchemaExampleOrigin): string {
 function resolveExamples(
   props: Pick<
     SchemaExamplePanelProps,
-    "examples" | "exampleInputs" | "values" | "language"
+    "examples" | "exampleInputs" | "values" | "language" | "chrome"
   >,
 ): SchemaExampleDisplay[] {
   if (props.examples !== undefined) {
@@ -102,10 +108,12 @@ function resolveExamples(
   if (props.exampleInputs !== undefined) {
     return projectSchemaExamplesFromInputs(props.exampleInputs, {
       language: props.language,
+      chrome: props.chrome,
     });
   }
   return projectSchemaExamplesFromValues(props.values, {
     language: props.language,
+    chrome: props.chrome,
   });
 }
 
@@ -114,6 +122,7 @@ export function SchemaExamplePanel({
   values,
   exampleInputs,
   language = "json",
+  chrome,
   showEmpty = true,
   className,
   "data-testid": testId = "schema-example-panel",
@@ -123,6 +132,7 @@ export function SchemaExamplePanel({
     exampleInputs,
     values,
     language,
+    chrome,
   });
 
   if (resolved.length === 0) {
@@ -157,7 +167,7 @@ export function SchemaExamplePanel({
       <h3 className="font-medium text-foreground text-sm">Examples</h3>
       <ul className="m-0 list-none space-y-3 p-0">
         {resolved.map((example) => {
-          const originLabel = schemaExampleOriginLabel(example.origin);
+          const originLabel = schemaExampleOriginLabel(example.origin, chrome);
           const languageLabel = example.language ?? language;
 
           return (

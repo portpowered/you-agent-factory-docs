@@ -12,7 +12,7 @@ W17 owns:
 - reference chrome / collection message catalogs for `en` / `ja` / `zh-CN` / `vi`
 - shipped-locale route manifest + alternate/hreflang updates for reference
   routes (`references` family index + `references/*` children)
-- locale-parity and untranslated-identifier behavioral tests (later stories)
+- locale-parity and untranslated-identifier behavioral tests
 
 Do **not**:
 
@@ -89,10 +89,19 @@ are display-only and are not contract description prose.
 | `src/lib/content/generated/shipped-localized-docs.generated.ts` | Client-safe generated artifact for language switcher / gating |
 | `src/components/references/shared/*` | Shared chrome surfaces that resolve catalogs via prop or provider |
 | `src/components/references/schema/schema-example-display.ts` | Example origin labels ("Generated example") — chrome-localizable; payloads stay English |
+| `src/components/references/schema/schema-example-panel.tsx` | Optional `chrome` prop localizes origin/index labels; payload `code` stays locale-neutral |
+
+## Locale parity + untranslated identifiers (story 006)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/i18n/w17-locale-parity-and-untranslated-identifiers.test.tsx` | Behavioral suite: full chrome leaf parity across en/ja/zh-CN/vi, rendered untranslated identifiers (API/CLI/MCP/JS/schema), language-boundary DOM proofs, generated-example locale-neutral payloads with localized chrome |
+
+Assert observable render/runtime outcomes only — do not scan source trees or enforce nav/search/compat registration inventories.
 
 ## Later W17 stories (do not jump ahead unless selected)
 
-- **006** — locale parity + untranslated-identifier behavioral suite
+_(none — W17 stories 001–006 complete)_
 
 ## Locale manifests and alternates (story 005)
 
