@@ -20,6 +20,19 @@ export {
   schemaAddressForSelectedEventStream,
 } from "./event-schema-targets";
 export {
+  FACTORY_EVENT_SCHEMA_NAME,
+  FactoryEventCatalogError,
+  type FactoryEventCatalog,
+  type FactoryEventCatalogErrorCode,
+  type FactoryEventDiscriminatorMapping,
+  buildFactoryEventCatalog,
+  factoryEventCatalogEventTypes,
+  factoryEventCatalogPayloadSchemaNames,
+  factoryEventPayloadDefinitionForType,
+  normalizeOpenApiComponentSchemaDefinition,
+  payloadSchemaNameFromRef,
+} from "./factory-event-catalog";
+export {
   assertEventCorpusClosureValid,
   assertEventInventoryMatchesExpected,
   buildEventOperationInventory,

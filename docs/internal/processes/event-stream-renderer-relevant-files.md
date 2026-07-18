@@ -68,6 +68,18 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/app/(dev)/events-renderer-harness/page.tsx` | Dev harness route `/events-renderer-harness` (hidden in prod unless `ENABLE_EVENTS_RENDERER_HARNESS=1`) |
 | `src/components/references/events/event-stream-operations.test.tsx` | Role labeling + live OpenAPI three-stream proofs |
 
+## Key host files (story 004 — FactoryEvent envelope + discriminator catalog)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/events/factory-event-catalog.ts` | Build FactoryEvent envelope + discriminator → payload catalog from packaged OpenAPI (W04 normalize via `normalizeJsonSchemaArtifact`) |
+| `src/components/references/events/event-envelope-reference.tsx` | Shared FactoryEvent envelope fields via W07 `SchemaDefinition` (composition stripped) |
+| `src/components/references/events/event-discriminator-map.tsx` | Live `type` → payload schema map with payload-variant deep links |
+| `src/components/references/events/event-payload-variant.tsx` | One payload-only variant (explicitly not a complete envelope) |
+| `src/components/references/events/event-payload-catalog.tsx` | All mapped payload variants with schema-backed fields |
+| `src/components/references/events/factory-event-catalog-section.tsx` | Compose envelope + map + payload catalog |
+| `src/components/references/events/factory-event-catalog.test.tsx` | Live inventory + envelope/payload-only UI proofs |
+
 ## Related spike (do not ship as production)
 
 | Path | Role |
@@ -106,3 +118,9 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   is not available under Turbopack (`__TURBOPACK__import$2e$meta__.resolve is not a function`),
   and `Bun.YAML.parse` is unavailable under Next's Node server (inject the portable
   `yaml` package parser). Unit tests under `bun test` can keep the default resolver.
+- Build FactoryEvent catalog via `buildFactoryEventCatalog(doc)` — normalizes each
+  `components.schemas` entry with `normalizeJsonSchemaArtifact` at
+  `/components/schemas/<name>` pointers. Strip envelope `composition` when rendering
+  `EventEnvelopeReference` so `EventDiscriminatorMap` owns mapping chrome.
+- Payload variants must set `data-event-payload-only="true"` and never present
+  payload-only schemas as complete FactoryEvent envelopes.

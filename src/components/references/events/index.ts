@@ -11,6 +11,22 @@ export {
   type EventCanonicalityBadgeProps,
 } from "./event-canonicality-badge";
 export {
+  EventDiscriminatorMap,
+  type EventDiscriminatorMapProps,
+} from "./event-discriminator-map";
+export {
+  EventEnvelopeReference,
+  type EventEnvelopeReferenceProps,
+} from "./event-envelope-reference";
+export {
+  EventPayloadCatalog,
+  type EventPayloadCatalogProps,
+} from "./event-payload-catalog";
+export {
+  EventPayloadVariant,
+  type EventPayloadVariantProps,
+} from "./event-payload-variant";
+export {
   type EventCanonicalityPresentation,
   type EventStreamOperationSummaryModel,
   eventCanonicalityPresentationForRole,
@@ -35,6 +51,10 @@ export {
   EventsVerificationHarness,
   type EventsVerificationHarnessProps,
 } from "./events-verification-harness";
+export {
+  FactoryEventCatalogSection,
+  type FactoryEventCatalogSectionProps,
+} from "./factory-event-catalog-section";
 export {
   EVENTS_UI_STATUS_DEFAULT_MESSAGES,
   EVENTS_UI_STATUS_DEFAULT_TITLES,
