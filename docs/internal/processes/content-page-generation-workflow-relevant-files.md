@@ -1034,7 +1034,10 @@ MDX component merge for schema mounts:
    `prepare:content-runtime`.
 
 Representative pages: `src/content/docs/references/factory-schema/`,
-`you-config-schema/` (add `page-mdx-components` switch cases per slug).
+`you-config-schema/`, `mock-workers-schema/` (add `page-mdx-components`
+switch cases per slug). Cross-route success/invalid proofs live in
+`src/content/docs/references/schema-reference-published-routes.test.tsx`
+(page-owned route + mount markers only — not renderer or inventory scans).
 
 ## Page bundle and registry workflow
 
