@@ -92,6 +92,13 @@ async function loadRouteFamilyPageMdxComponents(
     return mod.pageMdxComponents ?? {};
   }
 
+  if (section === "factories" && slug === "sessions") {
+    const mod = await import(
+      "@/content/docs/factories/sessions/page-mdx-components"
+    );
+    return mod.pageMdxComponents ?? {};
+  }
+
   return {};
 }
 

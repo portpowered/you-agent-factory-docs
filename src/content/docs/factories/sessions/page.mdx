@@ -1,0 +1,173 @@
+---
+title: "Factory Sessions"
+description: "Discover, inspect, and control a live Factory Session, including identity, lifecycle, and its relationship to a loaded Factory."
+kind: "documentation"
+registryId: "documentation.factories-sessions"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "factory session"
+  - "FactorySession"
+  - "sessions"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="factory-relationship" titleKey="sections.factoryRelationship.title">
+  <T k="sections.factoryRelationship.body" />
+  <FactoryNameSchemaEmbed />
+  <T k="callouts.schemaEmbedNote.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/schema",
+        labelKey: "links.fullFactorySchema",
+      },
+      {
+        href: "/docs/references/api",
+        labelKey: "links.fullFactoryApi",
+      },
+      {
+        href: "/docs/references/events",
+        labelKey: "links.fullFactoryEvents",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="session-list" titleKey="sections.sessionList.title">
+  <T k="sections.sessionList.body" />
+  <p>
+    <T k="links.sessionListLabel" />
+  </p>
+  ```sh
+  you session list
+  ```
+  <T k="links.sessionListEmptyNote" />
+</Section>
+
+<Section id="session-show" titleKey="sections.sessionShow.title">
+  <T k="sections.sessionShow.body" />
+  <p>
+    <T k="links.sessionShowLabel" />
+  </p>
+  ```sh
+  you session show <session-id>
+  ```
+  <T k="links.sessionShowTargetNote" />
+</Section>
+
+<Section id="lifecycle" titleKey="sections.lifecycle.title">
+  <T k="sections.lifecycle.body" />
+  <p>
+    <T k="links.sessionPauseLabel" />
+  </p>
+  ```sh
+  you session pause <session-id>
+  ```
+  <p>
+    <T k="links.sessionResumeLabel" />
+  </p>
+  ```sh
+  you session resume <session-id>
+  ```
+  <T k="links.sessionLifecycleConfirmNote" />
+</Section>
+
+<Section id="durable-javascript-session" titleKey="sections.durableJavascriptSession.title">
+  <T k="sections.durableJavascriptSession.body" />
+  <p>
+    <T k="links.workflowValidateLabel" />
+  </p>
+  ```sh
+  you workflow validate --kind WORKFLOW_NAME --value <workflow-name>
+  ```
+  <p>
+    <T k="links.workflowStartLabel" />
+  </p>
+  ```sh
+  you workflow start --request-id <request-id> --workflow <workflow-name>
+  ```
+  <p>
+    <T k="links.workflowStatusLabel" />
+  </p>
+  ```sh
+  you workflow status <session-id>
+  ```
+  <p>
+    <T k="links.workflowResultLabel" />
+  </p>
+  ```sh
+  you workflow result <session-id>
+  ```
+  <T k="links.durableInspectionNounsNote" />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/submitting-work",
+        labelKey: "links.submittingWorkDocs",
+      },
+      {
+        href: "/docs/factories/dynamic-workflows",
+        labelKey: "links.dynamicWorkflowsDocs",
+      },
+      {
+        href: "/docs/factories/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/guides/cursor-dynamic-workflows",
+        labelKey: "links.cursorDynamicWorkflowsGuide",
+      },
+      {
+        href: "/docs/references/api",
+        labelKey: "links.fullFactoryApi",
+      },
+      {
+        href: "/docs/references/events",
+        labelKey: "links.fullFactoryEvents",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <RelatedDocs registryId="documentation.factories-sessions" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.factories-sessions" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.factories-sessions" />
+</Section>

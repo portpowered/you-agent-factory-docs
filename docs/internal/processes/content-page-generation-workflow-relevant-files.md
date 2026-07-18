@@ -961,7 +961,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `@/content/docs/factories/dynamic-workflows/page-mdx-components` for addressed
   `FactoryOrchestrator`, `FactoryOrchestratorJavaScriptConfig`, and
   `FactoryInvocationSignature` teaching embeds (link out for exhaustive
-  schema/API lookup; do not paste OpenAPI/operation inventories into the page).
+  schema/API lookup; do not paste OpenAPI/operation inventories into the page);
+  `factories/sessions` →
+  `@/content/docs/factories/sessions/page-mdx-components` for addressed
+  `FactoryName` teaching the Factory a session loads (FactorySession /
+  Dispatch / event contracts live in OpenAPI — link
+  `/docs/references/{schema,api,events}` rather than inventing session schema
+  embeds outside W07 JSON Schema package models).
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
