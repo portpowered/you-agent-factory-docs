@@ -21,6 +21,8 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 | --- | --- |
 | `src/lib/references/reference-item.ts` | Pure serializable `ReferenceItem`, family ids, lifecycle, and source-pointer types + JSON parse/serialize helpers (no IO) |
 | `src/lib/references/reference-item.test.ts` | Family coverage, source-pointer shape, and JSON round-trip proofs |
+| `src/lib/references/schema-model.ts` | Pure serializable `SchemaAddress`, `SchemaDefinitionModel`, `SchemaFieldModel`, composition/discriminator, constraints, and JSON parse/serialize helpers (no IO) |
+| `src/lib/references/schema-model.test.ts` | Address/pointer shape, composition, maps/arrays/enums/defaults, missing-description, and JSON round-trip proofs |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 build/server acquisition — consume artifacts only through this public-subpath surface |
 | `src/lib/references/api-package-public-exports.ts` | Documented public subpath allowlist (for source `publicArtifactId` / subpath values) |
 
@@ -39,14 +41,21 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 - Prove JSON serializability with `serializeReferenceItem` /
   `deserializeReferenceItem` round-trips; items must be plain objects, not
   class instances.
-- Later stories add schema models, family-specific normalized types, anchor
-  registry, cross-link resolver, and display/search projections beside this
-  module without widening W04 into UI/pages.
+- `SchemaAddress` is `{ publicArtifactId, pointer }` (JSON Pointer preferred).
+  Composition members and `$ref` / discriminator mapping values stay as
+  addresses so cycles remain representable without unbounded nesting. Nested
+  `$defs` may be full `SchemaDefinitionModel` or deferred `SchemaAddress`.
+- Never invent missing descriptions, types, or constraints — leave optional
+  fields absent when the contract omits them.
+- Later stories add family-specific normalized types, anchor registry,
+  cross-link resolver, and display/search projections beside these modules
+  without widening W04 into UI/pages.
 
 ## Verification
 
 ```bash
 bun test src/lib/references/reference-item.test.ts
+bun test src/lib/references/schema-model.test.ts
 bun run typecheck
 bun run lint
 ```
