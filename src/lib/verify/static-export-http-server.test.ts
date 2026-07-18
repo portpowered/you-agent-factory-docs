@@ -11,6 +11,37 @@ import {
 import { createStaticExportHttpServer } from "./static-export-http-server";
 
 describe("createStaticExportHttpServer", () => {
+  test("serves percent-encoded Next catch-all chunk paths under _next/static", async () => {
+    const root = mkdtempSync(join(tmpdir(), "static-export-server-"));
+    writeFileSync(join(root, "index.html"), "<html>home</html>");
+    const chunkDir = join(
+      root,
+      "_next",
+      "static",
+      "chunks",
+      "app",
+      "docs",
+      "[[...slug]]",
+    );
+    mkdirSync(chunkDir, { recursive: true });
+    writeFileSync(join(chunkDir, "page-test.js"), "export default 1;");
+
+    const session = await createStaticExportHttpServer({
+      outDir: root,
+      port: 3191,
+    });
+
+    try {
+      const encoded = `${session.baseUrl}/_next/static/chunks/app/docs/%5B%5B...slug%5D%5D/page-test.js`;
+      const response = await httpGetText(encoded);
+      expect(response.status).toBe(200);
+      expect(response.body).toContain("export default 1");
+    } finally {
+      await session.cleanup();
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   test("serves index, route HTML, and api/search bootstrap JSON", async () => {
     const root = mkdtempSync(join(tmpdir(), "static-export-server-"));
     writeFileSync(join(root, "index.html"), "<html>home</html>");

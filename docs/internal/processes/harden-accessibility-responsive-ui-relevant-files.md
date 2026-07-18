@@ -297,6 +297,11 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `a11y-reference-no-js-html-contract` + export/served
   `a11y-reference-no-js-html-page.test.ts`. Script-stripped HTML must keep
   API method/path/summary, event type + headings, schema field names/types.
+* W19 story 011 browser close-out: always-on
+  `a11y-reference-browser-closeout-contract` + opt-in consolidated
+  `a11y-reference-browser-closeout-page.test.ts`. One session covers overflow
+  (6×5), keyboard/hash/copy/reduced-motion on API+events+schema, long-token,
+  no-JS, and focused budgets; excludes W20 convergence.
 
 ## Existing component a11y smokes
 
@@ -314,6 +319,8 @@ surfaces (home, browse, search, docs/harness-support, blog).
   intentional scrollers; fail only on page-level `scrollWidth` overflow.
 * Prefer pure probe helpers for happy-dom unit proofs; use
   `openA11yResponsivePageProbe` only when a served page is required.
+* Static-export HTTP server must percent-decode `_next/static` catch-all chunk
+  paths (`%5B%5B...slug%5D%5D`) or hydrated reference pages fail browser verify.
 * For critical-page a11y stories: assert banner + `nav[aria-label="Primary"]` +
   `main` + coherent h1/h2 outline, keyboard focus with `focus-visible:ring`,
   then serious/critical axe on the verified surface.

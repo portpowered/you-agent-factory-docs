@@ -41,6 +41,7 @@ gates stay documented in
   - `src/lib/verify/a11y-reference-reduced-motion-contract.test.ts`
   - `src/lib/verify/a11y-reference-long-token-overflow-contract.test.ts`
   - `src/lib/verify/a11y-reference-no-js-html-contract.test.ts`
+  - `src/lib/verify/a11y-reference-browser-closeout-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -256,12 +257,32 @@ gates stay documented in
   Same `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
   against static `out/` for local browser verify.
 
+## Reference browser close-out (story 011)
+
+* `src/lib/verify/a11y-reference-browser-closeout-contract.ts` — enumerates the
+  route × layout × probe evidence matrix for W19 close-out (overflow,
+  keyboard, hash focus, copy announcements, reduced-motion, long-token,
+  no-JS, focused payload budgets). Covers all six representative routes;
+  interactive probes require API + events + factory-schema. Explicitly
+  excludes W20 sitemap/canonical/link/search convergence suites.
+* Probe binders re-exported from `a11y-reference-surface-probes.ts`
+  (`listReferenceBrowserCloseoutCases`,
+  `referenceBrowserCloseoutCoversRequiredSurfaces`).
+* Always-on proofs: `src/lib/verify/a11y-reference-browser-closeout-contract.test.ts`
+* Opt-in consolidated served probe:
+  `src/lib/verify/a11y-reference-browser-closeout-page.test.ts` — one Playwright
+  session runs overflow (6×5), interactive chrome, long-token, no-JS, and
+  focused budgets when `out/` exists. Same
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
+  against static `out/` for local browser verify. Does not run W20 convergence.
+
 ## Focused gate
 
 * Reproduce with `make a11y` (or `bun run test:a11y`).
-* Later W19 stories (browser close-out) must enumerate
-  `listReferenceOverflowMatrixCases()` / route ids from the contract — do not
-  hard-code widths or reference paths in story tests.
+* Close-out and later stories must enumerate
+  `listReferenceOverflowMatrixCases()` / `listReferenceBrowserCloseoutCases()` /
+  route ids from the contract — do not hard-code widths or reference paths in
+  story tests.
 * Do not own W20 static-export/sitemap/canonical/link/search convergence here.
 * Do not reopen W00–W18 feature ownership except narrow gate-fix UI edits.
 
@@ -273,3 +294,9 @@ gates stay documented in
   locally when the API a11y module already defines the same one-liner.
 * Authored factory/worker/workstation representatives should be pages that
   embed schema fragments so no-JS / overflow stories have real long tokens.
+* Browser close-out should reuse prior story evaluate helpers in one session
+  rather than inventing a second a11y framework; prefer a fresh `make build`
+  `out/` (copy-status markers) before served interactive probes.
+* Static-export HTTP serving must percent-decode `_next/static` catch-all chunk
+  paths (`%5B%5B...slug%5D%5D` → `[[...slug]]`) or hydration fails with
+  “couldn’t load” and W19 served probes look empty.

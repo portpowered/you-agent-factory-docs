@@ -47,13 +47,27 @@ function resolveStaticExportFilePath(
 ): string | null {
   const candidates: string[] = [];
 
-  if (pathname === "/" || pathname === "") {
-    candidates.push(join(outDir, "index.html"));
-  } else {
-    const trimmed = pathname.startsWith("/") ? pathname.slice(1) : pathname;
+  // Bun/Node may keep percent-encoding in URL.pathname for characters like
+  // `[` / `]` (`%5B%5B...slug%5D%5D`). Decode so out/_next/static catch-all
+  // chunk directories resolve (required for hydrated reference-page probes).
+  let decodedPathname = pathname;
+  try {
+    decodedPathname = decodeURIComponent(pathname);
+  } catch {
+    decodedPathname = pathname;
+  }
+
+  for (const pathVariant of [decodedPathname, pathname]) {
+    if (pathVariant === "/" || pathVariant === "") {
+      candidates.push(join(outDir, "index.html"));
+      continue;
+    }
+    const trimmed = pathVariant.startsWith("/")
+      ? pathVariant.slice(1)
+      : pathVariant;
     candidates.push(
       join(outDir, trimmed),
-      join(outDir, exportHtmlRelativePath(pathname)),
+      join(outDir, exportHtmlRelativePath(pathVariant)),
       join(outDir, trimmed, "index.html"),
     );
   }

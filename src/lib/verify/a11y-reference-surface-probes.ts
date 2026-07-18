@@ -8,6 +8,21 @@
 
 import { expectNoSeriousAxeViolations, runAxeOnElement } from "./a11y-axe";
 import {
+  listReferenceBrowserCloseoutCases,
+  listReferenceBrowserCloseoutCoveredRouteIds,
+  REFERENCE_BROWSER_CLOSEOUT_CASES,
+  REFERENCE_BROWSER_CLOSEOUT_EXCLUDED_W20_SUITES,
+  REFERENCE_BROWSER_CLOSEOUT_INTERACTIVE_ROUTE_IDS,
+  REFERENCE_BROWSER_CLOSEOUT_INTERACTIVE_VIEWPORT_IDS,
+  REFERENCE_BROWSER_CLOSEOUT_LONG_TOKEN_VIEWPORT_IDS,
+  REFERENCE_BROWSER_CLOSEOUT_PROBE_KINDS,
+  REFERENCE_BROWSER_CLOSEOUT_STICKY_VIEWPORT_IDS,
+  type ReferenceBrowserCloseoutCase,
+  type ReferenceBrowserCloseoutExpandedCase,
+  type ReferenceBrowserCloseoutProbeKind,
+  referenceBrowserCloseoutCoversRequiredSurfaces,
+} from "./a11y-reference-browser-closeout-contract";
+import {
   evaluateReferenceCopyAnnouncementsInBrowser,
   expectReferenceCopyAnnouncementChrome,
   expectReferenceCopyAnnouncements,
@@ -171,6 +186,9 @@ import {
 } from "./a11y-responsive-probes";
 
 export type {
+  ReferenceBrowserCloseoutCase,
+  ReferenceBrowserCloseoutExpandedCase,
+  ReferenceBrowserCloseoutProbeKind,
   ReferenceCopyAnnouncementChromeProbe,
   ReferenceCopyAnnouncementKind,
   ReferenceCopyAnnouncementProbe,
@@ -237,6 +255,8 @@ export {
   isPointerOnlyInteractiveElement,
   isReadableApiOperationSection,
   isReferenceLongTokenContained,
+  listReferenceBrowserCloseoutCases,
+  listReferenceBrowserCloseoutCoveredRouteIds,
   listReferenceCopyAnnouncementsForRoute,
   listReferenceHashTargetsForRoute,
   listReferenceKeyboardControlsForRoute,
@@ -280,6 +300,13 @@ export {
   probeReferenceStickyVisibility,
   REDUCED_MOTION_CHROME_SELECTOR,
   REDUCED_MOTION_DURATION_THRESHOLD_MS,
+  REFERENCE_BROWSER_CLOSEOUT_CASES,
+  REFERENCE_BROWSER_CLOSEOUT_EXCLUDED_W20_SUITES,
+  REFERENCE_BROWSER_CLOSEOUT_INTERACTIVE_ROUTE_IDS,
+  REFERENCE_BROWSER_CLOSEOUT_INTERACTIVE_VIEWPORT_IDS,
+  REFERENCE_BROWSER_CLOSEOUT_LONG_TOKEN_VIEWPORT_IDS,
+  REFERENCE_BROWSER_CLOSEOUT_PROBE_KINDS,
+  REFERENCE_BROWSER_CLOSEOUT_STICKY_VIEWPORT_IDS,
   REFERENCE_COPY_ANNOUNCEMENTS,
   REFERENCE_HASH_TARGETS,
   REFERENCE_KEYBOARD_CONTROLS,
@@ -295,6 +322,7 @@ export {
   REFERENCE_REDUCED_MOTION_HASH_ROUTE_IDS,
   REFERENCE_STICKY_CHROME_SELECTOR,
   readableTextForNoJsFact,
+  referenceBrowserCloseoutCoversRequiredSurfaces,
   referenceCopyAnnouncementEvaluateArgs,
   referenceHashFocusScrollBehavior,
   referenceLongTokenOverflowEvaluateArgs,
