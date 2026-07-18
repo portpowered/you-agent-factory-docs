@@ -186,7 +186,7 @@
   },
   "referencesIndex": {
     "title": "References",
-    "description": "Published reference pages that catalog schemas, contracts, and other lookup surfaces for factory subjects.",
+    "description": "Contract lookup surfaces for you-agent-factory: HTTP API, events, schemas, command-line interface (CLI), Model Context Protocol (MCP), and JavaScript runtime.",
     "listLabel": "Reference entries",
     "emptyTitle": "No reference entries yet",
     "emptyDescription": "Published reference pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",

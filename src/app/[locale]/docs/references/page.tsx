@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { renderSectionCollectionIndexPage } from "@/app/(site)/site-renderers";
-import { loadUiMessages } from "@/lib/content/ui-messages";
+import { renderReferencesFamilyIndexPage } from "@/app/(site)/site-renderers";
+import { loadReferencesFamilyIndex } from "@/content/docs/references/family-index/load-references-family-index";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { resolveMetadataLocale } from "../../localized-shell-metadata";
 
@@ -12,11 +12,11 @@ export async function generateMetadata({
   params,
 }: LocalizedReferencesIndexPageProps): Promise<Metadata> {
   const locale = await resolveMetadataLocale(params);
-  const messages = await loadUiMessages(locale);
+  const index = await loadReferencesFamilyIndex(locale);
 
   return {
-    title: messages.referencesIndex.title,
-    description: messages.referencesIndex.description,
+    title: index.messages.title,
+    description: index.messages.description,
     alternates: localizedRouteAlternates({
       surface: "docs-page",
       slug: "references",
@@ -28,5 +28,5 @@ export default async function LocalizedReferencesIndexPage({
   params,
 }: LocalizedReferencesIndexPageProps) {
   const locale = await resolveMetadataLocale(params);
-  return renderSectionCollectionIndexPage("references", locale);
+  return renderReferencesFamilyIndexPage(locale);
 }

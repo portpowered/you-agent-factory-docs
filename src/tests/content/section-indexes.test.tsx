@@ -498,48 +498,47 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
   });
 
-  it("renders the references index with authored schema and events entries", async () => {
-    const messages = await loadUiMessages();
-    const indexMessages = messages.referencesIndex;
+  it("renders the authored references family index introduction", async () => {
     const html = renderToStaticMarkup(await ReferencesIndexPage());
 
-    expect(html).toContain(indexMessages.title);
-    expect(html).toContain(indexMessages.description);
-    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
-    expect(html).toContain("Factory schema");
-    expect(html).toContain("/docs/references/factory-schema");
-    expect(html).toContain("Factory JSON Schema");
-    expect(html).toContain("You-config schema");
-    expect(html).toContain("/docs/references/you-config-schema");
-    expect(html).toContain("You operator and system configuration JSON Schema");
-    expect(html).toContain("Mock-workers schema");
-    expect(html).toContain("/docs/references/mock-workers-schema");
-    expect(html).toContain("mock-worker configuration JSON Schema");
-    expect(html).toContain("/docs/references/events");
-    expect(html).not.toContain(indexMessages.emptyTitle);
-    expect(html).not.toContain("/docs/documentation/");
-    expect(indexMessages.emptyTitle).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
-    expect(indexMessages.emptyDescription).not.toMatch(
-      CLI_EMPTY_STATE_ATLAS_PHRASING,
-    );
+    expect(html).toContain("References");
+    expect(html).toContain("Contract lookup surfaces");
+    expect(html).toContain("What this family covers");
+    expect(html).toContain("isolation-first lookup");
+    expect(html).toContain('data-references-family-index=""');
+    expect(html).toContain("Contract surfaces");
+    expect(html).toContain('data-references-family-discoverability=""');
+    expect(html).toContain('data-references-family-freshness=""');
+    expect(html).toContain("Package freshness");
+    expect(html).toContain('data-freshness-status="ready"');
+    expect(html).toContain('data-references-family-freshness-summary=""');
+    expect(html).toContain("@you-agent-factory/api");
+    for (const href of [
+      "/docs/references/api",
+      "/docs/references/events",
+      "/docs/references/factory-schema",
+      "/docs/references/you-config-schema",
+      "/docs/references/mock-workers-schema",
+      "/docs/references/cli",
+      "/docs/references/mcp",
+      "/docs/references/javascript-runtime",
+    ]) {
+      expect(html).toContain(`href="${href}"`);
+    }
+    expect(html).not.toContain("No reference entries yet");
+    expect(html).not.toContain("Package freshness unavailable");
   });
 
-  it("renders the localized references index empty when no locale-shipped pages exist", async () => {
-    const messages = await loadUiMessages("ja");
-    const indexMessages = messages.referencesIndex;
+  it("renders the localized references family index with English fallback copy", async () => {
     const html = renderToStaticMarkup(
       await LocalizedReferencesIndexPage({
         params: Promise.resolve({ locale: "ja" }),
       }),
     );
 
-    // Default-locale-only references pages stay out of ja shipped discovery.
-    expect(html).toContain(indexMessages.title);
-    expect(html).toContain(indexMessages.emptyTitle);
-    expect(html).toContain(indexMessages.emptyHomeLink);
-    expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("References");
+    expect(html).toContain("What this family covers");
+    expect(html).not.toContain("No reference entries yet");
   });
 
   it("keeps default and localized references index metadata aligned", async () => {
@@ -559,12 +558,10 @@ describe("W05 direct route-family section index pages", () => {
 
     expect(defaultMetadata.alternates).toEqual(expectedAlternates);
     expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
-
-    const viMessages = await loadUiMessages("vi");
-    expect(localizedMetadata.title).toBe(viMessages.referencesIndex.title);
-    expect(localizedMetadata.description).toBe(
-      viMessages.referencesIndex.description,
-    );
+    expect(defaultMetadata.title).toBe("References");
+    expect(defaultMetadata.description).toContain("Contract lookup");
+    expect(localizedMetadata.title).toBe(defaultMetadata.title);
+    expect(localizedMetadata.description).toBe(defaultMetadata.description);
   });
 
   it("renders the authored workers family index instead of the empty-state contract", async () => {

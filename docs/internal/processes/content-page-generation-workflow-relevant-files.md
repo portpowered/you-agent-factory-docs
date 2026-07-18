@@ -674,6 +674,27 @@ the original page slice when they are the concrete reason the reviewed head is
 blocked. Document mergeability-only follow-ups in `progress.txt` and PR
 conversation comments.
 
+When rebasing a family-index lane onto `main` that already authored another
+direct route family (workers index, factories authored index, events-on-
+references collection listing, schema sibling pages listed via the generic W05
+collection index, etc.), reconcile
+`src/tests/content/section-indexes.test.tsx` by keeping each authored
+family-index proof and narrowing empty-state cases to families that are still
+empty (today: workstations only). Prefer the authored family-index assertions
+(intro + discoverability hrefs + freshness markers) over main’s generic
+collection-listing proofs for the same route once
+`renderReferencesFamilyIndexPage` owns `/docs/references` — sibling schema /
+events bodies remain published under their own page routes. Do not restore
+empty-state-as-primary for a family this lane authored, and do not drop main’s
+workers or factories authored-index assertions while resolving references
+conflicts. Also reconcile
+`src/lib/docs/section-collection-index.test.ts` so generic-helper empty-state
+loops match still-empty families only (keep factories authored-entry proofs).
+The same rebase often dual-edits
+`docs/internal/processes/content-page-generation-workflow-relevant-files.md` —
+keep both sides’ notes (including any “First published `references` schema
+page” section from schema lanes and factories index loader notes).
+
 When several documentation lanes land close together, the exported-site
 `totalOutBytes` / `searchBootstrapBytes` gates in
 `src/lib/build/exported-site-budget.ts` can fail even though each lane alone
@@ -1168,6 +1189,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   collections render `DocsIndexEmptyState`. Factories uses the factories-owned
   `renderFactoriesIndexPage` composition (overview + W07 root Factory summary
   embed + child entry list) once authored factories pages exist.
+  families. Workstations (still empty) call `renderSectionCollectionIndexPage`
+  with matching `*Index` messages and render `DocsIndexEmptyState`. Factories
+  uses the factories-owned `renderFactoriesIndexPage` composition (overview +
+  W07 root Factory summary embed + child entry list). Workers uses the
+  workers-owned family index. References uses
+  `renderReferencesFamilyIndexPage` (authored intro owned under
+  `src/content/docs/references/family-index/`) instead of empty-state-only UX.
 * `src/app/[locale]/docs/{references,factories,workers,workstations}/page.tsx`
   Shipped-locale mirrors of the same four family indexes.
 * `src/content/docs/factories/index/render-factories-index-page.tsx` /
@@ -1199,11 +1227,37 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   map under `node_modules/@you-agent-factory/api/package.json`. Without that,
   prerender of `/docs/factories` (and localized factories indexes) fails with
   package-resolution TypeErrors during `make build`.
+* `src/content/docs/references/family-index/`
+  References family index ownership surface: `frontmatter.json` (`kind:
+  reference`, `registryId: reference.references`), page-local `messages/en.json`,
+  `assets.json`, composition (`ReferencesFamilyIndex.tsx`), loader, planned
+  eight-route constants (`reference-family-routes.ts`), discoverability card
+  resolver (`resolve-reference-family-discoverability.ts` — message sections
+  keyed by route id supply title/body; hrefs stay on planned
+  `/docs/references/...` paths even when sibling bodies are unpublished),
+  package freshness summary (`load-references-family-freshness.ts` via W03
+  `loadApiPackageManifest` / `@you-agent-factory/api/manifest`, with a
+  worktree-safe parent-walk `resolveExport` for Next/webpack — do not use
+  `createRequire(import.meta.url)` or bare `import.meta.resolve` on this
+  surface; rendered by `ReferencesFamilyFreshnessSummary.tsx` with shared
+  `ReferenceErrorState` on failure), ownership fence helpers (`ownership.ts` —
+  allowed family-index root vs forbidden sibling page / foreign renderer /
+  factories-workers-workstations roots; prove with path helpers, not source
+  inventory scans), and colocated tests. Do not put sibling W11 page bodies
+  (`api/`, `events/`, …) in this lane.
+* `src/content/registry/references/`
+  First `reference` registry collection. Wire new records through
+  `REGISTRY_COLLECTIONS`, `registry.ts` directories, and
+  `registry-runtime-generation.ts` (plus `canonical-page-surface-audit`
+  `registryDirectoryByKind.reference`) the same way the first documentation
+  records needed their loader path.
 * `src/app/(site)/site-renderers.tsx`
   `renderShellSectionCollectionIndexPage` filters index entries by
   `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not
   frontmatter kind alone — required because factories/workers/workstations
   reuse `documentation` kind while keeping an independent public route.
+  `renderReferencesFamilyIndexPage` loads the family-index ownership surface
+  and package freshness for `/docs/references`.
 * `src/lib/docs/section-collection-index.test.ts` /
   `src/tests/content/section-indexes.test.tsx`
   Empty-state + localized metadata proofs for still-empty family indexes;
@@ -1212,6 +1266,10 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   pages.
   factories flips to authored-entry + overview assertions and must not list
   documentation child pages.
+  Empty-state + localized metadata proofs for still-empty family indexes
+  (workstations); factories authored-entry + overview assertions; workers
+  family-index proofs; authored introduction proofs for the references family
+  index; factories must not list documentation child pages.
 * `src/lib/content/docs-catch-all-static-params.ts`
   Catch-all static-param helpers for nested docs slugs. Default-locale
   `generateStaticParams` merges Fumadocs source params with published-page
