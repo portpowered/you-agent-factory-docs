@@ -29,6 +29,8 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 | `src/lib/references/normalize-family-artifacts.test.ts` | Fixture-shaped normalization + W03 public-subpath consumption proofs |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic URL-safe `ReferenceAnchorRegistry` + kind-specific anchor builders; fails closed on per-owning-page fragment collisions (no IO) |
 | `src/lib/references/reference-anchor-registry.test.ts` | Kind coverage, determinism, URL-safety, page grouping, idempotent re-register, and per-page collision proofs |
+| `src/lib/references/reference-cross-link-resolver.ts` | Cycle-safe `$ref` / discriminator `ReferenceCrossLinkResolver`; preserves originating source pointers; explicit resolved/cycle/missing/malformed outcomes (no IO) |
+| `src/lib/references/reference-cross-link-resolver.test.ts` | Ref parse, one-hop resolve, chain cycle detection, discriminator one-hop mapping, missing/malformed proofs |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 build/server acquisition — consume artifacts only through this public-subpath surface |
 | `src/lib/references/api-package-public-exports.ts` | Documented public subpath allowlist (for source `publicArtifactId` / subpath values) |
 
@@ -74,8 +76,15 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
   fragment, both item ids, and owning page; the same fragment on two different
   owning pages is allowed. Distinct-payload re-register of the same `itemId`
   also fails closed.
-- Later stories add cross-link resolver and display/search projections beside
-  these modules without widening W04 into UI/pages.
+- `ReferenceCrossLinkResolver` resolves `$ref` and discriminator mappings to
+  explicit outcomes (`resolved` | `cycle` | `missing` | `malformed`). Always
+  preserve the originating `source` pointer; never invent missing definitions
+  or hang on cycles. Use `resolveRef` for one hop, `resolveRefChain` to follow
+  `refTarget` wrappers, and `resolveDiscriminator` for one-hop mapping
+  expansion only. Local `#/…` / `/…` refs inherit the source artifact id;
+  anchors come from `anchorForIdentity("schema-pointer", …)`.
+- Later stories add display/search projections beside these modules without
+  widening W04 into UI/pages.
 
 ## Verification
 
@@ -85,6 +94,7 @@ bun test src/lib/references/schema-model.test.ts
 bun test src/lib/references/family-normalized-models.test.ts
 bun test src/lib/references/normalize-family-artifacts.test.ts
 bun test src/lib/references/reference-anchor-registry.test.ts
+bun test src/lib/references/reference-cross-link-resolver.test.ts
 bun run typecheck
 bun run lint
 ```
