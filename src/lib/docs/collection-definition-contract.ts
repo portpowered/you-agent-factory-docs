@@ -29,6 +29,20 @@ export const DOCS_COLLECTION_IDS = [
   "workstations",
 ] as const satisfies readonly DocsCollectionId[];
 
+/**
+ * Direct public route families (W05): registered collections with matching
+ * `/docs/<id>` indexes and nested child slug support under the catch-all.
+ */
+export const DIRECT_DOCS_ROUTE_FAMILY_IDS = [
+  "references",
+  "factories",
+  "workers",
+  "workstations",
+] as const satisfies readonly DocsCollectionId[];
+
+export type DirectDocsRouteFamilyId =
+  (typeof DIRECT_DOCS_ROUTE_FAMILY_IDS)[number];
+
 /** Public route slug segment under `/docs`. */
 export type DocsCollectionRouteSlug = DocsCollectionId;
 

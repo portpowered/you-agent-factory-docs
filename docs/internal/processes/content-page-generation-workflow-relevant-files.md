@@ -963,6 +963,19 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `src/tests/content/section-indexes.test.tsx`
   Empty-state + localized metadata proofs for the four family indexes;
   factories must not list documentation child pages.
+* `src/lib/content/docs-catch-all-static-params.ts`
+  Catch-all static-param helpers for nested docs slugs. Default-locale
+  `generateStaticParams` merges Fumadocs source params with published-page
+  discovery so nested route-family children enter the compile graph; localized
+  params map shipped page slugs the same way. Family indexes themselves are
+  dedicated App Router pages listed in
+  `SUPPORTED_FACTORY_EXPORT_APP_PAGE_MARKERS` /
+  `DIRECT_DOCS_ROUTE_FAMILY_INDEX_APP_PAGE_MARKERS` (not one-segment catch-all
+  params). Empty collections still rely on `ensureStaticExportParams` so static
+  export never emits an empty param list.
+* `src/lib/content/docs-catch-all-static-params.test.ts`
+  Nested fixture proofs for default/shipped catch-all params, empty-family
+  export safety, compile-graph index markers, and invalid nested not-found.
 * `src/lib/content/content-paths-page-dir-guard.ts`
   Grandfathered allowlist for legacy `*_PAGE_DIR` exports and the guard failure
   message that points reviewers to `getDocsPageDir(section, slug)`.
