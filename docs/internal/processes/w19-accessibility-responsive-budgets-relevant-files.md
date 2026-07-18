@@ -40,6 +40,7 @@ gates stay documented in
   - `src/lib/verify/a11y-reference-copy-announcement-contract.test.ts`
   - `src/lib/verify/a11y-reference-reduced-motion-contract.test.ts`
   - `src/lib/verify/a11y-reference-long-token-overflow-contract.test.ts`
+  - `src/lib/verify/a11y-reference-no-js-html-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -211,6 +212,27 @@ gates stay documented in
   `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
   against static `out/` for local browser verify.
 
+## Reference no-JS static HTML readability (story 010)
+
+* `src/lib/verify/a11y-reference-no-js-html-contract.ts` — essential static
+  HTML facts for all six W19 routes: API method/path/summary, event type
+  identity + envelope/payload headings, schema field names/types (including
+  authored SchemaReference embeds). `stripScriptsFromHtml` removes client
+  bundles before probing so contract text cannot depend on hydration.
+* Probe binders: `expectReferenceNoJsHtmlReadability`,
+  `evaluateReferenceNoJsHtmlInBrowser`, `referenceNoJsHtmlEvaluateArgs`
+  (also re-exported from `a11y-reference-surface-probes.ts`).
+* Always-on proofs:
+  - `src/lib/verify/a11y-reference-no-js-html-contract.test.ts`
+  - `src/tests/a11y/reference-no-js-html.a11y.test.tsx` (API harness, events
+    envelope + payload variant, FactorySchemaReference, authored factory
+    metadata/source embed)
+* Export / served probe:
+  `src/lib/verify/a11y-reference-no-js-html-page.test.ts` — script-stripped
+  `out/*.html` for all six routes when a trusted export exists; Playwright
+  setContent of script-stripped DOM for API/events/factory-schema under
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1`.
+
 ## Reference hash focus, sticky visibility, mobile collapse (story 006)
 
 * `src/lib/verify/a11y-reference-hash-focus-contract.ts` — hash target selectors
@@ -237,8 +259,7 @@ gates stay documented in
 ## Focused gate
 
 * Reproduce with `make a11y` (or `bun run test:a11y`).
-* Later W19 stories (hash-focus, copy live regions, reduced motion,
-  long-token overflow, no-JS HTML) must enumerate
+* Later W19 stories (browser close-out) must enumerate
   `listReferenceOverflowMatrixCases()` / route ids from the contract — do not
   hard-code widths or reference paths in story tests.
 * Do not own W20 static-export/sitemap/canonical/link/search convergence here.

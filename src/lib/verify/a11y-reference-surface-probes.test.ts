@@ -55,6 +55,7 @@ describe("a11y-reference-surface probe helpers", () => {
       copyAnnouncement: "expectReferenceCopyAnnouncements",
       reducedMotion: "evaluateReferenceReducedMotionInBrowser",
       longTokenOverflow: "expectReferenceLongTokenOverflow",
+      noJsHtml: "expectReferenceNoJsHtmlReadability",
       pageSession: "openReferenceSurfacePageProbe",
     });
 

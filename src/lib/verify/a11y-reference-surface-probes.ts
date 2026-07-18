@@ -79,6 +79,25 @@ import {
   referenceLongTokenOverflowEvaluateArgs,
 } from "./a11y-reference-long-token-overflow-contract";
 import {
+  evaluateReferenceNoJsHtmlInBrowser,
+  expectReferenceNoJsHtmlReadability,
+  isReadableApiOperationSection,
+  listReferenceNoJsFactsForRoute,
+  listRequiredReferenceNoJsFacts,
+  probeReferenceNoJsFact,
+  probeReferenceNoJsFactsForRoute,
+  REFERENCE_NO_JS_FACTS,
+  REFERENCE_NO_JS_ROUTE_IDS,
+  type ReferenceNoJsFactKind,
+  type ReferenceNoJsFactProbe,
+  type ReferenceNoJsFactSpec,
+  type ReferenceNoJsHtmlEvaluateResult,
+  type ReferenceNoJsHtmlProbe,
+  readableTextForNoJsFact,
+  referenceNoJsHtmlEvaluateArgs,
+  stripScriptsFromHtml,
+} from "./a11y-reference-no-js-html-contract";
+import {
   evaluateReducedMotionChromeInBrowser,
   evaluateReferenceReducedMotionInBrowser,
   expectReferenceReducedMotionChrome,
@@ -172,6 +191,11 @@ export type {
   ReferenceMobileNavSpec,
   ReferenceMotionChromeProbe,
   ReferenceMotionChromeSpec,
+  ReferenceNoJsFactKind,
+  ReferenceNoJsFactProbe,
+  ReferenceNoJsFactSpec,
+  ReferenceNoJsHtmlEvaluateResult,
+  ReferenceNoJsHtmlProbe,
   ReferenceNonColorStatusProbe,
   ReferenceNonColorStatusSpec,
   ReferenceReducedMotionEvaluateResult,
@@ -185,6 +209,7 @@ export {
   evaluateReducedMotionChromeInBrowser,
   evaluateReferenceCopyAnnouncementsInBrowser,
   evaluateReferenceLongTokenOverflowInBrowser,
+  evaluateReferenceNoJsHtmlInBrowser,
   evaluateReferenceReducedMotionInBrowser,
   evaluateResponsiveOverflowInBrowser,
   expectCoherentReferenceHeadingHierarchy,
@@ -197,6 +222,7 @@ export {
   expectReferenceLabeledChrome,
   expectReferenceLongTokenOverflow,
   expectReferenceMobileNav,
+  expectReferenceNoJsHtmlReadability,
   expectReferenceNonColorStatus,
   expectReferenceReducedMotionChrome,
   expectReferenceReducedMotionHashFocus,
@@ -209,6 +235,7 @@ export {
   isHashTargetFullyObscuredBySticky,
   isKeyboardFocusableElement,
   isPointerOnlyInteractiveElement,
+  isReadableApiOperationSection,
   isReferenceLongTokenContained,
   listReferenceCopyAnnouncementsForRoute,
   listReferenceHashTargetsForRoute,
@@ -218,6 +245,7 @@ export {
   listReferenceLongTokensForRoute,
   listReferenceMobileNavsForRoute,
   listReferenceMotionChromeForRoute,
+  listReferenceNoJsFactsForRoute,
   listReferenceNonColorStatusForRoute,
   listRequiredReferenceCopyAnnouncements,
   listRequiredReferenceHashTargets,
@@ -226,6 +254,7 @@ export {
   listRequiredReferenceLongTokens,
   listRequiredReferenceMobileNavs,
   listRequiredReferenceMotionChrome,
+  listRequiredReferenceNoJsFacts,
   listRequiredReferenceNonColorStatus,
   MOBILE_DRAWER_MOTION_CHROME,
   measurePageLevelOverflow,
@@ -244,6 +273,8 @@ export {
   probeReferenceLongTokensForRoute,
   probeReferenceMobileNav,
   probeReferenceMotionChrome,
+  probeReferenceNoJsFact,
+  probeReferenceNoJsFactsForRoute,
   probeReferenceNonColorStatus,
   probeReferenceReducedMotionHashFocus,
   probeReferenceStickyVisibility,
@@ -258,15 +289,20 @@ export {
   REFERENCE_LONG_TOKENS,
   REFERENCE_MOBILE_NAVS,
   REFERENCE_MOTION_CHROME,
+  REFERENCE_NO_JS_FACTS,
+  REFERENCE_NO_JS_ROUTE_IDS,
   REFERENCE_NON_COLOR_STATUS,
   REFERENCE_REDUCED_MOTION_HASH_ROUTE_IDS,
   REFERENCE_STICKY_CHROME_SELECTOR,
+  readableTextForNoJsFact,
   referenceCopyAnnouncementEvaluateArgs,
   referenceHashFocusScrollBehavior,
   referenceLongTokenOverflowEvaluateArgs,
+  referenceNoJsHtmlEvaluateArgs,
   referenceReducedMotionEvaluateArgs,
   resolveA11yResponsiveProbeUrl,
   runAxeOnElement,
+  stripScriptsFromHtml,
 };
 
 /** Shared overflow args for Playwright `page.evaluate` on reference surfaces. */
@@ -351,6 +387,7 @@ export type ReferenceSurfaceProbeBinding = {
     copyAnnouncement: "expectReferenceCopyAnnouncements";
     reducedMotion: "evaluateReferenceReducedMotionInBrowser";
     longTokenOverflow: "expectReferenceLongTokenOverflow";
+    noJsHtml: "expectReferenceNoJsHtmlReadability";
     pageSession: "openReferenceSurfacePageProbe";
   };
 };
@@ -372,6 +409,7 @@ export function listReferenceSurfaceProbeBindings(): ReferenceSurfaceProbeBindin
       copyAnnouncement: "expectReferenceCopyAnnouncements",
       reducedMotion: "evaluateReferenceReducedMotionInBrowser",
       longTokenOverflow: "expectReferenceLongTokenOverflow",
+      noJsHtml: "expectReferenceNoJsHtmlReadability",
       pageSession: "openReferenceSurfacePageProbe",
     },
   }));

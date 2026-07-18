@@ -292,6 +292,11 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `a11y-reference-long-token-overflow-contract` + opt-in served
   `a11y-reference-long-token-overflow-page.test.ts`. Path/field/enum/code
   containment at mobile + zoomed; extends shared overflow probes.
+* W19 story 010 no-JS static HTML: always-on
+  `src/tests/a11y/reference-no-js-html.a11y.test.tsx` +
+  `a11y-reference-no-js-html-contract` + export/served
+  `a11y-reference-no-js-html-page.test.ts`. Script-stripped HTML must keep
+  API method/path/summary, event type + headings, schema field names/types.
 
 ## Existing component a11y smokes
 
