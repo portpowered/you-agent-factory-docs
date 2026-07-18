@@ -219,7 +219,7 @@ describe("W05 route-family static params and not-found", () => {
 
     // Families without authored nested pages still contribute no catch-all
     // children (indexes remain dedicated App Router routes).
-// W14 authored Workstation variant pages enter default catch-all params.
+    // W14 authored Workstation variant pages enter default catch-all params.
     const workstationChildren = defaultPaths.filter((path) =>
       path.startsWith("workstations/"),
     );
@@ -241,7 +241,6 @@ describe("W05 route-family static params and not-found", () => {
       ]),
     );
 
-    
     // Empty-param static export still emits a placeholder rather than failing.
     expect(
       ensureStaticExportParams(

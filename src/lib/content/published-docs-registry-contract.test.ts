@@ -67,9 +67,9 @@ describe("published docs registry contract — factories section", () => {
     expect(() => docsSectionFromSlug("modules/attention")).toThrow(
       /Unsupported published docs section "modules"/,
     );
-    expect(() => docsSectionFromSlug("papers/attention-is-all-you-need")).toThrow(
-      /Unsupported published docs section "papers"/,
-    );
+    expect(() =>
+      docsSectionFromSlug("papers/attention-is-all-you-need"),
+    ).toThrow(/Unsupported published docs section "papers"/);
   });
 
   test("canonical factories hrefs resolve under /docs/factories, including nested slugs", () => {
@@ -199,9 +199,9 @@ describe("published docs registry contract — workers section", () => {
     expect(() => docsSectionFromSlug("modules/attention")).toThrow(
       /Unsupported published docs section "modules"/,
     );
-    expect(() => docsSectionFromSlug("papers/attention-is-all-you-need")).toThrow(
-      /Unsupported published docs section "papers"/,
-    );
+    expect(() =>
+      docsSectionFromSlug("papers/attention-is-all-you-need"),
+    ).toThrow(/Unsupported published docs section "papers"/);
   });
 
   test("canonical workers hrefs resolve under /docs/workers, including nested slugs", () => {
@@ -270,9 +270,9 @@ describe("published docs registry contract — workstations section", () => {
     expect(() => docsSectionFromSlug("modules/attention")).toThrow(
       /Unsupported published docs section "modules"/,
     );
-    expect(() => docsSectionFromSlug("papers/attention-is-all-you-need")).toThrow(
-      /Unsupported published docs section "papers"/,
-    );
+    expect(() =>
+      docsSectionFromSlug("papers/attention-is-all-you-need"),
+    ).toThrow(/Unsupported published docs section "papers"/);
   });
 
   test("canonical workstations hrefs resolve under /docs/workstations, including nested slugs", () => {
