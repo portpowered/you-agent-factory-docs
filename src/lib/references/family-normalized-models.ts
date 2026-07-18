@@ -55,6 +55,9 @@ export type OpenApiOperationSummary = {
 
 /**
  * Normalized CLI command identity for later CLI reference pages.
+ *
+ * Optional metadata fields stay absent when the published contract omitted
+ * them — never invent flags, arguments, defaults, or conflicts here.
  */
 export type CliCommandNormalized = {
   id: string;
@@ -63,7 +66,26 @@ export type CliCommandNormalized = {
   /** Full command path (for example `you config init`). */
   commandPath: string;
   aliases: string[];
+  /**
+   * Preferred single-line description when published (`short`, else `long`).
+   * Kept for display/search projections that need one summary string.
+   */
   description?: string;
+  /** Published short help text when present. */
+  shortDescription?: string;
+  /** Published long help text when present. */
+  longDescription?: string;
+  /** Published example block when present. */
+  example?: string;
+  /**
+   * Published documentation visibility string from the CLI contract
+   * (for example `visible`). Left as the contract value — not remapped here.
+   */
+  visibility?: string;
+  /** Whether the command is marked runnable in the published contract. */
+  runnable?: boolean;
+  /** Whether a handler is present in the published contract. */
+  handlerPresent?: boolean;
   lifecycle?: ReferenceLifecycle;
   source: ReferenceSourcePointer;
   anchor: string;
@@ -347,6 +369,44 @@ export function parseCliCommandNormalized(
 
   if (value.description !== undefined) {
     model.description = requireNonEmptyString(value.description, "description");
+  }
+  if (value.shortDescription !== undefined) {
+    model.shortDescription = requireNonEmptyString(
+      value.shortDescription,
+      "shortDescription",
+    );
+  }
+  if (value.longDescription !== undefined) {
+    model.longDescription = requireNonEmptyString(
+      value.longDescription,
+      "longDescription",
+    );
+  }
+  if (value.example !== undefined) {
+    model.example = requireNonEmptyString(value.example, "example");
+  }
+  if (value.visibility !== undefined) {
+    model.visibility = requireNonEmptyString(value.visibility, "visibility");
+  }
+  if (value.runnable !== undefined) {
+    if (typeof value.runnable !== "boolean") {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "runnable" must be a boolean.`,
+        { field: "runnable" },
+      );
+    }
+    model.runnable = value.runnable;
+  }
+  if (value.handlerPresent !== undefined) {
+    if (typeof value.handlerPresent !== "boolean") {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "handlerPresent" must be a boolean.`,
+        { field: "handlerPresent" },
+      );
+    }
+    model.handlerPresent = value.handlerPresent;
   }
 
   const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");

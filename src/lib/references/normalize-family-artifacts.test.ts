@@ -112,12 +112,61 @@ describe("normalizeCliCommandsFromArtifact", () => {
       id: "you",
       commandPath: "you",
       description: "Run and manage factories",
+      shortDescription: "Run and manage factories",
       lifecycle: { state: "active" },
       anchor: "you",
     });
     expect(commands[1].description).toBeUndefined();
     expect(commands[1].aliases).toEqual(["bootstrap"]);
     expect(commands[1].anchor).toBe("you-config-init");
+  });
+
+  test("preserves example, visibility, runnable, and handler metadata when published", () => {
+    const fixture = {
+      formatVersion: "cli-command-identity/v1",
+      rootPath: "you",
+      commands: [
+        {
+          idCandidate: "you",
+          name: "you",
+          path: "you",
+          aliases: [],
+          short: "Run factories",
+          long: "Run factories with a longer help block.",
+          example: "  you docs agents",
+          visibility: "visible",
+          lifecycle: "active",
+          runnable: true,
+          handlerPresent: true,
+        },
+        {
+          idCandidate: "you.mcp",
+          name: "mcp",
+          path: "you mcp",
+          aliases: [],
+          short: "MCP servers",
+          long: "",
+          example: "",
+          visibility: "visible",
+          lifecycle: "active",
+          runnable: false,
+          handlerPresent: false,
+        },
+      ],
+    };
+
+    const commands = normalizeCliCommandsFromArtifact(fixture);
+    expect(commands[0]).toMatchObject({
+      shortDescription: "Run factories",
+      longDescription: "Run factories with a longer help block.",
+      example: "you docs agents",
+      visibility: "visible",
+      runnable: true,
+      handlerPresent: true,
+    });
+    expect(commands[1].example).toBeUndefined();
+    expect(commands[1].runnable).toBe(false);
+    expect(commands[1].handlerPresent).toBe(false);
   });
 
   test("consumes W03-resolved CLI public-subpath data", () => {
@@ -131,6 +180,9 @@ describe("normalizeCliCommandsFromArtifact", () => {
     expect(init?.commandPath).toBe("you config init");
     expect(init?.description).toBeTruthy();
     expect(init?.source.publicArtifactId).toBe("@you-agent-factory/api/cli");
+    expect(init?.visibility).toBe("visible");
+    expect(typeof init?.runnable).toBe("boolean");
+    expect(typeof init?.handlerPresent).toBe("boolean");
   });
 });
 

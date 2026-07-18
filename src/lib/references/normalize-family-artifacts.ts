@@ -321,9 +321,11 @@ export function normalizeCliCommandsFromArtifact(
     }
 
     // Prefer short help text; fall back to long. Empty package strings stay absent.
-    const description =
-      optionalNonEmptyString(command.short) ??
-      optionalNonEmptyString(command.long);
+    const shortDescription = optionalNonEmptyString(command.short);
+    const longDescription = optionalNonEmptyString(command.long);
+    const description = shortDescription ?? longDescription;
+    const example = optionalNonEmptyString(command.example);
+    const visibility = optionalNonEmptyString(command.visibility);
 
     const lifecycle = lifecycleFromStringOrObject(
       command.lifecycle,
@@ -345,6 +347,24 @@ export function normalizeCliCommandsFromArtifact(
 
     if (description !== undefined) {
       model.description = description;
+    }
+    if (shortDescription !== undefined) {
+      model.shortDescription = shortDescription;
+    }
+    if (longDescription !== undefined) {
+      model.longDescription = longDescription;
+    }
+    if (example !== undefined) {
+      model.example = example;
+    }
+    if (visibility !== undefined) {
+      model.visibility = visibility;
+    }
+    if (typeof command.runnable === "boolean") {
+      model.runnable = command.runnable;
+    }
+    if (typeof command.handlerPresent === "boolean") {
+      model.handlerPresent = command.handlerPresent;
     }
     if (lifecycle !== undefined) {
       model.lifecycle = lifecycle;

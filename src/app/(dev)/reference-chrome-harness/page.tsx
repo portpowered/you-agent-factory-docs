@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ReferenceChromeHarness } from "@/components/references/harness/ReferenceChromeHarness";
+import { ReferenceCliHarness } from "@/components/references/harness/ReferenceCliHarness";
 
 export default function ReferenceChromeHarnessPage() {
   if (
@@ -9,5 +10,10 @@ export default function ReferenceChromeHarnessPage() {
     notFound();
   }
 
-  return <ReferenceChromeHarness />;
+  return (
+    <>
+      <ReferenceChromeHarness />
+      <ReferenceCliHarness />
+    </>
+  );
 }

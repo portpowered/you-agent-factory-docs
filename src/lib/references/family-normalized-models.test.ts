@@ -200,6 +200,25 @@ describe("CliCommandNormalized / McpToolNormalized / JavascriptSymbolNormalized 
     expect(model.anchor).toBe("you-config-init");
   });
 
+  test("CLI model preserves optional published metadata fields", () => {
+    const model = createCliCommandNormalized(
+      sampleCli({
+        shortDescription: "Short help",
+        longDescription: "Long help",
+        example: "  you config init",
+        visibility: "visible",
+        runnable: true,
+        handlerPresent: false,
+      }),
+    );
+    expect(model.shortDescription).toBe("Short help");
+    expect(model.longDescription).toBe("Long help");
+    expect(model.example).toBe("  you config init");
+    expect(model.visibility).toBe("visible");
+    expect(model.runnable).toBe(true);
+    expect(model.handlerPresent).toBe(false);
+  });
+
   test("MCP model exposes tool name and leaves lifecycle absent when unpublished", () => {
     const model = createMcpToolNormalized(sampleMcp());
     expect(model.name).toBe("you.factory_session.get");
