@@ -1,5 +1,10 @@
 import { notFound } from "next/navigation";
 import { OpenAPISpikeAPIPage } from "@/lib/references-openapi-spike/api-page";
+import {
+  SPIKE_MOBILE_NAV_ATTR,
+  SPIKE_MOBILE_NAV_LIST_ATTR,
+  SPIKE_OPERATION_NAV_ARIA_LABEL,
+} from "@/lib/references-openapi-spike/mobile-navigation";
 import { loadOpenApiSpikeSinglePageProjection } from "@/lib/references-openapi-spike/openapi-server";
 import { loadSpikeAnchorInventory } from "@/lib/references-openapi-spike/spike-anchor-inventory";
 import { SPIKE_THEME_ROOT_ATTR } from "@/lib/references-openapi-spike/theme-customization";
@@ -24,7 +29,7 @@ export default async function ReferencesOpenApiSpikePage() {
 
   return (
     <main
-      className="mx-auto max-w-6xl px-4 py-8 text-foreground"
+      className="mx-auto min-w-0 max-w-6xl overflow-x-hidden px-4 py-8 text-foreground"
       {...{ [SPIKE_THEME_ROOT_ATTR]: "" }}
     >
       <header className="mb-8 space-y-2 border-b border-border pb-6">
@@ -40,35 +45,55 @@ export default async function ReferencesOpenApiSpikePage() {
           all {projection.operations.length} published operations appear on this
           one route. Deep links use collision-free <code>operationId</code>{" "}
           anchors. Playground / live execution is suppressed (static examples
-          only; no proxy). Theme hooks use factory semantic tokens. Not merged
-          as production reference UI.
+          only; no proxy). Theme hooks use factory semantic tokens. Page-local
+          operation nav collapses on phones. Not merged as production reference
+          UI.
         </p>
       </header>
 
-      <nav
-        aria-label="Operation deep links"
-        className="mb-10 rounded-lg border border-border bg-muted/30 p-4"
+      {/*
+        Collapsed details/summary keeps 45 deep links reachable at phone widths
+        without forcing readers past a long always-open list before content.
+      */}
+      <details
+        className="mb-10 rounded-lg border border-border bg-muted/30"
+        {...{ [SPIKE_MOBILE_NAV_ATTR]: "" }}
       >
-        <p className="mb-3 text-sm font-medium">
-          Deterministic operation anchors ({inventory.anchors.length})
-        </p>
-        <ul className="grid gap-1 text-sm sm:grid-cols-2">
-          {inventory.anchors.map((anchor) => (
-            <li key={anchor.deepLinkId}>
-              <a
-                className="text-primary underline-offset-4 hover:underline"
-                href={`#${anchor.deepLinkId}`}
-              >
-                <code>{anchor.deepLinkId}</code>
-              </a>
-              <span className="text-muted-foreground">
-                {" "}
-                — {anchor.method.toUpperCase()} {anchor.path}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </nav>
+        <summary className="cursor-pointer list-none p-4 text-sm font-medium marker:content-none [&::-webkit-details-marker]:hidden">
+          <span className="text-foreground">
+            {SPIKE_OPERATION_NAV_ARIA_LABEL} ({inventory.anchors.length})
+          </span>
+          <span className="mt-1 block text-xs font-normal text-muted-foreground">
+            Tap to expand deterministic operation anchors (collapsed by default
+            for phone widths)
+          </span>
+        </summary>
+        <nav
+          aria-label={SPIKE_OPERATION_NAV_ARIA_LABEL}
+          className="border-t border-border px-4 pb-4 pt-3"
+        >
+          <ul
+            className="grid max-h-[50vh] gap-1 overflow-y-auto overflow-x-hidden text-sm sm:grid-cols-2"
+            {...{ [SPIKE_MOBILE_NAV_LIST_ATTR]: "" }}
+          >
+            {inventory.anchors.map((anchor) => (
+              <li key={anchor.deepLinkId} className="min-w-0">
+                <a
+                  className="break-all text-primary underline-offset-4 hover:underline"
+                  href={`#${anchor.deepLinkId}`}
+                  data-openapi-spike-nav-link={anchor.deepLinkId}
+                >
+                  <code>{anchor.deepLinkId}</code>
+                </a>
+                <span className="text-muted-foreground">
+                  {" "}
+                  — {anchor.method.toUpperCase()} {anchor.path}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </details>
 
       <OpenAPISpikeAPIPage {...projection.apiPageProps} />
     </main>

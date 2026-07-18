@@ -90,6 +90,24 @@ the shipped `/docs/references/api` surface.
 - Host product is `html.dark` + `data-color-palette="factory-dark"`;
   fumadocs-ui `shadcn.css` already maps `--color-fd-*` → host semantic tokens.
 
+## Mobile navigation and export / search costs
+
+- `src/lib/references-openapi-spike/mobile-navigation.ts` — phone viewport
+  (390×844), collapsible `<details>` contract, and pure HTML markup probe.
+- `src/lib/references-openapi-spike/cost-measurements.ts` — reproducible
+  measurement method (HTML bytes, Next static JS bytes, DOMContentLoaded
+  hydration proxy, search-projection delta). Search delta is **0** while
+  shared nav/search/sitemap inventories exclude the spike.
+- Spike page wraps operation deep links in collapsed-by-default `<details>`
+  with a `max-h-[50vh]` scroll list so phone readers can reach content without
+  scrolling past 45 links; `min-w-0` + `overflow-x-hidden` on `<main>`.
+- `src/lib/references-openapi-spike/assert-mobile-and-costs.ts` — starts an
+  isolated Next dev server, measures HTML/JS, and uses Playwright at 390×844
+  for overflow + nav expand/reachability + hydration proxy. Run with plain
+  `bun`, not `bun test` (`OPENAPI_SPIKE_PROBE_PORT=3466`).
+- Spike SSR HTML is multi-megabyte; treat that as a W08 productionization risk,
+  not a CI budget gate for this non-production route.
+
 ## Temporary install policy
 
 - Spike may add exact `fumadocs-openapi` and required peers (for example
