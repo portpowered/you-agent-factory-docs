@@ -183,8 +183,9 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    // W11 published the CLI reference page under the references family.
+    // W11 published CLI and MCP reference pages under the references family.
     expect(defaultPaths).toContain("references/cli");
+    expect(defaultPaths).toContain("references/mcp");
 
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       if (id === "references") {
@@ -215,7 +216,7 @@ describe("W05 route-family static params and not-found", () => {
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
-    // references/cli ships default-locale only until localized message bundles exist.
+    // references/cli and references/mcp ship default-locale only until localized message bundles exist.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

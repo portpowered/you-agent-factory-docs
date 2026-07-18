@@ -71,6 +71,13 @@ async function loadRouteFamilyPageMdxComponents(
     return mod.pageMdxComponents ?? {};
   }
 
+  if (section === "references" && slug === "mcp") {
+    const mod = await import(
+      "@/content/docs/references/mcp/page-mdx-components"
+    );
+    return mod.pageMdxComponents ?? {};
+  }
+
   return {};
 }
 

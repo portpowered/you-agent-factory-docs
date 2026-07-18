@@ -40,6 +40,21 @@ Do **not**:
 | `src/lib/references/cli-reference-turbopack.ts` | Turbopack-safe CLI export resolution via manifest |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Merges page-local MDX components for references/cli |
 
+## Key host files (MCP page — story 002)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/mcp/page.mdx` | Published reference page structure |
+| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy |
+| `src/content/docs/references/mcp/assets.json` | Empty baseline assets |
+| `src/content/docs/references/mcp/McpReferenceInventory.tsx` | Server mount: load inventory → `McpToolInventory` |
+| `src/content/docs/references/mcp/page-mdx-components.tsx` | Page-local MDX component map |
+| `src/content/docs/references/mcp/mcp-page.test.tsx` | Colocated route/render proof |
+| `src/content/registry/references/mcp.json` | `reference.mcp` registry record |
+| `src/lib/references/load-mcp-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
+| `src/lib/references/mcp-reference-turbopack.ts` | Turbopack-safe MCP export resolution via manifest |
+| `src/lib/content/route-family-local-docs-page-load.ts` | Also merges page-local MDX for references/mcp |
+
 ## Additive registry / published-docs wiring
 
 | Path | Role |
@@ -56,18 +71,23 @@ Do **not**:
 | Path | Role |
 | --- | --- |
 | `src/components/references/cli/` | Public W10 CLI inventory surfaces |
-| `src/lib/references/normalize-family-artifacts.ts` | `normalizeCliCommandsFromArtifact` |
+| `src/components/references/mcp/` | Public W10 MCP inventory surfaces |
+| `src/lib/references/normalize-family-artifacts.ts` | `normalizeCliCommandsFromArtifact`, `normalizeMcpToolsFromArtifact` |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 acquisition |
-| `src/lib/references/reference-search-projection.ts` | `REFERENCE_FAMILY_PAGE_PATHS.cli` |
+| `src/lib/references/reference-search-projection.ts` | `REFERENCE_FAMILY_PAGE_PATHS.{cli,mcp}` |
 
 ## Patterns
 
 - Pass already-normalized inventory props into client inventory components; never
   import W03 Node acquisition into browser bundles.
 - Prefer Turbopack-safe `resolveExport` via package `manifest` → sibling JSON
-  (same pattern as schema verification / events OpenAPI).
+  (same pattern as schema verification / events OpenAPI). CLI uses
+  `generated/cli/commands.json`; MCP uses `generated/mcp/tools.json`.
 - Keep curated discovery under `#related` with `LocalizedLinkList` for authored
-  CLI docs and planned sibling reference routes; `RelatedDocs` stays for when
+  docs and planned sibling reference routes; `RelatedDocs` stays for when
   reference records participate in the related-docs runtime.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
+- Each new references page needs its own static
+  `import("@/content/docs/references/<slug>/page-mdx-components")` branch in
+  `route-family-local-docs-page-load.ts`.
