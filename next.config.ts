@@ -28,6 +28,31 @@ const openApiSpikeContentStubModule = path.resolve(
   "src/app/(dev)/references-openapi-spike/spike-page-content.stub.tsx",
 );
 
+/** Any W02 SSE spike enable flag keeps heavy content in the production graph. */
+const enableSseSpike =
+  process.env.ENABLE_SSE_OPENAPI_SPIKE === "1" ||
+  process.env.ENABLE_SSE_ASYNCAPI_SPIKE === "1" ||
+  process.env.ENABLE_SSE_CATALOG_SPIKE === "1" ||
+  process.env.ENABLE_SSE_HYBRID_SPIKE === "1";
+
+const sseSpikeContentAliases = [
+  "sse-openapi",
+  "sse-asyncapi",
+  "sse-catalog",
+  "sse-placement-hybrid",
+].map((route) => ({
+  module: path.resolve(
+    projectRoot,
+    `src/app/(dev)/spikes/${route}/spike-page-content.tsx`,
+  ),
+  stub: path.resolve(
+    projectRoot,
+    `src/app/(dev)/spikes/${route}/spike-page-content.stub.tsx`,
+  ),
+  // Match the W01 replacement pattern (extensionless import path).
+  pattern: new RegExp(`[\\\\/]spikes[\\\\/]${route}[\\\\/]spike-page-content$`),
+}));
+
 const nextConfig: NextConfig = {
   ...resolveNextConfigForBuildMode(),
   // Package ships TypeScript source through its export map (no dist/); Next must transpile it.
@@ -39,8 +64,9 @@ const nextConfig: NextConfig = {
     root: projectRoot,
   },
   /**
-   * Keep the W01 OpenAPI spike out of production static-export budgets unless
-   * ENABLE_OPENAPI_SPIKE=1. CI build uses webpack (`next build --webpack`).
+   * Keep the W01 OpenAPI spike and W02 SSE spikes out of production
+   * static-export budgets unless their ENABLE_* flags are set. CI build uses
+   * webpack (`next build --webpack`).
    */
   webpack: (config, { dev, webpack }) => {
     if (!dev && !enableOpenApiSpike) {
@@ -56,6 +82,19 @@ const nextConfig: NextConfig = {
         ...config.resolve.alias,
         [openApiSpikeContentModule]: openApiSpikeContentStubModule,
       };
+    }
+    if (!dev && !enableSseSpike) {
+      config.plugins = config.plugins ?? [];
+      config.resolve = config.resolve ?? {};
+      config.resolve.alias = {
+        ...config.resolve.alias,
+      };
+      for (const spike of sseSpikeContentAliases) {
+        config.plugins.push(
+          new webpack.NormalModuleReplacementPlugin(spike.pattern, spike.stub),
+        );
+        config.resolve.alias[spike.module] = spike.stub;
+      }
     }
     return config;
   },

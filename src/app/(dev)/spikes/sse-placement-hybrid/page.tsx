@@ -1,0 +1,20 @@
+import { notFound } from "next/navigation";
+
+/**
+ * Non-production W02 hybrid placement SSE spike route gate.
+ *
+ * Production static export aliases `./spike-page-content` to the stub unless
+ * an ENABLE_SSE_* spike flag is set.
+ */
+export default async function SsePlacementHybridSpikePage() {
+  if (
+    process.env.NODE_ENV === "production" &&
+    process.env.ENABLE_SSE_HYBRID_SPIKE !== "1" &&
+    process.env.ENABLE_SSE_OPENAPI_SPIKE !== "1"
+  ) {
+    notFound();
+  }
+
+  const { SseHybridSpikePageContent } = await import("./spike-page-content");
+  return <SseHybridSpikePageContent />;
+}
