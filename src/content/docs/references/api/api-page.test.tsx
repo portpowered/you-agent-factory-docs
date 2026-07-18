@@ -97,11 +97,29 @@ describe("api reference page", () => {
 
       expect(screen.getByTestId("api-reference-projection")).toBeTruthy();
       expect(
+        document
+          .querySelector('[data-testid="api-surface"]')
+          ?.getAttribute("data-api-status"),
+      ).toBe("ready");
+      expect(document.querySelector('[data-testid="api-status"]')).toBeNull();
+      expect(
         document.querySelector("[data-api-operation-navigator]"),
       ).not.toBeNull();
       expect(
         document.querySelectorAll("[data-api-operation-section]").length,
       ).toBeGreaterThan(0);
+      expect(
+        document
+          .querySelector("[data-api-reference-projection]")
+          ?.getAttribute("data-api-playground-suppressed"),
+      ).toBe("true");
+      expect(document.querySelectorAll("[data-api-sse-summary]").length).toBe(
+        3,
+      );
+      expect(
+        document.querySelectorAll("[data-api-sse-live-connection='true']")
+          .length,
+      ).toBe(0);
 
       expect(
         screen

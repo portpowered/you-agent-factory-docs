@@ -97,6 +97,8 @@ try {
     });
 
     const probe = await page.evaluate((ops) => {
+      const surface = document.querySelector('[data-testid="api-surface"]');
+      const statusPanel = document.querySelector('[data-testid="api-status"]');
       const root = document.querySelector("[data-api-reference-projection]");
       const notice = document.querySelector("[data-api-local-server-base-url]");
       const disclaimer = document.querySelector(
@@ -161,6 +163,10 @@ try {
       });
 
       return {
+        surfaceStatus: surface?.getAttribute("data-api-status") ?? null,
+        hasStatusPanel: Boolean(statusPanel),
+        sectionCount: document.querySelectorAll("[data-api-operation-section]")
+          .length,
         suppressed: root?.getAttribute("data-api-playground-suppressed"),
         noticeUrl: notice?.getAttribute("data-api-local-server-base-url"),
         disclaimer: disclaimer?.textContent ?? null,
@@ -184,6 +190,15 @@ try {
     }, SSE_OPS);
 
     const failures: string[] = [];
+    if (probe.surfaceStatus !== "ready") {
+      failures.push(`expected ready API surface, got ${probe.surfaceStatus}`);
+    }
+    if (probe.hasStatusPanel) {
+      failures.push("ready route must not show api-status panel");
+    }
+    if (probe.sectionCount < 1) {
+      failures.push(`expected operation sections, got ${probe.sectionCount}`);
+    }
     if (probe.suppressed !== "true") {
       failures.push(`expected playground suppressed, got ${probe.suppressed}`);
     }

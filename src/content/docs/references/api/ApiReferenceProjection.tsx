@@ -7,6 +7,9 @@
  * suppression, and hybrid SSE summaries via `ApiOperationSection` — without
  * the non-production harness chrome. Static-only: no live playground, proxy,
  * or EventSource. Page wiring only; renderer internals stay under W08 ownership.
+ *
+ * Non-success outcomes short-circuit through `ApiSurface` / `ApiStatus` so the
+ * published route never blank-fails when the OpenAPI projection cannot render.
  */
 
 import {
@@ -14,8 +17,14 @@ import {
   API_PRINT_ROOT_ATTR,
   API_REFERENCE_PAGE_PATH,
   API_THEME_ROOT_ATTR,
+  type ApiLocalServerBaseUrl,
   ApiLocalServerBaseUrlNotice,
+  type ApiLocalServerBaseUrlProjection,
+  type ApiOperationDetail,
+  type ApiOperationDetailProjection,
   ApiOperationNavigation,
+  type ApiOperationNavigationProjection,
+  type ApiOperationNavModel,
   ApiOperationSection,
   ApiReferenceHashController,
   ApiSurface,
@@ -26,9 +35,65 @@ import {
 import "@/features/docs/styles/references-api-print.css";
 import { cn } from "@/lib/utils";
 
+/** Injectable loaders for page-local success / non-success proofs. */
+export type ApiReferenceProjectionLoaders = {
+  buildNavigation: () => ApiOperationNavigationProjection;
+  buildDetails: () => ApiOperationDetailProjection;
+  buildLocalServer: () => ApiLocalServerBaseUrlProjection;
+};
+
+const defaultLoaders: ApiReferenceProjectionLoaders = {
+  buildNavigation: buildApiOperationNavigationFromArtifact,
+  buildDetails: buildApiOperationDetailsFromArtifact,
+  buildLocalServer: buildApiLocalServerBaseUrlFromArtifact,
+};
+
+export type ApiReferenceProjectionReadyState = {
+  status: "ready";
+  model: ApiOperationNavModel;
+  byAnchor: ReadonlyMap<string, ApiOperationDetail>;
+  localServerBaseUrl: ApiLocalServerBaseUrl | undefined;
+};
+
+export type ApiReferenceProjectionNonReadyState = {
+  status: "empty" | "invalid";
+};
+
+export type ApiReferenceProjectionState =
+  | ApiReferenceProjectionReadyState
+  | ApiReferenceProjectionNonReadyState;
+
+/**
+ * Resolve the published-page projection into an explicit ready / empty /
+ * invalid state. Failures and zero-operation corpora stay accessible — never
+ * a blank page.
+ */
+export function resolveApiReferenceProjectionState(
+  loaders: ApiReferenceProjectionLoaders = defaultLoaders,
+): ApiReferenceProjectionState {
+  try {
+    const { model } = loaders.buildNavigation();
+    if (model.operationCount === 0) {
+      return { status: "empty" };
+    }
+    const { byAnchor } = loaders.buildDetails();
+    const { primary: localServerBaseUrl } = loaders.buildLocalServer();
+    return {
+      status: "ready",
+      model,
+      byAnchor,
+      localServerBaseUrl,
+    };
+  } catch {
+    return { status: "invalid" };
+  }
+}
+
 export type ApiReferenceProjectionProps = {
   className?: string;
   "data-testid"?: string;
+  /** Optional loaders for page-local non-success proofs. Production omits this. */
+  loaders?: ApiReferenceProjectionLoaders;
 };
 
 /**
@@ -37,11 +102,21 @@ export type ApiReferenceProjectionProps = {
 export function ApiReferenceProjection({
   className,
   "data-testid": testId = "api-reference-projection",
+  loaders = defaultLoaders,
 }: ApiReferenceProjectionProps) {
-  const { model } = buildApiOperationNavigationFromArtifact();
-  const { byAnchor } = buildApiOperationDetailsFromArtifact();
-  const { primary: localServerBaseUrl } =
-    buildApiLocalServerBaseUrlFromArtifact();
+  const state = resolveApiReferenceProjectionState(loaders);
+
+  if (state.status !== "ready") {
+    return (
+      <ApiSurface
+        className={cn("min-w-0", className)}
+        data-testid={testId}
+        status={state.status}
+      />
+    );
+  }
+
+  const { model, byAnchor, localServerBaseUrl } = state;
 
   const seenAnchors = new Set<string>();
   const uniqueItems = model.groups.flatMap((group) =>

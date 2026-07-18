@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for the published OpenAPI projection mount.
- * Asserts navigation, operation sections, anchors, filter chrome, static-only
- * policy, and hybrid SSE summaries without scanning foreign renderer inventories.
+ * Asserts success / non-success surface states, navigation, operation
+ * sections, anchors, filter chrome, static-only policy, and hybrid SSE
+ * summaries without scanning foreign renderer inventories.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -22,16 +23,48 @@ import {
   API_SSE_OPERATIONS,
   API_SSE_ROLE_ATTR,
   API_SSE_SUMMARY_ATTR,
+  API_UI_STATUS_DEFAULT_MESSAGES,
+  API_UI_STATUS_DEFAULT_TITLES,
+  type ApiLocalServerBaseUrlProjection,
+  type ApiOperationDetailProjection,
+  type ApiOperationNavigationProjection,
   apiOperationAnchorUrl,
   assertsNoApiProxyUrl,
   buildApiLocalServerBaseUrlFromArtifact,
   buildApiOperationNavigationFromArtifact,
   isApiPlaygroundSuppressed,
 } from "@/components/references/api";
-import { ApiReferenceProjection } from "./ApiReferenceProjection";
+import {
+  ApiReferenceProjection,
+  type ApiReferenceProjectionLoaders,
+  resolveApiReferenceProjectionState,
+} from "./ApiReferenceProjection";
 
 // Artifact load + full projection render can exceed Bun's 5s default.
 const PROJECTION_RENDER_TIMEOUT_MS = 60_000;
+
+function emptyNavigationProjection(): ApiOperationNavigationProjection {
+  return {
+    model: { groups: [], linkCount: 0, operationCount: 0 },
+    normalizedOperationCount: 0,
+    documentTagOrder: [],
+    specifier: "@you-agent-factory/api/openapi",
+  };
+}
+
+function failingLoaders(
+  overrides: Partial<ApiReferenceProjectionLoaders> = {},
+): ApiReferenceProjectionLoaders {
+  const boom = (): never => {
+    throw new Error("forced OpenAPI projection failure");
+  };
+  return {
+    buildNavigation: boom,
+    buildDetails: boom,
+    buildLocalServer: boom,
+    ...overrides,
+  };
+}
 
 const EXPECTED_SSE_OPS = [
   {
@@ -66,13 +99,46 @@ describe("ApiReferenceProjection", () => {
     cleanup();
   });
 
+  test("resolveApiReferenceProjectionState returns ready for the packaged artifact", () => {
+    const state = resolveApiReferenceProjectionState();
+    expect(state.status).toBe("ready");
+    if (state.status !== "ready") {
+      throw new Error("expected ready projection state");
+    }
+    expect(state.model.operationCount).toBeGreaterThan(0);
+    expect(state.byAnchor.size).toBeGreaterThan(0);
+  });
+
+  test("resolveApiReferenceProjectionState returns empty when no operations publish", () => {
+    const state = resolveApiReferenceProjectionState({
+      buildNavigation: emptyNavigationProjection,
+      buildDetails: (): ApiOperationDetailProjection => {
+        throw new Error("details should not load for empty navigation");
+      },
+      buildLocalServer: (): ApiLocalServerBaseUrlProjection => {
+        throw new Error("local server should not load for empty navigation");
+      },
+    });
+    expect(state).toEqual({ status: "empty" });
+  });
+
+  test("resolveApiReferenceProjectionState returns invalid when loaders throw", () => {
+    expect(resolveApiReferenceProjectionState(failingLoaders())).toEqual({
+      status: "invalid",
+    });
+  });
+
   test(
-    "mounts tag navigation, filter, and all published operation sections",
+    "mounts the ready API surface with tag navigation and all operations",
     () => {
       const { model } = buildApiOperationNavigationFromArtifact();
       expect(model.operationCount).toBeGreaterThan(0);
 
       const { container } = render(<ApiReferenceProjection />);
+
+      const surface = screen.getByTestId("api-surface");
+      expect(surface.getAttribute("data-api-status")).toBe("ready");
+      expect(screen.queryByTestId("api-status")).toBeNull();
 
       const root = screen.getByTestId("api-reference-projection");
       expect(root).toBeTruthy();
@@ -226,4 +292,48 @@ describe("ApiReferenceProjection", () => {
     },
     PROJECTION_RENDER_TIMEOUT_MS,
   );
+
+  test("renders accessible empty status when the projection has no operations", () => {
+    render(
+      <ApiReferenceProjection
+        loaders={{
+          buildNavigation: emptyNavigationProjection,
+          buildDetails: (): ApiOperationDetailProjection => {
+            throw new Error("details should not load for empty navigation");
+          },
+          buildLocalServer: (): ApiLocalServerBaseUrlProjection => {
+            throw new Error(
+              "local server should not load for empty navigation",
+            );
+          },
+        }}
+      />,
+    );
+
+    const status = screen.getByRole("status");
+    expect(status.getAttribute("data-api-status")).toBe("empty");
+    expect(status.getAttribute("aria-live")).toBe("polite");
+    expect(status.textContent).toContain(API_UI_STATUS_DEFAULT_TITLES.empty);
+    expect(status.textContent).toContain(API_UI_STATUS_DEFAULT_MESSAGES.empty);
+    expect(screen.queryByTestId("api-reference-projection")).toBeTruthy();
+    expect(document.querySelector("[data-api-operation-navigator]")).toBeNull();
+    expect(
+      document.querySelectorAll("[data-api-operation-section]").length,
+    ).toBe(0);
+  });
+
+  test("renders accessible invalid status when the OpenAPI projection cannot load", () => {
+    render(<ApiReferenceProjection loaders={failingLoaders()} />);
+
+    const status = screen.getByRole("status");
+    expect(status.getAttribute("data-api-status")).toBe("invalid");
+    expect(status.getAttribute("aria-live")).toBe("polite");
+    expect(status.textContent).toContain(API_UI_STATUS_DEFAULT_TITLES.invalid);
+    expect(status.textContent).toContain(
+      API_UI_STATUS_DEFAULT_MESSAGES.invalid,
+    );
+    expect(screen.queryByTestId("api-reference-projection")).toBeTruthy();
+    expect(document.querySelector("[data-api-operation-navigator]")).toBeNull();
+    expect(document.querySelectorAll("[data-api-sse-summary]").length).toBe(0);
+  });
 });

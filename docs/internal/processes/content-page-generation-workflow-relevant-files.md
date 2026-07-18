@@ -1038,6 +1038,16 @@ W05 already provides nested discovery, family indexes, and
    do not re-implement event catalog UI. Prove static-only + three SSE
    summaries with page-local tests and the colocated browser probe
    `assert-api-page-static-sse-browser.ts` (unique port; kill server on exit).
+9. Keep non-success outcomes page-owned: `resolveApiReferenceProjectionState`
+   short-circuits to `ApiSurface` `empty` / `invalid` (public `ApiStatus`)
+   when the packaged projection has zero operations or loaders throw.
+   Inject optional `loaders` only in page-local tests — production MDX omits
+   them. Assert ready `data-api-status="ready"` plus accessible empty/invalid
+   `role="status"` messaging in `ApiReferenceProjection.test.tsx` /
+   `api-page.test.tsx`; do not scan renderer trees or shared inventories.
+   Ownership stays page wiring: no edits under `src/components/references/api/`
+   (or schema/events/CLI/MCP/JS), no sibling W11 pages, no W15–W18 inventories,
+   no factories/workers/workstations content, no `node_modules` patches.
 
 Do not edit shared nav/sidebar/search/sitemap/compat inventory owners
 (W15–W18) by hand for this first page — published-docs membership is enough
