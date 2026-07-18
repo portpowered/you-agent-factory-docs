@@ -36,6 +36,8 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
 
 - Spike may add exact `fumadocs-openapi@10.10.3` and required peers (for example
   `@scalar/api-client-react`) for render evidence.
+- Spike may add exact `@fumadocs/asyncapi@0.2.1` (and portable `yaml` for Next/
+  Node OpenAPI parse) for AsyncAPI render evidence.
 - Do not treat those pins as the final production OpenAPI/AsyncAPI dependency
   set (W08 decides after W01/W02).
 - Do not own or rewrite W01 files under `src/lib/references-openapi-spike/`.
@@ -100,3 +102,17 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   discriminator. `projectOpenApiSseToAsyncApi` runs
   `assertEnvelopeProjectionRules` and returns `envelopeEvidence`. Focused
   tests: `envelope-projection-rules.test.ts`.
+- `@fumadocs/asyncapi` render + information loss (story 007): temporary pin
+  `@fumadocs/asyncapi@0.2.1` (not a permanent production pin). Server helper
+  `create-sse-spike-asyncapi.ts` regenerates AsyncAPI from packaged OpenAPI and
+  binds `createAsyncAPI` for load proofs. UI must use client component
+  `SseAsyncApiSpikeRenderer.tsx` because `createAsyncAPIPage` cannot be called
+  from a Server Component. Parse OpenAPI YAML with portable
+  `parse-openapi-yaml.ts` (`yaml` package) — `Bun.YAML` is unavailable under
+  Next's Node server. Route: `/spikes/sse-asyncapi`. Evidence helpers:
+  `asyncapi-render-evidence.ts`, `projection-information-loss.ts` (records
+  lost reconnect/cursor/dual-Accept/headers/retained-history/stream-generation
+  semantics; compatibility-only partially preserved as channel label). Never
+  hand-edit generated AsyncAPI to paper over gaps. Focused tests:
+  `projection-information-loss.test.ts` (+ subprocess
+  `prove-create-asyncapi-load.ts`).
