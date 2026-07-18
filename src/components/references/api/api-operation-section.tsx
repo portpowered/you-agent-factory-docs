@@ -11,6 +11,7 @@ import { ApiMethodBadge } from "./api-method-badge";
 import { ApiOperationCopyLink } from "./api-operation-copy-link";
 import { ApiOperationExamples } from "./api-operation-examples";
 import { ApiResponseMediaType } from "./api-response-media-type";
+import { ApiSseOperationSummaryPanel } from "./api-sse-operation-summary";
 import {
   API_OPERATION_ANCHOR_ATTR,
   API_OPERATION_SECTION_ATTR,
@@ -24,6 +25,7 @@ import {
   type ApiMediaContentDetail,
   type ApiOperationDetail,
 } from "./operation-detail";
+import { resolveApiSseOperationSummary } from "./sse-operation-summary";
 
 export type ApiOperationSectionProps = {
   detail: ApiOperationDetail;
@@ -72,6 +74,11 @@ export function ApiOperationSection({
   "data-testid": testId = "api-operation-section",
 }: ApiOperationSectionProps) {
   const headingId = `${detail.anchor}-heading`;
+  const sseSummary = resolveApiSseOperationSummary({
+    operationId: detail.operationId,
+    path: detail.path,
+    method: detail.method,
+  });
 
   return (
     <section
@@ -83,6 +90,7 @@ export function ApiOperationSection({
       data-api-operation-id={detail.operationId ?? detail.anchor}
       data-api-operation-method={detail.method}
       data-api-operation-path={detail.path}
+      data-api-sse-operation={sseSummary ? "true" : undefined}
       data-testid={testId}
       id={detail.anchor}
       tabIndex={-1}
@@ -127,6 +135,10 @@ export function ApiOperationSection({
           </p>
         ) : null}
       </header>
+
+      {sseSummary !== undefined ? (
+        <ApiSseOperationSummaryPanel summary={sseSummary} />
+      ) : null}
 
       <section
         aria-label="Request parameters"

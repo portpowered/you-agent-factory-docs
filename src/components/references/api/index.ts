@@ -59,6 +59,10 @@ export {
   ApiResponseMediaType,
   type ApiResponseMediaTypeProps,
 } from "./api-response-media-type";
+export {
+  ApiSseOperationSummaryPanel,
+  type ApiSseOperationSummaryProps,
+} from "./api-sse-operation-summary";
 export { ApiStatus } from "./api-status";
 export { ApiSurface, type ApiSurfaceProps } from "./api-surface";
 export {
@@ -210,6 +214,31 @@ export {
   assertsNoApiProxyUrl,
   isApiPlaygroundSuppressed,
 } from "./playground-suppression";
+export {
+  API_EVENTS_REFERENCE_PAGE_PATH,
+  type ApiSseEventsCatalogLink,
+  type ApiSseHttpSemanticsEntry,
+  type ApiSseHttpSemanticsField,
+  type ApiSseOperationSummary,
+  apiSseEventsCatalogLinkForSchemaRef,
+  apiSseEventsCatalogLinkForStreamRole,
+  apiSseOperationSummariesByOperationId,
+  assertCompatibilityOnlyNeverPreferred,
+  projectAllApiSseOperationSummaries,
+  projectApiSseOperationSummary,
+  resolveApiSseOperationSummary,
+} from "./sse-operation-summary";
+export {
+  API_SSE_OPERATIONS,
+  API_SSE_ROLE_ATTR,
+  API_SSE_SUMMARY_ATTR,
+  API_SSE_SUMMARY_SAFETY,
+  type ApiSseOperation,
+  type ApiSseOperationItem,
+  type ApiSseRole,
+  findApiSseOperation,
+  isApiSseOperation,
+} from "./sse-operations";
 export {
   API_UI_STATUS_DEFAULT_MESSAGES,
   API_UI_STATUS_DEFAULT_TITLES,

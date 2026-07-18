@@ -1,8 +1,8 @@
 /**
  * Focused W08 verification surface for tag-grouped operation navigation,
  * filtering, stable anchors, copy links, hash-to-focus, operation
- * request/response detail rendering, playground suppression, and local-server
- * base URL copy.
+ * request/response detail rendering, hybrid SSE summaries, playground
+ * suppression, and local-server base URL copy.
  *
  * Renders navigators against the package-resolved single-page projection and
  * full `ApiOperationSection` hosts whose `id` matches each nav anchor. Not a
@@ -78,11 +78,12 @@ export function ApiNavigationVerificationHarness({
             <p className="max-w-3xl text-sm text-muted-foreground">
               Exercises desktop and phone/tablet navigators, operation
               filtering, stable anchors, copy links, hash-to-focus,
-              request/response/media-type/example rendering, and static-only
+              request/response/media-type/example rendering, hybrid SSE
+              transport summaries (with events-catalog links), and static-only
               local-server base URL copy against the package-resolved OpenAPI
               projection ({model.operationCount} operations /{" "}
-              {model.groups.length} tags). Live playground and proxy execution
-              are suppressed.
+              {model.groups.length} tags). Live playground, proxy execution, and
+              live event-stream connections are suppressed.
             </p>
           </header>
 

@@ -83,6 +83,10 @@ hooks, and SSR cost.
 | `src/components/references/api/api-local-server-base-url.tsx` | Visible local-server base URL notice (static-only; no live execution) |
 | `src/components/references/api/load-local-server-base-url.ts` | Load primary local-server notice from the package OpenAPI artifact |
 | `src/components/references/api/assert-playground-suppression-browser.ts` | Playwright harness probe: no Send/try-it/proxy UI + local base URL visible |
+| `src/components/references/api/sse-operations.ts` | Production inventory of the three SSE ops + roles (canonical / ephemeral / compatibility-only) |
+| `src/components/references/api/sse-operation-summary.ts` | Pure hybrid SSE summaries: HTTP transport semantics + `/docs/references/events` catalog links |
+| `src/components/references/api/api-sse-operation-summary.tsx` | SSE summary panel UI (static-only; no live EventSource) |
+| `src/components/references/api/assert-sse-summaries-browser.ts` | Playwright harness probe: three SSE summaries, roles, events links, no full catalog |
 | `src/components/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
 | `src/components/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
 | `src/components/references/api/api-reference-hash-controller.tsx` | Hash-to-focus + back/forward (`hashchange` / `popstate`) without rewriting content |
@@ -190,6 +194,24 @@ hooks, and SSR cost.
 - Browser probe: `bun src/components/references/api/assert-playground-suppression-browser.ts`
   (unique port, `localhost`, Playwright via `launchPlaywrightBrowser`).
 
+## Hybrid SSE operation summaries
+
+- Inventory: `sse-operations.ts` lists the three published SSE ops with roles
+  (canonical `getEventsBySessionId`, ephemeral
+  `getFactoryResponseEventsBySessionId`, compatibility-only `getEvents`).
+  Compatibility-only is **never** preferred/canonical.
+- Pure summaries: `sse-operation-summary.ts` projects HTTP transport semantics
+  owned by the API page (transport, reconnect, cursor precedence, handshake
+  headers, dual-Accept, replay/retained-history, compatibility-only status) and
+  links toward planned W09 anchors under `/docs/references/events#…`
+  (W04 schema-pointer encoding for envelope schemas).
+- UI: `ApiSseOperationSummaryPanel` mounts inside `ApiOperationSection` only for
+  those three ops. Markers: `data-api-sse-summary`, `data-api-sse-role`,
+  `data-api-sse-live-connection="false"`, `data-api-sse-full-catalog="false"`.
+- Do **not** implement the full event envelope/payload catalog here (W09). Do
+  not import W02 spike catalog views into the production API tree.
+- Browser probe: `bun src/components/references/api/assert-sse-summaries-browser.ts`
+
 ## Patterns
 
 - Keep production API UI under `src/components/references/api/` so ownership
@@ -198,10 +220,9 @@ hooks, and SSR cost.
   do not re-litigate temporary spike status constants as production policy.
 - Non-ready outcomes must be explicit and accessible (`role="status"`,
   `aria-live="polite"`, `aria-busy` when loading).
-- Prefer migrating helpers from the W01 spike into this tree over editing the
-  spike in place.
-- Later stories: hybrid SSE summaries, theme/code-copy polish, and
-  responsive/a11y/print verification.
+- Prefer migrating helpers from the W01/W02 spikes into this tree over editing
+  the spike in place.
+- Later stories: theme/code-copy polish, and responsive/a11y/print verification.
 
 ## Focused verification
 
@@ -219,5 +240,7 @@ bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/operation-detail.test.ts \
   src/components/references/api/api-operation-section.test.tsx \
   src/components/references/api/playground-suppression.test.ts \
-  src/components/references/api/local-server-base-url.test.tsx
+  src/components/references/api/local-server-base-url.test.tsx \
+  src/components/references/api/sse-operation-summary.test.ts \
+  src/components/references/api/api-sse-operation-summary.test.tsx
 ```
