@@ -1,4 +1,4 @@
-.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-w20-contract-projection test-w20-content-registry test-w20-link-anchor test-w20-search-functional test-website-static-search test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
+.PHONY: setup check budget component-coverage dev lint format typecheck test test-verify-contract test-build-contract test-w20-contract-projection test-w20-content-registry test-w20-link-anchor test-w20-search-functional test-w20-a11y-responsive test-website-static-search test-system test-integration test-reader-facing test-ci-contract coverage build benchmark-static-export guard-pages-deployed-artifact ci validate-data scaffold linkcheck verify-content-runtime-completeness validate-pdf build-search-index component-examples planner-conflict-hotspots audit-canonical-page-surface verify-architectural-checklist-mechanism-status a11y
 
 # CI / Pages contract targets (see .github/workflows/ci.yml and deploy-pages.yml).
 # Local maintainers and automation share these entrypoints.
@@ -68,6 +68,12 @@ test-website-static-search:
 # Reproduce with: make test-w20-search-functional
 test-w20-search-functional:
 	bun run test:w20-search-functional
+
+# W20 a11y / responsive / focused-payload-budget convergence (make a11y +
+# W19 representative surfaces + narrow keyboard browser-path). Total-site
+# budget remains story 008. Reproduce with: make test-w20-a11y-responsive
+test-w20-a11y-responsive:
+	bun run test:w20-a11y-responsive
 
 test-system:
 	bun run test:system

@@ -147,6 +147,43 @@ Prove search → item deep-link navigation via live `docsSearchApi.search` (same
 `/api/search` pipeline) plus the browser-verify suite above — do not redesign
 search ranking or W16 projection ownership.
 
+## Story 005 — accessibility / responsive / focused payload budgets
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-a11y-responsive-convergence.ts` | Catalog of `make a11y` command gate, W19 suite inventory, focused payload-budget routes, and narrow keyboard browser-path contract |
+| `src/lib/verify/w20-a11y-responsive-convergence.test.ts` | Catalog completeness / file-existence / family-coverage proofs |
+| `src/lib/verify/w20-a11y-responsive-browser-verify.test.tsx` | Browser-path proof: API representative at narrow (390) width with keyboard focus visible on primary control |
+| `scripts/run-w20-a11y-responsive-tests.ts` | Runner: catalog → `make a11y` → browser-path suite |
+| `package.json` → `test:w20-a11y-responsive` | Maintainer / automation entry |
+| `Makefile` → `test-w20-a11y-responsive` | Shared Makefile contract |
+
+### Command gate
+
+* `make a11y` — critical-route + W19 reference-surface a11y / responsive /
+  focused payload-budget always-on suites (`test:a11y`)
+
+### Catalogued W19 / W20 suites (evidence inventory)
+
+* `a11y-responsive-contract.test.ts` — critical-route a11y contract
+* `a11y-reference-surface-contract.test.ts` — six representative routes × five layouts
+* `a11y-reference-payload-budget.test.ts` — focused API / events / factory-schema budgets (does **not** raise total-site ceilings; story 008 owns `make budget`)
+* `a11y-reference-keyboard-contract.test.ts` + `reference-keyboard-navigation.a11y.test.tsx`
+* `reference-responsive-overflow.a11y.test.tsx`
+* Screen-reader / hash-focus / copy / reduced-motion / long-token / no-JS / browser-closeout contract tests
+* `w20-a11y-responsive-browser-verify.test.tsx` — narrow + keyboard focus browser path
+
+### Reproduce
+
+```bash
+make test-w20-a11y-responsive
+# or: bun run test:w20-a11y-responsive
+```
+
+Worktree note: prove narrow-width keyboard focus via the API navigation harness
++ W19 keyboard chrome contract (happy-dom), not a second Playwright matrix.
+Do not redesign W19 harness ownership.
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,
