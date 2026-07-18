@@ -69,6 +69,11 @@
     "submittingWorkDocs": "Submitting work",
     "dynamicWorkflowsDocs": "Dynamic workflows",
     "configurationDocs": "Configuration (factory.json topology)",
+    "globalConfigurationDocs": "Global configuration",
+    "packagedDocs": "Packaged factories",
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "resourcesDocs": "Resources",
     "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows"
   },
   "callouts": {

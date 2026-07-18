@@ -173,26 +173,55 @@ describe("factories/dynamic-workflows documentation page", () => {
 
     expect(
       screen
-        .getByRole("link", { name: "Cursor dynamic workflows" })
-        .getAttribute("href"),
+        .getAllByRole("link", { name: "Cursor dynamic workflows" })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/guides/cursor-dynamic-workflows");
     expect(
       screen
-        .getByRole("link", { name: "Configuration (factory.json topology)" })
-        .getAttribute("href"),
+        .getAllByRole("link", {
+          name: "Configuration (factory.json topology)",
+        })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/factories/configuration");
     expect(
       screen
-        .getByRole("link", { name: "Global configuration" })
-        .getAttribute("href"),
+        .getAllByRole("link", { name: "Global configuration" })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/factories/global-configuration");
-    expect(screen.getByRole("link", { name: "CLI" }).getAttribute("href")).toBe(
-      "/docs/documentation/cli",
-    );
+    expect(
+      screen.getAllByRole("link", { name: "CLI" })[0]?.getAttribute("href"),
+    ).toBe("/docs/documentation/cli");
     expect(
       screen
-        .getByRole("link", { name: "Harness support" })
-        .getAttribute("href"),
+        .getAllByRole("link", { name: "Harness support" })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/documentation/harness-support");
+
+    const related = document.getElementById("related");
+    expect(related).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/configuration"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/global-configuration"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/packaged"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/sessions"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/cli"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/workers"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/references/schema"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/references/api"]'),
+    ).toBeTruthy();
   });
 });

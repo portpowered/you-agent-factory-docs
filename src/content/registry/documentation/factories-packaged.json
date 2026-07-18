@@ -9,13 +9,14 @@
   "relatedIds": [
     "documentation.factories-configuration",
     "documentation.factories-global-configuration",
-    "documentation.packaged-factories",
-    "documentation.dynamic-workflows",
+    "documentation.factories-dynamic-workflows",
+    "documentation.factories-sessions",
     "documentation.cli",
-    "documentation.packaged-documents"
+    "documentation.packaged-documents",
+    "documentation.workers"
   ],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-18T14:00:00.000Z",
-  "updatedAt": "2026-07-18T14:00:00.000Z"
+  "updatedAt": "2026-07-18T17:00:00.000Z"
 }

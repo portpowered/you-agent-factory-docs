@@ -90,8 +90,13 @@
     "fullFactorySchema": "Full Factory schema",
     "fullFactoryApi": "Factory API reference",
     "configurationDocs": "Configuration (factory.json topology)",
+    "packagedDocs": "Packaged factories",
+    "dynamicWorkflowsDocs": "Dynamic workflows",
+    "sessionsDocs": "Factory sessions",
     "cliDocs": "CLI",
-    "workersDocs": "Workers"
+    "workersDocs": "Workers",
+    "workstationsDocs": "Workstations",
+    "resourcesDocs": "Resources"
   },
   "callouts": {
     "configFileNotes": {

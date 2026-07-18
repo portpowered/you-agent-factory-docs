@@ -82,8 +82,11 @@
     "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows",
     "configurationDocs": "Configuration (factory.json topology)",
     "globalConfigurationDocs": "Global configuration",
+    "packagedDocs": "Packaged factories",
+    "sessionsDocs": "Factory sessions",
     "cliDocs": "CLI",
-    "harnessSupportDocs": "Harness support"
+    "harnessSupportDocs": "Harness support",
+    "workersDocs": "Workers"
   },
   "callouts": {
     "cliSurface": {

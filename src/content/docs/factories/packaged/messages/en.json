@@ -51,8 +51,10 @@
     "configurationDocs": "Configuration (factory.json topology)",
     "globalConfigurationDocs": "Global configuration",
     "dynamicWorkflowsDocs": "Dynamic workflows",
+    "sessionsDocs": "Factory sessions",
     "cliDocs": "CLI",
-    "packagedDocumentsDocs": "Packaged documents"
+    "packagedDocumentsDocs": "Packaged documents",
+    "workersDocs": "Workers"
   },
   "callouts": {
     "freshnessAndPortability": {

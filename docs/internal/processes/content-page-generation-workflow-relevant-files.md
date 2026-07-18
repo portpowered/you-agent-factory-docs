@@ -1003,6 +1003,17 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Extended factories index messages with `overviewTitle` / `overviewBody` /
   `schemaSummaryTitle` / `schemaSummaryBody` / full schema+API link labels
   (`FactoriesIndexMessages`).
+* Factories sibling discovery (W12 related wiring): keep family-local
+  `relatedIds` on each `documentation.factories-*` registry record pointing at
+  sibling factories pages plus published workers/workstations/resources/
+  sessions-adjacent documentation targets that already exist. Render
+  reviewer-visible discovery with page-local `#related` `<LocalizedLinkList>`
+  hrefs to `/docs/factories/...`, existing `/docs/documentation/{workers,
+  workstations,resources,...}`, and planned `/docs/references/{schema,api,
+  events}` — documentation kind still will not render under `<RelatedDocs />`
+  alone. Do not invent workers/workstations content or references registry ids
+  in this lane; keep `<RelatedDocs />` beside the LocalizedLinkList for when
+  related-runtime can resolve curated documentation ids.
 * `src/app/(site)/site-renderers.tsx`
   `renderShellSectionCollectionIndexPage` filters index entries by
   `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not

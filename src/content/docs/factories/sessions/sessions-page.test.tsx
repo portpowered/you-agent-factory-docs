@@ -157,28 +157,69 @@ describe("factories/sessions documentation page", () => {
     ).toBe("/docs/references/events");
 
     expect(
-      screen.getByRole("link", { name: "CLI docs" }).getAttribute("href"),
+      screen.getAllByRole("link", { name: "CLI docs" })[0]?.getAttribute("href"),
     ).toBe("/docs/documentation/cli");
     expect(
       screen
-        .getByRole("link", { name: "Submitting work" })
-        .getAttribute("href"),
+        .getAllByRole("link", { name: "Submitting work" })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/documentation/submitting-work");
     expect(
       screen
-        .getByRole("link", { name: "Dynamic workflows" })
-        .getAttribute("href"),
+        .getAllByRole("link", { name: "Dynamic workflows" })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/factories/dynamic-workflows");
     expect(
       screen
-        .getByRole("link", { name: "Configuration (factory.json topology)" })
-        .getAttribute("href"),
+        .getAllByRole("link", {
+          name: "Configuration (factory.json topology)",
+        })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/factories/configuration");
     expect(
       screen
-        .getByRole("link", { name: "Cursor dynamic workflows" })
-        .getAttribute("href"),
+        .getAllByRole("link", { name: "Cursor dynamic workflows" })[0]
+        ?.getAttribute("href"),
     ).toBe("/docs/guides/cursor-dynamic-workflows");
+
+    const related = document.getElementById("related");
+    expect(related).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/configuration"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/global-configuration"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/packaged"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/factories/dynamic-workflows"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/cli"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/submitting-work"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/workers"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/workstations"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/resources"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/references/schema"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/references/api"]'),
+    ).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/references/events"]'),
+    ).toBeTruthy();
 
     const sessionListSection = document.getElementById("session-list");
     const sessionShowSection = document.getElementById("session-show");

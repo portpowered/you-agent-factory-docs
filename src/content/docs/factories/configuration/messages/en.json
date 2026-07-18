@@ -58,6 +58,10 @@
     "routingFailedField": "onFailure",
     "fullFactorySchema": "Full Factory schema",
     "fullFactoryApi": "Factory API reference",
+    "globalConfigurationDocs": "Global configuration",
+    "packagedDocs": "Packaged factories",
+    "dynamicWorkflowsDocs": "Dynamic workflows",
+    "sessionsDocs": "Factory sessions",
     "workersDocs": "Workers",
     "workstationsDocs": "Workstations",
     "resourcesDocs": "Resources"
