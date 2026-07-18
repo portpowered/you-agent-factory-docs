@@ -5,14 +5,17 @@
  * Do not import from client/browser UI bundles — depends on Node package
  * resolution via `resolveApiPackageArtifact`.
  *
- * Next/Turbopack note: do not `require.resolve` JSON schema exports directly —
- * Turbopack rewrites them into non-readable virtual module ids. Resolve the
- * package `manifest` JSON export (static string), then join to
- * `schemas/<name>.schema.json` (same pattern as the OpenAPI spike).
+ * Next/bundler notes:
+ * - Do not `require.resolve` / `import` JSON schema exports directly —
+ *   Turbopack/webpack rewrite them into non-readable virtual module ids.
+ * - Do not rely on `createRequire(...).resolve("@you-agent-factory/api/manifest")`
+ *   either — webpack production server chunks stub `createRequire` with a
+ *   MODULE_NOT_FOUND resolver. Locate the installed package via ancestor
+ *   `node_modules` filesystem walk (same class of approach as the SSE spike
+ *   packaged-OpenAPI loader), then join to `generated/schemas/<name>.schema.json`.
  */
 
-import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
+import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { resolveApiPackageArtifact } from "./api-package-artifact-resolver";
@@ -25,7 +28,8 @@ import {
 } from "./normalize-json-schema-artifact";
 import type { SchemaDefinitionModel } from "./schema-model";
 
-const require = createRequire(import.meta.url);
+const API_PACKAGE_NAME = "@you-agent-factory/api";
+const MANIFEST_RELATIVE_PATH = join("generated", "manifest.json");
 const TURBOPACK_PROJECT_PREFIX = "[project]/";
 
 export type SchemaVerificationPackageModel = {
@@ -41,11 +45,6 @@ export type SchemaVerificationPackageModel = {
 export function normalizeSchemaVerificationFsPath(
   resolvedPath: string,
 ): string {
-  if (typeof resolvedPath !== "string") {
-    throw new TypeError(
-      `Expected a filesystem path string from package resolution, received ${typeof resolvedPath}.`,
-    );
-  }
   if (resolvedPath.startsWith(TURBOPACK_PROJECT_PREFIX)) {
     return join(
       process.cwd(),
@@ -73,81 +72,65 @@ function schemaFileName(subpath: SchemaVerificationPublicSubpath): string {
 }
 
 /**
- * Absolute filesystem path for a schema public export, resolved through the
- * package manifest (avoids Turbopack JSON-export virtualization).
+ * Walk ancestors from `startDir` for `node_modules/@you-agent-factory/api`.
+ * Supports worktree checkouts that hoist dependencies to a parent repo root.
+ */
+export function findInstalledApiPackageRoot(
+  startDir: string = process.cwd(),
+): string {
+  let dir = startDir;
+  for (;;) {
+    const packageJsonPath = join(
+      dir,
+      "node_modules",
+      API_PACKAGE_NAME,
+      "package.json",
+    );
+    if (existsSync(packageJsonPath)) {
+      return dirname(packageJsonPath);
+    }
+    const parent = dirname(dir);
+    if (parent === dir) {
+      break;
+    }
+    dir = parent;
+  }
+  throw new Error(
+    `Installed ${API_PACKAGE_NAME} package.json not found walking up from ${startDir}. Run bun install.`,
+  );
+}
+
+/**
+ * Resolve the package manifest JSON export to a real filesystem path.
  *
- * Under webpack static export, `require.resolve` / `createRequire` can return
- * numeric module ids or fail entirely when the acquisition module is bundled
- * into the server graph. Fall back to reading the installed package
- * `exports` map from disk so factories schema embeds can prerender.
+ * Uses ancestor `node_modules` lookup instead of `createRequire().resolve`,
+ * which webpack stubs in production server chunks.
+ */
+export function resolveApiPackageManifestFsPath(
+  startDir: string = process.cwd(),
+): string {
+  const packageRoot = findInstalledApiPackageRoot(startDir);
+  const manifestPath = join(packageRoot, MANIFEST_RELATIVE_PATH);
+  if (!existsSync(manifestPath)) {
+    throw new Error(
+      `Packaged API manifest missing at ${manifestPath} (from ${API_PACKAGE_NAME}).`,
+    );
+  }
+  return normalizeSchemaVerificationFsPath(manifestPath);
+}
+
+/**
+ * Absolute filesystem path for a schema public export, resolved through the
+ * package manifest (avoids Turbopack/webpack JSON-export virtualization).
  */
 export function resolveSchemaVerificationFsPath(
   subpath: SchemaVerificationPublicSubpath,
+  startDir: string = process.cwd(),
 ): string {
-  const fromRequire = tryResolveManifestViaRequire();
-  if (fromRequire !== null) {
-    return join(dirname(fromRequire), "schemas", schemaFileName(subpath));
-  }
-
-  const fromPackageExports = resolveManifestViaInstalledPackageExports();
-  return join(dirname(fromPackageExports), "schemas", schemaFileName(subpath));
-}
-
-function tryResolveManifestViaRequire(): string | null {
-  try {
-    const resolved: unknown = require.resolve(
-      "@you-agent-factory/api/manifest",
-    );
-    if (typeof resolved !== "string" || resolved.length === 0) {
-      return null;
-    }
-    return normalizeSchemaVerificationFsPath(resolved);
-  } catch {
-    return null;
-  }
-}
-
-function resolveManifestViaInstalledPackageExports(): string {
-  const packageJsonPath = join(
-    process.cwd(),
-    "node_modules",
-    "@you-agent-factory",
-    "api",
-    "package.json",
-  );
-  let packageJson: {
-    exports?: Record<string, string | { default?: string }>;
-  };
-  try {
-    packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as {
-      exports?: Record<string, string | { default?: string }>;
-    };
-  } catch (cause) {
-    throw new Error(
-      `Could not read installed @you-agent-factory/api package.json at "${packageJsonPath}" for schema verification resolution.`,
-      { cause },
-    );
-  }
-
-  const exportEntry = packageJson.exports?.["./manifest"];
-  const relativePath =
-    typeof exportEntry === "string"
-      ? exportEntry
-      : typeof exportEntry?.default === "string"
-        ? exportEntry.default
-        : null;
-  if (relativePath === null) {
-    throw new Error(
-      `Installed @you-agent-factory/api package.json is missing a string exports["./manifest"] entry needed for schema verification resolution.`,
-    );
-  }
-
   return join(
-    process.cwd(),
-    "node_modules",
-    "@you-agent-factory",
-    "api",
-    relativePath,
+    dirname(resolveApiPackageManifestFsPath(startDir)),
+    "schemas",
+    schemaFileName(subpath),
   );
 }
 

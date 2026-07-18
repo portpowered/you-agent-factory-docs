@@ -64,53 +64,72 @@ async function loadRouteFamilyPageMdxComponents(
   section: RouteFamilyLocalDocsSection,
   slug: string,
 ): Promise<MDXComponents> {
-  if (section === "factories" && slug === "configuration") {
-    const mod = await import(
-      "@/content/docs/factories/configuration/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
+  if (section === "factories") {
+    switch (slug) {
+      case "configuration": {
+        const mod = await import(
+          "@/content/docs/factories/configuration/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "global-configuration": {
+        const mod = await import(
+          "@/content/docs/factories/global-configuration/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "packaged": {
+        const mod = await import(
+          "@/content/docs/factories/packaged/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "dynamic-workflows": {
+        const mod = await import(
+          "@/content/docs/factories/dynamic-workflows/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "sessions": {
+        const mod = await import(
+          "@/content/docs/factories/sessions/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
   }
 
-  if (section === "factories" && slug === "global-configuration") {
-    const mod = await import(
-      "@/content/docs/factories/global-configuration/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
-  }
-
-  if (section === "factories" && slug === "packaged") {
-    const mod = await import(
-      "@/content/docs/factories/packaged/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
-  }
-
-  if (section === "factories" && slug === "dynamic-workflows") {
-    const mod = await import(
-      "@/content/docs/factories/dynamic-workflows/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
-  }
-
-  if (section === "factories" && slug === "sessions") {
-    const mod = await import(
-      "@/content/docs/factories/sessions/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
-  }
-
-  if (section === "references" && slug === "events") {
-    const mod = await import(
-      "@/content/docs/references/events/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
-  }
-
-  if (section === "references" && slug === "events") {
-    const mod = await import(
-      "@/content/docs/references/events/page-mdx-components"
-    );
-    return mod.pageMdxComponents ?? {};
+  if (section === "references") {
+    switch (slug) {
+      case "factory-schema": {
+        const mod = await import(
+          "@/content/docs/references/factory-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "you-config-schema": {
+        const mod = await import(
+          "@/content/docs/references/you-config-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mock-workers-schema": {
+        const mod = await import(
+          "@/content/docs/references/mock-workers-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "events": {
+        const mod = await import(
+          "@/content/docs/references/events/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
   }
 
   if (section === "workers") {

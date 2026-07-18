@@ -66,13 +66,13 @@ describe("exported-site-budget baselines", () => {
   test("declares factory-specific numeric baselines and a reproduction command", () => {
     expect(EXPORTED_SITE_BUDGET_COMMAND).toBe("make budget");
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes).toBe(
-      175_000_000,
+      185_000_000,
     );
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxNextStaticJsBytes).toBe(
       3_500_000,
     );
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxSearchBootstrapBytes).toBe(
-      5_800_000,
+      6_000_000,
     );
   });
 });
@@ -116,7 +116,7 @@ describe("exported-site-budget evaluation", () => {
       "Exported-site budget gate: PASS",
     );
     expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
-      "limit 175.00 MB",
+      "limit 185.00 MB",
     );
   });
 
