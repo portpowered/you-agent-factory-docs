@@ -157,3 +157,29 @@ Baseline must call out that nested `/docs/references|factories|workers|workstati
 families are blocked by the five-collection inventory and the exactly-two-slug-segment
 local-docs contract until route-foundation work lands. Live worker/workstation pages
 today are flat under `/docs/documentation/*`.
+
+## Compatibility and redirect mechanisms
+
+Record live static-export compatibility reality (no migration implementation in
+W00):
+
+| Concern | Primary sources |
+| --- | --- |
+| No server redirects | `next.config.ts` (no `redirects()`), `src/lib/build/static-export.ts` (`output: "export"`) |
+| Canonical declaration | `src/lib/i18n/route-locale.ts` (`localizedRouteAlternates`), `src/app/docs/docs-slug-renderer.tsx` (`buildDocsPageAlternates`), `src/lib/seo/production-metadata-base.ts`, `src/lib/seo/page-open-graph.ts` |
+| Live-path / sitemap gate | `src/lib/seo/export-absolute-canonical.ts` (`isLiveFactoryCanonicalPath`), `src/lib/seo/public-sitemap-routes.ts` |
+| Retired-route omission | `src/lib/build/static-export-legacy-compile-graph.ts` (`omitRetiredAtlasDocsStaticParams`), `src/lib/governance/retired-ai-content-infrastructure-denylist.ts` |
+| SEO / export proofs | `docs/internal/processes/static-seo-metadata-relevant-files.md`, `export-*-canonical|sitemap|alternates|seo-discovery` tests |
+| Atlas deletion context | `docs/internal/processes/delete-atlas-domain-relevant-files.md` |
+| Planned move set (cite only) | `docs/temp/references/plan.md` §10 migration inventory |
+
+Baseline must state explicitly:
+
+- Static export cannot assume server-side redirects.
+- Proven Atlas handling is omit + `notFound` + discovery exclusion, **not** an
+  old→new compatibility page.
+- There is currently no meta-refresh / `_redirects` / App Router redirect helper
+  for moved `/docs/documentation/*` URLs; migration lanes must add a tested
+  static compatibility document (or equivalent) under W18 while reusing
+  Metadata canonical + sitemap exclusion rules.
+- Plan §10 inventory is the target move set only; W00 does not implement it.

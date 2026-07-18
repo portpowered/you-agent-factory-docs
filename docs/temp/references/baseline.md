@@ -711,3 +711,116 @@ route-foundation work lands:
 Adding the planned families is therefore a coordinated collection, loader,
 href, navigation, generator, sitemap, search, and static-export change — not a
 content-only addition under the current documentation route contract.
+
+## Compatibility and redirect mechanisms
+
+Evidence is from live site code and export/SEO contracts on this checkout.
+**This story records mechanisms only; it does not migrate any
+`/docs/documentation/*` routes.**
+
+### Static-export constraint (no server redirects)
+
+When `NEXT_STATIC_EXPORT=1`, Next merges `output: "export"`
+(`src/lib/build/static-export.ts` → `staticExportNextConfig`). The live
+`next.config.ts` has **no** `redirects()`, `rewrites()`, or headers-based
+redirect rules. There is also **no** `public/_redirects`, meta-refresh
+compat page, or App Router `redirect()` / `permanentRedirect()` usage under
+`src/` for moved docs URLs.
+
+Implication for migration lanes: **do not invent runtime server-side
+redirects** for GitHub Pages static export. Old inbound URLs need an explicit
+static HTML outcome (compatibility document, client-safe pattern, or another
+host-supported static mechanism) plus a new canonical declaration. Silent
+removal of a published `/docs/documentation/*` URL is forbidden by the
+reference plan; this baseline confirms the site does not yet ship that
+compat layer for the planned move set.
+
+### How canonical URLs are declared today
+
+Canonical identity is **Next.js Metadata**, not a redirect table:
+
+| Layer | Mechanism | Notes |
+| --- | --- | --- |
+| App-relative canonical | `localizedRouteAlternates()` (`src/lib/i18n/route-locale.ts`) | Sets `alternates.canonical` to the default-locale path via `buildLocalizedRoute`; also builds hreflang `languages` |
+| Docs pages | `buildDocsPageAlternates` (`src/app/docs/docs-slug-renderer.tsx`) | Same helper; **filters** `languages` with `isDocsPageShippedForLocale` (fail-closed) |
+| Absolute production URL | Root `metadataBase` via `resolveProductionMetadataBase` (`src/lib/seo/production-metadata-base.ts`) | Origin `https://portpowered.github.io`; project-site export joins `/you-agent-factory-docs`. Metadata field hrefs stay **app-relative** so Next does not double-prefix |
+| Open Graph mirror | `withPageOpenGraph` / `pageOpenGraph` (`src/lib/seo/page-open-graph.ts`) | Mirrors title/description and keeps `openGraph.url` aligned with the canonical path |
+| Live-path gate | `isLiveFactoryCanonicalPath` (`src/lib/seo/export-absolute-canonical.ts`) | Rejects retired Atlas URL prefixes, `/topology`, `/docs/timeline`, and deleted Atlas blog slugs for sitemap/canonical proofs |
+
+A page’s public canonical is therefore “whatever path that page’s
+`generateMetadata` advertises,” joined onto production `metadataBase`. There
+is **no** separate ledger that maps an old docs path to a new canonical while
+still serving HTML at the old path.
+
+### Proven static patterns (retirement / exclusion — not redirects)
+
+The project’s proven handling for **retired** Atlas product surfaces is
+**omit + not-found + discovery exclusion**, not HTTP redirects:
+
+1. **Do not emit static HTML** for retired docs collections —
+   `omitRetiredAtlasDocsStaticParams` /
+   `isRetiredAtlasDocsSlug`
+   (`src/lib/build/static-export-legacy-compile-graph.ts`) filter
+   `generateStaticParams` so `/docs/{models,modules,papers,training,systems}/…`
+   never schedule export work.
+2. **Runtime missing routes** — catch-all docs rendering calls `notFound()`
+   when the page is absent or unshipped for the locale
+   (`renderDocsSlugPage`).
+3. **Compile-graph / denylist ledgers** — retired App Router modules, owned
+   paths, and export HTML are audited against
+   `RETIRED_PUBLIC_ROUTE_FAMILIES` /
+   `RETIRED_AI_CONTENT_OWNED_PATHS`
+   (`src/lib/governance/retired-ai-content-infrastructure-denylist.ts` +
+   legacy compile-graph audit). Reintroduction fails the gate.
+4. **Discovery exclusion** — sitemap (`listPublicSitemapRoutes`), robots,
+   search URL prefixes (`RETIRED_ATLAS_SEARCH_URL_PREFIXES`), and absolute
+   canonical proofs all fail-closed via `isLiveFactoryCanonicalPath` (and
+   related search helpers). Retired paths must not appear as competing
+   canonical sitemap entries.
+
+These patterns prove how the site **stops advertising** deleted destinations
+under static export. They are **not** a drop-in “old URL → new URL”
+compatibility page. Migrating live `/docs/documentation/*` content to
+`/docs/references|factories|workers|workstations/...` will need an additional
+static compatibility document or equivalent tested mechanism (planned under
+W18 / plan US-011), reusing the canonical-declaration and sitemap-exclusion
+rules above so old routes do not compete with new ones.
+
+### Tests and ledgers that prove today’s behavior
+
+| Concern | Primary proofs |
+| --- | --- |
+| Absolute production canonicals | `src/lib/seo/export-absolute-canonical.test.ts`, `verifyExportAbsoluteCanonicals` |
+| Sitemap include/exclude | `src/lib/seo/public-sitemap-routes.ts` (+ `.test.ts`), `export-sitemap.test.ts` |
+| Localized alternates | `src/lib/seo/export-localized-alternates.test.ts`, `src/tests/layout/localized-route-metadata.test.ts` |
+| Composite export SEO gate | `src/lib/seo/verify-export-seo-discovery.ts` (+ `.test.ts`) |
+| Retired static params / compile graph | `src/lib/build/static-export-legacy-compile-graph.test.ts` |
+| Process map | `docs/internal/processes/static-seo-metadata-relevant-files.md`, `delete-atlas-domain-relevant-files.md` |
+
+### Plan migration inventory (target move set — not implemented here)
+
+From `docs/temp/references/plan.md` §10. Every row below is a **future**
+compatibility obligation for the migration lane; current checkout still
+serves the left-hand paths as ordinary documentation pages (where published):
+
+| Current route | Target route |
+| --- | --- |
+| `/docs/documentation/api-doc` | `/docs/references/api` |
+| `/docs/documentation/cli-command-index` | `/docs/references/cli` |
+| `/docs/documentation/configuration` | `/docs/factories/configuration` |
+| `/docs/documentation/global-configuration-factories` | `/docs/factories/global-configuration` |
+| `/docs/documentation/packaged-factories` | `/docs/factories/packaged` |
+| `/docs/documentation/dynamic-workflows` | `/docs/factories/dynamic-workflows` |
+| `/docs/documentation/factory-session` | `/docs/factories/sessions` |
+| `/docs/documentation/workers` | `/docs/workers` |
+| `/docs/documentation/agent-workers` | `/docs/workers/agent` |
+| `/docs/documentation/inference-workers` | `/docs/workers/inference` |
+| `/docs/documentation/script-workers` | `/docs/workers/script` |
+| `/docs/documentation/poller-workers` | `/docs/workers/poller` |
+| `/docs/documentation/mock-workers` | `/docs/workers/mock` |
+| `/docs/documentation/workstations` | `/docs/workstations` |
+
+Plan expectation (verbatim intent): each old route must resolve to a static
+compatibility page or other supported static mechanism and declare the new
+canonical; every old route needs one explicit outcome. **W00 does not
+implement those outcomes.**
