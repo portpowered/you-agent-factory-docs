@@ -68,15 +68,15 @@ describe("documentation route migration ledger", () => {
     }
   });
 
-  test("opens every §10 row until compatibility outcomes are proven", () => {
-    expect(listOpenDocumentationRouteMigrationRows()).toHaveLength(
+  test("closes every §10 row after compatibility outcomes are proven", () => {
+    expect(listOpenDocumentationRouteMigrationRows()).toEqual([]);
+    expect(listClosedDocumentationRouteMigrationRows()).toHaveLength(
       DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT,
     );
-    expect(listClosedDocumentationRouteMigrationRows()).toEqual([]);
-    expect(isDocumentationRouteMigrationLedgerFullyClosed()).toBe(false);
+    expect(isDocumentationRouteMigrationLedgerFullyClosed()).toBe(true);
 
     for (const row of DOCUMENTATION_ROUTE_MIGRATION_LEDGER) {
-      expect(row.status).toBe("open");
+      expect(row.status).toBe("closed");
     }
   });
 

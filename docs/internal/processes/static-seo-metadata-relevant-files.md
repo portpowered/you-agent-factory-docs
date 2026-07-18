@@ -37,6 +37,7 @@ social assets, sitemap, robots).
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
 | `src/lib/seo/documentation-route-migration-canonical.test.ts` | §10 old→target Metadata canonical/OG + sitemap exclusion/inclusion proofs |
 | `src/lib/seo/documentation-route-migration-links.test.tsx` | §10 related-id / related-href / browse retarget proofs |
+| `src/lib/seo/documentation-route-migration-closure.test.tsx` | §10 ledger closure + old/target/canonical/important-anchor proofs |
 | `src/lib/seo/export-absolute-canonical.ts` | Also exports `isCanonicalPublicDiscoveryPath` (Atlas live + W18 migration old-path discovery gate) |
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.tsx` | Shared static compatibility document for §10 old `/docs/documentation/*` routes |
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx` | Component-level old→target link + unknown-route error proofs |
@@ -164,7 +165,12 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    routes; browse excludes §10 old compatibility URLs so they are not preferred
    discovery destinations. Do not invent W16 search projection or W17 chrome
    localization work here.
-6. Later W18 stories close ledger rows; do not invent per-route redirect
+6. **Closure (story 005):** mark every ledger row `closed` only after focused
+   proofs cover old compatibility HTML, target resolution, Metadata canonical
+   consistency, sitemap exclusion/inclusion, and an important on-target
+   anchor (`DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS`, typically
+   `what-it-covers`; use `{ kind: "none", reason: "index-only-target" }` only
+   when an index truly has no section id). Do not invent per-route redirect
    helpers.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`

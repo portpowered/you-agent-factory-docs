@@ -66,82 +66,126 @@ export type DocumentationRouteStaticCompatibilityMechanism =
 
 /**
  * Temporary ledger for every plan §10 /docs/documentation/* → family mapping.
- * Rows start `open`; close only when compatibility, canonical, link, and
- * sitemap outcomes are proven (story 005).
+ * Rows close only when compatibility, canonical, link, sitemap, and important
+ * anchor outcomes are proven (story 005).
  */
 export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMigrationRow[] =
   [
     {
       oldRoute: "/docs/documentation/api-doc",
       targetRoute: "/docs/references/api",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/cli-command-index",
       targetRoute: "/docs/references/cli",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/configuration",
       targetRoute: "/docs/factories/configuration",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/global-configuration-factories",
       targetRoute: "/docs/factories/global-configuration",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/packaged-factories",
       targetRoute: "/docs/factories/packaged",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/dynamic-workflows",
       targetRoute: "/docs/factories/dynamic-workflows",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/factory-session",
       targetRoute: "/docs/factories/sessions",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/workers",
       targetRoute: "/docs/workers",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/agent-workers",
       targetRoute: "/docs/workers/agent",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/inference-workers",
       targetRoute: "/docs/workers/inference",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/script-workers",
       targetRoute: "/docs/workers/script",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/poller-workers",
       targetRoute: "/docs/workers/poller",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/mock-workers",
       targetRoute: "/docs/workers/mock",
-      status: "open",
+      status: "closed",
     },
     {
       oldRoute: "/docs/documentation/workstations",
       targetRoute: "/docs/workstations",
-      status: "open",
+      status: "closed",
     },
   ];
+
+/**
+ * Important on-target deep-link anchors for §10 family destinations.
+ *
+ * Every migrated MDX page and both App Router family indexes expose a
+ * `what-it-covers` section. Index-only targets that lacked a section id would
+ * use `{ kind: "none", reason: "index-only-target" }` instead.
+ */
+export type DocumentationRouteMigrationImportantAnchor =
+  | { kind: "section"; id: string }
+  | { kind: "none"; reason: "index-only-target" };
+
+export const DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS: Readonly<
+  Record<`/${string}`, DocumentationRouteMigrationImportantAnchor>
+> = {
+  "/docs/references/api": { kind: "section", id: "what-it-covers" },
+  "/docs/references/cli": { kind: "section", id: "what-it-covers" },
+  "/docs/factories/configuration": { kind: "section", id: "what-it-covers" },
+  "/docs/factories/global-configuration": {
+    kind: "section",
+    id: "what-it-covers",
+  },
+  "/docs/factories/packaged": { kind: "section", id: "what-it-covers" },
+  "/docs/factories/dynamic-workflows": {
+    kind: "section",
+    id: "what-it-covers",
+  },
+  "/docs/factories/sessions": { kind: "section", id: "what-it-covers" },
+  "/docs/workers": { kind: "section", id: "what-it-covers" },
+  "/docs/workers/agent": { kind: "section", id: "what-it-covers" },
+  "/docs/workers/inference": { kind: "section", id: "what-it-covers" },
+  "/docs/workers/script": { kind: "section", id: "what-it-covers" },
+  "/docs/workers/poller": { kind: "section", id: "what-it-covers" },
+  "/docs/workers/mock": { kind: "section", id: "what-it-covers" },
+  "/docs/workstations": { kind: "section", id: "what-it-covers" },
+};
+
+export function resolveDocumentationRouteMigrationImportantAnchor(
+  targetRoute: string,
+): DocumentationRouteMigrationImportantAnchor | undefined {
+  return DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS[
+    targetRoute as `/${string}`
+  ];
+}
 
 export type DocumentationRouteMigrationLedger =
   typeof DOCUMENTATION_ROUTE_MIGRATION_LEDGER;
