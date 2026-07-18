@@ -28,7 +28,7 @@ export function ReferencesFamilyFreshnessSummaryView({
     unavailable?.title ?? "Package freshness unavailable";
   const unavailableDescription =
     unavailable?.body ??
-    "The published API package manifest could not be read for this build. Contract surfaces below still use their planned routes.";
+    "The published API package manifest could not be read for this build. Contract surface cards below remain available; package identity and version appear here when the manifest resolves.";
 
   return (
     <section

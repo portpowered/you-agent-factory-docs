@@ -674,6 +674,17 @@ the original page slice when they are the concrete reason the reviewed head is
 blocked. Document mergeability-only follow-ups in `progress.txt` and PR
 conversation comments.
 
+When rebasing a family-index lane onto `main` that already authored another
+direct route family (workers index, events-on-references collection listing,
+etc.), reconcile `src/tests/content/section-indexes.test.tsx` by keeping each
+authored family-index proof and narrowing empty-state cases to families that
+are still empty (today: factories + workstations). Do not restore
+empty-state-as-primary for a family this lane authored, and do not drop main’s
+workers family-index assertions while resolving references conflicts. The same
+rebase often dual-edits
+`docs/internal/processes/content-page-generation-workflow-relevant-files.md` —
+keep both sides’ notes.
+
 When several documentation lanes land close together, the exported-site
 `totalOutBytes` / `searchBootstrapBytes` gates in
 `src/lib/build/exported-site-budget.ts` can fail even though each lane alone

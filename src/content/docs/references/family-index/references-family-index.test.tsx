@@ -29,6 +29,10 @@ import {
 } from "./reference-family-routes";
 import { resolveReferenceFamilyDiscoverabilityCards } from "./resolve-reference-family-discoverability";
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 describe("references family index", () => {
   afterEach(() => {
     cleanup();
@@ -187,7 +191,7 @@ describe("references family index", () => {
     const list = screen.getByRole("list", { name: "Contract surfaces" });
     for (const card of cards) {
       const link = within(list).getByRole("link", {
-        name: new RegExp(card.title),
+        name: new RegExp(escapeRegExp(card.title)),
       });
       expect(link.getAttribute("href")).toBe(card.href);
     }
@@ -237,7 +241,7 @@ describe("references family index", () => {
 
     for (const card of cards) {
       const link = within(list).getByRole("link", {
-        name: new RegExp(card.title),
+        name: new RegExp(escapeRegExp(card.title)),
       });
       expect(link.getAttribute("href")).toBe(card.href);
       expect(link.textContent).toContain(card.description);
