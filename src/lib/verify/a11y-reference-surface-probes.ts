@@ -60,6 +60,25 @@ import {
   type ReferenceKeyboardControlSpec,
 } from "./a11y-reference-keyboard-contract";
 import {
+  evaluateReferenceLongTokenOverflowInBrowser,
+  expectReferenceLongTokenOverflow,
+  isReferenceLongTokenContained,
+  listReferenceLongTokenOverflowViewports,
+  listReferenceLongTokensForRoute,
+  listRequiredReferenceLongTokens,
+  probeReferenceLongToken,
+  probeReferenceLongTokensForRoute,
+  REFERENCE_LONG_TOKEN_CONTAINMENT_CLASS_FRAGMENTS,
+  REFERENCE_LONG_TOKEN_OVERFLOW_VIEWPORT_IDS,
+  REFERENCE_LONG_TOKENS,
+  type ReferenceLongTokenKind,
+  type ReferenceLongTokenOverflowEvaluateResult,
+  type ReferenceLongTokenOverflowProbe,
+  type ReferenceLongTokenProbe,
+  type ReferenceLongTokenSpec,
+  referenceLongTokenOverflowEvaluateArgs,
+} from "./a11y-reference-long-token-overflow-contract";
+import {
   evaluateReducedMotionChromeInBrowser,
   evaluateReferenceReducedMotionInBrowser,
   expectReferenceReducedMotionChrome,
@@ -144,6 +163,11 @@ export type {
   ReferenceKeyboardControlSpec,
   ReferenceLabeledControlProbe,
   ReferenceLabeledControlSpec,
+  ReferenceLongTokenKind,
+  ReferenceLongTokenOverflowEvaluateResult,
+  ReferenceLongTokenOverflowProbe,
+  ReferenceLongTokenProbe,
+  ReferenceLongTokenSpec,
   ReferenceMobileNavProbe,
   ReferenceMobileNavSpec,
   ReferenceMotionChromeProbe,
@@ -160,6 +184,7 @@ export {
   collectStickyChromeRects,
   evaluateReducedMotionChromeInBrowser,
   evaluateReferenceCopyAnnouncementsInBrowser,
+  evaluateReferenceLongTokenOverflowInBrowser,
   evaluateReferenceReducedMotionInBrowser,
   evaluateResponsiveOverflowInBrowser,
   expectCoherentReferenceHeadingHierarchy,
@@ -170,6 +195,7 @@ export {
   expectReferenceHashFocusAndMobileCollapse,
   expectReferenceKeyboardChrome,
   expectReferenceLabeledChrome,
+  expectReferenceLongTokenOverflow,
   expectReferenceMobileNav,
   expectReferenceNonColorStatus,
   expectReferenceReducedMotionChrome,
@@ -183,10 +209,13 @@ export {
   isHashTargetFullyObscuredBySticky,
   isKeyboardFocusableElement,
   isPointerOnlyInteractiveElement,
+  isReferenceLongTokenContained,
   listReferenceCopyAnnouncementsForRoute,
   listReferenceHashTargetsForRoute,
   listReferenceKeyboardControlsForRoute,
   listReferenceLabeledControlsForRoute,
+  listReferenceLongTokenOverflowViewports,
+  listReferenceLongTokensForRoute,
   listReferenceMobileNavsForRoute,
   listReferenceMotionChromeForRoute,
   listReferenceNonColorStatusForRoute,
@@ -194,6 +223,7 @@ export {
   listRequiredReferenceHashTargets,
   listRequiredReferenceKeyboardControls,
   listRequiredReferenceLabeledControls,
+  listRequiredReferenceLongTokens,
   listRequiredReferenceMobileNavs,
   listRequiredReferenceMotionChrome,
   listRequiredReferenceNonColorStatus,
@@ -210,6 +240,8 @@ export {
   probeReferenceKeyboardControl,
   probeReferenceKeyboardControlsForRoute,
   probeReferenceLabeledControl,
+  probeReferenceLongToken,
+  probeReferenceLongTokensForRoute,
   probeReferenceMobileNav,
   probeReferenceMotionChrome,
   probeReferenceNonColorStatus,
@@ -221,6 +253,9 @@ export {
   REFERENCE_HASH_TARGETS,
   REFERENCE_KEYBOARD_CONTROLS,
   REFERENCE_LABELED_CONTROLS,
+  REFERENCE_LONG_TOKEN_CONTAINMENT_CLASS_FRAGMENTS,
+  REFERENCE_LONG_TOKEN_OVERFLOW_VIEWPORT_IDS,
+  REFERENCE_LONG_TOKENS,
   REFERENCE_MOBILE_NAVS,
   REFERENCE_MOTION_CHROME,
   REFERENCE_NON_COLOR_STATUS,
@@ -228,6 +263,7 @@ export {
   REFERENCE_STICKY_CHROME_SELECTOR,
   referenceCopyAnnouncementEvaluateArgs,
   referenceHashFocusScrollBehavior,
+  referenceLongTokenOverflowEvaluateArgs,
   referenceReducedMotionEvaluateArgs,
   resolveA11yResponsiveProbeUrl,
   runAxeOnElement,
@@ -314,6 +350,7 @@ export type ReferenceSurfaceProbeBinding = {
     hashFocus: "expectReferenceHashFocusAndMobileCollapse";
     copyAnnouncement: "expectReferenceCopyAnnouncements";
     reducedMotion: "evaluateReferenceReducedMotionInBrowser";
+    longTokenOverflow: "expectReferenceLongTokenOverflow";
     pageSession: "openReferenceSurfacePageProbe";
   };
 };
@@ -334,6 +371,7 @@ export function listReferenceSurfaceProbeBindings(): ReferenceSurfaceProbeBindin
       hashFocus: "expectReferenceHashFocusAndMobileCollapse",
       copyAnnouncement: "expectReferenceCopyAnnouncements",
       reducedMotion: "evaluateReferenceReducedMotionInBrowser",
+      longTokenOverflow: "expectReferenceLongTokenOverflow",
       pageSession: "openReferenceSurfacePageProbe",
     },
   }));

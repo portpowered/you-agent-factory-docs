@@ -39,6 +39,7 @@ gates stay documented in
   - `src/lib/verify/a11y-reference-hash-focus-contract.test.ts`
   - `src/lib/verify/a11y-reference-copy-announcement-contract.test.ts`
   - `src/lib/verify/a11y-reference-reduced-motion-contract.test.ts`
+  - `src/lib/verify/a11y-reference-long-token-overflow-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -183,6 +184,30 @@ gates stay documented in
   `src/lib/verify/a11y-reference-reduced-motion-page.test.ts` — API / events /
   factory-schema at laptop + mobile with `emulateMedia({ reducedMotion:
   "reduce" })`, hash focus, and mobile drawer duration probe. Same
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
+  against static `out/` for local browser verify.
+
+## Reference long-token overflow (story 009)
+
+* `src/lib/verify/a11y-reference-long-token-overflow-contract.ts` — long path /
+  field / enum / code token selectors, containment class fragments
+  (`break-all`, `truncate`, `overflow-x-auto`, …), and page-overflow gate at
+  narrow phone + zoomed (`REFERENCE_LONG_TOKEN_OVERFLOW_VIEWPORT_IDS`). Extends
+  existing `collectResponsiveOverflowProbe` / intentional scroller selectors —
+  does not invent a parallel overflow framework.
+* Probe binders: `expectReferenceLongTokenOverflow`,
+  `evaluateReferenceLongTokenOverflowInBrowser`,
+  `referenceLongTokenOverflowEvaluateArgs` (also re-exported from
+  `a11y-reference-surface-probes.ts`).
+* Narrow UI containment: `break-all` / `min-w-0` on schema field names;
+  authored `SchemaDefinitionEmbed` property names + enums gain
+  `data-schema-embed-*` markers with wrap/scroll classes.
+* Always-on proofs:
+  - `src/lib/verify/a11y-reference-long-token-overflow-contract.test.ts`
+  - `src/tests/a11y/reference-long-token-overflow.a11y.test.tsx`
+* Opt-in served probe:
+  `src/lib/verify/a11y-reference-long-token-overflow-page.test.ts` — API /
+  events / factory-schema at mobile + zoomed. Same
   `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
   against static `out/` for local browser verify.
 

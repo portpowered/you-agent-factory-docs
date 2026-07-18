@@ -54,6 +54,7 @@ describe("a11y-reference-surface probe helpers", () => {
       hashFocus: "expectReferenceHashFocusAndMobileCollapse",
       copyAnnouncement: "expectReferenceCopyAnnouncements",
       reducedMotion: "evaluateReferenceReducedMotionInBrowser",
+      longTokenOverflow: "expectReferenceLongTokenOverflow",
       pageSession: "openReferenceSurfacePageProbe",
     });
 

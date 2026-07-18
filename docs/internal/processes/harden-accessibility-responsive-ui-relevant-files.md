@@ -287,6 +287,11 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `a11y-reference-reduced-motion-contract` + opt-in served
   `a11y-reference-reduced-motion-page.test.ts`. Extends
   `a11y-reduced-motion*` for hash `auto` scroll + drawer chrome.
+* W19 story 009 long-token overflow: always-on
+  `src/tests/a11y/reference-long-token-overflow.a11y.test.tsx` +
+  `a11y-reference-long-token-overflow-contract` + opt-in served
+  `a11y-reference-long-token-overflow-page.test.ts`. Path/field/enum/code
+  containment at mobile + zoomed; extends shared overflow probes.
 
 ## Existing component a11y smokes
 

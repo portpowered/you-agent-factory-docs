@@ -130,8 +130,11 @@ export function SchemaDefinitionEmbed({
                 }
                 key={name}
               >
-                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                  <code className="text-sm font-semibold text-foreground">
+                <div className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <code
+                    className="min-w-0 break-all text-sm font-semibold text-foreground"
+                    data-schema-embed-property-name=""
+                  >
                     {name}
                   </code>
                   {field.typeSummary !== undefined ? (
@@ -156,7 +159,10 @@ export function SchemaDefinitionEmbed({
                   </ContractDescriptionProse>
                 ) : null}
                 {field.enum !== undefined && field.enum.length > 0 ? (
-                  <p className="m-0 mt-1 font-mono text-xs text-foreground">
+                  <p
+                    className="m-0 mt-1 min-w-0 overflow-x-auto break-all font-mono text-xs text-foreground"
+                    data-schema-embed-enum=""
+                  >
                     Enum: {field.enum.map((entry) => String(entry)).join(", ")}
                   </p>
                 ) : null}
@@ -183,7 +189,12 @@ function EmbedRow({
       <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {label}
       </dt>
-      <dd className={cn("m-0", mono ? "font-mono text-xs" : undefined)}>
+      <dd
+        className={cn(
+          "m-0 min-w-0",
+          mono ? "break-all font-mono text-xs" : undefined,
+        )}
+      >
         {value}
       </dd>
     </div>
