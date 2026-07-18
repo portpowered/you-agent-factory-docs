@@ -976,6 +976,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 * `src/lib/content/docs-catch-all-static-params.test.ts`
   Nested fixture proofs for default/shipped catch-all params, empty-family
   export safety, compile-graph index markers, and invalid nested not-found.
+* `src/lib/docs/supported-docs-route-family-mechanism.test.ts`
+  Focused mechanism tests for the supported route-family contract: accept the
+  four direct families (`references`/`factories`/`workers`/`workstations`),
+  reject unknown family ids, accept nested slugs under those families, and
+  preserve CLI collection acceptance. Asserts observable accept/reject/resolve
+  outcomes from collection/route helpers — not source-file or registration
+  inventory scans.
 * `src/lib/content/content-paths-page-dir-guard.ts`
   Grandfathered allowlist for legacy `*_PAGE_DIR` exports and the guard failure
   message that points reviewers to `getDocsPageDir(section, slug)`.
