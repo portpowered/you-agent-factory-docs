@@ -990,11 +990,22 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 
 * `docs/templates/*.content.md`
   Authoring templates for factory kinds (guide, concept, technique,
-  documentation, glossary) plus blog-post. Atlas model/module/paper/training/
-  system templates are deleted.
+  documentation, reference, glossary) plus blog-post. Atlas
+  model/module/paper/training/system templates are deleted. Direct route
+  families: `references` → `reference.mdx` / kind `reference`;
+  `factories` / `workers` / `workstations` → `documentation.mdx` / kind
+  `documentation` (route slug independent from kind). Nested child slugs are
+  supported under every docs family.
+* `docs/documentation-template.md`
+  Shared template contract including reference kind and route-slug
+  independence for the four direct public route families.
+* `docs/architecture.md` / `docs/data-model.md` / `docs/site-fundamentals.md`
+  Architectural route documentation for the four direct families and nested
+  slug support.
 * `docs/guide-to-writing-pages.md`
   High-level page authoring steps, graph requirements, and code/documentation
-  separation expectations.
+  separation expectations — includes reference + factories/workers/workstations
+  mapping.
 * `src/content/docs/<section>/<slug>/`
   Canonical page bundle layout (`page.mdx`, `messages/`, `assets.json`, graphs,
   and related colocated files).

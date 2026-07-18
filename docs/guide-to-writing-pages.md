@@ -1,18 +1,21 @@
 # This is a guide to writing pages
 
 1. Given a request to write a page, choose the factory collection that matches
-   the ask: `guides`, `concepts`, `techniques`, `documentation`, `glossary`, or
-   `blog`.
+   the ask: `guides`, `concepts`, `techniques`, `documentation`, `references`,
+   `factories`, `workers`, `workstations`, `glossary`, or `blog`.
 2. Check that the page conforms to the matching rewrite-era template under
-   `docs/templates/` (`guide`, `technique`, `documentation`, `concept`,
-   `glossary`, or `blog-post`). See
-   [documentation-template.md](./documentation-template.md).
+   `docs/templates/` (`guide`, `technique`, `documentation`, `reference`,
+   `concept`, `glossary`, or `blog-post`). Factories/workers/workstations pages
+   use the `documentation` template while living under their own route-family
+   content roots — route slug is independent from frontmatter/registry kind.
+   See [documentation-template.md](./documentation-template.md).
 3. Check the codebase for similar published pages in that collection (for
    example other guides under `src/content/docs/guides/` or documentation pages
    under `src/content/docs/documentation/`).
-4. Add a new page under `src/content/docs/<collection>/<slug>/` (or
-   `src/content/blog/<slug>/` for blog posts) that follows the matching template
-   structure, registry id namespace, messages, and assets.
+4. Add a new page under `src/content/docs/<collection>/<slug>/` (or nested
+   `src/content/docs/<collection>/<parent>/<child>/` when the topic needs a
+   child page, or `src/content/blog/<slug>/` for blog posts) that follows the
+   matching template structure, registry id namespace, messages, and assets.
 4.0. Ensure the page can stand on its own, avoids page-meta prose, and follows
    the [docs-writing-standards](../factory/docs/standards/docs-writing-standards.md).
 4.1. Structure page content with tags and related links so readers can move
@@ -90,9 +93,17 @@ continue. Full command routing:
 | Install, first run, or a concrete workflow walkthrough | `guides` | `guide.mdx` | `guide.getting-started` |
 | A named idea readers look up in isolation (harness, loop, worktree) | `concepts` | `concept.mdx` | `concept.worktree` |
 | A reusable agent-factory pattern (ralph, writer-reviewer, planner-executor) | `techniques` | `technique.mdx` | `technique.ralph` |
-| CLI, configuration, harness support, MCP, API, or other reference | `documentation` | `documentation.mdx` | `documentation.cli` |
+| CLI, configuration, harness support, MCP, API, or other documentation lookup | `documentation` | `documentation.mdx` | `documentation.cli` |
+| A structured reference surface under `/docs/references` | `references` | `reference.mdx` | `reference.<slug>` |
+| A factory-subject page under `/docs/factories` | `factories` | `documentation.mdx` | `documentation.<slug>` |
+| A worker-subject page under `/docs/workers` | `workers` | `documentation.mdx` | `documentation.<slug>` |
+| A workstation-subject page under `/docs/workstations` | `workstations` | `documentation.mdx` | `documentation.<slug>` |
 | A short term definition that shares the concept registry shape | `glossary` | `glossary.mdx` | `concept.<slug>` |
 | Time-specific product or ecosystem writing | `blog` | `blog-post.mdx` | related via `relatedDocIds` |
+
+Route slug stays independent from frontmatter/registry kind: factories,
+workers, and workstations keep `kind: "documentation"` even though their public
+prefixes differ. Nested child slugs are supported under every docs family.
 
 Examples:
 
@@ -102,6 +113,9 @@ Examples:
 3. A reader wants the ralph loop pattern → write a **technique**.
 4. A reader needs harness capability lookup → write a **documentation** page
    (and use a matrix or diagram only when it teaches the reference surface).
+5. A reader needs a `/docs/references/…` topic → write a **reference** page.
+6. A reader needs a `/docs/workers/…` topic → write a **documentation**-kind
+   page under the workers content root (not a new worker page kind).
 
 ## Adding graphs
 

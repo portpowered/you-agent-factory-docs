@@ -9,18 +9,20 @@ type TemplateKind =
   | "guide"
   | "technique"
   | "documentation"
+  | "reference"
   | "glossary";
 
 /**
  * Factory templates keep writing-standards convergence without requiring
  * deleted Atlas PageAsset/ModuleGraph tags. CLI kinds
- * (guide/technique/documentation) never had graph assets.
+ * (guide/technique/documentation/reference) never had graph assets.
  */
 const factoryTemplates: TemplateKind[] = [
   "concept",
   "guide",
   "technique",
   "documentation",
+  "reference",
   "glossary",
 ];
 

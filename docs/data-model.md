@@ -71,8 +71,11 @@ Registry files are JSON. TypeScript defines schemas and inferred types.
 Validation should use Zod or an equivalent TypeScript-first schema library.
 
 Primary docs collections for the product are `guides`, `concepts`,
-`techniques`, `documentation`, and `glossary`, plus `blog` as a separate
-narrative surface. See
+`techniques`, `documentation`, and `glossary`, plus the direct public route
+families `references`, `factories`, `workers`, and `workstations`, and `blog` as
+a separate narrative surface. Nested child slugs under a docs family are part of
+the routing contract. **Route slug is independent from frontmatter/registry
+kind** (for example `workers` routes use `documentation` records). See
 [documentation-site-pages-needed.md](./documentation-site-pages-needed.md) for
 the page inventory and [site-fundamentals.md](./site-fundamentals.md) for the
 shell frame.
@@ -119,7 +122,7 @@ type BaseRecord = {
 ```
 
 Factory-facing kinds for new product pages are `guide`, `concept`,
-`technique`, and `documentation`. Glossary pages use frontmatter
+`technique`, `documentation`, and `reference`. Glossary pages use frontmatter
 `kind: "glossary"` with a backing `concept.<slug>` registry record. Remaining
 kinds such as `model`, `module`, and `paper` are legacy Atlas inventory, not the
 default authoring path.
@@ -127,9 +130,12 @@ default authoring path.
 Rules:
 
 * `id` is stable, kebab-case, and namespaced by kind, such as
-  `guide.getting-started`, `concept.worktree`, `technique.ralph`, or
-  `documentation.cli`.
-* `slug` is route-safe and does not include the route prefix.
+  `guide.getting-started`, `concept.worktree`, `technique.ralph`,
+  `documentation.cli`, or `reference.example-reference`.
+* `slug` is route-safe and does not include the route prefix. Nested pages may
+  use multi-segment slugs under a family (for example `agent/variant` under
+  `workers`); the public route prefix still comes from the collection
+  `routeSlug`, which may differ from the record `kind`.
 * `defaultTitleKey` points to the localized title in the relevant page or
   registry message file.
 * `defaultSummaryKey` points to the localized short summary suitable for search
@@ -679,8 +685,8 @@ Search rules:
 * Ontology-backed pages should publish classification ancestry and related
   topology ids as facets for grouping, filtering, and reranking when present.
 * Tags are always indexed as both searchable text and filterable facets.
-* Factory kinds (`guide`, `concept`, `technique`, `documentation`, glossary via
-  concept records, and blog) are first-class search surfaces.
+* Factory kinds (`guide`, `concept`, `technique`, `documentation`, `reference`,
+  glossary via concept records, and blog) are first-class search surfaces.
 * Orama handles retrieval. The registry handles canonical relationships and
   related-link generation.
 
