@@ -216,6 +216,49 @@ make test-w20-static-export
 Worktree note: the out/ verify suite requires a trusted export from the command
 gate. Do not invent a second Pages-prefixed rebuild here (story 007 owns that).
 
+## Story 007 — Pages-prefixed export and deployed-artifact guard
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-pages-prefixed-export-convergence.ts` | Catalog of prefixed rebuild + guard command gates, probe inventory, and §17 gate families |
+| `src/lib/verify/w20-pages-prefixed-export-convergence.test.ts` | Catalog completeness / file-existence / family-coverage proofs |
+| `src/lib/verify/w20-pages-prefixed-export-out-verify.test.ts` | Trusted project-site `out/` prefix consumer verify |
+| `scripts/run-w20-pages-prefixed-export-tests.ts` | Runner: catalog → prefixed `make build` → `make guard-pages-deployed-artifact` → post-guard suites |
+| `package.json` → `test:w20-pages-prefixed-export` | Maintainer / automation entry |
+| `Makefile` → `test-w20-pages-prefixed-export` | Shared Makefile contract |
+
+### Command gates
+
+* `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` — project-site prefixed static export emitting trusted `out/`
+* `make guard-pages-deployed-artifact` — HTTP-probe home / getting-started / comparing / search bootstrap / CSS / JS on that same `out/` (no second full export)
+
+### Focused suites
+
+* `src/lib/verify/pages-prefixed-rebuild-r02-convergence.test.ts` — base path + probe inventory + prefixed accept / unprefixed reject
+* `src/lib/build/guard-pages-deployed-artifact.test.ts` — guard evaluation + fixture probe proofs
+* `src/lib/build/deploy-pages-workflow-contract.test.ts` — `deploy-pages.yml` sets base path, guard before upload
+* `src/lib/build/verify-export-base-path.test.ts` — HTML asset / nav prefix helpers
+* `src/lib/build/verify-project-site-export-consumers.test.ts` — search-bootstrap + asset consumer evaluation
+* `src/lib/verify/w20-pages-prefixed-export-out-verify.test.ts` — live `out/` project-site consumer verify
+
+### Reproduce
+
+```bash
+make test-w20-pages-prefixed-export
+# or: bun run test:w20-pages-prefixed-export
+```
+
+Live gate sequence (no intervening unprefixed rebuild):
+
+```bash
+GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
+make guard-pages-deployed-artifact
+```
+
+Worktree note: the out/ verify suite requires the prefixed rebuild from the
+command gate. Do not run an unprefixed `make build` between the rebuild and
+the guard.
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,
