@@ -11,6 +11,18 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `/docs/documentation/harness-support`, `/blog`, representative blog post) and
   viewport matrix (mobile 390 / tablet 768 / laptop 1024 / wide 1440), plus
   page-overflow tolerance and intentional horizontal-scroll selectors.
+* `src/lib/verify/a11y-reference-surface-contract.ts` (W19)
+  Representative Factory reference routes (`/docs/references/api`,
+  `/docs/references/events`, `/docs/references/factory-schema`, plus one
+  authored `/docs/factories/*`, `/docs/workers/*`, and `/docs/workstations/*`
+  page) and five layouts (wide / laptop / tablet / mobile / zoomed ≈ 200% of
+  laptop CSS pixels). Reuses critical overflow tolerance + intentional
+  scroller selectors and `A11Y_SUITE_REPRODUCTION_COMMAND` (`make a11y`).
+* `src/lib/verify/a11y-reference-surface-probes.ts` (W19)
+  Thin binders over existing axe, responsive-overflow, reduced-motion, and
+  page-session helpers (`collectReferenceSurfaceOverflowProbe`,
+  `openReferenceSurfacePageProbe`, `listReferenceSurfaceProbeBindings`). Do
+  not invent a parallel a11y framework for reference pages.
 * `src/lib/verify/a11y-responsive-probes.ts`
   Pure DOM helpers: `measurePageLevelOverflow`,
   `findIntentionalHorizontalScrollContainers`,
@@ -227,21 +239,26 @@ surfaces (home, browse, search, docs/harness-support, blog).
 
 * `Makefile` target `a11y` → `bun run test:a11y`
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure/
-  reduced-motion/layout-snapshot unit tests plus home/browse, search,
-  docs/harness-support, blog, contributing/not-found/empty-state, responsive
-  overflow, reduced-motion, and layout snapshot a11y smokes (and the
-  skipped-by-default served-page probes).
+  reduced-motion/layout-snapshot unit tests (including W19
+  `a11y-reference-surface-contract` / `a11y-reference-surface-probes`) plus
+  home/browse, search, docs/harness-support, blog, contributing/not-found/
+  empty-state, responsive overflow, reduced-motion, and layout snapshot a11y
+  smokes (and the skipped-by-default served-page probes).
 * Required by `make ci` and `.github/workflows/ci.yml` (after
   `test-reader-facing`, before `test-ci-contract`) via
   `src/lib/ci-required-path.ts` (`MAKE_CI_PREREQUISITES`,
   `CI_WORKFLOW_REQUIRED_MAKE_TARGETS`, `SHARED_REQUIRED_SUITE_TARGETS`).
 * On failure, reproduce with `make a11y` (constant
-  `A11Y_SUITE_REPRODUCTION_COMMAND` in `a11y-responsive-contract.ts`).
+  `A11Y_SUITE_REPRODUCTION_COMMAND` in `a11y-responsive-contract.ts` /
+  re-exported from `a11y-reference-surface-contract.ts`).
 * `test:a11y` runs with `--max-concurrency=1` so happy-dom component smokes
   that share `document` do not race (same pattern as `test:reader-facing`).
 * Distinct from `make test-reader-facing`, which covers older component a11y
   smokes plus search/layout contracts — do not fold Atlas-era
   `src/tests/a11y/*` wholesale into `make a11y`.
+* W19 later stories should assert against `REFERENCE_SURFACE_ROUTES` /
+  `REFERENCE_SURFACE_VIEWPORTS` / `listReferenceOverflowMatrixCases()` rather
+  than hard-coding reference paths or the zoomed width.
 
 ## Existing component a11y smokes
 
