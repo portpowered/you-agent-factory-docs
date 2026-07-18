@@ -66,7 +66,7 @@ describe("exported-site-budget baselines", () => {
   test("declares factory-specific numeric baselines and a reproduction command", () => {
     expect(EXPORTED_SITE_BUDGET_COMMAND).toBe("make budget");
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxTotalOutBytes).toBe(
-      210_000_000,
+      220_000_000,
     );
     expect(FACTORY_EXPORTED_SITE_BUDGET_BASELINES.maxNextStaticJsBytes).toBe(
       3_500_000,
@@ -116,7 +116,7 @@ describe("exported-site-budget evaluation", () => {
       "Exported-site budget gate: PASS",
     );
     expect(formatExportedSiteBudgetPassReport(evaluation)).toContain(
-      "limit 210.00 MB",
+      "limit 220.00 MB",
     );
   });
 
