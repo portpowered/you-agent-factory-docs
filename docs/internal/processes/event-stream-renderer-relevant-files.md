@@ -104,6 +104,16 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/components/references/events/event-reconnect-lifecycle-section.tsx` | Compose reconnect/identity/lifecycle/probe docs |
 | `src/components/references/events/event-reconnect-lifecycle.test.tsx` | Live OpenAPI + UI proofs (no W08 OpenAPI UI re-implementation) |
 
+## Key host files (story 007 — static SSE frame + reconnect examples)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/references/events/sse-static-examples.ts` | Build static SSE frame + reconnect example models (illustrative fixtures + OpenAPI-authored JSON probe); safety = no live EventSource/proxy |
+| `src/components/references/events/sse-frame-example.tsx` | CodePanel-backed `id:` / `event:` / `data:` frame example |
+| `src/components/references/events/sse-reconnect-example.tsx` | CodePanel-backed reconnect request / JSON probe example |
+| `src/components/references/events/sse-static-examples-section.tsx` | Compose frame + reconnect examples into the events corpus |
+| `src/components/references/events/sse-static-examples.test.tsx` | Wire-field, contract-name, safety, and UI proofs |
+
 ## Related spike (do not ship as production)
 
 | Path | Role |
@@ -161,3 +171,11 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   `FactorySessionEventStreamRecovery` outcome enum. Mark
   `httpTransportOwnership: "api-operation-page"` and link toward API anchors;
   do not re-implement W08 OpenAPI UI or pin Fumadocs OpenAPI here.
+- Static SSE examples via `buildSseStaticExamplesCorpus(doc, reconnectLifecycle)` —
+  OpenAPI cannot declare SSE wire frames, so `id:`/`event:`/`data:` examples are
+  clearly labeled `illustrative-static-fixture` (ellipsis placeholders, not full
+  fabricated payloads). Prefer the authored OpenAPI `example` on
+  `FactorySessionEventStreamRecovery` for the JSON reconnect-probe response.
+  Always set `EVENT_STREAM_SAFETY` markers (`opensLiveFactoryConnection: false`,
+  no proxy). Render through site `CodePanel` (`SseFrameExample` /
+  `SseReconnectExample`).

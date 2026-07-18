@@ -5,6 +5,7 @@ import {
   buildEventReconnectLifecycleCorpus,
   buildFactoryEventCatalog,
   buildFactoryResponseEventCatalog,
+  buildSseStaticExamplesCorpus,
   eventsOpenApiTurbopackLoadDependencies,
   resolveEventCorpus,
 } from "@/lib/references/events";
@@ -40,6 +41,10 @@ export default function EventsRendererHarnessPage() {
   const reconnectLifecycle = buildEventReconnectLifecycleCorpus(
     corpus.openapi.document,
   );
+  const sseStaticExamples = buildSseStaticExamplesCorpus(
+    corpus.openapi.document,
+    reconnectLifecycle,
+  );
 
   return (
     <EventsVerificationHarness
@@ -48,6 +53,7 @@ export default function EventsRendererHarnessPage() {
       pagePath="/events-renderer-harness"
       reconnectLifecycle={reconnectLifecycle}
       sourceHash={corpus.sourceHash}
+      sseStaticExamples={sseStaticExamples}
       summaries={summaries}
     />
   );

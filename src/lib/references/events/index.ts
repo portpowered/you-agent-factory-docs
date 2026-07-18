@@ -160,6 +160,19 @@ export {
   selectEventStreamsFromOpenApi,
 } from "./select-event-streams";
 export {
+  buildSseStaticExamplesCorpus,
+  SSE_STATIC_EXAMPLE_KIND,
+  SSE_STATIC_EXAMPLE_ORIGIN,
+  type SseStaticExample,
+  type SseStaticExampleKind,
+  type SseStaticExampleOrigin,
+  type SseStaticExamplesCorpus,
+  sseFrameExampleHasWireFields,
+  sseReconnectExampleUsesContractNames,
+  sseStaticFrameExamples,
+  sseStaticReconnectExamples,
+} from "./sse-static-examples";
+export {
   EVENT_STREAM_OPERATIONS,
   EVENT_STREAM_ROLES,
   EVENT_STREAM_SAFETY,

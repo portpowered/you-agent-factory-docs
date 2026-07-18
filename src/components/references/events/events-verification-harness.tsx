@@ -1,16 +1,18 @@
 /**
  * Focused W09 verification surface for stream roles + event catalogs +
- * reconnect/lifecycle docs.
+ * reconnect/lifecycle docs + static SSE examples.
  *
  * Renders EventStreamOperationsList, FactoryEventCatalogSection,
- * FactoryResponseEventCatalogSection, and EventReconnectLifecycleSection from
- * already-resolved corpus models. Not a final /docs/references/events page.
+ * FactoryResponseEventCatalogSection, EventReconnectLifecycleSection, and
+ * SseStaticExamplesSection from already-resolved corpus models. Not a final
+ * /docs/references/events page.
  */
 
 import type {
   EventReconnectLifecycleCorpus,
   FactoryEventCatalog,
   FactoryResponseEventCatalog,
+  SseStaticExamplesCorpus,
 } from "@/lib/references/events";
 import { cn } from "@/lib/utils";
 import { EventReconnectLifecycleSection } from "./event-reconnect-lifecycle-section";
@@ -19,12 +21,14 @@ import { EventStreamOperationsList } from "./event-stream-operations-list";
 import { EventsSurface } from "./events-surface";
 import { FactoryEventCatalogSection } from "./factory-event-catalog-section";
 import { FactoryResponseEventCatalogSection } from "./factory-response-event-catalog-section";
+import { SseStaticExamplesSection } from "./sse-static-examples-section";
 
 export type EventsVerificationHarnessProps = {
   summaries: readonly EventStreamOperationSummaryModel[];
   factoryEventCatalog?: FactoryEventCatalog;
   factoryResponseEventCatalog?: FactoryResponseEventCatalog;
   reconnectLifecycle?: EventReconnectLifecycleCorpus;
+  sseStaticExamples?: SseStaticExamplesCorpus;
   sourceHash?: string;
   pagePath?: string;
   className?: string;
@@ -36,6 +40,7 @@ export function EventsVerificationHarness({
   factoryEventCatalog,
   factoryResponseEventCatalog,
   reconnectLifecycle,
+  sseStaticExamples,
   sourceHash,
   pagePath = "/events-renderer-harness",
   className,
@@ -45,7 +50,8 @@ export function EventsVerificationHarness({
     summaries.length > 0 ||
     factoryEventCatalog !== undefined ||
     factoryResponseEventCatalog !== undefined ||
-    reconnectLifecycle !== undefined
+    reconnectLifecycle !== undefined ||
+    sseStaticExamples !== undefined
       ? "success"
       : "empty";
 
@@ -68,8 +74,9 @@ export function EventsVerificationHarness({
         <p className="max-w-3xl text-sm text-muted-foreground">
           Verifies stream roles, the FactoryEvent envelope / discriminator /
           payload catalog, the FactoryResponseEvent envelope / dimensions /
-          payload catalog, and reconnect / identity / lifecycle contracts
-          against packaged OpenAPI. Does not open a live Factory connection.
+          payload catalog, reconnect / identity / lifecycle contracts, and
+          static SSE frame / reconnect examples against packaged OpenAPI. Does
+          not open a live Factory connection.
         </p>
       </header>
 
@@ -92,6 +99,9 @@ export function EventsVerificationHarness({
           ) : null}
           {reconnectLifecycle !== undefined ? (
             <EventReconnectLifecycleSection corpus={reconnectLifecycle} />
+          ) : null}
+          {sseStaticExamples !== undefined ? (
+            <SseStaticExamplesSection corpus={sseStaticExamples} />
           ) : null}
         </div>
       </EventsSurface>
