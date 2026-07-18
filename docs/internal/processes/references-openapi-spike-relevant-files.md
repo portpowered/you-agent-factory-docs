@@ -51,6 +51,23 @@ the shipped `/docs/references/api` surface.
   per operation on the single page (`AnchorSection` is not a public export).
   Prefer `operationId` section deep links for stable hash navigation.
 
+## Playground suppression (static-only)
+
+- `src/lib/references-openapi-spike/playground-suppression.ts` — shared
+  `SPIKE_PLAYGROUND_OPTIONS` (`enabled: false`) and `SPIKE_PROXY_POLICY`
+  (no `proxyUrl`, forbidden App Router proxy segments).
+- `src/lib/references-openapi-spike/api-page.tsx` — passes
+  `playground: SPIKE_PLAYGROUND_OPTIONS` into `createAPIPage` so fumadocs
+  replaces the try-it form with a static method+path bar while usage-tab
+  `<pre>` examples remain.
+- `src/lib/references-openapi-spike/openapi-server.ts` — intentionally omits
+  `proxyUrl` on `createOpenAPI`.
+- `src/lib/references-openapi-spike/assert-playground-suppression.ts` —
+  starts an isolated Next dev server, curls `/references-openapi-spike`
+  (`--max-time 60`), asserts zero playground Send buttons / auth panels and
+  retained `<pre>` examples. Run with plain `bun`, not inside `bun test`.
+- Do not add `src/app/api/proxy` (or similar) for the spike.
+
 ## Temporary install policy
 
 - Spike may add exact `fumadocs-openapi` and required peers (for example

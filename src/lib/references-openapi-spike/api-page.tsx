@@ -9,6 +9,7 @@
 import { createAPIPage } from "fumadocs-openapi/ui";
 import { openapiSpikeServer } from "./openapi-server";
 import { spikeDeepLinkAnchor } from "./operation-anchors";
+import { SPIKE_PLAYGROUND_OPTIONS } from "./playground-suppression";
 
 function readOperationId(
   paths: Record<string, Record<string, unknown>> | undefined,
@@ -30,6 +31,8 @@ function readOperationId(
 }
 
 export const OpenAPISpikeAPIPage = createAPIPage(openapiSpikeServer, {
+  // Static-only spike: no try-it / Send controls and no live HTTP execution.
+  playground: SPIKE_PLAYGROUND_OPTIONS,
   // Keep schema examples visible under schema UI when available.
   schemaUI: {
     showExample: true,

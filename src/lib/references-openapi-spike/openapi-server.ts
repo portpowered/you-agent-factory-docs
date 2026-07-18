@@ -35,6 +35,8 @@ export const openapiSpikeServer = createOpenAPI({
   input: () => ({
     [OPENAPI_SPIKE_SCHEMA_ID]: loadPackagedOpenApiDocument(),
   }),
+  // Static-only spike: never configure a CORS proxy for live playground fetches.
+  // (`proxyUrl` omitted intentionally — see SPIKE_PROXY_POLICY.)
 });
 
 export type OpenApiSpikeOperation = NonNullable<

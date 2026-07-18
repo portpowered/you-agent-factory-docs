@@ -35,7 +35,8 @@ export default async function ReferencesOpenApiSpikePage() {
           document with Fumadocs OpenAPI <code>per:&quot;file&quot;</code> so
           all {projection.operations.length} published operations appear on this
           one route. Deep links use collision-free <code>operationId</code>{" "}
-          anchors. Not merged as production reference UI.
+          anchors. Playground / live execution is suppressed (static examples
+          only; no proxy). Not merged as production reference UI.
         </p>
       </header>
 
