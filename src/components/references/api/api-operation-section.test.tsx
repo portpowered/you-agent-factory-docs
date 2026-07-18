@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import { PageMessagesProvider } from "@/features/docs/components/page-messages-context";
+import type { PageMessages } from "@/lib/content/schemas";
 import { API_METHOD_BADGE_ATTR, ApiMethodBadge } from "./api-method-badge";
 import { ApiNavigationVerificationHarness } from "./api-navigation-verification-harness";
 import { ApiOperationSection } from "./api-operation-section";
@@ -179,6 +181,38 @@ describe("ApiOperationSection", () => {
     const { container } = render(<ApiOperationSection detail={sseDetail} />);
     expect(container.querySelector("[data-api-examples='present']")).toBeNull();
     expect(container.querySelector("[data-api-example='code']")).toBeNull();
+  });
+
+  test("marks canonical English contract descriptions with lang=en on Japanese UI locale", () => {
+    const pageMessages = {
+      title: "API",
+      description: "Test",
+    } as PageMessages;
+
+    const { container } = render(
+      <PageMessagesProvider messages={pageMessages} locale="ja">
+        <ApiOperationSection detail={sampleDetail} />
+      </PageMessagesProvider>,
+    );
+
+    const description = container.querySelector(
+      "[data-api-operation-description]",
+    );
+    expect(description?.getAttribute("lang")).toBe("en");
+    expect(description?.getAttribute("data-contract-prose")).toBe("");
+    expect(description?.textContent).toBe(
+      "Enqueue a work item for the session.",
+    );
+
+    const summary = container.querySelector("[data-api-operation-summary]");
+    expect(summary?.getAttribute("lang")).toBe("en");
+
+    // Untranslated identifiers stay byte-identical beside bounded prose.
+    expect(screen.getByText(sampleDetail.path)).toBeTruthy();
+    expect(screen.getByText("POST")).toBeTruthy();
+    expect(
+      screen.getByText(`operationId: ${sampleDetail.operationId}`),
+    ).toBeTruthy();
   });
 });
 

@@ -5,11 +5,13 @@
  * never invent missing lifecycle or visibility fields.
  */
 
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
 import type {
   ReferenceLifecycle,
   ReferenceLifecycleState,
 } from "@/lib/references/reference-item";
 import { REFERENCE_LIFECYCLE_STATES } from "@/lib/references/reference-item";
+import { referenceLifecycleStateLabel } from "./reference-status-labels";
 
 /** Sentinel for "no lifecycle facet selected". */
 export const REFERENCE_INVENTORY_FILTER_ALL = "all" as const;
@@ -135,15 +137,20 @@ export function filterReferenceInventoryItems<
 }
 
 /** Lifecycle facet options for select controls (includes "all"). */
-export function referenceInventoryLifecycleFilterOptions(): readonly {
+export function referenceInventoryLifecycleFilterOptions(
+  chrome?: ReferenceChromeMessages,
+): readonly {
   value: ReferenceInventoryLifecycleFilter;
   label: string;
 }[] {
   return [
-    { value: REFERENCE_INVENTORY_FILTER_ALL, label: "All lifecycles" },
+    {
+      value: REFERENCE_INVENTORY_FILTER_ALL,
+      label: chrome?.filter.allLifecycles ?? "All lifecycles",
+    },
     ...REFERENCE_LIFECYCLE_STATES.map((state) => ({
       value: state,
-      label: state.charAt(0).toUpperCase() + state.slice(1),
+      label: referenceLifecycleStateLabel(state, chrome),
     })),
   ];
 }
@@ -151,9 +158,12 @@ export function referenceInventoryLifecycleFilterOptions(): readonly {
 /**
  * Build visibility facet options from published values present on the
  * inventory — never invents visibility strings that are not on any item.
+ * Known public/internal tokens use chrome labels; other published tokens stay
+ * byte-identical (untranslated contract literals).
  */
 export function referenceInventoryVisibilityFilterOptions(
   publishedVisibilities: readonly (string | undefined)[],
+  chrome?: ReferenceChromeMessages,
 ): readonly { value: ReferenceInventoryVisibilityFilter; label: string }[] {
   const unique: string[] = [];
   for (const value of publishedVisibilities) {
@@ -167,10 +177,21 @@ export function referenceInventoryVisibilityFilterOptions(
   unique.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 
   return [
-    { value: REFERENCE_INVENTORY_FILTER_ALL, label: "All visibility" },
-    ...unique.map((value) => ({
-      value,
-      label: value.charAt(0).toUpperCase() + value.slice(1),
-    })),
+    {
+      value: REFERENCE_INVENTORY_FILTER_ALL,
+      label: chrome?.filter.allVisibility ?? "All visibility",
+    },
+    ...unique.map((value) => {
+      if (value === "public" || value === "internal") {
+        return {
+          value,
+          label:
+            chrome?.visibilityStates[value] ??
+            value.charAt(0).toUpperCase() + value.slice(1),
+        };
+      }
+      // Preserve unpublished/custom visibility tokens untranslated.
+      return { value, label: value };
+    }),
   ];
 }

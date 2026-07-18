@@ -4,6 +4,7 @@ import {
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { JavascriptSharedSchemaNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
 import {
@@ -20,6 +21,7 @@ import type { JavaScriptSharedSchemaReferenceProps } from "./types";
 export function JavaScriptSharedSchemaReference({
   schema,
   packageVersion,
+  chrome,
   className,
 }: JavaScriptSharedSchemaReferenceProps) {
   const sharedVisibility = mapJavascriptVisibilityToReferenceVisibility(
@@ -47,16 +49,21 @@ export function JavaScriptSharedSchemaReference({
               {heading}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={schema.anchor} family="javascript" />
+          <CopyableReferenceAnchor
+            anchor={schema.anchor}
+            chrome={chrome}
+            family="javascript"
+          />
         </div>
         {schema.description !== undefined ? (
-          <p className="m-0 text-sm text-muted-foreground">
+          <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
             {schema.description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="javascript"
         lifecycle={schema.lifecycle}
         packageVersion={packageVersion}

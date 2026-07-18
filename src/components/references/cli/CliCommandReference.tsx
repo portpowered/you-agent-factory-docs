@@ -3,6 +3,7 @@ import {
   CopyableReferenceAnchor,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
 import { CliCapabilityNotice } from "./CliCapabilityNotice";
@@ -27,6 +28,7 @@ function booleanStateLabel(value: boolean): string {
 export function CliCommandReference({
   command,
   packageVersion,
+  chrome,
   className,
 }: CliCommandReferenceProps) {
   const sharedVisibility = mapCliVisibilityToReferenceVisibility(
@@ -61,16 +63,21 @@ export function CliCommandReference({
               {command.commandPath}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={command.anchor} family="cli" />
+          <CopyableReferenceAnchor
+            anchor={command.anchor}
+            chrome={chrome}
+            family="cli"
+          />
         </div>
         {shortDescription !== undefined ? (
-          <p className="m-0 text-sm text-muted-foreground">
+          <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
             {shortDescription}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="cli"
         lifecycle={command.lifecycle}
         packageVersion={packageVersion}
@@ -113,9 +120,9 @@ export function CliCommandReference({
           <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Long description
           </h4>
-          <p className="m-0 whitespace-pre-wrap text-sm text-foreground">
+          <ContractDescriptionProse className="m-0 whitespace-pre-wrap text-sm text-foreground">
             {longDescription}
-          </p>
+          </ContractDescriptionProse>
         </section>
       ) : null}
 

@@ -81,8 +81,123 @@ export type ExplorerMessages = {
 };
 
 /**
+ * W17 Factory-reference chrome: filter, status, badge, empty/error, a11y, and
+ * inventory chrome. Literal contract tokens (API / CLI / MCP family ids, method
+ * names, tool names, command paths) stay untranslated in catalogs.
+ */
+export type ReferenceChromeFilterMessages = {
+  queryPlaceholder: string;
+  lifecycleLabel: string;
+  visibilityLabel: string;
+  allLifecycles: string;
+  allVisibility: string;
+  clearFilters: string;
+  showingOf: string;
+  schemaQueryPlaceholder: string;
+  schemaQueryLabel: string;
+  schemaNoMatchesTitle: string;
+  schemaNoMatchesMessage: string;
+  clear: string;
+};
+
+export type ReferenceChromeStatusMessages = {
+  loadingTitle: string;
+  loadingMessage: string;
+  emptyTitle: string;
+  emptyMessage: string;
+  invalidTitle: string;
+  invalidMessage: string;
+  unsupportedTitle: string;
+  unsupportedMessage: string;
+};
+
+export type ReferenceChromeBadgeMessages = {
+  family: string;
+  package: string;
+  packageVersion: string;
+  sourceArtifact: string;
+  sourceCommit: string;
+  lifecycle: string;
+  visibility: string;
+  contractSource: string;
+  packageVersionNotPublished: string;
+  notPublishedOnProjection: string;
+  familyWithLabel: string;
+};
+
+export type ReferenceChromeFamilyMessages = {
+  api: string;
+  schema: string;
+  cli: string;
+  mcp: string;
+  javascript: string;
+  events: string;
+};
+
+export type ReferenceChromeLifecycleStateMessages = {
+  active: string;
+  deprecated: string;
+  removed: string;
+};
+
+export type ReferenceChromeLifecycleSummaryMessages = {
+  since: string;
+  deprecated: string;
+  removed: string;
+  successor: string;
+};
+
+export type ReferenceChromeVisibilityStateMessages = {
+  public: string;
+  internal: string;
+};
+
+export type ReferenceChromeA11yMessages = {
+  copyAnchorLink: string;
+  anchorLinkCopied: string;
+};
+
+export type ReferenceChromeExampleMessages = {
+  authored: string;
+  generated: string;
+  exampleIndexed: string;
+};
+
+export type ReferenceChromeInventoryFamilyMessages = {
+  filterLegend: string;
+  queryLabel: string;
+  queryPlaceholder: string;
+  emptyTitle: string;
+  emptyDescription: string;
+  errorTitle: string;
+  errorDescription: string;
+  filterEmpty: string;
+  countOne: string;
+  countMany: string;
+};
+
+export type ReferenceChromeInventoryMessages = {
+  cli: ReferenceChromeInventoryFamilyMessages;
+  mcp: ReferenceChromeInventoryFamilyMessages;
+  javascript: ReferenceChromeInventoryFamilyMessages;
+};
+
+export type ReferenceChromeMessages = {
+  filter: ReferenceChromeFilterMessages;
+  status: ReferenceChromeStatusMessages;
+  badge: ReferenceChromeBadgeMessages;
+  families: ReferenceChromeFamilyMessages;
+  lifecycleStates: ReferenceChromeLifecycleStateMessages;
+  lifecycleSummary: ReferenceChromeLifecycleSummaryMessages;
+  visibilityStates: ReferenceChromeVisibilityStateMessages;
+  a11y: ReferenceChromeA11yMessages;
+  examples: ReferenceChromeExampleMessages;
+  inventory: ReferenceChromeInventoryMessages;
+};
+
+/**
  * Shell-level UI messages: search, navigation, language selector, layout chrome,
- * and docs explorer folder/subgroup labels.
+ * docs explorer folder/subgroup labels, and Factory-reference chrome.
  * Reusable across generic documentation shells without retired Atlas topology/timeline copy.
  */
 export type ShellMessages = {
@@ -91,6 +206,7 @@ export type ShellMessages = {
   language: LanguageMessages;
   shell: ShellLayoutMessages;
   explorer: ExplorerMessages;
+  referenceChrome: ReferenceChromeMessages;
 };
 
 /** Shared section-index copy shape for docs collection landing pages. */
@@ -278,6 +394,7 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "searchEntry",
   "shell",
   "explorer",
+  "referenceChrome",
   "home",
   "browseIndex",
   "conceptsIndex",

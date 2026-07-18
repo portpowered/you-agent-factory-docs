@@ -2,6 +2,7 @@
 
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { type ReactNode, useId, useState } from "react";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import { cn } from "@/lib/utils";
 import {
   schemaAddressDeepLink,
@@ -154,12 +155,12 @@ export function SchemaFieldRow({
           </div>
 
           {field.description !== undefined ? (
-            <p
+            <ContractDescriptionProse
               className="text-muted-foreground text-sm"
               data-schema-field-description=""
             >
               {field.description}
-            </p>
+            </ContractDescriptionProse>
           ) : null}
 
           {field.default !== undefined ? (

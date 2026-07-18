@@ -10,6 +10,8 @@ import {
   type ReferenceInventoryFilterableItem,
   type ReferenceInventoryFilterState,
 } from "@/components/references/shared";
+import { useOptionalReferenceChrome } from "@/lib/i18n/reference-chrome-context";
+import { formatReferenceChromeTemplate } from "@/lib/i18n/reference-chrome-labels";
 import { assignCliCommandRegistryAnchors } from "@/lib/references/assign-family-reference-anchors";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
@@ -52,6 +54,8 @@ export function CliCommandInventory({
   inventory,
   className,
 }: CliCommandInventoryProps) {
+  const chrome = useOptionalReferenceChrome();
+  const inv = chrome?.inventory.cli;
   const [filter, setFilter] = useState<ReferenceInventoryFilterState>(() =>
     createReferenceInventoryFilterState(),
   );
@@ -71,9 +75,13 @@ export function CliCommandInventory({
         data-inventory-state="empty"
       >
         <ReferenceEmptyState
-          description="No published CLI commands were found in the resolved contract."
+          chrome={chrome}
+          description={
+            inv?.emptyDescription ??
+            "No published CLI commands were found in the resolved contract."
+          }
           family="cli"
-          title="No CLI commands"
+          title={inv?.emptyTitle ?? "No CLI commands"}
         />
       </div>
     );
@@ -87,10 +95,14 @@ export function CliCommandInventory({
         data-inventory-state="error"
       >
         <ReferenceErrorState
-          description="The CLI inventory could not be normalized from the package contract."
+          chrome={chrome}
+          description={
+            inv?.errorDescription ??
+            "The CLI inventory could not be normalized from the package contract."
+          }
           detail={inventory.detail}
           family="cli"
-          title="CLI inventory error"
+          title={inv?.errorTitle ?? "CLI inventory error"}
         />
       </div>
     );
@@ -104,9 +116,13 @@ export function CliCommandInventory({
         data-inventory-state="empty"
       >
         <ReferenceEmptyState
-          description="No published CLI commands were found in the resolved contract."
+          chrome={chrome}
+          description={
+            inv?.emptyDescription ??
+            "No published CLI commands were found in the resolved contract."
+          }
           family="cli"
-          title="No CLI commands"
+          title={inv?.emptyTitle ?? "No CLI commands"}
         />
       </div>
     );
@@ -114,6 +130,12 @@ export function CliCommandInventory({
 
   const filterable = anchoredCommands.map(toFilterable);
   const filtered = filterReferenceInventoryItems(filterable, filter);
+  const countTemplate =
+    anchoredCommands.length === 1
+      ? (inv?.countOne ??
+        "{count} published CLI command from the package contract.")
+      : (inv?.countMany ??
+        "{count} published CLI commands from the package contract.");
 
   return (
     <div
@@ -124,20 +146,24 @@ export function CliCommandInventory({
       data-inventory-state="success"
     >
       <p className="m-0 text-sm text-muted-foreground">
-        {anchoredCommands.length} published CLI{" "}
-        {anchoredCommands.length === 1 ? "command" : "commands"} from the
-        package contract.
+        {formatReferenceChromeTemplate(countTemplate, {
+          count: anchoredCommands.length,
+        })}
       </p>
 
       <ReferenceInventoryFilter
+        chrome={chrome}
         filter={filter}
-        legend="Filter CLI commands"
+        legend={inv?.filterLegend ?? "Filter CLI commands"}
         onFilterChange={setFilter}
         publishedVisibilities={anchoredCommands.map(
           (command) => command.visibility,
         )}
-        queryLabel="Command path"
-        queryPlaceholder="Filter by command path, alias, or description…"
+        queryLabel={inv?.queryLabel ?? "Command path"}
+        queryPlaceholder={
+          inv?.queryPlaceholder ??
+          "Filter by command path, alias, or description…"
+        }
         resultCount={filtered.length}
         totalCount={anchoredCommands.length}
       />
@@ -148,12 +174,13 @@ export function CliCommandInventory({
           data-cli-command-filter-empty=""
           role="status"
         >
-          No CLI commands match the current filters.
+          {inv?.filterEmpty ?? "No CLI commands match the current filters."}
         </p>
       ) : (
         <div className="flex flex-col gap-4">
           {filtered.map((item) => (
             <CliCommandReference
+              chrome={chrome}
               command={item.command}
               key={item.command.id}
               packageVersion={inventory.packageVersion}

@@ -3,6 +3,7 @@ import {
   CopyableReferenceAnchor,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { JavascriptSymbolNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
 import {
@@ -19,6 +20,7 @@ import type { JavaScriptSymbolReferenceProps } from "./types";
 export function JavaScriptSymbolReference({
   symbol,
   packageVersion,
+  chrome,
   className,
 }: JavaScriptSymbolReferenceProps) {
   const sharedVisibility = mapJavascriptVisibilityToReferenceVisibility(
@@ -46,16 +48,21 @@ export function JavaScriptSymbolReference({
               {symbol.symbolPath}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={symbol.anchor} family="javascript" />
+          <CopyableReferenceAnchor
+            anchor={symbol.anchor}
+            chrome={chrome}
+            family="javascript"
+          />
         </div>
         {symbol.description !== undefined ? (
-          <p className="m-0 text-sm text-muted-foreground">
+          <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
             {symbol.description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="javascript"
         lifecycle={symbol.lifecycle}
         packageVersion={packageVersion}

@@ -2,6 +2,7 @@
  * Identity handshake headers + stream-generation invalidation.
  */
 
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { EventIdentityHandshakeModel } from "@/lib/references/events";
 import { cn } from "@/lib/utils";
 
@@ -57,9 +58,9 @@ export function EventIdentityHandshake({
               {header.name}
             </code>
             {header.description.length > 0 ? (
-              <p className="mt-1 text-muted-foreground text-sm">
+              <ContractDescriptionProse className="mt-1 text-muted-foreground text-sm">
                 {header.description}
-              </p>
+              </ContractDescriptionProse>
             ) : null}
           </li>
         ))}

@@ -115,3 +115,37 @@ export const SCHEMA_UI_STATUS_DEFAULT_TITLES: Record<
   invalid: "Invalid schema",
   unsupported: "Unsupported schema",
 };
+
+/** Resolve schema status titles from reference chrome catalogs when provided. */
+export function schemaUiStatusTitlesFromChrome(chrome: {
+  status: {
+    loadingTitle: string;
+    emptyTitle: string;
+    invalidTitle: string;
+    unsupportedTitle: string;
+  };
+}): Record<SchemaUiStatusKind, string> {
+  return {
+    loading: chrome.status.loadingTitle,
+    empty: chrome.status.emptyTitle,
+    invalid: chrome.status.invalidTitle,
+    unsupported: chrome.status.unsupportedTitle,
+  };
+}
+
+/** Resolve schema status messages from reference chrome catalogs when provided. */
+export function schemaUiStatusMessagesFromChrome(chrome: {
+  status: {
+    loadingMessage: string;
+    emptyMessage: string;
+    invalidMessage: string;
+    unsupportedMessage: string;
+  };
+}): Record<SchemaUiStatusKind, string> {
+  return {
+    loading: chrome.status.loadingMessage,
+    empty: chrome.status.emptyMessage,
+    invalid: chrome.status.invalidMessage,
+    unsupported: chrome.status.unsupportedMessage,
+  };
+}

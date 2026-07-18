@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { loadReferencesFamilyIndex } from "@/content/docs/references/family-index/load-references-family-index";
-import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
+import { localizedShippedDocsPageAlternates } from "@/lib/i18n/route-locale";
 import { renderReferencesFamilyIndexPage } from "../../site-renderers";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,10 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: index.messages.title,
     description: index.messages.description,
-    alternates: localizedRouteAlternates({
-      surface: "docs-page",
-      slug: "references",
-    }),
+    alternates: localizedShippedDocsPageAlternates("references"),
   };
 }
 

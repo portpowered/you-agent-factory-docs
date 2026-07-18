@@ -1,0 +1,57 @@
+{
+  "title": "Tham chiếu",
+  "description": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
+  "openingSummary": "Họ trang này tập hợp các bề mặt hợp đồng đã xuất bản của you-agent-factory. Dùng khi bạn cần tra cứu thao tác API, hình dạng sự kiện, schema cấu hình, lệnh giao diện dòng lệnh (CLI), công cụ Model Context Protocol (MCP), hoặc binding JavaScript runtime—không coi trang đích này là hướng dẫn cách làm.",
+  "sections": {
+    "introduction": {
+      "title": "Họ trang này bao gồm gì",
+      "body": "Tham chiếu là các trang tra cứu isolation-first cho hợp đồng factory. Mỗi bề mặt liên kết sở hữu một họ hợp đồng: HTTP API, kho sự kiện bền vững, schema factory và cấu hình, ma trận lệnh giao diện dòng lệnh (CLI), hợp đồng công cụ Model Context Protocol (MCP), hoặc bề mặt JavaScript runtime. Bắt đầu từ đây để chọn đúng trang hợp đồng; chỉ mở trang con khi cần trường, thao tác, hoặc ví dụ của bề mặt đó."
+    },
+    "discoverability": {
+      "title": "Các bề mặt hợp đồng",
+      "body": "Mỗi thẻ mở một họ hợp đồng. Nhãn vẫn dễ đọc trên khung nhìn hẹp."
+    },
+    "freshness": {
+      "title": "Độ mới của gói",
+      "body": "Họ trang này ghi nhận danh tính gói API công khai đã cài đặt bên dưới. Phiên bản và source commit đến từ manifest gói đã xuất bản—không phải chuỗi chép tay."
+    },
+    "api": {
+      "title": "HTTP API",
+      "body": "Các thao tác OpenAPI và hợp đồng request/response cho bề mặt HTTP của factory."
+    },
+    "events": {
+      "title": "Sự kiện",
+      "body": "Kho sự kiện bền vững và hình dạng envelope cho luồng phản hồi factory."
+    },
+    "factory-schema": {
+      "title": "Factory schema",
+      "body": "JSON Schema cho tài liệu factory đã đóng gói và các trường bắt buộc."
+    },
+    "you-config-schema": {
+      "title": "Schema cấu hình you",
+      "body": "Schema cấu hình cho runtime và thiết lập workspace của you-agent-factory."
+    },
+    "mock-workers-schema": {
+      "title": "Schema mock worker",
+      "body": "Schema cho định nghĩa mock worker dùng trong harness cục bộ và kiểm thử."
+    },
+    "cli": {
+      "title": "Giao diện dòng lệnh (CLI)",
+      "body": "Ma trận lệnh và cờ cho giao diện dòng lệnh (CLI) you."
+    },
+    "mcp": {
+      "title": "Model Context Protocol (MCP)",
+      "body": "Hợp đồng công cụ Model Context Protocol (MCP) do factory công bố."
+    },
+    "javascript-runtime": {
+      "title": "JavaScript runtime",
+      "body": "Binding JavaScript runtime và bề mặt gói để nhúng công việc factory."
+    }
+  },
+  "callouts": {
+    "freshnessUnavailable": {
+      "title": "Không lấy được độ mới của gói",
+      "body": "Không đọc được manifest gói API đã xuất bản cho bản dựng này. Các thẻ bề mặt hợp đồng bên dưới vẫn khả dụng; danh tính và phiên bản gói sẽ hiện ở đây khi manifest được giải quyết."
+    }
+  }
+}

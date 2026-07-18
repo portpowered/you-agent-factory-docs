@@ -10,6 +10,8 @@ import {
   type ReferenceInventoryFilterableItem,
   type ReferenceInventoryFilterState,
 } from "@/components/references/shared";
+import { useOptionalReferenceChrome } from "@/lib/i18n/reference-chrome-context";
+import { formatReferenceChromeTemplate } from "@/lib/i18n/reference-chrome-labels";
 import { assignJavascriptRuntimeRegistryAnchors } from "@/lib/references/assign-family-reference-anchors";
 import type {
   JavascriptSharedSchemaNormalized,
@@ -90,6 +92,8 @@ export function JavaScriptRuntimeInventory({
   inventory,
   className,
 }: JavaScriptRuntimeInventoryProps) {
+  const chrome = useOptionalReferenceChrome();
+  const inv = chrome?.inventory.javascript;
   const [filter, setFilter] = useState<ReferenceInventoryFilterState>(() =>
     createReferenceInventoryFilterState(),
   );
@@ -116,9 +120,13 @@ export function JavaScriptRuntimeInventory({
         data-javascript-runtime-inventory=""
       >
         <ReferenceEmptyState
-          description="No published JavaScript symbols or shared schemas were found in the resolved contract."
+          chrome={chrome}
+          description={
+            inv?.emptyDescription ??
+            "No published JavaScript symbols or shared schemas were found in the resolved contract."
+          }
           family="javascript"
-          title="No JavaScript runtime items"
+          title={inv?.emptyTitle ?? "No JavaScript runtime items"}
         />
       </div>
     );
@@ -132,10 +140,14 @@ export function JavaScriptRuntimeInventory({
         data-javascript-runtime-inventory=""
       >
         <ReferenceErrorState
-          description="The JavaScript inventory could not be normalized from the package contract."
+          chrome={chrome}
+          description={
+            inv?.errorDescription ??
+            "The JavaScript inventory could not be normalized from the package contract."
+          }
           detail={inventory.detail}
           family="javascript"
-          title="JavaScript inventory error"
+          title={inv?.errorTitle ?? "JavaScript inventory error"}
         />
       </div>
     );
@@ -149,9 +161,13 @@ export function JavaScriptRuntimeInventory({
         data-javascript-runtime-inventory=""
       >
         <ReferenceEmptyState
-          description="No published JavaScript symbols or shared schemas were found in the resolved contract."
+          chrome={chrome}
+          description={
+            inv?.emptyDescription ??
+            "No published JavaScript symbols or shared schemas were found in the resolved contract."
+          }
           family="javascript"
-          title="No JavaScript runtime items"
+          title={inv?.emptyTitle ?? "No JavaScript runtime items"}
         />
       </div>
     );
@@ -169,6 +185,12 @@ export function JavaScriptRuntimeInventory({
     (item): item is JsFilterableSchema => item.kind === "schema",
   );
   const totalCount = anchored.symbols.length + anchored.sharedSchemas.length;
+  const countTemplate =
+    totalCount === 1
+      ? (inv?.countOne ??
+        "{count} published JavaScript runtime item from the package contract.")
+      : (inv?.countMany ??
+        "{count} published JavaScript runtime items from the package contract.");
 
   return (
     <div
@@ -182,23 +204,23 @@ export function JavaScriptRuntimeInventory({
       data-javascript-filtered-count={String(filtered.length)}
     >
       <p className="m-0 text-sm text-muted-foreground">
-        {anchored.symbols.length} published JavaScript{" "}
-        {anchored.symbols.length === 1 ? "symbol" : "symbols"} and{" "}
-        {anchored.sharedSchemas.length} shared{" "}
-        {anchored.sharedSchemas.length === 1 ? "schema" : "schemas"} from the
-        package contract.
+        {formatReferenceChromeTemplate(countTemplate, { count: totalCount })}
       </p>
 
       <ReferenceInventoryFilter
+        chrome={chrome}
         filter={filter}
-        legend="Filter JavaScript runtime items"
+        legend={inv?.filterLegend ?? "Filter JavaScript runtime items"}
         onFilterChange={setFilter}
         publishedVisibilities={[
           ...anchored.symbols.map((symbol) => symbol.visibility),
           ...anchored.sharedSchemas.map((schema) => schema.visibility),
         ]}
-        queryLabel="Symbol or schema"
-        queryPlaceholder="Filter by symbol path, schema id, or description…"
+        queryLabel={inv?.queryLabel ?? "Symbol or schema"}
+        queryPlaceholder={
+          inv?.queryPlaceholder ??
+          "Filter by symbol path, schema id, or description…"
+        }
         resultCount={filtered.length}
         totalCount={totalCount}
       />
@@ -209,7 +231,8 @@ export function JavaScriptRuntimeInventory({
           data-javascript-filter-empty=""
           role="status"
         >
-          No JavaScript runtime items match the current filters.
+          {inv?.filterEmpty ??
+            "No JavaScript runtime items match the current filters."}
         </p>
       ) : (
         <>
@@ -221,6 +244,7 @@ export function JavaScriptRuntimeInventory({
               <div className="flex flex-col gap-4">
                 {filteredSymbols.map((item) => (
                   <JavaScriptSymbolReference
+                    chrome={chrome}
                     key={item.symbol.id}
                     packageVersion={inventory.packageVersion}
                     symbol={item.symbol}
@@ -241,6 +265,7 @@ export function JavaScriptRuntimeInventory({
               <div className="flex flex-col gap-4">
                 {filteredSchemas.map((item) => (
                   <JavaScriptSharedSchemaReference
+                    chrome={chrome}
                     key={item.schema.id}
                     packageVersion={inventory.packageVersion}
                     schema={item.schema}

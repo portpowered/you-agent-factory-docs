@@ -134,6 +134,62 @@ describe("deriveShippedLocalizedDocsManifest", () => {
     }
   });
 
+  test("includes published references family-index slug when locale messages exist", async () => {
+    const tempRoot = join(
+      import.meta.dir,
+      "__shipped-localized-docs-fixtures__",
+      crypto.randomUUID(),
+      "docs",
+    );
+    const familyIndexDir = join(tempRoot, "references", "family-index");
+    await mkdir(join(familyIndexDir, "messages"), { recursive: true });
+    await writeFile(
+      join(familyIndexDir, "frontmatter.json"),
+      JSON.stringify({
+        kind: "reference",
+        registryId: "reference.references",
+        messageNamespace: "local",
+        assetNamespace: "local",
+        tags: [],
+        status: "published",
+        updatedAt: "2026-07-18",
+      }),
+    );
+    await writeFile(
+      join(familyIndexDir, "messages", "en.json"),
+      JSON.stringify({
+        title: "References",
+        description: "English family index",
+      }),
+    );
+    await writeFile(
+      join(familyIndexDir, "messages", "ja.json"),
+      JSON.stringify({
+        title: "リファレンス",
+        description: "Japanese family index",
+      }),
+    );
+    await writePageBundle(tempRoot, "references/api", {
+      status: "published",
+      locales: ["ja", "vi"],
+    });
+
+    try {
+      resetDerivedShippedLocalizedDocsManifestCache();
+      expect(deriveShippedLocalizedDocsManifest(tempRoot)).toEqual({
+        ja: ["references", "references/api"],
+        "zh-CN": [],
+        vi: ["references/api"],
+      });
+    } finally {
+      resetDerivedShippedLocalizedDocsManifestCache();
+      await rm(join(import.meta.dir, "__shipped-localized-docs-fixtures__"), {
+        recursive: true,
+        force: true,
+      });
+    }
+  });
+
   test("generated shipped localized docs artifact matches the committed docs tree", () => {
     resetDerivedShippedLocalizedDocsManifestCache();
     const derived = deriveShippedLocalizedDocsManifest();
@@ -174,6 +230,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "references",
         "references/api",
         "techniques/fusion",
         "techniques/planner-executor",
@@ -216,6 +273,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "references",
         "references/api",
         "techniques/fusion",
         "techniques/planner-executor",
@@ -258,6 +316,7 @@ describe("deriveShippedLocalizedDocsManifest", () => {
         "guides/getting-started",
         "guides/using-you-agent-factory-for-loops",
         "guides/write-review-loops",
+        "references",
         "references/api",
         "techniques/fusion",
         "techniques/planner-executor",
