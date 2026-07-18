@@ -9,6 +9,8 @@ export {
   referenceSourceArtifactLabel,
   referenceVisibilityLabel,
 } from "./reference-status-labels";
+export type { SchemaDefinitionEmbedProps } from "./SchemaDefinitionEmbed";
+export { SchemaDefinitionEmbed } from "./SchemaDefinitionEmbed";
 export type {
   ContractSourceBadgeProps,
   ReferenceEmptyStateProps,

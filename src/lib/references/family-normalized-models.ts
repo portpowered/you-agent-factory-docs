@@ -13,6 +13,10 @@ import {
   type ReferenceLifecycle,
   type ReferenceSourcePointer,
 } from "./reference-item";
+import {
+  parseSchemaDefinitionModel,
+  type SchemaDefinitionModel,
+} from "./schema-model";
 
 /** HTTP methods published on OpenAPI path items. */
 export const OPENAPI_HTTP_METHODS = [
@@ -93,12 +97,27 @@ export type CliCommandNormalized = {
 
 /**
  * Normalized MCP tool identity for later MCP reference pages.
+ *
+ * Optional metadata fields stay absent when the published contract omitted
+ * them — never invent input properties, required lists, or handler state.
  */
 export type McpToolNormalized = {
   id: string;
   /** Published tool name (for example `you.factory_session.get`). */
   name: string;
   description?: string;
+  /** Whether a handler is registered in the published MCP contract. */
+  handlerRegistered?: boolean;
+  /**
+   * Required input property names when published on the tool input schema.
+   * Derived from the schema `required` array — never invented.
+   */
+  requiredInputs?: string[];
+  /**
+   * Tool input schema as a W04 `SchemaDefinitionModel` projection when the
+   * published contract includes `inputSchema`.
+   */
+  inputSchema?: SchemaDefinitionModel;
   lifecycle?: ReferenceLifecycle;
   source: ReferenceSourcePointer;
   anchor: string;
@@ -452,6 +471,36 @@ export function parseMcpToolNormalized(value: unknown): McpToolNormalized {
 
   if (value.description !== undefined) {
     model.description = requireNonEmptyString(value.description, "description");
+  }
+
+  if (value.handlerRegistered !== undefined) {
+    if (typeof value.handlerRegistered !== "boolean") {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "handlerRegistered" must be a boolean.`,
+        { field: "handlerRegistered" },
+      );
+    }
+    model.handlerRegistered = value.handlerRegistered;
+  }
+
+  if (value.requiredInputs !== undefined) {
+    model.requiredInputs = requireStringArray(
+      value.requiredInputs,
+      "requiredInputs",
+    );
+  }
+
+  if (value.inputSchema !== undefined) {
+    try {
+      model.inputSchema = parseSchemaDefinitionModel(value.inputSchema);
+    } catch (cause) {
+      throw new FamilyNormalizedModelParseError(
+        "malformed-model",
+        `Malformed family model: field "inputSchema" must be a SchemaDefinitionModel.`,
+        { field: "inputSchema", cause },
+      );
+    }
   }
 
   const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");

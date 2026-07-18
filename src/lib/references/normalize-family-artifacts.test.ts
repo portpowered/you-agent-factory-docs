@@ -195,6 +195,18 @@ describe("normalizeMcpToolsFromArtifact", () => {
           idCandidate: "factory-session.get",
           name: "you.factory_session.get",
           description: "Get one durable Factory Session.",
+          handlerRegistered: true,
+          inputSchema: {
+            type: "object",
+            additionalProperties: false,
+            required: ["sessionId"],
+            properties: {
+              sessionId: {
+                type: "string",
+                description: "Stable durable Factory Session identifier.",
+              },
+            },
+          },
         },
         {
           idCandidate: "factory-session.control",
@@ -207,7 +219,15 @@ describe("normalizeMcpToolsFromArtifact", () => {
     const tools = normalizeMcpToolsFromArtifact(fixture);
     expect(tools).toHaveLength(2);
     expect(tools[0].description).toBe("Get one durable Factory Session.");
+    expect(tools[0].handlerRegistered).toBe(true);
+    expect(tools[0].requiredInputs).toEqual(["sessionId"]);
+    expect(tools[0].inputSchema?.type).toBe("object");
+    expect(tools[0].inputSchema?.properties?.sessionId?.typeSummary).toBe(
+      "string",
+    );
     expect(tools[1].description).toBeUndefined();
+    expect(tools[1].lifecycle).toBeUndefined();
+    expect(tools[1].inputSchema).toBeUndefined();
     expect(tools[0].lifecycle).toBeUndefined();
   });
 
@@ -221,6 +241,9 @@ describe("normalizeMcpToolsFromArtifact", () => {
     const get = tools.find((tool) => tool.id === "factory-session.get");
     expect(get?.name).toBe("you.factory_session.get");
     expect(get?.source.publicArtifactId).toBe("@you-agent-factory/api/mcp");
+    expect(get?.handlerRegistered).toBe(true);
+    expect(get?.requiredInputs).toEqual(["sessionId"]);
+    expect(get?.inputSchema?.properties?.sessionId?.typeSummary).toBe("string");
   });
 });
 

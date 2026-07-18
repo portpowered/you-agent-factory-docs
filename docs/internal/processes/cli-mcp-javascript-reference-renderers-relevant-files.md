@@ -44,13 +44,27 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/components/references/cli/index.ts` | Public CLI renderer barrel |
 | `src/components/references/harness/ReferenceCliHarness.tsx` | Dev fixture mount for CLI inventory browser verification |
 
+## Key host files (MCP family — story 004)
+
+| Path | Role |
+| --- | --- |
+| `src/components/references/mcp/McpToolReference.tsx` | One tool from a W04-normalized MCP projection with input schema embed |
+| `src/components/references/mcp/McpToolInventory.tsx` | Inventory list with empty/error chrome |
+| `src/components/references/mcp/types.ts` | MCP renderer prop contracts / inventory input union |
+| `src/components/references/mcp/index.ts` | Public MCP renderer barrel |
+| `src/components/references/shared/SchemaDefinitionEmbed.tsx` | Thin local adapter over W04 `SchemaDefinitionModel` (no W07 fork) |
+| `src/lib/references/mcp-input-schema-projection.ts` | Pure MCP JSON Schema → `SchemaDefinitionModel` projection |
+| `src/components/references/harness/ReferenceMcpHarness.tsx` | Dev fixture mount for MCP inventory browser verification |
+
 ## Upstream dependencies (do not reimplement)
 
 | Path | Role |
 | --- | --- |
 | `src/lib/references/reference-item.ts` | `ReferenceFamily`, `ReferenceLifecycle`, `ReferenceSourcePointer` |
-| `src/lib/references/family-normalized-models.ts` | CLI/MCP/JS normalized item shapes (CLI carries optional short/long/example/visibility/runnable/handlerPresent) |
+| `src/lib/references/family-normalized-models.ts` | CLI/MCP/JS normalized item shapes (CLI carries optional short/long/example/visibility/runnable/handlerPresent; MCP carries optional handlerRegistered/requiredInputs/inputSchema) |
 | `src/lib/references/normalize-family-artifacts.ts` | Artifact → normalized CLI/MCP/JS models |
+| `src/lib/references/mcp-input-schema-projection.ts` | MCP JSON Schema → W04 SchemaDefinitionModel |
+| `src/lib/references/schema-model.ts` | W04 SchemaDefinitionModel / SchemaFieldModel contracts |
 | `src/lib/references/reference-display-projection.ts` | Display projections for later family renderers |
 | `src/lib/references/reference-anchor-registry.ts` | Stable anchors (later stories) |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 acquisition (server/build only) |
@@ -80,3 +94,9 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   defaults, conflicts, or validation rules from prose examples.
 - Optional enriched projection bags `flags` / `arguments` (non-empty arrays)
   hide the notice; rendering those rows is a later enrichment, not W10 story 003.
+- MCP tools carry optional `handlerRegistered`, `requiredInputs`, and
+  `inputSchema` (`SchemaDefinitionModel`) on W04 projections — project via
+  `projectMcpInputSchemaToDefinition`, embed via thin `SchemaDefinitionEmbed`
+  until W07 public adapters exist (do not fork a full schema-tree UI).
+- MCP/JS schema embeds belong under family renderers + shared thin adapter;
+  keep W03 Node acquisition out of client harness mounts.

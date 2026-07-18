@@ -26,6 +26,11 @@ import {
   provisionalAnchorFromIdentity,
 } from "./family-normalized-models";
 import {
+  McpInputSchemaProjectionError,
+  projectMcpInputSchemaToDefinition,
+  requiredInputsFromDefinition,
+} from "./mcp-input-schema-projection";
+import {
   isReferenceLifecycleState,
   type ReferenceLifecycle,
   type ReferenceSourcePointer,
@@ -429,14 +434,39 @@ export function normalizeMcpToolsFromArtifact(
       `tools[${index}].lifecycle`,
     );
 
+    const source = sourcePointer(
+      publicArtifactId,
+      `/tools/${index}`,
+      options.sourcePath,
+    );
+
+    let inputSchema: ReturnType<typeof projectMcpInputSchemaToDefinition>;
+    try {
+      inputSchema = projectMcpInputSchemaToDefinition(tool.inputSchema, {
+        address: {
+          publicArtifactId,
+          pointer: `${source.pointer}/inputSchema`,
+        },
+        title: `${name} input`,
+        ...(description !== undefined ? { description } : {}),
+      });
+    } catch (cause) {
+      if (cause instanceof McpInputSchemaProjectionError) {
+        throw new FamilyArtifactNormalizeError(
+          "malformed-artifact",
+          `Malformed MCP tool at tools[${index}]: ${cause.message}`,
+          { field: `tools[${index}].inputSchema`, cause },
+        );
+      }
+      throw cause;
+    }
+
+    const requiredInputs = requiredInputsFromDefinition(inputSchema);
+
     const model: McpToolNormalized = {
       id: idCandidate,
       name,
-      source: sourcePointer(
-        publicArtifactId,
-        `/tools/${index}`,
-        options.sourcePath,
-      ),
+      source,
       anchor: provisionalAnchorFromIdentity(name),
     };
 
@@ -445,6 +475,15 @@ export function normalizeMcpToolsFromArtifact(
     }
     if (lifecycle !== undefined) {
       model.lifecycle = lifecycle;
+    }
+    if (typeof tool.handlerRegistered === "boolean") {
+      model.handlerRegistered = tool.handlerRegistered;
+    }
+    if (requiredInputs !== undefined) {
+      model.requiredInputs = requiredInputs;
+    }
+    if (inputSchema !== undefined) {
+      model.inputSchema = inputSchema;
     }
 
     try {

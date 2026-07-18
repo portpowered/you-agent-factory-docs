@@ -226,6 +226,36 @@ describe("CliCommandNormalized / McpToolNormalized / JavascriptSymbolNormalized 
     expect("lifecycle" in model).toBe(false);
   });
 
+  test("MCP model preserves optional published handler and input schema fields", () => {
+    const model = createMcpToolNormalized(
+      sampleMcp({
+        handlerRegistered: true,
+        requiredInputs: ["sessionId"],
+        inputSchema: {
+          address: {
+            publicArtifactId: "@you-agent-factory/api/mcp",
+            pointer: "/tools/1/inputSchema",
+          },
+          type: "object",
+          required: ["sessionId"],
+          properties: {
+            sessionId: {
+              path: "sessionId",
+              typeSummary: "string",
+              required: true,
+            },
+          },
+        },
+      }),
+    );
+    expect(model.handlerRegistered).toBe(true);
+    expect(model.requiredInputs).toEqual(["sessionId"]);
+    expect(model.inputSchema?.type).toBe("object");
+    expect(model.inputSchema?.properties?.sessionId?.typeSummary).toBe(
+      "string",
+    );
+  });
+
   test("JavaScript model exposes symbol path and kind", () => {
     const model = createJavascriptSymbolNormalized(sampleJs());
     expect(model.symbolPath).toBe("log");
