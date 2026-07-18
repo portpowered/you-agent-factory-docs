@@ -6,24 +6,48 @@ import ConceptsIndexPage, {
 import DocumentationIndexPage, {
   generateMetadata as generateDocumentationMetadata,
 } from "@/app/(site)/docs/documentation/page";
+import FactoriesIndexPage, {
+  generateMetadata as generateFactoriesMetadata,
+} from "@/app/(site)/docs/factories/page";
 import GuidesIndexPage, {
   generateMetadata as generateGuidesMetadata,
 } from "@/app/(site)/docs/guides/page";
+import ReferencesIndexPage, {
+  generateMetadata as generateReferencesMetadata,
+} from "@/app/(site)/docs/references/page";
 import TechniquesIndexPage, {
   generateMetadata as generateTechniquesMetadata,
 } from "@/app/(site)/docs/techniques/page";
+import WorkersIndexPage, {
+  generateMetadata as generateWorkersMetadata,
+} from "@/app/(site)/docs/workers/page";
+import WorkstationsIndexPage, {
+  generateMetadata as generateWorkstationsMetadata,
+} from "@/app/(site)/docs/workstations/page";
 import LocalizedConceptsIndexPage, {
   generateMetadata as generateLocalizedConceptsMetadata,
 } from "@/app/[locale]/docs/concepts/page";
 import LocalizedDocumentationIndexPage, {
   generateMetadata as generateLocalizedDocumentationMetadata,
 } from "@/app/[locale]/docs/documentation/page";
+import LocalizedFactoriesIndexPage, {
+  generateMetadata as generateLocalizedFactoriesMetadata,
+} from "@/app/[locale]/docs/factories/page";
 import LocalizedGuidesIndexPage, {
   generateMetadata as generateLocalizedGuidesMetadata,
 } from "@/app/[locale]/docs/guides/page";
+import LocalizedReferencesIndexPage, {
+  generateMetadata as generateLocalizedReferencesMetadata,
+} from "@/app/[locale]/docs/references/page";
 import LocalizedTechniquesIndexPage, {
   generateMetadata as generateLocalizedTechniquesMetadata,
 } from "@/app/[locale]/docs/techniques/page";
+import LocalizedWorkersIndexPage, {
+  generateMetadata as generateLocalizedWorkersMetadata,
+} from "@/app/[locale]/docs/workers/page";
+import LocalizedWorkstationsIndexPage, {
+  generateMetadata as generateLocalizedWorkstationsMetadata,
+} from "@/app/[locale]/docs/workstations/page";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
 
@@ -388,6 +412,118 @@ describe("localized CLI section index page render", () => {
 
 describe("CLI section index metadata", () => {
   for (const section of CLI_SECTION_INDEX_CASES) {
+    it(`keeps default and localized ${section.collectionId} index metadata aligned`, async () => {
+      const defaultMetadata = await section.generateDefaultMetadata();
+      const localizedMetadata = await section.generateLocalizedMetadata({
+        params: Promise.resolve({ locale: "vi" }),
+      });
+      const routeSlug = section.collectionId;
+      const expectedAlternates = {
+        canonical: `/docs/${routeSlug}`,
+        languages: {
+          en: `/docs/${routeSlug}`,
+          ja: `/ja/docs/${routeSlug}`,
+          "zh-CN": `/zh-CN/docs/${routeSlug}`,
+          vi: `/vi/docs/${routeSlug}`,
+        },
+      };
+
+      expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+      expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+
+      const viMessages = await loadUiMessages("vi");
+      const indexMessages = viMessages[section.messageKey];
+      expect(localizedMetadata.title).toBe(indexMessages.title);
+      expect(localizedMetadata.description).toBe(indexMessages.description);
+    });
+  }
+});
+
+const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
+  {
+    collectionId: "references" as const,
+    messageKey: "referencesIndex" as const,
+    renderDefault: ReferencesIndexPage,
+    renderLocalized: LocalizedReferencesIndexPage,
+    generateDefaultMetadata: generateReferencesMetadata,
+    generateLocalizedMetadata: generateLocalizedReferencesMetadata,
+  },
+  {
+    collectionId: "factories" as const,
+    messageKey: "factoriesIndex" as const,
+    renderDefault: FactoriesIndexPage,
+    renderLocalized: LocalizedFactoriesIndexPage,
+    generateDefaultMetadata: generateFactoriesMetadata,
+    generateLocalizedMetadata: generateLocalizedFactoriesMetadata,
+  },
+  {
+    collectionId: "workers" as const,
+    messageKey: "workersIndex" as const,
+    renderDefault: WorkersIndexPage,
+    renderLocalized: LocalizedWorkersIndexPage,
+    generateDefaultMetadata: generateWorkersMetadata,
+    generateLocalizedMetadata: generateLocalizedWorkersMetadata,
+  },
+  {
+    collectionId: "workstations" as const,
+    messageKey: "workstationsIndex" as const,
+    renderDefault: WorkstationsIndexPage,
+    renderLocalized: LocalizedWorkstationsIndexPage,
+    generateDefaultMetadata: generateWorkstationsMetadata,
+    generateLocalizedMetadata: generateLocalizedWorkstationsMetadata,
+  },
+] as const;
+
+describe("W05 direct route-family section index pages", () => {
+  it("loads index copy for references, factories, workers, and workstations", async () => {
+    const messages = await loadUiMessages();
+
+    expect(messages.referencesIndex.title).toBe("References");
+    expect(messages.factoriesIndex.title).toBe("Factories");
+    expect(messages.workersIndex.title).toBe("Workers");
+    expect(messages.workstationsIndex.title).toBe("Workstations");
+  });
+
+  for (const section of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+    it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
+      const messages = await loadUiMessages();
+      const indexMessages = messages[section.messageKey];
+      const html = renderToStaticMarkup(await section.renderDefault());
+
+      expect(html).toContain(indexMessages.title);
+      expect(html).toContain(indexMessages.description);
+      expect(html).toContain(indexMessages.emptyTitle);
+      expect(html).toContain(indexMessages.emptyDescription);
+      expect(html).toContain(indexMessages.emptyHomeLink);
+      expect(html).toContain('href="/"');
+      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+      expect(html).not.toContain("/docs/documentation/");
+      expect(indexMessages.emptyTitle).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyDescription).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+      expect(indexMessages.emptyHomeLink).not.toMatch(
+        CLI_EMPTY_STATE_ATLAS_PHRASING,
+      );
+    });
+
+    it(`renders the localized ${section.collectionId} empty-state index`, async () => {
+      const messages = await loadUiMessages("ja");
+      const indexMessages = messages[section.messageKey];
+      const html = renderToStaticMarkup(
+        await section.renderLocalized({
+          params: Promise.resolve({ locale: "ja" }),
+        }),
+      );
+
+      expect(html).toContain(indexMessages.title);
+      expect(html).toContain(indexMessages.emptyTitle);
+      expect(html).toContain(indexMessages.emptyHomeLink);
+      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+    });
+
     it(`keeps default and localized ${section.collectionId} index metadata aligned`, async () => {
       const defaultMetadata = await section.generateDefaultMetadata();
       const localizedMetadata = await section.generateLocalizedMetadata({

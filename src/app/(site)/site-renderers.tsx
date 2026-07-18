@@ -241,7 +241,7 @@ export async function renderBrowseIndexPage(
 
 export type ShellSectionCollectionIndexDefinition = Pick<
   ShellCollectionDefinition,
-  "frontmatterKind" | "messageKeys"
+  "routeSlug" | "frontmatterKind" | "messageKeys"
 >;
 
 export type ShellSectionCollectionIndexPageInput = {
@@ -268,9 +268,12 @@ export function renderShellSectionCollectionIndexPage({
     messages,
     definition,
   );
+  // Filter by route-slug prefix so collections that reuse a frontmatter kind
+  // (for example factories/workers/workstations → documentation) stay empty
+  // until child pages exist under that family's public route.
   const entries = toDocsIndexEntries(
-    pages.filter(
-      (page) => page.frontmatter.kind === definition.frontmatterKind,
+    pages.filter((page) =>
+      page.docsSlug.startsWith(`${definition.routeSlug}/`),
     ),
     locale,
     [],

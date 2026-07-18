@@ -948,6 +948,21 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).
+* `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
+  Default-locale collection index routes for the four W05 direct route
+  families. Each calls `renderSectionCollectionIndexPage` with matching
+  `*Index` messages. Empty collections render `DocsIndexEmptyState`.
+* `src/app/[locale]/docs/{references,factories,workers,workstations}/page.tsx`
+  Shipped-locale mirrors of the same four family indexes.
+* `src/app/(site)/site-renderers.tsx`
+  `renderShellSectionCollectionIndexPage` filters index entries by
+  `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not
+  frontmatter kind alone — required because factories/workers/workstations
+  reuse `documentation` kind while keeping an independent public route.
+* `src/lib/docs/section-collection-index.test.ts` /
+  `src/tests/content/section-indexes.test.tsx`
+  Empty-state + localized metadata proofs for the four family indexes;
+  factories must not list documentation child pages.
 * `src/lib/content/content-paths-page-dir-guard.ts`
   Grandfathered allowlist for legacy `*_PAGE_DIR` exports and the guard failure
   message that points reviewers to `getDocsPageDir(section, slug)`.
