@@ -27,6 +27,12 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-status.tsx` | Accessible loading/empty/invalid/unsupported status messaging |
 | `src/components/references/schema/schema-surface.tsx` | Boundary that short-circuits non-ready statuses or renders ready children |
 | `src/components/references/schema/schema-surface.test.tsx` | Status semantics + W04 adapter acceptance proofs |
+| `src/components/references/schema/schema-type-badge.tsx` | Type / format / nullable presentation from display projections |
+| `src/components/references/schema/schema-required-badge.tsx` | Required/optional text badge (never color-only meaning) |
+| `src/components/references/schema/schema-default-value.tsx` | Code-formatted defaults with clipboard copy |
+| `src/components/references/schema/schema-constraint-list.tsx` | Enum/const/pattern/range/length/items/uniqueness/additionalProperties list |
+| `src/components/references/schema/schema-constraint-entries.ts` | Pure constraint → labeled entry projection (no invented values) |
+| `src/components/references/schema/schema-field-metadata.test.tsx` | Field metadata display proofs (type/required/default/constraints) |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -45,7 +51,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 - Never invent missing contract prose (descriptions, examples, constraints).
   Leave optional fields absent when the model omits them.
 - Prefer semantic theme tokens (`border-border`, `text-muted-foreground`,
-  `text-destructive`) over color-only meaning for later type/required badges.
+  `text-destructive`) over color-only meaning for type/required badges.
+- Field metadata components (`SchemaTypeBadge`, `SchemaRequiredBadge`,
+  `SchemaDefaultValue`, `SchemaConstraintList`) read W04 projections / field
+  models. Use `listSchemaConstraintEntries` when you need labeled constraint
+  rows without inventing absent enum/const/pattern/range facts.
+- `SchemaDefaultValue` is a client component (clipboard via `useCopyButton`);
+  keep pure formatting in `formatSchemaValue` / `listSchemaConstraintEntries`.
 
 ## Verification preference
 

@@ -6,8 +6,33 @@
  * this tree.
  */
 
+export { formatSchemaValue } from "./format-schema-value";
+export {
+  listSchemaConstraintEntries,
+  type SchemaConstraintEntry,
+  type SchemaConstraintSource,
+} from "./schema-constraint-entries";
+export {
+  SchemaConstraintList,
+  type SchemaConstraintListProps,
+  schemaConstraintListPropsFromField,
+  schemaConstraintListPropsFromProjection,
+} from "./schema-constraint-list";
+export {
+  SchemaDefaultValue,
+  type SchemaDefaultValueProps,
+} from "./schema-default-value";
+export {
+  SchemaRequiredBadge,
+  type SchemaRequiredBadgeProps,
+} from "./schema-required-badge";
 export { SchemaStatus } from "./schema-status";
 export { SchemaSurface, type SchemaSurfaceProps } from "./schema-surface";
+export {
+  SchemaTypeBadge,
+  type SchemaTypeBadgeProps,
+  schemaTypeBadgePropsFromProjection,
+} from "./schema-type-badge";
 export {
   SCHEMA_UI_STATUS_DEFAULT_MESSAGES,
   SCHEMA_UI_STATUS_DEFAULT_TITLES,
