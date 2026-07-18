@@ -42,11 +42,15 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * Mock/Throttling + Script/Poller measured ~120.24 MiB / ~4.84 MiB. Projected
  * eight-page union (packaged + Agent/Inference + Mock/Throttling +
  * Script/Poller) from those observed deltas is ~127 MiB / ~5.15 MiB; ceilings
- * are 130 MiB / 5.30 MiB. Keep modest headroom for ordinary content growth
- * without silent skip/pass.
+ * were 130 MiB / 5.30 MiB. Raised again on 2026-07-18 UTC after the W05
+ * route-family foundation lane (four direct family indexes + nested-slug
+ * routing + reference kind/template) measured ~138.27 MiB total on CI while
+ * Next static JS (~2.65 MiB) and search bootstrap (~5.16 MiB) remained under
+ * their limits; ceiling is now 145 MiB total / 5.30 MiB search. Keep modest
+ * headroom for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 130_000_000,
+  maxTotalOutBytes: 145_000_000,
   maxNextStaticJsBytes: 3_500_000,
   maxSearchBootstrapBytes: 5_300_000,
 } as const;
