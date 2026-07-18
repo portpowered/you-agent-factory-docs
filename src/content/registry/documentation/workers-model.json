@@ -1,0 +1,29 @@
+{
+  "id": "documentation.workers-model",
+  "slug": "workers-model",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "model worker",
+    "MODEL_WORKER",
+    "MODEL_WORKSTATION",
+    "MODEL_INVOKE",
+    "operations",
+    "modelLocality",
+    "docs workers model"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers-family",
+    "documentation.workers-inference",
+    "documentation.workers-agent",
+    "documentation.workstations",
+    "documentation.resources",
+    "concept.tokens"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T17:00:00.000Z",
+  "updatedAt": "2026-07-18T17:00:00.000Z"
+}

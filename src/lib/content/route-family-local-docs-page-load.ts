@@ -52,18 +52,98 @@ function readJsonFile<T>(path: string): T {
 }
 
 /**
- * Merge page-owned MDX components for a route-family slug.
+ * Merge page-owned MDX components for a route-family section/slug.
  *
  * Local docs compile through `compileMDX` with a fixed component map, so
  * relative imports in `page.mdx` do not resolve. Use a static
  * `import("@/content/docs/<section>/<slug>/page-mdx-components")` literal
- * (webpack cannot resolve expression-based imports at build time). Keep page
- * visuals out of the shared `mdx-components.tsx` registry.
+ * (bundlers cannot resolve expression-based imports at build time). Keep page
+ * mounts out of the shared `mdx-components.tsx` registry.
  */
 async function loadRouteFamilyPageMdxComponents(
   section: RouteFamilyLocalDocsSection,
   slug: string,
 ): Promise<MDXComponents> {
+  if (section === "references") {
+    switch (slug) {
+      case "factory-schema": {
+        const mod = await import(
+          "@/content/docs/references/factory-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "you-config-schema": {
+        const mod = await import(
+          "@/content/docs/references/you-config-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mock-workers-schema": {
+        const mod = await import(
+          "@/content/docs/references/mock-workers-schema/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "events": {
+        const mod = await import(
+          "@/content/docs/references/events/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
+  if (section === "workers") {
+    switch (slug) {
+      case "agent": {
+        const mod = await import(
+          "@/content/docs/workers/agent/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "inference": {
+        const mod = await import(
+          "@/content/docs/workers/inference/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "script": {
+        const mod = await import(
+          "@/content/docs/workers/script/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "poller": {
+        const mod = await import(
+          "@/content/docs/workers/poller/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "model": {
+        const mod = await import(
+          "@/content/docs/workers/model/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "hosted": {
+        const mod = await import(
+          "@/content/docs/workers/hosted/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mock": {
+        const mod = await import(
+          "@/content/docs/workers/mock/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
   if (section === "workstations") {
     switch (slug) {
       case "standard": {

@@ -3,7 +3,9 @@ import {
   documentationPageHref,
   glossaryPageHref,
   guidePageHref,
+  referencePageHref,
   techniquePageHref,
+  workersPageHref,
   workstationsPageHref,
 } from "@/lib/content/content-hrefs";
 import type { PageKind } from "@/lib/content/schemas";
@@ -14,6 +16,8 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "guides",
   "techniques",
   "documentation",
+  "references",
+  "workers",
   "workstations",
 ] as const;
 
@@ -53,9 +57,9 @@ export function docsSectionFromSlug(docsSlug: string): PublishedDocsSection {
 /**
  * Path under the published section used for canonical href helpers.
  *
- * Prefer the docsSlug remainder after `<section>/` so nested workstations
- * (and future nested CLI) pages keep `/docs/<section>/<parent>/<child>`
- * rather than collapsing to the leaf segment alone.
+ * Prefer the docsSlug remainder after `<section>/` so nested workers/workstations (and
+ * future nested CLI) pages keep `/docs/<section>/<parent>/<child>` rather than
+ * collapsing to the leaf segment alone.
  */
 export function publishedDocsRelativeSlug(entry: PublishedDocsEntry): string {
   const prefix = `${entry.section}/`;
@@ -83,6 +87,10 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return techniquePageHref(relativeSlug);
     case "documentation":
       return documentationPageHref(relativeSlug);
+    case "references":
+      return referencePageHref(relativeSlug);
+    case "workers":
+      return workersPageHref(relativeSlug);
     case "workstations":
       return workstationsPageHref(relativeSlug);
   }

@@ -1,0 +1,36 @@
+{
+  "title": "Mock-workers schema",
+  "description": "Look up the live mock-worker configuration JSON Schema—definitions, fields, constraints, defaults, enums, and examples—on a stable deep-linkable docs route.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference shows the live mock-worker configuration JSON Schema from the you-agent-factory API package. Use it to look up definitions, fields, constraints, defaults, enums, and examples for mock-worker dispatch configuration. Field and definition descriptions come from the package schema itself."
+    },
+    "schemaLookup": {
+      "title": "Schema Lookup",
+      "body": "Browse the complete mock-workers schema below. Filter by definition or field name, follow $ref links to related definitions, and copy deep links to any definition or field anchor on this page."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Start from the root mock-worker configuration object, then open nested definitions when a field points at another schema. Use the filter to find a field or definition by name. Copy a deep link when you need to share a stable pointer into this page. Contract text on fields and definitions stays in the package schema language even when the page chrome is localized."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page covers the mock-worker configuration package schema only. It is not the Factory schema, the You-config schema, or authored Worker documentation such as /docs/workers/mock. Use this lookup for the JSON Schema contract; use Worker pages for how mock workers behave in the factory. If the schema cannot be loaded, the lookup surface shows an explicit unavailable state instead of an empty page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "factorySchema": "Factory schema",
+    "youConfigSchema": "You-config schema",
+    "mockWorkersDocs": "Mock workers"
+  }
+}

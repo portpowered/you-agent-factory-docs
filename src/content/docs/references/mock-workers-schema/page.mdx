@@ -1,0 +1,68 @@
+---
+title: "Mock-workers schema"
+description: "Look up the live mock-worker configuration JSON Schema—definitions, fields, constraints, defaults, enums, and examples—on a stable deep-linkable docs route."
+kind: "reference"
+registryId: "reference.mock-workers-schema"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "Mock-workers schema"
+  - "mock workers JSON Schema"
+  - "You mock-worker configuration schema"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="schema-lookup" titleKey="sections.schemaLookup.title">
+  <T k="sections.schemaLookup.body" />
+  <MockWorkersSchemaReference />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/factory-schema",
+        labelKey: "links.factorySchema",
+      },
+      {
+        href: "/docs/references/you-config-schema",
+        labelKey: "links.youConfigSchema",
+      },
+      {
+        href: "/docs/documentation/mock-workers",
+        labelKey: "links.mockWorkersDocs",
+      },
+    ]}
+  />
+
+  <RelatedDocs registryId="reference.mock-workers-schema" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="reference.mock-workers-schema" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="reference.mock-workers-schema" />
+</Section>

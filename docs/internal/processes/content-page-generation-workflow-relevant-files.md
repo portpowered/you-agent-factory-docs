@@ -308,6 +308,33 @@ static `import("@/content/blog/<slug>/page-mdx-components")` switch case in
 `blog-page-load.ts`. Keep the chart/graph component post-owned; do not register
 it in shared `blog-mdx-components.tsx` / `mdx-components.tsx`.
 
+### Route-family page-local MDX components (references / factories / workers / workstations)
+
+When a route-family page under `src/content/docs/references/` (or factories /
+workers / workstations) needs a page-owned mount such as the W11 events corpus
+`EventsCorpusMount` (stream roles, catalogs, reconnect/lifecycle, static SSE):
+
+1. Keep the page-local renderer and `page-mdx-components.tsx` under the page
+   bundle. Import public surfaces from `@/components/references/...` and helpers
+   from `@/lib/references/...` — do not edit renderer internals on a page-wiring
+   lane.
+2. Add a static section+slug switch in
+   `route-family-local-docs-page-load.ts` that imports
+   `@/content/docs/<section>/<slug>/page-mdx-components` (same compileMDX
+   constraint as documentation/concept/blog — relative MDX imports do not
+   resolve).
+3. Treat that loader switch as a narrow shared-surface exception: rerun
+   `bun run audit:canonical-page-surface` with `--exception-reason` and repeat
+   the justification in the PR conversation. Do not register page mounts in
+   shared `mdx-components.tsx`.
+4. For published-route empty/error proofs, export a presentational view (for
+   example `EventsCorpusMountView`) that accepts a resolved mount model so
+   colocated tests can assert accessible `EventsStatus` messaging without
+   mocking OpenAPI loaders or scanning renderer trees.
+
+For `/docs/references/events`, also see
+[events-reference-page-relevant-files](./events-reference-page-relevant-files.md).
+
 Blog discoverability proofs (index card, search queries, tag landing) for a
 blog-local lane should colocate under `src/content/blog/<slug>/` (for example
 `<slug>-discoverability.test.tsx`) rather than editing sibling B07 posts or
@@ -945,6 +972,70 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `route-family-local-docs-page-load.ts`
   Generic local-message disk loader for the four direct route families; uses
   `getDocsPageDir` so nested child bundles resolve.
+* `src/lib/content/published-docs-registry-contract.ts` /
+  `src/lib/content/content-hrefs.ts`
+  `PUBLISHED_DOCS_SECTIONS` includes `workers` with `workersPageHref` and
+  `publishedDocsHrefFromEntry` so authored `/docs/workers/<slug>` (including
+  nested slugs) validate and resolve without
+  `Unsupported published docs section`. Do not treat this as W15–W18 nav /
+  search / sitemap / compat inventory ownership — those stay deferred.
+* `src/lib/content/published-docs-registry-contract.test.ts`
+  Workers section membership, nested href proofs, and unchanged CLI section
+  href behavior.
+* `src/content/docs/workers/` family index composition (W13)
+  `/docs/workers` stays an App Router family index (not
+  `workers/page.mdx` — `isLocalDocsPageBundlePath` rejects section-root
+  bundles). Authored overview/selection/shared-fields/schema embed live as
+  page-local messages + React composition under `src/content/docs/workers/`
+  (`render-workers-family-index.tsx`, `WorkersFamilyIndexContent.tsx`,
+  `WorkerBaseSchemaEmbed.tsx` via W07 `SchemaReference` addressed to
+  `/$defs/Worker`). Registry id `documentation.workers-family`. Unshipped
+  locales fall back to `messages/en.json`. Wire
+  `src/app/(site)/docs/workers/page.tsx` and the locale mirror to
+  `renderWorkersFamilyIndexPage` instead of the empty collection contract.
+* `src/content/docs/workers/<variant>/` variant pages (W13)
+  Child Worker pages are ordinary route-family local-message bundles
+  (`page.mdx` + `messages/en.json` + `assets.json` + registry
+  `documentation.workers-<variant>`). Embed production overlays with W07
+  `SchemaVariantReference` via a page-local `*VariantSchemaEmbed` that loads
+  the Worker base definition (`load-worker-base-schema.ts`), builds the
+  overlay from `createProductionWorkerOverlay`, and maps slots through
+  `factory-variant-overlay-presentation.ts` (shared under workers ownership —
+  do not rewrite W06/W07 cores). Register the embed in
+  `page-mdx-components.tsx` and add a static slug switch in
+  `route-family-local-docs-page-load.ts` (same compileMDX constraint as
+  documentation/concept loaders — relative MDX imports do not resolve). Link
+  Workstation companions with `LocalizedLinkList` hrefs under
+  `/docs/workstations/...` (implementers: do not author W14 pages in this
+  lane). Keep customer-facing Limits / body copy product-scope only: say what
+  the Worker is / is not and what companion links mean (run-time pairing),
+  never narrate “planned Workstation targets” or “without authoring those
+  pages here.” Keep mock workers on
+  `/docs/workers/mock`, not as a Factory WorkerType overlay. Legacy
+  `MODEL_WORKER` companions are `MODEL_WORKSTATION` (required) plus
+  `MODEL_INVOKE` (compatible) at `/docs/workstations/model-workstation` and
+  `/docs/workstations/model-invoke`; capability fields stay in overlay
+  `shared` (presentation omits shared paths — assert selected/excluded only).
+  Prefer `INFERENCE_WORKER` / `AGENT_WORKER` guidance in prose for new configs.
+  Legacy `HOSTED_WORKER` companions are `LOGICAL_MOVE` (required) plus
+  `CLASSIFIER_WORKSTATION` (compatible) at `/docs/workstations/logical-move`
+  and `/docs/workstations/classifier`; hosted provider fields (`provider`,
+  `auth`, `linear`) stay in overlay `shared`. Prefer `POLLER_WORKER` guidance
+  in prose for new configs; misuse example is inline `auth.apiKey`
+  (`worker.hosted.misuse-inline-secret`).
+  Mock workers (`/docs/workers/mock`) are **not** a Factory WorkerType page:
+  embed `@you-agent-factory/api/schemas/mock-workers` via W07
+  `SchemaReference` addressed to `/$defs/mockWorker` (page-local
+  `load-mock-workers-schema.ts` + `MockWorkersSchemaEmbed`), never
+  `SchemaVariantReference` / production Worker overlays. Identity line is
+  `runType = accept | script | reject`, not `type = MOCK_WORKER`. Link the
+  planned full schema at `/docs/references/mock-workers-schema`; misuse
+  teaching is Factory Worker shape (`name` + `type`) on a mock entry
+  (`worker.mock.misuse-worker-type`).
+* `src/lib/content/route-family-local-docs-page-load.ts`
+  Generic local-message disk loader for the four direct route families; uses
+  `getDocsPageDir` so nested child bundles resolve. W13 adds an optional
+  page-mdx-components merge for workers variant embeds (static slug switch).
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).
@@ -1068,6 +1159,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   export safety for still-empty references/factories/workers, authored
   workstations children in default catch-all params (W14), compile-graph
   index markers, and invalid nested not-found.
+  Nested fixture proofs for default/shipped catch-all params, compile-graph
+  index markers, and invalid nested not-found. After W13, default-locale
+  params include authored `workers/<variant>` children; empty families
+  (`references` / `factories` / `workstations`) still contribute none.
+  Localized params stay empty for route-family children until those pages
+  ship non-English message stubs.
 * `src/lib/docs/supported-docs-route-family-mechanism.test.ts`
   Focused mechanism tests for the supported route-family contract: accept the
   four direct families (`references`/`factories`/`workers`/`workstations`),
@@ -1085,8 +1182,62 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Nested-slug discovery proofs (temp fixtures under new families; no
   production content pages).
 
+## First published `references` schema page
+
+The first authored page under `src/content/docs/references/` needs the same
+kind of first-section publish wiring as CLI collections, plus route-family
+MDX component merge for schema mounts:
+
+1. Add `references` to `PUBLISHED_DOCS_SECTIONS` and
+   `publishedDocsHrefFromEntry` / `referencePageHref` so
+   `prepare:content-runtime` / `validateDerivedPublishedPageBundles` accept
+   `references/<slug>` without throwing `Unsupported published docs section`.
+2. Add `references` to `REGISTRY_COLLECTIONS`, `loadRegistry` /
+   `registry-runtime-generation` (`referenceRecordSchema`),
+   `registryDirectoryByKind` / `registryKindDirectories`, and
+   `registryRecordHref` so `reference.*` records resolve and validate.
+3. Extend `route-family-local-docs-page-load.ts` with a static
+   `page-mdx-components` import switch (same pattern as
+   `documentation-page-load.ts`) so page-local mounts such as
+   `<FactorySchemaReference />` compile. Relative MDX imports do not resolve
+   through `compileMDX`.
+4. Keep schema acquisition on the W03 helper
+   `loadSchemaVerificationPackageModel("schemas/<name>")` and mount public
+   W07 `SchemaReference` with `pagePath="/docs/references/<slug>"`. Do not
+   edit renderer internals under `src/components/references/schema/`.
+   Production browser proofs must assert `data-schema-status="ready"` (page
+   intro copy can mention the schema title even when acquisition fails).
+   If production `bun run start` shows `invalid` with
+   `Package export resolution failed`, check that
+   `resolveApiPackageManifestFsPath` uses ancestor `node_modules` filesystem
+   walk — webpack stubs `createRequire().resolve` in production server chunks
+   (MODULE_NOT_FOUND), including runtime-built specifier strings.
+5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
+   not published yet; do not put unpublished `reference.*` ids in
+   `relatedIds`.
+6. Update `src/tests/content/section-indexes.test.tsx` so the references
+   index asserts authored entries on the default locale while
+   factories/workers/workstations stay on the empty-state contract.
+7. Do not hand-edit shared nav/sidebar/search/sitemap/compat inventories
+   (W15–W18). Sitemap inclusion follows derived published-docs entries after
+   `prepare:content-runtime`.
+
+Representative pages: `src/content/docs/references/factory-schema/`,
+`you-config-schema/`, `mock-workers-schema/` (add `page-mdx-components`
+switch cases per slug). Cross-route success/invalid proofs live in
+`src/content/docs/references/schema-reference-published-routes.test.tsx`
+(page-owned route + mount markers only — not renderer or inventory scans).
+
 ## Page bundle and registry workflow
 
+* First published `reference.*` page also needs `references` in
+  `REGISTRY_COLLECTIONS` / registry disk loader / `PUBLISHED_DOCS_SECTIONS` /
+  `referencePageHref`, plus `registryDirectoryByKind.reference` and
+  `validate-registry` path-kind mapping. See
+  [events-reference-page-relevant-files.md](./events-reference-page-relevant-files.md).
+  Route-family pages load through `loadRouteFamilyLocalDocsPage`; keep curated
+  sibling discovery under `#related` with `LocalizedLinkList` when sibling
+  `reference.*` records are not yet published.
 * `docs/templates/*.content.md`
   Authoring templates for factory kinds (guide, concept, technique,
   documentation, reference, glossary) plus blog-post. Atlas

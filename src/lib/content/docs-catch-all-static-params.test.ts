@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default generateStaticParams keeps empty families empty and includes authored workstations children", () => {
+  test("live default generateStaticParams include authored references, workers, and workstations children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -183,8 +183,32 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    // Still-empty W05 families contribute no catch-all child params.
-    for (const id of ["references", "factories", "workers"] as const) {
+    // references (W11 schema + events) and workers (W13) have authored
+    // children; empty families still contribute no catch-all children.
+    expect(defaultPaths.some((path) => path.startsWith("references/"))).toBe(
+      true,
+    );
+    expect(defaultPaths).toContain("references/factory-schema");
+    expect(defaultPaths).toContain("references/you-config-schema");
+    expect(defaultPaths).toContain("references/mock-workers-schema");
+    expect(defaultPaths).toContain("references/events");
+
+    const workersChildren = defaultPaths.filter((path) =>
+      path.startsWith("workers/"),
+    );
+    expect(workersChildren).toEqual(
+      expect.arrayContaining([
+        "workers/agent",
+        "workers/inference",
+        "workers/script",
+        "workers/poller",
+        "workers/model",
+        "workers/hosted",
+        "workers/mock",
+      ]),
+    );
+
+    for (const id of ["factories"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -224,7 +248,7 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty without route-family children", async () => {
+  test("live localized generateStaticParams stay non-empty without unshipped route-family children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 

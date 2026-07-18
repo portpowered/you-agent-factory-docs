@@ -1,0 +1,28 @@
+{
+  "id": "documentation.workers-hosted",
+  "slug": "workers-hosted",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "hosted worker",
+    "HOSTED_WORKER",
+    "LOGICAL_MOVE",
+    "CLASSIFIER_WORKSTATION",
+    "provider",
+    "auth.secretRef",
+    "docs workers hosted"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers-family",
+    "documentation.workers-poller",
+    "documentation.workstations",
+    "documentation.resources",
+    "concept.tokens"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T18:00:00.000Z",
+  "updatedAt": "2026-07-18T18:00:00.000Z"
+}

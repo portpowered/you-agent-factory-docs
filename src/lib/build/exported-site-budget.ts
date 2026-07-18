@@ -46,7 +46,15 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * route-family foundation lane (four direct family indexes + nested-slug
  * routing + reference kind/template) measured ~138.27 MiB total on CI while
  * Next static JS (~2.65 MiB) and search bootstrap (~5.16 MiB) remained under
- * their limits; ceiling is now 145 MiB total / 5.30 MiB search. Raised again
+ * their limits; ceiling was 145 MiB total / 5.30 MiB search. Raised again on
+ * 2026-07-18 UTC after the W13 Worker authored-pages lane (family index +
+ * seven variant pages including mock-workers schema embed) measured
+ * ~152.37 MiB total and ~5.36 MiB search bootstrap on CI while Next static JS
+ * (~2.78 MiB) remained under its limit; ceilings were 160 MiB total /
+ * 5.50 MiB search. Raised again on 2026-07-18 UTC after W11 schema reference
+ * pages merged with W13 workers + W11 events measured ~161.68 MiB total and
+ * ~5.44 MiB search bootstrap on CI while Next static JS (~2.80 MiB) remained
+ * under its limit; ceilings were 165 MiB total / 5.50 MiB search. Raised again
  * on 2026-07-18 UTC after the W14 Workstation authored-pages lane (family
  * index + 4 behaviors + 8 types with overlay embeds) measured ~161.99 MiB
  * total and ~5.53 MiB search bootstrap on CI while Next static JS (~2.78 MiB)
