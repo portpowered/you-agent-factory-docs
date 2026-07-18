@@ -113,13 +113,13 @@ observed deltas is ~127 MiB / ~5.15 MiB; raised again 2026-07-18 UTC after the
 W05 route-family foundation lane measured ~138.27 MiB total on CI (Next static
 JS ~2.65 MiB and search bootstrap ~5.16 MiB remained under their limits);
 raised again 2026-07-18 UTC after the W12 factories authored-pages lane
-measured ~151.07 MiB total and ~5.33 MiB search bootstrap on CI (Next static JS
-raised again 2026-07-18 UTC after the W13 Worker authored-pages lane measured
-~152.37 MiB total and ~5.36 MiB search bootstrap on CI (Next static JS
-~2.78 MiB remained under its limit); raised again 2026-07-18 UTC after the W11
-schema reference pages lane merged with W13 workers + W11 events measured
-~161.68 MiB total and ~5.44 MiB search bootstrap on CI (Next static JS
-~2.80 MiB remained under its limit):
+measured ~151.07 MiB total and ~5.33 MiB search bootstrap on CI; raised again
+2026-07-18 UTC after the W13 Worker authored-pages lane measured ~152.37 MiB
+total and ~5.36 MiB search bootstrap on CI (Next static JS ~2.78 MiB remained
+under its limit); raised again 2026-07-18 UTC after W11 schema + events
+(~161.68 MiB) and CLI/MCP/JavaScript runtime + events (~161.11 MiB /
+~5.51 MiB combined with workers) measured on CI — combined W11+W12+W13
+headroom uses:
 
 - `maxTotalOutBytes`: 185_000_000
 - `maxNextStaticJsBytes`: 3_500_000

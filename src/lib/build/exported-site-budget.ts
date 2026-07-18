@@ -50,12 +50,13 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * 2026-07-18 UTC after the W12 factories authored-pages lane (five
  * `/docs/factories/*` pages + factories index with live W07 schema embeds)
  * measured ~151.07 MiB total and ~5.33 MiB search bootstrap on CI, after the
- * W13 Worker authored-pages lane measured ~152.37 MiB / ~5.36 MiB, and after
- * W11 schema reference pages merged with workers + events measured
- * ~161.68 MiB / ~5.44 MiB. Combined W11+W12+W13 headroom uses 185 MiB total /
- * 6.00 MiB search while Next static JS (~2.80 MiB) remains under its 3.50 MiB
- * limit. Keep modest headroom for ordinary content growth without silent
- * skip/pass.
+ * W13 Worker authored-pages lane measured ~152.37 MiB / ~5.36 MiB, after W11
+ * schema reference pages merged with workers + events measured ~161.68 MiB /
+ * ~5.44 MiB, and after W11 CLI/MCP/JavaScript runtime + events + workers
+ * measured ~167.84 MiB / ~5.51 MiB. Combined W11+W12+W13 headroom uses
+ * 185 MiB total / 6.00 MiB search while Next static JS (~2.80 MiB) remains
+ * under its 3.50 MiB limit. Keep modest headroom for ordinary content growth
+ * without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
   maxTotalOutBytes: 185_000_000,

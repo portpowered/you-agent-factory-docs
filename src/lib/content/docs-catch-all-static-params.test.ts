@@ -193,10 +193,13 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultPaths).toContain("factories/dynamic-workflows");
     expect(defaultPaths).toContain("factories/sessions");
 
-    // references (W11 schema + events) and workers (W13) have authored children.
+    // W11 authored references: CLI/MCP/JS runtime, schemas, and events.
     expect(defaultPaths.some((path) => path.startsWith("references/"))).toBe(
       true,
     );
+    expect(defaultPaths).toContain("references/cli");
+    expect(defaultPaths).toContain("references/mcp");
+    expect(defaultPaths).toContain("references/javascript-runtime");
     expect(defaultPaths).toContain("references/factory-schema");
     expect(defaultPaths).toContain("references/you-config-schema");
     expect(defaultPaths).toContain("references/mock-workers-schema");

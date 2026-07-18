@@ -12,4 +12,5 @@ export const PRODUCTION_INTEGRATION_TEST_PATHS = [
   "src/tests/layout/docs-sidebar-navigation.test.tsx",
   "src/tests/content/high-traffic-locales-browser.test.ts",
   "src/lib/verify/theme-code-copy-r00-page.test.ts",
+  "src/content/docs/references/cli-mcp-js-static-export-success.test.ts",
 ] as const;
