@@ -122,7 +122,7 @@ describe("javascript-runtime reference page", () => {
 
       expect(
         screen.getByText(
-          /published JavaScript symbols and .+ shared schemas from the package contract/i,
+          /published JavaScript runtime items from the package contract/i,
         ),
       ).toBeTruthy();
       expect(screen.getAllByText("javascript.args").length).toBeGreaterThan(0);
