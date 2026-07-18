@@ -992,6 +992,15 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `auth`, `linear`) stay in overlay `shared`. Prefer `POLLER_WORKER` guidance
   in prose for new configs; misuse example is inline `auth.apiKey`
   (`worker.hosted.misuse-inline-secret`).
+  Mock workers (`/docs/workers/mock`) are **not** a Factory WorkerType page:
+  embed `@you-agent-factory/api/schemas/mock-workers` via W07
+  `SchemaReference` addressed to `/$defs/mockWorker` (page-local
+  `load-mock-workers-schema.ts` + `MockWorkersSchemaEmbed`), never
+  `SchemaVariantReference` / production Worker overlays. Identity line is
+  `runType = accept | script | reject`, not `type = MOCK_WORKER`. Link the
+  planned full schema at `/docs/references/mock-workers-schema`; misuse
+  teaching is Factory Worker shape (`name` + `type`) on a mock entry
+  (`worker.mock.misuse-worker-type`).
 * `src/lib/content/route-family-local-docs-page-load.ts`
   Generic local-message disk loader for the four direct route families; uses
   `getDocsPageDir` so nested child bundles resolve. W13 adds an optional

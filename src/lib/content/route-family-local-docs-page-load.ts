@@ -102,6 +102,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "mock": {
+        const mod = await import(
+          "@/content/docs/workers/mock/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }
