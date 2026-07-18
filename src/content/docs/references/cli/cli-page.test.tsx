@@ -118,7 +118,7 @@ describe("cli reference page", () => {
         relatedQueries
           .getByRole("link", { name: "CLI command index" })
           .getAttribute("href"),
-      ).toBe("/docs/documentation/cli-command-index");
+      ).toBe("/docs/references/cli");
       expect(
         relatedQueries
           .getByRole("link", { name: "MCP reference" })

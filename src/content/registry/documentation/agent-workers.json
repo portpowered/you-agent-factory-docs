@@ -14,7 +14,7 @@
     "concept.tool-calling",
     "documentation.logs",
     "documentation.troubleshooting",
-    "documentation.inference-workers"
+    "documentation.workers-inference"
   ],
   "citationIds": [],
   "status": "published",

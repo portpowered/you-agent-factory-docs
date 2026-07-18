@@ -130,7 +130,7 @@ describe("api reference page", () => {
         screen
           .getByRole("link", { name: "API documentation orientation" })
           .getAttribute("href"),
-      ).toBe("/docs/documentation/api-doc");
+      ).toBe("/docs/references/api");
       expect(
         screen.getByRole("link", { name: "CLI" }).getAttribute("href"),
       ).toBe("/docs/documentation/cli");

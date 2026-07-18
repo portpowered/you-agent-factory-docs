@@ -1,105 +1,14 @@
 {
   "title": "Workers",
-  "description": "Declare and place you-agent-factory workers: runtime executors bound by workstations, named in factory.json, with backend details in workers/<name>/AGENTS.md.",
-  "openingSummary": "Workers are the runtime executors that workstation steps invoke. factory.json names each worker; the matching workers/<name>/AGENTS.md file supplies the backend and shared system instructions.",
+  "description": "This documentation page moved to /docs/workers. Continue there for the current family content.",
+  "openingSummary": "This page moved. Open /docs/workers for the current documentation.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This reference covers you-agent-factory workers: what a worker is, how it sits beside workstations and factory.json, which public worker type matches a backend, where fields belong in the worker-vs-workstation split, and enough core fields plus a minimal example to author a worker. Use it when you need the durable web workers contract for placement, identity, ownership, and type selection."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A worker is a runtime executor that a workstation invokes by name. factory.json declares each worker name in the factory topology. The worker directory at workers/<name>/AGENTS.md holds the backend type and shared system instructions for every workstation that binds that name. A workstation owns step routing, prompt body, limits, and outputs; the worker owns the execution backend. Keep worker definitions in the split layout beside factory.json under workers/<name>/AGENTS.md."
-    },
-    "workerTaxonomy": {
-      "title": "Worker Taxonomy",
-      "body": "Public factory config names workers by behavior class. Use the matrix below to pick the current public type for a new worker. Prefer these names in new configs; legacy aliases remain only for migration."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Author a worker in workers/<name>/AGENTS.md, declare the same name in factory.json, and bind it from a workstation with the workstation worker field. Put backend identity on the worker and step routing on the workstation. Only type is required for a split worker definition when operator defaults supply model identity. Use the ownership matrix, minimal agent example, and type guidance below to place fields correctly."
-    },
-    "coreFields": {
-      "title": "Core Fields",
-      "body": "Use this field reference when authoring a worker. It covers the fields you need to choose a type and supply backend identity. It is not a full flag dump."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is a web workers reference for types, placement, ownership, and core authoring. It is not a sync of packaged CLI docs (you docs workers), not a workstation routing or lifecycle guide, not a resource capacity deep-dive, and not a full agent failure-class catalog. Sibling configuration, workstations, and resources pages own those surfaces when published. This page still defines what a worker is on its own; sibling links are discovery only."
-    },
-    "related": {
-      "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
+    "moved": {
+      "title": "Moved",
+      "body": "This documentation page moved to a new family route. The content now lives at /docs/workers. Use the link below to continue — no live factory host is required."
     }
   },
   "links": {
-    "taxonomyTypeHeader": "Public type",
-    "taxonomyBehaviorHeader": "Behavior",
-    "taxonomyWhenToUseHeader": "Use when",
-    "taxonomyInferenceType": "INFERENCE_WORKER",
-    "taxonomyInferenceBehavior": "One-shot model operations",
-    "taxonomyInferenceWhen": "Harnessless inference such as TTS, ASR, or typed INFERENCE_RUN dispatches",
-    "taxonomyAgentType": "AGENT_WORKER",
-    "taxonomyAgentBehavior": "Agent-loop model execution",
-    "taxonomyAgentWhen": "Prompt-rendered AGENT_RUN workstations that iterate until acceptance, rejection, or failure",
-    "taxonomyScriptType": "SCRIPT_WORKER",
-    "taxonomyScriptBehavior": "Script execution",
-    "taxonomyScriptWhen": "Command-backed SCRIPT_RUN workstations",
-    "taxonomyPollerType": "POLLER_WORKER",
-    "taxonomyPollerBehavior": "Hosted poller integration",
-    "taxonomyPollerWhen": "Workstations with behavior POLLER that ingest external work through built-in providers",
-    "taxonomyLegacyNote": "Legacy compatibility aliases: MODEL_WORKER still loads and projects to INFERENCE_WORKER or AGENT_WORKER depending on the paired workstation; HOSTED_WORKER still loads and projects to POLLER_WORKER. Prefer the current public names in new configs.",
-    "ownershipWorkerHeader": "Put it on the worker",
-    "ownershipWorkstationHeader": "Put it on the workstation",
-    "ownershipWorkerBackend": "type, model, modelProvider, executorProvider, openCodeAgent",
-    "ownershipWorkstationRouting": "type, worker, promptFile, prompt body, openCodeAgent",
-    "ownershipWorkerScript": "command, args",
-    "ownershipWorkstationBehavior": "behavior, outputs, onFailure, onContinue, onRejection",
-    "ownershipWorkerPoller": "provider, auth.secretRef, linear.* for hosted pollers",
-    "ownershipWorkstationLimits": "outputSchema, limits.maxExecutionTime, limits.maxRetries",
-    "ownershipWorkerBody": "Worker body used as the model system prompt",
-    "ownershipWorkstationPrompt": "Prompt template used as the rendered user message",
-    "minimalExampleLabel": "Minimal agent worker (only type is required when operator defaults supply model identity):",
-    "minimalAgentExample": "---\ntype: AGENT_WORKER\n---\n\nYou are a helpful assistant.",
-    "typeGuidanceIntro": "Type-specific authoring cues:",
-    "typeGuidanceInference": "INFERENCE_WORKER — declare operations and one-shot model identity for INFERENCE_RUN; do not use operations as a substitute for an agent loop.",
-    "typeGuidanceAgent": "AGENT_WORKER — put the shared system prompt in the markdown body; do not declare operations (validation rejects capability declarations on agent workers).",
-    "typeGuidanceScript": "SCRIPT_WORKER — set command and args; the markdown body is descriptive only and is not executed.",
-    "typeGuidancePoller": "POLLER_WORKER — set provider and auth.secretRef (never inline secrets); keep behavior POLLER and routing on the workstation.",
-    "coreFieldHeader": "Field",
-    "coreAppliesHeader": "Applies to",
-    "coreControlsHeader": "What it controls",
-    "coreTypeField": "type",
-    "coreTypeApplies": "all workers",
-    "coreTypeControls": "INFERENCE_WORKER, AGENT_WORKER, SCRIPT_WORKER, or POLLER_WORKER",
-    "coreModelField": "model",
-    "coreModelApplies": "inference and agent workers",
-    "coreModelControls": "Concrete model identifier such as gpt-5-codex",
-    "coreModelProviderField": "modelProvider",
-    "coreModelProviderApplies": "inference and agent workers",
-    "coreModelProviderControls": "Model-routing provider identity (built-in values include CLAUDE and CODEX)",
-    "coreCommandField": "command",
-    "coreCommandApplies": "script workers",
-    "coreCommandControls": "Executable to run",
-    "coreArgsField": "args",
-    "coreArgsApplies": "script workers",
-    "coreArgsControls": "Command arguments",
-    "coreProviderField": "provider",
-    "coreProviderApplies": "poller workers",
-    "coreProviderControls": "Built-in hosted provider such as LINEAR",
-    "coreAuthField": "auth.secretRef",
-    "coreAuthApplies": "poller workers",
-    "coreAuthControls": "Referenced secret name resolved at runtime (never an inline key)",
-    "coreOperationsField": "operations",
-    "coreOperationsApplies": "inference workers",
-    "coreOperationsControls": "Provider-agnostic one-shot capability declarations with typed input and output slots",
-    "siblingConfiguration": "Configuration",
-    "siblingWorkstations": "Workstations",
-    "siblingResources": "Resources"
+    "targetLabel": "Open the Workers family index"
   }
 }

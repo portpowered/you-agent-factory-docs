@@ -134,7 +134,7 @@ describe("javascript-runtime reference page", () => {
         relatedQueries
           .getByRole("link", { name: "Dynamic workflows documentation" })
           .getAttribute("href"),
-      ).toBe("/docs/documentation/dynamic-workflows");
+      ).toBe("/docs/factories/dynamic-workflows");
       expect(
         relatedQueries
           .getByRole("link", { name: "CLI reference" })

@@ -7,9 +7,9 @@
   "aliases": ["API", "OpenAPI", "HTTP API", "api-doc"],
   "tags": [],
   "relatedIds": [
-    "documentation.factory-session",
+    "documentation.factories-sessions",
     "documentation.submitting-work",
-    "documentation.dynamic-workflows",
+    "documentation.factories-dynamic-workflows",
     "documentation.cli",
     "documentation.mcp"
   ],

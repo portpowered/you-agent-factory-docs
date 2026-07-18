@@ -14,9 +14,9 @@
   "tags": [],
   "relatedIds": [
     "documentation.security-trust-boundaries",
-    "documentation.factory-session",
+    "documentation.factories-sessions",
     "documentation.metrics",
-    "documentation.configuration"
+    "documentation.factories-configuration"
   ],
   "citationIds": [],
   "status": "published",

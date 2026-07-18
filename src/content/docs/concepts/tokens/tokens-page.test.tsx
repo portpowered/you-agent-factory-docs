@@ -133,12 +133,10 @@ describe("tokens concept page", () => {
       name: "Configuration",
     });
     expect(configurationLink.getAttribute("href")).toBe(
-      "/docs/documentation/configuration",
+      "/docs/factories/configuration",
     );
     const workstationsLink = screen.getByRole("link", { name: "Workstations" });
-    expect(workstationsLink.getAttribute("href")).toBe(
-      "/docs/documentation/workstations",
-    );
+    expect(workstationsLink.getAttribute("href")).toBe("/docs/workstations");
     const submittingWorkLink = screen.getByRole("link", {
       name: "Submitting work",
     });

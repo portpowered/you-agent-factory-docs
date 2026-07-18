@@ -16,7 +16,7 @@
     "documentation.workers-family",
     "documentation.workstations",
     "documentation.resources",
-    "documentation.inference-workers",
+    "documentation.workers-inference",
     "concept.tool-calling",
     "concept.tokens",
     "documentation.workstations-agent-run"

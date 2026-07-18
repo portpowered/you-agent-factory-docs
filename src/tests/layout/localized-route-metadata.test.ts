@@ -114,9 +114,9 @@ describe("localized route metadata alternates", () => {
       },
     });
     expect(unfilledConfigurationMetadata.alternates).toEqual({
-      canonical: "/docs/documentation/configuration",
+      canonical: "/docs/factories/configuration",
       languages: {
-        en: "/docs/documentation/configuration",
+        en: "/docs/factories/configuration",
       },
     });
 

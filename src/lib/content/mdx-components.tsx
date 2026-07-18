@@ -4,6 +4,7 @@ import { Callout } from "@/features/docs/components/Callout";
 import { CitationList } from "@/features/docs/components/CitationList";
 import { DerivedRelatedDocs } from "@/features/docs/components/DerivedRelatedDocs";
 import { DocsPre } from "@/features/docs/components/DocsCodeBlock";
+import { DocumentationRouteCompatibilityDocument } from "@/features/docs/components/DocumentationRouteCompatibilityDocument";
 import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
 import { BlockMath, InlineMath } from "@/features/docs/components/Math";
 import { PageAsset } from "@/features/docs/components/PageAsset";
@@ -24,6 +25,7 @@ export const moduleMdxComponents: MDXComponents = {
   Callout,
   CitationList,
   DerivedRelatedDocs,
+  DocumentationRouteCompatibilityDocument,
   LocalizedLinkList,
   PageAsset,
   RelatedDocs,

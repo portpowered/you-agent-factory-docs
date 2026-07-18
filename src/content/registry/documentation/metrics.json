@@ -7,7 +7,7 @@
   "aliases": ["factory metrics", "ops metrics", "session metrics"],
   "tags": [],
   "relatedIds": [
-    "documentation.factory-session",
+    "documentation.factories-sessions",
     "concept.statistical-process-control-graphs",
     "concept.bottlenecks",
     "documentation.petri"

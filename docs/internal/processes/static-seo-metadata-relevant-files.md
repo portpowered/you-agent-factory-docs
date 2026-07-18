@@ -32,6 +32,15 @@ social assets, sitemap, robots).
 | `src/app/robots.ts` | Next.js App Router robots generator (static export → `out/robots.txt`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/verify-export-seo-discovery.ts` | Composite export gate: canonicals + OG + social + alternates + sitemap + robots |
 | `src/lib/seo/verify-export-seo-discovery.test.ts` | Temp-`out/` proofs for the full SEO discovery contract |
+| `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects); canonical slug/path remap helpers |
+| `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
+| `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
+| `src/lib/seo/documentation-route-migration-canonical.test.ts` | §10 old→target Metadata canonical/OG + sitemap exclusion/inclusion proofs |
+| `src/lib/seo/documentation-route-migration-links.test.tsx` | §10 related-id / related-href / browse retarget proofs |
+| `src/lib/seo/documentation-route-migration-closure.test.tsx` | §10 ledger closure + old/target/canonical/important-anchor proofs |
+| `src/lib/seo/export-absolute-canonical.ts` | Also exports `isCanonicalPublicDiscoveryPath` (Atlas live + W18 migration old-path discovery gate) |
+| `src/features/docs/components/DocumentationRouteCompatibilityDocument.tsx` | Shared static compatibility document for §10 old `/docs/documentation/*` routes |
+| `src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx` | Component-level old→target link + unknown-route error proofs |
 | `public/images/og-default.png` | Shipped default Open Graph / Twitter preview asset |
 | `src/app/root-layout.shared.tsx` | Root `siteMetadata.metadataBase` + default social image wiring |
 | `src/lib/i18n/route-locale.ts` | App-relative canonical + language alternates (`localizedRouteAlternates`) |
@@ -111,8 +120,66 @@ social assets, sitemap, robots).
     `src/lib/build/build-contract-required-test-paths.ts` so they stay in
     `make test-build-contract` after merges with required-gates work.
 
+## W18 documentation → family route migration
+
+Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
+
+1. **Ledger** — `DOCUMENTATION_ROUTE_MIGRATION_LEDGER` enumerates every plan
+   §10 `/docs/documentation/*` → family mapping with `open`/`closed` status
+   (fourteen rows from W00 baseline / plan inventory).
+2. **Mechanism** — `DOCUMENTATION_ROUTE_STATIC_COMPATIBILITY_MECHANISM` locks a
+   static-export-safe pattern: static compatibility HTML at the old path that
+   declares the new family canonical, paired with Metadata canonical + sitemap
+   exclusion of the old path. Forbidden: `next.config` redirects, host
+   `_redirects`, runtime server redirects. Silent removal of a published §10
+   old URL is forbidden — every old route needs one explicit compatibility
+   outcome.
+3. **Compatibility documents (story 002):** each §10 old route’s `page.mdx`
+   mounts `DocumentationRouteCompatibilityDocument` (registered in
+   `src/lib/content/mdx-components.tsx` — local MDX imports do not resolve
+   under `compileMDX`) with the ledger `oldRoute`. The component stamps
+   `data-documentation-route-compatibility`, `data-compatibility-old-route`,
+   `data-compatibility-target-route`, and a `data-compatibility-target-link`
+   Next `<Link>` to the family target — no live factory host and no server
+   redirects. Keep every old route in published docs / catch-all static params
+   (silent removal is forbidden).
+4. **Canonical + sitemap (story 003):** `localizedShippedDocsPageAlternates`
+   remaps §10 old docs slugs to the family target slug so Metadata
+   `alternates.canonical` and Open Graph `url` name the new path only.
+   `isCanonicalPublicDiscoveryPath` (Atlas live-path gate + migration old-path
+   exclusion) filters `listPublicSitemapRoutes` so old `/docs/documentation/*`
+   URLs stay out of sitemap while compatibility HTML remains published.
+   Target family routes stay in the sitemap. Helpers live under
+   `src/lib/seo/documentation-route-migration.ts` and
+   `src/lib/seo/export-absolute-canonical.ts`.
+5. **Link retarget (story 004):** registry `relatedIds` prefer published
+   family identities via
+   `DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS` (for example
+   `documentation.configuration` → `documentation.factories-configuration`,
+   `documentation.api-doc` → `reference.api`). Workers/workstations indexes
+   keep `documentation.workers` / `documentation.workstations` related ids
+   (App Router indexes are not MDX published entries) and remap destination
+   hrefs through `remapDocumentationRouteMigrationDestinationHref` inside
+   `resolveRelatedRegistryDocs` / related-doc derivation. Hard-coded MDX
+   `LocalizedLinkList` hrefs and browse documentation entries point at family
+   routes; browse excludes §10 old compatibility URLs so they are not preferred
+   discovery destinations. Do not invent W16 search projection or W17 chrome
+   localization work here.
+6. **Closure (story 005):** mark every ledger row `closed` only after focused
+   proofs cover old compatibility HTML, target resolution, Metadata canonical
+   consistency, sitemap exclusion/inclusion, and an important on-target
+   anchor (`DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS`, typically
+   `what-it-covers`; use `{ kind: "none", reason: "index-only-target" }` only
+   when an index truly has no section id). Do not invent per-route redirect
+   helpers.
+
+See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
+(Compatibility and redirect mechanisms) and
+`docs/temp/references/baseline.md` (Plan migration inventory).
+
 ## Sibling lanes
 
 Leave search-nav convergence, required-gate inventory, a11y, and ops runbooks
 to sibling B09c lanes. This lane owns SEO/discovery metadata and export
-validation only.
+validation only. W18 consumes that SEO pairing for moved documentation routes
+without redesigning four-family nav (W15) or owning W16/W17.

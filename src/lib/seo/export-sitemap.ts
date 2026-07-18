@@ -7,9 +7,11 @@ import {
   resolveGitHubPagesBasePath,
 } from "@/lib/build/static-export";
 import { stripBasePathFromHref } from "@/lib/navigation/site-path";
-import { isLiveFactoryCanonicalPath } from "@/lib/seo/export-absolute-canonical";
+import { isCanonicalPublicDiscoveryPath } from "@/lib/seo/export-absolute-canonical";
 import { resolveProductionMetadataHref } from "@/lib/seo/production-metadata-base";
 import {
+  DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
+  DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES,
   listPublicSitemapAbsoluteUrls,
   listPublicSitemapRoutes,
   SITEMAP_EXCLUSION_PROOF_ROUTES,
@@ -87,9 +89,21 @@ export function sitemapLocsMatchPublicFactoryContract(
     }
   }
 
+  for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES) {
+    if (locSet.has(resolveProductionMetadataHref(route, env))) {
+      return false;
+    }
+  }
+
+  for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_INCLUSION_ROUTES) {
+    if (!locSet.has(resolveProductionMetadataHref(route, env))) {
+      return false;
+    }
+  }
+
   for (const loc of locs) {
     const appPath = appPathFromSitemapLoc(loc, env);
-    if (appPath === null || !isLiveFactoryCanonicalPath(appPath)) {
+    if (appPath === null || !isCanonicalPublicDiscoveryPath(appPath)) {
       return false;
     }
     if (loc !== resolveProductionMetadataHref(appPath, env)) {
@@ -169,6 +183,17 @@ export function verifyExportSitemap(options: {
     }
   }
 
+  for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES) {
+    const absolute = resolveProductionMetadataHref(route, env);
+    if (locSet.has(absolute)) {
+      return {
+        ok: false,
+        reason: `sitemap must not list §10 migration old URL ${absolute}`,
+        urls,
+      };
+    }
+  }
+
   for (const url of urls) {
     const appPath = appPathFromSitemapLoc(url, env);
     if (appPath === null) {
@@ -179,10 +204,10 @@ export function verifyExportSitemap(options: {
       };
     }
 
-    if (!isLiveFactoryCanonicalPath(appPath)) {
+    if (!isCanonicalPublicDiscoveryPath(appPath)) {
       return {
         ok: false,
-        reason: `sitemap lists non-live factory path ${appPath} (${url})`,
+        reason: `sitemap lists non-canonical discovery path ${appPath} (${url})`,
         urls,
       };
     }

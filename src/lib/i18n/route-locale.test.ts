@@ -68,6 +68,28 @@ describe("route-locale", () => {
     });
   });
 
+  test("remaps §10 migration old docs slugs to family target canonicals", () => {
+    expect(localizedShippedDocsPageAlternates("documentation/api-doc")).toEqual(
+      {
+        canonical: "/docs/references/api",
+        languages: {
+          en: "/docs/references/api",
+          ja: "/ja/docs/references/api",
+          "zh-CN": "/zh-CN/docs/references/api",
+          vi: "/vi/docs/references/api",
+        },
+      },
+    );
+    expect(
+      localizedShippedDocsPageAlternates("documentation/cli-command-index"),
+    ).toEqual({
+      canonical: "/docs/references/cli",
+      languages: {
+        en: "/docs/references/cli",
+      },
+    });
+  });
+
   test("publishes alternates for static browse routes", () => {
     expect(localizedRouteAlternates({ surface: "browse" })).toEqual({
       canonical: "/browse",

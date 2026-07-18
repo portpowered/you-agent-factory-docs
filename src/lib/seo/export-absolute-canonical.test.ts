@@ -12,6 +12,7 @@ import {
   exportHtmlHasAbsoluteProductionCanonical,
   extractCanonicalHref,
   isAbsoluteProductionCanonicalHref,
+  isCanonicalPublicDiscoveryPath,
   isLiveFactoryCanonicalPath,
   verifyExportAbsoluteCanonicals,
 } from "@/lib/seo/export-absolute-canonical";
@@ -98,6 +99,19 @@ describe("export absolute canonical helpers", () => {
     );
     expect(
       isLiveFactoryCanonicalPath("/ja/docs/modules/grouped-query-attention"),
+    ).toBe(false);
+  });
+
+  test("isCanonicalPublicDiscoveryPath excludes §10 migration old routes while keeping them live", () => {
+    expect(isLiveFactoryCanonicalPath("/docs/documentation/api-doc")).toBe(
+      true,
+    );
+    expect(isCanonicalPublicDiscoveryPath("/docs/documentation/api-doc")).toBe(
+      false,
+    );
+    expect(isCanonicalPublicDiscoveryPath("/docs/references/api")).toBe(true);
+    expect(
+      isCanonicalPublicDiscoveryPath("/ja/docs/documentation/configuration"),
     ).toBe(false);
   });
 

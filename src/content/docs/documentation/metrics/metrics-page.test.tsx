@@ -227,7 +227,7 @@ describe("metrics documentation page", () => {
       relatedQueries
         .getByRole("link", { name: "Factory session" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/factory-session");
+    ).toBe("/docs/factories/sessions");
     expect(
       relatedQueries
         .getByRole("link", {

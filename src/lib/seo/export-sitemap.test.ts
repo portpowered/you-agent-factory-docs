@@ -6,6 +6,7 @@ import sitemap, { dynamic as sitemapDynamic } from "@/app/sitemap";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
 import { FACTORY_PUBLISHED_TAG_SLUGS } from "@/lib/content/factory-tags-browse";
 import { listPublishedDocsEntries } from "@/lib/content/published-docs-registry-ids";
+import { isDocumentationRouteMigrationOldPath } from "@/lib/seo/documentation-route-migration";
 import { isLiveFactoryCanonicalPath } from "@/lib/seo/export-absolute-canonical";
 import {
   buildPublicSitemapEntries,
@@ -19,6 +20,7 @@ import {
   resolveProductionMetadataHref,
 } from "@/lib/seo/production-metadata-base";
 import {
+  DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
   listPublicSitemapAbsoluteUrls,
   listPublicSitemapRoutes,
   PUBLIC_SITEMAP_DOCS_SECTION_ROUTES,
@@ -53,6 +55,10 @@ describe("public sitemap routes", () => {
       expect(routes).toContain(route);
     }
     for (const entry of listPublishedDocsEntries()) {
+      if (isDocumentationRouteMigrationOldPath(entry.url)) {
+        expect(routes).not.toContain(entry.url);
+        continue;
+      }
       expect(routes).toContain(entry.url);
     }
     expect(routes).toContain("/blog/bottlenecks");
@@ -67,6 +73,13 @@ describe("public sitemap routes", () => {
     for (const route of SITEMAP_EXCLUSION_PROOF_ROUTES) {
       expect(routes).not.toContain(route);
       expect(isLiveFactoryCanonicalPath(route)).toBe(false);
+    }
+  });
+
+  test("never lists §10 migration old documentation routes", () => {
+    const routes = listPublicSitemapRoutes();
+    for (const route of DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES) {
+      expect(routes).not.toContain(route);
     }
   });
 

@@ -152,9 +152,9 @@ describe("architecture-of-system documentation page", () => {
       expect(howToUseHrefs).toContain(
         "/docs/documentation/what-is-you-agent-factory",
       );
-      expect(howToUseHrefs).toContain("/docs/documentation/configuration");
-      expect(howToUseHrefs).toContain("/docs/documentation/workers");
-      expect(howToUseHrefs).toContain("/docs/documentation/workstations");
+      expect(howToUseHrefs).toContain("/docs/factories/configuration");
+      expect(howToUseHrefs).toContain("/docs/workers");
+      expect(howToUseHrefs).toContain("/docs/workstations");
       expect(howToUseHrefs).toContain("/docs/documentation/resources");
 
       const limitsSection = document.getElementById("limits-and-assumptions");

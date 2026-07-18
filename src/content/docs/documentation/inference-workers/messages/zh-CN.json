@@ -1,82 +1,14 @@
 {
   "title": "Inference workers",
-  "description": "Configure you-agent-factory INFERENCE_WORKER backends for INFERENCE_RUN bounded model operations, including declared operations and provider or locality ownership.",
-  "openingSummary": "Inference workers perform one bounded model operation such as TTS or ASR through INFERENCE_RUN. Use this page when you need the durable web contract for INFERENCE_WORKER authoring, declared operations, and provider or locality ownership.",
+  "description": "This documentation page moved to /docs/workers/inference. Continue there for the current family content.",
+  "openingSummary": "This page moved. Open /docs/workers/inference for the current documentation.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "An Inference worker is the model-backed executor for one-shot INFERENCE_RUN workstations in you-agent-factory. This reference covers INFERENCE_WORKER identity, bounded model operations such as text-to-speech (TTS) or automatic speech recognition (ASR), where declared operations and provider or locality fields belong, and how inference backends differ from agent-loop workers. Use it when you need to author a one-shot model backend without confusing it with AGENT_WORKER loops or agentTools policy."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "An INFERENCE_WORKER performs one bounded model operation such as TTS or ASR through INFERENCE_RUN. The markdown body describes operation context. Slot bindings and the operation name used at dispatch live with the workstation contract. Inference workers declare provider-agnostic operations with typed input and output slots, modelLocality, and concrete model identity so INFERENCE_RUN workstations can validate compatibility before dispatch. Inference workers are not AGENT_WORKER backends: they do not own agent loops or agentTools.policy."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Author an INFERENCE_WORKER under workers/<name>/AGENTS.md with type INFERENCE_WORKER. Put model, modelProvider, and modelLocality on the worker when you need authored identity and locality. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep operation context in the markdown body. Bind the worker from an INFERENCE_RUN workstation that supplies slot bindings and the operation name used at dispatch."
-    },
-    "declaredOperations": {
-      "title": "Declared Operations",
-      "body": "Operations are provider-agnostic capability declarations. They name uppercase operations such as TTS and declare typed input and output slots so the factory can check workstation compatibility before dispatch. Keep the same operation contract when you change model identity or modelLocality from LOCAL to CLOUD. Do not invent a second operation shape for cloud backends."
-    },
-    "failureAndSecurity": {
-      "title": "Failure And Security Cautions",
-      "body": "Inference workers fail early on invalid declarations and expect locality and resource capacity to match the authored backend. Keep secrets out of worker bodies. Do not treat inference workers as a substitute for AGENT_WORKER agent loops or agentTools policy—those contracts belong on agent backends."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is a web Inference workers reference for INFERENCE_WORKER / INFERENCE_RUN authoring, declared operations, and provider or locality ownership. It is not a sync of packaged CLI docs, not the full Workers taxonomy overview, not workstation routing or lifecycle depth, not resource-capacity deep-dive, and not the Agent workers full contract. Sibling pages aid discovery; they are not required to define what an Inference worker is."
-    },
-    "related": {
-      "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
+    "moved": {
+      "title": "Moved",
+      "body": "This documentation page moved to a new family route. The content now lives at /docs/workers/inference. Use the link below to continue — no live factory host is required."
     }
   },
   "links": {
-    "ownershipIntro": "Put backend identity and locality on the worker. Authored model and modelProvider values win over operator defaults. Slot bindings and the operation name used at dispatch stay on the INFERENCE_RUN workstation.",
-    "ownershipWorkerHeader": "Put it on the worker",
-    "ownershipWorkstationHeader": "Put it on the workstation",
-    "ownershipWorkerFields": "type, model, modelProvider, modelLocality, operations with typed slots, resources, operation-context body",
-    "ownershipWorkstationFields": "type INFERENCE_RUN, worker binding, operation name, slot bindings, limits, outputs, onFailure",
-    "localityNote": "modelLocality is LOCAL or CLOUD. Change model identity and locality when you move between local and cloud backends. Keep the same operations contract so pre-dispatch compatibility stays stable.",
-    "localExampleLabel": "Minimal LOCAL INFERENCE_WORKER with a declared TTS operation:",
-    "localExample": "---\ntype: INFERENCE_WORKER\nmodel: OMNIVOICE_Q4_K_M\nmodelProvider: CODEX\nmodelLocality: LOCAL\nresources:\n  - name: omnivoice-cache\n    capacity: 1\noperations:\n  - name: TTS\n    inputs:\n      - name: text\n        required: true\n        contentTypes:\n          - TEXT\n      - name: voice\n        contentTypes:\n          - JSON\n    outputs:\n      - name: audio\n        contentTypes:\n          - AUDIO\n---\n\nSynthesize speech from resolved text content.",
-    "cloudExampleLabel": "Same TTS operation contract with CLOUD identity and locality:",
-    "cloudExample": "---\ntype: INFERENCE_WORKER\nmodel: gpt-4o-mini-tts\nmodelProvider: CODEX\nmodelLocality: CLOUD\nresources:\n  - name: cloud-tts-quota\n    capacity: 1\n  - name: cloud-tts-slot\n    capacity: 1\noperations:\n  - name: TTS\n    inputs:\n      - name: text\n        required: true\n        contentTypes:\n          - TEXT\n      - name: voice\n        contentTypes:\n          - JSON\n    outputs:\n      - name: audio\n        contentTypes:\n          - AUDIO\n---\n\nSynthesize speech through the cloud-backed provider.",
-    "validationRuleHeader": "Invalid declaration",
-    "validationOutcomeHeader": "Outcome",
-    "validationDuplicateOps": "Duplicate operation names on one worker",
-    "validationDuplicateOpsOutcome": "Validation fails before dispatch",
-    "validationDuplicateSlots": "Duplicate slot names within one operation direction",
-    "validationDuplicateSlotsOutcome": "Validation fails before dispatch",
-    "validationInvalidEnums": "Lowercase or invalid uppercase enum values",
-    "validationInvalidEnumsOutcome": "Validation fails before dispatch",
-    "validationIncompatibleContent": "Incompatible content-type declarations",
-    "validationIncompatibleContentOutcome": "Validation fails before dispatch",
-    "agentSubstituteCaution": "Inference workers are not a substitute for AGENT_WORKER agent loops or agentTools policy. Use AGENT_WORKER with AGENT_RUN when you need a prompt-rendered agent loop. Use INFERENCE_WORKER with INFERENCE_RUN when you need one bounded model operation.",
-    "cautionTopicHeader": "Caution",
-    "cautionGuidanceHeader": "Guidance",
-    "cautionValidationTopic": "Validation failures",
-    "cautionValidationGuidance": "Fix duplicate or invalid operation and slot declarations before retrying. Invalid enums and incompatible content types also fail validation.",
-    "cautionLocalityTopic": "Locality and capacity",
-    "cautionLocalityGuidance": "Match modelLocality and worker resources to the backend you intend. Local backends need ready local capacity; cloud backends need quota and slot capacity that match the authored resources.",
-    "cautionSecretsTopic": "Secrets in worker bodies",
-    "cautionSecretsGuidance": "Do not put API keys, tokens, or other secret material in the worker markdown body. Keep credentials in the secret and config surfaces the runtime already resolves.",
-    "cautionAgentLoopTopic": "Agent-loop substitution",
-    "cautionAgentLoopGuidance": "Do not add agentTools or expect agent-loop behavior on an inference worker. Agent tool policy and loop ownership belong on AGENT_WORKER.",
-    "siblingDiscoveryIntro": "Continue with these sibling surfaces when you need the Workers taxonomy, workstation routing, resource capacity, model-inference tokens, tool calling, logs, troubleshooting, or the Agent workers contract. Sibling links aid discovery; they are not required to define what an Inference worker is.",
-    "workersDocs": "Workers",
-    "workstationsDocs": "Workstations",
-    "resourcesDocs": "Resources",
-    "tokensConcept": "Tokens",
-    "toolCallingConcept": "Tool calling",
-    "logsDocs": "Logs",
-    "troubleshootingDocs": "Troubleshooting",
-    "agentWorkersDocs": "Agent workers"
+    "targetLabel": "Open the inference workers page"
   }
 }

@@ -1,6 +1,6 @@
 ---
 title: "Poller workers"
-description: "Author you-agent-factory POLLER_WORKER backends: hosted provider and secret refs on the worker, behavior POLLER on the workstation, and poller ingress for external work."
+description: "This page moved to /docs/workers/poller."
 kind: "documentation"
 registryId: "documentation.poller-workers"
 messageNamespace: "local"
@@ -8,123 +8,10 @@ assetNamespace: "local"
 status: "published"
 tags: []
 aliases:
+  - "poller workers"
   - "POLLER_WORKER"
-  - "hosted poller"
-  - "Linear poller"
-  - "poller requestId"
-updatedAt: "2026-07-11"
+updatedAt: "2026-07-18"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
-import { Section } from "@/features/docs/components/Section";
-import { T } from "@/features/docs/components/T";
-import { TagPillList } from "@/features/docs/components/TagPillList";
-
-
-<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
-  <T k="sections.whatItCovers.body" />
-</Section>
-
-<Section id="key-concepts" titleKey="sections.keyConcepts.title">
-  <T k="sections.keyConcepts.body" />
-</Section>
-
-<Section id="how-to-use" titleKey="sections.howToUse.title">
-  <T k="sections.howToUse.body" />
-  <table>
-    <thead>
-      <tr>
-        <th>
-          <T k="links.ownershipWorkerHeader" />
-        </th>
-        <th>
-          <T k="links.ownershipWorkstationHeader" />
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <T k="links.ownershipWorkerFields" />
-        </td>
-        <td>
-          <T k="links.ownershipWorkstationFields" />
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <p>
-    <T k="links.lifecycleLabel" />{" "}
-    <T k="links.lifecycleBody" />
-  </p>
-  <p>
-    <T k="links.idempotencyLabel" />{" "}
-    <T k="links.idempotencyBody" />
-  </p>
-  <p>
-    <T k="links.secretCautionLabel" />{" "}
-    <T k="links.secretCautionBody" />
-  </p>
-  <p>
-    <T k="links.minimalWorkerExampleLabel" />
-  </p>
-  <pre>
-    <code>
-      <T k="links.minimalPollerWorkerExample" />
-    </code>
-  </pre>
-  <p>
-    <T k="links.minimalWorkstationExampleLabel" />
-  </p>
-  <pre>
-    <code>
-      <T k="links.minimalPollerWorkstationExample" />
-    </code>
-  </pre>
-</Section>
-
-<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
-  <T k="sections.limitsAndAssumptions.body" />
-</Section>
-
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/documentation/workers",
-        labelKey: "links.workersDocs",
-      },
-      {
-        href: "/docs/documentation/workstations",
-        labelKey: "links.workstationsDocs",
-      },
-      {
-        href: "/docs/documentation/submitting-work",
-        labelKey: "links.submittingWorkDocs",
-      },
-      {
-        href: "/docs/documentation/logs",
-        labelKey: "links.logsDocs",
-      },
-      {
-        href: "/docs/documentation/troubleshooting",
-        labelKey: "links.troubleshootingDocs",
-      },
-      {
-        href: "/docs/documentation/script-workers",
-        labelKey: "links.scriptWorkersDocs",
-      },
-    ]}
-  />
-  <RelatedDocs registryId="documentation.poller-workers" />
-</Section>
-
-<Section id="tags" titleKey="sections.tags.title">
-  <TagPillList registryId="documentation.poller-workers" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="documentation.poller-workers" />
-</Section>
+{/* W18 static compatibility document: preserves the inbound URL and links to the family target. */}
+<DocumentationRouteCompatibilityDocument oldRoute="/docs/documentation/poller-workers" />

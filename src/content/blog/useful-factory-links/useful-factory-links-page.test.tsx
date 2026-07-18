@@ -45,7 +45,7 @@ describe("useful-factory-links blog post (001–002)", () => {
       'href="/docs/guides/using-you-agent-factory-for-loops"',
     );
     expect(html).toContain('href="/docs/documentation/mcp"');
-    expect(html).toContain('href="/docs/documentation/dynamic-workflows"');
+    expect(html).toContain('href="/docs/factories/dynamic-workflows"');
     expect(html).toContain('href="/docs/guides/cursor-dynamic-workflows"');
     expect(html).toContain('href="/blog/comparing-agent-factories"');
 

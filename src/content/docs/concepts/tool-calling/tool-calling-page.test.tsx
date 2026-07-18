@@ -138,9 +138,7 @@ describe("tool-calling concept page", () => {
     const mcpLink = screen.getByRole("link", { name: "MCP" });
     expect(mcpLink.getAttribute("href")).toBe("/docs/concepts/mcp");
     const workersLink = screen.getByRole("link", { name: "Workers" });
-    expect(workersLink.getAttribute("href")).toBe(
-      "/docs/documentation/workers",
-    );
+    expect(workersLink.getAttribute("href")).toBe("/docs/workers");
     const harnessSupportLink = screen.getByRole("link", {
       name: "Harness support",
     });

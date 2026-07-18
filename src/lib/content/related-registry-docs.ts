@@ -10,6 +10,7 @@ import {
 } from "@/lib/content/registry-linking";
 import { getRegistryRecordById } from "@/lib/content/registry-runtime";
 import type { RelatedRegistryRecord } from "@/lib/content/related-docs";
+import { remapDocumentationRouteMigrationDestinationHref } from "@/lib/seo/documentation-route-migration";
 
 export type RelatedRegistryDocUnavailableReason = "missing" | "unpublished";
 
@@ -70,7 +71,9 @@ export function resolveRelatedRegistryDocs(
     available.push({
       registryId,
       title: registryDisplayTitle(record),
-      href,
+      // §10 old documentation URLs stay live as compatibility HTML, but related
+      // discovery must prefer the family canonical destination.
+      href: remapDocumentationRouteMigrationDestinationHref(href),
     });
   }
 

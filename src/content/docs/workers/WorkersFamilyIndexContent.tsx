@@ -194,11 +194,11 @@ export function WorkersFamilyIndexContent() {
         <LocalizedLinkList
           items={[
             {
-              href: "/docs/documentation/workstations",
+              href: "/docs/workstations",
               labelKey: "links.siblingWorkstations",
             },
             {
-              href: "/docs/documentation/configuration",
+              href: "/docs/factories/configuration",
               labelKey: "links.siblingConfiguration",
             },
             {

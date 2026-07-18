@@ -187,7 +187,7 @@ describe("factories/global-configuration documentation page", () => {
     ).toBe("/docs/documentation/cli");
     expect(
       screen.getAllByRole("link", { name: "Workers" })[0]?.getAttribute("href"),
-    ).toBe("/docs/documentation/workers");
+    ).toBe("/docs/workers");
 
     const related = document.getElementById("related");
     expect(related).toBeTruthy();
@@ -206,12 +206,8 @@ describe("factories/global-configuration documentation page", () => {
     expect(
       related?.querySelector('a[href="/docs/documentation/cli"]'),
     ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/workers"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/workstations"]'),
-    ).toBeTruthy();
+    expect(related?.querySelector('a[href="/docs/workers"]')).toBeTruthy();
+    expect(related?.querySelector('a[href="/docs/workstations"]')).toBeTruthy();
     expect(
       related?.querySelector('a[href="/docs/documentation/resources"]'),
     ).toBeTruthy();

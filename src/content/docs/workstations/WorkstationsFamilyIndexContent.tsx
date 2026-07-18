@@ -383,7 +383,7 @@ export function WorkstationsFamilyIndexContent() {
               labelKey: "links.siblingWorkers",
             },
             {
-              href: "/docs/documentation/configuration",
+              href: "/docs/factories/configuration",
               labelKey: "links.siblingConfiguration",
             },
             {

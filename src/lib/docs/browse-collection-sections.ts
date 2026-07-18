@@ -10,6 +10,7 @@ import {
   buildLocalizedRoute,
   type SiteLocale,
 } from "@/lib/i18n/locale-routing";
+import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 
 /**
  * Reader-visible browse collection order for the rewrite-era CLI docs taxonomy.
@@ -80,7 +81,11 @@ function buildBrowseCollectionSection(
   ) => string,
 ): BrowseCollectionSection {
   const collectionPages = pages.filter(
-    (page) => page.frontmatter.kind === definition.frontmatterKind,
+    (page) =>
+      page.frontmatter.kind === definition.frontmatterKind &&
+      // W18: keep §10 old compatibility pages out of browse; family targets remain.
+      !isDocumentationRouteMigrationOldBrowsePath(page.url) &&
+      !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug),
   );
 
   return {

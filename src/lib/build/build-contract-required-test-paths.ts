@@ -30,6 +30,12 @@ export const BUILD_CONTRACT_REQUIRED_TEST_PATHS = [
   "src/lib/seo/export-sitemap.test.ts",
   "src/lib/seo/export-robots.test.ts",
   "src/lib/seo/verify-export-seo-discovery.test.ts",
+  "src/lib/seo/documentation-route-migration.test.ts",
+  "src/lib/seo/documentation-route-compatibility.test.tsx",
+  "src/lib/seo/documentation-route-migration-canonical.test.ts",
+  "src/lib/seo/documentation-route-migration-links.test.tsx",
+  "src/lib/seo/documentation-route-migration-closure.test.tsx",
+  "src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx",
 ] as const;
 
 export const BUILD_CONTRACT_REQUIRED_SUITE_COMMAND = "make test-build-contract";
