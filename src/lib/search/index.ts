@@ -40,6 +40,7 @@ export {
   type FactorySearchResultKind,
   isFactorySearchResultKind,
   isRetiredAtlasSearchResultKind,
+  REFERENCE_SEARCH_DOCUMENT_KIND,
   RETIRED_ATLAS_SEARCH_RESULT_KINDS,
   type RetiredAtlasSearchResultKind,
 } from "./factory-search-kinds";

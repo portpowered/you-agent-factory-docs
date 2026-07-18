@@ -7,12 +7,19 @@ Use these files when changing search document construction, Orama indexing, or
 
 * `src/lib/search/factory-search-kinds.ts`
   Factory-only public search result kinds (`guide`, `concept`, `technique`,
-  `documentation`, `glossary`, `blog`) plus retired Atlas kind denylist and
-  fail-closed `assertFactorySearchDocuments` used by document builders.
+  `documentation`, `glossary`, `reference`, `blog`) plus retired Atlas kind
+  denylist and fail-closed `assertFactorySearchDocuments` used by document
+  builders. `REFERENCE_SEARCH_DOCUMENT_KIND` is the shared page/item kind for
+  W16 reference search projection (aligned with W04/W09 search shapes).
 * `src/lib/content/factory-search-categories.test.tsx`
   Required `bun run test` proof that pageKind labels, live search meta, and
   representative `harness` / `ralph` queries stay inside the factory category
   set and never advertise Model Atlas result kinds.
+* `src/lib/content/factory-search-reference-kind.test.tsx`
+  W16 story 001 required-suite proof that `reference` is a live search kind
+  for page and item documents, stays aligned with W04
+  `REFERENCE_SEARCH_DOCUMENT_KIND`, and a representative `/docs/references/events`
+  hit exposes the reader-visible Reference category (not a retired Atlas kind).
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
@@ -80,11 +87,14 @@ Use these files when changing search document construction, Orama indexing, or
 ### Pattern: factory-only search result kinds
 
 Public search categories / result-kind labels are the factory set only. Keep
-`FACTORY_SEARCH_RESULT_KINDS` as the single allowlist, assert it when building
-documents, and prove reader-facing labels via `messages.pageKind` (no Atlas
-keys such as `module` / `model` / `paper`). Place the required-suite proof under
+`FACTORY_SEARCH_RESULT_KINDS` as the single allowlist (including first-class
+`reference` for page and item documents), assert it when building documents,
+and prove reader-facing labels via `messages.pageKind` (no Atlas keys such as
+`module` / `model` / `paper`). Place the required-suite proof under
 `src/lib/content/` because `src/lib/search/` remains excluded from
-`run-website-functionality-tests.ts` for leftover Atlas-coupled suites.
+`run-website-functionality-tests.ts` for leftover Atlas-coupled suites. W16
+reference-item Orama projection reuses `REFERENCE_SEARCH_DOCUMENT_KIND` rather
+than inventing a second public category.
 
 ### Pattern: factory alias / body / tag discovery
 
