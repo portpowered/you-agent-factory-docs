@@ -2,6 +2,11 @@
 
 import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
 import { Check, Link2 } from "lucide-react";
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
+import {
+  resolveReferenceChromeForSurface,
+  useOptionalReferenceChrome,
+} from "@/lib/i18n/reference-chrome-context";
 import type { ReferenceFamily } from "@/lib/references/reference-item";
 import {
   referenceAnchorUrl,
@@ -9,7 +14,9 @@ import {
 } from "@/lib/references/reference-search-projection";
 import { cn } from "@/lib/utils";
 
+/** @deprecated Prefer chrome.a11y.copyAnchorLink from reference chrome catalogs. */
 export const REFERENCE_ANCHOR_COPY_LABEL = "Copy anchor link";
+/** @deprecated Prefer chrome.a11y.anchorLinkCopied from reference chrome catalogs. */
 export const REFERENCE_ANCHOR_COPIED_LABEL = "Anchor link copied";
 
 export type CopyableReferenceAnchorProps = {
@@ -30,6 +37,8 @@ export type CopyableReferenceAnchorProps = {
    * (`/docs/references/cli#you-config-init`).
    */
   copyFragmentOnly?: boolean;
+  /** Localized reference chrome; falls back to ReferenceChromeProvider. */
+  chrome?: ReferenceChromeMessages;
   className?: string;
 };
 
@@ -45,8 +54,20 @@ export function CopyableReferenceAnchor({
   family,
   pagePath,
   copyFragmentOnly = false,
+  chrome: chromeProp,
   className,
 }: CopyableReferenceAnchorProps) {
+  const contextChrome = useOptionalReferenceChrome();
+  const chrome =
+    chromeProp ??
+    contextChrome ??
+    ({
+      a11y: {
+        copyAnchorLink: REFERENCE_ANCHOR_COPY_LABEL,
+        anchorLinkCopied: REFERENCE_ANCHOR_COPIED_LABEL,
+      },
+    } as ReferenceChromeMessages);
+
   const fragment = anchor.trim().replace(/^#/, "");
   const owningPagePath = pagePath ?? referencePagePathForFamily(family);
   const clipboardText = copyFragmentOnly
@@ -58,8 +79,8 @@ export function CopyableReferenceAnchor({
   });
 
   const label = checked
-    ? REFERENCE_ANCHOR_COPIED_LABEL
-    : REFERENCE_ANCHOR_COPY_LABEL;
+    ? chrome.a11y.anchorLinkCopied
+    : chrome.a11y.copyAnchorLink;
 
   return (
     <div
@@ -94,8 +115,11 @@ export function CopyableReferenceAnchor({
         )}
       </button>
       <span className="sr-only" aria-live="polite">
-        {checked ? REFERENCE_ANCHOR_COPIED_LABEL : ""}
+        {checked ? chrome.a11y.anchorLinkCopied : ""}
       </span>
     </div>
   );
 }
+
+// Keep helper exported for inventory surfaces that require full chrome.
+export { resolveReferenceChromeForSurface };

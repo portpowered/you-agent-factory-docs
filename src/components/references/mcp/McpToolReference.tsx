@@ -23,6 +23,7 @@ function booleanStateLabel(value: boolean): string {
 export function McpToolReference({
   tool,
   packageVersion,
+  chrome,
   className,
 }: McpToolReferenceProps) {
   const example = resolveMcpToolExample(tool);
@@ -48,7 +49,11 @@ export function McpToolReference({
               {tool.name}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={tool.anchor} family="mcp" />
+          <CopyableReferenceAnchor
+            anchor={tool.anchor}
+            chrome={chrome}
+            family="mcp"
+          />
         </div>
         {tool.description !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
@@ -58,6 +63,7 @@ export function McpToolReference({
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="mcp"
         lifecycle={tool.lifecycle}
         packageVersion={packageVersion}

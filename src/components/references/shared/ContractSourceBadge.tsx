@@ -6,6 +6,15 @@ import {
 } from "./reference-status-labels";
 import type { ContractSourceBadgeProps } from "./types";
 
+const ENGLISH_BADGE = {
+  family: "Family",
+  packageVersion: "Package version",
+  sourceArtifact: "Source artifact",
+  contractSource: "Contract source",
+  packageVersionNotPublished: "package version not published",
+  notPublishedOnProjection: "Not published on this projection",
+} as const;
+
 /**
  * Informative contract source chrome for reference items.
  *
@@ -19,21 +28,23 @@ export function ContractSourceBadge({
   packageVersion,
   source,
   visibility,
+  chrome,
   className,
 }: ContractSourceBadgeProps) {
-  const familyLabel = referenceFamilyLabel(family);
+  const badge = chrome?.badge ?? ENGLISH_BADGE;
+  const familyLabel = referenceFamilyLabel(family, chrome);
   const sourceLabel = referenceSourceArtifactLabel(source);
   const summaryParts = [
-    `Family ${familyLabel}`,
+    `${badge.family} ${familyLabel}`,
     packageVersion !== undefined
       ? `package ${packageVersion}`
-      : "package version not published",
+      : badge.packageVersionNotPublished,
     `source ${sourceLabel}`,
   ];
 
   return (
     <aside
-      aria-label={`Contract source: ${summaryParts.join(", ")}`}
+      aria-label={`${badge.contractSource}: ${summaryParts.join(", ")}`}
       className={cn(
         "flex flex-col gap-2 rounded-md border border-border bg-muted/40 px-3 py-2.5 text-sm text-foreground",
         className,
@@ -53,28 +64,29 @@ export function ContractSourceBadge({
       <dl className="m-0 grid gap-1.5 sm:grid-cols-[auto_1fr] sm:gap-x-3">
         <div className="contents">
           <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Family
+            {badge.family}
           </dt>
           <dd className="m-0 font-medium">{familyLabel}</dd>
         </div>
         <div className="contents">
           <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Package version
+            {badge.packageVersion}
           </dt>
           <dd className="m-0 font-mono text-xs">
             {packageVersion !== undefined
               ? packageVersion
-              : "Not published on this projection"}
+              : badge.notPublishedOnProjection}
           </dd>
         </div>
         <div className="contents">
           <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Source artifact
+            {badge.sourceArtifact}
           </dt>
           <dd className="m-0 break-all font-mono text-xs">{sourceLabel}</dd>
         </div>
       </dl>
       <ReferenceLifecycleVisibility
+        chrome={chrome}
         lifecycle={lifecycle}
         visibility={visibility}
       />

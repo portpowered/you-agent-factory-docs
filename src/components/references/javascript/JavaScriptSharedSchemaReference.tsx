@@ -20,6 +20,7 @@ import type { JavaScriptSharedSchemaReferenceProps } from "./types";
 export function JavaScriptSharedSchemaReference({
   schema,
   packageVersion,
+  chrome,
   className,
 }: JavaScriptSharedSchemaReferenceProps) {
   const sharedVisibility = mapJavascriptVisibilityToReferenceVisibility(
@@ -47,7 +48,11 @@ export function JavaScriptSharedSchemaReference({
               {heading}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={schema.anchor} family="javascript" />
+          <CopyableReferenceAnchor
+            anchor={schema.anchor}
+            chrome={chrome}
+            family="javascript"
+          />
         </div>
         {schema.description !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
@@ -57,6 +62,7 @@ export function JavaScriptSharedSchemaReference({
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="javascript"
         lifecycle={schema.lifecycle}
         packageVersion={packageVersion}

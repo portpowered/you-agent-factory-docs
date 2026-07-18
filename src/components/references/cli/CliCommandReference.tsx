@@ -27,6 +27,7 @@ function booleanStateLabel(value: boolean): string {
 export function CliCommandReference({
   command,
   packageVersion,
+  chrome,
   className,
 }: CliCommandReferenceProps) {
   const sharedVisibility = mapCliVisibilityToReferenceVisibility(
@@ -61,7 +62,11 @@ export function CliCommandReference({
               {command.commandPath}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={command.anchor} family="cli" />
+          <CopyableReferenceAnchor
+            anchor={command.anchor}
+            chrome={chrome}
+            family="cli"
+          />
         </div>
         {shortDescription !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
@@ -71,6 +76,7 @@ export function CliCommandReference({
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="cli"
         lifecycle={command.lifecycle}
         packageVersion={packageVersion}

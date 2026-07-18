@@ -1,9 +1,14 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import { useState } from "react";
+import { loadUiMessages } from "@/lib/content/ui-messages";
+import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
 import { ContractSourceBadge } from "./ContractSourceBadge";
 import { ReferenceEmptyState } from "./ReferenceEmptyState";
 import { ReferenceErrorState } from "./ReferenceErrorState";
+import { ReferenceInventoryFilter } from "./ReferenceInventoryFilter";
 import { ReferenceLifecycleVisibility } from "./ReferenceLifecycleVisibility";
+import { createReferenceInventoryFilterState } from "./reference-inventory-filter";
 
 afterEach(() => {
   cleanup();
@@ -63,6 +68,34 @@ describe("ContractSourceBadge", () => {
       screen.getByRole("complementary", {
         name: /package version not published/i,
       }),
+    ).toBeTruthy();
+  });
+
+  test("renders localized Japanese badge chrome while keeping CLI untranslated", async () => {
+    const chrome = resolveReferenceChromeMessages(await loadUiMessages("ja"));
+    render(
+      <ContractSourceBadge
+        chrome={chrome}
+        family="cli"
+        lifecycle={{ state: "active", since: "0.0.0" }}
+        packageVersion="0.0.0"
+        source={fixtureSource}
+        visibility="public"
+      />,
+    );
+
+    expect(screen.getByText(chrome.badge.family)).toBeTruthy();
+    expect(screen.getByText("CLI")).toBeTruthy();
+    expect(screen.getByText(chrome.badge.packageVersion)).toBeTruthy();
+    expect(
+      screen.getByText(
+        `${chrome.badge.lifecycle}: ${chrome.lifecycleStates.active}`,
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        `${chrome.badge.visibility}: ${chrome.visibilityStates.public}`,
+      ),
     ).toBeTruthy();
   });
 });
@@ -147,5 +180,49 @@ describe("ReferenceErrorState", () => {
     ).toBeTruthy();
     expect(screen.getByText("Family: MCP")).toBeTruthy();
     expect(screen.getByText("Error")).toBeTruthy();
+  });
+});
+
+function JaFilterProbe({
+  chrome,
+}: {
+  chrome: ReturnType<typeof resolveReferenceChromeMessages>;
+}) {
+  const [filter, setFilter] = useState(createReferenceInventoryFilterState());
+  return (
+    <ReferenceInventoryFilter
+      chrome={chrome}
+      filter={filter}
+      legend={chrome.inventory.cli.filterLegend}
+      onFilterChange={setFilter}
+      publishedVisibilities={["public", "internal"]}
+      queryLabel={chrome.inventory.cli.queryLabel}
+      queryPlaceholder={chrome.inventory.cli.queryPlaceholder}
+    />
+  );
+}
+
+describe("localized inventory filter chrome", () => {
+  test("renders Japanese filter labels with untranslated facet values", async () => {
+    const chrome = resolveReferenceChromeMessages(await loadUiMessages("ja"));
+    render(<JaFilterProbe chrome={chrome} />);
+
+    expect(screen.getByText(chrome.inventory.cli.filterLegend)).toBeTruthy();
+    expect(screen.getByLabelText(chrome.inventory.cli.queryLabel)).toBeTruthy();
+    expect(screen.getByLabelText(chrome.filter.lifecycleLabel)).toBeTruthy();
+    expect(screen.getByLabelText(chrome.filter.visibilityLabel)).toBeTruthy();
+    expect(
+      screen.getByRole("option", { name: chrome.filter.allLifecycles }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("option", { name: chrome.lifecycleStates.deprecated }),
+    ).toBeTruthy();
+    // Facet option values stay English contract tokens.
+    const lifecycle = screen.getByLabelText(
+      chrome.filter.lifecycleLabel,
+    ) as HTMLSelectElement;
+    expect([...lifecycle.options].map((option) => option.value)).toContain(
+      "deprecated",
+    );
   });
 });

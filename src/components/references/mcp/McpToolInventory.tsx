@@ -10,6 +10,8 @@ import {
   type ReferenceInventoryFilterableItem,
   type ReferenceInventoryFilterState,
 } from "@/components/references/shared";
+import { useOptionalReferenceChrome } from "@/lib/i18n/reference-chrome-context";
+import { formatReferenceChromeTemplate } from "@/lib/i18n/reference-chrome-labels";
 import { assignMcpToolRegistryAnchors } from "@/lib/references/assign-family-reference-anchors";
 import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
@@ -46,6 +48,8 @@ export function McpToolInventory({
   inventory,
   className,
 }: McpToolInventoryProps) {
+  const chrome = useOptionalReferenceChrome();
+  const inv = chrome?.inventory.mcp;
   const [filter, setFilter] = useState<ReferenceInventoryFilterState>(() =>
     createReferenceInventoryFilterState(),
   );
@@ -65,9 +69,13 @@ export function McpToolInventory({
         data-mcp-tool-inventory=""
       >
         <ReferenceEmptyState
-          description="No published MCP tools were found in the resolved contract."
+          chrome={chrome}
+          description={
+            inv?.emptyDescription ??
+            "No published MCP tools were found in the resolved contract."
+          }
           family="mcp"
-          title="No MCP tools"
+          title={inv?.emptyTitle ?? "No MCP tools"}
         />
       </div>
     );
@@ -81,10 +89,14 @@ export function McpToolInventory({
         data-mcp-tool-inventory=""
       >
         <ReferenceErrorState
-          description="The MCP inventory could not be normalized from the package contract."
+          chrome={chrome}
+          description={
+            inv?.errorDescription ??
+            "The MCP inventory could not be normalized from the package contract."
+          }
           detail={inventory.detail}
           family="mcp"
-          title="MCP inventory error"
+          title={inv?.errorTitle ?? "MCP inventory error"}
         />
       </div>
     );
@@ -98,9 +110,13 @@ export function McpToolInventory({
         data-mcp-tool-inventory=""
       >
         <ReferenceEmptyState
-          description="No published MCP tools were found in the resolved contract."
+          chrome={chrome}
+          description={
+            inv?.emptyDescription ??
+            "No published MCP tools were found in the resolved contract."
+          }
           family="mcp"
-          title="No MCP tools"
+          title={inv?.emptyTitle ?? "No MCP tools"}
         />
       </div>
     );
@@ -108,6 +124,12 @@ export function McpToolInventory({
 
   const filterable = anchoredTools.map(toFilterable);
   const filtered = filterReferenceInventoryItems(filterable, filter);
+  const countTemplate =
+    anchoredTools.length === 1
+      ? (inv?.countOne ??
+        "{count} published MCP tool from the package contract.")
+      : (inv?.countMany ??
+        "{count} published MCP tools from the package contract.");
 
   return (
     <div
@@ -118,17 +140,20 @@ export function McpToolInventory({
       data-mcp-tool-inventory=""
     >
       <p className="m-0 text-sm text-muted-foreground">
-        {anchoredTools.length} published MCP{" "}
-        {anchoredTools.length === 1 ? "tool" : "tools"} from the package
-        contract.
+        {formatReferenceChromeTemplate(countTemplate, {
+          count: anchoredTools.length,
+        })}
       </p>
 
       <ReferenceInventoryFilter
+        chrome={chrome}
         filter={filter}
-        legend="Filter MCP tools"
+        legend={inv?.filterLegend ?? "Filter MCP tools"}
         onFilterChange={setFilter}
-        queryLabel="Tool name"
-        queryPlaceholder="Filter by tool name or description…"
+        queryLabel={inv?.queryLabel ?? "Tool name"}
+        queryPlaceholder={
+          inv?.queryPlaceholder ?? "Filter by tool name or description…"
+        }
         resultCount={filtered.length}
         showVisibilityFilter={false}
         totalCount={anchoredTools.length}
@@ -140,12 +165,13 @@ export function McpToolInventory({
           data-mcp-tool-filter-empty=""
           role="status"
         >
-          No MCP tools match the current filters.
+          {inv?.filterEmpty ?? "No MCP tools match the current filters."}
         </p>
       ) : (
         <div className="flex flex-col gap-4">
           {filtered.map((item) => (
             <McpToolReference
+              chrome={chrome}
               key={item.tool.id}
               packageVersion={inventory.packageVersion}
               tool={item.tool}

@@ -21,6 +21,7 @@ const SHELL_MESSAGE_KEYS = [
   "language",
   "shell",
   "explorer",
+  "referenceChrome",
 ] as const;
 
 const DOCS_MESSAGE_KEYS = [
@@ -64,6 +65,7 @@ function pickShellMessages(messages: ShellMessages): ShellMessages {
     language: messages.language,
     shell: messages.shell,
     explorer: messages.explorer,
+    referenceChrome: messages.referenceChrome,
   };
 }
 
@@ -311,73 +313,13 @@ describe("message boundary contracts", () => {
     expect(messages.tagLanding.searchHandoff).toBe("Search this tag");
   });
 
-  it("assigns shell-shaped data to ShellMessages without factory domain fields", () => {
-    const shellShaped: ShellMessages = {
-      search: {
-        open: "Open search",
-        placeholder: "Search…",
-        close: "Close search",
-        idle: "Type to search.",
-        noResults: "No results.",
-        loading: "Searching…",
-        error: "Search unavailable.",
-        retry: "Try again",
-        shortcut: "Search",
-        resultPath: "Path",
-      },
-      nav: {
-        home: "Home",
-        search: "Search",
-        menu: "Open menu",
-        guides: "Guides",
-        docs: "Docs",
-        architecture: "Architecture",
-        topology: "Topology",
-        blog: "Blog",
-        glossary: "Glossary",
-        timeline: "Timeline",
-        tags: "Tags",
-      },
-      language: {
-        open: "Switch language",
-        selectorLabel: "Language",
-        unavailable: "Not available",
-        locales: { en: "English" },
-      },
-      shell: {
-        sidebarTitle: "Reference",
-        sidebarDescription: "Browse modules.",
-        onThisPage: "On this page",
-        openingSummary: "Opening summary",
-      },
-      explorer: {
-        folders: {
-          guides: "Guides",
-          concepts: "Concepts",
-          techniques: "Techniques",
-          documentation: "Program documentation",
-        },
-        conceptsGroups: {
-          harnesses: "Harnesses",
-          "industrial-engineering": "Industrial engineering",
-          "model-inference": "Model inference",
-        },
-        documentationGroups: {
-          basics: "Basics",
-          "feature-support": "Feature support",
-          functions: "Functions",
-          configuration: "Configuration",
-          api: "API",
-          cli: "CLI",
-          mcp: "MCP",
-          operational: "Operational",
-          "internal-architecture": "Internal architecture",
-          "additional-reference": "Additional reference",
-        },
-      },
-    };
+  it("assigns shell-shaped data to ShellMessages without factory domain fields", async () => {
+    const shellShaped = pickShellMessages(await loadUiMessages());
 
     expect(acceptsShellMessages(shellShaped)).toBe(shellShaped);
+    expect(shellShaped.referenceChrome.filter.clearFilters).toBe(
+      "Clear filters",
+    );
     expect("conceptsIndex" in shellShaped).toBe(false);
     expect("tagsIndex" in shellShaped).toBe(false);
   });

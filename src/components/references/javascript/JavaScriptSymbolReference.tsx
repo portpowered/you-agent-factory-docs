@@ -19,6 +19,7 @@ import type { JavaScriptSymbolReferenceProps } from "./types";
 export function JavaScriptSymbolReference({
   symbol,
   packageVersion,
+  chrome,
   className,
 }: JavaScriptSymbolReferenceProps) {
   const sharedVisibility = mapJavascriptVisibilityToReferenceVisibility(
@@ -46,7 +47,11 @@ export function JavaScriptSymbolReference({
               {symbol.symbolPath}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={symbol.anchor} family="javascript" />
+          <CopyableReferenceAnchor
+            anchor={symbol.anchor}
+            chrome={chrome}
+            family="javascript"
+          />
         </div>
         {symbol.description !== undefined ? (
           <p className="m-0 text-sm text-muted-foreground">
@@ -56,6 +61,7 @@ export function JavaScriptSymbolReference({
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="javascript"
         lifecycle={symbol.lifecycle}
         packageVersion={packageVersion}

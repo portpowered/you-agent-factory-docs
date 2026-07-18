@@ -19,6 +19,7 @@ import {
 import { isDocsPageShippedForLocale } from "@/lib/content/pages";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
+import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
 import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";
 import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
@@ -102,6 +103,7 @@ async function renderLocalDocsPage(
         messages={loadedPage.messages}
         assets={loadedPage.assets}
         locale={locale}
+        referenceChrome={resolveReferenceChromeMessages(uiMessages)}
       >
         <DocsPageBreadcrumb
           locale={locale}

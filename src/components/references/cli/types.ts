@@ -5,6 +5,7 @@
  * not acquire package artifacts or invent missing flags/arguments.
  */
 
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import type { CliCommandWithStructuredOptions } from "./cli-capability";
 
@@ -19,6 +20,8 @@ export type CliCommandReferenceProps = {
    * when the caller has no package version — never invent a version string.
    */
   packageVersion?: string;
+  /** Localized reference chrome forwarded to shared badge/anchor surfaces. */
+  chrome?: ReferenceChromeMessages;
   className?: string;
 };
 

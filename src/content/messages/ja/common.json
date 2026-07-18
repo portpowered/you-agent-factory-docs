@@ -78,6 +78,113 @@
       "additional-reference": "追加リファレンス"
     }
   },
+  "referenceChrome": {
+    "filter": {
+      "queryPlaceholder": "名前またはパスで絞り込み…",
+      "lifecycleLabel": "ライフサイクル",
+      "visibilityLabel": "可視性",
+      "allLifecycles": "すべてのライフサイクル",
+      "allVisibility": "すべての可視性",
+      "clearFilters": "フィルターをクリア",
+      "showingOf": "{totalCount} 件中 {resultCount} 件を表示",
+      "schemaQueryPlaceholder": "定義とフィールドを絞り込み…",
+      "schemaQueryLabel": "スキーマ定義とフィールドを絞り込み",
+      "schemaNoMatchesTitle": "一致なし",
+      "schemaNoMatchesMessage": "このフィルターに一致する定義またはフィールドはありません。",
+      "clear": "クリア"
+    },
+    "status": {
+      "loadingTitle": "読み込み中",
+      "loadingMessage": "スキーマを読み込み中…",
+      "emptyTitle": "空のスキーマ",
+      "emptyMessage": "利用可能なスキーマ定義またはフィールドはありません。",
+      "invalidTitle": "無効なスキーマ",
+      "invalidMessage": "スキーマ入力の検証または正規化に失敗しました。",
+      "unsupportedTitle": "未対応のスキーマ",
+      "unsupportedMessage": "このスキーマ形状またはバージョンは表示に対応していません。"
+    },
+    "badge": {
+      "family": "ファミリー",
+      "packageVersion": "パッケージバージョン",
+      "sourceArtifact": "ソース成果物",
+      "lifecycle": "ライフサイクル",
+      "visibility": "可視性",
+      "contractSource": "コントラクトソース",
+      "packageVersionNotPublished": "パッケージバージョン未公開",
+      "notPublishedOnProjection": "このプロジェクションでは未公開",
+      "familyWithLabel": "ファミリー: {family}"
+    },
+    "families": {
+      "api": "API",
+      "schema": "スキーマ",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "javascript": "JavaScript",
+      "events": "イベント"
+    },
+    "lifecycleStates": {
+      "active": "有効",
+      "deprecated": "非推奨",
+      "removed": "削除済み"
+    },
+    "lifecycleSummary": {
+      "since": "{value} 以降",
+      "deprecated": "{value} で非推奨",
+      "removed": "{value} で削除",
+      "successor": "後継 {value}"
+    },
+    "visibilityStates": {
+      "public": "公開",
+      "internal": "内部"
+    },
+    "a11y": {
+      "copyAnchorLink": "アンカーリンクをコピー",
+      "anchorLinkCopied": "アンカーリンクをコピーしました"
+    },
+    "examples": {
+      "authored": "作成済みの例",
+      "generated": "生成された例",
+      "exampleIndexed": "例 {index}"
+    },
+    "inventory": {
+      "cli": {
+        "filterLegend": "CLI コマンドを絞り込み",
+        "queryLabel": "コマンドパス",
+        "queryPlaceholder": "コマンドパス、エイリアス、説明で絞り込み…",
+        "emptyTitle": "CLI コマンドがありません",
+        "emptyDescription": "解決済みコントラクトに公開済み CLI コマンドは見つかりませんでした。",
+        "errorTitle": "CLI インベントリエラー",
+        "errorDescription": "パッケージコントラクトから CLI インベントリを正規化できませんでした。",
+        "filterEmpty": "現在のフィルターに一致する CLI コマンドはありません。",
+        "countOne": "パッケージコントラクトからの公開済み CLI コマンド {count} 件。",
+        "countMany": "パッケージコントラクトからの公開済み CLI コマンド {count} 件。"
+      },
+      "mcp": {
+        "filterLegend": "MCP ツールを絞り込み",
+        "queryLabel": "ツール名",
+        "queryPlaceholder": "ツール名または説明で絞り込み…",
+        "emptyTitle": "MCP ツールがありません",
+        "emptyDescription": "解決済みコントラクトに公開済み MCP ツールは見つかりませんでした。",
+        "errorTitle": "MCP インベントリエラー",
+        "errorDescription": "パッケージコントラクトから MCP インベントリを正規化できませんでした。",
+        "filterEmpty": "現在のフィルターに一致する MCP ツールはありません。",
+        "countOne": "パッケージコントラクトからの公開済み MCP ツール {count} 件。",
+        "countMany": "パッケージコントラクトからの公開済み MCP ツール {count} 件。"
+      },
+      "javascript": {
+        "filterLegend": "JavaScript ランタイム項目を絞り込み",
+        "queryLabel": "シンボルまたはスキーマ",
+        "queryPlaceholder": "シンボルパス、スキーマ id、説明で絞り込み…",
+        "emptyTitle": "JavaScript ランタイム項目がありません",
+        "emptyDescription": "解決済みコントラクトに公開済み JavaScript シンボルまたは共有スキーマは見つかりませんでした。",
+        "errorTitle": "JavaScript インベントリエラー",
+        "errorDescription": "パッケージコントラクトから JavaScript インベントリを正規化できませんでした。",
+        "filterEmpty": "現在のフィルターに一致する JavaScript ランタイム項目はありません。",
+        "countOne": "パッケージコントラクトからの公開済み JavaScript ランタイム項目 {count} 件。",
+        "countMany": "パッケージコントラクトからの公開済み JavaScript ランタイム項目 {count} 件。"
+      }
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "エージェントファクトリー CLI のドキュメント",

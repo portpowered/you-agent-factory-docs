@@ -33,6 +33,18 @@ Do **not**:
 | `src/lib/i18n/contract-language-boundary.tsx` | `EnglishContractDescription` React helper — emits `lang="en"` on non-default locales |
 | `src/lib/i18n/contract-language-boundary.test.tsx` | Render proofs for language boundary + fail-closed chrome misuse |
 
+## Reference chrome catalogs (story 002)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/content/ui-messages.types.ts` → `ReferenceChromeMessages` | Typed chrome catalog shape (filter/status/badge/families/a11y/examples/inventory) |
+| `src/content/messages/{en,ja,zh-CN,vi}/common.json` → `referenceChrome` | Shipped catalogs; API/CLI/MCP family tokens stay literal |
+| `src/lib/i18n/reference-chrome-labels.ts` | `assertReferenceChromeMessages` / `resolveReferenceChromeMessages` fail-closed |
+| `src/lib/i18n/reference-chrome-labels.test.ts` | Locale resolution, untranslated family tokens, fail-closed missing keys |
+| `src/lib/i18n/reference-chrome-context.tsx` | Client provider for inventory/badge surfaces |
+| `src/app/docs/docs-slug-renderer.tsx` | Passes resolved chrome into `DocsPageProviders` for local docs pages |
+| `src/components/references/{cli,mcp,javascript}/*Inventory.tsx` | Resolve inventory empty/error/filter chrome from provider |
+
 ## Call-site rule (keep chrome and contract prose separated)
 
 | Text role | Correct path |
@@ -48,13 +60,16 @@ Do **not**:
 | --- | --- |
 | `src/lib/i18n/locale-routing.ts` | Supported locales (`en`, `ja`, `zh-CN`, `vi`) + `defaultLocale` |
 | `src/lib/i18n/explorer-labels.ts` | Fail-closed missing chrome catalog pattern (no silent English fallback) |
+| `src/lib/i18n/reference-chrome-labels.ts` | Fail-closed reference chrome catalog assert/resolve + template helper |
+| `src/lib/i18n/reference-chrome-context.tsx` | `ReferenceChromeProvider` / optional hook for client inventory surfaces |
+| `src/content/messages/{locale}/common.json` → `referenceChrome` | en/ja/zh-CN/vi filter, status, badge, a11y, inventory chrome catalogs |
+| `src/features/docs/components/DocsPageProviders.tsx` | Wires `referenceChrome` into local docs pages via provider |
 | `src/lib/i18n/route-locale.ts` | Alternate/hreflang helpers (later W17 manifest story) |
-| `src/components/references/shared/*` | Reference chrome surfaces that later stories wire to catalogs |
+| `src/components/references/shared/*` | Shared chrome surfaces that resolve catalogs via prop or provider |
 | `src/components/references/schema/schema-example-display.ts` | Example origin labels ("Generated example") — chrome-localizable; payloads stay English |
 
 ## Later W17 stories (do not jump ahead unless selected)
 
-- **002** — ship/wire filter, status, badge, empty/error, a11y chrome catalogs
 - **003** — collection/page chrome under fail-closed shipping
 - **004** — apply `EnglishContractDescription` on rendered contract descriptions
 - **005** — locale manifests + alternates for shipped reference routes only
