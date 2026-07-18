@@ -105,8 +105,10 @@
     },
     "badge": {
       "family": "Họ",
+      "package": "Gói",
       "packageVersion": "Phiên bản gói",
       "sourceArtifact": "Artifact nguồn",
+      "sourceCommit": "Source commit",
       "lifecycle": "Vòng đời",
       "visibility": "Khả năng hiển thị",
       "contractSource": "Nguồn hợp đồng",
@@ -247,7 +249,7 @@
     "glossarySectionDescription": "Trang thuật ngữ định nghĩa từ vựng ngắn về factory và CLI để phần còn lại của tài liệu dễ đọc hơn.",
     "glossarySectionLinkLabel": "Duyệt toàn bộ thuật ngữ",
     "referencesSectionTitle": "Tham chiếu",
-    "referencesSectionDescription": "Trang tham chiếu liệt kê schema, hợp đồng, và các bề mặt tra cứu khác cho chủ đề factory.",
+    "referencesSectionDescription": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
     "referencesSectionLinkLabel": "Duyệt tất cả trang tham chiếu",
     "factoriesSectionTitle": "Factory",
     "factoriesSectionDescription": "Trang factory mô tả các bề mặt factory đã đóng gói và cách cấu hình, chạy chúng.",
@@ -293,7 +295,7 @@
   },
   "referencesIndex": {
     "title": "Tham chiếu",
-    "description": "Các trang tham chiếu đã xuất bản liệt kê schema, hợp đồng, và các bề mặt tra cứu khác cho chủ đề factory.",
+    "description": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
     "listLabel": "Các mục tham chiếu",
     "emptyTitle": "Chưa có mục tham chiếu nào",
     "emptyDescription": "Các trang tham chiếu đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",

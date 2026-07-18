@@ -113,8 +113,10 @@ export type ReferenceChromeStatusMessages = {
 
 export type ReferenceChromeBadgeMessages = {
   family: string;
+  package: string;
   packageVersion: string;
   sourceArtifact: string;
+  sourceCommit: string;
   lifecycle: string;
   visibility: string;
   contractSource: string;

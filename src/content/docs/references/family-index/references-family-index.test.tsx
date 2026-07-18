@@ -8,7 +8,10 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { cleanup, render, screen, within } from "@testing-library/react";
+import { MessageLoadError } from "@/lib/content/page-messages-load";
 import { getRegistryRecord, loadRegistry } from "@/lib/content/registry";
+import { loadUiMessages } from "@/lib/content/ui-messages";
+import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
 import { loadReferencesFamilyFreshnessSummary } from "./load-references-family-freshness";
 import { loadReferencesFamilyIndex } from "./load-references-family-index";
 import {
@@ -31,6 +34,11 @@ import { resolveReferenceFamilyDiscoverabilityCards } from "./resolve-reference-
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+async function englishChrome() {
+  const messages = await loadUiMessages("en");
+  return resolveReferenceChromeMessages(messages);
 }
 
 describe("references family index", () => {
@@ -66,6 +74,33 @@ describe("references family index", () => {
     );
   });
 
+  test("loads localized family-index page chrome without English silent fallback", async () => {
+    const en = await loadReferencesFamilyIndex("en");
+    const ja = await loadReferencesFamilyIndex("ja");
+    const zh = await loadReferencesFamilyIndex("zh-CN");
+    const vi = await loadReferencesFamilyIndex("vi");
+
+    expect(ja.messages.title).toBe("リファレンス");
+    expect(ja.messages.title).not.toBe(en.messages.title);
+    expect(ja.messages.sections?.discoverability?.title).toBe("コントラクト面");
+    expect(ja.messages.sections?.discoverability?.title).not.toBe(
+      en.messages.sections?.discoverability?.title,
+    );
+    expect(zh.messages.title).toBe("参考");
+    expect(zh.messages.title).not.toBe(en.messages.title);
+    expect(vi.messages.title).toBe("Tham chiếu");
+    expect(vi.messages.title).not.toBe(en.messages.title);
+    expect(ja.messages.sections?.cli?.title).toContain("CLI");
+    expect(ja.messages.sections?.mcp?.title).toContain("MCP");
+    expect(ja.messages.sections?.api?.title).toContain("API");
+  });
+
+  test("fails closed when a locale page-message file is missing", async () => {
+    await expect(
+      loadReferencesFamilyIndex("ja", join(process.cwd(), "tmp-missing-index")),
+    ).rejects.toBeInstanceOf(MessageLoadError);
+  });
+
   test("loads package freshness from the public API manifest", () => {
     const freshness = loadReferencesFamilyFreshnessSummary();
 
@@ -96,12 +131,14 @@ describe("references family index", () => {
   test("renders the authored introduction instead of empty-collection copy", async () => {
     const loaded = await loadReferencesFamilyIndex();
     const freshness = loadReferencesFamilyFreshnessSummary();
+    const chrome = await englishChrome();
 
     render(
       <main>
         <h1>{loaded.messages.title}</h1>
         <p>{loaded.messages.description}</p>
         <ReferencesFamilyIndex
+          chrome={chrome}
           freshness={freshness}
           messages={loaded.messages}
         />
@@ -123,6 +160,7 @@ describe("references family index", () => {
   test("renders package freshness summary on the success path", async () => {
     const loaded = await loadReferencesFamilyIndex();
     const freshness = loadReferencesFamilyFreshnessSummary();
+    const chrome = await englishChrome();
 
     expect(freshness.status).toBe("ready");
     if (freshness.status !== "ready") {
@@ -132,6 +170,7 @@ describe("references family index", () => {
     render(
       <main>
         <ReferencesFamilyIndex
+          chrome={chrome}
           freshness={freshness}
           messages={loaded.messages}
         />
@@ -141,6 +180,8 @@ describe("references family index", () => {
     expect(
       screen.getByRole("heading", { name: "Package freshness" }),
     ).toBeTruthy();
+    expect(screen.getByText(chrome.badge.package)).toBeTruthy();
+    expect(screen.getByText(chrome.badge.sourceCommit)).toBeTruthy();
     const summary = document.querySelector(
       "[data-references-family-freshness-summary]",
     );
@@ -168,10 +209,12 @@ describe("references family index", () => {
       },
     });
     const cards = resolveReferenceFamilyDiscoverabilityCards(loaded.messages);
+    const chrome = await englishChrome();
 
     render(
       <main>
         <ReferencesFamilyIndex
+          chrome={chrome}
           freshness={freshness}
           messages={loaded.messages}
         />
@@ -201,6 +244,7 @@ describe("references family index", () => {
     const loaded = await loadReferencesFamilyIndex();
     const freshness = loadReferencesFamilyFreshnessSummary();
     const cards = resolveReferenceFamilyDiscoverabilityCards(loaded.messages);
+    const chrome = await englishChrome();
 
     expect(REFERENCE_FAMILY_DISCOVERABILITY_ROUTES).toHaveLength(8);
     expect(cards.map((card) => card.href)).toEqual([
@@ -225,6 +269,7 @@ describe("references family index", () => {
     render(
       <main>
         <ReferencesFamilyIndex
+          chrome={chrome}
           freshness={freshness}
           messages={loaded.messages}
         />
@@ -246,6 +291,40 @@ describe("references family index", () => {
       expect(link.getAttribute("href")).toBe(card.href);
       expect(link.textContent).toContain(card.description);
     }
+  });
+
+  test("renders localized Japanese family-index chrome with untranslated CLI/MCP/API tokens", async () => {
+    const loaded = await loadReferencesFamilyIndex("ja");
+    const freshness = loadReferencesFamilyFreshnessSummary();
+    const ui = await loadUiMessages("ja");
+    const chrome = resolveReferenceChromeMessages(ui);
+
+    render(
+      <main>
+        <ReferencesFamilyIndex
+          chrome={chrome}
+          freshness={freshness}
+          messages={loaded.messages}
+        />
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "このファミリーが扱うこと" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "コントラクト面" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "パッケージの鮮度" }),
+    ).toBeTruthy();
+    expect(screen.getByText(chrome.badge.package)).toBeTruthy();
+    expect(screen.getByText(chrome.badge.sourceCommit)).toBeTruthy();
+    expect(screen.queryByText("What this family covers")).toBeNull();
+    expect(screen.queryByText("Contract surfaces")).toBeNull();
+    expect(screen.getByRole("link", { name: /CLI/ })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /MCP/ })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /HTTP API/ })).toBeTruthy();
   });
 
   test("exposes a page-local registry record for the family index", async () => {

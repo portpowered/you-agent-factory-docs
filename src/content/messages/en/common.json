@@ -105,8 +105,10 @@
     },
     "badge": {
       "family": "Family",
+      "package": "Package",
       "packageVersion": "Package version",
       "sourceArtifact": "Source artifact",
+      "sourceCommit": "Source commit",
       "lifecycle": "Lifecycle",
       "visibility": "Visibility",
       "contractSource": "Contract source",

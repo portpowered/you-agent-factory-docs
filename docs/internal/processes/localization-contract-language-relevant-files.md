@@ -74,3 +74,15 @@ Do **not**:
 - **004** — apply `EnglishContractDescription` on rendered contract descriptions
 - **005** — locale manifests + alternates for shipped reference routes only
 - **006** — locale parity + untranslated-identifier behavioral suite
+
+## Collection / page chrome (story 003)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/family-index/messages/{en,ja,zh-CN,vi}.json` | Authored family-index page chrome (titles, discoverability cards, freshness copy) for all shipped locales |
+| `src/content/docs/references/family-index/load-references-family-index.ts` | Fail-closed locale load — no silent English fallback when a locale message file is missing |
+| `src/content/messages/{locale}/common.json` → `referencesIndex` + `browseIndex.referencesSection*` | Collection chrome for section empty states and browse discovery |
+| `src/content/messages/{locale}/common.json` → `referenceChrome.badge.package` / `sourceCommit` | Freshness definition-list field labels shared with contract badges |
+| `src/app/(site)/site-renderers.tsx` → `renderReferencesFamilyIndexPage` | Resolves reference chrome and injects it into the family index |
+
+W15 collection/nav label keys: consume existing `referencesIndex` / browse `referencesSection*` keys when present; do not redesign primary-nav/sidebar topology.

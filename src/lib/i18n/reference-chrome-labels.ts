@@ -72,8 +72,10 @@ const STATUS_KEYS = [
 
 const BADGE_KEYS = [
   "family",
+  "package",
   "packageVersion",
   "sourceArtifact",
+  "sourceCommit",
   "lifecycle",
   "visibility",
   "contractSource",

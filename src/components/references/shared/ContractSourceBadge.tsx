@@ -8,8 +8,10 @@ import type { ContractSourceBadgeProps } from "./types";
 
 const ENGLISH_BADGE = {
   family: "Family",
+  package: "Package",
   packageVersion: "Package version",
   sourceArtifact: "Source artifact",
+  sourceCommit: "Source commit",
   contractSource: "Contract source",
   packageVersionNotPublished: "package version not published",
   notPublishedOnProjection: "Not published on this projection",

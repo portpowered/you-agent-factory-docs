@@ -105,8 +105,10 @@
     },
     "badge": {
       "family": "ファミリー",
+      "package": "パッケージ",
       "packageVersion": "パッケージバージョン",
       "sourceArtifact": "ソース成果物",
+      "sourceCommit": "ソースコミット",
       "lifecycle": "ライフサイクル",
       "visibility": "可視性",
       "contractSource": "コントラクトソース",
@@ -247,7 +249,7 @@
     "glossarySectionDescription": "用語集ページでは、ファクトリーと CLI まわりの短い語彙を定義し、ドキュメント全体を読みやすくします。",
     "glossarySectionLinkLabel": "用語集をすべて見る",
     "referencesSectionTitle": "リファレンス",
-    "referencesSectionDescription": "リファレンスページでは、スキーマ、契約、その他のファクトリー主題の参照面をカタログします。",
+    "referencesSectionDescription": "you-agent-factory のコントラクト参照面: HTTP API、イベント、スキーマ、コマンドラインインターフェイス（CLI）、Model Context Protocol（MCP）、および JavaScript ランタイム。",
     "referencesSectionLinkLabel": "リファレンスページをすべて見る",
     "factoriesSectionTitle": "ファクトリー",
     "factoriesSectionDescription": "ファクトリーのページでは、パッケージ化されたファクトリー面と、その設定・実行のしかたを説明します。",
@@ -293,7 +295,7 @@
   },
   "referencesIndex": {
     "title": "リファレンス",
-    "description": "公開済みのリファレンスページでは、スキーマ、契約、その他のファクトリー主題の参照面をカタログします。",
+    "description": "you-agent-factory のコントラクト参照面: HTTP API、イベント、スキーマ、コマンドラインインターフェイス（CLI）、Model Context Protocol（MCP）、および JavaScript ランタイム。",
     "listLabel": "リファレンス項目",
     "emptyTitle": "リファレンス項目はまだありません",
     "emptyDescription": "公開されたリファレンスページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
