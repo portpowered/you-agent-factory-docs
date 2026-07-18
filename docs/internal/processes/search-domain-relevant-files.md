@@ -11,6 +11,12 @@ Use these files when changing search document construction, Orama indexing, or
   denylist and fail-closed `assertFactorySearchDocuments` used by document
   builders. `REFERENCE_SEARCH_DOCUMENT_KIND` is the shared page/item kind for
   W16 reference search projection (aligned with W04/W09 search shapes).
+* `src/lib/search/adapt-reference-search-document.ts`
+  Pure adapter from W04/W09 `ReferenceSearchDocumentShape` → live Orama
+  `SearchDocument` (kind `reference`, fragment URL required, empty topology).
+* `src/lib/search/build-reference-search-documents.ts`
+  Loads settled inventory shapes (events corpus first; other families in later
+  W16 stories), adapts them, and caches for shared locale builds.
 * `src/lib/content/factory-search-categories.test.tsx`
   Required `bun run test` proof that pageKind labels, live search meta, and
   representative `harness` / `ralph` queries stay inside the factory category
@@ -20,6 +26,11 @@ Use these files when changing search document construction, Orama indexing, or
   for page and item documents, stays aligned with W04
   `REFERENCE_SEARCH_DOCUMENT_KIND`, and a representative `/docs/references/events`
   hit exposes the reader-visible Reference category (not a retired Atlas kind).
+* `src/lib/content/factory-search-reference-shape-adaptation.test.ts`
+  W16 story 002 required-suite proof that W04/W09 event-corpus shapes adapt
+  into live Orama documents with registry-anchor fragment URLs, join
+  `buildSearchDocumentsForLocale` for every shipped locale, and remain
+  findable via representative Orama queries.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,
@@ -94,7 +105,10 @@ and prove reader-facing labels via `messages.pageKind` (no Atlas keys such as
 `src/lib/content/` because `src/lib/search/` remains excluded from
 `run-website-functionality-tests.ts` for leftover Atlas-coupled suites. W16
 reference-item Orama projection reuses `REFERENCE_SEARCH_DOCUMENT_KIND` rather
-than inventing a second public category.
+than inventing a second public category. Adapt W04/W09 shapes through
+`adaptReferenceSearchShapeToSearchDocument` and include them via
+`buildReferenceItemSearchDocuments` in `buildSearchDocumentsForLocale` /
+`loadSearchDocumentsByLocale` (shared once across locales).
 
 ### Pattern: factory alias / body / tag discovery
 

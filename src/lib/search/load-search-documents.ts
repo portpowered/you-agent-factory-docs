@@ -2,9 +2,10 @@
  * Shared load path for search documents used by the live search server and by
  * static-export search-index emission.
  *
- * Registry indexes are loaded once per call to `loadSearchDocumentsByLocale`
- * and reused across locales. Page/blog walks still run per locale (content
- * differs), but they go through the process-scoped page-load caches.
+ * Registry indexes and reference-item documents are loaded once per call to
+ * `loadSearchDocumentsByLocale` and reused across locales. Page/blog walks
+ * still run per locale (content differs), but they go through the
+ * process-scoped page-load caches.
  */
 
 import type { DocsPageSource } from "@/lib/content/pages";
@@ -16,6 +17,7 @@ import {
   loadBlogSearchPostSources,
 } from "./build-blog-search-document";
 import { buildSearchDocumentsForLocale } from "./build-documents";
+import { buildReferenceItemSearchDocuments } from "./build-reference-search-documents";
 import type { SearchDocument } from "./types";
 
 export type LoadSearchDocumentsByLocaleOptions = {
@@ -23,6 +25,11 @@ export type LoadSearchDocumentsByLocaleOptions = {
   loadRegistryFn?: () => Promise<RegistryIndexes>;
   loadPagesFn?: (locale: SiteLocale) => Promise<DocsPageSource[]>;
   loadBlogPostsFn?: (locale: SiteLocale) => Promise<BlogSearchPostSource[]>;
+  /**
+   * Shared reference item documents for every locale. Defaults to settled
+   * inventory adaptation (cached). Tests may inject `[]` to skip OpenAPI load.
+   */
+  referenceItemDocuments?: readonly SearchDocument[];
 };
 
 let searchDocumentBuildCount = 0;
@@ -32,9 +39,13 @@ export function buildSearchDocumentsFromParsedSources(
   indexes: RegistryIndexes,
   pages: DocsPageSource[],
   blogPosts: BlogSearchPostSource[] = [],
+  referenceItemDocuments?: readonly SearchDocument[],
 ): SearchDocument[] {
   searchDocumentBuildCount += 1;
-  return buildSearchDocumentsForLocale(locale, indexes, pages, blogPosts);
+  return buildSearchDocumentsForLocale(locale, indexes, pages, blogPosts, {
+    referenceItemDocuments:
+      referenceItemDocuments ?? buildReferenceItemSearchDocuments(),
+  });
 }
 
 /**
@@ -54,6 +65,8 @@ export async function loadSearchDocumentsByLocale(
     ((locale: SiteLocale) => loadBlogSearchPostSources({ locale }));
 
   const indexes = await loadRegistryFn();
+  const referenceItemDocuments =
+    options.referenceItemDocuments ?? buildReferenceItemSearchDocuments();
   const documentsByLocale = new Map<SiteLocale, SearchDocument[]>();
 
   for (const locale of locales) {
@@ -63,7 +76,13 @@ export async function loadSearchDocumentsByLocale(
     ]);
     documentsByLocale.set(
       locale,
-      buildSearchDocumentsFromParsedSources(locale, indexes, pages, blogPosts),
+      buildSearchDocumentsFromParsedSources(
+        locale,
+        indexes,
+        pages,
+        blogPosts,
+        referenceItemDocuments,
+      ),
     );
   }
 

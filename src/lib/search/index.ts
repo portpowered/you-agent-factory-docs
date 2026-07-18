@@ -1,4 +1,8 @@
 export {
+  adaptReferenceSearchShapesToSearchDocuments,
+  adaptReferenceSearchShapeToSearchDocument,
+} from "./adapt-reference-search-document";
+export {
   buildBaseSearchDocument,
   buildBaseSearchDocuments,
 } from "./build-base-document";
@@ -13,10 +17,17 @@ export {
   splitBlogPostMdxBody,
 } from "./build-blog-search-document";
 export {
+  type BuildSearchDocumentsForLocaleOptions,
   buildSearchDocument,
   buildSearchDocuments,
   buildSearchDocumentsForLocale,
 } from "./build-documents";
+export {
+  buildReferenceItemSearchDocuments,
+  loadEventCorpusReferenceSearchShapes,
+  loadSettledReferenceSearchShapes,
+  resetReferenceItemSearchDocumentsCacheForTests,
+} from "./build-reference-search-documents";
 export {
   enrichSearchDocument,
   enrichSearchDocuments,
