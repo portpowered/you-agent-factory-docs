@@ -1031,6 +1031,13 @@ W05 already provides nested discovery, family indexes, and
    resolve under `compileMDX` (same constraint as documentation/concept
    page-local components). Keep the visual page-owned; do not register it
    in shared `mdx-components.tsx`.
+8. For `/docs/references/api`, compose the public W08 surface
+   (`ApiSurface` + nav + `ApiOperationSection` + hash/theme/print markers +
+   `ApiLocalServerBaseUrlNotice`) in a page-local `ApiReferenceProjection`.
+   SSE hybrid summaries mount automatically through `ApiOperationSection`;
+   do not re-implement event catalog UI. Prove static-only + three SSE
+   summaries with page-local tests and the colocated browser probe
+   `assert-api-page-static-sse-browser.ts` (unique port; kill server on exit).
 
 Do not edit shared nav/sidebar/search/sitemap/compat inventory owners
 (W15–W18) by hand for this first page — published-docs membership is enough

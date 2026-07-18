@@ -3,9 +3,10 @@
  *
  * Wires the public W08 surface (`@/components/references/api`) with the same
  * composition as the verification harness — navigation, operation sections,
- * hash controller, theme/print markers, local-server notice — without the
- * non-production harness chrome. Page wiring only; renderer internals stay
- * under W08 ownership.
+ * hash controller, theme/print markers, local-server notice, playground
+ * suppression, and hybrid SSE summaries via `ApiOperationSection` — without
+ * the non-production harness chrome. Static-only: no live playground, proxy,
+ * or EventSource. Page wiring only; renderer internals stay under W08 ownership.
  */
 
 import {
