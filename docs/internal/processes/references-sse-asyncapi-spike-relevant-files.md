@@ -128,3 +128,12 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   `placement-comparison-evidence.ts` (HTML bytes, nav stops, desktop/phone
   a11y notes). Focused tests: `placement-comparison-evidence.test.ts`,
   `create-sse-spike-hybrid-openapi.test.ts`.
+- Placement decision gate (story 009):
+  `placement-decision-gate.ts` evaluates plan.md outcomes in order
+  (integrated-only → separate-catalog → hybrid) against recorded evidence
+  facts. W02 evidence selects **hybrid**: OpenAPI owns event truth; AsyncAPI
+  is generated projection only; HTTP reconnect/cursor/headers/dual-Accept/
+  replay/compatibility stay on the API operation page; spike does not merge
+  production event UI, permanently pin deps, hand-edit AsyncAPI, or own W01
+  files. Focused tests: `placement-decision-gate.test.ts`. Narrative decision:
+  `docs/temp/references/sse-renderer-investigation.md` (gitignored).
