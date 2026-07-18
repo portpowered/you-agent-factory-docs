@@ -159,7 +159,7 @@ describe("throttling-and-limits documentation page", () => {
         relatedQueries
           .getByRole("link", { name: "Workers" })
           .getAttribute("href"),
-      ).toBe("/docs/documentation/workers");
+      ).toBe("/docs/workers");
       expect(
         relatedQueries
           .getByRole("link", { name: "Resources" })

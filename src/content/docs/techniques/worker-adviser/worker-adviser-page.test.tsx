@@ -116,9 +116,7 @@ describe("worker-adviser technique page", () => {
     const workersLink = screen.getByRole("link", {
       name: "Workers configuration",
     });
-    expect(workersLink.getAttribute("href")).toBe(
-      "/docs/documentation/workers",
-    );
+    expect(workersLink.getAttribute("href")).toBe("/docs/workers");
     const writerReviewerLink = screen.getByRole("link", {
       name: "Writer-reviewer technique",
     });

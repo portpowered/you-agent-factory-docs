@@ -87,7 +87,7 @@ describe("replays-records documentation page", () => {
       relatedQueries
         .getByRole("link", { name: "Configuration" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/configuration");
+    ).toBe("/docs/factories/configuration");
     expect(
       relatedQueries
         .getByRole("link", { name: "Submitting Work" })

@@ -204,12 +204,8 @@ describe("factories/sessions documentation page", () => {
     expect(
       related?.querySelector('a[href="/docs/documentation/submitting-work"]'),
     ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/workers"]'),
-    ).toBeTruthy();
-    expect(
-      related?.querySelector('a[href="/docs/documentation/workstations"]'),
-    ).toBeTruthy();
+    expect(related?.querySelector('a[href="/docs/workers"]')).toBeTruthy();
+    expect(related?.querySelector('a[href="/docs/workstations"]')).toBeTruthy();
     expect(
       related?.querySelector('a[href="/docs/documentation/resources"]'),
     ).toBeTruthy();

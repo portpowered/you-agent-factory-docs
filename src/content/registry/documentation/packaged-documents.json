@@ -7,10 +7,10 @@
   "aliases": ["packaged docs", "you docs", "packaged topics"],
   "tags": [],
   "relatedIds": [
-    "documentation.configuration",
-    "documentation.dynamic-workflows",
+    "documentation.factories-configuration",
+    "documentation.factories-dynamic-workflows",
     "documentation.cli",
-    "documentation.packaged-factories"
+    "documentation.factories-packaged"
   ],
   "citationIds": [],
   "status": "published",

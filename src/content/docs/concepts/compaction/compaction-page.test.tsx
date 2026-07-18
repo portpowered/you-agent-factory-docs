@@ -118,7 +118,7 @@ describe("compaction concept page", () => {
       name: "Configuration documentation",
     });
     expect(configurationLink.getAttribute("href")).toBe(
-      "/docs/documentation/configuration",
+      "/docs/factories/configuration",
     );
   });
 

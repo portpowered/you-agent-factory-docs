@@ -239,7 +239,7 @@ describe("troubleshooting documentation page", () => {
       screen
         .getByRole("link", { name: "Factory Session" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/factory-session");
+    ).toBe("/docs/factories/sessions");
     expect(screen.getByRole("link", { name: "CLI" }).getAttribute("href")).toBe(
       "/docs/documentation/cli",
     );
@@ -248,13 +248,13 @@ describe("troubleshooting documentation page", () => {
       screen
         .getByRole("link", { name: "Global Configuration Factories" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/global-configuration-factories");
+    ).toBe("/docs/factories/global-configuration");
     const configurationLinks = screen.getAllByRole("link", {
       name: "Configuration",
     });
     expect(configurationLinks.length).toBeGreaterThanOrEqual(1);
     expect(configurationLinks[0]?.getAttribute("href")).toBe(
-      "/docs/documentation/configuration",
+      "/docs/factories/configuration",
     );
 
     const mcpLinks = screen.getAllByRole("link", { name: "MCP" });
@@ -266,7 +266,7 @@ describe("troubleshooting documentation page", () => {
     });
     expect(dynamicWorkflowLinks.length).toBeGreaterThanOrEqual(1);
     expect(dynamicWorkflowLinks[0]?.getAttribute("href")).toBe(
-      "/docs/documentation/dynamic-workflows",
+      "/docs/factories/dynamic-workflows",
     );
 
     const cursorGuideLinks = screen.getAllByRole("link", {

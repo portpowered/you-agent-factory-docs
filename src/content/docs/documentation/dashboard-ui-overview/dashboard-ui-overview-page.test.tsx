@@ -140,7 +140,7 @@ describe("dashboard-ui-overview documentation page", () => {
       relatedQueries
         .getByRole("link", { name: "Factory Session" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/factory-session");
+    ).toBe("/docs/factories/sessions");
     expect(
       relatedQueries
         .getByRole("link", { name: "Metrics" })
@@ -150,7 +150,7 @@ describe("dashboard-ui-overview documentation page", () => {
       relatedQueries
         .getByRole("link", { name: "Configuration" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/configuration");
+    ).toBe("/docs/factories/configuration");
 
     expect(screen.queryByText(/reader shortcut/i)).toBeNull();
     expect(document.body.textContent).not.toMatch(/Model Atlas/i);

@@ -42,7 +42,7 @@ describe("changelog blog hub (001)", () => {
 
     expect(html).toContain('href="/docs/documentation/install"');
     expect(html).toContain('href="/docs/documentation/cli"');
-    expect(html).toContain('href="/docs/documentation/cli-command-index"');
+    expect(html).toContain('href="/docs/references/cli"');
     expect(html).toContain("Quick reach");
     expect(html).toContain("Install documentation");
     expect(html).toContain("CLI documentation");

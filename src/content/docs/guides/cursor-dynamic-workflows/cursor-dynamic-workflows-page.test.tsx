@@ -57,7 +57,7 @@ describe("cursor-dynamic-workflows guide page", () => {
     });
     expect(mcpDocs.getAttribute("href")).toBe("/docs/documentation/mcp");
     expect(dynamicDocs.getAttribute("href")).toBe(
-      "/docs/documentation/dynamic-workflows",
+      "/docs/factories/dynamic-workflows",
     );
   });
 

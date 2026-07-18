@@ -36,6 +36,7 @@ social assets, sitemap, robots).
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
 | `src/lib/seo/documentation-route-migration-canonical.test.ts` | §10 old→target Metadata canonical/OG + sitemap exclusion/inclusion proofs |
+| `src/lib/seo/documentation-route-migration-links.test.tsx` | §10 related-id / related-href / browse retarget proofs |
 | `src/lib/seo/export-absolute-canonical.ts` | Also exports `isCanonicalPublicDiscoveryPath` (Atlas live + W18 migration old-path discovery gate) |
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.tsx` | Shared static compatibility document for §10 old `/docs/documentation/*` routes |
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx` | Component-level old→target link + unknown-route error proofs |
@@ -150,8 +151,21 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    Target family routes stay in the sitemap. Helpers live under
    `src/lib/seo/documentation-route-migration.ts` and
    `src/lib/seo/export-absolute-canonical.ts`.
-5. Later W18 stories retarget links and close ledger rows; do not invent
-   per-route redirect helpers.
+5. **Link retarget (story 004):** registry `relatedIds` prefer published
+   family identities via
+   `DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS` (for example
+   `documentation.configuration` → `documentation.factories-configuration`,
+   `documentation.api-doc` → `reference.api`). Workers/workstations indexes
+   keep `documentation.workers` / `documentation.workstations` related ids
+   (App Router indexes are not MDX published entries) and remap destination
+   hrefs through `remapDocumentationRouteMigrationDestinationHref` inside
+   `resolveRelatedRegistryDocs` / related-doc derivation. Hard-coded MDX
+   `LocalizedLinkList` hrefs and browse documentation entries point at family
+   routes; browse excludes §10 old compatibility URLs so they are not preferred
+   discovery destinations. Do not invent W16 search projection or W17 chrome
+   localization work here.
+6. Later W18 stories close ledger rows; do not invent per-route redirect
+   helpers.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and

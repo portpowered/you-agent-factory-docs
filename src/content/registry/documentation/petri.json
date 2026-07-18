@@ -7,7 +7,7 @@
   "aliases": ["petri", "CPN", "colored petri net", "petri net"],
   "tags": [],
   "relatedIds": [
-    "documentation.configuration",
+    "documentation.factories-configuration",
     "documentation.workstations",
     "documentation.submitting-work"
   ],

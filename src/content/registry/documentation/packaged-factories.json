@@ -7,10 +7,10 @@
   "aliases": ["packaged factories", "@you/goal", "you run --named"],
   "tags": [],
   "relatedIds": [
-    "documentation.configuration",
-    "documentation.dynamic-workflows",
+    "documentation.factories-configuration",
+    "documentation.factories-dynamic-workflows",
     "documentation.cli",
-    "documentation.global-configuration-factories",
+    "documentation.factories-global-configuration",
     "documentation.packaged-documents"
   ],
   "citationIds": [],

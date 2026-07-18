@@ -124,12 +124,12 @@ describe("packaged-documents documentation discoverability (005)", () => {
         relatedQueries
           .getByRole("link", { name: "Configuration" })
           .getAttribute("href"),
-      ).toBe("/docs/documentation/configuration");
+      ).toBe("/docs/factories/configuration");
       expect(
         relatedQueries
           .getByRole("link", { name: "Dynamic workflows" })
           .getAttribute("href"),
-      ).toBe("/docs/documentation/dynamic-workflows");
+      ).toBe("/docs/factories/dynamic-workflows");
       expect(
         relatedQueries.getByRole("link", { name: "CLI" }).getAttribute("href"),
       ).toBe("/docs/documentation/cli");
@@ -137,7 +137,7 @@ describe("packaged-documents documentation discoverability (005)", () => {
         relatedQueries
           .getByRole("link", { name: "Packaged factories" })
           .getAttribute("href"),
-      ).toBe("/docs/documentation/packaged-factories");
+      ).toBe("/docs/factories/packaged");
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

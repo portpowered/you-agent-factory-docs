@@ -33,6 +33,7 @@ export const BUILD_CONTRACT_REQUIRED_TEST_PATHS = [
   "src/lib/seo/documentation-route-migration.test.ts",
   "src/lib/seo/documentation-route-compatibility.test.tsx",
   "src/lib/seo/documentation-route-migration-canonical.test.ts",
+  "src/lib/seo/documentation-route-migration-links.test.tsx",
   "src/features/docs/components/DocumentationRouteCompatibilityDocument.test.tsx",
 ] as const;
 

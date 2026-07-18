@@ -123,9 +123,7 @@ describe("worktree concept page", () => {
     const workstationsLink = screen.getByRole("link", {
       name: "Workstations",
     });
-    expect(workstationsLink.getAttribute("href")).toBe(
-      "/docs/documentation/workstations",
-    );
+    expect(workstationsLink.getAttribute("href")).toBe("/docs/workstations");
     const whatIsLink = screen.getByRole("link", {
       name: "What is you-agent-factory",
     });

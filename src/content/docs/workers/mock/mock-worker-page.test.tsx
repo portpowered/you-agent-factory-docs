@@ -173,7 +173,7 @@ describe("workers mock page", () => {
       screen
         .getByRole("link", { name: "Mock workers CLI reference" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/mock-workers");
+    ).toBe("/docs/workers/mock");
     expect(
       screen.getByRole("link", { name: "Agent worker" }).getAttribute("href"),
     ).toBe("/docs/workers/agent");

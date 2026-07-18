@@ -141,12 +141,12 @@ describe("security-trust-boundaries documentation page", () => {
       relatedQueries
         .getByRole("link", { name: "Configuration" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/configuration");
+    ).toBe("/docs/factories/configuration");
     expect(
       relatedQueries
         .getByRole("link", { name: "Factory Session" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/factory-session");
+    ).toBe("/docs/factories/sessions");
     expect(
       relatedQueries
         .getByRole("link", { name: "Metrics" })

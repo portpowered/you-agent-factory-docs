@@ -180,13 +180,11 @@ describe("petri documentation page", () => {
       ).toBeNull();
       expect(
         relatedSection?.querySelector(
-          'a[href="/docs/documentation/configuration"]',
+          'a[href="/docs/factories/configuration"]',
         ),
       ).toBeTruthy();
       expect(
-        relatedSection?.querySelector(
-          'a[href="/docs/documentation/workstations"]',
-        ),
+        relatedSection?.querySelector('a[href="/docs/workstations"]'),
       ).toBeTruthy();
       expect(
         relatedSection?.querySelector(
@@ -194,9 +192,7 @@ describe("petri documentation page", () => {
         ),
       ).toBeTruthy();
       expect(
-        relatedSection?.querySelector(
-          'a[href="/docs/documentation/factory-session"]',
-        ),
+        relatedSection?.querySelector('a[href="/docs/factories/sessions"]'),
       ).toBeTruthy();
       expect(
         relatedSection?.querySelector(

@@ -23,6 +23,7 @@ import type {
   ReferenceRecord,
 } from "@/lib/content/schemas";
 import { getW15CrossFamilyRelatedOverrideIds } from "@/lib/content/w15-family-related-overrides";
+import { remapDocumentationRouteMigrationDestinationHref } from "@/lib/seo/documentation-route-migration";
 
 export const SAME_VARIANT_GROUP = "same-variant-group" as const;
 export const SHARED_TAGS = "shared-tags" as const;
@@ -575,11 +576,15 @@ function toRelatedItem(
 ): RelatedDocItem {
   const isPlanned = isPlannedRelatedTarget(record, publishedRegistryIds);
   const hasDocsPage = hasPublishedDocsPage(record, publishedRegistryIds);
+  const publishedHref =
+    isPlanned || !hasDocsPage ? undefined : registryRecordHref(record);
   return {
     registryId: record.id,
     slug: record.slug,
     title: registryDisplayTitle(record),
-    href: isPlanned || !hasDocsPage ? undefined : registryRecordHref(record),
+    href: publishedHref
+      ? remapDocumentationRouteMigrationDestinationHref(publishedHref)
+      : undefined,
     reasonLabel: isPlanned ? PLANNED_RELATED_REASON_LABEL : reasonLabel,
     isPlanned,
   };

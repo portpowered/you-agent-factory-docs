@@ -14,8 +14,8 @@
   "tags": [],
   "relatedIds": [
     "documentation.dashboard-ui-overview",
-    "documentation.configuration",
-    "documentation.factory-session",
+    "documentation.factories-configuration",
+    "documentation.factories-sessions",
     "documentation.metrics",
     "documentation.mcp",
     "documentation.logs",

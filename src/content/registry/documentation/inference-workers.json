@@ -20,7 +20,7 @@
     "concept.tool-calling",
     "documentation.logs",
     "documentation.troubleshooting",
-    "documentation.agent-workers"
+    "documentation.workers-agent"
   ],
   "citationIds": [],
   "status": "published",

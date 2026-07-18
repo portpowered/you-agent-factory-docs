@@ -176,6 +176,6 @@ describe("harness-support documentation page", () => {
       relatedQueries
         .getByRole("link", { name: "Configuration" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/configuration");
+    ).toBe("/docs/factories/configuration");
   });
 });

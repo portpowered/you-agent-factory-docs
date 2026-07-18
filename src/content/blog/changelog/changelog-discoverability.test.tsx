@@ -117,7 +117,7 @@ describe("changelog blog discoverability (005)", () => {
     expect(html).toContain(`href="${GITHUB_RELEASES_URL}"`);
     expect(html).toContain('href="/docs/documentation/install"');
     expect(html).toContain('href="/docs/documentation/cli"');
-    expect(html).toContain('href="/docs/documentation/cli-command-index"');
+    expect(html).toContain('href="/docs/references/cli"');
     expect(html).toContain("Freshness ownership");
     expect(html).toContain("Site docs maintainers");
   });

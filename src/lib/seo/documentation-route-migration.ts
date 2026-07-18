@@ -314,3 +314,86 @@ export function isDocumentationRouteStaticCompatibilityMechanismExportSafe(
   }
   return true;
 }
+
+/**
+ * Preferred published registry identities for §10 migrated destinations.
+ * Related-ID graphs and discovery should prefer these over the old
+ * `documentation.*` compatibility-page ids.
+ *
+ * Workers/workstations family indexes use App Router routes without MDX
+ * published entries; keep `documentation.workers` /
+ * `documentation.workstations` as related ids and remap their hrefs via
+ * {@link remapDocumentationRouteMigrationDestinationHref}.
+ */
+export const DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS = {
+  "documentation.api-doc": "reference.api",
+  "documentation.cli-command-index": "reference.cli",
+  "documentation.configuration": "documentation.factories-configuration",
+  "documentation.global-configuration-factories":
+    "documentation.factories-global-configuration",
+  "documentation.packaged-factories": "documentation.factories-packaged",
+  "documentation.dynamic-workflows":
+    "documentation.factories-dynamic-workflows",
+  "documentation.factory-session": "documentation.factories-sessions",
+  "documentation.agent-workers": "documentation.workers-agent",
+  "documentation.inference-workers": "documentation.workers-inference",
+  "documentation.script-workers": "documentation.workers-script",
+  "documentation.poller-workers": "documentation.workers-poller",
+  "documentation.mock-workers": "documentation.workers-mock",
+} as const;
+
+export type DocumentationRouteMigrationOldRegistryId =
+  keyof typeof DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS;
+
+export type DocumentationRouteMigrationPreferredRegistryId =
+  (typeof DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS)[DocumentationRouteMigrationOldRegistryId];
+
+/** Old registry ids that still resolve related hrefs via path remap only. */
+export const DOCUMENTATION_ROUTE_MIGRATION_HREF_REMAP_ONLY_REGISTRY_IDS = [
+  "documentation.workers",
+  "documentation.workstations",
+] as const;
+
+export type DocumentationRouteMigrationHrefRemapOnlyRegistryId =
+  (typeof DOCUMENTATION_ROUTE_MIGRATION_HREF_REMAP_ONLY_REGISTRY_IDS)[number];
+
+export function resolveDocumentationRouteMigrationPreferredRegistryId(
+  registryId: string,
+): string {
+  if (registryId in DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS) {
+    return DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS[
+      registryId as DocumentationRouteMigrationOldRegistryId
+    ];
+  }
+  return registryId;
+}
+
+/**
+ * Remaps a §10 old documentation destination href to its family target.
+ * Non-migration paths pass through unchanged. Locale prefixes are preserved
+ * on the remapped family path when present on the input.
+ */
+export function remapDocumentationRouteMigrationDestinationHref(
+  href: string,
+): string {
+  const path = stripSearchUrlLocalePrefix(href);
+  const target = resolveDocumentationRouteMigrationTarget(path);
+  if (!target) {
+    return href;
+  }
+  if (path === href) {
+    return target;
+  }
+  const localePrefix = href.slice(0, href.length - path.length);
+  return `${localePrefix}${target}`;
+}
+
+/** True when a docs URL/slug is a §10 old route that must leave browse. */
+export function isDocumentationRouteMigrationOldBrowsePath(
+  appPathOrDocsSlug: string,
+): boolean {
+  if (appPathOrDocsSlug.startsWith("/")) {
+    return isDocumentationRouteMigrationOldPath(appPathOrDocsSlug);
+  }
+  return isDocumentationRouteMigrationOldPath(`/docs/${appPathOrDocsSlug}`);
+}

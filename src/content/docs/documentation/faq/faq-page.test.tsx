@@ -207,15 +207,15 @@ describe("faq documentation page", () => {
       screen
         .getByRole("link", { name: "Factory Session" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/factory-session");
+    ).toBe("/docs/factories/sessions");
     expect(
       screen.getByRole("link", { name: "Configuration" }).getAttribute("href"),
-    ).toBe("/docs/documentation/configuration");
+    ).toBe("/docs/factories/configuration");
     expect(
       screen
         .getByRole("link", { name: "Global Configuration Factories" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/global-configuration-factories");
+    ).toBe("/docs/factories/global-configuration");
     const mcpLinks = screen.getAllByRole("link", { name: "MCP" });
     expect(mcpLinks.length).toBeGreaterThanOrEqual(1);
     expect(mcpLinks[0]?.getAttribute("href")).toBe("/docs/documentation/mcp");
@@ -223,7 +223,7 @@ describe("faq documentation page", () => {
       screen
         .getByRole("link", { name: "Dynamic Workflows" })
         .getAttribute("href"),
-    ).toBe("/docs/documentation/dynamic-workflows");
+    ).toBe("/docs/factories/dynamic-workflows");
     expect(
       screen
         .getByRole("link", { name: "Cursor dynamic workflows guide" })

@@ -12,7 +12,7 @@
     "documentation.submitting-work",
     "documentation.logs",
     "documentation.troubleshooting",
-    "documentation.poller-workers"
+    "documentation.workers-poller"
   ],
   "citationIds": [],
   "status": "published",
