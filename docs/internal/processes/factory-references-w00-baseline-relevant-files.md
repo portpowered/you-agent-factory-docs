@@ -9,6 +9,8 @@ Use this file when capturing or refreshing the W00 contract/route baseline under
 | --- | --- |
 | `docs/temp/references/baseline.md` | Human-readable W00 baseline (committed) |
 | `docs/temp/references/fixtures/**` | Deterministic inventory fixtures (committed when present) |
+| `src/lib/references/w00-baseline-inventory.ts` | Shared inventory derive path (regenerator + tests) |
+| `src/lib/references/w00-baseline-inventory.test.ts` | Focused fixture drift tests vs installed package |
 | `scripts/regenerate-w00-reference-baseline-fixtures.ts` | Regenerates fixtures from installed `@you-agent-factory/api` |
 | `docs/temp/references/plan.md` | Planner PRD/plan (gitignored scratch; do not commit) |
 | `node_modules/@you-agent-factory/api/package.json` | Installed API package identity source |
@@ -181,7 +183,13 @@ bun ./scripts/regenerate-w00-reference-baseline-fixtures.ts
 The regenerator writes JSON then applies Biome formatting so fixtures stay
 lint-clean. Each fixture stores both identity lists and numeric `counts`, plus
 `baselineObservationNote`. Counts are drift observations, not permanent product
-limits or UI quotas. Focused drift tests belong to story 010 / later work.
+limits or UI quotas.
+
+Focused drift tests live in
+`src/lib/references/w00-baseline-inventory.test.ts`. They call
+`deriveW00BaselineInventories()` (same builders as the regenerator) and
+deep-equal against committed fixtures. A failure means regenerate fixtures and
+refresh `baseline.md` — not that inventory sizes are product ceilings.
 
 ## Compatibility and redirect mechanisms
 

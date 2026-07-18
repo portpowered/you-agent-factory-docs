@@ -5,9 +5,46 @@ Lane ownership: baseline artifacts and focused fixture tests only. This lane doe
 **not** implement the package resolver, renderers, route families, or production
 UI.
 
+Published artifacts in this lane:
+
+| Artifact | Role |
+| --- | --- |
+| [`baseline.md`](./baseline.md) (this file) | Human-readable package, OpenAPI, schema, variant, SSE, route, and compatibility findings |
+| [`fixtures/`](./fixtures/) | Deterministic machine-readable inventories for stories 002–006 |
+| [`fixtures/README.md`](./fixtures/README.md) | Observation policy + regenerate command |
+| `src/lib/references/w00-baseline-inventory.ts` (+ `.test.ts`) | Shared derive path and focused drift tests |
+| `scripts/regenerate-w00-reference-baseline-fixtures.ts` | Regenerates fixtures from the installed API package |
+
 Sources for package identity are the installed packages under `node_modules`
 (package resolution), not invented values. Re-check these fields after any
 `@you-agent-factory/api` or `@you-agent-factory/components` install change.
+
+## Deterministic inventory fixtures
+
+Machine-readable snapshots live under [`fixtures/`](./fixtures/). Each file
+pairs with a section below and embeds `baselineObservationNote`: **counts and
+membership lists are baseline observations for drift detection, not permanent
+product limits or UI quotas.**
+
+| Fixture | Baseline section |
+| --- | --- |
+| [`fixtures/manifest-inventory.json`](./fixtures/manifest-inventory.json) | [Manifest exports](#manifest-exports) |
+| [`fixtures/openapi-inventory.json`](./fixtures/openapi-inventory.json) | [OpenAPI inventory](#openapi-inventory) |
+| [`fixtures/schema-inventory.json`](./fixtures/schema-inventory.json) | [Configuration schema inventory](#configuration-schema-inventory) |
+| [`fixtures/variant-inventory.json`](./fixtures/variant-inventory.json) | [Worker types, Workstation types, and behaviors](#worker-types-workstation-types-and-behaviors) |
+| [`fixtures/sse-inventory.json`](./fixtures/sse-inventory.json) | [SSE stream contracts](#sse-stream-contracts) |
+
+Regenerate after upgrading `@you-agent-factory/api`:
+
+```bash
+bun ./scripts/regenerate-w00-reference-baseline-fixtures.ts
+```
+
+Focused drift tests recompute the same inventories from the installed package
+and fail when committed fixtures go stale
+(`src/lib/references/w00-baseline-inventory.test.ts`). Route and compatibility
+findings below are prose-only (live site assumptions); they are not duplicated
+as numeric inventory fixtures.
 
 ## Package versions and peer constraints
 

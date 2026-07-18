@@ -39,6 +39,19 @@ Biome formatting so the fixtures stay lint-clean. Do not hand-edit membership
 lists or counts. Re-run after upgrading `@you-agent-factory/api`, then review
 the fixture diff alongside `baseline.md`.
 
+## Drift tests
+
+Focused tests recompute inventories via
+`src/lib/references/w00-baseline-inventory.ts` and compare to the committed
+JSON files:
+
+```bash
+bun test src/lib/references/w00-baseline-inventory.test.ts
+```
+
+A mismatch is package/fixture drift — regenerate, then update `baseline.md`.
+Do not treat count failures as authority to freeze inventory sizes in UI.
+
 ## Ownership
 
 W00 owns these fixtures and focused drift tests only. No package resolver,
