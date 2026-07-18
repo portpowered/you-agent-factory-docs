@@ -1006,8 +1006,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   without authoring W13);
   `workstations/agent-run` / `documentation.workstations-agent-run`
   (`workstation:AGENT_RUN`, requires `worker:AGENT_WORKER`, selects exclusive
-  `openCodeAgent`, misuse = `operation` from MODEL_INVOKE). Mirror this bundle
-  for later WorkstationType pages with `createProductionWorkstationTypeOverlay`.
+  `openCodeAgent`, misuse = `operation` from MODEL_INVOKE);
+  `workstations/script-run` / `documentation.workstations-script-run`
+  (`workstation:SCRIPT_RUN`, requires `worker:SCRIPT_WORKER`, empty
+  `selected`, misuse = `promptFile` from MODEL_WORKSTATION). Mirror this
+  bundle for later WorkstationType pages with
+  `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
   families. Empty collections call `renderSectionCollectionIndexPage` with
