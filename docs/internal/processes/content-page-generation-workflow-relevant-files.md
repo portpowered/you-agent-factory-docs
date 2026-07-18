@@ -985,10 +985,24 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   content pages).
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
-  families. Each calls `renderSectionCollectionIndexPage` with matching
-  `*Index` messages. Empty collections render `DocsIndexEmptyState`.
+  families. References/workers/workstations call
+  `renderSectionCollectionIndexPage` with matching `*Index` messages; empty
+  collections render `DocsIndexEmptyState`. Factories uses the factories-owned
+  `renderFactoriesIndexPage` composition (overview + W07 root Factory summary
+  embed + child entry list) once authored factories pages exist.
 * `src/app/[locale]/docs/{references,factories,workers,workstations}/page.tsx`
   Shipped-locale mirrors of the same four family indexes.
+* `src/content/docs/factories/index/render-factories-index-page.tsx` /
+  `FactoryRootSummaryEmbed.tsx` / `factories-index.test.tsx`
+  Factories-lane index ownership: isolation-first overview copy from
+  `factoriesIndex` messages, live root Factory SchemaReference embed
+  (`showCatalog={false}`), links to `/docs/references/{schema,api}`, and the
+  factories child-page list. Do not fold this into shared nav/search/sitemap
+  inventories (W15–W18).
+* `src/content/messages/*/common.json` (`factoriesIndex`)
+  Extended factories index messages with `overviewTitle` / `overviewBody` /
+  `schemaSummaryTitle` / `schemaSummaryBody` / full schema+API link labels
+  (`FactoriesIndexMessages`).
 * `src/app/(site)/site-renderers.tsx`
   `renderShellSectionCollectionIndexPage` filters index entries by
   `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not
@@ -996,8 +1010,9 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   reuse `documentation` kind while keeping an independent public route.
 * `src/lib/docs/section-collection-index.test.ts` /
   `src/tests/content/section-indexes.test.tsx`
-  Empty-state + localized metadata proofs for the four family indexes;
-  factories must not list documentation child pages.
+  Empty-state + localized metadata proofs for still-empty family indexes;
+  factories flips to authored-entry + overview assertions and must not list
+  documentation child pages.
 * `src/lib/content/docs-catch-all-static-params.ts`
   Catch-all static-param helpers for nested docs slugs. Default-locale
   `generateStaticParams` merges Fumadocs source params with published-page

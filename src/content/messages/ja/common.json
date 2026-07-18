@@ -195,6 +195,12 @@
   "factoriesIndex": {
     "title": "ファクトリー",
     "description": "公開済みのファクトリーページでは、パッケージ化されたファクトリー面と、その設定・実行のしかたを説明します。",
+    "overviewTitle": "ファクトリーとは",
+    "overviewBody": "ファクトリーは you-agent-factory が実行するワークフロー位相です。作業種別、ワーカー、ワークステーション、任意のリソースを宣言し、長時間のエージェント作業をチャットごとにリセットせず持続させます。この系列では factory.json の位相、名前付き・グローバルなオペレーター既定値の関係、パッケージ化ファクトリーの発見と更新、動的ワークフロー API とファクトリー設定の関係、Factory Session が実行中ファクトリーをどう識別するかを学べます。",
+    "schemaSummaryTitle": "ファクトリールート定義",
+    "schemaSummaryBody": "ライブの Factory スキーマルートは、factory.json が宣言できる位相フィールドを一覧します。このインデックスはそのルート要約のみを示します。網羅的なフィールドや操作の参照が必要なときは、完全な Factory スキーマと API リファレンスを開いてください。",
+    "fullFactorySchemaLink": "完全な Factory スキーマ",
+    "fullFactoryApiLink": "Factory API リファレンス",
     "listLabel": "ファクトリー項目",
     "emptyTitle": "ファクトリー項目はまだありません",
     "emptyDescription": "公開されたファクトリーページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
