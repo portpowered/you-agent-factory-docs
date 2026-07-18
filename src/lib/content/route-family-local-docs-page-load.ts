@@ -78,6 +78,13 @@ async function loadRouteFamilyPageMdxComponents(
     return mod.pageMdxComponents ?? {};
   }
 
+  if (section === "references" && slug === "javascript-runtime") {
+    const mod = await import(
+      "@/content/docs/references/javascript-runtime/page-mdx-components"
+    );
+    return mod.pageMdxComponents ?? {};
+  }
+
   return {};
 }
 

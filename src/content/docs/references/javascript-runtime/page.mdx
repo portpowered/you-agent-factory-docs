@@ -1,0 +1,73 @@
+---
+title: "JavaScript Runtime"
+description: "Look up every published runtime symbol and shared schema from the installed package JavaScript runtime contract on a stable static docs route."
+kind: "reference"
+registryId: "reference.javascript-runtime"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "JavaScript runtime reference"
+  - "runtime symbols"
+  - "package JavaScript runtime contract"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="runtime-inventory" titleKey="sections.runtimeInventory.title">
+  <T k="sections.runtimeInventory.body" />
+  <JavascriptRuntimeReferenceInventory />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/documentation/dynamic-workflows",
+        labelKey: "links.dynamicWorkflowsDocs",
+      },
+      {
+        href: "/docs/references/cli",
+        labelKey: "links.cliReference",
+      },
+      {
+        href: "/docs/references/mcp",
+        labelKey: "links.mcpReference",
+      },
+    ]}
+  />
+
+  <RelatedDocs registryId="reference.javascript-runtime" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="reference.javascript-runtime" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="reference.javascript-runtime" />
+</Section>

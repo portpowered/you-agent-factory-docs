@@ -55,6 +55,21 @@ Do **not**:
 | `src/lib/references/mcp-reference-turbopack.ts` | Turbopack-safe MCP export resolution via manifest |
 | `src/lib/content/route-family-local-docs-page-load.ts` | Also merges page-local MDX for references/mcp |
 
+## Key host files (JavaScript runtime page — story 003)
+
+| Path | Role |
+| --- | --- |
+| `src/content/docs/references/javascript-runtime/page.mdx` | Published reference page structure |
+| `src/content/docs/references/javascript-runtime/messages/en.json` | Default-locale copy |
+| `src/content/docs/references/javascript-runtime/assets.json` | Empty baseline assets |
+| `src/content/docs/references/javascript-runtime/JavascriptRuntimeReferenceInventory.tsx` | Server mount: load inventory → `JavaScriptRuntimeInventory` |
+| `src/content/docs/references/javascript-runtime/page-mdx-components.tsx` | Page-local MDX component map |
+| `src/content/docs/references/javascript-runtime/javascript-runtime-page.test.tsx` | Colocated route/render proof |
+| `src/content/registry/references/javascript-runtime.json` | `reference.javascript-runtime` registry record |
+| `src/lib/references/load-javascript-runtime-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
+| `src/lib/references/javascript-runtime-reference-turbopack.ts` | Turbopack-safe JS runtime export resolution via manifest |
+| `src/lib/content/route-family-local-docs-page-load.ts` | Also merges page-local MDX for references/javascript-runtime |
+
 ## Additive registry / published-docs wiring
 
 | Path | Role |
@@ -72,9 +87,10 @@ Do **not**:
 | --- | --- |
 | `src/components/references/cli/` | Public W10 CLI inventory surfaces |
 | `src/components/references/mcp/` | Public W10 MCP inventory surfaces |
-| `src/lib/references/normalize-family-artifacts.ts` | `normalizeCliCommandsFromArtifact`, `normalizeMcpToolsFromArtifact` |
+| `src/components/references/javascript/` | Public W10 JavaScript runtime inventory surfaces |
+| `src/lib/references/normalize-family-artifacts.ts` | `normalizeCliCommandsFromArtifact`, `normalizeMcpToolsFromArtifact`, `normalizeJavascriptSymbolsFromArtifact`, `normalizeJavascriptSharedSchemasFromArtifact` |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 acquisition |
-| `src/lib/references/reference-search-projection.ts` | `REFERENCE_FAMILY_PAGE_PATHS.{cli,mcp}` |
+| `src/lib/references/reference-search-projection.ts` | `REFERENCE_FAMILY_PAGE_PATHS.{cli,mcp,javascript}` |
 
 ## Patterns
 
@@ -82,7 +98,9 @@ Do **not**:
   import W03 Node acquisition into browser bundles.
 - Prefer Turbopack-safe `resolveExport` via package `manifest` → sibling JSON
   (same pattern as schema verification / events OpenAPI). CLI uses
-  `generated/cli/commands.json`; MCP uses `generated/mcp/tools.json`.
+  `generated/cli/commands.json`; MCP uses `generated/mcp/tools.json`; JavaScript
+  runtime uses `generated/javascript/runtime-api.json` (public subpath
+  `javascript/runtime`).
 - Keep curated discovery under `#related` with `LocalizedLinkList` for authored
   docs and planned sibling reference routes; `RelatedDocs` stays for when
   reference records participate in the related-docs runtime.
@@ -91,3 +109,5 @@ Do **not**:
 - Each new references page needs its own static
   `import("@/content/docs/references/<slug>/page-mdx-components")` branch in
   `route-family-local-docs-page-load.ts`.
+- JavaScript runtime success inventories require at least one symbol or shared
+  schema after W04 normalize; empty means both collections are empty.

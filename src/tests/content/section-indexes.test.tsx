@@ -489,7 +489,7 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.workstationsIndex.title).toBe("Workstations");
   });
 
-  it("renders the references index with authored CLI and MCP reference entries", async () => {
+  it("renders the references index with authored CLI, MCP, and JavaScript runtime reference entries", async () => {
     const messages = await loadUiMessages();
     const indexMessages = messages.referencesIndex;
     const html = renderToStaticMarkup(await ReferencesIndexPage());
@@ -499,11 +499,12 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
     expect(html).toContain("/docs/references/cli");
     expect(html).toContain("/docs/references/mcp");
+    expect(html).toContain("/docs/references/javascript-runtime");
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(html).not.toContain("/docs/documentation/");
   });
 
-  it("keeps the localized references index empty until CLI and MCP messages ship", async () => {
+  it("keeps the localized references index empty until CLI, MCP, and JavaScript runtime messages ship", async () => {
     const messages = await loadUiMessages("ja");
     const indexMessages = messages.referencesIndex;
     const html = renderToStaticMarkup(
