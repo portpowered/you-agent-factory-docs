@@ -3,6 +3,7 @@ import {
   documentationPageHref,
   glossaryPageHref,
   guidePageHref,
+  referencePageHref,
   techniquePageHref,
   workersPageHref,
 } from "@/lib/content/content-hrefs";
@@ -14,6 +15,7 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "guides",
   "techniques",
   "documentation",
+  "references",
   "workers",
 ] as const;
 
@@ -83,6 +85,8 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return techniquePageHref(relativeSlug);
     case "documentation":
       return documentationPageHref(relativeSlug);
+    case "references":
+      return referencePageHref(relativeSlug);
     case "workers":
       return workersPageHref(relativeSlug);
   }

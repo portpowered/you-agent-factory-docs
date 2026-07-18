@@ -73,6 +73,7 @@ const registryKindDirectories: Record<string, string> = {
   guide: "guides",
   technique: "techniques",
   documentation: "documentation",
+  reference: "references",
   classification: "classifications",
   dataset: "datasets",
   organization: "organizations",

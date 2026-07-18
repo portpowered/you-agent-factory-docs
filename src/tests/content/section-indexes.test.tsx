@@ -441,14 +441,6 @@ describe("CLI section index metadata", () => {
 
 const W05_EMPTY_ROUTE_FAMILY_INDEX_CASES = [
   {
-    collectionId: "references" as const,
-    messageKey: "referencesIndex" as const,
-    renderDefault: ReferencesIndexPage,
-    renderLocalized: LocalizedReferencesIndexPage,
-    generateDefaultMetadata: generateReferencesMetadata,
-    generateLocalizedMetadata: generateLocalizedReferencesMetadata,
-  },
-  {
     collectionId: "factories" as const,
     messageKey: "factoriesIndex" as const,
     renderDefault: FactoriesIndexPage,
@@ -474,6 +466,59 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.factoriesIndex.title).toBe("Factories");
     expect(messages.workersIndex.title).toBe("Workers");
     expect(messages.workstationsIndex.title).toBe("Workstations");
+  });
+
+  it("renders the references index with the authored events reference entry", async () => {
+    const messages = await loadUiMessages();
+    const indexMessages = messages.referencesIndex;
+    const html = renderToStaticMarkup(await ReferencesIndexPage());
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.description);
+    expect(html).toContain(`aria-label="${indexMessages.listLabel}"`);
+    expect(html).toContain("/docs/references/events");
+    expect(html).not.toContain(indexMessages.emptyTitle);
+    expect(html).not.toContain("/docs/documentation/");
+  });
+
+  it("keeps the localized references index empty until events messages ship", async () => {
+    const messages = await loadUiMessages("ja");
+    const indexMessages = messages.referencesIndex;
+    const html = renderToStaticMarkup(
+      await LocalizedReferencesIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    expect(html).toContain(indexMessages.title);
+    expect(html).toContain(indexMessages.emptyTitle);
+    expect(html).toContain(indexMessages.emptyHomeLink);
+    expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+  });
+
+  it("keeps default and localized references index metadata aligned", async () => {
+    const defaultMetadata = await generateReferencesMetadata();
+    const localizedMetadata = await generateLocalizedReferencesMetadata({
+      params: Promise.resolve({ locale: "vi" }),
+    });
+    const expectedAlternates = {
+      canonical: "/docs/references",
+      languages: {
+        en: "/docs/references",
+        ja: "/ja/docs/references",
+        "zh-CN": "/zh-CN/docs/references",
+        vi: "/vi/docs/references",
+      },
+    };
+
+    expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+    expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+
+    const viMessages = await loadUiMessages("vi");
+    expect(localizedMetadata.title).toBe(viMessages.referencesIndex.title);
+    expect(localizedMetadata.description).toBe(
+      viMessages.referencesIndex.description,
+    );
   });
 
   for (const section of W05_EMPTY_ROUTE_FAMILY_INDEX_CASES) {

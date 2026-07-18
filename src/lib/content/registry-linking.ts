@@ -11,6 +11,7 @@ import type {
   GraphRecord,
   GuideRecord,
   OrganizationRecord,
+  ReferenceRecord,
   TagRecord,
   TechniqueRecord,
 } from "@/lib/content/schemas";
@@ -20,6 +21,7 @@ export type LinkableRegistryRecord =
   | GuideRecord
   | TechniqueRecord
   | DocumentationRecord
+  | ReferenceRecord
   | ClassificationRecord
   | DatasetRecord
   | OrganizationRecord
@@ -45,7 +47,8 @@ export function registryRecordHref(
     record.kind === "concept" ||
     record.kind === "guide" ||
     record.kind === "technique" ||
-    record.kind === "documentation"
+    record.kind === "documentation" ||
+    record.kind === "reference"
   ) {
     return getPublishedDocsHrefForRecord(record) ?? undefined;
   }
