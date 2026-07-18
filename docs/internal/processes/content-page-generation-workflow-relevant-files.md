@@ -966,6 +966,25 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   locales fall back to `messages/en.json`. Wire
   `src/app/(site)/docs/workers/page.tsx` and the locale mirror to
   `renderWorkersFamilyIndexPage` instead of the empty collection contract.
+* `src/content/docs/workers/<variant>/` variant pages (W13)
+  Child Worker pages are ordinary route-family local-message bundles
+  (`page.mdx` + `messages/en.json` + `assets.json` + registry
+  `documentation.workers-<variant>`). Embed production overlays with W07
+  `SchemaVariantReference` via a page-local `*VariantSchemaEmbed` that loads
+  the Worker base definition (`load-worker-base-schema.ts`), builds the
+  overlay from `createProductionWorkerOverlay`, and maps slots through
+  `factory-variant-overlay-presentation.ts` (shared under workers ownership —
+  do not rewrite W06/W07 cores). Register the embed in
+  `page-mdx-components.tsx` and add a static slug switch in
+  `route-family-local-docs-page-load.ts` (same compileMDX constraint as
+  documentation/concept loaders — relative MDX imports do not resolve). Link
+  Workstation companions with `LocalizedLinkList` planned hrefs under
+  `/docs/workstations/...` without authoring W14 pages. Keep mock workers on
+  `/docs/workers/mock`, not as a Factory WorkerType overlay.
+* `src/lib/content/route-family-local-docs-page-load.ts`
+  Generic local-message disk loader for the four direct route families; uses
+  `getDocsPageDir` so nested child bundles resolve. W13 adds an optional
+  page-mdx-components merge for workers variant embeds (static slug switch).
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).

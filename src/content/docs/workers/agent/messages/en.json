@@ -1,0 +1,71 @@
+{
+  "title": "Agent worker",
+  "description": "Configure an AGENT_WORKER for agent-loop execution: model and provider identity, agentTools policy, permissions, resources, and AGENT_RUN workstation companionship.",
+  "openingSummary": "An AGENT_WORKER is the model-backed executor for AGENT_RUN workstations. Set type to AGENT_WORKER, author model identity and tool policy on the worker, and bind the worker name from an agent-run workstation.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "An Agent worker is the Factory WorkerType for prompt-rendered agent loops in you-agent-factory. This page covers the AGENT_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid configuration, an incompatible misuse of inference operations, operational cautions, and the required AGENT_RUN workstation companion. Use it when you need to author an agent backend without confusing it with one-shot inference workers."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "The discriminator field is type with value AGENT_WORKER. An AGENT_WORKER supplies the model backend and the markdown body used as the shared system prompt for every AGENT_RUN workstation that binds that worker name. The factory runtime owns one agent loop per dispatch, including session cancellation, timeout, and final-result selection. Agent workers are not INFERENCE_WORKER backends: they do not declare operations, and validation rejects capability declarations on AGENT_WORKER."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a worker with type AGENT_WORKER. Put model and modelProvider on the worker when you need authored identity; authored values always win over operator defaults. Keep the shared system prompt in body. Configure agentTools.policy when the loop needs filesystem tools. Bind the worker from an AGENT_RUN workstation. Runner selection is separate from modelProvider—choose the built-in runner through factory or workstation runner fields."
+    },
+    "variantFields": {
+      "title": "Variant Fields",
+      "body": "The embed below shows the live Worker base definition with AGENT_WORKER overlay applicability. Selected fields are agent-loop exclusive. Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when starting an AGENT_WORKER. The misuse example shows operations on an agent worker—operations belong on INFERENCE_WORKER and fail validation on AGENT_WORKER."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "Agent dispatches surface stable failure_class values in work and session inspection metadata. Watch for lease denial, model readiness, tool-policy violations, harness failures, and timeout or cancel paths. Keep secrets out of worker bodies. Allowed tool execution records only bounded tool_diagnostics summaries. Do not treat INFERENCE_WORKER or operations as an agent-loop substitute."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workers/agent surface for AGENT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference worker full contract. Workstation companion links point at planned /docs/workstations targets without authoring those pages here. Mock workers stay on their own route and schema."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "discriminatorLabel": "Discriminator",
+    "discriminatorValue": "type = AGENT_WORKER",
+    "companionIntro": "AGENT_WORKER requires an AGENT_RUN workstation companion. The workstation binds the worker name and owns step routing, prompts, limits, and outputs.",
+    "companionWorkstation": "Agent-run workstation",
+    "minimalExampleLabel": "Minimal valid AGENT_WORKER:",
+    "misuseExampleLabel": "Incompatible misuse — operations on AGENT_WORKER (rejected):",
+    "misuseNote": "operations is an inference capability field. Validation rejects it on AGENT_WORKER. Use INFERENCE_WORKER for one-shot operations.",
+    "fullFactorySchema": "Full Factory schema reference",
+    "workersFamilyIndex": "Workers family index",
+    "siblingWorkstations": "Workstations overview",
+    "siblingResources": "Resources",
+    "siblingInferenceWorkers": "Inference workers",
+    "siblingToolCalling": "Tool calling",
+    "failureLeaseClass": "agent_run_lease_denied",
+    "failureLeaseCause": "Managed runtime capacity exhausted — retry later or increase MODEL resource capacity",
+    "failureModelReadyClass": "agent_run_model_not_ready",
+    "failureModelReadyCause": "Managed runtime missing or still loading — pull or wait before retrying",
+    "failureToolPolicyClass": "agent_run_tool_policy_violation",
+    "failureToolPolicyCause": "Tool call denied by agentTools.policy — change policy or workstation prompt expectations",
+    "failureHarnessClass": "agent_run_harness_failure",
+    "failureHarnessCause": "Agent loop runtime failure — inspect dispatch details and factory logs",
+    "failureTimeoutClass": "agent_run_timeout",
+    "failureTimeoutCause": "Dispatch or worker timeout exceeded — increase limits or narrow workstation scope",
+    "failureClassHeader": "failure_class",
+    "failureCauseHeader": "Typical cause and recovery"
+  }
+}
