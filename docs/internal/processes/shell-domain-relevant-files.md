@@ -53,7 +53,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/features/docs/components/DocsPageBreadcrumb.tsx`
   Docs breadcrumbs only emit a collection crumb for accepted factory route
   slugs (`isAcceptedDocsSourceSection`); retired Atlas section labels/hrefs are
-  not public crumbs.
+  not public crumbs. W15 family crumbs use topology `messages.nav.*` labels
+  (references/factories/workers/workstations); explorer folder messages cover
+  CLI collection crumbs; deeper slug ancestry (segments between family and
+  leaf) becomes intermediate linked crumbs rather than collapsing to one path.
+* `src/lib/navigation/w15-family-breadcrumbs.test.tsx`
+  Nested-family breadcrumb proofs: Home → family index → page title for each
+  W15 family, localized nav labels across shipped locales, and deeper ancestry
+  between family and leaf.
 * `src/lib/navigation/docs-sidebar-adapter.ts`
   Factory docs shell sidebar labels, grouping resolvers, explorer collection
   ids (no Glossary folder), and `getDocsShellPageTreeSettings()` for public

@@ -65,4 +65,22 @@ describe("DocsPageBreadcrumb", () => {
     expect(html).not.toContain(">Training<");
     expect(html).not.toContain(">Systems<");
   });
+
+  test("inserts intermediate ancestry crumbs between collection and leaf", async () => {
+    const messages = await loadUiMessages();
+    const segments = buildDocsBreadcrumbSegments(
+      ["documentation", "configuration", "sessions"],
+      "Sessions",
+      messages,
+    );
+
+    expect(segments.map((segment) => segment.label)).toEqual([
+      "Home",
+      "Program documentation",
+      "Configuration",
+      "Sessions",
+    ]);
+    expect(segments[1]?.href).toBe("/docs/documentation");
+    expect(segments[2]?.href).toBe("/docs/documentation/configuration");
+  });
 });
