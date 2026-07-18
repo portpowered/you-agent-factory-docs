@@ -22,6 +22,7 @@ import {
 import { DocsIndexEmptyState } from "@/features/docs/components/DocsIndexEmptyState";
 import { DocsIndexEntryList } from "@/features/docs/components/DocsIndexEntryList";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
+import { FamilyDocsFooterNeighbors } from "@/features/docs/components/FamilyDocsFooterNeighbors";
 import { TagResourceList } from "@/features/docs/components/TagResourceList";
 import { SearchPagePanelContent } from "@/features/docs/search/SearchPagePanel";
 import {
@@ -40,7 +41,7 @@ import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
 import { listPublishedBlogPosts } from "@/lib/content/blog-post-list";
 import { loadPublishedGlossaryEntries } from "@/lib/content/glossary";
 import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
-import { resolveFamilyDocsPageFooterOptions } from "@/lib/content/resolve-family-docs-footer";
+import { resolveFamilyDocsFooterNeighborsForSlug } from "@/lib/content/resolve-family-docs-footer";
 import {
   loadTagLandingContext,
   loadTagResourceGroups,
@@ -340,13 +341,13 @@ export async function renderReferencesFamilyIndexPage(
   const title = index.messages.title || uiMessages.referencesIndex.title;
   const description =
     index.messages.description || uiMessages.referencesIndex.description;
-  const familyFooter = await resolveFamilyDocsPageFooterOptions(
+  const familyNeighbors = await resolveFamilyDocsFooterNeighborsForSlug(
     "references",
     locale,
   );
 
   return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={familyFooter}>
+    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
       <DocsTitle>{title}</DocsTitle>
       <DocsDescription>{description}</DocsDescription>
       <DocsBody>
@@ -356,6 +357,9 @@ export async function renderReferencesFamilyIndexPage(
             messages={index.messages}
           />
         </DocsPageProviders>
+        {familyNeighbors ? (
+          <FamilyDocsFooterNeighbors neighbors={familyNeighbors} />
+        ) : null}
       </DocsBody>
     </DocsPage>
   );

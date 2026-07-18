@@ -60,18 +60,24 @@ describe("factories index", () => {
     expect(
       screen.getByRole("list", { name: indexMessages.listLabel }),
     ).toBeTruthy();
-    expect(screen.getByText("Configuration")).toBeTruthy();
+    expect(
+      screen
+        .getAllByText("Configuration")
+        .some((node) =>
+          node.closest('a[href="/docs/factories/configuration"]'),
+        ),
+    ).toBe(true);
     expect(screen.getByText("Global Configuration")).toBeTruthy();
     expect(screen.getByText("Packaged Factories")).toBeTruthy();
     expect(screen.getByText("Dynamic Workflows")).toBeTruthy();
     expect(screen.getByText("Factory Sessions")).toBeTruthy();
 
-    const configurationLink = screen.getByRole("link", {
-      name: /^Configuration\b/,
-    });
-    expect(configurationLink.getAttribute("href")).toBe(
-      "/docs/factories/configuration",
-    );
+    const configurationLink = screen
+      .getAllByRole("link", { name: /^Configuration\b/ })
+      .find(
+        (link) => link.getAttribute("href") === "/docs/factories/configuration",
+      );
+    expect(configurationLink).toBeTruthy();
     expect(
       screen
         .getByRole("link", { name: /^Factory Sessions\b/ })

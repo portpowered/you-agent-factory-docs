@@ -281,8 +281,12 @@ describe("troubleshooting documentation page", () => {
     expect(relatedSection).toBeTruthy();
     const relatedQueries = within(relatedSection as HTMLElement);
     expect(
-      relatedQueries.getByRole("link", { name: "FAQ" }).getAttribute("href"),
-    ).toBe("/docs/documentation/faq");
+      relatedQueries
+        .getAllByRole("link", { name: "FAQ" })
+        .some(
+          (link) => link.getAttribute("href") === "/docs/documentation/faq",
+        ),
+    ).toBe(true);
     expect(
       relatedQueries
         .getByRole("link", { name: "Install" })

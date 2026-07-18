@@ -3,8 +3,8 @@ import {
   isDirectDocsRouteFamilySlug,
 } from "@/lib/content/docs-catch-all-static-params";
 import {
+  type FactoryFooterNeighbors,
   resolveFamilyScopedDocsFooterNeighbors,
-  toFamilyDocsPageFooterOptions,
 } from "@/lib/content/factory-prev-next-related";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
@@ -14,19 +14,15 @@ import {
 } from "@/lib/i18n/locale-routing";
 import { localizePageTree } from "@/lib/i18n/localize-page-tree";
 
-export type FamilyDocsPageFooterOptions = NonNullable<
-  ReturnType<typeof toFamilyDocsPageFooterOptions>
->;
-
 /**
- * Resolve DocsPage footer options for a W15 family docs slug (index or
- * nested). Uses the locale-pruned page tree so neighbors stay on shipped
- * family destinations. Returns undefined for non-family slugs.
+ * Resolve family-scoped previous/next neighbors for a W15 family docs slug
+ * (index or nested). Uses the locale-pruned page tree. Returns undefined for
+ * non-family slugs or when both directions are omitted.
  */
-export async function resolveFamilyDocsPageFooterOptions(
+export async function resolveFamilyDocsFooterNeighborsForSlug(
   docsSlug: string,
   locale: SiteLocale = defaultLocale,
-): Promise<FamilyDocsPageFooterOptions | undefined> {
+): Promise<FactoryFooterNeighbors | undefined> {
   if (!isDirectDocsRouteFamilySlug(docsSlug)) {
     return undefined;
   }
@@ -50,5 +46,11 @@ export async function resolveFamilyDocsPageFooterOptions(
     locale,
   });
 
-  return toFamilyDocsPageFooterOptions(neighbors);
+  if (neighbors === null) {
+    return undefined;
+  }
+  if (!neighbors.previous && !neighbors.next) {
+    return undefined;
+  }
+  return neighbors;
 }

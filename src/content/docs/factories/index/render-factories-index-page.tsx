@@ -15,8 +15,9 @@ import {
 import Link from "next/link";
 import { DocsIndexEmptyState } from "@/features/docs/components/DocsIndexEmptyState";
 import { DocsIndexEntryList } from "@/features/docs/components/DocsIndexEntryList";
+import { FamilyDocsFooterNeighbors } from "@/features/docs/components/FamilyDocsFooterNeighbors";
 import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
-import { resolveFamilyDocsPageFooterOptions } from "@/lib/content/resolve-family-docs-footer";
+import { resolveFamilyDocsFooterNeighborsForSlug } from "@/lib/content/resolve-family-docs-footer";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import type { FactoriesIndexMessages } from "@/lib/content/ui-messages.types";
 import { toDocsIndexEntries } from "@/lib/docs/docs-index-entries";
@@ -112,13 +113,13 @@ export async function renderFactoriesIndexPage(
     [...FACTORIES_CHILD_PREFERRED_SLUGS],
     Number.POSITIVE_INFINITY,
   );
-  const familyFooter = await resolveFamilyDocsPageFooterOptions(
+  const familyNeighbors = await resolveFamilyDocsFooterNeighborsForSlug(
     "factories",
     locale,
   );
 
   return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={familyFooter}>
+    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
       <DocsTitle>{indexMessages.title}</DocsTitle>
       <DocsDescription>{indexMessages.description}</DocsDescription>
       <DocsBody>
@@ -139,6 +140,9 @@ export async function renderFactoriesIndexPage(
             listLabel={indexMessages.listLabel}
           />
         )}
+        {familyNeighbors ? (
+          <FamilyDocsFooterNeighbors neighbors={familyNeighbors} />
+        ) : null}
       </DocsBody>
     </DocsPage>
   );

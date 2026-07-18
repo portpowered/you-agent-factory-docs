@@ -296,7 +296,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   navigation never advertises deleted Atlas destinations.
 * `src/lib/content/resolve-family-docs-footer.ts`
   Server helper that loads locale UI messages + pruned page tree and returns
-  DocsPage `footer` options for W15 family index/nested slugs.
+  family-scoped previous/next neighbors for W15 family index/nested slugs
+  (`resolveFamilyDocsFooterNeighborsForSlug`).
+* `src/features/docs/components/FamilyDocsFooterNeighbors.tsx`
+  Renders those neighbors without Fumadocs `Footer` / `useFooterItems`, so App
+  Router entry unit tests and DocsPage surfaces stay free of DocsLayout tree
+  context while keeping family-scoped prev/next cards.
 * `src/lib/navigation/w15-family-prev-next.test.ts`
   W15 story 005 proof: index + nested pages keep previous/next inside each
   family topology; edges omit cleanly; localized trees keep locale-prefixed

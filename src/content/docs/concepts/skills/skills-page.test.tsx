@@ -133,8 +133,11 @@ describe("skills concept page", () => {
     expect(harnessLink.getAttribute("href")).toBe("/docs/concepts/harness");
     const toolLink = screen.getByRole("link", { name: "Tool" });
     expect(toolLink.getAttribute("href")).toBe("/docs/concepts/tool");
-    const mcpConceptLink = screen.getByRole("link", { name: "MCP" });
-    expect(mcpConceptLink.getAttribute("href")).toBe("/docs/concepts/mcp");
+    expect(
+      screen
+        .getAllByRole("link", { name: "MCP" })
+        .some((link) => link.getAttribute("href") === "/docs/concepts/mcp"),
+    ).toBe(true);
     const toolCallingLink = screen.getByRole("link", { name: "Tool calling" });
     expect(toolCallingLink.getAttribute("href")).toBe(
       "/docs/concepts/tool-calling",
