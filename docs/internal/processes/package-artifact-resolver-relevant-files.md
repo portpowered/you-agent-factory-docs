@@ -36,7 +36,12 @@ use the `joined/*` wildcard export.
 | `src/lib/references/api-package-format-versions.ts` | Pure docs-build format-version allowlist + fail-closed checks (no IO) |
 | `src/lib/references/api-package-format-version-gate.ts` | Build/server: membership + format-version gate; missing-artifact errors name subpath + dependent reference family |
 | `src/lib/references/api-package-format-version-gate.test.ts` | Known-version success, unsupported-version failure, missing-artifact consumer-identity proofs |
-| `package.json` | Runtime dependency on `@you-agent-factory/api@0.0.0` |
+| `src/lib/references/api-package-consumed-hash-ledger.ts` | Pure ledger types/builder + Biome-stable TypeScript module renderer (no IO) |
+| `src/lib/references/api-package-consumed-hash-ledger-generation.ts` | Build/server: validate consumed exports then emit ledger via `writeFileIfChanged` |
+| `src/lib/references/api-package-consumed-hash-ledger.test.ts` | Deterministic ledger bytes, identity/hash recording, no-diff rebuild proofs |
+| `scripts/generate-api-package-consumed-hash-ledger.ts` | CLI entry for ledger emission (`bun run generate:api-package-consumed-hash-ledger`) |
+| `src/lib/content/generated/api-package-consumed-hash-ledger.generated.ts` | Generated runtime ledger output (gitignored; regenerated from package inputs) |
+| `package.json` | Runtime dependency on `@you-agent-factory/api@0.0.0`; `generate:api-package-consumed-hash-ledger` script |
 
 ## Patterns
 
@@ -62,15 +67,23 @@ use the `joined/*` wildcard export.
   fail closed naming family/subpath/observed version and that the docs build does
   not support it. Missing required artifacts after resolution/membership name
   the public subpath and the caller `dependentReferenceFamily`.
-- Later stories (consumed-hash ledger, prepare wiring, browser-bundle exclusion)
-  should extend this surface rather than inventing a second acquisition path.
+- Build the consumed-hash ledger only from validated exports
+  (`buildApiPackageConsumedHashLedger`); sort entries by `subpath` then
+  `exportId`; render with `renderTypescriptLiteral` so identical package inputs
+  produce identical module bytes. Emit through `writeFileIfChanged` /
+  `generateApiPackageConsumedHashLedger` so unchanged inputs leave the generated
+  file untouched. Default consumed set is fixed public subpaths minus
+  `manifest`.
+- Later stories (prepare wiring, browser-bundle exclusion) should extend this
+  surface rather than inventing a second acquisition path.
 
 ## Verification
 
 ```bash
 bun test src/lib/references/api-package-artifact-resolver.test.ts \
   src/lib/references/api-package-manifest-membership.test.ts \
-  src/lib/references/api-package-format-version-gate.test.ts
+  src/lib/references/api-package-format-version-gate.test.ts \
+  src/lib/references/api-package-consumed-hash-ledger.test.ts
 bunx biome check src/lib/references/
 bun run typecheck
 ```
