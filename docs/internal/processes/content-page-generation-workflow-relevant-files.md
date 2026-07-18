@@ -935,6 +935,19 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 * `src/lib/content/routable-docs-page.ts`
   `isLocalDocsPageBundlePath` accepts section + one-or-more slug segments
   (`guides/foo` and `workers/agent/variant`) for Fumadocs routing exclusion.
+* `src/lib/content/local-docs-page.ts`
+  `parseLocalDocsPageRef` accepts catch-all slugs with two or more segments
+  under every `DOCS_SECTIONS` id (including references/factories/workers/
+  workstations). Nested page segments join into `slug` (`agent/variant`).
+  One-segment collection indexes stay null. Route-family sections load through
+  `loadRouteFamilyLocalDocsPage`.
+* `src/lib/content/route-family-local-docs-page.ts` /
+  `route-family-local-docs-page-load.ts`
+  Generic local-message disk loader for the four direct route families; uses
+  `getDocsPageDir` so nested child bundles resolve.
+* `src/lib/content/local-docs-page.test.ts`
+  Nested parse/load proofs and fail-closed checks (temp fixtures; no production
+  content pages).
 * `src/lib/content/content-paths-page-dir-guard.ts`
   Grandfathered allowlist for legacy `*_PAGE_DIR` exports and the guard failure
   message that points reviewers to `getDocsPageDir(section, slug)`.
