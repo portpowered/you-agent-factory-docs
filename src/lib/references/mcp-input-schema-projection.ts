@@ -191,6 +191,10 @@ function projectPropertyField(
     field.default = propertyValue.default;
   }
 
+  if (propertyValue.const !== undefined) {
+    field.const = propertyValue.const;
+  }
+
   const format = optionalNonEmptyString(propertyValue.format);
   if (format !== undefined) {
     field.format = format;
@@ -286,6 +290,21 @@ export function projectMcpInputSchemaToDefinition(
       // Nested schema objects for additionalProperties are out of scope for
       // this thin MCP projection — leave the field absent rather than invent.
     }
+  }
+
+  if (inputSchema.examples !== undefined) {
+    if (!Array.isArray(inputSchema.examples)) {
+      throw new McpInputSchemaProjectionError(
+        "malformed-input-schema",
+        `Malformed MCP inputSchema: field "examples" must be an array.`,
+        { field: "examples" },
+      );
+    }
+    if (inputSchema.examples.length > 0) {
+      definition.examples = inputSchema.examples;
+    }
+  } else if (inputSchema.example !== undefined) {
+    definition.examples = [inputSchema.example];
   }
 
   try {

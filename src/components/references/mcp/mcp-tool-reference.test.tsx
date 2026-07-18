@@ -151,6 +151,63 @@ describe("McpToolReference", () => {
     expect(screen.queryByText("Required inputs")).toBeNull();
     expect(container.querySelector("[data-schema-properties]")).toBeNull();
   });
+
+  test("labels generated examples and keeps them schema-valid", () => {
+    const { container } = render(
+      <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
+    );
+
+    const example = container.querySelector("[data-mcp-tool-example]");
+    expect(example).toBeTruthy();
+    expect(example?.getAttribute("data-mcp-example-origin")).toBe("generated");
+    expect(
+      container.querySelector("[data-mcp-example-generated-notice]"),
+    ).toBeTruthy();
+    expect(screen.getByText("Generated example")).toBeTruthy();
+    expect(screen.getByText("Example (generated)")).toBeTruthy();
+
+    const code = container.querySelector(
+      "[data-mcp-example-code]",
+    )?.textContent;
+    expect(code).toContain('"sessionId"');
+    expect(code).toContain("example-sessionId");
+    expect(code).not.toContain('"extra"');
+  });
+
+  test("does not label authored examples as generated", () => {
+    const authored = { sessionId: "sess_authored" };
+    const { container } = render(
+      <McpToolReference
+        tool={fixtureTool({
+          example: authored,
+        })}
+      />,
+    );
+
+    const example = container.querySelector("[data-mcp-tool-example]");
+    expect(example?.getAttribute("data-mcp-example-origin")).toBe("authored");
+    expect(
+      container.querySelector("[data-mcp-example-generated-notice]"),
+    ).toBeNull();
+    expect(screen.queryByText("Generated example")).toBeNull();
+    expect(screen.getByText("Example")).toBeTruthy();
+    expect(
+      container.querySelector("[data-mcp-example-code]")?.textContent,
+    ).toContain("sess_authored");
+  });
+
+  test("omits the example section when no schema and no authored example exist", () => {
+    const { container } = render(
+      <McpToolReference
+        tool={fixtureTool({
+          inputSchema: undefined,
+          example: undefined,
+        })}
+      />,
+    );
+
+    expect(container.querySelector("[data-mcp-tool-example]")).toBeNull();
+  });
 });
 
 describe("McpToolInventory", () => {

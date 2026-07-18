@@ -97,6 +97,7 @@ const fixtureTools: McpToolNormalized[] = [
     handlerRegistered: true,
     requiredInputs: ["sessionId"],
     inputSchema: getInputSchema,
+    example: { sessionId: "fs_example_authored" },
     lifecycle: { state: "active" },
     source: {
       publicArtifactId: "@you-agent-factory/api/mcp",
@@ -169,7 +170,8 @@ export function ReferenceMcpHarness() {
         </h1>
         <p className="max-w-2xl text-sm text-muted-foreground">
           Fixture mount for McpToolReference / McpToolInventory using W04-shaped
-          normalized tools with thin SchemaDefinitionModel embeds. Not a
+          normalized tools with thin SchemaDefinitionModel embeds. Includes both
+          authored and generated examples (generated are labeled). Not a
           production reference route.
         </p>
       </header>

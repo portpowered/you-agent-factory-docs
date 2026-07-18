@@ -229,6 +229,39 @@ describe("normalizeMcpToolsFromArtifact", () => {
     expect(tools[1].lifecycle).toBeUndefined();
     expect(tools[1].inputSchema).toBeUndefined();
     expect(tools[0].lifecycle).toBeUndefined();
+    expect(tools[0].example).toBeUndefined();
+  });
+
+  test("preserves authored tool examples when published", () => {
+    const authored = { sessionId: "sess_1", operation: "APPROVE" };
+    const tools = normalizeMcpToolsFromArtifact({
+      tools: [
+        {
+          idCandidate: "factory-session.control",
+          name: "you.factory_session.control",
+          example: authored,
+          inputSchema: {
+            type: "object",
+            additionalProperties: false,
+            required: ["sessionId", "operation"],
+            properties: {
+              sessionId: { type: "string" },
+              operation: {
+                type: "string",
+                enum: ["APPROVE", "PAUSE"],
+              },
+            },
+            examples: [{ sessionId: "ignored", operation: "PAUSE" }],
+          },
+        },
+      ],
+    });
+
+    expect(tools[0].example).toEqual(authored);
+    expect(tools[0].inputSchema?.examples?.[0]).toEqual({
+      sessionId: "ignored",
+      operation: "PAUSE",
+    });
   });
 
   test("consumes W03-resolved MCP public-subpath data", () => {

@@ -118,6 +118,12 @@ export type McpToolNormalized = {
    * published contract includes `inputSchema`.
    */
   inputSchema?: SchemaDefinitionModel;
+  /**
+   * Authored tool input example when published on the MCP contract.
+   * Absent when the artifact omitted examples — renderers may generate a
+   * schema-valid illustration and must label that illustration as generated.
+   */
+  example?: unknown;
   lifecycle?: ReferenceLifecycle;
   source: ReferenceSourcePointer;
   anchor: string;
@@ -501,6 +507,10 @@ export function parseMcpToolNormalized(value: unknown): McpToolNormalized {
         { field: "inputSchema", cause },
       );
     }
+  }
+
+  if (value.example !== undefined) {
+    model.example = value.example;
   }
 
   const lifecycle = parseOptionalLifecycle(value.lifecycle, "lifecycle");

@@ -389,6 +389,22 @@ export function normalizeCliCommandsFromArtifact(
 }
 
 /**
+ * Authored MCP tool example from published contract fields when present.
+ * Prefer `example`, else the first entry of `examples`. Does not invent values.
+ */
+function authoredMcpToolExample(
+  tool: Record<string, unknown>,
+): unknown | undefined {
+  if (tool.example !== undefined) {
+    return tool.example;
+  }
+  if (Array.isArray(tool.examples) && tool.examples.length > 0) {
+    return tool.examples[0];
+  }
+  return undefined;
+}
+
+/**
  * Normalize MCP tools inventory data into tool models.
  * Expects the structured object from `@you-agent-factory/api/mcp`.
  */
@@ -462,6 +478,7 @@ export function normalizeMcpToolsFromArtifact(
     }
 
     const requiredInputs = requiredInputsFromDefinition(inputSchema);
+    const authoredExample = authoredMcpToolExample(tool);
 
     const model: McpToolNormalized = {
       id: idCandidate,
@@ -484,6 +501,9 @@ export function normalizeMcpToolsFromArtifact(
     }
     if (inputSchema !== undefined) {
       model.inputSchema = inputSchema;
+    }
+    if (authoredExample !== undefined) {
+      model.example = authoredExample;
     }
 
     try {

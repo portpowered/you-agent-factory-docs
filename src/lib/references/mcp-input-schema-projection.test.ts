@@ -110,4 +110,23 @@ describe("projectMcpInputSchemaToDefinition", () => {
     expect(requiredInputsFromDefinition(definition)).toBeUndefined();
     expect(definition?.properties?.scope?.required).toBe(false);
   });
+
+  test("projects authored examples and property const when published", () => {
+    const authored = { sessionId: "sess_1" };
+    const definition = projectMcpInputSchemaToDefinition(
+      {
+        type: "object",
+        additionalProperties: false,
+        required: ["sessionId"],
+        properties: {
+          sessionId: { type: "string", const: "fixed-session" },
+        },
+        examples: [authored],
+      },
+      { address: ADDRESS },
+    );
+
+    expect(definition?.examples).toEqual([authored]);
+    expect(definition?.properties?.sessionId?.const).toBe("fixed-session");
+  });
 });

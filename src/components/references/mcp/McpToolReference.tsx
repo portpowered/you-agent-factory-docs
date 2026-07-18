@@ -3,7 +3,9 @@ import {
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
 import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
+import { resolveMcpToolExample } from "@/lib/references/mcp-example-generation";
 import { cn } from "@/lib/utils";
+import { McpToolExample } from "./McpToolExample";
 import type { McpToolReferenceProps } from "./types";
 
 function booleanStateLabel(value: boolean): string {
@@ -14,12 +16,16 @@ function booleanStateLabel(value: boolean): string {
  * Render one normalized MCP tool with available published metadata and its
  * input schema embed (thin local SchemaDefinitionModel adapter when W07 is
  * absent). Does not invent required inputs, properties, or handler state.
+ * Shows a schema-valid example labeled generated when no authored example
+ * exists on the projection.
  */
 export function McpToolReference({
   tool,
   packageVersion,
   className,
 }: McpToolReferenceProps) {
+  const example = resolveMcpToolExample(tool);
+
   return (
     <article
       className={cn(
@@ -87,6 +93,10 @@ export function McpToolReference({
           </p>
         )}
       </section>
+
+      {example.origin !== "none" ? (
+        <McpToolExample origin={example.origin} value={example.value} />
+      ) : null}
     </article>
   );
 }
