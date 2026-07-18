@@ -1,0 +1,25 @@
+{
+  "id": "documentation.factories-dynamic-workflows",
+  "slug": "factories-dynamic-workflows",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "dynamic workflows",
+    "JavaScript workflows",
+    "Factory Session workflows"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.factories-configuration",
+    "documentation.factories-global-configuration",
+    "documentation.factories-packaged",
+    "documentation.dynamic-workflows",
+    "documentation.cli",
+    "documentation.harness-support"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T15:00:00.000Z",
+  "updatedAt": "2026-07-18T15:00:00.000Z"
+}

@@ -85,6 +85,13 @@ async function loadRouteFamilyPageMdxComponents(
     return mod.pageMdxComponents ?? {};
   }
 
+  if (section === "factories" && slug === "dynamic-workflows") {
+    const mod = await import(
+      "@/content/docs/factories/dynamic-workflows/page-mdx-components"
+    );
+    return mod.pageMdxComponents ?? {};
+  }
+
   return {};
 }
 

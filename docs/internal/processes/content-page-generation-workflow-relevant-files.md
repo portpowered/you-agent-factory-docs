@@ -956,7 +956,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `factories/packaged` →
   `@/content/docs/factories/packaged/page-mdx-components` for addressed
   `FactoryName` plus root Factory metadata/`sourceDirectory` teaching embed
-  (property pointers do not resolve as addressed catalog definitions).
+  (property pointers do not resolve as addressed catalog definitions);
+  `factories/dynamic-workflows` →
+  `@/content/docs/factories/dynamic-workflows/page-mdx-components` for addressed
+  `FactoryOrchestrator`, `FactoryOrchestratorJavaScriptConfig`, and
+  `FactoryInvocationSignature` teaching embeds (link out for exhaustive
+  schema/API lookup; do not paste OpenAPI/operation inventories into the page).
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
