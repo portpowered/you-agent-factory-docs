@@ -63,6 +63,14 @@ hooks, and SSR cost.
 | `src/components/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
 | `src/components/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
 | `src/components/references/api/single-page-projection.test.ts` | W03 acquisition + single-page projection proofs |
+| `src/components/references/api/operation-navigation.ts` | Pure tag-grouped nav model + mobile HTML probe contract |
+| `src/components/references/api/api-operation-navigator.tsx` | Desktop tag-grouped operation deep links |
+| `src/components/references/api/api-reference-mobile-navigator.tsx` | Phone/tablet collapsed `<details>` navigator |
+| `src/components/references/api/api-operation-navigation.tsx` | Responsive composition (`lg+` desktop / `<lg` mobile) |
+| `src/components/references/api/load-operation-navigation.ts` | Build nav model from live package artifact + document tag order |
+| `src/components/references/api/assert-operation-navigation.ts` | Happy-dom-safe subprocess proof: nav anchors ↔ `per:"file"` projection |
+| `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + stub sections matching nav anchors |
+| `src/app/(dev)/api-renderer-harness/page.tsx` | Non-production harness route (`ENABLE_API_RENDERER_HARNESS=1` in production) |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition used by the production loader |
 | `src/lib/references/normalize-family-artifacts.ts` | W04 `normalizeOpenApiOperationsFromArtifact` — same corpus, not a second OpenAPI source |
 | `src/lib/references-openapi-spike/` | Merged W01 non-production spike — donor of reusable helpers only |
@@ -71,6 +79,12 @@ hooks, and SSR cost.
 
 - Acquire only through `loadApiOpenApiArtifact()` →
   `resolveApiPackageArtifact("@you-agent-factory/api/openapi")`.
+- Under Next/Turbopack, `loadApiOpenApiArtifact` injects a manifest-relative
+  `resolveExport` (`createRequire` → `@you-agent-factory/api/manifest` →
+  `openapi/openapi.yaml`) because bare `import.meta.resolve` is unreliable in
+  bundled RSC. Illegal targets still fail closed in the W03 resolver.
+- Also inject `js-yaml` as `parseYaml` — Next runs under Node where
+  `Bun.YAML.parse` is unavailable (same pattern as the W01 spike server).
 - Feed `createOpenAPI` a **document object** (not a filesystem path string) so
   happy-dom URL polyfills under `bun test` do not break
   `@apidevtools/json-schema-ref-parser`.
@@ -84,6 +98,21 @@ hooks, and SSR cost.
 - W04 normalized summaries are derived from the same loaded document for
   cross-links/display; do not invent a second OpenAPI corpus.
 
+## Tag-grouped operation navigation
+
+- Build nav from W04 `normalizedOperations` on the same package artifact as the
+  single-page projection — never invent a second OpenAPI corpus.
+- Prefer OpenAPI document `tags[].name` order via `readOpenApiDocumentTagOrder`;
+  untagged ops land in a final `Untagged` group.
+- Desktop: `ApiOperationNavigator` (visible `lg+`). Phone/tablet:
+  `ApiReferenceMobileNavigator` — collapsed-by-default `<details>`, open list
+  capped at `max-h-[50vh]` (migrated W01 mobile-nav pattern).
+- Deep links use W04 `anchor` fragments (`#${anchor}`); harness stub sections
+  use the same `id` so targets match before full operation rendering (later
+  stories).
+- Verify at `/api-renderer-harness` (dev) — not a published `/docs/references/api`
+  inventory (W11).
+
 ## Patterns
 
 - Keep production API UI under `src/components/references/api/` so ownership
@@ -94,7 +123,7 @@ hooks, and SSR cost.
   `aria-live="polite"`, `aria-busy` when loading).
 - Prefer migrating helpers from the W01 spike into this tree over editing the
   spike in place.
-- Later stories: tag nav, filtering, anchors, request/response rendering,
+- Later stories: filtering, anchors/hash focus, request/response rendering,
   playground suppression, hybrid SSE summaries, theme/code-copy, and
   responsive/a11y/print verification.
 
@@ -104,5 +133,8 @@ hooks, and SSR cost.
 bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/ownership.test.ts \
   src/components/references/api/api-surface.test.tsx \
-  src/components/references/api/single-page-projection.test.ts
+  src/components/references/api/single-page-projection.test.ts \
+  src/components/references/api/operation-navigation.test.ts \
+  src/components/references/api/load-operation-navigation.test.ts \
+  src/components/references/api/api-operation-navigation.test.tsx
 ```

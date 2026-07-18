@@ -7,6 +7,22 @@
  * spike trees except to migrate reusable helpers into this surface.
  */
 
+export {
+  ApiNavigationVerificationHarness,
+  type ApiNavigationVerificationHarnessProps,
+} from "./api-navigation-verification-harness";
+export {
+  ApiOperationNavigation,
+  type ApiOperationNavigationProps,
+} from "./api-operation-navigation";
+export {
+  ApiOperationNavigator,
+  type ApiOperationNavigatorProps,
+} from "./api-operation-navigator";
+export {
+  ApiReferenceMobileNavigator,
+  type ApiReferenceMobileNavigatorProps,
+} from "./api-reference-mobile-navigator";
 export { ApiStatus } from "./api-status";
 export { ApiSurface, type ApiSurfaceProps } from "./api-surface";
 export {
@@ -30,13 +46,41 @@ export {
   API_OPENAPI_SOURCE_BASE_DIR,
   type LoadedApiOpenApiArtifact,
   loadApiOpenApiArtifact,
+  normalizeApiOpenApiBundlerFsPath,
+  resolveApiOpenApiArtifactFsPath,
+  resolveApiOpenApiExportUrl,
 } from "./load-openapi-artifact";
+export {
+  type ApiOperationNavigationProjection,
+  buildApiOperationNavigationFromArtifact,
+  loadApiOperationNavigationProjection,
+} from "./load-operation-navigation";
 export {
   type ApiOpenApiOperation,
   type ApiOpenApiSinglePageProjection,
   apiOpenApiServer,
   loadApiOpenApiSinglePageProjection,
 } from "./openapi-server";
+export {
+  API_MOBILE_NAV_ATTR,
+  API_MOBILE_NAV_CONTRACT,
+  API_MOBILE_NAV_LIST_ATTR,
+  API_OPERATION_NAV_ARIA_LABEL,
+  API_OPERATION_NAV_ATTR,
+  API_OPERATION_NAV_LINK_ATTR,
+  API_OPERATION_UNTAGGED_GROUP,
+  API_PHONE_VIEWPORT,
+  type ApiMobileNavContract,
+  type ApiMobileNavHtmlProbe,
+  type ApiOperationNavGroup,
+  type ApiOperationNavItem,
+  type ApiOperationNavModel,
+  buildApiOperationNavModel,
+  isApiMobileNavMarkupReady,
+  probeApiMobileNavHtml,
+  readOpenApiDocumentTagOrder,
+  toApiOperationNavItem,
+} from "./operation-navigation";
 export {
   API_REFERENCE_FORBIDDEN_OWNERSHIP_ROOTS,
   API_REFERENCE_OWNERSHIP_IMPORT,
