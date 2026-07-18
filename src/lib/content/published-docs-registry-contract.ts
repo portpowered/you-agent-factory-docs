@@ -5,6 +5,7 @@ import {
   guidePageHref,
   referencePageHref,
   techniquePageHref,
+  workersPageHref,
 } from "@/lib/content/content-hrefs";
 import type { PageKind } from "@/lib/content/schemas";
 
@@ -15,6 +16,7 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "techniques",
   "documentation",
   "references",
+  "workers",
 ] as const;
 
 export type PublishedDocsSection = (typeof PUBLISHED_DOCS_SECTIONS)[number];
@@ -50,18 +52,39 @@ export function docsSectionFromSlug(docsSlug: string): PublishedDocsSection {
   );
 }
 
+/**
+ * Path under the published section used for canonical href helpers.
+ *
+ * Prefer the docsSlug remainder after `<section>/` so nested workers (and
+ * future nested CLI) pages keep `/docs/<section>/<parent>/<child>` rather than
+ * collapsing to the leaf segment alone.
+ */
+export function publishedDocsRelativeSlug(entry: PublishedDocsEntry): string {
+  const prefix = `${entry.section}/`;
+  if (entry.docsSlug.startsWith(prefix)) {
+    const relative = entry.docsSlug.slice(prefix.length);
+    if (relative.length > 0) {
+      return relative;
+    }
+  }
+
+  return entry.slug;
+}
+
 export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
+  const relativeSlug = publishedDocsRelativeSlug(entry);
+
   switch (entry.section) {
     case "glossary":
-      return glossaryPageHref(entry.slug);
+      return glossaryPageHref(relativeSlug);
     case "concepts":
-      return conceptPageHref(entry.slug);
+      return conceptPageHref(relativeSlug);
     case "guides":
-      return guidePageHref(entry.slug);
+      return guidePageHref(relativeSlug);
     case "techniques":
-      return techniquePageHref(entry.slug);
+      return techniquePageHref(relativeSlug);
     case "documentation":
-      return documentationPageHref(entry.slug);
+      return documentationPageHref(relativeSlug);
     case "references":
       // Prefer docsSlug so nested reference routes keep full path segments.
       return referencePageHref(
@@ -69,5 +92,7 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
           ? entry.docsSlug.slice("references/".length)
           : entry.slug,
       );
+    case "workers":
+      return workersPageHref(relativeSlug);
   }
 }

@@ -52,7 +52,7 @@ function readJsonFile<T>(path: string): T {
 }
 
 /**
- * Merge page-owned MDX components for a route-family page.
+ * Merge page-owned MDX components for a route-family slug.
  *
  * Local docs compile through `compileMDX` with a fixed component map, so
  * relative imports in `page.mdx` do not resolve. Use a static
@@ -83,6 +83,55 @@ async function loadRouteFamilyPageMdxComponents(
       "@/content/docs/references/javascript-runtime/page-mdx-components"
     );
     return mod.pageMdxComponents ?? {};
+  }
+
+  if (section === "workers") {
+    switch (slug) {
+      case "agent": {
+        const mod = await import(
+          "@/content/docs/workers/agent/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "inference": {
+        const mod = await import(
+          "@/content/docs/workers/inference/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "script": {
+        const mod = await import(
+          "@/content/docs/workers/script/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "poller": {
+        const mod = await import(
+          "@/content/docs/workers/poller/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "model": {
+        const mod = await import(
+          "@/content/docs/workers/model/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "hosted": {
+        const mod = await import(
+          "@/content/docs/workers/hosted/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "mock": {
+        const mod = await import(
+          "@/content/docs/workers/mock/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
   }
 
   return {};

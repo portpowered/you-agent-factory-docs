@@ -1,0 +1,71 @@
+{
+  "title": "Inference worker",
+  "description": "Configure an INFERENCE_WORKER for harness inference dispatch: declared operations, model and provider identity, modelLocality, timeout/resources, and INFERENCE_RUN workstation companionship.",
+  "openingSummary": "An INFERENCE_WORKER is the model-backed executor for INFERENCE_RUN workstations. Set type to INFERENCE_WORKER, declare operations and locality on the worker, and bind the worker name from an inference-run workstation.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "An Inference worker is the Factory WorkerType for one-shot model operations in you-agent-factory. This page covers the INFERENCE_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid configuration, an incompatible misuse of agent tool policy, operational cautions, and the required INFERENCE_RUN workstation companion. Use it when you need to author a bounded inference backend without confusing it with AGENT_WORKER loops."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "The discriminator field is type with value INFERENCE_WORKER. An INFERENCE_WORKER performs one bounded model operation such as TTS or ASR through INFERENCE_RUN. Declare provider-agnostic operations with typed input and output slots, modelLocality, and concrete model identity so INFERENCE_RUN workstations can validate compatibility before dispatch. The markdown body describes operation context. Slot bindings and the operation name used at dispatch live with the workstation contract. Inference workers are not AGENT_WORKER backends: they do not own agent loops or agentTools.policy."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a worker with type INFERENCE_WORKER. Put model, modelProvider, and modelLocality on the worker when you need authored identity and locality; authored values always win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep operation context in the body. Bind the worker from an INFERENCE_RUN workstation that supplies slot bindings and the operation name used at dispatch."
+    },
+    "variantFields": {
+      "title": "Variant Fields",
+      "body": "The embed below shows the live Worker base definition with INFERENCE_WORKER overlay applicability. Selected fields are inference-capability exclusive. Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when starting an INFERENCE_WORKER. The misuse example shows agentTools on an inference worker—agentTools belongs on AGENT_WORKER and fails validation on INFERENCE_WORKER."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "Inference workers fail early on invalid declarations and expect locality and resource capacity to match the authored backend. Keep secrets out of worker bodies. Watch timeout and capacity paths when LOCAL backends are still loading or CLOUD quota is exhausted. Do not treat AGENT_WORKER or agentTools as an inference substitute."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workers/inference surface for INFERENCE_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Agent worker full contract. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine INFERENCE_WORKER fields. Mock workers stay on their own route and schema."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "discriminatorLabel": "Discriminator",
+    "discriminatorValue": "type = INFERENCE_WORKER",
+    "companionIntro": "INFERENCE_WORKER requires an INFERENCE_RUN workstation companion. The workstation binds the worker name and owns operation selection, slot bindings, limits, and outputs.",
+    "companionWorkstation": "Inference-run workstation",
+    "minimalExampleLabel": "Minimal valid INFERENCE_WORKER:",
+    "misuseExampleLabel": "Incompatible misuse — agentTools on INFERENCE_WORKER (rejected):",
+    "misuseNote": "agentTools is an agent-loop field. Validation rejects it on INFERENCE_WORKER. Use AGENT_WORKER for prompt-rendered agent loops.",
+    "fullFactorySchema": "Full Factory schema reference",
+    "workersFamilyIndex": "Workers family index",
+    "siblingAgentWorker": "Agent worker",
+    "siblingWorkstations": "Workstations overview",
+    "siblingResources": "Resources",
+    "siblingTokens": "Tokens",
+    "cautionTopicHeader": "Caution",
+    "cautionGuidanceHeader": "Guidance",
+    "cautionValidationTopic": "Validation failures",
+    "cautionValidationGuidance": "Fix duplicate or invalid operation and slot declarations before retrying. Invalid enums and incompatible content types also fail validation.",
+    "cautionLocalityTopic": "Locality and capacity",
+    "cautionLocalityGuidance": "Match modelLocality and worker resources to the backend you intend. Local backends need ready local capacity; cloud backends need quota and slot capacity that match the authored resources.",
+    "cautionSecretsTopic": "Secrets in worker bodies",
+    "cautionSecretsGuidance": "Do not put API keys, tokens, or other secret material in the worker markdown body. Keep credentials in the secret and config surfaces the runtime already resolves.",
+    "cautionAgentLoopTopic": "Agent-loop substitution",
+    "cautionAgentLoopGuidance": "Do not add agentTools or expect agent-loop behavior on an inference worker. Agent tool policy and loop ownership belong on AGENT_WORKER.",
+    "cautionTimeoutTopic": "Timeout and readiness",
+    "cautionTimeoutGuidance": "Increase worker timeout or wait for LOCAL model readiness when dispatches fail before the operation completes. Narrow workstation scope when CLOUD latency exceeds limits."
+  }
+}

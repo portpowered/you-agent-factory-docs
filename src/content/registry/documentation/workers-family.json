@@ -1,0 +1,19 @@
+{
+  "id": "documentation.workers-family",
+  "slug": "workers-family",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "workers family",
+    "worker types",
+    "WorkerType",
+    "docs workers index"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T12:30:00.000Z",
+  "updatedAt": "2026-07-18T12:30:00.000Z"
+}

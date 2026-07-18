@@ -1,0 +1,27 @@
+{
+  "id": "documentation.workers-mock",
+  "slug": "workers-mock",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "mock worker",
+    "mock workers",
+    "mock-workers",
+    "with-mock-workers",
+    "runType",
+    "docs workers mock"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers-family",
+    "documentation.mock-workers",
+    "documentation.workers-agent",
+    "documentation.workstations",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T19:00:00.000Z",
+  "updatedAt": "2026-07-18T19:00:00.000Z"
+}
