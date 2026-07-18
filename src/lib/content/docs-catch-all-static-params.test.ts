@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default generateStaticParams include authored factories, references, and workers children", () => {
+  test("live default generateStaticParams include authored factories, references, workers, and workstations children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -222,11 +222,27 @@ describe("W05 route-family static params and not-found", () => {
 
     // Families without authored nested pages still contribute no catch-all
     // children (indexes remain dedicated App Router routes).
-    for (const id of ["workstations"] as const) {
-      expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
-        false,
-      );
-    }
+    // W14 authored Workstation variant pages enter default catch-all params.
+    const workstationChildren = defaultPaths.filter((path) =>
+      path.startsWith("workstations/"),
+    );
+    expect(workstationChildren.length).toBeGreaterThan(0);
+    expect(workstationChildren).toEqual(
+      expect.arrayContaining([
+        "workstations/standard",
+        "workstations/repeater",
+        "workstations/cron",
+        "workstations/poller",
+        "workstations/inference-run",
+        "workstations/agent-run",
+        "workstations/script-run",
+        "workstations/poller-run",
+        "workstations/model-workstation",
+        "workstations/model-invoke",
+        "workstations/logical-move",
+        "workstations/classifier",
+      ]),
+    );
 
     // Empty-param static export still emits a placeholder rather than failing.
     expect(

@@ -41,6 +41,8 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/fixtures/upstream-migration.ts` | Focused overlay + W04 definition fixtures for upstream preference / contradiction / unresolved target |
 | `src/lib/references/overlays/fixtures/package-drift.ts` | Focused post-drift definition + overlay fixtures: removed fields, renamed enums, missing refs, incompatible examples |
 | `src/lib/references/overlays/fixtures/package-drift.test.ts` | Drift-class fail-closed diagnostics + minimal valid overlay success (fixture catalog + installed W03 package) |
+| `src/lib/references/overlays/production-workstation-overlays.ts` | W14 production Workstation overlays for all eight `WorkstationType` values and four `WorkstationKind` behaviors (applicability + companions + example refs; keep `POLLER_RUN` type distinct from `POLLER` behavior) |
+| `src/lib/references/overlays/production-workstation-overlays.test.ts` | Production overlays validate via W06 against installed Factory schemas; diagnostics name overlay + identity; joint selected-field attribution stays conflict-free |
 | `src/lib/references/overlays/production-worker-overlays.ts` | W13 production Worker overlays for all six Factory `WorkerType` values (applicability + companions + example refs; mock workers excluded) |
 | `src/lib/references/overlays/production-worker-overlays.test.ts` | Production overlays validate via W06 against installed Factory schemas; diagnostics name overlay + identity; joint selected-field attribution stays conflict-free |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
@@ -115,6 +117,16 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   (`missing-example-ref`), plus success for a minimal valid overlay set.
   Focused tests also re-exercise incompatible companion field selection via
   the story 006 fixtures against installed W03 package models.
+- Production Workstation overlays (W14) live in
+  `overlays/production-workstation-overlays.ts`. Put cross-variant applicable
+  fields in `shared` and exclusive fields in `selected` so joint
+  `validateFactoryVariantOverlaysIncompatibleFieldSelection` stays green.
+  Keep `MODEL_WORKSTATION` prompt/parse fields and `MODEL_INVOKE` operation
+  fields on separate `selected` sets (types are not companions of each other).
+  Keep `POLLER_RUN` (`workstation:…`) distinct from `POLLER` (`behavior:…`).
+  Apply companions via `applyFactoryVariantCompatibilityFactToOverlay` +
+  `createMinimalFactoryVariantCompatibilityMatrix`. Do not rewrite shared
+  W06 validator/registry core from this lane.
 - Production Worker overlays (W13) live in
   `overlays/production-worker-overlays.ts`. Put cross-variant applicable
   fields in `shared` and exclusive fields in `selected` so joint

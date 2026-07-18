@@ -112,18 +112,18 @@ measured ~120.24 MiB / ~4.84 MiB); projected eight-page union from those
 observed deltas is ~127 MiB / ~5.15 MiB; raised again 2026-07-18 UTC after the
 W05 route-family foundation lane measured ~138.27 MiB total on CI (Next static
 JS ~2.65 MiB and search bootstrap ~5.16 MiB remained under their limits);
-raised again 2026-07-18 UTC after the W12 factories authored-pages lane
-measured ~151.07 MiB total and ~5.33 MiB search bootstrap on CI; raised again
-2026-07-18 UTC after the W13 Worker authored-pages lane measured ~152.37 MiB
-total and ~5.36 MiB search bootstrap on CI (Next static JS ~2.78 MiB remained
-under its limit); raised again 2026-07-18 UTC after W11 schema + events
-(~161.68 MiB) and CLI/MCP/JavaScript runtime + events (~161.11 MiB /
-~5.51 MiB combined with workers) measured on CI — combined W11+W12+W13
-headroom uses:
+raised again 2026-07-18 UTC after W12 factories (~151.07 MiB / ~5.33 MiB), W13
+workers (~152.37 MiB / ~5.36 MiB), W11 schema + events (~161.68 MiB /
+~5.44 MiB), W11 CLI/MCP/JavaScript runtime + events + workers (~167.84 MiB /
+~5.51 MiB), and W14 workstations (~161.99 MiB / ~5.53 MiB) landed; raised
+again 2026-07-18 UTC after merging W14 with main (W11 schema + events + W13
+workers) measured ~184.93 MiB total and ~5.82 MiB search bootstrap on CI, then
+after merging W12 factories and W11 CLI/MCP/JS onto that combined head:
 
-- `maxTotalOutBytes`: 185_000_000
+- `maxTotalOutBytes`: 210_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 6_000_000
+- `maxSearchBootstrapBytes`: 6_500_000
+
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
 `out/` fails closed. Reproduce locally with:

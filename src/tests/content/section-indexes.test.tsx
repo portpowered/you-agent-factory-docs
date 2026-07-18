@@ -439,19 +439,7 @@ describe("CLI section index metadata", () => {
   }
 });
 
-const W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
-  {
-    collectionId: "workstations" as const,
-    messageKey: "workstationsIndex" as const,
-    renderDefault: WorkstationsIndexPage,
-    renderLocalized: LocalizedWorkstationsIndexPage,
-    generateDefaultMetadata: generateWorkstationsMetadata,
-    generateLocalizedMetadata: generateLocalizedWorkstationsMetadata,
-  },
-] as const;
-
 const W05_DIRECT_ROUTE_FAMILY_METADATA_CASES = [
-  ...W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES,
   {
     collectionId: "factories" as const,
     messageKey: "factoriesIndex" as const,
@@ -623,47 +611,6 @@ describe("W05 direct route-family section index pages", () => {
     expect(localizedMetadata.description).toBe(defaultMetadata.description);
   });
 
-  for (const section of W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
-    it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
-      const messages = await loadUiMessages();
-      const indexMessages = messages[section.messageKey];
-      const html = renderToStaticMarkup(await section.renderDefault());
-
-      expect(html).toContain(indexMessages.title);
-      expect(html).toContain(indexMessages.description);
-      expect(html).toContain(indexMessages.emptyTitle);
-      expect(html).toContain(indexMessages.emptyDescription);
-      expect(html).toContain(indexMessages.emptyHomeLink);
-      expect(html).toContain('href="/"');
-      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
-      expect(html).not.toContain("/docs/documentation/");
-      expect(indexMessages.emptyTitle).not.toMatch(
-        CLI_EMPTY_STATE_ATLAS_PHRASING,
-      );
-      expect(indexMessages.emptyDescription).not.toMatch(
-        CLI_EMPTY_STATE_ATLAS_PHRASING,
-      );
-      expect(indexMessages.emptyHomeLink).not.toMatch(
-        CLI_EMPTY_STATE_ATLAS_PHRASING,
-      );
-    });
-
-    it(`renders the localized ${section.collectionId} empty-state index`, async () => {
-      const messages = await loadUiMessages("ja");
-      const indexMessages = messages[section.messageKey];
-      const html = renderToStaticMarkup(
-        await section.renderLocalized({
-          params: Promise.resolve({ locale: "ja" }),
-        }),
-      );
-
-      expect(html).toContain(indexMessages.title);
-      expect(html).toContain(indexMessages.emptyTitle);
-      expect(html).toContain(indexMessages.emptyHomeLink);
-      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
-    });
-  }
-
   for (const section of W05_DIRECT_ROUTE_FAMILY_METADATA_CASES) {
     it(`keeps default and localized ${section.collectionId} index metadata aligned`, async () => {
       const defaultMetadata = await section.generateDefaultMetadata();
@@ -690,4 +637,53 @@ describe("W05 direct route-family section index pages", () => {
       expect(localizedMetadata.description).toBe(indexMessages.description);
     });
   }
+
+  it("renders the authored workstations family index instead of the empty-state contract", async () => {
+    const html = renderToStaticMarkup(await WorkstationsIndexPage());
+
+    expect(html).toContain("Workstations");
+    expect(html).toContain('data-workstations-family-index=""');
+    expect(html).toContain('data-workstations-type-selection-table=""');
+    expect(html).toContain('data-workstations-compatibility-matrix=""');
+    expect(html).toContain("INFERENCE_RUN");
+    expect(html).toContain("POLLER_RUN");
+    expect(html).toContain("Do not collapse POLLER_RUN");
+    expect(html).not.toContain("No workstation entries yet");
+  });
+
+  it("renders the localized workstations family index with page-local selection copy", async () => {
+    const html = renderToStaticMarkup(
+      await LocalizedWorkstationsIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    expect(html).toContain("Workstations");
+    expect(html).toContain('data-workstations-family-index=""');
+    expect(html).toContain("AGENT_RUN");
+    expect(html).not.toContain("No workstation entries yet");
+  });
+
+  it("keeps default and localized workstations index metadata aligned to page-local messages", async () => {
+    const defaultMetadata = await generateWorkstationsMetadata();
+    const localizedMetadata = await generateLocalizedWorkstationsMetadata({
+      params: Promise.resolve({ locale: "vi" }),
+    });
+    const expectedAlternates = {
+      canonical: "/docs/workstations",
+      languages: {
+        en: "/docs/workstations",
+        ja: "/ja/docs/workstations",
+        "zh-CN": "/zh-CN/docs/workstations",
+        vi: "/vi/docs/workstations",
+      },
+    };
+
+    expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+    expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+    expect(defaultMetadata.title).toBe("Workstations");
+    expect(localizedMetadata.title).toBe("Workstations");
+    expect(String(defaultMetadata.description)).toMatch(/WorkstationType/i);
+    expect(localizedMetadata.description).toBe(defaultMetadata.description);
+  });
 });

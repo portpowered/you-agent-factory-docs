@@ -1092,8 +1092,103 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).
+* `src/lib/content/published-docs-registry-contract.ts` /
+  `src/lib/content/content-hrefs.ts`
+  `PUBLISHED_DOCS_SECTIONS` includes `workstations` with `workstationsPageHref`
+  and `publishedDocsHrefFromEntry` so authored `/docs/workstations/<slug>`
+  (including nested slugs) validate and resolve without
+  `Unsupported published docs section`. Do not treat this as W15–W18 nav /
+  search / sitemap / compat inventory ownership — those stay deferred.
+* `src/lib/content/published-docs-registry-contract.test.ts`
+  Workstations section membership, nested href proofs, and unchanged CLI
+  section href behavior.
+* `src/content/docs/workstations/` family index composition (W14)
+  `/docs/workstations` stays an App Router family index (not
+  `workstations/page.mdx` — `isLocalDocsPageBundlePath` rejects section-root
+  bundles). Authored overview / type+behavior selection / type-versus-behavior
+  compatibility matrix / shared-fields / schema embed live as page-local
+  messages + React composition under `src/content/docs/workstations/`
+  (`render-workstations-family-index.tsx`, `WorkstationsFamilyIndexContent.tsx`,
+  `WorkstationBaseSchemaEmbed.tsx` via W07 `SchemaReference` addressed to
+  `/$defs/Workstation`). Registry id `documentation.workstations-family`.
+  Unshipped locales fall back to `messages/en.json`. Wire
+  `src/app/(site)/docs/workstations/page.tsx` and the locale mirror to
+  `renderWorkstationsFamilyIndexPage` instead of the empty collection
+  contract. Keep `POLLER_RUN` (type) distinct from `POLLER` (behavior) in
+  selection copy and matrix headers.
+* `src/content/docs/workstations/<slug>/` variant pages (W14)
+  Behavior and type children are MDX page bundles (`page.mdx`,
+  `messages/en.json`, `assets.json`, `page-mdx-components.tsx`, variant schema
+  embed + examples + colocated `*-page.test.tsx`). Reuse
+  `factory-variant-overlay-presentation.ts` under workstations ownership —
+  do not rewrite W06/W07 cores. Embed via W07 `SchemaVariantReference` with
+  `createProductionWorkstationBehaviorOverlay` /
+  `createProductionWorkstationTypeOverlay` +
+  `loadWorkstationBaseSchemaEmbedModel`. Register embeds in
+  `page-mdx-components.tsx` and add a static slug switch in
+  `route-family-local-docs-page-load.ts` (same compileMDX constraint as
+  workers — relative MDX imports do not resolve). Link Worker companions with
+  `/docs/workers` (or planned `/docs/workers/<slug>` hrefs) without authoring
+  W13 pages. Keep customer-facing Limits / body copy product-scope only —
+  never narrate “planned Worker targets” or “without authoring those pages
+  here.”   Behavior pages so far: `workstations/standard` /
+  `documentation.workstations-standard` (`behavior:STANDARD`, misuse = cron);
+  `workstations/repeater` / `documentation.workstations-repeater`
+  (`behavior:REPEATER`, change-triggered / rejection reloop, misuse = cron);
+  `workstations/cron` / `documentation.workstations-cron` (`behavior:CRON`,
+  selects exclusive `cron`, misuse = missing cron);
+  `workstations/poller` / `documentation.workstations-poller`
+  (`behavior:POLLER`, long-lived poller scheduling, misuse = POLLER-as-type
+  axis collapse; keep `POLLER` distinct from type `POLLER_RUN` and link
+  `/docs/workstations/poller-run`). Non-CRON behaviors share empty `selected`
+  and exclude `cron` — STANDARD/REPEATER misuse stays on the cron field;
+  POLLER's primary misuse is axis collapse (`type: "POLLER"`); CRON flips
+  the cron pattern (selected `cron`, misuse omits it). Type pages so far:
+  `workstations/inference-run` / `documentation.workstations-inference-run`
+  (`workstation:INFERENCE_RUN`, requires `worker:INFERENCE_WORKER`, empty
+  `selected`, misuse = `classificationRoutes`; link behaviors + `/docs/workers`
+  without authoring W13);
+  `workstations/agent-run` / `documentation.workstations-agent-run`
+  (`workstation:AGENT_RUN`, requires `worker:AGENT_WORKER`, selects exclusive
+  `openCodeAgent`, misuse = `operation` from MODEL_INVOKE);
+  `workstations/script-run` / `documentation.workstations-script-run`
+  (`workstation:SCRIPT_RUN`, requires `worker:SCRIPT_WORKER`, empty
+  `selected`, misuse = `promptFile` from MODEL_WORKSTATION);
+  `workstations/poller-run` / `documentation.workstations-poller-run`
+  (`workstation:POLLER_RUN`, requires `worker:POLLER_WORKER`, empty
+  `selected`, misuse = axis collapse putting `POLLER_RUN` on behavior;
+  keep `POLLER_RUN` distinct from behavior `POLLER` and link
+  `/docs/workstations/poller`);
+  `workstations/model-workstation` /
+  `documentation.workstations-model-workstation`
+  (`workstation:MODEL_WORKSTATION`, requires `worker:MODEL_WORKER`, selects
+  exclusive `promptFile` / `outcomeFormat` / `outputSchema` / `stopWords`,
+  misuse = `operation` from MODEL_INVOKE; keep distinct from
+  `model-invoke`);
+  `workstations/model-invoke` / `documentation.workstations-model-invoke`
+  (`workstation:MODEL_INVOKE`, requires `worker:MODEL_WORKER`, selects
+  exclusive `operation` / `operationBindings`, misuse = `outcomeFormat`
+  from MODEL_WORKSTATION; keep distinct from `model-workstation`);
+  `workstations/logical-move` / `documentation.workstations-logical-move`
+  (`workstation:LOGICAL_MOVE`, requires `worker:HOSTED_WORKER`, selects
+  exclusive `guards`, misuse = `classificationRoutes` from
+  CLASSIFIER_WORKSTATION; keep distinct from `classifier`);
+  `workstations/classifier` / `documentation.workstations-classifier`
+  (`workstation:CLASSIFIER_WORKSTATION`, requires `worker:HOSTED_WORKER`,
+  selects exclusive `classificationRoutes`, excludes `outputs` /
+  `onContinue` / `onRejection`, misuse = `outputs`; keep distinct from
+  `logical-move`). Mirror this bundle for WorkstationType pages with
+  `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
+  families. Empty collections call `renderSectionCollectionIndexPage` with
+  matching `*Index` messages (`DocsIndexEmptyState`). Authored family indexes
+  (W14 workstations) call page-local `render*FamilyIndexPage` instead.
+  families. References/workers/workstations call
+  `renderSectionCollectionIndexPage` with matching `*Index` messages; empty
+  collections render `DocsIndexEmptyState`. Factories uses the factories-owned
+  `renderFactoriesIndexPage` composition (overview + W07 root Factory summary
+  embed + child entry list) once authored factories pages exist.
   families. Workstations (still empty) call `renderSectionCollectionIndexPage`
   with matching `*Index` messages and render `DocsIndexEmptyState`. Factories
   uses the factories-owned `renderFactoriesIndexPage` composition (overview +
@@ -1165,6 +1260,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   and package freshness for `/docs/references`.
 * `src/lib/docs/section-collection-index.test.ts` /
   `src/tests/content/section-indexes.test.tsx`
+  Empty-state + localized metadata proofs for still-empty family indexes;
+  authored workstations index asserts `data-workstations-family-index` instead
+  of the empty-state contract; factories must not list documentation child
+  pages.
+  factories flips to authored-entry + overview assertions and must not list
+  documentation child pages.
   Empty-state + localized metadata proofs for still-empty family indexes
   (workstations); factories authored-entry + overview assertions; workers
   family-index proofs; authored introduction proofs for the references family
@@ -1180,6 +1281,10 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   params). Empty collections still rely on `ensureStaticExportParams` so static
   export never emits an empty param list.
 * `src/lib/content/docs-catch-all-static-params.test.ts`
+  Nested fixture proofs for default/shipped catch-all params, empty-family
+  export safety for still-empty references/factories/workers, authored
+  workstations children in default catch-all params (W14), compile-graph
+  index markers, and invalid nested not-found.
   Nested fixture proofs for default/shipped catch-all params, compile-graph
   index markers, and invalid nested not-found. After W13, default-locale
   params include authored `workers/<variant>` children; empty families

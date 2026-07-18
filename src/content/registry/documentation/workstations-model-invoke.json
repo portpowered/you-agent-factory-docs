@@ -1,0 +1,24 @@
+{
+  "id": "documentation.workstations-model-invoke",
+  "slug": "workstations-model-invoke",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "model-invoke type",
+    "MODEL_INVOKE",
+    "WorkstationType MODEL_INVOKE",
+    "docs workstations model-invoke"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workstations-family",
+    "documentation.workstations",
+    "documentation.configuration",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T17:00:00.000Z",
+  "updatedAt": "2026-07-18T17:00:00.000Z"
+}

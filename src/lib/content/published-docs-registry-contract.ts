@@ -7,6 +7,7 @@ import {
   referencePageHref,
   techniquePageHref,
   workersPageHref,
+  workstationsPageHref,
 } from "@/lib/content/content-hrefs";
 import type { PageKind } from "@/lib/content/schemas";
 
@@ -19,6 +20,7 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "factories",
   "references",
   "workers",
+  "workstations",
 ] as const;
 
 export type PublishedDocsSection = (typeof PUBLISHED_DOCS_SECTIONS)[number];
@@ -93,5 +95,7 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return referencePageHref(relativeSlug);
     case "workers":
       return workersPageHref(relativeSlug);
+    case "workstations":
+      return workstationsPageHref(relativeSlug);
   }
 }

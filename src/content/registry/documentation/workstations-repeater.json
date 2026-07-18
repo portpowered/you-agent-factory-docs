@@ -1,0 +1,24 @@
+{
+  "id": "documentation.workstations-repeater",
+  "slug": "workstations-repeater",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "repeater behavior",
+    "REPEATER",
+    "WorkstationKind REPEATER",
+    "docs workstations repeater"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workstations-family",
+    "documentation.workstations",
+    "documentation.configuration",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T14:00:00.000Z",
+  "updatedAt": "2026-07-18T14:00:00.000Z"
+}

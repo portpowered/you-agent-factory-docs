@@ -199,6 +199,85 @@ async function loadRouteFamilyPageMdxComponents(
     }
   }
 
+  if (section === "workstations") {
+    switch (slug) {
+      case "standard": {
+        const mod = await import(
+          "@/content/docs/workstations/standard/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "repeater": {
+        const mod = await import(
+          "@/content/docs/workstations/repeater/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "cron": {
+        const mod = await import(
+          "@/content/docs/workstations/cron/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "poller": {
+        const mod = await import(
+          "@/content/docs/workstations/poller/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "inference-run": {
+        const mod = await import(
+          "@/content/docs/workstations/inference-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "agent-run": {
+        const mod = await import(
+          "@/content/docs/workstations/agent-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "script-run": {
+        const mod = await import(
+          "@/content/docs/workstations/script-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "poller-run": {
+        const mod = await import(
+          "@/content/docs/workstations/poller-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "model-workstation": {
+        const mod = await import(
+          "@/content/docs/workstations/model-workstation/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "model-invoke": {
+        const mod = await import(
+          "@/content/docs/workstations/model-invoke/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "logical-move": {
+        const mod = await import(
+          "@/content/docs/workstations/logical-move/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      case "classifier": {
+        const mod = await import(
+          "@/content/docs/workstations/classifier/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
   return {};
 }
 
