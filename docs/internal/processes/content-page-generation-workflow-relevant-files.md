@@ -675,21 +675,25 @@ blocked. Document mergeability-only follow-ups in `progress.txt` and PR
 conversation comments.
 
 When rebasing a family-index lane onto `main` that already authored another
-direct route family (workers index, events-on-references collection listing,
-schema sibling pages listed via the generic W05 collection index, etc.),
-reconcile `src/tests/content/section-indexes.test.tsx` by keeping each
-authored family-index proof and narrowing empty-state cases to families that
-are still empty (today: factories + workstations). Prefer the authored
-family-index assertions (intro + discoverability hrefs + freshness markers)
-over main’s generic collection-listing proofs for the same route once
+direct route family (workers index, factories authored index, events-on-
+references collection listing, schema sibling pages listed via the generic W05
+collection index, etc.), reconcile
+`src/tests/content/section-indexes.test.tsx` by keeping each authored
+family-index proof and narrowing empty-state cases to families that are still
+empty (today: workstations only). Prefer the authored family-index assertions
+(intro + discoverability hrefs + freshness markers) over main’s generic
+collection-listing proofs for the same route once
 `renderReferencesFamilyIndexPage` owns `/docs/references` — sibling schema /
 events bodies remain published under their own page routes. Do not restore
 empty-state-as-primary for a family this lane authored, and do not drop main’s
-workers family-index assertions while resolving references conflicts. The same
-rebase often dual-edits
+workers or factories authored-index assertions while resolving references
+conflicts. Also reconcile
+`src/lib/docs/section-collection-index.test.ts` so generic-helper empty-state
+loops match still-empty families only (keep factories authored-entry proofs).
+The same rebase often dual-edits
 `docs/internal/processes/content-page-generation-workflow-relevant-files.md` —
 keep both sides’ notes (including any “First published `references` schema
-page” section from schema lanes).
+page” section from schema lanes and factories index loader notes).
 
 When several documentation lanes land close together, the exported-site
 `totalOutBytes` / `searchBootstrapBytes` gates in
