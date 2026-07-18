@@ -945,6 +945,16 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `route-family-local-docs-page-load.ts`
   Generic local-message disk loader for the four direct route families; uses
   `getDocsPageDir` so nested child bundles resolve.
+* `src/lib/content/published-docs-registry-contract.ts` /
+  `src/lib/content/content-hrefs.ts`
+  `PUBLISHED_DOCS_SECTIONS` includes `factories` with `factoriesPageHref` and
+  `publishedDocsHrefFromEntry` so authored `/docs/factories/<slug>` (including
+  nested slugs) validate and resolve without
+  `Unsupported published docs section`. Do not treat this as W15–W18 nav /
+  search / sitemap / compat inventory ownership — those stay deferred.
+* `src/lib/content/published-docs-registry-contract.test.ts`
+  Factories section membership, nested href proofs, and unchanged CLI section
+  href behavior.
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).

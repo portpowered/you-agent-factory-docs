@@ -114,6 +114,22 @@ export function documentationPageHref(
   );
 }
 
+/**
+ * Canonical docs URL for a factories entry slug under `docs/factories`.
+ *
+ * `slug` may be a single segment (`configuration`) or a nested path
+ * (`docs/write-review`) so route-family child pages resolve correctly.
+ */
+export function factoriesPageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `factories/${slug}` },
+    locale,
+  );
+}
+
 /** Canonical tag landing URL for a registry tag slug. */
 export function tagPageHref(
   slug: string,
