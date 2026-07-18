@@ -168,6 +168,7 @@ describe("loadUiMessages shell keys", () => {
       expect(messages.pageKind.technique).toBeTruthy();
       expect(messages.pageKind.documentation).toBeTruthy();
       expect(messages.pageKind.glossary).toBeTruthy();
+      expect(messages.pageKind.reference).toBeTruthy();
       expect(messages.pageKind.blog).toBeTruthy();
       expect(messages.pageKind.module).toBeUndefined();
       expect(messages.pageKind.model).toBeUndefined();
@@ -235,6 +236,7 @@ describe("loadUiMessages shell keys", () => {
     expect(formatPageKind(messages, "technique")).toBe("Technique");
     expect(formatPageKind(messages, "documentation")).toBe("Documentation");
     expect(formatPageKind(messages, "glossary")).toBe("Glossary");
+    expect(formatPageKind(messages, "reference")).toBe("Reference");
     expect(formatPageKind(messages, "blog")).toBe("Blog");
     expect(formatPageKind(messages, "module")).toBe("module");
     expect(formatPageKind(messages, "not-a-real-kind")).toBe("not-a-real-kind");

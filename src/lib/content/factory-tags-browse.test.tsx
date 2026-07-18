@@ -75,6 +75,7 @@ describe("factory tags and browse destinations", () => {
       "technique",
       "documentation",
       "glossary",
+      "reference",
       "blog",
     ]);
     expect([...FACTORY_TAG_CATEGORY_ORDER]).toEqual([

@@ -26,6 +26,7 @@ const FACTORY_CATEGORY_SET = [
   "technique",
   "documentation",
   "glossary",
+  "reference",
   "blog",
 ] as const;
 
