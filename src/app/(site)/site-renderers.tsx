@@ -7,6 +7,7 @@ import {
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HomeArticle } from "@/components/home/home-article";
+import { loadReferencesFamilyFreshnessSummary } from "@/content/docs/references/family-index/load-references-family-freshness";
 import { loadReferencesFamilyIndex } from "@/content/docs/references/family-index/load-references-family-index";
 import { ReferencesFamilyIndex } from "@/content/docs/references/family-index/ReferencesFamilyIndex";
 import {
@@ -325,15 +326,16 @@ export async function renderSectionCollectionIndexPage(
 }
 
 /**
- * Authored `/docs/references` family index: localized introduction and
- * eight-route discoverability cards owned by the references index lane.
- * Package freshness summary lands in a later story on the same surface.
+ * Authored `/docs/references` family index: localized introduction,
+ * eight-route discoverability cards, and package/version freshness from the
+ * public API manifest—owned by the references index lane.
  */
 export async function renderReferencesFamilyIndexPage(
   locale: SiteLocale = defaultLocale,
 ) {
   const uiMessages = await loadUiMessages(locale);
   const index = await loadReferencesFamilyIndex(locale);
+  const freshness = loadReferencesFamilyFreshnessSummary();
   const title = index.messages.title || uiMessages.referencesIndex.title;
   const description =
     index.messages.description || uiMessages.referencesIndex.description;
@@ -344,7 +346,10 @@ export async function renderReferencesFamilyIndexPage(
       <DocsDescription>{description}</DocsDescription>
       <DocsBody>
         <DocsPageProviders messages={index.messages} assets={index.assets}>
-          <ReferencesFamilyIndex messages={index.messages} />
+          <ReferencesFamilyIndex
+            freshness={freshness}
+            messages={index.messages}
+          />
         </DocsPageProviders>
       </DocsBody>
     </DocsPage>

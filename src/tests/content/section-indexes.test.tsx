@@ -520,6 +520,8 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain('data-references-family-index=""');
     expect(html).toContain("Contract surfaces");
     expect(html).toContain('data-references-family-discoverability=""');
+    expect(html).toContain('data-references-family-freshness=""');
+    expect(html).toContain("Package freshness");
     for (const href of [
       "/docs/references/api",
       "/docs/references/events",

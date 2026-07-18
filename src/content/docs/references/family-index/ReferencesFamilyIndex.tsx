@@ -5,19 +5,23 @@ import {
   docsResourceCardLinkClassName,
 } from "@/features/docs/components/list-decoration";
 import type { PageMessages } from "@/lib/content/schemas";
+import type { ReferencesFamilyFreshnessSummary } from "./load-references-family-freshness";
+import { ReferencesFamilyFreshnessSummaryView } from "./ReferencesFamilyFreshnessSummary";
 import { resolveReferenceFamilyDiscoverabilityCards } from "./resolve-reference-family-discoverability";
 
 type ReferencesFamilyIndexProps = {
   messages: PageMessages;
+  freshness: ReferencesFamilyFreshnessSummary;
 };
 
 /**
- * Authored `/docs/references` family index: isolation-first introduction plus
- * discoverability cards for all eight planned reference routes. Package
- * freshness summary lands in a later story.
+ * Authored `/docs/references` family index: isolation-first introduction,
+ * discoverability cards for all eight planned reference routes, and a
+ * package/version freshness summary from the public API manifest.
  */
 export function ReferencesFamilyIndex({
   messages,
+  freshness,
 }: ReferencesFamilyIndexProps) {
   const introduction = messages.sections?.introduction;
   const discoverability = messages.sections?.discoverability;
@@ -51,6 +55,10 @@ export function ReferencesFamilyIndex({
           ) : null}
         </section>
       ) : null}
+      <ReferencesFamilyFreshnessSummaryView
+        freshness={freshness}
+        messages={messages}
+      />
       <section
         aria-labelledby={discoverabilityHeadingId}
         className="mt-8"

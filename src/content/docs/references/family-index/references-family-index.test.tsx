@@ -1,10 +1,12 @@
 /**
  * Page-owned render proof for the `/docs/references` family index.
  * Asserts authored introduction, eight discoverability hrefs, and
- * frontmatter/registry alignment — not sibling page bodies.
+ * package/version freshness success + unavailable treatments — not sibling
+ * page bodies.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
+import { loadReferencesFamilyFreshnessSummary } from "./load-references-family-freshness";
 import { loadReferencesFamilyIndex } from "./load-references-family-index";
 import { ReferencesFamilyIndex } from "./ReferencesFamilyIndex";
 import {
@@ -38,16 +40,53 @@ describe("references family index", () => {
     expect(loaded.messages.sections?.introduction?.body).not.toMatch(
       /Model Atlas|page-meta|reader-shortcut|process prose/i,
     );
+    expect(loaded.messages.sections?.freshness?.title).toBe(
+      "Package freshness",
+    );
+    expect(loaded.messages.callouts?.freshnessUnavailable?.title).toContain(
+      "unavailable",
+    );
+  });
+
+  test("loads package freshness from the public API manifest", () => {
+    const freshness = loadReferencesFamilyFreshnessSummary();
+
+    expect(freshness.status).toBe("ready");
+    if (freshness.status !== "ready") {
+      throw new Error("expected ready freshness summary");
+    }
+    expect(freshness.packageId.length).toBeGreaterThan(0);
+    expect(freshness.packageVersion.length).toBeGreaterThan(0);
+    expect(freshness.sourceCommit.length).toBeGreaterThan(0);
+    expect(freshness.publicArtifactId).toBe("@you-agent-factory/api/manifest");
+  });
+
+  test("returns an explicit unavailable freshness result when the manifest cannot be read", () => {
+    const freshness = loadReferencesFamilyFreshnessSummary({
+      resolveExport: () => {
+        throw new Error("manifest export missing in fixture");
+      },
+    });
+
+    expect(freshness.status).toBe("unavailable");
+    if (freshness.status !== "unavailable") {
+      throw new Error("expected unavailable freshness summary");
+    }
+    expect(freshness.reason).toContain("manifest");
   });
 
   test("renders the authored introduction instead of empty-collection copy", async () => {
     const loaded = await loadReferencesFamilyIndex();
+    const freshness = loadReferencesFamilyFreshnessSummary();
 
     render(
       <main>
         <h1>{loaded.messages.title}</h1>
         <p>{loaded.messages.description}</p>
-        <ReferencesFamilyIndex messages={loaded.messages} />
+        <ReferencesFamilyIndex
+          freshness={freshness}
+          messages={loaded.messages}
+        />
       </main>,
     );
 
@@ -63,8 +102,86 @@ describe("references family index", () => {
     expect(screen.queryByText("No reference entries yet")).toBeNull();
   });
 
+  test("renders package freshness summary on the success path", async () => {
+    const loaded = await loadReferencesFamilyIndex();
+    const freshness = loadReferencesFamilyFreshnessSummary();
+
+    expect(freshness.status).toBe("ready");
+    if (freshness.status !== "ready") {
+      throw new Error("expected ready freshness summary");
+    }
+
+    render(
+      <main>
+        <ReferencesFamilyIndex
+          freshness={freshness}
+          messages={loaded.messages}
+        />
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Package freshness" }),
+    ).toBeTruthy();
+    const summary = document.querySelector(
+      "[data-references-family-freshness-summary]",
+    );
+    expect(summary).toBeTruthy();
+    expect(summary?.getAttribute("data-package-id")).toBe(freshness.packageId);
+    expect(summary?.getAttribute("data-package-version")).toBe(
+      freshness.packageVersion,
+    );
+    expect(summary?.getAttribute("data-source-commit")).toBe(
+      freshness.sourceCommit,
+    );
+    expect(screen.getByText(freshness.packageId)).toBeTruthy();
+    expect(screen.getByText(freshness.packageVersion)).toBeTruthy();
+    expect(screen.getByText(freshness.sourceCommit)).toBeTruthy();
+    expect(
+      document.querySelector("[data-freshness-status='ready']"),
+    ).toBeTruthy();
+  });
+
+  test("keeps intro and discoverability links when freshness is unavailable", async () => {
+    const loaded = await loadReferencesFamilyIndex();
+    const freshness = loadReferencesFamilyFreshnessSummary({
+      resolveExport: () => {
+        throw new Error("manifest export missing in fixture");
+      },
+    });
+    const cards = resolveReferenceFamilyDiscoverabilityCards(loaded.messages);
+
+    render(
+      <main>
+        <ReferencesFamilyIndex
+          freshness={freshness}
+          messages={loaded.messages}
+        />
+      </main>,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "What this family covers" }),
+    ).toBeTruthy();
+    expect(
+      document.querySelector("[data-freshness-status='unavailable']"),
+    ).toBeTruthy();
+    expect(document.querySelector("[data-reference-error-state]")).toBeTruthy();
+    expect(screen.getByText("Package freshness unavailable")).toBeTruthy();
+    expect(screen.getByText(/manifest could not be read/i)).toBeTruthy();
+
+    const list = screen.getByRole("list", { name: "Contract surfaces" });
+    for (const card of cards) {
+      const link = within(list).getByRole("link", {
+        name: new RegExp(card.title),
+      });
+      expect(link.getAttribute("href")).toBe(card.href);
+    }
+  });
+
   test("renders discoverability links for all eight planned reference routes", async () => {
     const loaded = await loadReferencesFamilyIndex();
+    const freshness = loadReferencesFamilyFreshnessSummary();
     const cards = resolveReferenceFamilyDiscoverabilityCards(loaded.messages);
 
     expect(REFERENCE_FAMILY_DISCOVERABILITY_ROUTES).toHaveLength(8);
@@ -89,7 +206,10 @@ describe("references family index", () => {
 
     render(
       <main>
-        <ReferencesFamilyIndex messages={loaded.messages} />
+        <ReferencesFamilyIndex
+          freshness={freshness}
+          messages={loaded.messages}
+        />
       </main>,
     );
 

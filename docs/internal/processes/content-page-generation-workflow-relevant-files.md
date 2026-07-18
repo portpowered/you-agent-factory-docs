@@ -1118,9 +1118,14 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   eight-route constants (`reference-family-routes.ts`), discoverability card
   resolver (`resolve-reference-family-discoverability.ts` — message sections
   keyed by route id supply title/body; hrefs stay on planned
-  `/docs/references/...` paths even when sibling bodies are unpublished), and
-  colocated tests. Do not put sibling W11 page bodies (`api/`, `events/`, …)
-  in this lane.
+  `/docs/references/...` paths even when sibling bodies are unpublished),
+  package freshness summary (`load-references-family-freshness.ts` via W03
+  `loadApiPackageManifest` / `@you-agent-factory/api/manifest`, with a
+  worktree-safe parent-walk `resolveExport` for Next/webpack — do not use
+  `createRequire(import.meta.url)` or bare `import.meta.resolve` on this
+  surface; rendered by `ReferencesFamilyFreshnessSummary.tsx` with shared
+  `ReferenceErrorState` on failure), and colocated tests. Do not put sibling
+  W11 page bodies (`api/`, `events/`, …) in this lane.
 * `src/content/registry/references/`
   First `reference` registry collection. Wire new records through
   `REGISTRY_COLLECTIONS`, `registry.ts` directories, and
@@ -1133,7 +1138,7 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   frontmatter kind alone — required because factories/workers/workstations
   reuse `documentation` kind while keeping an independent public route.
   `renderReferencesFamilyIndexPage` loads the family-index ownership surface
-  for `/docs/references`.
+  and package freshness for `/docs/references`.
 * `src/lib/docs/section-collection-index.test.ts` /
   `src/tests/content/section-indexes.test.tsx`
   Empty-state + localized metadata proofs for still-empty family indexes
