@@ -10,9 +10,8 @@ W17 owns:
 - contract-language policy helpers under `src/lib/i18n/`
 - English language-boundary wrappers for canonical contract description prose
 - reference chrome / collection message catalogs for `en` / `ja` / `zh-CN` / `vi`
-  (later stories)
 - shipped-locale route manifest + alternate/hreflang updates for reference
-  routes (later stories)
+  routes (`references` family index + `references/*` children)
 - locale-parity and untranslated-identifier behavioral tests (later stories)
 
 Do **not**:
@@ -85,14 +84,27 @@ are display-only and are not contract description prose.
 | `src/lib/i18n/reference-chrome-context.tsx` | `ReferenceChromeProvider` / optional hook for client inventory surfaces |
 | `src/content/messages/{locale}/common.json` → `referenceChrome` | en/ja/zh-CN/vi filter, status, badge, a11y, inventory chrome catalogs |
 | `src/features/docs/components/DocsPageProviders.tsx` | Wires `referenceChrome` into local docs pages via provider |
-| `src/lib/i18n/route-locale.ts` | Alternate/hreflang helpers (later W17 manifest story) |
+| `src/lib/i18n/route-locale.ts` | `localizedRouteAlternates` (all locales) + `localizedShippedDocsPageAlternates` (fail-closed shipped filter) |
+| `src/lib/content/shipped-localized-docs.server.ts` | Derive shipped-locale manifest; includes `references` family-index slug when published + locale messages exist |
+| `src/lib/content/generated/shipped-localized-docs.generated.ts` | Client-safe generated artifact for language switcher / gating |
 | `src/components/references/shared/*` | Shared chrome surfaces that resolve catalogs via prop or provider |
 | `src/components/references/schema/schema-example-display.ts` | Example origin labels ("Generated example") — chrome-localizable; payloads stay English |
 
 ## Later W17 stories (do not jump ahead unless selected)
 
-- **005** — locale manifests + alternates for shipped reference routes only
 - **006** — locale parity + untranslated-identifier behavioral suite
+
+## Locale manifests and alternates (story 005)
+
+| Path | Role |
+| --- | --- |
+| `src/lib/content/shipped-localized-docs.server.ts` | Derives `references` (family index) + `references/*` child slugs from colocated locale messages |
+| `src/lib/i18n/route-locale.ts` → `localizedShippedDocsPageAlternates` | Shared fail-closed hreflang filter for docs/reference routes |
+| `src/app/docs/docs-slug-renderer.tsx` | Docs child pages use shipped alternates helper |
+| `src/app/(site)/docs/references/page.tsx` + `[locale]` twin | Family index metadata uses shipped alternates (not all-locale advertising) |
+| `src/components/layout/language-switcher.tsx` | Unavailable for unshipped `references/*` child locales via generated manifest |
+
+Regenerate with `bun run generate:shipped-localized-docs` after changing family-index or reference page locale messages.
 
 ## Collection / page chrome (story 003)
 

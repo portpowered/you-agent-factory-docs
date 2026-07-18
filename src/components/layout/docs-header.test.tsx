@@ -997,4 +997,75 @@ describe("DocsHeader", () => {
     ).toBe("true");
     expect(dialog.textContent).toContain(messages.language.unavailable);
   });
+
+  test("keeps references family index locales available and marks unshipped reference child locales unavailable", async () => {
+    const messages = await loadUiMessages();
+    const SearchDialog: ComponentType<SharedProps> = () => null;
+    const user = userEvent.setup();
+
+    window.history.replaceState({}, "", "/docs/references");
+    const { unmount: unmountIndex } = renderHeaderWithNavigation(
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
+      {
+        SearchDialog,
+        pathname: "/docs/references",
+      },
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: messages.language.open }),
+    );
+    const indexDialog = screen.getByRole("menu");
+    expect(
+      within(indexDialog)
+        .getByRole("menuitem", { name: /日本語/ })
+        .getAttribute("href"),
+    ).toBe("/ja/docs/references");
+    expect(
+      within(indexDialog)
+        .getByRole("menuitem", { name: /简体中文/ })
+        .getAttribute("href"),
+    ).toBe("/zh-CN/docs/references");
+    expect(
+      within(indexDialog)
+        .getByRole("menuitem", { name: /Tiếng Việt/ })
+        .getAttribute("href"),
+    ).toBe("/vi/docs/references");
+    unmountIndex();
+
+    window.history.replaceState({}, "", "/docs/references/cli");
+    renderHeaderWithNavigation(
+      <DocsHeader messages={messages} pageTree={source.pageTree} />,
+      {
+        SearchDialog,
+        pathname: "/docs/references/cli",
+      },
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: messages.language.open }),
+    );
+    const cliDialog = screen.getByRole("menu");
+    expect(
+      within(cliDialog)
+        .getByRole("menuitem", { name: /English/i })
+        .getAttribute("href"),
+    ).toBe("/docs/references/cli");
+    expect(
+      within(cliDialog)
+        .getByRole("menuitem", { name: /日本語/ })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
+    expect(
+      within(cliDialog)
+        .getByRole("menuitem", { name: /简体中文/ })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
+    expect(
+      within(cliDialog)
+        .getByRole("menuitem", { name: /Tiếng Việt/ })
+        .getAttribute("aria-disabled"),
+    ).toBe("true");
+    expect(cliDialog.textContent).toContain(messages.language.unavailable);
+  });
 });

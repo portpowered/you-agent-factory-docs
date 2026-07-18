@@ -20,7 +20,7 @@ import { isDocsPageShippedForLocale } from "@/lib/content/pages";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { resolveReferenceChromeMessages } from "@/lib/i18n/reference-chrome-labels";
-import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
+import { localizedShippedDocsPageAlternates } from "@/lib/i18n/route-locale";
 import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";
 import { withPageOpenGraph } from "@/lib/seo/page-open-graph";
 import { getMDXComponents } from "../../../mdx-components";
@@ -50,23 +50,6 @@ type DocsSlugPageData = {
 async function loadDocsSource() {
   const { source } = await import("@/lib/source");
   return source;
-}
-
-function buildDocsPageAlternates(docsSlug: string) {
-  const alternates = localizedRouteAlternates({
-    surface: "docs-page",
-    slug: docsSlug,
-  });
-  const languages = alternates.languages ?? {};
-
-  return {
-    ...alternates,
-    languages: Object.fromEntries(
-      Object.entries(languages).filter(([locale]) =>
-        isDocsPageShippedForLocale(docsSlug, locale as SiteLocale),
-      ),
-    ),
-  };
 }
 
 async function renderLocalDocsPage(
@@ -202,7 +185,7 @@ export async function buildDocsPageMetadata(
       return withPageOpenGraph({
         title: loadedPage.messages.title,
         description: loadedPage.messages.description,
-        alternates: buildDocsPageAlternates(docsSlug),
+        alternates: localizedShippedDocsPageAlternates(docsSlug),
       });
     }
   }
@@ -229,6 +212,6 @@ export async function buildDocsPageMetadata(
   return withPageOpenGraph({
     title,
     description,
-    alternates: buildDocsPageAlternates(docsSlug),
+    alternates: localizedShippedDocsPageAlternates(docsSlug),
   });
 }

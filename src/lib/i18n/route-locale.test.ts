@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   generateStaticLocaleParams,
   localizedRouteAlternates,
+  localizedShippedDocsPageAlternates,
   localizeStaticParams,
   resolveRouteLocaleOrNotFound,
 } from "./route-locale";
@@ -36,6 +37,33 @@ describe("route-locale", () => {
         ja: "/ja/docs/modules/grouped-query-attention",
         "zh-CN": "/zh-CN/docs/modules/grouped-query-attention",
         vi: "/vi/docs/modules/grouped-query-attention",
+      },
+    });
+  });
+
+  test("filters docs-page alternates to shipped locales only", () => {
+    expect(localizedShippedDocsPageAlternates("references")).toEqual({
+      canonical: "/docs/references",
+      languages: {
+        en: "/docs/references",
+        ja: "/ja/docs/references",
+        "zh-CN": "/zh-CN/docs/references",
+        vi: "/vi/docs/references",
+      },
+    });
+    expect(localizedShippedDocsPageAlternates("references/api")).toEqual({
+      canonical: "/docs/references/api",
+      languages: {
+        en: "/docs/references/api",
+        ja: "/ja/docs/references/api",
+        "zh-CN": "/zh-CN/docs/references/api",
+        vi: "/vi/docs/references/api",
+      },
+    });
+    expect(localizedShippedDocsPageAlternates("references/cli")).toEqual({
+      canonical: "/docs/references/cli",
+      languages: {
+        en: "/docs/references/cli",
       },
     });
   });
