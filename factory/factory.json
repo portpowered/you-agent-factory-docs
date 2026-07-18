@@ -574,6 +574,15 @@
       "skipPermissions": true,
       "stopToken": "\u003cCOMPLETE\u003e",
       "type": "AGENT_WORKER"
+    },
+    {
+      "executorProvider": "SCRIPT_WRAP",
+      "id": "ideafier",
+      "modelProvider": "CURSOR",
+      "model": "grok-4.5-high",
+      "name": "ideafier",
+      "skipPermissions": true,
+      "type": "AGENT_WORKER"
     }
   ],
   "workstations": [
@@ -605,7 +614,7 @@
         }
       ],
       "type": "AGENT_RUN",
-      "worker": "planner"
+      "worker": "ideafier"
     },
     {
       "id": "plan",
