@@ -17,11 +17,13 @@ import {
   EVENTS_SSE_RESPONSE_STATUS,
   EventInventoryValidationError,
   eventSchemaDisplayTargetsForStreams,
+  eventsOpenApiTurbopackLoadDependencies,
   hashOpenApiSource,
   loadEventsOpenApi,
   projectEventsOpenApiToAsyncApi,
   registerEventSchemaTargets,
   resolveEventCorpus,
+  resolveEventsOpenApiFsPath,
   SelectEventStreamsError,
   selectEventStreamsByHardCodedSchemaNamesOnly,
   selectEventStreamsFromOpenApi,
@@ -269,5 +271,20 @@ describe("W09 OpenAPI event-truth resolution (002)", () => {
       pageEntries.filter((entry) => entry.identity.includes("FactoryEvent"))
         .length,
     ).toBeGreaterThan(0);
+  });
+
+  test("Turbopack load dependencies resolve the same OpenAPI bytes as Bun default", () => {
+    const viaDefault = loadEventsOpenApi();
+    const viaTurbopack = resolveEventCorpus({
+      loadDependencies: eventsOpenApiTurbopackLoadDependencies(),
+    });
+
+    expect(resolveEventsOpenApiFsPath()).toBe(viaDefault.resolvedPath);
+    expect(viaTurbopack.openapi.rawText).toBe(viaDefault.rawText);
+    expect(viaTurbopack.selectedStreams.map((stream) => stream.role)).toEqual([
+      "canonical",
+      "ephemeral",
+      "compatibility-only",
+    ]);
   });
 });

@@ -53,7 +53,20 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/lib/references/events/project-events-asyncapi.ts` | Optional source-hashed AsyncAPI projection (never a second authored corpus) |
 | `src/lib/references/events/event-schema-targets.ts` | W04 `SchemaAddress` / anchor targets for payload roots |
 | `src/lib/references/events/resolve-event-corpus.ts` | Orchestrate load → select → inventory → optional projection → W04 targets |
+| `src/lib/references/events/events-openapi-turbopack.ts` | Turbopack-safe `resolveExport` for Next server pages (manifest → `generated/openapi/openapi.yaml` sibling join) |
 | `src/lib/references/events/events-openapi-resolution.test.ts` | W03 load, selection, inventory drift, unresolved refs, AsyncAPI projection, W04 anchors |
+
+## Key host files (story 003 — stream roles / canonicality)
+
+| Path | Role |
+| --- | --- |
+| `src/components/references/events/event-stream-display.ts` | Pure canonicality + summary model helpers (`eventCanonicalityPresentationForRole`, `eventStreamOperationSummaryModelsFromCorpus`) |
+| `src/components/references/events/event-canonicality-badge.tsx` | Accessible role badge: Canonical/Ephemeral/Compatibility-only + Preferred/Not preferred (+ Non-canonical / Not canonical replay) |
+| `src/components/references/events/event-stream-operation-summary.tsx` | One stream summary: path/method, payload root, catalog deep link, role notices |
+| `src/components/references/events/event-stream-operations-list.tsx` | Ordered list (canonical → ephemeral → compatibility-only) |
+| `src/components/references/events/events-verification-harness.tsx` | Non-production harness chrome for browser / RTL proofs |
+| `src/app/(dev)/events-renderer-harness/page.tsx` | Dev harness route `/events-renderer-harness` (hidden in prod unless `ENABLE_EVENTS_RENDERER_HARNESS=1`) |
+| `src/components/references/events/event-stream-operations.test.tsx` | Role labeling + live OpenAPI three-stream proofs |
 
 ## Related spike (do not ship as production)
 
@@ -82,3 +95,14 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   `event-schema-targets.ts` — do not invent a second event schema corpus.
 - Prefer `resolveEventCorpus()` as the build/server orchestration entry for
   later catalog UI stories.
+- Preferred session-stream marking is **canonical only**
+  (`isPreferredEventStreamRole` / `EventCanonicalityBadge`). SelectedOpenAPI
+  `preferred: true` for ephemeral means “not compatibility-only” — do not
+  confuse that inventory flag with the UI “Preferred” badge.
+- Browser-verify stream roles via `/events-renderer-harness` (dev) with a unique
+  port and `curl --max-time 60` (SSR can be slow under Turbopack).
+- Next/Turbopack pages must pass `eventsOpenApiTurbopackLoadDependencies()` into
+  `resolveEventCorpus({ loadDependencies })` — Bun's default `import.meta.resolve`
+  is not available under Turbopack (`__TURBOPACK__import$2e$meta__.resolve is not a function`),
+  and `Bun.YAML.parse` is unavailable under Next's Node server (inject the portable
+  `yaml` package parser). Unit tests under `bun test` can keep the default resolver.

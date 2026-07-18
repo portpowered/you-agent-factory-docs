@@ -34,6 +34,13 @@ export {
   resolveEventCorpusInventory,
 } from "./event-semantic-inventory";
 export {
+  EVENTS_OPENAPI_GENERATED_RELATIVE_PATH,
+  eventsOpenApiTurbopackLoadDependencies,
+  normalizeEventsOpenApiFsPath,
+  resolveEventsOpenApiExport,
+  resolveEventsOpenApiFsPath,
+} from "./events-openapi-turbopack";
+export {
   assertLockedHybridPlacement,
   HYBRID_EVENT_STREAM_OWNERSHIP,
   isLockedHybridPlacement,

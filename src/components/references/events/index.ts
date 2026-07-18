@@ -6,11 +6,35 @@
  * and W10 family renderers outside this tree.
  */
 
+export {
+  EventCanonicalityBadge,
+  type EventCanonicalityBadgeProps,
+} from "./event-canonicality-badge";
+export {
+  type EventCanonicalityPresentation,
+  type EventStreamOperationSummaryModel,
+  eventCanonicalityPresentationForRole,
+  eventPreferredSessionStreamLabel,
+  eventStreamOperationSummaryModelFromSelected,
+  eventStreamOperationSummaryModelsFromCorpus,
+} from "./event-stream-display";
+export {
+  EventStreamOperationSummary,
+  type EventStreamOperationSummaryProps,
+} from "./event-stream-operation-summary";
+export {
+  EventStreamOperationsList,
+  type EventStreamOperationsListProps,
+} from "./event-stream-operations-list";
 export { EventsStatus } from "./events-status";
 export {
   EventsSurface,
   type EventsSurfaceProps,
 } from "./events-surface";
+export {
+  EventsVerificationHarness,
+  type EventsVerificationHarnessProps,
+} from "./events-verification-harness";
 export {
   EVENTS_UI_STATUS_DEFAULT_MESSAGES,
   EVENTS_UI_STATUS_DEFAULT_TITLES,
