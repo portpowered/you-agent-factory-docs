@@ -25,6 +25,23 @@ export {
   splitBlogPostMdxBody,
 } from "./build-blog-search-document";
 export {
+  type BuildCliCommandSearchDocumentsOptions,
+  type BuildJavascriptRuntimeSearchDocumentsOptions,
+  type BuildMcpToolSearchDocumentsOptions,
+  buildCliCommandSearchDocuments,
+  buildJavascriptRuntimeSearchDocuments,
+  buildMcpToolSearchDocuments,
+  CLI_COMMAND_SEARCH_DOCUMENT_TAGS,
+  type CliCommandSearchDocumentsResult,
+  JAVASCRIPT_RUNTIME_SEARCH_DOCUMENT_TAGS,
+  type JavascriptRuntimeSearchDocumentsResult,
+  loadCliCommandReferenceSearchShapes,
+  loadJavascriptRuntimeReferenceSearchShapes,
+  loadMcpToolReferenceSearchShapes,
+  MCP_TOOL_SEARCH_DOCUMENT_TAGS,
+  type McpToolSearchDocumentsResult,
+} from "./build-cli-mcp-javascript-reference-search-documents";
+export {
   type BuildSearchDocumentsForLocaleOptions,
   buildSearchDocument,
   buildSearchDocuments,
@@ -33,7 +50,10 @@ export {
 export {
   buildReferenceItemSearchDocuments,
   loadApiReferenceSearchShapes,
+  loadCliReferenceSearchShapes,
   loadEventCorpusReferenceSearchShapes,
+  loadJavascriptReferenceSearchShapes,
+  loadMcpReferenceSearchShapes,
   loadSchemaFamilyReferenceSearchShapes,
   loadSettledReferenceSearchShapes,
   resetReferenceItemSearchDocumentsCacheForTests,

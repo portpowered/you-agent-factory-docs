@@ -16,8 +16,8 @@ Use these files when changing search document construction, Orama indexing, or
   `SearchDocument` (kind `reference`, fragment URL required, empty topology).
 * `src/lib/search/build-reference-search-documents.ts`
   Loads settled inventory shapes (events corpus, API operations, schema
-  definitions/fields; CLI/MCP/JS in later W16 stories), adapts them, and
-  caches for shared locale builds.
+  definitions/fields, CLI commands, MCP tools, JavaScript runtime symbols /
+  shared schemas), adapts them, and caches for shared locale builds.
 * `src/lib/search/build-api-reference-search-documents.ts`
   W16 story 003: projects packaged OpenAPI operations into reference search
   shapes deep-linking to `/docs/references/api#<registry-anchor>`.
@@ -26,6 +26,11 @@ Use these files when changing search document construction, Orama indexing, or
   definitions and addressable field paths onto per-schema owning pages
   (`factory-schema`, `you-config-schema`, `mock-workers-schema`) — never the
   placeholder `/docs/references/schema` path.
+* `src/lib/search/build-cli-mcp-javascript-reference-search-documents.ts`
+  W16 story 004: projects packaged CLI commands, MCP tools, and JavaScript
+  runtime symbols / shared schemas into reference search shapes deep-linking
+  to `/docs/references/cli|mcp|javascript-runtime#<registry-anchor>` via
+  shared `assign*RegistryAnchors` helpers.
 * `src/lib/content/factory-search-categories.test.tsx`
   Required `bun run test` proof that pageKind labels, live search meta, and
   representative `harness` / `ralph` queries stay inside the factory category
@@ -45,6 +50,12 @@ Use these files when changing search document construction, Orama indexing, or
   definition/field items index as Orama documents with correct owning-page
   deep links (`/docs/references/api#…`, per-schema pages) and that
   representative `submitWorkBySessionId` / `workers` queries return item hits.
+* `src/lib/content/factory-search-cli-mcp-js-event-indexing.test.ts`
+  W16 story 004 required-suite proof that CLI commands, MCP tools, JavaScript
+  symbols / shared schemas, and event variants index as Orama documents with
+  correct owning-page deep links and that representative
+  `you config init` / `you.factory_session.get` / `javascript.log` /
+  `RUN_REQUEST` queries return item hits.
 * `src/lib/content/factory-search-alias-body-tag.test.ts`
   Required `bun run test` proof that factory alias, body-phrase, and tag
   queries find live pages (`agent runtime` → harness, `Ralph loop` → ralph,

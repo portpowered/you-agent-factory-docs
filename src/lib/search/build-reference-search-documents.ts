@@ -4,7 +4,7 @@
  *
  * Story 002 wired the adapter + locale build path with the events corpus.
  * Story 003 adds API operation and schema definition/field loaders.
- * Later W16 stories add CLI/MCP/JavaScript family loaders.
+ * Story 004 adds CLI command, MCP tool, and JavaScript runtime loaders.
  */
 
 import {
@@ -21,6 +21,14 @@ import {
   type ApiOperationSearchDocumentsResult,
   loadApiOperationReferenceSearchShapes,
 } from "./build-api-reference-search-documents";
+import {
+  type CliCommandSearchDocumentsResult,
+  type JavascriptRuntimeSearchDocumentsResult,
+  loadCliCommandReferenceSearchShapes,
+  loadJavascriptRuntimeReferenceSearchShapes,
+  loadMcpToolReferenceSearchShapes,
+  type McpToolSearchDocumentsResult,
+} from "./build-cli-mcp-javascript-reference-search-documents";
 import {
   loadSchemaReferenceSearchShapes,
   type SchemaReferenceSearchDocumentsResult,
@@ -87,14 +95,54 @@ export function loadSchemaFamilyReferenceSearchShapes(): {
 }
 
 /**
+ * Load published CLI command search shapes with registry anchors on
+ * `/docs/references/cli`.
+ */
+export function loadCliReferenceSearchShapes(): {
+  shapes: ReferenceSearchDocumentShape[];
+  corpus: CliCommandSearchDocumentsResult;
+} {
+  const corpus = loadCliCommandReferenceSearchShapes();
+  return { shapes: corpus.documents, corpus };
+}
+
+/**
+ * Load published MCP tool search shapes with registry anchors on
+ * `/docs/references/mcp`.
+ */
+export function loadMcpReferenceSearchShapes(): {
+  shapes: ReferenceSearchDocumentShape[];
+  corpus: McpToolSearchDocumentsResult;
+} {
+  const corpus = loadMcpToolReferenceSearchShapes();
+  return { shapes: corpus.documents, corpus };
+}
+
+/**
+ * Load published JavaScript runtime symbol / shared-schema search shapes with
+ * registry anchors on `/docs/references/javascript-runtime`.
+ */
+export function loadJavascriptReferenceSearchShapes(): {
+  shapes: ReferenceSearchDocumentShape[];
+  corpus: JavascriptRuntimeSearchDocumentsResult;
+} {
+  const corpus = loadJavascriptRuntimeReferenceSearchShapes();
+  return { shapes: corpus.documents, corpus };
+}
+
+/**
  * Collect settled reference search shapes for Orama adaptation.
- * Includes events, API operations, and schema definitions/fields.
+ * Includes events, API operations, schema definitions/fields, CLI commands,
+ * MCP tools, and JavaScript runtime symbols / shared schemas.
  */
 export function loadSettledReferenceSearchShapes(): ReferenceSearchDocumentShape[] {
   return [
     ...loadEventCorpusReferenceSearchShapes().shapes,
     ...loadApiReferenceSearchShapes().shapes,
     ...loadSchemaFamilyReferenceSearchShapes().shapes,
+    ...loadCliReferenceSearchShapes().shapes,
+    ...loadMcpReferenceSearchShapes().shapes,
+    ...loadJavascriptReferenceSearchShapes().shapes,
   ];
 }
 
