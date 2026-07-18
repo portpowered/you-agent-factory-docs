@@ -59,13 +59,27 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/lib/references/mcp-example-generation.ts` | Pure resolve/generate/conform helpers for MCP input examples |
 | `src/components/references/harness/ReferenceMcpHarness.tsx` | Dev fixture mount for MCP inventory browser verification |
 
+## Key host files (JavaScript family — story 006)
+
+| Path | Role |
+| --- | --- |
+| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection |
+| `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed |
+| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome |
+| `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
+| `src/components/references/javascript/types.ts` | JS renderer prop contracts / inventory input union |
+| `src/components/references/javascript/index.ts` | Public JavaScript renderer barrel |
+| `src/components/references/harness/ReferenceJavascriptHarness.tsx` | Dev fixture mount for JS inventory browser verification |
+| `src/lib/references/normalize-family-artifacts.ts` | Also normalizes `sharedSchemas` + enriched symbol metadata |
+
 ## Upstream dependencies (do not reimplement)
+
 
 | Path | Role |
 | --- | --- |
 | `src/lib/references/reference-item.ts` | `ReferenceFamily`, `ReferenceLifecycle`, `ReferenceSourcePointer` |
-| `src/lib/references/family-normalized-models.ts` | CLI/MCP/JS normalized item shapes (CLI carries optional short/long/example/visibility/runnable/handlerPresent; MCP carries optional handlerRegistered/requiredInputs/inputSchema/example) |
-| `src/lib/references/normalize-family-artifacts.ts` | Artifact → normalized CLI/MCP/JS models |
+| `src/lib/references/family-normalized-models.ts` | CLI/MCP/JS normalized item shapes (CLI carries optional short/long/example/visibility/runnable/handlerPresent; MCP carries optional handlerRegistered/requiredInputs/inputSchema/example; JS symbols carry mutability/nullability/examples/sharedSchemaLinks; JS shared schemas carry SchemaDefinitionModel) |
+| `src/lib/references/normalize-family-artifacts.ts` | Artifact → normalized CLI/MCP/JS models (+ shared schemas) |
 | `src/lib/references/mcp-input-schema-projection.ts` | MCP JSON Schema → W04 SchemaDefinitionModel |
 | `src/lib/references/mcp-example-generation.ts` | Resolve authored vs generated MCP examples; schema-valid generation + conform checks |
 | `src/lib/references/schema-model.ts` | W04 SchemaDefinitionModel / SchemaFieldModel contracts |
@@ -84,15 +98,15 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 - When optional contract fields are absent (`packageVersion`, lifecycle,
   visibility, example, runnable, handlerPresent), leave them out or disclose
   absence — never invent values, flags, or arguments.
-- Keep shared chrome under `src/components/references/shared/`; CLI family
-  renderers live in `cli/` (MCP/JavaScript land in later stories).
+- Keep shared chrome under `src/components/references/shared/`; family
+  renderers live in `cli/`, `mcp/`, and `javascript/`.
 - CLI package visibility is often `visible`; map to shared `public` only via
   `mapCliVisibilityToReferenceVisibility` — still show the published string in
   the command metadata row.
 - Browser verification without W11 routes: mount chrome/family renderers on the
   gated `(dev)/reference-chrome-harness` (or a later family harness), not on
   production reference collection pages.
-- Reuse `CodePanel` from `@/features/factory-ui/data-display` for CLI examples.
+- Reuse `CodePanel` from `@/features/factory-ui/data-display` for CLI/JS examples.
 - Show `CliCapabilityNotice` (AlertPanel `semantic="info"`) whenever
   `cliCommandHasStructuredOptions` is false — never invent flag/argument rows,
   defaults, conflicts, or validation rules from prose examples.
@@ -110,3 +124,8 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   Never show unlabeled synthetic examples.
 - MCP/JS schema embeds belong under family renderers + shared thin adapter;
   keep W03 Node acquisition out of client harness mounts.
+- JavaScript symbols carry optional visibility/mutability/nullability/
+  bindingLifecycle/examples/sharedSchemaLinks. Shared schemas normalize via
+  `projectMcpInputSchemaToDefinition`; `$ref`-only properties surface the ref
+  as `typeSummary`; oneOf roots record composition member addresses without
+  expanding a second schema-tree UI.

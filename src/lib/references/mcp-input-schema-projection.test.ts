@@ -30,6 +30,14 @@ describe("typeSummaryFromJsonSchemaProperty", () => {
   test("leaves type absent when unpublished", () => {
     expect(typeSummaryFromJsonSchemaProperty({})).toBeUndefined();
   });
+
+  test("surfaces published $ref when type is absent", () => {
+    expect(
+      typeSummaryFromJsonSchemaProperty({
+        $ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+      }),
+    ).toBe("#/sharedSchemas/javascript.schema.json_compatible/schema");
+  });
 });
 
 describe("projectMcpInputSchemaToDefinition", () => {

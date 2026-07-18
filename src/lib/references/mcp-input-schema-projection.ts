@@ -62,6 +62,8 @@ function isSchemaTypeName(value: string): value is SchemaTypeName {
 /**
  * Compact type summary from a JSON Schema property node when type is published.
  * Leaves the summary absent when the contract omits type — never invents one.
+ * When only a `$ref` is published, surfaces that ref string so thin embeds can
+ * show the link without inventing a primitive type.
  */
 export function typeSummaryFromJsonSchemaProperty(
   property: Record<string, unknown>,
@@ -81,6 +83,10 @@ export function typeSummaryFromJsonSchemaProperty(
       (entry): entry is string => typeof entry === "string" && entry.length > 0,
     );
     return parts.length > 0 ? parts.join(" | ") : undefined;
+  }
+  const ref = optionalNonEmptyString(property.$ref);
+  if (ref !== undefined) {
+    return ref;
   }
   return undefined;
 }
@@ -169,6 +175,14 @@ function projectPropertyField(
   const typeSummary = typeSummaryFromJsonSchemaProperty(propertyValue);
   if (typeSummary !== undefined) {
     field.typeSummary = typeSummary;
+  }
+
+  const ref = optionalNonEmptyString(propertyValue.$ref);
+  if (ref !== undefined) {
+    field.refTarget = {
+      publicArtifactId: address.publicArtifactId,
+      pointer: ref,
+    };
   }
 
   const description = optionalNonEmptyString(propertyValue.description);
@@ -281,6 +295,49 @@ export function projectMcpInputSchemaToDefinition(
   }
   if (properties !== undefined) {
     definition.properties = properties;
+  }
+
+  // Thin projection of composition: record member addresses without expanding
+  // nested schemas into a second full schema-tree UI.
+  const compositionMembers: {
+    oneOf?: SchemaAddress[];
+    anyOf?: SchemaAddress[];
+    allOf?: SchemaAddress[];
+  } = {};
+  for (const kind of ["oneOf", "anyOf", "allOf"] as const) {
+    const members = inputSchema[kind];
+    if (members === undefined) {
+      continue;
+    }
+    if (!Array.isArray(members)) {
+      throw new McpInputSchemaProjectionError(
+        "malformed-input-schema",
+        `Malformed MCP inputSchema: field "${kind}" must be an array.`,
+        { field: kind },
+      );
+    }
+    const addresses: SchemaAddress[] = members.map((_, index) => ({
+      publicArtifactId: options.address.publicArtifactId,
+      pointer: `${options.address.pointer}/${kind}/${index}`,
+    }));
+    if (addresses.length > 0) {
+      compositionMembers[kind] = addresses;
+    }
+  }
+  if (
+    compositionMembers.oneOf !== undefined ||
+    compositionMembers.anyOf !== undefined ||
+    compositionMembers.allOf !== undefined
+  ) {
+    definition.composition = compositionMembers;
+  }
+
+  const rootRef = optionalNonEmptyString(inputSchema.$ref);
+  if (rootRef !== undefined) {
+    definition.refTarget = {
+      publicArtifactId: options.address.publicArtifactId,
+      pointer: rootRef,
+    };
   }
 
   if (inputSchema.additionalProperties !== undefined) {

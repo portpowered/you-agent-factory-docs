@@ -4,6 +4,7 @@ import {
   FamilyArtifactNormalizeError,
   normalizeCliCommandsFromArtifact,
   normalizeEventTypesFromOpenApiArtifact,
+  normalizeJavascriptSharedSchemasFromArtifact,
   normalizeJavascriptSymbolsFromArtifact,
   normalizeMcpToolsFromArtifact,
   normalizeOpenApiOperationsFromArtifact,
@@ -296,14 +297,27 @@ describe("normalizeJavascriptSymbolsFromArtifact", () => {
                 canonicalEnglish: "Emits one workflow-scoped log record.",
               },
             },
+            examples: ['log("hi")'],
+            visibility: "public",
           },
           lifecycle: { state: "active", since: "1.0.0" },
+          parameters: [
+            {
+              name: "fields",
+              serializableValue: {
+                $ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+              },
+            },
+          ],
         },
         "javascript.args": {
           id: "javascript.args",
           name: "args",
           path: "args",
           kind: "value",
+          mutability: "mutable-object",
+          nullability: "non-null",
+          bindingLifecycle: "snapshot-at-bind",
           lifecycle: { state: "active" },
         },
       },
@@ -317,10 +331,22 @@ describe("normalizeJavascriptSymbolsFromArtifact", () => {
       symbolPath: "log",
       kind: "function",
       description: "Emits one workflow-scoped log record.",
+      visibility: "public",
+      examples: ['log("hi")'],
       lifecycle: { state: "active", since: "1.0.0" },
     });
+    expect(log?.sharedSchemaLinks).toEqual([
+      {
+        schemaId: "javascript.schema.json_compatible",
+        ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+        anchor: "javascript.schema.json_compatible",
+      },
+    ]);
     const args = symbols.find((symbol) => symbol.id === "javascript.args");
     expect(args?.description).toBeUndefined();
+    expect(args?.mutability).toBe("mutable-object");
+    expect(args?.nullability).toBe("non-null");
+    expect(args?.bindingLifecycle).toBe("snapshot-at-bind");
   });
 
   test("consumes W03-resolved JavaScript runtime public-subpath data", () => {
@@ -333,7 +359,88 @@ describe("normalizeJavascriptSymbolsFromArtifact", () => {
     const log = symbols.find((symbol) => symbol.id === "javascript.log");
     expect(log?.kind).toBe("function");
     expect(log?.description).toBeTruthy();
+    expect(log?.examples?.length).toBeGreaterThan(0);
+    expect(
+      log?.sharedSchemaLinks?.some(
+        (link) => link.schemaId === "javascript.schema.json_compatible",
+      ),
+    ).toBe(true);
     expect(log?.source.publicArtifactId).toBe(
+      "@you-agent-factory/api/javascript/runtime",
+    );
+  });
+});
+
+describe("normalizeJavascriptSharedSchemasFromArtifact", () => {
+  test("normalizes fixture-shaped shared schemas with thin schema embeds", () => {
+    const fixture = {
+      formatVersion: "1.0.0",
+      sharedSchemas: {
+        "javascript.schema.checkpoint_spec": {
+          id: "javascript.schema.checkpoint_spec",
+          documentation: {
+            documentation: {
+              title: {
+                canonicalEnglish: "Checkpoint specification object",
+              },
+              description: {
+                canonicalEnglish:
+                  "Closed object shape for workflow.checkpoint spec arguments.",
+              },
+            },
+            examples: ['{ "label": "draft" }'],
+            visibility: "public",
+          },
+          lifecycle: { state: "active", since: "1.0.0" },
+          schema: {
+            type: "object",
+            additionalProperties: false,
+            properties: {
+              label: { type: "string" },
+              state: {
+                $ref: "#/sharedSchemas/javascript.schema.json_compatible/schema",
+              },
+            },
+            required: ["label"],
+          },
+        },
+      },
+    };
+
+    const schemas = normalizeJavascriptSharedSchemasFromArtifact(fixture);
+    expect(schemas).toHaveLength(1);
+    const checkpoint = schemas[0];
+    expect(checkpoint).toMatchObject({
+      id: "javascript.schema.checkpoint_spec",
+      name: "Checkpoint specification object",
+      title: "Checkpoint specification object",
+      visibility: "public",
+      examples: ['{ "label": "draft" }'],
+    });
+    expect(checkpoint?.schema?.type).toBe("object");
+    expect(checkpoint?.schema?.required).toEqual(["label"]);
+    expect(checkpoint?.schema?.properties?.state?.typeSummary).toBe(
+      "#/sharedSchemas/javascript.schema.json_compatible/schema",
+    );
+  });
+
+  test("consumes W03-resolved JavaScript runtime sharedSchemas", () => {
+    const artifact = resolveApiPackageArtifact("javascript/runtime");
+    const schemas = normalizeJavascriptSharedSchemasFromArtifact(
+      artifact.data,
+      {
+        publicArtifactId: artifact.specifier,
+      },
+    );
+
+    expect(schemas.length).toBeGreaterThan(3);
+    const jsonCompatible = schemas.find(
+      (schema) => schema.id === "javascript.schema.json_compatible",
+    );
+    expect(jsonCompatible?.schema?.composition?.oneOf?.length).toBeGreaterThan(
+      0,
+    );
+    expect(jsonCompatible?.source.publicArtifactId).toBe(
       "@you-agent-factory/api/javascript/runtime",
     );
   });

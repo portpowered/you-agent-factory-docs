@@ -6,7 +6,10 @@
  * public adapter types exist on main.
  */
 
-import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
+import type {
+  SchemaCompositionModel,
+  SchemaDefinitionModel,
+} from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
 
 export type SchemaDefinitionEmbedProps = {
@@ -36,6 +39,25 @@ function additionalPropertiesLabel(
   return `Additional properties → ${value.pointer}`;
 }
 
+function compositionSummary(
+  composition: SchemaCompositionModel | undefined,
+): string | undefined {
+  if (composition === undefined) {
+    return undefined;
+  }
+  const parts: string[] = [];
+  if (composition.oneOf !== undefined && composition.oneOf.length > 0) {
+    parts.push(`oneOf (${composition.oneOf.length})`);
+  }
+  if (composition.anyOf !== undefined && composition.anyOf.length > 0) {
+    parts.push(`anyOf (${composition.anyOf.length})`);
+  }
+  if (composition.allOf !== undefined && composition.allOf.length > 0) {
+    parts.push(`allOf (${composition.allOf.length})`);
+  }
+  return parts.length > 0 ? parts.join(", ") : undefined;
+}
+
 /**
  * Flat property / required-list embed for a SchemaDefinitionModel projection.
  * Does not invent missing descriptions, types, or required names.
@@ -52,6 +74,8 @@ export function SchemaDefinitionEmbed({
     ? Object.entries(definition.properties)
     : [];
   const required = definition.required ?? [];
+  const compositionLabel = compositionSummary(definition.composition);
+  const refLabel = definition.refTarget?.pointer;
 
   return (
     <div
@@ -69,6 +93,12 @@ export function SchemaDefinitionEmbed({
         ) : null}
         {schemaType !== undefined ? (
           <EmbedRow label="Type" value={schemaType} mono />
+        ) : null}
+        {compositionLabel !== undefined ? (
+          <EmbedRow label="Composition" value={compositionLabel} />
+        ) : null}
+        {refLabel !== undefined ? (
+          <EmbedRow label="$ref" value={refLabel} mono />
         ) : null}
         {additionalProperties !== undefined ? (
           <EmbedRow label="Object policy" value={additionalProperties} />

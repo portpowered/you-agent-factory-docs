@@ -12,6 +12,7 @@ import {
   type CliCommandNormalized,
   createCliCommandNormalized,
   createEventTypeNormalized,
+  createJavascriptSharedSchemaNormalized,
   createJavascriptSymbolNormalized,
   createMcpToolNormalized,
   createOpenApiOperationSummary,
@@ -19,6 +20,8 @@ import {
   encodeJsonPointerSegment,
   FamilyNormalizedModelParseError,
   isOpenApiHttpMethod,
+  type JavascriptSharedSchemaLink,
+  type JavascriptSharedSchemaNormalized,
   type JavascriptSymbolNormalized,
   type McpToolNormalized,
   type OpenApiHttpMethod,
@@ -553,11 +556,15 @@ export function normalizeJavascriptSymbolsFromArtifact(
     }
 
     const kind = optionalNonEmptyString(symbol.kind);
-    const description = readJavascriptDocumentationDescription(symbol);
+    const documentation = readJavascriptDocumentation(symbol);
     const lifecycle = lifecycleFromStringOrObject(
       symbol.lifecycle,
       `symbols.${key}.lifecycle`,
     );
+    const mutability = optionalNonEmptyString(symbol.mutability);
+    const nullability = optionalNonEmptyString(symbol.nullability);
+    const bindingLifecycle = optionalNonEmptyString(symbol.bindingLifecycle);
+    const sharedSchemaLinks = collectJavascriptSharedSchemaLinks(symbol);
 
     const model: JavascriptSymbolNormalized = {
       id,
@@ -574,8 +581,26 @@ export function normalizeJavascriptSymbolsFromArtifact(
     if (kind !== undefined) {
       model.kind = kind;
     }
-    if (description !== undefined) {
-      model.description = description;
+    if (documentation.description !== undefined) {
+      model.description = documentation.description;
+    }
+    if (documentation.visibility !== undefined) {
+      model.visibility = documentation.visibility;
+    }
+    if (documentation.examples !== undefined) {
+      model.examples = documentation.examples;
+    }
+    if (mutability !== undefined) {
+      model.mutability = mutability;
+    }
+    if (nullability !== undefined) {
+      model.nullability = nullability;
+    }
+    if (bindingLifecycle !== undefined) {
+      model.bindingLifecycle = bindingLifecycle;
+    }
+    if (sharedSchemaLinks.length > 0) {
+      model.sharedSchemaLinks = sharedSchemaLinks;
     }
     if (lifecycle !== undefined) {
       model.lifecycle = lifecycle;
@@ -594,22 +619,225 @@ export function normalizeJavascriptSymbolsFromArtifact(
   return symbols;
 }
 
-function readJavascriptDocumentationDescription(
-  symbol: Record<string, unknown>,
-): string | undefined {
-  const documentation = symbol.documentation;
+/**
+ * Normalize JavaScript runtime `sharedSchemas` into shared schema models.
+ * Expects the structured object from `@you-agent-factory/api/javascript/runtime`.
+ */
+export function normalizeJavascriptSharedSchemasFromArtifact(
+  data: unknown,
+  options: {
+    publicArtifactId?: string;
+    sourcePath?: string;
+  } = {},
+): JavascriptSharedSchemaNormalized[] {
+  const root = requirePlainObject(data, "javascript/runtime");
+  const sharedValue = root.sharedSchemas;
+  if (sharedValue === undefined) {
+    return [];
+  }
+  const sharedMap = requirePlainObject(sharedValue, "sharedSchemas");
+  const publicArtifactId =
+    options.publicArtifactId ??
+    toApiPackageExportSpecifier("javascript/runtime");
+
+  const schemas: JavascriptSharedSchemaNormalized[] = [];
+
+  for (const [key, entry] of Object.entries(sharedMap)) {
+    const shared = requirePlainObject(entry, `sharedSchemas.${key}`);
+    const id = optionalNonEmptyString(shared.id) ?? key;
+    const documentation = readJavascriptDocumentation(shared);
+    const lifecycle = lifecycleFromStringOrObject(
+      shared.lifecycle,
+      `sharedSchemas.${key}.lifecycle`,
+    );
+    const name =
+      documentation.title ??
+      sharedSchemaDisplayName(id) ??
+      optionalNonEmptyString(shared.name) ??
+      id;
+
+    let schema: ReturnType<typeof projectMcpInputSchemaToDefinition>;
+    try {
+      schema = projectMcpInputSchemaToDefinition(shared.schema, {
+        address: {
+          publicArtifactId,
+          pointer: `/sharedSchemas/${encodeJsonPointerSegment(key)}/schema`,
+        },
+        title: documentation.title,
+        description: documentation.description,
+      });
+    } catch (cause) {
+      if (cause instanceof McpInputSchemaProjectionError) {
+        throw new FamilyArtifactNormalizeError(
+          "malformed-artifact",
+          `Malformed JavaScript shared schema at sharedSchemas.${key}: ${cause.message}`,
+          { field: `sharedSchemas.${key}.schema`, cause },
+        );
+      }
+      throw cause;
+    }
+
+    const model: JavascriptSharedSchemaNormalized = {
+      id,
+      name,
+      source: sourcePointer(
+        publicArtifactId,
+        `/sharedSchemas/${encodeJsonPointerSegment(key)}`,
+        options.sourcePath,
+      ),
+      anchor: provisionalAnchorFromIdentity(id),
+    };
+
+    if (documentation.title !== undefined) {
+      model.title = documentation.title;
+    }
+    if (documentation.description !== undefined) {
+      model.description = documentation.description;
+    }
+    if (documentation.visibility !== undefined) {
+      model.visibility = documentation.visibility;
+    }
+    if (documentation.examples !== undefined) {
+      model.examples = documentation.examples;
+    }
+    if (schema !== undefined) {
+      model.schema = schema;
+    }
+    if (lifecycle !== undefined) {
+      model.lifecycle = lifecycle;
+    }
+
+    try {
+      schemas.push(createJavascriptSharedSchemaNormalized(model));
+    } catch (cause) {
+      throw wrapModelError(
+        `Malformed JavaScript shared schema at sharedSchemas.${key}`,
+        cause,
+      );
+    }
+  }
+
+  return schemas;
+}
+
+type JavascriptDocumentationFields = {
+  description?: string;
+  title?: string;
+  visibility?: string;
+  examples?: string[];
+};
+
+function readJavascriptDocumentation(
+  item: Record<string, unknown>,
+): JavascriptDocumentationFields {
+  const documentation = item.documentation;
   if (!isPlainObject(documentation)) {
-    return undefined;
+    return {};
   }
+
+  const result: JavascriptDocumentationFields = {};
   const nested = documentation.documentation;
-  if (!isPlainObject(nested)) {
+  if (isPlainObject(nested)) {
+    const description = nested.description;
+    if (isPlainObject(description)) {
+      const canonical = optionalNonEmptyString(description.canonicalEnglish);
+      if (canonical !== undefined) {
+        result.description = canonical;
+      }
+    } else {
+      const plain = optionalNonEmptyString(description);
+      if (plain !== undefined) {
+        result.description = plain;
+      }
+    }
+
+    const title = nested.title;
+    if (isPlainObject(title)) {
+      const canonical = optionalNonEmptyString(title.canonicalEnglish);
+      if (canonical !== undefined) {
+        result.title = canonical;
+      }
+    } else {
+      const plain = optionalNonEmptyString(title);
+      if (plain !== undefined) {
+        result.title = plain;
+      }
+    }
+  }
+
+  const visibility = optionalNonEmptyString(documentation.visibility);
+  if (visibility !== undefined) {
+    result.visibility = visibility;
+  }
+
+  if (Array.isArray(documentation.examples)) {
+    const examples = documentation.examples
+      .map((entry) => optionalNonEmptyString(entry))
+      .filter((entry): entry is string => entry !== undefined);
+    if (examples.length > 0) {
+      result.examples = examples;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Extract `#/sharedSchemas/{id}/schema` identities from a published symbol
+ * surface. Dedupes by schema id; never invents refs that are not present.
+ */
+export function collectJavascriptSharedSchemaLinks(
+  value: unknown,
+): JavascriptSharedSchemaLink[] {
+  const found = new Map<string, JavascriptSharedSchemaLink>();
+
+  const visit = (node: unknown): void => {
+    if (Array.isArray(node)) {
+      for (const entry of node) {
+        visit(entry);
+      }
+      return;
+    }
+    if (!isPlainObject(node)) {
+      return;
+    }
+    const ref = optionalNonEmptyString(node.$ref);
+    if (ref !== undefined) {
+      const schemaId = sharedSchemaIdFromRef(ref);
+      if (schemaId !== undefined && !found.has(schemaId)) {
+        found.set(schemaId, {
+          schemaId,
+          ref,
+          anchor: provisionalAnchorFromIdentity(schemaId),
+        });
+      }
+    }
+    for (const entry of Object.values(node)) {
+      visit(entry);
+    }
+  };
+
+  visit(value);
+  return [...found.values()];
+}
+
+/** Parse `#/sharedSchemas/{id}/schema` (or similar) into the shared schema id. */
+export function sharedSchemaIdFromRef(ref: string): string | undefined {
+  const trimmed = ref.trim();
+  const match = trimmed.match(/^#\/sharedSchemas\/([^/]+)(?:\/|$)/);
+  if (match === null) {
     return undefined;
   }
-  const description = nested.description;
-  if (!isPlainObject(description)) {
-    return optionalNonEmptyString(description);
+  const encoded = match[1];
+  if (encoded === undefined || encoded.length === 0) {
+    return undefined;
   }
-  return optionalNonEmptyString(description.canonicalEnglish);
+  return encoded.replace(/~1/g, "/").replace(/~0/g, "~");
+}
+
+function sharedSchemaDisplayName(id: string): string | undefined {
+  const leaf = id.split(".").pop();
+  return optionalNonEmptyString(leaf);
 }
 
 /**
