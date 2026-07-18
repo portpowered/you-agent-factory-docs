@@ -1,0 +1,217 @@
+/**
+ * W09 production event-stream / event-corpus lib helpers.
+ *
+ * Prefer importing from `@/lib/references/events`. Keep W02 spike routes and
+ * W07/W08/W10 ownership trees outside this module.
+ */
+
+export {
+  EVENTS_ASYNCAPI_DEPENDENCY_POLICY,
+  type EventsAsyncApiDependencyPolicy,
+  type EventsAsyncApiDependencyPolicyInput,
+  eventsSurfaceAllowsPermanentAsyncApiPin,
+} from "./asyncapi-dependency-policy";
+export {
+  assertEventCatalogInventoryMatchesLive,
+  compareEventCatalogInventoryIdentities,
+  EventCatalogInventoryDriftError,
+  type EventCatalogInventoryDriftErrorCode,
+  type EventCatalogInventoryIdentityKind,
+  eventSearchDocumentFactoryEventTypeIdentities,
+  eventSearchDocumentResponsePayloadIdentities,
+  extractFactoryEventDiscriminatorMappingsFromOpenApi,
+  extractFactoryEventMappingIdentitiesFromOpenApi,
+  extractFactoryEventTypesFromOpenApi,
+  extractFactoryResponseEventKindValuesFromOpenApi,
+  extractFactoryResponseEventPayloadNamesFromOpenApi,
+  extractFactoryResponseEventPhaseValuesFromOpenApi,
+  factoryEventCatalogMappingIdentities,
+  factoryEventCatalogTypeIdentities,
+  factoryEventMappingIdentity,
+  factoryResponseEventCatalogKindIdentities,
+  factoryResponseEventCatalogPayloadIdentities,
+  factoryResponseEventCatalogPhaseIdentities,
+} from "./event-catalog-inventory-drift";
+export {
+  buildEventIdentityHandshake,
+  buildEventJsonReconnectProbe,
+  buildEventReconnectContract,
+  buildEventReconnectLifecycleCorpus,
+  buildEventStreamLifecycle,
+  EVENT_IDENTITY_HANDSHAKE_HEADER_NAMES,
+  EVENT_JSON_RECONNECT_OUTCOME_SCHEMA_NAME,
+  EVENT_JSON_RECONNECT_PROBE_MEDIA_TYPE,
+  EVENT_JSON_RECONNECT_PROBE_OUTCOME_BASELINE,
+  EVENT_JSON_RECONNECT_RECOVERY_SCHEMA_NAME,
+  EVENT_JSON_RECONNECT_RETRY_SCHEMA_NAME,
+  EVENT_RECONNECT_CANONICAL_PATH,
+  EVENT_RECONNECT_CURSOR_PARAM_NAMES,
+  EVENT_STREAM_LIFECYCLE_RESPONSE_GAP_KIND,
+  type EventIdentityHandshakeHeader,
+  type EventIdentityHandshakeHeaderName,
+  type EventIdentityHandshakeModel,
+  type EventJsonReconnectProbeModel,
+  type EventJsonReconnectProbeRetryField,
+  type EventReconnectContractModel,
+  type EventReconnectCursorParameter,
+  type EventReconnectCursorParamName,
+  type EventReconnectLifecycleCorpus,
+  EventReconnectLifecycleError,
+  type EventReconnectLifecycleErrorCode,
+  type EventStreamLifecycleModel,
+} from "./event-reconnect-lifecycle";
+export {
+  EVENTS_CORPUS_OWNING_PAGE_ID,
+  type EventSchemaDisplayTarget,
+  eventSchemaDisplayTargetsForStreams,
+  jsonPointerFromComponentsRef,
+  registerEventSchemaTargets,
+  schemaAddressForSelectedEventStream,
+} from "./event-schema-targets";
+export {
+  type BuildEventSearchDocumentsOptions,
+  buildEventCorpusSearchDocuments,
+  EVENT_SEARCH_DOCUMENT_TAGS,
+  type EventCatalogNavEntry,
+  type EventCorpusSearchDocumentsResult,
+  eventSearchDocumentAnchors,
+  factoryEventTypeReferenceItems,
+  factoryResponseEventPayloadReferenceItems,
+  registerEventCatalogAnchors,
+} from "./event-search-documents";
+export {
+  assertEventCorpusClosureValid,
+  assertEventInventoryMatchesExpected,
+  buildEventOperationInventory,
+  buildEventSemanticInventory,
+  countEventTypesFromSchema,
+  countPayloadVariantsFromRootSchema,
+  EventInventoryValidationError,
+  type EventInventoryValidationErrorCode,
+  type EventOperationInventory,
+  type EventSemanticInventory,
+  hashOpenApiSource,
+  resolveEventCorpusInventory,
+} from "./event-semantic-inventory";
+export {
+  EVENTS_OPENAPI_GENERATED_RELATIVE_PATH,
+  eventsOpenApiTurbopackLoadDependencies,
+  normalizeEventsOpenApiFsPath,
+  resolveEventsOpenApiExport,
+  resolveEventsOpenApiFsPath,
+} from "./events-openapi-turbopack";
+export {
+  buildFactoryEventCatalog,
+  FACTORY_EVENT_SCHEMA_NAME,
+  type FactoryEventCatalog,
+  FactoryEventCatalogError,
+  type FactoryEventCatalogErrorCode,
+  type FactoryEventDiscriminatorMapping,
+  factoryEventCatalogEventTypes,
+  factoryEventCatalogPayloadSchemaNames,
+  factoryEventPayloadDefinitionForType,
+  normalizeOpenApiComponentSchemaDefinition,
+  payloadSchemaNameFromRef,
+} from "./factory-event-catalog";
+export {
+  buildFactoryResponseEventCatalog,
+  FACTORY_RESPONSE_EVENT_KIND_SCHEMA_NAME,
+  FACTORY_RESPONSE_EVENT_PAYLOAD_SCHEMA_NAME,
+  FACTORY_RESPONSE_EVENT_PHASE_SCHEMA_NAME,
+  FACTORY_RESPONSE_EVENT_PROVENANCE_SCHEMA_NAME,
+  FACTORY_RESPONSE_EVENT_SCHEMA_NAME,
+  type FactoryResponseEventCatalog,
+  FactoryResponseEventCatalogError,
+  type FactoryResponseEventCatalogErrorCode,
+  type FactoryResponseEventDimensionValues,
+  type FactoryResponseEventPayloadVariant,
+  factoryResponseEventCatalogKindValues,
+  factoryResponseEventCatalogPayloadSchemaNames,
+  factoryResponseEventCatalogPhaseValues,
+  factoryResponseEventPayloadDefinitionForName,
+  responsePayloadSchemaNameFromRef,
+} from "./factory-response-event-catalog";
+export {
+  assertLockedHybridPlacement,
+  HYBRID_EVENT_STREAM_OWNERSHIP,
+  isLockedHybridPlacement,
+  LOCKED_EVENT_STREAM_PLACEMENT,
+  type LockedEventStreamPlacement,
+} from "./hybrid-placement";
+export {
+  EventsOpenApiLoadError,
+  type LoadEventsOpenApiDependencies,
+  type LoadedEventsOpenApi,
+  loadEventsOpenApi,
+} from "./load-events-openapi";
+export {
+  EVENTS_SSE_MEDIA_TYPE,
+  EVENTS_SSE_RESPONSE_STATUS,
+  type EventsOpenApiComponentsSchemasLike,
+  type EventsOpenApiDocument,
+  type EventsOpenApiHeaderObject,
+  type EventsOpenApiMediaTypeObject,
+  type EventsOpenApiOperation,
+  type EventsOpenApiParameterObject,
+  type EventsOpenApiPathItem,
+  type EventsOpenApiResponseObject,
+} from "./openapi-document";
+export {
+  channelIdForSelectedEventStream,
+  EVENTS_ASYNCAPI_GENERATED_FILE_NOTICE,
+  EVENTS_ASYNCAPI_VERSION,
+  type EventsOpenApiToAsyncApiProjection,
+  type EventsProjectedAsyncApiChannel,
+  type EventsProjectedAsyncApiDocument,
+  type EventsProjectedAsyncApiMessage,
+  messageIdForSelectedEventStream,
+  type ProjectEventsOpenApiToAsyncApiOptions,
+  projectEventsOpenApiToAsyncApi,
+  projectSelectedEventStreamsToAsyncApi,
+} from "./project-events-asyncapi";
+export {
+  type ResolvedEventCorpus,
+  type ResolveEventCorpusOptions,
+  resolveEventCorpus,
+} from "./resolve-event-corpus";
+export {
+  collectComponentSchemaRefsFromValue,
+  collectEventSchemaRefClosure,
+  type EventSchemaRefClosure,
+  localSchemaNameFromRef,
+} from "./schema-ref-closure";
+export {
+  readEventsSseMediaTypeObject,
+  resolvePayloadRootFromXEventSchema,
+  SelectEventStreamsError,
+  type SelectEventStreamsErrorCode,
+  type SelectedEventStream,
+  schemaNameFromComponentsRef,
+  selectEventStreamFromOpenApi,
+  selectEventStreamsByHardCodedSchemaNamesOnly,
+  selectEventStreamsFromOpenApi,
+} from "./select-event-streams";
+export {
+  buildSseStaticExamplesCorpus,
+  SSE_STATIC_EXAMPLE_KIND,
+  SSE_STATIC_EXAMPLE_ORIGIN,
+  type SseStaticExample,
+  type SseStaticExampleKind,
+  type SseStaticExampleOrigin,
+  type SseStaticExamplesCorpus,
+  sseFrameExampleHasWireFields,
+  sseReconnectExampleUsesContractNames,
+  sseStaticFrameExamples,
+  sseStaticReconnectExamples,
+} from "./sse-static-examples";
+export {
+  EVENT_STREAM_OPERATIONS,
+  EVENT_STREAM_ROLES,
+  EVENT_STREAM_SAFETY,
+  EVENTS_OPENAPI_EXPORT,
+  type EventStreamOperation,
+  type EventStreamOperationItem,
+  type EventStreamRole,
+  eventStreamOperationByRole,
+  isPreferredEventStreamRole,
+} from "./stream-operations";

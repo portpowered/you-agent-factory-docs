@@ -1,0 +1,77 @@
+{
+  "title": "Workers",
+  "description": "Choose and configure you-agent-factory workers: runtime executors declared in the factory and invoked by workstations, with six Factory WorkerType variants plus a separate mock-worker surface.",
+  "openingSummary": "A worker is the runtime executor a workstation invokes by name. Pick the WorkerType that matches the work, keep mock workers on their own test-only schema, and use shared identity fields before variant-specific configuration.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This index defines the Worker family for you-agent-factory: what a worker is, why the WorkerType choice matters before you author a variant page, which fields are shared across Factory workers, and how mock workers stay separate from runtime WorkerType values. Use it when you need to select the right worker page before configuring backends."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A worker is a named runtime executor. factory.json declares each worker name in the factory topology. The worker definition supplies the execution backend; a workstation binds that name and owns step routing, prompts, limits, and outputs. The WorkerType discriminator selects the implementation family. Mock workers are not a Factory WorkerType — they live on the mock-workers schema for deterministic test dispatch only."
+    },
+    "selection": {
+      "title": "Select A Worker Variant",
+      "body": "Use the comparison below to open the matching variant page. Prefer current public WorkerType names in new configs. Legacy MODEL_WORKER and HOSTED_WORKER remain loadable aliases and have their own pages for migration review."
+    },
+    "sharedFields": {
+      "title": "Shared Fields",
+      "body": "These fields apply across Factory Worker variants. Variant pages add type-specific fields such as model routing, command and args, or hosted provider auth. The live Worker schema embed below shows the base contract from the installed Factory package."
+    },
+    "workerSchema": {
+      "title": "Worker Schema",
+      "body": "The embed shows the live Factory Worker base definition from the installed package. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this index."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This index is a Worker family overview and selection surface. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not a full per-variant field dump. Variant pages own discriminator-specific configuration. Mock workers stay on their own page and schema. Workstation companion pages are discovery links only."
+    },
+    "related": {
+      "title": "Related To"
+    }
+  },
+  "links": {
+    "selectionTypeHeader": "WorkerType",
+    "selectionWhenHeader": "Use when",
+    "selectionPageHeader": "Variant page",
+    "selectionInferenceType": "INFERENCE_WORKER",
+    "selectionInferenceWhen": "One-shot harness inference such as TTS, ASR, or typed INFERENCE_RUN dispatches",
+    "selectionInferencePage": "Inference worker",
+    "selectionAgentType": "AGENT_WORKER",
+    "selectionAgentWhen": "Agent-loop execution for AGENT_RUN workstations until acceptance, rejection, or failure",
+    "selectionAgentPage": "Agent worker",
+    "selectionScriptType": "SCRIPT_WORKER",
+    "selectionScriptWhen": "Command-backed SCRIPT_RUN workstations",
+    "selectionScriptPage": "Script worker",
+    "selectionPollerType": "POLLER_WORKER",
+    "selectionPollerWhen": "Hosted poller ingress paired with workstation behavior POLLER",
+    "selectionPollerPage": "Poller worker",
+    "selectionModelType": "MODEL_WORKER",
+    "selectionModelWhen": "Legacy managed or local model capability alias — prefer INFERENCE_WORKER or AGENT_WORKER for new configs",
+    "selectionModelPage": "Model worker",
+    "selectionHostedType": "HOSTED_WORKER",
+    "selectionHostedWhen": "Legacy hosted provider alias — prefer POLLER_WORKER for new configs",
+    "selectionHostedPage": "Hosted worker",
+    "selectionMockType": "Mock worker (not a WorkerType)",
+    "selectionMockWhen": "Test-only deterministic accept, script, or reject dispatch from the mock-workers schema",
+    "selectionMockPage": "Mock worker",
+    "selectionMockNote": "Mock workers are not a seventh Factory WorkerType. Keep them on the mock-workers schema and the mock worker page.",
+    "sharedFieldHeader": "Field",
+    "sharedRoleHeader": "Role",
+    "sharedNameField": "name",
+    "sharedNameRole": "Worker identity declared in the factory and bound by workstations",
+    "sharedTypeField": "type",
+    "sharedTypeRole": "WorkerType discriminator that selects the implementation family",
+    "sharedBodyField": "body",
+    "sharedBodyRole": "Shared markdown body — system prompt for agent workers; descriptive for other types",
+    "sharedTimeoutField": "timeout",
+    "sharedTimeoutRole": "Execution time bound for the worker run",
+    "sharedResourcesField": "resources",
+    "sharedResourcesRole": "Resource claims the worker needs at runtime",
+    "fullFactorySchema": "Full Factory schema reference",
+    "siblingWorkstations": "Workstations",
+    "siblingConfiguration": "Configuration",
+    "siblingResources": "Resources"
+  }
+}

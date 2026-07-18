@@ -114,11 +114,13 @@ W05 route-family foundation lane measured ~138.27 MiB total on CI (Next static
 JS ~2.65 MiB and search bootstrap ~5.16 MiB remained under their limits);
 raised again 2026-07-18 UTC after the W12 factories authored-pages lane
 measured ~151.07 MiB total and ~5.33 MiB search bootstrap on CI (Next static JS
+raised again 2026-07-18 UTC after the W13 Worker authored-pages lane measured
+~152.37 MiB total and ~5.36 MiB search bootstrap on CI (Next static JS
 ~2.78 MiB remained under its limit):
 
-- `maxTotalOutBytes`: 160_000_000
+- `maxTotalOutBytes`: 175_000_000
 - `maxNextStaticJsBytes`: 3_500_000
-- `maxSearchBootstrapBytes`: 5_500_000
+- `maxSearchBootstrapBytes`: 5_800_000
 
 The gate never passes via an unconditional skip/`exit 0`. Missing or incomplete
 `out/` fails closed. Reproduce locally with:

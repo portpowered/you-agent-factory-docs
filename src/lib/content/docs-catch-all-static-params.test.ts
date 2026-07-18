@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default generateStaticParams includes authored factories children and keeps empty families empty", () => {
+  test("live default generateStaticParams include authored factories and workers children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -193,8 +193,26 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultPaths).toContain("factories/dynamic-workflows");
     expect(defaultPaths).toContain("factories/sessions");
 
-    // Still-empty route families contribute no catch-all child params yet.
-    for (const id of ["references", "workers", "workstations"] as const) {
+    // W13 authored Worker variant pages enter the default-locale catch-all
+    // compile graph via published-page discovery.
+    const workersChildren = defaultPaths.filter((path) =>
+      path.startsWith("workers/"),
+    );
+    expect(workersChildren).toEqual(
+      expect.arrayContaining([
+        "workers/agent",
+        "workers/inference",
+        "workers/script",
+        "workers/poller",
+        "workers/model",
+        "workers/hosted",
+        "workers/mock",
+      ]),
+    );
+
+    // Families without authored nested pages still contribute no catch-all
+    // children (indexes remain dedicated App Router routes).
+    for (const id of ["references", "workstations"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -212,16 +230,16 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty while empty families and unset factories locale stubs omit children", async () => {
+  test("live localized generateStaticParams stay non-empty without unshipped route-family children", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
+    // Factories and workers pages currently ship English-only messages, so they
+    // do not enter shipped-locale catch-all params yet.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
-      // Localized factories page stubs are not shipped yet, so factories stays
-      // empty here alongside still-empty references/workers/workstations.
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }
   });

@@ -449,14 +449,6 @@ const W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
     generateLocalizedMetadata: generateLocalizedReferencesMetadata,
   },
   {
-    collectionId: "workers" as const,
-    messageKey: "workersIndex" as const,
-    renderDefault: WorkersIndexPage,
-    renderLocalized: LocalizedWorkersIndexPage,
-    generateDefaultMetadata: generateWorkersMetadata,
-    generateLocalizedMetadata: generateLocalizedWorkersMetadata,
-  },
-  {
     collectionId: "workstations" as const,
     messageKey: "workstationsIndex" as const,
     renderDefault: WorkstationsIndexPage,
@@ -524,6 +516,53 @@ describe("W05 direct route-family section index pages", () => {
     // Child factories pages ship default-locale only until locale stubs exist.
     expect(html).toContain(indexMessages.emptyTitle);
     expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
+  });
+
+  it("renders the authored workers family index instead of the empty-state contract", async () => {
+    const html = renderToStaticMarkup(await WorkersIndexPage());
+
+    expect(html).toContain("Workers");
+    expect(html).toContain('data-workers-family-index=""');
+    expect(html).toContain('data-workers-selection-table=""');
+    expect(html).toContain("INFERENCE_WORKER");
+    expect(html).toContain("Mock worker (not a WorkerType)");
+    expect(html).not.toContain("No worker entries yet");
+  });
+
+  it("renders the localized workers family index with page-local selection copy", async () => {
+    const html = renderToStaticMarkup(
+      await LocalizedWorkersIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    expect(html).toContain("Workers");
+    expect(html).toContain('data-workers-family-index=""');
+    expect(html).toContain("AGENT_WORKER");
+    expect(html).not.toContain("No worker entries yet");
+  });
+
+  it("keeps default and localized workers index metadata aligned to page-local messages", async () => {
+    const defaultMetadata = await generateWorkersMetadata();
+    const localizedMetadata = await generateLocalizedWorkersMetadata({
+      params: Promise.resolve({ locale: "vi" }),
+    });
+    const expectedAlternates = {
+      canonical: "/docs/workers",
+      languages: {
+        en: "/docs/workers",
+        ja: "/ja/docs/workers",
+        "zh-CN": "/zh-CN/docs/workers",
+        vi: "/vi/docs/workers",
+      },
+    };
+
+    expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+    expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+    expect(defaultMetadata.title).toBe("Workers");
+    expect(localizedMetadata.title).toBe("Workers");
+    expect(String(defaultMetadata.description)).toMatch(/WorkerType/i);
+    expect(localizedMetadata.description).toBe(defaultMetadata.description);
   });
 
   for (const section of W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES) {

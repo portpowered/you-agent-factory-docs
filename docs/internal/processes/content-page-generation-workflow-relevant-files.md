@@ -974,12 +974,73 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `src/lib/content/content-hrefs.ts`
   `PUBLISHED_DOCS_SECTIONS` includes `factories` with `factoriesPageHref` and
   `publishedDocsHrefFromEntry` so authored `/docs/factories/<slug>` (including
+  `getDocsPageDir` so nested child bundles resolve.
+* `src/lib/content/published-docs-registry-contract.ts` /
+  `src/lib/content/content-hrefs.ts`
+  `PUBLISHED_DOCS_SECTIONS` includes `workers` with `workersPageHref` and
+  `publishedDocsHrefFromEntry` so authored `/docs/workers/<slug>` (including
   nested slugs) validate and resolve without
   `Unsupported published docs section`. Do not treat this as W15–W18 nav /
   search / sitemap / compat inventory ownership — those stay deferred.
 * `src/lib/content/published-docs-registry-contract.test.ts`
   Factories section membership, nested href proofs, and unchanged CLI section
   href behavior.
+  Workers section membership, nested href proofs, and unchanged CLI section
+  href behavior.
+* `src/content/docs/workers/` family index composition (W13)
+  `/docs/workers` stays an App Router family index (not
+  `workers/page.mdx` — `isLocalDocsPageBundlePath` rejects section-root
+  bundles). Authored overview/selection/shared-fields/schema embed live as
+  page-local messages + React composition under `src/content/docs/workers/`
+  (`render-workers-family-index.tsx`, `WorkersFamilyIndexContent.tsx`,
+  `WorkerBaseSchemaEmbed.tsx` via W07 `SchemaReference` addressed to
+  `/$defs/Worker`). Registry id `documentation.workers-family`. Unshipped
+  locales fall back to `messages/en.json`. Wire
+  `src/app/(site)/docs/workers/page.tsx` and the locale mirror to
+  `renderWorkersFamilyIndexPage` instead of the empty collection contract.
+* `src/content/docs/workers/<variant>/` variant pages (W13)
+  Child Worker pages are ordinary route-family local-message bundles
+  (`page.mdx` + `messages/en.json` + `assets.json` + registry
+  `documentation.workers-<variant>`). Embed production overlays with W07
+  `SchemaVariantReference` via a page-local `*VariantSchemaEmbed` that loads
+  the Worker base definition (`load-worker-base-schema.ts`), builds the
+  overlay from `createProductionWorkerOverlay`, and maps slots through
+  `factory-variant-overlay-presentation.ts` (shared under workers ownership —
+  do not rewrite W06/W07 cores). Register the embed in
+  `page-mdx-components.tsx` and add a static slug switch in
+  `route-family-local-docs-page-load.ts` (same compileMDX constraint as
+  documentation/concept loaders — relative MDX imports do not resolve). Link
+  Workstation companions with `LocalizedLinkList` hrefs under
+  `/docs/workstations/...` (implementers: do not author W14 pages in this
+  lane). Keep customer-facing Limits / body copy product-scope only: say what
+  the Worker is / is not and what companion links mean (run-time pairing),
+  never narrate “planned Workstation targets” or “without authoring those
+  pages here.” Keep mock workers on
+  `/docs/workers/mock`, not as a Factory WorkerType overlay. Legacy
+  `MODEL_WORKER` companions are `MODEL_WORKSTATION` (required) plus
+  `MODEL_INVOKE` (compatible) at `/docs/workstations/model-workstation` and
+  `/docs/workstations/model-invoke`; capability fields stay in overlay
+  `shared` (presentation omits shared paths — assert selected/excluded only).
+  Prefer `INFERENCE_WORKER` / `AGENT_WORKER` guidance in prose for new configs.
+  Legacy `HOSTED_WORKER` companions are `LOGICAL_MOVE` (required) plus
+  `CLASSIFIER_WORKSTATION` (compatible) at `/docs/workstations/logical-move`
+  and `/docs/workstations/classifier`; hosted provider fields (`provider`,
+  `auth`, `linear`) stay in overlay `shared`. Prefer `POLLER_WORKER` guidance
+  in prose for new configs; misuse example is inline `auth.apiKey`
+  (`worker.hosted.misuse-inline-secret`).
+  Mock workers (`/docs/workers/mock`) are **not** a Factory WorkerType page:
+  embed `@you-agent-factory/api/schemas/mock-workers` via W07
+  `SchemaReference` addressed to `/$defs/mockWorker` (page-local
+  `load-mock-workers-schema.ts` + `MockWorkersSchemaEmbed`), never
+  `SchemaVariantReference` / production Worker overlays. Identity line is
+  `runType = accept | script | reject`, not `type = MOCK_WORKER`. Link the
+  planned full schema at `/docs/references/mock-workers-schema`; misuse
+  teaching is Factory Worker shape (`name` + `type`) on a mock entry
+  (`worker.mock.misuse-worker-type`).
+* `src/lib/content/route-family-local-docs-page-load.ts`
+  Generic local-message disk loader for the four direct route families; uses
+  `getDocsPageDir` so nested child bundles resolve. W13 adds an optional
+  page-mdx-components merge for workers variant embeds (static slug switch).
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).
@@ -1042,8 +1103,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   params). Empty collections still rely on `ensureStaticExportParams` so static
   export never emits an empty param list.
 * `src/lib/content/docs-catch-all-static-params.test.ts`
-  Nested fixture proofs for default/shipped catch-all params, empty-family
-  export safety, compile-graph index markers, and invalid nested not-found.
+  Nested fixture proofs for default/shipped catch-all params, compile-graph
+  index markers, and invalid nested not-found. After W13, default-locale
+  params include authored `workers/<variant>` children; empty families
+  (`references` / `factories` / `workstations`) still contribute none.
+  Localized params stay empty for route-family children until those pages
+  ship non-English message stubs.
 * `src/lib/docs/supported-docs-route-family-mechanism.test.ts`
   Focused mechanism tests for the supported route-family contract: accept the
   four direct families (`references`/`factories`/`workers`/`workstations`),

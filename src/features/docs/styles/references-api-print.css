@@ -1,0 +1,43 @@
+/**
+ * Print stylesheet for the W08 production API reference surface.
+ *
+ * Hides interactive chrome (filter, navigators, copy links) and keeps
+ * operation method/path/summary plus request/response regions readable.
+ * Import from the harness or the eventual `/docs/references/api` page (W11).
+ */
+
+@media print {
+  [data-api-reference-print] {
+    color: #000;
+    background: #fff;
+  }
+
+  [data-api-print-chrome="hide"] {
+    display: none !important;
+  }
+
+  [data-api-operation-section],
+  [data-api-print-content] {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  [data-api-method-badge],
+  [data-api-operation-summary],
+  [data-api-operation-description],
+  [data-api-operation-parameters],
+  [data-api-operation-request-body],
+  [data-api-operation-responses],
+  [data-api-sse-summary] {
+    display: block;
+    visibility: visible;
+  }
+
+  /* Keep long paths wrapping instead of clipping off the printed page. */
+  [data-api-operation-section] code,
+  [data-api-operation-section] pre {
+    white-space: pre-wrap;
+    overflow: visible;
+    word-break: break-word;
+  }
+}

@@ -5,6 +5,7 @@ import {
   glossaryPageHref,
   guidePageHref,
   techniquePageHref,
+  workersPageHref,
 } from "@/lib/content/content-hrefs";
 import type { PageKind } from "@/lib/content/schemas";
 
@@ -15,6 +16,7 @@ export const PUBLISHED_DOCS_SECTIONS = [
   "techniques",
   "documentation",
   "factories",
+  "workers",
 ] as const;
 
 export type PublishedDocsSection = (typeof PUBLISHED_DOCS_SECTIONS)[number];
@@ -53,7 +55,7 @@ export function docsSectionFromSlug(docsSlug: string): PublishedDocsSection {
 /**
  * Path under the published section used for canonical href helpers.
  *
- * Prefer the docsSlug remainder after `<section>/` so nested factories (and
+ * Prefer the docsSlug remainder after `<section>/` so nested factories, workers (and
  * future nested CLI) pages keep `/docs/<section>/<parent>/<child>` rather than
  * collapsing to the leaf segment alone.
  */
@@ -85,5 +87,7 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
       return documentationPageHref(relativeSlug);
     case "factories":
       return factoriesPageHref(relativeSlug);
+    case "workers":
+      return workersPageHref(relativeSlug);
   }
 }

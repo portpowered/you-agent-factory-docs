@@ -1,0 +1,72 @@
+{
+  "title": "Script worker",
+  "description": "Configure a SCRIPT_WORKER for command-backed SCRIPT_RUN dispatch: command, args, optional executorProvider, timeout/resources, and SCRIPT_RUN workstation companionship.",
+  "openingSummary": "A SCRIPT_WORKER is the command-backed executor for SCRIPT_RUN workstations. Set type to SCRIPT_WORKER, put command and args on the worker, and bind the worker name from a script-run workstation.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "A Script worker is the Factory WorkerType for command-backed execution in you-agent-factory. This page covers the SCRIPT_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid configuration, an incompatible misuse of model-routing fields, operational cautions, and the required SCRIPT_RUN workstation companion. Use it when you need to author a command-backed backend without confusing it with inference or agent workers."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "The discriminator field is type with value SCRIPT_WORKER. A SCRIPT_WORKER runs an authored command with args through SCRIPT_RUN. The markdown body is descriptive only and is not executed; the runtime executes command and args. Args may use Go template expressions. Optional timeout and resources on the worker bound each attempt. Script workers are not model-backed backends: they do not own model, modelProvider, modelLocality, operations, or agentTools."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Author a worker with type SCRIPT_WORKER. Put command and args on the worker; add optional executorProvider, timeout, and resources when the attempt needs an explicit wrapper or bound. Keep descriptive context in the body. Bind the worker from a SCRIPT_RUN workstation that supplies routing, limits, workingDirectory, worktree, env, and optional copyReferencedScripts."
+    },
+    "variantFields": {
+      "title": "Variant Fields",
+      "body": "The embed below shows the live Worker base definition with SCRIPT_WORKER overlay applicability. Selected fields are script-execution exclusive (command, args, executorProvider). Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
+    },
+    "examples": {
+      "title": "Examples",
+      "body": "Use the minimal valid example when starting a SCRIPT_WORKER. The misuse example shows model-routing fields on a script worker—model, modelProvider, and modelLocality belong on inference and agent families and fail validation on SCRIPT_WORKER."
+    },
+    "operationalCautions": {
+      "title": "Operational Cautions",
+      "body": "Script workers fail early on invalid command declarations and expect portable relative paths when copyReferencedScripts is used. Keep secrets out of worker bodies. Watch timeout and exit-code paths when commands hang or fail. Do not treat model fields or agentTools as a script substitute."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is the direct /docs/workers/script surface for SCRIPT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference or Agent worker full contract. Operator model defaults never apply to script workers. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine SCRIPT_WORKER fields. Mock workers stay on their own route and schema."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "discriminatorLabel": "Discriminator",
+    "discriminatorValue": "type = SCRIPT_WORKER",
+    "companionIntro": "SCRIPT_WORKER requires a SCRIPT_RUN workstation companion. The workstation binds the worker name and owns routing, limits, workingDirectory, worktree, env, and optional copyReferencedScripts.",
+    "companionWorkstation": "Script-run workstation",
+    "minimalExampleLabel": "Minimal valid SCRIPT_WORKER:",
+    "misuseExampleLabel": "Incompatible misuse — model fields on SCRIPT_WORKER (rejected):",
+    "misuseNote": "model, modelProvider, and modelLocality are model-routing fields. Validation rejects them on SCRIPT_WORKER. Use INFERENCE_WORKER or AGENT_WORKER when you need model-backed execution.",
+    "fullFactorySchema": "Full Factory schema reference",
+    "workersFamilyIndex": "Workers family index",
+    "siblingInferenceWorker": "Inference worker",
+    "siblingAgentWorker": "Agent worker",
+    "siblingWorkstations": "Workstations overview",
+    "siblingResources": "Resources",
+    "siblingTokens": "Tokens",
+    "cautionTopicHeader": "Caution",
+    "cautionGuidanceHeader": "Guidance",
+    "cautionValidationTopic": "Validation failures",
+    "cautionValidationGuidance": "Fix missing command, invalid args shapes, and excluded model or agent fields before retrying. Invalid enums and unknown exclusive fields also fail validation.",
+    "cautionBodyTopic": "Body is not executed",
+    "cautionBodyGuidance": "The markdown body describes the worker. The runtime runs command with args only. Do not put executable shell in the body and expect it to run.",
+    "cautionSecretsTopic": "Secrets in worker bodies",
+    "cautionSecretsGuidance": "Do not put API keys, tokens, or other secret material in the worker markdown body. Keep credentials in the secret and config surfaces the runtime already resolves.",
+    "cautionModelFieldsTopic": "Model-field substitution",
+    "cautionModelFieldsGuidance": "Do not add model, modelProvider, modelLocality, or operations on a script worker. Model-backed dispatch belongs on INFERENCE_WORKER or AGENT_WORKER.",
+    "cautionTimeoutTopic": "Timeout and exit codes",
+    "cautionTimeoutGuidance": "Increase worker timeout when commands outlive the attempt bound. Treat non-zero exits through SCRIPT_RUN routing rather than rewriting the worker type."
+  }
+}

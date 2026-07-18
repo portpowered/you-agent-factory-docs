@@ -1,0 +1,30 @@
+{
+  "id": "documentation.workers-poller",
+  "slug": "workers-poller",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "poller worker",
+    "POLLER_WORKER",
+    "POLLER_RUN",
+    "behavior POLLER",
+    "provider",
+    "auth.secretRef",
+    "docs workers poller"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workers-family",
+    "documentation.workers-script",
+    "documentation.workers-inference",
+    "documentation.workers-agent",
+    "documentation.workstations",
+    "documentation.resources",
+    "concept.tokens"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T16:00:00.000Z",
+  "updatedAt": "2026-07-18T16:00:00.000Z"
+}

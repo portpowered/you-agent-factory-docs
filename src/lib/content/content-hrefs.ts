@@ -130,6 +130,22 @@ export function factoriesPageHref(
   );
 }
 
+/**
+ * Canonical docs URL for a workers entry slug under `docs/workers`.
+ *
+ * `slug` may be a single segment (`agent`) or a nested path
+ * (`agent/variant`) so route-family child pages resolve correctly.
+ */
+export function workersPageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `workers/${slug}` },
+    locale,
+  );
+}
+
 /** Canonical tag landing URL for a registry tag slug. */
 export function tagPageHref(
   slug: string,
