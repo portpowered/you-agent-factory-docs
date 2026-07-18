@@ -27,6 +27,8 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
 | `src/lib/references/family-normalized-models.test.ts` | Family identity fields, missing-optional handling, and JSON round-trip proofs |
 | `src/lib/references/normalize-family-artifacts.ts` | Pure artifact→model normalizers for OpenAPI/CLI/MCP/JS/events (consumes W03-resolved data or fixtures; no package imports) |
 | `src/lib/references/normalize-family-artifacts.test.ts` | Fixture-shaped normalization + W03 public-subpath consumption proofs |
+| `src/lib/references/reference-anchor-registry.ts` | Deterministic URL-safe `ReferenceAnchorRegistry` + kind-specific anchor builders (register by owning page; no IO) |
+| `src/lib/references/reference-anchor-registry.test.ts` | Kind coverage, determinism, URL-safety, page grouping, and idempotent re-register proofs |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 build/server acquisition — consume artifacts only through this public-subpath surface |
 | `src/lib/references/api-package-public-exports.ts` | Documented public subpath allowlist (for source `publicArtifactId` / subpath values) |
 
@@ -58,9 +60,18 @@ tests under `src/lib/references/` (plus focused fixtures). Do **not**:
   Do not import `@you-agent-factory/api` package root or `generated/…` internals
   from W04 modules.
 - Provisional anchors from `provisionalAnchorFromIdentity` only fill the
-  required slot until `ReferenceAnchorRegistry` owns collision-checked anchors.
-- Later stories add anchor registry, cross-link resolver, and display/search
-  projections beside these modules without widening W04 into UI/pages.
+  required slot until callers adopt `ReferenceAnchorRegistry` anchors.
+- Use `ReferenceAnchorRegistry.register({ owningPageId, itemId, kind, identity })`
+  for deterministic URL-safe fragments. Kind set:
+  `operation` | `schema-pointer` | `command` | `tool` | `symbol` | `event`.
+  Schema pointers accept `/…` or `#/…` forms; leading `#`/`/` are stripped
+  before slugifying. Anchor algorithm matches provisional slug rules
+  (RFC 3986 unreserved kept; other runs → `-`).
+- Register against an owning page id (family id or page path) so later
+  collision checks and projections can `listPage`. Per-page fail-closed
+  collision detection is the next story — do not invent collision suffixes here.
+- Later stories add cross-link resolver and display/search projections beside
+  these modules without widening W04 into UI/pages.
 
 ## Verification
 
@@ -69,6 +80,7 @@ bun test src/lib/references/reference-item.test.ts
 bun test src/lib/references/schema-model.test.ts
 bun test src/lib/references/family-normalized-models.test.ts
 bun test src/lib/references/normalize-family-artifacts.test.ts
+bun test src/lib/references/reference-anchor-registry.test.ts
 bun run typecheck
 bun run lint
 ```
