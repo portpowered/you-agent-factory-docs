@@ -30,6 +30,9 @@ use the `joined/*` wildcard export.
 | `src/lib/references/api-package-public-exports.ts` | Pure documented-subpath allowlist and target parsing (no filesystem IO) |
 | `src/lib/references/api-package-artifact-resolver.ts` | Build/server resolver: public-subpath resolve → read → JSON/YAML parse; actionable illegal/missing errors |
 | `src/lib/references/api-package-artifact-resolver.test.ts` | Observable resolve/parse success plus illegal-target and missing-export failures |
+| `src/lib/references/api-package-acquisition-browser-exclusion.ts` | Pure catalogs + browser-bundle leak evaluation for W03 acquisition modules |
+| `src/lib/references/api-package-acquisition-browser-exclusion-bundling.ts` | Build/server Bun browser-target bundler used by exclusion proofs |
+| `src/lib/references/api-package-acquisition-browser-exclusion.test.ts` | Package-internal rejection plus browser-chunk exclusion of Node acquisition modules |
 | `src/lib/references/api-package-manifest.ts` | Pure manifest parse + membership field shape checks + path index (no IO) |
 | `src/lib/references/api-package-manifest-membership.ts` | Build/server: load manifest via public subpath; validate consumed exports against published membership |
 | `src/lib/references/api-package-manifest-membership.test.ts` | Manifest authority load, membership success, missing/malformed failure proofs |
@@ -83,8 +86,13 @@ use the `joined/*` wildcard export.
   acquisition generator/schema modules. Do not invent a second prepare pipeline;
   warm `prepare:content-runtime` skips via fingerprints, and generators still
   use `writeFileIfChanged` so unchanged package inputs produce no ledger diff.
-- Later stories (browser-bundle exclusion) should extend this surface rather
-  than inventing a second acquisition path.
+- Prove browser exclusion with Bun `target: "browser"` bundling: pure helpers in
+  `API_PACKAGE_BROWSER_SAFE_ACQUISITION_MODULES` must emit clean chunks (no
+  `node:fs` / `import.meta.resolve` / `fileURLToPath` markers); server-only
+  modules in `API_PACKAGE_SERVER_ONLY_ACQUISITION_MODULES` must fail closed for
+  browser targets (Bun throws AggregateError with Node polyfill diagnostics) or
+  otherwise leak those markers. Keep Node acquisition IO out of client UI
+  imports — the resolver fails browser bundling on `node:url`/`fileURLToPath`.
 
 ## Verification
 
@@ -93,6 +101,7 @@ bun test src/lib/references/api-package-artifact-resolver.test.ts \
   src/lib/references/api-package-manifest-membership.test.ts \
   src/lib/references/api-package-format-version-gate.test.ts \
   src/lib/references/api-package-consumed-hash-ledger.test.ts \
+  src/lib/references/api-package-acquisition-browser-exclusion.test.ts \
   src/tests/ci/content-runtime-preparation.test.ts
 bunx biome check src/lib/references/ src/lib/content/content-runtime-preparation.ts \
   src/lib/content/content-runtime-fingerprints.ts
