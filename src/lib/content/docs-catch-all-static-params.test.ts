@@ -183,10 +183,11 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
 
-    // W11 published CLI, MCP, and JavaScript runtime reference pages under the references family.
+    // W11 published CLI, MCP, JavaScript runtime, and events reference pages.
     expect(defaultPaths).toContain("references/cli");
     expect(defaultPaths).toContain("references/mcp");
     expect(defaultPaths).toContain("references/javascript-runtime");
+    expect(defaultPaths).toContain("references/events");
 
     // W13 authored Worker variant pages enter the default-locale catch-all
     // compile graph via published-page discovery.
@@ -232,9 +233,9 @@ describe("W05 route-family static params and not-found", () => {
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
-    // references/{cli,mcp,javascript-runtime} and workers/* currently ship
-    // English-only messages, so they do not enter shipped-locale catch-all
-    // params yet.
+    // references/{cli,mcp,javascript-runtime,events} and workers/* currently
+    // ship English-only messages, so they do not enter shipped-locale
+    // catch-all params yet.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

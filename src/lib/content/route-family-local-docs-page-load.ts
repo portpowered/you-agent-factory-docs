@@ -52,13 +52,13 @@ function readJsonFile<T>(path: string): T {
 }
 
 /**
- * Merge page-owned MDX components for a route-family slug.
+ * Merge page-owned MDX components for a route-family section/slug.
  *
  * Local docs compile through `compileMDX` with a fixed component map, so
  * relative imports in `page.mdx` do not resolve. Use a static
  * `import("@/content/docs/<section>/<slug>/page-mdx-components")` literal
  * (bundlers cannot resolve expression-based imports at build time). Keep page
- * visuals out of the shared `mdx-components.tsx` registry.
+ * mounts out of the shared `mdx-components.tsx` registry.
  */
 async function loadRouteFamilyPageMdxComponents(
   section: RouteFamilyLocalDocsSection,
@@ -81,6 +81,13 @@ async function loadRouteFamilyPageMdxComponents(
   if (section === "references" && slug === "javascript-runtime") {
     const mod = await import(
       "@/content/docs/references/javascript-runtime/page-mdx-components"
+    );
+    return mod.pageMdxComponents ?? {};
+  }
+
+  if (section === "references" && slug === "events") {
+    const mod = await import(
+      "@/content/docs/references/events/page-mdx-components"
     );
     return mod.pageMdxComponents ?? {};
   }

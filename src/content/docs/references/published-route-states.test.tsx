@@ -52,7 +52,6 @@ const PUBLISHED_ROUTES = [
 /** Sibling W11 routes owned elsewhere — must stay unpublished in this lane. */
 const UNPUBLISHED_SIBLING_SLUGS = [
   "api",
-  "events",
   "factory-schema",
   "you-config-schema",
   "mock-workers-schema",
@@ -277,5 +276,11 @@ describe("W11 published route states and ownership fences", () => {
     for (const route of PUBLISHED_ROUTES) {
       expect(source.getPage(["references", route.slug])?.url).toBe(route.url);
     }
+
+    // Parallel W11 events page may already exist on main; this lane must not
+    // delete or re-own it.
+    expect(source.getPage(["references", "events"])?.url).toBe(
+      "/docs/references/events",
+    );
   });
 });

@@ -86,12 +86,7 @@ export function publishedDocsHrefFromEntry(entry: PublishedDocsEntry): string {
     case "documentation":
       return documentationPageHref(relativeSlug);
     case "references":
-      // Prefer docsSlug so nested reference routes keep full path segments.
-      return referencePageHref(
-        entry.docsSlug.startsWith("references/")
-          ? entry.docsSlug.slice("references/".length)
-          : entry.slug,
-      );
+      return referencePageHref(relativeSlug);
     case "workers":
       return workersPageHref(relativeSlug);
   }
