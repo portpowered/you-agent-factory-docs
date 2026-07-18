@@ -174,7 +174,7 @@ describe("W05 route-family static params and not-found", () => {
     }
   });
 
-  test("live default generateStaticParams include authored factories and workers children", () => {
+  test("live default generateStaticParams include authored factories, references, and workers children", () => {
     const defaultParams = generateDefaultDocsStaticParams();
     const defaultPaths = defaultParams.map((entry) =>
       (entry.slug ?? []).join("/"),
@@ -192,6 +192,9 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultPaths).toContain("factories/packaged");
     expect(defaultPaths).toContain("factories/dynamic-workflows");
     expect(defaultPaths).toContain("factories/sessions");
+
+    // W11 published the events reference page under the references family.
+    expect(defaultPaths).toContain("references/events");
 
     // W13 authored Worker variant pages enter the default-locale catch-all
     // compile graph via published-page discovery.
@@ -212,7 +215,7 @@ describe("W05 route-family static params and not-found", () => {
 
     // Families without authored nested pages still contribute no catch-all
     // children (indexes remain dedicated App Router routes).
-    for (const id of ["references", "workstations"] as const) {
+    for (const id of ["workstations"] as const) {
       expect(defaultPaths.some((path) => path.startsWith(`${id}/`))).toBe(
         false,
       );
@@ -237,8 +240,8 @@ describe("W05 route-family static params and not-found", () => {
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
-    // Factories and workers pages currently ship English-only messages, so they
-    // do not enter shipped-locale catch-all params yet.
+    // Factories, references/events, and workers currently ship English-only
+    // messages, so they do not enter shipped-locale catch-all params yet.
     for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }

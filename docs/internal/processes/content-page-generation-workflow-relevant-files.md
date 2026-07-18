@@ -308,6 +308,33 @@ static `import("@/content/blog/<slug>/page-mdx-components")` switch case in
 `blog-page-load.ts`. Keep the chart/graph component post-owned; do not register
 it in shared `blog-mdx-components.tsx` / `mdx-components.tsx`.
 
+### Route-family page-local MDX components (references / factories / workers / workstations)
+
+When a route-family page under `src/content/docs/references/` (or factories /
+workers / workstations) needs a page-owned mount such as the W11 events corpus
+`EventsCorpusMount` (stream roles, catalogs, reconnect/lifecycle, static SSE):
+
+1. Keep the page-local renderer and `page-mdx-components.tsx` under the page
+   bundle. Import public surfaces from `@/components/references/...` and helpers
+   from `@/lib/references/...` — do not edit renderer internals on a page-wiring
+   lane.
+2. Add a static section+slug switch in
+   `route-family-local-docs-page-load.ts` that imports
+   `@/content/docs/<section>/<slug>/page-mdx-components` (same compileMDX
+   constraint as documentation/concept/blog — relative MDX imports do not
+   resolve).
+3. Treat that loader switch as a narrow shared-surface exception: rerun
+   `bun run audit:canonical-page-surface` with `--exception-reason` and repeat
+   the justification in the PR conversation. Do not register page mounts in
+   shared `mdx-components.tsx`.
+4. For published-route empty/error proofs, export a presentational view (for
+   example `EventsCorpusMountView`) that accepts a resolved mount model so
+   colocated tests can assert accessible `EventsStatus` messaging without
+   mocking OpenAPI loaders or scanning renderer trees.
+
+For `/docs/references/events`, also see
+[events-reference-page-relevant-files](./events-reference-page-relevant-files.md).
+
 Blog discoverability proofs (index card, search queries, tag landing) for a
 blog-local lane should colocate under `src/content/blog/<slug>/` (for example
 `<slug>-discoverability.test.tsx`) rather than editing sibling B07 posts or
@@ -1128,6 +1155,14 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 
 ## Page bundle and registry workflow
 
+* First published `reference.*` page also needs `references` in
+  `REGISTRY_COLLECTIONS` / registry disk loader / `PUBLISHED_DOCS_SECTIONS` /
+  `referencePageHref`, plus `registryDirectoryByKind.reference` and
+  `validate-registry` path-kind mapping. See
+  [events-reference-page-relevant-files.md](./events-reference-page-relevant-files.md).
+  Route-family pages load through `loadRouteFamilyLocalDocsPage`; keep curated
+  sibling discovery under `#related` with `LocalizedLinkList` when sibling
+  `reference.*` records are not yet published.
 * `docs/templates/*.content.md`
   Authoring templates for factory kinds (guide, concept, technique,
   documentation, reference, glossary) plus blog-post. Atlas

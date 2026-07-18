@@ -16,6 +16,7 @@ import {
   graphRecordSchema,
   guideRecordSchema,
   organizationRecordSchema,
+  referenceRecordSchema,
   type TagRecord,
   tagRecordSchema,
   techniqueRecordSchema,
@@ -49,6 +50,7 @@ type RegistryDirectory = {
     | typeof guideRecordSchema
     | typeof techniqueRecordSchema
     | typeof documentationRecordSchema
+    | typeof referenceRecordSchema
     | typeof classificationRecordSchema
     | typeof datasetRecordSchema
     | typeof organizationRecordSchema
@@ -62,6 +64,7 @@ const registryDirectories: RegistryDirectory[] = [
   { name: "guides", schema: guideRecordSchema },
   { name: "techniques", schema: techniqueRecordSchema },
   { name: "documentation", schema: documentationRecordSchema },
+  { name: "references", schema: referenceRecordSchema },
   { name: "classifications", schema: classificationRecordSchema },
   { name: "datasets", schema: datasetRecordSchema },
   { name: "organizations", schema: organizationRecordSchema },

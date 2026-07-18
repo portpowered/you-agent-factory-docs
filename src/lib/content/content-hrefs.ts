@@ -131,6 +131,20 @@ export function factoriesPageHref(
 }
 
 /**
+ * Canonical docs URL for a reference entry slug under `docs/references`.
+ * `slug` may be nested (`openapi/paths`).
+ */
+export function referencePageHref(
+  slug: string,
+  locale: SiteLocale = defaultLocale,
+): string {
+  return buildLocalizedRoute(
+    { surface: "docs-page", slug: `references/${slug}` },
+    locale,
+  );
+}
+
+/**
  * Canonical docs URL for a workers entry slug under `docs/workers`.
  *
  * `slug` may be a single segment (`agent`) or a nested path
