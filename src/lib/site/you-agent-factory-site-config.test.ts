@@ -37,17 +37,41 @@ describe("you-agent-factory site config", () => {
     );
   });
 
-  test("orders primary nav for home, guides, docs, glossary, and blog", () => {
+  test("orders primary nav for home, guides, docs, W15 families, glossary, and blog", () => {
     expect(
       youAgentFactorySiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).toEqual(["home", "guides", "docs", "glossary", "blogIndex"]);
+    ).toEqual([
+      "home",
+      "guides",
+      "docs",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
+      "glossary",
+      "blogIndex",
+    ]);
     expect(
       youAgentFactorySiteConfig.primaryNav.map((entry) => entry.labelKey),
-    ).toEqual(["home", "guides", "docs", "glossary", "blog"]);
+    ).toEqual([
+      "home",
+      "guides",
+      "docs",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
+      "glossary",
+      "blog",
+    ]);
     expect(youAgentFactorySiteConfig.routeSurfaces).toMatchObject({
       home: { surface: "home" },
       guides: { surface: "docs-page", slug: "guides" },
       docs: { surface: "browse" },
+      references: { surface: "docs-page", slug: "references" },
+      factories: { surface: "docs-page", slug: "factories" },
+      workers: { surface: "docs-page", slug: "workers" },
+      workstations: { surface: "docs-page", slug: "workstations" },
       glossary: { surface: "glossary-index" },
       blogIndex: { surface: "blog-index" },
       search: { surface: "search" },

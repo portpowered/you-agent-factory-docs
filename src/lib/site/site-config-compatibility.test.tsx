@@ -118,6 +118,10 @@ describe("site config primary nav compatibility", () => {
       "/vi",
       "/vi/docs/guides",
       "/vi/browse",
+      "/vi/docs/references",
+      "/vi/docs/factories",
+      "/vi/docs/workers",
+      "/vi/docs/workstations",
       "/vi/docs/glossary",
       "/vi/blog",
     ]);
@@ -125,6 +129,10 @@ describe("site config primary nav compatibility", () => {
       "Trang chủ",
       messages.nav.guides,
       messages.nav.docs,
+      messages.nav.references,
+      messages.nav.factories,
+      messages.nav.workers,
+      messages.nav.workstations,
       "Thuật ngữ",
       messages.nav.blog,
     ]);

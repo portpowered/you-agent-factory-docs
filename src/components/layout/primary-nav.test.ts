@@ -17,8 +17,32 @@ const CLI_PRIMARY_NAV_HREFS = [
   "/",
   "/docs/guides",
   "/browse",
+  "/docs/references",
+  "/docs/factories",
+  "/docs/workers",
+  "/docs/workstations",
   "/docs/glossary",
   "/blog",
+] as const;
+
+const CLI_PRIMARY_NAV_LABELS = [
+  "Home",
+  "Guides",
+  "Docs",
+  "References",
+  "Factories",
+  "Workers",
+  "Workstations",
+  "Glossary",
+  "Blog",
+] as const;
+
+/** Stable relative order of W15 family destinations inside primary nav. */
+const W15_FAMILY_NAV_HREFS = [
+  "/docs/references",
+  "/docs/factories",
+  "/docs/workers",
+  "/docs/workstations",
 ] as const;
 
 describe("getPrimaryNavItems", () => {
@@ -28,16 +52,16 @@ describe("getPrimaryNavItems", () => {
 
     expect(items.map((item) => item.href)).toEqual([...CLI_PRIMARY_NAV_HREFS]);
     expect(items.map((item) => item.label)).toEqual([
-      "Home",
-      "Guides",
-      "Docs",
-      "Glossary",
-      "Blog",
+      ...CLI_PRIMARY_NAV_LABELS,
     ]);
     expect(items.map((item) => item.label)).toEqual([
       messages.nav.home,
       messages.nav.guides,
       messages.nav.docs,
+      messages.nav.references,
+      messages.nav.factories,
+      messages.nav.workers,
+      messages.nav.workstations,
       messages.nav.glossary,
       messages.nav.blog,
     ]);
@@ -51,6 +75,17 @@ describe("getPrimaryNavItems", () => {
     );
   });
 
+  it("keeps W15 family destinations in stable relative order", async () => {
+    const messages = await loadUiMessages();
+    const familyHrefs = getPrimaryNavItems(messages)
+      .map((item) => item.href)
+      .filter((href) =>
+        (W15_FAMILY_NAV_HREFS as readonly string[]).includes(href),
+      );
+
+    expect(familyHrefs).toEqual([...W15_FAMILY_NAV_HREFS]);
+  });
+
   it("can emit vietnamese-prefixed navigation routes from the shared locale contract", async () => {
     const messages = await loadUiMessages("vi");
     const items = getPrimaryNavItems(messages, "vi");
@@ -59,6 +94,10 @@ describe("getPrimaryNavItems", () => {
       "/vi",
       "/vi/docs/guides",
       "/vi/browse",
+      "/vi/docs/references",
+      "/vi/docs/factories",
+      "/vi/docs/workers",
+      "/vi/docs/workstations",
       "/vi/docs/glossary",
       "/vi/blog",
     ]);
@@ -66,6 +105,10 @@ describe("getPrimaryNavItems", () => {
       messages.nav.home,
       messages.nav.guides,
       messages.nav.docs,
+      messages.nav.references,
+      messages.nav.factories,
+      messages.nav.workers,
+      messages.nav.workstations,
       messages.nav.glossary,
       messages.nav.blog,
     ]);
@@ -73,6 +116,10 @@ describe("getPrimaryNavItems", () => {
       "Trang chủ",
       "Hướng dẫn",
       "Tài liệu",
+      messages.nav.references,
+      messages.nav.factories,
+      messages.nav.workers,
+      messages.nav.workstations,
       "Thuật ngữ",
       messages.nav.blog,
     ]);
@@ -88,6 +135,10 @@ describe("getPrimaryNavItems", () => {
       "/ja",
       "/ja/docs/guides",
       "/ja/browse",
+      "/ja/docs/references",
+      "/ja/docs/factories",
+      "/ja/docs/workers",
+      "/ja/docs/workstations",
       "/ja/docs/glossary",
       "/ja/blog",
     ]);
@@ -95,6 +146,10 @@ describe("getPrimaryNavItems", () => {
       "ホーム",
       "ガイド",
       "ドキュメント",
+      jaMessages.nav.references,
+      jaMessages.nav.factories,
+      jaMessages.nav.workers,
+      jaMessages.nav.workstations,
       "用語集",
       jaMessages.nav.blog,
     ]);
@@ -103,6 +158,10 @@ describe("getPrimaryNavItems", () => {
       "/zh-CN",
       "/zh-CN/docs/guides",
       "/zh-CN/browse",
+      "/zh-CN/docs/references",
+      "/zh-CN/docs/factories",
+      "/zh-CN/docs/workers",
+      "/zh-CN/docs/workstations",
       "/zh-CN/docs/glossary",
       "/zh-CN/blog",
     ]);
@@ -110,6 +169,10 @@ describe("getPrimaryNavItems", () => {
       "首页",
       "指南",
       "文档",
+      zhCnMessages.nav.references,
+      zhCnMessages.nav.factories,
+      zhCnMessages.nav.workers,
+      zhCnMessages.nav.workstations,
       "术语表",
       zhCnMessages.nav.blog,
     ]);
@@ -131,7 +194,7 @@ describe("getPrimaryNavItems", () => {
     );
     expect(projectSiteHrefs[0]).toBe("/you-agent-factory-docs/");
     expect(projectSiteHrefs[1]).toBe("/you-agent-factory-docs/docs/guides");
-    expect(projectSiteHrefs[4]).toBe("/you-agent-factory-docs/blog");
+    expect(projectSiteHrefs[8]).toBe("/you-agent-factory-docs/blog");
     expect(resolveSiteNavigationHrefs(hrefs, "")).toEqual(hrefs);
   });
 

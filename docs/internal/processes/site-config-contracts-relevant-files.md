@@ -56,18 +56,20 @@ contract for the you-agent-factory CLI docs product.
 
 ## Primary nav / route placeholders
 
-- Default primary nav is Home, Guides, Docs, Glossary, Blog (no Topology or
-  Timeline). Search is a configured `routeSurfaces.search` entry for the header
-  trigger, not a primary nav item (avoids duplicating the search control).
+- Default primary nav is Home, Guides, Docs, References, Factories, Workers,
+  Workstations, Glossary, Blog (no Topology or Timeline). Search is a configured
+  `routeSurfaces.search` entry for the header trigger, not a primary nav item
+  (avoids duplicating the search control).
 - W15 family destinations are configured as `routeSurfaces.references` /
   `factories` / `workers` / `workstations` (`docs-page` slugs matching each
-  family index). Primary-nav membership for those four surfaces is a separate
-  wiring story; keep the route surfaces and `nav.*` label keys available so
-  later stories can add them without inventing new destinations.
+  family index) and are **members of** `primaryNav` in that relative order
+  (references → factories → workers → workstations), placed after Docs and
+  before Glossary.
 - Header search chrome copy (`messages.search.placeholder` / open / shortcut in
   `common.json`) must not say Model Atlas; placeholder identifies
   `you-agent-factory` (or neutral CLI docs search).
-- Resolved default hrefs: `/`, `/docs/guides`, `/browse`, `/docs/glossary`,
+- Resolved default hrefs: `/`, `/docs/guides`, `/browse`, `/docs/references`,
+  `/docs/factories`, `/docs/workers`, `/docs/workstations`, `/docs/glossary`,
   `/blog`. Guides uses `{ surface: "docs-page", slug: "guides" }`; Docs uses
   `{ surface: "browse" }` as the transitional docs landing placeholder.
   Family surfaces resolve to `/docs/references`, `/docs/factories`,
@@ -76,6 +78,11 @@ contract for the you-agent-factory CLI docs product.
   W15 topology also requires `references`, `factories`, `workers`, and
   `workstations` on `NavMessages` / `common.json` (aligned with family index
   titles; not the full reference chrome corpus).
+- Exact-order / desktop↔mobile family parity proofs live in
+  `src/components/layout/w15-primary-nav-family-parity.test.tsx` (and
+  `primary-nav.test.ts` relative-order coverage). Both Primary landmarks must
+  share the same family hrefs/labels/relative order; Search stays a header
+  control only.
 - `DocsHeader` / `getPrimaryNavItems` do not accept Atlas `topologyOptions`;
   canonical docs layout no longer wires topology navigation into the header.
   Topology browse remains a separate page-surface concern in site-renderers.
@@ -106,8 +113,8 @@ contract for the you-agent-factory CLI docs product.
 ## Regression test retargeting
 
 - Shell compatibility tests that assert primary nav must expect CLI labels
-  (Home/Guides/Docs/Glossary/Blog) and must not require Topology/Timeline/
-  Tags as primary destinations.
+  (Home/Guides/Docs/References/Factories/Workers/Workstations/Glossary/Blog)
+  and must not require Topology/Timeline/Tags as primary destinations.
 - Sidebar/layout brand link assertions should use `You Agent Factory`, not
   `Model Atlas` or the package slug alone, when driven by the default site
   config.
@@ -118,6 +125,8 @@ contract for the you-agent-factory CLI docs product.
   Search on the canonical layout). Do not reintroduce Model Atlas header
   component names, Topology/Timeline primary items, or Model Atlas search
   chrome copy in those surfaces.
+- W15 family exact-order and desktop/mobile Primary parity:
+  `src/components/layout/w15-primary-nav-family-parity.test.tsx`.
 
 ## Story sequencing
 

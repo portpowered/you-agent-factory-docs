@@ -115,6 +115,10 @@ describe("Phase 1 discovery search handoffs", () => {
       "/",
       "/docs/guides",
       "/browse",
+      "/docs/references",
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
       "/docs/glossary",
       "/blog",
     ]);

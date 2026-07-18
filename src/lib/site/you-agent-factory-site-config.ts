@@ -30,8 +30,8 @@ export const youAgentFactorySiteConfig = {
     glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
     search: { surface: "search" },
-    // W15 family destinations: available for nav/discovery wiring; primaryNav
-    // membership is owned by the desktop/mobile primary-nav story.
+    // W15 family destinations: first-class primary-nav members in stable
+    // relative order references → factories → workers → workstations.
     references: { surface: "docs-page", slug: "references" },
     factories: { surface: "docs-page", slug: "factories" },
     workers: { surface: "docs-page", slug: "workers" },
@@ -41,6 +41,10 @@ export const youAgentFactorySiteConfig = {
     { routeSurface: "home", labelKey: "home" },
     { routeSurface: "guides", labelKey: "guides" },
     { routeSurface: "docs", labelKey: "docs" },
+    { routeSurface: "references", labelKey: "references" },
+    { routeSurface: "factories", labelKey: "factories" },
+    { routeSurface: "workers", labelKey: "workers" },
+    { routeSurface: "workstations", labelKey: "workstations" },
     { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
   ],

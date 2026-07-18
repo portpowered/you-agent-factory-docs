@@ -207,6 +207,10 @@ describe("factory-only public inventory end-to-end", () => {
       "Home",
       "Guides",
       "Docs",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
       "Glossary",
       "Blog",
     ]);
@@ -214,6 +218,10 @@ describe("factory-only public inventory end-to-end", () => {
       "/",
       "/docs/guides",
       "/browse",
+      "/docs/references",
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
       "/docs/glossary",
       "/blog",
     ]);

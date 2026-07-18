@@ -119,6 +119,10 @@ const CLI_PRIMARY_NAV_LABELS = [
   "Home",
   "Guides",
   "Docs",
+  "References",
+  "Factories",
+  "Workers",
+  "Workstations",
   "Glossary",
   "Blog",
 ] as const;
@@ -126,6 +130,10 @@ const CLI_PRIMARY_NAV_HREFS = [
   "/",
   "/docs/guides",
   "/browse",
+  "/docs/references",
+  "/docs/factories",
+  "/docs/workers",
+  "/docs/workstations",
   "/docs/glossary",
   "/blog",
 ] as const;
@@ -202,6 +210,10 @@ describe("DocsHeader", () => {
       "/",
       "/docs/guides",
       "/browse",
+      "/docs/references",
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
       "/docs/glossary",
       "/blog",
     ]);
@@ -454,6 +466,10 @@ describe("DocsHeader", () => {
       "Home",
       "Guides",
       "Docs",
+      "References",
+      "Factories",
+      "Workers",
+      "Workstations",
       "Glossary",
       "Blog",
     ]);
@@ -461,6 +477,10 @@ describe("DocsHeader", () => {
       "/",
       "/docs/guides",
       "/browse",
+      "/docs/references",
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
       "/docs/glossary",
       "/blog",
     ]);
@@ -552,11 +572,7 @@ describe("DocsHeader", () => {
 
     const expectedItems = getPrimaryNavItems(messages);
     expect(expectedItems.map((item) => item.label)).toEqual([
-      "Home",
-      "Guides",
-      "Docs",
-      "Glossary",
-      "Blog",
+      ...CLI_PRIMARY_NAV_LABELS,
     ]);
     for (const item of expectedItems) {
       const link = within(drawer as HTMLElement).getByRole("link", {
