@@ -4,6 +4,11 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { type ReactNode, useId, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
+  schemaAddressDeepLink,
+  schemaPointerBreadcrumbSegments,
+} from "./schema-anchor";
+import { SchemaBreadcrumb } from "./schema-breadcrumb";
+import {
   schemaFieldLeafName,
   schemaFieldTreeNodeCanExpand,
 } from "./schema-field-path";
@@ -30,6 +35,11 @@ export type SchemaFieldRowProps = {
   refLink?: SchemaRefLinkDisplay;
   /** Owning page path used when building a default `$ref` href. */
   pagePath?: string;
+  /**
+   * When true (default), fields with a W04 `address` show a copyable deep-link
+   * breadcrumb. Fields without an address never invent anchors.
+   */
+  showAnchorCopy?: boolean;
   /** Nested field tree rendered when expanded. */
   children?: ReactNode;
   className?: string;
@@ -42,6 +52,7 @@ export function SchemaFieldRow({
   defaultExpanded = false,
   refLink,
   pagePath,
+  showAnchorCopy = true,
   children,
   className,
   "data-testid": testId = "schema-field-row",
@@ -57,6 +68,15 @@ export function SchemaFieldRow({
     (refTarget !== undefined
       ? schemaRefLinkDisplayFromAddress(refTarget, { pagePath })
       : undefined);
+  const fieldAddress = field.address;
+  const fieldDeepLink =
+    showAnchorCopy && fieldAddress !== undefined
+      ? schemaAddressDeepLink(fieldAddress, pagePath)
+      : undefined;
+  const fieldBreadcrumbSegments =
+    fieldAddress !== undefined
+      ? schemaPointerBreadcrumbSegments(fieldAddress.pointer)
+      : [];
 
   return (
     <li
@@ -129,6 +149,15 @@ export function SchemaFieldRow({
             >
               {field.description}
             </p>
+          ) : null}
+
+          {fieldDeepLink !== undefined ? (
+            <SchemaBreadcrumb
+              anchor={fieldDeepLink.anchor}
+              aria-label={`Deep link for field ${field.path}`}
+              href={fieldDeepLink.href}
+              segments={fieldBreadcrumbSegments}
+            />
           ) : null}
 
           {resolvedRefLink !== undefined ? (

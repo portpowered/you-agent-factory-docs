@@ -41,6 +41,10 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-ref-link.tsx` | Navigable `$ref` link + cycle sentinel; unresolved missing/malformed status |
 | `src/components/references/schema/schema-composition.tsx` | oneOf/anyOf/allOf + discriminator mapping display |
 | `src/components/references/schema/schema-composition.test.tsx` | Composition, discriminator, cycle, unresolved, and field-tree `$ref` proofs |
+| `src/components/references/schema/schema-anchor.ts` | Pure W04 deep-link / breadcrumb segment helpers (`anchorForIdentity`) |
+| `src/components/references/schema/schema-breadcrumb.tsx` | Path breadcrumb + copyable deep-link control |
+| `src/components/references/schema/schema-definition.tsx` | Full definition view: metadata, anchors, composition, field tree |
+| `src/components/references/schema/schema-definition.test.tsx` | Definition metadata, omitted prose, copyable definition/field anchors |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -76,6 +80,11 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   `schemaRefLinkDisplayFromOutcome` consume W04 composition models and
   `ReferenceCrossLinkResolver` outcomes. Members stay as links — never
   recursive definition trees.
+- Definition UI: `SchemaDefinition` composes metadata, `SchemaComposition`,
+  `SchemaFieldTree`, and `SchemaBreadcrumb`. Anchors come from
+  `schemaAddressDeepLink` / `anchorForIdentity("schema-pointer", …)` — never
+  mint unstable fragment IDs in the UI. Field rows copy deep links only when
+  `SchemaFieldModel.address` is present.
 
 ## Verification preference
 

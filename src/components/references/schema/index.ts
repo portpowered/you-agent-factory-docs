@@ -8,6 +8,17 @@
 
 export { formatSchemaValue } from "./format-schema-value";
 export {
+  type SchemaDeepLink,
+  schemaAddressDeepLink,
+  schemaFieldPathBreadcrumbSegments,
+  schemaPointerAnchor,
+  schemaPointerBreadcrumbSegments,
+} from "./schema-anchor";
+export {
+  SchemaBreadcrumb,
+  type SchemaBreadcrumbProps,
+} from "./schema-breadcrumb";
+export {
   SchemaComposition,
   type SchemaCompositionProps,
 } from "./schema-composition";
@@ -26,6 +37,10 @@ export {
   SchemaDefaultValue,
   type SchemaDefaultValueProps,
 } from "./schema-default-value";
+export {
+  SchemaDefinition,
+  type SchemaDefinitionProps,
+} from "./schema-definition";
 export {
   schemaFieldHasRefTarget,
   schemaFieldLeafName,
