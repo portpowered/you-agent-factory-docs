@@ -32,7 +32,16 @@ the shipped `/docs/references/api` surface.
   `content.renderPageLayout` and enables `schemaUI.showExample`.
 - `src/app/(dev)/references-openapi-spike/page.tsx` — isolated non-production
   spike route (`/references-openapi-spike`). Hidden in production unless
-  `ENABLE_OPENAPI_SPIKE=1`. Does not edit shared nav/search/sitemap inventories.
+  `ENABLE_OPENAPI_SPIKE=1`. Dynamically imports `spike-page-content` so
+  production CI can alias the heavy OpenAPI UI out of the static-export graph.
+  Does not edit shared nav/search/sitemap inventories.
+- `src/app/(dev)/references-openapi-spike/spike-page-content.tsx` — heavy
+  OpenAPI UI + spike-only CSS imports (`fumadocs-openapi/css/preset.css`,
+  `references-openapi-spike-theme.css`). Keep these out of `app/globals.css`.
+- `src/app/(dev)/references-openapi-spike/spike-page-content.stub.tsx` —
+  production-export stub (`notFound` only). `next.config.ts` webpack-aliases
+  the real content module here when `ENABLE_OPENAPI_SPIKE` is unset so
+  fumadocs-openapi / Scalar do not inflate exported-site budget gates.
 - `src/lib/references-openapi-spike/single-page-route.test.ts` — proves package
   resolution and that `per:"file"` yields one page with every published op.
 
@@ -133,9 +142,12 @@ the shipped `/docs/references/api` surface.
   W08 chooses final pins after W01/W02 evidence.
 - Do not install `fumadocs-openapi` 11.2 while remaining on Fumadocs 16.9;
   upgrade requires a coordinated `fumadocs-core` + `fumadocs-ui` 16.10 bump.
-- Temporary CSS import: `fumadocs-openapi/css/preset.css` plus
-  `references-openapi-spike-theme.css` in `globals.css` for the spike only;
-  revert or relocate when W08 productionizes references UI.
+- Temporary CSS: load `fumadocs-openapi/css/preset.css` plus
+  `references-openapi-spike-theme.css` from the spike page content module only
+  (not `globals.css`); revert or relocate when W08 productionizes references UI.
+- Production static-export budgets: webpack-alias
+  `spike-page-content.tsx` → `spike-page-content.stub.tsx` unless
+  `ENABLE_OPENAPI_SPIKE=1` so the spike cannot fail `make budget`.
 - Document-object `createOpenAPI` input (load packaged YAML with Node `fs` +
   `js-yaml`) avoids absolute file-path input. Under `bun test`, happy-dom's URL
   polyfill still breaks fumadocs-openapi's ref-parser — run projection
