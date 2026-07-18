@@ -182,6 +182,7 @@ describe("W05 route-family static params and not-found", () => {
 
     expect(defaultParams.length).toBeGreaterThan(0);
     expect(defaultPaths).not.toContain("__no_docs_pages__");
+    expect(defaultPaths).toContain("references/api");
 
     // W12 authored factories pages contribute catch-all child params.
     expect(defaultPaths.some((path) => path.startsWith("factories/"))).toBe(
@@ -256,17 +257,28 @@ describe("W05 route-family static params and not-found", () => {
     ).toEqual([{ slug: ["__no_docs_pages__"] }]);
   });
 
-  test("live localized generateStaticParams stay non-empty without unshipped route-family children", async () => {
+  test("live localized generateStaticParams include shipped references/api without unshipped route-family siblings", async () => {
     const localizedParams = await generateLocalizedDocsStaticParams();
     expect(localizedParams.length).toBeGreaterThan(0);
 
     const slugPaths = localizedParams.map((entry) =>
       (entry.slug ?? []).join("/"),
     );
-    // Factories, references/schema+events, and workers currently ship
-    // English-only messages, so they do not enter shipped-locale catch-all
-    // params yet.
-    for (const id of DIRECT_DOCS_ROUTE_FAMILY_IDS) {
+    // API ships ja/zh-CN/vi messages; other reference siblings and the
+    // factories/workers/workstations families remain English-only for now.
+    expect(slugPaths).toContain("references/api");
+    for (const slug of [
+      "events",
+      "cli",
+      "mcp",
+      "javascript-runtime",
+      "factory-schema",
+      "you-config-schema",
+      "mock-workers-schema",
+    ] as const) {
+      expect(slugPaths).not.toContain(`references/${slug}`);
+    }
+    for (const id of ["factories", "workers", "workstations"] as const) {
       expect(slugPaths.some((path) => path.startsWith(`${id}/`))).toBe(false);
     }
   });

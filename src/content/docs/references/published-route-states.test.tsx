@@ -2,7 +2,8 @@
  * Cross-route page-owned proofs for W11 published CLI / MCP / JavaScript
  * runtime reference routes: success mounts, accessible empty/error states,
  * package-backed (not copied) inventory source, static no-host safety, and
- * ownership fences that keep sibling reference pages unpublished.
+ * ownership fences that keep CLI/MCP/JS pages coexisting with sibling
+ * reference routes (API, events, schemas) once those lanes land.
  *
  * Does not scan renderer source trees, enforce global registration
  * inventories, or re-own W10 contract-count drift logic.
@@ -49,8 +50,14 @@ const PUBLISHED_ROUTES = [
   },
 ] as const;
 
-/** Sibling W11 routes owned elsewhere — must stay unpublished in this lane. */
-const UNPUBLISHED_SIBLING_SLUGS = ["api"] as const;
+/** Sibling W11 routes once owned elsewhere — now coexist when those lanes land. */
+const COEXISTING_REFERENCE_SLUGS = [
+  { slug: "api", url: "/docs/references/api" },
+  { slug: "events", url: "/docs/references/events" },
+  { slug: "factory-schema", url: "/docs/references/factory-schema" },
+  { slug: "you-config-schema", url: "/docs/references/you-config-schema" },
+  { slug: "mock-workers-schema", url: "/docs/references/mock-workers-schema" },
+] as const;
 
 describe("W11 published route states and ownership fences", () => {
   afterEach(() => {
@@ -261,30 +268,18 @@ describe("W11 published route states and ownership fences", () => {
     }
   });
 
-  test("ownership fences keep sibling reference routes unpublished", () => {
+  test("ownership fences keep CLI/MCP/JS pages coexisting with sibling reference routes", () => {
+    // Family index is an App Router page, not a fumadocs catch-all slug.
     expect(source.getPage(["references"])).toBeUndefined();
-
-    for (const slug of UNPUBLISHED_SIBLING_SLUGS) {
-      expect(source.getPage(["references", slug])).toBeUndefined();
-    }
 
     for (const route of PUBLISHED_ROUTES) {
       expect(source.getPage(["references", route.slug])?.url).toBe(route.url);
     }
 
-    // Parallel W11 schema/events pages may already exist on main; this lane
-    // must not delete or re-own them.
-    expect(source.getPage(["references", "events"])?.url).toBe(
-      "/docs/references/events",
-    );
-    expect(source.getPage(["references", "factory-schema"])?.url).toBe(
-      "/docs/references/factory-schema",
-    );
-    expect(source.getPage(["references", "you-config-schema"])?.url).toBe(
-      "/docs/references/you-config-schema",
-    );
-    expect(source.getPage(["references", "mock-workers-schema"])?.url).toBe(
-      "/docs/references/mock-workers-schema",
-    );
+    // Parallel W11 API/schema/events pages coexist on the same family; this
+    // lane must not delete or re-own them.
+    for (const route of COEXISTING_REFERENCE_SLUGS) {
+      expect(source.getPage(["references", route.slug])?.url).toBe(route.url);
+    }
   });
 });

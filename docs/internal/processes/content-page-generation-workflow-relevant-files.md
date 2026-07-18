@@ -1308,6 +1308,80 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Nested-slug discovery proofs (temp fixtures under new families; no
   production content pages).
 
+### First authored page under `/docs/references` (W05 route family)
+
+The first published `references/<slug>` page needs more than the page bundle.
+W05 already provides nested discovery, family indexes, and
+`loadRouteFamilyLocalDocsPage`. Before the page can pass
+`prepare:content-runtime` / `make validate-data` and appear in
+`generateStaticParams` / the references index:
+
+1. Add `references` to `PUBLISHED_DOCS_SECTIONS` and `referencePageHref` /
+   `publishedDocsHrefFromEntry` in `published-docs-registry-contract.ts` +
+   `content-hrefs.ts`. Without that, `docsSectionFromSlug("references/…")`
+   throws and the published-docs scanner cannot index the page.
+2. Add `references` to `REGISTRY_COLLECTIONS`, load `referenceRecordSchema`
+   from `src/content/registry/references/` in `registry.ts`, include the
+   directory in `registry-runtime-generation.ts`, and treat `reference` as
+   linkable in `registry-linking.ts`. Schema/kind support already exists;
+   the loader path was empty until the first record.
+3. Map `reference` → `references` in
+   `canonical-page-surface-audit.ts` `registryDirectoryByKind`. The audit
+   also documents a first W05 route-family page exception for the narrow
+   shared wiring above (plus section-index empty-state flips).
+4. Remove `src/content/docs/references/.gitkeep` when the first page bundle
+   lands. Prefer colocated `<slug>-page.test.tsx` under the page bundle.
+5. Flip `section-indexes.test.tsx` and
+   `section-collection-index.test.ts` from references empty-state to
+   authored-entry assertions when the App Router still uses the generic
+   section-collection renderer. Parallel lanes now own custom family indexes
+   for references/workers/workstations — keep coexistence proofs on those
+   App Router surfaces instead of fighting shared empty-state tables.
+6. Ship non-default locale message files when the page should appear on
+   localized family indexes (shipped-locale manifest derives from
+   `messages/<locale>.json` presence). English-first copies are fine.
+7. When the page needs a required page-local MDX component (for example
+   mounting `@/components/references/api` on `/docs/references/api`),
+   colocate `page-mdx-components.tsx` next to `page.mdx` and add a static
+   `import("@/content/docs/references/<slug>/page-mdx-components")` switch
+   in `route-family-local-docs-page-load.ts`. Relative MDX imports do not
+   resolve under `compileMDX` (same constraint as documentation/concept
+   page-local components). Keep the visual page-owned; do not register it
+   in shared `mdx-components.tsx`. Union sibling slug cases (`api`, `events`,
+   `cli`, `mcp`, `javascript-runtime`, schema pages) when merging parallel
+   W11 lanes — do not drop another lane's switch arm.
+8. For `/docs/references/api`, compose the public W08 surface
+   (`ApiSurface` + nav + `ApiOperationSection` + hash/theme/print markers +
+   `ApiLocalServerBaseUrlNotice`) in a page-local `ApiReferenceProjection`.
+   SSE hybrid summaries mount automatically through `ApiOperationSection`;
+   do not re-implement event catalog UI. Prove static-only + three SSE
+   summaries with page-local tests and the colocated browser probe
+   `assert-api-page-static-sse-browser.ts` (unique port; kill server on exit).
+   Production loaders must use Next/webpack-safe OpenAPI acquisition via
+   `src/lib/references/api-openapi-turbopack.ts` (`resolveApiPackageManifestFsPath`
+   ancestor `node_modules` walk → `openapi/openapi.yaml`) injected through
+   page-local `api-reference-production-loaders.ts` / `loadApiOpenApiArtifact({
+   resolveExport })`. Do not rely on W08 default `createRequire` resolve —
+   under Turbopack it can return unreadable `[externals]/` paths and the
+   published route falls through to `data-api-status="invalid"` while Bun
+   unit tests stay green.
+9. Keep non-success outcomes page-owned: `resolveApiReferenceProjectionState`
+   short-circuits to `ApiSurface` `empty` / `invalid` (public `ApiStatus`)
+   when the packaged projection has zero operations or loaders throw.
+   Inject optional `loaders` only in page-local tests — production MDX omits
+   them (defaults are the Next-safe production loaders). Assert ready
+   `data-api-status="ready"` plus accessible empty/invalid `role="status"`
+   messaging in `ApiReferenceProjection.test.tsx` / `api-page.test.tsx`; do
+   not scan renderer trees or shared inventories. Ownership stays page
+   wiring: no edits under `src/components/references/api/` (or
+   schema/events/CLI/MCP/JS), no sibling W11 pages, no W15–W18 inventories,
+   no factories/workers/workstations content, no `node_modules` patches.
+
+Do not edit shared nav/sidebar/search/sitemap/compat inventory owners
+(W15–W18) by hand for this first page — published-docs membership is enough
+for nested static params and the family index. Do not create sibling
+reference pages or a contended shared references `meta.json`.
+
 ## First published `references` schema page
 
 The first authored page under `src/content/docs/references/` needs the same
@@ -1342,8 +1416,7 @@ MDX component merge for schema mounts:
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.
 6. Update `src/tests/content/section-indexes.test.tsx` so the references
-   index asserts authored entries on the default locale while
-   factories/workers/workstations stay on the empty-state contract.
+   family index asserts discoverability links for published reference routes.
 7. Do not hand-edit shared nav/sidebar/search/sitemap/compat inventories
    (W15–W18). Sitemap inclusion follows derived published-docs entries after
    `prepare:content-runtime`.

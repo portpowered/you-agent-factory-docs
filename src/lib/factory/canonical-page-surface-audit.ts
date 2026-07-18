@@ -35,7 +35,15 @@ const FIRST_CLI_SECTION_PAGE_SECTIONS = [
   "techniques",
 ] as const;
 
+/**
+ * W05 direct route-family sections that need first authored page wiring
+ * (published-docs section membership + reference registry loading).
+ */
+const FIRST_ROUTE_FAMILY_PAGE_SECTIONS = ["references"] as const;
+
 type FirstCliSection = (typeof FIRST_CLI_SECTION_PAGE_SECTIONS)[number];
+type FirstRouteFamilySection =
+  (typeof FIRST_ROUTE_FAMILY_PAGE_SECTIONS)[number];
 
 export type CanonicalPageSurfaceClassification =
   | {
@@ -724,6 +732,17 @@ function resolveFirstCliSection(pageDirectory: string): FirstCliSection | null {
   return null;
 }
 
+function resolveFirstRouteFamilySection(
+  pageDirectory: string,
+): FirstRouteFamilySection | null {
+  for (const section of FIRST_ROUTE_FAMILY_PAGE_SECTIONS) {
+    if (pageDirectory.startsWith(`src/content/docs/${section}/`)) {
+      return section;
+    }
+  }
+  return null;
+}
+
 function isAllowedFirstCliSectionPageSharedPath(
   path: string,
   section: FirstCliSection,
@@ -787,6 +806,51 @@ function isAllowedFirstCliSectionPageSharedPath(
   );
 }
 
+function isAllowedFirstRouteFamilyPageSharedPath(
+  path: string,
+  section: FirstRouteFamilySection,
+): boolean {
+  if (isAuditSupportPath(path)) {
+    return true;
+  }
+
+  if (
+    path === `src/content/docs/${section}/.gitkeep` ||
+    path === `src/content/registry/${section}/.gitkeep`
+  ) {
+    return true;
+  }
+
+  if (
+    path ===
+      "docs/internal/processes/content-page-generation-workflow-relevant-files.md" ||
+    path ===
+      "docs/internal/processes/canonical-page-surface-budget-relevant-files.md" ||
+    path ===
+      "docs/internal/processes/unified-api-reference-renderer-relevant-files.md"
+  ) {
+    return true;
+  }
+
+  if (
+    path === "src/lib/content/published-docs-registry-contract.ts" ||
+    path === "src/lib/content/content-hrefs.ts" ||
+    path === "src/lib/content/content-paths.ts" ||
+    path === "src/lib/content/registry.ts" ||
+    path === "src/lib/content/registry-runtime-generation.ts" ||
+    path === "src/lib/content/registry-linking.ts" ||
+    path === "src/lib/content/docs-catch-all-static-params.test.ts" ||
+    path === "src/lib/content/shipped-localized-docs.server.test.ts" ||
+    path === "src/lib/factory/canonical-page-surface-audit.ts" ||
+    path === "src/tests/content/section-indexes.test.tsx" ||
+    path === "src/lib/docs/section-collection-index.test.ts"
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
 function evaluateFirstCliSectionPageBudget(
   scope: CanonicalPageScope,
   sharedPaths: readonly string[],
@@ -828,6 +892,39 @@ function evaluateFirstCliSectionPageBudget(
       section === "concepts"
         ? `First authored page under rewrite-era CLI section concepts: section .gitkeep removal, empty-taxonomy process notes, and tracked shipped-locale manifest / derive-test updates required so /docs/concepts/${scope.slug} publishes with colocated messages.`
         : `First authored page under rewrite-era CLI section ${section}: published-docs + local-docs loader wiring, section .gitkeep removal, and process notes required so /docs/${section}/${scope.slug} publishes with colocated messages.`,
+  };
+}
+
+function evaluateFirstRouteFamilyPageBudget(
+  scope: CanonicalPageScope,
+  sharedPaths: readonly string[],
+): { reason: string } | null {
+  const section = resolveFirstRouteFamilySection(scope.pageDirectory);
+  if (!section) {
+    return null;
+  }
+
+  if (section === "references" && !scope.registryId.startsWith("reference.")) {
+    return null;
+  }
+
+  const relevantSharedPaths = sharedPaths.filter(
+    (path) => !isAuditSupportPath(path),
+  );
+  if (relevantSharedPaths.length === 0) {
+    return null;
+  }
+
+  if (
+    !relevantSharedPaths.every((path) =>
+      isAllowedFirstRouteFamilyPageSharedPath(path, section),
+    )
+  ) {
+    return null;
+  }
+
+  return {
+    reason: `First authored page under W05 route family ${section}: published-docs section membership, reference registry collection loading, section .gitkeep removal, and index empty-state flips required so /docs/${section}/${scope.slug} publishes through nested route-family discovery.`,
   };
 }
 
@@ -1031,6 +1128,34 @@ function collectGuidance(
       details,
       headline:
         "This branch is over the routine budget, but it fits the first CLI-section page exception when published-docs and local-docs wiring stay narrowly scoped to one section.",
+      recommendedAction: "declare-exception",
+    };
+  }
+
+  const firstRouteFamilyException = evaluateFirstRouteFamilyPageBudget(
+    scope,
+    sharedPaths,
+  );
+  if (firstRouteFamilyException) {
+    const details = [
+      "This branch matches the documented first authored page under a W05 direct route family exception.",
+      firstRouteFamilyException.reason,
+      `Shared paths: ${sharedPaths.filter((path) => !isAuditSupportPath(path)).join(", ")}.`,
+    ];
+    if (exception) {
+      details.push(
+        `Visible exception declared: "${exception.reason}". Repeat that justification in the PR conversation comment so reviewers can evaluate the broader touch explicitly.`,
+      );
+    } else {
+      details.push(
+        'If this shared touch is truly required to ship the page, rerun the guard with --exception-reason "..." and copy the same justification into the PR conversation comment.',
+      );
+    }
+
+    return {
+      details,
+      headline:
+        "This branch is over the routine budget, but it fits the first W05 route-family page exception when published-docs and reference registry wiring stay narrowly scoped to one family.",
       recommendedAction: "declare-exception",
     };
   }

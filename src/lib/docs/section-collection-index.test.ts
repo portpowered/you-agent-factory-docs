@@ -241,49 +241,10 @@ describe("renderSectionCollectionIndexPage localized techniques", () => {
   });
 });
 
-const W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
-  {
-    collectionId: "workstations" as const,
-    messageKey: "workstationsIndex" as const,
-  },
-] as const;
-
 const W05_EMPTY_STATE_ATLAS_PHRASING =
   /Model Atlas|Browse the Atlas|the atlas|アトラス|Duyệt Atlas|浏览图谱|图谱/i;
 
 describe("renderSectionCollectionIndexPage W05 direct route families", () => {
-  test("renders empty-state indexes for still-empty families without leaking documentation entries", async () => {
-    const messages = await loadUiMessages();
-
-    for (const {
-      collectionId,
-      messageKey,
-    } of W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
-      const indexMessages = messages[messageKey];
-      const html = renderToStaticMarkup(
-        await renderSectionCollectionIndexPage(collectionId),
-      );
-
-      expect(html).toContain(indexMessages.title);
-      expect(html).toContain(indexMessages.description);
-      expect(html).toContain(indexMessages.emptyTitle);
-      expect(html).toContain(indexMessages.emptyDescription);
-      expect(html).toContain(indexMessages.emptyHomeLink);
-      expect(html).toContain('href="/"');
-      expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
-      expect(html).not.toContain("/docs/documentation/");
-      expect(indexMessages.emptyTitle).not.toMatch(
-        W05_EMPTY_STATE_ATLAS_PHRASING,
-      );
-      expect(indexMessages.emptyDescription).not.toMatch(
-        W05_EMPTY_STATE_ATLAS_PHRASING,
-      );
-      expect(indexMessages.emptyHomeLink).not.toMatch(
-        W05_EMPTY_STATE_ATLAS_PHRASING,
-      );
-    }
-  });
-
   test("keeps factories authored entries scoped to the factories route family", async () => {
     const messages = await loadUiMessages();
     const html = renderToStaticMarkup(
@@ -299,24 +260,69 @@ describe("renderSectionCollectionIndexPage W05 direct route families", () => {
     expect(html).not.toContain("/docs/documentation/what-is-you-agent-factory");
   });
 
-  test("renders localized empty-state indexes for still-empty families", async () => {
+  test("keeps workstations authored entries scoped to the workstations route family", async () => {
+    const messages = await loadUiMessages();
+    const html = renderToStaticMarkup(
+      await renderSectionCollectionIndexPage("workstations"),
+    );
+
+    expect(html).toContain(messages.workstationsIndex.title);
+    expect(html).toContain(
+      `aria-label="${messages.workstationsIndex.listLabel}"`,
+    );
+    expect(html).toContain("/docs/workstations/standard");
+    expect(html).toContain("/docs/workstations/agent-run");
+    expect(html).not.toContain(messages.workstationsIndex.emptyTitle);
+    expect(html).not.toContain("/docs/documentation/");
+    expect(messages.workstationsIndex.emptyTitle).not.toMatch(
+      W05_EMPTY_STATE_ATLAS_PHRASING,
+    );
+  });
+
+  test("renders localized factories indexes as empty while child pages stay English-only", async () => {
     for (const locale of ["ja", "zh-CN", "vi"] as const) {
       const messages = await loadUiMessages(locale);
+      const html = renderToStaticMarkup(
+        await renderSectionCollectionIndexPage("factories", locale),
+      );
 
-      for (const {
-        collectionId,
-        messageKey,
-      } of W05_EMPTY_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
-        const indexMessages = messages[messageKey];
-        const html = renderToStaticMarkup(
-          await renderSectionCollectionIndexPage(collectionId, locale),
-        );
+      expect(html).toContain(messages.factoriesIndex.title);
+      expect(html).toContain(messages.factoriesIndex.emptyTitle);
+      expect(html).not.toContain(
+        `aria-label="${messages.factoriesIndex.listLabel}"`,
+      );
+    }
+  });
 
-        expect(html).toContain(indexMessages.title);
-        expect(html).toContain(indexMessages.emptyTitle);
-        expect(html).toContain(indexMessages.emptyHomeLink);
-        expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
-      }
+  test("renders localized workstations indexes as empty while variant pages stay English-only", async () => {
+    for (const locale of ["ja", "zh-CN", "vi"] as const) {
+      const messages = await loadUiMessages(locale);
+      const html = renderToStaticMarkup(
+        await renderSectionCollectionIndexPage("workstations", locale),
+      );
+
+      expect(html).toContain(messages.workstationsIndex.title);
+      expect(html).toContain(messages.workstationsIndex.emptyTitle);
+      expect(html).not.toContain(
+        `aria-label="${messages.workstationsIndex.listLabel}"`,
+      );
+    }
+  });
+
+  test("renders localized references indexes with authored api entries only", async () => {
+    for (const locale of ["ja", "zh-CN", "vi"] as const) {
+      const messages = await loadUiMessages(locale);
+      const html = renderToStaticMarkup(
+        await renderSectionCollectionIndexPage("references", locale),
+      );
+
+      expect(html).toContain(messages.referencesIndex.title);
+      expect(html).toContain(
+        `aria-label="${messages.referencesIndex.listLabel}"`,
+      );
+      expect(html).toContain(`/${locale}/docs/references/api`);
+      expect(html).not.toContain(`/${locale}/docs/references/events`);
+      expect(html).not.toContain(messages.referencesIndex.emptyTitle);
     }
   });
 });

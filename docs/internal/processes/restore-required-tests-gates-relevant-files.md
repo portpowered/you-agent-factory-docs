@@ -118,9 +118,13 @@ workers (~152.37 MiB / ~5.36 MiB), W11 schema + events (~161.68 MiB /
 ~5.51 MiB), and W14 workstations (~161.99 MiB / ~5.53 MiB) landed; raised
 again 2026-07-18 UTC after merging W14 with main (W11 schema + events + W13
 workers) measured ~184.93 MiB total and ~5.82 MiB search bootstrap on CI, then
-after merging W12 factories and W11 CLI/MCP/JS onto that combined head:
+after merging W12 factories and W11 CLI/MCP/JS onto that combined head; raised
+again 2026-07-18 UTC after merging the W11 API reference page onto that head
+(CI measured ~211.61 MiB total / ~6.16 MiB search); raised again 2026-07-18 UTC
+after the Next-safe OpenAPI loader fix on that head (CI measured ~220.21 MiB
+total / ~6.16 MiB search):
 
-- `maxTotalOutBytes`: 210_000_000
+- `maxTotalOutBytes`: 225_000_000
 - `maxNextStaticJsBytes`: 3_500_000
 - `maxSearchBootstrapBytes`: 6_500_000
 
