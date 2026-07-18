@@ -1014,8 +1014,14 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   (`workstation:POLLER_RUN`, requires `worker:POLLER_WORKER`, empty
   `selected`, misuse = axis collapse putting `POLLER_RUN` on behavior;
   keep `POLLER_RUN` distinct from behavior `POLLER` and link
-  `/docs/workstations/poller`). Mirror this bundle for later WorkstationType
-  pages with `createProductionWorkstationTypeOverlay`.
+  `/docs/workstations/poller`);
+  `workstations/model-workstation` /
+  `documentation.workstations-model-workstation`
+  (`workstation:MODEL_WORKSTATION`, requires `worker:MODEL_WORKER`, selects
+  exclusive `promptFile` / `outcomeFormat` / `outputSchema` / `stopWords`,
+  misuse = `operation` from MODEL_INVOKE; keep distinct from
+  `model-invoke`). Mirror this bundle for later WorkstationType pages with
+  `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
   families. Empty collections call `renderSectionCollectionIndexPage` with

@@ -114,6 +114,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "model-workstation": {
+        const mod = await import(
+          "@/content/docs/workstations/model-workstation/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }

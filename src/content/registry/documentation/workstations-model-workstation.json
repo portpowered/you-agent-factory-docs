@@ -1,0 +1,24 @@
+{
+  "id": "documentation.workstations-model-workstation",
+  "slug": "workstations-model-workstation",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "model-workstation type",
+    "MODEL_WORKSTATION",
+    "WorkstationType MODEL_WORKSTATION",
+    "docs workstations model-workstation"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workstations-family",
+    "documentation.workstations",
+    "documentation.configuration",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T16:45:00.000Z",
+  "updatedAt": "2026-07-18T16:45:00.000Z"
+}
