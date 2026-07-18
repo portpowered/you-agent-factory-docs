@@ -1,0 +1,24 @@
+{
+  "id": "documentation.workstations-poller-run",
+  "slug": "workstations-poller-run",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "poller-run type",
+    "POLLER_RUN",
+    "WorkstationType POLLER_RUN",
+    "docs workstations poller-run"
+  ],
+  "tags": [],
+  "relatedIds": [
+    "documentation.workstations-family",
+    "documentation.workstations",
+    "documentation.configuration",
+    "documentation.resources"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T16:20:00.000Z",
+  "updatedAt": "2026-07-18T16:20:00.000Z"
+}

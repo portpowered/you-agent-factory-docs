@@ -108,6 +108,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "poller-run": {
+        const mod = await import(
+          "@/content/docs/workstations/poller-run/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }
