@@ -952,7 +952,11 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `@/content/docs/factories/configuration/page-mdx-components` for the W07
   `FactoryRootSchemaEmbed`; `factories/global-configuration` →
   `@/content/docs/factories/global-configuration/page-mdx-components` for
-  You-config root plus addressed Factory `FactoryName` / `RunnerID` embeds.
+  You-config root plus addressed Factory `FactoryName` / `RunnerID` embeds;
+  `factories/packaged` →
+  `@/content/docs/factories/packaged/page-mdx-components` for addressed
+  `FactoryName` plus root Factory metadata/`sourceDirectory` teaching embed
+  (property pointers do not resolve as addressed catalog definitions).
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /

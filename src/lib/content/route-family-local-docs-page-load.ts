@@ -78,6 +78,13 @@ async function loadRouteFamilyPageMdxComponents(
     return mod.pageMdxComponents ?? {};
   }
 
+  if (section === "factories" && slug === "packaged") {
+    const mod = await import(
+      "@/content/docs/factories/packaged/page-mdx-components"
+    );
+    return mod.pageMdxComponents ?? {};
+  }
+
   return {};
 }
 

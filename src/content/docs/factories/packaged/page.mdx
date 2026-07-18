@@ -1,0 +1,136 @@
+---
+title: "Packaged Factories"
+description: "Discover, identify, and run first-party @you/* packaged factories with you run --named."
+kind: "documentation"
+registryId: "documentation.factories-packaged"
+messageNamespace: "local"
+assetNamespace: "local"
+status: "published"
+tags: []
+aliases:
+  - "packaged factories"
+  - "@you/goal"
+  - "you run --named"
+updatedAt: "2026-07-18"
+---
+
+import { CitationList } from "@/features/docs/components/CitationList";
+import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
+import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
+import { Section } from "@/features/docs/components/Section";
+import { T } from "@/features/docs/components/T";
+import { TagPillList } from "@/features/docs/components/TagPillList";
+
+
+<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
+  <T k="sections.whatItCovers.body" />
+</Section>
+
+<Section id="key-concepts" titleKey="sections.keyConcepts.title">
+  <T k="sections.keyConcepts.body" />
+</Section>
+
+<Section id="discovery-and-resolution" titleKey="sections.discoveryAndResolution.title">
+  <T k="sections.discoveryAndResolution.body" />
+  <p>
+    <T k="links.globalRootLabel" />
+  </p>
+  ```text
+  ~/.you-agent-factory/factories
+  ```
+  <T k="callouts.freshnessAndPortability.body" />
+</Section>
+
+<Section id="factory-name-schema" titleKey="sections.factoryNameSchema.title">
+  <T k="sections.factoryNameSchema.body" />
+  <FactoryNameSchemaEmbed />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/schema",
+        labelKey: "links.fullFactorySchema",
+      },
+      {
+        href: "/docs/references/api",
+        labelKey: "links.fullFactoryApi",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="metadata-and-source-schema" titleKey="sections.metadataAndSourceSchema.title">
+  <T k="sections.metadataAndSourceSchema.body" />
+  <FactoryMetadataSourceSchemaEmbed />
+  <T k="callouts.schemaEmbedNote.body" />
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/references/schema",
+        labelKey: "links.fullFactorySchema",
+      },
+    ]}
+  />
+</Section>
+
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
+  <p>
+    <T k="links.goalCommandLabel" />
+  </p>
+  ```bash
+  you run --named @you/goal "Ship the login bug fix"
+  ```
+  <p>
+    <T k="links.ttsCommandLabel" />
+  </p>
+  ```bash
+  you run --named @you/tts "hi there"
+  ```
+  <p>
+    <T k="links.helpCommandLabel" />
+  </p>
+  ```bash
+  you run --named @you/goal --help
+  ```
+  <T k="callouts.exampleNotes.body" />
+</Section>
+
+<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
+  <T k="sections.limitsAndAssumptions.body" />
+</Section>
+
+<Section id="related" titleKey="sections.related.title">
+  <LocalizedLinkList
+    items={[
+      {
+        href: "/docs/factories/configuration",
+        labelKey: "links.configurationDocs",
+      },
+      {
+        href: "/docs/factories/global-configuration",
+        labelKey: "links.globalConfigurationDocs",
+      },
+      {
+        href: "/docs/documentation/dynamic-workflows",
+        labelKey: "links.dynamicWorkflowsDocs",
+      },
+      {
+        href: "/docs/documentation/cli",
+        labelKey: "links.cliDocs",
+      },
+      {
+        href: "/docs/documentation/packaged-documents",
+        labelKey: "links.packagedDocumentsDocs",
+      },
+    ]}
+  />
+  <RelatedDocs registryId="documentation.factories-packaged" />
+</Section>
+
+<Section id="tags" titleKey="sections.tags.title">
+  <TagPillList registryId="documentation.factories-packaged" showDescriptions />
+</Section>
+
+<Section id="references" titleKey="sections.references.title">
+  <CitationList registryId="documentation.factories-packaged" />
+</Section>

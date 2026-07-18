@@ -1,0 +1,21 @@
+{
+  "id": "documentation.factories-packaged",
+  "slug": "factories-packaged",
+  "kind": "documentation",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": ["packaged factories", "@you/goal", "you run --named"],
+  "tags": [],
+  "relatedIds": [
+    "documentation.factories-configuration",
+    "documentation.factories-global-configuration",
+    "documentation.packaged-factories",
+    "documentation.dynamic-workflows",
+    "documentation.cli",
+    "documentation.packaged-documents"
+  ],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T14:00:00.000Z",
+  "updatedAt": "2026-07-18T14:00:00.000Z"
+}
