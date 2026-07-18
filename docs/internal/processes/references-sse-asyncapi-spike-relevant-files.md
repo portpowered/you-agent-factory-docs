@@ -88,3 +88,15 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   and `x-semantic-inventory` on the regenerated AsyncAPI document. Focused
   tests: `projection-inventory.test.ts`. Callers must pass `sourceText` (or
   `sourceHash`) into `projectOpenApiSseToAsyncApi`.
+- Envelope attachment / no invented discriminator (story 006):
+  `src/lib/references-sse-asyncapi-spike/envelope-projection-rules.ts` keeps
+  AsyncAPI message `payload.$ref` on the `x-event-schema` envelope root
+  (`x-envelope-attachment: envelope-attached`). FactoryEvent `type`
+  discriminator mappings stay on the envelope schema; mapping-target payload
+  schemas are never emitted as standalone complete event messages.
+  FactoryResponseEvent messages document kind/phase/structural payload
+  selection (`x-payload-selection-rule`) and set
+  `x-invented-discriminator: false` — projection never adds a missing
+  discriminator. `projectOpenApiSseToAsyncApi` runs
+  `assertEnvelopeProjectionRules` and returns `envelopeEvidence`. Focused
+  tests: `envelope-projection-rules.test.ts`.

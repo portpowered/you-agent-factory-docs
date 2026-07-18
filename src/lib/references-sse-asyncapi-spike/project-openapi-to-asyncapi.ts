@@ -4,6 +4,8 @@
  * Story 004 — selection path (path/operation/status/media-type → x-event-schema).
  * Story 005 — full transitive `$ref` closure, source hash, semantic inventory,
  * and fail-closed validation.
+ * Story 006 — FactoryEvent envelope-attached type mappings; FactoryResponseEvent
+ * kind/phase/payload selection documented without inventing a discriminator.
  *
  * Input is the packaged OpenAPI document only. Generated AsyncAPI is always
  * regenerated — never a second authored corpus.
@@ -16,6 +18,13 @@ import {
   collectSchemaRefClosure,
   type SchemaRefClosure,
 } from "./collect-schema-ref-closure";
+import {
+  appendEnvelopeRuleDescription,
+  assertEnvelopeProjectionRules,
+  buildEnvelopeMessageAnnotations,
+  type EnvelopeProjectionEvidence,
+  type EnvelopeProjectionMessageAnnotations,
+} from "./envelope-projection-rules";
 import type { OpenApiLike } from "./observe-sse-operations";
 import {
   assertInventoryMatchesExpected,
@@ -40,9 +49,10 @@ export type AsyncApiMessage = {
   name: string;
   title: string;
   contentType: "application/json";
+  /** Always the x-event-schema envelope root — never a payload-only schema. */
   payload: { $ref: string };
   description: string;
-};
+} & EnvelopeProjectionMessageAnnotations;
 
 export type AsyncApiChannel = {
   address: string;
@@ -96,6 +106,8 @@ export type OpenApiToAsyncApiProjection = {
   inventory: ProjectionSemanticInventory;
   /** Union `$ref` closure across selected roots. */
   schemaClosure: SchemaRefClosure;
+  /** Envelope-attachment / no-invented-discriminator evidence (story 006). */
+  envelopeEvidence: EnvelopeProjectionEvidence;
 };
 
 export type ProjectOpenApiSseOptions = {
@@ -173,6 +185,7 @@ export function projectSelectedStreamsToAsyncApi(
   asyncapi: ProjectedAsyncApiDocument;
   inventory: ProjectionSemanticInventory;
   schemaClosure: SchemaRefClosure;
+  envelopeEvidence: EnvelopeProjectionEvidence;
 } {
   const rootRefs = streams.map((stream) => stream.payloadRootRef);
   const schemaClosure = collectSchemaRefClosure(doc, rootRefs);
@@ -192,19 +205,29 @@ export function projectSelectedStreamsToAsyncApi(
   for (const stream of streams) {
     const channelId = channelIdForSelectedStream(stream);
     const messageId = messageIdForSelectedStream(stream);
+    const envelopeAnnotations = buildEnvelopeMessageAnnotations(
+      stream.payloadRootSchemaName,
+    );
+    const baseDescription = [
+      `Message payload root projected from OpenAPI x-event-schema (${stream.payloadRootRef}).`,
+      `Source operation: ${stream.operationId} (${stream.role}).`,
+      stream.compatibilityLabel === "compatibility-only-non-preferred"
+        ? "Compatibility-only / non-preferred stream."
+        : "Preferred stream.",
+    ].join(" ");
 
     messages[messageId] = {
       name: messageId,
       title: stream.payloadRootSchemaName || stream.operationId,
       contentType: "application/json",
+      // Envelope root only — never emit payload-variant schemas as standalone
+      // complete event messages (FactoryEvent mapping targets stay fragments).
       payload: { $ref: stream.payloadRootRef },
-      description: [
-        `Message payload root projected from OpenAPI x-event-schema (${stream.payloadRootRef}).`,
-        `Source operation: ${stream.operationId} (${stream.role}).`,
-        stream.compatibilityLabel === "compatibility-only-non-preferred"
-          ? "Compatibility-only / non-preferred stream."
-          : "Preferred stream.",
-      ].join(" "),
+      description: appendEnvelopeRuleDescription(
+        baseDescription,
+        stream.payloadRootSchemaName,
+      ),
+      ...envelopeAnnotations,
     };
 
     channels[channelId] = {
@@ -226,28 +249,33 @@ export function projectSelectedStreamsToAsyncApi(
     };
   }
 
-  return {
-    asyncapi: {
-      asyncapi: ASYNCAPI_SPIKE_VERSION,
-      info: {
-        title: "Factory SSE streams (temporary W02 projection)",
-        version: "0.0.0-spike",
-        description: ASYNCAPI_GENERATED_FILE_NOTICE,
-        "x-generated-from": "packaged-openapi",
-        "x-spike-status": "non-production-temporary",
-        "x-openapi-source-hash": sourceHash,
-        "x-generated-file-notice": ASYNCAPI_GENERATED_FILE_NOTICE,
-        "x-semantic-inventory": inventory,
-      },
-      channels,
-      operations,
-      components: {
-        messages,
-        schemas: schemaClosure.schemas,
-      },
+  const asyncapi: ProjectedAsyncApiDocument = {
+    asyncapi: ASYNCAPI_SPIKE_VERSION,
+    info: {
+      title: "Factory SSE streams (temporary W02 projection)",
+      version: "0.0.0-spike",
+      description: ASYNCAPI_GENERATED_FILE_NOTICE,
+      "x-generated-from": "packaged-openapi",
+      "x-spike-status": "non-production-temporary",
+      "x-openapi-source-hash": sourceHash,
+      "x-generated-file-notice": ASYNCAPI_GENERATED_FILE_NOTICE,
+      "x-semantic-inventory": inventory,
     },
+    channels,
+    operations,
+    components: {
+      messages,
+      schemas: schemaClosure.schemas,
+    },
+  };
+
+  const envelopeEvidence = assertEnvelopeProjectionRules(asyncapi, streams);
+
+  return {
+    asyncapi,
     inventory,
     schemaClosure,
+    envelopeEvidence,
   };
 }
 
@@ -284,5 +312,6 @@ export function projectOpenApiSseToAsyncApi(
     sourceHash,
     inventory: projected.inventory,
     schemaClosure: projected.schemaClosure,
+    envelopeEvidence: projected.envelopeEvidence,
   };
 }
