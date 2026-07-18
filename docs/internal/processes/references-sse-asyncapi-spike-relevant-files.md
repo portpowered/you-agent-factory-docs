@@ -59,3 +59,11 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   `prove-native-sse-render-evidence.ts`). Classification for
   fumadocs-openapi@10.10.3: plain-string-schema display; `x-event-schema`
   ignored (retained on the media type, not shown or traversed in the UI).
+- FactoryEvent / FactoryResponseEvent discoverability helpers:
+  `src/lib/references-sse-asyncapi-spike/event-schema-discoverability.ts` (+
+  `event-schema-discoverability.test.ts`). Records contract facts on
+  `components.schemas` (FactoryEvent `type` discriminator mappings present;
+  FactoryResponseEvent kind/phase/`oneOf` without a simple type discriminator)
+  versus native SSE render discoverability (`not-discoverable` while
+  `x-event-schema` is ignored). Role markers on `SseSpikeSurfaceChrome` keep
+  canonical / ephemeral / compatibility-only distinguishable.
