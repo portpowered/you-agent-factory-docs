@@ -439,7 +439,7 @@ describe("CLI section index metadata", () => {
   }
 });
 
-const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
+const W05_EMPTY_ROUTE_FAMILY_INDEX_CASES = [
   {
     collectionId: "references" as const,
     messageKey: "referencesIndex" as const,
@@ -464,14 +464,6 @@ const W05_DIRECT_ROUTE_FAMILY_INDEX_CASES = [
     generateDefaultMetadata: generateWorkersMetadata,
     generateLocalizedMetadata: generateLocalizedWorkersMetadata,
   },
-  {
-    collectionId: "workstations" as const,
-    messageKey: "workstationsIndex" as const,
-    renderDefault: WorkstationsIndexPage,
-    renderLocalized: LocalizedWorkstationsIndexPage,
-    generateDefaultMetadata: generateWorkstationsMetadata,
-    generateLocalizedMetadata: generateLocalizedWorkstationsMetadata,
-  },
 ] as const;
 
 describe("W05 direct route-family section index pages", () => {
@@ -484,7 +476,7 @@ describe("W05 direct route-family section index pages", () => {
     expect(messages.workstationsIndex.title).toBe("Workstations");
   });
 
-  for (const section of W05_DIRECT_ROUTE_FAMILY_INDEX_CASES) {
+  for (const section of W05_EMPTY_ROUTE_FAMILY_INDEX_CASES) {
     it(`renders the ${section.collectionId} index through the generic empty-state contract`, async () => {
       const messages = await loadUiMessages();
       const indexMessages = messages[section.messageKey];
@@ -549,4 +541,53 @@ describe("W05 direct route-family section index pages", () => {
       expect(localizedMetadata.description).toBe(indexMessages.description);
     });
   }
+
+  it("renders the authored workstations family index instead of the empty-state contract", async () => {
+    const html = renderToStaticMarkup(await WorkstationsIndexPage());
+
+    expect(html).toContain("Workstations");
+    expect(html).toContain('data-workstations-family-index=""');
+    expect(html).toContain('data-workstations-type-selection-table=""');
+    expect(html).toContain('data-workstations-compatibility-matrix=""');
+    expect(html).toContain("INFERENCE_RUN");
+    expect(html).toContain("POLLER_RUN");
+    expect(html).toContain("Do not collapse POLLER_RUN");
+    expect(html).not.toContain("No workstation entries yet");
+  });
+
+  it("renders the localized workstations family index with page-local selection copy", async () => {
+    const html = renderToStaticMarkup(
+      await LocalizedWorkstationsIndexPage({
+        params: Promise.resolve({ locale: "ja" }),
+      }),
+    );
+
+    expect(html).toContain("Workstations");
+    expect(html).toContain('data-workstations-family-index=""');
+    expect(html).toContain("AGENT_RUN");
+    expect(html).not.toContain("No workstation entries yet");
+  });
+
+  it("keeps default and localized workstations index metadata aligned to page-local messages", async () => {
+    const defaultMetadata = await generateWorkstationsMetadata();
+    const localizedMetadata = await generateLocalizedWorkstationsMetadata({
+      params: Promise.resolve({ locale: "vi" }),
+    });
+    const expectedAlternates = {
+      canonical: "/docs/workstations",
+      languages: {
+        en: "/docs/workstations",
+        ja: "/ja/docs/workstations",
+        "zh-CN": "/zh-CN/docs/workstations",
+        vi: "/vi/docs/workstations",
+      },
+    };
+
+    expect(defaultMetadata.alternates).toEqual(expectedAlternates);
+    expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
+    expect(defaultMetadata.title).toBe("Workstations");
+    expect(localizedMetadata.title).toBe("Workstations");
+    expect(String(defaultMetadata.description)).toMatch(/WorkstationType/i);
+    expect(localizedMetadata.description).toBe(defaultMetadata.description);
+  });
 });

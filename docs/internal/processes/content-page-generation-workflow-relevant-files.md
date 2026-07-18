@@ -948,10 +948,35 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 * `src/lib/content/local-docs-page.test.ts`
   Nested parse/load proofs and fail-closed checks (temp fixtures; no production
   content pages).
+* `src/lib/content/published-docs-registry-contract.ts` /
+  `src/lib/content/content-hrefs.ts`
+  `PUBLISHED_DOCS_SECTIONS` includes `workstations` with `workstationsPageHref`
+  and `publishedDocsHrefFromEntry` so authored `/docs/workstations/<slug>`
+  (including nested slugs) validate and resolve without
+  `Unsupported published docs section`. Do not treat this as W15–W18 nav /
+  search / sitemap / compat inventory ownership — those stay deferred.
+* `src/lib/content/published-docs-registry-contract.test.ts`
+  Workstations section membership, nested href proofs, and unchanged CLI
+  section href behavior.
+* `src/content/docs/workstations/` family index composition (W14)
+  `/docs/workstations` stays an App Router family index (not
+  `workstations/page.mdx` — `isLocalDocsPageBundlePath` rejects section-root
+  bundles). Authored overview / type+behavior selection / type-versus-behavior
+  compatibility matrix / shared-fields / schema embed live as page-local
+  messages + React composition under `src/content/docs/workstations/`
+  (`render-workstations-family-index.tsx`, `WorkstationsFamilyIndexContent.tsx`,
+  `WorkstationBaseSchemaEmbed.tsx` via W07 `SchemaReference` addressed to
+  `/$defs/Workstation`). Registry id `documentation.workstations-family`.
+  Unshipped locales fall back to `messages/en.json`. Wire
+  `src/app/(site)/docs/workstations/page.tsx` and the locale mirror to
+  `renderWorkstationsFamilyIndexPage` instead of the empty collection
+  contract. Keep `POLLER_RUN` (type) distinct from `POLLER` (behavior) in
+  selection copy and matrix headers.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
-  families. Each calls `renderSectionCollectionIndexPage` with matching
-  `*Index` messages. Empty collections render `DocsIndexEmptyState`.
+  families. Empty collections call `renderSectionCollectionIndexPage` with
+  matching `*Index` messages (`DocsIndexEmptyState`). Authored family indexes
+  (W14 workstations) call page-local `render*FamilyIndexPage` instead.
 * `src/app/[locale]/docs/{references,factories,workers,workstations}/page.tsx`
   Shipped-locale mirrors of the same four family indexes.
 * `src/app/(site)/site-renderers.tsx`
@@ -961,8 +986,10 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   reuse `documentation` kind while keeping an independent public route.
 * `src/lib/docs/section-collection-index.test.ts` /
   `src/tests/content/section-indexes.test.tsx`
-  Empty-state + localized metadata proofs for the four family indexes;
-  factories must not list documentation child pages.
+  Empty-state + localized metadata proofs for still-empty family indexes;
+  authored workstations index asserts `data-workstations-family-index` instead
+  of the empty-state contract; factories must not list documentation child
+  pages.
 * `src/lib/content/docs-catch-all-static-params.ts`
   Catch-all static-param helpers for nested docs slugs. Default-locale
   `generateStaticParams` merges Fumadocs source params with published-page
