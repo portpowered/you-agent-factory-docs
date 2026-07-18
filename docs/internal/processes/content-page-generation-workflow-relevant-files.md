@@ -980,12 +980,18 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   documentation/concept loaders — relative MDX imports do not resolve). Link
   Workstation companions with `LocalizedLinkList` planned hrefs under
   `/docs/workstations/...` without authoring W14 pages. Keep mock workers on
-  `/docs/workers/mock`, not as a Factory WorkerType overlay. Legacy
+  `/docs/workers/mock`, not as a Factory WorkerType overlay.   Legacy
   `MODEL_WORKER` companions are `MODEL_WORKSTATION` (required) plus
   `MODEL_INVOKE` (compatible) at `/docs/workstations/model-workstation` and
   `/docs/workstations/model-invoke`; capability fields stay in overlay
   `shared` (presentation omits shared paths — assert selected/excluded only).
   Prefer `INFERENCE_WORKER` / `AGENT_WORKER` guidance in prose for new configs.
+  Legacy `HOSTED_WORKER` companions are `LOGICAL_MOVE` (required) plus
+  `CLASSIFIER_WORKSTATION` (compatible) at `/docs/workstations/logical-move`
+  and `/docs/workstations/classifier`; hosted provider fields (`provider`,
+  `auth`, `linear`) stay in overlay `shared`. Prefer `POLLER_WORKER` guidance
+  in prose for new configs; misuse example is inline `auth.apiKey`
+  (`worker.hosted.misuse-inline-secret`).
 * `src/lib/content/route-family-local-docs-page-load.ts`
   Generic local-message disk loader for the four direct route families; uses
   `getDocsPageDir` so nested child bundles resolve. W13 adds an optional
