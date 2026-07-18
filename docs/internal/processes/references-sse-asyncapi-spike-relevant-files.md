@@ -1,0 +1,50 @@
+# References SSE / AsyncAPI spike — relevant files
+
+Non-production W02 SSE renderer investigation helpers. Do not treat this tree as
+the shipped `/docs/references/api` or `/docs/references/events` surface.
+
+## Spike inventory and safety
+
+- `src/lib/references-sse-asyncapi-spike/sse-operations.ts` — the three SSE
+  operations (`canonical` session events, `ephemeral` response-events,
+  `compatibility-only` `GET /events`), document id, route, and the no-live-
+  connection / no-proxy / no-playground safety contract.
+- `src/lib/references-sse-asyncapi-spike/load-packaged-openapi.ts` — filesystem
+  lookup of installed `node_modules/@you-agent-factory/api` verifying
+  `exports["./openapi"]` → `generated/openapi/openapi.yaml`. Do not
+  `require.resolve` / `import` the YAML export under Next/Turbopack (MDX tries
+  to parse YAML as JS). Reads bytes without rewriting SSE operations or
+  `x-event-schema`.
+- `src/lib/references-sse-asyncapi-spike/observe-sse-operations.ts` — pure
+  observers that prove the packaged document still exposes
+  `text/event-stream` + `x-event-schema` for each inventory operation.
+- `src/lib/references-sse-asyncapi-spike/create-sse-spike-openapi.ts` —
+  `createOpenAPI` + `createAPIPage` with `playground.enabled: false` and no
+  `proxyUrl`.
+- `src/lib/references-sse-asyncapi-spike/SseSpikeSurfaceChrome.tsx` — role
+  labels and safety copy for the spike surface.
+- `src/app/(dev)/spikes/sse-openapi/page.tsx` — isolated spike route
+  (`/spikes/sse-openapi`). Gated with `notFound()` in production unless
+  `ENABLE_SSE_OPENAPI_SPIKE=1` (same pattern as component-examples).
+
+## Temporary install policy
+
+- Spike may add exact `fumadocs-openapi@10.10.3` and required peers (for example
+  `@scalar/api-client-react`) for render evidence.
+- Do not treat those pins as the final production OpenAPI/AsyncAPI dependency
+  set (W08 decides after W01/W02).
+- Do not own or rewrite W01 files under `src/lib/references-openapi-spike/`.
+
+## Testing gotcha
+
+- `bunfig.toml` preloads happy-dom for unit tests. happy-dom's `URL` polyfill
+  breaks `@apidevtools/json-schema-ref-parser` filesystem resolution inside
+  `fumadocs-openapi` `processDocument`. Prove packaged OpenAPI load with a
+  plain Bun subprocess (`prove-create-openapi-load.ts`) instead of calling
+  `server.getSchema()` under happy-dom.
+
+## Investigation evidence
+
+- Narrative findings: `docs/temp/references/sse-renderer-investigation.md`
+  (gitignored local planner state). Commit machine-checkable spike helpers and
+  tests; keep long-form measurements under `docs/temp/references/`.
