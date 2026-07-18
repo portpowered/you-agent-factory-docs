@@ -1,0 +1,42 @@
+{
+  "title": "CLI",
+  "description": "Look up every published you-agent-factory CLI command from the installed package CLI contract on a stable static docs route.",
+  "openingSummary": "This reference lists every published CLI command from the installed @you-agent-factory/api CLI contract so integrators can look up command paths, help text, and package-backed metadata without a live Factory host.",
+  "sections": {
+    "whatItCovers": {
+      "title": "What It Covers",
+      "body": "This reference publishes the package-backed CLI command inventory for you-agent-factory. Readers can look up every published command path from the installed CLI contract, including available descriptions, examples, lifecycle and visibility metadata, runnable and handler presence when the package publishes them, stable anchors, and inventory filters."
+    },
+    "keyConcepts": {
+      "title": "Key Concepts",
+      "body": "A CLI command path is the full published invocation string, such as you config init. The inventory comes from the installed @you-agent-factory/api/cli public export, not from a page-local copy of commands. Lifecycle and visibility describe how the package marks a command when those fields are present. When structured flags or arguments are absent from the published contract, the inventory discloses that limit instead of inventing option rows."
+    },
+    "commandInventory": {
+      "title": "Command Inventory",
+      "body": "Scan the published CLI commands below. Filter by command path, alias, description, lifecycle, or visibility when those facets are present on a command. Open a command card for package-backed metadata and copy its stable anchor when you need a deep link."
+    },
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Open this page when you need the durable package CLI lookup surface. Use the inventory filters to narrow the list, then open a command for its published help text and metadata. Prefer the authored CLI documentation pages for install walkthroughs and narrative guidance; prefer this inventory when you need every published command path from the installed package contract."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "This page is a static package-backed CLI inventory. It does not start a Factory host, does not invent structured flags or arguments when the contract omits them, and is not a sync of packaged you docs agents markdown. Sibling MCP and JavaScript runtime reference routes may be linked before those pages exist in every checkout."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
+    }
+  },
+  "links": {
+    "cliDocs": "CLI documentation",
+    "cliCommandIndex": "CLI command index",
+    "mcpReference": "MCP reference",
+    "javascriptRuntimeReference": "JavaScript runtime reference"
+  }
+}

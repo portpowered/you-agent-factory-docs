@@ -1,0 +1,19 @@
+{
+  "id": "reference.cli",
+  "slug": "cli",
+  "kind": "reference",
+  "defaultTitleKey": "title",
+  "defaultSummaryKey": "description",
+  "aliases": [
+    "CLI reference",
+    "you CLI commands",
+    "package CLI contract",
+    "you-agent-factory CLI reference"
+  ],
+  "tags": [],
+  "relatedIds": [],
+  "citationIds": [],
+  "status": "published",
+  "createdAt": "2026-07-18T00:00:00.000Z",
+  "updatedAt": "2026-07-18T00:00:00.000Z"
+}
