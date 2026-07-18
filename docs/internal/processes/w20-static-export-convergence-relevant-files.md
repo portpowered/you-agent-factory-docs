@@ -356,6 +356,62 @@ Assert W18 ledger remains fully closed via existing closure suites; do not
 reopen W18 mechanism design. Upstream lane doc:
 [static-seo-metadata-relevant-files](./static-seo-metadata-relevant-files.md).
 
+## Story 011 — final evidence + upstream follow-ups
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-final-evidence-convergence.ts` | §17 gate-family evidence map, Worker/Workstation upstream follow-ups, browser probe inventory, `evaluateFinalEvidenceConvergence` |
+| `src/lib/verify/w20-final-evidence-convergence.test.ts` | Catalog completeness / family coverage / upstream-scope / evaluation proofs |
+| `src/lib/verify/w20-final-evidence-browser-verify.test.ts` | Trusted `out/` loopback HTTP fetch of API / events / schema / authored factory-worker-workstation surfaces (no Factory host) |
+| `scripts/run-w20-final-evidence-tests.ts` | Runner: catalog → `make check` → browser-verify suite |
+| `package.json` → `test:w20-final-evidence` / `check` | Maintainer / automation entry |
+| `Makefile` → `test-w20-final-evidence` | Shared Makefile contract |
+
+### Command gate
+
+* `make check` — lint + typecheck (`bun run check` mirrors the same pair)
+
+### Evidence inventory (stories 001–010 pointers)
+
+* Contract + projection → `make test-w20-contract-projection`
+* Content/registry → `make test-w20-content-registry`
+* Link/anchor → `make test-w20-link-anchor`
+* Search → `make test-w20-search-functional`
+* A11y/responsive → `make test-w20-a11y-responsive`
+* Static export → `make test-w20-static-export`
+* Pages guard → `make test-w20-pages-prefixed-export`
+* Budgets → `make test-w20-budget`
+* Client-chunk exclusion → `make test-w20-client-chunk-exclusion`
+* Ownership map + migration closure → `make test-w20-ownership-migration`
+
+### Upstream follow-ups (locked scope)
+
+* Worker/Workstation discriminated-schema only (`AgentWorker`,
+  `RepeaterWorkstation`, `ClassifierWorkstation` aspirational `$defs`; installed
+  `Worker` / `Workstation` remain broad objects per baseline). Do **not** invent
+  unpublished schemas or new product surfaces.
+
+### Reproduce
+
+```bash
+make test-w20-final-evidence
+# or: bun run test:w20-final-evidence
+```
+
+Live gate sequence (browser verify reuses `out/`):
+
+```bash
+make build
+make check
+bun test src/lib/verify/w20-final-evidence-browser-verify.test.ts
+```
+
+Worktree note: final evidence catalogues prior W20 binders rather than
+re-running every §17 family; `make check` + exported-surface HTTP verify are
+the story-011 executable gates. Upstream docs:
+[variant-overlay-contract-relevant-files](./variant-overlay-contract-relevant-files.md),
+[factory-references-w00-baseline-relevant-files](./factory-references-w00-baseline-relevant-files.md).
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,
