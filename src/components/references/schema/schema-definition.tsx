@@ -169,10 +169,14 @@ export function SchemaDefinition({
   return (
     <article
       aria-labelledby={headingId}
-      className={cn("min-w-0 space-y-4", className)}
+      className={cn(
+        "scroll-mt-20 min-w-0 space-y-4 outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        className,
+      )}
       data-schema-definition-pointer={definition.address.pointer}
       data-testid={testId}
       id={anchor}
+      tabIndex={-1}
     >
       <header className="space-y-2">
         <div className="flex min-w-0 flex-wrap items-center gap-2">

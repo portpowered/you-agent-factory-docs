@@ -129,7 +129,7 @@ export function SchemaFieldRow({
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
             <span
-              className="font-mono font-medium text-foreground text-sm"
+              className="min-w-0 break-all font-mono font-medium text-foreground text-sm"
               data-schema-field-name=""
             >
               {leafName}

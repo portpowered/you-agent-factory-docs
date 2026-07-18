@@ -144,9 +144,13 @@ describe("EventStreamOperationSummary", () => {
     ).toBeTruthy();
     expect(screen.getByText("getEventsBySessionId")).toBeTruthy();
 
-    const catalogLink = screen.getByRole("link", { name: "FactoryEvent" });
+    const catalogLink = document.querySelector(
+      "[data-event-catalog-link]",
+    ) as HTMLAnchorElement;
+    expect(catalogLink).not.toBeNull();
     expect(catalogLink.getAttribute("href")).toBe(`#${target?.eventAnchor}`);
-    expect(catalogLink.getAttribute("data-event-catalog-link")).toBe("");
+    expect(catalogLink.textContent).toBe("FactoryEvent");
+    expect(catalogLink.className).toContain("focus-visible:ring");
   });
 
   test("ephemeral summary never claims canonical replay state", () => {

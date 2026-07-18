@@ -68,7 +68,11 @@ export function ApiOperationCopyLink({
       >
         {checked ? <Check aria-hidden="true" /> : <Link2 aria-hidden="true" />}
       </button>
-      <span aria-live="polite" className="sr-only">
+      <span
+        aria-live="polite"
+        className="sr-only"
+        data-api-operation-copy-status=""
+      >
         {checked ? API_OPERATION_COPY_LINK_COPIED_LABEL : ""}
       </span>
     </span>

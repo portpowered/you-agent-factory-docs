@@ -32,7 +32,7 @@ export function EventPayloadVariant({
     <article
       aria-labelledby={`event-payload-${mapping.eventType}-heading`}
       className={cn(
-        "min-w-0 space-y-3 border-border/60 border-b py-4 last:border-b-0",
+        "scroll-mt-20 min-w-0 space-y-3 border-border/60 border-b py-4 last:border-b-0 outline-none focus-visible:ring-2 focus-visible:ring-ring",
         className,
       )}
       data-event-payload-only="true"

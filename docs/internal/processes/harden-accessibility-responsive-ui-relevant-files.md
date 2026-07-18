@@ -11,6 +11,18 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `/docs/documentation/harness-support`, `/blog`, representative blog post) and
   viewport matrix (mobile 390 / tablet 768 / laptop 1024 / wide 1440), plus
   page-overflow tolerance and intentional horizontal-scroll selectors.
+* `src/lib/verify/a11y-reference-surface-contract.ts` (W19)
+  Representative Factory reference routes (`/docs/references/api`,
+  `/docs/references/events`, `/docs/references/factory-schema`, plus one
+  authored `/docs/factories/*`, `/docs/workers/*`, and `/docs/workstations/*`
+  page) and five layouts (wide / laptop / tablet / mobile / zoomed ≈ 200% of
+  laptop CSS pixels). Reuses critical overflow tolerance + intentional
+  scroller selectors and `A11Y_SUITE_REPRODUCTION_COMMAND` (`make a11y`).
+* `src/lib/verify/a11y-reference-surface-probes.ts` (W19)
+  Thin binders over existing axe, responsive-overflow, reduced-motion, and
+  page-session helpers (`collectReferenceSurfaceOverflowProbe`,
+  `openReferenceSurfacePageProbe`, `listReferenceSurfaceProbeBindings`). Do
+  not invent a parallel a11y framework for reference pages.
 * `src/lib/verify/a11y-responsive-probes.ts`
   Pure DOM helpers: `measurePageLevelOverflow`,
   `findIntentionalHorizontalScrollContainers`,
@@ -227,21 +239,69 @@ surfaces (home, browse, search, docs/harness-support, blog).
 
 * `Makefile` target `a11y` → `bun run test:a11y`
 * `package.json` script `test:a11y` runs contract/probe/axe/page-structure/
-  reduced-motion/layout-snapshot unit tests plus home/browse, search,
-  docs/harness-support, blog, contributing/not-found/empty-state, responsive
-  overflow, reduced-motion, and layout snapshot a11y smokes (and the
-  skipped-by-default served-page probes).
+  reduced-motion/layout-snapshot unit tests (including W19
+  `a11y-reference-surface-contract` / `a11y-reference-surface-probes`) plus
+  home/browse, search, docs/harness-support, blog, contributing/not-found/
+  empty-state, responsive overflow, reduced-motion, and layout snapshot a11y
+  smokes (and the skipped-by-default served-page probes).
 * Required by `make ci` and `.github/workflows/ci.yml` (after
   `test-reader-facing`, before `test-ci-contract`) via
   `src/lib/ci-required-path.ts` (`MAKE_CI_PREREQUISITES`,
   `CI_WORKFLOW_REQUIRED_MAKE_TARGETS`, `SHARED_REQUIRED_SUITE_TARGETS`).
 * On failure, reproduce with `make a11y` (constant
-  `A11Y_SUITE_REPRODUCTION_COMMAND` in `a11y-responsive-contract.ts`).
+  `A11Y_SUITE_REPRODUCTION_COMMAND` in `a11y-responsive-contract.ts` /
+  re-exported from `a11y-reference-surface-contract.ts`).
 * `test:a11y` runs with `--max-concurrency=1` so happy-dom component smokes
   that share `document` do not race (same pattern as `test:reader-facing`).
 * Distinct from `make test-reader-facing`, which covers older component a11y
   smokes plus search/layout contracts — do not fold Atlas-era
   `src/tests/a11y/*` wholesale into `make a11y`.
+* W19 later stories should assert against `REFERENCE_SURFACE_ROUTES` /
+  `REFERENCE_SURFACE_VIEWPORTS` / `listReferenceOverflowMatrixCases()` rather
+  than hard-coding reference paths or the zoomed width.
+* W19 story 003 overflow matrix: always-on
+  `src/tests/a11y/reference-responsive-overflow.a11y.test.tsx` + opt-in served
+  `src/lib/verify/a11y-reference-overflow-matrix-page.test.ts` (wired into
+  `test:a11y`). See
+  [w19-accessibility-responsive-budgets-relevant-files](./w19-accessibility-responsive-budgets-relevant-files.md).
+* W19 story 004 keyboard navigation: always-on
+  `src/tests/a11y/reference-keyboard-navigation.a11y.test.tsx` +
+  `a11y-reference-keyboard-contract` + opt-in served
+  `a11y-reference-keyboard-page.test.ts`.
+* W19 story 005 screen-reader / non-color status: always-on
+  `src/tests/a11y/reference-screen-reader.a11y.test.tsx` +
+  `a11y-reference-screen-reader-contract` + opt-in served
+  `a11y-reference-screen-reader-page.test.ts` (axe serious/critical).
+* W19 story 006 hash focus / sticky / mobile collapse: always-on
+  `src/tests/a11y/reference-hash-focus.a11y.test.tsx` +
+  `a11y-reference-hash-focus-contract` + opt-in served
+  `a11y-reference-hash-focus-page.test.ts`. Shared
+  `ReferenceHashNavigation` on events + factory-schema mounts.
+* W19 story 007 copy status announcements: always-on
+  `src/tests/a11y/reference-copy-announcements.a11y.test.tsx` +
+  `a11y-reference-copy-announcement-contract` + opt-in served
+  `a11y-reference-copy-announcement-page.test.ts`. Status markers on
+  deep-link / example copy live regions.
+* W19 story 008 reduced-motion: always-on
+  `src/tests/a11y/reference-reduced-motion.a11y.test.tsx` +
+  `a11y-reference-reduced-motion-contract` + opt-in served
+  `a11y-reference-reduced-motion-page.test.ts`. Extends
+  `a11y-reduced-motion*` for hash `auto` scroll + drawer chrome.
+* W19 story 009 long-token overflow: always-on
+  `src/tests/a11y/reference-long-token-overflow.a11y.test.tsx` +
+  `a11y-reference-long-token-overflow-contract` + opt-in served
+  `a11y-reference-long-token-overflow-page.test.ts`. Path/field/enum/code
+  containment at mobile + zoomed; extends shared overflow probes.
+* W19 story 010 no-JS static HTML: always-on
+  `src/tests/a11y/reference-no-js-html.a11y.test.tsx` +
+  `a11y-reference-no-js-html-contract` + export/served
+  `a11y-reference-no-js-html-page.test.ts`. Script-stripped HTML must keep
+  API method/path/summary, event type + headings, schema field names/types.
+* W19 story 011 browser close-out: always-on
+  `a11y-reference-browser-closeout-contract` + opt-in consolidated
+  `a11y-reference-browser-closeout-page.test.ts`. One session covers overflow
+  (6×5), keyboard/hash/copy/reduced-motion on API+events+schema, long-token,
+  no-JS, and focused budgets; excludes W20 convergence.
 
 ## Existing component a11y smokes
 
@@ -259,6 +319,8 @@ surfaces (home, browse, search, docs/harness-support, blog).
   intentional scrollers; fail only on page-level `scrollWidth` overflow.
 * Prefer pure probe helpers for happy-dom unit proofs; use
   `openA11yResponsivePageProbe` only when a served page is required.
+* Static-export HTTP server must percent-decode `_next/static` catch-all chunk
+  paths (`%5B%5B...slug%5D%5D`) or hydrated reference pages fail browser verify.
 * For critical-page a11y stories: assert banner + `nav[aria-label="Primary"]` +
   `main` + coherent h1/h2 outline, keyboard focus with `focus-visible:ring`,
   then serious/critical axe on the verified surface.

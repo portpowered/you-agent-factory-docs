@@ -22,6 +22,7 @@ import { FactoryEventCatalogSection } from "@/components/references/events/facto
 import { FactoryResponseEventCatalogSection } from "@/components/references/events/factory-response-event-catalog-section";
 import { SseStaticExamplesSection } from "@/components/references/events/sse-static-examples-section";
 import type { EventsUiStatus } from "@/components/references/events/types";
+import { ReferenceHashNavigation } from "@/components/references/shared";
 import {
   buildEventReconnectLifecycleCorpus,
   buildFactoryEventCatalog,
@@ -126,6 +127,7 @@ export function EventsCorpusMountView({
         ? { "data-events-source-hash": resolved.sourceHash }
         : {})}
     >
+      <ReferenceHashNavigation data-testid="events-reference-hash-navigation" />
       <EventsSurface
         status={resolved.status}
         statusMessage={resolved.statusMessage}

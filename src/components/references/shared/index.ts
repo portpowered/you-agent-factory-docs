@@ -7,6 +7,11 @@ export {
 } from "./CopyableReferenceAnchor";
 export { ReferenceEmptyState } from "./ReferenceEmptyState";
 export { ReferenceErrorState } from "./ReferenceErrorState";
+export type { ReferenceHashNavigationProps } from "./ReferenceHashNavigation";
+export {
+  focusReferenceHashTarget,
+  ReferenceHashNavigation,
+} from "./ReferenceHashNavigation";
 export type { ReferenceInventoryFilterProps } from "./ReferenceInventoryFilter";
 export { ReferenceInventoryFilter } from "./ReferenceInventoryFilter";
 export { ReferenceLifecycleVisibility } from "./ReferenceLifecycleVisibility";

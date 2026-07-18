@@ -90,7 +90,8 @@ make test-integration
 | --- | --- |
 | `src/lib/build/exported-site-budget.ts` | Pure measurement/evaluation of `out/` against factory baselines (total size, `_next/static/**/*.js`, `api/search*`); prints reproduction command on failure |
 | `src/lib/build/exported-site-budget.test.ts` | Fixture proofs for pass, breach, missing export, and missing JS/search surfaces; included in `make test-build-contract` |
-| `scripts/run-exported-site-budget.ts` | CLI for `bun run budget` / `make budget`; measures existing `out/` only (no competing full export) |
+| `scripts/run-exported-site-budget.ts` | CLI for `bun run budget` / `make budget`; measures existing `out/` only (no competing full export); after the total-site gate, also enforces W19 focused API/events/schema page payload ceilings via `a11y-reference-payload-budget` |
+| `src/lib/verify/a11y-reference-payload-budget.ts` | W19 focused per-page HTML + attributable Next static JS budgets for `/docs/references/api`, `/events`, `/factory-schema` |
 | `Makefile` `budget` / `package.json` `budget` | Maintainer + CI/deploy entrypoint; invoked after `make build` in `.github/workflows/ci.yml` and `deploy-pages.yml` |
 
 Factory baselines (calibrated 2026-07-10 UTC; total-out raised 2026-07-11 UTC
