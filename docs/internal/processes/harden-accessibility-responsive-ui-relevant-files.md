@@ -276,7 +276,12 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `src/tests/a11y/reference-hash-focus.a11y.test.tsx` +
   `a11y-reference-hash-focus-contract` + opt-in served
   `a11y-reference-hash-focus-page.test.ts`. Shared
-  `ReferenceHashNavigation` mounts on events + factory-schema pages.
+  `ReferenceHashNavigation` on events + factory-schema mounts.
+* W19 story 007 copy status announcements: always-on
+  `src/tests/a11y/reference-copy-announcements.a11y.test.tsx` +
+  `a11y-reference-copy-announcement-contract` + opt-in served
+  `a11y-reference-copy-announcement-page.test.ts`. Status markers on
+  deep-link / example copy live regions.
 
 ## Existing component a11y smokes
 

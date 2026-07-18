@@ -114,7 +114,11 @@ export function CopyableReferenceAnchor({
           <Link2 aria-hidden="true" className="size-3.5" />
         )}
       </button>
-      <span className="sr-only" aria-live="polite">
+      <span
+        className="sr-only"
+        aria-live="polite"
+        data-reference-anchor-copy-status=""
+      >
         {checked ? chrome.a11y.anchorLinkCopied : ""}
       </span>
     </div>

@@ -105,7 +105,11 @@ export function SchemaBreadcrumb({
           <Clipboard aria-hidden="true" />
         )}
       </button>
-      <span aria-live="polite" className="sr-only">
+      <span
+        aria-live="polite"
+        className="sr-only"
+        data-schema-deep-link-copy-status=""
+      >
         {checked ? COPIED_LABEL : ""}
       </span>
     </nav>

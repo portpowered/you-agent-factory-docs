@@ -36,6 +36,7 @@ gates stay documented in
   - `src/lib/verify/a11y-reference-keyboard-contract.test.ts`
   - `src/lib/verify/a11y-reference-screen-reader-contract.test.ts`
   - `src/lib/verify/a11y-reference-hash-focus-contract.test.ts`
+  - `src/lib/verify/a11y-reference-copy-announcement-contract.test.ts`
 
 ## Existing harnesses to extend (do not fork)
 
@@ -131,6 +132,32 @@ gates stay documented in
   factory-schema at laptop + mobile with landmarks/headings/labels/non-color
   status + Playwright axe. Same `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate;
   prefer `VERIFY_BASE_URL` against static `out/` for local browser verify.
+
+## Reference copy status announcements (story 007)
+
+* `src/lib/verify/a11y-reference-copy-announcement-contract.ts` — deep-link and
+  code-copy control + polite live-region status selectors. Required:
+  API `[data-api-operation-copy-link]` + `[data-api-operation-copy-status]`,
+  events `[data-reference-anchor-copy]` + `[data-reference-anchor-copy-status]`,
+  schema `[data-schema-breadcrumb="copy"]` +
+  `[data-schema-deep-link-copy-status]`. Optional when present: API/schema
+  example code-copy and docs code-block copy (`data-*-copy-status`).
+* Probe binders: `expectReferenceCopyAnnouncements` (async, activates copy),
+  `expectReferenceCopyAnnouncementChrome` (idle structure),
+  `evaluateReferenceCopyAnnouncementsInBrowser`,
+  `referenceCopyAnnouncementEvaluateArgs` (also re-exported from
+  `a11y-reference-surface-probes.ts`).
+* Narrow UI markers: status data attrs on `CopyableReferenceAnchor`,
+  `ApiOperationCopyLink`, `SchemaBreadcrumb`, and `SchemaExamplePanel` (API
+  example + docs code-copy already had status markers).
+* Always-on proofs:
+  - `src/lib/verify/a11y-reference-copy-announcement-contract.test.ts`
+  - `src/tests/a11y/reference-copy-announcements.a11y.test.tsx`
+* Opt-in served probe:
+  `src/lib/verify/a11y-reference-copy-announcement-page.test.ts` — API / events /
+  factory-schema at laptop + mobile. Same
+  `VERIFY_PRODUCTION_INTEGRATION_TESTS=1` gate; prefer `VERIFY_BASE_URL`
+  against static `out/` for local browser verify. Grants `clipboard-write`.
 
 ## Reference hash focus, sticky visibility, mobile collapse (story 006)
 

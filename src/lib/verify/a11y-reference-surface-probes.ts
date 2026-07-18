@@ -15,6 +15,22 @@ import {
   REDUCED_MOTION_DURATION_THRESHOLD_MS,
 } from "./a11y-reduced-motion";
 import {
+  evaluateReferenceCopyAnnouncementsInBrowser,
+  expectReferenceCopyAnnouncementChrome,
+  expectReferenceCopyAnnouncements,
+  listReferenceCopyAnnouncementsForRoute,
+  listRequiredReferenceCopyAnnouncements,
+  probeReferenceCopyAnnouncement,
+  probeReferenceCopyAnnouncementChrome,
+  probeReferenceCopyAnnouncementsForRoute,
+  REFERENCE_COPY_ANNOUNCEMENTS,
+  type ReferenceCopyAnnouncementChromeProbe,
+  type ReferenceCopyAnnouncementKind,
+  type ReferenceCopyAnnouncementProbe,
+  type ReferenceCopyAnnouncementSpec,
+  referenceCopyAnnouncementEvaluateArgs,
+} from "./a11y-reference-copy-announcement-contract";
+import {
   collectStickyChromeRects,
   expectReferenceHashFocus,
   expectReferenceHashFocusAndMobileCollapse,
@@ -101,6 +117,10 @@ import {
 } from "./a11y-responsive-probes";
 
 export type {
+  ReferenceCopyAnnouncementChromeProbe,
+  ReferenceCopyAnnouncementKind,
+  ReferenceCopyAnnouncementProbe,
+  ReferenceCopyAnnouncementSpec,
   ReferenceHashFocusResult,
   ReferenceHashTargetSpec,
   ReferenceHeadingHierarchyProbe,
@@ -119,9 +139,12 @@ export {
   collectResponsiveOverflowProbe,
   collectStickyChromeRects,
   evaluateReducedMotionChromeInBrowser,
+  evaluateReferenceCopyAnnouncementsInBrowser,
   evaluateResponsiveOverflowInBrowser,
   expectCoherentReferenceHeadingHierarchy,
   expectNoSeriousAxeViolations,
+  expectReferenceCopyAnnouncementChrome,
+  expectReferenceCopyAnnouncements,
   expectReferenceHashFocus,
   expectReferenceHashFocusAndMobileCollapse,
   expectReferenceKeyboardChrome,
@@ -137,11 +160,13 @@ export {
   isHashTargetFullyObscuredBySticky,
   isKeyboardFocusableElement,
   isPointerOnlyInteractiveElement,
+  listReferenceCopyAnnouncementsForRoute,
   listReferenceHashTargetsForRoute,
   listReferenceKeyboardControlsForRoute,
   listReferenceLabeledControlsForRoute,
   listReferenceMobileNavsForRoute,
   listReferenceNonColorStatusForRoute,
+  listRequiredReferenceCopyAnnouncements,
   listRequiredReferenceHashTargets,
   listRequiredReferenceKeyboardControls,
   listRequiredReferenceLabeledControls,
@@ -152,6 +177,9 @@ export {
   openA11yResponsivePageProbe,
   pageOverflowAllowsIntentionalScrollers,
   probeMotionDurationsFromStyle,
+  probeReferenceCopyAnnouncement,
+  probeReferenceCopyAnnouncementChrome,
+  probeReferenceCopyAnnouncementsForRoute,
   probeReferenceHeadingHierarchy,
   probeReferenceKeyboardControl,
   probeReferenceKeyboardControlsForRoute,
@@ -161,12 +189,14 @@ export {
   probeReferenceStickyVisibility,
   REDUCED_MOTION_CHROME_SELECTOR,
   REDUCED_MOTION_DURATION_THRESHOLD_MS,
+  REFERENCE_COPY_ANNOUNCEMENTS,
   REFERENCE_HASH_TARGETS,
   REFERENCE_KEYBOARD_CONTROLS,
   REFERENCE_LABELED_CONTROLS,
   REFERENCE_MOBILE_NAVS,
   REFERENCE_NON_COLOR_STATUS,
   REFERENCE_STICKY_CHROME_SELECTOR,
+  referenceCopyAnnouncementEvaluateArgs,
   resolveA11yResponsiveProbeUrl,
   runAxeOnElement,
 };
@@ -250,6 +280,7 @@ export type ReferenceSurfaceProbeBinding = {
     keyboard: "expectReferenceKeyboardChrome";
     screenReader: "expectReferenceScreenReaderChrome";
     hashFocus: "expectReferenceHashFocusAndMobileCollapse";
+    copyAnnouncement: "expectReferenceCopyAnnouncements";
     reducedMotion: "evaluateReducedMotionChromeInBrowser";
     pageSession: "openReferenceSurfacePageProbe";
   };
@@ -269,6 +300,7 @@ export function listReferenceSurfaceProbeBindings(): ReferenceSurfaceProbeBindin
       keyboard: "expectReferenceKeyboardChrome",
       screenReader: "expectReferenceScreenReaderChrome",
       hashFocus: "expectReferenceHashFocusAndMobileCollapse",
+      copyAnnouncement: "expectReferenceCopyAnnouncements",
       reducedMotion: "evaluateReducedMotionChromeInBrowser",
       pageSession: "openReferenceSurfacePageProbe",
     },
