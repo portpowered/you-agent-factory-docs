@@ -1,11 +1,18 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
+import { CliCapabilityNotice } from "./CliCapabilityNotice";
 import { CliCommandInventory } from "./CliCommandInventory";
 import {
   CliCommandReference,
   cliCommandInventoryIdentities,
 } from "./CliCommandReference";
+import {
+  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION,
+  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE,
+  type CliCommandWithStructuredOptions,
+  cliCommandHasStructuredOptions,
+} from "./cli-capability";
 import {
   cliVisibilityDisplayLabel,
   mapCliVisibilityToReferenceVisibility,
@@ -116,12 +123,91 @@ describe("CliCommandReference", () => {
     expect(screen.getByText("Not published on this projection")).toBeTruthy();
   });
 
-  test("does not invent flags or arguments when they are absent", () => {
-    render(<CliCommandReference command={fixtureCommand()} />);
+  test("shows CliCapabilityNotice when structured flags/arguments are absent", () => {
+    const { container } = render(
+      <CliCommandReference command={fixtureCommand()} />,
+    );
 
-    expect(screen.queryByText("Flags")).toBeNull();
-    expect(screen.queryByText("Arguments")).toBeNull();
-    expect(screen.queryByText("Options")).toBeNull();
+    expect(
+      container.querySelector("[data-cli-capability-notice]"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION),
+    ).toBeTruthy();
+    expect(screen.getByText("Flags and arguments")).toBeTruthy();
+    // Visible status chrome — not hover-only.
+    expect(screen.getByRole("status")).toBeTruthy();
+    // Does not invent option rows.
+    expect(screen.queryByText("--help")).toBeNull();
+    expect(screen.queryByText("--json")).toBeNull();
+    expect(screen.queryByText("Defaults")).toBeNull();
+    expect(screen.queryByText("Conflicts")).toBeNull();
+  });
+
+  test("hides CliCapabilityNotice when structured options exist on the projection", () => {
+    const enriched: CliCommandWithStructuredOptions = {
+      ...fixtureCommand(),
+      flags: [{ name: "--dry-run" }],
+    };
+
+    const { container } = render(<CliCommandReference command={enriched} />);
+
+    expect(container.querySelector("[data-cli-capability-notice]")).toBeNull();
+    expect(
+      screen.queryByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+    ).toBeNull();
+    // Still does not invent rendered option rows in this story.
+    expect(screen.queryByText("--dry-run")).toBeNull();
+  });
+});
+
+describe("cliCommandHasStructuredOptions", () => {
+  test("treats missing and empty option bags as unavailable", () => {
+    expect(cliCommandHasStructuredOptions(fixtureCommand())).toBe(false);
+    expect(
+      cliCommandHasStructuredOptions({
+        ...fixtureCommand(),
+        flags: [],
+        arguments: [],
+      }),
+    ).toBe(false);
+  });
+
+  test("detects non-empty flags or arguments without inventing values", () => {
+    expect(
+      cliCommandHasStructuredOptions({
+        ...fixtureCommand(),
+        flags: [{ name: "--verbose" }],
+      }),
+    ).toBe(true);
+    expect(
+      cliCommandHasStructuredOptions({
+        ...fixtureCommand(),
+        arguments: [{ name: "path" }],
+      }),
+    ).toBe(true);
+  });
+});
+
+describe("CliCapabilityNotice", () => {
+  test("renders accessible visible disclosure copy", () => {
+    const { container } = render(<CliCapabilityNotice />);
+
+    expect(
+      container.querySelector(
+        '[data-cli-capability="structured-options-unavailable"]',
+      ),
+    ).toBeTruthy();
+    expect(screen.getByRole("status")).toBeTruthy();
+    expect(
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION),
+    ).toBeTruthy();
   });
 });
 

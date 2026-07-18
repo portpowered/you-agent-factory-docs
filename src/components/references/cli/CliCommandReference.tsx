@@ -2,6 +2,8 @@ import { ContractSourceBadge } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
+import { CliCapabilityNotice } from "./CliCapabilityNotice";
+import { cliCommandHasStructuredOptions } from "./cli-capability";
 import {
   cliVisibilityDisplayLabel,
   mapCliVisibilityToReferenceVisibility,
@@ -16,7 +18,8 @@ function booleanStateLabel(value: boolean): string {
  * Render one normalized CLI command with available published metadata.
  *
  * Does not invent flags, arguments, defaults, or conflicts. Optional fields
- * stay absent when the projection omitted them.
+ * stay absent when the projection omitted them. When structured
+ * flags/arguments are unavailable, shows CliCapabilityNotice.
  */
 export function CliCommandReference({
   command,
@@ -32,6 +35,7 @@ export function CliCommandReference({
     command.longDescription !== shortDescription
       ? command.longDescription
       : undefined;
+  const showCapabilityNotice = !cliCommandHasStructuredOptions(command);
 
   return (
     <article
@@ -115,6 +119,15 @@ export function CliCommandReference({
             Example
           </h4>
           <CodePanel data-cli-example-code="">{command.example}</CodePanel>
+        </section>
+      ) : null}
+
+      {showCapabilityNotice ? (
+        <section className="space-y-2" data-cli-structured-options="">
+          <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Flags and arguments
+          </h4>
+          <CliCapabilityNotice />
         </section>
       ) : null}
     </article>

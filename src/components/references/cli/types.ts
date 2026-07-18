@@ -6,14 +6,30 @@
  */
 
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
+import type { CliCommandWithStructuredOptions } from "./cli-capability";
 
 export type CliCommandReferenceProps = {
-  command: CliCommandNormalized;
+  /**
+   * Normalized CLI command. May carry optional enriched `flags` / `arguments`
+   * bags; when those are absent or empty, CliCapabilityNotice is shown.
+   */
+  command: CliCommandWithStructuredOptions;
   /**
    * Package version when known from the resolved manifest identity. Absent
    * when the caller has no package version — never invent a version string.
    */
   packageVersion?: string;
+  className?: string;
+};
+
+/**
+ * Visible disclosure when structured flags/arguments are unavailable from
+ * the published CLI contract. Optional title/description override defaults
+ * from `cli-capability.ts` — never used to invent option rows.
+ */
+export type CliCapabilityNoticeProps = {
+  title?: string;
+  description?: string;
   className?: string;
 };
 
