@@ -43,8 +43,11 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-composition.test.tsx` | Composition, discriminator, cycle, unresolved, and field-tree `$ref` proofs |
 | `src/components/references/schema/schema-anchor.ts` | Pure W04 deep-link / breadcrumb segment helpers (`anchorForIdentity`) |
 | `src/components/references/schema/schema-breadcrumb.tsx` | Path breadcrumb + copyable deep-link control |
-| `src/components/references/schema/schema-definition.tsx` | Full definition view: metadata, anchors, composition, field tree |
+| `src/components/references/schema/schema-definition.tsx` | Full definition view: metadata, anchors, composition, field tree, examples |
 | `src/components/references/schema/schema-definition.test.tsx` | Definition metadata, omitted prose, copyable definition/field anchors |
+| `src/components/references/schema/schema-example-display.ts` | Pure example → CodePanel display projectors + authored/generated labels |
+| `src/components/references/schema/schema-example-panel.tsx` | CodePanel-backed examples with copy chrome and empty affordance |
+| `src/components/references/schema/schema-example-panel.test.tsx` | Example CodePanel, provenance labels, empty, and definition wiring proofs |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -81,10 +84,16 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   `ReferenceCrossLinkResolver` outcomes. Members stay as links — never
   recursive definition trees.
 - Definition UI: `SchemaDefinition` composes metadata, `SchemaComposition`,
-  `SchemaFieldTree`, and `SchemaBreadcrumb`. Anchors come from
-  `schemaAddressDeepLink` / `anchorForIdentity("schema-pointer", …)` — never
-  mint unstable fragment IDs in the UI. Field rows copy deep links only when
-  `SchemaFieldModel.address` is present.
+  `SchemaFieldTree`, `SchemaBreadcrumb`, and `SchemaExamplePanel`. Anchors come
+  from `schemaAddressDeepLink` / `anchorForIdentity("schema-pointer", …)` —
+  never mint unstable fragment IDs in the UI. Field rows copy deep links only
+  when `SchemaFieldModel.address` is present.
+- Examples: render through site `CodePanel` (`@/features/factory-ui/data-display`)
+  with sibling copy chrome (same `useCopyButton` pattern as defaults/anchors).
+  Use `projectSchemaExamplesFromValues` for raw W04 `examples` and
+  `projectSchemaExamplesFromInputs` when authored/generated origin is known.
+  Never invent sample payloads; empty uses `SchemaStatus` `kind="empty"` when
+  `showEmpty` is true. Do not label unknown provenance as authored.
 
 ## Verification preference
 

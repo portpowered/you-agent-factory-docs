@@ -42,6 +42,20 @@ export {
   type SchemaDefinitionProps,
 } from "./schema-definition";
 export {
+  type ProjectSchemaExamplesOptions,
+  projectSchemaExamplesFromInputs,
+  projectSchemaExamplesFromValues,
+  SCHEMA_EXAMPLE_ORIGINS,
+  type SchemaExampleDisplay,
+  type SchemaExampleInput,
+  type SchemaExampleOrigin,
+  schemaExampleOriginLabel,
+} from "./schema-example-display";
+export {
+  SchemaExamplePanel,
+  type SchemaExamplePanelProps,
+} from "./schema-example-panel";
+export {
   schemaFieldHasRefTarget,
   schemaFieldLeafName,
   schemaFieldTreeNodeCanExpand,

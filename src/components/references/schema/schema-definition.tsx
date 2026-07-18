@@ -23,6 +23,11 @@ import {
   schemaConstraintListPropsFromProjection,
 } from "./schema-constraint-list";
 import { SchemaDefaultValue } from "./schema-default-value";
+import type {
+  SchemaExampleDisplay,
+  SchemaExampleInput,
+} from "./schema-example-display";
+import { SchemaExamplePanel } from "./schema-example-panel";
 import { schemaFieldTreeNodesFromProperties } from "./schema-field-path";
 import { SchemaFieldTree } from "./schema-field-tree";
 import { schemaRefLinkDisplayFromAddress } from "./schema-ref-display";
@@ -47,6 +52,22 @@ export type SchemaDefinitionProps = {
    * Optional one-hop resolver for composition / discriminator members.
    */
   resolve?: (address: SchemaAddress) => ReferenceCrossLinkOutcome;
+  /**
+   * Pre-projected example display entries. When set, takes precedence over
+   * `exampleInputs` and the definition's raw `examples`.
+   */
+  examples?: readonly SchemaExampleDisplay[];
+  /**
+   * Annotated examples with optional authored/generated origin. Used when
+   * `examples` is omitted; takes precedence over raw definition examples.
+   */
+  exampleInputs?: readonly SchemaExampleInput[];
+  /**
+   * When true, render an empty examples affordance even if the definition has
+   * no examples. Default false so absent examples stay omitted (never
+   * fabricated).
+   */
+  showEmptyExamples?: boolean;
   /** Owning page path used to build full deep-link href values. */
   pagePath?: string;
   /** Initial expansion for nested field rows. Default: false. */
@@ -88,6 +109,9 @@ export function SchemaDefinition({
   projection,
   fieldNodes,
   resolve,
+  examples,
+  exampleInputs,
+  showEmptyExamples = false,
   pagePath,
   defaultExpanded = false,
   className,
@@ -222,6 +246,18 @@ export function SchemaDefinition({
           />
         </section>
       ) : null}
+
+      <SchemaExamplePanel
+        data-testid="schema-definition-examples"
+        exampleInputs={exampleInputs}
+        examples={examples}
+        showEmpty={showEmptyExamples}
+        values={
+          examples === undefined && exampleInputs === undefined
+            ? definition.examples
+            : undefined
+        }
+      />
     </article>
   );
 }
