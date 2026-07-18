@@ -1,0 +1,213 @@
+{
+  "baselineObservationNote": "Counts and membership lists are baseline observations for drift detection against the installed @you-agent-factory/api package. They are not permanent product limits, hard ceilings, or UI quotas.",
+  "source": "@you-agent-factory/api/manifest",
+  "packageId": "you-agent-factory.api",
+  "packageVersion": "0.0.0",
+  "formatVersion": "1.0.0",
+  "sourceCommit": "280e13dbb101809532034fef24c6b46144f7f7cc",
+  "familyFormatVersions": {
+    "cli": "1.0.0",
+    "config": "1.0.0",
+    "javascript": "1.0.0",
+    "mcp": "1.0.0",
+    "openapi": "1.0.0",
+    "shared": "1.0.0"
+  },
+  "counts": {
+    "exports": 10
+  },
+  "exportIds": [
+    "generated.cli.commands",
+    "generated.javascript.runtime-api",
+    "generated.joined.contracts.common.deprecations",
+    "generated.joined.contracts.common.documentation",
+    "generated.joined.contracts.manifest",
+    "generated.mcp.tools",
+    "generated.openapi.openapi",
+    "generated.schemas.factory",
+    "generated.schemas.mock-workers",
+    "generated.schemas.you-config"
+  ],
+  "exports": [
+    {
+      "id": "generated.cli.commands",
+      "family": "cli",
+      "path": "generated/cli/commands.json",
+      "artifactHash": "6b32edebf7ea06619c958a4723cb96eb5f7c10aa2fcc112c273bf3f809c6424c",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "6b32edebf7ea06619c958a4723cb96eb5f7c10aa2fcc112c273bf3f809c6424c",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.cli.commands"
+      }
+    },
+    {
+      "id": "generated.javascript.runtime-api",
+      "family": "javascript",
+      "path": "generated/javascript/runtime-api.json",
+      "artifactHash": "4d1c70325407b340fdd6e072cf9f2f8c77c499001b1553a06691418e6e988247",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "4d1c70325407b340fdd6e072cf9f2f8c77c499001b1553a06691418e6e988247",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.javascript.runtime-api"
+      }
+    },
+    {
+      "id": "generated.joined.contracts.common.deprecations",
+      "family": "shared",
+      "path": "generated/joined/contracts/common/deprecations.schema.json",
+      "artifactHash": "7ce45d618efb3116525acf3acf08766a550d77bd12f4e525e0f1789dc38e17d8",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "7ce45d618efb3116525acf3acf08766a550d77bd12f4e525e0f1789dc38e17d8",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.joined.contracts.common.deprecations"
+      }
+    },
+    {
+      "id": "generated.joined.contracts.common.documentation",
+      "family": "shared",
+      "path": "generated/joined/contracts/common/documentation.schema.json",
+      "artifactHash": "8126c0a29e39b53733165db4177d486a109cb2b263839d0bd9e6f359cffa4e60",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "8126c0a29e39b53733165db4177d486a109cb2b263839d0bd9e6f359cffa4e60",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.joined.contracts.common.documentation"
+      }
+    },
+    {
+      "id": "generated.joined.contracts.manifest",
+      "family": "shared",
+      "path": "generated/joined/contracts/manifest.schema.json",
+      "artifactHash": "4dae080e46652c697025016b97d82a03437cdf27f3f0c43f1485812fa271a339",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "4dae080e46652c697025016b97d82a03437cdf27f3f0c43f1485812fa271a339",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.joined.contracts.manifest"
+      }
+    },
+    {
+      "id": "generated.mcp.tools",
+      "family": "mcp",
+      "path": "generated/mcp/tools.json",
+      "artifactHash": "98eff642b8b6bf442de1e150e13bdb89a6beab05c1fec3a24aa270690e9ffb33",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "98eff642b8b6bf442de1e150e13bdb89a6beab05c1fec3a24aa270690e9ffb33",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.mcp.tools"
+      }
+    },
+    {
+      "id": "generated.openapi.openapi",
+      "family": "openapi",
+      "path": "generated/openapi/openapi.yaml",
+      "artifactHash": "74932a7018dd449663cb9f858be203d4ec3d8de9d3b44f18e944259db0eec568",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "74932a7018dd449663cb9f858be203d4ec3d8de9d3b44f18e944259db0eec568",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.openapi.openapi"
+      }
+    },
+    {
+      "id": "generated.schemas.factory",
+      "family": "config",
+      "path": "generated/schemas/factory.schema.json",
+      "artifactHash": "06ddc805d0901db1f98fcffaab366655ed5764074a1f27a6b16ace51022a2a93",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "06ddc805d0901db1f98fcffaab366655ed5764074a1f27a6b16ace51022a2a93",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.schemas.factory"
+      }
+    },
+    {
+      "id": "generated.schemas.mock-workers",
+      "family": "config",
+      "path": "generated/schemas/mock-workers.schema.json",
+      "artifactHash": "1aad74057b85a8c0d5c195e945832b373a0d37bbc7fc7efece5aa88085efd7d3",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "1aad74057b85a8c0d5c195e945832b373a0d37bbc7fc7efece5aa88085efd7d3",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.schemas.mock-workers"
+      }
+    },
+    {
+      "id": "generated.schemas.you-config",
+      "family": "config",
+      "path": "generated/schemas/you-config.schema.json",
+      "artifactHash": "d13af3b56397d8da27f47f7b7823a570583f8ac9207602df04364123bdcf88e1",
+      "documentation": {
+        "formatVersion": "1.0.0",
+        "visibility": "public",
+        "sourceHash": "d13af3b56397d8da27f47f7b7823a570583f8ac9207602df04364123bdcf88e1",
+        "title": null
+      },
+      "lifecycle": {
+        "state": "active",
+        "since": "0.0.0",
+        "formatVersion": "1.0.0",
+        "itemId": "generated.schemas.you-config"
+      }
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "baselineObservationNote": "Counts and membership lists are baseline observations for drift detection against the installed @you-agent-factory/api package. They are not permanent product limits, hard ceilings, or UI quotas.",
+  "source": "@you-agent-factory/api/openapi",
+  "presentationRules": {
+    "globalEventsNeverPreferredOrCanonical": true,
+    "canonicalSessionEventsPath": "/factory-sessions/{session_id}/events",
+    "ephemeralResponseEventsPath": "/factory-sessions/{session_id}/response-events",
+    "compatibilityOnlyEventsPath": "/events"
+  },
+  "counts": {
+    "sseOperations": 3,
+    "factoryEventTypeMappings": 31,
+    "factoryResponseEventKinds": 12,
+    "factoryResponseEventPhases": 6,
+    "factoryResponseEventPayloadOneOf": 14
+  },
+  "streams": [
+    {
+      "path": "/events",
+      "method": "get",
+      "operationId": "getEvents",
+      "summary": "Stream process-global factory events (compatibility-only)",
+      "role": "compatibility-only",
+      "preferredOrCanonical": false,
+      "xEventSchema": "#/components/schemas/FactoryEvent",
+      "accept": ["text/event-stream"],
+      "dualAccept": false,
+      "identityHandshakeHeaders": [],
+      "jsonRecoverySchema": null
+    },
+    {
+      "path": "/factory-sessions/{session_id}/events",
+      "method": "get",
+      "operationId": "getEventsBySessionId",
+      "summary": "Stream factory events for one session",
+      "role": "canonical",
+      "preferredOrCanonical": true,
+      "xEventSchema": "#/components/schemas/FactoryEvent",
+      "accept": ["application/json", "text/event-stream"],
+      "dualAccept": true,
+      "identityHandshakeHeaders": [
+        "X-Factory-Session-Backend-Scope-Id",
+        "X-Factory-Session-Factory-Session-Id",
+        "X-Factory-Session-Logical-Session-Key-Id",
+        "X-Factory-Session-Stream-Generation-Id"
+      ],
+      "jsonRecoverySchema": "FactorySessionEventStreamRecovery"
+    },
+    {
+      "path": "/factory-sessions/{session_id}/response-events",
+      "method": "get",
+      "operationId": "getFactoryResponseEventsBySessionId",
+      "summary": "Stream ephemeral response events for one Factory Session",
+      "role": "ephemeral",
+      "preferredOrCanonical": false,
+      "xEventSchema": "#/components/schemas/FactoryResponseEvent",
+      "accept": ["text/event-stream"],
+      "dualAccept": false,
+      "identityHandshakeHeaders": [],
+      "jsonRecoverySchema": null
+    }
+  ],
+  "factoryEventTypeMappings": [
+    {
+      "type": "RUN_REQUEST",
+      "payloadSchema": "RunRequestEventPayload"
+    },
+    {
+      "type": "INITIAL_STRUCTURE_REQUEST",
+      "payloadSchema": "InitialStructureRequestEventPayload"
+    },
+    {
+      "type": "FACTORY_CHANGE",
+      "payloadSchema": "FactoryChangeEventPayload"
+    },
+    {
+      "type": "WORK_REQUEST",
+      "payloadSchema": "WorkRequestEventPayload"
+    },
+    {
+      "type": "RELATIONSHIP_CHANGE_REQUEST",
+      "payloadSchema": "RelationshipChangeRequestEventPayload"
+    },
+    {
+      "type": "DISPATCH_REQUEST",
+      "payloadSchema": "DispatchRequestEventPayload"
+    },
+    {
+      "type": "MODEL_REQUEST",
+      "payloadSchema": "ModelRequestEventPayload"
+    },
+    {
+      "type": "MODEL_RESPONSE",
+      "payloadSchema": "ModelResponseEventPayload"
+    },
+    {
+      "type": "INFERENCE_REQUEST",
+      "payloadSchema": "InferenceRequestEventPayload"
+    },
+    {
+      "type": "INFERENCE_RESPONSE",
+      "payloadSchema": "InferenceResponseEventPayload"
+    },
+    {
+      "type": "SCRIPT_REQUEST",
+      "payloadSchema": "ScriptRequestEventPayload"
+    },
+    {
+      "type": "SCRIPT_RESPONSE",
+      "payloadSchema": "ScriptResponseEventPayload"
+    },
+    {
+      "type": "AGENT_RUN_RESPONSE",
+      "payloadSchema": "AgentRunResponseEventPayload"
+    },
+    {
+      "type": "DISPATCH_RESPONSE",
+      "payloadSchema": "DispatchResponseEventPayload"
+    },
+    {
+      "type": "WORK_STATE_CHANGE",
+      "payloadSchema": "WorkStateChangeEventPayload"
+    },
+    {
+      "type": "FACTORY_STATE_RESPONSE",
+      "payloadSchema": "FactoryStateResponseEventPayload"
+    },
+    {
+      "type": "RUN_RESPONSE",
+      "payloadSchema": "RunResponseEventPayload"
+    },
+    {
+      "type": "SESSION_STARTED",
+      "payloadSchema": "SessionStartedEventPayload"
+    },
+    {
+      "type": "SESSION_PAUSED",
+      "payloadSchema": "SessionPausedEventPayload"
+    },
+    {
+      "type": "SESSION_RESUMED",
+      "payloadSchema": "SessionResumedEventPayload"
+    },
+    {
+      "type": "SESSION_RESULT_UPDATED",
+      "payloadSchema": "SessionResultUpdatedEventPayload"
+    },
+    {
+      "type": "SESSION_COMPLETED",
+      "payloadSchema": "SessionCompletedEventPayload"
+    },
+    {
+      "type": "SESSION_LIFECYCLE_CONTROL",
+      "payloadSchema": "SessionLifecycleControlEventPayload"
+    },
+    {
+      "type": "ORCHESTRATOR_PHASE_CHANGED",
+      "payloadSchema": "OrchestratorPhaseChangedEventPayload"
+    },
+    {
+      "type": "ORCHESTRATOR_CHECKPOINT_WRITTEN",
+      "payloadSchema": "OrchestratorCheckpointWrittenEventPayload"
+    },
+    {
+      "type": "DISPATCH_QUEUED",
+      "payloadSchema": "DispatchQueuedEventPayload"
+    },
+    {
+      "type": "DISPATCH_INTERRUPTED",
+      "payloadSchema": "DispatchInterruptedEventPayload"
+    },
+    {
+      "type": "DISPATCH_RECONCILED",
+      "payloadSchema": "DispatchReconciledEventPayload"
+    },
+    {
+      "type": "JAVASCRIPT_CHECKPOINT_REF",
+      "payloadSchema": "JavaScriptCheckpointRefEventPayload"
+    },
+    {
+      "type": "JAVASCRIPT_PHASE_CHANGE",
+      "payloadSchema": "JavaScriptPhaseChangeEventPayload"
+    },
+    {
+      "type": "ARTIFACT_CREATED",
+      "payloadSchema": "ArtifactCreatedEventPayload"
+    }
+  ],
+  "factoryResponseEventKinds": [
+    "SESSION",
+    "RUN",
+    "TURN",
+    "MESSAGE",
+    "REASONING",
+    "TOOL",
+    "FILE_CHANGE",
+    "PLAN",
+    "PROGRESS",
+    "USAGE",
+    "ERROR",
+    "STREAM_GAP"
+  ],
+  "factoryResponseEventPhases": [
+    "STARTED",
+    "DELTA",
+    "UPDATED",
+    "COMPLETED",
+    "FAILED",
+    "CANCELED"
+  ],
+  "factoryResponseEventPayloadSchemas": [
+    "FactoryResponseEventSessionPayload",
+    "FactoryResponseEventRunPayload",
+    "FactoryResponseEventTurnPayload",
+    "FactoryResponseEventMessagePayload",
+    "FactoryResponseEventMessageDeltaPayload",
+    "FactoryResponseEventReasoningPayload",
+    "FactoryResponseEventToolPayload",
+    "FactoryResponseEventToolDeltaPayload",
+    "FactoryResponseEventFileChangePayload",
+    "FactoryResponseEventPlanPayload",
+    "FactoryResponseEventProgressPayload",
+    "FactoryResponseEventUsagePayload",
+    "FactoryResponseEventErrorPayload",
+    "FactoryResponseEventStreamGapPayload"
+  ],
+  "canonicalJsonRecoveryOutcomes": [
+    "STREAM_READY",
+    "CURSOR_STALE",
+    "UNKNOWN_SESSION",
+    "INTERNAL_ERROR"
+  ]
+}

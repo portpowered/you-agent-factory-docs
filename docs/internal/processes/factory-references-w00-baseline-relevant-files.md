@@ -9,6 +9,7 @@ Use this file when capturing or refreshing the W00 contract/route baseline under
 | --- | --- |
 | `docs/temp/references/baseline.md` | Human-readable W00 baseline (committed) |
 | `docs/temp/references/fixtures/**` | Deterministic inventory fixtures (committed when present) |
+| `scripts/regenerate-w00-reference-baseline-fixtures.ts` | Regenerates fixtures from installed `@you-agent-factory/api` |
 | `docs/temp/references/plan.md` | Planner PRD/plan (gitignored scratch; do not commit) |
 | `node_modules/@you-agent-factory/api/package.json` | Installed API package identity source |
 | `node_modules/@you-agent-factory/components/package.json` | Installed components package identity source |
@@ -157,6 +158,30 @@ Baseline must call out that nested `/docs/references|factories|workers|workstati
 families are blocked by the five-collection inventory and the exactly-two-slug-segment
 local-docs contract until route-foundation work lands. Live worker/workstation pages
 today are flat under `/docs/documentation/*`.
+
+## Deterministic inventory fixtures
+
+Committed under `docs/temp/references/fixtures/`:
+
+| File | Inventory |
+| --- | --- |
+| `manifest-inventory.json` | Manifest exports / hashes / lifecycle |
+| `openapi-inventory.json` | Paths, operations, tags, schemas, parameters, responses |
+| `schema-inventory.json` | factory / you-config / mock-workers root + `$defs` |
+| `variant-inventory.json` | WorkerType / WorkstationType / WorkstationKind |
+| `sse-inventory.json` | Three SSE streams + event discriminator inventories |
+| `README.md` | Observation policy + regenerate command |
+
+Regenerate from the installed package (do not hand-edit counts/membership):
+
+```bash
+bun ./scripts/regenerate-w00-reference-baseline-fixtures.ts
+```
+
+The regenerator writes JSON then applies Biome formatting so fixtures stay
+lint-clean. Each fixture stores both identity lists and numeric `counts`, plus
+`baselineObservationNote`. Counts are drift observations, not permanent product
+limits or UI quotas. Focused drift tests belong to story 010 / later work.
 
 ## Compatibility and redirect mechanisms
 
