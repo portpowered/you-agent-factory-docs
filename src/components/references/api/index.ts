@@ -8,6 +8,10 @@
  */
 
 export {
+  ApiLocalServerBaseUrlNotice,
+  type ApiLocalServerBaseUrlNoticeProps,
+} from "./api-local-server-base-url";
+export {
   API_METHOD_BADGE_ATTR,
   ApiMethodBadge,
   type ApiMethodBadgeProps,
@@ -73,6 +77,10 @@ export {
   type OpenApiProductionDependencyName,
 } from "./dependency-selection";
 export {
+  type ApiLocalServerBaseUrlProjection,
+  buildApiLocalServerBaseUrlFromArtifact,
+} from "./load-local-server-base-url";
+export {
   API_OPENAPI_PACKAGE_EXPORT,
   API_OPENAPI_SCHEMA_ID,
   API_OPENAPI_SOURCE_BASE_DIR,
@@ -92,9 +100,20 @@ export {
   loadApiOperationNavigationProjection,
 } from "./load-operation-navigation";
 export {
+  API_LOCAL_SERVER_BASE_URL_ATTR,
+  API_LOCAL_SERVER_DEFAULT_DESCRIPTION,
+  API_LOCAL_SERVER_DOCS_HOST_DISCLAIMER,
+  type ApiLocalServerBaseUrl,
+  type ApiOpenApiServerEntry,
+  apiLocalServerCopyAvoidsDocsHostAsApi,
+  projectApiLocalServerBaseUrls,
+  resolvePrimaryApiLocalServerBaseUrl,
+} from "./local-server-base-url";
+export {
   type ApiOpenApiOperation,
   type ApiOpenApiSinglePageProjection,
   apiOpenApiServer,
+  apiOpenApiServerOmitsProxyUrl,
   loadApiOpenApiSinglePageProjection,
 } from "./openapi-server";
 export {
@@ -183,6 +202,14 @@ export {
   isApiReferenceOwnershipPath,
   isForbiddenApiReferenceOwnershipPath,
 } from "./ownership";
+export {
+  API_PLAYGROUND_OPTIONS,
+  API_PLAYGROUND_SUPPRESSED_ATTR,
+  API_PROXY_POLICY,
+  apiReferencePlaygroundPageOptions,
+  assertsNoApiProxyUrl,
+  isApiPlaygroundSuppressed,
+} from "./playground-suppression";
 export {
   API_UI_STATUS_DEFAULT_MESSAGES,
   API_UI_STATUS_DEFAULT_TITLES,

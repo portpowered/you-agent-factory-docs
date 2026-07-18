@@ -22,11 +22,16 @@ import {
   API_OPENAPI_SOURCE_BASE_DIR,
   loadApiOpenApiArtifact,
 } from "./load-openapi-artifact";
+import {
+  API_PROXY_POLICY,
+  assertsNoApiProxyUrl,
+} from "./playground-suppression";
 
 /**
  * Production OpenAPI server bound to the package-resolved document.
- * `proxyUrl` is intentionally omitted — live execution belongs to later
- * playground-suppression stories and must stay absent here.
+ * `proxyUrl` is intentionally omitted (see {@link API_PROXY_POLICY}) — the
+ * production surface is static-only and must never configure a CORS proxy for
+ * live playground fetches.
  */
 export const apiOpenApiServer = createOpenAPI({
   input: () => {
@@ -35,7 +40,16 @@ export const apiOpenApiServer = createOpenAPI({
       [API_OPENAPI_SCHEMA_ID]: loaded.document,
     };
   },
+  // Static-only: leave proxyUrl unset — aligned with API_PROXY_POLICY.
 });
+
+/** True when the production OpenAPI server matches the no-proxy policy. */
+export function apiOpenApiServerOmitsProxyUrl(): boolean {
+  return (
+    API_PROXY_POLICY.proxyUrl === undefined &&
+    assertsNoApiProxyUrl(apiOpenApiServer.options)
+  );
+}
 
 export type ApiOpenApiOperation = NonNullable<
   ApiPageProps["operations"]

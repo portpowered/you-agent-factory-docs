@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { ApiNavigationVerificationHarness } from "@/components/references/api/api-navigation-verification-harness";
+import { buildApiLocalServerBaseUrlFromArtifact } from "@/components/references/api/load-local-server-base-url";
 import { buildApiOperationDetailsFromArtifact } from "@/components/references/api/load-operation-details";
 import { buildApiOperationNavigationFromArtifact } from "@/components/references/api/load-operation-navigation";
 
@@ -19,9 +20,12 @@ export default async function ApiRendererHarnessPage() {
 
   const { model } = buildApiOperationNavigationFromArtifact();
   const { byAnchor } = buildApiOperationDetailsFromArtifact();
+  const { primary: localServerBaseUrl } =
+    buildApiLocalServerBaseUrlFromArtifact();
   return (
     <ApiNavigationVerificationHarness
       detailsByAnchor={byAnchor}
+      localServerBaseUrl={localServerBaseUrl}
       model={model}
     />
   );

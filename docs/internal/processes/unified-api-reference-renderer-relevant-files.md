@@ -78,6 +78,11 @@ hooks, and SSR cost.
 | `src/components/references/api/api-response-media-type.tsx` | Distinguishes JSON vs `text/event-stream` vs other with text labels |
 | `src/components/references/api/api-operation-examples.tsx` | CodePanel + `useCopyButton` for authored examples only (no fabricated payloads) |
 | `src/components/references/api/api-operation-section.tsx` | Full operation section: method/path/summary, params, body, responses, examples |
+| `src/components/references/api/playground-suppression.ts` | Production `playground: { enabled: false }` + no-`proxyUrl` / forbidden proxy-route policy |
+| `src/components/references/api/local-server-base-url.ts` | Pure projectors for OpenAPI `servers` → local base URL + docs-host disclaimer |
+| `src/components/references/api/api-local-server-base-url.tsx` | Visible local-server base URL notice (static-only; no live execution) |
+| `src/components/references/api/load-local-server-base-url.ts` | Load primary local-server notice from the package OpenAPI artifact |
+| `src/components/references/api/assert-playground-suppression-browser.ts` | Playwright harness probe: no Send/try-it/proxy UI + local base URL visible |
 | `src/components/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
 | `src/components/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
 | `src/components/references/api/api-reference-hash-controller.tsx` | Hash-to-focus + back/forward (`hashchange` / `popstate`) without rewriting content |
@@ -165,6 +170,26 @@ hooks, and SSR cost.
 - `ApiOperationExamples` uses site `CodePanel` + fumadocs `useCopyButton`.
 - Load via `buildApiOperationDetailsFromArtifact()` (happy-dom-safe).
 
+## Playground suppression and local-server base URL
+
+- Production policy lives in `playground-suppression.ts` (`API_PLAYGROUND_OPTIONS`
+  with `enabled: false`, `API_PROXY_POLICY` with unset `proxyUrl` + forbidden
+  App Router proxy segments). Prefer this over editing the W01 spike policy.
+- `apiOpenApiServer` must leave `proxyUrl` unset; assert via
+  `assertsNoApiProxyUrl(apiOpenApiServer.options)`.
+- `apiReferencePlaygroundPageOptions()` is the `createAPIPage` fragment for
+  later Fumadocs page wiring (W11); custom `ApiOperationSection` renderers are
+  stronger (no playground slots at all).
+- Local-server notice: pure `local-server-base-url.ts` projectors read OpenAPI
+  `servers` (live package baseline: `http://localhost:7437`);
+  `ApiLocalServerBaseUrlNotice` shows the URL plus an explicit docs-host
+  disclaimer so readers never treat the documentation host as the API.
+- Harness (`/api-renderer-harness`) mounts the notice and marks
+  `data-api-playground-suppressed="true"`. Static examples stay visible without
+  a reachable Factory host.
+- Browser probe: `bun src/components/references/api/assert-playground-suppression-browser.ts`
+  (unique port, `localhost`, Playwright via `launchPlaywrightBrowser`).
+
 ## Patterns
 
 - Keep production API UI under `src/components/references/api/` so ownership
@@ -175,8 +200,8 @@ hooks, and SSR cost.
   `aria-live="polite"`, `aria-busy` when loading).
 - Prefer migrating helpers from the W01 spike into this tree over editing the
   spike in place.
-- Later stories: playground suppression, hybrid SSE summaries, theme/code-copy
-  polish, and responsive/a11y/print verification.
+- Later stories: hybrid SSE summaries, theme/code-copy polish, and
+  responsive/a11y/print verification.
 
 ## Focused verification
 
@@ -192,5 +217,7 @@ bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/operation-anchors.test.ts \
   src/components/references/api/api-operation-anchors.test.tsx \
   src/components/references/api/operation-detail.test.ts \
-  src/components/references/api/api-operation-section.test.tsx
+  src/components/references/api/api-operation-section.test.tsx \
+  src/components/references/api/playground-suppression.test.ts \
+  src/components/references/api/local-server-base-url.test.tsx
 ```

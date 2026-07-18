@@ -1,7 +1,8 @@
 /**
  * Focused W08 verification surface for tag-grouped operation navigation,
- * filtering, stable anchors, copy links, hash-to-focus, and operation
- * request/response detail rendering.
+ * filtering, stable anchors, copy links, hash-to-focus, operation
+ * request/response detail rendering, playground suppression, and local-server
+ * base URL copy.
  *
  * Renders navigators against the package-resolved single-page projection and
  * full `ApiOperationSection` hosts whose `id` matches each nav anchor. Not a
@@ -10,14 +11,17 @@
  */
 
 import { cn } from "@/lib/utils";
+import { ApiLocalServerBaseUrlNotice } from "./api-local-server-base-url";
 import { ApiOperationCopyLink } from "./api-operation-copy-link";
 import { ApiOperationNavigation } from "./api-operation-navigation";
 import { ApiOperationSection } from "./api-operation-section";
 import { ApiReferenceHashController } from "./api-reference-hash-controller";
 import { ApiSurface } from "./api-surface";
+import type { ApiLocalServerBaseUrl } from "./local-server-base-url";
 import { API_REFERENCE_PAGE_PATH } from "./operation-anchors";
 import type { ApiOperationDetail } from "./operation-detail";
 import type { ApiOperationNavModel } from "./operation-navigation";
+import { API_PLAYGROUND_SUPPRESSED_ATTR } from "./playground-suppression";
 
 export type ApiNavigationVerificationHarnessProps = {
   model: ApiOperationNavModel;
@@ -26,6 +30,8 @@ export type ApiNavigationVerificationHarnessProps = {
    * method/path/summary stubs (navigation-only probes).
    */
   detailsByAnchor?: ReadonlyMap<string, ApiOperationDetail>;
+  /** Primary local-server base URL notice from OpenAPI `servers`. */
+  localServerBaseUrl?: ApiLocalServerBaseUrl;
   /** Owning page path used for copy-link URLs (defaults to production API path). */
   pagePath?: string;
   className?: string;
@@ -39,6 +45,7 @@ export type ApiNavigationVerificationHarnessProps = {
 export function ApiNavigationVerificationHarness({
   model,
   detailsByAnchor,
+  localServerBaseUrl,
   pagePath = API_REFERENCE_PAGE_PATH,
   className,
   "data-testid": testId = "api-navigation-verification-harness",
@@ -59,6 +66,7 @@ export function ApiNavigationVerificationHarness({
           className="mx-auto min-w-0 max-w-6xl space-y-8 overflow-x-hidden px-4 py-6"
           data-api-navigation-verification-harness=""
           data-testid={testId}
+          {...{ [API_PLAYGROUND_SUPPRESSED_ATTR]: "true" }}
         >
           <header className="min-w-0 space-y-2 border-b border-border pb-6">
             <p className="text-sm text-muted-foreground">
@@ -69,12 +77,18 @@ export function ApiNavigationVerificationHarness({
             </h1>
             <p className="max-w-3xl text-sm text-muted-foreground">
               Exercises desktop and phone/tablet navigators, operation
-              filtering, stable anchors, copy links, hash-to-focus, and
-              request/response/media-type/example rendering against the
-              package-resolved OpenAPI projection ({model.operationCount}{" "}
-              operations / {model.groups.length} tags).
+              filtering, stable anchors, copy links, hash-to-focus,
+              request/response/media-type/example rendering, and static-only
+              local-server base URL copy against the package-resolved OpenAPI
+              projection ({model.operationCount} operations /{" "}
+              {model.groups.length} tags). Live playground and proxy execution
+              are suppressed.
             </p>
           </header>
+
+          {localServerBaseUrl !== undefined ? (
+            <ApiLocalServerBaseUrlNotice server={localServerBaseUrl} />
+          ) : null}
 
           <ApiOperationNavigation groups={model.groups} model={model} />
 
