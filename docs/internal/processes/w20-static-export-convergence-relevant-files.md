@@ -325,6 +325,37 @@ Worktree note: restore the established W03 exclusion boundary when tip drift
 introduces a leak — do not patch `node_modules` or reopen package ownership.
 Upstream lane doc: [package-artifact-resolver-relevant-files](./package-artifact-resolver-relevant-files.md).
 
+## Story 010 — ownership map + closed migration ledger
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-ownership-migration-convergence.ts` | Plan §9 page + §11 component ownership/test-surface map, W18 closure suite catalog, pure `evaluateOwnershipMigrationConvergence` |
+| `src/lib/verify/w20-ownership-migration-convergence.test.ts` | Catalog completeness / path-existence / zero-orphan / ledger-closed proofs |
+| `scripts/run-w20-ownership-migration-tests.ts` | Runner: catalog → W18 migration closure suites |
+| `package.json` → `test:w20-ownership-migration` | Maintainer / automation entry |
+| `Makefile` → `test-w20-ownership-migration` | Shared Makefile contract |
+
+### Focused suites (W18 migration ledger closure)
+
+* `src/lib/seo/documentation-route-migration.test.ts` — ledger contract + §10 row inventory
+* `src/lib/seo/documentation-route-migration-closure.test.tsx` — fully closed ledger + important anchors + sitemap/canonical proofs
+* `src/lib/seo/documentation-route-migration-canonical.test.ts` — canonical declaration pairing
+* `src/lib/seo/documentation-route-migration-links.test.tsx` — inbound link / compatibility HTML proofs
+* `src/lib/seo/documentation-route-migration.ts` — temporary §10 ledger + static compatibility mechanism
+
+### Reproduce
+
+```bash
+make test-w20-ownership-migration
+# or: bun run test:w20-ownership-migration
+```
+
+Worktree note: map every plan §9 page and §11 component to an existing owner
+workstream + test surface — do not invent product pages or unpublished schemas.
+Assert W18 ledger remains fully closed via existing closure suites; do not
+reopen W18 mechanism design. Upstream lane doc:
+[static-seo-metadata-relevant-files](./static-seo-metadata-relevant-files.md).
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,
