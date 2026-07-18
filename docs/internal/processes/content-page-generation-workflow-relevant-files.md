@@ -1024,7 +1024,11 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `workstations/model-invoke` / `documentation.workstations-model-invoke`
   (`workstation:MODEL_INVOKE`, requires `worker:MODEL_WORKER`, selects
   exclusive `operation` / `operationBindings`, misuse = `outcomeFormat`
-  from MODEL_WORKSTATION; keep distinct from `model-workstation`). Mirror
+  from MODEL_WORKSTATION; keep distinct from `model-workstation`);
+  `workstations/logical-move` / `documentation.workstations-logical-move`
+  (`workstation:LOGICAL_MOVE`, requires `worker:HOSTED_WORKER`, selects
+  exclusive `guards`, misuse = `classificationRoutes` from
+  CLASSIFIER_WORKSTATION; keep distinct from `classifier`). Mirror
   this bundle for later WorkstationType pages with
   `createProductionWorkstationTypeOverlay`.
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`

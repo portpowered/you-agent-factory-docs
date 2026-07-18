@@ -126,6 +126,12 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
+      case "logical-move": {
+        const mod = await import(
+          "@/content/docs/workstations/logical-move/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
       default:
         return {};
     }
