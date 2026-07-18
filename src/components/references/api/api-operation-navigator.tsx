@@ -7,6 +7,10 @@
 
 import { cn } from "@/lib/utils";
 import {
+  API_PRINT_CHROME_ATTR,
+  API_PRINT_CHROME_HIDE,
+} from "./a11y-verification";
+import {
   API_OPERATION_NAV_ARIA_LABEL,
   API_OPERATION_NAV_ATTR,
   API_OPERATION_NAV_LINK_ATTR,
@@ -46,7 +50,10 @@ export function ApiOperationNavigator({
         "min-w-0 rounded-lg border border-border bg-muted/20 p-4",
         className,
       )}
-      {...{ [API_OPERATION_NAV_ATTR]: "" }}
+      {...{
+        [API_OPERATION_NAV_ATTR]: "",
+        [API_PRINT_CHROME_ATTR]: API_PRINT_CHROME_HIDE,
+      }}
       data-testid={testId}
       data-api-operation-nav-link-count={linkCount}
     >

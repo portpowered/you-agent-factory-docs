@@ -11,6 +11,10 @@
 import { useId, useState } from "react";
 import { cn } from "@/lib/utils";
 import {
+  API_PRINT_CHROME_ATTR,
+  API_PRINT_CHROME_HIDE,
+} from "./a11y-verification";
+import {
   API_OPERATION_FILTER_ATTR,
   API_OPERATION_FILTER_LABEL,
   API_OPERATION_FILTER_PLACEHOLDER,
@@ -67,7 +71,10 @@ export function ApiOperationFilter({
   return (
     <div
       className={cn("min-w-0 space-y-2", className)}
-      {...{ [API_OPERATION_FILTER_ATTR]: "" }}
+      {...{
+        [API_OPERATION_FILTER_ATTR]: "",
+        [API_PRINT_CHROME_ATTR]: API_PRINT_CHROME_HIDE,
+      }}
       data-api-operation-filter-active={hasClearableQuery ? "true" : "false"}
       data-testid={testId}
     >

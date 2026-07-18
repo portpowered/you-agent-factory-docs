@@ -6,13 +6,17 @@
  *
  * Renders navigators against the package-resolved single-page projection and
  * full `ApiOperationSection` hosts whose `id` matches each nav anchor. Marks
- * the production theme root (`data-api-reference-theme`) so method badges,
- * CodePanel examples, and operation chrome resolve through host semantic
- * tokens. Not a final `/docs/references/api` page — harness / demo only
- * (W11 owns published MDX).
+ * the production theme root (`data-api-reference-theme`) and print root
+ * (`data-api-reference-print`) so method badges, CodePanel examples, operation
+ * chrome, and print styles resolve correctly. Not a final
+ * `/docs/references/api` page — harness / demo only (W11 owns published MDX).
  */
 
 import { cn } from "@/lib/utils";
+import {
+  API_PRINT_CONTENT_ATTR,
+  API_PRINT_ROOT_ATTR,
+} from "./a11y-verification";
 import { ApiLocalServerBaseUrlNotice } from "./api-local-server-base-url";
 import { ApiOperationCopyLink } from "./api-operation-copy-link";
 import { ApiOperationNavigation } from "./api-operation-navigation";
@@ -72,6 +76,7 @@ export function ApiNavigationVerificationHarness({
           {...{
             [API_PLAYGROUND_SUPPRESSED_ATTR]: "true",
             [API_THEME_ROOT_ATTR]: "",
+            [API_PRINT_ROOT_ATTR]: "",
           }}
         >
           <header className="min-w-0 space-y-2 border-b border-border pb-6">
@@ -86,11 +91,13 @@ export function ApiNavigationVerificationHarness({
               filtering, stable anchors, copy links, hash-to-focus,
               request/response/media-type/example rendering, hybrid SSE
               transport summaries (with events-catalog links), static-only
-              local-server base URL copy, project theme tokens, and site
-              CodePanel code-copy against the package-resolved OpenAPI
-              projection ({model.operationCount} operations /{" "}
-              {model.groups.length} tags). Live playground, proxy execution, and
-              live event-stream connections are suppressed.
+              local-server base URL copy, project theme tokens, site
+              CodePanel code-copy, responsive overflow, keyboard focus,
+              reduced-motion hash focus, and print-readable operation content
+              against the package-resolved OpenAPI projection (
+              {model.operationCount} operations / {model.groups.length} tags).
+              Live playground, proxy execution, and live event-stream
+              connections are suppressed.
             </p>
           </header>
 
@@ -125,6 +132,7 @@ export function ApiNavigationVerificationHarness({
                   data-api-operation-section=""
                   data-api-operation-anchor={item.anchor}
                   tabIndex={-1}
+                  {...{ [API_PRINT_CONTENT_ATTR]: "" }}
                 >
                   <div className="flex min-w-0 flex-wrap items-start justify-between gap-3">
                     <h2 className="text-lg font-semibold text-foreground">
@@ -139,7 +147,10 @@ export function ApiNavigationVerificationHarness({
                     />
                   </div>
                   {item.summary !== undefined ? (
-                    <p className="mt-1 text-sm text-muted-foreground">
+                    <p
+                      className="mt-1 text-sm text-muted-foreground"
+                      data-api-operation-summary=""
+                    >
                       {item.summary}
                     </p>
                   ) : null}

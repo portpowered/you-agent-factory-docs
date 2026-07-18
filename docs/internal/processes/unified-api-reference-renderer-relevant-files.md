@@ -91,6 +91,10 @@ hooks, and SSR cost.
 | `src/components/references/api/theme-tokens.test.ts` | Token-class / code-copy policy / host contrast proofs |
 | `src/components/references/api/api-theme-code-copy.test.tsx` | CodePanel + copy affordance, method badge tones, theme-root harness wiring |
 | `src/components/references/api/assert-theme-code-copy-browser.ts` | Playwright harness probe: theme root, method badges, CodePanel copy, no playground |
+| `src/components/references/api/a11y-verification.ts` | Phone/tablet/desktop viewports, keyboard focus contract, print policy, reduced-motion scroll helper |
+| `src/components/references/api/api-a11y-print.test.tsx` | Keyboard, overflow, reduced-motion hash focus, and print-readable fact proofs |
+| `src/components/references/api/assert-a11y-print-browser.ts` | Playwright harness probe: overflow × 3 viewports, keyboard, reduced-motion, print, SSE + non-SSE |
+| `src/features/docs/styles/references-api-print.css` | Print stylesheet: hide filter/nav/copy chrome; keep method/path/summary + request/response |
 | `src/components/references/api/operation-anchors.ts` | Stable operationId anchors, collision check, owning-page deep-link URL helpers |
 | `src/components/references/api/api-operation-copy-link.tsx` | Copy-link control (`useCopyButton`) targeting `/docs/references/api#<anchor>` |
 | `src/components/references/api/api-reference-hash-controller.tsx` | Hash-to-focus + back/forward (`hashchange` / `popstate`) without rewriting content |
@@ -232,6 +236,27 @@ hooks, and SSR cost.
 - Browser probe: `bun src/components/references/api/assert-theme-code-copy-browser.ts`
   (unique port default 3539, `localhost`, Playwright via `launchPlaywrightBrowser`).
 
+## Responsive, keyboard, reduced-motion, and print
+
+- Contract: `a11y-verification.ts` — `API_VERIFICATION_VIEWPORTS` (390 / 768 /
+  1440), keyboard control selectors with focus-ring checks, print root/chrome/
+  content markers, and `apiHashFocusScrollBehavior` (`auto` under reduced
+  motion).
+- Print stylesheet: `src/features/docs/styles/references-api-print.css`
+  (imported by `/api-renderer-harness`). Hides
+  `[data-api-print-chrome="hide"]` (filter, navigators, copy links) and keeps
+  method/path/summary + parameters/request-body/responses readable — never
+  hover-only facts for those fields.
+- Harness mounts `data-api-reference-print`; operation sections carry
+  `data-api-print-content`.
+- Hash focus already honors `prefers-reduced-motion` (instant scroll); prove
+  with `focusApiOperationAnchor(..., { reduceMotion: true })` and browser
+  `emulateMedia({ reducedMotion: "reduce" })`.
+- Browser probe: `bun src/components/references/api/assert-a11y-print-browser.ts`
+  (unique port default 3540) — overflow at phone/tablet/desktop, keyboard
+  filter/nav/copy, reduced-motion hash focus, print media facts, all 45 ops
+  reachable, playground absent, one SSE + one non-SSE section checked.
+
 ## Patterns
 
 - Keep production API UI under `src/components/references/api/` so ownership
@@ -242,7 +267,6 @@ hooks, and SSR cost.
   `aria-live="polite"`, `aria-busy` when loading).
 - Prefer migrating helpers from the W01/W02 spikes into this tree over editing
   the spike in place.
-- Later stories: responsive/a11y/print verification.
 
 ## Focused verification
 
@@ -264,5 +288,6 @@ bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/sse-operation-summary.test.ts \
   src/components/references/api/api-sse-operation-summary.test.tsx \
   src/components/references/api/theme-tokens.test.ts \
-  src/components/references/api/api-theme-code-copy.test.tsx
+  src/components/references/api/api-theme-code-copy.test.tsx \
+  src/components/references/api/api-a11y-print.test.tsx
 ```

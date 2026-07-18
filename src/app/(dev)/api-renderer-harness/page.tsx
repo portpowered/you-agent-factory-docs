@@ -3,6 +3,7 @@ import { ApiNavigationVerificationHarness } from "@/components/references/api/ap
 import { buildApiLocalServerBaseUrlFromArtifact } from "@/components/references/api/load-local-server-base-url";
 import { buildApiOperationDetailsFromArtifact } from "@/components/references/api/load-operation-details";
 import { buildApiOperationNavigationFromArtifact } from "@/components/references/api/load-operation-navigation";
+import "@/features/docs/styles/references-api-print.css";
 
 /**
  * Non-production W08 API navigation + operation-detail harness.

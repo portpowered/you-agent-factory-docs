@@ -8,6 +8,21 @@
  */
 
 export {
+  API_KEYBOARD_CONTROL_SELECTORS,
+  API_PRINT_CHROME_ATTR,
+  API_PRINT_CHROME_HIDE,
+  API_PRINT_CONTENT_ATTR,
+  API_PRINT_POLICY,
+  API_PRINT_ROOT_ATTR,
+  API_VERIFICATION_VIEWPORTS,
+  type ApiPrintReadableFacts,
+  type ApiVerificationViewport,
+  apiHashFocusScrollBehavior,
+  hasApiVisibleFocusRingClass,
+  probeApiKeyboardControls,
+  probeApiPrintReadableFacts,
+} from "./a11y-verification";
+export {
   ApiLocalServerBaseUrlNotice,
   type ApiLocalServerBaseUrlNoticeProps,
 } from "./api-local-server-base-url";

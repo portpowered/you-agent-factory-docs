@@ -7,6 +7,10 @@
 
 import { cn } from "@/lib/utils";
 import {
+  API_PRINT_CHROME_ATTR,
+  API_PRINT_CHROME_HIDE,
+} from "./a11y-verification";
+import {
   API_MOBILE_NAV_ATTR,
   API_MOBILE_NAV_CONTRACT,
   API_MOBILE_NAV_LIST_ATTR,
@@ -46,7 +50,10 @@ export function ApiReferenceMobileNavigator({
         "min-w-0 rounded-lg border border-border bg-muted/30",
         className,
       )}
-      {...{ [API_MOBILE_NAV_ATTR]: "" }}
+      {...{
+        [API_MOBILE_NAV_ATTR]: "",
+        [API_PRINT_CHROME_ATTR]: API_PRINT_CHROME_HIDE,
+      }}
       data-testid={testId}
       data-api-operation-nav-link-count={linkCount}
     >

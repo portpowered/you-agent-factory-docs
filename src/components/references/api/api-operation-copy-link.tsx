@@ -11,6 +11,10 @@ import { useCopyButton } from "fumadocs-ui/utils/use-copy-button";
 import { Check, Link2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
+  API_PRINT_CHROME_ATTR,
+  API_PRINT_CHROME_HIDE,
+} from "./a11y-verification";
+import {
   API_OPERATION_COPY_LINK_ATTR,
   API_OPERATION_COPY_LINK_COPIED_LABEL,
   API_OPERATION_COPY_LINK_LABEL,
@@ -48,6 +52,7 @@ export function ApiOperationCopyLink({
       className={cn("inline-flex shrink-0 items-center", className)}
       data-api-operation-copy-value={copyValue}
       data-testid={testId}
+      {...{ [API_PRINT_CHROME_ATTR]: API_PRINT_CHROME_HIDE }}
     >
       <button
         aria-label={

@@ -7,6 +7,7 @@
  */
 
 import { cn } from "@/lib/utils";
+import { API_PRINT_CONTENT_ATTR } from "./a11y-verification";
 import { ApiMethodBadge } from "./api-method-badge";
 import { ApiOperationCopyLink } from "./api-operation-copy-link";
 import { ApiOperationExamples } from "./api-operation-examples";
@@ -98,6 +99,7 @@ export function ApiOperationSection({
         [API_OPERATION_SECTION_ATTR]: "",
         [API_OPERATION_ANCHOR_ATTR]: detail.anchor,
         [API_OPERATION_DETAIL_ATTR]: detail.anchor,
+        [API_PRINT_CONTENT_ATTR]: "",
       }}
     >
       <header className="min-w-0 space-y-2">
