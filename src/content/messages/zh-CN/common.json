@@ -138,7 +138,19 @@
     "documentationSectionLinkLabel": "浏览全部文档页",
     "glossarySectionTitle": "术语表",
     "glossarySectionDescription": "术语表页定义简短的工厂与 CLI 词汇，使其余文档更易阅读。",
-    "glossarySectionLinkLabel": "浏览完整术语表"
+    "glossarySectionLinkLabel": "浏览完整术语表",
+    "referencesSectionTitle": "参考",
+    "referencesSectionDescription": "参考页整理模式、契约及其他工厂主题的查阅面。",
+    "referencesSectionLinkLabel": "浏览全部参考页",
+    "factoriesSectionTitle": "工厂",
+    "factoriesSectionDescription": "工厂页说明已打包的工厂面及其配置与运行方式。",
+    "factoriesSectionLinkLabel": "浏览全部工厂页",
+    "workersSectionTitle": "工作器",
+    "workersSectionDescription": "工作器页说明工作器类型及其如何执行工厂工作。",
+    "workersSectionLinkLabel": "浏览全部工作器页",
+    "workstationsSectionTitle": "工作站",
+    "workstationsSectionDescription": "工作站页说明工作站角色及其如何参与工厂运行。",
+    "workstationsSectionLinkLabel": "浏览全部工作站页"
   },
   "conceptsIndex": {
     "title": "概念",
@@ -170,6 +182,38 @@
     "listLabel": "文档条目",
     "emptyTitle": "尚无文档条目",
     "emptyDescription": "已发布的文档页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
+    "emptyHomeLink": "返回首页"
+  },
+  "referencesIndex": {
+    "title": "参考",
+    "description": "已发布的参考页整理模式、契约及其他工厂主题的查阅面。",
+    "listLabel": "参考条目",
+    "emptyTitle": "尚无参考条目",
+    "emptyDescription": "已发布的参考页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
+    "emptyHomeLink": "返回首页"
+  },
+  "factoriesIndex": {
+    "title": "工厂",
+    "description": "已发布的工厂页说明已打包的工厂面及其配置与运行方式。",
+    "listLabel": "工厂条目",
+    "emptyTitle": "尚无工厂条目",
+    "emptyDescription": "已发布的工厂页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
+    "emptyHomeLink": "返回首页"
+  },
+  "workersIndex": {
+    "title": "工作器",
+    "description": "已发布的工作器页说明工作器类型及其如何执行工厂工作。",
+    "listLabel": "工作器条目",
+    "emptyTitle": "尚无工作器条目",
+    "emptyDescription": "已发布的工作器页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
+    "emptyHomeLink": "返回首页"
+  },
+  "workstationsIndex": {
+    "title": "工作站",
+    "description": "已发布的工作站页说明工作站角色及其如何参与工厂运行。",
+    "listLabel": "工作站条目",
+    "emptyTitle": "尚无工作站条目",
+    "emptyDescription": "已发布的工作站页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",
     "emptyHomeLink": "返回首页"
   },
   "glossaryIndex": {
@@ -222,6 +266,7 @@
     "technique": "技巧",
     "documentation": "文档",
     "glossary": "术语表",
+    "reference": "参考",
     "blog": "博客"
   }
 }

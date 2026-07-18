@@ -40,6 +40,10 @@ export const SUPPORTED_FACTORY_EXPORT_APP_PAGE_MARKERS = [
   "docs/techniques/page.tsx",
   "docs/documentation/page.tsx",
   "docs/glossary/page.tsx",
+  "docs/references/page.tsx",
+  "docs/factories/page.tsx",
+  "docs/workers/page.tsx",
+  "docs/workstations/page.tsx",
   "blog/page.tsx",
 ] as const;
 

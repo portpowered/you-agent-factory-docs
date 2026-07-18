@@ -1,7 +1,8 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { defaultLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 import { DOCS_ROOT } from "./content-paths";
+import { findDocsPageDirectories } from "./docs-page-directories";
 import { pageFrontmatterSchema } from "./schemas";
 import type {
   NonDefaultLocale,
@@ -23,27 +24,6 @@ function parseFrontmatter(pageMdxPath: string) {
   }
 
   return pageFrontmatterSchema.parse(parseYamlFrontmatterBlock(match[1]));
-}
-
-function findPageDirectories(rootDir: string): string[] {
-  const directories: string[] = [];
-
-  for (const entry of readdirSync(rootDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) {
-      continue;
-    }
-
-    const pageDir = path.join(rootDir, entry.name);
-    const pageMdxPath = path.join(pageDir, "page.mdx");
-    if (existsSync(pageMdxPath)) {
-      directories.push(pageDir);
-      continue;
-    }
-
-    directories.push(...findPageDirectories(pageDir));
-  }
-
-  return directories;
 }
 
 function createEmptyManifest(): ShippedLocalizedDocsManifest {
@@ -74,7 +54,7 @@ export function deriveShippedLocalizedDocsManifest(
     string[]
   >;
 
-  for (const pageDirectory of findPageDirectories(docsRoot)) {
+  for (const pageDirectory of findDocsPageDirectories(docsRoot)) {
     const frontmatter = parseFrontmatter(path.join(pageDirectory, "page.mdx"));
     if (frontmatter.status !== "published") {
       continue;

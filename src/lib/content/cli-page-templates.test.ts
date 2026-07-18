@@ -11,6 +11,7 @@ const cliTemplateKinds = [
   "concept",
   "technique",
   "documentation",
+  "reference",
 ] as const;
 
 const expectedRegistryIdPrefix: Record<
@@ -21,6 +22,7 @@ const expectedRegistryIdPrefix: Record<
   concept: "concept.",
   technique: "technique.",
   documentation: "documentation.",
+  reference: "reference.",
 };
 
 const requiredSidecars = [
@@ -103,6 +105,13 @@ describe("CLI page templates under docs/templates", () => {
         "related",
       ],
       documentation: [
+        "what-it-covers",
+        "key-concepts",
+        "how-to-use",
+        "limits-and-assumptions",
+        "related",
+      ],
+      reference: [
         "what-it-covers",
         "key-concepts",
         "how-to-use",

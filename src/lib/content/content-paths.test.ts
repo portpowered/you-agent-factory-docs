@@ -80,12 +80,19 @@ describe("content-paths", () => {
         sectionRoot: DOCUMENTATION_DOCS_ROOT,
       },
       { section: "glossary", slug: "token", sectionRoot: GLOSSARY_DOCS_ROOT },
+      {
+        section: "workers",
+        slug: "agent/variant",
+        sectionRoot: getDocsSectionRoot("workers"),
+      },
     ] as const;
 
     for (const { section, slug, sectionRoot } of representativePages) {
-      expect(getDocsPageDir(section, slug)).toBe(join(sectionRoot, slug));
       expect(getDocsPageDir(section, slug)).toBe(
-        join(DOCS_ROOT, section, slug),
+        join(sectionRoot, ...slug.split("/")),
+      );
+      expect(getDocsPageDir(section, slug)).toBe(
+        join(DOCS_ROOT, section, ...slug.split("/")),
       );
     }
   });

@@ -118,6 +118,10 @@ describe("AI shell behavior parity after non-AI fixture proof", () => {
         "techniques",
         "documentation",
         "glossary",
+        "references",
+        "factories",
+        "workers",
+        "workstations",
       ]);
     });
   });

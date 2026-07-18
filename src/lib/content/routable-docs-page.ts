@@ -11,8 +11,9 @@ export function isLocalDocsPageBundlePath(path: string): boolean {
     .split("/")
     .filter(Boolean);
 
+  // Section + one or more nested slug segments (two-segment and deeper pages).
   return (
-    sectionSlugs.length === 2 &&
+    sectionSlugs.length >= 2 &&
     sectionSlugs[0] !== undefined &&
     isAcceptedDocsSourceSection(sectionSlugs[0])
   );

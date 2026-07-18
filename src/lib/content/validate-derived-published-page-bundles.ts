@@ -1,7 +1,8 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { CONTENT_ROOT, DOCS_ROOT } from "./content-paths";
+import { findDocsPageDirectories } from "./docs-page-directories";
 import { assetMessageKeys } from "./page-assets-load";
 import { getMessageString, hasPageMessagesFile } from "./page-messages-load";
 import { type DocsPageSource, docsUrlFromSlug } from "./pages";
@@ -89,31 +90,6 @@ function resolveCitationReference(
   return undefined;
 }
 
-function findPageDirectories(
-  rootDir: string,
-  relativeParts: string[] = [],
-): string[] {
-  if (!existsSync(rootDir)) {
-    return [];
-  }
-
-  const directories: string[] = [];
-  for (const entry of readdirSync(rootDir, { withFileTypes: true })) {
-    if (!entry.isDirectory()) {
-      continue;
-    }
-    const pageDir = join(rootDir, entry.name);
-    const nextParts = [...relativeParts, entry.name];
-    const pageMdx = join(pageDir, "page.mdx");
-    if (existsSync(pageMdx)) {
-      directories.push(pageDir);
-      continue;
-    }
-    directories.push(...findPageDirectories(pageDir, nextParts));
-  }
-  return directories;
-}
-
 type ScanPublishedDocsPagesResult = {
   pages: DocsPageSource[];
   errors: ValidationError[];
@@ -126,7 +102,7 @@ export function scanPublishedDocsPagesForValidation(
   const pages: DocsPageSource[] = [];
   const errors: ValidationError[] = [];
 
-  for (const pageDir of findPageDirectories(docsRoot)) {
+  for (const pageDir of findDocsPageDirectories(docsRoot)) {
     const pagePath = join(pageDir, "page.mdx");
     const docsSlug = pageDir
       .slice(docsRoot.length + 1)

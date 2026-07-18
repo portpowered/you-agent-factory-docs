@@ -39,6 +39,7 @@ describe("search UI messages", () => {
     expect(formatPageKind(messages, "technique")).toBe("Technique");
     expect(formatPageKind(messages, "documentation")).toBe("Documentation");
     expect(formatPageKind(messages, "glossary")).toBe("Glossary");
+    expect(formatPageKind(messages, "reference")).toBe("Reference");
     expect(formatPageKind(messages, "blog")).toBe("Blog");
     expect(messages.pageKind.module).toBeUndefined();
     expect(formatPageKind(messages, "module")).toBe("module");

@@ -6,6 +6,7 @@ import {
 } from "@/app/docs/docs-slug-renderer";
 import { ensureStaticExportParams } from "@/lib/build/static-export";
 import { omitRetiredAtlasDocsStaticParams } from "@/lib/build/static-export-legacy-compile-graph";
+import { buildDocsCatchAllStaticParamsFromDocsSlugs } from "@/lib/content/docs-catch-all-static-params";
 import {
   isDocsPageShippedForLocale,
   loadShippedLocalizedDocsPages,
@@ -27,10 +28,12 @@ export async function generateStaticParams() {
 
   for (const { locale } of generateStaticLocaleParams()) {
     const pages = await loadShippedLocalizedDocsPages(locale);
-    for (const page of pages) {
+    for (const entry of buildDocsCatchAllStaticParamsFromDocsSlugs(
+      pages.map((page) => page.docsSlug),
+    )) {
       params.push({
         locale,
-        slug: page.docsSlug.split("/"),
+        slug: entry.slug,
       });
     }
   }

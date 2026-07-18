@@ -923,24 +923,96 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
 
 * `src/lib/content/content-paths.ts`
   Canonical path helpers. Module JSDoc documents the derived page directory
-  contract. Add shared roots or section helpers here only when the path is not
-  an ordinary single-page directory.
+  contract. `getDocsPageDir(section, slug)` accepts nested slug paths
+  (`parent/child`) so route-family child pages resolve beyond two segments.
+  Add shared roots or section helpers here only when the path is not an
+  ordinary single-page directory.
+* `src/lib/content/docs-page-directories.ts`
+  Shared `findDocsPageDirectories` walker used by published-page load,
+  shipped-locale manifests, and derived bundle validation. Continues under
+  directories that already contain `page.mdx` so nested child bundles are
+  discovered.
+* `src/lib/content/routable-docs-page.ts`
+  `isLocalDocsPageBundlePath` accepts section + one-or-more slug segments
+  (`guides/foo` and `workers/agent/variant`) for Fumadocs routing exclusion.
+* `src/lib/content/local-docs-page.ts`
+  `parseLocalDocsPageRef` accepts catch-all slugs with two or more segments
+  under every `DOCS_SECTIONS` id (including references/factories/workers/
+  workstations). Nested page segments join into `slug` (`agent/variant`).
+  One-segment collection indexes stay null. Route-family sections load through
+  `loadRouteFamilyLocalDocsPage`.
+* `src/lib/content/route-family-local-docs-page.ts` /
+  `route-family-local-docs-page-load.ts`
+  Generic local-message disk loader for the four direct route families; uses
+  `getDocsPageDir` so nested child bundles resolve.
+* `src/lib/content/local-docs-page.test.ts`
+  Nested parse/load proofs and fail-closed checks (temp fixtures; no production
+  content pages).
+* `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
+  Default-locale collection index routes for the four W05 direct route
+  families. Each calls `renderSectionCollectionIndexPage` with matching
+  `*Index` messages. Empty collections render `DocsIndexEmptyState`.
+* `src/app/[locale]/docs/{references,factories,workers,workstations}/page.tsx`
+  Shipped-locale mirrors of the same four family indexes.
+* `src/app/(site)/site-renderers.tsx`
+  `renderShellSectionCollectionIndexPage` filters index entries by
+  `routeSlug` prefix (`docsSlug.startsWith(`${routeSlug}/`)`), not
+  frontmatter kind alone — required because factories/workers/workstations
+  reuse `documentation` kind while keeping an independent public route.
+* `src/lib/docs/section-collection-index.test.ts` /
+  `src/tests/content/section-indexes.test.tsx`
+  Empty-state + localized metadata proofs for the four family indexes;
+  factories must not list documentation child pages.
+* `src/lib/content/docs-catch-all-static-params.ts`
+  Catch-all static-param helpers for nested docs slugs. Default-locale
+  `generateStaticParams` merges Fumadocs source params with published-page
+  discovery so nested route-family children enter the compile graph; localized
+  params map shipped page slugs the same way. Family indexes themselves are
+  dedicated App Router pages listed in
+  `SUPPORTED_FACTORY_EXPORT_APP_PAGE_MARKERS` /
+  `DIRECT_DOCS_ROUTE_FAMILY_INDEX_APP_PAGE_MARKERS` (not one-segment catch-all
+  params). Empty collections still rely on `ensureStaticExportParams` so static
+  export never emits an empty param list.
+* `src/lib/content/docs-catch-all-static-params.test.ts`
+  Nested fixture proofs for default/shipped catch-all params, empty-family
+  export safety, compile-graph index markers, and invalid nested not-found.
+* `src/lib/docs/supported-docs-route-family-mechanism.test.ts`
+  Focused mechanism tests for the supported route-family contract: accept the
+  four direct families (`references`/`factories`/`workers`/`workstations`),
+  reject unknown family ids, accept nested slugs under those families, and
+  preserve CLI collection acceptance. Asserts observable accept/reject/resolve
+  outcomes from collection/route helpers — not source-file or registration
+  inventory scans.
 * `src/lib/content/content-paths-page-dir-guard.ts`
   Grandfathered allowlist for legacy `*_PAGE_DIR` exports and the guard failure
   message that points reviewers to `getDocsPageDir(section, slug)`.
 * `src/lib/content/content-paths.test.ts`
   Contract tests for derived directories across every docs section, exported
   production roots, and the no-new-page-constants guard.
+* `src/lib/content/docs-page-directories.test.ts`
+  Nested-slug discovery proofs (temp fixtures under new families; no
+  production content pages).
 
 ## Page bundle and registry workflow
 
 * `docs/templates/*.content.md`
   Authoring templates for factory kinds (guide, concept, technique,
-  documentation, glossary) plus blog-post. Atlas model/module/paper/training/
-  system templates are deleted.
+  documentation, reference, glossary) plus blog-post. Atlas
+  model/module/paper/training/system templates are deleted. Direct route
+  families: `references` → `reference.mdx` / kind `reference`;
+  `factories` / `workers` / `workstations` → `documentation.mdx` / kind
+  `documentation` (route slug independent from kind). Nested child slugs are
+  supported under every docs family.
+* `docs/documentation-template.md`
+  Shared template contract including reference kind and route-slug
+  independence for the four direct public route families.
+* `docs/architecture.md` / `docs/data-model.md` / `docs/site-fundamentals.md`
+  Architectural route documentation for the four direct families and nested
+  slug support.
 * `docs/guide-to-writing-pages.md`
   High-level page authoring steps, graph requirements, and code/documentation
-  separation expectations.
+  separation expectations — includes reference + factories/workers/workstations
+  mapping.
 * `src/content/docs/<section>/<slug>/`
   Canonical page bundle layout (`page.mdx`, `messages/`, `assets.json`, graphs,
   and related colocated files).
