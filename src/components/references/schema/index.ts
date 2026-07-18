@@ -71,6 +71,19 @@ export {
   type SchemaFieldTreeProps,
 } from "./schema-field-tree";
 export {
+  SchemaFilter,
+  type SchemaFilterProps,
+} from "./schema-filter";
+export {
+  filterSchemaDefinitions,
+  filterSchemaFieldTreeNodes,
+  normalizeSchemaFilterQuery,
+  schemaDefinitionMatchesFilter,
+  schemaFilterHasNoMatches,
+  schemaFilterQueryIsEmpty,
+  schemaTextMatchesFilter,
+} from "./schema-filter-display";
+export {
   projectSchemaCompositionDisplay,
   projectSchemaDiscriminatorDisplay,
   type SchemaCompositionBranchDisplay,

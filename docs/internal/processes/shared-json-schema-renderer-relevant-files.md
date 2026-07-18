@@ -48,6 +48,9 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
 | `src/components/references/schema/schema-example-display.ts` | Pure example → CodePanel display projectors + authored/generated labels |
 | `src/components/references/schema/schema-example-panel.tsx` | CodePanel-backed examples with copy chrome and empty affordance |
 | `src/components/references/schema/schema-example-panel.test.tsx` | Example CodePanel, provenance labels, empty, and definition wiring proofs |
+| `src/components/references/schema/schema-filter-display.ts` | Pure definition / field-path filter projectors (no canonical mutation) |
+| `src/components/references/schema/schema-filter.tsx` | Keyboard-accessible filter control + filtered definition/field results |
+| `src/components/references/schema/schema-filter.test.tsx` | Filter match, empty-filter status, clear/reset, non-mutation proofs |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / `SchemaDefinitionModel` / `SchemaFieldModel` contracts |
 | `src/lib/references/reference-display-projection.ts` | W04 UI-agnostic display projections consumed by schema UI props |
 | `src/lib/references/reference-anchor-registry.ts` | Deterministic anchors for later copyable deep links |
@@ -94,6 +97,12 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   `projectSchemaExamplesFromInputs` when authored/generated origin is known.
   Never invent sample payloads; empty uses `SchemaStatus` `kind="empty"` when
   `showEmpty` is true. Do not label unknown provenance as authored.
+- Filtering: `SchemaFilter` + `filterSchemaDefinitions` /
+  `filterSchemaFieldTreeNodes` keep query state in the UI only. Matching parents
+  keep all children; non-matching parents stay only as ancestors of matches.
+  Active queries with zero hits use `SchemaStatus` `kind="empty"` (empty-filter
+  message), not a blank panel. Clear resets via the Clear button or emptying
+  the search input.
 
 ## Verification preference
 
