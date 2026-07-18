@@ -1034,8 +1034,12 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   params). Empty collections still rely on `ensureStaticExportParams` so static
   export never emits an empty param list.
 * `src/lib/content/docs-catch-all-static-params.test.ts`
-  Nested fixture proofs for default/shipped catch-all params, empty-family
-  export safety, compile-graph index markers, and invalid nested not-found.
+  Nested fixture proofs for default/shipped catch-all params, compile-graph
+  index markers, and invalid nested not-found. After W13, default-locale
+  params include authored `workers/<variant>` children; empty families
+  (`references` / `factories` / `workstations`) still contribute none.
+  Localized params stay empty for route-family children until those pages
+  ship non-English message stubs.
 * `src/lib/docs/supported-docs-route-family-mechanism.test.ts`
   Focused mechanism tests for the supported route-family contract: accept the
   four direct families (`references`/`factories`/`workers`/`workstations`),
