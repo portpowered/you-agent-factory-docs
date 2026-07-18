@@ -69,6 +69,7 @@ describe("section collection index resolution", () => {
       "documentation",
     );
     expect(resolveSectionKindCollectionId("concept")).toBe("concepts");
+    expect(resolveSectionKindCollectionId("reference")).toBe("references");
   });
 
   test("resolves localized index copy from collection message metadata", async () => {

@@ -2,15 +2,20 @@ import type { PageKind, RegistryKind } from "@/lib/content/schemas";
 
 /**
  * Stable ids for public docs collections.
- * Factory-only inventory: guides, concepts, techniques, documentation, and
- * glossary. Retired Model Atlas collection ids are not part of this contract.
+ * Factory inventory: guides, concepts, techniques, documentation, glossary,
+ * plus direct route families references, factories, workers, and workstations.
+ * Retired Model Atlas collection ids are not part of this contract.
  */
 export type DocsCollectionId =
   | "guides"
   | "concepts"
   | "techniques"
   | "documentation"
-  | "glossary";
+  | "glossary"
+  | "references"
+  | "factories"
+  | "workers"
+  | "workstations";
 
 export const DOCS_COLLECTION_IDS = [
   "guides",
@@ -18,6 +23,10 @@ export const DOCS_COLLECTION_IDS = [
   "techniques",
   "documentation",
   "glossary",
+  "references",
+  "factories",
+  "workers",
+  "workstations",
 ] as const satisfies readonly DocsCollectionId[];
 
 /** Public route slug segment under `/docs`. */
@@ -26,13 +35,13 @@ export type DocsCollectionRouteSlug = DocsCollectionId;
 /** Registry kinds referenced by published docs collection pages. */
 export type DocsCollectionRegistryKind = Extract<
   RegistryKind,
-  "guide" | "concept" | "technique" | "documentation"
+  "guide" | "concept" | "technique" | "documentation" | "reference"
 >;
 
 /** Frontmatter kinds on published docs collection pages. */
 export type DocsCollectionFrontmatterKind = Extract<
   PageKind,
-  "guide" | "concept" | "technique" | "documentation" | "glossary"
+  "guide" | "concept" | "technique" | "documentation" | "glossary" | "reference"
 >;
 
 /**

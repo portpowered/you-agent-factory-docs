@@ -96,10 +96,36 @@ describe("docs collection definitions config", () => {
       frontmatterKind: "glossary",
       registryKind: "concept",
     });
+    expect(getDocsCollectionDefinition("references")).toMatchObject({
+      routeSlug: "references",
+      frontmatterKind: "reference",
+      registryKind: "reference",
+    });
+    expect(getDocsCollectionDefinition("factories")).toMatchObject({
+      routeSlug: "factories",
+      frontmatterKind: "documentation",
+      registryKind: "documentation",
+    });
+    expect(getDocsCollectionDefinition("workers")).toMatchObject({
+      routeSlug: "workers",
+      frontmatterKind: "documentation",
+      registryKind: "documentation",
+    });
+    expect(getDocsCollectionDefinition("workstations")).toMatchObject({
+      routeSlug: "workstations",
+      frontmatterKind: "documentation",
+      registryKind: "documentation",
+    });
   });
 
-  test("keeps CLI collection starter and featured slug lists empty", () => {
-    for (const id of EMPTY_CLI_COLLECTION_IDS) {
+  test("keeps CLI and direct-route-family starter and featured slug lists empty", () => {
+    for (const id of [
+      ...EMPTY_CLI_COLLECTION_IDS,
+      "references",
+      "factories",
+      "workers",
+      "workstations",
+    ] as const) {
       expect(getDocsCollectionDefinition(id).starterSlugs).toEqual([]);
     }
   });
@@ -110,10 +136,16 @@ describe("docs collection definitions config", () => {
       "glossary/architecture",
     ]);
 
+    const emptyStarterIds = new Set<string>([
+      ...EMPTY_CLI_COLLECTION_IDS,
+      "references",
+      "factories",
+      "workers",
+      "workstations",
+    ]);
+
     for (const definition of DOCS_COLLECTION_DEFINITIONS) {
-      if (
-        (EMPTY_CLI_COLLECTION_IDS as readonly string[]).includes(definition.id)
-      ) {
+      if (emptyStarterIds.has(definition.id)) {
         expect(definition.starterSlugs).toEqual([]);
         continue;
       }
@@ -163,7 +195,14 @@ describe("docs collection definitions config", () => {
   });
 
   test("omits sidebar grouping resolver ids for ungrouped collections", () => {
-    const ungroupedIds = new Set<string>(["guides", "techniques"]);
+    const ungroupedIds = new Set<string>([
+      "guides",
+      "techniques",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
+    ]);
 
     for (const id of ungroupedIds) {
       expect(

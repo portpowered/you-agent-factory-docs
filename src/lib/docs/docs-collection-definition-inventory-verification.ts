@@ -9,12 +9,19 @@ import {
   listDocsCollectionDefinitions,
 } from "@/lib/docs/docs-collection-definitions";
 
-/** Rewrite-era CLI collections may ship with empty starter/featured lists. */
+/**
+ * Collections that may ship with empty starter/featured lists: rewrite-era CLI
+ * collections plus the W05 direct route families (no featured placeholders yet).
+ */
 const EMPTY_STARTER_COLLECTION_IDS = [
   "guides",
   "concepts",
   "techniques",
   "documentation",
+  "references",
+  "factories",
+  "workers",
+  "workstations",
 ] as const satisfies readonly DocsCollectionId[];
 
 const GLOSSARY_STARTER_COLLECTION_ID = "glossary" as const;

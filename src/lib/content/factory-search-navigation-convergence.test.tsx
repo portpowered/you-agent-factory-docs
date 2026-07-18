@@ -313,6 +313,10 @@ describe("factory search and navigation convergence end-to-end", () => {
       "techniques",
       "documentation",
       "glossary",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
     ]);
     expect([...FACTORY_SIDEBAR_COLLECTION_IDS]).toEqual([
       "guides",

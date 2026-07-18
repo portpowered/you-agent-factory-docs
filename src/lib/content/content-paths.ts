@@ -48,6 +48,10 @@ export const DOCS_SECTIONS = [
   "techniques",
   "documentation",
   "glossary",
+  "references",
+  "factories",
+  "workers",
+  "workstations",
 ] as const;
 
 /** Canonical docs section identifier for derived page directory lookup. */
@@ -60,6 +64,10 @@ const docsSectionPaths: Record<DocsSection, string> = {
   techniques: "techniques",
   documentation: "documentation",
   glossary: "glossary",
+  references: "references",
+  factories: "factories",
+  workers: "workers",
+  workstations: "workstations",
 };
 
 /** Docs section root under `src/content/docs/<section>`. */

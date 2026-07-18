@@ -138,7 +138,19 @@
     "documentationSectionLinkLabel": "Duyệt tất cả trang tài liệu",
     "glossarySectionTitle": "Thuật ngữ",
     "glossarySectionDescription": "Trang thuật ngữ định nghĩa từ vựng ngắn về factory và CLI để phần còn lại của tài liệu dễ đọc hơn.",
-    "glossarySectionLinkLabel": "Duyệt toàn bộ thuật ngữ"
+    "glossarySectionLinkLabel": "Duyệt toàn bộ thuật ngữ",
+    "referencesSectionTitle": "Tham chiếu",
+    "referencesSectionDescription": "Trang tham chiếu liệt kê schema, hợp đồng, và các bề mặt tra cứu khác cho chủ đề factory.",
+    "referencesSectionLinkLabel": "Duyệt tất cả trang tham chiếu",
+    "factoriesSectionTitle": "Factory",
+    "factoriesSectionDescription": "Trang factory mô tả các bề mặt factory đã đóng gói và cách cấu hình, chạy chúng.",
+    "factoriesSectionLinkLabel": "Duyệt tất cả trang factory",
+    "workersSectionTitle": "Worker",
+    "workersSectionDescription": "Trang worker mô tả các loại worker và cách chúng thực thi công việc factory.",
+    "workersSectionLinkLabel": "Duyệt tất cả trang worker",
+    "workstationsSectionTitle": "Workstation",
+    "workstationsSectionDescription": "Trang workstation mô tả vai trò workstation và cách chúng tham gia các lần chạy factory.",
+    "workstationsSectionLinkLabel": "Duyệt tất cả trang workstation"
   },
   "conceptsIndex": {
     "title": "Khái niệm",
@@ -170,6 +182,38 @@
     "listLabel": "Các mục tài liệu",
     "emptyTitle": "Chưa có mục tài liệu nào",
     "emptyDescription": "Các trang tài liệu đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",
+    "emptyHomeLink": "Về trang chủ"
+  },
+  "referencesIndex": {
+    "title": "Tham chiếu",
+    "description": "Các trang tham chiếu đã xuất bản liệt kê schema, hợp đồng, và các bề mặt tra cứu khác cho chủ đề factory.",
+    "listLabel": "Các mục tham chiếu",
+    "emptyTitle": "Chưa có mục tham chiếu nào",
+    "emptyDescription": "Các trang tham chiếu đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",
+    "emptyHomeLink": "Về trang chủ"
+  },
+  "factoriesIndex": {
+    "title": "Factory",
+    "description": "Các trang factory đã xuất bản mô tả các bề mặt factory đã đóng gói và cách cấu hình, chạy chúng.",
+    "listLabel": "Các mục factory",
+    "emptyTitle": "Chưa có mục factory nào",
+    "emptyDescription": "Các trang factory đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",
+    "emptyHomeLink": "Về trang chủ"
+  },
+  "workersIndex": {
+    "title": "Worker",
+    "description": "Các trang worker đã xuất bản mô tả các loại worker và cách chúng thực thi công việc factory.",
+    "listLabel": "Các mục worker",
+    "emptyTitle": "Chưa có mục worker nào",
+    "emptyDescription": "Các trang worker đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",
+    "emptyHomeLink": "Về trang chủ"
+  },
+  "workstationsIndex": {
+    "title": "Workstation",
+    "description": "Các trang workstation đã xuất bản mô tả vai trò workstation và cách chúng tham gia các lần chạy factory.",
+    "listLabel": "Các mục workstation",
+    "emptyTitle": "Chưa có mục workstation nào",
+    "emptyDescription": "Các trang workstation đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",
     "emptyHomeLink": "Về trang chủ"
   },
   "glossaryIndex": {

@@ -138,7 +138,19 @@
     "documentationSectionLinkLabel": "Browse all documentation pages",
     "glossarySectionTitle": "Glossary",
     "glossarySectionDescription": "Glossary pages define short factory and CLI vocabulary so the rest of the docs read more naturally.",
-    "glossarySectionLinkLabel": "Browse the full glossary"
+    "glossarySectionLinkLabel": "Browse the full glossary",
+    "referencesSectionTitle": "References",
+    "referencesSectionDescription": "Reference pages catalog schemas, contracts, and other lookup surfaces for factory subjects.",
+    "referencesSectionLinkLabel": "Browse all reference pages",
+    "factoriesSectionTitle": "Factories",
+    "factoriesSectionDescription": "Factory pages describe packaged factory surfaces and how they are configured and run.",
+    "factoriesSectionLinkLabel": "Browse all factory pages",
+    "workersSectionTitle": "Workers",
+    "workersSectionDescription": "Worker pages describe worker types and how they execute factory work.",
+    "workersSectionLinkLabel": "Browse all worker pages",
+    "workstationsSectionTitle": "Workstations",
+    "workstationsSectionDescription": "Workstation pages describe workstation roles and how they participate in factory runs.",
+    "workstationsSectionLinkLabel": "Browse all workstation pages"
   },
   "conceptsIndex": {
     "title": "Concepts",
@@ -170,6 +182,38 @@
     "listLabel": "Documentation entries",
     "emptyTitle": "No documentation entries yet",
     "emptyDescription": "Published documentation pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
+    "emptyHomeLink": "Return home"
+  },
+  "referencesIndex": {
+    "title": "References",
+    "description": "Published reference pages that catalog schemas, contracts, and other lookup surfaces for factory subjects.",
+    "listLabel": "Reference entries",
+    "emptyTitle": "No reference entries yet",
+    "emptyDescription": "Published reference pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
+    "emptyHomeLink": "Return home"
+  },
+  "factoriesIndex": {
+    "title": "Factories",
+    "description": "Published factory pages that describe packaged factory surfaces and how they are configured and run.",
+    "listLabel": "Factory entries",
+    "emptyTitle": "No factory entries yet",
+    "emptyDescription": "Published factory pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
+    "emptyHomeLink": "Return home"
+  },
+  "workersIndex": {
+    "title": "Workers",
+    "description": "Published worker pages that describe worker types and how they execute factory work.",
+    "listLabel": "Worker entries",
+    "emptyTitle": "No worker entries yet",
+    "emptyDescription": "Published worker pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
+    "emptyHomeLink": "Return home"
+  },
+  "workstationsIndex": {
+    "title": "Workstations",
+    "description": "Published workstation pages that describe workstation roles and how they participate in factory runs.",
+    "listLabel": "Workstation entries",
+    "emptyTitle": "No workstation entries yet",
+    "emptyDescription": "Published workstation pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "glossaryIndex": {

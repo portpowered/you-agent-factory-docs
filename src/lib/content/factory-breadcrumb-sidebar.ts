@@ -84,6 +84,10 @@ export const FACTORY_SIDEBAR_FOLDER_LABELS = {
   techniques: "Techniques",
   documentation: "Program documentation",
   glossary: "Glossary",
+  references: "References",
+  factories: "Factories",
+  workers: "Workers",
+  workstations: "Workstations",
 } as const satisfies Record<FactoryNavCollectionId, string>;
 
 /** Explorer folder labels only (no Glossary folder). */

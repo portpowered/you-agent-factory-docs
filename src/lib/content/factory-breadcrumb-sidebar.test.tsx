@@ -97,6 +97,10 @@ describe("factory breadcrumbs and sidebar collections", () => {
       "techniques",
       "documentation",
       "glossary",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
     ]);
     expect(
       FACTORY_SIDEBAR_COLLECTION_IDS.map((id) =>

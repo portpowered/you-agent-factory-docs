@@ -75,6 +75,10 @@ describe("collection definition contract", () => {
       "techniques",
       "documentation",
       "glossary",
+      "references",
+      "factories",
+      "workers",
+      "workstations",
     ]);
     for (const retiredId of [
       "modules",
