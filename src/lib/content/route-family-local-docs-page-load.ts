@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { TOCItemType } from "fumadocs-core/toc";
+import type { MDXComponents } from "mdx/types";
 import { compileMDX } from "next-mdx-remote/rsc";
 import type { ReactElement } from "react";
 import { parsePageAssetConfig } from "@/lib/content/assets";
@@ -51,6 +52,35 @@ function readJsonFile<T>(path: string): T {
 }
 
 /**
+ * Merge page-owned MDX components for a route-family slug.
+ *
+ * Local docs compile through `compileMDX` with a fixed component map, so
+ * relative imports in `page.mdx` do not resolve. Use a static
+ * `import("@/content/docs/<section>/<slug>/page-mdx-components")` literal
+ * (webpack cannot resolve expression-based imports at build time). Keep page
+ * visuals out of the shared `mdx-components.tsx` registry.
+ */
+async function loadRouteFamilyPageMdxComponents(
+  section: RouteFamilyLocalDocsSection,
+  slug: string,
+): Promise<MDXComponents> {
+  if (section === "workstations") {
+    switch (slug) {
+      case "standard": {
+        const mod = await import(
+          "@/content/docs/workstations/standard/page-mdx-components"
+        );
+        return mod.pageMdxComponents ?? {};
+      }
+      default:
+        return {};
+    }
+  }
+
+  return {};
+}
+
+/**
  * Loads a local-message page under a direct route family.
  *
  * `slug` may be nested (`agent/variant`). Uses {@link getDocsPageDir} so nested
@@ -76,10 +106,17 @@ export async function loadRouteFamilyLocalDocsPageFromDisk(
   // Always sync against the live content root so temp docsRoot fixtures do not
   // attempt to read a missing registry/graphs tree beside the fixture.
   syncGraphRegistryForContentRoot(getContentRoot());
+  const pageMdxComponents = await loadRouteFamilyPageMdxComponents(
+    section,
+    slug,
+  );
 
   const { content, frontmatter } = await compileMDX<PageFrontmatter>({
     source,
-    components: moduleMdxComponents,
+    components: {
+      ...moduleMdxComponents,
+      ...pageMdxComponents,
+    },
     options: moduleMdxCompileOptions,
   });
 

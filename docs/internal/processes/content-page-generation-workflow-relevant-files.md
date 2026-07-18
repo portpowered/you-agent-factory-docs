@@ -972,6 +972,23 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `renderWorkstationsFamilyIndexPage` instead of the empty collection
   contract. Keep `POLLER_RUN` (type) distinct from `POLLER` (behavior) in
   selection copy and matrix headers.
+* `src/content/docs/workstations/<slug>/` variant pages (W14)
+  Behavior and type children are MDX page bundles (`page.mdx`,
+  `messages/en.json`, `assets.json`, `page-mdx-components.tsx`, variant schema
+  embed + examples + colocated `*-page.test.tsx`). Reuse
+  `factory-variant-overlay-presentation.ts` under workstations ownership —
+  do not rewrite W06/W07 cores. Embed via W07 `SchemaVariantReference` with
+  `createProductionWorkstationBehaviorOverlay` /
+  `createProductionWorkstationTypeOverlay` +
+  `loadWorkstationBaseSchemaEmbedModel`. Register embeds in
+  `page-mdx-components.tsx` and add a static slug switch in
+  `route-family-local-docs-page-load.ts` (same compileMDX constraint as
+  workers — relative MDX imports do not resolve). Link Worker companions with
+  `/docs/workers` (or planned `/docs/workers/<slug>` hrefs) without authoring
+  W13 pages. Keep customer-facing Limits / body copy product-scope only —
+  never narrate “planned Worker targets” or “without authoring those pages
+  here.” First behavior page: `workstations/standard` /
+  `documentation.workstations-standard` (`behavior:STANDARD`, misuse = cron).
 * `src/app/(site)/docs/{references,factories,workers,workstations}/page.tsx`
   Default-locale collection index routes for the four W05 direct route
   families. Empty collections call `renderSectionCollectionIndexPage` with
