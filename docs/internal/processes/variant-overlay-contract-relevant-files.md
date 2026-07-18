@@ -31,6 +31,8 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
 | `src/lib/references/overlays/factory-variant-field-semantics.test.ts` | Applicability resolution: excluded omission, conditional `conditionId` gates, no invented base fields |
 | `src/lib/references/overlays/factory-variant-compatibility-matrix.ts` | Pure `FactoryVariantCompatibilityMatrix` + companion validation against the overlay registry (no IO); minimal authored Worker ↔ Workstation ↔ behavior facts |
 | `src/lib/references/overlays/factory-variant-compatibility-matrix.test.ts` | Missing required / unknown compatible companions fail closed with overlay + companion diagnostics; minimal matrix validates against installed registry |
+| `src/lib/references/overlays/factory-variant-overlay-validator.ts` | Pure `FactoryVariantOverlayValidator` — field paths + discriminators against W04 models; example-ref existence catalog; Factory schema → W04 projection helper (no IO) |
+| `src/lib/references/overlays/factory-variant-overlay-validator.test.ts` | Missing base, unknown discriminator field/value, absent field paths, missing example refs fail closed; installed package via W03 + W04 projection |
 | `src/lib/references/schema-model.ts` | W04 `SchemaAddress` / definition / field models consumed by overlays |
 | `src/lib/references/api-package-artifact-resolver.ts` | W03 public-subpath acquisition — load Factory schemas only through this surface |
 
@@ -70,8 +72,16 @@ W06 owns only overlay contract / validator modules, fixtures, and tests under
   compatible. Minimal authored facts may deepen later without changing the
   contract shape. Apply facts onto overlays with
   `applyFactoryVariantCompatibilityFactToOverlay` when needed.
-- Later stories own package-backed field/discriminator validation and
-  incompatible field-selection detection.
+- Validate overlays with `validateFactoryVariantOverlay` against a
+  `FactoryVariantOverlayValidationContext` (W04 definition catalog +
+  `knownExampleIds`). Project installed Factory schema data with
+  `factoryVariantOverlayDefinitionsFromFactorySchemaData` /
+  `createFactoryVariantOverlayValidationContextFromFactorySchemaData` after
+  W03 `resolveApiPackageArtifact("schemas/factory")`. Discriminator enums
+  resolve via field `enum` or `refTarget` → enum `$defs`. Diagnostics name
+  the overlay and offending identity (base address, field path, example ID).
+- Later stories own incompatible field-selection detection and optional
+  `upstreamDefinition` migration preference.
 
 ## Verification
 
