@@ -116,3 +116,15 @@ the shipped `/docs/references/api` or `/docs/references/events` surface.
   hand-edit generated AsyncAPI to paper over gaps. Focused tests:
   `projection-information-loss.test.ts` (+ subprocess
   `prove-create-asyncapi-load.ts`).
+- Custom catalog + placement comparison (story 008): schema-backed catalog from
+  packaged OpenAPI via `build-event-catalog-fixture.ts` +
+  `EventCatalogFixtureView.tsx` + `load-packaged-event-catalog.ts`. Separate
+  route `/spikes/sse-catalog`. Hybrid route `/spikes/sse-placement-hybrid`
+  injects the catalog beside each operation using the **documented**
+  `content.renderOperationLayout` hook only
+  (`create-sse-spike-hybrid-openapi.tsx`). Hooks evaluation:
+  `openapi-renderer-hooks-evaluation.ts` (reject undocumented internals unless
+  an adapter + upgrade test is explicitly recorded). Placement cost evidence:
+  `placement-comparison-evidence.ts` (HTML bytes, nav stops, desktop/phone
+  a11y notes). Focused tests: `placement-comparison-evidence.test.ts`,
+  `create-sse-spike-hybrid-openapi.test.ts`.
