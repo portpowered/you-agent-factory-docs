@@ -68,6 +68,28 @@ the shipped `/docs/references/api` surface.
   retained `<pre>` examples. Run with plain `bun`, not inside `bun test`.
 - Do not add `src/app/api/proxy` (or similar) for the spike.
 
+## Theme / customization (factory tokens)
+
+- `src/lib/references-openapi-spike/theme-customization.ts` — machine-checkable
+  inventory of supported vs blocked `createAPIPage` hooks, semantic token
+  classes, and dual shiki theme options (`github-light` / `github-dark`,
+  `defaultColor: false`).
+- `src/lib/references-openapi-spike/spike-code-block.tsx` — `renderCodeBlock`
+  hook using `ServerCodeBlock` + `docs-code-block` markers (SSR highlight;
+  no page-only hex).
+- `src/lib/references-openapi-spike/api-page.tsx` — wires
+  `renderOperationLayout`, `renderCodeBlock`, `schemaUI.showExample`, and
+  `shikiOptions`. `renderHeading` is deprecated/unused; MethodLabel colors are
+  remapped in CSS.
+- `src/features/docs/styles/references-openapi-spike-theme.css` — scoped under
+  `[data-openapi-spike-theme]`; remaps MethodLabel Tailwind colors to
+  `var(--primary|secondary|accent|destructive|foreground)` only.
+- `src/lib/references-openapi-spike/assert-theme-customization.ts` — HTML probe
+  for theme root, operation-layout, schema-slot, code-block markers, and dual
+  shiki CSS vars. Run with plain `bun`, not `bun test`.
+- Host product is `html.dark` + `data-color-palette="factory-dark"`;
+  fumadocs-ui `shadcn.css` already maps `--color-fd-*` → host semantic tokens.
+
 ## Temporary install policy
 
 - Spike may add exact `fumadocs-openapi` and required peers (for example
@@ -75,8 +97,9 @@ the shipped `/docs/references/api` surface.
 - Do not treat those pins as the final production OpenAPI dependency set.
 - Do not install `fumadocs-openapi` 11.2 while remaining on Fumadocs 16.9;
   upgrade requires a coordinated `fumadocs-core` + `fumadocs-ui` 16.10 bump.
-- Temporary CSS import: `fumadocs-openapi/css/preset.css` in `globals.css` for
-  the spike only; revert or relocate when W08 productionizes references UI.
+- Temporary CSS import: `fumadocs-openapi/css/preset.css` plus
+  `references-openapi-spike-theme.css` in `globals.css` for the spike only;
+  revert or relocate when W08 productionizes references UI.
 - Document-object `createOpenAPI` input (load packaged YAML with Node `fs` +
   `js-yaml`) avoids absolute file-path input. Under `bun test`, happy-dom's URL
   polyfill still breaks fumadocs-openapi's ref-parser — run projection

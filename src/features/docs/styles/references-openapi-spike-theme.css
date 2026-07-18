@@ -1,0 +1,55 @@
+/**
+ * Temporary W01 OpenAPI spike theme overrides.
+ *
+ * Remaps fumadocs-openapi MethodLabel Tailwind greens/etc. to host semantic
+ * tokens under [data-openapi-spike-theme]. No page-only hex/rgb/oklch colors.
+ * Revert or relocate when W08 productionizes references UI.
+ */
+
+[data-openapi-spike-theme] {
+  color: var(--foreground);
+}
+
+/* Operation headings — renderHeading is deprecated; style via tokens. */
+[data-openapi-spike-theme] [data-openapi-spike-heading-slot] :is(h1, h2, h3, h4) {
+  color: var(--foreground);
+}
+
+[data-openapi-spike-theme] [data-openapi-spike-schema-slot] {
+  color: var(--foreground);
+}
+
+/*
+ * MethodLabel uses text-green-600 / dark:text-green-400 etc. Remap those
+ * utilities to semantic tokens so light (.dark absent) and dark hosts stay
+ * readable without hard-coded page colors.
+ */
+[data-openapi-spike-theme] .text-green-600,
+[data-openapi-spike-theme] .dark\:text-green-400 {
+  color: var(--secondary);
+}
+
+[data-openapi-spike-theme] .text-blue-600,
+[data-openapi-spike-theme] .dark\:text-blue-400 {
+  color: var(--primary);
+}
+
+[data-openapi-spike-theme] .text-yellow-600,
+[data-openapi-spike-theme] .dark\:text-yellow-400 {
+  color: var(--accent);
+}
+
+[data-openapi-spike-theme] .text-orange-600,
+[data-openapi-spike-theme] .dark\:text-orange-400 {
+  color: var(--accent);
+}
+
+[data-openapi-spike-theme] .text-red-600,
+[data-openapi-spike-theme] .dark\:text-red-400 {
+  color: var(--destructive);
+}
+
+/* Schema required markers in fumadocs use text-red-400 directly. */
+[data-openapi-spike-theme] .text-red-400 {
+  color: var(--destructive);
+}

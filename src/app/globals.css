@@ -5,6 +5,7 @@
 @import "fumadocs-ui/css/shadcn.css";
 /* Temporary W01 OpenAPI spike styles — not a permanent production pin. */
 @import "fumadocs-openapi/css/preset.css";
+@import "../features/docs/styles/references-openapi-spike-theme.css";
 @import "katex/dist/katex.min.css";
 @import "../features/docs/styles/docs-page-footer-chrome.css";
 @import "../features/docs/styles/docs-code-block.css";

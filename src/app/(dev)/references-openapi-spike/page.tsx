@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { OpenAPISpikeAPIPage } from "@/lib/references-openapi-spike/api-page";
 import { loadOpenApiSpikeSinglePageProjection } from "@/lib/references-openapi-spike/openapi-server";
 import { loadSpikeAnchorInventory } from "@/lib/references-openapi-spike/spike-anchor-inventory";
+import { SPIKE_THEME_ROOT_ATTR } from "@/lib/references-openapi-spike/theme-customization";
 
 /**
  * Non-production W01 spike: one static route that renders every published
@@ -22,12 +23,15 @@ export default async function ReferencesOpenApiSpikePage() {
   const inventory = await loadSpikeAnchorInventory();
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
+    <main
+      className="mx-auto max-w-6xl px-4 py-8 text-foreground"
+      {...{ [SPIKE_THEME_ROOT_ATTR]: "" }}
+    >
       <header className="mb-8 space-y-2 border-b border-border pb-6">
         <p className="text-sm text-muted-foreground">
           Non-production OpenAPI spike (W01)
         </p>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Packaged OpenAPI — single-page projection
         </h1>
         <p className="max-w-3xl text-sm text-muted-foreground">
@@ -36,7 +40,8 @@ export default async function ReferencesOpenApiSpikePage() {
           all {projection.operations.length} published operations appear on this
           one route. Deep links use collision-free <code>operationId</code>{" "}
           anchors. Playground / live execution is suppressed (static examples
-          only; no proxy). Not merged as production reference UI.
+          only; no proxy). Theme hooks use factory semantic tokens. Not merged
+          as production reference UI.
         </p>
       </header>
 
