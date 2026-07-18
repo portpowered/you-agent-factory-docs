@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { isShippedLocalizedDocsSlug } from "@/lib/content/shipped-localized-docs";
 import {
   buildLocalizedRoute,
   defaultLocale,
@@ -40,6 +41,33 @@ export function localizedRouteAlternates(
         locale,
         buildLocalizedRoute(destination, locale),
       ]),
+    ),
+  };
+}
+
+/**
+ * Docs-page alternates filtered to locales that actually ship the slug under
+ * fail-closed rules (W17). Unshipped locales are omitted from hreflang rather
+ * than advertised. Use for `/docs/<slug>` pages and reference family routes.
+ *
+ * Uses the generated shipped-locale manifest (same gate as the language
+ * switcher) so this helper stays free of server-only page loaders.
+ */
+export function localizedShippedDocsPageAlternates(
+  docsSlug: string,
+): NonNullable<Metadata["alternates"]> {
+  const alternates = localizedRouteAlternates({
+    surface: "docs-page",
+    slug: docsSlug,
+  });
+  const languages = alternates.languages ?? {};
+
+  return {
+    ...alternates,
+    languages: Object.fromEntries(
+      Object.entries(languages).filter(([locale]) =>
+        isShippedLocalizedDocsSlug(docsSlug, locale as SiteLocale),
+      ),
     ),
   };
 }

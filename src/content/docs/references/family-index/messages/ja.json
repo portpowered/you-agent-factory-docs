@@ -1,0 +1,57 @@
+{
+  "title": "リファレンス",
+  "description": "you-agent-factory のコントラクト参照面: HTTP API、イベント、スキーマ、コマンドラインインターフェイス（CLI）、Model Context Protocol（MCP）、および JavaScript ランタイム。",
+  "openingSummary": "このファミリーは、you-agent-factory の公開済みコントラクト面をまとめています。API 操作、イベント形状、設定スキーマ、コマンドラインインターフェイス（CLI）コマンド、Model Context Protocol（MCP）ツール、または JavaScript ランタイムのバインディングを調べるときに使います。このランディングはハウツーガイドではありません。",
+  "sections": {
+    "introduction": {
+      "title": "このファミリーが扱うこと",
+      "body": "リファレンスは、ファクトリーコントラクト向けの isolation-first な参照ページです。各リンク先は 1 つのコントラクトファミリーを担当します。HTTP API、永続イベントコーパス、ファクトリーおよび設定スキーマ、コマンドラインインターフェイス（CLI）コマンド行列、Model Context Protocol（MCP）ツール契約、または JavaScript ランタイム面です。ここでは適切なコントラクトページを選び、フィールド・操作・例が必要なときだけ子ページを開いてください。"
+    },
+    "discoverability": {
+      "title": "コントラクト面",
+      "body": "各カードは 1 つのコントラクトファミリーを開きます。ラベルは狭いビューポートでも読みやすく保たれます。"
+    },
+    "freshness": {
+      "title": "パッケージの鮮度",
+      "body": "このファミリーは、下記のインストール済み公開 API パッケージ識別子を文書化します。バージョンとソースコミットは公開パッケージマニフェストから取得します。手書きの文字列ではありません。"
+    },
+    "api": {
+      "title": "HTTP API",
+      "body": "ファクトリー HTTP 面の OpenAPI 操作とリクエスト／レスポンス契約。"
+    },
+    "events": {
+      "title": "イベント",
+      "body": "ファクトリー応答ストリーム向けの永続イベントコーパスとエンベロープ形状。"
+    },
+    "factory-schema": {
+      "title": "Factory スキーマ",
+      "body": "パッケージ化されたファクトリー文書と必須フィールドの JSON Schema。"
+    },
+    "you-config-schema": {
+      "title": "you 設定スキーマ",
+      "body": "you-agent-factory ランタイムとワークスペース設定の構成スキーマ。"
+    },
+    "mock-workers-schema": {
+      "title": "モックワーカースキーマ",
+      "body": "ローカルおよびテストハーネスで使うモックワーカー定義のスキーマ。"
+    },
+    "cli": {
+      "title": "コマンドラインインターフェイス（CLI）",
+      "body": "you コマンドラインインターフェイス（CLI）のコマンド行列とフラグ。"
+    },
+    "mcp": {
+      "title": "Model Context Protocol（MCP）",
+      "body": "ファクトリーが公開する Model Context Protocol（MCP）ツール契約。"
+    },
+    "javascript-runtime": {
+      "title": "JavaScript ランタイム",
+      "body": "ファクトリー作業を埋め込むための JavaScript ランタイムバインディングとパッケージ面。"
+    }
+  },
+  "callouts": {
+    "freshnessUnavailable": {
+      "title": "パッケージの鮮度を取得できません",
+      "body": "このビルドでは公開 API パッケージマニフェストを読み取れませんでした。下記のコントラクト面カードは引き続き利用できます。マニフェストが解決されると、パッケージ識別子とバージョンがここに表示されます。"
+    }
+  }
+}

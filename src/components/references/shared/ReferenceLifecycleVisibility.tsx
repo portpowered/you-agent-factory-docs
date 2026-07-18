@@ -41,6 +41,7 @@ const statusChipClassName =
 export function ReferenceLifecycleVisibility({
   lifecycle,
   visibility,
+  chrome,
   className,
 }: ReferenceLifecycleVisibilityProps) {
   if (lifecycle === undefined && visibility === undefined) {
@@ -51,6 +52,8 @@ export function ReferenceLifecycleVisibility({
     lifecycle !== undefined ? LIFECYCLE_ICON[lifecycle.state] : null;
   const VisibilityIcon =
     visibility !== undefined ? VISIBILITY_ICON[visibility] : null;
+  const lifecycleLabel = chrome?.badge.lifecycle ?? "Lifecycle";
+  const visibilityLabel = chrome?.badge.visibility ?? "Visibility";
 
   return (
     <div
@@ -61,21 +64,24 @@ export function ReferenceLifecycleVisibility({
         <span
           className={statusChipClassName}
           data-lifecycle-state={lifecycle.state}
-          title={referenceLifecycleSummary(lifecycle)}
+          title={referenceLifecycleSummary(lifecycle, chrome)}
         >
           <LifecycleIcon aria-hidden="true" className="size-3.5 shrink-0" />
           <span>
-            Lifecycle: {referenceLifecycleStateLabel(lifecycle.state)}
+            {lifecycleLabel}:{" "}
+            {referenceLifecycleStateLabel(lifecycle.state, chrome)}
           </span>
           <span className="sr-only">
-            {referenceLifecycleSummary(lifecycle)}
+            {referenceLifecycleSummary(lifecycle, chrome)}
           </span>
         </span>
       ) : null}
       {visibility !== undefined && VisibilityIcon !== null ? (
         <span className={statusChipClassName} data-visibility={visibility}>
           <VisibilityIcon aria-hidden="true" className="size-3.5 shrink-0" />
-          <span>Visibility: {referenceVisibilityLabel(visibility)}</span>
+          <span>
+            {visibilityLabel}: {referenceVisibilityLabel(visibility, chrome)}
+          </span>
         </span>
       ) : null}
     </div>

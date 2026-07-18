@@ -529,15 +529,18 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).not.toContain("Package freshness unavailable");
   });
 
-  it("renders the localized references family index with English fallback copy", async () => {
+  it("renders the localized references family index with locale page chrome", async () => {
     const html = renderToStaticMarkup(
       await LocalizedReferencesIndexPage({
         params: Promise.resolve({ locale: "ja" }),
       }),
     );
 
-    expect(html).toContain("References");
-    expect(html).toContain("What this family covers");
+    expect(html).toContain("リファレンス");
+    expect(html).toContain("このファミリーが扱うこと");
+    expect(html).toContain("コントラクト面");
+    expect(html).toContain("パッケージの鮮度");
+    expect(html).not.toContain("What this family covers");
     expect(html).not.toContain("No reference entries yet");
   });
 
@@ -560,8 +563,8 @@ describe("W05 direct route-family section index pages", () => {
     expect(localizedMetadata.alternates).toEqual(defaultMetadata.alternates);
     expect(defaultMetadata.title).toBe("References");
     expect(defaultMetadata.description).toContain("Contract lookup");
-    expect(localizedMetadata.title).toBe(defaultMetadata.title);
-    expect(localizedMetadata.description).toBe(defaultMetadata.description);
+    expect(localizedMetadata.title).toBe("Tham chiếu");
+    expect(localizedMetadata.description).toContain("bề mặt tra cứu hợp đồng");
   });
 
   it("renders the authored workers family index instead of the empty-state contract", async () => {

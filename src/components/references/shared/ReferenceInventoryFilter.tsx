@@ -1,6 +1,12 @@
 "use client";
 
 import { useId } from "react";
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
+import {
+  resolveReferenceChromeForSurface,
+  useOptionalReferenceChrome,
+} from "@/lib/i18n/reference-chrome-context";
+import { formatReferenceChromeTemplate } from "@/lib/i18n/reference-chrome-labels";
 import { cn } from "@/lib/utils";
 import {
   isReferenceInventoryFilterActive,
@@ -33,6 +39,8 @@ export type ReferenceInventoryFilterProps = {
   queryLabel: string;
   /** Placeholder for the text query field. */
   queryPlaceholder?: string;
+  /** Localized reference chrome; falls back to ReferenceChromeProvider. */
+  chrome?: ReferenceChromeMessages;
   className?: string;
   /** Optional result count shown beside the legend when filtering is active. */
   resultCount?: number;
@@ -51,18 +59,31 @@ export function ReferenceInventoryFilter({
   showVisibilityFilter = true,
   legend,
   queryLabel,
-  queryPlaceholder = "Filter by name or path…",
+  queryPlaceholder,
+  chrome: chromeProp,
   className,
   resultCount,
   totalCount,
 }: ReferenceInventoryFilterProps) {
+  const contextChrome = useOptionalReferenceChrome();
+  const chrome = chromeProp ?? contextChrome ?? undefined;
   const reactId = useId();
-  const lifecycleOptions = referenceInventoryLifecycleFilterOptions();
+  const lifecycleOptions = referenceInventoryLifecycleFilterOptions(chrome);
   const visibilityOptions = referenceInventoryVisibilityFilterOptions(
     publishedVisibilities,
+    chrome,
   );
   const showVisibility = showVisibilityFilter && visibilityOptions.length > 1;
   const filterActive = isReferenceInventoryFilterActive(filter);
+  const resolvedPlaceholder =
+    queryPlaceholder ??
+    chrome?.filter.queryPlaceholder ??
+    "Filter by name or path…";
+  const lifecycleLabel = chrome?.filter.lifecycleLabel ?? "Lifecycle";
+  const visibilityLabel = chrome?.filter.visibilityLabel ?? "Visibility";
+  const clearFiltersLabel = chrome?.filter.clearFilters ?? "Clear filters";
+  const showingOf =
+    chrome?.filter.showingOf ?? "Showing {resultCount} of {totalCount}";
 
   const queryId = `${reactId}-query`;
   const lifecycleId = `${reactId}-lifecycle`;
@@ -83,7 +104,10 @@ export function ReferenceInventoryFilter({
         resultCount !== undefined &&
         totalCount !== undefined ? (
           <span className="ml-2 font-normal normal-case tracking-normal text-muted-foreground">
-            Showing {resultCount} of {totalCount}
+            {formatReferenceChromeTemplate(showingOf, {
+              resultCount,
+              totalCount,
+            })}
           </span>
         ) : null}
       </legend>
@@ -103,7 +127,7 @@ export function ReferenceInventoryFilter({
             onChange={(event) =>
               onFilterChange({ ...filter, query: event.target.value })
             }
-            placeholder={queryPlaceholder}
+            placeholder={resolvedPlaceholder}
             type="search"
             value={filter.query}
           />
@@ -114,7 +138,7 @@ export function ReferenceInventoryFilter({
             className="text-xs font-medium text-muted-foreground"
             htmlFor={lifecycleId}
           >
-            Lifecycle
+            {lifecycleLabel}
           </label>
           <select
             className="h-8 rounded-md border border-border bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -143,7 +167,7 @@ export function ReferenceInventoryFilter({
               className="text-xs font-medium text-muted-foreground"
               htmlFor={visibilityId}
             >
-              Visibility
+              {visibilityLabel}
             </label>
             <select
               className="h-8 rounded-md border border-border bg-background px-2 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -180,10 +204,12 @@ export function ReferenceInventoryFilter({
             }
             type="button"
           >
-            Clear filters
+            {clearFiltersLabel}
           </button>
         ) : null}
       </div>
     </fieldset>
   );
 }
+
+export { resolveReferenceChromeForSurface };

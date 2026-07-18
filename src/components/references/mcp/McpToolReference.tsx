@@ -3,6 +3,7 @@ import {
   CopyableReferenceAnchor,
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
 import { resolveMcpToolExample } from "@/lib/references/mcp-example-generation";
 import { cn } from "@/lib/utils";
@@ -23,6 +24,7 @@ function booleanStateLabel(value: boolean): string {
 export function McpToolReference({
   tool,
   packageVersion,
+  chrome,
   className,
 }: McpToolReferenceProps) {
   const example = resolveMcpToolExample(tool);
@@ -48,16 +50,21 @@ export function McpToolReference({
               {tool.name}
             </a>
           </h3>
-          <CopyableReferenceAnchor anchor={tool.anchor} family="mcp" />
+          <CopyableReferenceAnchor
+            anchor={tool.anchor}
+            chrome={chrome}
+            family="mcp"
+          />
         </div>
         {tool.description !== undefined ? (
-          <p className="m-0 text-sm text-muted-foreground">
+          <ContractDescriptionProse className="m-0 text-sm text-muted-foreground">
             {tool.description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
       </header>
 
       <ContractSourceBadge
+        chrome={chrome}
         family="mcp"
         lifecycle={tool.lifecycle}
         packageVersion={packageVersion}

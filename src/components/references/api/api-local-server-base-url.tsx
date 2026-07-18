@@ -6,6 +6,7 @@
  * connections or embed playground / credential controls.
  */
 
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import { cn } from "@/lib/utils";
 import {
   API_LOCAL_SERVER_BASE_URL_ATTR,
@@ -37,7 +38,9 @@ export function ApiLocalServerBaseUrlNotice({
       <h2 className="text-sm font-semibold text-foreground">
         Local server base URL
       </h2>
-      <p className="text-muted-foreground">{server.description}</p>
+      <ContractDescriptionProse className="text-muted-foreground">
+        {server.description}
+      </ContractDescriptionProse>
       <p className="min-w-0">
         <span className="text-muted-foreground">Base URL: </span>
         <code

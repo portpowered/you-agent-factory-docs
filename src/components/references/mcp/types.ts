@@ -5,6 +5,7 @@
  * not acquire package artifacts or invent missing input schema fields.
  */
 
+import type { ReferenceChromeMessages } from "@/lib/content/ui-messages.types";
 import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
 
 export type McpToolReferenceProps = {
@@ -15,6 +16,7 @@ export type McpToolReferenceProps = {
    * when the caller has no package version — never invent a version string.
    */
   packageVersion?: string;
+  chrome?: ReferenceChromeMessages;
   className?: string;
 };
 

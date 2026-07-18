@@ -5,6 +5,7 @@
  * not invent missing descriptions/examples or unstable fragment IDs.
  */
 
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { ReferenceCrossLinkOutcome } from "@/lib/references/reference-cross-link-resolver";
 import type { ReferenceDisplayProjection } from "@/lib/references/reference-display-projection";
 import type {
@@ -193,12 +194,12 @@ export function SchemaDefinition({
         />
 
         {description !== undefined ? (
-          <p
+          <ContractDescriptionProse
             className="text-muted-foreground text-sm"
             data-schema-definition-description=""
           >
             {description}
-          </p>
+          </ContractDescriptionProse>
         ) : null}
 
         {defaultValue !== undefined ? (

@@ -86,6 +86,115 @@
       "additional-reference": "补充参考"
     }
   },
+  "referenceChrome": {
+    "filter": {
+      "queryPlaceholder": "按名称或路径筛选…",
+      "lifecycleLabel": "生命周期",
+      "visibilityLabel": "可见性",
+      "allLifecycles": "全部生命周期",
+      "allVisibility": "全部可见性",
+      "clearFilters": "清除筛选",
+      "showingOf": "显示第 {resultCount} / {totalCount} 项",
+      "schemaQueryPlaceholder": "筛选定义与字段…",
+      "schemaQueryLabel": "筛选 schema 定义与字段",
+      "schemaNoMatchesTitle": "无匹配项",
+      "schemaNoMatchesMessage": "没有定义或字段匹配此筛选条件。",
+      "clear": "清除"
+    },
+    "status": {
+      "loadingTitle": "加载中",
+      "loadingMessage": "正在加载 schema…",
+      "emptyTitle": "空 schema",
+      "emptyMessage": "没有可用的 schema 定义或字段。",
+      "invalidTitle": "无效 schema",
+      "invalidMessage": "Schema 输入验证或规范化失败。",
+      "unsupportedTitle": "不支持的 schema",
+      "unsupportedMessage": "此 schema 形状或版本不支持显示。"
+    },
+    "badge": {
+      "family": "系列",
+      "package": "软件包",
+      "packageVersion": "包版本",
+      "sourceArtifact": "源工件",
+      "sourceCommit": "源提交",
+      "lifecycle": "生命周期",
+      "visibility": "可见性",
+      "contractSource": "契约来源",
+      "packageVersionNotPublished": "未发布包版本",
+      "notPublishedOnProjection": "此投影未发布",
+      "familyWithLabel": "系列：{family}"
+    },
+    "families": {
+      "api": "API",
+      "schema": "Schema",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "javascript": "JavaScript",
+      "events": "事件"
+    },
+    "lifecycleStates": {
+      "active": "有效",
+      "deprecated": "已弃用",
+      "removed": "已移除"
+    },
+    "lifecycleSummary": {
+      "since": "自 {value}",
+      "deprecated": "于 {value} 弃用",
+      "removed": "于 {value} 移除",
+      "successor": "后继 {value}"
+    },
+    "visibilityStates": {
+      "public": "公开",
+      "internal": "内部"
+    },
+    "a11y": {
+      "copyAnchorLink": "复制锚点链接",
+      "anchorLinkCopied": "已复制锚点链接"
+    },
+    "examples": {
+      "authored": "手写示例",
+      "generated": "生成示例",
+      "exampleIndexed": "示例 {index}"
+    },
+    "inventory": {
+      "cli": {
+        "filterLegend": "筛选 CLI 命令",
+        "queryLabel": "命令路径",
+        "queryPlaceholder": "按命令路径、别名或描述筛选…",
+        "emptyTitle": "没有 CLI 命令",
+        "emptyDescription": "在已解析契约中未找到已发布的 CLI 命令。",
+        "errorTitle": "CLI 清单错误",
+        "errorDescription": "无法从包契约规范化 CLI 清单。",
+        "filterEmpty": "没有 CLI 命令匹配当前筛选条件。",
+        "countOne": "来自包契约的 {count} 条已发布 CLI 命令。",
+        "countMany": "来自包契约的 {count} 条已发布 CLI 命令。"
+      },
+      "mcp": {
+        "filterLegend": "筛选 MCP 工具",
+        "queryLabel": "工具名称",
+        "queryPlaceholder": "按工具名称或描述筛选…",
+        "emptyTitle": "没有 MCP 工具",
+        "emptyDescription": "在已解析契约中未找到已发布的 MCP 工具。",
+        "errorTitle": "MCP 清单错误",
+        "errorDescription": "无法从包契约规范化 MCP 清单。",
+        "filterEmpty": "没有 MCP 工具匹配当前筛选条件。",
+        "countOne": "来自包契约的 {count} 个已发布 MCP 工具。",
+        "countMany": "来自包契约的 {count} 个已发布 MCP 工具。"
+      },
+      "javascript": {
+        "filterLegend": "筛选 JavaScript 运行时项",
+        "queryLabel": "符号或 schema",
+        "queryPlaceholder": "按符号路径、schema id 或描述筛选…",
+        "emptyTitle": "没有 JavaScript 运行时项",
+        "emptyDescription": "在已解析契约中未找到已发布的 JavaScript 符号或共享 schema。",
+        "errorTitle": "JavaScript 清单错误",
+        "errorDescription": "无法从包契约规范化 JavaScript 清单。",
+        "filterEmpty": "没有 JavaScript 运行时项匹配当前筛选条件。",
+        "countOne": "来自包契约的 {count} 个已发布 JavaScript 运行时项。",
+        "countMany": "来自包契约的 {count} 个已发布 JavaScript 运行时项。"
+      }
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "代理工厂 CLI 文档",
@@ -148,7 +257,7 @@
     "glossarySectionDescription": "术语表页定义简短的工厂与 CLI 词汇，使其余文档更易阅读。",
     "glossarySectionLinkLabel": "浏览完整术语表",
     "referencesSectionTitle": "参考",
-    "referencesSectionDescription": "参考页整理模式、契约及其他工厂主题的查阅面。",
+    "referencesSectionDescription": "you-agent-factory 的契约查阅面：HTTP API、事件、schema、命令行界面（CLI）、Model Context Protocol（MCP）以及 JavaScript 运行时。",
     "referencesSectionLinkLabel": "浏览全部参考页",
     "factoriesSectionTitle": "工厂",
     "factoriesSectionDescription": "工厂页说明已打包的工厂面及其配置与运行方式。",
@@ -194,7 +303,7 @@
   },
   "referencesIndex": {
     "title": "参考",
-    "description": "已发布的参考页整理模式、契约及其他工厂主题的查阅面。",
+    "description": "you-agent-factory 的契约查阅面：HTTP API、事件、schema、命令行界面（CLI）、Model Context Protocol（MCP）以及 JavaScript 运行时。",
     "listLabel": "参考条目",
     "emptyTitle": "尚无参考条目",
     "emptyDescription": "已发布的参考页加入后会出现在这里。在此之前可返回首页、打开浏览、搜索文档，或阅读博客。",

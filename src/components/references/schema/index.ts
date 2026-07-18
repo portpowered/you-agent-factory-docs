@@ -167,4 +167,6 @@ export {
   type SchemaStatusProps,
   type SchemaUiStatus,
   type SchemaUiStatusKind,
+  schemaUiStatusMessagesFromChrome,
+  schemaUiStatusTitlesFromChrome,
 } from "./types";

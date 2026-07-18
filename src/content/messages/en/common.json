@@ -86,6 +86,115 @@
       "additional-reference": "Additional reference"
     }
   },
+  "referenceChrome": {
+    "filter": {
+      "queryPlaceholder": "Filter by name or path…",
+      "lifecycleLabel": "Lifecycle",
+      "visibilityLabel": "Visibility",
+      "allLifecycles": "All lifecycles",
+      "allVisibility": "All visibility",
+      "clearFilters": "Clear filters",
+      "showingOf": "Showing {resultCount} of {totalCount}",
+      "schemaQueryPlaceholder": "Filter definitions and fields…",
+      "schemaQueryLabel": "Filter schema definitions and fields",
+      "schemaNoMatchesTitle": "No matches",
+      "schemaNoMatchesMessage": "No definitions or fields match this filter.",
+      "clear": "Clear"
+    },
+    "status": {
+      "loadingTitle": "Loading",
+      "loadingMessage": "Loading schema…",
+      "emptyTitle": "Empty schema",
+      "emptyMessage": "No schema definitions or fields are available.",
+      "invalidTitle": "Invalid schema",
+      "invalidMessage": "Schema input failed validation or normalization.",
+      "unsupportedTitle": "Unsupported schema",
+      "unsupportedMessage": "This schema shape or version is not supported for display."
+    },
+    "badge": {
+      "family": "Family",
+      "package": "Package",
+      "packageVersion": "Package version",
+      "sourceArtifact": "Source artifact",
+      "sourceCommit": "Source commit",
+      "lifecycle": "Lifecycle",
+      "visibility": "Visibility",
+      "contractSource": "Contract source",
+      "packageVersionNotPublished": "package version not published",
+      "notPublishedOnProjection": "Not published on this projection",
+      "familyWithLabel": "Family: {family}"
+    },
+    "families": {
+      "api": "API",
+      "schema": "Schema",
+      "cli": "CLI",
+      "mcp": "MCP",
+      "javascript": "JavaScript",
+      "events": "Events"
+    },
+    "lifecycleStates": {
+      "active": "Active",
+      "deprecated": "Deprecated",
+      "removed": "Removed"
+    },
+    "lifecycleSummary": {
+      "since": "since {value}",
+      "deprecated": "deprecated {value}",
+      "removed": "removed {value}",
+      "successor": "successor {value}"
+    },
+    "visibilityStates": {
+      "public": "Public",
+      "internal": "Internal"
+    },
+    "a11y": {
+      "copyAnchorLink": "Copy anchor link",
+      "anchorLinkCopied": "Anchor link copied"
+    },
+    "examples": {
+      "authored": "Authored example",
+      "generated": "Generated example",
+      "exampleIndexed": "Example {index}"
+    },
+    "inventory": {
+      "cli": {
+        "filterLegend": "Filter CLI commands",
+        "queryLabel": "Command path",
+        "queryPlaceholder": "Filter by command path, alias, or description…",
+        "emptyTitle": "No CLI commands",
+        "emptyDescription": "No published CLI commands were found in the resolved contract.",
+        "errorTitle": "CLI inventory error",
+        "errorDescription": "The CLI inventory could not be normalized from the package contract.",
+        "filterEmpty": "No CLI commands match the current filters.",
+        "countOne": "{count} published CLI command from the package contract.",
+        "countMany": "{count} published CLI commands from the package contract."
+      },
+      "mcp": {
+        "filterLegend": "Filter MCP tools",
+        "queryLabel": "Tool name",
+        "queryPlaceholder": "Filter by tool name or description…",
+        "emptyTitle": "No MCP tools",
+        "emptyDescription": "No published MCP tools were found in the resolved contract.",
+        "errorTitle": "MCP inventory error",
+        "errorDescription": "The MCP inventory could not be normalized from the package contract.",
+        "filterEmpty": "No MCP tools match the current filters.",
+        "countOne": "{count} published MCP tool from the package contract.",
+        "countMany": "{count} published MCP tools from the package contract."
+      },
+      "javascript": {
+        "filterLegend": "Filter JavaScript runtime items",
+        "queryLabel": "Symbol or schema",
+        "queryPlaceholder": "Filter by symbol path, schema id, or description…",
+        "emptyTitle": "No JavaScript runtime items",
+        "emptyDescription": "No published JavaScript symbols or shared schemas were found in the resolved contract.",
+        "errorTitle": "JavaScript inventory error",
+        "errorDescription": "The JavaScript inventory could not be normalized from the package contract.",
+        "filterEmpty": "No JavaScript runtime items match the current filters.",
+        "countOne": "{count} published JavaScript runtime item from the package contract.",
+        "countMany": "{count} published JavaScript runtime items from the package contract."
+      }
+    }
+  },
   "home": {
     "title": "You Agent Factory",
     "subtitle": "Docs for the agent factory CLI",

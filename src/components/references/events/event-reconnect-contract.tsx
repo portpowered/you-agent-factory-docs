@@ -2,6 +2,7 @@
  * Reconnect cursor parameters + precedence for the canonical session stream.
  */
 
+import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { EventReconnectContractModel } from "@/lib/references/events";
 import { cn } from "@/lib/utils";
 
@@ -48,18 +49,18 @@ export function EventReconnectContract({
         </p>
       </header>
 
-      <p
+      <ContractDescriptionProse
         className="text-foreground text-sm"
         data-event-reconnect-precedence-summary=""
       >
         {contract.precedenceSummary}
-      </p>
-      <p
+      </ContractDescriptionProse>
+      <ContractDescriptionProse
         className="text-muted-foreground text-sm"
         data-event-reconnect-sequence-fallback=""
       >
         {contract.sessionSequenceFallbackSummary}
-      </p>
+      </ContractDescriptionProse>
 
       <ul
         aria-label="Reconnect cursor query parameters"
@@ -85,9 +86,9 @@ export function EventReconnectContract({
               </span>
             </div>
             {parameter.description.length > 0 ? (
-              <p className="mt-1 text-muted-foreground text-sm">
+              <ContractDescriptionProse className="mt-1 text-muted-foreground text-sm">
                 {parameter.description}
-              </p>
+              </ContractDescriptionProse>
             ) : null}
           </li>
         ))}
