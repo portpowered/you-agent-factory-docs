@@ -89,10 +89,19 @@ describe("api reference page", () => {
       expect(
         screen.getByRole("heading", { name: "Key Concepts" }),
       ).toBeTruthy();
+      expect(screen.getByRole("heading", { name: "Operations" })).toBeTruthy();
       expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
       ).toBeTruthy();
+
+      expect(screen.getByTestId("api-reference-projection")).toBeTruthy();
+      expect(
+        document.querySelector("[data-api-operation-navigator]"),
+      ).not.toBeNull();
+      expect(
+        document.querySelectorAll("[data-api-operation-section]").length,
+      ).toBeGreaterThan(0);
 
       expect(
         screen

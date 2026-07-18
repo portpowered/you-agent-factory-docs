@@ -1023,6 +1023,14 @@ W05 already provides nested discovery, family indexes, and
 6. Ship non-default locale message files when the page should appear on
    localized family indexes (shipped-locale manifest derives from
    `messages/<locale>.json` presence). English-first copies are fine.
+7. When the page needs a required page-local MDX component (for example
+   mounting `@/components/references/api` on `/docs/references/api`),
+   colocate `page-mdx-components.tsx` next to `page.mdx` and add a static
+   `import("@/content/docs/references/<slug>/page-mdx-components")` switch
+   in `route-family-local-docs-page-load.ts`. Relative MDX imports do not
+   resolve under `compileMDX` (same constraint as documentation/concept
+   page-local components). Keep the visual page-owned; do not register it
+   in shared `mdx-components.tsx`.
 
 Do not edit shared nav/sidebar/search/sitemap/compat inventory owners
 (W15–W18) by hand for this first page — published-docs membership is enough

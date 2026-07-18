@@ -11,6 +11,10 @@
       "title": "Key Concepts",
       "body": "OpenAPI (Open Application Programming Interface) describes the HTTP API a running factory host exposes. An operation is one method-and-path pair with a stable operation id. Tags group related operations for navigation. The local-server base URL comes from the OpenAPI servers list and names where callers send requests—typically a local factory host—not this documentation site. Server-Sent Events (SSE) stream operations use HTTP transport summaries here and link toward the events reference for the event catalog."
     },
+    "operations": {
+      "title": "Operations",
+      "body": "The published OpenAPI projection lists every HTTP operation on one searchable page. Use tag-grouped navigation and filtering to move between endpoints; each operation section keeps a stable hash anchor for deep links."
+    },
     "howToUse": {
       "title": "How To Use",
       "body": "Open this page to look up published HTTP operations on one searchable surface. Use tag-grouped navigation and method, path, summary, or operation-id filtering to move between endpoints without leaving the route. Deep-link an operation with its page hash when you need a shareable anchor. Read request parameters, bodies, responses, media types, and authored examples from the operation sections. Call the live factory host at the local-server base URL shown on the page—not this documentation host. For stream payload catalogs, follow the events reference link."
