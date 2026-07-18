@@ -184,6 +184,38 @@ Worktree note: prove narrow-width keyboard focus via the API navigation harness
 + W19 keyboard chrome contract (happy-dom), not a second Playwright matrix.
 Do not redesign W19 harness ownership.
 
+## Story 006 — full static export without a live Factory host
+
+| Path | Role |
+| --- | --- |
+| `src/lib/verify/w20-static-export-convergence.ts` | Catalog of `make build` command gate, FR-33 route probes, FR-34 no-host markers, and `evaluateStaticExportConvergence` |
+| `src/lib/verify/w20-static-export-convergence.test.ts` | Catalog completeness + fixture evaluation proofs |
+| `src/lib/verify/w20-static-export-out-verify.test.ts` | Trusted `out/` FR-33 corpus + FR-34 no-host / no-proxy verify |
+| `scripts/run-w20-static-export-tests.ts` | Runner: catalog → `make build` → post-build suites |
+| `package.json` → `test:w20-static-export` | Maintainer / automation entry |
+| `Makefile` → `test-w20-static-export` | Shared Makefile contract |
+
+### Command gate
+
+* `make build` — full static export (`bun run build:export`) emitting trusted `out/`
+
+### Focused suites (FR-33 / FR-34)
+
+* `src/components/references/api/playground-suppression.test.ts` — playground disabled + proxyUrl unset
+* `src/lib/references/events/events-lib.test.ts` — `EVENT_STREAM_SAFETY` no live host / proxy / playground
+* `src/content/docs/references/published-route-states.test.tsx` — CLI/MCP/JS inventory loads without Factory host env
+* `src/lib/verify/w20-static-export-out-verify.test.ts` — exported HTML corpus markers + forbidden proxy absence
+
+### Reproduce
+
+```bash
+make test-w20-static-export
+# or: bun run test:w20-static-export
+```
+
+Worktree note: the out/ verify suite requires a trusted export from the command
+gate. Do not invent a second Pages-prefixed rebuild here (story 007 owns that).
+
 ## Ownership fence
 
 W20 may reconcile wiring under `src/lib/build/`, `src/lib/seo/`, `src/lib/verify/`,
