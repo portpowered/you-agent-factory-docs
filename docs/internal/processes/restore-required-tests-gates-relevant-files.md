@@ -114,9 +114,12 @@ W05 route-family foundation lane measured ~138.27 MiB total on CI (Next static
 JS ~2.65 MiB and search bootstrap ~5.16 MiB remained under their limits);
 raised again 2026-07-18 UTC after the W13 Worker authored-pages lane measured
 ~152.37 MiB total and ~5.36 MiB search bootstrap on CI (Next static JS
-~2.78 MiB remained under its limit):
+~2.78 MiB remained under its limit); raised again 2026-07-18 UTC after combining
+W11 CLI/MCP/JavaScript runtime reference pages with the landed events reference
+page measured ~161.11 MiB total and ~5.45 MiB search bootstrap on CI (Next
+static JS ~2.81 MiB remained under its limit):
 
-- `maxTotalOutBytes`: 160_000_000
+- `maxTotalOutBytes`: 170_000_000
 - `maxNextStaticJsBytes`: 3_500_000
 - `maxSearchBootstrapBytes`: 5_500_000
 

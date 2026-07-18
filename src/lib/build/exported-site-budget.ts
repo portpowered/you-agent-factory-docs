@@ -50,12 +50,16 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * 2026-07-18 UTC after the W13 Worker authored-pages lane (family index +
  * seven variant pages including mock-workers schema embed) measured
  * ~152.37 MiB total and ~5.36 MiB search bootstrap on CI while Next static JS
- * (~2.78 MiB) remained under its limit; ceilings are now 160 MiB total /
- * 5.50 MiB search. Keep modest headroom for ordinary content growth without
- * silent skip/pass.
+ * (~2.78 MiB) remained under its limit; ceilings were 160 MiB total /
+ * 5.50 MiB search. Raised again on 2026-07-18 UTC after combining W11 CLI/MCP/
+ * JavaScript runtime reference pages with the landed events reference page
+ * (plus W13 workers already on main) measured ~161.11 MiB total and ~5.45 MiB
+ * search bootstrap on CI while Next static JS (~2.81 MiB) remained under its
+ * limit; ceilings are now 170 MiB total / 5.50 MiB search. Keep modest
+ * headroom for ordinary content growth without silent skip/pass.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 160_000_000,
+  maxTotalOutBytes: 170_000_000,
   maxNextStaticJsBytes: 3_500_000,
   maxSearchBootstrapBytes: 5_500_000,
 } as const;
