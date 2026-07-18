@@ -50,12 +50,7 @@ const PUBLISHED_ROUTES = [
 ] as const;
 
 /** Sibling W11 routes owned elsewhere — must stay unpublished in this lane. */
-const UNPUBLISHED_SIBLING_SLUGS = [
-  "api",
-  "factory-schema",
-  "you-config-schema",
-  "mock-workers-schema",
-] as const;
+const UNPUBLISHED_SIBLING_SLUGS = ["api"] as const;
 
 describe("W11 published route states and ownership fences", () => {
   afterEach(() => {
@@ -277,10 +272,19 @@ describe("W11 published route states and ownership fences", () => {
       expect(source.getPage(["references", route.slug])?.url).toBe(route.url);
     }
 
-    // Parallel W11 events page may already exist on main; this lane must not
-    // delete or re-own it.
+    // Parallel W11 schema/events pages may already exist on main; this lane
+    // must not delete or re-own them.
     expect(source.getPage(["references", "events"])?.url).toBe(
       "/docs/references/events",
+    );
+    expect(source.getPage(["references", "factory-schema"])?.url).toBe(
+      "/docs/references/factory-schema",
+    );
+    expect(source.getPage(["references", "you-config-schema"])?.url).toBe(
+      "/docs/references/you-config-schema",
+    );
+    expect(source.getPage(["references", "mock-workers-schema"])?.url).toBe(
+      "/docs/references/mock-workers-schema",
     );
   });
 });
