@@ -1,16 +1,9 @@
-import {
-  AlertPanel,
-  AlertPanelText,
-  AlertPanelTitle,
-} from "@you-agent-factory/components/feedback";
 import { CodePanel } from "@/features/factory-ui/data-display";
 import type { McpToolExampleOrigin } from "@/lib/references/mcp-example-generation";
 import { cn } from "@/lib/utils";
 import {
   MCP_AUTHORED_EXAMPLE_HEADING,
-  MCP_GENERATED_EXAMPLE_DESCRIPTION,
   MCP_GENERATED_EXAMPLE_HEADING,
-  MCP_GENERATED_EXAMPLE_TITLE,
 } from "./mcp-example";
 
 export type McpToolExampleProps = {
@@ -30,8 +23,9 @@ function formatExampleJson(value: unknown): string {
 }
 
 /**
- * Render one MCP tool input example. Generated illustrations show an explicit
- * visible notice; authored contract examples are not labeled generated.
+ * Render one MCP tool input example. Generated illustrations keep a short
+ * section heading; authored contract examples are not labeled generated.
+ * No explanatory AlertPanel notice for generated examples.
  */
 export function McpToolExample({
   value,
@@ -52,17 +46,6 @@ export function McpToolExample({
       <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
         {heading}
       </h4>
-
-      {origin === "generated" ? (
-        <AlertPanel
-          compact
-          data-mcp-example-generated-notice=""
-          semantic="info"
-        >
-          <AlertPanelTitle>{MCP_GENERATED_EXAMPLE_TITLE}</AlertPanelTitle>
-          <AlertPanelText>{MCP_GENERATED_EXAMPLE_DESCRIPTION}</AlertPanelText>
-        </AlertPanel>
-      ) : null}
 
       <CodePanel data-mcp-example-code="">{formatExampleJson(value)}</CodePanel>
     </section>

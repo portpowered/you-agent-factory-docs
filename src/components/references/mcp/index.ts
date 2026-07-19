@@ -9,9 +9,7 @@ export {
 } from "./McpToolReference";
 export {
   MCP_AUTHORED_EXAMPLE_HEADING,
-  MCP_GENERATED_EXAMPLE_DESCRIPTION,
   MCP_GENERATED_EXAMPLE_HEADING,
-  MCP_GENERATED_EXAMPLE_TITLE,
 } from "./mcp-example";
 export type {
   McpToolInventoryInput,

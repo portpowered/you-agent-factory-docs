@@ -183,7 +183,7 @@ describe("McpToolReference", () => {
     expect(container.querySelector("[data-schema-properties]")).toBeNull();
   });
 
-  test("labels generated examples and keeps them schema-valid", () => {
+  test("renders generated examples without the explanatory notice", () => {
     const { container } = render(
       <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
     );
@@ -193,8 +193,11 @@ describe("McpToolReference", () => {
     expect(example?.getAttribute("data-mcp-example-origin")).toBe("generated");
     expect(
       container.querySelector("[data-mcp-example-generated-notice]"),
-    ).toBeTruthy();
-    expect(screen.getByText("Generated example")).toBeTruthy();
+    ).toBeNull();
+    expect(screen.queryByText("Generated example")).toBeNull();
+    expect(
+      screen.queryByText(/generated from the published tool input schema/i),
+    ).toBeNull();
     expect(screen.getByText("Example (generated)")).toBeTruthy();
 
     const code = container.querySelector(

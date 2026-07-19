@@ -50,8 +50,8 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | --- | --- |
 | `src/components/references/mcp/McpToolReference.tsx` | One tool card: title + stable anchor, description, input schema, example — no ContractSourceBadge / Tool name / Tool id / Handler registered / Required inputs chrome |
 | `src/components/references/mcp/McpInputSchemaEmbed.tsx` | MCP-owned wrapper over shared SchemaDefinitionEmbed that omits Object policy chrome |
-| `src/components/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; generated shows visible AlertPanel notice |
-| `src/components/references/mcp/mcp-example.ts` | Generated-example copy constants |
+| `src/components/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; heading + payload only (no generated AlertPanel notice) |
+| `src/components/references/mcp/mcp-example.ts` | Example section heading constants (`Example` / `Example (generated)`) |
 | `src/components/references/mcp/McpToolInventory.tsx` | Inventory list with empty/error chrome |
 | `src/components/references/mcp/types.ts` | MCP renderer prop contracts / inventory input union |
 | `src/components/references/mcp/index.ts` | Public MCP renderer barrel |
@@ -147,8 +147,9 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 - MCP examples: prefer authored `tool.example` / `inputSchema.examples`; when
   absent, `resolveMcpToolExample` / `generateSchemaValidMcpExample` build a
   minimal schema-valid object (required fields only, first enum / const /
-  default) and `McpToolExample` labels it generated with visible info chrome.
-  Never show unlabeled synthetic examples.
+  default) and `McpToolExample` marks origin via heading (`Example (generated)`)
+  plus `data-mcp-example-origin` — no explanatory AlertPanel notice. Never show
+  unlabeled synthetic examples.
 - MCP/JS schema embeds belong under family renderers + shared thin adapter;
   keep W03 Node acquisition out of client harness mounts.
 - JavaScript symbols carry optional visibility/mutability/nullability/
