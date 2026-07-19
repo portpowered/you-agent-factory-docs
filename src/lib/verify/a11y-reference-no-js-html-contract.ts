@@ -170,6 +170,10 @@ function attributeText(element: Element, keys: readonly string[]): string {
 /**
  * True when an API operation section exposes method, path, and summary as
  * readable static text / data attributes (no client-only rendering required).
+ *
+ * Accepts both harness custom chrome (`[data-api-operation-summary]` element,
+ * `h2 code` path) and the Fumadocs-primary published page (method/path/summary
+ * data attributes on the section wrapper + Fumadocs heading text).
  */
 export function isReadableApiOperationSection(section: Element): boolean {
   const method =
@@ -178,12 +182,18 @@ export function isReadableApiOperationSection(section: Element): boolean {
     "";
   const path =
     section.getAttribute("data-api-operation-path")?.trim() ||
-    section.querySelector("h2 code, h2")?.textContent?.trim() ||
+    section
+      .querySelector("[data-api-operation-path-token] code, h2 code, h2")
+      ?.textContent?.trim() ||
     "";
   const summary =
+    section.getAttribute("data-api-operation-summary")?.trim() ||
     section
       .querySelector("[data-api-operation-summary]")
-      ?.textContent?.trim() || "";
+      ?.textContent?.trim() ||
+    // Fumadocs Operation heading is the summary when showTitle is on.
+    section.querySelector("h2, h3")?.textContent?.trim() ||
+    "";
   return method.length > 0 && path.length > 0 && summary.length > 0;
 }
 
@@ -202,9 +212,12 @@ export function readableTextForNoJsFact(
       element.getAttribute("data-api-operation-method")?.trim() ?? "";
     const path = element.getAttribute("data-api-operation-path")?.trim() ?? "";
     const summary =
+      element.getAttribute("data-api-operation-summary")?.trim() ||
       element
         .querySelector("[data-api-operation-summary]")
-        ?.textContent?.trim() ?? "";
+        ?.textContent?.trim() ||
+      element.querySelector("h2, h3")?.textContent?.trim() ||
+      "";
     return `${method} ${path} ${summary}`.trim();
   }
 
@@ -404,12 +417,17 @@ export function evaluateReferenceNoJsHtmlInBrowser(args: {
       "";
     const path =
       section.getAttribute("data-api-operation-path")?.trim() ||
-      section.querySelector("h2 code, h2")?.textContent?.trim() ||
+      section
+        .querySelector("[data-api-operation-path-token] code, h2 code, h2")
+        ?.textContent?.trim() ||
       "";
     const summary =
+      section.getAttribute("data-api-operation-summary")?.trim() ||
       section
         .querySelector("[data-api-operation-summary]")
-        ?.textContent?.trim() || "";
+        ?.textContent?.trim() ||
+      section.querySelector("h2, h3")?.textContent?.trim() ||
+      "";
     return method.length > 0 && path.length > 0 && summary.length > 0;
   }
 
@@ -427,9 +445,12 @@ export function evaluateReferenceNoJsHtmlInBrowser(args: {
       const path =
         element.getAttribute("data-api-operation-path")?.trim() ?? "";
       const summary =
+        element.getAttribute("data-api-operation-summary")?.trim() ||
         element
           .querySelector("[data-api-operation-summary]")
-          ?.textContent?.trim() ?? "";
+          ?.textContent?.trim() ||
+        element.querySelector("h2, h3")?.textContent?.trim() ||
+        "";
       return `${method} ${path} ${summary}`.trim();
     }
     const parts: string[] = [];

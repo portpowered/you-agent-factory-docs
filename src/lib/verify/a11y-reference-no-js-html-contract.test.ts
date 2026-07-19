@@ -104,12 +104,44 @@ describe("a11y-reference-no-js-html-contract", () => {
       <section data-api-operation-section=""
         data-api-operation-method="get"
         data-api-operation-path="/health">
-        <h2>health</h2>
+        <p>No heading or summary marker</p>
       </section>
     `;
     expect(() =>
       expectReferenceNoJsHtmlReadability(document, "references-api"),
     ).toThrow(/api-operation-method-path-summary/);
+  });
+
+  test("Fumadocs-primary sections pass via method/path/summary data attributes", () => {
+    document.body.innerHTML = `
+      <section data-api-operation-section=""
+        data-api-fumadocs-operation="submitWorkBySessionId"
+        data-api-operation-method="post"
+        data-api-operation-path="/factory-sessions/{session_id}/work"
+        data-api-operation-summary="Submit work">
+        <div data-api-operation-path-token="">
+          <code class="overflow-auto">/factory-sessions/{session_id}/work</code>
+        </div>
+        <h2>Submit work</h2>
+      </section>
+    `;
+    const section = document.querySelector("[data-api-operation-section]");
+    expect(section).toBeTruthy();
+    if (!section) {
+      return;
+    }
+    expect(isReadableApiOperationSection(section)).toBe(true);
+
+    const probe = expectReferenceNoJsHtmlReadability(
+      document,
+      "references-api",
+    );
+    expect(probe.ok).toBe(true);
+    const api = probe.facts.find(
+      (entry) => entry.id === "api-operation-method-path-summary",
+    );
+    expect(api?.readableHitCount).toBe(1);
+    expect(api?.sampleTexts[0]).toContain("Submit work");
   });
 
   test("events type identity and envelope/payload headings pass", () => {

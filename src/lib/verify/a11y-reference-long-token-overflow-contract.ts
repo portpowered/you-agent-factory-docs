@@ -71,6 +71,7 @@ export const REFERENCE_LONG_TOKEN_CONTAINMENT_CLASS_FRAGMENTS = [
   "break-all",
   "break-words",
   "truncate",
+  "overflow-auto",
   "overflow-x-auto",
   "overflow-x-scroll",
   "overflow-hidden",
@@ -85,7 +86,10 @@ export const REFERENCE_LONG_TOKENS: readonly ReferenceLongTokenSpec[] = [
   {
     id: "api-operation-path",
     kind: "path",
-    selector: "[data-api-operation-section] h2 code",
+    // Harness custom chrome uses `h2 code`; Fumadocs-primary wraps the static
+    // method/path bar with `data-api-operation-path-token`.
+    selector:
+      "[data-api-operation-section] h2 code, [data-api-operation-path-token] code",
     label: "API operation path",
     required: true,
     routeIds: ["references-api"],

@@ -61,7 +61,7 @@ hooks, and SSR cost.
 | `src/components/references/api/api-surface.test.tsx` | Status semantics proofs for the ownership boundary |
 | `src/components/references/api/load-openapi-artifact.ts` | W03-backed loader for `@you-agent-factory/api/openapi` (document object + schema id) |
 | `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; Turbopack-safe package load; attaches W04 normalized ops from the same artifact |
-| `src/components/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, request/response `data-api-schema-slot` wrappers, operationId section wrappers) |
+| `src/components/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, request/response `data-api-schema-slot` wrappers, `data-api-operation-summary` + `data-api-operation-path-token`, operationId section wrappers) |
 | `src/components/references/api/api-code-block.tsx` | `renderCodeBlock` → ServerCodeBlock + dual Shiki themes |
 | `src/components/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
 | `src/components/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
@@ -156,6 +156,11 @@ hooks, and SSR cost.
   `bun src/content/docs/references/api/assert-api-page-boilerplate-trim-browser.ts`
   (unique port default 3562) — assert section ids, not fragile heading strings
   like "Tags" that Fumadocs may reuse.
+- End-to-end published-page gate (story 006):
+  `bun src/content/docs/references/api/assert-api-page-gates-browser.ts`
+  (unique port default 3572). Proves Fumadocs ops + static-only + schema fields
+  + SSE notes + boilerplate trim + readable method/path/summary /
+  `data-api-operation-path-token` markers in one pass.
 - W04 normalized summaries are derived from the same loaded document for
   cross-links/display; do not invent a second OpenAPI corpus.
 
@@ -213,8 +218,12 @@ hooks, and SSR cost.
 - Harness-only custom chrome (deep-import; **not** on `@/components/references/api`
   barrel): `ApiMethodBadge`, `ApiResponseMediaType`, `ApiOperationExamples`,
   `ApiOperationSection`. Keep them for `/api-renderer-harness` and unit
-  a11y/theme/SSE fixtures until those probes move fully onto the Fumadocs page
-  (see story 006 gates).
+  a11y/theme/SSE fixtures. Published-page a11y/no-JS/long-token gates must
+  accept Fumadocs markers (`data-api-operation-summary` attribute,
+  `data-api-operation-path-token` around the static method/path bar,
+  `overflow-auto` containment) — see
+  `a11y-reference-no-js-html-contract.ts` and
+  `a11y-reference-long-token-overflow-contract.ts`.
 - Load via `buildApiOperationDetailsFromArtifact()` (happy-dom-safe).
 
 ## Playground suppression and local-server base URL

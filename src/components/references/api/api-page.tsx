@@ -52,6 +52,14 @@ export const API_FUMADOCS_OPERATION_ATTR =
  */
 export const API_SCHEMA_SLOT_ATTR = "data-api-schema-slot" as const;
 
+/**
+ * Marker wrapping the static method/path bar (Fumadocs disabled-playground
+ * slot) so a11y long-token probes can find the path `code` without relying on
+ * harness-only `h2 code` chrome.
+ */
+export const API_OPERATION_PATH_TOKEN_ATTR =
+  "data-api-operation-path-token" as const;
+
 /** Stable probe target: POST body `$ref` → `#/components/schemas/SubmitWorkRequest`. */
 export const API_SCHEMA_COMPONENT_PROBE = {
   operationId: "submitWorkBySessionId",
@@ -68,23 +76,51 @@ export const API_SCHEMA_UI_OPTIONS = {
   showExample: true,
 } as const;
 
+function readOperationObject(
+  paths: Record<string, Record<string, unknown>> | undefined,
+  path: string,
+  method: string,
+): Record<string, unknown> {
+  const operation = paths?.[path]?.[method];
+  if (operation && typeof operation === "object") {
+    return operation as Record<string, unknown>;
+  }
+  throw new Error(
+    `OpenAPI production page missing operation for ${method.toUpperCase()} ${path}`,
+  );
+}
+
 function readOperationId(
   paths: Record<string, Record<string, unknown>> | undefined,
   path: string,
   method: string,
 ): string {
-  const operation = paths?.[path]?.[method];
-  if (
-    operation &&
-    typeof operation === "object" &&
-    "operationId" in operation &&
-    typeof (operation as { operationId?: unknown }).operationId === "string"
-  ) {
-    return (operation as { operationId: string }).operationId;
+  const operation = readOperationObject(paths, path, method);
+  if (typeof operation.operationId === "string") {
+    return operation.operationId;
   }
   throw new Error(
     `OpenAPI production page missing operationId for ${method.toUpperCase()} ${path}`,
   );
+}
+
+/**
+ * Reader-visible summary for no-JS / a11y gates. Prefer OpenAPI `summary`,
+ * then `operationId`, then the path — matches Fumadocs heading fallback order.
+ */
+export function readApiOperationSummaryLabel(
+  paths: Record<string, Record<string, unknown>> | undefined,
+  path: string,
+  method: string,
+): string {
+  const operation = readOperationObject(paths, path, method);
+  if (typeof operation.summary === "string" && operation.summary.trim()) {
+    return operation.summary.trim();
+  }
+  if (typeof operation.operationId === "string" && operation.operationId) {
+    return operation.operationId;
+  }
+  return path;
 }
 
 /**
@@ -120,6 +156,11 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
         >
           {slots.operations?.map(({ item, children }) => {
             const operationId = readOperationId(paths, item.path, item.method);
+            const summaryLabel = readApiOperationSummaryLabel(
+              paths,
+              item.path,
+              item.method,
+            );
             const sseSummary = resolveApiSseOperationSummary({
               operationId,
               path: item.path,
@@ -138,6 +179,7 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
                 data-api-operation-method={item.method}
                 data-api-operation-path={item.path}
                 data-api-operation-id={operationId}
+                data-api-operation-summary={summaryLabel}
                 data-api-sse-operation={sseSummary ? "true" : undefined}
               >
                 {children}
@@ -174,7 +216,12 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
         >
           <div className={`min-w-0 flex-1 ${API_TOKEN_CLASSES.border}`}>
             {slots.header}
-            {slots.apiPlayground}
+            <div
+              className="min-w-0"
+              {...{ [API_OPERATION_PATH_TOKEN_ATTR]: "" }}
+            >
+              {slots.apiPlayground}
+            </div>
             {slots.description}
             {sseSummary ? (
               <ApiSseOperationSummaryPanel summary={sseSummary} />

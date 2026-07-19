@@ -65,6 +65,7 @@ export {
 export {
   API_FUMADOCS_OPERATION_ATTR,
   API_FUMADOCS_OPERATIONS_ATTR,
+  API_OPERATION_PATH_TOKEN_ATTR,
   API_PUBLISHED_PRIMARY_OPERATION_RENDERER,
   API_SCHEMA_COMPONENT_PROBE,
   API_SCHEMA_SLOT_ATTR,
@@ -72,6 +73,7 @@ export {
   ApiReferenceAPIPage,
   apiReferenceApiPagePlaygroundDisabled,
   apiReferenceSchemaUiShowsExamples,
+  readApiOperationSummaryLabel,
 } from "./api-page";
 export {
   ApiReferenceHashController,

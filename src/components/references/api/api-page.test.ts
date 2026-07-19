@@ -6,6 +6,7 @@ import { describe, expect, test } from "bun:test";
 import {
   API_FUMADOCS_OPERATION_ATTR,
   API_FUMADOCS_OPERATIONS_ATTR,
+  API_OPERATION_PATH_TOKEN_ATTR,
   API_PUBLISHED_PRIMARY_OPERATION_RENDERER,
   API_SCHEMA_COMPONENT_PROBE,
   API_SCHEMA_SLOT_ATTR,
@@ -13,6 +14,7 @@ import {
   ApiReferenceAPIPage,
   apiReferenceApiPagePlaygroundDisabled,
   apiReferenceSchemaUiShowsExamples,
+  readApiOperationSummaryLabel,
 } from "./api-page";
 import {
   apiOpenApiServer,
@@ -53,6 +55,35 @@ describe("ApiReferenceAPIPage (createAPIPage binder)", () => {
 
   test("marks request/response slots that host Fumadocs Schema UI", () => {
     expect(API_SCHEMA_SLOT_ATTR).toBe("data-api-schema-slot");
+  });
+
+  test("marks the static method/path bar for long-token a11y gates", () => {
+    expect(API_OPERATION_PATH_TOKEN_ATTR).toBe("data-api-operation-path-token");
+  });
+
+  test("projects reader-visible summary labels for no-JS gates", () => {
+    expect(
+      readApiOperationSummaryLabel(
+        {
+          "/health": {
+            get: { operationId: "getHealth", summary: "Health check" },
+          },
+        },
+        "/health",
+        "get",
+      ),
+    ).toBe("Health check");
+    expect(
+      readApiOperationSummaryLabel(
+        {
+          "/health": {
+            get: { operationId: "getHealth" },
+          },
+        },
+        "/health",
+        "get",
+      ),
+    ).toBe("getHealth");
   });
 
   test("records a stable body $ref probe target for browser verification", () => {

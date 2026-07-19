@@ -2,8 +2,9 @@
  * Happy-dom stand-in for the published API projection mount.
  *
  * Async RSC `createAPIPage` cannot run under happy-dom page tests; this stub
- * keeps MDX shell proofs green while projection unit tests + the browser probe
- * cover the real Fumadocs path.
+ * keeps MDX shell proofs green while projection unit tests + browser probes
+ * cover the real Fumadocs path. Markers match the Fumadocs-primary published
+ * page (not harness-only custom operation chrome).
  */
 
 export function ApiReferenceProjectionHappyDomStub() {
@@ -21,7 +22,17 @@ export function ApiReferenceProjectionHappyDomStub() {
           data-api-fumadocs-operation="submitWorkBySessionId"
           data-api-operation-method="post"
           data-api-operation-path="/factory-sessions/{session_id}/work"
-        />
+          data-api-operation-summary="Submit work"
+        >
+          <div data-api-operation-path-token="">
+            <code className="overflow-auto">
+              /factory-sessions/{"{session_id}"}/work
+            </code>
+          </div>
+          <h2>Submit work</h2>
+          <div data-api-schema-slot="request" />
+          <div data-api-schema-slot="response" />
+        </section>
       </div>
     </div>
   );

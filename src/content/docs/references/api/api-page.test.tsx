@@ -134,6 +134,20 @@ describe("api reference page", () => {
       expect(
         document.querySelectorAll("[data-api-fumadocs-operation]").length,
       ).toBeGreaterThan(0);
+      expect(
+        document
+          .querySelector("[data-api-fumadocs-operation]")
+          ?.getAttribute("data-api-operation-summary"),
+      ).toBeTruthy();
+      expect(
+        document.querySelector("[data-api-operation-path-token]"),
+      ).not.toBeNull();
+      expect(
+        document.querySelectorAll('[data-api-schema-slot="request"]').length,
+      ).toBeGreaterThan(0);
+      expect(
+        document.querySelectorAll('[data-api-schema-slot="response"]').length,
+      ).toBeGreaterThan(0);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
