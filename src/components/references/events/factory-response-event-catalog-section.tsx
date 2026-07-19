@@ -32,6 +32,7 @@ export function FactoryResponseEventCatalogSection({
       id={catalog.envelopeAddress.pointer.split("/").filter(Boolean).at(-1)}
     >
       <ResponseEventEnvelopeReference
+        envelopeExample={catalog.envelopeExample}
         envelopeFieldsDefinition={catalog.envelopeFieldsDefinition}
         pagePath={pagePath}
       />

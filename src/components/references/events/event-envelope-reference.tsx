@@ -6,15 +6,19 @@
  * are never mistaken for complete FactoryEvent envelopes.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
+import type { EventEnvelopeJsonExample } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventEnvelopeJsonExampleView } from "./event-envelope-json-example";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type EventEnvelopeReferenceProps = {
   /** Envelope fields definition (composition/discriminator stripped). */
   envelopeFieldsDefinition: SchemaDefinitionModel;
   /** Discriminator property name (for example `type`). */
   discriminatorPropertyName: string;
+  /** Corpus-true full envelope JSON example when available. */
+  envelopeExample?: EventEnvelopeJsonExample;
   /** Owning page path for deep-link href values. */
   pagePath?: string;
   className?: string;
@@ -24,6 +28,7 @@ export type EventEnvelopeReferenceProps = {
 export function EventEnvelopeReference({
   envelopeFieldsDefinition,
   discriminatorPropertyName,
+  envelopeExample,
   pagePath,
   className,
   "data-testid": testId = "event-envelope-reference",
@@ -51,12 +56,16 @@ export function EventEnvelopeReference({
         </p>
       </header>
 
-      <SchemaDefinition
+      <EventsSchemaDefinition
         data-testid="event-envelope-schema-definition"
         defaultExpanded
         definition={envelopeFieldsDefinition}
         pagePath={pagePath}
       />
+
+      {envelopeExample !== undefined ? (
+        <EventEnvelopeJsonExampleView example={envelopeExample} />
+      ) : null}
     </section>
   );
 }
