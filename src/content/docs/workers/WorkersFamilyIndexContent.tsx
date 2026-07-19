@@ -46,18 +46,15 @@ const FACTORY_WORKER_SELECTION_ROWS = [
 ] as const;
 
 /**
- * Authored `/docs/workers` family index body: overview, selection table,
- * shared-field summary, live Worker schema embed, and discovery links.
+ * Authored `/docs/workers` family index body: purpose lead (opening summary),
+ * how-to-use, selection table, shared-field summary, live Worker schema embed,
+ * and discovery links.
  */
 export function WorkersFamilyIndexContent() {
   return (
     <div className="min-w-0 space-y-8" data-workers-family-index="">
-      <Section id="what-it-covers" titleKey="sections.whatItCovers.title">
-        <T k="sections.whatItCovers.body" />
-      </Section>
-
-      <Section id="key-concepts" titleKey="sections.keyConcepts.title">
-        <T k="sections.keyConcepts.body" />
+      <Section id="how-to-use" titleKey="sections.howToUse.title">
+        <T k="sections.howToUse.body" />
       </Section>
 
       <Section id="selection" titleKey="sections.selection.title">

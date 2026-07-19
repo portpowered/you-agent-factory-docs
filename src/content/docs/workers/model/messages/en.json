@@ -3,17 +3,9 @@
   "description": "Configure a MODEL_WORKER for managed or local model capability: operations, model and provider identity, modelLocality, and MODEL_WORKSTATION / MODEL_INVOKE companionship.",
   "openingSummary": "A MODEL_WORKER is the legacy managed or local model-capability WorkerType. Set type to MODEL_WORKER, declare operations and locality on the worker, and bind from a MODEL_WORKSTATION companion. Prefer INFERENCE_WORKER for new configs.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "A Model worker is the legacy Factory WorkerType for managed or local model capability in you-agent-factory. This page covers the MODEL_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid configuration, an incompatible misuse of agent tool policy, operational cautions, locality and binding guidance, and the MODEL_WORKSTATION plus MODEL_INVOKE workstation companions. Use it when reviewing or migrating an existing MODEL_WORKER; prefer INFERENCE_WORKER or AGENT_WORKER for new configs."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is type with value MODEL_WORKER. A MODEL_WORKER declares managed or local model capability through model, modelProvider, modelLocality, and operations. MODEL_WORKSTATION is the required companion that owns workstation-side bindings and dispatch. MODEL_INVOKE is a compatible companion for invoke-style model calls. This surface is a loadable legacy alias of model-capability authoring—prefer INFERENCE_WORKER for new one-shot inference backends and AGENT_WORKER for agent loops. Model workers are not AGENT_WORKER backends: they do not own agentTools or skipPermissions, and they exclude script and hosted-poller fields."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a worker with type MODEL_WORKER when migrating an existing managed or local model config. Put model, modelProvider, and modelLocality on the worker so authored identity and locality win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep descriptive context in the body. Bind the worker from a MODEL_WORKSTATION companion; use MODEL_INVOKE when the invoke-style companion applies. For new factories, prefer INFERENCE_WORKER instead of MODEL_WORKER."
+      "body": "Author a worker with type MODEL_WORKER when migrating an existing managed or local model config. Put model, modelProvider, and modelLocality on the worker so authored identity and locality win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep descriptive context in the body. Bind the worker from a MODEL_WORKSTATION companion; use MODEL_INVOKE when the invoke-style companion applies. For new factories, prefer INFERENCE_WORKER instead of MODEL_WORKER. Model workers are not AGENT_WORKER backends: they do not own agentTools or skipPermissions."
     },
     "variantFields": {
       "title": "Variant Fields",

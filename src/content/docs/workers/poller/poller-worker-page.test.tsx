@@ -48,12 +48,7 @@ describe("workers poller page", () => {
     );
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const variantFields = String(
       loadedPage.messages.sections?.variantFields?.body ?? "",
@@ -66,12 +61,12 @@ describe("workers poller page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/POLLER_WORKER/i);
-    expect(whatItCovers).toMatch(/POLLER_RUN/i);
-    expect(whatItCovers).toMatch(/behavior POLLER/i);
-    expect(keyConcepts).toMatch(/type with value POLLER_WORKER/i);
-    expect(keyConcepts).toMatch(/POLLER_RUN/i);
-    expect(keyConcepts).toMatch(/behavior POLLER/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/POLLER_WORKER/i);
+    expect(openingSummary).toMatch(/behavior POLLER/i);
+    expect(howToUse).toMatch(/POLLER_RUN/i);
+    expect(howToUse).toMatch(/behavior POLLER/i);
     expect(howToUse).toMatch(/auth\.secretRef/i);
     expect(howToUse).toMatch(/LINEAR|provider/i);
     expect(variantFields).toMatch(/overlay applicability/i);
@@ -83,7 +78,7 @@ describe("workers poller page", () => {
       /Compatible Workstation type and behavior companions/i,
     );
     expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -140,9 +135,9 @@ describe("workers poller page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Variant Fields" }),

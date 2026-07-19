@@ -46,12 +46,7 @@ describe("workers inference page", () => {
     expect(loadedPage.messages.description).toMatch(/operations/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const variantFields = String(
       loadedPage.messages.sections?.variantFields?.body ?? "",
@@ -64,12 +59,13 @@ describe("workers inference page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/INFERENCE_WORKER/i);
-    expect(whatItCovers).toMatch(/INFERENCE_RUN/i);
-    expect(keyConcepts).toMatch(/type with value INFERENCE_WORKER/i);
-    expect(keyConcepts).toMatch(/not AGENT_WORKER/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/INFERENCE_WORKER/i);
+    expect(openingSummary).toMatch(/INFERENCE_RUN/i);
     expect(howToUse).toMatch(/model, modelProvider, and modelLocality/i);
     expect(howToUse).toMatch(/operations/i);
+    expect(howToUse).toMatch(/not AGENT_WORKER/i);
     expect(variantFields).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/agentTools/i);
@@ -77,7 +73,7 @@ describe("workers inference page", () => {
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/Compatible Workstation companions/i);
     expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -131,9 +127,9 @@ describe("workers inference page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Variant Fields" }),

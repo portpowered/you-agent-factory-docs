@@ -53,12 +53,7 @@ describe("workers mock page", () => {
     );
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const schemaFields = String(
       loadedPage.messages.sections?.schemaFields?.body ?? "",
@@ -71,18 +66,20 @@ describe("workers mock page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/mock-workers/i);
-    expect(whatItCovers).toMatch(/not a Factory WorkerType/i);
-    expect(keyConcepts).toMatch(/runType/i);
-    expect(keyConcepts).toMatch(/accept|script|reject/i);
-    expect(keyConcepts).not.toMatch(/seventh Factory WorkerType|type = MOCK/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/mock-workers/i);
+    expect(openingSummary).toMatch(/not a Factory WorkerType/i);
+    expect(howToUse).toMatch(/runType/i);
+    expect(howToUse).toMatch(/accept|script|reject/i);
+    expect(howToUse).not.toMatch(/seventh Factory WorkerType|type = MOCK/i);
     expect(howToUse).toMatch(/--with-mock-workers|mockWorkers/i);
     expect(schemaFields).toMatch(/mockWorker|runType/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/WorkerType|MOCK_WORKER|workerName/i);
     expect(cautions).toMatch(/WorkerType|passthrough|unknown/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -129,9 +126,9 @@ describe("workers mock page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Schema Fields" })).toBeTruthy();
     expect(

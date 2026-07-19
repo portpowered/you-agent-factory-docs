@@ -3,17 +3,9 @@
   "description": "Configure a HOSTED_WORKER for hosted provider auth: provider, auth.secretRef, Linear provider fields, and LOGICAL_MOVE / CLASSIFIER_WORKSTATION companionship. Prefer POLLER_WORKER for new configs.",
   "openingSummary": "A HOSTED_WORKER is the legacy hosted-provider WorkerType. Set type to HOSTED_WORKER, put provider and auth.secretRef on the worker, and bind from a LOGICAL_MOVE companion. Prefer POLLER_WORKER for new configs.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "A Hosted worker is the legacy Factory WorkerType for hosted provider backends in you-agent-factory. This page covers the HOSTED_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid hosted Linear configuration, an incompatible inline-secret misuse, operational cautions, auth and secret-reference guidance, and the LOGICAL_MOVE plus CLASSIFIER_WORKSTATION workstation companions. Use it when reviewing or migrating an existing HOSTED_WORKER; prefer POLLER_WORKER for new hosted poller configs."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is type with value HOSTED_WORKER. A HOSTED_WORKER supplies a hosted-provider backend through provider, auth.secretRef, and provider-specific fields such as linear. LOGICAL_MOVE is the required companion. CLASSIFIER_WORKSTATION is a compatible companion. This surface is a loadable legacy alias of hosted-provider authoring—prefer POLLER_WORKER for new hosted poller backends. Hosted workers are not model-backed or script backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a worker with type HOSTED_WORKER when migrating an existing hosted provider config. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear provider needs them. Bind the worker from a LOGICAL_MOVE companion; use CLASSIFIER_WORKSTATION when the classifier companion applies. For new factories, prefer POLLER_WORKER instead of HOSTED_WORKER."
+      "body": "Author a worker with type HOSTED_WORKER when migrating an existing hosted provider config. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear provider needs them. Bind the worker from a LOGICAL_MOVE companion; use CLASSIFIER_WORKSTATION when the classifier companion applies. For new factories, prefer POLLER_WORKER instead of HOSTED_WORKER. Hosted workers are not model-backed or script backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
     },
     "variantFields": {
       "title": "Variant Fields",

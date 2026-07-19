@@ -3,17 +3,9 @@
   "description": "Configure a POLLER_WORKER for hosted poller ingress: provider, auth.secretRef, Linear provider fields, and POLLER_RUN companionship distinct from workstation behavior POLLER.",
   "openingSummary": "A POLLER_WORKER is the hosted-provider backend for long-lived poller ingress. Set type to POLLER_WORKER, put provider and auth.secretRef on the worker, and keep behavior POLLER plus routing on the workstation.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "A Poller worker is the Factory WorkerType for hosted poller ingress in you-agent-factory. This page covers the POLLER_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid hosted Linear configuration, an incompatible inline-secret misuse, operational cautions, and the distinction between POLLER_RUN workstation type companionship and workstation behavior POLLER. Use it when you need to author a hosted poller backend without confusing worker execution with scheduling behavior."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is type with value POLLER_WORKER. A POLLER_WORKER supplies the hosted-provider backend for long-lived external ingress. Put provider, auth.secretRef, and provider-specific fields such as linear on the worker. Workstation type POLLER_RUN is the compatible runtime companion for this worker. Workstation behavior POLLER is a separate scheduling axis that keeps the external ingress loop active in service mode. Do not treat POLLER_RUN and behavior POLLER as the same contract. Poller workers are not model-backed backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a worker with type POLLER_WORKER. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear poller needs them. Bind the worker from a POLLER_RUN workstation companion, and keep behavior POLLER with outputs and onFailure on the workstation that owns ingress scheduling."
+      "body": "Author a worker with type POLLER_WORKER. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear poller needs them. Bind the worker from a POLLER_RUN workstation companion, and keep behavior POLLER with outputs and onFailure on the workstation that owns ingress scheduling. Do not treat POLLER_RUN and behavior POLLER as the same contract. Poller workers are not model-backed backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
     },
     "variantFields": {
       "title": "Variant Fields",

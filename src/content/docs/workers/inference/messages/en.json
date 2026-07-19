@@ -1,19 +1,11 @@
 {
   "title": "Inference worker",
   "description": "Configure an INFERENCE_WORKER for harness inference dispatch: declared operations, model and provider identity, modelLocality, timeout/resources, and INFERENCE_RUN workstation companionship.",
-  "openingSummary": "An INFERENCE_WORKER is the model-backed executor for INFERENCE_RUN workstations. Set type to INFERENCE_WORKER, declare operations and locality on the worker, and bind the worker name from an inference-run workstation.",
+  "openingSummary": "An INFERENCE_WORKER is the model-backed executor for one-shot harness inference on INFERENCE_RUN workstations. Set type to INFERENCE_WORKER, declare operations and locality on the worker, and bind the worker name from an inference-run workstation.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "An Inference worker is the Factory WorkerType for one-shot model operations in you-agent-factory. This page covers the INFERENCE_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid configuration, an incompatible misuse of agent tool policy, operational cautions, and the required INFERENCE_RUN workstation companion. Use it when you need to author a bounded inference backend without confusing it with AGENT_WORKER loops."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is type with value INFERENCE_WORKER. An INFERENCE_WORKER performs one bounded model operation such as TTS or ASR through INFERENCE_RUN. Declare provider-agnostic operations with typed input and output slots, modelLocality, and concrete model identity so INFERENCE_RUN workstations can validate compatibility before dispatch. The markdown body describes operation context. Slot bindings and the operation name used at dispatch live with the workstation contract. Inference workers are not AGENT_WORKER backends: they do not own agent loops or agentTools.policy."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a worker with type INFERENCE_WORKER. Put model, modelProvider, and modelLocality on the worker when you need authored identity and locality; authored values always win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep operation context in the body. Bind the worker from an INFERENCE_RUN workstation that supplies slot bindings and the operation name used at dispatch."
+      "body": "Author a worker with type INFERENCE_WORKER. Put model, modelProvider, and modelLocality on the worker when you need authored identity and locality; authored values always win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep operation context in the body. Bind the worker from an INFERENCE_RUN workstation that supplies slot bindings and the operation name used at dispatch. Inference workers are not AGENT_WORKER backends: they do not own agent loops or agentTools.policy."
     },
     "variantFields": {
       "title": "Variant Fields",

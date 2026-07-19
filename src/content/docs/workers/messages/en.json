@@ -1,15 +1,11 @@
 {
   "title": "Workers",
   "description": "Choose and configure you-agent-factory workers: runtime executors declared in the factory and invoked by workstations, with six Factory WorkerType variants plus a separate mock-worker surface.",
-  "openingSummary": "A worker is the runtime executor a workstation invokes by name. Pick the WorkerType that matches the work, keep mock workers on their own test-only schema, and use shared identity fields before variant-specific configuration.",
+  "openingSummary": "A worker is a named runtime executor a workstation invokes by name. factory.json declares each worker; the WorkerType discriminator selects the implementation family. Pick the matching variant page before you author type-specific fields, and keep mock workers on their own test-only schema.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This index defines the Worker family for you-agent-factory: what a worker is, why the WorkerType choice matters before you author a variant page, which fields are shared across Factory workers, and how mock workers stay separate from runtime WorkerType values. Use it when you need to select the right worker page before configuring backends."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A worker is a named runtime executor. factory.json declares each worker name in the factory topology. The worker definition supplies the execution backend; a workstation binds that name and owns step routing, prompts, limits, and outputs. The WorkerType discriminator selects the implementation family. Mock workers are not a Factory WorkerType — they live on the mock-workers schema for deterministic test dispatch only."
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Use the selection table to open the WorkerType page that matches the work. Prefer current public WorkerType names in new configs; legacy MODEL_WORKER and HOSTED_WORKER remain loadable aliases with their own migration pages. Author shared identity fields such as name, type, body, timeout, and resources before variant-specific configuration. Mock workers are not a Factory WorkerType — keep them on the mock-workers schema for deterministic test dispatch only."
     },
     "selection": {
       "title": "Select A Worker Variant",
