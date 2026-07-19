@@ -1,5 +1,4 @@
 import {
-  ContractSourceBadge,
   CopyableReferenceAnchor,
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
@@ -10,20 +9,14 @@ import { cn } from "@/lib/utils";
 import { McpToolExample } from "./McpToolExample";
 import type { McpToolReferenceProps } from "./types";
 
-function booleanStateLabel(value: boolean): string {
-  return value ? "Yes" : "No";
-}
-
 /**
- * Render one normalized MCP tool with available published metadata and its
- * input schema embed (thin local SchemaDefinitionModel adapter when W07 is
- * absent). Does not invent required inputs, properties, or handler state.
- * Shows a schema-valid example labeled generated when no authored example
- * exists on the projection.
+ * Render one normalized MCP tool as a scannable card: title with stable
+ * anchor, description when published, input schema embed, and example when
+ * present. Does not invent schema fields or surface family / package /
+ * duplicate identity / handler-registered chrome.
  */
 export function McpToolReference({
   tool,
-  packageVersion,
   chrome,
   className,
 }: McpToolReferenceProps) {
@@ -63,32 +56,6 @@ export function McpToolReference({
         ) : null}
       </header>
 
-      <ContractSourceBadge
-        chrome={chrome}
-        family="mcp"
-        lifecycle={tool.lifecycle}
-        packageVersion={packageVersion}
-        source={tool.source}
-      />
-
-      <dl className="m-0 grid gap-2 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-4">
-        <MetadataRow label="Tool name" value={tool.name} mono />
-        <MetadataRow label="Tool id" value={tool.id} mono />
-        {tool.handlerRegistered !== undefined ? (
-          <MetadataRow
-            label="Handler registered"
-            value={booleanStateLabel(tool.handlerRegistered)}
-          />
-        ) : null}
-        {tool.requiredInputs !== undefined && tool.requiredInputs.length > 0 ? (
-          <MetadataRow
-            label="Required inputs"
-            value={tool.requiredInputs.join(", ")}
-            mono
-          />
-        ) : null}
-      </dl>
-
       <section className="space-y-2" data-mcp-input-schema="">
         <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Input schema
@@ -109,27 +76,6 @@ export function McpToolReference({
         <McpToolExample origin={example.origin} value={example.value} />
       ) : null}
     </article>
-  );
-}
-
-function MetadataRow({
-  label,
-  value,
-  mono = false,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
-  return (
-    <div className="contents">
-      <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
-      </dt>
-      <dd className={cn("m-0", mono ? "font-mono text-xs" : undefined)}>
-        {value}
-      </dd>
-    </div>
   );
 }
 

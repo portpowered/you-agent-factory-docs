@@ -63,7 +63,7 @@ function fixtureTool(
 }
 
 describe("McpToolReference", () => {
-  test("renders available metadata and embeds the input schema", () => {
+  test("renders title, description, and input schema without verbose metadata", () => {
     const { container } = render(
       <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
     );
@@ -83,12 +83,17 @@ describe("McpToolReference", () => {
         "Get one durable Factory Session inspection read model with lifecycle status.",
       ),
     ).toBeTruthy();
-    expect(screen.getByText("Handler registered")).toBeTruthy();
-    expect(screen.getByText("Yes")).toBeTruthy();
-    expect(screen.getByText("Required inputs")).toBeTruthy();
-    expect(screen.getAllByText("sessionId").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("0.0.0")).toBeTruthy();
-    expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
+    expect(
+      container.querySelector("[data-reference-copyable-anchor]"),
+    ).toBeTruthy();
+
+    expect(screen.queryByText("Handler registered")).toBeNull();
+    expect(screen.queryByText("Tool name")).toBeNull();
+    expect(screen.queryByText("Tool id")).toBeNull();
+    expect(screen.queryByText("Required inputs")).toBeNull();
+    expect(screen.queryByText("Lifecycle: Active")).toBeNull();
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(screen.queryByText("0.0.0")).toBeNull();
 
     const schemaEmbed = container.querySelector(
       "[data-schema-definition-embed]",
@@ -107,7 +112,7 @@ describe("McpToolReference", () => {
     ).toBeTruthy();
   });
 
-  test("omits optional metadata when the projection left it absent", () => {
+  test("omits description and schema embed when the projection left them absent", () => {
     const { container } = render(
       <McpToolReference
         tool={fixtureTool({
@@ -131,7 +136,7 @@ describe("McpToolReference", () => {
     ).toBeNull();
   });
 
-  test("does not invent required inputs or schema properties", () => {
+  test("does not invent schema properties when the projection omitted them", () => {
     const { container } = render(
       <McpToolReference
         tool={fixtureTool({

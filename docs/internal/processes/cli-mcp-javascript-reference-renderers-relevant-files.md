@@ -48,7 +48,7 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/mcp/McpToolReference.tsx` | One tool from a W04-normalized MCP projection with input schema embed + example |
+| `src/components/references/mcp/McpToolReference.tsx` | One tool card: title + stable anchor, description, input schema, example — no ContractSourceBadge / Tool name / Tool id / Handler registered / Required inputs chrome |
 | `src/components/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; generated shows visible AlertPanel notice |
 | `src/components/references/mcp/mcp-example.ts` | Generated-example copy constants |
 | `src/components/references/mcp/McpToolInventory.tsx` | Inventory list with empty/error chrome |
@@ -132,6 +132,10 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   defaults, conflicts, or validation rules from prose examples.
 - Optional enriched projection bags `flags` / `arguments` (non-empty arrays)
   hide the notice; rendering those rows is a later enrichment, not W10 story 003.
+- MCP tool cards keep title (heading + copyable anchor), description,
+  input schema, and example only — do not render `ContractSourceBadge`,
+  Tool name / Tool id / Handler registered / Required inputs rows on the card
+  body (normalized fields may still exist on the projection for filters/examples).
 - MCP tools carry optional `handlerRegistered`, `requiredInputs`,
   `inputSchema` (`SchemaDefinitionModel`), and authored `example` on W04
   projections — project via `projectMcpInputSchemaToDefinition`, embed via
