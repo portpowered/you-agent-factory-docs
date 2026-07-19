@@ -13,11 +13,11 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start from the default log root when you need to inspect recent factory runs. Use the retention and rotation controls below when you need a different root, retention window, backup count, size limit, or compression for rotated files. Pass a runtime-log flag on you run to set or inspect the log root for one invocation. Use the CLI diagnostics controls when you need concise or lower-level stderr output, or when a supported command should emit structured JSON on stdout. Keep runtime logs separate from metrics files and from record/replay artifacts when diagnosing a run. A forthcoming metrics page will cover the metrics channel in depth; this page only marks that boundary."
+      "body": "Start from the default log root when you need to inspect recent factory runs. Use the retention and rotation controls below when you need a different root, retention window, backup count, size limit, or compression for rotated files. Pass a runtime-log flag on you run to set or inspect the log root for one invocation. Use the CLI diagnostics controls when you need concise or lower-level stderr output, or when a supported command should emit structured JSON on stdout. Keep runtime logs separate from metrics files and from record/replay artifacts when diagnosing a run. Metrics covers the metrics channel in depth; logs only mark that boundary."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web runtime-logs and CLI-diagnostics reference for you-agent-factory. It is not a sync of packaged CLI docs, not the metrics reference, not record/replay artifact management, not FactoryEvent or session event-stream contracts, not agent-run tool-diagnostics inspection, and not the OpenAPI or API reference. Sibling links and packaged you docs topics aid discovery only; they are not required to understand runtime logs and CLI diagnostics here."
+      "body": "Logs covers runtime logs and CLI diagnostics for you-agent-factory. It is not a sync of packaged CLI docs, not the metrics reference, not record/replay artifact management, not FactoryEvent or session event-stream contracts, not agent-run tool-diagnostics inspection, and not the OpenAPI or API reference. Sibling links and packaged you docs topics aid discovery only; they are not required to understand runtime logs and CLI diagnostics here."
     },
     "related": {
       "title": "Related To"

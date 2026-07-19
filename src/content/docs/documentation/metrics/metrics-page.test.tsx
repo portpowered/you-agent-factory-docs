@@ -101,7 +101,7 @@ describe("metrics documentation page", () => {
     expect(metricsChart).toMatch(/time-ordered|successive ticks/i);
     expect(metricsChart).toMatch(/processing|terminal|failed|categories/i);
 
-    expect(limits).toMatch(/factory metrics exposure reference/i);
+    expect(limits).toMatch(/Metrics covers factory metrics exposure/i);
     expect(limits).toMatch(/not a sync of packaged CLI/i);
     expect(limits).toMatch(/not a logs|not logs/i);
     expect(limits).toMatch(/not OpenAPI|API reference/i);
@@ -206,7 +206,7 @@ describe("metrics documentation page", () => {
 
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(limitsSection?.textContent).toMatch(
-      /factory metrics exposure reference/i,
+      /Metrics covers factory metrics exposure/i,
     );
     expect(limitsSection?.textContent).toMatch(/not a sync of packaged CLI/i);
     expect(limitsSection?.textContent).toMatch(/not Model Atlas/i);

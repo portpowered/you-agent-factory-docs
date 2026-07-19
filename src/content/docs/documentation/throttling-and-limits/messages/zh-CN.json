@@ -5,7 +5,7 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Throttling and limits in you-agent-factory are four distinct pressure surfaces that can slow or stop a run: configured resource capacity, provider limits, queue pressure, and retry/limit (circuit-breaker) behavior. Use this page when a factory feels constrained and you need to tell those surfaces apart. It is not a Model Atlas page, not a resources-only deep-dive, and not a fabricated global rate-limit SLA."
+      "body": "Throttling and limits in you-agent-factory are four distinct pressure surfaces that can slow or stop a run: configured resource capacity, provider limits, queue pressure, and retry/limit (circuit-breaker) behavior. Use Throttling and limits when a factory feels constrained and you need to tell those surfaces apart. It is not a Model Atlas page, not a resources-only deep-dive, and not a fabricated global rate-limit SLA."
     },
     "keyConcepts": {
       "title": "Key Concepts",
@@ -21,11 +21,11 @@
     },
     "operationalCautions": {
       "title": "Operational Cautions",
-      "body": "This page does not invent an exponential backoff algorithm, numeric SLA, or undocumented auto-throttle. Factory-authored PROVIDER_QUOTA and INVOCATION_SLOT pools do not mean cloud provider quotas are fully enforced solely by factory config — the provider can still reject or rate-limit outside the factory. Do not collapse render-queue or terminal-output backlog into resource capacity: a progress backlog notice is a CLI rendering pressure signal, not proof that a resource pool is exhausted. Do not rely on retired top-level global_limits or exhaustionRules examples; current safety behavior uses workstation limits and guarded LOGICAL_MOVE workstations. For deeper sibling detail, continue with Resources, Workers, and Troubleshooting without treating those pages as the definition of these four distinctions."
+      "body": "Throttling and limits does not invent an exponential backoff algorithm, numeric SLA, or undocumented auto-throttle. Factory-authored PROVIDER_QUOTA and INVOCATION_SLOT pools do not mean cloud provider quotas are fully enforced solely by factory config — the provider can still reject or rate-limit outside the factory. Do not collapse render-queue or terminal-output backlog into resource capacity: a progress backlog notice is a CLI rendering pressure signal, not proof that a resource pool is exhausted. Do not rely on retired top-level global_limits or exhaustionRules examples; current safety behavior uses workstation limits and guarded LOGICAL_MOVE workstations. For deeper sibling detail, continue with Resources, Workers, and Troubleshooting without treating those pages as the definition of these four distinctions."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web throttling-and-limits reference for distinguishing capacity, provider limits, queue pressure, and retry/limit behavior. It is not a resources-only page, not a workers taxonomy, not a troubleshooting catalog, not a packaged CLI sync, and not a guarantee sheet for provider cloud quotas or invented backoff schedules."
+      "body": "Throttling and limits distinguishes capacity, provider limits, queue pressure, and retry/limit behavior. It is not a resources-only page, not a workers taxonomy, not a troubleshooting catalog, not a packaged CLI sync, and not a guarantee sheet for provider cloud quotas or invented backoff schedules."
     },
     "related": {
       "title": "Related To"
@@ -58,7 +58,7 @@
     "limitsExampleLabel": "Minimal workstation limits fragment",
     "limitsExampleYaml": "---\ntype: AGENT_RUN\nlimits:\n  maxExecutionTime: 30m\n  maxRetries: 3\n---",
     "limitsExampleMeaning": "maxExecutionTime bounds how long one dispatch may run before timeout failure routing. maxRetries is the per-workstation circuit-breaker retry/failure limit. Pair these with capacity pools when you need both concurrency bounds and per-step safety limits.",
-    "siblingDiscoveryIntro": "Continue with these sibling documentation surfaces when you need worker backends, resource-pool detail, or failure recovery beyond the four pressure distinctions on this page.",
+    "siblingDiscoveryIntro": "Continue with these sibling documentation surfaces when you need worker backends, resource-pool detail, or failure recovery beyond these four pressure distinctions.",
     "workersDocs": "Workers",
     "resourcesDocs": "Resources",
     "troubleshootingDocs": "Troubleshooting"

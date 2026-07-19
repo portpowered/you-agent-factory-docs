@@ -17,7 +17,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web reference for packaged you docs topics. It is not a full topic dump, not a sync of packaged markdown into the site, not factory-local factory/docs authorship, and not the CLI install or command-matrix deep page. Sibling documentation links aid discovery only."
+      "body": "Packaged documents covers packaged you docs topics. It is not a full topic dump, not a sync of packaged markdown into the site, not factory-local factory/docs authorship, and not the CLI install or command-matrix deep page. Sibling documentation links aid discovery only."
     },
     "related": {
       "title": "Related To"
@@ -42,7 +42,7 @@
       "body": "Discovery starts from you docs with no topic: that command prints the quick-start blurb and the packaged topic index. A supported topic argument prints that topic’s authored markdown with no wrapper formatting."
     },
     "referenceAndFreshness": {
-      "body": "Reference topics by topic id from the packaged index. Content freshness tracks the installed CLI binary—upgrade the CLI to receive updated packaged topics. This Program documentation page is not a live sync of packaged markdown."
+      "body": "Reference topics by topic id from the packaged index. Content freshness tracks the installed CLI binary—upgrade the CLI to receive updated packaged topics. The web docs are not a live sync of packaged markdown."
     },
     "exampleNotes": {
       "body": "Replace agents with any other supported topic id from the index, such as config or packaged-goal, when you need that topic’s authored markdown."
