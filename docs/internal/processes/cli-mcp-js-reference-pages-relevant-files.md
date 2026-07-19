@@ -35,6 +35,7 @@ Do **not**:
 | `src/content/docs/references/cli/CliReferenceInventory.tsx` | Server mount: load inventory → `CliCommandInventory` |
 | `src/content/docs/references/cli/page-mdx-components.tsx` | Page-local MDX component map |
 | `src/content/docs/references/cli/cli-page.test.tsx` | Colocated route/render proof |
+| `src/content/docs/references/cli/assert-cli-page-intro-strip-browser.ts` | Playwright probe: inventory-first CLI page without What It Covers / Key Concepts / folded Opening summary; #153 card keep-list + under-construction Flags/arguments |
 | `src/content/registry/references/cli.json` | `reference.cli` registry record |
 | `src/lib/references/load-cli-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
 | `src/lib/references/cli-reference-turbopack.ts` | Webpack-safe CLI export resolution via ancestor `node_modules` + manifest join |
@@ -158,6 +159,15 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   `data-contract-source-badge` / `Handler registered` / `Object policy` /
   `data-mcp-example-generated-notice`. Smoke sibling CLI + javascript-runtime
   routes still return HTTP 200.
+- CLI intro-strip browser-verify on `/docs/references/cli`:
+  `bun src/content/docs/references/cli/assert-cli-page-intro-strip-browser.ts`
+  (webpack `next dev`, unique port 3578 default, Playwright; kill server on
+  exit). Assert absent What It Covers / Key Concepts / `#what-it-covers` /
+  `#key-concepts` / `[data-testid="folded-summary"]` /
+  `[data-opening-summary="folded"]`; assert Command Inventory +
+  `data-inventory-state="success"` + representative `#you-config-init` card
+  keep-list (header, example, under-construction Flags/arguments — no invented
+  option rows). Prefer `CLI_INTRO_STRIP_PROBE_BASE_URL` when a server is warm.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
 - Each new references page needs its own static
