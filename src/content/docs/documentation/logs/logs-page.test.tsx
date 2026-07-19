@@ -37,42 +37,38 @@ describe("logs documentation page", () => {
       /docs-site build logs/i,
     );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/runtime logs/i);
-    expect(whatItCovers).toMatch(/CLI diagnostics/i);
-    expect(whatItCovers).toMatch(/UTC-date grouping/i);
-    expect(whatItCovers).toMatch(/Runtime metrics/i);
-    expect(keyConcepts).toMatch(/structured JSON rolling files/i);
-    expect(keyConcepts).toMatch(/UTC start date/i);
-    expect(keyConcepts).toMatch(/~\/\.you-agent-factory\/logs/);
-    expect(keyConcepts).toMatch(/Runtime metrics/i);
-    expect(keyConcepts).toMatch(/structured JSONL/i);
-    expect(keyConcepts).toMatch(/--verbose/);
-    expect(keyConcepts).toMatch(/concise command diagnostics to stderr/i);
-    expect(keyConcepts).toMatch(/--debug/);
-    expect(keyConcepts).toMatch(/implies --verbose/i);
-    expect(keyConcepts).toMatch(/--json/);
-    expect(keyConcepts).toMatch(/structured success output to stdout/i);
-    expect(keyConcepts).toMatch(/diagnostics remain on stderr/i);
-    expect(keyConcepts).toMatch(
-      /System logs include command stdout and stderr only on command failures/i,
+    expect(openingSummary).toMatch(/structured JSON rolling files/i);
+    expect(openingSummary).toMatch(/log root/i);
+    expect(openingSummary).not.toMatch(/\n\n/);
+    expect(openingSummary).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
     );
-    expect(keyConcepts).toMatch(
-      /Environment details are record-channel diagnostics only/i,
-    );
+
     expect(howToUse).toMatch(/log root/i);
     expect(howToUse).toMatch(/retention and rotation/i);
-    expect(howToUse).toMatch(/CLI diagnostics/i);
+    expect(howToUse).toMatch(/structured JSON rolling files/i);
+    expect(howToUse).toMatch(/UTC start date/i);
+    expect(howToUse).toMatch(/~\/\.you-agent-factory\/logs/);
+    expect(howToUse).toMatch(/metrics files/i);
+    expect(howToUse).toMatch(/structured JSONL/i);
+    expect(howToUse).toMatch(/--verbose/);
+    expect(howToUse).toMatch(/concise command diagnostics to stderr/i);
+    expect(howToUse).toMatch(/--debug/);
+    expect(howToUse).toMatch(/implies --verbose/i);
+    expect(howToUse).toMatch(/--json/);
+    expect(howToUse).toMatch(/structured success output to stdout/i);
+    expect(howToUse).toMatch(/diagnostics remain on stderr/i);
+    expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+
     expect(limits).toMatch(/Logs covers runtime logs and CLI diagnostics/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/not the metrics reference/i);
@@ -80,13 +76,6 @@ describe("logs documentation page", () => {
     expect(limits).toMatch(/not FactoryEvent or session event-stream/i);
     expect(limits).toMatch(/not agent-run tool-diagnostics inspection/i);
     expect(limits).toMatch(/not the OpenAPI or API reference/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
 
     render(
@@ -101,9 +90,11 @@ describe("logs documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -112,7 +103,6 @@ describe("logs documentation page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    expect(document.body.textContent).toMatch(/Logs is the web reference/i);
     expect(document.body.textContent).toMatch(/~\/\.you-agent-factory\/logs/);
 
     const howToUseSection = document.getElementById("how-to-use");
@@ -150,17 +140,12 @@ describe("logs documentation page", () => {
     expect(howToUseSection?.textContent).toMatch(
       /Environment details are record-channel diagnostics only/i,
     );
-
-    const keyConceptsSection = document.getElementById("key-concepts");
-    expect(keyConceptsSection?.textContent).toMatch(
+    expect(howToUseSection?.textContent).toMatch(
       /structured JSON rolling files/i,
     );
-    expect(keyConceptsSection?.textContent).toMatch(/UTC start date/i);
-    expect(keyConceptsSection?.textContent).toMatch(/Runtime metrics/i);
-    expect(keyConceptsSection?.textContent).toMatch(/structured JSONL/i);
-    expect(keyConceptsSection?.textContent).toMatch(/--verbose/);
-    expect(keyConceptsSection?.textContent).toMatch(/--debug/);
-    expect(keyConceptsSection?.textContent).toMatch(/--json/);
+    expect(howToUseSection?.textContent).toMatch(/UTC start date/i);
+    expect(howToUseSection?.textContent).toMatch(/metrics files/i);
+    expect(howToUseSection?.textContent).toMatch(/structured JSONL/i);
 
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(limitsSection?.textContent).toMatch(
@@ -213,15 +198,14 @@ describe("logs documentation page", () => {
     );
 
     expect(loadedPage.messages.title).toBe("Logs");
-    expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
-      "What It Covers",
-    );
-    expect(loadedPage.messages.sections?.keyConcepts?.title).toBe(
-      "Key Concepts",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
     expect(loadedPage.messages.sections?.howToUse?.title).toBe("How To Use");
     expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
       "Limits And Assumptions",
+    );
+    expect(String(loadedPage.messages.openingSummary ?? "")).toMatch(
+      /structured JSON rolling files/i,
     );
     expect(String(loadedPage.messages.links?.defaultPathValue ?? "")).toBe(
       "~/.you-agent-factory/logs",
@@ -245,8 +229,9 @@ describe("logs documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(document.body.textContent).toMatch(/~\/\.you-agent-factory\/logs/);
     expect(document.body.textContent).toMatch(/--runtime-log-dir/);

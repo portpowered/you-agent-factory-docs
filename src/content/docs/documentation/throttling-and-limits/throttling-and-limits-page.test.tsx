@@ -2,8 +2,8 @@
  * Page-owned render proof for documentation/throttling-and-limits.
  * Covers documentation shell, four pressure-surface distinctions,
  * no-invented-guarantee cautions, copyable capacity/limits examples,
- * sibling discovery, and non-en locale route render — not route
- * inventories or shared helper contracts. Colocated under the page
+ * sibling discovery, and non-en locale route render — without leftover
+ * What It Covers / Key Concepts intro chrome. Colocated under the page
  * bundle so audit:canonical-page-surface stays within the ordinary
  * page-owned + locale-shipping surface for this lane.
  */
@@ -46,12 +46,10 @@ describe("throttling-and-limits documentation page", () => {
         /without inventing a global throttle guarantee/i,
       );
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
-      );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+
+      const openingSummary = String(loadedPage.messages.openingSummary ?? "");
       const howToUse = String(
         loadedPage.messages.sections?.howToUse?.body ?? "",
       );
@@ -62,13 +60,15 @@ describe("throttling-and-limits documentation page", () => {
         loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
       );
 
-      expect(whatItCovers).toMatch(/configured resource capacity/i);
-      expect(whatItCovers).toMatch(/provider limits/i);
-      expect(whatItCovers).toMatch(/queue pressure/i);
-      expect(whatItCovers).toMatch(/retry\/limit/i);
-      expect(whatItCovers).toMatch(/not a Model Atlas page/i);
-      expect(keyConcepts).toMatch(/not one global throttle/i);
+      expect(openingSummary).toMatch(/configured capacity|pressure surfaces/i);
+      expect(openingSummary).toMatch(/provider|queue|retry/i);
+      expect(openingSummary).not.toMatch(/\n\n/);
+      expect(openingSummary).not.toMatch(/on this page|reader.?shortcut/i);
+
+      expect(howToUse).toMatch(/not one global throttle/i);
       expect(howToUse).toMatch(/four surfaces/i);
+      expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
+
       expect(operationalCautions).toMatch(
         /does not invent an exponential backoff/i,
       );
@@ -80,8 +80,6 @@ describe("throttling-and-limits documentation page", () => {
       expect(limits).toMatch(/not a troubleshooting catalog/i);
       expect(limits).toMatch(/not a packaged CLI sync/i);
       expect(limits).toMatch(/not a guarantee sheet/i);
-      expect(whatItCovers).not.toMatch(/on this page|reader.?shortcut/i);
-      expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
 
       expect(
         String(loadedPage.messages.links?.surfaceCapacityName ?? ""),
@@ -120,11 +118,13 @@ describe("throttling-and-limits documentation page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
       expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Minimal Example" }),
@@ -151,6 +151,7 @@ describe("throttling-and-limits documentation page", () => {
       expect(document.body.textContent).toMatch(
         /does not invent an exponential backoff/i,
       );
+      expect(document.body.textContent).toMatch(/not one global throttle/i);
 
       const relatedSection = document.getElementById("related");
       expect(relatedSection).toBeTruthy();
@@ -186,15 +187,14 @@ describe("throttling-and-limits documentation page", () => {
       );
 
       expect(loadedPage.messages.title).toBe("Throttling and limits");
-      expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
-        "What It Covers",
-      );
-      expect(loadedPage.messages.sections?.keyConcepts?.title).toBe(
-        "Key Concepts",
-      );
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
       expect(loadedPage.messages.sections?.howToUse?.title).toBe("How To Use");
       expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
         "Limits And Assumptions",
+      );
+      expect(String(loadedPage.messages.openingSummary ?? "")).toMatch(
+        /pressure surfaces|configured capacity/i,
       );
       expect(
         String(loadedPage.messages.links?.surfaceCapacityName ?? ""),
@@ -215,8 +215,11 @@ describe("throttling-and-limits documentation page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
+      expect(
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
       expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
       expect(document.body.textContent).toMatch(/Configured resource capacity/);
       expect(document.body.textContent).toMatch(/maxExecutionTime/);

@@ -1783,9 +1783,14 @@ For the nine ops/platform Documentation Program trees under
 - Do not edit core Program sibling trees owned by
   `repair-documentation-program-intro-strip-core`, and do not delete unused
   shared helpers (dead-code consolidation owns that).
-- Page-local tests (next story) should assert intro absence and retarget body
-  asserts onto promoted teaching markers—not restore intros to satisfy old
-  expects.
+- Page-local tests assert intro absence (MCP #156 / Events #171 style):
+  `sections.whatItCovers` / `sections.keyConcepts` undefined;
+  `queryByRole` / `getElementById` null for What It Covers / Key Concepts;
+  `openingSummary` empty or one short purpose sentence (no `\n\n` overview).
+  Retarget body asserts onto promoted teaching markers (`#how-to-use`,
+  status/dashboard sections, limits, callouts)—not restore intros to satisfy
+  old expects. Metrics/resources How To Use was stripped as boilerplate; other
+  ops pages keep How To Use when it wraps primary teaching.
 
 ## Reviewer-facing verification
 
