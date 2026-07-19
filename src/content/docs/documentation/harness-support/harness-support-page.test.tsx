@@ -50,7 +50,7 @@ describe("harness-support documentation page", () => {
     expect(keyConcepts).toMatch(/agent runtime the factory drives/i);
     expect(howToUse).toMatch(/MCP|worktrees|external models/i);
     expect(howToUse).toMatch(/scan/i);
-    expect(limits).toMatch(/web harness-support matrix reference/i);
+    expect(limits).toMatch(/Harness Support is a matrix reference/i);
     expect(limits).toMatch(/not a full runner or provider field dump/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/not the harness concept glossary/i);
@@ -109,7 +109,7 @@ describe("harness-support documentation page", () => {
       /MCP|worktrees|external models/i,
     );
     expect(limitsSection?.textContent).toMatch(
-      /web harness-support matrix reference/i,
+      /Harness Support is a matrix reference/i,
     );
     expect(limitsSection?.textContent).toMatch(
       /not the harness concept glossary/i,

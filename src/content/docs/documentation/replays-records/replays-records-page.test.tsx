@@ -72,8 +72,20 @@ describe("replays-records documentation page", () => {
     expect(keyConceptsSection?.textContent).toMatch(/stderr/i);
 
     const limitsSection = document.getElementById("limits-and-assumptions");
+    expect(limitsSection?.textContent).toMatch(
+      /Replays \/ Records covers capturing live runs/i,
+    );
     expect(limitsSection?.textContent).toMatch(/not a sync of packaged CLI/i);
     expect(limitsSection?.textContent).toMatch(/must not be committed/i);
+    expect(limitsSection?.textContent).not.toMatch(
+      /This page is|on this page|web .+ reference|reader.?shortcut/i,
+    );
+    expect(howToUseSection?.textContent).not.toMatch(
+      /This page|on this page|reader.?shortcut/i,
+    );
+    expect(keyConceptsSection?.textContent).not.toMatch(
+      /This page|on this page|reader.?shortcut/i,
+    );
 
     const relatedSection = document.getElementById("related");
     expect(relatedSection).toBeTruthy();

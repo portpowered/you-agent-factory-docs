@@ -62,9 +62,12 @@ describe("submitting-work documentation page", () => {
     ).toBeGreaterThan(0);
     expect(
       screen.getByText(
-        /submit that batch to a factory that is already running/i,
+        /submitting that batch to a factory that is already running/i,
       ),
     ).toBeTruthy();
+    expect(document.getElementById("what-it-covers")?.textContent).not.toMatch(
+      /This reference covers|Use it when you need the web/i,
+    );
 
     const workBatchesSection = document.getElementById("work-batches");
     expect(workBatchesSection).toBeTruthy();
@@ -123,7 +126,7 @@ describe("submitting-work documentation page", () => {
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(limitsSection).toBeTruthy();
     expect(limitsSection?.textContent).toMatch(
-      /web submitting-work reference/i,
+      /Submitting work covers batches and relationships only/i,
     );
     expect(limitsSection?.textContent).toMatch(/not a full CLI flag dump/i);
     expect(limitsSection?.textContent).toMatch(
@@ -134,6 +137,9 @@ describe("submitting-work documentation page", () => {
     );
     expect(limitsSection?.textContent).toMatch(
       /not the OpenAPI or API reference/i,
+    );
+    expect(limitsSection?.textContent).not.toMatch(
+      /This page is|web submitting-work reference/i,
     );
 
     const cliDocs = screen.getByRole("link", { name: "CLI docs" });
