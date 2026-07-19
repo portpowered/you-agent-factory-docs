@@ -130,9 +130,17 @@ describe("W11 published route states and ownership fences", () => {
         expect(loadedPage.messages.sections?.tags).toBeUndefined();
         expect(loadedPage.messages.sections?.references).toBeUndefined();
         expect(loadedPage.messages.links).toBeUndefined();
-        expect(loadedPage.messages.openingSummary).toMatch(
-          /without a live Factory host/i,
-        );
+        // CLI inventory-first repair omits openingSummary; MCP/JS keep the
+        // live-host-free lead. Scope the positive summary assertion away from CLI.
+        if (route.slug === "cli") {
+          expect(String(loadedPage.messages.openingSummary ?? "").trim()).toBe(
+            "",
+          );
+        } else {
+          expect(loadedPage.messages.openingSummary).toMatch(
+            /without a live Factory host/i,
+          );
+        }
 
         cleanup();
         render(

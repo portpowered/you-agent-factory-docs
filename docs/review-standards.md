@@ -11,6 +11,27 @@ For general review conduct, also read
 For docs content quality, use
 [docs writing standards](../factory/docs/standards/docs-writing-standards.md).
 
+## Docs copy blocking failures
+
+When a pull request changes published docs writing (guides, concepts,
+techniques, documentation, glossary, references, or related customer-facing
+copy), treat the following
+[docs writing standards](../factory/docs/standards/docs-writing-standards.md)
+rules as **blocking** `FAIL` items — do not approve until they pass:
+
+1. **No self-referential page-as-subject framing.** Published pages must not
+   narrate the documentation page itself ("This page explains/covers/is…",
+   "on this page" framing about the doc). The body teaches the product topic
+   directly.
+2. **Customer-facing voice, not internals.** Published pages speak to CLI and
+   factory users. Do not ship system-bounded factory, planner, or docs-process
+   internals as if the reader cares about authoring or planner context.
+
+Mark either failure as blocking in the PR review summary when docs writing is
+in scope. Intentional relocated stubs ("This page moved…") and brief
+reader-useful documentation-behavior facts remain allowed under the writing
+standard's listed exceptions.
+
 ## Discovery and navigation test review
 
 When a pull request touches route discovery, sidebar grouping, browse or tag

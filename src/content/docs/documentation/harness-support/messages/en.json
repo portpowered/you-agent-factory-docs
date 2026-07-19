@@ -9,7 +9,7 @@
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. Feature coverage means whether that runtime supports a capability the factory can use with it. This reference compares those harnesses by coverage; the full harness definition lives on the harness concept page."
+      "body": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. Feature coverage means whether that runtime supports a capability the factory can use with it. The matrix compares those harnesses by coverage; the full harness definition lives on the harness concept page."
     },
     "supportMatrix": {
       "title": "Support Matrix",
@@ -21,7 +21,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web harness-support matrix reference. It is not a full runner or provider field dump, not a sync of packaged CLI docs, not the harness concept glossary, and not an agent-factory comparison blog. Claims stay conservative when product evidence is incomplete: partial cells mark uncertain or incomplete coverage rather than inventing full support."
+      "body": "Harness Support is a matrix reference for harness feature coverage. It is not a full runner or provider field dump, not a sync of packaged CLI docs, not the harness concept glossary, and not an agent-factory comparison blog. Claims stay conservative when product evidence is incomplete: partial cells mark uncertain or incomplete coverage rather than inventing full support."
     },
     "related": {
       "title": "Related To"

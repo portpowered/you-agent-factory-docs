@@ -87,9 +87,9 @@ describe("architecture-of-system documentation page", () => {
       expect(limits).toMatch(/system-structure overview/i);
       expect(limits).toMatch(/field dump/i);
       expect(limits).toMatch(/packaged CLI/i);
-      expect(limits).toMatch(/docs-site internal architecture/i);
       expect(limits).toMatch(/MCP|API|logs|metrics/i);
       expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      expect(limits).not.toMatch(/This page is|docs-site internal/i);
 
       render(
         <main>

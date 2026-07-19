@@ -223,7 +223,7 @@ describe("mcp documentation page", () => {
       expect(keyConcepts).toMatch(/stdio/i);
       expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
 
-      expect(limits).toMatch(/web MCP integration reference/i);
+      expect(limits).toMatch(/MCP covers stdio serve/i);
       expect(limits).toMatch(/stdio/i);
       expect(limits).toMatch(/HTTP|SSE/i);
       expect(limits).toMatch(/multi-host/i);
@@ -253,9 +253,7 @@ describe("mcp documentation page", () => {
       expect(keyConceptsSection?.textContent).toMatch(/stdio/i);
       expect(keyConceptsSection?.textContent).toMatch(/Factory Session/);
 
-      expect(limitsSection?.textContent).toMatch(
-        /web MCP integration reference/i,
-      );
+      expect(limitsSection?.textContent).toMatch(/MCP covers stdio serve/i);
       expect(limitsSection?.textContent).toMatch(/HTTP|SSE/i);
       expect(limitsSection?.textContent).toMatch(/Cursor/i);
       expect(limitsSection?.textContent).toMatch(/dynamic-workflows/i);

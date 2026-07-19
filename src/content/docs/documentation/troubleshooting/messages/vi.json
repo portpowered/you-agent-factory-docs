@@ -13,7 +13,7 @@
     },
     "howToUse": {
       "title": "How To Use",
-      "body": "Scan for the symptom that matches what you see, try the short recovery action, then follow the link into the owning canonical doc when you need commands, flags, or deeper setup. Use this page for recovery lookup. Open the linked install, getting-started, CLI, configuration, MCP, dynamic-workflows, or Factory Session pages when you need the full contract those surfaces own."
+      "body": "Scan for the symptom that matches what you see, try the short recovery action, then follow the link into the owning canonical doc when you need commands, flags, or deeper setup. Use Troubleshooting for recovery lookup. Open the linked install, getting-started, CLI, configuration, MCP, dynamic-workflows, or Factory Session pages when you need the full contract those surfaces own."
     },
     "commandNotFound": {
       "title": "you Not Found After Install",
@@ -49,7 +49,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web recovery lookup for you-agent-factory failure modes. It is not the install command matrix, not the getting-started quickstart, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short recovery actions here."
+      "body": "Troubleshooting is a recovery lookup for you-agent-factory failure modes. It is not the install command matrix, not the getting-started quickstart, not a full CLI flag dump, not the configuration or global-configuration-factories deep dive, not MCP host setup, not dynamic-workflow authoring, and not a sync of packaged you docs. Sibling links aid discovery only; they are not required to understand the short recovery actions here."
     },
     "related": {
       "title": "Related To"

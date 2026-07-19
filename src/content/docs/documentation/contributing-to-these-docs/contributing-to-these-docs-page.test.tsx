@@ -74,6 +74,17 @@ describe("contributing-to-these-docs documentation page", () => {
     const howToUse = document.getElementById("how-to-use");
     expect(howToUse?.textContent).toMatch(/make validate-data/);
     expect(howToUse?.textContent).not.toMatch(/Model Atlas/i);
+    expect(howToUse?.textContent).not.toMatch(/This page|on this page/i);
+
+    const limits = document.getElementById("limits-and-assumptions");
+    expect(limits?.textContent).toMatch(
+      /Contributing orients factory-docs authors/i,
+    );
+    expect(limits?.textContent).not.toMatch(
+      /This page|on this page|Read this page/i,
+    );
+    expect(whatItCovers?.textContent).not.toMatch(/This page|on this page/i);
+    expect(keyConcepts?.textContent).not.toMatch(/This page|on this page/i);
 
     const whatIs = screen.getByRole("link", {
       name: "What is you-agent-factory",

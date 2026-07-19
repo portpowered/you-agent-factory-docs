@@ -1447,6 +1447,41 @@ MDX component merge for schema mounts:
    `resolveApiPackageManifestFsPath` uses ancestor `node_modules` filesystem
    walk — webpack stubs `createRequire().resolve` in production server chunks
    (MODULE_NOT_FOUND), including runtime-built specifier strings.
+   Factory schema recursive `$ref` splay is page-local: enable `showCatalog`
+   only on `FactorySchemaReference` and select the transitive closure with
+   `collectFactorySchemaSplayDefinitions` under
+   `src/content/docs/references/factory-schema/` — leave you-config /
+   mock-workers on `showCatalog={false}`. Same-page `$ref` click-traverse
+   depends on that splay plus `pagePath={FACTORY_SCHEMA_PAGE_PATH}` and
+   `ReferenceHashNavigation`: navigable `$ref` hrefs are
+   `/docs/references/factory-schema#…` fragments whose ids match splayed
+   `SchemaDefinition` anchors. Prefer a direct property `$ref` row such as
+   `orchestrator` → `/$defs/FactoryOrchestrator` for proofs — root `workers`
+   is `Worker[]` type chrome, not a `data-schema-ref-row`. Browser probe:
+   `src/content/docs/references/factory-schema/assert-factory-schema-click-traverse-browser.ts`.
+   Authored full Factory configuration JSON example is page-local
+   `FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS` from
+   `factory-schema-full-config-example.ts` (hermetic factories/configuration
+   minimal sample keys) passed as `exampleInputs` on `FactorySchemaReference`
+   only. Browser probe:
+   `assert-factory-schema-full-config-example-browser.ts`.
+   Factory schema repair close-out (intro strip + splay + click-traverse +
+   full config) uses one page-local success-path probe:
+   `assert-factory-schema-repair-browser.ts` (webpack `bun run dev`, unique
+   port in 3100–3999, Playwright, kill server on exit). Assert
+   `data-schema-status="ready"`, absent What It Covers / Key Concepts,
+   splayed `$defs` catalog, `orchestrator` → `#defs-FactoryOrchestrator`
+   same-page click-traverse, and copyable authored
+   `full-factory-configuration` example keys. Run with plain `bun` from
+   repo cwd; do not leave the probe server running. Narrower probes
+   (`assert-factory-schema-click-traverse-browser.ts`,
+   `assert-factory-schema-full-config-example-browser.ts`) remain for
+   story-scoped iteration.
+   Intentional catalog splay grows Factory schema SSR HTML (~2.0 MiB);
+   raise the focused `references-factory-schema` payload ceiling in
+   `a11y-reference-payload-budget.ts` (~25% headroom) when closing this
+   lane so `make budget` stays green — do not invent unpublished defs to
+   shrink the page.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.
@@ -1461,6 +1496,31 @@ Representative pages: `src/content/docs/references/factory-schema/`,
 switch cases per slug). Cross-route success/invalid proofs live in
 `src/content/docs/references/schema-reference-published-routes.test.tsx`
 (page-owned route + mount markers only — not renderer or inventory scans).
+Schema reference polish stays projection-first: open on `#schema-lookup` (plus
+authored examples when present); do **not** restore `What It Covers` /
+`Key Concepts` / summary-style intros — page-local tests should assert those
+headings and `sections.whatItCovers` / `sections.keyConcepts` keys absent.
+Mock-workers recursive splay stays page-local: enable `showCatalog` and pass
+expanded `fieldNodes` from a page helper that resolves `itemSchema` /
+`refTarget` into nested children (strip `refTarget` on inlined parents so the
+shared expander can open them). Do not retarget shared SchemaReference defaults
+for Factory schema / you-config siblings.
+Mock-workers authored examples stay page-local: pass `exampleInputs` into the
+page `SchemaReference` mount from a page-owned module adapted from existing
+docs/customer samples (schema-true keys only). Do not edit workers/workstations
+authored pages and do not invent hermetic upstream schemas (HOLD).
+Mock-workers polish regression proofs stay under
+`mock-workers-schema-page.test.tsx`: assert intro absence, nested splay /
+on-page `$defs`, and authored example payloads on both the full MDX page path
+and the isolated mount (shared helper preferred) so `$ref`-only / no-examples
+presentation cannot silently return.
+Mock-workers browser verify stays page-local:
+`assert-mock-workers-schema-polish-browser.ts` (webpack `bun run dev`, unique
+port in 3100–3999, Playwright, kill server on exit). Assert
+`data-schema-status="ready"`, absent What It Covers / Key Concepts headings,
+nested `mockWorkers[]` / `unmatchedDispatchPolicy` fields + on-page `$defs`,
+and copyable authored examples (`data-schema-example="copy"` focusable).
+Run with plain `bun` from repo cwd; do not leave the probe server running.
 
 ## Page bundle and registry workflow
 

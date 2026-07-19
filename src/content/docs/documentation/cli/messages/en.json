@@ -5,7 +5,7 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This reference covers the you-agent-factory CLI: how to install the you binary, and which core commands start a factory, submit work, inspect sessions and work, or print packaged docs. It is the durable CLI lookup surface for customers who need install entrypoints and command purpose at a glance."
+      "body": "The you-agent-factory CLI installs the you binary and exposes the core commands that start a factory, submit work, inspect sessions and work, or print packaged docs. Use it for install entrypoints and command purpose at a glance."
     },
     "keyConcepts": {
       "title": "Key Concepts",
@@ -25,7 +25,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web CLI reference for install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
+      "body": "CLI coverage here is install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
     },
     "related": {
       "title": "Related To"

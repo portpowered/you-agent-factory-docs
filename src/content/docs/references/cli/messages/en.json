@@ -1,16 +1,7 @@
 {
   "title": "CLI",
   "description": "Look up every published you-agent-factory CLI command from the installed package CLI contract on a stable static docs route.",
-  "openingSummary": "This reference lists every published CLI command from the installed @you-agent-factory/api CLI contract so integrators can look up command paths, help text, and examples without a live Factory host.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This reference publishes the package-backed CLI command inventory for you-agent-factory. Readers can look up every published command path from the installed CLI contract, including available descriptions, examples, stable anchors, and inventory filters."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A CLI command path is the full published invocation string, such as you config init. The inventory comes from the installed @you-agent-factory/api/cli public export, not from a page-local copy of commands. Structured flags and arguments are not published yet on command cards; the Flags and arguments area marks that surface as under construction instead of inventing option rows."
-    },
     "commandInventory": {
       "title": "Command Inventory",
       "body": "Scan the published CLI commands below. Filter by command path, alias, description, lifecycle, or visibility when those facets are present on a command. Open a command card for its description and example, and copy its stable anchor when you need a deep link."
