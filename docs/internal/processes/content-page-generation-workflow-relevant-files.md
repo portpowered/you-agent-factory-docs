@@ -1441,6 +1441,11 @@ Mock-workers authored examples stay page-local: pass `exampleInputs` into the
 page `SchemaReference` mount from a page-owned module adapted from existing
 docs/customer samples (schema-true keys only). Do not edit workers/workstations
 authored pages and do not invent hermetic upstream schemas (HOLD).
+Mock-workers polish regression proofs stay under
+`mock-workers-schema-page.test.tsx`: assert intro absence, nested splay /
+on-page `$defs`, and authored example payloads on both the full MDX page path
+and the isolated mount (shared helper preferred) so `$ref`-only / no-examples
+presentation cannot silently return.
 
 ## Page bundle and registry workflow
 
