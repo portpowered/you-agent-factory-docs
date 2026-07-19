@@ -33,11 +33,8 @@ describe("factory-schema reference page", () => {
     expect(loadedPage.messages.title).toBe("Factory schema");
     expect(loadedPage.messages.description).toMatch(/Factory JSON Schema/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    expect(whatItCovers).toMatch(/live Factory JSON Schema/i);
-    expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
     expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(loadedPage.messages.sections?.related).toBeUndefined();
@@ -57,8 +54,9 @@ describe("factory-schema reference page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Schema Lookup" })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
@@ -68,6 +66,8 @@ describe("factory-schema reference page", () => {
     expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
     expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
 
     const schemaSurface = screen.getByTestId("factory-schema-reference");
     expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
@@ -77,11 +77,6 @@ describe("factory-schema reference page", () => {
     expect(
       schemaSurface.querySelector('[data-schema-field-path="id"]'),
     ).toBeTruthy();
-
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent ?? "").toMatch(
-      /Factory JSON Schema/i,
-    );
 
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
