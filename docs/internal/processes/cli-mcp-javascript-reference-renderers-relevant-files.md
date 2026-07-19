@@ -79,8 +79,9 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/lib/references/normalize-family-artifacts.ts` | Also normalizes `sharedSchemas` + enriched symbol metadata |
 | `src/content/docs/references/javascript-runtime/JavascriptSymbolMetadataGlossary.tsx` | Page-local glossary definition list mounted from MDX |
 | `src/content/docs/references/javascript-runtime/JavascriptRuntimeOverallExample.tsx` | Page-local overall how-the-runtime-works example mounted from MDX |
+| `src/content/docs/references/javascript-runtime/assert-javascript-runtime-polish-browser.ts` | Live browser probe for polished JS runtime page (webpack `bun run dev`, unique port, Playwright). Run with plain `bun` from repo cwd. |
 
-## Key host files (anchors + filters — story 007)
+## Key host files (anchors + filters — W10 story 007)
 
 | Path | Role |
 | --- | --- |
@@ -172,7 +173,13 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   `javascript-runtime-page.test.tsx` (live package Value vs function pills,
   glossary + overall example + TOC `#symbols`/`#shared-schemas`). Prefer
   `data-javascript-metadata-facet` / inventory data attrs over source scans.
-- Story 007: assign anchors through `assign*RegistryAnchors` (wraps
+- Worktree browser verify for this lane: Turbopack rejects parent-hoisted
+  `node_modules` symlinks (`points out of the filesystem root`). Prefer
+  `bun run dev -- --webpack -p <unique-port>` (as in
+  `assert-javascript-runtime-polish-browser.ts`). Scope chrome-label absence
+  checks to `[data-javascript-runtime-inventory]` — page-wide `textContent`
+  still includes shared ContractSourceBadge i18n strings in RSC payloads.
+- W10 Story 007: assign anchors through `assign*RegistryAnchors` (wraps
   `ReferenceAnchorRegistry`) before render; expose `CopyableReferenceAnchor`
   on every command/tool/symbol/shared-schema card. Inventory filters live in
   shared pure helpers + `ReferenceInventoryFilter` — ephemeral `useState` only,
