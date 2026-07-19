@@ -15,6 +15,10 @@
       "title": "Symbol metadata glossary",
       "body": "Symbol cards show kind, mutability, nullability, and binding lifecycle as glossary-backed pills when the package contract publishes those fields. The definitions below explain the published meanings — including Value versus function kind — without inventing extra enum values."
     },
+    "howTheRuntimeWorks": {
+      "title": "How the JavaScript runtime works",
+      "body": "At script start the host binds Value symbols such as javascript.args and javascript.meta from the workflow request. The script body then chains published helpers — phase, log, workflow.checkpoint, agent.run, workflow.artifact, and workflow.final — to record progress, dispatch child work, attach artifacts, and terminate. The example below composes only published call patterns from the package contract."
+    },
     "runtimeInventory": {
       "title": "Runtime Inventory",
       "body": "Scan the published JavaScript symbols and shared schemas below. Filter by symbol path, schema id, description, or lifecycle when those facets are present. Open a card for available metadata and shared-schema links, and copy its stable anchor when you need a deep link."

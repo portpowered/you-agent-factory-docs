@@ -99,6 +99,11 @@ describe("javascript-runtime reference page", () => {
         screen.getByRole("heading", { name: "Symbol metadata glossary" }),
       ).toBeTruthy();
       expect(
+        screen.getByRole("heading", {
+          name: "How the JavaScript runtime works",
+        }),
+      ).toBeTruthy();
+      expect(
         screen.getByRole("heading", { name: "Runtime Inventory" }),
       ).toBeTruthy();
       expect(
@@ -107,8 +112,12 @@ describe("javascript-runtime reference page", () => {
       expect(
         screen.getByRole("heading", { level: 2, name: "Shared schemas" }),
       ).toBeTruthy();
+      expect(document.getElementById("how-the-runtime-works")).toBeTruthy();
       expect(document.getElementById("symbols")).toBeTruthy();
       expect(document.getElementById("shared-schemas")).toBeTruthy();
+      expect(
+        loadedPage.toc.some((item) => item.url === "#how-the-runtime-works"),
+      ).toBe(true);
       expect(loadedPage.toc.some((item) => item.url === "#symbols")).toBe(true);
       expect(
         loadedPage.toc.some((item) => item.url === "#shared-schemas"),
@@ -166,6 +175,41 @@ describe("javascript-runtime reference page", () => {
           loadedPage.messages.sections?.symbolMetadataGlossary?.body ?? "",
         ),
       ).toMatch(/glossary-backed pills/i);
+
+      const overallExample = document.querySelector(
+        "[data-javascript-runtime-overall-example]",
+      );
+      expect(overallExample).toBeTruthy();
+      const overallExampleCode = document.querySelector(
+        "[data-javascript-runtime-overall-example-code]",
+      );
+      expect(overallExampleCode).toBeTruthy();
+      expect(overallExampleCode?.textContent ?? "").toContain('phase("draft")');
+      expect(overallExampleCode?.textContent ?? "").toContain(
+        "await agent.run",
+      );
+      expect(overallExampleCode?.textContent ?? "").toContain(
+        "workflow.final({ ok: true",
+      );
+      expect(
+        screen.getByText(/At script start the host binds Value symbols/i),
+      ).toBeTruthy();
+      expect(
+        document.querySelector(
+          '[data-javascript-runtime-overall-example-step="javascript.phase"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        document.querySelector(
+          '[data-javascript-runtime-overall-example-step="javascript.agent.run"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        String(loadedPage.messages.sections?.howTheRuntimeWorks?.body ?? ""),
+      ).toMatch(/javascript\.args and javascript\.meta/i);
+      expect(
+        String(loadedPage.messages.sections?.howTheRuntimeWorks?.body ?? ""),
+      ).toMatch(/published call patterns/i);
 
       const inventoryRoot = document.querySelector(
         "[data-javascript-runtime-inventory]",

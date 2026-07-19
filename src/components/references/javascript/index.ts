@@ -14,6 +14,11 @@ export {
   JavaScriptSymbolReference,
   javascriptSymbolInventoryIdentities,
 } from "./JavaScriptSymbolReference";
+export type { JavascriptRuntimeOverallExampleStep } from "./javascript-runtime-overall-example";
+export {
+  JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE,
+  JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_STEPS,
+} from "./javascript-runtime-overall-example";
 export { JAVASCRIPT_RUNTIME_SECTION_ANCHORS } from "./javascript-runtime-section-anchors";
 export {
   filterJavascriptSymbolsExcludingSharedSchemaDuplicates,

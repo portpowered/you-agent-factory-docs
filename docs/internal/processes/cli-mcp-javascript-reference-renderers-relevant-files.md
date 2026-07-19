@@ -71,12 +71,14 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/components/references/javascript/javascript-shared-schema-presentation.ts` | Pure JS-owned helpers: trim shared-schema embed chrome fields; filter Symbols-list duplicates of shared schemas |
 | `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome; Symbols list omits shared-schema duplicates; composable provider/chrome/lists so page MDX `<Section id="symbols">` / `<Section id="shared-schemas">` can own On this page TOC anchors |
 | `src/components/references/javascript/javascript-runtime-section-anchors.ts` | Stable `symbols` / `shared-schemas` section anchor ids shared by standalone headings and page MDX Sections |
+| `src/components/references/javascript/javascript-runtime-overall-example.ts` | Composed overall-example script + walkthrough steps (published call patterns only) |
 | `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
 | `src/components/references/javascript/types.ts` | JS renderer prop contracts / inventory input union |
 | `src/components/references/javascript/index.ts` | Public JavaScript renderer barrel |
 | `src/components/references/harness/ReferenceJavascriptHarness.tsx` | Dev fixture mount for JS inventory browser verification |
 | `src/lib/references/normalize-family-artifacts.ts` | Also normalizes `sharedSchemas` + enriched symbol metadata |
 | `src/content/docs/references/javascript-runtime/JavascriptSymbolMetadataGlossary.tsx` | Page-local glossary definition list mounted from MDX |
+| `src/content/docs/references/javascript-runtime/JavascriptRuntimeOverallExample.tsx` | Page-local overall how-the-runtime-works example mounted from MDX |
 
 ## Key host files (anchors + filters — story 007)
 

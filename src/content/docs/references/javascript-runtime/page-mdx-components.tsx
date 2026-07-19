@@ -8,6 +8,7 @@ import {
   JavaScriptRuntimeSharedSchemasList,
   JavaScriptRuntimeSymbolsList,
 } from "@/components/references/javascript";
+import { JavascriptRuntimeOverallExample } from "./JavascriptRuntimeOverallExample";
 import { JavascriptRuntimeReferenceInventory } from "./JavascriptRuntimeReferenceInventory";
 import { JavascriptSymbolMetadataGlossary } from "./JavascriptSymbolMetadataGlossary";
 
@@ -17,4 +18,5 @@ export const pageMdxComponents = {
   JavascriptRuntimeSymbolsList: JavaScriptRuntimeSymbolsList,
   JavascriptRuntimeSharedSchemasList: JavaScriptRuntimeSharedSchemasList,
   JavascriptSymbolMetadataGlossary,
+  JavascriptRuntimeOverallExample,
 };
