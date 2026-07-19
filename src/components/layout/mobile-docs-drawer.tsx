@@ -16,7 +16,9 @@ import { TreeContextProvider } from "fumadocs-ui/contexts/tree";
 import { X } from "lucide-react";
 import { type ComponentProps, type ReactNode, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { DOCS_CHROME_SIDEBAR_ROW_CLASSES } from "@/features/docs/styles/docs-chrome-sidebar";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
+import { cn } from "@/lib/utils";
 
 type MobileDocsDrawerProps = {
   id: string;
@@ -84,6 +86,7 @@ export function MobileDocsDrawer({
         aria-modal="true"
         aria-label={messages.shell.sidebarTitle}
         data-state="open"
+        data-mobile-docs-drawer=""
         data-motion-chrome="mobile-drawer"
         className="fixed inset-y-0 left-0 z-50 flex w-screen max-w-none flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
       >
@@ -145,11 +148,7 @@ function DrawerSidebarItem(props: ComponentProps<typeof SidebarItem>) {
   return (
     <SidebarItem
       {...props}
-      className="relative flex items-center gap-2 rounded-xl px-0 py-2 text-sm text-sidebar-foreground/78 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary/12 data-[active=true]:text-sidebar-primary"
-      style={{
-        paddingInlineStart: "0rem",
-        ...props.style,
-      }}
+      className={cn(DOCS_CHROME_SIDEBAR_ROW_CLASSES, "rounded-xl py-2")}
     />
   );
 }
@@ -164,11 +163,7 @@ function DrawerSidebarFolderTrigger(
   return (
     <SidebarFolderTrigger
       {...props}
-      className="flex w-full items-center gap-2 rounded-xl px-0 py-2 text-left text-sm text-sidebar-foreground/78 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-      style={{
-        paddingInlineStart: "0rem",
-        ...props.style,
-      }}
+      className={cn(DOCS_CHROME_SIDEBAR_ROW_CLASSES, "rounded-xl py-2")}
     />
   );
 }
@@ -179,11 +174,7 @@ function DrawerSidebarFolderLink(
   return (
     <SidebarFolderLink
       {...props}
-      className="flex w-full items-center gap-2 rounded-xl px-0 py-2 text-sm text-sidebar-foreground/78 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-primary/12 data-[active=true]:text-sidebar-primary"
-      style={{
-        paddingInlineStart: "0rem",
-        ...props.style,
-      }}
+      className={cn(DOCS_CHROME_SIDEBAR_ROW_CLASSES, "rounded-xl py-2")}
     />
   );
 }

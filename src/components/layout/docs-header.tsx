@@ -15,6 +15,11 @@ import {
 } from "@/components/layout/primary-nav";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
+import {
+  DOCS_CHROME_HEADER_ICON_CLASSES,
+  DOCS_CHROME_HEADER_TEXT_CLASSES,
+} from "@/features/docs/styles/docs-chrome-header-breadcrumb";
+import { DOCS_CHROME_HEADER_ACTION_ICON_CLASSES } from "@/features/docs/styles/docs-chrome-search-globe-github";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import {
@@ -38,8 +43,10 @@ export const DOCS_HEADER_SHELL_CLASS =
   "grid w-full grid-cols-[auto_1fr] items-center gap-4 px-4 py-3 [--fd-layout-width:97rem] [--fd-sidebar-width:0px] [--fd-toc-width:0px] md:grid-cols-[minmax(min-content,1fr)_var(--fd-sidebar-width,268px)_minmax(0,calc(var(--fd-layout-width,97rem)-var(--fd-sidebar-width,268px)-var(--fd-toc-width,0px)))_var(--fd-toc-width,0px)_minmax(min-content,1fr)] md:gap-0 md:px-0 md:[--fd-sidebar-width:268px] xl:[--fd-toc-width:268px]";
 
 /** Brand link chrome in the docs header (sidebar column on desktop). */
-export const DOCS_HEADER_BRAND_LINK_CLASS =
-  "shrink-0 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:col-start-2 md:col-end-3 md:row-start-1 md:flex md:items-center md:px-4";
+export const DOCS_HEADER_BRAND_LINK_CLASS = cn(
+  DOCS_CHROME_HEADER_TEXT_CLASSES,
+  "shrink-0 text-sm font-semibold md:col-start-2 md:col-end-3 md:row-start-1 md:flex md:items-center md:px-4",
+);
 
 /**
  * Desktop primary-nav content column: shared left-edge contract + nav flex.
@@ -92,7 +99,10 @@ export function DocsHeader({
             type="button"
             variant="outline"
             size="icon"
-            className={PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS}
+            className={cn(
+              PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS,
+              DOCS_CHROME_HEADER_ICON_CLASSES,
+            )}
             aria-expanded={menuOpen}
             aria-controls={menuPanelId}
             aria-label={messages.nav.menu}
@@ -143,7 +153,7 @@ export function DocsHeader({
               href={repositoryUrl}
               aria-label="Open project GitHub repository"
               title="Open project GitHub repository"
-              className={`${buttonVariants({ variant: "outline", size: "icon" })} header-action-icon`}
+              className={`${buttonVariants({ variant: "outline", size: "icon" })} ${DOCS_CHROME_HEADER_ACTION_ICON_CLASSES}`}
             >
               <FaGithub className="size-4" aria-hidden />
             </Link>
