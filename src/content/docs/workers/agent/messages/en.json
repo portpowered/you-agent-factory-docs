@@ -17,12 +17,6 @@
     },
     "related": {
       "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {
@@ -33,11 +27,6 @@
     "minimalExampleLabel": "Minimal valid AGENT_WORKER:",
     "misuseExampleLabel": "Incompatible misuse — operations on AGENT_WORKER (rejected):",
     "misuseNote": "operations is an inference capability field. Validation rejects it on AGENT_WORKER. Use INFERENCE_WORKER for one-shot operations.",
-    "fullFactorySchema": "Full Factory schema reference",
-    "workersFamilyIndex": "Workers family index",
-    "siblingWorkstations": "Workstations overview",
-    "siblingResources": "Resources",
-    "siblingInferenceWorkers": "Inference workers",
-    "siblingToolCalling": "Tool calling"
+    "fullFactorySchema": "Full Factory schema reference"
   }
 }

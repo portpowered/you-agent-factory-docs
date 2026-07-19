@@ -127,12 +127,15 @@ describe("workers agent page", () => {
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(
       screen.queryByRole("heading", { name: "Operational Cautions" }),
     ).toBeNull();
     expect(
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
 
     expect(
       screen.getByText(
@@ -169,11 +172,22 @@ describe("workers agent page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
+
+    const relatedSection = document.querySelector("section#related");
+    expect(relatedSection).toBeTruthy();
     expect(
-      screen
-        .getByRole("link", { name: "Workers family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers");
+      relatedSection?.querySelector('[data-testid="curated-related-docs"]'),
+    ).toBeTruthy();
+    expect(
+      relatedSection?.querySelector('a[href="/docs/workers/inference"]'),
+    ).toBeTruthy();
+    expect(
+      relatedSection?.querySelector('a[href="/docs/concepts/tool-calling"]'),
+    ).toBeTruthy();
+    expect(
+      relatedSection?.querySelector('a[href="/docs/workstations"]'),
+    ).toBeTruthy();
+    expect(relatedSection?.querySelector("ul.mt-3.list-disc")).toBeNull();
 
     expect(screen.getByText("Minimal valid AGENT_WORKER:")).toBeTruthy();
     expect(
@@ -183,6 +197,14 @@ describe("workers agent page", () => {
     ).toBeTruthy();
     const examples = document.querySelector("[data-agent-worker-examples]");
     expect(examples).toBeTruthy();
+    expect(
+      examples?.querySelector('[data-agent-worker-example-code="minimal"]'),
+    ).toBeTruthy();
+    expect(
+      examples?.querySelector(
+        '[data-agent-worker-example-code="misuse-operations"]',
+      ),
+    ).toBeTruthy();
     expect(
       examples?.querySelector('[data-agent-worker-example="minimal"]')
         ?.textContent,
@@ -195,6 +217,7 @@ describe("workers agent page", () => {
       examples?.querySelector('[data-agent-worker-example="misuse-operations"]')
         ?.textContent,
     ).toContain('"CHAT"');
+    expect(examples?.querySelector("pre > code")).toBeNull();
   });
 
   test("renders the variant schema embed in isolation", () => {

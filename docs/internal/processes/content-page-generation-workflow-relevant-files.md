@@ -853,6 +853,12 @@ as the primary display title. Routes/slugs stay unchanged; only display
 titles and owned link labels change. `MODEL_WORKSTATION` displays as
 `Model workstation` (avoid `Model-workstation workstation`).
 
+On `/docs/workers/agent`, `#related` uses `<RelatedDocs />` alone (no
+duplicate hand-built `LocalizedLinkList` of the same destinations beside it).
+JSON examples render through shared `CodePanel` (not bare unstyled
+`<pre><code>`). Do not restore `#tags` / `#references`
+(`TagPillList` / `CitationList`) footer chrome on that page.
+
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`
 (stable anchor). Put ownership matrix cells, example label/body, and
