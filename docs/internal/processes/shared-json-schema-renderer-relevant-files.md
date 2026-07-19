@@ -148,10 +148,26 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   (`schemas/factory`, `schemas/you-config`, `schemas/mock-workers`), normalize
   with `normalizeJsonSchemaArtifact` (pure), then render through
   `SchemaReference` / `SchemaVerificationHarness`. Use `showCatalog={false}` for
-  large `$defs` catalogs (filter still lists definitions). Root pointers must be
-  anchor-safe (not bare `/`). Harness route:
-  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
-  `/docs/references/*-schema` page.
+  large `$defs` catalogs by default (filter still lists definitions). Factory
+  schema page opt-in: `/docs/references/factory-schema` enables catalog splay
+  via page-local `collectFactorySchemaSplayDefinitions` + `showCatalog` so the
+  transitive `$ref` closure renders as expanded definitions — keep you-config /
+  mock-workers on `showCatalog={false}`. With splay + `pagePath` +
+  `ReferenceHashNavigation`, Factory `$ref` links are same-page hash jumps to
+  those expanded definition `id`s (prove with
+  `assert-factory-schema-click-traverse-browser.ts` / page-local mount tests).
+  Full Factory configuration JSON example is a page-local authored
+  `exampleInputs` override (`factory-schema-full-config-example.ts`) aligned
+  with the factories/configuration hermetic minimal sample
+  (`workTypes` / `workers` / `workstations`) — pass only on
+  `FactorySchemaReference`, never as a sibling-schema default. Prove with
+  `assert-factory-schema-full-config-example-browser.ts` / page-local mount
+  tests. Repair close-out browser probe covering intro strip + splay +
+  click-traverse + full config together:
+  `assert-factory-schema-repair-browser.ts`. Root pointers must be
+  anchor-safe (not bare `/`). Harness route: `/schema-renderer-harness`
+  under `src/app/(dev)/` — not a published `/docs/references/*-schema`
+  page.
 
 ## Verification preference
 

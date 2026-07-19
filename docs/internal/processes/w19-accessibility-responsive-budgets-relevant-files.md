@@ -60,10 +60,12 @@ gates stay documented in
 * `src/lib/verify/a11y-reference-payload-budget.ts`
   Records HTML + attributable `/_next/static/**/*.js` baselines for
   `/docs/references/api`, `/docs/references/events`, and
-  `/docs/references/factory-schema` (from a prior production static-export
-  measurement on 2026-07-18 UTC) and enforces focused ceilings with ~25%
-  headroom. Aligns route ids/paths with `REFERENCE_SURFACE_ROUTES`. Does
-  **not** raise `FACTORY_EXPORTED_SITE_BUDGET_BASELINES`.
+  `/docs/references/factory-schema` and enforces focused ceilings with ~25%
+  headroom. Factory-schema HTML baseline was raised after intentional
+  recursive `$defs` catalog splay (~2.0 MiB measured / 2.5 MiB ceiling;
+  2026-07-19 UTC CI export) — re-measure before further raises. Aligns
+  route ids/paths with `REFERENCE_SURFACE_ROUTES`. Does **not** raise
+  `FACTORY_EXPORTED_SITE_BUDGET_BASELINES`.
 * Always-on proofs: `src/lib/verify/a11y-reference-payload-budget.test.ts`
   (wired into `make a11y` / `test:a11y`).
 * CI / maintainer export gate: `scripts/run-exported-site-budget.ts`
