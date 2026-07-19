@@ -203,6 +203,19 @@ HTML/RSC payload by ~2 MiB. Client collapse preserves
 catalogs that include item docs still require membership so ordinary
 reference-page headings collapse.
 
+### Pattern: reference owning pages omit standalone heading rows
+
+Fumadocs advanced search turns `structuredData.headings` into standalone
+`type: "heading"` hits at `#heading-N`. For reference owning pages
+(`/docs/references` and `/docs/references/**` without a registry-anchor
+fragment), `toStructuredData` must emit an empty `headings` array and leave
+content blocks without a `heading` fragment so subsection titles cannot flood
+generic queries. Fold collected heading text into page-level content so the
+owning page stays discoverable. Inventory item documents
+(`/docs/references/…#…`) keep normal heading projection. Gate with
+`isReferenceOwningPageSearchUrl` and prove via live Orama outcomes (no
+`#heading-N` rows for the owning page; page URL still matches).
+
 ### Pattern: factory alias / body / tag discovery
 
 Live factory pages are discoverable by frontmatter/registry aliases, distinctive
@@ -254,6 +267,12 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
 * `src/lib/search/to-advanced-index.test.ts`
   Fumadocs advanced index projection contract for `id`, `title`, `description`,
   `url`, `structuredData`, and `tag` fields.
+* `src/lib/search/to-structured-data.test.ts`
+  Reference owning-page heading de-spam: empty `structuredData.headings`, no
+  `#heading-N` Orama rows for `/docs/references/**` owning pages, heading text
+  folded into page-level content.
+* `src/lib/search/reference-owning-page-search-url.test.ts`
+  URL gate for reference owning pages vs inventory item deep links.
 * `src/lib/search/build-base-document.test.ts`
   Generic base document field contract and empty topology/facet guarantees.
 * `src/lib/search/build-documents.test.ts`
