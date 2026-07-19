@@ -949,8 +949,13 @@ For Documentation Program **core product** pages under
   (`logs`, `metrics`, `resources`, `petri`, `packaged-documents`,
   `dashboard-ui-overview`, `security-trust-boundaries`, `throttling-and-limits`,
   `replays-records`) — those belong to the sibling ops intro-strip lane.
-- Flip owned page tests in a follow-up story to assert intro absence; do not
-  delete shared helpers/modules while stripping intros.
+- Flip owned page tests (page-local under those trees plus
+  `src/lib/content/{what-is,install,cli}-page.test.tsx`) to assert intro
+  absence with `queryByRole(...).toBeNull()` / `toBeUndefined()` on
+  `whatItCovers` / `keyConcepts` (and `howToUse` when stripped as opening
+  boilerplate), while still proving remaining teaching headings/content and a
+  non-empty purpose `openingSummary`. Do not delete shared helpers/modules
+  while stripping intros.
 
 ### Documentation CLI limits and sibling discovery
 

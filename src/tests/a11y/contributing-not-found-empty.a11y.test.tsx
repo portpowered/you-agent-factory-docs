@@ -60,7 +60,13 @@ describe("contributing, not-found, and empty-state accessibility", () => {
     expect(structure.headingLevels[0]).toBe(1);
     expect(structure.headingLevels).toContain(2);
     expect(
-      screen.getByRole("heading", { level: 2, name: "What It Covers" }),
+      screen.queryByRole("heading", { level: 2, name: "What It Covers" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { level: 2, name: "Key Concepts" }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "How To Use" }),
     ).toBeTruthy();
 
     const h1 = screen.getByRole("heading", {
@@ -71,7 +77,9 @@ describe("contributing, not-found, and empty-state accessibility", () => {
     const lead = screen.getByText(/How to add factory documentation pages/i);
     expect(lead.textContent).toMatch(/you-agent-factory/i);
     expect(lead.textContent).not.toMatch(ATLAS_PRODUCT_COPY);
-    expect(document.body.textContent).toMatch(/not Model Atlas/i);
+    expect(document.body.textContent).toMatch(/make validate-data/);
+    expect(document.body.textContent).toMatch(/retired Atlas/i);
+    expect(document.body.textContent).not.toMatch(ATLAS_PRODUCT_COPY);
     expect(document.body.textContent).not.toMatch(
       /coming soon|Browse the Atlas/i,
     );

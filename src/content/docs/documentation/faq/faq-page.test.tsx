@@ -34,14 +34,11 @@ describe("faq documentation page", () => {
       /short answers|common .+ questions|FAQ/i,
     );
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/short-answer surface/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
-    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const whatIsYouAgentFactory = String(
       loadedPage.messages.sections?.whatIsYouAgentFactory?.body ?? "",
     );
@@ -63,15 +60,6 @@ describe("faq documentation page", () => {
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
-
-    expect(whatItCovers).toMatch(/short-answer surface/i);
-    expect(whatItCovers).toMatch(/install/i);
-    expect(whatItCovers).toMatch(/MCP/i);
-    expect(keyConcepts).toMatch(/question/i);
-    expect(keyConcepts).toMatch(/short reply|canonical/i);
-    expect(keyConcepts).toMatch(/canonical/i);
-    expect(howToUse).toMatch(/question/i);
-    expect(howToUse).toMatch(/short reply/i);
 
     expect(whatIsYouAgentFactory).toMatch(/you-agent-factory/i);
     expect(whatIsYouAgentFactory).toMatch(/Getting Started|first-run/i);
@@ -103,13 +91,6 @@ describe("faq documentation page", () => {
     expect(limits).toMatch(/FAQ answers common you-agent-factory questions/i);
     expect(limits).toMatch(/not the install command matrix/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
 
     render(
@@ -124,10 +105,13 @@ describe("faq documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
+    expect(document.getElementById("how-to-use")).toBeNull();
     expect(
       screen.getByRole("heading", {
         name: "What Is You-Agent-Factory, And Where Do I Start?",
@@ -163,9 +147,6 @@ describe("faq documentation page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    expect(document.body.textContent).toMatch(
-      /FAQ is the you-agent-factory short-answer surface/i,
-    );
     expect(document.body.textContent).toMatch(/keeps long-running agent work/i);
     expect(document.body.textContent).toMatch(/OS-specific script/i);
     expect(document.body.textContent).toMatch(/you session list/i);
@@ -268,9 +249,9 @@ describe("faq documentation page", () => {
     );
 
     expect(loadedPage.messages.title).toBe("FAQ");
-    expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
-      "What It Covers",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.whatIsYouAgentFactory?.title).toBe(
       "What Is You-Agent-Factory, And Where Do I Start?",
     );
@@ -293,8 +274,9 @@ describe("faq documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
       screen.getByRole("heading", {
         name: "Something Failed—Where Do I Recover?",
