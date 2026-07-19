@@ -96,21 +96,15 @@ describe("events reference page published-route states", () => {
       );
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
-      );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
+      // Intro chrome stripped: no What It Covers / Key Concepts messages and
+      // empty openingSummary so DocsOpeningSummary mounts nothing (MCP #156).
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+      expect(String(loadedPage.messages.openingSummary ?? "").trim()).toBe("");
+
       const eventCorpus = String(
         loadedPage.messages.sections?.eventCorpus?.body ?? "",
       );
-      expect(whatItCovers).toMatch(/FactoryEvent and FactoryResponseEvent/i);
-      expect(whatItCovers).toMatch(/stream-role labeling/i);
-      expect(whatItCovers).toMatch(
-        /HTTP transport mechanics stay with the API/i,
-      );
-      expect(keyConcepts).toMatch(/Hybrid placement/i);
       expect(eventCorpus).toMatch(/packaged OpenAPI/i);
       expect(eventCorpus).toMatch(/three stream operations/i);
       expect(eventCorpus).toMatch(/FactoryEvent envelope/i);
@@ -121,12 +115,6 @@ describe("events reference page published-route states", () => {
       expect(eventCorpus).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
-      expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
-      expect(keyConcepts).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
       expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
       expect(
         loadedPage.messages.sections?.limitsAndAssumptions,
@@ -135,9 +123,6 @@ describe("events reference page published-route states", () => {
       expect(loadedPage.messages.sections?.tags).toBeUndefined();
       expect(loadedPage.messages.sections?.references).toBeUndefined();
       expect(loadedPage.messages.links).toBeUndefined();
-      expect(loadedPage.messages.openingSummary).toMatch(
-        /without opening a live Factory connection/i,
-      );
 
       render(
         <main>
@@ -151,11 +136,11 @@ describe("events reference page published-route states", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
       expect(
         screen.getByRole("heading", { name: "Event Corpus" }),
       ).toBeTruthy();
@@ -167,6 +152,13 @@ describe("events reference page published-route states", () => {
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
+      expect(document.getElementById("event-corpus")).toBeTruthy();
+      expect(screen.queryByTestId("folded-summary")).toBeNull();
+      expect(
+        document.querySelector('[data-opening-summary="folded"]'),
+      ).toBeNull();
 
       const mount = screen.getByTestId("events-corpus-mount");
       expect(mount.getAttribute("data-events-page-path")).toBe(
@@ -422,15 +414,20 @@ describe("events reference page published-route states", () => {
         screen.getAllByTestId("sse-reconnect-example").length,
       ).toBeGreaterThan(0);
 
+      // Body markers retargeted to corpus / catalog / reconnect surface (not
+      // removed Key Concepts intro copy such as "Hybrid placement").
       const bodyText = document.body.textContent ?? "";
-      expect(bodyText).toMatch(/FactoryEvent and FactoryResponseEvent/i);
-      expect(bodyText).toMatch(/Hybrid placement/i);
+      expect(bodyText).toMatch(/FactoryEvent/i);
+      expect(bodyText).toMatch(/FactoryResponseEvent/i);
       expect(bodyText).toMatch(/never preferred/i);
       expect(bodyText).toMatch(/Reconnect cursors/i);
       expect(bodyText).toMatch(/JSON reconnect probe/i);
       expect(bodyText).toMatch(/Static SSE frame and reconnect examples/i);
+      expect(bodyText).toMatch(/event catalog/i);
       expect(bodyText).not.toMatch(/Model Atlas/i);
       expect(bodyText).not.toMatch(/Non-production events renderer harness/i);
+      expect(bodyText).not.toMatch(/What It Covers/i);
+      expect(bodyText).not.toMatch(/Key Concepts/i);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

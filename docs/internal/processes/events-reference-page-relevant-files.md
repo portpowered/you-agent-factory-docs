@@ -61,6 +61,16 @@ other W11 reference page lanes):
 
 ## Patterns
 
+- Intro strip (post-catalog polish): page opens on Event Corpus only — remove
+  `What It Covers` / `Key Concepts` Sections from `page.mdx` and delete
+  `sections.whatItCovers` / `sections.keyConcepts` from messages. Set
+  `openingSummary` to `""` (or omit) so `DocsOpeningSummary` mounts nothing;
+  unlike CLI/MCP/JS, Events must not keep a long informational folded summary.
+  Flip page-local tests / `assert-events-page-catalog-polish-browser.ts` to
+  assert intro absence (MCP #156 pattern) without weakening #160 catalog polish.
+  Retarget body-text asserts that depended on removed Key Concepts copy (for
+  example `Hybrid placement`) to remaining corpus / catalog / reconnect markers
+  or rely on existing `data-events-placement` asserts; do not restore intros.
 - Keep curated discovery under `#related` with `LocalizedLinkList` toward planned
   `/docs/references/api`; leave `relatedIds` empty until sibling registry records exist.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
@@ -86,6 +96,12 @@ other W11 reference page lanes):
   Worktrees without local `node_modules` must use the probe’s `--webpack` start
   path (Turbopack rejects parent-hoisted `next`); optionally set
   `EVENTS_CATALOG_POLISH_PROBE_BASE_URL` against an already-warm server.
+- Intro-strip browser close-out (story 003): the same probe also asserts
+  absence of What It Covers / Key Concepts headings and ids, absence of folded
+  Opening summary (`[data-testid="folded-summary"]` /
+  `[data-opening-summary="folded"]`), and presence of `#event-corpus` plus
+  stream operations / reconnect / static SSE markers. Do not invent a second
+  Events browser harness for intro absence.
 - Compose production mount like the W09 harness body: `EventsSurface` + public
   section components + `buildEventReconnectLifecycleCorpus` /
   `buildSseStaticExamplesCorpus`. Never mount `EventsVerificationHarness` on the

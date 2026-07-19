@@ -1,16 +1,8 @@
 {
   "title": "Events",
   "description": "Look up the complete FactoryEvent and FactoryResponseEvent corpus, stream roles, reconnect and lifecycle contracts, and static SSE examples on a stable hybrid docs route.",
-  "openingSummary": "This hybrid reference publishes the Factory event-stream corpus so readers can decode session and response streams, reconnect correctly, and study static SSE examples without opening a live Factory connection.",
+  "openingSummary": "",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This reference publishes the FactoryEvent and FactoryResponseEvent corpus for you-agent-factory. Readers can look up stream-role labeling across the three stream operations, the complete FactoryEvent envelope and discriminator payload catalog, FactoryResponseEvent envelope and kind/phase/provenance/payload dimensions, reconnect and lifecycle contracts, and static SSE frame examples. HTTP transport mechanics stay with the API reference family."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A FactoryEvent is the preferred session stream envelope. A FactoryResponseEvent is the ephemeral response stream envelope. Stream roles mark which operation is canonical, ephemeral, or compatibility-only. Hybrid placement means this page owns the event corpus and client-facing reconnect docs, while the API reference retains HTTP operation transport ownership."
-    },
     "eventCorpus": {
       "title": "Event Corpus",
       "body": "The published corpus resolves from packaged OpenAPI at build time. It labels the three stream operations, renders the complete FactoryEvent envelope and discriminator payload catalog, and renders the FactoryResponseEvent envelope with kind, phase, provenance, and payload dimensions without claiming every Cartesian combination is valid. It also documents reconnect cursor precedence, identity handshake headers, stream-generation invalidation, retained-history and keepalive behavior, the JSON reconnect-probe alternative, and static SSE frame examples that never open a live connection."
