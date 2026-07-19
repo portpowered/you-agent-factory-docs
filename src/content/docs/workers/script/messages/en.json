@@ -15,14 +15,6 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting a SCRIPT_WORKER. The misuse example shows model-routing fields on a script worker—model, modelProvider, and modelLocality belong on inference and agent families and fail validation on SCRIPT_WORKER."
     },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "Script workers fail early on invalid command declarations and expect portable relative paths when copyReferencedScripts is used. Keep secrets out of worker bodies. Watch timeout and exit-code paths when commands hang or fail. Do not treat model fields or agentTools as a script substitute."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/script surface for SCRIPT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference or Agent worker full contract. Operator model defaults never apply to script workers. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine SCRIPT_WORKER fields. Mock workers stay on their own route and schema."
-    },
     "related": {
       "title": "Related To"
     },
@@ -47,18 +39,6 @@
     "siblingAgentWorker": "Agent worker",
     "siblingWorkstations": "Workstations overview",
     "siblingResources": "Resources",
-    "siblingTokens": "Tokens",
-    "cautionTopicHeader": "Caution",
-    "cautionGuidanceHeader": "Guidance",
-    "cautionValidationTopic": "Validation failures",
-    "cautionValidationGuidance": "Fix missing command, invalid args shapes, and excluded model or agent fields before retrying. Invalid enums and unknown exclusive fields also fail validation.",
-    "cautionBodyTopic": "Body is not executed",
-    "cautionBodyGuidance": "The markdown body describes the worker. The runtime runs command with args only. Do not put executable shell in the body and expect it to run.",
-    "cautionSecretsTopic": "Secrets in worker bodies",
-    "cautionSecretsGuidance": "Do not put API keys, tokens, or other secret material in the worker markdown body. Keep credentials in the secret and config surfaces the runtime already resolves.",
-    "cautionModelFieldsTopic": "Model-field substitution",
-    "cautionModelFieldsGuidance": "Do not add model, modelProvider, modelLocality, or operations on a script worker. Model-backed dispatch belongs on INFERENCE_WORKER or AGENT_WORKER.",
-    "cautionTimeoutTopic": "Timeout and exit codes",
-    "cautionTimeoutGuidance": "Increase worker timeout when commands outlive the attempt bound. Treat non-zero exits through SCRIPT_RUN routing rather than rewriting the worker type."
+    "siblingTokens": "Tokens"
   }
 }

@@ -365,13 +365,6 @@ export function WorkstationsFamilyIndexContent() {
         />
       </Section>
 
-      <Section
-        id="limits-and-assumptions"
-        titleKey="sections.limitsAndAssumptions.title"
-      >
-        <T k="sections.limitsAndAssumptions.body" />
-      </Section>
-
       <Section id="related" titleKey="sections.related.title">
         <LocalizedLinkList
           items={[

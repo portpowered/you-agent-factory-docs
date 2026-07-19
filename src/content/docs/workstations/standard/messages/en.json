@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with behavior STANDARD. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs and route fields for accepted, continue, rejection, and failure outcomes. Do not set cron on STANDARD. Choose REPEATER, CRON, or POLLER only when those scheduling semantics are required. STANDARD is not CRON \u2014 it excludes the cron field \u2014 and it is not REPEATER or POLLER scheduling."
+      "body": "Author a workstation with behavior STANDARD. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs and route fields for accepted, continue, rejection, and failure outcomes. Do not set cron on STANDARD. Choose REPEATER, CRON, or POLLER only when those scheduling semantics are required. STANDARD is not CRON — it excludes the cron field — and it is not REPEATER or POLLER scheduling."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a STANDARD workstation. The misuse example shows cron on STANDARD \u2014 cron belongs on behavior CRON and is excluded from STANDARD."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "STANDARD steps fail closed when inputs never become ready, when dispatch cannot acquire capacity, when concurrency limits block progress, or when route fields leave an outcome unmapped. Do not use cron schedules, change-triggered reloops, or long-lived poller ingress under STANDARD \u2014 those belong on other WorkstationKind values."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/standard surface for STANDARD scheduling. It is not a sync of packaged CLI docs, not a WorkstationType guide, and not the CRON, REPEATER, or POLLER behavior contracts. Compatible WorkstationType companions name the runtime pairing for this behavior; they do not redefine STANDARD fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting a STANDARD workstation. The misuse example shows cron on STANDARD — cron belongs on behavior CRON and is excluded from STANDARD."
     },
     "related": {
       "title": "Related To"
@@ -42,7 +34,7 @@
     "companionScriptRun": "Script-run workstation",
     "companionWorkersIndex": "Workers family index",
     "minimalExampleLabel": "Minimal valid STANDARD workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 cron on STANDARD (excluded):",
+    "misuseExampleLabel": "Incompatible misuse — cron on STANDARD (excluded):",
     "misuseNote": "cron is a CRON scheduling field. STANDARD excludes it. Use behavior CRON when the step must run on a schedule.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -50,18 +42,6 @@
     "siblingCron": "Cron behavior",
     "siblingPoller": "Poller behavior",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureReadinessClass": "inputs_not_ready",
-    "failureReadinessCause": "Required input places empty \u2014 wait for upstream tokens or fix topology wiring",
-    "failureDispatchClass": "dispatch_unavailable",
-    "failureDispatchCause": "Worker or runner cannot accept the step \u2014 check worker binding and runner readiness",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked a new dispatch \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
-    "failureCronMisuseClass": "cron_on_standard",
-    "failureCronMisuseCause": "cron declared under STANDARD \u2014 move the schedule to behavior CRON",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

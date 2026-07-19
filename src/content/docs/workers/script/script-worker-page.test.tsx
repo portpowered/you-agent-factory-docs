@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workers/script.
  * Covers SCRIPT_WORKER discriminator, W07 overlay embed, minimal/misuse
- * examples, SCRIPT_RUN companion link, and operational cautions — not route
+ * examples, SCRIPT_RUN companion link — not route
  * inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workersScriptRegistry from "@/content/registry/documentation/workers-script.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -52,15 +52,11 @@ describe("workers script page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/SCRIPT_WORKER/i);
     expect(openingSummary).toMatch(/SCRIPT_RUN/i);
     expect(howToUse).toMatch(/not executed/i);
@@ -69,10 +65,6 @@ describe("workers script page", () => {
     expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/model-routing|model,/i);
-    expect(cautions).toMatch(/timeout|exit/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible Workstation companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -142,8 +134,11 @@ describe("workers script page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -214,17 +209,6 @@ describe("workers script page", () => {
         '[data-script-worker-example="misuse-model-fields"]',
       )?.textContent,
     ).toContain('"modelProvider"');
-
-    const failureTable = document.querySelector(
-      "[data-script-worker-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Body is not executed"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Model-field substitution"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

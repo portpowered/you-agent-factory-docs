@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with type SCRIPT_RUN and bind a SCRIPT_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so script outcomes route correctly. Put command and args on the SCRIPT_WORKER, not on this workstation type. Do not set promptFile, openCodeAgent, classificationRoutes, or operation bindings that belong to other WorkstationType families. Choose AGENT_RUN for agent loops, INFERENCE_RUN for bounded inference, or MODEL_WORKSTATION for prompt-file model steps. SCRIPT_RUN is not a scheduling behavior and is not MODEL_WORKSTATION \u2014 keep promptFile and model prompt surfaces on the model-workstation type."
+      "body": "Author a workstation with type SCRIPT_RUN and bind a SCRIPT_WORKER. Choose behavior for the scheduling axis you need — STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so script outcomes route correctly. Put command and args on the SCRIPT_WORKER, not on this workstation type. Do not set promptFile, openCodeAgent, classificationRoutes, or operation bindings that belong to other WorkstationType families. Choose AGENT_RUN for agent loops, INFERENCE_RUN for bounded inference, or MODEL_WORKSTATION for prompt-file model steps. SCRIPT_RUN is not a scheduling behavior and is not MODEL_WORKSTATION — keep promptFile and model prompt surfaces on the model-workstation type."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a SCRIPT_RUN workstation with behavior STANDARD. The misuse example borrows promptFile from MODEL_WORKSTATION \u2014 that field is excluded from SCRIPT_RUN."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "SCRIPT_RUN steps fail closed when the bound worker is missing or is not a SCRIPT_WORKER, when concurrency or resource limits block dispatch, when route fields leave an outcome unmapped, or when authors place model-workstation, agent, classifier, or model-invoke exclusives on this type. Do not use promptFile under SCRIPT_RUN \u2014 that field belongs on MODEL_WORKSTATION. Keep scheduling on behavior and runtime on type."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/script-run surface for SCRIPT_RUN runtime. It is not a sync of packaged CLI docs, not the AGENT_RUN or MODEL_WORKSTATION type guides, and not the STANDARD, REPEATER, CRON, or POLLER behavior contracts. Compatible WorkstationKind companions name the scheduling pairing for this type; they do not redefine SCRIPT_RUN fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting a SCRIPT_RUN workstation with behavior STANDARD. The misuse example borrows promptFile from MODEL_WORKSTATION — that field is excluded from SCRIPT_RUN."
     },
     "related": {
       "title": "Related To"
@@ -43,7 +35,7 @@
     "companionCron": "Cron behavior",
     "companionPoller": "Poller behavior",
     "minimalExampleLabel": "Minimal valid SCRIPT_RUN workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 promptFile on SCRIPT_RUN:",
+    "misuseExampleLabel": "Incompatible misuse — promptFile on SCRIPT_RUN:",
     "misuseNote": "promptFile belongs on MODEL_WORKSTATION. Keep SCRIPT_RUN on identity, worker binding, inputs, outputs, and routing fields only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -51,18 +43,6 @@
     "siblingAgentRun": "Agent-run type",
     "siblingModelWorkstation": "Model-workstation type",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureWorkerMissingClass": "worker_missing",
-    "failureWorkerMissingCause": "No worker bound, or bound worker is not a SCRIPT_WORKER \u2014 author and bind a script backend",
-    "failureWorkerMismatchClass": "worker_type_mismatch",
-    "failureWorkerMismatchCause": "Bound worker is AGENT_WORKER, INFERENCE_WORKER, or another non-script type \u2014 switch to SCRIPT_WORKER or change workstation type",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked script dispatch \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
-    "failurePromptFileMisuseClass": "prompt_file_on_script_run",
-    "failurePromptFileMisuseCause": "promptFile declared under SCRIPT_RUN \u2014 move prompt-file model steps to type MODEL_WORKSTATION",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

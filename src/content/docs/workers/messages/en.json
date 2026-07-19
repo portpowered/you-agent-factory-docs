@@ -19,10 +19,6 @@
       "title": "Worker Schema",
       "body": "The embed shows the live Factory Worker base definition from the installed package. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this index."
     },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This index is a Worker family overview and selection surface. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not a full per-variant field dump. Variant pages own discriminator-specific configuration. Mock workers stay on their own page and schema. Workstation companion pages are discovery links only."
-    },
     "related": {
       "title": "Related To"
     }

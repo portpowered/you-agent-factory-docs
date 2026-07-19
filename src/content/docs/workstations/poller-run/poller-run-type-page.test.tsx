@@ -2,10 +2,10 @@
  * Page-owned proofs for /docs/workstations/poller-run.
  * Covers POLLER_RUN discriminator, W07 overlay embed, minimal/misuse
  * examples, Worker + behavior companion links, POLLER axis distinction, and
- * failure cautions — not route inventories or shared helper contracts.
+ * — not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsPollerRunRegistry from "@/content/registry/documentation/workstations-poller-run.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -54,15 +54,11 @@ describe("workstations poller-run type page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/POLLER_RUN/i);
     expect(openingSummary).toMatch(/WorkstationType/i);
     expect(openingSummary).toMatch(/POLLER_WORKER/i);
@@ -76,11 +72,6 @@ describe("workstations poller-run type page", () => {
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/behavior POLLER/i);
     expect(examples).toMatch(/behavior field/i);
-    expect(cautions).toMatch(/POLLER_WORKER/i);
-    expect(cautions).toMatch(/Do not put POLLER_RUN on the behavior field/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the POLLER scheduling-behavior guide/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -152,8 +143,11 @@ describe("workstations poller-run type page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -257,20 +251,6 @@ describe("workstations poller-run type page", () => {
         '[data-poller-run-type-example="misuse-poller-behavior-collapse"]',
       )?.textContent,
     ).toContain('"behavior": "POLLER_RUN"');
-
-    const failureTable = document.querySelector(
-      "[data-poller-run-type-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("poller_axes_collapsed"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_type_mismatch"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workers/mock.
  * Covers mock-workers schema identity (not Factory WorkerType), W07
- * SchemaReference embed, minimal/misuse examples, and operational cautions —
+ * SchemaReference embed, minimal/misuse examples —
  * not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workersMockRegistry from "@/content/registry/documentation/workers-mock.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -59,15 +59,11 @@ describe("workers mock page", () => {
       loadedPage.messages.sections?.schemaFields?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/mock-workers/i);
     expect(openingSummary).toMatch(/not a Factory WorkerType/i);
     expect(howToUse).toMatch(/runType/i);
@@ -77,8 +73,6 @@ describe("workers mock page", () => {
     expect(schemaFields).toMatch(/mockWorker|runType/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/WorkerType|MOCK_WORKER|workerName/i);
-    expect(cautions).toMatch(/WorkerType|passthrough|unknown/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -135,8 +129,11 @@ describe("workers mock page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -197,17 +194,6 @@ describe("workers mock page", () => {
       examples?.querySelector('[data-mock-worker-example="misuse-worker-type"]')
         ?.textContent,
     ).toContain('"type": "MOCK_WORKER"');
-
-    const failureTable = document.querySelector(
-      "[data-mock-worker-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Not a WorkerType"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Unknown fields"),
-    ).toBeTruthy();
 
     // Must not present mock as a Factory WorkerType discriminator line.
     expect(document.body.textContent).not.toMatch(/type = MOCK_WORKER/);

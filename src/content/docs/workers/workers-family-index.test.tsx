@@ -42,19 +42,17 @@ describe("workers family index", () => {
     const sharedFields = String(
       bundle.messages.sections?.sharedFields?.body ?? "",
     );
-    const limits = String(
-      bundle.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(bundle.messages.sections?.whatItCovers).toBeUndefined();
     expect(bundle.messages.sections?.keyConcepts).toBeUndefined();
+    expect(bundle.messages.sections?.operationalCautions).toBeUndefined();
+    expect(bundle.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/WorkerType/i);
     expect(openingSummary).toMatch(/mock workers/i);
     expect(howToUse).toMatch(/selection table/i);
     expect(howToUse).toMatch(/Mock workers are not a Factory WorkerType/i);
     expect(selection).toMatch(/comparison/i);
     expect(sharedFields).toMatch(/apply across Factory Worker/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -100,6 +98,9 @@ describe("workers family index", () => {
     ).toBeNull();
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     const selection = document.querySelector("[data-workers-selection-table]");
     expect(selection).toBeTruthy();

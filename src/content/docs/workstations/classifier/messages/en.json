@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with type CLASSIFIER_WORKSTATION and bind a HOSTED_WORKER companion. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once classification, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus classificationRoutes so each label maps to destination workstations, and keep onFailure for failure routing. Do not set outputs, onContinue, onRejection, guards, openCodeAgent, promptFile, outcomeFormat, operation, operationBindings, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose LOGICAL_MOVE for guarded non-worker routing, AGENT_RUN for agent loops, or INFERENCE_RUN for bounded inference harness dispatch. CLASSIFIER_WORKSTATION is not a scheduling behavior and is not LOGICAL_MOVE \u2014 keep guards on the logical-move type. Both share HOSTED_WORKER companions, but their selected field sets stay separate."
+      "body": "Author a workstation with type CLASSIFIER_WORKSTATION and bind a HOSTED_WORKER companion. Choose behavior for the scheduling axis you need — STANDARD for fire-once classification, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus classificationRoutes so each label maps to destination workstations, and keep onFailure for failure routing. Do not set outputs, onContinue, onRejection, guards, openCodeAgent, promptFile, outcomeFormat, operation, operationBindings, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose LOGICAL_MOVE for guarded non-worker routing, AGENT_RUN for agent loops, or INFERENCE_RUN for bounded inference harness dispatch. CLASSIFIER_WORKSTATION is not a scheduling behavior and is not LOGICAL_MOVE — keep guards on the logical-move type. Both share HOSTED_WORKER companions, but their selected field sets stay separate."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a CLASSIFIER_WORKSTATION with behavior STANDARD and classificationRoutes. The misuse example borrows outputs from ordinary WorkstationTypes \u2014 that field is excluded from CLASSIFIER_WORKSTATION."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "CLASSIFIER_WORKSTATION steps fail closed when the bound worker is missing or is not a HOSTED_WORKER, when classificationRoutes are missing or leave a label unmapped, when concurrency or resource limits refuse a run, when onFailure leaves a failure outcome unmapped, or when authors place ordinary outputs, logical-move guards, agent-run, model, or cron exclusives on this type. Do not use outputs, onContinue, or onRejection under CLASSIFIER_WORKSTATION \u2014 those fields belong on non-classifier types. Keep scheduling on behavior and runtime on type."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/classifier surface for CLASSIFIER_WORKSTATION runtime. It is not a sync of packaged CLI docs, not the LOGICAL_MOVE type guide, and not the STANDARD, REPEATER, CRON, or POLLER behavior contracts. Compatible WorkstationKind companions name the scheduling pairing for this type; they do not redefine CLASSIFIER_WORKSTATION fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting a CLASSIFIER_WORKSTATION with behavior STANDARD and classificationRoutes. The misuse example borrows outputs from ordinary WorkstationTypes — that field is excluded from CLASSIFIER_WORKSTATION."
     },
     "related": {
       "title": "Related To"
@@ -43,7 +35,7 @@
     "companionCron": "Cron behavior",
     "companionPoller": "Poller behavior",
     "minimalExampleLabel": "Minimal valid CLASSIFIER_WORKSTATION workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 outputs on CLASSIFIER_WORKSTATION:",
+    "misuseExampleLabel": "Incompatible misuse — outputs on CLASSIFIER_WORKSTATION:",
     "misuseNote": "outputs, onContinue, and onRejection are excluded from CLASSIFIER_WORKSTATION. Keep label routing on classificationRoutes and failure routing on onFailure only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -51,20 +43,6 @@
     "siblingInferenceRun": "Inference-run type",
     "siblingAgentRun": "Agent-run type",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureWorkerMissingClass": "worker_missing",
-    "failureWorkerMissingCause": "No worker bound, or bound worker is not a HOSTED_WORKER \u2014 author and bind a hosted backend",
-    "failureWorkerMismatchClass": "worker_type_mismatch",
-    "failureWorkerMismatchCause": "Bound worker is AGENT_WORKER, MODEL_WORKER, or another specialized run type \u2014 switch to HOSTED_WORKER or change workstation type",
-    "failureClassificationRoutesMissingClass": "classification_routes_missing",
-    "failureClassificationRoutesMissingCause": "classificationRoutes missing or incomplete \u2014 author label maps for every classification outcome",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked classification routing \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Failure outcome has no authored route \u2014 wire onFailure for classifier failure paths",
-    "failureOutputsMisuseClass": "outputs_on_classifier",
-    "failureOutputsMisuseCause": "outputs, onContinue, or onRejection declared under CLASSIFIER_WORKSTATION \u2014 move ordinary success routing to a non-classifier type or use classificationRoutes",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

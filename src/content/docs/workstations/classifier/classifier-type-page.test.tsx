@@ -2,11 +2,11 @@
  * Page-owned proofs for /docs/workstations/classifier.
  * Covers CLASSIFIER_WORKSTATION discriminator, W07 overlay embed,
  * minimal/misuse examples, Worker + behavior companion links, logical-move
- * distinction, and failure cautions — not route inventories or shared helper
+ * distinction — not route inventories or shared helper
  * contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsClassifierRegistry from "@/content/registry/documentation/workstations-classifier.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -57,15 +57,11 @@ describe("workstations classifier type page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/CLASSIFIER_WORKSTATION/i);
     expect(openingSummary).toMatch(/WorkstationType/i);
     expect(openingSummary).toMatch(/classificationRoutes/i);
@@ -81,11 +77,6 @@ describe("workstations classifier type page", () => {
     expect(schemaReference).toMatch(/excludes outputs/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/outputs/i);
-    expect(cautions).toMatch(/HOSTED_WORKER/i);
-    expect(cautions).toMatch(/Do not use outputs/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the LOGICAL_MOVE type guide/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -170,8 +161,11 @@ describe("workstations classifier type page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -272,25 +266,6 @@ describe("workstations classifier type page", () => {
       examples?.querySelector('[data-classifier-type-example="misuse-outputs"]')
         ?.textContent,
     ).toContain('"outputs"');
-
-    const failureTable = document.querySelector(
-      "[data-classifier-type-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_type_mismatch"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText(
-        "classification_routes_missing",
-      ),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("outputs_on_classifier"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

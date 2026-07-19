@@ -15,14 +15,6 @@
       "title": "Examples",
       "body": "Use the minimal valid example when you need a single accept match for a named factory worker. The misuse example shows Factory Worker fields name and type MOCK_WORKER on a mock entry — mock selection uses workerName, never Factory WorkerType discriminators, and rejects unknown fields."
     },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "Unknown JSON fields fail at load time. passthrough unmatched policy can hit live providers. A mock accept proves only the mock path returned success, not live-provider quality. Do not treat mock workers as a seventh WorkerType."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/mock surface for mock-workers schema authoring. It is not a sync of packaged CLI docs, not a Factory WorkerType page, and not a record or replay guide. Packaged you docs mock-workers remains the CLI topic for the same contract. Mock workers stay off the Factory WorkerType enum and off production Worker overlays."
-    },
     "related": {
       "title": "Related To"
     },
@@ -46,16 +38,6 @@
     "siblingDocumentationMockWorkers": "Mock workers CLI reference",
     "siblingAgentWorker": "Agent worker",
     "siblingWorkstations": "Workstations overview",
-    "siblingResources": "Resources",
-    "cautionTopicHeader": "Caution",
-    "cautionGuidanceHeader": "Guidance",
-    "cautionUnknownFieldsTopic": "Unknown fields",
-    "cautionUnknownFieldsGuidance": "Keep the config to documented mock-workers fields. Additional properties fail closed at load time.",
-    "cautionPassthroughTopic": "Passthrough unmatched policy",
-    "cautionPassthroughGuidance": "unmatchedDispatchPolicy passthrough is not a pure-deterministic run. Unmatched steps call the real worker and may hit live providers.",
-    "cautionAcceptProofTopic": "Mock accept proof limits",
-    "cautionAcceptProofGuidance": "A mock accept proves only that the mock path returned success. It does not prove live-provider success or live model quality.",
-    "cautionNotWorkerTypeTopic": "Not a WorkerType",
-    "cautionNotWorkerTypeGuidance": "Do not author mock workers as Factory WorkerType values or as a seventh workers[].type. Keep them on the mock-workers schema."
+    "siblingResources": "Resources"
   }
 }

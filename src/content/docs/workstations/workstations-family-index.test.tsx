@@ -45,12 +45,11 @@ describe("workstations family index", () => {
     const sharedFields = String(
       bundle.messages.sections?.sharedFields?.body ?? "",
     );
-    const limits = String(
-      bundle.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(bundle.messages.sections?.whatItCovers).toBeUndefined();
     expect(bundle.messages.sections?.keyConcepts).toBeUndefined();
+    expect(bundle.messages.sections?.operationalCautions).toBeUndefined();
+    expect(bundle.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/WorkstationType|runtime type/i);
     expect(openingSummary).toMatch(/POLLER_RUN/i);
     expect(openingSummary).toMatch(/behavior POLLER/i);
@@ -59,7 +58,6 @@ describe("workstations family index", () => {
     expect(howToUse).toMatch(/not the same discriminator/i);
     expect(matrix).toMatch(/independent/i);
     expect(sharedFields).toMatch(/apply across Workstation/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -107,6 +105,9 @@ describe("workstations family index", () => {
     ).toBeNull();
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     const typeSelection = document.querySelector(
       "[data-workstations-type-selection-table]",

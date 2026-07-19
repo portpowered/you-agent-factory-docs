@@ -831,6 +831,11 @@ Fields”) and `#examples`. Do not restore `#what-it-covers` /
 identity into `#how-to-use` (label + value line) rather than a separate Key
 Concepts section. Workstation family index follows the same intro shape;
 type/behavior selection and the compatibility matrix stay after how-to-use.
+Do not restore `#operational-cautions` or `#limits-and-assumptions` on
+worker/workstation authored trees (including family indexes); companion
+facts stay in purpose / how-to-use / schema reference / examples, and
+failure-class tables that lived only under cautions are removed with that
+chrome.
 
 Worker/workstation `*VariantSchemaEmbed` components pass
 `showVariantHeading={false}` and `showPointerBreadcrumb={false}` into
@@ -856,12 +861,12 @@ meanings, but rewrite for web scanning and avoid a full flag dump.
 
 ### Documentation workers limits and sibling discovery (page-local)
 
-For `documentation/workers`, keep `#limits-and-assumptions` as the scope
-boundary: web workers reference for types, placement, ownership, and core
-authoring — not a packaged `you docs workers` sync, not workstation
-routing/lifecycle, not resource capacity deep-dive, and not a full agent
-failure-class catalog. Keep the page isolation-first: sibling links aid
-discovery but must not be required to define what a worker is.
+Authored `/docs/workers/*` and `/docs/workstations/*` (including family
+indexes) no longer mount `#limits-and-assumptions` or `#operational-cautions`.
+Scope boundaries that used to live in those sections belong in purpose /
+how-to-use / schema reference / examples when still needed for authoring.
+Keep the page isolation-first: sibling links aid discovery but must not be
+required to define what a worker is.
 
 When B04 siblings (`configuration`, `workstations`, `resources`) are not yet
 published in this worktree, wire reviewer-visible discovery with page-local

@@ -15,14 +15,6 @@
       "title": "Examples",
       "body": "Use the minimal valid example when reviewing a HOSTED_WORKER with hosted Linear provider auth. The misuse example shows an inline API key under auth—V1 hosted workers accept only auth.secretRef, and validation rejects inline credential fields."
     },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "Hosted workers fail closed on missing provider or invalid auth shapes. Keep secrets out of the worker body. Do not substitute model or script fields for hosted provider auth. Prefer POLLER_WORKER for new configs."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/hosted surface for HOSTED_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Poller worker full contract. OAuth hosted auth and advanced multi-instance coordination are out of scope for v1. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine HOSTED_WORKER fields. HOSTED_WORKER remains loadable as a legacy alias; prefer POLLER_WORKER in new configs. Mock workers stay on their own route and schema."
-    },
     "related": {
       "title": "Related To"
     },
@@ -47,16 +39,6 @@
     "siblingPollerWorker": "Poller worker",
     "siblingWorkstations": "Workstations overview",
     "siblingResources": "Resources",
-    "siblingTokens": "Tokens",
-    "cautionTopicHeader": "Caution",
-    "cautionGuidanceHeader": "Guidance",
-    "cautionValidationTopic": "Validation failures",
-    "cautionValidationGuidance": "Fix missing provider, invalid auth shapes, and excluded model or script fields before retrying. Unknown exclusive fields also fail validation.",
-    "cautionSecretsTopic": "Inline secrets",
-    "cautionSecretsGuidance": "Never put API keys, OAuth tokens, or other credential fields on the worker body. Use auth.secretRef only.",
-    "cautionModelFieldsTopic": "Model or script substitution",
-    "cautionModelFieldsGuidance": "Do not add model, modelProvider, operations, command, or args on a hosted worker. Hosted provider backends use provider and auth, not model routing or script execution.",
-    "cautionLegacyTopic": "Legacy preference",
-    "cautionLegacyGuidance": "Prefer POLLER_WORKER for new hosted poller backends. Keep HOSTED_WORKER only when migrating an existing hosted provider config."
+    "siblingTokens": "Tokens"
   }
 }

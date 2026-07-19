@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with behavior CRON and set the cron expression that owns the schedule. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so scheduled outcomes route correctly. Keep guards and readiness places intentional so a tick does not dispatch when work is blocked. Choose STANDARD, REPEATER, or POLLER when those non-schedule semantics are required. CRON is not STANDARD fire-once, REPEATER change-triggered looping, or POLLER long-lived scheduling \u2014 those behaviors exclude cron."
+      "body": "Author a workstation with behavior CRON and set the cron expression that owns the schedule. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so scheduled outcomes route correctly. Keep guards and readiness places intentional so a tick does not dispatch when work is blocked. Choose STANDARD, REPEATER, or POLLER when those non-schedule semantics are required. CRON is not STANDARD fire-once, REPEATER change-triggered looping, or POLLER long-lived scheduling — those behaviors exclude cron."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a CRON workstation. The misuse example shows behavior CRON without cron \u2014 the schedule field is required on this behavior."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "CRON steps fail closed when cron is missing, when the schedule expression is invalid, when inputs are not ready at tick time, when guards block dispatch, when concurrency limits refuse a new run, or when route fields leave an outcome unmapped. Do not omit cron under CRON, and do not move schedule ownership onto STANDARD, REPEATER, or POLLER \u2014 those behaviors exclude the cron field."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/cron surface for CRON scheduling. It is not a sync of packaged CLI docs, not a WorkstationType guide, and not the STANDARD, REPEATER, or POLLER behavior contracts. Compatible WorkstationType companions name the runtime pairing for this behavior; they do not redefine CRON fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting a CRON workstation. The misuse example shows behavior CRON without cron — the schedule field is required on this behavior."
     },
     "related": {
       "title": "Related To"
@@ -42,7 +34,7 @@
     "companionScriptRun": "Script-run workstation",
     "companionWorkersIndex": "Workers family index",
     "minimalExampleLabel": "Minimal valid CRON workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 CRON without cron (required):",
+    "misuseExampleLabel": "Incompatible misuse — CRON without cron (required):",
     "misuseNote": "cron is required under behavior CRON. Omitting it leaves the schedule undefined. Set cron when the step must run on a schedule.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -50,20 +42,6 @@
     "siblingRepeater": "Repeater behavior",
     "siblingPoller": "Poller behavior",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureCronMissingClass": "cron_missing",
-    "failureCronMissingCause": "behavior CRON without a cron expression \u2014 set cron before publishing the schedule",
-    "failureScheduleClass": "schedule_invalid",
-    "failureScheduleCause": "cron expression cannot be parsed or never matches \u2014 fix the schedule string",
-    "failureInputClass": "input_not_ready",
-    "failureInputCause": "Schedule tick fired but inputs were not ready \u2014 keep readiness places updated or narrow the schedule",
-    "failureGuardClass": "guard_blocked",
-    "failureGuardCause": "Guards refused dispatch at tick time \u2014 adjust guard conditions or wait for allowed windows",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked a scheduled dispatch \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

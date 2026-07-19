@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workstations/standard.
  * Covers STANDARD discriminator, W07 overlay embed, minimal/misuse
- * examples, WorkstationType companion links, and failure cautions — not
+ * examples, WorkstationType companion links — not
  * route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsStandardRegistry from "@/content/registry/documentation/workstations-standard.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -54,15 +54,11 @@ describe("workstations standard behavior page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/STANDARD/i);
     expect(openingSummary).toMatch(/WorkstationKind/i);
     expect(howToUse).toMatch(/behavior STANDARD/i);
@@ -71,10 +67,6 @@ describe("workstations standard behavior page", () => {
     expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/cron/i);
-    expect(cautions).toMatch(/inputs never become ready/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible WorkstationType companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -141,8 +133,11 @@ describe("workstations standard behavior page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -210,14 +205,6 @@ describe("workstations standard behavior page", () => {
       examples?.querySelector('[data-standard-behavior-example="misuse-cron"]')
         ?.textContent,
     ).toContain('"cron":');
-
-    const failureTable = document.querySelector(
-      "[data-standard-behavior-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("cron_on_standard"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workstations/inference-run.
  * Covers INFERENCE_RUN discriminator, W07 overlay embed, minimal/misuse
- * examples, Worker + behavior companion links, and failure cautions — not
+ * examples, Worker + behavior companion links — not
  * route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsInferenceRunRegistry from "@/content/registry/documentation/workstations-inference-run.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -56,15 +56,11 @@ describe("workstations inference-run type page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/INFERENCE_RUN/i);
     expect(openingSummary).toMatch(/WorkstationType/i);
     expect(openingSummary).toMatch(/INFERENCE_WORKER/i);
@@ -76,11 +72,6 @@ describe("workstations inference-run type page", () => {
     expect(schemaReference).toMatch(/no selected exclusive fields/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/classificationRoutes/i);
-    expect(cautions).toMatch(/INFERENCE_WORKER/i);
-    expect(cautions).toMatch(/Do not use classificationRoutes/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the AGENT_RUN or CLASSIFIER_WORKSTATION/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -156,8 +147,11 @@ describe("workstations inference-run type page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -257,22 +251,6 @@ describe("workstations inference-run type page", () => {
         '[data-inference-run-type-example="misuse-classification-routes"]',
       )?.textContent,
     ).toContain('"classificationRoutes"');
-
-    const failureTable = document.querySelector(
-      "[data-inference-run-type-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_type_mismatch"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText(
-        "classification_routes_on_inference",
-      ),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

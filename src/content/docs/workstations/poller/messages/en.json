@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with behavior POLLER. Keep type on the runtime axis for the execution family you need \u2014 use type POLLER_RUN when the step must run through a poller worker, or another WorkstationType when a different runtime is correct. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so long-lived outcomes route correctly. Do not set cron on POLLER. Choose STANDARD for fire-once dispatch, REPEATER for change-triggered loops, or CRON for schedules. POLLER is not a WorkstationType. POLLER_RUN is the runtime type for poller-worker execution \u2014 configure both axes when a step needs poller scheduling and poller-worker runtime together."
+      "body": "Author a workstation with behavior POLLER. Keep type on the runtime axis for the execution family you need — use type POLLER_RUN when the step must run through a poller worker, or another WorkstationType when a different runtime is correct. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so long-lived outcomes route correctly. Do not set cron on POLLER. Choose STANDARD for fire-once dispatch, REPEATER for change-triggered loops, or CRON for schedules. POLLER is not a WorkstationType. POLLER_RUN is the runtime type for poller-worker execution — configure both axes when a step needs poller scheduling and poller-worker runtime together."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a POLLER workstation with type POLLER_RUN. The misuse example collapses the axes by putting POLLER on the type field \u2014 POLLER is a behavior value, not a WorkstationType."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "POLLER steps fail closed when authors collapse behavior POLLER with type POLLER_RUN, when long-lived ingress never becomes ready, when concurrency limits block continuous dispatch, or when route fields leave an outcome unmapped. Do not put POLLER on the type field, and do not use cron schedules under POLLER \u2014 cron belongs on behavior CRON. Pair behavior POLLER with type POLLER_RUN only when both long-lived scheduling and poller-worker execution are required."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/poller surface for POLLER scheduling. It is not a sync of packaged CLI docs, not the POLLER_RUN runtime-type guide, and not the STANDARD, REPEATER, or CRON behavior contracts. Compatible WorkstationType companions name the runtime pairing for this behavior; they do not redefine POLLER fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting a POLLER workstation with type POLLER_RUN. The misuse example collapses the axes by putting POLLER on the type field — POLLER is a behavior value, not a WorkstationType."
     },
     "related": {
       "title": "Related To"
@@ -36,7 +28,7 @@
   "links": {
     "discriminatorLabel": "Discriminator",
     "discriminatorValue": "behavior = POLLER",
-    "pollerAxesNote": "POLLER is scheduling behavior. POLLER_RUN is a runtime type. Do not collapse the two axes \u2014 open the poller-run page when you need poller-worker execution.",
+    "pollerAxesNote": "POLLER is scheduling behavior. POLLER_RUN is a runtime type. Do not collapse the two axes — open the poller-run page when you need poller-worker execution.",
     "companionIntro": "POLLER is compatible with every published WorkstationType. Use poller-run when the runtime must be POLLER_RUN; bind a matching Worker for worker-backed types; LOGICAL_MOVE stays worker-free.",
     "companionPollerRun": "Poller-run workstation (type POLLER_RUN)",
     "companionAgentRun": "Agent-run workstation",
@@ -44,7 +36,7 @@
     "companionScriptRun": "Script-run workstation",
     "companionWorkersIndex": "Workers family index",
     "minimalExampleLabel": "Minimal valid POLLER workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 POLLER as type (axis collapse):",
+    "misuseExampleLabel": "Incompatible misuse — POLLER as type (axis collapse):",
     "misuseNote": "POLLER is a WorkstationKind behavior value, not a WorkstationType. Put POLLER on behavior, and use type POLLER_RUN when poller-worker execution is required.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -53,18 +45,6 @@
     "siblingRepeater": "Repeater behavior",
     "siblingCron": "Cron behavior",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureAxesCollapseClass": "poller_axes_collapsed",
-    "failureAxesCollapseCause": "POLLER placed on type instead of behavior, or POLLER_RUN treated as a behavior \u2014 keep scheduling on behavior and runtime on type",
-    "failureIngressClass": "ingress_not_ready",
-    "failureIngressCause": "Long-lived poller ingress never became ready \u2014 keep readiness places updated for continuous scheduling",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked continuous dispatch \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
-    "failureCronMisuseClass": "cron_on_poller",
-    "failureCronMisuseCause": "cron declared under POLLER \u2014 move the schedule to behavior CRON",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

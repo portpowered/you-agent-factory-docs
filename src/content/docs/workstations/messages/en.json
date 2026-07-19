@@ -27,10 +27,6 @@
       "title": "Workstation Schema",
       "body": "The embed shows the live Factory Workstation base definition from the installed package. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this index."
     },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This index is a Workstation family overview and selection surface. It is not a sync of packaged CLI docs, not a Worker configuration guide, and not a full per-variant field dump. Variant pages own discriminator-specific configuration. Worker companion pages are discovery links only. Classifier workstations replace ordinary success and rejection outputs with classificationRoutes."
-    },
     "related": {
       "title": "Related To"
     }

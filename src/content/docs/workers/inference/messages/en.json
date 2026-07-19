@@ -15,14 +15,6 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting an INFERENCE_WORKER. The misuse example shows agentTools on an inference worker—agentTools belongs on AGENT_WORKER and fails validation on INFERENCE_WORKER."
     },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "Inference workers fail early on invalid declarations and expect locality and resource capacity to match the authored backend. Keep secrets out of worker bodies. Watch timeout and capacity paths when LOCAL backends are still loading or CLOUD quota is exhausted. Do not treat AGENT_WORKER or agentTools as an inference substitute."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/inference surface for INFERENCE_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Agent worker full contract. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine INFERENCE_WORKER fields. Mock workers stay on their own route and schema."
-    },
     "related": {
       "title": "Related To"
     },
@@ -46,18 +38,6 @@
     "siblingAgentWorker": "Agent worker",
     "siblingWorkstations": "Workstations overview",
     "siblingResources": "Resources",
-    "siblingTokens": "Tokens",
-    "cautionTopicHeader": "Caution",
-    "cautionGuidanceHeader": "Guidance",
-    "cautionValidationTopic": "Validation failures",
-    "cautionValidationGuidance": "Fix duplicate or invalid operation and slot declarations before retrying. Invalid enums and incompatible content types also fail validation.",
-    "cautionLocalityTopic": "Locality and capacity",
-    "cautionLocalityGuidance": "Match modelLocality and worker resources to the backend you intend. Local backends need ready local capacity; cloud backends need quota and slot capacity that match the authored resources.",
-    "cautionSecretsTopic": "Secrets in worker bodies",
-    "cautionSecretsGuidance": "Do not put API keys, tokens, or other secret material in the worker markdown body. Keep credentials in the secret and config surfaces the runtime already resolves.",
-    "cautionAgentLoopTopic": "Agent-loop substitution",
-    "cautionAgentLoopGuidance": "Do not add agentTools or expect agent-loop behavior on an inference worker. Agent tool policy and loop ownership belong on AGENT_WORKER.",
-    "cautionTimeoutTopic": "Timeout and readiness",
-    "cautionTimeoutGuidance": "Increase worker timeout or wait for LOCAL model readiness when dispatches fail before the operation completes. Narrow workstation scope when CLOUD latency exceeds limits."
+    "siblingTokens": "Tokens"
   }
 }

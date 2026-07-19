@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with type MODEL_WORKSTATION and bind a MODEL_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so model outcomes route correctly. Set promptFile for the authored prompt, and use outcomeFormat, outputSchema, or stopWords when this step needs structured parse or stop control. Do not set operation, operationBindings, openCodeAgent, classificationRoutes, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose MODEL_INVOKE for provider-neutral operation bindings, AGENT_RUN for agent loops, or INFERENCE_RUN for bounded inference harness dispatch. MODEL_WORKSTATION is not a scheduling behavior and is not MODEL_INVOKE \u2014 keep operation and operationBindings on the model-invoke type."
+      "body": "Author a workstation with type MODEL_WORKSTATION and bind a MODEL_WORKER. Choose behavior for the scheduling axis you need — STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so model outcomes route correctly. Set promptFile for the authored prompt, and use outcomeFormat, outputSchema, or stopWords when this step needs structured parse or stop control. Do not set operation, operationBindings, openCodeAgent, classificationRoutes, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose MODEL_INVOKE for provider-neutral operation bindings, AGENT_RUN for agent loops, or INFERENCE_RUN for bounded inference harness dispatch. MODEL_WORKSTATION is not a scheduling behavior and is not MODEL_INVOKE — keep operation and operationBindings on the model-invoke type."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a MODEL_WORKSTATION with behavior STANDARD, a promptFile, and outcome parse fields. The misuse example borrows operation from MODEL_INVOKE \u2014 that field is excluded from MODEL_WORKSTATION."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "MODEL_WORKSTATION steps fail closed when the bound worker is missing or is not a MODEL_WORKER, when concurrency or resource limits block dispatch, when route fields leave an outcome unmapped, or when authors place model-invoke, agent-run, classifier, or cron exclusives on this type. Do not use operation under MODEL_WORKSTATION \u2014 that field belongs on MODEL_INVOKE. Keep scheduling on behavior and runtime on type."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/model-workstation surface for MODEL_WORKSTATION runtime. It is not a sync of packaged CLI docs, not the MODEL_INVOKE type guide, and not the STANDARD, REPEATER, CRON, or POLLER behavior contracts. Compatible WorkstationKind companions name the scheduling pairing for this type; they do not redefine MODEL_WORKSTATION fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting a MODEL_WORKSTATION with behavior STANDARD, a promptFile, and outcome parse fields. The misuse example borrows operation from MODEL_INVOKE — that field is excluded from MODEL_WORKSTATION."
     },
     "related": {
       "title": "Related To"
@@ -43,7 +35,7 @@
     "companionCron": "Cron behavior",
     "companionPoller": "Poller behavior",
     "minimalExampleLabel": "Minimal valid MODEL_WORKSTATION workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 operation on MODEL_WORKSTATION:",
+    "misuseExampleLabel": "Incompatible misuse — operation on MODEL_WORKSTATION:",
     "misuseNote": "operation belongs on MODEL_INVOKE. Keep MODEL_WORKSTATION on identity, worker binding, inputs, outputs, routing fields, and promptFile / outcomeFormat / outputSchema / stopWords only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -51,18 +43,6 @@
     "siblingInferenceRun": "Inference-run type",
     "siblingAgentRun": "Agent-run type",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureWorkerMissingClass": "worker_missing",
-    "failureWorkerMissingCause": "No worker bound, or bound worker is not a MODEL_WORKER \u2014 author and bind a model backend",
-    "failureWorkerMismatchClass": "worker_type_mismatch",
-    "failureWorkerMismatchCause": "Bound worker is AGENT_WORKER, INFERENCE_WORKER, or another non-model type \u2014 switch to MODEL_WORKER or change workstation type",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked model dispatch \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
-    "failureOperationMisuseClass": "operation_on_model_workstation",
-    "failureOperationMisuseCause": "operation declared under MODEL_WORKSTATION \u2014 move provider-neutral operation bindings to type MODEL_INVOKE",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

@@ -2,10 +2,10 @@
  * Page-owned proofs for /docs/workstations/model-workstation.
  * Covers MODEL_WORKSTATION discriminator, W07 overlay embed, minimal/misuse
  * examples, Worker + behavior companion links, model-invoke distinction, and
- * failure cautions — not route inventories or shared helper contracts.
+ * — not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsModelWorkstationRegistry from "@/content/registry/documentation/workstations-model-workstation.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -58,15 +58,11 @@ describe("workstations model-workstation type page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/MODEL_WORKSTATION/i);
     expect(openingSummary).toMatch(/WorkstationType/i);
     expect(openingSummary).toMatch(/prompt files/i);
@@ -80,11 +76,6 @@ describe("workstations model-workstation type page", () => {
     expect(schemaReference).toMatch(/selects the exclusive promptFile/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operation/i);
-    expect(cautions).toMatch(/MODEL_WORKER/i);
-    expect(cautions).toMatch(/Do not use operation/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the MODEL_INVOKE type guide/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -170,8 +161,11 @@ describe("workstations model-workstation type page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -275,22 +269,6 @@ describe("workstations model-workstation type page", () => {
         '[data-model-workstation-type-example="misuse-operation"]',
       )?.textContent,
     ).toContain('"operation"');
-
-    const failureTable = document.querySelector(
-      "[data-model-workstation-type-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_type_mismatch"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText(
-        "operation_on_model_workstation",
-      ),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

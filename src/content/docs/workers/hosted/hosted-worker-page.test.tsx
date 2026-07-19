@@ -5,7 +5,7 @@
  * operational cautions — not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workersHostedRegistry from "@/content/registry/documentation/workers-hosted.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -54,15 +54,11 @@ describe("workers hosted page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/HOSTED_WORKER/i);
     expect(openingSummary).toMatch(/LOGICAL_MOVE/i);
     expect(howToUse).toMatch(/auth\.secretRef|provider/i);
@@ -71,10 +67,6 @@ describe("workers hosted page", () => {
     expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/inline|secretRef/i);
-    expect(cautions).toMatch(/secret|POLLER_WORKER/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible Workstation companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -152,8 +144,11 @@ describe("workers hosted page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -229,17 +224,6 @@ describe("workers hosted page", () => {
         '[data-hosted-worker-example="misuse-inline-secret"]',
       )?.textContent,
     ).toContain('"apiKey"');
-
-    const failureTable = document.querySelector(
-      "[data-hosted-worker-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Inline secrets"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Legacy preference"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

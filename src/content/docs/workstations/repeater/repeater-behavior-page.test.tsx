@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workstations/repeater.
  * Covers REPEATER discriminator, W07 overlay embed, minimal/misuse
- * examples, WorkstationType companion links, and failure cautions — not
+ * examples, WorkstationType companion links — not
  * route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsRepeaterRegistry from "@/content/registry/documentation/workstations-repeater.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -54,15 +54,11 @@ describe("workstations repeater behavior page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/REPEATER/i);
     expect(openingSummary).toMatch(/WorkstationKind/i);
     expect(openingSummary).toMatch(/reloop/i);
@@ -73,11 +69,6 @@ describe("workstations repeater behavior page", () => {
     expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/cron/i);
-    expect(cautions).toMatch(/reloop never terminates/i);
-    expect(cautions).toMatch(/onRejection/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible WorkstationType companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -145,8 +136,11 @@ describe("workstations repeater behavior page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -223,17 +217,6 @@ describe("workstations repeater behavior page", () => {
       examples?.querySelector('[data-repeater-behavior-example="misuse-cron"]')
         ?.textContent,
     ).toContain('"cron":');
-
-    const failureTable = document.querySelector(
-      "[data-repeater-behavior-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("cron_on_repeater"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("reloop_unbounded"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

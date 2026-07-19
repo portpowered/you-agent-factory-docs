@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workstations/agent-run.
  * Covers AGENT_RUN discriminator, W07 overlay embed, minimal/misuse
- * examples, Worker + behavior companion links, and failure cautions — not
+ * examples, Worker + behavior companion links — not
  * route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsAgentRunRegistry from "@/content/registry/documentation/workstations-agent-run.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -54,15 +54,11 @@ describe("workstations agent-run type page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/AGENT_RUN/i);
     expect(openingSummary).toMatch(/WorkstationType/i);
     expect(openingSummary).toMatch(/AGENT_WORKER/i);
@@ -75,11 +71,6 @@ describe("workstations agent-run type page", () => {
     expect(schemaReference).toMatch(/selects the exclusive openCodeAgent/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operation/i);
-    expect(cautions).toMatch(/AGENT_WORKER/i);
-    expect(cautions).toMatch(/Do not use operation/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the INFERENCE_RUN or MODEL_INVOKE/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -152,8 +143,11 @@ describe("workstations agent-run type page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -251,20 +245,6 @@ describe("workstations agent-run type page", () => {
         '[data-agent-run-type-example="misuse-operation"]',
       )?.textContent,
     ).toContain('"operation"');
-
-    const failureTable = document.querySelector(
-      "[data-agent-run-type-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_type_mismatch"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("operation_on_agent_run"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

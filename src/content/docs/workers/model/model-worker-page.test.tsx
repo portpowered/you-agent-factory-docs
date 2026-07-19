@@ -5,7 +5,7 @@
  * cautions — not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workersModelRegistry from "@/content/registry/documentation/workers-model.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -54,15 +54,11 @@ describe("workers model page", () => {
       loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
     expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
     expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(openingSummary).toMatch(/MODEL_WORKER/i);
     expect(openingSummary).toMatch(/MODEL_WORKSTATION/i);
     expect(howToUse).toMatch(/modelLocality|operations/i);
@@ -71,10 +67,6 @@ describe("workers model page", () => {
     expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/agentTools/i);
-    expect(cautions).toMatch(/locality|bindings|INFERENCE_WORKER/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible Workstation companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
     expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -159,8 +151,11 @@ describe("workers model page", () => {
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -231,17 +226,6 @@ describe("workers model page", () => {
         '[data-model-worker-example="misuse-agent-tools"]',
       )?.textContent,
     ).toContain('"agentTools"');
-
-    const failureTable = document.querySelector(
-      "[data-model-worker-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Locality and bindings"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Legacy preference"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

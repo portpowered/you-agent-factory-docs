@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with type INFERENCE_RUN and bind an INFERENCE_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so inference outcomes route correctly. Do not set classificationRoutes, openCodeAgent, promptFile, or operation bindings that belong to other WorkstationType families. Choose AGENT_RUN for agent loops, SCRIPT_RUN for scripts, or CLASSIFIER_WORKSTATION for label routes. INFERENCE_RUN is not a scheduling behavior and is not AGENT_RUN \u2014 keep agent loops on AGENT_RUN and model-invoke operations on MODEL_INVOKE."
+      "body": "Author a workstation with type INFERENCE_RUN and bind an INFERENCE_WORKER. Choose behavior for the scheduling axis you need — STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so inference outcomes route correctly. Do not set classificationRoutes, openCodeAgent, promptFile, or operation bindings that belong to other WorkstationType families. Choose AGENT_RUN for agent loops, SCRIPT_RUN for scripts, or CLASSIFIER_WORKSTATION for label routes. INFERENCE_RUN is not a scheduling behavior and is not AGENT_RUN — keep agent loops on AGENT_RUN and model-invoke operations on MODEL_INVOKE."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting an INFERENCE_RUN workstation with behavior STANDARD. The misuse example borrows classificationRoutes from CLASSIFIER_WORKSTATION \u2014 that field is excluded from INFERENCE_RUN."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "INFERENCE_RUN steps fail closed when the bound worker is missing or is not an INFERENCE_WORKER, when concurrency or resource limits block dispatch, when route fields leave an outcome unmapped, or when authors place classifier, agent, model-workstation, or model-invoke exclusives on this type. Do not use classificationRoutes under INFERENCE_RUN \u2014 that field belongs on CLASSIFIER_WORKSTATION. Keep scheduling on behavior and runtime on type."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/inference-run surface for INFERENCE_RUN runtime. It is not a sync of packaged CLI docs, not the AGENT_RUN or CLASSIFIER_WORKSTATION type guides, and not the STANDARD, REPEATER, CRON, or POLLER behavior contracts. Compatible WorkstationKind companions name the scheduling pairing for this type; they do not redefine INFERENCE_RUN fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting an INFERENCE_RUN workstation with behavior STANDARD. The misuse example borrows classificationRoutes from CLASSIFIER_WORKSTATION — that field is excluded from INFERENCE_RUN."
     },
     "related": {
       "title": "Related To"
@@ -43,7 +35,7 @@
     "companionCron": "Cron behavior",
     "companionPoller": "Poller behavior",
     "minimalExampleLabel": "Minimal valid INFERENCE_RUN workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 classificationRoutes on INFERENCE_RUN:",
+    "misuseExampleLabel": "Incompatible misuse — classificationRoutes on INFERENCE_RUN:",
     "misuseNote": "classificationRoutes belongs on CLASSIFIER_WORKSTATION. Keep INFERENCE_RUN on identity, worker binding, inputs, outputs, and routing fields only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -51,18 +43,6 @@
     "siblingScriptRun": "Script-run type",
     "siblingClassifier": "Classifier type",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureWorkerMissingClass": "worker_missing",
-    "failureWorkerMissingCause": "No worker bound, or bound worker is not an INFERENCE_WORKER \u2014 author and bind an inference backend",
-    "failureWorkerMismatchClass": "worker_type_mismatch",
-    "failureWorkerMismatchCause": "Bound worker is AGENT_WORKER, SCRIPT_WORKER, or another non-inference type \u2014 switch to INFERENCE_WORKER or change workstation type",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked inference dispatch \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
-    "failureClassifierMisuseClass": "classification_routes_on_inference",
-    "failureClassifierMisuseCause": "classificationRoutes declared under INFERENCE_RUN \u2014 move label routing to type CLASSIFIER_WORKSTATION",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

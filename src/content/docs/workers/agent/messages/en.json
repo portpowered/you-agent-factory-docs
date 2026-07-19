@@ -15,14 +15,6 @@
       "title": "Examples",
       "body": "Use the minimal valid example when starting an AGENT_WORKER. The misuse example shows operations on an agent worker—operations belong on INFERENCE_WORKER and fail validation on AGENT_WORKER."
     },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "Agent dispatches surface stable failure_class values in work and session inspection metadata. Watch for lease denial, model readiness, tool-policy violations, harness failures, and timeout or cancel paths. Keep secrets out of worker bodies. Allowed tool execution records only bounded tool_diagnostics summaries. Do not treat INFERENCE_WORKER or operations as an agent-loop substitute."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/agent surface for AGENT_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference worker full contract. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine AGENT_WORKER fields. Mock workers stay on their own route and schema."
-    },
     "related": {
       "title": "Related To"
     },
@@ -46,18 +38,6 @@
     "siblingWorkstations": "Workstations overview",
     "siblingResources": "Resources",
     "siblingInferenceWorkers": "Inference workers",
-    "siblingToolCalling": "Tool calling",
-    "failureLeaseClass": "agent_run_lease_denied",
-    "failureLeaseCause": "Managed runtime capacity exhausted — retry later or increase MODEL resource capacity",
-    "failureModelReadyClass": "agent_run_model_not_ready",
-    "failureModelReadyCause": "Managed runtime missing or still loading — pull or wait before retrying",
-    "failureToolPolicyClass": "agent_run_tool_policy_violation",
-    "failureToolPolicyCause": "Tool call denied by agentTools.policy — change policy or workstation prompt expectations",
-    "failureHarnessClass": "agent_run_harness_failure",
-    "failureHarnessCause": "Agent loop runtime failure — inspect dispatch details and factory logs",
-    "failureTimeoutClass": "agent_run_timeout",
-    "failureTimeoutCause": "Dispatch or worker timeout exceeded — increase limits or narrow workstation scope",
-    "failureClassHeader": "failure_class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingToolCalling": "Tool calling"
   }
 }

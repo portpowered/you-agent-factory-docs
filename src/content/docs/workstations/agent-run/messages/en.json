@@ -5,7 +5,7 @@
   "sections": {
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with type AGENT_RUN and bind an AGENT_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so agent outcomes route correctly. Optionally set openCodeAgent when this step needs OpenCode agent overrides. Do not set operation, operationBindings, classificationRoutes, promptFile, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose INFERENCE_RUN for bounded inference, SCRIPT_RUN for scripts, or MODEL_INVOKE for provider-neutral operation bindings. AGENT_RUN is not a scheduling behavior and is not MODEL_INVOKE \u2014 keep operation and operationBindings on the model-invoke type, and keep one-shot inference on INFERENCE_RUN."
+      "body": "Author a workstation with type AGENT_RUN and bind an AGENT_WORKER. Choose behavior for the scheduling axis you need — STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so agent outcomes route correctly. Optionally set openCodeAgent when this step needs OpenCode agent overrides. Do not set operation, operationBindings, classificationRoutes, promptFile, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose INFERENCE_RUN for bounded inference, SCRIPT_RUN for scripts, or MODEL_INVOKE for provider-neutral operation bindings. AGENT_RUN is not a scheduling behavior and is not MODEL_INVOKE — keep operation and operationBindings on the model-invoke type, and keep one-shot inference on INFERENCE_RUN."
     },
     "schemaReference": {
       "title": "Schema reference",
@@ -13,15 +13,7 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting an AGENT_RUN workstation with behavior STANDARD and an openCodeAgent override. The misuse example borrows operation from MODEL_INVOKE \u2014 that field is excluded from AGENT_RUN."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "AGENT_RUN steps fail closed when the bound worker is missing or is not an AGENT_WORKER, when concurrency or resource limits block dispatch, when route fields leave an outcome unmapped, or when authors place model-invoke, classifier, model-workstation, or cron exclusives on this type. Do not use operation under AGENT_RUN \u2014 that field belongs on MODEL_INVOKE. Keep scheduling on behavior and runtime on type."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/agent-run surface for AGENT_RUN runtime. It is not a sync of packaged CLI docs, not the INFERENCE_RUN or MODEL_INVOKE type guides, and not the STANDARD, REPEATER, CRON, or POLLER behavior contracts. Compatible WorkstationKind companions name the scheduling pairing for this type; they do not redefine AGENT_RUN fields. Worker backends stay on the workers family."
+      "body": "Use the minimal valid example when starting an AGENT_RUN workstation with behavior STANDARD and an openCodeAgent override. The misuse example borrows operation from MODEL_INVOKE — that field is excluded from AGENT_RUN."
     },
     "related": {
       "title": "Related To"
@@ -43,7 +35,7 @@
     "companionCron": "Cron behavior",
     "companionPoller": "Poller behavior",
     "minimalExampleLabel": "Minimal valid AGENT_RUN workstation:",
-    "misuseExampleLabel": "Incompatible misuse \u2014 operation on AGENT_RUN:",
+    "misuseExampleLabel": "Incompatible misuse — operation on AGENT_RUN:",
     "misuseNote": "operation belongs on MODEL_INVOKE. Keep AGENT_RUN on identity, worker binding, inputs, outputs, routing fields, and optional openCodeAgent overrides only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -51,18 +43,6 @@
     "siblingScriptRun": "Script-run type",
     "siblingModelInvoke": "Model-invoke type",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureWorkerMissingClass": "worker_missing",
-    "failureWorkerMissingCause": "No worker bound, or bound worker is not an AGENT_WORKER \u2014 author and bind an agent backend",
-    "failureWorkerMismatchClass": "worker_type_mismatch",
-    "failureWorkerMismatchCause": "Bound worker is INFERENCE_WORKER, SCRIPT_WORKER, or another non-agent type \u2014 switch to AGENT_WORKER or change workstation type",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked agent dispatch \u2014 raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
-    "failureOperationMisuseClass": "operation_on_agent_run",
-    "failureOperationMisuseCause": "operation declared under AGENT_RUN \u2014 move provider-neutral operation bindings to type MODEL_INVOKE",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }
