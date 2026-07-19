@@ -4,6 +4,10 @@
  * Resolves the W03 `schemas/mock-workers` public subpath into a W04 model and
  * mounts the public W07 SchemaReference surface. Ownership stays page-local —
  * do not edit renderer internals under `src/components/references/schema/`.
+ *
+ * Recursive splay is page-local: expanded `fieldNodes` plus on-page `$defs`
+ * catalog (`showCatalog`) so nested mockWorkers / unmatchedDispatchPolicy
+ * detail and dependent defs are readable without opaque off-page `$ref` bounce.
  */
 
 import { SchemaReference } from "@/components/references/schema";
@@ -13,6 +17,7 @@ import {
 } from "@/lib/references/load-schema-verification-models";
 import { createReferenceCrossLinkResolver } from "@/lib/references/reference-cross-link-resolver";
 import type { SchemaAddress } from "@/lib/references/schema-model";
+import { splayMockWorkersSchemaFieldNodes } from "./mock-workers-schema-field-splay";
 
 export const MOCK_WORKERS_SCHEMA_PAGE_PATH =
   "/docs/references/mock-workers-schema";
@@ -49,14 +54,20 @@ export function MockWorkersSchemaReference({
 }: MockWorkersSchemaReferenceProps = {}) {
   try {
     const model = loadModel();
+    const fieldNodes = splayMockWorkersSchemaFieldNodes(
+      model.root,
+      model.definitions,
+    );
     return (
       <SchemaReference
         data-testid="mock-workers-schema-reference"
+        defaultExpanded
         definitions={model.definitions}
+        fieldNodes={fieldNodes}
         pagePath={MOCK_WORKERS_SCHEMA_PAGE_PATH}
         resolve={buildResolve(model)}
         root={model.root}
-        showCatalog={false}
+        showCatalog
         showEmptyExamples
       />
     );

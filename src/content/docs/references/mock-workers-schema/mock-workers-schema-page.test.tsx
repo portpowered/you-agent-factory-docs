@@ -115,6 +115,62 @@ describe("MockWorkersSchemaReference mount", () => {
     expect(
       surface.querySelector('[data-schema-field-path="mockWorkers"]'),
     ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-field-path="unmatchedDispatchPolicy"]',
+      ),
+    ).toBeTruthy();
+
+    // Recursive splay: nested mockWorker fields visible under mockWorkers
+    // without opaque off-page $ref bounce.
+    expect(
+      surface.querySelector('[data-schema-field-path="mockWorkers[].runType"]'),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-field-path="mockWorkers[].workerName"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-field-path="mockWorkers[].rejectConfig"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-field-path="mockWorkers[].scriptConfig"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-field-path="mockWorkers[].workInputs"]',
+      ),
+    ).toBeTruthy();
+
+    // On-page $defs catalog for dependent packaged shapes.
+    expect(
+      surface.querySelector('[data-schema-reference="catalog"]'),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-definition-pointer="/$defs/mockWorker"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-definition-pointer="/$defs/rejectConfig"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-definition-pointer="/$defs/scriptConfig"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector(
+        '[data-schema-definition-pointer="/$defs/workInput"]',
+      ),
+    ).toBeTruthy();
   });
 
   test("shows an accessible invalid status when schema acquisition fails", () => {

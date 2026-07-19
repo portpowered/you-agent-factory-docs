@@ -1432,6 +1432,11 @@ Schema reference polish stays projection-first: open on `#schema-lookup` (plus
 authored examples when present); do **not** restore `What It Covers` /
 `Key Concepts` / summary-style intros — page-local tests should assert those
 headings and `sections.whatItCovers` / `sections.keyConcepts` keys absent.
+Mock-workers recursive splay stays page-local: enable `showCatalog` and pass
+expanded `fieldNodes` from a page helper that resolves `itemSchema` /
+`refTarget` into nested children (strip `refTarget` on inlined parents so the
+shared expander can open them). Do not retarget shared SchemaReference defaults
+for Factory schema / you-config siblings.
 
 ## Page bundle and registry workflow
 
