@@ -1,3 +1,7 @@
+# Required PR/push verification — Wave CI-1 parallel job graph.
+# Membership and ordering edges: src/lib/ci-required-path.ts (CI_REQUIRED_JOB_GRAPH).
+# Local full-suite reproduction stays sequential: make ci.
+# Artifact handoff between jobs is deferred to CI-2; integration/budget rebuild out/.
 name: CI
 
 on:
@@ -5,7 +9,58 @@ on:
   pull_request:
 
 jobs:
-  verify:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Run typecheck and lint
+        run: make check
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Run tests
+        run: make test
+
+  reader-facing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Run reader-facing required suite
+        run: make test-reader-facing
+
+  a11y:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,17 +77,22 @@ jobs:
       - name: Install Playwright Chromium
         run: bunx playwright install --with-deps chromium
 
-      - name: Run typecheck and lint
-        run: make check
-
-      - name: Run tests
-        run: make test
-
-      - name: Run reader-facing required suite
-        run: make test-reader-facing
-
       - name: Run accessibility / responsive / layout suite
         run: make a11y
+
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
 
       - name: Run CI workflow/Makefile alignment contracts
         run: make test-ci-contract
@@ -43,20 +103,141 @@ jobs:
       - name: Run build-contract required suite
         run: make test-build-contract
 
-      - name: Build static export
-        run: make build
+  component-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Run production integration contracts
-        run: make test-integration
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
 
-      - name: Exported-site budget gate
-        run: make budget
+      - name: Setup
+        run: make setup
 
       - name: Component coverage enforcement
         run: make component-coverage
+
+  content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
 
       - name: Validate registry data
         run: make validate-data
 
       - name: Linkcheck
         run: make linkcheck
+
+  static-export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Build static export
+        run: make build
+
+  integration:
+    needs: [static-export]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
+      # CI-1: rebuild out/ locally (artifact handoff deferred to CI-2).
+      - name: Build static export for integration
+        run: make build
+
+      - name: Run production integration contracts
+        run: make test-integration
+
+  budget:
+    needs: [static-export]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      # CI-1: rebuild out/ locally (artifact handoff deferred to CI-2).
+      - name: Build static export for budget
+        run: make build
+
+      - name: Exported-site budget gate
+        run: make budget
+
+  ci-gate:
+    if: ${{ always() && !cancelled() }}
+    needs:
+      - check
+      - unit-tests
+      - reader-facing
+      - a11y
+      - contracts
+      - component-coverage
+      - content
+      - static-export
+      - integration
+      - budget
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every child job to succeed
+        run: |
+          set -euo pipefail
+          results=(
+            "${{ needs.check.result }}"
+            "${{ needs.unit-tests.result }}"
+            "${{ needs.reader-facing.result }}"
+            "${{ needs.a11y.result }}"
+            "${{ needs.contracts.result }}"
+            "${{ needs.component-coverage.result }}"
+            "${{ needs.content.result }}"
+            "${{ needs.static-export.result }}"
+            "${{ needs.integration.result }}"
+            "${{ needs.budget.result }}"
+          )
+          for result in "${results[@]}"; do
+            if [[ "$result" != "success" ]]; then
+              echo "ci-gate failed: a required child job result was '$result'"
+              exit 1
+            fi
+          done
+          echo "ci-gate passed: all required child jobs succeeded"

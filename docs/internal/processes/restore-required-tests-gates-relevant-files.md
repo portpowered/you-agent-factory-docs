@@ -68,7 +68,7 @@ make test-reader-facing
 | `src/lib/ci-contract-required-test-paths.test.ts` | Proves the CI contract path list is non-empty and excludes fresh-checkout/content-runtime proofs |
 | `scripts/run-ci-contract-required-tests.ts` | Runner for `bun run test:ci-contract`; prints `make test-ci-contract` on failure |
 | `Makefile` `test-ci-contract` / `test-verify-contract` / `test-build-contract` / `test-integration` | Maintainer + CI entrypoints; included in `make ci` |
-| `.github/workflows/ci.yml` | Linear required path invokes the same story-003 suites after `make test` / reader-facing; runs `make build` before `make test-integration` |
+| `.github/workflows/ci.yml` | Parallel job graph: `contracts` runs story-003 suites; `static-export` runs `make build`; `integration`/`budget` `needs: static-export` (CI-1 rebuilds `out/` locally) |
 | `src/lib/verify/production-integration-test-paths.ts` | Post-build integration path set for live shell/lifecycle contracts |
 | `src/tests/ci/github-actions-make-ci.test.ts` | Asserts Makefile `ci:` order and that the workflow invokes the required make targets |
 | `src/tests/ci/github-actions-bun-install.test.ts` | Asserts pinned Bun + `make setup` (frozen lockfile) install posture |
