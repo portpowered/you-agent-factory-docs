@@ -65,6 +65,29 @@ entry. Do not vendor or fork package source into this repo.
   `theme-code-copy-r00-page.test.ts` prove factory-dark chrome and shared
   code-copy interaction on `/docs/guides/getting-started` (desktop + narrow).
 
+## Prose / chrome link underline accent (secondary blue)
+
+- Fumadocs prose defaults `text-decoration-color` to `--color-fd-primary`
+  (host `--primary` / yellow accent). Do **not** remap `--primary` or
+  `--color-fd-primary` to fix underlines — that would retarget logos, CTA
+  fills, and method badges.
+- Own the accent in shared CSS: `.prose a:not([data-card])` (matching the
+  Fumadocs `:where` exclusion for `not-prose`) sets
+  `text-decoration-color: var(--secondary)` in `src/app/globals.css`.
+- Inline auto-links share `proseAutoLinkClassName` in
+  `src/features/docs/components/prose-auto-link-class.ts`
+  (`text-secondary` + `decoration-secondary`, not `text-primary`).
+- Lock with `prose-auto-link-class.test.tsx` and rendered secondary-class
+  assertions on a live factory phrase (for example Model Context Protocol).
+  The representative layout chrome contract
+  (`home-shell-styling-contract.test.tsx`) also asserts the same secondary
+  underline classes next to the header search resting-fill contract so both
+  chrome repairs stay locked together.
+- Joint browser check: on `/docs/concepts/mcp`, confirm
+  `button[data-search]` computed background matches `--background`, and
+  prose / auto-link underline or text colors resolve to `--secondary`
+  (not `--primary` yellow).
+
 ## Thin factory-ui graph wrappers
 
 - Host path: `src/features/factory-ui/graphs.ts` — re-export only from

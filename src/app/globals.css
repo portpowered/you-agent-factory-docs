@@ -115,6 +115,31 @@ article[data-registry-id] > section:first-of-type > h2 {
   border-style: solid;
 }
 
+/*
+ * Header search trigger (button[data-search]): blend with page/header
+ * background at rest. Scoped to buttons so the /search page input
+ * (also marked data-search) keeps its transparent-on-card fill.
+ * Hover/focus stay owned by the rules and classes below.
+ */
+button[data-search] {
+  background-color: var(--background) !important;
+}
+
+/*
+ * Prose/shared chrome link underlines: secondary blue accent, not primary
+ * yellow. Fumadocs prose defaults text-decoration-color to
+ * --color-fd-primary (mapped to --primary). Keep --primary for logos,
+ * CTA fills, and method badges; only retarget underlined prose links here.
+ * Inline auto-links use proseAutoLinkClassName (text-secondary +
+ * decoration-secondary) for the same accent.
+ */
+.prose
+  :where(a:not([data-card])):not(
+    :where([class~="not-prose"], [class~="not-prose"] *)
+  ) {
+  text-decoration-color: var(--secondary);
+}
+
 .header-action-icon {
   border-style: solid;
 }
