@@ -825,11 +825,19 @@ migration guidance and prefer the current public names for new configs.
 Authored `/docs/workers/*` and `/docs/workstations/*` pages (family indexes +
 variant pages, including `/docs/workers/mock`) use purpose-lead chrome:
 `openingSummary` via `DocsOpeningSummary`, then `#how-to-use`, then
-schema/variant fields and `#examples`. Do not restore `#what-it-covers` /
+`#schema-reference` (messages `sections.schemaReference`, not “Variant
+Fields”) and `#examples`. Do not restore `#what-it-covers` /
 `#key-concepts` summary intro sections on those trees. Fold discriminator
 identity into `#how-to-use` (label + value line) rather than a separate Key
 Concepts section. Workstation family index follows the same intro shape;
 type/behavior selection and the compatibility matrix stay after how-to-use.
+
+Worker/workstation `*VariantSchemaEmbed` components pass
+`showVariantHeading={false}` and `showPointerBreadcrumb={false}` into
+`SchemaVariantReference` so embeds omit reader-facing `Variant: XX_*` headings
+and `/$defs/Worker` / `/$defs/Workstation` pointer breadcrumb chrome. Defaults
+on those props stay `true` so Factory schema / you-config / mock-workers
+reference pages keep their current chrome.
 
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`

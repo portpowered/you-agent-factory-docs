@@ -50,8 +50,8 @@ describe("workers poller page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -69,7 +69,7 @@ describe("workers poller page", () => {
     expect(howToUse).toMatch(/behavior POLLER/i);
     expect(howToUse).toMatch(/auth\.secretRef/i);
     expect(howToUse).toMatch(/LINEAR|provider/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/inline|secretRef/i);
     expect(cautions).toMatch(/POLLER_RUN|behavior POLLER|secret/i);
@@ -140,7 +140,7 @@ describe("workers poller page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -164,7 +164,15 @@ describe("workers poller page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("POLLER_WORKER");
     expect(screen.getByTestId("poller-worker-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: POLLER_WORKER")).toBeTruthy();
+    expect(screen.queryByText("Variant: POLLER_WORKER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "poller-worker-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

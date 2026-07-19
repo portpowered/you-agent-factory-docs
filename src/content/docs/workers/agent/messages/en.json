@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a worker with type AGENT_WORKER. Put model and modelProvider on the worker when you need authored identity; authored values always win over operator defaults. Keep the shared system prompt in body. Configure agentTools.policy when the loop needs filesystem tools. Bind the worker from an AGENT_RUN workstation. Runner selection is separate from modelProvider—choose the built-in runner through factory or workstation runner fields. Agent workers are not INFERENCE_WORKER backends: they do not declare operations, and validation rejects capability declarations on AGENT_WORKER."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Worker base definition with AGENT_WORKER overlay applicability. Selected fields are agent-loop exclusive. Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

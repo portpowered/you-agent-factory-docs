@@ -52,8 +52,8 @@ describe("workstations model-invoke type page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -75,7 +75,7 @@ describe("workstations model-invoke type page", () => {
     expect(howToUse).toMatch(/Do not set promptFile/i);
     expect(howToUse).toMatch(/not a scheduling behavior/i);
     expect(howToUse).toMatch(/not MODEL_WORKSTATION/i);
-    expect(variantFields).toMatch(/selects the exclusive operation/i);
+    expect(schemaReference).toMatch(/selects the exclusive operation/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/outcomeFormat/i);
     expect(cautions).toMatch(/MODEL_WORKER/i);
@@ -160,7 +160,7 @@ describe("workstations model-invoke type page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -186,7 +186,15 @@ describe("workstations model-invoke type page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("MODEL_INVOKE");
     expect(screen.getByTestId("model-invoke-type-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: MODEL_INVOKE")).toBeTruthy();
+    expect(screen.queryByText("Variant: MODEL_INVOKE")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "model-invoke-type-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

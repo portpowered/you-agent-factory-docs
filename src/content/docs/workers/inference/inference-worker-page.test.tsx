@@ -48,8 +48,8 @@ describe("workers inference page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -66,7 +66,7 @@ describe("workers inference page", () => {
     expect(howToUse).toMatch(/model, modelProvider, and modelLocality/i);
     expect(howToUse).toMatch(/operations/i);
     expect(howToUse).toMatch(/not AGENT_WORKER/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/agentTools/i);
     expect(cautions).toMatch(/locality/i);
@@ -132,7 +132,7 @@ describe("workers inference page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -158,7 +158,15 @@ describe("workers inference page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("INFERENCE_WORKER");
     expect(screen.getByTestId("inference-worker-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: INFERENCE_WORKER")).toBeTruthy();
+    expect(screen.queryByText("Variant: INFERENCE_WORKER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "inference-worker-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

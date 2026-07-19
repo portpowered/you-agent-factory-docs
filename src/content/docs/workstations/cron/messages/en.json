@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with behavior CRON and set the cron expression that owns the schedule. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so scheduled outcomes route correctly. Keep guards and readiness places intentional so a tick does not dispatch when work is blocked. Choose STANDARD, REPEATER, or POLLER when those non-schedule semantics are required. CRON is not STANDARD fire-once, REPEATER change-triggered looping, or POLLER long-lived scheduling \u2014 those behaviors exclude cron."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with CRON overlay applicability. CRON selects the cron field as its exclusive schedule contract. Excluded fields belong to other WorkstationType families and must not appear on this behavior. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

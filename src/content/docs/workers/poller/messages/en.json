@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a worker with type POLLER_WORKER. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear poller needs them. Bind the worker from a POLLER_RUN workstation companion, and keep behavior POLLER with outputs and onFailure on the workstation that owns ingress scheduling. Do not treat POLLER_RUN and behavior POLLER as the same contract. Poller workers are not model-backed backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Worker base definition with POLLER_WORKER overlay applicability. Selected fields are hosted-poller exclusive (provider, auth, linear). Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

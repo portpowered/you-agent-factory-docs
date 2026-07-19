@@ -30,6 +30,8 @@ export function PollerRunTypeVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={POLLER_RUN_TYPE_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="poller-run-type-variant-schema"
       />
     </div>

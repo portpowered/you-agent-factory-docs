@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with type INFERENCE_RUN and bind an INFERENCE_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so inference outcomes route correctly. Do not set classificationRoutes, openCodeAgent, promptFile, or operation bindings that belong to other WorkstationType families. Choose AGENT_RUN for agent loops, SCRIPT_RUN for scripts, or CLASSIFIER_WORKSTATION for label routes. INFERENCE_RUN is not a scheduling behavior and is not AGENT_RUN \u2014 keep agent loops on AGENT_RUN and model-invoke operations on MODEL_INVOKE."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with INFERENCE_RUN overlay applicability. INFERENCE_RUN has no selected exclusive fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

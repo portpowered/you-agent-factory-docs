@@ -50,8 +50,8 @@ describe("workstations standard behavior page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -68,7 +68,7 @@ describe("workstations standard behavior page", () => {
     expect(howToUse).toMatch(/behavior STANDARD/i);
     expect(howToUse).toMatch(/Do not set cron/i);
     expect(howToUse).toMatch(/not CRON/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/cron/i);
     expect(cautions).toMatch(/inputs never become ready/i);
@@ -135,7 +135,7 @@ describe("workstations standard behavior page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -161,7 +161,15 @@ describe("workstations standard behavior page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("STANDARD");
     expect(screen.getByTestId("standard-behavior-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: STANDARD")).toBeTruthy();
+    expect(screen.queryByText("Variant: STANDARD")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "standard-behavior-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

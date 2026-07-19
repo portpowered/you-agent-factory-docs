@@ -48,8 +48,8 @@ describe("workers script page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -66,7 +66,7 @@ describe("workers script page", () => {
     expect(howToUse).toMatch(/not executed/i);
     expect(howToUse).toMatch(/command and args/i);
     expect(howToUse).toMatch(/SCRIPT_RUN/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/model-routing|model,/i);
     expect(cautions).toMatch(/timeout|exit/i);
@@ -136,7 +136,7 @@ describe("workers script page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -160,7 +160,15 @@ describe("workers script page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("SCRIPT_WORKER");
     expect(screen.getByTestId("script-worker-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: SCRIPT_WORKER")).toBeTruthy();
+    expect(screen.queryByText("Variant: SCRIPT_WORKER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "script-worker-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

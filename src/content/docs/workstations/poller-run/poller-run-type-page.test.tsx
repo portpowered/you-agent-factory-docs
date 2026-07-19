@@ -50,8 +50,8 @@ describe("workstations poller-run type page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -72,7 +72,7 @@ describe("workstations poller-run type page", () => {
     expect(howToUse).toMatch(/Do not put POLLER_RUN on the behavior field/i);
     expect(howToUse).toMatch(/not a scheduling behavior/i);
     expect(howToUse).toMatch(/POLLER is the WorkstationKind/i);
-    expect(variantFields).toMatch(/no selected exclusive fields/i);
+    expect(schemaReference).toMatch(/no selected exclusive fields/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/behavior POLLER/i);
     expect(examples).toMatch(/behavior field/i);
@@ -146,7 +146,7 @@ describe("workstations poller-run type page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -175,7 +175,15 @@ describe("workstations poller-run type page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("POLLER_RUN");
     expect(screen.getByTestId("poller-run-type-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: POLLER_RUN")).toBeTruthy();
+    expect(screen.queryByText("Variant: POLLER_RUN")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "poller-run-type-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

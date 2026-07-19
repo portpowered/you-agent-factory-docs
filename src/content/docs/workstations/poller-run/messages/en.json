@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with type POLLER_RUN and bind a POLLER_WORKER. Choose behavior for the scheduling axis you need \u2014 POLLER for long-lived poller ingress, STANDARD for fire-once dispatch, REPEATER for change-triggered loops, or CRON for schedules. Wire inputs plus outputs, onContinue, onRejection, and onFailure so poller outcomes route correctly. Do not put POLLER_RUN on the behavior field, and do not set promptFile, openCodeAgent, classificationRoutes, or operation bindings that belong to other WorkstationType families. Choose SCRIPT_RUN for command-backed scripts, AGENT_RUN for agent loops, or INFERENCE_RUN for bounded inference. POLLER_RUN is not a scheduling behavior. POLLER is the WorkstationKind for long-lived poller scheduling \u2014 configure both axes when a step needs poller-worker runtime and poller scheduling together."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with POLLER_RUN overlay applicability. POLLER_RUN has no selected exclusive fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

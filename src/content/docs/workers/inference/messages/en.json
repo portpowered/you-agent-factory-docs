@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a worker with type INFERENCE_WORKER. Put model, modelProvider, and modelLocality on the worker when you need authored identity and locality; authored values always win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep operation context in the body. Bind the worker from an INFERENCE_RUN workstation that supplies slot bindings and the operation name used at dispatch. Inference workers are not AGENT_WORKER backends: they do not own agent loops or agentTools.policy."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Worker base definition with INFERENCE_WORKER overlay applicability. Selected fields are inference-capability exclusive. Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

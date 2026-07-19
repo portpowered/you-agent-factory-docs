@@ -73,6 +73,12 @@ export type SchemaDefinitionProps = {
   pagePath?: string;
   /** Initial expansion for nested field rows. Default: false. */
   defaultExpanded?: boolean;
+  /**
+   * When false, omit the pointer breadcrumb (`$defs` / leaf segments). Default
+   * true so Factory schema / you-config / mock-workers embeds keep pointer
+   * chrome. Worker/workstation variant pages opt out via SchemaVariantReference.
+   */
+  showPointerBreadcrumb?: boolean;
   className?: string;
   "data-testid"?: string;
 };
@@ -115,6 +121,7 @@ export function SchemaDefinition({
   showEmptyExamples = false,
   pagePath,
   defaultExpanded = false,
+  showPointerBreadcrumb = true,
   className,
   "data-testid": testId = "schema-definition",
 }: SchemaDefinitionProps) {
@@ -190,12 +197,14 @@ export function SchemaDefinition({
           <SchemaTypeBadge format={format} typeSummary={typeSummary} />
         </div>
 
-        <SchemaBreadcrumb
-          anchor={anchor}
-          aria-label={`Deep link for ${title}`}
-          href={href}
-          segments={breadcrumbSegments}
-        />
+        {showPointerBreadcrumb ? (
+          <SchemaBreadcrumb
+            anchor={anchor}
+            aria-label={`Deep link for ${title}`}
+            href={href}
+            segments={breadcrumbSegments}
+          />
+        ) : null}
 
         {description !== undefined ? (
           <ContractDescriptionProse

@@ -50,8 +50,8 @@ describe("workers hosted page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -68,7 +68,7 @@ describe("workers hosted page", () => {
     expect(howToUse).toMatch(/auth\.secretRef|provider/i);
     expect(howToUse).toMatch(/LOGICAL_MOVE/i);
     expect(howToUse).toMatch(/POLLER_WORKER/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/inline|secretRef/i);
     expect(cautions).toMatch(/secret|POLLER_WORKER/i);
@@ -146,7 +146,7 @@ describe("workers hosted page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -170,7 +170,15 @@ describe("workers hosted page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("HOSTED_WORKER");
     expect(screen.getByTestId("hosted-worker-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: HOSTED_WORKER")).toBeTruthy();
+    expect(screen.queryByText("Variant: HOSTED_WORKER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "hosted-worker-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

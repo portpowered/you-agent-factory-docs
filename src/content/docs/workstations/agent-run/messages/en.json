@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with type AGENT_RUN and bind an AGENT_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so agent outcomes route correctly. Optionally set openCodeAgent when this step needs OpenCode agent overrides. Do not set operation, operationBindings, classificationRoutes, promptFile, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose INFERENCE_RUN for bounded inference, SCRIPT_RUN for scripts, or MODEL_INVOKE for provider-neutral operation bindings. AGENT_RUN is not a scheduling behavior and is not MODEL_INVOKE \u2014 keep operation and operationBindings on the model-invoke type, and keep one-shot inference on INFERENCE_RUN."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with AGENT_RUN overlay applicability. AGENT_RUN selects the exclusive openCodeAgent field. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

@@ -132,7 +132,12 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   display-only — do not implement W06 validators here. Missing/malformed overlay
   → `invalid`; empty overlay fields → `empty`. Annotate field trees via
   `annotateSchemaFieldTreeWithVariant`; field descriptions/types always come
-  from the base `SchemaFieldModel`.
+  from the base `SchemaFieldModel`. Opt-in chrome trim:
+  `showVariantHeading={false}` hides the `Variant: <label>` heading;
+  `showPointerBreadcrumb={false}` (forwarded to `SchemaDefinition`) hides
+  `/$defs/…` pointer breadcrumb chrome. Both default to `true` so Factory
+  schema / you-config / mock-workers pages keep existing chrome; worker and
+  workstation authored embeds opt out.
 - Real-schema verification: acquire via W03 `resolveApiPackageArtifact`
   (`schemas/factory`, `schemas/you-config`, `schemas/mock-workers`), normalize
   with `normalizeJsonSchemaArtifact` (pure), then render through

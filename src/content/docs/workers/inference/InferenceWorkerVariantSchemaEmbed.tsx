@@ -29,6 +29,8 @@ export function InferenceWorkerVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={INFERENCE_WORKER_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="inference-worker-variant-schema"
       />
     </div>

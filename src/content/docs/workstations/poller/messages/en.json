@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with behavior POLLER. Keep type on the runtime axis for the execution family you need \u2014 use type POLLER_RUN when the step must run through a poller worker, or another WorkstationType when a different runtime is correct. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so long-lived outcomes route correctly. Do not set cron on POLLER. Choose STANDARD for fire-once dispatch, REPEATER for change-triggered loops, or CRON for schedules. POLLER is not a WorkstationType. POLLER_RUN is the runtime type for poller-worker execution \u2014 configure both axes when a step needs poller scheduling and poller-worker runtime together."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with POLLER overlay applicability. POLLER has no selected exclusive fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this behavior. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

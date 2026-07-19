@@ -52,8 +52,8 @@ describe("workstations logical-move type page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -74,7 +74,7 @@ describe("workstations logical-move type page", () => {
     expect(howToUse).toMatch(/Do not set classificationRoutes/i);
     expect(howToUse).toMatch(/not a scheduling behavior/i);
     expect(howToUse).toMatch(/not CLASSIFIER_WORKSTATION/i);
-    expect(variantFields).toMatch(/selects the exclusive guards/i);
+    expect(schemaReference).toMatch(/selects the exclusive guards/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/classificationRoutes/i);
     expect(cautions).toMatch(/HOSTED_WORKER/i);
@@ -154,7 +154,7 @@ describe("workstations logical-move type page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -180,7 +180,15 @@ describe("workstations logical-move type page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("LOGICAL_MOVE");
     expect(screen.getByTestId("logical-move-type-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: LOGICAL_MOVE")).toBeTruthy();
+    expect(screen.queryByText("Variant: LOGICAL_MOVE")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "logical-move-type-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

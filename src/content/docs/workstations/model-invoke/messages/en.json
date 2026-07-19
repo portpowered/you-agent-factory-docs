@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with type MODEL_INVOKE and bind a MODEL_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so model outcomes route correctly. Set operation for the provider-neutral operation name, and use operationBindings when this step needs named binding maps. Do not set promptFile, outcomeFormat, outputSchema, stopWords, openCodeAgent, classificationRoutes, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose MODEL_WORKSTATION for prompt-file and outcome-parse surfaces, AGENT_RUN for agent loops, or INFERENCE_RUN for bounded inference harness dispatch. MODEL_INVOKE is not a scheduling behavior and is not MODEL_WORKSTATION \u2014 keep promptFile, outcomeFormat, outputSchema, and stopWords on the model-workstation type."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with MODEL_INVOKE overlay applicability. MODEL_INVOKE selects the exclusive operation and operationBindings fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

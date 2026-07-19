@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with behavior REPEATER. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so rejection and continue routes can re-enter the loop. Do not set cron on REPEATER. Choose STANDARD for fire-once dispatch, CRON for schedules, or POLLER for long-lived poller ingress. REPEATER is not CRON \u2014 it excludes the cron field \u2014 and it is not STANDARD or POLLER scheduling."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with REPEATER overlay applicability. REPEATER has no selected exclusive fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this behavior. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

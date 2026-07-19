@@ -50,8 +50,8 @@ describe("workstations poller behavior page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -72,7 +72,7 @@ describe("workstations poller behavior page", () => {
     expect(howToUse).toMatch(/Do not set cron/i);
     expect(howToUse).toMatch(/not a WorkstationType/i);
     expect(howToUse).toMatch(/POLLER_RUN is the runtime type/i);
-    expect(variantFields).toMatch(/no selected exclusive fields/i);
+    expect(schemaReference).toMatch(/no selected exclusive fields/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/collapses the axes/i);
     expect(cautions).toMatch(/collapse behavior POLLER with type POLLER_RUN/i);
@@ -147,7 +147,7 @@ describe("workstations poller behavior page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -176,7 +176,15 @@ describe("workstations poller behavior page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("POLLER");
     expect(screen.getByTestId("poller-behavior-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: POLLER")).toBeTruthy();
+    expect(screen.queryByText("Variant: POLLER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "poller-behavior-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

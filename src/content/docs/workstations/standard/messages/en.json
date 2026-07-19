@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with behavior STANDARD. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs and route fields for accepted, continue, rejection, and failure outcomes. Do not set cron on STANDARD. Choose REPEATER, CRON, or POLLER only when those scheduling semantics are required. STANDARD is not CRON \u2014 it excludes the cron field \u2014 and it is not REPEATER or POLLER scheduling."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with STANDARD overlay applicability. STANDARD has no selected exclusive fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this behavior. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

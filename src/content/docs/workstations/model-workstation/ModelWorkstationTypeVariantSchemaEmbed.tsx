@@ -31,6 +31,8 @@ export function ModelWorkstationTypeVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={MODEL_WORKSTATION_TYPE_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="model-workstation-type-variant-schema"
       />
     </div>

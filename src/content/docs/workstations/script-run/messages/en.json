@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with type SCRIPT_RUN and bind a SCRIPT_WORKER. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once dispatch, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so script outcomes route correctly. Put command and args on the SCRIPT_WORKER, not on this workstation type. Do not set promptFile, openCodeAgent, classificationRoutes, or operation bindings that belong to other WorkstationType families. Choose AGENT_RUN for agent loops, INFERENCE_RUN for bounded inference, or MODEL_WORKSTATION for prompt-file model steps. SCRIPT_RUN is not a scheduling behavior and is not MODEL_WORKSTATION \u2014 keep promptFile and model prompt surfaces on the model-workstation type."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with SCRIPT_RUN overlay applicability. SCRIPT_RUN has no selected exclusive fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

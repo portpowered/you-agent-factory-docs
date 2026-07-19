@@ -53,8 +53,8 @@ describe("workstations classifier type page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -75,10 +75,10 @@ describe("workstations classifier type page", () => {
     expect(howToUse).toMatch(/Do not set outputs/i);
     expect(howToUse).toMatch(/not a scheduling behavior/i);
     expect(howToUse).toMatch(/not LOGICAL_MOVE/i);
-    expect(variantFields).toMatch(
+    expect(schemaReference).toMatch(
       /selects the exclusive classificationRoutes/i,
     );
-    expect(variantFields).toMatch(/excludes outputs/i);
+    expect(schemaReference).toMatch(/excludes outputs/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/outputs/i);
     expect(cautions).toMatch(/HOSTED_WORKER/i);
@@ -164,7 +164,7 @@ describe("workstations classifier type page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -190,7 +190,15 @@ describe("workstations classifier type page", () => {
       "CLASSIFIER_WORKSTATION",
     );
     expect(screen.getByTestId("classifier-type-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: CLASSIFIER_WORKSTATION")).toBeTruthy();
+    expect(screen.queryByText("Variant: CLASSIFIER_WORKSTATION")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "classifier-type-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

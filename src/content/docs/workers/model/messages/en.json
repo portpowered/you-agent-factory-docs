@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a worker with type MODEL_WORKER when migrating an existing managed or local model config. Put model, modelProvider, and modelLocality on the worker so authored identity and locality win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep descriptive context in the body. Bind the worker from a MODEL_WORKSTATION companion; use MODEL_INVOKE when the invoke-style companion applies. For new factories, prefer INFERENCE_WORKER instead of MODEL_WORKER. Model workers are not AGENT_WORKER backends: they do not own agentTools or skipPermissions."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Worker base definition with MODEL_WORKER overlay applicability. Shared fields include identity, model routing, operations, modelLocality, and openCodeAgent. Excluded fields belong to agent-loop, script, or hosted-poller families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

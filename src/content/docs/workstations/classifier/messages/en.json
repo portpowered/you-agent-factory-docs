@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a workstation with type CLASSIFIER_WORKSTATION and bind a HOSTED_WORKER companion. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once classification, REPEATER for change-triggered loops, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus classificationRoutes so each label maps to destination workstations, and keep onFailure for failure routing. Do not set outputs, onContinue, onRejection, guards, openCodeAgent, promptFile, outcomeFormat, operation, operationBindings, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose LOGICAL_MOVE for guarded non-worker routing, AGENT_RUN for agent loops, or INFERENCE_RUN for bounded inference harness dispatch. CLASSIFIER_WORKSTATION is not a scheduling behavior and is not LOGICAL_MOVE \u2014 keep guards on the logical-move type. Both share HOSTED_WORKER companions, but their selected field sets stay separate."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with CLASSIFIER_WORKSTATION overlay applicability. CLASSIFIER_WORKSTATION selects the exclusive classificationRoutes field and excludes outputs, onContinue, and onRejection. Other excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this type. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

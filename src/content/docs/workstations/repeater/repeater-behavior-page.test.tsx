@@ -50,8 +50,8 @@ describe("workstations repeater behavior page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -70,7 +70,7 @@ describe("workstations repeater behavior page", () => {
     expect(howToUse).toMatch(/Do not set cron/i);
     expect(howToUse).toMatch(/onRejection/i);
     expect(howToUse).toMatch(/not CRON/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/cron/i);
     expect(cautions).toMatch(/reloop never terminates/i);
@@ -139,7 +139,7 @@ describe("workstations repeater behavior page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -165,7 +165,15 @@ describe("workstations repeater behavior page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("REPEATER");
     expect(screen.getByTestId("repeater-behavior-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: REPEATER")).toBeTruthy();
+    expect(screen.queryByText("Variant: REPEATER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "repeater-behavior-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

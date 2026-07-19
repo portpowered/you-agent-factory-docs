@@ -52,8 +52,8 @@ describe("workstations inference-run type page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -73,7 +73,7 @@ describe("workstations inference-run type page", () => {
     expect(howToUse).toMatch(/Do not set classificationRoutes/i);
     expect(howToUse).toMatch(/not a scheduling behavior/i);
     expect(howToUse).toMatch(/not AGENT_RUN/i);
-    expect(variantFields).toMatch(/no selected exclusive fields/i);
+    expect(schemaReference).toMatch(/no selected exclusive fields/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/classificationRoutes/i);
     expect(cautions).toMatch(/INFERENCE_WORKER/i);
@@ -150,7 +150,7 @@ describe("workstations inference-run type page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -178,7 +178,15 @@ describe("workstations inference-run type page", () => {
     expect(
       screen.getByTestId("inference-run-type-variant-schema"),
     ).toBeTruthy();
-    expect(screen.getByText("Variant: INFERENCE_RUN")).toBeTruthy();
+    expect(screen.queryByText("Variant: INFERENCE_RUN")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "inference-run-type-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

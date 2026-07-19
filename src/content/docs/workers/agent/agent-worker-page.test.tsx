@@ -48,8 +48,8 @@ describe("workers agent page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
     const cautions = String(
@@ -66,7 +66,7 @@ describe("workers agent page", () => {
     expect(howToUse).toMatch(/model and modelProvider/i);
     expect(howToUse).toMatch(/agentTools\.policy/i);
     expect(howToUse).toMatch(/not INFERENCE_WORKER/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operations/i);
     expect(cautions).toMatch(/failure_class/i);
@@ -130,7 +130,7 @@ describe("workers agent page", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
@@ -154,7 +154,15 @@ describe("workers agent page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("AGENT_WORKER");
     expect(screen.getByTestId("agent-worker-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: AGENT_WORKER")).toBeTruthy();
+    expect(screen.queryByText("Variant: AGENT_WORKER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "agent-worker-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen

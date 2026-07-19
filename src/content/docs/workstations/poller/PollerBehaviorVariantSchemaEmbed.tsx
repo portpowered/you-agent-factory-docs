@@ -29,6 +29,8 @@ export function PollerBehaviorVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={POLLER_BEHAVIOR_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="poller-behavior-variant-schema"
       />
     </div>

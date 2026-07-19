@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a worker with type HOSTED_WORKER when migrating an existing hosted provider config. Set provider to a built-in hosted identity such as LINEAR. Authenticate through auth.secretRef only. Add optional linear fields such as pollInterval, teamIds, stateIds, mapping, and claim when the Linear provider needs them. Bind the worker from a LOGICAL_MOVE companion; use CLASSIFIER_WORKSTATION when the classifier companion applies. For new factories, prefer POLLER_WORKER instead of HOSTED_WORKER. Hosted workers are not model-backed or script backends: they do not own model, modelProvider, modelLocality, operations, command, args, or agentTools."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Worker base definition with HOSTED_WORKER overlay applicability. Shared fields include identity plus hosted-provider fields (provider, auth, linear). Excluded fields belong to model-routing, inference, agent-loop, or script families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {

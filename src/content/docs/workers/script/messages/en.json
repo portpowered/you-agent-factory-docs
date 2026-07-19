@@ -7,8 +7,8 @@
       "title": "How To Use",
       "body": "Author a worker with type SCRIPT_WORKER. Put command and args on the worker; add optional executorProvider, timeout, and resources when the attempt needs an explicit wrapper or bound. Keep descriptive context in the body—the markdown body is not executed. Bind the worker from a SCRIPT_RUN workstation that supplies routing, limits, workingDirectory, worktree, env, and optional copyReferencedScripts. Script workers are not model-backed backends: they do not own model, modelProvider, modelLocality, operations, or agentTools."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Worker base definition with SCRIPT_WORKER overlay applicability. Selected fields are script-execution exclusive (command, args, executorProvider). Excluded fields belong to other WorkerType families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {
