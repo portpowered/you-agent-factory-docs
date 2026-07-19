@@ -30,6 +30,8 @@ export function StandardBehaviorVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={STANDARD_BEHAVIOR_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="standard-behavior-variant-schema"
       />
     </div>

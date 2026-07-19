@@ -1,11 +1,13 @@
 /**
  * Browser probe for published `/docs/references/events` catalog polish
- * (repair-events-catalog-examples-envelopes-007). Run with plain `bun` from
- * repo cwd. Kills the local server on exit.
+ * (repair-events-catalog-examples-envelopes-007) plus intro-strip absence
+ * (repair-events-reference-intro-strip-002). Run with plain `bun` from repo
+ * cwd. Kills the local server on exit.
  *
  * Proves a reader can see: short "Event catalog" label, rendered envelope
  * components, suppressed pointer-path chrome, and concrete envelope/payload
- * JSON examples in a success corpus state.
+ * JSON examples in a success corpus state — and that What It Covers / Key
+ * Concepts / folded Opening summary intro chrome are absent.
  *
  * Worktree note: Claude worktrees often resolve `next` from a parent
  * `node_modules`. Turbopack rejects that layout, so this probe starts
@@ -184,6 +186,10 @@ try {
         '[data-testid="event-payload-json-example"]',
       ).length;
 
+      const headingTexts = Array.from(
+        document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+      ).map((el) => (el.textContent ?? "").trim());
+
       return {
         surfaceStatus: surface?.getAttribute("data-events-status") ?? null,
         ownership: surface?.getAttribute("data-events-ownership") ?? null,
@@ -245,6 +251,35 @@ try {
           code.includes('"schemaVersion"'),
         ),
         payloadExampleCount,
+        // Intro-strip absence (MCP #156 pattern)
+        hasWhatItCoversHeading: headingTexts.some(
+          (text) => text === "What It Covers",
+        ),
+        hasKeyConceptsHeading: headingTexts.some(
+          (text) => text === "Key Concepts",
+        ),
+        whatItCoversIdPresent: Boolean(
+          document.getElementById("what-it-covers"),
+        ),
+        keyConceptsIdPresent: Boolean(document.getElementById("key-concepts")),
+        eventCorpusIdPresent: Boolean(document.getElementById("event-corpus")),
+        hasFoldedOpeningSummary: Boolean(
+          document.querySelector('[data-testid="folded-summary"]') ||
+            document.querySelector('[data-opening-summary="folded"]'),
+        ),
+        streamOperationsPresent: Boolean(
+          document.querySelector(
+            '[data-testid="event-stream-operations-list"]',
+          ),
+        ),
+        reconnectLifecyclePresent: Boolean(
+          document.querySelector(
+            '[data-testid="event-reconnect-lifecycle-section"]',
+          ),
+        ),
+        sseExamplesPresent: Boolean(
+          document.querySelector('[data-testid="sse-static-examples-section"]'),
+        ),
       };
     });
 
@@ -306,6 +341,27 @@ try {
     }
     if (probe.payloadExampleCount < 1) {
       failures.push("expected payload-variant JSON examples");
+    }
+    if (probe.hasWhatItCoversHeading || probe.whatItCoversIdPresent) {
+      failures.push("What It Covers intro chrome still present");
+    }
+    if (probe.hasKeyConceptsHeading || probe.keyConceptsIdPresent) {
+      failures.push("Key Concepts intro chrome still present");
+    }
+    if (probe.hasFoldedOpeningSummary) {
+      failures.push("folded Opening summary chrome still present");
+    }
+    if (!probe.eventCorpusIdPresent) {
+      failures.push("expected #event-corpus as primary content");
+    }
+    if (!probe.streamOperationsPresent) {
+      failures.push("expected event stream operations list");
+    }
+    if (!probe.reconnectLifecyclePresent) {
+      failures.push("expected reconnect/lifecycle section");
+    }
+    if (!probe.sseExamplesPresent) {
+      failures.push("expected static SSE examples section");
     }
 
     if (failures.length > 0) {

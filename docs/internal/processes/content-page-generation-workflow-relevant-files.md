@@ -822,6 +822,81 @@ migration guidance and prefer the current public names for new configs.
 
 ### Documentation workers ownership, examples, and core fields (page-local)
 
+Authored `/docs/workers/*` and `/docs/workstations/*` pages (family indexes +
+variant pages, including `/docs/workers/mock`) use purpose-lead chrome:
+`openingSummary` via `DocsOpeningSummary`, then `#how-to-use`, then
+`#schema-reference` (messages `sections.schemaReference`, not “Variant
+Fields”) and `#examples`. Do not restore `#what-it-covers` /
+`#key-concepts` summary intro sections on those trees. Fold discriminator
+identity into `#how-to-use` (label + value line) rather than a separate Key
+Concepts section. Workstation family index follows the same intro shape;
+type/behavior selection and the compatibility matrix stay after how-to-use.
+Do not restore `#operational-cautions` or `#limits-and-assumptions` on
+worker/workstation authored trees (including family indexes); companion
+facts stay in purpose / how-to-use / schema reference / examples, and
+failure-class tables that lived only under cautions are removed with that
+chrome.
+
+Worker/workstation `*VariantSchemaEmbed` components pass
+`showVariantHeading={false}` and `showPointerBreadcrumb={false}` into
+`SchemaVariantReference` so embeds omit reader-facing `Variant: XX_*` headings
+and `/$defs/Worker` / `/$defs/Workstation` pointer breadcrumb chrome. Defaults
+on those props stay `true` so Factory schema / you-config / mock-workers
+reference pages keep their current chrome.
+
+Workstation authored page titles (frontmatter `title` + matching
+`messages.title`) and in-family sibling/companion link labels use concrete
+`… workstation` forms — for example `Classifier workstation`,
+`Logical move workstation`, `Agent-run workstation`, `Standard workstation`.
+Do not restore `… type`, `… behavior`, or `Agent-run type` / `Classifier type`
+as the primary display title. Routes/slugs stay unchanged; only display
+titles and owned link labels change. `MODEL_WORKSTATION` displays as
+`Model workstation` (avoid `Model-workstation workstation`).
+
+On `/docs/workers/agent`, `#related` uses `<RelatedDocs />` alone (no
+duplicate hand-built `LocalizedLinkList` of the same destinations beside it).
+JSON examples render through shared `CodePanel` (not bare unstyled
+`<pre><code>`). Do not restore `#tags` / `#references`
+(`TagPillList` / `CitationList`) footer chrome on that page.
+
+Page-local worker/workstation tests must prove that polished shape
+behaviorally (rendered headings/copy, not file inventories):
+
+- Assert `openingSummary` + `howToUse` message bodies (purpose teaching), and
+  for family-index App Router renders also assert the purpose lead appears in
+  HTML.
+- Assert visible `#how-to-use` / `#schema-reference` / `#examples` (or mock’s
+  `#schema-fields`) presence with `getByRole` headings.
+- Assert removed chrome with `queryByRole(...).toBeNull()` for What It Covers,
+  Key Concepts, Operational Cautions, and Limits And Assumptions (family
+  indexes included).
+- On variant embeds, assert `queryByText("Variant: …")` is null and the
+  definition-header breadcrumb is absent via
+  `:scope > header [data-testid="schema-breadcrumb"]` (field-row breadcrumbs
+  still use that test id).
+- Assert concrete workstation `messages.title` forms (`… workstation`) and
+  Agent worker RelatedDocs-only related
+  (`section#related [data-testid="curated-related-docs"]`) with no Tags /
+  References headings.
+- Do not edit Factory schema / you-config / mock-workers *reference* page
+  tests for this chrome trim unless proving shared opt-in defaults stay
+  unchanged.
+
+Browser-verify the polished chrome on representative live routes (at least
+`/docs/workers/agent` and `/docs/workstations/classifier`) with a unique
+port in `3100–3999`, kill the server before exit, and prefer
+`bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` in
+parent-hoisted worktrees (plain Turbopack `bun run dev` can fail to resolve
+`next` from `src/app`). Assert from SSR HTML: purpose lead after the H1,
+`#how-to-use` / `#schema-reference` / `#examples`, no What It Covers / Key
+Concepts / Operational Cautions / Limits And Assumptions, no
+`Variant: XX_*` heading, no definition-header
+`[data-testid="schema-breadcrumb"]` (do **not** treat field-row `$ref →
+/$defs/…` links or `data-schema-definition-pointer` attributes as chrome
+noise), concrete `… workstation` title on the workstation page, and on
+agent: RelatedDocs (`curated-related-docs`),
+`data-agent-worker-example-code`, and absent `#tags` / `#references`.
+
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`
 (stable anchor). Put ownership matrix cells, example label/body, and
@@ -839,12 +914,12 @@ meanings, but rewrite for web scanning and avoid a full flag dump.
 
 ### Documentation workers limits and sibling discovery (page-local)
 
-For `documentation/workers`, keep `#limits-and-assumptions` as the scope
-boundary: web workers reference for types, placement, ownership, and core
-authoring — not a packaged `you docs workers` sync, not workstation
-routing/lifecycle, not resource capacity deep-dive, and not a full agent
-failure-class catalog. Keep the page isolation-first: sibling links aid
-discovery but must not be required to define what a worker is.
+Authored `/docs/workers/*` and `/docs/workstations/*` (including family
+indexes) no longer mount `#limits-and-assumptions` or `#operational-cautions`.
+Scope boundaries that used to live in those sections belong in purpose /
+how-to-use / schema reference / examples when still needed for authoring.
+Keep the page isolation-first: sibling links aid discovery but must not be
+required to define what a worker is.
 
 When B04 siblings (`configuration`, `workstations`, `resources`) are not yet
 published in this worktree, wire reviewer-visible discovery with page-local

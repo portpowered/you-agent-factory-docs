@@ -35,7 +35,7 @@ const REPRESENTATIVE_FAMILY_PAGES = [
   {
     familyId: "workstations" as const,
     slug: ["workstations", "inference-run"] as const,
-    title: "Inference-run type",
+    title: "Inference-run workstation",
   },
 ] as const;
 

@@ -1,5 +1,5 @@
 ---
-title: "Logical-move type"
+title: "Logical move workstation"
 description: "Configure type = LOGICAL_MOVE for non-worker logical routing and guarded loop-breaker usage through a HOSTED_WORKER companion."
 kind: "documentation"
 registryId: "documentation.workstations-logical-move"
@@ -22,21 +22,13 @@ import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
-<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
-  <T k="sections.whatItCovers.body" />
-</Section>
-
-<Section id="key-concepts" titleKey="sections.keyConcepts.title">
-  <T k="sections.keyConcepts.body" />
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
   <p>
     <T k="links.discriminatorLabel" />
     {": "}
     <T k="links.discriminatorValue" />
   </p>
-</Section>
-
-<Section id="how-to-use" titleKey="sections.howToUse.title">
-  <T k="sections.howToUse.body" />
   <p>
     <T k="links.companionIntro" />
   </p>
@@ -66,8 +58,8 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   />
 </Section>
 
-<Section id="variant-fields" titleKey="sections.variantFields.title">
-  <T k="sections.variantFields.body" />
+<Section id="schema-reference" titleKey="sections.schemaReference.title">
+  <T k="sections.schemaReference.body" />
   <LogicalMoveTypeVariantSchemaEmbed />
   <LocalizedLinkList
     items={[
@@ -82,76 +74,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 <Section id="examples" titleKey="sections.examples.title">
   <T k="sections.examples.body" />
   <LogicalMoveTypeExamples />
-</Section>
-
-<Section id="operational-cautions" titleKey="sections.operationalCautions.title">
-  <T k="sections.operationalCautions.body" />
-  <table data-logical-move-type-failure-table="">
-    <thead>
-      <tr>
-        <th>
-          <T k="links.failureClassHeader" />
-        </th>
-        <th>
-          <T k="links.failureCauseHeader" />
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <T k="links.failureWorkerMissingClass" />
-        </td>
-        <td>
-          <T k="links.failureWorkerMissingCause" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.failureWorkerMismatchClass" />
-        </td>
-        <td>
-          <T k="links.failureWorkerMismatchCause" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.failureGuardBlockedClass" />
-        </td>
-        <td>
-          <T k="links.failureGuardBlockedCause" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.failureConcurrencyClass" />
-        </td>
-        <td>
-          <T k="links.failureConcurrencyCause" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.failureRoutingClass" />
-        </td>
-        <td>
-          <T k="links.failureRoutingCause" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.failureClassificationRoutesMisuseClass" />
-        </td>
-        <td>
-          <T k="links.failureClassificationRoutesMisuseCause" />
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</Section>
-
-<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
-  <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
 <Section id="related" titleKey="sections.related.title">

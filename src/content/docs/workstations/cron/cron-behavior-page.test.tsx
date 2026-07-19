@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workstations/cron.
  * Covers CRON discriminator, W07 overlay embed, minimal/misuse
- * examples, WorkstationType companion links, and failure cautions — not
+ * examples, WorkstationType companion links — not
  * route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsCronRegistry from "@/content/registry/documentation/workstations-cron.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -41,47 +41,33 @@ describe("workstations cron behavior page", () => {
       slug: "cron",
     });
 
-    expect(loadedPage.messages.title).toBe("Cron behavior");
+    expect(loadedPage.messages.title).toBe("Cron workstation");
     expect(loadedPage.messages.description).toMatch(/behavior = CRON/i);
     expect(loadedPage.messages.description).toMatch(/schedule/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/behavior = CRON/i);
-    expect(whatItCovers).toMatch(/WorkstationKind/i);
-    expect(whatItCovers).toMatch(/scheduled time work/i);
-    expect(keyConcepts).toMatch(/behavior with value CRON/i);
-    expect(keyConcepts).toMatch(/selects the cron schedule field/i);
-    expect(keyConcepts).toMatch(/not STANDARD/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/CRON/i);
+    expect(openingSummary).toMatch(/WorkstationKind/i);
+    expect(openingSummary).toMatch(/schedule/i);
     expect(howToUse).toMatch(/behavior CRON/i);
     expect(howToUse).toMatch(/cron expression/i);
     expect(howToUse).toMatch(/guards/i);
-    expect(variantFields).toMatch(/selects the cron field/i);
+    expect(howToUse).toMatch(/not STANDARD/i);
+    expect(schemaReference).toMatch(/selects the cron field/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/without cron/i);
-    expect(cautions).toMatch(/cron is missing/i);
-    expect(cautions).toMatch(/guards block dispatch/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible WorkstationType companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -139,19 +125,22 @@ describe("workstations cron behavior page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -168,7 +157,15 @@ describe("workstations cron behavior page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("CRON");
     expect(screen.getByTestId("cron-behavior-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: CRON")).toBeTruthy();
+    expect(screen.queryByText("Variant: CRON")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "cron-behavior-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen
@@ -192,12 +189,12 @@ describe("workstations cron behavior page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
       screen
-        .getByRole("link", { name: "Repeater behavior" })
+        .getByRole("link", { name: "Repeater workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/repeater");
 
@@ -225,20 +222,6 @@ describe("workstations cron behavior page", () => {
         '[data-cron-behavior-example="misuse-missing-cron"]',
       )?.textContent,
     ).not.toContain('"cron"');
-
-    const failureTable = document.querySelector(
-      "[data-cron-behavior-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("cron_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("schedule_invalid"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("guard_blocked"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

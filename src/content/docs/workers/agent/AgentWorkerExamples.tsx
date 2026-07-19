@@ -1,4 +1,5 @@
 import { T } from "@/features/docs/components/T";
+import { CodePanel } from "@/features/factory-ui/data-display";
 import {
   AGENT_WORKER_MINIMAL_EXAMPLE,
   AGENT_WORKER_MISUSE_OPERATIONS_EXAMPLE,
@@ -11,6 +12,7 @@ function formatExample(value: unknown): string {
 /**
  * Authored minimal and misuse examples for AGENT_WORKER.
  * JSON payloads stay outside message auto-link so field names remain literal.
+ * Uses shared CodePanel so examples match other authored JSON presenters.
  */
 export function AgentWorkerExamples() {
   return (
@@ -19,17 +21,17 @@ export function AgentWorkerExamples() {
         <p>
           <T k="links.minimalExampleLabel" />
         </p>
-        <pre>
-          <code>{formatExample(AGENT_WORKER_MINIMAL_EXAMPLE)}</code>
-        </pre>
+        <CodePanel data-agent-worker-example-code="minimal">
+          {formatExample(AGENT_WORKER_MINIMAL_EXAMPLE)}
+        </CodePanel>
       </div>
       <div data-agent-worker-example="misuse-operations">
         <p>
           <T k="links.misuseExampleLabel" />
         </p>
-        <pre>
-          <code>{formatExample(AGENT_WORKER_MISUSE_OPERATIONS_EXAMPLE)}</code>
-        </pre>
+        <CodePanel data-agent-worker-example-code="misuse-operations">
+          {formatExample(AGENT_WORKER_MISUSE_OPERATIONS_EXAMPLE)}
+        </CodePanel>
         <p>
           <T k="links.misuseNote" />
         </p>

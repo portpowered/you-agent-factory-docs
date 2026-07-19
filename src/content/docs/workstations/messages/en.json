@@ -3,13 +3,9 @@
   "description": "Choose and configure you-agent-factory workstations across two independent axes: WorkstationType (runtime implementation) and WorkstationKind behavior (scheduling), with a type-versus-behavior compatibility matrix and shared-field summary.",
   "openingSummary": "A workstation binds a named worker, owns step routing and limits, and combines a runtime type with a scheduling behavior. Pick both axes independently — especially keep type POLLER_RUN distinct from behavior POLLER — then open the matching variant page.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This index defines the Workstation family for you-agent-factory: what a workstation is, why type and behavior are independent axes, which fields are shared across variants, and how to select the right type and behavior pages before configuring a step. Use it when you need to choose runtime implementation and scheduling together without collapsing those axes."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A workstation is a named factory step that invokes a worker by name and owns inputs, outputs, routing, limits, and scheduling. WorkstationType (field type) selects the runtime implementation family such as INFERENCE_RUN or AGENT_RUN. WorkstationKind (field behavior) selects scheduling such as STANDARD, REPEATER, CRON, or POLLER. The two axes combine freely: every published type is compatible with every published behavior. POLLER_RUN is a runtime type; POLLER is a scheduling behavior — they are not the same discriminator."
+    "howToUse": {
+      "title": "How To Use",
+      "body": "Use the type and behavior selection tables to open the matching variant pages. WorkstationType (field type) selects the runtime implementation family such as INFERENCE_RUN or AGENT_RUN. WorkstationKind (field behavior) selects scheduling such as STANDARD, REPEATER, CRON, or POLLER. The two axes combine freely: every published type is compatible with every published behavior. POLLER_RUN is a runtime type; POLLER is a scheduling behavior — they are not the same discriminator. Author shared fields such as name, worker, inputs, type, behavior, outputs, onFailure, and limits before variant-specific configuration."
     },
     "selectType": {
       "title": "Select A Runtime Type",
@@ -30,10 +26,6 @@
     "workstationSchema": {
       "title": "Workstation Schema",
       "body": "The embed shows the live Factory Workstation base definition from the installed package. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this index."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This index is a Workstation family overview and selection surface. It is not a sync of packaged CLI docs, not a Worker configuration guide, and not a full per-variant field dump. Variant pages own discriminator-specific configuration. Worker companion pages are discovery links only. Classifier workstations replace ordinary success and rejection outputs with classificationRoutes."
     },
     "related": {
       "title": "Related To"

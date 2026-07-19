@@ -29,6 +29,8 @@ export function HostedWorkerVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={HOSTED_WORKER_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="hosted-worker-variant-schema"
       />
     </div>

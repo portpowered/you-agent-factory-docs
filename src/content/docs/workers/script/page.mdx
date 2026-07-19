@@ -25,21 +25,13 @@ import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
-<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
-  <T k="sections.whatItCovers.body" />
-</Section>
-
-<Section id="key-concepts" titleKey="sections.keyConcepts.title">
-  <T k="sections.keyConcepts.body" />
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
   <p>
     <T k="links.discriminatorLabel" />
     {": "}
     <T k="links.discriminatorValue" />
   </p>
-</Section>
-
-<Section id="how-to-use" titleKey="sections.howToUse.title">
-  <T k="sections.howToUse.body" />
   <p>
     <T k="links.companionIntro" />
   </p>
@@ -53,8 +45,8 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
   />
 </Section>
 
-<Section id="variant-fields" titleKey="sections.variantFields.title">
-  <T k="sections.variantFields.body" />
+<Section id="schema-reference" titleKey="sections.schemaReference.title">
+  <T k="sections.schemaReference.body" />
   <ScriptWorkerVariantSchemaEmbed />
   <LocalizedLinkList
     items={[
@@ -69,68 +61,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 <Section id="examples" titleKey="sections.examples.title">
   <T k="sections.examples.body" />
   <ScriptWorkerExamples />
-</Section>
-
-<Section id="operational-cautions" titleKey="sections.operationalCautions.title">
-  <T k="sections.operationalCautions.body" />
-  <table data-script-worker-failure-table="">
-    <thead>
-      <tr>
-        <th>
-          <T k="links.cautionTopicHeader" />
-        </th>
-        <th>
-          <T k="links.cautionGuidanceHeader" />
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <T k="links.cautionValidationTopic" />
-        </td>
-        <td>
-          <T k="links.cautionValidationGuidance" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.cautionBodyTopic" />
-        </td>
-        <td>
-          <T k="links.cautionBodyGuidance" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.cautionSecretsTopic" />
-        </td>
-        <td>
-          <T k="links.cautionSecretsGuidance" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.cautionModelFieldsTopic" />
-        </td>
-        <td>
-          <T k="links.cautionModelFieldsGuidance" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.cautionTimeoutTopic" />
-        </td>
-        <td>
-          <T k="links.cautionTimeoutGuidance" />
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</Section>
-
-<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
-  <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
 <Section id="related" titleKey="sections.related.title">

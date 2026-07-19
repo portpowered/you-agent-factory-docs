@@ -5,7 +5,7 @@
  * cautions — not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workersModelRegistry from "@/content/registry/documentation/workers-model.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -48,38 +48,26 @@ describe("workers model page", () => {
     );
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/MODEL_WORKER/i);
-    expect(whatItCovers).toMatch(/MODEL_WORKSTATION|MODEL_INVOKE/i);
-    expect(keyConcepts).toMatch(/type with value MODEL_WORKER/i);
-    expect(keyConcepts).toMatch(/modelLocality|operations/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/MODEL_WORKER/i);
+    expect(openingSummary).toMatch(/MODEL_WORKSTATION/i);
+    expect(howToUse).toMatch(/modelLocality|operations/i);
     expect(howToUse).toMatch(/MODEL_WORKSTATION/i);
     expect(howToUse).toMatch(/INFERENCE_WORKER/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/agentTools/i);
-    expect(cautions).toMatch(/locality|bindings|INFERENCE_WORKER/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible Workstation companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -152,19 +140,22 @@ describe("workers model page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -181,7 +172,15 @@ describe("workers model page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("MODEL_WORKER");
     expect(screen.getByTestId("model-worker-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: MODEL_WORKER")).toBeTruthy();
+    expect(screen.queryByText("Variant: MODEL_WORKER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "model-worker-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen
@@ -227,17 +226,6 @@ describe("workers model page", () => {
         '[data-model-worker-example="misuse-agent-tools"]',
       )?.textContent,
     ).toContain('"agentTools"');
-
-    const failureTable = document.querySelector(
-      "[data-model-worker-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Locality and bindings"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("Legacy preference"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

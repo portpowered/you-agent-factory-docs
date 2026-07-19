@@ -29,6 +29,8 @@ export function AgentWorkerVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={AGENT_WORKER_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="agent-worker-variant-schema"
       />
     </div>

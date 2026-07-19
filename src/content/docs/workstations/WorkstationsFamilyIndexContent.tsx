@@ -141,19 +141,16 @@ const COMPATIBILITY_BEHAVIOR_COLUMNS = [
 ] as const;
 
 /**
- * Authored `/docs/workstations` family index body: overview, type and behavior
- * selection, type-versus-behavior compatibility matrix, shared-field summary,
- * live Workstation schema embed, and discovery links.
+ * Authored `/docs/workstations` family index body: purpose lead (opening
+ * summary), how-to-use, type and behavior selection, type-versus-behavior
+ * compatibility matrix, shared-field summary, live Workstation schema embed,
+ * and discovery links.
  */
 export function WorkstationsFamilyIndexContent() {
   return (
     <div className="min-w-0 space-y-8" data-workstations-family-index="">
-      <Section id="what-it-covers" titleKey="sections.whatItCovers.title">
-        <T k="sections.whatItCovers.body" />
-      </Section>
-
-      <Section id="key-concepts" titleKey="sections.keyConcepts.title">
-        <T k="sections.keyConcepts.body" />
+      <Section id="how-to-use" titleKey="sections.howToUse.title">
+        <T k="sections.howToUse.body" />
       </Section>
 
       <Section id="select-type" titleKey="sections.selectType.title">
@@ -366,13 +363,6 @@ export function WorkstationsFamilyIndexContent() {
             },
           ]}
         />
-      </Section>
-
-      <Section
-        id="limits-and-assumptions"
-        titleKey="sections.limitsAndAssumptions.title"
-      >
-        <T k="sections.limitsAndAssumptions.body" />
       </Section>
 
       <Section id="related" titleKey="sections.related.title">

@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workstations/standard.
  * Covers STANDARD discriminator, W07 overlay embed, minimal/misuse
- * examples, WorkstationType companion links, and failure cautions — not
+ * examples, WorkstationType companion links — not
  * route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsStandardRegistry from "@/content/registry/documentation/workstations-standard.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -43,43 +43,31 @@ describe("workstations standard behavior page", () => {
       slug: "standard",
     });
 
-    expect(loadedPage.messages.title).toBe("Standard behavior");
+    expect(loadedPage.messages.title).toBe("Standard workstation");
     expect(loadedPage.messages.description).toMatch(/behavior = STANDARD/i);
     expect(loadedPage.messages.description).toMatch(/readiness/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/behavior = STANDARD/i);
-    expect(whatItCovers).toMatch(/WorkstationKind/i);
-    expect(keyConcepts).toMatch(/behavior with value STANDARD/i);
-    expect(keyConcepts).toMatch(/not CRON/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/STANDARD/i);
+    expect(openingSummary).toMatch(/WorkstationKind/i);
     expect(howToUse).toMatch(/behavior STANDARD/i);
     expect(howToUse).toMatch(/Do not set cron/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(howToUse).toMatch(/not CRON/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/cron/i);
-    expect(cautions).toMatch(/inputs never become ready/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible WorkstationType companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -134,19 +122,22 @@ describe("workstations standard behavior page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -165,7 +156,15 @@ describe("workstations standard behavior page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("STANDARD");
     expect(screen.getByTestId("standard-behavior-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: STANDARD")).toBeTruthy();
+    expect(screen.queryByText("Variant: STANDARD")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "standard-behavior-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen
@@ -206,14 +205,6 @@ describe("workstations standard behavior page", () => {
       examples?.querySelector('[data-standard-behavior-example="misuse-cron"]')
         ?.textContent,
     ).toContain('"cron":');
-
-    const failureTable = document.querySelector(
-      "[data-standard-behavior-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("cron_on_standard"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

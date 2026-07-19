@@ -3,33 +3,17 @@
   "description": "Configure a MODEL_WORKER for managed or local model capability: operations, model and provider identity, modelLocality, and MODEL_WORKSTATION / MODEL_INVOKE companionship.",
   "openingSummary": "A MODEL_WORKER is the legacy managed or local model-capability WorkerType. Set type to MODEL_WORKER, declare operations and locality on the worker, and bind from a MODEL_WORKSTATION companion. Prefer INFERENCE_WORKER for new configs.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "A Model worker is the legacy Factory WorkerType for managed or local model capability in you-agent-factory. This page covers the MODEL_WORKER discriminator, required and variant fields, the validated worker overlay embed, a minimal valid configuration, an incompatible misuse of agent tool policy, operational cautions, locality and binding guidance, and the MODEL_WORKSTATION plus MODEL_INVOKE workstation companions. Use it when reviewing or migrating an existing MODEL_WORKER; prefer INFERENCE_WORKER or AGENT_WORKER for new configs."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is type with value MODEL_WORKER. A MODEL_WORKER declares managed or local model capability through model, modelProvider, modelLocality, and operations. MODEL_WORKSTATION is the required companion that owns workstation-side bindings and dispatch. MODEL_INVOKE is a compatible companion for invoke-style model calls. This surface is a loadable legacy alias of model-capability authoring—prefer INFERENCE_WORKER for new one-shot inference backends and AGENT_WORKER for agent loops. Model workers are not AGENT_WORKER backends: they do not own agentTools or skipPermissions, and they exclude script and hosted-poller fields."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a worker with type MODEL_WORKER when migrating an existing managed or local model config. Put model, modelProvider, and modelLocality on the worker so authored identity and locality win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep descriptive context in the body. Bind the worker from a MODEL_WORKSTATION companion; use MODEL_INVOKE when the invoke-style companion applies. For new factories, prefer INFERENCE_WORKER instead of MODEL_WORKER."
+      "body": "Author a worker with type MODEL_WORKER when migrating an existing managed or local model config. Put model, modelProvider, and modelLocality on the worker so authored identity and locality win over operator defaults. Declare operations with typed inputs and outputs for pre-dispatch compatibility. Keep descriptive context in the body. Bind the worker from a MODEL_WORKSTATION companion; use MODEL_INVOKE when the invoke-style companion applies. For new factories, prefer INFERENCE_WORKER instead of MODEL_WORKER. Model workers are not AGENT_WORKER backends: they do not own agentTools or skipPermissions."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Worker base definition with MODEL_WORKER overlay applicability. Shared fields include identity, model routing, operations, modelLocality, and openCodeAgent. Excluded fields belong to agent-loop, script, or hosted-poller families and must not appear on this variant. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {
       "title": "Examples",
       "body": "Use the minimal valid example when reviewing a MODEL_WORKER with local TTS capability. The misuse example shows agentTools on a model worker—agentTools belongs on AGENT_WORKER and fails validation on MODEL_WORKER."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "Model workers fail early on invalid declarations and expect locality and resource capacity to match the authored backend. Keep secrets out of worker bodies. Match modelLocality and bindings to the companion workstation. Do not treat AGENT_WORKER or agentTools as a model-worker substitute. Prefer INFERENCE_WORKER for new configs."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workers/model surface for MODEL_WORKER authoring. It is not a sync of packaged CLI docs, not a Workstation routing guide, and not the Inference or Agent worker full contract. Compatible Workstation companions name the run-time pairing for this WorkerType; they do not redefine MODEL_WORKER fields. MODEL_WORKER remains loadable as a legacy alias; prefer INFERENCE_WORKER or AGENT_WORKER in new configs. Mock workers stay on their own route and schema."
     },
     "related": {
       "title": "Related To"
@@ -56,18 +40,6 @@
     "siblingAgentWorker": "Agent worker",
     "siblingWorkstations": "Workstations overview",
     "siblingResources": "Resources",
-    "siblingTokens": "Tokens",
-    "cautionTopicHeader": "Caution",
-    "cautionGuidanceHeader": "Guidance",
-    "cautionValidationTopic": "Validation failures",
-    "cautionValidationGuidance": "Fix duplicate or invalid operation and slot declarations before retrying. Invalid enums, excluded agentTools fields, and incompatible content types also fail validation.",
-    "cautionLocalityTopic": "Locality and bindings",
-    "cautionLocalityGuidance": "Match modelLocality and worker resources to the backend you intend. Bindings and dispatch ownership live on the MODEL_WORKSTATION companion—keep locality on the worker consistent with that companion.",
-    "cautionSecretsTopic": "Secrets in worker bodies",
-    "cautionSecretsGuidance": "Do not put API keys, tokens, or other secret material in the worker markdown body. Keep credentials in the secret and config surfaces the runtime already resolves.",
-    "cautionAgentLoopTopic": "Agent-loop substitution",
-    "cautionAgentLoopGuidance": "Do not add agentTools or skipPermissions on a model worker. Agent tool policy and loop ownership belong on AGENT_WORKER.",
-    "cautionLegacyTopic": "Legacy preference",
-    "cautionLegacyGuidance": "Prefer INFERENCE_WORKER for new one-shot inference backends and AGENT_WORKER for agent loops. Keep MODEL_WORKER only when migrating an existing managed or local model config."
+    "siblingTokens": "Tokens"
   }
 }

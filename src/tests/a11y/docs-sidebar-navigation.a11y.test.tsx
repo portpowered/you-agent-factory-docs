@@ -200,7 +200,7 @@ describe("docs sidebar navigation accessibility", () => {
     ).toBe("/docs/workers/agent");
     expect(
       within(sidebar)
-        .getByRole("link", { name: "Inference-run type" })
+        .getByRole("link", { name: "Inference-run workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/inference-run");
     expect(

@@ -253,4 +253,32 @@ describe("SchemaVariantReference", () => {
     expect(screen.getByText("Unsupported overlay")).toBeTruthy();
     expect(screen.queryByText("Variant: AGENT_WORKER")).toBeNull();
   });
+
+  test("opts out of Variant heading and pointer breadcrumb chrome when requested", () => {
+    const base = makeWorkerBase();
+    render(
+      <SchemaVariantReference
+        definition={base}
+        overlay={agentOverlay}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
+      />,
+    );
+
+    expect(screen.queryByText("Variant: AGENT_WORKER")).toBeNull();
+    expect(document.querySelector("[data-schema-variant-heading]")).toBeNull();
+    const definition = screen.getByTestId(
+      "schema-variant-reference-definition",
+    );
+    expect(
+      definition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
+    expect(screen.queryByText("$defs")).toBeNull();
+    expect(
+      screen.getByText("Worker display name from base schema"),
+    ).toBeTruthy();
+    expect(screen.getAllByText("Selected").length).toBeGreaterThanOrEqual(2);
+  });
 });
