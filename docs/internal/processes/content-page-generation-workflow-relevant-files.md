@@ -1444,6 +1444,11 @@ MDX component merge for schema mounts:
    (`assert-factory-schema-click-traverse-browser.ts`,
    `assert-factory-schema-full-config-example-browser.ts`) remain for
    story-scoped iteration.
+   Intentional catalog splay grows Factory schema SSR HTML (~2.0 MiB);
+   raise the focused `references-factory-schema` payload ceiling in
+   `a11y-reference-payload-budget.ts` (~25% headroom) when closing this
+   lane so `make budget` stays green — do not invent unpublished defs to
+   shrink the page.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.
