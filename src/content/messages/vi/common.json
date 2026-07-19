@@ -83,9 +83,6 @@
       "additional-references": "Tham chiếu bổ sung"
     },
     "documentationSecondaries": {
-      "workers": "Worker",
-      "workstations": "Workstation",
-      "factories": "Factory",
       "resources": "Tài nguyên",
       "observability": "Khả năng quan sát"
     }

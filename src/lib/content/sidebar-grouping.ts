@@ -29,12 +29,13 @@ export const SIDEBAR_GROUP_LABELS = {
 /**
  * Nested secondaries under Program documentation top groups that need a third
  * explorer level. Groups absent here list pages directly under the top group.
+ *
+ * After W18 move-stub demotion (#158), Factory Configuration only nests
+ * Resources (Workers / Workstations / Factories secondaries had no remaining
+ * explorer members and were removed as orphaned stub support).
  */
 export const DOCUMENTATION_SIDEBAR_SECONDARY_LABELS = {
   "factory-configuration": {
-    workers: "Workers",
-    workstations: "Workstations",
-    factories: "Factories",
     resources: "Resources",
   },
   "system-operations": {
@@ -45,17 +46,10 @@ export const DOCUMENTATION_SIDEBAR_SECONDARY_LABELS = {
 /**
  * Flat English defaults for `explorer.documentationSecondaries` catalogs.
  * Keys must stay aligned with nested `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`
- * values (Workers/Workstations/Factories collide with top-level explorer
- * folders by design; Resources and Observability are secondary-only).
+ * values. Resources and Observability are secondary-only (they do not collide
+ * with top-level W15 family folder labels).
  */
 export const DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS = {
-  workers:
-    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].workers,
-  workstations:
-    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"]
-      .workstations,
-  factories:
-    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].factories,
   resources:
     DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].resources,
   observability:

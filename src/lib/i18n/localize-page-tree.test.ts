@@ -170,20 +170,37 @@ describe("localizePageTree", () => {
       messages.explorer.documentationGroups["additional-references"],
     );
 
-    const factoryConfigurationIndex = separatorNames(
-      documentation.children,
-    ).indexOf(messages.explorer.documentationGroups["factory-configuration"]);
+    const factoryConfigurationLabel =
+      messages.explorer.documentationGroups["factory-configuration"];
+    expect(separatorNames(documentation.children)).toContain(
+      factoryConfigurationLabel,
+    );
+    const factoryConfigurationIndex = documentation.children.findIndex(
+      (child) =>
+        child.type === "separator" &&
+        String(child.name) === factoryConfigurationLabel,
+    );
     expect(factoryConfigurationIndex).toBeGreaterThanOrEqual(0);
-    const secondaryFolderNames = documentation.children
+    const nextSeparatorAfterFactoryConfiguration = documentation.children
       .slice(factoryConfigurationIndex + 1)
+      .findIndex((child) => child.type === "separator");
+    const factoryConfigurationChildren =
+      nextSeparatorAfterFactoryConfiguration === -1
+        ? documentation.children.slice(factoryConfigurationIndex + 1)
+        : documentation.children.slice(
+            factoryConfigurationIndex + 1,
+            factoryConfigurationIndex +
+              1 +
+              nextSeparatorAfterFactoryConfiguration,
+          );
+    const secondaryFolderNames = factoryConfigurationChildren
       .filter((child) => child.type === "folder")
       .map((child) => String(child.name));
-    expect(secondaryFolderNames).toContain(
+    // Empty Workers / Workstations / Factories stub-nesting secondaries were
+    // removed after demotion; only Resources remains under Factory Configuration.
+    expect(secondaryFolderNames).toEqual([
       messages.explorer.documentationSecondaries.resources,
-    );
-    expect(secondaryFolderNames).not.toContain(
-      messages.explorer.documentationSecondaries.workers,
-    );
+    ]);
 
     const systemOperationsIndex = separatorNames(
       documentation.children,

@@ -75,17 +75,6 @@ describe("explorer labels", () => {
       expect(
         explorer.documentationSecondaries.resources.trim().length,
       ).toBeGreaterThan(0);
-
-      // Colliding secondary labels stay aligned with top-level folder catalogs.
-      expect(explorer.documentationSecondaries.workers).toBe(
-        explorer.folders.workers,
-      );
-      expect(explorer.documentationSecondaries.workstations).toBe(
-        explorer.folders.workstations,
-      );
-      expect(explorer.documentationSecondaries.factories).toBe(
-        explorer.folders.factories,
-      );
     }
   });
 

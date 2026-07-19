@@ -89,9 +89,6 @@ export type ExplorerDocumentationGroupMessages = {
 
 /** Nested Program documentation secondary folder labels (Workers, Observability, …). */
 export type ExplorerDocumentationSecondaryMessages = {
-  workers: string;
-  workstations: string;
-  factories: string;
   resources: string;
   observability: string;
 };

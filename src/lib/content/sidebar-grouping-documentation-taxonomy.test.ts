@@ -92,22 +92,7 @@ describe("Program documentation three-level taxonomy", () => {
   test("Factory Configuration and System Operations declare required secondaries", () => {
     expect(
       getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
-    ).toEqual(["workers", "workstations", "factories", "resources"]);
-    expect(
-      getDocumentationSidebarSecondaryLabel("factory-configuration", "workers"),
-    ).toBe("Workers");
-    expect(
-      getDocumentationSidebarSecondaryLabel(
-        "factory-configuration",
-        "workstations",
-      ),
-    ).toBe("Workstations");
-    expect(
-      getDocumentationSidebarSecondaryLabel(
-        "factory-configuration",
-        "factories",
-      ),
-    ).toBe("Factories");
+    ).toEqual(["resources"]);
     expect(
       getDocumentationSidebarSecondaryLabel(
         "factory-configuration",
@@ -130,9 +115,6 @@ describe("Program documentation three-level taxonomy", () => {
       "system-operations",
     ]);
     expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).toEqual({
-      workers: "Workers",
-      workstations: "Workstations",
-      factories: "Factories",
       resources: "Resources",
       observability: "Observability",
     });

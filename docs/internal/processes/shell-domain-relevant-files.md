@@ -14,9 +14,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   top groups **System feature set → Interfaces → Packaged factories →
   Factory Configuration → System Operations → Internal Architecture →
   Additional references** via `SIDEBAR_GROUP_LABELS.documentation`, with
-  secondaries under Factory Configuration (Workers → Workstations →
-  Factories → Resources) and System Operations (Observability) via
-  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership lives in
+  secondaries under Factory Configuration (Resources) and System Operations
+  (Observability) via `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership
+  lives in
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (FAQ omitted; top-level
   explorer page; W18 documentation move stubs omitted as compatibility-only
   routes); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
@@ -29,8 +29,8 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Concepts and documentation resolution pass page slug into the factory
   assignment maps so explicit membership applies. Program documentation
   emits three-level nodes: top-group separators, nested secondary folders
-  (Workers / Workstations / Factories / Resources under Factory
-  Configuration; Observability under System Operations), then page links.
+  (Resources under Factory Configuration; Observability under System
+  Operations), then page links.
   Empty top groups and empty secondaries are omitted; FAQ and W18
   documentation move stubs are never Program documentation children.
 * `src/lib/navigation/docs-sidebar-sections.ts`
@@ -420,13 +420,15 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`. Program documentation
   top-group and secondary labels localize; literal CLI/package/route
   identifiers in page titles stay untranslated. Nested secondary labels
-  (Workers, Observability, …) are declared in
+  (Resources, Observability) are declared in
   `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`, flattened for catalogs via
   `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`, and remapped by
   `localizePageTree` through `buildDefaultSecondaryLabelLocalizer`.
-  Colliding Workers/Workstations/Factories secondary strings stay aligned
-  with `explorer.folders` in each locale. `assertExplorerMessages` fails
-  closed when any explorer catalog (including secondaries) is incomplete.
+  Empty Workers / Workstations / Factories Program-documentation secondaries
+  that only nested W18 move stubs were removed after #158 demotion — keep
+  W15 top-level `explorer.folders.{workers,workstations,factories}` for the
+  live family routes. `assertExplorerMessages` fails closed when any explorer
+  catalog (including secondaries) is incomplete.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
   Locale-aware explorer folder/subgroup/secondary/page label resolution
   consumed by desktop sidebar and mobile drawer through the same localized
@@ -436,10 +438,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   placement, subgroup separators, nested secondary folders, page
   membership/labels/hrefs) for desktop/mobile parity comparisons.
   `pageEntriesInFolder` / `pageEntriesUnderSeparator` descend into secondary
-  folders; `secondaryFolderNamesUnderSeparator` locks Workers/Observability
+  folders; `secondaryFolderNamesUnderSeparator` locks Resources/Observability
   nesting under Program documentation top groups;
   `pageEntriesInSecondaryFolderUnderSeparator` locks exact page membership
-  inside a named secondary (Workers, Observability, …).
+  inside a named secondary (Resources, Observability).
 * `src/lib/navigation/explorer-ia-contract.test.ts`
   Exact-order proofs against `FACTORY_EXPLORER_SECTION_ORDER` /
   `SIDEBAR_GROUP_LABELS` (top-level folders + FAQ, Concepts subgroups, Program
@@ -448,13 +450,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Story 003 locks exact direct-under-top-group membership for System feature
   set / Interfaces / Packaged factories / Internal Architecture / Additional
   references and proves config/ops pages stay out of System feature set.
-  Story 004 locks Factory Configuration secondaries (Workers → Workstations →
-  Factories → Resources) and System Operations → Observability page membership,
-  and proves `replays-records` stays under System feature set only.
+  Story 004 locks Factory Configuration → Resources and System Operations →
+  Observability page membership (Workers/Workstations/Factories secondaries
+  removed after W18 stub demotion), and proves `replays-records` stays under
+  System feature set only.
   Story 006 consolidates the three-level Program documentation contract: FAQ
   remains the sole top-level explorer page (absent from Program documentation
   children), former ten-group Basics/Feature support/Functions/… separators are
-  rejected, and Workers/Observability nesting plus full membership remain locked.
+  rejected, and Resources/Observability nesting plus full membership remain locked.
   Repair story 005 consolidates demoted W18 stub absence across explorer,
   search, sitemap, and section-index in
   `src/lib/content/factory-documentation-route-migration-demoted-contract.test.tsx`

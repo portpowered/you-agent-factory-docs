@@ -83,9 +83,6 @@
       "additional-references": "追加リファレンス"
     },
     "documentationSecondaries": {
-      "workers": "ワーカー",
-      "workstations": "ワークステーション",
-      "factories": "ファクトリー",
       "resources": "リソース",
       "observability": "オブザーバビリティ"
     }
