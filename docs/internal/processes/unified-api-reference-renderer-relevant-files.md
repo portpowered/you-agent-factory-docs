@@ -147,6 +147,14 @@ hooks, and SSR cost.
   `submitWorkBySessionId` → `#/components/schemas/SubmitWorkRequest` fields
   (`name`, `workTypeName`, `items`) via Fumadocs Schema UI (lazy client boundary —
   wait for hydrated fields, not SSR example JSON alone).
+- Published API MDX stays projection-first: keep `what-it-covers` /
+  `key-concepts` / `operations` (+ Fumadocs mount); do **not** ship
+  `how-to-use`, `limits-and-assumptions`, `related`, `tags`, or `references`
+  (citations) sections on this page only. Sibling reference family pages are
+  owned by `repair-reference-boilerplate-trim`. Browser proof:
+  `bun src/content/docs/references/api/assert-api-page-boilerplate-trim-browser.ts`
+  (unique port default 3562) — assert section ids, not fragile heading strings
+  like "Tags" that Fumadocs may reuse.
 - W04 normalized summaries are derived from the same loaded document for
   cross-links/display; do not invent a second OpenAPI corpus.
 
