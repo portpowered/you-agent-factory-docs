@@ -1,8 +1,9 @@
 /**
  * Browser probe for published `/docs/references/api` projection-first MDX:
- * how-to-use, limits-and-assumptions, tags, related, and citations sections
- * must be absent while orientation + Fumadocs operations remain.
- * (repair-api-fumadocs-openapi-components story 004).
+ * what-it-covers, key-concepts, how-to-use, limits-and-assumptions, tags,
+ * related, and citations sections must be absent; folded Opening summary
+ * chrome ([data-opening-summary] / [data-testid="folded-summary"]) must not
+ * render; Operations + Fumadocs operations remain (intro-strip stories 002–003).
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
@@ -17,6 +18,8 @@ const PAGE_PATH = "/docs/references/api";
 const READY_TIMEOUT_MS = 180_000;
 
 const REMOVED_SECTION_IDS = [
+  "what-it-covers",
+  "key-concepts",
   "how-to-use",
   "limits-and-assumptions",
   "related",
@@ -27,16 +30,14 @@ const REMOVED_SECTION_IDS = [
 // Unambiguous MDX boilerplate titles only — avoid "Tags"/"References", which
 // Fumadocs OpenAPI chrome may reuse as ordinary headings.
 const REMOVED_HEADING_NAMES = [
+  "What It Covers",
+  "Key Concepts",
   "How To Use",
   "Limits And Assumptions",
   "Related To",
 ] as const;
 
-const KEPT_SECTION_IDS = [
-  "what-it-covers",
-  "key-concepts",
-  "operations",
-] as const;
+const KEPT_SECTION_IDS = ["operations"] as const;
 
 let server: ChildProcess | undefined;
 
@@ -81,7 +82,9 @@ async function waitForReady(url: string, timeoutMs: number): Promise<void> {
 }
 
 try {
-  server = spawn("bun", ["run", "dev", "--", "-p", String(PORT)], {
+  // Worktree Next/Turbopack rejects parent-hoisted node_modules symlinks;
+  // webpack resolves ancestor node_modules and can serve the published route.
+  server = spawn("bun", ["run", "dev", "--", "--webpack", "-p", String(PORT)], {
     cwd: process.cwd(),
     env: {
       ...process.env,
@@ -184,6 +187,26 @@ try {
     );
   }
 
+  const openingSummaryProbe = await page.evaluate(() => {
+    const openingSummaryCount = document.querySelectorAll(
+      "[data-opening-summary]",
+    ).length;
+    const foldedSummaryCount = document.querySelectorAll(
+      '[data-testid="folded-summary"]',
+    ).length;
+    return { openingSummaryCount, foldedSummaryCount };
+  });
+  if (openingSummaryProbe.openingSummaryCount > 0) {
+    throw new Error(
+      `Expected no [data-opening-summary] on ${PAGE_PATH}, found ${openingSummaryProbe.openingSummaryCount}`,
+    );
+  }
+  if (openingSummaryProbe.foldedSummaryCount > 0) {
+    throw new Error(
+      `Expected no [data-testid="folded-summary"] on ${PAGE_PATH}, found ${openingSummaryProbe.foldedSummaryCount}`,
+    );
+  }
+
   const fumadocsOps = await page
     .locator("[data-api-fumadocs-operation]")
     .count();
@@ -199,6 +222,8 @@ try {
       path: PAGE_PATH,
       keptSections: KEPT_SECTION_IDS,
       removedSections: REMOVED_SECTION_IDS,
+      openingSummaryAbsent: true,
+      foldedSummaryAbsent: true,
       fumadocsOperationCount: fumadocsOps,
     })}\n`,
   );
