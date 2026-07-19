@@ -147,9 +147,16 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/lib/search/build-documents.ts`
   Search builder: composes base documents with generic `enrichSearchDocument`
   only, then asserts every document kind is in `FACTORY_SEARCH_RESULT_KINDS`
-  and every URL is outside the deleted Atlas inventory denylist. Model Atlas
+  and every URL is outside the deleted Atlas inventory denylist. Also omits
+  W18 documentation-route-migration old browse paths
+  (`isDocumentationRouteMigrationOldBrowsePath`) so move stubs stay out of
+  ordinary search while compatibility HTML remains published. Model Atlas
   AI facet enrichment (`modelFamily`, `sourceType`, `modalities`,
   `trainingRegimeIds`, `optimizes`) is no longer applied.
+* `src/lib/content/factory-search-documentation-route-migration-exclusion.test.ts`
+  Required-suite proof that §10 old stub URLs are absent from search documents
+  / advanced indexes / representative API queries while family destinations
+  remain findable and stub pages stay published for compatibility.
 * `src/lib/search/to-advanced-index.ts`
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`

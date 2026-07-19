@@ -53,7 +53,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
   `DOCS_BROWSE_SECTION_ORDER`. Public browse no longer accepts glossary-derived
-  Atlas section refs (Model Types / Inference / Module Components).
+  Atlas section refs (Model Types / Inference / Module Components). W18
+  documentation move stubs are filtered via
+  `isDocumentationRouteMigrationOldBrowsePath` so family targets remain the
+  discoverable destinations.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
   `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,
@@ -90,6 +93,8 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Consolidated factory docs adapter parity and non-AI fixture sidebar independence regression.
 * `src/app/(site)/site-renderers.tsx`
   AI browse and section-index render entry points used by public routes.
+  `renderShellSectionCollectionIndexPage` also omits W18 move stubs from
+  documentation (and other) section-index entry lists.
 
 ## Non-AI fixture proof
 

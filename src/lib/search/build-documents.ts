@@ -1,5 +1,6 @@
 import type { DocsPageSource } from "@/lib/content/pages";
 import type { RegistryIndexes } from "@/lib/content/registry";
+import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 import { buildBaseSearchDocument } from "./build-base-document";
 import {
   type BlogSearchPostSource,
@@ -19,13 +20,26 @@ export type BuildSearchDocumentsForLocaleOptions = {
   referenceItemDocuments?: readonly SearchDocument[];
 };
 
+/**
+ * W18 move stubs keep static compatibility HTML but must not enter ordinary
+ * public search documents. Family targets remain indexed via their own pages.
+ */
+function isOrdinarySearchDiscoverablePage(page: DocsPageSource): boolean {
+  return (
+    !isDocumentationRouteMigrationOldBrowsePath(page.url) &&
+    !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)
+  );
+}
+
 export function buildSearchDocuments(
   pages: DocsPageSource[],
   indexes: RegistryIndexes,
 ): SearchDocument[] {
-  const documents = pages.map((page) =>
-    enrichSearchDocument(buildBaseSearchDocument(page, indexes), indexes),
-  );
+  const documents = pages
+    .filter(isOrdinarySearchDiscoverablePage)
+    .map((page) =>
+      enrichSearchDocument(buildBaseSearchDocument(page, indexes), indexes),
+    );
   assertFactorySearchDocuments(documents);
   assertNoDeletedAiSearchDocuments(documents);
   return documents;
