@@ -52,7 +52,7 @@
     "emptySuggestionSuffix": "を参照してください。"
   },
   "shell": {
-    "sidebarTitle": "リファレンス",
+    "sidebarTitle": "ドキュメントを閲覧",
     "sidebarDescription": "ガイド、概念、技法、ドキュメント、タグを参照します。",
     "onThisPage": "このページ内",
     "openingSummary": "要約を開く"

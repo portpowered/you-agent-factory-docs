@@ -294,7 +294,7 @@ describe("message boundary contracts", () => {
     expect(messages.search.open).toBe("Open search");
     expect(messages.language.selectorLabel).toBe("Language");
     expect(messages.language.locales.en).toBe("English");
-    expect(messages.shell.sidebarTitle).toBe("Reference");
+    expect(messages.shell.sidebarTitle).toBe("Browse docs");
     expect(messages.shell.onThisPage).toBe("On this page");
     expect(messages.explorer.folders.documentation).toBe(
       "Program documentation",

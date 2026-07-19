@@ -52,7 +52,7 @@
     "emptySuggestionSuffix": "."
   },
   "shell": {
-    "sidebarTitle": "Reference",
+    "sidebarTitle": "Browse docs",
     "sidebarDescription": "Browse guides, concepts, techniques, documentation, and tags.",
     "onThisPage": "On this page",
     "openingSummary": "Opening summary"

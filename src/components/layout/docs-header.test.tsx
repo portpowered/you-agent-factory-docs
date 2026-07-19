@@ -542,6 +542,17 @@ describe("DocsHeader", () => {
     const drawer = document.getElementById(panelId ?? "");
     expect(drawer).toBeTruthy();
     expect(drawer?.getAttribute("role")).toBe("dialog");
+    expect(drawer?.getAttribute("aria-label")).toBe(
+      messages.shell.sidebarTitle,
+    );
+    expect(
+      within(drawer as HTMLElement).queryByText("You Agent Factory"),
+    ).toBeNull();
+    // Single non-product-name eyebrow — no second competing title line.
+    expect(
+      within(drawer as HTMLElement).getAllByText(messages.shell.sidebarTitle)
+        .length,
+    ).toBe(1);
 
     const expectedItems = getPrimaryNavItems(messages);
     for (const item of expectedItems) {

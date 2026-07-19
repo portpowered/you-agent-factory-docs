@@ -93,6 +93,10 @@ describe("docs sidebar navigation accessibility", () => {
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,
     );
+    expect(
+      within(sidebar).queryByRole("link", { name: "You Agent Factory" }),
+    ).toBeNull();
+    expect(within(sidebar).queryByRole("link", { name: "YOU" })).toBeNull();
     expect(within(sidebar).queryByText(PLACEHOLDER_SIDEBAR_DESCRIPTION)).toBe(
       null,
     );
@@ -405,10 +409,14 @@ describe("docs sidebar navigation accessibility", () => {
       throw new Error("expected Fumadocs docs sidebar");
     }
 
-    const homeLink = within(sidebar).getByRole("link", {
+    const homeBrandLink = within(sidebar).queryByRole("link", {
       name: "You Agent Factory",
     });
-    expect(homeLink.getAttribute("href")).toBe("/vi");
+    const youBrandLink = within(sidebar).queryByRole("link", {
+      name: "YOU",
+    });
+    expect(homeBrandLink).toBeNull();
+    expect(youBrandLink).toBeNull();
 
     expect(sidebar.getAttribute("aria-label")).toBe(
       context.messages.shell.sidebarTitle,

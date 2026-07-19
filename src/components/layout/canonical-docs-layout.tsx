@@ -32,7 +32,13 @@ export function CanonicalDocsLayout({
           nav={{ ...options.nav, enabled: false }}
           searchToggle={{ enabled: false }}
           themeSwitch={{ enabled: false }}
-          slots={{ searchTrigger: false, themeSwitch: false }}
+          slots={{
+            searchTrigger: false,
+            themeSwitch: false,
+            // Header brand mark owns chrome identity; do not repeat it in the
+            // desktop sidebar header via Fumadocs InlineNavTitle.
+            navTitle: () => null,
+          }}
           sidebar={{
             "aria-label": messages.shell.sidebarTitle,
             components: docsSidebarTreeComponents,

@@ -131,7 +131,11 @@ surfaces (home, browse, search, docs/harness-support, blog).
   real `overflow-x-auto` scroller). Do not wrap DataTable in a second
   overflow div — the outer wrapper will not report scrollWidth growth.
 * Docs sidebar chrome is `aside#nd-sidebar` with `aria-label` from
-  `messages.shell.sidebarTitle` (not a `nav`).
+  `messages.shell.sidebarTitle` (a non-product-name nav label such as
+  "Browse docs", not a `nav` and not a competing brand mark). Canonical docs
+  layout sets Fumadocs `slots.navTitle: false` so the desktop sidebar header
+  does not repeat the header brand. Mobile drawer shows the same
+  `sidebarTitle` once as an eyebrow (no second product-name title line).
 * Render docs pages for a11y via `renderDocsSlugPage` + `CanonicalDocsLayout`
   (same shell as production), not a bare `<main>` wrapper alone.
 
