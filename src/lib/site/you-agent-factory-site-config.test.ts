@@ -100,7 +100,7 @@ describe("you-agent-factory site config", () => {
       youAgentFactorySiteConfig.homeFeaturedLinks.map((link) =>
         link.kind === "route" ? link.routeSurface : link.slug,
       ),
-    ).toEqual(["guides", "docs", "glossary", "blogIndex"]);
+    ).toEqual(["guides", "docs", "blogIndex"]);
     expect(
       youAgentFactorySiteConfig.homeFeaturedLinks.every(
         (link) =>
@@ -110,9 +110,15 @@ describe("you-agent-factory site config", () => {
             "gqaLinkTitle",
             "swigluLinkTitle",
             "reluLinkTitle",
+            "glossaryLinkTitle",
           ].includes(link.titleKey),
       ),
     ).toBe(true);
-    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(4);
+    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(3);
+    expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.some(
+        (link) => link.kind === "route" && link.routeSurface === "glossary",
+      ),
+    ).toBe(false);
   });
 });

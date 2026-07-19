@@ -60,13 +60,13 @@ Required meaning (wording may vary):
 
 | File | Role |
 | --- | --- |
-| `src/lib/site/you-agent-factory-site-config.ts` (`homeFeaturedLinks`) | Default CLI destinations: guides, docs/browse, glossary, blogIndex |
-| `src/content/messages/*/common.json` (`home.guidesLink*`, `home.docsLink*`, `home.glossaryLink*`, `home.blogLink*`) | Featured link title/description bindings |
+| `src/lib/site/you-agent-factory-site-config.ts` (`homeFeaturedLinks`) | Default CLI destinations: guides, docs/browse, blogIndex (no glossary) |
+| `src/content/messages/*/common.json` (`home.guidesLink*`, `home.docsLink*`, `home.blogLink*`) | Featured link title/description bindings |
 | `src/lib/site/site-config-resolution.ts` | `resolveSiteConfigHomeFeaturedLinks` / href helpers used by `HomeArticle` |
 | `src/components/home/home-article.tsx` (`#browse`) | Renders resolved featured links; does not hard-code hrefs |
 | `src/lib/content/ui-messages.types.ts` (`HomeMessages`) | Typed keys for CLI featured-link copy |
 
-Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
+Default en hrefs: `/docs/guides`, `/browse`, `/blog`.
 
 ## Locale shell + TOC regression
 
@@ -98,13 +98,14 @@ Default en hrefs: `/docs/guides`, `/browse`, `/docs/glossary`, `/blog`.
   negative margins to compensate. Home article width is `HOME_ARTICLE_CLASS`
   only — horizontal inset comes from DocsPage `#nd-page`.
 - Default `homeFeaturedLinks` bind CLI route surfaces to `guidesLink*` / `docsLink*` /
-  `glossaryLink*` / `blogLink*` message keys; do not hard-code hrefs in `HomeArticle`.
+  `blogLink*` message keys; do not hard-code hrefs in `HomeArticle`. Do not
+  advertise glossary from home featured discovery chrome.
 - Do not ship retired Atlas home featured-link message keys (`atlasLinkTitle`,
   `gqaLinkTitle`, `swigluLinkTitle`, `reluLinkTitle`, and their descriptions) in
   `common.json` / `HomeMessages`; site config must bind only the CLI featured-link
   keys above.
 - Reader-facing home HTML must not contain “Browse the atlas”; featured browse
-  copy comes from `guidesLink*` / `docsLink*` / `glossaryLink*` / `blogLink*` only.
+  copy comes from `guidesLink*` / `docsLink*` / `blogLink*` only.
 - Docs related-section titles are separate from home browse chrome: use
   `Related To` on live pages/templates, never `Related Concepts And Modules`
   (see `related-registry-docs-relevant-files.md`).

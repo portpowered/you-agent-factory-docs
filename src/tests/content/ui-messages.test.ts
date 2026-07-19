@@ -196,7 +196,13 @@ describe("loadUiMessages shell keys", () => {
         retiredSurfaceInvite,
       );
       expect(messages.searchEntry.description).toMatch(
-        /you-agent-factory|ガイド|指南|hướng dẫn|guides|concepts|techniques|documentation|glossary/i,
+        /you-agent-factory|ガイド|指南|hướng dẫn|guides|concepts|techniques|documentation/i,
+      );
+      expect(messages.search.idle).not.toMatch(
+        /glossary|用語集|术语表|thuật ngữ/i,
+      );
+      expect(messages.searchEntry.description).not.toMatch(
+        /glossary|用語集|术语表|thuật ngữ/i,
       );
       expect(messages.searchEntry.emptySuggestionTerm).not.toMatch(
         /GQA|attention/i,

@@ -12,13 +12,14 @@ export const YOU_AGENT_FACTORY_REPOSITORY_URL =
  * Default site config for the you-agent-factory CLI docs product.
  * Brand/repo, primary nav/route placeholders, collections, and home featured
  * links are CLI docs shaped. Home featured links point at guides, docs/browse,
- * glossary, and blog route surfaces (not Atlas module pages).
+ * and blog route surfaces (not glossary or Atlas module pages).
  * Header primary nav is Blog / Docs / Guides / References only; Home is the
  * brand/logo destination, not a text nav chip. Search is a configured route
  * surface (header trigger) but not a primary nav item, to avoid duplicating
  * the header search control. Family destinations (factories / workers /
- * workstations) and glossary remain as route surfaces for page routes and
- * discovery wiring, but are not primary-nav text items.
+ * workstations) and glossary remain as route surfaces for page routes until
+ * glossary retirement, but are not primary-nav text items or home featured
+ * destinations.
  */
 export const youAgentFactorySiteConfig = {
   brand: {
@@ -60,12 +61,6 @@ export const youAgentFactorySiteConfig = {
       routeSurface: "docs",
       titleKey: "docsLinkTitle",
       descriptionKey: "docsLinkDescription",
-    },
-    {
-      kind: "route",
-      routeSurface: "glossary",
-      titleKey: "glossaryLinkTitle",
-      descriptionKey: "glossaryLinkDescription",
     },
     {
       kind: "route",

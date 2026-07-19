@@ -187,7 +187,7 @@ describe("site config home featured link compatibility", () => {
       messages,
     );
 
-    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(4);
+    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(3);
     expect(configLinks).toEqual([
       {
         href: "/docs/guides",
@@ -200,15 +200,13 @@ describe("site config home featured link compatibility", () => {
         description: messages.home.docsLinkDescription,
       },
       {
-        href: "/docs/glossary",
-        title: messages.home.glossaryLinkTitle,
-        description: messages.home.glossaryLinkDescription,
-      },
-      {
         href: "/blog",
         title: messages.home.blogLinkTitle,
         description: messages.home.blogLinkDescription,
       },
     ]);
+    expect(configLinks.some((link) => link.href === "/docs/glossary")).toBe(
+      false,
+    );
   });
 });

@@ -114,23 +114,12 @@ export function BrowseIndexPage({
   locale = defaultLocale,
   sections,
 }: BrowseIndexPageProps) {
-  const {
-    browseIndex,
-    searchEntry,
-    glossaryIndex,
-    architectureIndex,
-    tagsIndex,
-  } = messages;
+  const { browseIndex, searchEntry, architectureIndex, tagsIndex } = messages;
   const quickRoutes: BrowseRouteCard[] = [
     {
       href: buildLocalizedRoute({ surface: "search" }, locale),
       title: searchEntry.title,
       description: browseIndex.searchRouteDescription,
-    },
-    {
-      href: buildLocalizedRoute({ surface: "glossary-index" }, locale),
-      title: glossaryIndex.title,
-      description: browseIndex.glossaryRouteDescription,
     },
     {
       href: buildLocalizedRoute({ surface: "architecture-index" }, locale),

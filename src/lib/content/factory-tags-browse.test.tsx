@@ -112,7 +112,7 @@ describe("factory tags and browse destinations", () => {
     ).toThrow(/deleted Atlas inventory/);
   });
 
-  test("browse hub presents factory collections only and keeps glossary available", async () => {
+  test("browse hub presents factory collections only without advertising glossary", async () => {
     expect([...DOCS_BROWSE_COLLECTION_IDS]).toEqual([
       ...FACTORY_BROWSE_COLLECTION_IDS,
     ]);
@@ -129,11 +129,11 @@ describe("factory tags and browse destinations", () => {
       "/docs/concepts",
       "/docs/techniques",
       "/docs/documentation",
-      "/docs/glossary",
       "/tags",
     ]) {
       expect(html).toContain(`href="${href}"`);
     }
+    expect(html).not.toContain('href="/docs/glossary"');
 
     for (const id of RETIRED_ATLAS_COLLECTION_IDS) {
       expect(html).not.toContain(`id="${id}-heading"`);
