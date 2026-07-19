@@ -384,7 +384,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   membership/labels/hrefs) for desktop/mobile parity comparisons.
   `pageEntriesInFolder` / `pageEntriesUnderSeparator` descend into secondary
   folders; `secondaryFolderNamesUnderSeparator` locks Workers/Observability
-  nesting under Program documentation top groups.
+  nesting under Program documentation top groups;
+  `pageEntriesInSecondaryFolderUnderSeparator` locks exact page membership
+  inside a named secondary (Workers, Observability, …).
 * `src/lib/navigation/explorer-ia-contract.test.ts`
   Exact-order proofs against `FACTORY_EXPLORER_SECTION_ORDER` /
   `SIDEBAR_GROUP_LABELS` (top-level folders + FAQ, Concepts subgroups, Program
@@ -393,6 +395,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Story 003 locks exact direct-under-top-group membership for System feature
   set / Interfaces / Packaged factories / Internal Architecture / Additional
   references and proves config/ops pages stay out of System feature set.
+  Story 004 locks Factory Configuration secondaries (Workers → Workstations →
+  Factories → Resources) and System Operations → Observability page membership,
+  and proves `replays-records` stays under System feature set only.
 * `src/tests/layout/desktop-mobile-explorer-parity.test.tsx`
   Focused proof that every locale’s constructed explorer tree matches the IA
   contract and that CanonicalDocsLayout’s desktop `#nd-sidebar` and mobile

@@ -287,6 +287,65 @@ describe("docs sidebar navigation accessibility", () => {
       position(installLink),
     );
 
+    // Story 004 browser proof: Factory Configuration → Workers and System
+    // Operations → Observability nest published pages (not a flat dump).
+    const factoryConfigurationLabel =
+      context.messages.explorer.documentationGroups["factory-configuration"];
+    const systemOperationsLabel =
+      context.messages.explorer.documentationGroups["system-operations"];
+    const factoryConfigurationSeparator = within(sidebar).getByText(
+      factoryConfigurationLabel,
+    );
+    const systemOperationsSeparator = within(sidebar).getByText(
+      systemOperationsLabel,
+    );
+
+    const workersSecondary = within(sidebar).getAllByRole("button", {
+      name: context.messages.explorer.folders.workers,
+    })[0];
+    expect(workersSecondary).toBeTruthy();
+    if (!workersSecondary) {
+      throw new Error("expected Workers secondary under Factory Configuration");
+    }
+    const observabilitySecondary = within(sidebar).getByRole("button", {
+      name: "Observability",
+    });
+
+    const mockWorkersLink = within(sidebar).getByRole("link", {
+      name: "Mock workers",
+    });
+    expect(mockWorkersLink.getAttribute("href")).toBe(
+      "/docs/documentation/mock-workers",
+    );
+    const logsLink = within(sidebar).getByRole("link", { name: "Logs" });
+    expect(logsLink.getAttribute("href")).toBe("/docs/documentation/logs");
+    const metricsLink = within(sidebar).getByRole("link", { name: "Metrics" });
+    expect(metricsLink.getAttribute("href")).toBe(
+      "/docs/documentation/metrics",
+    );
+    const replaysLink = within(sidebar).getByRole("link", {
+      name: "Replays / Records",
+    });
+    expect(replaysLink.getAttribute("href")).toBe(
+      "/docs/documentation/replays-records",
+    );
+
+    expect(position(factoryConfigurationSeparator)).toBeLessThan(
+      position(workersSecondary),
+    );
+    expect(position(workersSecondary)).toBeLessThan(position(mockWorkersLink));
+    expect(position(mockWorkersLink)).toBeLessThan(
+      position(systemOperationsSeparator),
+    );
+    expect(position(systemOperationsSeparator)).toBeLessThan(
+      position(observabilitySecondary),
+    );
+    expect(position(observabilitySecondary)).toBeLessThan(position(logsLink));
+    expect(position(logsLink)).toBeLessThan(position(metricsLink));
+    expect(position(replaysLink)).toBeLessThan(
+      position(factoryConfigurationSeparator),
+    );
+
     const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
     expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
     faqLink.focus();

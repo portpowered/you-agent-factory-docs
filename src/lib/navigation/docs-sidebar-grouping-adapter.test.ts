@@ -79,6 +79,30 @@ function secondaryFolderNamesAfterSeparator(
   return names;
 }
 
+function pageUrlsInSecondaryFolderAfterSeparator(
+  nodes: Node[],
+  separatorName: string,
+  secondaryFolderName: string,
+): string[] {
+  const start = nodes.findIndex(
+    (node) => node.type === "separator" && node.name === separatorName,
+  );
+  if (start === -1) {
+    return [];
+  }
+
+  for (let index = start + 1; index < nodes.length; index += 1) {
+    const node = nodes[index];
+    if (!node || node.type === "separator") {
+      break;
+    }
+    if (node.type === "folder" && String(node.name) === secondaryFolderName) {
+      return collectPagesFromNode(node);
+    }
+  }
+  return [];
+}
+
 function countPageNodes(nodes: Node[]): number {
   let count = 0;
   for (const node of nodes) {
@@ -261,6 +285,57 @@ describe("docs sidebar grouping adapter", () => {
         urls.map((url) => url.slice("/docs/documentation/".length)).sort(),
       ).toEqual([...slugs].sort());
     }
+
+    const exactSecondarySlugs = {
+      "Factory Configuration": {
+        Workers: [
+          "workers",
+          "poller-workers",
+          "script-workers",
+          "agent-workers",
+          "inference-workers",
+          "mock-workers",
+        ],
+        Workstations: ["workstations"],
+        Factories: [
+          "configuration",
+          "factory-session",
+          "global-configuration-factories",
+        ],
+        Resources: ["resources", "throttling-and-limits"],
+      },
+      "System Operations": {
+        Observability: ["logs", "metrics"],
+      },
+    } as const;
+
+    for (const [groupLabel, secondaries] of Object.entries(
+      exactSecondarySlugs,
+    )) {
+      for (const [secondaryLabel, slugs] of Object.entries(secondaries)) {
+        const urls = pageUrlsInSecondaryFolderAfterSeparator(
+          nodes,
+          groupLabel,
+          secondaryLabel,
+        );
+        expect(
+          urls.map((url) => url.slice("/docs/documentation/".length)).sort(),
+        ).toEqual([...slugs].sort());
+      }
+    }
+
+    expect(
+      pageUrlsInSecondaryFolderAfterSeparator(
+        nodes,
+        "System Operations",
+        "Observability",
+      ).some((url) => url.endsWith("/docs/documentation/replays-records")),
+    ).toBe(false);
+    expect(
+      byGroup["System feature set"]?.some((url) =>
+        url.endsWith("/docs/documentation/replays-records"),
+      ),
+    ).toBe(true);
 
     for (const excluded of [
       "configuration",

@@ -184,3 +184,31 @@ export function secondaryFolderNamesUnderSeparator(
   }
   return names;
 }
+
+/**
+ * Pages listed inside a named secondary folder under a top-group separator.
+ * Empty when the secondary folder is absent under that separator.
+ */
+export function pageEntriesInSecondaryFolderUnderSeparator(
+  folder: Extract<ExplorerNodeSignature, { type: "folder" }>,
+  separatorName: string,
+  secondaryFolderName: string,
+): Array<{ name: string; url: string }> {
+  const start = folder.children.findIndex(
+    (node) => node.type === "separator" && node.name === separatorName,
+  );
+  if (start === -1) {
+    return [];
+  }
+
+  for (let index = start + 1; index < folder.children.length; index += 1) {
+    const node = folder.children[index];
+    if (!node || node.type === "separator") {
+      break;
+    }
+    if (node.type === "folder" && node.name === secondaryFolderName) {
+      return pageEntriesInFolder(node);
+    }
+  }
+  return [];
+}

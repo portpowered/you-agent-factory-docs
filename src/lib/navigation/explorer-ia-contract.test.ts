@@ -17,6 +17,7 @@ import {
   DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
   FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
+  FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
   SIDEBAR_GROUP_LABELS,
 } from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
@@ -31,6 +32,7 @@ import {
   buildExplorerTreeSignature,
   folderSignatureByName,
   pageEntriesInFolder,
+  pageEntriesInSecondaryFolderUnderSeparator,
   pageEntriesUnderSeparator,
   secondaryFolderNamesUnderSeparator,
   separatorNamesInFolder,
@@ -92,6 +94,33 @@ const STORY_003_DIRECT_TOP_GROUP_PAGES = {
     "security-trust-boundaries",
     "troubleshooting",
   ],
+} as const;
+
+/**
+ * Story 004 — exact secondary membership under Factory Configuration and
+ * System Operations. replays-records stays under System feature set only.
+ */
+const STORY_004_SECONDARY_PAGES = {
+  "factory-configuration": {
+    workers: [
+      "workers",
+      "poller-workers",
+      "script-workers",
+      "agent-workers",
+      "inference-workers",
+      "mock-workers",
+    ],
+    workstations: ["workstations"],
+    factories: [
+      "configuration",
+      "factory-session",
+      "global-configuration-factories",
+    ],
+    resources: ["resources", "throttling-and-limits"],
+  },
+  "system-operations": {
+    observability: ["logs", "metrics"],
+  },
 } as const;
 
 /** Config / ops pages that must not leak into System feature set. */
@@ -302,6 +331,134 @@ describe("explorer IA exact-order contract", () => {
           urlEndsWithSlug(entry.url, "documentation", slug),
         ),
         `${slug} must not appear under System feature set`,
+      ).toBe(false);
+    }
+  });
+
+  test("default-locale Program documentation nests Factory Configuration and System Operations secondaries with exact page membership", async () => {
+    const messages = await loadUiMessages("en");
+    const signature = buildExplorerTreeSignature(
+      localizePageTree(source.pageTree, "en", { messages }),
+    );
+
+    const documentation = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+    );
+    expect(documentation).toBeTruthy();
+    if (!documentation) {
+      throw new Error("expected Program documentation folder");
+    }
+
+    const factoryConfigurationLabel =
+      SIDEBAR_GROUP_LABELS.documentation["factory-configuration"];
+    const systemOperationsLabel =
+      SIDEBAR_GROUP_LABELS.documentation["system-operations"];
+
+    expect(
+      secondaryFolderNamesUnderSeparator(
+        documentation,
+        factoryConfigurationLabel,
+      ),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
+      ),
+    );
+    expect(
+      secondaryFolderNamesUnderSeparator(documentation, systemOperationsLabel),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
+      ),
+    );
+
+    for (const [groupId, secondaries] of Object.entries(
+      STORY_004_SECONDARY_PAGES,
+    ) as Array<
+      [
+        keyof typeof STORY_004_SECONDARY_PAGES,
+        (typeof STORY_004_SECONDARY_PAGES)[keyof typeof STORY_004_SECONDARY_PAGES],
+      ]
+    >) {
+      const groupLabel = SIDEBAR_GROUP_LABELS.documentation[groupId];
+      for (const [secondaryId, slugs] of Object.entries(secondaries) as Array<
+        [string, readonly string[]]
+      >) {
+        const secondaryLabel =
+          DOCUMENTATION_SIDEBAR_SECONDARY_LABELS[groupId][
+            secondaryId as keyof (typeof DOCUMENTATION_SIDEBAR_SECONDARY_LABELS)[typeof groupId]
+          ];
+        const underSecondary = pageEntriesInSecondaryFolderUnderSeparator(
+          documentation,
+          groupLabel,
+          secondaryLabel,
+        );
+        const underSecondarySlugs = underSecondary.map((entry) => {
+          const match = entry.url.match(/\/documentation\/([^/]+)$/);
+          expect(
+            match?.[1],
+            `${entry.url} must be a documentation page`,
+          ).toBeTruthy();
+          return match?.[1] ?? "";
+        });
+
+        expect(underSecondarySlugs.sort()).toEqual([...slugs].sort());
+
+        for (const slug of slugs) {
+          const membership =
+            FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
+              slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG
+            ];
+          expect(membership.group).toBe(groupId);
+          expect(
+            "secondary" in membership
+              ? String(membership.secondary)
+              : undefined,
+          ).toBe(secondaryId);
+          expect(
+            underSecondary.some((entry) =>
+              urlEndsWithSlug(entry.url, "documentation", slug),
+            ),
+            `${slug} must sit under ${groupLabel} → ${secondaryLabel}`,
+          ).toBe(true);
+        }
+      }
+    }
+
+    const observabilityPages = pageEntriesInSecondaryFolderUnderSeparator(
+      documentation,
+      systemOperationsLabel,
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"].observability,
+    );
+    expect(
+      observabilityPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "replays-records"),
+      ),
+      "replays-records must not duplicate under Observability",
+    ).toBe(false);
+
+    const systemFeaturePages = pageEntriesUnderSeparator(
+      documentation,
+      SIDEBAR_GROUP_LABELS.documentation["system-feature-set"],
+    );
+    expect(
+      systemFeaturePages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "replays-records"),
+      ),
+      "replays-records must remain under System feature set",
+    ).toBe(true);
+
+    const factoryConfigurationPages = pageEntriesUnderSeparator(
+      documentation,
+      factoryConfigurationLabel,
+    );
+    for (const invented of ["model-workers", "hosted-workers"] as const) {
+      expect(
+        factoryConfigurationPages.some((entry) =>
+          urlEndsWithSlug(entry.url, "documentation", invented),
+        ),
+        `${invented} must not be invented under Workers`,
       ).toBe(false);
     }
   });

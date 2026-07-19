@@ -4,6 +4,7 @@ import {
   buildExplorerTreeSignature,
   folderSignatureByName,
   pageEntriesInFolder,
+  pageEntriesInSecondaryFolderUnderSeparator,
   pageEntriesUnderSeparator,
   secondaryFolderNamesUnderSeparator,
   separatorNamesInFolder,
@@ -139,6 +140,33 @@ describe("explorer-tree-signature", () => {
       { name: "Mock workers", url: "/docs/documentation/mock-workers" },
       { name: "Resources", url: "/docs/documentation/resources" },
     ]);
+    expect(
+      pageEntriesInSecondaryFolderUnderSeparator(
+        documentation,
+        "Factory Configuration",
+        "Workers",
+      ),
+    ).toEqual([
+      { name: "Workers", url: "/docs/documentation/workers" },
+      { name: "Mock workers", url: "/docs/documentation/mock-workers" },
+    ]);
+    expect(
+      pageEntriesInSecondaryFolderUnderSeparator(
+        documentation,
+        "System Operations",
+        "Observability",
+      ),
+    ).toEqual([
+      { name: "Logs", url: "/docs/documentation/logs" },
+      { name: "Metrics", url: "/docs/documentation/metrics" },
+    ]);
+    expect(
+      pageEntriesInSecondaryFolderUnderSeparator(
+        documentation,
+        "Factory Configuration",
+        "Missing",
+      ),
+    ).toEqual([]);
     expect(pageEntriesInFolder(documentation)).toEqual([
       {
         name: "Dynamic workflows",

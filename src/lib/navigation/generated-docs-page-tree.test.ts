@@ -76,6 +76,26 @@ const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
     separator: "Additional references",
     url: "/docs/documentation/install",
   },
+  {
+    folderName: "Program documentation",
+    separator: "Factory Configuration",
+    url: "/docs/documentation/mock-workers",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Factory Configuration",
+    url: "/docs/documentation/throttling-and-limits",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "System Operations",
+    url: "/docs/documentation/logs",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "System Operations",
+    url: "/docs/documentation/metrics",
+  },
 ] as const;
 
 const GROUPED_SECTION_BY_FOLDER = {
