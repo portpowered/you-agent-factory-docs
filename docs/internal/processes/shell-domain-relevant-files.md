@@ -402,6 +402,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Story 004 locks Factory Configuration secondaries (Workers → Workstations →
   Factories → Resources) and System Operations → Observability page membership,
   and proves `replays-records` stays under System feature set only.
+  Story 006 consolidates the three-level Program documentation contract: FAQ
+  remains the sole top-level explorer page (absent from Program documentation
+  children), former ten-group Basics/Feature support/Functions/… separators are
+  rejected, and Workers/Observability nesting plus full membership remain locked.
+* `src/lib/navigation/generated-docs-page-tree.test.ts` /
+  `src/lib/source.test.ts` /
+  `src/lib/navigation/docs-sidebar-collection-verification.test.ts` /
+  `src/lib/navigation/docs-sidebar-adapter-parity.test.ts`
+  Generated/source/parity sidebar proofs share the same three-level separator
+  order, secondary nesting, FAQ-outside, and former ten-group rejection.
 * `src/tests/layout/desktop-mobile-explorer-parity.test.tsx`
   Focused proof that every locale’s constructed explorer tree matches the IA
   contract and that CanonicalDocsLayout’s desktop `#nd-sidebar` and mobile
@@ -414,6 +424,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   proves Interfaces (`/docs/documentation/cli`) and Additional references
   (`/docs/documentation/install`) appear after their Program documentation
   separators in DOM order (disambiguate CLI from `/docs/references/cli`).
+  Story 006 browser proof: FAQ stays after Program documentation as a top-level
+  link, former flat ten-group separator labels are absent, and nested Workers /
+  Observability secondaries remain reachable.
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only

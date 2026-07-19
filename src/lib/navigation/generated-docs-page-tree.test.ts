@@ -20,6 +20,20 @@ const REQUIRED_SUBGROUP_LABELS = {
   ],
 } as const;
 
+/** Former flat Program documentation separators rejected by story 006. */
+const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
+  "Basics",
+  "Feature support",
+  "Functions",
+  "Configuration",
+  "API",
+  "CLI",
+  "MCP",
+  "Operational",
+  "Internal architecture",
+  "Additional reference",
+] as const;
+
 const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   {
     folderName: "Concepts",
@@ -201,6 +215,84 @@ describe("generated docs page tree", () => {
         actualLabels,
       );
     }
+  });
+
+  test("story 006 Program documentation rejects former ten-group separators, nests secondaries, and keeps FAQ outside", () => {
+    const children = getFolderChildren("Program documentation");
+    const separators = getSeparatorLabels(children);
+
+    expect(separators).toEqual([
+      ...REQUIRED_SUBGROUP_LABELS["Program documentation"],
+    ]);
+    for (const former of FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS) {
+      expect(separators).not.toContain(former);
+    }
+    expect(
+      children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/documentation/faq",
+      ),
+    ).toBe(false);
+    expect(source.pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+
+    const factoryConfigurationIndex = expectIndex(
+      "Factory Configuration separator",
+      findNodeIndex(children, { name: "Factory Configuration" }),
+    );
+    const systemOperationsIndex = expectIndex(
+      "System Operations separator",
+      findNodeIndex(children, { name: "System Operations" }),
+    );
+    const workersFolder = children.find(
+      (node) => node.type === "folder" && node.name === "Workers",
+    );
+    expect(workersFolder?.type).toBe("folder");
+    if (workersFolder?.type !== "folder") {
+      throw new Error("expected Workers secondary under Factory Configuration");
+    }
+    const workersIndex = expectIndex(
+      "Workers secondary",
+      findNodeIndex(children, { name: "Workers" }),
+    );
+    const observabilityFolder = children.find(
+      (node) => node.type === "folder" && node.name === "Observability",
+    );
+    expect(observabilityFolder?.type).toBe("folder");
+    if (observabilityFolder?.type !== "folder") {
+      throw new Error(
+        "expected Observability secondary under System Operations",
+      );
+    }
+    const observabilityIndex = expectIndex(
+      "Observability secondary",
+      findNodeIndex(children, { name: "Observability" }),
+    );
+
+    expect(workersIndex).toBeGreaterThan(factoryConfigurationIndex);
+    expect(workersIndex).toBeLessThan(systemOperationsIndex);
+    expect(observabilityIndex).toBeGreaterThan(systemOperationsIndex);
+    expect(
+      workersFolder.children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/documentation/mock-workers",
+      ),
+    ).toBe(true);
+    expect(
+      observabilityFolder.children.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          node.url === "/docs/documentation/logs",
+      ),
+    ).toBe(true);
   });
 
   test("representative subgroup pages appear after the correct separator", () => {

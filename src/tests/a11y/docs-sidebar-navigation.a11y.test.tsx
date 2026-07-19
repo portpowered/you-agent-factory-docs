@@ -350,6 +350,32 @@ describe("docs sidebar navigation accessibility", () => {
     expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
     faqLink.focus();
     expect(document.activeElement).toBe(faqLink);
+
+    // Story 006 browser proof: FAQ stays top-level outside Program
+    // documentation; three-level groups replace the former ten-group order;
+    // nested Workers / Observability secondaries stay reachable.
+    const programDocumentationFolder = within(sidebar).getAllByRole("button", {
+      name: context.messages.explorer.folders.documentation,
+    })[0];
+    expect(programDocumentationFolder).toBeTruthy();
+    if (!programDocumentationFolder) {
+      throw new Error("expected Program documentation folder");
+    }
+    expect(position(programDocumentationFolder)).toBeLessThan(
+      position(faqLink),
+    );
+    for (const former of [
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Operational",
+      "Additional reference",
+    ] as const) {
+      expect(within(sidebar).queryByText(former)).toBeNull();
+    }
+    expect(workersSecondary.getAttribute("aria-expanded")).not.toBe("false");
+    expect(observabilitySecondary).toBeTruthy();
+    expect(position(faqLink)).toBeGreaterThan(position(observabilitySecondary));
   });
 
   test("localized docs shell preserves locale while exposing shipped Vietnamese docs links", async () => {

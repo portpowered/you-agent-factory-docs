@@ -161,6 +161,9 @@ describe("docs sidebar adapter extraction parity", () => {
     const links = collectSidebarPageLinks(children);
     const additionalReferencesUrl =
       "/docs/documentation/what-is-you-agent-factory";
+    const secondaryFolderNames = children
+      .filter((node) => node.type === "folder")
+      .map((node) => String(node.name));
 
     expect(findSidebarPageLink(links, additionalReferencesUrl)?.url).toBe(
       additionalReferencesUrl,
@@ -177,9 +180,33 @@ describe("docs sidebar adapter extraction parity", () => {
       "Internal Architecture",
       "Additional references",
     ]);
+    for (const former of [
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ] as const) {
+      expect(getSeparatorLabels(children)).not.toContain(former);
+    }
     expect(links.some((link) => link.url === "/docs/documentation/faq")).toBe(
       false,
     );
+    expect(pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Observability");
+    expect(
+      findSidebarPageLink(links, "/docs/documentation/mock-workers")?.url,
+    ).toBe("/docs/documentation/mock-workers");
   });
 
   test("factory sidebar excludes retired Atlas collection destinations", () => {

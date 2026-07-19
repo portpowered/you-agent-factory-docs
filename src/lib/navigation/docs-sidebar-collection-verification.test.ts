@@ -214,6 +214,9 @@ describe("collection-driven docs sidebar verification", () => {
   test("Program documentation subgroups follow declared order without FAQ", () => {
     const pageTree = buildVerificationPageTree();
     const children = getFolderChildren(pageTree, "Program documentation");
+    const secondaryFolderNames = children
+      .filter((node) => node.type === "folder")
+      .map((node) => String(node.name));
 
     expect(getSeparatorLabels(children)).toEqual([
       "System feature set",
@@ -224,10 +227,31 @@ describe("collection-driven docs sidebar verification", () => {
       "Internal Architecture",
       "Additional references",
     ]);
+    for (const former of [
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Configuration",
+      "API",
+      "CLI",
+      "MCP",
+      "Operational",
+      "Internal architecture",
+      "Additional reference",
+    ] as const) {
+      expect(getSeparatorLabels(children)).not.toContain(former);
+    }
     expect(
       collectSidebarPageLinks(children).some(
         (link) => link.url === "/docs/documentation/faq",
       ),
     ).toBe(false);
+    expect(pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Observability");
   });
 });

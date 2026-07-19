@@ -5,6 +5,10 @@
  *
  * R02 story 002 also locks eight Program documentation page membership under
  * declared subgroups and Concepts Skills / MCP / Tool calling / Tokens groups.
+ *
+ * Story 006 locks the three-level Program documentation contract end-to-end:
+ * FAQ stays top-level outside Program documentation, and the former ten-group
+ * Basics/Feature support/Functions/… separator order is no longer required.
  */
 import { describe, expect, test } from "bun:test";
 import {
@@ -139,6 +143,25 @@ const SYSTEM_FEATURE_SET_EXCLUDED_SLUGS = [
   "throttling-and-limits",
   "logs",
   "metrics",
+] as const;
+
+/**
+ * Former flat Program documentation separators (Basics → … → Additional
+ * reference). Story 006 proves these are no longer the explorer contract.
+ * Keep exact historical spellings (including "Internal architecture" and
+ * singular "Additional reference") so regressions to the old IA fail CI.
+ */
+const FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS = [
+  "Basics",
+  "Feature support",
+  "Functions",
+  "Configuration",
+  "API",
+  "CLI",
+  "MCP",
+  "Operational",
+  "Internal architecture",
+  "Additional reference",
 ] as const;
 
 /** R00 Concepts pages required under declared explorer subgroups. */
@@ -460,6 +483,114 @@ describe("explorer IA exact-order contract", () => {
         ),
         `${invented} must not be invented under Workers`,
       ).toBe(false);
+    }
+  });
+
+  test("story 006 locks three-level Program documentation IA with FAQ outside and former ten-group order rejected", async () => {
+    const messages = await loadUiMessages("en");
+    const signature = buildExplorerTreeSignature(
+      localizePageTree(source.pageTree, "en", { messages }),
+    );
+
+    const faq = topLevelPageEntries(signature);
+    expect(faq).toEqual([
+      { name: "FAQ", url: DOCS_EXPLORER_TOP_LEVEL_FAQ_URL },
+    ]);
+    expect(signature.children.at(-1)).toMatchObject({
+      type: "page",
+      name: "FAQ",
+      url: DOCS_EXPLORER_TOP_LEVEL_FAQ_URL,
+    });
+
+    const documentation = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+    );
+    expect(documentation).toBeTruthy();
+    if (!documentation) {
+      throw new Error("expected Program documentation folder");
+    }
+
+    expect(separatorNamesInFolder(documentation)).toEqual([
+      ...DECLARED_DOCUMENTATION_GROUP_ORDER,
+    ]);
+    for (const former of FORMER_TEN_GROUP_PROGRAM_DOCUMENTATION_SEPARATORS) {
+      expect(
+        separatorNamesInFolder(documentation),
+        `former ten-group separator "${former}" must not be the Program documentation contract`,
+      ).not.toContain(former);
+    }
+
+    expect(
+      pageEntriesInFolder(documentation).some((page) =>
+        page.url.endsWith("/docs/documentation/faq"),
+      ),
+    ).toBe(false);
+
+    expect(
+      secondaryFolderNamesUnderSeparator(
+        documentation,
+        SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
+      ),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
+      ),
+    );
+    expect(
+      secondaryFolderNamesUnderSeparator(
+        documentation,
+        SIDEBAR_GROUP_LABELS.documentation["system-operations"],
+      ),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
+      ),
+    );
+
+    const workersPages = pageEntriesInSecondaryFolderUnderSeparator(
+      documentation,
+      SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].workers,
+    );
+    expect(
+      workersPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "mock-workers"),
+      ),
+    ).toBe(true);
+
+    const observabilityPages = pageEntriesInSecondaryFolderUnderSeparator(
+      documentation,
+      SIDEBAR_GROUP_LABELS.documentation["system-operations"],
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"].observability,
+    );
+    expect(
+      observabilityPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "logs"),
+      ),
+    ).toBe(true);
+    expect(
+      observabilityPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "metrics"),
+      ),
+    ).toBe(true);
+
+    for (const slug of Object.keys(
+      FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
+    )) {
+      expect(slug).not.toBe("faq");
+      const membership =
+        FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
+          slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG
+        ];
+      const groupLabel = SIDEBAR_GROUP_LABELS.documentation[membership.group];
+      const underGroup = pageEntriesUnderSeparator(documentation, groupLabel);
+      expect(
+        underGroup.some((entry) =>
+          urlEndsWithSlug(entry.url, "documentation", slug),
+        ),
+        `${slug} must remain under Program documentation group ${groupLabel}`,
+      ).toBe(true);
     }
   });
 
