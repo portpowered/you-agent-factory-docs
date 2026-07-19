@@ -72,13 +72,14 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/lib/references/events/factory-event-catalog.ts` | Build FactoryEvent envelope + discriminator → payload catalog from packaged OpenAPI (W04 normalize via `normalizeJsonSchemaArtifact`); also normalizes direct envelope `$ref` components (`FactoryEventType`, `FactoryEventContext`) into `envelopeComponents`; attaches `envelopeExample` via `buildFactoryEventEnvelopeJsonExample` |
-| `src/lib/references/events/event-envelope-examples.ts` | Corpus-true full FactoryEvent / FactoryResponseEvent envelope JSON examples (OpenAPI authored `example` when present; otherwise minimal required-field construction from packaged schemas — never ellipsis or invented keys) |
+| `src/lib/references/events/factory-event-catalog.ts` | Build FactoryEvent envelope + discriminator → payload catalog from packaged OpenAPI (W04 normalize via `normalizeJsonSchemaArtifact`); also normalizes direct envelope `$ref` components (`FactoryEventType`, `FactoryEventContext`) into `envelopeComponents`; attaches `envelopeExample` via `buildFactoryEventEnvelopeJsonExample`; attaches per-mapping `payloadExample` via `buildPayloadSchemaJsonExample` |
+| `src/lib/references/events/event-envelope-examples.ts` | Corpus-true full FactoryEvent / FactoryResponseEvent envelope JSON examples and per-variant payload JSON examples (OpenAPI authored `example`/`examples` when present; otherwise minimal required-field construction from packaged schemas — never ellipsis or invented keys) |
 | `src/components/references/events/event-envelope-reference.tsx` | Shared FactoryEvent envelope fields via `EventsSchemaDefinition` (composition stripped; single field listing) + full envelope JSON example |
 | `src/components/references/events/event-envelope-json-example.tsx` | CodePanel-backed full envelope JSON example (origin labeled authored vs corpus-constructed) |
+| `src/components/references/events/event-payload-json-example.tsx` | CodePanel-backed payload-only JSON example near each catalog variant |
 | `src/components/references/events/event-envelope-components.tsx` | Render envelope `$ref` component objects (`FactoryEventType`, `FactoryEventContext`) as full schema definitions on the events page |
 | `src/components/references/events/event-discriminator-map.tsx` | Live `type` → payload schema map with payload-variant deep links |
-| `src/components/references/events/event-payload-variant.tsx` | One payload variant under short “Event catalog” label (`data-event-payload-only`) |
+| `src/components/references/events/event-payload-variant.tsx` | One payload variant under short “Event catalog” label (`data-event-payload-only`) + payload JSON example |
 | `src/components/references/events/event-payload-catalog.tsx` | All mapped payload variants with schema-backed fields |
 | `src/components/references/events/events-schema-definition.tsx` | Events-opt-in SchemaDefinition: path-deduped field rows + distinct-only path labels + suppressed pointer-path chrome |
 | `src/components/references/events/factory-event-catalog-section.tsx` | Compose envelope + envelope components + map + payload catalog |
@@ -88,10 +89,10 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/lib/references/events/factory-response-event-catalog.ts` | Build FactoryResponseEvent envelope + kind/phase/provenance + oneOf payload catalog from packaged OpenAPI; attaches `envelopeExample` via `buildFactoryResponseEventEnvelopeJsonExample` |
+| `src/lib/references/events/factory-response-event-catalog.ts` | Build FactoryResponseEvent envelope + kind/phase/provenance + oneOf payload catalog from packaged OpenAPI; attaches `envelopeExample` via `buildFactoryResponseEventEnvelopeJsonExample`; attaches per-variant `payloadExample` via `buildPayloadSchemaJsonExample` |
 | `src/components/references/events/response-event-envelope-reference.tsx` | Shared FactoryResponseEvent envelope fields via `EventsSchemaDefinition` (ephemeral marker; single field listing) + full envelope JSON example |
 | `src/components/references/events/response-event-matrix.tsx` | Kind / phase / provenance / payload dimensions without claiming Cartesian validity; kind/phase/provenance each render as `EventsSchemaDefinition` (envelope `$ref` components) |
-| `src/components/references/events/response-event-payload-variant.tsx` | One payload oneOf shape under short “Event catalog” label (`data-event-payload-only` + ephemeral) |
+| `src/components/references/events/response-event-payload-variant.tsx` | One payload oneOf shape under short “Event catalog” label (`data-event-payload-only` + ephemeral) + payload JSON example |
 | `src/components/references/events/response-event-payload-catalog.tsx` | All oneOf payload shapes with schema-backed fields |
 | `src/components/references/events/factory-response-event-catalog-section.tsx` | Compose envelope + matrix + payload catalog |
 | `src/components/references/events/factory-response-event-catalog.test.tsx` | Live inventory + ephemeral / non-Cartesian UI proofs |
@@ -187,7 +188,9 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   via `buildFactoryEventEnvelopeJsonExample` (authored OpenAPI `example` when
   present; otherwise minimal required-field construction — never ellipsis
   placeholder bodies or invented envelope keys). Render with
-  `EventEnvelopeJsonExampleView` / CodePanel.
+  `EventEnvelopeJsonExampleView` / CodePanel. Attach per-mapping
+  `mapping.payloadExample` via `buildPayloadSchemaJsonExample` and render with
+  `EventPayloadJsonExampleView` beside each payload variant’s field table.
 - Payload variants must set `data-event-payload-only="true"` and use a short
   visible “Event catalog” label (not the long “Payload only — not a complete …
   envelope” disclaimer). Machine markers still distinguish payload rows from
@@ -207,7 +210,9 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   and provenance each render as `EventsSchemaDefinition` (envelope `$ref`
   components) alongside the dimension value chips. Attach
   `catalog.envelopeExample` the same way as FactoryEvent (prefer SESSION /
-  STARTED when those enums exist for readability).
+  STARTED when those enums exist for readability). Attach per-variant
+  `payloadExample` via `buildPayloadSchemaJsonExample` (same authored-or-
+  constructed rules as FactoryEvent payload rows).
 - Response-event payload variants use `data-event-ephemeral="true"` plus
   `data-event-payload-only="true"` and must never be presented as canonical
   FactoryEvent replay state.

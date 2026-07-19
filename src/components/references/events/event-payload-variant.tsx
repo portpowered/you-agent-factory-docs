@@ -1,16 +1,18 @@
 /**
  * One FactoryEvent discriminator payload variant.
  *
- * Renders schema-backed fields via W07 SchemaDefinition under a short
- * "Event catalog" label. Marked `data-event-payload-only` for machine
- * consumers; stable anchors come from W04 `anchorForIdentity("event", …)`
- * with copy-link affordances via shared CopyableReferenceAnchor.
+ * Renders a corpus-true JSON example plus schema-backed fields via W07
+ * SchemaDefinition under a short "Event catalog" label. Marked
+ * `data-event-payload-only` for machine consumers; stable anchors come from
+ * W04 `anchorForIdentity("event", …)` with copy-link affordances via shared
+ * CopyableReferenceAnchor.
  */
 
 import { CopyableReferenceAnchor } from "@/components/references/shared";
 import type { FactoryEventDiscriminatorMapping } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventPayloadJsonExampleView } from "./event-payload-json-example";
 import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type EventPayloadVariantProps = {
@@ -66,6 +68,8 @@ export function EventPayloadVariant({
           />
         </div>
       </header>
+
+      <EventPayloadJsonExampleView example={mapping.payloadExample} />
 
       <EventsSchemaDefinition
         data-testid={`event-payload-schema-${mapping.payloadSchemaName}`}

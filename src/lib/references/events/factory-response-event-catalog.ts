@@ -19,7 +19,9 @@ import {
 } from "@/lib/references/schema-model";
 import {
   buildFactoryResponseEventEnvelopeJsonExample,
+  buildPayloadSchemaJsonExample,
   type EventEnvelopeJsonExample,
+  type EventPayloadJsonExample,
 } from "./event-envelope-examples";
 import type { EventsOpenApiComponentsSchemasLike } from "./openapi-document";
 import { localSchemaNameFromRef } from "./schema-ref-closure";
@@ -78,6 +80,11 @@ export type FactoryResponseEventPayloadVariant = {
   payloadSchemaPointerAnchor: string;
   /** Stable event-kind anchor for deep-linking the payload variant. */
   payloadVariantAnchor: string;
+  /**
+   * Corpus-true payload-only JSON example (authored OpenAPI `example` when
+   * present; otherwise minimal constructed body from packaged schemas).
+   */
+  payloadExample: EventPayloadJsonExample;
 };
 
 export type FactoryResponseEventCatalog = {
@@ -306,6 +313,10 @@ export function buildFactoryResponseEventCatalog(
         member.pointer,
       ),
       payloadVariantAnchor: anchorForIdentity("event", payloadSchemaName),
+      payloadExample: buildPayloadSchemaJsonExample(doc, {
+        payloadSchemaName,
+        idPrefix: "factory-response-event-payload",
+      }),
     });
   }
 

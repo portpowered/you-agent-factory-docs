@@ -1,16 +1,17 @@
 /**
  * One FactoryResponseEvent payload oneOf variant.
  *
- * Renders schema-backed fields via W07 SchemaDefinition under a short
- * "Event catalog" label. Marked `data-event-payload-only` +
- * `data-event-ephemeral` for machine consumers. Stable anchors + copy-link
- * via W04 / shared CopyableReferenceAnchor.
+ * Renders a corpus-true JSON example plus schema-backed fields via W07
+ * SchemaDefinition under a short "Event catalog" label. Marked
+ * `data-event-payload-only` + `data-event-ephemeral` for machine consumers.
+ * Stable anchors + copy-link via W04 / shared CopyableReferenceAnchor.
  */
 
 import { CopyableReferenceAnchor } from "@/components/references/shared";
 import type { FactoryResponseEventPayloadVariant } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventPayloadJsonExampleView } from "./event-payload-json-example";
 import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type ResponseEventPayloadVariantProps = {
@@ -62,6 +63,8 @@ export function ResponseEventPayloadVariant({
           />
         </div>
       </header>
+
+      <EventPayloadJsonExampleView example={variant.payloadExample} />
 
       <EventsSchemaDefinition
         data-testid={`response-event-payload-schema-${variant.payloadSchemaName}`}

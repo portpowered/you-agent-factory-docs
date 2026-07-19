@@ -35,10 +35,12 @@ export {
 export {
   buildFactoryEventEnvelopeJsonExample,
   buildFactoryResponseEventEnvelopeJsonExample,
+  buildPayloadSchemaJsonExample,
   constructMinimalOpenApiObjectExample,
   EVENT_ENVELOPE_EXAMPLE_ORIGIN,
   type EventEnvelopeExampleOrigin,
   type EventEnvelopeJsonExample,
+  type EventPayloadJsonExample,
   envelopeExampleConformsToOpenApiSchema,
 } from "./event-envelope-examples";
 export {

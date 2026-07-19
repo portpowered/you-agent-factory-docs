@@ -119,6 +119,26 @@ describe("buildFactoryResponseEventCatalog", () => {
           | undefined,
       ),
     ).toEqual({ ok: true });
+
+    // Every published response payload variant carries a corpus-true JSON example.
+    const schemas = corpus.openapi.document.components?.schemas as
+      | Record<string, unknown>
+      | undefined;
+    for (const variant of catalog.payloadVariants) {
+      const payloadExample = variant.payloadExample;
+      expect(payloadExample.payloadSchemaName).toBe(variant.payloadSchemaName);
+      expect(payloadExample.language).toBe("json");
+      expect(payloadExample.code).not.toMatch(/[…]|\.\.\./);
+      expect(typeof payloadExample.value).toBe("object");
+      expect(payloadExample.value).not.toBeNull();
+      expect(
+        envelopeExampleConformsToOpenApiSchema(
+          payloadExample.value,
+          schemas?.[variant.payloadSchemaName],
+          schemas,
+        ),
+      ).toEqual({ ok: true });
+    }
   });
 
   test("fails closed when FactoryResponseEvent schema is missing", () => {
@@ -357,6 +377,21 @@ describe("FactoryResponseEvent catalog UI", () => {
       node.querySelector('[data-schema-field-path="schemaVersion"]'),
     ).toBeNull();
     expect(node.querySelector('[data-schema-field-path="eventId"]')).toBeNull();
+
+    const exampleArticle = within(node).getByTestId(
+      "event-payload-json-example",
+    );
+    expect(exampleArticle.getAttribute("data-event-payload-example")).toBe(
+      variant.payloadSchemaName,
+    );
+    expect(
+      exampleArticle.getAttribute("data-event-payload-example-origin"),
+    ).toBe(variant.payloadExample.origin);
+    const code = within(exampleArticle).getByTestId(
+      `event-payload-json-example-code-${variant.payloadExample.id}`,
+    );
+    expect(code.textContent).not.toMatch(/[…]|\.\.\./);
+    expect(code.textContent?.trim().length ?? 0).toBeGreaterThan(2);
   });
 
   test("ResponseEventPayloadCatalog renders every oneOf payload variant", () => {
@@ -375,6 +410,9 @@ describe("FactoryResponseEvent catalog UI", () => {
       String(catalog.payloadVariants.length),
     );
     expect(screen.getAllByTestId("response-event-payload-variant").length).toBe(
+      catalog.payloadVariants.length,
+    );
+    expect(screen.getAllByTestId("event-payload-json-example").length).toBe(
       catalog.payloadVariants.length,
     );
   });

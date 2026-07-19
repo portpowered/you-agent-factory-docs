@@ -197,6 +197,13 @@ describe("W09 FactoryEvent catalog inventory drift (live OpenAPI)", () => {
           payloadAddress: firstMapping.payloadAddress,
           payloadSchemaPointerAnchor: "schema-invented",
           eventTypeAnchor: "event-invented",
+          payloadExample: {
+            ...firstMapping.payloadExample,
+            id: "factory-event-payload-json-invented-event-payload",
+            payloadSchemaName: "InventedEventPayload",
+            title: "InventedEventPayload example",
+            eventIdentity: "INVENTED_EVENT",
+          },
         },
       ],
     };

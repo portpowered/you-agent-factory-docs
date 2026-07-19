@@ -1,11 +1,12 @@
 /**
- * Corpus-true full event-envelope JSON examples for the events catalog page.
+ * Corpus-true JSON examples for the events catalog page.
  *
- * Prefer OpenAPI-authored `example` on the envelope schema when present.
+ * Covers full event envelopes and per-variant payload bodies. Prefer
+ * OpenAPI-authored `example` (or first `examples` entry) when present.
  * Otherwise construct a minimal body from packaged component schemas: only
  * published property names, real enum/const values, and required nested refs.
- * Never invent SSE wire fields or unknown envelope keys. Ellipsis placeholder
- * bodies are not sufficient for the required full-envelope examples.
+ * Never invent SSE wire fields or unknown envelope/payload keys. Ellipsis
+ * placeholder bodies are not sufficient for published catalog examples.
  *
  * Pure transforms — callers supply an already-loaded OpenAPI document.
  */
@@ -61,6 +62,26 @@ export type EventEnvelopeJsonExample = {
   payloadSchemaName?: string;
 };
 
+/**
+ * Corpus-true payload-only JSON example for one discriminator / oneOf variant.
+ * Not a complete envelope — field tables remain the schema source of truth.
+ */
+export type EventPayloadJsonExample = {
+  id: string;
+  payloadSchemaName: string;
+  title: string;
+  description: string;
+  language: "json";
+  /** Pretty-printed JSON for CodePanel / clipboard. */
+  code: string;
+  /** Parsed example body for conformance assertions. */
+  value: Record<string, unknown>;
+  origin: EventEnvelopeExampleOrigin;
+  originLabel: string;
+  /** Discriminator event type when this payload is mapped from FactoryEvent. */
+  eventIdentity?: string;
+};
+
 const OPENAPI_AUTHORED_ORIGIN_LABEL = "OpenAPI authored example";
 const CORPUS_CONSTRUCTED_ORIGIN_LABEL = "Corpus-constructed example";
 
@@ -77,10 +98,22 @@ function readAuthoredExample(schema: unknown): unknown | undefined {
   if (!isPlainObject(schema)) {
     return undefined;
   }
-  if (!("example" in schema) || schema.example === undefined) {
-    return undefined;
+  if ("example" in schema && schema.example !== undefined) {
+    return schema.example;
   }
-  return schema.example;
+  // OpenAPI Media Type / Schema Object `examples` map — first entry wins.
+  if (isPlainObject(schema.examples)) {
+    for (const entry of Object.values(schema.examples)) {
+      if (entry === undefined) {
+        continue;
+      }
+      if (isPlainObject(entry) && "value" in entry) {
+        return entry.value;
+      }
+      return entry;
+    }
+  }
+  return undefined;
 }
 
 function schemasMap(
@@ -184,6 +217,9 @@ function valueForResolvedSchema(
     if (path === "sequence" || path.endsWith(".sequence")) {
       return 1;
     }
+    if (typeof schema.minimum === "number") {
+      return schema.minimum;
+    }
     return 0;
   }
   if (typeToken === "boolean") {
@@ -221,6 +257,8 @@ function objectExampleFromSchema(
 /**
  * Construct a minimal object example from an OpenAPI component schema.
  * Required properties only; nested `$ref`s resolved from the same components map.
+ * For `oneOf` / `anyOf`, uses the first constructible member (corpus-true —
+ * never invents keys outside a published alternative).
  */
 export function constructMinimalOpenApiObjectExample(
   schema: unknown,
@@ -233,6 +271,20 @@ export function constructMinimalOpenApiObjectExample(
   if (resolved.type === "object" || resolved.properties !== undefined) {
     return objectExampleFromSchema(resolved, schemas, 0);
   }
+
+  for (const key of ["oneOf", "anyOf"] as const) {
+    const members = resolved[key];
+    if (!Array.isArray(members)) {
+      continue;
+    }
+    for (const member of members) {
+      const constructed = constructMinimalOpenApiObjectExample(member, schemas);
+      if (constructed !== undefined) {
+        return constructed;
+      }
+    }
+  }
+
   return undefined;
 }
 
@@ -519,5 +571,89 @@ export function buildFactoryResponseEventEnvelopeJsonExample(
     originLabel: CORPUS_CONSTRUCTED_ORIGIN_LABEL,
     eventIdentity,
     payloadSchemaName,
+  };
+}
+
+function slugForExampleId(schemaName: string): string {
+  return schemaName
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase();
+}
+
+/**
+ * Build one copyable payload-only JSON example from a packaged OpenAPI
+ * component schema. Prefer authored `example` / `examples`; otherwise
+ * construct a minimal required-field body (no invented keys).
+ */
+export function buildPayloadSchemaJsonExample(
+  doc: EventsOpenApiSchemasDoc,
+  options: {
+    payloadSchemaName: string;
+    /** Discriminator event type when mapping from FactoryEvent. */
+    eventIdentity?: string;
+    idPrefix?: string;
+  },
+): EventPayloadJsonExample {
+  const schemas = schemasMap(doc);
+  const payloadSchemaName = options.payloadSchemaName;
+  const payloadSchema = schemas?.[payloadSchemaName];
+  if (payloadSchema === undefined) {
+    throw new Error(
+      `Missing components.schemas.${payloadSchemaName} for payload JSON example.`,
+    );
+  }
+
+  const slug = slugForExampleId(payloadSchemaName);
+  const idPrefix = options.idPrefix ?? "event-payload";
+  const id = `${idPrefix}-json-${slug}`;
+  const authored = readAuthoredExample(payloadSchema);
+
+  if (isPlainObject(authored)) {
+    return {
+      id,
+      payloadSchemaName,
+      title: `${payloadSchemaName} example`,
+      description: `Authored OpenAPI example for the ${payloadSchemaName} payload body.`,
+      language: "json",
+      code: formatExampleCode(authored),
+      value: authored,
+      origin: EVENT_ENVELOPE_EXAMPLE_ORIGIN.openApiAuthored,
+      originLabel: OPENAPI_AUTHORED_ORIGIN_LABEL,
+      ...(options.eventIdentity !== undefined
+        ? { eventIdentity: options.eventIdentity }
+        : {}),
+    };
+  }
+
+  const constructed = constructMinimalOpenApiObjectExample(
+    payloadSchema,
+    schemas,
+  );
+  if (constructed === undefined) {
+    throw new Error(
+      `Could not construct a minimal ${payloadSchemaName} payload example.`,
+    );
+  }
+
+  const identityNote =
+    options.eventIdentity !== undefined
+      ? ` Mapped from FactoryEvent type ${options.eventIdentity}.`
+      : "";
+
+  return {
+    id,
+    payloadSchemaName,
+    title: `${payloadSchemaName} example`,
+    description: `Payload-only ${payloadSchemaName} body.${identityNote} Field names and enums come from packaged OpenAPI; values are minimal corpus-constructed placeholders when OpenAPI omits an authored example.`,
+    language: "json",
+    code: formatExampleCode(constructed),
+    value: constructed,
+    origin: EVENT_ENVELOPE_EXAMPLE_ORIGIN.corpusConstructed,
+    originLabel: CORPUS_CONSTRUCTED_ORIGIN_LABEL,
+    ...(options.eventIdentity !== undefined
+      ? { eventIdentity: options.eventIdentity }
+      : {}),
   };
 }

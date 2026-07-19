@@ -52,6 +52,10 @@ export {
   type EventPayloadCatalogProps,
 } from "./event-payload-catalog";
 export {
+  type EventPayloadJsonExampleProps,
+  EventPayloadJsonExampleView,
+} from "./event-payload-json-example";
+export {
   EventPayloadVariant,
   type EventPayloadVariantProps,
 } from "./event-payload-variant";

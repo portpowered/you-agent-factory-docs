@@ -110,6 +110,27 @@ describe("buildFactoryEventCatalog", () => {
           | undefined,
       ),
     ).toEqual({ ok: true });
+
+    // Every published payload variant carries a corpus-true JSON example.
+    const schemas = corpus.openapi.document.components?.schemas as
+      | Record<string, unknown>
+      | undefined;
+    for (const mapping of catalog.mappings) {
+      const payloadExample = mapping.payloadExample;
+      expect(payloadExample.payloadSchemaName).toBe(mapping.payloadSchemaName);
+      expect(payloadExample.eventIdentity).toBe(mapping.eventType);
+      expect(payloadExample.language).toBe("json");
+      expect(payloadExample.code).not.toMatch(/[…]|\.\.\./);
+      expect(typeof payloadExample.value).toBe("object");
+      expect(payloadExample.value).not.toBeNull();
+      expect(
+        envelopeExampleConformsToOpenApiSchema(
+          payloadExample.value,
+          schemas?.[mapping.payloadSchemaName],
+          schemas,
+        ),
+      ).toEqual({ ok: true });
+    }
   });
 
   test("fails closed when FactoryEvent schema is missing", () => {
@@ -329,6 +350,24 @@ describe("FactoryEvent catalog UI", () => {
     expect(
       variant.querySelector('[data-schema-field-path="schemaVersion"]'),
     ).toBeNull();
+
+    const exampleArticle = within(variant).getByTestId(
+      "event-payload-json-example",
+    );
+    expect(exampleArticle.getAttribute("data-event-payload-example")).toBe(
+      mapping.payloadSchemaName,
+    );
+    expect(
+      exampleArticle.getAttribute("data-event-payload-example-identity"),
+    ).toBe("RUN_REQUEST");
+    expect(
+      exampleArticle.getAttribute("data-event-payload-example-origin"),
+    ).toBe(mapping.payloadExample.origin);
+    const code = within(exampleArticle).getByTestId(
+      `event-payload-json-example-code-${mapping.payloadExample.id}`,
+    );
+    expect(code.textContent).toContain('"recordedAt"');
+    expect(code.textContent).not.toMatch(/[…]|\.\.\./);
   });
 
   test("EventPayloadCatalog renders every mapped payload variant", () => {
@@ -347,6 +386,9 @@ describe("FactoryEvent catalog UI", () => {
       String(catalog.mappings.length),
     );
     expect(screen.getAllByTestId("event-payload-variant").length).toBe(
+      catalog.mappings.length,
+    );
+    expect(screen.getAllByTestId("event-payload-json-example").length).toBe(
       catalog.mappings.length,
     );
   });
