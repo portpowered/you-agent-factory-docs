@@ -105,6 +105,39 @@ describe("FactorySchemaReference mount", () => {
     ).toBeTruthy();
   });
 
+  test("recursively splays referenced Factory definitions onto the page", () => {
+    render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+    expect(surface.getAttribute("data-schema-status")).toBe("ready");
+
+    const catalog = screen.getByRole("region", { name: "Schema definitions" });
+    expect(catalog.getAttribute("data-schema-reference")).toBe("catalog");
+    expect(surface.contains(catalog)).toBe(true);
+
+    // Representative transitive $ref targets from the Factory root must render
+    // as expanded definition sections (not opaque $ref chrome alone).
+    for (const pointer of [
+      "/$defs/Worker",
+      "/$defs/Workstation",
+      "/$defs/WorkType",
+      "/$defs/FactoryGuard",
+      "/$defs/FactoryOrchestrator",
+    ]) {
+      const definition = surface.querySelector(
+        `[data-testid="factory-schema-reference-catalog-${pointer}"]`,
+      );
+      expect(definition).toBeTruthy();
+      expect(catalog.contains(definition)).toBe(true);
+    }
+
+    // Nested refs from a splayed definition remain cycle-safe link chrome
+    // rather than inventing unpublished bodies.
+    expect(
+      catalog.querySelector('[data-schema-ref-kind="resolved"]'),
+    ).toBeTruthy();
+  });
+
   test("shows an accessible invalid status when schema acquisition fails", () => {
     render(
       <FactorySchemaReference

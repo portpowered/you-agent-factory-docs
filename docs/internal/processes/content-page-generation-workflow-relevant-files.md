@@ -1414,6 +1414,11 @@ MDX component merge for schema mounts:
    `resolveApiPackageManifestFsPath` uses ancestor `node_modules` filesystem
    walk — webpack stubs `createRequire().resolve` in production server chunks
    (MODULE_NOT_FOUND), including runtime-built specifier strings.
+   Factory schema recursive `$ref` splay is page-local: enable `showCatalog`
+   only on `FactorySchemaReference` and select the transitive closure with
+   `collectFactorySchemaSplayDefinitions` under
+   `src/content/docs/references/factory-schema/` — leave you-config /
+   mock-workers on `showCatalog={false}`.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.

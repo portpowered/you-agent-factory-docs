@@ -137,10 +137,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   (`schemas/factory`, `schemas/you-config`, `schemas/mock-workers`), normalize
   with `normalizeJsonSchemaArtifact` (pure), then render through
   `SchemaReference` / `SchemaVerificationHarness`. Use `showCatalog={false}` for
-  large `$defs` catalogs (filter still lists definitions). Root pointers must be
-  anchor-safe (not bare `/`). Harness route:
-  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
-  `/docs/references/*-schema` page.
+  large `$defs` catalogs by default (filter still lists definitions). Factory
+  schema page opt-in: `/docs/references/factory-schema` enables catalog splay
+  via page-local `collectFactorySchemaSplayDefinitions` + `showCatalog` so the
+  transitive `$ref` closure renders as expanded definitions — keep you-config /
+  mock-workers on `showCatalog={false}`. Root pointers must be anchor-safe
+  (not bare `/`). Harness route: `/schema-renderer-harness` under
+  `src/app/(dev)/` — not a published `/docs/references/*-schema` page.
 
 ## Verification preference
 
