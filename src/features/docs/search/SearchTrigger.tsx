@@ -35,7 +35,7 @@ export function SearchTrigger({
       className={cn(
         "hover:!border-accent hover:!bg-accent hover:text-accent-foreground",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        "group inline-flex h-9 items-center gap-2 rounded-lg !border !border-border !bg-secondary/50 !px-2 !py-1.5 text-sm text-muted-foreground transition-colors",
+        "group inline-flex h-9 items-center gap-2 rounded-lg !border !border-border !bg-background !px-2 !py-1.5 text-sm text-muted-foreground transition-colors",
         className,
       )}
       style={

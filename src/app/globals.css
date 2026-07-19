@@ -115,6 +115,16 @@ article[data-registry-id] > section:first-of-type > h2 {
   border-style: solid;
 }
 
+/*
+ * Header search trigger (button[data-search]): blend with page/header
+ * background at rest. Scoped to buttons so the /search page input
+ * (also marked data-search) keeps its transparent-on-card fill.
+ * Hover/focus stay owned by the rules and classes below.
+ */
+button[data-search] {
+  background-color: var(--background) !important;
+}
+
 .header-action-icon {
   border-style: solid;
 }

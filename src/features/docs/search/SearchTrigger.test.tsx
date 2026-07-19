@@ -50,6 +50,16 @@ describe("SearchTrigger", () => {
     expect(html).toContain(`aria-label="${messages.search.open}"`);
   });
 
+  test("resting fill matches header/background instead of a secondary-tinted pill", async () => {
+    const messages = await loadUiMessages();
+    const html = renderSearchTrigger(messages);
+
+    expect(html).toContain("!bg-background");
+    expect(html).toContain("!border-border");
+    expect(html).not.toContain("bg-secondary/50");
+    expect(html).not.toContain("!bg-secondary");
+  });
+
   test("keeps shortcut chips readable on trigger hover and focus via group accent styles", async () => {
     const messages = await loadUiMessages();
     const html = renderSearchTrigger(messages);
@@ -60,6 +70,8 @@ describe("SearchTrigger", () => {
     expect(html).toContain("group-hover:bg-accent-foreground/10");
     expect(html).toContain("group-focus-visible:text-accent-foreground");
     expect(html).toContain("group-focus-visible:bg-accent-foreground/10");
+    expect(html).toContain("focus-visible:ring-2");
+    expect(html).toContain("focus-visible:ring-ring");
   });
 
   test("merges caller layout classes so the trigger can expand in mobile header slots", async () => {

@@ -282,7 +282,15 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
 
 * `src/features/docs/search/SearchTrigger.tsx`
   Header search control (`data-search`); uses `messages.search.open` /
-  `messages.search.shortcut` for trigger chrome.
+  `messages.search.shortcut` for trigger chrome. Resting fill is
+  `!bg-background` (matches header/page background)—not
+  `bg-secondary/50`. Border, accent hover, and `focus-visible:ring-*`
+  stay on the trigger.
+* `src/app/globals.css`
+  `button[data-search]` resting background is `var(--background)` so the
+  header trigger blends at rest; scoped to `button` so the `/search` page
+  input (`input[data-search]`) keeps transparent-on-card fill. Hover
+  accent rules remain under `[data-search][data-search]:hover`.
 * `src/features/docs/search/SearchDialog.tsx`
   Dialog input placeholder comes from `messages.search.placeholder`.
 * `src/content/messages/{en,vi,ja,zh-CN}/common.json`
@@ -304,6 +312,10 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
 * `src/components/layout/docs-header.tsx`
   Mounts `SearchTrigger` as the first-class Search destination; primary nav
   must not also link `/search` (avoids duplicating the same control).
+* `src/features/docs/search/SearchTrigger.test.tsx` and
+  `src/tests/layout/home-shell-styling-contract.test.tsx`
+  Lock resting `!bg-background` (no `bg-secondary/50`) plus hover/focus
+  accent and focus-ring classes on the header trigger.
 
 ## Static export bootstrap path (GitHub Pages)
 

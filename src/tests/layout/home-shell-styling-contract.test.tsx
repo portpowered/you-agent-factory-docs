@@ -113,8 +113,12 @@ describe("Phase 1 home shell styling contracts", () => {
       </RootProvider>,
     );
     expect(searchHtml).toContain('data-search=""');
+    expect(searchHtml).toContain("!bg-background");
+    expect(searchHtml).not.toContain("bg-secondary/50");
     expect(searchHtml).toContain("group-hover:text-accent-foreground");
     expect(searchHtml).toContain("group-focus-visible:text-accent-foreground");
+    expect(searchHtml).toContain("focus-visible:ring-2");
+    expect(searchHtml).toContain("focus-visible:ring-ring");
 
     const tagsIndexHtml = renderToStaticMarkup(
       <TagsIndexList groups={sampleTagGroups} listLabel="Tags" />,
