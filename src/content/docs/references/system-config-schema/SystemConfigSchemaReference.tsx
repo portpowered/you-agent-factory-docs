@@ -59,6 +59,7 @@ export function SystemConfigSchemaReference({
         root={model.root}
         showCatalog={false}
         showEmptyExamples
+        showFilter={false}
       />
     );
   } catch (error) {

@@ -82,6 +82,16 @@ describe("system-config-schema reference page", () => {
     const schemaSurface = screen.getByTestId("system-config-schema-reference");
     expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
     expect(
+      screen.queryByTestId("system-config-schema-reference-filter"),
+    ).toBeNull();
+    expect(
+      schemaSurface.querySelector('[data-schema-filter="definitions"]'),
+    ).toBeNull();
+    expect(
+      schemaSurface.querySelector('[data-schema-reference="catalog"]'),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Definitions" })).toBeNull();
+    expect(
       schemaSurface.querySelector('[data-schema-field-path="backendScopeID"]'),
     ).toBeTruthy();
     expect(
@@ -115,6 +125,18 @@ describe("SystemConfigSchemaReference mount", () => {
       surface.querySelector('[data-schema-reference-mode="complete"]'),
     ).toBeTruthy();
 
+    // Page-local chrome trim: no filter-definitions list, no top-level catalog.
+    expect(
+      screen.queryByTestId("system-config-schema-reference-filter"),
+    ).toBeNull();
+    expect(
+      surface.querySelector('[data-schema-filter="definitions"]'),
+    ).toBeNull();
+    expect(
+      surface.querySelector('[data-schema-reference="catalog"]'),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Definitions" })).toBeNull();
+
     // System-config root fields expose pagePath ownership via breadcrumb deep-link
     // attributes (fewer $ref <a> links than the Factory schema surface).
     const deepLink = surface.querySelector(
@@ -123,6 +145,12 @@ describe("SystemConfigSchemaReference mount", () => {
     expect(deepLink).toBeTruthy();
     expect(
       surface.querySelector('[data-schema-field-path="backendScopeID"]'),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector('[data-schema-field-path="defaults"]'),
+    ).toBeTruthy();
+    expect(
+      surface.querySelector('[data-schema-field-path="workerPresets"]'),
     ).toBeTruthy();
   });
 

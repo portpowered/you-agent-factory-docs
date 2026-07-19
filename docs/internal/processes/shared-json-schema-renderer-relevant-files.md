@@ -137,7 +137,10 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   (`schemas/factory`, `schemas/you-config`, `schemas/mock-workers`), normalize
   with `normalizeJsonSchemaArtifact` (pure), then render through
   `SchemaReference` / `SchemaVerificationHarness`. Use `showCatalog={false}` for
-  large `$defs` catalogs (filter still lists definitions). Root pointers must be
+  large `$defs` catalogs (filter still lists definitions). For page-owned polish
+  that removes filter-definitions list chrome as well, also set
+  `showFilter={false}` on that page mount only — do not change SchemaReference
+  defaults for other families. Root pointers must be
   anchor-safe (not bare `/`). Harness route:
   `/schema-renderer-harness` under `src/app/(dev)/` — not a published
   `/docs/references/*-schema` page.
