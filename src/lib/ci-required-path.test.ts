@@ -32,7 +32,10 @@ const makefilePath = join(repoRoot, "Makefile");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
 
 type WorkflowStep = {
+  name?: string;
   run?: string;
+  uses?: string;
+  with?: Record<string, unknown>;
   "continue-on-error"?: boolean | string;
 };
 
@@ -85,6 +88,20 @@ function jobMakeTargets(job: WorkflowJob | undefined): string[] {
     if (match?.[1]) targets.push(match[1]);
   }
   return targets;
+}
+
+function stepUsesAction(step: WorkflowStep, actionPrefix: string): boolean {
+  const uses = step.uses?.trim() ?? "";
+  return uses === actionPrefix || uses.startsWith(`${actionPrefix}@`);
+}
+
+function jobStepsUsingAction(
+  job: WorkflowJob | undefined,
+  actionPrefix: string,
+): WorkflowStep[] {
+  return (job?.steps ?? []).filter((step) =>
+    stepUsesAction(step, actionPrefix),
+  );
 }
 
 describe("ci required path alignment", () => {
@@ -399,5 +416,45 @@ describe("ci static-export artifact handoff contract (Wave CI-2)", () => {
     expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds).not.toContain(
       "ci-gate",
     );
+  });
+
+  test("workflow uploads contracted artifact and consumers download without rebuild", () => {
+    const jobs = loadCiWorkflowJobs();
+    const producer = jobs[CI_STATIC_EXPORT_ARTIFACT_HANDOFF.producerJobId];
+
+    const uploads = jobStepsUsingAction(producer, "actions/upload-artifact");
+    expect(uploads).toHaveLength(1);
+    expect(uploads[0]?.with?.name).toBe(
+      CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName,
+    );
+    expect(uploads[0]?.with?.path).toBe(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.path);
+    expect(uploads[0]?.with?.["if-no-files-found"]).toBe("error");
+
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds) {
+      const consumer = jobs[consumerId];
+      expect(normalizeNeeds(consumer?.needs)).toEqual(["static-export"]);
+
+      const downloads = jobStepsUsingAction(
+        consumer,
+        "actions/download-artifact",
+      );
+      expect(downloads).toHaveLength(1);
+      expect(downloads[0]?.with?.name).toBe(
+        CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName,
+      );
+      expect(downloads[0]?.with?.path).toBe(
+        CI_STATIC_EXPORT_ARTIFACT_HANDOFF.path,
+      );
+
+      const targets = jobMakeTargets(consumer);
+      for (const forbidden of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.forbiddenConsumerMakeTargets) {
+        expect(targets).not.toContain(forbidden);
+      }
+    }
+
+    expect(jobMakeTargets(jobs.integration)).toContain("test-integration");
+    expect(jobMakeTargets(jobs.budget)).toContain("budget");
+    expect(jobMakeTargets(jobs.integration)).not.toContain("build");
+    expect(jobMakeTargets(jobs.budget)).not.toContain("build");
   });
 });

@@ -18,6 +18,11 @@ import {
   CI_REQUIRED_JOB_IDS,
   CI_REQUIRED_ORDERING_EDGES,
   CI_REQUIRED_SUITE_JOBS,
+  CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS,
+  CI_STATIC_EXPORT_ARTIFACT_HANDOFF,
+  CI_STATIC_EXPORT_ARTIFACT_NAME,
+  CI_STATIC_EXPORT_ARTIFACT_PATH,
+  CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS,
   CI_WORKFLOW_REQUIRED_MAKE_TARGETS,
   EXCLUDED_MAKE_CI_TARGETS,
   getCiRequiredJob,
@@ -32,7 +37,10 @@ const makefilePath = join(repoRoot, "Makefile");
 type PackageScripts = Record<string, string>;
 
 type WorkflowStep = {
+  name?: string;
   run?: string;
+  uses?: string;
+  with?: Record<string, unknown>;
   "continue-on-error"?: boolean | string;
 };
 
@@ -101,6 +109,20 @@ function jobHasContinueOnErrorTrue(job: WorkflowJob | undefined): boolean {
     (step) =>
       step["continue-on-error"] === true ||
       step["continue-on-error"] === "true",
+  );
+}
+
+function stepUsesAction(step: WorkflowStep, actionPrefix: string): boolean {
+  const uses = step.uses?.trim() ?? "";
+  return uses === actionPrefix || uses.startsWith(`${actionPrefix}@`);
+}
+
+function jobStepsUsingAction(
+  job: WorkflowJob | undefined,
+  actionPrefix: string,
+): WorkflowStep[] {
+  return (job?.steps ?? []).filter((step) =>
+    stepUsesAction(step, actionPrefix),
   );
 }
 
@@ -343,5 +365,47 @@ describe("GitHub Actions make ci", () => {
     } finally {
       rmSync(fixtureRoot, { recursive: true, force: true });
     }
+  });
+
+  test("static-export uploads the contracted artifact and consumers download it", () => {
+    const { raw, jobs } = loadCiWorkflow();
+    const producer = jobs[CI_STATIC_EXPORT_ARTIFACT_HANDOFF.producerJobId];
+    expect(producer).toBeDefined();
+    expect(jobMakeTargets(producer)).toContain("build");
+
+    const uploads = jobStepsUsingAction(producer, "actions/upload-artifact");
+    expect(uploads.length).toBe(1);
+    expect(uploads[0]?.with?.name).toBe(CI_STATIC_EXPORT_ARTIFACT_NAME);
+    expect(uploads[0]?.with?.path).toBe(CI_STATIC_EXPORT_ARTIFACT_PATH);
+    expect(uploads[0]?.with?.["if-no-files-found"]).toBe("error");
+
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS) {
+      const consumer = jobs[consumerId];
+      expect(consumer).toBeDefined();
+      expect(normalizeNeeds(consumer?.needs)).toEqual(["static-export"]);
+
+      const downloads = jobStepsUsingAction(
+        consumer,
+        "actions/download-artifact",
+      );
+      expect(downloads.length).toBe(1);
+      expect(downloads[0]?.with?.name).toBe(CI_STATIC_EXPORT_ARTIFACT_NAME);
+      expect(downloads[0]?.with?.path).toBe(CI_STATIC_EXPORT_ARTIFACT_PATH);
+
+      const targets = jobMakeTargets(consumer);
+      for (const forbidden of CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS) {
+        expect(targets).not.toContain(forbidden);
+      }
+      expect(jobHasContinueOnErrorTrue(consumer)).toBe(false);
+    }
+
+    expect(jobMakeTargets(jobs.integration)).toContain("test-integration");
+    expect(jobMakeTargets(jobs.budget)).toContain("budget");
+    expect(jobMakeTargets(jobs.integration)).not.toContain("build");
+    expect(jobMakeTargets(jobs.budget)).not.toContain("build");
+
+    // Fail-closed upload/download — no silent skip on required handoff steps.
+    expect(jobHasContinueOnErrorTrue(producer)).toBe(false);
+    expect(raw).not.toMatch(/continue-on-error:\s*true/i);
   });
 });
