@@ -23,6 +23,10 @@ export {
   probeApiPrintReadableFacts,
 } from "./a11y-verification";
 export {
+  ApiOpenApiCodeBlock,
+  type ApiOpenApiCodeBlockProps,
+} from "./api-code-block";
+export {
   ApiLocalServerBaseUrlNotice,
   type ApiLocalServerBaseUrlNoticeProps,
 } from "./api-local-server-base-url";
@@ -61,6 +65,12 @@ export {
   ApiOperationSection,
   type ApiOperationSectionProps,
 } from "./api-operation-section";
+export {
+  API_FUMADOCS_OPERATION_ATTR,
+  API_FUMADOCS_OPERATIONS_ATTR,
+  ApiReferenceAPIPage,
+  apiReferenceApiPagePlaygroundDisabled,
+} from "./api-page";
 export {
   ApiReferenceHashController,
   type ApiReferenceHashControllerProps,

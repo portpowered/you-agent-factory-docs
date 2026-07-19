@@ -4,7 +4,13 @@
  * Do not register these in the shared module MDX map.
  */
 import { ApiReferenceProjection } from "./ApiReferenceProjection";
+import {
+  ApiReferenceProjectionHappyDomStub,
+  isApiReferenceHappyDomUnitTestEnvironment,
+} from "./ApiReferenceProjection.happy-dom";
 
 export const pageMdxComponents = {
-  ApiReferenceProjection,
+  ApiReferenceProjection: isApiReferenceHappyDomUnitTestEnvironment()
+    ? ApiReferenceProjectionHappyDomStub
+    : ApiReferenceProjection,
 };

@@ -1,0 +1,188 @@
+/**
+ * Browser probe for published `/docs/references/api` Fumadocs APIPage mount
+ * (repair-api-fumadocs-openapi-components story 001). Run with plain `bun`
+ * from repo cwd. Kills the local server on exit.
+ */
+
+import { type ChildProcess, spawn } from "node:child_process";
+import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
+
+const PORT = Number(process.env.API_REFERENCE_FUMADOCS_PROBE_PORT ?? "3542");
+const PAGE_PATH = "/docs/references/api";
+const READY_TIMEOUT_MS = 180_000;
+
+let server: ChildProcess | undefined;
+
+function cleanup() {
+  if (server?.pid) {
+    try {
+      process.kill(-server.pid, "SIGTERM");
+    } catch {
+      try {
+        server.kill("SIGTERM");
+      } catch {
+        // already exited
+      }
+    }
+  }
+}
+
+process.on("exit", cleanup);
+process.on("SIGINT", () => {
+  cleanup();
+  process.exit(1);
+});
+process.on("SIGTERM", () => {
+  cleanup();
+  process.exit(1);
+});
+
+async function waitForReady(url: string, timeoutMs: number): Promise<void> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    try {
+      const response = await fetch(url, {
+        signal: AbortSignal.timeout(5_000),
+      });
+      if (response.ok || response.status === 500) return;
+    } catch {
+      // not ready
+    }
+    await Bun.sleep(1_000);
+  }
+  throw new Error(`Dev server not ready within ${timeoutMs}ms at ${url}`);
+}
+
+try {
+  server = spawn("bun", ["run", "dev", "--", "-p", String(PORT)], {
+    cwd: process.cwd(),
+    env: {
+      ...process.env,
+      PORT: String(PORT),
+      NODE_ENV: "development",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+    detached: true,
+  });
+
+  const base = `http://127.0.0.1:${PORT}`;
+  await waitForReady(base, READY_TIMEOUT_MS);
+
+  const browser = await launchPlaywrightBrowser();
+  const page = await browser.newPage();
+  page.setDefaultTimeout(120_000);
+
+  const response = await page.goto(`${base}${PAGE_PATH}`, {
+    waitUntil: "domcontentloaded",
+    timeout: 120_000,
+  });
+  if (!response?.ok()) {
+    throw new Error(
+      `Expected 200 for ${PAGE_PATH}, got ${response?.status() ?? "no response"}`,
+    );
+  }
+
+  await page.waitForSelector(
+    '[data-api-status="ready"], [data-api-status="empty"], [data-api-status="invalid"]',
+    { timeout: 120_000 },
+  );
+
+  // Suspense may stream a loading fallback before the Fumadocs child resolves.
+  await page.waitForFunction(
+    () => {
+      const statuses = Array.from(
+        document.querySelectorAll("[data-api-status]"),
+      ).map((el) => el.getAttribute("data-api-status"));
+      return (
+        statuses.includes("ready") ||
+        statuses.includes("empty") ||
+        (statuses.includes("invalid") && !statuses.includes("loading"))
+      );
+    },
+    { timeout: 120_000 },
+  );
+
+  const status = await page.evaluate(() => {
+    const statuses = Array.from(
+      document.querySelectorAll("[data-api-status]"),
+    ).map((el) => el.getAttribute("data-api-status"));
+    if (statuses.includes("ready")) return "ready";
+    if (statuses.includes("empty")) return "empty";
+    if (statuses.includes("invalid")) return "invalid";
+    return statuses[0] ?? null;
+  });
+  if (status !== "ready") {
+    throw new Error(`Expected ready API surface, got status=${status}`);
+  }
+
+  const fumadocsHost = await page
+    .locator("[data-api-fumadocs-operations]")
+    .count();
+  if (fumadocsHost < 1) {
+    throw new Error(
+      "Expected Fumadocs operations host on /docs/references/api",
+    );
+  }
+
+  const fumadocsOps = await page
+    .locator("[data-api-fumadocs-operation]")
+    .count();
+  if (fumadocsOps < 1) {
+    throw new Error("Expected at least one Fumadocs-rendered operation");
+  }
+
+  const suppressed = await page
+    .locator("[data-api-playground-suppressed='true']")
+    .count();
+  if (suppressed < 1) {
+    throw new Error("Expected data-api-playground-suppressed=true");
+  }
+
+  const sendCount = await page.evaluate(() => {
+    return Array.from(
+      document.querySelectorAll("button, [role='button']"),
+    ).filter((el) => /^\s*Send\s*$/i.test(el.textContent ?? "")).length;
+  });
+  const tryItCount = await page.evaluate(() => {
+    return Array.from(
+      document.querySelectorAll("button, [role='button'], a"),
+    ).filter((el) => /try\s*it/i.test(el.textContent ?? "")).length;
+  });
+  if (sendCount > 0 || tryItCount > 0) {
+    throw new Error(
+      `Expected no try-it / Send controls, got send=${sendCount} tryIt=${tryItCount}`,
+    );
+  }
+
+  const sampleMethod = await page
+    .locator("[data-api-operation-method]")
+    .first()
+    .getAttribute("data-api-operation-method");
+  const samplePath = await page
+    .locator("[data-api-operation-path]")
+    .first()
+    .getAttribute("data-api-operation-path");
+  if (!sampleMethod || !samplePath) {
+    throw new Error("Expected visible method/path on a Fumadocs operation");
+  }
+
+  await browser.close();
+
+  process.stdout.write(
+    `${JSON.stringify({
+      ok: true,
+      path: PAGE_PATH,
+      fumadocsOperationCount: fumadocsOps,
+      sampleMethod,
+      samplePath,
+      playgroundSuppressed: true,
+    })}\n`,
+  );
+  cleanup();
+  process.exit(0);
+} catch (error) {
+  cleanup();
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(message);
+  process.exit(1);
+}

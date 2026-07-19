@@ -1,0 +1,139 @@
+/**
+ * Fumadocs OpenAPI page renderer for the production `/docs/references/api`
+ * surface.
+ *
+ * Created via `createAPIPage` against the package-backed `apiOpenApiServer`.
+ * Wraps each operation in a focusable `<section id={operationId}>` so deep
+ * links stay collision-free across the single-page projection. Playground /
+ * try-it stays disabled (static-only; no proxy).
+ */
+
+import { defaultShikiFactory } from "fumadocs-core/highlight/shiki/full";
+import { createAPIPage } from "fumadocs-openapi/ui";
+import { ApiOpenApiCodeBlock } from "./api-code-block";
+import { apiOpenApiServer } from "./openapi-server";
+import {
+  API_OPERATION_ANCHOR_ATTR,
+  API_OPERATION_SECTION_ATTR,
+} from "./operation-anchors";
+import {
+  API_PLAYGROUND_OPTIONS,
+  apiReferencePlaygroundPageOptions,
+} from "./playground-suppression";
+import { API_SHIKI_OPTIONS, API_TOKEN_CLASSES } from "./theme-tokens";
+
+/** Marker on the Fumadocs-primary operations host. */
+export const API_FUMADOCS_OPERATIONS_ATTR =
+  "data-api-fumadocs-operations" as const;
+
+/** Marker on each Fumadocs-rendered operation section wrapper. */
+export const API_FUMADOCS_OPERATION_ATTR =
+  "data-api-fumadocs-operation" as const;
+
+function readOperationId(
+  paths: Record<string, Record<string, unknown>> | undefined,
+  path: string,
+  method: string,
+): string {
+  const operation = paths?.[path]?.[method];
+  if (
+    operation &&
+    typeof operation === "object" &&
+    "operationId" in operation &&
+    typeof (operation as { operationId?: unknown }).operationId === "string"
+  ) {
+    return (operation as { operationId: string }).operationId;
+  }
+  throw new Error(
+    `OpenAPI production page missing operationId for ${method.toUpperCase()} ${path}`,
+  );
+}
+
+/**
+ * Production `<APIPage />` binder. Static-only: playground disabled, schema
+ * examples visible, semantic token classes on layout slots.
+ */
+export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
+  shiki: defaultShikiFactory,
+  ...apiReferencePlaygroundPageOptions(),
+  shikiOptions: {
+    themes: { ...API_SHIKI_OPTIONS.themes },
+    defaultColor: API_SHIKI_OPTIONS.defaultColor,
+  },
+  renderCodeBlock: ({ lang, code }) => (
+    <ApiOpenApiCodeBlock lang={lang} code={code} />
+  ),
+  // Keep schema examples visible under Fumadocs schema UI (story 002 expands
+  // on request/response component object readability).
+  schemaUI: {
+    showExample: true,
+  },
+  content: {
+    renderPageLayout: (slots, ctx) => {
+      const paths = ctx.schema.dereferenced.paths as
+        | Record<string, Record<string, unknown>>
+        | undefined;
+
+      return (
+        <div
+          className={`flex flex-col gap-24 text-sm @container ${API_TOKEN_CLASSES.foreground}`}
+          {...{ [API_FUMADOCS_OPERATIONS_ATTR]: "true" }}
+        >
+          {slots.operations?.map(({ item, children }) => {
+            const operationId = readOperationId(paths, item.path, item.method);
+            return (
+              <section
+                key={`${item.method}:${item.path}`}
+                id={operationId}
+                tabIndex={-1}
+                {...{
+                  [API_OPERATION_SECTION_ATTR]: "",
+                  [API_OPERATION_ANCHOR_ATTR]: operationId,
+                  [API_FUMADOCS_OPERATION_ATTR]: operationId,
+                }}
+                data-api-operation-method={item.method}
+                data-api-operation-path={item.path}
+                data-api-operation-id={operationId}
+              >
+                {children}
+              </section>
+            );
+          })}
+          {slots.webhooks?.map(({ item, children }) => (
+            <section
+              key={`webhook:${item.method}:${item.name}`}
+              data-api-fumadocs-webhook={item.name}
+            >
+              {children}
+            </section>
+          ))}
+        </div>
+      );
+    },
+    renderOperationLayout: (slots, _ctx, method) => (
+      <div
+        className={`flex flex-col gap-x-6 gap-y-4 @4xl:flex-row @4xl:items-start ${API_TOKEN_CLASSES.foreground}`}
+        data-api-fumadocs-operation-layout={method.method}
+      >
+        <div className={`min-w-0 flex-1 ${API_TOKEN_CLASSES.border}`}>
+          {slots.header}
+          {slots.apiPlayground}
+          {slots.description}
+          {slots.authSchemes}
+          {slots.parameters}
+          {slots.body}
+          {slots.responses}
+          {slots.callbacks}
+        </div>
+        <div className="@4xl:sticky @4xl:top-[calc(var(--fd-docs-row-1,2rem)+1rem)] @4xl:w-[400px]">
+          {slots.apiExample}
+        </div>
+      </div>
+    ),
+  },
+});
+
+/** True when the production APIPage binder keeps playground disabled. */
+export function apiReferenceApiPagePlaygroundDisabled(): boolean {
+  return API_PLAYGROUND_OPTIONS.enabled === false;
+}

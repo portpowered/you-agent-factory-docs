@@ -1,43 +1,59 @@
 /**
  * Page-local production mount for `/docs/references/api`.
  *
- * Wires the public W08 surface (`@/components/references/api`) with the same
- * composition as the verification harness — navigation, operation sections,
- * hash controller, theme/print markers, local-server notice, playground
- * suppression, and hybrid SSE summaries via `ApiOperationSection` — without
- * the non-production harness chrome. Static-only: no live playground, proxy,
- * or EventSource. Page wiring only; renderer internals stay under W08 ownership.
+ * Mounts Fumadocs OpenAPI `createAPIPage` / `<APIPage />` as the primary
+ * operation renderer (method / path / parameters / body / responses), fed by
+ * the package-backed `per: "file"` single-page projection. Thin page-local
+ * adapters remain: local-server notice, tag-grouped navigation, hash
+ * controller, and status shell. Static-only: no live playground, proxy, or
+ * EventSource.
+ *
+ * The public export is synchronous (Suspense boundary) so MDX + happy-dom
+ * page tests can mount it; the Fumadocs single-page load runs in the async
+ * child under RSC.
  *
  * Non-success outcomes short-circuit through `ApiSurface` / `ApiStatus` so the
  * published route never blank-fails when the OpenAPI projection cannot render.
  */
 
+import type { ApiPageProps } from "fumadocs-openapi/ui";
+import { type ReactNode, Suspense } from "react";
 import {
+  API_FUMADOCS_OPERATIONS_ATTR,
   API_PLAYGROUND_SUPPRESSED_ATTR,
   API_PRINT_ROOT_ATTR,
-  API_REFERENCE_PAGE_PATH,
   API_THEME_ROOT_ATTR,
   type ApiLocalServerBaseUrl,
   ApiLocalServerBaseUrlNotice,
   type ApiLocalServerBaseUrlProjection,
-  type ApiOperationDetail,
   type ApiOperationDetailProjection,
   ApiOperationNavigation,
   type ApiOperationNavigationProjection,
   type ApiOperationNavModel,
-  ApiOperationSection,
+  ApiReferenceAPIPage,
   ApiReferenceHashController,
   ApiSurface,
+  loadApiOpenApiSinglePageProjection,
 } from "@/components/references/api";
 import "@/features/docs/styles/references-api-print.css";
 import { cn } from "@/lib/utils";
 import { apiReferenceProductionLoaders } from "./api-reference-production-loaders";
+
+// Page-local Fumadocs OpenAPI CSS — keep out of app/globals.css so unrelated
+// routes do not pay for OpenAPI styles on every page.
+import "fumadocs-openapi/css/preset.css";
 
 /** Injectable loaders for page-local success / non-success proofs. */
 export type ApiReferenceProjectionLoaders = {
   buildNavigation: () => ApiOperationNavigationProjection;
   buildDetails: () => ApiOperationDetailProjection;
   buildLocalServer: () => ApiLocalServerBaseUrlProjection;
+  /**
+   * Async Fumadocs `ApiPageProps` for the primary operation renderer.
+   * Production loads the package-backed single-page projection. Tests may
+   * inject a sync-friendly stub to avoid happy-dom / `openapiSource` issues.
+   */
+  loadApiPageProps?: () => Promise<ApiPageProps>;
 };
 
 /**
@@ -48,10 +64,14 @@ export type ApiReferenceProjectionLoaders = {
 const defaultLoaders: ApiReferenceProjectionLoaders =
   apiReferenceProductionLoaders;
 
+async function defaultLoadApiPageProps(): Promise<ApiPageProps> {
+  const projection = await loadApiOpenApiSinglePageProjection();
+  return projection.apiPageProps;
+}
+
 export type ApiReferenceProjectionReadyState = {
   status: "ready";
   model: ApiOperationNavModel;
-  byAnchor: ReadonlyMap<string, ApiOperationDetail>;
   localServerBaseUrl: ApiLocalServerBaseUrl | undefined;
 };
 
@@ -76,12 +96,13 @@ export function resolveApiReferenceProjectionState(
     if (model.operationCount === 0) {
       return { status: "empty" };
     }
-    const { byAnchor } = loaders.buildDetails();
+    // Keep details load in the ready gate so corrupt detail inventories still
+    // surface as invalid (same package corpus as navigation).
+    loaders.buildDetails();
     const { primary: localServerBaseUrl } = loaders.buildLocalServer();
     return {
       status: "ready",
       model,
-      byAnchor,
       localServerBaseUrl,
     };
   } catch {
@@ -94,18 +115,33 @@ export type ApiReferenceProjectionProps = {
   "data-testid"?: string;
   /** Optional loaders for page-local non-success proofs. Production omits this. */
   loaders?: ApiReferenceProjectionLoaders;
+  /**
+   * Override the Fumadocs operations renderer. Production uses
+   * {@link ApiReferenceAPIPage}; tests may stub to avoid happy-dom SSR of
+   * fumadocs-openapi.
+   */
+  renderApiPage?: (props: ApiPageProps) => ReactNode;
+};
+
+function defaultRenderApiPage(props: ApiPageProps): ReactNode {
+  return <ApiReferenceAPIPage {...props} />;
+}
+
+type ApiReferenceProjectionViewProps = ApiReferenceProjectionProps & {
+  state: ApiReferenceProjectionState;
+  apiPageProps?: ApiPageProps;
 };
 
 /**
- * Build-time OpenAPI projection for the published API reference page.
+ * Sync view used by unit tests and as the resolved Suspense child output.
  */
-export function ApiReferenceProjection({
+export function ApiReferenceProjectionView({
   className,
   "data-testid": testId = "api-reference-projection",
-  loaders = defaultLoaders,
-}: ApiReferenceProjectionProps) {
-  const state = resolveApiReferenceProjectionState(loaders);
-
+  state,
+  apiPageProps,
+  renderApiPage = defaultRenderApiPage,
+}: ApiReferenceProjectionViewProps) {
   if (state.status !== "ready") {
     return (
       <ApiSurface
@@ -116,16 +152,28 @@ export function ApiReferenceProjection({
     );
   }
 
-  const { model, byAnchor, localServerBaseUrl } = state;
+  if (apiPageProps === undefined) {
+    return (
+      <ApiSurface
+        className={cn("min-w-0", className)}
+        data-testid={testId}
+        status="invalid"
+      />
+    );
+  }
 
-  const seenAnchors = new Set<string>();
-  const uniqueItems = model.groups.flatMap((group) =>
-    group.items.filter((item) => {
-      if (seenAnchors.has(item.anchor)) return false;
-      seenAnchors.add(item.anchor);
-      return true;
-    }),
-  );
+  const operations = apiPageProps.operations ?? [];
+  if (operations.length === 0) {
+    return (
+      <ApiSurface
+        className={cn("min-w-0", className)}
+        data-testid={testId}
+        status="empty"
+      />
+    );
+  }
+
+  const { model, localServerBaseUrl } = state;
 
   return (
     <ApiSurface status="ready" className={cn("min-w-0", className)}>
@@ -146,23 +194,80 @@ export function ApiReferenceProjection({
 
           <ApiOperationNavigation groups={model.groups} model={model} />
 
-          <div className="space-y-16" data-api-operation-sections="">
-            {uniqueItems.map((item) => {
-              const detail = byAnchor.get(item.anchor);
-              if (detail === undefined) {
-                return null;
-              }
-              return (
-                <ApiOperationSection
-                  detail={detail}
-                  key={item.id}
-                  pagePath={API_REFERENCE_PAGE_PATH}
-                />
-              );
-            })}
+          <div
+            className="min-w-0"
+            {...{ [API_FUMADOCS_OPERATIONS_ATTR]: "host" }}
+            data-api-operation-sections=""
+          >
+            {renderApiPage(apiPageProps)}
           </div>
         </div>
       </ApiReferenceHashController>
     </ApiSurface>
+  );
+}
+
+async function ApiReferenceProjectionAsync({
+  className,
+  "data-testid": testId = "api-reference-projection",
+  loaders = defaultLoaders,
+  renderApiPage = defaultRenderApiPage,
+}: ApiReferenceProjectionProps) {
+  const state = resolveApiReferenceProjectionState(loaders);
+
+  if (state.status !== "ready") {
+    return (
+      <ApiReferenceProjectionView
+        className={className}
+        data-testid={testId}
+        state={state}
+      />
+    );
+  }
+
+  let apiPageProps: ApiPageProps | undefined;
+  try {
+    apiPageProps = await (
+      loaders.loadApiPageProps ?? defaultLoadApiPageProps
+    )();
+  } catch {
+    return (
+      <ApiReferenceProjectionView
+        className={className}
+        data-testid={testId}
+        state={{ status: "invalid" }}
+      />
+    );
+  }
+
+  return (
+    <ApiReferenceProjectionView
+      className={className}
+      data-testid={testId}
+      state={state}
+      apiPageProps={apiPageProps}
+      renderApiPage={renderApiPage}
+    />
+  );
+}
+
+/**
+ * Build-time OpenAPI projection for the published API reference page.
+ * Sync Suspense host so MDX stays mountable under happy-dom page tests.
+ */
+export function ApiReferenceProjection(props: ApiReferenceProjectionProps) {
+  const testId = props["data-testid"] ?? "api-reference-projection";
+  return (
+    <Suspense
+      fallback={
+        <ApiSurface
+          className={cn("min-w-0", props.className)}
+          data-testid={testId}
+          status="loading"
+        />
+      }
+    >
+      <ApiReferenceProjectionAsync {...props} />
+    </Suspense>
   );
 }

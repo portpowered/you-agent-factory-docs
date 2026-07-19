@@ -59,7 +59,9 @@ hooks, and SSR cost.
 | `src/components/references/api/api-surface.tsx` | Boundary that short-circuits non-ready statuses or renders ready children |
 | `src/components/references/api/api-surface.test.tsx` | Status semantics proofs for the ownership boundary |
 | `src/components/references/api/load-openapi-artifact.ts` | W03-backed loader for `@you-agent-factory/api/openapi` (document object + schema id) |
-| `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; attaches W04 normalized ops from the same artifact |
+| `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; Turbopack-safe package load; attaches W04 normalized ops from the same artifact |
+| `src/components/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, operationId section wrappers) |
+| `src/components/references/api/api-code-block.tsx` | `renderCodeBlock` → ServerCodeBlock + dual Shiki themes |
 | `src/components/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
 | `src/components/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
 | `src/components/references/api/single-page-projection.test.ts` | W03 acquisition + single-page projection proofs |
@@ -116,13 +118,24 @@ hooks, and SSR cost.
 - Feed `createOpenAPI` a **document object** (not a filesystem path string) so
   happy-dom URL polyfills under `bun test` do not break
   `@apidevtools/json-schema-ref-parser`.
+- Prefer `apiOpenApiTurbopackLoadDependencies()` inside `createOpenAPI` input **and**
+  `loadApiOpenApiSinglePageProjection()` so Next/Turbopack RSC pages resolve the
+  same package YAML (ancestor `node_modules` walk) that CLI/tests use — bare
+  `createRequire` can become `[externals]/…` under Turbopack and fail closed in
+  the W03 resolver.
 - Project with `openapiSource(server, { per: "file", baseDir: "references/api" })`
   so every published operation lands on one virtual page.
+- Mount published operations through `ApiReferenceAPIPage` (`createAPIPage`) from
+  `api-page.tsx` — playground stays `{ enabled: false }`, no `proxyUrl`, and each
+  operation is wrapped in `<section id={operationId} data-api-operation-section>`.
 - Assert operation counts against the **live** package inventory
   (`countOpenApiOperations`), not a frozen product quota. Baseline observation
   at pin time was 45 operations / 41 paths.
 - Run `assert-single-page-projection.ts` via plain `bun` (subprocess from tests),
   never call `openapiSource` directly inside `bun test`.
+- Browser proof for the Fumadocs mount:
+  `bun src/content/docs/references/api/assert-api-page-fumadocs-browser.ts`
+  (unique port default 3542).
 - W04 normalized summaries are derived from the same loaded document for
   cross-links/display; do not invent a second OpenAPI corpus.
 

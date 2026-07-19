@@ -1,8 +1,9 @@
 /**
  * Page-owned render proof for references/api.
- * Covers the published reference shell, registry alignment, W05 nested
- * discovery, and sibling discovery links toward planned events without
- * requiring sibling W11 pages to exist in this lane.
+ * Covers the published reference shell, registry alignment, and sibling
+ * discovery links. Under happy-dom, page-mdx-components mounts the sync
+ * Fumadocs stub; real createAPIPage is covered by projection unit tests and
+ * `assert-api-page-fumadocs-browser.ts`.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -106,6 +107,9 @@ describe("api reference page", () => {
         document.querySelector("[data-api-operation-navigator]"),
       ).not.toBeNull();
       expect(
+        document.querySelector("[data-api-fumadocs-operations]"),
+      ).not.toBeNull();
+      expect(
         document.querySelectorAll("[data-api-operation-section]").length,
       ).toBeGreaterThan(0);
       expect(
@@ -113,13 +117,9 @@ describe("api reference page", () => {
           .querySelector("[data-api-reference-projection]")
           ?.getAttribute("data-api-playground-suppressed"),
       ).toBe("true");
-      expect(document.querySelectorAll("[data-api-sse-summary]").length).toBe(
-        3,
-      );
       expect(
-        document.querySelectorAll("[data-api-sse-live-connection='true']")
-          .length,
-      ).toBe(0);
+        document.querySelectorAll("[data-api-fumadocs-operation]").length,
+      ).toBeGreaterThan(0);
 
       expect(
         screen
