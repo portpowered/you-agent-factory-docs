@@ -8,7 +8,16 @@ import {
   CI_REQUIRED_JOB_IDS,
   CI_REQUIRED_ORDERING_EDGES,
   CI_REQUIRED_SUITE_JOBS,
+  CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS,
+  CI_STATIC_EXPORT_ARTIFACT_HANDOFF,
+  CI_STATIC_EXPORT_ARTIFACT_NAME,
+  CI_STATIC_EXPORT_ARTIFACT_PATH,
+  CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS,
   CI_WORKFLOW_REQUIRED_MAKE_TARGETS,
+  ciJobConsumesStaticExportArtifact,
+  ciJobDependsOnStaticExportJob,
+  ciJobForbidsLocalStaticExportRebuild,
+  ciJobMustRebuildStaticExportLocally,
   ciRequiredJobGraphMakeTargets,
   ciRequiredJobNeeds,
   EXCLUDED_MAKE_CI_TARGETS,
@@ -23,7 +32,10 @@ const makefilePath = join(repoRoot, "Makefile");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
 
 type WorkflowStep = {
+  name?: string;
   run?: string;
+  uses?: string;
+  with?: Record<string, unknown>;
   "continue-on-error"?: boolean | string;
 };
 
@@ -76,6 +88,20 @@ function jobMakeTargets(job: WorkflowJob | undefined): string[] {
     if (match?.[1]) targets.push(match[1]);
   }
   return targets;
+}
+
+function stepUsesAction(step: WorkflowStep, actionPrefix: string): boolean {
+  const uses = step.uses?.trim() ?? "";
+  return uses === actionPrefix || uses.startsWith(`${actionPrefix}@`);
+}
+
+function jobStepsUsingAction(
+  job: WorkflowJob | undefined,
+  actionPrefix: string,
+): WorkflowStep[] {
+  return (job?.steps ?? []).filter((step) =>
+    stepUsesAction(step, actionPrefix),
+  );
 }
 
 describe("ci required path alignment", () => {
@@ -292,5 +318,143 @@ describe("ci required job-graph model", () => {
       buildIndex,
     );
     expect(MAKE_CI_PREREQUISITES.indexOf("budget")).toBeGreaterThan(buildIndex);
+  });
+});
+
+describe("ci static-export artifact handoff contract (Wave CI-2)", () => {
+  test("documents stable artifact identity, producer, and consumers", () => {
+    expect(CI_STATIC_EXPORT_ARTIFACT_NAME).toBe("static-export-out");
+    expect(CI_STATIC_EXPORT_ARTIFACT_PATH).toBe("out");
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF).toEqual({
+      artifactName: "static-export-out",
+      path: "out",
+      producerJobId: "static-export",
+      consumerJobIds: ["integration", "budget"],
+      forbiddenConsumerMakeTargets: ["build", "build-export"],
+    });
+    expect([...CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS]).toEqual([
+      "integration",
+      "budget",
+    ]);
+    expect([...CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS]).toEqual([
+      "build",
+      "build-export",
+    ]);
+
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.producerJobId).toBe(
+      "static-export",
+    );
+    expect(getCiRequiredJob("static-export").makeTargets).toContain("build");
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds) {
+      expect(ciRequiredJobNeeds(consumerId)).toEqual(["static-export"]);
+      expect(CI_REQUIRED_ORDERING_EDGES).toContainEqual({
+        from: "static-export",
+        to: consumerId,
+      });
+    }
+  });
+
+  test("distinguishes needs: static-export ordering from rebuild-locally", () => {
+    // Ordering edge alone is not the same as “must rebuild out/ locally”.
+    expect(ciJobDependsOnStaticExportJob("integration")).toBe(true);
+    expect(ciJobDependsOnStaticExportJob("budget")).toBe(true);
+    expect(ciJobDependsOnStaticExportJob("static-export")).toBe(false);
+    expect(ciJobDependsOnStaticExportJob("check")).toBe(false);
+
+    // Wave CI-2: consumers reuse the trusted artifact — they do not rebuild.
+    expect(ciJobConsumesStaticExportArtifact("integration")).toBe(true);
+    expect(ciJobConsumesStaticExportArtifact("budget")).toBe(true);
+    expect(ciJobConsumesStaticExportArtifact("static-export")).toBe(false);
+    expect(ciJobConsumesStaticExportArtifact("check")).toBe(false);
+
+    expect(ciJobForbidsLocalStaticExportRebuild("integration")).toBe(true);
+    expect(ciJobForbidsLocalStaticExportRebuild("budget")).toBe(true);
+    expect(ciJobForbidsLocalStaticExportRebuild("static-export")).toBe(false);
+    expect(ciJobForbidsLocalStaticExportRebuild("unit-tests")).toBe(false);
+
+    // Rebuild-locally posture is the forbidden combination: needs the producer
+    // job but does not consume the artifact. CI-2 consumers must never match.
+    expect(ciJobMustRebuildStaticExportLocally("integration")).toBe(false);
+    expect(ciJobMustRebuildStaticExportLocally("budget")).toBe(false);
+    expect(ciJobMustRebuildStaticExportLocally("static-export")).toBe(false);
+    expect(ciJobMustRebuildStaticExportLocally("check")).toBe(false);
+
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS) {
+      expect(ciJobDependsOnStaticExportJob(consumerId)).toBe(true);
+      expect(ciJobConsumesStaticExportArtifact(consumerId)).toBe(true);
+      expect(ciJobForbidsLocalStaticExportRebuild(consumerId)).toBe(true);
+      expect(ciJobMustRebuildStaticExportLocally(consumerId)).toBe(false);
+
+      const makeTargets = getCiRequiredJob(consumerId).makeTargets;
+      for (const forbidden of CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS) {
+        expect(makeTargets).not.toContain(forbidden);
+      }
+    }
+  });
+
+  test("preserves Wave CI-1 membership, edges, suites, and sequential make ci", () => {
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("static-export");
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("integration");
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("budget");
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("ci-gate");
+
+    expect(ciRequiredJobNeeds("integration")).toEqual(["static-export"]);
+    expect(ciRequiredJobNeeds("budget")).toEqual(["static-export"]);
+
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(MAKE_CI_PREREQUISITES).toContain(target);
+    }
+
+    const buildIndex = MAKE_CI_PREREQUISITES.indexOf("build");
+    expect(MAKE_CI_PREREQUISITES.indexOf("test-integration")).toBeGreaterThan(
+      buildIndex,
+    );
+    expect(MAKE_CI_PREREQUISITES.indexOf("budget")).toBeGreaterThan(buildIndex);
+
+    // Local make ci still builds once then runs consumers — no Actions artifact.
+    expect(MAKE_CI_REPRODUCTION_COMMAND).toBe("make ci");
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds).not.toContain(
+      "ci-gate",
+    );
+  });
+
+  test("workflow uploads contracted artifact and consumers download without rebuild", () => {
+    const jobs = loadCiWorkflowJobs();
+    const producer = jobs[CI_STATIC_EXPORT_ARTIFACT_HANDOFF.producerJobId];
+
+    const uploads = jobStepsUsingAction(producer, "actions/upload-artifact");
+    expect(uploads).toHaveLength(1);
+    expect(uploads[0]?.with?.name).toBe(
+      CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName,
+    );
+    expect(uploads[0]?.with?.path).toBe(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.path);
+    expect(uploads[0]?.with?.["if-no-files-found"]).toBe("error");
+
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds) {
+      const consumer = jobs[consumerId];
+      expect(normalizeNeeds(consumer?.needs)).toEqual(["static-export"]);
+
+      const downloads = jobStepsUsingAction(
+        consumer,
+        "actions/download-artifact",
+      );
+      expect(downloads).toHaveLength(1);
+      expect(downloads[0]?.with?.name).toBe(
+        CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName,
+      );
+      expect(downloads[0]?.with?.path).toBe(
+        CI_STATIC_EXPORT_ARTIFACT_HANDOFF.path,
+      );
+
+      const targets = jobMakeTargets(consumer);
+      for (const forbidden of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.forbiddenConsumerMakeTargets) {
+        expect(targets).not.toContain(forbidden);
+      }
+    }
+
+    expect(jobMakeTargets(jobs.integration)).toContain("test-integration");
+    expect(jobMakeTargets(jobs.budget)).toContain("budget");
+    expect(jobMakeTargets(jobs.integration)).not.toContain("build");
+    expect(jobMakeTargets(jobs.budget)).not.toContain("build");
   });
 });

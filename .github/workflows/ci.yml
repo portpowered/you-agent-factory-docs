@@ -1,7 +1,10 @@
-# Required PR/push verification — Wave CI-1 parallel job graph.
-# Membership and ordering edges: src/lib/ci-required-path.ts (CI_REQUIRED_JOB_GRAPH).
-# Local full-suite reproduction stays sequential: make ci.
-# Artifact handoff between jobs is deferred to CI-2; integration/budget rebuild out/.
+# Required PR/push verification — Wave CI-1 parallel job graph + Wave CI-2
+# trusted static-export artifact handoff.
+# Membership, ordering edges, and artifact identity:
+#   src/lib/ci-required-path.ts (CI_REQUIRED_JOB_GRAPH, CI_STATIC_EXPORT_ARTIFACT_HANDOFF).
+# static-export uploads out/ as artifact static-export-out; integration and budget
+# download it and must not run a second make build / build:export.
+# Local full-suite reproduction stays sequential: make ci (no Actions artifact).
 name: CI
 
 on:
@@ -160,6 +163,15 @@ jobs:
       - name: Build static export
         run: make build
 
+      # Wave CI-2: upload trusted out/ for integration/budget (name: static-export-out).
+      - name: Upload trusted static-export artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-export-out
+          path: out
+          if-no-files-found: error
+          retention-days: 1
+
   integration:
     needs: [static-export]
     runs-on: ubuntu-latest
@@ -175,12 +187,26 @@ jobs:
       - name: Setup
         run: make setup
 
+      - name: Download trusted static-export artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export-out
+          # upload-artifact@v4 stores a single directory's *contents* at the
+          # artifact root; download into out/ so gates see repo-root out/.
+          path: out
+
+      - name: Verify trusted static-export artifact
+        run: |
+          set -euo pipefail
+          if [[ ! -d out ]] || [[ -z "$(find out -type f -print -quit)" ]]; then
+            echo "static-export artifact missing or incomplete: expected non-empty out/"
+            ls -la . || true
+            ls -la out || true
+            exit 1
+          fi
+
       - name: Install Playwright Chromium
         run: bunx playwright install --with-deps chromium
-
-      # CI-1: rebuild out/ locally (artifact handoff deferred to CI-2).
-      - name: Build static export for integration
-        run: make build
 
       - name: Run production integration contracts
         run: make test-integration
@@ -200,9 +226,23 @@ jobs:
       - name: Setup
         run: make setup
 
-      # CI-1: rebuild out/ locally (artifact handoff deferred to CI-2).
-      - name: Build static export for budget
-        run: make build
+      - name: Download trusted static-export artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export-out
+          # upload-artifact@v4 stores a single directory's *contents* at the
+          # artifact root; download into out/ so gates see repo-root out/.
+          path: out
+
+      - name: Verify trusted static-export artifact
+        run: |
+          set -euo pipefail
+          if [[ ! -d out ]] || [[ -z "$(find out -type f -print -quit)" ]]; then
+            echo "static-export artifact missing or incomplete: expected non-empty out/"
+            ls -la . || true
+            ls -la out || true
+            exit 1
+          fi
 
       - name: Exported-site budget gate
         run: make budget

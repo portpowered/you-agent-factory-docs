@@ -25,16 +25,17 @@ Pages deploy for the rewrite-era foundation pipeline.
 
 Workflows that call this contract:
 
-- `.github/workflows/ci.yml` — Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate `ci-gate`; membership/edges in `src/lib/ci-required-path.ts`. Playwright Chromium installs on jobs that run browser fixtures (`unit-tests`, `a11y`, `integration`). Local full path stays sequential (`make ci`).
-- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/` (Pages-focused subset; does not replace CI)
+- `.github/workflows/ci.yml` — Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate `ci-gate`; membership/edges in `src/lib/ci-required-path.ts`. Wave CI-2 trusted artifact handoff: after `make build`, `static-export` uploads Actions artifact `static-export-out` (trusted `out/` tree); `integration` and `budget` download that artifact, fail closed if `out/` is missing/empty, and run their gates — they must not run a second `make build` / `build:export`. Playwright Chromium installs on jobs that run browser fixtures (`unit-tests`, `a11y`, `integration`). Local full path stays sequential (`make ci`) and does not use Actions artifacts. CI-3 Playwright install scoping and CI-4 shards are not part of this wave.
+- `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/` (Pages-focused subset; does not replace CI; unchanged by Wave CI-2)
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
 tests need a browser). Map a failed Actions child job to its make target via
 `src/lib/ci-required-path.ts` (`CI_REQUIRED_JOB_GRAPH`); treat **ci-gate** as the
 aggregate required check, not a linear `verify` job. The full local required
-path stays sequential: `make ci`. Deploy-pages remains a separate Pages-focused
-subset unchanged by Wave CI-1.
+path stays sequential: `make ci` (builds once on one machine, then
+`test-integration` / `budget` — no Actions artifact download). Deploy-pages
+remains a separate Pages-focused subset unchanged by Wave CI-1 / CI-2.
 
 ### Project-site export (local match for deploy-pages)
 
@@ -66,10 +67,10 @@ and `bun run test:website:export-consumers`.
 | Path | Role |
 | --- | --- |
 | `Makefile` | Public local/CI command contract for the stages above |
-| `src/lib/ci-required-path.ts` | Required-path inventory + Wave CI-1 job-graph contract (`CI_REQUIRED_JOB_GRAPH`: suite membership per job, `static-export` → `integration`/`budget` edges, `ci-gate` aggregate). `make ci` prerequisites remain sequential. |
-| `.github/workflows/ci.yml` | Required PR/push parallel job graph + `ci-gate` (see `CI_REQUIRED_JOB_GRAPH`); does not call `make ci` |
+| `src/lib/ci-required-path.ts` | Required-path inventory + Wave CI-1 job-graph contract (`CI_REQUIRED_JOB_GRAPH`: suite membership per job, `static-export` → `integration`/`budget` edges, `ci-gate` aggregate) plus Wave CI-2 trusted artifact handoff (`CI_STATIC_EXPORT_ARTIFACT_HANDOFF`: stable name `static-export-out`, producer `static-export`, consumers `integration`/`budget`). Helpers distinguish `needs: static-export` ordering (`ciJobDependsOnStaticExportJob`) from artifact consumption / forbidden local rebuild (`ciJobConsumesStaticExportArtifact`, `ciJobForbidsLocalStaticExportRebuild`, `ciJobMustRebuildStaticExportLocally`). `make ci` prerequisites remain sequential (local path builds once; no Actions artifact). |
+| `.github/workflows/ci.yml` | Required PR/push parallel job graph + `ci-gate` (see `CI_REQUIRED_JOB_GRAPH`); Wave CI-2: `static-export` uploads Actions artifact `static-export-out` (`out/`), `integration`/`budget` download it and must not `make build`. Contract tests in `src/lib/ci-required-path.test.ts` and `src/tests/ci/github-actions-make-ci.test.ts` assert upload/download steps + forbidden consumer rebuild. Does not call `make ci` |
 | `.github/workflows/deploy-pages.yml` | Main-branch Pages validate + deploy; artifact path `out/` |
-| `docs/operations.md` | Maintainer-facing CI/deploy posture; local static-export benchmark command, summary field contract (including non-identifying machine metadata), agreed reference machine, and recorded optimize-next-static-export evidence (clean <=180s, warm reuse, determinism) |
+| `docs/operations.md` | Maintainer-facing CI/deploy posture; Wave CI-2 Actions artifact handoff (`static-export-out`) vs sequential local `make ci` (no Actions artifact); local static-export benchmark command, summary field contract (including non-identifying machine metadata), agreed reference machine, and recorded optimize-next-static-export evidence (clean <=180s, warm reuse, determinism) |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`, `benchmark:static-export`) |
 | `src/lib/build/static-export-profile.ts` | Optional static-export stage timing contract (`PROFILE_STATIC_EXPORT=1`); off by default; summary includes `mode=`, stage timings, cache reasons, scale counts, and non-identifying machine metadata (`osFamily`, `cpuArchitecture`, `logicalCpuCount`, `runtimeName`, `runtimeVersion`) |
 | `src/lib/build/static-export-profile-diagnostics.ts` | Cache artifact snapshot + scale-count collectors (routes/locales/chunks); content-runtime hit/miss from fingerprint store + contracted output presence; fumadocs hit/miss from immutable snapshot store + `.source` presence; Next compilation hit/miss from usable non-empty `.next/cache` (clean mode always `miss:clean-mode-regenerates`); search-index emission hit/miss from `.source/.export-search-parsed-documents.json` presence (clean mode always `miss:clean-mode-regenerates`); missing diagnostics degrade to `not-available` |
@@ -244,9 +245,13 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
   **CI** is the Wave CI-1 parallel job graph (`check`, `unit-tests`,
   `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`,
   `static-export`, `integration`, `budget`) plus aggregate **ci-gate**
-  (membership/edges in `src/lib/ci-required-path.ts`). Deploy-pages jobs remain
-  `Canonical validation` and `Deploy to GitHub Pages`. Local full path stays
-  sequential (`make ci`); deploy-pages stays a separate Pages-focused subset.
+  (membership/edges in `src/lib/ci-required-path.ts`), with Wave CI-2 trusted
+  artifact handoff: `static-export` uploads `static-export-out` (`out/`);
+  `integration` / `budget` download it and must not rebuild. Deploy-pages jobs
+  remain `Canonical validation` and `Deploy to GitHub Pages`. Local full path
+  stays sequential (`make ci`, no Actions artifact); deploy-pages stays a
+  separate Pages-focused subset. Do not treat CI-3 Playwright scoping or CI-4
+  shards as landed.
 - Source-SHA → Pages proof for maintainers lives in
   `docs/operations.md` under **Commit-SHA traceability**: record
   `merge_sha` + **CI**/**ci-gate** run + **Deploy GitHub Pages**

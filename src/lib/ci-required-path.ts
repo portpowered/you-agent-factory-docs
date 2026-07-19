@@ -1,12 +1,17 @@
 /**
  * Aligned required path for `make ci` and `.github/workflows/ci.yml`
- * (restore-required-tests-gates-007 → Wave CI-1 job graph).
+ * (restore-required-tests-gates-007 → Wave CI-1 job graph → Wave CI-2
+ * static-export artifact handoff).
  *
  * GitHub Actions CI is modeled as a required job graph: suite membership per
- * job plus real ordering edges (parallel peers allowed). `make ci`
+ * job plus real ordering edges (parallel peers allowed). Wave CI-2 adds a
+ * trusted Actions artifact handoff so `integration` / `budget` consume the
+ * `static-export` job’s `out/` instead of rebuilding it. `make ci`
  * prerequisites stay the sequential local reproduction path and must cover the
  * same shared restored suites — no workflow-only required gate that `make ci`
- * skips, and no `make ci`-only required suite that CI never runs.
+ * skips, and no `make ci`-only required suite that CI never runs. Local
+ * `make ci` still builds once then runs integration/budget on one machine; it
+ * does not use Actions artifacts.
  *
  * Deploy-pages stays a Pages-focused subset (check / test / build / guard /
  * budget) and is not required to mirror the full verify path.
@@ -127,9 +132,11 @@ const CI_REQUIRED_CHILD_JOB_IDS = [
 ] as const satisfies readonly Exclude<CiRequiredJobId, "ci-gate">[];
 
 /**
- * Required Actions job graph for Wave CI-1.
+ * Required Actions job graph for Wave CI-1 (+ CI-2 artifact consumers).
  * Independent peers have no serial edges between them; `integration` and
- * `budget` require `static-export`; `ci-gate` needs every required child job.
+ * `budget` require `static-export` (ordering) and consume the trusted
+ * static-export Actions artifact (Wave CI-2 — not a second local export);
+ * `ci-gate` needs every required child job.
  */
 export const CI_REQUIRED_JOB_GRAPH = [
   { id: "check", makeTargets: ["check"], needs: [] },
@@ -186,6 +193,45 @@ export const CI_REQUIRED_ORDERING_EDGES = [
   readonly to: CiRequiredJobId;
 }[];
 
+/**
+ * Stable Actions artifact identity for the trusted static-export `out/` handoff
+ * (Wave CI-2). Producer uploads after `make build`; consumers download and must
+ * not run a second full export.
+ */
+export const CI_STATIC_EXPORT_ARTIFACT_NAME = "static-export-out" as const;
+
+/** Workspace path the artifact restores for consumer gates. */
+export const CI_STATIC_EXPORT_ARTIFACT_PATH = "out" as const;
+
+/** Jobs that download and run gates against the trusted static-export artifact. */
+export const CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS = [
+  "integration",
+  "budget",
+] as const satisfies readonly CiRequiredJobId[];
+
+/**
+ * Make targets that constitute a full static-export rebuild. Consumer jobs must
+ * not invoke these after Wave CI-2 (they consume the Actions artifact instead).
+ */
+export const CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS = [
+  "build",
+  "build-export",
+] as const;
+
+/**
+ * Wave CI-2 trusted static-export artifact handoff contract.
+ * Distinct from `needs: static-export` ordering: consumers depend on the
+ * producer job *and* must reuse its uploaded `out/`, not rebuild locally.
+ */
+export const CI_STATIC_EXPORT_ARTIFACT_HANDOFF = {
+  artifactName: CI_STATIC_EXPORT_ARTIFACT_NAME,
+  path: CI_STATIC_EXPORT_ARTIFACT_PATH,
+  producerJobId: "static-export",
+  consumerJobIds: CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS,
+  forbiddenConsumerMakeTargets:
+    CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS,
+} as const;
+
 /** Make targets owned by the job graph (excludes per-job `setup`). */
 export function ciRequiredJobGraphMakeTargets(): readonly string[] {
   return CI_REQUIRED_SUITE_JOBS.flatMap((job) => [...job.makeTargets]);
@@ -205,4 +251,50 @@ export function ciRequiredJobNeeds(
   jobId: CiRequiredJobId,
 ): readonly CiRequiredJobId[] {
   return getCiRequiredJob(jobId).needs;
+}
+
+/**
+ * Ordering-only: true when the job has a `needs` edge on `static-export`.
+ * Does not imply the job rebuilds `out/` locally.
+ */
+export function ciJobDependsOnStaticExportJob(jobId: CiRequiredJobId): boolean {
+  return ciRequiredJobNeeds(jobId).includes("static-export");
+}
+
+/**
+ * Artifact consumption: true when the job is contracted to download and use the
+ * trusted static-export Actions artifact (Wave CI-2).
+ */
+export function ciJobConsumesStaticExportArtifact(
+  jobId: CiRequiredJobId,
+): boolean {
+  return (
+    CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds as readonly string[]
+  ).includes(jobId);
+}
+
+/**
+ * True when the job is forbidden from running a second full static export.
+ * Wave CI-2: every artifact consumer must return true; peer/producer jobs that
+ * do not consume the artifact return false (they either produce via `build` or
+ * never touch `out/`).
+ */
+export function ciJobForbidsLocalStaticExportRebuild(
+  jobId: CiRequiredJobId,
+): boolean {
+  return ciJobConsumesStaticExportArtifact(jobId);
+}
+
+/**
+ * Distinguishes CI-1-style “depends on static-export, rebuild out/ locally”
+ * from CI-2 “depends on static-export, consume the trusted artifact”.
+ * Returns true only for the forbidden rebuild-locally posture.
+ */
+export function ciJobMustRebuildStaticExportLocally(
+  jobId: CiRequiredJobId,
+): boolean {
+  return (
+    ciJobDependsOnStaticExportJob(jobId) &&
+    !ciJobConsumesStaticExportArtifact(jobId)
+  );
 }
