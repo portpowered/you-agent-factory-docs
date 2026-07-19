@@ -125,6 +125,16 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   Tags (`TagPillList`), or References (`CitationList`). Shared proofs live in
   `published-route-states.test.tsx` (assert removed section keys + headings
   absent; use `openingSummary` / inventory success for static no-host safety).
+- Browser-verify the trimmed shape after `bun run build` with
+  `bun run start -- -p <3100-3999>` (unique port), then fetch sampled routes
+  (one inventory page, events, one schema) and assert: section ids
+  `how-to-use` / `limits-and-assumptions` / `related` / `tags` / `references`
+  absent; primary projection markers present
+  (`data-inventory-state="success"`, `data-events-status="success"`,
+  `data-schema-status="ready"`). Confirm `/docs/references/api` still keeps
+  How To Use / Limits chrome and Program documentation sidebar grouping is
+  unchanged. Kill the server before exit; prefer a Bun fetch script over shell
+  functions when PATH is unreliable in nested functions.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
 - Each new references page needs its own static
