@@ -37,7 +37,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the web operator-defaults and global / named-factories reference. It is not a sync of packaged CLI docs, not the factory.json topology overview, not workers, workstations, or resources field dumps, not packaged @you/* invocation deep dives, not factory-session, and not submitting-work. Use the related factories and documentation links for factory.json topology, CLI command surfaces, and worker field contracts. Operator-default startup failures stay short here: missing config continues with no defaults; malformed config, unsupported providers, and DEFAULT without a concrete lower-precedence provider fail before dispatch. Exhaustive You-config and Factory field inventories live on the schema and API reference pages linked from the schema sections."
+      "body": "This page is the web operator-defaults and global / named-factories reference. It is not a sync of packaged CLI docs, not the factory.json topology overview, not workers, workstations, or resources field dumps, not packaged @you/* invocation deep dives, not factory-session, and not submitting-work. Use the related factories and documentation links for factory.json topology, CLI command surfaces, and worker field contracts. Operator-default startup failures stay short here: missing config continues with no defaults; malformed config, unsupported providers, and DEFAULT without a concrete lower-precedence provider fail before dispatch. Exhaustive System config and Factory field inventories live on the schema and API reference pages linked from the schema sections."
     },
     "related": {
       "title": "Related To"
@@ -86,7 +86,7 @@
     "failureDefaultWithoutProviderBehavior": "Fails before dispatch with resolution guidance",
     "failureAuthoredWorkerFieldsCondition": "Authored worker modelProvider or model",
     "failureAuthoredWorkerFieldsBehavior": "Operator defaults do not override authored values",
-    "fullYouConfigSchema": "Full You-config schema",
+    "fullSystemConfigSchema": "Full System config schema",
     "fullFactorySchema": "Full Factory schema",
     "fullFactoryApi": "Factory API reference",
     "configurationDocs": "Configuration (factory.json topology)",
