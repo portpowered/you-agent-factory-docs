@@ -28,9 +28,9 @@ export type CliCommandReferenceProps = {
 };
 
 /**
- * Visible disclosure when structured flags/arguments are unavailable from
- * the published CLI contract. Optional title/description override defaults
- * from `cli-capability.ts` — never used to invent option rows.
+ * Under-construction notice when structured flags/arguments are not yet
+ * published. Optional title/description override defaults from
+ * `cli-capability.ts` — never used to invent option rows.
  */
 export type CliCapabilityNoticeProps = {
   title?: string;

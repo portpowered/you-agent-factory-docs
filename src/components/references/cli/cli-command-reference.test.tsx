@@ -9,8 +9,8 @@ import {
   cliCommandInventoryIdentities,
 } from "./CliCommandReference";
 import {
-  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION,
-  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE,
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
   type CliCommandWithStructuredOptions,
   cliCommandHasStructuredOptions,
 } from "./cli-capability";
@@ -136,7 +136,7 @@ describe("CliCommandReference", () => {
     expect(screen.queryByText("Not published on this projection")).toBeNull();
   });
 
-  test("shows CliCapabilityNotice when structured flags/arguments are absent", () => {
+  test("shows under-construction Flags and arguments when structured options are absent", () => {
     const { container } = render(
       <CliCommandReference command={fixtureCommand()} />,
     );
@@ -145,12 +145,21 @@ describe("CliCommandReference", () => {
       container.querySelector("[data-cli-capability-notice]"),
     ).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+      container.querySelector(
+        '[data-cli-capability="structured-options-under-construction"]',
+      ),
     ).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION),
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
     ).toBeTruthy();
     expect(screen.getByText("Flags and arguments")).toBeTruthy();
+    // Old apology panel is gone.
+    expect(
+      screen.queryByText("Structured flags and arguments unavailable"),
+    ).toBeNull();
     // Visible status chrome — not hover-only.
     expect(screen.getByRole("status")).toBeTruthy();
     // Does not invent option rows.
@@ -160,7 +169,7 @@ describe("CliCommandReference", () => {
     expect(screen.queryByText("Conflicts")).toBeNull();
   });
 
-  test("hides CliCapabilityNotice when structured options exist on the projection", () => {
+  test("hides under-construction notice when structured options exist on the projection", () => {
     const enriched: CliCommandWithStructuredOptions = {
       ...fixtureCommand(),
       flags: [{ name: "--dry-run" }],
@@ -170,7 +179,7 @@ describe("CliCommandReference", () => {
 
     expect(container.querySelector("[data-cli-capability-notice]")).toBeNull();
     expect(
-      screen.queryByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+      screen.queryByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
     ).toBeNull();
     // Still does not invent rendered option rows in this story.
     expect(screen.queryByText("--dry-run")).toBeNull();
@@ -206,21 +215,24 @@ describe("cliCommandHasStructuredOptions", () => {
 });
 
 describe("CliCapabilityNotice", () => {
-  test("renders accessible visible disclosure copy", () => {
+  test("renders accessible under-construction treatment", () => {
     const { container } = render(<CliCapabilityNotice />);
 
     expect(
       container.querySelector(
-        '[data-cli-capability="structured-options-unavailable"]',
+        '[data-cli-capability="structured-options-under-construction"]',
       ),
     ).toBeTruthy();
     expect(screen.getByRole("status")).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
     ).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION),
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
     ).toBeTruthy();
+    expect(
+      screen.queryByText("Structured flags and arguments unavailable"),
+    ).toBeNull();
   });
 });
 

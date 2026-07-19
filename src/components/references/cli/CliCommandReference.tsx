@@ -12,7 +12,7 @@ import type { CliCommandReferenceProps } from "./types";
  *
  * Card body keep-list: command-path header (with stable-anchor copy), short
  * description, long description when distinct, example when present, and the
- * Flags and arguments capability notice when structured options are absent.
+ * Flags and arguments under-construction notice when structured options are absent.
  * Does not invent flags, arguments, defaults, or conflicts. Does not render
  * family/package/source badge chrome or duplicated identity / visibility /
  * runnable / handler metadata rows.

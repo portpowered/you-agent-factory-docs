@@ -9,8 +9,8 @@ export type {
   CliCommandWithStructuredOptions,
 } from "./cli-capability";
 export {
-  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION,
-  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE,
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
   cliCommandHasStructuredOptions,
 } from "./cli-capability";
 export {
