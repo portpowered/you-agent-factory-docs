@@ -105,12 +105,6 @@ describe("events reference page published-route states", () => {
       const eventCorpus = String(
         loadedPage.messages.sections?.eventCorpus?.body ?? "",
       );
-      const howToUse = String(
-        loadedPage.messages.sections?.howToUse?.body ?? "",
-      );
-      const limits = String(
-        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-      );
       expect(whatItCovers).toMatch(/FactoryEvent and FactoryResponseEvent/i);
       expect(whatItCovers).toMatch(/stream-role labeling/i);
       expect(whatItCovers).toMatch(
@@ -127,27 +121,23 @@ describe("events reference page published-route states", () => {
       expect(eventCorpus).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
-      expect(howToUse).toMatch(/durable event-stream lookup/i);
-      expect(howToUse).toMatch(/static SSE frame examples/i);
-      expect(limits).toMatch(/static hybrid events reference/i);
-      expect(limits).toMatch(/does not open a live EventSource/i);
-      expect(limits).toMatch(/wire-shape fixtures only/i);
-      expect(limits).toMatch(/does not re-implement the API OpenAPI UI/i);
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
       expect(keyConcepts).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
-      expect(howToUse).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
+      expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+      expect(
+        loadedPage.messages.sections?.limitsAndAssumptions,
+      ).toBeUndefined();
+      expect(loadedPage.messages.sections?.related).toBeUndefined();
+      expect(loadedPage.messages.sections?.tags).toBeUndefined();
+      expect(loadedPage.messages.sections?.references).toBeUndefined();
+      expect(loadedPage.messages.links).toBeUndefined();
+      expect(loadedPage.messages.openingSummary).toMatch(
+        /without opening a live Factory connection/i,
       );
-      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
-
-      const links = loadedPage.messages.links as
-        | Record<string, string>
-        | undefined;
-      expect(links?.apiReference).toMatch(/API reference/i);
 
       render(
         <main>
@@ -169,20 +159,14 @@ describe("events reference page published-route states", () => {
       expect(
         screen.getByRole("heading", { name: "Event Corpus" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Limits And Assumptions" }),
-      ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
-
-      const related = document.getElementById("related");
-      expect(related).toBeTruthy();
-      const relatedQueries = within(related as HTMLElement);
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "API reference" })
-          .getAttribute("href"),
-      ).toBe("/docs/references/api");
+        screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+      ).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
 
       const mount = screen.getByTestId("events-corpus-mount");
       expect(mount.getAttribute("data-events-page-path")).toBe(
