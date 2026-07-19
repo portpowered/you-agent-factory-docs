@@ -116,26 +116,16 @@ function renderHeaderWithNavigation(
 
 /** Product-order CLI primary destinations locked for the you-agent-factory shell. */
 const CLI_PRIMARY_NAV_LABELS = [
-  "Home",
-  "Guides",
-  "Docs",
-  "References",
-  "Factories",
-  "Workers",
-  "Workstations",
-  "Glossary",
   "Blog",
+  "Docs",
+  "Guides",
+  "References",
 ] as const;
 const CLI_PRIMARY_NAV_HREFS = [
-  "/",
-  "/docs/guides",
-  "/browse",
-  "/docs/references",
-  "/docs/factories",
-  "/docs/workers",
-  "/docs/workstations",
-  "/docs/glossary",
   "/blog",
+  "/browse",
+  "/docs/guides",
+  "/docs/references",
 ] as const;
 
 describe("DocsHeader", () => {
@@ -207,15 +197,10 @@ describe("DocsHeader", () => {
 
     const expectedItems = getPrimaryNavItems(messages);
     expect(expectedItems.map((item) => item.href)).toEqual([
-      "/",
-      "/docs/guides",
-      "/browse",
-      "/docs/references",
-      "/docs/factories",
-      "/docs/workers",
-      "/docs/workstations",
-      "/docs/glossary",
       "/blog",
+      "/browse",
+      "/docs/guides",
+      "/docs/references",
     ]);
 
     for (const item of expectedItems) {
@@ -463,26 +448,16 @@ describe("DocsHeader", () => {
 
     const expectedItems = getPrimaryNavItems(messages);
     expect(expectedItems.map((item) => item.label)).toEqual([
-      "Home",
-      "Guides",
-      "Docs",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
-      "Glossary",
       "Blog",
+      "Docs",
+      "Guides",
+      "References",
     ]);
     expect(expectedItems.map((item) => item.href)).toEqual([
-      "/",
-      "/docs/guides",
-      "/browse",
-      "/docs/references",
-      "/docs/factories",
-      "/docs/workers",
-      "/docs/workstations",
-      "/docs/glossary",
       "/blog",
+      "/browse",
+      "/docs/guides",
+      "/docs/references",
     ]);
 
     const desktopNavMatch = html.match(
@@ -497,8 +472,16 @@ describe("DocsHeader", () => {
       expect(desktopNav).toContain(`>${item.label}<`);
     }
 
+    expect(desktopNav).not.toContain(`>${messages.nav.home}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.factories}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.workers}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.workstations}<`);
+    expect(desktopNav).not.toContain(`>${messages.nav.glossary}<`);
     expect(desktopNav).not.toContain(`>${messages.nav.topology}<`);
     expect(desktopNav).not.toContain(`>${messages.nav.timeline}<`);
+    expect(desktopNav).not.toContain('href="/"');
+    expect(desktopNav).not.toContain('href="/docs/factories"');
+    expect(desktopNav).not.toContain('href="/docs/glossary"');
     expect(desktopNav).not.toContain('href="/topology"');
     expect(desktopNav).not.toContain('href="/docs/timeline"');
     expect(html).toContain("flex-wrap");
@@ -628,10 +611,10 @@ describe("DocsHeader", () => {
       expect(desktopNavMatch?.[1]).toContain(`href="${escapedHref}"`);
       expect(desktopNavMatch?.[1]).toContain(`>${item.label}<`);
     }
-    expect(html).toContain(">Trang chủ<");
-    expect(html).toContain(">Hướng dẫn<");
-    expect(html).toContain(">Tài liệu<");
-    expect(html).toContain(">Thuật ngữ<");
+    expect(desktopNavMatch?.[1]).toContain(">Hướng dẫn<");
+    expect(desktopNavMatch?.[1]).toContain(">Tài liệu<");
+    expect(desktopNavMatch?.[1]).not.toContain(">Trang chủ<");
+    expect(desktopNavMatch?.[1]).not.toContain(">Thuật ngữ<");
     expect(html).not.toContain(">Dòng thời gian<");
     expect(html).not.toContain(">Bản đồ<");
   });
@@ -668,8 +651,8 @@ describe("DocsHeader", () => {
       expect(link.className).toContain(PRIMARY_NAV_MOBILE_LINK_CLASS);
     }
     expect(
-      within(drawer as HTMLElement).getByRole("link", { name: "Trang chủ" }),
-    ).toBeTruthy();
+      within(drawer as HTMLElement).queryByRole("link", { name: "Trang chủ" }),
+    ).toBeNull();
     expect(
       within(drawer as HTMLElement).getByRole("link", {
         name: "Hướng dẫn",
@@ -680,6 +663,11 @@ describe("DocsHeader", () => {
         name: "Tài liệu",
       }),
     ).toBeTruthy();
+    expect(
+      within(drawer as HTMLElement).queryByRole("link", {
+        name: "Thuật ngữ",
+      }),
+    ).toBeNull();
     expect(
       within(drawer as HTMLElement).queryByRole("link", {
         name: "Dòng thời gian",
@@ -706,10 +694,10 @@ describe("DocsHeader", () => {
     );
     expect(drawer).toBeTruthy();
 
-    const homeLink = within(drawer as HTMLElement).getByRole("link", {
-      name: "Trang chủ",
+    const docsLink = within(drawer as HTMLElement).getByRole("link", {
+      name: "Tài liệu",
     });
-    fireEvent.click(homeLink);
+    fireEvent.click(docsLink);
 
     expect(menuButton.getAttribute("aria-expanded")).toBe("false");
     expect(
@@ -954,10 +942,10 @@ describe("DocsHeader", () => {
       expect(desktopNavMatch?.[1]).toContain(`href="${escapedHref}"`);
       expect(desktopNavMatch?.[1]).toContain(`>${item.label}<`);
     }
-    expect(html).toContain(">首页<");
-    expect(html).toContain(">指南<");
-    expect(html).toContain(">文档<");
-    expect(html).toContain(">术语表<");
+    expect(desktopNavMatch?.[1]).toContain(">指南<");
+    expect(desktopNavMatch?.[1]).toContain(">文档<");
+    expect(desktopNavMatch?.[1]).not.toContain(">首页<");
+    expect(desktopNavMatch?.[1]).not.toContain(">术语表<");
   });
 
   test("keeps the language and GitHub header controls on the same outline button contract", async () => {

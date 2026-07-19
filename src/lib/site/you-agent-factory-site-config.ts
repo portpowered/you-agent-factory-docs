@@ -13,8 +13,12 @@ export const YOU_AGENT_FACTORY_REPOSITORY_URL =
  * Brand/repo, primary nav/route placeholders, collections, and home featured
  * links are CLI docs shaped. Home featured links point at guides, docs/browse,
  * glossary, and blog route surfaces (not Atlas module pages).
- * Search is a configured route surface (header trigger) but not a primary
- * nav item, to avoid duplicating the header search control.
+ * Header primary nav is Blog / Docs / Guides / References only; Home is the
+ * brand/logo destination, not a text nav chip. Search is a configured route
+ * surface (header trigger) but not a primary nav item, to avoid duplicating
+ * the header search control. Family destinations (factories / workers /
+ * workstations) and glossary remain as route surfaces for page routes and
+ * discovery wiring, but are not primary-nav text items.
  */
 export const youAgentFactorySiteConfig = {
   brand: {
@@ -30,23 +34,18 @@ export const youAgentFactorySiteConfig = {
     glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
     search: { surface: "search" },
-    // W15 family destinations: first-class primary-nav members in stable
-    // relative order references → factories → workers → workstations.
+    // Family destinations remain as route surfaces for page routes; only
+    // references stays in header primary nav with Blog / Docs / Guides.
     references: { surface: "docs-page", slug: "references" },
     factories: { surface: "docs-page", slug: "factories" },
     workers: { surface: "docs-page", slug: "workers" },
     workstations: { surface: "docs-page", slug: "workstations" },
   },
   primaryNav: [
-    { routeSurface: "home", labelKey: "home" },
-    { routeSurface: "guides", labelKey: "guides" },
-    { routeSurface: "docs", labelKey: "docs" },
-    { routeSurface: "references", labelKey: "references" },
-    { routeSurface: "factories", labelKey: "factories" },
-    { routeSurface: "workers", labelKey: "workers" },
-    { routeSurface: "workstations", labelKey: "workstations" },
-    { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
+    { routeSurface: "docs", labelKey: "docs" },
+    { routeSurface: "guides", labelKey: "guides" },
+    { routeSurface: "references", labelKey: "references" },
   ],
   collections: SITE_COLLECTION_FAMILIES.map((family) => ({ family })),
   homeFeaturedLinks: [

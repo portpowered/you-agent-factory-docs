@@ -14,35 +14,26 @@ import type { SiteConfig } from "@/lib/site/site-config.contract";
 
 /** Product-order CLI primary destinations for the you-agent-factory shell. */
 const CLI_PRIMARY_NAV_HREFS = [
-  "/",
-  "/docs/guides",
+  "/blog",
   "/browse",
+  "/docs/guides",
   "/docs/references",
+] as const;
+
+const CLI_PRIMARY_NAV_LABELS = [
+  "Blog",
+  "Docs",
+  "Guides",
+  "References",
+] as const;
+
+/** Destinations that must stay out of header primary nav text items. */
+const REMOVED_PRIMARY_NAV_HREFS = [
+  "/",
   "/docs/factories",
   "/docs/workers",
   "/docs/workstations",
   "/docs/glossary",
-  "/blog",
-] as const;
-
-const CLI_PRIMARY_NAV_LABELS = [
-  "Home",
-  "Guides",
-  "Docs",
-  "References",
-  "Factories",
-  "Workers",
-  "Workstations",
-  "Glossary",
-  "Blog",
-] as const;
-
-/** Stable relative order of W15 family destinations inside primary nav. */
-const W15_FAMILY_NAV_HREFS = [
-  "/docs/references",
-  "/docs/factories",
-  "/docs/workers",
-  "/docs/workstations",
 ] as const;
 
 describe("getPrimaryNavItems", () => {
@@ -55,16 +46,14 @@ describe("getPrimaryNavItems", () => {
       ...CLI_PRIMARY_NAV_LABELS,
     ]);
     expect(items.map((item) => item.label)).toEqual([
-      messages.nav.home,
-      messages.nav.guides,
-      messages.nav.docs,
-      messages.nav.references,
-      messages.nav.factories,
-      messages.nav.workers,
-      messages.nav.workstations,
-      messages.nav.glossary,
       messages.nav.blog,
+      messages.nav.docs,
+      messages.nav.guides,
+      messages.nav.references,
     ]);
+    for (const href of REMOVED_PRIMARY_NAV_HREFS) {
+      expect(items.some((item) => item.href === href)).toBe(false);
+    }
     expect(items.some((item) => item.href === "/topology")).toBe(false);
     expect(items.some((item) => item.href === "/docs/timeline")).toBe(false);
     expect(items.some((item) => item.label === messages.nav.topology)).toBe(
@@ -75,15 +64,17 @@ describe("getPrimaryNavItems", () => {
     );
   });
 
-  it("keeps W15 family destinations in stable relative order", async () => {
+  it("omits Home text chip and W15/family/glossary destinations from primary nav", async () => {
     const messages = await loadUiMessages();
-    const familyHrefs = getPrimaryNavItems(messages)
-      .map((item) => item.href)
-      .filter((href) =>
-        (W15_FAMILY_NAV_HREFS as readonly string[]).includes(href),
-      );
+    const hrefs = getPrimaryNavItems(messages).map((item) => item.href);
+    const labels = getPrimaryNavItems(messages).map((item) => item.label);
 
-    expect(familyHrefs).toEqual([...W15_FAMILY_NAV_HREFS]);
+    expect(hrefs).not.toContain("/");
+    expect(labels).not.toContain(messages.nav.home);
+    expect(labels).not.toContain(messages.nav.factories);
+    expect(labels).not.toContain(messages.nav.workers);
+    expect(labels).not.toContain(messages.nav.workstations);
+    expect(labels).not.toContain(messages.nav.glossary);
   });
 
   it("can emit vietnamese-prefixed navigation routes from the shared locale contract", async () => {
@@ -91,37 +82,22 @@ describe("getPrimaryNavItems", () => {
     const items = getPrimaryNavItems(messages, "vi");
 
     expect(items.map((item) => item.href)).toEqual([
-      "/vi",
-      "/vi/docs/guides",
-      "/vi/browse",
-      "/vi/docs/references",
-      "/vi/docs/factories",
-      "/vi/docs/workers",
-      "/vi/docs/workstations",
-      "/vi/docs/glossary",
       "/vi/blog",
+      "/vi/browse",
+      "/vi/docs/guides",
+      "/vi/docs/references",
     ]);
     expect(items.map((item) => item.label)).toEqual([
-      messages.nav.home,
-      messages.nav.guides,
+      messages.nav.blog,
       messages.nav.docs,
+      messages.nav.guides,
       messages.nav.references,
-      messages.nav.factories,
-      messages.nav.workers,
-      messages.nav.workstations,
-      messages.nav.glossary,
-      messages.nav.blog,
     ]);
     expect(items.map((item) => item.label)).toEqual([
-      "Trang chủ",
-      "Hướng dẫn",
-      "Tài liệu",
-      messages.nav.references,
-      messages.nav.factories,
-      messages.nav.workers,
-      messages.nav.workstations,
-      "Thuật ngữ",
       messages.nav.blog,
+      "Tài liệu",
+      "Hướng dẫn",
+      messages.nav.references,
     ]);
   });
 
@@ -132,55 +108,35 @@ describe("getPrimaryNavItems", () => {
     const zhCnItems = getPrimaryNavItems(zhCnMessages, "zh-CN");
 
     expect(jaItems.map((item) => item.href)).toEqual([
-      "/ja",
-      "/ja/docs/guides",
-      "/ja/browse",
-      "/ja/docs/references",
-      "/ja/docs/factories",
-      "/ja/docs/workers",
-      "/ja/docs/workstations",
-      "/ja/docs/glossary",
       "/ja/blog",
+      "/ja/browse",
+      "/ja/docs/guides",
+      "/ja/docs/references",
     ]);
     expect(jaItems.map((item) => item.label)).toEqual([
-      "ホーム",
-      "ガイド",
-      "ドキュメント",
-      jaMessages.nav.references,
-      jaMessages.nav.factories,
-      jaMessages.nav.workers,
-      jaMessages.nav.workstations,
-      "用語集",
       jaMessages.nav.blog,
+      "ドキュメント",
+      "ガイド",
+      jaMessages.nav.references,
     ]);
 
     expect(zhCnItems.map((item) => item.href)).toEqual([
-      "/zh-CN",
-      "/zh-CN/docs/guides",
-      "/zh-CN/browse",
-      "/zh-CN/docs/references",
-      "/zh-CN/docs/factories",
-      "/zh-CN/docs/workers",
-      "/zh-CN/docs/workstations",
-      "/zh-CN/docs/glossary",
       "/zh-CN/blog",
+      "/zh-CN/browse",
+      "/zh-CN/docs/guides",
+      "/zh-CN/docs/references",
     ]);
     expect(zhCnItems.map((item) => item.label)).toEqual([
-      "首页",
-      "指南",
-      "文档",
-      zhCnMessages.nav.references,
-      zhCnMessages.nav.factories,
-      zhCnMessages.nav.workers,
-      zhCnMessages.nav.workstations,
-      "术语表",
       zhCnMessages.nav.blog,
+      "文档",
+      "指南",
+      zhCnMessages.nav.references,
     ]);
     expect(zhCnMessages.nav.guides).not.toBe("Guides");
     expect(zhCnMessages.nav.docs).not.toBe("Docs");
   });
 
-  it("resolves primary nav home/docs/blog under project-site base path without changing Link hrefs", async () => {
+  it("resolves primary nav docs/blog under project-site base path without changing Link hrefs", async () => {
     const messages = await loadUiMessages();
     const items = getPrimaryNavItems(messages);
     const hrefs = items.map((item) => item.href);
@@ -192,9 +148,9 @@ describe("getPrimaryNavItems", () => {
       hrefs,
       BUILT_APP_GITHUB_PAGES_BASE_PATH,
     );
-    expect(projectSiteHrefs[0]).toBe("/you-agent-factory-docs/");
-    expect(projectSiteHrefs[1]).toBe("/you-agent-factory-docs/docs/guides");
-    expect(projectSiteHrefs[8]).toBe("/you-agent-factory-docs/blog");
+    expect(projectSiteHrefs[0]).toBe("/you-agent-factory-docs/blog");
+    expect(projectSiteHrefs[1]).toBe("/you-agent-factory-docs/browse");
+    expect(projectSiteHrefs[3]).toBe("/you-agent-factory-docs/docs/references");
     expect(resolveSiteNavigationHrefs(hrefs, "")).toEqual(hrefs);
   });
 

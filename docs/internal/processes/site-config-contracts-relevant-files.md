@@ -61,32 +61,34 @@ contract for the you-agent-factory CLI docs product.
 
 ## Primary nav / route placeholders
 
-- Default primary nav is Home, Guides, Docs, References, Factories, Workers,
-  Workstations, Glossary, Blog (no Topology or Timeline). Search is a configured
+- Default primary nav is Blog, Docs, Guides, References only (no Home text
+  chip, Factories, Workers, Workstations, Glossary, Topology, or Timeline).
+  Home remains reachable via the header brand/logo. Search is a configured
   `routeSurfaces.search` entry for the header trigger, not a primary nav item
   (avoids duplicating the search control).
-- W15 family destinations are configured as `routeSurfaces.references` /
+- W15 family destinations remain configured as `routeSurfaces.references` /
   `factories` / `workers` / `workstations` (`docs-page` slugs matching each
-  family index) and are **members of** `primaryNav` in that relative order
-  (references → factories → workers → workstations), placed after Docs and
-  before Glossary.
+  family index) for page routes and discovery; only `references` stays in
+  header `primaryNav` (after Guides). Factories / workers / workstations are
+  not header primary-nav text items.
 - Header search chrome copy (`messages.search.placeholder` / open / shortcut in
   `common.json`) must not say Model Atlas; placeholder identifies
   `you-agent-factory` (or neutral CLI docs search).
-- Resolved default hrefs: `/`, `/docs/guides`, `/browse`, `/docs/references`,
-  `/docs/factories`, `/docs/workers`, `/docs/workstations`, `/docs/glossary`,
-  `/blog`. Guides uses `{ surface: "docs-page", slug: "guides" }`; Docs uses
-  `{ surface: "browse" }` as the transitional docs landing placeholder.
-  Family surfaces resolve to `/docs/references`, `/docs/factories`,
-  `/docs/workers`, and `/docs/workstations` (locale-prefixed when localized).
-- Nav label keys `guides` and `docs` live on `NavMessages` / `common.json`.
-  W15 topology also requires `references`, `factories`, `workers`, and
-  `workstations` on `NavMessages` / `common.json` (aligned with family index
-  titles; not the full reference chrome corpus).
-- Exact-order / desktop↔mobile family parity proofs live in
+- Resolved default primary-nav hrefs: `/blog`, `/browse`, `/docs/guides`,
+  `/docs/references`. Guides uses `{ surface: "docs-page", slug: "guides" }`;
+  Docs uses `{ surface: "browse" }` as the transitional docs landing
+  placeholder. Family surfaces still resolve to `/docs/references`,
+  `/docs/factories`, `/docs/workers`, and `/docs/workstations`
+  (locale-prefixed when localized) when used outside primary nav.
+- Nav label keys `blog`, `docs`, `guides`, and `references` live on
+  `NavMessages` / `common.json`. W15 topology still requires `factories`,
+  `workers`, and `workstations` on `NavMessages` / `common.json` (aligned with
+  family index titles; not the full reference chrome corpus) even though those
+  labels are no longer primary-nav chips.
+- Exact-order / desktop↔mobile primary-nav parity proofs live in
   `src/components/layout/w15-primary-nav-family-parity.test.tsx` (and
-  `primary-nav.test.ts` relative-order coverage). Both Primary landmarks must
-  share the same family hrefs/labels/relative order; Search stays a header
+  `primary-nav.test.ts`). Both Primary landmarks must share the same
+  Blog/Docs/Guides/References hrefs/labels/order; Search stays a header
   control only.
 - `DocsHeader` / `getPrimaryNavItems` do not accept Atlas `topologyOptions`;
   canonical docs layout no longer wires topology navigation into the header.
@@ -118,8 +120,9 @@ contract for the you-agent-factory CLI docs product.
 ## Regression test retargeting
 
 - Shell compatibility tests that assert primary nav must expect CLI labels
-  (Home/Guides/Docs/References/Factories/Workers/Workstations/Glossary/Blog)
-  and must not require Topology/Timeline/Tags as primary destinations.
+  (Blog/Docs/Guides/References) and must not require Home-as-text,
+  Factories/Workers/Workstations/Glossary, or Topology/Timeline/Tags as
+  primary destinations.
 - Sidebar/layout brand link assertions should use `YOU` for the header chrome
   mark driven by the default site config (not the full product name). Explorer
   root / home title / SEO may still use `You Agent Factory`.

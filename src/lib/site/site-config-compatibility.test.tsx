@@ -115,27 +115,22 @@ describe("site config primary nav compatibility", () => {
     const items = getPrimaryNavItems(messages, "vi");
 
     expect(items.map((item) => item.href)).toEqual([
-      "/vi",
-      "/vi/docs/guides",
-      "/vi/browse",
-      "/vi/docs/references",
-      "/vi/docs/factories",
-      "/vi/docs/workers",
-      "/vi/docs/workstations",
-      "/vi/docs/glossary",
       "/vi/blog",
+      "/vi/browse",
+      "/vi/docs/guides",
+      "/vi/docs/references",
     ]);
     expect(items.map((item) => item.label)).toEqual([
-      "Trang chủ",
-      messages.nav.guides,
-      messages.nav.docs,
-      messages.nav.references,
-      messages.nav.factories,
-      messages.nav.workers,
-      messages.nav.workstations,
-      "Thuật ngữ",
       messages.nav.blog,
+      messages.nav.docs,
+      messages.nav.guides,
+      messages.nav.references,
     ]);
+    expect(items.some((item) => item.href === "/vi")).toBe(false);
+    expect(items.some((item) => item.href === "/vi/docs/factories")).toBe(
+      false,
+    );
+    expect(items.some((item) => item.href === "/vi/docs/glossary")).toBe(false);
     expect(items.some((item) => item.href === "/vi/topology")).toBe(false);
     expect(items.some((item) => item.href === "/vi/docs/timeline")).toBe(false);
   });

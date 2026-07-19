@@ -30,10 +30,10 @@ export type GetPrimaryNavItemsOptions = {
 };
 
 /**
- * CLI docs primary destinations from site config (Home, Guides, Docs, the W15
- * family destinations References → Factories → Workers → Workstations,
- * Glossary, Blog). Does not accept Atlas topology options — those surfaces
- * are not primary nav items for the you-agent-factory shell.
+ * CLI docs primary destinations from site config (Blog, Docs, Guides,
+ * References). Home is the brand/logo destination, not a text nav chip.
+ * Does not accept Atlas topology options — those surfaces are not primary
+ * nav items for the you-agent-factory shell.
  */
 export function getPrimaryNavItems(
   messages: UiMessages,

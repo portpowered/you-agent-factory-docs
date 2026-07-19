@@ -58,31 +58,38 @@ describe("primary navigation accessibility smoke", () => {
 
     const expectedItems = getPrimaryNavItems(context.messages);
     expect(expectedItems.map((item) => item.label)).toEqual([
-      "Home",
-      "Guides",
-      "Docs",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
-      "Glossary",
       "Blog",
+      "Docs",
+      "Guides",
+      "References",
     ]);
     expect(expectedItems.map((item) => item.href)).toEqual([
-      "/",
-      "/docs/guides",
-      "/browse",
-      "/docs/references",
-      "/docs/factories",
-      "/docs/workers",
-      "/docs/workstations",
-      "/docs/glossary",
       "/blog",
+      "/browse",
+      "/docs/guides",
+      "/docs/references",
     ]);
     for (const item of expectedItems) {
       const link = within(nav).getByRole("link", { name: item.label });
       expect(link.getAttribute("href")).toBe(item.href);
     }
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.home }),
+    ).toBeNull();
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.factories }),
+    ).toBeNull();
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.workers }),
+    ).toBeNull();
+    expect(
+      within(nav).queryByRole("link", {
+        name: context.messages.nav.workstations,
+      }),
+    ).toBeNull();
+    expect(
+      within(nav).queryByRole("link", { name: context.messages.nav.glossary }),
+    ).toBeNull();
     expect(
       within(nav).queryByRole("link", { name: context.messages.nav.topology }),
     ).toBeNull();

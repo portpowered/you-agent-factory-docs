@@ -15,28 +15,20 @@ import {
 } from "@/tests/a11y/render";
 import "@/tests/a11y/mock-navigation";
 
-/** Stable relative W15 family order inside primary navigation. */
-const W15_FAMILY_HREFS = [
+/** Trimmed header primary nav: Blog / Docs / Guides / References. */
+const CLI_PRIMARY_NAV_HREFS = [
+  "/blog",
+  "/browse",
+  "/docs/guides",
   "/docs/references",
-  "/docs/factories",
-  "/docs/workers",
-  "/docs/workstations",
 ] as const;
 
-const W15_FAMILY_LABELS = [
+const CLI_PRIMARY_NAV_LABELS = [
+  "Blog",
+  "Docs",
+  "Guides",
   "References",
-  "Factories",
-  "Workers",
-  "Workstations",
 ] as const;
-
-function familySlice(
-  items: Array<{ href: string; label: string }>,
-): Array<{ href: string; label: string }> {
-  return items.filter((item) =>
-    (W15_FAMILY_HREFS as readonly string[]).includes(item.href),
-  );
-}
 
 function collectPrimaryNavItems(
   container: HTMLElement,
@@ -50,31 +42,36 @@ function collectPrimaryNavItems(
     }));
 }
 
-describe("W15 primary-nav family exact order and desktop/mobile parity", () => {
+describe("primary-nav chrome set and desktop/mobile parity", () => {
   afterEach(() => {
     cleanup();
     restoreFetchMock();
   });
 
-  test("getPrimaryNavItems keeps family destinations in exact relative order", async () => {
+  test("getPrimaryNavItems keeps Blog, Docs, Guides, References in product order", async () => {
     const messages = await loadUiMessages();
-    const familyItems = familySlice(getPrimaryNavItems(messages));
+    const items = getPrimaryNavItems(messages);
 
-    expect(familyItems.map((item) => item.href)).toEqual([...W15_FAMILY_HREFS]);
-    expect(familyItems.map((item) => item.label)).toEqual([
-      ...W15_FAMILY_LABELS,
+    expect(items.map((item) => item.href)).toEqual([...CLI_PRIMARY_NAV_HREFS]);
+    expect(items.map((item) => item.label)).toEqual([
+      ...CLI_PRIMARY_NAV_LABELS,
     ]);
-    expect(
-      getPrimaryNavItems(messages).some((item) => item.href === "/search"),
-    ).toBe(false);
+    expect(items.some((item) => item.href === "/search")).toBe(false);
+    expect(items.some((item) => item.href === "/")).toBe(false);
+    expect(items.some((item) => item.href === "/docs/factories")).toBe(false);
+    expect(items.some((item) => item.href === "/docs/workers")).toBe(false);
+    expect(items.some((item) => item.href === "/docs/workstations")).toBe(
+      false,
+    );
+    expect(items.some((item) => item.href === "/docs/glossary")).toBe(false);
   });
 
-  test("desktop and mobile Primary landmarks expose matching family order, hrefs, and labels", async () => {
+  test("desktop and mobile Primary landmarks expose matching chrome order, hrefs, and labels", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
-    const expectedFamily = familySlice(getPrimaryNavItems(messages));
+    const expectedItems = getPrimaryNavItems(messages);
 
     await act(async () => {
       await renderWithAppProviders(
@@ -88,7 +85,7 @@ describe("W15 primary-nav family exact order and desktop/mobile parity", () => {
 
     // Desktop inline Primary (visible in jsdom; CSS visibility is not asserted here).
     const desktopItems = collectPrimaryNavItems(header as HTMLElement);
-    expect(familySlice(desktopItems)).toEqual(expectedFamily);
+    expect(desktopItems).toEqual(expectedItems);
 
     const menuButton = screen.getByRole("button", { name: messages.nav.menu });
     fireEvent.click(menuButton);
@@ -98,7 +95,7 @@ describe("W15 primary-nav family exact order and desktop/mobile parity", () => {
     expect(panel).toBeTruthy();
 
     const mobileItems = collectPrimaryNavItems(panel as HTMLElement);
-    expect(familySlice(mobileItems)).toEqual(expectedFamily);
+    expect(mobileItems).toEqual(expectedItems);
     expect(mobileItems.map((item) => item.href)).toEqual(
       desktopItems.map((item) => item.href),
     );
@@ -106,16 +103,19 @@ describe("W15 primary-nav family exact order and desktop/mobile parity", () => {
       desktopItems.map((item) => item.label),
     );
 
-    // Existing non-family destinations remain; Search stays out of primary nav.
-    expect(desktopItems.some((item) => item.href === "/")).toBe(true);
+    // Brand/logo owns Home; Search stays a header control only.
+    expect(desktopItems.some((item) => item.href === "/")).toBe(false);
     expect(desktopItems.some((item) => item.href === "/docs/guides")).toBe(
       true,
     );
     expect(desktopItems.some((item) => item.href === "/browse")).toBe(true);
-    expect(desktopItems.some((item) => item.href === "/docs/glossary")).toBe(
+    expect(desktopItems.some((item) => item.href === "/docs/references")).toBe(
       true,
     );
     expect(desktopItems.some((item) => item.href === "/blog")).toBe(true);
+    expect(desktopItems.some((item) => item.href === "/docs/glossary")).toBe(
+      false,
+    );
     expect(desktopItems.some((item) => item.href === "/search")).toBe(false);
   });
 });

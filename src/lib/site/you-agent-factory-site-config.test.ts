@@ -37,33 +37,13 @@ describe("you-agent-factory site config", () => {
     );
   });
 
-  test("orders primary nav for home, guides, docs, W15 families, glossary, and blog", () => {
+  test("orders primary nav for Blog, Docs, Guides, and References only", () => {
     expect(
       youAgentFactorySiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).toEqual([
-      "home",
-      "guides",
-      "docs",
-      "references",
-      "factories",
-      "workers",
-      "workstations",
-      "glossary",
-      "blogIndex",
-    ]);
+    ).toEqual(["blogIndex", "docs", "guides", "references"]);
     expect(
       youAgentFactorySiteConfig.primaryNav.map((entry) => entry.labelKey),
-    ).toEqual([
-      "home",
-      "guides",
-      "docs",
-      "references",
-      "factories",
-      "workers",
-      "workstations",
-      "glossary",
-      "blog",
-    ]);
+    ).toEqual(["blog", "docs", "guides", "references"]);
     expect(youAgentFactorySiteConfig.routeSurfaces).toMatchObject({
       home: { surface: "home" },
       guides: { surface: "docs-page", slug: "guides" },
@@ -82,12 +62,16 @@ describe("you-agent-factory site config", () => {
     expect(youAgentFactorySiteConfig.routeSurfaces).not.toHaveProperty(
       "timeline",
     );
-    expect(
-      youAgentFactorySiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).not.toContain("topology");
-    expect(
-      youAgentFactorySiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).not.toContain("timeline");
+    const primarySurfaces = youAgentFactorySiteConfig.primaryNav.map(
+      (entry) => entry.routeSurface,
+    );
+    expect(primarySurfaces).not.toContain("home");
+    expect(primarySurfaces).not.toContain("factories");
+    expect(primarySurfaces).not.toContain("workers");
+    expect(primarySurfaces).not.toContain("workstations");
+    expect(primarySurfaces).not.toContain("glossary");
+    expect(primarySurfaces).not.toContain("topology");
+    expect(primarySurfaces).not.toContain("timeline");
   });
 
   test("includes CLI collection family placeholders", () => {
