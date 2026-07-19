@@ -1,10 +1,16 @@
 /**
  * Page-owned render proof for references/cli.
- * Covers reference shell and package-backed CLI inventory mount.
+ * Covers reference shell, package-backed CLI inventory mount, and the trimmed
+ * command-card keep-list (no verbose metadata chrome; under-construction Flags
+ * and arguments when structured options are absent).
  * Colocated under the page bundle.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import {
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
+} from "@/components/references/cli/cli-capability";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadCliReferenceInventory } from "@/lib/references/load-cli-reference-inventory";
@@ -118,6 +124,55 @@ describe("cli reference page", () => {
         screen.getByText(/published CLI commands from the package/i),
       ).toBeTruthy();
       expect(screen.getAllByText("you config init").length).toBeGreaterThan(0);
+
+      // Representative command card: trimmed keep-list + under-construction
+      // Flags/arguments. Scope to the card so inventory filter labels
+      // (Lifecycle / Visibility) do not false-positive.
+      const commandCard = document.querySelector(
+        "[data-cli-command-reference]#you-config-init",
+      );
+      expect(commandCard).toBeTruthy();
+      if (!(commandCard instanceof HTMLElement)) {
+        return;
+      }
+      const card = within(commandCard);
+      expect(
+        card.getByRole("heading", { name: "you config init" }),
+      ).toBeTruthy();
+      expect(
+        commandCard.querySelector("[data-reference-copyable-anchor]"),
+      ).toBeTruthy();
+      expect(
+        commandCard.querySelector("[data-contract-source-badge]"),
+      ).toBeNull();
+      expect(
+        commandCard.querySelector("[data-reference-status-chrome]"),
+      ).toBeNull();
+      expect(card.queryByText("Leaf name")).toBeNull();
+      expect(card.queryByText("Handler present")).toBeNull();
+      expect(card.queryByText("Runnable")).toBeNull();
+      expect(card.queryByText("Command path")).toBeNull();
+      expect(card.queryByText("Aliases")).toBeNull();
+      expect(card.queryByText("Visibility")).toBeNull();
+      expect(
+        card.queryByText("Structured flags and arguments unavailable"),
+      ).toBeNull();
+      expect(
+        commandCard.querySelector(
+          '[data-cli-capability="structured-options-under-construction"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        card.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
+      ).toBeTruthy();
+      expect(
+        card.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
+      ).toBeTruthy();
+      expect(card.getByText("Flags and arguments")).toBeTruthy();
+      // Inventory still exposes filter chrome outside the card body.
+      expect(
+        document.querySelector("[data-reference-inventory-filter]"),
+      ).toBeTruthy();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

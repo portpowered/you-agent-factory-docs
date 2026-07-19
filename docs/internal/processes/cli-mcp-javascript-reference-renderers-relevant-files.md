@@ -66,6 +66,16 @@ not the old “unavailable / discloses that limit” Flags/arguments story. Filt
 may still mention lifecycle/visibility facets when those remain inventory
 filter chrome.
 
+CLI tests that lock this repair:
+
+- `src/components/references/cli/cli-command-reference.test.tsx` — asserts the
+  kept surface, absence of ContractSourceBadge / identity / visibility /
+  runnable / handler chrome, under-construction Flags/arguments treatment, and
+  no invented option rows.
+- `src/content/docs/references/cli/cli-page.test.tsx` — asserts package-backed
+  inventory publish plus a representative card scoped with `within(card)` so
+  filter Lifecycle/Visibility labels do not false-positive as card chrome.
+
 ## Key host files (MCP family — story 004 / 005)
 
 | Path | Role |
@@ -143,8 +153,9 @@ filter chrome.
 - Keep shared chrome under `src/components/references/shared/`; family
   renderers live in `cli/`, `mcp/`, and `javascript/`.
 - CLI package visibility is often `visible`; map to shared `public` only via
-  `mapCliVisibilityToReferenceVisibility` — still show the published string in
-  the command metadata row.
+  `mapCliVisibilityToReferenceVisibility` when shared badge chrome needs it.
+  CLI command cards no longer render visibility as card-body metadata — filters
+  may still use the published visibility string as a facet.
 - Browser verification without W11 routes: mount chrome/family renderers on the
   gated `(dev)/reference-chrome-harness` (or a later family harness), not on
   production reference collection pages.

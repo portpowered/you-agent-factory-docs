@@ -95,8 +95,13 @@ describe("CliCommandReference", () => {
     ).toBeTruthy();
 
     // Verbose metadata chrome removed from the card body.
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(
+      container.querySelector("[data-reference-status-chrome]"),
+    ).toBeNull();
     expect(screen.queryByText("Aliases")).toBeNull();
     expect(screen.queryByText("bootstrap")).toBeNull();
+    expect(screen.queryByText("Command path")).toBeNull();
     expect(screen.queryByText("Leaf name")).toBeNull();
     expect(screen.queryByText("Visibility")).toBeNull();
     expect(screen.queryByText("Runnable")).toBeNull();
@@ -104,6 +109,8 @@ describe("CliCommandReference", () => {
     expect(screen.queryByText("Lifecycle: Active")).toBeNull();
     expect(screen.queryByText("0.0.0")).toBeNull();
     expect(screen.queryByText("Not published on this projection")).toBeNull();
+    expect(screen.queryByText("Family")).toBeNull();
+    expect(screen.queryByText("Source artifact")).toBeNull();
   });
 
   test("omits optional help fields when the projection left them absent", () => {
@@ -129,11 +136,13 @@ describe("CliCommandReference", () => {
     expect(screen.queryByText("Long description")).toBeNull();
     expect(screen.queryByText("Example")).toBeNull();
     expect(screen.queryByText("Aliases")).toBeNull();
+    expect(screen.queryByText("Command path")).toBeNull();
     expect(screen.queryByText("Visibility")).toBeNull();
     expect(screen.queryByText("Runnable")).toBeNull();
     expect(screen.queryByText("Handler present")).toBeNull();
     expect(screen.queryByText("Leaf name")).toBeNull();
     expect(screen.queryByText("Not published on this projection")).toBeNull();
+    expect(document.querySelector("[data-contract-source-badge]")).toBeNull();
   });
 
   test("shows under-construction Flags and arguments when structured options are absent", () => {
@@ -279,6 +288,13 @@ describe("CliCommandInventory", () => {
         .querySelector("[data-cli-command-reference]#you-config-init")
         ?.getAttribute("id"),
     ).toBe("you-config-init");
+    // Inventory cards stay trimmed — no ContractSourceBadge chrome restored.
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(
+      container.querySelectorAll(
+        '[data-cli-capability="structured-options-under-construction"]',
+      ).length,
+    ).toBe(2);
   });
 
   test("filters the inventory ephemerally without mutating projections", async () => {
