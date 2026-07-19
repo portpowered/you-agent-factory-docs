@@ -367,7 +367,7 @@ export function isDocumentationRouteStaticCompatibilityMechanismExportSafe(
  * Workers/workstations family indexes use App Router routes without MDX
  * published entries; keep `documentation.workers` /
  * `documentation.workstations` as related ids and remap their hrefs via
- * {@link remapDocumentationRouteMigrationDestinationHref}.
+ * {@link registryRecordHref} → {@link remapDocumentationRouteMigrationDestinationHref}.
  */
 export const DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS = {
   "documentation.api-doc": "reference.api",

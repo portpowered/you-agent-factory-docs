@@ -23,7 +23,7 @@ import type {
   ReferenceRecord,
 } from "@/lib/content/schemas";
 import { getW15CrossFamilyRelatedOverrideIds } from "@/lib/content/w15-family-related-overrides";
-import { remapDocumentationRouteMigrationDestinationHref } from "@/lib/seo/documentation-route-migration";
+import { resolveDocumentationRouteMigrationPreferredRegistryId } from "@/lib/seo/documentation-route-migration";
 
 export const SAME_VARIANT_GROUP = "same-variant-group" as const;
 export const SHARED_TAGS = "shared-tags" as const;
@@ -576,15 +576,14 @@ function toRelatedItem(
 ): RelatedDocItem {
   const isPlanned = isPlannedRelatedTarget(record, publishedRegistryIds);
   const hasDocsPage = hasPublishedDocsPage(record, publishedRegistryIds);
+  // registryRecordHref remaps §10 move-stub published URLs to family routes.
   const publishedHref =
     isPlanned || !hasDocsPage ? undefined : registryRecordHref(record);
   return {
     registryId: record.id,
     slug: record.slug,
     title: registryDisplayTitle(record),
-    href: publishedHref
-      ? remapDocumentationRouteMigrationDestinationHref(publishedHref)
-      : undefined,
+    href: publishedHref,
     reasonLabel: isPlanned ? PLANNED_RELATED_REASON_LABEL : reasonLabel,
     isPlanned,
   };
@@ -855,11 +854,13 @@ export function listCuratedRelatedTargetIds(
     ...source.relatedIds,
     ...getW15CrossFamilyRelatedOverrideIds(source.id),
   ]) {
-    if (seen.has(id)) {
+    const preferredId =
+      resolveDocumentationRouteMigrationPreferredRegistryId(id);
+    if (seen.has(preferredId)) {
       continue;
     }
-    seen.add(id);
-    ids.push(id);
+    seen.add(preferredId);
+    ids.push(preferredId);
   }
 
   return ids;

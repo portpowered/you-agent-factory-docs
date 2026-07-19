@@ -77,6 +77,29 @@ describe("W18 documentation route migration link retarget", () => {
     ).toBe("/docs/factories/configuration");
   });
 
+  test("related-registry resolution prefers published family registry ids for §10 old ids", () => {
+    const resolved = resolveRelatedRegistryDocs([
+      "documentation.api-doc",
+      "documentation.configuration",
+      "documentation.agent-workers",
+    ]);
+    expect(resolved.unavailable).toEqual([]);
+    expect(
+      resolved.available.find((item) => item.registryId === "reference.api")
+        ?.href,
+    ).toBe("/docs/references/api");
+    expect(
+      resolved.available.find(
+        (item) => item.registryId === "documentation.factories-configuration",
+      )?.href,
+    ).toBe("/docs/factories/configuration");
+    expect(
+      resolved.available.find(
+        (item) => item.registryId === "documentation.workers-agent",
+      )?.href,
+    ).toBe("/docs/workers/agent");
+  });
+
   test("RelatedDocs for family pages does not advertise §10 old documentation hrefs", () => {
     const html = renderToStaticMarkup(
       <RelatedDocs registryId="documentation.factories-configuration" />,

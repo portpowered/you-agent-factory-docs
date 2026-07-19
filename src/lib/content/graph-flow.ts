@@ -7,10 +7,8 @@ import {
 import type { CSSProperties } from "react";
 import { getGraphRegistryMessages } from "@/lib/content/graph-message-runtime";
 import { lookupMessage } from "@/lib/content/messages";
-import {
-  getPublishedDocsHrefForRecord,
-  PUBLISHED_DOCS_REGISTRY_IDS,
-} from "@/lib/content/published-docs-registry-ids";
+import { PUBLISHED_DOCS_REGISTRY_IDS } from "@/lib/content/published-docs-registry-ids";
+import { registryRecordHref } from "@/lib/content/registry-linking";
 import { getRegistryRecordById } from "@/lib/content/registry-runtime";
 import type {
   GraphRecord,
@@ -19,6 +17,10 @@ import type {
   PageMessages,
   RegistryKind,
 } from "@/lib/content/schemas";
+import {
+  remapDocumentationRouteMigrationDestinationHref,
+  resolveDocumentationRouteMigrationPreferredRegistryId,
+} from "@/lib/seo/documentation-route-migration";
 
 const NODE_X = 0;
 const NODE_Y_GAP = 110;
@@ -352,17 +354,21 @@ function resolveGraphNodeRelatedPage(node: ModuleGraphNode): {
   title?: string;
 } {
   if (node.relatedRegistryId) {
-    const relatedRecord = getRegistryRecordById(node.relatedRegistryId);
+    const preferredRelatedId =
+      resolveDocumentationRouteMigrationPreferredRegistryId(
+        node.relatedRegistryId,
+      );
+    const relatedRecord = getRegistryRecordById(preferredRelatedId);
     const hasPublishedPage = Boolean(
-      relatedRecord && PUBLISHED_DOCS_REGISTRY_IDS.has(node.relatedRegistryId),
+      relatedRecord && PUBLISHED_DOCS_REGISTRY_IDS.has(preferredRelatedId),
     );
 
     if (relatedRecord && hasPublishedPage) {
-      const relatedMessages = getGraphRegistryMessages(node.relatedRegistryId);
+      const relatedMessages = getGraphRegistryMessages(preferredRelatedId);
       const resolvedTitle = relatedMessages
         ? resolveGraphNodeLabel(relatedMessages, relatedRecord.defaultTitleKey)
         : undefined;
-      const relatedHref = getPublishedDocsHrefForRecord(relatedRecord);
+      const relatedHref = registryRecordHref(relatedRecord);
 
       return {
         href: relatedHref ?? undefined,
@@ -375,7 +381,9 @@ function resolveGraphNodeRelatedPage(node: ModuleGraphNode): {
   }
 
   const relatedHref = node.relatedHref?.trim();
-  return relatedHref ? { href: relatedHref } : {};
+  return relatedHref
+    ? { href: remapDocumentationRouteMigrationDestinationHref(relatedHref) }
+    : {};
 }
 
 function resolveGraphNodeSemanticData(
@@ -428,7 +436,7 @@ function resolveGraphNodeSemanticData(
   );
   const canonicalPageHref =
     hasCanonicalPage && registryRecord
-      ? getPublishedDocsHrefForRecord(registryRecord)
+      ? registryRecordHref(registryRecord)
       : null;
   const relatedPage = resolveGraphNodeRelatedPage(node);
   const interactionKind = hasCanonicalPage

@@ -15,6 +15,7 @@ import type {
   TagRecord,
   TechniqueRecord,
 } from "@/lib/content/schemas";
+import { remapDocumentationRouteMigrationDestinationHref } from "@/lib/seo/documentation-route-migration";
 
 export type LinkableRegistryRecord =
   | ConceptRecord
@@ -50,7 +51,13 @@ export function registryRecordHref(
     record.kind === "documentation" ||
     record.kind === "reference"
   ) {
-    return getPublishedDocsHrefForRecord(record) ?? undefined;
+    const publishedHref = getPublishedDocsHrefForRecord(record);
+    if (!publishedHref) {
+      return undefined;
+    }
+    // W18 move stubs stay published for bookmarks; reader-facing registry
+    // links prefer the ledger family destination instead of the stub URL.
+    return remapDocumentationRouteMigrationDestinationHref(publishedHref);
   }
   return undefined;
 }
