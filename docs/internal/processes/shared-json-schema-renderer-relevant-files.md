@@ -167,7 +167,9 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   `assert-factory-schema-repair-browser.ts`. For page-owned system-config polish
   that also removes filter-definitions list chrome, set `showFilter={false}` on
   that page mount only — do not change SchemaReference defaults for other
-  families. To rename a root definition header without changing the upstream
+  families. When trimming filter/catalog chrome, also rewrite page-local
+  `sections.schemaLookup.body` so it does not instruct readers to Filter by
+  definition / catalog UI that is gone, and drop “on this page” framing. To rename a root definition header without changing the upstream
   package title, pass a page-local `projection` from
   `projectSchemaDefinitionToDisplay` with an overridden `title` (keep the W04
   `schemaPointerAnchor` so deep links stay stable). To show a concrete operator

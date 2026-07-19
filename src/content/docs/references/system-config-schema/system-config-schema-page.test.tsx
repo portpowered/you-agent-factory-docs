@@ -46,6 +46,14 @@ describe("system-config-schema reference page", () => {
     expect(howToAccess).toMatch(/~\/\.you-agent-factory\/config\.json/);
     expect(howToAccess).toMatch(/you config init/);
     expect(howToAccess).not.toMatch(/on this page|Model Atlas|What It Covers/i);
+    const schemaLookup = String(
+      loadedPage.messages.sections?.schemaLookup?.body ?? "",
+    );
+    expect(schemaLookup).toMatch(/System configuration schema/i);
+    expect(schemaLookup).toMatch(/\$ref|deep links/i);
+    expect(schemaLookup).not.toMatch(
+      /Filter by definition|filter-definitions|Definitions catalog|on this page/i,
+    );
     expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(loadedPage.messages.sections?.related).toBeUndefined();

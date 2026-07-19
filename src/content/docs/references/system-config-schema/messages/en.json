@@ -8,7 +8,7 @@
     },
     "schemaLookup": {
       "title": "Schema Lookup",
-      "body": "Browse the complete System configuration schema below. Filter by definition or field name, follow $ref links to related definitions, and copy deep links to any definition or field anchor on this page."
+      "body": "Browse the complete System configuration schema below: root fields, constraints, defaults, enums, and examples. Follow $ref links to related definitions, and copy deep links to any definition or field anchor."
     }
   }
 }
