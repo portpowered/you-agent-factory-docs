@@ -144,9 +144,12 @@ describe("FactoryEvent catalog UI", () => {
 
     const variant = screen.getByTestId("event-payload-variant");
     expect(variant.getAttribute("data-event-payload-only")).toBe("true");
+    expect(screen.getByText(/event catalog/i)).toBeTruthy();
     expect(
-      screen.getByText(/Payload only — not a complete FactoryEvent envelope/i),
-    ).toBeTruthy();
+      screen.queryByText(
+        /Payload only — not a complete FactoryEvent envelope/i,
+      ),
+    ).toBeNull();
     expect(
       variant.querySelector('[data-schema-field-path="recordedAt"]'),
     ).toBeTruthy();

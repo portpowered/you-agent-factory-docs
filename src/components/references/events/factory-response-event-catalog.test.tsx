@@ -203,9 +203,10 @@ describe("FactoryResponseEvent catalog UI", () => {
     const node = screen.getByTestId("response-event-payload-variant");
     expect(node.getAttribute("data-event-payload-only")).toBe("true");
     expect(node.getAttribute("data-event-ephemeral")).toBe("true");
+    expect(screen.getByText(/event catalog/i)).toBeTruthy();
     expect(
-      screen.getByText(/not a complete FactoryResponseEvent envelope/i),
-    ).toBeTruthy();
+      screen.queryByText(/not a complete FactoryResponseEvent envelope/i),
+    ).toBeNull();
     // Envelope-only fields must not appear as if this were a full event.
     expect(
       node.querySelector('[data-schema-field-path="schemaVersion"]'),

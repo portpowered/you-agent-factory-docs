@@ -1,10 +1,10 @@
 /**
  * One FactoryResponseEvent payload oneOf variant.
  *
- * Renders schema-backed fields via W07 SchemaDefinition. Explicitly marked as
- * payload-only and ephemeral — never a complete FactoryResponseEvent envelope
- * or canonical FactoryEvent replay state. Stable anchors + copy-link via W04 /
- * shared CopyableReferenceAnchor.
+ * Renders schema-backed fields via W07 SchemaDefinition under a short
+ * "Event catalog" label. Marked `data-event-payload-only` +
+ * `data-event-ephemeral` for machine consumers. Stable anchors + copy-link
+ * via W04 / shared CopyableReferenceAnchor.
  */
 
 import { SchemaDefinition } from "@/components/references/schema";
@@ -44,8 +44,7 @@ export function ResponseEventPayloadVariant({
     >
       <header className="min-w-0 space-y-1">
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Payload only — ephemeral; not a complete FactoryResponseEvent envelope
-          or canonical FactoryEvent replay
+          Event catalog
         </p>
         <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
           <h3

@@ -1,10 +1,10 @@
 /**
  * One FactoryEvent discriminator payload variant.
  *
- * Renders schema-backed fields via W07 SchemaDefinition. Explicitly marked as
- * payload-only so readers never treat it as a complete FactoryEvent envelope.
- * Stable anchors come from W04 `anchorForIdentity("event", …)` with copy-link
- * affordances via shared CopyableReferenceAnchor.
+ * Renders schema-backed fields via W07 SchemaDefinition under a short
+ * "Event catalog" label. Marked `data-event-payload-only` for machine
+ * consumers; stable anchors come from W04 `anchorForIdentity("event", …)`
+ * with copy-link affordances via shared CopyableReferenceAnchor.
  */
 
 import { SchemaDefinition } from "@/components/references/schema";
@@ -44,7 +44,7 @@ export function EventPayloadVariant({
     >
       <header className="min-w-0 space-y-1">
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Payload only — not a complete FactoryEvent envelope
+          Event catalog
         </p>
         <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
           <h3
