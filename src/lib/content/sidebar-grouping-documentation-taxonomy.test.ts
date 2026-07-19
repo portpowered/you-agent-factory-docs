@@ -118,6 +118,24 @@ describe("Program documentation three-level taxonomy", () => {
       resources: "Resources",
       observability: "Observability",
     });
+    expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).not.toHaveProperty(
+      "workers",
+    );
+    expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).not.toHaveProperty(
+      "workstations",
+    );
+    expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).not.toHaveProperty(
+      "factories",
+    );
+    expect(
+      getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
+    ).not.toContain("workers");
+    expect(
+      getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
+    ).not.toContain("workstations");
+    expect(
+      getDocumentationSidebarSecondaryIdsForGroup("factory-configuration"),
+    ).not.toContain("factories");
     expect(isDocumentationSidebarSecondaryGroup("system-feature-set")).toBe(
       false,
     );

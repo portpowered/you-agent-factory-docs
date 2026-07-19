@@ -87,7 +87,7 @@ export type ExplorerDocumentationGroupMessages = {
   "additional-references": string;
 };
 
-/** Nested Program documentation secondary folder labels (Workers, Observability, …). */
+/** Nested Program documentation secondary folder labels (Resources, Observability). */
 export type ExplorerDocumentationSecondaryMessages = {
   resources: string;
   observability: string;

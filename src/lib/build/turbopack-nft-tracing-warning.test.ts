@@ -34,7 +34,7 @@ describe("buildOutputHasTurbopackWholeProjectTracingWarning", () => {
     const output = `
 ⚠ next.config.ts
 Import trace:
-  ./src/lib/content/glossary-pages.ts
+  ./src/lib/content/glossary-page.ts
   ./src/lib/content/pages.ts
   node:fs/promises
 `;

@@ -41,6 +41,15 @@ describe("explorer labels", () => {
     expect(explorer.documentationSecondaries).toEqual({
       ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
     });
+    expect(Object.keys(explorer.documentationSecondaries).sort()).toEqual([
+      "observability",
+      "resources",
+    ]);
+    expect(explorer.documentationSecondaries).not.toHaveProperty("workers");
+    expect(explorer.documentationSecondaries).not.toHaveProperty(
+      "workstations",
+    );
+    expect(explorer.documentationSecondaries).not.toHaveProperty("factories");
   });
 
   test("every shipped locale resolves non-empty explorer folder, subgroup, and secondary labels", async () => {

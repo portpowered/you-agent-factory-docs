@@ -429,7 +429,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Empty Workers / Workstations / Factories Program-documentation secondaries
   that only nested W18 move stubs were removed after #158 demotion — keep
   W15 top-level `explorer.folders.{workers,workstations,factories}` for the
-  live family routes. `assertExplorerMessages` fails closed when any explorer
+  live family routes. Contracts lock the live secondary catalog shape
+  (`resources` / `observability` only) and the absence of retired glossary
+  advertising keys (`glossaryIndex`, `home.glossaryLink*`,
+  `browseIndex.glossaryRouteDescription` / `glossarySection*`) without
+  reading those deleted symbols as live typed fields. Keep `nav.glossary` and
+  `pageKind.glossary`. `assertExplorerMessages` fails closed when any explorer
   catalog (including secondaries) is incomplete.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
   Locale-aware explorer folder/subgroup/secondary/page label resolution
