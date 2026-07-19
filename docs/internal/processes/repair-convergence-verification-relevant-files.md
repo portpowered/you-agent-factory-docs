@@ -238,3 +238,52 @@ destinations:
    explorer/search/sitemap/section index) is locked in
    `factory-documentation-route-migration-demoted-contract.test.tsx`. Live
    non-stub pages still own real `*-discoverability.test.tsx` proofs.
+
+## Wave 6 dead-code consolidation safety proofs
+
+After glossary advertising cleanup (#157 leftovers) and W18 stub demotion
+(#158 leftovers), prove export / search / sitemap / linkcheck / W18 safety
+without inventing a second inventory suite. Reuse the live contracts below,
+then spot-check browser + static `out/`.
+
+### Focused suites
+
+```bash
+bun run prepare:content-runtime && bunx fumadocs-mdx
+bun test \
+  src/lib/content/factory-documentation-route-migration-demoted-contract.test.tsx \
+  src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx \
+  src/lib/seo/public-sitemap-routes.test.ts \
+  src/lib/seo/export-sitemap.test.ts \
+  src/lib/content/factory-search-navigation-convergence.test.tsx \
+  src/lib/content/factory-search-categories.test.tsx \
+  src/lib/content/factory-search-deleted-records.test.ts \
+  src/lib/build/validate-links.test.ts \
+  src/lib/verify/focused-repair-suites-r02-convergence.test.ts \
+  src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts \
+  src/lib/content/factory-only-public-inventory.test.tsx \
+  src/tests/content/ui-messages.test.ts \
+  src/lib/site/you-agent-factory-site-config.test.ts \
+  src/lib/docs/browse-collection-sections.test.ts
+bun run typecheck
+bun run lint
+bun run test:website
+make build
+make linkcheck
+```
+
+### Browser + export spot-checks (unique port; cleanup trap)
+
+- Browse hub is `/browse` (not `/docs`).
+- Assert **destination href absence** for glossary (`href="…glossary…"`), not
+  residual `nav.glossary` / `pageKind.glossary` strings inside the RSC message
+  payload.
+- Representative W18 old route: `/docs/documentation/configuration` must keep
+  `data-documentation-route-compatibility`, `data-compatibility-target-link`,
+  and `/docs/factories/configuration`.
+- After `make build`: `out/docs/documentation/configuration.html` keeps compat
+  markers; `out/sitemap.xml` omits §10 old routes while listing live family /
+  Concepts URLs; export search bootstrap under `out/api/search*` omits demoted
+  stub paths and still indexes live pages (e.g. `/docs/concepts/skills`).
+- `bun run dev` rewrites `next-env.d.ts` toward `.next/dev/types` — restore with
+  `git checkout -- next-env.d.ts` before commit.
