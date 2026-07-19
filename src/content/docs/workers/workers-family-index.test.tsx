@@ -99,6 +99,9 @@ describe("workers family index", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
 
@@ -151,9 +154,16 @@ describe("workers family index", () => {
   });
 
   test("renders the authored family index through the App Router entry", async () => {
+    const bundle = await loadWorkersFamilyIndexBundle();
     const html = renderToStaticMarkup(await renderWorkersFamilyIndexPage());
 
     expect(html).toContain("Workers");
+    expect(html).toContain(String(bundle.messages.openingSummary ?? ""));
+    expect(html).toContain("How To Use");
+    expect(html).not.toContain("What It Covers");
+    expect(html).not.toContain("Key Concepts");
+    expect(html).not.toContain("Operational Cautions");
+    expect(html).not.toContain("Limits And Assumptions");
     expect(html).toContain('data-workers-family-index=""');
     expect(html).toContain('data-workers-selection-table=""');
     expect(html).toContain("INFERENCE_WORKER");

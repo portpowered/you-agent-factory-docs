@@ -859,6 +859,29 @@ JSON examples render through shared `CodePanel` (not bare unstyled
 `<pre><code>`). Do not restore `#tags` / `#references`
 (`TagPillList` / `CitationList`) footer chrome on that page.
 
+Page-local worker/workstation tests must prove that polished shape
+behaviorally (rendered headings/copy, not file inventories):
+
+- Assert `openingSummary` + `howToUse` message bodies (purpose teaching), and
+  for family-index App Router renders also assert the purpose lead appears in
+  HTML.
+- Assert visible `#how-to-use` / `#schema-reference` / `#examples` (or mock’s
+  `#schema-fields`) presence with `getByRole` headings.
+- Assert removed chrome with `queryByRole(...).toBeNull()` for What It Covers,
+  Key Concepts, Operational Cautions, and Limits And Assumptions (family
+  indexes included).
+- On variant embeds, assert `queryByText("Variant: …")` is null and the
+  definition-header breadcrumb is absent via
+  `:scope > header [data-testid="schema-breadcrumb"]` (field-row breadcrumbs
+  still use that test id).
+- Assert concrete workstation `messages.title` forms (`… workstation`) and
+  Agent worker RelatedDocs-only related
+  (`section#related [data-testid="curated-related-docs"]`) with no Tags /
+  References headings.
+- Do not edit Factory schema / you-config / mock-workers *reference* page
+  tests for this chrome trim unless proving shared opt-in defaults stay
+  unchanged.
+
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`
 (stable anchor). Put ownership matrix cells, example label/body, and

@@ -106,6 +106,9 @@ describe("workstations family index", () => {
     expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeNull();
 
@@ -204,11 +207,18 @@ describe("workstations family index", () => {
   });
 
   test("renders the authored family index through the App Router entry", async () => {
+    const bundle = await loadWorkstationsFamilyIndexBundle();
     const html = renderToStaticMarkup(
       await renderWorkstationsFamilyIndexPage(),
     );
 
     expect(html).toContain("Workstations");
+    expect(html).toContain(String(bundle.messages.openingSummary ?? ""));
+    expect(html).toContain("How To Use");
+    expect(html).not.toContain("What It Covers");
+    expect(html).not.toContain("Key Concepts");
+    expect(html).not.toContain("Operational Cautions");
+    expect(html).not.toContain("Limits And Assumptions");
     expect(html).toContain('data-workstations-family-index=""');
     expect(html).toContain('data-workstations-type-selection-table=""');
     expect(html).toContain('data-workstations-behavior-selection-table=""');
