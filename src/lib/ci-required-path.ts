@@ -1,17 +1,18 @@
 /**
  * Aligned required path for `make ci` and `.github/workflows/ci.yml`
  * (restore-required-tests-gates-007 → Wave CI-1 job graph → Wave CI-2
- * static-export artifact handoff).
+ * static-export artifact handoff → Wave CI-3 Playwright install ownership).
  *
  * GitHub Actions CI is modeled as a required job graph: suite membership per
  * job plus real ordering edges (parallel peers allowed). Wave CI-2 adds a
  * trusted Actions artifact handoff so `integration` / `budget` consume the
- * `static-export` job’s `out/` instead of rebuilding it. `make ci`
- * prerequisites stay the sequential local reproduction path and must cover the
- * same shared restored suites — no workflow-only required gate that `make ci`
- * skips, and no `make ci`-only required suite that CI never runs. Local
- * `make ci` still builds once then runs integration/budget on one machine; it
- * does not use Actions artifacts.
+ * `static-export` job’s `out/` instead of rebuilding it. Wave CI-3 scopes
+ * Playwright Chromium install to browser-backed jobs only (see
+ * `CI_BROWSER_INSTALL_OWNERSHIP`). `make ci` prerequisites stay the sequential
+ * local reproduction path and must cover the same shared restored suites —
+ * no workflow-only required gate that `make ci` skips, and no `make ci`-only
+ * required suite that CI never runs. Local `make ci` still builds once then
+ * runs integration/budget on one machine; it does not use Actions artifacts.
  *
  * Deploy-pages stays a Pages-focused subset (check / test / build / guard /
  * budget) and is not required to mirror the full verify path.
@@ -297,4 +298,83 @@ export function ciJobMustRebuildStaticExportLocally(
     ciJobDependsOnStaticExportJob(jobId) &&
     !ciJobConsumesStaticExportArtifact(jobId)
   );
+}
+
+/**
+ * Observable Playwright Chromium install step used by browser-backed CI jobs
+ * (Wave CI-3). Contract tests match this exact `run:` command.
+ */
+export const CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND =
+  "bunx playwright install --with-deps chromium" as const;
+
+/**
+ * Evidence that `unit-tests` / `make test` still launches Chromium via
+ * Playwright in the live website-functionality inventory (not excluded by
+ * `website-functionality-exclusions`). These paths call
+ * `launchPlaywrightBrowser` → `chromium.launch`.
+ *
+ * If these (or equivalent) Chromium launches leave `make test`, reclassify
+ * `unit-tests` into the forbidden set and remove its workflow install step.
+ */
+export const CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS = [
+  "src/features/docs/styles/docs-chrome-highlighting-token-map.browser.test.ts",
+  "src/features/docs/styles/docs-page-footer-chrome.browser.test.ts",
+] as const;
+
+/**
+ * Required Actions jobs that must run Playwright Chromium install before their
+ * make targets (Wave CI-3). Includes `unit-tests` because `make test` still
+ * launches Chromium (see `CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS`).
+ */
+export const CI_BROWSER_INSTALL_REQUIRED_JOB_IDS = [
+  "unit-tests",
+  "a11y",
+  "integration",
+] as const satisfies readonly CiRequiredJobId[];
+
+/**
+ * Required Actions jobs that must not run Playwright Chromium install.
+ * Peer jobs stay thin; `ci-gate` is aggregate-only and never installs browsers.
+ */
+export const CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS = [
+  "check",
+  "reader-facing",
+  "contracts",
+  "component-coverage",
+  "content",
+  "static-export",
+  "budget",
+  "ci-gate",
+] as const satisfies readonly CiRequiredJobId[];
+
+/**
+ * Wave CI-3 Playwright Chromium install ownership for the required job graph.
+ * Distinct from suite membership: a job can own `make test` and still need
+ * (or forbid) a browser install step based on whether that suite launches
+ * Chromium.
+ */
+export const CI_BROWSER_INSTALL_OWNERSHIP = {
+  installCommand: CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND,
+  requiredJobIds: CI_BROWSER_INSTALL_REQUIRED_JOB_IDS,
+  forbiddenJobIds: CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS,
+  unitTestsLaunchesPlaywrightChromium: true,
+  unitTestsEvidencePaths: CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS,
+} as const;
+
+/** True when the job must install Playwright Chromium before its make targets. */
+export function ciJobRequiresPlaywrightChromiumInstall(
+  jobId: CiRequiredJobId,
+): boolean {
+  return (
+    CI_BROWSER_INSTALL_OWNERSHIP.requiredJobIds as readonly string[]
+  ).includes(jobId);
+}
+
+/** True when the job must not run a Playwright Chromium install step. */
+export function ciJobForbidsPlaywrightChromiumInstall(
+  jobId: CiRequiredJobId,
+): boolean {
+  return (
+    CI_BROWSER_INSTALL_OWNERSHIP.forbiddenJobIds as readonly string[]
+  ).includes(jobId);
 }

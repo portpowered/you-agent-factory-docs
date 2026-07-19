@@ -27,7 +27,7 @@ failing workflow stage with the same `make <target>` locally (see
 | Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
 | Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
-| Quality gates | `.github/workflows/ci.yml` runs the Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate **ci-gate**; membership/edges live in `src/lib/ci-required-path.ts`. Wave CI-2: `static-export` uploads trusted Actions artifact `static-export-out` (`out/`); `integration` / `budget` download it and must not run a second `make build`. Local full reproduction stays sequential (`make ci`) and does not use Actions artifacts. Deploy-pages validate remains a separate Pages-focused subset and does not replace CI. CI-3 Playwright scoping and CI-4 shards are not part of this wave. |
+| Quality gates | `.github/workflows/ci.yml` runs the Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate **ci-gate**; membership/edges live in `src/lib/ci-required-path.ts`. Wave CI-2: `static-export` uploads trusted Actions artifact `static-export-out` (`out/`); `integration` / `budget` download it and must not run a second `make build`. Wave CI-3: Playwright Chromium install (`bunx playwright install --with-deps chromium`) runs only on browser-backed jobs `unit-tests`, `a11y`, and `integration` (`CI_BROWSER_INSTALL_OWNERSHIP`); non-browser peers must not install Chromium. `unit-tests` keeps install because `make test` still launches Chromium. Local full reproduction stays sequential (`make ci`) and does not use Actions artifacts; local browser suite targets still install/use Chromium when needed. Deploy-pages validate remains a separate Pages-focused subset and does not replace CI. CI-4 shards are not part of this wave. |
 
 The workflow **`validate`** job checks out the pushed commit, runs the Makefile
 stages above (including `make guard-pages-deployed-artifact` after `make build`),
@@ -245,14 +245,21 @@ Actions: after `make build`, `static-export` uploads artifact
 fail closed if the artifact is missing or incomplete, and run
 `make test-integration` / `make budget` without a second full static export.
 Other child jobs check out the branch, run `make setup`, and run their mapped
-`make <target>` stage(s). Browser jobs (`unit-tests`, `a11y`, `integration`)
-install Playwright Chromium. Aggregate **ci-gate** needs every required child
-and fails unless all succeed — that is the branch-protection quality gate.
-Deploy and preview steps stay out of CI. Local full reproduction remains
-sequential `make ci` (same shared required suites; builds once on one machine;
-no Actions artifact required). Deploy-pages remains a separate Pages-focused
-subset unchanged by this wave. CI-3 Playwright install scoping and CI-4 shards
-are not claimed here.
+`make <target>` stage(s). Wave CI-3 scopes Playwright Chromium install to
+browser-backed jobs only (`unit-tests`, `a11y`, `integration` —
+`CI_BROWSER_INSTALL_REQUIRED_JOB_IDS`); non-browser jobs
+(`check`, `reader-facing`, `contracts`, `component-coverage`, `content`,
+`static-export`, `budget`, `ci-gate`) must not run
+`bunx playwright install --with-deps chromium`. `unit-tests` retains install
+because `make test` still launches Chromium. Aggregate **ci-gate** needs every
+required child and fails unless all succeed — that is the branch-protection
+quality gate. Deploy and preview steps stay out of CI. Local full reproduction
+remains sequential `make ci` (same shared required suites; builds once on one
+machine; no Actions artifact required). When reproducing a failed browser job
+locally, run `make <target>` after `make setup` and install Chromium if that
+suite needs a browser (`make a11y`, `make test-integration`, browser-backed
+`make test`). Deploy-pages remains a separate Pages-focused subset unchanged by
+this wave. CI-4 shards are not claimed here.
 
 **Deploy GitHub Pages** runs **Canonical validation** (Pages-focused Makefile
 stages through `make budget`, plus `make guard-pages-deployed-artifact`, then
@@ -322,10 +329,13 @@ make ci
 parallel Actions graph (via `src/lib/ci-required-path.ts`), so a local green
 run is the practical preflight for **ci-gate**. Locally, `make ci` builds
 `out/` once then runs `test-integration` / `budget` on the same machine — it
-does not download Actions artifacts. When a child job fails on GitHub,
-reproduce with `make <target>` after `make setup` (and `make build` first when
-reproducing `integration` / `budget` without a prior export); use full
-`make ci` only when you need the entire local path.
+does not download Actions artifacts. Browser suites remain runnable locally
+when those targets need Chromium (`make a11y`, `make test-integration`, and
+browser-backed `make test`); Wave CI-3 only scopes Actions install ownership,
+it does not remove Playwright as a local dependency. When a child job fails on
+GitHub, reproduce with `make <target>` after `make setup` (and `make build`
+first when reproducing `integration` / `budget` without a prior export); use
+full `make ci` only when you need the entire local path.
 
 ### Local static-export benchmark (optional profiling)
 

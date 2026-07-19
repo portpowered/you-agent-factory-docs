@@ -13,7 +13,10 @@ import { parse as parseYaml } from "yaml";
 import { BUILD_CONTRACT_REQUIRED_TEST_PATHS } from "@/lib/build/build-contract-required-test-paths";
 import { CI_CONTRACT_REQUIRED_TEST_PATHS } from "@/lib/ci-contract-required-test-paths";
 import {
+  CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS,
+  CI_BROWSER_INSTALL_REQUIRED_JOB_IDS,
   CI_GATE_JOB_ID,
+  CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND,
   CI_REQUIRED_JOB_GRAPH,
   CI_REQUIRED_JOB_IDS,
   CI_REQUIRED_ORDERING_EDGES,
@@ -123,6 +126,51 @@ function jobStepsUsingAction(
 ): WorkflowStep[] {
   return (job?.steps ?? []).filter((step) =>
     stepUsesAction(step, actionPrefix),
+  );
+}
+
+function isPlaywrightChromiumInstallStep(step: WorkflowStep): boolean {
+  const run = step.run?.trim() ?? "";
+  return (
+    run === CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND ||
+    run.startsWith(`${CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND} `)
+  );
+}
+
+function jobPlaywrightChromiumInstallSteps(
+  job: WorkflowJob | undefined,
+): WorkflowStep[] {
+  return (job?.steps ?? []).filter(isPlaywrightChromiumInstallStep);
+}
+
+/**
+ * True when every contracted make target for the job appears after at least
+ * one Playwright Chromium install step in the same job's step list.
+ */
+function jobInstallsPlaywrightChromiumBeforeMakeTargets(
+  job: WorkflowJob | undefined,
+  makeTargets: readonly string[],
+): boolean {
+  const steps = job?.steps ?? [];
+  let sawInstall = false;
+  const targetsSeenAfterInstall = new Set<string>();
+
+  for (const step of steps) {
+    if (isPlaywrightChromiumInstallStep(step)) {
+      sawInstall = true;
+      continue;
+    }
+    if (!sawInstall) continue;
+    const run = step.run?.trim() ?? "";
+    const match = run.match(/^make\s+([^\s#]+)/);
+    if (match?.[1] && makeTargets.includes(match[1])) {
+      targetsSeenAfterInstall.add(match[1]);
+    }
+  }
+
+  return (
+    sawInstall &&
+    makeTargets.every((target) => targetsSeenAfterInstall.has(target))
   );
 }
 
@@ -407,5 +455,59 @@ describe("GitHub Actions make ci", () => {
     // Fail-closed upload/download — no silent skip on required handoff steps.
     expect(jobHasContinueOnErrorTrue(producer)).toBe(false);
     expect(raw).not.toMatch(/continue-on-error:\s*true/i);
+  });
+
+  test("browser-install-required jobs install Playwright Chromium before make targets", () => {
+    const { jobs } = loadCiWorkflow();
+
+    for (const jobId of CI_BROWSER_INSTALL_REQUIRED_JOB_IDS) {
+      const workflowJob = jobs[jobId];
+      expect(workflowJob).toBeDefined();
+      expect(jobHasContinueOnErrorTrue(workflowJob)).toBe(false);
+
+      const installSteps = jobPlaywrightChromiumInstallSteps(workflowJob);
+      expect(installSteps.length).toBeGreaterThanOrEqual(1);
+      expect(
+        installSteps.every(
+          (step) =>
+            step["continue-on-error"] !== true &&
+            step["continue-on-error"] !== "true",
+        ),
+      ).toBe(true);
+
+      const makeTargets = getCiRequiredJob(jobId).makeTargets;
+      expect(makeTargets.length).toBeGreaterThan(0);
+      expect(
+        jobInstallsPlaywrightChromiumBeforeMakeTargets(
+          workflowJob,
+          makeTargets,
+        ),
+      ).toBe(true);
+    }
+  });
+
+  test("browser-install-forbidden jobs never install Playwright Chromium", () => {
+    const { jobs } = loadCiWorkflow();
+
+    for (const jobId of CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS) {
+      const workflowJob = jobs[jobId];
+      expect(workflowJob).toBeDefined();
+      expect(jobPlaywrightChromiumInstallSteps(workflowJob)).toEqual([]);
+    }
+
+    // Regression guard: no universal browser setup sneaks onto peer jobs.
+    const allRequiredInstallJobIds = new Set(
+      CI_BROWSER_INSTALL_REQUIRED_JOB_IDS as readonly string[],
+    );
+    for (const jobId of CI_REQUIRED_JOB_IDS) {
+      const installCount = jobPlaywrightChromiumInstallSteps(
+        jobs[jobId],
+      ).length;
+      if (allRequiredInstallJobIds.has(jobId)) {
+        expect(installCount).toBeGreaterThanOrEqual(1);
+      } else {
+        expect(installCount).toBe(0);
+      }
+    }
   });
 });

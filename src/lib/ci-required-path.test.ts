@@ -1,9 +1,13 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import {
+  CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS,
+  CI_BROWSER_INSTALL_OWNERSHIP,
+  CI_BROWSER_INSTALL_REQUIRED_JOB_IDS,
   CI_GATE_JOB_ID,
+  CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND,
   CI_REQUIRED_JOB_GRAPH,
   CI_REQUIRED_JOB_IDS,
   CI_REQUIRED_ORDERING_EDGES,
@@ -13,11 +17,14 @@ import {
   CI_STATIC_EXPORT_ARTIFACT_NAME,
   CI_STATIC_EXPORT_ARTIFACT_PATH,
   CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS,
+  CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS,
   CI_WORKFLOW_REQUIRED_MAKE_TARGETS,
   ciJobConsumesStaticExportArtifact,
   ciJobDependsOnStaticExportJob,
   ciJobForbidsLocalStaticExportRebuild,
+  ciJobForbidsPlaywrightChromiumInstall,
   ciJobMustRebuildStaticExportLocally,
+  ciJobRequiresPlaywrightChromiumInstall,
   ciRequiredJobGraphMakeTargets,
   ciRequiredJobNeeds,
   EXCLUDED_MAKE_CI_TARGETS,
@@ -26,6 +33,7 @@ import {
   MAKE_CI_REPRODUCTION_COMMAND,
   SHARED_REQUIRED_SUITE_TARGETS,
 } from "./ci-required-path";
+import { isWebsiteFunctionalityExcluded } from "./website-functionality-exclusions";
 
 const repoRoot = join(import.meta.dir, "../..");
 const makefilePath = join(repoRoot, "Makefile");
@@ -456,5 +464,111 @@ describe("ci static-export artifact handoff contract (Wave CI-2)", () => {
     expect(jobMakeTargets(jobs.budget)).toContain("budget");
     expect(jobMakeTargets(jobs.integration)).not.toContain("build");
     expect(jobMakeTargets(jobs.budget)).not.toContain("build");
+  });
+});
+
+describe("ci browser-install ownership contract (Wave CI-3)", () => {
+  test("names required vs forbidden Playwright Chromium install jobs", () => {
+    expect(CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND).toBe(
+      "bunx playwright install --with-deps chromium",
+    );
+    expect([...CI_BROWSER_INSTALL_REQUIRED_JOB_IDS]).toEqual([
+      "unit-tests",
+      "a11y",
+      "integration",
+    ]);
+    expect([...CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS]).toEqual([
+      "check",
+      "reader-facing",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "budget",
+      "ci-gate",
+    ]);
+    expect(CI_BROWSER_INSTALL_OWNERSHIP).toEqual({
+      installCommand: CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND,
+      requiredJobIds: CI_BROWSER_INSTALL_REQUIRED_JOB_IDS,
+      forbiddenJobIds: CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS,
+      unitTestsLaunchesPlaywrightChromium: true,
+      unitTestsEvidencePaths: CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS,
+    });
+  });
+
+  test("partitions every required job into install-required or install-forbidden", () => {
+    const required = new Set<string>(CI_BROWSER_INSTALL_REQUIRED_JOB_IDS);
+    const forbidden = new Set<string>(CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS);
+
+    for (const jobId of CI_REQUIRED_JOB_IDS) {
+      const inRequired = required.has(jobId);
+      const inForbidden = forbidden.has(jobId);
+      expect(inRequired || inForbidden).toBe(true);
+      expect(inRequired && inForbidden).toBe(false);
+      expect(ciJobRequiresPlaywrightChromiumInstall(jobId)).toBe(inRequired);
+      expect(ciJobForbidsPlaywrightChromiumInstall(jobId)).toBe(inForbidden);
+    }
+
+    expect(required.size + forbidden.size).toBe(CI_REQUIRED_JOB_IDS.length);
+  });
+
+  test("classifies unit-tests as install-required from live make test Chromium evidence", () => {
+    expect(
+      CI_BROWSER_INSTALL_OWNERSHIP.unitTestsLaunchesPlaywrightChromium,
+    ).toBe(true);
+    expect(ciJobRequiresPlaywrightChromiumInstall("unit-tests")).toBe(true);
+    expect(ciJobForbidsPlaywrightChromiumInstall("unit-tests")).toBe(false);
+    expect(getCiRequiredJob("unit-tests").makeTargets).toEqual(["test"]);
+
+    for (const evidencePath of CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS) {
+      expect(existsSync(join(repoRoot, evidencePath))).toBe(true);
+      expect(isWebsiteFunctionalityExcluded(evidencePath)).toBe(false);
+      const source = readFileSync(join(repoRoot, evidencePath), "utf8");
+      expect(source).toContain("launchPlaywrightBrowser");
+    }
+  });
+
+  test("keeps a11y and integration install-required and peers install-forbidden", () => {
+    expect(ciJobRequiresPlaywrightChromiumInstall("a11y")).toBe(true);
+    expect(ciJobRequiresPlaywrightChromiumInstall("integration")).toBe(true);
+    expect(getCiRequiredJob("a11y").makeTargets).toEqual(["a11y"]);
+    expect(getCiRequiredJob("integration").makeTargets).toEqual([
+      "test-integration",
+    ]);
+
+    for (const jobId of CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS) {
+      expect(ciJobForbidsPlaywrightChromiumInstall(jobId)).toBe(true);
+      expect(ciJobRequiresPlaywrightChromiumInstall(jobId)).toBe(false);
+    }
+  });
+
+  test("preserves Wave CI-1/CI-2 membership, edges, artifact handoff, and make ci", () => {
+    expect([...CI_REQUIRED_JOB_IDS]).toEqual([
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "integration",
+      "budget",
+      "ci-gate",
+    ]);
+    expect(ciRequiredJobNeeds("integration")).toEqual(["static-export"]);
+    expect(ciRequiredJobNeeds("budget")).toEqual(["static-export"]);
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName).toBe(
+      "static-export-out",
+    );
+    expect([...CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS]).toEqual([
+      "integration",
+      "budget",
+    ]);
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(MAKE_CI_PREREQUISITES).toContain(target);
+    }
+    expect(MAKE_CI_REPRODUCTION_COMMAND).toBe("make ci");
+    expect(CI_GATE_JOB_ID).toBe("ci-gate");
   });
 });
