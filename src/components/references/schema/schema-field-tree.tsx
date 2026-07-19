@@ -26,6 +26,16 @@ export type SchemaFieldTreeProps = {
   defaultExpanded?: boolean;
   /** Owning page path forwarded to `$ref` links for full href values. */
   pagePath?: string;
+  /**
+   * When true, omit secondary path labels that equal the leaf name. Forwarded
+   * to each {@link SchemaFieldRow}. Default false.
+   */
+  showFieldPathWhenDistinct?: boolean;
+  /**
+   * When false, hide OpenAPI pointer breadcrumbs and compact `$ref` labels.
+   * Forwarded to each {@link SchemaFieldRow}. Default true.
+   */
+  showPointerPathChrome?: boolean;
   className?: string;
   "data-testid"?: string;
 };
@@ -42,6 +52,8 @@ export function SchemaFieldTree({
   depth = 0,
   defaultExpanded = false,
   pagePath,
+  showFieldPathWhenDistinct = false,
+  showPointerPathChrome = true,
   className,
   "data-testid": testId = "schema-field-tree",
 }: SchemaFieldTreeProps) {
@@ -71,6 +83,8 @@ export function SchemaFieldTree({
               depth={depth + 1}
               nodes={node.children}
               pagePath={pagePath}
+              showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+              showPointerPathChrome={showPointerPathChrome}
             />
           ) : null;
 
@@ -81,6 +95,8 @@ export function SchemaFieldTree({
             key={node.field.path}
             node={node}
             pagePath={pagePath}
+            showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+            showPointerPathChrome={showPointerPathChrome}
           >
             {nested}
           </SchemaFieldRow>

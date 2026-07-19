@@ -56,6 +56,7 @@ export {
   type SchemaExamplePanelProps,
 } from "./schema-example-panel";
 export {
+  dedupeSchemaFieldTreeNodesByPath,
   schemaFieldHasRefTarget,
   schemaFieldLeafName,
   schemaFieldTreeNodeCanExpand,

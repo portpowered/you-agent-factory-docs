@@ -1503,6 +1503,31 @@ Representative pages: `src/content/docs/references/factory-schema/`,
 switch cases per slug). Cross-route success/invalid proofs live in
 `src/content/docs/references/schema-reference-published-routes.test.tsx`
 (page-owned route + mount markers only — not renderer or inventory scans).
+Schema reference polish stays projection-first: open on `#schema-lookup` (plus
+authored examples when present); do **not** restore `What It Covers` /
+`Key Concepts` / summary-style intros — page-local tests should assert those
+headings and `sections.whatItCovers` / `sections.keyConcepts` keys absent.
+Mock-workers recursive splay stays page-local: enable `showCatalog` and pass
+expanded `fieldNodes` from a page helper that resolves `itemSchema` /
+`refTarget` into nested children (strip `refTarget` on inlined parents so the
+shared expander can open them). Do not retarget shared SchemaReference defaults
+for Factory schema / you-config siblings.
+Mock-workers authored examples stay page-local: pass `exampleInputs` into the
+page `SchemaReference` mount from a page-owned module adapted from existing
+docs/customer samples (schema-true keys only). Do not edit workers/workstations
+authored pages and do not invent hermetic upstream schemas (HOLD).
+Mock-workers polish regression proofs stay under
+`mock-workers-schema-page.test.tsx`: assert intro absence, nested splay /
+on-page `$defs`, and authored example payloads on both the full MDX page path
+and the isolated mount (shared helper preferred) so `$ref`-only / no-examples
+presentation cannot silently return.
+Mock-workers browser verify stays page-local:
+`assert-mock-workers-schema-polish-browser.ts` (webpack `bun run dev`, unique
+port in 3100–3999, Playwright, kill server on exit). Assert
+`data-schema-status="ready"`, absent What It Covers / Key Concepts headings,
+nested `mockWorkers[]` / `unmatchedDispatchPolicy` fields + on-page `$defs`,
+and copyable authored examples (`data-schema-example="copy"` focusable).
+Run with plain `bun` from repo cwd; do not leave the probe server running.
 
 ## Page bundle and registry workflow
 

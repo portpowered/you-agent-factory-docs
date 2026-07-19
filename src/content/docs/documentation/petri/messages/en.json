@@ -5,7 +5,7 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This page explains how you-agent-factory runs Petri / Colored Petri Net (CPN) factories: work tokens move through places under workstation transitions. Petri / CPN framing is how the runtime reads authored factory topology as a net. Places hold work, workstations act as transitions that fire when their inputs are ready, and the current token distribution is the marking the session advances."
+      "body": "you-agent-factory runs Petri / Colored Petri Net (CPN) factories: work tokens move through places under workstation transitions. Petri / CPN framing is how the runtime reads authored factory topology as a net. Places hold work, workstations act as transitions that fire when their inputs are ready, and the current token distribution is the marking the session advances."
     },
     "keyConcepts": {
       "title": "Key Concepts",
@@ -17,7 +17,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is Petri / Colored Petri Net (CPN) framing for factory readers. It is not academic Petri-net theory, not the JavaScript dynamic-workflow orchestrator deep dive, not the configuration field reference, and not the architecture-of-system diagram page. Factory orchestrators come in two kinds: PETRI (place, token, and transition nets like this page describes) and JAVASCRIPT (dynamic workflows authored in JavaScript or TypeScript). When no orchestrator block is authored, compatibility defaults to Petri."
+      "body": "Petri / Colored Petri Net (CPN) framing helps factory readers understand place, token, and transition nets. It is not academic Petri-net theory, not the JavaScript dynamic-workflow orchestrator deep dive, not the configuration field reference, and not the architecture-of-system diagram. Factory orchestrators come in two kinds: PETRI (place, token, and transition nets) and JAVASCRIPT (dynamic workflows authored in JavaScript or TypeScript). When no orchestrator block is authored, compatibility defaults to Petri."
     },
     "related": {
       "title": "Related To"

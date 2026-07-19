@@ -28,7 +28,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web MCP integration reference for stdio serve, host configuration, and Factory Session tool discovery. It is not HTTP or SSE transport documentation, not a multi-host UI parity matrix, not a sync of packaged you docs mcp topics, not the Cursor dynamic-workflows use-case guide, and not the dynamic-workflows API deep page."
+      "body": "MCP covers stdio serve, host configuration, and Factory Session tool discovery. It is not HTTP or SSE transport documentation, not a multi-host UI parity matrix, not a sync of packaged you docs mcp topics, not the Cursor dynamic-workflows use-case guide, and not the dynamic-workflows API deep page."
     },
     "related": {
       "title": "Related To"

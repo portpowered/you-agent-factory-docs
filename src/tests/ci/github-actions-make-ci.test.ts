@@ -9,10 +9,18 @@ import {
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import { BUILD_CONTRACT_REQUIRED_TEST_PATHS } from "@/lib/build/build-contract-required-test-paths";
+import { CI_CONTRACT_REQUIRED_TEST_PATHS } from "@/lib/ci-contract-required-test-paths";
 import {
+  CI_GATE_JOB_ID,
+  CI_REQUIRED_JOB_GRAPH,
+  CI_REQUIRED_JOB_IDS,
+  CI_REQUIRED_ORDERING_EDGES,
+  CI_REQUIRED_SUITE_JOBS,
   CI_WORKFLOW_REQUIRED_MAKE_TARGETS,
   EXCLUDED_MAKE_CI_TARGETS,
+  getCiRequiredJob,
   MAKE_CI_PREREQUISITES,
   SHARED_REQUIRED_SUITE_TARGETS,
 } from "@/lib/ci-required-path";
@@ -22,6 +30,21 @@ const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
 const makefilePath = join(repoRoot, "Makefile");
 
 type PackageScripts = Record<string, string>;
+
+type WorkflowStep = {
+  run?: string;
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowJob = {
+  needs?: string | string[];
+  steps?: WorkflowStep[];
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowDocument = {
+  jobs?: Record<string, WorkflowJob>;
+};
 
 function parseMakefileCiPrerequisites(makefile: string): string[] {
   const ciLine = makefile
@@ -39,19 +62,108 @@ function workflowMakeCommands(workflow: string): string[] {
   );
 }
 
+function loadCiWorkflow(): {
+  raw: string;
+  jobs: Record<string, WorkflowJob>;
+} {
+  const raw = readFileSync(ciWorkflowPath, "utf8");
+  const document = parseYaml(raw) as WorkflowDocument;
+  if (!document.jobs || typeof document.jobs !== "object") {
+    throw new Error("ci.yml is missing a jobs map");
+  }
+  return { raw, jobs: document.jobs };
+}
+
+function normalizeNeeds(needs: string | string[] | undefined): string[] {
+  if (!needs) return [];
+  return Array.isArray(needs) ? [...needs] : [needs];
+}
+
+function jobMakeTargets(job: WorkflowJob | undefined): string[] {
+  const targets: string[] = [];
+  for (const step of job?.steps ?? []) {
+    const run = step.run?.trim() ?? "";
+    const match = run.match(/^make\s+([^\s#]+)/);
+    if (match?.[1]) targets.push(match[1]);
+  }
+  return targets;
+}
+
+function jobHasContinueOnErrorTrue(job: WorkflowJob | undefined): boolean {
+  if (!job) return false;
+  if (
+    job["continue-on-error"] === true ||
+    job["continue-on-error"] === "true"
+  ) {
+    return true;
+  }
+  return (job.steps ?? []).some(
+    (step) =>
+      step["continue-on-error"] === true ||
+      step["continue-on-error"] === "true",
+  );
+}
+
 describe("GitHub Actions make ci", () => {
-  test("ci workflow is a linear required path with setup, check, and no continue-on-error", () => {
-    const workflow = readFileSync(ciWorkflowPath, "utf8");
+  test("ci workflow matches the required job-graph model", () => {
+    const { raw, jobs } = loadCiWorkflow();
+    const jobIds = Object.keys(jobs);
 
-    const setupBunIndex = workflow.indexOf("oven-sh/setup-bun@v2");
-    const setupIndex = workflow.indexOf("run: make setup");
-    const checkIndex = workflow.indexOf("run: make check");
+    for (const jobId of CI_REQUIRED_JOB_IDS) {
+      expect(jobIds).toContain(jobId);
+    }
 
-    expect(setupBunIndex).toBeGreaterThan(-1);
-    expect(setupIndex).toBeGreaterThan(setupBunIndex);
-    expect(checkIndex).toBeGreaterThan(setupIndex);
-    expect(workflow).not.toContain("run: make ci");
-    expect(workflow).not.toMatch(/continue-on-error:\s*true/i);
+    // No single linear verify-only required path.
+    expect(jobIds).not.toContain("verify");
+    expect(raw).not.toContain("run: make ci");
+
+    for (const graphJob of CI_REQUIRED_SUITE_JOBS) {
+      const workflowJob = jobs[graphJob.id];
+      expect(workflowJob).toBeDefined();
+      expect(normalizeNeeds(workflowJob?.needs)).toEqual([...graphJob.needs]);
+
+      const targets = jobMakeTargets(workflowJob);
+      for (const target of graphJob.makeTargets) {
+        expect(targets).toContain(target);
+      }
+    }
+
+    for (const edge of CI_REQUIRED_ORDERING_EDGES) {
+      expect(normalizeNeeds(jobs[edge.to]?.needs)).toContain(edge.from);
+    }
+
+    const gate = jobs[CI_GATE_JOB_ID];
+    expect(gate).toBeDefined();
+    expect(jobMakeTargets(gate)).toEqual([]);
+    expect(normalizeNeeds(gate?.needs).sort()).toEqual(
+      [...getCiRequiredJob(CI_GATE_JOB_ID).needs].sort(),
+    );
+
+    for (const jobId of CI_REQUIRED_JOB_IDS) {
+      expect(jobHasContinueOnErrorTrue(jobs[jobId])).toBe(false);
+    }
+    expect(raw).not.toMatch(/continue-on-error:\s*true/i);
+  });
+
+  test("ci-gate needs every required child job and suite jobs keep peer independence", () => {
+    const { jobs } = loadCiWorkflow();
+    const gateNeeds = new Set(normalizeNeeds(jobs[CI_GATE_JOB_ID]?.needs));
+
+    for (const suiteJob of CI_REQUIRED_SUITE_JOBS) {
+      expect(gateNeeds.has(suiteJob.id)).toBe(true);
+    }
+
+    const peerJobIds = CI_REQUIRED_SUITE_JOBS.filter(
+      (job) => job.needs.length === 0,
+    ).map((job) => job.id);
+
+    for (const peerId of peerJobIds) {
+      expect(normalizeNeeds(jobs[peerId]?.needs)).toEqual([]);
+    }
+
+    expect(CI_REQUIRED_JOB_GRAPH.map((job) => job.id)).toEqual([
+      ...CI_REQUIRED_JOB_IDS,
+    ]);
   });
 
   test("make ci and package scripts keep verify, build-contract, and integration as required gates", () => {
@@ -164,20 +276,24 @@ describe("GitHub Actions make ci", () => {
     }
   });
 
-  test("ci workflow invokes the aligned required make targets", () => {
-    const workflow = readFileSync(ciWorkflowPath, "utf8");
-    const commands = workflowMakeCommands(workflow);
+  test("ci workflow invokes every required make target across the job graph", () => {
+    const { raw, jobs } = loadCiWorkflow();
+    const commands = workflowMakeCommands(raw);
 
     for (const target of CI_WORKFLOW_REQUIRED_MAKE_TARGETS) {
       expect(commands).toContain(target);
     }
 
-    const buildIndex = commands.indexOf("build");
-    const integrationIndex = commands.indexOf("test-integration");
-    const budgetIndex = commands.indexOf("budget");
-    expect(buildIndex).toBeGreaterThan(-1);
-    expect(integrationIndex).toBeGreaterThan(buildIndex);
-    expect(budgetIndex).toBeGreaterThan(buildIndex);
+    for (const graphJob of CI_REQUIRED_SUITE_JOBS) {
+      const targets = jobMakeTargets(jobs[graphJob.id]);
+      for (const target of graphJob.makeTargets) {
+        expect(targets).toContain(target);
+      }
+    }
+
+    expect(normalizeNeeds(jobs.integration?.needs)).toEqual(["static-export"]);
+    expect(normalizeNeeds(jobs.budget?.needs)).toEqual(["static-export"]);
+    expect(jobMakeTargets(jobs["static-export"])).toContain("build");
   });
 
   test("shared restored suites appear in both make ci and the CI workflow", () => {
@@ -190,6 +306,15 @@ describe("GitHub Actions make ci", () => {
       expect(prerequisites.has(target)).toBe(true);
       expect(commands.has(target)).toBe(true);
     }
+  });
+
+  test("bounded ci-contract suite still includes the job-graph alignment tests", () => {
+    expect(CI_CONTRACT_REQUIRED_TEST_PATHS).toContain(
+      "src/tests/ci/github-actions-make-ci.test.ts",
+    );
+    expect(CI_CONTRACT_REQUIRED_TEST_PATHS).toContain(
+      "src/lib/ci-required-path.test.ts",
+    );
   });
 
   test("make ci stops on the first failing prerequisite", () => {

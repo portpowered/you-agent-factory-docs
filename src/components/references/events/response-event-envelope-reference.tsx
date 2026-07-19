@@ -5,12 +5,16 @@
  * the stream as ephemeral observation — not canonical FactoryEvent replay.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
+import type { EventEnvelopeJsonExample } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventEnvelopeJsonExampleView } from "./event-envelope-json-example";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type ResponseEventEnvelopeReferenceProps = {
   envelopeFieldsDefinition: SchemaDefinitionModel;
+  /** Corpus-true full envelope JSON example when available. */
+  envelopeExample?: EventEnvelopeJsonExample;
   pagePath?: string;
   className?: string;
   "data-testid"?: string;
@@ -18,6 +22,7 @@ export type ResponseEventEnvelopeReferenceProps = {
 
 export function ResponseEventEnvelopeReference({
   envelopeFieldsDefinition,
+  envelopeExample,
   pagePath,
   className,
   "data-testid": testId = "response-event-envelope-reference",
@@ -49,12 +54,16 @@ export function ResponseEventEnvelopeReference({
         </p>
       </header>
 
-      <SchemaDefinition
+      <EventsSchemaDefinition
         data-testid="response-event-envelope-schema-definition"
         defaultExpanded
         definition={envelopeFieldsDefinition}
         pagePath={pagePath}
       />
+
+      {envelopeExample !== undefined ? (
+        <EventEnvelopeJsonExampleView example={envelopeExample} />
+      ) : null}
     </section>
   );
 }

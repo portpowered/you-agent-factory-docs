@@ -221,6 +221,61 @@ describe("events reference page published-route states", () => {
         ),
       ).toBeGreaterThan(0);
 
+      // Catalog polish: short label, envelope components, examples, single
+      // field listing, and no verbose OpenAPI pointer-path chrome.
+      const factoryEventQueries = within(factoryEventCatalog);
+      expect(
+        factoryEventQueries.getAllByText(/event catalog/i).length,
+      ).toBeGreaterThan(0);
+      expect(
+        factoryEventQueries.queryByText(
+          /Payload only — not a complete FactoryEvent envelope/i,
+        ),
+      ).toBeNull();
+      expect(
+        factoryEventQueries.getByTestId("event-envelope-json-example"),
+      ).toBeTruthy();
+      expect(
+        factoryEventQueries.getByTestId("event-envelope-components"),
+      ).toBeTruthy();
+      expect(
+        factoryEventQueries.getByTestId(
+          "event-envelope-component-FactoryEventType",
+        ),
+      ).toBeTruthy();
+      expect(
+        factoryEventQueries.getByTestId(
+          "event-envelope-component-FactoryEventContext",
+        ),
+      ).toBeTruthy();
+      expect(
+        factoryEventQueries.getAllByTestId("event-payload-json-example").length,
+      ).toBeGreaterThan(0);
+      const factoryEnvelopeFields = factoryEventQueries.getByLabelText(
+        "Fields for FactoryEvent",
+      );
+      for (const field of [
+        "schemaVersion",
+        "id",
+        "type",
+        "context",
+        "payload",
+      ]) {
+        expect(
+          factoryEnvelopeFields.querySelectorAll(
+            `[data-schema-field-path="${field}"]`,
+          ).length,
+        ).toBe(1);
+      }
+      expect(factoryEventCatalog.textContent ?? "").not.toMatch(
+        /components\/schemas\/.*\/properties\//,
+      );
+      expect(
+        factoryEventCatalog.querySelectorAll(
+          '[data-schema-breadcrumb-segment="components"]',
+        ).length,
+      ).toBe(0);
+
       const factoryResponseCatalog = screen.getByTestId(
         "factory-response-event-catalog-section",
       );
@@ -240,6 +295,64 @@ describe("events reference page published-route states", () => {
           ),
         ),
       ).toBeGreaterThan(0);
+
+      const factoryResponseQueries = within(factoryResponseCatalog);
+      expect(
+        factoryResponseQueries.getAllByText(/event catalog/i).length,
+      ).toBeGreaterThan(0);
+      expect(
+        factoryResponseQueries.queryByText(
+          /Payload only — ephemeral; not a complete FactoryResponseEvent envelope/i,
+        ),
+      ).toBeNull();
+      expect(
+        factoryResponseQueries.getByTestId("event-envelope-json-example"),
+      ).toBeTruthy();
+      expect(
+        factoryResponseQueries.getByTestId(
+          "response-event-kind-schema-definition",
+        ),
+      ).toBeTruthy();
+      expect(
+        factoryResponseQueries.getByTestId(
+          "response-event-phase-schema-definition",
+        ),
+      ).toBeTruthy();
+      expect(
+        factoryResponseQueries.getByTestId(
+          "response-event-provenance-schema-definition",
+        ),
+      ).toBeTruthy();
+      expect(
+        factoryResponseQueries.getAllByTestId("event-payload-json-example")
+          .length,
+      ).toBeGreaterThan(0);
+      const responseEnvelopeFields = factoryResponseQueries.getByLabelText(
+        "Fields for FactoryResponseEvent",
+      );
+      for (const field of [
+        "schemaVersion",
+        "eventId",
+        "sequence",
+        "kind",
+        "phase",
+        "provenance",
+        "payload",
+      ]) {
+        expect(
+          responseEnvelopeFields.querySelectorAll(
+            `[data-schema-field-path="${field}"]`,
+          ).length,
+        ).toBe(1);
+      }
+      expect(factoryResponseCatalog.textContent ?? "").not.toMatch(
+        /components\/schemas\/.*\/properties\//,
+      );
+      expect(
+        factoryResponseCatalog.querySelectorAll(
+          '[data-schema-breadcrumb-segment="components"]',
+        ).length,
+      ).toBe(0);
 
       const reconnectLifecycle = screen.getByTestId(
         "event-reconnect-lifecycle-section",

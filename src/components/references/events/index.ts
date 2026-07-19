@@ -23,6 +23,14 @@ export {
   type EventDiscriminatorMapProps,
 } from "./event-discriminator-map";
 export {
+  EventEnvelopeComponents,
+  type EventEnvelopeComponentsProps,
+} from "./event-envelope-components";
+export {
+  type EventEnvelopeJsonExampleProps,
+  EventEnvelopeJsonExampleView,
+} from "./event-envelope-json-example";
+export {
   EventEnvelopeReference,
   type EventEnvelopeReferenceProps,
 } from "./event-envelope-reference";
@@ -43,6 +51,10 @@ export {
   EventPayloadCatalog,
   type EventPayloadCatalogProps,
 } from "./event-payload-catalog";
+export {
+  type EventPayloadJsonExampleProps,
+  EventPayloadJsonExampleView,
+} from "./event-payload-json-example";
 export {
   EventPayloadVariant,
   type EventPayloadVariantProps,
@@ -75,6 +87,10 @@ export {
   EventStreamOperationsList,
   type EventStreamOperationsListProps,
 } from "./event-stream-operations-list";
+export {
+  EventsSchemaDefinition,
+  type EventsSchemaDefinitionProps,
+} from "./events-schema-definition";
 export { EventsStatus } from "./events-status";
 export {
   EventsSurface,

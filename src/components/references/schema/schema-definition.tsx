@@ -31,7 +31,10 @@ import type {
 import { SchemaExamplePanel } from "./schema-example-panel";
 import { schemaFieldTreeNodesFromProperties } from "./schema-field-path";
 import { SchemaFieldTree } from "./schema-field-tree";
-import { schemaRefLinkDisplayFromAddress } from "./schema-ref-display";
+import {
+  schemaRefCompactLabel,
+  schemaRefLinkDisplayFromAddress,
+} from "./schema-ref-display";
 import { SchemaRefLink } from "./schema-ref-link";
 import { SchemaTypeBadge } from "./schema-type-badge";
 import type { SchemaFieldTreeNode } from "./types";
@@ -79,6 +82,19 @@ export type SchemaDefinitionProps = {
    * chrome. Worker/workstation variant pages opt out via SchemaVariantReference.
    */
   showPointerBreadcrumb?: boolean;
+  /**
+   * When true, omit secondary field path labels that equal the leaf name so
+   * each field is listed once. Events catalog views opt in; other reference
+   * families keep the default name+path chrome.
+   */
+  showFieldPathWhenDistinct?: boolean;
+  /**
+   * When false, hide visible `components/schemas/.../properties/...` pointer
+   * breadcrumbs and compact `$ref` labels to the leaf schema name while keeping
+   * copyable deep links. Default true preserves shared schema chrome; events
+   * catalog views opt out via EventsSchemaDefinition.
+   */
+  showPointerPathChrome?: boolean;
   className?: string;
   "data-testid"?: string;
 };
@@ -122,6 +138,8 @@ export function SchemaDefinition({
   pagePath,
   defaultExpanded = false,
   showPointerBreadcrumb = true,
+  showFieldPathWhenDistinct = false,
+  showPointerPathChrome = true,
   className,
   "data-testid": testId = "schema-definition",
 }: SchemaDefinitionProps) {
@@ -203,6 +221,7 @@ export function SchemaDefinition({
             aria-label={`Deep link for ${title}`}
             href={href}
             segments={breadcrumbSegments}
+            showPathSegments={showPointerPathChrome}
           />
         ) : null}
 
@@ -232,6 +251,9 @@ export function SchemaDefinition({
             <SchemaRefLink
               display={schemaRefLinkDisplayFromAddress(refTarget, {
                 pagePath,
+                ...(showPointerPathChrome
+                  ? {}
+                  : { label: schemaRefCompactLabel(refTarget.pointer) }),
               })}
             />
           </div>
@@ -257,6 +279,8 @@ export function SchemaDefinition({
             defaultExpanded={defaultExpanded}
             nodes={nodes}
             pagePath={pagePath}
+            showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+            showPointerPathChrome={showPointerPathChrome}
           />
         </section>
       ) : null}

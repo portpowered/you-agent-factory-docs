@@ -43,7 +43,9 @@ Before approval, reviewers **MUST** check each rule below and mark it `PASS` or
 1. The page is understandable in isolation and does not define the topic only
    through one architecture slot, one historical example, or one adjacent page.
 2. The narrative body stays focused on the concept and contains no self-
-   referential, site-structure, process, phase, or page-meta copy.
+   referential page-as-subject framing, site-structure, process, phase, or
+   page-meta copy. Mark `FAIL` for openings or body sentences that treat the
+   documentation page itself as the subject (see Clarifying Rules).
 3. The first sections explain both what the concept is and why it matters in
    plain language for a technical layperson.
 4. The title and first narrative mention use the full name before acronyms or
@@ -59,8 +61,11 @@ Before approval, reviewers **MUST** check each rule below and mark it `PASS` or
 8. Math sections keep concise symbol-only definitions directly under equations
    and avoid concept rows such as projections, grouping mechanics, or
    implementation steps.
-9. Customer-facing copy contains no reader-shortcut callouts, no "on this
-   page" framing, and no internal workflow language.
+9. Published pages use customer-facing voice for CLI and factory users: no
+   reader-shortcut callouts, no "on this page" framing about the doc itself,
+   and no system-bounded factory, planner, or docs-process internals. Mark
+   `FAIL` when copy speaks to authors or operators of the docs pipeline
+   instead of the product reader (see Clarifying Rules).
 10. References and citations are present where factual claims need support, and
     every cited reference is correct. you MUST check the actual doc if its true, or if you know its not true outright just fail it. 
 11. Related docs, tags, and citations support discovery, but the page body does
@@ -87,6 +92,55 @@ Rules:
   after the full name is established.
 - Use the fewest words needed for accuracy. Remove filler, throat clearing, and
   repeated "important because" framing.
+
+### No self-referential page-as-subject framing (mandatory)
+
+Published pages **MUST NOT** treat the documentation page itself as the
+subject of the teaching copy. The topic is the product concept, command,
+workflow, or limit — not the page, the docs site, or the author's framing of
+"what this page is for."
+
+Banned patterns (mark `FAIL` when they narrate the doc itself):
+
+- "This page explains…" / "This page covers…" / "This page describes…"
+- "This page is…" / "This page does not…" used to define the page's role
+- "On this page…" / "Read this page to…" / "Use this page when…" framing that
+  points at the document rather than the product behavior
+- Lead or limits copy that opens by announcing the page's job in the docs set
+  instead of teaching the topic
+
+Allowed exceptions are narrow and intentional:
+
+- Relocated stub notices such as "This page moved…" that exist only to send
+  the reader to the new route
+- Brief product facts that mention documentation behavior when the fact is
+  useful to the reader (for example that a reference surface does not run a
+  live request playground), stated without page-role narration
+
+Rewrite self-referential openers into direct product statements. Prefer
+"Install the CLI with…" over "This page explains how to install the CLI."
+
+### Customer-facing voice, not internals (mandatory)
+
+Published pages **MUST** speak to the customer using the CLI and factory
+product. Assume the reader does not care about system-bounded factory planner
+context, docs-process ownership, authoring workflow internals, or how the
+documentation site is maintained.
+
+Rules:
+
+- Prefer customer-facing voice: what the reader runs, configures, observes, or
+  decides while using you-agent-factory.
+- Do not write as if the audience is a planner, docs-site maintainer, or
+  factory-process operator unless the page is an intentional contributor
+  surface aimed at that audience.
+- When a real product limit involves documentation or static hosting behavior,
+  state the reader-visible consequence directly (for example "the docs site
+  does not run a live request playground") without docs-ownership or
+  authoring-pipeline talk.
+- Mark `FAIL` for copy that assumes the reader cares about system-bounded
+  factory/planner context, phase labels, or docs-process internals instead of
+  the product topic.
 
 ### Independence and structure
 
@@ -155,4 +209,10 @@ Do not reintroduce these patterns:
 - Verbose math definitions instead of short symbol lines
 - Unexpanded acronyms such as `MCP` or `CLI` before teaching the full term when
   the short form is not already established for the reader
+- Self-referential page-as-subject narration ("This page explains/covers/is…",
+  "on this page" framing about the doc itself) instead of teaching the product
+  topic directly
+- Internal or planner voice in published product pages: system-bounded
+  factory/planner/docs-process context, docs-site ownership talk, or
+  authoring-pipeline language aimed at maintainers rather than CLI users
 - Pages that explain their role in the docs set instead of the concept itself

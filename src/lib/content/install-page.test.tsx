@@ -30,6 +30,23 @@ describe("install documentation page", () => {
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
+    const whatItCovers = String(
+      loadedPage.messages.sections?.whatItCovers?.body ?? "",
+    );
+    const limits = String(
+      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+    );
+    expect(whatItCovers).toMatch(
+      /Install gets you-agent-factory onto a machine/i,
+    );
+    expect(limits).toMatch(/Install covers getting the CLI onto a machine/i);
+    expect(whatItCovers).not.toMatch(
+      /This page|on this page|Install is the reference for|reader.?shortcut/i,
+    );
+    expect(limits).not.toMatch(
+      /This page|on this page|web .+ reference|reader.?shortcut/i,
+    );
+
     render(
       <main>
         <DocsPageProviders
