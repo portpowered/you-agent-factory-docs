@@ -1093,6 +1093,39 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Dispatch / event contracts live in OpenAPI — link
   `/docs/references/{schema,api,events}` rather than inventing session schema
   embeds outside W07 JSON Schema package models).
+  Factories authored child pages
+  (`configuration` / `global-configuration` / `packaged` / `dynamic-workflows` /
+  `sessions`) use purpose-lead chrome: keep a short `openingSummary` for
+  `DocsOpeningSummary`, then open MDX on the first teaching section (for
+  example `#what-lives-where`, `#operator-model-defaults`,
+  `#discovery-and-resolution`, `#orchestrator-schema`, or
+  `#factory-relationship`). Do not restore `#what-it-covers` /
+  `#key-concepts` or `sections.whatItCovers` / `sections.keyConcepts` on those
+  trees. Leave the factories family index overview / root summary embed alone
+  unless it literally ships those intros. Do not expand this intro strip into
+  workers/workstations (separate polish), documentation Program pages, or
+  reference schema pages (batch-004).
+  Factories page-local tests assert intro absence the same way as polished
+  reference pages: `sections.whatItCovers` / `sections.keyConcepts` are
+  `undefined`, `queryByRole` for those headings returns null, and
+  `#what-it-covers` / `#key-concepts` ids are absent — while still proving
+  `openingSummary`, teaching headings, ready schema embeds, and lookup links.
+  Do not require How To Use / Limits / Related absence on factories pages that
+  still ship those non-intro sections.
+  Browser-verify Factories intro strip on the five child routes with
+  `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1`
+  (Turbopack often fails in parent-hoisted worktrees). Fetch SSR HTML and
+  assert: no `What It Covers` / `Key Concepts` headings, no
+  `#what-it-covers` / `#key-concepts`, `data-opening-summary` present with
+  the page lead, and the first teaching section id/title visible
+  (`#what-lives-where`, `#operator-model-defaults`,
+  `#discovery-and-resolution`, `#orchestrator-schema` titled
+  Orchestrator Identity, `#factory-relationship`). Kill the server before
+  exit. In zsh verify scripts, do not assign to `path` (it aliases `PATH`).
+  After stripping factories `what-it-covers`, retarget
+  `DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS` for those five routes to
+  the first teaching section ids above or W18 migration-closure /
+  `make test-build-contract` fails.
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /

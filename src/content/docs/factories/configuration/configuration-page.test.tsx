@@ -34,13 +34,11 @@ describe("factories/configuration documentation page", () => {
     expect(loadedPage.messages.description).toContain("factory.json");
     expect(loadedPage.messages.description).toMatch(/topology/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/factory\.json/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/topology/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
     const factoryRootSchema = String(
       loadedPage.messages.sections?.factoryRootSchema?.body ?? "",
     );
@@ -49,22 +47,11 @@ describe("factories/configuration documentation page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/factory\.json/i);
-    expect(whatItCovers).toMatch(/topology/i);
-    expect(keyConcepts).toMatch(/work types/i);
-    expect(keyConcepts).toMatch(/workers/i);
-    expect(keyConcepts).toMatch(/workstations/i);
     expect(factoryRootSchema).toMatch(/Factory schema/i);
     expect(factoryRootSchema).toMatch(/exhaustive/i);
     expect(howToUse).toMatch(/factory\.json/i);
     expect(limits).toMatch(/not a sync of packaged CLI/i);
     expect(limits).toMatch(/schema and API reference/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
     expect(factoryRootSchema).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -83,9 +70,11 @@ describe("factories/configuration documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "What Lives Where" }),
     ).toBeTruthy();
