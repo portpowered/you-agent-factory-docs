@@ -96,6 +96,12 @@ other W11 reference page lanes):
   Worktrees without local `node_modules` must use the probe’s `--webpack` start
   path (Turbopack rejects parent-hoisted `next`); optionally set
   `EVENTS_CATALOG_POLISH_PROBE_BASE_URL` against an already-warm server.
+- Intro-strip browser close-out (story 003): the same probe also asserts
+  absence of What It Covers / Key Concepts headings and ids, absence of folded
+  Opening summary (`[data-testid="folded-summary"]` /
+  `[data-opening-summary="folded"]`), and presence of `#event-corpus` plus
+  stream operations / reconnect / static SSE markers. Do not invent a second
+  Events browser harness for intro absence.
 - Compose production mount like the W09 harness body: `EventsSurface` + public
   section components + `buildEventReconnectLifecycleCorpus` /
   `buildSseStaticExamplesCorpus`. Never mount `EventsVerificationHarness` on the
