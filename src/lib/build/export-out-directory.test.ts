@@ -6,7 +6,10 @@ import {
   DEFAULT_EXPORT_OUT_DIR,
   exportHtmlRelativePath,
   resolveExportHtmlFilePath,
+  STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_RELATIVE_PATHS,
+  STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES,
   stripBasePathFromExportHtml,
+  verifyExportDirectoryLandings,
   verifyExportOutDirectory,
 } from "./export-out-directory";
 
@@ -20,6 +23,13 @@ afterEach(() => {
     }
   }
 });
+
+function writeLanding(outDir: string, route: string, html = "<html></html>\n") {
+  const relative = exportHtmlRelativePath(route);
+  const absolute = join(outDir, relative);
+  mkdirSync(join(absolute, ".."), { recursive: true });
+  writeFileSync(absolute, html, "utf8");
+}
 
 describe("export-out-directory", () => {
   test("DEFAULT_EXPORT_OUT_DIR is out", () => {
@@ -89,5 +99,73 @@ describe("export-out-directory", () => {
     mkdirSync(emptyDir, { recursive: true });
     writeFileSync(join(emptyDir, "index.html"), "", "utf8");
     expect(verifyExportOutDirectory(emptyDir, "/").ok).toBe(false);
+  });
+
+  test("required directory landings cover factories, workers, workstations, and peers", () => {
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain(
+      "/docs/factories",
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain(
+      "/docs/workers",
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain(
+      "/docs/workstations",
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain(
+      "/docs/guides",
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain("/blog");
+    expect([
+      ...STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_RELATIVE_PATHS,
+    ]).toEqual(
+      STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES.map((route) =>
+        exportHtmlRelativePath(route),
+      ),
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_RELATIVE_PATHS).toContain(
+      "docs/factories/index.html",
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_RELATIVE_PATHS).toContain(
+      "docs/workers/index.html",
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_RELATIVE_PATHS).toContain(
+      "docs/workstations/index.html",
+    );
+  });
+
+  test("verifyExportDirectoryLandings passes when all required landings exist", () => {
+    const dir = mkdtempSync(join(tmpdir(), "export-landings-ok-"));
+    tempDirs.push(dir);
+    for (const route of STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES) {
+      writeLanding(dir, route);
+    }
+    expect(verifyExportDirectoryLandings(dir, "/")).toEqual({ ok: true });
+  });
+
+  test("verifyExportDirectoryLandings fails closed when any required landing is missing", () => {
+    const dir = mkdtempSync(join(tmpdir(), "export-landings-missing-"));
+    tempDirs.push(dir);
+    for (const route of STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES) {
+      if (route === "/docs/factories") {
+        continue;
+      }
+      writeLanding(dir, route);
+    }
+
+    const result = verifyExportDirectoryLandings(dir, "/");
+    expect(result.ok).toBe(false);
+    if (result.ok) {
+      throw new Error("expected fail-closed missing factories landing");
+    }
+    expect(result.reason).toContain("docs/factories/index.html");
+
+    // Flat-only HTML must not satisfy the directory-landing contract.
+    writeFileSync(join(dir, "docs/factories.html"), "<html></html>\n", "utf8");
+    const stillMissing = verifyExportDirectoryLandings(dir, "/");
+    expect(stillMissing.ok).toBe(false);
+    if (stillMissing.ok) {
+      throw new Error("flat factories.html must not pass directory contract");
+    }
+    expect(stillMissing.reason).toContain("docs/factories/index.html");
   });
 });

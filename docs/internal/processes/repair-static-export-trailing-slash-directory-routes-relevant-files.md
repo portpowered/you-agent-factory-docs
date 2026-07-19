@@ -20,8 +20,9 @@ GitHub Pages serves trailing-slash URLs as directory lookups
 | --- | --- |
 | `src/lib/build/static-export.ts` | `staticExportNextConfig.trailingSlash: true` + basePath/assetPrefix |
 | `src/lib/build/static-export.test.ts` | Export-only trailingSlash + project-site basePath proofs |
-| `src/lib/build/export-out-directory.ts` | `exportHtmlRelativePath` maps `/docs/factories` → `docs/factories/index.html` (root stays `index.html`) |
-| `src/lib/build/export-out-directory.test.ts` | Directory-landing path mapping for collection indexes |
+| `src/lib/build/export-out-directory.ts` | `exportHtmlRelativePath` maps `/docs/factories` → `docs/factories/index.html` (root stays `index.html`); `verifyExportDirectoryLandings` fail-closes when required `…/index.html` landings are missing |
+| `src/lib/build/export-out-directory.test.ts` | Directory-landing path mapping + fail-closed missing-landing proofs |
+| `src/lib/build/static-export-contracted-export-surfaces.ts` | Determinism HTML paths use directory landings (`blog/index.html`, `docs/guides/index.html`) |
 | `src/lib/build/verify-export-base-path.ts` | Nav href checker accepts trailing-slash Link forms from trailingSlash export |
 | `src/lib/navigation/site-path.ts` | `normalizeAppPathTrailingSlash` keeps sitemap/nav/canonical hrefs non-slash |
 | `src/lib/seo/production-metadata-base.ts` | Absolute production URLs strip accidental trailing slashes (root stays `/`) |
@@ -40,6 +41,15 @@ index hrefs (`/docs/factories`, `/docs/workers`, `/docs/workstations`). Link HTM
 may serialize with a trailing slash under `trailingSlash: true`; both forms must
 resolve against directory landings. Do not add retired you-config compatibility
 redirects.
+
+## Fail-closed directory landings
+
+`STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES` lists published collection
+indexes (factories/workers/workstations and peers) plus `/blog`.
+`verifyExportDirectoryLandings(outDir)` fails when any mapped `…/index.html` is
+absent — flat `docs/factories.html` alone does not pass. Determinism HTML
+contract paths use the same directory layout (`blog/index.html`,
+`docs/guides/index.html`).
 
 ## Do not touch
 

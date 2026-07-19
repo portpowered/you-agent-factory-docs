@@ -445,7 +445,7 @@ On that reference machine class, the `optimize-next-static-export` lane recorded
 | Clean `MODE=clean` `totalWallTimeMs` | **111560** (<= 180000) |
 | Warm `MODE=warm` after unchanged tree | **92776** (faster than clean) |
 | Warm cache reuse | hits for content-runtime, fumadocs immutable snapshot, Next `.next/cache`, and search parsed-documents store |
-| Determinism (two clean exports) | matching contracted digests for `api/search` (+ locales) and HTML base-path contracts on `index.html`, `blog.html`, `docs/guides.html` |
+| Determinism (two clean exports) | matching contracted digests for `api/search` (+ locales) and HTML base-path contracts on directory landings `index.html`, `blog/index.html`, `docs/guides/index.html` |
 | Bundler default | webpack (see bake-off above) |
 
 Print the recorded gate without rebuilding:
