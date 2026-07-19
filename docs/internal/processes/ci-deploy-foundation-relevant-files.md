@@ -30,7 +30,11 @@ Workflows that call this contract:
 
 Reproduce any failing workflow stage locally with the same `make <target>` after
 `make setup` (and `bunx playwright install --with-deps chromium` when website
-tests need a browser). The full local required path is `make ci`.
+tests need a browser). Map a failed Actions child job to its make target via
+`src/lib/ci-required-path.ts` (`CI_REQUIRED_JOB_GRAPH`); treat **ci-gate** as the
+aggregate required check, not a linear `verify` job. The full local required
+path stays sequential: `make ci`. Deploy-pages remains a separate Pages-focused
+subset unchanged by Wave CI-1.
 
 ### Project-site export (local match for deploy-pages)
 
@@ -236,17 +240,22 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
 
 ## Repository-facing workflow identity
 
-- Live workflow display names are project-neutral: `CI` and `Deploy GitHub Pages`
-  (jobs `verify`, `Canonical validation`, `Deploy to GitHub Pages`).
+- Live workflow display names are project-neutral: `CI` and `Deploy GitHub Pages`.
+  **CI** is the Wave CI-1 parallel job graph (`check`, `unit-tests`,
+  `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`,
+  `static-export`, `integration`, `budget`) plus aggregate **ci-gate**
+  (membership/edges in `src/lib/ci-required-path.ts`). Deploy-pages jobs remain
+  `Canonical validation` and `Deploy to GitHub Pages`. Local full path stays
+  sequential (`make ci`); deploy-pages stays a separate Pages-focused subset.
 - Source-SHA → Pages proof for maintainers lives in
   `docs/operations.md` under **Commit-SHA traceability**: record
-  `merge_sha` + **CI**/**verify** run + **Deploy GitHub Pages**
+  `merge_sha` + **CI**/**ci-gate** run + **Deploy GitHub Pages**
   (**Canonical validation** / **Deploy to GitHub Pages**) run + Pages
   deployment record; do not claim the live project site
   (`https://portpowered.github.io/you-agent-factory-docs`) updated until
   **Deploy to GitHub Pages** is green for that SHA.
 - Non-destructive rollback lives in `docs/operations.md` under **Rollback
-  process**: identify `good_sha` with green **verify** + green **Deploy to
+  process**: identify `good_sha` with green **ci-gate** + green **Deploy to
   GitHub Pages**; record `(good_sha, bad_sha)` and Actions run IDs; prefer
   `git revert` via PR (or fix-forward) then redeploy on the new `main` tip.
   Force-push and hard-reset of `main` are prohibited. Direct redeploy of a
@@ -261,17 +270,18 @@ must also use the live project-site prefix, not retired `/ai-model-reference`.
   recovery path. Prefer fresh GET-only `curl` over a single browser tab when
   distinguishing cache from a bad artifact.
 - Deployment status expectations live in `docs/operations.md` under
-  **Deployment status expectations**: pushes to `main` show **CI**/**verify**
-  plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub
-  Pages**); pull requests show **verify** only and do not run production deploy.
-  A failed deploy on `main` leaves the prior successful Pages deployment live
-  until a later green **Deploy to GitHub Pages**.
+  **Deployment status expectations**: pushes to `main` show **CI**/**ci-gate**
+  (plus child jobs) plus **Deploy GitHub Pages** (**Canonical validation** /
+  **Deploy to GitHub Pages**); pull requests show **CI** / **ci-gate** only and
+  do not run production deploy. Fail → `make <target>` after `make setup`; full
+  local path → `make ci`. A failed deploy on `main` leaves the prior successful
+  Pages deployment live until a later green **Deploy to GitHub Pages**.
 - PR preview policy lives in `docs/operations.md` under **PR preview policy**:
   status is **Deferred** (not **Implemented**); owner is repository
   maintainers; alternative for PR authors is the local Makefile contract
   (`make setup` → `check` → `test` → `build` → `budget` → `component-coverage`)
   plus optional `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` and
-  green **CI**/**verify** on the PR. Checklist mapping and governance status
+  green **CI**/**ci-gate** on the PR. Checklist mapping and governance status
   language must stay **Deferred** with that owner/alternative until a preview
   workflow ships.
 - Contributor-facing entry points must link the operations runbooks by section
