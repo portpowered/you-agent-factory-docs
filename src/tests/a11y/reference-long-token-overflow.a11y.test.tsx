@@ -142,7 +142,7 @@ describe("reference long-token overflow (always-on)", () => {
         PAGE_OVERFLOW_TOLERANCE_PX,
       );
       const path = container.querySelector(
-        "[data-api-operation-section] h2 code",
+        "[data-api-operation-section] h2 code, [data-api-operation-path-token] code",
       );
       expect(path?.className).toContain("break-all");
       expect(path?.textContent).toBe(LONG_PATH);

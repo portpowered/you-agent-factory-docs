@@ -102,6 +102,28 @@ describe("a11y-reference-long-token-overflow-contract", () => {
     expect(path?.allHitsContained).toBe(true);
   });
 
+  test("Fumadocs path-token code with overflow-auto passes containment", () => {
+    document.body.innerHTML = `
+      <main>
+        <section data-api-operation-section="" data-api-fumadocs-operation="op">
+          <div data-api-operation-path-token="">
+            <code class="flex-1 overflow-auto text-nowrap">/factory-sessions/{session_id}/workers/{worker_id}/dispatch-with-a-very-long-path-suffix</code>
+          </div>
+        </section>
+      </main>
+    `;
+    stubPageWidth(390, 390);
+
+    const probe = expectReferenceLongTokenOverflow(document, "references-api");
+    expect(probe.ok).toBe(true);
+    const path = probe.tokens.find(
+      (entry) => entry.id === "api-operation-path",
+    );
+    expect(path?.found).toBe(true);
+    expect(path?.containedHitCount).toBeGreaterThan(0);
+    expect(path?.allHitsContained).toBe(true);
+  });
+
   test("uncontained long token fails the containment probe", () => {
     document.body.innerHTML = `
       <section data-api-operation-section="">

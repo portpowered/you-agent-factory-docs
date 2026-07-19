@@ -1,17 +1,20 @@
 /**
  * Page-owned render proof for the published OpenAPI projection mount.
- * Asserts success / non-success surface states, navigation, operation
- * sections, anchors, filter chrome, static-only policy, and hybrid SSE
- * summaries without scanning foreign renderer inventories.
+ * Asserts Fumadocs-primary operation rendering, navigation, anchors,
+ * static-only policy, and accessible empty/invalid outcomes without scanning
+ * foreign renderer inventories. Full fumadocs-openapi SSR is stubbed under
+ * happy-dom; browser probes cover the real createAPIPage path.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import type { ApiPageProps } from "fumadocs-openapi/ui";
+import type { ReactNode } from "react";
 import {
-  API_EVENTS_REFERENCE_PAGE_PATH,
+  API_FUMADOCS_OPERATION_ATTR,
+  API_FUMADOCS_OPERATIONS_ATTR,
   API_LOCAL_SERVER_BASE_URL_ATTR,
   API_LOCAL_SERVER_DOCS_HOST_DISCLAIMER,
   API_OPERATION_ANCHOR_ATTR,
-  API_OPERATION_COPY_LINK_ATTR,
   API_OPERATION_FILTER_ATTR,
   API_OPERATION_NAV_ATTR,
   API_OPERATION_NAV_LINK_ATTR,
@@ -20,23 +23,19 @@ import {
   API_PLAYGROUND_SUPPRESSED_ATTR,
   API_PROXY_POLICY,
   API_REFERENCE_PAGE_PATH,
-  API_SSE_OPERATIONS,
-  API_SSE_ROLE_ATTR,
-  API_SSE_SUMMARY_ATTR,
   API_UI_STATUS_DEFAULT_MESSAGES,
   API_UI_STATUS_DEFAULT_TITLES,
   type ApiLocalServerBaseUrlProjection,
   type ApiOperationDetailProjection,
   type ApiOperationNavigationProjection,
-  apiOperationAnchorUrl,
   assertsNoApiProxyUrl,
   buildApiLocalServerBaseUrlFromArtifact,
   buildApiOperationNavigationFromArtifact,
   isApiPlaygroundSuppressed,
 } from "@/components/references/api";
 import {
-  ApiReferenceProjection,
   type ApiReferenceProjectionLoaders,
+  ApiReferenceProjectionView,
   resolveApiReferenceProjectionState,
 } from "./ApiReferenceProjection";
 
@@ -66,33 +65,70 @@ function failingLoaders(
   };
 }
 
-const EXPECTED_SSE_OPS = [
-  {
-    operationId: "getEventsBySessionId",
-    role: "canonical",
-    eventsAnchor: "components-schemas-FactoryEvent",
-  },
-  {
-    operationId: "getFactoryResponseEventsBySessionId",
-    role: "ephemeral",
-    eventsAnchor: "components-schemas-FactoryResponseEvent",
-  },
-  {
-    operationId: "getEvents",
-    role: "compatibility-only",
-    eventsAnchor: "components-schemas-FactoryEvent",
-  },
-] as const;
+function stubApiPagePropsFromNavigation(
+  navigation: ApiOperationNavigationProjection,
+): ApiPageProps {
+  return {
+    document: "you-agent-factory-api",
+    operations: navigation.model.groups.flatMap((group) =>
+      group.items.map((item) => ({
+        method: item.method.toLowerCase() as NonNullable<
+          ApiPageProps["operations"]
+        >[number]["method"],
+        path: item.path,
+      })),
+    ),
+  };
+}
 
-const SSE_SEMANTICS_FIELDS = [
-  "transport",
-  "reconnect",
-  "cursorPrecedence",
-  "handshakeHeaders",
-  "dualAccept",
-  "replayRetainedHistory",
-  "compatibilityOnlyStatus",
-] as const;
+function stubRenderApiPage(
+  props: ApiPageProps,
+  navigation: ApiOperationNavigationProjection,
+): ReactNode {
+  const operations = props.operations ?? [];
+  const anchorByKey = new Map<string, string>(
+    navigation.model.groups.flatMap((group) =>
+      group.items.map((item) => [`${item.method}:${item.path}`, item.anchor]),
+    ),
+  );
+  return (
+    <div {...{ [API_FUMADOCS_OPERATIONS_ATTR]: "true" }}>
+      {operations.map((item) => {
+        const key = `${item.method}:${item.path}`;
+        const anchor = anchorByKey.get(key) ?? key;
+        return (
+          <section
+            key={key}
+            id={anchor}
+            tabIndex={-1}
+            {...{
+              [API_OPERATION_SECTION_ATTR]: "",
+              [API_OPERATION_ANCHOR_ATTR]: anchor,
+              [API_FUMADOCS_OPERATION_ATTR]: anchor,
+            }}
+            data-api-operation-method={item.method}
+            data-api-operation-path={item.path}
+          >
+            <code>
+              {item.method.toUpperCase()} {item.path}
+            </code>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function readyStubBundle(): {
+  navigation: ApiOperationNavigationProjection;
+  apiPageProps: ApiPageProps;
+} {
+  const navigation = buildApiOperationNavigationFromArtifact();
+  return {
+    navigation,
+    apiPageProps: stubApiPagePropsFromNavigation(navigation),
+  };
+}
 
 describe("ApiReferenceProjection", () => {
   afterEach(() => {
@@ -106,7 +142,6 @@ describe("ApiReferenceProjection", () => {
       throw new Error("expected ready projection state");
     }
     expect(state.model.operationCount).toBeGreaterThan(0);
-    expect(state.byAnchor.size).toBeGreaterThan(0);
   });
 
   test("resolveApiReferenceProjectionState returns empty when no operations publish", () => {
@@ -129,12 +164,32 @@ describe("ApiReferenceProjection", () => {
   });
 
   test(
-    "mounts the ready API surface with tag navigation and all operations",
+    "mounts Fumadocs-primary operations with tag navigation on the ready path",
     () => {
-      const { model } = buildApiOperationNavigationFromArtifact();
-      expect(model.operationCount).toBeGreaterThan(0);
+      const { navigation, apiPageProps } = readyStubBundle();
+      expect(navigation.model.operationCount).toBeGreaterThan(0);
 
-      const { container } = render(<ApiReferenceProjection />);
+      const state = resolveApiReferenceProjectionState({
+        buildNavigation: () => navigation,
+        buildDetails: (): ApiOperationDetailProjection => ({
+          details: [],
+          byAnchor: new Map(),
+          operationCount: navigation.model.operationCount,
+          operationsWithAuthoredExamples: 0,
+          operationsWithEventStream: 0,
+          specifier: "@you-agent-factory/api/openapi",
+        }),
+        buildLocalServer: buildApiLocalServerBaseUrlFromArtifact,
+      });
+      expect(state.status).toBe("ready");
+
+      const { container } = render(
+        <ApiReferenceProjectionView
+          state={state}
+          apiPageProps={apiPageProps}
+          renderApiPage={(props) => stubRenderApiPage(props, navigation)}
+        />,
+      );
 
       const surface = screen.getByTestId("api-surface");
       expect(surface.getAttribute("data-api-status")).toBe("ready");
@@ -150,48 +205,40 @@ describe("ApiReferenceProjection", () => {
       expect(
         container.querySelector(`[${API_OPERATION_FILTER_ATTR}]`),
       ).not.toBeNull();
+      expect(
+        container.querySelector(`[${API_FUMADOCS_OPERATIONS_ATTR}]`),
+      ).not.toBeNull();
 
       const sections = container.querySelectorAll(
         `[${API_OPERATION_SECTION_ATTR}]`,
       );
-      expect(sections.length).toBe(model.operationCount);
+      expect(sections.length).toBe(navigation.model.operationCount);
 
-      for (const item of model.groups.flatMap((group) => group.items)) {
+      for (const item of navigation.model.groups.flatMap(
+        (group) => group.items,
+      )) {
         const section = container.querySelector(`#${CSS.escape(item.anchor)}`);
         expect(section).not.toBeNull();
-        expect(section?.getAttribute(API_OPERATION_ANCHOR_ATTR)).toBe(
+        expect(section?.getAttribute(API_FUMADOCS_OPERATION_ATTR)).toBe(
           item.anchor,
         );
-
-        const expectedUrl = apiOperationAnchorUrl(
-          item.anchor,
-          API_REFERENCE_PAGE_PATH,
-        );
-        const copyControl = section?.querySelector(
-          `[${API_OPERATION_COPY_LINK_ATTR}="${item.anchor}"]`,
-        );
-        expect(copyControl).not.toBeNull();
-        expect(
-          section
-            ?.querySelector("[data-api-operation-copy-value]")
-            ?.getAttribute("data-api-operation-copy-value"),
-        ).toBe(expectedUrl);
 
         const navLinks = container.querySelectorAll(
           `[${API_OPERATION_NAV_LINK_ATTR}][href="#${item.anchor}"]`,
         );
         expect(navLinks.length).toBeGreaterThan(0);
       }
+
+      expect(API_REFERENCE_PAGE_PATH).toBe("/docs/references/api");
     },
     PROJECTION_RENDER_TIMEOUT_MS,
   );
 
   test(
-    "enforces static-only policy and hybrid SSE summaries on the published mount",
+    "enforces static-only policy on the published Fumadocs mount",
     () => {
       expect(isApiPlaygroundSuppressed(API_PLAYGROUND_OPTIONS)).toBe(true);
       expect(assertsNoApiProxyUrl(API_PROXY_POLICY)).toBe(true);
-      expect(API_SSE_OPERATIONS).toHaveLength(3);
 
       const { primary } = buildApiLocalServerBaseUrlFromArtifact();
       expect(primary).toBeDefined();
@@ -199,7 +246,27 @@ describe("ApiReferenceProjection", () => {
         throw new Error("expected packaged OpenAPI servers entry");
       }
 
-      const { container } = render(<ApiReferenceProjection />);
+      const { navigation, apiPageProps } = readyStubBundle();
+      const state = resolveApiReferenceProjectionState({
+        buildNavigation: () => navigation,
+        buildDetails: (): ApiOperationDetailProjection => ({
+          details: [],
+          byAnchor: new Map(),
+          operationCount: navigation.model.operationCount,
+          operationsWithAuthoredExamples: 0,
+          operationsWithEventStream: 0,
+          specifier: "@you-agent-factory/api/openapi",
+        }),
+        buildLocalServer: buildApiLocalServerBaseUrlFromArtifact,
+      });
+
+      const { container } = render(
+        <ApiReferenceProjectionView
+          state={state}
+          apiPageProps={apiPageProps}
+          renderApiPage={(props) => stubRenderApiPage(props, navigation)}
+        />,
+      );
       const root = screen.getByTestId("api-reference-projection");
 
       expect(root.getAttribute(API_PLAYGROUND_SUPPRESSED_ATTR)).toBe("true");
@@ -236,79 +303,12 @@ describe("ApiReferenceProjection", () => {
       expect(container.querySelectorAll('button[type="submit"]').length).toBe(
         0,
       );
-
-      const summaries = container.querySelectorAll(`[${API_SSE_SUMMARY_ATTR}]`);
-      expect(summaries.length).toBe(3);
-
-      for (const expected of EXPECTED_SSE_OPS) {
-        const panel = container.querySelector(
-          `[${API_SSE_SUMMARY_ATTR}="${expected.operationId}"]`,
-        );
-        expect(panel).not.toBeNull();
-        expect(panel?.getAttribute(API_SSE_ROLE_ATTR)).toBe(expected.role);
-        expect(panel?.getAttribute("data-api-sse-live-connection")).toBe(
-          "false",
-        );
-        expect(panel?.getAttribute("data-api-sse-full-catalog")).toBe("false");
-
-        for (const field of SSE_SEMANTICS_FIELDS) {
-          expect(
-            panel?.querySelector(`[data-api-sse-semantics-field="${field}"]`),
-          ).not.toBeNull();
-        }
-
-        const eventsLink = panel?.querySelector(
-          `[data-api-sse-events-link="${expected.eventsAnchor}"]`,
-        );
-        expect(eventsLink?.getAttribute("href")).toBe(
-          `${API_EVENTS_REFERENCE_PAGE_PATH}#${expected.eventsAnchor}`,
-        );
-
-        if (expected.role === "compatibility-only") {
-          expect(panel?.getAttribute("data-api-sse-preferred")).toBe("false");
-          expect(
-            panel?.querySelector("[data-api-sse-never-preferred]"),
-          ).not.toBeNull();
-        }
-        if (expected.role === "canonical") {
-          expect(panel?.getAttribute("data-api-sse-preferred")).toBe("true");
-        }
-      }
-
-      expect(
-        container.querySelector(
-          '[data-api-operation-id="submitWorkBySessionId"] [data-api-sse-summary]',
-        ),
-      ).toBeNull();
-      expect(
-        container.querySelectorAll(
-          "[data-sse-catalog-section],[data-event-catalog-envelope]",
-        ).length,
-      ).toBe(0);
-      expect(
-        container.querySelectorAll("[data-api-sse-live-connection='true']")
-          .length,
-      ).toBe(0);
     },
     PROJECTION_RENDER_TIMEOUT_MS,
   );
 
   test("renders accessible empty status when the projection has no operations", () => {
-    render(
-      <ApiReferenceProjection
-        loaders={{
-          buildNavigation: emptyNavigationProjection,
-          buildDetails: (): ApiOperationDetailProjection => {
-            throw new Error("details should not load for empty navigation");
-          },
-          buildLocalServer: (): ApiLocalServerBaseUrlProjection => {
-            throw new Error(
-              "local server should not load for empty navigation",
-            );
-          },
-        }}
-      />,
-    );
+    render(<ApiReferenceProjectionView state={{ status: "empty" }} />);
 
     const status = screen.getByRole("status");
     expect(status.getAttribute("data-api-status")).toBe("empty");
@@ -323,7 +323,7 @@ describe("ApiReferenceProjection", () => {
   });
 
   test("renders accessible invalid status when the OpenAPI projection cannot load", () => {
-    render(<ApiReferenceProjection loaders={failingLoaders()} />);
+    render(<ApiReferenceProjectionView state={{ status: "invalid" }} />);
 
     const status = screen.getByRole("status");
     expect(status.getAttribute("data-api-status")).toBe("invalid");
@@ -334,6 +334,21 @@ describe("ApiReferenceProjection", () => {
     );
     expect(screen.queryByTestId("api-reference-projection")).toBeTruthy();
     expect(document.querySelector("[data-api-operation-navigator]")).toBeNull();
-    expect(document.querySelectorAll("[data-api-sse-summary]").length).toBe(0);
+    expect(
+      document.querySelectorAll(`[${API_FUMADOCS_OPERATIONS_ATTR}]`).length,
+    ).toBe(0);
+  });
+
+  test("renders accessible invalid status when Fumadocs props are missing on ready state", () => {
+    const state = resolveApiReferenceProjectionState();
+    expect(state.status).toBe("ready");
+
+    render(
+      <ApiReferenceProjectionView state={state} apiPageProps={undefined} />,
+    );
+
+    const status = screen.getByRole("status");
+    expect(status.getAttribute("data-api-status")).toBe("invalid");
+    expect(status.textContent).toContain(API_UI_STATUS_DEFAULT_TITLES.invalid);
   });
 });

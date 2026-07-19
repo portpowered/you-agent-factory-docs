@@ -14,6 +14,7 @@
 
 import { createOpenAPI, openapiSource } from "fumadocs-openapi/server";
 import type { ApiPageProps } from "fumadocs-openapi/ui";
+import { apiOpenApiTurbopackLoadDependencies } from "@/lib/references/api-openapi-turbopack";
 import type { OpenApiOperationSummary } from "@/lib/references/family-normalized-models";
 import { normalizeOpenApiOperationsFromArtifact } from "@/lib/references/normalize-family-artifacts";
 import {
@@ -32,10 +33,17 @@ import {
  * `proxyUrl` is intentionally omitted (see {@link API_PROXY_POLICY}) — the
  * production surface is static-only and must never configure a CORS proxy for
  * live playground fetches.
+ *
+ * Input uses Turbopack-/webpack-safe package resolution so Next RSC pages can
+ * load the same `@you-agent-factory/api/openapi` document that CLI/tests load
+ * via the W03 resolver (ancestor `node_modules` walk, not bare `createRequire`
+ * paths that become `[externals]/…` under Turbopack).
  */
 export const apiOpenApiServer = createOpenAPI({
   input: () => {
-    const loaded = loadApiOpenApiArtifact();
+    const loaded = loadApiOpenApiArtifact(
+      apiOpenApiTurbopackLoadDependencies(),
+    );
     return {
       [API_OPENAPI_SCHEMA_ID]: loaded.document,
     };
@@ -79,7 +87,7 @@ export type ApiOpenApiSinglePageProjection = {
  * Project the packaged OpenAPI document onto one virtual page via `per: "file"`.
  */
 export async function loadApiOpenApiSinglePageProjection(): Promise<ApiOpenApiSinglePageProjection> {
-  const loaded = loadApiOpenApiArtifact();
+  const loaded = loadApiOpenApiArtifact(apiOpenApiTurbopackLoadDependencies());
   const source = await openapiSource(apiOpenApiServer, {
     per: "file",
     baseDir: API_OPENAPI_SOURCE_BASE_DIR,

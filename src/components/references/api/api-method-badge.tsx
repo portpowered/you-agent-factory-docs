@@ -1,5 +1,8 @@
 /**
- * Accessible HTTP method badge for the W08 API operation surface.
+ * Accessible HTTP method badge for harness / custom-section fixtures.
+ *
+ * Not part of the published Fumadocs `ApiReferenceAPIPage` path — deep-import
+ * only (not re-exported from `@/components/references/api`).
  *
  * Meaning is carried by the method text itself; theme tokens only style.
  * Never rely on color alone to communicate GET vs POST vs DELETE.

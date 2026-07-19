@@ -51,7 +51,8 @@ hooks, and SSR cost.
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/api/index.ts` | Public barrel for the W08 API UI ownership surface |
+| `src/components/references/api/index.ts` | Public barrel: published primary = `ApiReferenceAPIPage`; custom operation chrome is harness/deep-import only (not re-exported) |
+| `src/components/references/api/published-renderer-exports.test.ts` | Proves barrel names Fumadocs as primary and omits superseded custom section/badge/examples/media-type exports |
 | `src/components/references/api/ownership.ts` | Ownership root + forbidden-tree fence helpers |
 | `src/components/references/api/ownership.test.ts` | Ownership root presence + fence proofs |
 | `src/components/references/api/types.ts` | Status vocabulary for loading/empty/invalid/unsupported/ready |
@@ -59,7 +60,9 @@ hooks, and SSR cost.
 | `src/components/references/api/api-surface.tsx` | Boundary that short-circuits non-ready statuses or renders ready children |
 | `src/components/references/api/api-surface.test.tsx` | Status semantics proofs for the ownership boundary |
 | `src/components/references/api/load-openapi-artifact.ts` | W03-backed loader for `@you-agent-factory/api/openapi` (document object + schema id) |
-| `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; attaches W04 normalized ops from the same artifact |
+| `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; Turbopack-safe package load; attaches W04 normalized ops from the same artifact |
+| `src/components/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, request/response `data-api-schema-slot` wrappers, `data-api-operation-summary` + `data-api-operation-path-token`, operationId section wrappers) |
+| `src/components/references/api/api-code-block.tsx` | `renderCodeBlock` → ServerCodeBlock + dual Shiki themes |
 | `src/components/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
 | `src/components/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
 | `src/components/references/api/single-page-projection.test.ts` | W03 acquisition + single-page projection proofs |
@@ -74,10 +77,10 @@ hooks, and SSR cost.
 | `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + operation sections (detail or stub) + copy links + hash controller |
 | `src/components/references/api/operation-detail.ts` | Pure projectors for parameters, bodies, responses, media types, authored examples |
 | `src/components/references/api/load-operation-details.ts` | Build detail inventory + anchor map from the live package artifact |
-| `src/components/references/api/api-method-badge.tsx` | Accessible HTTP method text badge (theme tokens; not color-only meaning) |
-| `src/components/references/api/api-response-media-type.tsx` | Distinguishes JSON vs `text/event-stream` vs other with text labels |
-| `src/components/references/api/api-operation-examples.tsx` | CodePanel + `useCopyButton` for authored examples only (no fabricated payloads) |
-| `src/components/references/api/api-operation-section.tsx` | Full operation section: method/path/summary, params, body, responses, examples |
+| `src/components/references/api/api-method-badge.tsx` | Harness-only HTTP method text badge (deep-import; not on public barrel) |
+| `src/components/references/api/api-response-media-type.tsx` | Harness-only JSON vs `text/event-stream` vs other labels (deep-import) |
+| `src/components/references/api/api-operation-examples.tsx` | Harness-only CodePanel examples (deep-import; not published Fumadocs path) |
+| `src/components/references/api/api-operation-section.tsx` | Harness/unit custom operation section — **not** the published primary renderer (`ApiReferenceAPIPage` is) |
 | `src/components/references/api/playground-suppression.ts` | Production `playground: { enabled: false }` + no-`proxyUrl` / forbidden proxy-route policy |
 | `src/components/references/api/local-server-base-url.ts` | Pure projectors for OpenAPI `servers` → local base URL + docs-host disclaimer |
 | `src/components/references/api/api-local-server-base-url.tsx` | Visible local-server base URL notice (static-only; no live execution) |
@@ -116,13 +119,51 @@ hooks, and SSR cost.
 - Feed `createOpenAPI` a **document object** (not a filesystem path string) so
   happy-dom URL polyfills under `bun test` do not break
   `@apidevtools/json-schema-ref-parser`.
+- Prefer `apiOpenApiTurbopackLoadDependencies()` inside `createOpenAPI` input **and**
+  `loadApiOpenApiSinglePageProjection()` so Next/Turbopack RSC pages resolve the
+  same package YAML (ancestor `node_modules` walk) that CLI/tests use — bare
+  `createRequire` can become `[externals]/…` under Turbopack and fail closed in
+  the W03 resolver.
 - Project with `openapiSource(server, { per: "file", baseDir: "references/api" })`
   so every published operation lands on one virtual page.
+- Mount published operations through `ApiReferenceAPIPage` (`createAPIPage`) from
+  `api-page.tsx` — playground stays `{ enabled: false }`, no `proxyUrl`,
+  `generateTypeScriptDefinitions: false`, and `codeUsages` limited to curl + JS
+  (not the default six-language registry — that SSR-bloats HTML on the 45-op
+  single-page projection). Each operation is wrapped in
+  `<section id={operationId} data-api-operation-section>`.
+- Request/response body Schema UI stays on the Fumadocs path: `schemaUI.showExample`,
+  `showResponseSchema: true`, and `data-api-schema-slot="request|response"` wrappers
+  around `slots.body` / `slots.responses` (promoted from the W01 spike). Do **not**
+  add a bespoke schema explorer under `src/components/references/schema/` for this
+  page — W07 owns that tree separately.
 - Assert operation counts against the **live** package inventory
   (`countOpenApiOperations`), not a frozen product quota. Baseline observation
   at pin time was 45 operations / 41 paths.
 - Run `assert-single-page-projection.ts` via plain `bun` (subprocess from tests),
   never call `openapiSource` directly inside `bun test`.
+- Browser proof for the Fumadocs mount:
+  `bun src/content/docs/references/api/assert-api-page-fumadocs-browser.ts`
+  (unique port default 3542).
+- Browser proof for request/response component schema fields:
+  `bun src/content/docs/references/api/assert-api-page-schema-components-browser.ts`
+  (unique port default 3552). Probe target:
+  `submitWorkBySessionId` → `#/components/schemas/SubmitWorkRequest` fields
+  (`name`, `workTypeName`, `items`) via Fumadocs Schema UI (lazy client boundary —
+  wait for hydrated fields, not SSR example JSON alone).
+- Published API MDX stays projection-first: keep `what-it-covers` /
+  `key-concepts` / `operations` (+ Fumadocs mount); do **not** ship
+  `how-to-use`, `limits-and-assumptions`, `related`, `tags`, or `references`
+  (citations) sections on this page only. Sibling reference family pages are
+  owned by `repair-reference-boilerplate-trim`. Browser proof:
+  `bun src/content/docs/references/api/assert-api-page-boilerplate-trim-browser.ts`
+  (unique port default 3562) — assert section ids, not fragile heading strings
+  like "Tags" that Fumadocs may reuse.
+- End-to-end published-page gate (story 006):
+  `bun src/content/docs/references/api/assert-api-page-gates-browser.ts`
+  (unique port default 3572). Proves Fumadocs ops + static-only + schema fields
+  + SSE notes + boilerplate trim + readable method/path/summary /
+  `data-api-operation-path-token` markers in one pass.
 - W04 normalized summaries are derived from the same loaded document for
   cross-links/display; do not invent a second OpenAPI corpus.
 
@@ -169,17 +210,23 @@ hooks, and SSR cost.
 
 ## Operation request/response detail
 
-- Pure projectors live in `operation-detail.ts` — shallow-resolve
+- **Published path:** method/path/parameters/body/responses (+ schema fields)
+  come from Fumadocs `ApiReferenceAPIPage` (`createAPIPage`). Do not mount
+  custom `ApiOperationSection` on `/docs/references/api`.
+- Pure projectors in `operation-detail.ts` still feed the published ready-gate
+  (corrupt inventory → invalid) and harness fixtures — shallow-resolve
   `#/components/parameters/*` refs; project request/response media types and
   **authored** `example` / `examples` only (never invent payloads or walk W07
   schema field trees).
-- `ApiMethodBadge` carries HTTP method meaning in text; theme tokens style only.
-- `ApiResponseMediaType` distinguishes JSON vs `text/event-stream` vs other with
-  explicit kind labels (`JSON` / `Server-Sent Events` / `Other`).
-- `ApiOperationSection` renders method/path/summary/description, parameters,
-  request body, responses, media types, and examples; section `id` stays the
-  W04/operationId anchor shared with nav + hash focus.
-- `ApiOperationExamples` uses site `CodePanel` + fumadocs `useCopyButton`.
+- Harness-only custom chrome (deep-import; **not** on `@/components/references/api`
+  barrel): `ApiMethodBadge`, `ApiResponseMediaType`, `ApiOperationExamples`,
+  `ApiOperationSection`. Keep them for `/api-renderer-harness` and unit
+  a11y/theme/SSE fixtures. Published-page a11y/no-JS/long-token gates must
+  accept Fumadocs markers (`data-api-operation-summary` attribute,
+  `data-api-operation-path-token` around the static method/path bar,
+  `overflow-auto` containment) — see
+  `a11y-reference-no-js-html-contract.ts` and
+  `a11y-reference-long-token-overflow-contract.ts`.
 - Load via `buildApiOperationDetailsFromArtifact()` (happy-dom-safe).
 
 ## Playground suppression and local-server base URL
@@ -189,9 +236,10 @@ hooks, and SSR cost.
   App Router proxy segments). Prefer this over editing the W01 spike policy.
 - `apiOpenApiServer` must leave `proxyUrl` unset; assert via
   `assertsNoApiProxyUrl(apiOpenApiServer.options)`.
-- `apiReferencePlaygroundPageOptions()` is the `createAPIPage` fragment for
-  later Fumadocs page wiring (W11); custom `ApiOperationSection` renderers are
-  stronger (no playground slots at all).
+- `apiReferencePlaygroundPageOptions()` is the `createAPIPage` fragment used by
+  `ApiReferenceAPIPage` (`playground: { enabled: false }`). Harness-only
+  `ApiOperationSection` has no playground slots either, but is not the published
+  renderer.
 - Local-server notice: pure `local-server-base-url.ts` projectors read OpenAPI
   `servers` (live package baseline: `http://localhost:7437`);
   `ApiLocalServerBaseUrlNotice` shows the URL plus an explicit docs-host
@@ -213,12 +261,20 @@ hooks, and SSR cost.
   headers, dual-Accept, replay/retained-history, compatibility-only status) and
   links toward planned W09 anchors under `/docs/references/events#…`
   (W04 schema-pointer encoding for envelope schemas).
-- UI: `ApiSseOperationSummaryPanel` mounts inside `ApiOperationSection` only for
-  those three ops. Markers: `data-api-sse-summary`, `data-api-sse-role`,
+- UI: On the published Fumadocs-primary page, `ApiSseOperationSummaryPanel`
+  injects via `content.renderOperationLayout` in `api-page.tsx` (after
+  description, before parameters) for those three ops only. Section wrappers
+  also mark `data-api-sse-operation="true"`. Harness-only `ApiOperationSection`
+  (deep-import) still mounts the same panel for `/api-renderer-harness` /
+  unit fixtures — not a parallel published renderer. Markers:
+  `data-api-sse-summary`, `data-api-sse-role`,
   `data-api-sse-live-connection="false"`, `data-api-sse-full-catalog="false"`.
 - Do **not** implement the full event envelope/payload catalog here (W09). Do
   not import W02 spike catalog views into the production API tree.
-- Browser probe: `bun src/components/references/api/assert-sse-summaries-browser.ts`
+- Browser probes:
+  - harness: `bun src/components/references/api/assert-sse-summaries-browser.ts`
+  - published page: `bun src/content/docs/references/api/assert-api-page-static-sse-browser.ts`
+    (wait for terminal `data-api-status=ready` after Suspense; unique port)
 
 ## Theme tokens and code-copy
 
@@ -273,6 +329,8 @@ hooks, and SSR cost.
 ```bash
 bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/ownership.test.ts \
+  src/components/references/api/published-renderer-exports.test.ts \
+  src/components/references/api/api-page.test.ts \
   src/components/references/api/api-surface.test.tsx \
   src/components/references/api/single-page-projection.test.ts \
   src/components/references/api/operation-navigation.test.ts \

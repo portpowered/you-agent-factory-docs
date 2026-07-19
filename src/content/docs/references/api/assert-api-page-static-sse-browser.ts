@@ -1,13 +1,13 @@
 /**
  * Browser probe for published `/docs/references/api` static-only policy and
- * hybrid SSE summaries (W11 story 003). Run with plain `bun` from repo cwd.
- * Kills the local server on exit.
+ * hybrid SSE summaries beside Fumadocs operations (story 003). Run with plain
+ * `bun` from repo cwd. Kills the local server on exit.
  */
 
 import { type ChildProcess, spawn } from "node:child_process";
 import { launchPlaywrightBrowser } from "@/lib/verify/launch-playwright-browser";
 
-const PORT = Number(process.env.API_REFERENCE_PAGE_PROBE_PORT ?? "3541");
+const PORT = Number(process.env.API_REFERENCE_PAGE_PROBE_PORT ?? "3553");
 const PAGE_PATH = "/docs/references/api";
 const READY_TIMEOUT_MS = 120_000;
 
@@ -83,7 +83,7 @@ try {
     detached: true,
   });
 
-  const baseUrl = `http://localhost:${PORT}`;
+  const baseUrl = `http://127.0.0.1:${PORT}`;
   await waitForReady(baseUrl, READY_TIMEOUT_MS);
 
   const browser = await launchPlaywrightBrowser();
@@ -92,9 +92,32 @@ try {
       viewport: { width: 1440, height: 900 },
     });
     await page.goto(`${baseUrl}${PAGE_PATH}`, {
-      waitUntil: "networkidle",
+      waitUntil: "domcontentloaded",
       timeout: 120_000,
     });
+
+    // Suspense may stream a loading fallback before the Fumadocs child resolves.
+    await page.waitForFunction(
+      () => {
+        const statuses = Array.from(
+          document.querySelectorAll("[data-api-status]"),
+        ).map((el) => el.getAttribute("data-api-status"));
+        return (
+          statuses.includes("ready") ||
+          statuses.includes("empty") ||
+          (statuses.includes("invalid") && !statuses.includes("loading"))
+        );
+      },
+      { timeout: 120_000 },
+    );
+
+    // SSE panels mount with the Fumadocs operation layout for the three ops.
+    await page.waitForSelector(
+      '[data-api-sse-summary="getEventsBySessionId"]',
+      {
+        timeout: 60_000,
+      },
+    );
 
     const probe = await page.evaluate((ops) => {
       const surface = document.querySelector('[data-testid="api-surface"]');
@@ -118,9 +141,17 @@ try {
         const link = panel?.querySelector(
           `[data-api-sse-events-link="${op.eventsAnchor}"]`,
         );
+        const fumadocsOp = document.querySelector(
+          `[data-api-fumadocs-operation="${op.operationId}"]`,
+        );
         return {
           operationId: op.operationId,
           present: Boolean(panel),
+          insideFumadocsOp: Boolean(
+            fumadocsOp?.querySelector(
+              `[data-api-sse-summary="${op.operationId}"]`,
+            ),
+          ),
           role: panel?.getAttribute("data-api-sse-role") ?? null,
           liveConnection:
             panel?.getAttribute("data-api-sse-live-connection") ?? null,
@@ -165,6 +196,8 @@ try {
       return {
         surfaceStatus: surface?.getAttribute("data-api-status") ?? null,
         hasStatusPanel: Boolean(statusPanel),
+        fumadocsOps: document.querySelectorAll("[data-api-fumadocs-operation]")
+          .length,
         sectionCount: document.querySelectorAll("[data-api-operation-section]")
           .length,
         suppressed: root?.getAttribute("data-api-playground-suppressed"),
@@ -195,6 +228,9 @@ try {
     }
     if (probe.hasStatusPanel) {
       failures.push("ready route must not show api-status panel");
+    }
+    if (probe.fumadocsOps < 1) {
+      failures.push(`expected Fumadocs operations, got ${probe.fumadocsOps}`);
     }
     if (probe.sectionCount < 1) {
       failures.push(`expected operation sections, got ${probe.sectionCount}`);
@@ -240,6 +276,11 @@ try {
       if (!actual?.present) {
         failures.push(`missing SSE summary for ${expected.operationId}`);
         continue;
+      }
+      if (!actual.insideFumadocsOp) {
+        failures.push(
+          `${expected.operationId} SSE summary must sit inside Fumadocs operation wrapper`,
+        );
       }
       if (actual.role !== expected.role) {
         failures.push(

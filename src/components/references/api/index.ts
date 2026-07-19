@@ -2,6 +2,18 @@
  * W08 unified HTTP/OpenAPI reference renderer ownership surface.
  *
  * Prefer importing from `@/components/references/api` for production API UI.
+ *
+ * **Published primary operation renderer:** `ApiReferenceAPIPage` (Fumadocs
+ * `createAPIPage`). Thin adapters that Fumadocs does not replace stay on this
+ * barrel (local-server notice, tag nav, hash controller, status shell, SSE
+ * summary panel).
+ *
+ * **Not on this barrel (harness / deep-import only):** the superseded custom
+ * operation chrome (`api-operation-section`, `api-method-badge`,
+ * `api-operation-examples`, `api-response-media-type`). Those modules remain
+ * under this ownership tree for `/api-renderer-harness` and focused unit
+ * fixtures — they are not the published `/docs/references/api` renderer path.
+ *
  * Keep overlay validators (W06), schema UI (W07), event catalog (W09), and
  * CLI/MCP/JS family renderers (W10) outside this tree. Do not reopen W01/W02
  * spike trees except to migrate reusable helpers into this surface.
@@ -23,15 +35,13 @@ export {
   probeApiPrintReadableFacts,
 } from "./a11y-verification";
 export {
+  ApiOpenApiCodeBlock,
+  type ApiOpenApiCodeBlockProps,
+} from "./api-code-block";
+export {
   ApiLocalServerBaseUrlNotice,
   type ApiLocalServerBaseUrlNoticeProps,
 } from "./api-local-server-base-url";
-export {
-  API_METHOD_BADGE_ATTR,
-  ApiMethodBadge,
-  type ApiMethodBadgeProps,
-  apiMethodBadgeLabel,
-} from "./api-method-badge";
 export {
   ApiNavigationVerificationHarness,
   type ApiNavigationVerificationHarnessProps,
@@ -40,11 +50,6 @@ export {
   ApiOperationCopyLink,
   type ApiOperationCopyLinkProps,
 } from "./api-operation-copy-link";
-export {
-  API_EXAMPLES_ATTR,
-  ApiOperationExamples,
-  type ApiOperationExamplesProps,
-} from "./api-operation-examples";
 export {
   ApiOperationFilter,
   type ApiOperationFilterProps,
@@ -58,9 +63,19 @@ export {
   type ApiOperationNavigatorProps,
 } from "./api-operation-navigator";
 export {
-  ApiOperationSection,
-  type ApiOperationSectionProps,
-} from "./api-operation-section";
+  API_FUMADOCS_OPERATION_ATTR,
+  API_FUMADOCS_OPERATIONS_ATTR,
+  API_OPERATION_PATH_TOKEN_ATTR,
+  API_PUBLISHED_PRIMARY_OPERATION_RENDERER,
+  API_SCHEMA_COMPONENT_PROBE,
+  API_SCHEMA_SLOT_ATTR,
+  API_SCHEMA_UI_OPTIONS,
+  ApiReferenceAPIPage,
+  apiReferenceApiPagePlaygroundDisabled,
+  apiReferenceSchemaUiShowsExamples,
+  createApiOpenApiCodeUsageRegistry,
+  readApiOperationSummaryLabel,
+} from "./api-page";
 export {
   ApiReferenceHashController,
   type ApiReferenceHashControllerProps,
@@ -70,10 +85,6 @@ export {
   ApiReferenceMobileNavigator,
   type ApiReferenceMobileNavigatorProps,
 } from "./api-reference-mobile-navigator";
-export {
-  ApiResponseMediaType,
-  type ApiResponseMediaTypeProps,
-} from "./api-response-media-type";
 export {
   ApiSseOperationSummaryPanel,
   type ApiSseOperationSummaryProps,

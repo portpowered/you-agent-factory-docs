@@ -1,6 +1,8 @@
 /**
- * Static example panel for authored OpenAPI media examples.
+ * Static example panel for authored OpenAPI media examples (harness / custom
+ * section fixtures only — not the published Fumadocs operation renderer).
  *
+ * Deep-import only; not re-exported from `@/components/references/api`.
  * Uses the site CodePanel + fumadocs `useCopyButton`. Never invents payloads —
  * empty/absent examples render nothing (or an optional empty status).
  */

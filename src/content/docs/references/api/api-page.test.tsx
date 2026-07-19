@@ -1,8 +1,9 @@
 /**
  * Page-owned render proof for references/api.
- * Covers the published reference shell, registry alignment, W05 nested
- * discovery, and sibling discovery links toward planned events without
- * requiring sibling W11 pages to exist in this lane.
+ * Covers the published reference shell, registry alignment, and projection-first
+ * MDX (no how-to-use / limits / tags / related / citations boilerplate). Under
+ * happy-dom, page-mdx-components mounts the sync Fumadocs stub; real
+ * createAPIPage is covered by projection unit tests and browser probes.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -20,7 +21,7 @@ describe("api reference page", () => {
   });
 
   test(
-    "publishes /docs/references/api as a reference-kind page",
+    "publishes /docs/references/api as a projection-first reference page",
     async () => {
       const fumadocsPage = source.getPage(["references", "api"]);
       expect(fumadocsPage).toBeDefined();
@@ -51,26 +52,30 @@ describe("api reference page", () => {
       const keyConcepts = String(
         loadedPage.messages.sections?.keyConcepts?.body ?? "",
       );
-      const howToUse = String(
-        loadedPage.messages.sections?.howToUse?.body ?? "",
-      );
-      const limits = String(
-        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+      const operations = String(
+        loadedPage.messages.sections?.operations?.body ?? "",
       );
 
       expect(whatItCovers).toMatch(/HTTP\/OpenAPI/i);
       expect(whatItCovers).toMatch(/published operations/i);
       expect(keyConcepts).toMatch(/OpenAPI/i);
       expect(keyConcepts).toMatch(/local-server base URL/i);
-      expect(howToUse).toMatch(/tag-grouped navigation/i);
-      expect(howToUse).toMatch(/documentation host/i);
-      expect(limits).toMatch(/static documentation/i);
-      expect(limits).toMatch(/request playground/i);
-      expect(limits).toMatch(/\/docs\/references\/events/);
+      expect(keyConcepts).toMatch(/static documentation/i);
+      expect(keyConcepts).toMatch(/request playground/i);
+      expect(keyConcepts).toMatch(/events reference/i);
+      expect(operations).toMatch(/OpenAPI projection/i);
       expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
       expect(keyConcepts).not.toMatch(/on this page|Model Atlas/i);
-      expect(howToUse).not.toMatch(/on this page|Model Atlas/i);
-      expect(limits).not.toMatch(/on this page|Model Atlas/i);
+      expect(operations).not.toMatch(/on this page|Model Atlas/i);
+
+      // Boilerplate section copy must not remain as published message keys.
+      expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+      expect(
+        loadedPage.messages.sections?.limitsAndAssumptions,
+      ).toBeUndefined();
+      expect(loadedPage.messages.sections?.related).toBeUndefined();
+      expect(loadedPage.messages.sections?.tags).toBeUndefined();
+      expect(loadedPage.messages.sections?.references).toBeUndefined();
 
       render(
         <main>
@@ -90,10 +95,20 @@ describe("api reference page", () => {
         screen.getByRole("heading", { name: "Key Concepts" }),
       ).toBeTruthy();
       expect(screen.getByRole("heading", { name: "Operations" })).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+
+      expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Limits And Assumptions" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+      ).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+
+      expect(document.getElementById("how-to-use")).toBeNull();
+      expect(document.getElementById("limits-and-assumptions")).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("tags")).toBeNull();
+      expect(document.getElementById("references")).toBeNull();
 
       expect(screen.getByTestId("api-reference-projection")).toBeTruthy();
       expect(
@@ -106,6 +121,9 @@ describe("api reference page", () => {
         document.querySelector("[data-api-operation-navigator]"),
       ).not.toBeNull();
       expect(
+        document.querySelector("[data-api-fumadocs-operations]"),
+      ).not.toBeNull();
+      expect(
         document.querySelectorAll("[data-api-operation-section]").length,
       ).toBeGreaterThan(0);
       expect(
@@ -113,27 +131,23 @@ describe("api reference page", () => {
           .querySelector("[data-api-reference-projection]")
           ?.getAttribute("data-api-playground-suppressed"),
       ).toBe("true");
-      expect(document.querySelectorAll("[data-api-sse-summary]").length).toBe(
-        3,
-      );
       expect(
-        document.querySelectorAll("[data-api-sse-live-connection='true']")
-          .length,
-      ).toBe(0);
-
+        document.querySelectorAll("[data-api-fumadocs-operation]").length,
+      ).toBeGreaterThan(0);
       expect(
-        screen
-          .getByRole("link", { name: "Events reference" })
-          .getAttribute("href"),
-      ).toBe("/docs/references/events");
+        document
+          .querySelector("[data-api-fumadocs-operation]")
+          ?.getAttribute("data-api-operation-summary"),
+      ).toBeTruthy();
       expect(
-        screen
-          .getByRole("link", { name: "API documentation orientation" })
-          .getAttribute("href"),
-      ).toBe("/docs/references/api");
+        document.querySelector("[data-api-operation-path-token]"),
+      ).not.toBeNull();
       expect(
-        screen.getByRole("link", { name: "CLI" }).getAttribute("href"),
-      ).toBe("/docs/documentation/cli");
+        document.querySelectorAll('[data-api-schema-slot="request"]').length,
+      ).toBeGreaterThan(0);
+      expect(
+        document.querySelectorAll('[data-api-schema-slot="response"]').length,
+      ).toBeGreaterThan(0);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

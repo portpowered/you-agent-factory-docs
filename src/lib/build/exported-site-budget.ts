@@ -76,10 +76,18 @@ export const EXPORTED_SITE_BUDGET_COMMAND = "make budget";
  * Total stays under the W17 235 MiB ceiling (meta omission more than offsets
  * the Orama delta); search ceiling is now 32 MiB. Keep modest headroom for
  * ordinary content growth without silent skip/pass.
+ * Raised again on 2026-07-19 UTC after the repair-api-fumadocs-openapi-components
+ * lane mounted Fumadocs `createAPIPage` / Schema UI as the primary
+ * `/docs/references/api` renderer (curl+JS usage samples only; TS defs off).
+ * Local `make build` measured ~334.75 MiB total / ~13.21 MiB Next static JS
+ * (425 chunks; attributable API-page JS stayed ~2.14 MiB under the focused
+ * ceiling) / ~28.88 MiB search bootstrap. API HTML alone is ~10.26 MiB × 4
+ * locales from full Schema UI SSR — product-required for component-object
+ * visibility. Ceilings: 360 MiB total / 15 MiB Next static JS / 32 MiB search.
  */
 export const FACTORY_EXPORTED_SITE_BUDGET_BASELINES = {
-  maxTotalOutBytes: 235_000_000,
-  maxNextStaticJsBytes: 3_500_000,
+  maxTotalOutBytes: 360_000_000,
+  maxNextStaticJsBytes: 15_000_000,
   maxSearchBootstrapBytes: 32_000_000,
 } as const;
 

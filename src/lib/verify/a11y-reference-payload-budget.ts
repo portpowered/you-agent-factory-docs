@@ -65,8 +65,8 @@ export const REFERENCE_PAYLOAD_BUDGET_MEASUREMENT_METHOD = {
    * Re-measure on this lane's `out/` before raising ceilings.
    */
   baselineSource: {
-    measuredAtUtc: "2026-07-18T17:32:00Z",
-    note: "Measured from a trusted static-export out/ that included /docs/references/api, /docs/references/events, and /docs/references/factory-schema (refs-w16-search-anchor-projection export, 2026-07-18 UTC).",
+    measuredAtUtc: "2026-07-19T11:58:00Z",
+    note: "Measured from repair-api-fumadocs-openapi-components static-export out/ after Fumadocs APIPage + Schema UI became the primary /docs/references/api renderer (curl+JS codeUsages; generateTypeScriptDefinitions false). API HTML ~10.26 MiB; attributable API JS ~2.14 MiB.",
   } as const,
 } as const;
 
@@ -93,24 +93,25 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
     {
       routeId: "references-api",
       path: "/docs/references/api",
-      measuredHtmlBytes: 1_105_524,
-      measuredJsPayloadBytes: 1_987_990,
-      maxHtmlBytes: 1_400_000,
+      measuredHtmlBytes: 10_258_887,
+      measuredJsPayloadBytes: 2_136_570,
+      // ~25% headroom above Fumadocs Schema UI SSR HTML for 45 operations.
+      maxHtmlBytes: 13_000_000,
       maxJsPayloadBytes: 2_500_000,
     },
     {
       routeId: "references-events",
       path: "/docs/references/events",
-      measuredHtmlBytes: 2_030_114,
-      measuredJsPayloadBytes: 1_987_990,
+      measuredHtmlBytes: 2_076_020,
+      measuredJsPayloadBytes: 2_136_570,
       maxHtmlBytes: 2_600_000,
       maxJsPayloadBytes: 2_500_000,
     },
     {
       routeId: "references-factory-schema",
       path: "/docs/references/factory-schema",
-      measuredHtmlBytes: 466_197,
-      measuredJsPayloadBytes: 1_987_990,
+      measuredHtmlBytes: 480_214,
+      measuredJsPayloadBytes: 2_136_570,
       maxHtmlBytes: 600_000,
       maxJsPayloadBytes: 2_500_000,
     },
