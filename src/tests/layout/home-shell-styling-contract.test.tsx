@@ -14,6 +14,10 @@ import { searchInlineResultsListClassName } from "@/features/docs/components/lis
 import { proseAutoLinkClassName } from "@/features/docs/components/prose-auto-link-class";
 import { TagResourceList } from "@/features/docs/components/TagResourceList";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
+import {
+  DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS,
+  DOCS_CHROME_TOKEN_MAP_SURFACES,
+} from "@/features/docs/styles/docs-chrome-highlighting-token-map-contract";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
 import type { TagResourceKindGroup } from "@/lib/content/tag-resources";
 import type { TagIndexCategoryGroup } from "@/lib/content/tags";
@@ -128,6 +132,32 @@ describe("Phase 1 home shell styling contracts", () => {
     );
     expect(searchHtml).not.toContain("hover:!bg-accent");
     expect(searchHtml).not.toContain("group-hover:text-accent-foreground");
+
+    // Locked chrome highlighting token map: five surfaces, primary-yellow hover.
+    expect([...DOCS_CHROME_TOKEN_MAP_SURFACES]).toEqual([
+      "searchGlobeGitHub",
+      "toc",
+      "sidebarRow",
+      "headerTextIcons",
+      "breadcrumb",
+    ]);
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.searchGlobeGitHub
+        .hoverActiveProof,
+    ).toBe("#f5c76f");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.sidebarRow.hoverActiveKind,
+    ).toBe("background");
+    expect(DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.toc.restProofs).toEqual([
+      "#507f8c",
+      "#8aaeb8",
+    ]);
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.headerTextIcons.restProofs[0],
+    ).toBe("#f7f2e8");
+    expect(
+      DOCS_CHROME_TOKEN_MAP_SURFACE_EXPECTATIONS.breadcrumb.restProofs[0],
+    ).toBe("#8aaeb8");
 
     // Shared prose/chrome underline accent: secondary blue, not primary yellow.
     expect(proseAutoLinkClassName).toContain("text-secondary");
