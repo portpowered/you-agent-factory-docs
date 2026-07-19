@@ -73,6 +73,7 @@ export {
   ApiReferenceAPIPage,
   apiReferenceApiPagePlaygroundDisabled,
   apiReferenceSchemaUiShowsExamples,
+  createApiOpenApiCodeUsageRegistry,
   readApiOperationSummaryLabel,
 } from "./api-page";
 export {

@@ -15,6 +15,9 @@
  */
 
 import { defaultShikiFactory } from "fumadocs-core/highlight/shiki/full";
+import { createCodeUsageGeneratorRegistry } from "fumadocs-openapi/requests/generators";
+import { curl } from "fumadocs-openapi/requests/generators/curl";
+import { javascript } from "fumadocs-openapi/requests/generators/javascript";
 import { createAPIPage } from "fumadocs-openapi/ui";
 import { ApiOpenApiCodeBlock } from "./api-code-block";
 import { ApiSseOperationSummaryPanel } from "./api-sse-operation-summary";
@@ -29,6 +32,18 @@ import {
 } from "./playground-suppression";
 import { resolveApiSseOperationSummary } from "./sse-operation-summary";
 import { API_SHIKI_OPTIONS, API_TOKEN_CLASSES } from "./theme-tokens";
+
+/**
+ * Curl + JavaScript only — the default Fumadocs registry also registers go /
+ * python / java / csharp, which SSR-highlights six samples per operation and
+ * blows exported HTML / totalOutBytes on this 45-op single-page projection.
+ */
+export function createApiOpenApiCodeUsageRegistry() {
+  const registry = createCodeUsageGeneratorRegistry();
+  registry.add("curl", curl);
+  registry.add("js", javascript);
+  return registry;
+}
 
 /**
  * Stable id for the published primary operation renderer. Public barrel
@@ -143,6 +158,10 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
   schemaUI: {
     showExample: API_SCHEMA_UI_OPTIONS.showExample,
   },
+  // Disable TS definition generation — Schema UI already shows fields.
+  generateTypeScriptDefinitions: false,
+  // Limit usage samples to keep static-export HTML under site budget.
+  codeUsages: createApiOpenApiCodeUsageRegistry(),
   content: {
     renderPageLayout: (slots, ctx) => {
       const paths = ctx.schema.dereferenced.paths as

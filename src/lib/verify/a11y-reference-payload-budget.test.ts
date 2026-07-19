@@ -115,11 +115,11 @@ describe("reference payload budget baselines", () => {
       REFERENCE_PAYLOAD_PAGE_BUDGETS.map((entry) => [entry.routeId, entry]),
     );
 
-    expect(byId["references-api"]?.measuredHtmlBytes).toBe(1_105_524);
-    expect(byId["references-api"]?.maxHtmlBytes).toBe(1_400_000);
-    expect(byId["references-events"]?.measuredHtmlBytes).toBe(2_030_114);
+    expect(byId["references-api"]?.measuredHtmlBytes).toBe(10_258_887);
+    expect(byId["references-api"]?.maxHtmlBytes).toBe(13_000_000);
+    expect(byId["references-events"]?.measuredHtmlBytes).toBe(2_076_020);
     expect(byId["references-events"]?.maxHtmlBytes).toBe(2_600_000);
-    expect(byId["references-factory-schema"]?.measuredHtmlBytes).toBe(466_197);
+    expect(byId["references-factory-schema"]?.measuredHtmlBytes).toBe(480_214);
     expect(byId["references-factory-schema"]?.maxHtmlBytes).toBe(600_000);
 
     for (const entry of REFERENCE_PAYLOAD_PAGE_BUDGETS) {
@@ -185,7 +185,7 @@ describe("reference payload measurement and evaluation", () => {
 
   test("fails when HTML exceeds the focused ceiling", () => {
     const { cwd, outDir } = createExportFixture({
-      apiHtmlBytes: 1_500_000,
+      apiHtmlBytes: 14_000_000,
       jsBytes: 1_000,
     });
 

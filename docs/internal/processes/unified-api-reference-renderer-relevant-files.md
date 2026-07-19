@@ -127,8 +127,11 @@ hooks, and SSR cost.
 - Project with `openapiSource(server, { per: "file", baseDir: "references/api" })`
   so every published operation lands on one virtual page.
 - Mount published operations through `ApiReferenceAPIPage` (`createAPIPage`) from
-  `api-page.tsx` — playground stays `{ enabled: false }`, no `proxyUrl`, and each
-  operation is wrapped in `<section id={operationId} data-api-operation-section>`.
+  `api-page.tsx` — playground stays `{ enabled: false }`, no `proxyUrl`,
+  `generateTypeScriptDefinitions: false`, and `codeUsages` limited to curl + JS
+  (not the default six-language registry — that SSR-bloats HTML on the 45-op
+  single-page projection). Each operation is wrapped in
+  `<section id={operationId} data-api-operation-section>`.
 - Request/response body Schema UI stays on the Fumadocs path: `schemaUI.showExample`,
   `showResponseSchema: true`, and `data-api-schema-slot="request|response"` wrappers
   around `slots.body` / `slots.responses` (promoted from the W01 spike). Do **not**

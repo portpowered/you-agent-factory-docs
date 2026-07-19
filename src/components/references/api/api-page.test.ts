@@ -14,6 +14,7 @@ import {
   ApiReferenceAPIPage,
   apiReferenceApiPagePlaygroundDisabled,
   apiReferenceSchemaUiShowsExamples,
+  createApiOpenApiCodeUsageRegistry,
   readApiOperationSummaryLabel,
 } from "./api-page";
 import {
@@ -84,6 +85,16 @@ describe("ApiReferenceAPIPage (createAPIPage binder)", () => {
         "get",
       ),
     ).toBe("getHealth");
+  });
+
+  test("limits usage samples to curl and JavaScript for export budgets", () => {
+    const registry = createApiOpenApiCodeUsageRegistry();
+    const ids = [...registry.map().keys()].sort();
+    expect(ids).toEqual(["curl", "js"]);
+    expect(registry.get("curl")?.lang).toBe("bash");
+    expect(registry.get("js")?.lang).toBe("js");
+    expect(registry.get("python")).toBeUndefined();
+    expect(registry.get("go")).toBeUndefined();
   });
 
   test("records a stable body $ref probe target for browser verification", () => {
