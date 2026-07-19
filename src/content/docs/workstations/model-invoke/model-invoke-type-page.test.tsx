@@ -50,12 +50,7 @@ describe("workstations model-invoke type page", () => {
     expect(loadedPage.messages.description).toMatch(/MODEL_WORKER/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const variantFields = String(
       loadedPage.messages.sections?.variantFields?.body ?? "",
@@ -68,17 +63,18 @@ describe("workstations model-invoke type page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/type = MODEL_INVOKE/i);
-    expect(whatItCovers).toMatch(/WorkstationType/i);
-    expect(whatItCovers).toMatch(/operation/i);
-    expect(whatItCovers).toMatch(/MODEL_WORKER/i);
-    expect(whatItCovers).toMatch(/operationBindings/i);
-    expect(keyConcepts).toMatch(/type with value MODEL_INVOKE/i);
-    expect(keyConcepts).toMatch(/not a scheduling behavior/i);
-    expect(keyConcepts).toMatch(/not MODEL_WORKSTATION/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/MODEL_INVOKE/i);
+    expect(openingSummary).toMatch(/WorkstationType/i);
+    expect(openingSummary).toMatch(/operation/i);
+    expect(openingSummary).toMatch(/MODEL_WORKER/i);
+    expect(openingSummary).toMatch(/operationBindings/i);
     expect(howToUse).toMatch(/type MODEL_INVOKE/i);
     expect(howToUse).toMatch(/MODEL_WORKER/i);
     expect(howToUse).toMatch(/Do not set promptFile/i);
+    expect(howToUse).toMatch(/not a scheduling behavior/i);
+    expect(howToUse).toMatch(/not MODEL_WORKSTATION/i);
     expect(variantFields).toMatch(/selects the exclusive operation/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/outcomeFormat/i);
@@ -87,7 +83,7 @@ describe("workstations model-invoke type page", () => {
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/not the MODEL_WORKSTATION type guide/i);
     expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -159,9 +155,9 @@ describe("workstations model-invoke type page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Variant Fields" }),

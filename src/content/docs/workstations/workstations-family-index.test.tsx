@@ -37,12 +37,8 @@ describe("workstations family index", () => {
     expect(bundle.messages.description).not.toMatch(/Model Atlas/i);
     expect(bundle.route).toBe(WORKSTATIONS_FAMILY_INDEX_PATH);
 
-    const whatItCovers = String(
-      bundle.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      bundle.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(bundle.messages.openingSummary ?? "");
+    const howToUse = String(bundle.messages.sections?.howToUse?.body ?? "");
     const matrix = String(
       bundle.messages.sections?.typeBehaviorMatrix?.body ?? "",
     );
@@ -53,15 +49,18 @@ describe("workstations family index", () => {
       bundle.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/Workstation family/i);
-    expect(whatItCovers).toMatch(/independent axes/i);
-    expect(keyConcepts).toMatch(/POLLER_RUN/i);
-    expect(keyConcepts).toMatch(/POLLER/i);
-    expect(keyConcepts).toMatch(/not the same discriminator/i);
+    expect(bundle.messages.sections?.whatItCovers).toBeUndefined();
+    expect(bundle.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/WorkstationType|runtime type/i);
+    expect(openingSummary).toMatch(/POLLER_RUN/i);
+    expect(openingSummary).toMatch(/behavior POLLER/i);
+    expect(howToUse).toMatch(/selection tables/i);
+    expect(howToUse).toMatch(/POLLER_RUN/i);
+    expect(howToUse).toMatch(/not the same discriminator/i);
     expect(matrix).toMatch(/independent/i);
     expect(sharedFields).toMatch(/apply across Workstation/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -102,6 +101,12 @@ describe("workstations family index", () => {
         </DocsPageProviders>
       </main>,
     );
+
+    expect(
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
 
     const typeSelection = document.querySelector(
       "[data-workstations-type-selection-table]",

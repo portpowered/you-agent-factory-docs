@@ -3,17 +3,9 @@
   "description": "Configure type = LOGICAL_MOVE for non-worker logical routing and guarded loop-breaker usage through a HOSTED_WORKER companion.",
   "openingSummary": "LOGICAL_MOVE is the WorkstationType for non-worker logical routing with optional guards as loop breakers. Set type to LOGICAL_MOVE when a step must route work without agent, model, inference, script, or poller runtimes, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling. Keep classificationRoutes on CLASSIFIER_WORKSTATION instead.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Logical-move is the Factory WorkstationType for non-worker logical routing and guarded loop breakers in you-agent-factory. This page covers the type = LOGICAL_MOVE discriminator, how LOGICAL_MOVE pairs with a HOSTED_WORKER companion and the exclusive guards field, the validated type overlay embed, a minimal valid configuration, an incompatible misuse that borrows classifier classificationRoutes, operational cautions, and compatible WorkstationKind behaviors. Use it when a workstation must route or break loops without dispatching agent, model, inference, script, or poller worker runtimes."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is type with value LOGICAL_MOVE. LOGICAL_MOVE selects the runtime that performs logical routing without a specialized run worker and selects the exclusive guards field for optional loop-breaker checks. Type is independent of behavior: LOGICAL_MOVE pairs with every published WorkstationKind, including STANDARD and REPEATER. LOGICAL_MOVE is not a scheduling behavior and is not CLASSIFIER_WORKSTATION — keep classificationRoutes on the classifier type. Both share HOSTED_WORKER companions, but their selected field sets stay separate."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with type LOGICAL_MOVE and bind a HOSTED_WORKER companion. Choose behavior for the scheduling axis you need — STANDARD for fire-once routing, REPEATER for change-triggered loops that need a guard exit, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so logical outcomes route correctly. Set guards when this step must block or break a loop before continuing. Do not set classificationRoutes, openCodeAgent, promptFile, outcomeFormat, operation, operationBindings, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose CLASSIFIER_WORKSTATION for classification routes, AGENT_RUN for agent loops, or MODEL_INVOKE for provider-neutral model operations."
+      "body": "Author a workstation with type LOGICAL_MOVE and bind a HOSTED_WORKER companion. Choose behavior for the scheduling axis you need \u2014 STANDARD for fire-once routing, REPEATER for change-triggered loops that need a guard exit, CRON for schedules, or POLLER for long-lived poller ingress. Wire inputs plus outputs, onContinue, onRejection, and onFailure so logical outcomes route correctly. Set guards when this step must block or break a loop before continuing. Do not set classificationRoutes, openCodeAgent, promptFile, outcomeFormat, operation, operationBindings, or cron fields that belong to other WorkstationType or WorkstationKind families. Choose CLASSIFIER_WORKSTATION for classification routes, AGENT_RUN for agent loops, or MODEL_INVOKE for provider-neutral model operations. LOGICAL_MOVE is not a scheduling behavior and is not CLASSIFIER_WORKSTATION \u2014 keep classificationRoutes on the classifier type. Both share HOSTED_WORKER companions, but their selected field sets stay separate."
     },
     "variantFields": {
       "title": "Variant Fields",
@@ -21,11 +13,11 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a LOGICAL_MOVE with behavior STANDARD and optional guards. The misuse example borrows classificationRoutes from CLASSIFIER_WORKSTATION — that field is excluded from LOGICAL_MOVE."
+      "body": "Use the minimal valid example when starting a LOGICAL_MOVE with behavior STANDARD and optional guards. The misuse example borrows classificationRoutes from CLASSIFIER_WORKSTATION \u2014 that field is excluded from LOGICAL_MOVE."
     },
     "operationalCautions": {
       "title": "Operational Cautions",
-      "body": "LOGICAL_MOVE steps fail closed when the bound worker is missing or is not a HOSTED_WORKER, when guards block dispatch, when concurrency or resource limits refuse a run, when route fields leave an outcome unmapped, or when authors place classifier, agent-run, model, or cron exclusives on this type. Do not use classificationRoutes under LOGICAL_MOVE — that field belongs on CLASSIFIER_WORKSTATION. Keep scheduling on behavior and runtime on type."
+      "body": "LOGICAL_MOVE steps fail closed when the bound worker is missing or is not a HOSTED_WORKER, when guards block dispatch, when concurrency or resource limits refuse a run, when route fields leave an outcome unmapped, or when authors place classifier, agent-run, model, or cron exclusives on this type. Do not use classificationRoutes under LOGICAL_MOVE \u2014 that field belongs on CLASSIFIER_WORKSTATION. Keep scheduling on behavior and runtime on type."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -51,7 +43,7 @@
     "companionCron": "Cron behavior",
     "companionPoller": "Poller behavior",
     "minimalExampleLabel": "Minimal valid LOGICAL_MOVE workstation:",
-    "misuseExampleLabel": "Incompatible misuse — classificationRoutes on LOGICAL_MOVE:",
+    "misuseExampleLabel": "Incompatible misuse \u2014 classificationRoutes on LOGICAL_MOVE:",
     "misuseNote": "classificationRoutes belongs on CLASSIFIER_WORKSTATION. Keep LOGICAL_MOVE on identity, worker binding, inputs, outputs, routing fields, and optional guards only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -61,17 +53,17 @@
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources",
     "failureWorkerMissingClass": "worker_missing",
-    "failureWorkerMissingCause": "No worker bound, or bound worker is not a HOSTED_WORKER — author and bind a hosted backend",
+    "failureWorkerMissingCause": "No worker bound, or bound worker is not a HOSTED_WORKER \u2014 author and bind a hosted backend",
     "failureWorkerMismatchClass": "worker_type_mismatch",
-    "failureWorkerMismatchCause": "Bound worker is AGENT_WORKER, MODEL_WORKER, or another specialized run type — switch to HOSTED_WORKER or change workstation type",
+    "failureWorkerMismatchCause": "Bound worker is AGENT_WORKER, MODEL_WORKER, or another specialized run type \u2014 switch to HOSTED_WORKER or change workstation type",
     "failureGuardBlockedClass": "guard_blocked",
-    "failureGuardBlockedCause": "Guards blocked logical dispatch or loop continuation — adjust guards or wait for readiness",
+    "failureGuardBlockedCause": "Guards blocked logical dispatch or loop continuation \u2014 adjust guards or wait for readiness",
     "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked logical routing — raise limits or reduce parallel work",
+    "failureConcurrencyCause": "Workstation or resource limits blocked logical routing \u2014 raise limits or reduce parallel work",
     "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route — wire outputs, onContinue, onRejection, or onFailure",
+    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
     "failureClassificationRoutesMisuseClass": "classification_routes_on_logical_move",
-    "failureClassificationRoutesMisuseCause": "classificationRoutes declared under LOGICAL_MOVE — move classification routes to type CLASSIFIER_WORKSTATION",
+    "failureClassificationRoutesMisuseCause": "classificationRoutes declared under LOGICAL_MOVE \u2014 move classification routes to type CLASSIFIER_WORKSTATION",
     "failureClassHeader": "Failure class",
     "failureCauseHeader": "Typical cause and recovery"
   }

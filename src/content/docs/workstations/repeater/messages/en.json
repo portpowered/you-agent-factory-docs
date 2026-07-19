@@ -3,17 +3,9 @@
   "description": "Configure behavior = REPEATER for change-triggered looping and rejection reloop semantics without cron or poller scheduling.",
   "openingSummary": "REPEATER is the WorkstationKind scheduling behavior for change-triggered loops. Set behavior to REPEATER when a step should reloop on upstream change or rejection routing, without cron schedules or long-lived poller ingress.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Repeater behavior is the Factory WorkstationKind for change-triggered looping and rejection reloop semantics in you-agent-factory. This page covers the behavior = REPEATER discriminator, reloop and routing semantics, the validated behavior overlay embed, a minimal valid configuration, an incompatible misuse of cron, operational cautions, and compatible WorkstationType companions. Use it when a workstation must re-enter after change or rejection rather than fire once under STANDARD."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is behavior with value REPEATER. REPEATER schedules a workstation when inputs become ready, then reloops when upstream places change or when rejection routing returns work to the loop. Behavior is independent of type: REPEATER pairs with every published WorkstationType, including AGENT_RUN and POLLER_RUN. REPEATER is not CRON — it excludes the cron field — and it is not STANDARD fire-once or POLLER long-lived scheduling."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with behavior REPEATER. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so rejection and continue routes can re-enter the loop. Do not set cron on REPEATER. Choose STANDARD for fire-once dispatch, CRON for schedules, or POLLER for long-lived poller ingress."
+      "body": "Author a workstation with behavior REPEATER. Keep type on the runtime axis for the execution family you need. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so rejection and continue routes can re-enter the loop. Do not set cron on REPEATER. Choose STANDARD for fire-once dispatch, CRON for schedules, or POLLER for long-lived poller ingress. REPEATER is not CRON \u2014 it excludes the cron field \u2014 and it is not STANDARD or POLLER scheduling."
     },
     "variantFields": {
       "title": "Variant Fields",
@@ -21,11 +13,11 @@
     },
     "examples": {
       "title": "Examples",
-      "body": "Use the minimal valid example when starting a REPEATER workstation. The misuse example shows cron on REPEATER — cron belongs on behavior CRON and is excluded from REPEATER."
+      "body": "Use the minimal valid example when starting a REPEATER workstation. The misuse example shows cron on REPEATER \u2014 cron belongs on behavior CRON and is excluded from REPEATER."
     },
     "operationalCautions": {
       "title": "Operational Cautions",
-      "body": "REPEATER steps fail closed when reloop never terminates, when rejection routes omit onRejection, when concurrency limits block re-entry, or when route fields leave an outcome unmapped. Do not use cron schedules or long-lived poller ingress under REPEATER — those belong on CRON and POLLER. Wire onRejection deliberately so rejection reloops are intentional, not accidental infinite retries."
+      "body": "REPEATER steps fail closed when reloop never terminates, when rejection routes omit onRejection, when concurrency limits block re-entry, or when route fields leave an outcome unmapped. Do not use cron schedules or long-lived poller ingress under REPEATER \u2014 those belong on CRON and POLLER. Wire onRejection deliberately so rejection reloops are intentional, not accidental infinite retries."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -50,7 +42,7 @@
     "companionScriptRun": "Script-run workstation",
     "companionWorkersIndex": "Workers family index",
     "minimalExampleLabel": "Minimal valid REPEATER workstation:",
-    "misuseExampleLabel": "Incompatible misuse — cron on REPEATER (excluded):",
+    "misuseExampleLabel": "Incompatible misuse \u2014 cron on REPEATER (excluded):",
     "misuseNote": "cron is a CRON scheduling field. REPEATER excludes it. Use behavior CRON when the step must run on a schedule.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
@@ -60,15 +52,15 @@
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources",
     "failureReloopClass": "reloop_unbounded",
-    "failureReloopCause": "Change or continue routes keep re-entering without a stop condition — tighten onContinue/onRejection or add a guard",
+    "failureReloopCause": "Change or continue routes keep re-entering without a stop condition \u2014 tighten onContinue/onRejection or add a guard",
     "failureRejectionClass": "rejection_route_missing",
-    "failureRejectionCause": "Rejection outcome has no onRejection route — wire rejection places so reloops are intentional",
+    "failureRejectionCause": "Rejection outcome has no onRejection route \u2014 wire rejection places so reloops are intentional",
     "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked a reloop dispatch — raise limits or reduce parallel work",
+    "failureConcurrencyCause": "Workstation or resource limits blocked a reloop dispatch \u2014 raise limits or reduce parallel work",
     "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route — wire outputs, onContinue, onRejection, or onFailure",
+    "failureRoutingCause": "Outcome has no authored route \u2014 wire outputs, onContinue, onRejection, or onFailure",
     "failureCronMisuseClass": "cron_on_repeater",
-    "failureCronMisuseCause": "cron declared under REPEATER — move the schedule to behavior CRON",
+    "failureCronMisuseCause": "cron declared under REPEATER \u2014 move the schedule to behavior CRON",
     "failureClassHeader": "Failure class",
     "failureCauseHeader": "Typical cause and recovery"
   }

@@ -48,12 +48,7 @@ describe("workstations poller behavior page", () => {
     expect(loadedPage.messages.description).toMatch(/POLLER_RUN/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const variantFields = String(
       loadedPage.messages.sections?.variantFields?.body ?? "",
@@ -66,16 +61,17 @@ describe("workstations poller behavior page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/behavior = POLLER/i);
-    expect(whatItCovers).toMatch(/WorkstationKind/i);
-    expect(whatItCovers).toMatch(/long-lived poller scheduling/i);
-    expect(whatItCovers).toMatch(/POLLER_RUN/i);
-    expect(keyConcepts).toMatch(/behavior with value POLLER/i);
-    expect(keyConcepts).toMatch(/not a WorkstationType/i);
-    expect(keyConcepts).toMatch(/POLLER_RUN is the runtime type/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/POLLER/i);
+    expect(openingSummary).toMatch(/WorkstationKind/i);
+    expect(openingSummary).toMatch(/long-lived poller/i);
+    expect(openingSummary).toMatch(/POLLER_RUN/i);
     expect(howToUse).toMatch(/behavior POLLER/i);
     expect(howToUse).toMatch(/type POLLER_RUN/i);
     expect(howToUse).toMatch(/Do not set cron/i);
+    expect(howToUse).toMatch(/not a WorkstationType/i);
+    expect(howToUse).toMatch(/POLLER_RUN is the runtime type/i);
     expect(variantFields).toMatch(/no selected exclusive fields/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/collapses the axes/i);
@@ -84,7 +80,7 @@ describe("workstations poller behavior page", () => {
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/not the POLLER_RUN runtime-type guide/i);
     expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -146,9 +142,9 @@ describe("workstations poller behavior page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Variant Fields" }),

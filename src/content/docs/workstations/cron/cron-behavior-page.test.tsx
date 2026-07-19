@@ -46,12 +46,7 @@ describe("workstations cron behavior page", () => {
     expect(loadedPage.messages.description).toMatch(/schedule/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const variantFields = String(
       loadedPage.messages.sections?.variantFields?.body ?? "",
@@ -64,15 +59,15 @@ describe("workstations cron behavior page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/behavior = CRON/i);
-    expect(whatItCovers).toMatch(/WorkstationKind/i);
-    expect(whatItCovers).toMatch(/scheduled time work/i);
-    expect(keyConcepts).toMatch(/behavior with value CRON/i);
-    expect(keyConcepts).toMatch(/selects the cron schedule field/i);
-    expect(keyConcepts).toMatch(/not STANDARD/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/CRON/i);
+    expect(openingSummary).toMatch(/WorkstationKind/i);
+    expect(openingSummary).toMatch(/schedule/i);
     expect(howToUse).toMatch(/behavior CRON/i);
     expect(howToUse).toMatch(/cron expression/i);
     expect(howToUse).toMatch(/guards/i);
+    expect(howToUse).toMatch(/not STANDARD/i);
     expect(variantFields).toMatch(/selects the cron field/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/without cron/i);
@@ -81,7 +76,7 @@ describe("workstations cron behavior page", () => {
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/Compatible WorkstationType companions/i);
     expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -139,9 +134,9 @@ describe("workstations cron behavior page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Variant Fields" }),

@@ -48,12 +48,7 @@ describe("workstations agent-run type page", () => {
     expect(loadedPage.messages.description).toMatch(/AGENT_WORKER/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const variantFields = String(
       loadedPage.messages.sections?.variantFields?.body ?? "",
@@ -66,17 +61,17 @@ describe("workstations agent-run type page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/type = AGENT_RUN/i);
-    expect(whatItCovers).toMatch(/WorkstationType/i);
-    expect(whatItCovers).toMatch(/agent worker dispatch/i);
-    expect(whatItCovers).toMatch(/AGENT_WORKER/i);
-    expect(whatItCovers).toMatch(/openCodeAgent/i);
-    expect(keyConcepts).toMatch(/type with value AGENT_RUN/i);
-    expect(keyConcepts).toMatch(/not a scheduling behavior/i);
-    expect(keyConcepts).toMatch(/not MODEL_INVOKE/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/AGENT_RUN/i);
+    expect(openingSummary).toMatch(/WorkstationType/i);
+    expect(openingSummary).toMatch(/AGENT_WORKER/i);
+    expect(openingSummary).toMatch(/openCodeAgent/i);
     expect(howToUse).toMatch(/type AGENT_RUN/i);
     expect(howToUse).toMatch(/AGENT_WORKER/i);
     expect(howToUse).toMatch(/Do not set operation/i);
+    expect(howToUse).toMatch(/not a scheduling behavior/i);
+    expect(howToUse).toMatch(/not MODEL_INVOKE/i);
     expect(variantFields).toMatch(/selects the exclusive openCodeAgent/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operation/i);
@@ -85,7 +80,7 @@ describe("workstations agent-run type page", () => {
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/not the INFERENCE_RUN or MODEL_INVOKE/i);
     expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -146,9 +141,9 @@ describe("workstations agent-run type page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Variant Fields" }),

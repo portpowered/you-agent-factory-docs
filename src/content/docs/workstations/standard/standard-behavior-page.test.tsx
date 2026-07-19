@@ -48,12 +48,7 @@ describe("workstations standard behavior page", () => {
     expect(loadedPage.messages.description).toMatch(/readiness/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const variantFields = String(
       loadedPage.messages.sections?.variantFields?.body ?? "",
@@ -66,12 +61,13 @@ describe("workstations standard behavior page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/behavior = STANDARD/i);
-    expect(whatItCovers).toMatch(/WorkstationKind/i);
-    expect(keyConcepts).toMatch(/behavior with value STANDARD/i);
-    expect(keyConcepts).toMatch(/not CRON/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(openingSummary).toMatch(/STANDARD/i);
+    expect(openingSummary).toMatch(/WorkstationKind/i);
     expect(howToUse).toMatch(/behavior STANDARD/i);
     expect(howToUse).toMatch(/Do not set cron/i);
+    expect(howToUse).toMatch(/not CRON/i);
     expect(variantFields).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/cron/i);
@@ -79,7 +75,7 @@ describe("workstations standard behavior page", () => {
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/Compatible WorkstationType companions/i);
     expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -134,9 +130,9 @@ describe("workstations standard behavior page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Variant Fields" }),
