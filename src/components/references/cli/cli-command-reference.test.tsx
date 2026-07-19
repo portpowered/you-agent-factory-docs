@@ -64,7 +64,7 @@ describe("cli-visibility helpers", () => {
 });
 
 describe("CliCommandReference", () => {
-  test("renders available metadata from a normalized CLI projection", () => {
+  test("renders trimmed help surface from a normalized CLI projection", () => {
     const { container } = render(
       <CliCommandReference command={fixtureCommand()} packageVersion="0.0.0" />,
     );
@@ -82,23 +82,31 @@ describe("CliCommandReference", () => {
     expect(
       screen.getByText("Create operator/system config on a fresh home"),
     ).toBeTruthy();
-    expect(screen.getByText("Aliases")).toBeTruthy();
-    expect(screen.getByText("bootstrap")).toBeTruthy();
-    expect(screen.getByText("Visibility")).toBeTruthy();
-    expect(screen.getByText("Visible")).toBeTruthy();
-    expect(screen.getByText("Runnable")).toBeTruthy();
-    expect(screen.getByText("Handler present")).toBeTruthy();
-    expect(screen.getAllByText("Yes").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText("Long description")).toBeTruthy();
+    expect(
+      screen.getByText(/Use after install/, { exact: false }),
+    ).toBeTruthy();
     expect(screen.getByText("Example")).toBeTruthy();
     expect(
       container.querySelector("[data-cli-example-code]")?.textContent,
     ).toContain("you config init");
-    expect(screen.getByText("0.0.0")).toBeTruthy();
-    expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
+    expect(
+      container.querySelector("[data-reference-copyable-anchor]"),
+    ).toBeTruthy();
+
+    // Verbose metadata chrome removed from the card body.
+    expect(screen.queryByText("Aliases")).toBeNull();
+    expect(screen.queryByText("bootstrap")).toBeNull();
+    expect(screen.queryByText("Leaf name")).toBeNull();
+    expect(screen.queryByText("Visibility")).toBeNull();
+    expect(screen.queryByText("Runnable")).toBeNull();
+    expect(screen.queryByText("Handler present")).toBeNull();
+    expect(screen.queryByText("Lifecycle: Active")).toBeNull();
+    expect(screen.queryByText("0.0.0")).toBeNull();
+    expect(screen.queryByText("Not published on this projection")).toBeNull();
   });
 
-  test("omits optional metadata when the projection left it absent", () => {
+  test("omits optional help fields when the projection left them absent", () => {
     render(
       <CliCommandReference
         command={fixtureCommand({
@@ -115,13 +123,17 @@ describe("CliCommandReference", () => {
       />,
     );
 
+    expect(
+      screen.getByRole("heading", { name: "you config init" }),
+    ).toBeTruthy();
+    expect(screen.queryByText("Long description")).toBeNull();
+    expect(screen.queryByText("Example")).toBeNull();
     expect(screen.queryByText("Aliases")).toBeNull();
     expect(screen.queryByText("Visibility")).toBeNull();
     expect(screen.queryByText("Runnable")).toBeNull();
     expect(screen.queryByText("Handler present")).toBeNull();
-    expect(screen.queryByText("Long description")).toBeNull();
-    expect(screen.queryByText("Example")).toBeNull();
-    expect(screen.getByText("Not published on this projection")).toBeTruthy();
+    expect(screen.queryByText("Leaf name")).toBeNull();
+    expect(screen.queryByText("Not published on this projection")).toBeNull();
   });
 
   test("shows CliCapabilityNotice when structured flags/arguments are absent", () => {

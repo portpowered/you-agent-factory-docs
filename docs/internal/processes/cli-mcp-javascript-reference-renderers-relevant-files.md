@@ -35,14 +35,29 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/cli/CliCommandReference.tsx` | One command from a W04-normalized CLI projection; shows `CliCapabilityNotice` when structured flags/arguments are absent |
+| `src/components/references/cli/CliCommandReference.tsx` | One command from a W04-normalized CLI projection; trimmed keep-list only (see below); shows `CliCapabilityNotice` when structured flags/arguments are absent |
 | `src/components/references/cli/CliCommandInventory.tsx` | Inventory list with empty/error chrome |
 | `src/components/references/cli/CliCapabilityNotice.tsx` | Visible disclosure when published CLI contract lacks machine-readable flags/arguments |
 | `src/components/references/cli/cli-capability.ts` | Pure helpers + notice copy for structured-options availability |
-| `src/components/references/cli/cli-visibility.ts` | Map published CLI visibility → shared chrome when unambiguous |
+| `src/components/references/cli/cli-visibility.ts` | Map published CLI visibility → shared chrome when unambiguous (filter helpers; not card-body chrome) |
 | `src/components/references/cli/types.ts` | CLI renderer prop contracts / inventory input union |
 | `src/components/references/cli/index.ts` | Public CLI renderer barrel |
 | `src/components/references/harness/ReferenceCliHarness.tsx` | Dev fixture mount for CLI inventory browser verification |
+
+### CLI command card keep-list (repair-cli-reference-verbosity)
+
+`CliCommandReference` card body keeps only:
+
+- command-path header + stable-anchor copy affordance
+- short description (when present)
+- long description (when present and distinct from short)
+- example (when present)
+- Flags and arguments capability notice (when structured options are absent)
+
+Do **not** reintroduce on the CLI card body: `ContractSourceBadge` /
+family-package-source chrome, duplicated command-path or leaf-name rows,
+aliases, visibility, runnable, or handler-present metadata. MCP/JS/events
+renderers may still use shared badge chrome — this keep-list is CLI-card-only.
 
 ## Key host files (MCP family — story 004 / 005)
 
