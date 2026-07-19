@@ -27,6 +27,49 @@ describe("docs sidebar navigation accessibility", () => {
     restoreFetchMock();
   });
 
+  async function openExplorerFolder(
+    container: HTMLElement,
+    folderName: string,
+  ): Promise<void> {
+    const folders = within(container).getAllByRole("button", {
+      name: folderName,
+    });
+    // Top-level explorer folders follow Program documentation in DOM order.
+    // Prefer the last match so nested secondaries (Workers / Workstations /
+    // Factories) do not steal the top-level folder click.
+    const folder = folders.at(-1);
+    if (!folder) {
+      throw new Error(`missing folder button ${folderName}`);
+    }
+    await act(async () => {
+      folder.click();
+    });
+  }
+
+  async function openNestedProgramDocumentationSecondaries(
+    container: HTMLElement,
+    messages: Awaited<ReturnType<typeof loadUiMessages>>,
+  ): Promise<void> {
+    for (const folderName of [
+      messages.explorer.folders.workers,
+      messages.explorer.folders.workstations,
+      messages.explorer.folders.factories,
+      "Resources",
+      "Observability",
+    ] as const) {
+      const folders = within(container).queryAllByRole("button", {
+        name: folderName,
+      });
+      const folder = folders[0];
+      if (!folder) {
+        continue;
+      }
+      await act(async () => {
+        folder.click();
+      });
+    }
+  }
+
   test("CanonicalDocsLayout exposes keyboard-reachable factory sidebar links", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
@@ -116,11 +159,9 @@ describe("docs sidebar navigation accessibility", () => {
       context.messages.explorer.folders.workers,
       context.messages.explorer.folders.workstations,
     ] as const) {
-      const folder = within(sidebar).getByRole("button", { name: folderName });
-      await act(async () => {
-        folder.click();
-      });
+      await openExplorerFolder(sidebar, folderName);
     }
+    await openNestedProgramDocumentationSecondaries(sidebar, context.messages);
 
     expect(
       within(sidebar).queryByRole("button", { name: "Glossary" }),
@@ -258,10 +299,7 @@ describe("docs sidebar navigation accessibility", () => {
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
     ] as const) {
-      const folder = within(sidebar).getByRole("button", { name: folderName });
-      await act(async () => {
-        folder.click();
-      });
+      await openExplorerFolder(sidebar, folderName);
     }
 
     expect(

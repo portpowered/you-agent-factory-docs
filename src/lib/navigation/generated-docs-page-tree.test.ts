@@ -83,13 +83,28 @@ function findNodeIndex(
   nodes: Node[],
   target: { name?: string; url?: string },
 ): number {
-  return nodes.findIndex((node) => {
-    if (target.name) {
-      return node.name === target.name;
+  for (const [index, node] of nodes.entries()) {
+    if (target.name && node.name === target.name) {
+      return index;
     }
 
-    return node.type === "page" && "url" in node && node.url === target.url;
-  });
+    if (
+      target.url &&
+      node.type === "page" &&
+      "url" in node &&
+      node.url === target.url
+    ) {
+      return index;
+    }
+
+    if (target.url && node.type === "folder" && "children" in node) {
+      if (findNodeIndex(node.children, target) >= 0) {
+        return index;
+      }
+    }
+  }
+
+  return -1;
 }
 
 function expectIndex(targetLabel: string, index: number): number {

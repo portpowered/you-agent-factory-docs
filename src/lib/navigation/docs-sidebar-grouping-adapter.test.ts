@@ -3,8 +3,10 @@ import type { Node } from "fumadocs-core/page-tree";
 import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import {
+  DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
   FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
+  FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
   getSidebarGroupLabel,
 } from "@/lib/content/sidebar-grouping";
 import { listDocsCollectionDefinitions } from "@/lib/docs/docs-collection-definitions";
@@ -19,6 +21,16 @@ function getSeparatorLabels(nodes: Node[]): string[] {
     .map((node) => String(node.name));
 }
 
+function collectPagesFromNode(node: Node): string[] {
+  if (node.type === "page" && "url" in node && typeof node.url === "string") {
+    return [node.url];
+  }
+  if (node.type === "folder" && "children" in node) {
+    return node.children.flatMap((child) => collectPagesFromNode(child));
+  }
+  return [];
+}
+
 function collectGroupedPageUrls(nodes: Node[]): Record<string, string[]> {
   const byGroup: Record<string, string[]> = {};
   let currentGroup: string | undefined;
@@ -30,15 +42,55 @@ function collectGroupedPageUrls(nodes: Node[]): Record<string, string[]> {
       continue;
     }
 
-    if (node.type === "page" && "url" in node && typeof node.url === "string") {
-      if (!currentGroup) {
+    if (!currentGroup) {
+      if (node.type === "page" && "url" in node) {
         throw new Error(`ungrouped page at ${node.url}`);
       }
-      byGroup[currentGroup].push(node.url);
+      continue;
     }
+
+    byGroup[currentGroup].push(...collectPagesFromNode(node));
   }
 
   return byGroup;
+}
+
+function secondaryFolderNamesAfterSeparator(
+  nodes: Node[],
+  separatorName: string,
+): string[] {
+  const start = nodes.findIndex(
+    (node) => node.type === "separator" && node.name === separatorName,
+  );
+  if (start === -1) {
+    return [];
+  }
+
+  const names: string[] = [];
+  for (let index = start + 1; index < nodes.length; index += 1) {
+    const node = nodes[index];
+    if (!node || node.type === "separator") {
+      break;
+    }
+    if (node.type === "folder") {
+      names.push(String(node.name));
+    }
+  }
+  return names;
+}
+
+function countPageNodes(nodes: Node[]): number {
+  let count = 0;
+  for (const node of nodes) {
+    if (node.type === "page") {
+      count += 1;
+      continue;
+    }
+    if (node.type === "folder" && "children" in node) {
+      count += countPageNodes(node.children);
+    }
+  }
+  return count;
 }
 
 describe("docs sidebar grouping adapter", () => {
@@ -103,11 +155,10 @@ describe("docs sidebar grouping adapter", () => {
       expect(byGroup[label]?.slice().sort()).toEqual(urls.slice().sort());
     }
 
-    const pageNodeCount = nodes.filter((node) => node.type === "page").length;
-    expect(pageNodeCount).toBe(pages.length);
+    expect(countPageNodes(nodes)).toBe(pages.length);
   });
 
-  test("Program documentation subgroups follow declared order with every published page except FAQ assigned", () => {
+  test("Program documentation emits three-level nesting with every published page except FAQ assigned", () => {
     const pages = loadPublishedDocsPagesSync("en").filter(
       (page) =>
         page.docsSlug.startsWith("documentation/") &&
@@ -127,6 +178,25 @@ describe("docs sidebar grouping adapter", () => {
       "Additional references",
     ]);
 
+    expect(
+      secondaryFolderNamesAfterSeparator(nodes, "Factory Configuration"),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
+      ),
+    );
+    expect(
+      secondaryFolderNamesAfterSeparator(nodes, "System Operations"),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
+      ),
+    );
+    expect(
+      secondaryFolderNamesAfterSeparator(nodes, "System feature set"),
+    ).toEqual([]);
+    expect(secondaryFolderNamesAfterSeparator(nodes, "Interfaces")).toEqual([]);
+
     const expectedByGroup: Record<string, string[]> = {
       "System feature set": [],
       Interfaces: [],
@@ -140,33 +210,46 @@ describe("docs sidebar grouping adapter", () => {
     for (const page of pages) {
       const slug = page.docsSlug.slice("documentation/".length);
       expect(slug).not.toBe("faq");
-      const groupId =
-        FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
-          slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+      const membership =
+        FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
+          slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG
         ];
       expect(
-        groupId,
-        `${slug} must have an explicit Program documentation subgroup`,
+        membership,
+        `${slug} must have an explicit Program documentation membership`,
       ).toBeDefined();
-      if (!groupId) {
+      if (!membership) {
         continue;
       }
-      expectedByGroup[getSidebarGroupLabel("documentation", groupId)].push(
-        page.url,
-      );
+      expectedByGroup[
+        getSidebarGroupLabel("documentation", membership.group)
+      ].push(page.url);
+      expect(
+        FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+          slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+        ],
+      ).toBe(membership.group);
     }
 
     for (const [label, urls] of Object.entries(expectedByGroup)) {
       expect(byGroup[label]?.slice().sort()).toEqual(urls.slice().sort());
     }
 
-    const pageNodeCount = nodes.filter((node) => node.type === "page").length;
-    expect(pageNodeCount).toBe(pages.length);
+    expect(countPageNodes(nodes)).toBe(pages.length);
     expect(
       FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
         "faq" as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
       ],
     ).toBeUndefined();
+    expect(
+      nodes.some(
+        (node) =>
+          node.type === "page" &&
+          "url" in node &&
+          typeof node.url === "string" &&
+          node.url.endsWith("/docs/documentation/faq"),
+      ),
+    ).toBe(false);
   });
 
   test("rejects unsupported and retired Atlas resolver ids at runtime", () => {

@@ -2,8 +2,12 @@ import type { Node } from "fumadocs-core/page-tree";
 import type { DocsPageSource } from "@/lib/content/pages";
 import { getConceptById } from "@/lib/content/registry-runtime";
 import {
+  getDocumentationSidebarMembership,
+  getDocumentationSidebarSecondaryIdsForGroup,
+  getDocumentationSidebarSecondaryLabel,
   getSidebarGroupIdsForSection,
   getSidebarGroupLabel,
+  isDocumentationSidebarSecondaryGroup,
   resolveConceptsSidebarGroup,
   resolveDocumentationSidebarGroup,
   resolveGlossarySidebarGroup,
@@ -28,6 +32,20 @@ function createSeparator(name: string): Node {
     type: "separator",
     name,
   };
+}
+
+function createFolder(name: string, children: Node[]): Node {
+  return {
+    type: "folder",
+    name,
+    children,
+  };
+}
+
+function documentationPageSlug(page: DocsPageSource): string {
+  return page.docsSlug.startsWith("documentation/")
+    ? page.docsSlug.slice("documentation/".length)
+    : page.docsSlug;
 }
 
 function sortPages(pages: DocsPageSource[]): DocsPageSource[] {
@@ -113,14 +131,87 @@ function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
   });
 }
 
+/**
+ * Program documentation emits a three-level explorer: top-group separators,
+ * optional nested secondary folders, then page links. Empty top groups and
+ * empty secondaries are omitted. FAQ is not a Program documentation member.
+ */
 function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
-  return groupPagesBySection("documentation", pages, (page) => {
-    const slug = page.docsSlug.startsWith("documentation/")
-      ? page.docsSlug.slice("documentation/".length)
-      : page.docsSlug;
+  const remaining = new Set(pages.map((page) => page.docsSlug));
+  const nodes: Node[] = [];
 
-    return resolveDocumentationSidebarGroup({ slug });
-  });
+  for (const groupId of getSidebarGroupIdsForSection("documentation")) {
+    const groupPages = sortPages(
+      pages.filter((page) => {
+        if (!remaining.has(page.docsSlug)) {
+          return false;
+        }
+        return (
+          resolveDocumentationSidebarGroup({
+            slug: documentationPageSlug(page),
+          }) === groupId
+        );
+      }),
+    );
+    if (groupPages.length === 0) {
+      continue;
+    }
+
+    nodes.push(createSeparator(getSidebarGroupLabel("documentation", groupId)));
+
+    if (isDocumentationSidebarSecondaryGroup(groupId)) {
+      for (const secondaryId of getDocumentationSidebarSecondaryIdsForGroup(
+        groupId,
+      )) {
+        const secondaryPages = sortPages(
+          groupPages.filter((page) => {
+            const membership = getDocumentationSidebarMembership(
+              documentationPageSlug(page),
+            );
+            return (
+              membership !== undefined &&
+              "secondary" in membership &&
+              membership.secondary === secondaryId
+            );
+          }),
+        );
+        if (secondaryPages.length === 0) {
+          continue;
+        }
+
+        for (const page of secondaryPages) {
+          remaining.delete(page.docsSlug);
+        }
+        nodes.push(
+          createFolder(
+            getDocumentationSidebarSecondaryLabel(groupId, secondaryId),
+            secondaryPages.map(createPageNode),
+          ),
+        );
+      }
+
+      for (const page of sortPages(
+        groupPages.filter((page) => remaining.has(page.docsSlug)),
+      )) {
+        remaining.delete(page.docsSlug);
+        nodes.push(createPageNode(page));
+      }
+      continue;
+    }
+
+    for (const page of groupPages) {
+      remaining.delete(page.docsSlug);
+      nodes.push(createPageNode(page));
+    }
+  }
+
+  for (const page of sortPages(
+    pages.filter((page) => remaining.has(page.docsSlug)),
+  )) {
+    nodes.push(createPageNode(page));
+  }
+
+  return nodes;
 }
 
 const GROUPED_NODE_BUILDERS: Record<

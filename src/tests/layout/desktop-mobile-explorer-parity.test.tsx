@@ -51,7 +51,44 @@ async function openCollectionFolders(
   folderNames: readonly string[],
 ): Promise<void> {
   for (const folderName of folderNames) {
-    const folder = within(container).getByRole("button", { name: folderName });
+    const folders = within(container).getAllByRole("button", {
+      name: folderName,
+    });
+    // Top-level explorer folders follow Program documentation in DOM order.
+    // Prefer the last match so nested secondaries (Workers / Workstations /
+    // Factories) do not steal the top-level folder click.
+    const folder = folders.at(-1);
+    if (!folder) {
+      throw new Error(`missing folder button ${folderName}`);
+    }
+    await act(async () => {
+      folder.click();
+    });
+  }
+}
+
+async function openNestedProgramDocumentationSecondaries(
+  container: HTMLElement,
+  messages: Awaited<ReturnType<typeof loadUiMessages>>,
+): Promise<void> {
+  // Workers/Workstations/Factories collide with top-level explorer folders, so
+  // localizePageTree remaps those secondary labels via folder catalogs until
+  // dedicated secondary message keys land. Resources/Observability stay English.
+  for (const folderName of [
+    messages.explorer.folders.workers,
+    messages.explorer.folders.workstations,
+    messages.explorer.folders.factories,
+    "Resources",
+    "Observability",
+  ] as const) {
+    const folders = within(container).queryAllByRole("button", {
+      name: folderName,
+    });
+    // Nested secondaries appear before the same-named top-level W15 folders.
+    const folder = folders[0];
+    if (!folder) {
+      continue;
+    }
     await act(async () => {
       folder.click();
     });
@@ -218,6 +255,10 @@ describe("desktop/mobile explorer tree parity", () => {
       }
 
       await openCollectionFolders(sidebar, folderNames);
+      await openNestedProgramDocumentationSecondaries(
+        sidebar,
+        context.messages,
+      );
 
       expect(
         within(sidebar).queryByRole("button", { name: "Glossary" }),
@@ -289,6 +330,7 @@ describe("desktop/mobile explorer tree parity", () => {
       );
 
       await openCollectionFolders(drawer, folderNames);
+      await openNestedProgramDocumentationSecondaries(drawer, context.messages);
 
       expect(
         within(drawer).queryByRole("button", { name: "Glossary" }),

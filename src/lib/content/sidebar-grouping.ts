@@ -165,10 +165,10 @@ export type FactoryDocumentationSidebarSlug =
   keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG;
 
 /**
- * Top-group-only view of Program documentation membership for adapters that
- * still emit a single separator depth. Prefer
+ * Top-group-only view of Program documentation membership for callers that
+ * only need the top group id. Prefer
  * `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` when secondary placement
- * matters.
+ * matters; the documentation sidebar adapter nests secondaries from that map.
  */
 export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = Object.fromEntries(
   (

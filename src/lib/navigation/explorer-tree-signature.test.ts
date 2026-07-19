@@ -5,6 +5,7 @@ import {
   folderSignatureByName,
   pageEntriesInFolder,
   pageEntriesUnderSeparator,
+  secondaryFolderNamesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
   topLevelPageEntries,
@@ -79,5 +80,75 @@ describe("explorer-tree-signature", () => {
       { name: "Tokens", url: "/docs/concepts/tokens" },
     ]);
     expect(pageEntriesUnderSeparator(concepts, "Missing")).toEqual([]);
+  });
+
+  test("collects pages and secondary folder names under nested Program documentation groups", () => {
+    const signature = buildExplorerTreeSignature({
+      name: "You Agent Factory",
+      children: [
+        folder("Program documentation", [
+          separator("System feature set"),
+          page("Dynamic workflows", "/docs/documentation/dynamic-workflows"),
+          separator("Factory Configuration"),
+          folder("Workers", [
+            page("Workers", "/docs/documentation/workers"),
+            page("Mock workers", "/docs/documentation/mock-workers"),
+          ]),
+          folder("Resources", [
+            page("Resources", "/docs/documentation/resources"),
+          ]),
+          separator("System Operations"),
+          folder("Observability", [
+            page("Logs", "/docs/documentation/logs"),
+            page("Metrics", "/docs/documentation/metrics"),
+          ]),
+        ]),
+      ],
+    });
+
+    const documentation = folderSignatureByName(
+      signature,
+      "Program documentation",
+    );
+    expect(documentation).toBeTruthy();
+    if (!documentation) {
+      throw new Error("expected Program documentation folder");
+    }
+
+    expect(separatorNamesInFolder(documentation)).toEqual([
+      "System feature set",
+      "Factory Configuration",
+      "System Operations",
+    ]);
+    expect(
+      secondaryFolderNamesUnderSeparator(
+        documentation,
+        "Factory Configuration",
+      ),
+    ).toEqual(["Workers", "Resources"]);
+    expect(
+      secondaryFolderNamesUnderSeparator(documentation, "System Operations"),
+    ).toEqual(["Observability"]);
+    expect(
+      secondaryFolderNamesUnderSeparator(documentation, "System feature set"),
+    ).toEqual([]);
+    expect(
+      pageEntriesUnderSeparator(documentation, "Factory Configuration"),
+    ).toEqual([
+      { name: "Workers", url: "/docs/documentation/workers" },
+      { name: "Mock workers", url: "/docs/documentation/mock-workers" },
+      { name: "Resources", url: "/docs/documentation/resources" },
+    ]);
+    expect(pageEntriesInFolder(documentation)).toEqual([
+      {
+        name: "Dynamic workflows",
+        url: "/docs/documentation/dynamic-workflows",
+      },
+      { name: "Workers", url: "/docs/documentation/workers" },
+      { name: "Mock workers", url: "/docs/documentation/mock-workers" },
+      { name: "Resources", url: "/docs/documentation/resources" },
+      { name: "Logs", url: "/docs/documentation/logs" },
+      { name: "Metrics", url: "/docs/documentation/metrics" },
+    ]);
   });
 });

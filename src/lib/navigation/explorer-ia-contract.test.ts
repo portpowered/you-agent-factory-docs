@@ -14,6 +14,7 @@ import {
   FACTORY_EXPLORER_SECTION_ORDER,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import {
+  DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
   FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   SIDEBAR_GROUP_LABELS,
@@ -31,6 +32,7 @@ import {
   folderSignatureByName,
   pageEntriesInFolder,
   pageEntriesUnderSeparator,
+  secondaryFolderNamesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
   topLevelPageEntries,
@@ -165,6 +167,26 @@ describe("explorer IA exact-order contract", () => {
     expect(separatorNamesInFolder(documentation)).toEqual([
       ...DECLARED_DOCUMENTATION_GROUP_ORDER,
     ]);
+    expect(
+      secondaryFolderNamesUnderSeparator(
+        documentation,
+        SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
+      ),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
+      ),
+    );
+    expect(
+      secondaryFolderNamesUnderSeparator(
+        documentation,
+        SIDEBAR_GROUP_LABELS.documentation["system-operations"],
+      ),
+    ).toEqual(
+      Object.values(
+        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"],
+      ),
+    );
     expect(
       pageEntriesInFolder(documentation).some((page) =>
         page.url.endsWith("/docs/documentation/faq"),
