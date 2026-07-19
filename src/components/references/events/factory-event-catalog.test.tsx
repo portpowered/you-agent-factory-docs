@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import {
   EventDiscriminatorMap,
+  EventEnvelopeComponents,
   EventEnvelopeReference,
   EventPayloadCatalog,
   EventPayloadVariant,
@@ -10,7 +11,9 @@ import {
 import {
   buildFactoryEventCatalog,
   countEventTypesFromSchema,
+  FACTORY_EVENT_CONTEXT_SCHEMA_NAME,
   FACTORY_EVENT_SCHEMA_NAME,
+  FACTORY_EVENT_TYPE_SCHEMA_NAME,
   FactoryEventCatalogError,
   factoryEventCatalogEventTypes,
   factoryEventCatalogPayloadSchemaNames,
@@ -53,6 +56,23 @@ describe("buildFactoryEventCatalog", () => {
     const payloadNames = factoryEventCatalogPayloadSchemaNames(catalog);
     expect(payloadNames).toContain("RunRequestEventPayload");
     expect(payloadNames.length).toBe(catalog.mappings.length);
+
+    expect(catalog.envelopeComponents.map((entry) => entry.schemaName)).toEqual(
+      [FACTORY_EVENT_TYPE_SCHEMA_NAME, FACTORY_EVENT_CONTEXT_SCHEMA_NAME],
+    );
+    expect(catalog.envelopeComponents[0]?.envelopeFieldName).toBe("type");
+    expect(catalog.envelopeComponents[1]?.envelopeFieldName).toBe("context");
+    expect(catalog.envelopeComponents[0]?.definition.enum?.length).toBe(
+      catalog.mappings.length,
+    );
+    const contextRequired =
+      catalog.envelopeComponents[1]?.definition.required ?? [];
+    for (const field of ["sequence", "tick", "eventTime"]) {
+      expect(contextRequired).toContain(field);
+    }
+    expect(
+      catalog.envelopeComponents[1]?.definition.properties?.sequence,
+    ).toBeDefined();
 
     const runRequest = catalog.mappings.find(
       (entry) => entry.eventType === "RUN_REQUEST",
@@ -148,6 +168,52 @@ describe("FactoryEvent catalog UI", () => {
     expect(
       contextRow?.querySelector("[data-schema-ref-label]")?.textContent,
     ).toBe("FactoryEventContext");
+  });
+
+  test("EventEnvelopeComponents renders FactoryEventType and FactoryEventContext definitions", () => {
+    const corpus = resolveEventCorpus();
+    const catalog = buildFactoryEventCatalog(corpus.openapi.document);
+
+    render(<EventEnvelopeComponents components={catalog.envelopeComponents} />);
+
+    const section = screen.getByTestId("event-envelope-components");
+    expect(section.getAttribute("data-event-envelope-components")).toBe("2");
+    expect(screen.getByText("Envelope components")).toBeTruthy();
+
+    const typeDef = screen.getByTestId(
+      `event-envelope-component-${FACTORY_EVENT_TYPE_SCHEMA_NAME}`,
+    );
+    expect(typeDef.getAttribute("data-schema-definition-pointer")).toBe(
+      `/components/schemas/${FACTORY_EVENT_TYPE_SCHEMA_NAME}`,
+    );
+    expect(
+      typeDef.querySelector('[data-schema-constraint="enum"]'),
+    ).toBeTruthy();
+    expect(typeDef.textContent ?? "").toContain("RUN_REQUEST");
+    expect(typeDef.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
+
+    const contextDef = screen.getByTestId(
+      `event-envelope-component-${FACTORY_EVENT_CONTEXT_SCHEMA_NAME}`,
+    );
+    expect(contextDef.getAttribute("data-schema-definition-pointer")).toBe(
+      `/components/schemas/${FACTORY_EVENT_CONTEXT_SCHEMA_NAME}`,
+    );
+    const contextFields = within(contextDef).getByLabelText(
+      /Fields for FactoryEventContext/i,
+    );
+    for (const field of ["sequence", "tick", "eventTime"]) {
+      expect(
+        contextFields.querySelectorAll(`[data-schema-field-path="${field}"]`)
+          .length,
+      ).toBe(1);
+    }
+    expect(
+      contextDef.querySelectorAll(
+        '[data-schema-breadcrumb-segment="components"]',
+      ).length,
+    ).toBe(0);
   });
 
   test("EventDiscriminatorMap lists all live type → payload mappings", () => {
@@ -249,8 +315,19 @@ describe("FactoryEvent catalog UI", () => {
 
     expect(screen.getByTestId("factory-event-catalog-section")).toBeTruthy();
     expect(screen.getByTestId("event-envelope-reference")).toBeTruthy();
+    expect(screen.getByTestId("event-envelope-components")).toBeTruthy();
     expect(screen.getByTestId("event-discriminator-map")).toBeTruthy();
     expect(screen.getByTestId("event-payload-catalog")).toBeTruthy();
+    expect(
+      screen.getByTestId(
+        `event-envelope-component-${FACTORY_EVENT_TYPE_SCHEMA_NAME}`,
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByTestId(
+        `event-envelope-component-${FACTORY_EVENT_CONTEXT_SCHEMA_NAME}`,
+      ),
+    ).toBeTruthy();
     expect(
       screen
         .getByTestId("factory-event-catalog-section")

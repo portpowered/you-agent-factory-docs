@@ -102,11 +102,14 @@ export {
 } from "./events-openapi-turbopack";
 export {
   buildFactoryEventCatalog,
+  FACTORY_EVENT_CONTEXT_SCHEMA_NAME,
   FACTORY_EVENT_SCHEMA_NAME,
+  FACTORY_EVENT_TYPE_SCHEMA_NAME,
   type FactoryEventCatalog,
   FactoryEventCatalogError,
   type FactoryEventCatalogErrorCode,
   type FactoryEventDiscriminatorMapping,
+  type FactoryEventEnvelopeComponent,
   factoryEventCatalogEventTypes,
   factoryEventCatalogPayloadSchemaNames,
   factoryEventPayloadDefinitionForType,

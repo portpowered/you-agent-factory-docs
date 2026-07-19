@@ -1,10 +1,12 @@
 /**
- * Composed FactoryEvent corpus section: envelope + discriminator map + payloads.
+ * Composed FactoryEvent corpus section: envelope + components + discriminator
+ * map + payloads.
  */
 
 import type { FactoryEventCatalog } from "@/lib/references/events";
 import { cn } from "@/lib/utils";
 import { EventDiscriminatorMap } from "./event-discriminator-map";
+import { EventEnvelopeComponents } from "./event-envelope-components";
 import { EventEnvelopeReference } from "./event-envelope-reference";
 import { EventPayloadCatalog } from "./event-payload-catalog";
 
@@ -32,6 +34,10 @@ export function FactoryEventCatalogSection({
       <EventEnvelopeReference
         discriminatorPropertyName={catalog.discriminatorPropertyName}
         envelopeFieldsDefinition={catalog.envelopeFieldsDefinition}
+        pagePath={pagePath}
+      />
+      <EventEnvelopeComponents
+        components={catalog.envelopeComponents}
         pagePath={pagePath}
       />
       <EventDiscriminatorMap

@@ -22,12 +22,17 @@ import { localSchemaNameFromRef } from "./schema-ref-closure";
 import { EVENTS_OPENAPI_EXPORT } from "./stream-operations";
 
 export const FACTORY_EVENT_SCHEMA_NAME = "FactoryEvent" as const;
+/** Discriminator enum referenced by `FactoryEvent.type`. */
+export const FACTORY_EVENT_TYPE_SCHEMA_NAME = "FactoryEventType" as const;
+/** Shared context object referenced by `FactoryEvent.context`. */
+export const FACTORY_EVENT_CONTEXT_SCHEMA_NAME = "FactoryEventContext" as const;
 
 export type FactoryEventCatalogErrorCode =
   | "missing-factory-event-schema"
   | "missing-discriminator"
   | "invalid-discriminator-mapping"
-  | "missing-payload-schema";
+  | "missing-payload-schema"
+  | "missing-envelope-component";
 
 export class FactoryEventCatalogError extends Error {
   readonly code: FactoryEventCatalogErrorCode;
@@ -60,6 +65,20 @@ export type FactoryEventDiscriminatorMapping = {
   eventTypeAnchor: string;
 };
 
+/**
+ * Envelope field `$ref` component rendered as its own catalog definition
+ * (for example `FactoryEventType`, `FactoryEventContext`). Payload oneOf
+ * members stay in the discriminator/payload catalog, not here.
+ */
+export type FactoryEventEnvelopeComponent = {
+  /** Local OpenAPI component schema name. */
+  schemaName: string;
+  /** Envelope property that references this component (for example `type`). */
+  envelopeFieldName: string;
+  address: SchemaAddress;
+  definition: SchemaDefinitionModel;
+};
+
 export type FactoryEventCatalog = {
   envelopeSchemaName: typeof FACTORY_EVENT_SCHEMA_NAME;
   envelopeAddress: SchemaAddress;
@@ -71,6 +90,11 @@ export type FactoryEventCatalog = {
    * are not confused with the shared envelope.
    */
   envelopeFieldsDefinition: SchemaDefinitionModel;
+  /**
+   * Direct envelope `$ref` components (type / context) normalized from
+   * packaged OpenAPI — rendered on the events page, not only as `$ref` labels.
+   */
+  envelopeComponents: FactoryEventEnvelopeComponent[];
   discriminatorPropertyName: string;
   discriminator: SchemaDiscriminatorModel;
   /** Sorted by event type for stable catalog order. */
@@ -111,6 +135,86 @@ function envelopeFieldsOnly(
 ): SchemaDefinitionModel {
   const { composition: _composition, ...rest } = envelope;
   return rest;
+}
+
+/**
+ * Collect direct envelope field `$ref` targets (excluding `payload`, which the
+ * discriminator map / payload catalog owns) and normalize each from OpenAPI.
+ */
+function buildEnvelopeComponents(
+  envelopeFields: SchemaDefinitionModel,
+  schemas: Record<string, unknown> | undefined,
+  publicArtifactId: string,
+): FactoryEventEnvelopeComponent[] {
+  const properties = envelopeFields.properties ?? {};
+  const components: FactoryEventEnvelopeComponent[] = [];
+  const details: string[] = [];
+
+  for (const [fieldName, field] of Object.entries(properties)) {
+    if (fieldName === "payload") {
+      continue;
+    }
+    const pointer = field.refTarget?.pointer;
+    if (pointer === undefined) {
+      continue;
+    }
+    const schemaName =
+      pointer
+        .split("/")
+        .filter((segment) => segment.length > 0)
+        .at(-1) ?? "";
+    if (schemaName.length === 0) {
+      details.push(
+        `${fieldName}: could not derive component schema name from ${pointer}`,
+      );
+      continue;
+    }
+    const schema = schemas?.[schemaName];
+    if (schema === undefined) {
+      details.push(`${fieldName}: missing components.schemas.${schemaName}`);
+      continue;
+    }
+    const definition = normalizeOpenApiComponentSchemaDefinition(
+      schemaName,
+      schema,
+      publicArtifactId,
+    );
+    components.push({
+      schemaName,
+      envelopeFieldName: fieldName,
+      address: createSchemaAddress(definition.address),
+      definition,
+    });
+  }
+
+  if (details.length > 0) {
+    throw new FactoryEventCatalogError(
+      "missing-envelope-component",
+      `${FACTORY_EVENT_SCHEMA_NAME} envelope component refs are incomplete against packaged OpenAPI.`,
+      details,
+    );
+  }
+
+  // Prefer a stable type → context order when both are present; otherwise
+  // keep discovery order from the envelope property map.
+  const rank = (name: string): number => {
+    if (name === FACTORY_EVENT_TYPE_SCHEMA_NAME) {
+      return 0;
+    }
+    if (name === FACTORY_EVENT_CONTEXT_SCHEMA_NAME) {
+      return 1;
+    }
+    return 2;
+  };
+  components.sort((a, b) => {
+    const byRank = rank(a.schemaName) - rank(b.schemaName);
+    if (byRank !== 0) {
+      return byRank;
+    }
+    return a.schemaName.localeCompare(b.schemaName);
+  });
+
+  return components;
 }
 
 /**
@@ -218,11 +322,37 @@ export function buildFactoryEventCatalog(
     );
   }
 
+  const envelopeFieldsDefinition = envelopeFieldsOnly(envelopeDefinition);
+  const envelopeComponents = buildEnvelopeComponents(
+    envelopeFieldsDefinition,
+    schemas as Record<string, unknown> | undefined,
+    publicArtifactId,
+  );
+
+  // Fail closed when the required type/context components are absent from the
+  // envelope graph (readers must see them as full definitions, not $ref-only).
+  const componentNames = new Set(
+    envelopeComponents.map((entry) => entry.schemaName),
+  );
+  for (const requiredName of [
+    FACTORY_EVENT_TYPE_SCHEMA_NAME,
+    FACTORY_EVENT_CONTEXT_SCHEMA_NAME,
+  ]) {
+    if (!componentNames.has(requiredName)) {
+      throw new FactoryEventCatalogError(
+        "missing-envelope-component",
+        `${FACTORY_EVENT_SCHEMA_NAME} is missing required envelope component ${requiredName}.`,
+        [requiredName],
+      );
+    }
+  }
+
   return {
     envelopeSchemaName: FACTORY_EVENT_SCHEMA_NAME,
     envelopeAddress: createSchemaAddress(envelopeDefinition.address),
     envelopeDefinition,
-    envelopeFieldsDefinition: envelopeFieldsOnly(envelopeDefinition),
+    envelopeFieldsDefinition,
+    envelopeComponents,
     discriminatorPropertyName: discriminator.propertyName,
     discriminator: {
       propertyName: discriminator.propertyName,

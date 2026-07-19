@@ -23,6 +23,10 @@ export {
   type EventDiscriminatorMapProps,
 } from "./event-discriminator-map";
 export {
+  EventEnvelopeComponents,
+  type EventEnvelopeComponentsProps,
+} from "./event-envelope-components";
+export {
   EventEnvelopeReference,
   type EventEnvelopeReferenceProps,
 } from "./event-envelope-reference";

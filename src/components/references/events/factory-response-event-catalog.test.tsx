@@ -221,6 +221,54 @@ describe("FactoryResponseEvent catalog UI", () => {
     expect(
       screen.getByTestId("response-event-dimension-provenance"),
     ).toBeTruthy();
+
+    // Envelope $ref components render as full schema definitions, not labels only.
+    const kindDef = screen.getByTestId("response-event-kind-schema-definition");
+    expect(kindDef.getAttribute("data-schema-definition-pointer")).toBe(
+      "/components/schemas/FactoryResponseEventKind",
+    );
+    expect(
+      kindDef.querySelector('[data-schema-constraint="enum"]'),
+    ).toBeTruthy();
+    expect(kindDef.textContent ?? "").toContain("MESSAGE");
+
+    const phaseDef = screen.getByTestId(
+      "response-event-phase-schema-definition",
+    );
+    expect(phaseDef.getAttribute("data-schema-definition-pointer")).toBe(
+      "/components/schemas/FactoryResponseEventPhase",
+    );
+    expect(
+      phaseDef.querySelector('[data-schema-constraint="enum"]'),
+    ).toBeTruthy();
+
+    const provenanceDef = screen.getByTestId(
+      "response-event-provenance-schema-definition",
+    );
+    expect(provenanceDef.getAttribute("data-schema-definition-pointer")).toBe(
+      "/components/schemas/FactoryResponseEventProvenance",
+    );
+    expect(
+      within(provenanceDef).getByLabelText(
+        /Fields for FactoryResponseEventProvenance/i,
+      ),
+    ).toBeTruthy();
+
+    expect(
+      screen
+        .getByTestId("response-event-dimension-kind")
+        .getAttribute("data-event-envelope-component"),
+    ).toBe("FactoryResponseEventKind");
+    expect(
+      screen
+        .getByTestId("response-event-dimension-phase")
+        .getAttribute("data-event-envelope-component"),
+    ).toBe("FactoryResponseEventPhase");
+    expect(
+      screen
+        .getByTestId("response-event-dimension-provenance")
+        .getAttribute("data-event-envelope-component"),
+    ).toBe("FactoryResponseEventProvenance");
   });
 
   test("ResponseEventPayloadVariant is marked payload-only / ephemeral", () => {

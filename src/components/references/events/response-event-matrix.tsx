@@ -29,11 +29,7 @@ function DimensionValueList({
   testId: string;
 }) {
   return (
-    <div
-      className="min-w-0 space-y-2"
-      data-response-event-dimension={label.toLowerCase()}
-      data-testid={testId}
-    >
+    <div className="min-w-0 space-y-2" data-testid={testId}>
       <h3 className="font-semibold text-foreground text-base">
         {label}{" "}
         <code className="font-mono text-muted-foreground text-sm">
@@ -98,22 +94,49 @@ export function ResponseEventMatrix({
         </p>
       </header>
 
-      <DimensionValueList
-        label="Kind"
-        schemaName={catalog.kind.schemaName}
-        testId="response-event-dimension-kind"
-        values={catalog.kind.values}
-      />
+      <div
+        className="min-w-0 space-y-3"
+        data-event-envelope-component={catalog.kind.schemaName}
+        data-response-event-dimension="kind"
+        data-testid="response-event-dimension-kind"
+      >
+        <DimensionValueList
+          label="Kind"
+          schemaName={catalog.kind.schemaName}
+          testId="response-event-dimension-kind-values"
+          values={catalog.kind.values}
+        />
+        <EventsSchemaDefinition
+          data-testid="response-event-kind-schema-definition"
+          defaultExpanded
+          definition={catalog.kind.definition}
+          pagePath={pagePath}
+        />
+      </div>
 
-      <DimensionValueList
-        label="Phase"
-        schemaName={catalog.phase.schemaName}
-        testId="response-event-dimension-phase"
-        values={catalog.phase.values}
-      />
+      <div
+        className="min-w-0 space-y-3"
+        data-event-envelope-component={catalog.phase.schemaName}
+        data-response-event-dimension="phase"
+        data-testid="response-event-dimension-phase"
+      >
+        <DimensionValueList
+          label="Phase"
+          schemaName={catalog.phase.schemaName}
+          testId="response-event-dimension-phase-values"
+          values={catalog.phase.values}
+        />
+        <EventsSchemaDefinition
+          data-testid="response-event-phase-schema-definition"
+          defaultExpanded
+          definition={catalog.phase.definition}
+          pagePath={pagePath}
+        />
+      </div>
 
       <div
         className="min-w-0 space-y-2"
+        data-event-envelope-component={catalog.provenance.schemaName}
         data-response-event-dimension="provenance"
         data-testid="response-event-dimension-provenance"
       >
