@@ -142,6 +142,13 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   example, inventory success, and #159 chrome trim. Shared
   `published-route-states.test.tsx` scopes the live-host-free
   `openingSummary` assert to CLI/MCP only so JS may clear the summary.
+  Browser-verify JS keep-list-first shape with
+  `bun src/content/docs/references/javascript-runtime/assert-javascript-runtime-polish-browser.ts`
+  (webpack `bun run dev`, unique port, Playwright): assert absent What It
+  Covers / Key Concepts headings and `#what-it-covers` / `#key-concepts`,
+  absent folded Opening summary (`[data-opening-summary]` /
+  `[data-testid="folded-summary"]`), and present glossary / overall example /
+  inventory success / TOC `#symbols` / `#shared-schemas` / #159 chrome trim.
   Page-local `mcp-page.test.tsx` should also prove a representative published
   tool card keeps title/anchor/description/schema/example while omitting
   `data-contract-source-badge`, Handler registered / Tool id rows, Object
