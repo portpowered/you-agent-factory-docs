@@ -54,7 +54,7 @@ describe("petri documentation page", () => {
       expect(whatItCovers).toMatch(/work tokens move through places/i);
       expect(whatItCovers).toMatch(/workstation transitions/i);
       expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
+        /This page explains|on this page|Model Atlas|reader.?shortcut/i,
       );
 
       expect(keyConcepts).toMatch(/place/i);
@@ -91,7 +91,9 @@ describe("petri documentation page", () => {
       expect(limits).toMatch(/PETRI/);
       expect(limits).toMatch(/JAVASCRIPT/);
       expect(limits).toMatch(/defaults to Petri/i);
-      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      expect(limits).not.toMatch(
+        /This page is|like this page describes|on this page|Model Atlas|reader.?shortcut/i,
+      );
 
       const tokenFlowAsset = loadedPage.assets.tokenFlow;
       expect(tokenFlowAsset).toBeDefined();
