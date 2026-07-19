@@ -99,6 +99,13 @@ describe("McpToolReference", () => {
       "[data-schema-definition-embed]",
     );
     expect(schemaEmbed).toBeTruthy();
+    expect(screen.queryByText("Object policy")).toBeNull();
+    expect(
+      screen.queryByText("Closed (additional properties false)"),
+    ).toBeNull();
+    expect(schemaEmbed?.textContent).toContain("Type");
+    expect(schemaEmbed?.textContent).toContain("object");
+    expect(schemaEmbed?.textContent).toContain("Required");
     expect(
       container.querySelector('[data-schema-property="sessionId"]'),
     ).toBeTruthy();
@@ -109,6 +116,25 @@ describe("McpToolReference", () => {
     ).toBeTruthy();
     expect(
       screen.getByText("Stable durable Factory Session identifier."),
+    ).toBeTruthy();
+  });
+
+  test("omits Object policy chrome while keeping published schema details", () => {
+    const { container } = render(
+      <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
+    );
+
+    const schemaEmbed = container.querySelector(
+      "[data-schema-definition-embed]",
+    );
+    expect(screen.queryByText("Object policy")).toBeNull();
+    expect(screen.queryByText(/additional properties/i)).toBeNull();
+    expect(schemaEmbed).toBeTruthy();
+    expect(schemaEmbed?.textContent).toContain("Type");
+    expect(schemaEmbed?.textContent).toContain("object");
+    expect(schemaEmbed?.textContent).toContain("Required");
+    expect(
+      container.querySelector('[data-schema-property="sessionId"]'),
     ).toBeTruthy();
   });
 

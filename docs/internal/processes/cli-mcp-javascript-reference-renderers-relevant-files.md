@@ -49,6 +49,7 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | Path | Role |
 | --- | --- |
 | `src/components/references/mcp/McpToolReference.tsx` | One tool card: title + stable anchor, description, input schema, example — no ContractSourceBadge / Tool name / Tool id / Handler registered / Required inputs chrome |
+| `src/components/references/mcp/McpInputSchemaEmbed.tsx` | MCP-owned wrapper over shared SchemaDefinitionEmbed that omits Object policy chrome |
 | `src/components/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; generated shows visible AlertPanel notice |
 | `src/components/references/mcp/mcp-example.ts` | Generated-example copy constants |
 | `src/components/references/mcp/McpToolInventory.tsx` | Inventory list with empty/error chrome |
@@ -139,8 +140,10 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 - MCP tools carry optional `handlerRegistered`, `requiredInputs`,
   `inputSchema` (`SchemaDefinitionModel`), and authored `example` on W04
   projections — project via `projectMcpInputSchemaToDefinition`, embed via
-  thin `SchemaDefinitionEmbed` until W07 public adapters exist (do not fork a
-  full schema-tree UI).
+  MCP-owned `McpInputSchemaEmbed` (shared `SchemaDefinitionEmbed` with Object
+  policy omitted) until W07 public adapters exist (do not fork a full
+  schema-tree UI). Default shared embed Object policy chrome stays for other
+  families.
 - MCP examples: prefer authored `tool.example` / `inputSchema.examples`; when
   absent, `resolveMcpToolExample` / `generateSchemaValidMcpExample` build a
   minimal schema-valid object (required fields only, first enum / const /

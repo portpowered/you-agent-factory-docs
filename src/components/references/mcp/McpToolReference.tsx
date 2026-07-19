@@ -1,11 +1,9 @@
-import {
-  CopyableReferenceAnchor,
-  SchemaDefinitionEmbed,
-} from "@/components/references/shared";
+import { CopyableReferenceAnchor } from "@/components/references/shared";
 import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { McpToolNormalized } from "@/lib/references/family-normalized-models";
 import { resolveMcpToolExample } from "@/lib/references/mcp-example-generation";
 import { cn } from "@/lib/utils";
+import { McpInputSchemaEmbed } from "./McpInputSchemaEmbed";
 import { McpToolExample } from "./McpToolExample";
 import type { McpToolReferenceProps } from "./types";
 
@@ -61,7 +59,7 @@ export function McpToolReference({
           Input schema
         </h4>
         {tool.inputSchema !== undefined ? (
-          <SchemaDefinitionEmbed definition={tool.inputSchema} />
+          <McpInputSchemaEmbed definition={tool.inputSchema} />
         ) : (
           <p
             className="m-0 text-sm text-muted-foreground"
