@@ -1,9 +1,9 @@
 /**
  * Focused brand + content-column alignment verification matrix.
  *
- * Gates the repair-layout-brand-alignment contract: display brand
- * ("You Agent Factory"), shared left-edge surfaces, and no unintended
- * page overflow across mobile / tablet / laptop / wide viewports.
+ * Gates the repair-layout-brand-alignment contract: header chrome brand
+ * mark ("YOU"), shared left-edge surfaces, and no unintended page overflow
+ * across mobile / tablet / laptop / wide viewports.
  */
 
 import type { ContentColumnConsumerSurface } from "@/lib/layout/content-column-alignment";
@@ -14,7 +14,7 @@ import {
   type CriticalViewport,
 } from "@/lib/verify/a11y-responsive-contract";
 
-/** Reader-visible display brand asserted on header chrome. */
+/** Reader-visible header chrome brand mark asserted on `data-docs-header-brand`. */
 export const BRAND_ALIGNMENT_EXPECTED_BRAND = SITE_BRAND_NAME;
 
 /**

@@ -7,7 +7,7 @@ import {
 } from "./you-agent-factory-site-config";
 
 describe("you-agent-factory site config", () => {
-  test("contains You Agent Factory display brand values", () => {
+  test("contains YOU header chrome mark and full product home heading", () => {
     expect(youAgentFactorySiteConfig.brand).toEqual({
       scaffoldId: SCAFFOLD_ID,
       brandName: SITE_BRAND_NAME,
@@ -16,7 +16,7 @@ describe("you-agent-factory site config", () => {
     expect(youAgentFactorySiteConfig.brand.scaffoldId).toBe(
       "you-agent-factory-scaffold",
     );
-    expect(youAgentFactorySiteConfig.brand.brandName).toBe("You Agent Factory");
+    expect(youAgentFactorySiteConfig.brand.brandName).toBe("YOU");
     expect(youAgentFactorySiteConfig.brand.siteHeading).toBe(
       "You Agent Factory",
     );
@@ -31,39 +31,19 @@ describe("you-agent-factory site config", () => {
     );
   });
 
-  test("layout nav brand resolution returns You Agent Factory", () => {
+  test("layout nav brand resolution returns YOU", () => {
     expect(resolveSiteConfigLayoutNav(youAgentFactorySiteConfig).title).toBe(
-      "You Agent Factory",
+      "YOU",
     );
   });
 
-  test("orders primary nav for home, guides, docs, W15 families, glossary, and blog", () => {
+  test("orders primary nav for Blog, Docs, Guides, and References only", () => {
     expect(
       youAgentFactorySiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).toEqual([
-      "home",
-      "guides",
-      "docs",
-      "references",
-      "factories",
-      "workers",
-      "workstations",
-      "glossary",
-      "blogIndex",
-    ]);
+    ).toEqual(["blogIndex", "docs", "guides", "references"]);
     expect(
       youAgentFactorySiteConfig.primaryNav.map((entry) => entry.labelKey),
-    ).toEqual([
-      "home",
-      "guides",
-      "docs",
-      "references",
-      "factories",
-      "workers",
-      "workstations",
-      "glossary",
-      "blog",
-    ]);
+    ).toEqual(["blog", "docs", "guides", "references"]);
     expect(youAgentFactorySiteConfig.routeSurfaces).toMatchObject({
       home: { surface: "home" },
       guides: { surface: "docs-page", slug: "guides" },
@@ -72,22 +52,28 @@ describe("you-agent-factory site config", () => {
       factories: { surface: "docs-page", slug: "factories" },
       workers: { surface: "docs-page", slug: "workers" },
       workstations: { surface: "docs-page", slug: "workstations" },
-      glossary: { surface: "glossary-index" },
       blogIndex: { surface: "blog-index" },
       search: { surface: "search" },
     });
+    expect(youAgentFactorySiteConfig.routeSurfaces).not.toHaveProperty(
+      "glossary",
+    );
     expect(youAgentFactorySiteConfig.routeSurfaces).not.toHaveProperty(
       "topology",
     );
     expect(youAgentFactorySiteConfig.routeSurfaces).not.toHaveProperty(
       "timeline",
     );
-    expect(
-      youAgentFactorySiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).not.toContain("topology");
-    expect(
-      youAgentFactorySiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).not.toContain("timeline");
+    const primarySurfaces = youAgentFactorySiteConfig.primaryNav.map(
+      (entry) => entry.routeSurface,
+    );
+    expect(primarySurfaces).not.toContain("home");
+    expect(primarySurfaces).not.toContain("factories");
+    expect(primarySurfaces).not.toContain("workers");
+    expect(primarySurfaces).not.toContain("workstations");
+    expect(primarySurfaces).not.toContain("glossary");
+    expect(primarySurfaces).not.toContain("topology");
+    expect(primarySurfaces).not.toContain("timeline");
   });
 
   test("includes CLI collection family placeholders", () => {
@@ -116,7 +102,7 @@ describe("you-agent-factory site config", () => {
       youAgentFactorySiteConfig.homeFeaturedLinks.map((link) =>
         link.kind === "route" ? link.routeSurface : link.slug,
       ),
-    ).toEqual(["guides", "docs", "glossary", "blogIndex"]);
+    ).toEqual(["guides", "docs", "blogIndex"]);
     expect(
       youAgentFactorySiteConfig.homeFeaturedLinks.every(
         (link) =>
@@ -126,9 +112,15 @@ describe("you-agent-factory site config", () => {
             "gqaLinkTitle",
             "swigluLinkTitle",
             "reluLinkTitle",
+            "glossaryLinkTitle",
           ].includes(link.titleKey),
       ),
     ).toBe(true);
-    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(4);
+    expect(youAgentFactorySiteConfig.homeFeaturedLinks).toHaveLength(3);
+    expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.some(
+        (link) => link.kind === "route" && link.routeSurface === "glossary",
+      ),
+    ).toBe(false);
   });
 });

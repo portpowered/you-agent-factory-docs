@@ -39,7 +39,6 @@ import {
 } from "@/lib/content/blog-page-load";
 import { getPublishedBlogPostBySlug } from "@/lib/content/blog-post-get";
 import { listPublishedBlogPosts } from "@/lib/content/blog-post-list";
-import { loadPublishedGlossaryEntries } from "@/lib/content/glossary";
 import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
 import { resolveFamilyDocsFooterNeighborsForSlug } from "@/lib/content/resolve-family-docs-footer";
 import {
@@ -446,38 +445,6 @@ export async function renderArchitectureIndexPage(
           <DocsIndexEntryList
             entries={entries}
             listLabel={architectureIndex.listLabel}
-          />
-        )}
-      </DocsBody>
-    </DocsPage>
-  );
-}
-
-export async function renderGlossaryIndexPage(
-  locale: SiteLocale = defaultLocale,
-) {
-  const messages = await loadUiMessages(locale);
-  const entries = await loadPublishedGlossaryEntries(locale);
-  const { glossaryIndex } = messages;
-
-  return (
-    <DocsPage breadcrumb={{ enabled: false }} footer={{ enabled: false }}>
-      <DocsTitle>{glossaryIndex.title}</DocsTitle>
-      <DocsDescription>{glossaryIndex.description}</DocsDescription>
-      <DocsBody>
-        {entries.length === 0 ? (
-          <DocsIndexEmptyState
-            title={glossaryIndex.emptyTitle}
-            description={glossaryIndex.emptyDescription}
-            homeLinkLabel={glossaryIndex.emptyHomeLink}
-            messages={messages}
-            locale={locale}
-            includeBlogLink
-          />
-        ) : (
-          <DocsIndexEntryList
-            entries={entries}
-            listLabel={glossaryIndex.listLabel}
           />
         )}
       </DocsBody>

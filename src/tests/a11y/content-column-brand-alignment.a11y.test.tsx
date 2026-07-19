@@ -66,7 +66,7 @@ describe("brand + content-column alignment layout coverage (always-on)", () => {
       "blog-index",
       "docs-page",
     ]);
-    expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("You Agent Factory");
+    expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("YOU");
   });
 
   test("header/docs nav uses shared inset without negative-margin compensation", () => {

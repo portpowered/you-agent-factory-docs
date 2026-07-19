@@ -208,27 +208,23 @@ describe("factory-only public inventory end-to-end", () => {
     const messages = await loadUiMessages();
     const primaryNav = getPrimaryNavItems(messages);
     expect(primaryNav.map((item) => item.label)).toEqual([
-      "Home",
-      "Guides",
-      "Docs",
-      "References",
-      "Factories",
-      "Workers",
-      "Workstations",
-      "Glossary",
       "Blog",
+      "Docs",
+      "Guides",
+      "References",
     ]);
     expect(primaryNav.map((item) => item.href)).toEqual([
-      "/",
-      "/docs/guides",
-      "/browse",
-      "/docs/references",
-      "/docs/factories",
-      "/docs/workers",
-      "/docs/workstations",
-      "/docs/glossary",
       "/blog",
+      "/browse",
+      "/docs/guides",
+      "/docs/references",
     ]);
+    expect(primaryNav.some((item) => item.href === "/docs/glossary")).toBe(
+      false,
+    );
+    expect(youAgentFactorySiteConfig.routeSurfaces).not.toHaveProperty(
+      "glossary",
+    );
 
     const SearchDialog: ComponentType<SharedProps> = () => null;
     const headerHtml = renderToStaticMarkup(

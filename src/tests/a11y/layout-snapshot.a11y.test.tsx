@@ -53,11 +53,11 @@ describe("critical layout snapshot (always-on lightweight visual equivalent)", (
     const baseline = captureCriticalLayoutSnapshot(document);
     assertCriticalLayoutContract(baseline, {
       expectedH1: context.messages.home.title,
-      expectedBrand: "You Agent Factory",
+      expectedBrand: "YOU",
       expectedContentColumnSurface: "home-article-browse",
       minPrimaryNavLinks: getPrimaryNavItems(context.messages).length,
     });
-    expect(baseline.brandText).toBe("You Agent Factory");
+    expect(baseline.brandText).toBe("YOU");
     expect(baseline.primaryNavHrefs).toEqual(
       getPrimaryNavItems(context.messages).map((item) => item.href),
     );
@@ -109,10 +109,10 @@ describe("critical layout snapshot (always-on lightweight visual equivalent)", (
     const baseline = captureCriticalLayoutSnapshot(document);
     assertCriticalLayoutContract(baseline, {
       expectedH1: context.messages.browseIndex.title,
-      expectedBrand: "You Agent Factory",
+      expectedBrand: "YOU",
       minPrimaryNavLinks: getPrimaryNavItems(context.messages).length,
     });
-    expect(baseline.brandText).toBe("You Agent Factory");
+    expect(baseline.brandText).toBe("YOU");
     expectLayoutSnapshotMatches(baseline, baseline);
 
     document.querySelector("h1")?.remove();

@@ -3,7 +3,7 @@
     "open": "Mở tìm kiếm",
     "placeholder": "Tìm trong you-agent-factory…",
     "close": "Đóng tìm kiếm",
-    "idle": "Nhập truy vấn để tìm hướng dẫn, khái niệm, kỹ thuật, tài liệu, mục thuật ngữ, và thẻ.",
+    "idle": "Nhập truy vấn để tìm hướng dẫn, khái niệm, kỹ thuật, tài liệu, và thẻ.",
     "noResults": "Không tìm thấy kết quả.",
     "loading": "Đang tìm…",
     "error": "Tìm kiếm hiện tạm thời chưa khả dụng. Không thể tải chỉ mục.",
@@ -41,7 +41,7 @@
   },
   "searchEntry": {
     "title": "Tìm kiếm",
-    "description": "Tìm trong tài liệu you-agent-factory theo tiêu đề, tên gọi khác, hoặc thẻ. Dùng ô tìm kiếm để chuyển nhanh tới hướng dẫn, khái niệm, kỹ thuật, tài liệu, và mục thuật ngữ.",
+    "description": "Tìm trong tài liệu you-agent-factory theo tiêu đề, tên gọi khác, hoặc thẻ. Dùng ô tìm kiếm để chuyển nhanh tới hướng dẫn, khái niệm, kỹ thuật, và tài liệu.",
     "canonicalNote": "URL tìm kiếm chuẩn là /search. Các liên kết chuyển tiếp có thể thêm ?q=<term>; theo thẻ có thể thêm ?tag=<slug>; theo phân loại có thể thêm ?classification=<id-or-slug> (ví dụ /search?classification=activation).",
     "tagFilterDescription": "Đang hiển thị kết quả cho các tài nguyên gắn thẻ {tag}.",
     "classificationScopeDescription": "Đang hiển thị kết quả trong phân loại {classification}.",
@@ -52,7 +52,7 @@
     "emptySuggestionSuffix": "."
   },
   "shell": {
-    "sidebarTitle": "Tham chiếu",
+    "sidebarTitle": "Duyệt tài liệu",
     "sidebarDescription": "Duyệt hướng dẫn, khái niệm, kỹ thuật, tài liệu, và thẻ.",
     "onThisPage": "Trên trang này",
     "openingSummary": "Tóm tắt mở đầu"

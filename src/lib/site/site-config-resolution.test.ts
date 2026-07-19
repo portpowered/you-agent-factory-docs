@@ -31,34 +31,19 @@ describe("site config home featured link resolution", () => {
   test("default config resolves CLI docs featured-link hrefs", () => {
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "en"),
-    ).toEqual(["/docs/guides", "/browse", "/docs/glossary", "/blog"]);
+    ).toEqual(["/docs/guides", "/browse", "/blog"]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "vi"),
-    ).toEqual([
-      "/vi/docs/guides",
-      "/vi/browse",
-      "/vi/docs/glossary",
-      "/vi/blog",
-    ]);
+    ).toEqual(["/vi/docs/guides", "/vi/browse", "/vi/blog"]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(youAgentFactorySiteConfig, "ja"),
-    ).toEqual([
-      "/ja/docs/guides",
-      "/ja/browse",
-      "/ja/docs/glossary",
-      "/ja/blog",
-    ]);
+    ).toEqual(["/ja/docs/guides", "/ja/browse", "/ja/blog"]);
     expect(
       resolveSiteConfigHomeFeaturedLinkHrefs(
         youAgentFactorySiteConfig,
         "zh-CN",
       ),
-    ).toEqual([
-      "/zh-CN/docs/guides",
-      "/zh-CN/browse",
-      "/zh-CN/docs/glossary",
-      "/zh-CN/blog",
-    ]);
+    ).toEqual(["/zh-CN/docs/guides", "/zh-CN/browse", "/zh-CN/blog"]);
   });
 
   test("uses shipped-docs locale fallback for docs-page featured links", () => {

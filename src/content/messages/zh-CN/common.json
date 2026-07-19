@@ -3,7 +3,7 @@
     "open": "打开搜索",
     "placeholder": "搜索 you-agent-factory…",
     "close": "关闭搜索",
-    "idle": "输入查询以搜索指南、概念、技巧、文档、术语表条目和标签。",
+    "idle": "输入查询以搜索指南、概念、技巧、文档和标签。",
     "noResults": "未找到结果。",
     "loading": "正在搜索…",
     "error": "搜索暂时不可用。无法加载索引。",
@@ -41,7 +41,7 @@
   },
   "searchEntry": {
     "title": "搜索",
-    "description": "按标题、别名或标签搜索 you-agent-factory 文档。使用搜索控件跳转到指南、概念、技巧、文档和术语表条目。",
+    "description": "按标题、别名或标签搜索 you-agent-factory 文档。使用搜索控件跳转到指南、概念、技巧和文档。",
     "canonicalNote": "规范搜索入口 URL：/search。查询交接可附加 ?q=<term>；标签交接可附加 ?tag=<slug> 或 ?classification=<id-or-slug>（例如 /search?classification=activation）。",
     "tagFilterDescription": "正在显示带有 {tag} 标签的资源结果。",
     "classificationScopeDescription": "正在显示限定在 {classification} 分类范围内的结果。",
@@ -52,7 +52,7 @@
     "emptySuggestionSuffix": "。"
   },
   "shell": {
-    "sidebarTitle": "参考",
+    "sidebarTitle": "浏览文档",
     "sidebarDescription": "浏览指南、概念、技巧、文档和标签。",
     "onThisPage": "本页内容",
     "openingSummary": "开篇摘要"

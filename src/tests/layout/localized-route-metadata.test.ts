@@ -7,7 +7,6 @@ import {
   generateStaticParams as generateLocalizedDocsStaticParams,
 } from "@/app/[locale]/docs/[[...slug]]/page";
 import { generateMetadata as generateLocalizedArchitectureMetadata } from "@/app/[locale]/docs/architecture/page";
-import { generateMetadata as generateLocalizedGlossaryMetadata } from "@/app/[locale]/docs/glossary/page";
 import { generateMetadata as generateLocalizedHomeMetadata } from "@/app/[locale]/page";
 import { generateMetadata as generateLocalizedSearchMetadata } from "@/app/[locale]/search/page";
 import { generateMetadata as generateLocalizedTagsMetadata } from "@/app/[locale]/tags/page";
@@ -146,9 +145,6 @@ describe("localized route metadata alternates", () => {
     const jaArchitectureMetadata = await generateLocalizedArchitectureMetadata({
       params: Promise.resolve({ locale: "ja" }),
     });
-    const jaGlossaryMetadata = await generateLocalizedGlossaryMetadata({
-      params: Promise.resolve({ locale: "ja" }),
-    });
     const jaTagsMetadata = await generateLocalizedTagsMetadata({
       params: Promise.resolve({ locale: "ja" }),
     });
@@ -189,7 +185,6 @@ describe("localized route metadata alternates", () => {
     );
 
     expect(jaArchitectureMetadata.title).toBe("アーキテクチャ");
-    expect(jaGlossaryMetadata.title).toBe("用語集");
     expect(jaTagsMetadata.title).toBe("タグ");
 
     expect(jaHomeMetadata.alternates?.canonical).toBe("/");

@@ -53,7 +53,6 @@ describe("home page messages", () => {
     const { home } = await loadUiMessages();
     expect(home.guidesLinkTitle).toBe("Guides");
     expect(home.docsLinkTitle).toBe("Docs browse");
-    expect(home.glossaryLinkTitle).toBe("Glossary");
     expect(home.blogLinkTitle).toBe("Blog");
     const homeRecord = home as Record<string, unknown>;
     for (const key of [
@@ -70,12 +69,10 @@ describe("home page messages", () => {
     }
     expect(
       youAgentFactorySiteConfig.homeFeaturedLinks.map((link) => link.titleKey),
-    ).toEqual([
-      "guidesLinkTitle",
-      "docsLinkTitle",
-      "glossaryLinkTitle",
-      "blogLinkTitle",
-    ]);
+    ).toEqual(["guidesLinkTitle", "docsLinkTitle", "blogLinkTitle"]);
+    expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.map((link) => link.titleKey),
+    ).not.toContain("glossaryLinkTitle");
   });
 });
 
@@ -109,12 +106,12 @@ describe("home page render", () => {
     const html = await renderHomeArticleHtml();
     expect(html).toContain('href="/docs/guides"');
     expect(html).toContain('href="/browse"');
-    expect(html).toContain('href="/docs/glossary"');
     expect(html).toContain('href="/blog"');
+    expect(html).not.toContain('href="/docs/glossary"');
     expect(html).toContain("Guides");
     expect(html).toContain("Docs browse");
-    expect(html).toContain("Glossary");
     expect(html).toContain("Blog");
+    expect(html).not.toContain(">Glossary<");
     expect(html).not.toContain("Browse the atlas");
     expect(html).not.toContain("Grouped-query attention");
     expect(html).not.toContain("SwiGLU");
@@ -218,7 +215,7 @@ describe("home page render", () => {
     expect(html).toContain("event streams");
     expect(html).toContain('href="/vi/docs/guides"');
     expect(html).toContain('href="/vi/browse"');
-    expect(html).toContain('href="/vi/docs/glossary"');
+    expect(html).not.toContain('href="/vi/docs/glossary"');
     expect(html).toContain('href="/vi/blog"');
     expect(html).not.toContain(
       'href="/vi/docs/modules/grouped-query-attention"',
@@ -280,7 +277,7 @@ describe("home page render", () => {
     expect(html).toContain("数百のエージェント");
     expect(html).toContain('href="/ja/docs/guides"');
     expect(html).toContain('href="/ja/browse"');
-    expect(html).toContain('href="/ja/docs/glossary"');
+    expect(html).not.toContain('href="/ja/docs/glossary"');
     expect(html).toContain('href="/ja/blog"');
     expect(html).not.toContain(
       'href="/ja/docs/modules/grouped-query-attention"',

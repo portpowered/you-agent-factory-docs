@@ -16,7 +16,7 @@ import { PAGE_OVERFLOW_TOLERANCE_PX } from "./a11y-responsive-contract";
 function goodPageHtml(): string {
   return `
     <header role="banner">
-      <a data-docs-header-brand href="/">You Agent Factory</a>
+      <a data-docs-header-brand href="/">YOU</a>
       <nav aria-label="Primary">
         <a href="/">Home</a>
         <a href="/browse">Browse</a>
@@ -54,7 +54,7 @@ describe("captureCriticalLayoutSnapshot", () => {
       "/blog",
       "/search",
     ]);
-    expect(snapshot.brandText).toBe("You Agent Factory");
+    expect(snapshot.brandText).toBe("YOU");
     expect(snapshot.contentColumnSurfaces).toEqual(["home-article-browse"]);
     expect(snapshot.hasUnintendedPageOverflow).toBe(false);
   });
@@ -78,7 +78,7 @@ describe("serialize / hash / diff layout snapshots", () => {
     h1Texts: ["Factory docs"],
     primaryNavHrefs: ["/", "/browse"],
     primaryNavLinkCount: 2,
-    brandText: "You Agent Factory",
+    brandText: "YOU",
     contentColumnSurfaces: ["home-article-browse"],
     pageOverflowPx: 0,
     hasUnintendedPageOverflow: false,
@@ -131,7 +131,7 @@ describe("assertCriticalLayoutContract", () => {
     const good = captureCriticalLayoutSnapshot(document);
     assertCriticalLayoutContract(good, {
       expectedH1: "Factory docs",
-      expectedBrand: "You Agent Factory",
+      expectedBrand: "YOU",
       expectedContentColumnSurface: "home-article-browse",
       minPrimaryNavLinks: 5,
     });
@@ -149,7 +149,7 @@ describe("assertCriticalLayoutContract", () => {
     document.body.innerHTML = goodPageHtml();
     const good = captureCriticalLayoutSnapshot(document);
     assertCriticalLayoutContract(good, {
-      expectedBrand: "You Agent Factory",
+      expectedBrand: "YOU",
       expectedContentColumnSurface: "home-article-browse",
     });
 
@@ -157,7 +157,7 @@ describe("assertCriticalLayoutContract", () => {
     const noBrand = captureCriticalLayoutSnapshot(document);
     expect(() =>
       assertCriticalLayoutContract(noBrand, {
-        expectedBrand: "You Agent Factory",
+        expectedBrand: "YOU",
       }),
     ).toThrow(/expected brand matching/);
 

@@ -5,7 +5,6 @@ import { loadUiMessages } from "@/lib/content/ui-messages";
 
 const BROWSE_QUICK_ROUTE_HREFS = [
   "/search",
-  "/docs/glossary",
   "/docs/architecture",
   "/tags",
 ] as const;
@@ -193,13 +192,10 @@ describe("collection-driven browse behavior", () => {
     const html = renderToStaticMarkup(page);
     const localizedSectionPosition = hrefPosition(html, "/vi/docs/guides");
 
-    for (const href of [
-      "/vi/search",
-      "/vi/docs/glossary",
-      "/vi/tags",
-    ] as const) {
+    for (const href of ["/vi/search", "/vi/tags"] as const) {
       expect(hrefPosition(html, href)).toBeLessThan(localizedSectionPosition);
     }
+    expect(html).not.toContain('href="/vi/docs/glossary"');
 
     expect(html).toContain('href="/vi/docs/guides"');
     expect(html).toContain('href="/vi/docs/concepts"');
@@ -215,7 +211,6 @@ describe("browse index page render", () => {
 
     for (const href of [
       "/search",
-      "/docs/glossary",
       "/docs/architecture",
       "/tags",
       "/docs/guides",
@@ -225,6 +220,7 @@ describe("browse index page render", () => {
     ] as const) {
       expect(html).toContain(`href="${href}"`);
     }
+    expect(html).not.toContain('href="/docs/glossary"');
 
     for (const label of [
       "Quick routes",
@@ -251,7 +247,7 @@ describe("browse index page render", () => {
     expect(html).toContain("Duyệt");
     expect(html).not.toContain("Duyệt Atlas");
     expect(html).toContain('href="/vi/search"');
-    expect(html).toContain('href="/vi/docs/glossary"');
+    expect(html).not.toContain('href="/vi/docs/glossary"');
     expect(html).toContain('href="/vi/tags"');
     expect(html).toContain('href="/vi/docs/guides"');
     expect(html).toContain('href="/vi/docs/documentation"');

@@ -216,12 +216,7 @@ export function resolveFactoryDocsPageHref(
 export function resolveFactorySurfaceHref(
   surface: Extract<
     LocalizedRouteDestination["surface"],
-    | "home"
-    | "browse"
-    | "search"
-    | "tags-index"
-    | "blog-index"
-    | "glossary-index"
+    "home" | "browse" | "search" | "tags-index" | "blog-index"
   >,
   locale: SiteLocale,
   basePath = "",

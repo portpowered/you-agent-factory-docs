@@ -57,18 +57,21 @@ describe("Phase 1 home shell styling contracts", () => {
     const messages = await loadUiMessages();
 
     expect(getPrimaryNavItems(messages).map((item) => item.href)).toEqual([
-      "/",
-      "/docs/guides",
-      "/browse",
-      "/docs/references",
-      "/docs/factories",
-      "/docs/workers",
-      "/docs/workstations",
-      "/docs/glossary",
       "/blog",
+      "/browse",
+      "/docs/guides",
+      "/docs/references",
     ]);
     expect(
       getPrimaryNavItems(messages).some((item) => item.href === "/search"),
+    ).toBe(false);
+    expect(getPrimaryNavItems(messages).some((item) => item.href === "/")).toBe(
+      false,
+    );
+    expect(
+      getPrimaryNavItems(messages).some(
+        (item) => item.href === "/docs/glossary",
+      ),
     ).toBe(false);
     expect(
       getPrimaryNavItems(messages).some((item) => item.href === "/topology"),

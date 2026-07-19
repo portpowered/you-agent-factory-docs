@@ -6,7 +6,7 @@ import "./mock-navigation";
 import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, screen, within } from "@testing-library/react";
 import { act } from "react";
-import { renderGlossaryIndexPage } from "@/app/(site)/site-renderers";
+import { renderSectionCollectionIndexPage } from "@/app/(site)/site-renderers";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
 import DocsNotFound from "@/app/docs/not-found";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
@@ -145,10 +145,12 @@ describe("contributing, not-found, and empty-state accessibility", () => {
     await expectNoSeriousAxeViolations(document.body);
   });
 
-  test("glossary empty state exposes factory recovery affordances with keyboard focus and Atlas-free copy", async () => {
+  test("section collection empty state exposes factory recovery affordances with keyboard focus and Atlas-free copy", async () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
-    const page = await renderGlossaryIndexPage();
+    // Glossary collection has no published entries; use it as an empty-state
+    // surface without depending on the retired /docs/glossary index route.
+    const page = await renderSectionCollectionIndexPage("glossary");
 
     await act(async () => {
       await renderWithAppProviders(

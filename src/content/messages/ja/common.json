@@ -3,7 +3,7 @@
     "open": "検索を開く",
     "placeholder": "you-agent-factory を検索…",
     "close": "検索を閉じる",
-    "idle": "クエリを入力して、ガイド、概念、技法、ドキュメント、用語集、タグを検索します。",
+    "idle": "クエリを入力して、ガイド、概念、技法、ドキュメント、タグを検索します。",
     "noResults": "結果が見つかりませんでした。",
     "loading": "検索中…",
     "error": "検索は一時的に利用できません。インデックスを読み込めませんでした。",
@@ -41,7 +41,7 @@
   },
   "searchEntry": {
     "title": "検索",
-    "description": "タイトル、別名、タグで you-agent-factory のドキュメントを検索します。検索コントロールを使ってガイド、概念、技法、ドキュメント、用語集の項目へ移動できます。",
+    "description": "タイトル、別名、タグで you-agent-factory のドキュメントを検索します。検索コントロールを使ってガイド、概念、技法、ドキュメントへ移動できます。",
     "canonicalNote": "正規の検索エントリ URL: /search。検索クエリの受け渡しでは ?q=<term>、タグでは ?tag=<slug>、分類では ?classification=<id-or-slug> を付けることがあります（例: /search?classification=activation）。",
     "tagFilterDescription": "{tag} タグの付いたリソースの結果を表示しています。",
     "classificationScopeDescription": "{classification} 分類に絞った結果を表示しています。",
@@ -52,7 +52,7 @@
     "emptySuggestionSuffix": "を参照してください。"
   },
   "shell": {
-    "sidebarTitle": "リファレンス",
+    "sidebarTitle": "ドキュメントを閲覧",
     "sidebarDescription": "ガイド、概念、技法、ドキュメント、タグを参照します。",
     "onThisPage": "このページ内",
     "openingSummary": "要約を開く"

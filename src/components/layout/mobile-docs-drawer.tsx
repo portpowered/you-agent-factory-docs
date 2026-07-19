@@ -88,14 +88,9 @@ export function MobileDocsDrawer({
         className="fixed inset-y-0 left-0 z-50 flex w-screen max-w-none flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
       >
         <div className="flex items-center justify-between border-b border-sidebar-border px-4 py-4">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-              Browse docs
-            </p>
-            <p className="truncate text-sm text-foreground">
-              {messages.shell.sidebarTitle}
-            </p>
-          </div>
+          <p className="min-w-0 text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+            {messages.shell.sidebarTitle}
+          </p>
           <Button
             type="button"
             variant="ghost"

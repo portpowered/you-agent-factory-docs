@@ -43,7 +43,11 @@ export type LanguageMessages = {
   locales: Record<string, string>;
 };
 
-/** Sidebar and layout chrome copy for the generic documentation shell. */
+/**
+ * Sidebar and layout chrome copy for the generic documentation shell.
+ * `sidebarTitle` is the accessible docs-nav region label (and optional
+ * non-product-name drawer eyebrow) — not a competing product brand mark.
+ */
 export type ShellLayoutMessages = {
   sidebarTitle: string;
   sidebarDescription: string;

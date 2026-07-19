@@ -10,7 +10,6 @@ export const SITE_NAMED_ROUTE_SURFACES = [
   "home",
   "guides",
   "docs",
-  "glossary",
   "blogIndex",
   "search",
   "references",
@@ -41,9 +40,12 @@ export type SiteCollectionFamily = (typeof SITE_COLLECTION_FAMILIES)[number];
 export type SiteBrandConfig = {
   /** Stable scaffold identifier used by health checks and smoke tests. */
   scaffoldId: string;
-  /** Brand label rendered on shared shell surfaces. */
+  /**
+   * Short brand mark rendered on shared header chrome
+   * (`resolveSiteConfigLayoutNav` / `data-docs-header-brand`).
+   */
   brandName: string;
-  /** Primary home page heading. */
+  /** Primary home page heading (may be the full product name). */
   siteHeading: string;
 };
 

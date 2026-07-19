@@ -196,7 +196,13 @@ describe("loadUiMessages shell keys", () => {
         retiredSurfaceInvite,
       );
       expect(messages.searchEntry.description).toMatch(
-        /you-agent-factory|ガイド|指南|hướng dẫn|guides|concepts|techniques|documentation|glossary/i,
+        /you-agent-factory|ガイド|指南|hướng dẫn|guides|concepts|techniques|documentation/i,
+      );
+      expect(messages.search.idle).not.toMatch(
+        /glossary|用語集|术语表|thuật ngữ/i,
+      );
+      expect(messages.searchEntry.description).not.toMatch(
+        /glossary|用語集|术语表|thuật ngữ/i,
       );
       expect(messages.searchEntry.emptySuggestionTerm).not.toMatch(
         /GQA|attention/i,
@@ -294,7 +300,7 @@ describe("message boundary contracts", () => {
     expect(messages.search.open).toBe("Open search");
     expect(messages.language.selectorLabel).toBe("Language");
     expect(messages.language.locales.en).toBe("English");
-    expect(messages.shell.sidebarTitle).toBe("Reference");
+    expect(messages.shell.sidebarTitle).toBe("Browse docs");
     expect(messages.shell.onThisPage).toBe("On this page");
     expect(messages.explorer.folders.documentation).toBe(
       "Program documentation",
