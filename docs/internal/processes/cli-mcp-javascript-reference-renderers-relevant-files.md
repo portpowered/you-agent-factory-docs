@@ -76,6 +76,20 @@ CLI tests that lock this repair:
   inventory publish plus a representative card scoped with `within(card)` so
   filter Lifecycle/Visibility labels do not false-positive as card chrome.
 
+Browser spot-check for this repair (production build):
+
+1. `bun run build` then `bun run start -- -p <3100-3999>` (unique port; kill on exit).
+2. Open `/docs/references/cli` with Playwright (or equivalent JS-capable browser).
+3. Assert a representative `[data-cli-command-reference]` card: command-path
+   heading via `header h3 a` (AlertPanelTitle also uses `h3` for
+   `🚧 Under construction` — do not use a bare `h3` locator), no
+   `[data-contract-source-badge]` / `[data-reference-status-chrome]`, no
+   Visibility / Handler present / Leaf name / Command path metadata rows, and
+   `[data-cli-capability="structured-options-under-construction"]` (not the old
+   unavailable apology) with no invented option tables.
+4. Confirm inventory `data-inventory-state="success"` and Lifecycle/Visibility
+   filters remain usable outside the card body.
+
 ## Key host files (MCP family — story 004 / 005)
 
 | Path | Role |
