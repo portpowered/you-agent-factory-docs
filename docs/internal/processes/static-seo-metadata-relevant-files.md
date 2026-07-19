@@ -35,6 +35,7 @@ social assets, sitemap, robots).
 | `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects); canonical slug/path remap helpers |
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
+| `src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx` | Repair demotion proof: stubs stay published with compatibility HTML, family canonical, and sitemap exclusion |
 | `src/lib/seo/documentation-route-migration-canonical.test.ts` | §10 old→target Metadata canonical/OG + sitemap exclusion/inclusion proofs |
 | `src/lib/seo/documentation-route-migration-links.test.tsx` | §10 related-id / related-href / browse retarget proofs |
 | `src/lib/seo/documentation-route-migration-closure.test.tsx` | §10 ledger closure + old/target/canonical/important-anchor proofs |
@@ -172,6 +173,13 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    `what-it-covers`; use `{ kind: "none", reason: "index-only-target" }` only
    when an index truly has no section id). Do not invent per-route redirect
    helpers.
+7. **Repair demotion (moved-duplicate stubs):** demoting §10 stubs from Program
+   documentation explorer/search must keep the minimal compatibility MDX +
+   `DocumentationRouteCompatibilityDocument` published. Do not delete ledger
+   old routes or reopen W18 rows without evidence. Required-suite proof:
+   `src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx`
+   locks published presence, compatibility HTML + target link, family
+   Metadata canonical, and sitemap exclusion after demotion.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and
