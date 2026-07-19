@@ -1,18 +1,18 @@
 {
-  "id": "reference.you-config-schema",
-  "slug": "you-config-schema",
+  "id": "reference.system-config-schema",
+  "slug": "system-config-schema",
   "kind": "reference",
   "defaultTitleKey": "title",
   "defaultSummaryKey": "description",
   "aliases": [
-    "You-config schema",
-    "you config JSON Schema",
-    "You operator configuration schema"
+    "System configuration schema",
+    "System config schema",
+    "system config JSON Schema"
   ],
   "tags": [],
   "relatedIds": [],
   "citationIds": [],
   "status": "published",
   "createdAt": "2026-07-18T13:30:00.000Z",
-  "updatedAt": "2026-07-18T13:30:00.000Z"
+  "updatedAt": "2026-07-19T13:00:00.000Z"
 }

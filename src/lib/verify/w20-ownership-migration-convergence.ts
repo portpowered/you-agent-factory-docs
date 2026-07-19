@@ -109,11 +109,11 @@ export const W20_PLAN_SECTION_9_PAGE_OWNERSHIP = [
       "src/content/docs/references/factory-schema/factory-schema-page.test.tsx",
   },
   {
-    route: "/docs/references/you-config-schema",
+    route: "/docs/references/system-config-schema",
     planSection: "9.1",
     owner: "W11",
     testSurface:
-      "src/content/docs/references/you-config-schema/you-config-schema-page.test.tsx",
+      "src/content/docs/references/system-config-schema/system-config-schema-page.test.tsx",
   },
   {
     route: "/docs/references/mock-workers-schema",

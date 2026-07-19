@@ -27,8 +27,8 @@
       "title": "Factory スキーマ",
       "body": "パッケージ化されたファクトリー文書と必須フィールドの JSON Schema。"
     },
-    "you-config-schema": {
-      "title": "you 設定スキーマ",
+    "system-config-schema": {
+      "title": "システム設定スキーマ",
       "body": "you-agent-factory ランタイムとワークスペース設定の構成スキーマ。"
     },
     "mock-workers-schema": {

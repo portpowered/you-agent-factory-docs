@@ -84,7 +84,7 @@ export function loadApiReferenceSearchShapes(): {
 
 /**
  * Load settled schema definition/field search shapes with per-page anchors on
- * factory-schema / you-config-schema / mock-workers-schema.
+ * factory-schema / system-config-schema / mock-workers-schema.
  */
 export function loadSchemaFamilyReferenceSearchShapes(): {
   shapes: ReferenceSearchDocumentShape[];

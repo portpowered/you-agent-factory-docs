@@ -17,8 +17,8 @@ export const REFERENCE_FAMILY_DISCOVERABILITY_ROUTES = [
     href: "/docs/references/factory-schema",
   },
   {
-    id: "you-config-schema",
-    href: "/docs/references/you-config-schema",
+    id: "system-config-schema",
+    href: "/docs/references/system-config-schema",
   },
   {
     id: "mock-workers-schema",

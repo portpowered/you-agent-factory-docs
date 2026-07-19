@@ -32,7 +32,7 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/lib/search/build-schema-reference-search-documents.ts`
   W16 story 003: projects settled factory / you-config / mock-workers schema
   definitions and addressable field paths onto per-schema owning pages
-  (`factory-schema`, `you-config-schema`, `mock-workers-schema`) — never the
+  (`factory-schema`, `system-config-schema`, `mock-workers-schema`) — never the
   placeholder `/docs/references/schema` path.
 * `src/lib/search/build-cli-mcp-javascript-reference-search-documents.ts`
   W16 story 004: projects packaged CLI commands, MCP tools, and JavaScript

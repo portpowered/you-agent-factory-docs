@@ -57,7 +57,7 @@ describe("buildSchemaPackageSearchDocuments", () => {
       "/docs/references/factory-schema",
     );
     expect(bySubpath.get("schemas/you-config")?.pagePath).toBe(
-      "/docs/references/you-config-schema",
+      "/docs/references/system-config-schema",
     );
     expect(bySubpath.get("schemas/mock-workers")?.pagePath).toBe(
       "/docs/references/mock-workers-schema",
@@ -70,7 +70,7 @@ describe("buildSchemaPackageSearchDocuments", () => {
       expect(document.url.startsWith("/docs/references/schema#")).toBe(false);
       expect(
         document.url.startsWith("/docs/references/factory-schema#") ||
-          document.url.startsWith("/docs/references/you-config-schema#") ||
+          document.url.startsWith("/docs/references/system-config-schema#") ||
           document.url.startsWith("/docs/references/mock-workers-schema#"),
       ).toBe(true);
     }

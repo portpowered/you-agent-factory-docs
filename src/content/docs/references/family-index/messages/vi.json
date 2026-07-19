@@ -27,8 +27,8 @@
       "title": "Factory schema",
       "body": "JSON Schema cho tài liệu factory đã đóng gói và các trường bắt buộc."
     },
-    "you-config-schema": {
-      "title": "Schema cấu hình you",
+    "system-config-schema": {
+      "title": "Schema cấu hình hệ thống",
       "body": "Schema cấu hình cho runtime và thiết lập workspace của you-agent-factory."
     },
     "mock-workers-schema": {

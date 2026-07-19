@@ -35,7 +35,7 @@ import type {
 /** Settled owning-page paths for each schema verification public subpath. */
 export const SCHEMA_REFERENCE_PAGE_PATHS = {
   "schemas/factory": "/docs/references/factory-schema",
-  "schemas/you-config": "/docs/references/you-config-schema",
+  "schemas/you-config": "/docs/references/system-config-schema",
   "schemas/mock-workers": "/docs/references/mock-workers-schema",
 } as const satisfies Record<SchemaVerificationPublicSubpath, string>;
 

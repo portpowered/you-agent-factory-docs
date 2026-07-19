@@ -56,7 +56,10 @@ const COEXISTING_REFERENCE_SLUGS = [
   { slug: "api", url: "/docs/references/api" },
   { slug: "events", url: "/docs/references/events" },
   { slug: "factory-schema", url: "/docs/references/factory-schema" },
-  { slug: "you-config-schema", url: "/docs/references/you-config-schema" },
+  {
+    slug: "system-config-schema",
+    url: "/docs/references/system-config-schema",
+  },
   { slug: "mock-workers-schema", url: "/docs/references/mock-workers-schema" },
 ] as const;
 
