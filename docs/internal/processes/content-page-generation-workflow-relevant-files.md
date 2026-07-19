@@ -1018,6 +1018,18 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Dispatch / event contracts live in OpenAPI — link
   `/docs/references/{schema,api,events}` rather than inventing session schema
   embeds outside W07 JSON Schema package models).
+  Factories authored child pages
+  (`configuration` / `global-configuration` / `packaged` / `dynamic-workflows` /
+  `sessions`) use purpose-lead chrome: keep a short `openingSummary` for
+  `DocsOpeningSummary`, then open MDX on the first teaching section (for
+  example `#what-lives-where`, `#operator-model-defaults`,
+  `#discovery-and-resolution`, `#orchestrator-schema`, or
+  `#factory-relationship`). Do not restore `#what-it-covers` /
+  `#key-concepts` or `sections.whatItCovers` / `sections.keyConcepts` on those
+  trees. Leave the factories family index overview / root summary embed alone
+  unless it literally ships those intros. Do not expand this intro strip into
+  workers/workstations (separate polish), documentation Program pages, or
+  reference schema pages (batch-004).
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
