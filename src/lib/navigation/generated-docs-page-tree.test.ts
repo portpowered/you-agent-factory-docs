@@ -38,13 +38,38 @@ const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   },
   {
     folderName: "Program documentation",
-    separator: "Additional references",
-    url: "/docs/documentation/what-is-you-agent-factory",
+    separator: "System feature set",
+    url: "/docs/documentation/dynamic-workflows",
   },
   {
     folderName: "Program documentation",
     separator: "Interfaces",
     url: "/docs/documentation/cli",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Interfaces",
+    url: "/docs/documentation/mcp",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Packaged factories",
+    url: "/docs/documentation/packaged-documents",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Internal Architecture",
+    url: "/docs/documentation/architecture-of-system",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Internal Architecture",
+    url: "/docs/documentation/petri",
+  },
+  {
+    folderName: "Program documentation",
+    separator: "Additional references",
+    url: "/docs/documentation/what-is-you-agent-factory",
   },
   {
     folderName: "Program documentation",

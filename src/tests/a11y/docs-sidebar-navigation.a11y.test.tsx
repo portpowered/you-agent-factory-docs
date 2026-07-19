@@ -251,6 +251,42 @@ describe("docs sidebar navigation accessibility", () => {
       }),
     ).toBeTruthy();
 
+    // Story 003 browser proof: Interfaces + Additional references pages sit
+    // under Program documentation in separator order (flat separator siblings).
+    const interfacesLabel =
+      context.messages.explorer.documentationGroups.interfaces;
+    const additionalReferencesLabel =
+      context.messages.explorer.documentationGroups["additional-references"];
+    const interfacesSeparator = within(sidebar).getByText(interfacesLabel);
+    const additionalReferencesSeparator = within(sidebar).getByText(
+      additionalReferencesLabel,
+    );
+    const cliLink = within(sidebar)
+      .getAllByRole("link", { name: "CLI" })
+      .find((link) => link.getAttribute("href") === "/docs/documentation/cli");
+    expect(cliLink).toBeTruthy();
+    if (!cliLink) {
+      throw new Error("expected Interfaces CLI under Program documentation");
+    }
+    const installLink = within(sidebar).getByRole("link", {
+      name: "Install you-agent-factory",
+    });
+    expect(installLink.getAttribute("href")).toBe(
+      "/docs/documentation/install",
+    );
+
+    const position = (node: Element) => {
+      const nodes = Array.from(sidebar.querySelectorAll("*"));
+      return nodes.indexOf(node);
+    };
+    expect(position(interfacesSeparator)).toBeLessThan(position(cliLink));
+    expect(position(cliLink)).toBeLessThan(
+      position(additionalReferencesSeparator),
+    );
+    expect(position(additionalReferencesSeparator)).toBeLessThan(
+      position(installLink),
+    );
+
     const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
     expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
     faqLink.focus();

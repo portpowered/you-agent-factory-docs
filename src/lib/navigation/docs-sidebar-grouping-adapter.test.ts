@@ -235,6 +235,47 @@ describe("docs sidebar grouping adapter", () => {
       expect(byGroup[label]?.slice().sort()).toEqual(urls.slice().sort());
     }
 
+    const exactDirectTopGroupSlugs = {
+      "System feature set": [
+        "dynamic-workflows",
+        "harness-support",
+        "replays-records",
+        "submitting-work",
+      ],
+      Interfaces: ["cli", "cli-command-index", "api-doc", "mcp"],
+      "Packaged factories": ["packaged-factories", "packaged-documents"],
+      "Internal Architecture": ["architecture-of-system", "petri"],
+      "Additional references": [
+        "what-is-you-agent-factory",
+        "install",
+        "contributing-to-these-docs",
+        "dashboard-ui-overview",
+        "security-trust-boundaries",
+        "troubleshooting",
+      ],
+    } as const;
+
+    for (const [label, slugs] of Object.entries(exactDirectTopGroupSlugs)) {
+      const urls = byGroup[label] ?? [];
+      expect(
+        urls.map((url) => url.slice("/docs/documentation/".length)).sort(),
+      ).toEqual([...slugs].sort());
+    }
+
+    for (const excluded of [
+      "configuration",
+      "workers",
+      "logs",
+      "metrics",
+      "throttling-and-limits",
+    ] as const) {
+      expect(
+        byGroup["System feature set"]?.some((url) =>
+          url.endsWith(`/docs/documentation/${excluded}`),
+        ),
+      ).toBe(false);
+    }
+
     expect(countPageNodes(nodes)).toBe(pages.length);
     expect(
       FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[

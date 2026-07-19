@@ -390,6 +390,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `SIDEBAR_GROUP_LABELS` (top-level folders + FAQ, Concepts subgroups, Program
   documentation subgroups) plus fail-closed `localizePageTree` /
   `assertExplorerMessages` coverage when explorer catalogs are missing or empty.
+  Story 003 locks exact direct-under-top-group membership for System feature
+  set / Interfaces / Packaged factories / Internal Architecture / Additional
+  references and proves config/ops pages stay out of System feature set.
 * `src/tests/layout/desktop-mobile-explorer-parity.test.tsx`
   Focused proof that every locale’s constructed explorer tree matches the IA
   contract and that CanonicalDocsLayout’s desktop `#nd-sidebar` and mobile
@@ -398,7 +401,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/a11y/docs-sidebar-navigation.a11y.test.tsx`
   Keyboard-reachable FAQ and Concepts subgroup page links, no Glossary folder
   control, Program documentation accessible name, and localized Vietnamese
-  folder/sidebar accessible names on CanonicalDocsLayout.
+  folder/sidebar accessible names on CanonicalDocsLayout. Story 003 also
+  proves Interfaces (`/docs/documentation/cli`) and Additional references
+  (`/docs/documentation/install`) appear after their Program documentation
+  separators in DOM order (disambiguate CLI from `/docs/references/cli`).
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only

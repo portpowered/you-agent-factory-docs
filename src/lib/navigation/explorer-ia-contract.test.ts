@@ -70,6 +70,48 @@ const R01_PROGRAM_DOCUMENTATION_PAGES = [
   { slug: "packaged-factories", group: "packaged-factories" },
 ] as const;
 
+/**
+ * Story 003 — non-secondary Program documentation top groups and their pages.
+ * Factory Configuration / System Operations nesting is owned by story 004.
+ */
+const STORY_003_DIRECT_TOP_GROUP_PAGES = {
+  "system-feature-set": [
+    "dynamic-workflows",
+    "harness-support",
+    "replays-records",
+    "submitting-work",
+  ],
+  interfaces: ["cli", "cli-command-index", "api-doc", "mcp"],
+  "packaged-factories": ["packaged-factories", "packaged-documents"],
+  "internal-architecture": ["architecture-of-system", "petri"],
+  "additional-references": [
+    "what-is-you-agent-factory",
+    "install",
+    "contributing-to-these-docs",
+    "dashboard-ui-overview",
+    "security-trust-boundaries",
+    "troubleshooting",
+  ],
+} as const;
+
+/** Config / ops pages that must not leak into System feature set. */
+const SYSTEM_FEATURE_SET_EXCLUDED_SLUGS = [
+  "workers",
+  "poller-workers",
+  "script-workers",
+  "agent-workers",
+  "inference-workers",
+  "mock-workers",
+  "workstations",
+  "configuration",
+  "factory-session",
+  "global-configuration-factories",
+  "resources",
+  "throttling-and-limits",
+  "logs",
+  "metrics",
+] as const;
+
 /** R00 Concepts pages required under declared explorer subgroups. */
 const R00_CONCEPTS_PAGES = [
   { slug: "skills", group: "harnesses" },
@@ -192,6 +234,76 @@ describe("explorer IA exact-order contract", () => {
         page.url.endsWith("/docs/documentation/faq"),
       ),
     ).toBe(false);
+  });
+
+  test("default-locale Program documentation places feature, interface, packaged, architecture, and additional pages under declared top groups", async () => {
+    const messages = await loadUiMessages("en");
+    const signature = buildExplorerTreeSignature(
+      localizePageTree(source.pageTree, "en", { messages }),
+    );
+
+    const documentation = folderSignatureByName(
+      signature,
+      FACTORY_EXPLORER_FOLDER_LABELS.documentation,
+    );
+    expect(documentation).toBeTruthy();
+    if (!documentation) {
+      throw new Error("expected Program documentation folder");
+    }
+
+    expect(separatorNamesInFolder(documentation)).toEqual([
+      ...DECLARED_DOCUMENTATION_GROUP_ORDER,
+    ]);
+
+    for (const [groupId, slugs] of Object.entries(
+      STORY_003_DIRECT_TOP_GROUP_PAGES,
+    ) as Array<
+      [keyof typeof STORY_003_DIRECT_TOP_GROUP_PAGES, readonly string[]]
+    >) {
+      const groupLabel = SIDEBAR_GROUP_LABELS.documentation[groupId];
+      expect(
+        secondaryFolderNamesUnderSeparator(documentation, groupLabel),
+      ).toEqual([]);
+
+      const underGroup = pageEntriesUnderSeparator(documentation, groupLabel);
+      const underGroupSlugs = underGroup.map((entry) => {
+        const match = entry.url.match(/\/documentation\/([^/]+)$/);
+        expect(
+          match?.[1],
+          `${entry.url} must be a documentation page`,
+        ).toBeTruthy();
+        return match?.[1] ?? "";
+      });
+
+      expect(underGroupSlugs.sort()).toEqual([...slugs].sort());
+
+      for (const slug of slugs) {
+        expect(
+          FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+            slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+          ],
+        ).toBe(groupId);
+        expect(
+          underGroup.some((entry) =>
+            urlEndsWithSlug(entry.url, "documentation", slug),
+          ),
+          `${slug} must sit under Program documentation top group ${groupLabel}`,
+        ).toBe(true);
+      }
+    }
+
+    const systemFeaturePages = pageEntriesUnderSeparator(
+      documentation,
+      SIDEBAR_GROUP_LABELS.documentation["system-feature-set"],
+    );
+    for (const slug of SYSTEM_FEATURE_SET_EXCLUDED_SLUGS) {
+      expect(
+        systemFeaturePages.some((entry) =>
+          urlEndsWithSlug(entry.url, "documentation", slug),
+        ),
+        `${slug} must not appear under System feature set`,
+      ).toBe(false);
+    }
   });
 
   test("default-locale explorer places Concepts and eight Program pages under declared subgroups", async () => {
