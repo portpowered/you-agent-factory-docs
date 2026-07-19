@@ -65,6 +65,31 @@ entry. Do not vendor or fork package source into this repo.
   `theme-code-copy-r00-page.test.ts` prove factory-dark chrome and shared
   code-copy interaction on `/docs/guides/getting-started` (desktop + narrow).
 
+## Docs chrome highlighting token map (locked roles)
+
+Wave 5 / batch-005 chrome hover-active repair owns resting vs overlay colors
+for search, globe, GitHub, TOC, sidebar, header, and breadcrumb through one
+shared map — not per-control hex hacks.
+
+| Role | Host semantic | Factory-dark proof | Surfaces |
+| --- | --- | --- | --- |
+| surrounding chrome background | `--background` | `#050b10` | search / globe / GitHub rest |
+| primary yellow | `--primary` | `#f5c76f` | hover/active overlay (all); sidebar hover **background** |
+| secondary blue | `--secondary` | `#507f8c` | TOC current rest |
+| white | `--foreground` | `#f7f2e8` | sidebar / header text+icons rest |
+| muted white | `--muted-foreground` | `#8aaeb8` | TOC non-current / breadcrumb rest |
+
+- Contract module: `src/lib/theme/docs-chrome-highlighting-tokens.ts`
+  (`DOCS_CHROME_HIGHLIGHTING_TOKEN_VARS`, surface role map,
+  factory-dark hex proofs).
+- CSS ownership: `:root` `--docs-chrome-*` vars in `src/app/globals.css`
+  (must stay aligned with the TS contract).
+- Lock with `docs-chrome-highlighting-tokens.test.ts` (role bindings +
+  observable DOM color checks). Do not add source-inventory tests that only
+  scan `globals.css` for var names.
+- Later surface stories consume `--docs-chrome-*` / the TS contract; do not
+  reopen primary-nav membership, brand copy, glossary, or search ranking here.
+
 ## Prose / chrome link underline accent (secondary blue)
 
 - Fumadocs prose defaults `text-decoration-color` to `--color-fd-primary`

@@ -55,6 +55,18 @@
   --sidebar-accent-foreground: var(--color-af-foundation-ink);
   --sidebar-border: rgb(from var(--color-af-foundation-overlay) r g b / 0.18);
   --sidebar-ring: var(--color-af-foundation-accent);
+
+  /*
+   * Locked docs chrome highlighting roles (search / globe / GitHub, TOC,
+   * sidebar, header, breadcrumb). Keep aligned with
+   * src/lib/theme/docs-chrome-highlighting-tokens.ts — consume these vars
+   * from shared chrome CSS instead of scattering one-off hex values.
+   */
+  --docs-chrome-surrounding-background: var(--background);
+  --docs-chrome-primary-yellow: var(--primary);
+  --docs-chrome-secondary-blue: var(--secondary);
+  --docs-chrome-white: var(--foreground);
+  --docs-chrome-muted-white: var(--muted-foreground);
 }
 
 @theme inline {
