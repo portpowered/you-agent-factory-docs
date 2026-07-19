@@ -1,10 +1,10 @@
 /**
  * Page-owned render proof for references/cli.
- * Covers reference shell, package-backed CLI inventory mount, and related
- * discovery links. Colocated under the page bundle.
+ * Covers reference shell and package-backed CLI inventory mount.
+ * Colocated under the page bundle.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadCliReferenceInventory } from "@/lib/references/load-cli-reference-inventory";
@@ -41,21 +41,19 @@ describe("cli reference page", () => {
       const keyConcepts = String(
         loadedPage.messages.sections?.keyConcepts?.body ?? "",
       );
-      const howToUse = String(
-        loadedPage.messages.sections?.howToUse?.body ?? "",
-      );
-      const limits = String(
-        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-      );
       expect(whatItCovers).toMatch(/package-backed CLI command inventory/i);
       expect(keyConcepts).toMatch(/@you-agent-factory\/api\/cli/i);
       expect(keyConcepts).toMatch(/not from a page-local copy/i);
-      expect(howToUse).toMatch(/durable package CLI lookup/i);
-      expect(limits).toMatch(/static package-backed CLI inventory/i);
-      expect(limits).toMatch(/does not invent structured flags/i);
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
+      expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+      expect(
+        loadedPage.messages.sections?.limitsAndAssumptions,
+      ).toBeUndefined();
+      expect(loadedPage.messages.sections?.related).toBeUndefined();
+      expect(loadedPage.messages.sections?.tags).toBeUndefined();
+      expect(loadedPage.messages.sections?.references).toBeUndefined();
 
       const inventory = loadCliReferenceInventory();
       expect(inventory.state).toBe("success");
@@ -84,11 +82,13 @@ describe("cli reference page", () => {
       expect(
         screen.getByRole("heading", { name: "Command Inventory" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Limits And Assumptions" }),
-      ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+        screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+      ).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
 
       const inventoryRoot = document.querySelector(
         "[data-cli-command-inventory]",
@@ -105,32 +105,6 @@ describe("cli reference page", () => {
         screen.getByText(/published CLI commands from the package/i),
       ).toBeTruthy();
       expect(screen.getAllByText("you config init").length).toBeGreaterThan(0);
-
-      const related = document.getElementById("related");
-      expect(related).toBeTruthy();
-      const relatedQueries = within(related as HTMLElement);
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "CLI documentation" })
-          .getAttribute("href"),
-      ).toBe("/docs/documentation/cli");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "CLI command index" })
-          .getAttribute("href"),
-      ).toBe("/docs/references/cli");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "MCP reference" })
-          .getAttribute("href"),
-      ).toBe("/docs/references/mcp");
-      expect(
-        relatedQueries
-          .getByRole("link", {
-            name: "JavaScript runtime reference",
-          })
-          .getAttribute("href"),
-      ).toBe("/docs/references/javascript-runtime");
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

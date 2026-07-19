@@ -14,28 +14,6 @@
     "toolInventory": {
       "title": "Tool Inventory",
       "body": "Scan the published MCP tools below. Filter by tool name, description, or lifecycle when those facets are present on a tool. Open a tool card for its input schema and examples, and copy its stable anchor when you need a deep link."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Open this page when you need the durable package MCP lookup surface. Use the inventory filters to narrow the list, then open a tool for its published description, input schema, and examples. Prefer the authored MCP documentation page for host setup and narrative guidance; prefer this inventory when you need every published Factory Session tool from the installed package contract."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is a static package-backed MCP inventory. It does not start a Factory host, does not invent tool input fields when the contract omits them, and is not a substitute for host configuration walkthroughs. Sibling CLI and JavaScript runtime reference routes may be linked before those pages exist in every checkout."
-    },
-    "related": {
-      "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "mcpDocs": "MCP documentation",
-    "cliReference": "CLI reference",
-    "javascriptRuntimeReference": "JavaScript runtime reference"
   }
 }

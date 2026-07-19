@@ -121,11 +121,13 @@ describe("W11 published route states and ownership fences", () => {
         expect(loadedPage.frontmatter.kind).toBe("reference");
         expect(loadedPage.frontmatter.registryId).toBe(route.registryId);
 
-        const limits = String(
-          loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+        expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+        expect(
+          loadedPage.messages.sections?.limitsAndAssumptions,
+        ).toBeUndefined();
+        expect(loadedPage.messages.openingSummary).toMatch(
+          /without a live Factory host/i,
         );
-        expect(limits).toMatch(/static package-backed/i);
-        expect(limits).toMatch(/does not start a Factory host/i);
 
         cleanup();
         render(
@@ -138,6 +140,13 @@ describe("W11 published route states and ownership fences", () => {
             </DocsPageProviders>
           </main>,
         );
+
+        expect(
+          screen.queryByRole("heading", { name: "How To Use" }),
+        ).toBeNull();
+        expect(
+          screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+        ).toBeNull();
 
         const inventoryRoot = document.querySelector(route.inventorySelector);
         expect(inventoryRoot).toBeTruthy();
