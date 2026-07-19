@@ -125,10 +125,13 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   Related (`RelatedDocs` + `LocalizedLinkList`), Tags (`TagPillList`), or
   References (`CitationList`). Shared proofs live in
   `published-route-states.test.tsx` (assert removed section keys + headings
-  absent; use `openingSummary` matching `/without a live Factory host/i` and
-  inventory success for static no-host safety; keep `messages.links`
-  undefined). MCP polish replaces What It Covers / Key Concepts with an
-  install-first `how-to-install` section and a page-local
+  absent; inventory success for static no-host safety; keep `messages.links`
+  undefined). CLI inventory-first repair omits `openingSummary` (and drops
+  What It Covers / Key Concepts) so `DocsOpeningSummary` mounts nothing and
+  the page opens on Command Inventory — do not require CLI
+  `openingSummary` to match `/without a live Factory host/i`; MCP/JS may
+  still keep that lead. MCP polish replaces What It Covers / Key Concepts with
+  an install-first `how-to-install` section and a page-local
   `McpInstallDocsLink` (not `messages.links`) to `/docs/documentation/mcp`.
   Page-local `mcp-page.test.tsx` should also prove a representative published
   tool card keeps title/anchor/description/schema/example while omitting
