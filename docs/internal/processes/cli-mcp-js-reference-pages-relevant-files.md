@@ -135,7 +135,13 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   `McpInstallDocsLink` (not `messages.links`) to `/docs/documentation/mcp`.
   JS intro-strip removes What It Covers / Key Concepts entirely and keeps the
   #159 keep-list (glossary, overall usage example, Runtime Inventory) as the
-  first content.
+  first content. Page-local `javascript-runtime-page.test.tsx` asserts intro
+  absence via `queryByRole` / `getElementById` null, undefined
+  `sections.whatItCovers` / `sections.keyConcepts`, and empty
+  `openingSummary` (MCP #156 pattern)—while still proving glossary, overall
+  example, inventory success, and #159 chrome trim. Shared
+  `published-route-states.test.tsx` scopes the live-host-free
+  `openingSummary` assert to CLI/MCP only so JS may clear the summary.
   Page-local `mcp-page.test.tsx` should also prove a representative published
   tool card keeps title/anchor/description/schema/example while omitting
   `data-contract-source-badge`, Handler registered / Tool id rows, Object
