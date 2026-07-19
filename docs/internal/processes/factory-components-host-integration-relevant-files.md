@@ -117,9 +117,18 @@ shared map — not per-control hex hacks.
   Do not leave `text-fd-muted-foreground` rest or `hover:bg-fd-accent/50` /
   `hover:bg-sidebar-accent` owning these rows. Prove with
   `docs-chrome-sidebar.test.ts`.
-- Later surface stories (header text / breadcrumb) consume
-  `--docs-chrome-*` / the TS contract; do not reopen primary-nav membership,
-  brand copy, glossary, or search ranking here.
+- Header text/icons + breadcrumb surface (story 005): consume
+  `src/features/docs/styles/docs-chrome-header-breadcrumb.ts` +
+  `docs-chrome-header-breadcrumb.css` (imported from `globals.css`). Header
+  brand / primary-nav text and menu icon rest = `--docs-chrome-white`;
+  hover/active = `--docs-chrome-primary-yellow` text overlay. Breadcrumb
+  links and current page rest = `--docs-chrome-muted-white`; link hover =
+  `--docs-chrome-primary-yellow`. Marker classes
+  `docs-chrome-header-text` / `docs-chrome-header-icon` /
+  `docs-chrome-breadcrumb-link` / `docs-chrome-breadcrumb-page`. Do not leave
+  `text-muted-foreground hover:text-foreground` owning these chrome surfaces.
+  Do not reopen primary-nav membership, brand copy, glossary, or search
+  ranking. Prove with `docs-chrome-header-breadcrumb.test.ts`.
 
 ## Prose / chrome link underline accent (secondary blue)
 

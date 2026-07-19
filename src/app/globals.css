@@ -8,6 +8,7 @@
 @import "../features/docs/styles/docs-page-footer-chrome.css";
 @import "../features/docs/styles/docs-chrome-toc.css";
 @import "../features/docs/styles/docs-chrome-sidebar.css";
+@import "../features/docs/styles/docs-chrome-header-breadcrumb.css";
 @import "../features/docs/styles/docs-code-block.css";
 @import "../features/docs/styles/registry-graph-flow-theme.css";
 @import "@xyflow/react/dist/style.css";

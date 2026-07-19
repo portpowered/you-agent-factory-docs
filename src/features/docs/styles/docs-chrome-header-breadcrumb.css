@@ -1,0 +1,59 @@
+/**
+ * Docs header text/icons + breadcrumb highlighting token map.
+ *
+ * Header text/icons:
+ * - rest → white (`--docs-chrome-white`)
+ * - hover/active → primary yellow (`--docs-chrome-primary-yellow`)
+ *
+ * Breadcrumb:
+ * - rest → muted white (`--docs-chrome-muted-white`)
+ * - hover → primary yellow (`--docs-chrome-primary-yellow`)
+ *
+ * Keep selectors aligned with docs-chrome-header-breadcrumb.ts.
+ * Live in @layer utilities with !important so they beat Tailwind color /
+ * hover utilities (same cascade pattern as TOC / sidebar chrome).
+ */
+@layer utilities {
+  header .docs-chrome-header-text {
+    color: var(--docs-chrome-white) !important;
+  }
+
+  header .docs-chrome-header-icon {
+    color: var(--docs-chrome-white) !important;
+  }
+
+  header .docs-chrome-header-text:focus-visible,
+  header .docs-chrome-header-icon:focus-visible {
+    outline-style: solid !important;
+    outline-width: 2px !important;
+    outline-color: var(--ring) !important;
+    outline-offset: 2px;
+  }
+
+  nav[aria-label="breadcrumb"] .docs-chrome-breadcrumb-link,
+  nav[aria-label="breadcrumb"] .docs-chrome-breadcrumb-page {
+    color: var(--docs-chrome-muted-white) !important;
+  }
+
+  nav[aria-label="breadcrumb"] .docs-chrome-breadcrumb-link:focus-visible {
+    outline-style: solid !important;
+    outline-width: 2px !important;
+    outline-color: var(--ring) !important;
+    outline-offset: 2px;
+    border-radius: 0.125rem;
+  }
+
+  @media (hover: hover) {
+    header .docs-chrome-header-text:hover,
+    header .docs-chrome-header-text:active,
+    header .docs-chrome-header-icon:hover,
+    header .docs-chrome-header-icon:active,
+    header .docs-chrome-header-icon[aria-expanded="true"] {
+      color: var(--docs-chrome-primary-yellow) !important;
+    }
+
+    nav[aria-label="breadcrumb"] .docs-chrome-breadcrumb-link:hover {
+      color: var(--docs-chrome-primary-yellow) !important;
+    }
+  }
+}
