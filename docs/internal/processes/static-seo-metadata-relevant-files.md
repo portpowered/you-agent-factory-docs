@@ -36,6 +36,7 @@ social assets, sitemap, robots).
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
 | `src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx` | Repair demotion proof: stubs stay published with compatibility HTML, family canonical, and sitemap exclusion |
+| `src/lib/content/factory-documentation-route-migration-demoted-contract.test.tsx` | Repair story 005 consolidating proof: explorer/search/sitemap/section-index absence + colocated compatibility page tests |
 | `src/lib/seo/documentation-route-migration-canonical.test.ts` | §10 old→target Metadata canonical/OG + sitemap exclusion/inclusion proofs |
 | `src/lib/seo/documentation-route-migration-links.test.tsx` | §10 related-id / related-href / browse retarget proofs |
 | `src/lib/content/factory-documentation-route-migration-inbound-retarget.test.tsx` | Repair inbound retarget proof: registry/related/RegistryLinkList prefer family hrefs |

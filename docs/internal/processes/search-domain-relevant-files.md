@@ -157,6 +157,11 @@ Use these files when changing search document construction, Orama indexing, or
   Required-suite proof that §10 old stub URLs are absent from search documents
   / advanced indexes / representative API queries while family destinations
   remain findable and stub pages stay published for compatibility.
+* `src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts` /
+  `src/lib/verify/focused-repair-suites-r02-convergence.test.ts`
+  R02 discovery suites treat remaining non-stub Program documentation pages as
+  ordinary search/sitemap destinations and lock W18 move stubs as
+  compatibility-only (family search targets; stub URLs omitted).
 * `src/lib/search/to-advanced-index.ts`
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`

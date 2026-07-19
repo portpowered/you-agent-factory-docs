@@ -65,15 +65,15 @@ const REVIEW_PUBLISHED_PAGES = [
   },
   {
     path: BROWSER_VISUAL_REVIEW_PROGRAM_DOCUMENTATION_ROUTES[0],
-    docsSlug: ["documentation", "mock-workers"] as const,
-    registryId: "documentation.mock-workers",
-    title: "Mock workers",
+    docsSlug: ["documentation", "throttling-and-limits"] as const,
+    registryId: "documentation.throttling-and-limits",
+    title: "Throttling and limits",
   },
   {
     path: BROWSER_VISUAL_REVIEW_PROGRAM_DOCUMENTATION_ROUTES[1],
-    docsSlug: ["documentation", "packaged-factories"] as const,
-    registryId: "documentation.packaged-factories",
-    title: "Packaged factories",
+    docsSlug: ["documentation", "packaged-documents"] as const,
+    registryId: "documentation.packaged-documents",
+    title: "Packaged documents",
   },
   {
     path: BROWSER_VISUAL_REVIEW_CODE_HEAVY_GUIDE_ROUTE,
@@ -102,8 +102,8 @@ describe("R02 browser / visual review convergence", () => {
     );
     expect(BROWSER_VISUAL_REVIEW_CONCEPTS_ROUTE).toBe("/docs/concepts/skills");
     expect([...BROWSER_VISUAL_REVIEW_PROGRAM_DOCUMENTATION_ROUTES]).toEqual([
-      "/docs/documentation/mock-workers",
-      "/docs/documentation/packaged-factories",
+      "/docs/documentation/throttling-and-limits",
+      "/docs/documentation/packaged-documents",
     ]);
     expect([...BROWSER_VISUAL_REVIEW_REQUIRED_PATHS]).toEqual([
       "/",
@@ -111,8 +111,8 @@ describe("R02 browser / visual review convergence", () => {
       "/blog",
       THEME_CODE_COPY_R00_ROUTE,
       "/docs/concepts/skills",
-      "/docs/documentation/mock-workers",
-      "/docs/documentation/packaged-factories",
+      "/docs/documentation/throttling-and-limits",
+      "/docs/documentation/packaged-documents",
     ]);
     expect(brandAlignmentRoutesCoveredByBrowserReview()).toBe(true);
   });

@@ -417,6 +417,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   remains the sole top-level explorer page (absent from Program documentation
   children), former ten-group Basics/Feature support/Functions/… separators are
   rejected, and Workers/Observability nesting plus full membership remain locked.
+  Repair story 005 consolidates demoted W18 stub absence across explorer,
+  search, sitemap, and section-index in
+  `src/lib/content/factory-documentation-route-migration-demoted-contract.test.tsx`
+  (R02 discovery / visual-review suites sample non-stub Program pages only).
 * `src/lib/navigation/generated-docs-page-tree.test.ts` /
   `src/lib/source.test.ts` /
   `src/lib/navigation/docs-sidebar-collection-verification.test.ts` /

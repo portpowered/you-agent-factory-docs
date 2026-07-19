@@ -25,12 +25,12 @@ export const BROWSER_VISUAL_REVIEW_CODE_HEAVY_GUIDE_ROUTE =
 export const BROWSER_VISUAL_REVIEW_CONCEPTS_ROUTE = "/docs/concepts/skills";
 
 /**
- * Program documentation samples: one of the eight new pages plus the folder
- * chrome checked via explorer markers on the same route.
+ * Program documentation samples that remain ordinary explorer/discovery
+ * destinations after W18 move-stub demotion (not compatibility-only stubs).
  */
 export const BROWSER_VISUAL_REVIEW_PROGRAM_DOCUMENTATION_ROUTES = [
-  "/docs/documentation/mock-workers",
-  "/docs/documentation/packaged-factories",
+  "/docs/documentation/throttling-and-limits",
+  "/docs/documentation/packaged-documents",
 ] as const;
 
 /** Representative docs route used for locale-shell explorer/chrome review. */

@@ -138,7 +138,7 @@ R02 suites (website-functionality exclusions route Atlas search under reader-fac
 | home / browse / blog | You Agent Factory brand, `factory-dark`, content-column surfaces |
 | `/docs/guides/getting-started` | brand, theme, inset copy rail + status |
 | Concepts `/docs/concepts/skills` | title Skills; Program documentation + FAQ; no Glossary folder |
-| Program docs mock-workers + packaged-factories | titles; Program documentation folder; related internal hrefs |
+| Program docs throttling-and-limits + packaged-documents | titles; Program documentation folder; related internal hrefs (W18 move stubs are compatibility-only, not visual-review samples) |
 | Mobile drawer chrome | `nd-sidebar`, Open menu, Sidebar, `aria-controls`, Sheet markers |
 | Locale shells `en` / `ja` / `zh-CN` / `vi` | `lang` attr + brand + factory-dark on Concepts sample |
 
@@ -211,9 +211,26 @@ registry drift, ordering/parity, broken links, or combined-result test failures.
 | Surface | Expected | Proof |
 | --- | --- | --- |
 | Concepts Skills / MCP / Tool calling / Tokens | Route + metadata + concepts index card | `concepts-program-docs-discovery-r02-convergence.test.ts` |
-| Eight Program documentation pages | Route + metadata + documentation index card | same |
-| Search documents + representative queries | Indexed under `concept` / `documentation` kinds | same |
-| Public sitemap | All twelve URLs included | same |
+| Remaining discoverable Program documentation pages | Route + metadata + documentation index card (`throttling-and-limits`, `packaged-documents`) | same |
+| Demoted W18 Program stubs | Published + family Metadata canonical; absent from search/sitemap/section index; family routes remain searchable | same + `factory-documentation-route-migration-demoted-contract.test.tsx` |
+| Search documents + representative queries | Indexed under `concept` / `documentation` kinds for discoverable pages; stubs omitted | same |
+| Public sitemap | Discoverable URLs included; demoted stub URLs excluded | same |
 | Locale path policy | `en` unprefixed; `ja` / `zh-CN` / `vi` prefixed | same |
-| LocalizedLinkList + registry `relatedIds` | Resolve to published docs URLs (use `getPublishedDocsEntryByRegistryId` / `source.getPage`; documentation kinds are not in `getRegistryRecordById`) | same |
-| Browser spot-check | One Concepts + two Program pages load with title + at least one related link | port 3544 static serve |
+| LocalizedLinkList + registry `relatedIds` | Resolve to published docs URLs or W18 family targets (use `getPublishedDocsEntryByRegistryId` / `source.getPage` / `listDocumentationRouteMigrationTargetRoutes`; documentation kinds are not in `getRegistryRecordById`) | same |
+| Browser spot-check | One Concepts + two non-stub Program pages load with title + at least one related link | port 3544 static serve |
+
+### Pattern: demote W18 move stubs in R02 discovery / visual-review proofs
+
+When Program documentation move stubs are excluded from explorer/search, update
+R02 suites that still treat those stub URLs as ordinary documentation
+destinations:
+
+1. Keep stub URLs in **link inventory** / published presence proofs (compatibility).
+2. Remove stub URLs from **search documents**, **sitemap**, **section-index**,
+   and **browser visual-review Program documentation samples**.
+3. Point representative search queries at **family destinations**.
+4. Accept W18 family target hrefs in LocalizedLinkList validation (App Router
+   family indexes are not always MDX published entries).
+5. Keep colocated stub `*-page.test.tsx` as compatibility HTML proofs and
+   `*-discoverability.test.tsx` as ledger-target-only stubs (no ordinary body
+   discovery assertions).
