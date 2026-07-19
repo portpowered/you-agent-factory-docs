@@ -2,11 +2,18 @@
 export const SCAFFOLD_ID = "you-agent-factory-scaffold" as const;
 
 /**
- * Reader-visible product display brand for header, home identity, and
- * metadata brand surfaces. Technical package/CLI/repo literals stay
- * `you-agent-factory` elsewhere.
+ * Full product display name for home heading, document/SEO titles, and
+ * repository-facing identity. Distinct from the short header chrome mark.
+ * Technical package/CLI/repo literals stay `you-agent-factory` elsewhere.
  */
-export const SITE_BRAND_NAME = "You Agent Factory" as const;
+export const SITE_PRODUCT_NAME = "You Agent Factory" as const;
 
-/** Primary home page heading (display brand). */
-export const SITE_HEADING = "You Agent Factory" as const;
+/**
+ * Reader-visible header chrome brand mark rendered via site-config
+ * `brand.brandName` / `resolveSiteConfigLayoutNav`. Keep this short ("YOU");
+ * do not use the full product name here.
+ */
+export const SITE_BRAND_NAME = "YOU" as const;
+
+/** Primary home page heading (full product display name). */
+export const SITE_HEADING = SITE_PRODUCT_NAME;

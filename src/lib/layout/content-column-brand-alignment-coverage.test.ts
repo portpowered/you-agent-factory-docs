@@ -10,8 +10,8 @@ import {
 } from "@/lib/layout/content-column-brand-alignment-coverage";
 
 describe("brand + content-column alignment coverage contract", () => {
-  test("expects the You Agent Factory display brand", () => {
-    expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("You Agent Factory");
+  test("expects the YOU header chrome brand mark", () => {
+    expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("YOU");
   });
 
   test("covers home, browse, blog, and docs surfaces at four viewports", () => {

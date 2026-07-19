@@ -68,12 +68,12 @@ describe("site config scaffold compatibility", () => {
     }
   });
 
-  test("keeps the layout nav title aligned with the You Agent Factory display brand", () => {
-    expect(youAgentFactorySiteConfig.brand.brandName).toBe("You Agent Factory");
+  test("keeps the layout nav title aligned with the YOU header chrome mark", () => {
+    expect(youAgentFactorySiteConfig.brand.brandName).toBe("YOU");
     expect(resolveSiteConfigLayoutNav(youAgentFactorySiteConfig).title).toBe(
-      "You Agent Factory",
+      "YOU",
     );
-    expect(baseOptions().nav?.title).toBe("You Agent Factory");
+    expect(baseOptions().nav?.title).toBe("YOU");
     expect(baseOptions().nav?.title).toBe(
       youAgentFactorySiteConfig.brand.brandName,
     );

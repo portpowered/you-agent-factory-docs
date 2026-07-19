@@ -7,7 +7,7 @@ import {
 } from "./you-agent-factory-site-config";
 
 describe("you-agent-factory site config", () => {
-  test("contains You Agent Factory display brand values", () => {
+  test("contains YOU header chrome mark and full product home heading", () => {
     expect(youAgentFactorySiteConfig.brand).toEqual({
       scaffoldId: SCAFFOLD_ID,
       brandName: SITE_BRAND_NAME,
@@ -16,7 +16,7 @@ describe("you-agent-factory site config", () => {
     expect(youAgentFactorySiteConfig.brand.scaffoldId).toBe(
       "you-agent-factory-scaffold",
     );
-    expect(youAgentFactorySiteConfig.brand.brandName).toBe("You Agent Factory");
+    expect(youAgentFactorySiteConfig.brand.brandName).toBe("YOU");
     expect(youAgentFactorySiteConfig.brand.siteHeading).toBe(
       "You Agent Factory",
     );
@@ -31,9 +31,9 @@ describe("you-agent-factory site config", () => {
     );
   });
 
-  test("layout nav brand resolution returns You Agent Factory", () => {
+  test("layout nav brand resolution returns YOU", () => {
     expect(resolveSiteConfigLayoutNav(youAgentFactorySiteConfig).title).toBe(
-      "You Agent Factory",
+      "YOU",
     );
   });
 

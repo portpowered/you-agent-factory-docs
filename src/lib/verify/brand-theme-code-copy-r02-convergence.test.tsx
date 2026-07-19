@@ -71,10 +71,10 @@ describe("R02 brand / alignment / theme / code-copy convergence", () => {
     mock.restore();
   });
 
-  test("header and explorer brand stay You Agent Factory", async () => {
-    expect(SITE_BRAND_NAME).toBe("You Agent Factory");
+  test("header chrome mark is YOU; explorer root and home title keep full product name", async () => {
+    expect(SITE_BRAND_NAME).toBe("YOU");
+    expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("YOU");
     expect(DOCS_PAGE_TREE_ROOT_NAME).toBe("You Agent Factory");
-    expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("You Agent Factory");
 
     const messages = await loadUiMessages("en");
     expect(messages.home.title).toBe("You Agent Factory");

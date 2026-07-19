@@ -9,7 +9,7 @@ import {
 const cliDocsSiteConfig = {
   brand: {
     scaffoldId: "you-agent-factory-scaffold",
-    brandName: "You Agent Factory",
+    brandName: "YOU",
     siteHeading: "You Agent Factory",
   },
   repositoryUrl: "https://github.com/portpowered/you-agent-factory",

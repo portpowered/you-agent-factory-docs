@@ -46,7 +46,7 @@ describe("primary navigation accessibility smoke", () => {
       "a[data-docs-header-brand]",
     ) as HTMLAnchorElement | null;
     expect(brandLink).toBeTruthy();
-    expect(brandLink?.textContent).toBe("You Agent Factory");
+    expect(brandLink?.textContent).toBe("YOU");
     expect(brandLink?.getAttribute("href")).toBe("/");
     expect(header?.textContent).not.toMatch(/Model Atlas/);
 

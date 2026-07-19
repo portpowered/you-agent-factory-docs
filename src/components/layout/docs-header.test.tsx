@@ -158,7 +158,7 @@ describe("DocsHeader", () => {
       </RootProvider>,
     );
 
-    expect(brand.title).toBe("You Agent Factory");
+    expect(brand.title).toBe("YOU");
     expect(html).toContain('data-docs-header-brand=""');
     expect(html).toContain(`>${brand.title}<`);
     expect(html).not.toContain(">Model Atlas<");
@@ -268,7 +268,7 @@ describe("DocsHeader", () => {
       </RootProvider>,
     );
 
-    expect(brand.title).toBe("You Agent Factory");
+    expect(brand.title).toBe("YOU");
     expect(brand.url).toBe("/");
     expect(html).toContain('data-docs-header-brand=""');
     expect(html).toContain(DOCS_HEADER_BRAND_LINK_CLASS);
@@ -318,7 +318,7 @@ describe("DocsHeader", () => {
       </RootProvider>,
     );
 
-    expect(brand.title).toBe("You Agent Factory");
+    expect(brand.title).toBe("YOU");
     expect(brand.url).toBe("/vi");
     expect(html).toContain('data-docs-header-brand=""');
     expect(html).toContain(`href="${brand.url}"`);
@@ -758,7 +758,7 @@ describe("DocsHeader", () => {
     );
     const user = userEvent.setup();
     const menuButton = screen.getByRole("button", { name: messages.nav.menu });
-    const brandLink = screen.getByRole("link", { name: "You Agent Factory" });
+    const brandLink = screen.getByRole("link", { name: "YOU" });
     const searchTrigger = screen.getByRole("button", {
       name: messages.search.open,
     });

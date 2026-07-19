@@ -159,8 +159,9 @@ describe("R02 browser / visual review convergence", () => {
   });
 
   test("explorer chrome on locale shells keeps brand, FAQ, Program documentation, no Glossary", async () => {
-    expect(SITE_BRAND_NAME).toBe("You Agent Factory");
-    expect(DOCS_PAGE_TREE_ROOT_NAME).toBe(BRAND_ALIGNMENT_EXPECTED_BRAND);
+    expect(SITE_BRAND_NAME).toBe("YOU");
+    expect(BRAND_ALIGNMENT_EXPECTED_BRAND).toBe("YOU");
+    expect(DOCS_PAGE_TREE_ROOT_NAME).toBe("You Agent Factory");
     expect(FACTORY_EXPLORER_FOLDER_LABELS.documentation).toBe(
       "Program documentation",
     );

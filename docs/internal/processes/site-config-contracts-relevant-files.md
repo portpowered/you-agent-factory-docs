@@ -9,7 +9,7 @@ contract for the you-agent-factory CLI docs product.
 | --- | --- |
 | `src/lib/site/site-config.contract.ts` | Shared `SiteConfig` shape: open route-surface map, open collection family strings, nav/home copy keys from `UiMessages` (not Atlas-locked) |
 | `src/lib/site/site-config.contract.test.ts` | Contract tests; CLI representative fixture must type-check without topology/timeline/AI collections |
-| `src/lib/scaffold.ts` | Shared scaffold brand constants (`SCAFFOLD_ID`, `SITE_BRAND_NAME`, `SITE_HEADING`) consumed by the default site config |
+| `src/lib/scaffold.ts` | Shared scaffold brand constants (`SCAFFOLD_ID`, `SITE_BRAND_NAME` = `YOU` header mark, `SITE_PRODUCT_NAME` / `SITE_HEADING` = full product name) consumed by the default site config |
 | `src/lib/site/you-agent-factory-site-config.ts` | Product default config: you-agent-factory brand/repo, CLI primary nav/route placeholders, CLI collections (`guides`/`concepts`/`techniques`/`documentation`), and CLI `homeFeaturedLinks` (guides/docs/glossary/blog) |
 | `src/lib/site/site-config-layout-nav.ts` | Client-safe brand/home resolution (`resolveSiteConfigLayoutNav`) for header chrome; no Node/`pages` imports |
 | `src/lib/site/site-config-resolution.ts` | Resolves primary nav hrefs and home featured links from `SiteConfig`; re-exports layout-nav helpers |
@@ -36,10 +36,14 @@ contract for the you-agent-factory CLI docs product.
 
 ## Brand / repository identity
 
-- Default **display brand** resolves to `You Agent Factory` via scaffold
-  constants (`SITE_BRAND_NAME`, `SITE_HEADING`) and
-  `youAgentFactorySiteConfig.brand`. Use this for reader-visible header chrome,
-  home title identity, and document/metadata brand surfaces.
+- Default **header chrome brand mark** resolves to `YOU` via scaffold
+  `SITE_BRAND_NAME` and `youAgentFactorySiteConfig.brand.brandName`. Use this
+  for reader-visible header chrome (`resolveSiteConfigLayoutNav` /
+  `data-docs-header-brand`).
+- Full product display name (`SITE_PRODUCT_NAME` / `SITE_HEADING`) stays
+  `You Agent Factory` for home heading, document/SEO titles
+  (`siteMetadata.title`), and repository-facing identity. Visible header mark
+  and SEO title may differ.
 - Technical package/CLI/repo/route literals remain `you-agent-factory`
   (executable name, repository URL path, install commands, technical prose).
 - Default repository URL is
@@ -47,7 +51,8 @@ contract for the you-agent-factory CLI docs product.
   (`YOU_AGENT_FACTORY_REPOSITORY_URL`).
 - Layout brand title comes from `resolveSiteConfigLayoutNav` →
   `config.brand.brandName` (not UI message `home.title`). Keep `home.title` and
-  root `siteMetadata.title` aligned with the same display brand string.
+  root `siteMetadata.title` on the full product name when SEO/home identity
+  must remain accurate.
 - Docs header brand chrome (`DocsHeader`) imports layout-nav from
   `site-config-layout-nav.ts` (not `site-config-resolution.ts`) so the client
   bundle does not pull Node-only featured-link helpers. It renders the resolved
@@ -115,9 +120,9 @@ contract for the you-agent-factory CLI docs product.
 - Shell compatibility tests that assert primary nav must expect CLI labels
   (Home/Guides/Docs/References/Factories/Workers/Workstations/Glossary/Blog)
   and must not require Topology/Timeline/Tags as primary destinations.
-- Sidebar/layout brand link assertions should use `You Agent Factory`, not
-  `Model Atlas` or the package slug alone, when driven by the default site
-  config.
+- Sidebar/layout brand link assertions should use `YOU` for the header chrome
+  mark driven by the default site config (not the full product name). Explorer
+  root / home title / SEO may still use `You Agent Factory`.
 - CLI docs header regression lock-in lives in
   `src/components/layout/docs-header.test.tsx` ("locks CLI shell header brand,
   primary nav, and Search together") and
