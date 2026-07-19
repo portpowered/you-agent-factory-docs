@@ -1791,6 +1791,17 @@ For the nine ops/platform Documentation Program trees under
   status/dashboard sections, limits, callouts)—not restore intros to satisfy
   old expects. Metrics/resources How To Use was stripped as boilerplate; other
   ops pages keep How To Use when it wraps primary teaching.
+- Browser-verify all nine routes with
+  `bun src/content/docs/documentation/logs/assert-ops-platform-intro-strip-browser.ts`
+  (webpack `next dev`, unique port 3681 default, Playwright; kill server on
+  exit). Assert absent What It Covers / Key Concepts / `#what-it-covers` /
+  `#key-concepts` / visible `Summary` section heading; allow short purpose
+  lead via `DocsOpeningSummary` (`[data-opening-summary="folded"]`); assert
+  one operational teaching marker per route (logs retention, metrics
+  `factoryState`/`runtimeStatus`, resources ownership/pool, petri `task:init`,
+  packaged `you docs`, dashboard/security bind URLs, throttling surface table,
+  replays `--replay`). Prefer `OPS_INTRO_STRIP_PROBE_BASE_URL` when a server is
+  warm.
 
 ## Reviewer-facing verification
 
