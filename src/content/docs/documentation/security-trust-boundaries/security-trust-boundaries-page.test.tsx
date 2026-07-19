@@ -53,7 +53,9 @@ describe("security-trust-boundaries documentation page", () => {
     expect(openingSummary).toMatch(/you-agent-factory/i);
     expect(openingSummary).toMatch(/trust boundaries/i);
     expect(openingSummary).not.toMatch(/\n\n/);
-    expect(openingSummary).not.toMatch(/on this page|reader.?shortcut/i);
+    expect(openingSummary).not.toMatch(
+      /on this page|reader.?shortcut|Security \/ Trust Boundaries describes|describes what the local/i,
+    );
 
     expect(howToUse).toMatch(/http:\/\/localhost:7437/);
     expect(howToUse).toMatch(/http:\/\/localhost:7437\/dashboard\/ui/);

@@ -32,9 +32,10 @@ describe("replays-records documentation page", () => {
 
     const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     expect(openingSummary).toMatch(/replay/i);
+    expect(openingSummary).toMatch(/you-agent-factory/i);
     expect(openingSummary).not.toMatch(/\n\n/);
     expect(openingSummary).not.toMatch(
-      /This page|on this page|reader.?shortcut/i,
+      /This page|on this page|reader.?shortcut|is the .+ reference|Replays \/ Records is/i,
     );
 
     render(

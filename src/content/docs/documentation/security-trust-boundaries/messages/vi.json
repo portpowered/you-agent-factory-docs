@@ -30,5 +30,5 @@
     "cliDocs": "CLI",
     "replaysRecordsDocs": "Replays / Records"
   },
-  "openingSummary": "Security / Trust Boundaries describes what the local you-agent-factory service trusts and exposes today—not a compliance certification claim."
+  "openingSummary": "Local you-agent-factory trust boundaries define what the service trusts and exposes today—not a compliance certification claim."
 }

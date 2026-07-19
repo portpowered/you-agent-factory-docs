@@ -1,7 +1,7 @@
 {
   "title": "Replays / Records",
   "description": "Capture a live you-agent-factory run as a replay artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again.",
-  "openingSummary": "Replays / Records is the you-agent-factory reference for capturing live runs as replay artifacts and replaying saved history without dispatching live workers again.",
+  "openingSummary": "you-agent-factory can capture live runs as replay artifacts and replay saved history without dispatching live workers again.",
   "sections": {
     "howToUse": {
       "title": "How To Use",

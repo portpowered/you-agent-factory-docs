@@ -1773,6 +1773,13 @@ For the nine ops/platform Documentation Program trees under
 - Keep at most one short purpose lead via `openingSummary` (rendered by
   `DocsOpeningSummary`); omit or empty it when the first remaining body section
   already opens usefully. Do not ship a multi-paragraph Summary section heading.
+  Purpose leads must be product-first: the topic/behavior is the subject (for
+  example “Local you-agent-factory trust boundaries define…” or
+  “you-agent-factory can capture live runs as replay artifacts…”). Reject
+  page-as-subject / page-role openers such as “Security / Trust Boundaries
+  describes…”, “Replays / Records is the … reference for…”, or “This page
+  explains…”. Update every shipped locale together; page-local tests should
+  assert short lead length and reject those page-meta patterns.
 - Strip `#how-to-use` when it is only sibling-pointer / opening boilerplate
   (`metrics`, `resources`). When How To Use wraps primary operational teaching
   (tables, commands, CPN asset, pressure-surface table), keep that teaching
