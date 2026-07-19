@@ -320,16 +320,67 @@ function resolveResultDocument(
   );
 }
 
+/**
+ * Leftover Fumadocs heading rows under `/docs/references/**` (including
+ * `#heading-N` fragments) must not outrank page-title hits for generic queries.
+ */
+function isReferenceHeadingSpamResult(result: SortedResult): boolean {
+  const base = pageBaseUrl(result.url);
+  const isReferencePath =
+    base === "/docs/references" || base.startsWith("/docs/references/");
+  if (!isReferencePath) {
+    return false;
+  }
+
+  if (result.type === "heading") {
+    return true;
+  }
+
+  const hashIndex = result.url.indexOf("#");
+  if (hashIndex < 0) {
+    return false;
+  }
+
+  const firstFragment = result.url.slice(hashIndex + 1).split("#")[0] ?? "";
+  return /^heading-\d+$/i.test(firstFragment);
+}
+
 function resultPriority(
   query: string,
   scope: SearchClassificationScope | undefined,
   bestPageUrl: string | undefined,
-  resultUrl: string,
+  result: SortedResult,
   document: SearchDocument | undefined,
 ): number {
+  const resultUrl = result.url;
   const resultBaseUrl = pageBaseUrl(resultUrl);
-  if (resultUrl === bestPageUrl || resultBaseUrl === bestPageUrl) {
+
+  // Demote residual reference heading / #heading-N spam first so owning-page
+  // title resolution cannot promote those fragment rows.
+  if (isReferenceHeadingSpamResult(result)) {
+    return 40;
+  }
+
+  // Every page-level title/slug/alias match ranks above weak inventory noise.
+  // Generic queries like "mcp" must surface /docs/references/mcp and
+  // documentation MCP pages ahead of tool/session item floods — not only the
+  // single best seeded URL. Fragment URLs that are not inventory items must
+  // not inherit the owning page's title score.
+  if (
+    document &&
+    !resultUrl.includes("#") &&
+    !isReferenceItemSearchDocument(document) &&
+    scoreDocumentMatch(query, document) >= 90
+  ) {
     return 0;
+  }
+
+  if (resultUrl === bestPageUrl || resultBaseUrl === bestPageUrl) {
+    // Only bare page URLs (or the seeded best URL itself) receive the seed
+    // boost — not heading fragments that share the same base path.
+    if (!resultUrl.includes("#") || resultUrl === bestPageUrl) {
+      return 0;
+    }
   }
 
   // Exact title / direct-alias matches on reference items outrank incidental
@@ -387,14 +438,14 @@ export function rerankSearchResults(
         query,
         classificationScope,
         bestPageUrl,
-        left.result.url,
+        left.result,
         leftDocument,
       );
       const rightPriority = resultPriority(
         query,
         classificationScope,
         bestPageUrl,
-        right.result.url,
+        right.result,
         rightDocument,
       );
 

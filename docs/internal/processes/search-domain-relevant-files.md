@@ -220,6 +220,20 @@ outcomes: no `#heading-N` rows for owning pages or exact MCP/API/CLI/JS
 identifier queries; registry-anchor item URLs still match; bare `#heading-N`
 is never treated as an inventory item (`resolveReferenceItemDeepLinkUrl`).
 
+### Pattern: generic queries prefer page titles over reference item/heading spam
+
+`rerankSearchResults` must boost **every** page-level title/slug/alias match
+(score ≥ 90), not only the single best seeded URL. Otherwise a generic query
+like `mcp` keeps `/docs/concepts/mcp` on top while
+`/docs/documentation/mcp` and `/docs/references/mcp` sink below the inventory
+item flood (`#you.factory_session.*`, `you mcp`, …). Exact inventory title /
+direct-alias matches (score ≥ 95) still outrank incidental owning-page body
+hits. Residual `type: "heading"` / `#heading-N` rows under
+`/docs/references/**` demote below ordinary hits. Prove with unit fixtures in
+`rerank-search-results.test.ts` and live `docsSearchApi.search("mcp")` /
+`you.factory_session.get` outcomes in
+`prefer-page-titles-over-reference-heading-spam.test.ts`.
+
 ### Pattern: factory alias / body / tag discovery
 
 Live factory pages are discoverable by frontmatter/registry aliases, distinctive
@@ -276,6 +290,9 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
   `structuredData.headings`, no `#heading-N` Orama rows for owning pages or
   exact MCP/API/CLI/JS identifier queries; heading text folded into
   page/item-level content; `#heading-N` rejected as inventory.
+* `src/lib/search/prefer-page-titles-over-reference-heading-spam.test.ts`
+  Generic `mcp` page-title preference over inventory/heading spam; exact
+  `you.factory_session.get` still returns the item deep link first.
 * `src/lib/search/reference-owning-page-search-url.test.ts`
   URL gates for owning pages, inventory item deep links, `#heading-N`
   rejection, and standalone-heading suppression.
