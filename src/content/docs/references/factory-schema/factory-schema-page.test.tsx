@@ -1,10 +1,12 @@
 /**
  * Page-owned render proof for references/factory-schema.
  * Asserts route presence, SchemaReference success markers, pagePath ownership,
- * and explicit invalid status when acquisition fails — not W07 internals.
+ * same-page `$ref` click-traverse onto splayed definitions, and explicit
+ * invalid status when acquisition fails — not W07 internals.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import { focusReferenceHashTarget } from "@/components/references/shared";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
@@ -136,6 +138,82 @@ describe("FactorySchemaReference mount", () => {
     expect(
       catalog.querySelector('[data-schema-ref-kind="resolved"]'),
     ).toBeTruthy();
+  });
+
+  test("navigable $ref links click-traverse to same-page splayed definition anchors", () => {
+    const { container } = render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+    expect(surface.getAttribute("data-schema-status")).toBe("ready");
+    expect(screen.getByTestId("factory-schema-hash-navigation")).toBeTruthy();
+
+    // Root `workers` is Worker[] (type summary, not a direct $ref row). Use a
+    // representative property `$ref` that lands on a splayed catalog definition.
+    const orchestratorRow = surface.querySelector(
+      '[data-schema-field-path="orchestrator"]',
+    );
+    expect(orchestratorRow).toBeTruthy();
+    const orchestratorRef = orchestratorRow?.querySelector(
+      'a[data-schema-ref-kind="resolved"]',
+    );
+    expect(orchestratorRef).toBeTruthy();
+
+    const href = orchestratorRef?.getAttribute("href") ?? "";
+    expect(href.startsWith(`${FACTORY_SCHEMA_PAGE_PATH}#`)).toBe(true);
+    expect(href.includes("://")).toBe(false);
+
+    const fragment = href.slice(`${FACTORY_SCHEMA_PAGE_PATH}#`.length);
+    expect(fragment.length).toBeGreaterThan(0);
+
+    const definition = surface.querySelector(
+      `[data-testid="factory-schema-reference-catalog-/$defs/FactoryOrchestrator"]`,
+    );
+    expect(definition).toBeInstanceOf(HTMLElement);
+    if (!(definition instanceof HTMLElement)) {
+      throw new Error("expected FactoryOrchestrator catalog definition");
+    }
+    expect(definition.getAttribute("id")).toBe(fragment);
+    expect(definition.getAttribute("data-schema-definition-pointer")).toBe(
+      "/$defs/FactoryOrchestrator",
+    );
+    expect(orchestratorRef?.getAttribute("data-schema-ref-pointer")).toBe(
+      "/$defs/FactoryOrchestrator",
+    );
+
+    const focused = focusReferenceHashTarget(container, `#${fragment}`, {
+      reduceMotion: true,
+    });
+    expect(focused).toBe(definition);
+    expect(document.activeElement).toBe(definition);
+
+    // Every navigable $ref on this page must land on a rendered definition —
+    // no off-page destinations and no invented anchors for unpublished targets.
+    const navigableRefs = surface.querySelectorAll(
+      'a[data-schema-ref-kind="resolved"], a[data-schema-ref-kind="cycle"]',
+    );
+    expect(navigableRefs.length).toBeGreaterThan(0);
+    for (const link of navigableRefs) {
+      const linkHref = link.getAttribute("href") ?? "";
+      expect(linkHref.startsWith(`${FACTORY_SCHEMA_PAGE_PATH}#`)).toBe(true);
+      const linkFragment = linkHref.slice(
+        `${FACTORY_SCHEMA_PAGE_PATH}#`.length,
+      );
+      const target = surface.querySelector(`#${CSS.escape(linkFragment)}`);
+      expect(target).toBeTruthy();
+      expect(target?.getAttribute("data-schema-definition-pointer")).toBe(
+        link.getAttribute("data-schema-ref-pointer"),
+      );
+    }
+
+    for (const unresolved of surface.querySelectorAll(
+      '[data-schema-ref-kind="missing"], [data-schema-ref-kind="malformed"]',
+    )) {
+      expect(unresolved.tagName.toLowerCase()).not.toBe("a");
+      expect(unresolved.getAttribute("href")).toBeNull();
+      expect(
+        unresolved.querySelector("[data-schema-ref-unresolved]"),
+      ).toBeTruthy();
+    }
   });
 
   test("shows an accessible invalid status when schema acquisition fails", () => {

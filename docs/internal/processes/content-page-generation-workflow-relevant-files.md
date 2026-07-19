@@ -1418,7 +1418,14 @@ MDX component merge for schema mounts:
    only on `FactorySchemaReference` and select the transitive closure with
    `collectFactorySchemaSplayDefinitions` under
    `src/content/docs/references/factory-schema/` — leave you-config /
-   mock-workers on `showCatalog={false}`.
+   mock-workers on `showCatalog={false}`. Same-page `$ref` click-traverse
+   depends on that splay plus `pagePath={FACTORY_SCHEMA_PAGE_PATH}` and
+   `ReferenceHashNavigation`: navigable `$ref` hrefs are
+   `/docs/references/factory-schema#…` fragments whose ids match splayed
+   `SchemaDefinition` anchors. Prefer a direct property `$ref` row such as
+   `orchestrator` → `/$defs/FactoryOrchestrator` for proofs — root `workers`
+   is `Worker[]` type chrome, not a `data-schema-ref-row`. Browser probe:
+   `src/content/docs/references/factory-schema/assert-factory-schema-click-traverse-browser.ts`.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.

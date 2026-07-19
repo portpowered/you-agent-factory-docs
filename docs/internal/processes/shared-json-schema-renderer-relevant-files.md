@@ -141,9 +141,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   schema page opt-in: `/docs/references/factory-schema` enables catalog splay
   via page-local `collectFactorySchemaSplayDefinitions` + `showCatalog` so the
   transitive `$ref` closure renders as expanded definitions — keep you-config /
-  mock-workers on `showCatalog={false}`. Root pointers must be anchor-safe
-  (not bare `/`). Harness route: `/schema-renderer-harness` under
-  `src/app/(dev)/` — not a published `/docs/references/*-schema` page.
+  mock-workers on `showCatalog={false}`. With splay + `pagePath` +
+  `ReferenceHashNavigation`, Factory `$ref` links are same-page hash jumps to
+  those expanded definition `id`s (prove with
+  `assert-factory-schema-click-traverse-browser.ts` / page-local mount tests).
+  Root pointers must be anchor-safe (not bare `/`). Harness route:
+  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
+  `/docs/references/*-schema` page.
 
 ## Verification preference
 
