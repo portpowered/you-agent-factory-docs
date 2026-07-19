@@ -36,5 +36,13 @@ import { T } from "@/features/docs/components/T";
 
 <Section id="runtime-inventory" titleKey="sections.runtimeInventory.title">
   <T k="sections.runtimeInventory.body" />
-  <JavascriptRuntimeReferenceInventory />
+  <JavascriptRuntimeReferenceInventory>
+    <JavascriptRuntimeInventoryChrome />
+    <Section id="symbols" titleKey="sections.symbols.title">
+      <JavascriptRuntimeSymbolsList showHeading={false} />
+    </Section>
+    <Section id="shared-schemas" titleKey="sections.sharedSchemas.title">
+      <JavascriptRuntimeSharedSchemasList showHeading={false} />
+    </Section>
+  </JavascriptRuntimeReferenceInventory>
 </Section>

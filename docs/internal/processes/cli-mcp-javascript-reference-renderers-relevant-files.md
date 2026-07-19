@@ -69,7 +69,8 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/components/references/javascript/javascript-symbol-metadata-glossary.ts` | On-page glossary term/definition copy for published metadata facets |
 | `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed; polished cards use `ReferenceLifecycleVisibility` only (no `ContractSourceBadge`, no schema-id/name/title/type/object-policy chrome) |
 | `src/components/references/javascript/javascript-shared-schema-presentation.ts` | Pure JS-owned helpers: trim shared-schema embed chrome fields; filter Symbols-list duplicates of shared schemas |
-| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome; Symbols list omits shared-schema duplicates |
+| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome; Symbols list omits shared-schema duplicates; composable provider/chrome/lists so page MDX `<Section id="symbols">` / `<Section id="shared-schemas">` can own On this page TOC anchors |
+| `src/components/references/javascript/javascript-runtime-section-anchors.ts` | Stable `symbols` / `shared-schemas` section anchor ids shared by standalone headings and page MDX Sections |
 | `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
 | `src/components/references/javascript/types.ts` | JS renderer prop contracts / inventory input union |
 | `src/components/references/javascript/index.ts` | Public JavaScript renderer barrel |

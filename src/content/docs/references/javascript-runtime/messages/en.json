@@ -18,6 +18,14 @@
     "runtimeInventory": {
       "title": "Runtime Inventory",
       "body": "Scan the published JavaScript symbols and shared schemas below. Filter by symbol path, schema id, description, or lifecycle when those facets are present. Open a card for available metadata and shared-schema links, and copy its stable anchor when you need a deep link."
+    },
+    "symbols": {
+      "title": "Symbols",
+      "body": "Published JavaScript runtime symbol paths from the installed package contract."
+    },
+    "sharedSchemas": {
+      "title": "Shared schemas",
+      "body": "Reusable schema shapes published beside the JavaScript runtime symbols."
     }
   }
 }

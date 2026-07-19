@@ -499,6 +499,14 @@ describe("JavaScriptRuntimeInventory", () => {
     expect(javascriptSharedSchemaInventoryIdentities(sharedSchemas)).toEqual([
       "javascript.schema.checkpoint_spec",
     ]);
+    expect(document.getElementById("symbols")).toBeTruthy();
+    expect(document.getElementById("shared-schemas")).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Symbols" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Shared schemas" }),
+    ).toBeTruthy();
   });
 
   test("keeps shared-schema duplicates out of the Symbols list", () => {

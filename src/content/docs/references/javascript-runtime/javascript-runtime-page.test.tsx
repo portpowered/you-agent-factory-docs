@@ -101,6 +101,29 @@ describe("javascript-runtime reference page", () => {
       expect(
         screen.getByRole("heading", { name: "Runtime Inventory" }),
       ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { level: 2, name: "Symbols" }),
+      ).toBeTruthy();
+      expect(
+        screen.getByRole("heading", { level: 2, name: "Shared schemas" }),
+      ).toBeTruthy();
+      expect(document.getElementById("symbols")).toBeTruthy();
+      expect(document.getElementById("shared-schemas")).toBeTruthy();
+      expect(loadedPage.toc.some((item) => item.url === "#symbols")).toBe(true);
+      expect(
+        loadedPage.toc.some((item) => item.url === "#shared-schemas"),
+      ).toBe(true);
+      expect(
+        loadedPage.toc.some(
+          (item) => item.title === "Symbols" && item.url === "#symbols",
+        ),
+      ).toBe(true);
+      expect(
+        loadedPage.toc.some(
+          (item) =>
+            item.title === "Shared schemas" && item.url === "#shared-schemas",
+        ),
+      ).toBe(true);
       expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
         screen.queryByRole("heading", { name: "Limits And Assumptions" }),

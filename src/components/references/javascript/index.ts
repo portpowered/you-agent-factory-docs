@@ -1,4 +1,10 @@
-export { JavaScriptRuntimeInventory } from "./JavaScriptRuntimeInventory";
+export {
+  JavaScriptRuntimeInventory,
+  JavaScriptRuntimeInventoryChrome,
+  JavaScriptRuntimeInventoryProvider,
+  JavaScriptRuntimeSharedSchemasList,
+  JavaScriptRuntimeSymbolsList,
+} from "./JavaScriptRuntimeInventory";
 export {
   JavaScriptSharedSchemaReference,
   javascriptSharedSchemaInventoryIdentities,
@@ -8,6 +14,7 @@ export {
   JavaScriptSymbolReference,
   javascriptSymbolInventoryIdentities,
 } from "./JavaScriptSymbolReference";
+export { JAVASCRIPT_RUNTIME_SECTION_ANCHORS } from "./javascript-runtime-section-anchors";
 export {
   filterJavascriptSymbolsExcludingSharedSchemaDuplicates,
   isJavascriptSymbolDuplicatingSharedSchema,
