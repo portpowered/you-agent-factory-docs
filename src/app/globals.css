@@ -125,6 +125,21 @@ button[data-search] {
   background-color: var(--background) !important;
 }
 
+/*
+ * Prose/shared chrome link underlines: secondary blue accent, not primary
+ * yellow. Fumadocs prose defaults text-decoration-color to
+ * --color-fd-primary (mapped to --primary). Keep --primary for logos,
+ * CTA fills, and method badges; only retarget underlined prose links here.
+ * Inline auto-links use proseAutoLinkClassName (text-secondary +
+ * decoration-secondary) for the same accent.
+ */
+.prose
+  :where(a:not([data-card])):not(
+    :where([class~="not-prose"], [class~="not-prose"] *)
+  ) {
+  text-decoration-color: var(--secondary);
+}
+
 .header-action-icon {
   border-style: solid;
 }
