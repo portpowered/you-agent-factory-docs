@@ -5,7 +5,9 @@
  * Created via `createAPIPage` against the package-backed `apiOpenApiServer`.
  * Wraps each operation in a focusable `<section id={operationId}>` so deep
  * links stay collision-free across the single-page projection. Playground /
- * try-it stays disabled (static-only; no proxy).
+ * try-it stays disabled (static-only; no proxy). Request/response body schemas
+ * use Fumadocs `schemaUI` (not a bespoke schema explorer) so
+ * `#/components/schemas/*` fields are readable on the page.
  */
 
 import { defaultShikiFactory } from "fumadocs-core/highlight/shiki/full";
@@ -29,6 +31,28 @@ export const API_FUMADOCS_OPERATIONS_ATTR =
 /** Marker on each Fumadocs-rendered operation section wrapper. */
 export const API_FUMADOCS_OPERATION_ATTR =
   "data-api-fumadocs-operation" as const;
+
+/**
+ * Marker on request-body / response-body slots that host Fumadocs Schema UI
+ * (promoted from the W01 spike schema-slot pattern).
+ */
+export const API_SCHEMA_SLOT_ATTR = "data-api-schema-slot" as const;
+
+/** Stable probe target: POST body `$ref` → `#/components/schemas/SubmitWorkRequest`. */
+export const API_SCHEMA_COMPONENT_PROBE = {
+  operationId: "submitWorkBySessionId",
+  schemaRef: "#/components/schemas/SubmitWorkRequest",
+  /** Property names that must appear via Fumadocs Schema UI (not display-name only). */
+  expectedFieldNames: ["name", "workTypeName", "items"] as const,
+} as const;
+
+/**
+ * Fumadocs schema UI options for the production API page. Keep the default
+ * SchemaUI walk (no custom tree explorer); enable authored schema examples.
+ */
+export const API_SCHEMA_UI_OPTIONS = {
+  showExample: true,
+} as const;
 
 function readOperationId(
   paths: Record<string, Record<string, unknown>> | undefined,
@@ -56,6 +80,8 @@ function readOperationId(
 export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
   shiki: defaultShikiFactory,
   ...apiReferencePlaygroundPageOptions(),
+  // Keep full response Schema UI (not examples/TS-only) for component objects.
+  showResponseSchema: true,
   shikiOptions: {
     themes: { ...API_SHIKI_OPTIONS.themes },
     defaultColor: API_SHIKI_OPTIONS.defaultColor,
@@ -63,10 +89,9 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
   renderCodeBlock: ({ lang, code }) => (
     <ApiOpenApiCodeBlock lang={lang} code={code} />
   ),
-  // Keep schema examples visible under Fumadocs schema UI (story 002 expands
-  // on request/response component object readability).
+  // Fumadocs-integrated schema/components rendering (no bespoke explorer).
   schemaUI: {
-    showExample: true,
+    showExample: API_SCHEMA_UI_OPTIONS.showExample,
   },
   content: {
     renderPageLayout: (slots, ctx) => {
@@ -121,8 +146,18 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
           {slots.description}
           {slots.authSchemes}
           {slots.parameters}
-          {slots.body}
-          {slots.responses}
+          <div
+            className={API_TOKEN_CLASSES.foreground}
+            {...{ [API_SCHEMA_SLOT_ATTR]: "request" }}
+          >
+            {slots.body}
+          </div>
+          <div
+            className={API_TOKEN_CLASSES.foreground}
+            {...{ [API_SCHEMA_SLOT_ATTR]: "response" }}
+          >
+            {slots.responses}
+          </div>
           {slots.callbacks}
         </div>
         <div className="@4xl:sticky @4xl:top-[calc(var(--fd-docs-row-1,2rem)+1rem)] @4xl:w-[400px]">
@@ -136,4 +171,9 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
 /** True when the production APIPage binder keeps playground disabled. */
 export function apiReferenceApiPagePlaygroundDisabled(): boolean {
   return API_PLAYGROUND_OPTIONS.enabled === false;
+}
+
+/** True when Fumadocs schema UI keeps authored schema examples visible. */
+export function apiReferenceSchemaUiShowsExamples(): boolean {
+  return API_SCHEMA_UI_OPTIONS.showExample === true;
 }

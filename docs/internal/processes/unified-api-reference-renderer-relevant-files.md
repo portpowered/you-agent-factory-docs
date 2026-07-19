@@ -60,7 +60,7 @@ hooks, and SSR cost.
 | `src/components/references/api/api-surface.test.tsx` | Status semantics proofs for the ownership boundary |
 | `src/components/references/api/load-openapi-artifact.ts` | W03-backed loader for `@you-agent-factory/api/openapi` (document object + schema id) |
 | `src/components/references/api/openapi-server.ts` | `createOpenAPI` + `per: "file"` single-page projection; Turbopack-safe package load; attaches W04 normalized ops from the same artifact |
-| `src/components/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, operationId section wrappers) |
+| `src/components/references/api/api-page.tsx` | Production `createAPIPage` / `<APIPage />` binder (playground off, schemaUI examples, request/response `data-api-schema-slot` wrappers, operationId section wrappers) |
 | `src/components/references/api/api-code-block.tsx` | `renderCodeBlock` → ServerCodeBlock + dual Shiki themes |
 | `src/components/references/api/count-openapi-operations.ts` | Pure live-inventory counters (ops / paths) for projection assertions |
 | `src/components/references/api/assert-single-page-projection.ts` | Happy-dom-safe child-process proof for `per: "file"` (run with plain `bun`) |
@@ -128,6 +128,11 @@ hooks, and SSR cost.
 - Mount published operations through `ApiReferenceAPIPage` (`createAPIPage`) from
   `api-page.tsx` — playground stays `{ enabled: false }`, no `proxyUrl`, and each
   operation is wrapped in `<section id={operationId} data-api-operation-section>`.
+- Request/response body Schema UI stays on the Fumadocs path: `schemaUI.showExample`,
+  `showResponseSchema: true`, and `data-api-schema-slot="request|response"` wrappers
+  around `slots.body` / `slots.responses` (promoted from the W01 spike). Do **not**
+  add a bespoke schema explorer under `src/components/references/schema/` for this
+  page — W07 owns that tree separately.
 - Assert operation counts against the **live** package inventory
   (`countOpenApiOperations`), not a frozen product quota. Baseline observation
   at pin time was 45 operations / 41 paths.
@@ -136,6 +141,12 @@ hooks, and SSR cost.
 - Browser proof for the Fumadocs mount:
   `bun src/content/docs/references/api/assert-api-page-fumadocs-browser.ts`
   (unique port default 3542).
+- Browser proof for request/response component schema fields:
+  `bun src/content/docs/references/api/assert-api-page-schema-components-browser.ts`
+  (unique port default 3552). Probe target:
+  `submitWorkBySessionId` → `#/components/schemas/SubmitWorkRequest` fields
+  (`name`, `workTypeName`, `items`) via Fumadocs Schema UI (lazy client boundary —
+  wait for hydrated fields, not SSR example JSON alone).
 - W04 normalized summaries are derived from the same loaded document for
   cross-links/display; do not invent a second OpenAPI corpus.
 

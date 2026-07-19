@@ -68,8 +68,12 @@ export {
 export {
   API_FUMADOCS_OPERATION_ATTR,
   API_FUMADOCS_OPERATIONS_ATTR,
+  API_SCHEMA_COMPONENT_PROBE,
+  API_SCHEMA_SLOT_ATTR,
+  API_SCHEMA_UI_OPTIONS,
   ApiReferenceAPIPage,
   apiReferenceApiPagePlaygroundDisabled,
+  apiReferenceSchemaUiShowsExamples,
 } from "./api-page";
 export {
   ApiReferenceHashController,
