@@ -27,8 +27,8 @@
       "title": "Factory schema",
       "body": "JSON Schema for packaged factory documents and their required fields."
     },
-    "you-config-schema": {
-      "title": "you config schema",
+    "system-config-schema": {
+      "title": "System configuration schema",
       "body": "Configuration schema for you-agent-factory runtime and workspace settings."
     },
     "mock-workers-schema": {

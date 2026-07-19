@@ -153,9 +153,9 @@ describe("factories/global-configuration documentation page", () => {
 
     expect(
       screen
-        .getByRole("link", { name: "Full You-config schema" })
+        .getByRole("link", { name: "Full System config schema" })
         .getAttribute("href"),
-    ).toBe("/docs/references/schema");
+    ).toBe("/docs/references/system-config-schema");
     expect(
       screen
         .getAllByRole("link", { name: "Full Factory schema" })[0]

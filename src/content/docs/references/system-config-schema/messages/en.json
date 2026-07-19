@@ -1,0 +1,14 @@
+{
+  "title": "System configuration schema",
+  "description": "Look up the live system configuration JSON Schema—definitions, fields, constraints, defaults, enums, and examples—on a stable deep-linkable docs route.",
+  "sections": {
+    "howToAccess": {
+      "title": "Local storage and access",
+      "body": "Operator system configuration lives at ~/.you-agent-factory/config.json. Create that file with you config init, or open and edit it on disk, when you need operator-wide settings for the factory runtime."
+    },
+    "schemaLookup": {
+      "title": "Schema Lookup",
+      "body": "Browse the complete System configuration schema below: root fields, constraints, defaults, enums, and examples. Follow $ref links to related definitions, and copy deep links to any definition or field anchor."
+    }
+  }
+}

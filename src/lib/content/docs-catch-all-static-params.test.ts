@@ -202,7 +202,7 @@ describe("W05 route-family static params and not-found", () => {
     expect(defaultPaths).toContain("references/mcp");
     expect(defaultPaths).toContain("references/javascript-runtime");
     expect(defaultPaths).toContain("references/factory-schema");
-    expect(defaultPaths).toContain("references/you-config-schema");
+    expect(defaultPaths).toContain("references/system-config-schema");
     expect(defaultPaths).toContain("references/mock-workers-schema");
     expect(defaultPaths).toContain("references/events");
 
@@ -273,7 +273,7 @@ describe("W05 route-family static params and not-found", () => {
       "mcp",
       "javascript-runtime",
       "factory-schema",
-      "you-config-schema",
+      "system-config-schema",
       "mock-workers-schema",
     ] as const) {
       expect(slugPaths).not.toContain(`references/${slug}`);

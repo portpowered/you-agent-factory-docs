@@ -133,9 +133,9 @@ async function loadRouteFamilyPageMdxComponents(
         );
         return mod.pageMdxComponents ?? {};
       }
-      case "you-config-schema": {
+      case "system-config-schema": {
         const mod = await import(
-          "@/content/docs/references/you-config-schema/page-mdx-components"
+          "@/content/docs/references/system-config-schema/page-mdx-components"
         );
         return mod.pageMdxComponents ?? {};
       }

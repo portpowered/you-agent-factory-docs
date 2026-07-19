@@ -20,14 +20,14 @@ import {
   type MockWorkersSchemaReferenceProps,
 } from "./mock-workers-schema/MockWorkersSchemaReference";
 import {
-  YOU_CONFIG_SCHEMA_PAGE_PATH,
-  YouConfigSchemaReference,
-  type YouConfigSchemaReferenceProps,
-} from "./you-config-schema/YouConfigSchemaReference";
+  SYSTEM_CONFIG_SCHEMA_PAGE_PATH,
+  SystemConfigSchemaReference,
+  type SystemConfigSchemaReferenceProps,
+} from "./system-config-schema/SystemConfigSchemaReference";
 
 type SchemaMountProps =
   | FactorySchemaReferenceProps
-  | YouConfigSchemaReferenceProps
+  | SystemConfigSchemaReferenceProps
   | MockWorkersSchemaReferenceProps;
 
 type SchemaRouteCase = {
@@ -49,12 +49,12 @@ const SCHEMA_ROUTES: SchemaRouteCase[] = [
     Mount: FactorySchemaReference,
   },
   {
-    slug: "you-config-schema",
-    path: YOU_CONFIG_SCHEMA_PAGE_PATH,
-    testId: "you-config-schema-reference",
+    slug: "system-config-schema",
+    path: SYSTEM_CONFIG_SCHEMA_PAGE_PATH,
+    testId: "system-config-schema-reference",
     fieldPath: "backendScopeID",
-    unavailableTitle: /You-config schema unavailable/i,
-    Mount: YouConfigSchemaReference,
+    unavailableTitle: /System configuration schema unavailable/i,
+    Mount: SystemConfigSchemaReference,
   },
   {
     slug: "mock-workers-schema",

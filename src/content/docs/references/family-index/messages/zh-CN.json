@@ -27,8 +27,8 @@
       "title": "Factory schema",
       "body": "已打包工厂文档及其必填字段的 JSON Schema。"
     },
-    "you-config-schema": {
-      "title": "you 配置 schema",
+    "system-config-schema": {
+      "title": "系统配置 schema",
       "body": "you-agent-factory 运行时与工作区设置的配置 schema。"
     },
     "mock-workers-schema": {

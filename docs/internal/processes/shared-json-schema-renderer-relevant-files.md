@@ -164,10 +164,29 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   `assert-factory-schema-full-config-example-browser.ts` / page-local mount
   tests. Repair close-out browser probe covering intro strip + splay +
   click-traverse + full config together:
-  `assert-factory-schema-repair-browser.ts`. Root pointers must be
-  anchor-safe (not bare `/`). Harness route: `/schema-renderer-harness`
-  under `src/app/(dev)/` — not a published `/docs/references/*-schema`
-  page.
+  `assert-factory-schema-repair-browser.ts`. For page-owned system-config polish
+  that also removes filter-definitions list chrome, set `showFilter={false}` on
+  that page mount only — do not change SchemaReference defaults for other
+  families. When trimming filter/catalog chrome, also rewrite page-local
+  `sections.schemaLookup.body` so it does not instruct readers to Filter by
+  definition / catalog UI that is gone, and drop “on this page” framing. To rename a root definition header without changing the upstream
+  package title, pass a page-local `projection` from
+  `projectSchemaDefinitionToDisplay` with an overridden `title` (keep the W04
+  `schemaPointerAnchor` so deep links stay stable). To show a concrete operator
+  teaching sample without fabricating upstream package `examples`, pass
+  page-local `exampleInputs` (`origin: "authored"`) on that SchemaReference
+  mount only — keep payloads aligned with existing docs teaching samples (for
+  system-config: `defaults.workerModelProvider` / `defaults.workerModel`).
+  Browser-closeout for the system-config rename/polish lane: colocated
+  `src/content/docs/references/system-config-schema/assert-system-config-schema-rename-browser.ts`
+  (unique port `SYSTEM_CONFIG_SCHEMA_RENAME_PROBE_PORT`, webpack `bun run dev`,
+  kill server on exit). Assert `data-schema-status="ready"`, System config
+  title/lead, absent What It Covers / filter / Definitions catalog, authored
+  example fields, old slug non-redirect 404, and family-index +
+  global-configuration inbound links to `/docs/references/system-config-schema`.
+  Root pointers must be anchor-safe (not bare `/`). Harness route:
+  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
+  `/docs/references/*-schema` page.
 
 ## Verification preference
 

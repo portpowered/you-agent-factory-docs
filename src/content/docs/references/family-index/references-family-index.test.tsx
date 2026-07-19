@@ -298,7 +298,7 @@ describe("references family index", () => {
       "/docs/references/api",
       "/docs/references/events",
       "/docs/references/factory-schema",
-      "/docs/references/you-config-schema",
+      "/docs/references/system-config-schema",
       "/docs/references/mock-workers-schema",
       "/docs/references/cli",
       "/docs/references/mcp",
