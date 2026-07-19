@@ -1,5 +1,5 @@
 {
-  "title": "Script-run type",
+  "title": "Script-run workstation",
   "description": "Configure type = SCRIPT_RUN for script worker dispatch through a SCRIPT_WORKER backend.",
   "openingSummary": "SCRIPT_RUN is the WorkstationType for command-backed script worker dispatch. Set type to SCRIPT_RUN when a step must run a SCRIPT_WORKER command and args, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling.",
   "sections": {
@@ -30,18 +30,18 @@
     "discriminatorValue": "type = SCRIPT_RUN",
     "companionIntro": "SCRIPT_RUN requires a SCRIPT_WORKER companion and is compatible with every published WorkstationKind. Bind the script worker, then choose scheduling on the behavior axis.",
     "companionWorkersIndex": "Workers family index (SCRIPT_WORKER)",
-    "companionStandard": "Standard behavior",
-    "companionRepeater": "Repeater behavior",
-    "companionCron": "Cron behavior",
-    "companionPoller": "Poller behavior",
+    "companionStandard": "Standard workstation",
+    "companionRepeater": "Repeater workstation",
+    "companionCron": "Cron workstation",
+    "companionPoller": "Poller workstation",
     "minimalExampleLabel": "Minimal valid SCRIPT_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — promptFile on SCRIPT_RUN:",
     "misuseNote": "promptFile belongs on MODEL_WORKSTATION. Keep SCRIPT_RUN on identity, worker binding, inputs, outputs, and routing fields only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingInferenceRun": "Inference-run type",
-    "siblingAgentRun": "Agent-run type",
-    "siblingModelWorkstation": "Model-workstation type",
+    "siblingInferenceRun": "Inference-run workstation",
+    "siblingAgentRun": "Agent-run workstation",
+    "siblingModelWorkstation": "Model workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

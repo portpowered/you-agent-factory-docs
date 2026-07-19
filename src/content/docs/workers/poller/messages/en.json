@@ -30,7 +30,7 @@
     "discriminatorValue": "type = POLLER_WORKER",
     "companionIntro": "POLLER_WORKER pairs with a POLLER_RUN workstation type companion. Workstation behavior POLLER is a separate scheduling axis for long-lived ingress—do not treat type and behavior as interchangeable.",
     "companionWorkstation": "Poller-run workstation (POLLER_RUN type)",
-    "companionBehavior": "Poller behavior (behavior = POLLER)",
+    "companionBehavior": "Poller workstation (behavior = POLLER)",
     "minimalExampleLabel": "Minimal valid POLLER_WORKER:",
     "misuseExampleLabel": "Incompatible misuse — inline secret on POLLER_WORKER (rejected):",
     "misuseNote": "auth accepts only secretRef. Validation rejects inline API keys and other credential fields. Resolve the referenced secret from an environment variable or a factory-relative secret file.",

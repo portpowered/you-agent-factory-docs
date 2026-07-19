@@ -844,6 +844,15 @@ and `/$defs/Worker` / `/$defs/Workstation` pointer breadcrumb chrome. Defaults
 on those props stay `true` so Factory schema / you-config / mock-workers
 reference pages keep their current chrome.
 
+Workstation authored page titles (frontmatter `title` + matching
+`messages.title`) and in-family sibling/companion link labels use concrete
+`… workstation` forms — for example `Classifier workstation`,
+`Logical move workstation`, `Agent-run workstation`, `Standard workstation`.
+Do not restore `… type`, `… behavior`, or `Agent-run type` / `Classifier type`
+as the primary display title. Routes/slugs stay unchanged; only display
+titles and owned link labels change. `MODEL_WORKSTATION` displays as
+`Model workstation` (avoid `Model-workstation workstation`).
+
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`
 (stable anchor). Put ownership matrix cells, example label/body, and

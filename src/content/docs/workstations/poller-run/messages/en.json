@@ -1,5 +1,5 @@
 {
-  "title": "Poller-run type",
+  "title": "Poller-run workstation",
   "description": "Configure type = POLLER_RUN for poller worker execution and keep it distinct from behavior = POLLER.",
   "openingSummary": "POLLER_RUN is the WorkstationType for poller worker execution. Set type to POLLER_RUN when a step must run through a POLLER_WORKER, and set behavior to POLLER only when the step also needs long-lived poller scheduling.",
   "sections": {
@@ -28,21 +28,21 @@
   "links": {
     "discriminatorLabel": "Discriminator",
     "discriminatorValue": "type = POLLER_RUN",
-    "pollerAxesNote": "POLLER_RUN is a runtime type. POLLER is scheduling behavior. Do not collapse the two axes — open the poller behavior page when you need long-lived poller scheduling.",
+    "pollerAxesNote": "POLLER_RUN is a runtime type. POLLER is scheduling behavior. Do not collapse the two axes — open the poller workstation page when you need long-lived poller scheduling.",
     "companionIntro": "POLLER_RUN requires a POLLER_WORKER companion and is compatible with every published WorkstationKind. Bind the poller worker, then choose scheduling on the behavior axis — use POLLER when long-lived poller ingress is required.",
     "companionWorkersIndex": "Workers family index (POLLER_WORKER)",
-    "companionPoller": "Poller behavior (behavior POLLER)",
-    "companionStandard": "Standard behavior",
-    "companionRepeater": "Repeater behavior",
-    "companionCron": "Cron behavior",
+    "companionPoller": "Poller workstation (behavior POLLER)",
+    "companionStandard": "Standard workstation",
+    "companionRepeater": "Repeater workstation",
+    "companionCron": "Cron workstation",
     "minimalExampleLabel": "Minimal valid POLLER_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — POLLER_RUN as behavior (axis collapse):",
     "misuseNote": "POLLER_RUN is a WorkstationType value, not a WorkstationKind. Put POLLER_RUN on type, and use behavior POLLER when long-lived poller scheduling is required.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingInferenceRun": "Inference-run type",
-    "siblingAgentRun": "Agent-run type",
-    "siblingScriptRun": "Script-run type",
+    "siblingInferenceRun": "Inference-run workstation",
+    "siblingAgentRun": "Agent-run workstation",
+    "siblingScriptRun": "Script-run workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

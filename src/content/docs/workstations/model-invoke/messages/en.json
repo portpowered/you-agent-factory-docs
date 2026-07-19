@@ -1,5 +1,5 @@
 {
-  "title": "Model-invoke type",
+  "title": "Model-invoke workstation",
   "description": "Configure type = MODEL_INVOKE for provider-neutral operation bindings and model operations through a MODEL_WORKER backend.",
   "openingSummary": "MODEL_INVOKE is the WorkstationType for provider-neutral operation and operationBindings. Set type to MODEL_INVOKE when a step must run through a MODEL_WORKER with those operation surfaces, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling. Keep promptFile, outcomeFormat, outputSchema, and stopWords on MODEL_WORKSTATION instead.",
   "sections": {
@@ -30,18 +30,18 @@
     "discriminatorValue": "type = MODEL_INVOKE",
     "companionIntro": "MODEL_INVOKE requires a MODEL_WORKER companion and is compatible with every published WorkstationKind. Bind the model worker, then choose scheduling on the behavior axis. MODEL_WORKSTATION also uses MODEL_WORKER but selects prompt/parse surfaces instead of operation fields.",
     "companionWorkersIndex": "Workers family index (MODEL_WORKER)",
-    "companionStandard": "Standard behavior",
-    "companionRepeater": "Repeater behavior",
-    "companionCron": "Cron behavior",
-    "companionPoller": "Poller behavior",
+    "companionStandard": "Standard workstation",
+    "companionRepeater": "Repeater workstation",
+    "companionCron": "Cron workstation",
+    "companionPoller": "Poller workstation",
     "minimalExampleLabel": "Minimal valid MODEL_INVOKE workstation:",
     "misuseExampleLabel": "Incompatible misuse — outcomeFormat on MODEL_INVOKE:",
     "misuseNote": "outcomeFormat belongs on MODEL_WORKSTATION. Keep MODEL_INVOKE on identity, worker binding, inputs, outputs, routing fields, and operation / operationBindings only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingModelWorkstation": "Model-workstation type",
-    "siblingInferenceRun": "Inference-run type",
-    "siblingAgentRun": "Agent-run type",
+    "siblingModelWorkstation": "Model workstation",
+    "siblingInferenceRun": "Inference-run workstation",
+    "siblingAgentRun": "Agent-run workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

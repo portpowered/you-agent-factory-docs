@@ -41,7 +41,7 @@ describe("workstations cron behavior page", () => {
       slug: "cron",
     });
 
-    expect(loadedPage.messages.title).toBe("Cron behavior");
+    expect(loadedPage.messages.title).toBe("Cron workstation");
     expect(loadedPage.messages.description).toMatch(/behavior = CRON/i);
     expect(loadedPage.messages.description).toMatch(/schedule/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
@@ -189,12 +189,12 @@ describe("workstations cron behavior page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
       screen
-        .getByRole("link", { name: "Repeater behavior" })
+        .getByRole("link", { name: "Repeater workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/repeater");
 

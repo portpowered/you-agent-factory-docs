@@ -1,5 +1,5 @@
 {
-  "title": "Agent-run type",
+  "title": "Agent-run workstation",
   "description": "Configure type = AGENT_RUN for agent worker dispatch and OpenCode agent overrides through an AGENT_WORKER backend.",
   "openingSummary": "AGENT_RUN is the WorkstationType for agent worker dispatch. Set type to AGENT_RUN when a step must run an agent loop through an AGENT_WORKER, optionally with openCodeAgent overrides, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling.",
   "sections": {
@@ -30,18 +30,18 @@
     "discriminatorValue": "type = AGENT_RUN",
     "companionIntro": "AGENT_RUN requires an AGENT_WORKER companion and is compatible with every published WorkstationKind. Bind the agent worker, then choose scheduling on the behavior axis.",
     "companionWorkersIndex": "Workers family index (AGENT_WORKER)",
-    "companionStandard": "Standard behavior",
-    "companionRepeater": "Repeater behavior",
-    "companionCron": "Cron behavior",
-    "companionPoller": "Poller behavior",
+    "companionStandard": "Standard workstation",
+    "companionRepeater": "Repeater workstation",
+    "companionCron": "Cron workstation",
+    "companionPoller": "Poller workstation",
     "minimalExampleLabel": "Minimal valid AGENT_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — operation on AGENT_RUN:",
     "misuseNote": "operation belongs on MODEL_INVOKE. Keep AGENT_RUN on identity, worker binding, inputs, outputs, routing fields, and optional openCodeAgent overrides only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingInferenceRun": "Inference-run type",
-    "siblingScriptRun": "Script-run type",
-    "siblingModelInvoke": "Model-invoke type",
+    "siblingInferenceRun": "Inference-run workstation",
+    "siblingScriptRun": "Script-run workstation",
+    "siblingModelInvoke": "Model-invoke workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

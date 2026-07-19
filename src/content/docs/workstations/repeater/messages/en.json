@@ -1,5 +1,5 @@
 {
-  "title": "Repeater behavior",
+  "title": "Repeater workstation",
   "description": "Configure behavior = REPEATER for change-triggered looping and rejection reloop semantics without cron or poller scheduling.",
   "openingSummary": "REPEATER is the WorkstationKind scheduling behavior for change-triggered loops. Set behavior to REPEATER when a step should reloop on upstream change or rejection routing, without cron schedules or long-lived poller ingress.",
   "sections": {
@@ -38,9 +38,9 @@
     "misuseNote": "cron is a CRON scheduling field. REPEATER excludes it. Use behavior CRON when the step must run on a schedule.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingStandard": "Standard behavior",
-    "siblingCron": "Cron behavior",
-    "siblingPoller": "Poller behavior",
+    "siblingStandard": "Standard workstation",
+    "siblingCron": "Cron workstation",
+    "siblingPoller": "Poller workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

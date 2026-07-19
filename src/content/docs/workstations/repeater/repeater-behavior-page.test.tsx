@@ -43,7 +43,7 @@ describe("workstations repeater behavior page", () => {
       slug: "repeater",
     });
 
-    expect(loadedPage.messages.title).toBe("Repeater behavior");
+    expect(loadedPage.messages.title).toBe("Repeater workstation");
     expect(loadedPage.messages.description).toMatch(/behavior = REPEATER/i);
     expect(loadedPage.messages.description).toMatch(/reloop/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
@@ -191,7 +191,7 @@ describe("workstations repeater behavior page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
 

@@ -1,5 +1,5 @@
 {
-  "title": "Inference-run type",
+  "title": "Inference-run workstation",
   "description": "Configure type = INFERENCE_RUN for inference harness dispatch through an INFERENCE_WORKER backend.",
   "openingSummary": "INFERENCE_RUN is the WorkstationType for one-shot inference harness dispatch. Set type to INFERENCE_RUN when a step must run a bounded model operation such as TTS or ASR through an INFERENCE_WORKER, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling.",
   "sections": {
@@ -30,18 +30,18 @@
     "discriminatorValue": "type = INFERENCE_RUN",
     "companionIntro": "INFERENCE_RUN requires an INFERENCE_WORKER companion and is compatible with every published WorkstationKind. Bind the inference worker, then choose scheduling on the behavior axis.",
     "companionWorkersIndex": "Workers family index (INFERENCE_WORKER)",
-    "companionStandard": "Standard behavior",
-    "companionRepeater": "Repeater behavior",
-    "companionCron": "Cron behavior",
-    "companionPoller": "Poller behavior",
+    "companionStandard": "Standard workstation",
+    "companionRepeater": "Repeater workstation",
+    "companionCron": "Cron workstation",
+    "companionPoller": "Poller workstation",
     "minimalExampleLabel": "Minimal valid INFERENCE_RUN workstation:",
     "misuseExampleLabel": "Incompatible misuse — classificationRoutes on INFERENCE_RUN:",
     "misuseNote": "classificationRoutes belongs on CLASSIFIER_WORKSTATION. Keep INFERENCE_RUN on identity, worker binding, inputs, outputs, and routing fields only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingAgentRun": "Agent-run type",
-    "siblingScriptRun": "Script-run type",
-    "siblingClassifier": "Classifier type",
+    "siblingAgentRun": "Agent-run workstation",
+    "siblingScriptRun": "Script-run workstation",
+    "siblingClassifier": "Classifier workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

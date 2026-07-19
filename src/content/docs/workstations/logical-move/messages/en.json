@@ -1,5 +1,5 @@
 {
-  "title": "Logical-move type",
+  "title": "Logical move workstation",
   "description": "Configure type = LOGICAL_MOVE for non-worker logical routing and guarded loop-breaker usage through a HOSTED_WORKER companion.",
   "openingSummary": "LOGICAL_MOVE is the WorkstationType for non-worker logical routing with optional guards as loop breakers. Set type to LOGICAL_MOVE when a step must route work without agent, model, inference, script, or poller runtimes, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling. Keep classificationRoutes on CLASSIFIER_WORKSTATION instead.",
   "sections": {
@@ -30,18 +30,18 @@
     "discriminatorValue": "type = LOGICAL_MOVE",
     "companionIntro": "LOGICAL_MOVE requires a HOSTED_WORKER companion and is compatible with every published WorkstationKind. Bind the hosted worker for logical routing, then choose scheduling on the behavior axis. CLASSIFIER_WORKSTATION also uses HOSTED_WORKER but selects classificationRoutes instead of guards.",
     "companionWorkersIndex": "Workers family index (HOSTED_WORKER)",
-    "companionStandard": "Standard behavior",
-    "companionRepeater": "Repeater behavior",
-    "companionCron": "Cron behavior",
-    "companionPoller": "Poller behavior",
+    "companionStandard": "Standard workstation",
+    "companionRepeater": "Repeater workstation",
+    "companionCron": "Cron workstation",
+    "companionPoller": "Poller workstation",
     "minimalExampleLabel": "Minimal valid LOGICAL_MOVE workstation:",
     "misuseExampleLabel": "Incompatible misuse — classificationRoutes on LOGICAL_MOVE:",
     "misuseNote": "classificationRoutes belongs on CLASSIFIER_WORKSTATION. Keep LOGICAL_MOVE on identity, worker binding, inputs, outputs, routing fields, and optional guards only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingClassifier": "Classifier type",
-    "siblingInferenceRun": "Inference-run type",
-    "siblingAgentRun": "Agent-run type",
+    "siblingClassifier": "Classifier workstation",
+    "siblingInferenceRun": "Inference-run workstation",
+    "siblingAgentRun": "Agent-run workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

@@ -44,7 +44,7 @@ describe("workstations classifier type page", () => {
       slug: "classifier",
     });
 
-    expect(loadedPage.messages.title).toBe("Classifier type");
+    expect(loadedPage.messages.title).toBe("Classifier workstation");
     expect(loadedPage.messages.description).toMatch(
       /type = CLASSIFIER_WORKSTATION/i,
     );
@@ -203,20 +203,22 @@ describe("workstations classifier type page", () => {
     ).toBe("/docs/workers");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
       screen
-        .getByRole("link", { name: "Repeater behavior" })
+        .getByRole("link", { name: "Repeater workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/repeater");
     expect(
-      screen.getByRole("link", { name: "Cron behavior" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Cron workstation" })
+        .getAttribute("href"),
     ).toBe("/docs/workstations/cron");
     expect(
       screen
-        .getByRole("link", { name: "Poller behavior" })
+        .getByRole("link", { name: "Poller workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/poller");
     expect(
@@ -231,12 +233,12 @@ describe("workstations classifier type page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Logical-move type" })
+        .getByRole("link", { name: "Logical move workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/logical-move");
     expect(
       screen
-        .getByRole("link", { name: "Inference-run type" })
+        .getByRole("link", { name: "Inference-run workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/inference-run");
 

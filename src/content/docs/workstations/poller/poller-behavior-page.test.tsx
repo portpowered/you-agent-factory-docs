@@ -43,7 +43,7 @@ describe("workstations poller behavior page", () => {
       slug: "poller",
     });
 
-    expect(loadedPage.messages.title).toBe("Poller behavior");
+    expect(loadedPage.messages.title).toBe("Poller workstation");
     expect(loadedPage.messages.description).toMatch(/behavior = POLLER/i);
     expect(loadedPage.messages.description).toMatch(/POLLER_RUN/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
@@ -207,16 +207,18 @@ describe("workstations poller behavior page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Poller-run type" })
+        .getByRole("link", { name: "Poller-run workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/poller-run");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
-      screen.getByRole("link", { name: "Cron behavior" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Cron workstation" })
+        .getAttribute("href"),
     ).toBe("/docs/workstations/cron");
 
     expect(screen.getByText("Minimal valid POLLER workstation:")).toBeTruthy();

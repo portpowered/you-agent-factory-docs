@@ -43,7 +43,7 @@ describe("workstations standard behavior page", () => {
       slug: "standard",
     });
 
-    expect(loadedPage.messages.title).toBe("Standard behavior");
+    expect(loadedPage.messages.title).toBe("Standard workstation");
     expect(loadedPage.messages.description).toMatch(/behavior = STANDARD/i);
     expect(loadedPage.messages.description).toMatch(/readiness/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);

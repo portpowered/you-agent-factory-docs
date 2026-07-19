@@ -1,5 +1,5 @@
 {
-  "title": "Poller behavior",
+  "title": "Poller workstation",
   "description": "Configure behavior = POLLER for long-lived poller scheduling and keep it distinct from type = POLLER_RUN.",
   "openingSummary": "POLLER is the WorkstationKind scheduling behavior for long-lived poller ingress. Set behavior to POLLER when a step should stay scheduled for continuous poller-driven work, and set type to POLLER_RUN only when the runtime must execute through a poller worker.",
   "sections": {
@@ -40,10 +40,10 @@
     "misuseNote": "POLLER is a WorkstationKind behavior value, not a WorkstationType. Put POLLER on behavior, and use type POLLER_RUN when poller-worker execution is required.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingPollerRun": "Poller-run type",
-    "siblingStandard": "Standard behavior",
-    "siblingRepeater": "Repeater behavior",
-    "siblingCron": "Cron behavior",
+    "siblingPollerRun": "Poller-run workstation",
+    "siblingStandard": "Standard workstation",
+    "siblingRepeater": "Repeater workstation",
+    "siblingCron": "Cron workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

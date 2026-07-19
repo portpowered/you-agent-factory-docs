@@ -1,5 +1,5 @@
 {
-  "title": "Model-workstation type",
+  "title": "Model workstation",
   "description": "Configure type = MODEL_WORKSTATION for model-oriented prompts, output parsing, and stop words through a MODEL_WORKER backend.",
   "openingSummary": "MODEL_WORKSTATION is the WorkstationType for model-oriented prompt files, outcome parsing, output schemas, and stop words. Set type to MODEL_WORKSTATION when a step must run through a MODEL_WORKER with those prompt/parse surfaces, and choose behavior independently for STANDARD, REPEATER, CRON, or POLLER scheduling. Keep provider-neutral operation bindings on MODEL_INVOKE instead.",
   "sections": {
@@ -30,18 +30,18 @@
     "discriminatorValue": "type = MODEL_WORKSTATION",
     "companionIntro": "MODEL_WORKSTATION requires a MODEL_WORKER companion and is compatible with every published WorkstationKind. Bind the model worker, then choose scheduling on the behavior axis. MODEL_INVOKE also uses MODEL_WORKER but selects operation fields instead of prompt/parse surfaces.",
     "companionWorkersIndex": "Workers family index (MODEL_WORKER)",
-    "companionStandard": "Standard behavior",
-    "companionRepeater": "Repeater behavior",
-    "companionCron": "Cron behavior",
-    "companionPoller": "Poller behavior",
+    "companionStandard": "Standard workstation",
+    "companionRepeater": "Repeater workstation",
+    "companionCron": "Cron workstation",
+    "companionPoller": "Poller workstation",
     "minimalExampleLabel": "Minimal valid MODEL_WORKSTATION workstation:",
     "misuseExampleLabel": "Incompatible misuse — operation on MODEL_WORKSTATION:",
     "misuseNote": "operation belongs on MODEL_INVOKE. Keep MODEL_WORKSTATION on identity, worker binding, inputs, outputs, routing fields, and promptFile / outcomeFormat / outputSchema / stopWords only.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingModelInvoke": "Model-invoke type",
-    "siblingInferenceRun": "Inference-run type",
-    "siblingAgentRun": "Agent-run type",
+    "siblingModelInvoke": "Model-invoke workstation",
+    "siblingInferenceRun": "Inference-run workstation",
+    "siblingAgentRun": "Agent-run workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

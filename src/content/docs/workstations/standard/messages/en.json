@@ -1,5 +1,5 @@
 {
-  "title": "Standard behavior",
+  "title": "Standard workstation",
   "description": "Configure behavior = STANDARD for ordinary readiness, dispatch, concurrency, and routing without cron, repeater, or poller scheduling.",
   "openingSummary": "STANDARD is the default WorkstationKind scheduling behavior. Set behavior to STANDARD when the step should run once inputs are ready, without cron schedules, change-triggered reloops, or long-lived poller ingress.",
   "sections": {
@@ -38,9 +38,9 @@
     "misuseNote": "cron is a CRON scheduling field. STANDARD excludes it. Use behavior CRON when the step must run on a schedule.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingRepeater": "Repeater behavior",
-    "siblingCron": "Cron behavior",
-    "siblingPoller": "Poller behavior",
+    "siblingRepeater": "Repeater workstation",
+    "siblingCron": "Cron workstation",
+    "siblingPoller": "Poller workstation",
     "siblingConfiguration": "Configuration",
     "siblingResources": "Resources"
   }

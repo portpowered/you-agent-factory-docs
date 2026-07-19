@@ -45,7 +45,7 @@ describe("workstations inference-run type page", () => {
       slug: "inference-run",
     });
 
-    expect(loadedPage.messages.title).toBe("Inference-run type");
+    expect(loadedPage.messages.title).toBe("Inference-run workstation");
     expect(loadedPage.messages.description).toMatch(/type = INFERENCE_RUN/i);
     expect(loadedPage.messages.description).toMatch(/INFERENCE_WORKER/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
@@ -191,20 +191,22 @@ describe("workstations inference-run type page", () => {
     ).toBe("/docs/workers");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
       screen
-        .getByRole("link", { name: "Repeater behavior" })
+        .getByRole("link", { name: "Repeater workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/repeater");
     expect(
-      screen.getByRole("link", { name: "Cron behavior" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Cron workstation" })
+        .getAttribute("href"),
     ).toBe("/docs/workstations/cron");
     expect(
       screen
-        .getByRole("link", { name: "Poller behavior" })
+        .getByRole("link", { name: "Poller workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/poller");
     expect(
@@ -218,11 +220,13 @@ describe("workstations inference-run type page", () => {
         .getAttribute("href"),
     ).toBe("/docs/workstations");
     expect(
-      screen.getByRole("link", { name: "Agent-run type" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Agent-run workstation" })
+        .getAttribute("href"),
     ).toBe("/docs/workstations/agent-run");
     expect(
       screen
-        .getByRole("link", { name: "Classifier type" })
+        .getByRole("link", { name: "Classifier workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/classifier");
 

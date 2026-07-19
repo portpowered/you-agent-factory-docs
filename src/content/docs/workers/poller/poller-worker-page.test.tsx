@@ -174,7 +174,7 @@ describe("workers poller page", () => {
     ).toBe("/docs/workstations/poller-run");
     expect(
       screen
-        .getByRole("link", { name: "Poller behavior (behavior = POLLER)" })
+        .getByRole("link", { name: "Poller workstation (behavior = POLLER)" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/poller");
     expect(
