@@ -40,22 +40,11 @@ describe("javascript-runtime reference page", () => {
       );
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
-      );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
-      expect(whatItCovers).toMatch(
-        /package-backed JavaScript runtime inventory/i,
-      );
-      expect(keyConcepts).toMatch(
-        /@you-agent-factory\/api\/javascript\/runtime/i,
-      );
-      expect(keyConcepts).toMatch(/not from a page-local copy/i);
-      expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
+      // Intro chrome must stay absent (MCP #156 pattern): no What It Covers /
+      // Key Concepts keys and no informational Opening summary body.
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+      expect(String(loadedPage.messages.openingSummary ?? "").trim()).toBe("");
       expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
       expect(
         loadedPage.messages.sections?.limitsAndAssumptions,
@@ -90,11 +79,17 @@ describe("javascript-runtime reference page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
+      expect(screen.queryByTestId("folded-summary")).toBeNull();
+      expect(
+        document.querySelector('[data-opening-summary="folded"]'),
+      ).toBeNull();
       expect(
         screen.getByRole("heading", { name: "Symbol metadata glossary" }),
       ).toBeTruthy();

@@ -1,8 +1,10 @@
 /**
  * Browser verify for polished `/docs/references/javascript-runtime`:
- * trimmed symbol/shared-schema chrome, on-page glossary, Symbols/Shared
- * schemas On this page traversal, and the overall runtime example.
- * (repair-javascript-runtime-polish story 007).
+ * intro chrome absence (What It Covers / Key Concepts / folded Opening
+ * summary), #159 keep-list (glossary, overall usage example, Runtime
+ * Inventory), trimmed symbol/shared-schema chrome, and Symbols/Shared
+ * schemas On this page traversal.
+ * (repair-javascript-runtime-polish story 007 + intro-strip story 003).
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
@@ -126,6 +128,10 @@ try {
     const toc = document.querySelector("#nd-toc");
     const tocSymbols = toc?.querySelector('a[href="#symbols"]');
     const tocSharedSchemas = toc?.querySelector('a[href="#shared-schemas"]');
+    const headingNames = Array.from(
+      document.querySelectorAll("h1, h2, h3, h4"),
+    ).map((el) => (el.textContent ?? "").trim());
+    const hasHeading = (name: string) => headingNames.includes(name);
 
     const bodyText = document.body.textContent ?? "";
     const hasDtLabel = (root: ParentNode | null | undefined, label: string) => {
@@ -136,6 +142,17 @@ try {
     };
 
     return {
+      hasWhatItCoversHeading: hasHeading("What It Covers"),
+      hasKeyConceptsHeading: hasHeading("Key Concepts"),
+      hasWhatItCoversSection: Boolean(
+        document.getElementById("what-it-covers"),
+      ),
+      hasKeyConceptsSection: Boolean(document.getElementById("key-concepts")),
+      hasFoldedOpeningSummary: Boolean(
+        document.querySelector(
+          '[data-opening-summary], [data-testid="folded-summary"]',
+        ),
+      ),
       inventoryState: inventory?.getAttribute("data-inventory-state") ?? null,
       symbolCount: Number(
         inventory?.getAttribute("data-javascript-symbol-count") ?? "0",
@@ -240,6 +257,14 @@ try {
     if (!ok) failures.push(label);
   };
 
+  requireTrue(!polish.hasWhatItCoversHeading, "no What It Covers heading");
+  requireTrue(!polish.hasKeyConceptsHeading, "no Key Concepts heading");
+  requireTrue(!polish.hasWhatItCoversSection, "no #what-it-covers section");
+  requireTrue(!polish.hasKeyConceptsSection, "no #key-concepts section");
+  requireTrue(
+    !polish.hasFoldedOpeningSummary,
+    "no folded Opening summary chrome",
+  );
   requireTrue(polish.inventoryState === "success", "inventory success state");
   requireTrue(polish.symbolCount > 3, "symbol cards published");
   requireTrue(polish.sharedSchemaCount > 0, "shared schemas published");
@@ -341,8 +366,11 @@ try {
   console.log(
     JSON.stringify(
       {
+        introChromeAbsent: true,
         symbolCount: polish.symbolCount,
         sharedSchemaCount: polish.sharedSchemaCount,
+        glossaryPresent: polish.glossaryPresent,
+        overallExamplePresent: polish.overallExamplePresent,
         tocSymbols: polish.tocHasSymbols,
         tocSharedSchemas: polish.tocHasSharedSchemas,
       },

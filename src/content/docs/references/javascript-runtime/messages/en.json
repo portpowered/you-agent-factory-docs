@@ -1,16 +1,8 @@
 {
   "title": "JavaScript Runtime",
   "description": "Look up every published runtime symbol and shared schema from the installed package JavaScript runtime contract on a stable static docs route.",
-  "openingSummary": "This reference lists every published JavaScript runtime symbol and shared schema from the installed @you-agent-factory/api JavaScript runtime contract so dynamic-workflow authors can look up symbol paths, metadata, and shared schemas without a live Factory host.",
+  "openingSummary": "",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This reference publishes the package-backed JavaScript runtime inventory for you-agent-factory. Readers can look up every published runtime symbol and shared schema from the installed JavaScript runtime contract, including available kind, visibility, mutability, nullability, examples, shared-schema links, stable anchors, and inventory filters."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A runtime symbol path is the published JavaScript identity, such as javascript.args. The inventory comes from the installed @you-agent-factory/api/javascript/runtime public export, not from a page-local copy of symbols. Shared schemas are projected from the same package contract so authors can see reusable schema shapes the runtime publishes. Visibility, mutability, and nullability appear when the contract includes them."
-    },
     "symbolMetadataGlossary": {
       "title": "Symbol metadata glossary",
       "body": "Symbol cards show kind, mutability, nullability, and binding lifecycle as glossary-backed pills when the package contract publishes those fields. The definitions below explain the published meanings — including Value versus function kind — without inventing extra enum values."
