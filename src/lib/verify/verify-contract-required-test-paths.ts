@@ -22,6 +22,7 @@ export const VERIFY_CONTRACT_REQUIRED_TEST_PATHS = [
   "src/lib/verify/production-integration-build-trust.test.ts",
   "src/lib/verify/production-integration-test-paths.test.ts",
   "src/lib/verify/server-lifecycle.test.ts",
+  "src/lib/verify/static-export-directory-landing-url-probe.test.ts",
   "src/lib/verify/static-export-http-server.test.ts",
   "src/lib/verify/static-export-server-lifecycle.test.ts",
   "src/lib/verify/verifier-coverage-gate.test.ts",

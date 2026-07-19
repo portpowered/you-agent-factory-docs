@@ -114,6 +114,12 @@ describe("export-out-directory", () => {
     expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain(
       "/docs/guides",
     );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain(
+      "/docs/architecture",
+    );
+    expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).not.toContain(
+      "/docs/glossary",
+    );
     expect(STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES).toContain("/blog");
     expect([
       ...STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_RELATIVE_PATHS,

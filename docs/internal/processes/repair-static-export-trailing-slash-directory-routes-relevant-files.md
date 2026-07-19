@@ -28,6 +28,8 @@ GitHub Pages serves trailing-slash URLs as directory lookups
 | `src/lib/seo/production-metadata-base.ts` | Absolute production URLs strip accidental trailing slashes (root stays `/`) |
 | `src/lib/seo/export-sitemap.ts` | Sitemap loc → app-path normalization for trailing-slash locs |
 | `src/lib/verify/static-export-http-server.ts` | Serves both `/docs/factories` and `/docs/factories/` from directory landings |
+| `src/lib/verify/static-export-directory-landing-url-probe.ts` | Dual-URL probe helpers for non-slash + trailing-slash family landings |
+| `src/lib/verify/static-export-directory-landing-url-probe.test.ts` | Project-site fixture + trusted `out/` HTTP proofs that both URL forms return 200 |
 
 Trailing-slash input (`/docs/factories/`) normalizes to the same landing as
 non-slash. Do not reintroduce flat `${route}.html` mapping — Pages 404s on
@@ -42,10 +44,19 @@ may serialize with a trailing slash under `trailingSlash: true`; both forms must
 resolve against directory landings. Do not add retired you-config compatibility
 redirects.
 
+## Dual-URL behavioral proof
+
+Probe both `/docs/factories` and `/docs/factories/` (and peer collection indexes)
+through `createStaticExportHttpServer` with
+`basePath=/you-agent-factory-docs`. Fixture coverage always runs; when a trusted
+`out/` exists after `make build`, the same probe runs against the real artifact.
+Flat-only HTML must still 404 on trailing-slash URLs.
+
 ## Fail-closed directory landings
 
 `STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES` lists published collection
-indexes (factories/workers/workstations and peers) plus `/blog`.
+indexes (factories/workers/workstations and peers), `/docs/architecture`, and
+`/blog` — not the retired `/docs/glossary` index.
 `verifyExportDirectoryLandings(outDir)` fails when any mapped `…/index.html` is
 absent — flat `docs/factories.html` alone does not pass. Determinism HTML
 contract paths use the same directory layout (`blog/index.html`,

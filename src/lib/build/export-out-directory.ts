@@ -63,11 +63,12 @@ export type VerifyExportOutDirectoryResult =
 /**
  * Reader routes whose trailing-slash Pages URLs require `…/index.html`
  * directory landings under `out/`. Includes published docs collection indexes
- * (factories/workers/workstations and peers) plus `/blog`.
+ * (factories/workers/workstations and peers), `/docs/architecture`, and
+ * `/blog`. Omits the retired `/docs/glossary` index surface.
  */
 export const STATIC_EXPORT_REQUIRED_DIRECTORY_LANDING_ROUTES = [
   "/blog",
-  "/docs/glossary",
+  "/docs/architecture",
   "/docs/concepts",
   "/docs/guides",
   "/docs/techniques",
