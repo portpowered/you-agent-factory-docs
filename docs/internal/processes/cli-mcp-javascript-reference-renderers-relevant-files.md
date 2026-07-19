@@ -59,6 +59,13 @@ family-package-source chrome, duplicated command-path or leaf-name rows,
 aliases, visibility, runnable, or handler-present metadata. MCP/JS/events
 renderers may still use shared badge chrome — this keep-list is CLI-card-only.
 
+CLI page intro copy (`src/content/docs/references/cli/messages/en.json`) must
+match the keep-list: advertise descriptions, examples, stable anchors, and
+filters — not lifecycle/visibility/runnable/handler as card-body content, and
+not the old “unavailable / discloses that limit” Flags/arguments story. Filters
+may still mention lifecycle/visibility facets when those remain inventory
+filter chrome.
+
 ## Key host files (MCP family — story 004 / 005)
 
 | Path | Role |

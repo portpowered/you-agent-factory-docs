@@ -41,9 +41,20 @@ describe("cli reference page", () => {
       const keyConcepts = String(
         loadedPage.messages.sections?.keyConcepts?.body ?? "",
       );
+      const commandInventory = String(
+        loadedPage.messages.sections?.commandInventory?.body ?? "",
+      );
       expect(whatItCovers).toMatch(/package-backed CLI command inventory/i);
       expect(keyConcepts).toMatch(/@you-agent-factory\/api\/cli/i);
       expect(keyConcepts).toMatch(/not from a page-local copy/i);
+      expect(keyConcepts).toMatch(/under construction|not published yet/i);
+      expect(keyConcepts).not.toMatch(/discloses that limit/i);
+      expect(whatItCovers).not.toMatch(
+        /lifecycle|visibility|runnable|handler present/i,
+      );
+      expect(commandInventory).not.toMatch(
+        /package-backed metadata|handler present/i,
+      );
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
