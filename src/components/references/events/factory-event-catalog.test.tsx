@@ -11,6 +11,8 @@ import {
 import {
   buildFactoryEventCatalog,
   countEventTypesFromSchema,
+  EVENT_ENVELOPE_EXAMPLE_ORIGIN,
+  envelopeExampleConformsToOpenApiSchema,
   FACTORY_EVENT_CONTEXT_SCHEMA_NAME,
   FACTORY_EVENT_SCHEMA_NAME,
   FACTORY_EVENT_TYPE_SCHEMA_NAME,
@@ -82,6 +84,32 @@ describe("buildFactoryEventCatalog", () => {
       catalog.payloadDefinitionsByName.RunRequestEventPayload?.properties
         ?.recordedAt,
     ).toBeDefined();
+
+    // Full envelope JSON example — corpus-true keys/enums, no ellipsis body.
+    const example = catalog.envelopeExample;
+    expect(example.envelopeSchemaName).toBe(FACTORY_EVENT_SCHEMA_NAME);
+    expect(example.language).toBe("json");
+    expect(example.origin).toBe(
+      EVENT_ENVELOPE_EXAMPLE_ORIGIN.corpusConstructed,
+    );
+    expect(example.code).not.toMatch(/[…]|\.\.\./);
+    for (const field of ["schemaVersion", "id", "type", "context", "payload"]) {
+      expect(example.value).toHaveProperty(field);
+    }
+    expect(example.value.schemaVersion).toBe("agent-factory.event.v1");
+    expect(typeof example.value.type).toBe("string");
+    expect(factoryEventCatalogEventTypes(catalog)).toContain(
+      example.value.type as string,
+    );
+    expect(
+      envelopeExampleConformsToOpenApiSchema(
+        example.value,
+        liveRoot,
+        corpus.openapi.document.components?.schemas as
+          | Record<string, unknown>
+          | undefined,
+      ),
+    ).toEqual({ ok: true });
   });
 
   test("fails closed when FactoryEvent schema is missing", () => {
@@ -101,6 +129,7 @@ describe("FactoryEvent catalog UI", () => {
     render(
       <EventEnvelopeReference
         discriminatorPropertyName={catalog.discriminatorPropertyName}
+        envelopeExample={catalog.envelopeExample}
         envelopeFieldsDefinition={catalog.envelopeFieldsDefinition}
       />,
     );
@@ -109,6 +138,26 @@ describe("FactoryEvent catalog UI", () => {
     expect(section.getAttribute("data-event-envelope-complete")).toBe("true");
     expect(screen.getByText("FactoryEvent envelope")).toBeTruthy();
     expect(screen.getByText(/not complete envelopes/i)).toBeTruthy();
+
+    const exampleArticle = within(section).getByTestId(
+      "event-envelope-json-example",
+    );
+    expect(exampleArticle.getAttribute("data-event-envelope-example")).toBe(
+      "FactoryEvent",
+    );
+    expect(
+      exampleArticle.getAttribute("data-event-envelope-example-origin"),
+    ).toBe(EVENT_ENVELOPE_EXAMPLE_ORIGIN.corpusConstructed);
+    expect(
+      within(exampleArticle).getByText(/FactoryEvent envelope example/i),
+    ).toBeTruthy();
+    const code = within(exampleArticle).getByTestId(
+      `event-envelope-json-example-code-${catalog.envelopeExample.id}`,
+    );
+    expect(code.textContent).toContain('"schemaVersion"');
+    expect(code.textContent).toContain('"agent-factory.event.v1"');
+    expect(code.textContent).toContain('"type"');
+    expect(code.textContent).not.toMatch(/[…]|\.\.\./);
 
     const fields = within(section).getByLabelText(/Fields for FactoryEvent/i);
     expect(
@@ -315,6 +364,7 @@ describe("FactoryEvent catalog UI", () => {
 
     expect(screen.getByTestId("factory-event-catalog-section")).toBeTruthy();
     expect(screen.getByTestId("event-envelope-reference")).toBeTruthy();
+    expect(screen.getByTestId("event-envelope-json-example")).toBeTruthy();
     expect(screen.getByTestId("event-envelope-components")).toBeTruthy();
     expect(screen.getByTestId("event-discriminator-map")).toBeTruthy();
     expect(screen.getByTestId("event-payload-catalog")).toBeTruthy();

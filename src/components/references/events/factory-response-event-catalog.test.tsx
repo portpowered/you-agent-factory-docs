@@ -11,6 +11,8 @@ import {
 import {
   buildFactoryResponseEventCatalog,
   countPayloadVariantsFromRootSchema,
+  EVENT_ENVELOPE_EXAMPLE_ORIGIN,
+  envelopeExampleConformsToOpenApiSchema,
   FACTORY_RESPONSE_EVENT_SCHEMA_NAME,
   FactoryResponseEventCatalogError,
   factoryResponseEventCatalogKindValues,
@@ -85,6 +87,38 @@ describe("buildFactoryResponseEventCatalog", () => {
     expect(
       catalog.payloadDefinitionsByName.FactoryResponseEventMessagePayload,
     ).toBeDefined();
+
+    // Full envelope JSON example — corpus-true keys/enums, no ellipsis body.
+    const example = catalog.envelopeExample;
+    expect(example.envelopeSchemaName).toBe(FACTORY_RESPONSE_EVENT_SCHEMA_NAME);
+    expect(example.language).toBe("json");
+    expect(example.origin).toBe(
+      EVENT_ENVELOPE_EXAMPLE_ORIGIN.corpusConstructed,
+    );
+    expect(example.code).not.toMatch(/[…]|\.\.\./);
+    for (const field of [
+      "schemaVersion",
+      "eventId",
+      "sequence",
+      "kind",
+      "phase",
+      "provenance",
+      "payload",
+    ]) {
+      expect(example.value).toHaveProperty(field);
+    }
+    expect(example.value.schemaVersion).toBe("agent-factory.response-event.v1");
+    expect(kinds).toContain(example.value.kind as string);
+    expect(phases).toContain(example.value.phase as string);
+    expect(
+      envelopeExampleConformsToOpenApiSchema(
+        example.value,
+        liveRoot,
+        corpus.openapi.document.components?.schemas as
+          | Record<string, unknown>
+          | undefined,
+      ),
+    ).toEqual({ ok: true });
   });
 
   test("fails closed when FactoryResponseEvent schema is missing", () => {
@@ -103,6 +137,7 @@ describe("FactoryResponseEvent catalog UI", () => {
 
     render(
       <ResponseEventEnvelopeReference
+        envelopeExample={catalog.envelopeExample}
         envelopeFieldsDefinition={catalog.envelopeFieldsDefinition}
       />,
     );
@@ -114,6 +149,23 @@ describe("FactoryResponseEvent catalog UI", () => {
     expect(
       screen.getByText(/not canonical FactoryEvent replay state/i),
     ).toBeTruthy();
+
+    const exampleArticle = within(section).getByTestId(
+      "event-envelope-json-example",
+    );
+    expect(exampleArticle.getAttribute("data-event-envelope-example")).toBe(
+      "FactoryResponseEvent",
+    );
+    expect(
+      exampleArticle.getAttribute("data-event-envelope-example-origin"),
+    ).toBe(EVENT_ENVELOPE_EXAMPLE_ORIGIN.corpusConstructed);
+    const code = within(exampleArticle).getByTestId(
+      `event-envelope-json-example-code-${catalog.envelopeExample.id}`,
+    );
+    expect(code.textContent).toContain('"schemaVersion"');
+    expect(code.textContent).toContain('"agent-factory.response-event.v1"');
+    expect(code.textContent).toContain('"kind"');
+    expect(code.textContent).not.toMatch(/[…]|\.\.\./);
 
     const fields = within(section).getByLabelText(
       /Fields for FactoryResponseEvent/i,
@@ -344,6 +396,7 @@ describe("FactoryResponseEvent catalog UI", () => {
     expect(
       screen.getByTestId("response-event-envelope-reference"),
     ).toBeTruthy();
+    expect(screen.getByTestId("event-envelope-json-example")).toBeTruthy();
     expect(screen.getByTestId("response-event-matrix")).toBeTruthy();
     expect(screen.getByTestId("response-event-payload-catalog")).toBeTruthy();
     expect(

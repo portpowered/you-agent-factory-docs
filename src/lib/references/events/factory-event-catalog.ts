@@ -17,6 +17,10 @@ import {
   type SchemaDefinitionModel,
   type SchemaDiscriminatorModel,
 } from "@/lib/references/schema-model";
+import {
+  buildFactoryEventEnvelopeJsonExample,
+  type EventEnvelopeJsonExample,
+} from "./event-envelope-examples";
 import type { EventsOpenApiComponentsSchemasLike } from "./openapi-document";
 import { localSchemaNameFromRef } from "./schema-ref-closure";
 import { EVENTS_OPENAPI_EXPORT } from "./stream-operations";
@@ -101,6 +105,11 @@ export type FactoryEventCatalog = {
   mappings: FactoryEventDiscriminatorMapping[];
   /** Payload definitions keyed by local schema name. */
   payloadDefinitionsByName: Record<string, SchemaDefinitionModel>;
+  /**
+   * Corpus-true full envelope JSON example (authored OpenAPI `example` when
+   * present; otherwise minimal constructed body from packaged schemas).
+   */
+  envelopeExample: EventEnvelopeJsonExample;
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -347,7 +356,7 @@ export function buildFactoryEventCatalog(
     }
   }
 
-  return {
+  const catalogWithoutExample = {
     envelopeSchemaName: FACTORY_EVENT_SCHEMA_NAME,
     envelopeAddress: createSchemaAddress(envelopeDefinition.address),
     envelopeDefinition,
@@ -362,6 +371,14 @@ export function buildFactoryEventCatalog(
     },
     mappings,
     payloadDefinitionsByName,
+  } satisfies Omit<FactoryEventCatalog, "envelopeExample">;
+
+  return {
+    ...catalogWithoutExample,
+    envelopeExample: buildFactoryEventEnvelopeJsonExample(
+      doc,
+      catalogWithoutExample,
+    ),
   };
 }
 

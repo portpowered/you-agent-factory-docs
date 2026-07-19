@@ -33,6 +33,7 @@ export function FactoryEventCatalogSection({
     >
       <EventEnvelopeReference
         discriminatorPropertyName={catalog.discriminatorPropertyName}
+        envelopeExample={catalog.envelopeExample}
         envelopeFieldsDefinition={catalog.envelopeFieldsDefinition}
         pagePath={pagePath}
       />

@@ -17,6 +17,10 @@ import {
   type SchemaAddress,
   type SchemaDefinitionModel,
 } from "@/lib/references/schema-model";
+import {
+  buildFactoryResponseEventEnvelopeJsonExample,
+  type EventEnvelopeJsonExample,
+} from "./event-envelope-examples";
 import type { EventsOpenApiComponentsSchemasLike } from "./openapi-document";
 import { localSchemaNameFromRef } from "./schema-ref-closure";
 import { EVENTS_OPENAPI_EXPORT } from "./stream-operations";
@@ -107,6 +111,11 @@ export type FactoryResponseEventCatalog = {
   cartesianCombinationsValid: false;
   /** Ephemeral observation stream — not canonical FactoryEvent replay. */
   ephemeral: true;
+  /**
+   * Corpus-true full envelope JSON example (authored OpenAPI `example` when
+   * present; otherwise minimal constructed body from packaged schemas).
+   */
+  envelopeExample: EventEnvelopeJsonExample;
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
@@ -312,7 +321,7 @@ export function buildFactoryResponseEventCatalog(
     a.payloadSchemaName.localeCompare(b.payloadSchemaName),
   );
 
-  return {
+  const catalogWithoutExample = {
     envelopeSchemaName: FACTORY_RESPONSE_EVENT_SCHEMA_NAME,
     envelopeAddress: createSchemaAddress(envelopeDefinition.address),
     envelopeDefinition,
@@ -339,8 +348,16 @@ export function buildFactoryResponseEventCatalog(
     payloadUnionDefinition,
     payloadVariants,
     payloadDefinitionsByName,
-    cartesianCombinationsValid: false,
-    ephemeral: true,
+    cartesianCombinationsValid: false as const,
+    ephemeral: true as const,
+  } satisfies Omit<FactoryResponseEventCatalog, "envelopeExample">;
+
+  return {
+    ...catalogWithoutExample,
+    envelopeExample: buildFactoryResponseEventEnvelopeJsonExample(
+      doc,
+      catalogWithoutExample,
+    ),
   };
 }
 

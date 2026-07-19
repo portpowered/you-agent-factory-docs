@@ -27,6 +27,10 @@ export {
   type EventEnvelopeComponentsProps,
 } from "./event-envelope-components";
 export {
+  type EventEnvelopeJsonExampleProps,
+  EventEnvelopeJsonExampleView,
+} from "./event-envelope-json-example";
+export {
   EventEnvelopeReference,
   type EventEnvelopeReferenceProps,
 } from "./event-envelope-reference";

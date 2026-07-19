@@ -33,6 +33,15 @@ export {
   factoryResponseEventCatalogPhaseIdentities,
 } from "./event-catalog-inventory-drift";
 export {
+  buildFactoryEventEnvelopeJsonExample,
+  buildFactoryResponseEventEnvelopeJsonExample,
+  constructMinimalOpenApiObjectExample,
+  EVENT_ENVELOPE_EXAMPLE_ORIGIN,
+  type EventEnvelopeExampleOrigin,
+  type EventEnvelopeJsonExample,
+  envelopeExampleConformsToOpenApiSchema,
+} from "./event-envelope-examples";
+export {
   buildEventIdentityHandshake,
   buildEventJsonReconnectProbe,
   buildEventReconnectContract,
