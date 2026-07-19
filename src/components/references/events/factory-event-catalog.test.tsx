@@ -404,7 +404,8 @@ describe("FactoryEvent catalog UI", () => {
       />,
     );
 
-    expect(screen.getByTestId("factory-event-catalog-section")).toBeTruthy();
+    const section = screen.getByTestId("factory-event-catalog-section");
+    expect(section).toBeTruthy();
     expect(screen.getByTestId("event-envelope-reference")).toBeTruthy();
     expect(screen.getByTestId("event-envelope-json-example")).toBeTruthy();
     expect(screen.getByTestId("event-envelope-components")).toBeTruthy();
@@ -420,10 +421,20 @@ describe("FactoryEvent catalog UI", () => {
         `event-envelope-component-${FACTORY_EVENT_CONTEXT_SCHEMA_NAME}`,
       ),
     ).toBeTruthy();
+    expect(screen.getAllByTestId("event-payload-json-example").length).toBe(
+      catalog.mappings.length,
+    );
+    expect(screen.getAllByText(/event catalog/i).length).toBeGreaterThan(0);
     expect(
-      screen
-        .getByTestId("factory-event-catalog-section")
-        .getAttribute("data-event-catalog-mapping-count"),
-    ).toBe(String(catalog.mappings.length));
+      screen.queryByText(
+        /Payload only — not a complete FactoryEvent envelope/i,
+      ),
+    ).toBeNull();
+    expect(section.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
+    expect(section.getAttribute("data-event-catalog-mapping-count")).toBe(
+      String(catalog.mappings.length),
+    );
   });
 });

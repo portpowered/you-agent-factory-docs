@@ -172,6 +172,15 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   confuse that inventory flag with the UI “Preferred” badge.
 - Browser-verify stream roles via `/events-renderer-harness` (dev) with a unique
   port and `curl --max-time 60` (SSR can be slow under Turbopack).
+- Catalog polish browser close-out for the published page:
+  `bun src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts`
+  (default port 3577 / `EVENTS_CATALOG_POLISH_PROBE_PORT`). Starts
+  `next dev --webpack` so Claude worktrees with parent-hoisted `node_modules`
+  still work (Turbopack rejects that layout). Asserts short Event catalog
+  label, FactoryEventType / FactoryEventContext + response envelope component
+  definitions, suppressed pointer-path chrome, and concrete envelope/payload
+  JSON examples without ellipsis bodies. Warm via
+  `EVENTS_CATALOG_POLISH_PROBE_BASE_URL` when a server is already running.
 - Next/Turbopack pages must pass `eventsOpenApiTurbopackLoadDependencies()` into
   `resolveEventCorpus({ loadDependencies })` — Bun's default `import.meta.resolve`
   is not available under Turbopack (`__TURBOPACK__import$2e$meta__.resolve is not a function`),

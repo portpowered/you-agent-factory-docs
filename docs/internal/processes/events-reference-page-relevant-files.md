@@ -31,7 +31,8 @@ Do **not**:
 | `src/content/docs/references/events/assets.json` | Empty baseline assets |
 | `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount |
 | `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
-| `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount proof |
+| `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount + catalog polish proof |
+| `src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts` | Playwright probe: short Event catalog label, envelope components, suppressed pointer chrome, envelope/payload JSON examples on `/docs/references/events` |
 | `src/content/registry/references/events.json` | `reference.events` registry record |
 
 ## Additive registry / published-docs wiring
@@ -77,6 +78,14 @@ other W11 reference page lanes):
   `EventsCorpusMountView` (inject resolved mount models). Assert route presence,
   corpus roles, hybrid ownership markers, and `data-sse-live-connection=false`
   — do not scan renderer trees or global inventories.
+- Catalog polish close-out (examples / envelope components / short label /
+  single field listing / no pointer-path chrome): assert inside the published
+  success corpus render in `events-page.test.tsx`, and browser-verify with
+  `bun src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts`
+  (unique port via `EVENTS_CATALOG_POLISH_PROBE_PORT`, kill server on exit).
+  Worktrees without local `node_modules` must use the probe’s `--webpack` start
+  path (Turbopack rejects parent-hoisted `next`); optionally set
+  `EVENTS_CATALOG_POLISH_PROBE_BASE_URL` against an already-warm server.
 - Compose production mount like the W09 harness body: `EventsSurface` + public
   section components + `buildEventReconnectLifecycleCorpus` /
   `buildSseStaticExamplesCorpus`. Never mount `EventsVerificationHarness` on the

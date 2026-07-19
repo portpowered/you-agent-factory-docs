@@ -428,9 +428,10 @@ describe("FactoryResponseEvent catalog UI", () => {
       />,
     );
 
-    expect(
-      screen.getByTestId("factory-response-event-catalog-section"),
-    ).toBeTruthy();
+    const section = screen.getByTestId(
+      "factory-response-event-catalog-section",
+    );
+    expect(section).toBeTruthy();
     expect(
       screen.getByTestId("response-event-envelope-reference"),
     ).toBeTruthy();
@@ -438,15 +439,30 @@ describe("FactoryResponseEvent catalog UI", () => {
     expect(screen.getByTestId("response-event-matrix")).toBeTruthy();
     expect(screen.getByTestId("response-event-payload-catalog")).toBeTruthy();
     expect(
-      screen
-        .getByTestId("factory-response-event-catalog-section")
-        .getAttribute("data-event-catalog-payload-count"),
-    ).toBe(String(catalog.payloadVariants.length));
+      screen.getByTestId("response-event-kind-schema-definition"),
+    ).toBeTruthy();
     expect(
-      screen
-        .getByTestId("factory-response-event-catalog-section")
-        .getAttribute("data-event-ephemeral"),
-    ).toBe("true");
+      screen.getByTestId("response-event-phase-schema-definition"),
+    ).toBeTruthy();
+    expect(
+      screen.getByTestId("response-event-provenance-schema-definition"),
+    ).toBeTruthy();
+    expect(screen.getAllByTestId("event-payload-json-example").length).toBe(
+      catalog.payloadVariants.length,
+    );
+    expect(screen.getAllByText(/event catalog/i).length).toBeGreaterThan(0);
+    expect(
+      screen.queryByText(
+        /Payload only — ephemeral; not a complete FactoryResponseEvent envelope/i,
+      ),
+    ).toBeNull();
+    expect(section.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
+    expect(section.getAttribute("data-event-catalog-payload-count")).toBe(
+      String(catalog.payloadVariants.length),
+    );
+    expect(section.getAttribute("data-event-ephemeral")).toBe("true");
   });
 
   test("FactoryResponseEventCatalogSection renders standalone", () => {
