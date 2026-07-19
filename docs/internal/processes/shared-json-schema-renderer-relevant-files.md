@@ -140,7 +140,10 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   large `$defs` catalogs (filter still lists definitions). For page-owned polish
   that removes filter-definitions list chrome as well, also set
   `showFilter={false}` on that page mount only — do not change SchemaReference
-  defaults for other families. Root pointers must be
+  defaults for other families. To rename a root definition header without
+  changing the upstream package title, pass a page-local `projection` from
+  `projectSchemaDefinitionToDisplay` with an overridden `title` (keep the
+  W04 `schemaPointerAnchor` so deep links stay stable). Root pointers must be
   anchor-safe (not bare `/`). Harness route:
   `/schema-renderer-harness` under `src/app/(dev)/` — not a published
   `/docs/references/*-schema` page.

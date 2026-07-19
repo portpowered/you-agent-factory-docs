@@ -10,6 +10,7 @@ import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 import {
   SYSTEM_CONFIG_SCHEMA_PAGE_PATH,
+  SYSTEM_CONFIG_SCHEMA_ROOT_TITLE,
   SystemConfigSchemaReference,
 } from "./SystemConfigSchemaReference";
 
@@ -82,6 +83,17 @@ describe("system-config-schema reference page", () => {
     const schemaSurface = screen.getByTestId("system-config-schema-reference");
     expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
     expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: SYSTEM_CONFIG_SCHEMA_ROOT_TITLE,
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", {
+        name: /You operator and system configuration/i,
+      }),
+    ).toBeNull();
+    expect(
       screen.queryByTestId("system-config-schema-reference-filter"),
     ).toBeNull();
     expect(
@@ -124,6 +136,23 @@ describe("SystemConfigSchemaReference mount", () => {
     expect(
       surface.querySelector('[data-schema-reference-mode="complete"]'),
     ).toBeTruthy();
+
+    // Page-local display projection: clear System configuration root title,
+    // not the upstream package title "You operator and system configuration".
+    expect(
+      screen.getByRole("heading", {
+        level: 2,
+        name: SYSTEM_CONFIG_SCHEMA_ROOT_TITLE,
+      }),
+    ).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", {
+        name: /You operator and system configuration/i,
+      }),
+    ).toBeNull();
+    expect(surface.textContent ?? "").not.toMatch(
+      /You operator and system configuration/i,
+    );
 
     // Page-local chrome trim: no filter-definitions list, no top-level catalog.
     expect(
