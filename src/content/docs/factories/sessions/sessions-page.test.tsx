@@ -34,13 +34,11 @@ describe("factories/sessions documentation page", () => {
     expect(loadedPage.messages.title).toBe("Factory Sessions");
     expect(loadedPage.messages.description).toMatch(/Factory Session/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/Factory Session/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/live runtime/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
     const factoryRelationship = String(
       loadedPage.messages.sections?.factoryRelationship?.body ?? "",
     );
@@ -61,10 +59,6 @@ describe("factories/sessions documentation page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/Factory Session/i);
-    expect(whatItCovers).toMatch(/live runtime unit/i);
-    expect(keyConcepts).toMatch(/FactorySession/i);
-    expect(keyConcepts).toMatch(/loaded factory/i);
     expect(factoryRelationship).toMatch(/FactoryName/i);
     expect(factoryRelationship).toMatch(/schema, API, and events/i);
     expect(sessionList).toMatch(/liveness check/i);
@@ -76,12 +70,6 @@ describe("factories/sessions documentation page", () => {
     expect(limits).toMatch(/web Factory Session reference/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
     expect(limits).toMatch(/not the OpenAPI, schema, or events reference/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
     expect(factoryRelationship).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -100,9 +88,11 @@ describe("factories/sessions documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Relationship To A Factory" }),
     ).toBeTruthy();

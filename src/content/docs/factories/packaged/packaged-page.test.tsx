@@ -34,13 +34,11 @@ describe("factories/packaged documentation page", () => {
     expect(loadedPage.messages.description).toMatch(/@you\/\*/i);
     expect(loadedPage.messages.description).toMatch(/you run --named/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/@you\/\*/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/materialize/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
     const discovery = String(
       loadedPage.messages.sections?.discoveryAndResolution?.body ?? "",
     );
@@ -55,10 +53,6 @@ describe("factories/packaged documentation page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/@you\/\*/i);
-    expect(whatItCovers).toMatch(/packaged factory/i);
-    expect(keyConcepts).toMatch(/you run --named/i);
-    expect(keyConcepts).toMatch(/materialize/i);
     expect(discovery).toMatch(/project-local/i);
     expect(discovery).toMatch(/~\/\.you-agent-factory\/factories/);
     expect(factoryNameSchema).toMatch(/FactoryName/i);
@@ -67,12 +61,6 @@ describe("factories/packaged documentation page", () => {
     expect(howToUse).toMatch(/you run --named/i);
     expect(limits).toMatch(/not a sync of packaged CLI/i);
     expect(limits).toMatch(/schema and API reference/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
     expect(metadataSource).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -91,9 +79,11 @@ describe("factories/packaged documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Discovery And Resolution" }),
     ).toBeTruthy();

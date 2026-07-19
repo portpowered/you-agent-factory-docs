@@ -1030,6 +1030,13 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   unless it literally ships those intros. Do not expand this intro strip into
   workers/workstations (separate polish), documentation Program pages, or
   reference schema pages (batch-004).
+  Factories page-local tests assert intro absence the same way as polished
+  reference pages: `sections.whatItCovers` / `sections.keyConcepts` are
+  `undefined`, `queryByRole` for those headings returns null, and
+  `#what-it-covers` / `#key-concepts` ids are absent — while still proving
+  `openingSummary`, teaching headings, ready schema embeds, and lookup links.
+  Do not require How To Use / Limits / Related absence on factories pages that
+  still ship those non-intro sections.
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
