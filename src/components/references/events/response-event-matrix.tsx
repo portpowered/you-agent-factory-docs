@@ -6,9 +6,9 @@
  * validated before publication.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
 import type { FactoryResponseEventCatalog } from "@/lib/references/events";
 import { cn } from "@/lib/utils";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type ResponseEventMatrixProps = {
   catalog: FactoryResponseEventCatalog;
@@ -127,7 +127,7 @@ export function ResponseEventMatrix({
           Provider-neutral fidelity metadata. Diagnostic identity only — does
           not promote provider-native schemas into the public vocabulary.
         </p>
-        <SchemaDefinition
+        <EventsSchemaDefinition
           data-testid="response-event-provenance-schema-definition"
           definition={catalog.provenance.definition}
           pagePath={pagePath}

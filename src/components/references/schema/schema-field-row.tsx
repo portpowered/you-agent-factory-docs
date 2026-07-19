@@ -47,6 +47,12 @@ export type SchemaFieldRowProps = {
    * breadcrumb. Fields without an address never invent anchors.
    */
   showAnchorCopy?: boolean;
+  /**
+   * When true, omit the secondary path label when it equals the leaf name so
+   * each field is listed once. Default false preserves name + path chrome for
+   * nested schema trees on non-events surfaces.
+   */
+  showFieldPathWhenDistinct?: boolean;
   /** Nested field tree rendered when expanded. */
   children?: ReactNode;
   className?: string;
@@ -60,6 +66,7 @@ export function SchemaFieldRow({
   refLink,
   pagePath,
   showAnchorCopy = true,
+  showFieldPathWhenDistinct = false,
   children,
   className,
   "data-testid": testId = "schema-field-row",
@@ -69,6 +76,7 @@ export function SchemaFieldRow({
   const [expanded, setExpanded] = useState(defaultExpanded && canExpand);
   const panelId = useId();
   const leafName = schemaFieldLeafName(field.path);
+  const showPathLabel = !showFieldPathWhenDistinct || field.path !== leafName;
   const refTarget = field.refTarget;
   const resolvedRefLink =
     refLink ??
@@ -134,13 +142,15 @@ export function SchemaFieldRow({
             >
               {leafName}
             </span>
-            <code
-              className="max-w-full truncate font-mono text-muted-foreground text-xs"
-              data-schema-field-path-label=""
-              title={field.path}
-            >
-              {field.path}
-            </code>
+            {showPathLabel ? (
+              <code
+                className="max-w-full truncate font-mono text-muted-foreground text-xs"
+                data-schema-field-path-label=""
+                title={field.path}
+              >
+                {field.path}
+              </code>
+            ) : null}
             <SchemaRequiredBadge required={field.required} />
             <SchemaTypeBadge
               format={field.format}

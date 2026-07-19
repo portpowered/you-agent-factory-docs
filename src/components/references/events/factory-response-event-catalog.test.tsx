@@ -139,6 +139,33 @@ describe("FactoryResponseEvent catalog UI", () => {
     expect(
       fields.querySelector('[data-schema-field-path="payload"]'),
     ).toBeTruthy();
+
+    const fieldRows = fields.querySelectorAll(
+      '[data-testid="schema-field-row"]',
+    );
+    const paths = [...fieldRows].map((row) =>
+      row.getAttribute("data-schema-field-path"),
+    );
+    expect(paths.length).toBe(new Set(paths).size);
+    for (const field of [
+      "schemaVersion",
+      "eventId",
+      "sequence",
+      "kind",
+      "phase",
+      "provenance",
+      "payload",
+    ]) {
+      expect(
+        fields.querySelectorAll(`[data-schema-field-path="${field}"]`).length,
+      ).toBe(1);
+    }
+    const schemaVersionRow = fields.querySelector(
+      '[data-schema-field-path="schemaVersion"]',
+    );
+    expect(
+      schemaVersionRow?.querySelector("[data-schema-field-path-label]"),
+    ).toBeNull();
   });
 
   test("ResponseEventMatrix documents dimensions without Cartesian validity", () => {

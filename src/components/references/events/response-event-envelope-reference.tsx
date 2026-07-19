@@ -5,9 +5,9 @@
  * the stream as ephemeral observation — not canonical FactoryEvent replay.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type ResponseEventEnvelopeReferenceProps = {
   envelopeFieldsDefinition: SchemaDefinitionModel;
@@ -49,7 +49,7 @@ export function ResponseEventEnvelopeReference({
         </p>
       </header>
 
-      <SchemaDefinition
+      <EventsSchemaDefinition
         data-testid="response-event-envelope-schema-definition"
         defaultExpanded
         definition={envelopeFieldsDefinition}

@@ -6,9 +6,9 @@
  * are never mistaken for complete FactoryEvent envelopes.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type EventEnvelopeReferenceProps = {
   /** Envelope fields definition (composition/discriminator stripped). */
@@ -51,7 +51,7 @@ export function EventEnvelopeReference({
         </p>
       </header>
 
-      <SchemaDefinition
+      <EventsSchemaDefinition
         data-testid="event-envelope-schema-definition"
         defaultExpanded
         definition={envelopeFieldsDefinition}

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import {
+  dedupeSchemaFieldTreeNodesByPath,
   SchemaFieldTree,
   type SchemaFieldTreeNode,
   schemaFieldLeafName,
@@ -199,6 +200,78 @@ describe("SchemaFieldTree", () => {
       }),
     ]);
     expect(fromFields[0]?.field.path).toBe("id");
+  });
+
+  test("dedupeSchemaFieldTreeNodesByPath keeps the first node per path", () => {
+    const first = createSchemaFieldModel({
+      path: "id",
+      typeSummary: "string",
+      required: true,
+      description: "first",
+    });
+    const duplicate = createSchemaFieldModel({
+      path: "id",
+      typeSummary: "string",
+      required: true,
+      description: "duplicate",
+    });
+    const nestedDup: SchemaFieldTreeNode = {
+      field: createSchemaFieldModel({
+        path: "tools",
+        typeSummary: "object",
+        required: false,
+      }),
+      children: [
+        {
+          field: createSchemaFieldModel({
+            path: "tools.timeout",
+            typeSummary: "number",
+            required: true,
+            description: "first-child",
+          }),
+        },
+        {
+          field: createSchemaFieldModel({
+            path: "tools.timeout",
+            typeSummary: "number",
+            required: true,
+            description: "dup-child",
+          }),
+        },
+      ],
+    };
+
+    const deduped = dedupeSchemaFieldTreeNodesByPath([
+      { field: first },
+      { field: duplicate },
+      nestedDup,
+    ]);
+
+    expect(deduped).toHaveLength(2);
+    expect(deduped[0]?.field.description).toBe("first");
+    expect(deduped[1]?.children).toHaveLength(1);
+    expect(deduped[1]?.children?.[0]?.field.description).toBe("first-child");
+  });
+
+  test("showFieldPathWhenDistinct omits path labels that equal the leaf name", () => {
+    render(
+      <SchemaFieldTree
+        fields={[
+          createSchemaFieldModel({
+            path: "sessionId",
+            typeSummary: "string",
+            required: true,
+          }),
+        ]}
+        showFieldPathWhenDistinct
+      />,
+    );
+
+    const row = screen.getByTestId("schema-field-row");
+    expect(row.querySelector("[data-schema-field-name]")?.textContent).toBe(
+      "sessionId",
+    );
+    expect(row.querySelector("[data-schema-field-path-label]")).toBeNull();
   });
 
   test("omits absent descriptions instead of inventing copy", () => {

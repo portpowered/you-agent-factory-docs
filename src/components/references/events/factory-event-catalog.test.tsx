@@ -100,6 +100,29 @@ describe("FactoryEvent catalog UI", () => {
     expect(
       fields.querySelector('[data-schema-field-path="payload"]'),
     ).toBeTruthy();
+
+    // Each property path appears once; redundant path labels stay hidden.
+    const fieldRows = fields.querySelectorAll(
+      '[data-testid="schema-field-row"]',
+    );
+    const paths = [...fieldRows].map((row) =>
+      row.getAttribute("data-schema-field-path"),
+    );
+    expect(paths.length).toBe(new Set(paths).size);
+    for (const field of ["schemaVersion", "id", "type", "context", "payload"]) {
+      expect(
+        fields.querySelectorAll(`[data-schema-field-path="${field}"]`).length,
+      ).toBe(1);
+    }
+    const schemaVersionRow = fields.querySelector(
+      '[data-schema-field-path="schemaVersion"]',
+    );
+    expect(
+      schemaVersionRow?.querySelector("[data-schema-field-name]")?.textContent,
+    ).toBe("schemaVersion");
+    expect(
+      schemaVersionRow?.querySelector("[data-schema-field-path-label]"),
+    ).toBeNull();
   });
 
   test("EventDiscriminatorMap lists all live type → payload mappings", () => {
@@ -153,6 +176,15 @@ describe("FactoryEvent catalog UI", () => {
     expect(
       variant.querySelector('[data-schema-field-path="recordedAt"]'),
     ).toBeTruthy();
+    expect(
+      variant.querySelectorAll('[data-schema-field-path="recordedAt"]').length,
+    ).toBe(1);
+    const recordedAtRow = variant.querySelector(
+      '[data-schema-field-path="recordedAt"]',
+    );
+    expect(
+      recordedAtRow?.querySelector("[data-schema-field-path-label]"),
+    ).toBeNull();
     // Envelope-only fields must not appear as if this were a full event.
     expect(
       variant.querySelector('[data-schema-field-path="schemaVersion"]'),

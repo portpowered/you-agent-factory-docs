@@ -73,10 +73,11 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | Path | Role |
 | --- | --- |
 | `src/lib/references/events/factory-event-catalog.ts` | Build FactoryEvent envelope + discriminator → payload catalog from packaged OpenAPI (W04 normalize via `normalizeJsonSchemaArtifact`) |
-| `src/components/references/events/event-envelope-reference.tsx` | Shared FactoryEvent envelope fields via W07 `SchemaDefinition` (composition stripped) |
+| `src/components/references/events/event-envelope-reference.tsx` | Shared FactoryEvent envelope fields via `EventsSchemaDefinition` (composition stripped; single field listing) |
 | `src/components/references/events/event-discriminator-map.tsx` | Live `type` → payload schema map with payload-variant deep links |
 | `src/components/references/events/event-payload-variant.tsx` | One payload variant under short “Event catalog” label (`data-event-payload-only`) |
 | `src/components/references/events/event-payload-catalog.tsx` | All mapped payload variants with schema-backed fields |
+| `src/components/references/events/events-schema-definition.tsx` | Events-opt-in SchemaDefinition: path-deduped field rows + distinct-only path labels |
 | `src/components/references/events/factory-event-catalog-section.tsx` | Compose envelope + map + payload catalog |
 | `src/components/references/events/factory-event-catalog.test.tsx` | Live inventory + envelope/payload-only UI proofs |
 
@@ -85,7 +86,7 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | Path | Role |
 | --- | --- |
 | `src/lib/references/events/factory-response-event-catalog.ts` | Build FactoryResponseEvent envelope + kind/phase/provenance + oneOf payload catalog from packaged OpenAPI |
-| `src/components/references/events/response-event-envelope-reference.tsx` | Shared FactoryResponseEvent envelope fields via W07 `SchemaDefinition` (ephemeral marker) |
+| `src/components/references/events/response-event-envelope-reference.tsx` | Shared FactoryResponseEvent envelope fields via `EventsSchemaDefinition` (ephemeral marker; single field listing) |
 | `src/components/references/events/response-event-matrix.tsx` | Kind / phase / provenance / payload dimensions without claiming Cartesian validity |
 | `src/components/references/events/response-event-payload-variant.tsx` | One payload oneOf shape under short “Event catalog” label (`data-event-payload-only` + ephemeral) |
 | `src/components/references/events/response-event-payload-catalog.tsx` | All oneOf payload shapes with schema-backed fields |
@@ -180,6 +181,11 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   visible “Event catalog” label (not the long “Payload only — not a complete …
   envelope” disclaimer). Machine markers still distinguish payload rows from
   envelope sections.
+- Events catalog schema views render through `EventsSchemaDefinition` (not raw
+  W07 `SchemaDefinition`): field rows are deduped by path via
+  `dedupeSchemaFieldTreeNodesByPath`, and `showFieldPathWhenDistinct` omits
+  secondary path labels that equal the leaf name so each field is listed once.
+  Shared schema defaults for MCP/CLI/JS/API pages stay unchanged.
 - Build FactoryResponseEvent catalog via `buildFactoryResponseEventCatalog(doc)` —
   kind/phase enums + provenance object + payload `oneOf` shapes. Always set
   `cartesianCombinationsValid: false` and `ephemeral: true`; ResponseEventMatrix

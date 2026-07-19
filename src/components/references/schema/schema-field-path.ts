@@ -44,3 +44,30 @@ export function schemaFieldTreeNodesFromFields(
 ): SchemaFieldTreeNode[] {
   return fields.map((field) => ({ field }));
 }
+
+/**
+ * Keep the first node for each field path (depth-first). Nested children are
+ * deduped independently so a parent path never collapses a distinct child path.
+ */
+export function dedupeSchemaFieldTreeNodesByPath(
+  nodes: readonly SchemaFieldTreeNode[],
+): SchemaFieldTreeNode[] {
+  const seen = new Set<string>();
+  const result: SchemaFieldTreeNode[] = [];
+
+  for (const node of nodes) {
+    if (seen.has(node.field.path)) {
+      continue;
+    }
+    seen.add(node.field.path);
+    result.push({
+      ...node,
+      children:
+        node.children !== undefined && node.children.length > 0
+          ? dedupeSchemaFieldTreeNodesByPath(node.children)
+          : node.children,
+    });
+  }
+
+  return result;
+}

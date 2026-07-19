@@ -7,11 +7,11 @@
  * with copy-link affordances via shared CopyableReferenceAnchor.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
 import { CopyableReferenceAnchor } from "@/components/references/shared";
 import type { FactoryEventDiscriminatorMapping } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type EventPayloadVariantProps = {
   mapping: FactoryEventDiscriminatorMapping;
@@ -67,7 +67,7 @@ export function EventPayloadVariant({
         </div>
       </header>
 
-      <SchemaDefinition
+      <EventsSchemaDefinition
         data-testid={`event-payload-schema-${mapping.payloadSchemaName}`}
         definition={definition}
         pagePath={pagePath}

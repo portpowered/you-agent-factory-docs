@@ -7,11 +7,11 @@
  * via W04 / shared CopyableReferenceAnchor.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
 import { CopyableReferenceAnchor } from "@/components/references/shared";
 import type { FactoryResponseEventPayloadVariant } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type ResponseEventPayloadVariantProps = {
   variant: FactoryResponseEventPayloadVariant;
@@ -63,7 +63,7 @@ export function ResponseEventPayloadVariant({
         </div>
       </header>
 
-      <SchemaDefinition
+      <EventsSchemaDefinition
         data-testid={`response-event-payload-schema-${variant.payloadSchemaName}`}
         definition={definition}
         pagePath={pagePath}

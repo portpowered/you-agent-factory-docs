@@ -75,6 +75,10 @@ export {
   EventStreamOperationsList,
   type EventStreamOperationsListProps,
 } from "./event-stream-operations-list";
+export {
+  EventsSchemaDefinition,
+  type EventsSchemaDefinitionProps,
+} from "./events-schema-definition";
 export { EventsStatus } from "./events-status";
 export {
   EventsSurface,

@@ -73,6 +73,12 @@ export type SchemaDefinitionProps = {
   pagePath?: string;
   /** Initial expansion for nested field rows. Default: false. */
   defaultExpanded?: boolean;
+  /**
+   * When true, omit secondary field path labels that equal the leaf name so
+   * each field is listed once. Events catalog views opt in; other reference
+   * families keep the default name+path chrome.
+   */
+  showFieldPathWhenDistinct?: boolean;
   className?: string;
   "data-testid"?: string;
 };
@@ -115,6 +121,7 @@ export function SchemaDefinition({
   showEmptyExamples = false,
   pagePath,
   defaultExpanded = false,
+  showFieldPathWhenDistinct = false,
   className,
   "data-testid": testId = "schema-definition",
 }: SchemaDefinitionProps) {
@@ -248,6 +255,7 @@ export function SchemaDefinition({
             defaultExpanded={defaultExpanded}
             nodes={nodes}
             pagePath={pagePath}
+            showFieldPathWhenDistinct={showFieldPathWhenDistinct}
           />
         </section>
       ) : null}
