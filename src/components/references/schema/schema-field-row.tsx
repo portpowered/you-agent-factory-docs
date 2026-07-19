@@ -20,6 +20,7 @@ import {
 } from "./schema-field-path";
 import {
   type SchemaRefLinkDisplay,
+  schemaRefCompactLabel,
   schemaRefLinkDisplayFromAddress,
 } from "./schema-ref-display";
 import { SchemaRefLink } from "./schema-ref-link";
@@ -53,6 +54,12 @@ export type SchemaFieldRowProps = {
    * nested schema trees on non-events surfaces.
    */
   showFieldPathWhenDistinct?: boolean;
+  /**
+   * When false, hide visible OpenAPI pointer breadcrumbs and compact `$ref`
+   * labels to the leaf schema name while keeping copyable deep links. Default
+   * true preserves shared schema chrome.
+   */
+  showPointerPathChrome?: boolean;
   /** Nested field tree rendered when expanded. */
   children?: ReactNode;
   className?: string;
@@ -67,6 +74,7 @@ export function SchemaFieldRow({
   pagePath,
   showAnchorCopy = true,
   showFieldPathWhenDistinct = false,
+  showPointerPathChrome = true,
   children,
   className,
   "data-testid": testId = "schema-field-row",
@@ -81,7 +89,12 @@ export function SchemaFieldRow({
   const resolvedRefLink =
     refLink ??
     (refTarget !== undefined
-      ? schemaRefLinkDisplayFromAddress(refTarget, { pagePath })
+      ? schemaRefLinkDisplayFromAddress(refTarget, {
+          pagePath,
+          ...(showPointerPathChrome
+            ? {}
+            : { label: schemaRefCompactLabel(refTarget.pointer) }),
+        })
       : undefined);
   const fieldAddress = field.address;
   const fieldDeepLink =
@@ -196,6 +209,7 @@ export function SchemaFieldRow({
               aria-label={`Deep link for field ${field.path}`}
               href={fieldDeepLink.href}
               segments={fieldBreadcrumbSegments}
+              showPathSegments={showPointerPathChrome}
             />
           ) : null}
 

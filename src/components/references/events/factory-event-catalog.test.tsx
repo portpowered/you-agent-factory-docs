@@ -123,6 +123,31 @@ describe("FactoryEvent catalog UI", () => {
     expect(
       schemaVersionRow?.querySelector("[data-schema-field-path-label]"),
     ).toBeNull();
+
+    // Pointer-path chrome stays hidden; deep-link copy and compact $ref remain.
+    expect(
+      section.querySelectorAll('[data-schema-breadcrumb-segment="components"]')
+        .length,
+    ).toBe(0);
+    expect(
+      section.querySelectorAll('[data-schema-path-segments="false"]').length,
+    ).toBeGreaterThan(0);
+    expect(
+      section.querySelector('[data-schema-breadcrumb="copy"]'),
+    ).toBeTruthy();
+    const typeRow = fields.querySelector('[data-schema-field-path="type"]');
+    expect(typeRow?.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "FactoryEventType",
+    );
+    expect(typeRow?.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
+    const contextRow = fields.querySelector(
+      '[data-schema-field-path="context"]',
+    );
+    expect(
+      contextRow?.querySelector("[data-schema-ref-label]")?.textContent,
+    ).toBe("FactoryEventContext");
   });
 
   test("EventDiscriminatorMap lists all live type → payload mappings", () => {

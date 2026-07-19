@@ -99,10 +99,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   constraints / const / additionalProperties, the row composes
   `SchemaDefaultValue` + `SchemaConstraintList` via
   `schemaConstraintListPropsFromField` — do not leave those components
-  definition-only. Optional `showFieldPathWhenDistinct` (default false) omits
+  definition-only.   Optional `showFieldPathWhenDistinct` (default false) omits
   secondary path labels that equal the leaf name; events catalog views opt in
   via `EventsSchemaDefinition` / `dedupeSchemaFieldTreeNodesByPath` without
-  changing MCP/CLI/JS/API defaults.
+  changing MCP/CLI/JS/API defaults. Optional `showPointerPathChrome` (default
+  true) controls visible OpenAPI pointer breadcrumbs and full-pointer `$ref`
+  labels; events opt out (`false`) so field names stay primary while
+  `SchemaBreadcrumb` copy controls remain.
 - Composition UI: `SchemaComposition` + `projectSchemaCompositionDisplay` /
   `schemaRefLinkDisplayFromOutcome` consume W04 composition models and
   `ReferenceCrossLinkResolver` outcomes. Members stay as links — never

@@ -31,6 +31,11 @@ export type SchemaFieldTreeProps = {
    * to each {@link SchemaFieldRow}. Default false.
    */
   showFieldPathWhenDistinct?: boolean;
+  /**
+   * When false, hide OpenAPI pointer breadcrumbs and compact `$ref` labels.
+   * Forwarded to each {@link SchemaFieldRow}. Default true.
+   */
+  showPointerPathChrome?: boolean;
   className?: string;
   "data-testid"?: string;
 };
@@ -48,6 +53,7 @@ export function SchemaFieldTree({
   defaultExpanded = false,
   pagePath,
   showFieldPathWhenDistinct = false,
+  showPointerPathChrome = true,
   className,
   "data-testid": testId = "schema-field-tree",
 }: SchemaFieldTreeProps) {
@@ -78,6 +84,7 @@ export function SchemaFieldTree({
               nodes={node.children}
               pagePath={pagePath}
               showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+              showPointerPathChrome={showPointerPathChrome}
             />
           ) : null;
 
@@ -89,6 +96,7 @@ export function SchemaFieldTree({
             node={node}
             pagePath={pagePath}
             showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+            showPointerPathChrome={showPointerPathChrome}
           >
             {nested}
           </SchemaFieldRow>

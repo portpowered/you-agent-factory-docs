@@ -166,6 +166,24 @@ describe("FactoryResponseEvent catalog UI", () => {
     expect(
       schemaVersionRow?.querySelector("[data-schema-field-path-label]"),
     ).toBeNull();
+
+    expect(
+      section.querySelectorAll('[data-schema-breadcrumb-segment="components"]')
+        .length,
+    ).toBe(0);
+    expect(
+      section.querySelectorAll('[data-schema-path-segments="false"]').length,
+    ).toBeGreaterThan(0);
+    expect(
+      section.querySelector('[data-schema-breadcrumb="copy"]'),
+    ).toBeTruthy();
+    const kindRow = fields.querySelector('[data-schema-field-path="kind"]');
+    expect(kindRow?.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "FactoryResponseEventKind",
+    );
+    expect(kindRow?.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
   });
 
   test("ResponseEventMatrix documents dimensions without Cartesian validity", () => {

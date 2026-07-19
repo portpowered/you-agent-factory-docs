@@ -1,9 +1,10 @@
 /**
  * Events-page SchemaDefinition adapter.
  *
- * Dedupes field rows by path and omits redundant path labels that equal the
- * leaf name so each catalog field is listed once. Shared W07 defaults for
- * non-events reference pages stay unchanged.
+ * Dedupes field rows by path, omits redundant path labels that equal the leaf
+ * name, and suppresses verbose OpenAPI pointer-path chrome so each catalog
+ * field stays scannable. Shared W07 defaults for non-events reference pages
+ * stay unchanged.
  */
 
 import {
@@ -19,6 +20,7 @@ export function EventsSchemaDefinition({
   definition,
   fieldNodes,
   showFieldPathWhenDistinct = true,
+  showPointerPathChrome = false,
   ...rest
 }: EventsSchemaDefinitionProps) {
   const nodes = dedupeSchemaFieldTreeNodesByPath(
@@ -34,6 +36,7 @@ export function EventsSchemaDefinition({
       definition={definition}
       fieldNodes={nodes}
       showFieldPathWhenDistinct={showFieldPathWhenDistinct}
+      showPointerPathChrome={showPointerPathChrome}
     />
   );
 }

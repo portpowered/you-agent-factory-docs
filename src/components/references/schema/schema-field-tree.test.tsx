@@ -274,6 +274,42 @@ describe("SchemaFieldTree", () => {
     expect(row.querySelector("[data-schema-field-path-label]")).toBeNull();
   });
 
+  test("showPointerPathChrome false hides OpenAPI pointer breadcrumbs and compact $ref labels", () => {
+    render(
+      <SchemaFieldTree
+        fields={[
+          createSchemaFieldModel({
+            path: "type",
+            typeSummary: "FactoryEventType",
+            required: true,
+            address: address(
+              "/components/schemas/FactoryEvent/properties/type",
+            ),
+            refTarget: address("/components/schemas/FactoryEventType"),
+          }),
+        ]}
+        showPointerPathChrome={false}
+      />,
+    );
+
+    const row = screen.getByTestId("schema-field-row");
+    expect(
+      row.querySelector('[data-schema-breadcrumb-segment="components"]'),
+    ).toBeNull();
+    expect(
+      row
+        .querySelector('[data-testid="schema-breadcrumb"]')
+        ?.getAttribute("data-schema-path-segments"),
+    ).toBe("false");
+    expect(row.querySelector('[data-schema-breadcrumb="copy"]')).toBeTruthy();
+    expect(row.querySelector("[data-schema-ref-label]")?.textContent).toBe(
+      "FactoryEventType",
+    );
+    expect(row.textContent ?? "").not.toMatch(
+      /components\/schemas\/.*\/properties\//,
+    );
+  });
+
   test("omits absent descriptions instead of inventing copy", () => {
     render(
       <SchemaFieldTree

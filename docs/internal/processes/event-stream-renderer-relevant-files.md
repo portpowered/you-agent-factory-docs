@@ -77,7 +77,7 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
 | `src/components/references/events/event-discriminator-map.tsx` | Live `type` → payload schema map with payload-variant deep links |
 | `src/components/references/events/event-payload-variant.tsx` | One payload variant under short “Event catalog” label (`data-event-payload-only`) |
 | `src/components/references/events/event-payload-catalog.tsx` | All mapped payload variants with schema-backed fields |
-| `src/components/references/events/events-schema-definition.tsx` | Events-opt-in SchemaDefinition: path-deduped field rows + distinct-only path labels |
+| `src/components/references/events/events-schema-definition.tsx` | Events-opt-in SchemaDefinition: path-deduped field rows + distinct-only path labels + suppressed pointer-path chrome |
 | `src/components/references/events/factory-event-catalog-section.tsx` | Compose envelope + map + payload catalog |
 | `src/components/references/events/factory-event-catalog.test.tsx` | Live inventory + envelope/payload-only UI proofs |
 
@@ -185,7 +185,10 @@ plus focused lib helpers/tests under `src/lib/references/events/`. Do **not**:
   W07 `SchemaDefinition`): field rows are deduped by path via
   `dedupeSchemaFieldTreeNodesByPath`, and `showFieldPathWhenDistinct` omits
   secondary path labels that equal the leaf name so each field is listed once.
-  Shared schema defaults for MCP/CLI/JS/API pages stay unchanged.
+  `showPointerPathChrome` defaults to false on the events adapter so visible
+  `components/schemas/.../properties/...` breadcrumbs are suppressed while
+  copyable deep links and compact `$ref` leaf labels remain. Shared schema
+  defaults for MCP/CLI/JS/API pages stay unchanged.
 - Build FactoryResponseEvent catalog via `buildFactoryResponseEventCatalog(doc)` —
   kind/phase enums + provenance object + payload `oneOf` shapes. Always set
   `cartesianCombinationsValid: false` and `ephemeral: true`; ResponseEventMatrix

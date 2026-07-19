@@ -94,6 +94,29 @@ describe("SchemaBreadcrumb", () => {
       expect(writeText).toHaveBeenCalledWith(`${PAGE_PATH}#${anchor}`);
     });
   });
+
+  test("showPathSegments false keeps copy control without visible pointer segments", () => {
+    const anchor = schemaPointerAnchor(
+      "/components/schemas/FactoryEvent/properties/id",
+    );
+
+    render(
+      <SchemaBreadcrumb
+        anchor={anchor}
+        href={`${PAGE_PATH}#${anchor}`}
+        segments={["components", "schemas", "FactoryEvent", "properties", "id"]}
+        showPathSegments={false}
+      />,
+    );
+
+    const nav = screen.getByTestId("schema-breadcrumb");
+    expect(nav.getAttribute("data-schema-path-segments")).toBe("false");
+    expect(
+      nav.querySelector('[data-schema-breadcrumb-segment="components"]'),
+    ).toBeNull();
+    expect(nav.querySelector("[data-schema-breadcrumb-anchor]")).toBeNull();
+    expect(screen.getByRole("button", { name: "Copy deep link" })).toBeTruthy();
+  });
 });
 
 describe("SchemaDefinition", () => {
