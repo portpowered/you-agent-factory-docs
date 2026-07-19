@@ -6,6 +6,7 @@
 /* W01 OpenAPI spike CSS loads only from the spike page content module. */
 @import "katex/dist/katex.min.css";
 @import "../features/docs/styles/docs-page-footer-chrome.css";
+@import "../features/docs/styles/docs-chrome-toc.css";
 @import "../features/docs/styles/docs-code-block.css";
 @import "../features/docs/styles/registry-graph-flow-theme.css";
 @import "@xyflow/react/dist/style.css";

@@ -97,7 +97,16 @@ shared map — not per-control hex hacks.
   over unlayered !important per CSS Cascade 5).
   Prove with `docs-chrome-search-globe-github.test.ts` and SearchTrigger
   hover assertions.
-- Later surface stories (TOC / sidebar / header text / breadcrumb) consume
+- TOC “On this page” surface (story 003): consume
+  `src/features/docs/styles/docs-chrome-toc.ts` + `docs-chrome-toc.css`
+  (imported from `globals.css`). Current = `--docs-chrome-secondary-blue`;
+  non-current = `--docs-chrome-muted-white`; hover =
+  `--docs-chrome-primary-yellow`. Overrides Fumadocs
+  `data-[active=true]:text-fd-primary` / `hover:text-fd-accent-foreground`
+  and retargets the TOC thumb `.bg-fd-primary` to secondary blue. Keep
+  focus-visible as outline-only so focus does not recolor rest roles.
+  Prove with `docs-chrome-toc.test.ts`.
+- Later surface stories (sidebar / header text / breadcrumb) consume
   `--docs-chrome-*` / the TS contract; do not reopen primary-nav membership,
   brand copy, glossary, or search ranking here.
 
