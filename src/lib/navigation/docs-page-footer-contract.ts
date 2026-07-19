@@ -60,6 +60,29 @@ export function normalizeBundledCss(css: string): string {
   return css.replaceAll(/\s+/g, "").toLowerCase();
 }
 
+/** Compact padding expected from docs-page-footer-chrome (beats Fumadocs `p-4`). */
+export const FOOTER_COMPACT_PADDING = "0.5rem 0.75rem";
+
+/** Compact gap expected from docs-page-footer-chrome (beats Fumadocs `gap-2`). */
+export const FOOTER_COMPACT_GAP = "0.25rem";
+
+function bundledCssHasAccentHoverFooterSelector(normalized: string): boolean {
+  const hasAccentHoverSelector =
+    normalized.includes('a[class*="hover:bg-fd-accent"]') ||
+    normalized.includes("a[class*=hover\\:bg-fd-accent]") ||
+    normalized.includes("a[class*=hover:bg-fd-accent]");
+  const hasAccentForegroundSelector =
+    normalized.includes('[class*="hover:text-fd-accent-foreground"]') ||
+    normalized.includes("[class*=hover\\:text-fd-accent-foreground]") ||
+    normalized.includes("[class*=hover:text-fd-accent-foreground]");
+
+  return (
+    normalized.includes("#nd-page") &&
+    hasAccentHoverSelector &&
+    hasAccentForegroundSelector
+  );
+}
+
 /**
  * Production Tailwind bundles the footer no-text-recolor rules as a single
  * #nd-page selector chain with escaped hover utility class names.
@@ -69,36 +92,64 @@ export function normalizeBundledCss(css: string): string {
  */
 export function bundledCssHasFooterSublabelInheritRule(css: string): boolean {
   const normalized = normalizeBundledCss(css);
-  const hasAccentHoverSelector =
-    normalized.includes('a[class*="hover:bg-fd-accent"]') ||
-    normalized.includes("a[class*=hover\\:bg-fd-accent]") ||
-    normalized.includes("a[class*=hover:bg-fd-accent]");
-  const hasAccentForegroundSelector =
-    normalized.includes('[class*="hover:text-fd-accent-foreground"]') ||
-    normalized.includes("[class*=hover\\:text-fd-accent-foreground]") ||
-    normalized.includes("[class*=hover:text-fd-accent-foreground]");
   const hasStableTitleColorRule =
     normalized.includes("{color:inherit!important}") ||
-    normalized.includes("{color:inherit}");
+    normalized.includes("{color:inherit!important;}") ||
+    normalized.includes("{color:inherit}") ||
+    normalized.includes("{color:inherit;}");
   const hasMutedSublabelRule =
     normalized.includes(
       ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}",
     ) ||
     normalized.includes(
+      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important;}",
+    ) ||
+    normalized.includes(
       ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)}",
+    ) ||
+    normalized.includes(
+      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground);}",
     );
   const forcesAccentForegroundText =
     normalized.includes("color:var(--color-fd-accent-foreground)") ||
     normalized.includes("color:var(--color-fd-accent-foreground)!important");
 
   return (
-    normalized.includes("#nd-page") &&
-    hasAccentHoverSelector &&
-    hasAccentForegroundSelector &&
+    bundledCssHasAccentHoverFooterSelector(normalized) &&
     normalized.includes(":is(:hover,:focus-visible)") &&
     hasStableTitleColorRule &&
     hasMutedSublabelRule &&
     !forcesAccentForegroundText
+  );
+}
+
+/**
+ * Bundled/app CSS must override Fumadocs tall `p-4` / `gap-2` with compact
+ * padding and gap on the same accent-hover footer card selector.
+ */
+export function bundledCssHasFooterCompactSizingRule(css: string): boolean {
+  const normalized = normalizeBundledCss(css);
+  const compactPadding = normalizeBundledCss(FOOTER_COMPACT_PADDING);
+  const compactGap = normalizeBundledCss(FOOTER_COMPACT_GAP);
+  const hasCompactPadding =
+    normalized.includes(`padding:${compactPadding}!important`) ||
+    normalized.includes(`padding:${compactPadding}`);
+  const hasCompactGap =
+    normalized.includes(`gap:${compactGap}!important`) ||
+    normalized.includes(`gap:${compactGap}`);
+  const reintroducesTallPadding =
+    normalized.includes("padding:1rem!important") ||
+    normalized.includes("padding:1rem;");
+  const reintroducesTallGap =
+    normalized.includes("gap:0.5rem!important") ||
+    normalized.includes("gap:0.5rem;");
+
+  return (
+    bundledCssHasAccentHoverFooterSelector(normalized) &&
+    hasCompactPadding &&
+    hasCompactGap &&
+    !reintroducesTallPadding &&
+    !reintroducesTallGap
   );
 }
 
@@ -114,6 +165,33 @@ export function assertDocsFooterSublabelHoverFocusCssConvergence(
   }
 
   return "bundled app CSS missing footer hover/focus no-text-recolor rule pairing";
+}
+
+/**
+ * Returns a failure reason when bundled app CSS lacks compact footer card
+ * padding/gap overrides for the accent-hover prev/next cards.
+ */
+export function assertDocsFooterCompactSizingCssConvergence(
+  css: string,
+): string | null {
+  if (bundledCssHasFooterCompactSizingRule(css)) {
+    return null;
+  }
+
+  return "bundled app CSS missing footer compact padding/gap rule pairing";
+}
+
+/**
+ * Combined chrome convergence: no title-text recolor on hover/focus AND
+ * compact card padding/gap — the two repairs this lane locks together.
+ */
+export function assertDocsFooterChromeCssConvergence(
+  css: string,
+): string | null {
+  return (
+    assertDocsFooterSublabelHoverFocusCssConvergence(css) ??
+    assertDocsFooterCompactSizingCssConvergence(css)
+  );
 }
 
 /**

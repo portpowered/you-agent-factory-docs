@@ -14,10 +14,12 @@ export const docsPageFooterMutedSublabelSelector = `${docsPageFooterStableTextCo
 /**
  * Compact padding override for Fumadocs footer cards (`p-4` = 1rem).
  * Vertical/horizontal rem pair keeps titles + directional sublabels readable.
+ * Keep in sync with FOOTER_COMPACT_PADDING in docs-page-footer-contract.
  */
 export const docsPageFooterCompactPadding = "0.5rem 0.75rem";
 
 /**
  * Compact flex gap override for Fumadocs footer cards (`gap-2` = 0.5rem).
+ * Keep in sync with FOOTER_COMPACT_GAP in docs-page-footer-contract.
  */
 export const docsPageFooterCompactGap = "0.25rem";

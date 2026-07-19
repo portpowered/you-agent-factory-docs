@@ -304,14 +304,18 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   redesigning footer neighbor data.
 * `src/lib/navigation/docs-page-footer-contract.ts` (+ `.test.ts`)
   Built-HTML / bundled-CSS convergence helpers for footer card accent-hover
-  classes, muted directional sublabels, and the no-text-recolor CSS pairing.
+  classes, muted directional sublabels, the no-text-recolor CSS pairing, and
+  compact padding/gap overrides (`FOOTER_COMPACT_PADDING` /
+  `FOOTER_COMPACT_GAP`). Use `assertDocsFooterChromeCssConvergence` when both
+  repairs must stay locked together.
 * Worktree browser verify for footer chrome: Turbopack rejects hoisted
   out-of-root `node_modules` symlinks, so `bun run dev` often cannot start in
   a worktree. When that happens, serve the chrome CSS on a unique port with a
   minimal `#nd-page` prev/next card fixture and Playwright-hover/focus
   `getComputedStyle` (title color stable; background + focus ring present;
   padding/gap shorter than `p-4`/`gap-2`) instead of inventing a second Next
-  bootstrap path.
+  bootstrap path. Story 003 visual pass should assert **both** repairs in one
+  fixture session.
 * `src/lib/content/factory-prev-next-related.ts`
   Factory previous/next and related-link contract: footer neighbor resolution
   mirroring Fumadocs `useFooterItems`, W15 family-scoped linearization
