@@ -160,12 +160,15 @@ hooks, and SSR cost.
   `messages/**` so `DocsOpeningSummary` returns null. Sibling reference family
   pages are owned by `repair-reference-boilerplate-trim`. Browser proof:
   `bun src/content/docs/references/api/assert-api-page-boilerplate-trim-browser.ts`
-  (unique port default 3562) — keep only `#operations`; treat `#what-it-covers`
-  and `#key-concepts` as removed alongside the older boilerplate ids; assert
-  section ids (and unambiguous titles like "What It Covers"), not fragile
-  heading strings like "Tags" that Fumadocs may reuse. Page unit contract:
-  `src/content/docs/references/api/api-page.test.tsx` asserts those intro
-  keys/headings/ids are absent while Operations + ready projection remain.
+  (unique port default 3562; uses `next dev --webpack` so worktree
+  parent-hoisted `node_modules` still resolve) — keep only `#operations`;
+  treat `#what-it-covers` and `#key-concepts` as removed alongside the older
+  boilerplate ids; assert section ids (and unambiguous titles like "What It
+  Covers"), not fragile heading strings like "Tags" that Fumadocs may reuse;
+  also assert absence of folded Opening summary chrome
+  (`[data-opening-summary]` / `[data-testid="folded-summary"]`). Page unit
+  contract: `src/content/docs/references/api/api-page.test.tsx` asserts those
+  intro keys/headings/ids are absent while Operations + ready projection remain.
 - End-to-end published-page gate (story 006):
   `bun src/content/docs/references/api/assert-api-page-gates-browser.ts`
   (unique port default 3572). Proves Fumadocs ops + static-only + schema fields

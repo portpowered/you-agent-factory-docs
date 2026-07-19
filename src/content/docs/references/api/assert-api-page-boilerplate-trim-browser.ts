@@ -1,8 +1,9 @@
 /**
  * Browser probe for published `/docs/references/api` projection-first MDX:
  * what-it-covers, key-concepts, how-to-use, limits-and-assumptions, tags,
- * related, and citations sections must be absent while Operations + Fumadocs
- * operations remain (repair-api-reference-intro-strip story 002).
+ * related, and citations sections must be absent; folded Opening summary
+ * chrome ([data-opening-summary] / [data-testid="folded-summary"]) must not
+ * render; Operations + Fumadocs operations remain (intro-strip stories 002–003).
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
@@ -81,7 +82,9 @@ async function waitForReady(url: string, timeoutMs: number): Promise<void> {
 }
 
 try {
-  server = spawn("bun", ["run", "dev", "--", "-p", String(PORT)], {
+  // Worktree Next/Turbopack rejects parent-hoisted node_modules symlinks;
+  // webpack resolves ancestor node_modules and can serve the published route.
+  server = spawn("bun", ["run", "dev", "--", "--webpack", "-p", String(PORT)], {
     cwd: process.cwd(),
     env: {
       ...process.env,
@@ -184,6 +187,26 @@ try {
     );
   }
 
+  const openingSummaryProbe = await page.evaluate(() => {
+    const openingSummaryCount = document.querySelectorAll(
+      "[data-opening-summary]",
+    ).length;
+    const foldedSummaryCount = document.querySelectorAll(
+      '[data-testid="folded-summary"]',
+    ).length;
+    return { openingSummaryCount, foldedSummaryCount };
+  });
+  if (openingSummaryProbe.openingSummaryCount > 0) {
+    throw new Error(
+      `Expected no [data-opening-summary] on ${PAGE_PATH}, found ${openingSummaryProbe.openingSummaryCount}`,
+    );
+  }
+  if (openingSummaryProbe.foldedSummaryCount > 0) {
+    throw new Error(
+      `Expected no [data-testid="folded-summary"] on ${PAGE_PATH}, found ${openingSummaryProbe.foldedSummaryCount}`,
+    );
+  }
+
   const fumadocsOps = await page
     .locator("[data-api-fumadocs-operation]")
     .count();
@@ -199,6 +222,8 @@ try {
       path: PAGE_PATH,
       keptSections: KEPT_SECTION_IDS,
       removedSections: REMOVED_SECTION_IDS,
+      openingSummaryAbsent: true,
+      foldedSummaryAbsent: true,
       fumadocsOperationCount: fumadocsOps,
     })}\n`,
   );
