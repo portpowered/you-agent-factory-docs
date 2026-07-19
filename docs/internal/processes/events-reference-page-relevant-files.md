@@ -61,6 +61,13 @@ other W11 reference page lanes):
 
 ## Patterns
 
+- Intro strip (post-catalog polish): page opens on Event Corpus only — remove
+  `What It Covers` / `Key Concepts` Sections from `page.mdx` and delete
+  `sections.whatItCovers` / `sections.keyConcepts` from messages. Set
+  `openingSummary` to `""` (or omit) so `DocsOpeningSummary` mounts nothing;
+  unlike CLI/MCP/JS, Events must not keep a long informational folded summary.
+  Flip page-local tests / `assert-events-page-catalog-polish-browser.ts` to
+  assert intro absence (MCP #156 pattern) without weakening #160 catalog polish.
 - Keep curated discovery under `#related` with `LocalizedLinkList` toward planned
   `/docs/references/api`; leave `relatedIds` empty until sibling registry records exist.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
