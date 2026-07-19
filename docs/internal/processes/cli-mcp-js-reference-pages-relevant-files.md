@@ -130,6 +130,12 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   undefined). MCP polish replaces What It Covers / Key Concepts with an
   install-first `how-to-install` section and a page-local
   `McpInstallDocsLink` (not `messages.links`) to `/docs/documentation/mcp`.
+  Page-local `mcp-page.test.tsx` should also prove a representative published
+  tool card keeps title/anchor/description/schema/example while omitting
+  `data-contract-source-badge`, Handler registered / Tool id rows, Object
+  policy, and the generated-example notice. Do not assert absence of the
+  filter `queryLabel` default `"Tool name"` — that label is inventory filter
+  chrome, not card-body metadata.
 - Browser-verify the trimmed shape after `bun run build` with
   `bun run start -- -p <3100-3999>` (unique port), then fetch sampled routes
   (one inventory page, events, one schema) and assert: section ids

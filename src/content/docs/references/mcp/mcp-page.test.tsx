@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for references/mcp.
- * Covers install-first lead, polished title/subtitle, and package-backed
- * MCP inventory mount. Colocated under the page bundle.
+ * Covers install-first lead, polished title/subtitle, package-backed
+ * inventory mount, and representative trimmed tool-card chrome. Colocated
+ * under the page bundle.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -71,6 +72,15 @@ describe("mcp reference page", () => {
       }
       expect(inventory.tools.length).toBeGreaterThan(3);
 
+      const representativeTool =
+        inventory.tools.find(
+          (tool) =>
+            tool.description !== undefined &&
+            tool.inputSchema !== undefined &&
+            tool.name.length > 0,
+        ) ?? inventory.tools[0];
+      expect(representativeTool).toBeDefined();
+
       render(
         <main>
           <DocsPageProviders
@@ -124,6 +134,9 @@ describe("mcp reference page", () => {
       expect(
         Number(inventoryRoot?.getAttribute("data-mcp-tool-count") ?? "0"),
       ).toBe(inventory.tools.length);
+      expect(
+        inventoryRoot?.querySelector("[data-reference-inventory-filter]"),
+      ).toBeTruthy();
 
       expect(
         screen.getByText(/published MCP tools from the package/i),
@@ -131,6 +144,40 @@ describe("mcp reference page", () => {
       expect(
         screen.getAllByText("you.factory_session.control").length,
       ).toBeGreaterThan(0);
+
+      const card = document.querySelector(
+        `[data-mcp-tool-reference][data-mcp-tool-name="${representativeTool.name}"]`,
+      );
+      expect(card).toBeTruthy();
+      expect(card?.getAttribute("id")).toBe(representativeTool.anchor);
+      expect(
+        screen.getByRole("heading", { name: representativeTool.name }),
+      ).toBeTruthy();
+      expect(
+        card?.querySelector("[data-reference-copyable-anchor]"),
+      ).toBeTruthy();
+      if (representativeTool.description !== undefined) {
+        expect(card?.textContent).toContain(representativeTool.description);
+      }
+      expect(card?.querySelector("[data-mcp-input-schema]")).toBeTruthy();
+      expect(
+        card?.querySelector("[data-schema-definition-embed]"),
+      ).toBeTruthy();
+      expect(card?.querySelector("[data-mcp-tool-example]")).toBeTruthy();
+
+      // Trimmed card chrome: no family/package badge, duplicate identity rows,
+      // Object policy, or generated-example apology notice.
+      expect(document.querySelector("[data-contract-source-badge]")).toBeNull();
+      expect(screen.queryByText("Handler registered")).toBeNull();
+      expect(screen.queryByText("Tool id")).toBeNull();
+      expect(screen.queryByText("Object policy")).toBeNull();
+      expect(screen.queryByText(/additional properties/i)).toBeNull();
+      expect(
+        document.querySelector("[data-mcp-example-generated-notice]"),
+      ).toBeNull();
+      expect(
+        screen.queryByText(/generated from the published tool input schema/i),
+      ).toBeNull();
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

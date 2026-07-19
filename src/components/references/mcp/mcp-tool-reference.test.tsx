@@ -63,6 +63,9 @@ function fixtureTool(
 }
 
 describe("McpToolReference", () => {
+  // Polished success path: title + anchor + description + schema + example.
+  // Do not require ContractSourceBadge, Tool name/id, Handler registered,
+  // Object policy, or the generated-example explanatory notice.
   test("renders title, description, and input schema without verbose metadata", () => {
     const { container } = render(
       <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
