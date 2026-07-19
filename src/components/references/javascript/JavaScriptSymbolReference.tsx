@@ -1,25 +1,25 @@
 import {
-  ContractSourceBadge,
   CopyableReferenceAnchor,
+  ReferenceLifecycleVisibility,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
 import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { JavascriptSymbolNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
-import {
-  javascriptVisibilityDisplayLabel,
-  mapJavascriptVisibilityToReferenceVisibility,
-} from "./javascript-visibility";
+import { mapJavascriptVisibilityToReferenceVisibility } from "./javascript-visibility";
 import type { JavaScriptSymbolReferenceProps } from "./types";
 
 /**
  * Render one normalized JavaScript runtime symbol with available published
  * metadata, shared schema links, and authored examples. Does not invent
  * mutability, nullability, examples, or schema links.
+ *
+ * Symbol cards keep lifecycle/visibility as pills only — no family /
+ * package-version / source-artifact chrome and no duplicated visibility text
+ * row beside those pills.
  */
 export function JavaScriptSymbolReference({
   symbol,
-  packageVersion,
   chrome,
   className,
 }: JavaScriptSymbolReferenceProps) {
@@ -61,12 +61,9 @@ export function JavaScriptSymbolReference({
         ) : null}
       </header>
 
-      <ContractSourceBadge
+      <ReferenceLifecycleVisibility
         chrome={chrome}
-        family="javascript"
         lifecycle={symbol.lifecycle}
-        packageVersion={packageVersion}
-        source={symbol.source}
         visibility={sharedVisibility}
       />
 
@@ -75,12 +72,6 @@ export function JavaScriptSymbolReference({
         <MetadataRow label="Symbol id" value={symbol.id} mono />
         {symbol.kind !== undefined ? (
           <MetadataRow label="Kind" value={symbol.kind} mono />
-        ) : null}
-        {symbol.visibility !== undefined ? (
-          <MetadataRow
-            label="Visibility"
-            value={javascriptVisibilityDisplayLabel(symbol.visibility)}
-          />
         ) : null}
         {symbol.mutability !== undefined ? (
           <MetadataRow label="Mutability" value={symbol.mutability} mono />

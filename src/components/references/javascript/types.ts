@@ -15,8 +15,8 @@ export type JavaScriptSymbolReferenceProps = {
   /** Normalized JavaScript symbol from W04 projections. */
   symbol: JavascriptSymbolNormalized;
   /**
-   * Package version when known from the resolved manifest identity. Absent
-   * when the caller has no package version — never invent a version string.
+   * Accepted for caller compatibility with inventory mounts. Symbol cards no
+   * longer render package-version chrome (lifecycle/visibility pills only).
    */
   packageVersion?: string;
   chrome?: ReferenceChromeMessages;

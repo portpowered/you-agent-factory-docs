@@ -63,7 +63,7 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection |
+| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection; polished cards use `ReferenceLifecycleVisibility` only (no `ContractSourceBadge` family/package/source chrome, no duplicated Visibility metadata row) |
 | `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed |
 | `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome |
 | `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
@@ -149,6 +149,11 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   `projectMcpInputSchemaToDefinition`; `$ref`-only properties surface the ref
   as `typeSummary`; oneOf roots record composition member addresses without
   expanding a second schema-tree UI.
+- JavaScript symbol polish: compose `ReferenceLifecycleVisibility` for
+  lifecycle/visibility pills; do not mount `ContractSourceBadge` (keeps
+  family/package/source chrome for other families). Drop the duplicated
+  Visibility metadata row beside those pills — keep kind / mutability /
+  nullability / bindingLifecycle rows until glossary-pill stories land.
 - Story 007: assign anchors through `assign*RegistryAnchors` (wraps
   `ReferenceAnchorRegistry`) before render; expose `CopyableReferenceAnchor`
   on every command/tool/symbol/shared-schema card. Inventory filters live in

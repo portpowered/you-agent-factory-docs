@@ -152,14 +152,42 @@ describe("JavaScriptSymbolReference", () => {
     ).toBeTruthy();
     expect(screen.getByText("Kind")).toBeTruthy();
     expect(screen.getByText("function")).toBeTruthy();
-    expect(screen.getByText("0.0.0")).toBeTruthy();
     expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
+    expect(screen.getByText("Visibility: Public")).toBeTruthy();
     expect(
       container.querySelector(
         '[data-javascript-shared-schema-link="javascript.schema.json_compatible"]',
       ),
     ).toBeTruthy();
     expect(screen.getByText('log("checkpoint", { step: 1 })')).toBeTruthy();
+  });
+
+  test("omits family/package/source chrome and duplicated visibility text", () => {
+    const { container } = render(
+      <JavaScriptSymbolReference
+        packageVersion="0.0.0"
+        symbol={fixtureSymbol()}
+      />,
+    );
+
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(container.querySelector("[data-source-artifact]")).toBeNull();
+    expect(container.querySelector("[data-package-version]")).toBeNull();
+    expect(screen.queryByText("Family")).toBeNull();
+    expect(screen.queryByText("Package version")).toBeNull();
+    expect(screen.queryByText("Source artifact")).toBeNull();
+    expect(screen.queryByText("0.0.0")).toBeNull();
+    expect(
+      screen.queryByText("@you-agent-factory/api/javascript/runtime"),
+    ).toBeNull();
+
+    // Lifecycle/visibility remain as pills; no Visibility metadata row.
+    expect(
+      container.querySelector("[data-reference-status-chrome]"),
+    ).toBeTruthy();
+    expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
+    expect(screen.getByText("Visibility: Public")).toBeTruthy();
+    expect(screen.queryByText("Public")).toBeNull();
   });
 
   test("renders mutability and nullability when published", () => {
