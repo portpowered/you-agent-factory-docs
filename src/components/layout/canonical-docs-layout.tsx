@@ -2,6 +2,7 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ReactNode } from "react";
 import { DocsHeader } from "@/components/layout/docs-header";
 import { docsSidebarTreeComponents } from "@/components/layout/docs-sidebar-tree";
+import { EmptyDocsNavTitle } from "@/components/layout/empty-docs-nav-title";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import { localizePageTree } from "@/lib/i18n/localize-page-tree";
@@ -36,8 +37,9 @@ export function CanonicalDocsLayout({
             searchTrigger: false,
             themeSwitch: false,
             // Header brand mark owns chrome identity; do not repeat it in the
-            // desktop sidebar header via Fumadocs InlineNavTitle.
-            navTitle: () => null,
+            // desktop sidebar header via Fumadocs InlineNavTitle. Use a client
+            // module export — inline `() => null` breaks RSC serialization.
+            navTitle: EmptyDocsNavTitle,
           }}
           sidebar={{
             "aria-label": messages.shell.sidebarTitle,
