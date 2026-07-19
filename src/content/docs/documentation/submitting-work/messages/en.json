@@ -5,7 +5,7 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This reference covers submitting work to you-agent-factory: how a FACTORY_REQUEST_BATCH is shaped, how you submit that batch to a factory that is already running, and how DEPENDS_ON and PARENT_CHILD relationships order or nest the work items in that batch. Use it when you need the web submitting-work surface rather than a full CLI flag dump or a packaged docs sync."
+      "body": "Submitting work to you-agent-factory means shaping a FACTORY_REQUEST_BATCH, submitting that batch to a factory that is already running, and using DEPENDS_ON and PARENT_CHILD relationships to order or nest the work items in that batch."
     },
     "keyConcepts": {
       "title": "Key Concepts",
@@ -25,7 +25,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web submitting-work reference for batches and relationships only. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install scripts, first-run walkthroughs, and the broader command matrix belong on sibling documentation and guide pages linked from how to use."
+      "body": "Submitting work covers batches and relationships only. It is not a full CLI flag dump, not a sync of packaged you docs, not the configuration topology page, and not the OpenAPI or API reference. Install scripts, first-run walkthroughs, and the broader command matrix belong on sibling documentation and guide pages."
     },
     "related": {
       "title": "Related To"

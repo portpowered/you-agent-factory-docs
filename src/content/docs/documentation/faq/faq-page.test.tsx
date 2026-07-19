@@ -100,7 +100,7 @@ describe("faq documentation page", () => {
     expect(somethingFailed).toMatch(/Troubleshooting/i);
     expect(somethingFailed).toMatch(/failure|recover/i);
 
-    expect(limits).toMatch(/web FAQ/i);
+    expect(limits).toMatch(/FAQ answers common you-agent-factory questions/i);
     expect(limits).toMatch(/not the install command matrix/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
     expect(whatItCovers).not.toMatch(

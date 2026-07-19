@@ -128,7 +128,7 @@ describe("troubleshooting documentation page", () => {
     expect(cursorDynamicWorkflow).toMatch(/validate/i);
     expect(cursorDynamicWorkflow).not.toMatch(/args-schema|OpenAPI/i);
 
-    expect(limits).toMatch(/web recovery lookup/i);
+    expect(limits).toMatch(/Troubleshooting is a recovery lookup/i);
     expect(limits).toMatch(/not the install command matrix/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
     expect(whatItCovers).not.toMatch(

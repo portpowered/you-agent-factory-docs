@@ -4,6 +4,15 @@
  * Resolves the W03 `schemas/factory` public subpath into a W04 model and mounts
  * the public W07 SchemaReference surface. Ownership stays page-local — do not
  * edit renderer internals under `src/components/references/schema/`.
+ *
+ * Catalog splay is Factory-page opt-in (`showCatalog`): sibling you-config /
+ * mock-workers mounts keep `showCatalog={false}`. The published Factory package
+ * `$defs` set is the transitive `$ref` closure from the root, so enabling the
+ * catalog recursively renders referenced definition objects on this page.
+ *
+ * Full configuration example is a page-local authored `exampleInputs` override
+ * aligned with the factories/configuration hermetic minimal sample — not a
+ * sibling-schema default and not a live Factory host fetch.
  */
 
 import { SchemaReference } from "@/components/references/schema";
@@ -14,6 +23,8 @@ import {
 } from "@/lib/references/load-schema-verification-models";
 import { createReferenceCrossLinkResolver } from "@/lib/references/reference-cross-link-resolver";
 import type { SchemaAddress } from "@/lib/references/schema-model";
+import { FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS } from "./factory-schema-full-config-example";
+import { collectFactorySchemaSplayDefinitions } from "./factory-schema-splay";
 
 export const FACTORY_SCHEMA_PAGE_PATH = "/docs/references/factory-schema";
 
@@ -49,16 +60,21 @@ export function FactorySchemaReference({
 }: FactorySchemaReferenceProps = {}) {
   try {
     const model = loadModel();
+    const splayedDefinitions = collectFactorySchemaSplayDefinitions(
+      model.root,
+      model.definitions,
+    );
     return (
       <>
         <ReferenceHashNavigation data-testid="factory-schema-hash-navigation" />
         <SchemaReference
           data-testid="factory-schema-reference"
-          definitions={model.definitions}
+          definitions={splayedDefinitions}
+          exampleInputs={FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS}
           pagePath={FACTORY_SCHEMA_PAGE_PATH}
           resolve={buildResolve(model)}
           root={model.root}
-          showCatalog={false}
+          showCatalog
           showEmptyExamples
         />
       </>

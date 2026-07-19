@@ -1,9 +1,18 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import {
+  CI_GATE_JOB_ID,
+  CI_REQUIRED_JOB_GRAPH,
+  CI_REQUIRED_JOB_IDS,
+  CI_REQUIRED_ORDERING_EDGES,
+  CI_REQUIRED_SUITE_JOBS,
   CI_WORKFLOW_REQUIRED_MAKE_TARGETS,
+  ciRequiredJobGraphMakeTargets,
+  ciRequiredJobNeeds,
   EXCLUDED_MAKE_CI_TARGETS,
+  getCiRequiredJob,
   MAKE_CI_PREREQUISITES,
   MAKE_CI_REPRODUCTION_COMMAND,
   SHARED_REQUIRED_SUITE_TARGETS,
@@ -12,6 +21,21 @@ import {
 const repoRoot = join(import.meta.dir, "../..");
 const makefilePath = join(repoRoot, "Makefile");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
+
+type WorkflowStep = {
+  run?: string;
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowJob = {
+  needs?: string | string[];
+  steps?: WorkflowStep[];
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowDocument = {
+  jobs?: Record<string, WorkflowJob>;
+};
 
 function parseMakefileCiPrerequisites(makefile: string): string[] {
   const ciLine = makefile
@@ -27,6 +51,31 @@ function workflowMakeCommands(workflow: string): string[] {
   return [...workflow.matchAll(/^\s+run:\s+make\s+([^\s#]+)/gm)].flatMap(
     (match) => (match[1] ? [match[1]] : []),
   );
+}
+
+function loadCiWorkflowJobs(): Record<string, WorkflowJob> {
+  const document = parseYaml(
+    readFileSync(ciWorkflowPath, "utf8"),
+  ) as WorkflowDocument;
+  if (!document.jobs || typeof document.jobs !== "object") {
+    throw new Error("ci.yml is missing a jobs map");
+  }
+  return document.jobs;
+}
+
+function normalizeNeeds(needs: string | string[] | undefined): string[] {
+  if (!needs) return [];
+  return Array.isArray(needs) ? [...needs] : [needs];
+}
+
+function jobMakeTargets(job: WorkflowJob | undefined): string[] {
+  const targets: string[] = [];
+  for (const step of job?.steps ?? []) {
+    const run = step.run?.trim() ?? "";
+    const match = run.match(/^make\s+([^\s#]+)/);
+    if (match?.[1]) targets.push(match[1]);
+  }
+  return targets;
 }
 
 describe("ci required path alignment", () => {
@@ -45,20 +94,38 @@ describe("ci required path alignment", () => {
     }
   });
 
-  test("CI workflow invokes the aligned make targets including validate-data and linkcheck", () => {
+  test("CI workflow matches job-graph membership and static-export edges", () => {
     const workflow = readFileSync(ciWorkflowPath, "utf8");
     const commands = workflowMakeCommands(workflow);
+    const jobs = loadCiWorkflowJobs();
 
     for (const target of CI_WORKFLOW_REQUIRED_MAKE_TARGETS) {
       expect(commands).toContain(target);
     }
 
-    const buildIndex = commands.indexOf("build");
-    const integrationIndex = commands.indexOf("test-integration");
-    const budgetIndex = commands.indexOf("budget");
-    expect(buildIndex).toBeGreaterThan(-1);
-    expect(integrationIndex).toBeGreaterThan(buildIndex);
-    expect(budgetIndex).toBeGreaterThan(buildIndex);
+    // No single linear verify-only required path.
+    expect(Object.keys(jobs)).not.toContain("verify");
+    expect(workflow).not.toContain("run: make ci");
+    expect(workflow).not.toMatch(/continue-on-error:\s*true/i);
+
+    for (const graphJob of CI_REQUIRED_SUITE_JOBS) {
+      expect(Object.keys(jobs)).toContain(graphJob.id);
+      expect(normalizeNeeds(jobs[graphJob.id]?.needs)).toEqual([
+        ...graphJob.needs,
+      ]);
+      const targets = jobMakeTargets(jobs[graphJob.id]);
+      for (const target of graphJob.makeTargets) {
+        expect(targets).toContain(target);
+      }
+    }
+
+    for (const edge of CI_REQUIRED_ORDERING_EDGES) {
+      expect(normalizeNeeds(jobs[edge.to]?.needs)).toContain(edge.from);
+    }
+
+    expect(normalizeNeeds(jobs[CI_GATE_JOB_ID]?.needs).sort()).toEqual(
+      [...ciRequiredJobNeeds(CI_GATE_JOB_ID)].sort(),
+    );
   });
 
   test("shared restored suites appear in both make ci and the CI workflow", () => {
@@ -75,5 +142,155 @@ describe("ci required path alignment", () => {
     // make ci uses coverage alias only via component-coverage; never the old name alone.
     expect(prerequisites.has("coverage")).toBe(false);
     expect(prerequisites.has("component-coverage")).toBe(true);
+  });
+});
+
+describe("ci required job-graph model", () => {
+  test("names every Wave CI-1 required job including ci-gate", () => {
+    expect([...CI_REQUIRED_JOB_IDS]).toEqual([
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "integration",
+      "budget",
+      "ci-gate",
+    ]);
+    expect(CI_REQUIRED_JOB_GRAPH.map((job) => job.id)).toEqual([
+      ...CI_REQUIRED_JOB_IDS,
+    ]);
+    expect(CI_GATE_JOB_ID).toBe("ci-gate");
+  });
+
+  test("maps each non-gate job to its make target membership", () => {
+    expect(getCiRequiredJob("check").makeTargets).toEqual(["check"]);
+    expect(getCiRequiredJob("unit-tests").makeTargets).toEqual(["test"]);
+    expect(getCiRequiredJob("reader-facing").makeTargets).toEqual([
+      "test-reader-facing",
+    ]);
+    expect(getCiRequiredJob("a11y").makeTargets).toEqual(["a11y"]);
+    expect(getCiRequiredJob("contracts").makeTargets).toEqual([
+      "test-ci-contract",
+      "test-verify-contract",
+      "test-build-contract",
+    ]);
+    expect(getCiRequiredJob("component-coverage").makeTargets).toEqual([
+      "component-coverage",
+    ]);
+    expect(getCiRequiredJob("content").makeTargets).toEqual([
+      "validate-data",
+      "linkcheck",
+    ]);
+    expect(getCiRequiredJob("static-export").makeTargets).toEqual(["build"]);
+    expect(getCiRequiredJob("integration").makeTargets).toEqual([
+      "test-integration",
+    ]);
+    expect(getCiRequiredJob("budget").makeTargets).toEqual(["budget"]);
+    expect(getCiRequiredJob("ci-gate").makeTargets).toEqual([]);
+
+    for (const job of CI_REQUIRED_SUITE_JOBS) {
+      expect(job.makeTargets.length).toBeGreaterThan(0);
+    }
+  });
+
+  test("encodes static-export before integration and budget without false peer edges", () => {
+    expect(ciRequiredJobNeeds("integration")).toEqual(["static-export"]);
+    expect(ciRequiredJobNeeds("budget")).toEqual(["static-export"]);
+
+    for (const edge of CI_REQUIRED_ORDERING_EDGES) {
+      expect(ciRequiredJobNeeds(edge.to)).toContain(edge.from);
+    }
+
+    const peerJobIds = [
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+    ] as const;
+
+    for (const peerId of peerJobIds) {
+      expect(ciRequiredJobNeeds(peerId)).toEqual([]);
+    }
+
+    // Independent peers must not invent serial edges between each other.
+    for (const from of peerJobIds) {
+      for (const to of peerJobIds) {
+        if (from === to) continue;
+        expect(ciRequiredJobNeeds(to)).not.toContain(from);
+      }
+    }
+
+    expect(ciRequiredJobNeeds("ci-gate")).toEqual([
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "integration",
+      "budget",
+    ]);
+  });
+
+  test("job-graph suite membership covers shared required suites and workflow targets", () => {
+    const graphTargets = new Set(ciRequiredJobGraphMakeTargets());
+
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(graphTargets.has(target)).toBe(true);
+    }
+
+    for (const target of CI_WORKFLOW_REQUIRED_MAKE_TARGETS) {
+      if (target === "setup") continue;
+      expect(graphTargets.has(target)).toBe(true);
+    }
+
+    // setup stays a per-job prerequisite inventory entry, not a graph job.
+    expect(graphTargets.has("setup")).toBe(false);
+    expect(CI_WORKFLOW_REQUIRED_MAKE_TARGETS).toContain("setup");
+  });
+
+  test("make ci prerequisites stay sequential and include every shared required suite", () => {
+    const makefile = readFileSync(makefilePath, "utf8");
+    const prerequisites = parseMakefileCiPrerequisites(makefile);
+
+    expect(prerequisites).toEqual([...MAKE_CI_PREREQUISITES]);
+    expect(MAKE_CI_PREREQUISITES).toEqual([
+      "lint",
+      "typecheck",
+      "test",
+      "test-reader-facing",
+      "a11y",
+      "test-ci-contract",
+      "test-verify-contract",
+      "test-build-contract",
+      "build",
+      "test-integration",
+      "budget",
+      "component-coverage",
+      "validate-data",
+      "linkcheck",
+    ]);
+
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(MAKE_CI_PREREQUISITES).toContain(target);
+      expect(prerequisites).toContain(target);
+    }
+
+    // Sequential local path still places build before consumers that need out/.
+    const buildIndex = MAKE_CI_PREREQUISITES.indexOf("build");
+    expect(MAKE_CI_PREREQUISITES.indexOf("test-integration")).toBeGreaterThan(
+      buildIndex,
+    );
+    expect(MAKE_CI_PREREQUISITES.indexOf("budget")).toBeGreaterThan(buildIndex);
   });
 });

@@ -29,7 +29,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a factory metrics exposure reference for you-agent-factory operators watching a live Factory Session. It is not a sync of packaged CLI docs, not a logs or diagnostic-event reference, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."
+      "body": "Metrics covers factory metrics exposure for you-agent-factory operators watching a live Factory Session. It is not a sync of packaged CLI docs, not a logs or diagnostic-event reference, not OpenAPI or API reference ownership, not SPC control-chart depth, not bottleneck diagnosis, and not Model Atlas or benchmark metrics."
     },
     "related": {
       "title": "Related To"

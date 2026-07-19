@@ -73,7 +73,7 @@ describe("logs documentation page", () => {
     expect(howToUse).toMatch(/log root/i);
     expect(howToUse).toMatch(/retention and rotation/i);
     expect(howToUse).toMatch(/CLI diagnostics/i);
-    expect(limits).toMatch(/web runtime-logs and CLI-diagnostics reference/i);
+    expect(limits).toMatch(/Logs covers runtime logs and CLI diagnostics/i);
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/not the metrics reference/i);
     expect(limits).toMatch(/not record\/replay artifact management/i);
@@ -164,7 +164,7 @@ describe("logs documentation page", () => {
 
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(limitsSection?.textContent).toMatch(
-      /web runtime-logs and CLI-diagnostics reference/i,
+      /Logs covers runtime logs and CLI diagnostics/i,
     );
     expect(limitsSection?.textContent).toMatch(
       /not a sync of packaged CLI docs/i,

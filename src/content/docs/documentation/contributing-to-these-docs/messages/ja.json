@@ -1,11 +1,11 @@
 {
   "title": "Contributing to these docs",
   "description": "How to add factory documentation pages to the you-agent-factory docs site without recreating retired product patterns.",
-  "openingSummary": "Use this page when you want to add you-agent-factory documentation. It orients contributors to the live collections, production templates, isolation-first writing, and ordinary local validation path without pasting the full maintainer runbook.",
+  "openingSummary": "Contributing orients you when you want to add you-agent-factory documentation: live collections, production templates, isolation-first writing, and the ordinary local validation path—without pasting the full maintainer runbook.",
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This docs site documents the you-agent-factory CLI and agent-factory workflow system. Readers use it to install and run the CLI, follow use-case guides, look up concepts and techniques, read documentation topics, browse the glossary, and follow blog posts. It is not Model Atlas, not a benchmark leaderboard, and not a paper-download mirror. Contributing here means adding factory docs for those live surfaces, not recreating retired Atlas collections or promising future Model Atlas content."
+      "body": "you-agent-factory docs cover the CLI and agent-factory workflow system. Readers use them to install and run the CLI, follow use-case guides, look up concepts and techniques, read documentation topics, browse the glossary, and follow blog posts. They are not Model Atlas, not a benchmark leaderboard, and not a paper-download mirror. Contributing means adding factory docs for those live surfaces, not recreating retired Atlas collections or promising future Model Atlas content."
     },
     "keyConcepts": {
       "title": "Key Concepts",
@@ -17,7 +17,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is published contributing orientation for factory docs. It is not a paste of every validation command, not a second full CONTRIBUTING runbook, and not a place to recreate retired Atlas collection ownership. Product framing for the CLI itself belongs on what is you-agent-factory; first-run steps belong on getting started."
+      "body": "Contributing orients factory-docs authors. It is not a paste of every validation command, not a second full CONTRIBUTING runbook, and not a place to recreate retired Atlas collection ownership. Product framing for the CLI itself belongs on what is you-agent-factory; first-run steps belong on getting started."
     },
     "related": {
       "title": "Related To"

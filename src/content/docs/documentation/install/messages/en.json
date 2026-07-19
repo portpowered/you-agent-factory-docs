@@ -4,7 +4,7 @@
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "Install is the reference for getting you-agent-factory onto a machine. It covers the macOS and Linux curl install script, the Windows PowerShell install script, and the related first-scaffold notes that follow a successful install. Use it when you need the full OS install commands rather than a short home CTA."
+      "body": "Install gets you-agent-factory onto a machine. Use the macOS and Linux curl install script, the Windows PowerShell install script, and the related first-scaffold notes that follow a successful install when you need the full OS install commands rather than a short home CTA."
     },
     "keyConcepts": {
       "title": "Key Concepts",
@@ -16,7 +16,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is the install reference only. It is not the getting-started quickstart, not the full CLI command matrix, and it does not replace packaged you docs topics. For agent and factory orientation after install, run you docs agents. Deeper CLI and factory contracts stay in packaged you docs and sibling documentation pages."
+      "body": "Install covers getting the CLI onto a machine only. It is not the getting-started quickstart, not the full CLI command matrix, and it does not replace packaged you docs topics. For agent and factory orientation after install, run you docs agents. Deeper CLI and factory contracts stay in packaged you docs and sibling documentation pages."
     },
     "related": {
       "title": "Related To"
