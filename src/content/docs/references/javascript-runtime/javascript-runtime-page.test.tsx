@@ -1,10 +1,10 @@
 /**
  * Page-owned render proof for references/javascript-runtime.
- * Covers reference shell, package-backed JavaScript runtime inventory mount,
- * and related discovery links. Colocated under the page bundle.
+ * Covers reference shell and package-backed JavaScript runtime inventory mount.
+ * Colocated under the page bundle.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadJavascriptRuntimeReferenceInventory } from "@/lib/references/load-javascript-runtime-reference-inventory";
@@ -45,12 +45,6 @@ describe("javascript-runtime reference page", () => {
       const keyConcepts = String(
         loadedPage.messages.sections?.keyConcepts?.body ?? "",
       );
-      const howToUse = String(
-        loadedPage.messages.sections?.howToUse?.body ?? "",
-      );
-      const limits = String(
-        loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-      );
       expect(whatItCovers).toMatch(
         /package-backed JavaScript runtime inventory/i,
       );
@@ -58,14 +52,17 @@ describe("javascript-runtime reference page", () => {
         /@you-agent-factory\/api\/javascript\/runtime/i,
       );
       expect(keyConcepts).toMatch(/not from a page-local copy/i);
-      expect(howToUse).toMatch(/durable package JavaScript runtime lookup/i);
-      expect(limits).toMatch(
-        /static package-backed JavaScript runtime inventory/i,
-      );
-      expect(limits).toMatch(/does not invent symbol fields/i);
       expect(whatItCovers).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
+      expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+      expect(
+        loadedPage.messages.sections?.limitsAndAssumptions,
+      ).toBeUndefined();
+      expect(loadedPage.messages.sections?.related).toBeUndefined();
+      expect(loadedPage.messages.sections?.tags).toBeUndefined();
+      expect(loadedPage.messages.sections?.references).toBeUndefined();
+      expect(loadedPage.messages.links).toBeUndefined();
 
       const inventory = loadJavascriptRuntimeReferenceInventory();
       expect(inventory.state).toBe("success");
@@ -95,11 +92,14 @@ describe("javascript-runtime reference page", () => {
       expect(
         screen.getByRole("heading", { name: "Runtime Inventory" }),
       ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Limits And Assumptions" }),
-      ).toBeTruthy();
-      expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
+        screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+      ).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
 
       const inventoryRoot = document.querySelector(
         "[data-javascript-runtime-inventory]",
@@ -126,25 +126,6 @@ describe("javascript-runtime reference page", () => {
         ),
       ).toBeTruthy();
       expect(screen.getAllByText("javascript.args").length).toBeGreaterThan(0);
-
-      const related = document.getElementById("related");
-      expect(related).toBeTruthy();
-      const relatedQueries = within(related as HTMLElement);
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "Dynamic workflows documentation" })
-          .getAttribute("href"),
-      ).toBe("/docs/factories/dynamic-workflows");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "CLI reference" })
-          .getAttribute("href"),
-      ).toBe("/docs/references/cli");
-      expect(
-        relatedQueries
-          .getByRole("link", { name: "MCP reference" })
-          .getAttribute("href"),
-      ).toBe("/docs/references/mcp");
     },
     PAGE_RENDER_TIMEOUT_MS,
   );

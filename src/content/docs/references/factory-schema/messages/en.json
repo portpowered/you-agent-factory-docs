@@ -9,29 +9,6 @@
     "schemaLookup": {
       "title": "Schema Lookup",
       "body": "Browse the complete Factory schema below. Filter by definition or field name, follow $ref links to related definitions, and copy deep links to any definition or field anchor on this page."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Start from the root Factory object, then open nested definitions when a field points at another schema. Use the filter to find a field or definition by name. Copy a deep link when you need to share a stable pointer into this page. Contract text on fields and definitions stays in the package schema language even when the page chrome is localized."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page covers the Factory package schema only. It is not the You operator-config schema, the mock-workers schema, or authored Worker documentation. If the schema cannot be loaded, the lookup surface shows an explicit unavailable state instead of an empty page."
-    },
-    "related": {
-      "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "youConfigSchema": "You-config schema",
-    "mockWorkersSchema": "Mock-workers schema",
-    "configurationDocs": "Configuration",
-    "packagedFactoriesDocs": "Packaged factories"
   }
 }

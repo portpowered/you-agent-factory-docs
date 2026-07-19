@@ -14,28 +14,6 @@
     "runtimeInventory": {
       "title": "Runtime Inventory",
       "body": "Scan the published JavaScript symbols and shared schemas below. Filter by symbol path, schema id, description, or lifecycle when those facets are present. Open a card for available metadata and shared-schema links, and copy its stable anchor when you need a deep link."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Open this page when you need the durable package JavaScript runtime lookup surface. Use the inventory filters to narrow the list, then open a symbol or shared schema for its published metadata. Prefer the authored dynamic-workflows documentation page for narrative guidance; prefer this inventory when you need every published runtime symbol and shared schema from the installed package contract."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is a static package-backed JavaScript runtime inventory. It does not start a Factory host, does not invent symbol fields when the contract omits them, and is not a substitute for dynamic-workflow walkthroughs. Sibling CLI and MCP reference routes may be linked before those pages exist in every checkout."
-    },
-    "related": {
-      "title": "Related To"
-    },
-    "tags": {
-      "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "dynamicWorkflowsDocs": "Dynamic workflows documentation",
-    "cliReference": "CLI reference",
-    "mcpReference": "MCP reference"
   }
 }

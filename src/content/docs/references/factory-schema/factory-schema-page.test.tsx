@@ -38,6 +38,12 @@ describe("factory-schema reference page", () => {
     );
     expect(whatItCovers).toMatch(/live Factory JSON Schema/i);
     expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
+    expect(loadedPage.messages.sections?.tags).toBeUndefined();
+    expect(loadedPage.messages.sections?.references).toBeUndefined();
+    expect(loadedPage.messages.links).toBeUndefined();
 
     render(
       <main>
@@ -54,6 +60,14 @@ describe("factory-schema reference page", () => {
       screen.getByRole("heading", { name: "What It Covers" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Schema Lookup" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
 
     const schemaSurface = screen.getByTestId("factory-schema-reference");
     expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
@@ -67,19 +81,6 @@ describe("factory-schema reference page", () => {
     const whatItCoversSection = document.getElementById("what-it-covers");
     expect(whatItCoversSection?.textContent ?? "").toMatch(
       /Factory JSON Schema/i,
-    );
-
-    const youConfigLink = screen.getByRole("link", {
-      name: "You-config schema",
-    });
-    expect(youConfigLink.getAttribute("href")).toBe(
-      "/docs/references/you-config-schema",
-    );
-    const mockWorkersLink = screen.getByRole("link", {
-      name: "Mock-workers schema",
-    });
-    expect(mockWorkersLink.getAttribute("href")).toBe(
-      "/docs/references/mock-workers-schema",
     );
 
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);

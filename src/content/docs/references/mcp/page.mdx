@@ -14,12 +14,8 @@ aliases:
 updatedAt: "2026-07-18"
 ---
 
-import { CitationList } from "@/features/docs/components/CitationList";
-import { LocalizedLinkList } from "@/features/docs/components/LocalizedLinkList";
-import { RelatedDocs } from "@/features/docs/components/RelatedDocs";
 import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
-import { TagPillList } from "@/features/docs/components/TagPillList";
 
 
 <Section id="what-it-covers" titleKey="sections.whatItCovers.title">
@@ -33,41 +29,4 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 <Section id="tool-inventory" titleKey="sections.toolInventory.title">
   <T k="sections.toolInventory.body" />
   <McpReferenceInventory />
-</Section>
-
-<Section id="how-to-use" titleKey="sections.howToUse.title">
-  <T k="sections.howToUse.body" />
-</Section>
-
-<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
-  <T k="sections.limitsAndAssumptions.body" />
-</Section>
-
-<Section id="related" titleKey="sections.related.title">
-  <LocalizedLinkList
-    items={[
-      {
-        href: "/docs/documentation/mcp",
-        labelKey: "links.mcpDocs",
-      },
-      {
-        href: "/docs/references/cli",
-        labelKey: "links.cliReference",
-      },
-      {
-        href: "/docs/references/javascript-runtime",
-        labelKey: "links.javascriptRuntimeReference",
-      },
-    ]}
-  />
-
-  <RelatedDocs registryId="reference.mcp" />
-</Section>
-
-<Section id="tags" titleKey="sections.tags.title">
-  <TagPillList registryId="reference.mcp" showDescriptions />
-</Section>
-
-<Section id="references" titleKey="sections.references.title">
-  <CitationList registryId="reference.mcp" />
 </Section>

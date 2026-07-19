@@ -157,6 +157,53 @@ describe("references family index", () => {
     expect(screen.queryByText("No reference entries yet")).toBeNull();
   });
 
+  test("keeps introduction / discoverability / freshness only—no child-page boilerplate chrome", async () => {
+    const loaded = await loadReferencesFamilyIndex();
+    const freshness = loadReferencesFamilyFreshnessSummary();
+    const chrome = await englishChrome();
+    const sectionKeys = Object.keys(loaded.messages.sections ?? {});
+
+    expect(sectionKeys).toContain("introduction");
+    expect(sectionKeys).toContain("discoverability");
+    expect(sectionKeys).toContain("freshness");
+    for (const key of [
+      "howToUse",
+      "limitsAndAssumptions",
+      "related",
+      "tags",
+      "references",
+    ]) {
+      expect(sectionKeys).not.toContain(key);
+    }
+
+    render(
+      <main>
+        <ReferencesFamilyIndex
+          chrome={chrome}
+          freshness={freshness}
+          messages={loaded.messages}
+        />
+      </main>,
+    );
+
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(
+      screen.getByRole("heading", { name: "What this family covers" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Contract surfaces" }),
+    ).toBeTruthy();
+    expect(
+      screen.getByRole("heading", { name: "Package freshness" }),
+    ).toBeTruthy();
+  });
+
   test("renders package freshness summary on the success path", async () => {
     const loaded = await loadReferencesFamilyIndex();
     const freshness = loadReferencesFamilyFreshnessSummary();
