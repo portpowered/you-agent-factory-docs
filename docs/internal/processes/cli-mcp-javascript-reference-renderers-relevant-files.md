@@ -165,6 +165,13 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
   on-page glossary anchors (`#glossary-kind`, etc.); glossary term copy lives
   in `javascript-symbol-metadata-glossary.ts` because page message sections
   only accept `title` / `body` strings.
+- JavaScript polish regression tests (repair lane): assert visible chrome
+  outcomes in `javascript-symbol-reference.test.tsx` (no family/package/source,
+  glossary-backed pills, shared-schema trim/dedupe, composed
+  `showHeading={false}` lists, overall-example constants) and in
+  `javascript-runtime-page.test.tsx` (live package Value vs function pills,
+  glossary + overall example + TOC `#symbols`/`#shared-schemas`). Prefer
+  `data-javascript-metadata-facet` / inventory data attrs over source scans.
 - Story 007: assign anchors through `assign*RegistryAnchors` (wraps
   `ReferenceAnchorRegistry`) before render; expose `CopyableReferenceAnchor`
   on every command/tool/symbol/shared-schema card. Inventory filters live in

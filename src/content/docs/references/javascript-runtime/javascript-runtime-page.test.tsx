@@ -240,6 +240,113 @@ describe("javascript-runtime reference page", () => {
       ).toBeNull();
       expect(screen.queryByText("Schema id", { selector: "dt" })).toBeNull();
 
+      // Polished symbol/shared-schema chrome on the live package inventory.
+      expect(
+        document.querySelector(
+          "[data-javascript-symbol-reference] [data-contract-source-badge]",
+        ),
+      ).toBeNull();
+      expect(
+        document.querySelector(
+          "[data-javascript-symbol-reference] [data-source-artifact]",
+        ),
+      ).toBeNull();
+      expect(
+        document.querySelector(
+          "[data-javascript-symbol-reference] [data-package-version]",
+        ),
+      ).toBeNull();
+      expect(screen.queryByText("Family")).toBeNull();
+      expect(screen.queryByText("Package version")).toBeNull();
+      expect(screen.queryByText("Source artifact")).toBeNull();
+      expect(screen.queryByText("Object policy")).toBeNull();
+      expect(screen.queryByText("Name", { selector: "dt" })).toBeNull();
+      expect(screen.queryByText("Title", { selector: "dt" })).toBeNull();
+      expect(screen.queryByText("Type", { selector: "dt" })).toBeNull();
+
+      const argsCard = document.querySelector(
+        '[data-javascript-symbol-reference][data-javascript-symbol-path="args"]',
+      );
+      expect(argsCard).toBeTruthy();
+      expect(
+        argsCard?.querySelector(
+          '[data-javascript-metadata-facet="kind"][data-javascript-metadata-value="value"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        argsCard
+          ?.querySelector('[data-javascript-metadata-facet="kind"]')
+          ?.getAttribute("href"),
+      ).toBe("#glossary-kind");
+      expect(
+        argsCard?.querySelector(
+          '[data-javascript-metadata-facet="mutability"][data-javascript-metadata-value="mutable-object"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        argsCard?.querySelector(
+          '[data-javascript-metadata-facet="nullability"][data-javascript-metadata-value="non-null"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        argsCard?.querySelector(
+          '[data-javascript-metadata-facet="bindingLifecycle"][data-javascript-metadata-value="snapshot-at-bind"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        argsCard?.querySelector("[data-reference-status-chrome]"),
+      ).toBeTruthy();
+
+      const logCard = document.querySelector(
+        '[data-javascript-symbol-reference][data-javascript-symbol-path="log"]',
+      );
+      expect(logCard).toBeTruthy();
+      expect(
+        logCard?.querySelector(
+          '[data-javascript-metadata-facet="kind"][data-javascript-metadata-value="function"]',
+        ),
+      ).toBeTruthy();
+      expect(
+        logCard
+          ?.querySelector('[data-javascript-metadata-facet="kind"]')
+          ?.getAttribute("href"),
+      ).toBe("#glossary-kind");
+
+      // Shared-schema duplicates stay out of Symbols (live package currently
+      // has no overlap; still assert displayed count matches the filter).
+      expect(
+        document.querySelectorAll(
+          "[data-javascript-symbols] [data-javascript-symbol-reference]",
+        ).length,
+      ).toBe(symbolsForDisplay.length);
+      for (const schema of inventory.sharedSchemas) {
+        expect(
+          document.querySelector(
+            `[data-javascript-symbols] [data-javascript-symbol-reference][id="${schema.id}"]`,
+          ),
+        ).toBeNull();
+        expect(
+          document.querySelector(
+            `[data-javascript-shared-schemas] [data-javascript-shared-schema-id="${schema.id}"]`,
+          ),
+        ).toBeTruthy();
+      }
+
+      // Overall example step deep-links target published symbol anchors.
+      for (const step of document.querySelectorAll(
+        "[data-javascript-runtime-overall-example-step]",
+      )) {
+        const symbolPath = step.getAttribute(
+          "data-javascript-runtime-overall-example-step",
+        );
+        expect(symbolPath).toBeTruthy();
+        expect(
+          inventory.symbols.some((symbol) => symbol.id === symbolPath),
+        ).toBe(true);
+        const link = step.querySelector(`a[href="#${symbolPath}"]`);
+        expect(link).toBeTruthy();
+      }
+
       expect(
         screen.getByText(
           /published JavaScript runtime items from the package contract/i,

@@ -8,7 +8,13 @@ import {
   createSchemaDefinitionModel,
   createSchemaFieldModel,
 } from "@/lib/references/schema-model";
-import { JavaScriptRuntimeInventory } from "./JavaScriptRuntimeInventory";
+import {
+  JavaScriptRuntimeInventory,
+  JavaScriptRuntimeInventoryChrome,
+  JavaScriptRuntimeInventoryProvider,
+  JavaScriptRuntimeSharedSchemasList,
+  JavaScriptRuntimeSymbolsList,
+} from "./JavaScriptRuntimeInventory";
 import {
   JavaScriptSharedSchemaReference,
   javascriptSharedSchemaInventoryIdentities,
@@ -17,6 +23,11 @@ import {
   JavaScriptSymbolReference,
   javascriptSymbolInventoryIdentities,
 } from "./JavaScriptSymbolReference";
+import {
+  JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE,
+  JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_STEPS,
+} from "./javascript-runtime-overall-example";
+import { JAVASCRIPT_RUNTIME_SECTION_ANCHORS } from "./javascript-runtime-section-anchors";
 import {
   filterJavascriptSymbolsExcludingSharedSchemaDuplicates,
   isJavascriptSymbolDuplicatingSharedSchema,
@@ -426,6 +437,7 @@ describe("JavaScriptSharedSchemaReference", () => {
     ).toBeTruthy();
     expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
     expect(screen.getByText("Visibility: Public")).toBeTruthy();
+    expect(screen.queryByText("Public")).toBeNull();
     expect(
       container.querySelector("[data-schema-definition-embed]"),
     ).toBeTruthy();
@@ -590,5 +602,107 @@ describe("JavaScriptRuntimeInventory", () => {
         'Malformed JavaScript artifact: field "symbols" must be an object.',
       ),
     ).toBeTruthy();
+  });
+
+  test("composed provider lists omit local headings when page Sections own TOC anchors", () => {
+    const { container } = render(
+      <JavaScriptRuntimeInventoryProvider
+        inventory={{
+          state: "success",
+          symbols: [fixtureSymbol()],
+          sharedSchemas: [fixtureSharedSchema()],
+          packageVersion: "0.0.0",
+        }}
+      >
+        <JavaScriptRuntimeInventoryChrome />
+        <section id={JAVASCRIPT_RUNTIME_SECTION_ANCHORS.symbols}>
+          <h2>Symbols</h2>
+          <JavaScriptRuntimeSymbolsList showHeading={false} />
+        </section>
+        <section id={JAVASCRIPT_RUNTIME_SECTION_ANCHORS.sharedSchemas}>
+          <h2>Shared schemas</h2>
+          <JavaScriptRuntimeSharedSchemasList showHeading={false} />
+        </section>
+      </JavaScriptRuntimeInventoryProvider>,
+    );
+
+    expect(
+      container.querySelectorAll("[data-javascript-symbol-reference]").length,
+    ).toBe(1);
+    expect(
+      container.querySelectorAll("[data-javascript-shared-schema-reference]")
+        .length,
+    ).toBe(1);
+    // Lists suppress local h2 so page Section ids remain the sole TOC anchors.
+    expect(
+      container.querySelector(
+        `[data-javascript-symbols] h2#${JAVASCRIPT_RUNTIME_SECTION_ANCHORS.symbols}`,
+      ),
+    ).toBeNull();
+    expect(
+      container.querySelector(
+        `[data-javascript-shared-schemas] h2#${JAVASCRIPT_RUNTIME_SECTION_ANCHORS.sharedSchemas}`,
+      ),
+    ).toBeNull();
+    expect(
+      document.getElementById(JAVASCRIPT_RUNTIME_SECTION_ANCHORS.symbols),
+    ).toBeTruthy();
+    expect(
+      document.getElementById(JAVASCRIPT_RUNTIME_SECTION_ANCHORS.sharedSchemas),
+    ).toBeTruthy();
+    expect(
+      screen.getAllByRole("heading", { level: 2, name: "Symbols" }).length,
+    ).toBe(1);
+    expect(
+      screen.getAllByRole("heading", { level: 2, name: "Shared schemas" })
+        .length,
+    ).toBe(1);
+  });
+});
+
+describe("javascript runtime overall example constants", () => {
+  test("exposes one concrete end-to-end script using published call patterns", () => {
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).toContain('phase("draft")');
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).toContain(
+      'log("checkpoint", { step: 1 })',
+    );
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).toContain(
+      'workflow.checkpoint({ label: "draft", state: { step: 1 } })',
+    );
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).toContain(
+      "await agent.run",
+    );
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).toContain(
+      'workflow.artifact({ kind: "log", label: "step", content: { step: 1 } })',
+    );
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).toContain(
+      "workflow.final({ ok: true, result: { count: 1 } })",
+    );
+    // Does not invent unpublished meta-field or typed-arg shapes.
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).not.toMatch(
+      /meta\.[a-zA-Z_]+/,
+    );
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE).not.toMatch(
+      /args\.[a-zA-Z_]+\s*:/,
+    );
+  });
+
+  test("walkthrough steps deep-link to published symbol ids", () => {
+    expect(JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_STEPS.length).toBeGreaterThan(3);
+    for (const step of JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_STEPS) {
+      expect(step.symbolPath.startsWith("javascript.")).toBe(true);
+      expect(step.label.length).toBeGreaterThan(0);
+      expect(step.body.length).toBeGreaterThan(0);
+    }
+    expect(
+      JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_STEPS.map((step) => step.symbolPath),
+    ).toEqual([
+      "javascript.phase",
+      "javascript.log",
+      "javascript.workflow.checkpoint",
+      "javascript.agent.run",
+      "javascript.workflow.artifact",
+      "javascript.workflow.final",
+    ]);
   });
 });
