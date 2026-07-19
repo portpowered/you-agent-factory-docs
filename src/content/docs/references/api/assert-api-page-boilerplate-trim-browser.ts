@@ -1,8 +1,8 @@
 /**
  * Browser probe for published `/docs/references/api` projection-first MDX:
- * how-to-use, limits-and-assumptions, tags, related, and citations sections
- * must be absent while orientation + Fumadocs operations remain.
- * (repair-api-fumadocs-openapi-components story 004).
+ * what-it-covers, key-concepts, how-to-use, limits-and-assumptions, tags,
+ * related, and citations sections must be absent while Operations + Fumadocs
+ * operations remain (repair-api-reference-intro-strip story 002).
  *
  * Run with plain `bun` from repo cwd. Kills the local server on exit.
  */
@@ -17,6 +17,8 @@ const PAGE_PATH = "/docs/references/api";
 const READY_TIMEOUT_MS = 180_000;
 
 const REMOVED_SECTION_IDS = [
+  "what-it-covers",
+  "key-concepts",
   "how-to-use",
   "limits-and-assumptions",
   "related",
@@ -27,16 +29,14 @@ const REMOVED_SECTION_IDS = [
 // Unambiguous MDX boilerplate titles only — avoid "Tags"/"References", which
 // Fumadocs OpenAPI chrome may reuse as ordinary headings.
 const REMOVED_HEADING_NAMES = [
+  "What It Covers",
+  "Key Concepts",
   "How To Use",
   "Limits And Assumptions",
   "Related To",
 ] as const;
 
-const KEPT_SECTION_IDS = [
-  "what-it-covers",
-  "key-concepts",
-  "operations",
-] as const;
+const KEPT_SECTION_IDS = ["operations"] as const;
 
 let server: ChildProcess | undefined;
 
