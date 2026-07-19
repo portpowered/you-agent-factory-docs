@@ -146,6 +146,15 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   How To Use / Limits chrome and Program documentation sidebar grouping is
   unchanged. Kill the server before exit; prefer a Bun fetch script over shell
   functions when PATH is unreliable in nested functions.
+- MCP polish browser-verify on `/docs/references/mcp` (SSR HTML is enough —
+  inventory mounts server-side): assert `You Agent Factory MCP`,
+  `#how-to-install` / `you mcp serve` / `/docs/documentation/mcp`,
+  `data-inventory-state="success"`, `data-reference-inventory-filter`,
+  `data-mcp-tool-reference` + `data-mcp-input-schema` + `data-mcp-tool-example`;
+  assert absent `What It Covers` / `Key Concepts` / `lists every published` /
+  `data-contract-source-badge` / `Handler registered` / `Object policy` /
+  `data-mcp-example-generated-notice`. Smoke sibling CLI + javascript-runtime
+  routes still return HTTP 200.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
 - Each new references page needs its own static
