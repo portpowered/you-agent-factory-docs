@@ -1426,6 +1426,12 @@ MDX component merge for schema mounts:
    `orchestrator` → `/$defs/FactoryOrchestrator` for proofs — root `workers`
    is `Worker[]` type chrome, not a `data-schema-ref-row`. Browser probe:
    `src/content/docs/references/factory-schema/assert-factory-schema-click-traverse-browser.ts`.
+   Authored full Factory configuration JSON example is page-local
+   `FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS` from
+   `factory-schema-full-config-example.ts` (hermetic factories/configuration
+   minimal sample keys) passed as `exampleInputs` on `FactorySchemaReference`
+   only. Browser probe:
+   `assert-factory-schema-full-config-example-browser.ts`.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.

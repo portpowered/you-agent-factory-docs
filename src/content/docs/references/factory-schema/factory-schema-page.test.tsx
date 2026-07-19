@@ -14,6 +14,10 @@ import {
   FACTORY_SCHEMA_PAGE_PATH,
   FactorySchemaReference,
 } from "./FactorySchemaReference";
+import {
+  FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE,
+  FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_ID,
+} from "./factory-schema-full-config-example";
 
 describe("factory-schema reference page", () => {
   afterEach(() => {
@@ -137,6 +141,54 @@ describe("FactorySchemaReference mount", () => {
     // rather than inventing unpublished bodies.
     expect(
       catalog.querySelector('[data-schema-ref-kind="resolved"]'),
+    ).toBeTruthy();
+  });
+
+  test("publishes one authored full Factory configuration JSON example", () => {
+    render(<FactorySchemaReference />);
+
+    const surface = screen.getByTestId("factory-schema-reference");
+    expect(surface.getAttribute("data-schema-status")).toBe("ready");
+
+    const examples = surface.querySelector(
+      '[data-testid="schema-definition-examples"][data-schema-examples="present"]',
+    );
+    expect(examples).toBeTruthy();
+    expect(surface.contains(examples)).toBe(true);
+
+    const example = examples?.querySelector(
+      `[data-schema-example-id="${FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_ID}"]`,
+    );
+    expect(example).toBeTruthy();
+    expect(example?.getAttribute("data-schema-example-origin")).toBe(
+      "authored",
+    );
+
+    const code = examples?.querySelector(
+      `[data-testid="schema-example-code-${FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_ID}"]`,
+    );
+    expect(code).toBeTruthy();
+    const codeText = code?.textContent ?? "";
+    expect(codeText).toContain('"workTypes"');
+    expect(codeText).toContain('"workers"');
+    expect(codeText).toContain('"workstations"');
+    expect(codeText).toContain('"name": "task"');
+    expect(codeText).toContain('"name": "processor"');
+    expect(codeText).toContain('"name": "process"');
+
+    // Authored override stays aligned with the hermetic factories/configuration
+    // minimal sample keys — no invented unpublished top-level fields.
+    expect(Object.keys(FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE).sort()).toEqual(
+      ["workers", "workstations", "workTypes"].sort(),
+    );
+    for (const field of ["workTypes", "workers", "workstations"] as const) {
+      expect(
+        surface.querySelector(`[data-schema-field-path="${field}"]`),
+      ).toBeTruthy();
+    }
+
+    expect(
+      examples?.querySelector('[data-schema-example="copy"]'),
     ).toBeTruthy();
   });
 

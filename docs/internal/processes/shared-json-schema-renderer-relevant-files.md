@@ -145,7 +145,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   `ReferenceHashNavigation`, Factory `$ref` links are same-page hash jumps to
   those expanded definition `id`s (prove with
   `assert-factory-schema-click-traverse-browser.ts` / page-local mount tests).
-  Root pointers must be anchor-safe (not bare `/`). Harness route:
+  Full Factory configuration JSON example is a page-local authored
+  `exampleInputs` override (`factory-schema-full-config-example.ts`) aligned
+  with the factories/configuration hermetic minimal sample
+  (`workTypes` / `workers` / `workstations`) — pass only on
+  `FactorySchemaReference`, never as a sibling-schema default. Prove with
+  `assert-factory-schema-full-config-example-browser.ts` / page-local mount
+  tests. Root pointers must be anchor-safe (not bare `/`). Harness route:
   `/schema-renderer-harness` under `src/app/(dev)/` — not a published
   `/docs/references/*-schema` page.
 
