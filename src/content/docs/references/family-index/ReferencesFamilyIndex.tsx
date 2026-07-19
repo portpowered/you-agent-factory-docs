@@ -18,7 +18,7 @@ type ReferencesFamilyIndexProps = {
 };
 
 /**
- * Authored `/docs/references` family index: isolation-first introduction,
+ * Authored `/docs/references` family index: short openingSummary purpose lead,
  * discoverability cards for all eight planned reference routes, and a
  * package/version freshness summary from the public API manifest.
  */
@@ -27,7 +27,6 @@ export function ReferencesFamilyIndex({
   freshness,
   chrome,
 }: ReferencesFamilyIndexProps) {
-  const introduction = messages.sections?.introduction;
   const discoverability = messages.sections?.discoverability;
   const openingSummary = messages.openingSummary;
   const cards = resolveReferenceFamilyDiscoverabilityCards(messages);
@@ -35,11 +34,6 @@ export function ReferencesFamilyIndex({
   if (!discoverability?.title) {
     throw new Error(
       "References family index messages must define sections.discoverability.title for collection chrome.",
-    );
-  }
-  if (!introduction?.title) {
-    throw new Error(
-      "References family index messages must define sections.introduction.title for collection chrome.",
     );
   }
 
@@ -51,24 +45,6 @@ export function ReferencesFamilyIndex({
       {openingSummary ? (
         <p className="text-base text-muted-foreground">{openingSummary}</p>
       ) : null}
-      <section
-        aria-labelledby="references-family-introduction-heading"
-        className="mt-8"
-        data-references-family-introduction=""
-        id="introduction"
-      >
-        <h2
-          className="font-serif text-lg font-semibold text-foreground"
-          id="references-family-introduction-heading"
-        >
-          {introduction.title}
-        </h2>
-        {introduction.body ? (
-          <p className="mt-2 text-sm leading-relaxed text-foreground">
-            {introduction.body}
-          </p>
-        ) : null}
-      </section>
       <ReferencesFamilyFreshnessSummaryView
         chrome={chrome}
         freshness={freshness}

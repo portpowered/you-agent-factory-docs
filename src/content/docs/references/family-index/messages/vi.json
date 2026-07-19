@@ -3,10 +3,6 @@
   "description": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
   "openingSummary": "Họ trang này tập hợp các bề mặt hợp đồng đã xuất bản của you-agent-factory. Dùng khi bạn cần tra cứu thao tác API, hình dạng sự kiện, schema cấu hình, lệnh giao diện dòng lệnh (CLI), công cụ Model Context Protocol (MCP), hoặc binding JavaScript runtime—không coi trang đích này là hướng dẫn cách làm.",
   "sections": {
-    "introduction": {
-      "title": "Họ trang này bao gồm gì",
-      "body": "Tham chiếu là các trang tra cứu isolation-first cho hợp đồng factory. Mỗi bề mặt liên kết sở hữu một họ hợp đồng: HTTP API, kho sự kiện bền vững, schema factory và cấu hình, ma trận lệnh giao diện dòng lệnh (CLI), hợp đồng công cụ Model Context Protocol (MCP), hoặc bề mặt JavaScript runtime. Bắt đầu từ đây để chọn đúng trang hợp đồng; chỉ mở trang con khi cần trường, thao tác, hoặc ví dụ của bề mặt đó."
-    },
     "discoverability": {
       "title": "Các bề mặt hợp đồng",
       "body": "Mỗi thẻ mở một họ hợp đồng. Nhãn vẫn dễ đọc trên khung nhìn hẹp."

@@ -1419,8 +1419,10 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   documentation child pages.
   Empty-state + localized metadata proofs for still-empty family indexes
   (workstations); factories authored-entry + overview assertions; workers
-  family-index proofs; authored introduction proofs for the references family
-  index; factories must not list documentation child pages.
+  family-index proofs; references family index asserts purpose lead +
+  Contract surfaces + Package freshness and absence of
+  `sections.introduction` / What this family covers chrome; factories must
+  not list documentation child pages.
 * `src/lib/content/docs-catch-all-static-params.ts`
   Catch-all static-param helpers for nested docs slugs. Default-locale
   `generateStaticParams` merges Fumadocs source params with published-page

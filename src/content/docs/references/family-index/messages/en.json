@@ -3,10 +3,6 @@
   "description": "Contract lookup surfaces for you-agent-factory: HTTP API, events, schemas, command-line interface (CLI), Model Context Protocol (MCP), and JavaScript runtime.",
   "openingSummary": "This family collects the published contract surfaces for you-agent-factory. Use it when you need to look up API operations, event shapes, configuration schemas, command-line interface (CLI) commands, Model Context Protocol (MCP) tools, or JavaScript runtime bindings—without treating this landing as a how-to guide.",
   "sections": {
-    "introduction": {
-      "title": "What this family covers",
-      "body": "References are isolation-first lookup pages for factory contracts. Each linked surface owns one contract family: the HTTP API, durable event corpora, factory and config schemas, the command-line interface (CLI) command matrix, Model Context Protocol (MCP) tool contracts, or the JavaScript runtime surface. Start here to choose the right contract page; open a child page only when you need that surface’s fields, operations, or examples."
-    },
     "discoverability": {
       "title": "Contract surfaces",
       "body": "Each card opens one contract family. Labels stay readable on narrow viewports."

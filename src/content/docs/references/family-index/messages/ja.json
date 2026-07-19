@@ -3,10 +3,6 @@
   "description": "you-agent-factory のコントラクト参照面: HTTP API、イベント、スキーマ、コマンドラインインターフェイス（CLI）、Model Context Protocol（MCP）、および JavaScript ランタイム。",
   "openingSummary": "このファミリーは、you-agent-factory の公開済みコントラクト面をまとめています。API 操作、イベント形状、設定スキーマ、コマンドラインインターフェイス（CLI）コマンド、Model Context Protocol（MCP）ツール、または JavaScript ランタイムのバインディングを調べるときに使います。このランディングはハウツーガイドではありません。",
   "sections": {
-    "introduction": {
-      "title": "このファミリーが扱うこと",
-      "body": "リファレンスは、ファクトリーコントラクト向けの isolation-first な参照ページです。各リンク先は 1 つのコントラクトファミリーを担当します。HTTP API、永続イベントコーパス、ファクトリーおよび設定スキーマ、コマンドラインインターフェイス（CLI）コマンド行列、Model Context Protocol（MCP）ツール契約、または JavaScript ランタイム面です。ここでは適切なコントラクトページを選び、フィールド・操作・例が必要なときだけ子ページを開いてください。"
-    },
     "discoverability": {
       "title": "コントラクト面",
       "body": "各カードは 1 つのコントラクトファミリーを開きます。ラベルは狭いビューポートでも読みやすく保たれます。"
