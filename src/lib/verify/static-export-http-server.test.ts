@@ -45,7 +45,8 @@ describe("createStaticExportHttpServer", () => {
   test("serves index, route HTML, and api/search bootstrap JSON", async () => {
     const root = mkdtempSync(join(tmpdir(), "static-export-server-"));
     writeFileSync(join(root, "index.html"), "<html>home</html>");
-    writeFileSync(join(root, "search.html"), "<html>search</html>");
+    mkdirSync(join(root, "search"), { recursive: true });
+    writeFileSync(join(root, "search", "index.html"), "<html>search</html>");
     mkdirSync(join(root, "api"), { recursive: true });
     writeFileSync(
       join(root, "api", "search"),

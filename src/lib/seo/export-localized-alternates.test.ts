@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { generateMetadata as generateHomeMetadata } from "@/app/(site)/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import { FACTORY_SHIPPED_LOCALES } from "@/lib/content/factory-locale-base-path";
 import { isDocsPageShippedForLocale } from "@/lib/content/pages";
 import { isLiveFactoryCanonicalPath } from "@/lib/seo/export-absolute-canonical";
@@ -200,7 +201,7 @@ describe("verifyExportLocalizedAlternates", () => {
     const dir = mkdtempSync(join(tmpdir(), "localized-alternates-export-"));
     try {
       writeFileSync(
-        join(dir, "index.html"),
+        join(dir, exportHtmlRelativePath("/")),
         pageHtml(
           [
             ["en", "/"],
@@ -215,9 +216,13 @@ describe("verifyExportLocalizedAlternates", () => {
           ),
         ),
       );
-      mkdirSync(join(dir, "docs/concepts"), { recursive: true });
+      const taskQueuePath = join(
+        dir,
+        exportHtmlRelativePath("/docs/concepts/task-queue"),
+      );
+      mkdirSync(join(taskQueuePath, ".."), { recursive: true });
       writeFileSync(
-        join(dir, "docs/concepts/task-queue.html"),
+        taskQueuePath,
         alternateLink(
           "en",
           resolveProductionMetadataHref(
@@ -255,7 +260,7 @@ describe("verifyExportLocalizedAlternates", () => {
     const dir = mkdtempSync(join(tmpdir(), "unshipped-alternates-export-"));
     try {
       writeFileSync(
-        join(dir, "index.html"),
+        join(dir, exportHtmlRelativePath("/")),
         pageHtml(
           [
             ["en", "/"],
@@ -270,9 +275,13 @@ describe("verifyExportLocalizedAlternates", () => {
           ),
         ),
       );
-      mkdirSync(join(dir, "docs/concepts"), { recursive: true });
+      const taskQueuePath = join(
+        dir,
+        exportHtmlRelativePath("/docs/concepts/task-queue"),
+      );
+      mkdirSync(join(taskQueuePath, ".."), { recursive: true });
       writeFileSync(
-        join(dir, "docs/concepts/task-queue.html"),
+        taskQueuePath,
         pageHtml([
           alternateLink(
             "en",

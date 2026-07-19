@@ -5,14 +5,27 @@ import { normalizeGitHubPagesBasePath } from "@/lib/build/static-export";
 /** Default static export output directory from `bun run build:export`. */
 export const DEFAULT_EXPORT_OUT_DIR = "out";
 
-/** Maps a reader route to its relative HTML path under `out/`. */
+/**
+ * Maps a reader route to its relative HTML path under `out/`.
+ *
+ * With static-export `trailingSlash: true`, Next emits directory landings
+ * (`docs/factories/index.html`) rather than flat `docs/factories.html`.
+ * Root `/` remains `index.html`.
+ */
 export function exportHtmlRelativePath(route: string): string {
-  if (route === "/") {
+  if (route === "/" || route === "") {
     return "index.html";
   }
 
-  const trimmed = route.startsWith("/") ? route.slice(1) : route;
-  return `${trimmed}.html`;
+  let trimmed = route.startsWith("/") ? route.slice(1) : route;
+  if (trimmed.endsWith("/")) {
+    trimmed = trimmed.slice(0, -1);
+  }
+  if (trimmed === "") {
+    return "index.html";
+  }
+
+  return `${trimmed}/index.html`;
 }
 
 /** Resolves the absolute exported HTML file path for a reader route. */

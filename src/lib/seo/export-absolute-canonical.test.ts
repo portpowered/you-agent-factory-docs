@@ -6,6 +6,7 @@ import { generateMetadata as generateBlogPostMetadata } from "@/app/(site)/blog/
 import { generateMetadata as generateHomeMetadata } from "@/app/(site)/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import { blogPostHref } from "@/lib/content/blog-page-load";
 import {
   ABSOLUTE_CANONICAL_PROOF_ROUTES,
@@ -212,32 +213,21 @@ describe("verifyExportAbsoluteCanonicals", () => {
   test("passes when export HTML has absolute production canonicals for proof routes", () => {
     const dir = mkdtempSync(join(tmpdir(), "absolute-canonical-export-"));
     try {
-      writeFileSync(
-        join(dir, "index.html"),
-        canonicalLink(
-          resolveProductionMetadataHref("/", PROJECT_SITE_EXPORT_ENV),
-        ),
-      );
-      mkdirSync(join(dir, "docs/concepts"), { recursive: true });
-      writeFileSync(
-        join(dir, "docs/concepts/harness.html"),
-        canonicalLink(
-          resolveProductionMetadataHref(
-            "/docs/concepts/harness",
-            PROJECT_SITE_EXPORT_ENV,
+      for (const route of [
+        "/",
+        "/docs/concepts/harness",
+        "/blog/bottlenecks",
+      ] as const) {
+        const relative = exportHtmlRelativePath(route);
+        const absolutePath = join(dir, relative);
+        mkdirSync(join(absolutePath, ".."), { recursive: true });
+        writeFileSync(
+          absolutePath,
+          canonicalLink(
+            resolveProductionMetadataHref(route, PROJECT_SITE_EXPORT_ENV),
           ),
-        ),
-      );
-      mkdirSync(join(dir, "blog"), { recursive: true });
-      writeFileSync(
-        join(dir, "blog/bottlenecks.html"),
-        canonicalLink(
-          resolveProductionMetadataHref(
-            "/blog/bottlenecks",
-            PROJECT_SITE_EXPORT_ENV,
-          ),
-        ),
-      );
+        );
+      }
 
       const result = verifyExportAbsoluteCanonicals({
         outDir: dir,
@@ -263,20 +253,19 @@ describe("verifyExportAbsoluteCanonicals", () => {
   test("fails when export HTML only has path-prefixed relative canonicals", () => {
     const dir = mkdtempSync(join(tmpdir(), "relative-canonical-export-"));
     try {
-      writeFileSync(
-        join(dir, "index.html"),
-        canonicalLink(`${PROJECT_SITE_BASE_PATH}/`),
-      );
-      mkdirSync(join(dir, "docs/concepts"), { recursive: true });
-      writeFileSync(
-        join(dir, "docs/concepts/harness.html"),
-        canonicalLink(`${PROJECT_SITE_BASE_PATH}/docs/concepts/harness`),
-      );
-      mkdirSync(join(dir, "blog"), { recursive: true });
-      writeFileSync(
-        join(dir, "blog/bottlenecks.html"),
-        canonicalLink(`${PROJECT_SITE_BASE_PATH}/blog/bottlenecks`),
-      );
+      for (const [route, href] of [
+        ["/", `${PROJECT_SITE_BASE_PATH}/`],
+        [
+          "/docs/concepts/harness",
+          `${PROJECT_SITE_BASE_PATH}/docs/concepts/harness`,
+        ],
+        ["/blog/bottlenecks", `${PROJECT_SITE_BASE_PATH}/blog/bottlenecks`],
+      ] as const) {
+        const relative = exportHtmlRelativePath(route);
+        const absolutePath = join(dir, relative);
+        mkdirSync(join(absolutePath, ".."), { recursive: true });
+        writeFileSync(absolutePath, canonicalLink(href));
+      }
 
       const result = verifyExportAbsoluteCanonicals({
         outDir: dir,

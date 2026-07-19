@@ -2,6 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import {
   evaluateReferencePayloadBudgetMeasurements,
   evaluateReferencePayloadBudgets,
@@ -63,16 +64,16 @@ function createExportFixture(options?: {
     omit?: boolean;
   }> = [
     {
-      file: "docs/references/api.html",
+      file: exportHtmlRelativePath("/docs/references/api"),
       bytes: options?.apiHtmlBytes ?? 1_000,
       omit: options?.omitApi,
     },
     {
-      file: "docs/references/events.html",
+      file: exportHtmlRelativePath("/docs/references/events"),
       bytes: options?.eventsHtmlBytes ?? 1_000,
     },
     {
-      file: "docs/references/factory-schema.html",
+      file: exportHtmlRelativePath("/docs/references/factory-schema"),
       bytes: options?.schemaHtmlBytes ?? 1_000,
     },
   ];

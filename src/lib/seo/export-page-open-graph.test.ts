@@ -7,6 +7,7 @@ import { generateMetadata as generateHomeMetadata } from "@/app/(site)/page";
 import { generateMetadata as generateSearchMetadata } from "@/app/(site)/search/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import { blogPostHref } from "@/lib/content/blog-page-load";
 import {
   exportHtmlHasPageSpecificOpenGraph,
@@ -177,8 +178,7 @@ describe("verifyExportPageOpenGraph", () => {
           route,
           PROJECT_SITE_EXPORT_ENV,
         );
-        const relative =
-          route === "/" ? "index.html" : `${route.slice(1)}.html`;
+        const relative = exportHtmlRelativePath(route);
         const absolutePath = join(dir, relative);
         mkdirSync(join(absolutePath, ".."), { recursive: true });
         writeFileSync(
@@ -220,8 +220,7 @@ describe("verifyExportPageOpenGraph", () => {
       ] as const;
 
       for (const [route, title, description] of pages) {
-        const relative =
-          route === "/" ? "index.html" : `${route.slice(1)}.html`;
+        const relative = exportHtmlRelativePath(route);
         const absolutePath = join(dir, relative);
         mkdirSync(join(absolutePath, ".."), { recursive: true });
         writeFileSync(

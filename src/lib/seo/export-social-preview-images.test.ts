@@ -7,6 +7,7 @@ import { generateMetadata as generateHomeMetadata } from "@/app/(site)/page";
 import { generateMetadata as generateSearchMetadata } from "@/app/(site)/search/page";
 import { buildDocsPageMetadata } from "@/app/docs/docs-slug-renderer";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import {
   exportHtmlHasBasePrefixedSocialImages,
   extractSocialImageTags,
@@ -138,8 +139,7 @@ describe("verifyExportSocialPreviewImages", () => {
         PROJECT_SITE_EXPORT_ENV,
       );
       for (const route of SOCIAL_PREVIEW_PROOF_ROUTES) {
-        const relative =
-          route === "/" ? "index.html" : `${route.slice(1)}.html`;
+        const relative = exportHtmlRelativePath(route);
         const absolutePath = join(dir, relative);
         mkdirSync(join(absolutePath, ".."), { recursive: true });
         writeFileSync(absolutePath, pageHtml(absolute));
@@ -165,8 +165,7 @@ describe("verifyExportSocialPreviewImages", () => {
     try {
       const relativeHref = `${PROJECT_SITE_BASE_PATH}${DEFAULT_SOCIAL_PREVIEW_IMAGE_PATH}`;
       for (const route of SOCIAL_PREVIEW_PROOF_ROUTES) {
-        const relative =
-          route === "/" ? "index.html" : `${route.slice(1)}.html`;
+        const relative = exportHtmlRelativePath(route);
         const absolutePath = join(dir, relative);
         mkdirSync(join(absolutePath, ".."), { recursive: true });
         writeFileSync(absolutePath, pageHtml(relativeHref));

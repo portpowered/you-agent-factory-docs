@@ -3,6 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import {
   evaluateProjectSiteExportConsumers,
   projectSiteExportConsumersPass,
@@ -19,6 +20,12 @@ function projectSiteHtmlFixture(): string {
     `<a href="${PROJECT_SITE_BASE_PATH}/docs/guides">Guides</a>`,
     `<a href="${PROJECT_SITE_BASE_PATH}/blog">Blog</a>`,
   ].join("");
+}
+
+function writeExportHtml(outDir: string, route: string, html: string): void {
+  const absolute = join(outDir, exportHtmlRelativePath(route));
+  mkdirSync(join(absolute, ".."), { recursive: true });
+  writeFileSync(absolute, html);
 }
 
 describe("verify-project-site-export-consumers", () => {
@@ -119,15 +126,16 @@ describe("verify-project-site-export-consumers", () => {
     try {
       const outDir = join(root, "out");
       const chunksDir = join(outDir, "_next/static/chunks");
-      mkdirSync(join(outDir, "docs"), { recursive: true });
       mkdirSync(chunksDir, { recursive: true });
-      writeFileSync(join(outDir, "index.html"), projectSiteHtmlFixture());
-      writeFileSync(
-        join(outDir, "docs/guides.html"),
+      writeExportHtml(outDir, "/", projectSiteHtmlFixture());
+      writeExportHtml(
+        outDir,
+        "/docs/guides",
         `<a href="${PROJECT_SITE_BASE_PATH}/docs/guides">Guides</a>`,
       );
-      writeFileSync(
-        join(outDir, "blog.html"),
+      writeExportHtml(
+        outDir,
+        "/blog",
         `<a href="${PROJECT_SITE_BASE_PATH}/blog">Blog</a>`,
       );
       writeFileSync(
@@ -151,15 +159,16 @@ describe("verify-project-site-export-consumers", () => {
     try {
       const outDir = join(root, "out");
       const chunksDir = join(outDir, "_next/static/chunks");
-      mkdirSync(join(outDir, "docs"), { recursive: true });
       mkdirSync(chunksDir, { recursive: true });
-      writeFileSync(join(outDir, "index.html"), projectSiteHtmlFixture());
-      writeFileSync(
-        join(outDir, "docs/guides.html"),
+      writeExportHtml(outDir, "/", projectSiteHtmlFixture());
+      writeExportHtml(
+        outDir,
+        "/docs/guides",
         `<a href="${PROJECT_SITE_BASE_PATH}/docs/guides">Guides</a>`,
       );
-      writeFileSync(
-        join(outDir, "blog.html"),
+      writeExportHtml(
+        outDir,
+        "/blog",
         `<a href="${PROJECT_SITE_BASE_PATH}/blog">Blog</a>`,
       );
       writeFileSync(

@@ -99,6 +99,22 @@ describe("verify-export-base-path", () => {
     ).toBe(false);
   });
 
+  test("exportHtmlReferencesPrefixedNavigationHrefs accepts trailing-slash Link hrefs", () => {
+    const html = [
+      '<a href="/you-agent-factory-docs/">Home</a>',
+      '<a href="/you-agent-factory-docs/docs/guides/">Guides</a>',
+      '<a href="/you-agent-factory-docs/blog/">Blog</a>',
+    ].join("");
+
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        html,
+        PROJECT_SITE_BASE_PATH,
+        ["/", "/docs/guides", "/blog"],
+      ),
+    ).toBe(true);
+  });
+
   test("Pages representative nav hrefs require relative home/getting-started/comparing under project site", () => {
     const representativeHrefs = [
       "/",

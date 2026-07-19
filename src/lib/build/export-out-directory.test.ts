@@ -26,13 +26,28 @@ describe("export-out-directory", () => {
     expect(DEFAULT_EXPORT_OUT_DIR).toBe("out");
   });
 
-  test("exportHtmlRelativePath maps reader routes to out/ HTML files", () => {
+  test("exportHtmlRelativePath maps reader routes to directory index landings", () => {
     expect(exportHtmlRelativePath("/")).toBe("index.html");
     expect(exportHtmlRelativePath("/docs/architecture")).toBe(
-      "docs/architecture.html",
+      "docs/architecture/index.html",
     );
     expect(exportHtmlRelativePath("/tags/attention")).toBe(
-      "tags/attention.html",
+      "tags/attention/index.html",
+    );
+  });
+
+  test("exportHtmlRelativePath maps collection indexes to directory landings", () => {
+    expect(exportHtmlRelativePath("/docs/factories")).toBe(
+      "docs/factories/index.html",
+    );
+    expect(exportHtmlRelativePath("/docs/workers")).toBe(
+      "docs/workers/index.html",
+    );
+    expect(exportHtmlRelativePath("/docs/workstations")).toBe(
+      "docs/workstations/index.html",
+    );
+    expect(exportHtmlRelativePath("/docs/factories/")).toBe(
+      "docs/factories/index.html",
     );
   });
 
@@ -42,7 +57,7 @@ describe("export-out-directory", () => {
       join(cwd, "out", "index.html"),
     );
     expect(resolveExportHtmlFilePath("out", "/docs/glossary", cwd)).toBe(
-      join(cwd, "out", "docs", "glossary.html"),
+      join(cwd, "out", "docs", "glossary", "index.html"),
     );
   });
 

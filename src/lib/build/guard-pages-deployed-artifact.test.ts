@@ -3,6 +3,7 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import {
   absoluteSitePathToRequestUrl,
   evaluatePagesDeployedArtifactProbes,
@@ -59,23 +60,27 @@ function unprefixedPageHtml(title: string): string {
 </body></html>`;
 }
 
+function writeExportHtml(outDir: string, route: string, html: string): void {
+  const absolute = join(outDir, exportHtmlRelativePath(route));
+  mkdirSync(join(absolute, ".."), { recursive: true });
+  writeFileSync(absolute, html, "utf8");
+}
+
 function writeRepairedExport(outDir: string): void {
-  mkdirSync(join(outDir, "docs/guides"), { recursive: true });
-  mkdirSync(join(outDir, "blog"), { recursive: true });
   mkdirSync(join(outDir, "api"), { recursive: true });
   mkdirSync(join(outDir, "_next/static/css"), { recursive: true });
   mkdirSync(join(outDir, "_next/static/chunks"), { recursive: true });
 
-  writeFileSync(join(outDir, "index.html"), prefixedPageHtml("home"), "utf8");
-  writeFileSync(
-    join(outDir, "docs/guides/getting-started.html"),
+  writeExportHtml(outDir, "/", prefixedPageHtml("home"));
+  writeExportHtml(
+    outDir,
+    "/docs/guides/getting-started",
     prefixedPageHtml("getting-started"),
-    "utf8",
   );
-  writeFileSync(
-    join(outDir, "blog/comparing-agent-factories.html"),
+  writeExportHtml(
+    outDir,
+    "/blog/comparing-agent-factories",
     prefixedPageHtml("comparing-agent-factories"),
-    "utf8",
   );
   writeFileSync(
     join(outDir, "api/search"),
@@ -95,22 +100,20 @@ function writeRepairedExport(outDir: string): void {
 }
 
 function writeUnprefixedExport(outDir: string): void {
-  mkdirSync(join(outDir, "docs/guides"), { recursive: true });
-  mkdirSync(join(outDir, "blog"), { recursive: true });
   mkdirSync(join(outDir, "api"), { recursive: true });
   mkdirSync(join(outDir, "_next/static/css"), { recursive: true });
   mkdirSync(join(outDir, "_next/static/chunks"), { recursive: true });
 
-  writeFileSync(join(outDir, "index.html"), unprefixedPageHtml("home"), "utf8");
-  writeFileSync(
-    join(outDir, "docs/guides/getting-started.html"),
+  writeExportHtml(outDir, "/", unprefixedPageHtml("home"));
+  writeExportHtml(
+    outDir,
+    "/docs/guides/getting-started",
     unprefixedPageHtml("getting-started"),
-    "utf8",
   );
-  writeFileSync(
-    join(outDir, "blog/comparing-agent-factories.html"),
+  writeExportHtml(
+    outDir,
+    "/blog/comparing-agent-factories",
     unprefixedPageHtml("comparing-agent-factories"),
-    "utf8",
   );
   writeFileSync(
     join(outDir, "api/search"),

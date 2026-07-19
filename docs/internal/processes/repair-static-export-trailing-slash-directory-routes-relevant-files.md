@@ -20,8 +20,16 @@ GitHub Pages serves trailing-slash URLs as directory lookups
 | --- | --- |
 | `src/lib/build/static-export.ts` | `staticExportNextConfig.trailingSlash: true` + basePath/assetPrefix |
 | `src/lib/build/static-export.test.ts` | Export-only trailingSlash + project-site basePath proofs |
-| `src/lib/build/export-out-directory.ts` | `exportHtmlRelativePath` must map to `…/index.html` under trailingSlash |
+| `src/lib/build/export-out-directory.ts` | `exportHtmlRelativePath` maps `/docs/factories` → `docs/factories/index.html` (root stays `index.html`) |
 | `src/lib/build/export-out-directory.test.ts` | Directory-landing path mapping for collection indexes |
+| `src/lib/build/verify-export-base-path.ts` | Nav href checker accepts trailing-slash Link forms from trailingSlash export |
+
+Trailing-slash input (`/docs/factories/`) normalizes to the same landing as
+non-slash. Do not reintroduce flat `${route}.html` mapping — Pages 404s on
+directory URLs when only flat HTML exists.
+
+Export fixtures and SEO/probe tests that write `out/` HTML should use
+`exportHtmlRelativePath(route)` so they stay aligned with directory landings.
 
 ## Do not touch
 

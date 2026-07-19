@@ -110,6 +110,10 @@ export function exportHtmlReferencesBasePathInternalLinks(
 /**
  * True when exported HTML includes every representative navigation href under
  * the configured base path (home, docs, blog, and optional locale variants).
+ *
+ * With static-export `trailingSlash: true`, Next serializes Link hrefs with a
+ * trailing slash (`/docs/guides/`). Accept both slash and non-slash forms so
+ * the project-site consumer gate stays aligned with the export layout.
  */
 export function exportHtmlReferencesPrefixedNavigationHrefs(
   html: string,
@@ -118,7 +122,10 @@ export function exportHtmlReferencesPrefixedNavigationHrefs(
 ): boolean {
   return hrefs.every((href) => {
     const absolute = withBasePath(href, basePath);
-    if (html.includes(`href="${absolute}"`)) {
+    if (
+      html.includes(`href="${absolute}"`) ||
+      (href !== "/" && html.includes(`href="${absolute}/"`))
+    ) {
       return true;
     }
     // Home may serialize as href="/base" or href="/base/" depending on Link.
