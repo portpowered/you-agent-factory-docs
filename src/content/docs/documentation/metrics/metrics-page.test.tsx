@@ -1,9 +1,9 @@
 /**
  * Page-owned render proof for documentation/metrics.
- * Covers documentation shell, factory-ops metrics identity, the
- * what-it-covers / key-concepts live-run narrative, status/dashboard
- * copyable guidance, the factory-ui metrics teaching chart, limits
- * scope copy, and sibling discovery links.
+ * Covers documentation shell, factory-ops metrics identity, short purpose
+ * lead, status/dashboard copyable guidance, the factory-ui metrics teaching
+ * chart, limits scope copy, and sibling discovery links — without leftover
+ * What It Covers / Key Concepts / How To Use intro chrome.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -38,13 +38,11 @@ describe("metrics documentation page", () => {
       /benchmark leaderboard/i,
     );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
-    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const statusRead = String(
       loadedPage.messages.sections?.statusRead?.body ?? "",
     );
@@ -58,48 +56,27 @@ describe("metrics documentation page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/live-run signals/i);
-    expect(whatItCovers).toMatch(/Factory Session/i);
-    expect(whatItCovers).toMatch(/engine activity/i);
-    expect(whatItCovers).toMatch(/work-token lifecycle/i);
-    expect(whatItCovers).toMatch(/resource/i);
-    expect(whatItCovers).toMatch(/dashboard/i);
-    expect(whatItCovers).not.toMatch(/Model Atlas/i);
-
-    expect(keyConcepts).toMatch(/Factory Session/i);
-    expect(keyConcepts).toMatch(/factoryState/);
-    expect(keyConcepts).toMatch(/runtimeStatus/);
-    expect(keyConcepts).toMatch(/RUNNING/);
-    expect(keyConcepts).toMatch(/IDLE/);
-    expect(keyConcepts).toMatch(
-      /RUNNING while runtimeStatus is IDLE|runtimeStatus is IDLE when/i,
-    );
-    expect(keyConcepts).toMatch(/categories/);
-    expect(keyConcepts).toMatch(/totalTokens/);
-    expect(keyConcepts).toMatch(/resources/);
-    expect(keyConcepts).toMatch(/dashboard/i);
-    expect(keyConcepts).toMatch(/snapshot/i);
-    expect(keyConcepts).toMatch(/time-ordered/i);
-
-    expect(howToUse).toMatch(/dashboard|status/i);
-    expect(howToUse).toMatch(/factory-session/i);
-    expect(howToUse).toMatch(/SPC|control-limit/i);
-    expect(howToUse).toMatch(/logs/i);
-    expect(howToUse).toMatch(/OpenAPI|API doc/i);
-    expect(howToUse).toMatch(/bottlenecks|tokens/i);
+    expect(openingSummary).toMatch(/live-run signals/i);
+    expect(openingSummary).toMatch(/Factory Session/i);
+    expect(openingSummary).not.toMatch(/\n\n/);
+    expect(openingSummary).not.toMatch(/on this page|reader.?shortcut/i);
 
     expect(statusRead).toMatch(
       /GET \/factory-sessions\/\{session_id\}\/status/,
     );
     expect(statusRead).toMatch(/factory-ops metrics|runtime health/i);
+    expect(statusRead).toMatch(/Factory Session/i);
+    expect(statusRead).not.toMatch(/on this page|reader.?shortcut/i);
 
     expect(operatorDashboard).toMatch(/dashboard/i);
     expect(operatorDashboard).toMatch(/session selection/i);
     expect(operatorDashboard).toMatch(/work position/i);
     expect(operatorDashboard).toMatch(/factory activity/i);
+    expect(operatorDashboard).not.toMatch(/on this page|reader.?shortcut/i);
 
     expect(metricsChart).toMatch(/time-ordered|successive ticks/i);
     expect(metricsChart).toMatch(/processing|terminal|failed|categories/i);
+    expect(metricsChart).not.toMatch(/on this page|reader.?shortcut/i);
 
     expect(limits).toMatch(/Metrics covers factory metrics exposure/i);
     expect(limits).toMatch(/not a sync of packaged CLI/i);
@@ -108,14 +85,26 @@ describe("metrics documentation page", () => {
     expect(limits).toMatch(/not SPC control-chart/i);
     expect(limits).toMatch(/not bottleneck diagnosis/i);
     expect(limits).toMatch(/not Model Atlas/i);
-    // Scope copy may say "not Model Atlas"; reject page-meta / shortcut prose only.
-    expect(whatItCovers).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(statusRead).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(operatorDashboard).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(metricsChart).not.toMatch(/on this page|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|reader.?shortcut/i);
+
+    expect(
+      String(loadedPage.messages.links?.statusFactoryStateField ?? ""),
+    ).toBe("factoryState");
+    expect(
+      String(loadedPage.messages.links?.statusRuntimeStatusField ?? ""),
+    ).toBe("runtimeStatus");
+    expect(String(loadedPage.messages.links?.statusCategoriesField ?? "")).toBe(
+      "categories",
+    );
+    expect(
+      String(loadedPage.messages.links?.statusTotalTokensField ?? ""),
+    ).toBe("totalTokens");
+    expect(String(loadedPage.messages.links?.statusResourcesField ?? "")).toBe(
+      "resources",
+    );
+    expect(
+      String(loadedPage.messages.links?.statusReadTogetherNote ?? ""),
+    ).toMatch(/RUNNING while runtimeStatus is IDLE/i);
 
     render(
       <main>
@@ -129,10 +118,13 @@ describe("metrics documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
+    expect(document.getElementById("how-to-use")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Read Session Status" }),
     ).toBeTruthy();
@@ -149,25 +141,6 @@ describe("metrics documentation page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent).toMatch(/live-run signals/i);
-    expect(whatItCoversSection?.textContent).toMatch(/engine activity/i);
-
-    const keyConceptsSection = document.getElementById("key-concepts");
-    expect(keyConceptsSection?.textContent).toMatch(/factoryState/);
-    expect(keyConceptsSection?.textContent).toMatch(/runtimeStatus/);
-    expect(keyConceptsSection?.textContent).toMatch(
-      /RUNNING while runtimeStatus is IDLE/i,
-    );
-    expect(keyConceptsSection?.textContent).toMatch(/categories/);
-    expect(keyConceptsSection?.textContent).toMatch(/totalTokens/);
-    expect(keyConceptsSection?.textContent).toMatch(/time-ordered/i);
-
-    const howToUseSection = document.getElementById("how-to-use");
-    expect(howToUseSection?.textContent).toMatch(/factory-session/i);
-    expect(howToUseSection?.textContent).toMatch(/control-limit/i);
-    expect(howToUseSection?.textContent).toMatch(/logs/i);
-
     const statusReadSection = document.getElementById("status-read");
     expect(statusReadSection?.textContent).toMatch(
       /GET \/factory-sessions\/\{session_id\}\/status/,
@@ -177,6 +150,9 @@ describe("metrics documentation page", () => {
     );
     expect(statusReadSection?.textContent).toMatch(/factoryState/);
     expect(statusReadSection?.textContent).toMatch(/runtimeStatus/);
+    expect(statusReadSection?.textContent).toMatch(
+      /RUNNING while runtimeStatus is IDLE/i,
+    );
     expect(statusReadSection?.textContent).toMatch(/categories/);
     expect(statusReadSection?.textContent).toMatch(/totalTokens/);
     expect(statusReadSection?.textContent).toMatch(/resources/);

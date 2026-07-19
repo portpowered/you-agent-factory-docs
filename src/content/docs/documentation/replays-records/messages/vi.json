@@ -1,19 +1,11 @@
 {
   "title": "Replays / Records",
   "description": "Capture a live you-agent-factory run as a replay artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again.",
-  "openingSummary": "Replays / Records is the you-agent-factory reference for capturing live runs as replay artifacts and replaying saved history without dispatching live workers again.",
+  "openingSummary": "you-agent-factory can capture live runs as replay artifacts and replay saved history without dispatching live workers again.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Replays / Records is the web reference for you-agent-factory record and replay behavior. Use it when you need to capture a live factory run as a replay-compatible artifact, find the saved recording after shutdown, or re-run from saved history without dispatching live workers again. It covers record mode versus replay mode, the default recording root, run-control flags, incompatible flag pairs, copyable record and replay commands, and sensitivity and retention guidance for saved artifacts."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A recording is a replay-compatible artifact that stores observed runtime history from a live factory run. Record mode starts a live run and writes that history to an artifact — either the default generated path or an explicit --record path. Replay mode reads an existing artifact with --replay and reuses the saved history instead of dispatching live workers again. Normal live you run invocations record by default when you pass neither --record nor --replay. Replay artifacts are sensitive because they can contain prompts, payloads, stdout, stderr, and diagnostic metadata. Record and replay stay separate from factory-session pause, resume, or status inspection."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start from a normal live you run when you want a recording written by default. On shutdown, the CLI prints Recording saved: <path> so you can find the artifact after a failure or an unexpected stop. Use the run-controls table below to skip recording, write to an explicit path, or replay a saved artifact. Do not combine the incompatible flag pairs on the same invocation. Treat saved recordings as sensitive operator data: the product does not auto-delete old artifacts, so manage retention in your home directory or CI workspace, and do not commit real customer-run recordings. For packaged CLI topics outside record and replay, run you docs record-replay, you docs mock-workers, or you docs authoring-factories. Use related documentation pages for CLI commands, configuration, and submitting work."
+      "body": "A recording is a replay-compatible artifact that stores observed runtime history from a live factory run. Record mode starts a live run and writes that history to an artifact — either the default generated path or an explicit --record path. Replay mode reads an existing artifact with --replay and reuses the saved history instead of dispatching live workers again. Normal live you run invocations record by default when you pass neither --record nor --replay. Start from a normal live you run when you want a recording written by default. On shutdown, the CLI prints Recording saved: <path> so you can find the artifact after a failure or an unexpected stop. Use the run-controls table below to skip recording, write to an explicit path, or replay a saved artifact. Do not combine the incompatible flag pairs on the same invocation. Treat saved recordings as sensitive operator data: the product does not auto-delete old artifacts, so manage retention in your home directory or CI workspace, and do not commit real customer-run recordings. Record and replay stay separate from factory-session pause, resume, or status inspection."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",

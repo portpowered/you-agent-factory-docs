@@ -3,17 +3,9 @@
   "description": "Distinguish you-agent-factory resource capacity, provider limits, queue pressure, and retry/limit behavior without inventing a global throttle guarantee.",
   "openingSummary": "Factory slowdowns and stops come from different pressure surfaces — configured capacity, provider quotas, queue backlog, and workstation retry limits — not one global throttle.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Throttling and limits in you-agent-factory are four distinct pressure surfaces that can slow or stop a run: configured resource capacity, provider limits, queue pressure, and retry/limit (circuit-breaker) behavior. Use Throttling and limits when a factory feels constrained and you need to tell those surfaces apart. It is not a Model Atlas page, not a resources-only deep-dive, and not a fabricated global rate-limit SLA."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "These four surfaces are different mechanisms, not one global throttle. Diagnose load by naming which surface is active before changing capacity, provider settings, or workstation limits."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Ground each surface in current product behavior only. Start with the capacity and workstation-limits examples below when you need copyable fragments, then match the slowdown you see to one of the four surfaces."
+      "body": "These four surfaces are different mechanisms, not one global throttle. Diagnose load by naming which surface is active before changing capacity, provider settings, or workstation limits. Ground each surface in current product behavior only. Start with the capacity and workstation-limits examples below when you need copyable fragments, then match the slowdown you see to one of the four surfaces."
     },
     "minimalExample": {
       "title": "Minimal Example",

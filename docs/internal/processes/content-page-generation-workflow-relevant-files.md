@@ -1834,6 +1834,55 @@ Representative paired-slice verification:
 * `src/lib/content/qwen-3-6-discovery.test.tsx`
 * `src/lib/content/glm-family-discovery.test.tsx`
 
+### Documentation Program ops/platform intro strip (page-local)
+
+For the nine ops/platform Documentation Program trees under
+`src/content/docs/documentation/` (`logs`, `metrics`, `resources`, `petri`,
+`packaged-documents`, `dashboard-ui-overview`, `security-trust-boundaries`,
+`throttling-and-limits`, `replays-records`):
+
+- Remove `#what-it-covers` / `#key-concepts` Sections from `page.mdx` and drop
+  `sections.whatItCovers` / `sections.keyConcepts` from every shipped locale.
+- Keep at most one short purpose lead via `openingSummary` (rendered by
+  `DocsOpeningSummary`); omit or empty it when the first remaining body section
+  already opens usefully. Do not ship a multi-paragraph Summary section heading.
+  Purpose leads must be product-first: the topic/behavior is the subject (for
+  example “Local you-agent-factory trust boundaries define…” or
+  “you-agent-factory can capture live runs as replay artifacts…”). Reject
+  page-as-subject / page-role openers such as “Security / Trust Boundaries
+  describes…”, “Replays / Records is the … reference for…”, or “This page
+  explains…”. Update every shipped locale together; page-local tests should
+  assert short lead length and reject those page-meta patterns.
+- Strip `#how-to-use` when it is only sibling-pointer / opening boilerplate
+  (`metrics`, `resources`). When How To Use wraps primary operational teaching
+  (tables, commands, CPN asset, pressure-surface table), keep that teaching
+  visible—promote unique facts that lived only under Key Concepts into the
+  remaining body (for example throttling surface table into `#how-to-use`,
+  packaged callouts into `#how-to-use`, dashboard/security bind URL teaching
+  into `#how-to-use`).
+- Do not edit core Program sibling trees owned by
+  `repair-documentation-program-intro-strip-core`, and do not delete unused
+  shared helpers (dead-code consolidation owns that).
+- Page-local tests assert intro absence (MCP #156 / Events #171 style):
+  `sections.whatItCovers` / `sections.keyConcepts` undefined;
+  `queryByRole` / `getElementById` null for What It Covers / Key Concepts;
+  `openingSummary` empty or one short purpose sentence (no `\n\n` overview).
+  Retarget body asserts onto promoted teaching markers (`#how-to-use`,
+  status/dashboard sections, limits, callouts)—not restore intros to satisfy
+  old expects. Metrics/resources How To Use was stripped as boilerplate; other
+  ops pages keep How To Use when it wraps primary teaching.
+- Browser-verify all nine routes with
+  `bun src/content/docs/documentation/logs/assert-ops-platform-intro-strip-browser.ts`
+  (webpack `next dev`, unique port 3681 default, Playwright; kill server on
+  exit). Assert absent What It Covers / Key Concepts / `#what-it-covers` /
+  `#key-concepts` / visible `Summary` section heading; allow short purpose
+  lead via `DocsOpeningSummary` (`[data-opening-summary="folded"]`); assert
+  one operational teaching marker per route (logs retention, metrics
+  `factoryState`/`runtimeStatus`, resources ownership/pool, petri `task:init`,
+  packaged `you docs`, dashboard/security bind URLs, throttling surface table,
+  replays `--replay`). Prefer `OPS_INTRO_STRIP_PROBE_BASE_URL` when a server is
+  warm.
+
 ## Reviewer-facing verification
 
 * Canonical concept page slices should keep one `*-slice-verification` file with
