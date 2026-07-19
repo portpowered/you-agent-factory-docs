@@ -2,32 +2,55 @@ import { describe, expect, test } from "bun:test";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import {
   collectStaticExportContractedSurfaceDigests,
+  STATIC_EXPORT_DETERMINISM_HTML_RELATIVE_PATHS,
   serializeContractedSurfaceDigests,
 } from "@/lib/build/static-export-contracted-export-surfaces";
 import { evaluateStaticExportDeterminism } from "@/lib/build/static-export-optimization-evidence";
 
+function writeDirectoryLanding(
+  outDir: string,
+  route: string,
+  html: string,
+): void {
+  const relative = exportHtmlRelativePath(route);
+  const absolute = join(outDir, relative);
+  mkdirSync(join(absolute, ".."), { recursive: true });
+  writeFileSync(absolute, html);
+}
+
 describe("static-export-contracted-export-surfaces", () => {
+  test("determinism HTML paths use trailing-slash directory landings", () => {
+    expect([...STATIC_EXPORT_DETERMINISM_HTML_RELATIVE_PATHS]).toEqual([
+      "index.html",
+      "blog/index.html",
+      "docs/guides/index.html",
+    ]);
+  });
+
   test("collects bootstrap hashes and HTML contract digests", () => {
     const root = join(
       tmpdir(),
       `static-export-contracted-${Date.now()}-${Math.random().toString(16).slice(2)}`,
     );
     mkdirSync(join(root, "api"), { recursive: true });
-    mkdirSync(join(root, "docs"), { recursive: true });
 
     writeFileSync(join(root, "api/search"), '{"type":"advanced"}');
-    writeFileSync(
-      join(root, "index.html"),
+    writeDirectoryLanding(
+      root,
+      "/",
       '<html><link href="/you-agent-factory-docs/_next/static/css/a.css"/></html>',
     );
-    writeFileSync(
-      join(root, "blog.html"),
+    writeDirectoryLanding(
+      root,
+      "/blog",
       '<html><script src="/you-agent-factory-docs/_next/static/chunks/a.js"></script></html>',
     );
-    writeFileSync(
-      join(root, "docs/guides.html"),
+    writeDirectoryLanding(
+      root,
+      "/docs/guides",
       '<html><link href="/you-agent-factory-docs/_next/static/css/b.css"/></html>',
     );
 
@@ -43,6 +66,12 @@ describe("static-export-contracted-export-surfaces", () => {
 
       expect(first.digests["bootstrap:api/search"]).toMatch(/^[a-f0-9]{64}$/);
       expect(first.digests["html-contract:index.html"]).toMatch(
+        /^[a-f0-9]{64}$/,
+      );
+      expect(first.digests["html-contract:blog/index.html"]).toMatch(
+        /^[a-f0-9]{64}$/,
+      );
+      expect(first.digests["html-contract:docs/guides/index.html"]).toMatch(
         /^[a-f0-9]{64}$/,
       );
       expect(
@@ -67,17 +96,15 @@ describe("static-export-contracted-export-surfaces", () => {
     );
     mkdirSync(join(a, "api"), { recursive: true });
     mkdirSync(join(b, "api"), { recursive: true });
-    mkdirSync(join(a, "docs"), { recursive: true });
-    mkdirSync(join(b, "docs"), { recursive: true });
 
     const html =
       '<html><link href="/you-agent-factory-docs/_next/static/css/a.css"/></html>';
     writeFileSync(join(a, "api/search"), '{"v":1}');
     writeFileSync(join(b, "api/search"), '{"v":2}');
     for (const root of [a, b]) {
-      writeFileSync(join(root, "index.html"), html);
-      writeFileSync(join(root, "blog.html"), html);
-      writeFileSync(join(root, "docs/guides.html"), html);
+      writeDirectoryLanding(root, "/", html);
+      writeDirectoryLanding(root, "/blog", html);
+      writeDirectoryLanding(root, "/docs/guides", html);
     }
 
     try {

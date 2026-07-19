@@ -45,7 +45,8 @@ describe("createStaticExportHttpServer", () => {
   test("serves index, route HTML, and api/search bootstrap JSON", async () => {
     const root = mkdtempSync(join(tmpdir(), "static-export-server-"));
     writeFileSync(join(root, "index.html"), "<html>home</html>");
-    writeFileSync(join(root, "search.html"), "<html>search</html>");
+    mkdirSync(join(root, "search"), { recursive: true });
+    writeFileSync(join(root, "search", "index.html"), "<html>search</html>");
     mkdirSync(join(root, "api"), { recursive: true });
     writeFileSync(
       join(root, "api", "search"),
@@ -69,6 +70,45 @@ describe("createStaticExportHttpServer", () => {
       const bootstrap = await httpGetText(`${session.baseUrl}/api/search`);
       expect(bootstrap.status).toBe(200);
       expect(bootstrap.body).toContain('"type":"advanced"');
+    } finally {
+      await session.cleanup();
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  test("collection index directory landings resolve for non-slash and trailing-slash URLs", async () => {
+    const root = mkdtempSync(join(tmpdir(), "static-export-collection-"));
+    const collectionIndexes = [
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
+    ] as const;
+
+    for (const route of collectionIndexes) {
+      const dir = join(root, route.slice(1));
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(
+        join(dir, "index.html"),
+        `<html>${route.slice("/docs/".length)}</html>`,
+      );
+    }
+
+    const session = await createStaticExportHttpServer({
+      outDir: root,
+      port: 3192,
+    });
+
+    try {
+      for (const route of collectionIndexes) {
+        const label = route.slice("/docs/".length);
+        const nonSlash = await httpGetText(`${session.baseUrl}${route}`);
+        expect(nonSlash.status).toBe(200);
+        expect(nonSlash.body).toContain(label);
+
+        const trailingSlash = await httpGetText(`${session.baseUrl}${route}/`);
+        expect(trailingSlash.status).toBe(200);
+        expect(trailingSlash.body).toContain(label);
+      }
     } finally {
       await session.cleanup();
       rmSync(root, { recursive: true, force: true });

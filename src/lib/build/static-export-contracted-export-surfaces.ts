@@ -9,6 +9,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { BUILT_APP_GITHUB_PAGES_BASE_PATH } from "@/lib/build/built-app-html-paths";
+import { exportHtmlRelativePath } from "@/lib/build/export-out-directory";
 import {
   exportHtmlReferencesBasePathAssets,
   exportHtmlReferencesRootLevelNextAssets,
@@ -22,11 +23,12 @@ export const STATIC_EXPORT_DETERMINISM_BOOTSTRAP_RELATIVE_PATHS = [
 /**
  * Representative HTML pages checked for base-path contract equivalence.
  * Digests encode contract outcomes, not raw HTML bytes (Next build ids vary).
+ * Paths follow the trailing-slash directory-landing layout (`…/index.html`).
  */
 export const STATIC_EXPORT_DETERMINISM_HTML_RELATIVE_PATHS = [
-  "index.html",
-  "blog.html",
-  "docs/guides.html",
+  exportHtmlRelativePath("/"),
+  exportHtmlRelativePath("/blog"),
+  exportHtmlRelativePath("/docs/guides"),
 ] as const;
 
 export type StaticExportContractedSurfaceDigests = {

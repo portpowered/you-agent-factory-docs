@@ -1,4 +1,18 @@
 /**
+ * Strips a trailing slash from an app-relative path, keeping `/` as `/`.
+ *
+ * Static-export `trailingSlash: true` may serialize Link/sitemap forms with a
+ * trailing slash; canonical sitemap/nav/sidebar hrefs stay non-slash and must
+ * still resolve against directory landings under `out/`.
+ */
+export function normalizeAppPathTrailingSlash(pathname: string): string {
+  if (pathname === "/" || pathname === "") {
+    return "/";
+  }
+  return pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
+}
+
+/**
  * Prefixes an internal app href with a GitHub Pages project-site base path.
  * External URLs, hash links, and already-prefixed paths are returned unchanged.
  *

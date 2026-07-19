@@ -25,9 +25,26 @@ describe("static export build mode", () => {
     );
   });
 
-  test("static export config keeps images unoptimized for GitHub Pages", () => {
+  test("static export config enables trailingSlash for directory landings", () => {
     expect(staticExportNextConfig.output).toBe("export");
+    expect(staticExportNextConfig.trailingSlash).toBe(true);
     expect(staticExportNextConfig.images).toEqual({ unoptimized: true });
+  });
+
+  test("non-export builds do not force a trailing-slash policy", () => {
+    const config = resolveNextConfigForBuildMode({});
+    expect(config).toEqual({});
+    expect(Object.hasOwn(config, "trailingSlash")).toBe(false);
+  });
+
+  test("project-site export keeps basePath and trailingSlash together", () => {
+    const config = resolveNextConfigForBuildMode({
+      [STATIC_EXPORT_ENV]: "1",
+      [GITHUB_PAGES_BASE_PATH_ENV]: "/you-agent-factory-docs",
+    });
+    expect(config.trailingSlash).toBe(true);
+    expect(config.basePath).toBe("/you-agent-factory-docs");
+    expect(config.assetPrefix).toBe("/you-agent-factory-docs");
   });
 
   test("normalizes GitHub Pages base path values", () => {

@@ -79,4 +79,24 @@ describe("resolveProductionMetadataHref", () => {
       ),
     ).toBe(`${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/docs/guides`);
   });
+
+  test("keeps non-slash canonical absolute URLs when hrefs include a trailing slash", () => {
+    expect(
+      resolveProductionMetadataHref(
+        "/docs/factories/",
+        PROJECT_SITE_EXPORT_ENV,
+      ),
+    ).toBe(`${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/docs/factories`);
+    expect(
+      resolveProductionMetadataHref("/docs/workers/", PROJECT_SITE_EXPORT_ENV),
+    ).toBe(`${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/docs/workers`);
+    expect(
+      resolveProductionMetadataHref(
+        "/docs/workstations/",
+        PROJECT_SITE_EXPORT_ENV,
+      ),
+    ).toBe(
+      `${PRODUCTION_SITE_ORIGIN}${PROJECT_SITE_BASE_PATH}/docs/workstations`,
+    );
+  });
 });

@@ -1,7 +1,27 @@
 import { describe, expect, test } from "bun:test";
-import { stripBasePathFromHref, withBasePath } from "./site-path";
+import {
+  normalizeAppPathTrailingSlash,
+  stripBasePathFromHref,
+  withBasePath,
+} from "./site-path";
 
 const PROJECT_SITE_BASE_PATH = "/you-agent-factory-docs";
+
+describe("normalizeAppPathTrailingSlash", () => {
+  test("keeps root and strips trailing slashes from non-root paths", () => {
+    expect(normalizeAppPathTrailingSlash("/")).toBe("/");
+    expect(normalizeAppPathTrailingSlash("")).toBe("/");
+    expect(normalizeAppPathTrailingSlash("/docs/factories")).toBe(
+      "/docs/factories",
+    );
+    expect(normalizeAppPathTrailingSlash("/docs/factories/")).toBe(
+      "/docs/factories",
+    );
+    expect(normalizeAppPathTrailingSlash("/docs/workers/")).toBe(
+      "/docs/workers",
+    );
+  });
+});
 
 describe("withBasePath", () => {
   test("returns href unchanged when base path is empty", () => {

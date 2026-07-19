@@ -91,9 +91,9 @@ export const RECORDED_STATIC_EXPORT_OPTIMIZATION_EVIDENCE = {
         "ed3ce3ce6391a059a0b3af78c5deaab549ecffd65044399add23de5a2c989a6e",
       "html-contract:index.html":
         "d1e7421964ba40174999d9c113c68a2829298c6554c88c3563a87d8fb19e997b",
-      "html-contract:blog.html":
+      "html-contract:blog/index.html":
         "5d98631ff99171f9efb45819aa72196141b4e5aebbfbad35a739ceed7918e439",
-      "html-contract:docs/guides.html":
+      "html-contract:docs/guides/index.html":
         "7eb69fdda291518cab90cbe448b95516009dff0b9528c27e591ef16c287731b0",
     },
     secondDigests: {
@@ -107,9 +107,9 @@ export const RECORDED_STATIC_EXPORT_OPTIMIZATION_EVIDENCE = {
         "ed3ce3ce6391a059a0b3af78c5deaab549ecffd65044399add23de5a2c989a6e",
       "html-contract:index.html":
         "d1e7421964ba40174999d9c113c68a2829298c6554c88c3563a87d8fb19e997b",
-      "html-contract:blog.html":
+      "html-contract:blog/index.html":
         "5d98631ff99171f9efb45819aa72196141b4e5aebbfbad35a739ceed7918e439",
-      "html-contract:docs/guides.html":
+      "html-contract:docs/guides/index.html":
         "7eb69fdda291518cab90cbe448b95516009dff0b9528c27e591ef16c287731b0",
     },
   },

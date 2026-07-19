@@ -6,7 +6,10 @@ import {
   type BuildModeEnv,
   resolveGitHubPagesBasePath,
 } from "@/lib/build/static-export";
-import { stripBasePathFromHref } from "@/lib/navigation/site-path";
+import {
+  normalizeAppPathTrailingSlash,
+  stripBasePathFromHref,
+} from "@/lib/navigation/site-path";
 import { isCanonicalPublicDiscoveryPath } from "@/lib/seo/export-absolute-canonical";
 import { resolveProductionMetadataHref } from "@/lib/seo/production-metadata-base";
 import {
@@ -50,7 +53,9 @@ function appPathFromSitemapLoc(loc: string, env: BuildModeEnv): string | null {
   try {
     const pathname = new URL(loc).pathname;
     const basePath = resolveGitHubPagesBasePath(env);
-    return stripBasePathFromHref(pathname, basePath);
+    return normalizeAppPathTrailingSlash(
+      stripBasePathFromHref(pathname, basePath),
+    );
   } catch {
     return null;
   }

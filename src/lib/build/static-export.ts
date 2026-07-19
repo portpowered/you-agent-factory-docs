@@ -68,14 +68,23 @@ export function resolveBasePathForExportVerification(
   return normalizeGitHubPagesBasePath(env[GITHUB_PAGES_BASE_PATH_ENV]);
 }
 
+/**
+ * Static-export Next settings for GitHub Pages.
+ *
+ * `trailingSlash: true` makes `next export` emit directory landings
+ * (`docs/factories/index.html`) so Pages can serve both `/docs/factories`
+ * and `/docs/factories/` — flat `docs/factories.html` alone 404s on the
+ * trailing-slash form.
+ */
 export const staticExportNextConfig = {
   output: "export",
+  trailingSlash: true,
   images: { unoptimized: true },
-} as const satisfies Pick<NextConfig, "output" | "images">;
+} as const satisfies Pick<NextConfig, "output" | "trailingSlash" | "images">;
 
 export type StaticExportNextConfig = Pick<
   NextConfig,
-  "output" | "images" | "basePath" | "assetPrefix"
+  "output" | "trailingSlash" | "images" | "basePath" | "assetPrefix"
 >;
 
 export function resolveNextConfigForBuildMode(

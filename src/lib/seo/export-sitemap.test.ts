@@ -98,6 +98,28 @@ describe("public sitemap routes", () => {
     }
   });
 
+  test("collection index sitemap locs stay non-slash canonical hrefs", () => {
+    const routes = listPublicSitemapRoutes();
+    const urls = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+    const collectionIndexes = [
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
+    ] as const;
+
+    for (const route of collectionIndexes) {
+      expect(routes).toContain(route);
+      expect(routes).not.toContain(`${route}/`);
+      const absolute = resolveProductionMetadataHref(
+        route,
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      expect(absolute.endsWith("/")).toBe(false);
+      expect(urls).toContain(absolute);
+      expect(urls).not.toContain(`${absolute}/`);
+    }
+  });
+
   test("root / unset-base-path absolute URLs stay origin-only", () => {
     const urls = listPublicSitemapAbsoluteUrls(ROOT_EXPORT_ENV);
     for (const url of urls) {
