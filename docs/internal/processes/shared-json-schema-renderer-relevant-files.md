@@ -150,7 +150,14 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   system-config: `defaults.workerModelProvider` / `defaults.workerModel`). Root
   pointers must be anchor-safe (not bare `/`). Harness route:
   `/schema-renderer-harness` under `src/app/(dev)/` — not a published
-  `/docs/references/*-schema` page.
+  `/docs/references/*-schema` page. Browser-closeout for a schema rename/polish
+  lane: colocated
+  `src/content/docs/references/system-config-schema/assert-system-config-schema-rename-browser.ts`
+  (unique port `SYSTEM_CONFIG_SCHEMA_RENAME_PROBE_PORT`, webpack `bun run dev`,
+  kill server on exit). Assert `data-schema-status="ready"`, System config
+  title/lead, absent What It Covers / filter / Definitions catalog, authored
+  example fields, old slug non-redirect 404, and family-index +
+  global-configuration inbound links to `/docs/references/system-config-schema`.
 
 ## Verification preference
 
