@@ -15,6 +15,7 @@ import {
   createShellCollectionPageNode,
   type ShellCollectionSidebarDefinition,
 } from "@/lib/navigation/shell-collection-page-tree";
+import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 
 /**
  * Reader-visible explorer top-level order: CLI + W15 family collection
@@ -101,6 +102,11 @@ export function buildDocsSidebarSectionNodes({
 
   for (const page of pages) {
     if (isDocsExplorerTopLevelFaqPage(page.docsSlug)) {
+      continue;
+    }
+    // W18 move stubs keep static compatibility routes but are not explorer
+    // destinations under Program documentation (or any collection folder).
+    if (isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)) {
       continue;
     }
 

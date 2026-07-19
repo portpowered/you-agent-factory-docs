@@ -251,7 +251,8 @@ describe("collection-driven docs sidebar verification", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).not.toContain("Workers");
     expect(secondaryFolderNames).toContain("Observability");
   });
 });

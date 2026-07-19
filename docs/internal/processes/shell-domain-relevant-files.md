@@ -18,9 +18,11 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Factories → Resources) and System Operations (Observability) via
   `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership lives in
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (FAQ omitted; top-level
-  explorer page); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
+  explorer page; W18 documentation move stubs omitted as compatibility-only
+  routes); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
   top-group-only derived view. The documentation sidebar adapter nests
-  secondaries from the membership map. Glossary still uses ontology-first classification membership
+  secondaries from the membership map and also filters W18 move stubs via
+  `isDocumentationRouteMigrationOldBrowsePath`. Glossary still uses ontology-first classification membership
   with editorial `sidebarGrouping.glossary` fallback.
 * `src/lib/navigation/docs-sidebar-grouping-adapter.ts`
   Builds grouped Concepts/Glossary/Program documentation sidebar nodes;
@@ -29,8 +31,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   emits three-level nodes: top-group separators, nested secondary folders
   (Workers / Workstations / Factories / Resources under Factory
   Configuration; Observability under System Operations), then page links.
-  Empty top groups and empty secondaries are omitted; FAQ is never a
-  Program documentation child.
+  Empty top groups and empty secondaries are omitted; FAQ and W18
+  documentation move stubs are never Program documentation children.
+* `src/lib/navigation/docs-sidebar-sections.ts`
+  Builds explorer top-level folders; skips FAQ (promoted to top-level page)
+  and W18 documentation move stubs when assigning pages to collection
+  folders so stubs are not advertised under Program documentation.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:

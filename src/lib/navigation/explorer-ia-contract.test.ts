@@ -43,6 +43,7 @@ import {
   topLevelFolderNames,
   topLevelPageEntries,
 } from "@/lib/navigation/explorer-tree-signature";
+import { listDocumentationRouteMigrationOldRoutes } from "@/lib/seo/documentation-route-migration";
 import { source } from "@/lib/source";
 
 const DECLARED_CONCEPTS_GROUP_ORDER = Object.values(
@@ -64,31 +65,28 @@ const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
   FACTORY_EXPLORER_FOLDER_LABELS.workstations,
 ] as const;
 
-/** R01 eight Program documentation pages with declared explorer subgroups. */
-const R01_PROGRAM_DOCUMENTATION_PAGES = [
-  { slug: "mock-workers", group: "factory-configuration" },
+/**
+ * R01 Program documentation pages that remain explorer members after W18
+ * move-stub demotion. Stub R01 routes stay published for compatibility only.
+ */
+const R01_PROGRAM_DOCUMENTATION_EXPLORER_PAGES = [
   { slug: "throttling-and-limits", group: "factory-configuration" },
-  { slug: "script-workers", group: "factory-configuration" },
-  { slug: "poller-workers", group: "factory-configuration" },
-  { slug: "agent-workers", group: "factory-configuration" },
-  { slug: "inference-workers", group: "factory-configuration" },
   { slug: "packaged-documents", group: "packaged-factories" },
-  { slug: "packaged-factories", group: "packaged-factories" },
 ] as const;
 
 /**
  * Story 003 — non-secondary Program documentation top groups and their pages.
  * Factory Configuration / System Operations nesting is owned by story 004.
+ * W18 move stubs are excluded from explorer membership.
  */
 const STORY_003_DIRECT_TOP_GROUP_PAGES = {
   "system-feature-set": [
-    "dynamic-workflows",
     "harness-support",
     "replays-records",
     "submitting-work",
   ],
-  interfaces: ["cli", "cli-command-index", "api-doc", "mcp"],
-  "packaged-factories": ["packaged-factories", "packaged-documents"],
+  interfaces: ["cli", "mcp"],
+  "packaged-factories": ["packaged-documents"],
   "internal-architecture": ["architecture-of-system", "petri"],
   "additional-references": [
     "what-is-you-agent-factory",
@@ -102,24 +100,12 @@ const STORY_003_DIRECT_TOP_GROUP_PAGES = {
 
 /**
  * Story 004 — exact secondary membership under Factory Configuration and
- * System Operations. replays-records stays under System feature set only.
+ * System Operations after W18 move-stub demotion. Empty Workers / Workstations /
+ * Factories secondaries are omitted by the sidebar builder. replays-records
+ * stays under System feature set only.
  */
 const STORY_004_SECONDARY_PAGES = {
   "factory-configuration": {
-    workers: [
-      "workers",
-      "poller-workers",
-      "script-workers",
-      "agent-workers",
-      "inference-workers",
-      "mock-workers",
-    ],
-    workstations: ["workstations"],
-    factories: [
-      "configuration",
-      "factory-session",
-      "global-configuration-factories",
-    ],
     resources: ["resources", "throttling-and-limits"],
   },
   "system-operations": {
@@ -266,11 +252,7 @@ describe("explorer IA exact-order contract", () => {
         documentation,
         SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
       ),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
-      ),
-    );
+    ).toEqual(["Resources"]);
     expect(
       secondaryFolderNamesUnderSeparator(
         documentation,
@@ -286,6 +268,14 @@ describe("explorer IA exact-order contract", () => {
         page.url.endsWith("/docs/documentation/faq"),
       ),
     ).toBe(false);
+    for (const oldRoute of listDocumentationRouteMigrationOldRoutes()) {
+      expect(
+        pageEntriesInFolder(documentation).some((page) =>
+          page.url.endsWith(oldRoute),
+        ),
+        `${oldRoute} must not appear in Program documentation explorer`,
+      ).toBe(false);
+    }
   });
 
   test("default-locale Program documentation places feature, interface, packaged, architecture, and additional pages under declared top groups", async () => {
@@ -383,11 +373,7 @@ describe("explorer IA exact-order contract", () => {
         documentation,
         factoryConfigurationLabel,
       ),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
-      ),
-    );
+    ).toEqual(["Resources"]);
     expect(
       secondaryFolderNamesUnderSeparator(documentation, systemOperationsLabel),
     ).toEqual(
@@ -532,11 +518,7 @@ describe("explorer IA exact-order contract", () => {
         documentation,
         SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
       ),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
-      ),
-    );
+    ).toEqual(["Resources"]);
     expect(
       secondaryFolderNamesUnderSeparator(
         documentation,
@@ -548,16 +530,33 @@ describe("explorer IA exact-order contract", () => {
       ),
     );
 
-    const workersPages = pageEntriesInSecondaryFolderUnderSeparator(
+    for (const oldRoute of listDocumentationRouteMigrationOldRoutes()) {
+      expect(
+        pageEntriesInFolder(documentation).some((page) =>
+          page.url.endsWith(oldRoute),
+        ),
+        `${oldRoute} must not appear in Program documentation explorer`,
+      ).toBe(false);
+    }
+
+    const resourcesPages = pageEntriesInSecondaryFolderUnderSeparator(
       documentation,
       SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
-      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].workers,
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].resources,
     );
     expect(
-      workersPages.some((entry) =>
-        urlEndsWithSlug(entry.url, "documentation", "mock-workers"),
+      resourcesPages.some((entry) =>
+        urlEndsWithSlug(entry.url, "documentation", "throttling-and-limits"),
       ),
     ).toBe(true);
+    expect(
+      secondaryFolderNamesUnderSeparator(
+        documentation,
+        SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
+      ),
+    ).not.toContain(
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].workers,
+    );
 
     const observabilityPages = pageEntriesInSecondaryFolderUnderSeparator(
       documentation,
@@ -632,7 +631,7 @@ describe("explorer IA exact-order contract", () => {
       throw new Error("expected Program documentation folder");
     }
 
-    for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
+    for (const page of R01_PROGRAM_DOCUMENTATION_EXPLORER_PAGES) {
       expect(FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[page.slug]).toBe(
         page.group,
       );
@@ -723,7 +722,7 @@ describe("explorer IA exact-order contract", () => {
         explorer.documentationGroups["additional-references"],
       );
 
-      for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
+      for (const page of R01_PROGRAM_DOCUMENTATION_EXPLORER_PAGES) {
         const groupLabel = explorer.documentationGroups[page.group];
         const underGroup = pageEntriesUnderSeparator(documentation, groupLabel);
         expect(

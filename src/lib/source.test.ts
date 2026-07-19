@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import type { Node } from "fumadocs-core/page-tree";
+import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
+import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 import { source } from "@/lib/source";
 
 const SECTION_FOLDER_NAMES = {
@@ -143,7 +145,19 @@ describe("docs navigation source", () => {
     for (const [section, folderName] of Object.entries(SECTION_FOLDER_NAMES)) {
       const folderUrls = collectPageUrls(getFolderChildren(folderName));
       const publishedSectionUrls = publishedPages
-        .filter((page) => page.docsSlug.startsWith(`${section}/`))
+        .filter((page) => {
+          if (!page.docsSlug.startsWith(`${section}/`)) {
+            return false;
+          }
+          if (section !== "documentation") {
+            return true;
+          }
+          // FAQ is top-level; W18 move stubs keep compatibility HTML only.
+          return (
+            !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
+            !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)
+          );
+        })
         .map((page) => page.url);
 
       if (publishedSectionUrls.length === 0) {
@@ -231,11 +245,13 @@ describe("docs navigation source", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).not.toContain("Workers");
     expect(secondaryFolderNames).toContain("Observability");
     expect(pageUrls).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(pageUrls).toContain("/docs/documentation/cli");
-    expect(pageUrls).toContain("/docs/documentation/mock-workers");
+    expect(pageUrls).toContain("/docs/documentation/throttling-and-limits");
+    expect(pageUrls).not.toContain("/docs/documentation/mock-workers");
     expect(pageUrls).toContain("/docs/documentation/logs");
   });
 });

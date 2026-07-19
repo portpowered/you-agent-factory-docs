@@ -1,4 +1,5 @@
 import type { Node } from "fumadocs-core/page-tree";
+import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
 import { getConceptById } from "@/lib/content/registry-runtime";
 import {
@@ -18,6 +19,7 @@ import {
   type DocsCollectionSidebarGroupingResolverId,
   isDocsCollectionSidebarGroupingResolverId,
 } from "@/lib/docs/collection-definition-contract";
+import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 
 function createPageNode(page: DocsPageSource): Node {
   return {
@@ -134,15 +136,21 @@ function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
 /**
  * Program documentation emits a three-level explorer: top-group separators,
  * optional nested secondary folders, then page links. Empty top groups and
- * empty secondaries are omitted. FAQ is not a Program documentation member.
+ * empty secondaries are omitted. FAQ and W18 documentation move stubs are not
+ * Program documentation explorer members (stubs keep compatibility HTML only).
  */
 function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
-  const remaining = new Set(pages.map((page) => page.docsSlug));
+  const explorerPages = pages.filter(
+    (page) =>
+      !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
+      !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug),
+  );
+  const remaining = new Set(explorerPages.map((page) => page.docsSlug));
   const nodes: Node[] = [];
 
   for (const groupId of getSidebarGroupIdsForSection("documentation")) {
     const groupPages = sortPages(
-      pages.filter((page) => {
+      explorerPages.filter((page) => {
         if (!remaining.has(page.docsSlug)) {
           return false;
         }
@@ -206,7 +214,7 @@ function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
   }
 
   for (const page of sortPages(
-    pages.filter((page) => remaining.has(page.docsSlug)),
+    explorerPages.filter((page) => remaining.has(page.docsSlug)),
   )) {
     nodes.push(createPageNode(page));
   }

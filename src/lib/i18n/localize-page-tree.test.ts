@@ -179,10 +179,10 @@ describe("localizePageTree", () => {
       .filter((child) => child.type === "folder")
       .map((child) => String(child.name));
     expect(secondaryFolderNames).toContain(
-      messages.explorer.documentationSecondaries.workers,
-    );
-    expect(secondaryFolderNames).toContain(
       messages.explorer.documentationSecondaries.resources,
+    );
+    expect(secondaryFolderNames).not.toContain(
+      messages.explorer.documentationSecondaries.workers,
     );
 
     const systemOperationsIndex = separatorNames(

@@ -186,7 +186,7 @@ export const typedTaxonomyConsumerAuditContract: readonly TypedTaxonomyConsumerC
         "record.sidebarGrouping?.concepts",
       ],
       rationale:
-        "Glossary sidebar subgroup placement still checks canonical concept classification membership first with an editorial fallback. Factory Concepts explorer subgroups resolve from the explicit FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG assignment map first, then editorial sidebarGrouping.concepts for exceptions. Program documentation explorer placement resolves from FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG (top group plus optional secondary; FAQ omitted as a top-level explorer page), with FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG as the top-group-only derived view.",
+        "Glossary sidebar subgroup placement still checks canonical concept classification membership first with an editorial fallback. Factory Concepts explorer subgroups resolve from the explicit FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG assignment map first, then editorial sidebarGrouping.concepts for exceptions. Program documentation explorer placement resolves from FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG (top group plus optional secondary; FAQ omitted as a top-level explorer page; W18 documentation move stubs omitted as compatibility-only routes), with FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG as the top-group-only derived view.",
     },
 
     {

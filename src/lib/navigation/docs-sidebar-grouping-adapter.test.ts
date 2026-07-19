@@ -14,6 +14,10 @@ import {
   assertSupportedSidebarGroupingResolverId,
   buildGroupedSidebarNodes,
 } from "@/lib/navigation/docs-sidebar-grouping-adapter";
+import {
+  isDocumentationRouteMigrationOldBrowsePath,
+  listDocumentationRouteMigrationOldRoutes,
+} from "@/lib/seo/documentation-route-migration";
 
 function getSeparatorLabels(nodes: Node[]): string[] {
   return nodes
@@ -182,13 +186,19 @@ describe("docs sidebar grouping adapter", () => {
     expect(countPageNodes(nodes)).toBe(pages.length);
   });
 
-  test("Program documentation emits three-level nesting with every published page except FAQ assigned", () => {
-    const pages = loadPublishedDocsPagesSync("en").filter(
-      (page) =>
-        page.docsSlug.startsWith("documentation/") &&
-        !isDocsExplorerTopLevelFaqPage(page.docsSlug),
+  test("Program documentation emits three-level nesting without FAQ or W18 move stubs", () => {
+    const allDocumentationPages = loadPublishedDocsPagesSync("en").filter(
+      (page) => page.docsSlug.startsWith("documentation/"),
     );
-    const nodes = buildGroupedSidebarNodes("documentation", pages);
+    const pages = allDocumentationPages.filter(
+      (page) =>
+        !isDocsExplorerTopLevelFaqPage(page.docsSlug) &&
+        !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug),
+    );
+    const nodes = buildGroupedSidebarNodes(
+      "documentation",
+      allDocumentationPages,
+    );
     const separators = getSeparatorLabels(nodes);
     const byGroup = collectGroupedPageUrls(nodes);
 
@@ -204,11 +214,7 @@ describe("docs sidebar grouping adapter", () => {
 
     expect(
       secondaryFolderNamesAfterSeparator(nodes, "Factory Configuration"),
-    ).toEqual(
-      Object.values(
-        DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"],
-      ),
-    );
+    ).toEqual(["Resources"]);
     expect(
       secondaryFolderNamesAfterSeparator(nodes, "System Operations"),
     ).toEqual(
@@ -261,13 +267,12 @@ describe("docs sidebar grouping adapter", () => {
 
     const exactDirectTopGroupSlugs = {
       "System feature set": [
-        "dynamic-workflows",
         "harness-support",
         "replays-records",
         "submitting-work",
       ],
-      Interfaces: ["cli", "cli-command-index", "api-doc", "mcp"],
-      "Packaged factories": ["packaged-factories", "packaged-documents"],
+      Interfaces: ["cli", "mcp"],
+      "Packaged factories": ["packaged-documents"],
       "Internal Architecture": ["architecture-of-system", "petri"],
       "Additional references": [
         "what-is-you-agent-factory",
@@ -288,20 +293,6 @@ describe("docs sidebar grouping adapter", () => {
 
     const exactSecondarySlugs = {
       "Factory Configuration": {
-        Workers: [
-          "workers",
-          "poller-workers",
-          "script-workers",
-          "agent-workers",
-          "inference-workers",
-          "mock-workers",
-        ],
-        Workstations: ["workstations"],
-        Factories: [
-          "configuration",
-          "factory-session",
-          "global-configuration-factories",
-        ],
         Resources: ["resources", "throttling-and-limits"],
       },
       "System Operations": {
@@ -348,6 +339,15 @@ describe("docs sidebar grouping adapter", () => {
         byGroup["System feature set"]?.some((url) =>
           url.endsWith(`/docs/documentation/${excluded}`),
         ),
+      ).toBe(false);
+    }
+
+    for (const oldRoute of listDocumentationRouteMigrationOldRoutes()) {
+      expect(
+        Object.values(byGroup)
+          .flat()
+          .some((url) => url.endsWith(oldRoute)),
+        `${oldRoute} must not appear in Program documentation explorer`,
       ).toBe(false);
     }
 
