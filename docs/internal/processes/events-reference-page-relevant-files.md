@@ -68,6 +68,9 @@ other W11 reference page lanes):
   unlike CLI/MCP/JS, Events must not keep a long informational folded summary.
   Flip page-local tests / `assert-events-page-catalog-polish-browser.ts` to
   assert intro absence (MCP #156 pattern) without weakening #160 catalog polish.
+  Retarget body-text asserts that depended on removed Key Concepts copy (for
+  example `Hybrid placement`) to remaining corpus / catalog / reconnect markers
+  or rely on existing `data-events-placement` asserts; do not restore intros.
 - Keep curated discovery under `#related` with `LocalizedLinkList` toward planned
   `/docs/references/api`; leave `relatedIds` empty until sibling registry records exist.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
