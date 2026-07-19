@@ -1,7 +1,7 @@
 /**
  * Page-owned render proof for references/mcp.
- * Covers reference shell and package-backed MCP inventory mount.
- * Colocated under the page bundle.
+ * Covers install-first lead, polished title/subtitle, and package-backed
+ * MCP inventory mount. Colocated under the page bundle.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -31,22 +31,30 @@ describe("mcp reference page", () => {
 
       expect(loadedPage.frontmatter.kind).toBe("reference");
       expect(loadedPage.frontmatter.registryId).toBe("reference.mcp");
-      expect(loadedPage.messages.title).toBe("MCP");
-      expect(loadedPage.messages.description).toMatch(/package MCP contract/i);
+      expect(loadedPage.messages.title).toBe("You Agent Factory MCP");
+      expect(loadedPage.messages.description).toMatch(/You Agent Factory MCP/i);
+      expect(loadedPage.messages.description).toMatch(
+        /without a live Factory host/i,
+      );
+      expect(loadedPage.messages.description).not.toMatch(
+        /look up every published/i,
+      );
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+      expect(loadedPage.messages.openingSummary).toMatch(/you mcp serve/i);
+      expect(loadedPage.messages.openingSummary).toMatch(
+        /without a live Factory host/i,
+      );
+      expect(loadedPage.messages.openingSummary).not.toMatch(
+        /lists every published/i,
+      );
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
+      const howToInstall = String(
+        loadedPage.messages.sections?.howToInstall?.body ?? "",
       );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
-      expect(whatItCovers).toMatch(/package-backed MCP tool inventory/i);
-      expect(keyConcepts).toMatch(/@you-agent-factory\/api\/mcp/i);
-      expect(keyConcepts).toMatch(/not from a page-local copy/i);
-      expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
+      expect(howToInstall).toMatch(/you mcp serve/i);
+      expect(howToInstall).toMatch(/MCP documentation/i);
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
       expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
       expect(
         loadedPage.messages.sections?.limitsAndAssumptions,
@@ -75,14 +83,17 @@ describe("mcp reference page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
-      expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
+        screen.getByRole("heading", { name: "How to install MCP" }),
       ).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Tool Inventory" }),
       ).toBeTruthy();
+      expect(
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
+      expect(
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
       expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
         screen.queryByRole("heading", { name: "Limits And Assumptions" }),
@@ -91,6 +102,19 @@ describe("mcp reference page", () => {
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
+
+      const installDocsLink = screen.getByRole("link", {
+        name: "MCP documentation",
+      });
+      expect(installDocsLink.getAttribute("href")).toBe(
+        "/docs/documentation/mcp",
+      );
+      expect(document.querySelector("code.language-bash")?.textContent).toMatch(
+        /you mcp serve/,
+      );
+      expect(document.getElementById("how-to-install")).toBeTruthy();
 
       const inventoryRoot = document.querySelector("[data-mcp-tool-inventory]");
       expect(inventoryRoot).toBeTruthy();

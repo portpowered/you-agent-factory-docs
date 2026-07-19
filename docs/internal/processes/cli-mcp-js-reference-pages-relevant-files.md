@@ -44,9 +44,10 @@ Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/references/mcp/page.mdx` | Published reference page structure |
-| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy |
+| `src/content/docs/references/mcp/page.mdx` | Published reference page structure (install-first lead, then tool inventory) |
+| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy (`You Agent Factory MCP` title; no What It Covers / Key Concepts) |
 | `src/content/docs/references/mcp/assets.json` | Empty baseline assets |
+| `src/content/docs/references/mcp/McpInstallDocsLink.tsx` | Page-local Next `Link` to `/docs/documentation/mcp` without using `messages.links` (keeps W11 projection-first `links` undefined) |
 | `src/content/docs/references/mcp/McpReferenceInventory.tsx` | Server mount: load inventory → `McpToolInventory` |
 | `src/content/docs/references/mcp/page-mdx-components.tsx` | Page-local MDX component map |
 | `src/content/docs/references/mcp/mcp-page.test.tsx` | Colocated route/render proof |
@@ -119,12 +120,16 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   runtime uses `generated/javascript/runtime-api.json` (public subpath
   `javascript/runtime`). Prove shipped success with the production-integration
   `out/` HTML assertion, not Bun-side loader tests alone.
-- Non-API reference pages stay projection-first: keep what-it-covers /
-  key-concepts + primary inventory mount; do **not** remount How To Use,
-  Limits And Assumptions, Related (`RelatedDocs` + `LocalizedLinkList`),
-  Tags (`TagPillList`), or References (`CitationList`). Shared proofs live in
+- Non-API reference pages stay projection-first: keep a short lead + primary
+  inventory mount; do **not** remount How To Use, Limits And Assumptions,
+  Related (`RelatedDocs` + `LocalizedLinkList`), Tags (`TagPillList`), or
+  References (`CitationList`). Shared proofs live in
   `published-route-states.test.tsx` (assert removed section keys + headings
-  absent; use `openingSummary` / inventory success for static no-host safety).
+  absent; use `openingSummary` matching `/without a live Factory host/i` and
+  inventory success for static no-host safety; keep `messages.links`
+  undefined). MCP polish replaces What It Covers / Key Concepts with an
+  install-first `how-to-install` section and a page-local
+  `McpInstallDocsLink` (not `messages.links`) to `/docs/documentation/mcp`.
 - Browser-verify the trimmed shape after `bun run build` with
   `bun run start -- -p <3100-3999>` (unique port), then fetch sampled routes
   (one inventory page, events, one schema) and assert: section ids
