@@ -35,14 +35,60 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/cli/CliCommandReference.tsx` | One command from a W04-normalized CLI projection; shows `CliCapabilityNotice` when structured flags/arguments are absent |
+| `src/components/references/cli/CliCommandReference.tsx` | One command from a W04-normalized CLI projection; trimmed keep-list only (see below); shows `CliCapabilityNotice` when structured flags/arguments are absent |
 | `src/components/references/cli/CliCommandInventory.tsx` | Inventory list with empty/error chrome |
-| `src/components/references/cli/CliCapabilityNotice.tsx` | Visible disclosure when published CLI contract lacks machine-readable flags/arguments |
-| `src/components/references/cli/cli-capability.ts` | Pure helpers + notice copy for structured-options availability |
-| `src/components/references/cli/cli-visibility.ts` | Map published CLI visibility → shared chrome when unambiguous |
+| `src/components/references/cli/CliCapabilityNotice.tsx` | Under-construction treatment when published CLI contract lacks machine-readable flags/arguments |
+| `src/components/references/cli/cli-capability.ts` | Pure helpers + under-construction copy for structured-options availability |
+| `src/components/references/cli/cli-visibility.ts` | Map published CLI visibility → shared chrome when unambiguous (filter helpers; not card-body chrome) |
 | `src/components/references/cli/types.ts` | CLI renderer prop contracts / inventory input union |
 | `src/components/references/cli/index.ts` | Public CLI renderer barrel |
 | `src/components/references/harness/ReferenceCliHarness.tsx` | Dev fixture mount for CLI inventory browser verification |
+
+### CLI command card keep-list (repair-cli-reference-verbosity)
+
+`CliCommandReference` card body keeps only:
+
+- command-path header + stable-anchor copy affordance
+- short description (when present)
+- long description (when present and distinct from short)
+- example (when present)
+- Flags and arguments under-construction notice (when structured options are absent)
+
+Do **not** reintroduce on the CLI card body: `ContractSourceBadge` /
+family-package-source chrome, duplicated command-path or leaf-name rows,
+aliases, visibility, runnable, or handler-present metadata. MCP/JS/events
+renderers may still use shared badge chrome — this keep-list is CLI-card-only.
+
+CLI page intro copy (`src/content/docs/references/cli/messages/en.json`) must
+match the keep-list: advertise descriptions, examples, stable anchors, and
+filters — not lifecycle/visibility/runnable/handler as card-body content, and
+not the old “unavailable / discloses that limit” Flags/arguments story. Filters
+may still mention lifecycle/visibility facets when those remain inventory
+filter chrome.
+
+CLI tests that lock this repair:
+
+- `src/components/references/cli/cli-command-reference.test.tsx` — asserts the
+  kept surface, absence of ContractSourceBadge / identity / visibility /
+  runnable / handler chrome, under-construction Flags/arguments treatment, and
+  no invented option rows.
+- `src/content/docs/references/cli/cli-page.test.tsx` — asserts package-backed
+  inventory publish plus a representative card scoped with `within(card)` so
+  filter Lifecycle/Visibility labels do not false-positive as card chrome.
+
+Browser spot-check for this repair (production build):
+
+1. `bun run build` then `bun run start -- -p <3100-3999>` (unique port; kill on exit).
+2. Open `/docs/references/cli` with Playwright (or equivalent JS-capable browser).
+3. Assert a representative `[data-cli-command-reference]` card: command-path
+   heading via `header h3 a` (AlertPanelTitle also uses `h3` for
+   `🚧 Under construction` — do not use a bare `h3` locator), no
+   `[data-contract-source-badge]` / `[data-reference-status-chrome]`, no
+   Visibility / Handler present / Leaf name / Command path metadata rows, and
+   `[data-cli-capability="structured-options-under-construction"]` (not the old
+   unavailable apology) with no invented option tables.
+4. Confirm inventory `data-inventory-state="success"` and Lifecycle/Visibility
+   filters remain usable outside the card body.
 
 ## Key host files (MCP family — story 004 / 005)
 
@@ -121,17 +167,21 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 - Keep shared chrome under `src/components/references/shared/`; family
   renderers live in `cli/`, `mcp/`, and `javascript/`.
 - CLI package visibility is often `visible`; map to shared `public` only via
-  `mapCliVisibilityToReferenceVisibility` — still show the published string in
-  the command metadata row.
+  `mapCliVisibilityToReferenceVisibility` when shared badge chrome needs it.
+  CLI command cards no longer render visibility as card-body metadata — filters
+  may still use the published visibility string as a facet.
 - Browser verification without W11 routes: mount chrome/family renderers on the
   gated `(dev)/reference-chrome-harness` (or a later family harness), not on
   production reference collection pages.
 - Reuse `CodePanel` from `@/features/factory-ui/data-display` for CLI/JS examples.
-- Show `CliCapabilityNotice` (AlertPanel `semantic="info"`) whenever
+- Show `CliCapabilityNotice` under-construction treatment (AlertPanel
+  `semantic="info"`, construction marker + short cue) whenever
   `cliCommandHasStructuredOptions` is false — never invent flag/argument rows,
-  defaults, conflicts, or validation rules from prose examples.
+  defaults, conflicts, or validation rules from prose examples. Do not restore
+  the old "Structured flags and arguments unavailable" apology panel.
 - Optional enriched projection bags `flags` / `arguments` (non-empty arrays)
-  hide the notice; rendering those rows is a later enrichment, not W10 story 003.
+  hide the under-construction notice; rendering those rows is a later
+  enrichment, not this verbosity repair lane.
 - MCP tools carry optional `handlerRegistered`, `requiredInputs`,
   `inputSchema` (`SchemaDefinitionModel`), and authored `example` on W04
   projections — project via `projectMcpInputSchemaToDefinition`, embed via

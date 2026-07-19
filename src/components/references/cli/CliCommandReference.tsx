@@ -1,39 +1,27 @@
-import {
-  ContractSourceBadge,
-  CopyableReferenceAnchor,
-} from "@/components/references/shared";
+import { CopyableReferenceAnchor } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
 import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
 import { CliCapabilityNotice } from "./CliCapabilityNotice";
 import { cliCommandHasStructuredOptions } from "./cli-capability";
-import {
-  cliVisibilityDisplayLabel,
-  mapCliVisibilityToReferenceVisibility,
-} from "./cli-visibility";
 import type { CliCommandReferenceProps } from "./types";
 
-function booleanStateLabel(value: boolean): string {
-  return value ? "Yes" : "No";
-}
-
 /**
- * Render one normalized CLI command with available published metadata.
+ * Render one normalized CLI command with published help text.
  *
- * Does not invent flags, arguments, defaults, or conflicts. Optional fields
- * stay absent when the projection omitted them. When structured
- * flags/arguments are unavailable, shows CliCapabilityNotice.
+ * Card body keep-list: command-path header (with stable-anchor copy), short
+ * description, long description when distinct, example when present, and the
+ * Flags and arguments under-construction notice when structured options are absent.
+ * Does not invent flags, arguments, defaults, or conflicts. Does not render
+ * family/package/source badge chrome or duplicated identity / visibility /
+ * runnable / handler metadata rows.
  */
 export function CliCommandReference({
   command,
-  packageVersion,
   chrome,
   className,
 }: CliCommandReferenceProps) {
-  const sharedVisibility = mapCliVisibilityToReferenceVisibility(
-    command.visibility,
-  );
   const shortDescription = command.shortDescription ?? command.description;
   const longDescription =
     command.longDescription !== undefined &&
@@ -76,45 +64,6 @@ export function CliCommandReference({
         ) : null}
       </header>
 
-      <ContractSourceBadge
-        chrome={chrome}
-        family="cli"
-        lifecycle={command.lifecycle}
-        packageVersion={packageVersion}
-        source={command.source}
-        visibility={sharedVisibility}
-      />
-
-      <dl className="m-0 grid gap-2 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-4">
-        <MetadataRow label="Command path" value={command.commandPath} mono />
-        <MetadataRow label="Leaf name" value={command.name} mono />
-        {command.aliases.length > 0 ? (
-          <MetadataRow
-            label="Aliases"
-            value={command.aliases.join(", ")}
-            mono
-          />
-        ) : null}
-        {command.visibility !== undefined ? (
-          <MetadataRow
-            label="Visibility"
-            value={cliVisibilityDisplayLabel(command.visibility)}
-          />
-        ) : null}
-        {command.runnable !== undefined ? (
-          <MetadataRow
-            label="Runnable"
-            value={booleanStateLabel(command.runnable)}
-          />
-        ) : null}
-        {command.handlerPresent !== undefined ? (
-          <MetadataRow
-            label="Handler present"
-            value={booleanStateLabel(command.handlerPresent)}
-          />
-        ) : null}
-      </dl>
-
       {longDescription !== undefined ? (
         <section className="space-y-1" data-cli-long-description="">
           <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -144,27 +93,6 @@ export function CliCommandReference({
         </section>
       ) : null}
     </article>
-  );
-}
-
-function MetadataRow({
-  label,
-  value,
-  mono = false,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
-  return (
-    <div className="contents">
-      <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
-      </dt>
-      <dd className={cn("m-0", mono ? "font-mono text-xs" : undefined)}>
-        {value}
-      </dd>
-    </div>
   );
 }
 

@@ -4,7 +4,7 @@
  * The published `cli-command-identity/v1` contract does not currently ship
  * machine-readable flags or arguments. These helpers detect when an enriched
  * projection (or future contract) actually carries structured option data so
- * CliCapabilityNotice can stay hidden — without inventing option rows.
+ * the under-construction notice can stay hidden — without inventing option rows.
  */
 
 import type { CliCommandNormalized } from "@/lib/references/family-normalized-models";
@@ -35,9 +35,9 @@ export function cliCommandHasStructuredOptions(
   return hasFlags || hasArguments;
 }
 
-/** Copy used by CliCapabilityNotice when structured options are unavailable. */
-export const CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE =
-  "Structured flags and arguments unavailable";
+/** Copy used by CliCapabilityNotice when structured options are under construction. */
+export const CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE =
+  "🚧 Under construction";
 
-export const CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION =
-  "The published CLI contract does not include machine-readable flags or arguments for this command. Use published help text and examples when present; this reference does not invent option names, defaults, conflicts, or validation rules.";
+export const CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION =
+  "Structured flags and arguments are not published yet.";
