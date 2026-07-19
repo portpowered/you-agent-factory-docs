@@ -1,0 +1,45 @@
+/**
+ * Docs “On this page” TOC highlighting token map.
+ *
+ * Overrides Fumadocs TOCItem utilities:
+ * - text-fd-muted-foreground (non-current) → muted white
+ * - data-[active=true]:text-fd-primary (current) → secondary blue
+ * - hover:text-fd-accent-foreground → primary yellow
+ * - thumb bg-fd-primary → secondary blue (current marker)
+ *
+ * Keep selectors aligned with docs-chrome-toc.ts.
+ * Live in @layer utilities with !important so they beat Tailwind hover /
+ * data-active color utilities (same cascade pattern as footer chrome).
+ */
+@layer utilities {
+  #nd-toc a[href^="#"],
+  [data-toc-popover] a[href^="#"] {
+    color: var(--docs-chrome-muted-white) !important;
+  }
+
+  #nd-toc a[href^="#"][data-active="true"],
+  [data-toc-popover] a[href^="#"][data-active="true"] {
+    color: var(--docs-chrome-secondary-blue) !important;
+  }
+
+  #nd-toc .bg-fd-primary,
+  [data-toc-popover] .bg-fd-primary {
+    background-color: var(--docs-chrome-secondary-blue) !important;
+  }
+
+  #nd-toc a[href^="#"]:focus-visible,
+  [data-toc-popover] a[href^="#"]:focus-visible {
+    outline-style: solid !important;
+    outline-width: 2px !important;
+    outline-color: var(--ring) !important;
+    outline-offset: 2px;
+    border-radius: 0.125rem;
+  }
+
+  @media (hover: hover) {
+    #nd-toc a[href^="#"]:hover,
+    [data-toc-popover] a[href^="#"]:hover {
+      color: var(--docs-chrome-primary-yellow) !important;
+    }
+  }
+}

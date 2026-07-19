@@ -8,6 +8,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
+  DOCS_CHROME_BREADCRUMB_LINK_CLASSES,
+  DOCS_CHROME_BREADCRUMB_PAGE_CLASSES,
+} from "@/features/docs/styles/docs-chrome-header-breadcrumb";
+import {
   assertFactoryBreadcrumbSegments,
   resolveFactorySidebarFolderLabel,
 } from "@/lib/content/factory-breadcrumb-sidebar";
@@ -149,12 +153,12 @@ export function DocsPageBreadcrumb({
             {segment.href && index !== lastIndex ? (
               <BreadcrumbLink
                 render={<Link href={segment.href} />}
-                className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+                className={DOCS_CHROME_BREADCRUMB_LINK_CLASSES}
               >
                 {segment.label}
               </BreadcrumbLink>
             ) : (
-              <BreadcrumbPage className="text-xs font-medium uppercase tracking-[0.18em] text-foreground">
+              <BreadcrumbPage className={DOCS_CHROME_BREADCRUMB_PAGE_CLASSES}>
                 {segment.label}
               </BreadcrumbPage>
             )}

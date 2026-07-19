@@ -180,10 +180,11 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    substantive teaching section id on the target; factories authored child
    pages use purpose-lead chrome so anchors are
    `what-lives-where` / `operator-model-defaults` / `discovery-and-resolution` /
-   `orchestrator-schema` / `factory-relationship`, not `what-it-covers`; CLI
-   inventory-first uses `command-inventory`; use
-   `{ kind: "none", reason: "index-only-target" }` only when an index truly has
-   no section id). Do not invent per-route redirect helpers.
+   `orchestrator-schema` / `factory-relationship`, not `what-it-covers`;
+   projection-first API reference uses `operations`; CLI inventory-first uses
+   `command-inventory`; use `{ kind: "none", reason: "index-only-target" }`
+   only when an index truly has no section id). Do not invent per-route
+   redirect helpers.
 7. **Repair demotion (moved-duplicate stubs):** demoting §10 stubs from Program
    documentation explorer/search must keep the minimal compatibility MDX +
    `DocumentationRouteCompatibilityDocument` published. Do not delete ledger

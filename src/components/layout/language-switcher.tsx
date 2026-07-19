@@ -3,7 +3,6 @@
 import { Check, Globe } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useState } from "react";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DOCS_CHROME_HEADER_ACTION_ICON_CLASSES } from "@/features/docs/styles/docs-chrome-search-globe-github";
 import { isShippedLocalizedDocsSlug } from "@/lib/content/shipped-localized-docs";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import {
@@ -77,7 +77,6 @@ function buildLocaleOption(
 export function LanguageSwitcher({ locale, messages }: LanguageSwitcherProps) {
   const pathname = usePathname() ?? "/";
   const searchParams = useSearchParams();
-  const [hovered, setHovered] = useState(false);
   const currentSearch =
     searchParams?.toString() ||
     (typeof window === "undefined" ? "" : window.location.search.slice(1));
@@ -97,18 +96,7 @@ export function LanguageSwitcher({ locale, messages }: LanguageSwitcherProps) {
           <button
             type="button"
             aria-label={messages.language.open}
-            className={`${buttonVariants({ variant: "outline", size: "icon" })} header-action-icon`}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            style={
-              hovered
-                ? {
-                    backgroundColor:
-                      "color-mix(in oklch, var(--secondary), var(--foreground) 5%)",
-                    color: "var(--foreground)",
-                  }
-                : undefined
-            }
+            className={`${buttonVariants({ variant: "outline", size: "icon" })} ${DOCS_CHROME_HEADER_ACTION_ICON_CLASSES}`}
           />
         }
       >

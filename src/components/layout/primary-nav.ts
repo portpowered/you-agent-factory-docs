@@ -1,3 +1,4 @@
+import { DOCS_CHROME_HEADER_TEXT_CLASSES } from "@/features/docs/styles/docs-chrome-header-breadcrumb";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import {
   buildLocalizedRoute,
@@ -6,13 +7,14 @@ import {
 } from "@/lib/i18n/locale-routing";
 import type { SiteConfig } from "@/lib/site/site-config.contract";
 import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
+import { cn } from "@/lib/utils";
 
-export const PRIMARY_NAV_LINK_CLASS =
-  "text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+/** Desktop primary-nav text links: white rest, primary-yellow hover (chrome map). */
+export const PRIMARY_NAV_LINK_CLASS = DOCS_CHROME_HEADER_TEXT_CLASSES;
 
 export const PRIMARY_NAV_DESKTOP_CLASS = "hidden md:flex";
 
-export const PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS = "md:hidden";
+export const PRIMARY_NAV_MOBILE_MENU_BUTTON_CLASS = cn("md:hidden");
 
 export const PRIMARY_NAV_MOBILE_PANEL_CLASS =
   "order-last w-full basis-full border-t border-border py-3 md:hidden";

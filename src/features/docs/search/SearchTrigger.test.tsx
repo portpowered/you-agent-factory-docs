@@ -60,16 +60,16 @@ describe("SearchTrigger", () => {
     expect(html).not.toContain("!bg-secondary");
   });
 
-  test("keeps shortcut chips readable on trigger hover and focus via group accent styles", async () => {
+  test("keeps shortcut chips readable on trigger hover and focus via group primary styles", async () => {
     const messages = await loadUiMessages();
     const html = renderSearchTrigger(messages);
 
     expect(html).toContain("group ");
-    expect(html).toContain("hover:border-accent");
-    expect(html).toContain("group-hover:text-accent-foreground");
-    expect(html).toContain("group-hover:bg-accent-foreground/10");
-    expect(html).toContain("group-focus-visible:text-accent-foreground");
-    expect(html).toContain("group-focus-visible:bg-accent-foreground/10");
+    expect(html).toContain("hover:!bg-[var(--docs-chrome-primary-yellow)]");
+    expect(html).toContain("group-hover:text-primary-foreground");
+    expect(html).toContain("group-hover:bg-primary-foreground/10");
+    expect(html).toContain("group-focus-visible:text-primary-foreground");
+    expect(html).toContain("group-focus-visible:bg-primary-foreground/10");
     expect(html).toContain("focus-visible:ring-2");
     expect(html).toContain("focus-visible:ring-ring");
   });
@@ -106,7 +106,7 @@ describe("SearchTrigger", () => {
     expect(html).not.toContain('type="button"');
   });
 
-  test("opens search on click and toggles accent styles while hovered", async () => {
+  test("opens search on click and toggles primary-yellow chrome while hovered", async () => {
     const messages = await loadUiMessages();
     const user = userEvent.setup();
     let open = false;
@@ -128,18 +128,18 @@ describe("SearchTrigger", () => {
 
     await user.hover(trigger);
     expect(trigger.getAttribute("style")).toContain(
-      "background-color: var(--accent)",
+      "background-color: var(--docs-chrome-primary-yellow)",
     );
     expect(trigger.getAttribute("style")).toContain(
-      "border-color: var(--accent)",
+      "border-color: var(--docs-chrome-primary-yellow)",
     );
     expect(trigger.getAttribute("style")).toContain(
-      "color: var(--accent-foreground)",
+      "color: var(--primary-foreground)",
     );
 
     const hotKey = trigger.querySelector("kbd");
     expect(hotKey?.getAttribute("style")).toContain(
-      "color: var(--accent-foreground)",
+      "color: var(--primary-foreground)",
     );
 
     await user.unhover(trigger);
