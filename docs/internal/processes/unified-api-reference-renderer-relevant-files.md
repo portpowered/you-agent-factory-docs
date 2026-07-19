@@ -237,12 +237,19 @@ hooks, and SSR cost.
   headers, dual-Accept, replay/retained-history, compatibility-only status) and
   links toward planned W09 anchors under `/docs/references/events#…`
   (W04 schema-pointer encoding for envelope schemas).
-- UI: `ApiSseOperationSummaryPanel` mounts inside `ApiOperationSection` only for
-  those three ops. Markers: `data-api-sse-summary`, `data-api-sse-role`,
+- UI: On the published Fumadocs-primary page, `ApiSseOperationSummaryPanel`
+  injects via `content.renderOperationLayout` in `api-page.tsx` (after
+  description, before parameters) for those three ops only. Section wrappers
+  also mark `data-api-sse-operation="true"`. Legacy `ApiOperationSection` still
+  mounts the same panel for harness / unit fixtures. Markers:
+  `data-api-sse-summary`, `data-api-sse-role`,
   `data-api-sse-live-connection="false"`, `data-api-sse-full-catalog="false"`.
 - Do **not** implement the full event envelope/payload catalog here (W09). Do
   not import W02 spike catalog views into the production API tree.
-- Browser probe: `bun src/components/references/api/assert-sse-summaries-browser.ts`
+- Browser probes:
+  - harness: `bun src/components/references/api/assert-sse-summaries-browser.ts`
+  - published page: `bun src/content/docs/references/api/assert-api-page-static-sse-browser.ts`
+    (wait for terminal `data-api-status=ready` after Suspense; unique port)
 
 ## Theme tokens and code-copy
 

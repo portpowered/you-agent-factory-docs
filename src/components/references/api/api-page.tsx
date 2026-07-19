@@ -8,11 +8,16 @@
  * try-it stays disabled (static-only; no proxy). Request/response body schemas
  * use Fumadocs `schemaUI` (not a bespoke schema explorer) so
  * `#/components/schemas/*` fields are readable on the page.
+ *
+ * Hybrid SSE transport summaries (reconnect / cursor / events links) inject
+ * beside Fumadocs operation chrome via `content.renderOperationLayout` for the
+ * three published SSE ops only — not a full event catalog (W09).
  */
 
 import { defaultShikiFactory } from "fumadocs-core/highlight/shiki/full";
 import { createAPIPage } from "fumadocs-openapi/ui";
 import { ApiOpenApiCodeBlock } from "./api-code-block";
+import { ApiSseOperationSummaryPanel } from "./api-sse-operation-summary";
 import { apiOpenApiServer } from "./openapi-server";
 import {
   API_OPERATION_ANCHOR_ATTR,
@@ -22,6 +27,7 @@ import {
   API_PLAYGROUND_OPTIONS,
   apiReferencePlaygroundPageOptions,
 } from "./playground-suppression";
+import { resolveApiSseOperationSummary } from "./sse-operation-summary";
 import { API_SHIKI_OPTIONS, API_TOKEN_CLASSES } from "./theme-tokens";
 
 /** Marker on the Fumadocs-primary operations host. */
@@ -106,6 +112,11 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
         >
           {slots.operations?.map(({ item, children }) => {
             const operationId = readOperationId(paths, item.path, item.method);
+            const sseSummary = resolveApiSseOperationSummary({
+              operationId,
+              path: item.path,
+              method: item.method,
+            });
             return (
               <section
                 key={`${item.method}:${item.path}`}
@@ -119,6 +130,7 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
                 data-api-operation-method={item.method}
                 data-api-operation-path={item.path}
                 data-api-operation-id={operationId}
+                data-api-sse-operation={sseSummary ? "true" : undefined}
               >
                 {children}
               </section>
@@ -135,36 +147,52 @@ export const ApiReferenceAPIPage = createAPIPage(apiOpenApiServer, {
         </div>
       );
     },
-    renderOperationLayout: (slots, _ctx, method) => (
-      <div
-        className={`flex flex-col gap-x-6 gap-y-4 @4xl:flex-row @4xl:items-start ${API_TOKEN_CLASSES.foreground}`}
-        data-api-fumadocs-operation-layout={method.method}
-      >
-        <div className={`min-w-0 flex-1 ${API_TOKEN_CLASSES.border}`}>
-          {slots.header}
-          {slots.apiPlayground}
-          {slots.description}
-          {slots.authSchemes}
-          {slots.parameters}
-          <div
-            className={API_TOKEN_CLASSES.foreground}
-            {...{ [API_SCHEMA_SLOT_ATTR]: "request" }}
-          >
-            {slots.body}
+    renderOperationLayout: (slots, _ctx, method) => {
+      const sseSummary = resolveApiSseOperationSummary({
+        operationId:
+          typeof method.operationId === "string"
+            ? method.operationId
+            : undefined,
+        method: method.method,
+      });
+
+      return (
+        <div
+          className={`flex flex-col gap-x-6 gap-y-4 @4xl:flex-row @4xl:items-start ${API_TOKEN_CLASSES.foreground}`}
+          data-api-fumadocs-operation-layout={method.method}
+          data-api-fumadocs-sse-layout={
+            sseSummary ? sseSummary.operationId : undefined
+          }
+        >
+          <div className={`min-w-0 flex-1 ${API_TOKEN_CLASSES.border}`}>
+            {slots.header}
+            {slots.apiPlayground}
+            {slots.description}
+            {sseSummary ? (
+              <ApiSseOperationSummaryPanel summary={sseSummary} />
+            ) : null}
+            {slots.authSchemes}
+            {slots.parameters}
+            <div
+              className={API_TOKEN_CLASSES.foreground}
+              {...{ [API_SCHEMA_SLOT_ATTR]: "request" }}
+            >
+              {slots.body}
+            </div>
+            <div
+              className={API_TOKEN_CLASSES.foreground}
+              {...{ [API_SCHEMA_SLOT_ATTR]: "response" }}
+            >
+              {slots.responses}
+            </div>
+            {slots.callbacks}
           </div>
-          <div
-            className={API_TOKEN_CLASSES.foreground}
-            {...{ [API_SCHEMA_SLOT_ATTR]: "response" }}
-          >
-            {slots.responses}
+          <div className="@4xl:sticky @4xl:top-[calc(var(--fd-docs-row-1,2rem)+1rem)] @4xl:w-[400px]">
+            {slots.apiExample}
           </div>
-          {slots.callbacks}
         </div>
-        <div className="@4xl:sticky @4xl:top-[calc(var(--fd-docs-row-1,2rem)+1rem)] @4xl:w-[400px]">
-          {slots.apiExample}
-        </div>
-      </div>
-    ),
+      );
+    },
   },
 });
 
