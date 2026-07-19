@@ -60,11 +60,14 @@ describe("api reference page", () => {
       expect(whatItCovers).toMatch(/published operations/i);
       expect(keyConcepts).toMatch(/OpenAPI/i);
       expect(keyConcepts).toMatch(/local-server base URL/i);
-      expect(keyConcepts).toMatch(/static documentation/i);
+      expect(keyConcepts).toMatch(/published API docs are static/i);
       expect(keyConcepts).toMatch(/request playground/i);
       expect(keyConcepts).toMatch(/events reference/i);
       expect(operations).toMatch(/OpenAPI projection/i);
-      expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
+      expect(keyConcepts).not.toMatch(/This page is static/i);
+      expect(whatItCovers).not.toMatch(
+        /This reference covers|on this page|Model Atlas/i,
+      );
       expect(keyConcepts).not.toMatch(/on this page|Model Atlas/i);
       expect(operations).not.toMatch(/on this page|Model Atlas/i);
 

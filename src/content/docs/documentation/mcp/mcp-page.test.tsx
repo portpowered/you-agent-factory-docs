@@ -253,9 +253,7 @@ describe("mcp documentation page", () => {
       expect(keyConceptsSection?.textContent).toMatch(/stdio/i);
       expect(keyConceptsSection?.textContent).toMatch(/Factory Session/);
 
-      expect(limitsSection?.textContent).toMatch(
-        /MCP covers stdio serve/i,
-      );
+      expect(limitsSection?.textContent).toMatch(/MCP covers stdio serve/i);
       expect(limitsSection?.textContent).toMatch(/HTTP|SSE/i);
       expect(limitsSection?.textContent).toMatch(/Cursor/i);
       expect(limitsSection?.textContent).toMatch(/dynamic-workflows/i);

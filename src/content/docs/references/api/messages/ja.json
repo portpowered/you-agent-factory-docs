@@ -1,15 +1,15 @@
 {
   "title": "API",
   "description": "HTTP/OpenAPI reference for the you-agent-factory API: published operations, local-server base URL, and static-only docs with no live request playground.",
-  "openingSummary": "The you-agent-factory API is the HTTP contract a running factory host exposes. This reference page is the published OpenAPI (Open Application Programming Interface) surface for that contract—operations, request and response shapes, and local-server base URL—without treating this documentation host as the live API.",
+  "openingSummary": "The you-agent-factory API is the HTTP contract a running factory host exposes. The published OpenAPI (Open Application Programming Interface) surface lists operations, request and response shapes, and the local-server base URL for that contract—without treating the documentation host as the live API.",
   "sections": {
     "whatItCovers": {
       "title": "What It Covers",
-      "body": "This reference covers the you-agent-factory HTTP/OpenAPI surface for web readers: the published operations a factory host exposes, how those operations are grouped and addressed, and the local-server base URL callers use against a running host. Use it when you need the stable docs route for the OpenAPI projection rather than a CLI matrix, MCP host setup, or a hand-authored orientation outline."
+      "body": "The you-agent-factory HTTP/OpenAPI surface lists the published operations a factory host exposes, how those operations are grouped and addressed, and the local-server base URL callers use against a running host. Use it for the OpenAPI projection rather than a CLI matrix, MCP host setup, or a hand-authored orientation outline."
     },
     "keyConcepts": {
       "title": "Key Concepts",
-      "body": "OpenAPI (Open Application Programming Interface) describes the HTTP API a running factory host exposes. An operation is one method-and-path pair with a stable operation id. Tags group related operations for navigation. The local-server base URL comes from the OpenAPI servers list and names where callers send requests—typically a local factory host—not this documentation site. This page is static documentation: it does not run a request playground or require a reachable factory host to render. Server-Sent Events (SSE) stream operations use HTTP transport summaries here and link toward the events reference for the event catalog."
+      "body": "OpenAPI (Open Application Programming Interface) describes the HTTP API a running factory host exposes. An operation is one method-and-path pair with a stable operation id. Tags group related operations for navigation. The local-server base URL comes from the OpenAPI servers list and names where callers send requests—typically a local factory host—not the documentation site. The published API docs are static: they do not run a request playground or require a reachable factory host to render. Server-Sent Events (SSE) stream operations use HTTP transport summaries here and link toward the events reference for the event catalog."
     },
     "operations": {
       "title": "Operations",
