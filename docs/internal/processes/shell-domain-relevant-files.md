@@ -14,9 +14,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   top groups **System feature set → Interfaces → Packaged factories →
   Factory Configuration → System Operations → Internal Architecture →
   Additional references** via `SIDEBAR_GROUP_LABELS.documentation`, with
-  secondaries under Factory Configuration (Workers → Workstations →
-  Factories → Resources) and System Operations (Observability) via
-  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership lives in
+  secondaries under Factory Configuration (Resources) and System Operations
+  (Observability) via `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership
+  lives in
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (FAQ omitted; top-level
   explorer page; W18 documentation move stubs omitted as compatibility-only
   routes); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
@@ -29,8 +29,8 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Concepts and documentation resolution pass page slug into the factory
   assignment maps so explicit membership applies. Program documentation
   emits three-level nodes: top-group separators, nested secondary folders
-  (Workers / Workstations / Factories / Resources under Factory
-  Configuration; Observability under System Operations), then page links.
+  (Resources under Factory Configuration; Observability under System
+  Operations), then page links.
   Empty top groups and empty secondaries are omitted; FAQ and W18
   documentation move stubs are never Program documentation children.
 * `src/lib/navigation/docs-sidebar-sections.ts`
@@ -52,11 +52,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/docs/browse-collection-sections.ts`
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
-  `DOCS_BROWSE_SECTION_ORDER`. Public browse no longer accepts glossary-derived
-  Atlas section refs (Model Types / Inference / Module Components). W18
+  `DOCS_BROWSE_SECTION_ORDER`. Glossary-derived Atlas browse helpers are
+  deleted (no Model Types / Inference / Module Components sections). W18
   documentation move stubs are filtered via
   `isDocumentationRouteMigrationOldBrowsePath` so family targets remain the
   discoverable destinations.
+* `src/lib/docs/browse-collection-sections.test.ts`
+  Locks CLI-only browse order and asserts retired Atlas / glossary-derived
+  section ids and titles stay absent from the public hub.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
   `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,
@@ -262,13 +265,15 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   plus a11y smoke
   `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx` (`make a11y`).
 * `src/features/docs/components/DocsIndexEmptyState.tsx`
-  Shared empty-state for collection/blog/glossary/architecture indexes.
+  Shared empty-state for collection/blog/architecture indexes.
   Always offers home + browse + search (`SearchTrigger`); non-blog empties also
   pass `includeBlogLink` so Blog is a recovery path. Empty title/description/
   home-link copy in `src/content/messages/*/common.json` must stay free of
   Model Atlas / coming-soon Atlas advertising. Prove with
   `src/features/docs/components/DocsIndexEmptyState.test.tsx` and the empty-state
-  case in `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx`.
+  case in `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx` (drive that
+  a11y case from live `conceptsIndex` copy via `DocsIndexEmptyState` — do not
+  reuse the retired glossary index advertising surface as the empty vehicle).
 * `src/content/docs/documentation/contributing-to-these-docs/`
   Published contributing guidance page (`documentation.contributing-to-these-docs`).
   Colocated publish/copy proof:
@@ -393,12 +398,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   with search. See `search-domain-relevant-files.md` for the full pattern.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
-  `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
-  `browseIndex` hub + CLI section blurbs. Also keep
-  `search.idle`, `searchEntry.description`, `shell.sidebarDescription`,
-  blog/tags/architecture/glossary index copy, and `pageKind` /
-  `tagCategories` free of Model Atlas / atlas product ownership and
-  retired models/modules/papers/training live-surface labels (keep
+  `techniquesIndex` / `documentationIndex` plus `browseIndex` hub + CLI
+  section blurbs. Glossary index / home featured / browse quick-route
+  advertising keys (`glossaryIndex`, `home.glossaryLink*`,
+  `browseIndex.glossaryRouteDescription`, `browseIndex.glossarySection*`)
+  are retired with the `/docs/glossary` index destination; residual glossary
+  collection definitions reuse concepts messageKeys for resolve callers.
+  Also keep `search.idle`, `searchEntry.description`,
+  `shell.sidebarDescription`, blog/tags/architecture index copy, and
+  `pageKind` / `tagCategories` free of Model Atlas / atlas product ownership
+  and retired models/modules/papers/training live-surface labels (keep
   factory kinds + live tag categories such as `architecture` /
   `inference`). Do not ship retired Atlas
   `models|modules|papers|training|systems` index blocks, Atlas browse
@@ -413,13 +422,20 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`. Program documentation
   top-group and secondary labels localize; literal CLI/package/route
   identifiers in page titles stay untranslated. Nested secondary labels
-  (Workers, Observability, …) are declared in
+  (Resources, Observability) are declared in
   `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`, flattened for catalogs via
   `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`, and remapped by
   `localizePageTree` through `buildDefaultSecondaryLabelLocalizer`.
-  Colliding Workers/Workstations/Factories secondary strings stay aligned
-  with `explorer.folders` in each locale. `assertExplorerMessages` fails
-  closed when any explorer catalog (including secondaries) is incomplete.
+  Empty Workers / Workstations / Factories Program-documentation secondaries
+  that only nested W18 move stubs were removed after #158 demotion — keep
+  W15 top-level `explorer.folders.{workers,workstations,factories}` for the
+  live family routes. Contracts lock the live secondary catalog shape
+  (`resources` / `observability` only) and the absence of retired glossary
+  advertising keys (`glossaryIndex`, `home.glossaryLink*`,
+  `browseIndex.glossaryRouteDescription` / `glossarySection*`) without
+  reading those deleted symbols as live typed fields. Keep `nav.glossary` and
+  `pageKind.glossary`. `assertExplorerMessages` fails closed when any explorer
+  catalog (including secondaries) is incomplete.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
   Locale-aware explorer folder/subgroup/secondary/page label resolution
   consumed by desktop sidebar and mobile drawer through the same localized
@@ -429,10 +445,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   placement, subgroup separators, nested secondary folders, page
   membership/labels/hrefs) for desktop/mobile parity comparisons.
   `pageEntriesInFolder` / `pageEntriesUnderSeparator` descend into secondary
-  folders; `secondaryFolderNamesUnderSeparator` locks Workers/Observability
+  folders; `secondaryFolderNamesUnderSeparator` locks Resources/Observability
   nesting under Program documentation top groups;
   `pageEntriesInSecondaryFolderUnderSeparator` locks exact page membership
-  inside a named secondary (Workers, Observability, …).
+  inside a named secondary (Resources, Observability).
 * `src/lib/navigation/explorer-ia-contract.test.ts`
   Exact-order proofs against `FACTORY_EXPLORER_SECTION_ORDER` /
   `SIDEBAR_GROUP_LABELS` (top-level folders + FAQ, Concepts subgroups, Program
@@ -441,13 +457,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Story 003 locks exact direct-under-top-group membership for System feature
   set / Interfaces / Packaged factories / Internal Architecture / Additional
   references and proves config/ops pages stay out of System feature set.
-  Story 004 locks Factory Configuration secondaries (Workers → Workstations →
-  Factories → Resources) and System Operations → Observability page membership,
-  and proves `replays-records` stays under System feature set only.
+  Story 004 locks Factory Configuration → Resources and System Operations →
+  Observability page membership (Workers/Workstations/Factories secondaries
+  removed after W18 stub demotion), and proves `replays-records` stays under
+  System feature set only.
   Story 006 consolidates the three-level Program documentation contract: FAQ
   remains the sole top-level explorer page (absent from Program documentation
   children), former ten-group Basics/Feature support/Functions/… separators are
-  rejected, and Workers/Observability nesting plus full membership remain locked.
+  rejected, and Resources/Observability nesting plus full membership remain locked.
   Repair story 005 consolidates demoted W18 stub absence across explorer,
   search, sitemap, and section-index in
   `src/lib/content/factory-documentation-route-migration-demoted-contract.test.tsx`

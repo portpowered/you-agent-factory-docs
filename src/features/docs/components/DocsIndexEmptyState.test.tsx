@@ -64,9 +64,9 @@ describe("DocsIndexEmptyState", () => {
     const messages = await loadUiMessages();
     const html = renderEmptyState(
       messages,
-      messages.glossaryIndex.emptyTitle,
-      messages.glossaryIndex.emptyDescription,
-      messages.glossaryIndex.emptyHomeLink,
+      messages.conceptsIndex.emptyTitle,
+      messages.conceptsIndex.emptyDescription,
+      messages.conceptsIndex.emptyHomeLink,
       { includeBlogLink: true },
     );
 
@@ -84,7 +84,6 @@ describe("DocsIndexEmptyState", () => {
       "guidesIndex",
       "techniquesIndex",
       "documentationIndex",
-      "glossaryIndex",
       "architectureIndex",
       "blogIndex",
     ] as const;

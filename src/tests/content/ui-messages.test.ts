@@ -28,7 +28,6 @@ const DOCS_MESSAGE_KEYS = [
   "searchEntry",
   "home",
   "browseIndex",
-  "glossaryIndex",
   "architectureIndex",
   "blogIndex",
   "pageKind",
@@ -107,7 +106,6 @@ describe("loadUiMessages shell keys", () => {
     expect(messages.conceptsIndex.title).toBe("Concepts");
     expect(messages.guidesIndex.title).toBe("Guides");
     expect(messages.architectureIndex.title).toBe("Architecture");
-    expect(messages.glossaryIndex.title).toBe("Glossary");
     expect(messages.blogIndex.title).toBe("Blog");
     expect(messages.tagsIndex.title).toBe("Tags");
   });
@@ -160,8 +158,6 @@ describe("loadUiMessages shell keys", () => {
         messages.searchEntry.description,
         messages.shell.sidebarDescription,
         messages.conceptsIndex.description,
-        messages.glossaryIndex.description,
-        messages.glossaryIndex.emptyDescription,
         messages.architectureIndex.description,
         messages.architectureIndex.emptyDescription,
         messages.blogIndex.description,
@@ -242,6 +238,40 @@ describe("loadUiMessages shell keys", () => {
     const messages = await loadUiMessages();
     for (const key of UI_MESSAGES_COMPATIBILITY_KEYS) {
       expect(messages[key]).toBeDefined();
+    }
+  });
+
+  it("omits retired glossary advertising keys and hollow documentation secondaries", async () => {
+    for (const locale of ["en", "ja", "zh-CN", "vi"] as const) {
+      const messages = await loadUiMessages(locale);
+      const catalog = messages as Record<string, unknown>;
+      expect(catalog).not.toHaveProperty("glossaryIndex");
+
+      const home = messages.home as Record<string, unknown>;
+      expect(home).not.toHaveProperty("glossaryLinkTitle");
+      expect(home).not.toHaveProperty("glossaryLinkDescription");
+
+      const browseIndex = messages.browseIndex as Record<string, unknown>;
+      expect(browseIndex).not.toHaveProperty("glossaryRouteDescription");
+      expect(browseIndex).not.toHaveProperty("glossarySectionTitle");
+      expect(browseIndex).not.toHaveProperty("glossarySectionDescription");
+      expect(browseIndex).not.toHaveProperty("glossarySectionLinkLabel");
+
+      const secondaries = messages.explorer.documentationSecondaries as Record<
+        string,
+        unknown
+      >;
+      expect(Object.keys(secondaries).sort()).toEqual([
+        "observability",
+        "resources",
+      ]);
+      expect(secondaries).not.toHaveProperty("workers");
+      expect(secondaries).not.toHaveProperty("workstations");
+      expect(secondaries).not.toHaveProperty("factories");
+
+      // Residual glossary labels stay for breadcrumbs / search kind chrome.
+      expect(messages.nav.glossary.trim().length).toBeGreaterThan(0);
+      expect(messages.pageKind.glossary.trim().length).toBeGreaterThan(0);
     }
   });
 

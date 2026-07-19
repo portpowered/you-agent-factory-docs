@@ -231,13 +231,14 @@ describe("factory tags and browse destinations", () => {
 
   test("empty section-index states use factory copy and factory next-step links", async () => {
     const messages = await loadUiMessages();
-    // Glossary index is the stable empty-capable factory collection surface.
-    const glossaryMessages = messages.glossaryIndex;
+    // Concepts index is a stable factory collection surface for empty-state
+    // copy checks after glossary index advertising keys were removed.
+    const sectionMessages = messages.conceptsIndex;
 
-    expect(glossaryMessages.emptyTitle.length).toBeGreaterThan(0);
-    expect(glossaryMessages.emptyDescription).not.toMatch(ATLAS_PRODUCT_COPY);
-    expect(glossaryMessages.emptyHomeLink.length).toBeGreaterThan(0);
-    expect(glossaryMessages.emptyDescription).not.toMatch(
+    expect(sectionMessages.emptyTitle.length).toBeGreaterThan(0);
+    expect(sectionMessages.emptyDescription).not.toMatch(ATLAS_PRODUCT_COPY);
+    expect(sectionMessages.emptyHomeLink.length).toBeGreaterThan(0);
+    expect(sectionMessages.emptyDescription).not.toMatch(
       /modules|models|papers|training|attention|GQA/i,
     );
 

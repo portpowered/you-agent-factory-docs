@@ -83,9 +83,6 @@
       "additional-references": "Additional references"
     },
     "documentationSecondaries": {
-      "workers": "Workers",
-      "workstations": "Workstations",
-      "factories": "Factories",
       "resources": "Resources",
       "observability": "Observability"
     }
@@ -226,8 +223,6 @@
     "guidesLinkDescription": "Start with how-to guides for installing and running the agent factory CLI.",
     "docsLinkTitle": "Docs browse",
     "docsLinkDescription": "Open the docs browse hub to explore CLI documentation collections.",
-    "glossaryLinkTitle": "Glossary",
-    "glossaryLinkDescription": "Scan short definitions for factory and CLI terms.",
     "blogLinkTitle": "Blog",
     "blogLinkDescription": "Read updates and deeper write-ups about the agent factory.",
     "onThisPageInstall": "Install",
@@ -242,7 +237,6 @@
     "quickRoutesTitle": "Quick routes",
     "quickRoutesDescription": "Use these entry points when you know how you want to explore, but not the exact page yet.",
     "searchRouteDescription": "Jump straight to a title, alias, or tag when you already have a term in mind.",
-    "glossaryRouteDescription": "Scan short definitions when you need to decode unfamiliar language fast.",
     "architectureRouteDescription": "Follow factory system shape, workstation structure, and other architecture ideas.",
     "tagsRouteDescription": "Browse curated topic labels that cut across guides, concepts, techniques, and documentation.",
     "conceptsSectionTitle": "Concepts",
@@ -257,9 +251,6 @@
     "documentationSectionTitle": "Documentation",
     "documentationSectionDescription": "Documentation pages cover reference material for the CLI surface, including contracts, conventions, and supporting detail.",
     "documentationSectionLinkLabel": "Browse all documentation pages",
-    "glossarySectionTitle": "Glossary",
-    "glossarySectionDescription": "Glossary pages define short factory and CLI vocabulary so the rest of the docs read more naturally.",
-    "glossarySectionLinkLabel": "Browse the full glossary",
     "referencesSectionTitle": "References",
     "referencesSectionDescription": "Reference pages catalog schemas, contracts, and other lookup surfaces for factory subjects.",
     "referencesSectionLinkLabel": "Browse all reference pages",
@@ -341,14 +332,6 @@
     "listLabel": "Workstation entries",
     "emptyTitle": "No workstation entries yet",
     "emptyDescription": "Published workstation pages will appear here once they are added. Return home, open Browse, search the docs, or read the blog in the meantime.",
-    "emptyHomeLink": "Return home"
-  },
-  "glossaryIndex": {
-    "title": "Glossary",
-    "description": "Short definitions for factory and CLI terms. Each entry links to a canonical glossary page when published.",
-    "listLabel": "Glossary entries",
-    "emptyTitle": "No glossary entries yet",
-    "emptyDescription": "Published glossary pages will appear here once they are added to the reference. Return home, open Browse, search the docs, or read the blog in the meantime.",
     "emptyHomeLink": "Return home"
   },
   "architectureIndex": {

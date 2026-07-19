@@ -16,7 +16,7 @@ import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentat
  * Reader-visible browse collection order for the rewrite-era CLI docs taxonomy.
  * Public docs collection inventory is factory-only; default browse hub sections
  * are the four CLI collections. Glossary-derived Atlas browse sections
- * (Model Types / Inference / Module Components) are not part of the public hub.
+ * (Model Types / Inference / Module Components) are deleted and must not return.
  */
 export const DOCS_BROWSE_COLLECTION_IDS = CLI_DOCS_COLLECTION_IDS;
 

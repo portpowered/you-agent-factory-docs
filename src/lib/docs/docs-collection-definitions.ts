@@ -76,7 +76,11 @@ export const DOCS_COLLECTION_DEFINITIONS = [
     registryKind: "concept",
     frontmatterKind: "glossary",
     starterSlugs: ["glossary/token", "glossary/architecture"],
-    messageKeys: collectionMessageKeys("glossary", "glossary"),
+    // Glossary index/browse destinations are retired (#157). Reuse concepts
+    // section-index copy for residual collection-definition resolve callers so
+    // inventory contracts stay resolvable without shipping hollow glossary
+    // advertising keys in common.json.
+    messageKeys: collectionMessageKeys("concepts", "concepts"),
     sidebarGroupingResolverId: "glossary",
   },
   {

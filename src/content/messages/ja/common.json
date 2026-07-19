@@ -83,9 +83,6 @@
       "additional-references": "追加リファレンス"
     },
     "documentationSecondaries": {
-      "workers": "ワーカー",
-      "workstations": "ワークステーション",
-      "factories": "ファクトリー",
       "resources": "リソース",
       "observability": "オブザーバビリティ"
     }
@@ -226,8 +223,6 @@
     "guidesLinkDescription": "エージェントファクトリー CLI のインストールと実行のハウツーガイドから始めましょう。",
     "docsLinkTitle": "ドキュメント参照",
     "docsLinkDescription": "ドキュメント参照ハブを開いて、CLI ドキュメントのコレクションを探索します。",
-    "glossaryLinkTitle": "用語集",
-    "glossaryLinkDescription": "ファクトリーと CLI の用語の短い定義を確認します。",
     "blogLinkTitle": "ブログ",
     "blogLinkDescription": "エージェントファクトリーに関する更新と詳しい解説を読みます。",
     "onThisPageInstall": "インストール",
@@ -242,7 +237,6 @@
     "quickRoutesTitle": "主要な入口",
     "quickRoutesDescription": "探し方は分かっているけれど、まだ具体的なページ名が分からないときに使ってください。",
     "searchRouteDescription": "すでに用語が分かっているなら、タイトル、別名、タグへ直接ジャンプできます。",
-    "glossaryRouteDescription": "見慣れない言葉を素早くほどくために、短い定義をまとめて確認できます。",
     "architectureRouteDescription": "ファクトリーのシステム形状、ワークステーション構成、その他のアーキテクチャの考え方を追えます。",
     "tagsRouteDescription": "ガイド、概念、技法、ドキュメントを横断する整理済みトピックタグを参照できます。",
     "conceptsSectionTitle": "概念",
@@ -257,9 +251,6 @@
     "documentationSectionTitle": "ドキュメント",
     "documentationSectionDescription": "ドキュメントのページでは、契約、規約、補足情報など、CLI 面の参照資料を扱います。",
     "documentationSectionLinkLabel": "ドキュメントページをすべて見る",
-    "glossarySectionTitle": "用語集",
-    "glossarySectionDescription": "用語集ページでは、ファクトリーと CLI まわりの短い語彙を定義し、ドキュメント全体を読みやすくします。",
-    "glossarySectionLinkLabel": "用語集をすべて見る",
     "referencesSectionTitle": "リファレンス",
     "referencesSectionDescription": "you-agent-factory のコントラクト参照面: HTTP API、イベント、スキーマ、コマンドラインインターフェイス（CLI）、Model Context Protocol（MCP）、および JavaScript ランタイム。",
     "referencesSectionLinkLabel": "リファレンスページをすべて見る",
@@ -341,14 +332,6 @@
     "listLabel": "ワークステーション項目",
     "emptyTitle": "ワークステーション項目はまだありません",
     "emptyDescription": "公開されたワークステーションページは、追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
-    "emptyHomeLink": "ホームに戻る"
-  },
-  "glossaryIndex": {
-    "title": "用語集",
-    "description": "ファクトリーと CLI まわりの短い定義です。公開済みの各項目は正規の用語集ページにリンクします。",
-    "listLabel": "用語集の項目",
-    "emptyTitle": "用語集の項目はまだありません",
-    "emptyDescription": "公開された用語集ページは、このリファレンスに追加されるとここに表示されます。それまではホームに戻る、参照を開く、検索する、またはブログを読むことができます。",
     "emptyHomeLink": "ホームに戻る"
   },
   "architectureIndex": {

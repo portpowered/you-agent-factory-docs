@@ -104,6 +104,9 @@ describe("you-agent-factory site config", () => {
       ),
     ).toEqual(["guides", "docs", "blogIndex"]);
     expect(
+      youAgentFactorySiteConfig.homeFeaturedLinks.map((link) => link.titleKey),
+    ).toEqual(["guidesLinkTitle", "docsLinkTitle", "blogLinkTitle"]);
+    expect(
       youAgentFactorySiteConfig.homeFeaturedLinks.every(
         (link) =>
           link.kind === "route" &&
@@ -112,7 +115,6 @@ describe("you-agent-factory site config", () => {
             "gqaLinkTitle",
             "swigluLinkTitle",
             "reluLinkTitle",
-            "glossaryLinkTitle",
           ].includes(link.titleKey),
       ),
     ).toBe(true);

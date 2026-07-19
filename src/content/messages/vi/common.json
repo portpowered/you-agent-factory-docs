@@ -83,9 +83,6 @@
       "additional-references": "Tham chiếu bổ sung"
     },
     "documentationSecondaries": {
-      "workers": "Worker",
-      "workstations": "Workstation",
-      "factories": "Factory",
       "resources": "Tài nguyên",
       "observability": "Khả năng quan sát"
     }
@@ -226,8 +223,6 @@
     "guidesLinkDescription": "Bắt đầu với hướng dẫn cách cài đặt và chạy CLI agent factory.",
     "docsLinkTitle": "Duyệt tài liệu",
     "docsLinkDescription": "Mở trung tâm duyệt tài liệu để khám phá các bộ sưu tập tài liệu CLI.",
-    "glossaryLinkTitle": "Thuật ngữ",
-    "glossaryLinkDescription": "Xem các định nghĩa ngắn về thuật ngữ factory và CLI.",
     "blogLinkTitle": "Blog",
     "blogLinkDescription": "Đọc cập nhật và bài viết sâu hơn về agent factory.",
     "onThisPageInstall": "Cài đặt",
@@ -242,7 +237,6 @@
     "quickRoutesTitle": "Lối vào nhanh",
     "quickRoutesDescription": "Dùng các điểm vào này khi bạn biết cách muốn khám phá, nhưng chưa biết chính xác trang nào.",
     "searchRouteDescription": "Nhảy thẳng tới tiêu đề, tên gọi khác, hoặc thẻ khi bạn đã có sẵn một thuật ngữ.",
-    "glossaryRouteDescription": "Xem nhanh các định nghĩa ngắn khi bạn cần giải mã từ ngữ chưa quen.",
     "architectureRouteDescription": "Theo dõi hình dạng hệ thống của factory, cấu trúc workstation, và các ý tưởng kiến trúc khác.",
     "tagsRouteDescription": "Duyệt các thẻ chủ đề được tuyển chọn, trải dài qua hướng dẫn, khái niệm, kỹ thuật, và tài liệu.",
     "conceptsSectionTitle": "Khái niệm",
@@ -257,9 +251,6 @@
     "documentationSectionTitle": "Tài liệu",
     "documentationSectionDescription": "Trang tài liệu bao gồm tài liệu tham chiếu cho bề mặt CLI, gồm hợp đồng, quy ước, và chi tiết hỗ trợ.",
     "documentationSectionLinkLabel": "Duyệt tất cả trang tài liệu",
-    "glossarySectionTitle": "Thuật ngữ",
-    "glossarySectionDescription": "Trang thuật ngữ định nghĩa từ vựng ngắn về factory và CLI để phần còn lại của tài liệu dễ đọc hơn.",
-    "glossarySectionLinkLabel": "Duyệt toàn bộ thuật ngữ",
     "referencesSectionTitle": "Tham chiếu",
     "referencesSectionDescription": "Các bề mặt tra cứu hợp đồng của you-agent-factory: HTTP API, sự kiện, schema, giao diện dòng lệnh (CLI), Model Context Protocol (MCP), và JavaScript runtime.",
     "referencesSectionLinkLabel": "Duyệt tất cả trang tham chiếu",
@@ -341,14 +332,6 @@
     "listLabel": "Các mục workstation",
     "emptyTitle": "Chưa có mục workstation nào",
     "emptyDescription": "Các trang workstation đã xuất bản sẽ xuất hiện ở đây khi được thêm. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",
-    "emptyHomeLink": "Về trang chủ"
-  },
-  "glossaryIndex": {
-    "title": "Thuật ngữ",
-    "description": "Các định nghĩa ngắn về thuật ngữ factory và CLI. Mỗi mục liên kết tới một trang thuật ngữ chuẩn khi đã được xuất bản.",
-    "listLabel": "Các mục thuật ngữ",
-    "emptyTitle": "Chưa có mục thuật ngữ nào",
-    "emptyDescription": "Các trang thuật ngữ đã xuất bản sẽ xuất hiện ở đây khi được thêm vào bộ tham chiếu. Trong lúc này, hãy quay lại trang chủ, mở Duyệt, tìm kiếm tài liệu, hoặc đọc blog.",
     "emptyHomeLink": "Về trang chủ"
   },
   "architectureIndex": {

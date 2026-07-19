@@ -59,8 +59,7 @@ async function openCollectionFolders(
       name: folderName,
     });
     // Top-level explorer folders follow Program documentation in DOM order.
-    // Prefer the last match so nested secondaries (Workers / Workstations /
-    // Factories) do not steal the top-level folder click.
+    // Prefer the last match when names collide with other chrome controls.
     const folder = folders.at(-1);
     if (!folder) {
       throw new Error(`missing folder button ${folderName}`);
@@ -75,9 +74,7 @@ async function openNestedProgramDocumentationSecondaries(
   container: HTMLElement,
   messages: Awaited<ReturnType<typeof loadUiMessages>>,
 ): Promise<void> {
-  // Only open secondaries that still have members after W18 move-stub demotion.
-  // Empty Workers / Workstations / Factories labels would otherwise match and
-  // toggle the same-named top-level W15 family folders.
+  // Open live Program documentation secondaries (Resources / Observability).
   for (const folderName of [
     messages.explorer.documentationSecondaries.resources,
     messages.explorer.documentationSecondaries.observability,

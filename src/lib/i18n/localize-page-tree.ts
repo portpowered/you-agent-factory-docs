@@ -101,10 +101,8 @@ function localizeNode(
     const defaultName = String(node.name);
     const folderId = context.folderLabelToId.get(defaultName);
     // Prefer Program documentation secondary catalogs when the English default
-    // matches a secondary (Workers / Resources / Observability). Collection
-    // folders still resolve via explorer.folders when no secondary applies.
-    // Colliding Workers/Workstations/Factories secondary strings stay aligned
-    // with explorer.folders in each locale catalog.
+    // matches a secondary (Resources / Observability). Collection folders still
+    // resolve via explorer.folders when no secondary applies.
     const localizedFolderName =
       context.secondaryLabelLocalizer.get(defaultName) ??
       (folderId ? context.explorer.folders[folderId] : node.name);

@@ -554,11 +554,12 @@ those paths only accept collection section refs.
   `src/lib/content/factory-only-public-inventory.test.tsx` (factory-only
   inventory + Blog/Search as separate surfaces), and
   [shell-domain-relevant-files](./shell-domain-relevant-files.md).
-- Glossary-derived helpers in
-  `src/lib/docs/glossary-derived-browse-sections.ts` may still exist for
-  message/legacy tests until the localized-message cleanup story removes
-  reader-facing Atlas browse copy; they must not drive public browse or
-  sidebar folder order.
+- Glossary-derived Atlas browse helpers
+  (`src/lib/docs/glossary-derived-browse-sections.ts`) are deleted. Public
+  browse stays CLI-only via `buildDocsBrowseSections` /
+  `DOCS_BROWSE_SECTION_ORDER`; proofs live in
+  `src/lib/docs/browse-collection-sections.test.ts`. Do not reintroduce
+  Model Types / Inference / Module Components browse sections.
 - Inference terms with canonical concept routes (`concepts/prefill`,
   `concepts/quantization`, `concepts/kv-cache-quantization`,
   `concepts/post-training-quantization`) still expose inference classification

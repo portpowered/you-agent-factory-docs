@@ -554,9 +554,9 @@ describe("explorer IA exact-order contract", () => {
         documentation,
         SIDEBAR_GROUP_LABELS.documentation["factory-configuration"],
       ),
-    ).not.toContain(
-      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].workers,
-    );
+    ).toEqual([
+      DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].resources,
+    ]);
 
     const observabilityPages = pageEntriesInSecondaryFolderUnderSeparator(
       documentation,
@@ -734,9 +734,6 @@ describe("explorer IA exact-order contract", () => {
       }
 
       const factoryConfigurationSecondaries = [
-        explorer.documentationSecondaries.workers,
-        explorer.documentationSecondaries.workstations,
-        explorer.documentationSecondaries.factories,
         explorer.documentationSecondaries.resources,
       ];
       const presentFactorySecondaries = secondaryFolderNamesUnderSeparator(

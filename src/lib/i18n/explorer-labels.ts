@@ -153,8 +153,9 @@ export function buildDefaultGroupLabelLocalizer(
 
 /**
  * Default-locale English Program documentation secondary folder label →
- * localized label. Covers Resources/Observability and colliding
- * Workers/Workstations/Factories secondaries.
+ * localized label. Covers live Resources / Observability secondaries only
+ * (empty Workers / Workstations / Factories stub-nesting labels were removed
+ * after W18 move-stub demotion).
  */
 export function buildDefaultSecondaryLabelLocalizer(
   explorer: ExplorerMessages,

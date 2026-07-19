@@ -87,11 +87,8 @@ export type ExplorerDocumentationGroupMessages = {
   "additional-references": string;
 };
 
-/** Nested Program documentation secondary folder labels (Workers, Observability, …). */
+/** Nested Program documentation secondary folder labels (Resources, Observability). */
 export type ExplorerDocumentationSecondaryMessages = {
-  workers: string;
-  workstations: string;
-  factories: string;
   resources: string;
   observability: string;
 };
@@ -284,8 +281,6 @@ export type HomeMessages = {
   guidesLinkDescription: string;
   docsLinkTitle: string;
   docsLinkDescription: string;
-  glossaryLinkTitle: string;
-  glossaryLinkDescription: string;
   blogLinkTitle: string;
   blogLinkDescription: string;
   onThisPageInstall: string;
@@ -302,7 +297,6 @@ export type BrowseIndexMessages = {
   quickRoutesTitle: string;
   quickRoutesDescription: string;
   searchRouteDescription: string;
-  glossaryRouteDescription: string;
   architectureRouteDescription: string;
   tagsRouteDescription: string;
   conceptsSectionTitle: string;
@@ -317,9 +311,6 @@ export type BrowseIndexMessages = {
   documentationSectionTitle: string;
   documentationSectionDescription: string;
   documentationSectionLinkLabel: string;
-  glossarySectionTitle: string;
-  glossarySectionDescription: string;
-  glossarySectionLinkLabel: string;
   referencesSectionTitle: string;
   referencesSectionDescription: string;
   referencesSectionLinkLabel: string;
@@ -366,14 +357,14 @@ export type TagLandingMessages = {
 };
 
 /**
- * Generic docs UI messages: home, browse/index hubs, glossary/architecture
- * section indexes, and page-kind labels.
+ * Generic docs UI messages: home, browse/index hubs, architecture section
+ * index, and page-kind labels. Glossary index advertising copy is retired
+ * with the `/docs/glossary` index destination (#157).
  */
 export type DocsMessages = {
   searchEntry: SearchEntryMessages;
   home: HomeMessages;
   browseIndex: BrowseIndexMessages;
-  glossaryIndex: SectionIndexMessages;
   architectureIndex: SectionIndexMessages;
   blogIndex: SectionIndexMessages;
   pageKind: Record<string, string>;
@@ -428,7 +419,6 @@ export const UI_MESSAGES_COMPATIBILITY_KEYS = [
   "factoriesIndex",
   "workersIndex",
   "workstationsIndex",
-  "glossaryIndex",
   "architectureIndex",
   "blogIndex",
   "tagsIndex",

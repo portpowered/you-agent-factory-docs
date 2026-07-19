@@ -41,6 +41,15 @@ describe("explorer labels", () => {
     expect(explorer.documentationSecondaries).toEqual({
       ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
     });
+    expect(Object.keys(explorer.documentationSecondaries).sort()).toEqual([
+      "observability",
+      "resources",
+    ]);
+    expect(explorer.documentationSecondaries).not.toHaveProperty("workers");
+    expect(explorer.documentationSecondaries).not.toHaveProperty(
+      "workstations",
+    );
+    expect(explorer.documentationSecondaries).not.toHaveProperty("factories");
   });
 
   test("every shipped locale resolves non-empty explorer folder, subgroup, and secondary labels", async () => {
@@ -75,17 +84,6 @@ describe("explorer labels", () => {
       expect(
         explorer.documentationSecondaries.resources.trim().length,
       ).toBeGreaterThan(0);
-
-      // Colliding secondary labels stay aligned with top-level folder catalogs.
-      expect(explorer.documentationSecondaries.workers).toBe(
-        explorer.folders.workers,
-      );
-      expect(explorer.documentationSecondaries.workstations).toBe(
-        explorer.folders.workstations,
-      );
-      expect(explorer.documentationSecondaries.factories).toBe(
-        explorer.folders.factories,
-      );
     }
   });
 
