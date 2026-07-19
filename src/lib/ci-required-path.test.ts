@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import {
   CI_GATE_JOB_ID,
   CI_REQUIRED_JOB_GRAPH,
@@ -21,6 +22,21 @@ const repoRoot = join(import.meta.dir, "../..");
 const makefilePath = join(repoRoot, "Makefile");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
 
+type WorkflowStep = {
+  run?: string;
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowJob = {
+  needs?: string | string[];
+  steps?: WorkflowStep[];
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowDocument = {
+  jobs?: Record<string, WorkflowJob>;
+};
+
 function parseMakefileCiPrerequisites(makefile: string): string[] {
   const ciLine = makefile
     .split("\n")
@@ -35,6 +51,31 @@ function workflowMakeCommands(workflow: string): string[] {
   return [...workflow.matchAll(/^\s+run:\s+make\s+([^\s#]+)/gm)].flatMap(
     (match) => (match[1] ? [match[1]] : []),
   );
+}
+
+function loadCiWorkflowJobs(): Record<string, WorkflowJob> {
+  const document = parseYaml(
+    readFileSync(ciWorkflowPath, "utf8"),
+  ) as WorkflowDocument;
+  if (!document.jobs || typeof document.jobs !== "object") {
+    throw new Error("ci.yml is missing a jobs map");
+  }
+  return document.jobs;
+}
+
+function normalizeNeeds(needs: string | string[] | undefined): string[] {
+  if (!needs) return [];
+  return Array.isArray(needs) ? [...needs] : [needs];
+}
+
+function jobMakeTargets(job: WorkflowJob | undefined): string[] {
+  const targets: string[] = [];
+  for (const step of job?.steps ?? []) {
+    const run = step.run?.trim() ?? "";
+    const match = run.match(/^make\s+([^\s#]+)/);
+    if (match?.[1]) targets.push(match[1]);
+  }
+  return targets;
 }
 
 describe("ci required path alignment", () => {
@@ -53,20 +94,38 @@ describe("ci required path alignment", () => {
     }
   });
 
-  test("CI workflow invokes the aligned make targets including validate-data and linkcheck", () => {
+  test("CI workflow matches job-graph membership and static-export edges", () => {
     const workflow = readFileSync(ciWorkflowPath, "utf8");
     const commands = workflowMakeCommands(workflow);
+    const jobs = loadCiWorkflowJobs();
 
     for (const target of CI_WORKFLOW_REQUIRED_MAKE_TARGETS) {
       expect(commands).toContain(target);
     }
 
-    const buildIndex = commands.indexOf("build");
-    const integrationIndex = commands.indexOf("test-integration");
-    const budgetIndex = commands.indexOf("budget");
-    expect(buildIndex).toBeGreaterThan(-1);
-    expect(integrationIndex).toBeGreaterThan(buildIndex);
-    expect(budgetIndex).toBeGreaterThan(buildIndex);
+    // No single linear verify-only required path.
+    expect(Object.keys(jobs)).not.toContain("verify");
+    expect(workflow).not.toContain("run: make ci");
+    expect(workflow).not.toMatch(/continue-on-error:\s*true/i);
+
+    for (const graphJob of CI_REQUIRED_SUITE_JOBS) {
+      expect(Object.keys(jobs)).toContain(graphJob.id);
+      expect(normalizeNeeds(jobs[graphJob.id]?.needs)).toEqual([
+        ...graphJob.needs,
+      ]);
+      const targets = jobMakeTargets(jobs[graphJob.id]);
+      for (const target of graphJob.makeTargets) {
+        expect(targets).toContain(target);
+      }
+    }
+
+    for (const edge of CI_REQUIRED_ORDERING_EDGES) {
+      expect(normalizeNeeds(jobs[edge.to]?.needs)).toContain(edge.from);
+    }
+
+    expect(normalizeNeeds(jobs[CI_GATE_JOB_ID]?.needs).sort()).toEqual(
+      [...ciRequiredJobNeeds(CI_GATE_JOB_ID)].sort(),
+    );
   });
 
   test("shared restored suites appear in both make ci and the CI workflow", () => {

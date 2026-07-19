@@ -70,7 +70,7 @@ make test-reader-facing
 | `Makefile` `test-ci-contract` / `test-verify-contract` / `test-build-contract` / `test-integration` | Maintainer + CI entrypoints; included in `make ci` |
 | `.github/workflows/ci.yml` | Parallel job graph: `contracts` runs story-003 suites; `static-export` runs `make build`; `integration`/`budget` `needs: static-export` (CI-1 rebuilds `out/` locally) |
 | `src/lib/verify/production-integration-test-paths.ts` | Post-build integration path set for live shell/lifecycle contracts |
-| `src/tests/ci/github-actions-make-ci.test.ts` | Asserts Makefile `ci:` order and that the workflow invokes the required make targets |
+| `src/tests/ci/github-actions-make-ci.test.ts` | Asserts the Wave CI-1 parallel job graph (job ids, per-job make membership, `needs` edges, `ci-gate` aggregate, no linear `verify`, no `continue-on-error: true`) plus sequential `make ci` prerequisites |
 | `src/tests/ci/github-actions-bun-install.test.ts` | Asserts pinned Bun + `make setup` (frozen lockfile) install posture |
 
 Do **not** restore the Atlas empty-shell skip that exited 0 when `websiteVerifierPatterns` was empty. Verify-contract must run the factory tooling list or fail closed.
@@ -203,7 +203,7 @@ Do not reintroduce helpers that call `runStaticExportBuild` from read-only probe
 | Path | Role |
 | --- | --- |
 | `src/lib/ci-required-path.ts` | Shared inventory of `make ci` prerequisites, CI workflow make targets, shared restored suites, plus Wave CI-1 `CI_REQUIRED_JOB_GRAPH` (job ids, make-target membership, ordering edges such as `static-export` → `integration`/`budget`, `ci-gate` aggregate) |
-| `src/lib/ci-required-path.test.ts` | Proves Makefile `ci:` / workflow suite alignment and the required job-graph membership + edges (`make ci` stays sequential) |
+| `src/lib/ci-required-path.test.ts` | Proves Makefile `ci:` / workflow suite alignment against `CI_REQUIRED_JOB_GRAPH` (membership, `static-export` → `integration`/`budget`, `ci-gate` needs); `make ci` stays sequential |
 | `src/lib/build/build-contract-required-test-paths.ts` | Explicit build-contract path list + `make test-build-contract` reproduction command (include SEO focused tests under `src/lib/seo/` when that lane lands) |
 | `scripts/run-build-contract-required-tests.ts` | Runner for `bun run test:build-contract`; prints reproduction command on failure |
 | `Makefile` `ci:` | Local full required path: suites through `build` → `test-integration` → `budget` → `component-coverage` → `validate-data` → `linkcheck` |
