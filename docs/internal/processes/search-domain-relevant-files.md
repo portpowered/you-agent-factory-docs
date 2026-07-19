@@ -278,8 +278,9 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
   Generic enrichment topology/facet contract, searchable topology terms, and draft or
   missing-target stability coverage.
 * `src/tests/search/build-documents.test.ts`
-  Document construction and topology normalization coverage (Atlas page fixtures;
-  excluded from required `make test` after Atlas deletion).
+  Live published-page search indexing for the default locale, including the
+  W18 move-stub exclusion (stubs stay published; ordinary search omits them),
+  plus topology normalization coverage.
 * `src/tests/search/search-api.test.ts`
   `/api/search` HTTP contract and `docsSearchApi` ranking regressions.
 * `src/tests/search/helpers.ts`
