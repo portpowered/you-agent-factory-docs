@@ -37,11 +37,13 @@ describe("system-config-schema reference page", () => {
       /system configuration JSON Schema/i,
     );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    const howToAccess = String(
+      loadedPage.messages.sections?.howToAccess?.body ?? "",
     );
-    expect(whatItCovers).toMatch(/live system configuration JSON Schema/i);
-    expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
+    expect(howToAccess).toMatch(/~\/\.you-agent-factory\/config\.json/);
+    expect(howToAccess).toMatch(/you config init/);
+    expect(howToAccess).not.toMatch(/on this page|Model Atlas|What It Covers/i);
     expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(loadedPage.messages.sections?.related).toBeUndefined();
@@ -61,7 +63,10 @@ describe("system-config-schema reference page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("heading", { name: "Local storage and access" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Schema Lookup" })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
@@ -72,6 +77,7 @@ describe("system-config-schema reference page", () => {
     expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
     expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
 
     const schemaSurface = screen.getByTestId("system-config-schema-reference");
     expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
@@ -85,10 +91,11 @@ describe("system-config-schema reference page", () => {
       schemaSurface.querySelector('[data-schema-field-path="workerPresets"]'),
     ).toBeTruthy();
 
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent ?? "").toMatch(
-      /system configuration JSON Schema/i,
+    const howToAccessSection = document.getElementById("how-to-access");
+    expect(howToAccessSection?.textContent ?? "").toMatch(
+      /~\/\.you-agent-factory\/config\.json/,
     );
+    expect(howToAccessSection?.textContent ?? "").toMatch(/you config init/);
 
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
