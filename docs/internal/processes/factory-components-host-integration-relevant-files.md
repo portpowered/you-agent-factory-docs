@@ -65,6 +65,83 @@ entry. Do not vendor or fork package source into this repo.
   `theme-code-copy-r00-page.test.ts` prove factory-dark chrome and shared
   code-copy interaction on `/docs/guides/getting-started` (desktop + narrow).
 
+## Docs chrome highlighting token map (locked roles)
+
+Wave 5 / batch-005 chrome hover-active repair owns resting vs overlay colors
+for search, globe, GitHub, TOC, sidebar, header, and breadcrumb through one
+shared map — not per-control hex hacks.
+
+| Role | Host semantic | Factory-dark proof | Surfaces |
+| --- | --- | --- | --- |
+| surrounding chrome background | `--background` | `#050b10` | search / globe / GitHub rest |
+| primary yellow | `--primary` | `#f5c76f` | hover/active overlay (all); sidebar hover **background** |
+| secondary blue | `--secondary` | `#507f8c` | TOC current rest |
+| white | `--foreground` | `#f7f2e8` | sidebar / header text+icons rest |
+| muted white | `--muted-foreground` | `#8aaeb8` | TOC non-current / breadcrumb rest |
+
+- Contract module: `src/lib/theme/docs-chrome-highlighting-tokens.ts`
+  (`DOCS_CHROME_HIGHLIGHTING_TOKEN_VARS`, surface role map,
+  factory-dark hex proofs).
+- CSS ownership: `:root` `--docs-chrome-*` vars in `src/app/globals.css`
+  (must stay aligned with the TS contract).
+- Lock with `docs-chrome-highlighting-tokens.test.ts` (role bindings +
+  observable DOM color checks). Do not add source-inventory tests that only
+  scan `globals.css` for var names.
+- Search / globe / GitHub surface (story 002): consume
+  `src/features/docs/styles/docs-chrome-search-globe-github.ts` +
+  `.header-action-icon` / `button[data-search]` rules in `globals.css`.
+  Rest = `--docs-chrome-surrounding-background`; hover/active =
+  `--docs-chrome-primary-yellow` (not `--accent` or secondary color-mix).
+  Chrome icon overrides must sit in `@layer utilities` with `!important`
+  so they beat outline-button `dark:!bg-input/30` (layered !important wins
+  over unlayered !important per CSS Cascade 5).
+  Prove with `docs-chrome-search-globe-github.test.ts` and SearchTrigger
+  hover assertions.
+- TOC “On this page” surface (story 003): consume
+  `src/features/docs/styles/docs-chrome-toc.ts` + `docs-chrome-toc.css`
+  (imported from `globals.css`). Current = `--docs-chrome-secondary-blue`;
+  non-current = `--docs-chrome-muted-white`; hover =
+  `--docs-chrome-primary-yellow`. Overrides Fumadocs
+  `data-[active=true]:text-fd-primary` / `hover:text-fd-accent-foreground`
+  and retargets the TOC thumb `.bg-fd-primary` to secondary blue. Keep
+  focus-visible as outline-only so focus does not recolor rest roles.
+  Prove with `docs-chrome-toc.test.ts`.
+- Sidebar row surface (story 004): consume
+  `src/features/docs/styles/docs-chrome-sidebar.ts` + `docs-chrome-sidebar.css`
+  (imported from `globals.css`). Rest text = `--docs-chrome-white`; hover =
+  wide `--docs-chrome-primary-yellow` **background** (with `px-2` so the fill
+  covers outline/padding — not text-only recolor). Active rows keep a soft
+  primary-yellow wash so current stays distinguishable at rest. Marker class
+  `docs-chrome-sidebar-row` is shared by desktop `#nd-sidebar` tree
+  (`docs-sidebar-tree.tsx`) and mobile drawer (`data-mobile-docs-drawer`).
+  Do not leave `text-fd-muted-foreground` rest or `hover:bg-fd-accent/50` /
+  `hover:bg-sidebar-accent` owning these rows. Prove with
+  `docs-chrome-sidebar.test.ts`.
+- Header text/icons + breadcrumb surface (story 005): consume
+  `src/features/docs/styles/docs-chrome-header-breadcrumb.ts` +
+  `docs-chrome-header-breadcrumb.css` (imported from `globals.css`). Header
+  brand / primary-nav text and menu icon rest = `--docs-chrome-white`;
+  hover/active = `--docs-chrome-primary-yellow` text overlay. Breadcrumb
+  links and current page rest = `--docs-chrome-muted-white`; link hover =
+  `--docs-chrome-primary-yellow`. Marker classes
+  `docs-chrome-header-text` / `docs-chrome-header-icon` /
+  `docs-chrome-breadcrumb-link` / `docs-chrome-breadcrumb-page`. Do not leave
+  `text-muted-foreground hover:text-foreground` owning these chrome surfaces.
+  Do not reopen primary-nav membership, brand copy, glossary, or search
+  ranking. Prove with `docs-chrome-header-breadcrumb.test.ts`.
+- Five-surface lock (story 006): consume
+  `src/features/docs/styles/docs-chrome-highlighting-token-map-contract.ts`
+  for the representative resting vs hover/active expectations across search /
+  globe / GitHub, TOC, sidebar, header text/icons, and breadcrumb. Prove with
+  `docs-chrome-highlighting-token-map-contract.test.ts` (happy-dom role + DOM
+  color proofs) and
+  `docs-chrome-highlighting-token-map.browser.test.ts` (Playwright fixture —
+  same always-on pattern as `docs-page-footer-chrome.browser.test.ts`; no Next
+  build required). The home-shell layout contract also asserts the five-surface
+  expectation map next to the search resting-fill contract. Joint live check:
+  on `/docs/guides/getting-started`, confirm all five surfaces match the locked
+  map together (rest + hover).
+
 ## Prose / chrome link underline accent (secondary blue)
 
 - Fumadocs prose defaults `text-decoration-color` to `--color-fd-primary`

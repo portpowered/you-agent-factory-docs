@@ -34,13 +34,11 @@ describe("factories/dynamic-workflows documentation page", () => {
     expect(loadedPage.messages.description).toMatch(/JavaScript/i);
     expect(loadedPage.messages.description).toMatch(/Factory/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/JavaScript/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/Factory Session/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
     const orchestratorSchema = String(
       loadedPage.messages.sections?.orchestratorSchema?.body ?? "",
     );
@@ -58,10 +56,6 @@ describe("factories/dynamic-workflows documentation page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/JavaScript/i);
-    expect(whatItCovers).toMatch(/Factory Session/i);
-    expect(keyConcepts).toMatch(/FactoryOrchestrator/i);
-    expect(keyConcepts).toMatch(/JAVASCRIPT/i);
     expect(orchestratorSchema).toMatch(/FactoryOrchestrator/i);
     expect(javascriptConfig).toMatch(/FactoryOrchestratorJavaScriptConfig/i);
     expect(invocationSchema).toMatch(/FactoryInvocationSignature/i);
@@ -70,12 +64,6 @@ describe("factories/dynamic-workflows documentation page", () => {
     expect(howToUse).toMatch(/Cursor dynamic-workflows/i);
     expect(limits).toMatch(/not a duplicated OpenAPI/i);
     expect(limits).toMatch(/schema and API reference/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
     expect(orchestratorSchema).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -97,9 +85,11 @@ describe("factories/dynamic-workflows documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Orchestrator Identity" }),
     ).toBeTruthy();

@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for documentation/architecture-of-system.
  * Covers documentation shell, system-structure identity, narrative
- * visibility, how-to-use discovery, and limits scope.
+ * visibility, how-to-use discovery, and limits scope — without leftover
+ * What It Covers / Key Concepts intro chrome.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -39,31 +40,17 @@ describe("architecture-of-system documentation page", () => {
         /system|architecture|FactorySession/i,
       );
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+      expect(loadedPage.messages.openingSummary).toMatch(/workflow factory/i);
+      expect(loadedPage.messages.openingSummary).toMatch(/Factory Session/i);
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
+      const systemDiagram = String(
+        loadedPage.messages.sections?.systemDiagram?.body ?? "",
       );
-      expect(whatItCovers).toMatch(/workflow factory/i);
-      expect(whatItCovers).toMatch(/persistent|coordinated/i);
-      expect(whatItCovers).toMatch(/Factory Session|FactorySession/i);
-      expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
-
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
-      expect(keyConcepts).toMatch(/factory\.json/i);
-      expect(keyConcepts).toMatch(/work types?/i);
-      expect(keyConcepts).toMatch(/workstations?/i);
-      expect(keyConcepts).toMatch(/workers?/i);
-      expect(keyConcepts).toMatch(/resources?/i);
-      expect(keyConcepts).toMatch(/Factory Session|FactorySession/i);
-      expect(keyConcepts).toMatch(/Petri/i);
-      expect(keyConcepts).toMatch(/JavaScript|dynamic workflow/i);
-      expect(keyConcepts).toMatch(/on disk|authored/i);
-      expect(keyConcepts).toMatch(/live|runtime|session/i);
-      expect(keyConcepts).not.toMatch(
+      expect(systemDiagram).toMatch(/Factory Session/i);
+      expect(systemDiagram).toMatch(/workstation|worker/i);
+      expect(systemDiagram).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
 
@@ -77,6 +64,7 @@ describe("architecture-of-system documentation page", () => {
       expect(howToUse).toMatch(/Factory Session/i);
       expect(howToUse).toMatch(/dynamic workflow/i);
       expect(howToUse).toMatch(/Petri/i);
+      expect(howToUse).toMatch(/factory\.json/i);
       expect(howToUse).not.toMatch(
         /on this page|Model Atlas|reader.?shortcut/i,
       );
@@ -87,9 +75,9 @@ describe("architecture-of-system documentation page", () => {
       expect(limits).toMatch(/system-structure overview/i);
       expect(limits).toMatch(/field dump/i);
       expect(limits).toMatch(/packaged CLI/i);
-      expect(limits).toMatch(/docs-site internal architecture/i);
       expect(limits).toMatch(/MCP|API|logs|metrics/i);
       expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      expect(limits).not.toMatch(/This page is|docs-site internal/i);
 
       render(
         <main>
@@ -103,11 +91,13 @@ describe("architecture-of-system documentation page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
       expect(
         screen.getByRole("heading", { name: "System Diagram" }),
       ).toBeTruthy();
@@ -118,9 +108,8 @@ describe("architecture-of-system documentation page", () => {
       expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
       expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
       expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
-      expect(screen.getByText(/workflow factory/i)).toBeTruthy();
       expect(screen.getAllByText(/factory\.json/i).length).toBeGreaterThan(0);
-      expect(screen.getByText(/Petri-backed/i)).toBeTruthy();
+      expect(screen.getByText(/Petri framing/i)).toBeTruthy();
       expect(
         screen.getByText("How work moves through you-agent-factory"),
       ).toBeTruthy();

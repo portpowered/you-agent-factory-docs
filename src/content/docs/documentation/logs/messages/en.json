@@ -3,21 +3,13 @@
   "description": "Find you-agent-factory runtime logs under the selected log root, manage rolling retention, and use CLI --verbose / --debug diagnostics without confusing logs with metrics or record/replay.",
   "openingSummary": "Runtime logs are the you-agent-factory on-disk channel for structured JSON rolling files under a selected log root, separate from stderr CLI diagnostics and from runtime metrics.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Logs is the web reference for you-agent-factory runtime logs and CLI diagnostics. Use it when you need to find where structured runtime log files are written, how rolling retention works, or how --verbose and --debug relate to on-disk logs. It covers the default log root, UTC-date grouping for rolling JSON files, retention and rotation controls, and stderr diagnostics policy including --json stdout separation. Runtime metrics are a separate structured JSONL operational channel and do not replace runtime logs. Record/replay artifacts and session event streams are also separate channels."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "Runtime logs are structured JSON rolling files grouped by UTC start date under a selected log root. The default root is ~/.you-agent-factory/logs. Each run writes under that root by UTC start date so operators can find files for a given day without scanning unrelated channels. Runtime metrics are a separate structured JSONL operational channel with their own rolling files and do not replace runtime logs. CLI --verbose emits concise command diagnostics to stderr. CLI --debug emits lower-level diagnostics where supported and implies --verbose. CLI --json writes structured success output to stdout while diagnostics remain on stderr. System logs include command stdout and stderr only on command failures. Environment details are record-channel diagnostics only; they are not part of the runtime-log channel."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Start from the default log root when you need to inspect recent factory runs. Use the retention and rotation controls below when you need a different root, retention window, backup count, size limit, or compression for rotated files. Pass a runtime-log flag on you run to set or inspect the log root for one invocation. Use the CLI diagnostics controls when you need concise or lower-level stderr output, or when a supported command should emit structured JSON on stdout. Keep runtime logs separate from metrics files and from record/replay artifacts when diagnosing a run. A forthcoming metrics page will cover the metrics channel in depth; this page only marks that boundary."
+      "body": "Start from the default log root when you need to inspect recent factory runs. Runtime logs are structured JSON rolling files grouped by UTC start date under that root (default ~/.you-agent-factory/logs). Use the retention and rotation controls below when you need a different root, retention window, backup count, size limit, or compression for rotated files. Pass a runtime-log flag on you run to set or inspect the log root for one invocation. CLI --verbose emits concise command diagnostics to stderr; --debug emits lower-level diagnostics where supported and implies --verbose; --json writes structured success output to stdout while diagnostics remain on stderr. Keep runtime logs separate from metrics files (a separate structured JSONL channel) and from record/replay artifacts when diagnosing a run."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web runtime-logs and CLI-diagnostics reference for you-agent-factory. It is not a sync of packaged CLI docs, not the metrics reference, not record/replay artifact management, not FactoryEvent or session event-stream contracts, not agent-run tool-diagnostics inspection, and not the OpenAPI or API reference. Sibling links and packaged you docs topics aid discovery only; they are not required to understand runtime logs and CLI diagnostics here."
+      "body": "Logs covers runtime logs and CLI diagnostics for you-agent-factory. It is not a sync of packaged CLI docs, not the metrics reference, not record/replay artifact management, not FactoryEvent or session event-stream contracts, not agent-run tool-diagnostics inspection, and not the OpenAPI or API reference. Sibling links and packaged you docs topics aid discovery only; they are not required to understand runtime logs and CLI diagnostics here."
     },
     "related": {
       "title": "Related To"

@@ -3,21 +3,13 @@
   "description": "How you-agent-factory maps factory topology onto a Petri / Colored Petri Net (CPN) execution model: places, colored tokens, transitions, and markings.",
   "openingSummary": "you-agent-factory runs Petri / Colored Petri Net (CPN) factories: work tokens move through places under workstation transitions.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This page explains how you-agent-factory runs Petri / Colored Petri Net (CPN) factories: work tokens move through places under workstation transitions. Petri / CPN framing is how the runtime reads authored factory topology as a net. Places hold work, workstations act as transitions that fire when their inputs are ready, and the current token distribution is the marking the session advances."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A place is a work-type state such as task:init. A colored token is submitted work occupying a place; it carries work-type identity and payload so the runtime can tell which work sits where. A transition is a workstation that consumes tokens from its input places and emits outcomes onto output places. A marking is which tokens currently sit in which places. A transition is enabled when its input places have matching tokens ready to consume."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Read one compact factory run as a Petri / Colored Petri Net (CPN). You submit work for a task work type; the runtime places a colored token in the initial place task:init. A workstation whose inputs include task:init becomes enabled when that matching token is present. The transition fires: the workstation consumes the token and dispatches its worker. When the worker finishes, the workstation routes the token to an outcome place — accepted success, continue for ordinary partial progress, rejection, or failure. The diagram below shows that place → transition → place token flow for the accepted path, with the other outcome places drawn as alternate routes."
+      "body": "A place is a work-type state such as task:init. A colored token is submitted work occupying a place; it carries work-type identity and payload so the runtime can tell which work sits where. A transition is a workstation that consumes tokens from its input places and emits outcomes onto output places. A marking is which tokens currently sit in which places. A transition is enabled when its input places have matching tokens ready to consume. Read one compact factory run as a Petri / Colored Petri Net (CPN). You submit work for a task work type; the runtime places a colored token in the initial place task:init. A workstation whose inputs include task:init becomes enabled when that matching token is present. The transition fires: the workstation consumes the token and dispatches its worker. When the worker finishes, the workstation routes the token to an outcome place — accepted success, continue for ordinary partial progress, rejection, or failure. The diagram below shows that place → transition → place token flow for the accepted path, with the other outcome places drawn as alternate routes."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is Petri / Colored Petri Net (CPN) framing for factory readers. It is not academic Petri-net theory, not the JavaScript dynamic-workflow orchestrator deep dive, not the configuration field reference, and not the architecture-of-system diagram page. Factory orchestrators come in two kinds: PETRI (place, token, and transition nets like this page describes) and JAVASCRIPT (dynamic workflows authored in JavaScript or TypeScript). When no orchestrator block is authored, compatibility defaults to Petri."
+      "body": "Petri / Colored Petri Net (CPN) framing helps factory readers understand place, token, and transition nets. It is not academic Petri-net theory, not the JavaScript dynamic-workflow orchestrator deep dive, not the configuration field reference, and not the architecture-of-system diagram. Factory orchestrators come in two kinds: PETRI (place, token, and transition nets) and JAVASCRIPT (dynamic workflows authored in JavaScript or TypeScript). When no orchestrator block is authored, compatibility defaults to Petri."
     },
     "related": {
       "title": "Related To"

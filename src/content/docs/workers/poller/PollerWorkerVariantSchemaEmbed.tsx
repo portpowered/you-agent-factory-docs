@@ -29,6 +29,8 @@ export function PollerWorkerVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={POLLER_WORKER_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="poller-worker-variant-schema"
       />
     </div>

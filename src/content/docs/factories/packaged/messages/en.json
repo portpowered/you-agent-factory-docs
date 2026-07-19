@@ -3,14 +3,6 @@
   "description": "Discover, identify, and run first-party @you/* packaged factories with you run --named.",
   "openingSummary": "Packaged factories are catalog-backed @you/* built-ins such as @you/goal, @you/fusion, and @you/tts that materialize under ~/.you-agent-factory/factories on first use and stay editable on disk afterward.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Packaged factories are first-party built-in named factories under the @you/* namespace. Use this surface when you need shipped you-agent-factory terminology for choosing a packaged factory, referencing it by canonical name, understanding first-use materialization under ~/.you-agent-factory/factories, and knowing where editability, portability, and freshness end."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A packaged factory is a catalog-backed built-in under the @you/* namespace. Invoke it with you run --named <canonical-name>. Built-ins ship with the CLI catalog and materialize lazily into ~/.you-agent-factory/factories on first use. Project-local or saved named factories and portable --factory <factory.json> runs are separate invocation paths. Live Factory name, metadata, and sourceDirectory fields describe identity and diagnostic provenance for those materialized definitions."
-    },
     "discoveryAndResolution": {
       "title": "Discovery And Resolution",
       "body": "Choose a packaged factory when you want a catalog-backed named invocation by canonical name such as @you/goal. Use a project-local or saved named factory when you own the definition under a chosen root. Use --factory <factory.json> for a portable one-shot config path without guessing --dir. Invoke with you run --named <canonical-name>. Resolution order is project-local ./factory (or --dir), then global ~/.you-agent-factory/factories, then built-in catalog materialization on first use. On-disk scoped names are URL-encoded — for example ~/.you-agent-factory/factories/@you%2Ftts/."

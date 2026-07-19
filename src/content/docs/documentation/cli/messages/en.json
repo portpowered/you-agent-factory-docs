@@ -3,21 +3,9 @@
   "description": "Install the you-agent-factory CLI and look up the core you commands for starting a factory, submitting work, checking sessions, and reading packaged docs.",
   "openingSummary": "The you-agent-factory CLI is the command-line entrypoint for installing the factory tooling and operating long-running agent work from your machine.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This reference covers the you-agent-factory CLI: how to install the you binary, and which core commands start a factory, submit work, inspect sessions and work, or print packaged docs. It is the durable CLI lookup surface for customers who need install entrypoints and command purpose at a glance."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A factory is the long-running runtime that keeps agent work persistent on your machine. Starting a factory means launching that runtime with forms such as you or you run so the host can accept work. Submitting work means sending a work item or batch to a factory that is already running, with forms such as you submit or you submit batch. Session and work commands inspect live factory state. Packaged docs commands print reference markdown without needing a live factory."
-    },
     "install": {
       "title": "Install",
       "body": "Install the you CLI with the published release entrypoint for your operating system. These commands install the binary; they do not start a factory."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Install the CLI, then use the command matrix below to choose the right you command. Start a factory when you need a local runtime. Submit work only after a factory is already running. Use session and work commands to inspect live state, and you docs when you need packaged reference topics without a live factory."
     },
     "commands": {
       "title": "Commands",
@@ -25,7 +13,7 @@
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
-      "body": "This page is a web CLI reference for install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
+      "body": "CLI coverage here is install entrypoints and a core command matrix. It is not a full flag dump, not a sync of packaged CLI docs, and not the harness, MCP, or configuration deep pages. First-run walkthroughs and OS or executor install variants belong on their own install and getting-started surfaces when those pages are published."
     },
     "related": {
       "title": "Related To"

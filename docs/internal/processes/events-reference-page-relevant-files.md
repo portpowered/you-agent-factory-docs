@@ -31,7 +31,8 @@ Do **not**:
 | `src/content/docs/references/events/assets.json` | Empty baseline assets |
 | `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount |
 | `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
-| `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount proof |
+| `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount + catalog polish proof |
+| `src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts` | Playwright probe: short Event catalog label, envelope components, suppressed pointer chrome, envelope/payload JSON examples on `/docs/references/events` |
 | `src/content/registry/references/events.json` | `reference.events` registry record |
 
 ## Additive registry / published-docs wiring
@@ -60,6 +61,16 @@ other W11 reference page lanes):
 
 ## Patterns
 
+- Intro strip (post-catalog polish): page opens on Event Corpus only — remove
+  `What It Covers` / `Key Concepts` Sections from `page.mdx` and delete
+  `sections.whatItCovers` / `sections.keyConcepts` from messages. Set
+  `openingSummary` to `""` (or omit) so `DocsOpeningSummary` mounts nothing;
+  unlike CLI/MCP/JS, Events must not keep a long informational folded summary.
+  Flip page-local tests / `assert-events-page-catalog-polish-browser.ts` to
+  assert intro absence (MCP #156 pattern) without weakening #160 catalog polish.
+  Retarget body-text asserts that depended on removed Key Concepts copy (for
+  example `Hybrid placement`) to remaining corpus / catalog / reconnect markers
+  or rely on existing `data-events-placement` asserts; do not restore intros.
 - Keep curated discovery under `#related` with `LocalizedLinkList` toward planned
   `/docs/references/api`; leave `relatedIds` empty until sibling registry records exist.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
@@ -77,6 +88,20 @@ other W11 reference page lanes):
   `EventsCorpusMountView` (inject resolved mount models). Assert route presence,
   corpus roles, hybrid ownership markers, and `data-sse-live-connection=false`
   — do not scan renderer trees or global inventories.
+- Catalog polish close-out (examples / envelope components / short label /
+  single field listing / no pointer-path chrome): assert inside the published
+  success corpus render in `events-page.test.tsx`, and browser-verify with
+  `bun src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts`
+  (unique port via `EVENTS_CATALOG_POLISH_PROBE_PORT`, kill server on exit).
+  Worktrees without local `node_modules` must use the probe’s `--webpack` start
+  path (Turbopack rejects parent-hoisted `next`); optionally set
+  `EVENTS_CATALOG_POLISH_PROBE_BASE_URL` against an already-warm server.
+- Intro-strip browser close-out (story 003): the same probe also asserts
+  absence of What It Covers / Key Concepts headings and ids, absence of folded
+  Opening summary (`[data-testid="folded-summary"]` /
+  `[data-opening-summary="folded"]`), and presence of `#event-corpus` plus
+  stream operations / reconnect / static SSE markers. Do not invent a second
+  Events browser harness for intro absence.
 - Compose production mount like the W09 harness body: `EventsSurface` + public
   section components + `buildEventReconnectLifecycleCorpus` /
   `buildSseStaticExamplesCorpus`. Never mount `EventsVerificationHarness` on the

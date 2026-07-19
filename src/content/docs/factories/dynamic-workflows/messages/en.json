@@ -3,14 +3,6 @@
   "description": "Author JavaScript orchestrator-backed factories and relate dynamic workflow APIs to Factory configuration.",
   "openingSummary": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory. The live run is a Factory Session — the same durable runtime object used for every live orchestration — not a separate DynamicWorkflowRun type.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "A dynamic workflow is a JavaScript (JAVASCRIPT) orchestrator-backed factory in you-agent-factory. Customers author JavaScript or TypeScript orchestrator source, then validate, start, and inspect the live run as a Factory Session. This surface defines that idea in isolation, names the session nouns a live run depends on, and shows the live orchestrator and invocation schema fragments that configuration and callable APIs share."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A Factory is the authored orchestration definition a live session loads. A Factory Orchestrator (FactoryOrchestrator) is the orchestrator identity on that factory — Petri (PETRI) or JavaScript (JAVASCRIPT). Dynamic workflow is shorthand for the JavaScript kind. A Factory Session (FactorySession) is the canonical runtime instance for one live orchestration; a dynamic-workflow run is still that Factory Session with JavaScript orchestrator kind, not a separate DynamicWorkflowRun noun. A Dispatch is a shared execution request the session sends. A Factory Artifact (FactoryArtifact) is a session-owned durable output such as a result, finding, log, or checkpoint reference. A Factory Event (FactoryEvent) is a durable event-stream record for session lifecycle, dispatch lifecycle, progress, and artifacts."
-    },
     "orchestratorSchema": {
       "title": "Orchestrator Identity",
       "body": "The live FactoryOrchestrator definition is the authored orchestrator identity on one factory. Dynamic workflows use kind JAVASCRIPT with javascript configuration instead of Petri graph fields. When orchestrator is omitted, existing Petri factories load through compatibility defaulting to PETRI. Exhaustive Factory field inventories stay on the full schema and API reference pages."

@@ -176,10 +176,15 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
 6. **Closure (story 005):** mark every ledger row `closed` only after focused
    proofs cover old compatibility HTML, target resolution, Metadata canonical
    consistency, sitemap exclusion/inclusion, and an important on-target
-   anchor (`DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS`, typically
-   `what-it-covers`; use `{ kind: "none", reason: "index-only-target" }` only
-   when an index truly has no section id). Do not invent per-route redirect
-   helpers.
+   anchor (`DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS` — prefer the first
+   substantive teaching section id on the target; factories authored child
+   pages use purpose-lead chrome so anchors are
+   `what-lives-where` / `operator-model-defaults` / `discovery-and-resolution` /
+   `orchestrator-schema` / `factory-relationship`, not `what-it-covers`;
+   workers/workstations chrome polish uses `how-to-use`; projection-first API
+   reference uses `operations`; CLI inventory-first uses `command-inventory`;
+   use `{ kind: "none", reason: "index-only-target" }` only when an index truly
+   has no section id). Do not invent per-route redirect helpers.
 7. **Repair demotion (moved-duplicate stubs):** demoting §10 stubs from Program
    documentation explorer/search must keep the minimal compatibility MDX +
    `DocumentationRouteCompatibilityDocument` published. Do not delete ledger

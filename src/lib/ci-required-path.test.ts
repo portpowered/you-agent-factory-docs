@@ -1,17 +1,61 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { parse as parseYaml } from "yaml";
 import {
+  CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS,
+  CI_BROWSER_INSTALL_OWNERSHIP,
+  CI_BROWSER_INSTALL_REQUIRED_JOB_IDS,
+  CI_GATE_JOB_ID,
+  CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND,
+  CI_REQUIRED_JOB_GRAPH,
+  CI_REQUIRED_JOB_IDS,
+  CI_REQUIRED_ORDERING_EDGES,
+  CI_REQUIRED_SUITE_JOBS,
+  CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS,
+  CI_STATIC_EXPORT_ARTIFACT_HANDOFF,
+  CI_STATIC_EXPORT_ARTIFACT_NAME,
+  CI_STATIC_EXPORT_ARTIFACT_PATH,
+  CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS,
+  CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS,
   CI_WORKFLOW_REQUIRED_MAKE_TARGETS,
+  ciJobConsumesStaticExportArtifact,
+  ciJobDependsOnStaticExportJob,
+  ciJobForbidsLocalStaticExportRebuild,
+  ciJobForbidsPlaywrightChromiumInstall,
+  ciJobMustRebuildStaticExportLocally,
+  ciJobRequiresPlaywrightChromiumInstall,
+  ciRequiredJobGraphMakeTargets,
+  ciRequiredJobNeeds,
   EXCLUDED_MAKE_CI_TARGETS,
+  getCiRequiredJob,
   MAKE_CI_PREREQUISITES,
   MAKE_CI_REPRODUCTION_COMMAND,
   SHARED_REQUIRED_SUITE_TARGETS,
 } from "./ci-required-path";
+import { isWebsiteFunctionalityExcluded } from "./website-functionality-exclusions";
 
 const repoRoot = join(import.meta.dir, "../..");
 const makefilePath = join(repoRoot, "Makefile");
 const ciWorkflowPath = join(repoRoot, ".github/workflows/ci.yml");
+
+type WorkflowStep = {
+  name?: string;
+  run?: string;
+  uses?: string;
+  with?: Record<string, unknown>;
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowJob = {
+  needs?: string | string[];
+  steps?: WorkflowStep[];
+  "continue-on-error"?: boolean | string;
+};
+
+type WorkflowDocument = {
+  jobs?: Record<string, WorkflowJob>;
+};
 
 function parseMakefileCiPrerequisites(makefile: string): string[] {
   const ciLine = makefile
@@ -26,6 +70,45 @@ function parseMakefileCiPrerequisites(makefile: string): string[] {
 function workflowMakeCommands(workflow: string): string[] {
   return [...workflow.matchAll(/^\s+run:\s+make\s+([^\s#]+)/gm)].flatMap(
     (match) => (match[1] ? [match[1]] : []),
+  );
+}
+
+function loadCiWorkflowJobs(): Record<string, WorkflowJob> {
+  const document = parseYaml(
+    readFileSync(ciWorkflowPath, "utf8"),
+  ) as WorkflowDocument;
+  if (!document.jobs || typeof document.jobs !== "object") {
+    throw new Error("ci.yml is missing a jobs map");
+  }
+  return document.jobs;
+}
+
+function normalizeNeeds(needs: string | string[] | undefined): string[] {
+  if (!needs) return [];
+  return Array.isArray(needs) ? [...needs] : [needs];
+}
+
+function jobMakeTargets(job: WorkflowJob | undefined): string[] {
+  const targets: string[] = [];
+  for (const step of job?.steps ?? []) {
+    const run = step.run?.trim() ?? "";
+    const match = run.match(/^make\s+([^\s#]+)/);
+    if (match?.[1]) targets.push(match[1]);
+  }
+  return targets;
+}
+
+function stepUsesAction(step: WorkflowStep, actionPrefix: string): boolean {
+  const uses = step.uses?.trim() ?? "";
+  return uses === actionPrefix || uses.startsWith(`${actionPrefix}@`);
+}
+
+function jobStepsUsingAction(
+  job: WorkflowJob | undefined,
+  actionPrefix: string,
+): WorkflowStep[] {
+  return (job?.steps ?? []).filter((step) =>
+    stepUsesAction(step, actionPrefix),
   );
 }
 
@@ -45,20 +128,38 @@ describe("ci required path alignment", () => {
     }
   });
 
-  test("CI workflow invokes the aligned make targets including validate-data and linkcheck", () => {
+  test("CI workflow matches job-graph membership and static-export edges", () => {
     const workflow = readFileSync(ciWorkflowPath, "utf8");
     const commands = workflowMakeCommands(workflow);
+    const jobs = loadCiWorkflowJobs();
 
     for (const target of CI_WORKFLOW_REQUIRED_MAKE_TARGETS) {
       expect(commands).toContain(target);
     }
 
-    const buildIndex = commands.indexOf("build");
-    const integrationIndex = commands.indexOf("test-integration");
-    const budgetIndex = commands.indexOf("budget");
-    expect(buildIndex).toBeGreaterThan(-1);
-    expect(integrationIndex).toBeGreaterThan(buildIndex);
-    expect(budgetIndex).toBeGreaterThan(buildIndex);
+    // No single linear verify-only required path.
+    expect(Object.keys(jobs)).not.toContain("verify");
+    expect(workflow).not.toContain("run: make ci");
+    expect(workflow).not.toMatch(/continue-on-error:\s*true/i);
+
+    for (const graphJob of CI_REQUIRED_SUITE_JOBS) {
+      expect(Object.keys(jobs)).toContain(graphJob.id);
+      expect(normalizeNeeds(jobs[graphJob.id]?.needs)).toEqual([
+        ...graphJob.needs,
+      ]);
+      const targets = jobMakeTargets(jobs[graphJob.id]);
+      for (const target of graphJob.makeTargets) {
+        expect(targets).toContain(target);
+      }
+    }
+
+    for (const edge of CI_REQUIRED_ORDERING_EDGES) {
+      expect(normalizeNeeds(jobs[edge.to]?.needs)).toContain(edge.from);
+    }
+
+    expect(normalizeNeeds(jobs[CI_GATE_JOB_ID]?.needs).sort()).toEqual(
+      [...ciRequiredJobNeeds(CI_GATE_JOB_ID)].sort(),
+    );
   });
 
   test("shared restored suites appear in both make ci and the CI workflow", () => {
@@ -75,5 +176,399 @@ describe("ci required path alignment", () => {
     // make ci uses coverage alias only via component-coverage; never the old name alone.
     expect(prerequisites.has("coverage")).toBe(false);
     expect(prerequisites.has("component-coverage")).toBe(true);
+  });
+});
+
+describe("ci required job-graph model", () => {
+  test("names every Wave CI-1 required job including ci-gate", () => {
+    expect([...CI_REQUIRED_JOB_IDS]).toEqual([
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "integration",
+      "budget",
+      "ci-gate",
+    ]);
+    expect(CI_REQUIRED_JOB_GRAPH.map((job) => job.id)).toEqual([
+      ...CI_REQUIRED_JOB_IDS,
+    ]);
+    expect(CI_GATE_JOB_ID).toBe("ci-gate");
+  });
+
+  test("maps each non-gate job to its make target membership", () => {
+    expect(getCiRequiredJob("check").makeTargets).toEqual(["check"]);
+    expect(getCiRequiredJob("unit-tests").makeTargets).toEqual(["test"]);
+    expect(getCiRequiredJob("reader-facing").makeTargets).toEqual([
+      "test-reader-facing",
+    ]);
+    expect(getCiRequiredJob("a11y").makeTargets).toEqual(["a11y"]);
+    expect(getCiRequiredJob("contracts").makeTargets).toEqual([
+      "test-ci-contract",
+      "test-verify-contract",
+      "test-build-contract",
+    ]);
+    expect(getCiRequiredJob("component-coverage").makeTargets).toEqual([
+      "component-coverage",
+    ]);
+    expect(getCiRequiredJob("content").makeTargets).toEqual([
+      "validate-data",
+      "linkcheck",
+    ]);
+    expect(getCiRequiredJob("static-export").makeTargets).toEqual(["build"]);
+    expect(getCiRequiredJob("integration").makeTargets).toEqual([
+      "test-integration",
+    ]);
+    expect(getCiRequiredJob("budget").makeTargets).toEqual(["budget"]);
+    expect(getCiRequiredJob("ci-gate").makeTargets).toEqual([]);
+
+    for (const job of CI_REQUIRED_SUITE_JOBS) {
+      expect(job.makeTargets.length).toBeGreaterThan(0);
+    }
+  });
+
+  test("encodes static-export before integration and budget without false peer edges", () => {
+    expect(ciRequiredJobNeeds("integration")).toEqual(["static-export"]);
+    expect(ciRequiredJobNeeds("budget")).toEqual(["static-export"]);
+
+    for (const edge of CI_REQUIRED_ORDERING_EDGES) {
+      expect(ciRequiredJobNeeds(edge.to)).toContain(edge.from);
+    }
+
+    const peerJobIds = [
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+    ] as const;
+
+    for (const peerId of peerJobIds) {
+      expect(ciRequiredJobNeeds(peerId)).toEqual([]);
+    }
+
+    // Independent peers must not invent serial edges between each other.
+    for (const from of peerJobIds) {
+      for (const to of peerJobIds) {
+        if (from === to) continue;
+        expect(ciRequiredJobNeeds(to)).not.toContain(from);
+      }
+    }
+
+    expect(ciRequiredJobNeeds("ci-gate")).toEqual([
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "integration",
+      "budget",
+    ]);
+  });
+
+  test("job-graph suite membership covers shared required suites and workflow targets", () => {
+    const graphTargets = new Set(ciRequiredJobGraphMakeTargets());
+
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(graphTargets.has(target)).toBe(true);
+    }
+
+    for (const target of CI_WORKFLOW_REQUIRED_MAKE_TARGETS) {
+      if (target === "setup") continue;
+      expect(graphTargets.has(target)).toBe(true);
+    }
+
+    // setup stays a per-job prerequisite inventory entry, not a graph job.
+    expect(graphTargets.has("setup")).toBe(false);
+    expect(CI_WORKFLOW_REQUIRED_MAKE_TARGETS).toContain("setup");
+  });
+
+  test("make ci prerequisites stay sequential and include every shared required suite", () => {
+    const makefile = readFileSync(makefilePath, "utf8");
+    const prerequisites = parseMakefileCiPrerequisites(makefile);
+
+    expect(prerequisites).toEqual([...MAKE_CI_PREREQUISITES]);
+    expect(MAKE_CI_PREREQUISITES).toEqual([
+      "lint",
+      "typecheck",
+      "test",
+      "test-reader-facing",
+      "a11y",
+      "test-ci-contract",
+      "test-verify-contract",
+      "test-build-contract",
+      "build",
+      "test-integration",
+      "budget",
+      "component-coverage",
+      "validate-data",
+      "linkcheck",
+    ]);
+
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(MAKE_CI_PREREQUISITES).toContain(target);
+      expect(prerequisites).toContain(target);
+    }
+
+    // Sequential local path still places build before consumers that need out/.
+    const buildIndex = MAKE_CI_PREREQUISITES.indexOf("build");
+    expect(MAKE_CI_PREREQUISITES.indexOf("test-integration")).toBeGreaterThan(
+      buildIndex,
+    );
+    expect(MAKE_CI_PREREQUISITES.indexOf("budget")).toBeGreaterThan(buildIndex);
+  });
+});
+
+describe("ci static-export artifact handoff contract (Wave CI-2)", () => {
+  test("documents stable artifact identity, producer, and consumers", () => {
+    expect(CI_STATIC_EXPORT_ARTIFACT_NAME).toBe("static-export-out");
+    expect(CI_STATIC_EXPORT_ARTIFACT_PATH).toBe("out");
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF).toEqual({
+      artifactName: "static-export-out",
+      path: "out",
+      producerJobId: "static-export",
+      consumerJobIds: ["integration", "budget"],
+      forbiddenConsumerMakeTargets: ["build", "build-export"],
+    });
+    expect([...CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS]).toEqual([
+      "integration",
+      "budget",
+    ]);
+    expect([...CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS]).toEqual([
+      "build",
+      "build-export",
+    ]);
+
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.producerJobId).toBe(
+      "static-export",
+    );
+    expect(getCiRequiredJob("static-export").makeTargets).toContain("build");
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds) {
+      expect(ciRequiredJobNeeds(consumerId)).toEqual(["static-export"]);
+      expect(CI_REQUIRED_ORDERING_EDGES).toContainEqual({
+        from: "static-export",
+        to: consumerId,
+      });
+    }
+  });
+
+  test("distinguishes needs: static-export ordering from rebuild-locally", () => {
+    // Ordering edge alone is not the same as “must rebuild out/ locally”.
+    expect(ciJobDependsOnStaticExportJob("integration")).toBe(true);
+    expect(ciJobDependsOnStaticExportJob("budget")).toBe(true);
+    expect(ciJobDependsOnStaticExportJob("static-export")).toBe(false);
+    expect(ciJobDependsOnStaticExportJob("check")).toBe(false);
+
+    // Wave CI-2: consumers reuse the trusted artifact — they do not rebuild.
+    expect(ciJobConsumesStaticExportArtifact("integration")).toBe(true);
+    expect(ciJobConsumesStaticExportArtifact("budget")).toBe(true);
+    expect(ciJobConsumesStaticExportArtifact("static-export")).toBe(false);
+    expect(ciJobConsumesStaticExportArtifact("check")).toBe(false);
+
+    expect(ciJobForbidsLocalStaticExportRebuild("integration")).toBe(true);
+    expect(ciJobForbidsLocalStaticExportRebuild("budget")).toBe(true);
+    expect(ciJobForbidsLocalStaticExportRebuild("static-export")).toBe(false);
+    expect(ciJobForbidsLocalStaticExportRebuild("unit-tests")).toBe(false);
+
+    // Rebuild-locally posture is the forbidden combination: needs the producer
+    // job but does not consume the artifact. CI-2 consumers must never match.
+    expect(ciJobMustRebuildStaticExportLocally("integration")).toBe(false);
+    expect(ciJobMustRebuildStaticExportLocally("budget")).toBe(false);
+    expect(ciJobMustRebuildStaticExportLocally("static-export")).toBe(false);
+    expect(ciJobMustRebuildStaticExportLocally("check")).toBe(false);
+
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS) {
+      expect(ciJobDependsOnStaticExportJob(consumerId)).toBe(true);
+      expect(ciJobConsumesStaticExportArtifact(consumerId)).toBe(true);
+      expect(ciJobForbidsLocalStaticExportRebuild(consumerId)).toBe(true);
+      expect(ciJobMustRebuildStaticExportLocally(consumerId)).toBe(false);
+
+      const makeTargets = getCiRequiredJob(consumerId).makeTargets;
+      for (const forbidden of CI_STATIC_EXPORT_FORBIDDEN_CONSUMER_MAKE_TARGETS) {
+        expect(makeTargets).not.toContain(forbidden);
+      }
+    }
+  });
+
+  test("preserves Wave CI-1 membership, edges, suites, and sequential make ci", () => {
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("static-export");
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("integration");
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("budget");
+    expect([...CI_REQUIRED_JOB_IDS]).toContain("ci-gate");
+
+    expect(ciRequiredJobNeeds("integration")).toEqual(["static-export"]);
+    expect(ciRequiredJobNeeds("budget")).toEqual(["static-export"]);
+
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(MAKE_CI_PREREQUISITES).toContain(target);
+    }
+
+    const buildIndex = MAKE_CI_PREREQUISITES.indexOf("build");
+    expect(MAKE_CI_PREREQUISITES.indexOf("test-integration")).toBeGreaterThan(
+      buildIndex,
+    );
+    expect(MAKE_CI_PREREQUISITES.indexOf("budget")).toBeGreaterThan(buildIndex);
+
+    // Local make ci still builds once then runs consumers — no Actions artifact.
+    expect(MAKE_CI_REPRODUCTION_COMMAND).toBe("make ci");
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds).not.toContain(
+      "ci-gate",
+    );
+  });
+
+  test("workflow uploads contracted artifact and consumers download without rebuild", () => {
+    const jobs = loadCiWorkflowJobs();
+    const producer = jobs[CI_STATIC_EXPORT_ARTIFACT_HANDOFF.producerJobId];
+
+    const uploads = jobStepsUsingAction(producer, "actions/upload-artifact");
+    expect(uploads).toHaveLength(1);
+    expect(uploads[0]?.with?.name).toBe(
+      CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName,
+    );
+    expect(uploads[0]?.with?.path).toBe(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.path);
+    expect(uploads[0]?.with?.["if-no-files-found"]).toBe("error");
+
+    for (const consumerId of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.consumerJobIds) {
+      const consumer = jobs[consumerId];
+      expect(normalizeNeeds(consumer?.needs)).toEqual(["static-export"]);
+
+      const downloads = jobStepsUsingAction(
+        consumer,
+        "actions/download-artifact",
+      );
+      expect(downloads).toHaveLength(1);
+      expect(downloads[0]?.with?.name).toBe(
+        CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName,
+      );
+      expect(downloads[0]?.with?.path).toBe(
+        CI_STATIC_EXPORT_ARTIFACT_HANDOFF.path,
+      );
+
+      const targets = jobMakeTargets(consumer);
+      for (const forbidden of CI_STATIC_EXPORT_ARTIFACT_HANDOFF.forbiddenConsumerMakeTargets) {
+        expect(targets).not.toContain(forbidden);
+      }
+    }
+
+    expect(jobMakeTargets(jobs.integration)).toContain("test-integration");
+    expect(jobMakeTargets(jobs.budget)).toContain("budget");
+    expect(jobMakeTargets(jobs.integration)).not.toContain("build");
+    expect(jobMakeTargets(jobs.budget)).not.toContain("build");
+  });
+});
+
+describe("ci browser-install ownership contract (Wave CI-3)", () => {
+  test("names required vs forbidden Playwright Chromium install jobs", () => {
+    expect(CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND).toBe(
+      "bunx playwright install --with-deps chromium",
+    );
+    expect([...CI_BROWSER_INSTALL_REQUIRED_JOB_IDS]).toEqual([
+      "unit-tests",
+      "a11y",
+      "integration",
+    ]);
+    expect([...CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS]).toEqual([
+      "check",
+      "reader-facing",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "budget",
+      "ci-gate",
+    ]);
+    expect(CI_BROWSER_INSTALL_OWNERSHIP).toEqual({
+      installCommand: CI_PLAYWRIGHT_CHROMIUM_INSTALL_COMMAND,
+      requiredJobIds: CI_BROWSER_INSTALL_REQUIRED_JOB_IDS,
+      forbiddenJobIds: CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS,
+      unitTestsLaunchesPlaywrightChromium: true,
+      unitTestsEvidencePaths: CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS,
+    });
+  });
+
+  test("partitions every required job into install-required or install-forbidden", () => {
+    const required = new Set<string>(CI_BROWSER_INSTALL_REQUIRED_JOB_IDS);
+    const forbidden = new Set<string>(CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS);
+
+    for (const jobId of CI_REQUIRED_JOB_IDS) {
+      const inRequired = required.has(jobId);
+      const inForbidden = forbidden.has(jobId);
+      expect(inRequired || inForbidden).toBe(true);
+      expect(inRequired && inForbidden).toBe(false);
+      expect(ciJobRequiresPlaywrightChromiumInstall(jobId)).toBe(inRequired);
+      expect(ciJobForbidsPlaywrightChromiumInstall(jobId)).toBe(inForbidden);
+    }
+
+    expect(required.size + forbidden.size).toBe(CI_REQUIRED_JOB_IDS.length);
+  });
+
+  test("classifies unit-tests as install-required from live make test Chromium evidence", () => {
+    expect(
+      CI_BROWSER_INSTALL_OWNERSHIP.unitTestsLaunchesPlaywrightChromium,
+    ).toBe(true);
+    expect(ciJobRequiresPlaywrightChromiumInstall("unit-tests")).toBe(true);
+    expect(ciJobForbidsPlaywrightChromiumInstall("unit-tests")).toBe(false);
+    expect(getCiRequiredJob("unit-tests").makeTargets).toEqual(["test"]);
+
+    for (const evidencePath of CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS) {
+      expect(existsSync(join(repoRoot, evidencePath))).toBe(true);
+      expect(isWebsiteFunctionalityExcluded(evidencePath)).toBe(false);
+      const source = readFileSync(join(repoRoot, evidencePath), "utf8");
+      expect(source).toContain("launchPlaywrightBrowser");
+    }
+  });
+
+  test("keeps a11y and integration install-required and peers install-forbidden", () => {
+    expect(ciJobRequiresPlaywrightChromiumInstall("a11y")).toBe(true);
+    expect(ciJobRequiresPlaywrightChromiumInstall("integration")).toBe(true);
+    expect(getCiRequiredJob("a11y").makeTargets).toEqual(["a11y"]);
+    expect(getCiRequiredJob("integration").makeTargets).toEqual([
+      "test-integration",
+    ]);
+
+    for (const jobId of CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS) {
+      expect(ciJobForbidsPlaywrightChromiumInstall(jobId)).toBe(true);
+      expect(ciJobRequiresPlaywrightChromiumInstall(jobId)).toBe(false);
+    }
+  });
+
+  test("preserves Wave CI-1/CI-2 membership, edges, artifact handoff, and make ci", () => {
+    expect([...CI_REQUIRED_JOB_IDS]).toEqual([
+      "check",
+      "unit-tests",
+      "reader-facing",
+      "a11y",
+      "contracts",
+      "component-coverage",
+      "content",
+      "static-export",
+      "integration",
+      "budget",
+      "ci-gate",
+    ]);
+    expect(ciRequiredJobNeeds("integration")).toEqual(["static-export"]);
+    expect(ciRequiredJobNeeds("budget")).toEqual(["static-export"]);
+    expect(CI_STATIC_EXPORT_ARTIFACT_HANDOFF.artifactName).toBe(
+      "static-export-out",
+    );
+    expect([...CI_STATIC_EXPORT_ARTIFACT_CONSUMER_JOB_IDS]).toEqual([
+      "integration",
+      "budget",
+    ]);
+    for (const target of SHARED_REQUIRED_SUITE_TARGETS) {
+      expect(MAKE_CI_PREREQUISITES).toContain(target);
+    }
+    expect(MAKE_CI_REPRODUCTION_COMMAND).toBe("make ci");
+    expect(CI_GATE_JOB_ID).toBe("ci-gate");
   });
 });

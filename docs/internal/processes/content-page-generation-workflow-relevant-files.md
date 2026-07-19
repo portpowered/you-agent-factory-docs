@@ -822,6 +822,81 @@ migration guidance and prefer the current public names for new configs.
 
 ### Documentation workers ownership, examples, and core fields (page-local)
 
+Authored `/docs/workers/*` and `/docs/workstations/*` pages (family indexes +
+variant pages, including `/docs/workers/mock`) use purpose-lead chrome:
+`openingSummary` via `DocsOpeningSummary`, then `#how-to-use`, then
+`#schema-reference` (messages `sections.schemaReference`, not “Variant
+Fields”) and `#examples`. Do not restore `#what-it-covers` /
+`#key-concepts` summary intro sections on those trees. Fold discriminator
+identity into `#how-to-use` (label + value line) rather than a separate Key
+Concepts section. Workstation family index follows the same intro shape;
+type/behavior selection and the compatibility matrix stay after how-to-use.
+Do not restore `#operational-cautions` or `#limits-and-assumptions` on
+worker/workstation authored trees (including family indexes); companion
+facts stay in purpose / how-to-use / schema reference / examples, and
+failure-class tables that lived only under cautions are removed with that
+chrome.
+
+Worker/workstation `*VariantSchemaEmbed` components pass
+`showVariantHeading={false}` and `showPointerBreadcrumb={false}` into
+`SchemaVariantReference` so embeds omit reader-facing `Variant: XX_*` headings
+and `/$defs/Worker` / `/$defs/Workstation` pointer breadcrumb chrome. Defaults
+on those props stay `true` so Factory schema / you-config / mock-workers
+reference pages keep their current chrome.
+
+Workstation authored page titles (frontmatter `title` + matching
+`messages.title`) and in-family sibling/companion link labels use concrete
+`… workstation` forms — for example `Classifier workstation`,
+`Logical move workstation`, `Agent-run workstation`, `Standard workstation`.
+Do not restore `… type`, `… behavior`, or `Agent-run type` / `Classifier type`
+as the primary display title. Routes/slugs stay unchanged; only display
+titles and owned link labels change. `MODEL_WORKSTATION` displays as
+`Model workstation` (avoid `Model-workstation workstation`).
+
+On `/docs/workers/agent`, `#related` uses `<RelatedDocs />` alone (no
+duplicate hand-built `LocalizedLinkList` of the same destinations beside it).
+JSON examples render through shared `CodePanel` (not bare unstyled
+`<pre><code>`). Do not restore `#tags` / `#references`
+(`TagPillList` / `CitationList`) footer chrome on that page.
+
+Page-local worker/workstation tests must prove that polished shape
+behaviorally (rendered headings/copy, not file inventories):
+
+- Assert `openingSummary` + `howToUse` message bodies (purpose teaching), and
+  for family-index App Router renders also assert the purpose lead appears in
+  HTML.
+- Assert visible `#how-to-use` / `#schema-reference` / `#examples` (or mock’s
+  `#schema-fields`) presence with `getByRole` headings.
+- Assert removed chrome with `queryByRole(...).toBeNull()` for What It Covers,
+  Key Concepts, Operational Cautions, and Limits And Assumptions (family
+  indexes included).
+- On variant embeds, assert `queryByText("Variant: …")` is null and the
+  definition-header breadcrumb is absent via
+  `:scope > header [data-testid="schema-breadcrumb"]` (field-row breadcrumbs
+  still use that test id).
+- Assert concrete workstation `messages.title` forms (`… workstation`) and
+  Agent worker RelatedDocs-only related
+  (`section#related [data-testid="curated-related-docs"]`) with no Tags /
+  References headings.
+- Do not edit Factory schema / you-config / mock-workers *reference* page
+  tests for this chrome trim unless proving shared opt-in defaults stay
+  unchanged.
+
+Browser-verify the polished chrome on representative live routes (at least
+`/docs/workers/agent` and `/docs/workstations/classifier`) with a unique
+port in `3100–3999`, kill the server before exit, and prefer
+`bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` in
+parent-hoisted worktrees (plain Turbopack `bun run dev` can fail to resolve
+`next` from `src/app`). Assert from SSR HTML: purpose lead after the H1,
+`#how-to-use` / `#schema-reference` / `#examples`, no What It Covers / Key
+Concepts / Operational Cautions / Limits And Assumptions, no
+`Variant: XX_*` heading, no definition-header
+`[data-testid="schema-breadcrumb"]` (do **not** treat field-row `$ref →
+/$defs/…` links or `data-schema-definition-pointer` attributes as chrome
+noise), concrete `… workstation` title on the workstation page, and on
+agent: RelatedDocs (`curated-related-docs`),
+`data-agent-worker-example-code`, and absent `#tags` / `#references`.
+
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`
 (stable anchor). Put ownership matrix cells, example label/body, and
@@ -839,12 +914,12 @@ meanings, but rewrite for web scanning and avoid a full flag dump.
 
 ### Documentation workers limits and sibling discovery (page-local)
 
-For `documentation/workers`, keep `#limits-and-assumptions` as the scope
-boundary: web workers reference for types, placement, ownership, and core
-authoring — not a packaged `you docs workers` sync, not workstation
-routing/lifecycle, not resource capacity deep-dive, and not a full agent
-failure-class catalog. Keep the page isolation-first: sibling links aid
-discovery but must not be required to define what a worker is.
+Authored `/docs/workers/*` and `/docs/workstations/*` (including family
+indexes) no longer mount `#limits-and-assumptions` or `#operational-cautions`.
+Scope boundaries that used to live in those sections belong in purpose /
+how-to-use / schema reference / examples when still needed for authoring.
+Keep the page isolation-first: sibling links aid discovery but must not be
+required to define what a worker is.
 
 When B04 siblings (`configuration`, `workstations`, `resources`) are not yet
 published in this worktree, wire reviewer-visible discovery with page-local
@@ -853,11 +928,51 @@ install / what-is). Leave registry `relatedIds` empty until those sibling
 registry records and published pages exist; keep `<RelatedDocs />` in
 `#related` for when curated ids can resolve cleanly.
 
-### Documentation CLI key concepts, limits, and sibling discovery
+### Documentation Program core intro strip (page-local)
 
-For `documentation/cli`, keep `#key-concepts` before the install/commands
-teaching surfaces so readers learn start-a-factory vs submit-to-a-running-factory
-before the matrix. Keep `#limits-and-assumptions` as the scope boundary: web
+For Documentation Program **core product** pages under
+`src/content/docs/documentation/` (`what-is-you-agent-factory`, `install`,
+`cli`, `mcp`, `contributing-to-these-docs`, `faq`, `troubleshooting`,
+`submitting-work`, `harness-support`, `architecture-of-system`):
+
+- Remove `#what-it-covers` / `#key-concepts` Sections from `page.mdx` and delete
+  `sections.whatItCovers` / `sections.keyConcepts` from all locale messages.
+- Keep a short purpose `openingSummary` (add one sentence only when the page
+  would otherwise open with no useful lead). Do not clear it to `""` the way
+  Events/JS reference intro-strips do — Documentation Program pages still use
+  `DocsOpeningSummary` as the purpose lead.
+- Strip `#how-to-use` / `sections.howToUse` only when it is opening meta reading
+  guidance before real teaching. Keep it when it holds the page’s primary
+  procedure (for example install commands, contributing steps) or when it sits
+  after teaching sections (for example MCP integrate/serve/tools).
+- Do not expand this strip into ops/platform Documentation Program trees
+  (`logs`, `metrics`, `resources`, `petri`, `packaged-documents`,
+  `dashboard-ui-overview`, `security-trust-boundaries`, `throttling-and-limits`,
+  `replays-records`) — those belong to the sibling ops intro-strip lane.
+- Flip owned page tests (page-local under those trees plus
+  `src/lib/content/{what-is,install,cli}-page.test.tsx`) to assert intro
+  absence with `queryByRole(...).toBeNull()` / `toBeUndefined()` on
+  `whatItCovers` / `keyConcepts` (and `howToUse` when stripped as opening
+  boilerplate), while still proving remaining teaching headings/content and a
+  non-empty purpose `openingSummary`. Do not delete shared helpers/modules
+  while stripping intros.
+- Browser-verify the ten core routes with
+  `bun src/content/docs/documentation/assert-documentation-program-core-intro-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3587 default,
+  Playwright; kill server on exit). Assert absent What It Covers / Key Concepts
+  headings and `#what-it-covers` / `#key-concepts`; present purpose lead via
+  `[data-opening-summary="folded"]` / `[data-testid="folded-summary"]` (unlike
+  Events/JS/CLI reference intro-strips that clear `openingSummary`); at least
+  one teaching section id still mounted; `#how-to-use` absent on pages where it
+  was stripped as opening boilerplate (what-is, cli, faq, troubleshooting,
+  submitting-work). Prefer `DOC_PROGRAM_CORE_INTRO_STRIP_PROBE_BASE_URL` when a
+  server is already warm.
+
+### Documentation CLI limits and sibling discovery
+
+For `documentation/cli`, open on `#install` then `#commands` after the purpose
+`openingSummary` — do not restore `#what-it-covers` / `#key-concepts` or a meta
+`#how-to-use` opener. Keep `#limits-and-assumptions` as the scope boundary: web
 install + command matrix only — not a flag dump, not a packaged-docs sync, and
 not harness/MCP/config deep pages.
 
@@ -1018,6 +1133,39 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   Dispatch / event contracts live in OpenAPI — link
   `/docs/references/{schema,api,events}` rather than inventing session schema
   embeds outside W07 JSON Schema package models).
+  Factories authored child pages
+  (`configuration` / `global-configuration` / `packaged` / `dynamic-workflows` /
+  `sessions`) use purpose-lead chrome: keep a short `openingSummary` for
+  `DocsOpeningSummary`, then open MDX on the first teaching section (for
+  example `#what-lives-where`, `#operator-model-defaults`,
+  `#discovery-and-resolution`, `#orchestrator-schema`, or
+  `#factory-relationship`). Do not restore `#what-it-covers` /
+  `#key-concepts` or `sections.whatItCovers` / `sections.keyConcepts` on those
+  trees. Leave the factories family index overview / root summary embed alone
+  unless it literally ships those intros. Do not expand this intro strip into
+  workers/workstations (separate polish), documentation Program pages, or
+  reference schema pages (batch-004).
+  Factories page-local tests assert intro absence the same way as polished
+  reference pages: `sections.whatItCovers` / `sections.keyConcepts` are
+  `undefined`, `queryByRole` for those headings returns null, and
+  `#what-it-covers` / `#key-concepts` ids are absent — while still proving
+  `openingSummary`, teaching headings, ready schema embeds, and lookup links.
+  Do not require How To Use / Limits / Related absence on factories pages that
+  still ship those non-intro sections.
+  Browser-verify Factories intro strip on the five child routes with
+  `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1`
+  (Turbopack often fails in parent-hoisted worktrees). Fetch SSR HTML and
+  assert: no `What It Covers` / `Key Concepts` headings, no
+  `#what-it-covers` / `#key-concepts`, `data-opening-summary` present with
+  the page lead, and the first teaching section id/title visible
+  (`#what-lives-where`, `#operator-model-defaults`,
+  `#discovery-and-resolution`, `#orchestrator-schema` titled
+  Orchestrator Identity, `#factory-relationship`). Kill the server before
+  exit. In zsh verify scripts, do not assign to `path` (it aliases `PATH`).
+  After stripping factories `what-it-covers`, retarget
+  `DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS` for those five routes to
+  the first teaching section ids above or W18 migration-closure /
+  `make test-build-contract` fails.
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
@@ -1414,6 +1562,41 @@ MDX component merge for schema mounts:
    `resolveApiPackageManifestFsPath` uses ancestor `node_modules` filesystem
    walk — webpack stubs `createRequire().resolve` in production server chunks
    (MODULE_NOT_FOUND), including runtime-built specifier strings.
+   Factory schema recursive `$ref` splay is page-local: enable `showCatalog`
+   only on `FactorySchemaReference` and select the transitive closure with
+   `collectFactorySchemaSplayDefinitions` under
+   `src/content/docs/references/factory-schema/` — leave you-config /
+   mock-workers on `showCatalog={false}`. Same-page `$ref` click-traverse
+   depends on that splay plus `pagePath={FACTORY_SCHEMA_PAGE_PATH}` and
+   `ReferenceHashNavigation`: navigable `$ref` hrefs are
+   `/docs/references/factory-schema#…` fragments whose ids match splayed
+   `SchemaDefinition` anchors. Prefer a direct property `$ref` row such as
+   `orchestrator` → `/$defs/FactoryOrchestrator` for proofs — root `workers`
+   is `Worker[]` type chrome, not a `data-schema-ref-row`. Browser probe:
+   `src/content/docs/references/factory-schema/assert-factory-schema-click-traverse-browser.ts`.
+   Authored full Factory configuration JSON example is page-local
+   `FACTORY_SCHEMA_FULL_CONFIG_EXAMPLE_INPUTS` from
+   `factory-schema-full-config-example.ts` (hermetic factories/configuration
+   minimal sample keys) passed as `exampleInputs` on `FactorySchemaReference`
+   only. Browser probe:
+   `assert-factory-schema-full-config-example-browser.ts`.
+   Factory schema repair close-out (intro strip + splay + click-traverse +
+   full config) uses one page-local success-path probe:
+   `assert-factory-schema-repair-browser.ts` (webpack `bun run dev`, unique
+   port in 3100–3999, Playwright, kill server on exit). Assert
+   `data-schema-status="ready"`, absent What It Covers / Key Concepts,
+   splayed `$defs` catalog, `orchestrator` → `#defs-FactoryOrchestrator`
+   same-page click-traverse, and copyable authored
+   `full-factory-configuration` example keys. Run with plain `bun` from
+   repo cwd; do not leave the probe server running. Narrower probes
+   (`assert-factory-schema-click-traverse-browser.ts`,
+   `assert-factory-schema-full-config-example-browser.ts`) remain for
+   story-scoped iteration.
+   Intentional catalog splay grows Factory schema SSR HTML (~2.0 MiB);
+   raise the focused `references-factory-schema` payload ceiling in
+   `a11y-reference-payload-budget.ts` (~25% headroom) when closing this
+   lane so `make budget` stays green — do not invent unpublished defs to
+   shrink the page.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.
@@ -1428,6 +1611,31 @@ Representative pages: `src/content/docs/references/factory-schema/`,
 switch cases per slug). Cross-route success/invalid proofs live in
 `src/content/docs/references/schema-reference-published-routes.test.tsx`
 (page-owned route + mount markers only — not renderer or inventory scans).
+Schema reference polish stays projection-first: open on `#schema-lookup` (plus
+authored examples when present); do **not** restore `What It Covers` /
+`Key Concepts` / summary-style intros — page-local tests should assert those
+headings and `sections.whatItCovers` / `sections.keyConcepts` keys absent.
+Mock-workers recursive splay stays page-local: enable `showCatalog` and pass
+expanded `fieldNodes` from a page helper that resolves `itemSchema` /
+`refTarget` into nested children (strip `refTarget` on inlined parents so the
+shared expander can open them). Do not retarget shared SchemaReference defaults
+for Factory schema / you-config siblings.
+Mock-workers authored examples stay page-local: pass `exampleInputs` into the
+page `SchemaReference` mount from a page-owned module adapted from existing
+docs/customer samples (schema-true keys only). Do not edit workers/workstations
+authored pages and do not invent hermetic upstream schemas (HOLD).
+Mock-workers polish regression proofs stay under
+`mock-workers-schema-page.test.tsx`: assert intro absence, nested splay /
+on-page `$defs`, and authored example payloads on both the full MDX page path
+and the isolated mount (shared helper preferred) so `$ref`-only / no-examples
+presentation cannot silently return.
+Mock-workers browser verify stays page-local:
+`assert-mock-workers-schema-polish-browser.ts` (webpack `bun run dev`, unique
+port in 3100–3999, Playwright, kill server on exit). Assert
+`data-schema-status="ready"`, absent What It Covers / Key Concepts headings,
+nested `mockWorkers[]` / `unmatchedDispatchPolicy` fields + on-page `$defs`,
+and copyable authored examples (`data-schema-example="copy"` focusable).
+Run with plain `bun` from repo cwd; do not leave the probe server running.
 
 ## Page bundle and registry workflow
 
@@ -1625,6 +1833,55 @@ Representative paired-slice verification:
 * `src/lib/content/mixtral-moe-discovery.test.tsx`
 * `src/lib/content/qwen-3-6-discovery.test.tsx`
 * `src/lib/content/glm-family-discovery.test.tsx`
+
+### Documentation Program ops/platform intro strip (page-local)
+
+For the nine ops/platform Documentation Program trees under
+`src/content/docs/documentation/` (`logs`, `metrics`, `resources`, `petri`,
+`packaged-documents`, `dashboard-ui-overview`, `security-trust-boundaries`,
+`throttling-and-limits`, `replays-records`):
+
+- Remove `#what-it-covers` / `#key-concepts` Sections from `page.mdx` and drop
+  `sections.whatItCovers` / `sections.keyConcepts` from every shipped locale.
+- Keep at most one short purpose lead via `openingSummary` (rendered by
+  `DocsOpeningSummary`); omit or empty it when the first remaining body section
+  already opens usefully. Do not ship a multi-paragraph Summary section heading.
+  Purpose leads must be product-first: the topic/behavior is the subject (for
+  example “Local you-agent-factory trust boundaries define…” or
+  “you-agent-factory can capture live runs as replay artifacts…”). Reject
+  page-as-subject / page-role openers such as “Security / Trust Boundaries
+  describes…”, “Replays / Records is the … reference for…”, or “This page
+  explains…”. Update every shipped locale together; page-local tests should
+  assert short lead length and reject those page-meta patterns.
+- Strip `#how-to-use` when it is only sibling-pointer / opening boilerplate
+  (`metrics`, `resources`). When How To Use wraps primary operational teaching
+  (tables, commands, CPN asset, pressure-surface table), keep that teaching
+  visible—promote unique facts that lived only under Key Concepts into the
+  remaining body (for example throttling surface table into `#how-to-use`,
+  packaged callouts into `#how-to-use`, dashboard/security bind URL teaching
+  into `#how-to-use`).
+- Do not edit core Program sibling trees owned by
+  `repair-documentation-program-intro-strip-core`, and do not delete unused
+  shared helpers (dead-code consolidation owns that).
+- Page-local tests assert intro absence (MCP #156 / Events #171 style):
+  `sections.whatItCovers` / `sections.keyConcepts` undefined;
+  `queryByRole` / `getElementById` null for What It Covers / Key Concepts;
+  `openingSummary` empty or one short purpose sentence (no `\n\n` overview).
+  Retarget body asserts onto promoted teaching markers (`#how-to-use`,
+  status/dashboard sections, limits, callouts)—not restore intros to satisfy
+  old expects. Metrics/resources How To Use was stripped as boilerplate; other
+  ops pages keep How To Use when it wraps primary teaching.
+- Browser-verify all nine routes with
+  `bun src/content/docs/documentation/logs/assert-ops-platform-intro-strip-browser.ts`
+  (webpack `next dev`, unique port 3681 default, Playwright; kill server on
+  exit). Assert absent What It Covers / Key Concepts / `#what-it-covers` /
+  `#key-concepts` / visible `Summary` section heading; allow short purpose
+  lead via `DocsOpeningSummary` (`[data-opening-summary="folded"]`); assert
+  one operational teaching marker per route (logs retention, metrics
+  `factoryState`/`runtimeStatus`, resources ownership/pool, petri `task:init`,
+  packaged `you docs`, dashboard/security bind URLs, throttling surface table,
+  replays `--replay`). Prefer `OPS_INTRO_STRIP_PROBE_BASE_URL` when a server is
+  warm.
 
 ## Reviewer-facing verification
 

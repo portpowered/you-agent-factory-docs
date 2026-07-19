@@ -1,7 +1,8 @@
 /**
  * Page-owned render proof for documentation/contributing-to-these-docs.
  * Covers publish/discoverability, factory contributing guidance, maintainer
- * reference links, and colocated locale stub key shape.
+ * reference links, and colocated locale stub key shape — without leftover
+ * What It Covers / Key Concepts intro chrome.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -33,7 +34,12 @@ describe("contributing-to-these-docs documentation page", () => {
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.title).not.toMatch(/Model Atlas/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /add you-agent-factory documentation/i,
+    );
     expect(loadedPage.messages).not.toHaveProperty("callouts");
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
     render(
       <main>
@@ -47,33 +53,30 @@ describe("contributing-to-these-docs documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
 
-    const whatItCovers = document.getElementById("what-it-covers");
-    expect(whatItCovers?.textContent).toMatch(/you-agent-factory/i);
-    expect(whatItCovers?.textContent).toMatch(/not Model Atlas/i);
-    expect(whatItCovers?.textContent).toMatch(/not a benchmark leaderboard/i);
-    expect(whatItCovers?.textContent).toMatch(/not a paper-download mirror/i);
-    expect(whatItCovers?.textContent).not.toMatch(/coming soon/i);
-
-    const keyConcepts = document.getElementById("key-concepts");
-    expect(keyConcepts?.textContent).toMatch(/guides/i);
-    expect(keyConcepts?.textContent).toMatch(/concepts/i);
-    expect(keyConcepts?.textContent).toMatch(/techniques/i);
-    expect(keyConcepts?.textContent).toMatch(/documentation/i);
-    expect(keyConcepts?.textContent).toMatch(/glossary/i);
-    expect(keyConcepts?.textContent).toMatch(/blog/i);
-    expect(keyConcepts?.textContent).toMatch(/isolation-first/i);
-
     const howToUse = document.getElementById("how-to-use");
     expect(howToUse?.textContent).toMatch(/make validate-data/);
+    expect(howToUse?.textContent).toMatch(/isolation-first/i);
     expect(howToUse?.textContent).not.toMatch(/Model Atlas/i);
+    expect(howToUse?.textContent).not.toMatch(/This page|on this page/i);
+
+    const limits = document.getElementById("limits-and-assumptions");
+    expect(limits?.textContent).toMatch(
+      /Contributing orients factory-docs authors/i,
+    );
+    expect(limits?.textContent).toMatch(/retired Atlas/i);
+    expect(limits?.textContent).not.toMatch(
+      /This page|on this page|Read this page/i,
+    );
 
     const whatIs = screen.getByRole("link", {
       name: "What is you-agent-factory",
@@ -138,6 +141,8 @@ describe("contributing-to-these-docs documentation page", () => {
     expect(Object.keys(localized.messages.links ?? {}).sort()).toEqual(
       Object.keys(en.messages.links ?? {}).sort(),
     );
+    expect(localized.messages.sections?.whatItCovers).toBeUndefined();
+    expect(localized.messages.sections?.keyConcepts).toBeUndefined();
     expect(localized.messages.title).toBe("Contributing to these docs");
     expect(localized.messages.description).toContain("you-agent-factory");
     expect(localized.messages.title).not.toMatch(/Model Atlas/i);

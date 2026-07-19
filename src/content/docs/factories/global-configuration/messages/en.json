@@ -3,14 +3,6 @@
   "description": "Set you-agent-factory operator model defaults and manage global / named factories under ~/.you-agent-factory.",
   "openingSummary": "Global configuration covers operator-wide model defaults in ~/.you-agent-factory/config.json and shared named factories under ~/.you-agent-factory/factories — separate from project factory.json topology.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Global configuration is the web reference for you-agent-factory operator model defaults and global / named factories. Use it when you need operator-wide defaults in ~/.you-agent-factory/config.json, environment overrides, and global CLI flags, or when you need the shared factories root under ~/.you-agent-factory/factories for you run --named resolution, one-root listing, and save or update under a chosen root."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "Operator model defaults are preferred provider and model values for INFERENCE_WORKER and AGENT_WORKER definitions that omit modelProvider or model. They live in the operator config file, environment variables, and global CLI flags. The runtime applies them in memory only: authored worker modelProvider and model values are never overwritten, script and poller workers are never touched, and factory.json is never rewritten with those defaults. Named factories are persisted factory definitions under a factory root. Project-local roots such as ./factory come first for you run --named; the global shared root is ~/.you-agent-factory/factories. Built-ins materialize into that global root on first use and stay editable on disk."
-    },
     "operatorModelDefaults": {
       "title": "Operator Model Defaults",
       "body": "Use operator defaults when you want one preferred provider and model across runs without editing every factory worker. Defaults apply only to INFERENCE_WORKER and AGENT_WORKER entries that omit modelProvider or model. Authored worker values stay as written. Script workers and poller workers never receive operator defaults. The runtime fills omitted fields in memory at startup and does not persist those fills into factory.json."

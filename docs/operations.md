@@ -27,7 +27,7 @@ failing workflow stage with the same `make <target>` locally (see
 | Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
 | Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
-| Quality gates | `.github/workflows/ci.yml` runs the aligned required path (`make check` → test suites → `a11y` → build → integration → budget → component-coverage → validate-data → linkcheck); deploy-pages validate does not replace CI |
+| Quality gates | `.github/workflows/ci.yml` runs the Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate **ci-gate**; membership/edges live in `src/lib/ci-required-path.ts`. Wave CI-2: `static-export` uploads trusted Actions artifact `static-export-out` (`out/`); `integration` / `budget` download it and must not run a second `make build`. Wave CI-3: Playwright Chromium install (`bunx playwright install --with-deps chromium`) runs only on browser-backed jobs `unit-tests`, `a11y`, and `integration` (`CI_BROWSER_INSTALL_OWNERSHIP`); non-browser peers must not install Chromium. `unit-tests` keeps install because `make test` still launches Chromium. Local full reproduction stays sequential (`make ci`) and does not use Actions artifacts; local browser suite targets still install/use Chromium when needed. Deploy-pages validate remains a separate Pages-focused subset and does not replace CI. CI-4 shards are not part of this wave. |
 
 The workflow **`validate`** job checks out the pushed commit, runs the Makefile
 stages above (including `make guard-pages-deployed-artifact` after `make build`),
@@ -98,7 +98,7 @@ with owner), or **N/A** (not applicable).
 | --- | --- | --- | --- |
 | Merges to `main` are blocked unless CI passes | **Implemented** (CI workflow) + **GitHub settings assumed** | Repository maintainers | Configure **Settings → Branches** on GitHub per the [Branch protection](#branch-protection) section; rules cannot be enforced from git. |
 | Website deploys automatically via GitHub Actions (GitHub Pages or equivalent) | **Implemented** | Repository maintainers | `.github/workflows/deploy-pages.yml` runs on `main` pushes; confirm Pages source is **GitHub Actions** on first enablement. |
-| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | Follow [Deployment status expectations](#deployment-status-expectations): pushes to `main` show **CI** (**verify**) plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**); PRs show **verify** only (no production deploy). |
+| Deployment status is visible in GitHub checks | **Implemented** on `main` | Repository maintainers | Follow [Deployment status expectations](#deployment-status-expectations): pushes to `main` show **CI** (**ci-gate** and child jobs) plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**); PRs show **CI** / **ci-gate** only (no production deploy). |
 | Preview deployments for pull requests | **Deferred** | Repository maintainers | No PR preview workflow today. Follow [PR preview policy](#pr-preview-policy) for owner, alternative verification, and when this row may flip to **Implemented**. |
 
 Related operational rows not closed in this section alone:
@@ -111,21 +111,26 @@ Related operational rows not closed in this section alone:
 
 ### What contributors should expect today
 
-- **Pull requests** run **CI** / **verify** only (aligned with `make ci`:
-  `make setup` → `check` → `test` → `test-reader-facing` → `a11y` →
-  `test-ci-contract` → `test-verify-contract` → `test-build-contract` →
-  `build` → `test-integration` → `budget` → `component-coverage` →
-  `validate-data` → `linkcheck`).
-  They do **not** run production deploy and do **not** publish a PR preview URL.
-  Reproduce a failing stage locally with the same `make <target>`, or run
-  `make ci` for the full local required path. See
+- **Pull requests** run **CI** only: parallel child jobs
+  (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`,
+  `component-coverage`, `content`, `static-export`, `integration`, `budget`)
+  plus aggregate **ci-gate**. Branch protection should require **ci-gate**.
+  On Actions, `static-export` uploads trusted `out/` as artifact
+  `static-export-out`; `integration` and `budget` download that artifact and
+  do not rebuild. They do **not** run production deploy and do **not** publish
+  a PR preview URL. When a child job fails, open that job’s log, then
+  reproduce with the same `make <target>` after `make setup` (local
+  reproduction does not download Actions artifacts). For the full local
+  required path (still sequential: build once, then integration/budget), run
+  `make ci`. See
   [Deployment status expectations](#deployment-status-expectations) and
   [PR preview policy](#pr-preview-policy).
-- **Pushes to `main`** show **CI** / **verify** plus **Deploy GitHub Pages**
-  (**Canonical validation** / **Deploy to GitHub Pages**). Deploy-pages validates
-  with its Pages-focused Makefile subset (through `budget`, plus
-  `make guard-pages-deployed-artifact`), uploads `out/`, and publishes to
-  GitHub Pages when deploy succeeds.
+- **Pushes to `main`** show **CI** (**ci-gate** and child jobs) plus **Deploy
+  GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**).
+  Deploy-pages validates with its Pages-focused Makefile subset (through
+  `budget`, plus `make guard-pages-deployed-artifact`), uploads `out/`, and
+  publishes to GitHub Pages when deploy succeeds. That Pages subset is unchanged
+  by the Wave CI-1 parallel graph or Wave CI-2 artifact handoff.
 - Confirm the **Deploy to GitHub Pages** check on the merge commit before
   claiming the site was updated. A failed deploy leaves the prior successful
   Pages deployment live until a later green deploy.
@@ -137,8 +142,9 @@ Related operational rows not closed in this section alone:
 
 **Decision: Deferred.** Pull requests do **not** get a hosted preview URL in
 Phase 1. There is no preview workflow under `.github/workflows/` today
-(`.github/workflows/ci.yml` runs **verify** on PRs; `.github/workflows/deploy-pages.yml`
-publishes production only on `push` to `main`).
+(`.github/workflows/ci.yml` runs the parallel job graph + **ci-gate** on PRs;
+`.github/workflows/deploy-pages.yml` publishes production only on `push` to
+`main`).
 
 | Field | Value |
 | --- | --- |
@@ -171,9 +177,9 @@ publish):
 GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build
 ```
 
-Then confirm **CI** / **verify** is green on the pull request (see
+Then confirm **CI** / **ci-gate** is green on the pull request (see
 [Deployment status expectations](#deployment-status-expectations)). Do not expect
-a preview link in the PR conversation, and do not treat a green **verify** as a
+a preview link in the PR conversation, and do not treat a green **ci-gate** as a
 live Pages publish.
 
 ### When this policy may change
@@ -198,8 +204,8 @@ version-controlled.
 | --- | --- | --- |
 | Protected branch | `main` | Production integration branch; merges trigger CI and GitHub Pages deploy. |
 | Require status checks to pass before merging | **Enabled** | Merges must not land while the CI workflow is failing. |
-| Required status check name | `verify` | Matches the sole job in `.github/workflows/ci.yml` (`jobs.verify`). GitHub lists this as **verify** on pull requests once the workflow has run at least once on the branch. |
-| Require branches to be up to date before merging | **Recommended** | Ensures the required `verify` check ran against the latest `main` tip, not only an older base. |
+| Required status check name | `ci-gate` | Aggregate job in `.github/workflows/ci.yml` (`jobs.ci-gate`). It needs every required child job and fails unless all succeed. GitHub lists this as **ci-gate** on pull requests once the workflow has run at least once on the branch. Prefer requiring **ci-gate** (not every child job) so branch protection stays a single aggregate check. |
+| Require branches to be up to date before merging | **Recommended** | Ensures the required `ci-gate` check ran against the latest `main` tip, not only an older base. |
 | Do not allow bypassing the above settings | **Enabled for administrators** | Prevents accidental direct pushes that skip the gate. |
 | Allow force pushes | **Disabled** | Force-push to `main` is not permitted; history repair uses revert commits or a new branch and PR. |
 | Allow deletions | **Disabled** | The default branch must not be deleted from the UI. |
@@ -227,16 +233,33 @@ Contributors and maintainers read deployment status from GitHub **Checks** /
 
 | Surface | Workflow display name | Workflow file | Job display name(s) | When it runs |
 | --- | --- | --- | --- | --- |
-| Quality gate | **CI** | `.github/workflows/ci.yml` | **verify** | Every `pull_request` and every `push` (including `main`) |
+| Quality gate | **CI** | `.github/workflows/ci.yml` | Parallel children (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate **ci-gate** | Every `pull_request` and every `push` (including `main`) |
 | Production publish | **Deploy GitHub Pages** | `.github/workflows/deploy-pages.yml` | **Canonical validation**, then **Deploy to GitHub Pages** | `push` to `main` only |
 
-**CI** / **verify** checks out the branch, runs `make setup`, installs Playwright
-Chromium for browser-backed website tests, then runs the Makefile contract
-aligned with `make ci`: `make check`, `make test`, `make test-reader-facing`,
-`make a11y`, `make test-ci-contract`, `make test-verify-contract`,
-`make test-build-contract`, `make build`, `make test-integration`, `make budget`,
-`make component-coverage`, `make validate-data`, and `make linkcheck`. Deploy and
-preview steps are intentionally excluded from CI.
+**CI** runs a Wave CI-1 parallel job graph (not a single linear `verify` job).
+Suite membership and ordering edges (`static-export` before `integration` /
+`budget`; independent peers may overlap) live in
+`src/lib/ci-required-path.ts`. Wave CI-2 adds a trusted artifact handoff on
+Actions: after `make build`, `static-export` uploads artifact
+`static-export-out` (complete `out/`); `integration` and `budget` download it,
+fail closed if the artifact is missing or incomplete, and run
+`make test-integration` / `make budget` without a second full static export.
+Other child jobs check out the branch, run `make setup`, and run their mapped
+`make <target>` stage(s). Wave CI-3 scopes Playwright Chromium install to
+browser-backed jobs only (`unit-tests`, `a11y`, `integration` —
+`CI_BROWSER_INSTALL_REQUIRED_JOB_IDS`); non-browser jobs
+(`check`, `reader-facing`, `contracts`, `component-coverage`, `content`,
+`static-export`, `budget`, `ci-gate`) must not run
+`bunx playwright install --with-deps chromium`. `unit-tests` retains install
+because `make test` still launches Chromium. Aggregate **ci-gate** needs every
+required child and fails unless all succeed — that is the branch-protection
+quality gate. Deploy and preview steps stay out of CI. Local full reproduction
+remains sequential `make ci` (same shared required suites; builds once on one
+machine; no Actions artifact required). When reproducing a failed browser job
+locally, run `make <target>` after `make setup` and install Chromium if that
+suite needs a browser (`make a11y`, `make test-integration`, browser-backed
+`make test`). Deploy-pages remains a separate Pages-focused subset unchanged by
+this wave. CI-4 shards are not claimed here.
 
 **Deploy GitHub Pages** runs **Canonical validation** (Pages-focused Makefile
 stages through `make budget`, plus `make guard-pages-deployed-artifact`, then
@@ -247,20 +270,21 @@ upload `out/`) and **Deploy to GitHub Pages** (publishes that artifact). Failed
 
 | Event | Workflow trigger | Expected checks |
 | --- | --- | --- |
-| Pull request opened or updated | `on: pull_request` in `ci.yml` | **CI** / **verify** against the PR head. **No** **Deploy GitHub Pages** run and **no** hosted PR preview (see [PR preview policy](#pr-preview-policy)). |
-| Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **CI** / **verify** plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**) against the pushed commit. |
-| Push to other branches without a PR | `on: push` in `ci.yml` | **CI** / **verify** only; **Deploy GitHub Pages** does not run. |
+| Pull request opened or updated | `on: pull_request` in `ci.yml` | **CI** child jobs + **ci-gate** against the PR head. **No** **Deploy GitHub Pages** run and **no** hosted PR preview (see [PR preview policy](#pr-preview-policy)). |
+| Push to `main` | `on: push` in `ci.yml`; `on: push` branches `main` in `deploy-pages.yml` | **CI** (**ci-gate** + children) plus **Deploy GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**) against the pushed commit. |
+| Push to other branches without a PR | `on: push` in `ci.yml` | **CI** (**ci-gate** + children) only; **Deploy GitHub Pages** does not run. |
 
 ### What contributors see
 
 **On pull requests**
 
-- The **Checks** tab shows **CI** / **verify** only.
-- A green **verify** check means every Makefile contract stage passed on the PR
-  head SHA. It does **not** mean the public site was updated.
-- A red **verify** check blocks merge when branch protection requires status
-  checks (see [Branch protection](#branch-protection)); open the failed step to
-  see which `make <target>` broke, then reproduce it locally.
+- The **Checks** tab shows **CI** child jobs plus aggregate **ci-gate**.
+- A green **ci-gate** means every required child job succeeded on the PR head
+  SHA. It does **not** mean the public site was updated.
+- A red **ci-gate** (or a red child job) blocks merge when branch protection
+  requires **ci-gate** (see [Branch protection](#branch-protection)); open the
+  failed child job to see which `make <target>` broke, then reproduce it
+  locally after `make setup`.
 - Pull requests do **not** run production deploy. No **Canonical validation** or
   **Deploy to GitHub Pages** check appears on PRs today. Production publish runs
   only after merge to `main`. Hosted PR previews are **Deferred** — see
@@ -268,12 +292,12 @@ upload `out/`) and **Deploy to GitHub Pages** (publishes that artifact). Failed
 
 **On pushes to `main`**
 
-- Each commit on `main` shows **CI** / **verify** plus **Deploy GitHub Pages**
-  (**Canonical validation** / **Deploy to GitHub Pages**).
-- A green **verify** on `main` means the integration tip passed the Makefile
-  contract. A green **Deploy to GitHub Pages** means that SHA was published to
-  the project site (see [Commit-SHA traceability](#commit-sha-traceability)).
-- Failed **verify** on `main` signals the integration branch is unhealthy; fix
+- Each commit on `main` shows **CI** (**ci-gate** + children) plus **Deploy
+  GitHub Pages** (**Canonical validation** / **Deploy to GitHub Pages**).
+- A green **ci-gate** on `main` means the integration tip passed the required
+  CI job graph. A green **Deploy to GitHub Pages** means that SHA was published
+  to the project site (see [Commit-SHA traceability](#commit-sha-traceability)).
+- Failed **ci-gate** on `main` signals the integration branch is unhealthy; fix
   forward with a follow-up commit or revert — do not force-push.
 - A failed **Deploy GitHub Pages** run on `main` (failed **Canonical
   validation** or failed **Deploy to GitHub Pages**) means that SHA did **not**
@@ -284,7 +308,7 @@ upload `out/`) and **Deploy to GitHub Pages** (publishes that artifact). Failed
 **Local versus GitHub**
 
 - Local Makefile targets do not publish status to GitHub; push or open/update a
-  PR to surface the **verify** check.
+  PR to surface the **ci-gate** check (and child jobs).
 - `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs make build` locally produces
   the same project-site `out/` artifact deploy-pages uploads; it does not push
   to GitHub Pages. Plain `make build` (unset base path) keeps `/` for local
@@ -293,18 +317,25 @@ upload `out/`) and **Deploy to GitHub Pages** (publishes that artifact). Failed
 
 ### Matching local and CI
 
-Run `make setup`, then the same stages CI runs, from the repository root before
-opening a PR:
+Run `make setup`, then the same stages CI covers, from the repository root
+before opening a PR:
 
 ```sh
 make setup
 make ci
 ```
 
-`make ci` matches `.github/workflows/ci.yml` (via `src/lib/ci-required-path.ts`),
-so a local green run is the practical preflight for the **verify** check
-contributors see on GitHub. Reproduce a single failing stage with
-`make <target>`.
+`make ci` stays sequential and covers the same shared required suites as the
+parallel Actions graph (via `src/lib/ci-required-path.ts`), so a local green
+run is the practical preflight for **ci-gate**. Locally, `make ci` builds
+`out/` once then runs `test-integration` / `budget` on the same machine — it
+does not download Actions artifacts. Browser suites remain runnable locally
+when those targets need Chromium (`make a11y`, `make test-integration`, and
+browser-backed `make test`); Wave CI-3 only scopes Actions install ownership,
+it does not remove Playwright as a local dependency. When a child job fails on
+GitHub, reproduce with `make <target>` after `make setup` (and `make build`
+first when reproducing `integration` / `budget` without a prior export); use
+full `make ci` only when you need the entire local path.
 
 ### Local static-export benchmark (optional profiling)
 
@@ -448,14 +479,14 @@ Reviewers validating that artifact should run, in order:
 
 ## Release process
 
-Release means integrating changes onto `main` with a green **verify** check,
+Release means integrating changes onto `main` with a green **ci-gate** check,
 then confirming deploy-pages published the merge commit.
 
 ### Standard release on `main`
 
-1. **Open a pull request** against `main` and wait for the **verify** check to
+1. **Open a pull request** against `main` and wait for the **ci-gate** check to
    pass on the PR head commit (see [Deployment status expectations](#deployment-status-expectations)).
-2. **Merge to `main`** only when branch protection allows it (required **verify**
+2. **Merge to `main`** only when branch protection allows it (required **ci-gate**
    green and branch up to date if that rule is enabled).
 3. **Confirm post-merge CI** on the merge commit: a push to `main` triggers
    `.github/workflows/ci.yml` again on the integrated SHA.
@@ -501,12 +532,12 @@ Git on `main`.
 
 Before changing anything, pick the last commit on `main` that has **both**:
 
-1. A green **CI** / **verify** run for that SHA, and
+1. A green **CI** / **ci-gate** run for that SHA, and
 2. A green **Deploy GitHub Pages** run for that SHA (**Canonical validation** and
    **Deploy to GitHub Pages**).
 
 Use [Commit-SHA traceability](#commit-sha-traceability) to confirm those runs
-(and the Pages deployment record) for the candidate `good_sha`. A green **verify**
+(and the Pages deployment record) for the candidate `good_sha`. A green **ci-gate**
 alone is not enough; a green **Canonical validation** without **Deploy to GitHub
 Pages** is also not enough.
 
@@ -516,7 +547,7 @@ Before opening a revert or fix-forward PR, record:
 
 | Field | Meaning |
 | --- | --- |
-| `good_sha` | Last known-good merge commit with green **verify** + green **Deploy to GitHub Pages**. |
+| `good_sha` | Last known-good merge commit with green **ci-gate** + green **Deploy to GitHub Pages**. |
 | `bad_sha` | The merge commit (or tip) that published or attempted the bad artifact. |
 | `bad_ci_run_id` / `bad_deploy_pages_run_id` | Actions run IDs (or URLs) for the failing or suspect **CI** / **Deploy GitHub Pages** runs. |
 | `good_ci_run_id` / `good_deploy_pages_run_id` | Actions run IDs (or URLs) that proved `good_sha` was healthy. |
@@ -540,10 +571,10 @@ Prefer restoring healthy source on `main`, then letting deploy run on the new ti
 1. **Choose the recovery shape**
    - **`git revert`** (preferred when the bad change is clear): on a branch,
      revert the bad merge commit(s) that introduced `bad_sha`, open a PR, and
-     merge after **verify** passes.
+     merge after **ci-gate** passes.
    - **Fix-forward**: open a PR that corrects the defect without reverting, merge
-     after **verify** passes, when a targeted fix is safer than a full revert.
-2. **Merge to `main`** under normal branch protection (required **verify** green).
+     after **ci-gate** passes, when a targeted fix is safer than a full revert.
+2. **Merge to `main`** under normal branch protection (required **ci-gate** green).
 3. **Let deploy run** on the post-merge tip: workflow **Deploy GitHub Pages**
    runs **Canonical validation** then **Deploy to GitHub Pages** for the new
    `main` SHA (not for the historical `good_sha` itself).
@@ -654,7 +685,7 @@ Maintainers must prove which source commit is live on the project site
 commit on `main` to the Actions runs that verified and published it.
 
 Do **not** claim the public site was updated for a SHA until the **Deploy to
-GitHub Pages** job for that SHA succeeds. A green **CI** / **verify** check alone
+GitHub Pages** job for that SHA succeeds. A green **CI** / **ci-gate** check alone
 is not publish proof; **Canonical validation** without a green deploy also is
 not publish proof.
 
@@ -662,7 +693,7 @@ not publish proof.
 
 | Display name | Workflow file | Job(s) | Role in proof |
 | --- | --- | --- | --- |
-| **CI** | `.github/workflows/ci.yml` | **verify** | Confirms the merge commit passed the Makefile contract on `main`. |
+| **CI** | `.github/workflows/ci.yml` | Parallel children + aggregate **ci-gate** | Confirms the merge commit passed the required CI job graph on `main`. |
 | **Deploy GitHub Pages** | `.github/workflows/deploy-pages.yml` | **Canonical validation**, then **Deploy to GitHub Pages** | Builds/uploads `out/` for that SHA, then publishes it to Pages. |
 
 Both workflows run against `${{ github.sha }}` for the `main` push (the merge
@@ -673,13 +704,13 @@ commit). The project site URL after a successful deploy is
 
 | SHA role | Where it appears | Phase 1 meaning |
 | --- | --- | --- |
-| PR head commit | PR **Checks** tab **verify** run | Validates the proposed merge tip before integration. |
-| Merge commit on `main` | Commit page; **CI** (**verify**) and **Deploy GitHub Pages** runs | Authoritative integrated SHA; published only after **Deploy to GitHub Pages** is green. |
+| PR head commit | PR **Checks** tab **ci-gate** (and child jobs) | Validates the proposed merge tip before integration. |
+| Merge commit on `main` | Commit page; **CI** (**ci-gate**) and **Deploy GitHub Pages** runs | Authoritative integrated SHA; published only after **Deploy to GitHub Pages** is green. |
 | `github.sha` in workflows | GitHub Actions context for `ci.yml` and `deploy-pages.yml` | The commit `actions/checkout@v4` built for that run—matches the trigger commit. |
 | Deploy workflow output | **Deploy to GitHub Pages** job summary and Pages deployment record | Must reference the same SHA as the `main` push that triggered publish. |
 
 **Proof of what shipped to production** is all of: the merge commit SHA on
-`main`, a green **CI** / **verify** run for that SHA, a green **Deploy GitHub
+`main`, a green **CI** / **ci-gate** run for that SHA, a green **Deploy GitHub
 Pages** run for that SHA (**Canonical validation** + **Deploy to GitHub
 Pages**), and the live project site reflecting that deploy.
 
@@ -704,7 +735,8 @@ record / environment URL when available.
 1. On GitHub, open **Commits** on `main` and copy the full SHA of the merge or
    release point (`merge_sha`).
 2. Open **Actions** → workflow **CI**, filter or open the run for that SHA, and
-   confirm job **verify** succeeded. Record the run ID or URL as `ci_run_id`.
+   confirm job **ci-gate** succeeded (all required child jobs green). Record the
+   run ID or URL as `ci_run_id`.
 3. Open **Actions** → workflow **Deploy GitHub Pages** for the same SHA.
    Confirm **Canonical validation** succeeded (artifact built/uploaded) and
    **Deploy to GitHub Pages** succeeded (artifact published). Confirm the run

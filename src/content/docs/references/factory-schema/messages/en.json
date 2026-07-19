@@ -2,10 +2,6 @@
   "title": "Factory schema",
   "description": "Look up the complete live Factory JSON Schema—definitions, fields, constraints, defaults, enums, and examples—on a stable deep-linkable docs route.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "This reference shows the live Factory JSON Schema from the you-agent-factory API package. Use it to look up definitions, fields, constraints, defaults, enums, and examples for Factory configuration. Field and definition descriptions come from the package schema itself."
-    },
     "schemaLookup": {
       "title": "Schema Lookup",
       "body": "Browse the complete Factory schema below. Filter by definition or field name, follow $ref links to related definitions, and copy deep links to any definition or field anchor on this page."

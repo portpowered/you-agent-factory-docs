@@ -1,8 +1,8 @@
 /**
  * Page-owned render proof for documentation/mcp.
  * Covers documentation shell, MCP identity, how-to-integrate steps,
- * serve modes, Factory Session tool overview, key concepts / limits,
- * and sibling discovery links.
+ * serve modes, Factory Session tool overview, limits, and sibling discovery
+ * links — without leftover What It Covers / Key Concepts intro chrome.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -38,21 +38,11 @@ describe("mcp documentation page", () => {
         /Model Context Protocol|MCP|you mcp serve/i,
       );
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
+      expect(loadedPage.messages.openingSummary).toMatch(
+        /you mcp serve over stdio/i,
       );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
-      expect(whatItCovers).toMatch(/Model Context Protocol \(MCP\)/);
-      expect(keyConcepts).toMatch(/Model Context Protocol \(MCP\)/);
-      expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
-      expect(keyConcepts).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
       render(
         <main>
@@ -66,11 +56,13 @@ describe("mcp documentation page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
       expect(
         screen.getByRole("heading", { name: "How To Integrate" }),
       ).toBeTruthy();
@@ -85,15 +77,6 @@ describe("mcp documentation page", () => {
       expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
       expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
       expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
-
-      const whatItCoversSection = document.getElementById("what-it-covers");
-      const keyConceptsSection = document.getElementById("key-concepts");
-      expect(whatItCoversSection).toBeTruthy();
-      expect(keyConceptsSection).toBeTruthy();
-      expect(whatItCoversSection?.textContent).toMatch(
-        /Model Context Protocol \(MCP\)/,
-      );
-      expect(keyConceptsSection?.textContent).toMatch(/you mcp serve/);
     },
     PAGE_RENDER_TIMEOUT_MS,
   );
@@ -203,27 +186,27 @@ describe("mcp documentation page", () => {
   );
 
   test(
-    "shows key concepts, limits, and sibling discovery links",
+    "shows limits and sibling discovery links without intro chrome",
     async () => {
       const loadedPage = await loadLocalDocsPage({
         section: "documentation",
         slug: "mcp",
       });
 
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
       const limits = String(
         loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
       );
+      const howToUse = String(
+        loadedPage.messages.sections?.howToUse?.body ?? "",
+      );
 
-      expect(keyConcepts).toMatch(/Model Context Protocol \(MCP\)/);
-      expect(keyConcepts).toMatch(/Factory Session/);
-      expect(keyConcepts).toMatch(/you mcp serve/);
-      expect(keyConcepts).toMatch(/stdio/i);
-      expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+      expect(howToUse).toMatch(/you mcp serve/);
+      expect(howToUse).toMatch(/restart|reload/i);
+      expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
 
-      expect(limits).toMatch(/web MCP integration reference/i);
+      expect(limits).toMatch(/MCP covers stdio serve/i);
       expect(limits).toMatch(/stdio/i);
       expect(limits).toMatch(/HTTP|SSE/i);
       expect(limits).toMatch(/multi-host/i);
@@ -242,20 +225,17 @@ describe("mcp documentation page", () => {
         </main>,
       );
 
-      const keyConceptsSection = document.getElementById("key-concepts");
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
+
       const limitsSection = document.getElementById("limits-and-assumptions");
       const relatedSection = document.getElementById("related");
+      const integrateSection = document.getElementById("how-to-integrate");
 
-      expect(keyConceptsSection?.textContent).toMatch(
-        /Model Context Protocol \(MCP\)/,
+      expect(integrateSection?.textContent).toMatch(
+        /Model Context Protocol|stdio|you mcp serve/i,
       );
-      expect(keyConceptsSection?.textContent).toMatch(/you mcp serve/);
-      expect(keyConceptsSection?.textContent).toMatch(/stdio/i);
-      expect(keyConceptsSection?.textContent).toMatch(/Factory Session/);
-
-      expect(limitsSection?.textContent).toMatch(
-        /web MCP integration reference/i,
-      );
+      expect(limitsSection?.textContent).toMatch(/MCP covers stdio serve/i);
       expect(limitsSection?.textContent).toMatch(/HTTP|SSE/i);
       expect(limitsSection?.textContent).toMatch(/Cursor/i);
       expect(limitsSection?.textContent).toMatch(/dynamic-workflows/i);

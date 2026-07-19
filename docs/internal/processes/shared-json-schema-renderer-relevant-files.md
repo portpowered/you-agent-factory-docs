@@ -99,7 +99,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   constraints / const / additionalProperties, the row composes
   `SchemaDefaultValue` + `SchemaConstraintList` via
   `schemaConstraintListPropsFromField` — do not leave those components
-  definition-only.
+  definition-only.   Optional `showFieldPathWhenDistinct` (default false) omits
+  secondary path labels that equal the leaf name; events catalog views opt in
+  via `EventsSchemaDefinition` / `dedupeSchemaFieldTreeNodesByPath` without
+  changing MCP/CLI/JS/API defaults. Optional `showPointerPathChrome` (default
+  true) controls visible OpenAPI pointer breadcrumbs and full-pointer `$ref`
+  labels; events opt out (`false`) so field names stay primary while
+  `SchemaBreadcrumb` copy controls remain.
 - Composition UI: `SchemaComposition` + `projectSchemaCompositionDisplay` /
   `schemaRefLinkDisplayFromOutcome` consume W04 composition models and
   `ReferenceCrossLinkResolver` outcomes. Members stay as links — never
@@ -132,32 +138,53 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   display-only — do not implement W06 validators here. Missing/malformed overlay
   → `invalid`; empty overlay fields → `empty`. Annotate field trees via
   `annotateSchemaFieldTreeWithVariant`; field descriptions/types always come
-  from the base `SchemaFieldModel`.
+  from the base `SchemaFieldModel`. Opt-in chrome trim:
+  `showVariantHeading={false}` hides the `Variant: <label>` heading;
+  `showPointerBreadcrumb={false}` (forwarded to `SchemaDefinition`) hides
+  `/$defs/…` pointer breadcrumb chrome. Both default to `true` so Factory
+  schema / you-config / mock-workers pages keep existing chrome; worker and
+  workstation authored embeds opt out.
 - Real-schema verification: acquire via W03 `resolveApiPackageArtifact`
   (`schemas/factory`, `schemas/you-config`, `schemas/mock-workers`), normalize
   with `normalizeJsonSchemaArtifact` (pure), then render through
   `SchemaReference` / `SchemaVerificationHarness`. Use `showCatalog={false}` for
-  large `$defs` catalogs (filter still lists definitions). For page-owned polish
-  that removes filter-definitions list chrome as well, also set
-  `showFilter={false}` on that page mount only — do not change SchemaReference
-  defaults for other families.   To rename a root definition header without
-  changing the upstream package title, pass a page-local `projection` from
-  `projectSchemaDefinitionToDisplay` with an overridden `title` (keep the
-  W04 `schemaPointerAnchor` so deep links stay stable). To show a concrete
-  operator teaching sample without fabricating upstream package `examples`,
-  pass page-local `exampleInputs` (`origin: "authored"`) on that SchemaReference
+  large `$defs` catalogs by default (filter still lists definitions). Factory
+  schema page opt-in: `/docs/references/factory-schema` enables catalog splay
+  via page-local `collectFactorySchemaSplayDefinitions` + `showCatalog` so the
+  transitive `$ref` closure renders as expanded definitions — keep you-config /
+  mock-workers on `showCatalog={false}`. With splay + `pagePath` +
+  `ReferenceHashNavigation`, Factory `$ref` links are same-page hash jumps to
+  those expanded definition `id`s (prove with
+  `assert-factory-schema-click-traverse-browser.ts` / page-local mount tests).
+  Full Factory configuration JSON example is a page-local authored
+  `exampleInputs` override (`factory-schema-full-config-example.ts`) aligned
+  with the factories/configuration hermetic minimal sample
+  (`workTypes` / `workers` / `workstations`) — pass only on
+  `FactorySchemaReference`, never as a sibling-schema default. Prove with
+  `assert-factory-schema-full-config-example-browser.ts` / page-local mount
+  tests. Repair close-out browser probe covering intro strip + splay +
+  click-traverse + full config together:
+  `assert-factory-schema-repair-browser.ts`. For page-owned system-config polish
+  that also removes filter-definitions list chrome, set `showFilter={false}` on
+  that page mount only — do not change SchemaReference defaults for other
+  families. To rename a root definition header without changing the upstream
+  package title, pass a page-local `projection` from
+  `projectSchemaDefinitionToDisplay` with an overridden `title` (keep the W04
+  `schemaPointerAnchor` so deep links stay stable). To show a concrete operator
+  teaching sample without fabricating upstream package `examples`, pass
+  page-local `exampleInputs` (`origin: "authored"`) on that SchemaReference
   mount only — keep payloads aligned with existing docs teaching samples (for
-  system-config: `defaults.workerModelProvider` / `defaults.workerModel`). Root
-  pointers must be anchor-safe (not bare `/`). Harness route:
-  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
-  `/docs/references/*-schema` page. Browser-closeout for a schema rename/polish
-  lane: colocated
+  system-config: `defaults.workerModelProvider` / `defaults.workerModel`).
+  Browser-closeout for the system-config rename/polish lane: colocated
   `src/content/docs/references/system-config-schema/assert-system-config-schema-rename-browser.ts`
   (unique port `SYSTEM_CONFIG_SCHEMA_RENAME_PROBE_PORT`, webpack `bun run dev`,
   kill server on exit). Assert `data-schema-status="ready"`, System config
   title/lead, absent What It Covers / filter / Definitions catalog, authored
   example fields, old slug non-redirect 404, and family-index +
   global-configuration inbound links to `/docs/references/system-config-schema`.
+  Root pointers must be anchor-safe (not bare `/`). Harness route:
+  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
+  `/docs/references/*-schema` page.
 
 ## Verification preference
 

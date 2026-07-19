@@ -2,8 +2,8 @@
  * Page-owned render proof for documentation/dashboard-ui-overview.
  * Covers you-agent-factory identity, default dashboard URL and live
  * session surfaces, current-vs-roadmap limits, related-link presence,
- * and non-en locale section structure — not route inventories or
- * link-topology manifests. Colocated under the page bundle so
+ * and non-en locale section structure — without leftover What It Covers /
+ * Key Concepts intro chrome. Colocated under the page bundle so
  * audit:canonical-page-surface stays within the ordinary page-owned +
  * locale-shipping surface for this lane.
  */
@@ -39,34 +39,30 @@ describe("dashboard-ui-overview documentation page", () => {
       /not a rebuilt in-docs dashboard/i,
     );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/you-agent-factory/i);
-    expect(whatItCovers).toMatch(/local browser operator surface/i);
-    expect(whatItCovers).toMatch(/Factory Session/i);
-    expect(whatItCovers).not.toMatch(/Model Atlas/i);
+    expect(openingSummary).toMatch(/you-agent-factory/i);
+    expect(openingSummary).toMatch(/dashboard|browser surface/i);
+    expect(openingSummary).toMatch(/Factory Session/i);
+    expect(openingSummary).not.toMatch(/\n\n/);
+    expect(openingSummary).not.toMatch(/on this page|reader.?shortcut/i);
 
-    expect(keyConcepts).toMatch(/http:\/\/localhost:7437\/dashboard\/ui/);
-    expect(keyConcepts).toMatch(/without quiet mode/i);
-    expect(keyConcepts).toMatch(/session selection/i);
-    expect(keyConcepts).toMatch(/work position/i);
-    expect(keyConcepts).toMatch(/factory activity/i);
-    expect(keyConcepts).toMatch(/SESSION_LIFECYCLE_CONTROL/);
-    expect(keyConcepts).toMatch(/canonical API status/i);
-
+    expect(howToUse).toMatch(/http:\/\/localhost:7437\/dashboard\/ui/);
+    expect(howToUse).toMatch(/without quiet mode/i);
+    expect(howToUse).toMatch(/session selection/i);
+    expect(howToUse).toMatch(/work position/i);
+    expect(howToUse).toMatch(/factory activity/i);
+    expect(howToUse).toMatch(/SESSION_LIFECYCLE_CONTROL/);
+    expect(howToUse).toMatch(/canonical API status/i);
     expect(howToUse).toMatch(/you session list/i);
-    expect(howToUse).toMatch(/factory-session/i);
-    expect(howToUse).toMatch(/metrics/i);
-    expect(howToUse).toMatch(/configuration/i);
+    expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
 
     expect(limits).toMatch(/not a rebuilt in-docs dashboard/i);
     expect(limits).toMatch(
@@ -75,10 +71,6 @@ describe("dashboard-ui-overview documentation page", () => {
     expect(limits).toMatch(/MCP status and event tool parity/i);
     expect(limits).toMatch(/roadmap/i);
     expect(limits).toMatch(/does not rebuild the factory dashboard UI/i);
-
-    expect(whatItCovers).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|reader.?shortcut/i);
 
     render(
@@ -93,9 +85,11 @@ describe("dashboard-ui-overview documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -104,20 +98,12 @@ describe("dashboard-ui-overview documentation page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent).toMatch(
-      /local browser operator surface/i,
-    );
-    expect(whatItCoversSection?.textContent).toMatch(/you-agent-factory/i);
-
-    const keyConceptsSection = document.getElementById("key-concepts");
-    expect(keyConceptsSection?.textContent).toMatch(
+    const howToUseSection = document.getElementById("how-to-use");
+    expect(howToUseSection?.textContent).toMatch(
       /http:\/\/localhost:7437\/dashboard\/ui/,
     );
-    expect(keyConceptsSection?.textContent).toMatch(/session selection/i);
-    expect(keyConceptsSection?.textContent).toMatch(
-      /SESSION_LIFECYCLE_CONTROL/,
-    );
+    expect(howToUseSection?.textContent).toMatch(/session selection/i);
+    expect(howToUseSection?.textContent).toMatch(/SESSION_LIFECYCLE_CONTROL/);
 
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(limitsSection?.textContent).toMatch(
@@ -168,15 +154,14 @@ describe("dashboard-ui-overview documentation page", () => {
     expect(loadedPage.messages.title).toBe("Dashboard / UI Overview");
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-    expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
-      "What It Covers",
-    );
-    expect(loadedPage.messages.sections?.keyConcepts?.title).toBe(
-      "Key Concepts",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
     expect(loadedPage.messages.sections?.howToUse?.title).toBe("How To Use");
     expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
       "Limits And Assumptions",
+    );
+    expect(String(loadedPage.messages.openingSummary ?? "")).toMatch(
+      /dashboard|browser surface/i,
     );
 
     render(
@@ -191,9 +176,9 @@ describe("dashboard-ui-overview documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),

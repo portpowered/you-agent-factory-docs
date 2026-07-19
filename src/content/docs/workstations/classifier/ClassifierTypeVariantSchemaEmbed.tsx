@@ -33,6 +33,8 @@ export function ClassifierTypeVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={CLASSIFIER_TYPE_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="classifier-type-variant-schema"
       />
     </div>

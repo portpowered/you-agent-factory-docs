@@ -65,8 +65,8 @@ export const REFERENCE_PAYLOAD_BUDGET_MEASUREMENT_METHOD = {
    * Re-measure on this lane's `out/` before raising ceilings.
    */
   baselineSource: {
-    measuredAtUtc: "2026-07-19T11:58:00Z",
-    note: "Measured from repair-api-fumadocs-openapi-components static-export out/ after Fumadocs APIPage + Schema UI became the primary /docs/references/api renderer (curl+JS codeUsages; generateTypeScriptDefinitions false). API HTML ~10.26 MiB; attributable API JS ~2.14 MiB.",
+    measuredAtUtc: "2026-07-19T13:30:00Z",
+    note: "Factory-schema HTML remeasured after recursive `$defs` catalog splay + authored full-config example on /docs/references/factory-schema (repair-factory-schema-click-splay-example). CI export observed ~1.98–2.00 MiB HTML; attributable JS unchanged (~2.14 MiB). API/events baselines unchanged from the prior Fumadocs APIPage measurement.",
   } as const,
 } as const;
 
@@ -110,9 +110,11 @@ export const REFERENCE_PAYLOAD_PAGE_BUDGETS: readonly ReferencePayloadPageBaseli
     {
       routeId: "references-factory-schema",
       path: "/docs/references/factory-schema",
-      measuredHtmlBytes: 480_214,
+      // Catalog splay renders the transitive Factory `$defs` closure on-page.
+      measuredHtmlBytes: 1_997_920,
       measuredJsPayloadBytes: 2_136_570,
-      maxHtmlBytes: 600_000,
+      // ~25% headroom above the splayed catalog SSR HTML.
+      maxHtmlBytes: 2_500_000,
       maxJsPayloadBytes: 2_500_000,
     },
   ] as const;

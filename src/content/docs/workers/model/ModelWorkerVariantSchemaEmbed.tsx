@@ -29,6 +29,8 @@ export function ModelWorkerVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={MODEL_WORKER_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="model-worker-variant-schema"
       />
     </div>

@@ -34,13 +34,13 @@ describe("factories/global-configuration documentation page", () => {
     expect(loadedPage.messages.description).toMatch(/operator model defaults/i);
     expect(loadedPage.messages.description).toMatch(/named factories/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /operator-wide model defaults/i,
+    );
+    expect(loadedPage.messages.openingSummary).toMatch(/named factories/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
     const youConfigSchema = String(
       loadedPage.messages.sections?.youConfigSchema?.body ?? "",
     );
@@ -55,10 +55,6 @@ describe("factories/global-configuration documentation page", () => {
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/operator model defaults/i);
-    expect(whatItCovers).toMatch(/named factories/i);
-    expect(keyConcepts).toMatch(/INFERENCE_WORKER/i);
-    expect(keyConcepts).toMatch(/~\/\.you-agent-factory\/factories/);
     expect(youConfigSchema).toMatch(/you-config/i);
     expect(youConfigSchema).toMatch(/exhaustive/i);
     expect(namedFactories).toMatch(/you run --named/i);
@@ -67,12 +63,6 @@ describe("factories/global-configuration documentation page", () => {
     expect(howToUse).toMatch(/config\.json/i);
     expect(limits).toMatch(/not a sync of packaged CLI/i);
     expect(limits).toMatch(/schema and API reference/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
     expect(youConfigSchema).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
@@ -91,9 +81,11 @@ describe("factories/global-configuration documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Operator Model Defaults" }),
     ).toBeTruthy();

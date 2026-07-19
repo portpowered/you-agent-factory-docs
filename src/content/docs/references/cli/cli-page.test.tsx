@@ -1,6 +1,7 @@
 /**
  * Page-owned render proof for references/cli.
- * Covers reference shell, package-backed CLI inventory mount, and the trimmed
+ * Covers inventory-first shell (no What It Covers / Key Concepts / informational
+ * Opening summary), package-backed CLI inventory mount, and the trimmed
  * command-card keep-list (no verbose metadata chrome; under-construction Flags
  * and arguments when structured options are absent).
  * Colocated under the page bundle.
@@ -40,29 +41,16 @@ describe("cli reference page", () => {
       expect(loadedPage.messages.title).toBe("CLI");
       expect(loadedPage.messages.description).toMatch(/package CLI contract/i);
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+      expect(String(loadedPage.messages.openingSummary ?? "").trim()).toBe("");
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
-      );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
       const commandInventory = String(
         loadedPage.messages.sections?.commandInventory?.body ?? "",
       );
-      expect(whatItCovers).toMatch(/package-backed CLI command inventory/i);
-      expect(keyConcepts).toMatch(/@you-agent-factory\/api\/cli/i);
-      expect(keyConcepts).toMatch(/not from a page-local copy/i);
-      expect(keyConcepts).toMatch(/under construction|not published yet/i);
-      expect(keyConcepts).not.toMatch(/discloses that limit/i);
-      expect(whatItCovers).not.toMatch(
-        /lifecycle|visibility|runnable|handler present/i,
-      );
+      expect(commandInventory).toMatch(/published CLI commands/i);
       expect(commandInventory).not.toMatch(
         /package-backed metadata|handler present/i,
-      );
-      expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
       );
       expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
       expect(
@@ -92,14 +80,14 @@ describe("cli reference page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
-      expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
-      expect(
         screen.getByRole("heading", { name: "Command Inventory" }),
       ).toBeTruthy();
+      expect(
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
+      expect(
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
       expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
         screen.queryByRole("heading", { name: "Limits And Assumptions" }),
@@ -107,7 +95,13 @@ describe("cli reference page", () => {
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
       expect(document.getElementById("related")).toBeNull();
+      expect(screen.queryByTestId("folded-summary")).toBeNull();
+      expect(
+        document.querySelector('[data-opening-summary="folded"]'),
+      ).toBeNull();
 
       const inventoryRoot = document.querySelector(
         "[data-cli-command-inventory]",

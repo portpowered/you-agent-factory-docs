@@ -2,7 +2,8 @@
  * Page-owned render proof for documentation/petri.
  * Covers documentation shell, Petri / CPN framing narrative, how-to-read
  * walkthrough, teaching diagram, limits / PETRI-vs-JAVASCRIPT boundaries,
- * related discovery links, and section headings.
+ * related discovery links, and section headings — without leftover
+ * What It Covers / Key Concepts intro chrome.
  * Colocated under the page bundle so audit:canonical-page-surface stays
  * within-budget for this ordinary documentation lane.
  */
@@ -36,12 +37,10 @@ describe("petri documentation page", () => {
       );
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
-      );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+
+      const openingSummary = String(loadedPage.messages.openingSummary ?? "");
       const howToUse = String(
         loadedPage.messages.sections?.howToUse?.body ?? "",
       );
@@ -49,27 +48,25 @@ describe("petri documentation page", () => {
         loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
       );
 
-      expect(whatItCovers).toMatch(/Petri\s*\/\s*Colored Petri Net\s*\(CPN\)/);
-      expect(whatItCovers).toMatch(/you-agent-factory/);
-      expect(whatItCovers).toMatch(/work tokens move through places/i);
-      expect(whatItCovers).toMatch(/workstation transitions/i);
-      expect(whatItCovers).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
+      expect(openingSummary).toMatch(
+        /Petri\s*\/\s*Colored Petri Net\s*\(CPN\)/,
+      );
+      expect(openingSummary).toMatch(/you-agent-factory/);
+      expect(openingSummary).toMatch(/work tokens move through places/i);
+      expect(openingSummary).toMatch(/workstation transitions/i);
+      expect(openingSummary).not.toMatch(/\n\n/);
+      expect(openingSummary).not.toMatch(
+        /This page explains|on this page|Model Atlas|reader.?shortcut/i,
       );
 
-      expect(keyConcepts).toMatch(/place/i);
-      expect(keyConcepts).toMatch(/task:init/);
-      expect(keyConcepts).toMatch(/colored token/i);
-      expect(keyConcepts).toMatch(/work-type identity and payload/i);
-      expect(keyConcepts).toMatch(/transition/i);
-      expect(keyConcepts).toMatch(/workstation/i);
-      expect(keyConcepts).toMatch(/marking/i);
-      expect(keyConcepts).toMatch(/tokens currently sit in which places/i);
-      expect(keyConcepts).not.toMatch(
-        /on this page|Model Atlas|reader.?shortcut/i,
-      );
-
+      expect(howToUse).toMatch(/place/i);
       expect(howToUse).toMatch(/task:init/);
+      expect(howToUse).toMatch(/colored token/i);
+      expect(howToUse).toMatch(/work-type identity and payload/i);
+      expect(howToUse).toMatch(/transition/i);
+      expect(howToUse).toMatch(/workstation/i);
+      expect(howToUse).toMatch(/marking/i);
+      expect(howToUse).toMatch(/tokens currently sit in which places/i);
       expect(howToUse).toMatch(/enabled/i);
       expect(howToUse).toMatch(/fires/i);
       expect(howToUse).toMatch(/dispatches its worker/i);
@@ -91,7 +88,9 @@ describe("petri documentation page", () => {
       expect(limits).toMatch(/PETRI/);
       expect(limits).toMatch(/JAVASCRIPT/);
       expect(limits).toMatch(/defaults to Petri/i);
-      expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+      expect(limits).not.toMatch(
+        /This page is|like this page describes|on this page|Model Atlas|reader.?shortcut/i,
+      );
 
       const tokenFlowAsset = loadedPage.assets.tokenFlow;
       expect(tokenFlowAsset).toBeDefined();
@@ -114,11 +113,13 @@ describe("petri documentation page", () => {
       );
 
       expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
       expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
       expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
       expect(
         screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -127,30 +128,18 @@ describe("petri documentation page", () => {
       expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
       expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-      expect(document.getElementById("what-it-covers")).toBeTruthy();
-      expect(document.getElementById("key-concepts")).toBeTruthy();
       expect(document.getElementById("how-to-use")).toBeTruthy();
       expect(document.getElementById("limits-and-assumptions")).toBeTruthy();
       expect(document.getElementById("related")).toBeTruthy();
       expect(document.getElementById("tags")).toBeTruthy();
       expect(document.getElementById("references")).toBeTruthy();
 
-      // Prose auto-linking may wrap terms in anchors; assert via textContent.
-      const whatItCoversSection = document.getElementById("what-it-covers");
-      const keyConceptsSection = document.getElementById("key-concepts");
       const howToUseSection = document.getElementById("how-to-use");
       const limitsSection = document.getElementById("limits-and-assumptions");
       const relatedSection = document.getElementById("related");
-      expect(whatItCoversSection?.textContent).toMatch(
-        /Colored Petri Net \(CPN\)/,
-      );
-      expect(whatItCoversSection?.textContent).toMatch(
-        /work tokens move through places/i,
-      );
-      expect(keyConceptsSection?.textContent).toMatch(/task:init/);
-      expect(keyConceptsSection?.textContent).toMatch(/colored token/i);
-      expect(keyConceptsSection?.textContent).toMatch(/marking/i);
       expect(howToUseSection?.textContent).toMatch(/task:init/);
+      expect(howToUseSection?.textContent).toMatch(/colored token/i);
+      expect(howToUseSection?.textContent).toMatch(/marking/i);
       expect(howToUseSection?.textContent).toMatch(/dispatches its worker/i);
       expect(howToUseSection?.textContent).toMatch(/accepted/i);
       expect(limitsSection?.textContent).toMatch(/PETRI/);

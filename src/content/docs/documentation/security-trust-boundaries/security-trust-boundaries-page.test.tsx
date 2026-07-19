@@ -2,8 +2,8 @@
  * Page-owned render proof for documentation/security-trust-boundaries.
  * Covers you-agent-factory identity, current trust-boundary facts,
  * non-guarantee limits language, related-link presence, and non-en
- * locale section structure — not route inventories or link-topology
- * manifests. Colocated under the page bundle so
+ * locale section structure — without leftover What It Covers / Key
+ * Concepts intro chrome. Colocated under the page bundle so
  * audit:canonical-page-surface stays within the ordinary page-owned +
  * locale-shipping surface for this lane.
  */
@@ -41,40 +41,33 @@ describe("security-trust-boundaries documentation page", () => {
       /not a compliance certification claim/i,
     );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
 
-    expect(whatItCovers).toMatch(/you-agent-factory/i);
-    expect(whatItCovers).toMatch(/trust boundaries/i);
-    expect(whatItCovers).toMatch(/local factory service/i);
-    expect(whatItCovers).toMatch(/not a penetration-test report/i);
-    expect(whatItCovers).not.toMatch(/Model Atlas/i);
-
-    expect(keyConcepts).toMatch(/http:\/\/localhost:7437/);
-    expect(keyConcepts).toMatch(/http:\/\/localhost:7437\/dashboard\/ui/);
-    expect(keyConcepts).toMatch(/CLI/i);
-    expect(keyConcepts).toMatch(/you submit/);
-    expect(keyConcepts).toMatch(/operator paths/i);
-    expect(keyConcepts).toMatch(/Replay artifacts are sensitive/i);
-    expect(keyConcepts).toMatch(/Retention is operator-owned/i);
-    expect(keyConcepts).toMatch(
-      /without printing unrelated environment values/i,
+    expect(openingSummary).toMatch(/you-agent-factory/i);
+    expect(openingSummary).toMatch(/trust boundaries/i);
+    expect(openingSummary).not.toMatch(/\n\n/);
+    expect(openingSummary).not.toMatch(
+      /on this page|reader.?shortcut|Security \/ Trust Boundaries describes|describes what the local/i,
     );
-    expect(keyConcepts).toMatch(/stdio/i);
-    expect(keyConcepts).toMatch(/you mcp serve/);
 
-    expect(howToUse).toMatch(/configuration/i);
-    expect(howToUse).toMatch(/factory-session/i);
-    expect(howToUse).toMatch(/metrics/i);
-    expect(howToUse).toMatch(/MCP/i);
+    expect(howToUse).toMatch(/http:\/\/localhost:7437/);
+    expect(howToUse).toMatch(/http:\/\/localhost:7437\/dashboard\/ui/);
+    expect(howToUse).toMatch(/CLI/i);
+    expect(howToUse).toMatch(/you submit/);
+    expect(howToUse).toMatch(/operator paths/i);
+    expect(howToUse).toMatch(/Replay artifacts are sensitive/i);
+    expect(howToUse).toMatch(/Retention is operator-owned/i);
+    expect(howToUse).toMatch(/without printing unrelated environment values/i);
+    expect(howToUse).toMatch(/stdio/i);
+    expect(howToUse).toMatch(/you mcp serve/);
+    expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
 
     expect(limits).toMatch(/does not invent default TLS/i);
     expect(limits).toMatch(/multi-tenant authentication/i);
@@ -82,10 +75,6 @@ describe("security-trust-boundaries documentation page", () => {
     expect(limits).toMatch(/does not automatically delete old replay/i);
     expect(limits).toMatch(/does not rebuild or harden the factory dashboard/i);
     expect(limits).toMatch(/roadmap/i);
-
-    expect(whatItCovers).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(keyConcepts).not.toMatch(/on this page|reader.?shortcut/i);
-    expect(howToUse).not.toMatch(/on this page|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|reader.?shortcut/i);
 
     render(
@@ -100,9 +89,11 @@ describe("security-trust-boundaries documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -111,16 +102,12 @@ describe("security-trust-boundaries documentation page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent).toMatch(/trust boundaries/i);
-    expect(whatItCoversSection?.textContent).toMatch(/you-agent-factory/i);
-
-    const keyConceptsSection = document.getElementById("key-concepts");
-    expect(keyConceptsSection?.textContent).toMatch(
+    const howToUseSection = document.getElementById("how-to-use");
+    expect(howToUseSection?.textContent).toMatch(
       /http:\/\/localhost:7437\/dashboard\/ui/,
     );
-    expect(keyConceptsSection?.textContent).toMatch(/you submit/);
-    expect(keyConceptsSection?.textContent).toMatch(/stdio/i);
+    expect(howToUseSection?.textContent).toMatch(/you submit/);
+    expect(howToUseSection?.textContent).toMatch(/stdio/i);
 
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(limitsSection?.textContent).toMatch(/does not invent default TLS/i);
@@ -169,15 +156,14 @@ describe("security-trust-boundaries documentation page", () => {
     expect(loadedPage.messages.title).toBe("Security / Trust Boundaries");
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-    expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
-      "What It Covers",
-    );
-    expect(loadedPage.messages.sections?.keyConcepts?.title).toBe(
-      "Key Concepts",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
     expect(loadedPage.messages.sections?.howToUse?.title).toBe("How To Use");
     expect(loadedPage.messages.sections?.limitsAndAssumptions?.title).toBe(
       "Limits And Assumptions",
+    );
+    expect(String(loadedPage.messages.openingSummary ?? "")).toMatch(
+      /trust boundaries/i,
     );
 
     render(
@@ -192,9 +178,9 @@ describe("security-trust-boundaries documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),

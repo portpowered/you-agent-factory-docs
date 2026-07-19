@@ -1,17 +1,19 @@
 /**
  * One FactoryEvent discriminator payload variant.
  *
- * Renders schema-backed fields via W07 SchemaDefinition. Explicitly marked as
- * payload-only so readers never treat it as a complete FactoryEvent envelope.
- * Stable anchors come from W04 `anchorForIdentity("event", …)` with copy-link
- * affordances via shared CopyableReferenceAnchor.
+ * Renders a corpus-true JSON example plus schema-backed fields via W07
+ * SchemaDefinition under a short "Event catalog" label. Marked
+ * `data-event-payload-only` for machine consumers; stable anchors come from
+ * W04 `anchorForIdentity("event", …)` with copy-link affordances via shared
+ * CopyableReferenceAnchor.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
 import { CopyableReferenceAnchor } from "@/components/references/shared";
 import type { FactoryEventDiscriminatorMapping } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventPayloadJsonExampleView } from "./event-payload-json-example";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type EventPayloadVariantProps = {
   mapping: FactoryEventDiscriminatorMapping;
@@ -44,7 +46,7 @@ export function EventPayloadVariant({
     >
       <header className="min-w-0 space-y-1">
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Payload only — not a complete FactoryEvent envelope
+          Event catalog
         </p>
         <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
           <h3
@@ -67,7 +69,9 @@ export function EventPayloadVariant({
         </div>
       </header>
 
-      <SchemaDefinition
+      <EventPayloadJsonExampleView example={mapping.payloadExample} />
+
+      <EventsSchemaDefinition
         data-testid={`event-payload-schema-${mapping.payloadSchemaName}`}
         definition={definition}
         pagePath={pagePath}

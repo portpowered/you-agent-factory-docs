@@ -1,7 +1,12 @@
 /**
- * Page-owned render proof for references/mock-workers-schema.
- * Asserts route presence, SchemaReference success markers, pagePath ownership,
- * and explicit invalid status when acquisition fails — not W07 internals.
+ * Page-owned polish regression suite for references/mock-workers-schema.
+ *
+ * Proves the three polish dimensions stay observable on the rendered page:
+ * (1) no What It Covers / Key Concepts / summary intro success path,
+ * (2) recursive field splay for mockWorkers / unmatchedDispatchPolicy +
+ *     on-page $defs, and (3) authored hermetic-looking configuration examples.
+ * Ownership stays under this page bundle — not W07 renderer internals or
+ * sibling Wave 4 trees.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -13,12 +18,110 @@ import {
   MockWorkersSchemaReference,
 } from "./MockWorkersSchemaReference";
 
+/**
+ * Shared observable markers for recursive splay + authored examples.
+ * Used by both the full MDX page path and the isolated mount path so the
+ * old $ref-only / no-examples presentation cannot silently return.
+ */
+function expectPolishedMockWorkersSchemaSurface(surface: HTMLElement): void {
+  expect(surface.getAttribute("data-schema-status")).toBe("ready");
+
+  expect(
+    surface.querySelector('[data-schema-field-path="mockWorkers"]'),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector('[data-schema-field-path="unmatchedDispatchPolicy"]'),
+  ).toBeTruthy();
+
+  const policyRow = surface.querySelector(
+    '[data-schema-field-path="unmatchedDispatchPolicy"]',
+  );
+  expect(
+    policyRow?.querySelector(
+      '[data-testid="schema-constraint-list"] [data-schema-constraint="enum"]',
+    ),
+  ).toBeTruthy();
+  expect(policyRow?.textContent ?? "").toMatch(/passthrough/i);
+  expect(policyRow?.textContent ?? "").toMatch(/accept/i);
+
+  // Nested mockWorker fields under mockWorkers without opaque off-page $ref.
+  expect(
+    surface.querySelector('[data-schema-field-path="mockWorkers[].runType"]'),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-field-path="mockWorkers[].workerName"]',
+    ),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-field-path="mockWorkers[].rejectConfig"]',
+    ),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-field-path="mockWorkers[].scriptConfig"]',
+    ),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-field-path="mockWorkers[].workInputs"]',
+    ),
+  ).toBeTruthy();
+
+  // On-page $defs catalog for dependent packaged shapes.
+  expect(
+    surface.querySelector('[data-schema-reference="catalog"]'),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-definition-pointer="/$defs/mockWorker"]',
+    ),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-definition-pointer="/$defs/rejectConfig"]',
+    ),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-definition-pointer="/$defs/scriptConfig"]',
+    ),
+  ).toBeTruthy();
+  expect(
+    surface.querySelector(
+      '[data-schema-definition-pointer="/$defs/workInput"]',
+    ),
+  ).toBeTruthy();
+
+  // Authored hermetic-looking configuration examples (schema-true keys).
+  const examples = surface.querySelector('[data-schema-examples="present"]');
+  expect(examples).toBeTruthy();
+  expect(
+    examples?.querySelector(
+      '[data-schema-example-id="mock-workers-schema.minimal-accept"]',
+    ),
+  ).toBeTruthy();
+  expect(
+    examples?.querySelector(
+      '[data-schema-example-id="mock-workers-schema.reject-with-policy"]',
+    ),
+  ).toBeTruthy();
+  expect(examples?.textContent ?? "").toContain('"runType": "accept"');
+  expect(examples?.textContent ?? "").toContain('"workerName": "reviewer"');
+  expect(examples?.textContent ?? "").toContain('"runType": "reject"');
+  expect(examples?.textContent ?? "").toContain(
+    '"unmatchedDispatchPolicy": "passthrough"',
+  );
+  expect(examples?.querySelector('[data-schema-example="copy"]')).toBeTruthy();
+}
+
 describe("mock-workers-schema reference page", () => {
   afterEach(() => {
     cleanup();
   });
 
-  test("publishes /docs/references/mock-workers-schema as a reference page", async () => {
+  test("publishes polished projection-first mock-workers schema page", async () => {
     const fumadocsPage = source.getPage(["references", "mock-workers-schema"]);
     expect(fumadocsPage).toBeDefined();
     expect(fumadocsPage?.url).toBe("/docs/references/mock-workers-schema");
@@ -37,17 +140,21 @@ describe("mock-workers-schema reference page", () => {
       /mock-worker configuration JSON Schema/i,
     );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    expect(whatItCovers).toMatch(/live mock-worker configuration JSON Schema/i);
-    expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
+    // Intro boilerplate must stay absent — no What It Covers success path.
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
     expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(loadedPage.messages.sections?.related).toBeUndefined();
     expect(loadedPage.messages.sections?.tags).toBeUndefined();
     expect(loadedPage.messages.sections?.references).toBeUndefined();
     expect(loadedPage.messages.links).toBeUndefined();
+
+    const schemaLookup = String(
+      loadedPage.messages.sections?.schemaLookup?.body ?? "",
+    );
+    expect(schemaLookup).toMatch(/mock-workers schema/i);
+    expect(schemaLookup).not.toMatch(/Model Atlas/i);
 
     render(
       <main>
@@ -61,8 +168,9 @@ describe("mock-workers-schema reference page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Schema Lookup" })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
@@ -72,22 +180,11 @@ describe("mock-workers-schema reference page", () => {
     expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
     expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
 
     const schemaSurface = screen.getByTestId("mock-workers-schema-reference");
-    expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
-    expect(
-      schemaSurface.querySelector('[data-schema-field-path="mockWorkers"]'),
-    ).toBeTruthy();
-    expect(
-      schemaSurface.querySelector(
-        '[data-schema-field-path="unmatchedDispatchPolicy"]',
-      ),
-    ).toBeTruthy();
-
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent ?? "").toMatch(
-      /mock-worker configuration JSON Schema/i,
-    );
+    expectPolishedMockWorkersSchemaSurface(schemaSurface);
 
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
@@ -98,11 +195,10 @@ describe("MockWorkersSchemaReference mount", () => {
     cleanup();
   });
 
-  test("mounts complete-schema mode with stable pagePath for mock-workers schema", () => {
+  test("mounts complete-schema mode with splay, catalog defs, and examples", () => {
     render(<MockWorkersSchemaReference />);
 
     const surface = screen.getByTestId("mock-workers-schema-reference");
-    expect(surface.getAttribute("data-schema-status")).toBe("ready");
     expect(
       surface.querySelector('[data-schema-reference-mode="complete"]'),
     ).toBeTruthy();
@@ -111,9 +207,8 @@ describe("MockWorkersSchemaReference mount", () => {
       `[data-schema-deep-link^="${MOCK_WORKERS_SCHEMA_PAGE_PATH}#"]`,
     );
     expect(deepLink).toBeTruthy();
-    expect(
-      surface.querySelector('[data-schema-field-path="mockWorkers"]'),
-    ).toBeTruthy();
+
+    expectPolishedMockWorkersSchemaSurface(surface);
   });
 
   test("shows an accessible invalid status when schema acquisition fails", () => {

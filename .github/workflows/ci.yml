@@ -1,3 +1,17 @@
+# Required PR/push verification — Wave CI-1 parallel job graph + Wave CI-2
+# trusted static-export artifact handoff + Wave CI-3 Playwright install ownership.
+# Membership, ordering edges, artifact identity, and browser-install ownership:
+#   src/lib/ci-required-path.ts (CI_REQUIRED_JOB_GRAPH, CI_STATIC_EXPORT_ARTIFACT_HANDOFF,
+#   CI_BROWSER_INSTALL_OWNERSHIP).
+# static-export uploads out/ as artifact static-export-out; integration and budget
+# download it and must not run a second make build / build:export.
+# Playwright Chromium install (`bunx playwright install --with-deps chromium`) runs
+# only on browser-backed jobs: unit-tests, a11y, integration (see
+# CI_BROWSER_INSTALL_REQUIRED_JOB_IDS). Non-browser jobs must not install Chromium
+# (CI_BROWSER_INSTALL_FORBIDDEN_JOB_IDS). unit-tests keeps install because make test
+# still launches Chromium (CI_UNIT_TESTS_PLAYWRIGHT_CHROMIUM_EVIDENCE_PATHS).
+# Local full-suite reproduction stays sequential: make ci (no Actions artifact).
+# Optional Bun/Playwright Actions caches are omitted for this wave.
 name: CI
 
 on:
@@ -5,7 +19,7 @@ on:
   pull_request:
 
 jobs:
-  verify:
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -19,20 +33,81 @@ jobs:
       - name: Setup
         run: make setup
 
-      - name: Install Playwright Chromium
-        run: bunx playwright install --with-deps chromium
-
       - name: Run typecheck and lint
         run: make check
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      # Wave CI-3: browser-install-required (make test launches Chromium).
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
 
       - name: Run tests
         run: make test
 
+  reader-facing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
       - name: Run reader-facing required suite
         run: make test-reader-facing
 
+  a11y:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      # Wave CI-3: browser-install-required (a11y suite launches Chromium).
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
       - name: Run accessibility / responsive / layout suite
         run: make a11y
+
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
 
       - name: Run CI workflow/Makefile alignment contracts
         run: make test-ci-contract
@@ -43,20 +118,179 @@ jobs:
       - name: Run build-contract required suite
         run: make test-build-contract
 
-      - name: Build static export
-        run: make build
+  component-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Run production integration contracts
-        run: make test-integration
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
 
-      - name: Exported-site budget gate
-        run: make budget
+      - name: Setup
+        run: make setup
 
       - name: Component coverage enforcement
         run: make component-coverage
+
+  content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
 
       - name: Validate registry data
         run: make validate-data
 
       - name: Linkcheck
         run: make linkcheck
+
+  static-export:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Build static export
+        run: make build
+
+      # Wave CI-2: upload trusted out/ for integration/budget (name: static-export-out).
+      - name: Upload trusted static-export artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: static-export-out
+          path: out
+          if-no-files-found: error
+          retention-days: 1
+
+  integration:
+    needs: [static-export]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Download trusted static-export artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export-out
+          # upload-artifact@v4 stores a single directory's *contents* at the
+          # artifact root; download into out/ so gates see repo-root out/.
+          path: out
+
+      - name: Verify trusted static-export artifact
+        run: |
+          set -euo pipefail
+          if [[ ! -d out ]] || [[ -z "$(find out -type f -print -quit)" ]]; then
+            echo "static-export artifact missing or incomplete: expected non-empty out/"
+            ls -la . || true
+            ls -la out || true
+            exit 1
+          fi
+
+      # Wave CI-3: browser-install-required (integration suite launches Chromium).
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run production integration contracts
+        run: make test-integration
+
+  budget:
+    needs: [static-export]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.13
+
+      - name: Setup
+        run: make setup
+
+      - name: Download trusted static-export artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: static-export-out
+          # upload-artifact@v4 stores a single directory's *contents* at the
+          # artifact root; download into out/ so gates see repo-root out/.
+          path: out
+
+      - name: Verify trusted static-export artifact
+        run: |
+          set -euo pipefail
+          if [[ ! -d out ]] || [[ -z "$(find out -type f -print -quit)" ]]; then
+            echo "static-export artifact missing or incomplete: expected non-empty out/"
+            ls -la . || true
+            ls -la out || true
+            exit 1
+          fi
+
+      - name: Exported-site budget gate
+        run: make budget
+
+  ci-gate:
+    if: ${{ always() && !cancelled() }}
+    needs:
+      - check
+      - unit-tests
+      - reader-facing
+      - a11y
+      - contracts
+      - component-coverage
+      - content
+      - static-export
+      - integration
+      - budget
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every child job to succeed
+        run: |
+          set -euo pipefail
+          results=(
+            "${{ needs.check.result }}"
+            "${{ needs.unit-tests.result }}"
+            "${{ needs.reader-facing.result }}"
+            "${{ needs.a11y.result }}"
+            "${{ needs.contracts.result }}"
+            "${{ needs.component-coverage.result }}"
+            "${{ needs.content.result }}"
+            "${{ needs.static-export.result }}"
+            "${{ needs.integration.result }}"
+            "${{ needs.budget.result }}"
+          )
+          for result in "${results[@]}"; do
+            if [[ "$result" != "success" ]]; then
+              echo "ci-gate failed: a required child job result was '$result'"
+              exit 1
+            fi
+          done
+          echo "ci-gate passed: all required child jobs succeeded"

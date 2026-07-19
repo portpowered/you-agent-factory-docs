@@ -21,6 +21,11 @@ export type SchemaBreadcrumbProps = {
    * `#${anchor}` is copied.
    */
   href?: string;
+  /**
+   * When false, hide visible path / `#anchor` chrome and keep only the
+   * copyable deep-link control. Default true preserves breadcrumb segments.
+   */
+  showPathSegments?: boolean;
   /** Accessible name for the navigation landmark. */
   "aria-label"?: string;
   className?: string;
@@ -34,6 +39,7 @@ export function SchemaBreadcrumb({
   segments,
   anchor,
   href,
+  showPathSegments = true,
   "aria-label": ariaLabel = "Schema path",
   className,
   "data-testid": testId = "schema-breadcrumb",
@@ -52,44 +58,47 @@ export function SchemaBreadcrumb({
       )}
       data-schema-anchor={anchor}
       data-schema-deep-link={copyValue}
+      data-schema-path-segments={showPathSegments ? "true" : "false"}
       data-testid={testId}
     >
-      {segments.length > 0 ? (
-        <ol className="m-0 flex min-w-0 list-none flex-wrap items-center gap-1 p-0">
-          {segments.map((segment, index) => {
-            const isLast = index === segments.length - 1;
-            const pathSoFar = segments.slice(0, index + 1).join("/");
-            return (
-              <li
-                className="inline-flex min-w-0 items-center gap-1"
-                data-schema-breadcrumb-segment={segment}
-                key={pathSoFar}
-              >
-                {index > 0 ? (
-                  <span aria-hidden="true" className="text-muted-foreground">
-                    /
-                  </span>
-                ) : null}
-                <span
-                  className={cn(
-                    "min-w-0 truncate font-mono text-xs",
-                    isLast ? "text-foreground" : "text-muted-foreground",
-                  )}
+      {showPathSegments ? (
+        segments.length > 0 ? (
+          <ol className="m-0 flex min-w-0 list-none flex-wrap items-center gap-1 p-0">
+            {segments.map((segment, index) => {
+              const isLast = index === segments.length - 1;
+              const pathSoFar = segments.slice(0, index + 1).join("/");
+              return (
+                <li
+                  className="inline-flex min-w-0 items-center gap-1"
+                  data-schema-breadcrumb-segment={segment}
+                  key={pathSoFar}
                 >
-                  {segment}
-                </span>
-              </li>
-            );
-          })}
-        </ol>
-      ) : (
-        <code
-          className="min-w-0 truncate font-mono text-muted-foreground text-xs"
-          data-schema-breadcrumb-anchor=""
-        >
-          #{anchor}
-        </code>
-      )}
+                  {index > 0 ? (
+                    <span aria-hidden="true" className="text-muted-foreground">
+                      /
+                    </span>
+                  ) : null}
+                  <span
+                    className={cn(
+                      "min-w-0 truncate font-mono text-xs",
+                      isLast ? "text-foreground" : "text-muted-foreground",
+                    )}
+                  >
+                    {segment}
+                  </span>
+                </li>
+              );
+            })}
+          </ol>
+        ) : (
+          <code
+            className="min-w-0 truncate font-mono text-muted-foreground text-xs"
+            data-schema-breadcrumb-anchor=""
+          >
+            #{anchor}
+          </code>
+        )
+      ) : null}
 
       <button
         aria-label={checked ? COPIED_LABEL : COPY_LABEL}

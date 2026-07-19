@@ -8,9 +8,86 @@ import {
   isReferenceItemSearchDocument,
   pageBaseUrl,
   referenceItemDocumentForResultUrl,
+  resolveReferenceItemDeepLinkUrl,
 } from "./collapse-search-results-to-page-hits";
+import {
+  BLOG_SEARCH_DOCUMENT_KIND,
+  REFERENCE_SEARCH_DOCUMENT_KIND,
+} from "./factory-search-kinds";
 import { expandTopologySearchTerm } from "./topology-search-terms";
 import type { SearchDocument } from "./types";
+
+/**
+ * Cross-collection bands for non-exact search hits (lower = higher rank).
+ * Exact / near-exact page and exact inventory wins stay above this ladder.
+ */
+export const SEARCH_COLLECTION_BAND = {
+  guide: 0,
+  curatedReferencePage: 1,
+  other: 2,
+  blog: 3,
+  referenceSubfield: 4,
+} as const;
+
+export type SearchCollectionBand =
+  (typeof SEARCH_COLLECTION_BAND)[keyof typeof SEARCH_COLLECTION_BAND];
+
+/**
+ * Classify a hit into the locked non-exact collection ladder:
+ * guides → curated reference owning pages → other → blog → reference
+ * subheaders / subfields.
+ */
+export function searchCollectionBand(
+  result: SortedResult,
+  document: SearchDocument | undefined,
+): SearchCollectionBand {
+  if (isReferenceHeadingSpamResult(result)) {
+    return SEARCH_COLLECTION_BAND.referenceSubfield;
+  }
+
+  // Avoid `isReferenceItemSearchDocument` here: its type predicate narrows the
+  // false branch to `undefined`, which breaks later `document.kind` reads.
+  if (
+    document !== undefined &&
+    document.kind === REFERENCE_SEARCH_DOCUMENT_KIND &&
+    document.url.includes("#")
+  ) {
+    return SEARCH_COLLECTION_BAND.referenceSubfield;
+  }
+
+  const deepLink = resolveReferenceItemDeepLinkUrl(result.url);
+  if (deepLink !== undefined) {
+    return SEARCH_COLLECTION_BAND.referenceSubfield;
+  }
+
+  const kind = document?.kind;
+  if (kind === "guide") {
+    return SEARCH_COLLECTION_BAND.guide;
+  }
+
+  if (kind === REFERENCE_SEARCH_DOCUMENT_KIND) {
+    return SEARCH_COLLECTION_BAND.curatedReferencePage;
+  }
+
+  if (kind === BLOG_SEARCH_DOCUMENT_KIND) {
+    return SEARCH_COLLECTION_BAND.blog;
+  }
+
+  const base = pageBaseUrl(result.url);
+  if (base.startsWith("/docs/guides/") || base === "/docs/guides") {
+    return SEARCH_COLLECTION_BAND.guide;
+  }
+
+  if (base.startsWith("/docs/references/") || base === "/docs/references") {
+    return SEARCH_COLLECTION_BAND.curatedReferencePage;
+  }
+
+  if (base.startsWith("/blog/") || base === "/blog") {
+    return SEARCH_COLLECTION_BAND.blog;
+  }
+
+  return SEARCH_COLLECTION_BAND.other;
+}
 
 function normalizeSearchTerm(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/g, " ");
@@ -411,7 +488,9 @@ function resultPriority(
 
 /**
  * Boost exact title, direct-alias, slug, and topology matches so canonical and
- * ontology-near pages rank above incidental body hits.
+ * ontology-near pages rank above incidental body hits. After those exact /
+ * near-exact and inventory wins, non-exact ties follow the locked collection
+ * ladder (guides → curated reference pages → blog → reference subfields).
  */
 export function rerankSearchResults(
   query: string,
@@ -449,7 +528,21 @@ export function rerankSearchResults(
         rightDocument,
       );
 
-      return leftPriority - rightPriority || left.index - right.index;
+      if (leftPriority !== rightPriority) {
+        return leftPriority - rightPriority;
+      }
+
+      // Collection ladder applies among non-exact hits only (priority > 1).
+      // Exact page (0) and exact inventory (1) wins keep their primary order.
+      if (leftPriority > 1) {
+        const leftBand = searchCollectionBand(left.result, leftDocument);
+        const rightBand = searchCollectionBand(right.result, rightDocument);
+        if (leftBand !== rightBand) {
+          return leftBand - rightBand;
+        }
+      }
+
+      return left.index - right.index;
     })
     .map(({ result }) => result);
 }

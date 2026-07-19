@@ -24,21 +24,13 @@ import { Section } from "@/features/docs/components/Section";
 import { T } from "@/features/docs/components/T";
 import { TagPillList } from "@/features/docs/components/TagPillList";
 
-<Section id="what-it-covers" titleKey="sections.whatItCovers.title">
-  <T k="sections.whatItCovers.body" />
-</Section>
-
-<Section id="key-concepts" titleKey="sections.keyConcepts.title">
-  <T k="sections.keyConcepts.body" />
+<Section id="how-to-use" titleKey="sections.howToUse.title">
+  <T k="sections.howToUse.body" />
   <p>
     <T k="links.identityLabel" />
     {": "}
     <T k="links.identityValue" />
   </p>
-</Section>
-
-<Section id="how-to-use" titleKey="sections.howToUse.title">
-  <T k="sections.howToUse.body" />
   <p>
     <T k="links.enableIntro" />
   </p>
@@ -65,60 +57,6 @@ import { TagPillList } from "@/features/docs/components/TagPillList";
 <Section id="examples" titleKey="sections.examples.title">
   <T k="sections.examples.body" />
   <MockWorkerExamples />
-</Section>
-
-<Section id="operational-cautions" titleKey="sections.operationalCautions.title">
-  <T k="sections.operationalCautions.body" />
-  <table data-mock-worker-failure-table="">
-    <thead>
-      <tr>
-        <th>
-          <T k="links.cautionTopicHeader" />
-        </th>
-        <th>
-          <T k="links.cautionGuidanceHeader" />
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>
-          <T k="links.cautionUnknownFieldsTopic" />
-        </td>
-        <td>
-          <T k="links.cautionUnknownFieldsGuidance" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.cautionPassthroughTopic" />
-        </td>
-        <td>
-          <T k="links.cautionPassthroughGuidance" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.cautionAcceptProofTopic" />
-        </td>
-        <td>
-          <T k="links.cautionAcceptProofGuidance" />
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <T k="links.cautionNotWorkerTypeTopic" />
-        </td>
-        <td>
-          <T k="links.cautionNotWorkerTypeGuidance" />
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</Section>
-
-<Section id="limits-and-assumptions" titleKey="sections.limitsAndAssumptions.title">
-  <T k="sections.limitsAndAssumptions.body" />
 </Section>
 
 <Section id="related" titleKey="sections.related.title">

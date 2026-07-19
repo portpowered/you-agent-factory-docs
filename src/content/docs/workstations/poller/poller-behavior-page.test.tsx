@@ -2,10 +2,10 @@
  * Page-owned proofs for /docs/workstations/poller.
  * Covers POLLER discriminator, POLLER vs POLLER_RUN axis separation, W07
  * overlay embed, minimal/misuse examples, WorkstationType companion links,
- * and failure cautions — not route inventories or shared helper contracts.
+ * — not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsPollerRegistry from "@/content/registry/documentation/workstations-poller.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -43,48 +43,35 @@ describe("workstations poller behavior page", () => {
       slug: "poller",
     });
 
-    expect(loadedPage.messages.title).toBe("Poller behavior");
+    expect(loadedPage.messages.title).toBe("Poller workstation");
     expect(loadedPage.messages.description).toMatch(/behavior = POLLER/i);
     expect(loadedPage.messages.description).toMatch(/POLLER_RUN/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/behavior = POLLER/i);
-    expect(whatItCovers).toMatch(/WorkstationKind/i);
-    expect(whatItCovers).toMatch(/long-lived poller scheduling/i);
-    expect(whatItCovers).toMatch(/POLLER_RUN/i);
-    expect(keyConcepts).toMatch(/behavior with value POLLER/i);
-    expect(keyConcepts).toMatch(/not a WorkstationType/i);
-    expect(keyConcepts).toMatch(/POLLER_RUN is the runtime type/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/POLLER/i);
+    expect(openingSummary).toMatch(/WorkstationKind/i);
+    expect(openingSummary).toMatch(/long-lived poller/i);
+    expect(openingSummary).toMatch(/POLLER_RUN/i);
     expect(howToUse).toMatch(/behavior POLLER/i);
     expect(howToUse).toMatch(/type POLLER_RUN/i);
     expect(howToUse).toMatch(/Do not set cron/i);
-    expect(variantFields).toMatch(/no selected exclusive fields/i);
+    expect(howToUse).toMatch(/not a WorkstationType/i);
+    expect(howToUse).toMatch(/POLLER_RUN is the runtime type/i);
+    expect(schemaReference).toMatch(/no selected exclusive fields/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/collapses the axes/i);
-    expect(cautions).toMatch(/collapse behavior POLLER with type POLLER_RUN/i);
-    expect(cautions).toMatch(/Do not put POLLER on the type field/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the POLLER_RUN runtime-type guide/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -146,19 +133,22 @@ describe("workstations poller behavior page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -180,7 +170,15 @@ describe("workstations poller behavior page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("POLLER");
     expect(screen.getByTestId("poller-behavior-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: POLLER")).toBeTruthy();
+    expect(screen.queryByText("Variant: POLLER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "poller-behavior-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen
@@ -209,16 +207,18 @@ describe("workstations poller behavior page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Poller-run type" })
+        .getByRole("link", { name: "Poller-run workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/poller-run");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
-      screen.getByRole("link", { name: "Cron behavior" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Cron workstation" })
+        .getAttribute("href"),
     ).toBe("/docs/workstations/cron");
 
     expect(screen.getByText("Minimal valid POLLER workstation:")).toBeTruthy();
@@ -245,20 +245,6 @@ describe("workstations poller behavior page", () => {
         '[data-poller-behavior-example="misuse-poller-run-collapse"]',
       )?.textContent,
     ).not.toContain('"behavior": "POLLER"');
-
-    const failureTable = document.querySelector(
-      "[data-poller-behavior-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("poller_axes_collapsed"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("ingress_not_ready"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("cron_on_poller"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

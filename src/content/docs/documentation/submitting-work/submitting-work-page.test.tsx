@@ -24,6 +24,12 @@ describe("submitting-work documentation page", () => {
     expect(loadedPage.messages.title).toBe("Submitting Work");
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /factory that is already running/i,
+    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
 
     render(
       <main>
@@ -37,17 +43,13 @@ describe("submitting-work documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
-    const howToUseSection = document.getElementById("how-to-use");
-    expect(howToUseSection).toBeTruthy();
-    expect(howToUseSection?.textContent).toMatch(
-      /Author a FACTORY_REQUEST_BATCH with a stable requestId/i,
-    );
-    expect(howToUseSection?.textContent).not.toMatch(/on this page/i);
-    expect(howToUseSection?.textContent).not.toMatch(/Later sections/i);
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
+    expect(document.getElementById("how-to-use")).toBeNull();
     expect(screen.getByRole("heading", { name: "Work Batches" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Relationships" })).toBeTruthy();
     expect(
@@ -62,7 +64,7 @@ describe("submitting-work documentation page", () => {
     ).toBeGreaterThan(0);
     expect(
       screen.getByText(
-        /submit that batch to a factory that is already running/i,
+        /Submit that document to a factory that is already running/i,
       ),
     ).toBeTruthy();
 
@@ -70,6 +72,9 @@ describe("submitting-work documentation page", () => {
     expect(workBatchesSection).toBeTruthy();
     expect(workBatchesSection?.textContent).toMatch(/requestId/i);
     expect(workBatchesSection?.textContent).toMatch(/workTypeName/i);
+    expect(workBatchesSection?.textContent).toMatch(
+      /multiple work items in (a )?single validated submission|one validated submission/i,
+    );
     expect(workBatchesSection?.textContent).toMatch(
       /you submit batch \.\/batch\.json/,
     );
@@ -110,20 +115,10 @@ describe("submitting-work documentation page", () => {
       /source is a child of the target/i,
     );
 
-    const keyConceptsSection = document.getElementById("key-concepts");
-    expect(keyConceptsSection).toBeTruthy();
-    expect(keyConceptsSection?.textContent).toMatch(
-      /factory that is already running/i,
-    );
-    expect(keyConceptsSection?.textContent).toMatch(
-      /multiple work items in one validated submission/i,
-    );
-    expect(keyConceptsSection?.textContent).toMatch(/Relations order or nest/i);
-
     const limitsSection = document.getElementById("limits-and-assumptions");
     expect(limitsSection).toBeTruthy();
     expect(limitsSection?.textContent).toMatch(
-      /web submitting-work reference/i,
+      /Submitting work covers batches and relationships only/i,
     );
     expect(limitsSection?.textContent).toMatch(/not a full CLI flag dump/i);
     expect(limitsSection?.textContent).toMatch(
@@ -134,6 +129,9 @@ describe("submitting-work documentation page", () => {
     );
     expect(limitsSection?.textContent).toMatch(
       /not the OpenAPI or API reference/i,
+    );
+    expect(limitsSection?.textContent).not.toMatch(
+      /This page is|web submitting-work reference/i,
     );
 
     const cliDocs = screen.getByRole("link", { name: "CLI docs" });

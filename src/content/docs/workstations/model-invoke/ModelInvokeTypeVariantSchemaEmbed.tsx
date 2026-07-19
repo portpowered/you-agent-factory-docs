@@ -30,6 +30,8 @@ export function ModelInvokeTypeVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={MODEL_INVOKE_TYPE_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="model-invoke-type-variant-schema"
       />
     </div>

@@ -1,35 +1,19 @@
 {
-  "title": "Poller behavior",
+  "title": "Poller workstation",
   "description": "Configure behavior = POLLER for long-lived poller scheduling and keep it distinct from type = POLLER_RUN.",
   "openingSummary": "POLLER is the WorkstationKind scheduling behavior for long-lived poller ingress. Set behavior to POLLER when a step should stay scheduled for continuous poller-driven work, and set type to POLLER_RUN only when the runtime must execute through a poller worker.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Poller behavior is the Factory WorkstationKind for long-lived poller scheduling in you-agent-factory. This page covers the behavior = POLLER discriminator, how scheduling POLLER differs from runtime type POLLER_RUN, the validated behavior overlay embed, a minimal valid configuration, an incompatible misuse that collapses the two axes, operational cautions, and compatible WorkstationType companions. Use it when a workstation must stay on long-lived poller ingress rather than fire-once STANDARD, change-triggered REPEATER, or scheduled CRON."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The discriminator field is behavior with value POLLER. POLLER keeps a workstation on long-lived poller scheduling so ingress can remain active without cron ticks or fire-once STANDARD semantics. Behavior is independent of type: POLLER pairs with every published WorkstationType, including AGENT_RUN and POLLER_RUN. POLLER is not a WorkstationType. POLLER_RUN is the runtime type for poller-worker execution — configure both axes when a step needs poller scheduling and poller-worker runtime together."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Author a workstation with behavior POLLER. Keep type on the runtime axis for the execution family you need — use type POLLER_RUN when the step must run through a poller worker, or another WorkstationType when a different runtime is correct. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so long-lived outcomes route correctly. Do not set cron on POLLER. Choose STANDARD for fire-once dispatch, REPEATER for change-triggered loops, or CRON for schedules."
+      "body": "Author a workstation with behavior POLLER. Keep type on the runtime axis for the execution family you need — use type POLLER_RUN when the step must run through a poller worker, or another WorkstationType when a different runtime is correct. Bind a worker when the type requires one. Wire inputs plus outputs, onContinue, onRejection, and onFailure so long-lived outcomes route correctly. Do not set cron on POLLER. Choose STANDARD for fire-once dispatch, REPEATER for change-triggered loops, or CRON for schedules. POLLER is not a WorkstationType. POLLER_RUN is the runtime type for poller-worker execution — configure both axes when a step needs poller scheduling and poller-worker runtime together."
     },
-    "variantFields": {
-      "title": "Variant Fields",
+    "schemaReference": {
+      "title": "Schema reference",
       "body": "The embed below shows the live Workstation base definition with POLLER overlay applicability. POLLER has no selected exclusive fields. Excluded fields belong to other WorkstationType families or to CRON scheduling and must not appear on this behavior. Open the full Factory schema reference for exhaustive field lookup rather than copying contract text into this page."
     },
     "examples": {
       "title": "Examples",
       "body": "Use the minimal valid example when starting a POLLER workstation with type POLLER_RUN. The misuse example collapses the axes by putting POLLER on the type field — POLLER is a behavior value, not a WorkstationType."
-    },
-    "operationalCautions": {
-      "title": "Operational Cautions",
-      "body": "POLLER steps fail closed when authors collapse behavior POLLER with type POLLER_RUN, when long-lived ingress never becomes ready, when concurrency limits block continuous dispatch, or when route fields leave an outcome unmapped. Do not put POLLER on the type field, and do not use cron schedules under POLLER — cron belongs on behavior CRON. Pair behavior POLLER with type POLLER_RUN only when both long-lived scheduling and poller-worker execution are required."
-    },
-    "limitsAndAssumptions": {
-      "title": "Limits And Assumptions",
-      "body": "This page is the direct /docs/workstations/poller surface for POLLER scheduling. It is not a sync of packaged CLI docs, not the POLLER_RUN runtime-type guide, and not the STANDARD, REPEATER, or CRON behavior contracts. Compatible WorkstationType companions name the runtime pairing for this behavior; they do not redefine POLLER fields. Worker backends stay on the workers family."
     },
     "related": {
       "title": "Related To"
@@ -56,23 +40,11 @@
     "misuseNote": "POLLER is a WorkstationKind behavior value, not a WorkstationType. Put POLLER on behavior, and use type POLLER_RUN when poller-worker execution is required.",
     "fullFactorySchema": "Full Factory schema reference",
     "workstationsFamilyIndex": "Workstations family index",
-    "siblingPollerRun": "Poller-run type",
-    "siblingStandard": "Standard behavior",
-    "siblingRepeater": "Repeater behavior",
-    "siblingCron": "Cron behavior",
+    "siblingPollerRun": "Poller-run workstation",
+    "siblingStandard": "Standard workstation",
+    "siblingRepeater": "Repeater workstation",
+    "siblingCron": "Cron workstation",
     "siblingConfiguration": "Configuration",
-    "siblingResources": "Resources",
-    "failureAxesCollapseClass": "poller_axes_collapsed",
-    "failureAxesCollapseCause": "POLLER placed on type instead of behavior, or POLLER_RUN treated as a behavior — keep scheduling on behavior and runtime on type",
-    "failureIngressClass": "ingress_not_ready",
-    "failureIngressCause": "Long-lived poller ingress never became ready — keep readiness places updated for continuous scheduling",
-    "failureConcurrencyClass": "concurrency_limit",
-    "failureConcurrencyCause": "Workstation or resource limits blocked continuous dispatch — raise limits or reduce parallel work",
-    "failureRoutingClass": "route_unmapped",
-    "failureRoutingCause": "Outcome has no authored route — wire outputs, onContinue, onRejection, or onFailure",
-    "failureCronMisuseClass": "cron_on_poller",
-    "failureCronMisuseCause": "cron declared under POLLER — move the schedule to behavior CRON",
-    "failureClassHeader": "Failure class",
-    "failureCauseHeader": "Typical cause and recovery"
+    "siblingResources": "Resources"
   }
 }

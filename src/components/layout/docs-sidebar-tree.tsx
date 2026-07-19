@@ -12,16 +12,13 @@ import {
 } from "fumadocs-ui/components/sidebar/base";
 import { useTreePath } from "fumadocs-ui/contexts/tree";
 import type { ReactNode } from "react";
+import { DOCS_CHROME_SIDEBAR_ROW_CLASSES } from "@/features/docs/styles/docs-chrome-sidebar";
+import { cn } from "@/lib/utils";
 
 function isActiveUrl(currentPath: string, targetPath: string) {
   return currentPath === targetPath || currentPath.startsWith(`${targetPath}/`);
 }
 
-const ROOT_ITEM_OFFSET = "0rem";
-const SIDEBAR_ROW_CLASS =
-  "relative flex w-full flex-row items-center gap-2 rounded-lg px-0 py-1.5 text-start text-sm text-fd-muted-foreground whitespace-nowrap [&_svg]:size-4 [&_svg]:shrink-0";
-const TOP_LEVEL_ROW_CLASS =
-  "relative flex w-full flex-row items-center gap-2 rounded-lg overflow-hidden whitespace-nowrap px-0 text-sm text-fd-foreground/85 transition-colors hover:bg-fd-accent/50 hover:text-fd-accent-foreground/80";
 const ROOT_SECTION_GAP_CLASS = "mb-3";
 const CHILD_NODE_GAP_CLASS = "mb-1";
 
@@ -35,10 +32,11 @@ export const docsSidebarTreeComponents = {
         external={item.external}
         active={isActiveUrl(pathname, item.url)}
         icon={item.icon}
-        className={`${SIDEBAR_ROW_CLASS} ${CHILD_NODE_GAP_CLASS} overflow-hidden text-ellipsis`}
-        style={{
-          paddingInlineStart: ROOT_ITEM_OFFSET,
-        }}
+        className={cn(
+          DOCS_CHROME_SIDEBAR_ROW_CLASSES,
+          CHILD_NODE_GAP_CLASS,
+          "overflow-hidden text-ellipsis",
+        )}
       >
         {item.name}
       </SidebarItem>
@@ -65,20 +63,22 @@ export const docsSidebarTreeComponents = {
             href={item.index.url}
             active={isActiveUrl(pathname, item.index.url)}
             external={item.index.external}
-            className={`${TOP_LEVEL_ROW_CLASS} ${ROOT_SECTION_GAP_CLASS} text-ellipsis`}
-            style={{
-              paddingInlineStart: ROOT_ITEM_OFFSET,
-            }}
+            className={cn(
+              DOCS_CHROME_SIDEBAR_ROW_CLASSES,
+              ROOT_SECTION_GAP_CLASS,
+              "overflow-hidden text-ellipsis",
+            )}
           >
             {item.icon}
             {item.name}
           </SidebarFolderLink>
         ) : (
           <SidebarFolderTrigger
-            className={`${TOP_LEVEL_ROW_CLASS} ${ROOT_SECTION_GAP_CLASS} text-ellipsis`}
-            style={{
-              paddingInlineStart: ROOT_ITEM_OFFSET,
-            }}
+            className={cn(
+              DOCS_CHROME_SIDEBAR_ROW_CLASSES,
+              ROOT_SECTION_GAP_CLASS,
+              "overflow-hidden text-ellipsis",
+            )}
           >
             {item.icon}
             {item.name}
@@ -96,12 +96,7 @@ export const docsSidebarTreeComponents = {
     item: PageTree.Separator;
   }) {
     return (
-      <SidebarSeparator
-        className="mb-2.5 mt-6 px-0 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-fd-foreground/55 first:mt-1"
-        style={{
-          paddingInlineStart: ROOT_ITEM_OFFSET,
-        }}
-      >
+      <SidebarSeparator className="mb-2.5 mt-6 px-2 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-fd-foreground/55 first:mt-1">
         {item.icon}
         {item.name}
       </SidebarSeparator>

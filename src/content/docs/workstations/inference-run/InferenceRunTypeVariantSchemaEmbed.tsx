@@ -31,6 +31,8 @@ export function InferenceRunTypeVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={INFERENCE_RUN_TYPE_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="inference-run-type-variant-schema"
       />
     </div>

@@ -30,6 +30,8 @@ export function RepeaterBehaviorVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={REPEATER_BEHAVIOR_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="repeater-behavior-variant-schema"
       />
     </div>

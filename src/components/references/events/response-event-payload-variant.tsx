@@ -1,17 +1,18 @@
 /**
  * One FactoryResponseEvent payload oneOf variant.
  *
- * Renders schema-backed fields via W07 SchemaDefinition. Explicitly marked as
- * payload-only and ephemeral — never a complete FactoryResponseEvent envelope
- * or canonical FactoryEvent replay state. Stable anchors + copy-link via W04 /
- * shared CopyableReferenceAnchor.
+ * Renders a corpus-true JSON example plus schema-backed fields via W07
+ * SchemaDefinition under a short "Event catalog" label. Marked
+ * `data-event-payload-only` + `data-event-ephemeral` for machine consumers.
+ * Stable anchors + copy-link via W04 / shared CopyableReferenceAnchor.
  */
 
-import { SchemaDefinition } from "@/components/references/schema";
 import { CopyableReferenceAnchor } from "@/components/references/shared";
 import type { FactoryResponseEventPayloadVariant } from "@/lib/references/events";
 import type { SchemaDefinitionModel } from "@/lib/references/schema-model";
 import { cn } from "@/lib/utils";
+import { EventPayloadJsonExampleView } from "./event-payload-json-example";
+import { EventsSchemaDefinition } from "./events-schema-definition";
 
 export type ResponseEventPayloadVariantProps = {
   variant: FactoryResponseEventPayloadVariant;
@@ -44,8 +45,7 @@ export function ResponseEventPayloadVariant({
     >
       <header className="min-w-0 space-y-1">
         <p className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-          Payload only — ephemeral; not a complete FactoryResponseEvent envelope
-          or canonical FactoryEvent replay
+          Event catalog
         </p>
         <div className="flex min-w-0 flex-wrap items-start justify-between gap-2">
           <h3
@@ -64,7 +64,9 @@ export function ResponseEventPayloadVariant({
         </div>
       </header>
 
-      <SchemaDefinition
+      <EventPayloadJsonExampleView example={variant.payloadExample} />
+
+      <EventsSchemaDefinition
         data-testid={`response-event-payload-schema-${variant.payloadSchemaName}`}
         definition={definition}
         pagePath={pagePath}

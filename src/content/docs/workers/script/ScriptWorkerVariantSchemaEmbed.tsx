@@ -29,6 +29,8 @@ export function ScriptWorkerVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={SCRIPT_WORKER_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="script-worker-variant-schema"
       />
     </div>
