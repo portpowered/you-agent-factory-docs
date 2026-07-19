@@ -106,7 +106,18 @@ shared map — not per-control hex hacks.
   and retargets the TOC thumb `.bg-fd-primary` to secondary blue. Keep
   focus-visible as outline-only so focus does not recolor rest roles.
   Prove with `docs-chrome-toc.test.ts`.
-- Later surface stories (sidebar / header text / breadcrumb) consume
+- Sidebar row surface (story 004): consume
+  `src/features/docs/styles/docs-chrome-sidebar.ts` + `docs-chrome-sidebar.css`
+  (imported from `globals.css`). Rest text = `--docs-chrome-white`; hover =
+  wide `--docs-chrome-primary-yellow` **background** (with `px-2` so the fill
+  covers outline/padding — not text-only recolor). Active rows keep a soft
+  primary-yellow wash so current stays distinguishable at rest. Marker class
+  `docs-chrome-sidebar-row` is shared by desktop `#nd-sidebar` tree
+  (`docs-sidebar-tree.tsx`) and mobile drawer (`data-mobile-docs-drawer`).
+  Do not leave `text-fd-muted-foreground` rest or `hover:bg-fd-accent/50` /
+  `hover:bg-sidebar-accent` owning these rows. Prove with
+  `docs-chrome-sidebar.test.ts`.
+- Later surface stories (header text / breadcrumb) consume
   `--docs-chrome-*` / the TS contract; do not reopen primary-nav membership,
   brand copy, glossary, or search ranking here.
 
