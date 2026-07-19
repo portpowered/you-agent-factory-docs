@@ -74,16 +74,20 @@
       "model-inference": "Model inference"
     },
     "documentationGroups": {
-      "basics": "Basics",
-      "feature-support": "Feature support",
-      "functions": "Functions",
-      "configuration": "Configuration",
-      "api": "API",
-      "cli": "CLI",
-      "mcp": "MCP",
-      "operational": "Operational",
-      "internal-architecture": "Internal architecture",
-      "additional-reference": "Additional reference"
+      "system-feature-set": "System feature set",
+      "interfaces": "Interfaces",
+      "packaged-factories": "Packaged factories",
+      "factory-configuration": "Factory Configuration",
+      "system-operations": "System Operations",
+      "internal-architecture": "Internal Architecture",
+      "additional-references": "Additional references"
+    },
+    "documentationSecondaries": {
+      "workers": "Workers",
+      "workstations": "Workstations",
+      "factories": "Factories",
+      "resources": "Resources",
+      "observability": "Observability"
     }
   },
   "referenceChrome": {

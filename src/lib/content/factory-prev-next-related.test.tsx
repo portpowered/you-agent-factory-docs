@@ -50,7 +50,8 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     next: "/docs/techniques/worker-adviser",
   },
   {
-    href: "/docs/documentation/what-is-you-agent-factory",
+    // First Program documentation page under System feature set (three-level IA).
+    href: "/docs/documentation/dynamic-workflows",
     previous: "/docs/techniques/writer-reviewer",
     next: "/docs/documentation/harness-support",
   },

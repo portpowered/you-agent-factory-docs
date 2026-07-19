@@ -198,8 +198,20 @@ describe("docs navigation source", () => {
       .filter((node) => node.type === "separator")
       .map((node) => String(node.name));
     const pageUrls = collectPageUrls(children);
+    const secondaryFolderNames = children
+      .filter((node) => node.type === "folder")
+      .map((node) => String(node.name));
 
     expect(separatorNames).toEqual([
+      "System feature set",
+      "Interfaces",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Internal Architecture",
+      "Additional references",
+    ]);
+    for (const former of [
       "Basics",
       "Feature support",
       "Functions",
@@ -210,9 +222,20 @@ describe("docs navigation source", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
-    ]);
+    ] as const) {
+      expect(separatorNames).not.toContain(former);
+    }
     expect(pageUrls).not.toContain("/docs/documentation/faq");
+    expect(source.pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Observability");
     expect(pageUrls).toContain("/docs/documentation/what-is-you-agent-factory");
     expect(pageUrls).toContain("/docs/documentation/cli");
+    expect(pageUrls).toContain("/docs/documentation/mock-workers");
+    expect(pageUrls).toContain("/docs/documentation/logs");
   });
 });

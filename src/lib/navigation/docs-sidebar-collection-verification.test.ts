@@ -45,7 +45,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
     folderName: "Program documentation",
     url: "/docs/documentation/what-is-you-agent-factory",
     name: "What is you-agent-factory",
-    separatorLabel: "Basics",
+    separatorLabel: "Additional references",
   },
   {
     folderName: "References",
@@ -214,8 +214,20 @@ describe("collection-driven docs sidebar verification", () => {
   test("Program documentation subgroups follow declared order without FAQ", () => {
     const pageTree = buildVerificationPageTree();
     const children = getFolderChildren(pageTree, "Program documentation");
+    const secondaryFolderNames = children
+      .filter((node) => node.type === "folder")
+      .map((node) => String(node.name));
 
     expect(getSeparatorLabels(children)).toEqual([
+      "System feature set",
+      "Interfaces",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Internal Architecture",
+      "Additional references",
+    ]);
+    for (const former of [
       "Basics",
       "Feature support",
       "Functions",
@@ -226,11 +238,20 @@ describe("collection-driven docs sidebar verification", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
-    ]);
+    ] as const) {
+      expect(getSeparatorLabels(children)).not.toContain(former);
+    }
     expect(
       collectSidebarPageLinks(children).some(
         (link) => link.url === "/docs/documentation/faq",
       ),
     ).toBe(false);
+    expect(pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Observability");
   });
 });

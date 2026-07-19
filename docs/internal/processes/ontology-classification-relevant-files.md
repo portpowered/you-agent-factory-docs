@@ -57,8 +57,9 @@ the temporary legacy-id bridge.
   (Harnesses → Industrial engineering → Model inference) resolve from
   `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` first, then editorial
   `sidebarGrouping.concepts` for pages outside that map. Program documentation
-  explorer subgroups resolve from `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG`
-  (FAQ omitted as a top-level explorer page). Module, training, and
+  explorer placement resolves from `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG`
+  (top group plus optional secondary; FAQ omitted as a top-level explorer page).
+  Module, training, and
   system subgroup placement notes below are historical Atlas guidance retained
   for glossary/module compatibility paths.
   Backfill those override entries onto the specific registry records

@@ -10,17 +10,27 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   subgroups are **Harnesses → Industrial engineering → Model inference** via
   `SIDEBAR_GROUP_LABELS.concepts` and explicit slug membership in
   `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` (including reserved skills/mcp/
-  tool-calling slots). Program documentation subgroups are **Basics → Feature
-  support → Functions → Configuration → API → CLI → MCP → Operational →
-  Internal architecture → Additional reference** via
-  `SIDEBAR_GROUP_LABELS.documentation` and
-  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (FAQ omitted; top-level
-  explorer page). Glossary still uses ontology-first classification membership
+  tool-calling slots). Program documentation uses a three-level taxonomy:
+  top groups **System feature set → Interfaces → Packaged factories →
+  Factory Configuration → System Operations → Internal Architecture →
+  Additional references** via `SIDEBAR_GROUP_LABELS.documentation`, with
+  secondaries under Factory Configuration (Workers → Workstations →
+  Factories → Resources) and System Operations (Observability) via
+  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership lives in
+  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (FAQ omitted; top-level
+  explorer page); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
+  top-group-only derived view. The documentation sidebar adapter nests
+  secondaries from the membership map. Glossary still uses ontology-first classification membership
   with editorial `sidebarGrouping.glossary` fallback.
 * `src/lib/navigation/docs-sidebar-grouping-adapter.ts`
   Builds grouped Concepts/Glossary/Program documentation sidebar nodes;
   Concepts and documentation resolution pass page slug into the factory
-  assignment maps so explicit membership applies.
+  assignment maps so explicit membership applies. Program documentation
+  emits three-level nodes: top-group separators, nested secondary folders
+  (Workers / Workstations / Factories / Resources under Factory
+  Configuration; Observability under System Operations), then page links.
+  Empty top groups and empty secondaries are omitted; FAQ is never a
+  Program documentation child.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
@@ -355,23 +365,53 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   home `atlasLink*` / module featured-link keys. Preserve legitimate factory
   model-provider / external-model product wording when present.
   Explorer chrome labels live under top-level `explorer` (`folders`,
-  `conceptsGroups`, `documentationGroups`) for en/ja/zh-CN/vi; English
-  values must stay aligned with `FACTORY_EXPLORER_FOLDER_LABELS` /
-  `SIDEBAR_GROUP_LABELS`. Literal `API` / `CLI` / `MCP` stay untranslated.
-  `localizePageTree` overlays those labels plus shipped page-message titles
-  and fails closed via `assertExplorerMessages` when catalogs are incomplete.
+  `conceptsGroups`, `documentationGroups`, `documentationSecondaries`) for
+  en/ja/zh-CN/vi; English values must stay aligned with
+  `FACTORY_EXPLORER_FOLDER_LABELS` / `SIDEBAR_GROUP_LABELS` /
+  `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`. Program documentation
+  top-group and secondary labels localize; literal CLI/package/route
+  identifiers in page titles stay untranslated. Nested secondary labels
+  (Workers, Observability, …) are declared in
+  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`, flattened for catalogs via
+  `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`, and remapped by
+  `localizePageTree` through `buildDefaultSecondaryLabelLocalizer`.
+  Colliding Workers/Workstations/Factories secondary strings stay aligned
+  with `explorer.folders` in each locale. `assertExplorerMessages` fails
+  closed when any explorer catalog (including secondaries) is incomplete.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
-  Locale-aware explorer folder/subgroup/page label resolution consumed by
-  desktop sidebar and mobile drawer through the same localized page tree.
+  Locale-aware explorer folder/subgroup/secondary/page label resolution
+  consumed by desktop sidebar and mobile drawer through the same localized
+  page tree.
 * `src/lib/navigation/explorer-tree-signature.ts`
   Serializes a page tree into the explorer IA contract (top-level order, FAQ
-  placement, subgroup separators, page membership/labels/hrefs) for
-  desktop/mobile parity comparisons.
+  placement, subgroup separators, nested secondary folders, page
+  membership/labels/hrefs) for desktop/mobile parity comparisons.
+  `pageEntriesInFolder` / `pageEntriesUnderSeparator` descend into secondary
+  folders; `secondaryFolderNamesUnderSeparator` locks Workers/Observability
+  nesting under Program documentation top groups;
+  `pageEntriesInSecondaryFolderUnderSeparator` locks exact page membership
+  inside a named secondary (Workers, Observability, …).
 * `src/lib/navigation/explorer-ia-contract.test.ts`
   Exact-order proofs against `FACTORY_EXPLORER_SECTION_ORDER` /
   `SIDEBAR_GROUP_LABELS` (top-level folders + FAQ, Concepts subgroups, Program
   documentation subgroups) plus fail-closed `localizePageTree` /
   `assertExplorerMessages` coverage when explorer catalogs are missing or empty.
+  Story 003 locks exact direct-under-top-group membership for System feature
+  set / Interfaces / Packaged factories / Internal Architecture / Additional
+  references and proves config/ops pages stay out of System feature set.
+  Story 004 locks Factory Configuration secondaries (Workers → Workstations →
+  Factories → Resources) and System Operations → Observability page membership,
+  and proves `replays-records` stays under System feature set only.
+  Story 006 consolidates the three-level Program documentation contract: FAQ
+  remains the sole top-level explorer page (absent from Program documentation
+  children), former ten-group Basics/Feature support/Functions/… separators are
+  rejected, and Workers/Observability nesting plus full membership remain locked.
+* `src/lib/navigation/generated-docs-page-tree.test.ts` /
+  `src/lib/source.test.ts` /
+  `src/lib/navigation/docs-sidebar-collection-verification.test.ts` /
+  `src/lib/navigation/docs-sidebar-adapter-parity.test.ts`
+  Generated/source/parity sidebar proofs share the same three-level separator
+  order, secondary nesting, FAQ-outside, and former ten-group rejection.
 * `src/tests/layout/desktop-mobile-explorer-parity.test.tsx`
   Focused proof that every locale’s constructed explorer tree matches the IA
   contract and that CanonicalDocsLayout’s desktop `#nd-sidebar` and mobile
@@ -380,7 +420,13 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/tests/a11y/docs-sidebar-navigation.a11y.test.tsx`
   Keyboard-reachable FAQ and Concepts subgroup page links, no Glossary folder
   control, Program documentation accessible name, and localized Vietnamese
-  folder/sidebar accessible names on CanonicalDocsLayout.
+  folder/sidebar accessible names on CanonicalDocsLayout. Story 003 also
+  proves Interfaces (`/docs/documentation/cli`) and Additional references
+  (`/docs/documentation/install`) appear after their Program documentation
+  separators in DOM order (disambiguate CLI from `/docs/references/cli`).
+  Story 006 browser proof: FAQ stays after Program documentation as a top-level
+  link, former flat ten-group separator labels are absent, and nested Workers /
+  Observability secondaries remain reachable.
 * `src/lib/content/ui-messages.types.ts`
   `BrowseIndexMessages`, `HomeMessages`, `AiCollectionIndexMessages`, and
   `UI_MESSAGES_COMPATIBILITY_KEYS` stay aligned with the factory-only

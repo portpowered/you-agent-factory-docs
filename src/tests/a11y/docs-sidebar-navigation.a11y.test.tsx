@@ -27,6 +27,49 @@ describe("docs sidebar navigation accessibility", () => {
     restoreFetchMock();
   });
 
+  async function openExplorerFolder(
+    container: HTMLElement,
+    folderName: string,
+  ): Promise<void> {
+    const folders = within(container).getAllByRole("button", {
+      name: folderName,
+    });
+    // Top-level explorer folders follow Program documentation in DOM order.
+    // Prefer the last match so nested secondaries (Workers / Workstations /
+    // Factories) do not steal the top-level folder click.
+    const folder = folders.at(-1);
+    if (!folder) {
+      throw new Error(`missing folder button ${folderName}`);
+    }
+    await act(async () => {
+      folder.click();
+    });
+  }
+
+  async function openNestedProgramDocumentationSecondaries(
+    container: HTMLElement,
+    messages: Awaited<ReturnType<typeof loadUiMessages>>,
+  ): Promise<void> {
+    for (const folderName of [
+      messages.explorer.documentationSecondaries.workers,
+      messages.explorer.documentationSecondaries.workstations,
+      messages.explorer.documentationSecondaries.factories,
+      messages.explorer.documentationSecondaries.resources,
+      messages.explorer.documentationSecondaries.observability,
+    ] as const) {
+      const folders = within(container).queryAllByRole("button", {
+        name: folderName,
+      });
+      const folder = folders[0];
+      if (!folder) {
+        continue;
+      }
+      await act(async () => {
+        folder.click();
+      });
+    }
+  }
+
   test("CanonicalDocsLayout exposes keyboard-reachable factory sidebar links", async () => {
     captureOriginalFetch();
     await installDocsSearchFetchMock();
@@ -116,11 +159,9 @@ describe("docs sidebar navigation accessibility", () => {
       context.messages.explorer.folders.workers,
       context.messages.explorer.folders.workstations,
     ] as const) {
-      const folder = within(sidebar).getByRole("button", { name: folderName });
-      await act(async () => {
-        folder.click();
-      });
+      await openExplorerFolder(sidebar, folderName);
     }
+    await openNestedProgramDocumentationSecondaries(sidebar, context.messages);
 
     expect(
       within(sidebar).queryByRole("button", { name: "Glossary" }),
@@ -189,36 +230,152 @@ describe("docs sidebar navigation accessibility", () => {
     ).toBeTruthy();
 
     for (const subgroup of [
-      context.messages.explorer.documentationGroups.basics,
-      context.messages.explorer.documentationGroups["feature-support"],
-      context.messages.explorer.documentationGroups.functions,
-      context.messages.explorer.documentationGroups.operational,
+      context.messages.explorer.documentationGroups["system-feature-set"],
+      context.messages.explorer.documentationGroups.interfaces,
+      context.messages.explorer.documentationGroups["factory-configuration"],
+      context.messages.explorer.documentationGroups["system-operations"],
       context.messages.explorer.documentationGroups["internal-architecture"],
-      context.messages.explorer.documentationGroups["additional-reference"],
+      context.messages.explorer.documentationGroups["additional-references"],
     ] as const) {
       expect(within(sidebar).getByText(subgroup)).toBeTruthy();
     }
-    // Configuration / API / CLI / MCP are both subgroup separators and page titles.
-    for (const sharedLabel of [
-      context.messages.explorer.documentationGroups.configuration,
-      context.messages.explorer.documentationGroups.api,
-      context.messages.explorer.documentationGroups.cli,
-      context.messages.explorer.documentationGroups.mcp,
-    ] as const) {
-      expect(
-        within(sidebar).getAllByText(sharedLabel).length,
-      ).toBeGreaterThanOrEqual(2);
-    }
+    // Packaged factories is both a top-group separator and a page title.
+    expect(
+      within(sidebar).getAllByText(
+        context.messages.explorer.documentationGroups["packaged-factories"],
+      ).length,
+    ).toBeGreaterThanOrEqual(2);
     expect(
       within(sidebar).getByRole("link", {
         name: "What is you-agent-factory",
       }),
     ).toBeTruthy();
 
+    // Story 003 browser proof: Interfaces + Additional references pages sit
+    // under Program documentation in separator order (flat separator siblings).
+    const interfacesLabel =
+      context.messages.explorer.documentationGroups.interfaces;
+    const additionalReferencesLabel =
+      context.messages.explorer.documentationGroups["additional-references"];
+    const interfacesSeparator = within(sidebar).getByText(interfacesLabel);
+    const additionalReferencesSeparator = within(sidebar).getByText(
+      additionalReferencesLabel,
+    );
+    const cliLink = within(sidebar)
+      .getAllByRole("link", { name: "CLI" })
+      .find((link) => link.getAttribute("href") === "/docs/documentation/cli");
+    expect(cliLink).toBeTruthy();
+    if (!cliLink) {
+      throw new Error("expected Interfaces CLI under Program documentation");
+    }
+    const installLink = within(sidebar).getByRole("link", {
+      name: "Install you-agent-factory",
+    });
+    expect(installLink.getAttribute("href")).toBe(
+      "/docs/documentation/install",
+    );
+
+    const position = (node: Element) => {
+      const nodes = Array.from(sidebar.querySelectorAll("*"));
+      return nodes.indexOf(node);
+    };
+    expect(position(interfacesSeparator)).toBeLessThan(position(cliLink));
+    expect(position(cliLink)).toBeLessThan(
+      position(additionalReferencesSeparator),
+    );
+    expect(position(additionalReferencesSeparator)).toBeLessThan(
+      position(installLink),
+    );
+
+    // Story 004 browser proof: Factory Configuration → Workers and System
+    // Operations → Observability nest published pages (not a flat dump).
+    const factoryConfigurationLabel =
+      context.messages.explorer.documentationGroups["factory-configuration"];
+    const systemOperationsLabel =
+      context.messages.explorer.documentationGroups["system-operations"];
+    const factoryConfigurationSeparator = within(sidebar).getByText(
+      factoryConfigurationLabel,
+    );
+    const systemOperationsSeparator = within(sidebar).getByText(
+      systemOperationsLabel,
+    );
+
+    const workersSecondary = within(sidebar).getAllByRole("button", {
+      name: context.messages.explorer.documentationSecondaries.workers,
+    })[0];
+    expect(workersSecondary).toBeTruthy();
+    if (!workersSecondary) {
+      throw new Error("expected Workers secondary under Factory Configuration");
+    }
+    const observabilitySecondary = within(sidebar).getByRole("button", {
+      name: context.messages.explorer.documentationSecondaries.observability,
+    });
+
+    const mockWorkersLink = within(sidebar).getByRole("link", {
+      name: "Mock workers",
+    });
+    expect(mockWorkersLink.getAttribute("href")).toBe(
+      "/docs/documentation/mock-workers",
+    );
+    const logsLink = within(sidebar).getByRole("link", { name: "Logs" });
+    expect(logsLink.getAttribute("href")).toBe("/docs/documentation/logs");
+    const metricsLink = within(sidebar).getByRole("link", { name: "Metrics" });
+    expect(metricsLink.getAttribute("href")).toBe(
+      "/docs/documentation/metrics",
+    );
+    const replaysLink = within(sidebar).getByRole("link", {
+      name: "Replays / Records",
+    });
+    expect(replaysLink.getAttribute("href")).toBe(
+      "/docs/documentation/replays-records",
+    );
+
+    expect(position(factoryConfigurationSeparator)).toBeLessThan(
+      position(workersSecondary),
+    );
+    expect(position(workersSecondary)).toBeLessThan(position(mockWorkersLink));
+    expect(position(mockWorkersLink)).toBeLessThan(
+      position(systemOperationsSeparator),
+    );
+    expect(position(systemOperationsSeparator)).toBeLessThan(
+      position(observabilitySecondary),
+    );
+    expect(position(observabilitySecondary)).toBeLessThan(position(logsLink));
+    expect(position(logsLink)).toBeLessThan(position(metricsLink));
+    expect(position(replaysLink)).toBeLessThan(
+      position(factoryConfigurationSeparator),
+    );
+
     const faqLink = within(sidebar).getByRole("link", { name: "FAQ" });
     expect(faqLink.getAttribute("href")).toBe("/docs/documentation/faq");
     faqLink.focus();
     expect(document.activeElement).toBe(faqLink);
+
+    // Story 006 browser proof: FAQ stays top-level outside Program
+    // documentation; three-level groups replace the former ten-group order;
+    // nested Workers / Observability secondaries stay reachable.
+    const programDocumentationFolder = within(sidebar).getAllByRole("button", {
+      name: context.messages.explorer.folders.documentation,
+    })[0];
+    expect(programDocumentationFolder).toBeTruthy();
+    if (!programDocumentationFolder) {
+      throw new Error("expected Program documentation folder");
+    }
+    expect(position(programDocumentationFolder)).toBeLessThan(
+      position(faqLink),
+    );
+    for (const former of [
+      "Basics",
+      "Feature support",
+      "Functions",
+      "Operational",
+      "Additional reference",
+    ] as const) {
+      expect(within(sidebar).queryByText(former)).toBeNull();
+    }
+    expect(workersSecondary.getAttribute("aria-expanded")).not.toBe("false");
+    expect(observabilitySecondary).toBeTruthy();
+    expect(position(faqLink)).toBeGreaterThan(position(observabilitySecondary));
   });
 
   test("localized docs shell preserves locale while exposing shipped Vietnamese docs links", async () => {
@@ -263,10 +420,7 @@ describe("docs sidebar navigation accessibility", () => {
       context.messages.explorer.folders.techniques,
       context.messages.explorer.folders.documentation,
     ] as const) {
-      const folder = within(sidebar).getByRole("button", { name: folderName });
-      await act(async () => {
-        folder.click();
-      });
+      await openExplorerFolder(sidebar, folderName);
     }
 
     expect(
@@ -282,9 +436,35 @@ describe("docs sidebar navigation accessibility", () => {
     ).toBeTruthy();
     expect(
       within(sidebar).getByText(
-        context.messages.explorer.documentationGroups.basics,
+        context.messages.explorer.documentationGroups["system-feature-set"],
       ),
     ).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.documentationGroups["factory-configuration"],
+      ),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getAllByRole("button", {
+        name: context.messages.explorer.documentationSecondaries.workers,
+      }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(sidebar).getByRole("button", {
+        name: context.messages.explorer.documentationSecondaries.resources,
+      }),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getByRole("button", {
+        name: context.messages.explorer.documentationSecondaries.observability,
+      }),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).queryByRole("button", { name: "Observability" }),
+    ).toBeNull();
+    expect(
+      within(sidebar).queryByRole("button", { name: "Resources" }),
+    ).toBeNull();
 
     const tokensLink = within(sidebar).getByRole("link", { name: "Tokens" });
     expect(tokensLink.getAttribute("href")).toBe("/vi/docs/concepts/tokens");

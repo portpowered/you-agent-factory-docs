@@ -74,16 +74,20 @@
       "model-inference": "モデル推論"
     },
     "documentationGroups": {
-      "basics": "基礎",
-      "feature-support": "機能サポート",
-      "functions": "機能",
-      "configuration": "設定",
-      "api": "API",
-      "cli": "CLI",
-      "mcp": "MCP",
-      "operational": "運用",
+      "system-feature-set": "システム機能セット",
+      "interfaces": "インターフェース",
+      "packaged-factories": "パッケージ済みファクトリー",
+      "factory-configuration": "ファクトリー設定",
+      "system-operations": "システム運用",
       "internal-architecture": "内部アーキテクチャ",
-      "additional-reference": "追加リファレンス"
+      "additional-references": "追加リファレンス"
+    },
+    "documentationSecondaries": {
+      "workers": "ワーカー",
+      "workstations": "ワークステーション",
+      "factories": "ファクトリー",
+      "resources": "リソース",
+      "observability": "オブザーバビリティ"
     }
   },
   "referenceChrome": {

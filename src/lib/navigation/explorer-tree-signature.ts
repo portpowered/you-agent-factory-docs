@@ -102,14 +102,26 @@ export function separatorNamesInFolder(
 export function pageEntriesInFolder(
   folder: Extract<ExplorerNodeSignature, { type: "folder" }>,
 ): Array<{ name: string; url: string }> {
-  return folder.children
-    .filter((node) => node.type === "page")
-    .map((node) => ({ name: node.name, url: node.url }));
+  const pages: Array<{ name: string; url: string }> = [];
+
+  for (const node of folder.children) {
+    if (node.type === "page") {
+      pages.push({ name: node.name, url: node.url });
+      continue;
+    }
+    if (node.type === "folder") {
+      pages.push(...pageEntriesInFolder(node));
+    }
+  }
+
+  return pages;
 }
 
 /**
- * Pages listed under a named subgroup separator until the next separator.
- * Used to prove declared explorer membership (e.g. mock-workers under Functions).
+ * Pages listed under a named subgroup separator until the next separator,
+ * including pages nested inside secondary folders under that separator.
+ * Used to prove declared explorer membership (e.g. mock-workers under
+ * Factory Configuration → Workers).
  */
 export function pageEntriesUnderSeparator(
   folder: Extract<ExplorerNodeSignature, { type: "folder" }>,
@@ -133,7 +145,70 @@ export function pageEntriesUnderSeparator(
     }
     if (node.type === "page") {
       pages.push({ name: node.name, url: node.url });
+      continue;
+    }
+    if (node.type === "folder") {
+      pages.push(...pageEntriesInFolder(node));
     }
   }
   return pages;
+}
+
+/**
+ * Secondary folder names listed under a named top-group separator until the
+ * next separator. Empty when the top group has no nested secondaries.
+ */
+export function secondaryFolderNamesUnderSeparator(
+  folder: Extract<ExplorerNodeSignature, { type: "folder" }>,
+  separatorName: string,
+): string[] {
+  const start = folder.children.findIndex(
+    (node) => node.type === "separator" && node.name === separatorName,
+  );
+  if (start === -1) {
+    return [];
+  }
+
+  const names: string[] = [];
+  for (let index = start + 1; index < folder.children.length; index += 1) {
+    const node = folder.children[index];
+    if (!node) {
+      break;
+    }
+    if (node.type === "separator") {
+      break;
+    }
+    if (node.type === "folder") {
+      names.push(node.name);
+    }
+  }
+  return names;
+}
+
+/**
+ * Pages listed inside a named secondary folder under a top-group separator.
+ * Empty when the secondary folder is absent under that separator.
+ */
+export function pageEntriesInSecondaryFolderUnderSeparator(
+  folder: Extract<ExplorerNodeSignature, { type: "folder" }>,
+  separatorName: string,
+  secondaryFolderName: string,
+): Array<{ name: string; url: string }> {
+  const start = folder.children.findIndex(
+    (node) => node.type === "separator" && node.name === separatorName,
+  );
+  if (start === -1) {
+    return [];
+  }
+
+  for (let index = start + 1; index < folder.children.length; index += 1) {
+    const node = folder.children[index];
+    if (!node || node.type === "separator") {
+      break;
+    }
+    if (node.type === "folder" && node.name === secondaryFolderName) {
+      return pageEntriesInFolder(node);
+    }
+  }
+  return [];
 }

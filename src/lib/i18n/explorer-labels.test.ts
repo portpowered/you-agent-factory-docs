@@ -3,7 +3,10 @@ import {
   FACTORY_EXPLORER_FOLDER_LABELS,
   FACTORY_SIDEBAR_FOLDER_LABELS,
 } from "@/lib/content/factory-breadcrumb-sidebar";
-import { SIDEBAR_GROUP_LABELS } from "@/lib/content/sidebar-grouping";
+import {
+  DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
+  SIDEBAR_GROUP_LABELS,
+} from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import {
   assertExplorerMessages,
@@ -35,9 +38,12 @@ describe("explorer labels", () => {
     expect(explorer.documentationGroups).toEqual({
       ...SIDEBAR_GROUP_LABELS.documentation,
     });
+    expect(explorer.documentationSecondaries).toEqual({
+      ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
+    });
   });
 
-  test("every shipped locale resolves non-empty explorer folder and subgroup labels", async () => {
+  test("every shipped locale resolves non-empty explorer folder, subgroup, and secondary labels", async () => {
     for (const locale of supportedLocales) {
       const explorer = resolveExplorerMessages(await loadUiMessages(locale));
 
@@ -50,11 +56,36 @@ describe("explorer labels", () => {
       for (const label of Object.values(explorer.documentationGroups)) {
         expect(label.trim().length).toBeGreaterThan(0);
       }
+      for (const label of Object.values(explorer.documentationSecondaries)) {
+        expect(label.trim().length).toBeGreaterThan(0);
+      }
 
-      // Literal CLI/package/route identifiers stay untranslated.
-      expect(explorer.documentationGroups.api).toBe("API");
-      expect(explorer.documentationGroups.cli).toBe("CLI");
-      expect(explorer.documentationGroups.mcp).toBe("MCP");
+      // Literal CLI/package/route identifiers stay untranslated in page titles;
+      // Program documentation top-group labels localize (Interfaces is not a
+      // literal API/CLI/MCP separator after the three-level IA).
+      expect(
+        explorer.documentationGroups.interfaces.trim().length,
+      ).toBeGreaterThan(0);
+      expect(
+        explorer.documentationGroups["system-feature-set"].trim().length,
+      ).toBeGreaterThan(0);
+      expect(
+        explorer.documentationSecondaries.observability.trim().length,
+      ).toBeGreaterThan(0);
+      expect(
+        explorer.documentationSecondaries.resources.trim().length,
+      ).toBeGreaterThan(0);
+
+      // Colliding secondary labels stay aligned with top-level folder catalogs.
+      expect(explorer.documentationSecondaries.workers).toBe(
+        explorer.folders.workers,
+      );
+      expect(explorer.documentationSecondaries.workstations).toBe(
+        explorer.folders.workstations,
+      );
+      expect(explorer.documentationSecondaries.factories).toBe(
+        explorer.folders.factories,
+      );
     }
   });
 
@@ -67,15 +98,27 @@ describe("explorer labels", () => {
     expect(ja.folders.concepts).not.toBe(en.folders.concepts);
     expect(ja.folders.documentation).not.toBe(en.folders.documentation);
     expect(ja.conceptsGroups.harnesses).not.toBe(en.conceptsGroups.harnesses);
+    expect(ja.documentationSecondaries.observability).not.toBe(
+      en.documentationSecondaries.observability,
+    );
+    expect(ja.documentationSecondaries.resources).not.toBe(
+      en.documentationSecondaries.resources,
+    );
 
     expect(vi.folders.guides).not.toBe(en.folders.guides);
-    expect(vi.documentationGroups.basics).not.toBe(
-      en.documentationGroups.basics,
+    expect(vi.documentationGroups["system-feature-set"]).not.toBe(
+      en.documentationGroups["system-feature-set"],
+    );
+    expect(vi.documentationSecondaries.observability).not.toBe(
+      en.documentationSecondaries.observability,
     );
 
     expect(zhCN.folders.techniques).not.toBe(en.folders.techniques);
     expect(zhCN.conceptsGroups["model-inference"]).not.toBe(
       en.conceptsGroups["model-inference"],
+    );
+    expect(zhCN.documentationSecondaries.resources).not.toBe(
+      en.documentationSecondaries.resources,
     );
   });
 
@@ -104,7 +147,37 @@ describe("explorer labels", () => {
         documentationGroups: {
           ...SIDEBAR_GROUP_LABELS.documentation,
         },
+        documentationSecondaries: {
+          ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
+        },
       }),
     ).toThrow(/industrial-engineering/);
+  });
+
+  test("assertExplorerMessages fails closed for missing documentation secondary catalogs", () => {
+    expect(() =>
+      assertExplorerMessages({
+        folders: {
+          guides: "Guides",
+          concepts: "Concepts",
+          techniques: "Techniques",
+          documentation: "Program documentation",
+          references: "References",
+          factories: "Factories",
+          workers: "Workers",
+          workstations: "Workstations",
+        },
+        conceptsGroups: {
+          ...SIDEBAR_GROUP_LABELS.concepts,
+        },
+        documentationGroups: {
+          ...SIDEBAR_GROUP_LABELS.documentation,
+        },
+        documentationSecondaries: {
+          ...DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
+          observability: "   ",
+        },
+      }),
+    ).toThrow(/documentationSecondaries\.observability/);
   });
 });

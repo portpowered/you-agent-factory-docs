@@ -74,16 +74,20 @@
       "model-inference": "模型推理"
     },
     "documentationGroups": {
-      "basics": "基础",
-      "feature-support": "功能支持",
-      "functions": "功能",
-      "configuration": "配置",
-      "api": "API",
-      "cli": "CLI",
-      "mcp": "MCP",
-      "operational": "运维",
+      "system-feature-set": "系统功能集",
+      "interfaces": "接口",
+      "packaged-factories": "打包工厂",
+      "factory-configuration": "工厂配置",
+      "system-operations": "系统运维",
       "internal-architecture": "内部架构",
-      "additional-reference": "补充参考"
+      "additional-references": "补充参考"
+    },
+    "documentationSecondaries": {
+      "workers": "工作器",
+      "workstations": "工作站",
+      "factories": "工厂",
+      "resources": "资源",
+      "observability": "可观测性"
     }
   },
   "referenceChrome": {

@@ -159,11 +159,28 @@ describe("docs sidebar adapter extraction parity", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const children = getFolderChildren(pageTree, "Program documentation");
     const links = collectSidebarPageLinks(children);
-    const basicsUrl = "/docs/documentation/what-is-you-agent-factory";
+    const additionalReferencesUrl =
+      "/docs/documentation/what-is-you-agent-factory";
+    const secondaryFolderNames = children
+      .filter((node) => node.type === "folder")
+      .map((node) => String(node.name));
 
-    expect(findSidebarPageLink(links, basicsUrl)?.url).toBe(basicsUrl);
-    expect(findPrecedingSeparatorLabel(children, basicsUrl)).toBe("Basics");
+    expect(findSidebarPageLink(links, additionalReferencesUrl)?.url).toBe(
+      additionalReferencesUrl,
+    );
+    expect(findPrecedingSeparatorLabel(children, additionalReferencesUrl)).toBe(
+      "Additional references",
+    );
     expect(getSeparatorLabels(children)).toEqual([
+      "System feature set",
+      "Interfaces",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Internal Architecture",
+      "Additional references",
+    ]);
+    for (const former of [
       "Basics",
       "Feature support",
       "Functions",
@@ -174,10 +191,22 @@ describe("docs sidebar adapter extraction parity", () => {
       "Operational",
       "Internal architecture",
       "Additional reference",
-    ]);
+    ] as const) {
+      expect(getSeparatorLabels(children)).not.toContain(former);
+    }
     expect(links.some((link) => link.url === "/docs/documentation/faq")).toBe(
       false,
     );
+    expect(pageTree.children.at(-1)).toEqual({
+      type: "page",
+      name: "FAQ",
+      url: "/docs/documentation/faq",
+    });
+    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Observability");
+    expect(
+      findSidebarPageLink(links, "/docs/documentation/mock-workers")?.url,
+    ).toBe("/docs/documentation/mock-workers");
   });
 
   test("factory sidebar excludes retired Atlas collection destinations", () => {
