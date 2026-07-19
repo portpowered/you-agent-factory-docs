@@ -264,7 +264,12 @@ in `rerank-search-results.test.ts`: (1) guides before curated refs before blog
 before subfields for a generic query with no title match; (2) exact page-title
 / near-exact alias and exact inventory-identifier queries still rank first
 even when every collection band (including guides) and residual `#heading-N`
-spam are present as weak competitors.
+spam are present as weak competitors. Lock the same policy on the live
+`docsSearchApi.search` path in `collection-ranking-policy.test.ts` with a
+representative generic query (`cursor`: guide → curated ref → blog →
+subfield) plus reused #154 exact page-title (`harness` / `mcp`) and exact
+inventory (`you.factory_session.get`) cases so both policies stay green
+together.
 
 ### Pattern: factory alias / body / tag discovery
 
