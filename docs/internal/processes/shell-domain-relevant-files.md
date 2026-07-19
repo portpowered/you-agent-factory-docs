@@ -296,6 +296,20 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   W15 story 003 proof: four family folders appear in topology relative order
   with settled published page children only (no operation / event-variant /
   schema-definition inventory paths in the global explorer).
+* `src/features/docs/styles/docs-page-footer-chrome.ts` (+ `.css` / `.test.ts`)
+  Shared DocsPage Previous/Next footer **chrome** (hover/focus background +
+  focus ring; no title-text accent-foreground recolor; muted sublabel stays
+  muted). Prefer CSS/token overrides on the Fumadocs accent-hover card
+  selectors over redesigning footer neighbor data.
+* `src/lib/navigation/docs-page-footer-contract.ts` (+ `.test.ts`)
+  Built-HTML / bundled-CSS convergence helpers for footer card accent-hover
+  classes, muted directional sublabels, and the no-text-recolor CSS pairing.
+* Worktree browser verify for footer chrome: Turbopack rejects hoisted
+  out-of-root `node_modules` symlinks, so `bun run dev` often cannot start in
+  a worktree. When that happens, serve the chrome CSS on a unique port with a
+  minimal `#nd-page` prev/next card fixture and Playwright-hover/focus
+  `getComputedStyle` (title color stable; background + focus ring present)
+  instead of inventing a second Next bootstrap path.
 * `src/lib/content/factory-prev-next-related.ts`
   Factory previous/next and related-link contract: footer neighbor resolution
   mirroring Fumadocs `useFooterItems`, W15 family-scoped linearization

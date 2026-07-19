@@ -61,8 +61,11 @@ export function normalizeBundledCss(css: string): string {
 }
 
 /**
- * Production Tailwind bundles the footer sublabel inherit rule as a single
+ * Production Tailwind bundles the footer no-text-recolor rules as a single
  * #nd-page selector chain with escaped hover utility class names.
+ *
+ * Expects: hover/focus keeps background affordance, neutralizes title color
+ * (color:inherit), and keeps muted sublabels muted — not accent-foreground.
  */
 export function bundledCssHasFooterSublabelInheritRule(css: string): boolean {
   const normalized = normalizeBundledCss(css);
@@ -74,28 +77,34 @@ export function bundledCssHasFooterSublabelInheritRule(css: string): boolean {
     normalized.includes('[class*="hover:text-fd-accent-foreground"]') ||
     normalized.includes("[class*=hover\\:text-fd-accent-foreground]") ||
     normalized.includes("[class*=hover:text-fd-accent-foreground]");
-  const hasSublabelInheritRule =
-    normalized.includes(">p.text-fd-muted-foreground{color:inherit}") ||
+  const hasStableTitleColorRule =
+    normalized.includes("{color:inherit!important}") ||
+    normalized.includes("{color:inherit}");
+  const hasMutedSublabelRule =
     normalized.includes(
-      ">p.text-fd-muted-foreground{color:inherit!important}",
+      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}",
     ) ||
-    normalized.includes(">p.text-fd-muted-foreground{color:currentcolor}") ||
     normalized.includes(
-      ">p.text-fd-muted-foreground{color:currentcolor!important}",
+      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)}",
     );
+  const forcesAccentForegroundText =
+    normalized.includes("color:var(--color-fd-accent-foreground)") ||
+    normalized.includes("color:var(--color-fd-accent-foreground)!important");
 
   return (
     normalized.includes("#nd-page") &&
     hasAccentHoverSelector &&
     hasAccentForegroundSelector &&
     normalized.includes(":is(:hover,:focus-visible)") &&
-    hasSublabelInheritRule
+    hasStableTitleColorRule &&
+    hasMutedSublabelRule &&
+    !forcesAccentForegroundText
   );
 }
 
 /**
- * Returns a failure reason when bundled app CSS lacks the footer sublabel
- * hover/focus inherit rule enforced by built HTML/CSS convergence checks.
+ * Returns a failure reason when bundled app CSS lacks the footer no-text-recolor
+ * hover/focus pairing enforced by built HTML/CSS convergence checks.
  */
 export function assertDocsFooterSublabelHoverFocusCssConvergence(
   css: string,
@@ -104,7 +113,7 @@ export function assertDocsFooterSublabelHoverFocusCssConvergence(
     return null;
   }
 
-  return "bundled app CSS missing footer sublabel hover/focus inherit rule pairing";
+  return "bundled app CSS missing footer hover/focus no-text-recolor rule pairing";
 }
 
 /**

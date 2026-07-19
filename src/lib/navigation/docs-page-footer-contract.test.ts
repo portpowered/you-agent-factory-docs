@@ -73,25 +73,27 @@ describe("docs page footer contract", () => {
     ).toBe(true);
   });
 
-  test("bundledCssHasFooterSublabelInheritRule matches production minified selector chain", () => {
+  test("bundledCssHasFooterSublabelInheritRule matches production no-text-recolor selector chain", () => {
     const bundledCss = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)>p.text-fd-muted-foreground{color:currentcolor}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){color:inherit!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}
     `;
 
     expect(bundledCssHasFooterSublabelInheritRule(bundledCss)).toBe(true);
   });
 
-  test("assertDocsFooterSublabelHoverFocusCssConvergence returns reason when inherit rule is missing", () => {
+  test("assertDocsFooterSublabelHoverFocusCssConvergence returns reason when no-text-recolor rule is missing", () => {
     expect(
       assertDocsFooterSublabelHoverFocusCssConvergence(
         "#nd-page a:hover>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)}",
       ),
-    ).toContain("missing footer sublabel hover/focus inherit");
+    ).toContain("missing footer hover/focus no-text-recolor");
   });
 
-  test("bundledCssHasFooterSublabelInheritRule rejects missing inherit rule", () => {
+  test("bundledCssHasFooterSublabelInheritRule rejects accent-foreground title recolor", () => {
     const bundledCss = `
-      #nd-page a[class*=hover\\:text-fd-accent-foreground]:hover>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){color:var(--color-fd-accent-foreground)}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}
     `;
 
     expect(bundledCssHasFooterSublabelInheritRule(bundledCss)).toBe(false);

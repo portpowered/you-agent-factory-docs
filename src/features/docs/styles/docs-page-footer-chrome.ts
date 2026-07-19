@@ -5,4 +5,8 @@
 export const docsPageFooterCardSelector =
   '#nd-page a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]';
 
-export const docsPageFooterSublabelInheritSelector = `${docsPageFooterCardSelector}:is(:hover, :focus-visible) > p.text-fd-muted-foreground`;
+/** Hover/focus card state where title text must not recolor. */
+export const docsPageFooterStableTextColorSelector = `${docsPageFooterCardSelector}:is(:hover, :focus-visible)`;
+
+/** Muted Previous/Next sublabel must keep muted color on hover/focus. */
+export const docsPageFooterMutedSublabelSelector = `${docsPageFooterStableTextColorSelector} > p.text-fd-muted-foreground`;
