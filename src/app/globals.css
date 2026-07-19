@@ -128,13 +128,55 @@ article[data-registry-id] > section:first-of-type > h2 {
 }
 
 /*
- * Header search trigger (button[data-search]): blend with page/header
- * background at rest. Scoped to buttons so the /search page input
- * (also marked data-search) keeps its transparent-on-card fill.
- * Hover/focus stay owned by the rules and classes below.
+ * Header search trigger (button[data-search]): blend with surrounding chrome
+ * at rest; primary yellow on hover/active. Scoped to buttons so the /search
+ * page input (also marked data-search) keeps its transparent-on-card fill.
+ * Tokens: --docs-chrome-* (see docs-chrome-highlighting-tokens.ts).
  */
 button[data-search] {
-  background-color: var(--background) !important;
+  background-color: var(--docs-chrome-surrounding-background) !important;
+}
+
+/*
+ * Globe / GitHub header icon controls: surrounding chrome at rest; primary
+ * yellow hover/active overlay.
+ *
+ * Must live in `@layer utilities` with !important: outline-button utilities
+ * (`dark:!bg-input/30`, secondary color-mix hover) also use !important inside
+ * the utilities layer. Unlayered !important loses to layered !important
+ * (CSS Cascade 5 reverse for important declarations).
+ */
+@layer utilities {
+  html.dark button.header-action-icon,
+  html.dark a.header-action-icon,
+  button.header-action-icon,
+  a.header-action-icon {
+    border-style: solid;
+    background-color: var(--docs-chrome-surrounding-background) !important;
+    color: var(--docs-chrome-white);
+  }
+
+  @media (hover: hover) {
+    html.dark button.header-action-icon:hover,
+    html.dark a.header-action-icon:hover,
+    html.dark button.header-action-icon:active,
+    html.dark a.header-action-icon:active,
+    button.header-action-icon:hover,
+    a.header-action-icon:hover,
+    button.header-action-icon:active,
+    a.header-action-icon:active {
+      background-color: var(--docs-chrome-primary-yellow) !important;
+      border-color: var(--docs-chrome-primary-yellow) !important;
+      color: var(--primary-foreground) !important;
+    }
+  }
+
+  html.dark button.header-action-icon[aria-expanded="true"],
+  button.header-action-icon[aria-expanded="true"] {
+    background-color: var(--docs-chrome-primary-yellow) !important;
+    border-color: var(--docs-chrome-primary-yellow) !important;
+    color: var(--primary-foreground) !important;
+  }
 }
 
 /*
@@ -152,21 +194,27 @@ button[data-search] {
   text-decoration-color: var(--secondary);
 }
 
-.header-action-icon {
-  border-style: solid;
-}
-
 @media (hover: hover) {
-  [data-search][data-search]:hover {
-    background-color: var(--accent) !important;
-    border-color: var(--accent) !important;
-    color: var(--accent-foreground) !important;
+  button[data-search]:hover,
+  button[data-search]:active {
+    background-color: var(--docs-chrome-primary-yellow) !important;
+    border-color: var(--docs-chrome-primary-yellow) !important;
+    color: var(--primary-foreground) !important;
   }
 
-  [data-search][data-search]:hover kbd {
-    border-color: color-mix(in oklch, var(--accent-foreground) 25%, transparent) !important;
-    background-color: color-mix(in oklch, var(--accent-foreground) 10%, transparent) !important;
-    color: var(--accent-foreground) !important;
+  button[data-search]:hover kbd,
+  button[data-search]:active kbd {
+    border-color: color-mix(
+      in oklch,
+      var(--primary-foreground) 25%,
+      transparent
+    ) !important;
+    background-color: color-mix(
+      in oklch,
+      var(--primary-foreground) 10%,
+      transparent
+    ) !important;
+    color: var(--primary-foreground) !important;
   }
 }
 

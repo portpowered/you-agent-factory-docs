@@ -15,6 +15,7 @@ import {
 } from "@/components/layout/primary-nav";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
+import { DOCS_CHROME_HEADER_ACTION_ICON_CLASSES } from "@/features/docs/styles/docs-chrome-search-globe-github";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { defaultLocale, type SiteLocale } from "@/lib/i18n/locale-routing";
 import {
@@ -143,7 +144,7 @@ export function DocsHeader({
               href={repositoryUrl}
               aria-label="Open project GitHub repository"
               title="Open project GitHub repository"
-              className={`${buttonVariants({ variant: "outline", size: "icon" })} header-action-icon`}
+              className={`${buttonVariants({ variant: "outline", size: "icon" })} ${DOCS_CHROME_HEADER_ACTION_ICON_CLASSES}`}
             >
               <FaGithub className="size-4" aria-hidden />
             </Link>

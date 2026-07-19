@@ -87,8 +87,19 @@ shared map — not per-control hex hacks.
 - Lock with `docs-chrome-highlighting-tokens.test.ts` (role bindings +
   observable DOM color checks). Do not add source-inventory tests that only
   scan `globals.css` for var names.
-- Later surface stories consume `--docs-chrome-*` / the TS contract; do not
-  reopen primary-nav membership, brand copy, glossary, or search ranking here.
+- Search / globe / GitHub surface (story 002): consume
+  `src/features/docs/styles/docs-chrome-search-globe-github.ts` +
+  `.header-action-icon` / `button[data-search]` rules in `globals.css`.
+  Rest = `--docs-chrome-surrounding-background`; hover/active =
+  `--docs-chrome-primary-yellow` (not `--accent` or secondary color-mix).
+  Chrome icon overrides must sit in `@layer utilities` with `!important`
+  so they beat outline-button `dark:!bg-input/30` (layered !important wins
+  over unlayered !important per CSS Cascade 5).
+  Prove with `docs-chrome-search-globe-github.test.ts` and SearchTrigger
+  hover assertions.
+- Later surface stories (TOC / sidebar / header text / breadcrumb) consume
+  `--docs-chrome-*` / the TS contract; do not reopen primary-nav membership,
+  brand copy, glossary, or search ranking here.
 
 ## Prose / chrome link underline accent (secondary blue)
 

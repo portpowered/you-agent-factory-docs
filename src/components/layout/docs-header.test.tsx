@@ -946,7 +946,7 @@ describe("DocsHeader", () => {
     expect(desktopNavMatch?.[1]).not.toContain(">术语表<");
   });
 
-  test("keeps the language and GitHub header controls on the same outline button contract", async () => {
+  test("keeps the language and GitHub header controls on the locked chrome yellow hover contract", async () => {
     const messages = await loadUiMessages();
     const SearchDialog: ComponentType<SharedProps> = () => null;
     renderHeaderWithNavigation(
@@ -963,12 +963,18 @@ describe("DocsHeader", () => {
       name: "Open project GitHub repository",
     });
 
+    // Shared marker class owns rest (surrounding chrome) + primary-yellow
+    // hover/active via globals.css --docs-chrome-* rules.
     expect(languageButton.className).toContain("header-action-icon");
     expect(githubLink.className).toContain("header-action-icon");
+    expect(languageButton.className).toContain(
+      "!bg-[var(--docs-chrome-surrounding-background)]",
+    );
+    expect(githubLink.className).toContain(
+      "hover:!bg-[var(--docs-chrome-primary-yellow)]",
+    );
     expect(languageButton.className).toContain("!border-border");
     expect(githubLink.className).toContain("!border-border");
-    expect(languageButton.className).toContain("hover:!bg-[color-mix");
-    expect(githubLink.className).toContain("hover:!bg-[color-mix");
   });
 
   test("shows unavailable locales for docs pages that are not shipped in that locale", async () => {
