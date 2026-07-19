@@ -37,17 +37,20 @@ describe("mock-workers-schema reference page", () => {
       /mock-worker configuration JSON Schema/i,
     );
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    expect(whatItCovers).toMatch(/live mock-worker configuration JSON Schema/i);
-    expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
     expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
     expect(loadedPage.messages.sections?.related).toBeUndefined();
     expect(loadedPage.messages.sections?.tags).toBeUndefined();
     expect(loadedPage.messages.sections?.references).toBeUndefined();
     expect(loadedPage.messages.links).toBeUndefined();
+
+    const schemaLookup = String(
+      loadedPage.messages.sections?.schemaLookup?.body ?? "",
+    );
+    expect(schemaLookup).toMatch(/mock-workers schema/i);
+    expect(schemaLookup).not.toMatch(/Model Atlas/i);
 
     render(
       <main>
@@ -61,8 +64,9 @@ describe("mock-workers-schema reference page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "Schema Lookup" })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
@@ -72,6 +76,8 @@ describe("mock-workers-schema reference page", () => {
     expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
     expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
     expect(document.getElementById("related")).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
 
     const schemaSurface = screen.getByTestId("mock-workers-schema-reference");
     expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
@@ -83,11 +89,6 @@ describe("mock-workers-schema reference page", () => {
         '[data-schema-field-path="unmatchedDispatchPolicy"]',
       ),
     ).toBeTruthy();
-
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    expect(whatItCoversSection?.textContent ?? "").toMatch(
-      /mock-worker configuration JSON Schema/i,
-    );
 
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
   });
