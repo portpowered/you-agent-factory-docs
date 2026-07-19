@@ -6,6 +6,7 @@ import { describe, expect, test } from "bun:test";
 import {
   API_FUMADOCS_OPERATION_ATTR,
   API_FUMADOCS_OPERATIONS_ATTR,
+  API_PUBLISHED_PRIMARY_OPERATION_RENDERER,
   API_SCHEMA_COMPONENT_PROBE,
   API_SCHEMA_SLOT_ATTR,
   API_SCHEMA_UI_OPTIONS,
@@ -28,6 +29,9 @@ import { API_SSE_OPERATIONS, API_SSE_SUMMARY_SAFETY } from "./sse-operations";
 describe("ApiReferenceAPIPage (createAPIPage binder)", () => {
   test("exports a Fumadocs APIPage function with playground disabled", () => {
     expect(typeof ApiReferenceAPIPage).toBe("function");
+    expect(API_PUBLISHED_PRIMARY_OPERATION_RENDERER).toBe(
+      "ApiReferenceAPIPage",
+    );
     expect(apiReferenceApiPagePlaygroundDisabled()).toBe(true);
     expect(isApiPlaygroundSuppressed(API_PLAYGROUND_OPTIONS)).toBe(true);
   });

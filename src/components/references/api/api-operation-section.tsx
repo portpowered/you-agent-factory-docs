@@ -1,6 +1,12 @@
 /**
- * Production API operation section: method/path/summary, parameters, request
- * body, responses, media types, and authored examples.
+ * Harness / unit-fixture operation section (not the published renderer).
+ *
+ * Method/path/parameters/body/responses chrome on `/docs/references/api` is
+ * owned by Fumadocs `ApiReferenceAPIPage`. This module remains for
+ * `/api-renderer-harness` and focused a11y/theme fixtures that still need a
+ * synchronous custom section host. Prefer deep imports
+ * (`@/components/references/api/api-operation-section`); it is not re-exported
+ * from the public `@/components/references/api` barrel.
  *
  * Anchors and copy links stay aligned with the tag navigator / hash controller.
  * Does not invent example payloads or embed live playground controls.

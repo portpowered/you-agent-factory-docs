@@ -1,15 +1,17 @@
 /**
- * Focused W08 verification surface for tag-grouped operation navigation,
- * filtering, stable anchors, copy links, hash-to-focus, operation
- * request/response detail rendering, hybrid SSE summaries, playground
- * suppression, and local-server base URL copy.
+ * Non-production W08 verification harness for tag-grouped navigation,
+ * filtering, stable anchors, copy links, hash-to-focus, hybrid SSE summaries,
+ * playground suppression, and local-server base URL copy.
  *
- * Renders navigators against the package-resolved single-page projection and
- * full `ApiOperationSection` hosts whose `id` matches each nav anchor. Marks
- * the production theme root (`data-api-reference-theme`) and print root
- * (`data-api-reference-print`) so method badges, CodePanel examples, operation
- * chrome, and print styles resolve correctly. Not a final
- * `/docs/references/api` page — harness / demo only (W11 owns published MDX).
+ * Operation detail chrome here still mounts the harness-only
+ * `ApiOperationSection` (deep import) so legacy a11y/theme/SSE browser probes
+ * keep a synchronous host. Published `/docs/references/api` uses Fumadocs
+ * `ApiReferenceAPIPage` instead — do not treat this harness as the primary
+ * operation renderer path.
+ *
+ * Marks the theme root (`data-api-reference-theme`) and print root
+ * (`data-api-reference-print`) so method badges, CodePanel examples, and print
+ * styles resolve for harness probes.
  */
 
 import { cn } from "@/lib/utils";

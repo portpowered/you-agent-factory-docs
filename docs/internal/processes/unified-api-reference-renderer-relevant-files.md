@@ -51,7 +51,8 @@ hooks, and SSR cost.
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/api/index.ts` | Public barrel for the W08 API UI ownership surface |
+| `src/components/references/api/index.ts` | Public barrel: published primary = `ApiReferenceAPIPage`; custom operation chrome is harness/deep-import only (not re-exported) |
+| `src/components/references/api/published-renderer-exports.test.ts` | Proves barrel names Fumadocs as primary and omits superseded custom section/badge/examples/media-type exports |
 | `src/components/references/api/ownership.ts` | Ownership root + forbidden-tree fence helpers |
 | `src/components/references/api/ownership.test.ts` | Ownership root presence + fence proofs |
 | `src/components/references/api/types.ts` | Status vocabulary for loading/empty/invalid/unsupported/ready |
@@ -76,10 +77,10 @@ hooks, and SSR cost.
 | `src/components/references/api/api-navigation-verification-harness.tsx` | Harness: navigators + operation sections (detail or stub) + copy links + hash controller |
 | `src/components/references/api/operation-detail.ts` | Pure projectors for parameters, bodies, responses, media types, authored examples |
 | `src/components/references/api/load-operation-details.ts` | Build detail inventory + anchor map from the live package artifact |
-| `src/components/references/api/api-method-badge.tsx` | Accessible HTTP method text badge (theme tokens; not color-only meaning) |
-| `src/components/references/api/api-response-media-type.tsx` | Distinguishes JSON vs `text/event-stream` vs other with text labels |
-| `src/components/references/api/api-operation-examples.tsx` | CodePanel + `useCopyButton` for authored examples only (no fabricated payloads) |
-| `src/components/references/api/api-operation-section.tsx` | Full operation section: method/path/summary, params, body, responses, examples |
+| `src/components/references/api/api-method-badge.tsx` | Harness-only HTTP method text badge (deep-import; not on public barrel) |
+| `src/components/references/api/api-response-media-type.tsx` | Harness-only JSON vs `text/event-stream` vs other labels (deep-import) |
+| `src/components/references/api/api-operation-examples.tsx` | Harness-only CodePanel examples (deep-import; not published Fumadocs path) |
+| `src/components/references/api/api-operation-section.tsx` | Harness/unit custom operation section — **not** the published primary renderer (`ApiReferenceAPIPage` is) |
 | `src/components/references/api/playground-suppression.ts` | Production `playground: { enabled: false }` + no-`proxyUrl` / forbidden proxy-route policy |
 | `src/components/references/api/local-server-base-url.ts` | Pure projectors for OpenAPI `servers` → local base URL + docs-host disclaimer |
 | `src/components/references/api/api-local-server-base-url.tsx` | Visible local-server base URL notice (static-only; no live execution) |
@@ -201,17 +202,19 @@ hooks, and SSR cost.
 
 ## Operation request/response detail
 
-- Pure projectors live in `operation-detail.ts` — shallow-resolve
+- **Published path:** method/path/parameters/body/responses (+ schema fields)
+  come from Fumadocs `ApiReferenceAPIPage` (`createAPIPage`). Do not mount
+  custom `ApiOperationSection` on `/docs/references/api`.
+- Pure projectors in `operation-detail.ts` still feed the published ready-gate
+  (corrupt inventory → invalid) and harness fixtures — shallow-resolve
   `#/components/parameters/*` refs; project request/response media types and
   **authored** `example` / `examples` only (never invent payloads or walk W07
   schema field trees).
-- `ApiMethodBadge` carries HTTP method meaning in text; theme tokens style only.
-- `ApiResponseMediaType` distinguishes JSON vs `text/event-stream` vs other with
-  explicit kind labels (`JSON` / `Server-Sent Events` / `Other`).
-- `ApiOperationSection` renders method/path/summary/description, parameters,
-  request body, responses, media types, and examples; section `id` stays the
-  W04/operationId anchor shared with nav + hash focus.
-- `ApiOperationExamples` uses site `CodePanel` + fumadocs `useCopyButton`.
+- Harness-only custom chrome (deep-import; **not** on `@/components/references/api`
+  barrel): `ApiMethodBadge`, `ApiResponseMediaType`, `ApiOperationExamples`,
+  `ApiOperationSection`. Keep them for `/api-renderer-harness` and unit
+  a11y/theme/SSE fixtures until those probes move fully onto the Fumadocs page
+  (see story 006 gates).
 - Load via `buildApiOperationDetailsFromArtifact()` (happy-dom-safe).
 
 ## Playground suppression and local-server base URL
@@ -221,9 +224,10 @@ hooks, and SSR cost.
   App Router proxy segments). Prefer this over editing the W01 spike policy.
 - `apiOpenApiServer` must leave `proxyUrl` unset; assert via
   `assertsNoApiProxyUrl(apiOpenApiServer.options)`.
-- `apiReferencePlaygroundPageOptions()` is the `createAPIPage` fragment for
-  later Fumadocs page wiring (W11); custom `ApiOperationSection` renderers are
-  stronger (no playground slots at all).
+- `apiReferencePlaygroundPageOptions()` is the `createAPIPage` fragment used by
+  `ApiReferenceAPIPage` (`playground: { enabled: false }`). Harness-only
+  `ApiOperationSection` has no playground slots either, but is not the published
+  renderer.
 - Local-server notice: pure `local-server-base-url.ts` projectors read OpenAPI
   `servers` (live package baseline: `http://localhost:7437`);
   `ApiLocalServerBaseUrlNotice` shows the URL plus an explicit docs-host
@@ -248,8 +252,9 @@ hooks, and SSR cost.
 - UI: On the published Fumadocs-primary page, `ApiSseOperationSummaryPanel`
   injects via `content.renderOperationLayout` in `api-page.tsx` (after
   description, before parameters) for those three ops only. Section wrappers
-  also mark `data-api-sse-operation="true"`. Legacy `ApiOperationSection` still
-  mounts the same panel for harness / unit fixtures. Markers:
+  also mark `data-api-sse-operation="true"`. Harness-only `ApiOperationSection`
+  (deep-import) still mounts the same panel for `/api-renderer-harness` /
+  unit fixtures — not a parallel published renderer. Markers:
   `data-api-sse-summary`, `data-api-sse-role`,
   `data-api-sse-live-connection="false"`, `data-api-sse-full-catalog="false"`.
 - Do **not** implement the full event envelope/payload catalog here (W09). Do
@@ -312,6 +317,8 @@ hooks, and SSR cost.
 ```bash
 bun test src/components/references/api/dependency-selection.test.ts \
   src/components/references/api/ownership.test.ts \
+  src/components/references/api/published-renderer-exports.test.ts \
+  src/components/references/api/api-page.test.ts \
   src/components/references/api/api-surface.test.tsx \
   src/components/references/api/single-page-projection.test.ts \
   src/components/references/api/operation-navigation.test.ts \

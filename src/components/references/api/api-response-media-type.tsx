@@ -1,5 +1,8 @@
 /**
- * Request/response media-type label for the W08 API operation surface.
+ * Request/response media-type label for harness / custom-section fixtures.
+ *
+ * Not part of the published Fumadocs `ApiReferenceAPIPage` path — deep-import
+ * only (not re-exported from `@/components/references/api`).
  *
  * Distinguishes JSON, text/event-stream (SSE), and other media types with
  * explicit text labels — never color-only meaning.

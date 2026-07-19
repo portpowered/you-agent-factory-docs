@@ -30,6 +30,14 @@ import {
 import { resolveApiSseOperationSummary } from "./sse-operation-summary";
 import { API_SHIKI_OPTIONS, API_TOKEN_CLASSES } from "./theme-tokens";
 
+/**
+ * Stable id for the published primary operation renderer. Public barrel
+ * consumers should mount {@link ApiReferenceAPIPage}, not the harness-only
+ * custom `ApiOperationSection` chrome.
+ */
+export const API_PUBLISHED_PRIMARY_OPERATION_RENDERER =
+  "ApiReferenceAPIPage" as const;
+
 /** Marker on the Fumadocs-primary operations host. */
 export const API_FUMADOCS_OPERATIONS_ATTR =
   "data-api-fumadocs-operations" as const;
