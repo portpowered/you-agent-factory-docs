@@ -27,7 +27,7 @@ failing workflow stage with the same `make <target>` locally (see
 | Pages artifact guard | `make guard-pages-deployed-artifact` after `make build`, before `upload-pages-artifact` — reuses `out/` only (no second full export) |
 | Project-site base path | `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs` on the validate job build step (required for `https://portpowered.github.io/you-agent-factory-docs`) |
 | Published artifact | `out/` uploaded with `actions/upload-pages-artifact@v3` |
-| Quality gates | `.github/workflows/ci.yml` runs the Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate **ci-gate**; membership/edges live in `src/lib/ci-required-path.ts`. Local full reproduction stays sequential (`make ci`). Deploy-pages validate remains a separate Pages-focused subset and does not replace CI |
+| Quality gates | `.github/workflows/ci.yml` runs the Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate **ci-gate**; membership/edges live in `src/lib/ci-required-path.ts`. Wave CI-2: `static-export` uploads trusted Actions artifact `static-export-out` (`out/`); `integration` / `budget` download it and must not run a second `make build`. Local full reproduction stays sequential (`make ci`) and does not use Actions artifacts. Deploy-pages validate remains a separate Pages-focused subset and does not replace CI. CI-3 Playwright scoping and CI-4 shards are not part of this wave. |
 
 The workflow **`validate`** job checks out the pushed commit, runs the Makefile
 stages above (including `make guard-pages-deployed-artifact` after `make build`),
@@ -115,10 +115,14 @@ Related operational rows not closed in this section alone:
   (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`,
   `component-coverage`, `content`, `static-export`, `integration`, `budget`)
   plus aggregate **ci-gate**. Branch protection should require **ci-gate**.
-  They do **not** run production deploy and do **not** publish a PR preview URL.
-  When a child job fails, open that job’s log, then reproduce with the same
-  `make <target>` after `make setup`. For the full local required path (still
-  sequential), run `make ci`. See
+  On Actions, `static-export` uploads trusted `out/` as artifact
+  `static-export-out`; `integration` and `budget` download that artifact and
+  do not rebuild. They do **not** run production deploy and do **not** publish
+  a PR preview URL. When a child job fails, open that job’s log, then
+  reproduce with the same `make <target>` after `make setup` (local
+  reproduction does not download Actions artifacts). For the full local
+  required path (still sequential: build once, then integration/budget), run
+  `make ci`. See
   [Deployment status expectations](#deployment-status-expectations) and
   [PR preview policy](#pr-preview-policy).
 - **Pushes to `main`** show **CI** (**ci-gate** and child jobs) plus **Deploy
@@ -126,7 +130,7 @@ Related operational rows not closed in this section alone:
   Deploy-pages validates with its Pages-focused Makefile subset (through
   `budget`, plus `make guard-pages-deployed-artifact`), uploads `out/`, and
   publishes to GitHub Pages when deploy succeeds. That Pages subset is unchanged
-  by the Wave CI-1 parallel graph.
+  by the Wave CI-1 parallel graph or Wave CI-2 artifact handoff.
 - Confirm the **Deploy to GitHub Pages** check on the merge commit before
   claiming the site was updated. A failed deploy leaves the prior successful
   Pages deployment live until a later green deploy.
@@ -235,14 +239,20 @@ Contributors and maintainers read deployment status from GitHub **Checks** /
 **CI** runs a Wave CI-1 parallel job graph (not a single linear `verify` job).
 Suite membership and ordering edges (`static-export` before `integration` /
 `budget`; independent peers may overlap) live in
-`src/lib/ci-required-path.ts`. Each child job checks out the branch, runs
-`make setup`, and runs its mapped `make <target>` stage(s). Browser jobs
-(`unit-tests`, `a11y`, `integration`) install Playwright Chromium. Aggregate **ci-gate**
-needs every required child and fails unless all succeed — that is the
-branch-protection quality gate. Deploy and preview steps stay out of CI.
-Local full reproduction remains sequential `make ci` (same shared required
-suites). Deploy-pages remains a separate Pages-focused subset unchanged by
-this wave.
+`src/lib/ci-required-path.ts`. Wave CI-2 adds a trusted artifact handoff on
+Actions: after `make build`, `static-export` uploads artifact
+`static-export-out` (complete `out/`); `integration` and `budget` download it,
+fail closed if the artifact is missing or incomplete, and run
+`make test-integration` / `make budget` without a second full static export.
+Other child jobs check out the branch, run `make setup`, and run their mapped
+`make <target>` stage(s). Browser jobs (`unit-tests`, `a11y`, `integration`)
+install Playwright Chromium. Aggregate **ci-gate** needs every required child
+and fails unless all succeed — that is the branch-protection quality gate.
+Deploy and preview steps stay out of CI. Local full reproduction remains
+sequential `make ci` (same shared required suites; builds once on one machine;
+no Actions artifact required). Deploy-pages remains a separate Pages-focused
+subset unchanged by this wave. CI-3 Playwright install scoping and CI-4 shards
+are not claimed here.
 
 **Deploy GitHub Pages** runs **Canonical validation** (Pages-focused Makefile
 stages through `make budget`, plus `make guard-pages-deployed-artifact`, then
@@ -310,9 +320,12 @@ make ci
 
 `make ci` stays sequential and covers the same shared required suites as the
 parallel Actions graph (via `src/lib/ci-required-path.ts`), so a local green
-run is the practical preflight for **ci-gate**. When a child job fails on
-GitHub, reproduce with `make <target>` after `make setup`; use full `make ci`
-only when you need the entire local path.
+run is the practical preflight for **ci-gate**. Locally, `make ci` builds
+`out/` once then runs `test-integration` / `budget` on the same machine — it
+does not download Actions artifacts. When a child job fails on GitHub,
+reproduce with `make <target>` after `make setup` (and `make build` first when
+reproducing `integration` / `budget` without a prior export); use full
+`make ci` only when you need the entire local path.
 
 ### Local static-export benchmark (optional profiling)
 
