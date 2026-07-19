@@ -56,8 +56,10 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 
 Do **not** reintroduce on the CLI card body: `ContractSourceBadge` /
 family-package-source chrome, duplicated command-path or leaf-name rows,
-aliases, visibility, runnable, or handler-present metadata. MCP/JS/events
-renderers may still use shared badge chrome — this keep-list is CLI-card-only.
+aliases, visibility, runnable, or handler-present metadata. JS/events
+renderers may still use shared badge chrome; MCP cards also omit
+`ContractSourceBadge` (see MCP keep-list below). This keep-list is
+CLI-card-only for the CLI verbosity repair.
 
 CLI page intro copy (`src/content/docs/references/cli/messages/en.json`) must
 match the keep-list: advertise descriptions, examples, stable anchors, and
@@ -94,9 +96,10 @@ Browser spot-check for this repair (production build):
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/mcp/McpToolReference.tsx` | One tool from a W04-normalized MCP projection with input schema embed + example |
-| `src/components/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; generated shows visible AlertPanel notice |
-| `src/components/references/mcp/mcp-example.ts` | Generated-example copy constants |
+| `src/components/references/mcp/McpToolReference.tsx` | One tool card: title + stable anchor, description, input schema, example — no ContractSourceBadge / Tool name / Tool id / Handler registered / Required inputs chrome |
+| `src/components/references/mcp/McpInputSchemaEmbed.tsx` | MCP-owned wrapper over shared SchemaDefinitionEmbed that omits Object policy chrome |
+| `src/components/references/mcp/McpToolExample.tsx` | Authored vs generated example chrome; heading + payload only (no generated AlertPanel notice) |
+| `src/components/references/mcp/mcp-example.ts` | Example section heading constants (`Example` / `Example (generated)`) |
 | `src/components/references/mcp/McpToolInventory.tsx` | Inventory list with empty/error chrome |
 | `src/components/references/mcp/types.ts` | MCP renderer prop contracts / inventory input union |
 | `src/components/references/mcp/index.ts` | Public MCP renderer barrel |
@@ -182,16 +185,23 @@ Browser spot-check for this repair (production build):
 - Optional enriched projection bags `flags` / `arguments` (non-empty arrays)
   hide the under-construction notice; rendering those rows is a later
   enrichment, not this verbosity repair lane.
+- MCP tool cards keep title (heading + copyable anchor), description,
+  input schema, and example only — do not render `ContractSourceBadge`,
+  Tool name / Tool id / Handler registered / Required inputs rows on the card
+  body (normalized fields may still exist on the projection for filters/examples).
 - MCP tools carry optional `handlerRegistered`, `requiredInputs`,
   `inputSchema` (`SchemaDefinitionModel`), and authored `example` on W04
   projections — project via `projectMcpInputSchemaToDefinition`, embed via
-  thin `SchemaDefinitionEmbed` until W07 public adapters exist (do not fork a
-  full schema-tree UI).
+  MCP-owned `McpInputSchemaEmbed` (shared `SchemaDefinitionEmbed` with Object
+  policy omitted) until W07 public adapters exist (do not fork a full
+  schema-tree UI). Default shared embed Object policy chrome stays for other
+  families.
 - MCP examples: prefer authored `tool.example` / `inputSchema.examples`; when
   absent, `resolveMcpToolExample` / `generateSchemaValidMcpExample` build a
   minimal schema-valid object (required fields only, first enum / const /
-  default) and `McpToolExample` labels it generated with visible info chrome.
-  Never show unlabeled synthetic examples.
+  default) and `McpToolExample` marks origin via heading (`Example (generated)`)
+  plus `data-mcp-example-origin` — no explanatory AlertPanel notice. Never show
+  unlabeled synthetic examples.
 - MCP/JS schema embeds belong under family renderers + shared thin adapter;
   keep W03 Node acquisition out of client harness mounts.
 - JavaScript symbols carry optional visibility/mutability/nullability/

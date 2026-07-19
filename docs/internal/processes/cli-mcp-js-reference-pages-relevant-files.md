@@ -44,9 +44,10 @@ Do **not**:
 
 | Path | Role |
 | --- | --- |
-| `src/content/docs/references/mcp/page.mdx` | Published reference page structure |
-| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy |
+| `src/content/docs/references/mcp/page.mdx` | Published reference page structure (install-first lead, then tool inventory) |
+| `src/content/docs/references/mcp/messages/en.json` | Default-locale copy (`You Agent Factory MCP` title; no What It Covers / Key Concepts) |
 | `src/content/docs/references/mcp/assets.json` | Empty baseline assets |
+| `src/content/docs/references/mcp/McpInstallDocsLink.tsx` | Page-local Next `Link` to `/docs/documentation/mcp` without using `messages.links` (keeps W11 projection-first `links` undefined) |
 | `src/content/docs/references/mcp/McpReferenceInventory.tsx` | Server mount: load inventory → `McpToolInventory` |
 | `src/content/docs/references/mcp/page-mdx-components.tsx` | Page-local MDX component map |
 | `src/content/docs/references/mcp/mcp-page.test.tsx` | Colocated route/render proof |
@@ -119,12 +120,22 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   runtime uses `generated/javascript/runtime-api.json` (public subpath
   `javascript/runtime`). Prove shipped success with the production-integration
   `out/` HTML assertion, not Bun-side loader tests alone.
-- Non-API reference pages stay projection-first: keep what-it-covers /
-  key-concepts + primary inventory mount; do **not** remount How To Use,
-  Limits And Assumptions, Related (`RelatedDocs` + `LocalizedLinkList`),
-  Tags (`TagPillList`), or References (`CitationList`). Shared proofs live in
+- Non-API reference pages stay projection-first: keep a short lead + primary
+  inventory mount; do **not** remount How To Use, Limits And Assumptions,
+  Related (`RelatedDocs` + `LocalizedLinkList`), Tags (`TagPillList`), or
+  References (`CitationList`). Shared proofs live in
   `published-route-states.test.tsx` (assert removed section keys + headings
-  absent; use `openingSummary` / inventory success for static no-host safety).
+  absent; use `openingSummary` matching `/without a live Factory host/i` and
+  inventory success for static no-host safety; keep `messages.links`
+  undefined). MCP polish replaces What It Covers / Key Concepts with an
+  install-first `how-to-install` section and a page-local
+  `McpInstallDocsLink` (not `messages.links`) to `/docs/documentation/mcp`.
+  Page-local `mcp-page.test.tsx` should also prove a representative published
+  tool card keeps title/anchor/description/schema/example while omitting
+  `data-contract-source-badge`, Handler registered / Tool id rows, Object
+  policy, and the generated-example notice. Do not assert absence of the
+  filter `queryLabel` default `"Tool name"` — that label is inventory filter
+  chrome, not card-body metadata.
 - Browser-verify the trimmed shape after `bun run build` with
   `bun run start -- -p <3100-3999>` (unique port), then fetch sampled routes
   (one inventory page, events, one schema) and assert: section ids
@@ -135,6 +146,15 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   How To Use / Limits chrome and Program documentation sidebar grouping is
   unchanged. Kill the server before exit; prefer a Bun fetch script over shell
   functions when PATH is unreliable in nested functions.
+- MCP polish browser-verify on `/docs/references/mcp` (SSR HTML is enough —
+  inventory mounts server-side): assert `You Agent Factory MCP`,
+  `#how-to-install` / `you mcp serve` / `/docs/documentation/mcp`,
+  `data-inventory-state="success"`, `data-reference-inventory-filter`,
+  `data-mcp-tool-reference` + `data-mcp-input-schema` + `data-mcp-tool-example`;
+  assert absent `What It Covers` / `Key Concepts` / `lists every published` /
+  `data-contract-source-badge` / `Handler registered` / `Object policy` /
+  `data-mcp-example-generated-notice`. Smoke sibling CLI + javascript-runtime
+  routes still return HTTP 200.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
 - Each new references page needs its own static

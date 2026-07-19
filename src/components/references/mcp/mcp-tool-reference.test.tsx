@@ -63,7 +63,10 @@ function fixtureTool(
 }
 
 describe("McpToolReference", () => {
-  test("renders available metadata and embeds the input schema", () => {
+  // Polished success path: title + anchor + description + schema + example.
+  // Do not require ContractSourceBadge, Tool name/id, Handler registered,
+  // Object policy, or the generated-example explanatory notice.
+  test("renders title, description, and input schema without verbose metadata", () => {
     const { container } = render(
       <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
     );
@@ -83,17 +86,29 @@ describe("McpToolReference", () => {
         "Get one durable Factory Session inspection read model with lifecycle status.",
       ),
     ).toBeTruthy();
-    expect(screen.getByText("Handler registered")).toBeTruthy();
-    expect(screen.getByText("Yes")).toBeTruthy();
-    expect(screen.getByText("Required inputs")).toBeTruthy();
-    expect(screen.getAllByText("sessionId").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("0.0.0")).toBeTruthy();
-    expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
+    expect(
+      container.querySelector("[data-reference-copyable-anchor]"),
+    ).toBeTruthy();
+
+    expect(screen.queryByText("Handler registered")).toBeNull();
+    expect(screen.queryByText("Tool name")).toBeNull();
+    expect(screen.queryByText("Tool id")).toBeNull();
+    expect(screen.queryByText("Required inputs")).toBeNull();
+    expect(screen.queryByText("Lifecycle: Active")).toBeNull();
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(screen.queryByText("0.0.0")).toBeNull();
 
     const schemaEmbed = container.querySelector(
       "[data-schema-definition-embed]",
     );
     expect(schemaEmbed).toBeTruthy();
+    expect(screen.queryByText("Object policy")).toBeNull();
+    expect(
+      screen.queryByText("Closed (additional properties false)"),
+    ).toBeNull();
+    expect(schemaEmbed?.textContent).toContain("Type");
+    expect(schemaEmbed?.textContent).toContain("object");
+    expect(schemaEmbed?.textContent).toContain("Required");
     expect(
       container.querySelector('[data-schema-property="sessionId"]'),
     ).toBeTruthy();
@@ -107,7 +122,26 @@ describe("McpToolReference", () => {
     ).toBeTruthy();
   });
 
-  test("omits optional metadata when the projection left it absent", () => {
+  test("omits Object policy chrome while keeping published schema details", () => {
+    const { container } = render(
+      <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
+    );
+
+    const schemaEmbed = container.querySelector(
+      "[data-schema-definition-embed]",
+    );
+    expect(screen.queryByText("Object policy")).toBeNull();
+    expect(screen.queryByText(/additional properties/i)).toBeNull();
+    expect(schemaEmbed).toBeTruthy();
+    expect(schemaEmbed?.textContent).toContain("Type");
+    expect(schemaEmbed?.textContent).toContain("object");
+    expect(schemaEmbed?.textContent).toContain("Required");
+    expect(
+      container.querySelector('[data-schema-property="sessionId"]'),
+    ).toBeTruthy();
+  });
+
+  test("omits description and schema embed when the projection left them absent", () => {
     const { container } = render(
       <McpToolReference
         tool={fixtureTool({
@@ -131,7 +165,7 @@ describe("McpToolReference", () => {
     ).toBeNull();
   });
 
-  test("does not invent required inputs or schema properties", () => {
+  test("does not invent schema properties when the projection omitted them", () => {
     const { container } = render(
       <McpToolReference
         tool={fixtureTool({
@@ -152,7 +186,7 @@ describe("McpToolReference", () => {
     expect(container.querySelector("[data-schema-properties]")).toBeNull();
   });
 
-  test("labels generated examples and keeps them schema-valid", () => {
+  test("renders generated examples without the explanatory notice", () => {
     const { container } = render(
       <McpToolReference packageVersion="0.0.0" tool={fixtureTool()} />,
     );
@@ -162,8 +196,11 @@ describe("McpToolReference", () => {
     expect(example?.getAttribute("data-mcp-example-origin")).toBe("generated");
     expect(
       container.querySelector("[data-mcp-example-generated-notice]"),
-    ).toBeTruthy();
-    expect(screen.getByText("Generated example")).toBeTruthy();
+    ).toBeNull();
+    expect(screen.queryByText("Generated example")).toBeNull();
+    expect(
+      screen.queryByText(/generated from the published tool input schema/i),
+    ).toBeNull();
     expect(screen.getByText("Example (generated)")).toBeTruthy();
 
     const code = container.querySelector(

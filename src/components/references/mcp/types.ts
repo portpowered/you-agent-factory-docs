@@ -12,8 +12,8 @@ export type McpToolReferenceProps = {
   /** Normalized MCP tool from W04 projections. */
   tool: McpToolNormalized;
   /**
-   * Package version when known from the resolved manifest identity. Absent
-   * when the caller has no package version — never invent a version string.
+   * Package version from the resolved manifest identity. Accepted for call-site
+   * compatibility with inventory shells; MCP tool cards do not render it.
    */
   packageVersion?: string;
   chrome?: ReferenceChromeMessages;
