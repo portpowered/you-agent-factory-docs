@@ -1446,6 +1446,13 @@ Mock-workers polish regression proofs stay under
 on-page `$defs`, and authored example payloads on both the full MDX page path
 and the isolated mount (shared helper preferred) so `$ref`-only / no-examples
 presentation cannot silently return.
+Mock-workers browser verify stays page-local:
+`assert-mock-workers-schema-polish-browser.ts` (webpack `bun run dev`, unique
+port in 3100–3999, Playwright, kill server on exit). Assert
+`data-schema-status="ready"`, absent What It Covers / Key Concepts headings,
+nested `mockWorkers[]` / `unmatchedDispatchPolicy` fields + on-page `$defs`,
+and copyable authored examples (`data-schema-example="copy"` focusable).
+Run with plain `bun` from repo cwd; do not leave the probe server running.
 
 ## Page bundle and registry workflow
 
