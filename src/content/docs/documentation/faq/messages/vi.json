@@ -3,18 +3,6 @@
   "description": "Short answers to common you-agent-factory questions that point at the owning canonical docs for install, run, configuration, MCP, and dynamic workflows.",
   "openingSummary": "FAQ is the you-agent-factory short-answer surface for common product questions. Each reply stays brief and sends you to the canonical doc that owns the full contract.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "FAQ is the you-agent-factory short-answer surface for common product and how-to questions about install, first run, configuration, MCP, and dynamic workflows. Use it when you need a scannable question, a short reply, and a link into the owning canonical doc rather than a second copy of that doc."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "An FAQ entry pairs a common question with a short reply and a pointer to the canonical documentation page that owns the deeper contract. Answers stay link-forward: read the short guidance first, then open what-is, getting started, install, CLI, configuration, MCP, dynamic workflows, or Troubleshooting when you need the full reference. This surface does not replace those pages."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Scan for the question that matches what you need, read the short reply, then follow the link into the owning canonical doc when you need commands, flags, or deeper setup. Use FAQ for common-question lookup. Open the linked what-is, getting-started, install, CLI, configuration, MCP, dynamic-workflows, or Troubleshooting pages when you need the full contract those surfaces own."
-    },
     "whatIsYouAgentFactory": {
       "title": "What Is You-Agent-Factory, And Where Do I Start?",
       "body": "you-agent-factory is the CLI and workflow system that keeps long-running agent work persistent. Start with the product overview, then follow Getting Started for first-run order before you dig into install or CLI depth."

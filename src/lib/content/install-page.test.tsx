@@ -29,18 +29,22 @@ describe("install documentation page", () => {
     expect(loadedPage.messages.title).toBe("Install you-agent-factory");
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
-
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /Install the you-agent-factory CLI/i,
     );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+
+    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
-    expect(whatItCovers).toMatch(
-      /Install gets you-agent-factory onto a machine/i,
+    expect(howToUse).toMatch(
+      /Run the install command for your operating system/i,
     );
+    expect(howToUse).toMatch(/--executor claude/i);
     expect(limits).toMatch(/Install covers getting the CLI onto a machine/i);
-    expect(whatItCovers).not.toMatch(
+    expect(howToUse).not.toMatch(
       /This page|on this page|Install is the reference for|reader.?shortcut/i,
     );
     expect(limits).not.toMatch(
@@ -59,9 +63,11 @@ describe("install documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -71,7 +77,9 @@ describe("install documentation page", () => {
     expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
     expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
     expect(
-      screen.getByText(/omit it for the default Codex-backed scaffold/i),
+      screen.getByText(
+        /Omitting --executor keeps the default Codex-backed starter scaffold/i,
+      ),
     ).toBeTruthy();
 
     const gettingStarted = screen.getByRole("link", {
@@ -91,7 +99,7 @@ describe("install documentation page", () => {
       locale: "ja" as SiteLocale,
       title: "you-agent-factory のインストール",
       howToUseHeading: "使い方",
-      proseNeedle: /インストールは、you-agent-factory/,
+      proseNeedle: /お使いの OS 向けのインストールコマンド/,
       gettingStartedLabel: "はじめに",
       cliDocsLabel: "CLI ドキュメント",
     },
@@ -99,7 +107,7 @@ describe("install documentation page", () => {
       locale: "zh-CN" as SiteLocale,
       title: "安装 you-agent-factory",
       howToUseHeading: "如何使用",
-      proseNeedle: /安装是将 you-agent-factory/,
+      proseNeedle: /运行适用于你操作系统的安装命令/,
       gettingStartedLabel: "快速开始",
       cliDocsLabel: "CLI 文档",
     },
@@ -107,7 +115,7 @@ describe("install documentation page", () => {
       locale: "vi" as SiteLocale,
       title: "Cài đặt you-agent-factory",
       howToUseHeading: "Cách dùng",
-      proseNeedle: /Cài đặt là tài liệu tham chiếu/,
+      proseNeedle: /Chạy lệnh cài đặt cho hệ điều hành của bạn/,
       gettingStartedLabel: "Bắt đầu",
       cliDocsLabel: "Tài liệu CLI",
     },
@@ -132,9 +140,11 @@ describe("install documentation page", () => {
     expect(localized.messages.title).not.toBe(en.messages.title);
     expect(localized.messages.description).not.toBe(en.messages.description);
     expect(localized.messages.description).toContain("you-agent-factory");
-    expect(
-      String(localized.messages.sections?.whatItCovers?.body ?? ""),
-    ).toMatch(proseNeedle);
+    expect(String(localized.messages.sections?.howToUse?.body ?? "")).toMatch(
+      proseNeedle,
+    );
+    expect(localized.messages.sections?.whatItCovers).toBeUndefined();
+    expect(localized.messages.sections?.keyConcepts).toBeUndefined();
     expect(localized.messages.links?.macosLinuxLabel).toBe("macOS / Linux");
     expect(localized.messages.links?.windowsLabel).toBe("Windows (PowerShell)");
     expect(Object.keys(localized.messages).sort()).toEqual(
@@ -153,6 +163,10 @@ describe("install documentation page", () => {
       </main>,
     );
 
+    expect(
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: howToUseHeading })).toBeTruthy();
     expect(screen.getByText(INSTALL_SH)).toBeTruthy();
     expect(screen.getByText(INSTALL_PS1)).toBeTruthy();

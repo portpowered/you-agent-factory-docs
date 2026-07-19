@@ -31,25 +31,16 @@ describe("cli documentation page", () => {
     expect(loadedPage.messages.openingSummary).toMatch(
       /you-agent-factory CLI is the command-line entrypoint/i,
     );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
-    expect(whatItCovers).toMatch(
-      /The you-agent-factory CLI installs the you binary/i,
-    );
     expect(limits).toMatch(/CLI coverage here is install entrypoints/i);
-    expect(whatItCovers).not.toMatch(
-      /This reference covers|This page|on this page|reader.?shortcut/i,
-    );
     expect(limits).not.toMatch(
       /This page|on this page|web .+ reference|reader.?shortcut/i,
-    );
-    expect(whatItCovers).not.toContain(
-      "This reference covers the you-agent-factory CLI: how to install the you binary",
     );
 
     render(
@@ -64,11 +55,14 @@ describe("cli documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
+    expect(document.getElementById("how-to-use")).toBeNull();
     expect(screen.getByRole("heading", { name: "Install" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Commands" })).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
@@ -84,31 +78,31 @@ describe("cli documentation page", () => {
   test.each([
     {
       locale: "ja" as SiteLocale,
-      howToUseHeading: "使い方",
+      installHeading: "インストール",
       commandsHeading: "コマンド",
-      proseNeedle: /このリファレンスは you-agent-factory CLI/,
+      proseNeedle: /コマンドライン入口/,
       purposeHeader: "目的",
       youPurposeNeedle: /デフォルトのローカルファクトリー/,
     },
     {
       locale: "zh-CN" as SiteLocale,
-      howToUseHeading: "如何使用",
+      installHeading: "安装",
       commandsHeading: "命令",
-      proseNeedle: /本参考说明涵盖 you-agent-factory CLI/,
+      proseNeedle: /命令行入口/,
       purposeHeader: "用途",
       youPurposeNeedle: /从当前项目启动默认本地工厂/,
     },
     {
       locale: "vi" as SiteLocale,
-      howToUseHeading: "Cách dùng",
+      installHeading: "Cài đặt",
       commandsHeading: "Lệnh",
-      proseNeedle: /Tài liệu tham chiếu này gồm CLI you-agent-factory/,
+      proseNeedle: /điểm vào dòng lệnh/,
       purposeHeader: "Mục đích",
       youPurposeNeedle: /Khởi động factory cục bộ mặc định/,
     },
   ])("renders $locale CLI with real target-language prose and copyable commands", async ({
     locale,
-    howToUseHeading,
+    installHeading,
     commandsHeading,
     proseNeedle,
     purposeHeader,
@@ -129,9 +123,12 @@ describe("cli documentation page", () => {
       en.messages.openingSummary,
     );
     expect(localized.messages.description).toContain("you-agent-factory");
-    expect(
-      String(localized.messages.sections?.whatItCovers?.body ?? ""),
-    ).toMatch(proseNeedle);
+    expect(String(localized.messages.openingSummary ?? "")).toMatch(
+      proseNeedle,
+    );
+    expect(localized.messages.sections?.whatItCovers).toBeUndefined();
+    expect(localized.messages.sections?.keyConcepts).toBeUndefined();
+    expect(localized.messages.sections?.howToUse).toBeUndefined();
     expect(localized.messages.links?.installMacosLinuxLabel).toBe(
       "macOS / Linux",
     );
@@ -160,7 +157,15 @@ describe("cli documentation page", () => {
       </main>,
     );
 
-    expect(screen.getByRole("heading", { name: howToUseHeading })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "使い方" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "如何使用" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Cách dùng" })).toBeNull();
+    expect(screen.getByRole("heading", { name: installHeading })).toBeTruthy();
     expect(screen.getByRole("heading", { name: commandsHeading })).toBeTruthy();
     expect(screen.getByText(purposeHeader)).toBeTruthy();
     expect(screen.getByText(youPurposeNeedle)).toBeTruthy();

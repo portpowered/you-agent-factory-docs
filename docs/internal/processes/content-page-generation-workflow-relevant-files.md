@@ -928,11 +928,51 @@ install / what-is). Leave registry `relatedIds` empty until those sibling
 registry records and published pages exist; keep `<RelatedDocs />` in
 `#related` for when curated ids can resolve cleanly.
 
-### Documentation CLI key concepts, limits, and sibling discovery
+### Documentation Program core intro strip (page-local)
 
-For `documentation/cli`, keep `#key-concepts` before the install/commands
-teaching surfaces so readers learn start-a-factory vs submit-to-a-running-factory
-before the matrix. Keep `#limits-and-assumptions` as the scope boundary: web
+For Documentation Program **core product** pages under
+`src/content/docs/documentation/` (`what-is-you-agent-factory`, `install`,
+`cli`, `mcp`, `contributing-to-these-docs`, `faq`, `troubleshooting`,
+`submitting-work`, `harness-support`, `architecture-of-system`):
+
+- Remove `#what-it-covers` / `#key-concepts` Sections from `page.mdx` and delete
+  `sections.whatItCovers` / `sections.keyConcepts` from all locale messages.
+- Keep a short purpose `openingSummary` (add one sentence only when the page
+  would otherwise open with no useful lead). Do not clear it to `""` the way
+  Events/JS reference intro-strips do — Documentation Program pages still use
+  `DocsOpeningSummary` as the purpose lead.
+- Strip `#how-to-use` / `sections.howToUse` only when it is opening meta reading
+  guidance before real teaching. Keep it when it holds the page’s primary
+  procedure (for example install commands, contributing steps) or when it sits
+  after teaching sections (for example MCP integrate/serve/tools).
+- Do not expand this strip into ops/platform Documentation Program trees
+  (`logs`, `metrics`, `resources`, `petri`, `packaged-documents`,
+  `dashboard-ui-overview`, `security-trust-boundaries`, `throttling-and-limits`,
+  `replays-records`) — those belong to the sibling ops intro-strip lane.
+- Flip owned page tests (page-local under those trees plus
+  `src/lib/content/{what-is,install,cli}-page.test.tsx`) to assert intro
+  absence with `queryByRole(...).toBeNull()` / `toBeUndefined()` on
+  `whatItCovers` / `keyConcepts` (and `howToUse` when stripped as opening
+  boilerplate), while still proving remaining teaching headings/content and a
+  non-empty purpose `openingSummary`. Do not delete shared helpers/modules
+  while stripping intros.
+- Browser-verify the ten core routes with
+  `bun src/content/docs/documentation/assert-documentation-program-core-intro-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3587 default,
+  Playwright; kill server on exit). Assert absent What It Covers / Key Concepts
+  headings and `#what-it-covers` / `#key-concepts`; present purpose lead via
+  `[data-opening-summary="folded"]` / `[data-testid="folded-summary"]` (unlike
+  Events/JS/CLI reference intro-strips that clear `openingSummary`); at least
+  one teaching section id still mounted; `#how-to-use` absent on pages where it
+  was stripped as opening boilerplate (what-is, cli, faq, troubleshooting,
+  submitting-work). Prefer `DOC_PROGRAM_CORE_INTRO_STRIP_PROBE_BASE_URL` when a
+  server is already warm.
+
+### Documentation CLI limits and sibling discovery
+
+For `documentation/cli`, open on `#install` then `#commands` after the purpose
+`openingSummary` — do not restore `#what-it-covers` / `#key-concepts` or a meta
+`#how-to-use` opener. Keep `#limits-and-assumptions` as the scope boundary: web
 install + command matrix only — not a flag dump, not a packaged-docs sync, and
 not harness/MCP/config deep pages.
 

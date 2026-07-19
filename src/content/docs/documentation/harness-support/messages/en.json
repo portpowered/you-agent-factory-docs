@@ -3,14 +3,6 @@
   "description": "Compare you-agent-factory harness support across claude, codex, opencode, pi, cursor, and agy for Model Context Protocol (MCP), worktrees, loop, thinking controls, open source, and external models.",
   "openingSummary": "Harness Support is the you-agent-factory reference for which agent runtimes the factory drives and which features each harness covers.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Harness Support compares factory-supported harnesses by feature coverage. Use it when you need a scannable answer to which agent runtimes you-agent-factory can drive and which capabilities — Model Context Protocol (MCP), worktrees, loop, thinking controls, open-source status, or external model support — each one covers."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A harness is the agent runtime the factory drives, such as a coding agent under a shared factory process. Feature coverage means whether that runtime supports a capability the factory can use with it. The matrix compares those harnesses by coverage; the full harness definition lives on the harness concept page."
-    },
     "supportMatrix": {
       "title": "Support Matrix",
       "body": "Compare factory-supported harnesses across MCP, worktrees, loop, thinking controls, open-source status, and external model support. Cell values are yes, no, or partial."

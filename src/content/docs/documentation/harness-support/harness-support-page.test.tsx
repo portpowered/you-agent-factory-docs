@@ -1,9 +1,10 @@
 /**
  * Page-owned render proof for documentation/harness-support.
  * Covers documentation shell, harness-support identity, support-matrix
- * DataTable, framing/limits copy, and sibling discovery links. Colocated
- * under the page bundle so audit:canonical-page-surface stays within-budget
- * for this ordinary documentation lane.
+ * DataTable, framing/limits copy, and sibling discovery links — without
+ * leftover What It Covers / Key Concepts intro chrome. Colocated under the
+ * page bundle so audit:canonical-page-surface stays within-budget for this
+ * ordinary documentation lane.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen, within } from "@testing-library/react";
@@ -30,24 +31,24 @@ describe("harness-support documentation page", () => {
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).toMatch(/harness/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /agent runtimes the factory drives/i,
+    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
-    expect(whatItCovers).toMatch(/factory-supported harnesses/i);
-    expect(whatItCovers).toMatch(/feature coverage/i);
-    expect(whatItCovers).toMatch(/Model Context Protocol \(MCP\)/);
+    const supportMatrix = String(
+      loadedPage.messages.sections?.supportMatrix?.body ?? "",
+    );
     expect(loadedPage.messages.description).toMatch(
       /Model Context Protocol \(MCP\)/,
     );
-    expect(keyConcepts).toMatch(/agent runtime the factory drives/i);
+    expect(supportMatrix).toMatch(/factory-supported harnesses/i);
+    expect(supportMatrix).toMatch(/Model Context Protocol \(MCP\)|MCP/);
     expect(howToUse).toMatch(/MCP|worktrees|external models/i);
     expect(howToUse).toMatch(/scan/i);
     expect(limits).toMatch(/Harness Support is a matrix reference/i);
@@ -55,13 +56,10 @@ describe("harness-support documentation page", () => {
     expect(limits).toMatch(/not a sync of packaged CLI docs/i);
     expect(limits).toMatch(/not the harness concept glossary/i);
     expect(limits).toMatch(/not an agent-factory comparison blog/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
     expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
+    expect(supportMatrix).not.toMatch(
+      /on this page|Model Atlas|reader.?shortcut/i,
+    );
 
     render(
       <main>
@@ -75,9 +73,11 @@ describe("harness-support documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Support Matrix" }),
     ).toBeTruthy();
@@ -89,22 +89,15 @@ describe("harness-support documentation page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    const whatItCoversSection = document.getElementById("what-it-covers");
-    const keyConceptsSection = document.getElementById("key-concepts");
     const supportMatrixSection = document.getElementById("support-matrix");
     const howToUseSection = document.getElementById("how-to-use");
     const limitsSection = document.getElementById("limits-and-assumptions");
     const relatedSection = document.getElementById("related");
-    expect(whatItCoversSection).toBeTruthy();
-    expect(keyConceptsSection).toBeTruthy();
     expect(supportMatrixSection).toBeTruthy();
     expect(howToUseSection).toBeTruthy();
     expect(limitsSection).toBeTruthy();
     expect(relatedSection).toBeTruthy();
-    expect(keyConceptsSection?.textContent).toMatch(
-      /agent runtime the factory drives/i,
-    );
-    expect(whatItCoversSection?.textContent).toMatch(/feature coverage/i);
+    expect(supportMatrixSection?.textContent).toMatch(/feature coverage|MCP/i);
     expect(howToUseSection?.textContent).toMatch(
       /MCP|worktrees|external models/i,
     );

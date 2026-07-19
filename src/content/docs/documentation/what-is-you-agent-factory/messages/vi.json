@@ -3,18 +3,6 @@
   "description": "you-agent-factory là CLI và hệ thống workflow agent-factory giúp công việc agent chạy dài được duy trì liên tục.",
   "openingSummary": "you-agent-factory là giao diện dòng lệnh (CLI) và hệ thống workflow agent-factory. Nó giữ công việc agent chạy dài tiếp tục qua các phiên thay vì coi mỗi lần chạy là một cuộc trò chuyện một lần.",
   "sections": {
-    "whatItCovers": {
-      "title": "Nội dung bao gồm",
-      "body": "you-agent-factory là phần mềm bạn cài đặt và chạy từ terminal. Nó tổ chức công việc agent thành workflow factory để các mục tiêu có thể tiếp tục trong thời gian dài. Khách hàng dùng nó để cài đặt CLI, khởi động named run, và vận hành workflow đa agent với harness cùng định dạng dùng chung như vòng lặp, review, planner, lịch chạy, và luồng sự kiện. Trọng tâm sản phẩm là công việc factory bền vững, không phải một phiên agent dùng một lần."
-    },
-    "keyConcepts": {
-      "title": "Khái niệm chính",
-      "body": "Factory là hệ thống workflow giữ công việc agent bền vững và phối hợp. Harness là runtime agent mà factory điều khiển, ví dụ một coding agent dưới quy trình factory dùng chung. Named run, thường biểu diễn dưới dạng goal, là một phần công việc cụ thể bạn khởi động bằng CLI để factory theo dõi và tiếp tục. Những ý này đủ để hiểu sản phẩm trước khi đi sâu vào bước cài đặt hoặc cấu trúc hệ thống."
-    },
-    "howToUse": {
-      "title": "Cách dùng",
-      "body": "Bắt đầu với Bắt đầu để cài đặt CLI và chạy một goal có tên. Dùng hướng dẫn khi bạn muốn một đường workflow cụ thể như vòng lặp hoặc write-review. Mở kiến trúc hệ thống khi bạn cần hiểu factory được cấu trúc nội bộ như thế nào. Khung sản phẩm không thay thế tài liệu cài đặt hay tham chiếu lệnh đầy đủ."
-    },
     "limitsAndAssumptions": {
       "title": "Giới hạn và giả định",
       "body": "Khung sản phẩm dừng ở tổng quan. Nó không phải tham chiếu kiến trúc đầy đủ, danh mục thành phần, hay hướng dẫn nội bộ runtime. you-agent-factory không phải Model Atlas, bảng tham chiếu attention, bảng xếp hạng benchmark, hay gương tải paper. Độc giả cần bước cài đặt nên dùng Bắt đầu; độc giả cần cấu trúc hệ thống nên dùng kiến trúc hệ thống khi tài liệu đó sẵn có."

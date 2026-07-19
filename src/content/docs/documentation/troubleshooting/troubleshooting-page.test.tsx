@@ -35,14 +35,11 @@ describe("troubleshooting documentation page", () => {
       /recover|failure|troubleshooting/i,
     );
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(/recovery lookup/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
-    const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
     const commandNotFound = String(
       loadedPage.messages.sections?.commandNotFound?.body ?? "",
     );
@@ -68,15 +65,6 @@ describe("troubleshooting documentation page", () => {
     const limits = String(
       loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
     );
-
-    expect(whatItCovers).toMatch(/recovery lookup/i);
-    expect(whatItCovers).toMatch(/install/i);
-    expect(whatItCovers).toMatch(/MCP/i);
-    expect(keyConcepts).toMatch(/symptom/i);
-    expect(keyConcepts).toMatch(/recovery/i);
-    expect(keyConcepts).toMatch(/canonical/i);
-    expect(howToUse).toMatch(/symptom/i);
-    expect(howToUse).toMatch(/recovery/i);
 
     expect(commandNotFound).toMatch(/command not found/i);
     expect(commandNotFound).toMatch(/PATH/i);
@@ -131,13 +119,6 @@ describe("troubleshooting documentation page", () => {
     expect(limits).toMatch(/Troubleshooting is a recovery lookup/i);
     expect(limits).toMatch(/not the install command matrix/i);
     expect(limits).toMatch(/not a full CLI flag dump/i);
-    expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(keyConcepts).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
-    );
-    expect(howToUse).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
     expect(limits).not.toMatch(/on this page|Model Atlas|reader.?shortcut/i);
 
     render(
@@ -152,10 +133,13 @@ describe("troubleshooting documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
+    expect(document.getElementById("how-to-use")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "you Not Found After Install" }),
     ).toBeTruthy();
@@ -201,9 +185,6 @@ describe("troubleshooting documentation page", () => {
     expect(screen.getByRole("heading", { name: "Tags" })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "References" })).toBeTruthy();
 
-    expect(document.body.textContent).toMatch(
-      /Troubleshooting is the you-agent-factory recovery lookup/i,
-    );
     expect(document.body.textContent).toMatch(/you: command not found/i);
     expect(document.body.textContent).toMatch(/you init --executor claude/i);
     expect(document.body.textContent).toMatch(/session list is empty/i);
@@ -309,9 +290,9 @@ describe("troubleshooting documentation page", () => {
     );
 
     expect(loadedPage.messages.title).toBe("Troubleshooting");
-    expect(loadedPage.messages.sections?.whatItCovers?.title).toBe(
-      "What It Covers",
-    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
     expect(loadedPage.messages.sections?.commandNotFound?.title).toBe(
       "you Not Found After Install",
     );
@@ -337,8 +318,9 @@ describe("troubleshooting documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
     expect(
       screen.getByRole("heading", { name: "you Not Found After Install" }),
     ).toBeTruthy();

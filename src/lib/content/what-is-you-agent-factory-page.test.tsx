@@ -13,7 +13,7 @@ describe("what-is-you-agent-factory documentation page", () => {
     cleanup();
   });
 
-  test("renders framing sections, product identity, and next-step hrefs", async () => {
+  test("renders purpose lead, limits, and next-step hrefs without intro chrome", async () => {
     const loadedPage = await loadLocalDocsPage({
       section: "documentation",
       slug: "what-is-you-agent-factory",
@@ -22,6 +22,21 @@ describe("what-is-you-agent-factory documentation page", () => {
     expect(loadedPage.messages.title).toBe("What is you-agent-factory");
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /command-line interface \(CLI\) and agent-factory workflow system/i,
+    );
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /long-running agent work/i,
+    );
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+
+    const limits = String(
+      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+    );
+    expect(limits).toMatch(/not Model Atlas/i);
+    expect(limits).toMatch(/getting started|architecture of system/i);
 
     render(
       <main>
@@ -35,18 +50,16 @@ describe("what-is-you-agent-factory documentation page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(document.getElementById("what-it-covers")).toBeNull();
+    expect(document.getElementById("key-concepts")).toBeNull();
+    expect(document.getElementById("how-to-use")).toBeNull();
     expect(
       screen.getByRole("heading", { name: "Limits And Assumptions" }),
     ).toBeTruthy();
-
-    expect(
-      screen.getByText(/software you install and run from a terminal/i),
-    ).toBeTruthy();
-    expect(screen.getByText(/persistent factory work/i)).toBeTruthy();
     expect(screen.getByText(/not Model Atlas/i)).toBeTruthy();
 
     const gettingStarted = screen.getByRole("link", {
@@ -67,31 +80,33 @@ describe("what-is-you-agent-factory documentation page", () => {
     {
       locale: "ja" as SiteLocale,
       title: "you-agent-factory とは",
-      howToUseHeading: "使い方",
-      proseNeedle: /ターミナルからインストールして実行するソフトウェア/,
+      limitsHeading: "限界と前提",
+      proseNeedle:
+        /コマンドラインインターフェース（CLI）およびエージェントファクトリー/,
       gettingStartedLabel: "はじめに",
       architectureLabel: "システムのアーキテクチャ",
     },
     {
       locale: "zh-CN" as SiteLocale,
       title: "什么是 you-agent-factory",
-      howToUseHeading: "如何使用",
-      proseNeedle: /从终端安装并运行的软件/,
+      limitsHeading: "限制与假设",
+      proseNeedle: /命令行界面（CLI）与代理工厂工作流系统/,
       gettingStartedLabel: "快速开始",
       architectureLabel: "系统架构",
     },
     {
       locale: "vi" as SiteLocale,
       title: "you-agent-factory là gì",
-      howToUseHeading: "Cách dùng",
-      proseNeedle: /phần mềm bạn cài đặt và chạy từ terminal/,
+      limitsHeading: "Giới hạn và giả định",
+      proseNeedle:
+        /giao diện dòng lệnh \(CLI\) và hệ thống workflow agent-factory/,
       gettingStartedLabel: "Bắt đầu",
       architectureLabel: "Kiến trúc hệ thống",
     },
   ])("renders $locale what-is with real target-language prose", async ({
     locale,
     title,
-    howToUseHeading,
+    limitsHeading,
     proseNeedle,
     gettingStartedLabel,
     architectureLabel,
@@ -112,9 +127,12 @@ describe("what-is-you-agent-factory documentation page", () => {
       en.messages.openingSummary,
     );
     expect(localized.messages.description).toContain("you-agent-factory");
-    expect(
-      String(localized.messages.sections?.whatItCovers?.body ?? ""),
-    ).toMatch(proseNeedle);
+    expect(String(localized.messages.openingSummary ?? "")).toMatch(
+      proseNeedle,
+    );
+    expect(localized.messages.sections?.whatItCovers).toBeUndefined();
+    expect(localized.messages.sections?.keyConcepts).toBeUndefined();
+    expect(localized.messages.sections?.howToUse).toBeUndefined();
     expect(Object.keys(localized.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
@@ -131,7 +149,12 @@ describe("what-is-you-agent-factory documentation page", () => {
       </main>,
     );
 
-    expect(screen.getByRole("heading", { name: howToUseHeading })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(screen.getByRole("heading", { name: limitsHeading })).toBeTruthy();
     expect(
       screen.getByRole("link", { name: gettingStartedLabel }),
     ).toBeTruthy();

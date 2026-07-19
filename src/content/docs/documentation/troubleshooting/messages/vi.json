@@ -3,18 +3,6 @@
   "description": "Recover from you-agent-factory install, run, configuration, MCP, and dynamic-workflow failures with short symptom-scoped guidance that links to the owning canonical docs.",
   "openingSummary": "Troubleshooting is the you-agent-factory recovery lookup for recognizable failure symptoms. Each entry gives a short action you can try, then points at the canonical doc that owns the full contract.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Troubleshooting is the you-agent-factory recovery lookup for install, first-run, configuration, MCP, and dynamic-workflow failures. Use it when something fails and you need a scannable symptom, a short recovery action, and a link into the owning canonical doc rather than a second copy of that doc."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "A failure entry pairs a recognizable symptom with a short recovery action and a pointer to the canonical documentation page that owns the deeper contract. Recovery stays symptom-scoped: try the short action first, then open install, getting started, CLI, configuration, MCP, dynamic workflows, or Factory Session when you need the full reference. This surface does not replace those pages."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Scan for the symptom that matches what you see, try the short recovery action, then follow the link into the owning canonical doc when you need commands, flags, or deeper setup. Use Troubleshooting for recovery lookup. Open the linked install, getting-started, CLI, configuration, MCP, dynamic-workflows, or Factory Session pages when you need the full contract those surfaces own."
-    },
     "commandNotFound": {
       "title": "you Not Found After Install",
       "body": "Symptom: your shell reports you: command not found, or which you finds nothing, after you ran an install script. Recovery: open a new terminal so PATH reloads, then confirm you resolves. If the binary is still missing, re-run the install script for your operating system and confirm the script finished without error before retrying you. For the full OS install paths and post-install scaffold notes, open Install."
