@@ -28,6 +28,29 @@ describe("cli documentation page", () => {
     expect(loadedPage.messages.title).toBe("CLI");
     expect(loadedPage.messages.description).toContain("you-agent-factory");
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
+    expect(loadedPage.messages.openingSummary).toMatch(
+      /you-agent-factory CLI is the command-line entrypoint/i,
+    );
+
+    const whatItCovers = String(
+      loadedPage.messages.sections?.whatItCovers?.body ?? "",
+    );
+    const limits = String(
+      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
+    );
+    expect(whatItCovers).toMatch(
+      /The you-agent-factory CLI installs the you binary/i,
+    );
+    expect(limits).toMatch(/CLI coverage here is install entrypoints/i);
+    expect(whatItCovers).not.toMatch(
+      /This reference covers|This page|on this page|reader.?shortcut/i,
+    );
+    expect(limits).not.toMatch(
+      /This page|on this page|web .+ reference|reader.?shortcut/i,
+    );
+    expect(whatItCovers).not.toContain(
+      "This reference covers the you-agent-factory CLI: how to install the you binary",
+    );
 
     render(
       <main>

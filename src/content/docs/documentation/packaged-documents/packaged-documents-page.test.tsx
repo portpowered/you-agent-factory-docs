@@ -68,12 +68,15 @@ describe("packaged-documents documentation page", () => {
     expect(referenceAndFreshness).toMatch(/not a live sync/i);
     expect(howToUse).toMatch(/packaged topic index/i);
     expect(howToUse).toMatch(/no live factory/i);
+    expect(limits).toMatch(
+      /Packaged documents covers packaged you docs topics/i,
+    );
     expect(limits).toMatch(/not a full topic dump/i);
     expect(limits).toMatch(/not a sync of packaged markdown/i);
     expect(limits).toMatch(/not factory-local/i);
     expect(limits).toMatch(/not the CLI install/i);
     expect(whatItCovers).not.toMatch(
-      /on this page|Model Atlas|reader.?shortcut/i,
+      /This page|on this page|Model Atlas|reader.?shortcut/i,
     );
     expect(keyConcepts).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
