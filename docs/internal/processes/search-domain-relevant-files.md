@@ -203,6 +203,42 @@ HTML/RSC payload by ~2 MiB. Client collapse preserves
 catalogs that include item docs still require membership so ordinary
 reference-page headings collapse.
 
+### Pattern: reference owning pages and inventory items omit standalone heading rows
+
+Fumadocs advanced search turns `structuredData.headings` into standalone
+`type: "heading"` hits at `#heading-N`. For reference owning pages
+(`/docs/references` and `/docs/references/**` without a registry-anchor
+fragment) **and** true inventory item deep links (`/docs/references/…#…`
+with a non-`heading-N` fragment), `toStructuredData` must emit an empty
+`headings` array and leave content blocks without a `heading` fragment so
+subsection titles and item auto-heading children cannot flood search. Fold
+collected heading text into page-level content so owning pages and exact
+inventory identifiers stay discoverable on their canonical URLs. Gate with
+`shouldSuppressReferenceStandaloneSearchHeadings` (owning-page + inventory
+helpers in `reference-owning-page-search-url.ts`). Prove via live Orama
+outcomes: no `#heading-N` rows for owning pages or exact MCP/API/CLI/JS
+identifier queries; registry-anchor item URLs still match; bare `#heading-N`
+is never treated as an inventory item (`resolveReferenceItemDeepLinkUrl`).
+
+### Pattern: generic queries prefer page titles over reference item/heading spam
+
+`rerankSearchResults` must boost **every** page-level title/slug/alias match
+(score ≥ 90), not only the single best seeded URL. Otherwise a generic query
+like `mcp` keeps `/docs/concepts/mcp` on top while
+`/docs/documentation/mcp` and `/docs/references/mcp` sink below the inventory
+item flood (`#you.factory_session.*`, `you mcp`, …). Exact inventory title /
+direct-alias matches (score ≥ 95) still outrank incidental owning-page body
+hits. Residual `type: "heading"` / `#heading-N` rows under
+`/docs/references/**` demote below ordinary hits. Prove with unit fixtures in
+`rerank-search-results.test.ts` and live `docsSearchApi.search("mcp")` /
+`you.factory_session.get` outcomes in
+`prefer-page-titles-over-reference-heading-spam.test.ts`. Lock the same
+observable outcomes (page preference, no `#heading-N`, exact MCP/API/CLI/JS
+deep links) in `src/tests/search/reference-heading-despam-contract.test.ts`
+and keep both files on the reader-facing required suite path. Collapse must
+also fold bare reference `#heading-N` spam into the owning page URL
+(`collapse-search-results-to-page-hits.test.ts`).
+
 ### Pattern: factory alias / body / tag discovery
 
 Live factory pages are discoverable by frontmatter/registry aliases, distinctive
@@ -254,6 +290,23 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
 * `src/lib/search/to-advanced-index.test.ts`
   Fumadocs advanced index projection contract for `id`, `title`, `description`,
   `url`, `structuredData`, and `tag` fields.
+* `src/lib/search/to-structured-data.test.ts`
+  Reference owning-page + inventory-item heading de-spam: empty
+  `structuredData.headings`, no `#heading-N` Orama rows for owning pages or
+  exact MCP/API/CLI/JS identifier queries; heading text folded into
+  page/item-level content; `#heading-N` rejected as inventory.
+* `src/lib/search/prefer-page-titles-over-reference-heading-spam.test.ts`
+  Generic `mcp` page-title preference over inventory/heading spam; exact
+  `you.factory_session.get` still returns the item deep link first.
+* `src/tests/search/reference-heading-despam-contract.test.ts`
+  Reader-facing lock for generic `mcp` page preference + no `#heading-N`,
+  plus exact MCP/API/CLI/JS inventory deep-link availability.
+* `src/lib/search/reference-owning-page-search-url.test.ts`
+  URL gates for owning pages, inventory item deep links, `#heading-N`
+  rejection, and standalone-heading suppression.
+* `src/lib/reader-facing-required-test-paths.ts`
+  Includes the reference heading de-spam proofs above so
+  `make test-reader-facing` / CI keep the contract green.
 * `src/lib/search/build-base-document.test.ts`
   Generic base document field contract and empty topology/facet guarantees.
 * `src/lib/search/build-documents.test.ts`
