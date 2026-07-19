@@ -265,13 +265,15 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   plus a11y smoke
   `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx` (`make a11y`).
 * `src/features/docs/components/DocsIndexEmptyState.tsx`
-  Shared empty-state for collection/blog/glossary/architecture indexes.
+  Shared empty-state for collection/blog/architecture indexes.
   Always offers home + browse + search (`SearchTrigger`); non-blog empties also
   pass `includeBlogLink` so Blog is a recovery path. Empty title/description/
   home-link copy in `src/content/messages/*/common.json` must stay free of
   Model Atlas / coming-soon Atlas advertising. Prove with
   `src/features/docs/components/DocsIndexEmptyState.test.tsx` and the empty-state
-  case in `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx`.
+  case in `src/tests/a11y/contributing-not-found-empty.a11y.test.tsx` (drive that
+  a11y case from live `conceptsIndex` copy via `DocsIndexEmptyState` — do not
+  reuse the retired glossary index advertising surface as the empty vehicle).
 * `src/content/docs/documentation/contributing-to-these-docs/`
   Published contributing guidance page (`documentation.contributing-to-these-docs`).
   Colocated publish/copy proof:

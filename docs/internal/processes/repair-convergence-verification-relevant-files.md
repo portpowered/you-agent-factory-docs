@@ -231,6 +231,10 @@ destinations:
 3. Point representative search queries at **family destinations**.
 4. Accept W18 family target hrefs in LocalizedLinkList validation (App Router
    family indexes are not always MDX published entries).
-5. Keep colocated stub `*-page.test.tsx` as compatibility HTML proofs and
-   `*-discoverability.test.tsx` as ledger-target-only stubs (no ordinary body
-   discovery assertions).
+5. Keep colocated stub `*-page.test.tsx` as compatibility HTML proofs. Do **not**
+   keep hollow `*-discoverability.test.tsx` ledger-target-only stubs on demoted
+   W18 routes — ledger remapping is already locked in
+   `documentation-route-migration.test.ts`, and demotion (absent from
+   explorer/search/sitemap/section index) is locked in
+   `factory-documentation-route-migration-demoted-contract.test.tsx`. Live
+   non-stub pages still own real `*-discoverability.test.tsx` proofs.

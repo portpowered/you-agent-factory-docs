@@ -112,7 +112,6 @@ describe("you-agent-factory site config", () => {
             "gqaLinkTitle",
             "swigluLinkTitle",
             "reluLinkTitle",
-            "glossaryLinkTitle",
           ].includes(link.titleKey),
       ),
     ).toBe(true);

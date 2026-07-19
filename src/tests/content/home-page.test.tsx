@@ -70,9 +70,6 @@ describe("home page messages", () => {
     expect(
       youAgentFactorySiteConfig.homeFeaturedLinks.map((link) => link.titleKey),
     ).toEqual(["guidesLinkTitle", "docsLinkTitle", "blogLinkTitle"]);
-    expect(
-      youAgentFactorySiteConfig.homeFeaturedLinks.map((link) => link.titleKey),
-    ).not.toContain("glossaryLinkTitle");
   });
 });
 

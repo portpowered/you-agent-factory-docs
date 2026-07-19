@@ -6,11 +6,11 @@ import "./mock-navigation";
 import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, screen, within } from "@testing-library/react";
 import { act } from "react";
-import { renderSectionCollectionIndexPage } from "@/app/(site)/site-renderers";
 import { renderDocsSlugPage } from "@/app/docs/docs-slug-renderer";
 import DocsNotFound from "@/app/docs/not-found";
 import { CanonicalDocsLayout } from "@/components/layout/canonical-docs-layout";
 import { getPrimaryNavItems } from "@/components/layout/primary-nav";
+import { DocsIndexEmptyState } from "@/features/docs/components/DocsIndexEmptyState";
 import {
   expectCriticalPageStructure,
   listKeyboardFocusableControls,
@@ -148,49 +148,55 @@ describe("contributing, not-found, and empty-state accessibility", () => {
   test("section collection empty state exposes factory recovery affordances with keyboard focus and Atlas-free copy", async () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
-    // Glossary collection has no published entries; after #157 its messageKeys
-    // reuse concepts index copy so hollow glossary advertising keys stay out
-    // of common.json while empty-state chrome can still be exercised.
-    const page = await renderSectionCollectionIndexPage("glossary");
+    // Drive empty-state a11y from live conceptsIndex copy via DocsIndexEmptyState
+    // rather than the retired glossary index advertising surface.
+    const { conceptsIndex, browseIndex, nav, search } = context.messages;
 
     await act(async () => {
       await renderWithAppProviders(
         <CanonicalDocsLayout messages={context.messages}>
-          {page}
+          <main>
+            <h1>{conceptsIndex.title}</h1>
+            <DocsIndexEmptyState
+              title={conceptsIndex.emptyTitle}
+              description={conceptsIndex.emptyDescription}
+              homeLinkLabel={conceptsIndex.emptyHomeLink}
+              messages={context.messages}
+              includeBlogLink
+            />
+          </main>
         </CanonicalDocsLayout>,
         { context },
       );
     });
 
     const structure = expectCriticalPageStructure(document, {
-      expectedH1: context.messages.conceptsIndex.title,
+      expectedH1: conceptsIndex.title,
     });
     expect(structure.headingLevels).toContain(2);
 
     const empty = screen.getByRole("status");
-    expect(empty.textContent).toContain(
-      context.messages.conceptsIndex.emptyTitle,
-    );
+    expect(empty.textContent).toContain(conceptsIndex.emptyTitle);
     expect(empty.textContent).not.toMatch(ATLAS_PRODUCT_COPY);
 
     const home = within(empty).getByRole("link", {
-      name: context.messages.conceptsIndex.emptyHomeLink,
+      name: conceptsIndex.emptyHomeLink,
     });
     const browse = within(empty).getByRole("link", {
-      name: context.messages.browseIndex.title,
+      name: browseIndex.title,
     });
     const blog = within(empty).getByRole("link", {
-      name: context.messages.nav.blog,
+      name: nav.blog,
     });
-    const search = within(empty).getByRole("button", {
-      name: context.messages.search.open,
+    const searchControl = within(empty).getByRole("button", {
+      name: search.open,
     });
 
     expect(home.getAttribute("href")).toBe("/");
     expect(browse.getAttribute("href")).toBe("/browse");
     expect(blog.getAttribute("href")).toBe("/blog");
 
-    for (const control of [home, browse, blog, search]) {
+    for (const control of [home, browse, blog, searchControl]) {
       control.focus();
       expect(document.activeElement).toBe(control);
       expect(control.className).toContain("focus-visible:ring");
