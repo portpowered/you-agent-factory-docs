@@ -237,7 +237,7 @@ Suite membership and ordering edges (`static-export` before `integration` /
 `budget`; independent peers may overlap) live in
 `src/lib/ci-required-path.ts`. Each child job checks out the branch, runs
 `make setup`, and runs its mapped `make <target>` stage(s). Browser jobs
-(`a11y`, `integration`) install Playwright Chromium. Aggregate **ci-gate**
+(`unit-tests`, `a11y`, `integration`) install Playwright Chromium. Aggregate **ci-gate**
 needs every required child and fails unless all succeed — that is the
 branch-protection quality gate. Deploy and preview steps stay out of CI.
 Local full reproduction remains sequential `make ci` (same shared required

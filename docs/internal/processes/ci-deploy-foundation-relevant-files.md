@@ -25,7 +25,7 @@ Pages deploy for the rewrite-era foundation pipeline.
 
 Workflows that call this contract:
 
-- `.github/workflows/ci.yml` — Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate `ci-gate`; membership/edges in `src/lib/ci-required-path.ts`. Playwright Chromium installs on browser jobs (`a11y`, `integration`). Local full path stays sequential (`make ci`).
+- `.github/workflows/ci.yml` — Wave CI-1 parallel job graph (`check`, `unit-tests`, `reader-facing`, `a11y`, `contracts`, `component-coverage`, `content`, `static-export`, `integration`, `budget`) plus aggregate `ci-gate`; membership/edges in `src/lib/ci-required-path.ts`. Playwright Chromium installs on jobs that run browser fixtures (`unit-tests`, `a11y`, `integration`). Local full path stays sequential (`make ci`).
 - `.github/workflows/deploy-pages.yml` — setup → Playwright Chromium → check → test → build (with `GITHUB_PAGES_BASE_PATH=/you-agent-factory-docs`) → `make guard-pages-deployed-artifact` → budget, then upload `out/` (Pages-focused subset; does not replace CI)
 
 Reproduce any failing workflow stage locally with the same `make <target>` after

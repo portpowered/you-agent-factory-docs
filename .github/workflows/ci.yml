@@ -40,6 +40,9 @@ jobs:
       - name: Setup
         run: make setup
 
+      - name: Install Playwright Chromium
+        run: bunx playwright install --with-deps chromium
+
       - name: Run tests
         run: make test
 
