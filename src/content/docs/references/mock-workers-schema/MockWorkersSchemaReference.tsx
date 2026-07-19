@@ -17,6 +17,7 @@ import {
 } from "@/lib/references/load-schema-verification-models";
 import { createReferenceCrossLinkResolver } from "@/lib/references/reference-cross-link-resolver";
 import type { SchemaAddress } from "@/lib/references/schema-model";
+import { mockWorkersSchemaExampleInputs } from "./mock-workers-schema-examples";
 import { splayMockWorkersSchemaFieldNodes } from "./mock-workers-schema-field-splay";
 
 export const MOCK_WORKERS_SCHEMA_PAGE_PATH =
@@ -63,6 +64,7 @@ export function MockWorkersSchemaReference({
         data-testid="mock-workers-schema-reference"
         defaultExpanded
         definitions={model.definitions}
+        exampleInputs={mockWorkersSchemaExampleInputs()}
         fieldNodes={fieldNodes}
         pagePath={MOCK_WORKERS_SCHEMA_PAGE_PATH}
         resolve={buildResolve(model)}

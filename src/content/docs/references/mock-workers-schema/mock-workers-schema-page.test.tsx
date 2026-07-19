@@ -171,6 +171,29 @@ describe("MockWorkersSchemaReference mount", () => {
         '[data-schema-definition-pointer="/$defs/workInput"]',
       ),
     ).toBeTruthy();
+
+    // Authored hermetic-looking configuration examples (schema-true keys).
+    const examples = surface.querySelector('[data-schema-examples="present"]');
+    expect(examples).toBeTruthy();
+    expect(
+      examples?.querySelector(
+        '[data-schema-example-id="mock-workers-schema.minimal-accept"]',
+      ),
+    ).toBeTruthy();
+    expect(
+      examples?.querySelector(
+        '[data-schema-example-id="mock-workers-schema.reject-with-policy"]',
+      ),
+    ).toBeTruthy();
+    expect(examples?.textContent ?? "").toContain('"runType": "accept"');
+    expect(examples?.textContent ?? "").toContain('"workerName": "reviewer"');
+    expect(examples?.textContent ?? "").toContain('"runType": "reject"');
+    expect(examples?.textContent ?? "").toContain(
+      '"unmatchedDispatchPolicy": "passthrough"',
+    );
+    expect(
+      examples?.querySelector('[data-schema-example="copy"]'),
+    ).toBeTruthy();
   });
 
   test("shows an accessible invalid status when schema acquisition fails", () => {
