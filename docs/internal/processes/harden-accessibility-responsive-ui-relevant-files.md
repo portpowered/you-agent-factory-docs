@@ -160,15 +160,21 @@ surfaces (home, browse, search, docs/harness-support, blog).
   Always-on smokes: contributing-to-these-docs landmarks/headings/keyboard
   chrome/Atlas-free copy + axe; docs not-found recovery links (Getting Started,
   Browse, Search, Blog) with focus-visible rings + Atlas-free copy + axe;
-  glossary empty state factory recovery (home/browse/blog/search) with keyboard
-  focus + Atlas-free copy + axe.
+  section-collection empty state factory recovery (home/browse/blog/search)
+  with keyboard focus + Atlas-free copy + axe (uses
+  `renderSectionCollectionIndexPage("glossary")` as an empty collection
+  surface — not a published `/docs/glossary` index route).
 * Render contributing via `renderDocsSlugPage` + `CanonicalDocsLayout`; wrap
-  `DocsNotFound` in the same shell; empty proof via `renderGlossaryIndexPage`.
+  `DocsNotFound` in the same shell; empty proof via
+  `renderSectionCollectionIndexPage` (glossary collection has no published
+  entries). Do not reintroduce `renderGlossaryIndexPage` or glossary index
+  app routes.
 * Colocated contract proofs (required `bun run test`): 
   `contributing-to-these-docs-page.test.tsx`, `src/app/docs/not-found.test.tsx`,
   `DocsIndexEmptyState.test.tsx`.
-* Live empty surface for browser proof: `/docs/glossary`. Missing docs and
-  retired Atlas paths (for example `/docs/models`) share `src/app/docs/not-found.tsx`.
+* Live empty-state browser proof no longer depends on `/docs/glossary` (index
+  retired). Missing docs and retired Atlas paths (for example `/docs/models`)
+  share `src/app/docs/not-found.tsx`.
 
 ## Responsive overflow matrix (story 006)
 

@@ -72,7 +72,6 @@ const alternateSiteConfig = {
     home: { surface: "home" },
     guides: { surface: "docs-page", slug: "guides" },
     docs: { surface: "browse" },
-    glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
     search: { surface: "search" },
   },
@@ -80,7 +79,6 @@ const alternateSiteConfig = {
     { routeSurface: "home", labelKey: "home" },
     { routeSurface: "guides", labelKey: "guides" },
     { routeSurface: "docs", labelKey: "docs" },
-    { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
   ],
   collections: [

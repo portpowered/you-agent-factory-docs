@@ -84,9 +84,6 @@ describe("factory locale and Pages base path", () => {
     expect(resolveFactorySurfaceHref("search", "en")).toBe("/search");
     expect(resolveFactorySurfaceHref("tags-index", "en")).toBe("/tags");
     expect(resolveFactorySurfaceHref("blog-index", "en")).toBe("/blog");
-    expect(resolveFactorySurfaceHref("glossary-index", "en")).toBe(
-      "/docs/glossary",
-    );
     expect(resolveFactoryDocsPageHref("concepts/harness", "en")).toBe(
       "/docs/concepts/harness",
     );

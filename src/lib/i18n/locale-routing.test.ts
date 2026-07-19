@@ -114,15 +114,6 @@ describe("locale-routing", () => {
     expect(
       buildLocalizedRoute({ surface: "architecture-index" }, "zh-CN"),
     ).toBe("/zh-CN/docs/architecture");
-    expect(buildLocalizedRoute({ surface: "glossary-index" }, "vi")).toBe(
-      "/vi/docs/glossary",
-    );
-    expect(buildLocalizedRoute({ surface: "glossary-index" }, "ja")).toBe(
-      "/ja/docs/glossary",
-    );
-    expect(buildLocalizedRoute({ surface: "glossary-index" }, "zh-CN")).toBe(
-      "/zh-CN/docs/glossary",
-    );
     expect(buildLocalizedRoute({ surface: "tags-index" }, "vi")).toBe(
       "/vi/tags",
     );
@@ -193,7 +184,7 @@ describe("locale-routing", () => {
       kind: "matched",
       locale: "vi",
       pathname: "/docs/glossary",
-      destination: { surface: "glossary-index" },
+      destination: { surface: "docs-page", slug: "glossary" },
     });
 
     expect(

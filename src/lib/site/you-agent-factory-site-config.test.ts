@@ -52,10 +52,12 @@ describe("you-agent-factory site config", () => {
       factories: { surface: "docs-page", slug: "factories" },
       workers: { surface: "docs-page", slug: "workers" },
       workstations: { surface: "docs-page", slug: "workstations" },
-      glossary: { surface: "glossary-index" },
       blogIndex: { surface: "blog-index" },
       search: { surface: "search" },
     });
+    expect(youAgentFactorySiteConfig.routeSurfaces).not.toHaveProperty(
+      "glossary",
+    );
     expect(youAgentFactorySiteConfig.routeSurfaces).not.toHaveProperty(
       "topology",
     );

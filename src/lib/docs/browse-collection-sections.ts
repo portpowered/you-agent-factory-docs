@@ -55,10 +55,9 @@ function defaultResolveBrowseSectionLinkHref(
   definition: Pick<ShellCollectionDefinition, "id" | "routeSlug">,
   locale: SiteLocale,
 ): string {
-  if (definition.id === "glossary") {
-    return buildLocalizedRoute({ surface: "glossary-index" }, locale);
-  }
-
+  // Glossary index routes are retired; collection linkHref still resolves via
+  // the docs-page slug path so callers do not keep a hollow glossary-index
+  // surface dependency. Public browse hubs omit glossary entirely.
   return buildLocalizedRoute(
     { surface: "docs-page", slug: definition.routeSlug },
     locale,

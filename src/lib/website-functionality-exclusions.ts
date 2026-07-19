@@ -326,7 +326,7 @@ export const WEBSITE_FUNCTIONALITY_FILE_EXCLUSIONS: readonly WebsiteFileExclusio
     {
       path: "src/tests/layout/japanese-shell-routes.test.tsx",
       classification: "active",
-      note: "Japanese shell route suite still asserts Atlas architecture/glossary indexes; keep out until rewritten for factory collections.",
+      note: "Japanese shell route suite still asserts Atlas architecture index entries; keep out until rewritten for factory collections. Glossary index assertions removed with glossary index retirement.",
     },
     {
       path: "src/tests/layout/localized-route-metadata.test.ts",

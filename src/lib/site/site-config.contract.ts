@@ -10,7 +10,6 @@ export const SITE_NAMED_ROUTE_SURFACES = [
   "home",
   "guides",
   "docs",
-  "glossary",
   "blogIndex",
   "search",
   "references",

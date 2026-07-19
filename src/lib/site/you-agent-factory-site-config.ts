@@ -17,9 +17,9 @@ export const YOU_AGENT_FACTORY_REPOSITORY_URL =
  * brand/logo destination, not a text nav chip. Search is a configured route
  * surface (header trigger) but not a primary nav item, to avoid duplicating
  * the header search control. Family destinations (factories / workers /
- * workstations) and glossary remain as route surfaces for page routes until
- * glossary retirement, but are not primary-nav text items or home featured
- * destinations.
+ * workstations) remain as route surfaces for page routes but are not
+ * primary-nav text items or home featured destinations. The glossary index
+ * route surface is retired (no `/docs/glossary` index destination).
  */
 export const youAgentFactorySiteConfig = {
   brand: {
@@ -32,7 +32,6 @@ export const youAgentFactorySiteConfig = {
     home: { surface: "home" },
     guides: { surface: "docs-page", slug: "guides" },
     docs: { surface: "browse" },
-    glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
     search: { surface: "search" },
     // Family destinations remain as route surfaces for page routes; only

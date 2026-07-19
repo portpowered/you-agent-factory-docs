@@ -17,15 +17,14 @@ const cliDocsSiteConfig = {
     home: { surface: "home" },
     guides: { surface: "docs-page", slug: "guides" },
     docs: { surface: "browse" },
-    glossary: { surface: "glossary-index" },
     blogIndex: { surface: "blog-index" },
     search: { surface: "search" },
+    references: { surface: "docs-page", slug: "references" },
   },
   primaryNav: [
     { routeSurface: "home", labelKey: "home" },
     { routeSurface: "guides", labelKey: "guides" },
     { routeSurface: "docs", labelKey: "docs" },
-    { routeSurface: "glossary", labelKey: "glossary" },
     { routeSurface: "blogIndex", labelKey: "blog" },
     { routeSurface: "search", labelKey: "search" },
   ],
@@ -52,7 +51,6 @@ describe("site config contract", () => {
       "home",
       "guides",
       "docs",
-      "glossary",
       "blogIndex",
       "search",
       "references",
@@ -60,6 +58,7 @@ describe("site config contract", () => {
       "workers",
       "workstations",
     ]);
+    expect(SITE_NAMED_ROUTE_SURFACES).not.toContain("glossary");
     expect(SITE_NAMED_ROUTE_SURFACES).not.toContain("topology");
     expect(SITE_NAMED_ROUTE_SURFACES).not.toContain("timeline");
   });
@@ -91,7 +90,7 @@ describe("site config contract", () => {
     expect(cliDocsSiteConfig.routeSurfaces).not.toHaveProperty("timeline");
     expect(
       cliDocsSiteConfig.primaryNav.map((entry) => entry.routeSurface),
-    ).toEqual(["home", "guides", "docs", "glossary", "blogIndex", "search"]);
+    ).toEqual(["home", "guides", "docs", "blogIndex", "search"]);
     expect(
       cliDocsSiteConfig.primaryNav.every(
         (entry) => !atlasNavLabelKeys.has(entry.labelKey),

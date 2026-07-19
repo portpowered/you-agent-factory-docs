@@ -20,9 +20,10 @@ contract for the you-agent-factory CLI docs product.
 ## Contract shape rules (rewrite era)
 
 - `SITE_NAMED_ROUTE_SURFACES` documents CLI placeholders (`home`, `guides`,
-  `docs`, `glossary`, `blogIndex`, `search`, plus W15 family destinations
+  `docs`, `blogIndex`, `search`, plus W15 family destinations
   `references`, `factories`, `workers`, `workstations`). It is **not** a
-  mandatory closed set on `SiteConfig.routeSurfaces`.
+  mandatory closed set on `SiteConfig.routeSurfaces`. The glossary index
+  surface is retired and must not reappear as a named route placeholder.
 - `routeSurfaces` is `Record<string, LocalizedRouteDestination>` so products can
   omit topology/timeline and add CLI surfaces without fighting the type.
 - `SITE_COLLECTION_FAMILIES` documents CLI families (`guides`, `concepts`,
@@ -100,9 +101,10 @@ contract for the you-agent-factory CLI docs product.
   `guides`, `concepts`, `techniques`, `documentation`.
 - Default `homeFeaturedLinks` lists CLI route destinations (guides, docs/browse,
   blogIndex) bound to `guidesLink*` / `docsLink*` / `blogLink*` home message
-  keys — not glossary or Atlas module slugs. Glossary may remain a
-  `routeSurfaces` entry for page routes until retirement, but must not appear
-  in home featured discovery chrome.
+  keys — not glossary or Atlas module slugs. Do not reintroduce a glossary
+  `routeSurfaces` entry or `/docs/glossary` index app route; individual
+  glossary term pages may still exist under `/docs/glossary/<slug>` via the
+  docs catch-all when published.
 - Type featured-link arrays as `… as SiteConfig["homeFeaturedLinks"]` when the
   default config uses `as const satisfies SiteConfig`, so the field stays
   assignable as `HomeFeaturedLinkPlaceholder[]`.

@@ -15,7 +15,6 @@ export type LocalizedRouteDestination =
   | { surface: "blog-post"; slug: string }
   | { surface: "docs-page"; slug: string }
   | { surface: "architecture-index" }
-  | { surface: "glossary-index" }
   | { surface: "tags-index" }
   | { surface: "tag-page"; slug: string };
 
@@ -131,8 +130,6 @@ export function buildLocalizedRoute(
       return localizePath(`/docs/${destination.slug}`, locale);
     case "architecture-index":
       return localizePath("/docs/architecture", locale);
-    case "glossary-index":
-      return localizePath("/docs/glossary", locale);
     case "tags-index":
       return localizePath("/tags", locale);
     case "tag-page":
@@ -165,10 +162,6 @@ function destinationFromNormalizedPath(
 
   if (pathname === "/docs/architecture") {
     return { surface: "architecture-index" };
-  }
-
-  if (pathname === "/docs/glossary") {
-    return { surface: "glossary-index" };
   }
 
   if (pathname === "/tags") {
