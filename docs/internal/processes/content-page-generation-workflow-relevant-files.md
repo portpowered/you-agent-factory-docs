@@ -1395,7 +1395,16 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   allowed family-index root vs forbidden sibling page / foreign renderer /
   factories-workers-workstations roots; prove with path helpers, not source
   inventory scans), and colocated tests. Do not put sibling W11 page bodies
-  (`api/`, `events/`, …) in this lane.
+  (`api/`, `events/`, …) in this lane. After the intro strip, the landing is
+  `openingSummary` + Package freshness + Contract surfaces — not
+  `sections.introduction` / What this family covers. Browser-verify with
+  `bun src/content/docs/references/family-index/assert-references-family-index-intro-strip-browser.ts`
+  (webpack `bun run next` via `scripts/run-next.ts`, unique port default
+  `3589`, or `REFERENCES_FAMILY_INDEX_INTRO_STRIP_PROBE_BASE_URL` when a server
+  is already warm). The probe asserts introduction absence, purpose lead,
+  eight discoverability hrefs including System configuration schema →
+  `/docs/references/system-config-schema` (#177), and no empty-collection /
+  you-config revival.
 * `src/content/registry/references/`
   First `reference` registry collection. Wire new records through
   `REGISTRY_COLLECTIONS`, `registry.ts` directories, and
@@ -1419,8 +1428,10 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   documentation child pages.
   Empty-state + localized metadata proofs for still-empty family indexes
   (workstations); factories authored-entry + overview assertions; workers
-  family-index proofs; authored introduction proofs for the references family
-  index; factories must not list documentation child pages.
+  family-index proofs; references family index asserts purpose lead +
+  Contract surfaces + Package freshness and absence of
+  `sections.introduction` / What this family covers chrome; factories must
+  not list documentation child pages.
 * `src/lib/content/docs-catch-all-static-params.ts`
   Catch-all static-param helpers for nested docs slugs. Default-locale
   `generateStaticParams` merges Fumadocs source params with published-page

@@ -503,13 +503,16 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).not.toContain(`aria-label="${indexMessages.listLabel}"`);
   });
 
-  it("renders the authored references family index introduction", async () => {
+  it("renders the authored references family index without introduction chrome", async () => {
     const html = renderToStaticMarkup(await ReferencesIndexPage());
 
     expect(html).toContain("References");
     expect(html).toContain("Contract lookup surfaces");
-    expect(html).toContain("What this family covers");
-    expect(html).toContain("isolation-first lookup");
+    expect(html).toContain("published contract surfaces");
+    expect(html).not.toContain("What this family covers");
+    expect(html).not.toContain("isolation-first lookup");
+    expect(html).not.toContain('data-references-family-introduction=""');
+    expect(html).not.toContain('id="introduction"');
     expect(html).toContain('data-references-family-index=""');
     expect(html).toContain("Contract surfaces");
     expect(html).toContain('data-references-family-discoverability=""');
@@ -518,6 +521,8 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain('data-freshness-status="ready"');
     expect(html).toContain('data-references-family-freshness-summary=""');
     expect(html).toContain("@you-agent-factory/api");
+    expect(html).toContain("System configuration schema");
+    expect(html).not.toContain("you-config");
     for (const href of [
       "/docs/references/api",
       "/docs/references/events",
@@ -542,7 +547,7 @@ describe("W05 direct route-family section index pages", () => {
     );
 
     expect(html).toContain("リファレンス");
-    expect(html).toContain("このファミリーが扱うこと");
+    expect(html).not.toContain("このファミリーが扱うこと");
     expect(html).toContain("コントラクト面");
     expect(html).toContain("パッケージの鮮度");
     expect(html).not.toContain("What this family covers");

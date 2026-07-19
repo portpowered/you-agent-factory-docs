@@ -116,7 +116,7 @@ function reasonFromUnknown(error: unknown): string {
 /**
  * Acquire a lightweight package/version freshness summary for the references
  * family index. Failures return an explicit unavailable result so the index
- * can still render introduction and discoverability links.
+ * can still render the purpose lead and discoverability links.
  */
 export function loadReferencesFamilyFreshnessSummary(
   dependencies: ApiPackageArtifactResolverDependencies = {},

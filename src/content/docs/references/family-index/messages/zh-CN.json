@@ -3,10 +3,6 @@
   "description": "you-agent-factory 的契约查阅面：HTTP API、事件、schema、命令行界面（CLI）、Model Context Protocol（MCP）以及 JavaScript 运行时。",
   "openingSummary": "本系列汇总 you-agent-factory 已发布的契约面。需要查阅 API 操作、事件形状、配置 schema、命令行界面（CLI）命令、Model Context Protocol（MCP）工具或 JavaScript 运行时绑定时使用本页。本着陆页不是操作指南。",
   "sections": {
-    "introduction": {
-      "title": "本系列涵盖的内容",
-      "body": "参考页是面向工厂契约的 isolation-first 查阅页。每个链接面负责一个契约族：HTTP API、持久事件语料、工厂与配置 schema、命令行界面（CLI）命令矩阵、Model Context Protocol（MCP）工具契约，或 JavaScript 运行时面。先在此选择正确的契约页；仅在需要该面的字段、操作或示例时再打开子页。"
-    },
     "discoverability": {
       "title": "契约面",
       "body": "每张卡片打开一个契约族。标签在窄视口上仍保持可读。"
