@@ -8,6 +8,7 @@
  */
 
 import {
+  type SchemaExampleInput,
   SchemaReference,
   schemaPointerAnchor,
 } from "@/components/references/schema";
@@ -30,6 +31,30 @@ export const SYSTEM_CONFIG_SCHEMA_PAGE_PATH =
 
 /** Reader-facing root header; overrides upstream package title on this page only. */
 export const SYSTEM_CONFIG_SCHEMA_ROOT_TITLE = "System configuration";
+
+/**
+ * Authored operator-config teaching sample aligned with global-configuration /
+ * install defaults (`defaults.workerModelProvider` / `defaults.workerModel`).
+ * Page-local only — do not invent named-struct schema fields or rename the
+ * upstream `schemas/you-config` package examples.
+ */
+export const SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE = {
+  defaults: {
+    workerModelProvider: "codex",
+    workerModel: "gpt-5-codex",
+  },
+} as const;
+
+const SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE_INPUTS: readonly SchemaExampleInput[] =
+  [
+    {
+      id: "operator-config-defaults",
+      value: SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE,
+      origin: "authored",
+      language: "json",
+      label: "Operator config defaults",
+    },
+  ];
 
 export type SystemConfigSchemaReferenceProps = {
   /**
@@ -89,6 +114,7 @@ export function SystemConfigSchemaReference({
       <SchemaReference
         data-testid="system-config-schema-reference"
         definitions={model.definitions}
+        exampleInputs={SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE_INPUTS}
         pagePath={SYSTEM_CONFIG_SCHEMA_PAGE_PATH}
         projection={buildRootDisplayProjection(model.root)}
         resolve={buildResolve(model)}

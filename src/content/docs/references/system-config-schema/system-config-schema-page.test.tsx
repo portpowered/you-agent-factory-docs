@@ -9,6 +9,7 @@ import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders"
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { source } from "@/lib/source";
 import {
+  SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE,
   SYSTEM_CONFIG_SCHEMA_PAGE_PATH,
   SYSTEM_CONFIG_SCHEMA_ROOT_TITLE,
   SystemConfigSchemaReference,
@@ -112,6 +113,16 @@ describe("system-config-schema reference page", () => {
     expect(
       schemaSurface.querySelector('[data-schema-field-path="workerPresets"]'),
     ).toBeTruthy();
+    expect(
+      schemaSurface.querySelector('[data-schema-examples="present"]'),
+    ).toBeTruthy();
+    expect(
+      schemaSurface.querySelector('[data-schema-example-origin="authored"]'),
+    ).toBeTruthy();
+    expect(
+      screen.getByTestId("schema-example-code-operator-config-defaults")
+        .textContent ?? "",
+    ).toMatch(/workerModelProvider[\s\S]*codex/);
 
     const howToAccessSection = document.getElementById("how-to-access");
     expect(howToAccessSection?.textContent ?? "").toMatch(
@@ -181,6 +192,25 @@ describe("SystemConfigSchemaReference mount", () => {
     expect(
       surface.querySelector('[data-schema-field-path="workerPresets"]'),
     ).toBeTruthy();
+
+    // Page-local authored example aligned with global-configuration teaching sample.
+    const examples = surface.querySelector('[data-schema-examples="present"]');
+    expect(examples).toBeTruthy();
+    expect(surface.querySelector('[data-schema-examples="empty"]')).toBeNull();
+    expect(screen.getByText("Authored example")).toBeTruthy();
+    expect(
+      surface.querySelector('[data-schema-example-origin="authored"]'),
+    ).toBeTruthy();
+    const exampleCode = screen.getByTestId(
+      "schema-example-code-operator-config-defaults",
+    );
+    expect(exampleCode.textContent ?? "").toContain(
+      `"workerModelProvider": "${SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE.defaults.workerModelProvider}"`,
+    );
+    expect(exampleCode.textContent ?? "").toContain(
+      `"workerModel": "${SYSTEM_CONFIG_OPERATOR_CONFIG_EXAMPLE.defaults.workerModel}"`,
+    );
+    expect(exampleCode.textContent ?? "").not.toMatch(/defaultModelProvider/);
   });
 
   test("shows an accessible invalid status when schema acquisition fails", () => {
