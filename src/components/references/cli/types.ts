@@ -16,19 +16,21 @@ export type CliCommandReferenceProps = {
    */
   command: CliCommandWithStructuredOptions;
   /**
-   * Package version when known from the resolved manifest identity. Absent
-   * when the caller has no package version — never invent a version string.
+   * Package version when known from the resolved manifest identity. Kept for
+   * inventory callers; command cards no longer render package/source badge
+   * chrome. Absent when the caller has no package version — never invent a
+   * version string.
    */
   packageVersion?: string;
-  /** Localized reference chrome forwarded to shared badge/anchor surfaces. */
+  /** Localized reference chrome forwarded to the stable-anchor copy control. */
   chrome?: ReferenceChromeMessages;
   className?: string;
 };
 
 /**
- * Visible disclosure when structured flags/arguments are unavailable from
- * the published CLI contract. Optional title/description override defaults
- * from `cli-capability.ts` — never used to invent option rows.
+ * Under-construction notice when structured flags/arguments are not yet
+ * published. Optional title/description override defaults from
+ * `cli-capability.ts` — never used to invent option rows.
  */
 export type CliCapabilityNoticeProps = {
   title?: string;

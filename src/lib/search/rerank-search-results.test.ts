@@ -609,4 +609,104 @@ describe("rerankSearchResults", () => {
 
     expect(results[0]?.url).toBe(runRequest);
   });
+
+  test("prefers all mcp page-title hits over weak inventory items and heading spam", () => {
+    const conceptUrl = "/docs/concepts/mcp";
+    const documentationUrl = "/docs/documentation/mcp";
+    const referencesUrl = "/docs/references/mcp";
+    const weakItem = `${referencesUrl}#you.factory_session.start_async`;
+    const headingSpam = `${referencesUrl}#heading-0`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        conceptUrl,
+        documentForUrl(conceptUrl, {
+          kind: "concept",
+          title: "MCP",
+          directAliases: ["MCP"],
+          aliases: ["MCP"],
+          facets: { kind: "concept", tags: ["mcp"] },
+        }),
+      ],
+      [
+        documentationUrl,
+        documentForUrl(documentationUrl, {
+          kind: "documentation",
+          title: "MCP",
+          directAliases: ["MCP"],
+          aliases: ["MCP"],
+          facets: { kind: "documentation", tags: ["mcp"] },
+        }),
+      ],
+      [
+        referencesUrl,
+        documentForUrl(referencesUrl, {
+          kind: "reference",
+          title: "MCP",
+          directAliases: ["MCP"],
+          aliases: ["MCP"],
+          facets: { kind: "reference", tags: ["mcp"] },
+        }),
+      ],
+      [
+        weakItem,
+        documentForUrl(weakItem, {
+          kind: "reference",
+          title: "you.factory_session.start_async",
+          directAliases: ["you.factory_session.start_async"],
+          aliases: ["you.factory_session.start_async"],
+          facets: { kind: "reference", tags: ["mcp"] },
+        }),
+      ],
+    ]);
+
+    const results = rerankSearchResults(
+      "mcp",
+      [
+        {
+          id: weakItem,
+          type: "page",
+          url: weakItem,
+          content: "you.factory_session.start_async",
+        },
+        {
+          id: headingSpam,
+          type: "heading",
+          url: headingSpam,
+          content: "mcp factory session start async",
+        },
+        {
+          id: documentationUrl,
+          type: "page",
+          url: documentationUrl,
+          content: "MCP",
+        },
+        {
+          id: referencesUrl,
+          type: "page",
+          url: referencesUrl,
+          content: "MCP",
+        },
+        {
+          id: conceptUrl,
+          type: "page",
+          url: conceptUrl,
+          content: "MCP",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    const pageTitleUrls = [conceptUrl, documentationUrl, referencesUrl];
+    const firstWeakIndex = results.findIndex(
+      (result) => result.url === weakItem || result.url === headingSpam,
+    );
+    for (const pageUrl of pageTitleUrls) {
+      const pageIndex = results.findIndex((result) => result.url === pageUrl);
+      expect(pageIndex).toBeGreaterThanOrEqual(0);
+      expect(pageIndex).toBeLessThan(firstWeakIndex);
+    }
+    expect(results.map((result) => result.url).slice(-2)).toEqual(
+      expect.arrayContaining([weakItem, headingSpam]),
+    );
+  });
 });

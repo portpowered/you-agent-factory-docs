@@ -9,8 +9,8 @@ import {
   cliCommandInventoryIdentities,
 } from "./CliCommandReference";
 import {
-  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION,
-  CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE,
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION,
+  CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE,
   type CliCommandWithStructuredOptions,
   cliCommandHasStructuredOptions,
 } from "./cli-capability";
@@ -64,7 +64,7 @@ describe("cli-visibility helpers", () => {
 });
 
 describe("CliCommandReference", () => {
-  test("renders available metadata from a normalized CLI projection", () => {
+  test("renders trimmed help surface from a normalized CLI projection", () => {
     const { container } = render(
       <CliCommandReference command={fixtureCommand()} packageVersion="0.0.0" />,
     );
@@ -82,23 +82,38 @@ describe("CliCommandReference", () => {
     expect(
       screen.getByText("Create operator/system config on a fresh home"),
     ).toBeTruthy();
-    expect(screen.getByText("Aliases")).toBeTruthy();
-    expect(screen.getByText("bootstrap")).toBeTruthy();
-    expect(screen.getByText("Visibility")).toBeTruthy();
-    expect(screen.getByText("Visible")).toBeTruthy();
-    expect(screen.getByText("Runnable")).toBeTruthy();
-    expect(screen.getByText("Handler present")).toBeTruthy();
-    expect(screen.getAllByText("Yes").length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText("Long description")).toBeTruthy();
+    expect(
+      screen.getByText(/Use after install/, { exact: false }),
+    ).toBeTruthy();
     expect(screen.getByText("Example")).toBeTruthy();
     expect(
       container.querySelector("[data-cli-example-code]")?.textContent,
     ).toContain("you config init");
-    expect(screen.getByText("0.0.0")).toBeTruthy();
-    expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
+    expect(
+      container.querySelector("[data-reference-copyable-anchor]"),
+    ).toBeTruthy();
+
+    // Verbose metadata chrome removed from the card body.
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(
+      container.querySelector("[data-reference-status-chrome]"),
+    ).toBeNull();
+    expect(screen.queryByText("Aliases")).toBeNull();
+    expect(screen.queryByText("bootstrap")).toBeNull();
+    expect(screen.queryByText("Command path")).toBeNull();
+    expect(screen.queryByText("Leaf name")).toBeNull();
+    expect(screen.queryByText("Visibility")).toBeNull();
+    expect(screen.queryByText("Runnable")).toBeNull();
+    expect(screen.queryByText("Handler present")).toBeNull();
+    expect(screen.queryByText("Lifecycle: Active")).toBeNull();
+    expect(screen.queryByText("0.0.0")).toBeNull();
+    expect(screen.queryByText("Not published on this projection")).toBeNull();
+    expect(screen.queryByText("Family")).toBeNull();
+    expect(screen.queryByText("Source artifact")).toBeNull();
   });
 
-  test("omits optional metadata when the projection left it absent", () => {
+  test("omits optional help fields when the projection left them absent", () => {
     render(
       <CliCommandReference
         command={fixtureCommand({
@@ -115,16 +130,22 @@ describe("CliCommandReference", () => {
       />,
     );
 
+    expect(
+      screen.getByRole("heading", { name: "you config init" }),
+    ).toBeTruthy();
+    expect(screen.queryByText("Long description")).toBeNull();
+    expect(screen.queryByText("Example")).toBeNull();
     expect(screen.queryByText("Aliases")).toBeNull();
+    expect(screen.queryByText("Command path")).toBeNull();
     expect(screen.queryByText("Visibility")).toBeNull();
     expect(screen.queryByText("Runnable")).toBeNull();
     expect(screen.queryByText("Handler present")).toBeNull();
-    expect(screen.queryByText("Long description")).toBeNull();
-    expect(screen.queryByText("Example")).toBeNull();
-    expect(screen.getByText("Not published on this projection")).toBeTruthy();
+    expect(screen.queryByText("Leaf name")).toBeNull();
+    expect(screen.queryByText("Not published on this projection")).toBeNull();
+    expect(document.querySelector("[data-contract-source-badge]")).toBeNull();
   });
 
-  test("shows CliCapabilityNotice when structured flags/arguments are absent", () => {
+  test("shows under-construction Flags and arguments when structured options are absent", () => {
     const { container } = render(
       <CliCommandReference command={fixtureCommand()} />,
     );
@@ -133,12 +154,21 @@ describe("CliCommandReference", () => {
       container.querySelector("[data-cli-capability-notice]"),
     ).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+      container.querySelector(
+        '[data-cli-capability="structured-options-under-construction"]',
+      ),
     ).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION),
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
     ).toBeTruthy();
     expect(screen.getByText("Flags and arguments")).toBeTruthy();
+    // Old apology panel is gone.
+    expect(
+      screen.queryByText("Structured flags and arguments unavailable"),
+    ).toBeNull();
     // Visible status chrome — not hover-only.
     expect(screen.getByRole("status")).toBeTruthy();
     // Does not invent option rows.
@@ -148,7 +178,7 @@ describe("CliCommandReference", () => {
     expect(screen.queryByText("Conflicts")).toBeNull();
   });
 
-  test("hides CliCapabilityNotice when structured options exist on the projection", () => {
+  test("hides under-construction notice when structured options exist on the projection", () => {
     const enriched: CliCommandWithStructuredOptions = {
       ...fixtureCommand(),
       flags: [{ name: "--dry-run" }],
@@ -158,7 +188,7 @@ describe("CliCommandReference", () => {
 
     expect(container.querySelector("[data-cli-capability-notice]")).toBeNull();
     expect(
-      screen.queryByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+      screen.queryByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
     ).toBeNull();
     // Still does not invent rendered option rows in this story.
     expect(screen.queryByText("--dry-run")).toBeNull();
@@ -194,21 +224,24 @@ describe("cliCommandHasStructuredOptions", () => {
 });
 
 describe("CliCapabilityNotice", () => {
-  test("renders accessible visible disclosure copy", () => {
+  test("renders accessible under-construction treatment", () => {
     const { container } = render(<CliCapabilityNotice />);
 
     expect(
       container.querySelector(
-        '[data-cli-capability="structured-options-unavailable"]',
+        '[data-cli-capability="structured-options-under-construction"]',
       ),
     ).toBeTruthy();
     expect(screen.getByRole("status")).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_TITLE),
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_TITLE),
     ).toBeTruthy();
     expect(
-      screen.getByText(CLI_STRUCTURED_OPTIONS_UNAVAILABLE_DESCRIPTION),
+      screen.getByText(CLI_STRUCTURED_OPTIONS_UNDER_CONSTRUCTION_DESCRIPTION),
     ).toBeTruthy();
+    expect(
+      screen.queryByText("Structured flags and arguments unavailable"),
+    ).toBeNull();
   });
 });
 
@@ -255,6 +288,13 @@ describe("CliCommandInventory", () => {
         .querySelector("[data-cli-command-reference]#you-config-init")
         ?.getAttribute("id"),
     ).toBe("you-config-init");
+    // Inventory cards stay trimmed — no ContractSourceBadge chrome restored.
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(
+      container.querySelectorAll(
+        '[data-cli-capability="structured-options-under-construction"]',
+      ).length,
+    ).toBe(2);
   });
 
   test("filters the inventory ephemerally without mutating projections", async () => {
