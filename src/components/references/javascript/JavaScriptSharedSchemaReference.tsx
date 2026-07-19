@@ -1,26 +1,27 @@
 import {
-  ContractSourceBadge,
   CopyableReferenceAnchor,
+  ReferenceLifecycleVisibility,
   SchemaDefinitionEmbed,
 } from "@/components/references/shared";
 import { CodePanel } from "@/features/factory-ui/data-display";
 import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { JavascriptSharedSchemaNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
-import {
-  javascriptVisibilityDisplayLabel,
-  mapJavascriptVisibilityToReferenceVisibility,
-} from "./javascript-visibility";
+import { trimJavascriptSharedSchemaDefinitionForCard } from "./javascript-shared-schema-presentation";
+import { mapJavascriptVisibilityToReferenceVisibility } from "./javascript-visibility";
 import type { JavaScriptSharedSchemaReferenceProps } from "./types";
 
 /**
  * Render one normalized JavaScript shared schema with a thin
  * SchemaDefinitionModel embed (no W07 fork). Does not invent schema
  * properties, titles, or examples.
+ *
+ * Shared-schema cards keep lifecycle/visibility as pills only — no family /
+ * package-version / source-artifact chrome, no schema-id / name / title /
+ * object-policy / type metadata rows, and no duplicated visibility text field.
  */
 export function JavaScriptSharedSchemaReference({
   schema,
-  packageVersion,
   chrome,
   className,
 }: JavaScriptSharedSchemaReferenceProps) {
@@ -28,6 +29,10 @@ export function JavaScriptSharedSchemaReference({
     schema.visibility,
   );
   const heading = schema.title ?? schema.name;
+  const schemaBody =
+    schema.schema !== undefined
+      ? trimJavascriptSharedSchemaDefinitionForCard(schema.schema)
+      : undefined;
 
   return (
     <article
@@ -62,32 +67,18 @@ export function JavaScriptSharedSchemaReference({
         ) : null}
       </header>
 
-      <ContractSourceBadge
+      <ReferenceLifecycleVisibility
         chrome={chrome}
-        family="javascript"
         lifecycle={schema.lifecycle}
-        packageVersion={packageVersion}
-        source={schema.source}
         visibility={sharedVisibility}
       />
-
-      <dl className="m-0 grid gap-2 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-4">
-        <MetadataRow label="Schema id" value={schema.id} mono />
-        <MetadataRow label="Name" value={schema.name} mono />
-        {schema.visibility !== undefined ? (
-          <MetadataRow
-            label="Visibility"
-            value={javascriptVisibilityDisplayLabel(schema.visibility)}
-          />
-        ) : null}
-      </dl>
 
       <section className="space-y-2" data-javascript-shared-schema-body="">
         <h4 className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Schema
         </h4>
-        {schema.schema !== undefined ? (
-          <SchemaDefinitionEmbed definition={schema.schema} />
+        {schemaBody !== undefined ? (
+          <SchemaDefinitionEmbed definition={schemaBody} />
         ) : (
           <p
             className="m-0 text-sm text-muted-foreground"
@@ -114,27 +105,6 @@ export function JavaScriptSharedSchemaReference({
         </section>
       ) : null}
     </article>
-  );
-}
-
-function MetadataRow({
-  label,
-  value,
-  mono = false,
-}: {
-  label: string;
-  value: string;
-  mono?: boolean;
-}) {
-  return (
-    <div className="contents">
-      <dt className="m-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
-      </dt>
-      <dd className={cn("m-0", mono ? "font-mono text-xs" : undefined)}>
-        {value}
-      </dd>
-    </div>
   );
 }
 

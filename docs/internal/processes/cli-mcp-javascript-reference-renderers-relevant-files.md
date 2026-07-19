@@ -67,8 +67,9 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/components/references/javascript/JavaScriptSymbolMetadataPills.tsx` | Glossary-backed kind / mutability / nullability / binding-lifecycle pills linking to on-page glossary anchors |
 | `src/components/references/javascript/javascript-symbol-metadata.ts` | Pure published-value → display-label helpers + glossary anchor ids |
 | `src/components/references/javascript/javascript-symbol-metadata-glossary.ts` | On-page glossary term/definition copy for published metadata facets |
-| `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed |
-| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome |
+| `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed; polished cards use `ReferenceLifecycleVisibility` only (no `ContractSourceBadge`, no schema-id/name/title/type/object-policy chrome) |
+| `src/components/references/javascript/javascript-shared-schema-presentation.ts` | Pure JS-owned helpers: trim shared-schema embed chrome fields; filter Symbols-list duplicates of shared schemas |
+| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome; Symbols list omits shared-schema duplicates |
 | `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
 | `src/components/references/javascript/types.ts` | JS renderer prop contracts / inventory input union |
 | `src/components/references/javascript/index.ts` | Public JavaScript renderer barrel |

@@ -20,6 +20,7 @@ import type {
 import { cn } from "@/lib/utils";
 import { JavaScriptSharedSchemaReference } from "./JavaScriptSharedSchemaReference";
 import { JavaScriptSymbolReference } from "./JavaScriptSymbolReference";
+import { filterJavascriptSymbolsExcludingSharedSchemaDuplicates } from "./javascript-shared-schema-presentation";
 import type { JavaScriptRuntimeInventoryProps } from "./types";
 
 type JsFilterableSymbol = ReferenceInventoryFilterableItem & {
@@ -102,8 +103,15 @@ export function JavaScriptRuntimeInventory({
     if (inventory.state !== "success") {
       return { symbols: [], sharedSchemas: [] };
     }
+    // Drop shared-schema duplicates before registry assignment so identical
+    // identities do not collide as both symbol and schema-pointer anchors.
+    const symbolsForDisplay =
+      filterJavascriptSymbolsExcludingSharedSchemaDuplicates(
+        inventory.symbols,
+        inventory.sharedSchemas,
+      );
     const result = assignJavascriptRuntimeRegistryAnchors(
-      inventory.symbols,
+      symbolsForDisplay,
       inventory.sharedSchemas,
     );
     return {
@@ -173,6 +181,7 @@ export function JavaScriptRuntimeInventory({
     );
   }
 
+  // Shared-schema identities were already dropped from Symbols before anchors.
   const filterable: JsFilterableItem[] = [
     ...anchored.symbols.map(toFilterableSymbol),
     ...anchored.sharedSchemas.map(toFilterableSchema),

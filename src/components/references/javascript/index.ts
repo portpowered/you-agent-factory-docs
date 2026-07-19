@@ -9,6 +9,11 @@ export {
   javascriptSymbolInventoryIdentities,
 } from "./JavaScriptSymbolReference";
 export {
+  filterJavascriptSymbolsExcludingSharedSchemaDuplicates,
+  isJavascriptSymbolDuplicatingSharedSchema,
+  trimJavascriptSharedSchemaDefinitionForCard,
+} from "./javascript-shared-schema-presentation";
+export {
   JAVASCRIPT_SYMBOL_BINDING_LIFECYCLE_LABELS,
   JAVASCRIPT_SYMBOL_KIND_LABELS,
   JAVASCRIPT_SYMBOL_METADATA_FACET_LABELS,

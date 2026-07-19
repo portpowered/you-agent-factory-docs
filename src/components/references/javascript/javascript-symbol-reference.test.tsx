@@ -18,6 +18,11 @@ import {
   javascriptSymbolInventoryIdentities,
 } from "./JavaScriptSymbolReference";
 import {
+  filterJavascriptSymbolsExcludingSharedSchemaDuplicates,
+  isJavascriptSymbolDuplicatingSharedSchema,
+  trimJavascriptSharedSchemaDefinitionForCard,
+} from "./javascript-shared-schema-presentation";
+import {
   javascriptSymbolBindingLifecycleLabel,
   javascriptSymbolKindLabel,
   javascriptSymbolMutabilityLabel,
@@ -303,6 +308,66 @@ describe("JavaScriptSymbolReference", () => {
   });
 });
 
+describe("javascript shared schema presentation helpers", () => {
+  test("detects shared-schema duplicates by id or source pointer", () => {
+    const schemas = [fixtureSharedSchema()];
+    expect(
+      isJavascriptSymbolDuplicatingSharedSchema(
+        fixtureSymbol({
+          id: "javascript.schema.checkpoint_spec",
+          name: "checkpoint_spec",
+          symbolPath: "checkpoint_spec",
+        }),
+        schemas,
+      ),
+    ).toBe(true);
+    expect(
+      isJavascriptSymbolDuplicatingSharedSchema(
+        fixtureSymbol({
+          id: "javascript.schema.from-pointer",
+          source: {
+            publicArtifactId: "@you-agent-factory/api/javascript/runtime",
+            pointer: "/sharedSchemas/javascript.schema.from-pointer",
+            path: "generated/javascript/runtime-api.json",
+          },
+        }),
+        schemas,
+      ),
+    ).toBe(true);
+    expect(
+      isJavascriptSymbolDuplicatingSharedSchema(fixtureSymbol(), schemas),
+    ).toBe(false);
+  });
+
+  test("filters duplicate symbols while keeping ordinary runtime symbols", () => {
+    const schemas = [fixtureSharedSchema()];
+    const filtered = filterJavascriptSymbolsExcludingSharedSchemaDuplicates(
+      [
+        fixtureSymbol(),
+        fixtureSymbol({
+          id: "javascript.schema.checkpoint_spec",
+          name: "checkpoint_spec",
+          symbolPath: "checkpoint_spec",
+          anchor: "javascript.schema.checkpoint_spec",
+        }),
+      ],
+      schemas,
+    );
+    expect(javascriptSymbolInventoryIdentities(filtered)).toEqual(["log"]);
+  });
+
+  test("trims title, type, and object-policy from schema body chrome", () => {
+    const trimmed = trimJavascriptSharedSchemaDefinitionForCard(
+      fixtureSchemaBody(),
+    );
+    expect(trimmed.title).toBeUndefined();
+    expect(trimmed.type).toBeUndefined();
+    expect(trimmed.additionalProperties).toBeUndefined();
+    expect(trimmed.properties?.label).toBeTruthy();
+    expect(trimmed.required).toEqual(["label"]);
+  });
+});
+
 describe("JavaScriptSharedSchemaReference", () => {
   test("renders schema embed and authored examples", () => {
     const { container } = render(
@@ -329,6 +394,44 @@ describe("JavaScriptSharedSchemaReference", () => {
       container.querySelector('[data-schema-property="label"]'),
     ).toBeTruthy();
     expect(screen.getByText('{ "label": "draft", "state": {} }')).toBeTruthy();
+  });
+
+  test("omits family/package/source chrome and duplicated identity fields", () => {
+    const { container } = render(
+      <JavaScriptSharedSchemaReference
+        packageVersion="0.0.0"
+        schema={fixtureSharedSchema()}
+      />,
+    );
+
+    expect(container.querySelector("[data-contract-source-badge]")).toBeNull();
+    expect(container.querySelector("[data-source-artifact]")).toBeNull();
+    expect(container.querySelector("[data-package-version]")).toBeNull();
+    expect(screen.queryByText("Family")).toBeNull();
+    expect(screen.queryByText("Package version")).toBeNull();
+    expect(screen.queryByText("Source artifact")).toBeNull();
+    expect(screen.queryByText("Schema id")).toBeNull();
+    expect(screen.queryByText("Name")).toBeNull();
+    expect(screen.queryByText("Title")).toBeNull();
+    expect(screen.queryByText("Type")).toBeNull();
+    expect(screen.queryByText("Object policy")).toBeNull();
+    expect(screen.queryByText("0.0.0")).toBeNull();
+    expect(
+      screen.queryByText("@you-agent-factory/api/javascript/runtime"),
+    ).toBeNull();
+
+    // Lifecycle/visibility remain as pills; no Visibility metadata row.
+    expect(
+      container.querySelector("[data-reference-status-chrome]"),
+    ).toBeTruthy();
+    expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
+    expect(screen.getByText("Visibility: Public")).toBeTruthy();
+    expect(
+      container.querySelector("[data-schema-definition-embed]"),
+    ).toBeTruthy();
+    expect(
+      container.querySelector('[data-schema-property="label"]'),
+    ).toBeTruthy();
   });
 
   test("discloses absent schema body without inventing properties", () => {
@@ -396,6 +499,54 @@ describe("JavaScriptRuntimeInventory", () => {
     expect(javascriptSharedSchemaInventoryIdentities(sharedSchemas)).toEqual([
       "javascript.schema.checkpoint_spec",
     ]);
+  });
+
+  test("keeps shared-schema duplicates out of the Symbols list", () => {
+    const sharedSchemas = [fixtureSharedSchema()];
+    const symbols = [
+      fixtureSymbol(),
+      fixtureSymbol({
+        id: "javascript.schema.checkpoint_spec",
+        name: "checkpoint_spec",
+        symbolPath: "checkpoint_spec",
+        kind: "value",
+        anchor: "javascript.schema.checkpoint_spec-symbol",
+        sharedSchemaLinks: undefined,
+        examples: undefined,
+      }),
+    ];
+    const { container } = render(
+      <JavaScriptRuntimeInventory
+        inventory={{
+          state: "success",
+          symbols,
+          sharedSchemas,
+          packageVersion: "0.0.0",
+        }}
+      />,
+    );
+
+    const symbolCards = container.querySelectorAll(
+      "[data-javascript-symbol-reference]",
+    );
+    expect(symbolCards.length).toBe(1);
+    expect(symbolCards[0]?.getAttribute("data-javascript-symbol-path")).toBe(
+      "log",
+    );
+    expect(
+      container.querySelectorAll("[data-javascript-shared-schema-reference]")
+        .length,
+    ).toBe(1);
+    expect(
+      container
+        .querySelector("[data-javascript-runtime-inventory]")
+        ?.getAttribute("data-javascript-symbol-count"),
+    ).toBe("1");
+    expect(
+      container.querySelector(
+        '[data-javascript-shared-schema-id="javascript.schema.checkpoint_spec"]',
+      ),
+    ).toBeTruthy();
   });
 
   test("shows empty state for empty inventories", () => {

@@ -5,6 +5,7 @@
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
+import { filterJavascriptSymbolsExcludingSharedSchemaDuplicates } from "@/components/references/javascript/javascript-shared-schema-presentation";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
 import { loadLocalDocsPage } from "@/lib/content/local-docs-page";
 import { loadJavascriptRuntimeReferenceInventory } from "@/lib/references/load-javascript-runtime-reference-inventory";
@@ -71,6 +72,11 @@ describe("javascript-runtime reference page", () => {
       }
       expect(inventory.symbols.length).toBeGreaterThan(3);
       expect(inventory.sharedSchemas.length).toBeGreaterThan(0);
+      const symbolsForDisplay =
+        filterJavascriptSymbolsExcludingSharedSchemaDuplicates(
+          inventory.symbols,
+          inventory.sharedSchemas,
+        );
 
       render(
         <main>
@@ -149,13 +155,23 @@ describe("javascript-runtime reference page", () => {
         Number(
           inventoryRoot?.getAttribute("data-javascript-symbol-count") ?? "0",
         ),
-      ).toBe(inventory.symbols.length);
+      ).toBe(symbolsForDisplay.length);
       expect(
         Number(
           inventoryRoot?.getAttribute("data-javascript-shared-schema-count") ??
             "0",
         ),
       ).toBe(inventory.sharedSchemas.length);
+      expect(
+        document.querySelectorAll("[data-javascript-shared-schema-reference]")
+          .length,
+      ).toBe(inventory.sharedSchemas.length);
+      expect(
+        document.querySelector(
+          "[data-javascript-shared-schema-reference] [data-contract-source-badge]",
+        ),
+      ).toBeNull();
+      expect(screen.queryByText("Schema id", { selector: "dt" })).toBeNull();
 
       expect(
         screen.getByText(

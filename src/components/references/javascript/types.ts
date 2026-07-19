@@ -26,6 +26,11 @@ export type JavaScriptSymbolReferenceProps = {
 export type JavaScriptSharedSchemaReferenceProps = {
   /** Normalized shared schema from W04 projections. */
   schema: JavascriptSharedSchemaNormalized;
+  /**
+   * Accepted for caller compatibility with inventory mounts. Shared-schema
+   * cards no longer render package-version chrome (lifecycle/visibility pills
+   * only).
+   */
   packageVersion?: string;
   chrome?: ReferenceChromeMessages;
   className?: string;
