@@ -65,7 +65,7 @@ const REPRESENTATIVE_FACTORY_PAGES = [
   {
     folderName: "Workstations",
     url: "/docs/workstations/inference-run",
-    name: "Inference-run type",
+    name: "Inference-run workstation",
   },
 ] as const;
 

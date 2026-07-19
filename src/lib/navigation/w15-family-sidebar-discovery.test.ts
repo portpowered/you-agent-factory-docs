@@ -43,7 +43,7 @@ const SETTLED_FAMILY_PAGE_PROOFS = [
   {
     folderName: FACTORY_EXPLORER_FOLDER_LABELS.workstations,
     url: "/docs/workstations/inference-run",
-    name: "Inference-run type",
+    name: "Inference-run workstation",
   },
 ] as const;
 
