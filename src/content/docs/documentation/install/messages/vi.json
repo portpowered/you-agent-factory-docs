@@ -1,15 +1,8 @@
 {
   "title": "Cài đặt you-agent-factory",
   "description": "Cài đặt CLI you-agent-factory trên macOS, Linux hoặc Windows bằng script cài đặt phát hành, rồi scaffold một factory.",
+  "openingSummary": "Install the you-agent-factory CLI with the published release scripts for your operating system, then scaffold a factory.",
   "sections": {
-    "whatItCovers": {
-      "title": "Nội dung bao gồm",
-      "body": "Cài đặt là tài liệu tham chiếu để đưa you-agent-factory lên máy. Nó gồm script cài đặt curl cho macOS và Linux, script cài đặt PowerShell cho Windows, và các ghi chú scaffold đầu tiên sau khi cài đặt thành công. Dùng trang này khi bạn cần lệnh cài đặt đầy đủ theo hệ điều hành thay vì CTA ngắn trên trang chủ."
-    },
-    "keyConcepts": {
-      "title": "Khái niệm chính",
-      "body": "Script cài đặt tải bản phát hành CLI cho hệ điều hành của bạn và đặt binary you vào PATH để lệnh you sẵn sàng trong shell. Sau khi cài đặt, you init scaffold một thư mục factory. Cờ --executor chọn scaffold worker khởi đầu nào được tạo: bỏ qua để dùng scaffold mặc định dựa trên Codex, hoặc truyền claude cho scaffold dựa trên Claude. Các giá trị starter được hỗ trợ là codex và claude."
-    },
     "howToUse": {
       "title": "Cách dùng",
       "body": "Chạy lệnh cài đặt cho hệ điều hành của bạn. Cả hai đường đều dùng cùng tài nguyên GitHub Releases như CTA cài đặt trên trang chủ. Sau khi script xong, xác nhận you có sẵn trong shell. Rồi scaffold một factory. Bỏ qua --executor giữ scaffold starter mặc định dựa trên Codex. Truyền --executor claude khi bạn muốn scaffold mặc định dựa trên Claude. Sau khi cài đặt, tiếp tục với Bắt đầu cho vòng chạy và gửi đầu tiên, hoặc mở tài liệu CLI khi bạn cần ma trận lệnh rộng hơn."

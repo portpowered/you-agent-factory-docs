@@ -3,18 +3,6 @@
   "description": "Submit work batches to a running you-agent-factory and relate work items with DEPENDS_ON or PARENT_CHILD.",
   "openingSummary": "Submitting work is how you enqueue one or more work items into a factory that is already running, including batch documents and the relationships that order or nest those items.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Submitting work to you-agent-factory means shaping a FACTORY_REQUEST_BATCH, submitting that batch to a factory that is already running, and using DEPENDS_ON and PARENT_CHILD relationships to order or nest the work items in that batch."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "Submitted work enters a factory that is already running — the factory must accept work before a batch lands. A batch creates multiple work items in one validated submission, so the factory either accepts the whole document or rejects it. Relations order or nest those items: DEPENDS_ON waits on a sibling prerequisite, and PARENT_CHILD keeps child work under a parent."
-    },
-    "howToUse": {
-      "title": "How To Use",
-      "body": "Author a FACTORY_REQUEST_BATCH with a stable requestId and the works you want to enqueue. Add relations when items must wait on each other or nest under a parent. Submit the batch to a running factory, and use dry-run when you want validation without creating work. Open the CLI docs for the broader command matrix, or getting started when you need the first-run walkthrough."
-    },
     "workBatches": {
       "title": "Work Batches",
       "body": "A FACTORY_REQUEST_BATCH is one JSON document that creates multiple work items in a single validated submission. Required fields are requestId, type set to FACTORY_REQUEST_BATCH, and a works array. Each works entry needs a name and a workTypeName that exists in the target factory. The factory validates the full batch before creating any work, so an invalid batch rejects the whole submission."

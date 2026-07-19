@@ -3,14 +3,6 @@
   "description": "How to add factory documentation pages to the you-agent-factory docs site without recreating retired product patterns.",
   "openingSummary": "Contributing orients you when you want to add you-agent-factory documentation: live collections, production templates, isolation-first writing, and the ordinary local validation path—without pasting the full maintainer runbook.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "you-agent-factory docs cover the CLI and agent-factory workflow system. Readers use them to install and run the CLI, follow use-case guides, look up concepts and techniques, read documentation topics, browse the glossary, and follow blog posts. They are not Model Atlas, not a benchmark leaderboard, and not a paper-download mirror. Contributing means adding factory docs for those live surfaces, not recreating retired Atlas collections or promising future Model Atlas content."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "Choose a collection that matches the reader job: guides for step-by-step paths, concepts for named ideas, techniques for named workflow patterns, documentation for reference topics, glossary for short definitions, or blog for time-specific narrative posts. Each canonical docs page keeps structure in MDX, reader-facing prose in colocated message files, and discovery metadata in a registry record. Production templates under docs/templates supply the starter MDX, messages, and assets shape. Isolation-first writing means the page teaches its topic on its own without page-meta framing or reader-shortcut callouts."
-    },
     "howToUse": {
       "title": "How To Use",
       "body": "Pick the matching collection, copy the production template and starter message and asset sidecars into a new page bundle, fill isolation-first prose in messages, and add the matching registry record. Run make validate-data as the ordinary local validation path before opening a pull request, then follow any related contributor checks the repository documents for content work. Deeper maintainer references stay in the repository: site fundamentals, the documentation template, writing standards, and the full CONTRIBUTING guide. Use the links below for those references and for nearby published factory pages."

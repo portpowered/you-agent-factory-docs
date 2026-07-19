@@ -3,21 +3,9 @@
   "description": "安装 you-agent-factory CLI，并查阅用于启动工厂、提交工作、检查会话以及阅读打包文档的核心 you 命令。",
   "openingSummary": "you-agent-factory CLI 是从本机安装工厂工具并操作长时间运行的代理工作的命令行入口。",
   "sections": {
-    "whatItCovers": {
-      "title": "涵盖内容",
-      "body": "本参考说明涵盖 you-agent-factory CLI：如何安装 you 二进制，以及哪些核心命令用于启动工厂、提交工作、检查会话与工作，或打印打包文档。它是面向需要一眼看清安装入口与命令用途的客户的持久 CLI 查阅面。"
-    },
-    "keyConcepts": {
-      "title": "关键概念",
-      "body": "工厂是在本机上保持代理工作持久运行的长时间运行时。启动工厂意味着用 you 或 you run 等形式启动该运行时，使主机可以接受工作。提交工作意味着向已经在运行的工厂发送工作项或批次，形式如 you submit 或 you submit batch。会话与工作命令用于检查实时工厂状态。打包文档命令可在无需实时工厂的情况下打印参考 markdown。"
-    },
     "install": {
       "title": "安装",
       "body": "使用适用于你操作系统的已发布安装入口安装 you CLI。这些命令会安装二进制，但不会启动工厂。"
-    },
-    "howToUse": {
-      "title": "如何使用",
-      "body": "先安装 CLI，然后用下方命令矩阵选择合适的 you 命令。需要本地运行时时启动工厂。仅在工厂已经运行后再提交工作。用会话与工作命令检查实时状态；需要不依赖实时工厂的打包参考主题时使用 you docs。"
     },
     "commands": {
       "title": "命令",
