@@ -2,17 +2,9 @@
   "title": "Security / Trust Boundaries",
   "description": "Current you-agent-factory trust boundaries for the local factory service, operator surfaces, and sensitive artifacts—not a compliance certification claim.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Security / Trust Boundaries is the you-agent-factory reference for what the local factory service trusts and exposes today. It covers the local operator service surface, how operator paths differ from autonomous-agent ingress, how sensitive replay and config diagnostics are handled, and the stdio scope of MCP serve. Use it when you need a clear picture of current trust boundaries—not a penetration-test report, not an enterprise security program, and not a compliance certification claim."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "The local factory service binds on the operator machine by default. Session and API traffic use the default local host and port http://localhost:7437 unless you override host or port. When the service was started via you or you run without quiet mode, the operator dashboard is available at http://localhost:7437/dashboard/ui on that same host and port. Treat that bind and dashboard URL as an operator-accessible local surface, not a multi-tenant public product edge. Autonomous agents must submit work only through the CLI—you submit for one item, you submit batch for a FACTORY_REQUEST_BATCH against a running factory, and you run --work only as part of local startup. Dashboard submit and POST /factory-sessions/{session_id}/work remain operator paths; autonomous agents must not treat them as parallel control ingress. Replay artifacts are sensitive because they can contain prompts, payloads, stdout, stderr, and diagnostic metadata. Retention is operator-owned: the product does not delete old recordings automatically, and operators manage what stays in the home directory or CI workspace. Config and operator-default diagnostics name the config path and sources (file, env, flag, or unset) without printing unrelated environment values or credentials. Model Context Protocol (MCP) serve is stdio-bounded: you mcp serve runs as a host-spawned stdio child process, and HTTP or SSE MCP transport is unsupported on that path."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Use Security / Trust Boundaries to see which surfaces are operator-local, which ingress autonomous agents may use, and which artifacts need operator care. For concrete host, port, and run-mode setup, open the configuration docs. For live session discover, inspect, and lifecycle control, open the factory-session docs. For live-run watching from status and the operator dashboard, open the metrics docs. For stdio MCP host setup, open the MCP docs. For on-disk runtime logs and CLI diagnostics, open the logs docs. For install and core command purpose, open the CLI docs. For capture, sensitivity, and retention of recordings, open the replays / records docs. Those siblings own the setup and operational detail."
+      "body": "The local factory service binds on the operator machine by default. Session and API traffic use the default local host and port http://localhost:7437 unless you override host or port. When the service was started via you or you run without quiet mode, the operator dashboard is available at http://localhost:7437/dashboard/ui on that same host and port. Treat that bind and dashboard URL as an operator-accessible local surface, not a multi-tenant public product edge. Autonomous agents must submit work only through the CLI—you submit for one item, you submit batch for a FACTORY_REQUEST_BATCH against a running factory, and you run --work only as part of local startup. Dashboard submit and POST /factory-sessions/{session_id}/work remain operator paths; autonomous agents must not treat them as parallel control ingress. Replay artifacts are sensitive because they can contain prompts, payloads, stdout, stderr, and diagnostic metadata. Retention is operator-owned: the product does not delete old recordings automatically, and operators manage what stays in the home directory or CI workspace. Config and operator-default diagnostics name the config path and sources (file, env, flag, or unset) without printing unrelated environment values or credentials. Model Context Protocol (MCP) serve is stdio-bounded: you mcp serve runs as a host-spawned stdio child process, and HTTP or SSE MCP transport is unsupported on that path."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -37,5 +29,6 @@
     "logsDocs": "Logs",
     "cliDocs": "CLI",
     "replaysRecordsDocs": "Replays / Records"
-  }
+  },
+  "openingSummary": "Security / Trust Boundaries describes what the local you-agent-factory service trusts and exposes today—not a compliance certification claim."
 }

@@ -1761,6 +1761,32 @@ Representative paired-slice verification:
 * `src/lib/content/qwen-3-6-discovery.test.tsx`
 * `src/lib/content/glm-family-discovery.test.tsx`
 
+### Documentation Program ops/platform intro strip (page-local)
+
+For the nine ops/platform Documentation Program trees under
+`src/content/docs/documentation/` (`logs`, `metrics`, `resources`, `petri`,
+`packaged-documents`, `dashboard-ui-overview`, `security-trust-boundaries`,
+`throttling-and-limits`, `replays-records`):
+
+- Remove `#what-it-covers` / `#key-concepts` Sections from `page.mdx` and drop
+  `sections.whatItCovers` / `sections.keyConcepts` from every shipped locale.
+- Keep at most one short purpose lead via `openingSummary` (rendered by
+  `DocsOpeningSummary`); omit or empty it when the first remaining body section
+  already opens usefully. Do not ship a multi-paragraph Summary section heading.
+- Strip `#how-to-use` when it is only sibling-pointer / opening boilerplate
+  (`metrics`, `resources`). When How To Use wraps primary operational teaching
+  (tables, commands, CPN asset, pressure-surface table), keep that teaching
+  visible—promote unique facts that lived only under Key Concepts into the
+  remaining body (for example throttling surface table into `#how-to-use`,
+  packaged callouts into `#how-to-use`, dashboard/security bind URL teaching
+  into `#how-to-use`).
+- Do not edit core Program sibling trees owned by
+  `repair-documentation-program-intro-strip-core`, and do not delete unused
+  shared helpers (dead-code consolidation owns that).
+- Page-local tests (next story) should assert intro absence and retarget body
+  asserts onto promoted teaching markers—not restore intros to satisfy old
+  expects.
+
 ## Reviewer-facing verification
 
 * Canonical concept page slices should keep one `*-slice-verification` file with

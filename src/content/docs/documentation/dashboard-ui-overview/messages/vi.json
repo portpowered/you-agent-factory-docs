@@ -2,17 +2,9 @@
   "title": "Dashboard / UI Overview",
   "description": "Overview of the you-agent-factory local operator dashboard for live Factory Session inspection and control visibility—not a rebuilt in-docs dashboard product.",
   "sections": {
-    "whatItCovers": {
-      "title": "What It Covers",
-      "body": "Dashboard / UI Overview is the you-agent-factory reference for the local browser operator surface. It covers how to open the dashboard on a running host, what live session selection, work position, and factory activity show today, and how Factory Session detail and lifecycle banner state line up with CLI and API reads. Use it when you need a clear picture of the operator dashboard—not a rebuilt in-docs dashboard product, not a full CLI flag dump, and not a sync of every packaged you docs topic."
-    },
-    "keyConcepts": {
-      "title": "Key Concepts",
-      "body": "When the service was started via you or you run without quiet mode, the local operator dashboard is available at http://localhost:7437/dashboard/ui. Use the same host and port as the API unless the process that bound the listener used a different server or port setting. The dashboard shows live session selection, work position, and factory activity while a Factory Session runs. Factory Session detail and the session lifecycle banner are derived from canonical API status and replayed SESSION_LIFECYCLE_CONTROL / session event stream facts rather than dashboard-owned state. For the shipped durable JavaScript path, the Factory Session detail surface should line up with the same session identity, phase, checkpoint refs, dispatch counts, artifacts, and lifecycle banner state you can read through CLI or API status and event inspection."
-    },
     "howToUse": {
       "title": "How To Use",
-      "body": "Open the dashboard when you want a browser surface for live Factory Session inspection and control visibility on a running host. Prefer CLI and API reads—you session list, you session show, you workflow status, and matching status or event endpoints—when you need scripted checks, CI-oriented quiet runs, or machine-readable snapshots without a browser. For discover, inspect, and lifecycle control detail, open the factory-session docs. For live-run watching from status and the same operator dashboard metrics surface, open the metrics docs. For host, port, and run-mode setup, open the configuration docs. Those siblings own the operational and setup detail."
+      "body": "When the service was started via you or you run without quiet mode, the local operator dashboard is available at http://localhost:7437/dashboard/ui. Use the same host and port as the API unless the process that bound the listener used a different server or port setting. The dashboard shows live session selection, work position, and factory activity while a Factory Session runs. Factory Session detail and the session lifecycle banner are derived from canonical API status and replayed SESSION_LIFECYCLE_CONTROL / session event stream facts rather than dashboard-owned state. For the shipped durable JavaScript path, the Factory Session detail surface should line up with the same session identity, phase, checkpoint refs, dispatch counts, artifacts, and lifecycle banner state you can read through CLI or API status and event inspection. Prefer CLI and API reads—you session list, you session show, you workflow status, and matching status or event endpoints—when you need scripted checks, CI-oriented quiet runs, or machine-readable snapshots without a browser."
     },
     "limitsAndAssumptions": {
       "title": "Limits And Assumptions",
@@ -33,5 +25,6 @@
     "factorySessionDocs": "Factory Session",
     "metricsDocs": "Metrics",
     "configurationDocs": "Configuration"
-  }
+  },
+  "openingSummary": "The local operator dashboard is the you-agent-factory browser surface for live Factory Session inspection on a running host."
 }
