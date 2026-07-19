@@ -62,7 +62,8 @@ and `bun run test:website:export-consumers`.
 | Path | Role |
 | --- | --- |
 | `Makefile` | Public local/CI command contract for the stages above |
-| `.github/workflows/ci.yml` | Required PR/push verification stages (`jobs.verify`) |
+| `src/lib/ci-required-path.ts` | Required-path inventory + Wave CI-1 job-graph contract (`CI_REQUIRED_JOB_GRAPH`: suite membership per job, `static-export` → `integration`/`budget` edges, `ci-gate` aggregate). `make ci` prerequisites remain sequential. |
+| `.github/workflows/ci.yml` | Required PR/push verification stages (`jobs.verify` today; parallel job graph lands in Wave CI-1 workflow story) |
 | `.github/workflows/deploy-pages.yml` | Main-branch Pages validate + deploy; artifact path `out/` |
 | `docs/operations.md` | Maintainer-facing CI/deploy posture; local static-export benchmark command, summary field contract (including non-identifying machine metadata), agreed reference machine, and recorded optimize-next-static-export evidence (clean <=180s, warm reuse, determinism) |
 | `package.json` | Underlying Bun scripts (`typecheck`, `lint`, `test`, `build:export`, `benchmark:static-export`) |
