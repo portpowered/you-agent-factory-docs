@@ -956,6 +956,17 @@ For Documentation Program **core product** pages under
   boilerplate), while still proving remaining teaching headings/content and a
   non-empty purpose `openingSummary`. Do not delete shared helpers/modules
   while stripping intros.
+- Browser-verify the ten core routes with
+  `bun src/content/docs/documentation/assert-documentation-program-core-intro-strip-browser.ts`
+  (webpack `next dev` via `scripts/run-next.ts`, unique port 3587 default,
+  Playwright; kill server on exit). Assert absent What It Covers / Key Concepts
+  headings and `#what-it-covers` / `#key-concepts`; present purpose lead via
+  `[data-opening-summary="folded"]` / `[data-testid="folded-summary"]` (unlike
+  Events/JS/CLI reference intro-strips that clear `openingSummary`); at least
+  one teaching section id still mounted; `#how-to-use` absent on pages where it
+  was stripped as opening boilerplate (what-is, cli, faq, troubleshooting,
+  submitting-work). Prefer `DOC_PROGRAM_CORE_INTRO_STRIP_PROBE_BASE_URL` when a
+  server is already warm.
 
 ### Documentation CLI limits and sibling discovery
 
