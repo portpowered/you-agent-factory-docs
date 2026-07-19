@@ -1428,6 +1428,10 @@ Representative pages: `src/content/docs/references/factory-schema/`,
 switch cases per slug). Cross-route success/invalid proofs live in
 `src/content/docs/references/schema-reference-published-routes.test.tsx`
 (page-owned route + mount markers only — not renderer or inventory scans).
+Schema reference polish stays projection-first: open on `#schema-lookup` (plus
+authored examples when present); do **not** restore `What It Covers` /
+`Key Concepts` / summary-style intros — page-local tests should assert those
+headings and `sections.whatItCovers` / `sections.keyConcepts` keys absent.
 
 ## Page bundle and registry workflow
 
