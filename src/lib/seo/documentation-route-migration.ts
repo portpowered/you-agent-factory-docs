@@ -146,9 +146,12 @@ export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMi
 /**
  * Important on-target deep-link anchors for §10 family destinations.
  *
- * Every migrated MDX page and both App Router family indexes expose a
- * `what-it-covers` section. Index-only targets that lacked a section id would
- * use `{ kind: "none", reason: "index-only-target" }` instead.
+ * Prefer the first substantive teaching section on each target. Factories
+ * authored child pages use purpose-lead chrome (no `what-it-covers`); keep
+ * anchors aligned with those first teaching section ids. Workers/workstations
+ * and references that still ship `what-it-covers` keep that id until those
+ * lanes strip intros. Index-only targets without a section id use
+ * `{ kind: "none", reason: "index-only-target" }`.
  */
 export type DocumentationRouteMigrationImportantAnchor =
   | { kind: "section"; id: string }
@@ -159,17 +162,26 @@ export const DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS: Readonly<
 > = {
   "/docs/references/api": { kind: "section", id: "what-it-covers" },
   "/docs/references/cli": { kind: "section", id: "what-it-covers" },
-  "/docs/factories/configuration": { kind: "section", id: "what-it-covers" },
+  "/docs/factories/configuration": {
+    kind: "section",
+    id: "what-lives-where",
+  },
   "/docs/factories/global-configuration": {
     kind: "section",
-    id: "what-it-covers",
+    id: "operator-model-defaults",
   },
-  "/docs/factories/packaged": { kind: "section", id: "what-it-covers" },
+  "/docs/factories/packaged": {
+    kind: "section",
+    id: "discovery-and-resolution",
+  },
   "/docs/factories/dynamic-workflows": {
     kind: "section",
-    id: "what-it-covers",
+    id: "orchestrator-schema",
   },
-  "/docs/factories/sessions": { kind: "section", id: "what-it-covers" },
+  "/docs/factories/sessions": {
+    kind: "section",
+    id: "factory-relationship",
+  },
   "/docs/workers": { kind: "section", id: "what-it-covers" },
   "/docs/workers/agent": { kind: "section", id: "what-it-covers" },
   "/docs/workers/inference": { kind: "section", id: "what-it-covers" },

@@ -1047,6 +1047,10 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `#discovery-and-resolution`, `#orchestrator-schema` titled
   Orchestrator Identity, `#factory-relationship`). Kill the server before
   exit. In zsh verify scripts, do not assign to `path` (it aliases `PATH`).
+  After stripping factories `what-it-covers`, retarget
+  `DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS` for those five routes to
+  the first teaching section ids above or W18 migration-closure /
+  `make test-build-contract` fails.
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
