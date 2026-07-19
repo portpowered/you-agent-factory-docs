@@ -58,6 +58,17 @@ export type SchemaVariantReferenceProps = {
   showEmptyExamples?: boolean;
   pagePath?: string;
   defaultExpanded?: boolean;
+  /**
+   * When false, omit the reader-facing `Variant: <label>` heading. Default true
+   * preserves existing Factory schema / you-config / mock-workers chrome.
+   * Worker/workstation authored embeds opt out for calmer schema-reference UI.
+   */
+  showVariantHeading?: boolean;
+  /**
+   * Forwarded to SchemaDefinition. When false, omit `/$defs/…` pointer
+   * breadcrumb chrome. Default true preserves shared schema page defaults.
+   */
+  showPointerBreadcrumb?: boolean;
   className?: string;
   "data-testid"?: string;
 };
@@ -76,6 +87,8 @@ export function SchemaVariantReference({
   showEmptyExamples = false,
   pagePath,
   defaultExpanded = false,
+  showVariantHeading = true,
+  showPointerBreadcrumb = true,
   className,
   "data-testid": testId = "schema-variant-reference",
 }: SchemaVariantReferenceProps) {
@@ -123,16 +136,18 @@ export function SchemaVariantReference({
         data-schema-variant-reference=""
         data-schema-variant-label={variantLabel ?? ""}
       >
-        <header className="space-y-1">
-          <p
-            className="font-medium text-foreground text-sm"
-            data-schema-variant-heading=""
-          >
-            {variantLabel !== undefined && variantLabel.trim().length > 0
-              ? `Variant: ${variantLabel}`
-              : "Schema variant"}
-          </p>
-        </header>
+        {showVariantHeading ? (
+          <header className="space-y-1">
+            <p
+              className="font-medium text-foreground text-sm"
+              data-schema-variant-heading=""
+            >
+              {variantLabel !== undefined && variantLabel.trim().length > 0
+                ? `Variant: ${variantLabel}`
+                : "Schema variant"}
+            </p>
+          </header>
+        ) : null}
 
         <SchemaDefinition
           data-testid={`${testId}-definition`}
@@ -145,6 +160,7 @@ export function SchemaVariantReference({
           projection={projection}
           resolve={resolve}
           showEmptyExamples={showEmptyExamples}
+          showPointerBreadcrumb={showPointerBreadcrumb}
         />
       </div>
     </SchemaSurface>

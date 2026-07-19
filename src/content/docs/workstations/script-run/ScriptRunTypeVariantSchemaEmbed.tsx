@@ -30,6 +30,8 @@ export function ScriptRunTypeVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={SCRIPT_RUN_TYPE_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="script-run-type-variant-schema"
       />
     </div>

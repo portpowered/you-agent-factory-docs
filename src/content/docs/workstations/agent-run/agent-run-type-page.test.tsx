@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workstations/agent-run.
  * Covers AGENT_RUN discriminator, W07 overlay embed, minimal/misuse
- * examples, Worker + behavior companion links, and failure cautions — not
+ * examples, Worker + behavior companion links — not
  * route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsAgentRunRegistry from "@/content/registry/documentation/workstations-agent-run.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -43,49 +43,35 @@ describe("workstations agent-run type page", () => {
       slug: "agent-run",
     });
 
-    expect(loadedPage.messages.title).toBe("Agent-run type");
+    expect(loadedPage.messages.title).toBe("Agent-run workstation");
     expect(loadedPage.messages.description).toMatch(/type = AGENT_RUN/i);
     expect(loadedPage.messages.description).toMatch(/AGENT_WORKER/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/type = AGENT_RUN/i);
-    expect(whatItCovers).toMatch(/WorkstationType/i);
-    expect(whatItCovers).toMatch(/agent worker dispatch/i);
-    expect(whatItCovers).toMatch(/AGENT_WORKER/i);
-    expect(whatItCovers).toMatch(/openCodeAgent/i);
-    expect(keyConcepts).toMatch(/type with value AGENT_RUN/i);
-    expect(keyConcepts).toMatch(/not a scheduling behavior/i);
-    expect(keyConcepts).toMatch(/not MODEL_INVOKE/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/AGENT_RUN/i);
+    expect(openingSummary).toMatch(/WorkstationType/i);
+    expect(openingSummary).toMatch(/AGENT_WORKER/i);
+    expect(openingSummary).toMatch(/openCodeAgent/i);
     expect(howToUse).toMatch(/type AGENT_RUN/i);
     expect(howToUse).toMatch(/AGENT_WORKER/i);
     expect(howToUse).toMatch(/Do not set operation/i);
-    expect(variantFields).toMatch(/selects the exclusive openCodeAgent/i);
+    expect(howToUse).toMatch(/not a scheduling behavior/i);
+    expect(howToUse).toMatch(/not MODEL_INVOKE/i);
+    expect(schemaReference).toMatch(/selects the exclusive openCodeAgent/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operation/i);
-    expect(cautions).toMatch(/AGENT_WORKER/i);
-    expect(cautions).toMatch(/Do not use operation/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the INFERENCE_RUN or MODEL_INVOKE/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -146,19 +132,22 @@ describe("workstations agent-run type page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -175,7 +164,15 @@ describe("workstations agent-run type page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("AGENT_RUN");
     expect(screen.getByTestId("agent-run-type-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: AGENT_RUN")).toBeTruthy();
+    expect(screen.queryByText("Variant: AGENT_RUN")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "agent-run-type-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen
@@ -186,20 +183,22 @@ describe("workstations agent-run type page", () => {
     ).toBe("/docs/workers");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
       screen
-        .getByRole("link", { name: "Repeater behavior" })
+        .getByRole("link", { name: "Repeater workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/repeater");
     expect(
-      screen.getByRole("link", { name: "Cron behavior" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Cron workstation" })
+        .getAttribute("href"),
     ).toBe("/docs/workstations/cron");
     expect(
       screen
-        .getByRole("link", { name: "Poller behavior" })
+        .getByRole("link", { name: "Poller workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/poller");
     expect(
@@ -214,12 +213,12 @@ describe("workstations agent-run type page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Inference-run type" })
+        .getByRole("link", { name: "Inference-run workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/inference-run");
     expect(
       screen
-        .getByRole("link", { name: "Model-invoke type" })
+        .getByRole("link", { name: "Model-invoke workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/model-invoke");
 
@@ -248,20 +247,6 @@ describe("workstations agent-run type page", () => {
         '[data-agent-run-type-example="misuse-operation"]',
       )?.textContent,
     ).toContain('"operation"');
-
-    const failureTable = document.querySelector(
-      "[data-agent-run-type-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_type_mismatch"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("operation_on_agent_run"),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

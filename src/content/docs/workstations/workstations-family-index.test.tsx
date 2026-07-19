@@ -37,31 +37,28 @@ describe("workstations family index", () => {
     expect(bundle.messages.description).not.toMatch(/Model Atlas/i);
     expect(bundle.route).toBe(WORKSTATIONS_FAMILY_INDEX_PATH);
 
-    const whatItCovers = String(
-      bundle.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      bundle.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(bundle.messages.openingSummary ?? "");
+    const howToUse = String(bundle.messages.sections?.howToUse?.body ?? "");
     const matrix = String(
       bundle.messages.sections?.typeBehaviorMatrix?.body ?? "",
     );
     const sharedFields = String(
       bundle.messages.sections?.sharedFields?.body ?? "",
     );
-    const limits = String(
-      bundle.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/Workstation family/i);
-    expect(whatItCovers).toMatch(/independent axes/i);
-    expect(keyConcepts).toMatch(/POLLER_RUN/i);
-    expect(keyConcepts).toMatch(/POLLER/i);
-    expect(keyConcepts).toMatch(/not the same discriminator/i);
+    expect(bundle.messages.sections?.whatItCovers).toBeUndefined();
+    expect(bundle.messages.sections?.keyConcepts).toBeUndefined();
+    expect(bundle.messages.sections?.operationalCautions).toBeUndefined();
+    expect(bundle.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/WorkstationType|runtime type/i);
+    expect(openingSummary).toMatch(/POLLER_RUN/i);
+    expect(openingSummary).toMatch(/behavior POLLER/i);
+    expect(howToUse).toMatch(/selection tables/i);
+    expect(howToUse).toMatch(/POLLER_RUN/i);
+    expect(howToUse).toMatch(/not the same discriminator/i);
     expect(matrix).toMatch(/independent/i);
     expect(sharedFields).toMatch(/apply across Workstation/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -102,6 +99,18 @@ describe("workstations family index", () => {
         </DocsPageProviders>
       </main>,
     );
+
+    expect(
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     const typeSelection = document.querySelector(
       "[data-workstations-type-selection-table]",
@@ -198,11 +207,18 @@ describe("workstations family index", () => {
   });
 
   test("renders the authored family index through the App Router entry", async () => {
+    const bundle = await loadWorkstationsFamilyIndexBundle();
     const html = renderToStaticMarkup(
       await renderWorkstationsFamilyIndexPage(),
     );
 
     expect(html).toContain("Workstations");
+    expect(html).toContain(String(bundle.messages.openingSummary ?? ""));
+    expect(html).toContain("How To Use");
+    expect(html).not.toContain("What It Covers");
+    expect(html).not.toContain("Key Concepts");
+    expect(html).not.toContain("Operational Cautions");
+    expect(html).not.toContain("Limits And Assumptions");
     expect(html).toContain('data-workstations-family-index=""');
     expect(html).toContain('data-workstations-type-selection-table=""');
     expect(html).toContain('data-workstations-behavior-selection-table=""');

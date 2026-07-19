@@ -77,6 +77,12 @@ export type SchemaDefinitionProps = {
   /** Initial expansion for nested field rows. Default: false. */
   defaultExpanded?: boolean;
   /**
+   * When false, omit the pointer breadcrumb (`$defs` / leaf segments). Default
+   * true so Factory schema / you-config / mock-workers embeds keep pointer
+   * chrome. Worker/workstation variant pages opt out via SchemaVariantReference.
+   */
+  showPointerBreadcrumb?: boolean;
+  /**
    * When true, omit secondary field path labels that equal the leaf name so
    * each field is listed once. Events catalog views opt in; other reference
    * families keep the default name+path chrome.
@@ -131,6 +137,7 @@ export function SchemaDefinition({
   showEmptyExamples = false,
   pagePath,
   defaultExpanded = false,
+  showPointerBreadcrumb = true,
   showFieldPathWhenDistinct = false,
   showPointerPathChrome = true,
   className,
@@ -208,13 +215,15 @@ export function SchemaDefinition({
           <SchemaTypeBadge format={format} typeSummary={typeSummary} />
         </div>
 
-        <SchemaBreadcrumb
-          anchor={anchor}
-          aria-label={`Deep link for ${title}`}
-          href={href}
-          segments={breadcrumbSegments}
-          showPathSegments={showPointerPathChrome}
-        />
+        {showPointerBreadcrumb ? (
+          <SchemaBreadcrumb
+            anchor={anchor}
+            aria-label={`Deep link for ${title}`}
+            href={href}
+            segments={breadcrumbSegments}
+            showPathSegments={showPointerPathChrome}
+          />
+        ) : null}
 
         {description !== undefined ? (
           <ContractDescriptionProse

@@ -2,10 +2,10 @@
  * Page-owned proofs for /docs/workstations/model-workstation.
  * Covers MODEL_WORKSTATION discriminator, W07 overlay embed, minimal/misuse
  * examples, Worker + behavior companion links, model-invoke distinction, and
- * failure cautions — not route inventories or shared helper contracts.
+ * — not route inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workstationsModelWorkstationRegistry from "@/content/registry/documentation/workstations-model-workstation.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -45,51 +45,38 @@ describe("workstations model-workstation type page", () => {
       slug: "model-workstation",
     });
 
-    expect(loadedPage.messages.title).toBe("Model-workstation type");
+    expect(loadedPage.messages.title).toBe("Model workstation");
     expect(loadedPage.messages.description).toMatch(
       /type = MODEL_WORKSTATION/i,
     );
     expect(loadedPage.messages.description).toMatch(/MODEL_WORKER/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/type = MODEL_WORKSTATION/i);
-    expect(whatItCovers).toMatch(/WorkstationType/i);
-    expect(whatItCovers).toMatch(/promptFile/i);
-    expect(whatItCovers).toMatch(/MODEL_WORKER/i);
-    expect(whatItCovers).toMatch(/outcomeFormat/i);
-    expect(keyConcepts).toMatch(/type with value MODEL_WORKSTATION/i);
-    expect(keyConcepts).toMatch(/not a scheduling behavior/i);
-    expect(keyConcepts).toMatch(/not MODEL_INVOKE/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/MODEL_WORKSTATION/i);
+    expect(openingSummary).toMatch(/WorkstationType/i);
+    expect(openingSummary).toMatch(/prompt files/i);
+    expect(openingSummary).toMatch(/MODEL_WORKER/i);
+    expect(openingSummary).toMatch(/outcome parsing/i);
     expect(howToUse).toMatch(/type MODEL_WORKSTATION/i);
     expect(howToUse).toMatch(/MODEL_WORKER/i);
     expect(howToUse).toMatch(/Do not set operation/i);
-    expect(variantFields).toMatch(/selects the exclusive promptFile/i);
+    expect(howToUse).toMatch(/not a scheduling behavior/i);
+    expect(howToUse).toMatch(/not MODEL_INVOKE/i);
+    expect(schemaReference).toMatch(/selects the exclusive promptFile/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operation/i);
-    expect(cautions).toMatch(/MODEL_WORKER/i);
-    expect(cautions).toMatch(/Do not use operation/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/not the MODEL_INVOKE type guide/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -163,19 +150,22 @@ describe("workstations model-workstation type page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     expect(
       screen.getByText(
@@ -196,7 +186,15 @@ describe("workstations model-workstation type page", () => {
     expect(
       screen.getByTestId("model-workstation-type-variant-schema"),
     ).toBeTruthy();
-    expect(screen.getByText("Variant: MODEL_WORKSTATION")).toBeTruthy();
+    expect(screen.queryByText("Variant: MODEL_WORKSTATION")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "model-workstation-type-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen
@@ -207,20 +205,22 @@ describe("workstations model-workstation type page", () => {
     ).toBe("/docs/workers");
     expect(
       screen
-        .getByRole("link", { name: "Standard behavior" })
+        .getByRole("link", { name: "Standard workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/standard");
     expect(
       screen
-        .getByRole("link", { name: "Repeater behavior" })
+        .getByRole("link", { name: "Repeater workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/repeater");
     expect(
-      screen.getByRole("link", { name: "Cron behavior" }).getAttribute("href"),
+      screen
+        .getByRole("link", { name: "Cron workstation" })
+        .getAttribute("href"),
     ).toBe("/docs/workstations/cron");
     expect(
       screen
-        .getByRole("link", { name: "Poller behavior" })
+        .getByRole("link", { name: "Poller workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/poller");
     expect(
@@ -235,12 +235,12 @@ describe("workstations model-workstation type page", () => {
     ).toBe("/docs/workstations");
     expect(
       screen
-        .getByRole("link", { name: "Model-invoke type" })
+        .getByRole("link", { name: "Model-invoke workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/model-invoke");
     expect(
       screen
-        .getByRole("link", { name: "Inference-run type" })
+        .getByRole("link", { name: "Inference-run workstation" })
         .getAttribute("href"),
     ).toBe("/docs/workstations/inference-run");
 
@@ -271,22 +271,6 @@ describe("workstations model-workstation type page", () => {
         '[data-model-workstation-type-example="misuse-operation"]',
       )?.textContent,
     ).toContain('"operation"');
-
-    const failureTable = document.querySelector(
-      "[data-model-workstation-type-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_missing"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText("worker_type_mismatch"),
-    ).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText(
-        "operation_on_model_workstation",
-      ),
-    ).toBeTruthy();
   });
 
   test("renders the variant schema embed in isolation", () => {

@@ -1,11 +1,11 @@
 /**
  * Page-owned proofs for /docs/workers/agent.
  * Covers AGENT_WORKER discriminator, W07 overlay embed, minimal/misuse
- * examples, AGENT_RUN companion link, and failure cautions — not route
+ * examples, AGENT_RUN companion link — not route
  * inventories or shared helper contracts.
  */
 import { afterEach, describe, expect, test } from "bun:test";
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { renderToStaticMarkup } from "react-dom/server";
 import workersAgentRegistry from "@/content/registry/documentation/workers-agent.json";
 import { DocsPageProviders } from "@/features/docs/components/DocsPageProviders";
@@ -46,38 +46,26 @@ describe("workers agent page", () => {
     expect(loadedPage.messages.description).toMatch(/agentTools/i);
     expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-    const whatItCovers = String(
-      loadedPage.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      loadedPage.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(loadedPage.messages.openingSummary ?? "");
     const howToUse = String(loadedPage.messages.sections?.howToUse?.body ?? "");
-    const variantFields = String(
-      loadedPage.messages.sections?.variantFields?.body ?? "",
+    const schemaReference = String(
+      loadedPage.messages.sections?.schemaReference?.body ?? "",
     );
     const examples = String(loadedPage.messages.sections?.examples?.body ?? "");
-    const cautions = String(
-      loadedPage.messages.sections?.operationalCautions?.body ?? "",
-    );
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/AGENT_WORKER/i);
-    expect(whatItCovers).toMatch(/AGENT_RUN/i);
-    expect(keyConcepts).toMatch(/type with value AGENT_WORKER/i);
-    expect(keyConcepts).toMatch(/not INFERENCE_WORKER/i);
+    expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+    expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
+    expect(loadedPage.messages.sections?.operationalCautions).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/AGENT_WORKER/i);
+    expect(openingSummary).toMatch(/AGENT_RUN/i);
     expect(howToUse).toMatch(/model and modelProvider/i);
     expect(howToUse).toMatch(/agentTools\.policy/i);
-    expect(variantFields).toMatch(/overlay applicability/i);
+    expect(howToUse).toMatch(/not INFERENCE_WORKER/i);
+    expect(schemaReference).toMatch(/overlay applicability/i);
     expect(examples).toMatch(/minimal valid/i);
     expect(examples).toMatch(/operations/i);
-    expect(cautions).toMatch(/failure_class/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(limits).toMatch(/Compatible Workstation companions/i);
-    expect(limits).not.toMatch(/planned|without authoring/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -129,19 +117,25 @@ describe("workers agent page", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: "What It Covers" }),
-    ).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Key Concepts" })).toBeTruthy();
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
     expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Variant Fields" }),
+      screen.getByRole("heading", { name: "Schema reference" }),
     ).toBeTruthy();
     expect(
       screen.getByRole("heading", { name: "Examples", level: 2 }),
     ).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Related To" })).toBeTruthy();
     expect(
-      screen.getByRole("heading", { name: "Operational Cautions" }),
-    ).toBeTruthy();
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
 
     expect(
       screen.getByText(
@@ -158,7 +152,15 @@ describe("workers agent page", () => {
     );
     expect(embed?.getAttribute("data-discriminator")).toBe("AGENT_WORKER");
     expect(screen.getByTestId("agent-worker-variant-schema")).toBeTruthy();
-    expect(screen.getByText("Variant: AGENT_WORKER")).toBeTruthy();
+    expect(screen.queryByText("Variant: AGENT_WORKER")).toBeNull();
+    const schemaDefinition = screen.getByTestId(
+      "agent-worker-variant-schema-definition",
+    );
+    expect(
+      schemaDefinition.querySelector(
+        ':scope > header [data-testid="schema-breadcrumb"]',
+      ),
+    ).toBeNull();
 
     expect(
       screen
@@ -170,11 +172,22 @@ describe("workers agent page", () => {
         .getByRole("link", { name: "Full Factory schema reference" })
         .getAttribute("href"),
     ).toBe("/docs/references/factory-schema");
+
+    const relatedSection = document.querySelector("section#related");
+    expect(relatedSection).toBeTruthy();
     expect(
-      screen
-        .getByRole("link", { name: "Workers family index" })
-        .getAttribute("href"),
-    ).toBe("/docs/workers");
+      relatedSection?.querySelector('[data-testid="curated-related-docs"]'),
+    ).toBeTruthy();
+    expect(
+      relatedSection?.querySelector('a[href="/docs/workers/inference"]'),
+    ).toBeTruthy();
+    expect(
+      relatedSection?.querySelector('a[href="/docs/concepts/tool-calling"]'),
+    ).toBeTruthy();
+    expect(
+      relatedSection?.querySelector('a[href="/docs/workstations"]'),
+    ).toBeTruthy();
+    expect(relatedSection?.querySelector("ul.mt-3.list-disc")).toBeNull();
 
     expect(screen.getByText("Minimal valid AGENT_WORKER:")).toBeTruthy();
     expect(
@@ -184,6 +197,14 @@ describe("workers agent page", () => {
     ).toBeTruthy();
     const examples = document.querySelector("[data-agent-worker-examples]");
     expect(examples).toBeTruthy();
+    expect(
+      examples?.querySelector('[data-agent-worker-example-code="minimal"]'),
+    ).toBeTruthy();
+    expect(
+      examples?.querySelector(
+        '[data-agent-worker-example-code="misuse-operations"]',
+      ),
+    ).toBeTruthy();
     expect(
       examples?.querySelector('[data-agent-worker-example="minimal"]')
         ?.textContent,
@@ -196,16 +217,7 @@ describe("workers agent page", () => {
       examples?.querySelector('[data-agent-worker-example="misuse-operations"]')
         ?.textContent,
     ).toContain('"CHAT"');
-
-    const failureTable = document.querySelector(
-      "[data-agent-worker-failure-table]",
-    );
-    expect(failureTable).toBeTruthy();
-    expect(
-      within(failureTable as HTMLElement).getByText(
-        "agent_run_tool_policy_violation",
-      ),
-    ).toBeTruthy();
+    expect(examples?.querySelector("pre > code")).toBeNull();
   });
 
   test("renders the variant schema embed in isolation", () => {

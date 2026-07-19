@@ -36,27 +36,24 @@ describe("workers family index", () => {
     expect(bundle.messages.description).not.toMatch(/Model Atlas/i);
     expect(bundle.route).toBe(WORKERS_FAMILY_INDEX_PATH);
 
-    const whatItCovers = String(
-      bundle.messages.sections?.whatItCovers?.body ?? "",
-    );
-    const keyConcepts = String(
-      bundle.messages.sections?.keyConcepts?.body ?? "",
-    );
+    const openingSummary = String(bundle.messages.openingSummary ?? "");
+    const howToUse = String(bundle.messages.sections?.howToUse?.body ?? "");
     const selection = String(bundle.messages.sections?.selection?.body ?? "");
     const sharedFields = String(
       bundle.messages.sections?.sharedFields?.body ?? "",
     );
-    const limits = String(
-      bundle.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
 
-    expect(whatItCovers).toMatch(/Worker family/i);
-    expect(whatItCovers).toMatch(/WorkerType/i);
-    expect(keyConcepts).toMatch(/Mock workers are not a Factory WorkerType/i);
+    expect(bundle.messages.sections?.whatItCovers).toBeUndefined();
+    expect(bundle.messages.sections?.keyConcepts).toBeUndefined();
+    expect(bundle.messages.sections?.operationalCautions).toBeUndefined();
+    expect(bundle.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(openingSummary).toMatch(/WorkerType/i);
+    expect(openingSummary).toMatch(/mock workers/i);
+    expect(howToUse).toMatch(/selection table/i);
+    expect(howToUse).toMatch(/Mock workers are not a Factory WorkerType/i);
     expect(selection).toMatch(/comparison/i);
     expect(sharedFields).toMatch(/apply across Factory Worker/i);
-    expect(limits).toMatch(/not a sync of packaged CLI docs/i);
-    expect(whatItCovers).not.toMatch(
+    expect(openingSummary).not.toMatch(
       /on this page|Model Atlas|reader.?shortcut/i,
     );
   });
@@ -95,6 +92,18 @@ describe("workers family index", () => {
         </DocsPageProviders>
       </main>,
     );
+
+    expect(
+      screen.queryByRole("heading", { name: "What It Covers" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Key Concepts" })).toBeNull();
+    expect(screen.getByRole("heading", { name: "How To Use" })).toBeTruthy();
+    expect(
+      screen.queryByRole("heading", { name: "Operational Cautions" }),
+    ).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
 
     const selection = document.querySelector("[data-workers-selection-table]");
     expect(selection).toBeTruthy();
@@ -145,9 +154,16 @@ describe("workers family index", () => {
   });
 
   test("renders the authored family index through the App Router entry", async () => {
+    const bundle = await loadWorkersFamilyIndexBundle();
     const html = renderToStaticMarkup(await renderWorkersFamilyIndexPage());
 
     expect(html).toContain("Workers");
+    expect(html).toContain(String(bundle.messages.openingSummary ?? ""));
+    expect(html).toContain("How To Use");
+    expect(html).not.toContain("What It Covers");
+    expect(html).not.toContain("Key Concepts");
+    expect(html).not.toContain("Operational Cautions");
+    expect(html).not.toContain("Limits And Assumptions");
     expect(html).toContain('data-workers-family-index=""');
     expect(html).toContain('data-workers-selection-table=""');
     expect(html).toContain("INFERENCE_WORKER");

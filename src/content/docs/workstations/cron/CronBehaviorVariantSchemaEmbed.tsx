@@ -29,6 +29,8 @@ export function CronBehaviorVariantSchemaEmbed() {
         overlay={presentation}
         pagePath={CRON_BEHAVIOR_PAGE_PATH}
         showEmptyExamples={false}
+        showPointerBreadcrumb={false}
+        showVariantHeading={false}
         data-testid="cron-behavior-variant-schema"
       />
     </div>

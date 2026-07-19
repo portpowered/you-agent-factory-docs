@@ -146,12 +146,13 @@ export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMi
 /**
  * Important on-target deep-link anchors for §10 family destinations.
  *
- * Most migrated MDX pages and both App Router family indexes expose a
- * `what-it-covers` section. Projection-first pages (for example the API
- * reference) use their primary content section id instead (`operations`).
- * The CLI reference inventory-first repair opens on `command-inventory`
- * instead (no leftover What It Covers intro). Index-only targets that
- * lacked a section id would use
+ * Worker/workstation authored pages (and their family indexes) expose
+ * `how-to-use` after the chrome polish that removed `what-it-covers`.
+ * Projection-first pages (for example the API reference) use their primary
+ * content section id instead (`operations`). The CLI reference
+ * inventory-first repair opens on `command-inventory` instead. Other
+ * migrated MDX destinations still use `what-it-covers`. Index-only targets
+ * that lacked a section id would use
  * `{ kind: "none", reason: "index-only-target" }` instead.
  */
 export type DocumentationRouteMigrationImportantAnchor =
@@ -174,13 +175,13 @@ export const DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS: Readonly<
     id: "what-it-covers",
   },
   "/docs/factories/sessions": { kind: "section", id: "what-it-covers" },
-  "/docs/workers": { kind: "section", id: "what-it-covers" },
-  "/docs/workers/agent": { kind: "section", id: "what-it-covers" },
-  "/docs/workers/inference": { kind: "section", id: "what-it-covers" },
-  "/docs/workers/script": { kind: "section", id: "what-it-covers" },
-  "/docs/workers/poller": { kind: "section", id: "what-it-covers" },
-  "/docs/workers/mock": { kind: "section", id: "what-it-covers" },
-  "/docs/workstations": { kind: "section", id: "what-it-covers" },
+  "/docs/workers": { kind: "section", id: "how-to-use" },
+  "/docs/workers/agent": { kind: "section", id: "how-to-use" },
+  "/docs/workers/inference": { kind: "section", id: "how-to-use" },
+  "/docs/workers/script": { kind: "section", id: "how-to-use" },
+  "/docs/workers/poller": { kind: "section", id: "how-to-use" },
+  "/docs/workers/mock": { kind: "section", id: "how-to-use" },
+  "/docs/workstations": { kind: "section", id: "how-to-use" },
 };
 
 export function resolveDocumentationRouteMigrationImportantAnchor(
