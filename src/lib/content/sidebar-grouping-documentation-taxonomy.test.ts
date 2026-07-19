@@ -38,41 +38,12 @@ const DECLARED_TOP_GROUP_LABELS = [
 ] as const;
 
 const EXPECTED_MEMBERSHIP = {
-  "dynamic-workflows": { group: "system-feature-set" },
   "harness-support": { group: "system-feature-set" },
   "replays-records": { group: "system-feature-set" },
   "submitting-work": { group: "system-feature-set" },
   cli: { group: "interfaces" },
-  "cli-command-index": { group: "interfaces" },
-  "api-doc": { group: "interfaces" },
   mcp: { group: "interfaces" },
-  "packaged-factories": { group: "packaged-factories" },
   "packaged-documents": { group: "packaged-factories" },
-  workers: { group: "factory-configuration", secondary: "workers" },
-  "poller-workers": { group: "factory-configuration", secondary: "workers" },
-  "script-workers": { group: "factory-configuration", secondary: "workers" },
-  "agent-workers": { group: "factory-configuration", secondary: "workers" },
-  "inference-workers": {
-    group: "factory-configuration",
-    secondary: "workers",
-  },
-  "mock-workers": { group: "factory-configuration", secondary: "workers" },
-  workstations: {
-    group: "factory-configuration",
-    secondary: "workstations",
-  },
-  configuration: {
-    group: "factory-configuration",
-    secondary: "factories",
-  },
-  "factory-session": {
-    group: "factory-configuration",
-    secondary: "factories",
-  },
-  "global-configuration-factories": {
-    group: "factory-configuration",
-    secondary: "factories",
-  },
   resources: { group: "factory-configuration", secondary: "resources" },
   "throttling-and-limits": {
     group: "factory-configuration",
@@ -89,6 +60,24 @@ const EXPECTED_MEMBERSHIP = {
   "security-trust-boundaries": { group: "additional-references" },
   troubleshooting: { group: "additional-references" },
 } as const;
+
+/** W18 ledger move-stub slugs — published for compatibility, not explorer members. */
+const W18_DOCUMENTATION_MOVE_STUB_SLUGS = [
+  "api-doc",
+  "cli-command-index",
+  "configuration",
+  "global-configuration-factories",
+  "packaged-factories",
+  "dynamic-workflows",
+  "factory-session",
+  "workers",
+  "agent-workers",
+  "inference-workers",
+  "script-workers",
+  "poller-workers",
+  "mock-workers",
+  "workstations",
+] as const;
 
 describe("Program documentation three-level taxonomy", () => {
   test("declares seven top groups in stable order with default-locale labels", () => {
@@ -175,7 +164,7 @@ describe("Program documentation three-level taxonomy", () => {
     }
   });
 
-  test("every published documentation page except FAQ has exactly one membership path", () => {
+  test("every published documentation page except FAQ and W18 move stubs has exactly one membership path", () => {
     const publishedSlugs = loadPublishedDocsPagesSync("en")
       .filter((page) => page.docsSlug.startsWith("documentation/"))
       .map((page) => page.docsSlug.slice("documentation/".length));
@@ -183,6 +172,7 @@ describe("Program documentation three-level taxonomy", () => {
     const membershipSlugs = Object.keys(
       FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
     );
+    const moveStubSlugSet = new Set<string>(W18_DOCUMENTATION_MOVE_STUB_SLUGS);
 
     expect(membershipSlugs).not.toContain("faq");
     expect(getDocumentationSidebarMembership("faq")).toBeUndefined();
@@ -192,8 +182,18 @@ describe("Program documentation three-level taxonomy", () => {
       ],
     ).toBeUndefined();
 
+    for (const stubSlug of W18_DOCUMENTATION_MOVE_STUB_SLUGS) {
+      expect(membershipSlugs).not.toContain(stubSlug);
+      expect(getDocumentationSidebarMembership(stubSlug)).toBeUndefined();
+      expect(publishedSlugs).toContain(stubSlug);
+    }
+
     for (const slug of publishedSlugs) {
       if (isDocsExplorerTopLevelFaqPage(`documentation/${slug}`)) {
+        expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
+        continue;
+      }
+      if (moveStubSlugSet.has(slug)) {
         expect(getDocumentationSidebarMembership(slug)).toBeUndefined();
         continue;
       }

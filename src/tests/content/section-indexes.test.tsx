@@ -50,6 +50,7 @@ import LocalizedWorkstationsIndexPage, {
 } from "@/app/[locale]/docs/workstations/page";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { CLI_DOCS_COLLECTION_IDS } from "@/lib/docs/docs-collection-slug-acceptance";
+import { listDocumentationRouteMigrationOldRoutes } from "@/lib/seo/documentation-route-migration";
 
 const CLI_SECTION_INDEX_CASES = [
   {
@@ -231,6 +232,10 @@ describe("CLI section index page render", () => {
     expect(html).toContain(
       "you-agent-factory is a CLI and agent-factory workflow system that keeps long-running agent work persistent.",
     );
+    // W18 move stubs keep compatibility HTML but are not browse destinations.
+    for (const oldRoute of listDocumentationRouteMigrationOldRoutes()) {
+      expect(html).not.toContain(`href="${oldRoute}"`);
+    }
     expect(html).not.toContain(indexMessages.emptyTitle);
     expect(indexMessages.emptyTitle).not.toMatch(
       CLI_EMPTY_STATE_ATLAS_PHRASING,

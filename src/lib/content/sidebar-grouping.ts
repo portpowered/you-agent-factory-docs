@@ -125,45 +125,18 @@ export type DocumentationSidebarMembership =
 /**
  * Explicit three-level Program documentation explorer membership by page slug.
  * FAQ is a top-level explorer page and is intentionally omitted here.
- * Groups with declared secondaries assign exactly one secondary per slug;
- * other groups place pages directly under the top group.
+ * W18 documentation move-stub slugs (see DOCUMENTATION_ROUTE_MIGRATION_LEDGER)
+ * are also omitted — they keep static compatibility HTML but are not explorer
+ * destinations. Groups with declared secondaries assign exactly one secondary
+ * per slug; other groups place pages directly under the top group.
  */
 export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
-  "dynamic-workflows": { group: "system-feature-set" },
   "harness-support": { group: "system-feature-set" },
   "replays-records": { group: "system-feature-set" },
   "submitting-work": { group: "system-feature-set" },
   cli: { group: "interfaces" },
-  "cli-command-index": { group: "interfaces" },
-  "api-doc": { group: "interfaces" },
   mcp: { group: "interfaces" },
-  "packaged-factories": { group: "packaged-factories" },
   "packaged-documents": { group: "packaged-factories" },
-  workers: { group: "factory-configuration", secondary: "workers" },
-  "poller-workers": { group: "factory-configuration", secondary: "workers" },
-  "script-workers": { group: "factory-configuration", secondary: "workers" },
-  "agent-workers": { group: "factory-configuration", secondary: "workers" },
-  "inference-workers": {
-    group: "factory-configuration",
-    secondary: "workers",
-  },
-  "mock-workers": { group: "factory-configuration", secondary: "workers" },
-  workstations: {
-    group: "factory-configuration",
-    secondary: "workstations",
-  },
-  configuration: {
-    group: "factory-configuration",
-    secondary: "factories",
-  },
-  "factory-session": {
-    group: "factory-configuration",
-    secondary: "factories",
-  },
-  "global-configuration-factories": {
-    group: "factory-configuration",
-    secondary: "factories",
-  },
   resources: { group: "factory-configuration", secondary: "resources" },
   "throttling-and-limits": {
     group: "factory-configuration",

@@ -4,6 +4,7 @@ import {
   registryRecordHref,
 } from "@/lib/content/registry-linking";
 import { getRegistryRecordById } from "@/lib/content/registry-runtime";
+import { resolveDocumentationRouteMigrationPreferredRegistryId } from "@/lib/seo/documentation-route-migration";
 
 type RegistryLinkListProps = {
   registryIds: string[];
@@ -21,8 +22,10 @@ export function RegistryLinkList({
   return (
     <ul className="space-y-2">
       {registryIds.map((registryId) => {
-        const record = getRegistryRecordById(registryId);
-        const title = record ? registryDisplayTitle(record) : registryId;
+        const preferredId =
+          resolveDocumentationRouteMigrationPreferredRegistryId(registryId);
+        const record = getRegistryRecordById(preferredId);
+        const title = record ? registryDisplayTitle(record) : preferredId;
         const href = record ? registryRecordHref(record) : undefined;
 
         return (

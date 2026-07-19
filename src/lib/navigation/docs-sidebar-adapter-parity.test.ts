@@ -202,11 +202,16 @@ describe("docs sidebar adapter extraction parity", () => {
       name: "FAQ",
       url: "/docs/documentation/faq",
     });
-    expect(secondaryFolderNames).toContain("Workers");
+    expect(secondaryFolderNames).toContain("Resources");
+    expect(secondaryFolderNames).not.toContain("Workers");
     expect(secondaryFolderNames).toContain("Observability");
     expect(
-      findSidebarPageLink(links, "/docs/documentation/mock-workers")?.url,
-    ).toBe("/docs/documentation/mock-workers");
+      findSidebarPageLink(links, "/docs/documentation/throttling-and-limits")
+        ?.url,
+    ).toBe("/docs/documentation/throttling-and-limits");
+    expect(
+      findSidebarPageLink(links, "/docs/documentation/mock-workers"),
+    ).toBeUndefined();
   });
 
   test("factory sidebar excludes retired Atlas collection destinations", () => {

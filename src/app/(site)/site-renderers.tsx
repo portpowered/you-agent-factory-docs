@@ -73,6 +73,7 @@ import { localizedRouteAlternates } from "@/lib/i18n/route-locale";
 import { buildHomeTableOfContents } from "@/lib/navigation/home-page-toc";
 import { loadSearchResultMetaMap } from "@/lib/search/search-result-meta";
 import { searchResultMetaMapToRecord } from "@/lib/search/serialize-result-meta";
+import { isDocumentationRouteMigrationOldBrowsePath } from "@/lib/seo/documentation-route-migration";
 import { youAgentFactorySiteConfig } from "@/lib/site/you-agent-factory-site-config";
 
 export type SearchPageProps = {
@@ -276,10 +277,14 @@ export function renderShellSectionCollectionIndexPage({
   );
   // Filter by route-slug prefix so collections that reuse a frontmatter kind
   // (for example factories/workers/workstations → documentation) stay empty
-  // until child pages exist under that family's public route.
+  // until child pages exist under that family's public route. W18 move stubs
+  // keep compatibility HTML but are omitted from ordinary section-index browse.
   const entries = toDocsIndexEntries(
-    pages.filter((page) =>
-      page.docsSlug.startsWith(`${definition.routeSlug}/`),
+    pages.filter(
+      (page) =>
+        page.docsSlug.startsWith(`${definition.routeSlug}/`) &&
+        !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug) &&
+        !isDocumentationRouteMigrationOldBrowsePath(page.url),
     ),
     locale,
     [],

@@ -267,4 +267,49 @@ describe("buildSearchDocumentsForLocale", () => {
     expect(documents[0]?.facets).not.toHaveProperty("optimizes");
     expect(buildSearchDocuments([page], indexes)).toEqual(documents);
   });
+
+  test("omits W18 documentation move-stub pages from ordinary search documents", () => {
+    const indexes = buildRegistryIndexes([]);
+    const stubPage = buildSyntheticPage({
+      pageDir: "/tmp/documentation-workers",
+      docsSlug: "documentation/workers",
+      url: "/docs/documentation/workers",
+      frontmatter: {
+        kind: "documentation",
+        registryId: "documentation.workers",
+        messageNamespace: "local",
+        assetNamespace: "local",
+        tags: [],
+        status: "published",
+        updatedAt: "2026-07-18T00:00:00.000Z",
+      },
+      messages: {
+        title: "Workers",
+        description: "This page moved to /docs/workers.",
+      },
+    });
+    const familyPage = buildSyntheticPage({
+      pageDir: "/tmp/workers-agent",
+      docsSlug: "workers/agent",
+      url: "/docs/workers/agent",
+      frontmatter: {
+        kind: "documentation",
+        registryId: "documentation.workers-agent",
+        messageNamespace: "local",
+        assetNamespace: "local",
+        tags: [],
+        status: "published",
+        updatedAt: "2026-07-18T00:00:00.000Z",
+      },
+      messages: {
+        title: "Agent Workers",
+        description: "Agent worker family page",
+      },
+    });
+
+    const documents = buildSearchDocuments([stubPage, familyPage], indexes);
+    expect(documents.map((document) => document.url)).toEqual([
+      "/docs/workers/agent",
+    ]);
+  });
 });

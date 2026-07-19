@@ -7,6 +7,10 @@ import type {
   ConceptRecord,
 } from "@/lib/content/schemas";
 import { buildSearchDocuments } from "@/lib/search/build-documents";
+import {
+  isDocumentationRouteMigrationOldBrowsePath,
+  listDocumentationRouteMigrationOldRoutes,
+} from "@/lib/seo/documentation-route-migration";
 
 function buildRegistryIndexes(records: ConceptRecord[]): RegistryIndexes {
   return {
@@ -85,15 +89,26 @@ function buildSyntheticConcept(
 }
 
 describe("buildSearchDocuments", () => {
-  test("indexes only published docs pages for the default locale", async () => {
+  test("indexes published docs pages for the default locale except W18 move stubs", async () => {
     const registry = await loadRegistry();
     const pages = await loadPublishedDocsPages("en");
     const documents = buildSearchDocuments(pages, registry);
-
-    expect(documents.length).toBe(pages.length);
-    expect(documents.map((document) => document.url).sort()).toEqual(
-      pages.map((page) => page.url).sort(),
+    const searchablePages = pages.filter(
+      (page) =>
+        !isDocumentationRouteMigrationOldBrowsePath(page.url) &&
+        !isDocumentationRouteMigrationOldBrowsePath(page.docsSlug),
     );
+    const documentUrls = new Set(documents.map((document) => document.url));
+
+    expect(documents.length).toBe(searchablePages.length);
+    expect(documents.map((document) => document.url).sort()).toEqual(
+      searchablePages.map((page) => page.url).sort(),
+    );
+
+    for (const oldRoute of listDocumentationRouteMigrationOldRoutes()) {
+      expect(pages.some((page) => page.url === oldRoute)).toBe(true);
+      expect(documentUrls.has(oldRoute)).toBe(false);
+    }
   });
 
   test("builds stable empty topology metadata for records without ontology fields", () => {

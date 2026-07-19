@@ -51,9 +51,9 @@ const REPRESENTATIVE_FACTORY_PAGES = [
   },
   {
     // First Program documentation page under System feature set (three-level IA).
-    href: "/docs/documentation/dynamic-workflows",
+    href: "/docs/documentation/harness-support",
     previous: "/docs/techniques/writer-reviewer",
-    next: "/docs/documentation/harness-support",
+    next: "/docs/documentation/replays-records",
   },
 ] as const;
 

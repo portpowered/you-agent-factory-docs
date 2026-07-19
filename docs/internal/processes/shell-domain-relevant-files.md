@@ -18,9 +18,11 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Factories → Resources) and System Operations (Observability) via
   `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership lives in
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (FAQ omitted; top-level
-  explorer page); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
+  explorer page; W18 documentation move stubs omitted as compatibility-only
+  routes); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
   top-group-only derived view. The documentation sidebar adapter nests
-  secondaries from the membership map. Glossary still uses ontology-first classification membership
+  secondaries from the membership map and also filters W18 move stubs via
+  `isDocumentationRouteMigrationOldBrowsePath`. Glossary still uses ontology-first classification membership
   with editorial `sidebarGrouping.glossary` fallback.
 * `src/lib/navigation/docs-sidebar-grouping-adapter.ts`
   Builds grouped Concepts/Glossary/Program documentation sidebar nodes;
@@ -29,8 +31,12 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   emits three-level nodes: top-group separators, nested secondary folders
   (Workers / Workstations / Factories / Resources under Factory
   Configuration; Observability under System Operations), then page links.
-  Empty top groups and empty secondaries are omitted; FAQ is never a
-  Program documentation child.
+  Empty top groups and empty secondaries are omitted; FAQ and W18
+  documentation move stubs are never Program documentation children.
+* `src/lib/navigation/docs-sidebar-sections.ts`
+  Builds explorer top-level folders; skips FAQ (promoted to top-level page)
+  and W18 documentation move stubs when assigning pages to collection
+  folders so stubs are not advertised under Program documentation.
 * `src/lib/docs/collection-definition-contract.ts`
   Shared `ShellCollectionDefinition` contract for AI and non-AI collections.
   Public `DocsCollectionId` / `DOCS_COLLECTION_IDS` are factory-only:
@@ -47,7 +53,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
   `DOCS_BROWSE_SECTION_ORDER`. Public browse no longer accepts glossary-derived
-  Atlas section refs (Model Types / Inference / Module Components).
+  Atlas section refs (Model Types / Inference / Module Components). W18
+  documentation move stubs are filtered via
+  `isDocumentationRouteMigrationOldBrowsePath` so family targets remain the
+  discoverable destinations.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
   `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,
@@ -84,6 +93,8 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Consolidated factory docs adapter parity and non-AI fixture sidebar independence regression.
 * `src/app/(site)/site-renderers.tsx`
   AI browse and section-index render entry points used by public routes.
+  `renderShellSectionCollectionIndexPage` also omits W18 move stubs from
+  documentation (and other) section-index entry lists.
 
 ## Non-AI fixture proof
 
@@ -437,6 +448,10 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   remains the sole top-level explorer page (absent from Program documentation
   children), former ten-group Basics/Feature support/Functions/… separators are
   rejected, and Workers/Observability nesting plus full membership remain locked.
+  Repair story 005 consolidates demoted W18 stub absence across explorer,
+  search, sitemap, and section-index in
+  `src/lib/content/factory-documentation-route-migration-demoted-contract.test.tsx`
+  (R02 discovery / visual-review suites sample non-stub Program pages only).
 * `src/lib/navigation/generated-docs-page-tree.test.ts` /
   `src/lib/source.test.ts` /
   `src/lib/navigation/docs-sidebar-collection-verification.test.ts` /

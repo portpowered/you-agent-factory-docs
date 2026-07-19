@@ -25,15 +25,19 @@ import {
 } from "@/tests/a11y/render";
 import "@/tests/a11y/mock-navigation";
 
-/** Representative R01 pages that must appear in both desktop and mobile explorers. */
+/** Representative R01 pages that remain explorer members after W18 stub demotion. */
 const R01_EXPLORER_MEMBERSHIP_SLUGS = [
-  "mock-workers",
   "throttling-and-limits",
+  "packaged-documents",
+] as const;
+
+/** W18 move stubs that must stay out of Program documentation explorer. */
+const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
+  "mock-workers",
   "script-workers",
   "poller-workers",
   "agent-workers",
   "inference-workers",
-  "packaged-documents",
   "packaged-factories",
 ] as const;
 
@@ -71,10 +75,10 @@ async function openNestedProgramDocumentationSecondaries(
   container: HTMLElement,
   messages: Awaited<ReturnType<typeof loadUiMessages>>,
 ): Promise<void> {
+  // Only open secondaries that still have members after W18 move-stub demotion.
+  // Empty Workers / Workstations / Factories labels would otherwise match and
+  // toggle the same-named top-level W15 family folders.
   for (const folderName of [
-    messages.explorer.documentationSecondaries.workers,
-    messages.explorer.documentationSecondaries.workstations,
-    messages.explorer.documentationSecondaries.factories,
     messages.explorer.documentationSecondaries.resources,
     messages.explorer.documentationSecondaries.observability,
   ] as const) {
@@ -207,13 +211,29 @@ describe("desktop/mobile explorer tree parity", () => {
           `${locale}: ${slug} in Program documentation folder`,
         ).toBe(true);
       }
+      for (const slug of W18_MOVE_STUB_EXPLORER_EXCLUSIONS) {
+        expect(
+          pageEntriesInFolder(documentation).some((page) =>
+            page.url.includes(`/documentation/${slug}`),
+          ),
+          `${locale}: ${slug} must not appear in Program documentation folder`,
+        ).toBe(false);
+      }
 
       expect(
         pageEntriesUnderSeparator(
           documentation,
           messages.explorer.documentationGroups["factory-configuration"],
-        ).some((page) => page.url.includes("/documentation/mock-workers")),
+        ).some((page) =>
+          page.url.includes("/documentation/throttling-and-limits"),
+        ),
       ).toBe(true);
+      expect(
+        pageEntriesUnderSeparator(
+          documentation,
+          messages.explorer.documentationGroups["factory-configuration"],
+        ).some((page) => page.url.includes("/documentation/mock-workers")),
+      ).toBe(false);
       expect(
         pageEntriesUnderSeparator(
           documentation,

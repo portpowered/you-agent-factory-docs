@@ -53,7 +53,7 @@ const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   {
     folderName: "Program documentation",
     separator: "System feature set",
-    url: "/docs/documentation/dynamic-workflows",
+    url: "/docs/documentation/harness-support",
   },
   {
     folderName: "Program documentation",
@@ -89,11 +89,6 @@ const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
     folderName: "Program documentation",
     separator: "Additional references",
     url: "/docs/documentation/install",
-  },
-  {
-    folderName: "Program documentation",
-    separator: "Factory Configuration",
-    url: "/docs/documentation/mock-workers",
   },
   {
     folderName: "Program documentation",
@@ -249,17 +244,24 @@ describe("generated docs page tree", () => {
       "System Operations separator",
       findNodeIndex(children, { name: "System Operations" }),
     );
-    const workersFolder = children.find(
-      (node) => node.type === "folder" && node.name === "Workers",
+    const resourcesFolder = children.find(
+      (node) => node.type === "folder" && node.name === "Resources",
     );
-    expect(workersFolder?.type).toBe("folder");
-    if (workersFolder?.type !== "folder") {
-      throw new Error("expected Workers secondary under Factory Configuration");
+    expect(resourcesFolder?.type).toBe("folder");
+    if (resourcesFolder?.type !== "folder") {
+      throw new Error(
+        "expected Resources secondary under Factory Configuration",
+      );
     }
-    const workersIndex = expectIndex(
-      "Workers secondary",
-      findNodeIndex(children, { name: "Workers" }),
+    const resourcesIndex = expectIndex(
+      "Resources secondary",
+      findNodeIndex(children, { name: "Resources" }),
     );
+    expect(
+      children.some(
+        (node) => node.type === "folder" && node.name === "Workers",
+      ),
+    ).toBe(false);
     const observabilityFolder = children.find(
       (node) => node.type === "folder" && node.name === "Observability",
     );
@@ -274,15 +276,15 @@ describe("generated docs page tree", () => {
       findNodeIndex(children, { name: "Observability" }),
     );
 
-    expect(workersIndex).toBeGreaterThan(factoryConfigurationIndex);
-    expect(workersIndex).toBeLessThan(systemOperationsIndex);
+    expect(resourcesIndex).toBeGreaterThan(factoryConfigurationIndex);
+    expect(resourcesIndex).toBeLessThan(systemOperationsIndex);
     expect(observabilityIndex).toBeGreaterThan(systemOperationsIndex);
     expect(
-      workersFolder.children.some(
+      resourcesFolder.children.some(
         (node) =>
           node.type === "page" &&
           "url" in node &&
-          node.url === "/docs/documentation/mock-workers",
+          node.url === "/docs/documentation/throttling-and-limits",
       ),
     ).toBe(true);
     expect(

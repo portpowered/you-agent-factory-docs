@@ -35,8 +35,12 @@ social assets, sitemap, robots).
 | `src/lib/seo/documentation-route-migration.ts` | W18 temporary §10 migration ledger + locked static compatibility mechanism (no server redirects); canonical slug/path remap helpers |
 | `src/lib/seo/documentation-route-migration.test.ts` | Ledger completeness + export-safe mechanism contract proofs |
 | `src/lib/seo/documentation-route-compatibility.test.tsx` | Every §10 old route still publishes compatibility HTML + target link; static params not silently omitted |
+| `src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx` | Repair demotion proof: stubs stay published with compatibility HTML, family canonical, and sitemap exclusion |
+| `src/lib/content/factory-documentation-route-migration-demoted-contract.test.tsx` | Repair story 005 consolidating proof: explorer/search/sitemap/section-index absence + colocated compatibility page tests |
 | `src/lib/seo/documentation-route-migration-canonical.test.ts` | §10 old→target Metadata canonical/OG + sitemap exclusion/inclusion proofs |
 | `src/lib/seo/documentation-route-migration-links.test.tsx` | §10 related-id / related-href / browse retarget proofs |
+| `src/lib/content/factory-documentation-route-migration-inbound-retarget.test.tsx` | Repair inbound retarget proof: registry/related/RegistryLinkList prefer family hrefs |
+| `src/lib/content/registry-linking.ts` | `registryRecordHref` remaps §10 stub published URLs to family destinations |
 | `src/lib/seo/documentation-route-migration-closure.test.tsx` | §10 ledger closure + old/target/canonical/important-anchor proofs |
 | `src/lib/seo/export-absolute-canonical.ts` | Also exports `isCanonicalPublicDiscoveryPath` (Atlas live + W18 migration old-path discovery gate) |
 | `src/features/docs/components/DocumentationRouteCompatibilityDocument.tsx` | Shared static compatibility document for §10 old `/docs/documentation/*` routes |
@@ -156,15 +160,19 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    family identities via
    `DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS` (for example
    `documentation.configuration` → `documentation.factories-configuration`,
-   `documentation.api-doc` → `reference.api`). Workers/workstations indexes
-   keep `documentation.workers` / `documentation.workstations` related ids
-   (App Router indexes are not MDX published entries) and remap destination
-   hrefs through `remapDocumentationRouteMigrationDestinationHref` inside
-   `resolveRelatedRegistryDocs` / related-doc derivation. Hard-coded MDX
-   `LocalizedLinkList` hrefs and browse documentation entries point at family
-   routes; browse excludes §10 old compatibility URLs so they are not preferred
-   discovery destinations. Do not invent W16 search projection or W17 chrome
-   localization work here.
+   `documentation.api-doc` → `reference.api`) inside
+   `resolveRelatedRegistryDocs`, curated related-id listing, graph related
+   resolution, and `RegistryLinkList`. Workers/workstations indexes keep
+   `documentation.workers` / `documentation.workstations` related ids (App
+   Router indexes are not MDX published entries). Reader-facing registry hrefs
+   remap through `registryRecordHref` →
+   `remapDocumentationRouteMigrationDestinationHref` so
+   `RegistryLinkList` / related / graph destinations never advertise stub URLs.
+   Hard-coded MDX `LocalizedLinkList` hrefs and browse documentation entries
+   point at family routes; browse excludes §10 old compatibility URLs so they
+   are not preferred discovery destinations. Repair proof:
+   `src/lib/content/factory-documentation-route-migration-inbound-retarget.test.tsx`.
+   Do not invent W16 search projection or W17 chrome localization work here.
 6. **Closure (story 005):** mark every ledger row `closed` only after focused
    proofs cover old compatibility HTML, target resolution, Metadata canonical
    consistency, sitemap exclusion/inclusion, and an important on-target
@@ -172,6 +180,13 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    `what-it-covers`; use `{ kind: "none", reason: "index-only-target" }` only
    when an index truly has no section id). Do not invent per-route redirect
    helpers.
+7. **Repair demotion (moved-duplicate stubs):** demoting §10 stubs from Program
+   documentation explorer/search must keep the minimal compatibility MDX +
+   `DocumentationRouteCompatibilityDocument` published. Do not delete ledger
+   old routes or reopen W18 rows without evidence. Required-suite proof:
+   `src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx`
+   locks published presence, compatibility HTML + target link, family
+   Metadata canonical, and sitemap exclusion after demotion.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and

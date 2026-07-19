@@ -147,9 +147,21 @@ Use these files when changing search document construction, Orama indexing, or
 * `src/lib/search/build-documents.ts`
   Search builder: composes base documents with generic `enrichSearchDocument`
   only, then asserts every document kind is in `FACTORY_SEARCH_RESULT_KINDS`
-  and every URL is outside the deleted Atlas inventory denylist. Model Atlas
+  and every URL is outside the deleted Atlas inventory denylist. Also omits
+  W18 documentation-route-migration old browse paths
+  (`isDocumentationRouteMigrationOldBrowsePath`) so move stubs stay out of
+  ordinary search while compatibility HTML remains published. Model Atlas
   AI facet enrichment (`modelFamily`, `sourceType`, `modalities`,
   `trainingRegimeIds`, `optimizes`) is no longer applied.
+* `src/lib/content/factory-search-documentation-route-migration-exclusion.test.ts`
+  Required-suite proof that §10 old stub URLs are absent from search documents
+  / advanced indexes / representative API queries while family destinations
+  remain findable and stub pages stay published for compatibility.
+* `src/lib/verify/concepts-program-docs-discovery-r02-convergence.test.ts` /
+  `src/lib/verify/focused-repair-suites-r02-convergence.test.ts`
+  R02 discovery suites treat remaining non-stub Program documentation pages as
+  ordinary search/sitemap destinations and lock W18 move stubs as
+  compatibility-only (family search targets; stub URLs omitted).
 * `src/lib/search/to-advanced-index.ts`
   Projects `SearchDocument` records into Fumadocs advanced search indexes.
 * `src/lib/search/search-server.ts`
@@ -324,8 +336,9 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
   Generic enrichment topology/facet contract, searchable topology terms, and draft or
   missing-target stability coverage.
 * `src/tests/search/build-documents.test.ts`
-  Document construction and topology normalization coverage (Atlas page fixtures;
-  excluded from required `make test` after Atlas deletion).
+  Live published-page search indexing for the default locale, including the
+  W18 move-stub exclusion (stubs stay published; ordinary search omits them),
+  plus topology normalization coverage.
 * `src/tests/search/search-api.test.ts`
   `/api/search` HTTP contract and `docsSearchApi` ranking regressions.
 * `src/tests/search/helpers.ts`

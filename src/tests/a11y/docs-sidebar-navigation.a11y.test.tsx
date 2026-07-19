@@ -50,10 +50,10 @@ describe("docs sidebar navigation accessibility", () => {
     container: HTMLElement,
     messages: Awaited<ReturnType<typeof loadUiMessages>>,
   ): Promise<void> {
+    // Only open secondaries that still have members after W18 move-stub
+    // demotion. Empty Workers / Workstations / Factories labels would otherwise
+    // match and toggle the same-named top-level W15 family folders.
     for (const folderName of [
-      messages.explorer.documentationSecondaries.workers,
-      messages.explorer.documentationSecondaries.workstations,
-      messages.explorer.documentationSecondaries.factories,
       messages.explorer.documentationSecondaries.resources,
       messages.explorer.documentationSecondaries.observability,
     ] as const) {
@@ -239,12 +239,18 @@ describe("docs sidebar navigation accessibility", () => {
     ] as const) {
       expect(within(sidebar).getByText(subgroup)).toBeTruthy();
     }
-    // Packaged factories is both a top-group separator and a page title.
+    // Packaged factories remains a top-group separator; the move-stub page
+    // titled "Packaged factories" is no longer an explorer link.
     expect(
       within(sidebar).getAllByText(
         context.messages.explorer.documentationGroups["packaged-factories"],
       ).length,
-    ).toBeGreaterThanOrEqual(2);
+    ).toBe(1);
+    expect(
+      within(sidebar).getByRole("link", {
+        name: "Packaged documents",
+      }),
+    ).toBeTruthy();
     expect(
       within(sidebar).getByRole("link", {
         name: "What is you-agent-factory",
@@ -287,8 +293,9 @@ describe("docs sidebar navigation accessibility", () => {
       position(installLink),
     );
 
-    // Story 004 browser proof: Factory Configuration → Workers and System
-    // Operations → Observability nest published pages (not a flat dump).
+    // Story 004 browser proof: Factory Configuration → Resources and System
+    // Operations → Observability nest published pages (not a flat dump). W18
+    // move stubs no longer appear under empty Workers / Workstations / Factories.
     const factoryConfigurationLabel =
       context.messages.explorer.documentationGroups["factory-configuration"];
     const systemOperationsLabel =
@@ -300,23 +307,22 @@ describe("docs sidebar navigation accessibility", () => {
       systemOperationsLabel,
     );
 
-    const workersSecondary = within(sidebar).getAllByRole("button", {
-      name: context.messages.explorer.documentationSecondaries.workers,
-    })[0];
-    expect(workersSecondary).toBeTruthy();
-    if (!workersSecondary) {
-      throw new Error("expected Workers secondary under Factory Configuration");
-    }
+    const resourcesSecondary = within(sidebar).getByRole("button", {
+      name: context.messages.explorer.documentationSecondaries.resources,
+    });
     const observabilitySecondary = within(sidebar).getByRole("button", {
       name: context.messages.explorer.documentationSecondaries.observability,
     });
 
-    const mockWorkersLink = within(sidebar).getByRole("link", {
-      name: "Mock workers",
+    const throttlingLink = within(sidebar).getByRole("link", {
+      name: "Throttling and limits",
     });
-    expect(mockWorkersLink.getAttribute("href")).toBe(
-      "/docs/documentation/mock-workers",
+    expect(throttlingLink.getAttribute("href")).toBe(
+      "/docs/documentation/throttling-and-limits",
     );
+    expect(
+      within(sidebar).queryByRole("link", { name: "Mock workers" }),
+    ).toBeNull();
     const logsLink = within(sidebar).getByRole("link", { name: "Logs" });
     expect(logsLink.getAttribute("href")).toBe("/docs/documentation/logs");
     const metricsLink = within(sidebar).getByRole("link", { name: "Metrics" });
@@ -331,10 +337,10 @@ describe("docs sidebar navigation accessibility", () => {
     );
 
     expect(position(factoryConfigurationSeparator)).toBeLessThan(
-      position(workersSecondary),
+      position(resourcesSecondary),
     );
-    expect(position(workersSecondary)).toBeLessThan(position(mockWorkersLink));
-    expect(position(mockWorkersLink)).toBeLessThan(
+    expect(position(resourcesSecondary)).toBeLessThan(position(throttlingLink));
+    expect(position(throttlingLink)).toBeLessThan(
       position(systemOperationsSeparator),
     );
     expect(position(systemOperationsSeparator)).toBeLessThan(
@@ -353,7 +359,7 @@ describe("docs sidebar navigation accessibility", () => {
 
     // Story 006 browser proof: FAQ stays top-level outside Program
     // documentation; three-level groups replace the former ten-group order;
-    // nested Workers / Observability secondaries stay reachable.
+    // nested Resources / Observability secondaries stay reachable.
     const programDocumentationFolder = within(sidebar).getAllByRole("button", {
       name: context.messages.explorer.folders.documentation,
     })[0];
@@ -373,7 +379,7 @@ describe("docs sidebar navigation accessibility", () => {
     ] as const) {
       expect(within(sidebar).queryByText(former)).toBeNull();
     }
-    expect(workersSecondary.getAttribute("aria-expanded")).not.toBe("false");
+    expect(resourcesSecondary.getAttribute("aria-expanded")).not.toBe("false");
     expect(observabilitySecondary).toBeTruthy();
     expect(position(faqLink)).toBeGreaterThan(position(observabilitySecondary));
   });
@@ -445,11 +451,6 @@ describe("docs sidebar navigation accessibility", () => {
       ),
     ).toBeTruthy();
     expect(
-      within(sidebar).getAllByRole("button", {
-        name: context.messages.explorer.documentationSecondaries.workers,
-      }).length,
-    ).toBeGreaterThan(0);
-    expect(
       within(sidebar).getByRole("button", {
         name: context.messages.explorer.documentationSecondaries.resources,
       }),
@@ -459,6 +460,9 @@ describe("docs sidebar navigation accessibility", () => {
         name: context.messages.explorer.documentationSecondaries.observability,
       }),
     ).toBeTruthy();
+    expect(
+      within(sidebar).queryByRole("link", { name: "Mock workers" }),
+    ).toBeNull();
     expect(
       within(sidebar).queryByRole("button", { name: "Observability" }),
     ).toBeNull();

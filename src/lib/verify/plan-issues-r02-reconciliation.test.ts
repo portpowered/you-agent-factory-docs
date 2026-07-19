@@ -44,47 +44,55 @@ import {
   resolveHostSemanticThemeTokens,
 } from "@/lib/theme/host-semantic-theme-tokens";
 
-/** R01 eight Program documentation pages with declared explorer subgroups. */
+/** R01 eight Program documentation pages (published; stubs demoted from explorer). */
 const R01_PROGRAM_DOCUMENTATION_PAGES = [
   {
     slug: "mock-workers",
     group: "factory-configuration",
     registryId: "documentation.mock-workers",
+    explorerMember: false,
   },
   {
     slug: "throttling-and-limits",
     group: "factory-configuration",
     registryId: "documentation.throttling-and-limits",
+    explorerMember: true,
   },
   {
     slug: "script-workers",
     group: "factory-configuration",
     registryId: "documentation.script-workers",
+    explorerMember: false,
   },
   {
     slug: "poller-workers",
     group: "factory-configuration",
     registryId: "documentation.poller-workers",
+    explorerMember: false,
   },
   {
     slug: "agent-workers",
     group: "factory-configuration",
     registryId: "documentation.agent-workers",
+    explorerMember: false,
   },
   {
     slug: "inference-workers",
     group: "factory-configuration",
     registryId: "documentation.inference-workers",
+    explorerMember: false,
   },
   {
     slug: "packaged-documents",
     group: "packaged-factories",
     registryId: "documentation.packaged-documents",
+    explorerMember: true,
   },
   {
     slug: "packaged-factories",
     group: "packaged-factories",
     registryId: "documentation.packaged-factories",
+    explorerMember: false,
   },
 ] as const;
 
@@ -112,10 +120,18 @@ describe("plan-issues R02 tip reconciliation", () => {
       expect(entry?.docsSlug).toBe(`documentation/${page.slug}`);
       expect(entry?.url).toBe(`/docs/documentation/${page.slug}`);
       expect(publishedUrls.has(`/docs/documentation/${page.slug}`)).toBe(true);
-      expect(FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[page.slug]).toBe(
-        page.group,
-      );
       expect(entry?.pageKind).toBe("documentation");
+      if (page.explorerMember) {
+        expect(FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[page.slug]).toBe(
+          page.group,
+        );
+      } else {
+        expect(
+          FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
+            page.slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG
+          ],
+        ).toBeUndefined();
+      }
     }
 
     for (const page of R00_CONCEPTS_PAGES) {
@@ -197,7 +213,13 @@ describe("plan-issues R02 tip reconciliation", () => {
       (page) => page.url,
     );
     for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
-      expect(documentationUrls).toContain(`/docs/documentation/${page.slug}`);
+      if (page.explorerMember) {
+        expect(documentationUrls).toContain(`/docs/documentation/${page.slug}`);
+      } else {
+        expect(documentationUrls).not.toContain(
+          `/docs/documentation/${page.slug}`,
+        );
+      }
     }
 
     expect(Object.values(SIDEBAR_GROUP_LABELS.concepts)).toEqual([
@@ -216,7 +238,7 @@ describe("plan-issues R02 tip reconciliation", () => {
     ]);
   });
 
-  test("localized explorer trees keep brand, FAQ, no Glossary, and eight-page membership", async () => {
+  test("localized explorer trees keep brand, FAQ, no Glossary, and non-stub R01 membership", async () => {
     for (const locale of supportedLocales) {
       const messages = await loadUiMessages(locale);
       const signature = buildExplorerTreeSignature(
@@ -241,9 +263,10 @@ describe("plan-issues R02 tip reconciliation", () => {
       }
       const urls = pageEntriesInFolder(documentation).map((page) => page.url);
       for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
-        expect(
-          urls.some((url) => url.endsWith(`/documentation/${page.slug}`)),
-        ).toBe(true);
+        const present = urls.some((url) =>
+          url.endsWith(`/documentation/${page.slug}`),
+        );
+        expect(present).toBe(page.explorerMember);
       }
     }
   });
