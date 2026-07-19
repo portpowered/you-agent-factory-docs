@@ -299,8 +299,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/features/docs/styles/docs-page-footer-chrome.ts` (+ `.css` / `.test.ts`)
   Shared DocsPage Previous/Next footer **chrome** (hover/focus background +
   focus ring; no title-text accent-foreground recolor; muted sublabel stays
-  muted). Prefer CSS/token overrides on the Fumadocs accent-hover card
-  selectors over redesigning footer neighbor data.
+  muted; compact `padding`/`gap` overrides for Fumadocs `p-4`/`gap-2`). Prefer
+  CSS/token overrides on the Fumadocs accent-hover card selectors over
+  redesigning footer neighbor data.
 * `src/lib/navigation/docs-page-footer-contract.ts` (+ `.test.ts`)
   Built-HTML / bundled-CSS convergence helpers for footer card accent-hover
   classes, muted directional sublabels, and the no-text-recolor CSS pairing.
@@ -308,8 +309,9 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   out-of-root `node_modules` symlinks, so `bun run dev` often cannot start in
   a worktree. When that happens, serve the chrome CSS on a unique port with a
   minimal `#nd-page` prev/next card fixture and Playwright-hover/focus
-  `getComputedStyle` (title color stable; background + focus ring present)
-  instead of inventing a second Next bootstrap path.
+  `getComputedStyle` (title color stable; background + focus ring present;
+  padding/gap shorter than `p-4`/`gap-2`) instead of inventing a second Next
+  bootstrap path.
 * `src/lib/content/factory-prev-next-related.ts`
   Factory previous/next and related-link contract: footer neighbor resolution
   mirroring Fumadocs `useFooterItems`, W15 family-scoped linearization

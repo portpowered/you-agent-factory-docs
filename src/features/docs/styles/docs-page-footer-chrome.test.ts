@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   docsPageFooterCardSelector,
+  docsPageFooterCompactGap,
+  docsPageFooterCompactPadding,
   docsPageFooterMutedSublabelSelector,
   docsPageFooterStableTextColorSelector,
 } from "@/features/docs/styles/docs-page-footer-chrome";
@@ -48,5 +50,19 @@ describe("docs page footer chrome CSS contract", () => {
     expect(footerChromeCss).not.toContain(
       "color: var(--color-fd-accent-foreground)",
     );
+  });
+
+  test("footer cards use compact padding and gap below Fumadocs p-4/gap-2", () => {
+    expect(docsPageFooterCompactPadding).toBe("0.5rem 0.75rem");
+    expect(docsPageFooterCompactGap).toBe("0.25rem");
+    expect(footerChromeCss).toContain(
+      `padding: ${docsPageFooterCompactPadding} !important`,
+    );
+    expect(footerChromeCss).toContain(
+      `gap: ${docsPageFooterCompactGap} !important`,
+    );
+    // Must not reintroduce the tall Fumadocs spacing values as chrome defaults.
+    expect(footerChromeCss).not.toContain("padding: 1rem");
+    expect(footerChromeCss).not.toContain("gap: 0.5rem");
   });
 });
