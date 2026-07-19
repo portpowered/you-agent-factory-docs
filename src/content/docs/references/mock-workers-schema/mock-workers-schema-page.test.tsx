@@ -42,12 +42,12 @@ describe("mock-workers-schema reference page", () => {
     );
     expect(whatItCovers).toMatch(/live mock-worker configuration JSON Schema/i);
     expect(whatItCovers).not.toMatch(/on this page|Model Atlas/i);
-
-    const limits = String(
-      loadedPage.messages.sections?.limitsAndAssumptions?.body ?? "",
-    );
-    expect(limits).toMatch(/not.*authored Worker documentation/i);
-    expect(limits).toMatch(/\/docs\/workers\/mock/i);
+    expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
+    expect(loadedPage.messages.sections?.limitsAndAssumptions).toBeUndefined();
+    expect(loadedPage.messages.sections?.related).toBeUndefined();
+    expect(loadedPage.messages.sections?.tags).toBeUndefined();
+    expect(loadedPage.messages.sections?.references).toBeUndefined();
+    expect(loadedPage.messages.links).toBeUndefined();
 
     render(
       <main>
@@ -64,6 +64,14 @@ describe("mock-workers-schema reference page", () => {
       screen.getByRole("heading", { name: "What It Covers" }),
     ).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Schema Lookup" })).toBeTruthy();
+    expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
+    expect(
+      screen.queryByRole("heading", { name: "Limits And Assumptions" }),
+    ).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+    expect(document.getElementById("related")).toBeNull();
 
     const schemaSurface = screen.getByTestId("mock-workers-schema-reference");
     expect(schemaSurface.getAttribute("data-schema-status")).toBe("ready");
@@ -79,19 +87,6 @@ describe("mock-workers-schema reference page", () => {
     const whatItCoversSection = document.getElementById("what-it-covers");
     expect(whatItCoversSection?.textContent ?? "").toMatch(
       /mock-worker configuration JSON Schema/i,
-    );
-
-    const factoryLink = screen.getByRole("link", {
-      name: "Factory schema",
-    });
-    expect(factoryLink.getAttribute("href")).toBe(
-      "/docs/references/factory-schema",
-    );
-    const youConfigLink = screen.getByRole("link", {
-      name: "You-config schema",
-    });
-    expect(youConfigLink.getAttribute("href")).toBe(
-      "/docs/references/you-config-schema",
     );
 
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
