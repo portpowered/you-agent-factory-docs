@@ -3,8 +3,18 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   docsPageFooterCardSelector,
-  docsPageFooterSublabelInheritSelector,
+  docsPageFooterCompactGap,
+  docsPageFooterCompactPadding,
+  docsPageFooterMutedSublabelSelector,
+  docsPageFooterStableTextColorSelector,
 } from "@/features/docs/styles/docs-page-footer-chrome";
+import {
+  assertDocsFooterChromeCssConvergence,
+  assertDocsFooterCompactSizingCssConvergence,
+  assertDocsFooterSublabelHoverFocusCssConvergence,
+  FOOTER_COMPACT_GAP,
+  FOOTER_COMPACT_PADDING,
+} from "@/lib/navigation/docs-page-footer-contract";
 
 const footerChromeCss = readFileSync(
   join(process.cwd(), "src/features/docs/styles/docs-page-footer-chrome.css"),
@@ -16,25 +26,58 @@ function normalizeSelectorContract(value: string): string {
 }
 
 describe("docs page footer chrome CSS contract", () => {
-  test("footer card selector targets accent-hover footer anchors with muted sublabels", () => {
+  test("chrome token exports stay aligned with footer contract constants", () => {
+    expect(docsPageFooterCompactPadding).toBe(FOOTER_COMPACT_PADDING);
+    expect(docsPageFooterCompactGap).toBe(FOOTER_COMPACT_GAP);
+    expect(docsPageFooterCardSelector).toContain("hover:bg-fd-accent");
+    expect(docsPageFooterCardSelector).toContain(
+      "hover:text-fd-accent-foreground",
+    );
+    expect(docsPageFooterStableTextColorSelector).toContain(":hover");
+    expect(docsPageFooterStableTextColorSelector).toContain(":focus-visible");
+    expect(docsPageFooterMutedSublabelSelector).toContain(
+      "p.text-fd-muted-foreground",
+    );
+  });
+
+  test("shared chrome stylesheet converges on no-text-recolor and compact sizing together", () => {
+    expect(assertDocsFooterChromeCssConvergence(footerChromeCss)).toBeNull();
+    expect(
+      assertDocsFooterSublabelHoverFocusCssConvergence(footerChromeCss),
+    ).toBeNull();
+    expect(
+      assertDocsFooterCompactSizingCssConvergence(footerChromeCss),
+    ).toBeNull();
+
+    // Non-text affordances still present alongside stable title color.
+    expect(footerChromeCss).toContain(
+      "background-color: color-mix(in oklch, var(--color-fd-accent) 80%, transparent)",
+    );
+    expect(footerChromeCss).toContain("outline-width: 2px");
+    expect(footerChromeCss).toContain("box-shadow: 0 0 0 2px var(--ring)");
+    expect(footerChromeCss).not.toContain(
+      "color: var(--color-fd-accent-foreground)",
+    );
+  });
+
+  test("selector exports stay wired into the shared chrome stylesheet", () => {
     const normalizedCss = normalizeSelectorContract(footerChromeCss);
 
     expect(normalizedCss).toContain(
       normalizeSelectorContract(docsPageFooterCardSelector),
     );
     expect(normalizedCss).toContain(
-      normalizeSelectorContract(docsPageFooterSublabelInheritSelector),
+      normalizeSelectorContract(docsPageFooterStableTextColorSelector),
     );
-    expect(footerChromeCss).toContain('class*="hover:bg-fd-accent"');
-    expect(footerChromeCss).toContain(
-      'class*="hover:text-fd-accent-foreground"',
+    expect(normalizedCss).toContain(
+      normalizeSelectorContract(docsPageFooterMutedSublabelSelector),
     );
     expect(footerChromeCss).toContain("@layer utilities");
-    expect(footerChromeCss).toContain("color: currentColor");
-    expect(footerChromeCss).toContain(":focus");
-    expect(footerChromeCss).toContain(":focus-visible");
-    expect(footerChromeCss).toContain("var(--color-fd-accent-foreground)");
-    expect(footerChromeCss).toContain("outline-width: 2px");
-    expect(footerChromeCss).toContain("box-shadow: 0 0 0 2px var(--ring)");
+    expect(footerChromeCss).toContain(
+      `padding: ${docsPageFooterCompactPadding} !important`,
+    );
+    expect(footerChromeCss).toContain(
+      `gap: ${docsPageFooterCompactGap} !important`,
+    );
   });
 });

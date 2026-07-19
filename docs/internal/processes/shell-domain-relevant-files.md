@@ -296,6 +296,37 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   W15 story 003 proof: four family folders appear in topology relative order
   with settled published page children only (no operation / event-variant /
   schema-definition inventory paths in the global explorer).
+* `src/features/docs/styles/docs-page-footer-chrome.ts` (+ `.css` / `.test.ts`)
+  Shared DocsPage Previous/Next footer **chrome** (hover/focus background +
+  focus ring; no title-text accent-foreground recolor; muted sublabel stays
+  muted; compact `padding`/`gap` overrides for Fumadocs `p-4`/`gap-2`). Prefer
+  CSS/token overrides on the Fumadocs accent-hover card selectors over
+  redesigning footer neighbor data.
+* `src/features/docs/styles/docs-page-footer-chrome.browser.test.ts`
+  Always-on Playwright behavioral gate: embeds the real chrome CSS in a
+  minimal `#nd-page` prev/next fixture (no Next build / `bun run dev`),
+  probes `getComputedStyle` on hover and focus-visible for stable title color
+  (not accent-foreground), muted sublabel retention, background + focus-ring
+  affordances, and compact padding/gap (`8px/12px` + `4px`). Includes a
+  negative fixture (chrome CSS omitted) that still reproduces tall `p-4`/`gap-2`
+  and accent title recolor. Pattern mirrors
+  `a11y-content-column-left-edge-geometry.test.ts` (`page.setContent`).
+* `src/lib/navigation/docs-page-footer-contract.ts` (+ `.test.ts`)
+  Built-HTML / bundled-CSS convergence helpers for footer card accent-hover
+  classes, muted directional sublabels, the no-text-recolor CSS pairing, and
+  compact padding/gap overrides (`FOOTER_COMPACT_PADDING` /
+  `FOOTER_COMPACT_GAP`). Use `assertDocsFooterChromeCssConvergence` when both
+  repairs must stay locked together. Source/CSS string helpers are supporting
+  contracts only — behavioral proof lives in the browser test above.
+* Worktree browser verify for footer chrome: Turbopack rejects hoisted
+  out-of-root `node_modules` symlinks, so `bun run dev` often cannot start in
+  a worktree. Prefer the committed Playwright `page.setContent` fixture in
+  `docs-page-footer-chrome.browser.test.ts` (same pattern as left-edge
+  geometry) over inventing a second Next bootstrap or ad-hoc HTTP server.
+  Competing fixture hover text utilities must stay inside `@layer utilities`
+  (or lose to unlayered resting color); resting link color belongs in
+  `@layer base` so the negative (no-chrome) case can still show accent
+  recolor.
 * `src/lib/content/factory-prev-next-related.ts`
   Factory previous/next and related-link contract: footer neighbor resolution
   mirroring Fumadocs `useFooterItems`, W15 family-scoped linearization

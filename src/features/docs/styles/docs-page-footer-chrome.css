@@ -1,11 +1,15 @@
 /**
  * Fumadocs DocsPage footer cards set hover:bg-fd-accent/* and
- * hover:text-fd-accent-foreground on the anchor while the Previous/Next
- * sublabel keeps text-fd-muted-foreground. Mirror hover, focused, and
- * focus-visible states on the card and inherit foreground on the sublabel.
+ * hover:text-fd-accent-foreground on the anchor. Keep the background (and
+ * focus-ring) affordance, but neutralize the text-highlight treatment so
+ * title and Previous/Next sublabel colors stay stable on hover/focus.
  *
- * Sublabel color:inherit lives in @layer utilities so it wins over the
- * Tailwind .text-fd-muted-foreground utility at runtime.
+ * Also override Fumadocs tall `p-4` / `gap-2` spacing so cards read as
+ * compact neighbor controls rather than bulky blocks.
+ *
+ * Color + spacing overrides live in @layer utilities with !important so they
+ * win over the Tailwind hover:text-fd-accent-foreground / p-4 / gap-2
+ * utilities at runtime.
  */
 @layer components {
   #nd-page
@@ -14,19 +18,23 @@
       :focus-visible
     ) {
     background-color: color-mix(in oklch, var(--color-fd-accent) 80%, transparent);
-    color: var(--color-fd-accent-foreground);
   }
-
 }
 
 @layer utilities {
+  /* Compact card chrome: shorter than Fumadocs p-4 (1rem) / gap-2 (0.5rem). */
+  #nd-page
+    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"] {
+    padding: 0.5rem 0.75rem !important;
+    gap: 0.25rem !important;
+  }
+
   #nd-page
     a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:is(
       :hover,
       :focus-visible
-    )
-    > p.text-fd-muted-foreground {
-    color: currentColor !important;
+    ) {
+    color: inherit !important;
   }
 
   #nd-page
@@ -39,8 +47,11 @@
   }
 
   #nd-page
-    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:focus-visible
+    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:is(
+      :hover,
+      :focus-visible
+    )
     > p.text-fd-muted-foreground {
-    color: currentColor !important;
+    color: var(--color-fd-muted-foreground) !important;
   }
 }
