@@ -1037,6 +1037,16 @@ keep `<RelatedDocs />` in `#related` for when curated ids can resolve cleanly.
   `openingSummary`, teaching headings, ready schema embeds, and lookup links.
   Do not require How To Use / Limits / Related absence on factories pages that
   still ship those non-intro sections.
+  Browser-verify Factories intro strip on the five child routes with
+  `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1`
+  (Turbopack often fails in parent-hoisted worktrees). Fetch SSR HTML and
+  assert: no `What It Covers` / `Key Concepts` headings, no
+  `#what-it-covers` / `#key-concepts`, `data-opening-summary` present with
+  the page lead, and the first teaching section id/title visible
+  (`#what-lives-where`, `#operator-model-defaults`,
+  `#discovery-and-resolution`, `#orchestrator-schema` titled
+  Orchestrator Identity, `#factory-relationship`). Kill the server before
+  exit. In zsh verify scripts, do not assign to `path` (it aliases `PATH`).
   Treat each loader switch as a narrow shared-surface exception and declare it
   with `audit:canonical-page-surface --exception-reason`.
 * `src/lib/content/published-docs-registry-contract.ts` /
