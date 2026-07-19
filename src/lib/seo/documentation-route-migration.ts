@@ -146,9 +146,11 @@ export const DOCUMENTATION_ROUTE_MIGRATION_LEDGER: readonly DocumentationRouteMi
 /**
  * Important on-target deep-link anchors for §10 family destinations.
  *
- * Every migrated MDX page and both App Router family indexes expose a
- * `what-it-covers` section. Index-only targets that lacked a section id would
- * use `{ kind: "none", reason: "index-only-target" }` instead.
+ * Most migrated MDX pages and both App Router family indexes expose a
+ * `what-it-covers` section. Projection-first pages (for example the API
+ * reference) use their primary content section id instead (`operations`).
+ * Index-only targets that lacked a section id would use
+ * `{ kind: "none", reason: "index-only-target" }` instead.
  */
 export type DocumentationRouteMigrationImportantAnchor =
   | { kind: "section"; id: string }
@@ -157,7 +159,7 @@ export type DocumentationRouteMigrationImportantAnchor =
 export const DOCUMENTATION_ROUTE_MIGRATION_IMPORTANT_ANCHORS: Readonly<
   Record<`/${string}`, DocumentationRouteMigrationImportantAnchor>
 > = {
-  "/docs/references/api": { kind: "section", id: "what-it-covers" },
+  "/docs/references/api": { kind: "section", id: "operations" },
   "/docs/references/cli": { kind: "section", id: "what-it-covers" },
   "/docs/factories/configuration": { kind: "section", id: "what-it-covers" },
   "/docs/factories/global-configuration": {
