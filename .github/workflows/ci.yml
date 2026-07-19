@@ -191,12 +191,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: static-export-out
+          # upload-artifact@v4 stores a single directory's *contents* at the
+          # artifact root; download into out/ so gates see repo-root out/.
+          path: out
 
       - name: Verify trusted static-export artifact
         run: |
           set -euo pipefail
           if [[ ! -d out ]] || [[ -z "$(find out -type f -print -quit)" ]]; then
             echo "static-export artifact missing or incomplete: expected non-empty out/"
+            ls -la . || true
+            ls -la out || true
             exit 1
           fi
 
@@ -225,12 +230,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: static-export-out
+          # upload-artifact@v4 stores a single directory's *contents* at the
+          # artifact root; download into out/ so gates see repo-root out/.
+          path: out
 
       - name: Verify trusted static-export artifact
         run: |
           set -euo pipefail
           if [[ ! -d out ]] || [[ -z "$(find out -type f -print -quit)" ]]; then
             echo "static-export artifact missing or incomplete: expected non-empty out/"
+            ls -la . || true
+            ls -la out || true
             exit 1
           fi
 
