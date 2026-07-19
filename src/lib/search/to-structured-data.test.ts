@@ -4,6 +4,12 @@ import { loadPublishedDocsPages } from "@/lib/content/pages";
 import { loadRegistry } from "@/lib/content/registry";
 import { buildSearchDocuments } from "./build-documents";
 import {
+  buildReferenceItemSearchDocuments,
+  resetReferenceItemSearchDocumentsCacheForTests,
+} from "./build-reference-search-documents";
+import { resolveReferenceItemDeepLinkUrl } from "./collapse-search-results-to-page-hits";
+import { createSearchServerFromDocuments } from "./create-search-catalog-from-documents";
+import {
   toAdvancedSearchIndex,
   toAdvancedSearchIndexes,
 } from "./to-advanced-index";
@@ -57,17 +63,27 @@ describe("toStructuredData reference owning-page heading policy", () => {
     expect(structured.contents[0]?.content).toContain("Overview");
   });
 
-  test("keeps heading rows for non-reference pages and inventory item documents", () => {
+  test("omits standalone heading rows for inventory item deep links", () => {
+    const item = buildSyntheticDocument({
+      url: `${MCP_REFERENCE_URL}#you.factory_session.get`,
+      title: "you.factory_session.get",
+      kind: "reference",
+      headings: ["you.factory_session.get", "you.factory_session.get"],
+    });
+
+    const structured = toStructuredData(item);
+    expect(structured.headings).toEqual([]);
+    expect(structured.contents[0]?.heading).toBeUndefined();
+    expect(structured.contents[0]?.content).toContain(
+      "you.factory_session.get",
+    );
+  });
+
+  test("keeps heading rows for non-reference pages", () => {
     const concept = buildSyntheticDocument({
       url: HARNESS_URL,
       title: "Harness",
       headings: ["What a harness does"],
-    });
-    const item = buildSyntheticDocument({
-      url: `${MCP_REFERENCE_URL}#factory_session_start`,
-      title: "factory_session_start",
-      kind: "reference",
-      headings: ["factory_session_start", "factory_session_start"],
     });
 
     const conceptStructured = toStructuredData(concept);
@@ -75,10 +91,6 @@ describe("toStructuredData reference owning-page heading policy", () => {
       { id: "heading-0", content: "What a harness does" },
     ]);
     expect(conceptStructured.contents[0]?.heading).toBe("Harness");
-
-    const itemStructured = toStructuredData(item);
-    expect(itemStructured.headings.length).toBeGreaterThan(0);
-    expect(itemStructured.headings[0]?.id).toBe("heading-0");
   });
 
   test("live MCP reference page indexes as a page hit without #heading-N rows", async () => {
@@ -137,5 +149,79 @@ describe("toStructuredData reference owning-page heading policy", () => {
           (result) => !/^heading-\d+$/i.test(result.url.split("#")[1] ?? ""),
         ),
     ).toBe(true);
+  });
+});
+
+describe("reference inventory item exact-match deep links", () => {
+  test("resolveReferenceItemDeepLinkUrl keeps registry anchors and rejects #heading-N", () => {
+    expect(
+      resolveReferenceItemDeepLinkUrl(
+        "/docs/references/mcp#you.factory_session.get",
+      ),
+    ).toBe("/docs/references/mcp#you.factory_session.get");
+    expect(
+      resolveReferenceItemDeepLinkUrl(
+        "/docs/references/mcp#you.factory_session.get#heading-0",
+      ),
+    ).toBe("/docs/references/mcp#you.factory_session.get");
+    expect(
+      resolveReferenceItemDeepLinkUrl("/docs/references/mcp#heading-0"),
+    ).toBeUndefined();
+    expect(
+      resolveReferenceItemDeepLinkUrl("/docs/concepts/harness#overview"),
+    ).toBeUndefined();
+  });
+
+  test("exact MCP/API/CLI/JS identifier queries return registry-anchor item hits without #heading-N", async () => {
+    resetReferenceItemSearchDocumentsCacheForTests();
+    const documents = buildReferenceItemSearchDocuments({ fresh: true });
+
+    const representatives = [
+      {
+        query: "you.factory_session.get",
+        url: "/docs/references/mcp#you.factory_session.get",
+      },
+      {
+        query: "submitWorkBySessionId",
+        url: "/docs/references/api#submitWorkBySessionId",
+      },
+      {
+        query: "you config init",
+        url: "/docs/references/cli#you-config-init",
+      },
+      {
+        query: "javascript.log",
+        url: "/docs/references/javascript-runtime#javascript.log",
+      },
+    ] as const;
+
+    for (const representative of representatives) {
+      const document = documents.find(
+        (entry) => entry.url === representative.url,
+      );
+      expect(document).toBeDefined();
+      if (!document) {
+        throw new Error(`Missing inventory document at ${representative.url}`);
+      }
+
+      const structured = toStructuredData(document);
+      expect(structured.headings).toEqual([]);
+      expect(structured.contents[0]?.heading).toBeUndefined();
+    }
+
+    const searchServer = createSearchServerFromDocuments(documents);
+
+    for (const representative of representatives) {
+      const results = await searchServer.search(representative.query);
+      expect(results.some((result) => result.url === representative.url)).toBe(
+        true,
+      );
+      expect(
+        results.some(
+          (result) =>
+            result.type === "heading" || /#heading-\d+/i.test(result.url),
+        ),
+      ).toBe(false);
+    }
   });
 });

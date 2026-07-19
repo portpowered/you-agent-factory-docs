@@ -1,4 +1,4 @@
-import { isReferenceOwningPageSearchUrl } from "./reference-owning-page-search-url";
+import { shouldSuppressReferenceStandaloneSearchHeadings } from "./reference-owning-page-search-url";
 import { topologySearchText } from "./topology-search-terms";
 import type {
   FumadocsSearchIndexEntry,
@@ -9,18 +9,18 @@ import type {
 /**
  * Project a search document into Fumadocs structured data.
  *
- * Reference owning pages under `/docs/references/**` omit standalone heading
- * rows (`#heading-N`) so subsection titles cannot flood advanced search.
- * Heading text is folded into page-level content so the owning page remains
- * discoverable. Inventory item documents (URLs with registry anchors) keep
- * normal heading projection.
+ * Reference owning pages and inventory item deep links under
+ * `/docs/references/**` omit standalone heading rows (`#heading-N`) so
+ * subsection titles and item auto-heading children cannot flood advanced
+ * search. Heading text is folded into page-level content so titles and
+ * registry identifiers remain searchable. Exact inventory lookups stay on the
+ * registry-anchor page URL — not Fumadocs `#heading-N` fragments.
  */
 export function toStructuredData(
   document: SearchDocument,
 ): FumadocsStructuredData {
-  const suppressStandaloneHeadings = isReferenceOwningPageSearchUrl(
-    document.url,
-  );
+  const suppressStandaloneHeadings =
+    shouldSuppressReferenceStandaloneSearchHeadings(document.url);
 
   const headings = suppressStandaloneHeadings
     ? []

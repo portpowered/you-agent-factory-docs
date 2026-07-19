@@ -114,7 +114,11 @@ export {
   toOramaRecord,
   toOramaSnapshotDocument,
 } from "./orama-index";
-export { isReferenceOwningPageSearchUrl } from "./reference-owning-page-search-url";
+export {
+  isReferenceInventoryItemSearchUrl,
+  isReferenceOwningPageSearchUrl,
+  shouldSuppressReferenceStandaloneSearchHeadings,
+} from "./reference-owning-page-search-url";
 export { docsSearchApi } from "./search-server";
 export type { DocsAdvancedSearchIndex } from "./to-advanced-index";
 export {
