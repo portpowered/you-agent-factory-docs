@@ -56,8 +56,8 @@ const alternateSiteConfig = {
     {
       kind: "route",
       routeSurface: "tagsIndex",
-      titleKey: "glossaryLinkTitle",
-      descriptionKey: "glossaryLinkDescription",
+      titleKey: "title",
+      descriptionKey: "intro",
     },
   ],
 } satisfies SiteConfig;

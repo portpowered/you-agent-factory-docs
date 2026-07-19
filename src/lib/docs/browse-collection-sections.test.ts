@@ -75,7 +75,7 @@ describe("browse collection sections", () => {
       "Papers",
       "Training",
       "Systems",
-      messages.browseIndex.glossarySectionTitle,
+      "Glossary",
       "Model Types",
       "Inference",
       "Module Components",

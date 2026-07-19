@@ -393,12 +393,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   with search. See `search-domain-relevant-files.md` for the full pattern.
 * `src/content/messages/{en,ja,vi,zh-CN}/common.json`
   Factory-only public UI copy: `guidesIndex` / `conceptsIndex` /
-  `techniquesIndex` / `documentationIndex` / `glossaryIndex` plus
-  `browseIndex` hub + CLI section blurbs. Also keep
-  `search.idle`, `searchEntry.description`, `shell.sidebarDescription`,
-  blog/tags/architecture/glossary index copy, and `pageKind` /
-  `tagCategories` free of Model Atlas / atlas product ownership and
-  retired models/modules/papers/training live-surface labels (keep
+  `techniquesIndex` / `documentationIndex` plus `browseIndex` hub + CLI
+  section blurbs. Glossary index / home featured / browse quick-route
+  advertising keys (`glossaryIndex`, `home.glossaryLink*`,
+  `browseIndex.glossaryRouteDescription`, `browseIndex.glossarySection*`)
+  are retired with the `/docs/glossary` index destination; residual glossary
+  collection definitions reuse concepts messageKeys for resolve callers.
+  Also keep `search.idle`, `searchEntry.description`,
+  `shell.sidebarDescription`, blog/tags/architecture index copy, and
+  `pageKind` / `tagCategories` free of Model Atlas / atlas product ownership
+  and retired models/modules/papers/training live-surface labels (keep
   factory kinds + live tag categories such as `architecture` /
   `inference`). Do not ship retired Atlas
   `models|modules|papers|training|systems` index blocks, Atlas browse

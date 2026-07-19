@@ -148,8 +148,9 @@ describe("contributing, not-found, and empty-state accessibility", () => {
   test("section collection empty state exposes factory recovery affordances with keyboard focus and Atlas-free copy", async () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
-    // Glossary collection has no published entries; use it as an empty-state
-    // surface without depending on the retired /docs/glossary index route.
+    // Glossary collection has no published entries; after #157 its messageKeys
+    // reuse concepts index copy so hollow glossary advertising keys stay out
+    // of common.json while empty-state chrome can still be exercised.
     const page = await renderSectionCollectionIndexPage("glossary");
 
     await act(async () => {
@@ -162,18 +163,18 @@ describe("contributing, not-found, and empty-state accessibility", () => {
     });
 
     const structure = expectCriticalPageStructure(document, {
-      expectedH1: context.messages.glossaryIndex.title,
+      expectedH1: context.messages.conceptsIndex.title,
     });
     expect(structure.headingLevels).toContain(2);
 
     const empty = screen.getByRole("status");
     expect(empty.textContent).toContain(
-      context.messages.glossaryIndex.emptyTitle,
+      context.messages.conceptsIndex.emptyTitle,
     );
     expect(empty.textContent).not.toMatch(ATLAS_PRODUCT_COPY);
 
     const home = within(empty).getByRole("link", {
-      name: context.messages.glossaryIndex.emptyHomeLink,
+      name: context.messages.conceptsIndex.emptyHomeLink,
     });
     const browse = within(empty).getByRole("link", {
       name: context.messages.browseIndex.title,
