@@ -154,10 +154,10 @@ describe("desktop/mobile explorer tree parity", () => {
       }
       const documentationSeparators = separatorNamesInFolder(documentation);
       expect(documentationSeparators[0]).toBe(
-        messages.explorer.documentationGroups.basics,
+        messages.explorer.documentationGroups["system-feature-set"],
       );
       expect(documentationSeparators.at(-1)).toBe(
-        messages.explorer.documentationGroups["additional-reference"],
+        messages.explorer.documentationGroups["additional-references"],
       );
       expect(
         pageEntriesInFolder(documentation).some((page) =>
@@ -177,13 +177,13 @@ describe("desktop/mobile explorer tree parity", () => {
       expect(
         pageEntriesUnderSeparator(
           documentation,
-          messages.explorer.documentationGroups.functions,
+          messages.explorer.documentationGroups["factory-configuration"],
         ).some((page) => page.url.includes("/documentation/mock-workers")),
       ).toBe(true);
       expect(
         pageEntriesUnderSeparator(
           documentation,
-          messages.explorer.documentationGroups.cli,
+          messages.explorer.documentationGroups["packaged-factories"],
         ).some((page) =>
           page.url.includes("/documentation/packaged-documents"),
         ),
@@ -251,7 +251,7 @@ describe("desktop/mobile explorer tree parity", () => {
       }
       expect(
         within(sidebar).getByText(
-          context.messages.explorer.documentationGroups.basics,
+          context.messages.explorer.documentationGroups["system-feature-set"],
         ),
       ).toBeTruthy();
 
@@ -301,7 +301,7 @@ describe("desktop/mobile explorer tree parity", () => {
       }
       expect(
         within(drawer).getByText(
-          context.messages.explorer.documentationGroups.basics,
+          context.messages.explorer.documentationGroups["system-feature-set"],
         ),
       ).toBeTruthy();
 

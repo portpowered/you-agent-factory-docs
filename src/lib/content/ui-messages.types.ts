@@ -74,16 +74,13 @@ export type ExplorerConceptsGroupMessages = {
 };
 
 export type ExplorerDocumentationGroupMessages = {
-  basics: string;
-  "feature-support": string;
-  functions: string;
-  configuration: string;
-  api: string;
-  cli: string;
-  mcp: string;
-  operational: string;
+  "system-feature-set": string;
+  interfaces: string;
+  "packaged-factories": string;
+  "factory-configuration": string;
+  "system-operations": string;
   "internal-architecture": string;
-  "additional-reference": string;
+  "additional-references": string;
 };
 
 export type ExplorerMessages = {

@@ -200,16 +200,13 @@ describe("docs navigation source", () => {
     const pageUrls = collectPageUrls(children);
 
     expect(separatorNames).toEqual([
-      "Basics",
-      "Feature support",
-      "Functions",
-      "Configuration",
-      "API",
-      "CLI",
-      "MCP",
-      "Operational",
-      "Internal architecture",
-      "Additional reference",
+      "System feature set",
+      "Interfaces",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Internal Architecture",
+      "Additional references",
     ]);
     expect(pageUrls).not.toContain("/docs/documentation/faq");
     expect(pageUrls).toContain("/docs/documentation/what-is-you-agent-factory");

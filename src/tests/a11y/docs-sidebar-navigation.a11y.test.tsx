@@ -189,26 +189,21 @@ describe("docs sidebar navigation accessibility", () => {
     ).toBeTruthy();
 
     for (const subgroup of [
-      context.messages.explorer.documentationGroups.basics,
-      context.messages.explorer.documentationGroups["feature-support"],
-      context.messages.explorer.documentationGroups.functions,
-      context.messages.explorer.documentationGroups.operational,
+      context.messages.explorer.documentationGroups["system-feature-set"],
+      context.messages.explorer.documentationGroups.interfaces,
+      context.messages.explorer.documentationGroups["factory-configuration"],
+      context.messages.explorer.documentationGroups["system-operations"],
       context.messages.explorer.documentationGroups["internal-architecture"],
-      context.messages.explorer.documentationGroups["additional-reference"],
+      context.messages.explorer.documentationGroups["additional-references"],
     ] as const) {
       expect(within(sidebar).getByText(subgroup)).toBeTruthy();
     }
-    // Configuration / API / CLI / MCP are both subgroup separators and page titles.
-    for (const sharedLabel of [
-      context.messages.explorer.documentationGroups.configuration,
-      context.messages.explorer.documentationGroups.api,
-      context.messages.explorer.documentationGroups.cli,
-      context.messages.explorer.documentationGroups.mcp,
-    ] as const) {
-      expect(
-        within(sidebar).getAllByText(sharedLabel).length,
-      ).toBeGreaterThanOrEqual(2);
-    }
+    // Packaged factories is both a top-group separator and a page title.
+    expect(
+      within(sidebar).getAllByText(
+        context.messages.explorer.documentationGroups["packaged-factories"],
+      ).length,
+    ).toBeGreaterThanOrEqual(2);
     expect(
       within(sidebar).getByRole("link", {
         name: "What is you-agent-factory",
@@ -282,7 +277,7 @@ describe("docs sidebar navigation accessibility", () => {
     ).toBeTruthy();
     expect(
       within(sidebar).getByText(
-        context.messages.explorer.documentationGroups.basics,
+        context.messages.explorer.documentationGroups["system-feature-set"],
       ),
     ).toBeTruthy();
 

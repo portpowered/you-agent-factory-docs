@@ -48,42 +48,42 @@ import {
 const R01_PROGRAM_DOCUMENTATION_PAGES = [
   {
     slug: "mock-workers",
-    group: "functions",
+    group: "factory-configuration",
     registryId: "documentation.mock-workers",
   },
   {
     slug: "throttling-and-limits",
-    group: "operational",
+    group: "factory-configuration",
     registryId: "documentation.throttling-and-limits",
   },
   {
     slug: "script-workers",
-    group: "configuration",
+    group: "factory-configuration",
     registryId: "documentation.script-workers",
   },
   {
     slug: "poller-workers",
-    group: "configuration",
+    group: "factory-configuration",
     registryId: "documentation.poller-workers",
   },
   {
     slug: "agent-workers",
-    group: "configuration",
+    group: "factory-configuration",
     registryId: "documentation.agent-workers",
   },
   {
     slug: "inference-workers",
-    group: "configuration",
+    group: "factory-configuration",
     registryId: "documentation.inference-workers",
   },
   {
     slug: "packaged-documents",
-    group: "cli",
+    group: "packaged-factories",
     registryId: "documentation.packaged-documents",
   },
   {
     slug: "packaged-factories",
-    group: "configuration",
+    group: "packaged-factories",
     registryId: "documentation.packaged-factories",
   },
 ] as const;
@@ -206,16 +206,13 @@ describe("plan-issues R02 tip reconciliation", () => {
       "Model inference",
     ]);
     expect(Object.values(SIDEBAR_GROUP_LABELS.documentation)).toEqual([
-      "Basics",
-      "Feature support",
-      "Functions",
-      "Configuration",
-      "API",
-      "CLI",
-      "MCP",
-      "Operational",
-      "Internal architecture",
-      "Additional reference",
+      "System feature set",
+      "Interfaces",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Internal Architecture",
+      "Additional references",
     ]);
   });
 

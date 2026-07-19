@@ -10,16 +10,13 @@ import { source } from "@/lib/source";
 const REQUIRED_SUBGROUP_LABELS = {
   Concepts: ["Harnesses", "Industrial engineering", "Model inference"],
   "Program documentation": [
-    "Basics",
-    "Feature support",
-    "Functions",
-    "Configuration",
-    "API",
-    "CLI",
-    "MCP",
-    "Operational",
-    "Internal architecture",
-    "Additional reference",
+    "System feature set",
+    "Interfaces",
+    "Packaged factories",
+    "Factory Configuration",
+    "System Operations",
+    "Internal Architecture",
+    "Additional references",
   ],
 } as const;
 
@@ -41,17 +38,17 @@ const REPRESENTATIVE_SUBGROUP_PLACEMENTS = [
   },
   {
     folderName: "Program documentation",
-    separator: "Basics",
+    separator: "Additional references",
     url: "/docs/documentation/what-is-you-agent-factory",
   },
   {
     folderName: "Program documentation",
-    separator: "CLI",
+    separator: "Interfaces",
     url: "/docs/documentation/cli",
   },
   {
     folderName: "Program documentation",
-    separator: "Additional reference",
+    separator: "Additional references",
     url: "/docs/documentation/install",
   },
 ] as const;

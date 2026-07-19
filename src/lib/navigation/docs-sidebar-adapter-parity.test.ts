@@ -159,21 +159,23 @@ describe("docs sidebar adapter extraction parity", () => {
     const pageTree = buildGeneratedDocsPageTree({ name: "Docs", children: [] });
     const children = getFolderChildren(pageTree, "Program documentation");
     const links = collectSidebarPageLinks(children);
-    const basicsUrl = "/docs/documentation/what-is-you-agent-factory";
+    const additionalReferencesUrl =
+      "/docs/documentation/what-is-you-agent-factory";
 
-    expect(findSidebarPageLink(links, basicsUrl)?.url).toBe(basicsUrl);
-    expect(findPrecedingSeparatorLabel(children, basicsUrl)).toBe("Basics");
+    expect(findSidebarPageLink(links, additionalReferencesUrl)?.url).toBe(
+      additionalReferencesUrl,
+    );
+    expect(findPrecedingSeparatorLabel(children, additionalReferencesUrl)).toBe(
+      "Additional references",
+    );
     expect(getSeparatorLabels(children)).toEqual([
-      "Basics",
-      "Feature support",
-      "Functions",
-      "Configuration",
-      "API",
-      "CLI",
-      "MCP",
-      "Operational",
-      "Internal architecture",
-      "Additional reference",
+      "System feature set",
+      "Interfaces",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Internal Architecture",
+      "Additional references",
     ]);
     expect(links.some((link) => link.url === "/docs/documentation/faq")).toBe(
       false,

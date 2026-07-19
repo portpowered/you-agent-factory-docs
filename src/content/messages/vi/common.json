@@ -74,16 +74,13 @@
       "model-inference": "Suy luận mô hình"
     },
     "documentationGroups": {
-      "basics": "Cơ bản",
-      "feature-support": "Hỗ trợ tính năng",
-      "functions": "Chức năng",
-      "configuration": "Cấu hình",
-      "api": "API",
-      "cli": "CLI",
-      "mcp": "MCP",
-      "operational": "Vận hành",
+      "system-feature-set": "Bộ tính năng hệ thống",
+      "interfaces": "Giao diện",
+      "packaged-factories": "Factory đóng gói",
+      "factory-configuration": "Cấu hình factory",
+      "system-operations": "Vận hành hệ thống",
       "internal-architecture": "Kiến trúc nội bộ",
-      "additional-reference": "Tham chiếu bổ sung"
+      "additional-references": "Tham chiếu bổ sung"
     }
   },
   "referenceChrome": {

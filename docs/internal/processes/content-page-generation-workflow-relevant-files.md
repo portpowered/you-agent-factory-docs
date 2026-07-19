@@ -239,7 +239,7 @@ exception reason in the PR conversation. Do not treat the sibling page bundle
 as shared hotspot churn for the page under audit.
 
 When the same documentation lane also needs a narrow
-`FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` membership entry
+`FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` membership entry
 (`src/lib/content/sidebar-grouping.ts`), prove the owned surface and each
 exception separately rather than stuffing every shared path into one
 `--files` list:
@@ -573,12 +573,14 @@ those paths only accept collection section refs.
   `sidebarGrouping.concepts` is for exceptions not covered by that map.
   `generation-and-diffusion` remains glossary-only.
 - Program documentation explorer membership is driven by
-  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (Basics → Additional
-  reference). FAQ is omitted from that map because it is a top-level explorer
+  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (seven top groups with
+  optional secondaries under Factory Configuration and System Operations;
+  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view).
+  FAQ is omitted from that map because it is a top-level explorer
   page outside the Program documentation folder.
-- Packaged CLI reference surfaces: place `packaged-documents` under the `cli`
-  subgroup and `packaged-factories` under `configuration` (nearest ownership —
-  named-factory materialization beside global-configuration-factories). Wire
+- Packaged CLI reference surfaces: place `packaged-documents` and
+  `packaged-factories` under the `packaged-factories` top group; place
+  `cli` / `cli-command-index` / `api-doc` / `mcp` under `interfaces`. Wire
   documentation→documentation discovery with page-local `<LocalizedLinkList>`
   plus aligned registry `relatedIds`; `<RelatedDocs />` alone will not render
   documentation-kind siblings.

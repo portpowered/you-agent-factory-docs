@@ -51,10 +51,15 @@ describe("explorer labels", () => {
         expect(label.trim().length).toBeGreaterThan(0);
       }
 
-      // Literal CLI/package/route identifiers stay untranslated.
-      expect(explorer.documentationGroups.api).toBe("API");
-      expect(explorer.documentationGroups.cli).toBe("CLI");
-      expect(explorer.documentationGroups.mcp).toBe("MCP");
+      // Literal CLI/package/route identifiers stay untranslated in page titles;
+      // Program documentation top-group labels localize (Interfaces is not a
+      // literal API/CLI/MCP separator after the three-level IA).
+      expect(
+        explorer.documentationGroups.interfaces.trim().length,
+      ).toBeGreaterThan(0);
+      expect(
+        explorer.documentationGroups["system-feature-set"].trim().length,
+      ).toBeGreaterThan(0);
     }
   });
 
@@ -69,8 +74,8 @@ describe("explorer labels", () => {
     expect(ja.conceptsGroups.harnesses).not.toBe(en.conceptsGroups.harnesses);
 
     expect(vi.folders.guides).not.toBe(en.folders.guides);
-    expect(vi.documentationGroups.basics).not.toBe(
-      en.documentationGroups.basics,
+    expect(vi.documentationGroups["system-feature-set"]).not.toBe(
+      en.documentationGroups["system-feature-set"],
     );
 
     expect(zhCN.folders.techniques).not.toBe(en.folders.techniques);

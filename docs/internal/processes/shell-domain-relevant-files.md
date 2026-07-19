@@ -10,12 +10,16 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   subgroups are **Harnesses → Industrial engineering → Model inference** via
   `SIDEBAR_GROUP_LABELS.concepts` and explicit slug membership in
   `FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG` (including reserved skills/mcp/
-  tool-calling slots). Program documentation subgroups are **Basics → Feature
-  support → Functions → Configuration → API → CLI → MCP → Operational →
-  Internal architecture → Additional reference** via
-  `SIDEBAR_GROUP_LABELS.documentation` and
-  `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` (FAQ omitted; top-level
-  explorer page). Glossary still uses ontology-first classification membership
+  tool-calling slots). Program documentation uses a three-level taxonomy:
+  top groups **System feature set → Interfaces → Packaged factories →
+  Factory Configuration → System Operations → Internal Architecture →
+  Additional references** via `SIDEBAR_GROUP_LABELS.documentation`, with
+  secondaries under Factory Configuration (Workers → Workstations →
+  Factories → Resources) and System Operations (Observability) via
+  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`. Slug membership lives in
+  `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` (FAQ omitted; top-level
+  explorer page); `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the
+  top-group-only derived view for single-depth adapters. Glossary still uses ontology-first classification membership
   with editorial `sidebarGrouping.glossary` fallback.
 * `src/lib/navigation/docs-sidebar-grouping-adapter.ts`
   Builds grouped Concepts/Glossary/Program documentation sidebar nodes;
@@ -357,8 +361,11 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   Explorer chrome labels live under top-level `explorer` (`folders`,
   `conceptsGroups`, `documentationGroups`) for en/ja/zh-CN/vi; English
   values must stay aligned with `FACTORY_EXPLORER_FOLDER_LABELS` /
-  `SIDEBAR_GROUP_LABELS`. Literal `API` / `CLI` / `MCP` stay untranslated.
-  `localizePageTree` overlays those labels plus shipped page-message titles
+  `SIDEBAR_GROUP_LABELS`. Program documentation top-group labels localize;
+  literal CLI/package/route identifiers in page titles stay untranslated.
+  Nested secondary labels (Workers, Observability, …) are declared in
+  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS` and get locale catalogs when the
+  nested sidebar emitter lands. `localizePageTree` overlays those labels plus shipped page-message titles
   and fails closed via `assertExplorerMessages` when catalogs are incomplete.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
   Locale-aware explorer folder/subgroup/page label resolution consumed by

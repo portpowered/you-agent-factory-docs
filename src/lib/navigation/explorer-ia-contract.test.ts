@@ -58,14 +58,14 @@ const DECLARED_TOP_LEVEL_FOLDER_ORDER = [
 
 /** R01 eight Program documentation pages with declared explorer subgroups. */
 const R01_PROGRAM_DOCUMENTATION_PAGES = [
-  { slug: "mock-workers", group: "functions" },
-  { slug: "throttling-and-limits", group: "operational" },
-  { slug: "script-workers", group: "configuration" },
-  { slug: "poller-workers", group: "configuration" },
-  { slug: "agent-workers", group: "configuration" },
-  { slug: "inference-workers", group: "configuration" },
-  { slug: "packaged-documents", group: "cli" },
-  { slug: "packaged-factories", group: "configuration" },
+  { slug: "mock-workers", group: "factory-configuration" },
+  { slug: "throttling-and-limits", group: "factory-configuration" },
+  { slug: "script-workers", group: "factory-configuration" },
+  { slug: "poller-workers", group: "factory-configuration" },
+  { slug: "agent-workers", group: "factory-configuration" },
+  { slug: "inference-workers", group: "factory-configuration" },
+  { slug: "packaged-documents", group: "packaged-factories" },
+  { slug: "packaged-factories", group: "packaged-factories" },
 ] as const;
 
 /** R00 Concepts pages required under declared explorer subgroups. */
@@ -295,10 +295,10 @@ describe("explorer IA exact-order contract", () => {
         isSubsequence(documentationSeparators, declaredLocalizedOrder),
       ).toBe(true);
       expect(documentationSeparators[0]).toBe(
-        explorer.documentationGroups.basics,
+        explorer.documentationGroups["system-feature-set"],
       );
       expect(documentationSeparators.at(-1)).toBe(
-        explorer.documentationGroups["additional-reference"],
+        explorer.documentationGroups["additional-references"],
       );
 
       for (const page of R01_PROGRAM_DOCUMENTATION_PAGES) {
@@ -353,12 +353,12 @@ describe("explorer IA fail-closed locale contract", () => {
       conceptsGroups: messages.explorer.conceptsGroups,
       documentationGroups: {
         ...messages.explorer.documentationGroups,
-        cli: "",
+        interfaces: "",
       },
     };
 
     expect(() =>
       resolveExplorerMessages({ ...messages, explorer: incomplete }),
-    ).toThrow(/cli/);
+    ).toThrow(/interfaces/);
   });
 });

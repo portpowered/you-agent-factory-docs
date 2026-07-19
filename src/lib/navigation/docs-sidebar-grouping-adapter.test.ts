@@ -118,29 +118,23 @@ describe("docs sidebar grouping adapter", () => {
     const byGroup = collectGroupedPageUrls(nodes);
 
     expect(separators).toEqual([
-      "Basics",
-      "Feature support",
-      "Functions",
-      "Configuration",
-      "API",
-      "CLI",
-      "MCP",
-      "Operational",
-      "Internal architecture",
-      "Additional reference",
+      "System feature set",
+      "Interfaces",
+      "Packaged factories",
+      "Factory Configuration",
+      "System Operations",
+      "Internal Architecture",
+      "Additional references",
     ]);
 
     const expectedByGroup: Record<string, string[]> = {
-      Basics: [],
-      "Feature support": [],
-      Functions: [],
-      Configuration: [],
-      API: [],
-      CLI: [],
-      MCP: [],
-      Operational: [],
-      "Internal architecture": [],
-      "Additional reference": [],
+      "System feature set": [],
+      Interfaces: [],
+      "Packaged factories": [],
+      "Factory Configuration": [],
+      "System Operations": [],
+      "Internal Architecture": [],
+      "Additional references": [],
     };
 
     for (const page of pages) {

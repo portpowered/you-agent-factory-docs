@@ -16,16 +16,29 @@ export const SIDEBAR_GROUP_LABELS = {
     "model-inference": "Model inference",
   },
   documentation: {
-    basics: "Basics",
-    "feature-support": "Feature support",
-    functions: "Functions",
-    configuration: "Configuration",
-    api: "API",
-    cli: "CLI",
-    mcp: "MCP",
-    operational: "Operational",
-    "internal-architecture": "Internal architecture",
-    "additional-reference": "Additional reference",
+    "system-feature-set": "System feature set",
+    interfaces: "Interfaces",
+    "packaged-factories": "Packaged factories",
+    "factory-configuration": "Factory Configuration",
+    "system-operations": "System Operations",
+    "internal-architecture": "Internal Architecture",
+    "additional-references": "Additional references",
+  },
+} as const;
+
+/**
+ * Nested secondaries under Program documentation top groups that need a third
+ * explorer level. Groups absent here list pages directly under the top group.
+ */
+export const DOCUMENTATION_SIDEBAR_SECONDARY_LABELS = {
+  "factory-configuration": {
+    workers: "Workers",
+    workstations: "Workstations",
+    factories: "Factories",
+    resources: "Resources",
+  },
+  "system-operations": {
+    observability: "Observability",
   },
 } as const;
 
@@ -57,52 +70,118 @@ export const FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG = {
 export type FactoryConceptsSidebarSlug =
   keyof typeof FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG;
 
-/**
- * Explicit Program documentation explorer membership by page slug.
- * FAQ is a top-level explorer page and is intentionally omitted here.
- * Empty groups are omitted until assigned pages publish.
- */
-export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = {
-  "what-is-you-agent-factory": "basics",
-  "harness-support": "feature-support",
-  "dynamic-workflows": "functions",
-  "mock-workers": "functions",
-  "replays-records": "functions",
-  "submitting-work": "functions",
-  configuration: "configuration",
-  workers: "configuration",
-  "agent-workers": "configuration",
-  "inference-workers": "configuration",
-  "poller-workers": "configuration",
-  "script-workers": "configuration",
-  workstations: "configuration",
+type DocumentationTopGroupId =
+  keyof (typeof SIDEBAR_GROUP_LABELS)["documentation"];
 
-  resources: "configuration",
-  "global-configuration-factories": "configuration",
-  "packaged-factories": "configuration",
-  "factory-session": "configuration",
-  "api-doc": "api",
-  cli: "cli",
-  "cli-command-index": "cli",
-  "packaged-documents": "cli",
-  mcp: "mcp",
-  metrics: "operational",
-  troubleshooting: "operational",
-  logs: "operational",
-  "throttling-and-limits": "operational",
-  "architecture-of-system": "internal-architecture",
-  petri: "internal-architecture",
-  install: "additional-reference",
-  "contributing-to-these-docs": "additional-reference",
-  "dashboard-ui-overview": "additional-reference",
-  "security-trust-boundaries": "additional-reference",
-} as const satisfies Record<
-  string,
-  keyof (typeof SIDEBAR_GROUP_LABELS)["documentation"]
->;
+type DocumentationSecondaryLabels =
+  typeof DOCUMENTATION_SIDEBAR_SECONDARY_LABELS;
+
+export type DocumentationSidebarSecondaryGroupId =
+  keyof DocumentationSecondaryLabels;
+
+export type DocumentationSidebarSecondaryId<
+  Group extends
+    DocumentationSidebarSecondaryGroupId = DocumentationSidebarSecondaryGroupId,
+> = keyof DocumentationSecondaryLabels[Group];
+
+type DocumentationMembershipWithoutSecondary = {
+  readonly group: Exclude<
+    DocumentationTopGroupId,
+    DocumentationSidebarSecondaryGroupId
+  >;
+};
+
+type DocumentationMembershipWithSecondary = {
+  readonly [Group in DocumentationSidebarSecondaryGroupId]: {
+    readonly group: Group;
+    readonly secondary: DocumentationSidebarSecondaryId<Group>;
+  };
+}[DocumentationSidebarSecondaryGroupId];
+
+export type DocumentationSidebarMembership =
+  | DocumentationMembershipWithoutSecondary
+  | DocumentationMembershipWithSecondary;
+
+/**
+ * Explicit three-level Program documentation explorer membership by page slug.
+ * FAQ is a top-level explorer page and is intentionally omitted here.
+ * Groups with declared secondaries assign exactly one secondary per slug;
+ * other groups place pages directly under the top group.
+ */
+export const FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG = {
+  "dynamic-workflows": { group: "system-feature-set" },
+  "harness-support": { group: "system-feature-set" },
+  "replays-records": { group: "system-feature-set" },
+  "submitting-work": { group: "system-feature-set" },
+  cli: { group: "interfaces" },
+  "cli-command-index": { group: "interfaces" },
+  "api-doc": { group: "interfaces" },
+  mcp: { group: "interfaces" },
+  "packaged-factories": { group: "packaged-factories" },
+  "packaged-documents": { group: "packaged-factories" },
+  workers: { group: "factory-configuration", secondary: "workers" },
+  "poller-workers": { group: "factory-configuration", secondary: "workers" },
+  "script-workers": { group: "factory-configuration", secondary: "workers" },
+  "agent-workers": { group: "factory-configuration", secondary: "workers" },
+  "inference-workers": {
+    group: "factory-configuration",
+    secondary: "workers",
+  },
+  "mock-workers": { group: "factory-configuration", secondary: "workers" },
+  workstations: {
+    group: "factory-configuration",
+    secondary: "workstations",
+  },
+  configuration: {
+    group: "factory-configuration",
+    secondary: "factories",
+  },
+  "factory-session": {
+    group: "factory-configuration",
+    secondary: "factories",
+  },
+  "global-configuration-factories": {
+    group: "factory-configuration",
+    secondary: "factories",
+  },
+  resources: { group: "factory-configuration", secondary: "resources" },
+  "throttling-and-limits": {
+    group: "factory-configuration",
+    secondary: "resources",
+  },
+  logs: { group: "system-operations", secondary: "observability" },
+  metrics: { group: "system-operations", secondary: "observability" },
+  "architecture-of-system": { group: "internal-architecture" },
+  petri: { group: "internal-architecture" },
+  "what-is-you-agent-factory": { group: "additional-references" },
+  install: { group: "additional-references" },
+  "contributing-to-these-docs": { group: "additional-references" },
+  "dashboard-ui-overview": { group: "additional-references" },
+  "security-trust-boundaries": { group: "additional-references" },
+  troubleshooting: { group: "additional-references" },
+} as const satisfies Record<string, DocumentationSidebarMembership>;
 
 export type FactoryDocumentationSidebarSlug =
-  keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG;
+  keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG;
+
+/**
+ * Top-group-only view of Program documentation membership for adapters that
+ * still emit a single separator depth. Prefer
+ * `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` when secondary placement
+ * matters.
+ */
+export const FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG = Object.fromEntries(
+  (
+    Object.entries(FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG) as Array<
+      [
+        FactoryDocumentationSidebarSlug,
+        (typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG)[FactoryDocumentationSidebarSlug],
+      ]
+    >
+  ).map(([slug, membership]) => [slug, membership.group]),
+) as {
+  readonly [Slug in FactoryDocumentationSidebarSlug]: (typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG)[Slug]["group"];
+};
 
 export type SidebarGroupingSection = keyof typeof SIDEBAR_GROUP_LABELS;
 
@@ -183,6 +262,36 @@ export function getSidebarGroupLabel<Section extends SidebarGroupingSection>(
   groupId: SidebarGroupIdBySection[Section],
 ): string {
   return SIDEBAR_GROUP_LABELS[section][groupId] as string;
+}
+
+export function isDocumentationSidebarSecondaryGroup(
+  groupId: DocumentationTopGroupId,
+): groupId is DocumentationSidebarSecondaryGroupId {
+  return groupId in DOCUMENTATION_SIDEBAR_SECONDARY_LABELS;
+}
+
+export function getDocumentationSidebarSecondaryIdsForGroup<
+  Group extends DocumentationSidebarSecondaryGroupId,
+>(groupId: Group): readonly DocumentationSidebarSecondaryId<Group>[] {
+  return Object.keys(
+    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS[groupId],
+  ) as DocumentationSidebarSecondaryId<Group>[];
+}
+
+export function getDocumentationSidebarSecondaryLabel<
+  Group extends DocumentationSidebarSecondaryGroupId,
+>(groupId: Group, secondaryId: DocumentationSidebarSecondaryId<Group>): string {
+  return DOCUMENTATION_SIDEBAR_SECONDARY_LABELS[groupId][secondaryId] as string;
+}
+
+export function getDocumentationSidebarMembership(
+  slug: string,
+):
+  | (typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG)[FactoryDocumentationSidebarSlug]
+  | undefined {
+  return FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
+    slug as FactoryDocumentationSidebarSlug
+  ];
 }
 
 function createSidebarGroupResolution<
@@ -336,15 +445,12 @@ function resolveFactoryAssignedDocumentationSidebarGroup(
     return undefined;
   }
 
-  const groupId =
-    FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG[
-      slug as FactoryDocumentationSidebarSlug
-    ];
-  if (!groupId) {
+  const membership = getDocumentationSidebarMembership(slug);
+  if (!membership) {
     return undefined;
   }
 
-  return createSidebarGroupResolution(groupId, "derived-taxonomy");
+  return createSidebarGroupResolution(membership.group, "derived-taxonomy");
 }
 
 function resolveEditorialDocumentationSidebarGroup(

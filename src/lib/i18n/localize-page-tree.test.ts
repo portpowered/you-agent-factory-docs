@@ -158,17 +158,16 @@ describe("localizePageTree", () => {
       throw new Error("expected Program documentation folder");
     }
     expect(separatorNames(documentation.children)[0]).toBe(
-      messages.explorer.documentationGroups.basics,
+      messages.explorer.documentationGroups["system-feature-set"],
     );
     expect(separatorNames(documentation.children)).toContain(
-      messages.explorer.documentationGroups.cli,
+      messages.explorer.documentationGroups.interfaces,
     );
     expect(separatorNames(documentation.children)).toContain(
-      messages.explorer.documentationGroups.functions,
+      messages.explorer.documentationGroups["factory-configuration"],
     );
-    // API/MCP subgroups omit when no shipped ja pages remain in those groups.
-    expect(separatorNames(documentation.children)).not.toContain(
-      messages.explorer.documentationGroups.api,
+    expect(separatorNames(documentation.children)).toContain(
+      messages.explorer.documentationGroups["additional-references"],
     );
   });
 
