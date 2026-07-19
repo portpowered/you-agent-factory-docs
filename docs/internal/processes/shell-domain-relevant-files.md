@@ -52,11 +52,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
 * `src/lib/docs/browse-collection-sections.ts`
   Collection-driven browse sections; default order is the four CLI collections
   from `CLI_DOCS_COLLECTION_IDS` via `DOCS_BROWSE_COLLECTION_IDS` /
-  `DOCS_BROWSE_SECTION_ORDER`. Public browse no longer accepts glossary-derived
-  Atlas section refs (Model Types / Inference / Module Components). W18
+  `DOCS_BROWSE_SECTION_ORDER`. Glossary-derived Atlas browse helpers are
+  deleted (no Model Types / Inference / Module Components sections). W18
   documentation move stubs are filtered via
   `isDocumentationRouteMigrationOldBrowsePath` so family targets remain the
   discoverable destinations.
+* `src/lib/docs/browse-collection-sections.test.ts`
+  Locks CLI-only browse order and asserts retired Atlas / glossary-derived
+  section ids and titles stay absent from the public hub.
 * `src/lib/docs/section-collection-index.ts`
   Generic section-index message resolution and `renderShellSectionCollectionIndexPage`.
   `SectionIndexFrontmatterKind` maps only factory kinds (`guide`, `concept`,
