@@ -3,7 +3,10 @@ import {
   type BuildModeEnv,
   resolveGitHubPagesBasePath,
 } from "@/lib/build/static-export";
-import { stripBasePathFromHref } from "@/lib/navigation/site-path";
+import {
+  normalizeAppPathTrailingSlash,
+  stripBasePathFromHref,
+} from "@/lib/navigation/site-path";
 
 /**
  * Production GitHub Pages origin for the you-agent-factory docs site.
@@ -47,7 +50,9 @@ export function resolveProductionMetadataHref(
   env: BuildModeEnv = process.env,
 ): string {
   const basePath = resolveGitHubPagesBasePath(env);
-  const appHref = stripBasePathFromHref(href, basePath);
+  const appHref = normalizeAppPathTrailingSlash(
+    stripBasePathFromHref(href, basePath),
+  );
   const metadataBase = resolveProductionMetadataBase(env);
   const joinedPath = path.posix.join(metadataBase.pathname || "", appHref);
   return new URL(joinedPath, metadataBase).href;

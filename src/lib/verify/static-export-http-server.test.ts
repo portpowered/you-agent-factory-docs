@@ -76,6 +76,45 @@ describe("createStaticExportHttpServer", () => {
     }
   });
 
+  test("collection index directory landings resolve for non-slash and trailing-slash URLs", async () => {
+    const root = mkdtempSync(join(tmpdir(), "static-export-collection-"));
+    const collectionIndexes = [
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
+    ] as const;
+
+    for (const route of collectionIndexes) {
+      const dir = join(root, route.slice(1));
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(
+        join(dir, "index.html"),
+        `<html>${route.slice("/docs/".length)}</html>`,
+      );
+    }
+
+    const session = await createStaticExportHttpServer({
+      outDir: root,
+      port: 3192,
+    });
+
+    try {
+      for (const route of collectionIndexes) {
+        const label = route.slice("/docs/".length);
+        const nonSlash = await httpGetText(`${session.baseUrl}${route}`);
+        expect(nonSlash.status).toBe(200);
+        expect(nonSlash.body).toContain(label);
+
+        const trailingSlash = await httpGetText(`${session.baseUrl}${route}/`);
+        expect(trailingSlash.status).toBe(200);
+        expect(trailingSlash.body).toContain(label);
+      }
+    } finally {
+      await session.cleanup();
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   test("cleanup closes held keep-alive sockets so the server does not hang", async () => {
     const root = mkdtempSync(join(tmpdir(), "static-export-server-"));
     writeFileSync(join(root, "index.html"), "<html>home</html>");

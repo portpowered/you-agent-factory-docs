@@ -115,6 +115,41 @@ describe("verify-export-base-path", () => {
     ).toBe(true);
   });
 
+  test("collection index nav/sidebar hrefs resolve in non-slash and trailing-slash forms", () => {
+    const collectionHrefs = [
+      "/docs/factories",
+      "/docs/workers",
+      "/docs/workstations",
+    ] as const;
+    const nonSlashHtml = collectionHrefs
+      .map(
+        (href) =>
+          `<a href="/you-agent-factory-docs${href}">${href.slice("/docs/".length)}</a>`,
+      )
+      .join("");
+    const trailingSlashHtml = collectionHrefs
+      .map(
+        (href) =>
+          `<a href="/you-agent-factory-docs${href}/">${href.slice("/docs/".length)}</a>`,
+      )
+      .join("");
+
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        nonSlashHtml,
+        PROJECT_SITE_BASE_PATH,
+        collectionHrefs,
+      ),
+    ).toBe(true);
+    expect(
+      exportHtmlReferencesPrefixedNavigationHrefs(
+        trailingSlashHtml,
+        PROJECT_SITE_BASE_PATH,
+        collectionHrefs,
+      ),
+    ).toBe(true);
+  });
+
   test("Pages representative nav hrefs require relative home/getting-started/comparing under project site", () => {
     const representativeHrefs = [
       "/",
