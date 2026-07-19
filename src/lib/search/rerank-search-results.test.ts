@@ -823,6 +823,328 @@ describe("rerankSearchResults", () => {
     expect(subfieldIndex).toBeLessThanOrEqual(headingIndex);
   });
 
+  test("exact page-title match outranks every collection band and heading spam", () => {
+    const exactPageUrl = "/docs/concepts/harness";
+    const guideUrl = "/docs/guides/write-review-loop";
+    const curatedRefUrl = "/docs/references/cli";
+    const blogUrl = "/blog/agent-factories";
+    const subfieldUrl = `${curatedRefUrl}#you-run`;
+    const headingSpam = `${curatedRefUrl}#heading-0`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        exactPageUrl,
+        documentForUrl(exactPageUrl, {
+          kind: "concept",
+          title: "Harness",
+          directAliases: ["Harness"],
+          aliases: ["Harness"],
+          facets: { kind: "concept", tags: ["harness"] },
+        }),
+      ],
+      [
+        guideUrl,
+        documentForUrl(guideUrl, {
+          kind: "guide",
+          title: "Write-review loop",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "guide", tags: ["harness"] },
+        }),
+      ],
+      [
+        curatedRefUrl,
+        documentForUrl(curatedRefUrl, {
+          kind: "reference",
+          title: "CLI",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "reference", tags: ["cli"] },
+        }),
+      ],
+      [
+        blogUrl,
+        documentForUrl(blogUrl, {
+          kind: "blog",
+          title: "Agent factories",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "blog", tags: ["factories"] },
+        }),
+      ],
+      [
+        subfieldUrl,
+        documentForUrl(subfieldUrl, {
+          kind: "reference",
+          title: "you run",
+          directAliases: ["you run"],
+          aliases: ["you run"],
+          facets: { kind: "reference", tags: ["cli"] },
+        }),
+      ],
+    ]);
+
+    // Exact title query — collection ladder must not demote the page win.
+    const results = rerankSearchResults(
+      "harness",
+      [
+        {
+          id: headingSpam,
+          type: "heading",
+          url: headingSpam,
+          content: "harness and loops",
+        },
+        {
+          id: subfieldUrl,
+          type: "page",
+          url: subfieldUrl,
+          content: "you run",
+        },
+        {
+          id: blogUrl,
+          type: "page",
+          url: blogUrl,
+          content: "Agent factories",
+        },
+        {
+          id: curatedRefUrl,
+          type: "page",
+          url: curatedRefUrl,
+          content: "CLI",
+        },
+        {
+          id: guideUrl,
+          type: "page",
+          url: guideUrl,
+          content: "Write-review loop",
+        },
+        {
+          id: exactPageUrl,
+          type: "page",
+          url: exactPageUrl,
+          content: "Harness",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    expect(results[0]?.url).toBe(exactPageUrl);
+
+    const guideIndex = results.findIndex((result) => result.url === guideUrl);
+    const curatedIndex = results.findIndex(
+      (result) => result.url === curatedRefUrl,
+    );
+    const blogIndex = results.findIndex((result) => result.url === blogUrl);
+    const subfieldIndex = results.findIndex(
+      (result) => result.url === subfieldUrl,
+    );
+    const headingIndex = results.findIndex(
+      (result) => result.url === headingSpam,
+    );
+
+    expect(guideIndex).toBeGreaterThan(0);
+    expect(curatedIndex).toBeGreaterThan(guideIndex);
+    expect(blogIndex).toBeGreaterThan(curatedIndex);
+    expect(subfieldIndex).toBeGreaterThan(blogIndex);
+    expect(headingIndex).toBeGreaterThanOrEqual(subfieldIndex);
+  });
+
+  test("exact inventory-identifier match outranks every collection band and heading spam", () => {
+    const inventoryUrl = "/docs/references/mcp#you.factory_session.get";
+    const guideUrl = "/docs/guides/write-review-loop";
+    const curatedRefUrl = "/docs/references/mcp";
+    const blogUrl = "/blog/agent-factories";
+    const headingSpam = `${curatedRefUrl}#heading-0`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        inventoryUrl,
+        documentForUrl(inventoryUrl, {
+          kind: "reference",
+          title: "you.factory_session.get",
+          directAliases: ["you.factory_session.get"],
+          aliases: ["you.factory_session.get"],
+          facets: { kind: "reference", tags: ["mcp"] },
+        }),
+      ],
+      [
+        guideUrl,
+        documentForUrl(guideUrl, {
+          kind: "guide",
+          title: "Write-review loop",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "guide", tags: ["mcp"] },
+        }),
+      ],
+      [
+        curatedRefUrl,
+        documentForUrl(curatedRefUrl, {
+          kind: "reference",
+          title: "MCP",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "reference", tags: ["mcp"] },
+        }),
+      ],
+      [
+        blogUrl,
+        documentForUrl(blogUrl, {
+          kind: "blog",
+          title: "Agent factories",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "blog", tags: ["factories"] },
+        }),
+      ],
+    ]);
+
+    // Exact inventory query — guide/blog bands must not outrank the item win.
+    const results = rerankSearchResults(
+      "you.factory_session.get",
+      [
+        {
+          id: headingSpam,
+          type: "heading",
+          url: headingSpam,
+          content: "you.factory_session.get",
+        },
+        {
+          id: blogUrl,
+          type: "page",
+          url: blogUrl,
+          content: "Agent factories",
+        },
+        {
+          id: curatedRefUrl,
+          type: "page",
+          url: curatedRefUrl,
+          content: "MCP",
+        },
+        {
+          id: guideUrl,
+          type: "page",
+          url: guideUrl,
+          content: "Write-review loop",
+        },
+        {
+          id: inventoryUrl,
+          type: "page",
+          url: inventoryUrl,
+          content: "you.factory_session.get",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    expect(results[0]?.url).toBe(inventoryUrl);
+
+    const guideIndex = results.findIndex((result) => result.url === guideUrl);
+    const curatedIndex = results.findIndex(
+      (result) => result.url === curatedRefUrl,
+    );
+    const blogIndex = results.findIndex((result) => result.url === blogUrl);
+    const headingIndex = results.findIndex(
+      (result) => result.url === headingSpam,
+    );
+
+    expect(guideIndex).toBeGreaterThan(0);
+    expect(curatedIndex).toBeGreaterThan(guideIndex);
+    expect(blogIndex).toBeGreaterThan(curatedIndex);
+    expect(headingIndex).toBeGreaterThan(blogIndex);
+  });
+
+  test("near-exact page alias match outranks weak collection-band hits", () => {
+    const exactPageUrl = "/docs/guides/ralph";
+    const curatedRefUrl = "/docs/references/cli";
+    const blogUrl = "/blog/agent-factories";
+    const subfieldUrl = `${curatedRefUrl}#you-run`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        exactPageUrl,
+        documentForUrl(exactPageUrl, {
+          kind: "guide",
+          title: "Ralph loop",
+          directAliases: ["ralph"],
+          aliases: ["ralph"],
+          facets: { kind: "guide", tags: ["ralph"] },
+        }),
+      ],
+      [
+        curatedRefUrl,
+        documentForUrl(curatedRefUrl, {
+          kind: "reference",
+          title: "CLI",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "reference", tags: ["cli"] },
+        }),
+      ],
+      [
+        blogUrl,
+        documentForUrl(blogUrl, {
+          kind: "blog",
+          title: "Agent factories",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "blog", tags: ["factories"] },
+        }),
+      ],
+      [
+        subfieldUrl,
+        documentForUrl(subfieldUrl, {
+          kind: "reference",
+          title: "you run",
+          directAliases: ["you run"],
+          aliases: ["you run"],
+          facets: { kind: "reference", tags: ["cli"] },
+        }),
+      ],
+    ]);
+
+    const results = rerankSearchResults(
+      "ralph",
+      [
+        {
+          id: subfieldUrl,
+          type: "page",
+          url: subfieldUrl,
+          content: "you run",
+        },
+        {
+          id: blogUrl,
+          type: "page",
+          url: blogUrl,
+          content: "Agent factories",
+        },
+        {
+          id: curatedRefUrl,
+          type: "page",
+          url: curatedRefUrl,
+          content: "CLI",
+        },
+        {
+          id: exactPageUrl,
+          type: "page",
+          url: exactPageUrl,
+          content: "Ralph loop",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    expect(results[0]?.url).toBe(exactPageUrl);
+    expect(
+      results.findIndex((result) => result.url === curatedRefUrl),
+    ).toBeGreaterThan(0);
+    expect(
+      results.findIndex((result) => result.url === blogUrl),
+    ).toBeGreaterThan(
+      results.findIndex((result) => result.url === curatedRefUrl),
+    );
+    expect(
+      results.findIndex((result) => result.url === subfieldUrl),
+    ).toBeGreaterThan(results.findIndex((result) => result.url === blogUrl));
+  });
+
   test("searchCollectionBand classifies guide, curated ref, blog, and subfield hits", () => {
     const guide = documentForUrl("/docs/guides/ralph", {
       kind: "guide",

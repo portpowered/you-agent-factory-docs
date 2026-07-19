@@ -260,8 +260,11 @@ kinds → blog → reference subfield / subheader deep-links (including residual
 `#heading-N` spam). Detect bands from `kind` + URL shape; do not reopen
 builders unless a signal is missing. Keep exact wins on primary priority
 (`0` / `1`) so the ladder never demotes them. Prove with fixture rerank tests
-in `rerank-search-results.test.ts` (guides before curated refs before blog
-before subfields for a generic query with no title match).
+in `rerank-search-results.test.ts`: (1) guides before curated refs before blog
+before subfields for a generic query with no title match; (2) exact page-title
+/ near-exact alias and exact inventory-identifier queries still rank first
+even when every collection band (including guides) and residual `#heading-N`
+spam are present as weak competitors.
 
 ### Pattern: factory alias / body / tag discovery
 
