@@ -882,6 +882,21 @@ behaviorally (rendered headings/copy, not file inventories):
   tests for this chrome trim unless proving shared opt-in defaults stay
   unchanged.
 
+Browser-verify the polished chrome on representative live routes (at least
+`/docs/workers/agent` and `/docs/workstations/classifier`) with a unique
+port in `3100–3999`, kill the server before exit, and prefer
+`bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` in
+parent-hoisted worktrees (plain Turbopack `bun run dev` can fail to resolve
+`next` from `src/app`). Assert from SSR HTML: purpose lead after the H1,
+`#how-to-use` / `#schema-reference` / `#examples`, no What It Covers / Key
+Concepts / Operational Cautions / Limits And Assumptions, no
+`Variant: XX_*` heading, no definition-header
+`[data-testid="schema-breadcrumb"]` (do **not** treat field-row `$ref →
+/$defs/…` links or `data-schema-definition-pointer` attributes as chrome
+noise), concrete `… workstation` title on the workstation page, and on
+agent: RelatedDocs (`curated-related-docs`),
+`data-agent-worker-example-code`, and absent `#tags` / `#references`.
+
 For `documentation/workers` how-to-use teaching, keep ownership split,
 minimal authoring example, and type-specific cues inside `#how-to-use`
 (stable anchor). Put ownership matrix cells, example label/body, and
