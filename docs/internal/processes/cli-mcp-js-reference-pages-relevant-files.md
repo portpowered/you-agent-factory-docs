@@ -129,11 +129,29 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   absent; inventory success for static no-host safety; keep `messages.links`
   undefined). CLI inventory-first repair omits `openingSummary` (and drops
   What It Covers / Key Concepts) so `DocsOpeningSummary` mounts nothing and
-  the page opens on Command Inventory — do not require CLI
-  `openingSummary` to match `/without a live Factory host/i`; MCP/JS may
-  still keep that lead. MCP polish replaces What It Covers / Key Concepts with
-  an install-first `how-to-install` section and a page-local
+  the page opens on Command Inventory. JavaScript runtime clears
+  `openingSummary` to `""` so folded Opening summary chrome does not mount
+  (empty text returns null). Do not require CLI or JS `openingSummary` to
+  match `/without a live Factory host/i`; MCP may still keep that lead.
+  MCP polish replaces What It Covers / Key Concepts with an install-first
+  `how-to-install` section and a page-local
   `McpInstallDocsLink` (not `messages.links`) to `/docs/documentation/mcp`.
+  JS intro-strip removes What It Covers / Key Concepts entirely and keeps the
+  #159 keep-list (glossary, overall usage example, Runtime Inventory) as the
+  first content. Page-local `javascript-runtime-page.test.tsx` asserts intro
+  absence via `queryByRole` / `getElementById` null, undefined
+  `sections.whatItCovers` / `sections.keyConcepts`, and empty
+  `openingSummary` (MCP #156 pattern)—while still proving glossary, overall
+  example, inventory success, and #159 chrome trim. Shared
+  `published-route-states.test.tsx` scopes the live-host-free
+  `openingSummary` assert to MCP only so CLI and JS may clear the summary.
+  Browser-verify JS keep-list-first shape with
+  `bun src/content/docs/references/javascript-runtime/assert-javascript-runtime-polish-browser.ts`
+  (webpack `bun run dev`, unique port, Playwright): assert absent What It
+  Covers / Key Concepts headings and `#what-it-covers` / `#key-concepts`,
+  absent folded Opening summary (`[data-opening-summary]` /
+  `[data-testid="folded-summary"]`), and present glossary / overall example /
+  inventory success / TOC `#symbols` / `#shared-schemas` / #159 chrome trim.
   Page-local `mcp-page.test.tsx` should also prove a representative published
   tool card keeps title/anchor/description/schema/example while omitting
   `data-contract-source-badge`, Handler registered / Tool id rows, Object
