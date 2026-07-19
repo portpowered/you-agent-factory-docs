@@ -232,7 +232,12 @@ hits. Residual `type: "heading"` / `#heading-N` rows under
 `/docs/references/**` demote below ordinary hits. Prove with unit fixtures in
 `rerank-search-results.test.ts` and live `docsSearchApi.search("mcp")` /
 `you.factory_session.get` outcomes in
-`prefer-page-titles-over-reference-heading-spam.test.ts`.
+`prefer-page-titles-over-reference-heading-spam.test.ts`. Lock the same
+observable outcomes (page preference, no `#heading-N`, exact MCP/API/CLI/JS
+deep links) in `src/tests/search/reference-heading-despam-contract.test.ts`
+and keep both files on the reader-facing required suite path. Collapse must
+also fold bare reference `#heading-N` spam into the owning page URL
+(`collapse-search-results-to-page-hits.test.ts`).
 
 ### Pattern: factory alias / body / tag discovery
 
@@ -293,9 +298,15 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
 * `src/lib/search/prefer-page-titles-over-reference-heading-spam.test.ts`
   Generic `mcp` page-title preference over inventory/heading spam; exact
   `you.factory_session.get` still returns the item deep link first.
+* `src/tests/search/reference-heading-despam-contract.test.ts`
+  Reader-facing lock for generic `mcp` page preference + no `#heading-N`,
+  plus exact MCP/API/CLI/JS inventory deep-link availability.
 * `src/lib/search/reference-owning-page-search-url.test.ts`
   URL gates for owning pages, inventory item deep links, `#heading-N`
   rejection, and standalone-heading suppression.
+* `src/lib/reader-facing-required-test-paths.ts`
+  Includes the reference heading de-spam proofs above so
+  `make test-reader-facing` / CI keep the contract green.
 * `src/lib/search/build-base-document.test.ts`
   Generic base document field contract and empty topology/facet guarantees.
 * `src/lib/search/build-documents.test.ts`

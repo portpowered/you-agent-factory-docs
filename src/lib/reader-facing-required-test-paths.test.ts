@@ -24,6 +24,8 @@ describe("reader-facing required test paths", () => {
     const joined = READER_FACING_REQUIRED_TEST_PATHS.join("\n");
     expect(joined).toContain("src/lib/search/");
     expect(joined).toContain("src/tests/search/");
+    expect(joined).toContain("prefer-page-titles-over-reference-heading-spam");
+    expect(joined).toContain("reference-heading-despam-contract");
     expect(joined).toContain("src/tests/layout/");
     expect(joined).toContain("src/tests/a11y/");
     expect(joined).not.toMatch(/-built-app\.test/);

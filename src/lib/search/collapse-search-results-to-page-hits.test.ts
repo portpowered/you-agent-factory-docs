@@ -147,6 +147,49 @@ describe("collapseSearchResultsToPageHits", () => {
     });
   });
 
+  test("collapses reference owning-page #heading-N spam to the bare page URL", () => {
+    const mcpPage = "/docs/references/mcp";
+    const headingSpam = `${mcpPage}#heading-0`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        mcpPage,
+        documentForUrl(mcpPage, {
+          kind: "reference",
+          title: "MCP",
+          facets: { kind: "reference", tags: ["mcp"] },
+        }),
+      ],
+    ]);
+
+    const collapsed = collapseSearchResultsToPageHits(
+      [
+        {
+          id: headingSpam,
+          type: "heading",
+          url: headingSpam,
+          content: "mcp factory session start async",
+        },
+        {
+          id: `${mcpPage}-body`,
+          type: "text",
+          url: mcpPage,
+          content: "MCP tools and factory session helpers",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    expect(collapsed).toHaveLength(1);
+    expect(collapsed[0]).toMatchObject({
+      type: "page",
+      url: mcpPage,
+      content: "MCP",
+    });
+    expect(collapsed.every((result) => !/#heading-\d+/i.test(result.url))).toBe(
+      true,
+    );
+  });
+
   test("preserves reference item deep links instead of collapsing to the owning page", () => {
     const eventsPage = "/docs/references/events";
     const runRequest = `${eventsPage}#RUN_REQUEST`;
