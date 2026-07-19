@@ -315,7 +315,10 @@ PRD-level gate before SEO / later B09c lanes depend on the contract. Pair with
 * `src/features/docs/search/SearchTrigger.test.tsx` and
   `src/tests/layout/home-shell-styling-contract.test.tsx`
   Lock resting `!bg-background` (no `bg-secondary/50`) plus hover/focus
-  accent and focus-ring classes on the header trigger.
+  accent and focus-ring classes on the header trigger. The home-shell
+  contract also locks shared prose/chrome link underline accent
+  (`proseAutoLinkClassName`: `text-secondary` + `decoration-secondary`,
+  not primary yellow) alongside the quieter search fill.
 
 ## Static export bootstrap path (GitHub Pages)
 

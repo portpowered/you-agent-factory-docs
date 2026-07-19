@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { renderToStaticMarkup } from "react-dom/server";
-import { proseAutoLinkClassName } from "@/features/docs/components/prose-auto-link-class";
 import { ProseAutoLinkText } from "@/features/docs/components/ProseAutoLinkText";
+import { proseAutoLinkClassName } from "@/features/docs/components/prose-auto-link-class";
 
 describe("proseAutoLinkClassName", () => {
   test("uses secondary blue for link and underline accent, not primary yellow", () => {

@@ -11,6 +11,7 @@ import { HomeBrushHeader } from "@/components/home/home-brush-header";
 import { getPrimaryNavItems } from "@/components/layout/primary-nav";
 import { DocsIndexEntryList } from "@/features/docs/components/DocsIndexEntryList";
 import { searchInlineResultsListClassName } from "@/features/docs/components/list-decoration";
+import { proseAutoLinkClassName } from "@/features/docs/components/prose-auto-link-class";
 import { TagResourceList } from "@/features/docs/components/TagResourceList";
 import { SearchTrigger } from "@/features/docs/search/SearchTrigger";
 import { TagsIndexList } from "@/features/docs/tags/TagsIndexList";
@@ -52,7 +53,7 @@ const sampleTagResourceGroups: TagResourceKindGroup[] = [
 ];
 
 describe("Phase 1 home shell styling contracts", () => {
-  test("primary nav, brush header, search trigger, and tag lists meet shared class contracts", async () => {
+  test("primary nav, brush header, search trigger, prose link accent, and tag lists meet shared class contracts", async () => {
     const messages = await loadUiMessages();
 
     expect(getPrimaryNavItems(messages).map((item) => item.href)).toEqual([
@@ -119,6 +120,13 @@ describe("Phase 1 home shell styling contracts", () => {
     expect(searchHtml).toContain("group-focus-visible:text-accent-foreground");
     expect(searchHtml).toContain("focus-visible:ring-2");
     expect(searchHtml).toContain("focus-visible:ring-ring");
+
+    // Shared prose/chrome underline accent: secondary blue, not primary yellow.
+    expect(proseAutoLinkClassName).toContain("text-secondary");
+    expect(proseAutoLinkClassName).toContain("decoration-secondary");
+    expect(proseAutoLinkClassName).toContain("hover:underline");
+    expect(proseAutoLinkClassName).not.toContain("text-primary");
+    expect(proseAutoLinkClassName).not.toContain("decoration-primary");
 
     const tagsIndexHtml = renderToStaticMarkup(
       <TagsIndexList groups={sampleTagGroups} listLabel="Tags" />,

@@ -79,6 +79,14 @@ entry. Do not vendor or fork package source into this repo.
   (`text-secondary` + `decoration-secondary`, not `text-primary`).
 - Lock with `prose-auto-link-class.test.tsx` and rendered secondary-class
   assertions on a live factory phrase (for example Model Context Protocol).
+  The representative layout chrome contract
+  (`home-shell-styling-contract.test.tsx`) also asserts the same secondary
+  underline classes next to the header search resting-fill contract so both
+  chrome repairs stay locked together.
+- Joint browser check: on `/docs/concepts/mcp`, confirm
+  `button[data-search]` computed background matches `--background`, and
+  prose / auto-link underline or text colors resolve to `--secondary`
+  (not `--primary` yellow).
 
 ## Thin factory-ui graph wrappers
 
