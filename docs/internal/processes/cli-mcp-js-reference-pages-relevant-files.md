@@ -35,6 +35,7 @@ Do **not**:
 | `src/content/docs/references/cli/CliReferenceInventory.tsx` | Server mount: load inventory → `CliCommandInventory` |
 | `src/content/docs/references/cli/page-mdx-components.tsx` | Page-local MDX component map |
 | `src/content/docs/references/cli/cli-page.test.tsx` | Colocated route/render proof |
+| `src/content/docs/references/cli/assert-cli-page-intro-strip-browser.ts` | Playwright probe: inventory-first CLI page without What It Covers / Key Concepts / folded Opening summary; #153 card keep-list + under-construction Flags/arguments |
 | `src/content/registry/references/cli.json` | `reference.cli` registry record |
 | `src/lib/references/load-cli-reference-inventory.ts` | W03 resolve + W04 normalize → inventory input |
 | `src/lib/references/cli-reference-turbopack.ts` | Webpack-safe CLI export resolution via ancestor `node_modules` + manifest join |
@@ -126,12 +127,14 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   References (`CitationList`). Shared proofs live in
   `published-route-states.test.tsx` (assert removed section keys + headings
   absent; inventory success for static no-host safety; keep `messages.links`
-  undefined). CLI/MCP may still use a non-empty `openingSummary` matching
-  `/without a live Factory host/i`; JavaScript runtime clears
-  `openingSummary` to `""` so `DocsOpeningSummary` mounts nothing (empty text
-  returns null)—scope any shared-contract assertion to allow that empty
-  summary on the JS route only. MCP polish replaces What It Covers / Key
-  Concepts with an install-first `how-to-install` section and a page-local
+  undefined). CLI inventory-first repair omits `openingSummary` (and drops
+  What It Covers / Key Concepts) so `DocsOpeningSummary` mounts nothing and
+  the page opens on Command Inventory. JavaScript runtime clears
+  `openingSummary` to `""` so folded Opening summary chrome does not mount
+  (empty text returns null). Do not require CLI or JS `openingSummary` to
+  match `/without a live Factory host/i`; MCP may still keep that lead.
+  MCP polish replaces What It Covers / Key Concepts with an install-first
+  `how-to-install` section and a page-local
   `McpInstallDocsLink` (not `messages.links`) to `/docs/documentation/mcp`.
   JS intro-strip removes What It Covers / Key Concepts entirely and keeps the
   #159 keep-list (glossary, overall usage example, Runtime Inventory) as the
@@ -141,7 +144,7 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   `openingSummary` (MCP #156 pattern)—while still proving glossary, overall
   example, inventory success, and #159 chrome trim. Shared
   `published-route-states.test.tsx` scopes the live-host-free
-  `openingSummary` assert to CLI/MCP only so JS may clear the summary.
+  `openingSummary` assert to MCP only so CLI and JS may clear the summary.
   Browser-verify JS keep-list-first shape with
   `bun src/content/docs/references/javascript-runtime/assert-javascript-runtime-polish-browser.ts`
   (webpack `bun run dev`, unique port, Playwright): assert absent What It
@@ -174,6 +177,15 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   `data-contract-source-badge` / `Handler registered` / `Object policy` /
   `data-mcp-example-generated-notice`. Smoke sibling CLI + javascript-runtime
   routes still return HTTP 200.
+- CLI intro-strip browser-verify on `/docs/references/cli`:
+  `bun src/content/docs/references/cli/assert-cli-page-intro-strip-browser.ts`
+  (webpack `next dev`, unique port 3578 default, Playwright; kill server on
+  exit). Assert absent What It Covers / Key Concepts / `#what-it-covers` /
+  `#key-concepts` / `[data-testid="folded-summary"]` /
+  `[data-opening-summary="folded"]`; assert Command Inventory +
+  `data-inventory-state="success"` + representative `#you-config-init` card
+  keep-list (header, example, under-construction Flags/arguments — no invented
+  option rows). Prefer `CLI_INTRO_STRIP_PROBE_BASE_URL` when a server is warm.
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
 - Each new references page needs its own static

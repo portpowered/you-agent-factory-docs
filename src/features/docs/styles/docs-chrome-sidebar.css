@@ -1,0 +1,45 @@
+/**
+ * Docs sidebar row highlighting token map.
+ *
+ * Overrides muted-foreground rest text and accent/surface hover fills:
+ * - resting text → white (`--docs-chrome-white`)
+ * - hover → wide primary yellow background (`--docs-chrome-primary-yellow`)
+ * - active → soft primary-yellow wash (distinguishable from rest, not full hover)
+ *
+ * Keep selectors aligned with docs-chrome-sidebar.ts.
+ * Live in @layer utilities with !important so they beat Tailwind color /
+ * hover utilities (same cascade pattern as TOC chrome).
+ */
+@layer utilities {
+  #nd-sidebar .docs-chrome-sidebar-row,
+  [data-mobile-docs-drawer] .docs-chrome-sidebar-row {
+    color: var(--docs-chrome-white) !important;
+    background-color: transparent;
+  }
+
+  #nd-sidebar .docs-chrome-sidebar-row[data-active="true"],
+  [data-mobile-docs-drawer] .docs-chrome-sidebar-row[data-active="true"] {
+    background-color: color-mix(
+      in oklch,
+      var(--docs-chrome-primary-yellow) 18%,
+      transparent
+    ) !important;
+    color: var(--docs-chrome-white) !important;
+  }
+
+  #nd-sidebar .docs-chrome-sidebar-row:focus-visible,
+  [data-mobile-docs-drawer] .docs-chrome-sidebar-row:focus-visible {
+    outline-style: solid !important;
+    outline-width: 2px !important;
+    outline-color: var(--ring) !important;
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) {
+    #nd-sidebar .docs-chrome-sidebar-row:hover,
+    [data-mobile-docs-drawer] .docs-chrome-sidebar-row:hover {
+      background-color: var(--docs-chrome-primary-yellow) !important;
+      color: var(--primary-foreground) !important;
+    }
+  }
+}

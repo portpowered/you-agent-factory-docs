@@ -130,9 +130,9 @@ describe("W11 published route states and ownership fences", () => {
         expect(loadedPage.messages.sections?.tags).toBeUndefined();
         expect(loadedPage.messages.sections?.references).toBeUndefined();
         expect(loadedPage.messages.links).toBeUndefined();
-        // CLI/MCP keep a live-host-free opening summary; JS clears it so the
-        // folded Opening summary chrome does not mount (intro-strip lane).
-        if (route.slug === "javascript-runtime") {
+        // CLI and JS intro-strip clear openingSummary; MCP keeps the
+        // live-host-free lead. Scope the positive summary assertion to MCP.
+        if (route.slug === "cli" || route.slug === "javascript-runtime") {
           expect(String(loadedPage.messages.openingSummary ?? "").trim()).toBe(
             "",
           );

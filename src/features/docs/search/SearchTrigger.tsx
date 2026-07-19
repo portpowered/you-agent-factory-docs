@@ -3,6 +3,10 @@
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import { Search } from "lucide-react";
 import { type ComponentProps, useState } from "react";
+import {
+  docsChromeSearchGlobeGitHubHoverStyle,
+  docsChromeSearchKbdHoverStyle,
+} from "@/features/docs/styles/docs-chrome-search-globe-github";
 import type { UiMessages } from "@/lib/content/ui-messages.types";
 import { cn } from "@/lib/utils";
 
@@ -33,20 +37,14 @@ export function SearchTrigger({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={cn(
-        "hover:!border-accent hover:!bg-accent hover:text-accent-foreground",
+        // Hover/active fill is owned by globals.css + locked --docs-chrome-*
+        // tokens (primary yellow). Keep Tailwind primary classes as a backup.
+        "hover:!border-[var(--docs-chrome-primary-yellow)] hover:!bg-[var(--docs-chrome-primary-yellow)] hover:text-primary-foreground",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "group inline-flex h-9 items-center gap-2 rounded-lg !border !border-border !bg-background !px-2 !py-1.5 text-sm text-muted-foreground transition-colors",
         className,
       )}
-      style={
-        hovered
-          ? {
-              backgroundColor: "var(--accent)",
-              borderColor: "var(--accent)",
-              color: "var(--accent-foreground)",
-            }
-          : undefined
-      }
+      style={docsChromeSearchGlobeGitHubHoverStyle(hovered)}
       {...props}
     >
       <Search className="size-4 shrink-0" aria-hidden />
@@ -57,20 +55,10 @@ export function SearchTrigger({
             key={String(key.display)}
             className={[
               "rounded-md border border-border bg-background px-1.5 text-xs text-foreground",
-              "group-hover:border-accent-foreground/25 group-hover:bg-accent-foreground/10 group-hover:text-accent-foreground",
-              "group-focus-visible:border-accent-foreground/25 group-focus-visible:bg-accent-foreground/10 group-focus-visible:text-accent-foreground",
+              "group-hover:border-primary-foreground/25 group-hover:bg-primary-foreground/10 group-hover:text-primary-foreground",
+              "group-focus-visible:border-primary-foreground/25 group-focus-visible:bg-primary-foreground/10 group-focus-visible:text-primary-foreground",
             ].join(" ")}
-            style={
-              hovered
-                ? {
-                    borderColor:
-                      "color-mix(in oklch, var(--accent-foreground) 25%, transparent)",
-                    backgroundColor:
-                      "color-mix(in oklch, var(--accent-foreground) 10%, transparent)",
-                    color: "var(--accent-foreground)",
-                  }
-                : undefined
-            }
+            style={docsChromeSearchKbdHoverStyle(hovered)}
           >
             {key.display}
           </kbd>

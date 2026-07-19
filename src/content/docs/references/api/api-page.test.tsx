@@ -1,9 +1,10 @@
 /**
  * Page-owned render proof for references/api.
  * Covers the published reference shell, registry alignment, and projection-first
- * MDX (no how-to-use / limits / tags / related / citations boilerplate). Under
- * happy-dom, page-mdx-components mounts the sync Fumadocs stub; real
- * createAPIPage is covered by projection unit tests and browser probes.
+ * MDX (no what-it-covers / key-concepts / opening summary / how-to-use / limits /
+ * tags / related / citations boilerplate). Under happy-dom, page-mdx-components
+ * mounts the sync Fumadocs stub; real createAPIPage is covered by projection
+ * unit tests and browser probes.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -46,32 +47,16 @@ describe("api reference page", () => {
       expect(loadedPage.messages.description).toMatch(/HTTP\/OpenAPI/i);
       expect(loadedPage.messages.description).not.toMatch(/Model Atlas/i);
 
-      const whatItCovers = String(
-        loadedPage.messages.sections?.whatItCovers?.body ?? "",
-      );
-      const keyConcepts = String(
-        loadedPage.messages.sections?.keyConcepts?.body ?? "",
-      );
       const operations = String(
         loadedPage.messages.sections?.operations?.body ?? "",
       );
-
-      expect(whatItCovers).toMatch(/HTTP\/OpenAPI/i);
-      expect(whatItCovers).toMatch(/published operations/i);
-      expect(keyConcepts).toMatch(/OpenAPI/i);
-      expect(keyConcepts).toMatch(/local-server base URL/i);
-      expect(keyConcepts).toMatch(/published API docs are static/i);
-      expect(keyConcepts).toMatch(/request playground/i);
-      expect(keyConcepts).toMatch(/events reference/i);
       expect(operations).toMatch(/OpenAPI projection/i);
-      expect(keyConcepts).not.toMatch(/This page is static/i);
-      expect(whatItCovers).not.toMatch(
-        /This reference covers|on this page|Model Atlas/i,
-      );
-      expect(keyConcepts).not.toMatch(/on this page|Model Atlas/i);
       expect(operations).not.toMatch(/on this page|Model Atlas/i);
 
-      // Boilerplate section copy must not remain as published message keys.
+      // Intro and boilerplate section copy must not remain as published keys.
+      expect(loadedPage.messages.openingSummary).toBeUndefined();
+      expect(loadedPage.messages.sections?.whatItCovers).toBeUndefined();
+      expect(loadedPage.messages.sections?.keyConcepts).toBeUndefined();
       expect(loadedPage.messages.sections?.howToUse).toBeUndefined();
       expect(
         loadedPage.messages.sections?.limitsAndAssumptions,
@@ -91,14 +76,14 @@ describe("api reference page", () => {
         </main>,
       );
 
-      expect(
-        screen.getByRole("heading", { name: "What It Covers" }),
-      ).toBeTruthy();
-      expect(
-        screen.getByRole("heading", { name: "Key Concepts" }),
-      ).toBeTruthy();
       expect(screen.getByRole("heading", { name: "Operations" })).toBeTruthy();
 
+      expect(
+        screen.queryByRole("heading", { name: "What It Covers" }),
+      ).toBeNull();
+      expect(
+        screen.queryByRole("heading", { name: "Key Concepts" }),
+      ).toBeNull();
       expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
       expect(
         screen.queryByRole("heading", { name: "Limits And Assumptions" }),
@@ -107,11 +92,14 @@ describe("api reference page", () => {
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
 
+      expect(document.getElementById("what-it-covers")).toBeNull();
+      expect(document.getElementById("key-concepts")).toBeNull();
       expect(document.getElementById("how-to-use")).toBeNull();
       expect(document.getElementById("limits-and-assumptions")).toBeNull();
       expect(document.getElementById("related")).toBeNull();
       expect(document.getElementById("tags")).toBeNull();
       expect(document.getElementById("references")).toBeNull();
+      expect(document.getElementById("operations")).not.toBeNull();
 
       expect(screen.getByTestId("api-reference-projection")).toBeTruthy();
       expect(
