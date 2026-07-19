@@ -4,7 +4,9 @@
  * Do not register these in the shared module MDX map.
  */
 import { JavascriptRuntimeReferenceInventory } from "./JavascriptRuntimeReferenceInventory";
+import { JavascriptSymbolMetadataGlossary } from "./JavascriptSymbolMetadataGlossary";
 
 export const pageMdxComponents = {
   JavascriptRuntimeReferenceInventory,
+  JavascriptSymbolMetadataGlossary,
 };

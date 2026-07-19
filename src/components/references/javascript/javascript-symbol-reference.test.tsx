@@ -17,6 +17,12 @@ import {
   JavaScriptSymbolReference,
   javascriptSymbolInventoryIdentities,
 } from "./JavaScriptSymbolReference";
+import {
+  javascriptSymbolBindingLifecycleLabel,
+  javascriptSymbolKindLabel,
+  javascriptSymbolMutabilityLabel,
+  javascriptSymbolNullabilityLabel,
+} from "./javascript-symbol-metadata";
 import { mapJavascriptVisibilityToReferenceVisibility } from "./javascript-visibility";
 
 afterEach(() => {
@@ -128,6 +134,26 @@ describe("mapJavascriptVisibilityToReferenceVisibility", () => {
   });
 });
 
+describe("javascript symbol metadata labels", () => {
+  test("formats published kind and binding labels without inventing values", () => {
+    expect(javascriptSymbolKindLabel("value")).toBe("Value");
+    expect(javascriptSymbolKindLabel("function")).toBe("Function");
+    expect(javascriptSymbolMutabilityLabel("mutable-object")).toBe(
+      "Mutable object",
+    );
+    expect(javascriptSymbolNullabilityLabel("non-null")).toBe("Non-null");
+    expect(javascriptSymbolBindingLifecycleLabel("snapshot-at-bind")).toBe(
+      "Snapshot at bind",
+    );
+    expect(javascriptSymbolBindingLifecycleLabel("live-namespace")).toBe(
+      "Live namespace",
+    );
+    expect(javascriptSymbolKindLabel("custom-published-kind")).toBe(
+      "Custom Published Kind",
+    );
+  });
+});
+
 describe("JavaScriptSymbolReference", () => {
   test("renders available metadata, examples, and shared schema links", () => {
     const { container } = render(
@@ -150,8 +176,12 @@ describe("JavaScriptSymbolReference", () => {
         "Synchronously emits one workflow-scoped log record. The first argument must be a non-empty string message.",
       ),
     ).toBeTruthy();
-    expect(screen.getByText("Kind")).toBeTruthy();
-    expect(screen.getByText("function")).toBeTruthy();
+    expect(screen.getByText("Kind: Function")).toBeTruthy();
+    expect(
+      container.querySelector(
+        '[data-javascript-metadata-facet="kind"][data-javascript-metadata-value="function"]',
+      ),
+    ).toBeTruthy();
     expect(screen.getByText("Lifecycle: Active")).toBeTruthy();
     expect(screen.getByText("Visibility: Public")).toBeTruthy();
     expect(
@@ -190,8 +220,8 @@ describe("JavaScriptSymbolReference", () => {
     expect(screen.queryByText("Public")).toBeNull();
   });
 
-  test("renders mutability and nullability when published", () => {
-    render(
+  test("renders glossary-backed mutability and nullability pills when published", () => {
+    const { container } = render(
       <JavaScriptSymbolReference
         symbol={fixtureSymbol({
           kind: "value",
@@ -208,12 +238,40 @@ describe("JavaScriptSymbolReference", () => {
       />,
     );
 
-    expect(screen.getByText("Mutability")).toBeTruthy();
-    expect(screen.getByText("mutable-object")).toBeTruthy();
-    expect(screen.getByText("Nullability")).toBeTruthy();
-    expect(screen.getByText("non-null")).toBeTruthy();
-    expect(screen.getByText("Binding lifecycle")).toBeTruthy();
-    expect(screen.getByText("snapshot-at-bind")).toBeTruthy();
+    expect(screen.getByText("Kind: Value")).toBeTruthy();
+    expect(screen.getByText("Mutability: Mutable object")).toBeTruthy();
+    expect(screen.getByText("Nullability: Non-null")).toBeTruthy();
+    expect(
+      screen.getByText("Binding lifecycle: Snapshot at bind"),
+    ).toBeTruthy();
+    expect(
+      container.querySelector("[data-javascript-symbol-metadata-pills]"),
+    ).toBeTruthy();
+    expect(
+      container
+        .querySelector('[data-javascript-metadata-facet="kind"]')
+        ?.getAttribute("href"),
+    ).toBe("#glossary-kind");
+    expect(
+      container
+        .querySelector('[data-javascript-metadata-facet="mutability"]')
+        ?.getAttribute("href"),
+    ).toBe("#glossary-mutability");
+    expect(
+      container
+        .querySelector('[data-javascript-metadata-facet="nullability"]')
+        ?.getAttribute("href"),
+    ).toBe("#glossary-nullability");
+    expect(
+      container
+        .querySelector('[data-javascript-metadata-facet="bindingLifecycle"]')
+        ?.getAttribute("href"),
+    ).toBe("#glossary-binding-lifecycle");
+
+    // No duplicated text-row labels beside the pills.
+    expect(screen.queryByText("mutable-object")).toBeNull();
+    expect(screen.queryByText("non-null")).toBeNull();
+    expect(screen.queryByText("snapshot-at-bind")).toBeNull();
   });
 
   test("omits optional metadata when the projection left it absent", () => {
@@ -233,8 +291,11 @@ describe("JavaScriptSymbolReference", () => {
       />,
     );
 
-    expect(screen.queryByText("Kind")).toBeNull();
-    expect(screen.queryByText("Mutability")).toBeNull();
+    expect(screen.queryByText("Kind: Function")).toBeNull();
+    expect(screen.queryByText("Kind: Value")).toBeNull();
+    expect(
+      container.querySelector("[data-javascript-symbol-metadata-pills]"),
+    ).toBeNull();
     expect(container.querySelector("[data-javascript-examples]")).toBeNull();
     expect(
       container.querySelector("[data-javascript-shared-schema-links]"),

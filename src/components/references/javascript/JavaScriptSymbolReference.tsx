@@ -6,6 +6,7 @@ import { CodePanel } from "@/features/factory-ui/data-display";
 import { ContractDescriptionProse } from "@/lib/i18n/contract-description-prose";
 import type { JavascriptSymbolNormalized } from "@/lib/references/family-normalized-models";
 import { cn } from "@/lib/utils";
+import { JavaScriptSymbolMetadataPills } from "./JavaScriptSymbolMetadataPills";
 import { mapJavascriptVisibilityToReferenceVisibility } from "./javascript-visibility";
 import type { JavaScriptSymbolReferenceProps } from "./types";
 
@@ -16,7 +17,8 @@ import type { JavaScriptSymbolReferenceProps } from "./types";
  *
  * Symbol cards keep lifecycle/visibility as pills only — no family /
  * package-version / source-artifact chrome and no duplicated visibility text
- * row beside those pills.
+ * row beside those pills. Kind, mutability, nullability, and binding
+ * lifecycle appear as glossary-backed pills when published.
  */
 export function JavaScriptSymbolReference({
   symbol,
@@ -61,31 +63,23 @@ export function JavaScriptSymbolReference({
         ) : null}
       </header>
 
-      <ReferenceLifecycleVisibility
-        chrome={chrome}
-        lifecycle={symbol.lifecycle}
-        visibility={sharedVisibility}
-      />
+      <div className="flex flex-col gap-2">
+        <ReferenceLifecycleVisibility
+          chrome={chrome}
+          lifecycle={symbol.lifecycle}
+          visibility={sharedVisibility}
+        />
+        <JavaScriptSymbolMetadataPills
+          bindingLifecycle={symbol.bindingLifecycle}
+          kind={symbol.kind}
+          mutability={symbol.mutability}
+          nullability={symbol.nullability}
+        />
+      </div>
 
       <dl className="m-0 grid gap-2 text-sm sm:grid-cols-[auto_1fr] sm:gap-x-4">
         <MetadataRow label="Symbol path" value={symbol.symbolPath} mono />
         <MetadataRow label="Symbol id" value={symbol.id} mono />
-        {symbol.kind !== undefined ? (
-          <MetadataRow label="Kind" value={symbol.kind} mono />
-        ) : null}
-        {symbol.mutability !== undefined ? (
-          <MetadataRow label="Mutability" value={symbol.mutability} mono />
-        ) : null}
-        {symbol.nullability !== undefined ? (
-          <MetadataRow label="Nullability" value={symbol.nullability} mono />
-        ) : null}
-        {symbol.bindingLifecycle !== undefined ? (
-          <MetadataRow
-            label="Binding lifecycle"
-            value={symbol.bindingLifecycle}
-            mono
-          />
-        ) : null}
       </dl>
 
       {symbol.sharedSchemaLinks !== undefined &&

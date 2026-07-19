@@ -90,6 +90,9 @@ describe("javascript-runtime reference page", () => {
         screen.getByRole("heading", { name: "Key Concepts" }),
       ).toBeTruthy();
       expect(
+        screen.getByRole("heading", { name: "Symbol metadata glossary" }),
+      ).toBeTruthy();
+      expect(
         screen.getByRole("heading", { name: "Runtime Inventory" }),
       ).toBeTruthy();
       expect(screen.queryByRole("heading", { name: "How To Use" })).toBeNull();
@@ -100,6 +103,40 @@ describe("javascript-runtime reference page", () => {
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
       expect(document.getElementById("related")).toBeNull();
+
+      const glossary = document.querySelector(
+        "[data-javascript-symbol-metadata-glossary]",
+      );
+      expect(glossary).toBeTruthy();
+      expect(document.getElementById("glossary-kind")).toBeTruthy();
+      expect(document.getElementById("glossary-mutability")).toBeTruthy();
+      expect(document.getElementById("glossary-nullability")).toBeTruthy();
+      expect(
+        document.getElementById("glossary-binding-lifecycle"),
+      ).toBeTruthy();
+      expect(screen.getByText(/A Value is a bound data binding/i)).toBeTruthy();
+      expect(
+        screen.getByText(/A function is a callable runtime helper/i),
+      ).toBeTruthy();
+      expect(
+        screen.getByText(/Snapshot at bind captures the value/i),
+      ).toBeTruthy();
+      expect(
+        screen.getByText(/Non-null means the published contract/i),
+      ).toBeTruthy();
+      expect(
+        screen.getByText(/Mutable object means the binding exposes/i),
+      ).toBeTruthy();
+      expect(
+        String(
+          loadedPage.messages.sections?.symbolMetadataGlossary?.body ?? "",
+        ),
+      ).toMatch(/Value versus function/i);
+      expect(
+        String(
+          loadedPage.messages.sections?.symbolMetadataGlossary?.body ?? "",
+        ),
+      ).toMatch(/glossary-backed pills/i);
 
       const inventoryRoot = document.querySelector(
         "[data-javascript-runtime-inventory]",

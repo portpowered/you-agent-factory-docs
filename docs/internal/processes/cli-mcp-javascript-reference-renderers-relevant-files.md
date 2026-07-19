@@ -63,7 +63,10 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection; polished cards use `ReferenceLifecycleVisibility` only (no `ContractSourceBadge` family/package/source chrome, no duplicated Visibility metadata row) |
+| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection; polished cards use `ReferenceLifecycleVisibility` + `JavaScriptSymbolMetadataPills` (no `ContractSourceBadge` family/package/source chrome, no duplicated Visibility metadata row) |
+| `src/components/references/javascript/JavaScriptSymbolMetadataPills.tsx` | Glossary-backed kind / mutability / nullability / binding-lifecycle pills linking to on-page glossary anchors |
+| `src/components/references/javascript/javascript-symbol-metadata.ts` | Pure published-value → display-label helpers + glossary anchor ids |
+| `src/components/references/javascript/javascript-symbol-metadata-glossary.ts` | On-page glossary term/definition copy for published metadata facets |
 | `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed |
 | `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome |
 | `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
@@ -71,6 +74,7 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 | `src/components/references/javascript/index.ts` | Public JavaScript renderer barrel |
 | `src/components/references/harness/ReferenceJavascriptHarness.tsx` | Dev fixture mount for JS inventory browser verification |
 | `src/lib/references/normalize-family-artifacts.ts` | Also normalizes `sharedSchemas` + enriched symbol metadata |
+| `src/content/docs/references/javascript-runtime/JavascriptSymbolMetadataGlossary.tsx` | Page-local glossary definition list mounted from MDX |
 
 ## Key host files (anchors + filters — story 007)
 
@@ -152,8 +156,11 @@ plus allowed shared chrome helpers under `src/components/references/shared/`
 - JavaScript symbol polish: compose `ReferenceLifecycleVisibility` for
   lifecycle/visibility pills; do not mount `ContractSourceBadge` (keeps
   family/package/source chrome for other families). Drop the duplicated
-  Visibility metadata row beside those pills — keep kind / mutability /
-  nullability / bindingLifecycle rows until glossary-pill stories land.
+  Visibility metadata row beside those pills. Kind / mutability /
+  nullability / bindingLifecycle use `JavaScriptSymbolMetadataPills` with
+  on-page glossary anchors (`#glossary-kind`, etc.); glossary term copy lives
+  in `javascript-symbol-metadata-glossary.ts` because page message sections
+  only accept `title` / `body` strings.
 - Story 007: assign anchors through `assign*RegistryAnchors` (wraps
   `ReferenceAnchorRegistry`) before render; expose `CopyableReferenceAnchor`
   on every command/tool/symbol/shared-schema card. Inventory filters live in
