@@ -1,8 +1,13 @@
 /**
  * Page-owned render proof for references/factory-schema.
  * Asserts route presence, SchemaReference success markers, pagePath ownership,
- * same-page `$ref` click-traverse onto splayed definitions, and explicit
- * invalid status when acquisition fails — not W07 internals.
+ * leftover intro chrome absence, recursively splayed definitions, same-page
+ * `$ref` click-traverse onto those definitions, the authored full Factory
+ * configuration JSON example, and explicit invalid status when acquisition
+ * fails — not W07 internals.
+ *
+ * Browser success-path close-out (intro + splay + click-traverse + example):
+ * `assert-factory-schema-repair-browser.ts`.
  */
 import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, render, screen } from "@testing-library/react";

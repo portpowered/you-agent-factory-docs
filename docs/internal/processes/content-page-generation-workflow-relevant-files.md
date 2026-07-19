@@ -1432,6 +1432,18 @@ MDX component merge for schema mounts:
    minimal sample keys) passed as `exampleInputs` on `FactorySchemaReference`
    only. Browser probe:
    `assert-factory-schema-full-config-example-browser.ts`.
+   Factory schema repair close-out (intro strip + splay + click-traverse +
+   full config) uses one page-local success-path probe:
+   `assert-factory-schema-repair-browser.ts` (webpack `bun run dev`, unique
+   port in 3100–3999, Playwright, kill server on exit). Assert
+   `data-schema-status="ready"`, absent What It Covers / Key Concepts,
+   splayed `$defs` catalog, `orchestrator` → `#defs-FactoryOrchestrator`
+   same-page click-traverse, and copyable authored
+   `full-factory-configuration` example keys. Run with plain `bun` from
+   repo cwd; do not leave the probe server running. Narrower probes
+   (`assert-factory-schema-click-traverse-browser.ts`,
+   `assert-factory-schema-full-config-example-browser.ts`) remain for
+   story-scoped iteration.
 5. Prefer page-local `LocalizedLinkList` for sibling schema routes that are
    not published yet; do not put unpublished `reference.*` ids in
    `relatedIds`.

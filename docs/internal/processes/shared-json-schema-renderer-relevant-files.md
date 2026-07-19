@@ -151,9 +151,12 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   (`workTypes` / `workers` / `workstations`) — pass only on
   `FactorySchemaReference`, never as a sibling-schema default. Prove with
   `assert-factory-schema-full-config-example-browser.ts` / page-local mount
-  tests. Root pointers must be anchor-safe (not bare `/`). Harness route:
-  `/schema-renderer-harness` under `src/app/(dev)/` — not a published
-  `/docs/references/*-schema` page.
+  tests. Repair close-out browser probe covering intro strip + splay +
+  click-traverse + full config together:
+  `assert-factory-schema-repair-browser.ts`. Root pointers must be
+  anchor-safe (not bare `/`). Harness route: `/schema-renderer-harness`
+  under `src/app/(dev)/` — not a published `/docs/references/*-schema`
+  page.
 
 ## Verification preference
 
