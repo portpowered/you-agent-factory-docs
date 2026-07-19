@@ -119,9 +119,12 @@ Page mounts accept an optional `inventory` override solely so empty/error proofs
   runtime uses `generated/javascript/runtime-api.json` (public subpath
   `javascript/runtime`). Prove shipped success with the production-integration
   `out/` HTML assertion, not Bun-side loader tests alone.
-- Keep curated discovery under `#related` with `LocalizedLinkList` for authored
-  docs and planned sibling reference routes; `RelatedDocs` stays for when
-  reference records participate in the related-docs runtime.
+- Non-API reference pages stay projection-first: keep what-it-covers /
+  key-concepts + primary inventory mount; do **not** remount How To Use,
+  Limits And Assumptions, Related (`RelatedDocs` + `LocalizedLinkList`),
+  Tags (`TagPillList`), or References (`CitationList`). Shared proofs live in
+  `published-route-states.test.tsx` (assert removed section keys + headings
+  absent; use `openingSummary` / inventory success for static no-host safety).
 - Rely on W05 nested discovery + page frontmatter; do not edit a shared
   references family index.
 - Each new references page needs its own static

@@ -1,9 +1,10 @@
 /**
  * Cross-route page-owned proofs for W11 published CLI / MCP / JavaScript
  * runtime reference routes: success mounts, accessible empty/error states,
- * package-backed (not copied) inventory source, static no-host safety, and
- * ownership fences that keep CLI/MCP/JS pages coexisting with sibling
- * reference routes (API, events, schemas) once those lanes land.
+ * package-backed (not copied) inventory source, static no-host safety,
+ * projection-first page chrome (no How To Use / Limits / Related / Tags /
+ * Citations), and ownership fences that keep CLI/MCP/JS pages coexisting with
+ * sibling reference routes (API, events, schemas) once those lanes land.
  *
  * Does not scan renderer source trees, enforce global registration
  * inventories, or re-own W10 contract-count drift logic.
@@ -125,6 +126,10 @@ describe("W11 published route states and ownership fences", () => {
         expect(
           loadedPage.messages.sections?.limitsAndAssumptions,
         ).toBeUndefined();
+        expect(loadedPage.messages.sections?.related).toBeUndefined();
+        expect(loadedPage.messages.sections?.tags).toBeUndefined();
+        expect(loadedPage.messages.sections?.references).toBeUndefined();
+        expect(loadedPage.messages.links).toBeUndefined();
         expect(loadedPage.messages.openingSummary).toMatch(
           /without a live Factory host/i,
         );
@@ -147,6 +152,14 @@ describe("W11 published route states and ownership fences", () => {
         expect(
           screen.queryByRole("heading", { name: "Limits And Assumptions" }),
         ).toBeNull();
+        expect(
+          screen.queryByRole("heading", { name: "Related To" }),
+        ).toBeNull();
+        expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
+        expect(
+          screen.queryByRole("heading", { name: "References" }),
+        ).toBeNull();
+        expect(document.getElementById("related")).toBeNull();
 
         const inventoryRoot = document.querySelector(route.inventorySelector);
         expect(inventoryRoot).toBeTruthy();

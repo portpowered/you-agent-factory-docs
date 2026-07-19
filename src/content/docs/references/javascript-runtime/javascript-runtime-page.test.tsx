@@ -62,6 +62,7 @@ describe("javascript-runtime reference page", () => {
       expect(loadedPage.messages.sections?.related).toBeUndefined();
       expect(loadedPage.messages.sections?.tags).toBeUndefined();
       expect(loadedPage.messages.sections?.references).toBeUndefined();
+      expect(loadedPage.messages.links).toBeUndefined();
 
       const inventory = loadJavascriptRuntimeReferenceInventory();
       expect(inventory.state).toBe("success");
@@ -98,6 +99,7 @@ describe("javascript-runtime reference page", () => {
       expect(screen.queryByRole("heading", { name: "Related To" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "Tags" })).toBeNull();
       expect(screen.queryByRole("heading", { name: "References" })).toBeNull();
+      expect(document.getElementById("related")).toBeNull();
 
       const inventoryRoot = document.querySelector(
         "[data-javascript-runtime-inventory]",
