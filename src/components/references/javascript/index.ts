@@ -1,12 +1,44 @@
-export { JavaScriptRuntimeInventory } from "./JavaScriptRuntimeInventory";
+export {
+  JavaScriptRuntimeInventory,
+  JavaScriptRuntimeInventoryChrome,
+  JavaScriptRuntimeInventoryProvider,
+  JavaScriptRuntimeSharedSchemasList,
+  JavaScriptRuntimeSymbolsList,
+} from "./JavaScriptRuntimeInventory";
 export {
   JavaScriptSharedSchemaReference,
   javascriptSharedSchemaInventoryIdentities,
 } from "./JavaScriptSharedSchemaReference";
+export { JavaScriptSymbolMetadataPills } from "./JavaScriptSymbolMetadataPills";
 export {
   JavaScriptSymbolReference,
   javascriptSymbolInventoryIdentities,
 } from "./JavaScriptSymbolReference";
+export type { JavascriptRuntimeOverallExampleStep } from "./javascript-runtime-overall-example";
+export {
+  JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_CODE,
+  JAVASCRIPT_RUNTIME_OVERALL_EXAMPLE_STEPS,
+} from "./javascript-runtime-overall-example";
+export { JAVASCRIPT_RUNTIME_SECTION_ANCHORS } from "./javascript-runtime-section-anchors";
+export {
+  filterJavascriptSymbolsExcludingSharedSchemaDuplicates,
+  isJavascriptSymbolDuplicatingSharedSchema,
+  trimJavascriptSharedSchemaDefinitionForCard,
+} from "./javascript-shared-schema-presentation";
+export {
+  JAVASCRIPT_SYMBOL_BINDING_LIFECYCLE_LABELS,
+  JAVASCRIPT_SYMBOL_KIND_LABELS,
+  JAVASCRIPT_SYMBOL_METADATA_FACET_LABELS,
+  JAVASCRIPT_SYMBOL_METADATA_GLOSSARY_ANCHORS,
+  JAVASCRIPT_SYMBOL_MUTABILITY_LABELS,
+  JAVASCRIPT_SYMBOL_NULLABILITY_LABELS,
+  javascriptSymbolBindingLifecycleLabel,
+  javascriptSymbolKindLabel,
+  javascriptSymbolMutabilityLabel,
+  javascriptSymbolNullabilityLabel,
+} from "./javascript-symbol-metadata";
+export type { JavascriptSymbolMetadataGlossaryTerm } from "./javascript-symbol-metadata-glossary";
+export { JAVASCRIPT_SYMBOL_METADATA_GLOSSARY_TERMS } from "./javascript-symbol-metadata-glossary";
 export {
   javascriptVisibilityDisplayLabel,
   mapJavascriptVisibilityToReferenceVisibility,

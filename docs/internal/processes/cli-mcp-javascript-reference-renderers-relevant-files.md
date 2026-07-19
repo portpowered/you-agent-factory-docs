@@ -112,16 +112,25 @@ Browser spot-check for this repair (production build):
 
 | Path | Role |
 | --- | --- |
-| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection |
-| `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed |
-| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome |
+| `src/components/references/javascript/JavaScriptSymbolReference.tsx` | One symbol from a W04-normalized JavaScript projection; polished cards use `ReferenceLifecycleVisibility` + `JavaScriptSymbolMetadataPills` (no `ContractSourceBadge` family/package/source chrome, no duplicated Visibility metadata row) |
+| `src/components/references/javascript/JavaScriptSymbolMetadataPills.tsx` | Glossary-backed kind / mutability / nullability / binding-lifecycle pills linking to on-page glossary anchors |
+| `src/components/references/javascript/javascript-symbol-metadata.ts` | Pure published-value → display-label helpers + glossary anchor ids |
+| `src/components/references/javascript/javascript-symbol-metadata-glossary.ts` | On-page glossary term/definition copy for published metadata facets |
+| `src/components/references/javascript/JavaScriptSharedSchemaReference.tsx` | One shared schema with thin SchemaDefinitionModel embed; polished cards use `ReferenceLifecycleVisibility` only (no `ContractSourceBadge`, no schema-id/name/title/type/object-policy chrome) |
+| `src/components/references/javascript/javascript-shared-schema-presentation.ts` | Pure JS-owned helpers: trim shared-schema embed chrome fields; filter Symbols-list duplicates of shared schemas |
+| `src/components/references/javascript/JavaScriptRuntimeInventory.tsx` | Inventory list (symbols + shared schemas) with empty/error chrome; Symbols list omits shared-schema duplicates; composable provider/chrome/lists so page MDX `<Section id="symbols">` / `<Section id="shared-schemas">` can own On this page TOC anchors |
+| `src/components/references/javascript/javascript-runtime-section-anchors.ts` | Stable `symbols` / `shared-schemas` section anchor ids shared by standalone headings and page MDX Sections |
+| `src/components/references/javascript/javascript-runtime-overall-example.ts` | Composed overall-example script + walkthrough steps (published call patterns only) |
 | `src/components/references/javascript/javascript-visibility.ts` | Map published JS visibility → shared chrome when unambiguous |
 | `src/components/references/javascript/types.ts` | JS renderer prop contracts / inventory input union |
 | `src/components/references/javascript/index.ts` | Public JavaScript renderer barrel |
 | `src/components/references/harness/ReferenceJavascriptHarness.tsx` | Dev fixture mount for JS inventory browser verification |
 | `src/lib/references/normalize-family-artifacts.ts` | Also normalizes `sharedSchemas` + enriched symbol metadata |
+| `src/content/docs/references/javascript-runtime/JavascriptSymbolMetadataGlossary.tsx` | Page-local glossary definition list mounted from MDX |
+| `src/content/docs/references/javascript-runtime/JavascriptRuntimeOverallExample.tsx` | Page-local overall how-the-runtime-works example mounted from MDX |
+| `src/content/docs/references/javascript-runtime/assert-javascript-runtime-polish-browser.ts` | Live browser probe for polished JS runtime page (webpack `bun run dev`, unique port, Playwright). Run with plain `bun` from repo cwd. |
 
-## Key host files (anchors + filters — story 007)
+## Key host files (anchors + filters — W10 story 007)
 
 | Path | Role |
 | --- | --- |
@@ -209,7 +218,28 @@ Browser spot-check for this repair (production build):
   `projectMcpInputSchemaToDefinition`; `$ref`-only properties surface the ref
   as `typeSummary`; oneOf roots record composition member addresses without
   expanding a second schema-tree UI.
-- Story 007: assign anchors through `assign*RegistryAnchors` (wraps
+- JavaScript symbol polish: compose `ReferenceLifecycleVisibility` for
+  lifecycle/visibility pills; do not mount `ContractSourceBadge` (keeps
+  family/package/source chrome for other families). Drop the duplicated
+  Visibility metadata row beside those pills. Kind / mutability /
+  nullability / bindingLifecycle use `JavaScriptSymbolMetadataPills` with
+  on-page glossary anchors (`#glossary-kind`, etc.); glossary term copy lives
+  in `javascript-symbol-metadata-glossary.ts` because page message sections
+  only accept `title` / `body` strings.
+- JavaScript polish regression tests (repair lane): assert visible chrome
+  outcomes in `javascript-symbol-reference.test.tsx` (no family/package/source,
+  glossary-backed pills, shared-schema trim/dedupe, composed
+  `showHeading={false}` lists, overall-example constants) and in
+  `javascript-runtime-page.test.tsx` (live package Value vs function pills,
+  glossary + overall example + TOC `#symbols`/`#shared-schemas`). Prefer
+  `data-javascript-metadata-facet` / inventory data attrs over source scans.
+- Worktree browser verify for this lane: Turbopack rejects parent-hoisted
+  `node_modules` symlinks (`points out of the filesystem root`). Prefer
+  `bun run dev -- --webpack -p <unique-port>` (as in
+  `assert-javascript-runtime-polish-browser.ts`). Scope chrome-label absence
+  checks to `[data-javascript-runtime-inventory]` — page-wide `textContent`
+  still includes shared ContractSourceBadge i18n strings in RSC payloads.
+- W10 Story 007: assign anchors through `assign*RegistryAnchors` (wraps
   `ReferenceAnchorRegistry`) before render; expose `CopyableReferenceAnchor`
   on every command/tool/symbol/shared-schema card. Inventory filters live in
   shared pure helpers + `ReferenceInventoryFilter` — ephemeral `useState` only,
