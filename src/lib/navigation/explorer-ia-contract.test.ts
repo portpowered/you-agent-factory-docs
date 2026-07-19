@@ -602,6 +602,42 @@ describe("explorer IA exact-order contract", () => {
           `${locale}: ${page.slug} under ${groupLabel}`,
         ).toBe(true);
       }
+
+      const factoryConfigurationSecondaries = [
+        explorer.documentationSecondaries.workers,
+        explorer.documentationSecondaries.workstations,
+        explorer.documentationSecondaries.factories,
+        explorer.documentationSecondaries.resources,
+      ];
+      const presentFactorySecondaries = secondaryFolderNamesUnderSeparator(
+        documentation,
+        explorer.documentationGroups["factory-configuration"],
+      );
+      expect(
+        isSubsequence(
+          presentFactorySecondaries,
+          factoryConfigurationSecondaries,
+        ),
+        `${locale}: Factory Configuration secondaries use localized labels in declared order`,
+      ).toBe(true);
+      for (const name of presentFactorySecondaries) {
+        expect(factoryConfigurationSecondaries).toContain(name);
+      }
+
+      const presentObservabilitySecondaries =
+        secondaryFolderNamesUnderSeparator(
+          documentation,
+          explorer.documentationGroups["system-operations"],
+        );
+      expect(
+        isSubsequence(presentObservabilitySecondaries, [
+          explorer.documentationSecondaries.observability,
+        ]),
+        `${locale}: System Operations secondaries use localized Observability label`,
+      ).toBe(true);
+      for (const name of presentObservabilitySecondaries) {
+        expect(name).toBe(explorer.documentationSecondaries.observability);
+      }
     }
   });
 });
@@ -646,10 +682,28 @@ describe("explorer IA fail-closed locale contract", () => {
         ...messages.explorer.documentationGroups,
         interfaces: "",
       },
+      documentationSecondaries: messages.explorer.documentationSecondaries,
     };
 
     expect(() =>
       resolveExplorerMessages({ ...messages, explorer: incomplete }),
     ).toThrow(/interfaces/);
+  });
+
+  test("assertExplorerMessages rejects incomplete documentation secondary catalogs", async () => {
+    const messages = await loadUiMessages("ja");
+    const incomplete = {
+      folders: messages.explorer.folders,
+      conceptsGroups: messages.explorer.conceptsGroups,
+      documentationGroups: messages.explorer.documentationGroups,
+      documentationSecondaries: {
+        ...messages.explorer.documentationSecondaries,
+        resources: "",
+      },
+    };
+
+    expect(() =>
+      resolveExplorerMessages({ ...messages, explorer: incomplete }),
+    ).toThrow(/documentationSecondaries\.resources/);
   });
 });

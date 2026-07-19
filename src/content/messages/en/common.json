@@ -81,6 +81,13 @@
       "system-operations": "System Operations",
       "internal-architecture": "Internal Architecture",
       "additional-references": "Additional references"
+    },
+    "documentationSecondaries": {
+      "workers": "Workers",
+      "workstations": "Workstations",
+      "factories": "Factories",
+      "resources": "Resources",
+      "observability": "Observability"
     }
   },
   "referenceChrome": {

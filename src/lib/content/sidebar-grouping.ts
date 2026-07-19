@@ -43,6 +43,26 @@ export const DOCUMENTATION_SIDEBAR_SECONDARY_LABELS = {
 } as const;
 
 /**
+ * Flat English defaults for `explorer.documentationSecondaries` catalogs.
+ * Keys must stay aligned with nested `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`
+ * values (Workers/Workstations/Factories collide with top-level explorer
+ * folders by design; Resources and Observability are secondary-only).
+ */
+export const DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS = {
+  workers:
+    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].workers,
+  workstations:
+    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"]
+      .workstations,
+  factories:
+    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].factories,
+  resources:
+    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["factory-configuration"].resources,
+  observability:
+    DOCUMENTATION_SIDEBAR_SECONDARY_LABELS["system-operations"].observability,
+} as const;
+
+/**
  * Explicit factory Concepts explorer membership by page slug.
  * Slugs for sibling-authored pages (skills, mcp, tool-calling) are declared
  * so they land in the correct group when published; empty groups are omitted.

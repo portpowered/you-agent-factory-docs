@@ -81,6 +81,13 @@
       "system-operations": "Vận hành hệ thống",
       "internal-architecture": "Kiến trúc nội bộ",
       "additional-references": "Tham chiếu bổ sung"
+    },
+    "documentationSecondaries": {
+      "workers": "Worker",
+      "workstations": "Workstation",
+      "factories": "Factory",
+      "resources": "Tài nguyên",
+      "observability": "Khả năng quan sát"
     }
   },
   "referenceChrome": {

@@ -1,5 +1,8 @@
 import { FACTORY_EXPLORER_FOLDER_LABELS } from "@/lib/content/factory-breadcrumb-sidebar";
-import { SIDEBAR_GROUP_LABELS } from "@/lib/content/sidebar-grouping";
+import {
+  DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
+  SIDEBAR_GROUP_LABELS,
+} from "@/lib/content/sidebar-grouping";
 import type {
   ExplorerMessages,
   UiMessages,
@@ -40,6 +43,7 @@ export function assertExplorerMessages(
   const folders = record.folders;
   const conceptsGroups = record.conceptsGroups;
   const documentationGroups = record.documentationGroups;
+  const documentationSecondaries = record.documentationSecondaries;
 
   if (!folders || typeof folders !== "object") {
     throw new ExplorerLabelsError(
@@ -54,6 +58,14 @@ export function assertExplorerMessages(
   if (!documentationGroups || typeof documentationGroups !== "object") {
     throw new ExplorerLabelsError(
       "Explorer Program documentation group messages are missing; localized explorer chrome fails closed without English fallback.",
+    );
+  }
+  if (
+    !documentationSecondaries ||
+    typeof documentationSecondaries !== "object"
+  ) {
+    throw new ExplorerLabelsError(
+      "Explorer Program documentation secondary messages are missing; localized explorer chrome fails closed without English fallback.",
     );
   }
 
@@ -81,6 +93,15 @@ export function assertExplorerMessages(
     assertNonEmptyLabel(
       `explorer.documentationGroups.${id}`,
       (documentationGroups as Record<string, unknown>)[id],
+    );
+  }
+
+  for (const id of Object.keys(
+    DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
+  ) as Array<keyof typeof DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS>) {
+    assertNonEmptyLabel(
+      `explorer.documentationSecondaries.${id}`,
+      (documentationSecondaries as Record<string, unknown>)[id],
     );
   }
 }
@@ -125,6 +146,25 @@ export function buildDefaultGroupLabelLocalizer(
     SIDEBAR_GROUP_LABELS.documentation,
   ) as Array<[keyof ExplorerMessages["documentationGroups"], string]>) {
     localized.set(defaultLabel, explorer.documentationGroups[id]);
+  }
+
+  return localized;
+}
+
+/**
+ * Default-locale English Program documentation secondary folder label →
+ * localized label. Covers Resources/Observability and colliding
+ * Workers/Workstations/Factories secondaries.
+ */
+export function buildDefaultSecondaryLabelLocalizer(
+  explorer: ExplorerMessages,
+): Map<string, string> {
+  const localized = new Map<string, string>();
+
+  for (const [id, defaultLabel] of Object.entries(
+    DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
+  ) as Array<[keyof ExplorerMessages["documentationSecondaries"], string]>) {
+    localized.set(defaultLabel, explorer.documentationSecondaries[id]);
   }
 
   return localized;

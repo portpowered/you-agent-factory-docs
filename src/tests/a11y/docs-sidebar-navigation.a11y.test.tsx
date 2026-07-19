@@ -51,11 +51,11 @@ describe("docs sidebar navigation accessibility", () => {
     messages: Awaited<ReturnType<typeof loadUiMessages>>,
   ): Promise<void> {
     for (const folderName of [
-      messages.explorer.folders.workers,
-      messages.explorer.folders.workstations,
-      messages.explorer.folders.factories,
-      "Resources",
-      "Observability",
+      messages.explorer.documentationSecondaries.workers,
+      messages.explorer.documentationSecondaries.workstations,
+      messages.explorer.documentationSecondaries.factories,
+      messages.explorer.documentationSecondaries.resources,
+      messages.explorer.documentationSecondaries.observability,
     ] as const) {
       const folders = within(container).queryAllByRole("button", {
         name: folderName,
@@ -301,14 +301,14 @@ describe("docs sidebar navigation accessibility", () => {
     );
 
     const workersSecondary = within(sidebar).getAllByRole("button", {
-      name: context.messages.explorer.folders.workers,
+      name: context.messages.explorer.documentationSecondaries.workers,
     })[0];
     expect(workersSecondary).toBeTruthy();
     if (!workersSecondary) {
       throw new Error("expected Workers secondary under Factory Configuration");
     }
     const observabilitySecondary = within(sidebar).getByRole("button", {
-      name: "Observability",
+      name: context.messages.explorer.documentationSecondaries.observability,
     });
 
     const mockWorkersLink = within(sidebar).getByRole("link", {
@@ -413,6 +413,32 @@ describe("docs sidebar navigation accessibility", () => {
         context.messages.explorer.documentationGroups["system-feature-set"],
       ),
     ).toBeTruthy();
+    expect(
+      within(sidebar).getByText(
+        context.messages.explorer.documentationGroups["factory-configuration"],
+      ),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getAllByRole("button", {
+        name: context.messages.explorer.documentationSecondaries.workers,
+      }).length,
+    ).toBeGreaterThan(0);
+    expect(
+      within(sidebar).getByRole("button", {
+        name: context.messages.explorer.documentationSecondaries.resources,
+      }),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).getByRole("button", {
+        name: context.messages.explorer.documentationSecondaries.observability,
+      }),
+    ).toBeTruthy();
+    expect(
+      within(sidebar).queryByRole("button", { name: "Observability" }),
+    ).toBeNull();
+    expect(
+      within(sidebar).queryByRole("button", { name: "Resources" }),
+    ).toBeNull();
 
     const tokensLink = within(sidebar).getByRole("link", { name: "Tokens" });
     expect(tokensLink.getAttribute("href")).toBe("/vi/docs/concepts/tokens");

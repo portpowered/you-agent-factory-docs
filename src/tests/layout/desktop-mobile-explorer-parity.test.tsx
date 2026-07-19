@@ -71,15 +71,12 @@ async function openNestedProgramDocumentationSecondaries(
   container: HTMLElement,
   messages: Awaited<ReturnType<typeof loadUiMessages>>,
 ): Promise<void> {
-  // Workers/Workstations/Factories collide with top-level explorer folders, so
-  // localizePageTree remaps those secondary labels via folder catalogs until
-  // dedicated secondary message keys land. Resources/Observability stay English.
   for (const folderName of [
-    messages.explorer.folders.workers,
-    messages.explorer.folders.workstations,
-    messages.explorer.folders.factories,
-    "Resources",
-    "Observability",
+    messages.explorer.documentationSecondaries.workers,
+    messages.explorer.documentationSecondaries.workstations,
+    messages.explorer.documentationSecondaries.factories,
+    messages.explorer.documentationSecondaries.resources,
+    messages.explorer.documentationSecondaries.observability,
   ] as const) {
     const folders = within(container).queryAllByRole("button", {
       name: folderName,

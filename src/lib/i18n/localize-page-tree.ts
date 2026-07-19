@@ -12,6 +12,7 @@ import { loadUiMessagesFromDisk } from "@/lib/content/ui-messages-load";
 import {
   buildDefaultFolderLabelToIdMap,
   buildDefaultGroupLabelLocalizer,
+  buildDefaultSecondaryLabelLocalizer,
   resolveExplorerMessages,
 } from "@/lib/i18n/explorer-labels";
 import {
@@ -32,6 +33,7 @@ export type LocalizePageTreeOptions = {
 type LocalizationContext = {
   folderLabelToId: Map<string, keyof ExplorerFolderMessages>;
   groupLabelLocalizer: Map<string, string>;
+  secondaryLabelLocalizer: Map<string, string>;
   pageTitlesBySlug: Map<string, string>;
   explorer: ExplorerMessages;
 };
@@ -98,9 +100,14 @@ function localizeNode(
   if (node.type === "folder") {
     const defaultName = String(node.name);
     const folderId = context.folderLabelToId.get(defaultName);
-    const localizedFolderName = folderId
-      ? context.explorer.folders[folderId]
-      : node.name;
+    // Prefer Program documentation secondary catalogs when the English default
+    // matches a secondary (Workers / Resources / Observability). Collection
+    // folders still resolve via explorer.folders when no secondary applies.
+    // Colliding Workers/Workstations/Factories secondary strings stay aligned
+    // with explorer.folders in each locale catalog.
+    const localizedFolderName =
+      context.secondaryLabelLocalizer.get(defaultName) ??
+      (folderId ? context.explorer.folders[folderId] : node.name);
 
     const children = trimEmptySeparators(
       node.children
@@ -160,6 +167,7 @@ function buildLocalizationContext(
   return {
     folderLabelToId: buildDefaultFolderLabelToIdMap(),
     groupLabelLocalizer: buildDefaultGroupLabelLocalizer(explorer),
+    secondaryLabelLocalizer: buildDefaultSecondaryLabelLocalizer(explorer),
     pageTitlesBySlug,
     explorer,
   };

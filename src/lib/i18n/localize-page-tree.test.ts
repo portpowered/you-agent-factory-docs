@@ -169,6 +169,35 @@ describe("localizePageTree", () => {
     expect(separatorNames(documentation.children)).toContain(
       messages.explorer.documentationGroups["additional-references"],
     );
+
+    const factoryConfigurationIndex = separatorNames(
+      documentation.children,
+    ).indexOf(messages.explorer.documentationGroups["factory-configuration"]);
+    expect(factoryConfigurationIndex).toBeGreaterThanOrEqual(0);
+    const secondaryFolderNames = documentation.children
+      .slice(factoryConfigurationIndex + 1)
+      .filter((child) => child.type === "folder")
+      .map((child) => String(child.name));
+    expect(secondaryFolderNames).toContain(
+      messages.explorer.documentationSecondaries.workers,
+    );
+    expect(secondaryFolderNames).toContain(
+      messages.explorer.documentationSecondaries.resources,
+    );
+
+    const systemOperationsIndex = separatorNames(
+      documentation.children,
+    ).indexOf(messages.explorer.documentationGroups["system-operations"]);
+    expect(systemOperationsIndex).toBeGreaterThanOrEqual(0);
+    const observabilityFolder = documentation.children
+      .slice(systemOperationsIndex + 1)
+      .find(
+        (child) =>
+          child.type === "folder" &&
+          String(child.name) ===
+            messages.explorer.documentationSecondaries.observability,
+      );
+    expect(observabilityFolder?.type).toBe("folder");
   });
 
   test("preserves literal you-agent-factory identifiers in localized page labels", async () => {

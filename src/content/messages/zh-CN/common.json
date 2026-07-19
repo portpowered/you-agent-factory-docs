@@ -81,6 +81,13 @@
       "system-operations": "系统运维",
       "internal-architecture": "内部架构",
       "additional-references": "补充参考"
+    },
+    "documentationSecondaries": {
+      "workers": "工作器",
+      "workstations": "工作站",
+      "factories": "工厂",
+      "resources": "资源",
+      "observability": "可观测性"
     }
   },
   "referenceChrome": {

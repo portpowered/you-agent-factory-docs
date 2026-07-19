@@ -6,6 +6,7 @@ import { describe, expect, test } from "bun:test";
 import { isDocsExplorerTopLevelFaqPage } from "@/lib/content/factory-breadcrumb-sidebar";
 import { loadPublishedDocsPagesSync } from "@/lib/content/pages";
 import {
+  DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS,
   DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
@@ -139,6 +140,13 @@ describe("Program documentation three-level taxonomy", () => {
       "factory-configuration",
       "system-operations",
     ]);
+    expect(DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS).toEqual({
+      workers: "Workers",
+      workstations: "Workstations",
+      factories: "Factories",
+      resources: "Resources",
+      observability: "Observability",
+    });
     expect(isDocumentationSidebarSecondaryGroup("system-feature-set")).toBe(
       false,
     );

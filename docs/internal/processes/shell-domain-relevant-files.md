@@ -365,19 +365,23 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   home `atlasLink*` / module featured-link keys. Preserve legitimate factory
   model-provider / external-model product wording when present.
   Explorer chrome labels live under top-level `explorer` (`folders`,
-  `conceptsGroups`, `documentationGroups`) for en/ja/zh-CN/vi; English
-  values must stay aligned with `FACTORY_EXPLORER_FOLDER_LABELS` /
-  `SIDEBAR_GROUP_LABELS`. Program documentation top-group labels localize;
-  literal CLI/package/route identifiers in page titles stay untranslated.
-  Nested secondary labels (Workers, Observability, …) are declared in
-  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS` and emitted as nested folders by
-  the documentation sidebar adapter; dedicated locale catalogs for those
-  secondaries land with the localization story. `localizePageTree` overlays
-  top-group labels plus shipped page-message titles and fails closed via
-  `assertExplorerMessages` when catalogs are incomplete.
+  `conceptsGroups`, `documentationGroups`, `documentationSecondaries`) for
+  en/ja/zh-CN/vi; English values must stay aligned with
+  `FACTORY_EXPLORER_FOLDER_LABELS` / `SIDEBAR_GROUP_LABELS` /
+  `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`. Program documentation
+  top-group and secondary labels localize; literal CLI/package/route
+  identifiers in page titles stay untranslated. Nested secondary labels
+  (Workers, Observability, …) are declared in
+  `DOCUMENTATION_SIDEBAR_SECONDARY_LABELS`, flattened for catalogs via
+  `DOCUMENTATION_SIDEBAR_SECONDARY_CATALOG_LABELS`, and remapped by
+  `localizePageTree` through `buildDefaultSecondaryLabelLocalizer`.
+  Colliding Workers/Workstations/Factories secondary strings stay aligned
+  with `explorer.folders` in each locale. `assertExplorerMessages` fails
+  closed when any explorer catalog (including secondaries) is incomplete.
 * `src/lib/i18n/explorer-labels.ts` / `src/lib/i18n/localize-page-tree.ts`
-  Locale-aware explorer folder/subgroup/page label resolution consumed by
-  desktop sidebar and mobile drawer through the same localized page tree.
+  Locale-aware explorer folder/subgroup/secondary/page label resolution
+  consumed by desktop sidebar and mobile drawer through the same localized
+  page tree.
 * `src/lib/navigation/explorer-tree-signature.ts`
   Serializes a page tree into the explorer IA contract (top-level order, FAQ
   placement, subgroup separators, nested secondary folders, page
