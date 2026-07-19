@@ -251,6 +251,18 @@ and keep both files on the reader-facing required suite path. Collapse must
 also fold bare reference `#heading-N` spam into the owning page URL
 (`collapse-search-results-to-page-hits.test.ts`).
 
+### Pattern: non-exact hits follow the collection ranking ladder
+
+After exact / near-exact page matches and exact inventory-identifier wins,
+non-exact ties sort by `searchCollectionBand` / `SEARCH_COLLECTION_BAND`:
+guides → curated reference owning pages (bare `/docs/references/**`) → other
+kinds → blog → reference subfield / subheader deep-links (including residual
+`#heading-N` spam). Detect bands from `kind` + URL shape; do not reopen
+builders unless a signal is missing. Keep exact wins on primary priority
+(`0` / `1`) so the ladder never demotes them. Prove with fixture rerank tests
+in `rerank-search-results.test.ts` (guides before curated refs before blog
+before subfields for a generic query with no title match).
+
 ### Pattern: factory alias / body / tag discovery
 
 Live factory pages are discoverable by frontmatter/registry aliases, distinctive

@@ -2,6 +2,8 @@ import { describe, expect, test } from "bun:test";
 import {
   findBestTitleMatchPageUrl,
   rerankSearchResults,
+  SEARCH_COLLECTION_BAND,
+  searchCollectionBand,
 } from "./rerank-search-results";
 import type { SearchDocument } from "./types";
 
@@ -708,5 +710,187 @@ describe("rerankSearchResults", () => {
     expect(results.map((result) => result.url).slice(-2)).toEqual(
       expect.arrayContaining([weakItem, headingSpam]),
     );
+  });
+
+  test("ranks non-exact hits by collection ladder: guides > curated refs > blog > subfields", () => {
+    const guideUrl = "/docs/guides/write-review-loop";
+    const curatedRefUrl = "/docs/references/cli";
+    const blogUrl = "/blog/agent-factories";
+    const subfieldUrl = `${curatedRefUrl}#you-run`;
+    const headingSpam = `${curatedRefUrl}#heading-0`;
+    const documentsByUrl = new Map<string, SearchDocument>([
+      [
+        guideUrl,
+        documentForUrl(guideUrl, {
+          kind: "guide",
+          title: "Write-review loop",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "guide", tags: ["loops"] },
+        }),
+      ],
+      [
+        curatedRefUrl,
+        documentForUrl(curatedRefUrl, {
+          kind: "reference",
+          title: "CLI",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "reference", tags: ["cli"] },
+        }),
+      ],
+      [
+        blogUrl,
+        documentForUrl(blogUrl, {
+          kind: "blog",
+          title: "Agent factories",
+          directAliases: [],
+          aliases: [],
+          facets: { kind: "blog", tags: ["factories"] },
+        }),
+      ],
+      [
+        subfieldUrl,
+        documentForUrl(subfieldUrl, {
+          kind: "reference",
+          title: "you run",
+          directAliases: ["you run"],
+          aliases: ["you run"],
+          facets: { kind: "reference", tags: ["cli"] },
+        }),
+      ],
+    ]);
+
+    // Generic topical query — none of the titles/aliases/slugs match exactly.
+    const results = rerankSearchResults(
+      "loops",
+      [
+        {
+          id: headingSpam,
+          type: "heading",
+          url: headingSpam,
+          content: "loops and iteration",
+        },
+        {
+          id: subfieldUrl,
+          type: "page",
+          url: subfieldUrl,
+          content: "you run",
+        },
+        {
+          id: blogUrl,
+          type: "page",
+          url: blogUrl,
+          content: "Agent factories",
+        },
+        {
+          id: curatedRefUrl,
+          type: "page",
+          url: curatedRefUrl,
+          content: "CLI",
+        },
+        {
+          id: guideUrl,
+          type: "page",
+          url: guideUrl,
+          content: "Write-review loop",
+        },
+      ],
+      documentsByUrl,
+    );
+
+    const guideIndex = results.findIndex((result) => result.url === guideUrl);
+    const curatedIndex = results.findIndex(
+      (result) => result.url === curatedRefUrl,
+    );
+    const blogIndex = results.findIndex((result) => result.url === blogUrl);
+    const subfieldIndex = results.findIndex(
+      (result) => result.url === subfieldUrl,
+    );
+    const headingIndex = results.findIndex(
+      (result) => result.url === headingSpam,
+    );
+
+    expect(guideIndex).toBeGreaterThanOrEqual(0);
+    expect(curatedIndex).toBeGreaterThanOrEqual(0);
+    expect(blogIndex).toBeGreaterThanOrEqual(0);
+    expect(subfieldIndex).toBeGreaterThanOrEqual(0);
+    expect(headingIndex).toBeGreaterThanOrEqual(0);
+
+    expect(guideIndex).toBeLessThan(curatedIndex);
+    expect(curatedIndex).toBeLessThan(blogIndex);
+    expect(blogIndex).toBeLessThan(subfieldIndex);
+    expect(subfieldIndex).toBeLessThanOrEqual(headingIndex);
+  });
+
+  test("searchCollectionBand classifies guide, curated ref, blog, and subfield hits", () => {
+    const guide = documentForUrl("/docs/guides/ralph", {
+      kind: "guide",
+      title: "Ralph",
+      facets: { kind: "guide", tags: [] },
+    });
+    const curated = documentForUrl("/docs/references/mcp", {
+      kind: "reference",
+      title: "MCP",
+      facets: { kind: "reference", tags: [] },
+    });
+    const blog = documentForUrl("/blog/bottlenecks", {
+      kind: "blog",
+      title: "Bottlenecks",
+      facets: { kind: "blog", tags: [] },
+    });
+    const subfield = documentForUrl(
+      "/docs/references/mcp#you.factory_session.get",
+      {
+        kind: "reference",
+        title: "you.factory_session.get",
+        facets: { kind: "reference", tags: [] },
+      },
+    );
+
+    expect(
+      searchCollectionBand(
+        {
+          id: guide.url,
+          type: "page",
+          url: guide.url,
+          content: guide.title,
+        },
+        guide,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.guide);
+    expect(
+      searchCollectionBand(
+        {
+          id: curated.url,
+          type: "page",
+          url: curated.url,
+          content: curated.title,
+        },
+        curated,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.curatedReferencePage);
+    expect(
+      searchCollectionBand(
+        {
+          id: blog.url,
+          type: "page",
+          url: blog.url,
+          content: blog.title,
+        },
+        blog,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.blog);
+    expect(
+      searchCollectionBand(
+        {
+          id: subfield.url,
+          type: "page",
+          url: subfield.url,
+          content: subfield.title,
+        },
+        subfield,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.referenceSubfield);
   });
 });
