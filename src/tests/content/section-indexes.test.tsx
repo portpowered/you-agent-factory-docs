@@ -521,6 +521,8 @@ describe("W05 direct route-family section index pages", () => {
     expect(html).toContain('data-freshness-status="ready"');
     expect(html).toContain('data-references-family-freshness-summary=""');
     expect(html).toContain("@you-agent-factory/api");
+    expect(html).toContain("System configuration schema");
+    expect(html).not.toContain("you-config");
     for (const href of [
       "/docs/references/api",
       "/docs/references/events",

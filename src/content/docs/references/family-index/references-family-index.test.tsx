@@ -74,11 +74,26 @@ describe("references family index", () => {
     const zh = await loadReferencesFamilyIndex("zh-CN");
     const vi = await loadReferencesFamilyIndex("vi");
 
+    for (const loaded of [en, ja, zh, vi]) {
+      expect(loaded.messages.sections?.introduction).toBeUndefined();
+      expect(loaded.messages.openingSummary?.length).toBeGreaterThan(0);
+      expect(
+        loaded.messages.sections?.discoverability?.title?.length,
+      ).toBeGreaterThan(0);
+      expect(
+        loaded.messages.sections?.freshness?.title?.length,
+      ).toBeGreaterThan(0);
+    }
+
     expect(ja.messages.title).toBe("リファレンス");
     expect(ja.messages.title).not.toBe(en.messages.title);
     expect(ja.messages.sections?.discoverability?.title).toBe("コントラクト面");
     expect(ja.messages.sections?.discoverability?.title).not.toBe(
       en.messages.sections?.discoverability?.title,
+    );
+    expect(ja.messages.sections?.freshness?.title).toBe("パッケージの鮮度");
+    expect(ja.messages.sections?.freshness?.title).not.toBe(
+      en.messages.sections?.freshness?.title,
     );
     expect(zh.messages.title).toBe("参考");
     expect(zh.messages.title).not.toBe(en.messages.title);
@@ -303,6 +318,11 @@ describe("references family index", () => {
       "/docs/references/mcp",
       "/docs/references/javascript-runtime",
     ]);
+    expect(
+      cards.find(
+        (card) => card.href === "/docs/references/system-config-schema",
+      )?.title,
+    ).toBe("System configuration schema");
 
     for (const card of cards) {
       expect(card.title.length).toBeGreaterThan(0);
@@ -329,6 +349,14 @@ describe("references family index", () => {
     expect(
       document.querySelector("[data-references-family-discoverability]"),
     ).toBeTruthy();
+    expect(
+      within(list)
+        .getByRole("link", {
+          name: /System configuration schema/,
+        })
+        .getAttribute("href"),
+    ).toBe("/docs/references/system-config-schema");
+    expect(screen.queryByRole("link", { name: /you-config/i })).toBeNull();
 
     for (const card of cards) {
       const link = within(list).getByRole("link", {
