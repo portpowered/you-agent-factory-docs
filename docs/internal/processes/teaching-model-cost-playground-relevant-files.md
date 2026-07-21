@@ -10,14 +10,19 @@ chart recipe implementations, orchestrator matrix UI, inventory integrate, or
 
 * `src/features/teaching-pages/ModelCostPlayground/`
   Client composer: primary/secondary model selects, planner/executor token
-  inputs, live total R + breakdown via `calculateSplitPlanCost`, and a
-  comparative bar chart focused on the recommended plan.
+  inputs, live total R + breakdown via `calculateSplitPlanCost`, a comparative
+  bar chart focused on the recommended plan, and recommendation copy from host
+  message keys (success state only).
 * `src/features/teaching-pages/ModelCostPlayground/derive-playground-cost-state.ts`
   Pure parse + cost derivation (no React / filesystem). Prefer asserting tests
   against this + displayed totals rather than Recharts pixels.
 * `src/features/teaching-pages/ModelCostPlayground/derive-playground-chart-props.ts`
   Pure cost-state → `ComparativeBarChart` props. Series ids are
   `primary-only` / `split`; `focusSeriesId` equals `recommendedPlan`.
+* `src/features/teaching-pages/ModelCostPlayground/resolve-recommendation-copy.ts`
+  Pure plan → recommendation body from host message keys
+  (`recommendationPreferPrimaryOnly` / `recommendationPreferSplit`, with
+  `recommendation` fallback).
 * `src/features/teaching-pages/ModelCostPlayground/types.ts`
   Public props contract: parent-supplied `models`, default model ids, and
   host-resolved `messages` strings (no hard-coded product copy in the widget).
@@ -50,7 +55,10 @@ chart recipe implementations, orchestrator matrix UI, inventory integrate, or
   empty/error UI (`data-state`) — never silent NaN totals. Chart gets the
   matching `state="empty"|"error"` panel.
 * Message keys are resolved by the host; the widget only receives strings
-  (including chart title / axis / category labels).
+  (including chart title / axis / category labels and recommendation copy).
+  Recommendation region uses `recommendationLabel` for its accessible name and
+  selects prefer-primary / prefer-split body by `recommendedPlan`; it is omitted
+  on empty/error so invalid inputs never show a misleading you-should line.
 * Gated `(dev)` harnesses use `notFound()` when
   `NODE_ENV === "production" && ENABLE_COMPONENT_EXAMPLES !== "1"`.
 

@@ -9,6 +9,7 @@ import {
   derivePlaygroundCostState,
 } from "./derive-playground-cost-state";
 import { formatUsd } from "./format-usd";
+import { resolvePlaygroundRecommendationCopy } from "./resolve-recommendation-copy";
 import type { ModelCostPlaygroundProps, ModelCostTokenFields } from "./types";
 
 const CONTROL_CLASS =
@@ -243,6 +244,25 @@ export function ModelCostPlayground({
             </span>
           </p>
         </div>
+      ) : null}
+
+      {costState.status === "success" ? (
+        <section
+          aria-label={messages.recommendationLabel}
+          className="rounded-md border border-border bg-muted/20 px-3 py-3"
+          data-recommendation=""
+          data-recommended-plan={costState.recommendedPlan}
+        >
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {messages.recommendationLabel}
+          </p>
+          <p className="mt-1 text-sm" data-recommendation-copy="">
+            {resolvePlaygroundRecommendationCopy(
+              costState.recommendedPlan,
+              messages,
+            )}
+          </p>
+        </section>
       ) : null}
 
       <div

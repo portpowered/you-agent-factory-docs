@@ -13,6 +13,7 @@ export {
 } from "./derive-playground-cost-state";
 export { formatUsd } from "./format-usd";
 export { ModelCostPlayground } from "./ModelCostPlayground";
+export { resolvePlaygroundRecommendationCopy } from "./resolve-recommendation-copy";
 export type {
   ModelCostPlaygroundMessages,
   ModelCostPlaygroundProps,

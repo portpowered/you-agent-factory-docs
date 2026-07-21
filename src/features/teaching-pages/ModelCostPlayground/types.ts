@@ -8,7 +8,18 @@ export type ModelCostPlaygroundMessages = {
   primaryLabel: string;
   secondaryLabel: string;
   totalLabel: string;
+  /**
+   * Fallback recommendation body (and contract field). Prefer
+   * `recommendationPreferPrimaryOnly` / `recommendationPreferSplit` when set —
+   * those update with the live winning plan.
+   */
   recommendation: string;
+  /** Accessible name for the recommendation region. */
+  recommendationLabel: string;
+  /** Body when primary-only is the cheaper recommended plan. */
+  recommendationPreferPrimaryOnly: string;
+  /** Body when planner/executor split is the cheaper recommended plan. */
+  recommendationPreferSplit: string;
   plannerInputLabel: string;
   plannerOutputLabel: string;
   executorInputLabel: string;

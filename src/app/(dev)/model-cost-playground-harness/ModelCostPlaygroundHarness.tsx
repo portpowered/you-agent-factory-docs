@@ -34,6 +34,11 @@ const FIXTURE_MESSAGES = {
   secondaryLabel: "Secondary model",
   totalLabel: "Live total R",
   recommendation: "Prefer the cheaper plan for this token mix.",
+  recommendationLabel: "Recommendation",
+  recommendationPreferPrimaryOnly:
+    "Prefer running planner and executor on the primary model for this token mix.",
+  recommendationPreferSplit:
+    "Prefer splitting planner on the primary model and executor on the secondary model.",
   plannerInputLabel: "Planner input tokens",
   plannerOutputLabel: "Planner output tokens",
   executorInputLabel: "Executor input tokens",
@@ -70,8 +75,8 @@ export function ModelCostPlaygroundHarness() {
           Model cost playground harness
         </h1>
         <p className="text-sm text-muted-foreground">
-          Fixture surface for selects, tokens, live R, and comparative chart
-          focus. Not linked from production navigation.
+          Fixture surface for selects, tokens, live R, comparative chart focus,
+          and recommendation copy. Not linked from production navigation.
         </p>
       </header>
       <ModelCostPlayground

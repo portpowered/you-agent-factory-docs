@@ -13,6 +13,7 @@ import {
   PLAYGROUND_SERIES_PRIMARY_ONLY,
   PLAYGROUND_SERIES_SPLIT,
   parseTokenField,
+  resolvePlaygroundRecommendationCopy,
 } from "./index";
 import type { ModelCostPlaygroundMessages } from "./types";
 
@@ -49,6 +50,11 @@ const messages: ModelCostPlaygroundMessages = {
   secondaryLabel: "Secondary model",
   totalLabel: "Live total R",
   recommendation: "Prefer the cheaper plan for this token mix.",
+  recommendationLabel: "Recommendation",
+  recommendationPreferPrimaryOnly:
+    "Prefer running planner and executor on the primary model for this token mix.",
+  recommendationPreferSplit:
+    "Prefer splitting planner on the primary model and executor on the secondary model.",
   plannerInputLabel: "Planner input tokens",
   plannerOutputLabel: "Planner output tokens",
   executorInputLabel: "Executor input tokens",
@@ -406,5 +412,112 @@ describe("ModelCostPlayground comparative chart", () => {
     expect(screen.queryByRole("img", { name: messages.chartTitle })).toBeNull();
     const chartState = document.querySelector("[data-chart-state='empty']");
     expect(chartState).toBeTruthy();
+  });
+});
+
+describe("ModelCostPlayground recommendation", () => {
+  test("shows recommendation copy from message keys in the success state", () => {
+    render(
+      <ModelCostPlayground
+        defaultPrimaryModelId={gpt4oPricing.id}
+        defaultSecondaryModelId={claudePricing.id}
+        messages={messages}
+        models={fixtureModels}
+      />,
+    );
+
+    const region = screen.getByRole("region", {
+      name: messages.recommendationLabel,
+    });
+    expect(region.getAttribute("data-recommendation")).toBe("");
+    expect(region.getAttribute("data-recommended-plan")).toBe(
+      PLAYGROUND_SERIES_PRIMARY_ONLY,
+    );
+    expect(
+      region.querySelector("[data-recommendation-copy]")?.textContent,
+    ).toBe(messages.recommendationPreferPrimaryOnly);
+    expect(
+      screen.getByText(messages.recommendationPreferPrimaryOnly),
+    ).toBeTruthy();
+  });
+
+  test("updates recommendation copy when the winning plan flips to split", () => {
+    render(
+      <ModelCostPlayground
+        defaultPrimaryModelId={gpt4oPricing.id}
+        defaultSecondaryModelId={claudePricing.id}
+        messages={messages}
+        models={fixtureModels}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText(messages.primaryLabel), {
+      target: { value: claudePricing.id },
+    });
+    fireEvent.change(screen.getByLabelText(messages.secondaryLabel), {
+      target: { value: gpt4oPricing.id },
+    });
+
+    const region = screen.getByRole("region", {
+      name: messages.recommendationLabel,
+    });
+    expect(region.getAttribute("data-recommended-plan")).toBe(
+      PLAYGROUND_SERIES_SPLIT,
+    );
+    expect(
+      region.querySelector("[data-recommendation-copy]")?.textContent,
+    ).toBe(messages.recommendationPreferSplit);
+  });
+
+  test("hides recommendation on empty and error states", () => {
+    const { rerender } = render(
+      <ModelCostPlayground
+        defaultPrimaryModelId={gpt4oPricing.id}
+        defaultSecondaryModelId={claudePricing.id}
+        messages={messages}
+        models={[]}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("region", { name: messages.recommendationLabel }),
+    ).toBeNull();
+    expect(document.querySelector("[data-recommendation]")).toBeNull();
+
+    rerender(
+      <ModelCostPlayground
+        defaultPrimaryModelId={gpt4oPricing.id}
+        defaultSecondaryModelId={claudePricing.id}
+        messages={messages}
+        models={fixtureModels}
+      />,
+    );
+
+    const plannerInput = screen.getByLabelText(messages.plannerInputLabel);
+    fireEvent.change(plannerInput, { target: { value: "-1" } });
+
+    expect(
+      screen.queryByRole("region", { name: messages.recommendationLabel }),
+    ).toBeNull();
+    expect(document.querySelector("[data-recommendation]")).toBeNull();
+  });
+
+  test("resolvePlaygroundRecommendationCopy falls back to recommendation", () => {
+    expect(
+      resolvePlaygroundRecommendationCopy("primary-only", {
+        recommendation: messages.recommendation,
+        recommendationPreferPrimaryOnly: "   ",
+        recommendationPreferSplit: messages.recommendationPreferSplit,
+      }),
+    ).toBe(messages.recommendation);
+
+    expect(
+      resolvePlaygroundRecommendationCopy("split", {
+        recommendation: messages.recommendation,
+        recommendationPreferPrimaryOnly:
+          messages.recommendationPreferPrimaryOnly,
+        recommendationPreferSplit: "",
+      }),
+    ).toBe(messages.recommendation);
   });
 });
