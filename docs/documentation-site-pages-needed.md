@@ -87,3 +87,70 @@ blog list page
 - useful list of relevant links (page)
 - bottlenecks (page)
 Search (page)
+
+## Wave A teaching maintainer / dev surfaces (not public customer pages)
+
+These are production-gated `(dev)` harnesses and commit-only registries from
+Graph-pages Wave A. They are maintainer teaching/dev surfaces — do **not** treat
+them as published customer routes in the glossary, guides, documentation, or
+blog inventory above. Wave B customer pages (for example
+`planner-executor-in-action`, `comparing-orchestrators`) are inventoried only
+when those routes already exist on the base branch; this section does not invent
+them.
+
+teaching-ui harnesses (gated; `ENABLE_COMPONENT_EXAMPLES=1` in production)
+- `/teaching-ui-harness` — recipes chassis + tables fixture slot
+  (`src/app/(dev)/teaching-ui-harness/`)
+- `/teaching-ui-charts-harness` — comparative bar/line chart fixtures
+  (`src/app/(dev)/teaching-ui-charts-harness/`)
+- `/teaching-ui-lists-harness` — plain + tagged TeachingList fixtures
+  (`src/app/(dev)/teaching-ui-lists-harness/`)
+
+commit-only teaching registries (validated via `make validate-data` / registry CI)
+- model pricing — `src/content/registry/models/**` (`kind: model-pricing`),
+  loaders in `src/lib/content/model-pricing.ts` (+ `model-cost.ts`,
+  `validate-model-pricing.ts`); not part of the page compile graph
+- orchestrator feature registry — `src/content/registry/orchestrators/**`
+  (`attribute-defs.json` + `orchestrator.*.json`), loaders / agreement
+  validation in `src/lib/content/orchestrators.ts`
+
+## Wave B teaching customer pages (soft-inventory)
+
+Inventory only when the route already exists on the base branch (`main`). Do
+**not** invent coming-soon rows or sibling-owned MDX from this integrate lane.
+
+techniques (beside `planner-executor`)
+- `planner-executor-in-action` (`/docs/techniques/planner-executor-in-action/`) —
+  **soft-skipped** (2026-07-21 UTC): not present on `main` / this integrate
+  HEAD; sibling worktrees may land it later — re-check before cross-linking.
+  Cross-link soft-wire (`planner-executor` ↔ in-action) also **soft-skipped**
+  for the same reason (no technique MDX edits until the destination lands).
+
+blog (beside comparing agent factories)
+- `comparing-orchestrators` (`/blog/comparing-orchestrators/`) — **soft-skipped**
+  (2026-07-21 UTC): not present on `main` / this integrate HEAD; sibling
+  worktrees may land it later — re-check before cross-linking.
+  Cross-link soft-wire (`comparing-orchestrators` ↔ `comparing-agent-factories`)
+  also **soft-skipped** for the same reason (no blog MDX edits until the
+  destination lands; nearest peer remains `comparing-agent-factories`).
+
+### Live-route / a11y smoke + registry verify (W-integrate)
+
+Maintainer verify trail for this stream (detail in
+`docs/internal/processes/teaching-integrate-inventory-crosslinks-relevant-files.md`):
+
+- Wave B teaching customer routes above — live-route / a11y smoke **soft-skipped**
+  (2026-07-21 11:16 UTC): destinations still absent on base branch.
+- Model pricing + orchestrator registries — `make validate-data` **passed**
+  (2026-07-21 11:16 UTC); same registry validation hook runs under `make ci`.
+
+### Components API fence (W-integrate)
+
+Lane diff review (2026-07-21 UTC): this integrate branch only updates the
+committed inventory + process note above. No `@you-agent-factory/components`
+public exports, package API growth, or promotion of teaching recipes into that
+package. Teaching remains site-internal under `src/features/teaching-ui/` +
+page-local composers. Soft-skipped Wave B sibling steps are documented as
+**skipped** (not blocked). No teaching-ui recipe/registry schema rewrites, no
+sibling-owned MDX creation, and no page-formatting / homepage-2 / SEO helper
+churn mixed in.
