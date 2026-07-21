@@ -32,8 +32,10 @@ Do **not**:
 | `src/content/docs/references/events/EventsCorpusMount.tsx` | Page-local OpenAPI corpus resolve + EventsSurface mount (includes linked component schema splay) |
 | `src/lib/references/events/linked-component-schemas.ts` | Pure builder: nested component schemas cited from catalog roots |
 | `src/components/references/events/event-linked-component-schemas.tsx` | On-page linked component schema definitions section |
+| `src/components/references/events/response-event-matrix.tsx` | Response dimensions; mounts payload-union SchemaDefinition so envelope SchemaRefLinks resolve |
 | `src/content/docs/references/events/page-mdx-components.tsx` | Registers `EventsCorpusMount` for compileMDX |
 | `src/content/docs/references/events/events-page.test.tsx` | Colocated route/render + corpus mount + catalog polish proof |
+| `src/content/docs/references/events/events-schema-ref-link-resolution.test.tsx` | Same-page SchemaRefLink → inlined component-schema anchor proof |
 | `src/content/docs/references/events/assert-events-page-catalog-polish-browser.ts` | Playwright probe: short Event catalog label, envelope components, suppressed pointer chrome, envelope/payload JSON examples on `/docs/references/events` |
 | `src/content/registry/references/events.json` | `reference.events` registry record |
 
@@ -109,6 +111,14 @@ other W11 reference page lanes):
   default (events keeps `EventsSchemaDefinition` local `false`). Prove anchors
   with `linked-component-schemas.test.ts` +
   `event-linked-component-schemas.test.tsx`.
+- SchemaRefLink destinations must exist for every name in
+  `eventsAlreadyRenderedComponentSchemaNames`: kind / phase / provenance mount
+  as `EventsSchemaDefinition` in `ResponseEventMatrix`, and the payload union
+  (`FactoryResponseEventPayload`) must also mount there
+  (`response-event-payload-union-schema-definition`) — listing oneOf variant
+  links alone is not enough for envelope `$ref` clicks. Prove same-page
+  InferenceOutcome-class hrefs + hash focus + no dangling navigable refs with
+  `events-schema-ref-link-resolution.test.tsx`.
 - Intro-strip browser close-out (story 003): the same probe also asserts
   absence of What It Covers / Key Concepts headings and ids, absence of folded
   Opening summary (`[data-testid="folded-summary"]` /
