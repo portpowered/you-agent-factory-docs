@@ -100,6 +100,12 @@ describe("ApiOperationNavigator", () => {
     expect(link.getAttribute(API_OPERATION_NAV_LINK_ATTR)).toBe(
       "submitWorkBySessionId",
     );
+    expect(link.className).toContain("text-secondary");
+    expect(link.className).toContain("underline-offset-4");
+    expect(link.className).toContain("hover:underline");
+    expect(link.className).toContain("focus-visible:ring-2");
+    expect(link.className).toContain("focus-visible:ring-ring");
+    expect(link.className).not.toMatch(/\btext-primary\b/);
 
     expect(model.groups.map((g) => g.tag)).toEqual([
       "Work",
@@ -133,6 +139,12 @@ describe("ApiReferenceMobileNavigator", () => {
       name: /Compatibility event stream/i,
     });
     expect(link.getAttribute("href")).toBe("#getEvents");
+    expect(link.className).toContain("text-secondary");
+    expect(link.className).toContain("underline-offset-4");
+    expect(link.className).toContain("hover:underline");
+    expect(link.className).toContain("focus-visible:ring-2");
+    expect(link.className).toContain("focus-visible:ring-ring");
+    expect(link.className).not.toMatch(/\btext-primary\b/);
   });
 });
 
