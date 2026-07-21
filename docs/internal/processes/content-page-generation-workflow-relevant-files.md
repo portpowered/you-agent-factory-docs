@@ -325,8 +325,9 @@ confirm-`you`-available guidance, and starter scaffold choice (default Codex
 when `--executor` is omitted; copyable `you init --executor claude` for a
 Claude-backed scaffold). Do not reintroduce an Install deep-dive callout or
 primary next-step that requires `/docs/documentation/install` to finish a
-standard install — that URL stays a thin compatibility stub (PS-200) until
-explorer demotion (PS-300).
+standard install — that URL stays a thin compatibility stub (PS-200) and
+remains permanently demoted from the explorer (PS-300; listed in
+`PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`).
 
 For `documentation/install` itself: keep a published thin stub under
 `src/content/docs/documentation/install/` with one `install-path` section that
@@ -815,11 +816,18 @@ those paths only accept collection section refs.
   Orientation → Capabilities → Interfaces → Operations; Operations nests
   secondary `configuring` = “Configuring you-agent-factory” and may also list
   direct children such as logs/metrics/dashboard). Factory config pages use
-  full `factories/...` docsSlug keys in that map; `PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`
-  and FAQ are omitted from Program membership.
-  Mode A overviews in `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS`
-  and deferred membership slugs in `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS`
-  are likewise omitted until their IA lanes wire them.
+  full `factories/...` docsSlug keys in that map; Operations → Configuring
+  secondary membership is exactly `resources`, `factories/configuration`, and
+  `factories/global-configuration` (no route moves). `PROGRAM_DOCUMENTATION_DEMOTED_SLUGS`
+  (including permanent `install` demotion) and FAQ are omitted from Program
+  membership.
+  Mode A capability overviews (`factory-session`, `dynamic-workflows`,
+  `packaged-factories`) are Program → Capabilities members; keep
+  `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` empty unless a
+  future overview is published before membership. Program Interfaces includes
+  `cli`, `mcp`, and `api` (API how-to); keep
+  `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS` empty unless a future page
+  is published before membership.
   `FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG` is the top-group-only view.
   `buildDocumentationGroupedNodes` uses membership allowlisting so demotions,
   Mode A pending, and deferred pages do not appear as Program leftovers.
@@ -849,34 +857,45 @@ those paths only accept collection section refs.
   fail-closed via `assertExplorerMessages`, and `localizePageTree` remaps them
   through `buildDefaultVirtualFolderLabelLocalizer` (empty virtual folders still
   prune when no locale-shipped pages remain).
-- Explorer IA / taxonomy / folder-order contracts (PS-100 story 006): keep
-  locked expects in `explorer-ia-contract.test.ts`,
+- Explorer IA / taxonomy / folder-order contracts (PS-100 story 006 + PS-300
+  membership finish): keep locked expects in `explorer-ia-contract.test.ts`,
   `sidebar-grouping-documentation-taxonomy.test.ts`, generated page-tree /
   adapter / collection verification, and `plan-issues-r02-reconciliation` /
-  related r02 suites that assert folder order. Reject former Program separator
-  labels (Basics→Additional reference and System feature set / Factory
-  Configuration / System Operations / Additional references) as absence
-  expects only — never require them. Signature helper unit fixtures in
+  related r02 suites that assert folder order. After PS-300, r02 tip inventory
+  must treat `factory-session`, `dynamic-workflows`, `packaged-factories`, and
+  `api` as `explorerMember: true` (not published-but-explorer-omitted), and
+  taxonomy / explorer IA contracts must fail closed when Mode A pending or
+  deferred exemption lists re-exempt those slugs. Search ranking smoke for the
+  same finish lives in `rerank-search-results.test.ts` +
+  `collection-ranking-policy.test.ts`: Program overview/how-to pages band as
+  `SEARCH_COLLECTION_BAND.other` (Program documentation under the locked
+  ladder); Limits `throttling-and-limits` bands as `curatedReferencePage` via
+  `hasReferenceSidebarMembership` — do not rewrite ladder constants. Reject former Program
+  separator labels (Basics→Additional reference and System feature set /
+  Factory Configuration / System Operations / Additional references) as
+  absence expects only — never require them. Signature helper unit fixtures in
   `explorer-tree-signature.test.ts` should use the locked Orientation /
   Capabilities / Interfaces / Operations + Configuring shape, not retired
   taxonomy names.
 - Packaged CLI reference surfaces: place `packaged-documents` under Program
   Capabilities; depth catalogs for packaged factories stay Mode B (Reference →
-  Factories in later IA stories). Place `cli` / `mcp` under Program Interfaces;
-  retired move stubs (`cli-command-index`, `api-doc`, etc.) stay out of the
-  explorer. Wire documentation→documentation discovery with page-local
+  Factories in later IA stories). Place `cli` / `mcp` / `api` under Program
+  Interfaces; retired move stubs (`cli-command-index`, `api-doc`, etc.) stay out
+  of the explorer. Wire documentation→documentation discovery with page-local
   `<LocalizedLinkList>` plus aligned registry `relatedIds`; `<RelatedDocs />`
   alone will not render documentation-kind siblings.
-- Deferred Program documentation explorer membership (page-only lanes such as
-  PS-220 `/docs/documentation/api`): publish the page bundle + registry with
+- Deferred Program documentation explorer membership (page-only lanes that
+  publish before IA membership): publish the page bundle + registry with
   status `published`, add the slug to
   `DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS` in
   `src/lib/content/sidebar-grouping.ts`, and keep
   `FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG` unchanged until the IA lane
-  (PS-300) wires Interfaces membership. The sidebar adapter omits deferred
+  wires membership. PS-300 wired `/docs/documentation/api` under Program →
+  Interfaces and cleared that deferred list — do not re-add `api` unless
+  membership is intentionally rolled back. The sidebar adapter omits deferred
   slugs from the explorer tree the same way it omits FAQ, W18 move stubs, Mode A
   pending overviews, and PS-100 demotions (membership allowlist). Direct URL,
-  documentation section index, and search still include the page.
+  documentation section index, and search still include deferred pages.
 - Dual-page API how-to proof (`documentation/api` vs `references/api`): colocate
   page-local tests under `src/content/docs/documentation/api/api-page.test.tsx`.
   Assert Mode A how-to identity, default base URL / factory-running / session-flow

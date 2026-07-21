@@ -21,10 +21,12 @@ import {
   FACTORY_EXPLORER_SECTION_ORDER,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import {
+  DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS,
   DOCUMENTATION_SIDEBAR_SECONDARY_LABELS,
   FACTORY_CONCEPTS_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_GROUP_BY_SLUG,
   FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG,
+  MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
   SIDEBAR_GROUP_LABELS,
 } from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
@@ -76,9 +78,11 @@ const R01_PROGRAM_DOCUMENTATION_EXPLORER_PAGES = [
 ] as const;
 
 /**
- * Direct Program documentation top groups and their pages under locked PS-100.
+ * Direct Program documentation top groups and their pages under locked PS-100
+ * plus PS-300 membership finish (Mode A capability overviews + API how-to).
  * Operations → Configuring secondary membership is owned by STORY_004_SECONDARY_PAGES;
  * the Operations list below is direct children only (no Configuring nest).
+ * These four published Program slugs must remain members — not pending/deferred leftovers.
  */
 const STORY_003_DIRECT_TOP_GROUP_PAGES = {
   orientation: ["what-is-you-agent-factory"],
@@ -87,10 +91,21 @@ const STORY_003_DIRECT_TOP_GROUP_PAGES = {
     "replays-records",
     "submitting-work",
     "packaged-documents",
+    "factory-session",
+    "dynamic-workflows",
+    "packaged-factories",
   ],
-  interfaces: ["cli", "mcp"],
+  interfaces: ["cli", "mcp", "api"],
   operations: ["logs", "metrics", "dashboard-ui-overview"],
 } as const;
+
+/** PS-300 published Program members that must never return to pending/deferred exemption lists. */
+const PS300_MEMBERSHIP_FINISHED_PROGRAM_SLUGS = [
+  "factory-session",
+  "dynamic-workflows",
+  "packaged-factories",
+  "api",
+] as const;
 
 /**
  * Operations → Configuring secondary membership, including cross-collection
@@ -116,7 +131,6 @@ const CAPABILITIES_EXCLUDED_SLUGS = [
   "mock-workers",
   "workstations",
   "configuration",
-  "factory-session",
   "global-configuration-factories",
   "resources",
   "throttling-and-limits",
@@ -465,6 +479,25 @@ describe("explorer IA exact-order contract", () => {
         ),
         `${slug} must not appear in Program documentation explorer`,
       ).toBe(false);
+    }
+
+    expect(MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS).toEqual(
+      [],
+    );
+    expect(DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS).toEqual([]);
+    for (const slug of PS300_MEMBERSHIP_FINISHED_PROGRAM_SLUGS) {
+      expect(
+        MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
+      ).not.toContain(slug);
+      expect(DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS).not.toContain(
+        slug,
+      );
+      expect(
+        FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG[
+          slug as keyof typeof FACTORY_DOCUMENTATION_SIDEBAR_MEMBERSHIP_BY_SLUG
+        ],
+        `${slug} must remain a Program membership map entry after PS-300`,
+      ).toBeDefined();
     }
   });
 

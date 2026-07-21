@@ -139,9 +139,11 @@ function buildConceptsGroupedNodes(pages: DocsPageSource[]): Node[] {
  * optional nested secondary folders, then page links. Empty top groups and
  * empty secondaries are omitted. Membership is allowlist-only via
  * {@link getDocumentationSidebarMembership}: FAQ, W18 documentation move stubs,
- * Mode A overviews pending PS-300 membership, deferred-membership pages
- * (PS-300 Interfaces `api`, etc.), and locked PS-100 demotions stay published
- * without Program explorer placement until their IA lane wires membership.
+ * Mode A overviews pending membership, deferred-membership pages (keep
+ * {@link DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS} empty after PS-300
+ * Interfaces `api` wiring unless a future page publishes first), and locked
+ * PS-100 demotions stay published without Program explorer placement until
+ * their IA lane wires membership.
  */
 function buildDocumentationGroupedNodes(pages: DocsPageSource[]): Node[] {
   const explorerPages = pages.filter((page) => {

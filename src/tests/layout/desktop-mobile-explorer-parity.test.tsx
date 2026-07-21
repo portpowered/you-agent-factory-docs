@@ -2,7 +2,6 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { cleanup, within } from "@testing-library/react";
 import { act } from "react";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
-import { MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS } from "@/lib/content/sidebar-grouping";
 import { loadUiMessages } from "@/lib/content/ui-messages";
 import { type SiteLocale, supportedLocales } from "@/lib/i18n/locale-routing";
 import { localizePageTree } from "@/lib/i18n/localize-page-tree";
@@ -11,6 +10,7 @@ import {
   type ExplorerTreeSignature,
   folderSignatureByName,
   pageEntriesInFolder,
+  pageEntriesInSecondaryFolderUnderSeparator,
   pageEntriesUnderSeparator,
   separatorNamesInFolder,
   topLevelFolderNames,
@@ -28,6 +28,29 @@ import "@/tests/a11y/mock-navigation";
 
 /** Representative R01 pages that remain explorer members after W18 stub demotion. */
 const R01_EXPLORER_MEMBERSHIP_SLUGS = ["packaged-documents"] as const;
+
+/** Mode A capability overviews wired into Program → Capabilities (PS-300). */
+const MODE_A_CAPABILITY_OVERVIEW_MEMBERSHIP_SLUGS = [
+  "factory-session",
+  "dynamic-workflows",
+  "packaged-factories",
+] as const;
+
+/** Program Interfaces how-to wired into Program → Interfaces (PS-300). */
+const PROGRAM_INTERFACES_API_HOWTO_MEMBERSHIP_SLUG = "api" as const;
+
+/**
+ * Operations → Configuring secondary membership (PS-300 confirm).
+ * Factories config pages keep `/docs/factories/...` routes.
+ */
+const OPERATIONS_CONFIGURING_MEMBERSHIP_URL_SUFFIXES = [
+  "/docs/documentation/resources",
+  "/docs/factories/configuration",
+  "/docs/factories/global-configuration",
+] as const;
+
+/** Permanent Program explorer demotion — published stub, not a sidebar destination. */
+const PROGRAM_DOCUMENTATION_PERMANENTLY_DEMOTED_INSTALL_SLUG = "install";
 
 /** W18 move stubs that must stay out of Program documentation explorer. */
 const W18_MOVE_STUB_EXPLORER_EXCLUSIONS = [
@@ -234,13 +257,27 @@ describe("desktop/mobile explorer tree parity", () => {
           `${locale}: ${slug} must not appear in Program documentation folder`,
         ).toBe(false);
       }
-      for (const slug of MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
+      if (locale === "en") {
+        for (const slug of MODE_A_CAPABILITY_OVERVIEW_MEMBERSHIP_SLUGS) {
+          expect(
+            pageEntriesUnderSeparator(
+              documentation,
+              messages.explorer.documentationGroups.capabilities,
+            ).some((page) => page.url.includes(`/documentation/${slug}`)),
+            `${locale}: Mode A overview ${slug} must appear under Capabilities`,
+          ).toBe(true);
+        }
         expect(
-          pageEntriesInFolder(documentation).some((page) =>
-            page.url.includes(`/documentation/${slug}`),
+          pageEntriesUnderSeparator(
+            documentation,
+            messages.explorer.documentationGroups.interfaces,
+          ).some((page) =>
+            page.url.includes(
+              `/documentation/${PROGRAM_INTERFACES_API_HOWTO_MEMBERSHIP_SLUG}`,
+            ),
           ),
-          `${locale}: Mode A overview ${slug} must not appear in Program documentation folder until PS-300`,
-        ).toBe(false);
+          `${locale}: API how-to must appear under Interfaces`,
+        ).toBe(true);
       }
 
       expect(
@@ -249,13 +286,24 @@ describe("desktop/mobile explorer tree parity", () => {
           messages.explorer.documentationGroups.operations,
         ).some((page) => page.url.includes("/documentation/mock-workers")),
       ).toBe(false);
+      expect(
+        pageEntriesInFolder(documentation).some((page) =>
+          page.url.includes(
+            `/documentation/${PROGRAM_DOCUMENTATION_PERMANENTLY_DEMOTED_INSTALL_SLUG}`,
+          ),
+        ),
+        `${locale}: install must stay demoted from Program documentation explorer`,
+      ).toBe(false);
       if (locale === "en") {
+        const configuringPages = pageEntriesInSecondaryFolderUnderSeparator(
+          documentation,
+          messages.explorer.documentationGroups.operations,
+          messages.explorer.documentationSecondaries.configuring,
+        );
         expect(
-          pageEntriesUnderSeparator(
-            documentation,
-            messages.explorer.documentationGroups.operations,
-          ).some((page) => page.url.includes("/documentation/resources")),
-        ).toBe(true);
+          configuringPages.map((page) => page.url).sort(),
+          `${locale}: Operations → Configuring must list Resources + both factories config pages`,
+        ).toEqual([...OPERATIONS_CONFIGURING_MEMBERSHIP_URL_SUFFIXES].sort());
       }
       expect(
         pageEntriesUnderSeparator(

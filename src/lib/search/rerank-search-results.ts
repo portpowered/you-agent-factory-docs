@@ -3,6 +3,7 @@ import {
   ontologyRelationshipPriority,
   relationshipOutranksClassificationSibling,
 } from "@/lib/content/ontology-peer-policy";
+import { hasReferenceSidebarMembership } from "@/lib/content/sidebar-grouping";
 import type { SearchClassificationScope } from "./classification-scope";
 import {
   isReferenceItemSearchDocument,
@@ -33,9 +34,26 @@ export type SearchCollectionBand =
   (typeof SEARCH_COLLECTION_BAND)[keyof typeof SEARCH_COLLECTION_BAND];
 
 /**
+ * Docs slug after `/docs/` for membership lookups (no hash). Example:
+ * `/docs/documentation/throttling-and-limits` → `documentation/throttling-and-limits`.
+ */
+function docsSlugFromSearchUrl(url: string): string | undefined {
+  const base = pageBaseUrl(url);
+  if (!base.startsWith("/docs/")) {
+    return undefined;
+  }
+  const slug = base.slice("/docs/".length);
+  return slug.length > 0 ? slug : undefined;
+}
+
+/**
  * Classify a hit into the locked non-exact collection ladder:
  * guides → curated reference owning pages → other → blog → reference
  * subheaders / subfields.
+ *
+ * Cross-collection Reference membership (Limits → throttling at a
+ * documentation route) bands as curated reference without rewriting the
+ * ladder constants — explorer IA claims the page as Reference, not Program.
  */
 export function searchCollectionBand(
   result: SortedResult,
@@ -84,6 +102,14 @@ export function searchCollectionBand(
 
   if (base.startsWith("/blog/") || base === "/blog") {
     return SEARCH_COLLECTION_BAND.blog;
+  }
+
+  // Reference explorer membership can claim a non-/docs/references/ route
+  // (Limits throttling). Band those as curated reference so they do not sit
+  // in the Program-documentation `other` bucket.
+  const docsSlug = docsSlugFromSearchUrl(result.url);
+  if (docsSlug !== undefined && hasReferenceSidebarMembership(docsSlug)) {
+    return SEARCH_COLLECTION_BAND.curatedReferencePage;
   }
 
   return SEARCH_COLLECTION_BAND.other;

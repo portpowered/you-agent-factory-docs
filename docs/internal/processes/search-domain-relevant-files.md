@@ -255,21 +255,28 @@ also fold bare reference `#heading-N` spam into the owning page URL
 
 After exact / near-exact page matches and exact inventory-identifier wins,
 non-exact ties sort by `searchCollectionBand` / `SEARCH_COLLECTION_BAND`:
-guides → curated reference owning pages (bare `/docs/references/**`) → other
-kinds → blog → reference subfield / subheader deep-links (including residual
-`#heading-N` spam). Detect bands from `kind` + URL shape; do not reopen
-builders unless a signal is missing. Keep exact wins on primary priority
-(`0` / `1`) so the ladder never demotes them. Prove with fixture rerank tests
-in `rerank-search-results.test.ts`: (1) guides before curated refs before blog
-before subfields for a generic query with no title match; (2) exact page-title
-/ near-exact alias and exact inventory-identifier queries still rank first
-even when every collection band (including guides) and residual `#heading-N`
-spam are present as weak competitors. Lock the same policy on the live
-`docsSearchApi.search` path in `collection-ranking-policy.test.ts` with a
-representative generic query (`cursor`: guide → curated ref → blog →
-subfield) plus reused #154 exact page-title (`harness` / `mcp`) and exact
-inventory (`you.factory_session.get`) cases so both policies stay green
-together.
+guides → curated reference owning pages (bare `/docs/references/**`, plus
+cross-collection Reference membership such as Limits
+`/docs/documentation/throttling-and-limits`) → other kinds (including Program
+documentation pages) → blog → reference subfield / subheader deep-links
+(including residual `#heading-N` spam). Detect bands from `kind` + URL shape +
+`hasReferenceSidebarMembership(docsSlug)`; do not reopen builders unless a
+signal is missing. Keep exact wins on primary priority (`0` / `1`) so the
+ladder never demotes them. Do not rewrite ladder constants for membership
+finish — teach the band helper the Reference membership signal instead.
+Prove with fixture rerank tests in `rerank-search-results.test.ts`: (1) guides
+before curated refs before blog before subfields for a generic query with no
+title match; (2) exact page-title / near-exact alias and exact
+inventory-identifier queries still rank first even when every collection band
+(including guides) and residual `#heading-N` spam are present as weak
+competitors; (3) PS-300 Program overview pages (`factory-session`, etc.) band
+as `other` while Limits throttling bands as `curatedReferencePage`. Lock the
+same policy on the live `docsSearchApi.search` path in
+`collection-ranking-policy.test.ts` with a representative generic query
+(`cursor`: guide → curated ref → blog → subfield) plus reused #154 exact
+page-title (`harness` / `mcp`) and exact inventory (`you.factory_session.get`)
+cases, plus the PS-300 Program vs Limits membership-finish smoke, so both
+policies stay green together.
 
 ### Pattern: factory alias / body / tag discovery
 

@@ -3,14 +3,23 @@
  * curated reference owning pages > blog > reference subfields for a
  * representative generic query, and keep #154 exact page-title /
  * exact inventory wins green on the same live search path.
+ *
+ * PS-300 membership-finish smoke: new Program documentation pages band as
+ * Program (`other` under the locked ladder); Limits throttling bands as
+ * Reference via explorer membership without rewriting ladder constants.
  */
 import { describe, expect, test } from "bun:test";
+import {
+  hasDocumentationSidebarMembership,
+  hasReferenceSidebarMembership,
+} from "@/lib/content/sidebar-grouping";
 import { resetReferenceItemSearchDocumentsCacheForTests } from "./index";
 import {
   rerankSearchResults,
   SEARCH_COLLECTION_BAND,
   searchCollectionBand,
 } from "./rerank-search-results";
+import { loadSearchResultMetaMap } from "./search-result-meta";
 import { docsSearchApi } from "./search-server";
 import type { SearchDocument } from "./types";
 
@@ -309,5 +318,73 @@ describe("collection ranking policy", () => {
           result.type === "heading" || /#heading-\d+/i.test(result.url),
       ),
     ).toBe(false);
+  });
+
+  test("PS-300 smoke: Program factory-session bands as documentation other; Limits throttling as Reference", async () => {
+    resetReferenceItemSearchDocumentsCacheForTests();
+
+    const programUrl = "/docs/documentation/factory-session";
+    const limitsUrl = "/docs/documentation/throttling-and-limits";
+
+    expect(
+      hasDocumentationSidebarMembership("documentation/factory-session"),
+    ).toBe(true);
+    expect(hasReferenceSidebarMembership("documentation/factory-session")).toBe(
+      false,
+    );
+    expect(
+      hasDocumentationSidebarMembership("documentation/throttling-and-limits"),
+    ).toBe(false);
+    expect(
+      hasReferenceSidebarMembership("documentation/throttling-and-limits"),
+    ).toBe(true);
+
+    const programResults = await docsSearchApi.search("factory session");
+    expect(programResults.some((result) => result.url === programUrl)).toBe(
+      true,
+    );
+
+    const limitsResults = await docsSearchApi.search("throttling");
+    expect(limitsResults.some((result) => result.url === limitsUrl)).toBe(true);
+
+    const metaByUrl = await loadSearchResultMetaMap();
+    const programMeta = metaByUrl.get(programUrl);
+    const limitsMeta = metaByUrl.get(limitsUrl);
+    expect(programMeta?.kind).toBe("documentation");
+    expect(limitsMeta?.kind).toBe("documentation");
+
+    const programDocument = documentForUrl(programUrl, {
+      kind: "documentation",
+      title: programMeta?.title ?? "Factory Sessions",
+      facets: { kind: "documentation", tags: programMeta?.tags ?? [] },
+    });
+    const limitsDocument = documentForUrl(limitsUrl, {
+      kind: "documentation",
+      title: limitsMeta?.title ?? "Throttling and limits",
+      facets: { kind: "documentation", tags: limitsMeta?.tags ?? [] },
+    });
+
+    expect(
+      searchCollectionBand(
+        {
+          id: programUrl,
+          type: "page",
+          url: programUrl,
+          content: programDocument.title,
+        },
+        programDocument,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.other);
+    expect(
+      searchCollectionBand(
+        {
+          id: limitsUrl,
+          type: "page",
+          url: limitsUrl,
+          content: limitsDocument.title,
+        },
+        limitsDocument,
+      ),
+    ).toBe(SEARCH_COLLECTION_BAND.curatedReferencePage);
   });
 });

@@ -43,8 +43,12 @@ const EXPECTED_MEMBERSHIP = {
   "submitting-work": { group: "capabilities" },
   "replays-records": { group: "capabilities" },
   "packaged-documents": { group: "capabilities" },
+  "factory-session": { group: "capabilities" },
+  "dynamic-workflows": { group: "capabilities" },
+  "packaged-factories": { group: "capabilities" },
   cli: { group: "interfaces" },
   mcp: { group: "interfaces" },
+  api: { group: "interfaces" },
   logs: { group: "operations" },
   metrics: { group: "operations" },
   "dashboard-ui-overview": { group: "operations" },
@@ -180,7 +184,7 @@ describe("Program documentation three-level taxonomy", () => {
     }
   });
 
-  test("Program membership omits FAQ, W18 stubs, locked PS-100 demotions, Mode A overviews, and deferred pages", () => {
+  test("Program membership omits FAQ, W18 stubs, locked PS-100 demotions, and deferred pages", () => {
     const publishedSlugs = loadPublishedDocsPagesSync("en")
       .filter((page) => page.docsSlug.startsWith("documentation/"))
       .map((page) => page.docsSlug.slice("documentation/".length));
@@ -210,12 +214,39 @@ describe("Program documentation three-level taxonomy", () => {
       expect(publishedSlugs).toContain(stubSlug);
     }
 
-    for (const overviewSlug of MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS) {
-      expect(membershipSlugs).not.toContain(overviewSlug);
-      expect(getDocumentationSidebarMembership(overviewSlug)).toBeUndefined();
+    // PS-300 membership finish: pending + deferred exemption lists stay empty
+    // so published Program members fail closed if silently re-exempted.
+    expect(MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS).toEqual(
+      [],
+    );
+    expect(DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS).toEqual([]);
+
+    for (const overviewSlug of [
+      "factory-session",
+      "dynamic-workflows",
+      "packaged-factories",
+    ] as const) {
+      expect(membershipSlugs).toContain(overviewSlug);
+      expect(getDocumentationSidebarMembership(overviewSlug)).toEqual({
+        group: "capabilities",
+      });
       expect(publishedSlugs).toContain(overviewSlug);
       expect(moveStubSlugSet.has(overviewSlug)).toBe(false);
+      expect(
+        MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS,
+      ).not.toContain(overviewSlug);
     }
+
+    expect(membershipSlugs).toContain("api");
+    expect(getDocumentationSidebarMembership("api")).toEqual({
+      group: "interfaces",
+    });
+    expect(publishedSlugs).toContain("api");
+    expect(moveStubSlugSet.has("api")).toBe(false);
+    expect(DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS).not.toContain(
+      "api",
+    );
+    expect(isDeferredDocumentationExplorerMembershipSlug("api")).toBe(false);
 
     for (const deferredSlug of DEFERRED_DOCUMENTATION_EXPLORER_MEMBERSHIP_SLUGS) {
       expect(membershipSlugs).not.toContain(deferredSlug);
