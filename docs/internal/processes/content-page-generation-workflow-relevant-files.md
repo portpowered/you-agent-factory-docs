@@ -139,7 +139,14 @@ When a guide needs copyable shell commands (install, first-run, submit):
 
 Canonical install command forms match the home CTA in
 `src/content/messages/*/common.json` (`home.installMacosLinuxCommand` /
-`home.installWindowsCommand`). First-run / session forms used on the
+`home.installWindowsCommand`). After PS-200, Guides → Getting Started owns the
+full standard install teaching path: both OS release scripts, post-install
+confirm-`you`-available guidance, and starter scaffold choice (default Codex
+when `--executor` is omitted; copyable `you init --executor claude` for a
+Claude-backed scaffold). Do not reintroduce an Install deep-dive callout or
+primary next-step that requires `/docs/documentation/install` to finish a
+standard install — that URL stays a thin compatibility stub (PS-200) until
+explorer demotion (PS-300). First-run / session forms used on the
 getting-started quickstart: `you run --named @goal/blah`, bare `you`, and
 `you session list`. First-submit forms: unary
 `you submit --name <name> --work-type-name <type> --payload <path>` and
@@ -151,13 +158,17 @@ quickstart `Section`s (for example `install`, `first-you`, `first-submit`)
 are allowed when colocated message keys validate. Browser-verify MDX or
 message edits with `bun run build` then `bun run start` on a unique port —
 plain `start` serves the last production build and will look stale otherwise.
+In parent-hoisted worktrees prefer
+`bun ./scripts/run-next.ts dev --webpack -p <port> -H 127.0.0.1` (unique port
+in `3100–3999`); plain Turbopack `bun run dev` can fail to resolve `next` from
+`src/app`, and the first docs compile may need a long curl `--max-time`.
 
 When linking parallel-lane sibling destinations that are not yet published in
-this worktree (for example getting-started → `/docs/documentation/install` and
-`/docs/documentation/cli`), prefer page-local `<LocalizedLinkList>` with stable
-hrefs and `links.*` labels. Do not put those ids in registry `relatedIds` until
-the sibling registry records exist here — unresolved related ids fail
-`validate-data`, and RelatedDocs also drops unpublished targets.
+this worktree (for example getting-started → `/docs/documentation/cli`), prefer
+page-local `<LocalizedLinkList>` with stable hrefs and `links.*` labels. Do not
+put those ids in registry `relatedIds` until the sibling registry records exist
+here — unresolved related ids fail `validate-data`, and RelatedDocs also drops
+unpublished targets.
 
 Guide ↔ guide discovery also needs `<LocalizedLinkList>` today: generated
 `listRelatedRegistryRecords()` / `getRegistryRecordById()` omit `guides` (and

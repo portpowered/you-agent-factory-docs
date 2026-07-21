@@ -13,6 +13,7 @@ const INSTALL_SH =
   "curl -fsSL https://github.com/portpowered/you-agent-factory/releases/latest/download/install.sh | sh";
 const INSTALL_PS1 =
   "irm https://github.com/portpowered/you-agent-factory/releases/latest/download/install.ps1 | iex";
+const CLAUDE_INIT = "you init --executor claude";
 const NAMED_RUN = "you run --named @goal/blah";
 
 describe("getting-started guide page", () => {
@@ -47,6 +48,17 @@ describe("getting-started guide page", () => {
     expect(screen.getByRole("heading", { name: "First Submit" })).toBeTruthy();
     expect(screen.getByText(INSTALL_SH)).toBeTruthy();
     expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
+    expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
+    expect(
+      screen.getByText(
+        /confirm you is available in your shell before you continue/i,
+      ),
+    ).toBeTruthy();
+    expect(
+      screen.getByText(
+        /Omitting --executor keeps the default Codex-backed starter scaffold/i,
+      ),
+    ).toBeTruthy();
     expect(screen.getByText(NAMED_RUN)).toBeTruthy();
     expect(screen.getByText("you")).toBeTruthy();
     expect(screen.getByText("you session list")).toBeTruthy();
@@ -57,13 +69,13 @@ describe("getting-started guide page", () => {
     ).toBeTruthy();
     expect(screen.getByText("you submit batch ./batch.json")).toBeTruthy();
 
-    const installDeepDive = screen.getByRole("link", {
-      name: "Install deep-dive",
-    });
-    const cliDocs = screen.getByRole("link", { name: "CLI docs" });
-    expect(installDeepDive.getAttribute("href")).toBe(
+    expect(
+      screen.queryByRole("link", { name: "Install deep-dive" }),
+    ).toBeNull();
+    expect(document.body.textContent ?? "").not.toContain(
       "/docs/documentation/install",
     );
+    const cliDocs = screen.getByRole("link", { name: "CLI docs" });
     expect(cliDocs.getAttribute("href")).toBe("/docs/documentation/cli");
   });
 
@@ -141,11 +153,15 @@ describe("getting-started guide page", () => {
     expect(screen.getByRole("heading", { name: firstYouHeading })).toBeTruthy();
     expect(screen.getByText(INSTALL_SH)).toBeTruthy();
     expect(screen.getByText(INSTALL_PS1)).toBeTruthy();
+    expect(screen.getByText(CLAUDE_INIT)).toBeTruthy();
     expect(screen.getByText(NAMED_RUN)).toBeTruthy();
     expect(screen.getByText("you session list")).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
     expect(document.body.textContent ?? "").not.toContain(
       "This quickstart walks install",
+    );
+    expect(document.body.textContent ?? "").not.toContain(
+      "/docs/documentation/install",
     );
   });
 });

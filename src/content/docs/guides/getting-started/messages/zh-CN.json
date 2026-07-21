@@ -13,7 +13,7 @@
     },
     "install": {
       "title": "安装",
-      "body": "使用与首页相同的命令安装 you CLI。按你的操作系统选择对应路径。"
+      "body": "使用与首页相同的命令安装 you CLI。按你的操作系统选择对应路径。脚本结束后，先确认 shell 中可以使用 you，再脚手架化一个工厂。"
     },
     "firstYou": {
       "title": "第一次运行 you",
@@ -29,7 +29,7 @@
     },
     "commonPitfalls": {
       "title": "常见陷阱",
-      "body": "不要在工厂会话运行之前提交工作。操作系统相关的安装边界情况请参阅安装详解；完整 CLI 命令矩阵请参阅 CLI 文档。"
+      "body": "不要在工厂会话运行之前提交工作。完整 CLI 命令矩阵请参阅 CLI 文档。"
     },
     "related": {
       "title": "相关内容"
@@ -44,17 +44,20 @@
   "links": {
     "installMacosLinuxLabel": "macOS / Linux",
     "installWindowsLabel": "Windows (PowerShell)",
+    "claudeInitLabel": "Claude 脚手架",
     "firstYouNamedRunLabel": "命名运行",
     "firstYouDefaultStartLabel": "默认工厂启动",
     "firstYouSessionListLabel": "确认工厂已在运行",
     "firstSubmitUnaryLabel": "一元提交",
     "firstSubmitBatchLabel": "批量提交",
-    "installDeepDive": "安装详解",
     "cliDocs": "CLI 文档"
   },
   "callouts": {
-    "installDeepDive": {
-      "body": "这些命令覆盖基本安装。操作系统相关边界情况、自定义安装位置和固定版本见安装详解；完成标准安装不必打开该页。"
+    "confirmYouAvailable": {
+      "body": "安装后如有需要请打开新终端以重新加载 PATH，然后在继续之前确认 shell 中可以使用 you。"
+    },
+    "scaffoldChoice": {
+      "body": "省略 --executor 会保留默认的 Codex 起步脚手架。若需要 Claude 默认脚手架，请传入 --executor claude。"
     },
     "firstYouSessionCheck": {
       "body": "提交前用 session list 确认工厂已在运行。若没有活动会话，请再次启动工厂，然后重新检查。"
