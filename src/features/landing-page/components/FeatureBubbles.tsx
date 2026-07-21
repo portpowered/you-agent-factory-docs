@@ -116,18 +116,20 @@ export function FeatureBubbles({
         // Reduced motion: fade only — no Y travel (motion-whale.md).
         const offsetY = show || reduceMotion ? 0 : BUBBLE_TRAVEL_Y_PX;
 
+        const staggerMs = show ? Math.min(index * 40, 160) : 0;
+        // Keep delay inside the transition shorthand — do not mix with
+        // transitionDelay (React warns and styling can fight itself).
         const style: CSSProperties = {
           top: layout.top,
           left: layout.left,
           opacity: show ? 1 : 0,
           transform: `translateY(${offsetY}px)`,
           transition: reduceMotion
-            ? `opacity ${BUBBLE_ENTER_MS}ms ease-out`
+            ? `opacity ${BUBBLE_ENTER_MS}ms ease-out ${staggerMs}ms`
             : [
-                `opacity ${BUBBLE_ENTER_MS}ms ease-out`,
-                `transform ${BUBBLE_ENTER_MS}ms cubic-bezier(0.22, 0.9, 0.2, 1)`,
+                `opacity ${BUBBLE_ENTER_MS}ms ease-out ${staggerMs}ms`,
+                `transform ${BUBBLE_ENTER_MS}ms cubic-bezier(0.22, 0.9, 0.2, 1) ${staggerMs}ms`,
               ].join(", "),
-          transitionDelay: show ? `${Math.min(index * 40, 160)}ms` : "0ms",
         };
 
         const bubbleClassName = cn(

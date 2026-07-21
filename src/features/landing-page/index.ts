@@ -14,6 +14,12 @@ export {
   PRIMARY_BUBBLE_CLASSES,
 } from "./components/FeatureBubbles";
 export {
+  WHALE_BUBBLES_FAQ_SPACER_MIN_HEIGHT,
+  WHALE_BUBBLES_HARNESS_PRESETS,
+  WhaleBubblesHarness,
+  type WhaleBubblesHarnessPresetId,
+} from "./components/WhaleBubblesHarness";
+export {
   WhaleBubblesSection,
   type WhaleBubblesSectionProps,
 } from "./components/WhaleBubblesSection";

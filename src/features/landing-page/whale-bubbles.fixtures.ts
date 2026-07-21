@@ -10,7 +10,7 @@ import { WHALE_PLATE_DEFAULT_SRC } from "./components/whale-plate.theme";
 export const WHALE_BUBBLES_FIXTURE_SRC = WHALE_PLATE_DEFAULT_SRC;
 
 /** Harness-safe override when the staged `/home` asset is absent. */
-export const WHALE_BUBBLES_HARNESS_SRC = "/fixtures/whale-harness.png";
+export const WHALE_BUBBLES_HARNESS_SRC = "/fixtures/whale-harness.svg";
 
 /** Demo bubble cluster for section / harness mounts. */
 export const WHALE_BUBBLES_FIXTURE_ITEMS: readonly FeatureBubbleItem[] = [
