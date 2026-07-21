@@ -41,43 +41,33 @@ targets (UTC audit for HY-make).
 | Factory batch archives + `src/tests/ci/planner-deployment-guidance.test.ts` expecting historical `make build-export` in batch-014 payloads | Historical / test contract — leave alone |
 | `docs/temp/**` (opportunistic) | No `make ui-build` instructional hits found at audit time |
 
-## Must-fix (present-tense live false instructions)
+## Must-fix status (story 002 — applied)
 
-These prescribe nonexistent **current** targets and should be rewritten to real
-targets in follow-on stories (do not invent Makefile targets to match the old
-wording).
+False live Make / retired-verifier prescriptions below were rewritten to real
+targets. Do not invent Makefile targets to match old wording.
 
-### `factory/docs/overview.md`
+### `factory/docs/overview.md` — fixed
 
-- Line ~22: Local checks list includes `make all` and `make links` (neither
-  exists). Also mis-points at a foreign `CONTRIBUTING.md` Go-README checklist.
-- Quality Gates block (~172–180): `make all` and `make links` as live
-  pre-submit guidance, plus “mirror the Go README checks” framing that does not
-  match this repo’s Makefile contract.
+- Read-first CONTRIBUTING bullet and Quality Gates block now use
+  `make check` / `make test` / `make linkcheck` / `make ci` and warn against
+  inventing `ui-build` / `all` / `links`. Foreign Go-README framing removed.
 
-**Replacement intent:** use this repo’s real gates (`make check`, `make test`,
-`make linkcheck`, `make ci` as appropriate) or remove the foreign toolchain
-prose.
+### `docs/governance/architectural-checklist-mechanism-status.md` — fixed
 
-### `docs/governance/architectural-checklist-mechanism-status.md`
+- Deploy section retargeted to `.github/workflows/deploy-pages.yml` +
+  `make build` (with current `GITHUB_PAGES_BASE_PATH`).
+- Present-tense `make build-export` Verification / evidence / README summary
+  rows retargeted to `make build`.
+- Retired `scripts/verify-phase-1-*.ts` Verification commands replaced with
+  `make build` + existing discovery / build-contract tests.
+- Remaining `deploy.yml` evidence paths updated to `deploy-pages.yml`.
 
-Present-tense live prescriptions of retired `make build-export` (retarget to
-`make build` / current deploy-pages + CI contract):
+Accurate “former / retired” wording elsewhere remains allowed.
 
-- Deploy workflow **Build job** description still says `make build-export`
-- Category **Verification commands** / evidence rows that list
-  `make build-export` as something to run now
-- README summary row that still claims Quality Gates / static export docs
-  prescribe `make build-export`
+### `docs/contributors/CONTRIBUTING.md` — fixed
 
-Accurate “former / retired” wording elsewhere is out of scope for deletion.
-
-### `docs/contributors/CONTRIBUTING.md` (bonus audit hit)
-
-Optional-commands table still lists `make verify-phase-1-ux` and
-`make verify-phase-1-*-convergence` as if they exist. Those targets were
-removed with Atlas/Phase-1 export verifiers. Retarget or remove the rows so
-contributors are not steered at missing rules.
+- Removed nonexistent `make verify-phase-1-*` optional-command rows; noted
+  retirement and pointed contributors at `make build` / `make ci`.
 
 ## Historical (allowed — do not “fix” into silence)
 
@@ -98,9 +88,16 @@ contributors are not steered at missing rules.
 
 ## Follow-on work (other PRD stories)
 
-1. Replace false live instructions listed above with real targets.
+1. ~~Replace false live instructions listed above with real targets.~~ Done in story 002.
 2. Add or tighten a short primary-entrypoints maintainer note (README /
    AGENTS / factory overview) pointing at the root Makefile.
 3. Opportunistically scrub `docs/temp/**` if instructional `ui-build` reappears.
 4. Confirm lane fences: instruction docs/scripts comments only; no new Make
    targets; no page-chrome / IA / feature-package moves.
+
+## Companion contract note (story 002)
+
+`src/lib/governance/architectural-checklist-audit.ts` requires the operator
+workflow evidence heading `#### \`.github/workflows/deploy-pages.yml\`` (was
+retired `deploy.yml`). Keep the mechanism-status artifact heading aligned with
+that marker when renaming the live deploy workflow file.

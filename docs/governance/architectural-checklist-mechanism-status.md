@@ -180,15 +180,15 @@ replace operator settings above.
 
 Verification: `make ci`, `bun test src/tests/ci/github-actions-make-ci.test.ts`
 
-#### `.github/workflows/deploy.yml` (jobs `build`, `deploy`)
+#### `.github/workflows/deploy-pages.yml` (jobs `validate`, `deploy`)
 
 | Aspect | Repository behavior |
 | --- | --- |
-| **Triggers** | `push` to `main` only (no `pull_request`, no `workflow_dispatch` in Phase 1). |
+| **Triggers** | `push` to `main` only (no `pull_request`, no `workflow_dispatch`). |
 | **Permissions** | Workflow scope: `contents: read`, `pages: write`, `id-token: write`. |
-| **Build job** | Checkout → setup Bun → frozen lockfile install → `make build-export` with `GITHUB_PAGES_BASE_PATH: ai-model-reference` → configure Pages → upload `out/` artifact. |
-| **Deploy job** | Publishes artifact via `actions/deploy-pages@v4` to environment `github-pages`. |
-| **What it does not do** | Run `make ci` (quality gates stay in `ci.yml`); deploy PR heads; validate branch protection. |
+| **Validate job** | Checkout → setup Bun → `make setup` → Playwright Chromium → `make check` → `make test` → `make build` with `GITHUB_PAGES_BASE_PATH: /you-agent-factory-docs` → `make guard-pages-deployed-artifact` → `make budget` → configure Pages → upload `out/` artifact. |
+| **Deploy job** | Publishes artifact via `actions/deploy-pages@v4` to environment `github-pages` (`needs: validate`). |
+| **What it does not do** | Run the full `make ci` graph (PR/push quality gates stay in `ci.yml`); deploy PR heads; validate branch protection. |
 
 Verification: `make build`, `bun run test:build-contract` (includes `deploy-pages-workflow-contract`), `docs/operations.md`
 
@@ -220,8 +220,8 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | partially implemented |
 | **Summary** | CI runs on pull requests and `main` pushes; static export deploys to GitHub Pages on `main` via a separate workflow. Lockfile-backed installs, release/rollback guidance, and SHA traceability are documented. PR preview deploys and GitHub branch protection are not enforced from repository source. |
-| **Repository evidence** | `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, `docs/operations.md`, `bun.lock`, `Makefile` (`ci`, `build-export`), `src/tests/ci/github-actions-*.test.ts` |
-| **Verification commands** | `make ci`, `make build-export`, `bun test src/tests/ci` |
+| **Repository evidence** | `.github/workflows/ci.yml`, `.github/workflows/deploy-pages.yml`, `docs/operations.md`, `bun.lock`, `Makefile` (`ci`, `build`), `src/tests/ci/github-actions-*.test.ts` |
+| **Verification commands** | `make ci`, `make build`, `bun test src/tests/ci` |
 | **Gaps** | No PR preview deployment workflow (**Deferred** — owner: repository maintainers; alternative: local Makefile contract + **CI**/**verify**); branch protection rules live in GitHub settings only; `make validate-pdf` is stubbed; environment secrets and Pages UI settings are operator-owned. |
 | **Follow-up or operator requirement** | Configure GitHub branch protection per `docs/operations.md`; keep PR preview **Deferred** per [PR preview policy](../operations.md#pr-preview-policy) until maintainers ship a preview workflow and flip that row to **Implemented**. |
 
@@ -230,7 +230,7 @@ secrets to satisfy this artifact.
 | Field | Value |
 | --- | --- |
 | **Status** | partially implemented |
-| **Summary** | The repository has broad unit, integration, build-export, search, layout, and axe-based accessibility tests. `make ci` runs typecheck, lint, tests, manifest-scoped coverage, build-contract tests, registry validation, and linkcheck. Storybook, Lighthouse CI, visual regression, and accessibility-in-CI are not present. |
+| **Summary** | The repository has broad unit, integration, static-export, search, layout, and axe-based accessibility tests. `make ci` runs typecheck, lint, tests, manifest-scoped coverage, build-contract tests, registry validation, and linkcheck. Storybook, Lighthouse CI, visual regression, and accessibility-in-CI are not present. |
 | **Repository evidence** | `src/tests/**`, `Makefile` (`ci`, `test`, `coverage`), `package.json` (`test`, `coverage`), `scripts/component-coverage-gate.ts`, `src/lib/docs/component-coverage-gate.ts`, `src/tests/a11y/*.a11y.test.tsx`, `.github/workflows/ci.yml` |
 | **Verification commands** | `bun test`, `make ci`, `make coverage` |
 | **Gaps** | No Storybook; no Lighthouse or performance regression suite in CI; accessibility tests exist but are not part of `make ci`; no visual regression harness; math/MDX rendering lacks dedicated CI contract beyond page-level tests. |
@@ -329,9 +329,9 @@ secrets to satisfy this artifact.
 | Field | Value |
 | --- | --- |
 | **Status** | partially implemented |
-| **Summary** | Bun drives install, scripts, and tests; the root `Makefile` exposes `ci`, `test`, `test-integration`, `coverage`, `build`, `build-export`, `validate-data`, and `linkcheck` aligned with CI. PDF validation and generation targets are stubbed or absent; checklist-listed accessibility and PDF steps are not in `make ci`. |
+| **Summary** | Bun drives install, scripts, and tests; the root `Makefile` exposes `ci`, `test`, `test-integration`, `coverage`, `build`, `validate-data`, and `linkcheck` aligned with CI. PDF validation and generation targets are stubbed or absent; checklist-listed accessibility and PDF steps are not in `make ci`. |
 | **Repository evidence** | `Makefile`, `package.json`, `bun.lock`, `.github/workflows/ci.yml`, `scripts/validate-registry.ts`, `scripts/validate-links.ts` |
-| **Verification commands** | `make ci`, `make build`, `make build-export`, `make linkcheck`, `make validate-data` |
+| **Verification commands** | `make ci`, `make build`, `make linkcheck`, `make validate-data` |
 | **Gaps** | `make validate-pdf` exits successfully without validating; no `make pdf` targets; `make ci` omits a11y checks the checklist associates with CI. |
 | **Follow-up or operator requirement** | Implement PDF scripts or keep explicit `missing` status in PDF Export Contract entry until implemented. |
 
@@ -342,7 +342,7 @@ secrets to satisfy this artifact.
 | **Status** | partially implemented |
 | **Summary** | The site is a TypeScript Next.js App Router project using Bun, Fumadocs MDX, Tailwind CSS variables, shadcn/ui primitives, React Flow graphs, Recharts (where used), KaTeX math, and Orama-backed search with static export support. PDF export and full blog stack described in the checklist are not yet in the tree. |
 | **Repository evidence** | `package.json`, `next.config.ts`, `source.config.ts`, `src/app/api/search/route.ts`, `src/features/models/components/RegistryGraphFlow.tsx`, `src/features/docs/components/Math.tsx`, `scripts/emit-export-search-index.ts` |
-| **Verification commands** | `make build-export`, `bun run test:build-contract` |
+| **Verification commands** | `make build`, `bun run test:build-contract` |
 | **Gaps** | PDF pipeline and blog authoring paths missing; Magic UI usage is minimal/optional and not centrally cataloged. |
 | **Follow-up or operator requirement** | Land print/PDF routes before claiming PDF support as implemented. |
 
@@ -363,8 +363,8 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | partially implemented |
 | **Summary** | `/`, `/docs/**`, `/tags/**`, `/search`, and glossary/architecture index routes are implemented and covered by static-route and convergence tests. Blog and print URL families from the checklist are not routable. |
-| **Repository evidence** | `src/app/(site)/page.tsx`, `src/app/docs/[[...slug]]/page.tsx`, `src/app/(site)/tags/[slug]/page.tsx`, `src/app/(site)/search/page.tsx`, `scripts/verify-phase-1-static-routes.ts`, `scripts/verify-phase-1-export-routes.ts`, `src/tests/discovery/route-modules.test.ts` |
-| **Verification commands** | `make build`, `bun ./scripts/verify-phase-1-static-routes.ts`, `bun ./scripts/verify-phase-1-export-routes.ts` |
+| **Repository evidence** | `src/app/(site)/page.tsx`, `src/app/docs/[[...slug]]/page.tsx`, `src/app/(site)/tags/[slug]/page.tsx`, `src/app/(site)/search/page.tsx`, `src/tests/discovery/route-modules.test.ts`, `src/tests/build/static-export-*.test.ts` |
+| **Verification commands** | `make build`, `bun test src/tests/discovery/route-modules.test.ts`, `bun run test:build-contract` |
 | **Gaps** | `/blog`, `/blog/<slug>`, and `/print/<locale>/...` routes missing; dedicated `/search?tag=` page behavior partially covered via tag landing handoffs. |
 | **Follow-up or operator requirement** | Extend route verifiers when blog/print routes are added. |
 
@@ -472,7 +472,7 @@ secrets to satisfy this artifact.
 | Field | Value |
 | --- | --- |
 | **Status** | partially implemented |
-| **Summary** | `README.md` documents problem/solution, content-layer shape (`Website Shape`), important governance docs, **Local Development** (`bun install`, `make dev`), **Static export (GitHub Pages)** with `make build-export`, **Quality Gates** with ordered `make ci` steps and full Makefile target listings, operations/release posture, Phase 1 UX verifiers, and the agent factory loop. It carries a CI badge and links to `docs/operations.md`. |
+| **Summary** | `README.md` documents problem/solution, content-layer shape (`Website Shape`), important governance docs, **Local Development** (`bun install`, `make dev`), **Static export (GitHub Pages)** with `make build`, **Quality Gates** with ordered `make ci` steps and primary Makefile target listings, operations/release posture, and the agent factory loop. It carries a CI badge and links to `docs/operations.md`. Retired Atlas / Phase 1 route-verifier sprawl is explicitly out of the required contributor path. |
 | **Repository evidence** | `README.md` (`## Local Development`, `## Quality Gates`, `## Static export (GitHub Pages)`) |
 | **Verification commands** | Manual review; README prose is not a test-gated contract. |
 | **Gaps** | Missing page-count/license/locale badges (only CI badge present); no explicit one-line published-site URL; no detailed top-level repository tree map beyond content-layer layout in **Website Shape**. |
@@ -506,7 +506,7 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | missing |
 | **Summary** | No client error tracking, Core Web Vitals monitoring, search analytics, or 404 telemetry is implemented in application source. Build/deploy failure visibility relies on GitHub Actions checks only. |
-| **Repository evidence** | `.github/workflows/ci.yml`, `.github/workflows/deploy.yml` (CI/deploy status only) |
+| **Repository evidence** | `.github/workflows/ci.yml`, `.github/workflows/deploy-pages.yml` (CI/deploy status only) |
 | **Verification commands** | n/a |
 | **Gaps** | Entire observability/analytics checklist category. |
 | **Follow-up or operator requirement** | Operator-owned: configure hosting/analytics provider outside repo or add privacy-conscious instrumentation in a future phase. |
@@ -517,7 +517,7 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | partially implemented |
 | **Summary** | Workflows use least-privilege permissions where defined; dependencies install from lockfile without committing secrets. No automated dependency vulnerability scan, CSP configuration, or form-input validation layer is present (few user-submitted forms exist). |
-| **Repository evidence** | `.github/workflows/ci.yml`, `.github/workflows/deploy.yml`, `bun.lock`, `.gitignore` |
+| **Repository evidence** | `.github/workflows/ci.yml`, `.github/workflows/deploy-pages.yml`, `bun.lock`, `.gitignore` |
 | **Verification commands** | `bun install --frozen-lockfile` (deterministic install) |
 | **Gaps** | No Dependabot/npm audit gate; no documented CSP for production; PDF draft-exclusion not applicable until PDF exists. |
 | **Follow-up or operator requirement** | Enable GitHub Dependabot or equivalent operator process; document CSP expectations in deployment guide. |
@@ -528,8 +528,8 @@ secrets to satisfy this artifact.
 | --- | --- |
 | **Status** | partially implemented |
 | **Summary** | Static export pre-renders docs pages; heavy graph clients hydrate on module routes with targeted performance tests for export/search paths. Bundle-size tracking, Lighthouse budgets, and CI performance regression gates are not configured. |
-| **Repository evidence** | `next.config.ts`, `make build-export`, `src/tests/build/static-export-*.test.ts`, `scripts/verify-phase-1-export-search-handoff.ts` |
-| **Verification commands** | `make build-export`, `bun run test:build-contract` |
+| **Repository evidence** | `next.config.ts`, `make build`, `src/tests/build/static-export-*.test.ts`, `src/tests/build/static-export-base-path-contract.test.ts` |
+| **Verification commands** | `make build`, `bun run test:build-contract` |
 | **Gaps** | No bundle analyzer or performance budget enforcement; image/font optimization policies are implicit via Next/static export. |
 | **Follow-up or operator requirement** | Add Lighthouse or bundle-size gate when performance enforcement is prioritized. |
 
