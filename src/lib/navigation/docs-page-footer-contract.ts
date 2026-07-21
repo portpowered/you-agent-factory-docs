@@ -84,42 +84,38 @@ function bundledCssHasAccentHoverFooterSelector(normalized: string): boolean {
 }
 
 /**
- * Production Tailwind bundles the footer no-text-recolor rules as a single
- * #nd-page selector chain with escaped hover utility class names.
+ * App CSS footer hover/focus on the Fumadocs accent-hover card selector chain.
  *
- * Expects: hover/focus keeps background affordance, neutralizes title color
- * (color:inherit), and keeps muted sublabels muted — not accent-foreground.
+ * Expects: primary yellow fill (`--docs-chrome-primary-yellow`) and dark
+ * accent-ink text (`--primary-foreground`) — not the superseded color:inherit
+ * / muted-sublabel-stable pairing, and not Fumadocs accent-foreground.
  */
-export function bundledCssHasFooterSublabelInheritRule(css: string): boolean {
+export function bundledCssHasFooterYellowDarkTextRule(css: string): boolean {
   const normalized = normalizeBundledCss(css);
-  const hasStableTitleColorRule =
-    normalized.includes("{color:inherit!important}") ||
-    normalized.includes("{color:inherit!important;}") ||
-    normalized.includes("{color:inherit}") ||
-    normalized.includes("{color:inherit;}");
-  const hasMutedSublabelRule =
+  const hasYellowBackground =
     normalized.includes(
-      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}",
+      "background-color:var(--docs-chrome-primary-yellow)!important",
     ) ||
-    normalized.includes(
-      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important;}",
-    ) ||
-    normalized.includes(
-      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)}",
-    ) ||
-    normalized.includes(
-      ">p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground);}",
-    );
+    normalized.includes("background-color:var(--docs-chrome-primary-yellow)");
+  const hasDarkForeground =
+    normalized.includes("color:var(--primary-foreground)!important") ||
+    normalized.includes("color:var(--primary-foreground)");
   const forcesAccentForegroundText =
-    normalized.includes("color:var(--color-fd-accent-foreground)") ||
-    normalized.includes("color:var(--color-fd-accent-foreground)!important");
+    normalized.includes("color:var(--color-fd-accent-foreground)!important") ||
+    normalized.includes("color:var(--color-fd-accent-foreground);") ||
+    normalized.includes("color:var(--color-fd-accent-foreground)}");
+  const keepsStableInheritOnly =
+    (normalized.includes("{color:inherit!important}") ||
+      normalized.includes("{color:inherit}")) &&
+    !hasDarkForeground;
 
   return (
     bundledCssHasAccentHoverFooterSelector(normalized) &&
     normalized.includes(":is(:hover,:focus-visible)") &&
-    hasStableTitleColorRule &&
-    hasMutedSublabelRule &&
-    !forcesAccentForegroundText
+    hasYellowBackground &&
+    hasDarkForeground &&
+    !forcesAccentForegroundText &&
+    !keepsStableInheritOnly
   );
 }
 
@@ -154,17 +150,17 @@ export function bundledCssHasFooterCompactSizingRule(css: string): boolean {
 }
 
 /**
- * Returns a failure reason when bundled app CSS lacks the footer no-text-recolor
- * hover/focus pairing enforced by built HTML/CSS convergence checks.
+ * Returns a failure reason when app CSS lacks footer yellow-highlight +
+ * dark-text hover/focus pairing enforced by chrome convergence checks.
  */
-export function assertDocsFooterSublabelHoverFocusCssConvergence(
+export function assertDocsFooterYellowDarkTextCssConvergence(
   css: string,
 ): string | null {
-  if (bundledCssHasFooterSublabelInheritRule(css)) {
+  if (bundledCssHasFooterYellowDarkTextRule(css)) {
     return null;
   }
 
-  return "bundled app CSS missing footer hover/focus no-text-recolor rule pairing";
+  return "bundled app CSS missing footer hover/focus yellow + dark-text rule pairing";
 }
 
 /**
@@ -182,14 +178,14 @@ export function assertDocsFooterCompactSizingCssConvergence(
 }
 
 /**
- * Combined chrome convergence: no title-text recolor on hover/focus AND
- * compact card padding/gap — the two repairs this lane locks together.
+ * Combined chrome convergence: yellow highlight + dark text on hover/focus
+ * AND compact card padding/gap — the two repairs this lane locks together.
  */
 export function assertDocsFooterChromeCssConvergence(
   css: string,
 ): string | null {
   return (
-    assertDocsFooterSublabelHoverFocusCssConvergence(css) ??
+    assertDocsFooterYellowDarkTextCssConvergence(css) ??
     assertDocsFooterCompactSizingCssConvergence(css)
   );
 }

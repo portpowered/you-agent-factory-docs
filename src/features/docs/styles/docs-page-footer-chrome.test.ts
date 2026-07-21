@@ -2,16 +2,17 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  DOCS_PAGE_FOOTER_HOVER_TOKENS,
   docsPageFooterCardSelector,
   docsPageFooterCompactGap,
   docsPageFooterCompactPadding,
+  docsPageFooterHoverStateSelector,
   docsPageFooterMutedSublabelSelector,
-  docsPageFooterStableTextColorSelector,
 } from "@/features/docs/styles/docs-page-footer-chrome";
 import {
   assertDocsFooterChromeCssConvergence,
   assertDocsFooterCompactSizingCssConvergence,
-  assertDocsFooterSublabelHoverFocusCssConvergence,
+  assertDocsFooterYellowDarkTextCssConvergence,
   FOOTER_COMPACT_GAP,
   FOOTER_COMPACT_PADDING,
 } from "@/lib/navigation/docs-page-footer-contract";
@@ -33,30 +34,37 @@ describe("docs page footer chrome CSS contract", () => {
     expect(docsPageFooterCardSelector).toContain(
       "hover:text-fd-accent-foreground",
     );
-    expect(docsPageFooterStableTextColorSelector).toContain(":hover");
-    expect(docsPageFooterStableTextColorSelector).toContain(":focus-visible");
+    expect(docsPageFooterHoverStateSelector).toContain(":hover");
+    expect(docsPageFooterHoverStateSelector).toContain(":focus-visible");
     expect(docsPageFooterMutedSublabelSelector).toContain(
       "p.text-fd-muted-foreground",
     );
+    expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverBackground).toBe(
+      "var(--docs-chrome-primary-yellow)",
+    );
+    expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverForeground).toBe(
+      "var(--primary-foreground)",
+    );
   });
 
-  test("shared chrome stylesheet converges on no-text-recolor and compact sizing together", () => {
+  test("shared chrome stylesheet converges on yellow+dark-text and compact sizing together", () => {
     expect(assertDocsFooterChromeCssConvergence(footerChromeCss)).toBeNull();
     expect(
-      assertDocsFooterSublabelHoverFocusCssConvergence(footerChromeCss),
+      assertDocsFooterYellowDarkTextCssConvergence(footerChromeCss),
     ).toBeNull();
     expect(
       assertDocsFooterCompactSizingCssConvergence(footerChromeCss),
     ).toBeNull();
 
-    // Non-text affordances still present alongside stable title color.
     expect(footerChromeCss).toContain(
-      "background-color: color-mix(in oklch, var(--color-fd-accent) 80%, transparent)",
+      "background-color: var(--docs-chrome-primary-yellow)",
     );
+    expect(footerChromeCss).toContain("color: var(--primary-foreground)");
     expect(footerChromeCss).toContain("outline-width: 2px");
     expect(footerChromeCss).toContain("box-shadow: 0 0 0 2px var(--ring)");
+    expect(footerChromeCss).not.toContain("color: inherit");
     expect(footerChromeCss).not.toContain(
-      "color: var(--color-fd-accent-foreground)",
+      "background-color: color-mix(in oklch, var(--color-fd-accent)",
     );
   });
 
@@ -67,10 +75,7 @@ describe("docs page footer chrome CSS contract", () => {
       normalizeSelectorContract(docsPageFooterCardSelector),
     );
     expect(normalizedCss).toContain(
-      normalizeSelectorContract(docsPageFooterStableTextColorSelector),
-    );
-    expect(normalizedCss).toContain(
-      normalizeSelectorContract(docsPageFooterMutedSublabelSelector),
+      normalizeSelectorContract(docsPageFooterHoverStateSelector),
     );
     expect(footerChromeCss).toContain("@layer utilities");
     expect(footerChromeCss).toContain(

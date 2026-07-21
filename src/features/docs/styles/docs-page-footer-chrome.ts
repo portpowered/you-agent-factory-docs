@@ -5,11 +5,23 @@
 export const docsPageFooterCardSelector =
   '#nd-page a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]';
 
-/** Hover/focus card state where title text must not recolor. */
-export const docsPageFooterStableTextColorSelector = `${docsPageFooterCardSelector}:is(:hover, :focus-visible)`;
+/**
+ * Hover/focus card state: primary yellow fill + dark accent-ink text.
+ * Same interactive language as collection resource-card hover.
+ */
+export const docsPageFooterHoverStateSelector = `${docsPageFooterCardSelector}:is(:hover, :focus-visible)`;
 
-/** Muted Previous/Next sublabel must keep muted color on hover/focus. */
-export const docsPageFooterMutedSublabelSelector = `${docsPageFooterStableTextColorSelector} > p.text-fd-muted-foreground`;
+/** Directional Previous/Next sublabel under the hover/focus yellow highlight. */
+export const docsPageFooterMutedSublabelSelector = `${docsPageFooterHoverStateSelector} > p.text-fd-muted-foreground`;
+
+/**
+ * Locked hover/focus roles for docs Previous/Next footer cards.
+ * Background = primary yellow; foreground = accent ink for contrast on yellow.
+ */
+export const DOCS_PAGE_FOOTER_HOVER_TOKENS = {
+  hoverBackground: "var(--docs-chrome-primary-yellow)",
+  hoverForeground: "var(--primary-foreground)",
+} as const;
 
 /**
  * Compact padding override for Fumadocs footer cards (`p-4` = 1rem).

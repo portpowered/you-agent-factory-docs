@@ -1,26 +1,16 @@
 /**
  * Fumadocs DocsPage footer cards set hover:bg-fd-accent/* and
- * hover:text-fd-accent-foreground on the anchor. Keep the background (and
- * focus-ring) affordance, but neutralize the text-highlight treatment so
- * title and Previous/Next sublabel colors stay stable on hover/focus.
+ * hover:text-fd-accent-foreground on the anchor. Override to primary yellow
+ * highlight + dark accent-ink text so neighbor nav matches collection-card
+ * hover (supersedes the post-#155 stable-inherit / no-text-recolor rule).
  *
  * Also override Fumadocs tall `p-4` / `gap-2` spacing so cards read as
  * compact neighbor controls rather than bulky blocks.
  *
  * Color + spacing overrides live in @layer utilities with !important so they
- * win over the Tailwind hover:text-fd-accent-foreground / p-4 / gap-2
- * utilities at runtime.
+ * win over the Tailwind hover:bg-fd-accent / hover:text-fd-accent-foreground /
+ * p-4 / gap-2 utilities at runtime.
  */
-@layer components {
-  #nd-page
-    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:is(
-      :hover,
-      :focus-visible
-    ) {
-    background-color: color-mix(in oklch, var(--color-fd-accent) 80%, transparent);
-  }
-}
-
 @layer utilities {
   /* Compact card chrome: shorter than Fumadocs p-4 (1rem) / gap-2 (0.5rem). */
   #nd-page
@@ -34,7 +24,17 @@
       :hover,
       :focus-visible
     ) {
-    color: inherit !important;
+    background-color: var(--docs-chrome-primary-yellow) !important;
+    color: var(--primary-foreground) !important;
+  }
+
+  #nd-page
+    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:is(
+      :hover,
+      :focus-visible
+    )
+    * {
+    color: var(--primary-foreground) !important;
   }
 
   #nd-page
@@ -44,14 +44,5 @@
     outline-color: var(--ring) !important;
     outline-offset: 2px;
     box-shadow: 0 0 0 2px var(--ring) !important;
-  }
-
-  #nd-page
-    a[class*="hover:bg-fd-accent"][class*="hover:text-fd-accent-foreground"]:is(
-      :hover,
-      :focus-visible
-    )
-    > p.text-fd-muted-foreground {
-    color: var(--color-fd-muted-foreground) !important;
   }
 }

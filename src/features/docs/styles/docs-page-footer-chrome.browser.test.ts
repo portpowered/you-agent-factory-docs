@@ -11,6 +11,7 @@ import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  DOCS_PAGE_FOOTER_HOVER_TOKENS,
   docsPageFooterCompactGap,
   docsPageFooterCompactPadding,
 } from "@/features/docs/styles/docs-page-footer-chrome";
@@ -24,10 +25,12 @@ const FOOTER_CHROME_CSS = readFileSync(
   "utf8",
 );
 
-/** Distinctive accent-foreground so recoloring is observable in rgb(). */
+/** Distinctive accent-foreground so Fumadocs recoloring is observable in rgb(). */
 const ACCENT_FOREGROUND_RGB = "rgb(255, 0, 0)";
 const FOREGROUND_RGB = "rgb(20, 20, 20)";
 const MUTED_FOREGROUND_RGB = "rgb(100, 100, 100)";
+const PRIMARY_YELLOW_RGB = "rgb(245, 199, 111)";
+const PRIMARY_FOREGROUND_RGB = "rgb(26, 34, 40)";
 const RING_RGB = "rgb(0, 200, 100)";
 
 const FUMADOCS_TALL_PADDING_PX = 16; // p-4 = 1rem
@@ -79,6 +82,8 @@ function buildFooterChromeFixtureHtml(includeChromeCss: boolean): string {
         --color-fd-accent: rgb(0, 100, 200);
         --color-fd-accent-foreground: ${ACCENT_FOREGROUND_RGB};
         --color-fd-muted-foreground: ${MUTED_FOREGROUND_RGB};
+        --docs-chrome-primary-yellow: ${PRIMARY_YELLOW_RGB};
+        --primary-foreground: ${PRIMARY_FOREGROUND_RGB};
         --ring: ${RING_RGB};
       }
       * { box-sizing: border-box; }
@@ -186,9 +191,15 @@ describe("docs page footer chrome behavioral (always-on)", () => {
   test("compact token exports stay aligned with rem→px fixture expectations", () => {
     expect(docsPageFooterCompactPadding).toBe("0.5rem 0.75rem");
     expect(docsPageFooterCompactGap).toBe("0.25rem");
+    expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverBackground).toBe(
+      "var(--docs-chrome-primary-yellow)",
+    );
+    expect(DOCS_PAGE_FOOTER_HOVER_TOKENS.hoverForeground).toBe(
+      "var(--primary-foreground)",
+    );
   });
 
-  test("Playwright fixture: hover/focus keep stable title color, non-text affordances, and compact sizing", async () => {
+  test("Playwright fixture: hover/focus show yellow highlight with dark text and compact sizing", async () => {
     const browser = await launchPlaywrightBrowser();
     try {
       const page = await browser.newPage({
@@ -205,23 +216,23 @@ describe("docs page footer chrome behavioral (always-on)", () => {
 
           const resting = await probeFooterCard(page, cardKey);
           expect(resting.color).toBe(FOREGROUND_RGB);
+          expect(resting.backgroundColor).not.toBe(PRIMARY_YELLOW_RGB);
           expectCompactSizing(resting);
 
           await card.hover();
           const hovered = await probeFooterCard(page, cardKey);
-          expect(hovered.color).toBe(FOREGROUND_RGB);
+          expect(hovered.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(hovered.color).toBe(PRIMARY_FOREGROUND_RGB);
           expect(hovered.color).not.toBe(ACCENT_FOREGROUND_RGB);
-          expect(hovered.sublabelColor).toBe(MUTED_FOREGROUND_RGB);
-          expect(hovered.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
-          expect(hovered.backgroundColor).not.toBe(resting.backgroundColor);
+          expect(hovered.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
           expectCompactSizing(hovered);
 
           await card.focus();
           const focused = await probeFooterCard(page, cardKey);
-          expect(focused.color).toBe(FOREGROUND_RGB);
+          expect(focused.backgroundColor).toBe(PRIMARY_YELLOW_RGB);
+          expect(focused.color).toBe(PRIMARY_FOREGROUND_RGB);
           expect(focused.color).not.toBe(ACCENT_FOREGROUND_RGB);
-          expect(focused.sublabelColor).toBe(MUTED_FOREGROUND_RGB);
-          expect(focused.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+          expect(focused.sublabelColor).toBe(PRIMARY_FOREGROUND_RGB);
           expect(parsePx(focused.outlineWidth)).toBeGreaterThanOrEqual(2);
           expect(focused.boxShadow).toContain(RING_RGB);
           expectCompactSizing(focused);
