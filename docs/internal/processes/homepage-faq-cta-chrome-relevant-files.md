@@ -18,7 +18,8 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
 | `src/features/landing-page/components/FaqPanel.test.tsx` | Fixture Q/A render, heading/button a11y names, empty items, expand/collapse |
 | `src/features/landing-page/components/CtaBand.tsx` | Fogged install CTA band (`headline` / optional `supporting` + `installCommand` / `ctaLabel` + optional `ctaHref`) |
 | `src/features/landing-page/components/CtaBand.test.tsx` | Fixture CTA label/href, fog markers, optional-field omission |
-| `src/features/landing-page/components/LandingFooterArt.tsx` | (story 004) Decorative art node for `SiteFooter` `art` slot |
+| `src/features/landing-page/components/LandingFooterArt.tsx` | Decorative seadragon / YOU-field art node for `SiteFooter` `art` slot (`src` / `className`; decorative `alt=""`) |
+| `src/features/landing-page/components/LandingFooterArt.test.tsx` | Art root + default `/home/seadragon-crop.png`; SiteFooter art-slot wrap |
 | `src/app/(dev)/faq-cta-harness/page.tsx` | (story 005) Gated harness: header → faq → cta → footer art |
 
 ## Shared stubs (owned by W-skeleton; consume, do not reinvent schemas)
@@ -49,6 +50,9 @@ Control docs live under planner-local `docs/temp/homepage-2/` (gitignored):
   otherwise `<button>`; optional `supporting` / `installCommand` omit cleanly.
 - Fog drift uses `motion-safe:animate-pulse` + `motion-reduce:animate-none` so
   reduced-motion keeps a static readable band.
+- LandingFooterArt: default `src` is `landingHomeAssets.seadragonCrop`
+  (`/home/seadragon-crop.png`) plus a local YOU-field wash; pure decoration uses
+  `alt=""`; pass as opaque `art={<LandingFooterArt />}` — do not edit footer.
 - Harness gating matches other `(dev)` routes: `notFound()` when
   `NODE_ENV === "production"` unless `ENABLE_COMPONENT_EXAMPLES === "1"`.
 - Do not implement carousel, hero portrait/capability/youi, whale/sphere, or
