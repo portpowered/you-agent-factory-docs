@@ -377,7 +377,7 @@
   "name": "factory",
   "resources": [
     {
-      "capacity": 8,
+      "capacity": 16,
       "id": "executor-slot",
       "name": "executor-slot"
     },
