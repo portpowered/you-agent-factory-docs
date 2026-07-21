@@ -205,6 +205,22 @@ shared map — not per-control hex hacks.
   empty (`role="status"`) and error (`role="alert"`) states.
 - Do not import package styles from the wrapper module.
 
+## Teaching-ui comparative charts (compose factory-ui only)
+
+- Feature path: `src/features/teaching-ui/charts/**` — domain comparative
+  recipes (`ComparativeBarChart`, `ComparativeLineChart`) compose
+  `@/features/factory-ui/charts` + Recharts. Do not expand
+  `@you-agent-factory/components` or factory-ui wrapper APIs for focus/series
+  models.
+- Focus presentation lives in chart-local helpers (`focus-colors.ts` /
+  `resolveFocusColor` / `resolveBarFill`) using accent `#f5c76f` and muted
+  whitish `#8aaeb8` until a shared `teaching-ui/focus` helper lands.
+- Prefer a `ChartContainer` footer series key for visible legend labels so
+  tests remain reliable when Recharts `ResponsiveContainer` reports 0×0 under
+  happy-dom.
+- Assert focus via CSS vars on `role="img"` (`--color-<seriesId>`) and/or
+  pure focus helpers; assert a11y with `getByRole("img", { name: title })`.
+
 ## Thin factory-ui DataTable and CodePanel wrappers
 
 - Host path: `src/features/factory-ui/data-display.ts` — re-export
