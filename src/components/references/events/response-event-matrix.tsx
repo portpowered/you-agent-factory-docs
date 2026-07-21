@@ -183,7 +183,7 @@ export function ResponseEventMatrix({
           {catalog.payloadVariants.map((variant) => (
             <li key={variant.payloadSchemaName}>
               <a
-                className="font-mono text-primary text-sm underline-offset-4 hover:underline"
+                className="font-mono text-secondary text-sm underline-offset-4 hover:underline"
                 href={
                   pagePath !== undefined
                     ? `${pagePath}#${variant.payloadVariantAnchor}`
