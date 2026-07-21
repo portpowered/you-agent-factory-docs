@@ -2,10 +2,10 @@ import { describe, expect, test } from "bun:test";
 import {
   assertDocsFooterChromeCssConvergence,
   assertDocsFooterCompactSizingCssConvergence,
-  assertDocsFooterSublabelHoverFocusCssConvergence,
+  assertDocsFooterYellowDarkTextCssConvergence,
   assertFooterChromeContract,
   bundledCssHasFooterCompactSizingRule,
-  bundledCssHasFooterSublabelInheritRule,
+  bundledCssHasFooterYellowDarkTextRule,
   extractFooterCardAnchorHtml,
   extractNdPageHtml,
   FOOTER_COMPACT_GAP,
@@ -78,13 +78,13 @@ describe("docs page footer contract", () => {
     ).toBe(true);
   });
 
-  test("bundledCssHasFooterSublabelInheritRule matches production no-text-recolor selector chain", () => {
+  test("bundledCssHasFooterYellowDarkTextRule matches yellow fill + dark ink selector chain", () => {
     const bundledCss = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){color:inherit!important}
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)*{color:var(--primary-foreground)!important}
     `;
 
-    expect(bundledCssHasFooterSublabelInheritRule(bundledCss)).toBe(true);
+    expect(bundledCssHasFooterYellowDarkTextRule(bundledCss)).toBe(true);
   });
 
   test("bundledCssHasFooterCompactSizingRule matches compact padding/gap overrides", () => {
@@ -96,46 +96,50 @@ describe("docs page footer contract", () => {
     expect(assertDocsFooterCompactSizingCssConvergence(bundledCss)).toBeNull();
   });
 
-  test("assertDocsFooterChromeCssConvergence requires both no-text-recolor and compact sizing", () => {
+  test("assertDocsFooterChromeCssConvergence requires both yellow+dark-text and compact sizing", () => {
     const bothRepairsCss = `
       #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){color:inherit!important}
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
     `;
 
     expect(assertDocsFooterChromeCssConvergence(bothRepairsCss)).toBeNull();
 
     const missingCompact = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){color:inherit!important}
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--primary-foreground)!important}
     `;
     expect(assertDocsFooterChromeCssConvergence(missingCompact)).toContain(
       "missing footer compact padding/gap",
     );
 
-    const missingInherit = `
+    const missingYellowDark = `
       #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]{padding:${FOOTER_COMPACT_PADDING}!important;gap:${FOOTER_COMPACT_GAP}!important}
     `;
-    expect(assertDocsFooterChromeCssConvergence(missingInherit)).toContain(
-      "missing footer hover/focus no-text-recolor",
+    expect(assertDocsFooterChromeCssConvergence(missingYellowDark)).toContain(
+      "missing footer hover/focus yellow + dark-text",
     );
   });
 
-  test("assertDocsFooterSublabelHoverFocusCssConvergence returns reason when no-text-recolor rule is missing", () => {
+  test("assertDocsFooterYellowDarkTextCssConvergence returns reason when yellow+dark-text rule is missing", () => {
     expect(
-      assertDocsFooterSublabelHoverFocusCssConvergence(
-        "#nd-page a:hover>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)}",
+      assertDocsFooterYellowDarkTextCssConvergence(
+        "#nd-page a:hover{color:inherit!important}",
       ),
-    ).toContain("missing footer hover/focus no-text-recolor");
+    ).toContain("missing footer hover/focus yellow + dark-text");
   });
 
-  test("bundledCssHasFooterSublabelInheritRule rejects accent-foreground title recolor", () => {
-    const bundledCss = `
-      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){color:var(--color-fd-accent-foreground)}
+  test("bundledCssHasFooterYellowDarkTextRule rejects stable-inherit and accent-foreground-only hover", () => {
+    const stableInheritCss = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){color:inherit!important}
       #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible)>p.text-fd-muted-foreground{color:var(--color-fd-muted-foreground)!important}
     `;
+    expect(bundledCssHasFooterYellowDarkTextRule(stableInheritCss)).toBe(false);
 
-    expect(bundledCssHasFooterSublabelInheritRule(bundledCss)).toBe(false);
+    const accentForegroundCss = `
+      #nd-page a[class*=hover\\:bg-fd-accent][class*=hover\\:text-fd-accent-foreground]:is(:hover,:focus-visible){background-color:var(--docs-chrome-primary-yellow)!important;color:var(--color-fd-accent-foreground)!important}
+    `;
+    expect(bundledCssHasFooterYellowDarkTextRule(accentForegroundCss)).toBe(
+      false,
+    );
   });
 
   test("bundledCssHasFooterCompactSizingRule rejects tall Fumadocs padding/gap defaults", () => {

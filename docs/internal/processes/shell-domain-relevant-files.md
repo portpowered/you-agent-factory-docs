@@ -323,27 +323,31 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   with settled published page children only (no operation / event-variant /
   schema-definition inventory paths in the global explorer).
 * `src/features/docs/styles/docs-page-footer-chrome.ts` (+ `.css` / `.test.ts`)
-  Shared DocsPage Previous/Next footer **chrome** (hover/focus background +
-  focus ring; no title-text accent-foreground recolor; muted sublabel stays
-  muted; compact `padding`/`gap` overrides for Fumadocs `p-4`/`gap-2`). Prefer
-  CSS/token overrides on the Fumadocs accent-hover card selectors over
-  redesigning footer neighbor data.
+  Shared DocsPage Previous/Next footer **chrome** (hover/focus primary yellow
+  fill via `--docs-chrome-primary-yellow` + dark accent-ink text via
+  `--primary-foreground`; accessible focus ring; compact `padding`/`gap`
+  overrides for Fumadocs `p-4`/`gap-2`). Supersedes the post-#155
+  stable-inherit / no-text-recolor title rule so neighbor cards match
+  collection-card hover. Prefer CSS/token overrides on the Fumadocs
+  accent-hover card selectors over redesigning footer neighbor data.
 * `src/features/docs/styles/docs-page-footer-chrome.browser.test.ts`
   Always-on Playwright behavioral gate: embeds the real chrome CSS in a
   minimal `#nd-page` prev/next fixture (no Next build / `bun run dev`),
-  probes `getComputedStyle` on hover and focus-visible for stable title color
-  (not accent-foreground), muted sublabel retention, background + focus-ring
-  affordances, and compact padding/gap (`8px/12px` + `4px`). Includes a
-  negative fixture (chrome CSS omitted) that still reproduces tall `p-4`/`gap-2`
-  and accent title recolor. Pattern mirrors
-  `a11y-content-column-left-edge-geometry.test.ts` (`page.setContent`).
+  probes `getComputedStyle` on hover and focus-visible for yellow fill + dark
+  ink (title and directional sublabel), focus-ring affordances, and compact
+  padding/gap (`8px/12px` + `4px`). Includes a negative fixture (chrome CSS
+  omitted) that still reproduces tall `p-4`/`gap-2` and accent title recolor.
+  Pattern mirrors `a11y-content-column-left-edge-geometry.test.ts`
+  (`page.setContent`).
 * `src/lib/navigation/docs-page-footer-contract.ts` (+ `.test.ts`)
   Built-HTML / bundled-CSS convergence helpers for footer card accent-hover
-  classes, muted directional sublabels, the no-text-recolor CSS pairing, and
-  compact padding/gap overrides (`FOOTER_COMPACT_PADDING` /
-  `FOOTER_COMPACT_GAP`). Use `assertDocsFooterChromeCssConvergence` when both
-  repairs must stay locked together. Source/CSS string helpers are supporting
-  contracts only — behavioral proof lives in the browser test above.
+  classes, muted directional sublabels, the yellow + dark-text CSS pairing
+  (`bundledCssHasFooterYellowDarkTextRule` /
+  `assertDocsFooterYellowDarkTextCssConvergence`), and compact padding/gap
+  overrides (`FOOTER_COMPACT_PADDING` / `FOOTER_COMPACT_GAP`). Use
+  `assertDocsFooterChromeCssConvergence` when both repairs must stay locked
+  together. Source/CSS string helpers are supporting contracts only —
+  behavioral proof lives in the browser test above.
 * Worktree browser verify for footer chrome: Turbopack rejects hoisted
   out-of-root `node_modules` symlinks, so `bun run dev` often cannot start in
   a worktree. Prefer the committed Playwright `page.setContent` fixture in
