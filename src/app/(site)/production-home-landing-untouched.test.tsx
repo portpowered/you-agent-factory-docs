@@ -93,6 +93,8 @@ describe("production home mounts LandingPage (Wave C route flip)", () => {
     // Root + wired MERGED slots (header / hero+sphere / capability / youi /
     // whale / footer). Carousel stays a labeled placeholder by design.
     expect(html).toContain('data-landing-page=""');
+    expect(html).toContain('data-landing-main=""');
+    expect(html).toContain("<main");
     expect(html).toContain('data-landing-header=""');
     expect(html).toContain('data-hero-section=""');
     expect(html).toContain('data-particle-sphere=""');

@@ -21,14 +21,15 @@ describe("reduced-motion served-page probe", () => {
       return;
     }
 
-    const home = getCriticalRoute("home");
+    // Docs chrome (drawer) lives on browse — production `/` is full-bleed landing.
+    const browse = getCriticalRoute("browse");
     const mobile = getCriticalViewport("mobile");
-    if (!home || !mobile) {
-      throw new Error("Expected home route and mobile viewport in contract");
+    if (!browse || !mobile) {
+      throw new Error("Expected browse route and mobile viewport in contract");
     }
 
     const session = await openA11yResponsivePageProbe({
-      path: home.path,
+      path: browse.path,
       viewport: mobile,
       projectRoot: repoRoot,
     });
@@ -65,14 +66,14 @@ describe("reduced-motion served-page probe", () => {
       return;
     }
 
-    const home = getCriticalRoute("home");
+    const browse = getCriticalRoute("browse");
     const mobile = getCriticalViewport("mobile");
-    if (!home || !mobile) {
-      throw new Error("Expected home route and mobile viewport in contract");
+    if (!browse || !mobile) {
+      throw new Error("Expected browse route and mobile viewport in contract");
     }
 
     const session = await openA11yResponsivePageProbe({
-      path: home.path,
+      path: browse.path,
       viewport: mobile,
       projectRoot: repoRoot,
     });
@@ -100,6 +101,49 @@ describe("reduced-motion served-page probe", () => {
         REDUCED_MOTION_DURATION_THRESHOLD_MS,
       );
       expect(fullMotion.isReduced).toBe(false);
+    } finally {
+      await session.cleanup();
+    }
+  });
+
+  test("production home sphere stays static under prefers-reduced-motion", async () => {
+    if (!shouldRunVerifyProductionIntegrationTests(repoRoot)) {
+      return;
+    }
+
+    const home = getCriticalRoute("home");
+    const laptop = getCriticalViewport("laptop");
+    if (!home || !laptop) {
+      throw new Error("Expected home route and laptop viewport in contract");
+    }
+
+    const session = await openA11yResponsivePageProbe({
+      path: home.path,
+      viewport: laptop,
+      projectRoot: repoRoot,
+    });
+
+    try {
+      await session.page.emulateMedia({ reducedMotion: "reduce" });
+      await session.page.reload({ waitUntil: "load" });
+
+      await session.page.waitForSelector("[data-particle-sphere]", {
+        state: "attached",
+      });
+
+      const motion = await session.page.evaluate(() => {
+        const sphere = document.querySelector("[data-particle-sphere]");
+        const whale = document.querySelector("[data-whale-plate]");
+        return {
+          sphereMotion: sphere?.getAttribute("data-particle-sphere-motion"),
+          whalePhase: whale?.getAttribute("data-whale-phase"),
+          hasLanding: Boolean(document.querySelector("[data-landing-page]")),
+        };
+      });
+
+      expect(motion.hasLanding).toBe(true);
+      expect(motion.sphereMotion).toBe("static");
+      expect(motion.whalePhase).toBe("settled");
     } finally {
       await session.cleanup();
     }

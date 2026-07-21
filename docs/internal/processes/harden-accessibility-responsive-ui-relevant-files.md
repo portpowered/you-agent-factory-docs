@@ -333,9 +333,12 @@ surfaces (home, browse, search, docs/harness-support, blog).
   `openA11yResponsivePageProbe` only when a served page is required.
 * Static-export HTTP server must percent-decode `_next/static` catch-all chunk
   paths (`%5B%5B...slug%5D%5D`) or hydrated reference pages fail browser verify.
-* For critical-page a11y stories: assert banner + `nav[aria-label="Primary"]` +
-  `main` + coherent h1/h2 outline, keyboard focus with `focus-visible:ring`,
-  then serious/critical axe on the verified surface.
+* For critical-page a11y stories: assert banner + site nav
+  (`nav[aria-label="Primary"]` on docs chrome, `nav[aria-label="Landing"]` on
+  production `/`) + `main` + coherent h1/h2 outline, keyboard focus with
+  `focus-visible:ring`, then serious/critical axe on the verified surface.
+  Drawer reduced-motion probes target docs-chrome routes (e.g. `/browse`), not
+  full-bleed landing home.
 * Wire new required a11y gates through `src/lib/ci-required-path.ts` so
   `make ci` and CI stay aligned — do not add a workflow-only or Makefile-only
   required stage.

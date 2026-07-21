@@ -2,8 +2,11 @@ import "./mock-navigation";
 import { afterEach, beforeAll, describe, expect, test } from "bun:test";
 import { cleanup, screen, within } from "@testing-library/react";
 import { act } from "react";
+import { composeProductionLandingSlots } from "@/app/(site)/compose-production-landing-slots";
 import { HomeArticle } from "@/components/home/home-article";
 import { BrowseIndexPage } from "@/features/docs/components/BrowseIndexPage";
+import { LandingPage } from "@/features/landing-page/LandingPage";
+import { fixtureLandingPageData } from "@/features/landing-page/landing-page.data";
 import { CanonicalDocsLayout } from "@/features/layout/canonical-docs-layout";
 import { getPrimaryNavItems } from "@/features/layout/primary-nav";
 import { loadShippedLocalizedDocsPages } from "@/lib/content/pages";
@@ -33,7 +36,36 @@ describe("home and browse accessibility", () => {
     restoreFetchMock();
   });
 
-  test("home exposes landmarks, coherent headings, keyboard focus, and no serious axe violations", async () => {
+  test("production landing home exposes landmarks, keyboard focus, and no serious axe violations", async () => {
+    await act(async () => {
+      await renderWithAppProviders(
+        <LandingPage {...composeProductionLandingSlots()} />,
+      );
+    });
+
+    expect(document.querySelector("[data-landing-page]")).toBeTruthy();
+    expect(document.querySelector("main")).toBeTruthy();
+
+    const structure = expectCriticalPageStructure(document, {
+      expectedH1: fixtureLandingPageData.hero.title,
+    });
+    expect(structure.headingLevels[0]).toBe(1);
+
+    const nav = screen.getByRole("navigation", { name: "Landing" });
+    for (const item of fixtureLandingPageData.header.nav) {
+      const link = within(nav).getByRole("link", { name: item.label });
+      link.focus();
+      expect(document.activeElement).toBe(link);
+      expect(link.className).toContain("focus-visible:ring");
+    }
+
+    const controls = listKeyboardFocusableControls(document);
+    expect(controls.every((control) => control.name.length > 0)).toBe(true);
+
+    await expectNoSeriousAxeViolations(document.body);
+  });
+
+  test("HomeArticle under docs layout keeps landmarks and keyboard focus (component contract)", async () => {
     await installDocsSearchFetchMock();
     const context = await loadAppTestContext();
     await act(async () => {

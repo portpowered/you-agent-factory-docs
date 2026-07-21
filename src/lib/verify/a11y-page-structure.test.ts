@@ -6,7 +6,7 @@ import {
 } from "./a11y-page-structure";
 
 describe("a11y-page-structure probes", () => {
-  test("detects banner, primary nav, main, and heading outline", () => {
+  test("detects banner, primary or landing nav, main, and heading outline", () => {
     document.body.innerHTML = `
       <header>
         <nav aria-label="Primary">
@@ -41,6 +41,28 @@ describe("a11y-page-structure probes", () => {
       "Open search",
       "Getting started",
     ]);
+  });
+
+  test("treats Landing nav as site navigation for production home", () => {
+    document.body.innerHTML = `
+      <header data-landing-header="">
+        <nav aria-label="Landing">
+          <a href="/browse">Browse</a>
+          <a href="/docs/guides">Guides</a>
+        </nav>
+      </header>
+      <main data-landing-main="">
+        <h1>Agent factory workflows that stay persistent</h1>
+      </main>
+    `;
+
+    const probe = probePageLandmarks(document);
+    expect(probe.hasBanner).toBe(true);
+    expect(probe.hasPrimaryNavigation).toBe(true);
+    expect(probe.hasMain).toBe(true);
+    expectCriticalPageStructure(document, {
+      expectedH1: "Agent factory workflows that stay persistent",
+    });
   });
 
   test("resolves accessible names from label[for] associations", () => {

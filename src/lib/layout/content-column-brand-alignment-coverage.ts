@@ -19,15 +19,11 @@ export const BRAND_ALIGNMENT_EXPECTED_BRAND = SITE_BRAND_NAME;
 
 /**
  * Routes that must prove brand + shared content-column left edge.
- * `header-docs-nav` is present on every shell page via DocsHeader.
+ * `header-docs-nav` is present on every docs-chrome shell page via DocsHeader.
+ * Production `/` is full-bleed LandingPage (no docs content-column) — cover
+ * HomeArticle via unit a11y/layout suites, not this served-page matrix.
  */
 export const BRAND_ALIGNMENT_VERIFICATION_ROUTES = [
-  {
-    id: "home",
-    path: "/",
-    label: "Home article + Browse",
-    contentColumnSurface: "home-article-browse" as const,
-  },
   {
     id: "browse",
     path: "/browse",

@@ -15,11 +15,14 @@ import { shouldRunVerifyProductionIntegrationTests } from "./server-lifecycle";
 
 const repoRoot = join(import.meta.dir, "../../..");
 
-async function probePrimaryNavAtViewport(
+async function probeSiteNavAtViewport(
   page: Page,
   viewportId: string,
+  path: string,
 ): Promise<void> {
-  if (viewportId === "mobile") {
+  const isLandingHome = path === "/";
+
+  if (viewportId === "mobile" && !isLandingHome) {
     const menuButton = page.locator("header button[aria-expanded]").first();
     expect(await menuButton.count()).toBeGreaterThan(0);
     await menuButton.click();
@@ -34,29 +37,31 @@ async function probePrimaryNavAtViewport(
       return {
         hasMenuButton: Boolean(button),
         menuExpanded: button?.getAttribute("aria-expanded") === "true",
-        hasPrimaryNavigation: Boolean(primaryNav),
-        primaryLinkCount: links.length,
+        hasSiteNavigation: Boolean(primaryNav),
+        linkCount: links.length,
       };
     });
     expect(drawer.hasMenuButton).toBe(true);
     expect(drawer.menuExpanded).toBe(true);
-    expect(drawer.hasPrimaryNavigation).toBe(true);
-    expect(drawer.primaryLinkCount).toBeGreaterThanOrEqual(3);
+    expect(drawer.hasSiteNavigation).toBe(true);
+    expect(drawer.linkCount).toBeGreaterThanOrEqual(3);
     return;
   }
 
-  const inline = await page.evaluate(() => {
-    const primaryNav = document.querySelector('nav[aria-label="Primary"]');
-    const links = primaryNav
-      ? Array.from(primaryNav.querySelectorAll("a[href]"))
-      : [];
+  // Production `/` LandingHeader keeps inline Landing nav (no docs drawer).
+  // Docs routes keep Primary inline at tablet+.
+  const inline = await page.evaluate((landingHome) => {
+    const nav = document.querySelector(
+      landingHome ? 'nav[aria-label="Landing"]' : 'nav[aria-label="Primary"]',
+    );
+    const links = nav ? Array.from(nav.querySelectorAll("a[href]")) : [];
     return {
-      hasPrimaryNavigation: Boolean(primaryNav),
-      primaryLinkCount: links.length,
+      hasSiteNavigation: Boolean(nav),
+      linkCount: links.length,
     };
-  });
-  expect(inline.hasPrimaryNavigation).toBe(true);
-  expect(inline.primaryLinkCount).toBeGreaterThanOrEqual(3);
+  }, isLandingHome);
+  expect(inline.hasSiteNavigation).toBe(true);
+  expect(inline.linkCount).toBeGreaterThanOrEqual(3);
 }
 
 describe("critical-route responsive overflow matrix (served pages)", () => {
@@ -102,7 +107,7 @@ describe("critical-route responsive overflow matrix (served pages)", () => {
     }
   }, 600_000);
 
-  test("primary navigation remains usable at mobile and tablet", async () => {
+  test("site navigation remains usable at mobile and tablet", async () => {
     if (!shouldRunVerifyProductionIntegrationTests(repoRoot)) {
       return;
     }
@@ -119,8 +124,11 @@ describe("critical-route responsive overflow matrix (served pages)", () => {
 
     try {
       for (const viewport of [mobile, tablet]) {
-        const page = await session.openPath("/", viewport);
-        await probePrimaryNavAtViewport(page, viewport.id);
+        // Landing `/` (inline Landing nav) + docs browse (Primary / drawer).
+        for (const path of ["/", "/browse"] as const) {
+          const page = await session.openPath(path, viewport);
+          await probeSiteNavAtViewport(page, viewport.id, path);
+        }
       }
     } finally {
       await session.cleanup();

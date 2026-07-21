@@ -88,9 +88,12 @@ export function probePageLandmarks(root: ParentNode): PageLandmarkProbe {
   const banner =
     root.querySelector('header, [role="banner"]') ??
     scope.querySelector('header, [role="banner"]');
-  const primaryNav =
-    root.querySelector('nav[aria-label="Primary"]') ??
-    scope.querySelector('nav[aria-label="Primary"]');
+  // Docs chrome uses Primary; production landing home uses Landing.
+  const siteNav =
+    root.querySelector(
+      'nav[aria-label="Primary"], nav[aria-label="Landing"]',
+    ) ??
+    scope.querySelector('nav[aria-label="Primary"], nav[aria-label="Landing"]');
   const main =
     root.querySelector('main, [role="main"]') ??
     scope.querySelector('main, [role="main"]');
@@ -100,7 +103,7 @@ export function probePageLandmarks(root: ParentNode): PageLandmarkProbe {
 
   return {
     hasBanner: Boolean(banner),
-    hasPrimaryNavigation: Boolean(primaryNav),
+    hasPrimaryNavigation: Boolean(siteNav),
     hasMain: Boolean(main),
     h1Count: h1s.length,
     h1Texts: h1s.map((el) =>
@@ -144,7 +147,9 @@ export function expectCriticalPageStructure(
     throw new Error("Expected banner/header landmark on critical page");
   }
   if (!probe.hasPrimaryNavigation) {
-    throw new Error('Expected primary navigation (nav aria-label="Primary")');
+    throw new Error(
+      'Expected site navigation (nav aria-label="Primary" or "Landing")',
+    );
   }
   if (!probe.hasMain) {
     throw new Error("Expected main landmark on critical page");
