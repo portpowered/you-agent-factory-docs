@@ -28,6 +28,21 @@ pages.
 - Keep harness presentational body free of `next/navigation` so component tests
   can render it without mocking `notFound`.
 
+## Closeout verification (story 004)
+
+- Diff must stay chassis-only: `src/features/teaching-ui/**`,
+  `src/app/(dev)/teaching-ui-harness/**`, and this process note. No production
+  technique/blog/docs MDX, registries, or `@you-agent-factory/components` API
+  expansion.
+- Durable proof: `src/features/teaching-ui/production-untouched.test.tsx`
+  renders blog/changelog + docs/concepts/harness and asserts absence of
+  harness markers; also locks the public barrel to focus exports only.
+- Browser proof when Next can start (parent-hoisted `node_modules`):
+  `bun ./scripts/run-next.ts dev --webpack -p <3100-3999> -H 127.0.0.1`, then
+  curl `/blog/changelog` and `/docs/concepts/harness` with `--max-time 10` and
+  confirm no `teaching-ui-harness` / `data-teaching-ui` markers. Kill the server
+  before exiting.
+
 ## Control docs (often gitignored in worktrees)
 
 - `docs/temp/graph-pages/contracts.md` — Focus contract
