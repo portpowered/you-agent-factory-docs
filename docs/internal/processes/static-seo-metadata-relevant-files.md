@@ -120,6 +120,10 @@ social assets, sitemap, robots).
     Exclusion proofs: retired `/docs/models|modules|papers|training|systems`,
     `/topology`, `/docs/timeline`, deleted Atlas blog slugs. Use
     `verifyExportSitemap` / `sitemapLocsMatchPublicFactoryContract`.
+    Export SEO discovery (`verifyExportSeoDiscovery`) and `verifyExportSitemap`
+    reject non-slash absolute locs (compare against
+    `resolveProductionSitemapLocHref`, not `resolveProductionMetadataHref`) and
+    still fail closed on retired Atlas / §10 migration-old exclusion URLs.
 11. **Robots + discovery gate** (story 007): `buildPublicRobots` /
     `src/app/robots.ts` emit `out/robots.txt` with a normal allow-all policy
     and `Sitemap:` pointing at the absolute production sitemap URL

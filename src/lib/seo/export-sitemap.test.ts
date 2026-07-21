@@ -245,6 +245,31 @@ describe("export sitemap helpers", () => {
     ).toBe(false);
   });
 
+  test("sitemapLocsMatchPublicFactoryContract rejects non-slash absolute locs", () => {
+    const good = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+    const nonSlashHarness = resolveProductionMetadataHref(
+      "/docs/concepts/harness",
+      PROJECT_SITE_EXPORT_ENV,
+    );
+    expect(nonSlashHarness.endsWith("/")).toBe(false);
+
+    const withNonSlash = good.map((url) =>
+      url ===
+      resolveProductionSitemapLocHref(
+        "/docs/concepts/harness",
+        PROJECT_SITE_EXPORT_ENV,
+      )
+        ? nonSlashHarness
+        : url,
+    );
+    expect(
+      sitemapLocsMatchPublicFactoryContract(
+        withNonSlash,
+        PROJECT_SITE_EXPORT_ENV,
+      ),
+    ).toBe(false);
+  });
+
   test("verifyExportSitemap accepts a matching temp out/sitemap.xml", () => {
     const tempRoot = mkdtempSync(join(tmpdir(), "export-sitemap-"));
     try {
@@ -261,6 +286,14 @@ describe("export sitemap helpers", () => {
       expect(result.ok).toBe(true);
       if (result.ok) {
         expect(result.urls).toEqual(urls);
+        for (const url of result.urls) {
+          expect(url.endsWith("/")).toBe(true);
+        }
+        for (const route of SITEMAP_INCLUSION_PROOF_ROUTES) {
+          expect(result.urls).toContain(
+            resolveProductionSitemapLocHref(route, PROJECT_SITE_EXPORT_ENV),
+          );
+        }
       }
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
@@ -309,6 +342,63 @@ describe("export sitemap helpers", () => {
         outDir: tempRoot,
       });
       expect(relative.ok).toBe(false);
+    } finally {
+      rmSync(tempRoot, { recursive: true, force: true });
+    }
+  });
+
+  test("verifyExportSitemap rejects non-slash absolute locs and §10 migration old urls", () => {
+    const tempRoot = mkdtempSync(join(tmpdir(), "export-sitemap-slash-"));
+    try {
+      mkdirSync(tempRoot, { recursive: true });
+      const good = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+      const slashHarness = resolveProductionSitemapLocHref(
+        "/docs/concepts/harness",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      const nonSlashHarness = resolveProductionMetadataHref(
+        "/docs/concepts/harness",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      expect(nonSlashHarness.endsWith("/")).toBe(false);
+
+      writeFileSync(
+        join(tempRoot, EXPORT_SITEMAP_RELATIVE_PATH),
+        sitemapXml(
+          good.map((url) => (url === slashHarness ? nonSlashHarness : url)),
+        ),
+      );
+      const withNonSlash = verifyExportSitemap({
+        env: PROJECT_SITE_EXPORT_ENV,
+        outDir: tempRoot,
+      });
+      expect(withNonSlash.ok).toBe(false);
+      if (!withNonSlash.ok) {
+        expect(withNonSlash.reason).toContain(slashHarness);
+      }
+
+      const migrationOld =
+        DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES[0] as string;
+      writeFileSync(
+        join(tempRoot, EXPORT_SITEMAP_RELATIVE_PATH),
+        sitemapXml([
+          ...good,
+          resolveProductionSitemapLocHref(
+            migrationOld,
+            PROJECT_SITE_EXPORT_ENV,
+          ),
+        ]),
+      );
+      const withMigrationOld = verifyExportSitemap({
+        env: PROJECT_SITE_EXPORT_ENV,
+        outDir: tempRoot,
+      });
+      expect(withMigrationOld.ok).toBe(false);
+      if (!withMigrationOld.ok) {
+        expect(withMigrationOld.reason).toMatch(
+          /migration old|unexpected|§10/i,
+        );
+      }
     } finally {
       rmSync(tempRoot, { recursive: true, force: true });
     }
