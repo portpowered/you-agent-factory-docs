@@ -339,6 +339,13 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   omitted) that still reproduces tall `p-4`/`gap-2` and accent title recolor.
   Pattern mirrors `a11y-content-column-left-edge-geometry.test.ts`
   (`page.setContent`).
+* `src/features/docs/styles/docs-card-and-footer-hover-shared-feel.browser.test.ts`
+  Cross-surface shared-feel gate: locks
+  `DOCS_RESOURCE_CARD_HOVER_TOKENS` ↔ `DOCS_PAGE_FOOTER_HOVER_TOKENS` parity,
+  asserts both chrome stylesheets encode yellow fill + dark ink, keeps
+  `searchInlineResultsListClassName` outside the card marker, then proves
+  resource-card and footer-card hover/focus compute the same yellow + dark
+  ink colors in one Playwright fixture (no Next build).
 * `src/lib/navigation/docs-page-footer-contract.ts` (+ `.test.ts`)
   Built-HTML / bundled-CSS convergence helpers for footer card accent-hover
   classes, muted directional sublabels, the yellow + dark-text CSS pairing
