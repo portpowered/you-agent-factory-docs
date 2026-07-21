@@ -1,10 +1,32 @@
-import { describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, test } from "bun:test";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import claudeSonnetSeed from "@/content/registry/models/model.anthropic.claude-sonnet.json";
 import gpt4oSeed from "@/content/registry/models/model.openai.gpt-4o.json";
 import {
+  getModelPricing,
+  listModelPricing,
   type ModelPricingRecord,
   modelPricingRecordSchema,
 } from "./model-pricing";
+
+const fixtureRoots: string[] = [];
+
+afterEach(() => {
+  while (fixtureRoots.length > 0) {
+    const root = fixtureRoots.pop();
+    if (root) {
+      rmSync(root, { recursive: true, force: true });
+    }
+  }
+});
+
+function createModelsFixtureRoot(): string {
+  const root = mkdtempSync(join(tmpdir(), "model-pricing-"));
+  fixtureRoots.push(root);
+  return root;
+}
 
 const validRecord: ModelPricingRecord = {
   id: "model.openai.gpt-4o",
@@ -117,5 +139,83 @@ describe("committed model pricing seed JSON", () => {
       expect(result.data.inputPricePerMTok).toBeGreaterThanOrEqual(0);
       expect(result.data.outputPricePerMTok).toBeGreaterThanOrEqual(0);
     }
+  });
+});
+
+describe("listModelPricing / getModelPricing", () => {
+  test("lists seeded model-pricing ids from the committed registry", () => {
+    const records = listModelPricing();
+    const ids = records.map((record) => record.id);
+
+    expect(ids).toContain("model.openai.gpt-4o");
+    expect(ids).toContain("model.anthropic.claude-sonnet");
+    expect(records.every((record) => record.kind === "model-pricing")).toBe(
+      true,
+    );
+  });
+
+  test("resolves a known seeded id via getModelPricing", () => {
+    const record = getModelPricing("model.openai.gpt-4o");
+    expect(record).toBeDefined();
+    expect(record?.id).toBe("model.openai.gpt-4o");
+    expect(record?.displayName).toBe("GPT-4o");
+    expect(record?.currency).toBe("USD");
+  });
+
+  test("returns undefined for a missing id", () => {
+    expect(getModelPricing("model.missing.does-not-exist")).toBeUndefined();
+  });
+
+  test("skips non-model-pricing JSON such as optional provider metadata", () => {
+    const modelsRoot = createModelsFixtureRoot();
+    writeFileSync(
+      join(modelsRoot, "provider.openai.json"),
+      JSON.stringify({
+        id: "provider.openai",
+        kind: "provider",
+        displayName: "OpenAI",
+      }),
+    );
+    writeFileSync(
+      join(modelsRoot, "model.openai.gpt-4o.json"),
+      JSON.stringify(validRecord),
+    );
+
+    const records = listModelPricing({ modelsRoot });
+    expect(records).toHaveLength(1);
+    expect(records[0]?.id).toBe("model.openai.gpt-4o");
+    expect(getModelPricing("provider.openai", { modelsRoot })).toBeUndefined();
+  });
+
+  test("loads nested model-pricing JSON under models/**", () => {
+    const modelsRoot = createModelsFixtureRoot();
+    const nestedDir = join(modelsRoot, "nested");
+    mkdirSync(nestedDir);
+    writeFileSync(
+      join(nestedDir, "model.openai.gpt-4o.json"),
+      JSON.stringify(validRecord),
+    );
+
+    const records = listModelPricing({ modelsRoot });
+    expect(records).toHaveLength(1);
+    expect(getModelPricing("model.openai.gpt-4o", { modelsRoot })?.id).toBe(
+      "model.openai.gpt-4o",
+    );
+  });
+
+  test("throws when a model-pricing record fails schema validation", () => {
+    const modelsRoot = createModelsFixtureRoot();
+    writeFileSync(
+      join(modelsRoot, "model.bad.prices.json"),
+      JSON.stringify({
+        ...validRecord,
+        id: "model.bad.prices",
+        inputPricePerMTok: -1,
+      }),
+    );
+
+    expect(() => listModelPricing({ modelsRoot })).toThrow(
+      /Model pricing schema validation failed/,
+    );
   });
 });
