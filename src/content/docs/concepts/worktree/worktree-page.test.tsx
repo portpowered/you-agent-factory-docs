@@ -119,7 +119,6 @@ describe("worktree concept page", () => {
       /not the factory/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -158,9 +157,9 @@ describe("worktree concept page", () => {
     expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
       "Simple Example",
     );
-    expect(ja.messages.links?.workstations).toBe("Workstations");
-    expect(zhCN.messages.links?.harnessConcept).toBe("Harness concept");
-    expect(vi.messages.links?.harnessSupport).toBe("Harness support");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

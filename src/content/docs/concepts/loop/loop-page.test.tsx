@@ -86,7 +86,6 @@ describe("loop concept page", () => {
     expect(screen.getByText(/named run under you-agent-factory/i)).toBeTruthy();
     expect(screen.getByText(/not a write-review loop/i)).toBeTruthy();
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
   });
 
   test("ships ja / zh-CN / vi message stubs with the same key shape as English", async () => {
@@ -116,15 +115,9 @@ describe("loop concept page", () => {
     expect(Object.keys(vi.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
-    expect(ja.messages.links?.loopsGuide).toBe(
-      "Using you-agent-factory for loops",
-    );
-    expect(zhCN.messages.links?.loopsGuide).toBe(
-      "Using you-agent-factory for loops",
-    );
-    expect(vi.messages.links?.loopsGuide).toBe(
-      "Using you-agent-factory for loops",
-    );
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
     expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
       "What It Is",
     );

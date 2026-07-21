@@ -23,20 +23,8 @@
       "title": "Common Confusions",
       "body": "A factory bottleneck is not every slow run. Treating a stalled factory as a model-quality problem misses cases where the model is fine and a queue, harness, or shared resource is already saturated. It is also not the future bottlenecks blog listicle: that post collects comparisons and reading paths, while this concept page names the limiting stage in isolation. Statistical process control graphs are a different idea too—they watch a metric over time with a center line and control limits; they do not by themselves identify which stage caps throughput."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "blogBottlenecks": "Bottlenecks blog",
-    "taskQueueConcept": "Task queue",
-    "spcGraphsConcept": "Statistical process control graphs",
-    "harnessConcept": "Harness"
   }
 }

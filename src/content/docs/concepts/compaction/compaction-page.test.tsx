@@ -105,7 +105,6 @@ describe("compaction concept page", () => {
     expect(commonConfusionsSection?.textContent ?? "").toMatch(/not thinking/i);
     expect(commonConfusionsSection?.textContent ?? "").toMatch(/not tokens/i);
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -144,11 +143,9 @@ describe("compaction concept page", () => {
     expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
       "Simple Example",
     );
-    expect(ja.messages.links?.tokensConcept).toBe("Tokens concept");
-    expect(zhCN.messages.links?.thinkingConcept).toBe("Thinking concept");
-    expect(vi.messages.links?.configurationDocs).toBe(
-      "Configuration documentation",
-    );
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

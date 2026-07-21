@@ -18,23 +18,8 @@
       "title": "Common Confusions",
       "body": "A skill is not a tool. A tool is a named callable capability—read a file, run a command, or call an MCP action. A skill is the instruction package that tells the agent when and how to use those capabilities for a task class. A skill is also not MCP: Model Context Protocol is how a host exposes tools from servers; skills do not replace that protocol. A skill is not the harness itself—the harness is the agent runtime that can load skills. This page is not the repository's design-skills frontend authoring guide."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "harnessConcept": "Harness",
-    "toolConcept": "Tool",
-    "mcpConcept": "MCP",
-    "toolCallingConcept": "Tool calling",
-    "mcpDocs": "MCP documentation",
-    "harnessSupportDocs": "Harness support",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows"
   }
 }

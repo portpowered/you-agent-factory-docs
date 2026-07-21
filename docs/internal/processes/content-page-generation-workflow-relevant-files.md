@@ -64,9 +64,11 @@ mounting trailing Related / References footer chrome:
   do not reintroduce a related surface to keep old link asserts green.
 - `src/lib/navigation/local-docs-toc.test.ts` uses the loop concept page — after
   the strip, assert Tags presence and Related To / References TOC absence.
-- Locale message cleanup for `sections.related` / `sections.references` (and
-  Related-only link keys) is a follow-on story; MDX strip alone is enough for
-  chrome to disappear.
+- After MDX strip, clean owned concepts `messages/*.json`: drop
+  `sections.related` / `sections.references`, remove Related-only `links.*`
+  keys, keep teaching-section `links.*` (SPC `where-it-appears`), and flip
+  colocated locale stub asserts that previously required Related-footer link
+  labels.
 
 Kind templates under `docs/templates/**` (`concept.mdx`, `guide.mdx`,
 `technique.mdx`, `documentation.mdx`, `glossary.mdx`, `reference.mdx`) no

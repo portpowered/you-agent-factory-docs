@@ -23,14 +23,8 @@
       "title": "Common Confusions",
       "body": "A control chart is not a one-off dashboard snapshot that shows the latest value with no center line or limits. It is not a benchmark or eval leaderboard that ranks models or runs. It is also not a rule that every spike is a deploy bug: a point that stays inside the limits is usually common-cause noise, and a point that breaks the limits is a special-cause signal worth investigating — not an automatic proof of a bad release."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
   },
   "links": {

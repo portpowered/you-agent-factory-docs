@@ -113,7 +113,6 @@ describe("harness concept page", () => {
       /runner or model provider/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -152,11 +151,15 @@ describe("harness concept page", () => {
     expect(String(vi.messages.sections?.simpleExample?.title ?? "")).toBe(
       "Simple Example",
     );
-    expect(ja.messages.links?.whatIsYouAgentFactory).toBe(
-      "What is you-agent-factory",
-    );
-    expect(zhCN.messages.links?.loopConcept).toBe("Loop concept");
-    expect(vi.messages.links?.harnessSupport).toBe("Harness support");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
+    expect(
+      (ja.messages.sections as Record<string, unknown> | undefined)?.related,
+    ).toBeUndefined();
+    expect(
+      (ja.messages.sections as Record<string, unknown> | undefined)?.references,
+    ).toBeUndefined();
 
     render(
       <main>

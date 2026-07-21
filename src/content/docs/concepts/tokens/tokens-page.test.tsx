@@ -124,7 +124,6 @@ describe("tokens concept page", () => {
       /Design-system or UI tokens/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -166,9 +165,9 @@ describe("tokens concept page", () => {
     expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
       "Common Confusions",
     );
-    expect(ja.messages.links?.thinkingConcept).toBe("Thinking");
-    expect(zhCN.messages.links?.petriDocs).toBe("Petri / CPN");
-    expect(vi.messages.links?.configurationDocs).toBe("Configuration");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

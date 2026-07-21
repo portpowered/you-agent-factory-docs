@@ -18,22 +18,8 @@
       "title": "Common Confusions",
       "body": "A tool is the named callable capability. Tool calling is the model-inference behavior of selecting and invoking that capability during a turn—see the Tool calling concept. MCP is the host↔server protocol that can expose tools to an editor; it is not itself a tool. A skill is a reusable instruction package that may tell an agent when to use tools; it is not a callable tool name. The harness is the agent runtime that can load skills and run tools; it is not a tool. Thinking is internal reasoning before or between actions; it is not a callable capability with a tool name."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "toolCallingConcept": "Tool calling",
-    "mcpConcept": "MCP",
-    "skillsConcept": "Skills",
-    "harnessConcept": "Harness",
-    "mcpDocs": "MCP documentation",
-    "cursorDynamicWorkflows": "Cursor dynamic workflows"
   }
 }

@@ -128,7 +128,6 @@ describe("tool-calling concept page", () => {
       /Thinking is deliberative reasoning/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -170,9 +169,9 @@ describe("tool-calling concept page", () => {
     expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
       "Common Confusions",
     );
-    expect(ja.messages.links?.thinkingConcept).toBe("Thinking");
-    expect(zhCN.messages.links?.toolConcept).toBe("Tool");
-    expect(vi.messages.links?.workersDocs).toBe("Workers");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

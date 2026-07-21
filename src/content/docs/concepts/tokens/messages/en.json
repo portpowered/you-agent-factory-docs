@@ -19,25 +19,8 @@
       "title": "Common Confusions",
       "body": "Model-inference tokens are not factory or work tokens. Factory work tokens are the Petri / Colored Petri Net (CPN) units of submitted work that occupy places as workstations fire; that meaning lives in program documentation such as Petri, configuration, workstations, and submitting work. Design-system or UI tokens are also a different idea and are out of scope here. Compaction shrinks retained context measured in model-inference tokens; thinking is deliberative reasoning that may spend more of them."
     },
-    "related": {
-      "title": "Related To"
-    },
     "tags": {
       "title": "Tags"
-    },
-    "references": {
-      "title": "References"
     }
-  },
-  "links": {
-    "thinkingConcept": "Thinking",
-    "compactionConcept": "Compaction",
-    "harnessConcept": "Harness",
-    "petriDocs": "Petri / CPN",
-    "configurationDocs": "Configuration",
-    "workstationsDocs": "Workstations",
-    "submittingWorkDocs": "Submitting work",
-    "harnessSupportDocs": "Harness support",
-    "workersDocs": "Workers"
   }
 }

@@ -128,7 +128,6 @@ describe("skills concept page", () => {
       /not the harness itself/i,
     );
     expect(document.body.textContent ?? "").not.toMatch(/Model Atlas/i);
-
   });
 
   test("ships ja / zh-CN / vi message stubs with concept section structure", async () => {
@@ -170,9 +169,9 @@ describe("skills concept page", () => {
     expect(String(ja.messages.sections?.commonConfusions?.title ?? "")).toBe(
       "Common Confusions",
     );
-    expect(ja.messages.links?.harnessConcept).toBe("Harness");
-    expect(zhCN.messages.links?.toolConcept).toBe("Tool");
-    expect(vi.messages.links?.mcpDocs).toBe("MCP documentation");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
 
     render(
       <main>

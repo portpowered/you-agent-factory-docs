@@ -144,9 +144,9 @@ describe("tool concept page", () => {
     expect(Object.keys(vi.messages).sort()).toEqual(
       Object.keys(en.messages).sort(),
     );
-    expect(ja.messages.links?.toolCallingConcept).toBe("Tool calling");
-    expect(zhCN.messages.links?.mcpConcept).toBe("MCP");
-    expect(vi.messages.links?.skillsConcept).toBe("Skills");
+    expect(ja.messages.links).toBeUndefined();
+    expect(zhCN.messages.links).toBeUndefined();
+    expect(vi.messages.links).toBeUndefined();
     expect(String(ja.messages.sections?.whatItIs?.title ?? "")).toBe(
       "What It Is",
     );
