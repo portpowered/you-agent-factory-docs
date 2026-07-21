@@ -227,6 +227,17 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `src/lib/website-functionality-exclusions.ts`,
   `src/tests/layout/home-shell-coverage-contract.test.ts`,
   `src/lib/verify/w20-ownership-migration-convergence.ts`.
+* Layout ownership-move browser prove-out: after relocating
+  `src/features/layout`, verify representative docs + site shells still
+  SSR/DOM-expose `data-docs-header-shell`, `data-docs-header-brand`,
+  `nav[aria-label="Primary"]`, language switcher
+  (`button[aria-label="Switch language"]`), desktop `#nd-sidebar`, and
+  mobile `button[aria-label="Open menu"]` (drawer mounts only when open —
+  prove open/close via `docs-header.test.tsx` / primary-nav a11y suites,
+  not webpack-hmr click alone). Use a unique port + `next dev --webpack`
+  and kill the server on exit; worktree webpack-hmr may fail to hydrate
+  click handlers even when chrome SSR is healthy — do not treat that alone
+  as a layout-move regression.
 * `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
   Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
   routes via shared `withBasePath`.
