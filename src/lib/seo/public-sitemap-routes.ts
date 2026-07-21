@@ -1,9 +1,18 @@
 import type { BuildModeEnv } from "@/lib/build/static-export";
 import { blogPostHref, listBlogSlugs } from "@/lib/content/blog-page-load";
 import { tagPageHref } from "@/lib/content/content-hrefs";
+import {
+  buildLocalizedRoute,
+  defaultLocale,
+  FACTORY_SHIPPED_LOCALES,
+} from "@/lib/content/factory-locale-base-path";
 import { FACTORY_PUBLISHED_TAG_SLUGS } from "@/lib/content/factory-tags-browse";
 import { PUBLISHED_DOCS_SECTIONS } from "@/lib/content/published-docs-registry-contract";
 import { listPublishedDocsEntries } from "@/lib/content/published-docs-registry-ids";
+import {
+  getShippedLocalizedDocsSlugs,
+  type NonDefaultLocale,
+} from "@/lib/content/shipped-localized-docs";
 import {
   listDocumentationRouteMigrationOldRoutes,
   listDocumentationRouteMigrationTargetRoutes,
@@ -23,6 +32,31 @@ export const PUBLIC_SITEMAP_SHELL_ROUTES = [
 ] as const;
 
 /**
+ * Non-default shipped locale homes derived from {@link FACTORY_SHIPPED_LOCALES}
+ * via {@link buildLocalizedRoute}. Default locale stays the single `/` shell
+ * entry — never invent a duplicate `/en` home.
+ */
+export const PUBLIC_SITEMAP_LOCALE_HOME_ROUTES = FACTORY_SHIPPED_LOCALES.filter(
+  (locale) => locale !== defaultLocale,
+).map((locale) => buildLocalizedRoute({ surface: "home" }, locale));
+
+/**
+ * Shipped localized docs routes from the fail-closed
+ * {@link getShippedLocalizedDocsSlugs} manifest — only locale×slug pairs that
+ * actually ship, never a cartesian product over English published docs × all
+ * locales. Built via {@link buildLocalizedRoute} (`docs-page`).
+ */
+export function listPublicSitemapLocalizedDocsRoutes(): string[] {
+  return FACTORY_SHIPPED_LOCALES.filter(
+    (locale): locale is NonDefaultLocale => locale !== defaultLocale,
+  ).flatMap((locale) =>
+    getShippedLocalizedDocsSlugs(locale).map((slug) =>
+      buildLocalizedRoute({ surface: "docs-page", slug }, locale),
+    ),
+  );
+}
+
+/**
  * Docs collection index routes (section roots), including architecture.
  */
 export const PUBLIC_SITEMAP_DOCS_SECTION_ROUTES = [
@@ -31,7 +65,26 @@ export const PUBLIC_SITEMAP_DOCS_SECTION_ROUTES = [
 ] as const;
 
 /**
+ * Known shipped localized docs slug used as a sitemap inclusion proof.
+ * Must stay in the shipped-localized-docs manifest for a non-default locale
+ * (currently `ja`); never invent unshipped locale×slug ghosts here.
+ */
+export const SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG = "concepts/harness";
+
+/**
+ * Representative shipped localized docs route that inclusion proofs require
+ * (built via {@link buildLocalizedRoute}, not a hard-coded ghost path).
+ */
+export const SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE = buildLocalizedRoute(
+  { surface: "docs-page", slug: SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_SLUG },
+  "ja",
+);
+
+/**
  * Representative live factory routes that export sitemap proofs must include.
+ * Includes non-default locale homes from {@link PUBLIC_SITEMAP_LOCALE_HOME_ROUTES}
+ * and at least one shipped localized docs route
+ * ({@link SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE}).
  */
 export const SITEMAP_INCLUSION_PROOF_ROUTES = [
   "/",
@@ -42,6 +95,8 @@ export const SITEMAP_INCLUSION_PROOF_ROUTES = [
   "/blog/bottlenecks",
   "/docs/concepts",
   "/docs/concepts/harness",
+  ...PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
+  SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
 ] as const;
 
 /**
@@ -82,17 +137,22 @@ function uniqueSortedPaths(paths: readonly string[]): string[] {
 /**
  * Lists app-relative public factory routes for the sitemap. Fail-closed against
  * retired Atlas collections, deleted Atlas blogs, and §10 migration old routes
- * via {@link isCanonicalPublicDiscoveryPath}.
+ * via {@link isCanonicalPublicDiscoveryPath}. Includes shipped non-default
+ * locale homes from {@link PUBLIC_SITEMAP_LOCALE_HOME_ROUTES} and shipped
+ * localized docs from {@link listPublicSitemapLocalizedDocsRoutes}.
  */
 export function listPublicSitemapRoutes(): string[] {
   const docsArticles = listPublishedDocsEntries().map((entry) => entry.url);
   const blogPosts = listBlogSlugs().map((slug) => blogPostHref(slug));
   const tagPages = FACTORY_PUBLISHED_TAG_SLUGS.map((slug) => tagPageHref(slug));
+  const localizedDocs = listPublicSitemapLocalizedDocsRoutes();
 
   const candidates = [
     ...PUBLIC_SITEMAP_SHELL_ROUTES,
+    ...PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
     ...PUBLIC_SITEMAP_DOCS_SECTION_ROUTES,
     ...docsArticles,
+    ...localizedDocs,
     ...blogPosts,
     ...tagPages,
   ];

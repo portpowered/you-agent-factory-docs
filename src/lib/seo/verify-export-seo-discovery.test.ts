@@ -16,6 +16,8 @@ import {
 import {
   DOCUMENTATION_ROUTE_MIGRATION_SITEMAP_EXCLUSION_ROUTES,
   listPublicSitemapAbsoluteUrls,
+  PUBLIC_SITEMAP_LOCALE_HOME_ROUTES,
+  SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
 } from "@/lib/seo/public-sitemap-routes";
 import { resolveSocialPreviewImageAbsoluteHref } from "@/lib/seo/social-preview-assets";
 import { verifyExportSeoDiscovery } from "@/lib/seo/verify-export-seo-discovery";
@@ -181,6 +183,65 @@ describe("verifyExportSeoDiscovery", () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+
+  test("fails when sitemap omits a locale home or shipped localized docs loc", () => {
+    const dir = mkdtempSync(join(tmpdir(), "seo-discovery-locale-sitemap-"));
+    try {
+      writeDiscoveryFixture(dir);
+      const good = listPublicSitemapAbsoluteUrls(PROJECT_SITE_EXPORT_ENV);
+      expect(PUBLIC_SITEMAP_LOCALE_HOME_ROUTES).toEqual([
+        "/ja",
+        "/zh-CN",
+        "/vi",
+      ]);
+
+      const jaHome = resolveProductionSitemapLocHref(
+        "/ja",
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      writeFileSync(
+        join(dir, EXPORT_SITEMAP_RELATIVE_PATH),
+        sitemapXml(good.filter((url) => url !== jaHome)),
+      );
+      const missingLocaleHome = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(missingLocaleHome.ok).toBe(false);
+      if (!missingLocaleHome.ok) {
+        expect(missingLocaleHome.gate).toBe("sitemap");
+        expect(missingLocaleHome.reason).toContain(jaHome);
+      }
+
+      const shippedDocsAbsolute = resolveProductionSitemapLocHref(
+        SITEMAP_SHIPPED_LOCALIZED_DOCS_PROOF_ROUTE,
+        PROJECT_SITE_EXPORT_ENV,
+      );
+      writeFileSync(
+        join(dir, EXPORT_SITEMAP_RELATIVE_PATH),
+        sitemapXml(good.filter((url) => url !== shippedDocsAbsolute)),
+      );
+      const missingShippedDocs = verifyExportSeoDiscovery({
+        outDir: dir,
+        env: PROJECT_SITE_EXPORT_ENV,
+      });
+      expect(missingShippedDocs.ok).toBe(false);
+      if (!missingShippedDocs.ok) {
+        expect(missingShippedDocs.gate).toBe("sitemap");
+        expect(missingShippedDocs.reason).toContain(shippedDocsAbsolute);
+      }
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("discovery fixture does not invent hreflang x-default", () => {
+    for (const copy of Object.values(PAGE_COPY)) {
+      expect(Object.keys(copy.languages)).not.toContain("x-default");
+    }
+    const html = pageHtml("/");
+    expect(html).not.toMatch(/hreflang=["']x-default["']/i);
   });
 
   test("fails when sitemap lists a §10 documentation-migration exclusion route", () => {
