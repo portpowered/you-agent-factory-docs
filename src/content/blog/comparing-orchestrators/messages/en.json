@@ -2,5 +2,18 @@
   "title": "Comparing orchestrators by feature attributes",
   "description": "Explore orchestrator tradeoffs across open source, license, hosting, and capabilities—feature-attribute comparison, not a benchmark leaderboard.",
   "contextSentence": "When you need to compare agent orchestrators by concrete feature attributes—not by benchmark scores or product marketing—start from the committed feature registry and read columns against rows.",
-  "takeaway": "Treat orchestrator choice as an attribute exploration problem: pick the systems you care about, filter on hosting and capabilities that must all match, and sort or focus the matrix until the tradeoffs are visible."
+  "takeaway": "Treat orchestrator choice as an attribute exploration problem: pick the systems you care about, filter on hosting and capabilities that must all match, and sort or focus the matrix until the tradeoffs are visible.",
+  "matrix": {
+    "ariaLabel": "Orchestrator feature matrix",
+    "emptyMessage": "No orchestrators match the current filters and column selection.",
+    "focusColumnLabel": "Focus column",
+    "focusRowLabel": "Focus row",
+    "focusNoneLabel": "None",
+    "attributeLabels": {
+      "attr.open-source": "Open source",
+      "attr.license": "License",
+      "attr.hosting": "Hosting",
+      "attr.capabilities": "Capabilities"
+    }
+  }
 }

@@ -38,4 +38,18 @@ describe("comparing-orchestrators blog shell (001)", () => {
     expect(html).not.toContain('data-testid="blog-related-docs"');
     expect(html).not.toContain("Related reference pages");
   });
+
+  test("renders page-local matrix composer with transposed registry matrix regions", async () => {
+    const page = await renderBlogPostPage(BLOG_SLUG);
+    const html = renderToStaticMarkup(page);
+
+    expect(html).toContain('data-testid="comparing-orchestrators-matrix"');
+    expect(html).toContain("data-orchestrator-feature-matrix");
+    expect(html).toContain("data-matrix-column-picker");
+    expect(html).toContain("Attribute filters");
+    expect(html).toContain("Focus column");
+    expect(html).toContain("Open source");
+    expect(html).toContain("you-agent-factory");
+    expect(html).toContain("Custom scripts");
+  });
 });
