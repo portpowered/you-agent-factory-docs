@@ -71,6 +71,7 @@
     "serveModeRuntimeName": "Runtime-backed",
     "serveModeRuntimeArgs": "mcp serve --runtime",
     "serveModeRuntimePurpose": "Shared durable JavaScript runtime for live INLINE_WORKFLOW execution with real async start, status polling, and result reads.",
+    "dynamicWorkflowsOverview": "What Dynamic Workflows are",
     "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows",
     "configurationDocs": "Configuration (factory.json topology)",
     "globalConfigurationDocs": "Global configuration",

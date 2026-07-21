@@ -1,14 +1,37 @@
 {
   "title": "Dynamic Workflows",
-  "description": "This documentation page moved to /docs/factories/dynamic-workflows. Continue there for the current family content.",
-  "openingSummary": "This page moved. Open /docs/factories/dynamic-workflows for the current documentation.",
+  "description": "A dynamic workflow is a JavaScript orchestrator-backed factory whose live run is a Factory Session—not a separate runtime type.",
+  "openingSummary": "A dynamic workflow is a JavaScript orchestrator-backed factory. The live run is a Factory Session—the same durable runtime object used for every live orchestration—not a separate DynamicWorkflowRun type.",
   "sections": {
-    "moved": {
-      "title": "Moved",
-      "body": "This documentation page moved to a new family route. The content now lives at /docs/factories/dynamic-workflows. Use the link below to continue — no live factory host is required."
+    "whatItIs": {
+      "title": "What It Is",
+      "body": "A dynamic workflow is a JavaScript orchestrator-backed (`JAVASCRIPT`) factory. Instead of Petri graph fields, the factory carries JavaScript orchestrator configuration—source identity, metadata, argsSchema, and related knobs. The live run is still a Factory Session: the same durable runtime object used for every live orchestration. Dynamic workflow is shorthand for that JavaScript-backed session shape, not a separate DynamicWorkflowRun type."
+    },
+    "whenToUse": {
+      "title": "When To Use",
+      "body": "Use Dynamic Workflows when you need to author or validate JavaScript orchestrator source, start a durable JavaScript Factory Session, or inspect status and results through the shared session surface. Reach for them when Petri factory.json topology is not the right fit and a live JavaScript orchestrator should drive the run."
+    },
+    "howItFits": {
+      "title": "How It Fits",
+      "body": "Dynamic workflows use the shared Factory Session API surface across CLI, Model Context Protocol (MCP), and related hosts. Validate source, start a session, and read status or results through that same session identity. Configuration resolves JavaScript orchestrator source from a project root and chooses how an MCP host launches the serve path. Packaged factories and Petri configuration remain sibling factory shapes; sessions stay the live handle for every run."
+    },
+    "limitsAndAssumptions": {
+      "title": "Limits And Assumptions",
+      "body": "Dynamic Workflows covers JavaScript orchestrator-backed factories and when they matter. It is not a schema embed, not an OpenAPI or operation catalog, not the Cursor first-loop guide, and not Petri factory.json topology. Orchestrator fragments, invocation signatures, CLI knobs, and API relationship depth live on the Dynamic Workflows reference page."
+    },
+    "related": {
+      "title": "Related To"
+    },
+    "tags": {
+      "title": "Tags"
+    },
+    "references": {
+      "title": "References"
     }
   },
   "links": {
-    "targetLabel": "Open the dynamic workflows page"
+    "dynamicWorkflowsDepth": "Dynamic Workflows reference",
+    "factorySessionsOverview": "Factory Sessions overview",
+    "cursorDynamicWorkflowsGuide": "Cursor dynamic workflows"
   }
 }

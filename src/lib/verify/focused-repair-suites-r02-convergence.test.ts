@@ -26,6 +26,7 @@ const R02_CONCEPTS_URLS = [
 const R02_DISCOVERABLE_PROGRAM_DOC_URLS = [
   "/docs/documentation/throttling-and-limits",
   "/docs/documentation/packaged-documents",
+  "/docs/documentation/packaged-factories",
 ] as const;
 
 /** Published W18 move stubs kept for compatibility HTML only. */
@@ -35,7 +36,6 @@ const R02_DEMOTED_PROGRAM_DOC_STUB_URLS = [
   "/docs/documentation/poller-workers",
   "/docs/documentation/agent-workers",
   "/docs/documentation/inference-workers",
-  "/docs/documentation/packaged-factories",
 ] as const;
 
 const R02_PROGRAM_DOC_URLS = [

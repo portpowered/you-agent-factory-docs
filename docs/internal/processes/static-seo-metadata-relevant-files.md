@@ -8,7 +8,7 @@ social assets, sitemap, robots).
 
 | Path | Role |
 | --- | --- |
-| `src/lib/seo/production-metadata-base.ts` | Production origin + `resolveProductionMetadataBase` / `resolveProductionMetadataHref` |
+| `src/lib/seo/production-metadata-base.ts` | Production origin + `resolveProductionMetadataBase` / `resolveProductionMetadataHref` (non-slash) / `resolveProductionSitemapLocHref` (trailing-slash sitemap locs) |
 | `src/lib/seo/production-metadata-base.test.ts` | Origin/base-path resolution for project-site vs root modes |
 | `src/lib/seo/export-absolute-canonical.ts` | Absolute production canonical HTML checks + export-dir verification for home/docs/blog proof routes |
 | `src/lib/seo/export-absolute-canonical.test.ts` | Fixture + metadata + temp-`out/` proofs that canonicals are absolute under the production origin/base path and never legacy Atlas routes |
@@ -23,9 +23,9 @@ social assets, sitemap, robots).
 | `src/lib/seo/export-localized-alternates.ts` | Export HTML hreflang extraction + shipped-only absolute production alternate verification |
 | `src/lib/seo/export-localized-alternates.test.ts` | Multi-locale home + subset-locale docs (`concepts/task-queue`) metadata and temp-`out/` proofs |
 | `src/lib/seo/public-sitemap-routes.ts` | Live public factory route inventory for sitemap (shell, docs sections/articles, blog, tags) |
-| `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths |
+| `src/lib/seo/public-sitemap-routes.test.ts` | Inclusion/exclusion proofs for live vs retired Atlas paths; absolute locs must end with `/` while app-relative stay non-slash |
 | `src/lib/seo/export-sitemap.ts` | `buildPublicSitemapEntries` + `verifyExportSitemap` / loc extraction for `out/sitemap.xml` |
-| `src/lib/seo/export-sitemap.test.ts` | Absolute production sitemap URL proofs + temp-`out/` verification |
+| `src/lib/seo/export-sitemap.test.ts` | Trailing-slash absolute loc proofs (collection indexes + docs/blog/home) + non-slash app-relative + temp-`out/` verification |
 | `src/app/sitemap.ts` | Next.js App Router sitemap generator (static export → `out/sitemap.xml`; requires `export const dynamic = "force-static"`) |
 | `src/lib/seo/export-robots.ts` | `buildPublicRobots` / `resolveProductionSitemapUrl` + `verifyExportRobots` for `out/robots.txt` |
 | `src/lib/seo/export-robots.test.ts` | Production sitemap reference proofs + no legacy Atlas advertising |
@@ -54,6 +54,17 @@ social assets, sitemap, robots).
 | `src/lib/build/built-app-html-paths.ts` | Live project-site base path constant `/you-agent-factory-docs` |
 | `src/lib/build/verify-export-base-path.ts` | Export HTML checks accept path-prefixed or absolute production metadata hrefs |
 | `src/lib/build/build-contract-required-test-paths.ts` | Register focused SEO `*.test.ts` paths here for `make test-build-contract` / `bun run test:build-contract` (do not inline them in `package.json`) |
+
+## Policy notes (sitemap absolute locs)
+
+- App-relative sitemap inventories (`listPublicSitemapRoutes`) stay **non-slash**
+  (`/docs/factories`).
+- Absolute sitemap `<loc>` values use
+  `resolveProductionSitemapLocHref` → trailing-slash production URLs that match
+  live GitHub Pages / `rel=canonical` landings under `trailingSlash: true`.
+- Keep `resolveProductionMetadataHref` **non-slash** for file-like absolute URLs
+  (`/sitemap.xml`, `/images/og-default.png`) and non-sitemap metadata helpers.
+  Do not route those through the sitemap loc helper.
 
 ## Contract
 
@@ -99,14 +110,20 @@ social assets, sitemap, robots).
    `/docs/concepts/task-queue` (en only). Use
    `exportHtmlHasShippedAbsoluteAlternates` /
    `verifyExportLocalizedAlternates`. Never advertise deleted Atlas paths.
-10. **Sitemap** (story 006): `listPublicSitemapRoutes` / `buildPublicSitemapEntries`
-    emit only current public factory routes as absolute production URLs.
-    Project-site export writes `out/sitemap.xml` via `src/app/sitemap.ts`.
+10. **Sitemap** (story 006 + SEO-SITEMAP-SLASH): `listPublicSitemapRoutes` stays
+    app-relative non-slash; `listPublicSitemapAbsoluteUrls` /
+    `buildPublicSitemapEntries` emit trailing-slash absolute production locs via
+    `resolveProductionSitemapLocHref`. Project-site export writes
+    `out/sitemap.xml` via `src/app/sitemap.ts`.
     Inclusion proofs: `/`, `/search`, `/browse`, `/tags`, `/blog`,
     `/blog/bottlenecks`, `/docs/concepts`, `/docs/concepts/harness`.
     Exclusion proofs: retired `/docs/models|modules|papers|training|systems`,
     `/topology`, `/docs/timeline`, deleted Atlas blog slugs. Use
     `verifyExportSitemap` / `sitemapLocsMatchPublicFactoryContract`.
+    Export SEO discovery (`verifyExportSeoDiscovery`) and `verifyExportSitemap`
+    reject non-slash absolute locs (compare against
+    `resolveProductionSitemapLocHref`, not `resolveProductionMetadataHref`) and
+    still fail closed on retired Atlas / §10 migration-old exclusion URLs.
 11. **Robots + discovery gate** (story 007): `buildPublicRobots` /
     `src/app/robots.ts` emit `out/robots.txt` with a normal allow-all policy
     and `Sitemap:` pointing at the absolute production sitemap URL
@@ -192,6 +209,33 @@ Own migration/compat and moved-route SEO/sitemap under `src/lib/seo/`:
    `src/lib/content/factory-documentation-route-migration-compat-preservation.test.tsx`
    locks published presence, compatibility HTML + target link, family
    Metadata canonical, and sitemap exclusion after demotion.
+8. **Mode A overview restoration (PS-210 dual-page IA):** when a former §10
+   move stub is restored as a Program Mode A capability overview (for example
+   `/docs/documentation/factory-session`,
+   `/docs/documentation/dynamic-workflows`, or
+   `/docs/documentation/packaged-factories`), remove that row from
+   `DOCUMENTATION_ROUTE_MIGRATION_LEDGER`, drop its
+   `DOCUMENTATION_ROUTE_MIGRATION_PREFERRED_REGISTRY_IDS` remap, shrink
+   `DOCUMENTATION_ROUTE_MIGRATION_SECTION_10_ROW_COUNT`, and replace the
+   compatibility MDX with a Mode A overview that links to Mode B depth. The
+   restored route becomes its own canonical discovery destination again;
+   Mode B family pages stay published as Reference depth. Update ledger
+   expected-mapping tests, R02 demoted-stub inventories when the route was
+   listed there, and process notes in the same change. When adding the
+   optional reciprocal “what it is” pointer, put a LocalizedLinkList entry
+   on the Mode B Related list first (for example
+   `/docs/factories/sessions` → `/docs/documentation/factory-session`) and
+   assert the href in the Mode B page-owned test; do not change schema embeds
+   or Mode B depth body copy for that discovery link alone. Until PS-300 wires
+   explorer membership, keep restored Mode A slugs in
+   `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` and filter them
+   from Program documentation explorer construction (same path as FAQ / W18
+   stubs) so they do not reappear as ungrouped leftovers. Mode A
+   `limitsAndAssumptions` bodies must stay topic-first (for example
+   “Factory Sessions covers…”) — never “This overview/This page
+   explains/covers/is…”. Peer Pattern: Packaged documents / CLI. Page-owned
+   tests should reject `/This (overview|page) (explains|covers|is)/i` on
+   limits copy.
 
 See also `docs/internal/processes/factory-references-w00-baseline-relevant-files.md`
 (Compatibility and redirect mechanisms) and

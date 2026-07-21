@@ -83,7 +83,10 @@ export const RETIRED_AI_CONTENT_OWNED_PATHS = [
   "src/content/docs/papers",
   "src/content/docs/training",
   "src/content/docs/systems",
-  "src/content/registry/models",
+  // `src/content/registry/models` is intentionally allowed for commit-only
+  // teaching `kind: "model-pricing"` JSON (Wave A W-pricing-registry). It stays
+  // out of REGISTRY_COLLECTIONS / page kind unions; Atlas `kind: "model"` and
+  // `/docs/models` routes remain denylisted above and below.
   "src/content/registry/modules",
   "src/content/registry/papers",
   "src/content/registry/training-regimes",

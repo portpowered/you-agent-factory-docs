@@ -69,6 +69,22 @@ you are the planner.
 Figure out how `you` works by running `you -h` and `you docs agents`. Do not run
 `you` directly to start the workflow runtime unless you are the planner.
 
+## Local Make entrypoints
+
+Agents and maintainers must use **real** root `Makefile` targets only. Do **not**
+invent names such as `ui-build`. Primary shared entrypoints:
+
+- `make setup` — frozen-lockfile install
+- `make check` — typecheck + lint
+- `make build` — static export to `out/`
+- `make ci` — full local required path (aligned with CI verify)
+- `make dev` — local Next.js server
+- `make a11y` — critical-route accessibility suite
+
+The root `Makefile` `.PHONY` line is the source of truth for the full target
+list — do not invent a second parallel contract. See [README.md](./README.md)
+**Quality Gates** for the maintainer table and intent → target mapping.
+
 ## Planner and rewrite entrypoints
 
 Planners and agents MUST start from the live customer ask and the rewrite working

@@ -8,6 +8,7 @@ import {
 } from "@/lib/i18n/locale-routing";
 import { tagPageHref } from "./content-hrefs";
 import { CONTENT_ROOT, DOCS_ROOT } from "./content-paths";
+import { validateOrchestratorsRegistry } from "./orchestrators";
 import { assetMessageKeys, loadPageAssets } from "./page-assets-load";
 import {
   getMessageString,
@@ -55,6 +56,7 @@ import {
   validateGeneratedFoldedSummary,
   validateGeneratedKindSpecificStructure,
 } from "./validate-generated-canonical-docs";
+import { validateModelPricing } from "./validate-model-pricing";
 import { parseYamlFrontmatterBlock } from "./yaml-frontmatter";
 
 export { parseYamlFrontmatterBlock };
@@ -129,6 +131,8 @@ export type ValidateRegistryContentOptions = {
   docsRoot?: string;
   blogRoot?: string;
   messagesRoot?: string;
+  /** Override model pricing models root (for tests). Defaults to `<registryRoot>/models`. */
+  modelsRoot?: string;
   /** Override Phase 1 page directories (for tests). */
   phase1PageDirectories?: readonly string[];
   /** Override derived shipped localized docs entries in tests. */
@@ -1104,7 +1108,11 @@ export async function validateRegistryContent(
     return registryErrors;
   }
 
-  const errors = [...registryErrors, ...tableRegistry.errors];
+  const errors = [
+    ...registryErrors,
+    ...tableRegistry.errors,
+    ...validateOrchestratorsRegistry(join(registryRoot, "orchestrators")),
+  ];
 
   const pagePaths = await discoverPageMdxFiles(docsRoot);
   const validatedPageDirectories = new Set<string>();
@@ -1153,6 +1161,11 @@ export async function validateRegistryContent(
       blogRoot: options.blogRoot,
       indexes,
     })),
+  );
+  errors.push(
+    ...validateModelPricing({
+      modelsRoot: options.modelsRoot ?? join(registryRoot, "models"),
+    }),
   );
 
   return errors;

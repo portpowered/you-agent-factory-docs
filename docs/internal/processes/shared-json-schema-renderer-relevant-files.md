@@ -202,8 +202,13 @@ W07 owns only the schema UI surface under `src/components/references/schema/`
   (unique port `SYSTEM_CONFIG_SCHEMA_RENAME_PROBE_PORT`, webpack `bun run dev`,
   kill server on exit). Assert `data-schema-status="ready"`, System config
   title/lead, absent What It Covers / filter / Definitions catalog, authored
-  example fields, old slug non-redirect 404, and family-index +
-  global-configuration inbound links to `/docs/references/system-config-schema`.
+  example fields, Q5 examples-before-body DOM order
+  (`data-schema-examples-placement="before-body"` and
+  `schema-definition-examples` preceding `[data-schema-definition-fields]`),
+  old slug non-redirect 404, and family-index + global-configuration inbound
+  links to `/docs/references/system-config-schema`. System-config opts into
+  `examplesPlacement="before-body"` on its SchemaReference mount only; other
+  schema pages keep the default after-fields order unless they opt in.
   Root pointers must be anchor-safe (not bare `/`). Harness route:
   `/schema-renderer-harness` under `src/app/(dev)/` — not a published
   `/docs/references/*-schema` page.

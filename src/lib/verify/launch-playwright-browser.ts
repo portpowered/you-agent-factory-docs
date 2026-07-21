@@ -15,18 +15,31 @@ import { isInsideExportIntegrationProbeLock } from "./export-integration-probe-l
 const CI_PLAYWRIGHT_LAUNCH_TIMEOUT_MS = 120_000;
 /** Avoid hanging the full Bun probe timeout when browser teardown stalls under CI load. */
 export const PLAYWRIGHT_BROWSER_CLOSE_TIMEOUT_MS = 15_000;
+/**
+ * Bun timeout for always-on Playwright fixture tests. Must exceed one CI launch
+ * attempt plus serialized slot wait/retries; 120s matches the Chromium launch
+ * budget alone and flakes under PR runner contention.
+ */
+export const PLAYWRIGHT_FIXTURE_TEST_TIMEOUT_MS = 240_000;
 const CI_PLAYWRIGHT_LAUNCH_ATTEMPTS = 5;
 const CI_PLAYWRIGHT_LAUNCH_RETRY_DELAY_MS = 5_000;
 const CI_PLAYWRIGHT_LAUNCH_INITIAL_DELAY_MS = 3_000;
+/** Fail closed (retryable) instead of polling until the Bun test timeout. */
+const CI_PLAYWRIGHT_LAUNCH_SLOT_WAIT_TIMEOUT_MS = 45_000;
 const MAX_CONCURRENT_CI_LAUNCHES = 1;
 const LAUNCH_SLOT_DIR = join(tmpdir(), "model-atlas-playwright-launch-slots");
 const SYSTEM_CHROME_EXECUTABLE_PATH =
   "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const LOCK_POLL_MS = 200;
-/** Drop launch slots left behind by crashed workers so waiters do not poll until Bun timeout. */
-const STALE_LAUNCH_SLOT_MAX_AGE_MS = 5 * 60 * 1000;
+/**
+ * Drop launch slots left behind by crashed workers. Keep below typical Bun
+ * fixture timeouts so waiters reclaim rather than hang the suite.
+ */
+const STALE_LAUNCH_SLOT_MAX_AGE_MS = 90_000;
 export const PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH_ENV =
   "PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH";
+export const PLAYWRIGHT_LAUNCH_SLOT_WAIT_TIMEOUT_MESSAGE =
+  "Timed out waiting for Playwright CI launch slot";
 
 let inProcessLaunchGate: Promise<void> = Promise.resolve();
 
@@ -125,8 +138,21 @@ export function isPlaywrightLaunchTimeoutError(error: unknown): boolean {
   );
 }
 
+export function isPlaywrightLaunchSlotWaitTimeoutError(
+  error: unknown,
+): boolean {
+  return (
+    error instanceof Error &&
+    error.message.includes(PLAYWRIGHT_LAUNCH_SLOT_WAIT_TIMEOUT_MESSAGE)
+  );
+}
+
 export function isPlaywrightLaunchRetryableError(error: unknown): boolean {
   if (isPlaywrightLaunchTimeoutError(error)) {
+    return true;
+  }
+
+  if (isPlaywrightLaunchSlotWaitTimeoutError(error)) {
     return true;
   }
 
@@ -183,7 +209,10 @@ function tryAcquireLaunchSlot(): (() => void) | null {
   return null;
 }
 
-async function acquireLaunchSlot(): Promise<() => void> {
+async function acquireLaunchSlot(
+  waitTimeoutMs: number = CI_PLAYWRIGHT_LAUNCH_SLOT_WAIT_TIMEOUT_MS,
+): Promise<() => void> {
+  const deadline = Date.now() + waitTimeoutMs;
   let loggedWait = false;
   while (true) {
     const release = tryAcquireLaunchSlot();
@@ -192,6 +221,11 @@ async function acquireLaunchSlot(): Promise<() => void> {
         logPlaywrightLaunch("acquired launch slot after waiting");
       }
       return release;
+    }
+    if (Date.now() >= deadline) {
+      throw new Error(
+        `${PLAYWRIGHT_LAUNCH_SLOT_WAIT_TIMEOUT_MESSAGE} after ${waitTimeoutMs}ms`,
+      );
     }
     if (!loggedWait) {
       logPlaywrightLaunch("waiting for serialized launch slot");

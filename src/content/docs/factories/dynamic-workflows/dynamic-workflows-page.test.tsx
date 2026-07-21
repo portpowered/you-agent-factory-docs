@@ -163,6 +163,11 @@ describe("factories/dynamic-workflows documentation page", () => {
 
     expect(
       screen
+        .getAllByRole("link", { name: "What Dynamic Workflows are" })[0]
+        ?.getAttribute("href"),
+    ).toBe("/docs/documentation/dynamic-workflows");
+    expect(
+      screen
         .getAllByRole("link", { name: "Cursor dynamic workflows" })[0]
         ?.getAttribute("href"),
     ).toBe("/docs/guides/cursor-dynamic-workflows");
@@ -189,6 +194,9 @@ describe("factories/dynamic-workflows documentation page", () => {
 
     const related = document.getElementById("related");
     expect(related).toBeTruthy();
+    expect(
+      related?.querySelector('a[href="/docs/documentation/dynamic-workflows"]'),
+    ).toBeTruthy();
     expect(
       related?.querySelector('a[href="/docs/factories/configuration"]'),
     ).toBeTruthy();

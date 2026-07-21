@@ -1,0 +1,12 @@
+{
+  "id": "model.anthropic.claude-sonnet",
+  "kind": "model-pricing",
+  "providerId": "provider.anthropic",
+  "displayName": "Claude Sonnet",
+  "inputPricePerMTok": 3,
+  "outputPricePerMTok": 15,
+  "currency": "USD",
+  "asOf": "2026-07-01",
+  "defaultSummaryKey": "description",
+  "tags": ["anthropic", "chat"]
+}

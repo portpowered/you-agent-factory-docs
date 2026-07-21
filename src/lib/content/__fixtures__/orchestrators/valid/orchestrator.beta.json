@@ -1,0 +1,11 @@
+{
+  "id": "orchestrator.beta",
+  "kind": "orchestrator",
+  "name": "Beta",
+  "attributes": {
+    "attr.open-source": false,
+    "attr.license": "proprietary",
+    "attr.hosting": "cloud",
+    "attr.capabilities": ["worktrees"]
+  }
+}

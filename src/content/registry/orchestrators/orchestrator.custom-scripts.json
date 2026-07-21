@@ -1,0 +1,13 @@
+{
+  "id": "orchestrator.custom-scripts",
+  "kind": "orchestrator",
+  "name": "Custom scripts",
+  "attributes": {
+    "attr.open-source": false,
+    "attr.license": "proprietary",
+    "attr.hosting": "cloud",
+    "attr.capabilities": ["loops"]
+  },
+  "tags": ["scripts"],
+  "defaultSummaryKey": "summary"
+}

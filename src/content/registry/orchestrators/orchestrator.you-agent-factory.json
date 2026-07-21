@@ -1,0 +1,13 @@
+{
+  "id": "orchestrator.you-agent-factory",
+  "kind": "orchestrator",
+  "name": "you-agent-factory",
+  "attributes": {
+    "attr.open-source": true,
+    "attr.license": "MIT",
+    "attr.hosting": "local",
+    "attr.capabilities": ["loops", "worktrees", "mcp", "persistence"]
+  },
+  "tags": ["agent-factory"],
+  "defaultSummaryKey": "summary"
+}

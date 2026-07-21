@@ -261,7 +261,7 @@ Environment secrets
 Preview deployment infrastructure
 Production hosting configuration
 #### \`.github/workflows/ci.yml\`
-#### \`.github/workflows/deploy.yml\`
+#### \`.github/workflows/deploy-pages.yml\`
 
 ## Status values
 **implemented**

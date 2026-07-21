@@ -1,12 +1,11 @@
 /**
  * Landing-page public surface.
  *
- * Whale / bubbles (W-whale-bubbles): mount `<WhaleBubblesSection />` or compose
- * `<WhalePlate />` + `<FeatureBubbles armed … />` in a slot.
- *
- * Hero art (W-hero-art): export portrait, capability strip, Youi showcase,
- * TornEdge, and optional HeroSection chrome (sphere/terminal as ReactNode holes).
- * Integrate wires slots; do not flip production `/` from this barrel.
+ * W-faq-cta chrome (header / FAQ / CTA / footer art), W-whale-bubbles
+ * (whale plate + feature bubbles), and W-hero-art (portrait, capability strip,
+ * Youi showcase, TornEdge, optional HeroSection with sphere/terminal holes).
+ * Skeleton / integrate consumers mount these via LandingPage slots — do not
+ * flip production `/` from this package alone.
  */
 
 export {
@@ -15,6 +14,12 @@ export {
   type CapabilityStripItem,
   type CapabilityStripProps,
 } from "./components/CapabilityStrip";
+export { CtaBand, type CtaBandProps } from "./components/CtaBand";
+export {
+  FaqPanel,
+  type FaqPanelItem,
+  type FaqPanelProps,
+} from "./components/FaqPanel";
 export {
   DEFAULT_BUBBLE_CLASSES,
   type FeatureBubbleItem,
@@ -39,6 +44,15 @@ export {
   HeroSection,
   type HeroSectionProps,
 } from "./components/HeroSection";
+export {
+  LandingFooterArt,
+  type LandingFooterArtProps,
+} from "./components/LandingFooterArt";
+export {
+  LandingHeader,
+  type LandingHeaderNavItem,
+  type LandingHeaderProps,
+} from "./components/LandingHeader";
 export {
   TORN_EDGE_DEFAULT_SRC,
   TornEdge,

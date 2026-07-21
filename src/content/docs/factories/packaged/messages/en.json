@@ -40,6 +40,7 @@
     "globalRootLabel": "Global shared factories root where packaged built-ins materialize:",
     "fullFactorySchema": "Full Factory schema",
     "fullFactoryApi": "Factory API reference",
+    "packagedFactoriesOverview": "What Packaged Factories are",
     "configurationDocs": "Configuration (factory.json topology)",
     "globalConfigurationDocs": "Global configuration",
     "dynamicWorkflowsDocs": "Dynamic workflows",

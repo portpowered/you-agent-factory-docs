@@ -8,6 +8,10 @@ import {
   isDocsExplorerTopLevelFaqPage,
 } from "@/lib/content/factory-breadcrumb-sidebar";
 import type { DocsPageSource } from "@/lib/content/pages";
+import {
+  isDeferredDocumentationExplorerMembershipSlug,
+  isModeAProgramOverviewPendingExplorerMembership,
+} from "@/lib/content/sidebar-grouping";
 import { isDocsCollectionSidebarGroupingResolverId } from "@/lib/docs/collection-definition-contract";
 import { buildGroupedSidebarNodes } from "@/lib/navigation/docs-sidebar-grouping-adapter";
 import {
@@ -107,6 +111,19 @@ export function buildDocsSidebarSectionNodes({
     // W18 move stubs keep static compatibility routes but are not explorer
     // destinations under Program documentation (or any collection folder).
     if (isDocumentationRouteMigrationOldBrowsePath(page.docsSlug)) {
+      continue;
+    }
+    // Mode A Program overviews stay published until PS-300 wires membership;
+    // do not place them in explorer folders as ungrouped leftovers.
+    if (isModeAProgramOverviewPendingExplorerMembership(page.docsSlug)) {
+      continue;
+    }
+    // Deferred-membership pages (for example Program API how-to) stay
+    // published without explorer placement until their IA lane wires them.
+    const documentationSlug = page.docsSlug.startsWith("documentation/")
+      ? page.docsSlug.slice("documentation/".length)
+      : page.docsSlug;
+    if (isDeferredDocumentationExplorerMembershipSlug(documentationSlug)) {
       continue;
     }
 
