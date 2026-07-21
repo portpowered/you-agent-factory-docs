@@ -241,6 +241,14 @@ or shell fixture proofs that must stay independent from AI registry helpers.
   `LAYOUT_MANIFEST_PREFIX` (`src/features/layout/`) in
   `component-coverage-gate.ts` when layout entries live in the reusable
   coverage manifest.
+* Layout + providers/i18n ownership-lane merge conflicts: when `main` has
+  already moved `@/features/providers/*` and `@/features/i18n/*` while this
+  lane moved `@/features/layout/*`, resolve the three shell layouts
+  (`src/app/(site)/layout.tsx`, `src/app/[locale]/layout.tsx`,
+  `src/app/docs/layout.tsx`) to the combined import end-state and preserve
+  any non-layout `main` deltas in conflicted consumer tests (for example
+  `MODE_A_PROGRAM_OVERVIEW_PENDING_EXPLORER_MEMBERSHIP_SLUGS` in
+  `desktop-mobile-explorer-parity.test.tsx`).
 * `src/lib/navigation/site-navigation-href.ts` / `site-navigation-href.test.ts`
   Root vs `/you-agent-factory-docs` absolute hrefs for home/docs/blog and locale
   routes via shared `withBasePath`.
